@@ -29,6 +29,8 @@
 #include "Bindings/BountyManagerBinding.h"
 #include "Bindings/CameraClassBinding.h"
 #include "Bindings/MyGuiBinding.h"
+#include "Bindings/CharacterAnimalBinding.h"
+#include "Bindings/ShopTraderBinding.h"
 #include <string>
 #include <cstdio>
 
@@ -87,6 +89,9 @@ void LuaBindings::registerAll(lua_State* L)
     GameWorldBinding::registerBinding(L);
     GameDataBinding::registerBinding(L);
     MyGuiBinding::registerBinding(L);
+    ShopTraderBinding::registerBinding(L);
+    AnimalInventoryLayoutBinding::registerBinding(L);
+    CharacterAnimalBinding::registerBinding(L);
 
 	registerEnums(L);
     registerEventBinding(L);
