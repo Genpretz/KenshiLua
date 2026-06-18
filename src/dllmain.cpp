@@ -238,6 +238,9 @@ _declspec(dllexport) void startPlugin()
 
     // KenshiLua::InstallAllHooks(); // Hooks are now installed dynamically/lazily on first event registration
 
+    // Always install keydown hook so the dev GUI hotkey works by default
+    KenshiLua::InstallHookForEvent("onKeyDown");
+
     // Bring up the developer GUI (hidden by default; toggled with F11).
     KenshiLua::KenshiLuaGui::get().requestInitialize(KenshiLua::g_luaState);
     KenshiLua::logToFile("startPlugin: ready");
