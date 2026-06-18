@@ -15,20 +15,20 @@ static Damages* getD(lua_State* L, int idx)
     return (Damages*)luaL_checkudata(L, idx, DamagesBinding::getMetatableName());
 }
 
-int DamagesBinding::createNew(lua_State* L)
-{
-    float cut    = (float)luaL_optnumber(L, 1, 0.0);
-    float blunt  = (float)luaL_optnumber(L, 2, 0.0);
-    float pierce = (float)luaL_optnumber(L, 3, 0.0);
-    float bleed  = (float)luaL_optnumber(L, 4, 1.0);
-    float armour = (float)luaL_optnumber(L, 5, 0.0);
-
-    void* mem = lua_newuserdata(L, sizeof(Damages));
-    new (mem) Damages(cut, blunt, pierce, bleed, armour);
-    luaL_getmetatable(L, DamagesBinding::getMetatableName());
-    lua_setmetatable(L, -2);
-    return 1;
-}
+//int DamagesBinding::createNew(lua_State* L)
+//{
+//    float cut    = (float)luaL_optnumber(L, 1, 0.0);
+//    float blunt  = (float)luaL_optnumber(L, 2, 0.0);
+//    float pierce = (float)luaL_optnumber(L, 3, 0.0);
+//    float bleed  = (float)luaL_optnumber(L, 4, 1.0);
+//    float armour = (float)luaL_optnumber(L, 5, 0.0);
+//
+//    void* mem = lua_newuserdata(L, sizeof(Damages));
+//    new (mem) Damages(cut, blunt, pierce, bleed, armour);
+//    luaL_getmetatable(L, DamagesBinding::getMetatableName());
+//    lua_setmetatable(L, -2);
+//    return 1;
+//}
 
 int DamagesBinding::gc(lua_State* L)
 {
@@ -112,7 +112,7 @@ void DamagesBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "new",                  DamagesBinding::createNew },
+        //{ "new",                  DamagesBinding::createNew },
         { "getCut",               DamagesBinding::getCut },
         { "setCut",               DamagesBinding::setCut },
         { "getBlunt",             DamagesBinding::getBlunt },
