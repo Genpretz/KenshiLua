@@ -3,6 +3,7 @@
 #include "Bindings/FactionBinding.h"
 #include "Bindings/HandBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/RootObjectBinding.h"
 
 #include <kenshi/Town.h>
 #include <kenshi/Faction.h>
@@ -15,26 +16,70 @@
 namespace KenshiLua
 {
 
-static TownBase* getT(lua_State* L, int idx)
+// -----------------------------------------------------------------------------
+// TownBaseBinding
+// -----------------------------------------------------------------------------
+
+static TownBase* getTB(lua_State* L, int idx)
 {
-    return checkObject<TownBase>(L, idx, TownBinding::getMetatableName());
+    return TownBaseBinding::checkTownBase(L, idx);
 }
 
-int TownBinding::gc(lua_State* L)       { return noopGc(L); }
+int TownBaseBinding::pushTownBase(lua_State* L, TownBase* t)
+{
+    if (t == nullptr)
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+    Town* realTown = t->isTown();
+    if (realTown)
+    {
+        return TownBinding::pushTown(L, realTown);
+    }
+    return pushObject<TownBase>(L, t, TownBaseBinding::getMetatableName());
+}
 
-int TownBinding::index(lua_State* L)
+TownBase* TownBaseBinding::getTownBase(lua_State* L, int idx)
+{
+    TownBase* t = testObject<TownBase>(L, idx, TownBaseBinding::getMetatableName());
+    if (t) return t;
+    return TownBinding::getTown(L, idx);
+}
+
+TownBase* TownBaseBinding::checkTownBase(lua_State* L, int idx)
+{
+    TownBase* t = getTownBase(L, idx);
+    if (!t)
+    {
+        luaL_argerror(L, idx, "TownBase");
+    }
+    return t;
+}
+
+int TownBaseBinding::gc(lua_State* L)       { return noopGc(L); }
+
+int TownBaseBinding::tostring(lua_State* L)
+{
+    TownBase* t = getTB(L, 1);
+    if (!t) { lua_pushstring(L, "TownBase:nil"); return 1; }
+    char buf[160];
+    _snprintf(buf, sizeof(buf), "TownBase:%s(%p)", t->getKnownName().c_str(), (void*)t);
+    lua_pushstring(L, buf);
+    return 1;
+}
+
+int TownBaseBinding::index(lua_State* L)
 {
     const char* key = luaL_checkstring(L, 2);
 
-    // 1. Check the metatable first so obj:method() syntax continues to work.
-    luaL_getmetatable(L, TownBinding::getMetatableName());
+    luaL_getmetatable(L, TownBaseBinding::getMetatableName());
     lua_getfield(L, -1, key);
     if (!lua_isnil(L, -1))
         return 1;   // found a method - return it
     lua_pop(L, 2);  // pop nil result + metatable
 
-    // 2. Fall through to raw member variable access.
-    TownBase* t = getT(L, 1);
+    TownBase* t = getTB(L, 1);
     if (!t) { lua_pushnil(L); return 1; }
 
     // --- boolean members ---
@@ -46,12 +91,9 @@ int TownBinding::index(lua_State* L)
     if (strcmp(key, "isValid") == 0) { lua_pushboolean(L, t->isValid() ? 1 : 0); return 1; }
     if (strcmp(key, "isNotFriendly") == 0) { lua_pushboolean(L, t->isNotFriendly() ? 1 : 0); return 1; }
 
-    Town* realTown = t->isTown();
-
     // --- integer/enum members ---
     if (strcmp(key, "alarmState") == 0) { lua_pushinteger(L, (int)t->getAlarmState()); return 1; }
     if (strcmp(key, "townType") == 0) { lua_pushinteger(L, (int)t->townType); return 1; }
-    if (strcmp(key, "playerTownLevel") == 0) { lua_pushinteger(L, realTown ? realTown->playerTownLevel : 0); return 1; }
 
     // --- string members ---
     if (strcmp(key, "name") == 0) { lua_pushstring(L, t->getKnownName().c_str()); return 1; }
@@ -60,39 +102,22 @@ int TownBinding::index(lua_State* L)
     // --- boolean members extra ---
     if (strcmp(key, "discovered") == 0) { lua_pushboolean(L, t->discovered ? 1 : 0); return 1; }
     if (strcmp(key, "explored") == 0) { lua_pushboolean(L, t->explored ? 1 : 0); return 1; }
-    if (strcmp(key, "openToPublic") == 0) { lua_pushboolean(L, realTown && realTown->openToPublic ? 1 : 0); return 1; }
-
-    // --- float members ---
-    if (strcmp(key, "power_Stat") == 0) { lua_pushnumber(L, realTown ? realTown->power_Stat : 0.0); return 1; }
-    if (strcmp(key, "maxPower_Stat") == 0) { lua_pushnumber(L, realTown ? realTown->maxPower_Stat : 0.0); return 1; }
-    if (strcmp(key, "townRangeMultiplier") == 0) { lua_pushnumber(L, realTown ? realTown->townRangeMultiplier : 1.0); return 1; }
 
     // --- unique object members ---
     if (strcmp(key, "faction") == 0) {
         return pushObject<Faction>(L, t->getFaction(), FactionBinding::getMetatableName());
     }
     if (strcmp(key, "position") == 0) { pushVector3(L, t->getPosition()); return 1; }
-    if (strcmp(key, "gates") == 0) {
-        lua_newtable(L);
-        if (realTown) {
-            int idx = 1;
-            for (ogre_unordered_set<hand>::type::iterator it = realTown->gates.begin(); it != realTown->gates.end(); ++it) {
-                HandBinding::pushHand(L, *it);
-                lua_rawseti(L, -2, idx++);
-            }
-        }
-        return 1;
-    }
 
-    lua_pushnil(L);
-    return 1;
+    // Fall back to RootObject index
+    return RootObjectBinding::index(L);
 }
 
-int TownBinding::newindex(lua_State* L)
+int TownBaseBinding::newindex(lua_State* L)
 {
     const char* key = luaL_checkstring(L, 2);
-    TownBase* t = getT(L, 1);
-    if (!t) return luaL_error(L, "Town is nil");
+    TownBase* t = getTB(L, 1);
+    if (!t) return luaL_error(L, "TownBase is nil");
 
     // --- writable properties ---
     if (strcmp(key, "faction") == 0) {
@@ -121,12 +146,6 @@ int TownBinding::newindex(lua_State* L)
         t->explored = (lua_toboolean(L, 3) != 0);
         return 0;
     }
-    Town* realTown = t->isTown();
-
-    if (strcmp(key, "openToPublic") == 0) {
-        if (realTown) realTown->openToPublic = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
     if (strcmp(key, "unexploredName") == 0) {
         t->unexploredName = luaL_checkstring(L, 3);
         return 0;
@@ -135,114 +154,87 @@ int TownBinding::newindex(lua_State* L)
         t->townType = (TownType)luaL_checkinteger(L, 3);
         return 0;
     }
-    if (strcmp(key, "playerTownLevel") == 0) {
-        if (realTown) realTown->playerTownLevel = (int)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "power_Stat") == 0) {
-        if (realTown) realTown->power_Stat = (float)luaL_checknumber(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "maxPower_Stat") == 0) {
-        if (realTown) realTown->maxPower_Stat = (float)luaL_checknumber(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "townRangeMultiplier") == 0) {
-        if (realTown) realTown->townRangeMultiplier = (float)luaL_checknumber(L, 3);
-        return 0;
-    }
 
-    if (strcmp(key, "gates") == 0) return luaL_error(L, "Town: gates is read-only");
-
-    return luaL_error(L, "Town: field '%s' is read-only or does not exist", key);
+    // Fall back to RootObject newindex
+    return RootObjectBinding::newindex(L);
 }
 
-int TownBinding::tostring(lua_State* L)
+int TownBaseBinding::getName(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
-    if (!t) { lua_pushstring(L, "Town:nil"); return 1; }
-    char buf[160];
-    _snprintf(buf, sizeof(buf), "Town:%s(%p)", t->getKnownName().c_str(), (void*)t);
-    lua_pushstring(L, buf);
-    return 1;
-}
-
-int TownBinding::getName(lua_State* L)
-{
-    TownBase* t = getT(L, 1);
+    TownBase* t = getTB(L, 1);
     if (t) lua_pushstring(L, t->getKnownName().c_str()); else lua_pushnil(L);
     return 1;
 }
 
-int TownBinding::getPosition(lua_State* L)
+int TownBaseBinding::getPosition(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
+    TownBase* t = getTB(L, 1);
     if (!t) { lua_pushnil(L); return 1; }
     Ogre::Vector3 p = t->getPosition();
     pushVector3(L, p);
     return 1;
 }
 
-int TownBinding::getFaction(lua_State* L)
+int TownBaseBinding::getFaction(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
+    TownBase* t = getTB(L, 1);
     if (!t) { lua_pushnil(L); return 1; }
     return pushObject<Faction>(L, t->getFaction(), FactionBinding::getMetatableName());
 }
 
-int TownBinding::setFaction(lua_State* L)
+int TownBaseBinding::setFaction(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
-    if (!t) return luaL_error(L, "Town is nil");
+    TownBase* t = getTB(L, 1);
+    if (!t) return luaL_error(L, "TownBase is nil");
     Faction* f = getFactionFromLua(L, 2);
     if (!f) return luaL_error(L, "setFaction: expected Faction userdata");
     t->setFaction(f, 0);
     return 0;
 }
 
-int TownBinding::getAlarmState(lua_State* L)
+int TownBaseBinding::getAlarmState(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
+    TownBase* t = getTB(L, 1);
     if (t) lua_pushinteger(L, (int)t->getAlarmState()); else lua_pushnil(L);
     return 1;
 }
 
-int TownBinding::setAlarmState(lua_State* L)
+int TownBaseBinding::setAlarmState(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
-    if (!t) return luaL_error(L, "Town is nil");
+    TownBase* t = getTB(L, 1);
+    if (!t) return luaL_error(L, "TownBase is nil");
     int s = (int)luaL_checkinteger(L, 2);
     t->setAlarmState((TownAlarmState)s);
     return 0;
 }
 
-int TownBinding::isActive(lua_State* L)       { TownBase* t = getT(L, 1); lua_pushboolean(L, t && t->isActive() ? 1 : 0); return 1; }
-int TownBinding::isDead(lua_State* L)         { TownBase* t = getT(L, 1); lua_pushboolean(L, t && t->isDead() ? 1 : 0); return 1; }
-int TownBinding::isOutpost(lua_State* L)      { TownBase* t = getT(L, 1); lua_pushboolean(L, t && t->isOutpost() ? 1 : 0); return 1; }
-int TownBinding::isPublic(lua_State* L)       { TownBase* t = getT(L, 1); lua_pushboolean(L, t && t->isPublic() ? 1 : 0); return 1; }
-int TownBinding::hasGates(lua_State* L)       { TownBase* t = getT(L, 1); lua_pushboolean(L, t && t->hasGates() ? 1 : 0); return 1; }
-int TownBinding::isValid(lua_State* L)        { TownBase* t = getT(L, 1); lua_pushboolean(L, t && t->isValid() ? 1 : 0); return 1; }
-int TownBinding::isNotFriendly(lua_State* L)  { TownBase* t = getT(L, 1); lua_pushboolean(L, t && t->isNotFriendly() ? 1 : 0); return 1; }
+int TownBaseBinding::isActive(lua_State* L)       { TownBase* t = getTB(L, 1); lua_pushboolean(L, t && t->isActive() ? 1 : 0); return 1; }
+int TownBaseBinding::isDead(lua_State* L)         { TownBase* t = getTB(L, 1); lua_pushboolean(L, t && t->isDead() ? 1 : 0); return 1; }
+int TownBaseBinding::isOutpost(lua_State* L)      { TownBase* t = getTB(L, 1); lua_pushboolean(L, t && t->isOutpost() ? 1 : 0); return 1; }
+int TownBaseBinding::isPublic(lua_State* L)       { TownBase* t = getTB(L, 1); lua_pushboolean(L, t && t->isPublic() ? 1 : 0); return 1; }
+int TownBaseBinding::hasGates(lua_State* L)       { TownBase* t = getTB(L, 1); lua_pushboolean(L, t && t->hasGates() ? 1 : 0); return 1; }
+int TownBaseBinding::isValid(lua_State* L)        { TownBase* t = getTB(L, 1); lua_pushboolean(L, t && t->isValid() ? 1 : 0); return 1; }
+int TownBaseBinding::isNotFriendly(lua_State* L)  { TownBase* t = getTB(L, 1); lua_pushboolean(L, t && t->isNotFriendly() ? 1 : 0); return 1; }
 
-int TownBinding::setVisible(lua_State* L)
+int TownBaseBinding::setVisible(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
-    if (!t) return luaL_error(L, "Town is nil");
+    TownBase* t = getTB(L, 1);
+    if (!t) return luaL_error(L, "TownBase is nil");
     t->setVisible(lua_toboolean(L, 2) != 0);
     return 0;
 }
 
-int TownBinding::setRecentlyDiscovered(lua_State* L)
+int TownBaseBinding::setRecentlyDiscovered(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
-    if (!t) return luaL_error(L, "Town is nil");
+    TownBase* t = getTB(L, 1);
+    if (!t) return luaL_error(L, "TownBase is nil");
     t->setRecentlyDiscovered(lua_toboolean(L, 2) != 0);
     return 0;
 }
 
-int TownBinding::distanceTo(lua_State* L)
+int TownBaseBinding::distanceTo(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
+    TownBase* t = getTB(L, 1);
     if (!t) { lua_pushnumber(L, 0.0); return 1; }
     Ogre::Vector3 p(0.0f, 0.0f, 0.0f);
     if (!readVector3(L, 2, p)) return luaL_error(L, "distanceTo: expected {x,y,z}");
@@ -250,9 +242,9 @@ int TownBinding::distanceTo(lua_State* L)
     return 1;
 }
 
-int TownBinding::withinBordersRange(lua_State* L)
+int TownBaseBinding::withinBordersRange(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
+    TownBase* t = getTB(L, 1);
     if (!t) { lua_pushboolean(L, 0); return 1; }
     Ogre::Vector3 p(0.0f, 0.0f, 0.0f);
     if (!readVector3(L, 2, p)) return luaL_error(L, "withinBordersRange: expected {x,y,z}");
@@ -261,25 +253,10 @@ int TownBinding::withinBordersRange(lua_State* L)
     return 1;
 }
 
-int TownBinding::getPowerStats(lua_State* L)
+int TownBaseBinding::isMyTown(lua_State* L)
 {
-    TownBase* t = getT(L, 1);
-    if (!t) return luaL_error(L, "Town is nil");
-    Town* realTown = t->isTown();
-    if (realTown) {
-        lua_pushnumber(L, realTown->power_Stat);
-        lua_pushnumber(L, realTown->maxPower_Stat);
-    } else {
-        lua_pushnumber(L, 0.0);
-        lua_pushnumber(L, 0.0);
-    }
-    return 2;
-}
-
-int TownBinding::isMyTown(lua_State* L)
-{
-    TownBase* t = getT(L, 1);
-    if (!t) return luaL_error(L, "Town is nil");
+    TownBase* t = getTB(L, 1);
+    if (!t) return luaL_error(L, "TownBase is nil");
     Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     if (!f) return luaL_error(L, "isMyTown: expected Faction userdata");
     
@@ -294,6 +271,154 @@ int TownBinding::isMyTown(lua_State* L)
     return 1;
 }
 
+void TownBaseBinding::registerBinding(lua_State* L)
+{
+    static const luaL_Reg meta[] = {
+        { "__gc",       TownBaseBinding::gc },
+        { "__tostring", TownBaseBinding::tostring },
+        { 0, 0 }
+    };
+    static const luaL_Reg methods[] = {
+        { "getName",                TownBaseBinding::getName },
+        { "getPosition",            TownBaseBinding::getPosition },
+        { "getFaction",             TownBaseBinding::getFaction },
+        { "setFaction",             TownBaseBinding::setFaction },
+        { "getAlarmState",          TownBaseBinding::getAlarmState },
+        { "setAlarmState",          TownBaseBinding::setAlarmState },
+        { "isActive",               TownBaseBinding::isActive },
+        { "isDead",                 TownBaseBinding::isDead },
+        { "isOutpost",              TownBaseBinding::isOutpost },
+        { "isPublic",               TownBaseBinding::isPublic },
+        { "hasGates",               TownBaseBinding::hasGates },
+        { "isValid",                TownBaseBinding::isValid },
+        { "isNotFriendly",          TownBaseBinding::isNotFriendly },
+        { "setVisible",             TownBaseBinding::setVisible },
+        { "setRecentlyDiscovered",  TownBaseBinding::setRecentlyDiscovered },
+        { "distanceTo",             TownBaseBinding::distanceTo },
+        { "withinBordersRange",     TownBaseBinding::withinBordersRange },
+        { "isMyTown",               TownBaseBinding::isMyTown },
+        { 0, 0 }
+    };
+    registerClass(L, TownBaseBinding::getMetatableName(), meta, methods, TownBaseBinding::index, TownBaseBinding::newindex);
+}
+
+
+// -----------------------------------------------------------------------------
+// TownBinding
+// -----------------------------------------------------------------------------
+
+static Town* getT(lua_State* L, int idx)
+{
+    return TownBinding::checkTown(L, idx);
+}
+
+int TownBinding::pushTown(lua_State* L, Town* t)
+{
+    return pushObject<Town>(L, t, TownBinding::getMetatableName());
+}
+
+Town* TownBinding::getTown(lua_State* L, int idx)
+{
+    return testObject<Town>(L, idx, TownBinding::getMetatableName());
+}
+
+Town* TownBinding::checkTown(lua_State* L, int idx)
+{
+    Town* t = getTown(L, idx);
+    if (!t)
+    {
+        luaL_argerror(L, idx, "Town");
+    }
+    return t;
+}
+
+int TownBinding::gc(lua_State* L)       { return noopGc(L); }
+
+int TownBinding::tostring(lua_State* L)
+{
+    Town* t = getT(L, 1);
+    if (!t) { lua_pushstring(L, "Town:nil"); return 1; }
+    char buf[160];
+    _snprintf(buf, sizeof(buf), "Town:%s(%p)", t->getKnownName().c_str(), (void*)t);
+    lua_pushstring(L, buf);
+    return 1;
+}
+
+int TownBinding::index(lua_State* L)
+{
+    const char* key = luaL_checkstring(L, 2);
+
+    luaL_getmetatable(L, TownBinding::getMetatableName());
+    lua_getfield(L, -1, key);
+    if (!lua_isnil(L, -1))
+        return 1;   // found a method - return it
+    lua_pop(L, 2);  // pop nil result + metatable
+
+    Town* t = getT(L, 1);
+    if (!t) { lua_pushnil(L); return 1; }
+
+    // --- Town specific members ---
+    if (strcmp(key, "playerTownLevel") == 0) { lua_pushinteger(L, t->playerTownLevel); return 1; }
+    if (strcmp(key, "openToPublic") == 0) { lua_pushboolean(L, t->openToPublic ? 1 : 0); return 1; }
+    if (strcmp(key, "power_Stat") == 0) { lua_pushnumber(L, t->power_Stat); return 1; }
+    if (strcmp(key, "maxPower_Stat") == 0) { lua_pushnumber(L, t->maxPower_Stat); return 1; }
+    if (strcmp(key, "townRangeMultiplier") == 0) { lua_pushnumber(L, t->townRangeMultiplier); return 1; }
+    if (strcmp(key, "gates") == 0) {
+        lua_newtable(L);
+        int idx = 1;
+        for (ogre_unordered_set<hand>::type::iterator it = t->gates.begin(); it != t->gates.end(); ++it) {
+            HandBinding::pushHand(L, *it);
+            lua_rawseti(L, -2, idx++);
+        }
+        return 1;
+    }
+
+    // Fall back to TownBase index
+    return TownBaseBinding::index(L);
+}
+
+int TownBinding::newindex(lua_State* L)
+{
+    const char* key = luaL_checkstring(L, 2);
+    Town* t = getT(L, 1);
+    if (!t) return luaL_error(L, "Town is nil");
+
+    // --- Town specific writable properties ---
+    if (strcmp(key, "openToPublic") == 0) {
+        t->openToPublic = (lua_toboolean(L, 3) != 0);
+        return 0;
+    }
+    if (strcmp(key, "playerTownLevel") == 0) {
+        t->playerTownLevel = (int)luaL_checkinteger(L, 3);
+        return 0;
+    }
+    if (strcmp(key, "power_Stat") == 0) {
+        t->power_Stat = (float)luaL_checknumber(L, 3);
+        return 0;
+    }
+    if (strcmp(key, "maxPower_Stat") == 0) {
+        t->maxPower_Stat = (float)luaL_checknumber(L, 3);
+        return 0;
+    }
+    if (strcmp(key, "townRangeMultiplier") == 0) {
+        t->townRangeMultiplier = (float)luaL_checknumber(L, 3);
+        return 0;
+    }
+    if (strcmp(key, "gates") == 0) return luaL_error(L, "Town: gates is read-only");
+
+    // Fall back to TownBase newindex
+    return TownBaseBinding::newindex(L);
+}
+
+int TownBinding::getPowerStats(lua_State* L)
+{
+    Town* t = getT(L, 1);
+    if (!t) return luaL_error(L, "Town is nil");
+    lua_pushnumber(L, t->power_Stat);
+    lua_pushnumber(L, t->maxPower_Stat);
+    return 2;
+}
+
 void TownBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -302,25 +427,7 @@ void TownBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "getName",                TownBinding::getName },
-        { "getPosition",            TownBinding::getPosition },
-        { "getFaction",             TownBinding::getFaction },
-        { "setFaction",             TownBinding::setFaction },
-        { "getAlarmState",          TownBinding::getAlarmState },
-        { "setAlarmState",          TownBinding::setAlarmState },
-        { "isActive",               TownBinding::isActive },
-        { "isDead",                 TownBinding::isDead },
-        { "isOutpost",              TownBinding::isOutpost },
-        { "isPublic",               TownBinding::isPublic },
-        { "hasGates",               TownBinding::hasGates },
-        { "isValid",                TownBinding::isValid },
-        { "isNotFriendly",          TownBinding::isNotFriendly },
-        { "setVisible",             TownBinding::setVisible },
-        { "setRecentlyDiscovered",  TownBinding::setRecentlyDiscovered },
-        { "distanceTo",             TownBinding::distanceTo },
-        { "withinBordersRange",     TownBinding::withinBordersRange },
         { "getPowerStats",          TownBinding::getPowerStats },
-        { "isMyTown",               TownBinding::isMyTown },
         { 0, 0 }
     };
     registerClass(L, TownBinding::getMetatableName(), meta, methods, TownBinding::index, TownBinding::newindex);

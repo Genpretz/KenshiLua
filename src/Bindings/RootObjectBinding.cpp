@@ -114,7 +114,7 @@ int RootObjectBinding::index(lua_State* L)
     }
     if (strcmp(key, "town") == 0)
     {
-        return pushObject<TownBase>(L, r->getCurrentTownLocation(), TownBinding::getMetatableName());
+        return TownBaseBinding::pushTownBase(L, r->getCurrentTownLocation());
     }
     if (strcmp(key, "inventory") == 0)
     {
@@ -205,7 +205,7 @@ int RootObjectBinding::getTown(lua_State* L)
 {
     RootObject* r = getRO(L, 1);
     if (r == 0) { lua_pushnil(L); return 1; }
-    return pushObject<TownBase>(L, r->getCurrentTownLocation(), TownBinding::getMetatableName());
+    return TownBaseBinding::pushTownBase(L, r->getCurrentTownLocation());
 }
 
 int RootObjectBinding::getInventory(lua_State* L)

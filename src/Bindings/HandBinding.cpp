@@ -123,7 +123,7 @@ int HandBinding::index(lua_State* L)
     }
     if (strcmp(key, "town") == 0) {
         if (!h->isValid()) { lua_pushnil(L); return 1; }
-        return pushObject<TownBase>(L, h->getTown(), TownBinding::getMetatableName());
+        return TownBaseBinding::pushTownBase(L, h->getTown());
     }
 
     lua_pushnil(L);
@@ -205,7 +205,7 @@ int HandBinding::getTown(lua_State* L)
 {
     hand* h = checkHand(L, 1);
     if (!h || !h->isValid()) { lua_pushnil(L); return 1; }
-    return pushObject<TownBase>(L, h->getTown(), TownBinding::getMetatableName());
+    return TownBaseBinding::pushTownBase(L, h->getTown());
 }
 
 void HandBinding::registerBinding(lua_State* L)

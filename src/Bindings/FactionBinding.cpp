@@ -2,6 +2,7 @@
 #include "Bindings/FactionBinding.h"
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/TownBinding.h"
 #include "Lua/BindingHelpers.h"
 #include <kenshi/Platoon.h>
 
@@ -177,7 +178,7 @@ int FactionBinding::getNumPlatoons(lua_State* L)
     if (!f) { lua_pushinteger(L, 0); return 1; }
     GameData* tmpl = (GameData*)lua_touserdata(L, 2);
     bool tempsOnly = lua_toboolean(L, 3) != 0;
-    TownBase* home = (TownBase*)lua_touserdata(L, 4);
+    TownBase* home = TownBaseBinding::getTownBase(L, 4);
     lua_pushinteger(L, f->getNumPlatoons(tmpl, tempsOnly, home));
     return 1;
 }
