@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Resource">
+	<Resource type="ResourceLayout" name="Kenshi_ScriptEditor_EditBox" version="3.2.0">
+		<Widget type="Widget" skin="Kenshi_GenericInputBoxSkin" position="0 0 300 200" name="Root">
+			<Property key="MultiLine" value="true"/>
+			<UserString key="LE_TargetWidgetType" value="EditBox"/>
+
+			<Widget type="TextBox" skin="Kenshi_EditBoxStandardText" position="10 10 265 165" align="Stretch" name="Client">
+				<Property key="TextAlign" value="Default"/>
+				<Property key="Pointer" value="beam"/>
+			</Widget>
+
+			<Widget type="ScrollBar" skin="Kenshi_ScrollBarV" position="280 10 15 165" align="Right VStretch" name="VScroll"/>
+
+			<Widget type="ScrollBar" skin="Kenshi_ScrollBarH" position="10 180 265 15" align="HStretch Bottom" name="HScroll"/>
+		</Widget>
+	</Resource>
+</MyGUI>

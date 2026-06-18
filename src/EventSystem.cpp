@@ -1,0 +1,235 @@
+#include "pch.h"
+
+#include "EventSystem.h"
+#include "Lua/Logger.h"
+#include "Hooks.h"
+
+
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+}
+
+namespace KenshiLua
+{
+
+    // ---------------------------------------------------------------------------
+    // Singleton storage
+    // ---------------------------------------------------------------------------
+
+    static EventSystem* g_eventSystem = NULL;
+
+    // ---------------------------------------------------------------------------
+    // Lifecycle
+    // ---------------------------------------------------------------------------
+
+    EventSystem::EventSystem()
+        : m_L(NULL)
+        , m_nextHandlerId(1)
+    {
+    }
+
+    EventSystem::~EventSystem()
+    {
+        // clear() requires m_L; only call if we were ever initialized.
+        if (m_L)
+            clear();
+    }
+
+    // Non-copyable stubs - bodies required even for private declarations in
+    // MSVC 2010 when the linker sees a copy attempt anywhere.
+    EventSystem::EventSystem(const EventSystem&)
+        : m_L(NULL)
+        , m_nextHandlerId(1)
+    {
+    }
+
+    EventSystem& EventSystem::operator=(const EventSystem&)
+    {
+        return *this;
+    }
+
+    // ---------------------------------------------------------------------------
+    // Singleton accessor
+    // ---------------------------------------------------------------------------
+
+    EventSystem& EventSystem::get()
+    {
+        if (!g_eventSystem)
+        {
+            static EventSystem instance;
+            g_eventSystem = &instance;
+        }
+        return *g_eventSystem;
+    }
+
+    // ---------------------------------------------------------------------------
+    // initialize
+    // ---------------------------------------------------------------------------
+
+    bool EventSystem::initialize(lua_State* L)
+    {
+        m_L = L;
+
+        lua_pushcfunction(L, luaRegisterHandler);
+        lua_setglobal(L, "registerHandler");
+
+        lua_pushcfunction(L, luaUnregisterHandler);
+        lua_setglobal(L, "unregisterHandler");
+
+        return true;
+    }
+
+    // ---------------------------------------------------------------------------
+    // registerHandler
+    // ---------------------------------------------------------------------------
+
+    int EventSystem::registerHandler(const char* eventName, int luaRef)
+    {
+        HandlerInfo info;
+        info.id = m_nextHandlerId++;
+        info.luaRef = luaRef;
+
+        for (size_t i = 0; i < m_handlers.size(); ++i)
+        {
+            if (m_handlers[i].first == eventName)
+            {
+                m_handlers[i].second.push_back(info);
+                return info.id;
+            }
+        }
+
+        // No bucket yet - create one.
+        std::vector<HandlerInfo> newList;
+        newList.push_back(info);
+        m_handlers.push_back(std::make_pair(std::string(eventName), newList));
+
+        InstallHookForEvent(eventName);
+
+        return info.id;
+    }
+
+    // ---------------------------------------------------------------------------
+    // unregisterHandler
+    // ---------------------------------------------------------------------------
+
+    void EventSystem::unregisterHandler(int handlerId)
+    {
+        for (size_t i = 0; i < m_handlers.size(); ++i)
+        {
+            std::vector<HandlerInfo>& handlers = m_handlers[i].second;
+            for (size_t j = 0; j < handlers.size(); ++j)
+            {
+                if (handlers[j].id == handlerId)
+                {
+                    handlers.erase(handlers.begin() + j);
+                    return;
+                }
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------------------
+    // callHandlers
+    // ---------------------------------------------------------------------------
+
+    int EventSystem::callHandlers(const char* eventName, IArgPusher* pusher)
+    {
+        // Snapshot the handler list so that handlers which call
+        // unregisterHandler during their own execution don't corrupt iteration.
+        std::vector<HandlerInfo> snapshot;
+        for (size_t i = 0; i < m_handlers.size(); ++i)
+        {
+            if (m_handlers[i].first == eventName)
+            {
+                snapshot = m_handlers[i].second;
+                break;
+            }
+        }
+
+        if (snapshot.empty())
+            return 0;
+
+        int result = 0;
+        for (size_t i = 0; i < snapshot.size(); ++i)
+        {
+            lua_rawgeti(m_L, LUA_REGISTRYINDEX, snapshot[i].luaRef);
+            if (!lua_isfunction(m_L, -1))
+            {
+                lua_pop(m_L, 1);
+                continue;
+            }
+
+            int nargs = 0;
+            if (pusher)
+                nargs = pusher->push(m_L);
+
+            if (lua_pcall(m_L, nargs, 1, 0) == LUA_OK)
+            {
+                // A handler returning false consumes the event and stops
+                // subsequent handlers from running.
+                if (lua_isboolean(m_L, -1) && !lua_toboolean(m_L, -1))
+                    result = -1;
+            }
+            else
+            {
+                const char* err = lua_tostring(m_L, -1);
+                logToFilef("Lua error in '%s' handler: %s",
+                    eventName,
+                    err ? err : "(non-string error)");
+            }
+
+            lua_pop(m_L, 1);
+
+            if (result == -1)
+                break;
+        }
+
+        return result;
+    }
+
+    // ---------------------------------------------------------------------------
+    // clear
+    // ---------------------------------------------------------------------------
+
+    void EventSystem::clear()
+    {
+        for (size_t i = 0; i < m_handlers.size(); ++i)
+        {
+            std::vector<HandlerInfo>& handlers = m_handlers[i].second;
+            for (size_t j = 0; j < handlers.size(); ++j)
+            {
+                if (handlers[j].luaRef != LUA_REFNIL)
+                    luaL_unref(m_L, LUA_REGISTRYINDEX, handlers[j].luaRef);
+            }
+            handlers.clear();
+        }
+        m_handlers.clear();
+    }
+
+    // ---------------------------------------------------------------------------
+    // Lua globals
+    // ---------------------------------------------------------------------------
+
+    int luaRegisterHandler(lua_State* L)
+    {
+        const char* eventName = luaL_checkstring(L, 1);
+
+        if (!lua_isfunction(L, 2))
+            return luaL_error(L, "registerHandler: second argument must be a function");
+
+        lua_pushvalue(L, 2);
+        int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+
+        int handlerId = EventSystem::get().registerHandler(eventName, ref);
+        lua_pushinteger(L, handlerId);
+        return 1;
+    }
+
+    int luaUnregisterHandler(lua_State* L)
+    {
+        int handlerId = (int)luaL_checkinteger(L, 1);
+        EventSystem::get().unregisterHandler(handlerId);
+        return 0;
+    }
+}
