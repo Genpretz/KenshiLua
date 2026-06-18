@@ -128,7 +128,7 @@ void ScriptEditor::initialize(LuaState* luaState)
         "KenshiLuaEditor");
 
     m_window->setCaption("KenshiLua Script Editor");
-    m_window->setVisible(TRUE);
+    m_window->setVisible(false);
     m_window->eventWindowButtonPressed += MyGUI::newDelegate(this, &ScriptEditor::onWindowButtonPressed);
 
     MyGUI::Widget* client = m_window->getClientWidget();
