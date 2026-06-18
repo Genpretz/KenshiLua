@@ -6,7 +6,6 @@
 #include "Bindings/HandBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/DialogueBinding.h"
-#include "Bindings/DialogueEventBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/TownBinding.h"
 #include "Bindings/ItemBinding.h"
@@ -75,6 +74,7 @@ void LuaBindings::registerAll(lua_State* L)
     LockedArmourBinding::registerBinding(L);
     CrossbowBinding::registerBinding(L);
     BuildingBinding::registerBinding(L);
+    TownBaseBinding::registerBinding(L);
     TownBinding::registerBinding(L);
     MedicalSystemBinding::registerBinding(L);
     CharStatsBinding::registerBinding(L);

@@ -32,4 +32,6 @@ public:
     static int isValid(lua_State* L);
 };
 
+void registerEventBinding(lua_State* L);
+
 } // namespace KenshiLua
