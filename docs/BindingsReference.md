@@ -1318,6 +1318,8 @@
 | BD_SLAVE_STORAGE | BuildingDesignation::BD_SLAVE_STORAGE |
 | BD_RESIDENTIAL_SMALL | BuildingDesignation::BD_RESIDENTIAL_SMALL |
 #### or
+| Name | Value |
+|---|---|
 | NONE | BuildingDesignation::BD_NONE |
 | SHOP | BuildingDesignation::BD_SHOP |
 | BARRACKS | BuildingDesignation::BD_BARRACKS |
@@ -1349,6 +1351,8 @@
 | BCTYPE_SHELL_WITH_INTERIOR | BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR |
 | BCTYPE_FARM | BuildingClassType::BCTYPE_FARM |
 #### or
+| Name | Value |
+|---|---|
 | FLUFF | BuildingClassType::BCTYPE_FLUFF |
 | DOOR | BuildingClassType::BCTYPE_DOOR |
 | USABLE | BuildingClassType::BCTYPE_USABLE |
@@ -1378,6 +1382,8 @@
 | PLACEMENT_OUTSIDE | PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE |
 | PLACEMENT_INVALID | PreviewBuilding::PlacementResult::PLACEMENT_INVALID |
 #### or
+| Name | Value |
+|---|---|
 | VALID | PreviewBuilding::PlacementResult::PLACEMENT_VALID |
 | OUTSIDE | PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE |
 | INVALID | PreviewBuilding::PlacementResult::PLACEMENT_INVALID |
@@ -1388,6 +1394,8 @@
 | PREVIEW_NORMAL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL |
 | PREVIEW_WALL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL |
 #### or
+| Name | Value |
+|---|---|
 | NORMAL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL |
 | WALL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL |
 
@@ -1400,6 +1408,8 @@
 | PS_PLAYING_DEAD | ProneState::PS_PLAYING_DEAD |
 | PS_KO | ProneState::PS_KO |
 #### or
+| Name | Value |
+|---|---|
 | NORMAL | PS_NORMAL |
 | STAYING_LOW | PS_STAYING_LOW |
 | CRIPPLED | PS_CRIPPLED |
@@ -1441,6 +1451,8 @@
 | ST_HAS_BEEN_LOOTED | ST_HAS_BEEN_LOOTED |
 | ST_CRIMINAL | ST_CRIMINAL |
 #### or
+| Name | Value |
+|---|---|
 | NONE | ST_NONE |
 | INTRUDER | ST_INTRUDER |
 | AGGRESSOR | ST_AGGRESSOR |
@@ -1466,6 +1478,8 @@
 | LT_I_SCREWED_THIS_GUY | LT_I_SCREWED_THIS_GUY |
 | LT_MAX | LT_MAX |
 #### or
+| Name | Value |
+|---|---|
 | NONE | LT_NONE |
 | MY_INTRUDER | LT_MY_INTRUDER |
 | MY_LIFESAVER | LT_MY_LIFESAVER |
@@ -1486,6 +1500,8 @@
 | SOUNDRANGE_LONG | SOUNDRANGE_LONG |
 | SOUNDRANGE_ALWAYS | SOUNDRANGE_ALWAYS |
 #### or
+| Name | Value |
+|---|---|
 | SHORT | SOUNDRANGE_SHORT |
 | LONG | SOUNDRANGE_LONG |
 | ALWAYS | SOUNDRANGE_ALWAYS |
@@ -1499,6 +1515,8 @@
 | SQUAD_SIGNALS_PLAN | SQUAD_SIGNALS_PLAN |
 | SQUAD_SLAVE | SQUAD_SLAVE |
 #### or
+| Name | Value |
+|---|---|
 | 1 | SQUAD_1 |
 | 2 | SQUAD_2 |
 | LEADER | SQUAD_LEADER |
@@ -1522,6 +1540,8 @@
 | T_WHOLE_SQUAD | T_WHOLE_SQUAD |
 | T_TARGET_WITH_RACE | T_TARGET_WITH_RACE |
 #### or
+| Name | Value |
+|---|---|
 | ME | T_ME |
 | TARGET | T_TARGET |
 | TARGET_IF_PLAYER | T_TARGET_IF_PLAYER |
@@ -1587,6 +1607,8 @@
 | DA_KNOCKOUT | DA_KNOCKOUT |
 | DA_END | DA_END |
 #### or
+| Name | Value |
+|---|---|
 | NONE | DA_NONE |
 | TRADE | DA_TRADE |
 | TALK_TO_LEADER | DA_TALK_TO_LEADER |
@@ -1794,6 +1816,8 @@
 | BF_ENGINE | BuildingFunction::BF_ENGINE |
 | BF_LIQUID_TANK | BuildingFunction::BF_LIQUID_TANK |
 #### or
+| Name | Value |
+|---|---|
 | ANY | BuildingFunction::BF_ANY |
 | MINE | BuildingFunction::BF_MINE |
 | RESOURCE_STORAGE | BuildingFunction::BF_RESOURCE_STORAGE |
@@ -1840,6 +1864,8 @@
 | CUT_REAR_LEFT | CutDirection::CUT_REAR_LEFT |
 | CUT_REAR_RIGHT | CutDirection::CUT_REAR_RIGHT |
 #### or
+| Name | Value |
+|---|---|
 | DEFAULT | CutDirection::CUT_DEFAULT |
 | DOWNWARD | CutDirection::CUT_DOWNWARD |
 | LEFT | CutDirection::CUT_LEFT |
@@ -1870,6 +1896,8 @@
 | HIT_SWORD | HitMaterialType::HIT_SWORD |
 | HIT_CHAIN | HitMaterialType::HIT_CHAIN |
 #### or
+| Name | Value |
+|---|---|
 | MISSED | HitMaterialType::HIT_MISSED |
 | METAL | HitMaterialType::HIT_METAL |
 | FLESH | HitMaterialType::HIT_FLESH |
@@ -1888,6 +1916,8 @@
 | WA_GAS | WeatherAffecting::WA_GAS |
 | WA_RAIN | WeatherAffecting::WA_RAIN |
 #### or
+| Name | Value |
+|---|---|
 | NONE | WeatherAffecting::WA_NONE |
 | DUSTSTORM | WeatherAffecting::WA_DUSTSTORM |
 | ACID | WeatherAffecting::WA_ACID |
@@ -1918,6 +1948,8 @@
 | ATTACH_LEFT_LEG | AttachSlot::ATTACH_LEFT_LEG |
 | ATTACH_RIGHT_LEG | AttachSlot::ATTACH_RIGHT_LEG |
 #### or
+| Name | Value |
+|---|---|
 | WEAPON | AttachSlot::ATTACH_WEAPON |
 | BACK | AttachSlot::ATTACH_BACK |
 | HAIR | AttachSlot::ATTACH_HAIR |
@@ -2001,6 +2033,8 @@
 | OT_ADVENTURER | CharacterTypeEnum::OT_ADVENTURER |
 | OT_END | CharacterTypeEnum::OT_END |
 #### or
+| Name | Value |
+|---|---|
 | NONE | CharacterTypeEnum::OT_NONE |
 | LAW_ENFORCEMENT | CharacterTypeEnum::OT_LAW_ENFORCEMENT |
 | MILITARY | CharacterTypeEnum::OT_MILITARY |
@@ -2343,6 +2377,8 @@
 | ATTACK_NULL | WeaponCategory::ATTACK_NULL |
 | NUM_SKILL_TYPES | WeaponCategory::NUM_SKILL_TYPES |
 #### or
+| Name | Value |
+|---|---|
 | KATANAS | WeaponCategory::SKILL_KATANAS |
 | SABRES | WeaponCategory::SKILL_SABRES |
 | BLUNT | WeaponCategory::SKILL_BLUNT |
@@ -2481,6 +2517,8 @@
 | _encumbrance | StatsEnumerated::_encumbrance |
 | _combatSpeed | StatsEnumerated::_combatSpeed |
 #### or
+| Name | Value |
+|---|---|
 | NONE | StatsEnumerated::STAT_NONE |
 | STRENGTH | StatsEnumerated::STAT_STRENGTH |
 | MELEE_ATTACK | StatsEnumerated::STAT_MELEE_ATTACK |
@@ -2547,7 +2585,9 @@
 | UsingMachinery | StatsEnumerated::_UsingMachinery |
 | Encumbrance | StatsEnumerated::_encumbrance |
 | CombatSpeed | StatsEnumerated::_combatSpeed |
-
+#### also
+| Name | Value |
+|---|---|
 | encumbrance | StatsEnumerated::_encumbrance |
 | combatSpeed | StatsEnumerated::_combatSpeed |
 
@@ -2629,6 +2669,8 @@
 | EV_CROWD_TRIGGERED | EventTriggerEnum::EV_CROWD_TRIGGERED |
 | EV_MAX | EventTriggerEnum::EV_MAX |
 #### or
+| Name | Value |
+|---|---|
 | NONE | EventTriggerEnum::EV_NONE |
 | PLAYER_TALK_TO_ME | EventTriggerEnum::EV_PLAYER_TALK_TO_ME |
 | ANNOUNCEMENT | EventTriggerEnum::EV_ANNOUNCEMENT |
@@ -2788,6 +2830,8 @@
 | DC_HAS_ROBOT_LIMBS | DialogConditionEnum::DC_HAS_ROBOT_LIMBS |
 | DC_END | DialogConditionEnum::DC_END |
 #### or
+| Name | Value |
+|---|---|
 | NONE | DialogConditionEnum::DC_NONE |
 | RELATIONS | DialogConditionEnum::DC_RELATIONS |
 | PLAYERMONEY | DialogConditionEnum::DC_PLAYERMONEY |
@@ -2876,6 +2920,8 @@
 | CE_LESS_THAN | ComparisonEnum::CE_LESS_THAN |
 | CE_MORE_THAN | ComparisonEnum::CE_MORE_THAN |
 #### or
+| Name | Value |
+|---|---|
 | EQUALS | ComparisonEnum::CE_EQUALS |
 | LESS_THAN | ComparisonEnum::CE_LESS_THAN |
 | MORE_THAN | ComparisonEnum::CE_MORE_THAN |
@@ -2893,6 +2939,8 @@
 | GROUND_SNOW | GroundType::GROUND_SNOW |
 | GROUND_DIRT | GroundType::GROUND_DIRT |
 #### or
+| Name | Value |
+|---|---|
 | SAND | GroundType::GROUND_SAND |
 | GRASS | GroundType::GROUND_GRASS |
 | CONCRETE | GroundType::GROUND_CONCRETE |
@@ -2999,6 +3047,8 @@
 | ZOOM_MAX | MapZoomLevel::ZOOM_MAX |
 | ZOOM_CHARACTERS | MapZoomLevel::ZOOM_CHARACTERS |
 #### or
+| Name | Value |
+|---|---|
 | MIN | MapZoomLevel::ZOOM_MIN |
 | MID | MapZoomLevel::ZOOM_MID |
 | MAX | MapZoomLevel::ZOOM_MAX |
