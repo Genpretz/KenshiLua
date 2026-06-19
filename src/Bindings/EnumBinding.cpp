@@ -15,6 +15,9 @@ extern "C" {
 
 namespace KenshiLua
 {    
+
+    // setEnum helper defined in EnumBinding.h
+
     // ----------------------------------------------
     // Character.h
 	// ----------------------------------------------
@@ -23,30 +26,16 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, ProneState::PS_NORMAL);
-        lua_setfield(L, -2, "PS_NORMAL");
-        lua_pushinteger(L, ProneState::PS_NORMAL);
-        lua_setfield(L, -2, "NORMAL");
-
-        lua_pushinteger(L, ProneState::PS_STAYING_LOW);
-        lua_setfield(L, -2, "PS_STAYING_LOW");
-        lua_pushinteger(L, ProneState::PS_STAYING_LOW);
-        lua_setfield(L, -2, "STAYING_LOW");
-
-        lua_pushinteger(L, ProneState::PS_CRIPPLED);
-        lua_setfield(L, -2, "PS_CRIPPLED");
-        lua_pushinteger(L, ProneState::PS_CRIPPLED);
-        lua_setfield(L, -2, "CRIPPLED");
-
-        lua_pushinteger(L, ProneState::PS_PLAYING_DEAD);
-        lua_setfield(L, -2, "PS_PLAYING_DEAD");
-        lua_pushinteger(L, ProneState::PS_PLAYING_DEAD);
-        lua_setfield(L, -2, "PLAYING_DEAD");
-
-        lua_pushinteger(L, ProneState::PS_KO);
-        lua_setfield(L, -2, "PS_KO");
-        lua_pushinteger(L, ProneState::PS_KO);
-        lua_setfield(L, -2, "KO");
+        setEnum(L, "PS_NORMAL", ProneState::PS_NORMAL);
+        setEnum(L, "NORMAL", ProneState::PS_NORMAL);
+        setEnum(L, "PS_STAYING_LOW", ProneState::PS_STAYING_LOW);
+        setEnum(L, "STAYING_LOW", ProneState::PS_STAYING_LOW);
+        setEnum(L, "PS_CRIPPLED", ProneState::PS_CRIPPLED);
+        setEnum(L, "CRIPPLED", ProneState::PS_CRIPPLED);
+        setEnum(L, "PS_PLAYING_DEAD", ProneState::PS_PLAYING_DEAD);
+        setEnum(L, "PLAYING_DEAD", ProneState::PS_PLAYING_DEAD);
+        setEnum(L, "PS_KO", ProneState::PS_KO);
+        setEnum(L, "KO", ProneState::PS_KO);
 
         lua_setglobal(L, "ProneState");
     }
@@ -55,17 +44,10 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, WaterState::NO_WATER);
-        lua_setfield(L, -2, "NO_WATER");
-
-        lua_pushinteger(L, WaterState::VERY_SHALLOW_WATER);
-        lua_setfield(L, -2, "VERY_SHALLOW_WATER");
-
-        lua_pushinteger(L, WaterState::THIGH_DEEP_WATER);
-        lua_setfield(L, -2, "THIGH_DEEP_WATER");
-
-        lua_pushinteger(L, WaterState::DEEP_WATER);
-        lua_setfield(L, -2, "DEEP_WATER");
+        setEnum(L, "NO_WATER", WaterState::NO_WATER);
+        setEnum(L, "VERY_SHALLOW_WATER", WaterState::VERY_SHALLOW_WATER);
+        setEnum(L, "THIGH_DEEP_WATER", WaterState::THIGH_DEEP_WATER);
+        setEnum(L, "DEEP_WATER", WaterState::DEEP_WATER);
 
         lua_setglobal(L, "WaterState");
     }
@@ -74,38 +56,17 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, RagdollPart::Enum::NONE);
-        lua_setfield(L, -2, "NONE");
-
-        lua_pushinteger(L, RagdollPart::Enum::WHOLE);
-        lua_setfield(L, -2, "WHOLE");
-
-        lua_pushinteger(L, RagdollPart::Enum::RIGHT_ARM);
-        lua_setfield(L, -2, "RIGHT_ARM");
-
-        lua_pushinteger(L, RagdollPart::Enum::LEFT_ARM);
-        lua_setfield(L, -2, "LEFT_ARM");
-
-        lua_pushinteger(L, RagdollPart::Enum::HEAD);
-        lua_setfield(L, -2, "HEAD");
-
-        lua_pushinteger(L, RagdollPart::Enum::RIGHT_LEG);
-        lua_setfield(L, -2, "RIGHT_LEG");
-
-        lua_pushinteger(L, RagdollPart::Enum::LEFT_LEG);
-        lua_setfield(L, -2, "LEFT_LEG");
-
-        lua_pushinteger(L, RagdollPart::Enum::CARRY_MODE);
-        lua_setfield(L, -2, "CARRY_MODE");
-
-        lua_pushinteger(L, RagdollPart::Enum::ARMS);
-        lua_setfield(L, -2, "ARMS");
-
-        lua_pushinteger(L, RagdollPart::Enum::LEGS);
-        lua_setfield(L, -2, "LEGS");
-
-        lua_pushinteger(L, RagdollPart::Enum::ALL);
-        lua_setfield(L, -2, "ALL");
+        setEnum(L, "NONE", RagdollPart::Enum::NONE);
+        setEnum(L, "WHOLE", RagdollPart::Enum::WHOLE);
+        setEnum(L, "RIGHT_ARM", RagdollPart::Enum::RIGHT_ARM);
+        setEnum(L, "LEFT_ARM", RagdollPart::Enum::LEFT_ARM);
+        setEnum(L, "HEAD", RagdollPart::Enum::HEAD);
+        setEnum(L, "RIGHT_LEG", RagdollPart::Enum::RIGHT_LEG);
+        setEnum(L, "LEFT_LEG", RagdollPart::Enum::LEFT_LEG);
+        setEnum(L, "CARRY_MODE", RagdollPart::Enum::CARRY_MODE);
+        setEnum(L, "ARMS", RagdollPart::Enum::ARMS);
+        setEnum(L, "LEGS", RagdollPart::Enum::LEGS);
+        setEnum(L, "ALL", RagdollPart::Enum::ALL);
 
         lua_setglobal(L, "RagdollPart");
     }
@@ -114,45 +75,22 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, ST_NONE);
-        lua_setfield(L, -2, "ST_NONE");
-        lua_pushinteger(L, ST_NONE);
-        lua_setfield(L, -2, "NONE");
-
-        lua_pushinteger(L, ST_INTRUDER);
-        lua_setfield(L, -2, "ST_INTRUDER");
-        lua_pushinteger(L, ST_INTRUDER);
-        lua_setfield(L, -2, "INTRUDER");
-
-        lua_pushinteger(L, ST_AGGRESSOR);
-        lua_setfield(L, -2, "ST_AGGRESSOR");
-        lua_pushinteger(L, ST_AGGRESSOR);
-        lua_setfield(L, -2, "AGGRESSOR");
-
-        lua_pushinteger(L, ST_TEMPORARY_ALLY);
-        lua_setfield(L, -2, "ST_TEMPORARY_ALLY");
-        lua_pushinteger(L, ST_TEMPORARY_ALLY);
-        lua_setfield(L, -2, "TEMPORARY_ALLY");
-
-        lua_pushinteger(L, ST_TEMPORARY_ENEMY);
-        lua_setfield(L, -2, "ST_TEMPORARY_ENEMY");
-        lua_pushinteger(L, ST_TEMPORARY_ENEMY);
-        lua_setfield(L, -2, "TEMPORARY_ENEMY");
-
-        lua_pushinteger(L, ST_PRISONER);
-        lua_setfield(L, -2, "ST_PRISONER");
-        lua_pushinteger(L, ST_PRISONER);
-        lua_setfield(L, -2, "PRISONER");
-
-        lua_pushinteger(L, ST_HAS_BEEN_LOOTED);
-        lua_setfield(L, -2, "ST_HAS_BEEN_LOOTED");
-        lua_pushinteger(L, ST_HAS_BEEN_LOOTED);
-        lua_setfield(L, -2, "HAS_BEEN_LOOTED");
-
-        lua_pushinteger(L, ST_CRIMINAL);
-        lua_setfield(L, -2, "ST_CRIMINAL");
-        lua_pushinteger(L, ST_CRIMINAL);
-        lua_setfield(L, -2, "CRIMINAL");
+        setEnum(L, "ST_NONE", ST_NONE);
+        setEnum(L, "NONE", ST_NONE);
+        setEnum(L, "ST_INTRUDER", ST_INTRUDER);
+        setEnum(L, "INTRUDER", ST_INTRUDER);
+        setEnum(L, "ST_AGGRESSOR", ST_AGGRESSOR);
+        setEnum(L, "AGGRESSOR", ST_AGGRESSOR);
+        setEnum(L, "ST_TEMPORARY_ALLY", ST_TEMPORARY_ALLY);
+        setEnum(L, "TEMPORARY_ALLY", ST_TEMPORARY_ALLY);
+        setEnum(L, "ST_TEMPORARY_ENEMY", ST_TEMPORARY_ENEMY);
+        setEnum(L, "TEMPORARY_ENEMY", ST_TEMPORARY_ENEMY);
+        setEnum(L, "ST_PRISONER", ST_PRISONER);
+        setEnum(L, "PRISONER", ST_PRISONER);
+        setEnum(L, "ST_HAS_BEEN_LOOTED", ST_HAS_BEEN_LOOTED);
+        setEnum(L, "HAS_BEEN_LOOTED", ST_HAS_BEEN_LOOTED);
+        setEnum(L, "ST_CRIMINAL", ST_CRIMINAL);
+        setEnum(L, "CRIMINAL", ST_CRIMINAL);
 
         lua_setglobal(L, "CharacterPerceptionTags_ShortTerm");
     }
@@ -161,65 +99,30 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, LT_NONE);
-        lua_setfield(L, -2, "LT_NONE");
-        lua_pushinteger(L, LT_NONE);
-        lua_setfield(L, -2, "NONE");
-
-        lua_pushinteger(L, LT_MY_INTRUDER);
-        lua_setfield(L, -2, "LT_MY_INTRUDER");
-        lua_pushinteger(L, LT_MY_INTRUDER);
-        lua_setfield(L, -2, "MY_INTRUDER");
-
-        lua_pushinteger(L, LT_MY_LIFESAVER);
-        lua_setfield(L, -2, "LT_MY_LIFESAVER");
-        lua_pushinteger(L, LT_MY_LIFESAVER);
-        lua_setfield(L, -2, "MY_LIFESAVER");
-
-        lua_pushinteger(L, LT_FREED_ME);
-        lua_setfield(L, -2, "LT_FREED_ME");
-        lua_pushinteger(L, LT_FREED_ME);
-        lua_setfield(L, -2, "FREED_ME");
-
-        lua_pushinteger(L, LT_STOLE_FROM_ME);
-        lua_setfield(L, -2, "LT_STOLE_FROM_ME");
-        lua_pushinteger(L, LT_STOLE_FROM_ME);
-        lua_setfield(L, -2, "STOLE_FROM_ME");
-
-        lua_pushinteger(L, LT_MY_CAPTOR);
-        lua_setfield(L, -2, "LT_MY_CAPTOR");
-        lua_pushinteger(L, LT_MY_CAPTOR);
-        lua_setfield(L, -2, "MY_CAPTOR");
-
-        lua_pushinteger(L, LT_FRIENDLY_AQUAINTANCE);
-        lua_setfield(L, -2, "LT_FRIENDLY_AQUAINTANCE");
-        lua_pushinteger(L, LT_FRIENDLY_AQUAINTANCE);
-        lua_setfield(L, -2, "FRIENDLY_AQUAINTANCE");
-
-        lua_pushinteger(L, LT_DEFEATED_MY_SQUAD_ONCE);
-        lua_setfield(L, -2, "LT_DEFEATED_MY_SQUAD_ONCE");
-        lua_pushinteger(L, LT_DEFEATED_MY_SQUAD_ONCE);
-        lua_setfield(L, -2, "DEFEATED_MY_SQUAD_ONCE");
-
-        lua_pushinteger(L, LT_SQUAD_LOST_TO_ME_ONCE);
-        lua_setfield(L, -2, "LT_SQUAD_LOST_TO_ME_ONCE");
-        lua_pushinteger(L, LT_SQUAD_LOST_TO_ME_ONCE);
-        lua_setfield(L, -2, "SQUAD_LOST_TO_ME_ONCE");
-
-        lua_pushinteger(L, LT_KILLED_MY_FRIEND);
-        lua_setfield(L, -2, "LT_KILLED_MY_FRIEND");
-        lua_pushinteger(L, LT_KILLED_MY_FRIEND);
-        lua_setfield(L, -2, "KILLED_MY_FRIEND");
-
-        lua_pushinteger(L, LT_I_SCREWED_THIS_GUY);
-        lua_setfield(L, -2, "LT_I_SCREWED_THIS_GUY");
-        lua_pushinteger(L, LT_I_SCREWED_THIS_GUY);
-        lua_setfield(L, -2, "I_SCREWED_THIS_GUY");
-
-        lua_pushinteger(L, LT_MAX);
-        lua_setfield(L, -2, "LT_MAX");
-        lua_pushinteger(L, LT_MAX);
-        lua_setfield(L, -2, "MAX");
+        setEnum(L, "LT_NONE", LT_NONE);
+        setEnum(L, "NONE", LT_NONE);
+        setEnum(L, "LT_MY_INTRUDER", LT_MY_INTRUDER);
+        setEnum(L, "MY_INTRUDER", LT_MY_INTRUDER);
+        setEnum(L, "LT_MY_LIFESAVER", LT_MY_LIFESAVER);
+        setEnum(L, "MY_LIFESAVER", LT_MY_LIFESAVER);
+        setEnum(L, "LT_FREED_ME", LT_FREED_ME);
+        setEnum(L, "FREED_ME", LT_FREED_ME);
+        setEnum(L, "LT_STOLE_FROM_ME", LT_STOLE_FROM_ME);
+        setEnum(L, "STOLE_FROM_ME", LT_STOLE_FROM_ME);
+        setEnum(L, "LT_MY_CAPTOR", LT_MY_CAPTOR);
+        setEnum(L, "MY_CAPTOR", LT_MY_CAPTOR);
+        setEnum(L, "LT_FRIENDLY_AQUAINTANCE", LT_FRIENDLY_AQUAINTANCE);
+        setEnum(L, "FRIENDLY_AQUAINTANCE", LT_FRIENDLY_AQUAINTANCE);
+        setEnum(L, "LT_DEFEATED_MY_SQUAD_ONCE", LT_DEFEATED_MY_SQUAD_ONCE);
+        setEnum(L, "DEFEATED_MY_SQUAD_ONCE", LT_DEFEATED_MY_SQUAD_ONCE);
+        setEnum(L, "LT_SQUAD_LOST_TO_ME_ONCE", LT_SQUAD_LOST_TO_ME_ONCE);
+        setEnum(L, "SQUAD_LOST_TO_ME_ONCE", LT_SQUAD_LOST_TO_ME_ONCE);
+        setEnum(L, "LT_KILLED_MY_FRIEND", LT_KILLED_MY_FRIEND);
+        setEnum(L, "KILLED_MY_FRIEND", LT_KILLED_MY_FRIEND);
+        setEnum(L, "LT_I_SCREWED_THIS_GUY", LT_I_SCREWED_THIS_GUY);
+        setEnum(L, "I_SCREWED_THIS_GUY", LT_I_SCREWED_THIS_GUY);
+        setEnum(L, "LT_MAX", LT_MAX);
+        setEnum(L, "MAX", LT_MAX);
 
         lua_setglobal(L, "CharacterPerceptionTags_LongTerm");
     }
@@ -228,20 +131,12 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, SOUNDRANGE_SHORT);
-        lua_setfield(L, -2, "SOUNDRANGE_SHORT");
-        lua_pushinteger(L, SOUNDRANGE_SHORT);
-        lua_setfield(L, -2, "SHORT");
-
-        lua_pushinteger(L, SOUNDRANGE_LONG);
-        lua_setfield(L, -2, "SOUNDRANGE_LONG");
-        lua_pushinteger(L, SOUNDRANGE_LONG);
-        lua_setfield(L, -2, "LONG");
-
-        lua_pushinteger(L, SOUNDRANGE_ALWAYS);
-        lua_setfield(L, -2, "SOUNDRANGE_ALWAYS");
-        lua_pushinteger(L, SOUNDRANGE_ALWAYS);
-        lua_setfield(L, -2, "ALWAYS");
+        setEnum(L, "SOUNDRANGE_SHORT", SOUNDRANGE_SHORT);
+        setEnum(L, "SHORT", SOUNDRANGE_SHORT);
+        setEnum(L, "SOUNDRANGE_LONG", SOUNDRANGE_LONG);
+        setEnum(L, "LONG", SOUNDRANGE_LONG);
+        setEnum(L, "SOUNDRANGE_ALWAYS", SOUNDRANGE_ALWAYS);
+        setEnum(L, "ALWAYS", SOUNDRANGE_ALWAYS);
 
         lua_setglobal(L, "SoundRange");
     }
@@ -250,30 +145,16 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, SQUAD_1);
-        lua_setfield(L, -2, "SQUAD_1");
-		lua_pushinteger(L, SQUAD_1);
-		lua_setfield(L, -2, "1");
-
-        lua_pushinteger(L, SQUAD_2);
-        lua_setfield(L, -2, "SQUAD_2");
-		lua_pushinteger(L, SQUAD_2);
-		lua_setfield(L, -2, "2");
-
-        lua_pushinteger(L, SQUAD_LEADER);
-        lua_setfield(L, -2, "SQUAD_LEADER");
-		lua_pushinteger(L, SQUAD_LEADER);
-		lua_setfield(L, -2, "LEADER");
-
-        lua_pushinteger(L, SQUAD_SIGNALS_PLAN);
-        lua_setfield(L, -2, "SQUAD_SIGNALS_PLAN");
-		lua_pushinteger(L, SQUAD_SIGNALS_PLAN);
-		lua_setfield(L, -2, "SIGNALS_PLAN");
-
-        lua_pushinteger(L, SQUAD_SLAVE);
-        lua_setfield(L, -2, "SQUAD_SLAVE");
-		lua_pushinteger(L, SQUAD_SLAVE);
-		lua_setfield(L, -2, "SLAVE");
+        setEnum(L, "SQUAD_1", SQUAD_1);
+        setEnum(L, "1", SQUAD_1);
+        setEnum(L, "SQUAD_2", SQUAD_2);
+        setEnum(L, "2", SQUAD_2);
+        setEnum(L, "SQUAD_LEADER", SQUAD_LEADER);
+        setEnum(L, "LEADER", SQUAD_LEADER);
+        setEnum(L, "SQUAD_SIGNALS_PLAN", SQUAD_SIGNALS_PLAN);
+        setEnum(L, "SIGNALS_PLAN", SQUAD_SIGNALS_PLAN);
+        setEnum(L, "SQUAD_SLAVE", SQUAD_SLAVE);
+        setEnum(L, "SLAVE", SQUAD_SLAVE);
 
         lua_setglobal(L, "SquadMemberType");
     }
@@ -282,8 +163,7 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, ATTACKING_MELEE);
-        lua_setfield(L, -2, "ATTACKING_MELEE");
+        setEnum(L, "ATTACKING_MELEE", ATTACKING_MELEE);
 
         lua_setglobal(L, "CharacterMessage");
     }
@@ -308,45 +188,29 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, T_ME);
-        lua_setfield(L, -2, "T_ME");
-        lua_pushinteger(L, T_ME);
-        lua_setfield(L, -2, "ME");
+        setEnum(L, "T_ME", T_ME);
+        setEnum(L, "ME", T_ME);
 
-        lua_pushinteger(L, T_TARGET);
-        lua_setfield(L, -2, "T_TARGET");
-        lua_pushinteger(L, T_TARGET);
-        lua_setfield(L, -2, "TARGET");
+        setEnum(L, "T_TARGET", T_TARGET);
+        setEnum(L, "TARGET", T_TARGET);
 
-        lua_pushinteger(L, T_TARGET_IF_PLAYER);
-        lua_setfield(L, -2, "T_TARGET_IF_PLAYER");
-        lua_pushinteger(L, T_TARGET_IF_PLAYER);
-        lua_setfield(L, -2, "TARGET_IF_PLAYER");
+        setEnum(L, "T_TARGET_IF_PLAYER", T_TARGET_IF_PLAYER);
+        setEnum(L, "TARGET_IF_PLAYER", T_TARGET_IF_PLAYER);
 
-        lua_pushinteger(L, T_INTERJECTOR1);
-        lua_setfield(L, -2, "T_INTERJECTOR1");
-        lua_pushinteger(L, T_INTERJECTOR1);
-        lua_setfield(L, -2, "INTERJECTOR1");
+        setEnum(L, "T_INTERJECTOR1", T_INTERJECTOR1);
+        setEnum(L, "INTERJECTOR1", T_INTERJECTOR1);
 
-        lua_pushinteger(L, T_INTERJECTOR2);
-        lua_setfield(L, -2, "T_INTERJECTOR2");
-        lua_pushinteger(L, T_INTERJECTOR2);
-        lua_setfield(L, -2, "INTERJECTOR2");
+        setEnum(L, "T_INTERJECTOR2", T_INTERJECTOR2);
+        setEnum(L, "INTERJECTOR2", T_INTERJECTOR2);
 
-        lua_pushinteger(L, T_INTERJECTOR3);
-        lua_setfield(L, -2, "T_INTERJECTOR3");
-        lua_pushinteger(L, T_INTERJECTOR3);
-        lua_setfield(L, -2, "INTERJECTOR3");
+        setEnum(L, "T_INTERJECTOR3", T_INTERJECTOR3);
+        setEnum(L, "INTERJECTOR3", T_INTERJECTOR3);
 
-        lua_pushinteger(L, T_WHOLE_SQUAD);
-        lua_setfield(L, -2, "T_WHOLE_SQUAD");
-        lua_pushinteger(L, T_WHOLE_SQUAD);
-        lua_setfield(L, -2, "WHOLE_SQUAD");
+        setEnum(L, "T_WHOLE_SQUAD", T_WHOLE_SQUAD);
+        setEnum(L, "WHOLE_SQUAD", T_WHOLE_SQUAD);
 
-        lua_pushinteger(L, T_TARGET_WITH_RACE);
-        lua_setfield(L, -2, "T_TARGET_WITH_RACE");
-        lua_pushinteger(L, T_TARGET_WITH_RACE);
-        lua_setfield(L, -2, "TARGET_WITH_RACE");
+        setEnum(L, "T_TARGET_WITH_RACE", T_TARGET_WITH_RACE);
+        setEnum(L, "TARGET_WITH_RACE", T_TARGET_WITH_RACE);
 
 		lua_setglobal(L, "Talker");
     }
@@ -355,266 +219,161 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, DA_NONE);
-        lua_setfield(L, -2, "DA_NONE");
-        lua_pushinteger(L, DA_NONE);
-        lua_setfield(L, -2, "NONE");
+        setEnum(L, "DA_NONE", DA_NONE);
+        setEnum(L, "NONE", DA_NONE);
 
-        lua_pushinteger(L, DA_TRADE);
-        lua_setfield(L, -2, "DA_TRADE");
-        lua_pushinteger(L, DA_TRADE);
-        lua_setfield(L, -2, "TRADE");
+        setEnum(L, "DA_TRADE", DA_TRADE);
+        setEnum(L, "TRADE", DA_TRADE);
 
-        lua_pushinteger(L, DA_TALK_TO_LEADER);
-        lua_setfield(L, -2, "DA_TALK_TO_LEADER");
-        lua_pushinteger(L, DA_TALK_TO_LEADER);
-        lua_setfield(L, -2, "TALK_TO_LEADER");
+        setEnum(L, "DA_TALK_TO_LEADER", DA_TALK_TO_LEADER);
+        setEnum(L, "TALK_TO_LEADER", DA_TALK_TO_LEADER);
 
-        lua_pushinteger(L, DA_JOIN_SQUAD_WITH_EDIT);
-        lua_setfield(L, -2, "DA_JOIN_SQUAD_WITH_EDIT");
-        lua_pushinteger(L, DA_JOIN_SQUAD_WITH_EDIT);
-        lua_setfield(L, -2, "JOIN_SQUAD_WITH_EDIT");
+        setEnum(L, "DA_JOIN_SQUAD_WITH_EDIT", DA_JOIN_SQUAD_WITH_EDIT);
+        setEnum(L, "JOIN_SQUAD_WITH_EDIT", DA_JOIN_SQUAD_WITH_EDIT);
 
-        lua_pushinteger(L, DA_AFFECT_RELATIONS);
-        lua_setfield(L, -2, "DA_AFFECT_RELATIONS");
-        lua_pushinteger(L, DA_AFFECT_RELATIONS);
-        lua_setfield(L, -2, "AFFECT_RELATIONS");
+        setEnum(L, "DA_AFFECT_RELATIONS", DA_AFFECT_RELATIONS);
+        setEnum(L, "AFFECT_RELATIONS", DA_AFFECT_RELATIONS);
 
+        setEnum(L, "DA_AFFECT_REPUTATION", DA_AFFECT_REPUTATION);
+        setEnum(L, "AFFECT_REPUTATION", DA_AFFECT_REPUTATION);
 
-        lua_pushinteger(L, DA_AFFECT_REPUTATION);
-        lua_setfield(L, -2, "DA_AFFECT_REPUTATION");
-        lua_pushinteger(L, DA_AFFECT_REPUTATION);
-        lua_setfield(L, -2, "AFFECT_REPUTATION");
+		setEnum(L, "DA_ATTACK_CHASE_FOREVER", DA_ATTACK_CHASE_FOREVER);
+		setEnum(L, "ATTACK_CHASE_FOREVER", DA_ATTACK_CHASE_FOREVER);
 
-		lua_pushinteger(L, DA_ATTACK_CHASE_FOREVER);
-		lua_setfield(L, -2, "DA_ATTACK_CHASE_FOREVER");
-		lua_pushinteger(L, DA_ATTACK_CHASE_FOREVER);
-		lua_setfield(L, -2, "ATTACK_CHASE_FOREVER");
+        setEnum(L, "DA_GO_HOME", DA_GO_HOME);
+        setEnum(L, "GO_HOME", DA_GO_HOME);
 
-        lua_pushinteger(L, DA_GO_HOME);
-        lua_setfield(L, -2, "DA_GO_HOME");
-        lua_pushinteger(L, DA_GO_HOME);
-        lua_setfield(L, -2, "GO_HOME");
+        setEnum(L, "DA_TAKE_MONEY", DA_TAKE_MONEY);
+        setEnum(L, "TAKE_MONEY", DA_TAKE_MONEY);
 
-        lua_pushinteger(L, DA_TAKE_MONEY);
-        lua_setfield(L, -2, "DA_TAKE_MONEY");
-        lua_pushinteger(L, DA_TAKE_MONEY);
-        lua_setfield(L, -2, "TAKE_MONEY");
+        setEnum(L, "DA_GIVE_MONEY", DA_GIVE_MONEY);
+        setEnum(L, "GIVE_MONEY", DA_GIVE_MONEY);
 
-        lua_pushinteger(L, DA_GIVE_MONEY);
-        lua_setfield(L, -2, "DA_GIVE_MONEY");
-        lua_pushinteger(L, DA_GIVE_MONEY);
-        lua_setfield(L, -2, "GIVE_MONEY");
+        setEnum(L, "DA_PAY_BOUNTY", DA_PAY_BOUNTY);
+        setEnum(L, "PAY_BOUNTY", DA_PAY_BOUNTY);
 
-        lua_pushinteger(L, DA_PAY_BOUNTY);
-        lua_setfield(L, -2, "DA_PAY_BOUNTY");
-        lua_pushinteger(L, DA_PAY_BOUNTY);
-        lua_setfield(L, -2, "PAY_BOUNTY");
+        setEnum(L, "DA_CHARACTER_EDITOR", DA_CHARACTER_EDITOR);
+        setEnum(L, "CHARACTER_EDITOR", DA_CHARACTER_EDITOR);
 
-        lua_pushinteger(L, DA_CHARACTER_EDITOR);
-        lua_setfield(L, -2, "DA_CHARACTER_EDITOR");
-        lua_pushinteger(L, DA_CHARACTER_EDITOR);
-        lua_setfield(L, -2, "CHARACTER_EDITOR");
+        setEnum(L, "DA_FORCE_SPEECH_TIMER", DA_FORCE_SPEECH_TIMER);
+        setEnum(L, "FORCE_SPEECH_TIMER", DA_FORCE_SPEECH_TIMER);
 
-        lua_pushinteger(L, DA_FORCE_SPEECH_TIMER);
-        lua_setfield(L, -2, "DA_FORCE_SPEECH_TIMER");
-        lua_pushinteger(L, DA_FORCE_SPEECH_TIMER);
-        lua_setfield(L, -2, "FORCE_SPEECH_TIMER");
+        setEnum(L, "DA_DECLARE_WAR", DA_DECLARE_WAR);
+        setEnum(L, "DECLARE_WAR", DA_DECLARE_WAR);
 
-        lua_pushinteger(L, DA_DECLARE_WAR);
-        lua_setfield(L, -2, "DA_DECLARE_WAR");
-        lua_pushinteger(L, DA_DECLARE_WAR);
-        lua_setfield(L, -2, "DECLARE_WAR");
+        setEnum(L, "DA_END_WAR", DA_END_WAR);
+        setEnum(L, "END_WAR", DA_END_WAR);
 
-        lua_pushinteger(L, DA_END_WAR);
-        lua_setfield(L, -2, "DA_END_WAR");
-        lua_pushinteger(L, DA_END_WAR);
-        lua_setfield(L, -2, "END_WAR");
+        setEnum(L, "DA_CLEAR_AI", DA_CLEAR_AI);
+        setEnum(L, "CLEAR_AI", DA_CLEAR_AI);
 
-        lua_pushinteger(L, DA_CLEAR_AI);
-        lua_setfield(L, -2, "DA_CLEAR_AI");
-        lua_pushinteger(L, DA_CLEAR_AI);
-        lua_setfield(L, -2, "CLEAR_AI");
+        setEnum(L, "DA_FOLLOW_WHILE_TALKING", DA_FOLLOW_WHILE_TALKING);
+        setEnum(L, "FOLLOW_WHILE_TALKING", DA_FOLLOW_WHILE_TALKING);
 
-        lua_pushinteger(L, DA_FOLLOW_WHILE_TALKING);
-        lua_setfield(L, -2, "DA_FOLLOW_WHILE_TALKING");
-        lua_pushinteger(L, DA_FOLLOW_WHILE_TALKING);
-        lua_setfield(L, -2, "FOLLOW_WHILE_TALKING");
+        setEnum(L, "DA_THUG_HUNTER", DA_THUG_HUNTER);
+        setEnum(L, "THUG_HUNTER", DA_THUG_HUNTER);
 
-        lua_pushinteger(L, DA_THUG_HUNTER);
-        lua_setfield(L, -2, "DA_THUG_HUNTER");
-        lua_pushinteger(L, DA_THUG_HUNTER);
-        lua_setfield(L, -2, "THUG_HUNTER");
+        setEnum(L, "DA_JOIN_SQUAD_FAST", DA_JOIN_SQUAD_FAST);
+        setEnum(L, "JOIN_SQUAD_FAST", DA_JOIN_SQUAD_FAST);
 
-        lua_pushinteger(L, DA_JOIN_SQUAD_FAST);
-        lua_setfield(L, -2, "DA_JOIN_SQUAD_FAST");
-        lua_pushinteger(L, DA_JOIN_SQUAD_FAST);
-        lua_setfield(L, -2, "JOIN_SQUAD_FAST");
+		setEnum(L, "DA_REMEMBER_CHARACTER", DA_REMEMBER_CHARACTER);
+		setEnum(L, "REMEMBER_CHARACTER", DA_REMEMBER_CHARACTER);
 
-		lua_pushinteger(L, DA_REMEMBER_CHARACTER);
-		lua_setfield(L, -2, "DA_REMEMBER_CHARACTER");
-		lua_pushinteger(L, DA_REMEMBER_CHARACTER);
-		lua_setfield(L, -2, "REMEMBER_CHARACTER");
+        setEnum(L, "DA_FLAG_TEMP_ALLY", DA_FLAG_TEMP_ALLY);
+        setEnum(L, "FLAG_TEMP_ALLY", DA_FLAG_TEMP_ALLY);
 
-        lua_pushinteger(L, DA_FLAG_TEMP_ALLY);
-        lua_setfield(L, -2, "DA_FLAG_TEMP_ALLY");
-        lua_pushinteger(L, DA_FLAG_TEMP_ALLY);
-        lua_setfield(L, -2, "FLAG_TEMP_ALLY");
+        setEnum(L, "DA_FLAG_TEMP_ENEMY", DA_FLAG_TEMP_ENEMY);
+        setEnum(L, "FLAG_TEMP_ENEMY", DA_FLAG_TEMP_ENEMY);
 
-        lua_pushinteger(L, DA_FLAG_TEMP_ENEMY);
-        lua_setfield(L, -2, "DA_FLAG_TEMP_ENEMY");
-        lua_pushinteger(L, DA_FLAG_TEMP_ENEMY);
-        lua_setfield(L, -2, "FLAG_TEMP_ENEMY");
+        setEnum(L, "DA_MATES_KILL_ME", DA_MATES_KILL_ME);
+        setEnum(L, "MATES_KILL_ME", DA_MATES_KILL_ME);
 
-        lua_pushinteger(L, DA_MATES_KILL_ME);
-        lua_setfield(L, -2, "DA_MATES_KILL_ME");
-        lua_pushinteger(L, DA_MATES_KILL_ME);
-        lua_setfield(L, -2, "MATES_KILL_ME");
+        setEnum(L, "DA_MAKE_TARGET_RUN_FASTER", DA_MAKE_TARGET_RUN_FASTER);
+        setEnum(L, "MAKE_TARGET_RUN_FASTER", DA_MAKE_TARGET_RUN_FASTER);
 
-        lua_pushinteger(L, DA_MAKE_TARGET_RUN_FASTER);
-        lua_setfield(L, -2, "DA_MAKE_TARGET_RUN_FASTER");
-        lua_pushinteger(L, DA_MAKE_TARGET_RUN_FASTER);
-        lua_setfield(L, -2, "MAKE_TARGET_RUN_FASTER");
+        setEnum(L, "DA_GIVE_TARGET_MY_SLAVES", DA_GIVE_TARGET_MY_SLAVES);
+        setEnum(L, "GIVE_TARGET_MY_SLAVES", DA_GIVE_TARGET_MY_SLAVES);
 
-        lua_pushinteger(L, DA_GIVE_TARGET_MY_SLAVES);
-        lua_setfield(L, -2, "DA_GIVE_TARGET_MY_SLAVES");
-        lua_pushinteger(L, DA_GIVE_TARGET_MY_SLAVES);
-        lua_setfield(L, -2, "GIVE_TARGET_MY_SLAVES");
+        setEnum(L, "DA_TAG_ESCAPED_SLAVE", DA_TAG_ESCAPED_SLAVE);
+        setEnum(L, "TAG_ESCAPED_SLAVE", DA_TAG_ESCAPED_SLAVE);
 
-        lua_pushinteger(L, DA_TAG_ESCAPED_SLAVE);
-        lua_setfield(L, -2, "DA_TAG_ESCAPED_SLAVE");
-        lua_pushinteger(L, DA_TAG_ESCAPED_SLAVE);
-        lua_setfield(L, -2, "TAG_ESCAPED_SLAVE");
+        setEnum(L, "DA_FREE_TARGET_SLAVE", DA_FREE_TARGET_SLAVE);
+        setEnum(L, "FREE_TARGET_SLAVE", DA_FREE_TARGET_SLAVE);
 
-        lua_pushinteger(L, DA_FREE_TARGET_SLAVE);
-        lua_setfield(L, -2, "DA_FREE_TARGET_SLAVE");
-        lua_pushinteger(L, DA_FREE_TARGET_SLAVE);
-        lua_setfield(L, -2, "FREE_TARGET_SLAVE");
+        setEnum(L, "DA_MERGE_WITH_SIMILAR_SQUADS", DA_MERGE_WITH_SIMILAR_SQUADS);
+        setEnum(L, "MERGE_WITH_SIMILAR_SQUADS", DA_MERGE_WITH_SIMILAR_SQUADS);
 
-        lua_pushinteger(L, DA_MERGE_WITH_SIMILAR_SQUADS);
-        lua_setfield(L, -2, "DA_MERGE_WITH_SIMILAR_SQUADS");
-        lua_pushinteger(L, DA_MERGE_WITH_SIMILAR_SQUADS);
-        lua_setfield(L, -2, "MERGE_WITH_SIMILAR_SQUADS");
+        setEnum(L, "DA_SEPARATE_TO_MY_OWN_SQUAD", DA_SEPARATE_TO_MY_OWN_SQUAD);
+        setEnum(L, "SEPARATE_TO_MY_OWN_SQUAD", DA_SEPARATE_TO_MY_OWN_SQUAD);
 
-        lua_pushinteger(L, DA_SEPARATE_TO_MY_OWN_SQUAD);
-        lua_setfield(L, -2, "DA_SEPARATE_TO_MY_OWN_SQUAD");
-        lua_pushinteger(L, DA_SEPARATE_TO_MY_OWN_SQUAD);
-        lua_setfield(L, -2, "SEPARATE_TO_MY_OWN_SQUAD");
+        setEnum(L, "DA_ARREST_TARGET", DA_ARREST_TARGET);
+        setEnum(L, "ARREST_TARGET", DA_ARREST_TARGET);
 
-        lua_pushinteger(L, DA_ARREST_TARGET);
-        lua_setfield(L, -2, "DA_ARREST_TARGET");
-        lua_pushinteger(L, DA_ARREST_TARGET);
-        lua_setfield(L, -2, "ARREST_TARGET");
+        setEnum(L, "DA_ARREST_TARGETS_CARRIED_PERSON", DA_ARREST_TARGETS_CARRIED_PERSON);
+        setEnum(L, "ARREST_TARGETS_CARRIED_PERSON", DA_ARREST_TARGETS_CARRIED_PERSON);
 
-        lua_pushinteger(L, DA_ARREST_TARGETS_CARRIED_PERSON);
-        lua_setfield(L, -2, "DA_ARREST_TARGETS_CARRIED_PERSON");
-        lua_pushinteger(L, DA_ARREST_TARGETS_CARRIED_PERSON);
-        lua_setfield(L, -2, "ARREST_TARGETS_CARRIED_PERSON");
+		setEnum(L, "DA_ATTACK_TOWN", DA_ATTACK_TOWN);
+		setEnum(L, "ATTACK_TOWN", DA_ATTACK_TOWN);
 
-		lua_pushinteger(L, DA_ATTACK_TOWN);
-		lua_setfield(L, -2, "DA_ATTACK_TOWN");
-		lua_pushinteger(L, DA_ATTACK_TOWN);
-		lua_setfield(L, -2, "ATTACK_TOWN");
+		setEnum(L, "DA_ASSIGN_BOUNTY", DA_ASSIGN_BOUNTY);
+		setEnum(L, "ASSIGN_BOUNTY", DA_ASSIGN_BOUNTY);
 
-		lua_pushinteger(L, DA_ASSIGN_BOUNTY);
-		lua_setfield(L, -2, "DA_ASSIGN_BOUNTY");
-		lua_pushinteger(L, DA_ASSIGN_BOUNTY);
-		lua_setfield(L, -2, "ASSIGN_BOUNTY");
+        setEnum(L, "DA_CRIME_ALARM", DA_CRIME_ALARM);
+        setEnum(L, "CRIME_ALARM", DA_CRIME_ALARM);
 
-        lua_pushinteger(L, DA_CRIME_ALARM);
-        lua_setfield(L, -2, "DA_CRIME_ALARM");
-        lua_pushinteger(L, DA_CRIME_ALARM);
-        lua_setfield(L, -2, "CRIME_ALARM");
+        setEnum(L, "DA_RUN_AWAY", DA_RUN_AWAY);
+        setEnum(L, "RUN_AWAY", DA_RUN_AWAY);
 
-        lua_pushinteger(L, DA_RUN_AWAY);
-        lua_setfield(L, -2, "DA_RUN_AWAY");
-        lua_pushinteger(L, DA_RUN_AWAY);
-        lua_setfield(L, -2, "RUN_AWAY");
+        setEnum(L, "DA_INCREASE_FACTION_RANK", DA_INCREASE_FACTION_RANK);
+        setEnum(L, "INCREASE_FACTION_RANK", DA_INCREASE_FACTION_RANK);
 
-        lua_pushinteger(L, DA_INCREASE_FACTION_RANK);
-        lua_setfield(L, -2, "DA_INCREASE_FACTION_RANK");
-        lua_pushinteger(L, DA_INCREASE_FACTION_RANK);
-        lua_setfield(L, -2, "INCREASE_FACTION_RANK");
+        setEnum(L, "DA_LOCK_THIS_DIALOG", DA_LOCK_THIS_DIALOG);
+        setEnum(L, "LOCK_THIS_DIALOG", DA_LOCK_THIS_DIALOG);
 
-        lua_pushinteger(L, DA_LOCK_THIS_DIALOG);
-        lua_setfield(L, -2, "DA_LOCK_THIS_DIALOG");
-        lua_pushinteger(L, DA_LOCK_THIS_DIALOG);
-        lua_setfield(L, -2, "LOCK_THIS_DIALOG");
+		setEnum(L, "DA_ASSAULT_PHASE", DA_ASSAULT_PHASE);
+		setEnum(L, "ASSAULT_PHASE", DA_ASSAULT_PHASE);
 
-		lua_pushinteger(L, DA_ASSAULT_PHASE);
-		lua_setfield(L, -2, "DA_ASSAULT_PHASE");
-		lua_pushinteger(L, DA_ASSAULT_PHASE);
-		lua_setfield(L, -2, "ASSAULT_PHASE");
+		setEnum(L, "DA_RETREAT_PHASE", DA_RETREAT_PHASE);
+		setEnum(L, "RETREAT_PHASE", DA_RETREAT_PHASE);
 
-		lua_pushinteger(L, DA_RETREAT_PHASE);
-		lua_setfield(L, -2, "DA_RETREAT_PHASE");
-		lua_pushinteger(L, DA_RETREAT_PHASE);
-		lua_setfield(L, -2, "RETREAT_PHASE");
+		setEnum(L, "DA_VICTORY_PHASE", DA_VICTORY_PHASE);
+		setEnum(L, "VICTORY_PHASE", DA_VICTORY_PHASE);
 
-		lua_pushinteger(L, DA_VICTORY_PHASE);
-		lua_setfield(L, -2, "DA_VICTORY_PHASE");
-		lua_pushinteger(L, DA_VICTORY_PHASE);
-		lua_setfield(L, -2, "VICTORY_PHASE");
+		setEnum(L, "DA_ENSLAVE_TARGETS_CARRIED_PERSON", DA_ENSLAVE_TARGETS_CARRIED_PERSON);
+		setEnum(L, "ENSLAVE_TARGETS_CARRIED_PERSON", DA_ENSLAVE_TARGETS_CARRIED_PERSON);
 
-		lua_pushinteger(L, DA_ENSLAVE_TARGETS_CARRIED_PERSON);
-		lua_setfield(L, -2, "DA_ENSLAVE_TARGETS_CARRIED_PERSON");
-		lua_pushinteger(L, DA_ENSLAVE_TARGETS_CARRIED_PERSON);
-		lua_setfield(L, -2, "ENSLAVE_TARGETS_CARRIED_PERSON");
+        setEnum(L, "DA_CLEAR_BOUNTY", DA_CLEAR_BOUNTY);
+        setEnum(L, "CLEAR_BOUNTY", DA_CLEAR_BOUNTY);
 
-        lua_pushinteger(L, DA_CLEAR_BOUNTY);
-        lua_setfield(L, -2, "DA_CLEAR_BOUNTY");
-        lua_pushinteger(L, DA_CLEAR_BOUNTY);
-        lua_setfield(L, -2, "CLEAR_BOUNTY");
+        setEnum(L, "DA_PLAYER_SELL_PRISONERS", DA_PLAYER_SELL_PRISONERS);
+        setEnum(L, "PLAYER_SELL_PRISONERS", DA_PLAYER_SELL_PRISONERS);
 
-        lua_pushinteger(L, DA_PLAYER_SELL_PRISONERS);
-        lua_setfield(L, -2, "DA_PLAYER_SELL_PRISONERS");
-        lua_pushinteger(L, DA_PLAYER_SELL_PRISONERS);
-        lua_setfield(L, -2, "PLAYER_SELL_PRISONERS");
+		setEnum(L, "DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE", DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
+		setEnum(L, "PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE", DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
 
-		lua_pushinteger(L, DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
-		lua_setfield(L, -2, "DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE");
-		lua_pushinteger(L, DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
-		lua_setfield(L, -2, "PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE");
+		setEnum(L, "DA_SUMMON_MY_SQUAD", DA_SUMMON_MY_SQUAD);
+		setEnum(L, "SUMMON_MY_SQUAD", DA_SUMMON_MY_SQUAD);
 
-		lua_pushinteger(L, DA_SUMMON_MY_SQUAD);
-		lua_setfield(L, -2, "DA_SUMMON_MY_SQUAD");
-		lua_pushinteger(L, DA_SUMMON_MY_SQUAD);
-		lua_setfield(L, -2, "SUMMON_MY_SQUAD");
+		setEnum(L, "DA_REMOVE_SLAVE_STATUS", DA_REMOVE_SLAVE_STATUS);
+		setEnum(L, "REMOVE_SLAVE_STATUS", DA_REMOVE_SLAVE_STATUS);
 
-		lua_pushinteger(L, DA_REMOVE_SLAVE_STATUS);
-		lua_setfield(L, -2, "DA_REMOVE_SLAVE_STATUS");
-		lua_pushinteger(L, DA_REMOVE_SLAVE_STATUS);
-		lua_setfield(L, -2, "REMOVE_SLAVE_STATUS");
+		setEnum(L, "DA_OPEN_NEAREST_GATE", DA_OPEN_NEAREST_GATE);
+		setEnum(L, "OPEN_NEAREST_GATE", DA_OPEN_NEAREST_GATE);
 
-		lua_pushinteger(L, DA_OPEN_NEAREST_GATE);
-		lua_setfield(L, -2, "DA_OPEN_NEAREST_GATE");
-		lua_pushinteger(L, DA_OPEN_NEAREST_GATE);
-		lua_setfield(L, -2, "OPEN_NEAREST_GATE");
+		setEnum(L, "DA_ATTACK_STAY_NEAR_HOME", DA_ATTACK_STAY_NEAR_HOME);
+		setEnum(L, "ATTACK_STAY_NEAR_HOME", DA_ATTACK_STAY_NEAR_HOME);
 
-		lua_pushinteger(L, DA_ATTACK_STAY_NEAR_HOME);
-		lua_setfield(L, -2, "DA_ATTACK_STAY_NEAR_HOME");
-		lua_pushinteger(L, DA_ATTACK_STAY_NEAR_HOME);
-		lua_setfield(L, -2, "ATTACK_STAY_NEAR_HOME");
+		setEnum(L, "DA_MASSIVE_ALARM", DA_MASSIVE_ALARM);
+		setEnum(L, "MASSIVE_ALARM", DA_MASSIVE_ALARM);
 
-		lua_pushinteger(L, DA_MASSIVE_ALARM);
-		lua_setfield(L, -2, "DA_MASSIVE_ALARM");
-		lua_pushinteger(L, DA_MASSIVE_ALARM);
-		lua_setfield(L, -2, "MASSIVE_ALARM");
+		setEnum(L, "DA_ATTACK_IF_NO_COEXIST", DA_ATTACK_IF_NO_COEXIST);
+		setEnum(L, "ATTACK_IF_NO_COEXIST", DA_ATTACK_IF_NO_COEXIST);
 
-		lua_pushinteger(L, DA_ATTACK_IF_NO_COEXIST);
-		lua_setfield(L, -2, "DA_ATTACK_IF_NO_COEXIST");
-		lua_pushinteger(L, DA_ATTACK_IF_NO_COEXIST);
-		lua_setfield(L, -2, "ATTACK_IF_NO_COEXIST");
+		setEnum(L, "DA_KNOCKOUT", DA_KNOCKOUT);
+		setEnum(L, "KNOCKOUT", DA_KNOCKOUT);
 
-		lua_pushinteger(L, DA_KNOCKOUT);
-		lua_setfield(L, -2, "DA_KNOCKOUT");
-		lua_pushinteger(L, DA_KNOCKOUT);
-		lua_setfield(L, -2, "KNOCKOUT");
-
-        lua_pushinteger(L, DA_END);
-        lua_setfield(L, -2, "DA_END");
-        lua_pushinteger(L, DA_END);
-        lua_setfield(L, -2, "END");
+        setEnum(L, "DA_END", DA_END);
+        setEnum(L, "END", DA_END);
 
 		lua_setglobal(L, "DialogueAction");
     }
@@ -633,350 +392,121 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, itemType::BUILDING);
-        lua_setfield(L, -2, "BUILDING");
-
-        lua_pushinteger(L, itemType::CHARACTER);
-        lua_setfield(L, -2, "CHARACTER");
-
-        lua_pushinteger(L, itemType::WEAPON);
-        lua_setfield(L, -2, "WEAPON");
-
-        lua_pushinteger(L, itemType::ARMOUR);
-        lua_setfield(L, -2, "ARMOUR");
-
-        lua_pushinteger(L, itemType::ITEM);
-        lua_setfield(L, -2, "ITEM");
-
-        lua_pushinteger(L, itemType::ANIMAL_ANIMATION);
-        lua_setfield(L, -2, "ANIMAL_ANIMATION");
-
-        lua_pushinteger(L, itemType::ATTACHMENT);
-        lua_setfield(L, -2, "ATTACHMENT");
-
-        lua_pushinteger(L, itemType::RACE);
-        lua_setfield(L, -2, "RACE");
-
-        lua_pushinteger(L, itemType::LOCATION);
-        lua_setfield(L, -2, "LOCATION");
-
-        lua_pushinteger(L, itemType::WAR_SAVESTATE);
-        lua_setfield(L, -2, "WAR_SAVESTATE");
-
-        lua_pushinteger(L, itemType::FACTION);
-        lua_setfield(L, -2, "FACTION");
-
-        lua_pushinteger(L, itemType::NULL_ITEM);
-        lua_setfield(L, -2, "NULL_ITEM");
-
-        lua_pushinteger(L, itemType::ZONE_MAP);
-        lua_setfield(L, -2, "ZONE_MAP");
-
-        lua_pushinteger(L, itemType::TOWN);
-        lua_setfield(L, -2, "TOWN");
-
-        lua_pushinteger(L, itemType::WORLDMAP_CHARACTER);
-        lua_setfield(L, -2, "WORLDMAP_CHARACTER");
-
-        lua_pushinteger(L, itemType::CHARACTER_APPEARANCE_OLD);
-        lua_setfield(L, -2, "CHARACTER_APPEARANCE_OLD");
-
-        lua_pushinteger(L, itemType::LOCATIONAL_DAMAGE);
-        lua_setfield(L, -2, "LOCATIONAL_DAMAGE");
-
-        lua_pushinteger(L, itemType::COMBAT_TECHNIQUE);
-        lua_setfield(L, -2, "COMBAT_TECHNIQUE");
-
-        lua_pushinteger(L, itemType::DIALOGUE);
-        lua_setfield(L, -2, "DIALOGUE");
-
-        lua_pushinteger(L, itemType::DIALOGUE_LINE);
-        lua_setfield(L, -2, "DIALOGUE_LINE");
-
-        lua_pushinteger(L, itemType::TECHTREE);
-        lua_setfield(L, -2, "TECHTREE");
-
-        lua_pushinteger(L, itemType::RESEARCH);
-        lua_setfield(L, -2, "RESEARCH");
-
-        lua_pushinteger(L, itemType::AI_TASK);
-        lua_setfield(L, -2, "AI_TASK");
-
-        lua_pushinteger(L, itemType::AI_STATE);
-        lua_setfield(L, -2, "AI_STATE");
-
-        lua_pushinteger(L, itemType::ANIMATION);
-        lua_setfield(L, -2, "ANIMATION");
-
-        lua_pushinteger(L, itemType::STATS);
-        lua_setfield(L, -2, "STATS");
-
-        lua_pushinteger(L, itemType::PERSONALITY);
-        lua_setfield(L, -2, "PERSONALITY");
-
-        lua_pushinteger(L, itemType::CONSTANTS);
-        lua_setfield(L, -2, "CONSTANTS");
-
-        lua_pushinteger(L, itemType::BIOMES);
-        lua_setfield(L, -2, "BIOMES");
-
-        lua_pushinteger(L, itemType::BUILDING_PART);
-        lua_setfield(L, -2, "BUILDING_PART");
-
-        lua_pushinteger(L, itemType::INSTANCE_COLLECTION);
-        lua_setfield(L, -2, "INSTANCE_COLLECTION");
-
-        lua_pushinteger(L, itemType::DIALOG_ACTION);
-        lua_setfield(L, -2, "DIALOG_ACTION");
-
-        lua_pushinteger(L, itemType::TEMPORARY_INFO);
-        lua_setfield(L, -2, "TEMPORARY_INFO");
-
-        lua_pushinteger(L, itemType::MOD_FILENAME);
-        lua_setfield(L, -2, "MOD_FILENAME");
-
-        lua_pushinteger(L, itemType::PLATOON);
-        lua_setfield(L, -2, "PLATOON");
-
-        lua_pushinteger(L, itemType::GAMESTATE_BUILDING);
-        lua_setfield(L, -2, "GAMESTATE_BUILDING");
-
-        lua_pushinteger(L, itemType::GAMESTATE_CHARACTER);
-        lua_setfield(L, -2, "GAMESTATE_CHARACTER");
-
-        lua_pushinteger(L, itemType::GAMESTATE_FACTION);
-        lua_setfield(L, -2, "GAMESTATE_FACTION");
-
-        lua_pushinteger(L, itemType::GAMESTATE_TOWN_INSTANCE_LIST);
-        lua_setfield(L, -2, "GAMESTATE_TOWN_INSTANCE_LIST");
-
-        lua_pushinteger(L, itemType::STATE);
-        lua_setfield(L, -2, "STATE");
-
-        lua_pushinteger(L, itemType::SAVED_STATE);
-        lua_setfield(L, -2, "SAVED_STATE");
-
-        lua_pushinteger(L, itemType::INVENTORY_STATE);
-        lua_setfield(L, -2, "INVENTORY_STATE");
-
-        lua_pushinteger(L, itemType::INVENTORY_ITEM_STATE);
-        lua_setfield(L, -2, "INVENTORY_ITEM_STATE");
-
-        lua_pushinteger(L, itemType::REPEATABLE_BUILDING_PART_SLOT);
-        lua_setfield(L, -2, "REPEATABLE_BUILDING_PART_SLOT");
-
-        lua_pushinteger(L, itemType::MATERIAL_SPEC);
-        lua_setfield(L, -2, "MATERIAL_SPEC");
-
-        lua_pushinteger(L, itemType::MATERIAL_SPECS_COLLECTION);
-        lua_setfield(L, -2, "MATERIAL_SPECS_COLLECTION");
-
-        lua_pushinteger(L, itemType::CONTAINER);
-        lua_setfield(L, -2, "CONTAINER");
-
-        lua_pushinteger(L, itemType::MATERIAL_SPECS_CLOTHING);
-        lua_setfield(L, -2, "MATERIAL_SPECS_CLOTHING");
-
-        lua_pushinteger(L, itemType::GAMESTATE_BUILDING_INTERIOR);
-        lua_setfield(L, -2, "GAMESTATE_BUILDING_INTERIOR");
-
-        lua_pushinteger(L, itemType::VENDOR_LIST);
-        lua_setfield(L, -2, "VENDOR_LIST");
-
-        lua_pushinteger(L, itemType::MATERIAL_SPECS_WEAPON);
-        lua_setfield(L, -2, "MATERIAL_SPECS_WEAPON");
-
-        lua_pushinteger(L, itemType::WEAPON_MANUFACTURER);
-        lua_setfield(L, -2, "WEAPON_MANUFACTURER");
-
-        lua_pushinteger(L, itemType::SQUAD_TEMPLATE);
-        lua_setfield(L, -2, "SQUAD_TEMPLATE");
-
-        lua_pushinteger(L, itemType::ROAD);
-        lua_setfield(L, -2, "ROAD");
-
-        lua_pushinteger(L, itemType::LOCATION_NODE);
-        lua_setfield(L, -2, "LOCATION_NODE");
-
-        lua_pushinteger(L, itemType::COLOR_DATA);
-        lua_setfield(L, -2, "COLOR_DATA");
-
-        lua_pushinteger(L, itemType::CAMERA);
-        lua_setfield(L, -2, "CAMERA");
-
-        lua_pushinteger(L, itemType::MEDICAL_STATE);
-        lua_setfield(L, -2, "MEDICAL_STATE");
-
-        lua_pushinteger(L, itemType::MEDICAL_PART_STATE);
-        lua_setfield(L, -2, "MEDICAL_PART_STATE");
-
-        lua_pushinteger(L, itemType::FOLIAGE_LAYER);
-        lua_setfield(L, -2, "FOLIAGE_LAYER");
-
-        lua_pushinteger(L, itemType::FOLIAGE_MESH);
-        lua_setfield(L, -2, "FOLIAGE_MESH");
-
-        lua_pushinteger(L, itemType::GRASS);
-        lua_setfield(L, -2, "GRASS");
-
-        lua_pushinteger(L, itemType::BUILDING_FUNCTIONALITY);
-        lua_setfield(L, -2, "BUILDING_FUNCTIONALITY");
-
-        lua_pushinteger(L, itemType::DAY_SCHEDULE);
-        lua_setfield(L, -2, "DAY_SCHEDULE");
-
-        lua_pushinteger(L, itemType::NEW_GAME_STARTOFF);
-        lua_setfield(L, -2, "NEW_GAME_STARTOFF");
-
-        lua_pushinteger(L, itemType::GAMESTATE_CRAFTING);
-        lua_setfield(L, -2, "GAMESTATE_CRAFTING");
-
-        lua_pushinteger(L, itemType::CHARACTER_APPEARANCE);
-        lua_setfield(L, -2, "CHARACTER_APPEARANCE");
-
-        lua_pushinteger(L, itemType::GAMESTATE_AI);
-        lua_setfield(L, -2, "GAMESTATE_AI");
-
-        lua_pushinteger(L, itemType::WILDLIFE_BIRDS);
-        lua_setfield(L, -2, "WILDLIFE_BIRDS");
-
-        lua_pushinteger(L, itemType::MAP_FEATURES);
-        lua_setfield(L, -2, "MAP_FEATURES");
-
-        lua_pushinteger(L, itemType::DIPLOMATIC_ASSAULTS);
-        lua_setfield(L, -2, "DIPLOMATIC_ASSAULTS");
-
-        lua_pushinteger(L, itemType::SINGLE_DIPLOMATIC_ASSAULT);
-        lua_setfield(L, -2, "SINGLE_DIPLOMATIC_ASSAULT");
-
-        lua_pushinteger(L, itemType::AI_PACKAGE);
-        lua_setfield(L, -2, "AI_PACKAGE");
-
-        lua_pushinteger(L, itemType::DIALOGUE_PACKAGE);
-        lua_setfield(L, -2, "DIALOGUE_PACKAGE");
-
-        lua_pushinteger(L, itemType::GUN_DATA);
-        lua_setfield(L, -2, "GUN_DATA");
-
-        lua_pushinteger(L, itemType::HUMAN_CHARACTER);
-        lua_setfield(L, -2, "HUMAN_CHARACTER");
-
-        lua_pushinteger(L, itemType::ANIMAL_CHARACTER);
-        lua_setfield(L, -2, "ANIMAL_CHARACTER");
-
-        lua_pushinteger(L, itemType::UNIQUE_SQUAD_TEMPLATE);
-        lua_setfield(L, -2, "UNIQUE_SQUAD_TEMPLATE");
-
-        lua_pushinteger(L, itemType::FACTION_TEMPLATE);
-        lua_setfield(L, -2, "FACTION_TEMPLATE");
-
-        lua_pushinteger(L, itemType::AI_SCHEDULE);
-        lua_setfield(L, -2, "AI_SCHEDULE");
-
-        lua_pushinteger(L, itemType::WEATHER);
-        lua_setfield(L, -2, "WEATHER");
-
-        lua_pushinteger(L, itemType::SEASON);
-        lua_setfield(L, -2, "SEASON");
-
-        lua_pushinteger(L, itemType::EFFECT);
-        lua_setfield(L, -2, "EFFECT");
-
-        lua_pushinteger(L, itemType::ITEM_PLACEMENT_GROUP);
-        lua_setfield(L, -2, "ITEM_PLACEMENT_GROUP");
-
-        lua_pushinteger(L, itemType::WORD_SWAPS);
-        lua_setfield(L, -2, "WORD_SWAPS");
-
-        lua_pushinteger(L, itemType::NEST);
-        lua_setfield(L, -2, "NEST");
-
-        lua_pushinteger(L, itemType::NEST_ITEM);
-        lua_setfield(L, -2, "NEST_ITEM");
-
-        lua_pushinteger(L, itemType::CHARACTER_PHYSICS_ATTACHMENT);
-        lua_setfield(L, -2, "CHARACTER_PHYSICS_ATTACHMENT");
-
-        lua_pushinteger(L, itemType::LIGHT);
-        lua_setfield(L, -2, "LIGHT");
-
-        lua_pushinteger(L, itemType::HEAD);
-        lua_setfield(L, -2, "HEAD");
-
-        lua_pushinteger(L, itemType::BLUEPRINT);
-        lua_setfield(L, -2, "BLUEPRINT");
-
-        lua_pushinteger(L, itemType::SHOP_TRADER_CLASS);
-        lua_setfield(L, -2, "SHOP_TRADER_CLASS");
-
-        lua_pushinteger(L, itemType::FOLIAGE_BUILDING);
-        lua_setfield(L, -2, "FOLIAGE_BUILDING");
-
-        lua_pushinteger(L, itemType::FACTION_CAMPAIGN);
-        lua_setfield(L, -2, "FACTION_CAMPAIGN");
-
-        lua_pushinteger(L, itemType::GAMESTATE_TOWN);
-        lua_setfield(L, -2, "GAMESTATE_TOWN");
-
-        lua_pushinteger(L, itemType::BIOME_GROUP);
-        lua_setfield(L, -2, "BIOME_GROUP");
-
-        lua_pushinteger(L, itemType::EFFECT_FOG_VOLUME);
-        lua_setfield(L, -2, "EFFECT_FOG_VOLUME");
-
-        lua_pushinteger(L, itemType::FARM_DATA);
-        lua_setfield(L, -2, "FARM_DATA");
-
-        lua_pushinteger(L, itemType::FARM_PART);
-        lua_setfield(L, -2, "FARM_PART");
-
-        lua_pushinteger(L, itemType::ENVIRONMENT_RESOURCES);
-        lua_setfield(L, -2, "ENVIRONMENT_RESOURCES");
-
-        lua_pushinteger(L, itemType::RACE_GROUP);
-        lua_setfield(L, -2, "RACE_GROUP");
-
-        lua_pushinteger(L, itemType::ARTIFACTS);
-        lua_setfield(L, -2, "ARTIFACTS");
-
-        lua_pushinteger(L, itemType::MAP_ITEM);
-        lua_setfield(L, -2, "MAP_ITEM");
-
-        lua_pushinteger(L, itemType::BUILDINGS_SWAP);
-        lua_setfield(L, -2, "BUILDINGS_SWAP");
-
-        lua_pushinteger(L, itemType::ITEMS_CULTURE);
-        lua_setfield(L, -2, "ITEMS_CULTURE");
-
-        lua_pushinteger(L, itemType::ANIMATION_EVENT);
-        lua_setfield(L, -2, "ANIMATION_EVENT");
-
-        lua_pushinteger(L, itemType::TUTORIAL);
-        lua_setfield(L, -2, "TUTORIAL");
-
-        lua_pushinteger(L, itemType::CROSSBOW);
-        lua_setfield(L, -2, "CROSSBOW");
-
-        lua_pushinteger(L, itemType::TERRAIN_DECALS);
-        lua_setfield(L, -2, "TERRAIN_DECALS");
-
-        lua_pushinteger(L, itemType::AMBIENT_SOUND);
-        lua_setfield(L, -2, "AMBIENT_SOUND");
-
-        lua_pushinteger(L, itemType::WORLD_EVENT_STATE);
-        lua_setfield(L, -2, "WORLD_EVENT_STATE");
-
-        lua_pushinteger(L, itemType::LIMB_REPLACEMENT);
-        lua_setfield(L, -2, "LIMB_REPLACEMENT");
-
-        lua_pushinteger(L, itemType::ANIMATION_FILE);
-        lua_setfield(L, -2, "ANIMATION_FILE");
-
-        lua_pushinteger(L, itemType::____XXX___);
-        lua_setfield(L, -2, "___XXX___");
-
-        lua_pushinteger(L, itemType::OBJECT_TYPE_MAX);
-        lua_setfield(L, -2, "OBJECT_TYPE_MAX");
+        setEnum(L, "BUILDING", itemType::BUILDING);
+        setEnum(L, "CHARACTER", itemType::CHARACTER);
+        setEnum(L, "WEAPON", itemType::WEAPON);
+        setEnum(L, "ARMOUR", itemType::ARMOUR);
+        setEnum(L, "ITEM", itemType::ITEM);
+        setEnum(L, "ANIMAL_ANIMATION", itemType::ANIMAL_ANIMATION);
+        setEnum(L, "ATTACHMENT", itemType::ATTACHMENT);
+        setEnum(L, "RACE", itemType::RACE);
+        setEnum(L, "LOCATION", itemType::LOCATION);
+        setEnum(L, "WAR_SAVESTATE", itemType::WAR_SAVESTATE);
+        setEnum(L, "FACTION", itemType::FACTION);
+        setEnum(L, "NULL_ITEM", itemType::NULL_ITEM);
+        setEnum(L, "ZONE_MAP", itemType::ZONE_MAP);
+        setEnum(L, "TOWN", itemType::TOWN);
+        setEnum(L, "WORLDMAP_CHARACTER", itemType::WORLDMAP_CHARACTER);
+        setEnum(L, "CHARACTER_APPEARANCE_OLD", itemType::CHARACTER_APPEARANCE_OLD);
+        setEnum(L, "LOCATIONAL_DAMAGE", itemType::LOCATIONAL_DAMAGE);
+        setEnum(L, "COMBAT_TECHNIQUE", itemType::COMBAT_TECHNIQUE);
+        setEnum(L, "DIALOGUE", itemType::DIALOGUE);
+        setEnum(L, "DIALOGUE_LINE", itemType::DIALOGUE_LINE);
+        setEnum(L, "TECHTREE", itemType::TECHTREE);
+        setEnum(L, "RESEARCH", itemType::RESEARCH);
+        setEnum(L, "AI_TASK", itemType::AI_TASK);
+        setEnum(L, "AI_STATE", itemType::AI_STATE);
+        setEnum(L, "ANIMATION", itemType::ANIMATION);
+        setEnum(L, "STATS", itemType::STATS);
+        setEnum(L, "PERSONALITY", itemType::PERSONALITY);
+        setEnum(L, "CONSTANTS", itemType::CONSTANTS);
+        setEnum(L, "BIOMES", itemType::BIOMES);
+        setEnum(L, "BUILDING_PART", itemType::BUILDING_PART);
+        setEnum(L, "INSTANCE_COLLECTION", itemType::INSTANCE_COLLECTION);
+        setEnum(L, "DIALOG_ACTION", itemType::DIALOG_ACTION);
+        setEnum(L, "TEMPORARY_INFO", itemType::TEMPORARY_INFO);
+        setEnum(L, "MOD_FILENAME", itemType::MOD_FILENAME);
+        setEnum(L, "PLATOON", itemType::PLATOON);
+        setEnum(L, "GAMESTATE_BUILDING", itemType::GAMESTATE_BUILDING);
+        setEnum(L, "GAMESTATE_CHARACTER", itemType::GAMESTATE_CHARACTER);
+        setEnum(L, "GAMESTATE_FACTION", itemType::GAMESTATE_FACTION);
+        setEnum(L, "GAMESTATE_TOWN_INSTANCE_LIST", itemType::GAMESTATE_TOWN_INSTANCE_LIST);
+        setEnum(L, "STATE", itemType::STATE);
+        setEnum(L, "SAVED_STATE", itemType::SAVED_STATE);
+        setEnum(L, "INVENTORY_STATE", itemType::INVENTORY_STATE);
+        setEnum(L, "INVENTORY_ITEM_STATE", itemType::INVENTORY_ITEM_STATE);
+        setEnum(L, "REPEATABLE_BUILDING_PART_SLOT", itemType::REPEATABLE_BUILDING_PART_SLOT);
+        setEnum(L, "MATERIAL_SPEC", itemType::MATERIAL_SPEC);
+        setEnum(L, "MATERIAL_SPECS_COLLECTION", itemType::MATERIAL_SPECS_COLLECTION);
+        setEnum(L, "CONTAINER", itemType::CONTAINER);
+        setEnum(L, "MATERIAL_SPECS_CLOTHING", itemType::MATERIAL_SPECS_CLOTHING);
+        setEnum(L, "GAMESTATE_BUILDING_INTERIOR", itemType::GAMESTATE_BUILDING_INTERIOR);
+        setEnum(L, "VENDOR_LIST", itemType::VENDOR_LIST);
+        setEnum(L, "MATERIAL_SPECS_WEAPON", itemType::MATERIAL_SPECS_WEAPON);
+        setEnum(L, "WEAPON_MANUFACTURER", itemType::WEAPON_MANUFACTURER);
+        setEnum(L, "SQUAD_TEMPLATE", itemType::SQUAD_TEMPLATE);
+        setEnum(L, "ROAD", itemType::ROAD);
+        setEnum(L, "LOCATION_NODE", itemType::LOCATION_NODE);
+        setEnum(L, "COLOR_DATA", itemType::COLOR_DATA);
+        setEnum(L, "CAMERA", itemType::CAMERA);
+        setEnum(L, "MEDICAL_STATE", itemType::MEDICAL_STATE);
+        setEnum(L, "MEDICAL_PART_STATE", itemType::MEDICAL_PART_STATE);
+        setEnum(L, "FOLIAGE_LAYER", itemType::FOLIAGE_LAYER);
+        setEnum(L, "FOLIAGE_MESH", itemType::FOLIAGE_MESH);
+        setEnum(L, "GRASS", itemType::GRASS);
+        setEnum(L, "BUILDING_FUNCTIONALITY", itemType::BUILDING_FUNCTIONALITY);
+        setEnum(L, "DAY_SCHEDULE", itemType::DAY_SCHEDULE);
+        setEnum(L, "NEW_GAME_STARTOFF", itemType::NEW_GAME_STARTOFF);
+        setEnum(L, "GAMESTATE_CRAFTING", itemType::GAMESTATE_CRAFTING);
+        setEnum(L, "CHARACTER_APPEARANCE", itemType::CHARACTER_APPEARANCE);
+        setEnum(L, "GAMESTATE_AI", itemType::GAMESTATE_AI);
+        setEnum(L, "WILDLIFE_BIRDS", itemType::WILDLIFE_BIRDS);
+        setEnum(L, "MAP_FEATURES", itemType::MAP_FEATURES);
+        setEnum(L, "DIPLOMATIC_ASSAULTS", itemType::DIPLOMATIC_ASSAULTS);
+        setEnum(L, "SINGLE_DIPLOMATIC_ASSAULT", itemType::SINGLE_DIPLOMATIC_ASSAULT);
+        setEnum(L, "AI_PACKAGE", itemType::AI_PACKAGE);
+        setEnum(L, "DIALOGUE_PACKAGE", itemType::DIALOGUE_PACKAGE);
+        setEnum(L, "GUN_DATA", itemType::GUN_DATA);
+        setEnum(L, "HUMAN_CHARACTER", itemType::HUMAN_CHARACTER);
+        setEnum(L, "ANIMAL_CHARACTER", itemType::ANIMAL_CHARACTER);
+        setEnum(L, "UNIQUE_SQUAD_TEMPLATE", itemType::UNIQUE_SQUAD_TEMPLATE);
+        setEnum(L, "FACTION_TEMPLATE", itemType::FACTION_TEMPLATE);
+        setEnum(L, "AI_SCHEDULE", itemType::AI_SCHEDULE);
+        setEnum(L, "WEATHER", itemType::WEATHER);
+        setEnum(L, "SEASON", itemType::SEASON);
+        setEnum(L, "EFFECT", itemType::EFFECT);
+        setEnum(L, "ITEM_PLACEMENT_GROUP", itemType::ITEM_PLACEMENT_GROUP);
+        setEnum(L, "WORD_SWAPS", itemType::WORD_SWAPS);
+        setEnum(L, "NEST", itemType::NEST);
+        setEnum(L, "NEST_ITEM", itemType::NEST_ITEM);
+        setEnum(L, "CHARACTER_PHYSICS_ATTACHMENT", itemType::CHARACTER_PHYSICS_ATTACHMENT);
+        setEnum(L, "LIGHT", itemType::LIGHT);
+        setEnum(L, "HEAD", itemType::HEAD);
+        setEnum(L, "BLUEPRINT", itemType::BLUEPRINT);
+        setEnum(L, "SHOP_TRADER_CLASS", itemType::SHOP_TRADER_CLASS);
+        setEnum(L, "FOLIAGE_BUILDING", itemType::FOLIAGE_BUILDING);
+        setEnum(L, "FACTION_CAMPAIGN", itemType::FACTION_CAMPAIGN);
+        setEnum(L, "GAMESTATE_TOWN", itemType::GAMESTATE_TOWN);
+        setEnum(L, "BIOME_GROUP", itemType::BIOME_GROUP);
+        setEnum(L, "EFFECT_FOG_VOLUME", itemType::EFFECT_FOG_VOLUME);
+        setEnum(L, "FARM_DATA", itemType::FARM_DATA);
+        setEnum(L, "FARM_PART", itemType::FARM_PART);
+        setEnum(L, "ENVIRONMENT_RESOURCES", itemType::ENVIRONMENT_RESOURCES);
+        setEnum(L, "RACE_GROUP", itemType::RACE_GROUP);
+        setEnum(L, "ARTIFACTS", itemType::ARTIFACTS);
+        setEnum(L, "MAP_ITEM", itemType::MAP_ITEM);
+        setEnum(L, "BUILDINGS_SWAP", itemType::BUILDINGS_SWAP);
+        setEnum(L, "ITEMS_CULTURE", itemType::ITEMS_CULTURE);
+        setEnum(L, "ANIMATION_EVENT", itemType::ANIMATION_EVENT);
+        setEnum(L, "TUTORIAL", itemType::TUTORIAL);
+        setEnum(L, "CROSSBOW", itemType::CROSSBOW);
+        setEnum(L, "TERRAIN_DECALS", itemType::TERRAIN_DECALS);
+        setEnum(L, "AMBIENT_SOUND", itemType::AMBIENT_SOUND);
+        setEnum(L, "WORLD_EVENT_STATE", itemType::WORLD_EVENT_STATE);
+        setEnum(L, "LIMB_REPLACEMENT", itemType::LIMB_REPLACEMENT);
+        setEnum(L, "ANIMATION_FILE", itemType::ANIMATION_FILE);
+        setEnum(L, "___XXX___", itemType::____XXX___);
+        setEnum(L, "OBJECT_TYPE_MAX", itemType::OBJECT_TYPE_MAX);
 
         lua_setglobal(L, "itemType");
     }
@@ -3057,375 +2587,227 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, EventTriggerEnum::EV_NONE);
-        lua_setfield(L, -2, "EV_NONE");
-        lua_pushinteger(L, EventTriggerEnum::EV_NONE);
-        lua_setfield(L, -2, "NONE");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_PLAYER_TALK_TO_ME);
-        lua_setfield(L, -2, "EV_PLAYER_TALK_TO_ME");
-        lua_pushinteger(L, EventTriggerEnum::EV_PLAYER_TALK_TO_ME);
-        lua_setfield(L, -2, "PLAYER_TALK_TO_ME");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ANNOUNCEMENT);
-        lua_setfield(L, -2, "EV_ANNOUNCEMENT");
-        lua_pushinteger(L, EventTriggerEnum::EV_ANNOUNCEMENT);
-        lua_setfield(L, -2, "ANNOUNCEMENT");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD);
-        lua_setfield(L, -2, "EV_I_SEE_NEUTRAL_SQUAD");
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD);
-        lua_setfield(L, -2, "I_SEE_NEUTRAL_SQUAD");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_RAGDOLL);
-        lua_setfield(L, -2, "EV_I_SEE_RAGDOLL");
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_RAGDOLL);
-        lua_setfield(L, -2, "I_SEE_RAGDOLL");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_______);
-        lua_setfield(L, -2, "EV_______");
-        lua_pushinteger(L, EventTriggerEnum::EV_______);
-        lua_setfield(L, -2, "______");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_I_________);
-        lua_setfield(L, -2, "EV_I_________");
-        lua_pushinteger(L, EventTriggerEnum::EV_I_________);
-        lua_setfield(L, -2, "I_________");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING);
-        lua_setfield(L, -2, "EV_SHOO_FROM_MY_BUILDING");
-        lua_pushinteger(L, EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING);
-        lua_setfield(L, -2, "SHOO_FROM_MY_BUILDING");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_MARKED_FOR_DEATH);
-        lua_setfield(L, -2, "EV_MARKED_FOR_DEATH");
-        lua_pushinteger(L, EventTriggerEnum::EV_MARKED_FOR_DEATH);
-        lua_setfield(L, -2, "MARKED_FOR_DEATH");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_SCREAMING_TORTURE);
-        lua_setfield(L, -2, "EV_SCREAMING_TORTURE");
-        lua_pushinteger(L, EventTriggerEnum::EV_SCREAMING_TORTURE);
-        lua_setfield(L, -2, "SCREAMING_TORTURE");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_BAR_TALK);
-        lua_setfield(L, -2, "EV_BAR_TALK");
-        lua_pushinteger(L, EventTriggerEnum::EV_BAR_TALK);
-        lua_setfield(L, -2, "BAR_TALK");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES);
-        lua_setfield(L, -2, "EV_UNLOCK_MY_CAGE_OR_SHACKLES");
-        lua_pushinteger(L, EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES);
-        lua_setfield(L, -2, "UNLOCK_MY_CAGE_OR_SHACKLES");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT);
-        lua_setfield(L, -2, "EV_UNLOCK_MY_CAGE_ATTEMPT");
-        lua_pushinteger(L, EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT);
-        lua_setfield(L, -2, "UNLOCK_MY_CAGE_ATTEMPT");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_I_DEFEATED_SQUAD);
-        lua_setfield(L, -2, "EV_I_DEFEATED_SQUAD");
-        lua_pushinteger(L, EventTriggerEnum::EV_I_DEFEATED_SQUAD);
-        lua_setfield(L, -2, "I_DEFEATED_SQUAD");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_LAUNCH_ATTACK);
-        lua_setfield(L, -2, "EV_LAUNCH_ATTACK");
-        lua_pushinteger(L, EventTriggerEnum::EV_LAUNCH_ATTACK);
-        lua_setfield(L, -2, "LAUNCH_ATTACK");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_INTRUDER_FOUND);
-        lua_setfield(L, -2, "EV_INTRUDER_FOUND");
-        lua_pushinteger(L, EventTriggerEnum::EV_INTRUDER_FOUND);
-        lua_setfield(L, -2, "INTRUDER_FOUND");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_HEALING_OTHER_START);
-        lua_setfield(L, -2, "EV_HEALING_OTHER_START");
-        lua_pushinteger(L, EventTriggerEnum::EV_HEALING_OTHER_START);
-        lua_setfield(L, -2, "HEALING_OTHER_START");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_BEING_HEALED_START);
-        lua_setfield(L, -2, "EV_BEING_HEALED_START");
-        lua_pushinteger(L, EventTriggerEnum::EV_BEING_HEALED_START);
-        lua_setfield(L, -2, "BEING_HEALED_START");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_HEALING_OTHER_FINISHED);
-        lua_setfield(L, -2, "EV_HEALING_OTHER_FINISHED");
-        lua_pushinteger(L, EventTriggerEnum::EV_HEALING_OTHER_FINISHED);
-        lua_setfield(L, -2, "HEALING_OTHER_FINISHED");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_BEING_HEALED_FINISHED);
-        lua_setfield(L, -2, "EV_BEING_HEALED_FINISHED");
-        lua_pushinteger(L, EventTriggerEnum::EV_BEING_HEALED_FINISHED);
-        lua_setfield(L, -2, "BEING_HEALED_FINISHED");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY);
-        lua_setfield(L, -2, "EV_FIRSTAID_KIT_EMPTY");
-        lua_pushinteger(L, EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY);
-        lua_setfield(L, -2, "FIRSTAID_KIT_EMPTY");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_GET_UP_PEACE);
-        lua_setfield(L, -2, "EV_GET_UP_PEACE");
-        lua_pushinteger(L, EventTriggerEnum::EV_GET_UP_PEACE);
-        lua_setfield(L, -2, "GET_UP_PEACE");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_GET_UP_FIGHT);
-        lua_setfield(L, -2, "EV_GET_UP_FIGHT");
-        lua_pushinteger(L, EventTriggerEnum::EV_GET_UP_FIGHT);
-        lua_setfield(L, -2, "GET_UP_FIGHT");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT);
-        lua_setfield(L, -2, "EV_GET_UP_UNNECCESSARY_FIGHT");
-        lua_pushinteger(L, EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT);
-        lua_setfield(L, -2, "GET_UP_UNNECCESSARY_FIGHT");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_HARRASSMENT_SHOUTS);
-        lua_setfield(L, -2, "EV_HARRASSMENT_SHOUTS");
-        lua_pushinteger(L, EventTriggerEnum::EV_HARRASSMENT_SHOUTS);
-        lua_setfield(L, -2, "HARRASSMENT_SHOUTS");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD);
-        lua_setfield(L, -2, "EV_I_SEE_ANIMAL_SQUAD");
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD);
-        lua_setfield(L, -2, "I_SEE_ANIMAL_SQUAD");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET);
-        lua_setfield(L, -2, "EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET");
-        lua_pushinteger(L, EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET);
-        lua_setfield(L, -2, "SPEECH_INTERRUPTED_ATTACKED_BY_TARGET");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS);
-        lua_setfield(L, -2, "EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS");
-        lua_pushinteger(L, EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS);
-        lua_setfield(L, -2, "SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_CONTRACT_JOB_ENDED);
-        lua_setfield(L, -2, "EV_CONTRACT_JOB_ENDED");
-        lua_pushinteger(L, EventTriggerEnum::EV_CONTRACT_JOB_ENDED);
-        lua_setfield(L, -2, "CONTRACT_JOB_ENDED");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_BETRAYAL);
-        lua_setfield(L, -2, "EV_BETRAYAL");
-        lua_pushinteger(L, EventTriggerEnum::EV_BETRAYAL);
-        lua_setfield(L, -2, "BETRAYAL");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_LOOTING_WEAPON_ONLY);
-        lua_setfield(L, -2, "EV_LOOTING_WEAPON_ONLY");
-        lua_pushinteger(L, EventTriggerEnum::EV_LOOTING_WEAPON_ONLY);
-        lua_setfield(L, -2, "LOOTING_WEAPON_ONLY");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_LOOTING_EVERYTHING);
-        lua_setfield(L, -2, "EV_LOOTING_EVERYTHING");
-        lua_pushinteger(L, EventTriggerEnum::EV_LOOTING_EVERYTHING);
-        lua_setfield(L, -2, "LOOTING_EVERYTHING");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER);
-        lua_setfield(L, -2, "EV_I_SEE_UNIFORM_IMPOSTER");
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER);
-        lua_setfield(L, -2, "I_SEE_UNIFORM_IMPOSTER");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE);
-        lua_setfield(L, -2, "EV_INTRODUCING_NEW_SLAVE");
-        lua_pushinteger(L, EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE);
-        lua_setfield(L, -2, "INTRODUCING_NEW_SLAVE");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED);
-        lua_setfield(L, -2, "EV_ESCAPING_SLAVE_SPOTTED");
-        lua_pushinteger(L, EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED);
-        lua_setfield(L, -2, "ESCAPING_SLAVE_SPOTTED");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_RECAPTURED_A_SLAVE);
-        lua_setfield(L, -2, "EV_RECAPTURED_A_SLAVE");
-        lua_pushinteger(L, EventTriggerEnum::EV_RECAPTURED_A_SLAVE);
-        lua_setfield(L, -2, "RECAPTURED_A_SLAVE");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER);
-        lua_setfield(L, -2, "EV_SHOUT_AT_SLAVE_WORKER");
-        lua_pushinteger(L, EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER);
-        lua_setfield(L, -2, "SHOUT_AT_SLAVE_WORKER");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_SLAVE_DELIVERY);
-        lua_setfield(L, -2, "EV_SLAVE_DELIVERY");
-        lua_pushinteger(L, EventTriggerEnum::EV_SLAVE_DELIVERY);
-        lua_setfield(L, -2, "SLAVE_DELIVERY");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED);
-        lua_setfield(L, -2, "EV_ESCAPED_EX_SLAVE_SPOTTED");
-        lua_pushinteger(L, EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED);
-        lua_setfield(L, -2, "ESCAPED_EX_SLAVE_SPOTTED");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT);
-        lua_setfield(L, -2, "EV_WITNESS_GENERIC_ASSAULT");
-        lua_pushinteger(L, EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT);
-        lua_setfield(L, -2, "WITNESS_GENERIC_ASSAULT");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_WITNESS_LOOTING_ALLY);
-        lua_setfield(L, -2, "EV_WITNESS_LOOTING_ALLY");
-        lua_pushinteger(L, EventTriggerEnum::EV_WITNESS_LOOTING_ALLY);
-        lua_setfield(L, -2, "WITNESS_LOOTING_ALLY");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK);
-        lua_setfield(L, -2, "EV_WITNESS_THIEF_OR_LOCKPICK");
-        lua_pushinteger(L, EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK);
-        lua_setfield(L, -2, "WITNESS_THIEF_OR_LOCKPICK");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_BOUNTY_SPOTTED);
-        lua_setfield(L, -2, "EV_BOUNTY_SPOTTED");
-        lua_pushinteger(L, EventTriggerEnum::EV_BOUNTY_SPOTTED);
-        lua_setfield(L, -2, "BOUNTY_SPOTTED");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED);
-        lua_setfield(L, -2, "EV_ESCAPED_PRISONER_SPOTTED");
-        lua_pushinteger(L, EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED);
-        lua_setfield(L, -2, "ESCAPED_PRISONER_SPOTTED");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_PRISONER_FREE_TO_GO);
-        lua_setfield(L, -2, "EV_PRISONER_FREE_TO_GO");
-        lua_pushinteger(L, EventTriggerEnum::EV_PRISONER_FREE_TO_GO);
-        lua_setfield(L, -2, "PRISONER_FREE_TO_GO");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ALMOST_WOKE_UP);
-        lua_setfield(L, -2, "EV_ALMOST_WOKE_UP");
-        lua_pushinteger(L, EventTriggerEnum::EV_ALMOST_WOKE_UP);
-        lua_setfield(L, -2, "ALMOST_WOKE_UP");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ENTER_BIOME);
-        lua_setfield(L, -2, "EV_ENTER_BIOME");
-        lua_pushinteger(L, EventTriggerEnum::EV_ENTER_BIOME);
-        lua_setfield(L, -2, "ENTER_BIOME");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ENTER_TOWN);
-        lua_setfield(L, -2, "EV_ENTER_TOWN");
-        lua_pushinteger(L, EventTriggerEnum::EV_ENTER_TOWN);
-        lua_setfield(L, -2, "ENTER_TOWN");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_SQUAD_BROKEN);
-        lua_setfield(L, -2, "EV_SQUAD_BROKEN");
-        lua_pushinteger(L, EventTriggerEnum::EV_SQUAD_BROKEN);
-        lua_setfield(L, -2, "SQUAD_BROKEN");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY);
-        lua_setfield(L, -2, "EV_BOUGHT_ME_FROM_SLAVERY");
-        lua_pushinteger(L, EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY);
-        lua_setfield(L, -2, "BOUGHT_ME_FROM_SLAVERY");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS);
-        lua_setfield(L, -2, "EV_EATING_SOMETHING_SOUNDS");
-        lua_pushinteger(L, EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS);
-        lua_setfield(L, -2, "EATING_SOMETHING_SOUNDS");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_WORSHIPING_SOMETHING);
-        lua_setfield(L, -2, "EV_WORSHIPING_SOMETHING");
-        lua_pushinteger(L, EventTriggerEnum::EV_WORSHIPING_SOMETHING);
-        lua_setfield(L, -2, "WORSHIPING_SOMETHING");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR);
-        lua_setfield(L, -2, "EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR");
-        lua_pushinteger(L, EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR);
-        lua_setfield(L, -2, "SLAVE_ESCAPE_OPPORTUNITY_SAVIOR");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE);
-        lua_setfield(L, -2, "EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE");
-        lua_pushinteger(L, EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE);
-        lua_setfield(L, -2, "SLAVE_ESCAPE_OPPORTUNITY_ALONE");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ASSASSINATION_FAILED);
-        lua_setfield(L, -2, "EV_ASSASSINATION_FAILED");
-        lua_pushinteger(L, EventTriggerEnum::EV_ASSASSINATION_FAILED);
-        lua_setfield(L, -2, "ASSASSINATION_FAILED");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_EATING_MY_CROPS);
-        lua_setfield(L, -2, "EV_EATING_MY_CROPS");
-        lua_pushinteger(L, EventTriggerEnum::EV_EATING_MY_CROPS);
-        lua_setfield(L, -2, "EATING_MY_CROPS");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_KIDNAPPING_MY_ALLY);
-        lua_setfield(L, -2, "EV_KIDNAPPING_MY_ALLY");
-        lua_pushinteger(L, EventTriggerEnum::EV_KIDNAPPING_MY_ALLY);
-        lua_setfield(L, -2, "KIDNAPPING_MY_ALLY");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT);
-        lua_setfield(L, -2, "EV_USING_MY_TRAINING_EQUIPMENT");
-        lua_pushinteger(L, EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT);
-        lua_setfield(L, -2, "USING_MY_TRAINING_EQUIPMENT");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_GIVE_UP_CHASE);
-        lua_setfield(L, -2, "EV_GIVE_UP_CHASE");
-        lua_pushinteger(L, EventTriggerEnum::EV_GIVE_UP_CHASE);
-        lua_setfield(L, -2, "GIVE_UP_CHASE");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ACID_FEET);
-        lua_setfield(L, -2, "EV_ACID_FEET");
-        lua_pushinteger(L, EventTriggerEnum::EV_ACID_FEET);
-        lua_setfield(L, -2, "ACID_FEET");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ACID_RAIN);
-        lua_setfield(L, -2, "EV_ACID_RAIN");
-        lua_pushinteger(L, EventTriggerEnum::EV_ACID_RAIN);
-        lua_setfield(L, -2, "ACID_RAIN");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_ACID_WATER);
-        lua_setfield(L, -2, "EV_ACID_WATER");
-        lua_pushinteger(L, EventTriggerEnum::EV_ACID_WATER);
-        lua_setfield(L, -2, "ACID_WATER");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_WINDY);
-        lua_setfield(L, -2, "EV_WINDY");
-        lua_pushinteger(L, EventTriggerEnum::EV_WINDY);
-        lua_setfield(L, -2, "WINDY");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_POISON_GAS);
-        lua_setfield(L, -2, "EV_POISON_GAS");
-        lua_pushinteger(L, EventTriggerEnum::EV_POISON_GAS);
-        lua_setfield(L, -2, "POISON_GAS");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER);
-        lua_setfield(L, -2, "EV_I_SEE_ENEMY_PLAYER");
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER);
-        lua_setfield(L, -2, "I_SEE_ENEMY_PLAYER");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_ALLY_PLAYER);
-        lua_setfield(L, -2, "EV_I_SEE_ALLY_PLAYER");
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_ALLY_PLAYER);
-        lua_setfield(L, -2, "I_SEE_ALLY_PLAYER");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING);
-        lua_setfield(L, -2, "EV_I_SEE_ILLEGAL_PLAYER_BUILDING");
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING);
-        lua_setfield(L, -2, "I_SEE_ILLEGAL_PLAYER_BUILDING");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_BURNING);
-        lua_setfield(L, -2, "EV_BURNING");
-        lua_pushinteger(L, EventTriggerEnum::EV_BURNING);
-        lua_setfield(L, -2, "BURNING");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_LOST_LEG);
-        lua_setfield(L, -2, "EV_LOST_LEG");
-        lua_pushinteger(L, EventTriggerEnum::EV_LOST_LEG);
-        lua_setfield(L, -2, "LOST_LEG");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_LOST_ARM);
-        lua_setfield(L, -2, "EV_LOST_ARM");
-        lua_pushinteger(L, EventTriggerEnum::EV_LOST_ARM);
-        lua_setfield(L, -2, "LOST_ARM");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING);
-        lua_setfield(L, -2, "EV_I_SEE_PLAYER_NICE_BUILDING");
-        lua_pushinteger(L, EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING);
-        lua_setfield(L, -2, "I_SEE_PLAYER_NICE_BUILDING");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN);
-        lua_setfield(L, -2, "EV_TAKEN_OVER_PLAYER_TOWN");
-        lua_pushinteger(L, EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN);
-        lua_setfield(L, -2, "TAKEN_OVER_PLAYER_TOWN");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_CROWD_TRIGGERED);
-        lua_setfield(L, -2, "EV_CROWD_TRIGGERED");
-        lua_pushinteger(L, EventTriggerEnum::EV_CROWD_TRIGGERED);
-        lua_setfield(L, -2, "CROWD_TRIGGERED");
-
-        lua_pushinteger(L, EventTriggerEnum::EV_MAX);
-        lua_setfield(L, -2, "EV_MAX");
-        lua_pushinteger(L, EventTriggerEnum::EV_MAX);
-        lua_setfield(L, -2, "MAX");
+        setEnum(L, "EV_NONE", EventTriggerEnum::EV_NONE);
+        setEnum(L, "NONE", EventTriggerEnum::EV_NONE);
+
+        setEnum(L, "EV_PLAYER_TALK_TO_ME", EventTriggerEnum::EV_PLAYER_TALK_TO_ME);
+        setEnum(L, "PLAYER_TALK_TO_ME", EventTriggerEnum::EV_PLAYER_TALK_TO_ME);
+
+        setEnum(L, "EV_ANNOUNCEMENT", EventTriggerEnum::EV_ANNOUNCEMENT);
+        setEnum(L, "ANNOUNCEMENT", EventTriggerEnum::EV_ANNOUNCEMENT);
+
+        setEnum(L, "EV_I_SEE_NEUTRAL_SQUAD", EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD);
+        setEnum(L, "I_SEE_NEUTRAL_SQUAD", EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD);
+
+        setEnum(L, "EV_I_SEE_RAGDOLL", EventTriggerEnum::EV_I_SEE_RAGDOLL);
+        setEnum(L, "I_SEE_RAGDOLL", EventTriggerEnum::EV_I_SEE_RAGDOLL);
+
+        setEnum(L, "EV_______", EventTriggerEnum::EV_______);
+        setEnum(L, "______", EventTriggerEnum::EV_______);
+
+        setEnum(L, "EV_I_________", EventTriggerEnum::EV_I_________);
+        setEnum(L, "I_________", EventTriggerEnum::EV_I_________);
+
+        setEnum(L, "EV_SHOO_FROM_MY_BUILDING", EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING);
+        setEnum(L, "SHOO_FROM_MY_BUILDING", EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING);
+
+        setEnum(L, "EV_MARKED_FOR_DEATH", EventTriggerEnum::EV_MARKED_FOR_DEATH);
+        setEnum(L, "MARKED_FOR_DEATH", EventTriggerEnum::EV_MARKED_FOR_DEATH);
+
+        setEnum(L, "EV_SCREAMING_TORTURE", EventTriggerEnum::EV_SCREAMING_TORTURE);
+        setEnum(L, "SCREAMING_TORTURE", EventTriggerEnum::EV_SCREAMING_TORTURE);
+
+        setEnum(L, "EV_BAR_TALK", EventTriggerEnum::EV_BAR_TALK);
+        setEnum(L, "BAR_TALK", EventTriggerEnum::EV_BAR_TALK);
+
+        setEnum(L, "EV_UNLOCK_MY_CAGE_OR_SHACKLES", EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES);
+        setEnum(L, "UNLOCK_MY_CAGE_OR_SHACKLES", EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES);
+
+        setEnum(L, "EV_UNLOCK_MY_CAGE_ATTEMPT", EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT);
+        setEnum(L, "UNLOCK_MY_CAGE_ATTEMPT", EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT);
+
+        setEnum(L, "EV_I_DEFEATED_SQUAD", EventTriggerEnum::EV_I_DEFEATED_SQUAD);
+        setEnum(L, "I_DEFEATED_SQUAD", EventTriggerEnum::EV_I_DEFEATED_SQUAD);
+
+        setEnum(L, "EV_LAUNCH_ATTACK", EventTriggerEnum::EV_LAUNCH_ATTACK);
+        setEnum(L, "LAUNCH_ATTACK", EventTriggerEnum::EV_LAUNCH_ATTACK);
+
+        setEnum(L, "EV_INTRUDER_FOUND", EventTriggerEnum::EV_INTRUDER_FOUND);
+        setEnum(L, "INTRUDER_FOUND", EventTriggerEnum::EV_INTRUDER_FOUND);
+
+        setEnum(L, "EV_HEALING_OTHER_START", EventTriggerEnum::EV_HEALING_OTHER_START);
+        setEnum(L, "HEALING_OTHER_START", EventTriggerEnum::EV_HEALING_OTHER_START);
+
+        setEnum(L, "EV_BEING_HEALED_START", EventTriggerEnum::EV_BEING_HEALED_START);
+        setEnum(L, "BEING_HEALED_START", EventTriggerEnum::EV_BEING_HEALED_START);
+
+        setEnum(L, "EV_HEALING_OTHER_FINISHED", EventTriggerEnum::EV_HEALING_OTHER_FINISHED);
+        setEnum(L, "HEALING_OTHER_FINISHED", EventTriggerEnum::EV_HEALING_OTHER_FINISHED);
+
+        setEnum(L, "EV_BEING_HEALED_FINISHED", EventTriggerEnum::EV_BEING_HEALED_FINISHED);
+        setEnum(L, "BEING_HEALED_FINISHED", EventTriggerEnum::EV_BEING_HEALED_FINISHED);
+
+        setEnum(L, "EV_FIRSTAID_KIT_EMPTY", EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY);
+        setEnum(L, "FIRSTAID_KIT_EMPTY", EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY);
+
+        setEnum(L, "EV_GET_UP_PEACE", EventTriggerEnum::EV_GET_UP_PEACE);
+        setEnum(L, "GET_UP_PEACE", EventTriggerEnum::EV_GET_UP_PEACE);
+
+        setEnum(L, "EV_GET_UP_FIGHT", EventTriggerEnum::EV_GET_UP_FIGHT);
+        setEnum(L, "GET_UP_FIGHT", EventTriggerEnum::EV_GET_UP_FIGHT);
+
+        setEnum(L, "EV_GET_UP_UNNECCESSARY_FIGHT", EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT);
+        setEnum(L, "GET_UP_UNNECCESSARY_FIGHT", EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT);
+
+        setEnum(L, "EV_HARRASSMENT_SHOUTS", EventTriggerEnum::EV_HARRASSMENT_SHOUTS);
+        setEnum(L, "HARRASSMENT_SHOUTS", EventTriggerEnum::EV_HARRASSMENT_SHOUTS);
+
+        setEnum(L, "EV_I_SEE_ANIMAL_SQUAD", EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD);
+        setEnum(L, "I_SEE_ANIMAL_SQUAD", EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD);
+
+        setEnum(L, "EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET", EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET);
+        setEnum(L, "SPEECH_INTERRUPTED_ATTACKED_BY_TARGET", EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET);
+
+        setEnum(L, "EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS", EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS);
+        setEnum(L, "SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS", EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS);
+
+        setEnum(L, "EV_CONTRACT_JOB_ENDED", EventTriggerEnum::EV_CONTRACT_JOB_ENDED);
+        setEnum(L, "CONTRACT_JOB_ENDED", EventTriggerEnum::EV_CONTRACT_JOB_ENDED);
+
+        setEnum(L, "EV_BETRAYAL", EventTriggerEnum::EV_BETRAYAL);
+        setEnum(L, "BETRAYAL", EventTriggerEnum::EV_BETRAYAL);
+
+        setEnum(L, "EV_LOOTING_WEAPON_ONLY", EventTriggerEnum::EV_LOOTING_WEAPON_ONLY);
+        setEnum(L, "LOOTING_WEAPON_ONLY", EventTriggerEnum::EV_LOOTING_WEAPON_ONLY);
+
+        setEnum(L, "EV_LOOTING_EVERYTHING", EventTriggerEnum::EV_LOOTING_EVERYTHING);
+        setEnum(L, "LOOTING_EVERYTHING", EventTriggerEnum::EV_LOOTING_EVERYTHING);
+
+        setEnum(L, "EV_I_SEE_UNIFORM_IMPOSTER", EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER);
+        setEnum(L, "I_SEE_UNIFORM_IMPOSTER", EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER);
+
+        setEnum(L, "EV_INTRODUCING_NEW_SLAVE", EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE);
+        setEnum(L, "INTRODUCING_NEW_SLAVE", EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE);
+
+        setEnum(L, "EV_ESCAPING_SLAVE_SPOTTED", EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED);
+        setEnum(L, "ESCAPING_SLAVE_SPOTTED", EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED);
+
+        setEnum(L, "EV_RECAPTURED_A_SLAVE", EventTriggerEnum::EV_RECAPTURED_A_SLAVE);
+        setEnum(L, "RECAPTURED_A_SLAVE", EventTriggerEnum::EV_RECAPTURED_A_SLAVE);
+
+        setEnum(L, "EV_SHOUT_AT_SLAVE_WORKER", EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER);
+        setEnum(L, "SHOUT_AT_SLAVE_WORKER", EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER);
+
+        setEnum(L, "EV_SLAVE_DELIVERY", EventTriggerEnum::EV_SLAVE_DELIVERY);
+        setEnum(L, "SLAVE_DELIVERY", EventTriggerEnum::EV_SLAVE_DELIVERY);
+
+        setEnum(L, "EV_ESCAPED_EX_SLAVE_SPOTTED", EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED);
+        setEnum(L, "ESCAPED_EX_SLAVE_SPOTTED", EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED);
+
+        setEnum(L, "EV_WITNESS_GENERIC_ASSAULT", EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT);
+        setEnum(L, "WITNESS_GENERIC_ASSAULT", EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT);
+
+        setEnum(L, "EV_WITNESS_LOOTING_ALLY", EventTriggerEnum::EV_WITNESS_LOOTING_ALLY);
+        setEnum(L, "WITNESS_LOOTING_ALLY", EventTriggerEnum::EV_WITNESS_LOOTING_ALLY);
+
+        setEnum(L, "EV_WITNESS_THIEF_OR_LOCKPICK", EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK);
+        setEnum(L, "WITNESS_THIEF_OR_LOCKPICK", EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK);
+
+        setEnum(L, "EV_BOUNTY_SPOTTED", EventTriggerEnum::EV_BOUNTY_SPOTTED);
+        setEnum(L, "BOUNTY_SPOTTED", EventTriggerEnum::EV_BOUNTY_SPOTTED);
+
+        setEnum(L, "EV_ESCAPED_PRISONER_SPOTTED", EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED);
+        setEnum(L, "ESCAPED_PRISONER_SPOTTED", EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED);
+
+        setEnum(L, "EV_PRISONER_FREE_TO_GO", EventTriggerEnum::EV_PRISONER_FREE_TO_GO);
+        setEnum(L, "PRISONER_FREE_TO_GO", EventTriggerEnum::EV_PRISONER_FREE_TO_GO);
+
+        setEnum(L, "EV_ALMOST_WOKE_UP", EventTriggerEnum::EV_ALMOST_WOKE_UP);
+        setEnum(L, "ALMOST_WOKE_UP", EventTriggerEnum::EV_ALMOST_WOKE_UP);
+
+        setEnum(L, "EV_ENTER_BIOME", EventTriggerEnum::EV_ENTER_BIOME);
+        setEnum(L, "ENTER_BIOME", EventTriggerEnum::EV_ENTER_BIOME);
+
+        setEnum(L, "EV_ENTER_TOWN", EventTriggerEnum::EV_ENTER_TOWN);
+        setEnum(L, "ENTER_TOWN", EventTriggerEnum::EV_ENTER_TOWN);
+
+        setEnum(L, "EV_SQUAD_BROKEN", EventTriggerEnum::EV_SQUAD_BROKEN);
+        setEnum(L, "SQUAD_BROKEN", EventTriggerEnum::EV_SQUAD_BROKEN);
+
+        setEnum(L, "EV_BOUGHT_ME_FROM_SLAVERY", EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY);
+        setEnum(L, "BOUGHT_ME_FROM_SLAVERY", EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY);
+
+        setEnum(L, "EV_EATING_SOMETHING_SOUNDS", EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS);
+        setEnum(L, "EATING_SOMETHING_SOUNDS", EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS);
+
+        setEnum(L, "EV_WORSHIPING_SOMETHING", EventTriggerEnum::EV_WORSHIPING_SOMETHING);
+        setEnum(L, "WORSHIPING_SOMETHING", EventTriggerEnum::EV_WORSHIPING_SOMETHING);
+
+        setEnum(L, "EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR", EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR);
+        setEnum(L, "SLAVE_ESCAPE_OPPORTUNITY_SAVIOR", EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR);
+
+        setEnum(L, "EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE", EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE);
+        setEnum(L, "SLAVE_ESCAPE_OPPORTUNITY_ALONE", EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE);
+
+        setEnum(L, "EV_ASSASSINATION_FAILED", EventTriggerEnum::EV_ASSASSINATION_FAILED);
+        setEnum(L, "ASSASSINATION_FAILED", EventTriggerEnum::EV_ASSASSINATION_FAILED);
+
+        setEnum(L, "EV_EATING_MY_CROPS", EventTriggerEnum::EV_EATING_MY_CROPS);
+        setEnum(L, "EATING_MY_CROPS", EventTriggerEnum::EV_EATING_MY_CROPS);
+
+        setEnum(L, "EV_KIDNAPPING_MY_ALLY", EventTriggerEnum::EV_KIDNAPPING_MY_ALLY);
+        setEnum(L, "KIDNAPPING_MY_ALLY", EventTriggerEnum::EV_KIDNAPPING_MY_ALLY);
+
+        setEnum(L, "EV_USING_MY_TRAINING_EQUIPMENT", EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT);
+        setEnum(L, "USING_MY_TRAINING_EQUIPMENT", EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT);
+
+        setEnum(L, "EV_GIVE_UP_CHASE", EventTriggerEnum::EV_GIVE_UP_CHASE);
+        setEnum(L, "GIVE_UP_CHASE", EventTriggerEnum::EV_GIVE_UP_CHASE);
+
+        setEnum(L, "EV_ACID_FEET", EventTriggerEnum::EV_ACID_FEET);
+        setEnum(L, "ACID_FEET", EventTriggerEnum::EV_ACID_FEET);
+
+        setEnum(L, "EV_ACID_RAIN", EventTriggerEnum::EV_ACID_RAIN);
+        setEnum(L, "ACID_RAIN", EventTriggerEnum::EV_ACID_RAIN);
+
+        setEnum(L, "EV_ACID_WATER", EventTriggerEnum::EV_ACID_WATER);
+        setEnum(L, "ACID_WATER", EventTriggerEnum::EV_ACID_WATER);
+
+        setEnum(L, "EV_WINDY", EventTriggerEnum::EV_WINDY);
+        setEnum(L, "WINDY", EventTriggerEnum::EV_WINDY);
+
+        setEnum(L, "EV_POISON_GAS", EventTriggerEnum::EV_POISON_GAS);
+        setEnum(L, "POISON_GAS", EventTriggerEnum::EV_POISON_GAS);
+
+        setEnum(L, "EV_I_SEE_ENEMY_PLAYER", EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER);
+        setEnum(L, "I_SEE_ENEMY_PLAYER", EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER);
+
+        setEnum(L, "EV_I_SEE_ALLY_PLAYER", EventTriggerEnum::EV_I_SEE_ALLY_PLAYER);
+        setEnum(L, "I_SEE_ALLY_PLAYER", EventTriggerEnum::EV_I_SEE_ALLY_PLAYER);
+
+        setEnum(L, "EV_I_SEE_ILLEGAL_PLAYER_BUILDING", EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING);
+        setEnum(L, "I_SEE_ILLEGAL_PLAYER_BUILDING", EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING);
+
+        setEnum(L, "EV_BURNING", EventTriggerEnum::EV_BURNING);
+        setEnum(L, "BURNING", EventTriggerEnum::EV_BURNING);
+
+        setEnum(L, "EV_LOST_LEG", EventTriggerEnum::EV_LOST_LEG);
+        setEnum(L, "LOST_LEG", EventTriggerEnum::EV_LOST_LEG);
+
+        setEnum(L, "EV_LOST_ARM", EventTriggerEnum::EV_LOST_ARM);
+        setEnum(L, "LOST_ARM", EventTriggerEnum::EV_LOST_ARM);
+
+        setEnum(L, "EV_I_SEE_PLAYER_NICE_BUILDING", EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING);
+        setEnum(L, "I_SEE_PLAYER_NICE_BUILDING", EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING);
+
+        setEnum(L, "EV_TAKEN_OVER_PLAYER_TOWN", EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN);
+        setEnum(L, "TAKEN_OVER_PLAYER_TOWN", EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN);
+
+        setEnum(L, "EV_CROWD_TRIGGERED", EventTriggerEnum::EV_CROWD_TRIGGERED);
+        setEnum(L, "CROWD_TRIGGERED", EventTriggerEnum::EV_CROWD_TRIGGERED);
+
+        setEnum(L, "EV_MAX", EventTriggerEnum::EV_MAX);
+        setEnum(L, "MAX", EventTriggerEnum::EV_MAX);
 
         lua_setglobal(L, "EventTriggerEnum");
         lua_setglobal(L, "EventTrigger");

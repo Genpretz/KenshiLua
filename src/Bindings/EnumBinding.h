@@ -2,6 +2,13 @@
 
 namespace KenshiLua
 {
+    template<typename T>
+    inline void setEnum(lua_State* L, const char* name, T value)
+    {
+        lua_pushinteger(L, static_cast<lua_Integer>(value));
+        lua_setfield(L, -2, name);
+    }
+
 	class CharacterEnumBinding
 	{
     public:
