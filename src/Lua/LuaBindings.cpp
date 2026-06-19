@@ -3,6 +3,7 @@
 #include "Lua/LuaUtils.h"
 #include "Lua/LuaState.h"
 #include "Lua/Logger.h"
+#include "Lua/Benchmark.h"
 #include "Bindings/HandBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/DialogueBinding.h"
@@ -21,6 +22,7 @@
 #include "Bindings/InputHandlerBinding.h"
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/OgreUnorderedBinding.h"
 #include "Bindings/EnumBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/RaceDataBinding.h"
@@ -45,6 +47,7 @@ static const luaL_Reg KenshiLuaLib[] = {
     { "log", luaKenshiLog },
     { "error", luaKenshiError },
     { "version", luaKenshiVersion },
+    { "runBenchmark", luaKenshiRunBenchmark },
     { NULL, NULL }
 };
 
@@ -88,6 +91,7 @@ void LuaBindings::registerAll(lua_State* L)
     InputHandlerBinding::registerBinding(L);
     GameWorldBinding::registerBinding(L);
     GameDataBinding::registerBinding(L);
+    registerOgreUnorderedBindings(L);
     MyGuiBinding::registerBinding(L);
     ShopTraderBinding::registerBinding(L);
     AnimalInventoryLayoutBinding::registerBinding(L);

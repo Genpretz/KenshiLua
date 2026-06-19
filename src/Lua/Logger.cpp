@@ -2,6 +2,7 @@
 #include "Logger.h"
 #include <string>
 #include <ctime>
+#include <fstream>
 #include <boost/chrono.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
@@ -144,6 +145,37 @@ void shutdownLogger()
     Logger::get().log("KenshiLua logger shutting down");
     Logger::get().log("------------------------------  End  ------------------------------");
     Logger::get().shutdown();
+}
+
+void logBenchmark(const std::string& message)
+{
+    char modulePath[MAX_PATH] = {0};
+    if (s_dllModule) {
+        GetModuleFileNameA((HMODULE)s_dllModule, modulePath, MAX_PATH);
+    }
+    std::string dllPath(modulePath);
+    size_t pos = dllPath.find_last_of("\\/");
+    if (pos != std::string::npos) {
+        dllPath = dllPath.substr(0, pos);
+    } else {
+        dllPath = ".";
+    }
+    std::string benchmarkPath = dllPath + "\\KenshiLua_Benchmark.log";
+    std::ofstream file(benchmarkPath, std::ios::app);
+    if (file.is_open()) {
+        auto now = boost::chrono::system_clock::now();
+        auto time = boost::chrono::system_clock::to_time_t(now);
+        std::tm tm;
+#ifdef _WIN32
+        localtime_s(&tm, &time);
+#else
+        localtime_r(&time, &tm);
+#endif
+        char tsBuf[32];
+        std::strftime(tsBuf, sizeof(tsBuf), "%Y-%m-%d %H:%M:%S", &tm);
+        file << "[" << tsBuf << "] " << message << std::endl;
+        file.close();
+    }
 }
 
 } // namespace KenshiLua

@@ -4,6 +4,7 @@
 #include "Gui/InitializeGui.h"
 #include "Hooks.h"
 #include "Lua/Logger.h"
+#include "Lua/Benchmark.h"
 #include "Lua/LuaBindings.h"
 #include "Lua/LuaState.h"
 #include "ModLoader.h"
@@ -222,15 +223,14 @@ static void shutdownLua()
 }
 
 // --- RE_Kenshi plugin entry --------------------------------------------------
-//
-// RE_Kenshi invokes startPlugin() after Kenshi's main systems are live
-// (MyGUI, Ogre, the ou GameWorld pointer, etc.).  We can therefore initialise
-// our Lua state, discover active mods, run their scripts, and bring up the
-// in-game GUI in a single call without any "wait for engine ready" polling.
 
 _declspec(dllexport) void startPlugin()
 {
     if (!initializeLua()) return;
+
+    if (KenshiLua::isBenchmarkEnabled()) {
+        KenshiLua::runBenchmarkOnStartup(KenshiLua::g_luaState->getState());
+    }
 
     // Discover *.lua files under each active mod folder and execute each.
     // ModLoader is resilient: a single script failing won't abort the rest.
