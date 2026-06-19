@@ -39,28 +39,34 @@ public:
         }
     };
 
-    std::map<CallbackKey, int> m_callbacks;
-    lua_State* m_L;
+    struct CallbackInfo
+    {
+        int luaRef;
+        lua_State* L;
+        CallbackInfo() : luaRef(0), L(NULL) {}
+        CallbackInfo(int ref, lua_State* state) : luaRef(ref), L(state) {}
+    };
 
-    LuaWidgetCallbackManager() : m_L(nullptr) {}
+    std::map<CallbackKey, CallbackInfo> m_callbacks;
 
-    void setLuaState(lua_State* L) { m_L = L; }
+    LuaWidgetCallbackManager() {}
 
-    void registerCallback(MyGUI::Widget* widget, EventType type, int luaRef)
+    void registerCallback(MyGUI::Widget* widget, EventType type, int luaRef, lua_State* L)
     {
         CallbackKey key = { widget, type };
-        auto it = m_callbacks.find(key);
+        std::map<CallbackKey, CallbackInfo>::iterator it = m_callbacks.find(key);
         if (it != m_callbacks.end())
         {
-            if (m_L && it->second != LUA_NOREF)
+            if (it->second.L && it->second.luaRef != LUA_NOREF)
             {
-                luaL_unref(m_L, LUA_REGISTRYINDEX, it->second);
+                luaL_unref(it->second.L, LUA_REGISTRYINDEX, it->second.luaRef);
             }
-            it->second = luaRef;
+            it->second.luaRef = luaRef;
+            it->second.L = L;
         }
         else
         {
-            m_callbacks[key] = luaRef;
+            m_callbacks[key] = CallbackInfo(luaRef, L);
             if (type == OnClick)
             {
                 widget->eventMouseButtonClick += MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onMouseButtonClick);
@@ -92,9 +98,9 @@ public:
             auto it = m_callbacks.find(key);
             if (it != m_callbacks.end())
             {
-                if (m_L && it->second != LUA_NOREF)
+                if (it->second.L && it->second.luaRef != LUA_NOREF)
                 {
-                    luaL_unref(m_L, LUA_REGISTRYINDEX, it->second);
+                    luaL_unref(it->second.L, LUA_REGISTRYINDEX, it->second.luaRef);
                 }
                 m_callbacks.erase(it);
             }
@@ -103,14 +109,11 @@ public:
 
     void clearAll()
     {
-        if (m_L)
+        for (auto it = m_callbacks.begin(); it != m_callbacks.end(); ++it)
         {
-            for (std::map<CallbackKey, int>::iterator it = m_callbacks.begin(); it != m_callbacks.end(); ++it)
+            if (it->second.L && it->second.luaRef != LUA_NOREF)
             {
-                if (it->second != LUA_NOREF)
-                {
-                    luaL_unref(m_L, LUA_REGISTRYINDEX, it->second);
-                }
+                luaL_unref(it->second.L, LUA_REGISTRYINDEX, it->second.luaRef);
             }
         }
         m_callbacks.clear();
@@ -119,63 +122,69 @@ public:
 private:
     void onMouseButtonClick(MyGUI::Widget* sender)
     {
-        if (!m_L) return;
         CallbackKey key = { sender, OnClick };
         auto it = m_callbacks.find(key);
-        if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
+        if (it == m_callbacks.end() || it->second.luaRef == LUA_NOREF) return;
 
-        int top = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
+        lua_State* L = it->second.L;
+        if (!L) return;
 
-        if (lua_pcall(m_L, 1, 0, 0) != LUA_OK)
+        int top = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second.luaRef);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+
+        if (lua_pcall(L, 1, 0, 0) != LUA_OK)
         {
-            const char* err = lua_tostring(m_L, -1);
+            const char* err = lua_tostring(L, -1);
             logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
+            lua_pop(L, 1);
         }
-        lua_settop(m_L, top);
+        lua_settop(L, top);
     }
 
     void onEditTextChange(MyGUI::EditBox* sender)
     {
-        if (!m_L) return;
         CallbackKey key = { sender, OnTextChanged };
         auto it = m_callbacks.find(key);
-        if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
+        if (it == m_callbacks.end() || it->second.luaRef == LUA_NOREF) return;
 
-        int top = m_L ? lua_gettop(m_L) : 0;
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
+        lua_State* L = it->second.L;
+        if (!L) return;
 
-        if (lua_pcall(m_L, 1, 0, 0) != LUA_OK)
+        int top = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second.luaRef);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+
+        if (lua_pcall(L, 1, 0, 0) != LUA_OK)
         {
-            const char* err = lua_tostring(m_L, -1);
+            const char* err = lua_tostring(L, -1);
             logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
+            lua_pop(L, 1);
         }
-        lua_settop(m_L, top);
+        lua_settop(L, top);
     }
 
     void onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
     {
-        if (!m_L) return;
         CallbackKey key = { sender, OnWindowButtonPressed };
         auto it = m_callbacks.find(key);
-        if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
+        if (it == m_callbacks.end() || it->second.luaRef == LUA_NOREF) return;
 
-        int top = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushstring(m_L, name.c_str());
+        lua_State* L = it->second.L;
+        if (!L) return;
 
-        if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
+        int top = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second.luaRef);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushstring(L, name.c_str());
+
+        if (lua_pcall(L, 2, 0, 0) != LUA_OK)
         {
-            const char* err = lua_tostring(m_L, -1);
+            const char* err = lua_tostring(L, -1);
             logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
+            lua_pop(L, 1);
         }
-        lua_settop(m_L, top);
+        lua_settop(L, top);
     }
 };
 
@@ -365,7 +374,7 @@ static int widget_registerCallback(lua_State* L)
 
     if (w)
     {
-        LuaWidgetCallbackManager::get().registerCallback(w, type, luaRef);
+        LuaWidgetCallbackManager::get().registerCallback(w, type, luaRef, L);
     }
     else if (luaRef != LUA_NOREF)
     {
@@ -479,7 +488,6 @@ static int lua_loadLayout(lua_State* L)
 
 void MyGuiBinding::registerBinding(lua_State* L)
 {
-    LuaWidgetCallbackManager::get().setLuaState(L);
 
     static const luaL_Reg meta[] = {
         { 0, 0 }
