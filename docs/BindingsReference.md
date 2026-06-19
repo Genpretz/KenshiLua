@@ -1,6 +1,8 @@
 # Lua Bindings Reference
 
 ## Table of Contents
+- [AnimalInventoryLayout](#animalinventorylayout)
+- [Armour](#armour)
 - [Bounty](#bounty)
 - [BountyManager](#bountymanager)
 - [Building](#building)
@@ -9,6 +11,7 @@
 - [CharStats](#charstats)
 - [Character](#character)
 - [CharacterAnimal](#characteranimal)
+- [Crossbow](#crossbow)
 - [Damages](#damages)
 - [Dialogue](#dialogue)
 - [DialogueEvent](#dialogueevent)
@@ -20,16 +23,46 @@
 - [Hand](#hand)
 - [InputHandler](#inputhandler)
 - [Inventory](#inventory)
+- [InventoryItemBase](#inventoryitembase)
+- [InventorySection](#inventorysection)
 - [Item](#item)
+- [LockedArmour](#lockedarmour)
 - [MedicalSystem](#medicalsystem)
+- [MedicalSystemEnum](#medicalsystemenum)
 - [MyGui](#mygui)
 - [Platoon](#platoon)
 - [PlayerInterface](#playerinterface)
 - [RaceData](#racedata)
 - [RootObject](#rootobject)
+- [SectionItem](#sectionitem)
 - [ShopTrader](#shoptrader)
+- [Sword](#sword)
 - [Town](#town)
+- [TownBase](#townbase)
+- [Weapon](#weapon)
 - [Enums](#enums)
+
+## AnimalInventoryLayout
+**Header:** `extern/KenshiLib/Include/kenshi/CharacterAnimal.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## Armour
+**Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| getClassType | getClassType | `obj:getClassType(...)` |
+| isArmour | isArmour | `obj:isArmour(...)` |
+| getItemWeight | getItemWeight | `obj:getItemWeight(...)` |
+| getValueSingle | getValueSingle | `obj:getValueSingle(...)` |
+| hasArmourCoverage | hasArmourCoverage | `obj:hasArmourCoverage(...)` |
+| getCraftTime | getCraftTime | `obj:getCraftTime(...)` |
+| getWeatherProtection_simple | getWeatherProtection_simple | `obj:getWeatherProtection_simple(...)` |
 
 ## Bounty
 **Header:** `extern/KenshiLib/Include/kenshi/Bounty.h`
@@ -555,7 +588,45 @@
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
+| createAnimationClass | createAnimationClass | `obj:createAnimationClass(...)` |
+| _NV_createAnimationClass | _NV_createAnimationClass | `obj:_NV_createAnimationClass(...)` |
+| sheatheWeapon | sheatheWeapon | `obj:sheatheWeapon(...)` |
+| _NV_sheatheWeapon | _NV_sheatheWeapon | `obj:_NV_sheatheWeapon(...)` |
+| setupAudio | setupAudio | `obj:setupAudio(...)` |
+| _NV_setupAudio | _NV_setupAudio | `obj:_NV_setupAudio(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| setAge | setAge | `obj:setAge(...)` |
+| _NV_setAge | _NV_setAge | `obj:_NV_setAge(...)` |
+| getAge | getAge | `obj:getAge(...)` |
+| _NV_getAge | _NV_getAge | `obj:_NV_getAge(...)` |
+| getAgeInverse | getAgeInverse | `obj:getAgeInverse(...)` |
+| _NV_getAgeInverse | _NV_getAgeInverse | `obj:_NV_getAgeInverse(...)` |
+| getAge0to1 | getAge0to1 | `obj:getAge0to1(...)` |
+| _NV_getAge0to1 | _NV_getAge0to1 | `obj:_NV_getAge0to1(...)` |
+| getDefaultTaskRepertoireEnum | getDefaultTaskRepertoireEnum | `obj:getDefaultTaskRepertoireEnum(...)` |
+| _NV_getDefaultTaskRepertoireEnum | _NV_getDefaultTaskRepertoireEnum | `obj:_NV_getDefaultTaskRepertoireEnum(...)` |
+| getSmellHuntingThresholdBlood | getSmellHuntingThresholdBlood | `obj:getSmellHuntingThresholdBlood(...)` |
+| _NV_getSmellHuntingThresholdBlood | _NV_getSmellHuntingThresholdBlood | `obj:_NV_getSmellHuntingThresholdBlood(...)` |
+| getSmellHuntingThresholdEggs | getSmellHuntingThresholdEggs | `obj:getSmellHuntingThresholdEggs(...)` |
+| _NV_getSmellHuntingThresholdEggs | _NV_getSmellHuntingThresholdEggs | `obj:_NV_getSmellHuntingThresholdEggs(...)` |
+| getHPMultiplier | getHPMultiplier | `obj:getHPMultiplier(...)` |
+| _NV_getHPMultiplier | _NV_getHPMultiplier | `obj:_NV_getHPMultiplier(...)` |
+| foodUpdate | foodUpdate | `obj:foodUpdate(...)` |
+| _NV_foodUpdate | _NV_foodUpdate | `obj:_NV_foodUpdate(...)` |
+| dropItemInMouth | dropItemInMouth | `obj:dropItemInMouth(...)` |
+| eatItemInMouth | eatItemInMouth | `obj:eatItemInMouth(...)` |
 | _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| init | init | `obj:init(...)` |
+| _NV_init | _NV_init | `obj:_NV_init(...)` |
+
+## Crossbow
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| getClassType | getClassType | `obj:getClassType(...)` |
 
 ## Damages
 **Header:** `extern/KenshiLib/Include/kenshi/CharStats.h`
@@ -653,17 +724,6 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| visible | visible | boolean | RW | `obj.visible = <value>` |
-| category | category | string | RW | `obj.category = <value>` |
-| description | description | string | RW | `obj.description = <value>` |
-| fileTypes | fileTypes | string | RW | `obj.fileTypes = <value>` |
-| maxSize | maxSize | integer | RW | `obj.maxSize = <value>` |
-| maxValue | maxValue | integer | RW | `obj.maxValue = <value>` |
-| minValue | minValue | integer | RW | `obj.minValue = <value>` |
-| isSlider | isSlider | boolean | RW | `obj.isSlider = <value>` |
-| refID | refID | string | RW | `obj.refID = <value>` |
-| created | created | integer | RW | `obj.created = <value>` |
-| modified | modified | integer | RW | `obj.modified = <value>` |
 | validity | validity | integer | RW | `obj.validity = <value>` |
 | isStandalone | isStandalone | boolean | RW | `obj.isStandalone = <value>` |
 | id | id | integer | RW | `obj.id = <value>` |
@@ -820,23 +880,6 @@
 |---|---|---|---|---|
 | hasRoomCache | hasRoomCache | integer | R | `obj.hasRoomCache` |
 | totalWeight | totalWeight | number | RW | `obj.totalWeight = <value>` |
-| name | name | string | RW | `obj.name = <value>` |
-| width | width | integer | RW | `obj.width = <value>` |
-| height | height | integer | RW | `obj.height = <value>` |
-| armourOnly | armourOnly | boolean | RW | `obj.armourOnly = <value>` |
-| stackingBonusMin | stackingBonusMin | integer | RW | `obj.stackingBonusMin = <value>` |
-| stackingBonusMult | stackingBonusMult | number | RW | `obj.stackingBonusMult = <value>` |
-| itemsLimit | itemsLimit | integer | RW | `obj.itemsLimit = <value>` |
-| weightMultiplier | weightMultiplier | number | RW | `obj.weightMultiplier = <value>` |
-| totalWeight | totalWeight | number | R | `obj.totalWeight` |
-| isAnEquippedItemSection | isAnEquippedItemSection | boolean | RW | `obj.isAnEquippedItemSection = <value>` |
-| containerSlot | containerSlot | boolean | RW | `obj.containerSlot = <value>` |
-| enabled | enabled | boolean | RW | `obj.enabled = <value>` |
-| x | x | integer | RW | `obj.x = <value>` |
-| y | y | integer | RW | `obj.y = <value>` |
-| w | w | integer | RW | `obj.w = <value>` |
-| h | h | integer | RW | `obj.h = <value>` |
-| item | item | unknown | W | `obj.item = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -857,8 +900,8 @@
 | _NV_refreshGui | _NV_refreshGui | `obj:_NV_refreshGui(...)` |
 | autoArrange | autoArrange | `obj:autoArrange(...)` |
 
-## Item
-**Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
+## InventoryItemBase
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
 
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
@@ -885,13 +928,6 @@
 | objectType | objectType | integer | RW | `obj.objectType = <value>` |
 | inventorySection | inventorySection | string | RW | `obj.inventorySection = <value>` |
 | inventoryPos | inventoryPos | integer | R | `obj.inventoryPos` |
-| visible | getVisible | boolean | R | `obj.visible` |
-| athleticsMult | val | number | R | `obj.athleticsMult` |
-| stealthMult | val | number | R | `obj.stealthMult` |
-| combatSpeedMult | val | number | R | `obj.combatSpeedMult` |
-| classType | getClassType | integer | R | `obj.classType` |
-| combatSkillBonus | val | integer | R | `obj.combatSkillBonus` |
-| modelName | getModelName | string | R | `obj.modelName` |
 | isResearchArtifact | _isResearchArtifact | unknown | W | `obj.isResearchArtifact = <value>` |
 
 ### Methods
@@ -918,6 +954,88 @@
 | isStolen | isStolen | `obj:isStolen(...)` |
 | getLevel | getLevel | `obj:getLevel(...)` |
 | getMaxAffordable | getMaxAffordable | `obj:getMaxAffordable(...)` |
+
+## InventorySection
+**Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| name | name | string | RW | `obj.name = <value>` |
+| width | width | integer | RW | `obj.width = <value>` |
+| height | height | integer | RW | `obj.height = <value>` |
+| armourOnly | armourOnly | boolean | RW | `obj.armourOnly = <value>` |
+| stackingBonusMin | stackingBonusMin | integer | RW | `obj.stackingBonusMin = <value>` |
+| stackingBonusMult | stackingBonusMult | number | RW | `obj.stackingBonusMult = <value>` |
+| itemsLimit | itemsLimit | integer | RW | `obj.itemsLimit = <value>` |
+| weightMultiplier | weightMultiplier | number | RW | `obj.weightMultiplier = <value>` |
+| totalWeight | totalWeight | number | RW | `obj.totalWeight = <value>` |
+| isAnEquippedItemSection | isAnEquippedItemSection | boolean | RW | `obj.isAnEquippedItemSection = <value>` |
+| containerSlot | containerSlot | boolean | RW | `obj.containerSlot = <value>` |
+| enabled | enabled | boolean | RW | `obj.enabled = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| notifyModified | notifyModified | `obj:notifyModified(...)` |
+| autoArrange | autoArrange | `obj:autoArrange(...)` |
+| _NV_autoArrange | _NV_autoArrange | `obj:_NV_autoArrange(...)` |
+| getNumItems | getNumItems | `obj:getNumItems(...)` |
+| isEmpty | isEmpty | `obj:isEmpty(...)` |
+| clearAllItems | clearAllItems | `obj:clearAllItems(...)` |
+| applyStackingBonuses | applyStackingBonuses | `obj:applyStackingBonuses(...)` |
+| recalculateTotalWeight | recalculateTotalWeight | `obj:recalculateTotalWeight(...)` |
+| setWeightMultiplier | setWeightMultiplier | `obj:setWeightMultiplier(...)` |
+| setStackingBonus | setStackingBonus | `obj:setStackingBonus(...)` |
+| getMaxStack | getMaxStack | `obj:getMaxStack(...)` |
+| clearVeryLimitedSlot | clearVeryLimitedSlot | `obj:clearVeryLimitedSlot(...)` |
+| getEnabled | getEnabled | `obj:getEnabled(...)` |
+| setEnabled | setEnabled | `obj:setEnabled(...)` |
+| setItemsLimitCount | setItemsLimitCount | `obj:setItemsLimitCount(...)` |
+| getItemsLimitReached | getItemsLimitReached | `obj:getItemsLimitReached(...)` |
+| getFillPercentage | getFillPercentage | `obj:getFillPercentage(...)` |
+| resize | resize | `obj:resize(...)` |
+
+## Item
+**Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| visible | getVisible | boolean | R | `obj.visible` |
+| athleticsMult | val | number | R | `obj.athleticsMult` |
+| stealthMult | val | number | R | `obj.stealthMult` |
+| combatSpeedMult | val | number | R | `obj.combatSpeedMult` |
+| classType | getClassType | integer | R | `obj.classType` |
+| combatSkillBonus | val | integer | R | `obj.combatSkillBonus` |
+| modelName | getModelName | string | R | `obj.modelName` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| getName | getName | `obj:getName(...)` |
+| getPosition | getPosition | `obj:getPosition(...)` |
+| getClassType | getClassType | `obj:getClassType(...)` |
+| getVisible | getVisible | `obj:getVisible(...)` |
+| getInventory | getInventory | `obj:getInventory(...)` |
+| getLevel | getLevel | `obj:getLevel(...)` |
+| getModelName | getModelName | `obj:getModelName(...)` |
+| isPersistant | isPersistant | `obj:isPersistant(...)` |
+| isValid | isValid | `obj:isValid(...)` |
+| setVisible | setVisible | `obj:setVisible(...)` |
+| setPositionRotation | setPositionRotation | `obj:setPositionRotation(...)` |
+| setInventoryWeAreIn | setInventoryWeAreIn | `obj:setInventoryWeAreIn(...)` |
+| setPersistant | setPersistant | `obj:setPersistant(...)` |
+| stolenGoodsDetectionCheck | stolenGoodsDetectionCheck | `obj:stolenGoodsDetectionCheck(...)` |
+
+## LockedArmour
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| isLockedArmour | isLockedArmour | `obj:isLockedArmour(...)` |
 
 ## MedicalSystem
 **Header:** `extern/KenshiLib/Include/kenshi/CharStats.h`
@@ -1012,6 +1130,9 @@
 | getHungerSpeedModifier | getHungerSpeedModifer | `obj:getHungerSpeedModifier(...)` |
 | setHealth | setHealth | `obj:setHealth(...)` |
 | getWeatherStatPenalty | getWeatherStatPenalty | `obj:getWeatherStatPenalty(...)` |
+
+## MedicalSystemEnum
+**Header:** `???`
 
 ## MyGui
 **Header:** `???`
@@ -1226,6 +1347,18 @@
 | takeMoney | takeMoney | `obj:takeMoney(...)` |
 | say | say | `obj:say(...)` |
 
+## SectionItem
+**Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| x | x | integer | RW | `obj.x = <value>` |
+| y | y | integer | RW | `obj.y = <value>` |
+| w | w | integer | RW | `obj.w = <value>` |
+| h | h | integer | RW | `obj.h = <value>` |
+| item | item | unknown | W | `obj.item = <value>` |
+
 ## ShopTrader
 **Header:** `extern/KenshiLib/Include/kenshi/ShopTrader.h`
 
@@ -1252,8 +1385,33 @@
 | _NV_destroyPhysical | _NV_destroyPhysical | `obj:_NV_destroyPhysical(...)` |
 | updateInventory | updateInventory | `obj:updateInventory(...)` |
 
+## Sword
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| getClassType | getClassType | `obj:getClassType(...)` |
+
 ## Town
 **Header:** `extern/KenshiLib/Include/kenshi/FactionUniqueSquadManager.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| playerTownLevel | playerTownLevel | integer | RW | `obj.playerTownLevel = <value>` |
+| openToPublic | openToPublic | boolean | RW | `obj.openToPublic = <value>` |
+| power_Stat | power_Stat | number | RW | `obj.power_Stat = <value>` |
+| maxPower_Stat | maxPower_Stat | number | RW | `obj.maxPower_Stat = <value>` |
+| townRangeMultiplier | townRangeMultiplier | number | RW | `obj.townRangeMultiplier = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| getPowerStats | getPowerStats | `obj:getPowerStats(...)` |
+
+## TownBase
+**Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
 
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
@@ -1267,15 +1425,10 @@
 | isNotFriendly | isNotFriendly | boolean | R | `obj.isNotFriendly` |
 | alarmState | getAlarmState | integer | R | `obj.alarmState` |
 | townType | townType | integer | RW | `obj.townType = <value>` |
-| playerTownLevel | playerTownLevel | integer | RW | `obj.playerTownLevel = <value>` |
 | name | getKnownName | string | R | `obj.name` |
 | unexploredName | unexploredName | string | RW | `obj.unexploredName = <value>` |
 | discovered | discovered | boolean | RW | `obj.discovered = <value>` |
 | explored | explored | boolean | RW | `obj.explored = <value>` |
-| openToPublic | openToPublic | boolean | RW | `obj.openToPublic = <value>` |
-| power_Stat | power_Stat | number | RW | `obj.power_Stat = <value>` |
-| maxPower_Stat | maxPower_Stat | number | RW | `obj.maxPower_Stat = <value>` |
-| townRangeMultiplier | townRangeMultiplier | number | RW | `obj.townRangeMultiplier = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1297,8 +1450,15 @@
 | setRecentlyDiscovered | setRecentlyDiscovered | `obj:setRecentlyDiscovered(...)` |
 | distanceTo | distanceTo | `obj:distanceTo(...)` |
 | withinBordersRange | withinBordersRange | `obj:withinBordersRange(...)` |
-| getPowerStats | getPowerStats | `obj:getPowerStats(...)` |
 | isMyTown | isMyTown | `obj:isMyTown(...)` |
+
+## Weapon
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| is2HandedOnly | is2HandedOnly | `obj:is2HandedOnly(...)` |
 
 ## Enums
 
@@ -1306,66 +1466,60 @@
 | Name | Value |
 |---|---|
 | BD_NONE | BuildingDesignation::BD_NONE |
-| BD_SHOP | BuildingDesignation::BD_SHOP |
-| BD_BARRACKS | BuildingDesignation::BD_BARRACKS |
-| BD_BAR | BuildingDesignation::BD_BAR |
-| BD_HOSPITAL | BuildingDesignation::BD_HOSPITAL |
-| BD_ARMOURY | BuildingDesignation::BD_ARMOURY |
-| BD_TREASURE | BuildingDesignation::BD_TREASURE |
-| BD_PRISON | BuildingDesignation::BD_PRISON |
-| BD_HQ | BuildingDesignation::BD_HQ |
-| BD_RESIDENTIAL | BuildingDesignation::BD_RESIDENTIAL |
-| BD_SLAVE_STORAGE | BuildingDesignation::BD_SLAVE_STORAGE |
-| BD_RESIDENTIAL_SMALL | BuildingDesignation::BD_RESIDENTIAL_SMALL |
-#### or
-| Name | Value |
-|---|---|
 | NONE | BuildingDesignation::BD_NONE |
+| BD_SHOP | BuildingDesignation::BD_SHOP |
 | SHOP | BuildingDesignation::BD_SHOP |
+| BD_BARRACKS | BuildingDesignation::BD_BARRACKS |
 | BARRACKS | BuildingDesignation::BD_BARRACKS |
+| BD_BAR | BuildingDesignation::BD_BAR |
 | BAR | BuildingDesignation::BD_BAR |
+| BD_HOSPITAL | BuildingDesignation::BD_HOSPITAL |
 | HOSPITAL | BuildingDesignation::BD_HOSPITAL |
+| BD_ARMOURY | BuildingDesignation::BD_ARMOURY |
 | ARMOURY | BuildingDesignation::BD_ARMOURY |
+| BD_TREASURE | BuildingDesignation::BD_TREASURE |
 | TREASURE | BuildingDesignation::BD_TREASURE |
+| BD_PRISON | BuildingDesignation::BD_PRISON |
 | PRISON | BuildingDesignation::BD_PRISON |
+| BD_HQ | BuildingDesignation::BD_HQ |
 | HQ | BuildingDesignation::BD_HQ |
+| BD_RESIDENTIAL | BuildingDesignation::BD_RESIDENTIAL |
 | RESIDENTIAL | BuildingDesignation::BD_RESIDENTIAL |
+| BD_SLAVE_STORAGE | BuildingDesignation::BD_SLAVE_STORAGE |
 | SLAVE_STORAGE | BuildingDesignation::BD_SLAVE_STORAGE |
+| BD_RESIDENTIAL_SMALL | BuildingDesignation::BD_RESIDENTIAL_SMALL |
 | RESIDENTIAL_SMALL | BuildingDesignation::BD_RESIDENTIAL_SMALL |
 
 ### BuildingClassType
 | Name | Value |
 |---|---|
 | BCTYPE_FLUFF | BuildingClassType::BCTYPE_FLUFF |
-| BCTYPE_DOOR | BuildingClassType::BCTYPE_DOOR |
-| BCTYPE_USABLE | BuildingClassType::BCTYPE_USABLE |
-| BCTYPE_STORAGE | BuildingClassType::BCTYPE_STORAGE |
-| BCTYPE_PRODUCTION | BuildingClassType::BCTYPE_PRODUCTION |
-| BCTYPE_RESEARCH | BuildingClassType::BCTYPE_RESEARCH |
-| BCTYPE_CRAFTING | BuildingClassType::BCTYPE_CRAFTING |
-| BCTYPE_GATEWAY | BuildingClassType::BCTYPE_GATEWAY |
-| BCTYPE_TURRET | BuildingClassType::BCTYPE_TURRET |
-| BCTYPE_WALL | BuildingClassType::BCTYPE_WALL |
-| BCTYPE_ITEM_FURNACE | BuildingClassType::BCTYPE_ITEM_FURNACE |
-| BCTYPE_LIGHT | BuildingClassType::BCTYPE_LIGHT |
-| BCTYPE_SHELL_WITH_INTERIOR | BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR |
-| BCTYPE_FARM | BuildingClassType::BCTYPE_FARM |
-#### or
-| Name | Value |
-|---|---|
 | FLUFF | BuildingClassType::BCTYPE_FLUFF |
+| BCTYPE_DOOR | BuildingClassType::BCTYPE_DOOR |
 | DOOR | BuildingClassType::BCTYPE_DOOR |
+| BCTYPE_USABLE | BuildingClassType::BCTYPE_USABLE |
 | USABLE | BuildingClassType::BCTYPE_USABLE |
+| BCTYPE_STORAGE | BuildingClassType::BCTYPE_STORAGE |
 | STORAGE | BuildingClassType::BCTYPE_STORAGE |
+| BCTYPE_PRODUCTION | BuildingClassType::BCTYPE_PRODUCTION |
 | PRODUCTION | BuildingClassType::BCTYPE_PRODUCTION |
+| BCTYPE_RESEARCH | BuildingClassType::BCTYPE_RESEARCH |
 | RESEARCH | BuildingClassType::BCTYPE_RESEARCH |
+| BCTYPE_CRAFTING | BuildingClassType::BCTYPE_CRAFTING |
 | CRAFTING | BuildingClassType::BCTYPE_CRAFTING |
+| BCTYPE_GATEWAY | BuildingClassType::BCTYPE_GATEWAY |
 | GATEWAY | BuildingClassType::BCTYPE_GATEWAY |
+| BCTYPE_TURRET | BuildingClassType::BCTYPE_TURRET |
 | TURRET | BuildingClassType::BCTYPE_TURRET |
+| BCTYPE_WALL | BuildingClassType::BCTYPE_WALL |
 | WALL | BuildingClassType::BCTYPE_WALL |
+| BCTYPE_ITEM_FURNACE | BuildingClassType::BCTYPE_ITEM_FURNACE |
 | ITEM_FURNACE | BuildingClassType::BCTYPE_ITEM_FURNACE |
+| BCTYPE_LIGHT | BuildingClassType::BCTYPE_LIGHT |
 | LIGHT | BuildingClassType::BCTYPE_LIGHT |
+| BCTYPE_SHELL_WITH_INTERIOR | BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR |
 | SHELL_WITH_INTERIOR | BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR |
+| BCTYPE_FARM | BuildingClassType::BCTYPE_FARM |
 | FARM | BuildingClassType::BCTYPE_FARM |
 
 ### BuildingPlacementGroundType
@@ -1379,41 +1533,32 @@
 | Name | Value |
 |---|---|
 | PLACEMENT_VALID | PreviewBuilding::PlacementResult::PLACEMENT_VALID |
-| PLACEMENT_OUTSIDE | PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE |
-| PLACEMENT_INVALID | PreviewBuilding::PlacementResult::PLACEMENT_INVALID |
-#### or
-| Name | Value |
-|---|---|
 | VALID | PreviewBuilding::PlacementResult::PLACEMENT_VALID |
+| PLACEMENT_OUTSIDE | PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE |
 | OUTSIDE | PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE |
+| PLACEMENT_INVALID | PreviewBuilding::PlacementResult::PLACEMENT_INVALID |
 | INVALID | PreviewBuilding::PlacementResult::PLACEMENT_INVALID |
 
 ### PreviewBuildingClassType
 | Name | Value |
 |---|---|
 | PREVIEW_NORMAL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL |
-| PREVIEW_WALL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL |
-#### or
-| Name | Value |
-|---|---|
 | NORMAL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL |
+| PREVIEW_WALL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL |
 | WALL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL |
 
 ### ProneState
 | Name | Value |
 |---|---|
 | PS_NORMAL | ProneState::PS_NORMAL |
+| NORMAL | ProneState::PS_NORMAL |
 | PS_STAYING_LOW | ProneState::PS_STAYING_LOW |
+| STAYING_LOW | ProneState::PS_STAYING_LOW |
 | PS_CRIPPLED | ProneState::PS_CRIPPLED |
+| CRIPPLED | ProneState::PS_CRIPPLED |
 | PS_PLAYING_DEAD | ProneState::PS_PLAYING_DEAD |
+| PLAYING_DEAD | ProneState::PS_PLAYING_DEAD |
 | PS_KO | ProneState::PS_KO |
-#### or
-| Name | Value |
-|---|---|
-| NORMAL | PS_NORMAL |
-| STAYING_LOW | PS_STAYING_LOW |
-| CRIPPLED | PS_CRIPPLED |
-| PLAYING_DEAD | PS_PLAYING_DEAD |
 | KO | ProneState::PS_KO |
 
 ### WaterState
@@ -1443,223 +1588,205 @@
 | Name | Value |
 |---|---|
 | ST_NONE | ST_NONE |
-| ST_INTRUDER | ST_INTRUDER |
-| ST_AGGRESSOR | ST_AGGRESSOR |
-| ST_TEMPORARY_ALLY | ST_TEMPORARY_ALLY |
-| ST_TEMPORARY_ENEMY | ST_TEMPORARY_ENEMY |
-| ST_PRISONER | ST_PRISONER |
-| ST_HAS_BEEN_LOOTED | ST_HAS_BEEN_LOOTED |
-| ST_CRIMINAL | ST_CRIMINAL |
-#### or
-| Name | Value |
-|---|---|
 | NONE | ST_NONE |
+| ST_INTRUDER | ST_INTRUDER |
 | INTRUDER | ST_INTRUDER |
+| ST_AGGRESSOR | ST_AGGRESSOR |
 | AGGRESSOR | ST_AGGRESSOR |
+| ST_TEMPORARY_ALLY | ST_TEMPORARY_ALLY |
 | TEMPORARY_ALLY | ST_TEMPORARY_ALLY |
+| ST_TEMPORARY_ENEMY | ST_TEMPORARY_ENEMY |
 | TEMPORARY_ENEMY | ST_TEMPORARY_ENEMY |
+| ST_PRISONER | ST_PRISONER |
 | PRISONER | ST_PRISONER |
+| ST_HAS_BEEN_LOOTED | ST_HAS_BEEN_LOOTED |
 | HAS_BEEN_LOOTED | ST_HAS_BEEN_LOOTED |
+| ST_CRIMINAL | ST_CRIMINAL |
 | CRIMINAL | ST_CRIMINAL |
 
 ### CharacterPerceptionTags_LongTerm
 | Name | Value |
 |---|---|
 | LT_NONE | LT_NONE |
-| LT_MY_INTRUDER | LT_MY_INTRUDER |
-| LT_MY_LIFESAVER | LT_MY_LIFESAVER |
-| LT_FREED_ME | LT_FREED_ME |
-| LT_STOLE_FROM_ME | LT_STOLE_FROM_ME |
-| LT_MY_CAPTOR | LT_MY_CAPTOR |
-| LT_FRIENDLY_AQUAINTANCE | LT_FRIENDLY_AQUAINTANCE |
-| LT_DEFEATED_MY_SQUAD_ONCE | LT_DEFEATED_MY_SQUAD_ONCE |
-| LT_SQUAD_LOST_TO_ME_ONCE | LT_SQUAD_LOST_TO_ME_ONCE |
-| LT_KILLED_MY_FRIEND | LT_KILLED_MY_FRIEND |
-| LT_I_SCREWED_THIS_GUY | LT_I_SCREWED_THIS_GUY |
-| LT_MAX | LT_MAX |
-#### or
-| Name | Value |
-|---|---|
 | NONE | LT_NONE |
+| LT_MY_INTRUDER | LT_MY_INTRUDER |
 | MY_INTRUDER | LT_MY_INTRUDER |
+| LT_MY_LIFESAVER | LT_MY_LIFESAVER |
 | MY_LIFESAVER | LT_MY_LIFESAVER |
+| LT_FREED_ME | LT_FREED_ME |
 | FREED_ME | LT_FREED_ME |
+| LT_STOLE_FROM_ME | LT_STOLE_FROM_ME |
 | STOLE_FROM_ME | LT_STOLE_FROM_ME |
+| LT_MY_CAPTOR | LT_MY_CAPTOR |
 | MY_CAPTOR | LT_MY_CAPTOR |
+| LT_FRIENDLY_AQUAINTANCE | LT_FRIENDLY_AQUAINTANCE |
 | FRIENDLY_AQUAINTANCE | LT_FRIENDLY_AQUAINTANCE |
+| LT_DEFEATED_MY_SQUAD_ONCE | LT_DEFEATED_MY_SQUAD_ONCE |
 | DEFEATED_MY_SQUAD_ONCE | LT_DEFEATED_MY_SQUAD_ONCE |
+| LT_SQUAD_LOST_TO_ME_ONCE | LT_SQUAD_LOST_TO_ME_ONCE |
 | SQUAD_LOST_TO_ME_ONCE | LT_SQUAD_LOST_TO_ME_ONCE |
+| LT_KILLED_MY_FRIEND | LT_KILLED_MY_FRIEND |
 | KILLED_MY_FRIEND | LT_KILLED_MY_FRIEND |
+| LT_I_SCREWED_THIS_GUY | LT_I_SCREWED_THIS_GUY |
 | I_SCREWED_THIS_GUY | LT_I_SCREWED_THIS_GUY |
+| LT_MAX | LT_MAX |
 | MAX | LT_MAX |
 
 ### SoundRange
 | Name | Value |
 |---|---|
 | SOUNDRANGE_SHORT | SOUNDRANGE_SHORT |
-| SOUNDRANGE_LONG | SOUNDRANGE_LONG |
-| SOUNDRANGE_ALWAYS | SOUNDRANGE_ALWAYS |
-#### or
-| Name | Value |
-|---|---|
 | SHORT | SOUNDRANGE_SHORT |
+| SOUNDRANGE_LONG | SOUNDRANGE_LONG |
 | LONG | SOUNDRANGE_LONG |
+| SOUNDRANGE_ALWAYS | SOUNDRANGE_ALWAYS |
 | ALWAYS | SOUNDRANGE_ALWAYS |
 
 ### SquadMemberType
 | Name | Value |
 |---|---|
 | SQUAD_1 | SQUAD_1 |
-| SQUAD_2 | SQUAD_2 |
-| SQUAD_LEADER | SQUAD_LEADER |
-| SQUAD_SIGNALS_PLAN | SQUAD_SIGNALS_PLAN |
-| SQUAD_SLAVE | SQUAD_SLAVE |
-#### or
-| Name | Value |
-|---|---|
 | 1 | SQUAD_1 |
+| SQUAD_2 | SQUAD_2 |
 | 2 | SQUAD_2 |
+| SQUAD_LEADER | SQUAD_LEADER |
 | LEADER | SQUAD_LEADER |
+| SQUAD_SIGNALS_PLAN | SQUAD_SIGNALS_PLAN |
 | SIGNALS_PLAN | SQUAD_SIGNALS_PLAN |
+| SQUAD_SLAVE | SQUAD_SLAVE |
 | SLAVE | SQUAD_SLAVE |
 
 ### CharacterMessage
 | Name | Value |
-|---|
+|---|---|
 | ATTACKING_MELEE | ATTACKING_MELEE |
 
 ### Talker
 | Name | Value |
 |---|---|
 | T_ME | T_ME |
-| T_TARGET | T_TARGET |
-| T_TARGET_IF_PLAYER | T_TARGET_IF_PLAYER |
-| T_INTERJECTOR1 | T_INTERJECTOR1 |
-| T_INTERJECTOR2 | T_INTERJECTOR2 |
-| T_INTERJECTOR3 | T_INTERJECTOR3 |
-| T_WHOLE_SQUAD | T_WHOLE_SQUAD |
-| T_TARGET_WITH_RACE | T_TARGET_WITH_RACE |
-#### or
-| Name | Value |
-|---|---|
 | ME | T_ME |
+| T_TARGET | T_TARGET |
 | TARGET | T_TARGET |
+| T_TARGET_IF_PLAYER | T_TARGET_IF_PLAYER |
 | TARGET_IF_PLAYER | T_TARGET_IF_PLAYER |
+| T_INTERJECTOR1 | T_INTERJECTOR1 |
 | INTERJECTOR1 | T_INTERJECTOR1 |
+| T_INTERJECTOR2 | T_INTERJECTOR2 |
 | INTERJECTOR2 | T_INTERJECTOR2 |
+| T_INTERJECTOR3 | T_INTERJECTOR3 |
 | INTERJECTOR3 | T_INTERJECTOR3 |
+| T_WHOLE_SQUAD | T_WHOLE_SQUAD |
 | WHOLE_SQUAD | T_WHOLE_SQUAD |
+| T_TARGET_WITH_RACE | T_TARGET_WITH_RACE |
 | TARGET_WITH_RACE | T_TARGET_WITH_RACE |
 
 ### DialogueAction
 | Name | Value |
 |---|---|
 | DA_NONE | DA_NONE |
-| DA_TRADE | DA_TRADE |
-| DA_TALK_TO_LEADER | DA_TALK_TO_LEADER |
-| DA_JOIN_SQUAD_WITH_EDIT | DA_JOIN_SQUAD_WITH_EDIT |
-| DA_AFFECT_RELATIONS | DA_AFFECT_RELATIONS |
-| DA_AFFECT_REPUTATION | DA_AFFECT_REPUTATION |
-| DA_ATTACK_CHASE_FOREVER | DA_ATTACK_CHASE_FOREVER |
-| DA_GO_HOME | DA_GO_HOME |
-| DA_TAKE_MONEY | DA_TAKE_MONEY |
-| DA_GIVE_MONEY | DA_GIVE_MONEY |
-| DA_PAY_BOUNTY | DA_PAY_BOUNTY |
-| DA_CHARACTER_EDITOR | DA_CHARACTER_EDITOR |
-| DA_FORCE_SPEECH_TIMER | DA_FORCE_SPEECH_TIMER |
-| DA_DECLARE_WAR | DA_DECLARE_WAR |
-| DA_END_WAR | DA_END_WAR |
-| DA_CLEAR_AI | DA_CLEAR_AI |
-| DA_FOLLOW_WHILE_TALKING | DA_FOLLOW_WHILE_TALKING |
-| DA_THUG_HUNTER | DA_THUG_HUNTER |
-| DA_JOIN_SQUAD_FAST | DA_JOIN_SQUAD_FAST |
-| DA_REMEMBER_CHARACTER | DA_REMEMBER_CHARACTER |
-| DA_FLAG_TEMP_ALLY | DA_FLAG_TEMP_ALLY |
-| DA_FLAG_TEMP_ENEMY | DA_FLAG_TEMP_ENEMY |
-| DA_MATES_KILL_ME | DA_MATES_KILL_ME |
-| DA_MAKE_TARGET_RUN_FASTER | DA_MAKE_TARGET_RUN_FASTER |
-| DA_GIVE_TARGET_MY_SLAVES | DA_GIVE_TARGET_MY_SLAVES |
-| DA_TAG_ESCAPED_SLAVE | DA_TAG_ESCAPED_SLAVE |
-| DA_FREE_TARGET_SLAVE | DA_FREE_TARGET_SLAVE |
-| DA_MERGE_WITH_SIMILAR_SQUADS | DA_MERGE_WITH_SIMILAR_SQUADS |
-| DA_SEPARATE_TO_MY_OWN_SQUAD | DA_SEPARATE_TO_MY_OWN_SQUAD |
-| DA_ARREST_TARGET | DA_ARREST_TARGET |
-| DA_ARREST_TARGETS_CARRIED_PERSON | DA_ARREST_TARGETS_CARRIED_PERSON |
-| DA_ATTACK_TOWN | DA_ATTACK_TOWN |
-| DA_ASSIGN_BOUNTY | DA_ASSIGN_BOUNTY |
-| DA_CRIME_ALARM | DA_CRIME_ALARM |
-| DA_RUN_AWAY | DA_RUN_AWAY |
-| DA_INCREASE_FACTION_RANK | DA_INCREASE_FACTION_RANK |
-| DA_LOCK_THIS_DIALOG | DA_LOCK_THIS_DIALOG |
-| DA_ASSAULT_PHASE | DA_ASSAULT_PHASE |
-| DA_RETREAT_PHASE | DA_RETREAT_PHASE |
-| DA_VICTORY_PHASE | DA_VICTORY_PHASE |
-| DA_ENSLAVE_TARGETS_CARRIED_PERSON | DA_ENSLAVE_TARGETS_CARRIED_PERSON |
-| DA_CLEAR_BOUNTY | DA_CLEAR_BOUNTY |
-| DA_PLAYER_SELL_PRISONERS | DA_PLAYER_SELL_PRISONERS |
-| DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE | DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE |
-| DA_SUMMON_MY_SQUAD | DA_SUMMON_MY_SQUAD |
-| DA_REMOVE_SLAVE_STATUS | DA_REMOVE_SLAVE_STATUS |
-| DA_OPEN_NEAREST_GATE | DA_OPEN_NEAREST_GATE |
-| DA_ATTACK_STAY_NEAR_HOME | DA_ATTACK_STAY_NEAR_HOME |
-| DA_MASSIVE_ALARM | DA_MASSIVE_ALARM |
-| DA_ATTACK_IF_NO_COEXIST | DA_ATTACK_IF_NO_COEXIST |
-| DA_KNOCKOUT | DA_KNOCKOUT |
-| DA_END | DA_END |
-#### or
-| Name | Value |
-|---|---|
 | NONE | DA_NONE |
+| DA_TRADE | DA_TRADE |
 | TRADE | DA_TRADE |
+| DA_TALK_TO_LEADER | DA_TALK_TO_LEADER |
 | TALK_TO_LEADER | DA_TALK_TO_LEADER |
+| DA_JOIN_SQUAD_WITH_EDIT | DA_JOIN_SQUAD_WITH_EDIT |
 | JOIN_SQUAD_WITH_EDIT | DA_JOIN_SQUAD_WITH_EDIT |
+| DA_AFFECT_RELATIONS | DA_AFFECT_RELATIONS |
 | AFFECT_RELATIONS | DA_AFFECT_RELATIONS |
+| DA_AFFECT_REPUTATION | DA_AFFECT_REPUTATION |
 | AFFECT_REPUTATION | DA_AFFECT_REPUTATION |
+| DA_ATTACK_CHASE_FOREVER | DA_ATTACK_CHASE_FOREVER |
 | ATTACK_CHASE_FOREVER | DA_ATTACK_CHASE_FOREVER |
+| DA_GO_HOME | DA_GO_HOME |
 | GO_HOME | DA_GO_HOME |
+| DA_TAKE_MONEY | DA_TAKE_MONEY |
 | TAKE_MONEY | DA_TAKE_MONEY |
+| DA_GIVE_MONEY | DA_GIVE_MONEY |
 | GIVE_MONEY | DA_GIVE_MONEY |
+| DA_PAY_BOUNTY | DA_PAY_BOUNTY |
 | PAY_BOUNTY | DA_PAY_BOUNTY |
+| DA_CHARACTER_EDITOR | DA_CHARACTER_EDITOR |
 | CHARACTER_EDITOR | DA_CHARACTER_EDITOR |
+| DA_FORCE_SPEECH_TIMER | DA_FORCE_SPEECH_TIMER |
 | FORCE_SPEECH_TIMER | DA_FORCE_SPEECH_TIMER |
+| DA_DECLARE_WAR | DA_DECLARE_WAR |
 | DECLARE_WAR | DA_DECLARE_WAR |
+| DA_END_WAR | DA_END_WAR |
 | END_WAR | DA_END_WAR |
+| DA_CLEAR_AI | DA_CLEAR_AI |
 | CLEAR_AI | DA_CLEAR_AI |
+| DA_FOLLOW_WHILE_TALKING | DA_FOLLOW_WHILE_TALKING |
 | FOLLOW_WHILE_TALKING | DA_FOLLOW_WHILE_TALKING |
+| DA_THUG_HUNTER | DA_THUG_HUNTER |
 | THUG_HUNTER | DA_THUG_HUNTER |
+| DA_JOIN_SQUAD_FAST | DA_JOIN_SQUAD_FAST |
 | JOIN_SQUAD_FAST | DA_JOIN_SQUAD_FAST |
+| DA_REMEMBER_CHARACTER | DA_REMEMBER_CHARACTER |
 | REMEMBER_CHARACTER | DA_REMEMBER_CHARACTER |
+| DA_FLAG_TEMP_ALLY | DA_FLAG_TEMP_ALLY |
 | FLAG_TEMP_ALLY | DA_FLAG_TEMP_ALLY |
+| DA_FLAG_TEMP_ENEMY | DA_FLAG_TEMP_ENEMY |
 | FLAG_TEMP_ENEMY | DA_FLAG_TEMP_ENEMY |
+| DA_MATES_KILL_ME | DA_MATES_KILL_ME |
 | MATES_KILL_ME | DA_MATES_KILL_ME |
+| DA_MAKE_TARGET_RUN_FASTER | DA_MAKE_TARGET_RUN_FASTER |
 | MAKE_TARGET_RUN_FASTER | DA_MAKE_TARGET_RUN_FASTER |
+| DA_GIVE_TARGET_MY_SLAVES | DA_GIVE_TARGET_MY_SLAVES |
 | GIVE_TARGET_MY_SLAVES | DA_GIVE_TARGET_MY_SLAVES |
+| DA_TAG_ESCAPED_SLAVE | DA_TAG_ESCAPED_SLAVE |
 | TAG_ESCAPED_SLAVE | DA_TAG_ESCAPED_SLAVE |
+| DA_FREE_TARGET_SLAVE | DA_FREE_TARGET_SLAVE |
 | FREE_TARGET_SLAVE | DA_FREE_TARGET_SLAVE |
+| DA_MERGE_WITH_SIMILAR_SQUADS | DA_MERGE_WITH_SIMILAR_SQUADS |
 | MERGE_WITH_SIMILAR_SQUADS | DA_MERGE_WITH_SIMILAR_SQUADS |
+| DA_SEPARATE_TO_MY_OWN_SQUAD | DA_SEPARATE_TO_MY_OWN_SQUAD |
 | SEPARATE_TO_MY_OWN_SQUAD | DA_SEPARATE_TO_MY_OWN_SQUAD |
+| DA_ARREST_TARGET | DA_ARREST_TARGET |
 | ARREST_TARGET | DA_ARREST_TARGET |
+| DA_ARREST_TARGETS_CARRIED_PERSON | DA_ARREST_TARGETS_CARRIED_PERSON |
 | ARREST_TARGETS_CARRIED_PERSON | DA_ARREST_TARGETS_CARRIED_PERSON |
+| DA_ATTACK_TOWN | DA_ATTACK_TOWN |
 | ATTACK_TOWN | DA_ATTACK_TOWN |
+| DA_ASSIGN_BOUNTY | DA_ASSIGN_BOUNTY |
 | ASSIGN_BOUNTY | DA_ASSIGN_BOUNTY |
+| DA_CRIME_ALARM | DA_CRIME_ALARM |
 | CRIME_ALARM | DA_CRIME_ALARM |
+| DA_RUN_AWAY | DA_RUN_AWAY |
 | RUN_AWAY | DA_RUN_AWAY |
+| DA_INCREASE_FACTION_RANK | DA_INCREASE_FACTION_RANK |
 | INCREASE_FACTION_RANK | DA_INCREASE_FACTION_RANK |
+| DA_LOCK_THIS_DIALOG | DA_LOCK_THIS_DIALOG |
 | LOCK_THIS_DIALOG | DA_LOCK_THIS_DIALOG |
+| DA_ASSAULT_PHASE | DA_ASSAULT_PHASE |
 | ASSAULT_PHASE | DA_ASSAULT_PHASE |
+| DA_RETREAT_PHASE | DA_RETREAT_PHASE |
 | RETREAT_PHASE | DA_RETREAT_PHASE |
+| DA_VICTORY_PHASE | DA_VICTORY_PHASE |
 | VICTORY_PHASE | DA_VICTORY_PHASE |
+| DA_ENSLAVE_TARGETS_CARRIED_PERSON | DA_ENSLAVE_TARGETS_CARRIED_PERSON |
 | ENSLAVE_TARGETS_CARRIED_PERSON | DA_ENSLAVE_TARGETS_CARRIED_PERSON |
+| DA_CLEAR_BOUNTY | DA_CLEAR_BOUNTY |
 | CLEAR_BOUNTY | DA_CLEAR_BOUNTY |
+| DA_PLAYER_SELL_PRISONERS | DA_PLAYER_SELL_PRISONERS |
 | PLAYER_SELL_PRISONERS | DA_PLAYER_SELL_PRISONERS |
+| DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE | DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE |
 | PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE | DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE |
+| DA_SUMMON_MY_SQUAD | DA_SUMMON_MY_SQUAD |
 | SUMMON_MY_SQUAD | DA_SUMMON_MY_SQUAD |
+| DA_REMOVE_SLAVE_STATUS | DA_REMOVE_SLAVE_STATUS |
 | REMOVE_SLAVE_STATUS | DA_REMOVE_SLAVE_STATUS |
+| DA_OPEN_NEAREST_GATE | DA_OPEN_NEAREST_GATE |
 | OPEN_NEAREST_GATE | DA_OPEN_NEAREST_GATE |
+| DA_ATTACK_STAY_NEAR_HOME | DA_ATTACK_STAY_NEAR_HOME |
 | ATTACK_STAY_NEAR_HOME | DA_ATTACK_STAY_NEAR_HOME |
+| DA_MASSIVE_ALARM | DA_MASSIVE_ALARM |
 | MASSIVE_ALARM | DA_MASSIVE_ALARM |
+| DA_ATTACK_IF_NO_COEXIST | DA_ATTACK_IF_NO_COEXIST |
 | ATTACK_IF_NO_COEXIST | DA_ATTACK_IF_NO_COEXIST |
+| DA_KNOCKOUT | DA_KNOCKOUT |
 | KNOCKOUT | DA_KNOCKOUT |
+| DA_END | DA_END |
 | END | DA_END |
 
 ### itemType
@@ -1784,98 +1911,92 @@
 ### BuildingFunction
 | Name | Value |
 |---|---|
-| BF_ANY | BuildingFunction::BF_ANY |
-| BF_MINE | BuildingFunction::BF_MINE |
-| BF_RESOURCE_STORAGE | BuildingFunction::BF_RESOURCE_STORAGE |
-| BF_RESEARCH | BuildingFunction::BF_RESEARCH |
-| BF_REFINERY | BuildingFunction::BF_REFINERY |
-| BF_GENERATOR | BuildingFunction::BF_GENERATOR |
-| BF_BED | BuildingFunction::BF_BED |
-| BF_TRAINING | BuildingFunction::BF_TRAINING |
-| BF_CAGE | BuildingFunction::BF_CAGE |
-| BF_SHOP | BuildingFunction::BF_SHOP |
-| BF_CRAFTING | BuildingFunction::BF_CRAFTING |
-| BF_CORPSE_DISPOSAL | BuildingFunction::BF_CORPSE_DISPOSAL |
-| BF_TURRET | BuildingFunction::BF_TURRET |
-| BF_GENERAL_STORAGE | BuildingFunction::BF_GENERAL_STORAGE |
-| BF_ITEM_FURNACE | BuildingFunction::BF_ITEM_FURNACE |
-| BF_LIGHT | BuildingFunction::BF_LIGHT |
-| BF_TABLE | BuildingFunction::BF_TABLE |
-| BF_CHAIR | BuildingFunction::BF_CHAIR |
-| BF_FLUFF | BuildingFunction::BF_FLUFF |
-| BF_SHELL_WITH_INTERIOR | BuildingFunction::BF_SHELL_WITH_INTERIOR |
-| BF_WALL | BuildingFunction::BF_WALL |
-| BF_GATE | BuildingFunction::BF_GATE |
-| BF_DOOR | BuildingFunction::BF_DOOR |
-| BF_BATTERY | BuildingFunction::BF_BATTERY |
-| BF_THRONE | BuildingFunction::BF_THRONE |
-| BF_SKELETON_BED | BuildingFunction::BF_SKELETON_BED |
-| BF_RAIN_COLLECTOR | BuildingFunction::BF_RAIN_COLLECTOR |
-| BF_MINE_NATURAL | BuildingFunction::BF_MINE_NATURAL |
-| BF_STEERING | BuildingFunction::BF_STEERING |
-| BF_ENGINE | BuildingFunction::BF_ENGINE |
-| BF_LIQUID_TANK | BuildingFunction::BF_LIQUID_TANK |
-#### or
-| Name | Value |
-|---|---|
 | ANY | BuildingFunction::BF_ANY |
+| BF_ANY | BuildingFunction::BF_ANY |
 | MINE | BuildingFunction::BF_MINE |
+| BF_MINE | BuildingFunction::BF_MINE |
 | RESOURCE_STORAGE | BuildingFunction::BF_RESOURCE_STORAGE |
+| BF_RESOURCE_STORAGE | BuildingFunction::BF_RESOURCE_STORAGE |
 | RESEARCH | BuildingFunction::BF_RESEARCH |
+| BF_RESEARCH | BuildingFunction::BF_RESEARCH |
 | REFINERY | BuildingFunction::BF_REFINERY |
+| BF_REFINERY | BuildingFunction::BF_REFINERY |
 | GENERATOR | BuildingFunction::BF_GENERATOR |
+| BF_GENERATOR | BuildingFunction::BF_GENERATOR |
 | BED | BuildingFunction::BF_BED |
+| BF_BED | BuildingFunction::BF_BED |
 | TRAINING | BuildingFunction::BF_TRAINING |
+| BF_TRAINING | BuildingFunction::BF_TRAINING |
 | CAGE | BuildingFunction::BF_CAGE |
+| BF_CAGE | BuildingFunction::BF_CAGE |
 | SHOP | BuildingFunction::BF_SHOP |
+| BF_SHOP | BuildingFunction::BF_SHOP |
 | CRAFTING | BuildingFunction::BF_CRAFTING |
+| BF_CRAFTING | BuildingFunction::BF_CRAFTING |
 | CORPSE_DISPOSAL | BuildingFunction::BF_CORPSE_DISPOSAL |
+| BF_CORPSE_DISPOSAL | BuildingFunction::BF_CORPSE_DISPOSAL |
 | TURRET | BuildingFunction::BF_TURRET |
+| BF_TURRET | BuildingFunction::BF_TURRET |
 | GENERAL_STORAGE | BuildingFunction::BF_GENERAL_STORAGE |
+| BF_GENERAL_STORAGE | BuildingFunction::BF_GENERAL_STORAGE |
 | ITEM_FURNACE | BuildingFunction::BF_ITEM_FURNACE |
+| BF_ITEM_FURNACE | BuildingFunction::BF_ITEM_FURNACE |
 | LIGHT | BuildingFunction::BF_LIGHT |
+| BF_LIGHT | BuildingFunction::BF_LIGHT |
 | TABLE | BuildingFunction::BF_TABLE |
+| BF_TABLE | BuildingFunction::BF_TABLE |
 | CHAIR | BuildingFunction::BF_CHAIR |
+| BF_CHAIR | BuildingFunction::BF_CHAIR |
 | FLUFF | BuildingFunction::BF_FLUFF |
+| BF_FLUFF | BuildingFunction::BF_FLUFF |
 | SHELL_WITH_INTERIOR | BuildingFunction::BF_SHELL_WITH_INTERIOR |
+| BF_SHELL_WITH_INTERIOR | BuildingFunction::BF_SHELL_WITH_INTERIOR |
 | WALL | BuildingFunction::BF_WALL |
+| BF_WALL | BuildingFunction::BF_WALL |
 | GATE | BuildingFunction::BF_GATE |
+| BF_GATE | BuildingFunction::BF_GATE |
 | DOOR | BuildingFunction::BF_DOOR |
+| BF_DOOR | BuildingFunction::BF_DOOR |
 | BATTERY | BuildingFunction::BF_BATTERY |
+| BF_BATTERY | BuildingFunction::BF_BATTERY |
 | THRONE | BuildingFunction::BF_THRONE |
+| BF_THRONE | BuildingFunction::BF_THRONE |
 | SKELETON_BED | BuildingFunction::BF_SKELETON_BED |
+| BF_SKELETON_BED | BuildingFunction::BF_SKELETON_BED |
 | RAIN_COLLECTOR | BuildingFunction::BF_RAIN_COLLECTOR |
+| BF_RAIN_COLLECTOR | BuildingFunction::BF_RAIN_COLLECTOR |
 | MINE_NATURAL | BuildingFunction::BF_MINE_NATURAL |
+| BF_MINE_NATURAL | BuildingFunction::BF_MINE_NATURAL |
 | STEERING | BuildingFunction::BF_STEERING |
+| BF_STEERING | BuildingFunction::BF_STEERING |
 | ENGINE | BuildingFunction::BF_ENGINE |
+| BF_ENGINE | BuildingFunction::BF_ENGINE |
 | LIQUID_TANK | BuildingFunction::BF_LIQUID_TANK |
+| BF_LIQUID_TANK | BuildingFunction::BF_LIQUID_TANK |
 
 ### CutDirection
 | Name | Value |
 |---|---|
-| CUT_DEFAULT | CutDirection::CUT_DEFAULT |
-| CUT_DOWNWARD | CutDirection::CUT_DOWNWARD |
-| CUT_LEFT | CutDirection::CUT_LEFT |
-| CUT_RIGHT | CutDirection::CUT_RIGHT |
-| CUT_THRUST | CutDirection::CUT_THRUST |
-| CUT_UPWARDS | CutDirection::CUT_UPWARDS |
-| CUT_PIERCED | CutDirection::CUT_PIERCED |
-| CUT_REAR_DOWNWARD | CutDirection::CUT_REAR_DOWNWARD |
-| CUT_REAR_LEFT | CutDirection::CUT_REAR_LEFT |
-| CUT_REAR_RIGHT | CutDirection::CUT_REAR_RIGHT |
-#### or
-| Name | Value |
-|---|---|
 | DEFAULT | CutDirection::CUT_DEFAULT |
+| CUT_DEFAULT | CutDirection::CUT_DEFAULT |
 | DOWNWARD | CutDirection::CUT_DOWNWARD |
+| CUT_DOWNWARD | CutDirection::CUT_DOWNWARD |
 | LEFT | CutDirection::CUT_LEFT |
+| CUT_LEFT | CutDirection::CUT_LEFT |
 | RIGHT | CutDirection::CUT_RIGHT |
+| CUT_RIGHT | CutDirection::CUT_RIGHT |
 | THRUST | CutDirection::CUT_THRUST |
+| CUT_THRUST | CutDirection::CUT_THRUST |
 | UPWARDS | CutDirection::CUT_UPWARDS |
+| CUT_UPWARDS | CutDirection::CUT_UPWARDS |
 | PIERCED | CutDirection::CUT_PIERCED |
+| CUT_PIERCED | CutDirection::CUT_PIERCED |
 | REAR_DOWNWARD | CutDirection::CUT_REAR_DOWNWARD |
+| CUT_REAR_DOWNWARD | CutDirection::CUT_REAR_DOWNWARD |
 | REAR_LEFT | CutDirection::CUT_REAR_LEFT |
+| CUT_REAR_LEFT | CutDirection::CUT_REAR_LEFT |
 | REAR_RIGHT | CutDirection::CUT_REAR_RIGHT |
+| CUT_REAR_RIGHT | CutDirection::CUT_REAR_RIGHT |
 
 ### CutOrigination
 | Name | Value |
@@ -1888,86 +2009,77 @@
 ### HitMaterialType
 | Name | Value |
 |---|---|
-| HIT_MISSED | HitMaterialType::HIT_MISSED |
-| HIT_METAL | HitMaterialType::HIT_METAL |
-| HIT_FLESH | HitMaterialType::HIT_FLESH |
-| HIT_SAND | HitMaterialType::HIT_SAND |
-| HIT_WOOD | HitMaterialType::HIT_WOOD |
-| HIT_SWORD | HitMaterialType::HIT_SWORD |
-| HIT_CHAIN | HitMaterialType::HIT_CHAIN |
-#### or
-| Name | Value |
-|---|---|
 | MISSED | HitMaterialType::HIT_MISSED |
+| HIT_MISSED | HitMaterialType::HIT_MISSED |
 | METAL | HitMaterialType::HIT_METAL |
+| HIT_METAL | HitMaterialType::HIT_METAL |
 | FLESH | HitMaterialType::HIT_FLESH |
+| HIT_FLESH | HitMaterialType::HIT_FLESH |
 | SAND | HitMaterialType::HIT_SAND |
+| HIT_SAND | HitMaterialType::HIT_SAND |
 | WOOD | HitMaterialType::HIT_WOOD |
+| HIT_WOOD | HitMaterialType::HIT_WOOD |
 | SWORD | HitMaterialType::HIT_SWORD |
+| HIT_SWORD | HitMaterialType::HIT_SWORD |
 | CHAIN | HitMaterialType::HIT_CHAIN |
+| HIT_CHAIN | HitMaterialType::HIT_CHAIN |
 
 ### WeatherAffecting
 | Name | Value |
 |---|---|
-| WA_NONE | WeatherAffecting::WA_NONE |
-| WA_DUSTSTORM | WeatherAffecting::WA_DUSTSTORM |
-| WA_ACID | WeatherAffecting::WA_ACID |
-| WA_BURNING | WeatherAffecting::WA_BURNING |
-| WA_GAS | WeatherAffecting::WA_GAS |
-| WA_RAIN | WeatherAffecting::WA_RAIN |
-#### or
-| Name | Value |
-|---|---|
 | NONE | WeatherAffecting::WA_NONE |
+| WA_NONE | WeatherAffecting::WA_NONE |
 | DUSTSTORM | WeatherAffecting::WA_DUSTSTORM |
+| WA_DUSTSTORM | WeatherAffecting::WA_DUSTSTORM |
 | ACID | WeatherAffecting::WA_ACID |
+| WA_ACID | WeatherAffecting::WA_ACID |
 | BURNING | WeatherAffecting::WA_BURNING |
+| WA_BURNING | WeatherAffecting::WA_BURNING |
 | GAS | WeatherAffecting::WA_GAS |
+| WA_GAS | WeatherAffecting::WA_GAS |
 | RAIN | WeatherAffecting::WA_RAIN |
+| WA_RAIN | WeatherAffecting::WA_RAIN |
 
 ### AttachSlot
 | Name | Value |
 |---|---|
 | ATTACH_WEAPON | AttachSlot::ATTACH_WEAPON |
-| ATTACH_BACK | AttachSlot::ATTACH_BACK |
-| ATTACH_HAIR | AttachSlot::ATTACH_HAIR |
-| ATTACH_HAT | AttachSlot::ATTACH_HAT |
-| ATTACH_EYES | AttachSlot::ATTACH_EYES |
-| ATTACH_BODY | AttachSlot::ATTACH_BODY |
-| ATTACH_LEGS | AttachSlot::ATTACH_LEGS |
-| ATTACH_NONE | AttachSlot::ATTACH_NONE |
-| ATTACH_SHIRT | AttachSlot::ATTACH_SHIRT |
-| ATTACH_BOOTS | AttachSlot::ATTACH_BOOTS |
-| ATTACH_GLOVES | AttachSlot::ATTACH_GLOVES |
-| ATTACH_NECK | AttachSlot::ATTACH_NECK |
-| ATTACH_BACKPACK | AttachSlot::ATTACH_BACKPACK |
-| ATTACH_BEARD | AttachSlot::ATTACH_BEARD |
-| ATTACH_BELT | AttachSlot::ATTACH_BELT |
-| ATTACH_LEFT_ARM | AttachSlot::ATTACH_LEFT_ARM |
-| ATTACH_RIGHT_ARM | AttachSlot::ATTACH_RIGHT_ARM |
-| ATTACH_LEFT_LEG | AttachSlot::ATTACH_LEFT_LEG |
-| ATTACH_RIGHT_LEG | AttachSlot::ATTACH_RIGHT_LEG |
-#### or
-| Name | Value |
-|---|---|
 | WEAPON | AttachSlot::ATTACH_WEAPON |
+| ATTACH_BACK | AttachSlot::ATTACH_BACK |
 | BACK | AttachSlot::ATTACH_BACK |
+| ATTACH_HAIR | AttachSlot::ATTACH_HAIR |
 | HAIR | AttachSlot::ATTACH_HAIR |
+| ATTACH_HAT | AttachSlot::ATTACH_HAT |
 | HAT | AttachSlot::ATTACH_HAT |
+| ATTACH_EYES | AttachSlot::ATTACH_EYES |
 | EYES | AttachSlot::ATTACH_EYES |
+| ATTACH_BODY | AttachSlot::ATTACH_BODY |
 | BODY | AttachSlot::ATTACH_BODY |
+| ATTACH_LEGS | AttachSlot::ATTACH_LEGS |
 | LEGS | AttachSlot::ATTACH_LEGS |
+| ATTACH_NONE | AttachSlot::ATTACH_NONE |
 | NONE | AttachSlot::ATTACH_NONE |
+| ATTACH_SHIRT | AttachSlot::ATTACH_SHIRT |
 | SHIRT | AttachSlot::ATTACH_SHIRT |
+| ATTACH_BOOTS | AttachSlot::ATTACH_BOOTS |
 | BOOTS | AttachSlot::ATTACH_BOOTS |
+| ATTACH_GLOVES | AttachSlot::ATTACH_GLOVES |
 | GLOVES | AttachSlot::ATTACH_GLOVES |
+| ATTACH_NECK | AttachSlot::ATTACH_NECK |
 | NECK | AttachSlot::ATTACH_NECK |
+| ATTACH_BACKPACK | AttachSlot::ATTACH_BACKPACK |
 | BACKPACK | AttachSlot::ATTACH_BACKPACK |
+| ATTACH_BEARD | AttachSlot::ATTACH_BEARD |
 | BEARD | AttachSlot::ATTACH_BEARD |
+| ATTACH_BELT | AttachSlot::ATTACH_BELT |
 | BELT | AttachSlot::ATTACH_BELT |
+| ATTACH_LEFT_ARM | AttachSlot::ATTACH_LEFT_ARM |
 | LEFT_ARM | AttachSlot::ATTACH_LEFT_ARM |
+| ATTACH_RIGHT_ARM | AttachSlot::ATTACH_RIGHT_ARM |
 | RIGHT_ARM | AttachSlot::ATTACH_RIGHT_ARM |
+| ATTACH_LEFT_LEG | AttachSlot::ATTACH_LEFT_LEG |
 | LEFT_LEG | AttachSlot::ATTACH_LEFT_LEG |
+| ATTACH_RIGHT_LEG | AttachSlot::ATTACH_RIGHT_LEG |
 | RIGHT_LEG | AttachSlot::ATTACH_RIGHT_LEG |
 
 ### ItemFunction
@@ -2022,29 +2134,26 @@
 | Name | Value |
 |---|---|
 | OT_NONE | CharacterTypeEnum::OT_NONE |
-| OT_LAW_ENFORCEMENT | CharacterTypeEnum::OT_LAW_ENFORCEMENT |
-| OT_MILITARY | CharacterTypeEnum::OT_MILITARY |
-| OT_TRADER | CharacterTypeEnum::OT_TRADER |
-| OT_CIVILIAN | CharacterTypeEnum::OT_CIVILIAN |
-| OT_DIPLOMAT | CharacterTypeEnum::OT_DIPLOMAT |
-| OT_SLAVE | CharacterTypeEnum::OT_SLAVE |
-| OT_SLAVER | CharacterTypeEnum::OT_SLAVER |
-| OT_BANDIT | CharacterTypeEnum::OT_BANDIT |
-| OT_ADVENTURER | CharacterTypeEnum::OT_ADVENTURER |
-| OT_END | CharacterTypeEnum::OT_END |
-#### or
-| Name | Value |
-|---|---|
 | NONE | CharacterTypeEnum::OT_NONE |
+| OT_LAW_ENFORCEMENT | CharacterTypeEnum::OT_LAW_ENFORCEMENT |
 | LAW_ENFORCEMENT | CharacterTypeEnum::OT_LAW_ENFORCEMENT |
+| OT_MILITARY | CharacterTypeEnum::OT_MILITARY |
 | MILITARY | CharacterTypeEnum::OT_MILITARY |
+| OT_TRADER | CharacterTypeEnum::OT_TRADER |
 | TRADER | CharacterTypeEnum::OT_TRADER |
+| OT_CIVILIAN | CharacterTypeEnum::OT_CIVILIAN |
 | CIVILIAN | CharacterTypeEnum::OT_CIVILIAN |
+| OT_DIPLOMAT | CharacterTypeEnum::OT_DIPLOMAT |
 | DIPLOMAT | CharacterTypeEnum::OT_DIPLOMAT |
+| OT_SLAVE | CharacterTypeEnum::OT_SLAVE |
 | SLAVE | CharacterTypeEnum::OT_SLAVE |
+| OT_SLAVER | CharacterTypeEnum::OT_SLAVER |
 | SLAVER | CharacterTypeEnum::OT_SLAVER |
+| OT_BANDIT | CharacterTypeEnum::OT_BANDIT |
 | BANDIT | CharacterTypeEnum::OT_BANDIT |
+| OT_ADVENTURER | CharacterTypeEnum::OT_ADVENTURER |
 | ADVENTURER | CharacterTypeEnum::OT_ADVENTURER |
+| OT_END | CharacterTypeEnum::OT_END |
 | END | CharacterTypeEnum::OT_END |
 
 ### SlaveStateEnum
@@ -2354,52 +2463,48 @@
 | Name | Value |
 |---|---|
 | SKILL_KATANAS | WeaponCategory::SKILL_KATANAS |
-| SKILL_SABRES | WeaponCategory::SKILL_SABRES |
-| SKILL_BLUNT | WeaponCategory::SKILL_BLUNT |
-| SKILL_HEAVY | WeaponCategory::SKILL_HEAVY |
-| SKILL_HACKERS | WeaponCategory::SKILL_HACKERS |
-| SKILL_UNARMED | WeaponCategory::SKILL_UNARMED |
-| SKILL_BOW | WeaponCategory::SKILL_BOW |
-| SKILL_TURRET | WeaponCategory::SKILL_TURRET |
-| ATTACK_POLEARMS | WeaponCategory::ATTACK_POLEARMS |
-| ATTACK_ELEPHANT | WeaponCategory::ATTACK_ELEPHANT |
-| ATTACK_DOG | WeaponCategory::ATTACK_DOG |
-| ATTACK_BULL | WeaponCategory::ATTACK_BULL |
-| ATTACK_ROBOTSPIDER | WeaponCategory::ATTACK_ROBOTSPIDER |
-| ATTACK_SPIDER | WeaponCategory::ATTACK_SPIDER |
-| ATTACK_CAGEBEAST | WeaponCategory::ATTACK_CAGEBEAST |
-| ATTACK_DUCK | WeaponCategory::ATTACK_DUCK |
-| ATTACK_GORILLA | WeaponCategory::ATTACK_GORILLA |
-| ATTACK_GAR | WeaponCategory::ATTACK_GAR |
-| ATTACK_FROG | WeaponCategory::ATTACK_FROG |
-| ATTACK_GOAT | WeaponCategory::ATTACK_GOAT |
-| ATTACK_GIRAFFE | WeaponCategory::ATTACK_GIRAFFE |
-| ATTACK_NULL | WeaponCategory::ATTACK_NULL |
-| NUM_SKILL_TYPES | WeaponCategory::NUM_SKILL_TYPES |
-#### or
-| Name | Value |
-|---|---|
 | KATANAS | WeaponCategory::SKILL_KATANAS |
+| SKILL_SABRES | WeaponCategory::SKILL_SABRES |
 | SABRES | WeaponCategory::SKILL_SABRES |
+| SKILL_BLUNT | WeaponCategory::SKILL_BLUNT |
 | BLUNT | WeaponCategory::SKILL_BLUNT |
+| SKILL_HEAVY | WeaponCategory::SKILL_HEAVY |
 | HEAVY | WeaponCategory::SKILL_HEAVY |
+| SKILL_HACKERS | WeaponCategory::SKILL_HACKERS |
 | HACKERS | WeaponCategory::SKILL_HACKERS |
+| SKILL_UNARMED | WeaponCategory::SKILL_UNARMED |
 | UNARMED | WeaponCategory::SKILL_UNARMED |
+| SKILL_BOW | WeaponCategory::SKILL_BOW |
 | BOW | WeaponCategory::SKILL_BOW |
+| SKILL_TURRET | WeaponCategory::SKILL_TURRET |
 | TURRET | WeaponCategory::SKILL_TURRET |
+| ATTACK_POLEARMS | WeaponCategory::ATTACK_POLEARMS |
 | POLEARMS | WeaponCategory::ATTACK_POLEARMS |
+| ATTACK_ELEPHANT | WeaponCategory::ATTACK_ELEPHANT |
 | ELEPHANT | WeaponCategory::ATTACK_ELEPHANT |
+| ATTACK_DOG | WeaponCategory::ATTACK_DOG |
 | DOG | WeaponCategory::ATTACK_DOG |
+| ATTACK_BULL | WeaponCategory::ATTACK_BULL |
 | BULL | WeaponCategory::ATTACK_BULL |
+| ATTACK_ROBOTSPIDER | WeaponCategory::ATTACK_ROBOTSPIDER |
 | ROBOTSPIDER | WeaponCategory::ATTACK_ROBOTSPIDER |
+| ATTACK_SPIDER | WeaponCategory::ATTACK_SPIDER |
 | SPIDER | WeaponCategory::ATTACK_SPIDER |
+| ATTACK_CAGEBEAST | WeaponCategory::ATTACK_CAGEBEAST |
 | CAGEBEAST | WeaponCategory::ATTACK_CAGEBEAST |
+| ATTACK_DUCK | WeaponCategory::ATTACK_DUCK |
 | DUCK | WeaponCategory::ATTACK_DUCK |
+| ATTACK_GORILLA | WeaponCategory::ATTACK_GORILLA |
 | GORILLA | WeaponCategory::ATTACK_GORILLA |
+| ATTACK_GAR | WeaponCategory::ATTACK_GAR |
 | GAR | WeaponCategory::ATTACK_GAR |
+| ATTACK_FROG | WeaponCategory::ATTACK_FROG |
 | FROG | WeaponCategory::ATTACK_FROG |
+| ATTACK_GOAT | WeaponCategory::ATTACK_GOAT |
 | GOAT | WeaponCategory::ATTACK_GOAT |
+| ATTACK_GIRAFFE | WeaponCategory::ATTACK_GIRAFFE |
 | GIRAFFE | WeaponCategory::ATTACK_GIRAFFE |
+| ATTACK_NULL | WeaponCategory::ATTACK_NULL |
 | NULL | WeaponCategory::ATTACK_NULL |
 | NUM_SKILL_TYPES | WeaponCategory::NUM_SKILL_TYPES |
 
@@ -2407,22 +2512,20 @@
 | Name | Value |
 |---|---|
 | SIDE_NEITHER | LeftRight::SIDE_NEITHER |
-| SIDE_LEFT | LeftRight::SIDE_LEFT |
-| SIDE_RIGHT | LeftRight::SIDE_RIGHT |
-| SIDE_BOTH | LeftRight::SIDE_BOTH |
-#### or
 | NEITHER | LeftRight::SIDE_NEITHER |
+| SIDE_LEFT | LeftRight::SIDE_LEFT |
 | LEFT | LeftRight::SIDE_LEFT |
+| SIDE_RIGHT | LeftRight::SIDE_RIGHT |
 | RIGHT | LeftRight::SIDE_RIGHT |
+| SIDE_BOTH | LeftRight::SIDE_BOTH |
 | BOTH | LeftRight::SIDE_BOTH |
 
 ### MessageType
 | Name | Value |
 |---|---|
 | M_UNSELECT_ALL | MessageForB::MessageType::M_UNSELECT_ALL |
-| M_GIVE_TASK | MessageForB::MessageType::M_GIVE_TASK |
-#### or
 | UNSELECT_ALL | MessageForB::MessageType::M_UNSELECT_ALL |
+| M_GIVE_TASK | MessageForB::MessageType::M_GIVE_TASK |
 | GIVE_TASK | MessageForB::MessageType::M_GIVE_TASK |
 
 ### MessageB::StandingOrder
@@ -2450,505 +2553,487 @@
 ### StatsEnumerated
 | Name | Value |
 |---|---|
-| STAT_NONE | StatsEnumerated::STAT_NONE |
-| STAT_STRENGTH | StatsEnumerated::STAT_STRENGTH |
-| STAT_MELEE_ATTACK | StatsEnumerated::STAT_MELEE_ATTACK |
-| STAT_LABOURING | StatsEnumerated::STAT_LABOURING |
-| STAT_SCIENCE | StatsEnumerated::STAT_SCIENCE |
-| STAT_ENGINEERING | StatsEnumerated::STAT_ENGINEERING |
-| STAT_ROBOTICS | StatsEnumerated::STAT_ROBOTICS |
-| STAT_SMITHING_WEAPON | StatsEnumerated::STAT_SMITHING_WEAPON |
-| STAT_SMITHING_ARMOUR | StatsEnumerated::STAT_SMITHING_ARMOUR |
-| STAT_MEDIC | StatsEnumerated::STAT_MEDIC |
-| STAT_THIEVING | StatsEnumerated::STAT_THIEVING |
-| STAT_TURRETS | StatsEnumerated::STAT_TURRETS |
-| STAT_FARMING | StatsEnumerated::STAT_FARMING |
-| STAT_COOKING | StatsEnumerated::STAT_COOKING |
-| STAT_HIVEMEDIC | StatsEnumerated::STAT_HIVEMEDIC |
-| STAT_VET | StatsEnumerated::STAT_VET |
-| STAT_STEALTH | StatsEnumerated::STAT_STEALTH |
-| STAT_ATHLETICS | StatsEnumerated::STAT_ATHLETICS |
-| STAT_DEXTERITY | StatsEnumerated::STAT_DEXTERITY |
-| STAT_MELEE_DEFENCE | StatsEnumerated::STAT_MELEE_DEFENCE |
-| STAT_WEAPONS | StatsEnumerated::STAT_WEAPONS |
-| STAT_TOUGHNESS | StatsEnumerated::STAT_TOUGHNESS |
-| STAT_ASSASSINATION | StatsEnumerated::STAT_ASSASSINATION |
-| STAT_SWIMMING | StatsEnumerated::STAT_SWIMMING |
-| STAT_PERCEPTION | StatsEnumerated::STAT_PERCEPTION |
-| STAT_KATANAS | StatsEnumerated::STAT_KATANAS |
-| STAT_SABRES | StatsEnumerated::STAT_SABRES |
-| STAT_HACKERS | StatsEnumerated::STAT_HACKERS |
-| STAT_HEAVYWEAPONS | StatsEnumerated::STAT_HEAVYWEAPONS |
-| STAT_BLUNT | StatsEnumerated::STAT_BLUNT |
-| STAT_MARTIALARTS | StatsEnumerated::STAT_MARTIALARTS |
-| STAT_MASSCOMBAT | StatsEnumerated::STAT_MASSCOMBAT |
-| STAT_DODGE | StatsEnumerated::STAT_DODGE |
-| STAT_SURVIVAL | StatsEnumerated::STAT_SURVIVAL |
-| STAT_POLEARMS | StatsEnumerated::STAT_POLEARMS |
-| STAT_CROSSBOWS | StatsEnumerated::STAT_CROSSBOWS |
-| STAT_FRIENDLY_FIRE | StatsEnumerated::STAT_FRIENDLY_FIRE |
-| STAT_LOCKPICKING | StatsEnumerated::STAT_LOCKPICKING |
-| STAT_SMITHING_BOW | StatsEnumerated::STAT_SMITHING_BOW |
-| STAT_END | StatsEnumerated::STAT_END |
-| _PrimaryWeaponDamage | StatsEnumerated::_PrimaryWeaponDamage |
-| _PrimaryWeaponSpeed | StatsEnumerated::_PrimaryWeaponSpeed |
-| _SecondaryWeaponDamage | StatsEnumerated::_SecondaryWeaponDamage |
-| _SecondaryWeaponSpeed | StatsEnumerated::_SecondaryWeaponSpeed |
-| _MaxCarryWeight | StatsEnumerated::_MaxCarryWeight |
-| _StrengthXPRateWalk | StatsEnumerated::_StrengthXPRateWalk |
-| _StrengthXPRateCombat | StatsEnumerated::_StrengthXPRateCombat |
-| _AttackSpeedHeavyWeapons | StatsEnumerated::_AttackSpeedHeavyWeapons |
-| _DamageResistance | StatsEnumerated::_DamageResistance |
-| _ToughnessXPRate | StatsEnumerated::_ToughnessXPRate |
-| _KnockoutTime | StatsEnumerated::_KnockoutTime |
-| _ToughnessKnockoutPoint | StatsEnumerated::_ToughnessKnockoutPoint |
-| _WoundDeteriorationSpeed | StatsEnumerated::_WoundDeteriorationSpeed |
-| _MaxRunSpeed | StatsEnumerated::_MaxRunSpeed |
-| _CurrentRunSpeed | StatsEnumerated::_CurrentRunSpeed |
-| _AthleticsXPBonus | StatsEnumerated::_AthleticsXPBonus |
-| _TurretAccuracy | StatsEnumerated::_TurretAccuracy |
-| _TurretRateOfFire | StatsEnumerated::_TurretRateOfFire |
-| _TurretFriendlyFireAvoidance | StatsEnumerated::_TurretFriendlyFireAvoidance |
-| _BuildingRate | StatsEnumerated::_BuildingRate |
-| _RepairingRate | StatsEnumerated::_RepairingRate |
-| _Mining | StatsEnumerated::_Mining |
-| _Farming | StatsEnumerated::_Farming |
-| _UsingMachinery | StatsEnumerated::_UsingMachinery |
-| _encumbrance | StatsEnumerated::_encumbrance |
-| _combatSpeed | StatsEnumerated::_combatSpeed |
-#### or
-| Name | Value |
-|---|---|
 | NONE | StatsEnumerated::STAT_NONE |
+| STAT_NONE | StatsEnumerated::STAT_NONE |
 | STRENGTH | StatsEnumerated::STAT_STRENGTH |
+| STAT_STRENGTH | StatsEnumerated::STAT_STRENGTH |
 | MELEE_ATTACK | StatsEnumerated::STAT_MELEE_ATTACK |
+| STAT_MELEE_ATTACK | StatsEnumerated::STAT_MELEE_ATTACK |
 | LABOURING | StatsEnumerated::STAT_LABOURING |
+| STAT_LABOURING | StatsEnumerated::STAT_LABOURING |
 | SCIENCE | StatsEnumerated::STAT_SCIENCE |
+| STAT_SCIENCE | StatsEnumerated::STAT_SCIENCE |
 | ENGINEERING | StatsEnumerated::STAT_ENGINEERING |
+| STAT_ENGINEERING | StatsEnumerated::STAT_ENGINEERING |
 | ROBOTICS | StatsEnumerated::STAT_ROBOTICS |
+| STAT_ROBOTICS | StatsEnumerated::STAT_ROBOTICS |
 | SMITHING_WEAPON | StatsEnumerated::STAT_SMITHING_WEAPON |
+| STAT_SMITHING_WEAPON | StatsEnumerated::STAT_SMITHING_WEAPON |
 | SMITHING_ARMOUR | StatsEnumerated::STAT_SMITHING_ARMOUR |
+| STAT_SMITHING_ARMOUR | StatsEnumerated::STAT_SMITHING_ARMOUR |
 | MEDIC | StatsEnumerated::STAT_MEDIC |
+| STAT_MEDIC | StatsEnumerated::STAT_MEDIC |
 | THIEVING | StatsEnumerated::STAT_THIEVING |
+| STAT_THIEVING | StatsEnumerated::STAT_THIEVING |
 | TURRETS | StatsEnumerated::STAT_TURRETS |
+| STAT_TURRETS | StatsEnumerated::STAT_TURRETS |
 | FARMING | StatsEnumerated::STAT_FARMING |
+| STAT_FARMING | StatsEnumerated::STAT_FARMING |
 | COOKING | StatsEnumerated::STAT_COOKING |
+| STAT_COOKING | StatsEnumerated::STAT_COOKING |
 | HIVEMEDIC | StatsEnumerated::STAT_HIVEMEDIC |
+| STAT_HIVEMEDIC | StatsEnumerated::STAT_HIVEMEDIC |
 | VET | StatsEnumerated::STAT_VET |
+| STAT_VET | StatsEnumerated::STAT_VET |
 | STEALTH | StatsEnumerated::STAT_STEALTH |
+| STAT_STEALTH | StatsEnumerated::STAT_STEALTH |
 | ATHLETICS | StatsEnumerated::STAT_ATHLETICS |
+| STAT_ATHLETICS | StatsEnumerated::STAT_ATHLETICS |
 | DEXTERITY | StatsEnumerated::STAT_DEXTERITY |
+| STAT_DEXTERITY | StatsEnumerated::STAT_DEXTERITY |
 | MELEE_DEFENCE | StatsEnumerated::STAT_MELEE_DEFENCE |
+| STAT_MELEE_DEFENCE | StatsEnumerated::STAT_MELEE_DEFENCE |
 | WEAPONS | StatsEnumerated::STAT_WEAPONS |
+| STAT_WEAPONS | StatsEnumerated::STAT_WEAPONS |
 | TOUGHNESS | StatsEnumerated::STAT_TOUGHNESS |
+| STAT_TOUGHNESS | StatsEnumerated::STAT_TOUGHNESS |
 | ASSASSINATION | StatsEnumerated::STAT_ASSASSINATION |
+| STAT_ASSASSINATION | StatsEnumerated::STAT_ASSASSINATION |
 | SWIMMING | StatsEnumerated::STAT_SWIMMING |
+| STAT_SWIMMING | StatsEnumerated::STAT_SWIMMING |
 | PERCEPTION | StatsEnumerated::STAT_PERCEPTION |
+| STAT_PERCEPTION | StatsEnumerated::STAT_PERCEPTION |
 | KATANAS | StatsEnumerated::STAT_KATANAS |
+| STAT_KATANAS | StatsEnumerated::STAT_KATANAS |
 | SABRES | StatsEnumerated::STAT_SABRES |
+| STAT_SABRES | StatsEnumerated::STAT_SABRES |
 | HACKERS | StatsEnumerated::STAT_HACKERS |
+| STAT_HACKERS | StatsEnumerated::STAT_HACKERS |
 | HEAVYWEAPONS | StatsEnumerated::STAT_HEAVYWEAPONS |
+| STAT_HEAVYWEAPONS | StatsEnumerated::STAT_HEAVYWEAPONS |
 | BLUNT | StatsEnumerated::STAT_BLUNT |
+| STAT_BLUNT | StatsEnumerated::STAT_BLUNT |
 | MARTIALARTS | StatsEnumerated::STAT_MARTIALARTS |
+| STAT_MARTIALARTS | StatsEnumerated::STAT_MARTIALARTS |
 | MASSCOMBAT | StatsEnumerated::STAT_MASSCOMBAT |
+| STAT_MASSCOMBAT | StatsEnumerated::STAT_MASSCOMBAT |
 | DODGE | StatsEnumerated::STAT_DODGE |
+| STAT_DODGE | StatsEnumerated::STAT_DODGE |
 | SURVIVAL | StatsEnumerated::STAT_SURVIVAL |
+| STAT_SURVIVAL | StatsEnumerated::STAT_SURVIVAL |
 | POLEARMS | StatsEnumerated::STAT_POLEARMS |
+| STAT_POLEARMS | StatsEnumerated::STAT_POLEARMS |
 | CROSSBOWS | StatsEnumerated::STAT_CROSSBOWS |
+| STAT_CROSSBOWS | StatsEnumerated::STAT_CROSSBOWS |
 | FRIENDLY_FIRE | StatsEnumerated::STAT_FRIENDLY_FIRE |
+| STAT_FRIENDLY_FIRE | StatsEnumerated::STAT_FRIENDLY_FIRE |
 | LOCKPICKING | StatsEnumerated::STAT_LOCKPICKING |
+| STAT_LOCKPICKING | StatsEnumerated::STAT_LOCKPICKING |
 | SMITHING_BOW | StatsEnumerated::STAT_SMITHING_BOW |
+| STAT_SMITHING_BOW | StatsEnumerated::STAT_SMITHING_BOW |
 | END | StatsEnumerated::STAT_END |
+| STAT_END | StatsEnumerated::STAT_END |
 | PrimaryWeaponDamage | StatsEnumerated::_PrimaryWeaponDamage |
+| _PrimaryWeaponDamage | StatsEnumerated::_PrimaryWeaponDamage |
 | PrimaryWeaponSpeed | StatsEnumerated::_PrimaryWeaponSpeed |
+| _PrimaryWeaponSpeed | StatsEnumerated::_PrimaryWeaponSpeed |
 | SecondaryWeaponDamage | StatsEnumerated::_SecondaryWeaponDamage |
+| _SecondaryWeaponDamage | StatsEnumerated::_SecondaryWeaponDamage |
 | SecondaryWeaponSpeed | StatsEnumerated::_SecondaryWeaponSpeed |
+| _SecondaryWeaponSpeed | StatsEnumerated::_SecondaryWeaponSpeed |
 | MaxCarryWeight | StatsEnumerated::_MaxCarryWeight |
+| _MaxCarryWeight | StatsEnumerated::_MaxCarryWeight |
 | StrengthXPRateWalk | StatsEnumerated::_StrengthXPRateWalk |
+| _StrengthXPRateWalk | StatsEnumerated::_StrengthXPRateWalk |
 | StrengthXPRateCombat | StatsEnumerated::_StrengthXPRateCombat |
+| _StrengthXPRateCombat | StatsEnumerated::_StrengthXPRateCombat |
 | AttackSpeedHeavyWeapons | StatsEnumerated::_AttackSpeedHeavyWeapons |
+| _AttackSpeedHeavyWeapons | StatsEnumerated::_AttackSpeedHeavyWeapons |
 | DamageResistance | StatsEnumerated::_DamageResistance |
+| _DamageResistance | StatsEnumerated::_DamageResistance |
 | ToughnessXPRate | StatsEnumerated::_ToughnessXPRate |
+| _ToughnessXPRate | StatsEnumerated::_ToughnessXPRate |
 | KnockoutTime | StatsEnumerated::_KnockoutTime |
+| _KnockoutTime | StatsEnumerated::_KnockoutTime |
 | ToughnessKnockoutPoint | StatsEnumerated::_ToughnessKnockoutPoint |
+| _ToughnessKnockoutPoint | StatsEnumerated::_ToughnessKnockoutPoint |
 | WoundDeteriorationSpeed | StatsEnumerated::_WoundDeteriorationSpeed |
+| _WoundDeteriorationSpeed | StatsEnumerated::_WoundDeteriorationSpeed |
 | MaxRunSpeed | StatsEnumerated::_MaxRunSpeed |
+| _MaxRunSpeed | StatsEnumerated::_MaxRunSpeed |
 | CurrentRunSpeed | StatsEnumerated::_CurrentRunSpeed |
+| _CurrentRunSpeed | StatsEnumerated::_CurrentRunSpeed |
 | AthleticsXPBonus | StatsEnumerated::_AthleticsXPBonus |
+| _AthleticsXPBonus | StatsEnumerated::_AthleticsXPBonus |
 | TurretAccuracy | StatsEnumerated::_TurretAccuracy |
+| _TurretAccuracy | StatsEnumerated::_TurretAccuracy |
 | TurretRateOfFire | StatsEnumerated::_TurretRateOfFire |
+| _TurretRateOfFire | StatsEnumerated::_TurretRateOfFire |
 | TurretFriendlyFireAvoidance | StatsEnumerated::_TurretFriendlyFireAvoidance |
+| _TurretFriendlyFireAvoidance | StatsEnumerated::_TurretFriendlyFireAvoidance |
 | BuildingRate | StatsEnumerated::_BuildingRate |
+| _BuildingRate | StatsEnumerated::_BuildingRate |
 | RepairingRate | StatsEnumerated::_RepairingRate |
+| _RepairingRate | StatsEnumerated::_RepairingRate |
 | Mining | StatsEnumerated::_Mining |
+| _Mining | StatsEnumerated::_Mining |
 | Farming | StatsEnumerated::_Farming |
+| _Farming | StatsEnumerated::_Farming |
 | UsingMachinery | StatsEnumerated::_UsingMachinery |
+| _UsingMachinery | StatsEnumerated::_UsingMachinery |
 | Encumbrance | StatsEnumerated::_encumbrance |
-| CombatSpeed | StatsEnumerated::_combatSpeed |
-#### also
-| Name | Value |
-|---|---|
 | encumbrance | StatsEnumerated::_encumbrance |
+| _encumbrance | StatsEnumerated::_encumbrance |
+| CombatSpeed | StatsEnumerated::_combatSpeed |
 | combatSpeed | StatsEnumerated::_combatSpeed |
+| _combatSpeed | StatsEnumerated::_combatSpeed |
 
 ### EventTriggerEnum
 | Name | Value |
 |---|---|
 | EV_NONE | EventTriggerEnum::EV_NONE |
-| EV_PLAYER_TALK_TO_ME | EventTriggerEnum::EV_PLAYER_TALK_TO_ME |
-| EV_ANNOUNCEMENT | EventTriggerEnum::EV_ANNOUNCEMENT |
-| EV_I_SEE_NEUTRAL_SQUAD | EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD |
-| EV_I_SEE_RAGDOLL | EventTriggerEnum::EV_I_SEE_RAGDOLL |
-| EV_______ | EventTriggerEnum::EV_______ |
-| EV_I_________ | EventTriggerEnum::EV_I_________ |
-| EV_SHOO_FROM_MY_BUILDING | EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING |
-| EV_MARKED_FOR_DEATH | EventTriggerEnum::EV_MARKED_FOR_DEATH |
-| EV_SCREAMING_TORTURE | EventTriggerEnum::EV_SCREAMING_TORTURE |
-| EV_BAR_TALK | EventTriggerEnum::EV_BAR_TALK |
-| EV_UNLOCK_MY_CAGE_OR_SHACKLES | EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES |
-| EV_UNLOCK_MY_CAGE_ATTEMPT | EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT |
-| EV_I_DEFEATED_SQUAD | EventTriggerEnum::EV_I_DEFEATED_SQUAD |
-| EV_LAUNCH_ATTACK | EventTriggerEnum::EV_LAUNCH_ATTACK |
-| EV_INTRUDER_FOUND | EventTriggerEnum::EV_INTRUDER_FOUND |
-| EV_HEALING_OTHER_START | EventTriggerEnum::EV_HEALING_OTHER_START |
-| EV_BEING_HEALED_START | EventTriggerEnum::EV_BEING_HEALED_START |
-| EV_HEALING_OTHER_FINISHED | EventTriggerEnum::EV_HEALING_OTHER_FINISHED |
-| EV_BEING_HEALED_FINISHED | EventTriggerEnum::EV_BEING_HEALED_FINISHED |
-| EV_FIRSTAID_KIT_EMPTY | EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY |
-| EV_GET_UP_PEACE | EventTriggerEnum::EV_GET_UP_PEACE |
-| EV_GET_UP_FIGHT | EventTriggerEnum::EV_GET_UP_FIGHT |
-| EV_GET_UP_UNNECCESSARY_FIGHT | EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT |
-| EV_HARRASSMENT_SHOUTS | EventTriggerEnum::EV_HARRASSMENT_SHOUTS |
-| EV_I_SEE_ANIMAL_SQUAD | EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD |
-| EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET |
-| EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS |
-| EV_CONTRACT_JOB_ENDED | EventTriggerEnum::EV_CONTRACT_JOB_ENDED |
-| EV_BETRAYAL | EventTriggerEnum::EV_BETRAYAL |
-| EV_LOOTING_WEAPON_ONLY | EventTriggerEnum::EV_LOOTING_WEAPON_ONLY |
-| EV_LOOTING_EVERYTHING | EventTriggerEnum::EV_LOOTING_EVERYTHING |
-| EV_I_SEE_UNIFORM_IMPOSTER | EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER |
-| EV_INTRODUCING_NEW_SLAVE | EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE |
-| EV_ESCAPING_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED |
-| EV_RECAPTURED_A_SLAVE | EventTriggerEnum::EV_RECAPTURED_A_SLAVE |
-| EV_SHOUT_AT_SLAVE_WORKER | EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER |
-| EV_SLAVE_DELIVERY | EventTriggerEnum::EV_SLAVE_DELIVERY |
-| EV_ESCAPED_EX_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED |
-| EV_WITNESS_GENERIC_ASSAULT | EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT |
-| EV_WITNESS_LOOTING_ALLY | EventTriggerEnum::EV_WITNESS_LOOTING_ALLY |
-| EV_WITNESS_THIEF_OR_LOCKPICK | EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK |
-| EV_BOUNTY_SPOTTED | EventTriggerEnum::EV_BOUNTY_SPOTTED |
-| EV_ESCAPED_PRISONER_SPOTTED | EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED |
-| EV_PRISONER_FREE_TO_GO | EventTriggerEnum::EV_PRISONER_FREE_TO_GO |
-| EV_ALMOST_WOKE_UP | EventTriggerEnum::EV_ALMOST_WOKE_UP |
-| EV_ENTER_BIOME | EventTriggerEnum::EV_ENTER_BIOME |
-| EV_ENTER_TOWN | EventTriggerEnum::EV_ENTER_TOWN |
-| EV_SQUAD_BROKEN | EventTriggerEnum::EV_SQUAD_BROKEN |
-| EV_BOUGHT_ME_FROM_SLAVERY | EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY |
-| EV_EATING_SOMETHING_SOUNDS | EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS |
-| EV_WORSHIPING_SOMETHING | EventTriggerEnum::EV_WORSHIPING_SOMETHING |
-| EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR |
-| EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE |
-| EV_ASSASSINATION_FAILED | EventTriggerEnum::EV_ASSASSINATION_FAILED |
-| EV_EATING_MY_CROPS | EventTriggerEnum::EV_EATING_MY_CROPS |
-| EV_KIDNAPPING_MY_ALLY | EventTriggerEnum::EV_KIDNAPPING_MY_ALLY |
-| EV_USING_MY_TRAINING_EQUIPMENT | EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT |
-| EV_GIVE_UP_CHASE | EventTriggerEnum::EV_GIVE_UP_CHASE |
-| EV_ACID_FEET | EventTriggerEnum::EV_ACID_FEET |
-| EV_ACID_RAIN | EventTriggerEnum::EV_ACID_RAIN |
-| EV_ACID_WATER | EventTriggerEnum::EV_ACID_WATER |
-| EV_WINDY | EventTriggerEnum::EV_WINDY |
-| EV_POISON_GAS | EventTriggerEnum::EV_POISON_GAS |
-| EV_I_SEE_ENEMY_PLAYER | EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER |
-| EV_I_SEE_ALLY_PLAYER | EventTriggerEnum::EV_I_SEE_ALLY_PLAYER |
-| EV_I_SEE_ILLEGAL_PLAYER_BUILDING | EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING |
-| EV_BURNING | EventTriggerEnum::EV_BURNING |
-| EV_LOST_LEG | EventTriggerEnum::EV_LOST_LEG |
-| EV_LOST_ARM | EventTriggerEnum::EV_LOST_ARM |
-| EV_I_SEE_PLAYER_NICE_BUILDING | EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING |
-| EV_TAKEN_OVER_PLAYER_TOWN | EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN |
-| EV_CROWD_TRIGGERED | EventTriggerEnum::EV_CROWD_TRIGGERED |
-| EV_MAX | EventTriggerEnum::EV_MAX |
-#### or
-| Name | Value |
-|---|---|
 | NONE | EventTriggerEnum::EV_NONE |
+| EV_PLAYER_TALK_TO_ME | EventTriggerEnum::EV_PLAYER_TALK_TO_ME |
 | PLAYER_TALK_TO_ME | EventTriggerEnum::EV_PLAYER_TALK_TO_ME |
+| EV_ANNOUNCEMENT | EventTriggerEnum::EV_ANNOUNCEMENT |
 | ANNOUNCEMENT | EventTriggerEnum::EV_ANNOUNCEMENT |
+| EV_I_SEE_NEUTRAL_SQUAD | EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD |
 | I_SEE_NEUTRAL_SQUAD | EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD |
+| EV_I_SEE_RAGDOLL | EventTriggerEnum::EV_I_SEE_RAGDOLL |
 | I_SEE_RAGDOLL | EventTriggerEnum::EV_I_SEE_RAGDOLL |
+| EV_______ | EventTriggerEnum::EV_______ |
 | ______ | EventTriggerEnum::EV_______ |
+| EV_I_________ | EventTriggerEnum::EV_I_________ |
 | I_________ | EventTriggerEnum::EV_I_________ |
+| EV_SHOO_FROM_MY_BUILDING | EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING |
 | SHOO_FROM_MY_BUILDING | EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING |
+| EV_MARKED_FOR_DEATH | EventTriggerEnum::EV_MARKED_FOR_DEATH |
 | MARKED_FOR_DEATH | EventTriggerEnum::EV_MARKED_FOR_DEATH |
+| EV_SCREAMING_TORTURE | EventTriggerEnum::EV_SCREAMING_TORTURE |
 | SCREAMING_TORTURE | EventTriggerEnum::EV_SCREAMING_TORTURE |
+| EV_BAR_TALK | EventTriggerEnum::EV_BAR_TALK |
 | BAR_TALK | EventTriggerEnum::EV_BAR_TALK |
+| EV_UNLOCK_MY_CAGE_OR_SHACKLES | EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES |
 | UNLOCK_MY_CAGE_OR_SHACKLES | EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES |
+| EV_UNLOCK_MY_CAGE_ATTEMPT | EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT |
 | UNLOCK_MY_CAGE_ATTEMPT | EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT |
+| EV_I_DEFEATED_SQUAD | EventTriggerEnum::EV_I_DEFEATED_SQUAD |
 | I_DEFEATED_SQUAD | EventTriggerEnum::EV_I_DEFEATED_SQUAD |
+| EV_LAUNCH_ATTACK | EventTriggerEnum::EV_LAUNCH_ATTACK |
 | LAUNCH_ATTACK | EventTriggerEnum::EV_LAUNCH_ATTACK |
+| EV_INTRUDER_FOUND | EventTriggerEnum::EV_INTRUDER_FOUND |
 | INTRUDER_FOUND | EventTriggerEnum::EV_INTRUDER_FOUND |
+| EV_HEALING_OTHER_START | EventTriggerEnum::EV_HEALING_OTHER_START |
 | HEALING_OTHER_START | EventTriggerEnum::EV_HEALING_OTHER_START |
+| EV_BEING_HEALED_START | EventTriggerEnum::EV_BEING_HEALED_START |
 | BEING_HEALED_START | EventTriggerEnum::EV_BEING_HEALED_START |
+| EV_HEALING_OTHER_FINISHED | EventTriggerEnum::EV_HEALING_OTHER_FINISHED |
 | HEALING_OTHER_FINISHED | EventTriggerEnum::EV_HEALING_OTHER_FINISHED |
+| EV_BEING_HEALED_FINISHED | EventTriggerEnum::EV_BEING_HEALED_FINISHED |
 | BEING_HEALED_FINISHED | EventTriggerEnum::EV_BEING_HEALED_FINISHED |
+| EV_FIRSTAID_KIT_EMPTY | EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY |
 | FIRSTAID_KIT_EMPTY | EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY |
+| EV_GET_UP_PEACE | EventTriggerEnum::EV_GET_UP_PEACE |
 | GET_UP_PEACE | EventTriggerEnum::EV_GET_UP_PEACE |
+| EV_GET_UP_FIGHT | EventTriggerEnum::EV_GET_UP_FIGHT |
 | GET_UP_FIGHT | EventTriggerEnum::EV_GET_UP_FIGHT |
+| EV_GET_UP_UNNECCESSARY_FIGHT | EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT |
 | GET_UP_UNNECCESSARY_FIGHT | EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT |
+| EV_HARRASSMENT_SHOUTS | EventTriggerEnum::EV_HARRASSMENT_SHOUTS |
 | HARRASSMENT_SHOUTS | EventTriggerEnum::EV_HARRASSMENT_SHOUTS |
+| EV_I_SEE_ANIMAL_SQUAD | EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD |
 | I_SEE_ANIMAL_SQUAD | EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD |
+| EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET |
 | SPEECH_INTERRUPTED_ATTACKED_BY_TARGET | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET |
+| EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS |
 | SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS |
+| EV_CONTRACT_JOB_ENDED | EventTriggerEnum::EV_CONTRACT_JOB_ENDED |
 | CONTRACT_JOB_ENDED | EventTriggerEnum::EV_CONTRACT_JOB_ENDED |
+| EV_BETRAYAL | EventTriggerEnum::EV_BETRAYAL |
 | BETRAYAL | EventTriggerEnum::EV_BETRAYAL |
+| EV_LOOTING_WEAPON_ONLY | EventTriggerEnum::EV_LOOTING_WEAPON_ONLY |
 | LOOTING_WEAPON_ONLY | EventTriggerEnum::EV_LOOTING_WEAPON_ONLY |
+| EV_LOOTING_EVERYTHING | EventTriggerEnum::EV_LOOTING_EVERYTHING |
 | LOOTING_EVERYTHING | EventTriggerEnum::EV_LOOTING_EVERYTHING |
+| EV_I_SEE_UNIFORM_IMPOSTER | EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER |
 | I_SEE_UNIFORM_IMPOSTER | EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER |
+| EV_INTRODUCING_NEW_SLAVE | EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE |
 | INTRODUCING_NEW_SLAVE | EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE |
+| EV_ESCAPING_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED |
 | ESCAPING_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED |
+| EV_RECAPTURED_A_SLAVE | EventTriggerEnum::EV_RECAPTURED_A_SLAVE |
 | RECAPTURED_A_SLAVE | EventTriggerEnum::EV_RECAPTURED_A_SLAVE |
+| EV_SHOUT_AT_SLAVE_WORKER | EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER |
 | SHOUT_AT_SLAVE_WORKER | EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER |
+| EV_SLAVE_DELIVERY | EventTriggerEnum::EV_SLAVE_DELIVERY |
 | SLAVE_DELIVERY | EventTriggerEnum::EV_SLAVE_DELIVERY |
+| EV_ESCAPED_EX_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED |
 | ESCAPED_EX_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED |
+| EV_WITNESS_GENERIC_ASSAULT | EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT |
 | WITNESS_GENERIC_ASSAULT | EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT |
+| EV_WITNESS_LOOTING_ALLY | EventTriggerEnum::EV_WITNESS_LOOTING_ALLY |
 | WITNESS_LOOTING_ALLY | EventTriggerEnum::EV_WITNESS_LOOTING_ALLY |
+| EV_WITNESS_THIEF_OR_LOCKPICK | EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK |
 | WITNESS_THIEF_OR_LOCKPICK | EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK |
+| EV_BOUNTY_SPOTTED | EventTriggerEnum::EV_BOUNTY_SPOTTED |
 | BOUNTY_SPOTTED | EventTriggerEnum::EV_BOUNTY_SPOTTED |
+| EV_ESCAPED_PRISONER_SPOTTED | EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED |
 | ESCAPED_PRISONER_SPOTTED | EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED |
+| EV_PRISONER_FREE_TO_GO | EventTriggerEnum::EV_PRISONER_FREE_TO_GO |
 | PRISONER_FREE_TO_GO | EventTriggerEnum::EV_PRISONER_FREE_TO_GO |
+| EV_ALMOST_WOKE_UP | EventTriggerEnum::EV_ALMOST_WOKE_UP |
 | ALMOST_WOKE_UP | EventTriggerEnum::EV_ALMOST_WOKE_UP |
+| EV_ENTER_BIOME | EventTriggerEnum::EV_ENTER_BIOME |
 | ENTER_BIOME | EventTriggerEnum::EV_ENTER_BIOME |
+| EV_ENTER_TOWN | EventTriggerEnum::EV_ENTER_TOWN |
 | ENTER_TOWN | EventTriggerEnum::EV_ENTER_TOWN |
+| EV_SQUAD_BROKEN | EventTriggerEnum::EV_SQUAD_BROKEN |
 | SQUAD_BROKEN | EventTriggerEnum::EV_SQUAD_BROKEN |
+| EV_BOUGHT_ME_FROM_SLAVERY | EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY |
 | BOUGHT_ME_FROM_SLAVERY | EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY |
+| EV_EATING_SOMETHING_SOUNDS | EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS |
 | EATING_SOMETHING_SOUNDS | EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS |
+| EV_WORSHIPING_SOMETHING | EventTriggerEnum::EV_WORSHIPING_SOMETHING |
 | WORSHIPING_SOMETHING | EventTriggerEnum::EV_WORSHIPING_SOMETHING |
+| EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR |
 | SLAVE_ESCAPE_OPPORTUNITY_SAVIOR | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR |
+| EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE |
 | SLAVE_ESCAPE_OPPORTUNITY_ALONE | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE |
+| EV_ASSASSINATION_FAILED | EventTriggerEnum::EV_ASSASSINATION_FAILED |
 | ASSASSINATION_FAILED | EventTriggerEnum::EV_ASSASSINATION_FAILED |
+| EV_EATING_MY_CROPS | EventTriggerEnum::EV_EATING_MY_CROPS |
 | EATING_MY_CROPS | EventTriggerEnum::EV_EATING_MY_CROPS |
+| EV_KIDNAPPING_MY_ALLY | EventTriggerEnum::EV_KIDNAPPING_MY_ALLY |
 | KIDNAPPING_MY_ALLY | EventTriggerEnum::EV_KIDNAPPING_MY_ALLY |
+| EV_USING_MY_TRAINING_EQUIPMENT | EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT |
 | USING_MY_TRAINING_EQUIPMENT | EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT |
+| EV_GIVE_UP_CHASE | EventTriggerEnum::EV_GIVE_UP_CHASE |
 | GIVE_UP_CHASE | EventTriggerEnum::EV_GIVE_UP_CHASE |
+| EV_ACID_FEET | EventTriggerEnum::EV_ACID_FEET |
 | ACID_FEET | EventTriggerEnum::EV_ACID_FEET |
+| EV_ACID_RAIN | EventTriggerEnum::EV_ACID_RAIN |
 | ACID_RAIN | EventTriggerEnum::EV_ACID_RAIN |
+| EV_ACID_WATER | EventTriggerEnum::EV_ACID_WATER |
 | ACID_WATER | EventTriggerEnum::EV_ACID_WATER |
+| EV_WINDY | EventTriggerEnum::EV_WINDY |
 | WINDY | EventTriggerEnum::EV_WINDY |
+| EV_POISON_GAS | EventTriggerEnum::EV_POISON_GAS |
 | POISON_GAS | EventTriggerEnum::EV_POISON_GAS |
+| EV_I_SEE_ENEMY_PLAYER | EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER |
 | I_SEE_ENEMY_PLAYER | EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER |
+| EV_I_SEE_ALLY_PLAYER | EventTriggerEnum::EV_I_SEE_ALLY_PLAYER |
 | I_SEE_ALLY_PLAYER | EventTriggerEnum::EV_I_SEE_ALLY_PLAYER |
+| EV_I_SEE_ILLEGAL_PLAYER_BUILDING | EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING |
 | I_SEE_ILLEGAL_PLAYER_BUILDING | EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING |
+| EV_BURNING | EventTriggerEnum::EV_BURNING |
 | BURNING | EventTriggerEnum::EV_BURNING |
+| EV_LOST_LEG | EventTriggerEnum::EV_LOST_LEG |
 | LOST_LEG | EventTriggerEnum::EV_LOST_LEG |
+| EV_LOST_ARM | EventTriggerEnum::EV_LOST_ARM |
 | LOST_ARM | EventTriggerEnum::EV_LOST_ARM |
+| EV_I_SEE_PLAYER_NICE_BUILDING | EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING |
 | I_SEE_PLAYER_NICE_BUILDING | EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING |
+| EV_TAKEN_OVER_PLAYER_TOWN | EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN |
 | TAKEN_OVER_PLAYER_TOWN | EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN |
+| EV_CROWD_TRIGGERED | EventTriggerEnum::EV_CROWD_TRIGGERED |
 | CROWD_TRIGGERED | EventTriggerEnum::EV_CROWD_TRIGGERED |
+| EV_MAX | EventTriggerEnum::EV_MAX |
 | MAX | EventTriggerEnum::EV_MAX |
 
 ### DialogConditionEnum
 | Name | Value |
 |---|---|
 | DC_NONE | DialogConditionEnum::DC_NONE |
-| DC_RELATIONS | DialogConditionEnum::DC_RELATIONS |
-| DC_PLAYERMONEY | DialogConditionEnum::DC_PLAYERMONEY |
-| DC_REPUTATION | DialogConditionEnum::DC_REPUTATION |
-| DC_CARRYING_BOUNTY_ALIVE | DialogConditionEnum::DC_CARRYING_BOUNTY_ALIVE |
-| DC_CARRYING_BOUNTY_DEAD | DialogConditionEnum::DC_CARRYING_BOUNTY_DEAD |
-| DC_FACTION_VARIABLE | DialogConditionEnum::DC_FACTION_VARIABLE |
-| DC_IMPRISONED_BY_TARGET | DialogConditionEnum::DC_IMPRISONED_BY_TARGET |
-| DC_IMPRISONED_BY_OTHER | DialogConditionEnum::DC_IMPRISONED_BY_OTHER |
-| DC_IS_A_TRADER | DialogConditionEnum::DC_IS_A_TRADER |
-| DC_FACTION_RANK | DialogConditionEnum::DC_FACTION_RANK |
-| DC_BUILDING_IS_CLOSED_AND_SECURED | DialogConditionEnum::DC_BUILDING_IS_CLOSED_AND_SECURED |
-| DC_PLAYER_TECH_LEVEL | DialogConditionEnum::DC_PLAYER_TECH_LEVEL |
-| DC_NUM_DIALOG_EVENT_REPEATS | DialogConditionEnum::DC_NUM_DIALOG_EVENT_REPEATS |
-| DC_IS_IMPRISONED | DialogConditionEnum::DC_IS_IMPRISONED |
-| DC_IMPRISONMENT_IS_DEATHROW | DialogConditionEnum::DC_IMPRISONMENT_IS_DEATHROW |
-| DC_TARGET_IN_TALKING_RANGE | DialogConditionEnum::DC_TARGET_IN_TALKING_RANGE |
-| DC_IN_MY_BUILDING | DialogConditionEnum::DC_IN_MY_BUILDING |
-| DC_TARGET_LAST_SEEN_X_HOURS_AGO | DialogConditionEnum::DC_TARGET_LAST_SEEN_X_HOURS_AGO |
-| DC_IS_LEADER | DialogConditionEnum::DC_IS_LEADER |
-| DC_MET_TARGET_BEFORE | DialogConditionEnum::DC_MET_TARGET_BEFORE |
-| DC_WEAKER_THAN_ME | DialogConditionEnum::DC_WEAKER_THAN_ME |
-| DC_STRONGER_THAN_ME | DialogConditionEnum::DC_STRONGER_THAN_ME |
-| DC_HAS_TAG | DialogConditionEnum::DC_HAS_TAG |
-| DC_IS_ALLY | DialogConditionEnum::DC_IS_ALLY |
-| DC_IS_ENEMY | DialogConditionEnum::DC_IS_ENEMY |
-| DC_PERSONALITY_TAG | DialogConditionEnum::DC_PERSONALITY_TAG |
-| DC_BROKEN_LEG | DialogConditionEnum::DC_BROKEN_LEG |
-| DC_BROKEN_ARM | DialogConditionEnum::DC_BROKEN_ARM |
-| DC_DAMAGED_HEAD | DialogConditionEnum::DC_DAMAGED_HEAD |
-| DC_NEARLY_KO | DialogConditionEnum::DC_NEARLY_KO |
-| DC_IN_A_NON_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_NON_PLAYER_TOWN |
-| DC_IS_RUNNING | DialogConditionEnum::DC_IS_RUNNING |
-| DC_COPS_AROUND | DialogConditionEnum::DC_COPS_AROUND |
-| DC_SQUAD_SIZE | DialogConditionEnum::DC_SQUAD_SIZE |
-| DC_IS_PLAYER | DialogConditionEnum::DC_IS_PLAYER |
-| DC_NUM_BACKPACKS | DialogConditionEnum::DC_NUM_BACKPACKS |
-| DC_SQUAD_ONLY_ANIMALS | DialogConditionEnum::DC_SQUAD_ONLY_ANIMALS |
-| DC_IS_OUTNUMBERED | DialogConditionEnum::DC_IS_OUTNUMBERED |
-| DC_BOUNTY_AMOUNT_PERCEIVED | DialogConditionEnum::DC_BOUNTY_AMOUNT_PERCEIVED |
-| DC_IS_KO | DialogConditionEnum::DC_IS_KO |
-| DC_IS_NEARLY_KO | DialogConditionEnum::DC_IS_NEARLY_KO |
-| DC_SQUAD_IS_DOWN | DialogConditionEnum::DC_SQUAD_IS_DOWN |
-| DC_IS_DEAD | DialogConditionEnum::DC_IS_DEAD |
-| DC_IS_FEMALE | DialogConditionEnum::DC_IS_FEMALE |
-| DC_CARRYING_SOMEONE_TO_ENSLAVE | DialogConditionEnum::DC_CARRYING_SOMEONE_TO_ENSLAVE |
-| DC_BOUNTY_AMOUNT_ACTUAL | DialogConditionEnum::DC_BOUNTY_AMOUNT_ACTUAL |
-| DC_IM_UNARMED | DialogConditionEnum::DC_IM_UNARMED |
-| DC_TOWN_HAS_FORTIFICATIONS_WALLS | DialogConditionEnum::DC_TOWN_HAS_FORTIFICATIONS_WALLS |
-| DC_TARGET_IS_MY_MISSION_TARGET | DialogConditionEnum::DC_TARGET_IS_MY_MISSION_TARGET |
-| DC_MY_MISSION_IS_FRIENDLY | DialogConditionEnum::DC_MY_MISSION_IS_FRIENDLY |
-| DC_I_LOVE_THIS_GUY | DialogConditionEnum::DC_I_LOVE_THIS_GUY |
-| DC_I_HATE_THIS_GUY | DialogConditionEnum::DC_I_HATE_THIS_GUY |
-| DC_I_SHOULD_SCREW_THIS_GUY_OVER | DialogConditionEnum::DC_I_SHOULD_SCREW_THIS_GUY_OVER |
-| DC_I_SHOULD_HELP_THIS_GUY | DialogConditionEnum::DC_I_SHOULD_HELP_THIS_GUY |
-| DC_IN_COMBAT | DialogConditionEnum::DC_IN_COMBAT |
-| DC_WITHIN_TOWN_WALLS | DialogConditionEnum::DC_WITHIN_TOWN_WALLS |
-| DC_TOWN_WALLS_LOCKED_UP | DialogConditionEnum::DC_TOWN_WALLS_LOCKED_UP |
-| DC_IS_SLAVE | DialogConditionEnum::DC_IS_SLAVE |
-| DC_HAS_A_BASE_NEARBY | DialogConditionEnum::DC_HAS_A_BASE_NEARBY |
-| DC_TARGET_IS_SLAVE_OF_MY_FACTION | DialogConditionEnum::DC_TARGET_IS_SLAVE_OF_MY_FACTION |
-| DC_IS_ESCAPED_SLAVE | DialogConditionEnum::DC_IS_ESCAPED_SLAVE |
-| DC_IS_IN_LOCKED_CAGE | DialogConditionEnum::DC_IS_IN_LOCKED_CAGE |
-| DC_WEARING_LOCKED_SHACKLES | DialogConditionEnum::DC_WEARING_LOCKED_SHACKLES |
-| DC_IS_SAME_RACE_AS_ME | DialogConditionEnum::DC_IS_SAME_RACE_AS_ME |
-| DC_CAN_AFFORD_BOUNTY | DialogConditionEnum::DC_CAN_AFFORD_BOUNTY |
-| DC_IS_SNEAKING | DialogConditionEnum::DC_IS_SNEAKING |
-| DC_IS_INDOORS | DialogConditionEnum::DC_IS_INDOORS |
-| DC_HAS_ILLEGAL_ITEM | DialogConditionEnum::DC_HAS_ILLEGAL_ITEM |
-| DC_USING_MY_TRAINING_EQUIPMENT | DialogConditionEnum::DC_USING_MY_TRAINING_EQUIPMENT |
-| DC_STARVING | DialogConditionEnum::DC_STARVING |
-| DC_MIXED_GENDER_GROUP | DialogConditionEnum::DC_MIXED_GENDER_GROUP |
-| DC_TOWN_LEVEL_CURRENT_LOCATION | DialogConditionEnum::DC_TOWN_LEVEL_CURRENT_LOCATION |
-| DC_PLAYERS_BEST_TOWN_LEVEL | DialogConditionEnum::DC_PLAYERS_BEST_TOWN_LEVEL |
-| DC_IN_A_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_PLAYER_TOWN |
-| DC_TARGET_CHARACTER_EXISTS | DialogConditionEnum::DC_TARGET_CHARACTER_EXISTS |
-| DC_IS_RECRUITABLE | DialogConditionEnum::DC_IS_RECRUITABLE |
-| DC_HAS_AI_CONTRACT | DialogConditionEnum::DC_HAS_AI_CONTRACT |
-| DC_HAS_ROBOT_LIMBS | DialogConditionEnum::DC_HAS_ROBOT_LIMBS |
-| DC_END | DialogConditionEnum::DC_END |
-#### or
-| Name | Value |
-|---|---|
 | NONE | DialogConditionEnum::DC_NONE |
+| DC_RELATIONS | DialogConditionEnum::DC_RELATIONS |
 | RELATIONS | DialogConditionEnum::DC_RELATIONS |
+| DC_PLAYERMONEY | DialogConditionEnum::DC_PLAYERMONEY |
 | PLAYERMONEY | DialogConditionEnum::DC_PLAYERMONEY |
+| DC_REPUTATION | DialogConditionEnum::DC_REPUTATION |
 | REPUTATION | DialogConditionEnum::DC_REPUTATION |
+| DC_CARRYING_BOUNTY_ALIVE | DialogConditionEnum::DC_CARRYING_BOUNTY_ALIVE |
 | CARRYING_BOUNTY_ALIVE | DialogConditionEnum::DC_CARRYING_BOUNTY_ALIVE |
+| DC_CARRYING_BOUNTY_DEAD | DialogConditionEnum::DC_CARRYING_BOUNTY_DEAD |
 | CARRYING_BOUNTY_DEAD | DialogConditionEnum::DC_CARRYING_BOUNTY_DEAD |
+| DC_FACTION_VARIABLE | DialogConditionEnum::DC_FACTION_VARIABLE |
 | FACTION_VARIABLE | DialogConditionEnum::DC_FACTION_VARIABLE |
+| DC_IMPRISONED_BY_TARGET | DialogConditionEnum::DC_IMPRISONED_BY_TARGET |
 | IMPRISONED_BY_TARGET | DialogConditionEnum::DC_IMPRISONED_BY_TARGET |
+| DC_IMPRISONED_BY_OTHER | DialogConditionEnum::DC_IMPRISONED_BY_OTHER |
 | IMPRISONED_BY_OTHER | DialogConditionEnum::DC_IMPRISONED_BY_OTHER |
+| DC_IS_A_TRADER | DialogConditionEnum::DC_IS_A_TRADER |
 | IS_A_TRADER | DialogConditionEnum::DC_IS_A_TRADER |
+| DC_FACTION_RANK | DialogConditionEnum::DC_FACTION_RANK |
 | FACTION_RANK | DialogConditionEnum::DC_FACTION_RANK |
+| DC_BUILDING_IS_CLOSED_AND_SECURED | DialogConditionEnum::DC_BUILDING_IS_CLOSED_AND_SECURED |
 | BUILDING_IS_CLOSED_AND_SECURED | DialogConditionEnum::DC_BUILDING_IS_CLOSED_AND_SECURED |
+| DC_PLAYER_TECH_LEVEL | DialogConditionEnum::DC_PLAYER_TECH_LEVEL |
 | PLAYER_TECH_LEVEL | DialogConditionEnum::DC_PLAYER_TECH_LEVEL |
+| DC_NUM_DIALOG_EVENT_REPEATS | DialogConditionEnum::DC_NUM_DIALOG_EVENT_REPEATS |
 | NUM_DIALOG_EVENT_REPEATS | DialogConditionEnum::DC_NUM_DIALOG_EVENT_REPEATS |
+| DC_IS_IMPRISONED | DialogConditionEnum::DC_IS_IMPRISONED |
 | IS_IMPRISONED | DialogConditionEnum::DC_IS_IMPRISONED |
+| DC_IMPRISONMENT_IS_DEATHROW | DialogConditionEnum::DC_IMPRISONMENT_IS_DEATHROW |
 | IMPRISONMENT_IS_DEATHROW | DialogConditionEnum::DC_IMPRISONMENT_IS_DEATHROW |
+| DC_TARGET_IN_TALKING_RANGE | DialogConditionEnum::DC_TARGET_IN_TALKING_RANGE |
 | TARGET_IN_TALKING_RANGE | DialogConditionEnum::DC_TARGET_IN_TALKING_RANGE |
+| DC_IN_MY_BUILDING | DialogConditionEnum::DC_IN_MY_BUILDING |
 | IN_MY_BUILDING | DialogConditionEnum::DC_IN_MY_BUILDING |
+| DC_TARGET_LAST_SEEN_X_HOURS_AGO | DialogConditionEnum::DC_TARGET_LAST_SEEN_X_HOURS_AGO |
 | TARGET_LAST_SEEN_X_HOURS_AGO | DialogConditionEnum::DC_TARGET_LAST_SEEN_X_HOURS_AGO |
+| DC_IS_LEADER | DialogConditionEnum::DC_IS_LEADER |
 | IS_LEADER | DialogConditionEnum::DC_IS_LEADER |
+| DC_MET_TARGET_BEFORE | DialogConditionEnum::DC_MET_TARGET_BEFORE |
 | MET_TARGET_BEFORE | DialogConditionEnum::DC_MET_TARGET_BEFORE |
+| DC_WEAKER_THAN_ME | DialogConditionEnum::DC_WEAKER_THAN_ME |
 | WEAKER_THAN_ME | DialogConditionEnum::DC_WEAKER_THAN_ME |
+| DC_STRONGER_THAN_ME | DialogConditionEnum::DC_STRONGER_THAN_ME |
 | STRONGER_THAN_ME | DialogConditionEnum::DC_STRONGER_THAN_ME |
+| DC_HAS_TAG | DialogConditionEnum::DC_HAS_TAG |
 | HAS_TAG | DialogConditionEnum::DC_HAS_TAG |
+| DC_IS_ALLY | DialogConditionEnum::DC_IS_ALLY |
 | IS_ALLY | DialogConditionEnum::DC_IS_ALLY |
+| DC_IS_ENEMY | DialogConditionEnum::DC_IS_ENEMY |
 | IS_ENEMY | DialogConditionEnum::DC_IS_ENEMY |
+| DC_PERSONALITY_TAG | DialogConditionEnum::DC_PERSONALITY_TAG |
 | PERSONALITY_TAG | DialogConditionEnum::DC_PERSONALITY_TAG |
+| DC_BROKEN_LEG | DialogConditionEnum::DC_BROKEN_LEG |
 | BROKEN_LEG | DialogConditionEnum::DC_BROKEN_LEG |
+| DC_BROKEN_ARM | DialogConditionEnum::DC_BROKEN_ARM |
 | BROKEN_ARM | DialogConditionEnum::DC_BROKEN_ARM |
+| DC_DAMAGED_HEAD | DialogConditionEnum::DC_DAMAGED_HEAD |
 | DAMAGED_HEAD | DialogConditionEnum::DC_DAMAGED_HEAD |
+| DC_NEARLY_KO | DialogConditionEnum::DC_NEARLY_KO |
 | NEARLY_KO | DialogConditionEnum::DC_NEARLY_KO |
+| DC_IN_A_NON_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_NON_PLAYER_TOWN |
 | IN_A_NON_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_NON_PLAYER_TOWN |
+| DC_IS_RUNNING | DialogConditionEnum::DC_IS_RUNNING |
 | IS_RUNNING | DialogConditionEnum::DC_IS_RUNNING |
+| DC_COPS_AROUND | DialogConditionEnum::DC_COPS_AROUND |
 | COPS_AROUND | DialogConditionEnum::DC_COPS_AROUND |
+| DC_SQUAD_SIZE | DialogConditionEnum::DC_SQUAD_SIZE |
 | SQUAD_SIZE | DialogConditionEnum::DC_SQUAD_SIZE |
+| DC_IS_PLAYER | DialogConditionEnum::DC_IS_PLAYER |
 | IS_PLAYER | DialogConditionEnum::DC_IS_PLAYER |
+| DC_NUM_BACKPACKS | DialogConditionEnum::DC_NUM_BACKPACKS |
 | NUM_BACKPACKS | DialogConditionEnum::DC_NUM_BACKPACKS |
+| DC_SQUAD_ONLY_ANIMALS | DialogConditionEnum::DC_SQUAD_ONLY_ANIMALS |
 | SQUAD_ONLY_ANIMALS | DialogConditionEnum::DC_SQUAD_ONLY_ANIMALS |
+| DC_IS_OUTNUMBERED | DialogConditionEnum::DC_IS_OUTNUMBERED |
 | IS_OUTNUMBERED | DialogConditionEnum::DC_IS_OUTNUMBERED |
+| DC_BOUNTY_AMOUNT_PERCEIVED | DialogConditionEnum::DC_BOUNTY_AMOUNT_PERCEIVED |
 | BOUNTY_AMOUNT_PERCEIVED | DialogConditionEnum::DC_BOUNTY_AMOUNT_PERCEIVED |
+| DC_IS_KO | DialogConditionEnum::DC_IS_KO |
 | IS_KO | DialogConditionEnum::DC_IS_KO |
+| DC_IS_NEARLY_KO | DialogConditionEnum::DC_IS_NEARLY_KO |
 | IS_NEARLY_KO | DialogConditionEnum::DC_IS_NEARLY_KO |
+| DC_SQUAD_IS_DOWN | DialogConditionEnum::DC_SQUAD_IS_DOWN |
 | SQUAD_IS_DOWN | DialogConditionEnum::DC_SQUAD_IS_DOWN |
+| DC_IS_DEAD | DialogConditionEnum::DC_IS_DEAD |
 | IS_DEAD | DialogConditionEnum::DC_IS_DEAD |
+| DC_IS_FEMALE | DialogConditionEnum::DC_IS_FEMALE |
 | IS_FEMALE | DialogConditionEnum::DC_IS_FEMALE |
+| DC_CARRYING_SOMEONE_TO_ENSLAVE | DialogConditionEnum::DC_CARRYING_SOMEONE_TO_ENSLAVE |
 | CARRYING_SOMEONE_TO_ENSLAVE | DialogConditionEnum::DC_CARRYING_SOMEONE_TO_ENSLAVE |
+| DC_BOUNTY_AMOUNT_ACTUAL | DialogConditionEnum::DC_BOUNTY_AMOUNT_ACTUAL |
 | BOUNTY_AMOUNT_ACTUAL | DialogConditionEnum::DC_BOUNTY_AMOUNT_ACTUAL |
+| DC_IM_UNARMED | DialogConditionEnum::DC_IM_UNARMED |
 | IM_UNARMED | DialogConditionEnum::DC_IM_UNARMED |
+| DC_TOWN_HAS_FORTIFICATIONS_WALLS | DialogConditionEnum::DC_TOWN_HAS_FORTIFICATIONS_WALLS |
 | TOWN_HAS_FORTIFICATIONS_WALLS | DialogConditionEnum::DC_TOWN_HAS_FORTIFICATIONS_WALLS |
+| DC_TARGET_IS_MY_MISSION_TARGET | DialogConditionEnum::DC_TARGET_IS_MY_MISSION_TARGET |
 | TARGET_IS_MY_MISSION_TARGET | DialogConditionEnum::DC_TARGET_IS_MY_MISSION_TARGET |
+| DC_MY_MISSION_IS_FRIENDLY | DialogConditionEnum::DC_MY_MISSION_IS_FRIENDLY |
 | MY_MISSION_IS_FRIENDLY | DialogConditionEnum::DC_MY_MISSION_IS_FRIENDLY |
+| DC_I_LOVE_THIS_GUY | DialogConditionEnum::DC_I_LOVE_THIS_GUY |
 | I_LOVE_THIS_GUY | DialogConditionEnum::DC_I_LOVE_THIS_GUY |
+| DC_I_HATE_THIS_GUY | DialogConditionEnum::DC_I_HATE_THIS_GUY |
 | I_HATE_THIS_GUY | DialogConditionEnum::DC_I_HATE_THIS_GUY |
+| DC_I_SHOULD_SCREW_THIS_GUY_OVER | DialogConditionEnum::DC_I_SHOULD_SCREW_THIS_GUY_OVER |
 | I_SHOULD_SCREW_THIS_GUY_OVER | DialogConditionEnum::DC_I_SHOULD_SCREW_THIS_GUY_OVER |
+| DC_I_SHOULD_HELP_THIS_GUY | DialogConditionEnum::DC_I_SHOULD_HELP_THIS_GUY |
 | I_SHOULD_HELP_THIS_GUY | DialogConditionEnum::DC_I_SHOULD_HELP_THIS_GUY |
+| DC_IN_COMBAT | DialogConditionEnum::DC_IN_COMBAT |
 | IN_COMBAT | DialogConditionEnum::DC_IN_COMBAT |
+| DC_WITHIN_TOWN_WALLS | DialogConditionEnum::DC_WITHIN_TOWN_WALLS |
 | WITHIN_TOWN_WALLS | DialogConditionEnum::DC_WITHIN_TOWN_WALLS |
+| DC_TOWN_WALLS_LOCKED_UP | DialogConditionEnum::DC_TOWN_WALLS_LOCKED_UP |
 | TOWN_WALLS_LOCKED_UP | DialogConditionEnum::DC_TOWN_WALLS_LOCKED_UP |
+| DC_IS_SLAVE | DialogConditionEnum::DC_IS_SLAVE |
 | IS_SLAVE | DialogConditionEnum::DC_IS_SLAVE |
+| DC_HAS_A_BASE_NEARBY | DialogConditionEnum::DC_HAS_A_BASE_NEARBY |
 | HAS_A_BASE_NEARBY | DialogConditionEnum::DC_HAS_A_BASE_NEARBY |
+| DC_TARGET_IS_SLAVE_OF_MY_FACTION | DialogConditionEnum::DC_TARGET_IS_SLAVE_OF_MY_FACTION |
 | TARGET_IS_SLAVE_OF_MY_FACTION | DialogConditionEnum::DC_TARGET_IS_SLAVE_OF_MY_FACTION |
+| DC_IS_ESCAPED_SLAVE | DialogConditionEnum::DC_IS_ESCAPED_SLAVE |
 | IS_ESCAPED_SLAVE | DialogConditionEnum::DC_IS_ESCAPED_SLAVE |
+| DC_IS_IN_LOCKED_CAGE | DialogConditionEnum::DC_IS_IN_LOCKED_CAGE |
 | IS_IN_LOCKED_CAGE | DialogConditionEnum::DC_IS_IN_LOCKED_CAGE |
+| DC_WEARING_LOCKED_SHACKLES | DialogConditionEnum::DC_WEARING_LOCKED_SHACKLES |
 | WEARING_LOCKED_SHACKLES | DialogConditionEnum::DC_WEARING_LOCKED_SHACKLES |
+| DC_IS_SAME_RACE_AS_ME | DialogConditionEnum::DC_IS_SAME_RACE_AS_ME |
 | IS_SAME_RACE_AS_ME | DialogConditionEnum::DC_IS_SAME_RACE_AS_ME |
+| DC_CAN_AFFORD_BOUNTY | DialogConditionEnum::DC_CAN_AFFORD_BOUNTY |
 | CAN_AFFORD_BOUNTY | DialogConditionEnum::DC_CAN_AFFORD_BOUNTY |
+| DC_IS_SNEAKING | DialogConditionEnum::DC_IS_SNEAKING |
 | IS_SNEAKING | DialogConditionEnum::DC_IS_SNEAKING |
+| DC_IS_INDOORS | DialogConditionEnum::DC_IS_INDOORS |
 | IS_INDOORS | DialogConditionEnum::DC_IS_INDOORS |
+| DC_HAS_ILLEGAL_ITEM | DialogConditionEnum::DC_HAS_ILLEGAL_ITEM |
 | HAS_ILLEGAL_ITEM | DialogConditionEnum::DC_HAS_ILLEGAL_ITEM |
+| DC_USING_MY_TRAINING_EQUIPMENT | DialogConditionEnum::DC_USING_MY_TRAINING_EQUIPMENT |
 | USING_MY_TRAINING_EQUIPMENT | DialogConditionEnum::DC_USING_MY_TRAINING_EQUIPMENT |
+| DC_STARVING | DialogConditionEnum::DC_STARVING |
 | STARVING | DialogConditionEnum::DC_STARVING |
+| DC_MIXED_GENDER_GROUP | DialogConditionEnum::DC_MIXED_GENDER_GROUP |
 | MIXED_GENDER_GROUP | DialogConditionEnum::DC_MIXED_GENDER_GROUP |
+| DC_TOWN_LEVEL_CURRENT_LOCATION | DialogConditionEnum::DC_TOWN_LEVEL_CURRENT_LOCATION |
 | TOWN_LEVEL_CURRENT_LOCATION | DialogConditionEnum::DC_TOWN_LEVEL_CURRENT_LOCATION |
+| DC_PLAYERS_BEST_TOWN_LEVEL | DialogConditionEnum::DC_PLAYERS_BEST_TOWN_LEVEL |
 | PLAYERS_BEST_TOWN_LEVEL | DialogConditionEnum::DC_PLAYERS_BEST_TOWN_LEVEL |
+| DC_IN_A_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_PLAYER_TOWN |
 | IN_A_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_PLAYER_TOWN |
+| DC_TARGET_CHARACTER_EXISTS | DialogConditionEnum::DC_TARGET_CHARACTER_EXISTS |
 | TARGET_CHARACTER_EXISTS | DialogConditionEnum::DC_TARGET_CHARACTER_EXISTS |
+| DC_IS_RECRUITABLE | DialogConditionEnum::DC_IS_RECRUITABLE |
 | IS_RECRUITABLE | DialogConditionEnum::DC_IS_RECRUITABLE |
+| DC_HAS_AI_CONTRACT | DialogConditionEnum::DC_HAS_AI_CONTRACT |
 | HAS_AI_CONTRACT | DialogConditionEnum::DC_HAS_AI_CONTRACT |
+| DC_HAS_ROBOT_LIMBS | DialogConditionEnum::DC_HAS_ROBOT_LIMBS |
 | HAS_ROBOT_LIMBS | DialogConditionEnum::DC_HAS_ROBOT_LIMBS |
+| DC_END | DialogConditionEnum::DC_END |
 | END | DialogConditionEnum::DC_END |
 
 ### ComparisonEnum
 | Name | Value |
 |---|---|
 | CE_EQUALS | ComparisonEnum::CE_EQUALS |
-| CE_LESS_THAN | ComparisonEnum::CE_LESS_THAN |
-| CE_MORE_THAN | ComparisonEnum::CE_MORE_THAN |
-#### or
-| Name | Value |
-|---|---|
 | EQUALS | ComparisonEnum::CE_EQUALS |
+| CE_LESS_THAN | ComparisonEnum::CE_LESS_THAN |
 | LESS_THAN | ComparisonEnum::CE_LESS_THAN |
+| CE_MORE_THAN | ComparisonEnum::CE_MORE_THAN |
 | MORE_THAN | ComparisonEnum::CE_MORE_THAN |
 
 ### GroundType
 | Name | Value |
 |---|---|
 | GROUND_SAND | GroundType::GROUND_SAND |
-| GROUND_GRASS | GroundType::GROUND_GRASS |
-| GROUND_CONCRETE | GroundType::GROUND_CONCRETE |
-| GROUND_WOOD | GroundType::GROUND_WOOD |
-| GROUND_METAL | GroundType::GROUND_METAL |
-| GROUND_WATER | GroundType::GROUND_WATER |
-| GROUND_MUD | GroundType::GROUND_MUD |
-| GROUND_SNOW | GroundType::GROUND_SNOW |
-| GROUND_DIRT | GroundType::GROUND_DIRT |
-#### or
-| Name | Value |
-|---|---|
 | SAND | GroundType::GROUND_SAND |
+| GROUND_GRASS | GroundType::GROUND_GRASS |
 | GRASS | GroundType::GROUND_GRASS |
+| GROUND_CONCRETE | GroundType::GROUND_CONCRETE |
 | CONCRETE | GroundType::GROUND_CONCRETE |
+| GROUND_WOOD | GroundType::GROUND_WOOD |
 | WOOD | GroundType::GROUND_WOOD |
+| GROUND_METAL | GroundType::GROUND_METAL |
 | METAL | GroundType::GROUND_METAL |
+| GROUND_WATER | GroundType::GROUND_WATER |
 | WATER | GroundType::GROUND_WATER |
+| GROUND_MUD | GroundType::GROUND_MUD |
 | MUD | GroundType::GROUND_MUD |
+| GROUND_SNOW | GroundType::GROUND_SNOW |
 | SNOW | GroundType::GROUND_SNOW |
+| GROUND_DIRT | GroundType::GROUND_DIRT |
 | DIRT | GroundType::GROUND_DIRT |
 
 ### EffectType
@@ -3043,13 +3128,10 @@
 | Name | Value |
 |---|---|
 | ZOOM_MIN | MapZoomLevel::ZOOM_MIN |
-| ZOOM_MID | MapZoomLevel::ZOOM_MID |
-| ZOOM_MAX | MapZoomLevel::ZOOM_MAX |
-| ZOOM_CHARACTERS | MapZoomLevel::ZOOM_CHARACTERS |
-#### or
-| Name | Value |
-|---|---|
 | MIN | MapZoomLevel::ZOOM_MIN |
+| ZOOM_MID | MapZoomLevel::ZOOM_MID |
 | MID | MapZoomLevel::ZOOM_MID |
+| ZOOM_MAX | MapZoomLevel::ZOOM_MAX |
 | MAX | MapZoomLevel::ZOOM_MAX |
+| ZOOM_CHARACTERS | MapZoomLevel::ZOOM_CHARACTERS |
 | CHARACTERS | MapZoomLevel::ZOOM_CHARACTERS |
