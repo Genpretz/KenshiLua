@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Bindings/GameDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/OgreUnorderedBinding.h"
 
 #include <kenshi/GameData.h>
 
@@ -87,15 +88,15 @@ int GameDataBinding::index(lua_State* L)
 
     // TODO std::map<std::string, GameData::ObjectInstance, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData::ObjectInstance>, Ogre::GeneralAllocPolicy > > instances; unsupported __index type from header line 160
     if (strcmp(key, "currentID") == 0) { lua_pushinteger(L, s->currentID); return 1; }
-    // TODO boost::unordered::unordered_map<std::string, bool, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy > > activeValues; unsupported __index type from header line 163
-    // TODO boost::unordered::unordered_map<std::string, bool, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy > > bdata; unsupported __index type from header line 164
-    // TODO boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > > sdata; unsupported __index type from header line 165
-    // TODO boost::unordered::unordered_map<std::string, int, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > > idata; unsupported __index type from header line 166
-    // TODO boost::unordered::unordered_map<std::string, float, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, float>, Ogre::GeneralAllocPolicy > > fdata; unsupported __index type from header line 167
-    // TODO boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > > filesdata; unsupported __index type from header line 168
-    // TODO boost::unordered::unordered_map<std::string, Ogre::Vector3, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Vector3>, Ogre::GeneralAllocPolicy > > vecdata; unsupported __index type from header line 169
-    // TODO boost::unordered::unordered_map<std::string, Ogre::Quaternion, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Quaternion>, Ogre::GeneralAllocPolicy > > quatdata; unsupported __index type from header line 170
-    // TODO boost::unordered::unordered_map<std::string, Ogre::vector<GameDataReference>::type, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::vector<GameDataReference>::type >, Ogre::GeneralAllocPolicy > > objectReferences; unsupported __index type from header line 171
+    if (strcmp(key, "activeValues") == 0) return pushObject<StringBoolMapBinding::MapType>(L, &s->activeValues, StringBoolMapMeta());
+    if (strcmp(key, "bdata") == 0) return pushObject<StringBoolMapBinding::MapType>(L, &s->bdata, StringBoolMapMeta());
+    if (strcmp(key, "sdata") == 0) return pushObject<StringStringMapBinding::MapType>(L, &s->sdata, StringStringMapMeta());
+    if (strcmp(key, "idata") == 0) return pushObject<StringIntMapBinding::MapType>(L, &s->idata, StringIntMapMeta());
+    if (strcmp(key, "fdata") == 0) return pushObject<StringFloatMapBinding::MapType>(L, &s->fdata, StringFloatMapMeta());
+    if (strcmp(key, "filesdata") == 0) return pushObject<StringStringMapBinding::MapType>(L, &s->filesdata, StringStringMapMeta());
+    if (strcmp(key, "vecdata") == 0) return pushObject<StringVector3MapBinding::MapType>(L, &s->vecdata, StringVector3MapMeta());
+    if (strcmp(key, "quatdata") == 0) return pushObject<StringQuaternionMapBinding::MapType>(L, &s->quatdata, StringQuaternionMapMeta());
+    if (strcmp(key, "objectReferences") == 0) return pushObject<StringGameDataReferenceVectorMapBinding::MapType>(L, &s->objectReferences, StringGameDataReferenceVectorMapMeta());
     if (strcmp(key, "createdIndex") == 0) { lua_pushinteger(L, s->createdIndex); return 1; }
 
     lua_pushnil(L);

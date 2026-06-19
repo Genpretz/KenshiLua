@@ -1,29 +1,13 @@
-// OgreUnorderedMapBinding.h
 #pragma once
 #include <kenshi/util/OgreUnordered.h>
 
-// if (strcmp(key, "disguiseGUIFeedbacks") == 0)
-// {
-//     return pushObject<DisguiseFeedbackMap>(L, &c->disguiseGUIFeedbacks, DisguiseFeedbackMapBinding::getMetatableName());
-// }
-
-// void enumKeyToLua(lua_State* L, const Character::DisguiseGUIFeedback& k) { lua_pushinteger(L, (int)k); }
-// Character::DisguiseGUIFeedback luaToEnumKey(lua_State* L, int idx) { return (Character::DisguiseGUIFeedback)luaL_checkinteger(L, idx); }
-// void floatValToLua(lua_State* L, const float& v) { lua_pushnumber(L, v); }
-// float luaToFloatVal(lua_State* L, int idx) { return (float)luaL_checknumber(L, idx); }
-
-// local fb = character.disguiseGUIFeedbacks
-// fb[0] = 0.5          -- set/insert
-// print(fb[0])         -- 0.5
-// print(fb:has(0))     -- true
-// fb:remove(0)
-// for k, v in pairs(fb:toTable()) do ... end  -- iteration via snapshot
+class GameDataReference;
 
 namespace KenshiLua
 {
 
 // K, V: key/value types. KeyToLua/LuaToKey/ValToLua/LuaToVal: conversion fn pointers.
-template 
+template <
     typename K, typename V,
     const char* MetaName(),
     void (*ValToLua)(lua_State*, const V&),
@@ -120,10 +104,10 @@ struct OgreUnorderedMapBinding
         MapType* m = get(L, 1);
         if (!m) { lua_pushnil(L); return 1; }
         lua_newtable(L);
-        for (auto& kv : *m)
+        for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
         {
-            KeyToLua(L, kv.first);
-            ValToLua(L, kv.second);
+            KeyToLua(L, it->first);
+            ValToLua(L, it->second);
             lua_settable(L, -3);
         }
         return 1;
@@ -149,5 +133,91 @@ struct OgreUnorderedMapBinding
         registerClass(L, MetaName(), meta, methods, index, newindex);
     }
 };
+
+// Metadata name getters
+inline const char* StringBoolMapMeta() { return "KenshiLua.StringBoolMap"; }
+inline const char* StringStringMapMeta() { return "KenshiLua.StringStringMap"; }
+inline const char* StringIntMapMeta() { return "KenshiLua.StringIntMap"; }
+inline const char* StringFloatMapMeta() { return "KenshiLua.StringFloatMap"; }
+inline const char* StringVector3MapMeta() { return "KenshiLua.StringVector3Map"; }
+inline const char* StringQuaternionMapMeta() { return "KenshiLua.StringQuaternionMap"; }
+inline const char* StringGameDataReferenceVectorMapMeta() { return "KenshiLua.StringGameDataReferenceVectorMap"; }
+
+// Helper function declarations for conversion
+void stringKeyToLua(lua_State* L, const std::string& k);
+std::string luaToStringKey(lua_State* L, int idx);
+
+void boolValToLua(lua_State* L, const bool& v);
+bool luaToBoolVal(lua_State* L, int idx);
+
+void stringValToLua(lua_State* L, const std::string& v);
+std::string luaToStringVal(lua_State* L, int idx);
+
+void intValToLua(lua_State* L, const int& v);
+int luaToIntVal(lua_State* L, int idx);
+
+void floatValToLua(lua_State* L, const float& v);
+float luaToFloatVal(lua_State* L, int idx);
+
+void vector3ValToLua(lua_State* L, const Ogre::Vector3& v);
+Ogre::Vector3 luaToVector3Val(lua_State* L, int idx);
+
+void quaternionValToLua(lua_State* L, const Ogre::Quaternion& v);
+Ogre::Quaternion luaToQuaternionVal(lua_State* L, int idx);
+
+void refVectorValToLua(lua_State* L, const Ogre::vector<GameDataReference>::type& v);
+Ogre::vector<GameDataReference>::type luaToRefVectorVal(lua_State* L, int idx);
+
+// Typedefs
+typedef OgreUnorderedMapBinding<
+    std::string, bool,
+    StringBoolMapMeta,
+    boolValToLua, luaToBoolVal,
+    stringKeyToLua, luaToStringKey
+> StringBoolMapBinding;
+
+typedef OgreUnorderedMapBinding<
+    std::string, std::string,
+    StringStringMapMeta,
+    stringValToLua, luaToStringVal,
+    stringKeyToLua, luaToStringKey
+> StringStringMapBinding;
+
+typedef OgreUnorderedMapBinding<
+    std::string, int,
+    StringIntMapMeta,
+    intValToLua, luaToIntVal,
+    stringKeyToLua, luaToStringKey
+> StringIntMapBinding;
+
+typedef OgreUnorderedMapBinding<
+    std::string, float,
+    StringFloatMapMeta,
+    floatValToLua, luaToFloatVal,
+    stringKeyToLua, luaToStringKey
+> StringFloatMapBinding;
+
+typedef OgreUnorderedMapBinding<
+    std::string, Ogre::Vector3,
+    StringVector3MapMeta,
+    vector3ValToLua, luaToVector3Val,
+    stringKeyToLua, luaToStringKey
+> StringVector3MapBinding;
+
+typedef OgreUnorderedMapBinding<
+    std::string, Ogre::Quaternion,
+    StringQuaternionMapMeta,
+    quaternionValToLua, luaToQuaternionVal,
+    stringKeyToLua, luaToStringKey
+> StringQuaternionMapBinding;
+
+typedef OgreUnorderedMapBinding<
+    std::string, Ogre::vector<GameDataReference>::type,
+    StringGameDataReferenceVectorMapMeta,
+    refVectorValToLua, luaToRefVectorVal,
+    stringKeyToLua, luaToStringKey
+> StringGameDataReferenceVectorMapBinding;
+
+void registerOgreUnorderedBindings(lua_State* L);
 
 } // namespace KenshiLua
