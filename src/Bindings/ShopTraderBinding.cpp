@@ -273,8 +273,6 @@ void ShopTraderBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       ShopTraderBinding::gc },
         { "__tostring", ShopTraderBinding::tostring },
-        { "__index",    ShopTraderBinding::index },
-        { "__newindex", ShopTraderBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -299,7 +297,7 @@ void ShopTraderBinding::registerBinding(lua_State* L)
         { "updateInventory", ShopTraderBinding::updateInventory },
         { 0, 0 }
     };
-    registerClass(L, ShopTraderBinding::getMetatableName(), meta, methods);
+    registerClass(L, ShopTraderBinding::getMetatableName(), meta, methods, ShopTraderBinding::index, ShopTraderBinding::newindex);
 }
 
 } // namespace KenshiLua
