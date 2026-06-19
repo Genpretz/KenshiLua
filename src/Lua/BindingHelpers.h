@@ -87,7 +87,7 @@ inline int pushObjectT(lua_State* L, T* ptr)
 // registerBinding(L).
 //
 // When indexFunc / newindexFunc are NULL (the default), __index is set to the
-// metatable itself (the standard Lua method-table idiom) — suitable for
+// metatable itself (the standard Lua method-table idiom) suitable for
 // bindings that expose only methods and no raw member fields via dot-access.
 //
 // When indexFunc / newindexFunc are provided, they are registered as C-function
@@ -104,7 +104,7 @@ inline void registerClass(lua_State* L,
     lua_CFunction newindexFunc = NULL)
 {
     if (!luaL_newmetatable(L, metatableName)) {
-        // Already registered — bail.  Pop the existing metatable and return.
+        // Already registered bail.  Pop the existing metatable and return.
         lua_pop(L, 1);
         return;
     }
@@ -158,6 +158,33 @@ inline bool readVector3(lua_State* L, int idx, V3& out)
 {
     if (!lua_istable(L, idx)) return false;
     bool any = false;
+    lua_getfield(L, idx, "x"); if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+    lua_getfield(L, idx, "y"); if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+    lua_getfield(L, idx, "z"); if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+    return any;
+}
+
+// Convenience: build a Quaternion-like Lua table {w=,x=,y=,z=} from any object
+// exposing .w/.x/.y/.z (Ogre::Quaternion fits). Templated so we don't drag the
+// Ogre header into this helper.
+template <class Q4>
+inline void pushQuaternion(lua_State* L, const Q4& q)
+{
+    lua_createtable(L, 0, 4);
+    lua_pushnumber(L, q.w); lua_setfield(L, -2, "w");
+    lua_pushnumber(L, q.x); lua_setfield(L, -2, "x");
+    lua_pushnumber(L, q.y); lua_setfield(L, -2, "y");
+    lua_pushnumber(L, q.z); lua_setfield(L, -2, "z");
+}
+
+// Read a {w,x,y,z} table at idx. Missing fields default to 0. Returns true
+// if any of the four fields was actually present.
+template <class Q4>
+inline bool readQuaternion(lua_State* L, int idx, Q4& out)
+{
+    if (!lua_istable(L, idx)) return false;
+    bool any = false;
+    lua_getfield(L, idx, "w"); if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
     lua_getfield(L, idx, "x"); if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
     lua_getfield(L, idx, "y"); if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
     lua_getfield(L, idx, "z"); if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
