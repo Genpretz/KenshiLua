@@ -9,7 +9,7 @@
 #include "Lua/LuaState.h"
 #include "ModLoader.h"
 #include "ScriptQueue.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/Gui/MyGuiBinding.h"
 #include <ogre/OgreFrameListener.h>
 #include <ogre/OgreRoot.h>
 

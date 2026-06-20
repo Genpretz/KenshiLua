@@ -4,34 +4,37 @@
 #include "Lua/LuaState.h"
 #include "Lua/Logger.h"
 #include "Lua/Benchmark.h"
-#include "Bindings/HandBinding.h"
-#include "Bindings/CharacterBinding.h"
-#include "Bindings/DialogueBinding.h"
-#include "Bindings/FactionBinding.h"
-#include "Bindings/TownBinding.h"
-#include "Bindings/ItemBinding.h"
-#include "Bindings/GearBinding.h"
-#include "Bindings/InventoryBinding.h"
-#include "Bindings/BuildingBinding.h"
-#include "Bindings/GameWorldBinding.h"
-#include "Bindings/PlayerInterfaceBinding.h"
-#include "Bindings/GlobalBinding.h"
-#include "Bindings/CharStatsBinding.h"
-#include "Bindings/DamagesBinding.h"
-#include "Bindings/MedicalSystemBinding.h"
-#include "Bindings/InputHandlerBinding.h"
-#include "Bindings/PlatoonBinding.h"
-#include "Bindings/GameDataBinding.h"
-#include "Bindings/OgreUnorderedBinding.h"
-#include "Bindings/EnumBinding.h"
-#include "Bindings/RootObjectBinding.h"
-#include "Bindings/RaceDataBinding.h"
-#include "Bindings/BountyBinding.h"
-#include "Bindings/BountyManagerBinding.h"
-#include "Bindings/CameraClassBinding.h"
-#include "Bindings/MyGuiBinding.h"
-#include "Bindings/CharacterAnimalBinding.h"
-#include "Bindings/ShopTraderBinding.h"
+#include "Bindings/Utility/HandBinding.h"
+#include "Bindings/Character/CharacterBinding.h"
+#include "Bindings/Dialogue/DialogueBinding.h"
+#include "Bindings/World/FactionBinding.h"
+#include "Bindings/World/TownBinding.h"
+#include "Bindings/Equipment/ItemBinding.h"
+#include "Bindings/Equipment/GearBinding.h"
+#include "Bindings/Equipment/InventoryBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/World/GameWorldBinding.h"
+#include "Bindings/Core/PlayerInterfaceBinding.h"
+#include "Bindings/Core/GlobalBinding.h"
+#include "Bindings/Character/CharStatsBinding.h"
+#include "Bindings/System/DamagesBinding.h"
+#include "Bindings/System/MedicalSystemBinding.h"
+#include "Bindings/Core/InputHandlerBinding.h"
+#include "Bindings/World/PlatoonBinding.h"
+#include "Bindings/Core/GameDataBinding.h"
+#include "Bindings/Utility/OgreUnorderedBinding.h"
+#include "Bindings/Core/EnumBinding.h"
+#include "Bindings/Core/RootObjectBinding.h"
+#include "Bindings/Character/RaceDataBinding.h"
+#include "Bindings/System/BountyBinding.h"
+#include "Bindings/System/BountyManagerBinding.h"
+#include "Bindings/Gui/CameraClassBinding.h"
+#include "Bindings/Gui/MyGuiBinding.h"
+#include "Bindings/Character/CharacterAnimalBinding.h"
+#include "Bindings/Character/ShopTraderBinding.h"
+#include "Bindings/Character/CharBodyBinding.h"
+#include "Bindings/Character/Combat/CombatMovementControllerBinding.h"
+#include "Bindings/Character/Combat/ImpactPointBinding.h"
 #include <string>
 #include <cstdio>
 
@@ -96,9 +99,11 @@ void LuaBindings::registerAll(lua_State* L)
     ShopTraderBinding::registerBinding(L);
     AnimalInventoryLayoutBinding::registerBinding(L);
     CharacterAnimalBinding::registerBinding(L);
+    CharBodyBinding::registerBinding(L);
+    CombatMovementControllerBinding::registerBinding(L);
+    ImpactPointBinding::registerBinding(L);
 
 	registerEnums(L);
-    registerEventBinding(L);
     registerGlobals(L);
 }
 

@@ -5,13 +5,13 @@
 #include "Lua/Logger.h"
 
 // KenshiLib x Lua Bindings
-#include "Bindings/CharacterBinding.h"
-#include "Bindings/CharStatsBinding.h"
-#include "Bindings/DamagesBinding.h"
-#include "Bindings/PlatoonBinding.h"
-#include "Bindings/ItemBinding.h"
-#include "Bindings/PlayerInterfaceBinding.h"
-#include "Bindings/FactionBinding.h"
+#include "Character/CharacterBinding.h"
+#include "Character/CharStatsBinding.h"
+#include "System/DamagesBinding.h"
+#include "World/PlatoonBinding.h"
+#include "Equipment/ItemBinding.h"
+#include "Core/PlayerInterfaceBinding.h"
+#include "World/FactionBinding.h"
 
 // KenshiLib headers
 #include <kenshi/Character.h>
