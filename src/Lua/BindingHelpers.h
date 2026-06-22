@@ -46,6 +46,40 @@ inline T* testObject(lua_State* L, int idx, const char* metatableName)
     return (T*)*((void**)raw);
 }
 
+// Helper to check the userdata's associated user value table for a custom key.
+inline bool lookupUserValue(lua_State* L, int udIdx, const char* key)
+{
+    if (lua_getiuservalue(L, udIdx, 1) != LUA_TNIL) {
+        if (lua_istable(L, -1)) {
+            lua_pushstring(L, key);
+            lua_gettable(L, -2);
+            if (!lua_isnil(L, -1)) {
+                lua_replace(L, -2); // replace table with the lookup value
+                return true;
+            }
+            lua_pop(L, 1); // pop nil
+        }
+    }
+    lua_pop(L, 1); // pop nil or table
+    return false;
+}
+
+// Helper to set a custom key-value pair in the userdata's associated user value table.
+inline bool setUserValue(lua_State* L, int udIdx, const char* key, int valIdx)
+{
+    if (lua_getiuservalue(L, udIdx, 1) == LUA_TNIL) {
+        lua_pop(L, 1); // pop nil
+        lua_newtable(L);
+        lua_pushvalue(L, -1);
+        lua_setiuservalue(L, udIdx, 1);
+    }
+    lua_pushstring(L, key);
+    lua_pushvalue(L, valIdx);
+    lua_settable(L, -3);
+    lua_pop(L, 1); // pop table
+    return true;
+}
+
 // Allocates a new userdata wrapping `ptr` and assigns the named metatable.
 // If ptr is null, pushes nil instead.  Always returns 1 (one Lua value pushed).
 template <class T>
@@ -55,7 +89,8 @@ inline int pushObject(lua_State* L, T* ptr, const char* metatableName)
         lua_pushnil(L);
         return 1;
     }
-    void** ud = (void**)lua_newuserdata(L, sizeof(void*));
+    // Allocate userdata with 1 associated user value slot (initially nil)
+    void** ud = (void**)lua_newuserdatauv(L, sizeof(void*), 1);
     *ud = (void*)ptr;
     luaL_getmetatable(L, metatableName);
     if (lua_isnil(L, -1)) {
@@ -213,6 +248,13 @@ inline int noopGc(lua_State* /*L*/)
     return 0;
 }
 
+template<typename T>
+inline void setEnum(lua_State* L, const char* name, T value)
+{
+    lua_pushinteger(L, static_cast<lua_Integer>(value));
+    lua_setfield(L, -2, name);
+}
+
 } // namespace KenshiLua
 
 // -----------------------------------------
@@ -226,8 +268,20 @@ inline int noopGc(lua_State* /*L*/)
         return 1; \
     }
 
+#define LUA_GET_FLOAT_MEMBER_ALIAS(name, alias) \
+    if (strcmp(key, #alias) == 0) { \
+        lua_pushnumber(L, m->name); \
+        return 1; \
+    }
+
 #define LUA_GET_INT_MEMBER(name) \
     if (strcmp(key, #name) == 0) { \
+        lua_pushinteger(L, m->name); \
+        return 1; \
+    }
+
+#define LUA_GET_INT_MEMBER_ALIAS(name, alias) \
+    if (strcmp(key, #alias) == 0) { \
         lua_pushinteger(L, m->name); \
         return 1; \
     }
@@ -238,14 +292,32 @@ inline int noopGc(lua_State* /*L*/)
         return 1; \
     }
 
+#define LUA_GET_BOOL_MEMBER_ALIAS(name, alias) \
+    if (strcmp(key, #alias) == 0) { \
+        lua_pushboolean(L, m->name); \
+        return 1; \
+    }
+
 #define LUA_GET_ENUM_MEMBER(name, EnumType) \
     if (strcmp(key, #name) == 0) { \
         lua_pushinteger(L, static_cast<lua_Integer>(m->name)); \
         return 1; \
     }
 
+#define LUA_GET_ENUM_MEMBER_ALIAS(name, alias, EnumType) \
+    if (strcmp(key, #alias) == 0) { \
+        lua_pushinteger(L, static_cast<lua_Integer>(m->name)); \
+        return 1; \
+    }
+
 #define LUA_GET_STRING_MEMBER(name) \
     if (strcmp(key, #name) == 0) { \
+        lua_pushstring(L, m->name.c_str()); \
+        return 1; \
+    }
+
+#define LUA_GET_STRING_MEMBER_ALIAS(name, alias) \
+    if (strcmp(key, #alias) == 0) { \
         lua_pushstring(L, m->name.c_str()); \
         return 1; \
     }
@@ -257,8 +329,20 @@ inline int noopGc(lua_State* /*L*/)
         return 0; \
     }
 
+#define LUA_SET_FLOAT_MEMBER_ALIAS(name, alias) \
+    if (strcmp(key, #alias) == 0) { \
+        m->name = static_cast<float>(luaL_checknumber(L, 3)); \
+        return 0; \
+    }
+
 #define LUA_SET_INT_MEMBER(name) \
     if (strcmp(key, #name) == 0) { \
+        m->name = static_cast<int>(luaL_checkinteger(L, 3)); \
+        return 0; \
+    }
+
+#define LUA_SET_INT_MEMBER_ALIAS(name, alias) \
+    if (strcmp(key, #alias) == 0) { \
         m->name = static_cast<int>(luaL_checkinteger(L, 3)); \
         return 0; \
     }
@@ -269,14 +353,32 @@ inline int noopGc(lua_State* /*L*/)
         return 0; \
     }
 
+#define LUA_SET_BOOL_MEMBER_ALIAS(name, alias) \
+    if (strcmp(key, #alias) == 0) { \
+        m->name = (lua_toboolean(L, 3) != 0); \
+        return 0; \
+    }
+
 #define LUA_SET_ENUM_MEMBER(name, EnumType) \
     if (strcmp(key, #name) == 0) { \
         m->name = static_cast<EnumType>(luaL_checkinteger(L, 3)); \
         return 0; \
     }
 
+#define LUA_SET_ENUM_MEMBER_ALIAS(name, alias, EnumType) \
+    if (strcmp(key, #alias) == 0) { \
+        m->name = static_cast<EnumType>(luaL_checkinteger(L, 3)); \
+        return 0; \
+    }
+    
 #define LUA_SET_STRING_MEMBER(name) \
     if (strcmp(key, #name) == 0) { \
+        m->name = luaL_checkstring(L, 3); \
+        return 0; \
+    }
+
+#define LUA_SET_STRING_MEMBER_ALIAS(name, alias) \
+    if (strcmp(key, #alias) == 0) { \
         m->name = luaL_checkstring(L, 3); \
         return 0; \
     }
@@ -287,3 +389,7 @@ inline int noopGc(lua_State* /*L*/)
 // LUA_SET_BOOL_MEMBER(dead);
 //
 // LUA_SET_ENUM_MEMBER(proneState, ProneState)
+//
+// LUA_GET_SET_FLOAT_MEMBER_ALIAS(name, alias)
+//
+// LUA_GET_SET_ENUM_MEMBER_ALIAS(name, alias, EnumType)
