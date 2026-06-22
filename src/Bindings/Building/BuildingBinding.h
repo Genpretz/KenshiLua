@@ -1,15 +1,12 @@
-﻿#pragma once
+#pragma once
 
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
 }
 
-class Building;
-
 namespace KenshiLua
 {
-
 class BuildingBinding
 {
 public:
@@ -21,34 +18,192 @@ public:
     static int index(lua_State* L);
     static int newindex(lua_State* L);
 
-    // Reads
     static int getName(lua_State* L);
-    static int getPosition(lua_State* L);
-    static int getBuildingDesignation(lua_State* L);
-    static int getBuildingClass(lua_State* L);
-    static int getSpecialFunction(lua_State* L);
-    static int getBuildState(lua_State* L);
-    static int getConstructionProgress(lua_State* L);
-    static int isPublic(lua_State* L);
-    static int isAShop(lua_State* L);
-    static int isForSale(lua_State* L);
-    static int isAWall(lua_State* L);
-    static int isDamaged(lua_State* L);
-    static int isDestroyed(lua_State* L);
-    static int isBroken(lua_State* L);
-    static int isPowerOn(lua_State* L);
     static int getScale(lua_State* L);
-    static int getMiningResourceLevel(lua_State* L);
-    static int isValid(lua_State* L);
-
-    // Writes
-    static int setDesignation(lua_State* L);
-    static int setBroken(lua_State* L);
-    static int setDestroyed(lua_State* L);
+    static int getBuildState(lua_State* L);
+    static int _NV_getBuildState(lua_State* L);
+    static int getBuildState_ActualNonShared(lua_State* L);
+    static int select(lua_State* L);
+    static int _NV_select(lua_State* L);
+    static int getBuildingDesignation(lua_State* L);
+    static int addConstructionProgress(lua_State* L);
+    static int _NV_addConstructionProgress(lua_State* L);
     static int setConstructionProgress(lua_State* L);
-    static int setVisible(lua_State* L);
+    static int _NV_setConstructionProgress(lua_State* L);
+    static int notifyConstructionComplete(lua_State* L);
+    static int _NV_notifyConstructionComplete(lua_State* L);
+    static int addDismantleProgress(lua_State* L);
+    static int _NV_addDismantleProgress(lua_State* L);
+    static int notifyConstructionDismantling(lua_State* L);
+    static int _NV_notifyConstructionDismantling(lua_State* L);
+    static int dropMats(lua_State* L);
+    static int canUpgrade(lua_State* L);
+    static int _NV_canUpgrade(lua_State* L);
+    static int canDowngrade(lua_State* L);
+    static int _NV_canDowngrade(lua_State* L);
+    static int canDismantle(lua_State* L);
+    static int _NV_canDismantle(lua_State* L);
+    static int buyMeCallback(lua_State* L);
+    static int _NV_buyMeCallback(lua_State* L);
+    static int calculateSaleValue(lua_State* L);
+    static int loadNodes(lua_State* L);
+    static int isPublic(lua_State* L);
+    static int _NV_isPublic(lua_State* L);
+    static int confirmDismantle(lua_State* L);
+    static int _NV_confirmDismantle(lua_State* L);
+    static int isAShop(lua_State* L);
+    static int _NV_isAShop(lua_State* L);
+    static int isForSale(lua_State* L);
+    static int _NV_isForSale(lua_State* L);
+    static int isAWallRamp(lua_State* L);
+    static int _NV_isAWallRamp(lua_State* L);
+    static int hasInterior(lua_State* L);
+    static int affectsNavmesh(lua_State* L);
+    static int getResidentSquadLeader(lua_State* L);
+    static int setDesignation(lua_State* L);
+    static int setupMiningResourceLevel(lua_State* L);
+    static int _NV_setupMiningResourceLevel(lua_State* L);
+    static int getMiningResourceLevel(lua_State* L);
+    static int _NV_getMiningResourceLevel(lua_State* L);
+    static int getNumInternalBuildings(lua_State* L);
+    static int moveMountedBuildings(lua_State* L);
+    static int reCheckInsideOutsideFortificationStatus(lua_State* L);
+    static int setInsideTownWalls(lua_State* L);
+    static int _NV_setInsideTownWalls(lua_State* L);
+    static int postCreationPathfinderSetupStuff(lua_State* L);
+    static int _NV_postCreationPathfinderSetupStuff(lua_State* L);
+    static int getSpecialFunction(lua_State* L);
+    static int _NV_getSpecialFunction(lua_State* L);
+    static int getFunctionStuff(lua_State* L);
+    static int _NV_getFunctionStuff(lua_State* L);
+    static int isBroken(lua_State* L);
+    static int _NV_isBroken(lua_State* L);
+    static int setBroken(lua_State* L);
+    static int _NV_setBroken(lua_State* L);
     static int switchPowerOn(lua_State* L);
-    static int togglePublic(lua_State* L);
+    static int _NV_switchPowerOn(lua_State* L);
+    static int isPowerOn(lua_State* L);
+    static int _NV_isPowerOn(lua_State* L);
+    static int isDamaged(lua_State* L);
+    static int _NV_isDamaged(lua_State* L);
+    static int isDestroyed(lua_State* L);
+    static int _NV_isDestroyed(lua_State* L);
+    static int isSign(lua_State* L);
+    static int _NV_isSign(lua_State* L);
+    static int setDestroyed(lua_State* L);
+    static int _NV_setDestroyed(lua_State* L);
+    static int canBeDestroyed(lua_State* L);
+    static int _NV_canBeDestroyed(lua_State* L);
+    static int setNestTag(lua_State* L);
+    static int getReachRange(lua_State* L);
+    static int _NV_getReachRange(lua_State* L);
+    static int getBuildingClass(lua_State* L);
+    static int _NV_getBuildingClass(lua_State* L);
+    static int needsSaving(lua_State* L);
+    static int _NV_needsSaving(lua_State* L);
+    static int notifyChange(lua_State* L);
+    static int setToDefaultFactionDivision(lua_State* L);
+    static int getOutputBasedRotationSpeedMult(lua_State* L);
+    static int _NV_getOutputBasedRotationSpeedMult(lua_State* L);
+    static int calculateEfficiencyMult(lua_State* L);
+    static int _NV_calculateEfficiencyMult(lua_State* L);
+    static int getSoundIntensity(lua_State* L);
+    static int _NV_getSoundIntensity(lua_State* L);
+    static int loadUnloadCheck(lua_State* L);
+    static int _NV_loadUnloadCheck(lua_State* L);
+    static int _DESTRUCTOR(lua_State* L);
+    static int getProductionBuilding(lua_State* L);
+    static int _NV_getProductionBuilding(lua_State* L);
+    static int getProductionMultForGUI(lua_State* L);
+    static int _NV_getProductionMultForGUI(lua_State* L);
+    static int getProductionMult(lua_State* L);
+    static int _NV_getProductionMult(lua_State* L);
+    static int isThePlayer(lua_State* L);
+    static int doorParentBuilding(lua_State* L);
+    static int _NV_doorParentBuilding(lua_State* L);
+    static int isDoor(lua_State* L);
+    static int isFurniture(lua_State* L);
+    static int isFurnitureOrDoor(lua_State* L);
+    static int getIsOutsideFurniture(lua_State* L);
+    static int setIsOutsideFurniture(lua_State* L);
+    static int getCurrentTownLocation(lua_State* L);
+    static int _NV_getCurrentTownLocation(lua_State* L);
+    static int furnitureParentBuilding(lua_State* L);
+    static int hasAnOpenDoor(lua_State* L);
+    static int allowAnimals(lua_State* L);
+    static int update(lua_State* L);
+    static int _NV_update(lua_State* L);
+    static int threadedUpdate(lua_State* L);
+    static int _NV_threadedUpdate(lua_State* L);
+    static int needsUpdate(lua_State* L);
+    static int _NV_needsUpdate(lua_State* L);
+    static int isPhysical(lua_State* L);
+    static int _NV_isPhysical(lua_State* L);
+    static int checkLoadedProperly(lua_State* L);
+    static int _NV_checkLoadedProperly(lua_State* L);
+    static int setVisible(lua_State* L);
+    static int _NV_setVisible(lua_State* L);
+    static int getVisible(lua_State* L);
+    static int _NV_getVisible(lua_State* L);
+    static int hasDoorLock(lua_State* L);
+    static int _NV_hasDoorLock(lua_State* L);
+    static int getInventory(lua_State* L);
+    static int _NV_getInventory(lua_State* L);
+    static int getTown(lua_State* L);
+    static int getRealTown(lua_State* L);
+    static int createPhysical(lua_State* L);
+    static int _NV_createPhysical(lua_State* L);
+    static int destroyPhysical(lua_State* L);
+    static int _NV_destroyPhysical(lua_State* L);
+    static int destroyDoors(lua_State* L);
+    static int createTriggerHull(lua_State* L);
+    static int destroyAudioObject(lua_State* L);
+    static int getGroundType(lua_State* L);
+    static int isCeilingMounted(lua_State* L);
+    static int _NV_isCeilingMounted(lua_State* L);
+    static int setFloorVisibility(lua_State* L);
+    static int getNumFloors(lua_State* L);
+    static int buildingComplete_RestoreMaterial(lua_State* L);
+    static int loadInteriorPhysical(lua_State* L);
+    static int loadInteriorGraphics(lua_State* L);
+    static int getLinkLength(lua_State* L);
+    static int _NV_getLinkLength(lua_State* L);
+    static int clearTownBuildingsManagerPtr(lua_State* L);
+    static int _NV_clearTownBuildingsManagerPtr(lua_State* L);
+    static int setup(lua_State* L);
+    static int _NV_setup(lua_State* L);
+    static int setupFromData(lua_State* L);
+    static int _NV_setupFromData(lua_State* L);
+    static int setupAudio(lua_State* L);
+    static int switchLights(lua_State* L);
+    static int _NV_switchLights(lua_State* L);
+    static int switchEffects(lua_State* L);
+    static int _NV_switchEffects(lua_State* L);
+    static int hasAnyGoodPositionMarkersLeft(lua_State* L);
+    static int isCreated(lua_State* L);
+    static int _NV_isCreated(lua_State* L);
+    static int updateUsageNodes(lua_State* L);
+    static int forceValidUsageNodesValidation(lua_State* L);
+    static int addUsageNode(lua_State* L);
+    static int removeUsageNode(lua_State* L);
+    static int clearUsageNodes(lua_State* L);
+    static int updatePhysicalWithProgress(lua_State* L);
+    static int recalculateWorldAABB(lua_State* L);
+    static int getSeed(lua_State* L);
+    static int onBuildingLoaded(lua_State* L);
+    static int _NV_onBuildingLoaded(lua_State* L);
+    static int updateBadNodes(lua_State* L);
+    static int getMouseCursor(lua_State* L);
+    static int _NV_getMouseCursor(lua_State* L);
+    static int getWallEndPosition(lua_State* L);
+    static int getDefaultTask(lua_State* L);
+    static int _NV_getDefaultTask(lua_State* L);
+    static int calculateLeftPost(lua_State* L);
+    static int getPosition(lua_State* L);
+    static int _NV_getPositionMarker(lua_State* L);
+    static int getDirectionMarker(lua_State* L);
+    static int _NV_getDirectionMarker(lua_State* L);
+    static int getDirectionMarkerQuat(lua_State* L);
+    static int _NV_getDirectionMarkerQuat(lua_State* L);
 };
-
-} // namespace KenshiLua
+}
