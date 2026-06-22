@@ -83,15 +83,13 @@ void StatBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       StatBinding::gc },
         { "__tostring", StatBinding::tostring },
-        { "__index",    StatBinding::index },
-        { "__newindex", StatBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", StatBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, StatBinding::getMetatableName(), meta, methods);
+    registerClass(L, StatBinding::getMetatableName(), meta, methods, StatBinding::index, StatBinding::newindex);
 }
 
 } // namespace KenshiLua

@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/FarmBatchBinding.h"
+#include "Bindings/Building/FarmBatchBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/FarmBuilding.h>
+#include <kenshi/Building/FarmBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -103,8 +103,6 @@ void FarmBatchBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       FarmBatchBinding::gc },
         { "__tostring", FarmBatchBinding::tostring },
-        { "__index",    FarmBatchBinding::index },
-        { "__newindex", FarmBatchBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -113,7 +111,7 @@ void FarmBatchBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", FarmBatchBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, FarmBatchBinding::getMetatableName(), meta, methods);
+    registerClass(L, FarmBatchBinding::getMetatableName(), meta, methods, FarmBatchBinding::index, FarmBatchBinding::newindex);
 }
 
 } // namespace KenshiLua

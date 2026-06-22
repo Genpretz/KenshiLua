@@ -945,8 +945,6 @@ void HasRoomCacheBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       HasRoomCacheBinding::gc },
         { "__tostring", HasRoomCacheBinding::tostring },
-        { "__index",    HasRoomCacheBinding::index },
-        { "__newindex", HasRoomCacheBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -954,7 +952,7 @@ void HasRoomCacheBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", HasRoomCacheBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, HasRoomCacheBinding::getMetatableName(), meta, methods);
+    registerClass(L, HasRoomCacheBinding::getMetatableName(), meta, methods, HasRoomCacheBinding::index, HasRoomCacheBinding::newindex);
 }
 
 } // namespace KenshiLua

@@ -164,8 +164,6 @@ void TitleScreenBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       TitleScreenBinding::gc },
         { "__tostring", TitleScreenBinding::tostring },
-        { "__index",    TitleScreenBinding::index },
-        { "__newindex", TitleScreenBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -180,7 +178,7 @@ void TitleScreenBinding::registerBinding(lua_State* L)
         { "setCreditsVisible", TitleScreenBinding::setCreditsVisible },
         { 0, 0 }
     };
-    registerClass(L, TitleScreenBinding::getMetatableName(), meta, methods);
+    registerClass(L, TitleScreenBinding::getMetatableName(), meta, methods, TitleScreenBinding::index, TitleScreenBinding::newindex);
 }
 
 } // namespace KenshiLua

@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/CraftingBuildingBinding.h"
+#include "BindingsBuilding/CraftingBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/CraftingBuilding.h>
+#include <kenshi/Building/CraftingBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -165,7 +165,7 @@ int CraftingBuildingBinding::getProductionItemData(lua_State* L)
     CraftingBuilding* s = getS(L, 1);
     if (!s) return luaL_error(L, "CraftingBuilding is nil");
 
-    GameData result = s->getProductionItemData();
+    GameData* result = s->getProductionItemData();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
@@ -174,7 +174,7 @@ int CraftingBuildingBinding::_NV_getProductionItemData(lua_State* L)
     CraftingBuilding* s = getS(L, 1);
     if (!s) return luaL_error(L, "CraftingBuilding is nil");
 
-    GameData result = s->_NV_getProductionItemData();
+    GameData* result = s->_NV_getProductionItemData();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
@@ -252,7 +252,7 @@ int CraftingBuildingBinding::getCriticalSuccessWeapon(lua_State* L)
     if (!s) return luaL_error(L, "CraftingBuilding is nil");
 
     int normalWeaponLevel = (int)luaL_checkinteger(L, 2);
-    GameData result = s->getCriticalSuccessWeapon(normalWeaponLevel);
+    GameData* result = s->getCriticalSuccessWeapon(normalWeaponLevel);
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
@@ -352,8 +352,6 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       CraftingBuildingBinding::gc },
         { "__tostring", CraftingBuildingBinding::tostring },
-        { "__index",    CraftingBuildingBinding::index },
-        { "__newindex", CraftingBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -384,7 +382,7 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateInventoryWindow", CraftingBuildingBinding::_NV_updateInventoryWindow },
         { 0, 0 }
     };
-    registerClass(L, CraftingBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, CraftingBuildingBinding::getMetatableName(), meta, methods, CraftingBuildingBinding::index, CraftingBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

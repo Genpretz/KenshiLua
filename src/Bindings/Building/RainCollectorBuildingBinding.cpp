@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/RainCollectorBuildingBinding.h"
+#include "Bindings/Building/RainCollectorBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/RainCollectorBuilding.h>
+#include <kenshi/Building/RainCollectorBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -104,8 +104,6 @@ void RainCollectorBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       RainCollectorBuildingBinding::gc },
         { "__tostring", RainCollectorBuildingBinding::tostring },
-        { "__index",    RainCollectorBuildingBinding::index },
-        { "__newindex", RainCollectorBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -115,7 +113,7 @@ void RainCollectorBuildingBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", RainCollectorBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, RainCollectorBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, RainCollectorBuildingBinding::getMetatableName(), meta, methods, RainCollectorBuildingBinding::index, RainCollectorBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

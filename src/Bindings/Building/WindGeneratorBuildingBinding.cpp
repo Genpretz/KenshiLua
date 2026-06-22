@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/WindGeneratorBuildingBinding.h"
+#include "Bindings/Building/WindGeneratorBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/GeneratorBuilding.h>
+#include <kenshi/Building/GeneratorBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -134,8 +134,6 @@ void WindGeneratorBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       WindGeneratorBuildingBinding::gc },
         { "__tostring", WindGeneratorBuildingBinding::tostring },
-        { "__index",    WindGeneratorBuildingBinding::index },
-        { "__newindex", WindGeneratorBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -148,7 +146,7 @@ void WindGeneratorBuildingBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", WindGeneratorBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, WindGeneratorBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, WindGeneratorBuildingBinding::getMetatableName(), meta, methods, WindGeneratorBuildingBinding::index, WindGeneratorBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

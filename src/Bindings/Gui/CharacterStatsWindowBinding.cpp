@@ -246,8 +246,6 @@ void CharacterStatsWindowBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       CharacterStatsWindowBinding::gc },
         { "__tostring", CharacterStatsWindowBinding::tostring },
-        { "__index",    CharacterStatsWindowBinding::index },
-        { "__newindex", CharacterStatsWindowBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -269,7 +267,7 @@ void CharacterStatsWindowBinding::registerBinding(lua_State* L)
         { "sumStats", CharacterStatsWindowBinding::sumStats },
         { 0, 0 }
     };
-    registerClass(L, CharacterStatsWindowBinding::getMetatableName(), meta, methods);
+    registerClass(L, CharacterStatsWindowBinding::getMetatableName(), meta, methods, CharacterStatsWindowBinding::index, CharacterStatsWindowBinding::newindex);
 }
 
 } // namespace KenshiLua

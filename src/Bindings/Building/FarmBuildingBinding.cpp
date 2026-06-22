@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/FarmBuildingBinding.h"
+#include "Bindings/Building/FarmBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/FarmBuilding.h>
+#include <kenshi/Building/FarmBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -423,8 +423,6 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       FarmBuildingBinding::gc },
         { "__tostring", FarmBuildingBinding::tostring },
-        { "__index",    FarmBuildingBinding::index },
-        { "__newindex", FarmBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -459,7 +457,7 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
         { "resetFarm", FarmBuildingBinding::resetFarm },
         { 0, 0 }
     };
-    registerClass(L, FarmBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, FarmBuildingBinding::getMetatableName(), meta, methods, FarmBuildingBinding::index, FarmBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

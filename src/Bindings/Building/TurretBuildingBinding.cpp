@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/TurretBuildingBinding.h"
+#include "Bindings/Building/TurretBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/TurretBuilding.h>
+#include <kenshi/Building/TurretBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -334,8 +334,6 @@ void TurretBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       TurretBuildingBinding::gc },
         { "__tostring", TurretBuildingBinding::tostring },
-        { "__index",    TurretBuildingBinding::index },
-        { "__newindex", TurretBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -365,7 +363,7 @@ void TurretBuildingBinding::registerBinding(lua_State* L)
         { "_NV_clearTownBuildingsManagerPtr", TurretBuildingBinding::_NV_clearTownBuildingsManagerPtr },
         { 0, 0 }
     };
-    registerClass(L, TurretBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, TurretBuildingBinding::getMetatableName(), meta, methods, TurretBuildingBinding::index, TurretBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

@@ -351,8 +351,6 @@ void CharBodyBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       CharBodyBinding::gc },
         { "__tostring", CharBodyBinding::tostring },
-        { "__index",    CharBodyBinding::index },
-        { "__newindex", CharBodyBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -384,7 +382,7 @@ void CharBodyBinding::registerBinding(lua_State* L)
         { "_NV__endAction", CharBodyBinding::_NV__endAction },
         { 0, 0 }
     };
-    registerClass(L, CharBodyBinding::getMetatableName(), meta, methods);
+    registerClass(L, CharBodyBinding::getMetatableName(), meta, methods, CharBodyBinding::index, CharBodyBinding::newindex);
 }
 
 } // namespace KenshiLua

@@ -124,8 +124,6 @@ void DialogueSpeechBubbleBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       DialogueSpeechBubbleBinding::gc },
         { "__tostring", DialogueSpeechBubbleBinding::tostring },
-        { "__index",    DialogueSpeechBubbleBinding::index },
-        { "__newindex", DialogueSpeechBubbleBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -136,7 +134,7 @@ void DialogueSpeechBubbleBinding::registerBinding(lua_State* L)
         { "getAlpha", DialogueSpeechBubbleBinding::getAlpha },
         { 0, 0 }
     };
-    registerClass(L, DialogueSpeechBubbleBinding::getMetatableName(), meta, methods);
+    registerClass(L, DialogueSpeechBubbleBinding::getMetatableName(), meta, methods, DialogueSpeechBubbleBinding::index, DialogueSpeechBubbleBinding::newindex);
 }
 
 } // namespace KenshiLua

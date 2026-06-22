@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/ResearchBuildingInventoryLayoutBinding.h"
+#include "Bindings/Building/ResearchBuildingInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/ResearchBuilding.h>
+#include <kenshi/Building/ResearchBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -84,8 +84,6 @@ void ResearchBuildingInventoryLayoutBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       ResearchBuildingInventoryLayoutBinding::gc },
         { "__tostring", ResearchBuildingInventoryLayoutBinding::tostring },
-        { "__index",    ResearchBuildingInventoryLayoutBinding::index },
-        { "__newindex", ResearchBuildingInventoryLayoutBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -93,7 +91,7 @@ void ResearchBuildingInventoryLayoutBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", ResearchBuildingInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, ResearchBuildingInventoryLayoutBinding::getMetatableName(), meta, methods);
+    registerClass(L, ResearchBuildingInventoryLayoutBinding::getMetatableName(), meta, methods, ResearchBuildingInventoryLayoutBinding::index, ResearchBuildingInventoryLayoutBinding::newindex);
 }
 
 } // namespace KenshiLua

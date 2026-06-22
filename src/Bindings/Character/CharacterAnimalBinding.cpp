@@ -76,15 +76,13 @@ namespace KenshiLua
         static const luaL_Reg meta[] = {
             { "__gc",       AnimalInventoryLayoutBinding::gc },
             { "__tostring", AnimalInventoryLayoutBinding::tostring },
-            { "__index",    AnimalInventoryLayoutBinding::index },
-            { "__newindex", AnimalInventoryLayoutBinding::newindex },
             { 0, 0 }
         };
         static const luaL_Reg methods[] = {
             { "_DESTRUCTOR", AnimalInventoryLayoutBinding::_DESTRUCTOR },
             { 0, 0 }
         };
-        registerClass(L, AnimalInventoryLayoutBinding::getMetatableName(), meta, methods);
+        registerClass(L, AnimalInventoryLayoutBinding::getMetatableName(), meta, methods, AnimalInventoryLayoutBinding::index, AnimalInventoryLayoutBinding::newindex);
     }
 
 // -----------------------------------------------
@@ -482,8 +480,6 @@ namespace KenshiLua
         static const luaL_Reg meta[] = {
             { "__gc",       CharacterAnimalBinding::gc },
             { "__tostring", CharacterAnimalBinding::tostring },
-            { "__index",    CharacterAnimalBinding::index },
-            { "__newindex", CharacterAnimalBinding::newindex },
             { 0, 0 }
         };
         static const luaL_Reg methods[] = {
@@ -520,7 +516,7 @@ namespace KenshiLua
             { "_NV_init", CharacterAnimalBinding::_NV_init },
             { 0, 0 }
         };
-        registerClass(L, CharacterAnimalBinding::getMetatableName(), meta, methods);
+        registerClass(L, CharacterAnimalBinding::getMetatableName(), meta, methods, CharacterAnimalBinding::index, CharacterAnimalBinding::newindex);
     }
 
 } // namespace KenshiLua

@@ -314,8 +314,6 @@ void DialogLineDataBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       DialogLineDataBinding::gc },
         { "__tostring", DialogLineDataBinding::tostring },
-        { "__index",    DialogLineDataBinding::index },
-        { "__newindex", DialogLineDataBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -336,7 +334,7 @@ void DialogLineDataBinding::registerBinding(lua_State* L)
         { "getMoneyCostForLine", DialogLineDataBinding::getMoneyCostForLine },
         { 0, 0 }
     };
-    registerClass(L, DialogLineDataBinding::getMetatableName(), meta, methods);
+    registerClass(L, DialogLineDataBinding::getMetatableName(), meta, methods, DialogLineDataBinding::index, DialogLineDataBinding::newindex);
 }
 
 } // namespace KenshiLua

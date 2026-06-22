@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/ResearchBuildingBinding.h"
+#include "Bindings/Building/ResearchBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/ResearchBuilding.h>
+#include <kenshi/Building/ResearchBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -155,8 +155,6 @@ void ResearchBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       ResearchBuildingBinding::gc },
         { "__tostring", ResearchBuildingBinding::tostring },
-        { "__index",    ResearchBuildingBinding::index },
-        { "__newindex", ResearchBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -171,7 +169,7 @@ void ResearchBuildingBinding::registerBinding(lua_State* L)
         { "_NV_getTechLevel", ResearchBuildingBinding::_NV_getTechLevel },
         { 0, 0 }
     };
-    registerClass(L, ResearchBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, ResearchBuildingBinding::getMetatableName(), meta, methods, ResearchBuildingBinding::index, ResearchBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/GeneratorBuildingBinding.h"
+#include "Bindings/Building/GeneratorBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/GeneratorBuilding.h>
+#include <kenshi/Building/GeneratorBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -114,8 +114,6 @@ void GeneratorBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       GeneratorBuildingBinding::gc },
         { "__tostring", GeneratorBuildingBinding::tostring },
-        { "__index",    GeneratorBuildingBinding::index },
-        { "__newindex", GeneratorBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -126,7 +124,7 @@ void GeneratorBuildingBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", GeneratorBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, GeneratorBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, GeneratorBuildingBinding::getMetatableName(), meta, methods, GeneratorBuildingBinding::index, GeneratorBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/GatewayBuildingBinding.h"
+#include "Bindings/Building/GatewayBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/GatewayBuilding.h>
+#include <kenshi/Building/GatewayBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -164,8 +164,6 @@ void GatewayBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       GatewayBuildingBinding::gc },
         { "__tostring", GatewayBuildingBinding::tostring },
-        { "__index",    GatewayBuildingBinding::index },
-        { "__newindex", GatewayBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -181,7 +179,7 @@ void GatewayBuildingBinding::registerBinding(lua_State* L)
         { "separatesAreas", GatewayBuildingBinding::separatesAreas },
         { 0, 0 }
     };
-    registerClass(L, GatewayBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, GatewayBuildingBinding::getMetatableName(), meta, methods, GatewayBuildingBinding::index, GatewayBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

@@ -190,8 +190,6 @@ void CombatMovementControllerBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       CombatMovementControllerBinding::gc },
         { "__tostring", CombatMovementControllerBinding::tostring },
-        { "__index",    CombatMovementControllerBinding::index },
-        { "__newindex", CombatMovementControllerBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -201,7 +199,7 @@ void CombatMovementControllerBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", CombatMovementControllerBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, CombatMovementControllerBinding::getMetatableName(), meta, methods);
+    registerClass(L, CombatMovementControllerBinding::getMetatableName(), meta, methods, CombatMovementControllerBinding::index, CombatMovementControllerBinding::newindex);
 }
 
 } // namespace KenshiLua

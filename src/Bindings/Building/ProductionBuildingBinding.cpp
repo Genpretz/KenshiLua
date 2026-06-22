@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/ProductionBuildingBinding.h"
+#include "Bindings/Building/ProductionBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/ProductionBuilding.h>
+#include <kenshi/Building/ProductionBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -478,8 +478,6 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       ProductionBuildingBinding::gc },
         { "__tostring", ProductionBuildingBinding::tostring },
-        { "__index",    ProductionBuildingBinding::index },
-        { "__newindex", ProductionBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -523,7 +521,7 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateOutput", ProductionBuildingBinding::_NV_updateOutput },
         { 0, 0 }
     };
-    registerClass(L, ProductionBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, ProductionBuildingBinding::getMetatableName(), meta, methods, ProductionBuildingBinding::index, ProductionBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

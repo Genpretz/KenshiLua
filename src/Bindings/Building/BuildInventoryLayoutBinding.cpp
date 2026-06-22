@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/BuildInventoryLayoutBinding.h"
+#include "Bindings/Building/BuildInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/ProductionBuilding.h>
+#include <kenshi/Building/ProductionBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -164,8 +164,6 @@ void BuildInventoryLayoutBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       BuildInventoryLayoutBinding::gc },
         { "__tostring", BuildInventoryLayoutBinding::tostring },
-        { "__index",    BuildInventoryLayoutBinding::index },
-        { "__newindex", BuildInventoryLayoutBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -177,7 +175,7 @@ void BuildInventoryLayoutBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", BuildInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, BuildInventoryLayoutBinding::getMetatableName(), meta, methods);
+    registerClass(L, BuildInventoryLayoutBinding::getMetatableName(), meta, methods, BuildInventoryLayoutBinding::index, BuildInventoryLayoutBinding::newindex);
 }
 
 } // namespace KenshiLua

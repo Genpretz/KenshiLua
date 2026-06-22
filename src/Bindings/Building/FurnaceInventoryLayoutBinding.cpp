@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/FurnaceInventoryLayoutBinding.h"
+#include "Bindings/Building/FurnaceInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/FurnaceBuilding.h>
+#include <kenshi/Building/FurnaceBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -72,15 +72,13 @@ void FurnaceInventoryLayoutBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       FurnaceInventoryLayoutBinding::gc },
         { "__tostring", FurnaceInventoryLayoutBinding::tostring },
-        { "__index",    FurnaceInventoryLayoutBinding::index },
-        { "__newindex", FurnaceInventoryLayoutBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", FurnaceInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, FurnaceInventoryLayoutBinding::getMetatableName(), meta, methods);
+    registerClass(L, FurnaceInventoryLayoutBinding::getMetatableName(), meta, methods, FurnaceInventoryLayoutBinding::index, FurnaceInventoryLayoutBinding::newindex);
 }
 
 } // namespace KenshiLua

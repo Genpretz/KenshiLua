@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/StorageBuildingBinding.h"
+#include "Bindings/Building/StorageBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/StorageBuilding.h>
+#include <kenshi/Building/StorageBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -91,7 +91,7 @@ int StorageBuildingBinding::getProductionItemData(lua_State* L)
     StorageBuilding* s = getS(L, 1);
     if (!s) return luaL_error(L, "StorageBuilding is nil");
 
-    GameData result = s->getProductionItemData();
+    GameData* result = s->getProductionItemData();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
@@ -100,7 +100,7 @@ int StorageBuildingBinding::_NV_getProductionItemData(lua_State* L)
     StorageBuilding* s = getS(L, 1);
     if (!s) return luaL_error(L, "StorageBuilding is nil");
 
-    GameData result = s->_NV_getProductionItemData();
+    GameData* result = s->_NV_getProductionItemData();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
@@ -309,8 +309,6 @@ void StorageBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       StorageBuildingBinding::gc },
         { "__tostring", StorageBuildingBinding::tostring },
-        { "__index",    StorageBuildingBinding::index },
-        { "__newindex", StorageBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -339,7 +337,7 @@ void StorageBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateInventoryWindow", StorageBuildingBinding::_NV_updateInventoryWindow },
         { 0, 0 }
     };
-    registerClass(L, StorageBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, StorageBuildingBinding::getMetatableName(), meta, methods, StorageBuildingBinding::index, StorageBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

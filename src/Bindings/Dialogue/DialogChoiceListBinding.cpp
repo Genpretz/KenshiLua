@@ -73,15 +73,13 @@ void DialogChoiceListBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       DialogChoiceListBinding::gc },
         { "__tostring", DialogChoiceListBinding::tostring },
-        { "__index",    DialogChoiceListBinding::index },
-        { "__newindex", DialogChoiceListBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", DialogChoiceListBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, DialogChoiceListBinding::getMetatableName(), meta, methods);
+    registerClass(L, DialogChoiceListBinding::getMetatableName(), meta, methods, DialogChoiceListBinding::index, DialogChoiceListBinding::newindex);
 }
 
 } // namespace KenshiLua

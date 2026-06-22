@@ -66,14 +66,12 @@ void DialogDataManagerBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       DialogDataManagerBinding::gc },
         { "__tostring", DialogDataManagerBinding::tostring },
-        { "__index",    DialogDataManagerBinding::index },
-        { "__newindex", DialogDataManagerBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
         { 0, 0 }
     };
-    registerClass(L, DialogDataManagerBinding::getMetatableName(), meta, methods);
+    registerClass(L, DialogDataManagerBinding::getMetatableName(), meta, methods, DialogDataManagerBinding::index, DialogDataManagerBinding::newindex);
 }
 
 } // namespace KenshiLua

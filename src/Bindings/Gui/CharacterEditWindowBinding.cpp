@@ -358,8 +358,6 @@ void CharacterEditWindowBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       CharacterEditWindowBinding::gc },
         { "__tostring", CharacterEditWindowBinding::tostring },
-        { "__index",    CharacterEditWindowBinding::index },
-        { "__newindex", CharacterEditWindowBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -381,7 +379,7 @@ void CharacterEditWindowBinding::registerBinding(lua_State* L)
         { "exportMeshes", CharacterEditWindowBinding::exportMeshes },
         { 0, 0 }
     };
-    registerClass(L, CharacterEditWindowBinding::getMetatableName(), meta, methods);
+    registerClass(L, CharacterEditWindowBinding::getMetatableName(), meta, methods, CharacterEditWindowBinding::index, CharacterEditWindowBinding::newindex);
 }
 
 } // namespace KenshiLua

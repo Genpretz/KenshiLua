@@ -77,15 +77,13 @@ void BuildingCategoryBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       BuildingCategoryBinding::gc },
         { "__tostring", BuildingCategoryBinding::tostring },
-        { "__index",    BuildingCategoryBinding::index },
-        { "__newindex", BuildingCategoryBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", BuildingCategoryBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, BuildingCategoryBinding::getMetatableName(), meta, methods);
+    registerClass(L, BuildingCategoryBinding::getMetatableName(), meta, methods, BuildingCategoryBinding::index, BuildingCategoryBinding::newindex);
 }
 
 } // namespace KenshiLua

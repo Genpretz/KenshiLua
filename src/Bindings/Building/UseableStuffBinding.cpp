@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/UseableStuffBinding.h"
+#include "Bindings/Building/UseableStuffBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/UseableStuff.h>
+#include <kenshi/Building/UseableStuff.h>
 
 #include <cstring>
 #include <cstdio>
@@ -684,7 +684,7 @@ int UseableStuffBinding::getFunctionalityData(lua_State* L)
     UseableStuff* s = getS(L, 1);
     if (!s) return luaL_error(L, "UseableStuff is nil");
 
-    GameData result = s->getFunctionalityData();
+    GameData* result = s->getFunctionalityData();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
@@ -811,8 +811,6 @@ void UseableStuffBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       UseableStuffBinding::gc },
         { "__tostring", UseableStuffBinding::tostring },
-        { "__index",    UseableStuffBinding::index },
-        { "__newindex", UseableStuffBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -883,7 +881,7 @@ void UseableStuffBinding::registerBinding(lua_State* L)
         { "_NV_getGUIPowerEfficiencyToolTipString", UseableStuffBinding::_NV_getGUIPowerEfficiencyToolTipString },
         { 0, 0 }
     };
-    registerClass(L, UseableStuffBinding::getMetatableName(), meta, methods);
+    registerClass(L, UseableStuffBinding::getMetatableName(), meta, methods, UseableStuffBinding::index, UseableStuffBinding::newindex);
 }
 
 } // namespace KenshiLua

@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/TortureBuildingBinding.h"
+#include "Bindings/Building/TortureBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/TortureBuilding.h>
+#include <kenshi/Building/TortureBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -92,8 +92,6 @@ void TortureBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       TortureBuildingBinding::gc },
         { "__tostring", TortureBuildingBinding::tostring },
-        { "__index",    TortureBuildingBinding::index },
-        { "__newindex", TortureBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -102,7 +100,7 @@ void TortureBuildingBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", TortureBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, TortureBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, TortureBuildingBinding::getMetatableName(), meta, methods, TortureBuildingBinding::index, TortureBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

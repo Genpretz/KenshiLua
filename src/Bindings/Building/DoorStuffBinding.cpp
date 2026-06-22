@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/DoorStuffBinding.h"
+#include "Bindings/Building/DoorStuffBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/DoorStuff.h>
+#include <kenshi/Building/DoorStuff.h>
 
 #include <cstring>
 #include <cstdio>
@@ -113,7 +113,7 @@ int DoorStuffBinding::getFaction(lua_State* L)
     DoorStuff* s = getS(L, 1);
     if (!s) return luaL_error(L, "DoorStuff is nil");
 
-    Faction result = s->getFaction();
+    Faction* result = s->getFaction();
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
 }
 
@@ -122,7 +122,7 @@ int DoorStuffBinding::_NV_getFaction(lua_State* L)
     DoorStuff* s = getS(L, 1);
     if (!s) return luaL_error(L, "DoorStuff is nil");
 
-    Faction result = s->_NV_getFaction();
+    Faction* result = s->_NV_getFaction();
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
 }
 
@@ -455,7 +455,7 @@ int DoorStuffBinding::doorParentBuilding(lua_State* L)
     DoorStuff* s = getS(L, 1);
     if (!s) return luaL_error(L, "DoorStuff is nil");
 
-    Building result = s->doorParentBuilding();
+    Building* result = s->doorParentBuilding();
     return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
 }
 
@@ -464,7 +464,7 @@ int DoorStuffBinding::_NV_doorParentBuilding(lua_State* L)
     DoorStuff* s = getS(L, 1);
     if (!s) return luaL_error(L, "DoorStuff is nil");
 
-    Building result = s->_NV_doorParentBuilding();
+    Building* result = s->_NV_doorParentBuilding();
     return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
 }
 
@@ -511,8 +511,6 @@ void DoorStuffBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       DoorStuffBinding::gc },
         { "__tostring", DoorStuffBinding::tostring },
-        { "__index",    DoorStuffBinding::index },
-        { "__newindex", DoorStuffBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -557,7 +555,7 @@ void DoorStuffBinding::registerBinding(lua_State* L)
         { "_NV_doorParentBuilding", DoorStuffBinding::_NV_doorParentBuilding },
         { 0, 0 }
     };
-    registerClass(L, DoorStuffBinding::getMetatableName(), meta, methods);
+    registerClass(L, DoorStuffBinding::getMetatableName(), meta, methods, DoorStuffBinding::index, DoorStuffBinding::newindex);
 }
 
 } // namespace KenshiLua

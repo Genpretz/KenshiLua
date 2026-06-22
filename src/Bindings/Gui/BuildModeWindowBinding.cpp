@@ -233,8 +233,6 @@ void BuildModeWindowBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       BuildModeWindowBinding::gc },
         { "__tostring", BuildModeWindowBinding::tostring },
-        { "__index",    BuildModeWindowBinding::index },
-        { "__newindex", BuildModeWindowBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -252,7 +250,7 @@ void BuildModeWindowBinding::registerBinding(lua_State* L)
         { "changeCurrentIndex", BuildModeWindowBinding::changeCurrentIndex },
         { 0, 0 }
     };
-    registerClass(L, BuildModeWindowBinding::getMetatableName(), meta, methods);
+    registerClass(L, BuildModeWindowBinding::getMetatableName(), meta, methods, BuildModeWindowBinding::index, BuildModeWindowBinding::newindex);
 }
 
 } // namespace KenshiLua

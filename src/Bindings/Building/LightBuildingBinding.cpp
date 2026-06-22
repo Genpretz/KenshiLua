@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/LightBuildingBinding.h"
+#include "Bindings/Building/LightBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/LightBuilding.h>
+#include <kenshi/Building/LightBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -123,8 +123,6 @@ void LightBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       LightBuildingBinding::gc },
         { "__tostring", LightBuildingBinding::tostring },
-        { "__index",    LightBuildingBinding::index },
-        { "__newindex", LightBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -135,7 +133,7 @@ void LightBuildingBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", LightBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, LightBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, LightBuildingBinding::getMetatableName(), meta, methods, LightBuildingBinding::index, LightBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

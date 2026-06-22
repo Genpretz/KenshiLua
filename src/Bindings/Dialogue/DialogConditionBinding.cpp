@@ -64,14 +64,12 @@ void DialogConditionBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       DialogConditionBinding::gc },
         { "__tostring", DialogConditionBinding::tostring },
-        { "__index",    DialogConditionBinding::index },
-        { "__newindex", DialogConditionBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
         { 0, 0 }
     };
-    registerClass(L, DialogConditionBinding::getMetatableName(), meta, methods);
+    registerClass(L, DialogConditionBinding::getMetatableName(), meta, methods, DialogConditionBinding::index, DialogConditionBinding::newindex);
 }
 
 } // namespace KenshiLua

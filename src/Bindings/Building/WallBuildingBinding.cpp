@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/WallBuildingBinding.h"
+#include "Bindings/Building/WallBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/WallBuilding.h>
+#include <kenshi/Building/WallBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -161,7 +161,7 @@ int WallBuildingBinding::canUpgrade(lua_State* L)
     WallBuilding* s = getS(L, 1);
     if (!s) return luaL_error(L, "WallBuilding is nil");
 
-    GameData result = s->canUpgrade();
+    GameData* result = s->canUpgrade();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
@@ -170,7 +170,7 @@ int WallBuildingBinding::_NV_canUpgrade(lua_State* L)
     WallBuilding* s = getS(L, 1);
     if (!s) return luaL_error(L, "WallBuilding is nil");
 
-    GameData result = s->_NV_canUpgrade();
+    GameData* result = s->_NV_canUpgrade();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
@@ -339,8 +339,6 @@ void WallBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       WallBuildingBinding::gc },
         { "__tostring", WallBuildingBinding::tostring },
-        { "__index",    WallBuildingBinding::index },
-        { "__newindex", WallBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -372,7 +370,7 @@ void WallBuildingBinding::registerBinding(lua_State* L)
         { "isAShortWallPart", WallBuildingBinding::isAShortWallPart },
         { 0, 0 }
     };
-    registerClass(L, WallBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, WallBuildingBinding::getMetatableName(), meta, methods, WallBuildingBinding::index, WallBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua

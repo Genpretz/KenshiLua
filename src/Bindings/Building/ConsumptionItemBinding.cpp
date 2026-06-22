@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/ConsumptionItemBinding.h"
+#include "Bindings/Building/ConsumptionItemBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/StorageBuilding.h>
+#include <kenshi/Building/StorageBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -92,8 +92,6 @@ void ConsumptionItemBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       ConsumptionItemBinding::gc },
         { "__tostring", ConsumptionItemBinding::tostring },
-        { "__index",    ConsumptionItemBinding::index },
-        { "__newindex", ConsumptionItemBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -101,7 +99,7 @@ void ConsumptionItemBinding::registerBinding(lua_State* L)
         { "isEmpty", ConsumptionItemBinding::isEmpty },
         { 0, 0 }
     };
-    registerClass(L, ConsumptionItemBinding::getMetatableName(), meta, methods);
+    registerClass(L, ConsumptionItemBinding::getMetatableName(), meta, methods, ConsumptionItemBinding::index, ConsumptionItemBinding::newindex);
 }
 
 } // namespace KenshiLua

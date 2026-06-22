@@ -62,14 +62,12 @@ void FlagConditionBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       FlagConditionBinding::gc },
         { "__tostring", FlagConditionBinding::tostring },
-        { "__index",    FlagConditionBinding::index },
-        { "__newindex", FlagConditionBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
         { 0, 0 }
     };
-    registerClass(L, FlagConditionBinding::getMetatableName(), meta, methods);
+    registerClass(L, FlagConditionBinding::getMetatableName(), meta, methods, FlagConditionBinding::index, FlagConditionBinding::newindex);
 }
 
 } // namespace KenshiLua

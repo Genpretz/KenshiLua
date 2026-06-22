@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Bindings/FurnaceBuildingBinding.h"
+#include "Bindings/Building/FurnaceBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/FurnaceBuilding.h>
+#include <kenshi/Building/FurnaceBuilding.h>
 
 #include <cstring>
 #include <cstdio>
@@ -160,8 +160,6 @@ void FurnaceBuildingBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       FurnaceBuildingBinding::gc },
         { "__tostring", FurnaceBuildingBinding::tostring },
-        { "__index",    FurnaceBuildingBinding::index },
-        { "__newindex", FurnaceBuildingBinding::newindex },
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
@@ -175,7 +173,7 @@ void FurnaceBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateOutput", FurnaceBuildingBinding::_NV_updateOutput },
         { 0, 0 }
     };
-    registerClass(L, FurnaceBuildingBinding::getMetatableName(), meta, methods);
+    registerClass(L, FurnaceBuildingBinding::getMetatableName(), meta, methods, FurnaceBuildingBinding::index, FurnaceBuildingBinding::newindex);
 }
 
 } // namespace KenshiLua
