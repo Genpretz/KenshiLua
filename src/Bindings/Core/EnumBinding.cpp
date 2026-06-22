@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Bindings/Core/EnumBinding.h"
-#include "Bindings/Building/BuildingEnumBinding.h"
 #include "Bindings/System/MedicalSystemBinding.h"
+#include "Lua/BindingHelpers.h"
 
 #include "kenshi/Character.h"
 #include "kenshi/Dialogue.h"
@@ -17,6 +17,141 @@ namespace KenshiLua
 {    
 
     // setEnum helper defined in EnumBinding.h
+
+    // ----------------------------------------------
+    // Building.h
+	// ----------------------------------------------
+    void BuildingEnumBinding::registerBuildingDesignation(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "BD_NONE", BuildingDesignation::BD_NONE);
+        setEnum(L, "NONE", BuildingDesignation::BD_NONE);
+        setEnum(L, "BD_SHOP", BuildingDesignation::BD_SHOP);
+        setEnum(L, "SHOP", BuildingDesignation::BD_SHOP);
+        setEnum(L, "BD_BARRACKS", BuildingDesignation::BD_BARRACKS);
+        setEnum(L, "BARRACKS", BuildingDesignation::BD_BARRACKS);
+        setEnum(L, "BD_BAR", BuildingDesignation::BD_BAR);
+        setEnum(L, "BAR", BuildingDesignation::BD_BAR);
+        setEnum(L, "BD_HOSPITAL", BuildingDesignation::BD_HOSPITAL);
+        setEnum(L, "HOSPITAL", BuildingDesignation::BD_HOSPITAL);
+        setEnum(L, "BD_ARMOURY", BuildingDesignation::BD_ARMOURY);
+        setEnum(L, "ARMOURY", BuildingDesignation::BD_ARMOURY);
+        setEnum(L, "BD_TREASURE", BuildingDesignation::BD_TREASURE);
+        setEnum(L, "TREASURE", BuildingDesignation::BD_TREASURE);
+        setEnum(L, "BD_PRISON", BuildingDesignation::BD_PRISON);
+        setEnum(L, "PRISON", BuildingDesignation::BD_PRISON);
+        setEnum(L, "BD_HQ", BuildingDesignation::BD_HQ);
+        setEnum(L, "HQ", BuildingDesignation::BD_HQ);
+        setEnum(L, "BD_RESIDENTIAL", BuildingDesignation::BD_RESIDENTIAL);
+        setEnum(L, "RESIDENTIAL", BuildingDesignation::BD_RESIDENTIAL);
+        setEnum(L, "BD_SLAVE_STORAGE", BuildingDesignation::BD_SLAVE_STORAGE);
+        setEnum(L, "SLAVE_STORAGE", BuildingDesignation::BD_SLAVE_STORAGE);
+        setEnum(L, "BD_RESIDENTIAL_SMALL", BuildingDesignation::BD_RESIDENTIAL_SMALL);
+        setEnum(L, "RESIDENTIAL_SMALL", BuildingDesignation::BD_RESIDENTIAL_SMALL);
+
+        lua_setglobal(L, "BuildingDesignation");
+    }
+
+    void BuildingEnumBinding::registerBuildingClassType(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "BCTYPE_FLUFF", BuildingClassType::BCTYPE_FLUFF);
+        setEnum(L, "FLUFF", BuildingClassType::BCTYPE_FLUFF);
+        setEnum(L, "BCTYPE_DOOR", BuildingClassType::BCTYPE_DOOR);
+        setEnum(L, "DOOR", BuildingClassType::BCTYPE_DOOR);
+        setEnum(L, "BCTYPE_USABLE", BuildingClassType::BCTYPE_USABLE);
+        setEnum(L, "USABLE", BuildingClassType::BCTYPE_USABLE);
+        setEnum(L, "BCTYPE_STORAGE", BuildingClassType::BCTYPE_STORAGE);
+        setEnum(L, "STORAGE", BuildingClassType::BCTYPE_STORAGE);
+        setEnum(L, "BCTYPE_PRODUCTION", BuildingClassType::BCTYPE_PRODUCTION);
+        setEnum(L, "PRODUCTION", BuildingClassType::BCTYPE_PRODUCTION);
+        setEnum(L, "BCTYPE_RESEARCH", BuildingClassType::BCTYPE_RESEARCH);
+        setEnum(L, "RESEARCH", BuildingClassType::BCTYPE_RESEARCH);
+        setEnum(L, "BCTYPE_CRAFTING", BuildingClassType::BCTYPE_CRAFTING);
+        setEnum(L, "CRAFTING", BuildingClassType::BCTYPE_CRAFTING);
+        setEnum(L, "BCTYPE_GATEWAY", BuildingClassType::BCTYPE_GATEWAY);
+        setEnum(L, "GATEWAY", BuildingClassType::BCTYPE_GATEWAY);
+        setEnum(L, "BCTYPE_TURRET", BuildingClassType::BCTYPE_TURRET);
+        setEnum(L, "TURRET", BuildingClassType::BCTYPE_TURRET);
+        setEnum(L, "BCTYPE_WALL", BuildingClassType::BCTYPE_WALL);
+        setEnum(L, "WALL", BuildingClassType::BCTYPE_WALL);
+        setEnum(L, "BCTYPE_ITEM_FURNACE", BuildingClassType::BCTYPE_ITEM_FURNACE);
+        setEnum(L, "ITEM_FURNACE", BuildingClassType::BCTYPE_ITEM_FURNACE);
+        setEnum(L, "BCTYPE_LIGHT", BuildingClassType::BCTYPE_LIGHT);
+        setEnum(L, "LIGHT", BuildingClassType::BCTYPE_LIGHT);
+        setEnum(L, "BCTYPE_SHELL_WITH_INTERIOR", BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR);
+        setEnum(L, "SHELL_WITH_INTERIOR", BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR);
+        setEnum(L, "BCTYPE_FARM", BuildingClassType::BCTYPE_FARM);
+        setEnum(L, "FARM", BuildingClassType::BCTYPE_FARM);
+
+        lua_setglobal(L, "BuildingClassType");
+    }
+
+void BuildingEnumBinding::registerBuildingPlacementGroundType(lua_State* L)
+    {
+        lua_newtable(L);
+
+        lua_pushinteger(L, BuildingPlacementGroundType::Enum::ANY);
+        lua_setfield(L, -2, "ANY");
+
+        lua_pushinteger(L, BuildingPlacementGroundType::Enum::LAND);
+        lua_setfield(L, -2, "LAND");
+
+        lua_pushinteger(L, BuildingPlacementGroundType::Enum::WATER);
+        lua_setfield(L, -2, "WATER");
+
+        lua_setglobal(L, "BuildingPlacementGroundType");
+    }
+
+    void BuildingEnumBinding::registerPreviewBuildingPlacementResult(lua_State* L)
+    {
+        lua_newtable(L);
+
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_VALID);
+        lua_setfield(L, -2, "PLACEMENT_VALID");
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_VALID);
+        lua_setfield(L, -2, "VALID");
+
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE);
+        lua_setfield(L, -2, "PLACEMENT_OUTSIDE");
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE);
+        lua_setfield(L, -2, "OUTSIDE");
+
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_INVALID);
+        lua_setfield(L, -2, "PLACEMENT_INVALID");
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_INVALID);
+        lua_setfield(L, -2, "INVALID");
+
+        lua_setglobal(L, "PreviewBuildingPlacementResult");
+    }
+
+    void BuildingEnumBinding::registerPreviewBuildingClassType(lua_State* L)
+    {
+        lua_newtable(L);
+
+        lua_pushinteger(L, PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL);
+        lua_setfield(L, -2, "PREVIEW_NORMAL");
+        lua_pushinteger(L, PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL);
+        lua_setfield(L, -2, "NORMAL");
+
+        lua_pushinteger(L, PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL);
+        lua_setfield(L, -2, "PREVIEW_WALL");
+        lua_pushinteger(L, PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL);
+        lua_setfield(L, -2, "WALL");
+
+        lua_setglobal(L, "PreviewBuildingClassType");
+    }
+
+    void BuildingEnumBinding::registerBinding(lua_State* L)
+    {
+        registerBuildingDesignation(L);
+        registerBuildingClassType(L);
+        registerBuildingPlacementGroundType(L);
+        registerPreviewBuildingPlacementResult(L);
+        registerPreviewBuildingClassType(L);
+    }
 
     // ----------------------------------------------
     // Character.h

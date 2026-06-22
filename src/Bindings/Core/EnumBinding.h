@@ -2,12 +2,17 @@
 
 namespace KenshiLua
 {
-    template<typename T>
-    inline void setEnum(lua_State* L, const char* name, T value)
+    class BuildingEnumBinding
     {
-        lua_pushinteger(L, static_cast<lua_Integer>(value));
-        lua_setfield(L, -2, name);
-    }
+        public:
+            static void registerBinding(lua_State* L);
+        private:
+            static void registerBuildingDesignation(lua_State* L);
+            static void registerBuildingClassType(lua_State* L);
+            static void registerBuildingPlacementGroundType(lua_State* L);
+            static void registerPreviewBuildingPlacementResult(lua_State* L);
+            static void registerPreviewBuildingClassType(lua_State* L);
+    };
 
 	class CharacterEnumBinding
 	{
