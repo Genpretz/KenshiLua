@@ -1,8 +1,8 @@
 // pch.h: This is a precompiled header file.
-#ifndef PCH_H
-#define PCH_H
+#pragma once
 
 #include "framework.h"
+          
 #include <string>
 #include <vector>
 #include <map>
@@ -36,5 +36,3 @@ extern "C" {
 #include <kenshi/Dialogue.h>
 #include <kenshi/Platoon.h>
 #include <kenshi/util/hand.h>
-
-#endif // PCH_H
