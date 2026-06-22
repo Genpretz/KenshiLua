@@ -35,7 +35,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -52,16 +52,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)src;$(ProjectDir)extern\lua55\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)extern\lua55\lib;$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\kenshilib;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
-    <OutDir>C:\GOG Games\Kenshi\mods\KenshiLua\</OutDir>
+    <OutDir>C:\GOG Games\Kenshi\mods\KenshiLuaJIT\</OutDir>
     <SourcePath>$(SolutionDir)src;$(SourcePath)</SourcePath>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <TargetName>KenshiLuaJIT</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)extern\lua55\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)extern\lua55\lib;$(ProjectDir)extern\kenshilib\Libraries\kenshilib;$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <VcpkgInstalledDir>C:\Users\trist\vcpkg\installed</VcpkgInstalledDir>
@@ -100,14 +100,14 @@
       <PreprocessorDefinitions>_DEBUG;KENSHILUA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)extern\lua55\include;$(ProjectDir)extern\kenshilib\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>lua55.lib;KenshiLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)extern\lua55\lib;$(ProjectDir)extern\kenshilib\Libraries\kenshilib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua51.lib;KenshiLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -118,23 +118,24 @@
       <PreprocessorDefinitions>NDEBUG;KENSHILUA_EXPORTS;_USRDLL;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)extern\lua55\include;$(ProjectDir)extern\kenshilib\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <DisableSpecificWarnings>4482</DisableSpecificWarnings>
+      <OmitFramePointers>false</OmitFramePointers>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>lua55.lib;KenshiLib.lib;OgreMain_x64.lib;MyGUIEngine_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)extern\lua55\lib;$(ProjectDir)extern\kenshilib\Libraries\kenshilib;$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua51.lib;KenshiLib.lib;OgreMain_x64.lib;MyGUIEngine_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
-    <PostBuildEvent>
-      <Command>robocopy "E:\Kenshi\dev\projects\KenshiLua\bin\Release\KenshiLua" "$(KENSHI_INSTALL_DIR)mods\KenshiLua" /E /NFL /NDL /NJH /NJS /NC /NS &amp; if %ERRORLEVEL% LEQ 1 exit 0</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="extern\kenshilib\Include\ogre\Animation\OgreBone.h" />
@@ -617,10 +618,10 @@
     <ClInclude Include="src\Lua\LuaUtils.h" />
     <ClInclude Include="src\Lua\LuaBindings.h" />
     <ClInclude Include="src\Lua\Logger.h" />
+    <ClInclude Include="src\Lua\Benchmark.h" />
     <ClInclude Include="src\EventSystem.h" />
     <ClInclude Include="src\ScriptQueue.h" />
     <ClInclude Include="src\Bindings\HandBinding.h" />
-    <ClInclude Include="src\Bindings\DialogueEventBinding.h" />
     <ClInclude Include="src\Bindings\GlobalBinding.h" />
     <ClInclude Include="src\Bindings\PlayerInterfaceBinding.h" />
     <ClInclude Include="src\Bindings\CharacterBinding.h" />
@@ -632,6 +633,8 @@
     <ClInclude Include="src\Lua\BindingHelpers.h" />
     <ClInclude Include="src\ModLoader.h" />
     <ClInclude Include="src\Bindings\MyGuiBinding.h" />
+    <ClInclude Include="src\Bindings\CharacterAnimalBinding.h" />
+    <ClInclude Include="src\Bindings\ShopTraderBinding.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Bindings\BuildingEnumBinding.cpp" />
@@ -658,10 +661,10 @@
     <ClCompile Include="src\Lua\LuaUtils.cpp" />
     <ClCompile Include="src\Lua\LuaBindings.cpp" />
     <ClCompile Include="src\Lua\Logger.cpp" />
+    <ClCompile Include="src\Lua\Benchmark.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
     <ClCompile Include="src\ScriptQueue.cpp" />
     <ClCompile Include="src\Bindings\HandBinding.cpp" />
-    <ClCompile Include="src\Bindings\DialogueEventBinding.cpp" />
     <ClCompile Include="src\Bindings\GlobalBinding.cpp" />
     <ClCompile Include="src\Bindings\PlayerInterfaceBinding.cpp" />
     <ClCompile Include="src\Bindings\CharacterBinding.cpp" />
@@ -678,6 +681,8 @@
     <ClCompile Include="src\Bindings\GameWorldBinding.cpp" />
     <ClCompile Include="src\ModLoader.cpp" />
     <ClCompile Include="src\Bindings\MyGuiBinding.cpp" />
+    <ClCompile Include="src\Bindings\CharacterAnimalBinding.cpp" />
+    <ClCompile Include="src\Bindings\ShopTraderBinding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\kenshilib\Include\ogre\Animation\OgreBone.inl" />

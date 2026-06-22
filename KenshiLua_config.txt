@@ -1,0 +1,5 @@
+# KenshiLua Configuration File
+# ----------------------------
+
+# Set to true to run the benchmark system on game startup and log results to KenshiLua_Benchmark.log
+enable_benchmark=false

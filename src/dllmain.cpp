@@ -9,6 +9,7 @@
 #include "ModLoader.h"
 #include "ScriptQueue.h"
 #include "Bindings/MyGuiBinding.h"
+#include "Lua/Benchmark.h"
 #include <ogre/OgreFrameListener.h>
 #include <ogre/OgreRoot.h>
 
@@ -231,6 +232,10 @@ static void shutdownLua()
 _declspec(dllexport) void startPlugin()
 {
     if (!initializeLua()) return;
+
+    if (KenshiLua::isBenchmarkEnabled()) {
+        KenshiLua::runBenchmarkOnStartup(KenshiLua::g_luaState->getState());
+    }
 
     // Discover *.lua files under each active mod folder and execute each.
     // ModLoader is resilient: a single script failing won't abort the rest.

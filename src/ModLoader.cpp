@@ -200,13 +200,17 @@ bool ModLoader::runScript(lua_State* L, LoadedScript& s)
         return false;
     }
 
-    // Install a per-script _ENV upvalue.  In Lua 5.4 the first upvalue of a
-    // main chunk is _ENV.
+    // Install a per-script sandbox environment.
+#if LUA_VERSION_NUM >= 502
     createSandboxEnv(L);                            // top: chunk, env
     if (lua_setupvalue(L, -2, 1) == 0) {            // top: chunk  (no upvalue#1?!)
         // No upvalues to set - chunk just uses real globals.  Drop the env.
         lua_pop(L, 1);
     }
+#else
+    createSandboxEnv(L);                            // top: chunk, env
+    lua_setfenv(L, -2);                             // top: chunk
+#endif
 
     if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
         const char* err = lua_tostring(L, -1);

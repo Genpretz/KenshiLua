@@ -30,6 +30,7 @@
 #include "Bindings/MyGuiBinding.h"
 #include "Bindings/CharacterAnimalBinding.h"
 #include "Bindings/ShopTraderBinding.h"
+#include "Lua/Benchmark.h"
 #include <string>
 #include <cstdio>
 
@@ -45,6 +46,7 @@ static const luaL_Reg KenshiLuaLib[] = {
     { "log", luaKenshiLog },
     { "error", luaKenshiError },
     { "version", luaKenshiVersion },
+    { "runBenchmark", luaKenshiRunBenchmark },
     { NULL, NULL }
 };
 
