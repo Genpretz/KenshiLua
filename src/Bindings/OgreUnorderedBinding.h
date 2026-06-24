@@ -23,7 +23,7 @@ namespace KenshiLua
 {
 
 // K, V: key/value types. KeyToLua/LuaToKey/ValToLua/LuaToVal: conversion fn pointers.
-template 
+template <
     typename K, typename V,
     const char* MetaName(),
     void (*ValToLua)(lua_State*, const V&),

@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Bindings/EnumBinding.h"
-#include "Bindings/BuildingEnumBinding.h"
 #include "Bindings/MedicalSystemBinding.h"
 
 #include "kenshi/Character.h"
@@ -16,10 +15,213 @@ extern "C" {
 namespace KenshiLua
 {    
     // ----------------------------------------------
+    // Building.h
+    // ----------------------------------------------
+
+    void registerBuildingDesignation(lua_State* L)
+    {
+        lua_newtable(L);
+
+        lua_pushinteger(L, BuildingDesignation::BD_NONE);
+        lua_setfield(L, -2, "BD_NONE");
+        lua_pushinteger(L, BuildingDesignation::BD_NONE);
+        lua_setfield(L, -2, "NONE");
+
+        lua_pushinteger(L, BuildingDesignation::BD_SHOP);
+        lua_setfield(L, -2, "BD_SHOP");
+        lua_pushinteger(L, BuildingDesignation::BD_SHOP);
+        lua_setfield(L, -2, "SHOP");
+
+        lua_pushinteger(L, BuildingDesignation::BD_BARRACKS);
+        lua_setfield(L, -2, "BD_BARRACKS");
+        lua_pushinteger(L, BuildingDesignation::BD_BARRACKS);
+        lua_setfield(L, -2, "BARRACKS");
+
+        lua_pushinteger(L, BuildingDesignation::BD_BAR);
+        lua_setfield(L, -2, "BD_BAR");
+        lua_pushinteger(L, BuildingDesignation::BD_BAR);
+        lua_setfield(L, -2, "BAR");
+
+        lua_pushinteger(L, BuildingDesignation::BD_HOSPITAL);
+        lua_setfield(L, -2, "BD_HOSPITAL");
+        lua_pushinteger(L, BuildingDesignation::BD_HOSPITAL);
+        lua_setfield(L, -2, "HOSPITAL");
+
+        lua_pushinteger(L, BuildingDesignation::BD_ARMOURY);
+        lua_setfield(L, -2, "BD_ARMOURY");
+        lua_pushinteger(L, BuildingDesignation::BD_ARMOURY);
+        lua_setfield(L, -2, "ARMOURY");
+
+        lua_pushinteger(L, BuildingDesignation::BD_TREASURE);
+        lua_setfield(L, -2, "BD_TREASURE");
+        lua_pushinteger(L, BuildingDesignation::BD_TREASURE);
+        lua_setfield(L, -2, "TREASURE");
+
+        lua_pushinteger(L, BuildingDesignation::BD_PRISON);
+        lua_setfield(L, -2, "BD_PRISON");
+        lua_pushinteger(L, BuildingDesignation::BD_PRISON);
+        lua_setfield(L, -2, "PRISON");
+
+        lua_pushinteger(L, BuildingDesignation::BD_HQ);
+        lua_setfield(L, -2, "BD_HQ");
+        lua_pushinteger(L, BuildingDesignation::BD_HQ);
+        lua_setfield(L, -2, "HQ");
+
+        lua_pushinteger(L, BuildingDesignation::BD_RESIDENTIAL);
+        lua_setfield(L, -2, "BD_RESIDENTIAL");
+        lua_pushinteger(L, BuildingDesignation::BD_RESIDENTIAL);
+        lua_setfield(L, -2, "RESIDENTIAL");
+
+        lua_pushinteger(L, BuildingDesignation::BD_SLAVE_STORAGE);
+        lua_setfield(L, -2, "BD_SLAVE_STORAGE");
+        lua_pushinteger(L, BuildingDesignation::BD_SLAVE_STORAGE);
+        lua_setfield(L, -2, "SLAVE_STORAGE");
+
+        lua_pushinteger(L, BuildingDesignation::BD_RESIDENTIAL_SMALL);
+        lua_setfield(L, -2, "BD_RESIDENTIAL_SMALL");
+        lua_pushinteger(L, BuildingDesignation::BD_RESIDENTIAL_SMALL);
+        lua_setfield(L, -2, "RESIDENTIAL_SMALL");
+
+        lua_setglobal(L, "BuildingDesignation");
+    }
+
+    void registerBuildingClassType(lua_State* L)
+    {
+        lua_newtable(L);
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_FLUFF);
+        lua_setfield(L, -2, "BCTYPE_FLUFF");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_FLUFF);
+        lua_setfield(L, -2, "FLUFF");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_DOOR);
+        lua_setfield(L, -2, "BCTYPE_DOOR");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_DOOR);
+        lua_setfield(L, -2, "DOOR");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_USABLE);
+        lua_setfield(L, -2, "BCTYPE_USABLE");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_USABLE);
+        lua_setfield(L, -2, "USABLE");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_STORAGE);
+        lua_setfield(L, -2, "BCTYPE_STORAGE");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_STORAGE);
+        lua_setfield(L, -2, "STORAGE");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_PRODUCTION);
+        lua_setfield(L, -2, "BCTYPE_PRODUCTION");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_PRODUCTION);
+        lua_setfield(L, -2, "PRODUCTION");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_RESEARCH);
+        lua_setfield(L, -2, "BCTYPE_RESEARCH");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_RESEARCH);
+        lua_setfield(L, -2, "RESEARCH");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_CRAFTING);
+        lua_setfield(L, -2, "BCTYPE_CRAFTING");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_CRAFTING);
+        lua_setfield(L, -2, "CRAFTING");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_GATEWAY);
+        lua_setfield(L, -2, "BCTYPE_GATEWAY");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_GATEWAY);
+        lua_setfield(L, -2, "GATEWAY");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_TURRET);
+        lua_setfield(L, -2, "BCTYPE_TURRET");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_TURRET);
+        lua_setfield(L, -2, "TURRET");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_WALL);
+        lua_setfield(L, -2, "BCTYPE_WALL");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_WALL);
+        lua_setfield(L, -2, "WALL");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_ITEM_FURNACE);
+        lua_setfield(L, -2, "BCTYPE_ITEM_FURNACE");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_ITEM_FURNACE);
+        lua_setfield(L, -2, "ITEM_FURNACE");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_LIGHT);
+        lua_setfield(L, -2, "BCTYPE_LIGHT");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_LIGHT);
+        lua_setfield(L, -2, "LIGHT");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR);
+        lua_setfield(L, -2, "BCTYPE_SHELL_WITH_INTERIOR");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR);
+        lua_setfield(L, -2, "SHELL_WITH_INTERIOR");
+
+        lua_pushinteger(L, BuildingClassType::BCTYPE_FARM);
+        lua_setfield(L, -2, "BCTYPE_FARM");
+        lua_pushinteger(L, BuildingClassType::BCTYPE_FARM);
+        lua_setfield(L, -2, "FARM");
+
+        lua_setglobal(L, "BuildingClassType");
+    }
+
+    void registerBuildingPlacementGroundType(lua_State* L)
+    {
+        lua_newtable(L);
+
+        lua_pushinteger(L, BuildingPlacementGroundType::Enum::ANY);
+        lua_setfield(L, -2, "ANY");
+
+        lua_pushinteger(L, BuildingPlacementGroundType::Enum::LAND);
+        lua_setfield(L, -2, "LAND");
+
+        lua_pushinteger(L, BuildingPlacementGroundType::Enum::WATER);
+        lua_setfield(L, -2, "WATER");
+
+        lua_setglobal(L, "BuildingPlacementGroundType");
+    }
+
+    void registerPreviewBuildingPlacementResult(lua_State* L)
+    {
+        lua_newtable(L);
+
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_VALID);
+        lua_setfield(L, -2, "PLACEMENT_VALID");
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_VALID);
+        lua_setfield(L, -2, "VALID");
+
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE);
+        lua_setfield(L, -2, "PLACEMENT_OUTSIDE");
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE);
+        lua_setfield(L, -2, "OUTSIDE");
+
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_INVALID);
+        lua_setfield(L, -2, "PLACEMENT_INVALID");
+        lua_pushinteger(L, PreviewBuilding::PlacementResult::PLACEMENT_INVALID);
+        lua_setfield(L, -2, "INVALID");
+
+        lua_setglobal(L, "PreviewBuildingPlacementResult");
+    }
+
+    void registerPreviewBuildingClassType(lua_State* L)
+    {
+        lua_newtable(L);
+
+        lua_pushinteger(L, PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL);
+        lua_setfield(L, -2, "PREVIEW_NORMAL");
+        lua_pushinteger(L, PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL);
+        lua_setfield(L, -2, "NORMAL");
+
+        lua_pushinteger(L, PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL);
+        lua_setfield(L, -2, "PREVIEW_WALL");
+        lua_pushinteger(L, PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL);
+        lua_setfield(L, -2, "WALL");
+
+        lua_setglobal(L, "PreviewBuildingClassType");
+    }
+
+    // ----------------------------------------------
     // Character.h
 	// ----------------------------------------------
 
-    void CharacterEnumBinding::registerProneState(lua_State* L)
+    void registerProneState(lua_State* L)
     {
         lua_newtable(L);
 
@@ -51,7 +253,7 @@ namespace KenshiLua
         lua_setglobal(L, "ProneState");
     }
 
-    void CharacterEnumBinding::registerWaterState(lua_State* L)
+    void registerWaterState(lua_State* L)
     {
         lua_newtable(L);
 
@@ -70,7 +272,7 @@ namespace KenshiLua
         lua_setglobal(L, "WaterState");
     }
 
-    void CharacterEnumBinding::registerRagdollPart(lua_State* L)
+    void registerRagdollPart(lua_State* L)
     {
         lua_newtable(L);
 
@@ -110,175 +312,175 @@ namespace KenshiLua
         lua_setglobal(L, "RagdollPart");
     }
 
-    void CharacterEnumBinding::registerCharacterPerceptionTagsShortTerm(lua_State* L)
+    void registerCharacterPerceptionTagsShortTerm(lua_State* L)
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, ST_NONE);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_NONE);
         lua_setfield(L, -2, "ST_NONE");
-        lua_pushinteger(L, ST_NONE);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_NONE);
         lua_setfield(L, -2, "NONE");
 
-        lua_pushinteger(L, ST_INTRUDER);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_INTRUDER);
         lua_setfield(L, -2, "ST_INTRUDER");
-        lua_pushinteger(L, ST_INTRUDER);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_INTRUDER);
         lua_setfield(L, -2, "INTRUDER");
 
-        lua_pushinteger(L, ST_AGGRESSOR);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_AGGRESSOR);
         lua_setfield(L, -2, "ST_AGGRESSOR");
-        lua_pushinteger(L, ST_AGGRESSOR);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_AGGRESSOR);
         lua_setfield(L, -2, "AGGRESSOR");
 
-        lua_pushinteger(L, ST_TEMPORARY_ALLY);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ALLY);
         lua_setfield(L, -2, "ST_TEMPORARY_ALLY");
-        lua_pushinteger(L, ST_TEMPORARY_ALLY);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ALLY);
         lua_setfield(L, -2, "TEMPORARY_ALLY");
 
-        lua_pushinteger(L, ST_TEMPORARY_ENEMY);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ENEMY);
         lua_setfield(L, -2, "ST_TEMPORARY_ENEMY");
-        lua_pushinteger(L, ST_TEMPORARY_ENEMY);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ENEMY);
         lua_setfield(L, -2, "TEMPORARY_ENEMY");
 
-        lua_pushinteger(L, ST_PRISONER);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_PRISONER);
         lua_setfield(L, -2, "ST_PRISONER");
-        lua_pushinteger(L, ST_PRISONER);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_PRISONER);
         lua_setfield(L, -2, "PRISONER");
 
-        lua_pushinteger(L, ST_HAS_BEEN_LOOTED);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_HAS_BEEN_LOOTED);
         lua_setfield(L, -2, "ST_HAS_BEEN_LOOTED");
-        lua_pushinteger(L, ST_HAS_BEEN_LOOTED);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_HAS_BEEN_LOOTED);
         lua_setfield(L, -2, "HAS_BEEN_LOOTED");
 
-        lua_pushinteger(L, ST_CRIMINAL);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_CRIMINAL);
         lua_setfield(L, -2, "ST_CRIMINAL");
-        lua_pushinteger(L, ST_CRIMINAL);
+        lua_pushinteger(L,CharacterPerceptionTags_ShortTerm::ST_CRIMINAL);
         lua_setfield(L, -2, "CRIMINAL");
 
         lua_setglobal(L, "CharacterPerceptionTags_ShortTerm");
     }
 
-    void CharacterEnumBinding::registerCharacterPerceptionTagsLongTerm(lua_State* L)
+    void registerCharacterPerceptionTagsLongTerm(lua_State* L)
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, LT_NONE);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_NONE);
         lua_setfield(L, -2, "LT_NONE");
-        lua_pushinteger(L, LT_NONE);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_NONE);
         lua_setfield(L, -2, "NONE");
 
-        lua_pushinteger(L, LT_MY_INTRUDER);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_MY_INTRUDER);
         lua_setfield(L, -2, "LT_MY_INTRUDER");
-        lua_pushinteger(L, LT_MY_INTRUDER);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_MY_INTRUDER);
         lua_setfield(L, -2, "MY_INTRUDER");
 
-        lua_pushinteger(L, LT_MY_LIFESAVER);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_MY_LIFESAVER);
         lua_setfield(L, -2, "LT_MY_LIFESAVER");
-        lua_pushinteger(L, LT_MY_LIFESAVER);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_MY_LIFESAVER);
         lua_setfield(L, -2, "MY_LIFESAVER");
 
-        lua_pushinteger(L, LT_FREED_ME);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_FREED_ME);
         lua_setfield(L, -2, "LT_FREED_ME");
-        lua_pushinteger(L, LT_FREED_ME);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_FREED_ME);
         lua_setfield(L, -2, "FREED_ME");
 
-        lua_pushinteger(L, LT_STOLE_FROM_ME);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_STOLE_FROM_ME);
         lua_setfield(L, -2, "LT_STOLE_FROM_ME");
-        lua_pushinteger(L, LT_STOLE_FROM_ME);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_STOLE_FROM_ME);
         lua_setfield(L, -2, "STOLE_FROM_ME");
 
-        lua_pushinteger(L, LT_MY_CAPTOR);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_MY_CAPTOR);
         lua_setfield(L, -2, "LT_MY_CAPTOR");
-        lua_pushinteger(L, LT_MY_CAPTOR);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_MY_CAPTOR);
         lua_setfield(L, -2, "MY_CAPTOR");
 
-        lua_pushinteger(L, LT_FRIENDLY_AQUAINTANCE);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_FRIENDLY_AQUAINTANCE);
         lua_setfield(L, -2, "LT_FRIENDLY_AQUAINTANCE");
-        lua_pushinteger(L, LT_FRIENDLY_AQUAINTANCE);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_FRIENDLY_AQUAINTANCE);
         lua_setfield(L, -2, "FRIENDLY_AQUAINTANCE");
 
-        lua_pushinteger(L, LT_DEFEATED_MY_SQUAD_ONCE);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_DEFEATED_MY_SQUAD_ONCE);
         lua_setfield(L, -2, "LT_DEFEATED_MY_SQUAD_ONCE");
-        lua_pushinteger(L, LT_DEFEATED_MY_SQUAD_ONCE);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_DEFEATED_MY_SQUAD_ONCE);
         lua_setfield(L, -2, "DEFEATED_MY_SQUAD_ONCE");
 
-        lua_pushinteger(L, LT_SQUAD_LOST_TO_ME_ONCE);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_SQUAD_LOST_TO_ME_ONCE);
         lua_setfield(L, -2, "LT_SQUAD_LOST_TO_ME_ONCE");
-        lua_pushinteger(L, LT_SQUAD_LOST_TO_ME_ONCE);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_SQUAD_LOST_TO_ME_ONCE);
         lua_setfield(L, -2, "SQUAD_LOST_TO_ME_ONCE");
 
-        lua_pushinteger(L, LT_KILLED_MY_FRIEND);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_KILLED_MY_FRIEND);
         lua_setfield(L, -2, "LT_KILLED_MY_FRIEND");
-        lua_pushinteger(L, LT_KILLED_MY_FRIEND);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_KILLED_MY_FRIEND);
         lua_setfield(L, -2, "KILLED_MY_FRIEND");
 
-        lua_pushinteger(L, LT_I_SCREWED_THIS_GUY);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_I_SCREWED_THIS_GUY);
         lua_setfield(L, -2, "LT_I_SCREWED_THIS_GUY");
-        lua_pushinteger(L, LT_I_SCREWED_THIS_GUY);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_I_SCREWED_THIS_GUY);
         lua_setfield(L, -2, "I_SCREWED_THIS_GUY");
 
-        lua_pushinteger(L, LT_MAX);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_MAX);
         lua_setfield(L, -2, "LT_MAX");
-        lua_pushinteger(L, LT_MAX);
+        lua_pushinteger(L,CharacterPerceptionTags_LongTerm::LT_MAX);
         lua_setfield(L, -2, "MAX");
 
         lua_setglobal(L, "CharacterPerceptionTags_LongTerm");
     }
 
-    void CharacterEnumBinding::registerSoundRange(lua_State* L)
+    void registerSoundRange(lua_State* L)
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, SOUNDRANGE_SHORT);
+        lua_pushinteger(L,SoundRange::SOUNDRANGE_SHORT);
         lua_setfield(L, -2, "SOUNDRANGE_SHORT");
-        lua_pushinteger(L, SOUNDRANGE_SHORT);
+        lua_pushinteger(L,SoundRange::SOUNDRANGE_SHORT);
         lua_setfield(L, -2, "SHORT");
 
-        lua_pushinteger(L, SOUNDRANGE_LONG);
+        lua_pushinteger(L,SoundRange::SOUNDRANGE_LONG);
         lua_setfield(L, -2, "SOUNDRANGE_LONG");
-        lua_pushinteger(L, SOUNDRANGE_LONG);
+        lua_pushinteger(L,SoundRange::SOUNDRANGE_LONG);
         lua_setfield(L, -2, "LONG");
 
-        lua_pushinteger(L, SOUNDRANGE_ALWAYS);
+        lua_pushinteger(L,SoundRange::SOUNDRANGE_ALWAYS);
         lua_setfield(L, -2, "SOUNDRANGE_ALWAYS");
-        lua_pushinteger(L, SOUNDRANGE_ALWAYS);
+        lua_pushinteger(L,SoundRange::SOUNDRANGE_ALWAYS);
         lua_setfield(L, -2, "ALWAYS");
 
         lua_setglobal(L, "SoundRange");
     }
 
-    void CharacterEnumBinding::registerSquadMemberType(lua_State* L)
+    void registerSquadMemberType(lua_State* L)
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, SQUAD_1);
+        lua_pushinteger(L,SquadMemberType::SQUAD_1);
         lua_setfield(L, -2, "SQUAD_1");
-		lua_pushinteger(L, SQUAD_1);
+		lua_pushinteger(L,SquadMemberType::SQUAD_1);
 		lua_setfield(L, -2, "1");
 
-        lua_pushinteger(L, SQUAD_2);
+        lua_pushinteger(L,SquadMemberType::SQUAD_2);
         lua_setfield(L, -2, "SQUAD_2");
-		lua_pushinteger(L, SQUAD_2);
+		lua_pushinteger(L,SquadMemberType::SQUAD_2);
 		lua_setfield(L, -2, "2");
 
-        lua_pushinteger(L, SQUAD_LEADER);
+        lua_pushinteger(L,SquadMemberType::SQUAD_LEADER);
         lua_setfield(L, -2, "SQUAD_LEADER");
-		lua_pushinteger(L, SQUAD_LEADER);
+		lua_pushinteger(L,SquadMemberType::SQUAD_LEADER);
 		lua_setfield(L, -2, "LEADER");
 
-        lua_pushinteger(L, SQUAD_SIGNALS_PLAN);
+        lua_pushinteger(L,SquadMemberType::SQUAD_SIGNALS_PLAN);
         lua_setfield(L, -2, "SQUAD_SIGNALS_PLAN");
-		lua_pushinteger(L, SQUAD_SIGNALS_PLAN);
+		lua_pushinteger(L,SquadMemberType::SQUAD_SIGNALS_PLAN);
 		lua_setfield(L, -2, "SIGNALS_PLAN");
 
-        lua_pushinteger(L, SQUAD_SLAVE);
+        lua_pushinteger(L,SquadMemberType::SQUAD_SLAVE);
         lua_setfield(L, -2, "SQUAD_SLAVE");
-		lua_pushinteger(L, SQUAD_SLAVE);
+		lua_pushinteger(L,SquadMemberType::SQUAD_SLAVE);
 		lua_setfield(L, -2, "SLAVE");
 
         lua_setglobal(L, "SquadMemberType");
     }
 
-    void CharacterEnumBinding::registerCharacterMessage(lua_State* L)
+    void registerCharacterMessage(lua_State* L)
     {
         lua_newtable(L);
 
@@ -288,23 +490,13 @@ namespace KenshiLua
         lua_setglobal(L, "CharacterMessage");
     }
 
-    void CharacterEnumBinding::registerBinding(lua_State* L)
-    {
-        registerProneState(L);
-        registerWaterState(L);
-        registerRagdollPart(L);
-        registerCharacterPerceptionTagsShortTerm(L);
-        registerCharacterPerceptionTagsLongTerm(L);
-        registerSoundRange(L);
-        registerSquadMemberType(L);
-        registerCharacterMessage(L);
-	}
+
 
     // --------------------------------------------------
     // Dialogue.h
     // --------------------------------------------------
 
-    void DialogueEnumBinding::registerTalker(lua_State* L)
+    void registerTalker(lua_State* L)
     {
         lua_newtable(L);
 
@@ -351,285 +543,279 @@ namespace KenshiLua
 		lua_setglobal(L, "Talker");
     }
 
-    void DialogueEnumBinding::registerDialogueAction(lua_State* L)
+    void registerDialogueAction(lua_State* L)
     {
         lua_newtable(L);
 
         lua_pushinteger(L, DA_NONE);
         lua_setfield(L, -2, "DA_NONE");
-        lua_pushinteger(L, DA_NONE);
+        lua_pushinteger(L , DA_NONE);
         lua_setfield(L, -2, "NONE");
 
-        lua_pushinteger(L, DA_TRADE);
+        lua_pushinteger(L , DA_TRADE);
         lua_setfield(L, -2, "DA_TRADE");
-        lua_pushinteger(L, DA_TRADE);
+        lua_pushinteger(L , DA_TRADE);
         lua_setfield(L, -2, "TRADE");
 
-        lua_pushinteger(L, DA_TALK_TO_LEADER);
+        lua_pushinteger(L , DA_TALK_TO_LEADER);
         lua_setfield(L, -2, "DA_TALK_TO_LEADER");
-        lua_pushinteger(L, DA_TALK_TO_LEADER);
+        lua_pushinteger(L , DA_TALK_TO_LEADER);
         lua_setfield(L, -2, "TALK_TO_LEADER");
 
-        lua_pushinteger(L, DA_JOIN_SQUAD_WITH_EDIT);
+        lua_pushinteger(L , DA_JOIN_SQUAD_WITH_EDIT);
         lua_setfield(L, -2, "DA_JOIN_SQUAD_WITH_EDIT");
-        lua_pushinteger(L, DA_JOIN_SQUAD_WITH_EDIT);
+        lua_pushinteger(L , DA_JOIN_SQUAD_WITH_EDIT);
         lua_setfield(L, -2, "JOIN_SQUAD_WITH_EDIT");
 
-        lua_pushinteger(L, DA_AFFECT_RELATIONS);
+        lua_pushinteger(L , DA_AFFECT_RELATIONS);
         lua_setfield(L, -2, "DA_AFFECT_RELATIONS");
-        lua_pushinteger(L, DA_AFFECT_RELATIONS);
+        lua_pushinteger(L , DA_AFFECT_RELATIONS);
         lua_setfield(L, -2, "AFFECT_RELATIONS");
 
 
-        lua_pushinteger(L, DA_AFFECT_REPUTATION);
+        lua_pushinteger(L , DA_AFFECT_REPUTATION);
         lua_setfield(L, -2, "DA_AFFECT_REPUTATION");
-        lua_pushinteger(L, DA_AFFECT_REPUTATION);
+        lua_pushinteger(L , DA_AFFECT_REPUTATION);
         lua_setfield(L, -2, "AFFECT_REPUTATION");
 
-		lua_pushinteger(L, DA_ATTACK_CHASE_FOREVER);
+		lua_pushinteger(L , DA_ATTACK_CHASE_FOREVER);
 		lua_setfield(L, -2, "DA_ATTACK_CHASE_FOREVER");
-		lua_pushinteger(L, DA_ATTACK_CHASE_FOREVER);
+		lua_pushinteger(L , DA_ATTACK_CHASE_FOREVER);
 		lua_setfield(L, -2, "ATTACK_CHASE_FOREVER");
 
-        lua_pushinteger(L, DA_GO_HOME);
+        lua_pushinteger(L , DA_GO_HOME);
         lua_setfield(L, -2, "DA_GO_HOME");
-        lua_pushinteger(L, DA_GO_HOME);
+        lua_pushinteger(L , DA_GO_HOME);
         lua_setfield(L, -2, "GO_HOME");
 
-        lua_pushinteger(L, DA_TAKE_MONEY);
+        lua_pushinteger(L , DA_TAKE_MONEY);
         lua_setfield(L, -2, "DA_TAKE_MONEY");
-        lua_pushinteger(L, DA_TAKE_MONEY);
+        lua_pushinteger(L , DA_TAKE_MONEY);
         lua_setfield(L, -2, "TAKE_MONEY");
 
-        lua_pushinteger(L, DA_GIVE_MONEY);
+        lua_pushinteger(L , DA_GIVE_MONEY);
         lua_setfield(L, -2, "DA_GIVE_MONEY");
-        lua_pushinteger(L, DA_GIVE_MONEY);
+        lua_pushinteger(L , DA_GIVE_MONEY);
         lua_setfield(L, -2, "GIVE_MONEY");
 
-        lua_pushinteger(L, DA_PAY_BOUNTY);
+        lua_pushinteger(L , DA_PAY_BOUNTY);
         lua_setfield(L, -2, "DA_PAY_BOUNTY");
-        lua_pushinteger(L, DA_PAY_BOUNTY);
+        lua_pushinteger(L , DA_PAY_BOUNTY);
         lua_setfield(L, -2, "PAY_BOUNTY");
 
-        lua_pushinteger(L, DA_CHARACTER_EDITOR);
+        lua_pushinteger(L , DA_CHARACTER_EDITOR);
         lua_setfield(L, -2, "DA_CHARACTER_EDITOR");
-        lua_pushinteger(L, DA_CHARACTER_EDITOR);
+        lua_pushinteger(L , DA_CHARACTER_EDITOR);
         lua_setfield(L, -2, "CHARACTER_EDITOR");
 
-        lua_pushinteger(L, DA_FORCE_SPEECH_TIMER);
+        lua_pushinteger(L , DA_FORCE_SPEECH_TIMER);
         lua_setfield(L, -2, "DA_FORCE_SPEECH_TIMER");
-        lua_pushinteger(L, DA_FORCE_SPEECH_TIMER);
+        lua_pushinteger(L , DA_FORCE_SPEECH_TIMER);
         lua_setfield(L, -2, "FORCE_SPEECH_TIMER");
 
-        lua_pushinteger(L, DA_DECLARE_WAR);
+        lua_pushinteger(L , DA_DECLARE_WAR);
         lua_setfield(L, -2, "DA_DECLARE_WAR");
-        lua_pushinteger(L, DA_DECLARE_WAR);
+        lua_pushinteger(L , DA_DECLARE_WAR);
         lua_setfield(L, -2, "DECLARE_WAR");
 
-        lua_pushinteger(L, DA_END_WAR);
+        lua_pushinteger(L , DA_END_WAR);
         lua_setfield(L, -2, "DA_END_WAR");
-        lua_pushinteger(L, DA_END_WAR);
+        lua_pushinteger(L , DA_END_WAR);
         lua_setfield(L, -2, "END_WAR");
 
-        lua_pushinteger(L, DA_CLEAR_AI);
+        lua_pushinteger(L , DA_CLEAR_AI);
         lua_setfield(L, -2, "DA_CLEAR_AI");
-        lua_pushinteger(L, DA_CLEAR_AI);
+        lua_pushinteger(L , DA_CLEAR_AI);
         lua_setfield(L, -2, "CLEAR_AI");
 
-        lua_pushinteger(L, DA_FOLLOW_WHILE_TALKING);
+        lua_pushinteger(L , DA_FOLLOW_WHILE_TALKING);
         lua_setfield(L, -2, "DA_FOLLOW_WHILE_TALKING");
-        lua_pushinteger(L, DA_FOLLOW_WHILE_TALKING);
+        lua_pushinteger(L , DA_FOLLOW_WHILE_TALKING);
         lua_setfield(L, -2, "FOLLOW_WHILE_TALKING");
 
-        lua_pushinteger(L, DA_THUG_HUNTER);
+        lua_pushinteger(L , DA_THUG_HUNTER);
         lua_setfield(L, -2, "DA_THUG_HUNTER");
-        lua_pushinteger(L, DA_THUG_HUNTER);
+        lua_pushinteger(L , DA_THUG_HUNTER);
         lua_setfield(L, -2, "THUG_HUNTER");
 
-        lua_pushinteger(L, DA_JOIN_SQUAD_FAST);
+        lua_pushinteger(L , DA_JOIN_SQUAD_FAST);
         lua_setfield(L, -2, "DA_JOIN_SQUAD_FAST");
-        lua_pushinteger(L, DA_JOIN_SQUAD_FAST);
+        lua_pushinteger(L , DA_JOIN_SQUAD_FAST);
         lua_setfield(L, -2, "JOIN_SQUAD_FAST");
 
-		lua_pushinteger(L, DA_REMEMBER_CHARACTER);
+		lua_pushinteger(L , DA_REMEMBER_CHARACTER);
 		lua_setfield(L, -2, "DA_REMEMBER_CHARACTER");
-		lua_pushinteger(L, DA_REMEMBER_CHARACTER);
+		lua_pushinteger(L , DA_REMEMBER_CHARACTER);
 		lua_setfield(L, -2, "REMEMBER_CHARACTER");
 
-        lua_pushinteger(L, DA_FLAG_TEMP_ALLY);
+        lua_pushinteger(L , DA_FLAG_TEMP_ALLY);
         lua_setfield(L, -2, "DA_FLAG_TEMP_ALLY");
-        lua_pushinteger(L, DA_FLAG_TEMP_ALLY);
+        lua_pushinteger(L , DA_FLAG_TEMP_ALLY);
         lua_setfield(L, -2, "FLAG_TEMP_ALLY");
 
-        lua_pushinteger(L, DA_FLAG_TEMP_ENEMY);
+        lua_pushinteger(L , DA_FLAG_TEMP_ENEMY);
         lua_setfield(L, -2, "DA_FLAG_TEMP_ENEMY");
-        lua_pushinteger(L, DA_FLAG_TEMP_ENEMY);
+        lua_pushinteger(L , DA_FLAG_TEMP_ENEMY);
         lua_setfield(L, -2, "FLAG_TEMP_ENEMY");
 
-        lua_pushinteger(L, DA_MATES_KILL_ME);
+        lua_pushinteger(L , DA_MATES_KILL_ME);
         lua_setfield(L, -2, "DA_MATES_KILL_ME");
-        lua_pushinteger(L, DA_MATES_KILL_ME);
+        lua_pushinteger(L , DA_MATES_KILL_ME);
         lua_setfield(L, -2, "MATES_KILL_ME");
 
-        lua_pushinteger(L, DA_MAKE_TARGET_RUN_FASTER);
+        lua_pushinteger(L , DA_MAKE_TARGET_RUN_FASTER);
         lua_setfield(L, -2, "DA_MAKE_TARGET_RUN_FASTER");
-        lua_pushinteger(L, DA_MAKE_TARGET_RUN_FASTER);
+        lua_pushinteger(L , DA_MAKE_TARGET_RUN_FASTER);
         lua_setfield(L, -2, "MAKE_TARGET_RUN_FASTER");
 
-        lua_pushinteger(L, DA_GIVE_TARGET_MY_SLAVES);
+        lua_pushinteger(L , DA_GIVE_TARGET_MY_SLAVES);
         lua_setfield(L, -2, "DA_GIVE_TARGET_MY_SLAVES");
-        lua_pushinteger(L, DA_GIVE_TARGET_MY_SLAVES);
+        lua_pushinteger(L , DA_GIVE_TARGET_MY_SLAVES);
         lua_setfield(L, -2, "GIVE_TARGET_MY_SLAVES");
 
-        lua_pushinteger(L, DA_TAG_ESCAPED_SLAVE);
+        lua_pushinteger(L , DA_TAG_ESCAPED_SLAVE);
         lua_setfield(L, -2, "DA_TAG_ESCAPED_SLAVE");
-        lua_pushinteger(L, DA_TAG_ESCAPED_SLAVE);
+        lua_pushinteger(L , DA_TAG_ESCAPED_SLAVE);
         lua_setfield(L, -2, "TAG_ESCAPED_SLAVE");
 
-        lua_pushinteger(L, DA_FREE_TARGET_SLAVE);
+        lua_pushinteger(L , DA_FREE_TARGET_SLAVE);
         lua_setfield(L, -2, "DA_FREE_TARGET_SLAVE");
-        lua_pushinteger(L, DA_FREE_TARGET_SLAVE);
+        lua_pushinteger(L , DA_FREE_TARGET_SLAVE);
         lua_setfield(L, -2, "FREE_TARGET_SLAVE");
 
-        lua_pushinteger(L, DA_MERGE_WITH_SIMILAR_SQUADS);
+        lua_pushinteger(L , DA_MERGE_WITH_SIMILAR_SQUADS);
         lua_setfield(L, -2, "DA_MERGE_WITH_SIMILAR_SQUADS");
-        lua_pushinteger(L, DA_MERGE_WITH_SIMILAR_SQUADS);
+        lua_pushinteger(L , DA_MERGE_WITH_SIMILAR_SQUADS);
         lua_setfield(L, -2, "MERGE_WITH_SIMILAR_SQUADS");
 
-        lua_pushinteger(L, DA_SEPARATE_TO_MY_OWN_SQUAD);
+        lua_pushinteger(L , DA_SEPARATE_TO_MY_OWN_SQUAD);
         lua_setfield(L, -2, "DA_SEPARATE_TO_MY_OWN_SQUAD");
-        lua_pushinteger(L, DA_SEPARATE_TO_MY_OWN_SQUAD);
+        lua_pushinteger(L , DA_SEPARATE_TO_MY_OWN_SQUAD);
         lua_setfield(L, -2, "SEPARATE_TO_MY_OWN_SQUAD");
 
-        lua_pushinteger(L, DA_ARREST_TARGET);
+        lua_pushinteger(L , DA_ARREST_TARGET);
         lua_setfield(L, -2, "DA_ARREST_TARGET");
-        lua_pushinteger(L, DA_ARREST_TARGET);
+        lua_pushinteger(L , DA_ARREST_TARGET);
         lua_setfield(L, -2, "ARREST_TARGET");
 
-        lua_pushinteger(L, DA_ARREST_TARGETS_CARRIED_PERSON);
+        lua_pushinteger(L , DA_ARREST_TARGETS_CARRIED_PERSON);
         lua_setfield(L, -2, "DA_ARREST_TARGETS_CARRIED_PERSON");
-        lua_pushinteger(L, DA_ARREST_TARGETS_CARRIED_PERSON);
+        lua_pushinteger(L , DA_ARREST_TARGETS_CARRIED_PERSON);
         lua_setfield(L, -2, "ARREST_TARGETS_CARRIED_PERSON");
 
-		lua_pushinteger(L, DA_ATTACK_TOWN);
+		lua_pushinteger(L , DA_ATTACK_TOWN);
 		lua_setfield(L, -2, "DA_ATTACK_TOWN");
-		lua_pushinteger(L, DA_ATTACK_TOWN);
+		lua_pushinteger(L , DA_ATTACK_TOWN);
 		lua_setfield(L, -2, "ATTACK_TOWN");
 
-		lua_pushinteger(L, DA_ASSIGN_BOUNTY);
+		lua_pushinteger(L , DA_ASSIGN_BOUNTY);
 		lua_setfield(L, -2, "DA_ASSIGN_BOUNTY");
-		lua_pushinteger(L, DA_ASSIGN_BOUNTY);
+		lua_pushinteger(L , DA_ASSIGN_BOUNTY);
 		lua_setfield(L, -2, "ASSIGN_BOUNTY");
 
-        lua_pushinteger(L, DA_CRIME_ALARM);
+        lua_pushinteger(L , DA_CRIME_ALARM);
         lua_setfield(L, -2, "DA_CRIME_ALARM");
-        lua_pushinteger(L, DA_CRIME_ALARM);
+        lua_pushinteger(L , DA_CRIME_ALARM);
         lua_setfield(L, -2, "CRIME_ALARM");
 
-        lua_pushinteger(L, DA_RUN_AWAY);
+        lua_pushinteger(L , DA_RUN_AWAY);
         lua_setfield(L, -2, "DA_RUN_AWAY");
-        lua_pushinteger(L, DA_RUN_AWAY);
+        lua_pushinteger(L , DA_RUN_AWAY);
         lua_setfield(L, -2, "RUN_AWAY");
 
-        lua_pushinteger(L, DA_INCREASE_FACTION_RANK);
+        lua_pushinteger(L , DA_INCREASE_FACTION_RANK);
         lua_setfield(L, -2, "DA_INCREASE_FACTION_RANK");
-        lua_pushinteger(L, DA_INCREASE_FACTION_RANK);
+        lua_pushinteger(L , DA_INCREASE_FACTION_RANK);
         lua_setfield(L, -2, "INCREASE_FACTION_RANK");
 
-        lua_pushinteger(L, DA_LOCK_THIS_DIALOG);
+        lua_pushinteger(L , DA_LOCK_THIS_DIALOG);
         lua_setfield(L, -2, "DA_LOCK_THIS_DIALOG");
-        lua_pushinteger(L, DA_LOCK_THIS_DIALOG);
+        lua_pushinteger(L , DA_LOCK_THIS_DIALOG);
         lua_setfield(L, -2, "LOCK_THIS_DIALOG");
 
-		lua_pushinteger(L, DA_ASSAULT_PHASE);
+		lua_pushinteger(L , DA_ASSAULT_PHASE);
 		lua_setfield(L, -2, "DA_ASSAULT_PHASE");
-		lua_pushinteger(L, DA_ASSAULT_PHASE);
+		lua_pushinteger(L , DA_ASSAULT_PHASE);
 		lua_setfield(L, -2, "ASSAULT_PHASE");
 
-		lua_pushinteger(L, DA_RETREAT_PHASE);
+		lua_pushinteger(L , DA_RETREAT_PHASE);
 		lua_setfield(L, -2, "DA_RETREAT_PHASE");
-		lua_pushinteger(L, DA_RETREAT_PHASE);
+		lua_pushinteger(L , DA_RETREAT_PHASE);
 		lua_setfield(L, -2, "RETREAT_PHASE");
 
-		lua_pushinteger(L, DA_VICTORY_PHASE);
+		lua_pushinteger(L , DA_VICTORY_PHASE);
 		lua_setfield(L, -2, "DA_VICTORY_PHASE");
-		lua_pushinteger(L, DA_VICTORY_PHASE);
+		lua_pushinteger(L , DA_VICTORY_PHASE);
 		lua_setfield(L, -2, "VICTORY_PHASE");
 
-		lua_pushinteger(L, DA_ENSLAVE_TARGETS_CARRIED_PERSON);
+		lua_pushinteger(L , DA_ENSLAVE_TARGETS_CARRIED_PERSON);
 		lua_setfield(L, -2, "DA_ENSLAVE_TARGETS_CARRIED_PERSON");
-		lua_pushinteger(L, DA_ENSLAVE_TARGETS_CARRIED_PERSON);
+		lua_pushinteger(L , DA_ENSLAVE_TARGETS_CARRIED_PERSON);
 		lua_setfield(L, -2, "ENSLAVE_TARGETS_CARRIED_PERSON");
 
-        lua_pushinteger(L, DA_CLEAR_BOUNTY);
+        lua_pushinteger(L , DA_CLEAR_BOUNTY);
         lua_setfield(L, -2, "DA_CLEAR_BOUNTY");
-        lua_pushinteger(L, DA_CLEAR_BOUNTY);
+        lua_pushinteger(L , DA_CLEAR_BOUNTY);
         lua_setfield(L, -2, "CLEAR_BOUNTY");
 
-        lua_pushinteger(L, DA_PLAYER_SELL_PRISONERS);
+        lua_pushinteger(L , DA_PLAYER_SELL_PRISONERS);
         lua_setfield(L, -2, "DA_PLAYER_SELL_PRISONERS");
-        lua_pushinteger(L, DA_PLAYER_SELL_PRISONERS);
+        lua_pushinteger(L , DA_PLAYER_SELL_PRISONERS);
         lua_setfield(L, -2, "PLAYER_SELL_PRISONERS");
 
-		lua_pushinteger(L, DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
+		lua_pushinteger(L , DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
 		lua_setfield(L, -2, "DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE");
-		lua_pushinteger(L, DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
+		lua_pushinteger(L , DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
 		lua_setfield(L, -2, "PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE");
 
-		lua_pushinteger(L, DA_SUMMON_MY_SQUAD);
+		lua_pushinteger(L , DA_SUMMON_MY_SQUAD);
 		lua_setfield(L, -2, "DA_SUMMON_MY_SQUAD");
-		lua_pushinteger(L, DA_SUMMON_MY_SQUAD);
+		lua_pushinteger(L , DA_SUMMON_MY_SQUAD);
 		lua_setfield(L, -2, "SUMMON_MY_SQUAD");
 
-		lua_pushinteger(L, DA_REMOVE_SLAVE_STATUS);
+		lua_pushinteger(L , DA_REMOVE_SLAVE_STATUS);
 		lua_setfield(L, -2, "DA_REMOVE_SLAVE_STATUS");
-		lua_pushinteger(L, DA_REMOVE_SLAVE_STATUS);
+		lua_pushinteger(L , DA_REMOVE_SLAVE_STATUS);
 		lua_setfield(L, -2, "REMOVE_SLAVE_STATUS");
 
-		lua_pushinteger(L, DA_OPEN_NEAREST_GATE);
+		lua_pushinteger(L , DA_OPEN_NEAREST_GATE);
 		lua_setfield(L, -2, "DA_OPEN_NEAREST_GATE");
-		lua_pushinteger(L, DA_OPEN_NEAREST_GATE);
+		lua_pushinteger(L , DA_OPEN_NEAREST_GATE);
 		lua_setfield(L, -2, "OPEN_NEAREST_GATE");
 
-		lua_pushinteger(L, DA_ATTACK_STAY_NEAR_HOME);
+		lua_pushinteger(L , DA_ATTACK_STAY_NEAR_HOME);
 		lua_setfield(L, -2, "DA_ATTACK_STAY_NEAR_HOME");
-		lua_pushinteger(L, DA_ATTACK_STAY_NEAR_HOME);
+		lua_pushinteger(L , DA_ATTACK_STAY_NEAR_HOME);
 		lua_setfield(L, -2, "ATTACK_STAY_NEAR_HOME");
 
-		lua_pushinteger(L, DA_MASSIVE_ALARM);
+		lua_pushinteger(L , DA_MASSIVE_ALARM);
 		lua_setfield(L, -2, "DA_MASSIVE_ALARM");
-		lua_pushinteger(L, DA_MASSIVE_ALARM);
+		lua_pushinteger(L , DA_MASSIVE_ALARM);
 		lua_setfield(L, -2, "MASSIVE_ALARM");
 
-		lua_pushinteger(L, DA_ATTACK_IF_NO_COEXIST);
+		lua_pushinteger(L , DA_ATTACK_IF_NO_COEXIST);
 		lua_setfield(L, -2, "DA_ATTACK_IF_NO_COEXIST");
-		lua_pushinteger(L, DA_ATTACK_IF_NO_COEXIST);
+		lua_pushinteger(L , DA_ATTACK_IF_NO_COEXIST);
 		lua_setfield(L, -2, "ATTACK_IF_NO_COEXIST");
 
-		lua_pushinteger(L, DA_KNOCKOUT);
+		lua_pushinteger(L , DA_KNOCKOUT);
 		lua_setfield(L, -2, "DA_KNOCKOUT");
-		lua_pushinteger(L, DA_KNOCKOUT);
+		lua_pushinteger(L , DA_KNOCKOUT);
 		lua_setfield(L, -2, "KNOCKOUT");
 
-        lua_pushinteger(L, DA_END);
+        lua_pushinteger(L , DA_END);
         lua_setfield(L, -2, "DA_END");
-        lua_pushinteger(L, DA_END);
+        lua_pushinteger(L , DA_END);
         lua_setfield(L, -2, "END");
 
 		lua_setglobal(L, "DialogueAction");
-    }
-
-    void DialogueEnumBinding::registerBinding(lua_State* L)
-    {
-        registerTalker(L);
-        registerDialogueAction(L);
     }
 
 	// --------------------------------------------------
     // Enums.h
 	// --------------------------------------------------
 
-    void EnumsEnumBinding::registersItemType(lua_State* L)
+    void registersItemType(lua_State* L)
     {
         lua_newtable(L);
 
@@ -981,7 +1167,7 @@ namespace KenshiLua
         lua_setglobal(L, "itemType");
     }
 
-    void EnumsEnumBinding::registerBuildingFunction(lua_State* L)
+    void registerBuildingFunction(lua_State* L)
     {
         lua_newtable(L);
 
@@ -1143,7 +1329,7 @@ namespace KenshiLua
         lua_setglobal(L, "BuildingFunction");
     }
 
-    void EnumsEnumBinding::registerCutDirection(lua_State* L)
+    void registerCutDirection(lua_State* L)
     {
         lua_newtable(L);
 
@@ -1200,7 +1386,7 @@ namespace KenshiLua
         lua_setglobal(L, "CutDirection");
     }
 
-    void EnumsEnumBinding::registerCutOrigination(lua_State* L)
+    void registerCutOrigination(lua_State* L)
     {
         lua_newtable(L);
 
@@ -1219,7 +1405,7 @@ namespace KenshiLua
         lua_setglobal(L, "CutOrigination");
     }
 
-    void EnumsEnumBinding::registerHitMaterialType(lua_State* L)
+    void registerHitMaterialType(lua_State* L)
     {
         lua_newtable(L);
 
@@ -1261,7 +1447,7 @@ namespace KenshiLua
         lua_setglobal(L, "HitMaterialType");
     }
 
-    void EnumsEnumBinding::registerWeatherAffecting(lua_State* L)
+    void registerWeatherAffecting(lua_State* L)
     {
         lua_newtable(L);
 
@@ -1298,7 +1484,7 @@ namespace KenshiLua
         lua_setglobal(L, "WeatherAffecting");
     }
 
-    void EnumsEnumBinding::registerAttachSlot(lua_State* L)
+    void registerAttachSlot(lua_State* L)
     {
         lua_newtable(L);
 
@@ -1400,7 +1586,7 @@ namespace KenshiLua
         lua_setglobal(L, "AttachSlot");
     }
 
-    void EnumsEnumBinding::registerItemFunction(lua_State* L)
+    void registerItemFunction(lua_State* L)
     {
         lua_newtable(L);
 
@@ -1497,7 +1683,7 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "ItemFunction");
     }
 
-    void EnumsEnumBinding::registerArmourType(lua_State* L)
+    void registerArmourType(lua_State* L)
     {
         lua_newtable(L);
 
@@ -1516,7 +1702,7 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "ArmourType");
     }
 
-    void EnumsEnumBinding::registerCharacterTypeEnum(lua_State* L)
+    void registerCharacterTypeEnum(lua_State* L)
     {
         lua_newtable(L);
 
@@ -1585,7 +1771,7 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "CharacterType"); // Stack: [empty]
     }
 
-    void EnumsEnumBinding::registerSlaveStateEnum(lua_State* L)
+    void registerSlaveStateEnum(lua_State* L)
     {
         lua_newtable(L);
 
@@ -1601,11 +1787,12 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_pushinteger(L, SlaveStateEnum::EX_SLAVE);
         lua_setfield(L, -2, "EX_SLAVE");
 
+        lua_pushvalue(L, -1);
         lua_setglobal(L, "SlaveStateEnum");
         lua_setglobal(L, "SlaveState");
     }
 
-    void EnumsEnumBinding::registerTaskType(lua_State* L)
+    void registerTaskType(lua_State* L)
     {
         lua_newtable(L);
 
@@ -2485,7 +2672,7 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "TaskType");
     }
 
-    void EnumsEnumBinding::registerWeaponCategory(lua_State* L)
+    void registerWeaponCategory(lua_State* L)
     {
         lua_newtable(L);
 
@@ -2605,7 +2792,7 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "WeaponCategory");
     }
 
-    void EnumsEnumBinding::registerLeftRight(lua_State* L)
+    void registerLeftRight(lua_State* L)
     {
         lua_newtable(L);
 
@@ -2632,7 +2819,7 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "LeftRight");
     }
 
-    void EnumsEnumBinding::registerMessageType(lua_State* L)
+    void registerMessageType(lua_State* L)
     {
         lua_newtable(L);
 
@@ -2649,7 +2836,7 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "MessageType");
     }
 
-    void EnumsEnumBinding::registerStandingOrder(lua_State* L)
+    void registerStandingOrder(lua_State* L)
     {
         lua_newtable(L);
 
@@ -2710,7 +2897,7 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "MessageB::StandingOrder");
     }
 
-    void EnumsEnumBinding::registerStatsEnumerated(lua_State* L)
+    void registerStatsEnumerated(lua_State* L)
     {
         lua_newtable(L);
 
@@ -3049,11 +3236,12 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setfield(L, -2, "_combatSpeed");
 
 
+        lua_pushvalue(L, -1);
         lua_setglobal(L, "StatsEnumerated");
         lua_setglobal(L, "Stats");
     }
 
-    void EnumsEnumBinding::registerEventTriggerEnum(lua_State* L)
+    void registerEventTriggerEnum(lua_State* L)
     {
         lua_newtable(L);
 
@@ -3427,11 +3615,12 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_pushinteger(L, EventTriggerEnum::EV_MAX);
         lua_setfield(L, -2, "MAX");
 
+        lua_pushvalue(L, -1);
         lua_setglobal(L, "EventTriggerEnum");
         lua_setglobal(L, "EventTrigger");
     }
 
-    void EnumsEnumBinding::registerDialogConditionEnum(lua_State* L)
+    void registerDialogConditionEnum(lua_State* L)
     {
         lua_newtable(L);
 
@@ -3835,11 +4024,12 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_pushinteger(L, DialogConditionEnum::DC_END);
         lua_setfield(L, -2, "END");
 
+        lua_pushvalue(L, -1);
         lua_setglobal(L, "DialogConditionEnum");
         lua_setglobal(L, "DialogCondition");
     }
 
-    void EnumsEnumBinding::registerComparisonEnum(lua_State* L)
+    void registerComparisonEnum(lua_State* L)
     {
         lua_newtable(L);
 
@@ -3858,11 +4048,12 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_pushinteger(L, ComparisonEnum::CE_MORE_THAN);
         lua_setfield(L, -2, "MORE_THAN");
 
-        lua_setglobal(L, "ComparisonEnum");                                               
+        lua_pushvalue(L, -1);
+        lua_setglobal(L, "ComparisonEnum");
         lua_setglobal(L, "Comparison");
     }
 
-    void EnumsEnumBinding::registerGroundType(lua_State* L)
+    void registerGroundType(lua_State* L)
     {
         lua_newtable(L);
 
@@ -3914,9 +4105,9 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "GroundType");
     }
 
-    void EnumsEnumBinding::registerEffectType(lua_State* L)
+    void registerEffectType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 11);
 
         lua_pushinteger(L, EffectType::Enum::NONE);
         lua_setfield(L, -2, "NONE");
@@ -3954,9 +4145,9 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "EffectType");
     }
 
-    void EnumsEnumBinding::registerSquadType(lua_State* L)
+    void registerSquadType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         lua_pushinteger(L, SquadType::SQ_UNKNOWN);
         lua_setfield(L, -2, "SQ_UNKNOWN");
@@ -3970,9 +4161,9 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "SquadType");
     }
 
-    void EnumsEnumBinding::registerMoveSpeed(lua_State* L)
+    void registerMoveSpeed(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 5);
 
         lua_pushinteger(L, MoveSpeed::WALK);
         lua_setfield(L, -2, "WALK");
@@ -3992,9 +4183,9 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "MoveSpeed");
     }
 
-    void EnumsEnumBinding::registerSwordStateEnum(lua_State* L)
+    void registerSwordStateEnum(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 12);
 
         lua_pushinteger(L, swordStateEnum::CHOP_WEAPON);
         lua_setfield(L, -2, "CHOP_WEAPON");
@@ -4032,13 +4223,14 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_pushinteger(L, swordStateEnum::TARGET_PATHFINDING);
         lua_setfield(L, -2, "TARGET_PATHFINDING");
 
-        lua_setglobal(L, "SwordStateEnum");
+        lua_pushvalue(L, -1);
+        lua_setglobal(L, "swordStateEnum");
         lua_setglobal(L, "SwordState");
     }
 
-    void EnumsEnumBinding::registerMiningResource(lua_State* L)
+    void registerMiningResource(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 7);
 
         lua_pushinteger(L, MiningResource::NONE);
         lua_setfield(L, -2, "NONE");
@@ -4064,9 +4256,9 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "MiningResource");
     }
 
-    void EnumsEnumBinding::registerCursorType(lua_State* L)
+    void registerCursorType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 16);
 
         lua_pushinteger(L, CursorType::DEFAULT_CURSOR);
         lua_setfield(L, -2, "DEFAULT_CURSOR");
@@ -4149,9 +4341,9 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "CursorType");
     }
 
-    void EnumsEnumBinding::registerMapZoomLevel(lua_State* L)
+    void registerMapZoomLevel(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 8);
 
         lua_pushinteger(L, MapZoomLevel::ZOOM_MIN);
         lua_setfield(L, -2, "ZOOM_MIN");
@@ -4176,8 +4368,168 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "MapZoomLevel");
     }
 
-    void EnumsEnumBinding::registerBinding(lua_State* L)
+    // --------------------------------------
+    // MedicalSystem.h
+    // --------------------------------------
+
+    void registerLimbState(lua_State* L)
     {
+        lua_createtable(L, 0, 8);
+
+        lua_pushinteger(L, LimbState::LIMB_ORIGINAL);
+        lua_setfield(L, -2, "LIMB_ORIGINAL");
+        lua_pushinteger(L, LimbState::LIMB_ORIGINAL);
+        lua_setfield(L, -2, "ORIGINAL");
+
+        lua_pushinteger(L, LimbState::LIMB_STUMP);
+        lua_setfield(L, -2, "LIMB_STUMP");
+        lua_pushinteger(L, LimbState::LIMB_STUMP);
+        lua_setfield(L, -2, "STUMP");
+
+        lua_pushinteger(L, LimbState::LIMB_REPLACED);
+        lua_setfield(L, -2, "LIMB_REPLACED");
+        lua_pushinteger(L, LimbState::LIMB_REPLACED);
+        lua_setfield(L, -2, "REPLACED");
+
+        lua_pushinteger(L, LimbState::LIMB_CRUSHED);
+        lua_setfield(L, -2, "LIMB_CRUSHED");
+        lua_pushinteger(L, LimbState::LIMB_CRUSHED);
+        lua_setfield(L, -2, "CRUSHED");
+
+        lua_setglobal(L, "LimbState");
+    }
+
+    void registerRobotLimbs(lua_State* L)
+    {
+        lua_createtable(L, 0, 5);
+
+        lua_pushinteger(L, RobotLimbs::Limb::LEFT_ARM);
+        lua_setfield(L, -2, "LEFT_ARM");
+
+        lua_pushinteger(L, RobotLimbs::Limb::RIGHT_ARM);
+        lua_setfield(L, -2, "RIGHT_ARM");
+
+        lua_pushinteger(L, RobotLimbs::Limb::LEFT_LEG);
+        lua_setfield(L, -2, "LEFT_LEG");
+
+        lua_pushinteger(L, RobotLimbs::Limb::RIGHT_LEG);
+        lua_setfield(L, -2, "RIGHT_LEG");
+
+        lua_pushinteger(L, RobotLimbs::Limb::NULL_LIMB);
+        lua_setfield(L, -2, "NULL_LIMB");
+
+        lua_setglobal(L, "RobotLimbs");
+    }
+
+    void registerAttackDirection(lua_State* L)
+    {
+        lua_createtable(L, 0, 6);
+
+        lua_pushinteger(L, AttackDirection::Enum::FRONT);
+        lua_setfield(L, -2, "FRONT");
+
+        lua_pushinteger(L, AttackDirection::Enum::BACK);
+        lua_setfield(L, -2, "BACK");
+
+        lua_pushinteger(L, AttackDirection::Enum::LEFT);
+        lua_setfield(L, -2, "LEFT");
+
+        lua_pushinteger(L, AttackDirection::Enum::RIGHT);
+        lua_setfield(L, -2, "RIGHT");
+
+        lua_pushinteger(L, AttackDirection::Enum::TOP);
+        lua_setfield(L, -2, "TOP");
+
+        lua_pushinteger(L, AttackDirection::Enum::BOTTOM);
+        lua_setfield(L, -2, "BOTTOM");
+
+        lua_setglobal(L, "AttackDirection");
+    }
+
+    void registerHealthPartStatus(lua_State* L)
+    {
+        lua_createtable(L, 0, 8);
+
+        lua_pushinteger(L, MedicalSystem::HealthPartStatus::PART_TORSO);
+        lua_setfield(L, -2, "PART_TORSO");
+        lua_pushinteger(L, MedicalSystem::HealthPartStatus::PART_TORSO);
+        lua_setfield(L, -2, "TORSO");
+
+        lua_pushinteger(L, MedicalSystem::HealthPartStatus::PartType::PART_LEG);
+        lua_setfield(L, -2, "PART_LEG");
+        lua_pushinteger(L, MedicalSystem::HealthPartStatus::PartType::PART_LEG);
+        lua_setfield(L, -2, "LEG");
+
+        lua_pushinteger(L, MedicalSystem::HealthPartStatus::PartType::PART_ARM);
+        lua_setfield(L, -2, "PART_ARM");
+        lua_pushinteger(L, MedicalSystem::HealthPartStatus::PartType::PART_ARM);
+        lua_setfield(L, -2, "ARM");
+
+        lua_pushinteger(L, MedicalSystem::HealthPartStatus::PartType::PART_HEAD);
+        lua_setfield(L, -2, "PART_HEAD");
+        lua_pushinteger(L, MedicalSystem::HealthPartStatus::PartType::PART_HEAD);
+        lua_setfield(L, -2, "HEAD");
+
+        lua_setglobal(L, "HealthPartStatus");
+    }
+
+    void registerCollapseStage(lua_State* L)
+    {
+        lua_createtable(L, 0, 6);
+
+        lua_pushinteger(L, MedicalSystem::CollapseStage::COLLAPSE_NONE);
+        lua_setfield(L, -2, "COLLAPSE_NONE");
+        lua_pushinteger(L, MedicalSystem::CollapseStage::COLLAPSE_NONE);
+        lua_setfield(L, -2, "NONE");
+
+        lua_pushinteger(L, MedicalSystem::CollapseStage::COLLAPSE_BUT_NO_RAGDOLL);
+        lua_setfield(L, -2, "COLLAPSE_BUT_NO_RAGDOLL");
+        lua_pushinteger(L, MedicalSystem::CollapseStage::COLLAPSE_BUT_NO_RAGDOLL);
+        lua_setfield(L, -2, "BUT_NO_RAGDOLL");
+
+        lua_pushinteger(L, MedicalSystem::CollapseStage::COLLAPSE_KO);
+        lua_setfield(L, -2, "COLLAPSE_KO");
+        lua_pushinteger(L, MedicalSystem::CollapseStage::COLLAPSE_KO);
+        lua_setfield(L, -2, "KO");
+
+        lua_setglobal(L, "CollapseStage");
+    }
+
+    void registerEnumBindings(lua_State* L)
+    {
+        registerBuildingDesignation(L);
+        registerBuildingClassType(L);
+        registerBuildingPlacementGroundType(L);
+        registerPreviewBuildingPlacementResult(L);
+        registerPreviewBuildingClassType(L);
+        registerProneState(L);
+        registerWaterState(L);
+        registerRagdollPart(L);
+        registerCharacterPerceptionTagsShortTerm(L);
+        registerCharacterPerceptionTagsLongTerm(L);
+        registerSoundRange(L);
+        registerSquadMemberType(L);
+        registerCharacterMessage(L);
+        registerTalker(L);
+        registerDialogueAction(L);
+        registersItemType(L);
+        registerBuildingFunction(L);
+        registerCutDirection(L);
+        registerCutOrigination(L);
+        registerHitMaterialType(L);
+        registerWeatherAffecting(L);
+        registerAttachSlot(L);
+        registerItemFunction(L);
+        registerArmourType(L);
+        registerCharacterTypeEnum(L);
+        registerSlaveStateEnum(L);
+        registerTaskType(L);
+        registerWeaponCategory(L);
+        registerLeftRight(L);
+        registerMessageType(L);
+        registerStandingOrder(L);
+        registerStatsEnumerated(L);
+        registerEventTriggerEnum(L);
         registerDialogConditionEnum(L);
         registerComparisonEnum(L);
         registerGroundType(L);
@@ -4188,20 +4540,10 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
         registerMiningResource(L);
         registerCursorType(L);
         registerMapZoomLevel(L);
+        registerLimbState(L);
+        registerRobotLimbs(L);
+        registerAttackDirection(L);
+        registerHealthPartStatus(L);
+        registerCollapseStage(L);
 	}
-
-// --------------------------------------------------
-// Registration function
-// --------------------------------------------------
-
-    void registerEnums(lua_State* L)
-    {
-        BuildingEnumBinding::registerBinding(L);
-		CharacterEnumBinding::registerBinding(L);
-		//DialogueEnumBinding::registerBinding(L);
-		//EnumsEnumBinding::registerBinding(L);
-
-  //      //MedicalSystemBinding.h
-  //      MedicalSystemEnumBinding::registerBinding(L);
-    }
 } // namespace KenshiLua

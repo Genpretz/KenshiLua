@@ -5,52 +5,8 @@ extern "C" {
 #include <lauxlib.h>
 }
 
-class InventoryItemBase;
-class Item;
-
 namespace KenshiLua
 {
-
-class InventoryItemBaseBinding
-{
-public:
-    static const char* getMetatableName() { return "KenshiLua.InventoryItemBase"; }
-    static void registerBinding(lua_State* L);
-
-    static int gc(lua_State* L);
-    static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
-
-    // Polymorphic helpers
-    static int pushInventoryItemBase(lua_State* L, InventoryItemBase* item);
-    static InventoryItemBase* getItem(lua_State* L, int idx);
-    static InventoryItemBase* checkItem(lua_State* L, int idx);
-
-    // Methods
-    static int resetCharges(lua_State* L);
-    static int addQuantity(lua_State* L);
-    static int subtractQuantity(lua_State* L);
-    static int getItemWeight(lua_State* L);
-    static int getItemWeightSingle(lua_State* L);
-    static int getValueSingle(lua_State* L);
-    static int getValueAll(lua_State* L);
-    static int getQuantity(lua_State* L);
-    static int getQuality(lua_State* L);
-    static int isResearchArtifact(lua_State* L);
-    static int onGround(lua_State* L);
-    static int isStolen(lua_State* L);
-    static int getLevel(lua_State* L);
-    static int getInventory(lua_State* L);
-    static int getMaxAffordable(lua_State* L);
-    static int getItemType(lua_State* L);
-    static int getAvgPrice(lua_State* L);
-    static int isStackable(lua_State* L);
-    static int canStackWith(lua_State* L);
-    static int getProperOwner(lua_State* L);
-    static int setProperOwner(lua_State* L);
-};
-
 class ItemBinding
 {
 public:
@@ -59,32 +15,57 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
-    // Polymorphic helpers
-    static int pushItem(lua_State* L, Item* item);
-    static Item* getItem(lua_State* L, int idx);
-    static Item* checkItem(lua_State* L, int idx);
-
-    // Reads
-    static int getName(lua_State* L);
-    static int getPosition(lua_State* L);
+    static int isGear(lua_State* L);
+    static int _NV_isGear(lua_State* L);
     static int getClassType(lua_State* L);
-    static int getVisible(lua_State* L);
-    static int getInventory(lua_State* L);
-    static int getLevel(lua_State* L);
-    static int getModelName(lua_State* L);
-    static int isPersistant(lua_State* L);
-    static int isValid(lua_State* L);
-
-    // Writes
-    static int setVisible(lua_State* L);
+    static int _NV_getClassType(lua_State* L);
+    static int resetAfterCopy(lua_State* L);
+    static int _NV_resetAfterCopy(lua_State* L);
+    static int deactivate(lua_State* L);
+    static int _NV_deactivate(lua_State* L);
     static int setPositionRotation(lua_State* L);
-    static int setInventoryWeAreIn(lua_State* L);
-    static int setPersistant(lua_State* L);
-    static int stolenGoodsDetectionCheck(lua_State* L);
+    static int _NV_setPositionRotation(lua_State* L);
+    static int isCrossbow(lua_State* L);
+    static int _NV_isCrossbow(lua_State* L);
+    static int isArmour(lua_State* L);
+    static int _NV_isArmour(lua_State* L);
+    static int isWeapon(lua_State* L);
+    static int _NV_isWeapon(lua_State* L);
+    static int isLockedArmour(lua_State* L);
+    static int _NV_isLockedArmour(lua_State* L);
+    static int isAFactionUniform(lua_State* L);
+    static int _NV_isAFactionUniform(lua_State* L);
+    static int isPhysical(lua_State* L);
+    static int _NV_isPhysical(lua_State* L);
+    static int setVisible(lua_State* L);
+    static int _NV_setVisible(lua_State* L);
+    static int getVisible(lua_State* L);
+    static int _NV_getVisible(lua_State* L);
+    static int getModelName(lua_State* L);
+    static int _NV_getModelName(lua_State* L);
+    static int getInventory(lua_State* L);
+    static int _NV_getInventory(lua_State* L);
+    static int hasIngredients(lua_State* L);
+    static int _NV_hasIngredients(lua_State* L);
+    static int isGoodFood(lua_State* L);
+    static int _NV_isGoodFood(lua_State* L);
+    static int getCraftTime(lua_State* L);
+    static int _NV_getCraftTime(lua_State* L);
+    static int getCraftMaterialMult(lua_State* L);
+    static int _NV_getCraftMaterialMult(lua_State* L);
+    static int getLevel(lua_State* L);
+    static int _NV_getLevel(lua_State* L);
+    static int destroyItemEntityCallback_Equipping(lua_State* L);
+    static int _NV_destroyItemEntityCallback_Equipping(lua_State* L);
+    static int isPersistant(lua_State* L);
+    static int persistantOwnerExists(lua_State* L);
+    static int _DESTRUCTOR(lua_State* L);
+    static int createPhysical(lua_State* L);
+    static int _NV_createPhysical(lua_State* L);
+    static int destroyPhysical(lua_State* L);
+    static int _NV_destroyPhysical(lua_State* L);
+    static int loadUnloadCheck(lua_State* L);
+    static int _NV_loadUnloadCheck(lua_State* L);
 };
-
-} // namespace KenshiLua
-
+}

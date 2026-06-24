@@ -15,73 +15,104 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
-    // Core attributes (use *Actual() where available so equipment/age mods are
-    // factored in; the raw fields remain reachable via getRaw*).
-    static int getStrength(lua_State* L);
-    static int getStrengthRaw(lua_State* L);
-    static int getDexterity(lua_State* L);
-    static int getDexterityRaw(lua_State* L);
-    static int getToughness(lua_State* L);
-    static int getToughnessRaw(lua_State* L);
-    static int getPerception(lua_State* L);
-    static int getAthletics(lua_State* L);
-
-    // Combat skills
-    static int getMeleeAttack(lua_State* L);
+    static int getWeatherProtection(lua_State* L);
+    static int _CONSTRUCTOR(lua_State* L);
+    static int unarmedEncumbrancePenalty(lua_State* L);
+    static int skillBonusUnarmed_forGUI(lua_State* L);
+    static int skillBonusAttack_melee(lua_State* L);
+    static int skillBonusAttack_unarmed(lua_State* L);
+    static int skillBonusDefence(lua_State* L);
+    static int _randomiseStats(lua_State* L);
+    static int getGUIStatsDisplayMode(lua_State* L);
+    static int periodicUpdate(lua_State* L);
+    static int _NV_periodicUpdate(lua_State* L);
+    static int calculateStumbleThresholdDamageAmount(lua_State* L);
+    static int setEquipmentStatBonuses(lua_State* L);
+    static int getOverallSkillLevel_0_100(lua_State* L);
+    static int getStat(lua_State* L);
+    static int getStatMultiplier(lua_State* L);
+    static int getStatMultiplierForGUI(lua_State* L);
+    static int getStatPenaltiesTotalForGUI(lua_State* L);
+    static int xpStat_timeBased(lua_State* L);
+    static int xpStat_eventBased(lua_State* L);
+    static int xpDodgeEvent(lua_State* L);
+    static int strengthActual(lua_State* L);
+    static int strengthBase(lua_State* L);
+    static int _NV_strengthBase(lua_State* L);
+    static int dexterityBase(lua_State* L);
+    static int dexterityActual(lua_State* L);
+    static int toughness(lua_State* L);
+    static int getToughnessMult(lua_State* L);
+    static int getRangedFriendlyFireAvoidanceChance(lua_State* L);
+    static int getRangedAccuracyMult(lua_State* L);
+    static int getReloadSkill(lua_State* L);
+    static int animalRecruitReduceStats(lua_State* L);
     static int getMeleeDefence(lua_State* L);
     static int getDodge(lua_State* L);
-    static int getMassCombat(lua_State* L);
-    static int getMartialArts(lua_State* L); 
-    static int getKatanas(lua_State* L);
-    static int getSabres(lua_State* L);
-    static int getHackers(lua_State* L);
-    static int getBlunt(lua_State* L);
-    static int getHeavyWeapons(lua_State* L);
-    static int getPolearms(lua_State* L);
-    static int getBows(lua_State* L);
-    static int getTurrets(lua_State* L);
-
-    // Field / craft skills
-    static int getStealth(lua_State* L);
-    static int getThieving(lua_State* L);
-    static int getLockpicking(lua_State* L);
-    static int getAssassination(lua_State* L);
-    static int getSurvival(lua_State* L);
-    static int getTracking(lua_State* L);
-    static int getClimbing(lua_State* L);
-    static int getSwimming(lua_State* L);
-    static int getBluff(lua_State* L);
-    static int getFieldMedic(lua_State* L);
-    static int getDoctor(lua_State* L);
-    static int getScience(lua_State* L);
-    static int getEngineer(lua_State* L);
-    static int getRobotics(lua_State* L);
-    static int getLabouring(lua_State* L);
-    static int getFarming(lua_State* L);
-    static int getCooking(lua_State* L);
-    static int getWeaponSmith(lua_State* L);
-    static int getArmourSmith(lua_State* L);
-    static int getBowSmith(lua_State* L);
-
-    // XP / status
-    static int getXp(lua_State* L);
-    static int getFreeAttributePoints(lua_State* L);
-    static int getOverallSkillLevel(lua_State* L);
-    static int isUnarmed(lua_State* L);
+    static int getDodgePenalty_encumbrance(lua_State* L);
+    static int getDodgePenalty_injuries(lua_State* L);
+    static int getDodgePenalty_gear(lua_State* L);
+    static int getMeleeDefence_melee(lua_State* L);
+    static int getMeleeAttack(lua_State* L);
+    static int getMeleeAttack_unarmed(lua_State* L);
+    static int getMeleeAttack_melee(lua_State* L);
+    static int _getMeleeAttackBase(lua_State* L);
     static int isDefensiveMode(lua_State* L);
-    static int isHoldPositionMode(lua_State* L);
-    static int isRangedMode(lua_State* L);
-
-    // Linkage
-    static int getMedicalSystem(lua_State* L);
-    static int getCharacter(lua_State* L);
-
+    static int holdPositionMode(lua_State* L);
+    static int setHoldLocation(lua_State* L);
+    static int clearHoldLocation(lua_State* L);
+    static int calculateStumbleBlockTimer(lua_State* L);
+    static int calculateTechniqueInegrityCheckTimer(lua_State* L);
+    static int calculateToughnessDamageResistanceMult(lua_State* L);
+    static int calculateToughnessWoundDegenerationRate(lua_State* L);
+    static int getAttackChance(lua_State* L);
+    static int getAttackCuttingDamage(lua_State* L);
+    static int getAttackBluntPower(lua_State* L);
+    static int getAttackBleedDamageMult(lua_State* L);
+    static int getAttackPierceDamage(lua_State* L);
+    static int getEquippedWeaponSkill(lua_State* L);
+    static int _NV_getEquippedWeaponSkill(lua_State* L);
+    static int getSkillDifferenceRatio(lua_State* L);
+    static int calculateDeadTime(lua_State* L);
+    static int xpToughness_RagdollEvent(lua_State* L);
+    static int xpToughness_GetUpEvent(lua_State* L);
+    static int xpToughness_PunchSomething(lua_State* L);
+    static int xpRunning(lua_State* L);
+    static int xpStealthHearCheckEvent(lua_State* L);
+    static int xpMassCombat(lua_State* L);
+    static int xpEngineering(lua_State* L);
+    static int xpLockpicking(lua_State* L);
+    static int xpGeneral(lua_State* L);
+    static int calculateAthleticsXPMult(lua_State* L);
+    static int calculateStrengthXPMultFromWalking(lua_State* L);
+    static int isUnarmed(lua_State* L);
+    static int getWeaponWeightXPBonus(lua_State* L);
+    static int getAttackSpeed(lua_State* L);
+    static int getBlockSpeed(lua_State* L);
+    static int getMaxRunSpeed(lua_State* L);
+    static int getCurrentWeaponLength(lua_State* L);
+    static int getStealthSkill01(lua_State* L);
+    static int getAttackSuccessChanceSkill(lua_State* L);
+    static int getEncumbranceMult(lua_State* L);
+    static int calculateHungerMult(lua_State* L);
+    static int calculateTheoreticalIdealMaxRunSpeed(lua_State* L);
+    static int calculateWeaponWeightXPMult(lua_State* L);
+    static int hasWeapon(lua_State* L);
+    static int calculateMaxStealthSpeed(lua_State* L);
+    static int _calculateMaxSwimSpeed(lua_State* L);
+    static int calculateSwimSpeed(lua_State* L);
+    static int calculateDodgeChance(lua_State* L);
+    static int calculateMaxRunSpeed(lua_State* L);
+    static int _calculateEncumberanceMult(lua_State* L);
+    static int _calculateWeaponWeightSpeedMultiplier(lua_State* L);
+    static int currentWeaponHand(lua_State* L);
+    static int calculateAttackOrBlockSpeed(lua_State* L);
+    static int _calculateBlockChance(lua_State* L);
+    static int _recalculateStats(lua_State* L);
+    static int _NV__recalculateStats(lua_State* L);
     static int setEquippedWeaponSkill(lua_State* L);
     static int _NV_setEquippedWeaponSkill(lua_State* L);
-    static int setEquipmentStatBonuses(lua_State* L);
-
+    static int _DESTRUCTOR(lua_State* L);
 };
 }

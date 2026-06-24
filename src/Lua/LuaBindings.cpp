@@ -3,6 +3,7 @@
 #include "Lua/LuaUtils.h"
 #include "Lua/LuaState.h"
 #include "Lua/Logger.h"
+#include "Lua/BindingHelpers.h"
 #include "Bindings/HandBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/DialogueBinding.h"
@@ -11,7 +12,13 @@
 #include "Bindings/ItemBinding.h"
 #include "Bindings/GearBinding.h"
 #include "Bindings/InventoryBinding.h"
-#include "Bindings/BuildingBinding.h"
+#include "Bindings/Building/BuildMaterialBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/Building/BuildingPlacementGroundTypeBinding.h"
+#include "Bindings/Building/ConstructionStateBinding.h"
+#include "Bindings/Building/FootprintBinding.h"
+#include "Bindings/Building/FootprintNodeBinding.h"
+#include "Bindings/Building/PreviewBuildingBinding.h"
 #include "Bindings/GameWorldBinding.h"
 #include "Bindings/PlayerInterfaceBinding.h"
 #include "Bindings/GlobalBinding.h"
@@ -29,7 +36,17 @@
 #include "Bindings/CameraClassBinding.h"
 #include "Bindings/MyGuiBinding.h"
 #include "Bindings/CharacterAnimalBinding.h"
-#include "Bindings/ShopTraderBinding.h"
+#include "Bindings/InventoryItemBaseBinding.h"
+#include "Bindings/WeaponBinding.h"
+#include "Bindings/SwordBinding.h"
+#include "Bindings/ArmourBinding.h"
+#include "Bindings/LockedArmourBinding.h"
+#include "Bindings/CrossbowBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/InventorySectionBinding.h"
+#include "Bindings/SectionItemBinding.h"
+#include "Bindings/AnimalInventoryLayoutBinding.h"
+//#include "Bindings/ShopTraderBinding.h"
 #include "Lua/Benchmark.h"
 #include <string>
 #include <cstdio>
@@ -64,7 +81,7 @@ void LuaBindings::registerAll(lua_State* L)
     BountyManagerBinding::registerBinding(L);
     CameraClassBinding::registerBinding(L);
 
-    HandBinding::registerBinding(L);
+    handBinding::registerBinding(L);
     PlatoonBinding::registerBinding(L);
     FactionBinding::registerBinding(L);
     InventoryItemBaseBinding::registerBinding(L);
@@ -75,7 +92,13 @@ void LuaBindings::registerAll(lua_State* L)
     ArmourBinding::registerBinding(L);
     LockedArmourBinding::registerBinding(L);
     CrossbowBinding::registerBinding(L);
+    FootprintBinding::registerBinding(L);
+    FootprintNodeBinding::registerBinding(L);
+    ConstructionStateBinding::registerBinding(L);
+    BuildingPlacementGroundTypeBinding::registerBinding(L);
+    BuildMaterialBinding::registerBinding(L);
     BuildingBinding::registerBinding(L);
+    PreviewBuildingBinding::registerBinding(L);
     TownBaseBinding::registerBinding(L);
     TownBinding::registerBinding(L);
     MedicalSystemBinding::registerBinding(L);
@@ -91,13 +114,30 @@ void LuaBindings::registerAll(lua_State* L)
     GameWorldBinding::registerBinding(L);
     GameDataBinding::registerBinding(L);
     MyGuiBinding::registerBinding(L);
-    ShopTraderBinding::registerBinding(L);
+    //ShopTraderBinding::registerBinding(L);
     AnimalInventoryLayoutBinding::registerBinding(L);
     CharacterAnimalBinding::registerBinding(L);
 
-	registerEnums(L);
-    registerEventBinding(L);
+	registerEnumBindings(L);
     registerGlobals(L);
+
+    // Configure class metatable inheritance chains
+    setPlayableParent(L, "KenshiLua.CharacterAnimal", "KenshiLua.Character");
+    setPlayableParent(L, "KenshiLua.Character", "KenshiLua.RootObject");
+    setPlayableParent(L, "KenshiLua.RootObject", "KenshiLua.RootObjectBase");
+
+    setPlayableParent(L, "KenshiLua.Platoon", "KenshiLua.RootObjectBase");
+    setPlayableParent(L, "KenshiLua.Town", "KenshiLua.TownBase");
+    setPlayableParent(L, "KenshiLua.TownBase", "KenshiLua.RootObject");
+
+    setPlayableParent(L, "KenshiLua.Item", "KenshiLua.InventoryItemBase");
+    setPlayableParent(L, "KenshiLua.InventoryItemBase", "KenshiLua.RootObject");
+    setPlayableParent(L, "KenshiLua.Gear", "KenshiLua.Item");
+    setPlayableParent(L, "KenshiLua.Weapon", "KenshiLua.Gear");
+    setPlayableParent(L, "KenshiLua.Sword", "KenshiLua.Weapon");
+    setPlayableParent(L, "KenshiLua.Crossbow", "KenshiLua.Weapon");
+    setPlayableParent(L, "KenshiLua.Armour", "KenshiLua.Gear");
+    setPlayableParent(L, "KenshiLua.LockedArmour", "KenshiLua.Armour");
 }
 
 int luaKenshiLog(lua_State* L)

@@ -22,6 +22,14 @@ extern "C" {
 #include <lauxlib.h>
 }
 
+#include "CharacterBinding.h"
+#include "CharStatsBinding.h"
+#include "GameDataBinding.h"
+#include "FactionBinding.h"
+#include "PlatoonBinding.h"
+#include "TownBinding.h"
+#include "WorldEventStateQueryBinding.h"
+
 // Lua 5.1/LuaJIT compatibility macros and helpers
 #if LUA_VERSION_NUM < 502
 

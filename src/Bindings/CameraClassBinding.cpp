@@ -1,432 +1,609 @@
 #include "pch.h"
-#include "Bindings/CameraClassBinding.h"
-#include "Bindings/RootObjectBinding.h"
-#include "Bindings/HandBinding.h"
-#include "Bindings/CharacterBinding.h"
-#include "Bindings/BuildingBinding.h"
-#include "Bindings/ItemBinding.h"
-#include "Bindings/GameDataBinding.h"
+#include "kenshi\CameraClass.h"
+#include "CameraClassBinding.h"
+//#include "BuildingBinding.h"
 #include "Lua/BindingHelpers.h"
-
-#include <kenshi/CameraClass.h>
-#include <kenshi/RootObject.h>
-#include <kenshi/Character.h>
-#include <kenshi/Building/Building.h>
-#include <kenshi/Item.h>
-#include <kenshi/util/hand.h>
-#include <kenshi/GameData.h>
-
-#include <ogre/OgreVector3.h>
-#include <ogre/OgreQuaternion.h>
-
-#include <cstdio>
-#include <cstring>
 
 namespace KenshiLua
 {
 
-static CameraClass* getCam(lua_State* L, int idx)
+static CameraClass* getB(lua_State* L, int idx)
 {
     return checkObject<CameraClass>(L, idx, CameraClassBinding::getMetatableName());
 }
 
-int CameraClassBinding::gc(lua_State* L) { return noopGc(L); }
-
-int CameraClassBinding::tostring(lua_State* L)
+// --- Getters for CameraClass ---
+static int CameraClass_get_isRotating(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) { lua_pushstring(L, "CameraClass:nil"); return 1; }
-    char buf[160];
-    _snprintf(buf, sizeof(buf), "CameraClass(%p)", (void*)c);
-    lua_pushstring(L, buf);
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushboolean(L, b->isRotating ? 1 : 0);
     return 1;
 }
 
-int CameraClassBinding::index(lua_State* L)
+static int CameraClass_get_lastMousePos(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, CameraClassBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) { lua_pushnil(L); return 1; }
-
-    // --- boolean members ---
-    if (strcmp(key, "freeCameraMode") == 0) { lua_pushboolean(L, c->freeCameraMode ? 1 : 0); return 1; }
-    if (strcmp(key, "isRotating") == 0) { lua_pushboolean(L, c->isRotating ? 1 : 0); return 1; }
-    if (strcmp(key, "initialised") == 0) { lua_pushboolean(L, c->initialised ? 1 : 0); return 1; }
-    if (strcmp(key, "terrainLoaded") == 0) { lua_pushboolean(L, c->terrainLoaded ? 1 : 0); return 1; }
-
-    // --- float members ---
-    if (strcmp(key, "yaw") == 0) { lua_pushnumber(L, c->yaw); return 1; }
-    if (strcmp(key, "pitch") == 0) { lua_pushnumber(L, c->pitch); return 1; }
-    if (strcmp(key, "altitude") == 0) { lua_pushnumber(L, c->altitude); return 1; }
-    if (strcmp(key, "timeInGame") == 0) { lua_pushnumber(L, c->timeInGame); return 1; }
-    if (strcmp(key, "targetPositionY") == 0) { lua_pushnumber(L, c->targetPositionY); return 1; }
-    if (strcmp(key, "speedY") == 0) { lua_pushnumber(L, c->speedY); return 1; }
-    if (strcmp(key, "centerBuildingY") == 0) { lua_pushnumber(L, c->centerBuildingY); return 1; }
-
-    // --- int members ---
-    if (strcmp(key, "currentMusic") == 0) { lua_pushnumber(L, c->currentMusic); return 1; }
-
-    // --- hand members ---
-    if (strcmp(key, "objectCurrentlyFollowing") == 0)
-    {
-        return HandBinding::pushHand(L, c->objectCurrentlyFollowing);
-    }
-    if (strcmp(key, "inBuilding") == 0)
-    {
-        return HandBinding::pushHand(L, c->inBuilding);
-    }
-
-    // --- Ogre::Vector3 members ---
-    if (strcmp(key, "objectCurrentlyFollowingOffset") == 0)
-    {
-        pushVector3(L, c->objectCurrentlyFollowingOffset);
-        return 1;
-    }
-
-    // --- pointer members ---
-    if (strcmp(key, "rotationMarker") == 0) { lua_pushlightuserdata(L, (void*)c->rotationMarker); return 1; }
-    if (strcmp(key, "center") == 0) { lua_pushlightuserdata(L, (void*)c->center); return 1; }
-    if (strcmp(key, "camera") == 0) { lua_pushlightuserdata(L, (void*)c->camera); return 1; }
-    if (strcmp(key, "node") == 0) { lua_pushlightuserdata(L, (void*)c->node); return 1; }
-
-    if (strcmp(key, "centerBuilding") == 0) {
-        return pushObject<Building>(L, c->centerBuilding, BuildingBinding::getMetatableName());
-    }
-
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    // TODO: Unsupported type for lastMousePos (tagPOINT)
     lua_pushnil(L);
     return 1;
 }
 
-int CameraClassBinding::newindex(lua_State* L)
+static int CameraClass_get_rotationMarker(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-
-    // --- writable properties ---
-    if (strcmp(key, "freeCameraMode") == 0) {
-        c->setFreeCameraMode(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    // --- boolean members ---
-    if (strcmp(key, "freeCameraMode") == 0) { c->freeCameraMode = (lua_toboolean(L, 3) != 0); return 0; }
-    if (strcmp(key, "isRotating") == 0) { c->isRotating = (lua_toboolean(L, 3) != 0); return 0; }
-    if (strcmp(key, "initialised") == 0) { c->initialised = (lua_toboolean(L, 3) != 0); return 0; }
-    if (strcmp(key, "terrainLoaded") == 0) { c->terrainLoaded = (lua_toboolean(L, 3) != 0); return 0; }
-
-    // --- float members ---
-    if (strcmp(key, "yaw") == 0) { c->yaw = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "pitch") == 0) { c->pitch = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "altitude") == 0) { c->altitude = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "timeInGame") == 0) { c->timeInGame = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "targetPositionY") == 0) { c->targetPositionY = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "speedY") == 0) { c->speedY = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "centerBuildingY") == 0) { c->centerBuildingY = (float)luaL_checknumber(L, 3); return 0; }
-
-    // --- Ogre::Vector3 members ---
-    if (strcmp(key, "objectCurrentlyFollowingOffset") == 0) {
-        if (!readVector3(L, 3, c->objectCurrentlyFollowingOffset))
-            return luaL_error(L, "objectCurrentlyFollowingOffset: expected Vector3 {x,y,z}");
-        return 0;
-    }
-
-    // --- read-only members ---
-    if (strcmp(key, "rotationMarker") == 0) { return luaL_error(L, "CameraClass: field '%s' is read-only", key); }
-    if (strcmp(key, "center") == 0) { return luaL_error(L, "CameraClass: field '%s' is read-only", key); }
-    if (strcmp(key, "camera") == 0) { return luaL_error(L, "CameraClass: field '%s' is read-only", key); }
-    if (strcmp(key, "node") == 0) { return luaL_error(L, "CameraClass: field '%s' is read-only", key); }
-
-    // --- pointer members ---
-    if (strcmp(key, "centerBuilding") == 0)
-    {
-        c->centerBuilding = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
-        return 0;
-    }
-    // if (strcmp(key, "centerBuilding") == 0)
-    // {
-    //     return luaL_error(L,"CameraClass: field '%s' is read-only",key);
-    // }
-
-    return luaL_error(L, "CameraClass: field '%s' is read-only or does not exist", key);
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    // TODO: Unsupported type for rotationMarker (Ogre::Entity*)
+    lua_pushnil(L);
+    return 1;
 }
 
-int CameraClassBinding::focusCameraOnObject(lua_State* L)
+static int CameraClass_get_yaw(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushnumber(L, b->yaw);
+    return 1;
+}
 
-    // Can accept Character, Item, Building or RootObject userdata (all cast to RootObject*)
-    RootObject* obj = testObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
-    if (obj == 0)
-    {
-        // Try other related metatables since they are subclasses of RootObject
-        obj = (RootObject*)testObject<Character>(L, 2, CharacterBinding::getMetatableName());
-        if (obj == 0)
-        {
-            obj = (RootObject*)testObject<Building>(L, 2, BuildingBinding::getMetatableName());
-            if (obj == 0)
-            {
-                obj = (RootObject*)testObject<Item>(L, 2, ItemBinding::getMetatableName());
-            }
-        }
-    }
-    if (obj == 0) return luaL_error(L, "focusCameraOnObject: expected RootObject/Character/Building/Item userdata");
+static int CameraClass_get_pitch(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushnumber(L, b->pitch);
+    return 1;
+}
 
-    Ogre::Vector3 offset(0.0f, 0.0f, 0.0f);
-    if (!readVector3(L, 3, offset)) return luaL_error(L, "focusCameraOnObject: expected Vector3 offset {x,y,z}");
+static int CameraClass_get_initialised(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushboolean(L, b->initialised ? 1 : 0);
+    return 1;
+}
 
-    bool nearZoom = lua_toboolean(L, 4) != 0;
+static int CameraClass_get_terrainLoaded(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushboolean(L, b->terrainLoaded ? 1 : 0);
+    return 1;
+}
 
-    c->focusCameraOnObject(obj, offset, nearZoom);
+static int CameraClass_get_objectCurrentlyFollowing(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    // TODO: Unsupported type for objectCurrentlyFollowing (hand)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int CameraClass_get_objectCurrentlyFollowingOffset(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    pushVector3(L, b->objectCurrentlyFollowingOffset);
+    return 1;
+}
+
+static int CameraClass_get_center(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    // TODO: Unsupported type for center (Ogre::SceneNode*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int CameraClass_get_altitude(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushnumber(L, b->altitude);
+    return 1;
+}
+
+static int CameraClass_get_camera(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    // TODO: Unsupported type for camera (Ogre::Camera*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int CameraClass_get_node(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    // TODO: Unsupported type for node (Ogre::SceneNode*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int CameraClass_get_currentMusic(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushinteger(L, b->currentMusic);
+    return 1;
+}
+
+static int CameraClass_get_inBuilding(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    // TODO: Unsupported type for inBuilding (hand)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int CameraClass_get_timeInGame(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushnumber(L, b->timeInGame);
+    return 1;
+}
+
+static int CameraClass_get_targetPositionY(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushnumber(L, b->targetPositionY);
+    return 1;
+}
+
+static int CameraClass_get_speedY(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushnumber(L, b->speedY);
+    return 1;
+}
+
+static int CameraClass_get_centerBuilding(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    return pushObject<Building>(L, b->centerBuilding, "KenshiLua.Building");
+}
+
+static int CameraClass_get_centerBuildingY(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushnumber(L, b->centerBuildingY);
+    return 1;
+}
+
+static int CameraClass_get_currentCollisionGroup(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushinteger(L, b->currentCollisionGroup);
+    return 1;
+}
+
+static int CameraClass_get_currentFloor(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushinteger(L, b->currentFloor);
+    return 1;
+}
+
+static int CameraClass_get_freeCameraMode(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    lua_pushboolean(L, b->freeCameraMode ? 1 : 0);
+    return 1;
+}
+
+// --- Setters for CameraClass ---
+static int CameraClass_set_isRotating(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->isRotating = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
-int CameraClassBinding::update(lua_State* L)
+static int CameraClass_set_lastMousePos(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    bool controlEnabled = lua_toboolean(L, 2) != 0;
-    c->update(controlEnabled);
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for lastMousePos");
+}
+
+static int CameraClass_set_rotationMarker(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for rotationMarker");
+}
+
+static int CameraClass_set_yaw(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->yaw = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
-int CameraClassBinding::save(lua_State* L)
+static int CameraClass_set_pitch(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    if (data == 0) return luaL_error(L, "save: expected GameData userdata");
-    c->save(data);
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->pitch = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
-int CameraClassBinding::load(lua_State* L)
+static int CameraClass_set_initialised(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    if (data == 0) return luaL_error(L, "load: expected GameData userdata");
-    c->load(data);
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->initialised = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int CameraClass_set_terrainLoaded(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->terrainLoaded = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int CameraClass_set_objectCurrentlyFollowing(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for objectCurrentlyFollowing");
+}
+
+static int CameraClass_set_objectCurrentlyFollowingOffset(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    readVector3(L, 2, b->objectCurrentlyFollowingOffset);
+    return 0;
+}
+
+static int CameraClass_set_center(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for center");
+}
+
+static int CameraClass_set_altitude(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->altitude = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int CameraClass_set_camera(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for camera");
+}
+
+static int CameraClass_set_node(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for node");
+}
+
+static int CameraClass_set_currentMusic(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->currentMusic = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int CameraClass_set_inBuilding(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for inBuilding");
+}
+
+static int CameraClass_set_timeInGame(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->timeInGame = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int CameraClass_set_targetPositionY(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->targetPositionY = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int CameraClass_set_speedY(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->speedY = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int CameraClass_set_centerBuilding(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for centerBuilding");
+}
+
+static int CameraClass_set_centerBuildingY(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->centerBuildingY = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int CameraClass_set_currentCollisionGroup(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->currentCollisionGroup = (unsigned short)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int CameraClass_set_currentFloor(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->currentFloor = (unsigned char)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int CameraClass_set_freeCameraMode(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+    b->freeCameraMode = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 int CameraClassBinding::reset(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    c->reset();
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    b->reset();
     return 0;
 }
 
-int CameraClassBinding::isVisible(lua_State* L)
+int CameraClassBinding::update(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (!c)
-        return luaL_error(L, "CameraClass is nil");
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
 
-    Ogre::Vector3 pos;
-    if (!readVector3(L, 2, pos))
-        return luaL_error(L, "isVisible: expected Vector3 {x,y,z}");
-
-    bool visible;
-
-    if (lua_gettop(L) >= 3)
-    {
-        float radius = (float)luaL_checknumber(L, 3);
-        visible = c->isVisible(pos, radius);
-    }
-    else
-    {
-        visible = c->isVisible(pos);
-    }
-
-    lua_pushboolean(L, visible);
-    return 1;
-}
-
-int CameraClassBinding::intersectScreenEdge(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    Ogre::Vector3 a(0.0f, 0.0f, 0.0f);
-    if (!readVector3(L, 2, a)) return luaL_error(L, "intersectScreenEdge: expected Vector3 {x,y,z}");
-    Ogre::Vector3 b(0.0f, 0.0f, 0.0f);
-    if (!readVector3(L, 3, b)) return luaL_error(L, "intersectScreenEdge: expected Vector3 {x,y,z}");
-    float padding = (float)luaL_optnumber(L, 4, 0.0f);
-    float out = 0.0f;
-    int result = c->intersectScreenEdge(a, b, padding, out);
-    lua_pushnumber(L, result);
-    lua_pushnumber(L, out);
-    return 2;
-}
-
-int CameraClassBinding::teleport(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    Ogre::Vector3 pos(0.0f, 0.0f, 0.0f);
-    if (!readVector3(L, 2, pos)) return luaL_error(L, "teleport: expected Vector3 {x,y,z}");
-    c->teleport(pos);
-    return 0;
-}
-
-int CameraClassBinding::followObject(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    hand* h = (hand*)luaL_checkudata(L, 2, HandBinding::getMetatableName());
-    if (h == 0) return luaL_error(L, "followObject: expected hand userdata");
-    c->followObject(*h);
-    return 0;
-}
-
-int CameraClassBinding::stopFollowing(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c != 0) c->stopFollowing();
-    return 0;
-}
-
-int CameraClassBinding::getFollowObject(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) { lua_pushnil(L); return 1; }
-    return HandBinding::pushHand(L, c->getFollowObject());
-}
-
-int CameraClassBinding::manuallySetOrientationAndZoom(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-
-    // Read orientation Quaternion from table
-    float qw = (float)luaL_optnumber(L, 2, 1.0);
-    float qx = (float)luaL_optnumber(L, 3, 0.0);
-    float qy = (float)luaL_optnumber(L, 4, 0.0);
-    float qz = (float)luaL_optnumber(L, 5, 0.0);
-    Ogre::Quaternion rot(qw, qx, qy, qz);
-
-    float zoom = (float)luaL_checknumber(L, 6);
-
-    c->manuallySetOrientationAndZoom(rot, zoom);
-    return 0;
-}
-
-int CameraClassBinding::getFacingDirection(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) { lua_pushnil(L); return 1; }
-    pushVector3(L, c->getFacingDirection());
-    return 1;
-}
-
-int CameraClassBinding::getCenter(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) { lua_pushnil(L); return 1; }
-    pushVector3(L, c->getCenter());
-    return 1;
-}
-
-int CameraClassBinding::getCameraPos(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) { lua_pushnil(L); return 1; }
-    pushVector3(L, c->getCameraPos());
-    return 1;
-}
-
-int CameraClassBinding::isFreeCameraMode(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) { lua_pushnil(L); return 1; }
-    lua_pushboolean(L, c->isFreeCameraMode() ? 1 : 0);
-    return 1;
-}
-
-int CameraClassBinding::setFreeCameraMode(lua_State* L)
-{
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    c->setFreeCameraMode(lua_toboolean(L, 2) != 0);
+    bool controlEnabled = lua_toboolean(L, 2) != 0;
+    b->update(controlEnabled);
     return 0;
 }
 
 int CameraClassBinding::updateOptionSettings(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    c->updateOptionSettings();
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    b->updateOptionSettings();
+    return 0;
+}
+
+int CameraClassBinding::teleport(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    Ogre::Vector3 pos;
+    readVector3(L, 2, pos);
+    b->teleport(pos);
+    return 0;
+}
+
+int CameraClassBinding::stopFollowing(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    b->stopFollowing();
+    return 0;
+}
+
+int CameraClassBinding::manuallySetOrientationAndZoom(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    Ogre::Quaternion rot;
+    readQuaternion(L, 2, rot);
+    float zoom = (float)luaL_checknumber(L, 3);
+    b->manuallySetOrientationAndZoom(rot, zoom);
+    return 0;
+}
+
+int CameraClassBinding::getFacingDirection(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    Ogre::Vector3 result = b->getFacingDirection();
+    pushVector3(L, result);
+    return 1;
+}
+
+int CameraClassBinding::getCenter(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    Ogre::Vector3 result = b->getCenter();
+    pushVector3(L, result);
+    return 1;
+}
+
+int CameraClassBinding::getCameraPos(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    Ogre::Vector3 result = b->getCameraPos();
+    pushVector3(L, result);
+    return 1;
+}
+
+int CameraClassBinding::isInitialised(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    bool result = b->isInitialised();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int CameraClassBinding::isFreeCameraMode(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    bool result = b->isFreeCameraMode();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int CameraClassBinding::setFreeCameraMode(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    bool on = lua_toboolean(L, 2) != 0;
+    b->setFreeCameraMode(on);
+    return 0;
+}
+
+int CameraClassBinding::updateFreeCamera(lua_State* L)
+{
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    b->updateFreeCamera();
     return 0;
 }
 
 int CameraClassBinding::move(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    Ogre::Vector3 dir(0.0f, 0.0f, 0.0f);
-    if (!readVector3(L, 2, dir)) return luaL_error(L, "move: expected Vector3 {x,y,z}");
-    c->move(dir);
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    Ogre::Vector3 dir;
+    readVector3(L, 2, dir);
+    b->move(dir);
     return 0;
 }
 
 int CameraClassBinding::zoom(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    c->zoom();
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    b->zoom();
     return 0;
 }
 
 int CameraClassBinding::toGround(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
     bool smooth = lua_toboolean(L, 2) != 0;
-    c->toGround(smooth);
+    b->toGround(smooth);
     return 0;
 }
 
 int CameraClassBinding::setZoomDist(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
     float dist = (float)luaL_checknumber(L, 2);
-    c->setZoomDist(dist);
+    b->setZoomDist(dist);
     return 0;
 }
 
 int CameraClassBinding::rotate(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    float yaw = (float)luaL_checknumber(L, 2);
-    float pitch = (float)luaL_checknumber(L, 3);
-    c->rotate(yaw, pitch);
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    float _yaw = (float)luaL_checknumber(L, 2);
+    float _pitch = (float)luaL_checknumber(L, 3);
+    b->rotate(_yaw, _pitch);
     return 0;
 }
 
 int CameraClassBinding::rotationUpdate(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    c->rotationUpdate();
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    b->rotationUpdate();
     return 0;
 }
 
 int CameraClassBinding::updateAudio(lua_State* L)
 {
-    CameraClass* c = getCam(L, 1);
-    if (c == 0) return luaL_error(L, "CameraClass is nil");
-    c->updateAudio();
+    CameraClass* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CameraClass is nil");
+
+    b->updateAudio();
     return 0;
+}
+
+/*
+Skipped methods needing manual binding:
+  line 16: CameraClass* _CONSTRUCTOR(...) - unsupported arg type
+  line 19: void focusCameraOnObject(...) - unsupported arg type
+  line 21: void save(...) - unsupported arg type
+  line 22: void load(...) - unsupported arg type
+  line 23: bool isVisible(...) - overloaded method
+  line 24: bool isVisible(...) - overloaded method
+  line 25: int intersectScreenEdge(...) - non-string reference arg
+  line 27: void followObject(...) - unsupported arg type
+  line 29: const hand& getFollowObject(...) - reference return type
+  line 34: Ogre::SceneNode* getCenterNode(...) - unsupported return type
+  line 35: Ogre::SceneNode* getCameraNode(...) - unsupported return type
+  line 37: void restrictPosition(...) - unsupported arg type
+*/
+
+int CameraClassBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int CameraClassBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.CameraClass object");
+    return 1;
 }
 
 void CameraClassBinding::registerBinding(lua_State* L)
@@ -436,35 +613,140 @@ void CameraClassBinding::registerBinding(lua_State* L)
         { "__tostring", CameraClassBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
-        { "save",                           CameraClassBinding::save },
-        { "load",                           CameraClassBinding::load },
-        { "reset",                          CameraClassBinding::reset },
-        { "update",                         CameraClassBinding::update },
-        { "updateOptionSettings",             CameraClassBinding::updateOptionSettings },
-        { "isVisible",                        CameraClassBinding::isVisible },
-        { "intersectScreenEdge",            CameraClassBinding::intersectScreenEdge },
-        { "focusCameraOnObject",            CameraClassBinding::focusCameraOnObject },
-        { "teleport",                       CameraClassBinding::teleport },
-        { "followObject",                   CameraClassBinding::followObject },
-        { "stopFollowing",                  CameraClassBinding::stopFollowing },
-        { "getFollowObject",                CameraClassBinding::getFollowObject },
-        { "manuallySetOrientationAndZoom",   CameraClassBinding::manuallySetOrientationAndZoom },
-        { "getFacingDirection",             CameraClassBinding::getFacingDirection },
-        { "getCenter",                      CameraClassBinding::getCenter },
-        { "getCameraPos",                   CameraClassBinding::getCameraPos },
-        { "isFreeCameraMode",               CameraClassBinding::isFreeCameraMode },
-        { "setFreeCameraMode",              CameraClassBinding::setFreeCameraMode },
-        { "move",                           CameraClassBinding::move },
-        { "zoom",                           CameraClassBinding::zoom },
-        { "toGround",                       CameraClassBinding::toGround },
-        { "setZoomDist",                    CameraClassBinding::setZoomDist },
-        { "rotate",                         CameraClassBinding::rotate },
-        { "rotationUpdate",                 CameraClassBinding::rotationUpdate },
-        { "updateAudio",                    CameraClassBinding::updateAudio },
+        { "reset", CameraClassBinding::reset },
+        { "update", CameraClassBinding::update },
+        { "updateOptionSettings", CameraClassBinding::updateOptionSettings },
+        { "teleport", CameraClassBinding::teleport },
+        { "stopFollowing", CameraClassBinding::stopFollowing },
+        { "manuallySetOrientationAndZoom", CameraClassBinding::manuallySetOrientationAndZoom },
+        { "getFacingDirection", CameraClassBinding::getFacingDirection },
+        { "getCenter", CameraClassBinding::getCenter },
+        { "getCameraPos", CameraClassBinding::getCameraPos },
+        { "isInitialised", CameraClassBinding::isInitialised },
+        { "isFreeCameraMode", CameraClassBinding::isFreeCameraMode },
+        { "setFreeCameraMode", CameraClassBinding::setFreeCameraMode },
+        { "updateFreeCamera", CameraClassBinding::updateFreeCamera },
+        { "move", CameraClassBinding::move },
+        { "zoom", CameraClassBinding::zoom },
+        { "toGround", CameraClassBinding::toGround },
+        { "setZoomDist", CameraClassBinding::setZoomDist },
+        { "rotate", CameraClassBinding::rotate },
+        { "rotationUpdate", CameraClassBinding::rotationUpdate },
+        { "updateAudio", CameraClassBinding::updateAudio },
         { 0, 0 }
     };
-    registerClass(L, CameraClassBinding::getMetatableName(), meta, methods, CameraClassBinding::index, CameraClassBinding::newindex);
+
+    registerClass(
+        L, 
+        CameraClassBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, CameraClassBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, CameraClass_get_isRotating);
+    lua_setfield(L, -2, "isRotating");
+    lua_pushcfunction(L, CameraClass_get_lastMousePos);
+    lua_setfield(L, -2, "lastMousePos");
+    lua_pushcfunction(L, CameraClass_get_rotationMarker);
+    lua_setfield(L, -2, "rotationMarker");
+    lua_pushcfunction(L, CameraClass_get_yaw);
+    lua_setfield(L, -2, "yaw");
+    lua_pushcfunction(L, CameraClass_get_pitch);
+    lua_setfield(L, -2, "pitch");
+    lua_pushcfunction(L, CameraClass_get_initialised);
+    lua_setfield(L, -2, "initialised");
+    lua_pushcfunction(L, CameraClass_get_terrainLoaded);
+    lua_setfield(L, -2, "terrainLoaded");
+    lua_pushcfunction(L, CameraClass_get_objectCurrentlyFollowing);
+    lua_setfield(L, -2, "objectCurrentlyFollowing");
+    lua_pushcfunction(L, CameraClass_get_objectCurrentlyFollowingOffset);
+    lua_setfield(L, -2, "objectCurrentlyFollowingOffset");
+    lua_pushcfunction(L, CameraClass_get_center);
+    lua_setfield(L, -2, "center");
+    lua_pushcfunction(L, CameraClass_get_altitude);
+    lua_setfield(L, -2, "altitude");
+    lua_pushcfunction(L, CameraClass_get_camera);
+    lua_setfield(L, -2, "camera");
+    lua_pushcfunction(L, CameraClass_get_node);
+    lua_setfield(L, -2, "node");
+    lua_pushcfunction(L, CameraClass_get_currentMusic);
+    lua_setfield(L, -2, "currentMusic");
+    lua_pushcfunction(L, CameraClass_get_inBuilding);
+    lua_setfield(L, -2, "inBuilding");
+    lua_pushcfunction(L, CameraClass_get_timeInGame);
+    lua_setfield(L, -2, "timeInGame");
+    lua_pushcfunction(L, CameraClass_get_targetPositionY);
+    lua_setfield(L, -2, "targetPositionY");
+    lua_pushcfunction(L, CameraClass_get_speedY);
+    lua_setfield(L, -2, "speedY");
+    lua_pushcfunction(L, CameraClass_get_centerBuilding);
+    lua_setfield(L, -2, "centerBuilding");
+    lua_pushcfunction(L, CameraClass_get_centerBuildingY);
+    lua_setfield(L, -2, "centerBuildingY");
+    lua_pushcfunction(L, CameraClass_get_currentCollisionGroup);
+    lua_setfield(L, -2, "currentCollisionGroup");
+    lua_pushcfunction(L, CameraClass_get_currentFloor);
+    lua_setfield(L, -2, "currentFloor");
+    lua_pushcfunction(L, CameraClass_get_freeCameraMode);
+    lua_setfield(L, -2, "freeCameraMode");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, CameraClass_set_isRotating);
+    lua_setfield(L, -2, "isRotating");
+    lua_pushcfunction(L, CameraClass_set_lastMousePos);
+    lua_setfield(L, -2, "lastMousePos");
+    lua_pushcfunction(L, CameraClass_set_rotationMarker);
+    lua_setfield(L, -2, "rotationMarker");
+    lua_pushcfunction(L, CameraClass_set_yaw);
+    lua_setfield(L, -2, "yaw");
+    lua_pushcfunction(L, CameraClass_set_pitch);
+    lua_setfield(L, -2, "pitch");
+    lua_pushcfunction(L, CameraClass_set_initialised);
+    lua_setfield(L, -2, "initialised");
+    lua_pushcfunction(L, CameraClass_set_terrainLoaded);
+    lua_setfield(L, -2, "terrainLoaded");
+    lua_pushcfunction(L, CameraClass_set_objectCurrentlyFollowing);
+    lua_setfield(L, -2, "objectCurrentlyFollowing");
+    lua_pushcfunction(L, CameraClass_set_objectCurrentlyFollowingOffset);
+    lua_setfield(L, -2, "objectCurrentlyFollowingOffset");
+    lua_pushcfunction(L, CameraClass_set_center);
+    lua_setfield(L, -2, "center");
+    lua_pushcfunction(L, CameraClass_set_altitude);
+    lua_setfield(L, -2, "altitude");
+    lua_pushcfunction(L, CameraClass_set_camera);
+    lua_setfield(L, -2, "camera");
+    lua_pushcfunction(L, CameraClass_set_node);
+    lua_setfield(L, -2, "node");
+    lua_pushcfunction(L, CameraClass_set_currentMusic);
+    lua_setfield(L, -2, "currentMusic");
+    lua_pushcfunction(L, CameraClass_set_inBuilding);
+    lua_setfield(L, -2, "inBuilding");
+    lua_pushcfunction(L, CameraClass_set_timeInGame);
+    lua_setfield(L, -2, "timeInGame");
+    lua_pushcfunction(L, CameraClass_set_targetPositionY);
+    lua_setfield(L, -2, "targetPositionY");
+    lua_pushcfunction(L, CameraClass_set_speedY);
+    lua_setfield(L, -2, "speedY");
+    lua_pushcfunction(L, CameraClass_set_centerBuilding);
+    lua_setfield(L, -2, "centerBuilding");
+    lua_pushcfunction(L, CameraClass_set_centerBuildingY);
+    lua_setfield(L, -2, "centerBuildingY");
+    lua_pushcfunction(L, CameraClass_set_currentCollisionGroup);
+    lua_setfield(L, -2, "currentCollisionGroup");
+    lua_pushcfunction(L, CameraClass_set_currentFloor);
+    lua_setfield(L, -2, "currentFloor");
+    lua_pushcfunction(L, CameraClass_set_freeCameraMode);
+    lua_setfield(L, -2, "freeCameraMode");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

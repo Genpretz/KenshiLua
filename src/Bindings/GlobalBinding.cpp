@@ -28,46 +28,47 @@ static int luaGetGameWorld(lua_State* L)
     }
     return 1;
 }
-//static int luaGetPlayerInterface(lua_State* L)
-//{
-//    if (::ou && ::ou->player) {
-//        pushObject<PlayerInterface>(L, ::ou->player, PlayerInterfaceBinding::getMetatableName());
-//    } else {
-//        lua_pushnil(L);
-//    }
-//    return 1;
-//}
-//static int luaGetInputHandler(lua_State* L)
-//{
-//    if (::key) {
-//        pushObject<InputHandler>(L, ::key, InputHandlerBinding::getMetatableName());
-//    } else {
-//        lua_pushnil(L);
-//    }
-//    return 1;
-//}
-//
-//static int luaGetSelectedCharacter(lua_State* L)
-//{
-//    if (::ou && ::ou->player && ::ou->player->selectedCharacter.getCharacter()) {
-//        pushObject<Character>(L, ::ou->player->selectedCharacter.getCharacter(), CharacterBinding::getMetatableName());
-//    } else {
-//        lua_pushnil(L);
-//    }
-//    return 1;
-//}
+
+static int luaGetPlayerInterface(lua_State* L)
+{
+   if (::ou && ::ou->player) {
+       pushObject<PlayerInterface>(L, ::ou->player, PlayerInterfaceBinding::getMetatableName());
+   } else {
+       lua_pushnil(L);
+   }
+   return 1;
+}
+
+static int luaGetInputHandler(lua_State* L)
+{
+   if (::key) {
+       pushObject<InputHandler>(L, ::key, InputHandlerBinding::getMetatableName());
+   } else {
+       lua_pushnil(L);
+   }
+   return 1;
+}
+
+static int luaGetSelectedCharacter(lua_State* L)
+{
+   if (::ou && ::ou->player && ::ou->player->selectedCharacter.getCharacter()) {
+       pushObject<Character>(L, ::ou->player->selectedCharacter.getCharacter(), CharacterBinding::getMetatableName());
+   } else {
+       lua_pushnil(L);
+   }
+   return 1;
+}
 
 void registerGlobals(lua_State* L)
 {
-    // getGameWorld global function
     lua_pushcfunction(L, luaGetGameWorld);
     lua_setglobal(L, "getGameWorld");
-    //lua_pushcfunction(L, luaGetPlayerInterface);
-    //lua_setglobal(L, "getPlayerInterface");
-    //lua_pushcfunction(L, luaGetInputHandler);
-    //lua_setglobal(L, "getInputHandler");
-    //lua_pushcfunction(L, luaGetSelectedCharacter);
-    //lua_setglobal(L, "getSelectedCharacter");
+    lua_pushcfunction(L, luaGetPlayerInterface);
+    lua_setglobal(L, "getPlayerInterface");
+    lua_pushcfunction(L, luaGetInputHandler);
+    lua_setglobal(L, "getInputHandler");
+    lua_pushcfunction(L, luaGetSelectedCharacter);
+    lua_setglobal(L, "getSelectedCharacter");
 
     // GameWorld
     if (::ou) {
@@ -82,16 +83,16 @@ void registerGlobals(lua_State* L)
     if (::ou && ::ou->player) {
         pushObject<PlayerInterface>(L, ::ou->player, PlayerInterfaceBinding::getMetatableName());
         lua_setglobal(L, "player");
-        //pushObject<PlayerInterface>(L, ::ou->player, PlayerInterfaceBinding::getMetatableName());
-        //lua_setglobal(L, "PlayerInterface");
+        pushObject<PlayerInterface>(L, ::ou->player, PlayerInterfaceBinding::getMetatableName());
+        lua_setglobal(L, "PlayerInterface");
     }
 
     // InputHandler
     if (::key) {
         pushObject<InputHandler>(L, ::key, InputHandlerBinding::getMetatableName());
         lua_setglobal(L, "key");
-        //pushObject<InputHandler>(L, ::key, InputHandlerBinding::getMetatableName());
-        //lua_setglobal(L, "InputHandler");
+        pushObject<InputHandler>(L, ::key, InputHandlerBinding::getMetatableName());
+        lua_setglobal(L, "InputHandler");
     }
 
     // The remaining engine singletons don't have dedicated bindings yet;

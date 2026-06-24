@@ -1,108 +1,161 @@
 #include "pch.h"
-#include "Bindings/DamagesBinding.h"
+#include "kenshi\Damages.h"
+#include "DamagesBinding.h"
 #include "Lua/BindingHelpers.h"
-
-#include <kenshi/Damages.h>
-
-#include <new>
-#include <cstdio>
 
 namespace KenshiLua
 {
 
-static Damages* getD(lua_State* L, int idx)
+static Damages* getB(lua_State* L, int idx)
 {
-    return (Damages*)luaL_checkudata(L, idx, DamagesBinding::getMetatableName());
+    return checkObject<Damages>(L, idx, DamagesBinding::getMetatableName());
 }
 
-//int DamagesBinding::createNew(lua_State* L)
-//{
-//    float cut    = (float)luaL_optnumber(L, 1, 0.0);
-//    float blunt  = (float)luaL_optnumber(L, 2, 0.0);
-//    float pierce = (float)luaL_optnumber(L, 3, 0.0);
-//    float bleed  = (float)luaL_optnumber(L, 4, 1.0);
-//    float armour = (float)luaL_optnumber(L, 5, 0.0);
-//
-//    void* mem = lua_newuserdata(L, sizeof(Damages));
-//    new (mem) Damages(cut, blunt, pierce, bleed, armour);
-//    luaL_getmetatable(L, DamagesBinding::getMetatableName());
-//    lua_setmetatable(L, -2);
-//    return 1;
-//}
+// --- Getters for Damages ---
+static int Damages_get_cut(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    lua_pushnumber(L, b->cut);
+    return 1;
+}
+
+static int Damages_get_blunt(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    lua_pushnumber(L, b->blunt);
+    return 1;
+}
+
+static int Damages_get_pierce(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    lua_pushnumber(L, b->pierce);
+    return 1;
+}
+
+static int Damages_get_extraStun(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    lua_pushnumber(L, b->extraStun);
+    return 1;
+}
+
+static int Damages_get_bleedMult(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    lua_pushnumber(L, b->bleedMult);
+    return 1;
+}
+
+static int Damages_get_armourPenetration(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    lua_pushnumber(L, b->armourPenetration);
+    return 1;
+}
+
+// --- Setters for Damages ---
+static int Damages_set_cut(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    b->cut = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Damages_set_blunt(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    b->blunt = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Damages_set_pierce(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    b->pierce = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Damages_set_extraStun(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    b->extraStun = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Damages_set_bleedMult(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    b->bleedMult = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Damages_set_armourPenetration(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+    b->armourPenetration = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+int DamagesBinding::multiply(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+
+    float mult = (float)luaL_checknumber(L, 2);
+    b->multiply(mult);
+    return 0;
+}
+
+int DamagesBinding::total(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+
+    float result = b->total();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int DamagesBinding::_DESTRUCTOR(lua_State* L)
+{
+    Damages* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Damages is nil");
+
+    b->_DESTRUCTOR();
+    return 0;
+}
+
+/*
+Skipped methods needing manual binding:
+  line 10: Damages* _CONSTRUCTOR(...) - overloaded method
+  line 12: Damages* _CONSTRUCTOR(...) - overloaded method
+  line 14: Damages* _CONSTRUCTOR(...) - overloaded method
+*/
 
 int DamagesBinding::gc(lua_State* L)
 {
-    Damages* d = (Damages*)luaL_checkudata(L, 1, getMetatableName());
-    if (d) d->~Damages();
+    // Implementation depends on ownership model
     return 0;
 }
 
 int DamagesBinding::tostring(lua_State* L)
 {
-    Damages* d = getD(L, 1);
-    if (!d) { lua_pushstring(L, "Damages:nil"); return 1; }
-    char buf[160];
-    _snprintf(buf, sizeof(buf), "Damages(cut=%.2f, blunt=%.2f, pierce=%.2f)", d->cut, d->blunt, d->pierce);
-    lua_pushstring(L, buf);
+    lua_pushstring(L, "KenshiLua.Damages object");
     return 1;
 }
-
-int DamagesBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    // 1. Check the metatable first so obj:method() syntax continues to work.
-    luaL_getmetatable(L, DamagesBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;   // found a method - return it
-    lua_pop(L, 2);  // pop nil result + metatable
-
-    // 2. Fall through to raw member variable access.
-    Damages* d = getD(L, 1);
-    if (!d) { lua_pushnil(L); return 1; }
-
-    // --- float members ---
-    if (strcmp(key, "cut") == 0) { lua_pushnumber(L, d->cut); return 1; }
-    if (strcmp(key, "blunt") == 0) { lua_pushnumber(L, d->blunt); return 1; }
-    if (strcmp(key, "pierce") == 0) { lua_pushnumber(L, d->pierce); return 1; }
-    if (strcmp(key, "extraStun") == 0) { lua_pushnumber(L, d->extraStun); return 1; }
-    if (strcmp(key, "bleed") == 0 || strcmp(key, "bleedMult") == 0) { lua_pushnumber(L, d->bleedMult); return 1; }
-    if (strcmp(key, "armour") == 0 || strcmp(key, "armourPenetration") == 0) { lua_pushnumber(L, d->armourPenetration); return 1; }
-
-    lua_pushnil(L);
-    return 1;
-}
-
-int DamagesBinding::newindex(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-    Damages* d = getD(L, 1);
-    if (!d) return luaL_error(L, "Damages is nil");
-
-    // --- writable float properties ---
-    if (strcmp(key, "cut") == 0) { d->cut = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "blunt") == 0) { d->blunt = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "pierce") == 0) { d->pierce = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "extraStun") == 0) { d->extraStun = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "bleed") == 0 || strcmp(key, "bleedMult") == 0) { d->bleedMult = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "armour") == 0 || strcmp(key, "armourPenetration") == 0) { d->armourPenetration = (float)luaL_checknumber(L, 3); return 0; }
-
-    return luaL_error(L, "Damages: field '%s' does not exist", key);
-}
-
-int DamagesBinding::getCut(lua_State* L)              { Damages* d = getD(L, 1); if (d) lua_pushnumber(L, d->cut); else lua_pushnil(L); return 1; }
-int DamagesBinding::setCut(lua_State* L)              { Damages* d = getD(L, 1); if (d) d->cut = (float)luaL_checknumber(L, 2); return 0; }
-int DamagesBinding::getBlunt(lua_State* L)            { Damages* d = getD(L, 1); if (d) lua_pushnumber(L, d->blunt); else lua_pushnil(L); return 1; }
-int DamagesBinding::setBlunt(lua_State* L)            { Damages* d = getD(L, 1); if (d) d->blunt = (float)luaL_checknumber(L, 2); return 0; }
-int DamagesBinding::getPierce(lua_State* L)           { Damages* d = getD(L, 1); if (d) lua_pushnumber(L, d->pierce); else lua_pushnil(L); return 1; }
-int DamagesBinding::setPierce(lua_State* L)           { Damages* d = getD(L, 1); if (d) d->pierce = (float)luaL_checknumber(L, 2); return 0; }
-int DamagesBinding::getBleed(lua_State* L)            { Damages* d = getD(L, 1); if (d) lua_pushnumber(L, d->bleedMult); else lua_pushnil(L); return 1; }
-int DamagesBinding::setBleed(lua_State* L)            { Damages* d = getD(L, 1); if (d) d->bleedMult = (float)luaL_checknumber(L, 2); return 0; }
-int DamagesBinding::getArmourPenetration(lua_State* L){ Damages* d = getD(L, 1); if (d) lua_pushnumber(L, d->armourPenetration); else lua_pushnil(L); return 1; }
-int DamagesBinding::setArmourPenetration(lua_State* L){ Damages* d = getD(L, 1); if (d) d->armourPenetration = (float)luaL_checknumber(L, 2); return 0; }
-int DamagesBinding::total(lua_State* L)               { Damages* d = getD(L, 1); if (d) lua_pushnumber(L, d->total()); else lua_pushnil(L); return 1; }
-int DamagesBinding::multiply(lua_State* L)            { Damages* d = getD(L, 1); if (d) d->multiply((float)luaL_checknumber(L, 2)); return 0; }
 
 void DamagesBinding::registerBinding(lua_State* L)
 {
@@ -111,28 +164,55 @@ void DamagesBinding::registerBinding(lua_State* L)
         { "__tostring", DamagesBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
-        //{ "new",                  DamagesBinding::createNew },
-        { "getCut",               DamagesBinding::getCut },
-        { "setCut",               DamagesBinding::setCut },
-        { "getBlunt",             DamagesBinding::getBlunt },
-        { "setBlunt",             DamagesBinding::setBlunt },
-        { "getPierce",            DamagesBinding::getPierce },
-        { "setPierce",            DamagesBinding::setPierce },
-        { "getBleed",             DamagesBinding::getBleed },
-        { "setBleed",             DamagesBinding::setBleed },
-        { "getArmourPenetration", DamagesBinding::getArmourPenetration },
-        { "setArmourPenetration", DamagesBinding::setArmourPenetration },
-        { "total",                DamagesBinding::total },
-        { "multiply",             DamagesBinding::multiply },
+        { "multiply", DamagesBinding::multiply },
+        { "total", DamagesBinding::total },
+        { "_DESTRUCTOR", DamagesBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, DamagesBinding::getMetatableName(), meta, methods, DamagesBinding::index, DamagesBinding::newindex);
 
-    // Also expose Damages as a global table so scripts can do:
-    //   local d = Damages.new(1, 2, 3)
+    registerClass(
+        L, 
+        DamagesBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
     luaL_getmetatable(L, DamagesBinding::getMetatableName());
-    lua_setglobal(L, "Damages");
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, Damages_get_cut);
+    lua_setfield(L, -2, "cut");
+    lua_pushcfunction(L, Damages_get_blunt);
+    lua_setfield(L, -2, "blunt");
+    lua_pushcfunction(L, Damages_get_pierce);
+    lua_setfield(L, -2, "pierce");
+    lua_pushcfunction(L, Damages_get_extraStun);
+    lua_setfield(L, -2, "extraStun");
+    lua_pushcfunction(L, Damages_get_bleedMult);
+    lua_setfield(L, -2, "bleedMult");
+    lua_pushcfunction(L, Damages_get_armourPenetration);
+    lua_setfield(L, -2, "armourPenetration");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, Damages_set_cut);
+    lua_setfield(L, -2, "cut");
+    lua_pushcfunction(L, Damages_set_blunt);
+    lua_setfield(L, -2, "blunt");
+    lua_pushcfunction(L, Damages_set_pierce);
+    lua_setfield(L, -2, "pierce");
+    lua_pushcfunction(L, Damages_set_extraStun);
+    lua_setfield(L, -2, "extraStun");
+    lua_pushcfunction(L, Damages_set_bleedMult);
+    lua_setfield(L, -2, "bleedMult");
+    lua_pushcfunction(L, Damages_set_armourPenetration);
+    lua_setfield(L, -2, "armourPenetration");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

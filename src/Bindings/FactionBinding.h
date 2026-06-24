@@ -1,17 +1,12 @@
-﻿#pragma once
+#pragma once
 
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
 }
 
-class Faction;
-
 namespace KenshiLua
 {
-
-Faction* getFactionFromLua(lua_State* L, int idx);
-
 class FactionBinding
 {
 public:
@@ -20,25 +15,36 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
-    static int getName(lua_State* L);
-    static int setName(lua_State* L);
+    static int _CONSTRUCTOR(lua_State* L);
+    static int _DESTRUCTOR(lua_State* L);
+    static int getProsperityMultiplier(lua_State* L);
+    static int clearAndDestroy(lua_State* L);
+    static int setup2(lua_State* L);
+    static int setup3(lua_State* L);
+    static int getNewPlatoonID(lua_State* L);
+    static int resetPlatoonID(lua_State* L);
+    static int createReplacementPlatoonForPlayerWhenSavegameIsCorrupt(lua_State* L);
+    static int resetSquadPositions(lua_State* L);
+    static int getData(lua_State* L);
+    static int getDefaultDivision(lua_State* L);
+    static int getFactionColorScheme(lua_State* L);
+    static int _activateUnloadedPlatoons(lua_State* L);
+    static int processKillList(lua_State* L);
+    static int _NV_processKillList(lua_State* L);
+    static int getFactionSize(lua_State* L);
+    static int update(lua_State* L);
+    static int periodicUpdateThreaded(lua_State* L);
+    static int periodicUpdateMT(lua_State* L);
     static int isThePlayer(lua_State* L);
     static int isNotARealFaction(lua_State* L);
-    static int isAntiSlavery(lua_State* L);
-    static int isALawEnforcementFaction(lua_State* L);
-    static int getLawEnforcementFaction(lua_State* L);
-    static int getFactionSize(lua_State* L);
-    static int getNumPlatoons(lua_State* L);
-    static int getProsperityMultiplier(lua_State* L);
     static int getRoadPreference(lua_State* L);
-    static int getRelation(lua_State* L);
-    static int setRelation(lua_State* L);
-    static int declareWar(lua_State* L);
-    static int declarePeace(lua_State* L);
-    static int createPlatoon(lua_State* L);
+    static int isAntiSlavery(lua_State* L);
+    static int getLawEnforcementFaction(lua_State* L);
+    static int setName(lua_State* L);
+    static int updateUnloadedPlatoons(lua_State* L);
+    static int updateActivePlatoons(lua_State* L);
+    static int spawnSquadMissionsUpdate(lua_State* L);
+    static int _spawnASquad(lua_State* L);
 };
-
-} // namespace KenshiLua
+}

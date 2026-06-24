@@ -15,18 +15,22 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
-    static int isKeyState(lua_State* L);
-    static int isBound(lua_State* L);
-    static int sendEvent(lua_State* L);
+    static int getKeyUTF8(lua_State* L);
+    static int parseKey(lua_State* L);
+    static int keyDownEvent(lua_State* L);
+    static int keyUpEvent(lua_State* L);
+    static int clearMessages(lua_State* L);
+    static int _CONSTRUCTOR(lua_State* L);
+    static int initialise(lua_State* L);
     static int bind(lua_State* L);
-    static int unbind(lua_State* L);
     static int unbindAll(lua_State* L);
-    static int getMousePos(lua_State* L);
-    static int getMousePosAbs(lua_State* L);
-    static int getMouseWheel(lua_State* L);
-    static int getModifiers(lua_State* L);
+    static int isKeyState(lua_State* L);
+    static int getMode(lua_State* L);
+    static int sendEvent(lua_State* L);
+    static int loadConfig(lua_State* L);
+    static int saveConfig(lua_State* L);
+    static int keyString(lua_State* L);
+    static int _DESTRUCTOR(lua_State* L);
 };
 }

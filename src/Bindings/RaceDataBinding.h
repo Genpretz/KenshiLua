@@ -5,11 +5,8 @@ extern "C" {
 #include <lauxlib.h>
 }
 
-class RaceData;
-
 namespace KenshiLua
 {
-
 class RaceDataBinding
 {
 public:
@@ -18,13 +15,8 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
-    // Methods
-    static int isRelatedRace(lua_State* L);
-    static int canEat(lua_State* L);
+    static int getStatMod(lua_State* L);
     static int isImmune(lua_State* L);
 };
-
-} // namespace KenshiLua
+}

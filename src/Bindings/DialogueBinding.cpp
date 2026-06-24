@@ -1,143 +1,870 @@
 #include "pch.h"
-#include "Bindings/DialogueBinding.h"
-#include "Bindings/CharacterBinding.h"
-#include "Bindings/HandBinding.h"
-#include "Bindings/CharStatsBinding.h"
+#include "kenshi\Dialogue.h"
+#include "DialogueBinding.h"
+#include "kenshi/Character.h"
+#include "CharacterBinding.h"
+#include "kenshi/CharStats.h"
+#include "CharStatsBinding.h"
+#include "RepetitionCounterBinding.h"
+#include "DialogChoiceListBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/Dialogue.h>
-#include <kenshi/Character.h>
-#include <kenshi/util/hand.h>
+typedef Dialogue::RepetitionCounter RepetitionCounter;
 
 namespace KenshiLua
 {
 
-static Dialogue* getD(lua_State* L, int idx)
+static Dialogue* getB(lua_State* L, int idx)
 {
     return checkObject<Dialogue>(L, idx, DialogueBinding::getMetatableName());
 }
 
-int DialogueBinding::gc(lua_State* L)       { return noopGc(L); }
-
-int DialogueBinding::index(lua_State* L)
+// --- Getters for Dialogue ---
+static int Dialogue_get_repCounter(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return pushObject<RepetitionCounter>(L, &b->repCounter, RepetitionCounterBinding::getMetatableName());
+}
 
-    // 1. Check the metatable first so obj:method() syntax continues to work.
-    luaL_getmetatable(L, DialogueBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;   // found a method - return it
-    lua_pop(L, 2);  // pop nil result + metatable
+static int Dialogue_get__needsDynamicAssessments(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    lua_pushboolean(L, b->_needsDynamicAssessments ? 1 : 0);
+    return 1;
+}
 
-    // 2. Fall through to raw member variable access.
-    Dialogue* d = getD(L, 1);
-    if (!d) { lua_pushnil(L); return 1; }
-
-    // --- boolean members ---
-    if (strcmp(key, "hasEnded") == 0 || strcmp(key, "_hasEnded") == 0) { lua_pushboolean(L, d->_hasEnded ? 1 : 0); return 1; }
-    if (strcmp(key, "shouting") == 0) { lua_pushboolean(L, d->shouting ? 1 : 0); return 1; }
-    if (strcmp(key, "staysOnScreen") == 0) { lua_pushboolean(L, d->staysOnScreen ? 1 : 0); return 1; }
-
-    // --- unique object members ---
-    if (strcmp(key, "character") == 0 || strcmp(key, "me") == 0) {
-        return pushObject<Character>(L, d->me, CharacterBinding::getMetatableName());
-    }
-    if (strcmp(key, "conversationTarget") == 0) {
-        return HandBinding::pushHand(L, d->conversationTarget);
-    }
-    if (strcmp(key, "stats") == 0) {
-        return pushObject<CharStats>(L, d->stats, CharStatsBinding::getMetatableName());
-    }
-
+static int Dialogue_get_locked(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for locked (std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > >)
     lua_pushnil(L);
     return 1;
 }
 
-int DialogueBinding::newindex(lua_State* L)
+static int Dialogue_get_sayMsg(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    Dialogue* d = getD(L, 1);
-    if (!d) return luaL_error(L, "Dialogue is nil");
-
-    // --- writable properties ---
-    if (strcmp(key, "shouting") == 0) {
-        d->shouting = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "staysOnScreen") == 0) {
-        d->staysOnScreen = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-
-    return luaL_error(L, "Dialogue: field '%s' is read-only or does not exist", key);
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    lua_pushstring(L, b->sayMsg.c_str());
+    return 1;
 }
-int DialogueBinding::tostring(lua_State* L) { return genericTostringPtr(L, "Dialogue", (void*)getD(L, 1)); }
+
+static int Dialogue_get_threadMessages(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for threadMessages (Ogre::vector<Dialogue::DT_MSG>::type)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_pacakgesIHave(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for pacakgesIHave (std::set<GameData*, std::less<GameData*>, Ogre::STLAllocator<GameData*, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_playerInterruptionDialog(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for playerInterruptionDialog (DialogLineData*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_eventRepeatTimers(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for eventRepeatTimers (std::map<EventTriggerEnum, float, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, float>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_eventDeliveredStates(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for eventDeliveredStates (std::map<EventTriggerEnum, hand, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, hand>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get__hasChanceLines(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for _hasChanceLines (std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get__hasEnded(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    lua_pushboolean(L, b->_hasEnded ? 1 : 0);
+    return 1;
+}
+
+static int Dialogue_get_shouting(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    lua_pushboolean(L, b->shouting ? 1 : 0);
+    return 1;
+}
+
+static int Dialogue_get_staysOnScreen(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    lua_pushboolean(L, b->staysOnScreen ? 1 : 0);
+    return 1;
+}
+
+static int Dialogue_get_me(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return pushObject<Character>(L, b->me, CharacterBinding::getMetatableName());
+}
+
+static int Dialogue_get_conversationTarget(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for conversationTarget (hand)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_stats(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return pushObject<CharStats>(L, b->stats, CharStatsBinding::getMetatableName());
+}
+
+static int Dialogue_get_movement(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for movement (CharMovement*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_currentConversationType(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    lua_pushinteger(L, (lua_Integer)b->currentConversationType);
+    return 1;
+}
+
+static int Dialogue_get_currentConversation(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for currentConversation (DialogLineData*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_currentLine(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for currentLine (DialogLineData*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_conversationsMain(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for conversationsMain (std::map<EventTriggerEnum, DialogChoiceList*, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, DialogChoiceList*>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_interjector1(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for interjector1 (hand)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_interjector2(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for interjector2 (hand)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_interjector3(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for interjector3 (hand)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_speechBubblePanel(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for speechBubblePanel (DialogueSpeechBubble*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_speechTextTimer(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    lua_pushnumber(L, b->speechTextTimer);
+    return 1;
+}
+
+static int Dialogue_get_speechTextTimer_forced(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    lua_pushnumber(L, b->speechTextTimer_forced);
+    return 1;
+}
+
+static int Dialogue_get_replyIds(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for replyIds (Ogre::vector<std::string>::type)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_responses(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for responses (Ogre::vector<std::string>::type)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_npcReplyText(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    lua_pushstring(L, b->npcReplyText.c_str());
+    return 1;
+}
+
+static int Dialogue_get_conversationMaster(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for conversationMaster (hand)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Dialogue_get_waitingForReplyFrom(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    // TODO: Unsupported type for waitingForReplyFrom (hand)
+    lua_pushnil(L);
+    return 1;
+}
+
+// --- Setters for Dialogue ---
+static int Dialogue_set_repCounter(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    RepetitionCounter* val = checkObject<RepetitionCounter>(L, 2, RepetitionCounterBinding::getMetatableName());
+    if (!val) return luaL_error(L, "RepetitionCounter is nil");
+    b->repCounter = *val;
+    return 0;
+}
+
+static int Dialogue_set__needsDynamicAssessments(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    b->_needsDynamicAssessments = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Dialogue_set_locked(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for locked");
+}
+
+static int Dialogue_set_sayMsg(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    b->sayMsg = luaL_checkstring(L, 2);
+    return 0;
+}
+
+static int Dialogue_set_threadMessages(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for threadMessages");
+}
+
+static int Dialogue_set_pacakgesIHave(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for pacakgesIHave");
+}
+
+static int Dialogue_set_playerInterruptionDialog(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for playerInterruptionDialog");
+}
+
+static int Dialogue_set_eventRepeatTimers(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for eventRepeatTimers");
+}
+
+static int Dialogue_set_eventDeliveredStates(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for eventDeliveredStates");
+}
+
+static int Dialogue_set__hasChanceLines(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for _hasChanceLines");
+}
+
+static int Dialogue_set__hasEnded(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    b->_hasEnded = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Dialogue_set_shouting(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    b->shouting = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Dialogue_set_staysOnScreen(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    b->staysOnScreen = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Dialogue_set_me(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for me");
+}
+
+static int Dialogue_set_conversationTarget(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for conversationTarget");
+}
+
+static int Dialogue_set_stats(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for stats");
+}
+
+static int Dialogue_set_movement(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for movement");
+}
+
+static int Dialogue_set_currentConversationType(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    b->currentConversationType = (EventTriggerEnum)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Dialogue_set_currentConversation(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for currentConversation");
+}
+
+static int Dialogue_set_currentLine(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for currentLine");
+}
+
+static int Dialogue_set_conversationsMain(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for conversationsMain");
+}
+
+static int Dialogue_set_interjector1(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for interjector1");
+}
+
+static int Dialogue_set_interjector2(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for interjector2");
+}
+
+static int Dialogue_set_interjector3(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for interjector3");
+}
+
+static int Dialogue_set_speechBubblePanel(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for speechBubblePanel");
+}
+
+static int Dialogue_set_speechTextTimer(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    b->speechTextTimer = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Dialogue_set_speechTextTimer_forced(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    b->speechTextTimer_forced = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Dialogue_set_replyIds(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for replyIds");
+}
+
+static int Dialogue_set_responses(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for responses");
+}
+
+static int Dialogue_set_npcReplyText(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    b->npcReplyText = luaL_checkstring(L, 2);
+    return 0;
+}
+
+static int Dialogue_set_conversationMaster(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for conversationMaster");
+}
+
+static int Dialogue_set_waitingForReplyFrom(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for waitingForReplyFrom");
+}
+
+int DialogueBinding::setupWordSwaps(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->setupWordSwaps();
+    return 0;
+}
+
+int DialogueBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    Dialogue* result = b->_CONSTRUCTOR();
+    return pushObject<Dialogue>(L, result, DialogueBinding::getMetatableName());
+}
+
+int DialogueBinding::_DESTRUCTOR(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->_DESTRUCTOR();
+    return 0;
+}
 
 int DialogueBinding::getCharacter(lua_State* L)
 {
-    Dialogue* d = getD(L, 1);
-    if (!d) { lua_pushnil(L); return 1; }
-    return pushObject<Character>(L, d->me, CharacterBinding::getMetatableName());
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    Character* result = b->getCharacter();
+    return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
 }
 
-int DialogueBinding::getConversationTarget(lua_State* L)
+int DialogueBinding::setInDialog(lua_State* L)
 {
-    Dialogue* d = getD(L, 1);
-    if (!d) { lua_pushnil(L); return 1; }
-    hand h = d->conversationTarget;
-    if (!h.isValid()) { lua_pushnil(L); return 1; }
-    return pushObject<Character>(L, h.getCharacter(), CharacterBinding::getMetatableName());
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    bool on = lua_toboolean(L, 2) != 0;
+    b->setInDialog(on);
+    return 0;
 }
 
-int DialogueBinding::hasDialogueEvent(lua_State* L)
+int DialogueBinding::clearDialogues(lua_State* L)
 {
-    Dialogue* d = getD(L, 1);
-    if (!d) { lua_pushboolean(L, 0); return 1; }
-    int ev = (int)luaL_checkinteger(L, 2);
-    lua_pushboolean(L, d->hasDialogueEvent((EventTriggerEnum)ev) ? 1 : 0);
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->clearDialogues();
+    return 0;
+}
+
+int DialogueBinding::clearAnnouncements(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->clearAnnouncements();
+    return 0;
+}
+
+int DialogueBinding::needsDialogAssessmentUpdate(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    bool result = b->needsDialogAssessmentUpdate();
+    lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
-int DialogueBinding::willTalkToEnemies(lua_State* L)    { Dialogue* d = getD(L, 1); lua_pushboolean(L, d && d->willTalkToEnemies() ? 1 : 0); return 1; }
-int DialogueBinding::conversationHasEnded(lua_State* L) { Dialogue* d = getD(L, 1); lua_pushboolean(L, !d || d->conversationHasEnded() ? 1 : 0); return 1; }
-
-int DialogueBinding::sendEvent(lua_State* L)
+int DialogueBinding::clearConversationList(lua_State* L)
 {
-    Dialogue* d = getD(L, 1);
-    if (!d) return luaL_error(L, "Dialogue is nil");
-    Character* target = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    if (!target) return luaL_error(L, "Target Character expected");
-    int ev = (int)luaL_checkinteger(L, 3);
-    lua_pushboolean(L, d->sendEvent(target, (EventTriggerEnum)ev) ? 1 : 0);
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    EventTriggerEnum t = (EventTriggerEnum)luaL_checkinteger(L, 2);
+    b->clearConversationList(t);
+    return 0;
+}
+
+int DialogueBinding::willTalkToEnemies(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    bool result = b->willTalkToEnemies();
+    lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
-int DialogueBinding::sendEventOverride(lua_State* L)
+int DialogueBinding::stopEvent(lua_State* L)
 {
-    Dialogue* d = getD(L, 1);
-    if (!d) return luaL_error(L, "Dialogue is nil");
-    Character* target = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    if (!target) return luaL_error(L, "Target Character expected");
-    int ev = (int)luaL_checkinteger(L, 3);
-    bool force = lua_toboolean(L, 4) != 0;
-    lua_pushboolean(L, d->sendEventOverride(target, (EventTriggerEnum)ev, force) ? 1 : 0);
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    EventTriggerEnum what = (EventTriggerEnum)luaL_checkinteger(L, 2);
+    b->stopEvent(what);
+    return 0;
+}
+
+int DialogueBinding::conversationHasEnded(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    bool result = b->conversationHasEnded();
+    lua_pushboolean(L, result ? 1 : 0);
     return 1;
+}
+
+int DialogueBinding::conversationHasEndedPrettyMuch(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    bool result = b->conversationHasEndedPrettyMuch();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int DialogueBinding::update(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    float frameTime = (float)luaL_checknumber(L, 2);
+    b->update(frameTime);
+    return 0;
 }
 
 int DialogueBinding::endDialogue(lua_State* L)
 {
-    Dialogue* d = getD(L, 1);
-    if (!d) return 0;
-    bool definitelyEnd = lua_toboolean(L, 2) != 0;
-    d->endDialogue(definitelyEnd);
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    bool definitelyTheEnd = lua_toboolean(L, 2) != 0;
+    b->endDialogue(definitelyTheEnd);
     return 0;
 }
 
-int DialogueBinding::isValid(lua_State* L)
+int DialogueBinding::hasDialogue_Fast(lua_State* L)
 {
-    Dialogue* d = getD(L, 1);
-    lua_pushboolean(L, d && d->me ? 1 : 0);
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    bool result = b->hasDialogue_Fast();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int DialogueBinding::hasDialogue_Accurate(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    bool result = b->hasDialogue_Accurate();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int DialogueBinding::hasDialogueEvent(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    EventTriggerEnum e = (EventTriggerEnum)luaL_checkinteger(L, 2);
+    bool result = b->hasDialogueEvent(e);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int DialogueBinding::dialogDelivered(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    EventTriggerEnum e = (EventTriggerEnum)luaL_checkinteger(L, 2);
+    bool result = b->dialogDelivered(e);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int DialogueBinding::isKOExempt(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    EventTriggerEnum what = (EventTriggerEnum)luaL_checkinteger(L, 2);
+    bool result = b->isKOExempt(what);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int DialogueBinding::_endPlayerConversation(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    bool finished = lua_toboolean(L, 2) != 0;
+    b->_endPlayerConversation(finished);
+    return 0;
+}
+
+int DialogueBinding::getConversationList(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    EventTriggerEnum t = (EventTriggerEnum)luaL_checkinteger(L, 2);
+    DialogChoiceList* result = b->getConversationList(t);
+    return pushObject<DialogChoiceList>(L, result, DialogChoiceListBinding::getMetatableName());
+}
+
+int DialogueBinding::listPlayerReplies(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->listPlayerReplies();
+    return 0;
+}
+
+int DialogueBinding::_updateTextPos(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->_updateTextPos();
+    return 0;
+}
+
+int DialogueBinding::clearSpeechBox(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->clearSpeechBox();
+    return 0;
+}
+
+int DialogueBinding::clearRespones(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->clearRespones();
+    return 0;
+}
+
+int DialogueBinding::clearResponesGUI(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->clearResponesGUI();
+    return 0;
+}
+
+int DialogueBinding::setResponesGUI(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->setResponesGUI();
+    return 0;
+}
+
+int DialogueBinding::setConversationReplyGUI(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    b->setConversationReplyGUI();
+    return 0;
+}
+
+/*
+Skipped methods needing manual binding:
+  line 310: std::string getWordSwap(...) - unsupported arg type
+  line 312: void _insertWordSwapsRecurse(...) - non-string reference arg
+  line 333: void insertWordSwaps(...) - non-string reference arg
+  line 334: void getGUIData(...) - unsupported arg type
+  line 335: void create(...) - unsupported arg type
+  line 336: hand getHandle(...) - unsupported return type
+  line 338: void setLineLocked(...) - unsupported arg type
+  line 339: bool isLocked(...) - unsupported arg type
+  line 345: void addDialoguePackage(...) - unsupported arg type
+  line 346: void addConversation(...) - unsupported arg type
+  line 350: bool sendEventOverride(...) - unsupported arg type
+  line 351: bool sendEvent(...) - unsupported arg type
+  line 353: bool runCustomDialog(...) - unsupported arg type
+  line 354: int scoreCustomDialog(...) - unsupported arg type
+  line 356: hand getConversationTarget(...) - unsupported return type
+  line 357: void changeConversationTarget(...) - unsupported arg type
+  line 359: bool makeAnnouncement(...) - unsupported arg type
+  line 362: void notifyUnderAttack(...) - unsupported arg type
+  line 366: void say(...) - overloaded method
+  line 367: void say(...) - overloaded method
+  line 369: bool _checkCondition(...) - unsupported arg type
+  line 370: void dontLetTargetBeMe(...) - unsupported arg type
+  line 371: bool isAtTownOf(...) - unsupported arg type
+  line 372: bool hasThisChanceLine(...) - unsupported arg type
+  line 373: DialogLineData* _chooseDialog(...) - unsupported return type
+  line 374: void triggerNextLine(...) - unsupported arg type
+  line 375: bool targetInTalkingRange(...) - unsupported arg type
+  line 376: void save(...) - unsupported arg type
+  line 377: void load(...) - unsupported arg type
+  line 378: void replyClicked(...) - overloaded method
+  line 379: void replyClicked(...) - overloaded method
+  line 380: Character* getSpeaker(...) - unsupported arg type
+  line 381: bool isCurrentConversationRunning(...) - unsupported arg type
+  line 382: void resolveOverlappedSpeechBubbles(...) - static method
+  line 383: void _wordSwapCharacterName(...) - non-string reference arg
+  line 386: Character* findInterjectionCharacter(...) - unsupported arg type
+  line 390: bool startPlayerConversation(...) - unsupported arg type
+  line 391: bool startConversation(...) - unsupported arg type
+  line 404: void _doActions(...) - unsupported arg type
+  line 405: bool sayLine(...) - unsupported arg type
+  line 407: bool isLastLine(...) - unsupported arg type
+  line 408: void setSpeaker(...) - unsupported arg type
+*/
+
+int DialogueBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int DialogueBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.Dialogue object");
     return 1;
 }
 
@@ -148,330 +875,185 @@ void DialogueBinding::registerBinding(lua_State* L)
         { "__tostring", DialogueBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
-        { "getCharacter",           DialogueBinding::getCharacter },
-        { "getConversationTarget",  DialogueBinding::getConversationTarget },
-        { "hasDialogueEvent",       DialogueBinding::hasDialogueEvent },
-        { "willTalkToEnemies",      DialogueBinding::willTalkToEnemies },
-        { "conversationHasEnded",   DialogueBinding::conversationHasEnded },
-        { "sendEvent",              DialogueBinding::sendEvent },
-        { "sendEventOverride",      DialogueBinding::sendEventOverride },
-        { "endDialogue",            DialogueBinding::endDialogue },
-        { "isValid",                DialogueBinding::isValid },
+        { "setupWordSwaps", DialogueBinding::setupWordSwaps },
+        { "_CONSTRUCTOR", DialogueBinding::_CONSTRUCTOR },
+        { "_DESTRUCTOR", DialogueBinding::_DESTRUCTOR },
+        { "getCharacter", DialogueBinding::getCharacter },
+        { "setInDialog", DialogueBinding::setInDialog },
+        { "clearDialogues", DialogueBinding::clearDialogues },
+        { "clearAnnouncements", DialogueBinding::clearAnnouncements },
+        { "needsDialogAssessmentUpdate", DialogueBinding::needsDialogAssessmentUpdate },
+        { "clearConversationList", DialogueBinding::clearConversationList },
+        { "willTalkToEnemies", DialogueBinding::willTalkToEnemies },
+        { "stopEvent", DialogueBinding::stopEvent },
+        { "conversationHasEnded", DialogueBinding::conversationHasEnded },
+        { "conversationHasEndedPrettyMuch", DialogueBinding::conversationHasEndedPrettyMuch },
+        { "update", DialogueBinding::update },
+        { "endDialogue", DialogueBinding::endDialogue },
+        { "hasDialogue_Fast", DialogueBinding::hasDialogue_Fast },
+        { "hasDialogue_Accurate", DialogueBinding::hasDialogue_Accurate },
+        { "hasDialogueEvent", DialogueBinding::hasDialogueEvent },
+        { "dialogDelivered", DialogueBinding::dialogDelivered },
+        { "isKOExempt", DialogueBinding::isKOExempt },
+        { "_endPlayerConversation", DialogueBinding::_endPlayerConversation },
+        { "getConversationList", DialogueBinding::getConversationList },
+        { "listPlayerReplies", DialogueBinding::listPlayerReplies },
+        { "_updateTextPos", DialogueBinding::_updateTextPos },
+        { "clearSpeechBox", DialogueBinding::clearSpeechBox },
+        { "clearRespones", DialogueBinding::clearRespones },
+        { "clearResponesGUI", DialogueBinding::clearResponesGUI },
+        { "setResponesGUI", DialogueBinding::setResponesGUI },
+        { "setConversationReplyGUI", DialogueBinding::setConversationReplyGUI },
         { 0, 0 }
     };
-    registerClass(L, DialogueBinding::getMetatableName(), meta, methods, DialogueBinding::index, DialogueBinding::newindex);
-}
 
-void registerEventBinding(lua_State* L)
-{
-    lua_newtable(L);
-
-    lua_pushstring(L, "EV_NONE");
-    lua_pushinteger(L, 0);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_PLAYER_TALK_TO_ME");
-    lua_pushinteger(L, 1);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ANNOUNCEMENT");
-    lua_pushinteger(L, 2);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_I_SEE_NEUTRAL_SQUAD");
-    lua_pushinteger(L, 3);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_I_SEE_RAGDOLL");
-    lua_pushinteger(L, 4);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ENEMY_SIGHTED");
-    lua_pushinteger(L, 5);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_SOUND_THE_ALARM");
-    lua_pushinteger(L, 6);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_I_DEFEATED_SOMEONE");
-    lua_pushinteger(L, 7);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_THIEF_CAUGHT_STEALING_FROM_ME");
-    lua_pushinteger(L, 8);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_SHOO_FROM_MY_BUILDING");
-    lua_pushinteger(L, 9);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_MARKED_FOR_DEATH");
-    lua_pushinteger(L, 10);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_SCREAMING_TORTURE");
-    lua_pushinteger(L, 11);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_BAR_TALK");
-    lua_pushinteger(L, 12);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_UNLOCK_MY_CAGE_OR_SHACKLES");
-    lua_pushinteger(L, 13);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_UNLOCK_MY_CAGE_ATTEMPT");
-    lua_pushinteger(L, 14);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_I_DEFEATED_SQUAD");
-    lua_pushinteger(L, 15);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_LAUNCH_ATTACK");
-    lua_pushinteger(L, 16);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_INTRUDER_FOUND");
-    lua_pushinteger(L, 17);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_HEALING_OTHER_START");
-    lua_pushinteger(L, 18);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_BEING_HEALED_START");
-    lua_pushinteger(L, 19);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_HEALING_OTHER_FINISHED");
-    lua_pushinteger(L, 20);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_BEING_HEALED_FINISHED");
-    lua_pushinteger(L, 21);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_FIRSTAID_KIT_EMPTY");
-    lua_pushinteger(L, 22);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_GET_UP_PEACE");
-    lua_pushinteger(L, 23);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_GET_UP_FIGHT");
-    lua_pushinteger(L, 24);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_GET_UP_UNNECCESSARY_FIGHT");
-    lua_pushinteger(L, 25);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_HARRASSMENT_SHOUTS");
-    lua_pushinteger(L, 26);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_I_SEE_ANIMAL_SQUAD");
-    lua_pushinteger(L, 27);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET");
-    lua_pushinteger(L, 28);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS");
-    lua_pushinteger(L, 29);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_CONTRACT_JOB_ENDED");
-    lua_pushinteger(L, 30);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_BETRAYAL");
-    lua_pushinteger(L, 31);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_LOOTING_WEAPON_ONLY");
-    lua_pushinteger(L, 32);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_LOOTING_EVERYTHING");
-    lua_pushinteger(L, 33);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_I_SEE_UNIFORM_IMPOSTER");
-    lua_pushinteger(L, 34);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_INTRODUCING_NEW_SLAVE");
-    lua_pushinteger(L, 35);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ESCAPING_SLAVE_SPOTTED");
-    lua_pushinteger(L, 36);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_RECAPTURED_A_SLAVE");
-    lua_pushinteger(L, 37);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_SHOUT_AT_SLAVE_WORKER");
-    lua_pushinteger(L, 38);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_SLAVE_DELIVERY");
-    lua_pushinteger(L, 39);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ESCAPED_EX_SLAVE_SPOTTED");
-    lua_pushinteger(L, 40);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_WITNESS_GENERIC_ASSAULT");
-    lua_pushinteger(L, 41);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_WITNESS_LOOTING_ALLY");
-    lua_pushinteger(L, 42);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_WITNESS_THIEF_OR_LOCKPICK");
-    lua_pushinteger(L, 43);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_BOUNTY_SPOTTED");
-    lua_pushinteger(L, 44);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ESCAPED_PRISONER_SPOTTED");
-    lua_pushinteger(L, 45);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_PRISONER_FREE_TO_GO");
-    lua_pushinteger(L, 46);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ALMOST_WOKE_UP");
-    lua_pushinteger(L, 47);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ENTER_BIOME");
-    lua_pushinteger(L, 48);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ENTER_TOWN");
-    lua_pushinteger(L, 49);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_SQUAD_BROKEN");
-    lua_pushinteger(L, 50);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_BOUGHT_ME_FROM_SLAVERY");
-    lua_pushinteger(L, 51);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_EATING_SOMETHING_SOUNDS");
-    lua_pushinteger(L, 52);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_WORSHIPING_SOMETHING");
-    lua_pushinteger(L, 53);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR");
-    lua_pushinteger(L, 54);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE");
-    lua_pushinteger(L, 55);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ASSASSINATION_FAILED");
-    lua_pushinteger(L, 56);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_EATING_MY_CROPS");
-    lua_pushinteger(L, 57);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_KIDNAPPING_MY_ALLY");
-    lua_pushinteger(L, 58);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_USING_MY_TRAINING_EQUIPMENT");
-    lua_pushinteger(L, 59);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_GIVE_UP_CHASE");
-    lua_pushinteger(L, 60);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ACID_FEET");
-    lua_pushinteger(L, 61);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ACID_RAIN");
-    lua_pushinteger(L, 62);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_ACID_WATER");
-    lua_pushinteger(L, 63);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_WINDY");
-    lua_pushinteger(L, 64);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_POISON_GAS");
-    lua_pushinteger(L, 65);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_I_SEE_ENEMY_PLAYER");
-    lua_pushinteger(L, 66);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_I_SEE_ALLY_PLAYER");
-    lua_pushinteger(L, 67);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_I_SEE_ILLEGAL_PLAYER_BUILDING");
-    lua_pushinteger(L, 68);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_BURNING");
-    lua_pushinteger(L, 69);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_LOST_LEG");
-    lua_pushinteger(L, 70);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_LOST_ARM");
-    lua_pushinteger(L, 71);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_I_SEE_PLAYER_NICE_BUILDING");
-    lua_pushinteger(L, 72);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_TAKEN_OVER_PLAYER_TOWN");
-    lua_pushinteger(L, 73);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_CROWD_TRIGGERED");
-    lua_pushinteger(L, 74);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "EV_MAX");
-    lua_pushinteger(L, 75);
-    lua_settable(L, -3);
-
-    lua_setglobal(L, "EventTrigger");
+    registerClass(
+        L, 
+        DialogueBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, DialogueBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, Dialogue_get_repCounter);
+    lua_setfield(L, -2, "repCounter");
+    lua_pushcfunction(L, Dialogue_get__needsDynamicAssessments);
+    lua_setfield(L, -2, "_needsDynamicAssessments");
+    lua_pushcfunction(L, Dialogue_get_locked);
+    lua_setfield(L, -2, "locked");
+    lua_pushcfunction(L, Dialogue_get_sayMsg);
+    lua_setfield(L, -2, "sayMsg");
+    lua_pushcfunction(L, Dialogue_get_threadMessages);
+    lua_setfield(L, -2, "threadMessages");
+    lua_pushcfunction(L, Dialogue_get_pacakgesIHave);
+    lua_setfield(L, -2, "pacakgesIHave");
+    lua_pushcfunction(L, Dialogue_get_playerInterruptionDialog);
+    lua_setfield(L, -2, "playerInterruptionDialog");
+    lua_pushcfunction(L, Dialogue_get_eventRepeatTimers);
+    lua_setfield(L, -2, "eventRepeatTimers");
+    lua_pushcfunction(L, Dialogue_get_eventDeliveredStates);
+    lua_setfield(L, -2, "eventDeliveredStates");
+    lua_pushcfunction(L, Dialogue_get__hasChanceLines);
+    lua_setfield(L, -2, "_hasChanceLines");
+    lua_pushcfunction(L, Dialogue_get__hasEnded);
+    lua_setfield(L, -2, "_hasEnded");
+    lua_pushcfunction(L, Dialogue_get_shouting);
+    lua_setfield(L, -2, "shouting");
+    lua_pushcfunction(L, Dialogue_get_staysOnScreen);
+    lua_setfield(L, -2, "staysOnScreen");
+    lua_pushcfunction(L, Dialogue_get_me);
+    lua_setfield(L, -2, "me");
+    lua_pushcfunction(L, Dialogue_get_conversationTarget);
+    lua_setfield(L, -2, "conversationTarget");
+    lua_pushcfunction(L, Dialogue_get_stats);
+    lua_setfield(L, -2, "stats");
+    lua_pushcfunction(L, Dialogue_get_movement);
+    lua_setfield(L, -2, "movement");
+    lua_pushcfunction(L, Dialogue_get_currentConversationType);
+    lua_setfield(L, -2, "currentConversationType");
+    lua_pushcfunction(L, Dialogue_get_currentConversation);
+    lua_setfield(L, -2, "currentConversation");
+    lua_pushcfunction(L, Dialogue_get_currentLine);
+    lua_setfield(L, -2, "currentLine");
+    lua_pushcfunction(L, Dialogue_get_conversationsMain);
+    lua_setfield(L, -2, "conversationsMain");
+    lua_pushcfunction(L, Dialogue_get_interjector1);
+    lua_setfield(L, -2, "interjector1");
+    lua_pushcfunction(L, Dialogue_get_interjector2);
+    lua_setfield(L, -2, "interjector2");
+    lua_pushcfunction(L, Dialogue_get_interjector3);
+    lua_setfield(L, -2, "interjector3");
+    lua_pushcfunction(L, Dialogue_get_speechBubblePanel);
+    lua_setfield(L, -2, "speechBubblePanel");
+    lua_pushcfunction(L, Dialogue_get_speechTextTimer);
+    lua_setfield(L, -2, "speechTextTimer");
+    lua_pushcfunction(L, Dialogue_get_speechTextTimer_forced);
+    lua_setfield(L, -2, "speechTextTimer_forced");
+    lua_pushcfunction(L, Dialogue_get_replyIds);
+    lua_setfield(L, -2, "replyIds");
+    lua_pushcfunction(L, Dialogue_get_responses);
+    lua_setfield(L, -2, "responses");
+    lua_pushcfunction(L, Dialogue_get_npcReplyText);
+    lua_setfield(L, -2, "npcReplyText");
+    lua_pushcfunction(L, Dialogue_get_conversationMaster);
+    lua_setfield(L, -2, "conversationMaster");
+    lua_pushcfunction(L, Dialogue_get_waitingForReplyFrom);
+    lua_setfield(L, -2, "waitingForReplyFrom");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, Dialogue_set_repCounter);
+    lua_setfield(L, -2, "repCounter");
+    lua_pushcfunction(L, Dialogue_set__needsDynamicAssessments);
+    lua_setfield(L, -2, "_needsDynamicAssessments");
+    lua_pushcfunction(L, Dialogue_set_locked);
+    lua_setfield(L, -2, "locked");
+    lua_pushcfunction(L, Dialogue_set_sayMsg);
+    lua_setfield(L, -2, "sayMsg");
+    lua_pushcfunction(L, Dialogue_set_threadMessages);
+    lua_setfield(L, -2, "threadMessages");
+    lua_pushcfunction(L, Dialogue_set_pacakgesIHave);
+    lua_setfield(L, -2, "pacakgesIHave");
+    lua_pushcfunction(L, Dialogue_set_playerInterruptionDialog);
+    lua_setfield(L, -2, "playerInterruptionDialog");
+    lua_pushcfunction(L, Dialogue_set_eventRepeatTimers);
+    lua_setfield(L, -2, "eventRepeatTimers");
+    lua_pushcfunction(L, Dialogue_set_eventDeliveredStates);
+    lua_setfield(L, -2, "eventDeliveredStates");
+    lua_pushcfunction(L, Dialogue_set__hasChanceLines);
+    lua_setfield(L, -2, "_hasChanceLines");
+    lua_pushcfunction(L, Dialogue_set__hasEnded);
+    lua_setfield(L, -2, "_hasEnded");
+    lua_pushcfunction(L, Dialogue_set_shouting);
+    lua_setfield(L, -2, "shouting");
+    lua_pushcfunction(L, Dialogue_set_staysOnScreen);
+    lua_setfield(L, -2, "staysOnScreen");
+    lua_pushcfunction(L, Dialogue_set_me);
+    lua_setfield(L, -2, "me");
+    lua_pushcfunction(L, Dialogue_set_conversationTarget);
+    lua_setfield(L, -2, "conversationTarget");
+    lua_pushcfunction(L, Dialogue_set_stats);
+    lua_setfield(L, -2, "stats");
+    lua_pushcfunction(L, Dialogue_set_movement);
+    lua_setfield(L, -2, "movement");
+    lua_pushcfunction(L, Dialogue_set_currentConversationType);
+    lua_setfield(L, -2, "currentConversationType");
+    lua_pushcfunction(L, Dialogue_set_currentConversation);
+    lua_setfield(L, -2, "currentConversation");
+    lua_pushcfunction(L, Dialogue_set_currentLine);
+    lua_setfield(L, -2, "currentLine");
+    lua_pushcfunction(L, Dialogue_set_conversationsMain);
+    lua_setfield(L, -2, "conversationsMain");
+    lua_pushcfunction(L, Dialogue_set_interjector1);
+    lua_setfield(L, -2, "interjector1");
+    lua_pushcfunction(L, Dialogue_set_interjector2);
+    lua_setfield(L, -2, "interjector2");
+    lua_pushcfunction(L, Dialogue_set_interjector3);
+    lua_setfield(L, -2, "interjector3");
+    lua_pushcfunction(L, Dialogue_set_speechBubblePanel);
+    lua_setfield(L, -2, "speechBubblePanel");
+    lua_pushcfunction(L, Dialogue_set_speechTextTimer);
+    lua_setfield(L, -2, "speechTextTimer");
+    lua_pushcfunction(L, Dialogue_set_speechTextTimer_forced);
+    lua_setfield(L, -2, "speechTextTimer_forced");
+    lua_pushcfunction(L, Dialogue_set_replyIds);
+    lua_setfield(L, -2, "replyIds");
+    lua_pushcfunction(L, Dialogue_set_responses);
+    lua_setfield(L, -2, "responses");
+    lua_pushcfunction(L, Dialogue_set_npcReplyText);
+    lua_setfield(L, -2, "npcReplyText");
+    lua_pushcfunction(L, Dialogue_set_conversationMaster);
+    lua_setfield(L, -2, "conversationMaster");
+    lua_pushcfunction(L, Dialogue_set_waitingForReplyFrom);
+    lua_setfield(L, -2, "waitingForReplyFrom");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

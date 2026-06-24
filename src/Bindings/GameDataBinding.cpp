@@ -1,342 +1,606 @@
 #include "pch.h"
-#include "Bindings/GameDataBinding.h"
+#include "kenshi\GameData.h"
+#include "GameDataBinding.h"
 #include "Lua/BindingHelpers.h"
-
-#include <kenshi/GameData.h>
-
-#include <cstring>
-#include <cstdio>
-
-/*  class ItemData
-    if (strcmp(key, "visible") == 0) { lua_pushboolean(L, s->visible ? 1 : 0); return 1; }
-    if (strcmp(key, "category") == 0) { lua_pushstring(L, s->category.c_str()); return 1; }
-    if (strcmp(key, "description") == 0) { lua_pushstring(L, s->description.c_str()); return 1; }
-    if (strcmp(key, "fileTypes") == 0) { lua_pushstring(L, s->fileTypes.c_str()); return 1; }
-    // TODO itemType objectType; unsupported __index type from header line 79
-    if (strcmp(key, "maxSize") == 0) { lua_pushinteger(L, s->maxSize); return 1; }
-    if (strcmp(key, "maxValue") == 0) { lua_pushinteger(L, s->maxValue); return 1; }
-    if (strcmp(key, "minValue") == 0) { lua_pushinteger(L, s->minValue); return 1; }
-    if (strcmp(key, "isSlider") == 0) { lua_pushboolean(L, s->isSlider ? 1 : 0); return 1; }
-
-    if (strcmp(key, "visible") == 0) { s->visible = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "category") == 0) { s->category = luaL_checkstring(L, 3); return 0; }
-    if (strcmp(key, "description") == 0) { s->description = luaL_checkstring(L, 3); return 0; }
-    if (strcmp(key, "fileTypes") == 0) { s->fileTypes = luaL_checkstring(L, 3); return 0; }
-    // TODO itemType objectType; unsupported __newindex type from header line 79
-    if (strcmp(key, "maxSize") == 0) { s->maxSize = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "maxValue") == 0) { s->maxValue = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "minValue") == 0) { s->minValue = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "isSlider") == 0) { s->isSlider = lua_toboolean(L, 3) != 0; return 0; }
-*/
-
-/*  class ObjectInstance
-    // TODO Ogre::Vector3 pos; unsupported __index type from header line 143
-    // TODO Ogre::Quaternion rot; unsupported __index type from header line 144
-    if (strcmp(key, "refID") == 0) { lua_pushstring(L, s->refID.c_str()); return 1; }
-    if (strcmp(key, "created") == 0) { lua_pushinteger(L, s->created); return 1; }
-    if (strcmp(key, "modified") == 0) { lua_pushinteger(L, s->modified); return 1; }
-    // TODO lektor<std::string > stateIDs; unsupported __index type from header line 148
-
-    // TODO Ogre::Vector3 pos; unsupported __newindex type from header line 143
-    // TODO Ogre::Quaternion rot; unsupported __newindex type from header line 144
-    if (strcmp(key, "refID") == 0) { s->refID = luaL_checkstring(L, 3); return 0; }
-    if (strcmp(key, "created") == 0) { s->created = (short)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "modified") == 0) { s->modified = (short)luaL_checkinteger(L, 3); return 0; }
-    // TODO lektor<std::string > stateIDs; unsupported __newindex type from header line 148
-*/
-
 
 namespace KenshiLua
 {
 
-static GameData* getS(lua_State* L, int idx)
+static GameData* getB(lua_State* L, int idx)
 {
     return checkObject<GameData>(L, idx, GameDataBinding::getMetatableName());
 }
 
-int GameDataBinding::gc(lua_State* L) { return noopGc(L); }
-
-int GameDataBinding::tostring(lua_State* L)
+// --- Getters for GameData ---
+static int GameData_get_validity(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    lua_pushinteger(L, b->validity);
+    return 1;
 }
 
-int GameDataBinding::index(lua_State* L)
+static int GameData_get_sourceContainer(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, GameDataBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    GameData* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "validity") == 0) { lua_pushinteger(L, s->validity); return 1; }
-    // TODO GameDataContainer* sourceContainer; unsupported __index type from header line 49
-    if (strcmp(key, "isStandalone") == 0) { lua_pushboolean(L, s->isStandalone ? 1 : 0); return 1; }
-    if (strcmp(key, "id") == 0) { lua_pushinteger(L, s->id); return 1; }
-    if (strcmp(key, "readOnly") == 0) { lua_pushboolean(L, s->readOnly ? 1 : 0); return 1; }
-    if (strcmp(key, "name") == 0) { lua_pushstring(L, s->name.c_str()); return 1; }
-    // TODO itemType type; unsupported __index type from header line 91
-    if (strcmp(key, "stringID") == 0) { lua_pushstring(L, s->stringID.c_str()); return 1; }
-    if (strcmp(key, "isFromActiveFile") == 0) { lua_pushboolean(L, s->isFromActiveFile ? 1 : 0); return 1; }
-
-    // TODO std::map<std::string, GameData::ObjectInstance, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData::ObjectInstance>, Ogre::GeneralAllocPolicy > > instances; unsupported __index type from header line 160
-    if (strcmp(key, "currentID") == 0) { lua_pushinteger(L, s->currentID); return 1; }
-    // TODO boost::unordered::unordered_map<std::string, bool, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy > > activeValues; unsupported __index type from header line 163
-    // TODO boost::unordered::unordered_map<std::string, bool, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy > > bdata; unsupported __index type from header line 164
-    // TODO boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > > sdata; unsupported __index type from header line 165
-    // TODO boost::unordered::unordered_map<std::string, int, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > > idata; unsupported __index type from header line 166
-    // TODO boost::unordered::unordered_map<std::string, float, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, float>, Ogre::GeneralAllocPolicy > > fdata; unsupported __index type from header line 167
-    // TODO boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > > filesdata; unsupported __index type from header line 168
-    // TODO boost::unordered::unordered_map<std::string, Ogre::Vector3, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Vector3>, Ogre::GeneralAllocPolicy > > vecdata; unsupported __index type from header line 169
-    // TODO boost::unordered::unordered_map<std::string, Ogre::Quaternion, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Quaternion>, Ogre::GeneralAllocPolicy > > quatdata; unsupported __index type from header line 170
-    // TODO boost::unordered::unordered_map<std::string, Ogre::vector<GameDataReference>::type, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::vector<GameDataReference>::type >, Ogre::GeneralAllocPolicy > > objectReferences; unsupported __index type from header line 171
-    if (strcmp(key, "createdIndex") == 0) { lua_pushinteger(L, s->createdIndex); return 1; }
-
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for sourceContainer (GameDataContainer*)
     lua_pushnil(L);
     return 1;
 }
 
-int GameDataBinding::newindex(lua_State* L)
+static int GameData_get_isStandalone(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    lua_pushboolean(L, b->isStandalone ? 1 : 0);
+    return 1;
+}
 
-    if (strcmp(key, "validity") == 0) { s->validity = (int)luaL_checkinteger(L, 3); return 0; }
-    // TODO GameDataContainer* sourceContainer; unsupported __newindex type from header line 49
-    if (strcmp(key, "isStandalone") == 0) { s->isStandalone = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "id") == 0) { s->id = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "readOnly") == 0) { s->readOnly = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "name") == 0) { s->name = luaL_checkstring(L, 3); return 0; }
-    // TODO itemType type; unsupported __newindex type from header line 91
-    if (strcmp(key, "stringID") == 0) { s->stringID = luaL_checkstring(L, 3); return 0; }
-    if (strcmp(key, "isFromActiveFile") == 0) { s->isFromActiveFile = lua_toboolean(L, 3) != 0; return 0; }
-    // TODO std::map<std::string, GameData::ObjectInstance, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData::ObjectInstance>, Ogre::GeneralAllocPolicy > > instances; unsupported __newindex type from header line 160
-    if (strcmp(key, "currentID") == 0) { s->currentID = (int)luaL_checkinteger(L, 3); return 0; }
-    // TODO boost::unordered::unordered_map<std::string, bool, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy > > activeValues; unsupported __newindex type from header line 163
-    // TODO boost::unordered::unordered_map<std::string, bool, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy > > bdata; unsupported __newindex type from header line 164
-    // TODO boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > > sdata; unsupported __newindex type from header line 165
-    // TODO boost::unordered::unordered_map<std::string, int, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > > idata; unsupported __newindex type from header line 166
-    // TODO boost::unordered::unordered_map<std::string, float, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, float>, Ogre::GeneralAllocPolicy > > fdata; unsupported __newindex type from header line 167
-    // TODO boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > > filesdata; unsupported __newindex type from header line 168
-    // TODO boost::unordered::unordered_map<std::string, Ogre::Vector3, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Vector3>, Ogre::GeneralAllocPolicy > > vecdata; unsupported __newindex type from header line 169
-    // TODO boost::unordered::unordered_map<std::string, Ogre::Quaternion, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Quaternion>, Ogre::GeneralAllocPolicy > > quatdata; unsupported __newindex type from header line 170
-    // TODO boost::unordered::unordered_map<std::string, Ogre::vector<GameDataReference>::type, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::vector<GameDataReference>::type >, Ogre::GeneralAllocPolicy > > objectReferences; unsupported __newindex type from header line 171
-    if (strcmp(key, "createdIndex") == 0) { s->createdIndex = (unsigned short)luaL_checkinteger(L, 3); return 0; }
+static int GameData_get_id(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    lua_pushinteger(L, b->id);
+    return 1;
+}
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+static int GameData_get_readOnly(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    lua_pushboolean(L, b->readOnly ? 1 : 0);
+    return 1;
+}
+
+static int GameData_get_name(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    lua_pushstring(L, b->name.c_str());
+    return 1;
+}
+
+static int GameData_get_type(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    lua_pushinteger(L, (lua_Integer)b->type);
+    return 1;
+}
+
+static int GameData_get_stringID(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    lua_pushstring(L, b->stringID.c_str());
+    return 1;
+}
+
+static int GameData_get_isFromActiveFile(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    lua_pushboolean(L, b->isFromActiveFile ? 1 : 0);
+    return 1;
+}
+
+static int GameData_get_instances(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for instances (std::map<std::string, GameData::ObjectInstance, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData::ObjectInstance>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int GameData_get_currentID(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    lua_pushinteger(L, b->currentID);
+    return 1;
+}
+
+static int GameData_get_activeValues(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for activeValues (boost::unordered::unordered_map<std::string, bool, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int GameData_get_bdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for bdata (boost::unordered::unordered_map<std::string, bool, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int GameData_get_sdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for sdata (boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int GameData_get_idata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for idata (boost::unordered::unordered_map<std::string, int, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int GameData_get_fdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for fdata (boost::unordered::unordered_map<std::string, float, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, float>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int GameData_get_filesdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for filesdata (boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int GameData_get_vecdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for vecdata (boost::unordered::unordered_map<std::string, Ogre::Vector3, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Vector3>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int GameData_get_quatdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for quatdata (boost::unordered::unordered_map<std::string, Ogre::Quaternion, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Quaternion>, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int GameData_get_objectReferences(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    // TODO: Unsupported type for objectReferences (boost::unordered::unordered_map<std::string, Ogre::vector<GameDataReference>::type, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::vector<GameDataReference>::type >, Ogre::GeneralAllocPolicy > >)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int GameData_get_createdIndex(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    lua_pushinteger(L, b->createdIndex);
+    return 1;
+}
+
+// --- Setters for GameData ---
+static int GameData_set_validity(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    b->validity = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int GameData_set_sourceContainer(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for sourceContainer");
+}
+
+static int GameData_set_isStandalone(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    b->isStandalone = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int GameData_set_id(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    b->id = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int GameData_set_readOnly(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    b->readOnly = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int GameData_set_name(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    b->name = luaL_checkstring(L, 2);
+    return 0;
+}
+
+static int GameData_set_type(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    b->type = (itemType)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int GameData_set_stringID(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    b->stringID = luaL_checkstring(L, 2);
+    return 0;
+}
+
+static int GameData_set_isFromActiveFile(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    b->isFromActiveFile = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int GameData_set_instances(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for instances");
+}
+
+static int GameData_set_currentID(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    b->currentID = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int GameData_set_activeValues(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for activeValues");
+}
+
+static int GameData_set_bdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for bdata");
+}
+
+static int GameData_set_sdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for sdata");
+}
+
+static int GameData_set_idata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for idata");
+}
+
+static int GameData_set_fdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for fdata");
+}
+
+static int GameData_set_filesdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for filesdata");
+}
+
+static int GameData_set_vecdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for vecdata");
+}
+
+static int GameData_set_quatdata(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for quatdata");
+}
+
+static int GameData_set_objectReferences(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for objectReferences");
+}
+
+static int GameData_set_createdIndex(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+    b->createdIndex = (unsigned short)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+int GameDataBinding::_DESTRUCTOR(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+
+    b->_DESTRUCTOR();
+    return 0;
+}
+
+int GameDataBinding::_CONSTRUCTOR(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+
+    GameData* result = b->_CONSTRUCTOR();
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int GameDataBinding::isValid(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
-    bool result = s->isValid();
+    bool result = b->isValid();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int GameDataBinding::destroy(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
-    s->destroy();
+    b->destroy();
     return 0;
+}
+
+int GameDataBinding::initialise(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+
+    itemType t = (itemType)luaL_checkinteger(L, 2);
+    bool isActive = lua_toboolean(L, 3) != 0;
+    b->initialise(t, isActive);
+    return 0;
+}
+
+int GameDataBinding::loadFromFile(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+
+    std::string path = luaL_checkstring(L, 2);
+    itemType _type = (itemType)luaL_checkinteger(L, 3);
+    bool result = b->loadFromFile(path, _type);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
 }
 
 int GameDataBinding::saveToFile(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string path = luaL_checkstring(L, 2);
-    bool result = s->saveToFile(path);
+    bool result = b->saveToFile(path);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int GameDataBinding::isValueActive(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string v = luaL_checkstring(L, 2);
-    bool result = s->isValueActive(v);
+    bool result = b->isValueActive(v);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int GameDataBinding::isRefActive(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string v = luaL_checkstring(L, 2);
-    bool result = s->isRefActive(v);
+    bool result = b->isRefActive(v);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int GameDataBinding::addFileName(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string n = luaL_checkstring(L, 2);
     std::string v = luaL_checkstring(L, 3);
     std::string filestype = luaL_checkstring(L, 4);
     std::string category = luaL_checkstring(L, 5);
     bool vis = lua_toboolean(L, 6) != 0;
-    s->addFileName(n, v, filestype, category, vis);
+    b->addFileName(n, v, filestype, category, vis);
     return 0;
 }
 
 int GameDataBinding::addString(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string n = luaL_checkstring(L, 2);
     std::string v = luaL_checkstring(L, 3);
     std::string category = luaL_checkstring(L, 4);
     bool vis = lua_toboolean(L, 5) != 0;
-    s->addString(n, v, category, vis);
+    b->addString(n, v, category, vis);
     return 0;
 }
 
 int GameDataBinding::addToList(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string list = luaL_checkstring(L, 2);
     std::string id = luaL_checkstring(L, 3);
     int val = (int)luaL_checkinteger(L, 4);
     int val2 = (int)luaL_checkinteger(L, 5);
     int val3 = (int)luaL_checkinteger(L, 6);
-    s->addToList(list, id, val, val2, val3);
+    b->addToList(list, id, val, val2, val3);
     return 0;
 }
 
 int GameDataBinding::findInList(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string list = luaL_checkstring(L, 2);
     std::string SID = luaL_checkstring(L, 3);
-    bool result = s->findInList(list, SID);
+    bool result = b->findInList(list, SID);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int GameDataBinding::clearList(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string n = luaL_checkstring(L, 2);
-    s->clearList(n);
+    b->clearList(n);
     return 0;
 }
 
 int GameDataBinding::clearEverything(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
-    s->clearEverything();
+    b->clearEverything();
     return 0;
 }
 
 int GameDataBinding::clearInstances(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
-    s->clearInstances();
+    b->clearInstances();
     return 0;
 }
 
 int GameDataBinding::getListSize(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string n = luaL_checkstring(L, 2);
-    int result = s->getListSize(n);
+    int result = b->getListSize(n);
     lua_pushinteger(L, result);
     return 1;
 }
 
 int GameDataBinding::listExists(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string n = luaL_checkstring(L, 2);
-    bool result = s->listExists(n);
+    bool result = b->listExists(n);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int GameDataBinding::listExistsAndNotEmpty(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string n = luaL_checkstring(L, 2);
-    bool result = s->listExistsAndNotEmpty(n);
+    bool result = b->listExistsAndNotEmpty(n);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int GameDataBinding::deleteInstancedObject(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string id = luaL_checkstring(L, 2);
     int modIndex = (int)luaL_checkinteger(L, 3);
-    s->deleteInstancedObject(id, modIndex);
+    b->deleteInstancedObject(id, modIndex);
     return 0;
 }
 
 int GameDataBinding::getNewID(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
-    int result = s->getNewID();
+    int result = b->getNewID();
     lua_pushinteger(L, result);
+    return 1;
+}
+
+int GameDataBinding::getColorVec(lua_State* L)
+{
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
+
+    std::string name = luaL_checkstring(L, 2);
+    Ogre::Vector3 result = b->getColorVec(name);
+    pushVector3(L, result);
     return 1;
 }
 
 int GameDataBinding::addDeletedInstance(lua_State* L)
 {
-    GameData* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GameData is nil");
+    GameData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "GameData is nil");
 
     std::string instanceID = luaL_checkstring(L, 2);
-    s->addDeletedInstance(instanceID);
+    b->addDeletedInstance(instanceID);
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 51: void _DESTRUCTOR(...) - overloaded method
-  line 54: GameData* _CONSTRUCTOR(...) - overloaded method
   line 57: GameDataContainer* getSourceContainer(...) - unsupported return type
-  line 94: void initialise(...) - unsupported arg type
-  line 95: bool loadFromFile(...) - unsupported arg type
   line 97: void storeHandleList(...) - overloaded method
   line 98: void storeHandleList(...) - overloaded method
   line 99: void getHandleList(...) - overloaded method
@@ -359,17 +623,11 @@ Skipped methods needing manual binding:
   line 131: const Ogre::vector<GameDataReference>::type* getReferenceListIfExists(...) - unsupported return type
   line 132: Ogre::vector<GameDataReference>::type* _getReferenceList_nonConst(...) - unsupported return type
   line 133: void getAllFromListAsDatas(...) - unsupported arg type
-  line 134: GameData* getFromListAsData(...) - unsupported return type
+  line 134: GameData* getFromListAsData(...) - unsupported arg type
   line 135: const TripleInt& getValueFromList(...) - reference return type
-  line 140: ObjectInstance* _CONSTRUCTOR(...) - overloaded method
-  line 142: ObjectInstance* _CONSTRUCTOR(...) - overloaded method
-  line 149: const GameData::ObjectInstance& operator=(...) - operator
-  line 150: void updateInstancedObjectAttachedDatas(...) - unsupported arg type
-  line 152: void _DESTRUCTOR(...) - overloaded method
   line 156: void addSavedInstancedObject(...) - unsupported arg type
   line 159: void getInstances(...) - unsupported arg type
   line 173: Ogre::ColourValue getColor(...) - unsupported return type
-  line 174: Ogre::Vector3 getColorVec(...) - unsupported return type
   line 175: void setColor(...) - overloaded method
   line 176: void setColor(...) - overloaded method
   line 178: GameData::ObjectInstance* addANewInstancedObject(...) - overloaded method
@@ -378,6 +636,18 @@ Skipped methods needing manual binding:
   line 181: GameData::ObjectInstance* addANewInstancedObject(...) - overloaded method
 */
 
+int GameDataBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int GameDataBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.GameData object");
+    return 1;
+}
+
 void GameDataBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -385,9 +655,14 @@ void GameDataBinding::registerBinding(lua_State* L)
         { "__tostring", GameDataBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
+        { "_DESTRUCTOR", GameDataBinding::_DESTRUCTOR },
+        { "_CONSTRUCTOR", GameDataBinding::_CONSTRUCTOR },
         { "isValid", GameDataBinding::isValid },
         { "destroy", GameDataBinding::destroy },
+        { "initialise", GameDataBinding::initialise },
+        { "loadFromFile", GameDataBinding::loadFromFile },
         { "saveToFile", GameDataBinding::saveToFile },
         { "isValueActive", GameDataBinding::isValueActive },
         { "isRefActive", GameDataBinding::isRefActive },
@@ -403,13 +678,112 @@ void GameDataBinding::registerBinding(lua_State* L)
         { "listExistsAndNotEmpty", GameDataBinding::listExistsAndNotEmpty },
         { "deleteInstancedObject", GameDataBinding::deleteInstancedObject },
         { "getNewID", GameDataBinding::getNewID },
+        { "getColorVec", GameDataBinding::getColorVec },
         { "addDeletedInstance", GameDataBinding::addDeletedInstance },
         { 0, 0 }
     };
-    registerClass(L, GameDataBinding::getMetatableName(),
-        meta, methods,
-        GameDataBinding::index,
-        GameDataBinding::newindex);
+
+    registerClass(
+        L, 
+        GameDataBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, GameDataBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, GameData_get_validity);
+    lua_setfield(L, -2, "validity");
+    lua_pushcfunction(L, GameData_get_sourceContainer);
+    lua_setfield(L, -2, "sourceContainer");
+    lua_pushcfunction(L, GameData_get_isStandalone);
+    lua_setfield(L, -2, "isStandalone");
+    lua_pushcfunction(L, GameData_get_id);
+    lua_setfield(L, -2, "id");
+    lua_pushcfunction(L, GameData_get_readOnly);
+    lua_setfield(L, -2, "readOnly");
+    lua_pushcfunction(L, GameData_get_name);
+    lua_setfield(L, -2, "name");
+    lua_pushcfunction(L, GameData_get_type);
+    lua_setfield(L, -2, "type");
+    lua_pushcfunction(L, GameData_get_stringID);
+    lua_setfield(L, -2, "stringID");
+    lua_pushcfunction(L, GameData_get_isFromActiveFile);
+    lua_setfield(L, -2, "isFromActiveFile");
+    lua_pushcfunction(L, GameData_get_instances);
+    lua_setfield(L, -2, "instances");
+    lua_pushcfunction(L, GameData_get_currentID);
+    lua_setfield(L, -2, "currentID");
+    lua_pushcfunction(L, GameData_get_activeValues);
+    lua_setfield(L, -2, "activeValues");
+    lua_pushcfunction(L, GameData_get_bdata);
+    lua_setfield(L, -2, "bdata");
+    lua_pushcfunction(L, GameData_get_sdata);
+    lua_setfield(L, -2, "sdata");
+    lua_pushcfunction(L, GameData_get_idata);
+    lua_setfield(L, -2, "idata");
+    lua_pushcfunction(L, GameData_get_fdata);
+    lua_setfield(L, -2, "fdata");
+    lua_pushcfunction(L, GameData_get_filesdata);
+    lua_setfield(L, -2, "filesdata");
+    lua_pushcfunction(L, GameData_get_vecdata);
+    lua_setfield(L, -2, "vecdata");
+    lua_pushcfunction(L, GameData_get_quatdata);
+    lua_setfield(L, -2, "quatdata");
+    lua_pushcfunction(L, GameData_get_objectReferences);
+    lua_setfield(L, -2, "objectReferences");
+    lua_pushcfunction(L, GameData_get_createdIndex);
+    lua_setfield(L, -2, "createdIndex");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, GameData_set_validity);
+    lua_setfield(L, -2, "validity");
+    lua_pushcfunction(L, GameData_set_sourceContainer);
+    lua_setfield(L, -2, "sourceContainer");
+    lua_pushcfunction(L, GameData_set_isStandalone);
+    lua_setfield(L, -2, "isStandalone");
+    lua_pushcfunction(L, GameData_set_id);
+    lua_setfield(L, -2, "id");
+    lua_pushcfunction(L, GameData_set_readOnly);
+    lua_setfield(L, -2, "readOnly");
+    lua_pushcfunction(L, GameData_set_name);
+    lua_setfield(L, -2, "name");
+    lua_pushcfunction(L, GameData_set_type);
+    lua_setfield(L, -2, "type");
+    lua_pushcfunction(L, GameData_set_stringID);
+    lua_setfield(L, -2, "stringID");
+    lua_pushcfunction(L, GameData_set_isFromActiveFile);
+    lua_setfield(L, -2, "isFromActiveFile");
+    lua_pushcfunction(L, GameData_set_instances);
+    lua_setfield(L, -2, "instances");
+    lua_pushcfunction(L, GameData_set_currentID);
+    lua_setfield(L, -2, "currentID");
+    lua_pushcfunction(L, GameData_set_activeValues);
+    lua_setfield(L, -2, "activeValues");
+    lua_pushcfunction(L, GameData_set_bdata);
+    lua_setfield(L, -2, "bdata");
+    lua_pushcfunction(L, GameData_set_sdata);
+    lua_setfield(L, -2, "sdata");
+    lua_pushcfunction(L, GameData_set_idata);
+    lua_setfield(L, -2, "idata");
+    lua_pushcfunction(L, GameData_set_fdata);
+    lua_setfield(L, -2, "fdata");
+    lua_pushcfunction(L, GameData_set_filesdata);
+    lua_setfield(L, -2, "filesdata");
+    lua_pushcfunction(L, GameData_set_vecdata);
+    lua_setfield(L, -2, "vecdata");
+    lua_pushcfunction(L, GameData_set_quatdata);
+    lua_setfield(L, -2, "quatdata");
+    lua_pushcfunction(L, GameData_set_objectReferences);
+    lua_setfield(L, -2, "objectReferences");
+    lua_pushcfunction(L, GameData_set_createdIndex);
+    lua_setfield(L, -2, "createdIndex");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

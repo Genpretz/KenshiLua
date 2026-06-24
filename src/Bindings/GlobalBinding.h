@@ -8,7 +8,5 @@ extern "C" {
 
 namespace KenshiLua
 {
-
-void registerGlobals(lua_State* L);
-
+    void registerGlobals(lua_State* L);
 } // namespace KenshiLua

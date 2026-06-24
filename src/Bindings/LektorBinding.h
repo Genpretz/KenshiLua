@@ -3,10 +3,6 @@
 #include <kenshi/util/lektor.h>
 #include <kenshi/util/LektorPushBack.h>
 
-// if (strcmp(key, "members") == 0)
-// {
-//     return pushObject<lektor<Character*>>(L, &ap->members, LektorCharacterPtrBinding::getMetatableName());
-// }
 // inline const char* LektorCharacterPtrMeta() { return "lektor<Character*>"; }
 // inline const char* CharacterElemMeta() { return CharacterBinding::getMetatableName(); }
 // using LektorCharacterPtrBinding = LektorPtrBinding<Character*, LektorCharacterPtrMeta, CharacterElemMeta>;
@@ -143,5 +139,4 @@ namespace KenshiLua
             registerClass(L, MetaName(), meta, methods, index, newindex);
         }
     };
-
-} // namespace KenshiLua
+} // namespace KenshiLua

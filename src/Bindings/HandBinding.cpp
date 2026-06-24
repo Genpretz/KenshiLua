@@ -1,27 +1,23 @@
 #include "pch.h"
 #include "Bindings/HandBinding.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/PlatoonBinding.h"
-#include "Bindings/BuildingBinding.h"
 #include "Bindings/ItemBinding.h"
-#include "Bindings/TownBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/RootObjectBaseBinding.h"
+#include "Bindings/TownBaseBinding.h"
 #include "Lua/BindingHelpers.h"
 
-#include <kenshi/util/hand.h>
-#include <kenshi/Character.h>
-#include <kenshi/Platoon.h>
 #include <kenshi/Item.h>
 #include <kenshi/Town.h>
+#include <kenshi/RootObject.h>
+#include <kenshi/RootObjectBase.h>
 
 #include <new>
 #include <cstdio>
 #include <cstring>
 #include <boost/functional/hash.hpp>
-
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-}
 
 std::size_t hash_value(const hand& h)
 {
@@ -37,201 +33,334 @@ std::size_t hash_value(const hand& h)
 namespace KenshiLua
 {
 
-
-static hand* checkHand(lua_State* L, int idx)
+static hand* getB(lua_State* L, int idx)
 {
-    return (hand*)luaL_checkudata(L, idx, HandBinding::getMetatableName());
+    return checkObject<hand>(L, idx, handBinding::getMetatableName());
 }
 
-int HandBinding::pushHand(lua_State* L, const hand& h)
+// --- Getters for hand ---
+static int hand_get_type(lua_State* L)
 {
-    void* mem = lua_newuserdata(L, sizeof(hand));
-    new (mem) hand(h);
-    luaL_getmetatable(L, HandBinding::getMetatableName());
-    lua_setmetatable(L, -2);
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+    lua_pushinteger(L, (lua_Integer)b->type);
     return 1;
 }
 
-int HandBinding::gc(lua_State* L)
+static int hand_get_container(lua_State* L)
 {
-    hand* h = (hand*)luaL_checkudata(L, 1, getMetatableName());
-    if (h) h->~hand();
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+    lua_pushinteger(L, b->container);
+    return 1;
+}
+
+static int hand_get_containerSerial(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+    lua_pushinteger(L, b->containerSerial);
+    return 1;
+}
+
+static int hand_get_index(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+    lua_pushinteger(L, b->index);
+    return 1;
+}
+
+static int hand_get_serial(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+    lua_pushinteger(L, b->serial);
+    return 1;
+}
+
+// --- Setters for hand ---
+static int hand_set_type(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+    b->type = (itemType)luaL_checkinteger(L, 2);
     return 0;
 }
 
-int HandBinding::tostring(lua_State* L)
+static int hand_set_container(lua_State* L)
 {
-    hand* h = checkHand(L, 1);
-    if (h) lua_pushstring(L, h->toString().c_str());
-    else   lua_pushstring(L, "hand:nil");
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+    b->container = (unsigned int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int hand_set_containerSerial(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+    b->containerSerial = (unsigned int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int hand_set_index(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+    b->index = (unsigned int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int hand_set_serial(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+    b->serial = (unsigned int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+int handBinding::toString(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    std::string result = b->toString();
+    lua_pushstring(L, result.c_str());
     return 1;
 }
 
-int HandBinding::eq(lua_State* L)
+int handBinding::fromString(lua_State* L)
 {
-    hand* a = checkHand(L, 1);
-    hand* b = checkHand(L, 2);
-    lua_pushboolean(L, (a && b && (*a == *b)) ? 1 : 0);
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    std::string str = luaL_checkstring(L, 2);
+    b->fromString(str);
+    return 0;
+}
+
+int handBinding::getCharacter(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    Character* result = b->getCharacter();
+    return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
+}
+
+int handBinding::getPlatoon(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    Platoon* result = b->getPlatoon();
+    return pushObject<Platoon>(L, result, PlatoonBinding::getMetatableName());
+}
+
+int handBinding::getActivePlatoon(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    ActivePlatoon* result = b->getActivePlatoon();
+    return pushObject<ActivePlatoon>(L, result, ActivePlatoonBinding::getMetatableName());
+}
+
+int handBinding::getBuilding(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    Building* result = b->getBuilding();
+    return pushObject<Building>(L, result, "KenshiLua.Building");
+}
+
+int handBinding::getItem(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    Item* result = b->getItem();
+    return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+}
+
+int handBinding::getRootObject(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    RootObject* result = b->getRootObject();
+    return pushObject<RootObject>(L, result, RootObjectBinding::getMetatableName());
+}
+
+int handBinding::getRootObjectBase(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    RootObjectBase* result = b->getRootObjectBase();
+    return pushObject<RootObjectBase>(L, result, RootObjectBaseBinding::getMetatableName());
+}
+
+int handBinding::getTown(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    TownBase* result = b->getTown();
+    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
+}
+
+int handBinding::debugWhatHappenedToMe(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    std::string result = b->debugWhatHappenedToMe();
+    lua_pushstring(L, result.c_str());
     return 1;
 }
 
-int HandBinding::index(lua_State* L)
+int handBinding::setNull(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
 
-    // 1. Check the metatable first so obj:method() syntax continues to work.
-    luaL_getmetatable(L, HandBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;   // found a method - return it
-    lua_pop(L, 2);  // pop nil result + metatable
+    b->setNull();
+    return 0;
+}
 
-    // 2. Fall through to raw member variable access.
-    hand* h = checkHand(L, 1);
-    if (!h) { lua_pushnil(L); return 1; }
+int handBinding::isNull(lua_State* L)
+{
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
 
-    // --- boolean members ---
-    if (strcmp(key, "isValid") == 0) { lua_pushboolean(L, h->isValid() ? 1 : 0); return 1; }
-    if (strcmp(key, "isNull") == 0) { lua_pushboolean(L, h->isNull() ? 1 : 0); return 1; }
-
-    // --- integer/enum members ---
-    if (strcmp(key, "type") == 0) { lua_pushinteger(L, (int)h->type); return 1; }
-    if (strcmp(key, "index") == 0) { lua_pushinteger(L, h->index); return 1; }
-    if (strcmp(key, "serial") == 0) { lua_pushinteger(L, h->serial); return 1; }
-    if (strcmp(key, "container") == 0) { lua_pushinteger(L, h->container); return 1; }
-    if (strcmp(key, "containerSerial") == 0) { lua_pushinteger(L, h->containerSerial); return 1; }
-
-    // --- unique object members ---
-    if (strcmp(key, "character") == 0) {
-        if (!h->isValid()) { lua_pushnil(L); return 1; }
-        return pushObject<Character>(L, h->getCharacter(), CharacterBinding::getMetatableName());
-    }
-    if (strcmp(key, "platoon") == 0) {
-        if (!h->isValid()) { lua_pushnil(L); return 1; }
-        ActivePlatoon* ap = h->getActivePlatoon();
-        if (ap) return pushObject<ActivePlatoon>(L, ap, PlatoonBinding::getMetatableName());
-        Platoon* p = h->getPlatoon();
-        return pushObject<Platoon>(L, p, PlatoonBinding::getMetatableName());
-    }
-    if (strcmp(key, "building") == 0) {
-        if (!h->isValid()) { lua_pushnil(L); return 1; }
-        return pushObject<Building>(L, h->getBuilding(), BuildingBinding::getMetatableName());
-    }
-    if (strcmp(key, "item") == 0) {
-        if (!h->isValid()) { lua_pushnil(L); return 1; }
-        return ItemBinding::pushItem(L, h->getItem());
-    }
-    if (strcmp(key, "town") == 0) {
-        if (!h->isValid()) { lua_pushnil(L); return 1; }
-        return TownBaseBinding::pushTownBase(L, h->getTown());
-    }
-
-    lua_pushnil(L);
+    bool result = b->isNull();
+    lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
-int HandBinding::newindex(lua_State* L)
+int handBinding::isValid(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    hand* h = checkHand(L, 1);
-    if (!h) return luaL_error(L, "hand is nil");
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
 
-    // --- writable properties ---
-    if (strcmp(key, "type") == 0) {
-        h->type = (itemType)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "index") == 0) {
-        h->index = (unsigned int)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "serial") == 0) {
-        h->serial = (unsigned int)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "container") == 0) {
-        h->container = (unsigned int)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "containerSerial") == 0) {
-        h->containerSerial = (unsigned int)luaL_checkinteger(L, 3);
-        return 0;
-    }
-
-    return luaL_error(L, "hand: field '%s' is read-only or does not exist", key);
+    bool result = b->isValid();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
 }
 
-int HandBinding::isValid(lua_State* L)           { hand* h = checkHand(L, 1); lua_pushboolean(L, h && h->isValid() ? 1 : 0); return 1; }
-int HandBinding::isNull(lua_State* L)            { hand* h = checkHand(L, 1); lua_pushboolean(L, !h || h->isNull() ? 1 : 0); return 1; }
-int HandBinding::getType(lua_State* L)           { hand* h = checkHand(L, 1); if (h) lua_pushinteger(L, (int)h->type); else lua_pushnil(L); return 1; }
-int HandBinding::getIndex(lua_State* L)          { hand* h = checkHand(L, 1); if (h) lua_pushinteger(L, h->index); else lua_pushnil(L); return 1; }
-int HandBinding::getSerial(lua_State* L)         { hand* h = checkHand(L, 1); if (h) lua_pushinteger(L, h->serial); else lua_pushnil(L); return 1; }
-int HandBinding::getContainer(lua_State* L)      { hand* h = checkHand(L, 1); if (h) lua_pushinteger(L, h->container); else lua_pushnil(L); return 1; }
-int HandBinding::getContainerSerial(lua_State* L){ hand* h = checkHand(L, 1); if (h) lua_pushinteger(L, h->containerSerial); else lua_pushnil(L); return 1; }
-
-int HandBinding::getCharacter(lua_State* L)
+int handBinding::canCastToRootObject(lua_State* L)
 {
-    hand* h = checkHand(L, 1);
-    if (!h || !h->isValid()) { lua_pushnil(L); return 1; }
-    return pushObject<Character>(L, h->getCharacter(), CharacterBinding::getMetatableName());
+    hand* b = getB(L, 1);
+    if (!b) return luaL_error(L, "hand is nil");
+
+    bool result = b->canCastToRootObject();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
 }
 
-int HandBinding::getPlatoon(lua_State* L)
+/*
+Skipped methods needing manual binding:
+  line 22: hand* _CONSTRUCTOR(...) - overloaded method
+  line 24: hand* _CONSTRUCTOR(...) - overloaded method
+  line 26: hand* _CONSTRUCTOR(...) - overloaded method
+  line 28: hand* _CONSTRUCTOR(...) - overloaded method
+  line 30: hand* _CONSTRUCTOR(...) - overloaded method
+  line 32: hand* _CONSTRUCTOR(...) - overloaded method
+  line 40: bool operator==(...) - operator
+  line 41: bool _NV_operator_equal(...) - overloaded method
+  line 42: bool operator==(...) - operator
+  line 43: bool operator==(...) - operator
+  line 44: bool _NV_operator_equal(...) - overloaded method
+  line 45: bool operator!=(...) - operator
+  line 46: bool operator!=(...) - operator
+  line 47: bool _NV_operator_notequal(...) - unsupported arg type
+  line 48: operator bool(...) - unsupported return type
+  line 58: bool operator<(...) - operator
+  line 59: hand& operator=(...) - operator
+  line 60: const hand& operator=(...) - operator
+  line 61: const hand& operator=(...) - operator
+  line 66: bool squadMatch(...) - unsupported arg type
+*/
+
+int handBinding::gc(lua_State* L)
 {
-    hand* h = checkHand(L, 1);
-    if (!h || !h->isValid()) { lua_pushnil(L); return 1; }
-    // Prefer ActivePlatoon since that's what active gameplay uses.
-    ActivePlatoon* ap = h->getActivePlatoon();
-    if (ap) return pushObject<ActivePlatoon>(L, ap, PlatoonBinding::getMetatableName());
-    Platoon* p = h->getPlatoon();
-    return pushObject<Platoon>(L, p, PlatoonBinding::getMetatableName());
+    // Implementation depends on ownership model
+    return 0;
 }
 
-int HandBinding::getBuilding(lua_State* L)
+int handBinding::tostring(lua_State* L)
 {
-    hand* h = checkHand(L, 1);
-    if (!h || !h->isValid()) { lua_pushnil(L); return 1; }
-    return pushObject<Building>(L, h->getBuilding(), BuildingBinding::getMetatableName());
+    lua_pushstring(L, "KenshiLua.hand object");
+    return 1;
 }
 
-int HandBinding::getItem(lua_State* L)
+void handBinding::registerBinding(lua_State* L)
 {
-    hand* h = checkHand(L, 1);
-    if (!h || !h->isValid()) { lua_pushnil(L); return 1; }
-    return ItemBinding::pushItem(L, h->getItem());
-}
-
-int HandBinding::getTown(lua_State* L)
-{
-    hand* h = checkHand(L, 1);
-    if (!h || !h->isValid()) { lua_pushnil(L); return 1; }
-    return TownBaseBinding::pushTownBase(L, h->getTown());
-}
-
-void HandBinding::registerBinding(lua_State* L)
-{
-    static const luaL_Reg metamethods[] = {
-        { "__gc",       HandBinding::gc },
-        { "__tostring", HandBinding::tostring },
-        { "__eq",       HandBinding::eq },
+    static const luaL_Reg meta[] = {
+        { "__gc",       handBinding::gc },
+        { "__tostring", handBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
-        { "isValid",            HandBinding::isValid },
-        { "isNull",             HandBinding::isNull },
-        { "getType",            HandBinding::getType },
-        { "getIndex",           HandBinding::getIndex },
-        { "getSerial",          HandBinding::getSerial },
-        { "getContainer",       HandBinding::getContainer },
-        { "getContainerSerial", HandBinding::getContainerSerial },
-        { "getCharacter",       HandBinding::getCharacter },
-        { "getPlatoon",         HandBinding::getPlatoon },
-        { "getBuilding",        HandBinding::getBuilding },
-        { "getItem",            HandBinding::getItem },
-        { "getTown",            HandBinding::getTown },
+        { "toString", handBinding::toString },
+        { "fromString", handBinding::fromString },
+        { "getCharacter", handBinding::getCharacter },
+        { "getPlatoon", handBinding::getPlatoon },
+        { "getActivePlatoon", handBinding::getActivePlatoon },
+        { "getBuilding", handBinding::getBuilding },
+        { "getItem", handBinding::getItem },
+        { "getRootObject", handBinding::getRootObject },
+        { "getRootObjectBase", handBinding::getRootObjectBase },
+        { "getTown", handBinding::getTown },
+        { "debugWhatHappenedToMe", handBinding::debugWhatHappenedToMe },
+        { "setNull", handBinding::setNull },
+        { "isNull", handBinding::isNull },
+        { "isValid", handBinding::isValid },
+        { "canCastToRootObject", handBinding::canCastToRootObject },
         { 0, 0 }
     };
-    registerClass(L, HandBinding::getMetatableName(), metamethods, methods, HandBinding::index, HandBinding::newindex);
+
+    registerClass(
+        L, 
+        handBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, handBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, hand_get_type);
+    lua_setfield(L, -2, "type");
+    lua_pushcfunction(L, hand_get_container);
+    lua_setfield(L, -2, "container");
+    lua_pushcfunction(L, hand_get_containerSerial);
+    lua_setfield(L, -2, "containerSerial");
+    lua_pushcfunction(L, hand_get_index);
+    lua_setfield(L, -2, "index");
+    lua_pushcfunction(L, hand_get_serial);
+    lua_setfield(L, -2, "serial");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, hand_set_type);
+    lua_setfield(L, -2, "type");
+    lua_pushcfunction(L, hand_set_container);
+    lua_setfield(L, -2, "container");
+    lua_pushcfunction(L, hand_set_containerSerial);
+    lua_setfield(L, -2, "containerSerial");
+    lua_pushcfunction(L, hand_set_index);
+    lua_setfield(L, -2, "index");
+    lua_pushcfunction(L, hand_set_serial);
+    lua_setfield(L, -2, "serial");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

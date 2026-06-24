@@ -1,10 +1,9 @@
-﻿#pragma once
+#pragma once
 
 extern "C" {
 #include <lua.h>
+#include <lauxlib.h>
 }
-
-class Character;
 
 namespace KenshiLua
 {
@@ -16,90 +15,274 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-	static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
-    // Identity / existence
-    static int isValid(lua_State* L);
-    static int isPlayerCharacter(lua_State* L);
-    static int isUnique(lua_State* L);
-    static int isFemale(lua_State* L);
-    static int isDestroyed(lua_State* L);
-    static int isDead(lua_State* L);
-
-    // Naming / appearance
-    static int getName(lua_State* L);
-    static int setName(lua_State* L);
-    static int setNameTagVisible(lua_State* L);
-    static int getVisible(lua_State* L);
-    static int setVisible(lua_State* L);
-
-    // Position / movement
-    static int getPosition(lua_State* L);
-    static int getBoneWorldPosition(lua_State* L);
-    static int getMovementSpeed(lua_State* L);
-    static int getMovementDirection(lua_State* L);
-    static int teleport(lua_State* L);
-    static int setDestination(lua_State* L);
-
-    // Faction / race / platoon
-    static int getFaction(lua_State* L);
-    static int setFaction(lua_State* L);
-    static int getRace(lua_State* L);
-    static int getPlatoon(lua_State* L);
-    static int getSquadLeader(lua_State* L);
-
-    // State checks
-    static int isUnconcious(lua_State* L);
-    static int isDown(lua_State* L);
-    static int isRagdoll(lua_State* L);
-    static int isCrippled(lua_State* L);
-    static int isInCombatMode(lua_State* L);
-    static int isInRangedCombatMode(lua_State* L);
-    static int isFleeing(lua_State* L);
-    static int isStealthMode(lua_State* L);
-    static int isInjured(lua_State* L);
-    static int isKidnapped(lua_State* L);
-	static int getProneState(lua_State* L);
-	static int setProneState(lua_State* L);
-
-    // Relations
-    static int isEnemy(lua_State* L);
-    static int isAlly(lua_State* L);
-
-    // Combat
-    static int attackTarget(lua_State* L);
-    static int endCombatMode(lua_State* L);
-    static int getCurrentWeapon(lua_State* L);
-    static int getAttackTarget(lua_State* L);
+    static int isImmuneToOffscreenMode(lua_State* L);
+    static int init(lua_State* L);
+    static int _NV_init(lua_State* L);
+    static int _DESTRUCTOR(lua_State* L);
+    static int isOnARoof(lua_State* L);
+    static int _NV_isOnARoof(lua_State* L);
+    static int isOnAWall(lua_State* L);
+    static int _NV_isOnAWall(lua_State* L);
+    static int getLightLevel(lua_State* L);
+    static int getHPMultiplier(lua_State* L);
+    static int _NV_getHPMultiplier(lua_State* L);
     static int healCompletely(lua_State* L);
-
-    // Inventory / stats / medical
-    static int getInventory(lua_State* L);
-    static int getStats(lua_State* L);
-    static int getMedical(lua_State* L);
-    static int getMoney(lua_State* L);
+    static int resetRagdollNavmeshSafePos(lua_State* L);
+    static int setRagdollNavmeshSafePos(lua_State* L);
+    static int getFrameTime(lua_State* L);
+    static int frameSkip(lua_State* L);
+    static int getCurrentNoiseRange(lua_State* L);
+    static int isDestroyed(lua_State* L);
+    static int _NV_isDestroyed(lua_State* L);
+    static int isLawEnforcement(lua_State* L);
+    static int canAssignBounties(lua_State* L);
+    static int getDataType(lua_State* L);
+    static int _NV_getDataType(lua_State* L);
+    static int isDiplomaticStatus(lua_State* L);
+    static int isLeadingAWarCampaign(lua_State* L);
+    static int wantsToTriggerCampaigns(lua_State* L);
+    static int isUnique(lua_State* L);
+    static int canSpeakNormally(lua_State* L);
+    static int isAnimal(lua_State* L);
+    static int _NV_isAnimal(lua_State* L);
     static int takeMoney(lua_State* L);
-    static int hasItem(lua_State* L);
-    static int hasRoomForItem(lua_State* L);
-
-    // Dialogue
-    static int sayALine(lua_State* L);
+    static int _NV_takeMoney(lua_State* L);
+    static int getMoney(lua_State* L);
+    static int _NV_getMoney(lua_State* L);
+    static int setSquadMemberType(lua_State* L);
+    static int dailyUpdate(lua_State* L);
+    static int updateOnScreenCheck(lua_State* L);
+    static int offscreenUpdate(lua_State* L);
+    static int updateTimes(lua_State* L);
+    static int update(lua_State* L);
+    static int _NV_update(lua_State* L);
+    static int postUpdate(lua_State* L);
+    static int _NV_postUpdate(lua_State* L);
+    static int ragdollUpdatesUT(lua_State* L);
+    static int fourFrameUpdate(lua_State* L);
+    static int periodicUpdate(lua_State* L);
+    static int _NV_periodicUpdate(lua_State* L);
+    static int pausedUpdate(lua_State* L);
+    static int _NV_pausedUpdate(lua_State* L);
+    static int updateUT(lua_State* L);
+    static int threadedUpdate(lua_State* L);
+    static int _NV_threadedUpdate(lua_State* L);
+    static int threadedUpdate4(lua_State* L);
+    static int _NV_threadedUpdate4(lua_State* L);
+    static int threadedUpdatePeriodic(lua_State* L);
+    static int _NV_threadedUpdatePeriodic(lua_State* L);
+    static int pathExists(lua_State* L);
+    static int weatherUpdate(lua_State* L);
+    static int _NV_weatherUpdate(lua_State* L);
+    static int stealthUpdate(lua_State* L);
+    static int getPerceptionMult(lua_State* L);
+    static int isWithThePlayer(lua_State* L);
+    static int isItSafeToGetUp(lua_State* L);
+    static int separateIntoMyOwnSquad(lua_State* L);
+    static int dropGearOnDeath(lua_State* L);
+    static int getCurrentWeatherAffectStatus(lua_State* L);
+    static int getCurrentWeatherAffectStrength(lua_State* L);
+    static int getWaterLevel(lua_State* L);
+    static int setTerrainHeightPosition(lua_State* L);
+    static int getTerrainHeightPosition(lua_State* L);
+    static int setDisguiseMessage(lua_State* L);
+    static int uniqueStateUpdate(lua_State* L);
+    static int foodUpdate(lua_State* L);
+    static int _NV_foodUpdate(lua_State* L);
+    static int getPosition(lua_State* L);
+    static int _NV_getPosition(lua_State* L);
+    static int _getRawPosition(lua_State* L);
+    static int getRawEntityPosition(lua_State* L);
+    static int getMovementSpeed(lua_State* L);
+    static int _NV_getMovementSpeed(lua_State* L);
+    static int getMovementSpeedOrders(lua_State* L);
+    static int _NV_getMovementSpeedOrders(lua_State* L);
+    static int getMovementDirection(lua_State* L);
+    static int _NV_getMovementDirection(lua_State* L);
+    static int isPhysical(lua_State* L);
+    static int _NV_isPhysical(lua_State* L);
+    static int setVisible(lua_State* L);
+    static int _NV_setVisible(lua_State* L);
+    static int getVisible(lua_State* L);
+    static int _NV_getVisible(lua_State* L);
+    static int switchLights(lua_State* L);
+    static int isDisabled(lua_State* L);
+    static int _NV_isDisabled(lua_State* L);
+    static int setInsideTownWalls(lua_State* L);
+    static int _NV_setInsideTownWalls(lua_State* L);
+    static int sheatheWeapon(lua_State* L);
+    static int _NV_sheatheWeapon(lua_State* L);
+    static int select(lua_State* L);
+    static int _NV_select(lua_State* L);
+    static int unselect(lua_State* L);
+    static int _NV_unselect(lua_State* L);
+    static int say_WithARepeatLimiter(lua_State* L);
+    static int _NV_say_WithARepeatLimiter(lua_State* L);
     static int say(lua_State* L);
-    static int sendDialogEvent(lua_State* L);
-    static int sendDialogEventOverride(lua_State* L);
-    static int hasDialogue(lua_State* L);
-
-    // Orders
+    static int _NV_say(lua_State* L);
+    static int isInventoryVisible(lua_State* L);
+    static int _NV_isInventoryVisible(lua_State* L);
+    static int getNumFoodItems(lua_State* L);
+    static int _NV_getNumFoodItems(lua_State* L);
+    static int hasSimilarItem(lua_State* L);
+    static int _NV_hasSimilarItem(lua_State* L);
+    static int ifImASmithShouldIDitchMyBackWeapon(lua_State* L);
+    static int getInventory(lua_State* L);
+    static int _NV_getInventory(lua_State* L);
+    static int hasABackpackOn(lua_State* L);
+    static int isATrader(lua_State* L);
+    static int isFemale(lua_State* L);
+    static int isFleeing(lua_State* L);
+    static int getRoughLevel(lua_State* L);
     static int setStandingOrder(lua_State* L);
+    static int _NV_setStandingOrder(lua_State* L);
     static int getStandingOrder(lua_State* L);
     static int setStealthMode(lua_State* L);
-
-    // Age
-    static int getAge(lua_State* L);
+    static int isStealthMode(lua_State* L);
+    static int isStealthModeOrCrawling(lua_State* L);
+    static int declareDead(lua_State* L);
+    static int removeJob(lua_State* L);
+    static int removePermajob(lua_State* L);
+    static int clearPermajobs(lua_State* L);
+    static int movePermajob(lua_State* L);
+    static int getPermajob(lua_State* L);
+    static int getPermajobCount(lua_State* L);
+    static int endCombatMode(lua_State* L);
+    static int getTotalRelativeStrengthOfAttackers(lua_State* L);
+    static int _NV_getTotalRelativeStrengthOfAttackers(lua_State* L);
+    static int isIndoorsRagdoll(lua_State* L);
+    static int _NV_isIndoorsRagdoll(lua_State* L);
+    static int getIntendedAggression(lua_State* L);
+    static int _NV_getIntendedAggression(lua_State* L);
+    static int getPositionBip01(lua_State* L);
+    static int amInsideTownWalls(lua_State* L);
+    static int _NV_amInsideTownWalls(lua_State* L);
+    static int setName(lua_State* L);
+    static int _NV_setName(lua_State* L);
+    static int setNameTagVisible(lua_State* L);
+    static int ragdollMode(lua_State* L);
+    static int isRagdoll(lua_State* L);
+    static int isDown(lua_State* L);
+    static int getRagdollPhysicsRootPos(lua_State* L);
+    static int amSomeoneWhoNeedsToEatToLive(lua_State* L);
+    static int _NV_amSomeoneWhoNeedsToEatToLive(lua_State* L);
+    static int getMagicHungerSetting(lua_State* L);
+    static int _NV_getMagicHungerSetting(lua_State* L);
+    static int wantsToEatNow(lua_State* L);
+    static int isKidnapped(lua_State* L);
+    static int _NV_isKidnapped(lua_State* L);
+    static int isLiterallyUnconciousNotPretending(lua_State* L);
+    static int _NV_isLiterallyUnconciousNotPretending(lua_State* L);
+    static int isUnconcious(lua_State* L);
+    static int _NV_isUnconcious(lua_State* L);
+    static int isCrippled(lua_State* L);
+    static int _NV_isCrippled(lua_State* L);
+    static int getProneState(lua_State* L);
+    static int _NV_getProneState(lua_State* L);
+    static int setProneState(lua_State* L);
+    static int _NV_setProneState(lua_State* L);
+    static int _killRagdoll(lua_State* L);
+    static int setupAI(lua_State* L);
+    static int clearAllAIGoals(lua_State* L);
+    static int setupPlatoonAI(lua_State* L);
+    static int setDestination(lua_State* L);
+    static int sayALine(lua_State* L);
+    static int hasDialogue(lua_State* L);
+    static int willTalkToEnemies(lua_State* L);
+    static int relocationTeleport(lua_State* L);
+    static int teleportVisuallyOnly(lua_State* L);
+    static int teleportFromAnimation(lua_State* L);
+    static int stumbleState(lua_State* L);
     static int setAge(lua_State* L);
-    static int setSquadMemberType(lua_State* L);
-    static int rememberCharacter(lua_State* L);
-    static int isImmuneToOffscreenMode(lua_State* L);
+    static int _NV_setAge(lua_State* L);
+    static int getAge(lua_State* L);
+    static int _NV_getAge(lua_State* L);
+    static int getAge0to1(lua_State* L);
+    static int _NV_getAge0to1(lua_State* L);
+    static int getAgeString(lua_State* L);
+    static int _NV_getAgeString(lua_State* L);
+    static int getAgeInverse(lua_State* L);
+    static int _NV_getAgeInverse(lua_State* L);
+    static int reThinkCurrentAIAction(lua_State* L);
+    static int getStats(lua_State* L);
+    static int getMedical(lua_State* L);
+    static int getOwnerships(lua_State* L);
+    static int isInCombatMode(lua_State* L);
+    static int isInRangedCombatMode(lua_State* L);
+    static int isLiterallyUnderMeleeAttackRightNowForSure(lua_State* L);
+    static int _isLiterallyUnderMeleeAttackRightNowForSure_update(lua_State* L);
+    static int isPrisonerFreeToGo(lua_State* L);
+    static int clearAllTempEnemyStatuses(lua_State* L);
+    static int lookatPosition(lua_State* L);
+    static int _NV_lookatPosition(lua_State* L);
+    static int getAllAttackersCount(lua_State* L);
+    static int getRace(lua_State* L);
+    static int _NV_getRace(lua_State* L);
+    static int getRadius(lua_State* L);
+    static int isPlayerCharacter(lua_State* L);
+    static int getTotalCarryWeight(lua_State* L);
+    static int getCurrentWeapon(lua_State* L);
+    static int getThePreferredWeapon(lua_State* L);
+    static int getRangedWeapon(lua_State* L);
+    static int _NV_getRangedWeapon(lua_State* L);
+    static int getUpperBodyArmour(lua_State* L);
+    static int getLowerBodyArmour(lua_State* L);
+    static int isInjured(lua_State* L);
+    static int shouldUseRangedWeapons(lua_State* L);
+    static int getBoneWorldPosition(lua_State* L);
+    static int hasPlatoon(lua_State* L);
+    static int isInAPersistentPlatoon(lua_State* L);
+    static int getSquadLeader(lua_State* L);
+    static int preventRagdollMode(lua_State* L);
+    static int setSlaveAIJob(lua_State* L);
+    static int isChainedMode(lua_State* L);
+    static int getChainedModeShackles(lua_State* L);
+    static int isSlave(lua_State* L);
+    static int isHeadShaven(lua_State* L);
+    static int _NV_isHeadShaven(lua_State* L);
+    static int runSlaveAnim(lua_State* L);
+    static int endSlaveAnim(lua_State* L);
+    static int updatePortraitGUIState(lua_State* L);
+    static int slaveAttachToBoneMode(lua_State* L);
+    static int isDead(lua_State* L);
+    static int isBeingCarried(lua_State* L);
+    static int chooseCarryObjectLeftOrRight(lua_State* L);
+    static int dropCarriedObject(lua_State* L);
+    static int getDropped(lua_State* L);
+    static int getDiplomacyMultiplier(lua_State* L);
+    static int getDefaultTaskRepertoireEnum(lua_State* L);
+    static int _NV_getDefaultTaskRepertoireEnum(lua_State* L);
+    static int getPredictedPosition(lua_State* L);
+    static int carryModeT(lua_State* L);
+    static int _carryMode(lua_State* L);
+    static int recalculateTotalEquipmentSkillBonus(lua_State* L);
+    static int setupAudio(lua_State* L);
+    static int _NV_setupAudio(lua_State* L);
+    static int setGroundType(lua_State* L);
+    static int getGroundType(lua_State* L);
+    static int calculateMainArmourType(lua_State* L);
+    static int getMainArmourType(lua_State* L);
+    static int getUniformColorScheme(lua_State* L);
+    static int canTakePlayerOrdersAtThisTime(lua_State* L);
+    static int stopAllEffects(lua_State* L);
+    static int notifyEffect(lua_State* L);
+    static int _NV_notifyEffect(lua_State* L);
+    static int validateInventorySections(lua_State* L);
+    static int _NV_validateInventorySections(lua_State* L);
+    static int processCharacterLoadTimeMessages(lua_State* L);
+    static int wantsPathfinderActive(lua_State* L);
+    static int createAnimationClass(lua_State* L);
+    static int createPhysical(lua_State* L);
+    static int _NV_createPhysical(lua_State* L);
+    static int destroyPhysical(lua_State* L);
+    static int _NV_destroyPhysical(lua_State* L);
+    static int loadUnloadCheck(lua_State* L);
+    static int _NV_loadUnloadCheck(lua_State* L);
+    static int updateStateBroadcast(lua_State* L);
+    static int postRagdollCallback(lua_State* L);
+    static int _NV_postRagdollCallback(lua_State* L);
+    static int reCalculateNaturalWeapon(lua_State* L);
+    static int _NV_reCalculateNaturalWeapon(lua_State* L);
 };
 }

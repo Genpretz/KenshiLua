@@ -5,48 +5,8 @@ extern "C" {
 #include <lauxlib.h>
 }
 
-class TownBase;
-class Town;
-
 namespace KenshiLua
 {
-
-class TownBaseBinding
-{
-public:
-    static const char* getMetatableName() { return "KenshiLua.TownBase"; }
-    static void registerBinding(lua_State* L);
-
-    static int gc(lua_State* L);
-    static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
-
-    // Polymorphic helpers
-    static int pushTownBase(lua_State* L, TownBase* t);
-    static TownBase* getTownBase(lua_State* L, int idx);
-    static TownBase* checkTownBase(lua_State* L, int idx);
-
-    static int getName(lua_State* L);
-    static int getPosition(lua_State* L);
-    static int getFaction(lua_State* L);
-    static int setFaction(lua_State* L);
-    static int getAlarmState(lua_State* L);
-    static int setAlarmState(lua_State* L);
-    static int isActive(lua_State* L);
-    static int isDead(lua_State* L);
-    static int isOutpost(lua_State* L);
-    static int isPublic(lua_State* L);
-    static int hasGates(lua_State* L);
-    static int isValid(lua_State* L);
-    static int isNotFriendly(lua_State* L);
-    static int setVisible(lua_State* L);
-    static int setRecentlyDiscovered(lua_State* L);
-    static int distanceTo(lua_State* L);
-    static int withinBordersRange(lua_State* L);
-    static int isMyTown(lua_State* L);
-};
-
 class TownBinding
 {
 public:
@@ -55,15 +15,66 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
-    // Polymorphic helpers
-    static int pushTown(lua_State* L, Town* t);
-    static Town* getTown(lua_State* L, int idx);
-    static Town* checkTown(lua_State* L, int idx);
-
-    static int getPowerStats(lua_State* L);
+    static int _DESTRUCTOR(lua_State* L);
+    static int initialiseResidentData(lua_State* L);
+    static int getGameData(lua_State* L);
+    static int _NV_getGameData(lua_State* L);
+    static int getOriginalGameData(lua_State* L);
+    static int _reset(lua_State* L);
+    static int _NV__reset(lua_State* L);
+    static int getDataType(lua_State* L);
+    static int _NV_getDataType(lua_State* L);
+    static int reassessTownPosition(lua_State* L);
+    static int _NV_reassessTownPosition(lua_State* L);
+    static int showDistantTown(lua_State* L);
+    static int isOutpost(lua_State* L);
+    static int spawnTheBarFlies(lua_State* L);
+    static int townLoadedEvent(lua_State* L);
+    static int notifyUnloading(lua_State* L);
+    static int getBuildingMaterial(lua_State* L);
+    static int isTown(lua_State* L);
+    static int _NV_isTown(lua_State* L);
+    static int isPublic(lua_State* L);
+    static int _NV_isPublic(lua_State* L);
+    static int needsSaving(lua_State* L);
+    static int _NV_needsSaving(lua_State* L);
+    static int setPosition(lua_State* L);
+    static int getRadius(lua_State* L);
+    static int _NV_getRadius(lua_State* L);
+    static int isActive(lua_State* L);
+    static int _NV_isActive(lua_State* L);
+    static int update(lua_State* L);
+    static int _NV_update(lua_State* L);
+    static int periodicUpdate(lua_State* L);
+    static int _NV_periodicUpdate(lua_State* L);
+    static int updatePowerGrid(lua_State* L);
+    static int _NV_updatePowerGrid(lua_State* L);
+    static int gatesAllClosed(lua_State* L);
+    static int _NV_gatesAllClosed(lua_State* L);
+    static int hasGates(lua_State* L);
+    static int _NV_hasGates(lua_State* L);
+    static int notifyAccesibility(lua_State* L);
+    static int getPositionOutsideTownGates(lua_State* L);
+    static int _NV_getPositionOutsideTownGates(lua_State* L);
+    static int isPlayerBuildingsInThisTown(lua_State* L);
+    static int setPlayerBuildingsInThisTown(lua_State* L);
+    static int getRequiredPower(lua_State* L);
+    static int getTotalPower(lua_State* L);
+    static int hasSparePower(lua_State* L);
+    static int getBatteryDrain(lua_State* L);
+    static int getBatteryChargeMax(lua_State* L);
+    static int getBatteryCharge(lua_State* L);
+    static int getBatteryCharge01(lua_State* L);
+    static int getBatteryChargingUpAmount(lua_State* L);
+    static int getBatteryPowerTotal(lua_State* L);
+    static int isBatteryMode(lua_State* L);
+    static int clearNests(lua_State* L);
+    static int getMapMarker(lua_State* L);
+    static int _NV_getMapMarker(lua_State* L);
+    static int getMapMarkerZoomLevel(lua_State* L);
+    static int _NV_getMapMarkerZoomLevel(lua_State* L);
+    static int recalculatePlayerTownLevel(lua_State* L);
+    static int deActivationCheck(lua_State* L);
 };
-
-} // namespace KenshiLua
+}

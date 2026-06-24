@@ -7,20 +7,6 @@ extern "C" {
 
 namespace KenshiLua
 {
-class AnimalInventoryLayoutBinding
-{
-public:
-    static const char* getMetatableName() { return "KenshiLua.AnimalInventoryLayout"; }
-    static void registerBinding(lua_State* L);
-
-    static int gc(lua_State* L);
-    static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
-
-    static int _DESTRUCTOR(lua_State* L);
-};
-
 class CharacterAnimalBinding
 {
 public:
@@ -29,13 +15,17 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
+    static int isAnimal(lua_State* L);
+    static int _NV_isAnimal(lua_State* L);
     static int createAnimationClass(lua_State* L);
     static int _NV_createAnimationClass(lua_State* L);
     static int sheatheWeapon(lua_State* L);
     static int _NV_sheatheWeapon(lua_State* L);
+    static int getCurrentWeapon(lua_State* L);
+    static int _NV_getCurrentWeapon(lua_State* L);
+    static int getThePreferredWeapon(lua_State* L);
+    static int _NV_getThePreferredWeapon(lua_State* L);
     static int setupAudio(lua_State* L);
     static int _NV_setupAudio(lua_State* L);
     static int periodicUpdate(lua_State* L);
@@ -59,6 +49,7 @@ public:
     static int foodUpdate(lua_State* L);
     static int _NV_foodUpdate(lua_State* L);
     static int dropItemInMouth(lua_State* L);
+    static int getItemInMouth(lua_State* L);
     static int eatItemInMouth(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int init(lua_State* L);

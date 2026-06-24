@@ -1,451 +1,941 @@
 #include "pch.h"
-#include "Bindings/PlatoonBinding.h"
-#include "Bindings/CharacterBinding.h"
-#include "Bindings/FactionBinding.h"
-#include "Bindings/GameDataBinding.h"
-#include "Bindings/HandBinding.h"
+#include "kenshi\Platoon.h"
+#include "PlatoonBinding.h"
+#include "OwnershipsBinding.h"
 #include "Lua/BindingHelpers.h"
-
-#include <kenshi/Platoon.h>
-#include <kenshi/Character.h>
-#include <kenshi/Faction.h>
-#include <kenshi/RootObjectBase.h>
-
-#include <ogre/OgreVector3.h>
-
-#include <cstdio>
 
 namespace KenshiLua
 {
 
-// We store either ActivePlatoon* or Platoon* - dereference handling is by
-// checking the type at the storage slot via runtime probing.  In practice
-// CharacterBinding/HandBinding push ActivePlatoon*; legacy callers may push
-// Platoon*.  Both have getCharacterCount, getSquadLeader, isPersistentSquad
-// in their interfaces here.
-
-static void* getRaw(lua_State* L, int idx)
+static Platoon* getB(lua_State* L, int idx)
 {
-    void** ud = (void**)luaL_checkudata(L, idx, PlatoonBinding::getMetatableName());
-    return ud ? *ud : 0;
+    return checkObject<Platoon>(L, idx, PlatoonBinding::getMetatableName());
 }
 
-static bool isPointerActivePlatoon(void* ptr)
+// --- Getters for Platoon ---
+static int Platoon_get_stringID(lua_State* L)
 {
-    if (!ptr) return false;
-    __try {
-        // ActivePlatoon::me is at offset 0x78 in KenshiLib
-        Platoon* p = *(Platoon**)((char*)ptr + 0x78);
-        if (p && ((uintptr_t)p > 0x10000) && !((uintptr_t)p & 3)) {
-            // Platoon::activePlatoon is at offset 0x1D8 in KenshiLib
-            ActivePlatoon* ap = *(ActivePlatoon**)((char*)p + 0x1D8);
-            if (ap == ptr) {
-                return true;
-            }
-        }
-    } __except(1) {
-    }
-    return false;
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushstring(L, b->stringID.c_str());
+    return 1;
 }
 
-static ActivePlatoon* getAP(lua_State* L, int idx)
+static int Platoon_get__characterCountCurrent(lua_State* L)
 {
-    void* raw = getRaw(L, idx);
-    if (isPointerActivePlatoon(raw))
-        return (ActivePlatoon*)raw;
-    return 0;
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushinteger(L, b->_characterCountCurrent);
+    return 1;
 }
 
-static Platoon* getP(lua_State* L, int idx)
+static int Platoon_get__characterCountOriginal(lua_State* L)
 {
-    void* raw = getRaw(L, idx);
-    if (!raw) return 0;
-    if (isPointerActivePlatoon(raw))
-        return ((ActivePlatoon*)raw)->me;
-    return (Platoon*)raw;
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushinteger(L, b->_characterCountOriginal);
+    return 1;
 }
 
-Platoon* getPlatoonFromLua(lua_State* L, int idx)
+static int Platoon_get_squadType(lua_State* L)
 {
-    return getP(L, idx);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushinteger(L, (lua_Integer)b->squadType);
+    return 1;
 }
 
-int PlatoonBinding::gc(lua_State* L)       { return noopGc(L); }
-
-int PlatoonBinding::index(lua_State* L)
+static int Platoon_get_hasUniques(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-
-    // 1. Check the metatable first so obj:method() syntax continues to work.
-    luaL_getmetatable(L, PlatoonBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;   // found a method - return it
-    lua_pop(L, 2);  // pop nil result + metatable
-
-    // 2. Fall through to raw member variable access.
-    ActivePlatoon* ap = getAP(L, 1);
-    Platoon* p = getP(L, 1);
-
-    // --- string members ---
-    if (strcmp(key, "name") == 0) {
-        if (ap) lua_pushstring(L, ap->getName().c_str());
-        else    lua_pushnil(L);
-        return 1;
-    }
-    if (strcmp(key, "stringID") == 0) {
-        if (p) lua_pushstring(L, p->stringID.c_str());
-        else   lua_pushnil(L);
-        return 1;
-    }
-
-    // --- integer members ---
-    if (strcmp(key, "squadSize") == 0) { lua_pushinteger(L, ap ? ap->getSquadSize() : 0); return 1; }
-    if (strcmp(key, "characterCount") == 0) { lua_pushinteger(L, p ? p->getCharacterCount() : 0); return 1; }
-    if (strcmp(key, "characterCountCurrent") == 0) { lua_pushinteger(L, p ? p->_characterCountCurrent : 0); return 1; }
-    if (strcmp(key, "characterCountOriginal") == 0) { lua_pushinteger(L, p ? p->_characterCountOriginal : 0); return 1; }
-    if (strcmp(key, "squadType") == 0) { lua_pushinteger(L, p ? (int)p->squadType : 0); return 1; }
-    if (strcmp(key, "hasUniques") == 0) { lua_pushinteger(L, p ? p->hasUniques.toInt() : 0); return 1; }
-    if (strcmp(key, "speedOverride") == 0) { lua_pushinteger(L, p ? (int)p->speedOverride : 0); return 1; }
-    if (strcmp(key, "messageOnActivation") == 0) { lua_pushinteger(L, p ? (int)p->messageOnActivation : 0); return 1; }
-    if (strcmp(key, "index") == 0) { lua_pushinteger(L, p ? (int)p->index : 0); return 1; }
-
-    // --- boolean members ---
-    if (strcmp(key, "isValid") == 0) { lua_pushboolean(L, ap != 0 ? 1 : 0); return 1; }
-    if (strcmp(key, "isPersistent") == 0 || strcmp(key, "persistent") == 0) { lua_pushboolean(L, p && p->isPersistentSquad() ? 1 : 0); return 1; }
-    if (strcmp(key, "isLoaded") == 0) { lua_pushboolean(L, ap && ap->isLoaded() ? 1 : 0); return 1; }
-    if (strcmp(key, "isTrader") == 0) { lua_pushboolean(L, ap && ap->getIsTrader() ? 1 : 0); return 1; }
-    if (strcmp(key, "canRefresh") == 0) { lua_pushboolean(L, p && p->canRefresh ? 1 : 0); return 1; }
-    if (strcmp(key, "regenerates") == 0) { lua_pushboolean(L, p && p->regenerates ? 1 : 0); return 1; }
-    if (strcmp(key, "iBuyStolenGoods") == 0) { lua_pushboolean(L, p && p->_iBuyStolenGoods ? 1 : 0); return 1; }
-    if (strcmp(key, "iBuyIllegalGoods") == 0) { lua_pushboolean(L, p && p->_iBuyIllegalGoods ? 1 : 0); return 1; }
-    if (strcmp(key, "isIntact") == 0) { lua_pushboolean(L, p && p->_isIntact ? 1 : 0); return 1; }
-    if (strcmp(key, "hasNeverBeenActivated") == 0) { lua_pushboolean(L, p && p->hasNeverBeenActivated ? 1 : 0); return 1; }
-    if (strcmp(key, "isResidentSquad") == 0) { lua_pushboolean(L, p && p->isResidentSquad ? 1 : 0); return 1; }
-    if (strcmp(key, "isDead") == 0) { lua_pushboolean(L, p && p->isDead ? 1 : 0); return 1; }
-    if (strcmp(key, "imprisoned") == 0) { lua_pushboolean(L, p && p->imprisoned ? 1 : 0); return 1; }
-
-    // --- float members ---
-    if (strcmp(key, "priceMultWhenITrade") == 0) { lua_pushnumber(L, p ? p->priceMultWhenITrade : 1.0f); return 1; }
-    if (strcmp(key, "malnourishedLevel") == 0) { lua_pushnumber(L, p ? p->malnourishedLevel : 0.0f); return 1; }
-    if (strcmp(key, "traderInventoryRefreshTime") == 0) { lua_pushnumber(L, p ? p->traderInventoryRefreshTime.time : -1.0); return 1; }
-
-    // --- unique object members ---
-    if (strcmp(key, "squadLeader") == 0) {
-        if (!ap) { lua_pushnil(L); return 1; }
-        return pushObject<Character>(L, ap->getSquadLeader(), CharacterBinding::getMetatableName());
-    }
-    if (strcmp(key, "faction") == 0) {
-        if (!p) { lua_pushnil(L); return 1; }
-        return pushObject<Faction>(L, p->ownerships.faction, FactionBinding::getMetatableName());
-    }
-    if (strcmp(key, "squadTemplate") == 0) {
-        if (!p) { lua_pushnil(L); return 1; }
-        return pushObject<GameData>(L, p->squadTemplate, GameDataBinding::getMetatableName());
-    }
-    if (strcmp(key, "isSeparatedSquad") == 0) {
-        if (!p) { lua_pushnil(L); return 1; }
-        return HandBinding::pushHand(L, p->isSeparatedSquad);
-    }
-    if (strcmp(key, "squadleader") == 0) {
-        if (!p) { lua_pushnil(L); return 1; }
-        return HandBinding::pushHand(L, p->squadleader);
-    }
-    if (strcmp(key, "activePlatoon") == 0) {
-        if (!p || !p->activePlatoon) { lua_pushnil(L); return 1; }
-        return pushObject<ActivePlatoon>(L, p->activePlatoon, PlatoonBinding::getMetatableName());
-    }
-    if (strcmp(key, "unloadedPlatoon") == 0) {
-        if (!p || !p->unloadedPlatoon) { lua_pushnil(L); return 1; }
-        lua_pushlightuserdata(L, p->unloadedPlatoon);
-        return 1;
-    }
-
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for hasUniques (YesNoMaybe)
     lua_pushnil(L);
     return 1;
 }
 
-int PlatoonBinding::newindex(lua_State* L)
+static int Platoon_get_speedOverride(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    Platoon* p = getP(L, 1);
-    if (!p) return luaL_error(L, "Platoon is nil");
-
-    // --- string members ---
-    if (strcmp(key, "stringID") == 0) {
-        p->stringID = luaL_checkstring(L, 3);
-        return 0;
-    }
-
-    // --- boolean members ---
-    if (strcmp(key, "isPersistent") == 0 || strcmp(key, "persistent") == 0) {
-        p->setPersistentSquad(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "canRefresh") == 0) {
-        p->canRefresh = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "regenerates") == 0) {
-        p->regenerates = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "iBuyStolenGoods") == 0) {
-        p->_iBuyStolenGoods = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "iBuyIllegalGoods") == 0) {
-        p->_iBuyIllegalGoods = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "isIntact") == 0) {
-        p->_isIntact = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "hasNeverBeenActivated") == 0) {
-        p->hasNeverBeenActivated = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "isResidentSquad") == 0) {
-        p->isResidentSquad = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "isDead") == 0) {
-        p->isDead = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "imprisoned") == 0) {
-        p->imprisoned = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-
-    // --- integer members ---
-    if (strcmp(key, "characterCountCurrent") == 0) {
-        p->_characterCountCurrent = (int)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "characterCountOriginal") == 0) {
-        p->_characterCountOriginal = (int)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "squadType") == 0) {
-        p->squadType = (SquadType)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "hasUniques") == 0) {
-        p->hasUniques = YesNoMaybe((int)luaL_checkinteger(L, 3));
-        return 0;
-    }
-    if (strcmp(key, "speedOverride") == 0) {
-        p->speedOverride = (MoveSpeed)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "messageOnActivation") == 0) {
-        p->messageOnActivation = (PlatoonCreationMessage)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "index") == 0) {
-        p->index = (short)luaL_checkinteger(L, 3);
-        return 0;
-    }
-
-    // --- float members ---
-    if (strcmp(key, "priceMultWhenITrade") == 0) {
-        p->priceMultWhenITrade = (float)luaL_checknumber(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "malnourishedLevel") == 0) {
-        p->malnourishedLevel = (float)luaL_checknumber(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "traderInventoryRefreshTime") == 0) {
-        p->traderInventoryRefreshTime.time = (double)luaL_checknumber(L, 3);
-        return 0;
-    }
-
-    // --- unique object members ---
-    if (strcmp(key, "isSeparatedSquad") == 0) {
-        hand* h = (hand*)luaL_checkudata(L, 3, HandBinding::getMetatableName());
-        if (!h) return luaL_error(L, "expected hand userdata");
-        p->isSeparatedSquad = *h;
-        return 0;
-    }
-    if (strcmp(key, "squadleader") == 0) {
-        hand* h = (hand*)luaL_checkudata(L, 3, HandBinding::getMetatableName());
-        if (!h) return luaL_error(L, "expected hand userdata");
-        p->squadleader = *h;
-        return 0;
-    }
-
-    if (strcmp(key, "squadLeader") == 0) return luaL_error(L, "Platoon: squadLeader is read-only");
-    if (strcmp(key, "faction") == 0) return luaL_error(L, "Platoon: faction is read-only");
-    if (strcmp(key, "squadTemplate") == 0) return luaL_error(L, "Platoon: squadTemplate is read-only");
-    if (strcmp(key, "activePlatoon") == 0) return luaL_error(L, "Platoon: activePlatoon is read-only");
-    if (strcmp(key, "unloadedPlatoon") == 0) return luaL_error(L, "Platoon: unloadedPlatoon is read-only");
-
-    return luaL_error(L, "Platoon: field '%s' is read-only or does not exist", key);
-}
-int PlatoonBinding::tostring(lua_State* L) { return genericTostringPtr(L, "Platoon", getRaw(L, 1)); }
-
-int PlatoonBinding::isValid(lua_State* L)
-{
-    ActivePlatoon* ap = getAP(L, 1);
-    lua_pushboolean(L, ap != 0 ? 1 : 0);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushinteger(L, (lua_Integer)b->speedOverride);
     return 1;
 }
 
-int PlatoonBinding::getName(lua_State* L)
+static int Platoon_get_isSeparatedSquad(lua_State* L)
 {
-    ActivePlatoon* ap = getAP(L, 1);
-    if (ap) lua_pushstring(L, ap->getName().c_str());
-    else    lua_pushnil(L);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for isSeparatedSquad (hand)
+    lua_pushnil(L);
     return 1;
 }
 
-int PlatoonBinding::getSquadSize(lua_State* L)
+static int Platoon_get_canRefresh(lua_State* L)
 {
-    ActivePlatoon* ap = getAP(L, 1);
-    if (ap) lua_pushinteger(L, ap->getSquadSize());
-    else    lua_pushinteger(L, 0);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushboolean(L, b->canRefresh ? 1 : 0);
     return 1;
 }
 
-int PlatoonBinding::getCharacterCount(lua_State* L)
+static int Platoon_get_regenerates(lua_State* L)
 {
-    Platoon* p = getP(L, 1);
-    if (p) lua_pushinteger(L, p->getCharacterCount());
-    else   lua_pushinteger(L, 0);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushboolean(L, b->regenerates ? 1 : 0);
     return 1;
 }
 
-int PlatoonBinding::getSquadLeader(lua_State* L)
+static int Platoon_get_myBaseHomeTownData(lua_State* L)
 {
-    ActivePlatoon* ap = getAP(L, 1);
-    if (!ap) { lua_pushnil(L); return 1; }
-    return pushObject<Character>(L, ap->getSquadLeader(), CharacterBinding::getMetatableName());
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return pushObject<GameData>(L, b->myBaseHomeTownData, GameDataBinding::getMetatableName());
 }
 
-int PlatoonBinding::getFaction(lua_State* L)
+static int Platoon_get_priceMultWhenITrade(lua_State* L)
 {
-    Platoon* p = getP(L, 1);
-    if (!p) { lua_pushnil(L); return 1; }
-    return pushObject<Faction>(L, p->ownerships.faction, FactionBinding::getMetatableName());
-}
-
-int PlatoonBinding::isPersistentSquad(lua_State* L)
-{
-    Platoon* p = getP(L, 1);
-    lua_pushboolean(L, p && p->isPersistentSquad() ? 1 : 0);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushnumber(L, b->priceMultWhenITrade);
     return 1;
 }
 
-int PlatoonBinding::setPersistent(lua_State* L)
+static int Platoon_get__iBuyStolenGoods(lua_State* L)
 {
-    Platoon* p = getP(L, 1);
-    if (!p) return luaL_error(L, "Platoon is nil");
-    p->setPersistentSquad(lua_toboolean(L, 2) != 0);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushboolean(L, b->_iBuyStolenGoods ? 1 : 0);
+    return 1;
+}
+
+static int Platoon_get__iBuyIllegalGoods(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushboolean(L, b->_iBuyIllegalGoods ? 1 : 0);
+    return 1;
+}
+
+static int Platoon_get_locatorModel(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for locatorModel (Ogre::Entity*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_get_blackboard(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for blackboard (Blackboard*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_get__isIntact(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushboolean(L, b->_isIntact ? 1 : 0);
+    return 1;
+}
+
+static int Platoon_get_squadTemplate(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return pushObject<GameData>(L, b->squadTemplate, GameDataBinding::getMetatableName());
+}
+
+static int Platoon_get_malnourishedLevel(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushnumber(L, b->malnourishedLevel);
+    return 1;
+}
+
+static int Platoon_get_hasNeverBeenActivated(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushboolean(L, b->hasNeverBeenActivated ? 1 : 0);
+    return 1;
+}
+
+static int Platoon_get__persistentSquad(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushboolean(L, b->_persistentSquad ? 1 : 0);
+    return 1;
+}
+
+static int Platoon_get_isResidentSquad(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushboolean(L, b->isResidentSquad ? 1 : 0);
+    return 1;
+}
+
+static int Platoon_get_messageOnActivation(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for messageOnActivation (PlatoonCreationMessage)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_get_currentSpawnArea(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for currentSpawnArea (AreaSector*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_get_squadleader(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for squadleader (hand)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_get_ownerships(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for ownerships (Ownerships)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_get_activePlatoon(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for activePlatoon (ActivePlatoon*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_get_unloadedPlatoon(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for unloadedPlatoon (UnloadedPlatoon*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_get_patrolSettings(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for patrolSettings (PatrolInfo*)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_get_isDead(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushboolean(L, b->isDead ? 1 : 0);
+    return 1;
+}
+
+static int Platoon_get_imprisoned(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushboolean(L, b->imprisoned ? 1 : 0);
+    return 1;
+}
+
+static int Platoon_get_index(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    lua_pushinteger(L, b->index);
+    return 1;
+}
+
+static int Platoon_get_traderInventoryRefreshTime(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    // TODO: Unsupported type for traderInventoryRefreshTime (TimeOfDay)
+    lua_pushnil(L);
+    return 1;
+}
+
+// --- Setters for Platoon ---
+static int Platoon_set_stringID(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->stringID = luaL_checkstring(L, 2);
     return 0;
 }
 
-int PlatoonBinding::isLoaded(lua_State* L)
+static int Platoon_set__characterCountCurrent(lua_State* L)
 {
-    ActivePlatoon* ap = getAP(L, 1);
-    lua_pushboolean(L, ap && ap->isLoaded() ? 1 : 0);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->_characterCountCurrent = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Platoon_set__characterCountOriginal(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->_characterCountOriginal = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Platoon_set_squadType(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->squadType = (SquadType)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Platoon_set_hasUniques(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for hasUniques");
+}
+
+static int Platoon_set_speedOverride(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->speedOverride = (MoveSpeed)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Platoon_set_isSeparatedSquad(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for isSeparatedSquad");
+}
+
+static int Platoon_set_canRefresh(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->canRefresh = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Platoon_set_regenerates(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->regenerates = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Platoon_set_myBaseHomeTownData(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for myBaseHomeTownData");
+}
+
+static int Platoon_set_priceMultWhenITrade(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->priceMultWhenITrade = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Platoon_set__iBuyStolenGoods(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->_iBuyStolenGoods = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Platoon_set__iBuyIllegalGoods(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->_iBuyIllegalGoods = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Platoon_set_locatorModel(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for locatorModel");
+}
+
+static int Platoon_set_blackboard(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for blackboard");
+}
+
+static int Platoon_set__isIntact(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->_isIntact = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Platoon_set_squadTemplate(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for squadTemplate");
+}
+
+static int Platoon_set_malnourishedLevel(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->malnourishedLevel = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Platoon_set_hasNeverBeenActivated(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->hasNeverBeenActivated = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Platoon_set__persistentSquad(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->_persistentSquad = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Platoon_set_isResidentSquad(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->isResidentSquad = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Platoon_set_messageOnActivation(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for messageOnActivation");
+}
+
+static int Platoon_set_currentSpawnArea(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for currentSpawnArea");
+}
+
+static int Platoon_set_squadleader(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for squadleader");
+}
+
+static int Platoon_set_ownerships(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for ownerships");
+}
+
+static int Platoon_set_activePlatoon(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for activePlatoon");
+}
+
+static int Platoon_set_unloadedPlatoon(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for unloadedPlatoon");
+}
+
+static int Platoon_set_patrolSettings(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for patrolSettings");
+}
+
+static int Platoon_set_isDead(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->isDead = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Platoon_set_imprisoned(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->imprisoned = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Platoon_set_index(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    b->index = (short)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Platoon_set_traderInventoryRefreshTime(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for traderInventoryRefreshTime");
+}
+
+int PlatoonBinding::_DESTRUCTOR(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    b->_DESTRUCTOR();
+    return 0;
+}
+
+int PlatoonBinding::setCharacterCount(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    int count = (int)luaL_checkinteger(L, 2);
+    b->setCharacterCount(count);
+    return 0;
+}
+
+int PlatoonBinding::isUnconcious(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    bool result = b->isUnconcious();
+    lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
-int PlatoonBinding::isTrader(lua_State* L)
+int PlatoonBinding::_NV_isUnconcious(lua_State* L)
 {
-    ActivePlatoon* ap = getAP(L, 1);
-    lua_pushboolean(L, ap && ap->getIsTrader() ? 1 : 0);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    bool result = b->_NV_isUnconcious();
+    lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
-int PlatoonBinding::teleport(lua_State* L)
+int PlatoonBinding::getSquadType(lua_State* L)
 {
-    ActivePlatoon* ap = getAP(L, 1);
-    if (!ap) return luaL_error(L, "Platoon is nil");
-    Ogre::Vector3 p(0.0f, 0.0f, 0.0f);
-    if (!readVector3(L, 2, p)) return luaL_error(L, "teleport: expected {x,y,z}");
-    ap->teleport(p);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    SquadType result = b->getSquadType();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int PlatoonBinding::setSquadType(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    SquadType t = (SquadType)luaL_checkinteger(L, 2);
+    b->setSquadType(t);
+    return 0;
+}
+
+int PlatoonBinding::iBuyIllegalGoods(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    bool result = b->iBuyIllegalGoods();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlatoonBinding::getPlatoonStringID(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    std::string result = b->getPlatoonStringID();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+int PlatoonBinding::getDataType(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    itemType result = b->getDataType();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int PlatoonBinding::_NV_getDataType(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    itemType result = b->_NV_getDataType();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int PlatoonBinding::erasePlatoonFile(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    b->erasePlatoonFile();
+    return 0;
+}
+
+int PlatoonBinding::showDebugMarker(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    bool on = lua_toboolean(L, 2) != 0;
+    b->showDebugMarker(on);
+    return 0;
+}
+
+int PlatoonBinding::setDataFilename(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    std::string f = luaL_checkstring(L, 2);
+    b->setDataFilename(f);
+    return 0;
+}
+
+int PlatoonBinding::isIntact(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    bool result = b->isIntact();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlatoonBinding::notifyMissionEnded(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    b->notifyMissionEnded();
+    return 0;
+}
+
+int PlatoonBinding::_NV_notifyMissionEnded(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    b->_NV_notifyMissionEnded();
     return 0;
 }
 
 int PlatoonBinding::activate(lua_State* L)
 {
-    Platoon* p = getP(L, 1);
-    if (p) p->activate();
-    return 0;
-}
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
 
-int PlatoonBinding::deactivate(lua_State* L)
-{
-    Platoon* p = getP(L, 1);
-    if (p) p->deactivate(NULL);
+    b->activate();
     return 0;
 }
 
 int PlatoonBinding::declareDead(lua_State* L)
 {
-    Platoon* p = getP(L, 1);
-    if (p) p->declareDead();
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    b->declareDead();
     return 0;
 }
 
 int PlatoonBinding::undeclareDead(lua_State* L)
 {
-    Platoon* p = getP(L, 1);
-    if (p) p->undeclareDead();
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    b->undeclareDead();
     return 0;
 }
 
 int PlatoonBinding::isFullyLoaded(lua_State* L)
 {
-    Platoon* p = getP(L, 1);
-    lua_pushboolean(L, p && p->isFullyLoaded() ? 1 : 0);
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    bool result = b->isFullyLoaded();
+    lua_pushboolean(L, result ? 1 : 0);
     return 1;
+}
+
+int PlatoonBinding::update(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    bool result = b->update();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlatoonBinding::_NV_update(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    bool result = b->_NV_update();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlatoonBinding::periodicUpdate_active(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    float time = (float)luaL_checknumber(L, 2);
+    b->periodicUpdate_active(time);
+    return 0;
+}
+
+int PlatoonBinding::_NV_periodicUpdate_active(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    float time = (float)luaL_checknumber(L, 2);
+    b->_NV_periodicUpdate_active(time);
+    return 0;
+}
+
+int PlatoonBinding::periodicUpdate_unloaded(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    b->periodicUpdate_unloaded();
+    return 0;
+}
+
+int PlatoonBinding::_NV_periodicUpdate_unloaded(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    b->_NV_periodicUpdate_unloaded();
+    return 0;
 }
 
 int PlatoonBinding::setupPatrolSettings(lua_State* L)
 {
-    Platoon* p = getP(L, 1);
-    if (p)
-    {
-        int minRange = (int)luaL_checkinteger(L, 2);
-        int maxRange = (int)luaL_checkinteger(L, 3);
-        p->setupPatrolSettings(minRange, maxRange);
-    }
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    int minRange = (int)luaL_checkinteger(L, 2);
+    int maxRange = (int)luaL_checkinteger(L, 3);
+    b->setupPatrolSettings(minRange, maxRange);
     return 0;
 }
 
-int PlatoonBinding::swapCharacters(lua_State* L)
+int PlatoonBinding::isPersistentSquad(lua_State* L)
 {
-    ActivePlatoon* ap = getAP(L, 1);
-    if (ap)
-    {
-        int indexA = (int)luaL_checkinteger(L, 2);
-        int indexB = (int)luaL_checkinteger(L, 3);
-        ap->swapCharacters(indexA, indexB);
-    }
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    bool result = b->isPersistentSquad();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlatoonBinding::setPersistentSquad(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    bool on = lua_toboolean(L, 2) != 0;
+    b->setPersistentSquad(on);
     return 0;
 }
 
-int PlatoonBinding::clearAllTheUniqueNPCStates(lua_State* L)
+int PlatoonBinding::getOwnerships(lua_State* L)
 {
-    ActivePlatoon* ap = getAP(L, 1);
-    if (ap) ap->clearAllTheUniqueNPCStates();
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    Ownerships* result = b->getOwnerships();
+    return pushObject<Ownerships>(L, result, OwnershipsBinding::getMetatableName());
+}
+
+int PlatoonBinding::_NV_getOwnerships(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    Ownerships* result = b->_NV_getOwnerships();
+    return pushObject<Ownerships>(L, result, OwnershipsBinding::getMetatableName());
+}
+
+int PlatoonBinding::getNearestActiveCharacter(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    Ogre::Vector3 p;
+    readVector3(L, 2, p);
+    int floor = (int)luaL_checkinteger(L, 3);
+    Character* result = b->getNearestActiveCharacter(p, floor);
+    return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
+}
+
+int PlatoonBinding::getSquadLeader(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    Character* result = b->getSquadLeader();
+    return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
+}
+
+int PlatoonBinding::getCharacterCount(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    int result = b->getCharacterCount();
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int PlatoonBinding::getCharacterCount_Original(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    int result = b->getCharacterCount_Original();
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int PlatoonBinding::needsNewCharacters(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    int result = b->needsNewCharacters();
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int PlatoonBinding::reCheckPersistenceOnUnload(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    b->reCheckPersistenceOnUnload();
     return 0;
 }
 
-int PlatoonBinding::refreshInventory(lua_State* L)
+int PlatoonBinding::_NV_reCheckPersistenceOnUnload(lua_State* L)
 {
-    ActivePlatoon* ap = getAP(L, 1);
-    if (ap)
-    {
-        bool firstTime = lua_toboolean(L, 2) != 0;
-        ap->refreshInventory(firstTime);
-    }
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+
+    b->_NV_reCheckPersistenceOnUnload();
     return 0;
+}
+
+/*
+Skipped methods needing manual binding:
+  line 108: Platoon* _CONSTRUCTOR(...) - unsupported arg type
+  line 121: hand chooseNewHome(...) - unsupported return type
+  line 126: TownBase* getCurrentTownLocation(...) - unsupported return type
+  line 127: TownBase* _NV_getCurrentTownLocation(...) - unsupported return type
+  line 128: CampaignInstance* hasCampaign(...) - unsupported return type
+  line 132: bool iBuyStolenGoods(...) - unsupported arg type
+  line 134: void setFaction(...) - unsupported arg type
+  line 135: void _NV_setFaction(...) - unsupported arg type
+  line 136: bool canTakeRefugees(...) - unsupported arg type
+  line 139: UniquePlatoon* isUnique(...) - unsupported return type
+  line 140: UniquePlatoon* _NV_isUnique(...) - unsupported return type
+  line 142: Blackboard* getBlackboard(...) - unsupported return type
+  line 148: StateBroadcastData* getStateBroadcast(...) - unsupported return type
+  line 149: StateBroadcastData* _NV_getStateBroadcast(...) - unsupported return type
+  line 150: GameData* serialiseEverything(...) - unsupported arg type
+  line 151: GameData* _NV_serialiseEverything(...) - unsupported arg type
+  line 152: void loadStateData(...) - unsupported arg type
+  line 153: void _NV_loadStateData(...) - unsupported arg type
+  line 154: GameSaveState serialise(...) - unsupported return type
+  line 155: GameSaveState _NV_serialise(...) - unsupported return type
+  line 156: void loadFromSerialise(...) - unsupported arg type
+  line 157: void _NV_loadFromSerialise(...) - unsupported arg type
+  line 158: void reprocessTask(...) - unsupported arg type
+  line 159: void taskIsComplete(...) - unsupported arg type
+  line 167: void deactivate(...) - unsupported arg type
+  line 171: ActivePlatoon* getActivePlatoon(...) - unsupported return type
+  line 172: UnloadedPlatoon* getUnloadedPlatoon(...) - unsupported return type
+  line 180: PatrolInfo* getPatrolInfo(...) - unsupported return type
+  line 181: AreaBiomeGroup* getRoamingMapArea(...) - unsupported return type
+  line 182: void setRoamingMapArea(...) - unsupported arg type
+  line 194: const hand& getSquadLeader_theRealOne(...) - reference return type
+*/
+
+int PlatoonBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int PlatoonBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.Platoon object");
+    return 1;
 }
 
 void PlatoonBinding::registerBinding(lua_State* L)
@@ -455,30 +945,194 @@ void PlatoonBinding::registerBinding(lua_State* L)
         { "__tostring", PlatoonBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
-        { "isValid",            PlatoonBinding::isValid },
-        { "getName",            PlatoonBinding::getName },
-        { "getSquadSize",       PlatoonBinding::getSquadSize },
-        { "getCharacterCount",  PlatoonBinding::getCharacterCount },
-        { "getSquadLeader",     PlatoonBinding::getSquadLeader },
-        { "getFaction",         PlatoonBinding::getFaction },
-        { "isPersistentSquad",  PlatoonBinding::isPersistentSquad },
-        { "setPersistent",      PlatoonBinding::setPersistent },
-        { "isLoaded",           PlatoonBinding::isLoaded },
-        { "isTrader",           PlatoonBinding::isTrader },
-        { "teleport",           PlatoonBinding::teleport },
-        { "activate",           PlatoonBinding::activate },
-        { "deactivate",         PlatoonBinding::deactivate },
-        { "declareDead",        PlatoonBinding::declareDead },
-        { "undeclareDead",      PlatoonBinding::undeclareDead },
-        { "isFullyLoaded",      PlatoonBinding::isFullyLoaded },
+        { "_DESTRUCTOR", PlatoonBinding::_DESTRUCTOR },
+        { "setCharacterCount", PlatoonBinding::setCharacterCount },
+        { "isUnconcious", PlatoonBinding::isUnconcious },
+        { "_NV_isUnconcious", PlatoonBinding::_NV_isUnconcious },
+        { "getSquadType", PlatoonBinding::getSquadType },
+        { "setSquadType", PlatoonBinding::setSquadType },
+        { "iBuyIllegalGoods", PlatoonBinding::iBuyIllegalGoods },
+        { "getPlatoonStringID", PlatoonBinding::getPlatoonStringID },
+        { "getDataType", PlatoonBinding::getDataType },
+        { "_NV_getDataType", PlatoonBinding::_NV_getDataType },
+        { "erasePlatoonFile", PlatoonBinding::erasePlatoonFile },
+        { "showDebugMarker", PlatoonBinding::showDebugMarker },
+        { "setDataFilename", PlatoonBinding::setDataFilename },
+        { "isIntact", PlatoonBinding::isIntact },
+        { "notifyMissionEnded", PlatoonBinding::notifyMissionEnded },
+        { "_NV_notifyMissionEnded", PlatoonBinding::_NV_notifyMissionEnded },
+        { "activate", PlatoonBinding::activate },
+        { "declareDead", PlatoonBinding::declareDead },
+        { "undeclareDead", PlatoonBinding::undeclareDead },
+        { "isFullyLoaded", PlatoonBinding::isFullyLoaded },
+        { "update", PlatoonBinding::update },
+        { "_NV_update", PlatoonBinding::_NV_update },
+        { "periodicUpdate_active", PlatoonBinding::periodicUpdate_active },
+        { "_NV_periodicUpdate_active", PlatoonBinding::_NV_periodicUpdate_active },
+        { "periodicUpdate_unloaded", PlatoonBinding::periodicUpdate_unloaded },
+        { "_NV_periodicUpdate_unloaded", PlatoonBinding::_NV_periodicUpdate_unloaded },
         { "setupPatrolSettings", PlatoonBinding::setupPatrolSettings },
-        { "swapCharacters",     PlatoonBinding::swapCharacters },
-        { "clearAllTheUniqueNPCStates", PlatoonBinding::clearAllTheUniqueNPCStates },
-        { "refreshInventory",   PlatoonBinding::refreshInventory },
+        { "isPersistentSquad", PlatoonBinding::isPersistentSquad },
+        { "setPersistentSquad", PlatoonBinding::setPersistentSquad },
+        { "getOwnerships", PlatoonBinding::getOwnerships },
+        { "_NV_getOwnerships", PlatoonBinding::_NV_getOwnerships },
+        { "getNearestActiveCharacter", PlatoonBinding::getNearestActiveCharacter },
+        { "getSquadLeader", PlatoonBinding::getSquadLeader },
+        { "getCharacterCount", PlatoonBinding::getCharacterCount },
+        { "getCharacterCount_Original", PlatoonBinding::getCharacterCount_Original },
+        { "needsNewCharacters", PlatoonBinding::needsNewCharacters },
+        { "reCheckPersistenceOnUnload", PlatoonBinding::reCheckPersistenceOnUnload },
+        { "_NV_reCheckPersistenceOnUnload", PlatoonBinding::_NV_reCheckPersistenceOnUnload },
         { 0, 0 }
     };
-    registerClass(L, PlatoonBinding::getMetatableName(), meta, methods, PlatoonBinding::index, PlatoonBinding::newindex);
+
+    registerClass(
+        L, 
+        PlatoonBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, PlatoonBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, Platoon_get_stringID);
+    lua_setfield(L, -2, "stringID");
+    lua_pushcfunction(L, Platoon_get__characterCountCurrent);
+    lua_setfield(L, -2, "_characterCountCurrent");
+    lua_pushcfunction(L, Platoon_get__characterCountOriginal);
+    lua_setfield(L, -2, "_characterCountOriginal");
+    lua_pushcfunction(L, Platoon_get_squadType);
+    lua_setfield(L, -2, "squadType");
+    lua_pushcfunction(L, Platoon_get_hasUniques);
+    lua_setfield(L, -2, "hasUniques");
+    lua_pushcfunction(L, Platoon_get_speedOverride);
+    lua_setfield(L, -2, "speedOverride");
+    lua_pushcfunction(L, Platoon_get_isSeparatedSquad);
+    lua_setfield(L, -2, "isSeparatedSquad");
+    lua_pushcfunction(L, Platoon_get_canRefresh);
+    lua_setfield(L, -2, "canRefresh");
+    lua_pushcfunction(L, Platoon_get_regenerates);
+    lua_setfield(L, -2, "regenerates");
+    lua_pushcfunction(L, Platoon_get_myBaseHomeTownData);
+    lua_setfield(L, -2, "myBaseHomeTownData");
+    lua_pushcfunction(L, Platoon_get_priceMultWhenITrade);
+    lua_setfield(L, -2, "priceMultWhenITrade");
+    lua_pushcfunction(L, Platoon_get__iBuyStolenGoods);
+    lua_setfield(L, -2, "_iBuyStolenGoods");
+    lua_pushcfunction(L, Platoon_get__iBuyIllegalGoods);
+    lua_setfield(L, -2, "_iBuyIllegalGoods");
+    lua_pushcfunction(L, Platoon_get_locatorModel);
+    lua_setfield(L, -2, "locatorModel");
+    lua_pushcfunction(L, Platoon_get_blackboard);
+    lua_setfield(L, -2, "blackboard");
+    lua_pushcfunction(L, Platoon_get__isIntact);
+    lua_setfield(L, -2, "_isIntact");
+    lua_pushcfunction(L, Platoon_get_squadTemplate);
+    lua_setfield(L, -2, "squadTemplate");
+    lua_pushcfunction(L, Platoon_get_malnourishedLevel);
+    lua_setfield(L, -2, "malnourishedLevel");
+    lua_pushcfunction(L, Platoon_get_hasNeverBeenActivated);
+    lua_setfield(L, -2, "hasNeverBeenActivated");
+    lua_pushcfunction(L, Platoon_get__persistentSquad);
+    lua_setfield(L, -2, "_persistentSquad");
+    lua_pushcfunction(L, Platoon_get_isResidentSquad);
+    lua_setfield(L, -2, "isResidentSquad");
+    lua_pushcfunction(L, Platoon_get_messageOnActivation);
+    lua_setfield(L, -2, "messageOnActivation");
+    lua_pushcfunction(L, Platoon_get_currentSpawnArea);
+    lua_setfield(L, -2, "currentSpawnArea");
+    lua_pushcfunction(L, Platoon_get_squadleader);
+    lua_setfield(L, -2, "squadleader");
+    lua_pushcfunction(L, Platoon_get_ownerships);
+    lua_setfield(L, -2, "ownerships");
+    lua_pushcfunction(L, Platoon_get_activePlatoon);
+    lua_setfield(L, -2, "activePlatoon");
+    lua_pushcfunction(L, Platoon_get_unloadedPlatoon);
+    lua_setfield(L, -2, "unloadedPlatoon");
+    lua_pushcfunction(L, Platoon_get_patrolSettings);
+    lua_setfield(L, -2, "patrolSettings");
+    lua_pushcfunction(L, Platoon_get_isDead);
+    lua_setfield(L, -2, "isDead");
+    lua_pushcfunction(L, Platoon_get_imprisoned);
+    lua_setfield(L, -2, "imprisoned");
+    lua_pushcfunction(L, Platoon_get_index);
+    lua_setfield(L, -2, "index");
+    lua_pushcfunction(L, Platoon_get_traderInventoryRefreshTime);
+    lua_setfield(L, -2, "traderInventoryRefreshTime");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, Platoon_set_stringID);
+    lua_setfield(L, -2, "stringID");
+    lua_pushcfunction(L, Platoon_set__characterCountCurrent);
+    lua_setfield(L, -2, "_characterCountCurrent");
+    lua_pushcfunction(L, Platoon_set__characterCountOriginal);
+    lua_setfield(L, -2, "_characterCountOriginal");
+    lua_pushcfunction(L, Platoon_set_squadType);
+    lua_setfield(L, -2, "squadType");
+    lua_pushcfunction(L, Platoon_set_hasUniques);
+    lua_setfield(L, -2, "hasUniques");
+    lua_pushcfunction(L, Platoon_set_speedOverride);
+    lua_setfield(L, -2, "speedOverride");
+    lua_pushcfunction(L, Platoon_set_isSeparatedSquad);
+    lua_setfield(L, -2, "isSeparatedSquad");
+    lua_pushcfunction(L, Platoon_set_canRefresh);
+    lua_setfield(L, -2, "canRefresh");
+    lua_pushcfunction(L, Platoon_set_regenerates);
+    lua_setfield(L, -2, "regenerates");
+    lua_pushcfunction(L, Platoon_set_myBaseHomeTownData);
+    lua_setfield(L, -2, "myBaseHomeTownData");
+    lua_pushcfunction(L, Platoon_set_priceMultWhenITrade);
+    lua_setfield(L, -2, "priceMultWhenITrade");
+    lua_pushcfunction(L, Platoon_set__iBuyStolenGoods);
+    lua_setfield(L, -2, "_iBuyStolenGoods");
+    lua_pushcfunction(L, Platoon_set__iBuyIllegalGoods);
+    lua_setfield(L, -2, "_iBuyIllegalGoods");
+    lua_pushcfunction(L, Platoon_set_locatorModel);
+    lua_setfield(L, -2, "locatorModel");
+    lua_pushcfunction(L, Platoon_set_blackboard);
+    lua_setfield(L, -2, "blackboard");
+    lua_pushcfunction(L, Platoon_set__isIntact);
+    lua_setfield(L, -2, "_isIntact");
+    lua_pushcfunction(L, Platoon_set_squadTemplate);
+    lua_setfield(L, -2, "squadTemplate");
+    lua_pushcfunction(L, Platoon_set_malnourishedLevel);
+    lua_setfield(L, -2, "malnourishedLevel");
+    lua_pushcfunction(L, Platoon_set_hasNeverBeenActivated);
+    lua_setfield(L, -2, "hasNeverBeenActivated");
+    lua_pushcfunction(L, Platoon_set__persistentSquad);
+    lua_setfield(L, -2, "_persistentSquad");
+    lua_pushcfunction(L, Platoon_set_isResidentSquad);
+    lua_setfield(L, -2, "isResidentSquad");
+    lua_pushcfunction(L, Platoon_set_messageOnActivation);
+    lua_setfield(L, -2, "messageOnActivation");
+    lua_pushcfunction(L, Platoon_set_currentSpawnArea);
+    lua_setfield(L, -2, "currentSpawnArea");
+    lua_pushcfunction(L, Platoon_set_squadleader);
+    lua_setfield(L, -2, "squadleader");
+    lua_pushcfunction(L, Platoon_set_ownerships);
+    lua_setfield(L, -2, "ownerships");
+    lua_pushcfunction(L, Platoon_set_activePlatoon);
+    lua_setfield(L, -2, "activePlatoon");
+    lua_pushcfunction(L, Platoon_set_unloadedPlatoon);
+    lua_setfield(L, -2, "unloadedPlatoon");
+    lua_pushcfunction(L, Platoon_set_patrolSettings);
+    lua_setfield(L, -2, "patrolSettings");
+    lua_pushcfunction(L, Platoon_set_isDead);
+    lua_setfield(L, -2, "isDead");
+    lua_pushcfunction(L, Platoon_set_imprisoned);
+    lua_setfield(L, -2, "imprisoned");
+    lua_pushcfunction(L, Platoon_set_index);
+    lua_setfield(L, -2, "index");
+    lua_pushcfunction(L, Platoon_set_traderInventoryRefreshTime);
+    lua_setfield(L, -2, "traderInventoryRefreshTime");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua
