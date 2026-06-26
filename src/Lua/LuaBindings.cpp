@@ -56,10 +56,8 @@ static const luaL_Reg KenshiLuaLib[] = {
 
 void LuaBindings::registerAll(lua_State* L)
 {
-    for (const luaL_Reg* lib = KenshiLuaLib; lib->name; lib++) {
-        lua_pushcfunction(L, lib->func);
-        lua_setglobal(L, lib->name);
-    }
+    luaL_newlib(L, KenshiLuaLib);
+    lua_setglobal(L, "KenshiLua");
 
     // Order: dependency-free metatables first; ones that reference others afterwards when possible
     RootObjectBinding::registerBinding(L);
