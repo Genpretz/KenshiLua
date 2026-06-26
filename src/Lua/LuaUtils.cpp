@@ -19,6 +19,7 @@ namespace LuaUtils
 
 // ---------------------------------------------------------------------------
 // luaToString - produce a human-readable representation of one stack slot.
+// Leverages Lua 5.5's improved number conversion for better performance.
 // ---------------------------------------------------------------------------
 std::string luaToString(lua_State* L, int idx)
 {
@@ -27,16 +28,16 @@ std::string luaToString(lua_State* L, int idx)
         return "nil";
     case LUA_TBOOLEAN:
         return lua_toboolean(L, idx) ? "true" : "false";
-    case LUA_TNUMBER:
-        if (lua_isinteger(L, idx)) {
-            char buf[32];
-            _snprintf(buf, sizeof(buf), "%lld", (long long)lua_tointeger(L, idx));
-            return std::string(buf);
-        } else {
-            char buf[64];
-            _snprintf(buf, sizeof(buf), "%.14g", lua_tonumber(L, idx));
-            return std::string(buf);
-        }
+    case LUA_TNUMBER: {
+        // Use Lua 5.5's optimized number-to-string conversion
+        // This leverages the VM's native formatting which is faster and more accurate
+        lua_pushvalue(L, idx);
+        size_t len;
+        const char* str = lua_tolstring(L, -1, &len);
+        std::string result(str, len);
+        lua_pop(L, 1);
+        return result;
+    }
     case LUA_TSTRING: {
         size_t len = 0;
         const char* s = lua_tolstring(L, idx, &len);

@@ -37,6 +37,7 @@
 #include "Bindings/Character/Combat/ImpactPointBinding.h"
 #include <string>
 #include <cstdio>
+#include <cstdlib>
 
 extern "C" {
 #include <lua.h>
@@ -50,6 +51,9 @@ static const luaL_Reg KenshiLuaLib[] = {
     { "log", luaKenshiLog },
     { "error", luaKenshiError },
     { "version", luaKenshiVersion },
+    { "getLuaVersion", luaKenshiGetLuaVersion },
+    { "toJSON", luaKenshiToJSON },
+    { "fromJSON", luaKenshiFromJSON },
     { "runBenchmark", luaKenshiRunBenchmark },
     { NULL, NULL }
 };
@@ -156,6 +160,101 @@ int luaKenshiError(lua_State* L)
     return lua_error(L);
 }
 
-int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.1.0"); return 1; }
+int luaKenshiGetLuaVersion(lua_State* L)
+{
+    // Returns the Lua version string (e.g., "Lua 5.5")
+    lua_pushstring(L, LUA_VERSION);
+    return 1;
+}
+
+int luaKenshiToJSON(lua_State* L)
+{
+    // Stack: 1 = value to encode
+    // Uses Lua 5.5's json.encode if available, otherwise falls back to simple conversion
+    if (luaL_getmetafield(L, 1, "__name") != 0) {
+        // Complex type - try to use json library if available
+        luaL_getsubtable(L, LUA_REGISTRYINDEX, "_LOADED");
+        lua_getfield(L, -1, "json");
+        if (lua_istable(L, -1)) {
+            lua_getfield(L, -1, "encode");
+            if (lua_isfunction(L, -1)) {
+                lua_pushvalue(L, 1);
+                if (lua_pcall(L, 1, 1, 0) == LUA_OK) {
+                    return 1;
+                }
+            }
+        }
+    }
+
+    // Fallback: simple string representation for basic types
+    switch (lua_type(L, 1)) {
+    case LUA_TNIL:
+        lua_pushstring(L, "null");
+        return 1;
+    case LUA_TBOOLEAN:
+        lua_pushstring(L, lua_toboolean(L, 1) ? "true" : "false");
+        return 1;
+    case LUA_TNUMBER:
+        lua_pushvalue(L, 1);
+        lua_tostring(L, -1);
+        return 1;
+    case LUA_TSTRING:
+        lua_pushvalue(L, 1);
+        return 1;
+    default:
+        luaL_error(L, "Cannot convert %s to JSON", lua_typename(L, lua_type(L, 1)));
+        return 0;
+    }
+}
+
+int luaKenshiFromJSON(lua_State* L)
+{
+    // Stack: 1 = JSON string to decode
+    const char* json_str = luaL_checkstring(L, 1);
+
+    // Try to use json library if available
+    luaL_getsubtable(L, LUA_REGISTRYINDEX, "_LOADED");
+    lua_getfield(L, -1, "json");
+    if (lua_istable(L, -1)) {
+        lua_getfield(L, -1, "decode");
+        if (lua_isfunction(L, -1)) {
+            lua_pushstring(L, json_str);
+            if (lua_pcall(L, 1, 1, 0) == LUA_OK) {
+                return 1;
+            }
+        }
+    }
+
+    // Fallback: simple parsing for literals
+    lua_pop(L, 2);  // Remove json table and registry subtable
+
+    if (strcmp(json_str, "null") == 0) {
+        lua_pushnil(L);
+        return 1;
+    } else if (strcmp(json_str, "true") == 0) {
+        lua_pushboolean(L, 1);
+        return 1;
+    } else if (strcmp(json_str, "false") == 0) {
+        lua_pushboolean(L, 0);
+        return 1;
+    } else if (json_str[0] == '"' && json_str[strlen(json_str) - 1] == '"') {
+        // String literal
+        lua_pushlstring(L, json_str + 1, strlen(json_str) - 2);
+        return 1;
+    } else {
+        // Try to parse as number
+        char* endptr = nullptr;
+        lua_Number num = strtod(json_str, &endptr);
+        if (endptr != json_str && *endptr == '\0') {
+            lua_pushnumber(L, num);
+            return 1;
+        }
+    }
+
+    luaL_error(L, "Failed to decode JSON string: %s", json_str);
+    return 0;
+}
+
+int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.0 (Lua 5.5)"); return 1; }
 
 } // namespace KenshiLua

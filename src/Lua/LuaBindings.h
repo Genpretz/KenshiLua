@@ -21,5 +21,8 @@ public:
 int luaKenshiLog(lua_State* L);
 int luaKenshiError(lua_State* L);
 int luaKenshiVersion(lua_State* L);
+int luaKenshiGetLuaVersion(lua_State* L);
+int luaKenshiToJSON(lua_State* L);
+int luaKenshiFromJSON(lua_State* L);
 
 } // namespace KenshiLua
