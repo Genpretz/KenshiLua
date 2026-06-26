@@ -89,7 +89,7 @@ namespace KenshiLua
         lua_setglobal(L, "BuildingClassType");
     }
 
-void BuildingEnumBinding::registerBuildingPlacementGroundType(lua_State* L)
+    void BuildingEnumBinding::registerBuildingPlacementGroundType(lua_State* L)
     {
         lua_newtable(L);
 
