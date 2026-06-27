@@ -1,35 +1,502 @@
 # Lua Bindings Reference
 
 ## Table of Contents
+- [AIOptions](#aioptions)
+- [AbstractMovementBase](#abstractmovementbase)
+- [ActivePlatoon](#activeplatoon)
+- [AnimalInventoryLayout](#animalinventorylayout)
+- [AppearanceAnimal](#appearanceanimal)
+- [AppearanceBase](#appearancebase)
+- [AppearanceHuman](#appearancehuman)
+- [Armour](#armour)
+- [AttachedArrowManager](#attachedarrowmanager)
 - [Bounty](#bounty)
 - [BountyManager](#bountymanager)
-- [Building](#building)
+- [BuildingSwaps](#buildingswaps)
 - [CameraClass](#cameraclass)
+- [CampaignTriggerData](#campaigntriggerdata)
 - [CharBody](#charbody)
+- [CharMovement](#charmovement)
 - [CharStats](#charstats)
 - [Character](#character)
 - [CharacterAnimal](#characteranimal)
+- [CharacterHuman](#characterhuman)
+- [CharacterInventoryLayout](#characterinventorylayout)
+- [CombatMovementController](#combatmovementcontroller)
+- [ContainerItem](#containeritem)
+- [ContextMenu](#contextmenu)
+- [CreatelistItem](#createlistitem)
+- [Crossbow](#crossbow)
 - [Damages](#damages)
+- [DataObjectContainer](#dataobjectcontainer)
+- [DelayedSpawnMsg](#delayedspawnmsg)
+- [DialogAction](#dialogaction)
+- [DialogChoiceList](#dialogchoicelist)
+- [DialogCondition](#dialogcondition)
+- [DialogDataManager](#dialogdatamanager)
+- [DialogLineData](#dialoglinedata)
+- [DialogState](#dialogstate)
 - [Dialogue](#dialogue)
-- [DialogueEvent](#dialogueevent)
+- [DialogueSpeechBubble](#dialoguespeechbubble)
 - [Faction](#faction)
+- [FactionLeader](#factionleader)
+- [FactionManager](#factionmanager)
+- [FactionRelations](#factionrelations)
+- [FactoryCallbackInterface](#factorycallbackinterface)
+- [FlagCondition](#flagcondition)
+- [FlockingTools](#flockingtools)
+- [FormationMover](#formationmover)
 - [GameData](#gamedata)
+- [GameDataContainer](#gamedatacontainer)
+- [GameDataCopyStandalone](#gamedatacopystandalone)
+- [GameDataHeader](#gamedataheader)
+- [GameDataManager](#gamedatamanager)
+- [GameDataReference](#gamedatareference)
+- [GameDataValuePair](#gamedatavaluepair)
 - [GameWorld](#gameworld)
+- [GameplayOptions](#gameplayoptions)
 - [Gear](#gear)
 - [Global](#global)
-- [Hand](#hand)
+- [HasRoomCache](#hasroomcache)
+- [HealthPartStatus](#healthpartstatus)
 - [InputHandler](#inputhandler)
 - [Inventory](#inventory)
+- [InventoryItemBase](#inventoryitembase)
+- [InventorySection](#inventorysection)
 - [Item](#item)
+- [ItemData](#itemdata)
+- [LimbsInventoryLayout](#limbsinventorylayout)
+- [Limiter](#limiter)
+- [LockedArmour](#lockedarmour)
+- [MedianFilter](#medianfilter)
+- [MedianFilter2DVector](#medianfilter2dvector)
 - [MedicalSystem](#medicalsystem)
+- [MeshDataLookup](#meshdatalookup)
+- [MotionFilter](#motionfilter)
 - [MyGui](#mygui)
+- [NxUserControllerHitReport](#nxusercontrollerhitreport)
+- [ObjectInstance](#objectinstance)
+- [OptionsHolder](#optionsholder)
+- [Ownerships](#ownerships)
 - [Platoon](#platoon)
 - [PlayerInterface](#playerinterface)
 - [RaceData](#racedata)
+- [RaceLimiter](#racelimiter)
+- [RelationData](#relationdata)
+- [RepetitionCounter](#repetitioncounter)
+- [RobotLimbs](#robotlimbs)
 - [RootObject](#rootobject)
-- [ShopTrader](#shoptrader)
+- [RootObjectBase](#rootobjectbase)
+- [RootObjectContainer](#rootobjectcontainer)
+- [RootObjectFactory](#rootobjectfactory)
+- [SectionItem](#sectionitem)
+- [SeenSomeone](#seensomeone)
+- [SelectionBox](#selectionbox)
+- [SenseItr](#senseitr)
+- [SensoryData](#sensorydata)
+- [SimpleTimeStamper](#simpletimestamper)
+- [SpecificItemLoadFirst](#specificitemloadfirst)
+- [SpeedGroup](#speedgroup)
+- [Spot](#spot)
+- [SpottingPeopleMgr](#spottingpeoplemgr)
+- [Sword](#sword)
+- [SysMessage](#sysmessage)
+- [TaskData](#taskdata)
+- [TaskStateData](#taskstatedata)
+- [Tasker](#tasker)
 - [Town](#town)
+- [TownBase](#townbase)
+- [TownBuildingsManager](#townbuildingsmanager)
+- [TownPositionCacher](#townpositioncacher)
+- [VisibleObjectInfo](#visibleobjectinfo)
+- [Weapon](#weapon)
+- [WhoSeesMe](#whoseesme)
+- [WorldEventStateQuery](#worldeventstatequery)
+- [WorldEventStateQueryList](#worldeventstatequerylist)
+- [hand](#hand)
+- [physHit](#physhit)
 - [Enums](#enums)
+
+## AIOptions
+**Header:** `extern/KenshiLib/Include/kenshi/PlayerInterface.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| healAllies | healAllies | boolean | RW | `obj.healAllies = <value>` |
+| helpAllies | helpAllies | boolean | RW | `obj.helpAllies = <value>` |
+| rescueAllies | rescueAllies | boolean | RW | `obj.rescueAllies = <value>` |
+| stayInBase | stayInBase | boolean | RW | `obj.stayInBase = <value>` |
+| feedAnimals | feedAnimals | boolean | RW | `obj.feedAnimals = <value>` |
+| shareFood | shareFood | boolean | RW | `obj.shareFood = <value>` |
+| autoSleep | autoSleep | boolean | RW | `obj.autoSleep = <value>` |
+| autoDitchItems | autoDitchItems | boolean | RW | `obj.autoDitchItems = <value>` |
+| autoSit | autoSit | boolean | RW | `obj.autoSit = <value>` |
+| ejectEnemies | ejectEnemies | boolean | RW | `obj.ejectEnemies = <value>` |
+| shootFirst | shootFirst | boolean | RW | `obj.shootFirst = <value>` |
+
+## AbstractMovementBase
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| officiallyStopped | officiallyStopped | boolean | RW | `obj.officiallyStopped = <value>` |
+| speedGroup | speedGroup | unknown | RW | `obj.speedGroup = <value>` |
+| speedOrders | (lua_Integer | integer | RW | `obj.speedOrders = <value>` |
+| currentlyMoving | currentlyMoving | boolean | RW | `obj.currentlyMoving = <value>` |
+| positionSmoother | positionSmoother | unknown | RW | `obj.positionSmoother = <value>` |
+| currentMotion | currentMotion | Vector3 | RW | `obj.currentMotion = <value>` |
+| maxSpeed | maxSpeed | number | RW | `obj.maxSpeed = <value>` |
+| currentSpeed | currentSpeed | number | RW | `obj.currentSpeed = <value>` |
+| desiredSpeed | desiredSpeed | number | RW | `obj.desiredSpeed = <value>` |
+| walkSpeed | walkSpeed | number | RW | `obj.walkSpeed = <value>` |
+| pos | pos | unknown | RW | `obj.pos = <value>` |
+| direction | direction | Vector3 | RW | `obj.direction = <value>` |
+| destination | destination | Vector3 | RW | `obj.destination = <value>` |
+| pathDestination | pathDestination | Vector3 | RW | `obj.pathDestination = <value>` |
+| roadFollower | roadFollower | unknown | RW | `obj.roadFollower = <value>` |
+| roadWeight | roadWeight | number | RW | `obj.roadWeight = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| create | create | `obj:create(...)` |
+| _setPositionAndTeleport | _setPositionAndTeleport | `obj:_setPositionAndTeleport(...)` |
+| _NV__setPositionAndTeleport | _NV__setPositionAndTeleport | `obj:_NV__setPositionAndTeleport(...)` |
+| _setPositionSimple | _setPositionSimple | `obj:_setPositionSimple(...)` |
+| _NV__setPositionSimple | _NV__setPositionSimple | `obj:_NV__setPositionSimple(...)` |
+| faceDirection | faceDirection | `obj:faceDirection(...)` |
+| _NV_faceDirection | _NV_faceDirection | `obj:_NV_faceDirection(...)` |
+| lookatPosition | lookatPosition | `obj:lookatPosition(...)` |
+| _NV_lookatPosition | _NV_lookatPosition | `obj:_NV_lookatPosition(...)` |
+| getDestination | getDestination | `obj:getDestination(...)` |
+| isProbablyStuck | isProbablyStuck | `obj:isProbablyStuck(...)` |
+| pathOk | pathOk | `obj:pathOk(...)` |
+| _NV_pathOk | _NV_pathOk | `obj:_NV_pathOk(...)` |
+| pathFailed | pathFailed | `obj:pathFailed(...)` |
+| _NV_pathFailed | _NV_pathFailed | `obj:_NV_pathFailed(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| isDestinationReached | isDestinationReached | `obj:isDestinationReached(...)` |
+| _NV_isDestinationReached | _NV_isDestinationReached | `obj:_NV_isDestinationReached(...)` |
+| amInsideTownWalls | amInsideTownWalls | `obj:amInsideTownWalls(...)` |
+| _NV_amInsideTownWalls | _NV_amInsideTownWalls | `obj:_NV_amInsideTownWalls(...)` |
+| manualMovement | manualMovement | `obj:manualMovement(...)` |
+| _NV_manualMovement | _NV_manualMovement | `obj:_NV_manualMovement(...)` |
+| halt | halt | `obj:halt(...)` |
+| _NV_halt | _NV_halt | `obj:_NV_halt(...)` |
+| setRoadDestination | setRoadDestination | `obj:setRoadDestination(...)` |
+| setRoadPreference | setRoadPreference | `obj:setRoadPreference(...)` |
+| _NV_setDesiredSpeed | _NV_setDesiredSpeed | `obj:_NV_setDesiredSpeed(...)` |
+| setStandardWalkSpeed | setStandardWalkSpeed | `obj:setStandardWalkSpeed(...)` |
+| getStandardWalkSpeed | getStandardWalkSpeed | `obj:getStandardWalkSpeed(...)` |
+| restoreDesiredSpeed | restoreDesiredSpeed | `obj:restoreDesiredSpeed(...)` |
+| setMaxSpeed | setMaxSpeed | `obj:setMaxSpeed(...)` |
+| getMaxSpeed | getMaxSpeed | `obj:getMaxSpeed(...)` |
+| isCurrentlyMoving | isCurrentlyMoving | `obj:isCurrentlyMoving(...)` |
+| getCurrentSpeed | getCurrentSpeed | `obj:getCurrentSpeed(...)` |
+| getCurrentMotion | getCurrentMotion | `obj:getCurrentMotion(...)` |
+| getCurrentSpeedRelativeToMax01 | getCurrentSpeedRelativeToMax01 | `obj:getCurrentSpeedRelativeToMax01(...)` |
+| getSpeedOrders | getSpeedOrders | `obj:getSpeedOrders(...)` |
+| leaveSpeedGroup | leaveSpeedGroup | `obj:leaveSpeedGroup(...)` |
+
+## ActivePlatoon
+**Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| _groupSense | _groupSense | unknown | RW | `obj._groupSense = <value>` |
+| isAnimalsOnly | isAnimalsOnly | boolean | RW | `obj.isAnimalsOnly = <value>` |
+| me | me | unknown | RW | `obj.me = <value>` |
+| characterHandles | characterHandles | unknown | RW | `obj.characterHandles = <value>` |
+| p_TIME | p_TIME | number | RW | `obj.p_TIME = <value>` |
+| lastActiveZone | lastActiveZone | unknown | RW | `obj.lastActiveZone = <value>` |
+| _myMemory | _myMemory | unknown | RW | `obj._myMemory = <value>` |
+| squadleader | squadleader | unknown | RW | `obj.squadleader = <value>` |
+| backupLeader | backupLeader | unknown | RW | `obj.backupLeader = <value>` |
+| deactivationTimer | deactivationTimer | number | RW | `obj.deactivationTimer = <value>` |
+| workingPos | workingPos | Vector3 | RW | `obj.workingPos = <value>` |
+| currentGoal | currentGoal | unknown | RW | `obj.currentGoal = <value>` |
+| positionMoved | positionMoved | Vector3 | RW | `obj.positionMoved = <value>` |
+| teleportTo | teleportTo | Vector3 | RW | `obj.teleportTo = <value>` |
+| teleportMessage | teleportMessage | boolean | RW | `obj.teleportMessage = <value>` |
+| isPlayer | isPlayer | unknown | RW | `obj.isPlayer = <value>` |
+| isPhysical | isPhysical | boolean | RW | `obj.isPhysical = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _recalculateIsIntact | _recalculateIsIntact | `obj:_recalculateIsIntact(...)` |
+| isAnyoneCaptured | isAnyoneCaptured | `obj:isAnyoneCaptured(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| swapCharacters | swapCharacters | `obj:swapCharacters(...)` |
+| emptySquadCheck | emptySquadCheck | `obj:emptySquadCheck(...)` |
+| clearAllTheUniqueNPCStates | clearAllTheUniqueNPCStates | `obj:clearAllTheUniqueNPCStates(...)` |
+| isIntact | isIntact | `obj:isIntact(...)` |
+| getSquadLeader_theRealOne | getSquadLeader_theRealOne | `obj:getSquadLeader_theRealOne(...)` |
+| getNearestActiveCharacter | getNearestActiveCharacter | `obj:getNearestActiveCharacter(...)` |
+| getSquadLeader | getSquadLeader | `obj:getSquadLeader(...)` |
+| getSquadSize | getSquadSize | `obj:getSquadSize(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| refreshInventory | refreshInventory | `obj:refreshInventory(...)` |
+| _forceRefreshInventory | _forceRefreshInventory | `obj:_forceRefreshInventory(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| serialiseEverythingToDisk | serialiseEverythingToDisk | `obj:serialiseEverythingToDisk(...)` |
+| isWholeSquadDown | isWholeSquadDown | `obj:isWholeSquadDown(...)` |
+| setDataFilename | setDataFilename | `obj:setDataFilename(...)` |
+| setupLeaderDialogues | setupLeaderDialogues | `obj:setupLeaderDialogues(...)` |
+| isLoaded | isLoaded | `obj:isLoaded(...)` |
+| teleport | teleport | `obj:teleport(...)` |
+| setName | setName | `obj:setName(...)` |
+| getIsTrader | getIsTrader | `obj:getIsTrader(...)` |
+| getHasVendorList | getHasVendorList | `obj:getHasVendorList(...)` |
+| getHasSpecialItemsList | getHasSpecialItemsList | `obj:getHasSpecialItemsList(...)` |
+| setupTraderBuildings | setupTraderBuildings | `obj:setupTraderBuildings(...)` |
+| putTheSpecialCharactersInNewSquads_captured | putTheSpecialCharactersInNewSquads_captured | `obj:putTheSpecialCharactersInNewSquads_captured(...)` |
+| checkForCharactersBeingCarried | checkForCharactersBeingCarried | `obj:checkForCharactersBeingCarried(...)` |
+| restoreSquad | restoreSquad | `obj:restoreSquad(...)` |
+| unloadCheck | unloadCheck | `obj:unloadCheck(...)` |
+| destroyCharacters | destroyCharacters | `obj:destroyCharacters(...)` |
+| serialiseCharacterData | serialiseCharacterData | `obj:serialiseCharacterData(...)` |
+| saveToDisk | saveToDisk | `obj:saveToDisk(...)` |
+| calculateCurrentPos | calculateCurrentPos | `obj:calculateCurrentPos(...)` |
+| _checkForUniqueCharactersOnUnload | _checkForUniqueCharactersOnUnload | `obj:_checkForUniqueCharactersOnUnload(...)` |
+
+## AnimalInventoryLayout
+**Header:** `extern/KenshiLib/Include/kenshi/CharacterAnimal.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## AppearanceAnimal
+**Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| createBody | createBody | `obj:createBody(...)` |
+| _NV_createBody | _NV_createBody | `obj:_NV_createBody(...)` |
+| updateCharaterTexture | updateCharaterTexture | `obj:updateCharaterTexture(...)` |
+| _NV_updateCharaterTexture | _NV_updateCharaterTexture | `obj:_NV_updateCharaterTexture(...)` |
+
+## AppearanceBase
+**Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| slots | slots | unknown | RW | `obj.slots = <value>` |
+| attachedObjects | attachedObjects | unknown | RW | `obj.attachedObjects = <value>` |
+| attachedHarpoons | attachedHarpoons | unknown | RW | `obj.attachedHarpoons = <value>` |
+| msgClearHarpoons | msgClearHarpoons | boolean | RW | `obj.msgClearHarpoons = <value>` |
+| attachedEffects | attachedEffects | unknown | RW | `obj.attachedEffects = <value>` |
+| attachedEffectsToRemove | attachedEffectsToRemove | unknown | RW | `obj.attachedEffectsToRemove = <value>` |
+| woundsList | woundsList | unknown | RW | `obj.woundsList = <value>` |
+| woundsListMutex | woundsListMutex | unknown | RW | `obj.woundsListMutex = <value>` |
+| body | body | unknown | RW | `obj.body = <value>` |
+| bodyLoader | bodyLoader | unknown | RW | `obj.bodyLoader = <value>` |
+| isCreatingBody | isCreatingBody | boolean | RW | `obj.isCreatingBody = <value>` |
+| bodyRadius | bodyRadius | number | RW | `obj.bodyRadius = <value>` |
+| me | me | unknown | RW | `obj.me = <value>` |
+| visible | visible | boolean | RW | `obj.visible = <value>` |
+| bodyFilename | bodyFilename | string | RW | `obj.bodyFilename = <value>` |
+| bodyMaterial | bodyMaterial | unknown | RW | `obj.bodyMaterial = <value>` |
+| animation | animation | unknown | RW | `obj.animation = <value>` |
+| female | female | boolean | RW | `obj.female = <value>` |
+| updatedAttachments | updatedAttachments | boolean | RW | `obj.updatedAttachments = <value>` |
+| updatedAppearanceData | updatedAppearanceData | boolean | RW | `obj.updatedAppearanceData = <value>` |
+| updateBody | updateBody | boolean | RW | `obj.updateBody = <value>` |
+| suid | suid | integer | RW | `obj.suid = <value>` |
+| appearanceData | appearanceData | unknown | RW | `obj.appearanceData = <value>` |
+| raceData | raceData | unknown | RW | `obj.raceData = <value>` |
+| factionColor | factionColor | unknown | RW | `obj.factionColor = <value>` |
+| hairStyle | hairStyle | unknown | RW | `obj.hairStyle = <value>` |
+| shaved | shaved | boolean | RW | `obj.shaved = <value>` |
+| waterline | waterline | unknown | RW | `obj.waterline = <value>` |
+| waterLineFadeTimer | waterLineFadeTimer | number | RW | `obj.waterLineFadeTimer = <value>` |
+| barefoot | barefoot | boolean | RW | `obj.barefoot = <value>` |
+| hideAttachments | hideAttachments | boolean | RW | `obj.hideAttachments = <value>` |
+| characterHeight | characterHeight | number | RW | `obj.characterHeight = <value>` |
+| characterHeightSpeedMultiplier | characterHeightSpeedMultiplier | number | RW | `obj.characterHeightSpeedMultiplier = <value>` |
+| characterHeight_0to1 | characterHeight_0to1 | number | RW | `obj.characterHeight_0to1 = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| updateAnimationTransforms | updateAnimationTransforms | `obj:updateAnimationTransforms(...)` |
+| forceUpdateAnimationTransforms | forceUpdateAnimationTransforms | `obj:forceUpdateAnimationTransforms(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| activate | activate | `obj:activate(...)` |
+| _NV_activate | _NV_activate | `obj:_NV_activate(...)` |
+| deactivate | deactivate | `obj:deactivate(...)` |
+| _NV_deactivate | _NV_deactivate | `obj:_NV_deactivate(...)` |
+| isFemale | isFemale | `obj:isFemale(...)` |
+| setGender | setGender | `obj:setGender(...)` |
+| _NV_setGender | _NV_setGender | `obj:_NV_setGender(...)` |
+| getRace | getRace | `obj:getRace(...)` |
+| detachAllHarpoonsT | detachAllHarpoonsT | `obj:detachAllHarpoonsT(...)` |
+| _detachAllHarpoons | _detachAllHarpoons | `obj:_detachAllHarpoons(...)` |
+| updateWetness | updateWetness | `obj:updateWetness(...)` |
+| updateBloodyness | updateBloodyness | `obj:updateBloodyness(...)` |
+| getAttachmentPosition | getAttachmentPosition | `obj:getAttachmentPosition(...)` |
+| hasSlot | hasSlot | `obj:hasSlot(...)` |
+| getNormalisedCharacterHeight | getNormalisedCharacterHeight | `obj:getNormalisedCharacterHeight(...)` |
+| getCharacterHeight | getCharacterHeight | `obj:getCharacterHeight(...)` |
+| getBodyRadius | getBodyRadius | `obj:getBodyRadius(...)` |
+| failedToLoad | failedToLoad | `obj:failedToLoad(...)` |
+| getBonePosition | getBonePosition | `obj:getBonePosition(...)` |
+| getBoneOrientation | getBoneOrientation | `obj:getBoneOrientation(...)` |
+| getVertexWorldPosition | getVertexWorldPosition | `obj:getVertexWorldPosition(...)` |
+| getRandomVertex | getRandomVertex | `obj:getRandomVertex(...)` |
+| notifyDirty | notifyDirty | `obj:notifyDirty(...)` |
+| reload | reload | `obj:reload(...)` |
+| updateAppearance | updateAppearance | `obj:updateAppearance(...)` |
+| _NV_updateAppearance | _NV_updateAppearance | `obj:_NV_updateAppearance(...)` |
+| updatePortrait | updatePortrait | `obj:updatePortrait(...)` |
+| updateMovementScale | updateMovementScale | `obj:updateMovementScale(...)` |
+| switchLights | switchLights | `obj:switchLights(...)` |
+| hasLights | hasLights | `obj:hasLights(...)` |
+| shaveHead | shaveHead | `obj:shaveHead(...)` |
+| isShaved | isShaved | `obj:isShaved(...)` |
+| setFlayed | setFlayed | `obj:setFlayed(...)` |
+| _NV_setFlayed | _NV_setFlayed | `obj:_NV_setFlayed(...)` |
+| isFlayed | isFlayed | `obj:isFlayed(...)` |
+| _NV_isFlayed | _NV_isFlayed | `obj:_NV_isFlayed(...)` |
+| isBarefoot | isBarefoot | `obj:isBarefoot(...)` |
+| _NV_isBarefoot | _NV_isBarefoot | `obj:_NV_isBarefoot(...)` |
+| setVisible | setVisible | `obj:setVisible(...)` |
+| getVisible | getVisible | `obj:getVisible(...)` |
+| getAttachmentsLoaded | getAttachmentsLoaded | `obj:getAttachmentsLoaded(...)` |
+| setAttachmentsVisible | setAttachmentsVisible | `obj:setAttachmentsVisible(...)` |
+| _NV_setAttachmentsVisible | _NV_setAttachmentsVisible | `obj:_NV_setAttachmentsVisible(...)` |
+| createBody | createBody | `obj:createBody(...)` |
+| buildAttachments | buildAttachments | `obj:buildAttachments(...)` |
+| setHairTexture | setHairTexture | `obj:setHairTexture(...)` |
+| updateOverlap | updateOverlap | `obj:updateOverlap(...)` |
+| updateCharaterTexture | updateCharaterTexture | `obj:updateCharaterTexture(...)` |
+| getCharacterHeightSpeedMultiplier | getCharacterHeightSpeedMultiplier | `obj:getCharacterHeightSpeedMultiplier(...)` |
+
+## AppearanceHuman
+**Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| robotLegScale | robotLegScale | number | RW | `obj.robotLegScale = <value>` |
+| lastPhysiqueStats | lastPhysiqueStats | Vector3 | RW | `obj.lastPhysiqueStats = <value>` |
+| bulkMult | bulkMult | number | RW | `obj.bulkMult = <value>` |
+| muscleMult | muscleMult | number | RW | `obj.muscleMult = <value>` |
+| skinnyMult | skinnyMult | number | RW | `obj.skinnyMult = <value>` |
+| flayed | flayed | boolean | RW | `obj.flayed = <value>` |
+| beard | beard | unknown | RW | `obj.beard = <value>` |
+| hiddenPartsEnabled | hiddenPartsEnabled | boolean | RW | `obj.hiddenPartsEnabled = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| setGender | setGender | `obj:setGender(...)` |
+| _NV_setGender | _NV_setGender | `obj:_NV_setGender(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| setAttachmentsVisible | setAttachmentsVisible | `obj:setAttachmentsVisible(...)` |
+| _NV_setAttachmentsVisible | _NV_setAttachmentsVisible | `obj:_NV_setAttachmentsVisible(...)` |
+| setHiddenPartsEnabled | setHiddenPartsEnabled | `obj:setHiddenPartsEnabled(...)` |
+| showFace | showFace | `obj:showFace(...)` |
+| setFlayed | setFlayed | `obj:setFlayed(...)` |
+| _NV_setFlayed | _NV_setFlayed | `obj:_NV_setFlayed(...)` |
+| isFlayed | isFlayed | `obj:isFlayed(...)` |
+| _NV_isFlayed | _NV_isFlayed | `obj:_NV_isFlayed(...)` |
+| updateProportions | updateProportions | `obj:updateProportions(...)` |
+| createBody | createBody | `obj:createBody(...)` |
+| _NV_createBody | _NV_createBody | `obj:_NV_createBody(...)` |
+| updateAppearance | updateAppearance | `obj:updateAppearance(...)` |
+| _NV_updateAppearance | _NV_updateAppearance | `obj:_NV_updateAppearance(...)` |
+| updateHiddenParts | updateHiddenParts | `obj:updateHiddenParts(...)` |
+| updatePysiqueFromStats | updatePysiqueFromStats | `obj:updatePysiqueFromStats(...)` |
+| updatePhysiqueMuscleMults | updatePhysiqueMuscleMults | `obj:updatePhysiqueMuscleMults(...)` |
+| updateCharaterTexture | updateCharaterTexture | `obj:updateCharaterTexture(...)` |
+| _NV_updateCharaterTexture | _NV_updateCharaterTexture | `obj:_NV_updateCharaterTexture(...)` |
+| setPosture | setPosture | `obj:setPosture(...)` |
+
+## Armour
+**Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| cutResistance | cutResistance | number | RW | `obj.cutResistance = <value>` |
+| bluntResistance | bluntResistance | number | RW | `obj.bluntResistance = <value>` |
+| pierceResistance | pierceResistance | number | RW | `obj.pierceResistance = <value>` |
+| minCutResistance | minCutResistance | number | RW | `obj.minCutResistance = <value>` |
+| cutToStun | cutToStun | number | RW | `obj.cutToStun = <value>` |
+| materialType | (lua_Integer | integer | RW | `obj.materialType = <value>` |
+| armourClassEnum | armourClassEnum | unknown | RW | `obj.armourClassEnum = <value>` |
+| stigma | stigma | unknown | RW | `obj.stigma = <value>` |
+| athleticsMult | athleticsMult | number | RW | `obj.athleticsMult = <value>` |
+| combatSkillBonusAttk | combatSkillBonusAttk | integer | RW | `obj.combatSkillBonusAttk = <value>` |
+| combatSkillBonusDef | combatSkillBonusDef | integer | RW | `obj.combatSkillBonusDef = <value>` |
+| perceptionBonus | perceptionBonus | integer | RW | `obj.perceptionBonus = <value>` |
+| combatSpeedMult | combatSpeedMult | number | RW | `obj.combatSpeedMult = <value>` |
+| stealthMult | stealthMult | number | RW | `obj.stealthMult = <value>` |
+| assassinMult | assassinMult | number | RW | `obj.assassinMult = <value>` |
+| dexterityMult | dexterityMult | number | RW | `obj.dexterityMult = <value>` |
+| damageMult | damageMult | number | RW | `obj.damageMult = <value>` |
+| dodgeMult | dodgeMult | number | RW | `obj.dodgeMult = <value>` |
+| unarmedBonus | unarmedBonus | integer | RW | `obj.unarmedBonus = <value>` |
+| fistInjuryMult | fistInjuryMult | number | RW | `obj.fistInjuryMult = <value>` |
+| weatherProtectionAmount | weatherProtectionAmount | number | RW | `obj.weatherProtectionAmount = <value>` |
+| rangedSkillMult | rangedSkillMult | number | RW | `obj.rangedSkillMult = <value>` |
+| weatherProtections | weatherProtections | unknown | RW | `obj.weatherProtections = <value>` |
+| bodypartCoverage | bodypartCoverage | unknown | RW | `obj.bodypartCoverage = <value>` |
+| craftTime | craftTime | number | RW | `obj.craftTime = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| getClassType | getClassType | `obj:getClassType(...)` |
+| _NV_getClassType | _NV_getClassType | `obj:_NV_getClassType(...)` |
+| isArmour | isArmour | `obj:isArmour(...)` |
+| _NV_isArmour | _NV_isArmour | `obj:_NV_isArmour(...)` |
+| getItemWeight | getItemWeight | `obj:getItemWeight(...)` |
+| _NV_getItemWeight | _NV_getItemWeight | `obj:_NV_getItemWeight(...)` |
+| getValueSingle | getValueSingle | `obj:getValueSingle(...)` |
+| _NV_getValueSingle | _NV_getValueSingle | `obj:_NV_getValueSingle(...)` |
+| hasArmourCoverage | hasArmourCoverage | `obj:hasArmourCoverage(...)` |
+| getCraftTime | getCraftTime | `obj:getCraftTime(...)` |
+| _NV_getCraftTime | _NV_getCraftTime | `obj:_NV_getCraftTime(...)` |
+| getWeatherProtection_simple | getWeatherProtection_simple | `obj:getWeatherProtection_simple(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## AttachedArrowManager
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| ents | ents | unknown | RW | `obj.ents = <value>` |
+| index | index | integer | RW | `obj.index = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| clearAll | clearAll | `obj:clearAll(...)` |
+| updateStart | updateStart | `obj:updateStart(...)` |
+| addArrow | addArrow | `obj:addArrow(...)` |
+| updateEnd | updateEnd | `obj:updateEnd(...)` |
 
 ## Bounty
 **Header:** `extern/KenshiLib/Include/kenshi/Bounty.h`
@@ -39,12 +506,13 @@
 |---|---|---|---|---|
 | amount | amount | integer | RW | `obj.amount = <value>` |
 | crimes | crimes | integer | RW | `obj.crimes = <value>` |
+| bountyHasBeenClaimedOnce | bountyHasBeenClaimedOnce | boolean | RW | `obj.bountyHasBeenClaimedOnce = <value>` |
+| bountyAssignmentStartedTime | bountyAssignmentStartedTime | unknown | RW | `obj.bountyAssignmentStartedTime = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| addCrime | addCrime | `obj:addCrime(...)` |
-| hasCrime | hasCrime | `obj:hasCrime(...)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
 
 ## BountyManager
 **Header:** `extern/KenshiLib/Include/kenshi/BountyManager.h`
@@ -52,99 +520,44 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| isCommittingCrime | isCommittingCrime | boolean | R | `obj.isCommittingCrime` |
+| bounties | bounties | unknown | RW | `obj.bounties = <value>` |
+| me | me | unknown | RW | `obj.me = <value>` |
+| _hasAccessPass | _hasAccessPass | unknown | RW | `obj._hasAccessPass = <value>` |
+| accessPassExpirationTime | accessPassExpirationTime | unknown | RW | `obj.accessPassExpirationTime = <value>` |
+| committingCrime | committingCrime | unknown | RW | `obj.committingCrime = <value>` |
+| crimeAgainstFaction | crimeAgainstFaction | unknown | RW | `obj.crimeAgainstFaction = <value>` |
+| usingTrainingEquipmentOf | usingTrainingEquipmentOf | unknown | RW | `obj.usingTrainingEquipmentOf = <value>` |
+| crimeAgainst | crimeAgainst | unknown | RW | `obj.crimeAgainst = <value>` |
 | crimeExpiry | crimeExpiry | number | RW | `obj.crimeExpiry = <value>` |
+| prisonSentenceBeganTime | prisonSentenceBeganTime | unknown | RW | `obj.prisonSentenceBeganTime = <value>` |
 | prisonSentenceToServe | prisonSentenceToServe | number | RW | `obj.prisonSentenceToServe = <value>` |
-| committingCrime | committingCrime | integer | RW | `obj.committingCrime = <value>` |
-| totalBounty | getTotalBounty | integer | R | `obj.totalBounty` |
-| accessPassExpirationTime | accessPassExpirationTime | number | R | `obj.accessPassExpirationTime` |
-| prisonSentenceBeganTime | prisonSentenceBeganTime | number | R | `obj.prisonSentenceBeganTime` |
-| me | me | unknown | W | `obj.me = <value>` |
-| crimeAgainstFaction | crimeAgainstFaction | unknown | W | `obj.crimeAgainstFaction = <value>` |
-| usingTrainingEquipmentOf | usingTrainingEquipmentOf | unknown | W | `obj.usingTrainingEquipmentOf = <value>` |
-| crimeAgainst | crimeAgainst | unknown | W | `obj.crimeAgainst = <value>` |
+| _hadABountyAssignedForCurrentCrime | _hadABountyAssignedForCurrentCrime | boolean | RW | `obj._hadABountyAssignedForCurrentCrime = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| isCommittingCrime | isCommittingCrime | `obj:isCommittingCrime(...)` |
-| getTotalBounty | getTotalBounty | `obj:getTotalBounty(...)` |
-| getPercievedBounty | getPercievedBounty | `obj:getPercievedBounty(...)` |
-| getActualBounty | getActualBounty | `obj:getActualBounty(...)` |
-| clearBounty | clearBounty | `obj:clearBounty(...)` |
-| unfairAddToBounty | unfairAddToBounty | `obj:unfairAddToBounty(...)` |
-| hasAccessPass | hasAccessPass | `obj:hasAccessPass(...)` |
-| giveAccessPass | giveAccessPass | `obj:giveAccessPass(...)` |
-| notifyPlayerClaimBounty | notifyPlayerClaimBounty | `obj:notifyPlayerClaimBounty(...)` |
-| bountyAlreadyBeenClaimedByPlayer | bountyAlreadyBeenClaimedByPlayer | `obj:bountyAlreadyBeenClaimedByPlayer(...)` |
-| assignBountyForCrimes | assignBountyForCrimes | `obj:assignBountyForCrimes(...)` |
+| _getHighestBountyFaction | _getHighestBountyFaction | `obj:_getHighestBountyFaction(...)` |
 | getBountyRecognitionThreshold | getBountyRecognitionThreshold | `obj:getBountyRecognitionThreshold(...)` |
+| getTotalBounty | getTotalBounty | `obj:getTotalBounty(...)` |
 | update | update | `obj:update(...)` |
 | getBountyExpiryStringForGUI | getBountyExpiryStringForGUI | `obj:getBountyExpiryStringForGUI(...)` |
-| load | load | `obj:load(...)` |
-| save | save | `obj:save(...)` |
-| setCrime | setCrime | `obj:setCrime(...)` |
-| notifyCrimeWitnessed | notifyCrimeWitnessed | `obj:notifyCrimeWitnessed(...)` |
 | notifyPossibleCrimeWitnessed | notifyPossibleCrimeWitnessed | `obj:notifyPossibleCrimeWitnessed(...)` |
-| notifyStartPrisonSentence | notifyStartPrisonSentence | `obj:notifyStartPrisonSentence(...)` |
-| crimeToStr | crimeToStr | `obj:crimeToStr(...)` |
-| getBountyForCrime | getBountyForCrime | `obj:getBountyForCrime(...)` |
-| getPrisonSentenceInHours | getPrisonSentenceInHours | `obj:getPrisonSentenceInHours(...)` |
-| getBountyExpirationTime | getBountyExpirationTime | `obj:getBountyExpirationTime(...)` |
+| isCommittingCrime | isCommittingCrime | `obj:isCommittingCrime(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 
-## Building
-**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+## BuildingSwaps
+**Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
 
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| justBeenUpgraded | justBeenUpgradedFlag | boolean | RW | `obj.justBeenUpgraded = <value>` |
-| isOutsideFurniture | isOutsideFurniture | boolean | RW | `obj.isOutsideFurniture = <value>` |
-| lightsVisible | lightsVisible | boolean | RW | `obj.lightsVisible = <value>` |
-| heightAboveGround | heightAboveGround | number | RW | `obj.heightAboveGround = <value>` |
-| designation | designation | integer | RW | `obj.designation = <value>` |
-| materialName | materialName | string | RW | `obj.materialName = <value>` |
-| isFurnitureOf | isFurnitureOf | lightuserdata | R | `obj.isFurnitureOf` |
-| isFoliage | isFoliage | unknown | W | `obj.isFoliage = <value>` |
-| hasTerrainInside | hasTerrainInside | unknown | W | `obj.hasTerrainInside = <value>` |
-| isCavernous | isCavernous | unknown | W | `obj.isCavernous = <value>` |
-| enforceCeiling | enforceCeiling | unknown | W | `obj.enforceCeiling = <value>` |
-| publicDaytime | publicDaytime | unknown | W | `obj.publicDaytime = <value>` |
-| updateNavmesh | updateNavmesh | unknown | W | `obj.updateNavmesh = <value>` |
-| visible | visible | unknown | W | `obj.visible = <value>` |
-| interiorVisibility | interiorVisibility | unknown | W | `obj.interiorVisibility = <value>` |
-| imADoor | imADoor | unknown | W | `obj.imADoor = <value>` |
-| hasMovingParts | hasMovingParts | unknown | W | `obj.hasMovingParts = <value>` |
-| isAnInteriorObject | isAnInteriorObject | unknown | W | `obj.isAnInteriorObject = <value>` |
+| toReplace | toReplace | unknown | RW | `obj.toReplace = <value>` |
+| replaceWith | replaceWith | unknown | RW | `obj.replaceWith = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| getName | getName | `obj:getName(...)` |
-| getPosition | getPosition | `obj:getPosition(...)` |
-| getBuildingDesignation | getBuildingDesignation | `obj:getBuildingDesignation(...)` |
-| getBuildingClass | getBuildingClass | `obj:getBuildingClass(...)` |
-| getSpecialFunction | getSpecialFunction | `obj:getSpecialFunction(...)` |
-| getBuildState | getBuildState | `obj:getBuildState(...)` |
-| getConstructionProgress | getConstructionProgress | `obj:getConstructionProgress(...)` |
-| isPublic | isPublic | `obj:isPublic(...)` |
-| isAShop | isAShop | `obj:isAShop(...)` |
-| isForSale | isForSale | `obj:isForSale(...)` |
-| isAWall | isAWall | `obj:isAWall(...)` |
-| isDamaged | isDamaged | `obj:isDamaged(...)` |
-| isDestroyed | isDestroyed | `obj:isDestroyed(...)` |
-| isBroken | isBroken | `obj:isBroken(...)` |
-| isPowerOn | isPowerOn | `obj:isPowerOn(...)` |
-| getScale | getScale | `obj:getScale(...)` |
-| getMiningResourceLevel | getMiningResourceLevel | `obj:getMiningResourceLevel(...)` |
-| isValid | isValid | `obj:isValid(...)` |
-| setDesignation | setDesignation | `obj:setDesignation(...)` |
-| setBroken | setBroken | `obj:setBroken(...)` |
-| setDestroyed | setDestroyed | `obj:setDestroyed(...)` |
-| setConstructionProgress | setConstructionProgress | `obj:setConstructionProgress(...)` |
-| setVisible | setVisible | `obj:setVisible(...)` |
-| switchPowerOn | switchPowerOn | `obj:switchPowerOn(...)` |
-| togglePublic | togglePublic | `obj:togglePublic(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 
 ## CameraClass
 **Header:** `extern/KenshiLib/Include/kenshi/CameraClass.h`
@@ -152,45 +565,46 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| freeCameraMode | freeCameraMode | boolean | RW | `obj.freeCameraMode = <value>` |
 | isRotating | isRotating | boolean | RW | `obj.isRotating = <value>` |
-| initialised | initialised | boolean | RW | `obj.initialised = <value>` |
-| terrainLoaded | terrainLoaded | boolean | RW | `obj.terrainLoaded = <value>` |
+| lastMousePos | lastMousePos | unknown | RW | `obj.lastMousePos = <value>` |
+| rotationMarker | rotationMarker | unknown | RW | `obj.rotationMarker = <value>` |
 | yaw | yaw | number | RW | `obj.yaw = <value>` |
 | pitch | pitch | number | RW | `obj.pitch = <value>` |
+| initialised | initialised | boolean | RW | `obj.initialised = <value>` |
+| terrainLoaded | terrainLoaded | boolean | RW | `obj.terrainLoaded = <value>` |
+| objectCurrentlyFollowing | objectCurrentlyFollowing | unknown | RW | `obj.objectCurrentlyFollowing = <value>` |
+| objectCurrentlyFollowingOffset | objectCurrentlyFollowingOffset | Vector3 | RW | `obj.objectCurrentlyFollowingOffset = <value>` |
+| center | center | unknown | RW | `obj.center = <value>` |
 | altitude | altitude | number | RW | `obj.altitude = <value>` |
+| camera | camera | unknown | RW | `obj.camera = <value>` |
+| node | node | unknown | RW | `obj.node = <value>` |
+| currentMusic | currentMusic | integer | RW | `obj.currentMusic = <value>` |
+| inBuilding | inBuilding | unknown | RW | `obj.inBuilding = <value>` |
 | timeInGame | timeInGame | number | RW | `obj.timeInGame = <value>` |
 | targetPositionY | targetPositionY | number | RW | `obj.targetPositionY = <value>` |
 | speedY | speedY | number | RW | `obj.speedY = <value>` |
+| centerBuilding | centerBuilding | unknown | RW | `obj.centerBuilding = <value>` |
 | centerBuildingY | centerBuildingY | number | RW | `obj.centerBuildingY = <value>` |
-| currentMusic | currentMusic | number | R | `obj.currentMusic` |
-| rotationMarker | rotationMarker | lightuserdata | R | `obj.rotationMarker` |
-| center | center | lightuserdata | R | `obj.center` |
-| camera | camera | lightuserdata | R | `obj.camera` |
-| node | node | lightuserdata | R | `obj.node` |
-| centerBuilding | centerBuilding | unknown | W | `obj.centerBuilding = <value>` |
+| currentCollisionGroup | currentCollisionGroup | integer | RW | `obj.currentCollisionGroup = <value>` |
+| currentFloor | currentFloor | integer | RW | `obj.currentFloor = <value>` |
+| freeCameraMode | freeCameraMode | boolean | RW | `obj.freeCameraMode = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| save | save | `obj:save(...)` |
-| load | load | `obj:load(...)` |
 | reset | reset | `obj:reset(...)` |
 | update | update | `obj:update(...)` |
 | updateOptionSettings | updateOptionSettings | `obj:updateOptionSettings(...)` |
-| isVisible | isVisible | `obj:isVisible(...)` |
-| intersectScreenEdge | intersectScreenEdge | `obj:intersectScreenEdge(...)` |
-| focusCameraOnObject | focusCameraOnObject | `obj:focusCameraOnObject(...)` |
 | teleport | teleport | `obj:teleport(...)` |
-| followObject | followObject | `obj:followObject(...)` |
 | stopFollowing | stopFollowing | `obj:stopFollowing(...)` |
-| getFollowObject | getFollowObject | `obj:getFollowObject(...)` |
 | manuallySetOrientationAndZoom | manuallySetOrientationAndZoom | `obj:manuallySetOrientationAndZoom(...)` |
 | getFacingDirection | getFacingDirection | `obj:getFacingDirection(...)` |
 | getCenter | getCenter | `obj:getCenter(...)` |
 | getCameraPos | getCameraPos | `obj:getCameraPos(...)` |
+| isInitialised | isInitialised | `obj:isInitialised(...)` |
 | isFreeCameraMode | isFreeCameraMode | `obj:isFreeCameraMode(...)` |
 | setFreeCameraMode | setFreeCameraMode | `obj:setFreeCameraMode(...)` |
+| updateFreeCamera | updateFreeCamera | `obj:updateFreeCamera(...)` |
 | move | move | `obj:move(...)` |
 | zoom | zoom | `obj:zoom(...)` |
 | toGround | toGround | `obj:toGround(...)` |
@@ -199,23 +613,41 @@
 | rotationUpdate | rotationUpdate | `obj:rotationUpdate(...)` |
 | updateAudio | updateAudio | `obj:updateAudio(...)` |
 
+## CampaignTriggerData
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| what | what | unknown | RW | `obj.what = <value>` |
+| minTime | minTime | integer | RW | `obj.minTime = <value>` |
+| maxTime | maxTime | integer | RW | `obj.maxTime = <value>` |
+| chance | chance | number | RW | `obj.chance = <value>` |
+
 ## CharBody
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
 
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
+| combatClass | combatClass | unknown | RW | `obj.combatClass = <value>` |
+| animation | animation | unknown | RW | `obj.animation = <value>` |
+| character | character | unknown | RW | `obj.character = <value>` |
+| stats | stats | unknown | RW | `obj.stats = <value>` |
+| target | target | unknown | RW | `obj.target = <value>` |
 | gotItem | gotItem | boolean | RW | `obj.gotItem = <value>` |
 | crouched | crouched | boolean | RW | `obj.crouched = <value>` |
 | jogMode | jogMode | boolean | RW | `obj.jogMode = <value>` |
 | arbitraryCatchupDist | arbitraryCatchupDist | number | RW | `obj.arbitraryCatchupDist = <value>` |
+| ai | ai | unknown | RW | `obj.ai = <value>` |
+| movement | movement | unknown | RW | `obj.movement = <value>` |
 | frameTIME | frameTIME | number | RW | `obj.frameTIME = <value>` |
+| currentAction | currentAction | unknown | RW | `obj.currentAction = <value>` |
 | amIdle | amIdle | boolean | RW | `obj.amIdle = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
 | _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 | update | update | `obj:update(...)` |
 | _NV_update | _NV_update | `obj:_NV_update(...)` |
@@ -226,13 +658,13 @@
 | notifyTaskImpossible | notifyTaskImpossible | `obj:notifyTaskImpossible(...)` |
 | _NV_notifyTaskImpossible | _NV_notifyTaskImpossible | `obj:_NV_notifyTaskImpossible(...)` |
 | isCrouched | isCrouched | `obj:isCrouched(...)` |
+| getPosition | getPosition | `obj:getPosition(...)` |
+| _NV_getPosition | _NV_getPosition | `obj:_NV_getPosition(...)` |
 | getName | getName | `obj:getName(...)` |
 | isCharacter | isCharacter | `obj:isCharacter(...)` |
 | _NV_isCharacter | _NV_isCharacter | `obj:_NV_isCharacter(...)` |
 | getCharacter | getCharacter | `obj:getCharacter(...)` |
 | _NV_getCharacter | _NV_getCharacter | `obj:_NV_getCharacter(...)` |
-| getCharBody | getCharBody | `obj:getCharBody(...)` |
-| _NV_getCharBody | _NV_getCharBody | `obj:_NV_getCharBody(...)` |
 | getUpFromRagdoll | getUpFromRagdoll | `obj:getUpFromRagdoll(...)` |
 | getPlatoon | getPlatoon | `obj:getPlatoon(...)` |
 | _NV_getPlatoon | _NV_getPlatoon | `obj:_NV_getPlatoon(...)` |
@@ -242,12 +674,110 @@
 | _endAction | _endAction | `obj:_endAction(...)` |
 | _NV__endAction | _NV__endAction | `obj:_NV__endAction(...)` |
 
+## CharMovement
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| flockingVector | flockingVector | Vector3 | RW | `obj.flockingVector = <value>` |
+| combatMover | combatMover | unknown | RW | `obj.combatMover = <value>` |
+| combatMover2 | combatMover2 | unknown | RW | `obj.combatMover2 = <value>` |
+| flockingTools | flockingTools | unknown | RW | `obj.flockingTools = <value>` |
+| formation | formation | unknown | RW | `obj.formation = <value>` |
+| enemyFormation | enemyFormation | unknown | RW | `obj.enemyFormation = <value>` |
+| havokCharacter | havokCharacter | unknown | RW | `obj.havokCharacter = <value>` |
+| tracer | tracer | unknown | RW | `obj.tracer = <value>` |
+| dontEverRecreateMe | dontEverRecreateMe | boolean | RW | `obj.dontEverRecreateMe = <value>` |
+| floorGroup | floorGroup | integer | RW | `obj.floorGroup = <value>` |
+| building | building | unknown | RW | `obj.building = <value>` |
+| initCheck | initCheck | boolean | RW | `obj.initCheck = <value>` |
+| _combatMoveSpeedMult | _combatMoveSpeedMult | number | RW | `obj._combatMoveSpeedMult = <value>` |
+| destinationLoaded | destinationLoaded | boolean | RW | `obj.destinationLoaded = <value>` |
+| footprintRadius | footprintRadius | number | RW | `obj.footprintRadius = <value>` |
+| edgeTarget | edgeTarget | integer | RW | `obj.edgeTarget = <value>` |
+| _lastOffMeshCheck | _lastOffMeshCheck | number | RW | `obj._lastOffMeshCheck = <value>` |
+| movingToEdge | movingToEdge | boolean | RW | `obj.movingToEdge = <value>` |
+| lastStepTime | lastStepTime | number | RW | `obj.lastStepTime = <value>` |
+| movementMode | movementMode | unknown | RW | `obj.movementMode = <value>` |
+| animationOverride | animationOverride | boolean | RW | `obj.animationOverride = <value>` |
+| trackingAnimRelocationVector | trackingAnimRelocationVector | Vector3 | RW | `obj.trackingAnimRelocationVector = <value>` |
+| desiredMotion | desiredMotion | Vector3 | RW | `obj.desiredMotion = <value>` |
+| moveLimit | moveLimit | number | RW | `obj.moveLimit = <value>` |
+| animation | animationOverride | boolean | RW | `obj.animation = <value>` |
+| character | character | unknown | RW | `obj.character = <value>` |
+| clickHull | clickHull | unknown | RW | `obj.clickHull = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| _setPositionAndTeleport | _setPositionAndTeleport | `obj:_setPositionAndTeleport(...)` |
+| _NV__setPositionAndTeleport | _NV__setPositionAndTeleport | `obj:_NV__setPositionAndTeleport(...)` |
+| _setPositionDirectionAndTeleport | _setPositionDirectionAndTeleport | `obj:_setPositionDirectionAndTeleport(...)` |
+| _NV__setPositionDirectionAndTeleport | _NV__setPositionDirectionAndTeleport | `obj:_NV__setPositionDirectionAndTeleport(...)` |
+| _setPositionSimple | _setPositionSimple | `obj:_setPositionSimple(...)` |
+| _NV__setPositionSimple | _NV__setPositionSimple | `obj:_NV__setPositionSimple(...)` |
+| isRunning | isRunning | `obj:isRunning(...)` |
+| isRunningAway | isRunningAway | `obj:isRunningAway(...)` |
+| trackAnimationMovement | trackAnimationMovement | `obj:trackAnimationMovement(...)` |
+| handleChanged | handleChanged | `obj:handleChanged(...)` |
+| _NV_handleChanged | _NV_handleChanged | `obj:_NV_handleChanged(...)` |
+| getRadius | getRadius | `obj:getRadius(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| pausedUpdate | pausedUpdate | `obj:pausedUpdate(...)` |
+| twoFrameUpdate | twoFrameUpdate | `obj:twoFrameUpdate(...)` |
+| postAnimationUpdate | postAnimationUpdate | `obj:postAnimationUpdate(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| predictNextPosition | predictNextPosition | `obj:predictNextPosition(...)` |
+| getMaximumPossibleMovement | getMaximumPossibleMovement | `obj:getMaximumPossibleMovement(...)` |
+| faceDirection | faceDirection | `obj:faceDirection(...)` |
+| _NV_faceDirection | _NV_faceDirection | `obj:_NV_faceDirection(...)` |
+| lookatPosition | lookatPosition | `obj:lookatPosition(...)` |
+| _NV_lookatPosition | _NV_lookatPosition | `obj:_NV_lookatPosition(...)` |
+| pathOk | pathOk | `obj:pathOk(...)` |
+| _NV_pathOk | _NV_pathOk | `obj:_NV_pathOk(...)` |
+| pathFailed | pathFailed | `obj:pathFailed(...)` |
+| _NV_pathFailed | _NV_pathFailed | `obj:_NV_pathFailed(...)` |
+| isDestinationReached | isDestinationReached | `obj:isDestinationReached(...)` |
+| _NV_isDestinationReached | _NV_isDestinationReached | `obj:_NV_isDestinationReached(...)` |
+| isIdle | isIdle | `obj:isIdle(...)` |
+| _NV_isIdle | _NV_isIdle | `obj:_NV_isIdle(...)` |
+| playerMoveOrderWhileInCombatMode | playerMoveOrderWhileInCombatMode | `obj:playerMoveOrderWhileInCombatMode(...)` |
+| _NV_playerMoveOrderWhileInCombatMode | _NV_playerMoveOrderWhileInCombatMode | `obj:_NV_playerMoveOrderWhileInCombatMode(...)` |
+| halt | halt | `obj:halt(...)` |
+| _NV_halt | _NV_halt | `obj:_NV_halt(...)` |
+| invalidatePath | invalidatePath | `obj:invalidatePath(...)` |
+| movedBy | movedBy | `obj:movedBy(...)` |
+| isCombatMovementBlockedByCharacters | isCombatMovementBlockedByCharacters | `obj:isCombatMovementBlockedByCharacters(...)` |
+| destroy | destroy | `obj:destroy(...)` |
+| restore | restore | `obj:restore(...)` |
+| refreshClickHull | refreshClickHull | `obj:refreshClickHull(...)` |
+| teleportCollisionHull | teleportCollisionHull | `obj:teleportCollisionHull(...)` |
+| getCurrentFloor | getCurrentFloor | `obj:getCurrentFloor(...)` |
+| isIndoorsHideMeCheck | isIndoorsHideMeCheck | `obj:isIndoorsHideMeCheck(...)` |
+| isIndoors | isIndoors | `obj:isIndoors(...)` |
+| manualMovement | manualMovement | `obj:manualMovement(...)` |
+| _NV_manualMovement | _NV_manualMovement | `obj:_NV_manualMovement(...)` |
+| isInsideBuildingLoadedInterior | isInsideBuildingLoadedInterior | `obj:isInsideBuildingLoadedInterior(...)` |
+| hasClickHull | hasClickHull | `obj:hasClickHull(...)` |
+| isTrackingAnimationMode | isTrackingAnimationMode | `obj:isTrackingAnimationMode(...)` |
+| isWaypointMoveMode | isWaypointMoveMode | `obj:isWaypointMoveMode(...)` |
+| setDirectMovement | setDirectMovement | `obj:setDirectMovement(...)` |
+| getCharacter | getCharacter | `obj:getCharacter(...)` |
+| toGround | toGround | `obj:toGround(...)` |
+| updateGroundMaterial | updateGroundMaterial | `obj:updateGroundMaterial(...)` |
+| getCombatMoveSpeedMult | getCombatMoveSpeedMult | `obj:getCombatMoveSpeedMult(...)` |
+
 ## CharStats
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
 
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
+| medical | medical | unknown | RW | `obj.medical = <value>` |
+| me | me | unknown | RW | `obj.me = <value>` |
 | athleticsMultiplier | athleticsMultiplier | number | RW | `obj.athleticsMultiplier = <value>` |
 | combatSpeedMultiplier | combatSpeedMultiplier | number | RW | `obj.combatSpeedMultiplier = <value>` |
 | _skillBonusAttack | _skillBonusAttack | integer | RW | `obj._skillBonusAttack = <value>` |
@@ -263,13 +793,14 @@
 | skillMultDamage | skillMultDamage | number | RW | `obj.skillMultDamage = <value>` |
 | fistInjuryEquipmentMult | fistInjuryEquipmentMult | number | RW | `obj.fistInjuryEquipmentMult = <value>` |
 | skillMultRanged | skillMultRanged | number | RW | `obj.skillMultRanged = <value>` |
+| _weatherProtections | _weatherProtections | unknown | RW | `obj._weatherProtections = <value>` |
 | _strength | _strength | number | RW | `obj._strength = <value>` |
 | fitness | fitness | number | RW | `obj.fitness = <value>` |
 | _dexterity | _dexterity | number | RW | `obj._dexterity = <value>` |
 | perception | perception | number | RW | `obj.perception = <value>` |
 | _toughness | _toughness | number | RW | `obj._toughness = <value>` |
 | _athletics | _athletics | number | RW | `obj._athletics = <value>` |
-| medic | medic | number | RW | `obj.medic = <value>` |
+| medic | medic | unknown | RW | `obj.medic = <value>` |
 | massCombat | massCombat | number | RW | `obj.massCombat = <value>` |
 | arrowDefence | arrowDefence | number | RW | `obj.arrowDefence = <value>` |
 | stealth | stealth | number | RW | `obj.stealth = <value>` |
@@ -305,6 +836,12 @@
 | currentItemMaximumJuryRig | currentItemMaximumJuryRig | number | RW | `obj.currentItemMaximumJuryRig = <value>` |
 | __meleeAttack | __meleeAttack | number | RW | `obj.__meleeAttack = <value>` |
 | _meleeDefence | _meleeDefence | number | RW | `obj._meleeDefence = <value>` |
+| _defensiveMode | _defensiveMode | boolean | RW | `obj._defensiveMode = <value>` |
+| rangedMode | rangedMode | boolean | RW | `obj.rangedMode = <value>` |
+| tauntMode | tauntMode | boolean | RW | `obj.tauntMode = <value>` |
+| _holdPositionMode | _holdPositionMode | boolean | RW | `obj._holdPositionMode = <value>` |
+| passiveCombatMode | passiveCombatMode | boolean | RW | `obj.passiveCombatMode = <value>` |
+| holdLocation | holdLocation | Vector3 | RW | `obj.holdLocation = <value>` |
 | warriorSpirit | warriorSpirit | number | RW | `obj.warriorSpirit = <value>` |
 | derivedSpirit | derivedSpirit | number | RW | `obj.derivedSpirit = <value>` |
 | aggression | aggression | number | RW | `obj.aggression = <value>` |
@@ -328,6 +865,7 @@
 | blockSpeed | blockSpeed | number | RW | `obj.blockSpeed = <value>` |
 | encumbranceMult | encumbranceMult | number | RW | `obj.encumbranceMult = <value>` |
 | xp | xp | number | RW | `obj.xp = <value>` |
+| freeAttributePoints | freeAttributePoints | integer | RW | `obj.freeAttributePoints = <value>` |
 | cutDamageMult | cutDamageMult | number | RW | `obj.cutDamageMult = <value>` |
 | bluntDamageMult | bluntDamageMult | number | RW | `obj.bluntDamageMult = <value>` |
 | bleedDamageMult | bleedDamageMult | number | RW | `obj.bleedDamageMult = <value>` |
@@ -338,76 +876,122 @@
 | bonusHumans | bonusHumans | number | RW | `obj.bonusHumans = <value>` |
 | bonusAnimals | bonusAnimals | number | RW | `obj.bonusAnimals = <value>` |
 | bonusArmourPenetration | bonusArmourPenetration | number | RW | `obj.bonusArmourPenetration = <value>` |
+| bonusRaces | bonusRaces | unknown | RW | `obj.bonusRaces = <value>` |
+| currentWeaponType | (lua_Integer | integer | RW | `obj.currentWeaponType = <value>` |
+| pCurrentWeaponSkill | pCurrentWeaponSkill | number | RW | `obj.pCurrentWeaponSkill = <value>` |
 | currentWeaponLength | currentWeaponLength | number | RW | `obj.currentWeaponLength = <value>` |
-| weaponWeight | weaponWeight | number | RW | `obj.weaponWeight = <value>` |
-| _defensiveMode | _defensiveMode | boolean | RW | `obj._defensiveMode = <value>` |
-| rangedMode | rangedMode | boolean | RW | `obj.rangedMode = <value>` |
-| tauntMode | tauntMode | boolean | RW | `obj.tauntMode = <value>` |
-| _holdPositionMode | _holdPositionMode | boolean | RW | `obj._holdPositionMode = <value>` |
-| passiveCombatMode | passiveCombatMode | boolean | RW | `obj.passiveCombatMode = <value>` |
-| freeAttributePoints | freeAttributePoints | integer | RW | `obj.freeAttributePoints = <value>` |
-| currentWeaponType | currentWeaponType | integer | RW | `obj.currentWeaponType = <value>` |
-| medical | medical | unknown | W | `obj.medical = <value>` |
-| me | me | unknown | W | `obj.me = <value>` |
-| weapon | weapon | unknown | W | `obj.weapon = <value>` |
-| holdLocation | holdLocation | unknown | W | `obj.holdLocation = <value>` |
+| weapon | weaponSmith | number | RW | `obj.weapon = <value>` |
+| weaponWeight | weaponWeightSpeedMult | number | RW | `obj.weaponWeight = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
+| getWeatherProtection | getWeatherProtection | `obj:getWeatherProtection(...)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
+| unarmedEncumbrancePenalty | unarmedEncumbrancePenalty | `obj:unarmedEncumbrancePenalty(...)` |
+| skillBonusUnarmed_forGUI | skillBonusUnarmed_forGUI | `obj:skillBonusUnarmed_forGUI(...)` |
+| skillBonusAttack_melee | skillBonusAttack_melee | `obj:skillBonusAttack_melee(...)` |
+| skillBonusAttack_unarmed | skillBonusAttack_unarmed | `obj:skillBonusAttack_unarmed(...)` |
+| skillBonusDefence | skillBonusDefence | `obj:skillBonusDefence(...)` |
+| _randomiseStats | _randomiseStats | `obj:_randomiseStats(...)` |
+| getGUIStatsDisplayMode | getGUIStatsDisplayMode | `obj:getGUIStatsDisplayMode(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| calculateStumbleThresholdDamageAmount | calculateStumbleThresholdDamageAmount | `obj:calculateStumbleThresholdDamageAmount(...)` |
+| setEquipmentStatBonuses | setEquipmentStatBonuses | `obj:setEquipmentStatBonuses(...)` |
+| getOverallSkillLevel_0_100 | getOverallSkillLevel_0_100 | `obj:getOverallSkillLevel_0_100(...)` |
+| getStat | getStat | `obj:getStat(...)` |
+| getStatMultiplier | getStatMultiplier | `obj:getStatMultiplier(...)` |
+| getStatMultiplierForGUI | getStatMultiplierForGUI | `obj:getStatMultiplierForGUI(...)` |
+| getStatPenaltiesTotalForGUI | getStatPenaltiesTotalForGUI | `obj:getStatPenaltiesTotalForGUI(...)` |
+| xpStat_timeBased | xpStat_timeBased | `obj:xpStat_timeBased(...)` |
+| xpStat_eventBased | xpStat_eventBased | `obj:xpStat_eventBased(...)` |
+| xpDodgeEvent | xpDodgeEvent | `obj:xpDodgeEvent(...)` |
+| strengthActual | strengthActual | `obj:strengthActual(...)` |
+| strengthBase | strengthBase | `obj:strengthBase(...)` |
+| _NV_strengthBase | _NV_strengthBase | `obj:_NV_strengthBase(...)` |
+| dexterityBase | dexterityBase | `obj:dexterityBase(...)` |
+| dexterityActual | dexterityActual | `obj:dexterityActual(...)` |
+| toughness | toughness | `obj:toughness(...)` |
 | getStrength | getStrength | `obj:getStrength(...)` |
-| getStrengthRaw | getStrengthRaw | `obj:getStrengthRaw(...)` |
+| getStrengthRaw | getStrengthBase | `obj:getStrengthRaw(...)` |
 | getDexterity | getDexterity | `obj:getDexterity(...)` |
-| getDexterityRaw | getDexterityRaw | `obj:getDexterityRaw(...)` |
+| getDexterityRaw | getDexterityBase | `obj:getDexterityRaw(...)` |
 | getToughness | getToughness | `obj:getToughness(...)` |
-| getToughnessRaw | getToughnessRaw | `obj:getToughnessRaw(...)` |
 | getPerception | getPerception | `obj:getPerception(...)` |
 | getAthletics | getAthletics | `obj:getAthletics(...)` |
-| getMeleeAttack | getMeleeAttack | `obj:getMeleeAttack(...)` |
+| getThieving | getThieving | `obj:getThieving(...)` |
+| getToughnessMult | getToughnessMult | `obj:getToughnessMult(...)` |
+| getRangedFriendlyFireAvoidanceChance | getRangedFriendlyFireAvoidanceChance | `obj:getRangedFriendlyFireAvoidanceChance(...)` |
+| getRangedAccuracyMult | getRangedAccuracyMult | `obj:getRangedAccuracyMult(...)` |
+| getReloadSkill | getReloadSkill | `obj:getReloadSkill(...)` |
+| animalRecruitReduceStats | animalRecruitReduceStats | `obj:animalRecruitReduceStats(...)` |
 | getMeleeDefence | getMeleeDefence | `obj:getMeleeDefence(...)` |
 | getDodge | getDodge | `obj:getDodge(...)` |
-| getMassCombat | getMassCombat | `obj:getMassCombat(...)` |
-| getMartialArts | getMartialArts | `obj:getMartialArts(...)` |
-| getKatanas | getKatanas | `obj:getKatanas(...)` |
-| getSabres | getSabres | `obj:getSabres(...)` |
-| getHackers | getHackers | `obj:getHackers(...)` |
-| getBlunt | getBlunt | `obj:getBlunt(...)` |
-| getHeavyWeapons | getHeavyWeapons | `obj:getHeavyWeapons(...)` |
-| getPolearms | getPolearms | `obj:getPolearms(...)` |
-| getBows | getBows | `obj:getBows(...)` |
-| getTurrets | getTurrets | `obj:getTurrets(...)` |
-| getStealth | getStealth | `obj:getStealth(...)` |
-| getThieving | getThieving | `obj:getThieving(...)` |
-| getLockpicking | getLockpicking | `obj:getLockpicking(...)` |
-| getAssassination | getAssassination | `obj:getAssassination(...)` |
-| getSurvival | getSurvival | `obj:getSurvival(...)` |
-| getTracking | getTracking | `obj:getTracking(...)` |
-| getClimbing | getClimbing | `obj:getClimbing(...)` |
-| getSwimming | getSwimming | `obj:getSwimming(...)` |
-| getBluff | getBluff | `obj:getBluff(...)` |
-| getFieldMedic | getFieldMedic | `obj:getFieldMedic(...)` |
-| getDoctor | getDoctor | `obj:getDoctor(...)` |
-| getScience | getScience | `obj:getScience(...)` |
-| getEngineer | getEngineer | `obj:getEngineer(...)` |
-| getRobotics | getRobotics | `obj:getRobotics(...)` |
-| getLabouring | getLabouring | `obj:getLabouring(...)` |
-| getFarming | getFarming | `obj:getFarming(...)` |
-| getCooking | getCooking | `obj:getCooking(...)` |
-| getWeaponSmith | getWeaponSmith | `obj:getWeaponSmith(...)` |
-| getArmourSmith | getArmourSmith | `obj:getArmourSmith(...)` |
-| getBowSmith | getBowSmith | `obj:getBowSmith(...)` |
-| getXp | getXp | `obj:getXp(...)` |
-| getFreeAttributePoints | getFreeAttributePoints | `obj:getFreeAttributePoints(...)` |
-| getOverallSkillLevel | getOverallSkillLevel | `obj:getOverallSkillLevel(...)` |
-| isUnarmed | isUnarmed | `obj:isUnarmed(...)` |
+| getDodgePenalty_encumbrance | getDodgePenalty_encumbrance | `obj:getDodgePenalty_encumbrance(...)` |
+| getDodgePenalty_injuries | getDodgePenalty_injuries | `obj:getDodgePenalty_injuries(...)` |
+| getDodgePenalty_gear | getDodgePenalty_gear | `obj:getDodgePenalty_gear(...)` |
+| getMeleeDefence_melee | getMeleeDefence_melee | `obj:getMeleeDefence_melee(...)` |
+| getMeleeAttack | getMeleeAttack | `obj:getMeleeAttack(...)` |
+| getMeleeAttack_unarmed | getMeleeAttack_unarmed | `obj:getMeleeAttack_unarmed(...)` |
+| getMeleeAttack_melee | getMeleeAttack_melee | `obj:getMeleeAttack_melee(...)` |
+| _getMeleeAttackBase | _getMeleeAttackBase | `obj:_getMeleeAttackBase(...)` |
 | isDefensiveMode | isDefensiveMode | `obj:isDefensiveMode(...)` |
-| isHoldPositionMode | isHoldPositionMode | `obj:isHoldPositionMode(...)` |
-| isRangedMode | isRangedMode | `obj:isRangedMode(...)` |
-| getMedicalSystem | getMedicalSystem | `obj:getMedicalSystem(...)` |
-| getCharacter | getCharacter | `obj:getCharacter(...)` |
+| holdPositionMode | holdPositionMode | `obj:holdPositionMode(...)` |
+| setHoldLocation | setHoldLocation | `obj:setHoldLocation(...)` |
+| clearHoldLocation | clearHoldLocation | `obj:clearHoldLocation(...)` |
+| calculateStumbleBlockTimer | calculateStumbleBlockTimer | `obj:calculateStumbleBlockTimer(...)` |
+| calculateTechniqueInegrityCheckTimer | calculateTechniqueInegrityCheckTimer | `obj:calculateTechniqueInegrityCheckTimer(...)` |
+| calculateToughnessDamageResistanceMult | calculateToughnessDamageResistanceMult | `obj:calculateToughnessDamageResistanceMult(...)` |
+| calculateToughnessWoundDegenerationRate | calculateToughnessWoundDegenerationRate | `obj:calculateToughnessWoundDegenerationRate(...)` |
+| getAttackChance | getAttackChance | `obj:getAttackChance(...)` |
+| getAttackCuttingDamage | getAttackCuttingDamage | `obj:getAttackCuttingDamage(...)` |
+| getAttackBluntPower | getAttackBluntPower | `obj:getAttackBluntPower(...)` |
+| getAttackBleedDamageMult | getAttackBleedDamageMult | `obj:getAttackBleedDamageMult(...)` |
+| getAttackPierceDamage | getAttackPierceDamage | `obj:getAttackPierceDamage(...)` |
+| getEquippedWeaponSkill | getEquippedWeaponSkill | `obj:getEquippedWeaponSkill(...)` |
+| _NV_getEquippedWeaponSkill | _NV_getEquippedWeaponSkill | `obj:_NV_getEquippedWeaponSkill(...)` |
+| getSkillDifferenceRatio | getSkillDifferenceRatio | `obj:getSkillDifferenceRatio(...)` |
+| calculateDeadTime | calculateDeadTime | `obj:calculateDeadTime(...)` |
+| xpToughness_RagdollEvent | xpToughness_RagdollEvent | `obj:xpToughness_RagdollEvent(...)` |
+| xpToughness_GetUpEvent | xpToughness_GetUpEvent | `obj:xpToughness_GetUpEvent(...)` |
+| xpToughness_PunchSomething | xpToughness_PunchSomething | `obj:xpToughness_PunchSomething(...)` |
+| xpRunning | xpRunning | `obj:xpRunning(...)` |
+| xpStealthHearCheckEvent | xpStealthHearCheckEvent | `obj:xpStealthHearCheckEvent(...)` |
+| xpMassCombat | xpMassCombat | `obj:xpMassCombat(...)` |
+| xpEngineering | xpEngineering | `obj:xpEngineering(...)` |
+| xpLockpicking | xpLockpicking | `obj:xpLockpicking(...)` |
+| xpGeneral | xpGeneral | `obj:xpGeneral(...)` |
+| calculateAthleticsXPMult | calculateAthleticsXPMult | `obj:calculateAthleticsXPMult(...)` |
+| calculateStrengthXPMultFromWalking | calculateStrengthXPMultFromWalking | `obj:calculateStrengthXPMultFromWalking(...)` |
+| isUnarmed | isUnarmed | `obj:isUnarmed(...)` |
+| getWeaponWeightXPBonus | getWeaponWeightXPBonus | `obj:getWeaponWeightXPBonus(...)` |
+| getAttackSpeed | getAttackSpeed | `obj:getAttackSpeed(...)` |
+| getBlockSpeed | getBlockSpeed | `obj:getBlockSpeed(...)` |
+| getMaxRunSpeed | getMaxRunSpeed | `obj:getMaxRunSpeed(...)` |
+| getCurrentWeaponLength | getCurrentWeaponLength | `obj:getCurrentWeaponLength(...)` |
+| getStealthSkill01 | getStealthSkill01 | `obj:getStealthSkill01(...)` |
+| getAttackSuccessChanceSkill | getAttackSuccessChanceSkill | `obj:getAttackSuccessChanceSkill(...)` |
+| getEncumbranceMult | getEncumbranceMult | `obj:getEncumbranceMult(...)` |
+| calculateHungerMult | calculateHungerMult | `obj:calculateHungerMult(...)` |
+| calculateTheoreticalIdealMaxRunSpeed | calculateTheoreticalIdealMaxRunSpeed | `obj:calculateTheoreticalIdealMaxRunSpeed(...)` |
+| calculateWeaponWeightXPMult | calculateWeaponWeightXPMult | `obj:calculateWeaponWeightXPMult(...)` |
+| hasWeapon | hasWeapon | `obj:hasWeapon(...)` |
+| calculateMaxStealthSpeed | calculateMaxStealthSpeed | `obj:calculateMaxStealthSpeed(...)` |
+| _calculateMaxSwimSpeed | _calculateMaxSwimSpeed | `obj:_calculateMaxSwimSpeed(...)` |
+| calculateSwimSpeed | calculateSwimSpeed | `obj:calculateSwimSpeed(...)` |
+| calculateDodgeChance | calculateDodgeChance | `obj:calculateDodgeChance(...)` |
+| calculateMaxRunSpeed | calculateMaxRunSpeed | `obj:calculateMaxRunSpeed(...)` |
+| _calculateEncumberanceMult | _calculateEncumberanceMult | `obj:_calculateEncumberanceMult(...)` |
+| _calculateWeaponWeightSpeedMultiplier | _calculateWeaponWeightSpeedMultiplier | `obj:_calculateWeaponWeightSpeedMultiplier(...)` |
+| currentWeaponHand | currentWeaponHand | `obj:currentWeaponHand(...)` |
+| calculateAttackOrBlockSpeed | calculateAttackOrBlockSpeed | `obj:calculateAttackOrBlockSpeed(...)` |
+| _calculateBlockChance | _calculateBlockChance | `obj:_calculateBlockChance(...)` |
+| _recalculateStats | _recalculateStats | `obj:_recalculateStats(...)` |
+| _NV__recalculateStats | _NV__recalculateStats | `obj:_NV__recalculateStats(...)` |
 | setEquippedWeaponSkill | setEquippedWeaponSkill | `obj:setEquippedWeaponSkill(...)` |
 | _NV_setEquippedWeaponSkill | _NV_setEquippedWeaponSkill | `obj:_NV_setEquippedWeaponSkill(...)` |
-| setEquipmentStatBonuses | setEquipmentStatBonuses | `obj:setEquipmentStatBonuses(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 
 ## Character
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
@@ -415,125 +999,391 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| stealthMode | stealthMode | boolean | RW | `obj.stealthMode = <value>` |
-| _isOnARoof | _isOnARoof | boolean | RW | `obj._isOnARoof = <value>` |
-| needsLightLevel | needsLightLevel | boolean | RW | `obj.needsLightLevel = <value>` |
-| isVisibleUpdateMode | isVisibleUpdateMode | boolean | RW | `obj.isVisibleUpdateMode = <value>` |
-| setVisibleMsg | setVisibleMsg | boolean | RW | `obj.setVisibleMsg = <value>` |
-| playerWantsMeToGetUp | playerWantsMeToGetUp | boolean | RW | `obj.playerWantsMeToGetUp = <value>` |
-| isCarryingSomething | isCarryingSomething | boolean | RW | `obj.isCarryingSomething = <value>` |
-| isCarryingLeftSide | isCarryingLeftSide | boolean | RW | `obj.isCarryingLeftSide = <value>` |
-| _isBeingCarried | _isBeingCarried | boolean | RW | `obj._isBeingCarried = <value>` |
-| isPhysicalMode | isPhysicalMode | boolean | RW | `obj.isPhysicalMode = <value>` |
-| isChained | isChained | boolean | RW | `obj.isChained = <value>` |
-| isCurrentlyGettingUp | isCurrentlyGettingUp | boolean | RW | `obj.isCurrentlyGettingUp = <value>` |
-| _isEngagedWithAPlayer | _isEngagedWithAPlayer | boolean | RW | `obj._isEngagedWithAPlayer = <value>` |
-| isVisibleAndNear | isVisibleAndNear | boolean | RW | `obj.isVisibleAndNear = <value>` |
-| isOnScreen | isOnScreen | boolean | RW | `obj.isOnScreen = <value>` |
-| isLiterallyUnderAttack | _isLiterallyUnderMeleeAttackRightNowForSure | boolean | RW | `obj.isLiterallyUnderAttack = <value>` |
-| isOnARoof | _isOnARoof | boolean | R | `obj.isOnARoof` |
-| isEngagedWithAPlayer | _isEngagedWithAPlayer | boolean | R | `obj.isEngagedWithAPlayer` |
-| isBeingCarried | _isBeingCarried | boolean | R | `obj.isBeingCarried` |
 | offscreenFrameTime | offscreenFrameTime | number | RW | `obj.offscreenFrameTime = <value>` |
 | frameTIME | frameTIME | number | RW | `obj.frameTIME = <value>` |
 | frameTIMEfour | frameTIMEfour | number | RW | `obj.frameTIMEfour = <value>` |
 | frameTIME_P | frameTIME_P | number | RW | `obj.frameTIME_P = <value>` |
 | bodyDecayTimer | bodyDecayTimer | number | RW | `obj.bodyDecayTimer = <value>` |
+| stealthMode | stealthMode | boolean | RW | `obj.stealthMode = <value>` |
+| _isOnARoof | _isOnARoof | boolean | RW | `obj._isOnARoof = <value>` |
 | _lightLevel | _lightLevel | number | RW | `obj._lightLevel = <value>` |
-| diplomacyMultiplier | diplomacyMultiplier | number | RW | `obj.diplomacyMultiplier = <value>` |
-| terrainHeightPosition | terrainHeightPosition | number | RW | `obj.terrainHeightPosition = <value>` |
-| lightLevel | _lightLevel | number | R | `obj.lightLevel` |
-| _currentProneState | _currentProneState | integer | RW | `obj._currentProneState = <value>` |
+| needsLightLevel | needsLightLevel | boolean | RW | `obj.needsLightLevel = <value>` |
+| _currentProneState | (lua_Integer | integer | RW | `obj._currentProneState = <value>` |
+| isVisibleUpdateMode | isVisibleUpdateMode | boolean | RW | `obj.isVisibleUpdateMode = <value>` |
+| setVisibleMsg | setVisibleMsg | boolean | RW | `obj.setVisibleMsg = <value>` |
+| stealthUnseen | stealthUnseen | unknown | RW | `obj.stealthUnseen = <value>` |
+| playerWantsMeToGetUp | playerWantsMeToGetUp | boolean | RW | `obj.playerWantsMeToGetUp = <value>` |
+| crimes | crimes | unknown | RW | `obj.crimes = <value>` |
+| currentSkillUsing | (lua_Integer | integer | RW | `obj.currentSkillUsing = <value>` |
+| stateBroadcast | stateBroadcast | unknown | RW | `obj.stateBroadcast = <value>` |
+| isVisibleAndNear | isVisibleAndNear | boolean | RW | `obj.isVisibleAndNear = <value>` |
+| isOnScreen | isOnScreen | boolean | RW | `obj.isOnScreen = <value>` |
+| disguiseGUIFeedbacks | disguiseGUIFeedbacks | unknown | RW | `obj.disguiseGUIFeedbacks = <value>` |
+| whoSeesMeSneaking | whoSeesMeSneaking | unknown | RW | `obj.whoSeesMeSneaking = <value>` |
+| stealthMarkerArrows | stealthMarkerArrows | unknown | RW | `obj.stealthMarkerArrows = <value>` |
+| _isEngagedWithAPlayer | _isEngagedWithAPlayer | boolean | RW | `obj._isEngagedWithAPlayer = <value>` |
+| isUsingTurret | isUsingTurret | unknown | RW | `obj.isUsingTurret = <value>` |
+| isCurrentlyGettingUp | isCurrentlyGettingUp | boolean | RW | `obj.isCurrentlyGettingUp = <value>` |
+| isGettingEaten | isGettingEaten | integer | RW | `obj.isGettingEaten = <value>` |
+| dialogue | dialogue | unknown | RW | `obj.dialogue = <value>` |
+| currentStumblePainAnimation | currentStumblePainAnimation | string | RW | `obj.currentStumblePainAnimation = <value>` |
+| _isLiterallyUnderMeleeAttackRightNowForSure | _isLiterallyUnderMeleeAttackRightNowForSure | boolean | RW | `obj._isLiterallyUnderMeleeAttackRightNowForSure = <value>` |
+| _myMemory | _myMemory | unknown | RW | `obj._myMemory = <value>` |
+| lastGuyWhoDefeatedMe | lastGuyWhoDefeatedMe | unknown | RW | `obj.lastGuyWhoDefeatedMe = <value>` |
+| myRace | myRace | unknown | RW | `obj.myRace = <value>` |
+| inventory | inventory | unknown | RW | `obj.inventory = <value>` |
+| rangedCombat | rangedCombat | unknown | RW | `obj.rangedCombat = <value>` |
+| inSomething | inSomething | unknown | RW | `obj.inSomething = <value>` |
+| inWhat | inWhat | unknown | RW | `obj.inWhat = <value>` |
+| isChained | isChained | boolean | RW | `obj.isChained = <value>` |
+| slaveOwner | slaveOwner | unknown | RW | `obj.slaveOwner = <value>` |
+| isCarryingSomething | isCarryingSomething | boolean | RW | `obj.isCarryingSomething = <value>` |
+| carringObjectLeftOrRight | carringObjectLeftOrRight | string | RW | `obj.carringObjectLeftOrRight = <value>` |
+| isCarryingLeftSide | isCarryingLeftSide | boolean | RW | `obj.isCarryingLeftSide = <value>` |
+| carryingObject | carryingObject | unknown | RW | `obj.carryingObject = <value>` |
+| messages | (lua_Integer | integer | RW | `obj.messages = <value>` |
+| messageSubject | messageSubject | unknown | RW | `obj.messageSubject = <value>` |
+| ragdollNavmeshPosition | ragdollNavmeshPosition | Vector3 | RW | `obj.ragdollNavmeshPosition = <value>` |
+| _isBeingCarried | _isBeingCarried | boolean | RW | `obj._isBeingCarried = <value>` |
+| lastUsedWeaponCategory | (lua_Integer | integer | RW | `obj.lastUsedWeaponCategory = <value>` |
+| ragdollMessages | ragdollMessages | unknown | RW | `obj.ragdollMessages = <value>` |
+| msgCarryMode | (lua_Integer | integer | RW | `obj.msgCarryMode = <value>` |
 | squadMemberID | squadMemberID | integer | RW | `obj.squadMemberID = <value>` |
+| diplomacyMultiplier | diplomacyMultiplier | number | RW | `obj.diplomacyMultiplier = <value>` |
+| _destinationInsideBuilding | _destinationInsideBuilding | unknown | RW | `obj._destinationInsideBuilding = <value>` |
 | _destinationInsideWalls | _destinationInsideWalls | integer | RW | `obj._destinationInsideWalls = <value>` |
+| animation | animation | unknown | RW | `obj.animation = <value>` |
+| stats | stats | unknown | RW | `obj.stats = <value>` |
+| medical | medical | unknown | RW | `obj.medical = <value>` |
+| isPhysicalMode | isPhysicalMode | boolean | RW | `obj.isPhysicalMode = <value>` |
+| sex | sex | string | RW | `obj.sex = <value>` |
+| nameTag | nameTag | unknown | RW | `obj.nameTag = <value>` |
+| movement | movement | unknown | RW | `obj.movement = <value>` |
+| body | bodyDecayTimer | number | RW | `obj.body = <value>` |
+| ai | ai | unknown | RW | `obj.ai = <value>` |
+| platoon | platoon | unknown | RW | `obj.platoon = <value>` |
 | portraitIndex | portraitIndex | integer | RW | `obj.portraitIndex = <value>` |
 | portraitSerial | portraitSerial | integer | RW | `obj.portraitSerial = <value>` |
-| audioObject | audioObject | integer | RW | `obj.audioObject = <value>` |
-| stealthUnseen | stealthUnseen | integer | RW | `obj.stealthUnseen = <value>` |
-| currentSkillUsing | currentSkillUsing | integer | RW | `obj.currentSkillUsing = <value>` |
-| isGettingEaten | isGettingEaten | integer | RW | `obj.isGettingEaten = <value>` |
-| inSomething | inSomething | integer | RW | `obj.inSomething = <value>` |
-| lastUsedWeaponCategory | lastUsedWeaponCategory | integer | RW | `obj.lastUsedWeaponCategory = <value>` |
-| groundType | groundType | integer | RW | `obj.groundType = <value>` |
-| armourType | armourType | integer | RW | `obj.armourType = <value>` |
-| currentProneState | _currentProneState | integer | R | `obj.currentProneState` |
-| destinationInsideWalls | _destinationInsideWalls | integer | R | `obj.destinationInsideWalls` |
-| currentStumblePainAnimation | currentStumblePainAnimation | string | RW | `obj.currentStumblePainAnimation = <value>` |
-| carryingObjectLeftOrRight | carringObjectLeftOrRight | string | RW | `obj.carryingObjectLeftOrRight = <value>` |
-| sex | sex | string | RW | `obj.sex = <value>` |
-| myMemory | _myMemory | lightuserdata | R | `obj.myMemory` |
-| isUsingTurret | isUsingTurret | unknown | W | `obj.isUsingTurret = <value>` |
-| slaveOwner | slaveOwner | unknown | W | `obj.slaveOwner = <value>` |
-| inWhat | inWhat | unknown | W | `obj.inWhat = <value>` |
-| carryingObject | carryingObject | unknown | W | `obj.carryingObject = <value>` |
-| messageSubject | messageSubject | unknown | W | `obj.messageSubject = <value>` |
-| _destinationInsideBuilding | _destinationInsideBuilding | unknown | W | `obj._destinationInsideBuilding = <value>` |
-| stats | stats | unknown | W | `obj.stats = <value>` |
+| audioObject | audioObject | unknown | RW | `obj.audioObject = <value>` |
+| audioData | audioData | unknown | RW | `obj.audioData = <value>` |
+| groundType | (lua_Integer | integer | RW | `obj.groundType = <value>` |
+| armourType | (lua_Integer | integer | RW | `obj.armourType = <value>` |
+| audioEmitter | audioEmitter | unknown | RW | `obj.audioEmitter = <value>` |
+| terrainHeightPosition | terrainHeightPosition | number | RW | `obj.terrainHeightPosition = <value>` |
+| inDoorsSetCooldown | inDoorsSetCooldown | integer | RW | `obj.inDoorsSetCooldown = <value>` |
+| activeEffects | activeEffects | unknown | RW | `obj.activeEffects = <value>` |
+| particleEffects | particleEffects | unknown | RW | `obj.particleEffects = <value>` |
+| naturalWeapon | naturalWeapon | unknown | RW | `obj.naturalWeapon = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| isValid | isValid | `obj:isValid(...)` |
-| isPlayerCharacter | isPlayerCharacter | `obj:isPlayerCharacter(...)` |
-| isUnique | isUnique | `obj:isUnique(...)` |
-| isFemale | isFemale | `obj:isFemale(...)` |
-| isDestroyed | isDestroyed | `obj:isDestroyed(...)` |
-| isDead | isDead | `obj:isDead(...)` |
-| getName | getName | `obj:getName(...)` |
-| setName | setName | `obj:setName(...)` |
-| setNameTagVisible | setNameTagVisible | `obj:setNameTagVisible(...)` |
-| getVisible | getVisible | `obj:getVisible(...)` |
-| setVisible | setVisible | `obj:setVisible(...)` |
-| getPosition | getPosition | `obj:getPosition(...)` |
-| getBoneWorldPosition | getBoneWorldPosition | `obj:getBoneWorldPosition(...)` |
-| getMovementSpeed | getMovementSpeed | `obj:getMovementSpeed(...)` |
-| getMovementDirection | getMovementDirection | `obj:getMovementDirection(...)` |
-| teleport | teleport | `obj:teleport(...)` |
-| setDestination | setDestination | `obj:setDestination(...)` |
-| getFaction | getFaction | `obj:getFaction(...)` |
-| setFaction | setFaction | `obj:setFaction(...)` |
-| getRace | getRace | `obj:getRace(...)` |
-| getPlatoon | getPlatoon | `obj:getPlatoon(...)` |
-| getSquadLeader | getSquadLeader | `obj:getSquadLeader(...)` |
-| isUnconcious | isUnconcious | `obj:isUnconcious(...)` |
-| isDown | isDown | `obj:isDown(...)` |
-| isRagdoll | isRagdoll | `obj:isRagdoll(...)` |
-| isCrippled | isCrippled | `obj:isCrippled(...)` |
-| isInCombatMode | isInCombatMode | `obj:isInCombatMode(...)` |
-| isInRangedCombatMode | isInRangedCombatMode | `obj:isInRangedCombatMode(...)` |
-| isFleeing | isFleeing | `obj:isFleeing(...)` |
-| isStealthMode | isStealthMode | `obj:isStealthMode(...)` |
-| isInjured | isInjured | `obj:isInjured(...)` |
-| isKidnapped | isKidnapped | `obj:isKidnapped(...)` |
-| getProneState | getProneState | `obj:getProneState(...)` |
-| setProneState | setProneState | `obj:setProneState(...)` |
-| isEnemy | isEnemy | `obj:isEnemy(...)` |
-| isAlly | isAlly | `obj:isAlly(...)` |
-| attackTarget | attackTarget | `obj:attackTarget(...)` |
-| endCombatMode | endCombatMode | `obj:endCombatMode(...)` |
-| getCurrentWeapon | getCurrentWeapon | `obj:getCurrentWeapon(...)` |
-| getAttackTarget | getAttackTarget | `obj:getAttackTarget(...)` |
+| isImmuneToOffscreenMode | isImmuneToOffscreenMode | `obj:isImmuneToOffscreenMode(...)` |
+| init | init | `obj:init(...)` |
+| _NV_init | _NV_init | `obj:_NV_init(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| isOnARoof | isOnARoof | `obj:isOnARoof(...)` |
+| _NV_isOnARoof | _NV_isOnARoof | `obj:_NV_isOnARoof(...)` |
+| isOnAWall | isOnAWall | `obj:isOnAWall(...)` |
+| _NV_isOnAWall | _NV_isOnAWall | `obj:_NV_isOnAWall(...)` |
+| getLightLevel | getLightLevel | `obj:getLightLevel(...)` |
+| getHPMultiplier | getHPMultiplier | `obj:getHPMultiplier(...)` |
+| _NV_getHPMultiplier | _NV_getHPMultiplier | `obj:_NV_getHPMultiplier(...)` |
 | healCompletely | healCompletely | `obj:healCompletely(...)` |
-| getInventory | getInventory | `obj:getInventory(...)` |
-| getStats | getStats | `obj:getStats(...)` |
-| getMedical | getMedical | `obj:getMedical(...)` |
-| getMoney | getMoney | `obj:getMoney(...)` |
+| resetRagdollNavmeshSafePos | resetRagdollNavmeshSafePos | `obj:resetRagdollNavmeshSafePos(...)` |
+| setRagdollNavmeshSafePos | setRagdollNavmeshSafePos | `obj:setRagdollNavmeshSafePos(...)` |
+| getFrameTime | getFrameTime | `obj:getFrameTime(...)` |
+| frameSkip | frameSkip | `obj:frameSkip(...)` |
+| getCurrentNoiseRange | getCurrentNoiseRange | `obj:getCurrentNoiseRange(...)` |
+| isDestroyed | isDestroyed | `obj:isDestroyed(...)` |
+| _NV_isDestroyed | _NV_isDestroyed | `obj:_NV_isDestroyed(...)` |
+| isLawEnforcement | isLawEnforcement | `obj:isLawEnforcement(...)` |
+| canAssignBounties | canAssignBounties | `obj:canAssignBounties(...)` |
+| getDataType | getDataType | `obj:getDataType(...)` |
+| _NV_getDataType | _NV_getDataType | `obj:_NV_getDataType(...)` |
+| isDiplomaticStatus | isDiplomaticStatus | `obj:isDiplomaticStatus(...)` |
+| isLeadingAWarCampaign | isLeadingAWarCampaign | `obj:isLeadingAWarCampaign(...)` |
+| wantsToTriggerCampaigns | wantsToTriggerCampaigns | `obj:wantsToTriggerCampaigns(...)` |
+| isUnique | isUnique | `obj:isUnique(...)` |
+| canSpeakNormally | canSpeakNormally | `obj:canSpeakNormally(...)` |
+| isAnimal | isAnimal | `obj:isAnimal(...)` |
+| _NV_isAnimal | _NV_isAnimal | `obj:_NV_isAnimal(...)` |
 | takeMoney | takeMoney | `obj:takeMoney(...)` |
-| hasItem | hasItem | `obj:hasItem(...)` |
-| hasRoomForItem | hasRoomForItem | `obj:hasRoomForItem(...)` |
-| sayALine | sayALine | `obj:sayALine(...)` |
+| _NV_takeMoney | _NV_takeMoney | `obj:_NV_takeMoney(...)` |
+| getMoney | getMoney | `obj:getMoney(...)` |
+| _NV_getMoney | _NV_getMoney | `obj:_NV_getMoney(...)` |
+| setSquadMemberType | setSquadMemberType | `obj:setSquadMemberType(...)` |
+| dailyUpdate | dailyUpdate | `obj:dailyUpdate(...)` |
+| updateOnScreenCheck | updateOnScreenCheck | `obj:updateOnScreenCheck(...)` |
+| offscreenUpdate | offscreenUpdate | `obj:offscreenUpdate(...)` |
+| updateTimes | updateTimes | `obj:updateTimes(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| postUpdate | postUpdate | `obj:postUpdate(...)` |
+| _NV_postUpdate | _NV_postUpdate | `obj:_NV_postUpdate(...)` |
+| ragdollUpdatesUT | ragdollUpdatesUT | `obj:ragdollUpdatesUT(...)` |
+| fourFrameUpdate | fourFrameUpdate | `obj:fourFrameUpdate(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| pausedUpdate | pausedUpdate | `obj:pausedUpdate(...)` |
+| _NV_pausedUpdate | _NV_pausedUpdate | `obj:_NV_pausedUpdate(...)` |
+| updateUT | updateUT | `obj:updateUT(...)` |
+| threadedUpdate | threadedUpdate | `obj:threadedUpdate(...)` |
+| _NV_threadedUpdate | _NV_threadedUpdate | `obj:_NV_threadedUpdate(...)` |
+| threadedUpdate4 | threadedUpdate4 | `obj:threadedUpdate4(...)` |
+| _NV_threadedUpdate4 | _NV_threadedUpdate4 | `obj:_NV_threadedUpdate4(...)` |
+| threadedUpdatePeriodic | threadedUpdatePeriodic | `obj:threadedUpdatePeriodic(...)` |
+| _NV_threadedUpdatePeriodic | _NV_threadedUpdatePeriodic | `obj:_NV_threadedUpdatePeriodic(...)` |
+| pathExists | pathExists | `obj:pathExists(...)` |
+| weatherUpdate | weatherUpdate | `obj:weatherUpdate(...)` |
+| _NV_weatherUpdate | _NV_weatherUpdate | `obj:_NV_weatherUpdate(...)` |
+| stealthUpdate | stealthUpdate | `obj:stealthUpdate(...)` |
+| getPerceptionMult | getPerceptionMult | `obj:getPerceptionMult(...)` |
+| isWithThePlayer | isWithThePlayer | `obj:isWithThePlayer(...)` |
+| isItSafeToGetUp | isItSafeToGetUp | `obj:isItSafeToGetUp(...)` |
+| separateIntoMyOwnSquad | separateIntoMyOwnSquad | `obj:separateIntoMyOwnSquad(...)` |
+| dropGearOnDeath | dropGearOnDeath | `obj:dropGearOnDeath(...)` |
+| getCurrentWeatherAffectStatus | getCurrentWeatherAffectStatus | `obj:getCurrentWeatherAffectStatus(...)` |
+| getCurrentWeatherAffectStrength | getCurrentWeatherAffectStrength | `obj:getCurrentWeatherAffectStrength(...)` |
+| getWaterLevel | getWaterLevel | `obj:getWaterLevel(...)` |
+| setTerrainHeightPosition | setTerrainHeightPosition | `obj:setTerrainHeightPosition(...)` |
+| getTerrainHeightPosition | getTerrainHeightPosition | `obj:getTerrainHeightPosition(...)` |
+| setDisguiseMessage | setDisguiseMessage | `obj:setDisguiseMessage(...)` |
+| uniqueStateUpdate | uniqueStateUpdate | `obj:uniqueStateUpdate(...)` |
+| foodUpdate | foodUpdate | `obj:foodUpdate(...)` |
+| _NV_foodUpdate | _NV_foodUpdate | `obj:_NV_foodUpdate(...)` |
+| getPosition | getPosition | `obj:getPosition(...)` |
+| _NV_getPosition | _NV_getPosition | `obj:_NV_getPosition(...)` |
+| _getRawPosition | _getRawPosition | `obj:_getRawPosition(...)` |
+| getRawEntityPosition | getRawEntityPosition | `obj:getRawEntityPosition(...)` |
+| getMovementSpeed | getMovementSpeed | `obj:getMovementSpeed(...)` |
+| _NV_getMovementSpeed | _NV_getMovementSpeed | `obj:_NV_getMovementSpeed(...)` |
+| getMovementSpeedOrders | getMovementSpeedOrders | `obj:getMovementSpeedOrders(...)` |
+| _NV_getMovementSpeedOrders | _NV_getMovementSpeedOrders | `obj:_NV_getMovementSpeedOrders(...)` |
+| getMovementDirection | getMovementDirection | `obj:getMovementDirection(...)` |
+| _NV_getMovementDirection | _NV_getMovementDirection | `obj:_NV_getMovementDirection(...)` |
+| isPhysical | isPhysical | `obj:isPhysical(...)` |
+| _NV_isPhysical | _NV_isPhysical | `obj:_NV_isPhysical(...)` |
+| setVisible | setVisible | `obj:setVisible(...)` |
+| _NV_setVisible | _NV_setVisible | `obj:_NV_setVisible(...)` |
+| getVisible | getVisible | `obj:getVisible(...)` |
+| _NV_getVisible | _NV_getVisible | `obj:_NV_getVisible(...)` |
+| switchLights | switchLights | `obj:switchLights(...)` |
+| isDisabled | isDisabled | `obj:isDisabled(...)` |
+| _NV_isDisabled | _NV_isDisabled | `obj:_NV_isDisabled(...)` |
+| setInsideTownWalls | setInsideTownWalls | `obj:setInsideTownWalls(...)` |
+| _NV_setInsideTownWalls | _NV_setInsideTownWalls | `obj:_NV_setInsideTownWalls(...)` |
+| sheatheWeapon | sheatheWeapon | `obj:sheatheWeapon(...)` |
+| _NV_sheatheWeapon | _NV_sheatheWeapon | `obj:_NV_sheatheWeapon(...)` |
+| select | select | `obj:select(...)` |
+| _NV_select | _NV_select | `obj:_NV_select(...)` |
+| unselect | unselect | `obj:unselect(...)` |
+| _NV_unselect | _NV_unselect | `obj:_NV_unselect(...)` |
+| say_WithARepeatLimiter | say_WithARepeatLimiter | `obj:say_WithARepeatLimiter(...)` |
+| _NV_say_WithARepeatLimiter | _NV_say_WithARepeatLimiter | `obj:_NV_say_WithARepeatLimiter(...)` |
 | say | say | `obj:say(...)` |
-| sendDialogEvent | sendDialogEvent | `obj:sendDialogEvent(...)` |
-| sendDialogEventOverride | sendDialogEventOverride | `obj:sendDialogEventOverride(...)` |
-| hasDialogue | hasDialogue | `obj:hasDialogue(...)` |
+| _NV_say | _NV_say | `obj:_NV_say(...)` |
+| isInventoryVisible | isInventoryVisible | `obj:isInventoryVisible(...)` |
+| _NV_isInventoryVisible | _NV_isInventoryVisible | `obj:_NV_isInventoryVisible(...)` |
+| getNumFoodItems | getNumFoodItems | `obj:getNumFoodItems(...)` |
+| _NV_getNumFoodItems | _NV_getNumFoodItems | `obj:_NV_getNumFoodItems(...)` |
+| hasSimilarItem | hasSimilarItem | `obj:hasSimilarItem(...)` |
+| _NV_hasSimilarItem | _NV_hasSimilarItem | `obj:_NV_hasSimilarItem(...)` |
+| ifImASmithShouldIDitchMyBackWeapon | ifImASmithShouldIDitchMyBackWeapon | `obj:ifImASmithShouldIDitchMyBackWeapon(...)` |
+| getInventory | getInventory | `obj:getInventory(...)` |
+| _NV_getInventory | _NV_getInventory | `obj:_NV_getInventory(...)` |
+| hasABackpackOn | hasABackpackOn | `obj:hasABackpackOn(...)` |
+| isATrader | isATrader | `obj:isATrader(...)` |
+| isFemale | isFemale | `obj:isFemale(...)` |
+| isFleeing | isFleeing | `obj:isFleeing(...)` |
+| getRoughLevel | getRoughLevel | `obj:getRoughLevel(...)` |
 | setStandingOrder | setStandingOrder | `obj:setStandingOrder(...)` |
+| _NV_setStandingOrder | _NV_setStandingOrder | `obj:_NV_setStandingOrder(...)` |
 | getStandingOrder | getStandingOrder | `obj:getStandingOrder(...)` |
 | setStealthMode | setStealthMode | `obj:setStealthMode(...)` |
-| getAge | getAge | `obj:getAge(...)` |
+| isStealthMode | isStealthMode | `obj:isStealthMode(...)` |
+| isStealthModeOrCrawling | isStealthModeOrCrawling | `obj:isStealthModeOrCrawling(...)` |
+| declareDead | declareDead | `obj:declareDead(...)` |
+| removeJob | removeJob | `obj:removeJob(...)` |
+| removePermajob | removePermajob | `obj:removePermajob(...)` |
+| clearPermajobs | clearPermajobs | `obj:clearPermajobs(...)` |
+| movePermajob | movePermajob | `obj:movePermajob(...)` |
+| getPermajob | getPermajob | `obj:getPermajob(...)` |
+| getPermajobCount | getPermajobCount | `obj:getPermajobCount(...)` |
+| endCombatMode | endCombatMode | `obj:endCombatMode(...)` |
+| getTotalRelativeStrengthOfAttackers | getTotalRelativeStrengthOfAttackers | `obj:getTotalRelativeStrengthOfAttackers(...)` |
+| _NV_getTotalRelativeStrengthOfAttackers | _NV_getTotalRelativeStrengthOfAttackers | `obj:_NV_getTotalRelativeStrengthOfAttackers(...)` |
+| isIndoorsRagdoll | isIndoorsRagdoll | `obj:isIndoorsRagdoll(...)` |
+| _NV_isIndoorsRagdoll | _NV_isIndoorsRagdoll | `obj:_NV_isIndoorsRagdoll(...)` |
+| getIntendedAggression | getIntendedAggression | `obj:getIntendedAggression(...)` |
+| _NV_getIntendedAggression | _NV_getIntendedAggression | `obj:_NV_getIntendedAggression(...)` |
+| getPositionBip01 | getPositionBip01 | `obj:getPositionBip01(...)` |
+| amInsideTownWalls | amInsideTownWalls | `obj:amInsideTownWalls(...)` |
+| _NV_amInsideTownWalls | _NV_amInsideTownWalls | `obj:_NV_amInsideTownWalls(...)` |
+| setName | setName | `obj:setName(...)` |
+| _NV_setName | _NV_setName | `obj:_NV_setName(...)` |
+| setNameTagVisible | setNameTagVisible | `obj:setNameTagVisible(...)` |
+| ragdollMode | ragdollMode | `obj:ragdollMode(...)` |
+| isRagdoll | isRagdoll | `obj:isRagdoll(...)` |
+| isDown | isDown | `obj:isDown(...)` |
+| getRagdollPhysicsRootPos | getRagdollPhysicsRootPos | `obj:getRagdollPhysicsRootPos(...)` |
+| amSomeoneWhoNeedsToEatToLive | amSomeoneWhoNeedsToEatToLive | `obj:amSomeoneWhoNeedsToEatToLive(...)` |
+| _NV_amSomeoneWhoNeedsToEatToLive | _NV_amSomeoneWhoNeedsToEatToLive | `obj:_NV_amSomeoneWhoNeedsToEatToLive(...)` |
+| getMagicHungerSetting | getMagicHungerSetting | `obj:getMagicHungerSetting(...)` |
+| _NV_getMagicHungerSetting | _NV_getMagicHungerSetting | `obj:_NV_getMagicHungerSetting(...)` |
+| wantsToEatNow | wantsToEatNow | `obj:wantsToEatNow(...)` |
+| isKidnapped | isKidnapped | `obj:isKidnapped(...)` |
+| _NV_isKidnapped | _NV_isKidnapped | `obj:_NV_isKidnapped(...)` |
+| isLiterallyUnconciousNotPretending | isLiterallyUnconciousNotPretending | `obj:isLiterallyUnconciousNotPretending(...)` |
+| _NV_isLiterallyUnconciousNotPretending | _NV_isLiterallyUnconciousNotPretending | `obj:_NV_isLiterallyUnconciousNotPretending(...)` |
+| isUnconcious | isUnconcious | `obj:isUnconcious(...)` |
+| _NV_isUnconcious | _NV_isUnconcious | `obj:_NV_isUnconcious(...)` |
+| isCrippled | isCrippled | `obj:isCrippled(...)` |
+| _NV_isCrippled | _NV_isCrippled | `obj:_NV_isCrippled(...)` |
+| getProneState | getProneState | `obj:getProneState(...)` |
+| _NV_getProneState | _NV_getProneState | `obj:_NV_getProneState(...)` |
+| setProneState | setProneState | `obj:setProneState(...)` |
+| _NV_setProneState | _NV_setProneState | `obj:_NV_setProneState(...)` |
+| _killRagdoll | _killRagdoll | `obj:_killRagdoll(...)` |
+| setupAI | setupAI | `obj:setupAI(...)` |
+| clearAllAIGoals | clearAllAIGoals | `obj:clearAllAIGoals(...)` |
+| setupPlatoonAI | setupPlatoonAI | `obj:setupPlatoonAI(...)` |
+| setDestination | setDestination | `obj:setDestination(...)` |
+| sayALine | sayALine | `obj:sayALine(...)` |
+| hasDialogue | hasDialogue | `obj:hasDialogue(...)` |
+| willTalkToEnemies | willTalkToEnemies | `obj:willTalkToEnemies(...)` |
+| relocationTeleport | relocationTeleport | `obj:relocationTeleport(...)` |
+| teleportVisuallyOnly | teleportVisuallyOnly | `obj:teleportVisuallyOnly(...)` |
+| teleportFromAnimation | teleportFromAnimation | `obj:teleportFromAnimation(...)` |
+| stumbleState | stumbleState | `obj:stumbleState(...)` |
 | setAge | setAge | `obj:setAge(...)` |
-| setSquadMemberType | setSquadMemberType | `obj:setSquadMemberType(...)` |
+| _NV_setAge | _NV_setAge | `obj:_NV_setAge(...)` |
+| getAge | getAge | `obj:getAge(...)` |
+| _NV_getAge | _NV_getAge | `obj:_NV_getAge(...)` |
+| getAge0to1 | getAge0to1 | `obj:getAge0to1(...)` |
+| _NV_getAge0to1 | _NV_getAge0to1 | `obj:_NV_getAge0to1(...)` |
+| getAgeString | getAgeString | `obj:getAgeString(...)` |
+| _NV_getAgeString | _NV_getAgeString | `obj:_NV_getAgeString(...)` |
+| getAgeInverse | getAgeInverse | `obj:getAgeInverse(...)` |
+| _NV_getAgeInverse | _NV_getAgeInverse | `obj:_NV_getAgeInverse(...)` |
+| reThinkCurrentAIAction | reThinkCurrentAIAction | `obj:reThinkCurrentAIAction(...)` |
+| getStats | getStats | `obj:getStats(...)` |
+| getMedical | getMedical | `obj:getMedical(...)` |
+| getOwnerships | getOwnerships | `obj:getOwnerships(...)` |
+| isInCombatMode | isInCombatMode | `obj:isInCombatMode(...)` |
+| isInRangedCombatMode | isInRangedCombatMode | `obj:isInRangedCombatMode(...)` |
+| isLiterallyUnderMeleeAttackRightNowForSure | isLiterallyUnderMeleeAttackRightNowForSure | `obj:isLiterallyUnderMeleeAttackRightNowForSure(...)` |
+| _isLiterallyUnderMeleeAttackRightNowForSure_update | _isLiterallyUnderMeleeAttackRightNowForSure_update | `obj:_isLiterallyUnderMeleeAttackRightNowForSure_update(...)` |
+| isPrisonerFreeToGo | isPrisonerFreeToGo | `obj:isPrisonerFreeToGo(...)` |
+| clearAllTempEnemyStatuses | clearAllTempEnemyStatuses | `obj:clearAllTempEnemyStatuses(...)` |
+| lookatPosition | lookatPosition | `obj:lookatPosition(...)` |
+| _NV_lookatPosition | _NV_lookatPosition | `obj:_NV_lookatPosition(...)` |
+| getAllAttackersCount | getAllAttackersCount | `obj:getAllAttackersCount(...)` |
+| getRace | getRace | `obj:getRace(...)` |
+| _NV_getRace | _NV_getRace | `obj:_NV_getRace(...)` |
+| getRadius | getRadius | `obj:getRadius(...)` |
+| isPlayerCharacter | isPlayerCharacter | `obj:isPlayerCharacter(...)` |
+| getTotalCarryWeight | getTotalCarryWeight | `obj:getTotalCarryWeight(...)` |
+| getCurrentWeapon | getCurrentWeapon | `obj:getCurrentWeapon(...)` |
+| getThePreferredWeapon | getThePreferredWeapon | `obj:getThePreferredWeapon(...)` |
+| getRangedWeapon | getRangedWeapon | `obj:getRangedWeapon(...)` |
+| _NV_getRangedWeapon | _NV_getRangedWeapon | `obj:_NV_getRangedWeapon(...)` |
+| getUpperBodyArmour | getUpperBodyArmour | `obj:getUpperBodyArmour(...)` |
+| getLowerBodyArmour | getLowerBodyArmour | `obj:getLowerBodyArmour(...)` |
+| isInjured | isInjured | `obj:isInjured(...)` |
+| shouldUseRangedWeapons | shouldUseRangedWeapons | `obj:shouldUseRangedWeapons(...)` |
+| getBoneWorldPosition | getBoneWorldPosition | `obj:getBoneWorldPosition(...)` |
+| hasPlatoon | hasPlatoon | `obj:hasPlatoon(...)` |
+| isInAPersistentPlatoon | isInAPersistentPlatoon | `obj:isInAPersistentPlatoon(...)` |
+| getSquadLeader | getSquadLeader | `obj:getSquadLeader(...)` |
+| preventRagdollMode | preventRagdollMode | `obj:preventRagdollMode(...)` |
+| setSlaveAIJob | setSlaveAIJob | `obj:setSlaveAIJob(...)` |
+| isChainedMode | isChainedMode | `obj:isChainedMode(...)` |
+| getChainedModeShackles | getChainedModeShackles | `obj:getChainedModeShackles(...)` |
+| isSlave | isSlave | `obj:isSlave(...)` |
+| isHeadShaven | isHeadShaven | `obj:isHeadShaven(...)` |
+| _NV_isHeadShaven | _NV_isHeadShaven | `obj:_NV_isHeadShaven(...)` |
+| runSlaveAnim | runSlaveAnim | `obj:runSlaveAnim(...)` |
+| endSlaveAnim | endSlaveAnim | `obj:endSlaveAnim(...)` |
+| updatePortraitGUIState | updatePortraitGUIState | `obj:updatePortraitGUIState(...)` |
+| slaveAttachToBoneMode | slaveAttachToBoneMode | `obj:slaveAttachToBoneMode(...)` |
+| isDead | isDead | `obj:isDead(...)` |
+| isBeingCarried | isBeingCarried | `obj:isBeingCarried(...)` |
+| chooseCarryObjectLeftOrRight | chooseCarryObjectLeftOrRight | `obj:chooseCarryObjectLeftOrRight(...)` |
+| dropCarriedObject | dropCarriedObject | `obj:dropCarriedObject(...)` |
+| getDropped | getDropped | `obj:getDropped(...)` |
+| getDiplomacyMultiplier | getDiplomacyMultiplier | `obj:getDiplomacyMultiplier(...)` |
+| getDefaultTaskRepertoireEnum | getDefaultTaskRepertoireEnum | `obj:getDefaultTaskRepertoireEnum(...)` |
+| _NV_getDefaultTaskRepertoireEnum | _NV_getDefaultTaskRepertoireEnum | `obj:_NV_getDefaultTaskRepertoireEnum(...)` |
+| getPredictedPosition | getPredictedPosition | `obj:getPredictedPosition(...)` |
+| carryModeT | carryModeT | `obj:carryModeT(...)` |
+| _carryMode | _carryMode | `obj:_carryMode(...)` |
+| recalculateTotalEquipmentSkillBonus | recalculateTotalEquipmentSkillBonus | `obj:recalculateTotalEquipmentSkillBonus(...)` |
+| setupAudio | setupAudio | `obj:setupAudio(...)` |
+| _NV_setupAudio | _NV_setupAudio | `obj:_NV_setupAudio(...)` |
+| setGroundType | setGroundType | `obj:setGroundType(...)` |
+| getGroundType | getGroundType | `obj:getGroundType(...)` |
+| calculateMainArmourType | calculateMainArmourType | `obj:calculateMainArmourType(...)` |
+| getMainArmourType | getMainArmourType | `obj:getMainArmourType(...)` |
+| getUniformColorScheme | getUniformColorScheme | `obj:getUniformColorScheme(...)` |
+| canTakePlayerOrdersAtThisTime | canTakePlayerOrdersAtThisTime | `obj:canTakePlayerOrdersAtThisTime(...)` |
+| stopAllEffects | stopAllEffects | `obj:stopAllEffects(...)` |
+| notifyEffect | notifyEffect | `obj:notifyEffect(...)` |
+| _NV_notifyEffect | _NV_notifyEffect | `obj:_NV_notifyEffect(...)` |
+| validateInventorySections | validateInventorySections | `obj:validateInventorySections(...)` |
+| _NV_validateInventorySections | _NV_validateInventorySections | `obj:_NV_validateInventorySections(...)` |
+| processCharacterLoadTimeMessages | processCharacterLoadTimeMessages | `obj:processCharacterLoadTimeMessages(...)` |
+| wantsPathfinderActive | wantsPathfinderActive | `obj:wantsPathfinderActive(...)` |
+| createAnimationClass | createAnimationClass | `obj:createAnimationClass(...)` |
+| createPhysical | createPhysical | `obj:createPhysical(...)` |
+| _NV_createPhysical | _NV_createPhysical | `obj:_NV_createPhysical(...)` |
+| destroyPhysical | destroyPhysical | `obj:destroyPhysical(...)` |
+| _NV_destroyPhysical | _NV_destroyPhysical | `obj:_NV_destroyPhysical(...)` |
+| loadUnloadCheck | loadUnloadCheck | `obj:loadUnloadCheck(...)` |
+| _NV_loadUnloadCheck | _NV_loadUnloadCheck | `obj:_NV_loadUnloadCheck(...)` |
+| updateStateBroadcast | updateStateBroadcast | `obj:updateStateBroadcast(...)` |
+| postRagdollCallback | postRagdollCallback | `obj:postRagdollCallback(...)` |
+| _NV_postRagdollCallback | _NV_postRagdollCallback | `obj:_NV_postRagdollCallback(...)` |
+| reCalculateNaturalWeapon | reCalculateNaturalWeapon | `obj:reCalculateNaturalWeapon(...)` |
+| _NV_reCalculateNaturalWeapon | _NV_reCalculateNaturalWeapon | `obj:_NV_reCalculateNaturalWeapon(...)` |
 | rememberCharacter | rememberCharacter | `obj:rememberCharacter(...)` |
-| isImmuneToOffscreenMode | isImmuneToOffscreenMode | `obj:isImmuneToOffscreenMode(...)` |
+| attackTarget | attackTarget | `obj:attackTarget(...)` |
+| isHuman | isHuman | `obj:isHuman(...)` |
+| _NV_isHuman | _NV_isHuman | `obj:_NV_isHuman(...)` |
+| isResident | isResident | `obj:isResident(...)` |
+| getSensoryData | getSensoryData | `obj:getSensoryData(...)` |
+| _NV_getSensoryData | _NV_getSensoryData | `obj:_NV_getSensoryData(...)` |
+| getCurrentTownLocation | getCurrentTownLocation | `obj:getCurrentTownLocation(...)` |
+| _NV_getCurrentTownLocation | _NV_getCurrentTownLocation | `obj:_NV_getCurrentTownLocation(...)` |
+| lineOfSightCheck | lineOfSightCheck | `obj:lineOfSightCheck(...)` |
+| isItOkForMeToLoot | isItOkForMeToLoot | `obj:isItOkForMeToLoot(...)` |
+| _NV_isItOkForMeToLoot | _NV_isItOkForMeToLoot | `obj:_NV_isItOkForMeToLoot(...)` |
+| ImStealingDoYouNotice | ImStealingDoYouNotice | `obj:ImStealingDoYouNotice(...)` |
+| _NV_ImStealingDoYouNotice | _NV_ImStealingDoYouNotice | `obj:_NV_ImStealingDoYouNotice(...)` |
+| getFencingSuccessChance | getFencingSuccessChance | `obj:getFencingSuccessChance(...)` |
+| stolenGoodsDetectionCheck | stolenGoodsDetectionCheck | `obj:stolenGoodsDetectionCheck(...)` |
+| _NV_stolenGoodsDetectionCheck | _NV_stolenGoodsDetectionCheck | `obj:_NV_stolenGoodsDetectionCheck(...)` |
+| sellingUniformDetectionCheck | sellingUniformDetectionCheck | `obj:sellingUniformDetectionCheck(...)` |
+| _NV_sellingUniformDetectionCheck | _NV_sellingUniformDetectionCheck | `obj:_NV_sellingUniformDetectionCheck(...)` |
+| smugglingTradeCheck | smugglingTradeCheck | `obj:smugglingTradeCheck(...)` |
+| _NV_smugglingTradeCheck | _NV_smugglingTradeCheck | `obj:_NV_smugglingTradeCheck(...)` |
+| eatItem | eatItem | `obj:eatItem(...)` |
+| giveItem | giveItem | `obj:giveItem(...)` |
+| _NV_giveItem | _NV_giveItem | `obj:_NV_giveItem(...)` |
+| hasRoomForItem | hasRoomForItem | `obj:hasRoomForItem(...)` |
+| _NV_hasRoomForItem | _NV_hasRoomForItem | `obj:_NV_hasRoomForItem(...)` |
+| hasItem | hasItem | `obj:hasItem(...)` |
+| _NV_hasItem | _NV_hasItem | `obj:_NV_hasItem(...)` |
+| hasAmmoFor | hasAmmoFor | `obj:hasAmmoFor(...)` |
+| _NV_hasAmmoFor | _NV_hasAmmoFor | `obj:_NV_hasAmmoFor(...)` |
+| shouldIHelpThisGuy | shouldIHelpThisGuy | `obj:shouldIHelpThisGuy(...)` |
+| shouldIScrewThisGuyOver | shouldIScrewThisGuyOver | `obj:shouldIScrewThisGuyOver(...)` |
+| ILoveThisGuyBecauseOfStuffThatHappened | ILoveThisGuyBecauseOfStuffThatHappened | `obj:ILoveThisGuyBecauseOfStuffThatHappened(...)` |
+| IHateThisGuyBecauseOfStuffThatHappened | IHateThisGuyBecauseOfStuffThatHappened | `obj:IHateThisGuyBecauseOfStuffThatHappened(...)` |
+| isEnemy | isEnemy | `obj:isEnemy(...)` |
+| _NV_isEnemy | _NV_isEnemy | `obj:_NV_isEnemy(...)` |
+| isAlly | isAlly | `obj:isAlly(...)` |
+| _NV_isAlly | _NV_isAlly | `obj:_NV_isAlly(...)` |
 
 ## CharacterAnimal
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
@@ -543,18 +1393,254 @@
 |---|---|---|---|---|
 | weaponIsTechnicallyEquipped | weaponIsTechnicallyEquipped | boolean | RW | `obj.weaponIsTechnicallyEquipped = <value>` |
 | HPMultiplier | HPMultiplier | number | RW | `obj.HPMultiplier = <value>` |
+| itemInMouthTimeStamp | itemInMouthTimeStamp | unknown | RW | `obj.itemInMouthTimeStamp = <value>` |
 | smellThresholdBlood | smellThresholdBlood | number | RW | `obj.smellThresholdBlood = <value>` |
 | smellThresholdEggs | smellThresholdEggs | number | RW | `obj.smellThresholdEggs = <value>` |
 | ageSizeMin | ageSizeMin | number | RW | `obj.ageSizeMin = <value>` |
 | ageSizeMax | ageSizeMax | number | RW | `obj.ageSizeMax = <value>` |
 | lifespanInDays | lifespanInDays | number | RW | `obj.lifespanInDays = <value>` |
 | lastUpdatedAge | lastUpdatedAge | number | RW | `obj.lastUpdatedAge = <value>` |
-| age | age | number | RW | `obj.age = <value>` |
+| age | ageSizeMin | number | RW | `obj.age = <value>` |
+| weaponInHands | weaponInHands | unknown | RW | `obj.weaponInHands = <value>` |
 | audioTimeStamp | audioTimeStamp | number | RW | `obj.audioTimeStamp = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
+| isAnimal | isAnimal | `obj:isAnimal(...)` |
+| _NV_isAnimal | _NV_isAnimal | `obj:_NV_isAnimal(...)` |
+| createAnimationClass | createAnimationClass | `obj:createAnimationClass(...)` |
+| _NV_createAnimationClass | _NV_createAnimationClass | `obj:_NV_createAnimationClass(...)` |
+| sheatheWeapon | sheatheWeapon | `obj:sheatheWeapon(...)` |
+| _NV_sheatheWeapon | _NV_sheatheWeapon | `obj:_NV_sheatheWeapon(...)` |
+| getCurrentWeapon | getCurrentWeapon | `obj:getCurrentWeapon(...)` |
+| _NV_getCurrentWeapon | _NV_getCurrentWeapon | `obj:_NV_getCurrentWeapon(...)` |
+| getThePreferredWeapon | getThePreferredWeapon | `obj:getThePreferredWeapon(...)` |
+| _NV_getThePreferredWeapon | _NV_getThePreferredWeapon | `obj:_NV_getThePreferredWeapon(...)` |
+| setupAudio | setupAudio | `obj:setupAudio(...)` |
+| _NV_setupAudio | _NV_setupAudio | `obj:_NV_setupAudio(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| setAge | setAge | `obj:setAge(...)` |
+| _NV_setAge | _NV_setAge | `obj:_NV_setAge(...)` |
+| getAge | getAge | `obj:getAge(...)` |
+| _NV_getAge | _NV_getAge | `obj:_NV_getAge(...)` |
+| getAgeInverse | getAgeInverse | `obj:getAgeInverse(...)` |
+| _NV_getAgeInverse | _NV_getAgeInverse | `obj:_NV_getAgeInverse(...)` |
+| getAge0to1 | getAge0to1 | `obj:getAge0to1(...)` |
+| _NV_getAge0to1 | _NV_getAge0to1 | `obj:_NV_getAge0to1(...)` |
+| getDefaultTaskRepertoireEnum | getDefaultTaskRepertoireEnum | `obj:getDefaultTaskRepertoireEnum(...)` |
+| _NV_getDefaultTaskRepertoireEnum | _NV_getDefaultTaskRepertoireEnum | `obj:_NV_getDefaultTaskRepertoireEnum(...)` |
+| getSmellHuntingThresholdBlood | getSmellHuntingThresholdBlood | `obj:getSmellHuntingThresholdBlood(...)` |
+| _NV_getSmellHuntingThresholdBlood | _NV_getSmellHuntingThresholdBlood | `obj:_NV_getSmellHuntingThresholdBlood(...)` |
+| getSmellHuntingThresholdEggs | getSmellHuntingThresholdEggs | `obj:getSmellHuntingThresholdEggs(...)` |
+| _NV_getSmellHuntingThresholdEggs | _NV_getSmellHuntingThresholdEggs | `obj:_NV_getSmellHuntingThresholdEggs(...)` |
+| getHPMultiplier | getHPMultiplier | `obj:getHPMultiplier(...)` |
+| _NV_getHPMultiplier | _NV_getHPMultiplier | `obj:_NV_getHPMultiplier(...)` |
+| foodUpdate | foodUpdate | `obj:foodUpdate(...)` |
+| _NV_foodUpdate | _NV_foodUpdate | `obj:_NV_foodUpdate(...)` |
+| dropItemInMouth | dropItemInMouth | `obj:dropItemInMouth(...)` |
+| getItemInMouth | getItemInMouth | `obj:getItemInMouth(...)` |
+| eatItemInMouth | eatItemInMouth | `obj:eatItemInMouth(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| init | init | `obj:init(...)` |
+| _NV_init | _NV_init | `obj:_NV_init(...)` |
+
+## CharacterHuman
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| weaponInHands | weaponInHands | unknown | RW | `obj.weaponInHands = <value>` |
+| weaponInHandsSheathLocation | weaponInHandsSheathLocation | string | RW | `obj.weaponInHandsSheathLocation = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| sheatheWeapon | sheatheWeapon | `obj:sheatheWeapon(...)` |
+| _NV_sheatheWeapon | _NV_sheatheWeapon | `obj:_NV_sheatheWeapon(...)` |
+| getCurrentWeapon | getCurrentWeapon | `obj:getCurrentWeapon(...)` |
+| _NV_getCurrentWeapon | _NV_getCurrentWeapon | `obj:_NV_getCurrentWeapon(...)` |
+| getThePreferredWeapon | getThePreferredWeapon | `obj:getThePreferredWeapon(...)` |
+| _NV_getThePreferredWeapon | _NV_getThePreferredWeapon | `obj:_NV_getThePreferredWeapon(...)` |
+| getRangedWeapon | getRangedWeapon | `obj:getRangedWeapon(...)` |
+| _NV_getRangedWeapon | _NV_getRangedWeapon | `obj:_NV_getRangedWeapon(...)` |
+| validateInventorySections | validateInventorySections | `obj:validateInventorySections(...)` |
+| _NV_validateInventorySections | _NV_validateInventorySections | `obj:_NV_validateInventorySections(...)` |
+| setupAudio | setupAudio | `obj:setupAudio(...)` |
+| _NV_setupAudio | _NV_setupAudio | `obj:_NV_setupAudio(...)` |
+| shaveHead | shaveHead | `obj:shaveHead(...)` |
+| isHeadShaven | isHeadShaven | `obj:isHeadShaven(...)` |
+| _NV_isHeadShaven | _NV_isHeadShaven | `obj:_NV_isHeadShaven(...)` |
+| createAnimationClass | createAnimationClass | `obj:createAnimationClass(...)` |
+| _NV_createAnimationClass | _NV_createAnimationClass | `obj:_NV_createAnimationClass(...)` |
+| dropWeaponInHands | dropWeaponInHands | `obj:dropWeaponInHands(...)` |
+| dropWeaponInHandsFake | dropWeaponInHandsFake | `obj:dropWeaponInHandsFake(...)` |
+| weatherUpdate | weatherUpdate | `obj:weatherUpdate(...)` |
+| _NV_weatherUpdate | _NV_weatherUpdate | `obj:_NV_weatherUpdate(...)` |
+| leaveSheathEquipped | leaveSheathEquipped | `obj:leaveSheathEquipped(...)` |
+| postRagdollCallback | postRagdollCallback | `obj:postRagdollCallback(...)` |
+| _NV_postRagdollCallback | _NV_postRagdollCallback | `obj:_NV_postRagdollCallback(...)` |
+| reCalculateNaturalWeapon | reCalculateNaturalWeapon | `obj:reCalculateNaturalWeapon(...)` |
+| _NV_reCalculateNaturalWeapon | _NV_reCalculateNaturalWeapon | `obj:_NV_reCalculateNaturalWeapon(...)` |
+
+## CharacterInventoryLayout
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## CombatMovementController
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| characterCollisions | characterCollisions | unknown | RW | `obj.characterCollisions = <value>` |
+| movement | movement | unknown | RW | `obj.movement = <value>` |
+| chaseMode | chaseMode | boolean | RW | `obj.chaseMode = <value>` |
+| chaseStateTimer | chaseStateTimer | number | RW | `obj.chaseStateTimer = <value>` |
+| hasForcedWP | hasForcedWP | boolean | RW | `obj.hasForcedWP = <value>` |
+| forcedWP | forcedWP | Vector3 | RW | `obj.forcedWP = <value>` |
+| flockFilterX | flockFilterX | unknown | RW | `obj.flockFilterX = <value>` |
+| flockFilterZ | flockFilterZ | unknown | RW | `obj.flockFilterZ = <value>` |
+| flockingControl | flockingControl | unknown | RW | `obj.flockingControl = <value>` |
+| stats | stats | unknown | RW | `obj.stats = <value>` |
+| radius | radius | number | RW | `obj.radius = <value>` |
+| jogMode | jogMode | boolean | RW | `obj.jogMode = <value>` |
+| TOTALREPULSION_DAMPING | TOTALREPULSION_DAMPING | number | RW | `obj.TOTALREPULSION_DAMPING = <value>` |
+| STRAFE_STATE_DAMPING | STRAFE_STATE_DAMPING | number | RW | `obj.STRAFE_STATE_DAMPING = <value>` |
+| STRAFE_THRESHOLD | STRAFE_THRESHOLD | number | RW | `obj.STRAFE_THRESHOLD = <value>` |
+| FORWARD_THRESHOLD | FORWARD_THRESHOLD | number | RW | `obj.FORWARD_THRESHOLD = <value>` |
+| MIN_RANGE_FW | MIN_RANGE_FW | number | RW | `obj.MIN_RANGE_FW = <value>` |
+| ENEMY_DIST | ENEMY_DIST | number | RW | `obj.ENEMY_DIST = <value>` |
+| ALLY_DIST | ALLY_DIST | number | RW | `obj.ALLY_DIST = <value>` |
+| STOP_THRESHOLD | STOP_THRESHOLD | number | RW | `obj.STOP_THRESHOLD = <value>` |
+| START_THRESHOLD | START_THRESHOLD | number | RW | `obj.START_THRESHOLD = <value>` |
+| ACCEL_RATE_COMBATMODE | ACCEL_RATE_COMBATMODE | number | RW | `obj.ACCEL_RATE_COMBATMODE = <value>` |
+| meiMin | meiMin | number | RW | `obj.meiMin = <value>` |
+| circlingSpeed | circlingSpeed | number | RW | `obj.circlingSpeed = <value>` |
+| combatMinDistance | combatMinDistance | number | RW | `obj.combatMinDistance = <value>` |
+| combatMaxDistance | combatMaxDistance | number | RW | `obj.combatMaxDistance = <value>` |
+| strafeStateTimer | strafeStateTimer | number | RW | `obj.strafeStateTimer = <value>` |
+| strafing | strafing | boolean | RW | `obj.strafing = <value>` |
+| powerThrough | powerThrough | boolean | RW | `obj.powerThrough = <value>` |
+| canStrafe | canStrafe | boolean | RW | `obj.canStrafe = <value>` |
+| speedLimit | speedLimit | number | RW | `obj.speedLimit = <value>` |
+| currentAccelSpeed | currentAccelSpeed | number | RW | `obj.currentAccelSpeed = <value>` |
+| lookAtCharacter | lookAtCharacter | unknown | RW | `obj.lookAtCharacter = <value>` |
+| combatTarget | combatTarget | unknown | RW | `obj.combatTarget = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| collisionUpdate | collisionUpdate | `obj:collisionUpdate(...)` |
+| areTherePeopleInMyWay | areTherePeopleInMyWay | `obj:areTherePeopleInMyWay(...)` |
+| getUrgentVelocities | getUrgentVelocities | `obj:getUrgentVelocities(...)` |
+| checkWeDontCollideWithCharacters | checkWeDontCollideWithCharacters | `obj:checkWeDontCollideWithCharacters(...)` |
+| checkCharacterCollision | checkCharacterCollision | `obj:checkCharacterCollision(...)` |
+| setForcedWP | setForcedWP | `obj:setForcedWP(...)` |
+| disable | disable | `obj:disable(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## ContainerItem
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| callbackOwner | callbackOwner | unknown | RW | `obj.callbackOwner = <value>` |
+| athleticsMult | athleticsMult | number | RW | `obj.athleticsMult = <value>` |
+| weightMult | weightMult | number | RW | `obj.weightMult = <value>` |
+| combatSpeedMult | combatSpeedMult | number | RW | `obj.combatSpeedMult = <value>` |
+| combatSkillBonus | combatSkillBonus | integer | RW | `obj.combatSkillBonus = <value>` |
+| stealthMult | stealthMult | number | RW | `obj.stealthMult = <value>` |
+| racesExclude | racesExclude | unknown | RW | `obj.racesExclude = <value>` |
+| inventory | inventory | unknown | RW | `obj.inventory = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| getClassType | getClassType | `obj:getClassType(...)` |
+| _NV_getClassType | _NV_getClassType | `obj:_NV_getClassType(...)` |
+| takeMoney | takeMoney | `obj:takeMoney(...)` |
+| _NV_takeMoney | _NV_takeMoney | `obj:_NV_takeMoney(...)` |
+| getMoney | getMoney | `obj:getMoney(...)` |
+| _NV_getMoney | _NV_getMoney | `obj:_NV_getMoney(...)` |
+| doubleCheckHandle | doubleCheckHandle | `obj:doubleCheckHandle(...)` |
+| getPosition | getPosition | `obj:getPosition(...)` |
+| _NV_getPosition | _NV_getPosition | `obj:_NV_getPosition(...)` |
+| getInventory | getInventory | `obj:getInventory(...)` |
+| _NV_getInventory | _NV_getInventory | `obj:_NV_getInventory(...)` |
+
+## ContextMenu
+**Header:** `extern/KenshiLib/Include/kenshi/PlayerInterface.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| rightMouseActivated | rightMouseActivated | boolean | RW | `obj.rightMouseActivated = <value>` |
+| orders | orders | unknown | RW | `obj.orders = <value>` |
+| contextMenuName | contextMenuName | string | RW | `obj.contextMenuName = <value>` |
+| menuGUI | menuGUI | unknown | RW | `obj.menuGUI = <value>` |
+| menuGUI2 | menuGUI2 | unknown | RW | `obj.menuGUI2 = <value>` |
+| delayedDestroyFlag | delayedDestroyFlag | boolean | RW | `obj.delayedDestroyFlag = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| isVisible | isVisible | `obj:isVisible(...)` |
+| update | update | `obj:update(...)` |
+| _destroyMenuGUICheck | _destroyMenuGUICheck | `obj:_destroyMenuGUICheck(...)` |
+
+## CreatelistItem
+**Header:** `extern/KenshiLib/Include/kenshi/RootObjectFactory.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| container | container | unknown | RW | `obj.container = <value>` |
+| homeBuilding | homeBuilding | unknown | RW | `obj.homeBuilding = <value>` |
+| faction | faction | unknown | RW | `obj.faction = <value>` |
+| data | data | unknown | RW | `obj.data = <value>` |
+| position | position | Vector3 | RW | `obj.position = <value>` |
+| isFromActiveLevelMod | isFromActiveLevelMod | boolean | RW | `obj.isFromActiveLevelMod = <value>` |
+| rotation | rotation | Quaternion | RW | `obj.rotation = <value>` |
+| callbackObject | callbackObject | unknown | RW | `obj.callbackObject = <value>` |
+| saveState | saveState | unknown | RW | `obj.saveState = <value>` |
+| age | age | number | RW | `obj.age = <value>` |
+
+## Crossbow
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| gunClass | gunClass | unknown | RW | `obj.gunClass = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| isCrossbow | isCrossbow | `obj:isCrossbow(...)` |
+| _NV_isCrossbow | _NV_isCrossbow | `obj:_NV_isCrossbow(...)` |
+| getClassType | getClassType | `obj:getClassType(...)` |
+| _NV_getClassType | _NV_getClassType | `obj:_NV_getClassType(...)` |
+| getCraftMaterialMult | getCraftMaterialMult | `obj:getCraftMaterialMult(...)` |
+| _NV_getCraftMaterialMult | _NV_getCraftMaterialMult | `obj:_NV_getCraftMaterialMult(...)` |
+| getCraftTime | getCraftTime | `obj:getCraftTime(...)` |
+| _NV_getCraftTime | _NV_getCraftTime | `obj:_NV_getCraftTime(...)` |
+| getRangeInUnits | getRangeInUnits | `obj:getRangeInUnits(...)` |
+| getEquipPositionOffset | getEquipPositionOffset | `obj:getEquipPositionOffset(...)` |
+| destroyItemEntityCallback_Equipping | destroyItemEntityCallback_Equipping | `obj:destroyItemEntityCallback_Equipping(...)` |
+| _NV_destroyItemEntityCallback_Equipping | _NV_destroyItemEntityCallback_Equipping | `obj:_NV_destroyItemEntityCallback_Equipping(...)` |
+| setVisible | setVisible | `obj:setVisible(...)` |
+| _NV_setVisible | _NV_setVisible | `obj:_NV_setVisible(...)` |
 | _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 
 ## Damages
@@ -567,22 +1653,164 @@
 | blunt | blunt | number | RW | `obj.blunt = <value>` |
 | pierce | pierce | number | RW | `obj.pierce = <value>` |
 | extraStun | extraStun | number | RW | `obj.extraStun = <value>` |
+| bleedMult | bleedMult | number | RW | `obj.bleedMult = <value>` |
+| armourPenetration | armourPenetration | number | RW | `obj.armourPenetration = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| getCut | getCut | `obj:getCut(...)` |
-| setCut | setCut | `obj:setCut(...)` |
-| getBlunt | getBlunt | `obj:getBlunt(...)` |
-| setBlunt | setBlunt | `obj:setBlunt(...)` |
-| getPierce | getPierce | `obj:getPierce(...)` |
-| setPierce | setPierce | `obj:setPierce(...)` |
-| getBleed | getBleed | `obj:getBleed(...)` |
-| setBleed | setBleed | `obj:setBleed(...)` |
-| getArmourPenetration | getArmourPenetration | `obj:getArmourPenetration(...)` |
-| setArmourPenetration | setArmourPenetration | `obj:setArmourPenetration(...)` |
-| total | total | `obj:total(...)` |
 | multiply | multiply | `obj:multiply(...)` |
+| total | total | `obj:total(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## DataObjectContainer
+**Header:** `extern/KenshiLib/Include/kenshi/RootObject.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| isStored | isStored | boolean | RW | `obj.isStored = <value>` |
+| objectDatas | objectDatas | unknown | RW | `obj.objectDatas = <value>` |
+| datasFile | datasFile | string | RW | `obj.datasFile = <value>` |
+| selfType | (lua_Integer | integer | RW | `obj.selfType = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| getType | getType | `obj:getType(...)` |
+| destroyObjectDatas | destroyObjectDatas | `obj:destroyObjectDatas(...)` |
+
+## DelayedSpawnMsg
+**Header:** `extern/KenshiLib/Include/kenshi/Town.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| parentTown | parentTown | unknown | RW | `obj.parentTown = <value>` |
+| item | item | unknown | RW | `obj.item = <value>` |
+| nestData | nestData | unknown | RW | `obj.nestData = <value>` |
+| pos | pos | Vector3 | RW | `obj.pos = <value>` |
+| insideBuilding | insideBuilding | unknown | RW | `obj.insideBuilding = <value>` |
+
+## DialogAction
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| key | key | unknown | RW | `obj.key = <value>` |
+| value | value | integer | RW | `obj.value = <value>` |
+
+## DialogChoiceList
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| conversationChoices | conversationChoices | unknown | RW | `obj.conversationChoices = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## DialogCondition
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| key | (lua_Integer | integer | RW | `obj.key = <value>` |
+| compareBy | (lua_Integer | integer | RW | `obj.compareBy = <value>` |
+| who | who | unknown | RW | `obj.who = <value>` |
+| value | value | integer | RW | `obj.value = <value>` |
+
+## DialogDataManager
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+## DialogLineData
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| targetFlagsNeeded | targetFlagsNeeded | integer | RW | `obj.targetFlagsNeeded = <value>` |
+| targetFlagsNotWanted | targetFlagsNotWanted | integer | RW | `obj.targetFlagsNotWanted = <value>` |
+| personalityNeeded | personalityNeeded | integer | RW | `obj.personalityNeeded = <value>` |
+| personalityNotWanted | personalityNotWanted | integer | RW | `obj.personalityNotWanted = <value>` |
+| campaignTriggers | campaignTriggers | unknown | RW | `obj.campaignTriggers = <value>` |
+| isTargetRace | isTargetRace | unknown | RW | `obj.isTargetRace = <value>` |
+| isTargetSubRace_specificallyTheTarget | isTargetSubRace_specificallyTheTarget | unknown | RW | `obj.isTargetSubRace_specificallyTheTarget = <value>` |
+| givesItem | givesItem | unknown | RW | `obj.givesItem = <value>` |
+| inTownOf | inTownOf | unknown | RW | `obj.inTownOf = <value>` |
+| isTargetFaction | isTargetFaction | unknown | RW | `obj.isTargetFaction = <value>` |
+| isMyFaction | isMyFaction | unknown | RW | `obj.isMyFaction = <value>` |
+| isCharacter | isCharacter | unknown | RW | `obj.isCharacter = <value>` |
+| isTargetCarryingCharacter | isTargetCarryingCharacter | unknown | RW | `obj.isTargetCarryingCharacter = <value>` |
+| _hasPackage | _hasPackage | unknown | RW | `obj._hasPackage = <value>` |
+| isMyRace | isMyRace | unknown | RW | `obj.isMyRace = <value>` |
+| isMySubRace | isMySubRace | unknown | RW | `obj.isMySubRace = <value>` |
+| hasItemType | (lua_Integer | integer | RW | `obj.hasItemType = <value>` |
+| hasItem | (lua_Integer | integer | RW | `obj.hasItem = <value>` |
+| worldState | worldState | unknown | RW | `obj.worldState = <value>` |
+| data | data | unknown | RW | `obj.data = <value>` |
+| onceOnly | onceOnly | boolean | RW | `obj.onceOnly = <value>` |
+| isMonologue | isMonologue | boolean | RW | `obj.isMonologue = <value>` |
+| forCertainType | forCertainType | unknown | RW | `obj.forCertainType = <value>` |
+| children | children | unknown | RW | `obj.children = <value>` |
+| conditions | conditions | unknown | RW | `obj.conditions = <value>` |
+| actions | actions | unknown | RW | `obj.actions = <value>` |
+| lineCount | lineCount | integer | RW | `obj.lineCount = <value>` |
+| texts | texts | string | RW | `obj.texts = <value>` |
+| parent | parent | unknown | RW | `obj.parent = <value>` |
+| chancePermanent | chancePermanent | number | RW | `obj.chancePermanent = <value>` |
+| chanceTemporary | chanceTemporary | number | RW | `obj.chanceTemporary = <value>` |
+| unique | unique | boolean | RW | `obj.unique = <value>` |
+| uniqueOwner | uniqueOwner | unknown | RW | `obj.uniqueOwner = <value>` |
+| dialogRepeatMinTimeInHours | dialogRepeatMinTimeInHours | number | RW | `obj.dialogRepeatMinTimeInHours = <value>` |
+| lastTimeSaid | lastTimeSaid | unknown | RW | `obj.lastTimeSaid = <value>` |
+| score | score | integer | RW | `obj.score = <value>` |
+| oneAtATime | oneAtATime | boolean | RW | `obj.oneAtATime = <value>` |
+| isLocked | isLocked | boolean | RW | `obj.isLocked = <value>` |
+| locks | locks | unknown | RW | `obj.locks = <value>` |
+| unlocks_lockMe | unlocks_lockMe | unknown | RW | `obj.unlocks_lockMe = <value>` |
+| unlocks_dontLockMe | unlocks_dontLockMe | unknown | RW | `obj.unlocks_dontLockMe = <value>` |
+| crowdTrigger | crowdTrigger | unknown | RW | `obj.crowdTrigger = <value>` |
+| factionRelationEffects | factionRelationEffects | unknown | RW | `obj.factionRelationEffects = <value>` |
+| playerInterruptionDialog | playerInterruptionDialog | unknown | RW | `obj.playerInterruptionDialog = <value>` |
+| isInterjection | isInterjection | boolean | RW | `obj.isInterjection = <value>` |
+| speaker | speaker | unknown | RW | `obj.speaker = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| hasSpecificCharacterRequirement | hasSpecificCharacterRequirement | `obj:hasSpecificCharacterRequirement(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| setupChildren | setupChildren | `obj:setupChildren(...)` |
+| checkRepeatLimits | checkRepeatLimits | `obj:checkRepeatLimits(...)` |
+| getName | getName | `obj:getName(...)` |
+| saidItBefore | saidItBefore | `obj:saidItBefore(...)` |
+| willTalkToEnemies | willTalkToEnemies | `obj:willTalkToEnemies(...)` |
+| isEmptyNode | isEmptyNode | `obj:isEmptyNode(...)` |
+| _NV_isEmptyNode | _NV_isEmptyNode | `obj:_NV_isEmptyNode(...)` |
+| isAnnouncement | isAnnouncement | `obj:isAnnouncement(...)` |
+| stampLastTimeSaid | stampLastTimeSaid | `obj:stampLastTimeSaid(...)` |
+| hasChildren | hasChildren | `obj:hasChildren(...)` |
+| getStringID | getStringID | `obj:getStringID(...)` |
+| getGameData | getGameData | `obj:getGameData(...)` |
+| getMoneyCostForLine | getMoneyCostForLine | `obj:getMoneyCostForLine(...)` |
+
+## DialogState
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| count | count | integer | RW | `obj.count = <value>` |
+| lastTimeStamp | lastTimeStamp | number | RW | `obj.lastTimeStamp = <value>` |
+| resetTime | resetTime | number | RW | `obj.resetTime = <value>` |
 
 ## Dialogue
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
@@ -590,24 +1818,94 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
+| repCounter | repCounter | unknown | RW | `obj.repCounter = <value>` |
+| _needsDynamicAssessments | _needsDynamicAssessments | boolean | RW | `obj._needsDynamicAssessments = <value>` |
+| locked | locked | unknown | RW | `obj.locked = <value>` |
+| sayMsg | sayMsg | string | RW | `obj.sayMsg = <value>` |
+| threadMessages | threadMessages | unknown | RW | `obj.threadMessages = <value>` |
+| pacakgesIHave | pacakgesIHave | unknown | RW | `obj.pacakgesIHave = <value>` |
+| playerInterruptionDialog | playerInterruptionDialog | unknown | RW | `obj.playerInterruptionDialog = <value>` |
+| eventRepeatTimers | eventRepeatTimers | unknown | RW | `obj.eventRepeatTimers = <value>` |
+| eventDeliveredStates | eventDeliveredStates | unknown | RW | `obj.eventDeliveredStates = <value>` |
+| _hasChanceLines | _hasChanceLines | unknown | RW | `obj._hasChanceLines = <value>` |
+| _hasEnded | _hasEnded | boolean | RW | `obj._hasEnded = <value>` |
 | shouting | shouting | boolean | RW | `obj.shouting = <value>` |
 | staysOnScreen | staysOnScreen | boolean | RW | `obj.staysOnScreen = <value>` |
+| me | me | unknown | RW | `obj.me = <value>` |
+| conversationTarget | conversationTarget | hand | RW | `obj.conversationTarget = <value>` |
+| stats | stats | unknown | RW | `obj.stats = <value>` |
+| movement | movement | unknown | RW | `obj.movement = <value>` |
+| currentConversationType | (lua_Integer | integer | RW | `obj.currentConversationType = <value>` |
+| currentConversation | (lua_Integer | integer | RW | `obj.currentConversation = <value>` |
+| currentLine | currentLine | unknown | RW | `obj.currentLine = <value>` |
+| conversationsMain | conversationsMain | unknown | RW | `obj.conversationsMain = <value>` |
+| interjector1 | interjector1 | unknown | RW | `obj.interjector1 = <value>` |
+| interjector2 | interjector2 | unknown | RW | `obj.interjector2 = <value>` |
+| interjector3 | interjector3 | unknown | RW | `obj.interjector3 = <value>` |
+| speechBubblePanel | speechBubblePanel | unknown | RW | `obj.speechBubblePanel = <value>` |
+| speechTextTimer | speechTextTimer | number | RW | `obj.speechTextTimer = <value>` |
+| speechTextTimer_forced | speechTextTimer_forced | number | RW | `obj.speechTextTimer_forced = <value>` |
+| replyIds | replyIds | unknown | RW | `obj.replyIds = <value>` |
+| responses | responses | unknown | RW | `obj.responses = <value>` |
+| npcReplyText | npcReplyText | string | RW | `obj.npcReplyText = <value>` |
+| conversationMaster | conversationMaster | unknown | RW | `obj.conversationMaster = <value>` |
+| waitingForReplyFrom | waitingForReplyFrom | unknown | RW | `obj.waitingForReplyFrom = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
+| setupWordSwaps | setupWordSwaps | `obj:setupWordSwaps(...)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 | getCharacter | getCharacter | `obj:getCharacter(...)` |
 | getConversationTarget | getConversationTarget | `obj:getConversationTarget(...)` |
-| hasDialogueEvent | hasDialogueEvent | `obj:hasDialogueEvent(...)` |
+| setInDialog | setInDialog | `obj:setInDialog(...)` |
+| clearDialogues | clearDialogues | `obj:clearDialogues(...)` |
+| clearAnnouncements | clearAnnouncements | `obj:clearAnnouncements(...)` |
+| needsDialogAssessmentUpdate | needsDialogAssessmentUpdate | `obj:needsDialogAssessmentUpdate(...)` |
+| clearConversationList | clearConversationList | `obj:clearConversationList(...)` |
 | willTalkToEnemies | willTalkToEnemies | `obj:willTalkToEnemies(...)` |
+| stopEvent | stopEvent | `obj:stopEvent(...)` |
 | conversationHasEnded | conversationHasEnded | `obj:conversationHasEnded(...)` |
-| sendEvent | sendEvent | `obj:sendEvent(...)` |
-| sendEventOverride | sendEventOverride | `obj:sendEventOverride(...)` |
+| conversationHasEndedPrettyMuch | conversationHasEndedPrettyMuch | `obj:conversationHasEndedPrettyMuch(...)` |
+| update | update | `obj:update(...)` |
 | endDialogue | endDialogue | `obj:endDialogue(...)` |
-| isValid | isValid | `obj:isValid(...)` |
+| hasDialogue_Fast | hasDialogue_Fast | `obj:hasDialogue_Fast(...)` |
+| hasDialogue_Accurate | hasDialogue_Accurate | `obj:hasDialogue_Accurate(...)` |
+| hasDialogueEvent | hasDialogueEvent | `obj:hasDialogueEvent(...)` |
+| dialogDelivered | dialogDelivered | `obj:dialogDelivered(...)` |
+| isKOExempt | isKOExempt | `obj:isKOExempt(...)` |
+| _endPlayerConversation | _endPlayerConversation | `obj:_endPlayerConversation(...)` |
+| getConversationList | getConversationList | `obj:getConversationList(...)` |
+| listPlayerReplies | listPlayerReplies | `obj:listPlayerReplies(...)` |
+| _updateTextPos | _updateTextPos | `obj:_updateTextPos(...)` |
+| clearSpeechBox | clearSpeechBox | `obj:clearSpeechBox(...)` |
+| clearRespones | clearRespones | `obj:clearRespones(...)` |
+| clearResponesGUI | clearResponesGUI | `obj:clearResponesGUI(...)` |
+| setResponesGUI | setResponesGUI | `obj:setResponesGUI(...)` |
+| setConversationReplyGUI | setConversationReplyGUI | `obj:setConversationReplyGUI(...)` |
 
-## DialogueEvent
-**Header:** `???`
+## DialogueSpeechBubble
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| stayOnScreen | stayOnScreen | boolean | RW | `obj.stayOnScreen = <value>` |
+| shout | shout | boolean | RW | `obj.shout = <value>` |
+| marginW | marginW | integer | RW | `obj.marginW = <value>` |
+| marginH | marginH | integer | RW | `obj.marginH = <value>` |
+| textBox | (lua_Integer | integer | RW | `obj.textBox = <value>` |
+| baseSize | baseSize | unknown | RW | `obj.baseSize = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| setText | setText | `obj:setText(...)` |
+| setAlpha | setAlpha | `obj:setAlpha(...)` |
+| reset | reset | `obj:reset(...)` |
+| getAlpha | getAlpha | `obj:getAlpha(...)` |
 
 ## Faction
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -615,37 +1913,186 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| isThePlayer | isThePlayer | boolean | R | `obj.isThePlayer` |
-| isAntiSlavery | isAntiSlavery | boolean | R | `obj.isAntiSlavery` |
-| isALawEnforcementFaction | isALawEnforcementFaction | boolean | R | `obj.isALawEnforcementFaction` |
-| prosperityMultiplier | getProsperityMultiplier | number | R | `obj.prosperityMultiplier` |
-| roadPreference | getRoadPreference | number | R | `obj.roadPreference` |
-| factionSize | getFactionSize | integer | R | `obj.factionSize` |
-| name | name | string | R | `obj.name` |
+| _antiSlavery | _antiSlavery | boolean | RW | `obj._antiSlavery = <value>` |
+| characteristicsData | characteristicsData | unknown | RW | `obj.characteristicsData = <value>` |
+| ranks | ranks | unknown | RW | `obj.ranks = <value>` |
 | allowSlavesWeapons | allowSlavesWeapons | boolean | RW | `obj.allowSlavesWeapons = <value>` |
+| fundamentalNPCType | fundamentalNPCType | unknown | RW | `obj.fundamentalNPCType = <value>` |
+| myLawEnforcementFaction | myLawEnforcementFaction | unknown | RW | `obj.myLawEnforcementFaction = <value>` |
+| isALawEnforcementFaction | isALawEnforcementFaction | boolean | RW | `obj.isALawEnforcementFaction = <value>` |
+| factionLeader | factionLeader | unknown | RW | `obj.factionLeader = <value>` |
+| diplomatMgr | diplomatMgr | unknown | RW | `obj.diplomatMgr = <value>` |
+| relations | relations | unknown | RW | `obj.relations = <value>` |
+| factionOwnerships | factionOwnerships | unknown | RW | `obj.factionOwnerships = <value>` |
+| warMgr | warMgr | unknown | RW | `obj.warMgr = <value>` |
+| tradeCulture | tradeCulture | unknown | RW | `obj.tradeCulture = <value>` |
+| raceSelector | raceSelector | unknown | RW | `obj.raceSelector = <value>` |
+| name | name | string | RW | `obj.name = <value>` |
+| notARealFaction | notARealFaction | boolean | RW | `obj.notARealFaction = <value>` |
+| roadPreference | roadPreference | number | RW | `obj.roadPreference = <value>` |
+| platoonKillList | platoonKillList | unknown | RW | `obj.platoonKillList = <value>` |
+| platoonRemoveList | platoonRemoveList | unknown | RW | `obj.platoonRemoveList = <value>` |
+| activePlatoons | activePlatoons | unknown | RW | `obj.activePlatoons = <value>` |
+| unloadedPlatoons | unloadedPlatoons | unknown | RW | `obj.unloadedPlatoons = <value>` |
+| periodicUpdateCounter_active | periodicUpdateCounter_active | integer | RW | `obj.periodicUpdateCounter_active = <value>` |
+| periodicUpdateCounter_unloaded | periodicUpdateCounter_unloaded | integer | RW | `obj.periodicUpdateCounter_unloaded = <value>` |
+| data | data | unknown | RW | `obj.data = <value>` |
+| isAI | isAI | unknown | RW | `obj.isAI = <value>` |
+| isPlayer | isPlayer | unknown | RW | `obj.isPlayer = <value>` |
+| spawnTimeStamp | spawnTimeStamp | integer | RW | `obj.spawnTimeStamp = <value>` |
 | diplomatTimeStamp | diplomatTimeStamp | integer | RW | `obj.diplomatTimeStamp = <value>` |
-| fundamentalNPCType | fundamentalNPCType | integer | RW | `obj.fundamentalNPCType = <value>` |
-| ranks | ranks | string | R | `obj.ranks` |
+| platoonIDs | platoonIDs | integer | RW | `obj.platoonIDs = <value>` |
+| p_TIME | p_TIME | number | RW | `obj.p_TIME = <value>` |
+| platoonPeriodicUpdateIndex | platoonPeriodicUpdateIndex | integer | RW | `obj.platoonPeriodicUpdateIndex = <value>` |
+| buildingSwaps | buildingSwaps | unknown | RW | `obj.buildingSwaps = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| getName | getName | `obj:getName(...)` |
-| setName | setName | `obj:setName(...)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| getProsperityMultiplier | getProsperityMultiplier | `obj:getProsperityMultiplier(...)` |
+| clearAndDestroy | clearAndDestroy | `obj:clearAndDestroy(...)` |
+| setup2 | setup2 | `obj:setup2(...)` |
+| setup3 | setup3 | `obj:setup3(...)` |
+| getNewPlatoonID | getNewPlatoonID | `obj:getNewPlatoonID(...)` |
+| resetPlatoonID | resetPlatoonID | `obj:resetPlatoonID(...)` |
+| createReplacementPlatoonForPlayerWhenSavegameIsCorrupt | createReplacementPlatoonForPlayerWhenSavegameIsCorrupt | `obj:createReplacementPlatoonForPlayerWhenSavegameIsCorrupt(...)` |
+| resetSquadPositions | resetSquadPositions | `obj:resetSquadPositions(...)` |
+| getData | getData | `obj:getData(...)` |
+| getDefaultDivision | getDefaultDivision | `obj:getDefaultDivision(...)` |
+| getFactionColorScheme | getFactionColorScheme | `obj:getFactionColorScheme(...)` |
+| _activateUnloadedPlatoons | _activateUnloadedPlatoons | `obj:_activateUnloadedPlatoons(...)` |
+| processKillList | processKillList | `obj:processKillList(...)` |
+| _NV_processKillList | _NV_processKillList | `obj:_NV_processKillList(...)` |
+| getFactionSize | getFactionSize | `obj:getFactionSize(...)` |
+| update | update | `obj:update(...)` |
+| periodicUpdateThreaded | periodicUpdateThreaded | `obj:periodicUpdateThreaded(...)` |
+| periodicUpdateMT | periodicUpdateMT | `obj:periodicUpdateMT(...)` |
 | isThePlayer | isThePlayer | `obj:isThePlayer(...)` |
 | isNotARealFaction | isNotARealFaction | `obj:isNotARealFaction(...)` |
-| isAntiSlavery | isAntiSlavery | `obj:isAntiSlavery(...)` |
-| isALawEnforcementFaction | isALawEnforcementFaction | `obj:isALawEnforcementFaction(...)` |
-| getLawEnforcementFaction | getLawEnforcementFaction | `obj:getLawEnforcementFaction(...)` |
-| getFactionSize | getFactionSize | `obj:getFactionSize(...)` |
-| getNumPlatoons | getNumPlatoons | `obj:getNumPlatoons(...)` |
-| getProsperityMultiplier | getProsperityMultiplier | `obj:getProsperityMultiplier(...)` |
 | getRoadPreference | getRoadPreference | `obj:getRoadPreference(...)` |
-| getRelation | getRelation | `obj:getRelation(...)` |
-| setRelation | setRelation | `obj:setRelation(...)` |
-| declareWar | declareWar | `obj:declareWar(...)` |
-| declarePeace | declarePeace | `obj:declarePeace(...)` |
-| createPlatoon | createPlatoon | `obj:createPlatoon(...)` |
+| isAntiSlavery | isAntiSlavery | `obj:isAntiSlavery(...)` |
+| getLawEnforcementFaction | getLawEnforcementFaction | `obj:getLawEnforcementFaction(...)` |
+| setName | setName | `obj:setName(...)` |
+| updateUnloadedPlatoons | updateUnloadedPlatoons | `obj:updateUnloadedPlatoons(...)` |
+| updateActivePlatoons | updateActivePlatoons | `obj:updateActivePlatoons(...)` |
+| spawnSquadMissionsUpdate | spawnSquadMissionsUpdate | `obj:spawnSquadMissionsUpdate(...)` |
+| _spawnASquad | _spawnASquad | `obj:_spawnASquad(...)` |
+
+## FactionLeader
+**Header:** `extern/KenshiLib/Include/kenshi/FactionLeader.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| faction | faction | unknown | RW | `obj.faction = <value>` |
+| biomeTerritory | biomeTerritory | unknown | RW | `obj.biomeTerritory = <value>` |
+| worstEnemy | worstEnemy | unknown | RW | `obj.worstEnemy = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## FactionManager
+**Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| participants | participants | unknown | RW | `obj.participants = <value>` |
+| addListMuto | addListMuto | unknown | RW | `obj.addListMuto = <value>` |
+| toAddList | toAddList | unknown | RW | `obj.toAddList = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| clearAndDestroy | clearAndDestroy | `obj:clearAndDestroy(...)` |
+| activateUnloadedPlatoons | activateUnloadedPlatoons | `obj:activateUnloadedPlatoons(...)` |
+| getFactionByName | getFactionByName | `obj:getFactionByName(...)` |
+| getFactionByStringID | getFactionByStringID | `obj:getFactionByStringID(...)` |
+| getEmptyFaction | getEmptyFaction | `obj:getEmptyFaction(...)` |
+| setupAndLinkAllFactions | setupAndLinkAllFactions | `obj:setupAndLinkAllFactions(...)` |
+| areAnyHostileCampaignsRunning | areAnyHostileCampaignsRunning | `obj:areAnyHostileCampaignsRunning(...)` |
+| getNumTempPlatoons | getNumTempPlatoons | `obj:getNumTempPlatoons(...)` |
+| updateMT | updateMT | `obj:updateMT(...)` |
+| updateThreaded | updateThreaded | `obj:updateThreaded(...)` |
+| _showDebugPlatoonMarkers | _showDebugPlatoonMarkers | `obj:_showDebugPlatoonMarkers(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## FactionRelations
+**Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| me | me | unknown | RW | `obj.me = <value>` |
+| playerRank | playerRank | integer | RW | `obj.playerRank = <value>` |
+| globalReputationTrust | globalReputationTrust | number | RW | `obj.globalReputationTrust = <value>` |
+| globalReputationForBadassery | globalReputationForBadassery | number | RW | `obj.globalReputationForBadassery = <value>` |
+| _factionRelations | _factionRelations | unknown | RW | `obj._factionRelations = <value>` |
+| defaultFactionRelation | defaultFactionRelation | number | RW | `obj.defaultFactionRelation = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
+| setupPhase2 | setupPhase2 | `obj:setupPhase2(...)` |
+| isEnemyByDefault | isEnemyByDefault | `obj:isEnemyByDefault(...)` |
+| reset | reset | `obj:reset(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## FactoryCallbackInterface
+**Header:** `extern/KenshiLib/Include/kenshi/PlayerInterface.h`
+
+## FlagCondition
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| key | (lua_Integer | integer | RW | `obj.key = <value>` |
+| want | want | boolean | RW | `obj.want = <value>` |
+| flags | flags | integer | RW | `obj.flags = <value>` |
+
+## FlockingTools
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| getOutOfTheWayOfCharacter | getOutOfTheWayOfCharacter | unknown | RW | `obj.getOutOfTheWayOfCharacter = <value>` |
+| currentPosition | currentPosition | Vector3 | RW | `obj.currentPosition = <value>` |
+| me | me | unknown | RW | `obj.me = <value>` |
+| combatMover | combatMover | unknown | RW | `obj.combatMover = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
+| setCurrentPosition | setCurrentPosition | `obj:setCurrentPosition(...)` |
+
+## FormationMover
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| me | me | unknown | RW | `obj.me = <value>` |
+| destination | destination | Vector3 | RW | `obj.destination = <value>` |
+| direction | direction | Vector3 | RW | `obj.direction = <value>` |
+| movementTarget | movementTarget | unknown | RW | `obj.movementTarget = <value>` |
+| currentFormationID | currentFormationID | integer | RW | `obj.currentFormationID = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| update | update | `obj:update(...)` |
+| stopFormationMode | stopFormationMode | `obj:stopFormationMode(...)` |
 
 ## GameData
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
@@ -653,32 +2100,37 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| visible | visible | boolean | RW | `obj.visible = <value>` |
-| category | category | string | RW | `obj.category = <value>` |
-| description | description | string | RW | `obj.description = <value>` |
-| fileTypes | fileTypes | string | RW | `obj.fileTypes = <value>` |
-| maxSize | maxSize | integer | RW | `obj.maxSize = <value>` |
-| maxValue | maxValue | integer | RW | `obj.maxValue = <value>` |
-| minValue | minValue | integer | RW | `obj.minValue = <value>` |
-| isSlider | isSlider | boolean | RW | `obj.isSlider = <value>` |
-| refID | refID | string | RW | `obj.refID = <value>` |
-| created | created | integer | RW | `obj.created = <value>` |
-| modified | modified | integer | RW | `obj.modified = <value>` |
 | validity | validity | integer | RW | `obj.validity = <value>` |
+| sourceContainer | sourceContainer | unknown | RW | `obj.sourceContainer = <value>` |
 | isStandalone | isStandalone | boolean | RW | `obj.isStandalone = <value>` |
 | id | id | integer | RW | `obj.id = <value>` |
 | readOnly | readOnly | boolean | RW | `obj.readOnly = <value>` |
 | name | name | string | RW | `obj.name = <value>` |
+| type | (lua_Integer | integer | RW | `obj.type = <value>` |
 | stringID | stringID | string | RW | `obj.stringID = <value>` |
 | isFromActiveFile | isFromActiveFile | boolean | RW | `obj.isFromActiveFile = <value>` |
+| instances | instances | unknown | RW | `obj.instances = <value>` |
 | currentID | currentID | integer | RW | `obj.currentID = <value>` |
+| activeValues | activeValues | unknown | RW | `obj.activeValues = <value>` |
+| bdata | bdata | unknown | RW | `obj.bdata = <value>` |
+| sdata | sdata | unknown | RW | `obj.sdata = <value>` |
+| idata | idata | unknown | RW | `obj.idata = <value>` |
+| fdata | fdata | unknown | RW | `obj.fdata = <value>` |
+| filesdata | filesdata | unknown | RW | `obj.filesdata = <value>` |
+| vecdata | vecdata | unknown | RW | `obj.vecdata = <value>` |
+| quatdata | quatdata | unknown | RW | `obj.quatdata = <value>` |
+| objectReferences | objectReferences | unknown | RW | `obj.objectReferences = <value>` |
 | createdIndex | createdIndex | integer | RW | `obj.createdIndex = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
 | isValid | isValid | `obj:isValid(...)` |
 | destroy | destroy | `obj:destroy(...)` |
+| initialise | initialise | `obj:initialise(...)` |
+| loadFromFile | loadFromFile | `obj:loadFromFile(...)` |
 | saveToFile | saveToFile | `obj:saveToFile(...)` |
 | isValueActive | isValueActive | `obj:isValueActive(...)` |
 | isRefActive | isRefActive | `obj:isRefActive(...)` |
@@ -694,7 +2146,101 @@
 | listExistsAndNotEmpty | listExistsAndNotEmpty | `obj:listExistsAndNotEmpty(...)` |
 | deleteInstancedObject | deleteInstancedObject | `obj:deleteInstancedObject(...)` |
 | getNewID | getNewID | `obj:getNewID(...)` |
+| getColorVec | getColorVec | `obj:getColorVec(...)` |
 | addDeletedInstance | addDeletedInstance | `obj:addDeletedInstance(...)` |
+
+## GameDataContainer
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| currentID | currentID | integer | RW | `obj.currentID = <value>` |
+| gamedataCatName | gamedataCatName | unknown | RW | `obj.gamedataCatName = <value>` |
+| gamedataID | gamedataID | unknown | RW | `obj.gamedataID = <value>` |
+| gamedataCatSID | gamedataCatSID | unknown | RW | `obj.gamedataCatSID = <value>` |
+| gamedataSID | gamedataSID | unknown | RW | `obj.gamedataSID = <value>` |
+| mainList | mainList | unknown | RW | `obj.mainList = <value>` |
+| name | name | string | RW | `obj.name = <value>` |
+| isBaseDatafile | isBaseDatafile | boolean | RW | `obj.isBaseDatafile = <value>` |
+| readOnly | readOnly | boolean | RW | `obj.readOnly = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| createNewData | createNewData | `obj:createNewData(...)` |
+| getDataByName | getDataByName | `obj:getDataByName(...)` |
+| removeAllDataOfType | removeAllDataOfType | `obj:removeAllDataOfType(...)` |
+| clearInstances | clearInstances | `obj:clearInstances(...)` |
+| clearButDontDestroy | clearButDontDestroy | `obj:clearButDontDestroy(...)` |
+| clearButDontDestroyPlatoons | clearButDontDestroyPlatoons | `obj:clearButDontDestroyPlatoons(...)` |
+| clearAndDestroy | clearAndDestroy | `obj:clearAndDestroy(...)` |
+| getNewID | getNewID | `obj:getNewID(...)` |
+| preLoadAllReferencePtrs | preLoadAllReferencePtrs | `obj:preLoadAllReferencePtrs(...)` |
+| clearAllReferencePtrs | clearAllReferencePtrs | `obj:clearAllReferencePtrs(...)` |
+| setName | setName | `obj:setName(...)` |
+
+## GameDataCopyStandalone
+**Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## GameDataHeader
+**Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| name | name | string | RW | `obj.name = <value>` |
+| author | author | string | RW | `obj.author = <value>` |
+| version | version | integer | RW | `obj.version = <value>` |
+| description | description | string | RW | `obj.description = <value>` |
+| dependencies | dependencies | unknown | RW | `obj.dependencies = <value>` |
+| references | references | unknown | RW | `obj.references = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## GameDataManager
+**Header:** `extern/KenshiLib/Include/kenshi/GameDataManager.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| reloadGameData | reloadGameData | `obj:reloadGameData(...)` |
+| postProcessingTheDatas | postProcessingTheDatas | `obj:postProcessingTheDatas(...)` |
+| getMapSector | getMapSector | `obj:getMapSector(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## GameDataReference
+**Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| values | values | unknown | RW | `obj.values = <value>` |
+| sid | sid | string | RW | `obj.sid = <value>` |
+| ptr | ptr | unknown | RW | `obj.ptr = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## GameDataValuePair
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| data | data | unknown | RW | `obj.data = <value>` |
+| val0 | val0 | integer | RW | `obj.val0 = <value>` |
 
 ## GameWorld
 **Header:** `extern/KenshiLib/Include/kenshi/GameWorld.h`
@@ -702,65 +2248,219 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| isPaused | isPaused | boolean | R | `obj.isPaused` |
-| frameSpeedMultiplier | getFrameSpeedMultiplier | number | R | `obj.frameSpeedMultiplier` |
+| tempSpawnsDisableTimer | tempSpawnsDisableTimer | number | RW | `obj.tempSpawnsDisableTimer = <value>` |
+| initialized | initialized | boolean | RW | `obj.initialized = <value>` |
+| render | render | unknown | RW | `obj.render = <value>` |
+| physics | physics | unknown | RW | `obj.physics = <value>` |
+| gamedata | gamedata | unknown | RW | `obj.gamedata = <value>` |
+| leveldata | leveldata | unknown | RW | `obj.leveldata = <value>` |
+| savedata | savedata | unknown | RW | `obj.savedata = <value>` |
+| theFactory | theFactory | unknown | RW | `obj.theFactory = <value>` |
+| factionMgr | factionMgr | unknown | RW | `obj.factionMgr = <value>` |
+| navmesh | navmesh | unknown | RW | `obj.navmesh = <value>` |
+| nodeList | nodeList | unknown | RW | `obj.nodeList = <value>` |
+| guiDisplayObject | guiDisplayObject | unknown | RW | `obj.guiDisplayObject = <value>` |
+| messageRoller | messageRoller | unknown | RW | `obj.messageRoller = <value>` |
+| ogreLogger | ogreLogger | unknown | RW | `obj.ogreLogger = <value>` |
+| steamEnabled | steamEnabled | boolean | RW | `obj.steamEnabled = <value>` |
+| baseMods | baseMods | unknown | RW | `obj.baseMods = <value>` |
+| baseModsNames | baseModsNames | unknown | RW | `obj.baseModsNames = <value>` |
+| activeMods | activeMods | unknown | RW | `obj.activeMods = <value>` |
+| availableModsByName | availableModsByName | unknown | RW | `obj.availableModsByName = <value>` |
+| availabelModsOrderedList | availabelModsOrderedList | unknown | RW | `obj.availabelModsOrderedList = <value>` |
+| player | player | unknown | RW | `obj.player = <value>` |
+| charactersWithLights | charactersWithLights | unknown | RW | `obj.charactersWithLights = <value>` |
+| sysMessageList | sysMessageList | unknown | RW | `obj.sysMessageList = <value>` |
+| updatePortraitsMap | updatePortraitsMap | unknown | RW | `obj.updatePortraitsMap = <value>` |
+| dynamicDestroyBuildingsList | dynamicDestroyBuildingsList | unknown | RW | `obj.dynamicDestroyBuildingsList = <value>` |
+| destroyListAE | destroyListAE | unknown | RW | `obj.destroyListAE = <value>` |
+| destroyListOE | destroyListOE | unknown | RW | `obj.destroyListOE = <value>` |
+| destroyListTBM | destroyListTBM | unknown | RW | `obj.destroyListTBM = <value>` |
+| frameSpeedMult | frameSpeedMult | number | RW | `obj.frameSpeedMult = <value>` |
+| deathParade | deathParade | unknown | RW | `obj.deathParade = <value>` |
+| deathParadeWasMeddledWith | deathParadeWasMeddledWith | boolean | RW | `obj.deathParadeWasMeddledWith = <value>` |
+| charUpdateListMain_inUse | charUpdateListMain_inUse | boolean | RW | `obj.charUpdateListMain_inUse = <value>` |
+| charUpdateListMain | charUpdateListMain_inUse | boolean | RW | `obj.charUpdateListMain = <value>` |
+| _AINonRenderThread | _AINonRenderThread | unknown | RW | `obj._AINonRenderThread = <value>` |
+| nestBatcherKillList | nestBatcherKillList | unknown | RW | `obj.nestBatcherKillList = <value>` |
+| killListPhase0 | killListPhase0 | unknown | RW | `obj.killListPhase0 = <value>` |
+| killListPhase1 | killListPhase1 | unknown | RW | `obj.killListPhase1 = <value>` |
+| killListPhase2 | killListPhase2 | unknown | RW | `obj.killListPhase2 = <value>` |
+| mainUpdateListRemovalQueue | mainUpdateListRemovalQueue | unknown | RW | `obj.mainUpdateListRemovalQueue = <value>` |
+| timeStamper | timeStamper | unknown | RW | `obj.timeStamper = <value>` |
+| zoneMgr | zoneMgr | unknown | RW | `obj.zoneMgr = <value>` |
+| debugFlag | debugFlag | boolean | RW | `obj.debugFlag = <value>` |
+| paused | paused | boolean | RW | `obj.paused = <value>` |
+| gameResetting | gameResetting | boolean | RW | `obj.gameResetting = <value>` |
+| audioThread | audioThread | unknown | RW | `obj.audioThread = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
+| startUpThreads | startUpThreads | `obj:startUpThreads(...)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| resetGame | resetGame | `obj:resetGame(...)` |
+| _clearAndDestroyGameWorldStuff | _clearAndDestroyGameWorldStuff | `obj:_clearAndDestroyGameWorldStuff(...)` |
+| initialisation | initialisation | `obj:initialisation(...)` |
+| initialisationGameData | initialisationGameData | `obj:initialisationGameData(...)` |
+| dailyUpdates | dailyUpdates | `obj:dailyUpdates(...)` |
+| errorToLogReleaseMode | errorToLogReleaseMode | `obj:errorToLogReleaseMode(...)` |
+| errorD | errorD | `obj:errorD(...)` |
+| logToSave | logToSave | `obj:logToSave(...)` |
+| log | log | `obj:log(...)` |
+| flushKillList | flushKillList | `obj:flushKillList(...)` |
+| allThreadQueuesAreClear | allThreadQueuesAreClear | `obj:allThreadQueuesAreClear(...)` |
+| initBaseMods | initBaseMods | `obj:initBaseMods(...)` |
+| initModsList | initModsList | `obj:initModsList(...)` |
+| getModIndex | getModIndex | `obj:getModIndex(...)` |
+| getLightLevel | getLightLevel | `obj:getLightLevel(...)` |
+| findValidSpawnPos | findValidSpawnPos | `obj:findValidSpawnPos(...)` |
+| togglePause | togglePause | `obj:togglePause(...)` |
+| getFrameSpeedMultiplier | getFrameSpeedMultiplier | `obj:getFrameSpeedMultiplier(...)` |
+| setFrameSpeedMultiplier | setFrameSpeedMultiplier | `obj:setFrameSpeedMultiplier(...)` |
+| setGameSpeed | setGameSpeed | `obj:setGameSpeed(...)` |
+| userPause | userPause | `obj:userPause(...)` |
+| isPaused | isPaused | `obj:isPaused(...)` |
 | getCameraCenter | getCameraCenter | `obj:getCameraCenter(...)` |
 | getCameraPos | getCameraPos | `obj:getCameraPos(...)` |
-| isPaused | isPaused | `obj:isPaused(...)` |
-| getFrameSpeedMultiplier | getFrameSpeedMultiplier | `obj:getFrameSpeedMultiplier(...)` |
-| getLightLevel | getLightLevel | `obj:getLightLevel(...)` |
-| setPaused | setPaused | `obj:setPaused(...)` |
-| setGameSpeed | setGameSpeed | `obj:setGameSpeed(...)` |
-| setFrameSpeedMultiplier | setFrameSpeedMultiplier | `obj:setFrameSpeedMultiplier(...)` |
-| showMessage | showMessage | `obj:showMessage(...)` |
-| playSound | playSound | `obj:playSound(...)` |
-| getPlayer | getPlayer | `obj:getPlayer(...)` |
+| fixNaNPosition | fixNaNPosition | `obj:fixNaNPosition(...)` |
+| getWindSpeed | getWindSpeed | `obj:getWindSpeed(...)` |
+| isLoadingFromASaveGame | isLoadingFromASaveGame | `obj:isLoadingFromASaveGame(...)` |
+| hideContextMenu | hideContextMenu | `obj:hideContextMenu(...)` |
+| showPlayerAMessage_withLog | showPlayerAMessage_withLog | `obj:showPlayerAMessage_withLog(...)` |
+| showPlayerAMessage | showPlayerAMessage | `obj:showPlayerAMessage(...)` |
+| showPlayerAMessageD | showPlayerAMessageD | `obj:showPlayerAMessageD(...)` |
+| mainLoop_GPUSensitiveStuff | mainLoop_GPUSensitiveStuff | `obj:mainLoop_GPUSensitiveStuff(...)` |
+| _NV_mainLoop_GPUSensitiveStuff | _NV_mainLoop_GPUSensitiveStuff | `obj:_NV_mainLoop_GPUSensitiveStuff(...)` |
+| clearPortaitsUpdate | clearPortaitsUpdate | `obj:clearPortaitsUpdate(...)` |
+| processSysMessages | processSysMessages | `obj:processSysMessages(...)` |
+| destroyDeathParade | destroyDeathParade | `obj:destroyDeathParade(...)` |
+| processKeys | processKeys | `obj:processKeys(...)` |
+| processThreadMessages | processThreadMessages | `obj:processThreadMessages(...)` |
+| charsUpdate | charsUpdate | `obj:charsUpdate(...)` |
+| charsUpdateUT | charsUpdateUT | `obj:charsUpdateUT(...)` |
+| charsUpdatePaused | charsUpdatePaused | `obj:charsUpdatePaused(...)` |
+| charsUpdateDeathParade | charsUpdateDeathParade | `obj:charsUpdateDeathParade(...)` |
+| threadSafeRagdollUpdates | threadSafeRagdollUpdates | `obj:threadSafeRagdollUpdates(...)` |
+| processAttachmentsKillList | processAttachmentsKillList | `obj:processAttachmentsKillList(...)` |
+| processKillList | processKillList | `obj:processKillList(...)` |
+| processUpdateRemovalList | processUpdateRemovalList | `obj:processUpdateRemovalList(...)` |
+| loadAllPlatoons | loadAllPlatoons | `obj:loadAllPlatoons(...)` |
+| reCalculateFortificationInsideOutsideStateForAllCharacters | reCalculateFortificationInsideOutsideStateForAllCharacters | `obj:reCalculateFortificationInsideOutsideStateForAllCharacters(...)` |
+| getTimeStamp | getTimeStamp | `obj:getTimeStamp(...)` |
+| getTimeFromStamp_inGameHours | getTimeFromStamp_inGameHours | `obj:getTimeFromStamp_inGameHours(...)` |
+| getLengthOfHourInRealSeconds | getLengthOfHourInRealSeconds | `obj:getLengthOfHourInRealSeconds(...)` |
 
-## Gear
-**Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
-
-### Methods
-| Lua Name | C++ Method | Example |
-|---|---|---|
-| isAFactionUniform | isAFactionUniform | `obj:isAFactionUniform(...)` |
-| isPlayerCrafted | isPlayerCrafted | `obj:isPlayerCrafted(...)` |
-
-## Global
-**Header:** `???`
-
-## Hand
-**Header:** `???`
+## GameplayOptions
+**Header:** `extern/KenshiLib/Include/kenshi/GameplayOptions.h`
 
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| isValid | isValid | boolean | R | `obj.isValid` |
-| isNull | isNull | boolean | R | `obj.isNull` |
-| type | type | integer | RW | `obj.type = <value>` |
-| index | index | integer | RW | `obj.index = <value>` |
-| serial | serial | integer | RW | `obj.serial = <value>` |
-| container | container | integer | RW | `obj.container = <value>` |
-| containerSerial | containerSerial | integer | RW | `obj.containerSerial = <value>` |
+| deathFrequency | deathFrequency | number | RW | `obj.deathFrequency = <value>` |
+| easyProspecting | easyProspecting | boolean | RW | `obj.easyProspecting = <value>` |
+| globalDamageMultiplier | globalDamageMultiplier | number | RW | `obj.globalDamageMultiplier = <value>` |
+| buildingSpeed | buildingSpeed | number | RW | `obj.buildingSpeed = <value>` |
+| numNestsMult | numNestsMult | number | RW | `obj.numNestsMult = <value>` |
+| researchSpeed | researchSpeed | number | RW | `obj.researchSpeed = <value>` |
+| productionSpeed | productionSpeed | number | RW | `obj.productionSpeed = <value>` |
+| hungerTime | hungerTime | number | RW | `obj.hungerTime = <value>` |
+| banditsLootPlayer | banditsLootPlayer | boolean | RW | `obj.banditsLootPlayer = <value>` |
+| animalsEat | animalsEat | boolean | RW | `obj.animalsEat = <value>` |
+| difficultHealing | difficultHealing | boolean | RW | `obj.difficultHealing = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| isValid | isValid | `obj:isValid(...)` |
-| isNull | isNull | `obj:isNull(...)` |
-| getType | getType | `obj:getType(...)` |
-| getIndex | getIndex | `obj:getIndex(...)` |
-| getSerial | getSerial | `obj:getSerial(...)` |
-| getContainer | getContainer | `obj:getContainer(...)` |
-| getContainerSerial | getContainerSerial | `obj:getContainerSerial(...)` |
-| getCharacter | getCharacter | `obj:getCharacter(...)` |
-| getPlatoon | getPlatoon | `obj:getPlatoon(...)` |
-| getBuilding | getBuilding | `obj:getBuilding(...)` |
-| getItem | getItem | `obj:getItem(...)` |
-| getTown | getTown | `obj:getTown(...)` |
+| reset | reset | `obj:reset(...)` |
+| getStarvationTimeInHours | getStarvationTimeInHours | `obj:getStarvationTimeInHours(...)` |
+
+## Gear
+**Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| isUniform | isUniform | unknown | RW | `obj.isUniform = <value>` |
+| value | value | integer | RW | `obj.value = <value>` |
+| crafter | crafter | string | RW | `obj.crafter = <value>` |
+| level | level | number | RW | `obj.level = <value>` |
+| level_0_100 | level_0_100 | integer | RW | `obj.level_0_100 = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| isGear | isGear | `obj:isGear(...)` |
+| _NV_isGear | _NV_isGear | `obj:_NV_isGear(...)` |
+| getLevel01 | getLevel01 | `obj:getLevel01(...)` |
+| _NV_getLevel01 | _NV_getLevel01 | `obj:_NV_getLevel01(...)` |
+| getLevel | getLevel | `obj:getLevel(...)` |
+| _NV_getLevel | _NV_getLevel | `obj:_NV_getLevel(...)` |
+| isAFactionUniform | isAFactionUniform | `obj:isAFactionUniform(...)` |
+| _NV_isAFactionUniform | _NV_isAFactionUniform | `obj:_NV_isAFactionUniform(...)` |
+| isPlayerCrafted | isPlayerCrafted | `obj:isPlayerCrafted(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## Global
+**Header:** `???`
+
+## HasRoomCache
+**Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| itemStates | itemStates | unknown | RW | `obj.itemStates = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| modified | modified | `obj:modified(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## HealthPartStatus
+**Header:** `extern/KenshiLib/Include/kenshi/MedicalSystem.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| data | data | unknown | RW | `obj.data = <value>` |
+| whatAmI | (lua_Integer | integer | RW | `obj.whatAmI = <value>` |
+| medical | medical | unknown | RW | `obj.medical = <value>` |
+| me | me | unknown | RW | `obj.me = <value>` |
+| side | (lua_Integer | integer | RW | `obj.side = <value>` |
+| robotLimb | robotLimb | unknown | RW | `obj.robotLimb = <value>` |
+| selfHealing | selfHealing | boolean | RW | `obj.selfHealing = <value>` |
+| collapses | collapses | boolean | RW | `obj.collapses = <value>` |
+| fatal | fatal | boolean | RW | `obj.fatal = <value>` |
+| KOMult | KOMult | number | RW | `obj.KOMult = <value>` |
+| hitChance | hitChance | number | RW | `obj.hitChance = <value>` |
+| hitChanceMult | hitChanceMult | number | RW | `obj.hitChanceMult = <value>` |
+| flesh | flesh | number | RW | `obj.flesh = <value>` |
+| fleshStun | fleshStun | number | RW | `obj.fleshStun = <value>` |
+| bandaging | bandaging | number | RW | `obj.bandaging = <value>` |
+| juryRigging | juryRigging | number | RW | `obj.juryRigging = <value>` |
+| wearDamage | wearDamage | number | RW | `obj.wearDamage = <value>` |
+| _maxHealth | _maxHealth | number | RW | `obj._maxHealth = <value>` |
+| age | age | number | RW | `obj.age = <value>` |
+| HPMult | HPMult | number | RW | `obj.HPMult = <value>` |
+| derivedFleshHealthPercent | derivedFleshHealthPercent | number | RW | `obj.derivedFleshHealthPercent = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| isRobotic | isRobotic | `obj:isRobotic(...)` |
+| getData | getData | `obj:getData(...)` |
+| getRobotLimbEnum | getRobotLimbEnum | `obj:getRobotLimbEnum(...)` |
+| update | update | `obj:update(...)` |
+| updateDerivedHealths | updateDerivedHealths | `obj:updateDerivedHealths(...)` |
+| getWorstDamage | getWorstDamage | `obj:getWorstDamage(...)` |
+| getExtraBleedingAmount | getExtraBleedingAmount | `obj:getExtraBleedingAmount(...)` |
+| isDead | isDead | `obj:isDead(...)` |
+| getBloodynessMult | getBloodynessMult | `obj:getBloodynessMult(...)` |
+| maxHealth | maxHealth | `obj:maxHealth(...)` |
+| healthAsPercent | healthAsPercent | `obj:healthAsPercent(...)` |
 
 ## InputHandler
 **Header:** `extern/KenshiLib/Include/kenshi/Globals.h`
@@ -768,49 +2468,74 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
+| commands | commands | unknown | RW | `obj.commands = <value>` |
+| map | map | unknown | RW | `obj.map = <value>` |
+| editMap | editMap | unknown | RW | `obj.editMap = <value>` |
+| events | events | unknown | RW | `obj.events = <value>` |
+| keyboard | (lua_Integer | integer | RW | `obj.keyboard = <value>` |
+| keyNameMap | keyNameMap | unknown | RW | `obj.keyNameMap = <value>` |
+| controlEnabled | controlEnabled | boolean | RW | `obj.controlEnabled = <value>` |
+| gameMode | (lua_Integer | integer | RW | `obj.gameMode = <value>` |
 | ctrl | ctrl | boolean | RW | `obj.ctrl = <value>` |
 | shift | shift | boolean | RW | `obj.shift = <value>` |
 | alt | alt | boolean | RW | `obj.alt = <value>` |
-| up | up | boolean | R | `obj.up` |
-| down | down | boolean | R | `obj.down` |
-| left | left | boolean | R | `obj.left` |
-| right | right | boolean | R | `obj.right` |
-| space | space | boolean | R | `obj.space` |
-| pgup | pgup | boolean | R | `obj.pgup` |
-| pgdn | pgdn | boolean | R | `obj.pgdn` |
-| comma | comma | boolean | R | `obj.comma` |
-| period | period | boolean | R | `obj.period` |
-| f1 | f1 | boolean | R | `obj.f1` |
-| f2 | f2 | boolean | R | `obj.f2` |
-| escape | escape | boolean | R | `obj.escape` |
-| del | del | boolean | R | `obj.del` |
-| zoomin | zoomin | boolean | R | `obj.zoomin` |
-| zoomout | zoomout | boolean | R | `obj.zoomout` |
-| rotate | rotate | boolean | R | `obj.rotate` |
-| highlight | highlight | boolean | R | `obj.highlight` |
-| mLeft | mLeft | boolean | R | `obj.mLeft` |
-| mRight | mRight | boolean | R | `obj.mRight` |
-| mLDown | mLDown | boolean | R | `obj.mLDown` |
-| mRDown | mRDown | boolean | R | `obj.mRDown` |
-| mLUp | mLUp | boolean | R | `obj.mLUp` |
-| mRUp | mRUp | boolean | R | `obj.mRUp` |
-| mWheel | mWheel | integer | R | `obj.mWheel` |
-| mPos | mPos | number | R | `obj.mPos` |
-| mPosAbs | mPosAbs | number | R | `obj.mPosAbs` |
+| up | up | boolean | RW | `obj.up = <value>` |
+| down | down | boolean | RW | `obj.down = <value>` |
+| left | left | boolean | RW | `obj.left = <value>` |
+| right | right | boolean | RW | `obj.right = <value>` |
+| space | space | boolean | RW | `obj.space = <value>` |
+| pgup | pgup | boolean | RW | `obj.pgup = <value>` |
+| pgdn | pgdn | boolean | RW | `obj.pgdn = <value>` |
+| comma | comma | unknown | RW | `obj.comma = <value>` |
+| period | period | boolean | RW | `obj.period = <value>` |
+| f1 | f1 | boolean | RW | `obj.f1 = <value>` |
+| f2 | f2 | boolean | RW | `obj.f2 = <value>` |
+| escape | escape | boolean | RW | `obj.escape = <value>` |
+| del | del | boolean | RW | `obj.del = <value>` |
+| escape_msg | escape_msg | boolean | RW | `obj.escape_msg = <value>` |
+| zoomin | zoomin | boolean | RW | `obj.zoomin = <value>` |
+| zoomout | zoomout | boolean | RW | `obj.zoomout = <value>` |
+| buildTiltInc | buildTiltInc | boolean | RW | `obj.buildTiltInc = <value>` |
+| buildTiltDec | buildTiltDec | boolean | RW | `obj.buildTiltDec = <value>` |
+| rotate | rotate | boolean | RW | `obj.rotate = <value>` |
+| rotRight | rotRight | boolean | RW | `obj.rotRight = <value>` |
+| rotLeft | rotLeft | boolean | RW | `obj.rotLeft = <value>` |
+| tiltDown | tiltDown | boolean | RW | `obj.tiltDown = <value>` |
+| tiltUp | tiltUp | boolean | RW | `obj.tiltUp = <value>` |
+| highlight | highlight | boolean | RW | `obj.highlight = <value>` |
+| mLeft | mLeft | boolean | RW | `obj.mLeft = <value>` |
+| mRight | mRight | boolean | RW | `obj.mRight = <value>` |
+| lastMLeft | lastMLeft | boolean | RW | `obj.lastMLeft = <value>` |
+| lastMRight | lastMRight | boolean | RW | `obj.lastMRight = <value>` |
+| mLDown | mLDown | boolean | RW | `obj.mLDown = <value>` |
+| mRDown | mRDown | boolean | RW | `obj.mRDown = <value>` |
+| mLUp | mLUp | boolean | RW | `obj.mLUp = <value>` |
+| mRUp | mRUp | boolean | RW | `obj.mRUp = <value>` |
+| swapMouseButtons | swapMouseButtons | boolean | RW | `obj.swapMouseButtons = <value>` |
+| mPos | mPos | unknown | RW | `obj.mPos = <value>` |
+| mPosAbs | mPosAbs | unknown | RW | `obj.mPosAbs = <value>` |
+| mSpeed | mSpeed | Vector3 | RW | `obj.mSpeed = <value>` |
+| mWheel | mWheel | integer | RW | `obj.mWheel = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| isKeyState | isKeyState | `obj:isKeyState(...)` |
-| isBound | isBound | `obj:isBound(...)` |
-| sendEvent | sendEvent | `obj:sendEvent(...)` |
+| getKeyUTF8 | getKeyUTF8 | `obj:getKeyUTF8(...)` |
+| parseKey | parseKey | `obj:parseKey(...)` |
+| keyDownEvent | keyDownEvent | `obj:keyDownEvent(...)` |
+| keyUpEvent | keyUpEvent | `obj:keyUpEvent(...)` |
+| clearMessages | clearMessages | `obj:clearMessages(...)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
+| initialise | initialise | `obj:initialise(...)` |
 | bind | bind | `obj:bind(...)` |
-| unbind | unbind | `obj:unbind(...)` |
 | unbindAll | unbindAll | `obj:unbindAll(...)` |
-| getMousePos | getMousePos | `obj:getMousePos(...)` |
-| getMousePosAbs | getMousePosAbs | `obj:getMousePosAbs(...)` |
-| getMouseWheel | getMouseWheel | `obj:getMouseWheel(...)` |
-| getModifiers | getModifiers | `obj:getModifiers(...)` |
+| isKeyState | isKeyState | `obj:isKeyState(...)` |
+| getMode | getMode | `obj:getMode(...)` |
+| sendEvent | sendEvent | `obj:sendEvent(...)` |
+| loadConfig | loadConfig | `obj:loadConfig(...)` |
+| saveConfig | saveConfig | `obj:saveConfig(...)` |
+| keyString | keyString | `obj:keyString(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 
 ## Inventory
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
@@ -818,35 +2543,35 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| hasRoomCache | hasRoomCache | integer | R | `obj.hasRoomCache` |
+| hasRoomCache | (lua_Integer | integer | RW | `obj.hasRoomCache = <value>` |
+| _allItems | _allItems | unknown | RW | `obj._allItems = <value>` |
+| sections | sections | unknown | RW | `obj.sections = <value>` |
+| sectionsInSearchOrder | sectionsInSearchOrder | unknown | RW | `obj.sectionsInSearchOrder = <value>` |
+| callbackObject | callbackObject | unknown | RW | `obj.callbackObject = <value>` |
+| owner | owner | unknown | RW | `obj.owner = <value>` |
 | totalWeight | totalWeight | number | RW | `obj.totalWeight = <value>` |
-| name | name | string | RW | `obj.name = <value>` |
-| width | width | integer | RW | `obj.width = <value>` |
-| height | height | integer | RW | `obj.height = <value>` |
-| armourOnly | armourOnly | boolean | RW | `obj.armourOnly = <value>` |
-| stackingBonusMin | stackingBonusMin | integer | RW | `obj.stackingBonusMin = <value>` |
-| stackingBonusMult | stackingBonusMult | number | RW | `obj.stackingBonusMult = <value>` |
-| itemsLimit | itemsLimit | integer | RW | `obj.itemsLimit = <value>` |
-| weightMultiplier | weightMultiplier | number | RW | `obj.weightMultiplier = <value>` |
-| totalWeight | totalWeight | number | R | `obj.totalWeight` |
-| isAnEquippedItemSection | isAnEquippedItemSection | boolean | RW | `obj.isAnEquippedItemSection = <value>` |
-| containerSlot | containerSlot | boolean | RW | `obj.containerSlot = <value>` |
-| enabled | enabled | boolean | RW | `obj.enabled = <value>` |
-| x | x | integer | RW | `obj.x = <value>` |
-| y | y | integer | RW | `obj.y = <value>` |
-| w | w | integer | RW | `obj.w = <value>` |
-| h | h | integer | RW | `obj.h = <value>` |
-| item | item | unknown | W | `obj.item = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 | clearAll | clearAll | `obj:clearAll(...)` |
 | notifyModified | notifyModified | `obj:notifyModified(...)` |
+| initialiseNewSection | initialiseNewSection | `obj:initialiseNewSection(...)` |
+| _NV_initialiseNewSection | _NV_initialiseNewSection | `obj:_NV_initialiseNewSection(...)` |
 | removeAllSections | removeAllSections | `obj:removeAllSections(...)` |
+| getSection | getSection | `obj:getSection(...)` |
+| getSectionOfType | getSectionOfType | `obj:getSectionOfType(...)` |
+| getCallbackCharacter | getCallbackCharacter | `obj:getCallbackCharacter(...)` |
+| hasItemType | hasItemType | `obj:hasItemType(...)` |
 | hasStolenItems | hasStolenItems | `obj:hasStolenItems(...)` |
+| getSecondaryWeapon | getSecondaryWeapon | `obj:getSecondaryWeapon(...)` |
+| getPrimaryWeapon | getPrimaryWeapon | `obj:getPrimaryWeapon(...)` |
+| hasItemFunction | hasItemFunction | `obj:hasItemFunction(...)` |
+| getBestItemWithFunction | getBestItemWithFunction | `obj:getBestItemWithFunction(...)` |
 | hasWeaponEquipped | hasWeaponEquipped | `obj:hasWeaponEquipped(...)` |
 | isAContainer | isAContainer | `obj:isAContainer(...)` |
+| getOwner | getOwner | `obj:getOwner(...)` |
 | isEmpty | isEmpty | `obj:isEmpty(...)` |
 | recalculateTotalWeight | recalculateTotalWeight | `obj:recalculateTotalWeight(...)` |
 | getTotalWeight | getTotalWeight | `obj:getTotalWeight(...)` |
@@ -856,6 +2581,120 @@
 | refreshGui | refreshGui | `obj:refreshGui(...)` |
 | _NV_refreshGui | _NV_refreshGui | `obj:_NV_refreshGui(...)` |
 | autoArrange | autoArrange | `obj:autoArrange(...)` |
+| getCallbackObject | getCallbackObject | `obj:getCallbackObject(...)` |
+
+## InventoryItemBase
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| manufacturerData | manufacturerData | unknown | RW | `obj.manufacturerData = <value>` |
+| materialData | materialData | unknown | RW | `obj.materialData = <value>` |
+| coloriseData | coloriseData | unknown | RW | `obj.coloriseData = <value>` |
+| isInInventory | isInInventory | boolean | RW | `obj.isInInventory = <value>` |
+| inventoryPos | inventoryPos | unknown | RW | `obj.inventoryPos = <value>` |
+| inventorySection | inventorySection | string | RW | `obj.inventorySection = <value>` |
+| slotType | (lua_Integer | integer | RW | `obj.slotType = <value>` |
+| originalFullChargeAmount | originalFullChargeAmount | number | RW | `obj.originalFullChargeAmount = <value>` |
+| chargesLeft | chargesLeft | number | RW | `obj.chargesLeft = <value>` |
+| quality | quality | number | RW | `obj.quality = <value>` |
+| weight | weight | number | RW | `obj.weight = <value>` |
+| itemFunction | (lua_Integer | integer | RW | `obj.itemFunction = <value>` |
+| isTradeItem | isTradeItem | boolean | RW | `obj.isTradeItem = <value>` |
+| isEquipped | isEquipped | boolean | RW | `obj.isEquipped = <value>` |
+| isUnique | isUnique | boolean | RW | `obj.isUnique = <value>` |
+| quantity | quantity | integer | RW | `obj.quantity = <value>` |
+| itemWidth | itemWidth | integer | RW | `obj.itemWidth = <value>` |
+| itemHeight | itemHeight | integer | RW | `obj.itemHeight = <value>` |
+| deathItem | deathItem | boolean | RW | `obj.deathItem = <value>` |
+| objectType | (lua_Integer | integer | RW | `obj.objectType = <value>` |
+| properOwner | properOwner | unknown | RW | `obj.properOwner = <value>` |
+| _whosInventoryWeAreIn | _whosInventoryWeAreIn | unknown | RW | `obj._whosInventoryWeAreIn = <value>` |
+| _isResearchArtifact | _isResearchArtifact | boolean | RW | `obj._isResearchArtifact = <value>` |
+| itemGroup | itemGroup | unknown | RW | `obj.itemGroup = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| deactivate | deactivate | `obj:deactivate(...)` |
+| resetAfterCopy | resetAfterCopy | `obj:resetAfterCopy(...)` |
+| resetCharges | resetCharges | `obj:resetCharges(...)` |
+| getItemType | getItemType | `obj:getItemType(...)` |
+| getItemWeightSingle | getItemWeightSingle | `obj:getItemWeightSingle(...)` |
+| _NV_getItemWeightSingle | _NV_getItemWeightSingle | `obj:_NV_getItemWeightSingle(...)` |
+| getItemWeight | getItemWeight | `obj:getItemWeight(...)` |
+| _NV_getItemWeight | _NV_getItemWeight | `obj:_NV_getItemWeight(...)` |
+| getAvgPrice | getAvgPrice | `obj:getAvgPrice(...)` |
+| getValueSingle | getValueSingle | `obj:getValueSingle(...)` |
+| _NV_getValueSingle | _NV_getValueSingle | `obj:_NV_getValueSingle(...)` |
+| getValueAll | getValueAll | `obj:getValueAll(...)` |
+| _NV_getValueAll | _NV_getValueAll | `obj:_NV_getValueAll(...)` |
+| getMaxAffordableNum | getMaxAffordableNum | `obj:getMaxAffordableNum(...)` |
+| _NV_getMaxAffordableNum | _NV_getMaxAffordableNum | `obj:_NV_getMaxAffordableNum(...)` |
+| getInventory | getInventory | `obj:getInventory(...)` |
+| _NV_getInventory | _NV_getInventory | `obj:_NV_getInventory(...)` |
+| onGround | onGround | `obj:onGround(...)` |
+| isResearchArtifact | isResearchArtifact | `obj:isResearchArtifact(...)` |
+| getLevel | getLevel | `obj:getLevel(...)` |
+| _NV_getLevel | _NV_getLevel | `obj:_NV_getLevel(...)` |
+| getItemSound | getItemSound | `obj:getItemSound(...)` |
+| isStolen | isStolen | `obj:isStolen(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| merchantPriceMod | merchantPriceMod | `obj:merchantPriceMod(...)` |
+
+## InventorySection
+**Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| name | name | string | RW | `obj.name = <value>` |
+| width | width | integer | RW | `obj.width = <value>` |
+| height | height | integer | RW | `obj.height = <value>` |
+| armourOnly | armourOnly | boolean | RW | `obj.armourOnly = <value>` |
+| items | items | unknown | RW | `obj.items = <value>` |
+| content | content | unknown | RW | `obj.content = <value>` |
+| stackingBonusMin | stackingBonusMin | integer | RW | `obj.stackingBonusMin = <value>` |
+| stackingBonusMult | stackingBonusMult | number | RW | `obj.stackingBonusMult = <value>` |
+| veryLimitedSlot | veryLimitedSlot | unknown | RW | `obj.veryLimitedSlot = <value>` |
+| itemsLimit | itemsLimit | integer | RW | `obj.itemsLimit = <value>` |
+| weightMultiplier | weightMultiplier | number | RW | `obj.weightMultiplier = <value>` |
+| totalWeight | totalWeight | number | RW | `obj.totalWeight = <value>` |
+| isAnEquippedItemSection | isAnEquippedItemSection | boolean | RW | `obj.isAnEquippedItemSection = <value>` |
+| limitedSlot | (lua_Integer | integer | RW | `obj.limitedSlot = <value>` |
+| containerSlot | containerSlot | boolean | RW | `obj.containerSlot = <value>` |
+| callbackObject | callbackObject | unknown | RW | `obj.callbackObject = <value>` |
+| parentInventory | parentInventory | unknown | RW | `obj.parentInventory = <value>` |
+| enabled | enabled | boolean | RW | `obj.enabled = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| notifyModified | notifyModified | `obj:notifyModified(...)` |
+| getItemAt | getItemAt | `obj:getItemAt(...)` |
+| hasItemType | hasItemType | `obj:hasItemType(...)` |
+| autoArrange | autoArrange | `obj:autoArrange(...)` |
+| _NV_autoArrange | _NV_autoArrange | `obj:_NV_autoArrange(...)` |
+| getNumItems | getNumItems | `obj:getNumItems(...)` |
+| isEmpty | isEmpty | `obj:isEmpty(...)` |
+| clearAllItems | clearAllItems | `obj:clearAllItems(...)` |
+| getLimitedSlot | getLimitedSlot | `obj:getLimitedSlot(...)` |
+| applyStackingBonuses | applyStackingBonuses | `obj:applyStackingBonuses(...)` |
+| recalculateTotalWeight | recalculateTotalWeight | `obj:recalculateTotalWeight(...)` |
+| setWeightMultiplier | setWeightMultiplier | `obj:setWeightMultiplier(...)` |
+| setStackingBonus | setStackingBonus | `obj:setStackingBonus(...)` |
+| getMaxStack | getMaxStack | `obj:getMaxStack(...)` |
+| clearVeryLimitedSlot | clearVeryLimitedSlot | `obj:clearVeryLimitedSlot(...)` |
+| getEnabled | getEnabled | `obj:getEnabled(...)` |
+| setEnabled | setEnabled | `obj:setEnabled(...)` |
+| setItemsLimitCount | setItemsLimitCount | `obj:setItemsLimitCount(...)` |
+| getItemsLimitReached | getItemsLimitReached | `obj:getItemsLimitReached(...)` |
+| getInventory | getInventory | `obj:getInventory(...)` |
+| getFillPercentage | getFillPercentage | `obj:getFillPercentage(...)` |
+| getItem | getItem | `obj:getItem(...)` |
+| resize | resize | `obj:resize(...)` |
 
 ## Item
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
@@ -863,61 +2702,166 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| isResearchArtifact | isResearchArtifact | boolean | R | `obj.isResearchArtifact` |
-| isEquipped | isEquipped | boolean | RW | `obj.isEquipped = <value>` |
-| onGround | onGround | boolean | R | `obj.onGround` |
-| isValid | isValid | boolean | R | `obj.isValid` |
-| isInInventory | isInInventory | boolean | RW | `obj.isInInventory = <value>` |
-| isTradeItem | isTradeItem | boolean | RW | `obj.isTradeItem = <value>` |
-| isUnique | isUnique | boolean | RW | `obj.isUnique = <value>` |
-| deathItem | deathItem | boolean | RW | `obj.deathItem = <value>` |
-| quality | quality | number | RW | `obj.quality = <value>` |
-| itemWeight | getItemWeight | number | R | `obj.itemWeight` |
-| itemWeightSingle | getItemWeightSingle | number | R | `obj.itemWeightSingle` |
-| originalFullChargeAmount | originalFullChargeAmount | number | RW | `obj.originalFullChargeAmount = <value>` |
-| chargesLeft | chargesLeft | number | RW | `obj.chargesLeft = <value>` |
-| level | getLevel | integer | R | `obj.level` |
-| quantity | quantity | integer | RW | `obj.quantity = <value>` |
-| slotType | slotType | integer | RW | `obj.slotType = <value>` |
-| itemFunction | itemFunction | integer | RW | `obj.itemFunction = <value>` |
-| itemWidth | itemWidth | integer | RW | `obj.itemWidth = <value>` |
-| itemHeight | itemHeight | integer | RW | `obj.itemHeight = <value>` |
-| objectType | objectType | integer | RW | `obj.objectType = <value>` |
-| inventorySection | inventorySection | string | RW | `obj.inventorySection = <value>` |
-| inventoryPos | inventoryPos | integer | R | `obj.inventoryPos` |
-| visible | getVisible | boolean | R | `obj.visible` |
-| athleticsMult | val | number | R | `obj.athleticsMult` |
-| stealthMult | val | number | R | `obj.stealthMult` |
-| combatSpeedMult | val | number | R | `obj.combatSpeedMult` |
-| classType | getClassType | integer | R | `obj.classType` |
-| combatSkillBonus | val | integer | R | `obj.combatSkillBonus` |
-| modelName | getModelName | string | R | `obj.modelName` |
-| isResearchArtifact | _isResearchArtifact | unknown | W | `obj.isResearchArtifact = <value>` |
+| physicalShouldExist | physicalShouldExist | boolean | RW | `obj.physicalShouldExist = <value>` |
+| existAsBareWeapon | existAsBareWeapon | boolean | RW | `obj.existAsBareWeapon = <value>` |
+| persistant | persistant | unknown | RW | `obj.persistant = <value>` |
+| visible | visible | boolean | RW | `obj.visible = <value>` |
+| physical | physicalShouldExist | boolean | RW | `obj.physical = <value>` |
+| _isPhysical | _isPhysical | boolean | RW | `obj._isPhysical = <value>` |
+| physicalEntity | physicalEntity | unknown | RW | `obj.physicalEntity = <value>` |
+| creatingPhysical | creatingPhysical | boolean | RW | `obj.creatingPhysical = <value>` |
+| fixedPhysicalPosition | fixedPhysicalPosition | boolean | RW | `obj.fixedPhysicalPosition = <value>` |
+| useDynamicPhysics | useDynamicPhysics | boolean | RW | `obj.useDynamicPhysics = <value>` |
+| loadingEntity | loadingEntity | unknown | RW | `obj.loadingEntity = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| resetCharges | resetCharges | `obj:resetCharges(...)` |
-| getItemType | getItemType | `obj:getItemType(...)` |
-| getItemWeight | getItemWeight | `obj:getItemWeight(...)` |
-| getItemWeightSingle | getItemWeightSingle | `obj:getItemWeightSingle(...)` |
-| getAvgPrice | getAvgPrice | `obj:getAvgPrice(...)` |
-| addQuantity | addQuantity | `obj:addQuantity(...)` |
-| subtractQuantity | subtractQuantity | `obj:subtractQuantity(...)` |
-| getValueSingle | getValueSingle | `obj:getValueSingle(...)` |
-| getValueAll | getValueAll | `obj:getValueAll(...)` |
-| isStackable | isStackable | `obj:isStackable(...)` |
-| canStackWith | canStackWith | `obj:canStackWith(...)` |
+| isGear | isGear | `obj:isGear(...)` |
+| _NV_isGear | _NV_isGear | `obj:_NV_isGear(...)` |
+| getClassType | getClassType | `obj:getClassType(...)` |
+| _NV_getClassType | _NV_getClassType | `obj:_NV_getClassType(...)` |
+| resetAfterCopy | resetAfterCopy | `obj:resetAfterCopy(...)` |
+| _NV_resetAfterCopy | _NV_resetAfterCopy | `obj:_NV_resetAfterCopy(...)` |
+| deactivate | deactivate | `obj:deactivate(...)` |
+| _NV_deactivate | _NV_deactivate | `obj:_NV_deactivate(...)` |
+| setPositionRotation | setPositionRotation | `obj:setPositionRotation(...)` |
+| _NV_setPositionRotation | _NV_setPositionRotation | `obj:_NV_setPositionRotation(...)` |
+| isCrossbow | isCrossbow | `obj:isCrossbow(...)` |
+| _NV_isCrossbow | _NV_isCrossbow | `obj:_NV_isCrossbow(...)` |
+| isArmour | isArmour | `obj:isArmour(...)` |
+| _NV_isArmour | _NV_isArmour | `obj:_NV_isArmour(...)` |
+| isWeapon | isWeapon | `obj:isWeapon(...)` |
+| _NV_isWeapon | _NV_isWeapon | `obj:_NV_isWeapon(...)` |
+| isLockedArmour | isLockedArmour | `obj:isLockedArmour(...)` |
+| _NV_isLockedArmour | _NV_isLockedArmour | `obj:_NV_isLockedArmour(...)` |
+| isAFactionUniform | isAFactionUniform | `obj:isAFactionUniform(...)` |
+| _NV_isAFactionUniform | _NV_isAFactionUniform | `obj:_NV_isAFactionUniform(...)` |
+| isPhysical | isPhysical | `obj:isPhysical(...)` |
+| _NV_isPhysical | _NV_isPhysical | `obj:_NV_isPhysical(...)` |
+| setVisible | setVisible | `obj:setVisible(...)` |
+| _NV_setVisible | _NV_setVisible | `obj:_NV_setVisible(...)` |
+| getVisible | getVisible | `obj:getVisible(...)` |
+| _NV_getVisible | _NV_getVisible | `obj:_NV_getVisible(...)` |
+| getModelName | getModelName | `obj:getModelName(...)` |
+| _NV_getModelName | _NV_getModelName | `obj:_NV_getModelName(...)` |
 | getInventory | getInventory | `obj:getInventory(...)` |
-| getProperOwner | getProperOwner | `obj:getProperOwner(...)` |
-| setProperOwner | setProperOwner | `obj:setProperOwner(...)` |
-| getQuantity | getQuantity | `obj:getQuantity(...)` |
-| getQuality | getQuality | `obj:getQuality(...)` |
-| isResearchArtifact | isResearchArtifact | `obj:isResearchArtifact(...)` |
-| onGround | onGround | `obj:onGround(...)` |
-| isStolen | isStolen | `obj:isStolen(...)` |
+| _NV_getInventory | _NV_getInventory | `obj:_NV_getInventory(...)` |
+| hasIngredients | hasIngredients | `obj:hasIngredients(...)` |
+| _NV_hasIngredients | _NV_hasIngredients | `obj:_NV_hasIngredients(...)` |
+| isGoodFood | isGoodFood | `obj:isGoodFood(...)` |
+| _NV_isGoodFood | _NV_isGoodFood | `obj:_NV_isGoodFood(...)` |
+| getCraftTime | getCraftTime | `obj:getCraftTime(...)` |
+| _NV_getCraftTime | _NV_getCraftTime | `obj:_NV_getCraftTime(...)` |
+| getCraftMaterialMult | getCraftMaterialMult | `obj:getCraftMaterialMult(...)` |
+| _NV_getCraftMaterialMult | _NV_getCraftMaterialMult | `obj:_NV_getCraftMaterialMult(...)` |
 | getLevel | getLevel | `obj:getLevel(...)` |
-| getMaxAffordable | getMaxAffordable | `obj:getMaxAffordable(...)` |
+| _NV_getLevel | _NV_getLevel | `obj:_NV_getLevel(...)` |
+| destroyItemEntityCallback_Equipping | destroyItemEntityCallback_Equipping | `obj:destroyItemEntityCallback_Equipping(...)` |
+| _NV_destroyItemEntityCallback_Equipping | _NV_destroyItemEntityCallback_Equipping | `obj:_NV_destroyItemEntityCallback_Equipping(...)` |
+| isPersistant | isPersistant | `obj:isPersistant(...)` |
+| persistantOwnerExists | persistantOwnerExists | `obj:persistantOwnerExists(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| createPhysical | createPhysical | `obj:createPhysical(...)` |
+| _NV_createPhysical | _NV_createPhysical | `obj:_NV_createPhysical(...)` |
+| destroyPhysical | destroyPhysical | `obj:destroyPhysical(...)` |
+| _NV_destroyPhysical | _NV_destroyPhysical | `obj:_NV_destroyPhysical(...)` |
+| loadUnloadCheck | loadUnloadCheck | `obj:loadUnloadCheck(...)` |
+| _NV_loadUnloadCheck | _NV_loadUnloadCheck | `obj:_NV_loadUnloadCheck(...)` |
+
+## ItemData
+**Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| visible | visible | boolean | RW | `obj.visible = <value>` |
+| category | category | string | RW | `obj.category = <value>` |
+| description | description | string | RW | `obj.description = <value>` |
+| fileTypes | fileTypes | string | RW | `obj.fileTypes = <value>` |
+| objectType | (lua_Integer | integer | RW | `obj.objectType = <value>` |
+| maxSize | maxSize | integer | RW | `obj.maxSize = <value>` |
+| maxValue | maxValue | integer | RW | `obj.maxValue = <value>` |
+| minValue | minValue | integer | RW | `obj.minValue = <value>` |
+| isSlider | isSlider | boolean | RW | `obj.isSlider = <value>` |
+
+## LimbsInventoryLayout
+**Header:** `extern/KenshiLib/Include/kenshi/MedicalSystem.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| character | character | unknown | RW | `obj.character = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## Limiter
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| racesExclude | racesExclude | unknown | RW | `obj.racesExclude = <value>` |
+| racesInclude | racesInclude | unknown | RW | `obj.racesInclude = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## LockedArmour
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| lock | lock | unknown | RW | `obj.lock = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| isArmour | isArmour | `obj:isArmour(...)` |
+| _NV_isArmour | _NV_isArmour | `obj:_NV_isArmour(...)` |
+| isLockedArmour | isLockedArmour | `obj:isLockedArmour(...)` |
+| _NV_isLockedArmour | _NV_isLockedArmour | `obj:_NV_isLockedArmour(...)` |
+
+## MedianFilter
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| isPositionsFilter | isPositionsFilter | boolean | RW | `obj.isPositionsFilter = <value>` |
+| edgeSkips | edgeSkips | integer | RW | `obj.edgeSkips = <value>` |
+| maxLength | maxLength | integer | RW | `obj.maxLength = <value>` |
+| mHistoryBufferX | mHistoryBufferX | unknown | RW | `obj.mHistoryBufferX = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| setup | setup | `obj:setup(...)` |
+| reset | reset | `obj:reset(...)` |
+| applySilent | applySilent | `obj:applySilent(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## MedianFilter2DVector
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| filters | filters | unknown | RW | `obj.filters = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| setup | setup | `obj:setup(...)` |
+| reset | reset | `obj:reset(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 
 ## MedicalSystem
 **Header:** `extern/KenshiLib/Include/kenshi/CharStats.h`
@@ -925,25 +2869,18 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| blood | blood | number | RW | `obj.blood = <value>` |
+| status | status | unknown | RW | `obj.status = <value>` |
+| armourList | armourList | unknown | RW | `obj.armourList = <value>` |
 | hunger | hunger | number | RW | `obj.hunger = <value>` |
 | fed | fed | number | RW | `obj.fed = <value>` |
-| extra_bloodloss_from_bodyparts | extraBloodLossFromBodyparts | number | RW | `obj.extra_bloodloss_from_bodyparts = <value>` |
-| current_bleed_rate | currentBleedRate | number | RW | `obj.current_bleed_rate = <value>` |
-| knockout_timer | knockoutTimer | number | RW | `obj.knockout_timer = <value>` |
-| worst_damage | worstDamage | number | RW | `obj.worst_damage = <value>` |
-| needs_firstaid_scoretotal_robot | needsFirstAidScoreTotal_robot | number | RW | `obj.needs_firstaid_scoretotal_robot = <value>` |
-| needs_firstaid_scoretotal_fleshy | needsFirstAidScoreTotal_fleshy | number | RW | `obj.needs_firstaid_scoretotal_fleshy = <value>` |
-| rested_state | restedState | number | RW | `obj.rested_state = <value>` |
-| stealth_hinderance | stealthHinderance | number | RW | `obj.stealth_hinderance = <value>` |
-| part_best_arm | partBestArm | number | RW | `obj.part_best_arm = <value>` |
-| part_head | partHead | number | RW | `obj.part_head = <value>` |
-| part_worst_torso | partWorstTorso | number | RW | `obj.part_worst_torso = <value>` |
-| dazed_or_alert | dazedOrAlert | number | RW | `obj.dazed_or_alert = <value>` |
-| current_weather_affect_strength | currentWeatherAffectStrength | number | RW | `obj.current_weather_affect_strength = <value>` |
-| next_KO_time | nextKOTime | number | RW | `obj.next_KO_time = <value>` |
+| lastPeriodicUpdate | lastPeriodicUpdate | unknown | RW | `obj.lastPeriodicUpdate = <value>` |
+| blood | blood | number | RW | `obj.blood = <value>` |
 | extraBloodLossFromBodyparts | extraBloodLossFromBodyparts | number | RW | `obj.extraBloodLossFromBodyparts = <value>` |
 | currentBleedRate | currentBleedRate | number | RW | `obj.currentBleedRate = <value>` |
+| leftLeg | (lua_Integer | integer | RW | `obj.leftLeg = <value>` |
+| rightLeg | (lua_Integer | integer | RW | `obj.rightLeg = <value>` |
+| leftArm | (lua_Integer | integer | RW | `obj.leftArm = <value>` |
+| rightArm | (lua_Integer | integer | RW | `obj.rightArm = <value>` |
 | knockoutTimer | knockoutTimer | number | RW | `obj.knockoutTimer = <value>` |
 | worstDamage | worstDamage | number | RW | `obj.worstDamage = <value>` |
 | needsFirstAidScoreTotal_robot | needsFirstAidScoreTotal_robot | number | RW | `obj.needsFirstAidScoreTotal_robot = <value>` |
@@ -954,22 +2891,17 @@
 | partHead | partHead | number | RW | `obj.partHead = <value>` |
 | partWorstTorso | partWorstTorso | number | RW | `obj.partWorstTorso = <value>` |
 | dazedOrAlert | dazedOrAlert | number | RW | `obj.dazedOrAlert = <value>` |
-| currentWeatherAffectStrength | currentWeatherAffectStrength | number | RW | `obj.currentWeatherAffectStrength = <value>` |
-| nextKOTime | nextKOTime | number | RW | `obj.nextKOTime = <value>` |
-| eaten_death_delay | _eatenDeathDelay | integer | RW | `obj.eaten_death_delay = <value>` |
-| _eatenDeathDelay | _eatenDeathDelay | integer | RW | `obj._eatenDeathDelay = <value>` |
-| eatenDeathDelay | _eatenDeathDelay | integer | RW | `obj.eatenDeathDelay = <value>` |
-| is_bloodyness_changed | bloodynessChanged | boolean | RW | `obj.is_bloodyness_changed = <value>` |
-| is_bloodyness_cleaned_up | bloodynessCleanedUp | boolean | RW | `obj.is_bloodyness_cleaned_up = <value>` |
-| is_crippled | crippled | boolean | RW | `obj.is_crippled = <value>` |
-| is_unconcious | unconcious | boolean | RW | `obj.is_unconcious = <value>` |
-| is_sub50_KO | sub50KO | boolean | RW | `obj.is_sub50_KO = <value>` |
-| has_bloodloss_trauma | bloodlossTrauma | boolean | RW | `obj.has_bloodloss_trauma = <value>` |
-| is_dead | dead | boolean | RW | `obj.is_dead = <value>` |
-| is_right_arm_ok | rightArmOk | boolean | RW | `obj.is_right_arm_ok = <value>` |
-| is_left_arm_ok | leftArmOk | boolean | RW | `obj.is_left_arm_ok = <value>` |
+| robotLimbs | robotLimbs | unknown | RW | `obj.robotLimbs = <value>` |
 | bloodynessChanged | bloodynessChanged | boolean | RW | `obj.bloodynessChanged = <value>` |
 | bloodynessCleanedUp | bloodynessCleanedUp | boolean | RW | `obj.bloodynessCleanedUp = <value>` |
+| animation | animation | unknown | RW | `obj.animation = <value>` |
+| me | me | unknown | RW | `obj.me = <value>` |
+| weatherGUIfeedback | weatherGUIfeedback | unknown | RW | `obj.weatherGUIfeedback = <value>` |
+| currentWeatherAffect | (lua_Integer | integer | RW | `obj.currentWeatherAffect = <value>` |
+| currentWeatherAffectStrength | currentWeatherAffectStrength | number | RW | `obj.currentWeatherAffectStrength = <value>` |
+| lastHungerKO | lastHungerKO | unknown | RW | `obj.lastHungerKO = <value>` |
+| nextKOTime | nextKOTime | number | RW | `obj.nextKOTime = <value>` |
+| _eatenDeathDelay | _eatenDeathDelay | integer | RW | `obj._eatenDeathDelay = <value>` |
 | crippled | crippled | boolean | RW | `obj.crippled = <value>` |
 | unconcious | unconcious | boolean | RW | `obj.unconcious = <value>` |
 | sub50KO | sub50KO | boolean | RW | `obj.sub50KO = <value>` |
@@ -977,41 +2909,111 @@
 | dead | dead | boolean | RW | `obj.dead = <value>` |
 | rightArmOk | rightArmOk | boolean | RW | `obj.rightArmOk = <value>` |
 | leftArmOk | leftArmOk | boolean | RW | `obj.leftArmOk = <value>` |
+| lastBloodPosition | lastBloodPosition | Vector3 | RW | `obj.lastBloodPosition = <value>` |
+| wounds | wounds | unknown | RW | `obj.wounds = <value>` |
+| anatomy | anatomy | unknown | RW | `obj.anatomy = <value>` |
+| stats | stats | unknown | RW | `obj.stats = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| getBlood | getBlood | `obj:getBlood(...)` |
-| getMaxBlood | getMaxBlood | `obj:getMaxBlood(...)` |
-| getHunger | getHunger | `obj:getHunger(...)` |
-| isFed | isFed | `obj:isFed(...)` |
-| isReallyHungry | isReallyHungry | `obj:isReallyHungry(...)` |
-| getKnockoutTimer | getKnockoutTimer | `obj:getKnockoutTimer(...)` |
-| getOverallHealthRating | getOverallHealthRating | `obj:getOverallHealthRating(...)` |
-| getStealthHinderance | getStealthHinderance | `obj:getStealthHinderance(...)` |
-| isUnconcious | isUnconcious | `obj:isUnconcious(...)` |
-| isCrippled | isCrippled | `obj:isCrippled(...)` |
-| isDead | isDead | `obj:isDead(...)` |
-| isInBloodlossTrauma | isInBloodlossTrauma | `obj:isInBloodlossTrauma(...)` |
-| isLeftArmOk | isLeftArmOk | `obj:isLeftArmOk(...)` |
-| isRightArmOk | isRightArmOk | `obj:isRightArmOk(...)` |
-| hasRobotics | hasRobotics | `obj:hasRobotics(...)` |
-| hasFreshlySeveredALimb | hasFreshlySeveredALimb | `obj:hasFreshlySeveredALimb(...)` |
-| isProbablyDying | isProbablyDying | `obj:isProbablyDying(...)` |
+| precalculateFirstAidNeedScore | precalculateFirstAidNeedScore | `obj:precalculateFirstAidNeedScore(...)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| updateStats | updateStats | `obj:updateStats(...)` |
+| _NV_updateStats | _NV_updateStats | `obj:_NV_updateStats(...)` |
+| medicalUpdate | medicalUpdate | `obj:medicalUpdate(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| scoreFirstAidNeed | scoreFirstAidNeed | `obj:scoreFirstAidNeed(...)` |
+| scoreJuryRigNeed | scoreJuryRigNeed | `obj:scoreJuryRigNeed(...)` |
 | isFullyRested | isFullyRested | `obj:isFullyRested(...)` |
+| _setHealth | _setHealth | `obj:_setHealth(...)` |
+| validateHealthValues | validateHealthValues | `obj:validateHealthValues(...)` |
+| amputate | amputate | `obj:amputate(...)` |
+| crushLimb | crushLimb | `obj:crushLimb(...)` |
+| isUselessNoLimbGuy | isUselessNoLimbGuy | `obj:isUselessNoLimbGuy(...)` |
+| recalculateStealthHinderance | recalculateStealthHinderance | `obj:recalculateStealthHinderance(...)` |
+| getPartCount | getPartCount | `obj:getPartCount(...)` |
+| hasRobotics | hasRobotics | `obj:hasRobotics(...)` |
+| isFed | isFed | `obj:isFed(...)` |
+| getMaxBlood | getMaxBlood | `obj:getMaxBlood(...)` |
+| startKnockoutTimer | startKnockoutTimer | `obj:startKnockoutTimer(...)` |
+| knockout | knockout | `obj:knockout(...)` |
 | knockoutForceTimer | knockoutForceTimer | `obj:knockoutForceTimer(...)` |
-| gettingBurnt | gettingBurnt | `obj:gettingBurnt(...)` |
-| gettingGassed | gettingGassed | `obj:gettingGassed(...)` |
+| pointOfCollapseBloodloss | pointOfCollapseBloodloss | `obj:pointOfCollapseBloodloss(...)` |
+| pointOfNoReturn | pointOfNoReturn | `obj:pointOfNoReturn(...)` |
+| pointOfNoReturn_Hunger01 | pointOfNoReturn_Hunger01 | `obj:pointOfNoReturn_Hunger01(...)` |
+| isHungerKO | isHungerKO | `obj:isHungerKO(...)` |
+| getToughnessXpBonus | getToughnessXpBonus | `obj:getToughnessXpBonus(...)` |
+| getHungerSpeedModifier | getHungerSpeedModifier | `obj:getHungerSpeedModifier(...)` |
+| getHealthStatModifier | getHealthStatModifier | `obj:getHealthStatModifier(...)` |
+| _getRoboticsStatMult | _getRoboticsStatMult | `obj:_getRoboticsStatMult(...)` |
+| getMissingArmPenaltyMult | getMissingArmPenaltyMult | `obj:getMissingArmPenaltyMult(...)` |
+| getDerivedHeadHealth | getDerivedHeadHealth | `obj:getDerivedHeadHealth(...)` |
+| calculateDesiredPainAnimations | calculateDesiredPainAnimations | `obj:calculateDesiredPainAnimations(...)` |
+| getMovementSpeedInjuryMultiplier | getMovementSpeedInjuryMultiplier | `obj:getMovementSpeedInjuryMultiplier(...)` |
+| getStatRoboticsMultiplier | getStatRoboticsMultiplier | `obj:getStatRoboticsMultiplier(...)` |
+| getMovementSwimSpeedInjuryMultiplier | getMovementSwimSpeedInjuryMultiplier | `obj:getMovementSwimSpeedInjuryMultiplier(...)` |
 | gettingEaten | gettingEaten | `obj:gettingEaten(...)` |
 | gettingAcidRain | gettingAcidRain | `obj:gettingAcidRain(...)` |
 | gettingAcidWater | gettingAcidWater | `obj:gettingAcidWater(...)` |
 | gettingAcidFeet | gettingAcidFeet | `obj:gettingAcidFeet(...)` |
-| gettingWindyFace | gettingWindyFace | `obj:gettingWindyFace(...)` |
-| getToughnessXPBonus | getToughnessXPBonus | `obj:getToughnessXPBonus(...)` |
-| getMissingArmPenalty | getMissingArmPenalty | `obj:getMissingArmPenalty(...)` |
-| getHungerSpeedModifier | getHungerSpeedModifer | `obj:getHungerSpeedModifier(...)` |
-| setHealth | setHealth | `obj:setHealth(...)` |
+| gettingGassed | gettingGassed | `obj:gettingGassed(...)` |
+| gettingWindyface | gettingWindyface | `obj:gettingWindyface(...)` |
+| gettingBurnt | gettingBurnt | `obj:gettingBurnt(...)` |
+| reassessCollapseMode | reassessCollapseMode | `obj:reassessCollapseMode(...)` |
+| isUnconcious | isUnconcious | `obj:isUnconcious(...)` |
+| isCrippled | isCrippled | `obj:isCrippled(...)` |
+| isDead | isDead | `obj:isDead(...)` |
+| hasAnArmToFightWith | hasAnArmToFightWith | `obj:hasAnArmToFightWith(...)` |
+| hasFreshlySeveredALimb | hasFreshlySeveredALimb | `obj:hasFreshlySeveredALimb(...)` |
+| isReallyHungry | isReallyHungry | `obj:isReallyHungry(...)` |
+| isProbablyDying | isProbablyDying | `obj:isProbablyDying(...)` |
+| getOverallHealthRating | getOverallHealthRating | `obj:getOverallHealthRating(...)` |
+| canGetUpWakeUp | canGetUpWakeUp | `obj:canGetUpWakeUp(...)` |
+| _reassessRagdollPartsAssumingWeJustClearedTheEntireRagdoll | _reassessRagdollPartsAssumingWeJustClearedTheEntireRagdoll | `obj:_reassessRagdollPartsAssumingWeJustClearedTheEntireRagdoll(...)` |
+| isRightArmOk | isRightArmOk | `obj:isRightArmOk(...)` |
+| isLeftArmOk | isLeftArmOk | `obj:isLeftArmOk(...)` |
+| canIkick | canIkick | `obj:canIkick(...)` |
+| isInBloodlossTrauma | isInBloodlossTrauma | `obj:isInBloodlossTrauma(...)` |
+| clearWeatherEffects | clearWeatherEffects | `obj:clearWeatherEffects(...)` |
+| getWeatherStatPenaltyMult | getWeatherStatPenaltyMult | `obj:getWeatherStatPenaltyMult(...)` |
 | getWeatherStatPenalty | getWeatherStatPenalty | `obj:getWeatherStatPenalty(...)` |
+| calculateBleedRateForFX | calculateBleedRateForFX | `obj:calculateBleedRateForFX(...)` |
+| bloodlossUpdate | bloodlossUpdate | `obj:bloodlossUpdate(...)` |
+| updateDamageState | updateDamageState | `obj:updateDamageState(...)` |
+
+## MeshDataLookup
+**Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| boneAssignments | boneAssignments | unknown | RW | `obj.boneAssignments = <value>` |
+| vertCount | vertCount | unknown | RW | `obj.vertCount = <value>` |
+| verts | verts | unknown | RW | `obj.verts = <value>` |
+| uvs | uvs | unknown | RW | `obj.uvs = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## MotionFilter
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| mWeightModifier | mWeightModifier | number | RW | `obj.mWeightModifier = <value>` |
+| mHistoryBufferX | mHistoryBufferX | unknown | RW | `obj.mHistoryBufferX = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| SetHistoryBufferLength | SetHistoryBufferLength | `obj:SetHistoryBufferLength(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 
 ## MyGui
 **Header:** `???`
@@ -1034,6 +3036,191 @@
 | getClientWidget | widget_getClientWidget | `obj:getClientWidget(...)` |
 | setProperty | widget_setProperty | `obj:setProperty(...)` |
 | registerCallback | widget_registerCallback | `obj:registerCallback(...)` |
+| getCoord | widget_getCoord | `obj:getCoord(...)` |
+| setCoord | widget_setCoord | `obj:setCoord(...)` |
+| getPosition | widget_getPosition | `obj:getPosition(...)` |
+| getSize | widget_getSize | `obj:getSize(...)` |
+| getParent | widget_getParent | `obj:getParent(...)` |
+| detachFromWidget | widget_detachFromWidget | `obj:detachFromWidget(...)` |
+| attachToWidget | widget_attachToWidget | `obj:attachToWidget(...)` |
+| setNeedKeyFocus | widget_setNeedKeyFocus | `obj:setNeedKeyFocus(...)` |
+| setNeedMouseFocus | widget_setNeedMouseFocus | `obj:setNeedMouseFocus(...)` |
+| setPointer | widget_setPointer | `obj:setPointer(...)` |
+| setUserString | widget_setUserString | `obj:setUserString(...)` |
+| getUserString | widget_getUserString | `obj:getUserString(...)` |
+| isUserString | widget_isUserString | `obj:isUserString(...)` |
+| clearUserString | widget_clearUserString | `obj:clearUserString(...)` |
+| setStateSelected | widget_setStateSelected | `obj:setStateSelected(...)` |
+| getStateSelected | widget_getStateSelected | `obj:getStateSelected(...)` |
+| setOnlyText | widget_setOnlyText | `obj:setOnlyText(...)` |
+| getOnlyText | widget_getOnlyText | `obj:getOnlyText(...)` |
+| setEditReadOnly | widget_setEditReadOnly | `obj:setEditReadOnly(...)` |
+| getEditReadOnly | widget_getEditReadOnly | `obj:getEditReadOnly(...)` |
+| setEditPassword | widget_setEditPassword | `obj:setEditPassword(...)` |
+| getEditPassword | widget_getEditPassword | `obj:getEditPassword(...)` |
+| setEditMultiLine | widget_setEditMultiLine | `obj:setEditMultiLine(...)` |
+| getEditMultiLine | widget_getEditMultiLine | `obj:getEditMultiLine(...)` |
+| setEditStatic | widget_setEditStatic | `obj:setEditStatic(...)` |
+| getEditStatic | widget_getEditStatic | `obj:getEditStatic(...)` |
+| setPasswordChar | widget_setPasswordChar | `obj:setPasswordChar(...)` |
+| getItemCount | widget_getItemCount | `obj:getItemCount(...)` |
+| addItem | widget_addItem | `obj:addItem(...)` |
+| insertItemAt | widget_insertItemAt | `obj:insertItemAt(...)` |
+| removeItemAt | widget_removeItemAt | `obj:removeItemAt(...)` |
+| removeAllItems | widget_removeAllItems | `obj:removeAllItems(...)` |
+| getIndexSelected | widget_getIndexSelected | `obj:getIndexSelected(...)` |
+| setIndexSelected | widget_setIndexSelected | `obj:setIndexSelected(...)` |
+| clearIndexSelected | widget_clearIndexSelected | `obj:clearIndexSelected(...)` |
+| getItemNameAt | widget_getItemNameAt | `obj:getItemNameAt(...)` |
+| setItemNameAt | widget_setItemNameAt | `obj:setItemNameAt(...)` |
+| getOptimalHeight | widget_getOptimalHeight | `obj:getOptimalHeight(...)` |
+| getWidgetByIndex | widget_getWidgetByIndex | `obj:getWidgetByIndex(...)` |
+| setMinSize | widget_setMinSize | `obj:setMinSize(...)` |
+| getMinSize | widget_getMinSize | `obj:getMinSize(...)` |
+| setMaxSize | widget_setMaxSize | `obj:setMaxSize(...)` |
+| getMaxSize | widget_getMaxSize | `obj:getMaxSize(...)` |
+| setVisibleSmooth | widget_setVisibleSmooth | `obj:setVisibleSmooth(...)` |
+| destroySmooth | widget_destroySmooth | `obj:destroySmooth(...)` |
+| setMovable | widget_setMovable | `obj:setMovable(...)` |
+| getMovable | widget_getMovable | `obj:getMovable(...)` |
+| setImageTexture | widget_setImageTexture | `obj:setImageTexture(...)` |
+| setImageCoord | widget_setImageCoord | `obj:setImageCoord(...)` |
+| setImageTile | widget_setImageTile | `obj:setImageTile(...)` |
+| setImageIndex | widget_setImageIndex | `obj:setImageIndex(...)` |
+| getImageIndex | widget_getImageIndex | `obj:getImageIndex(...)` |
+
+## NxUserControllerHitReport
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## ObjectInstance
+**Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| pos | pos | Vector3 | RW | `obj.pos = <value>` |
+| rot | rot | Quaternion | RW | `obj.rot = <value>` |
+| refID | refID | string | RW | `obj.refID = <value>` |
+| created | created | integer | RW | `obj.created = <value>` |
+| modified | modified | integer | RW | `obj.modified = <value>` |
+| stateIDs | stateIDs | unknown | RW | `obj.stateIDs = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## OptionsHolder
+**Header:** `extern/KenshiLib/Include/kenshi/Globals.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| CAMERA_MOVE_SPEED | CAMERA_MOVE_SPEED | number | RW | `obj.CAMERA_MOVE_SPEED = <value>` |
+| CAMERA_PAN_SPEED | CAMERA_PAN_SPEED | number | RW | `obj.CAMERA_PAN_SPEED = <value>` |
+| CAMERA_TILT_SPEED | CAMERA_TILT_SPEED | number | RW | `obj.CAMERA_TILT_SPEED = <value>` |
+| CAMERA_ZOOM_SPEED | CAMERA_ZOOM_SPEED | number | RW | `obj.CAMERA_ZOOM_SPEED = <value>` |
+| invertX | invertX | number | RW | `obj.invertX = <value>` |
+| invertY | invertY | number | RW | `obj.invertY = <value>` |
+| VIEW_DISTANCE | VIEW_DISTANCE | number | RW | `obj.VIEW_DISTANCE = <value>` |
+| terrainDetail | terrainDetail | number | RW | `obj.terrainDetail = <value>` |
+| terrainDistant | terrainDistant | number | RW | `obj.terrainDistant = <value>` |
+| terrainThreshold | terrainThreshold | number | RW | `obj.terrainThreshold = <value>` |
+| terrainPatchSize | terrainPatchSize | integer | RW | `obj.terrainPatchSize = <value>` |
+| grassRange | grassRange | number | RW | `obj.grassRange = <value>` |
+| grassDensity | grassDensity | number | RW | `obj.grassDensity = <value>` |
+| foliageRange | foliageRange | number | RW | `obj.foliageRange = <value>` |
+| NPCRange | NPCRange | number | RW | `obj.NPCRange = <value>` |
+| smallBuildingRange | smallBuildingRange | number | RW | `obj.smallBuildingRange = <value>` |
+| stencilsDisabled | stencilsDisabled | boolean | RW | `obj.stencilsDisabled = <value>` |
+| fancyShaders | fancyShaders | boolean | RW | `obj.fancyShaders = <value>` |
+| HWmouse | HWmouse | boolean | RW | `obj.HWmouse = <value>` |
+| tutorials | tutorials | boolean | RW | `obj.tutorials = <value>` |
+| _enabledCivilians | _enabledCivilians | boolean | RW | `obj._enabledCivilians = <value>` |
+| populationMult | populationMult | number | RW | `obj.populationMult = <value>` |
+| squadSizeMult | squadSizeMult | number | RW | `obj.squadSizeMult = <value>` |
+| raidSizeMult | raidSizeMult | number | RW | `obj.raidSizeMult = <value>` |
+| raidFrequencyMult | raidFrequencyMult | number | RW | `obj.raidFrequencyMult = <value>` |
+| passingAttacksOnBase | passingAttacksOnBase | integer | RW | `obj.passingAttacksOnBase = <value>` |
+| shadowMode | shadowMode | integer | RW | `obj.shadowMode = <value>` |
+| shadowQuality | shadowQuality | integer | RW | `obj.shadowQuality = <value>` |
+| harpoonLimit | harpoonLimit | number | RW | `obj.harpoonLimit = <value>` |
+| decalRange | decalRange | number | RW | `obj.decalRange = <value>` |
+| decalResolution | decalResolution | integer | RW | `obj.decalResolution = <value>` |
+| characterMultithreading | characterMultithreading | boolean | RW | `obj.characterMultithreading = <value>` |
+| limbLossFrequency | limbLossFrequency | integer | RW | `obj.limbLossFrequency = <value>` |
+| showNames | showNames | boolean | RW | `obj.showNames = <value>` |
+| edgeScrolling | edgeScrolling | boolean | RW | `obj.edgeScrolling = <value>` |
+| damageFloaters | damageFloaters | integer | RW | `obj.damageFloaters = <value>` |
+| showRotationMarker | showRotationMarker | boolean | RW | `obj.showRotationMarker = <value>` |
+| showMoveMarker | showMoveMarker | boolean | RW | `obj.showMoveMarker = <value>` |
+| fontSize | fontSize | number | RW | `obj.fontSize = <value>` |
+| manyActiveZones | manyActiveZones | boolean | RW | `obj.manyActiveZones = <value>` |
+| distantTownRange | distantTownRange | number | RW | `obj.distantTownRange = <value>` |
+| featureRange | featureRange | number | RW | `obj.featureRange = <value>` |
+| generateDistantTowns | generateDistantTowns | boolean | RW | `obj.generateDistantTowns = <value>` |
+| shadowRange | shadowRange | number | RW | `obj.shadowRange = <value>` |
+| ddsTextureMipMapGimping | ddsTextureMipMapGimping | integer | RW | `obj.ddsTextureMipMapGimping = <value>` |
+| reflectionMode | reflectionMode | integer | RW | `obj.reflectionMode = <value>` |
+| reflectionDistance | reflectionDistance | number | RW | `obj.reflectionDistance = <value>` |
+| compositors | compositors | unknown | RW | `obj.compositors = <value>` |
+| musicVolume | musicVolume | number | RW | `obj.musicVolume = <value>` |
+| ambientVolume | ambientVolume | number | RW | `obj.ambientVolume = <value>` |
+| footstepVolume | footstepVolume | number | RW | `obj.footstepVolume = <value>` |
+| sfxVolume | sfxVolume | number | RW | `obj.sfxVolume = <value>` |
+| uiVolume | uiVolume | number | RW | `obj.uiVolume = <value>` |
+| voVolume | voVolume | number | RW | `obj.voVolume = <value>` |
+| musicFrequency | musicFrequency | number | RW | `obj.musicFrequency = <value>` |
+| autosavetime | autosavetime | number | RW | `obj.autosavetime = <value>` |
+| fullscreen | fullscreen | boolean | RW | `obj.fullscreen = <value>` |
+| borderless | borderless | boolean | RW | `obj.borderless = <value>` |
+| autosave | autosavetime | number | RW | `obj.autosave = <value>` |
+| userSaves | userSaves | boolean | RW | `obj.userSaves = <value>` |
+| blood | blood | boolean | RW | `obj.blood = <value>` |
+| censorship | censorship | boolean | RW | `obj.censorship = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| enabledCivilians | enabledCivilians | `obj:enabledCivilians(...)` |
+| characterMultithreadingEnabled | characterMultithreadingEnabled | `obj:characterMultithreadingEnabled(...)` |
+| compositiorEnabled | compositiorEnabled | `obj:compositiorEnabled(...)` |
+| loadCompositorSettings | loadCompositorSettings | `obj:loadCompositorSettings(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## Ownerships
+**Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| slaves | slaves | unknown | RW | `obj.slaves = <value>` |
+| _homeTown | _homeTown | unknown | RW | `obj._homeTown = <value>` |
+| _homeBuilding | _homeBuilding | unknown | RW | `obj._homeBuilding = <value>` |
+| stuff | stuff | unknown | RW | `obj.stuff = <value>` |
+| faction | faction | unknown | RW | `obj.faction = <value>` |
+| me | me | unknown | RW | `obj.me = <value>` |
+| occupiedTown | occupiedTown | unknown | RW | `obj.occupiedTown = <value>` |
+| money | money | integer | RW | `obj.money = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| takeMoney | takeMoney | `obj:takeMoney(...)` |
+| _NV_takeMoney | _NV_takeMoney | `obj:_NV_takeMoney(...)` |
+| takeMoneyByForce | takeMoneyByForce | `obj:takeMoneyByForce(...)` |
+| _NV_takeMoneyByForce | _NV_takeMoneyByForce | `obj:_NV_takeMoneyByForce(...)` |
+| getMoney | getMoney | `obj:getMoney(...)` |
+| addMoney | addMoney | `obj:addMoney(...)` |
+| setMoney | setMoney | `obj:setMoney(...)` |
+| setHomeBuildingDesignation | setHomeBuildingDesignation | `obj:setHomeBuildingDesignation(...)` |
+| getOccupiedTownFaction | getOccupiedTownFaction | `obj:getOccupiedTownFaction(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
 
 ## Platoon
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
@@ -1041,58 +3228,80 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| name | getName | string | R | `obj.name` |
 | stringID | stringID | string | RW | `obj.stringID = <value>` |
-| squadSize | getSquadSize | integer | R | `obj.squadSize` |
-| characterCount | getCharacterCount | integer | R | `obj.characterCount` |
-| characterCountCurrent | _characterCountCurrent | integer | RW | `obj.characterCountCurrent = <value>` |
-| characterCountOriginal | _characterCountOriginal | integer | RW | `obj.characterCountOriginal = <value>` |
-| squadType | squadType | integer | RW | `obj.squadType = <value>` |
-| hasUniques | hasUniques | integer | RW | `obj.hasUniques = <value>` |
-| speedOverride | speedOverride | integer | RW | `obj.speedOverride = <value>` |
-| messageOnActivation | messageOnActivation | integer | RW | `obj.messageOnActivation = <value>` |
-| index | index | integer | RW | `obj.index = <value>` |
-| isValid | ap != 0 ? 1 : 0 | boolean | R | `obj.isValid` |
-| isLoaded | isLoaded | boolean | R | `obj.isLoaded` |
-| isTrader | getIsTrader | boolean | R | `obj.isTrader` |
+| _characterCountCurrent | _characterCountCurrent | integer | RW | `obj._characterCountCurrent = <value>` |
+| _characterCountOriginal | _characterCountOriginal | integer | RW | `obj._characterCountOriginal = <value>` |
+| squadType | (lua_Integer | integer | RW | `obj.squadType = <value>` |
+| hasUniques | hasUniques | unknown | RW | `obj.hasUniques = <value>` |
+| speedOverride | (lua_Integer | integer | RW | `obj.speedOverride = <value>` |
+| isSeparatedSquad | isSeparatedSquad | unknown | RW | `obj.isSeparatedSquad = <value>` |
 | canRefresh | canRefresh | boolean | RW | `obj.canRefresh = <value>` |
 | regenerates | regenerates | boolean | RW | `obj.regenerates = <value>` |
-| iBuyStolenGoods | _iBuyStolenGoods | boolean | RW | `obj.iBuyStolenGoods = <value>` |
-| iBuyIllegalGoods | _iBuyIllegalGoods | boolean | RW | `obj.iBuyIllegalGoods = <value>` |
-| isIntact | _isIntact | boolean | RW | `obj.isIntact = <value>` |
+| myBaseHomeTownData | myBaseHomeTownData | unknown | RW | `obj.myBaseHomeTownData = <value>` |
+| priceMultWhenITrade | priceMultWhenITrade | number | RW | `obj.priceMultWhenITrade = <value>` |
+| _iBuyStolenGoods | _iBuyStolenGoods | boolean | RW | `obj._iBuyStolenGoods = <value>` |
+| _iBuyIllegalGoods | _iBuyIllegalGoods | boolean | RW | `obj._iBuyIllegalGoods = <value>` |
+| locatorModel | locatorModel | unknown | RW | `obj.locatorModel = <value>` |
+| blackboard | blackboard | unknown | RW | `obj.blackboard = <value>` |
+| _isIntact | _isIntact | boolean | RW | `obj._isIntact = <value>` |
+| squadTemplate | squadTemplate | unknown | RW | `obj.squadTemplate = <value>` |
+| malnourishedLevel | malnourishedLevel | number | RW | `obj.malnourishedLevel = <value>` |
 | hasNeverBeenActivated | hasNeverBeenActivated | boolean | RW | `obj.hasNeverBeenActivated = <value>` |
+| _persistentSquad | _persistentSquad | boolean | RW | `obj._persistentSquad = <value>` |
 | isResidentSquad | isResidentSquad | boolean | RW | `obj.isResidentSquad = <value>` |
+| messageOnActivation | messageOnActivation | unknown | RW | `obj.messageOnActivation = <value>` |
+| currentSpawnArea | currentSpawnArea | unknown | RW | `obj.currentSpawnArea = <value>` |
+| squadleader | squadleader | unknown | RW | `obj.squadleader = <value>` |
+| ownerships | ownerships | unknown | RW | `obj.ownerships = <value>` |
+| activePlatoon | activePlatoon | unknown | RW | `obj.activePlatoon = <value>` |
+| unloadedPlatoon | unloadedPlatoon | unknown | RW | `obj.unloadedPlatoon = <value>` |
+| patrolSettings | patrolSettings | unknown | RW | `obj.patrolSettings = <value>` |
 | isDead | isDead | boolean | RW | `obj.isDead = <value>` |
 | imprisoned | imprisoned | boolean | RW | `obj.imprisoned = <value>` |
-| priceMultWhenITrade | priceMultWhenITrade | number | RW | `obj.priceMultWhenITrade = <value>` |
-| malnourishedLevel | malnourishedLevel | number | RW | `obj.malnourishedLevel = <value>` |
-| traderInventoryRefreshTime | traderInventoryRefreshTime | number | R | `obj.traderInventoryRefreshTime` |
-| isSeparatedSquad | isSeparatedSquad | unknown | W | `obj.isSeparatedSquad = <value>` |
-| squadleader | squadleader | unknown | W | `obj.squadleader = <value>` |
+| index | index | integer | RW | `obj.index = <value>` |
+| traderInventoryRefreshTime | traderInventoryRefreshTime | unknown | RW | `obj.traderInventoryRefreshTime = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| isValid | isValid | `obj:isValid(...)` |
-| getName | getName | `obj:getName(...)` |
-| getSquadSize | getSquadSize | `obj:getSquadSize(...)` |
-| getCharacterCount | getCharacterCount | `obj:getCharacterCount(...)` |
-| getSquadLeader | getSquadLeader | `obj:getSquadLeader(...)` |
-| getFaction | getFaction | `obj:getFaction(...)` |
-| isPersistentSquad | isPersistentSquad | `obj:isPersistentSquad(...)` |
-| setPersistent | setPersistent | `obj:setPersistent(...)` |
-| isLoaded | isLoaded | `obj:isLoaded(...)` |
-| isTrader | isTrader | `obj:isTrader(...)` |
-| teleport | teleport | `obj:teleport(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| setCharacterCount | setCharacterCount | `obj:setCharacterCount(...)` |
+| isUnconcious | isUnconcious | `obj:isUnconcious(...)` |
+| _NV_isUnconcious | _NV_isUnconcious | `obj:_NV_isUnconcious(...)` |
+| getSquadType | getSquadType | `obj:getSquadType(...)` |
+| setSquadType | setSquadType | `obj:setSquadType(...)` |
+| iBuyIllegalGoods | iBuyIllegalGoods | `obj:iBuyIllegalGoods(...)` |
+| getPlatoonStringID | getPlatoonStringID | `obj:getPlatoonStringID(...)` |
+| getDataType | getDataType | `obj:getDataType(...)` |
+| _NV_getDataType | _NV_getDataType | `obj:_NV_getDataType(...)` |
+| erasePlatoonFile | erasePlatoonFile | `obj:erasePlatoonFile(...)` |
+| showDebugMarker | showDebugMarker | `obj:showDebugMarker(...)` |
+| setDataFilename | setDataFilename | `obj:setDataFilename(...)` |
+| isIntact | isIntact | `obj:isIntact(...)` |
+| notifyMissionEnded | notifyMissionEnded | `obj:notifyMissionEnded(...)` |
+| _NV_notifyMissionEnded | _NV_notifyMissionEnded | `obj:_NV_notifyMissionEnded(...)` |
 | activate | activate | `obj:activate(...)` |
-| deactivate | deactivate | `obj:deactivate(...)` |
 | declareDead | declareDead | `obj:declareDead(...)` |
 | undeclareDead | undeclareDead | `obj:undeclareDead(...)` |
 | isFullyLoaded | isFullyLoaded | `obj:isFullyLoaded(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| periodicUpdate_active | periodicUpdate_active | `obj:periodicUpdate_active(...)` |
+| _NV_periodicUpdate_active | _NV_periodicUpdate_active | `obj:_NV_periodicUpdate_active(...)` |
+| periodicUpdate_unloaded | periodicUpdate_unloaded | `obj:periodicUpdate_unloaded(...)` |
+| _NV_periodicUpdate_unloaded | _NV_periodicUpdate_unloaded | `obj:_NV_periodicUpdate_unloaded(...)` |
 | setupPatrolSettings | setupPatrolSettings | `obj:setupPatrolSettings(...)` |
-| swapCharacters | swapCharacters | `obj:swapCharacters(...)` |
-| clearAllTheUniqueNPCStates | clearAllTheUniqueNPCStates | `obj:clearAllTheUniqueNPCStates(...)` |
-| refreshInventory | refreshInventory | `obj:refreshInventory(...)` |
+| isPersistentSquad | isPersistentSquad | `obj:isPersistentSquad(...)` |
+| setPersistentSquad | setPersistentSquad | `obj:setPersistentSquad(...)` |
+| getOwnerships | getOwnerships | `obj:getOwnerships(...)` |
+| _NV_getOwnerships | _NV_getOwnerships | `obj:_NV_getOwnerships(...)` |
+| getNearestActiveCharacter | getNearestActiveCharacter | `obj:getNearestActiveCharacter(...)` |
+| getSquadLeader | getSquadLeader | `obj:getSquadLeader(...)` |
+| getCharacterCount | getCharacterCount | `obj:getCharacterCount(...)` |
+| getCharacterCount_Original | getCharacterCount_Original | `obj:getCharacterCount_Original(...)` |
+| needsNewCharacters | needsNewCharacters | `obj:needsNewCharacters(...)` |
+| reCheckPersistenceOnUnload | reCheckPersistenceOnUnload | `obj:reCheckPersistenceOnUnload(...)` |
+| _NV_reCheckPersistenceOnUnload | _NV_reCheckPersistenceOnUnload | `obj:_NV_reCheckPersistenceOnUnload(...)` |
 
 ## PlayerInterface
 **Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
@@ -1100,67 +3309,93 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| isBuildMode | isBuildMode | boolean | R | `obj.isBuildMode` |
-| characterEditorMode | characterEditorMode | boolean | RW | `obj.characterEditorMode = <value>` |
-| mouseRightTargetSet | mouseRightTargetSet | boolean | RW | `obj.mouseRightTargetSet = <value>` |
-| onlyAnimalsSelected | onlyAnimalsSelected | boolean | RW | `obj.onlyAnimalsSelected = <value>` |
-| currentFloor | currentFloor | integer | RW | `obj.currentFloor = <value>` |
-| currentMouseTask | currentMouseTask | integer | RW | `obj.currentMouseTask = <value>` |
-| mouseTaskTypeRestriction | mouseTaskTypeRestriction | integer | RW | `obj.mouseTaskTypeRestriction = <value>` |
-| rmouseTimer | rmouseTimer | number | RW | `obj.rmouseTimer = <value>` |
-| selectedLoadedLeft | selectedLoadedLeft | integer | RW | `obj.selectedLoadedLeft = <value>` |
-| trackedCharacterFloor | trackedCharacterFloor | integer | RW | `obj.trackedCharacterFloor = <value>` |
 | factionName | factionName | string | RW | `obj.factionName = <value>` |
-| technology | technology | lightuserdata | R | `obj.technology` |
-| placementObject | placementObject | lightuserdata | RW | `obj.placementObject = <value>` |
-| deadPlayerSquad | deadPlayerSquad | unknown | W | `obj.deadPlayerSquad = <value>` |
-| mouseRightTarget | mouseRightTarget | unknown | W | `obj.mouseRightTarget = <value>` |
-| selectedObject | selectedObject | unknown | W | `obj.selectedObject = <value>` |
-| trackedCharacterHandle | trackedCharacterHandle | unknown | W | `obj.trackedCharacterHandle = <value>` |
-| participant | participant | unknown | W | `obj.participant = <value>` |
+| camera | camera | unknown | RW | `obj.camera = <value>` |
+| technology | technology | unknown | RW | `obj.technology = <value>` |
+| selectedObjectsChangedThisFrame | selectedObjectsChangedThisFrame | boolean | RW | `obj.selectedObjectsChangedThisFrame = <value>` |
+| contextMenu | contextMenu | unknown | RW | `obj.contextMenu = <value>` |
+| selectBox | selectBox | unknown | RW | `obj.selectBox = <value>` |
+| moveMarker | moveMarker | unknown | RW | `obj.moveMarker = <value>` |
+| selectedCharacter | selectedCharacter | hand | RW | `obj.selectedCharacter = <value>` |
+| aiOptions | aiOptions | unknown | RW | `obj.aiOptions = <value>` |
+| zonesVisibilities | zonesVisibilities | unknown | RW | `obj.zonesVisibilities = <value>` |
+| townsActive | townsActive | unknown | RW | `obj.townsActive = <value>` |
+| interiorsVisible | interiorsVisible | unknown | RW | `obj.interiorsVisible = <value>` |
+| interiorsVisibleHash | interiorsVisibleHash | integer | RW | `obj.interiorsVisibleHash = <value>` |
+| currentFloor | currentFloor | integer | RW | `obj.currentFloor = <value>` |
+| currentMouseTask | (lua_Integer | integer | RW | `obj.currentMouseTask = <value>` |
+| mouseTaskTypeRestriction | (lua_Integer | integer | RW | `obj.mouseTaskTypeRestriction = <value>` |
+| mouseRightTargetSet | mouseRightTargetSet | boolean | RW | `obj.mouseRightTargetSet = <value>` |
+| mouseRightTarget | mouseRightTargetSet | boolean | RW | `obj.mouseRightTarget = <value>` |
+| rmouseTimer | rmouseTimer | number | RW | `obj.rmouseTimer = <value>` |
+| selectedCharacters | selectedCharacters | unknown | RW | `obj.selectedCharacters = <value>` |
+| selectedObject | selectedObjectsChangedThisFrame | boolean | RW | `obj.selectedObject = <value>` |
+| onlyAnimalsSelected | onlyAnimalsSelected | boolean | RW | `obj.onlyAnimalsSelected = <value>` |
+| selectedLoadedLeft | selectedLoadedLeft | integer | RW | `obj.selectedLoadedLeft = <value>` |
+| trackedCharacterHandle | trackedCharacterHandle | hand | RW | `obj.trackedCharacterHandle = <value>` |
+| trackedCharacterFloor | trackedCharacterFloor | integer | RW | `obj.trackedCharacterFloor = <value>` |
+| levelEditor | levelEditor | unknown | RW | `obj.levelEditor = <value>` |
+| participant | participant | unknown | RW | `obj.participant = <value>` |
+| currentPlatoon | currentPlatoon | unknown | RW | `obj.currentPlatoon = <value>` |
+| playerCharacters | playerCharacters | unknown | RW | `obj.playerCharacters = <value>` |
+| deadPlayerSquad | deadPlayerSquad | hand | RW | `obj.deadPlayerSquad = <value>` |
+| placementObject | placementObject | unknown | RW | `obj.placementObject = <value>` |
+| characterEditorMode | characterEditorMode | boolean | RW | `obj.characterEditorMode = <value>` |
+| mLeftUp | mLeftUp | boolean | RW | `obj.mLeftUp = <value>` |
+| mLeftDown | mLeftDown | boolean | RW | `obj.mLeftDown = <value>` |
+| mRightUp | mRightUp | boolean | RW | `obj.mRightUp = <value>` |
+| mRightDown | mRightDown | boolean | RW | `obj.mRightDown = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `obj:_CONSTRUCTOR(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| getCamera | getCamera | `obj:getCamera(...)` |
+| clearAndReset | clearAndReset | `obj:clearAndReset(...)` |
 | getFaction | getFaction | `obj:getFaction(...)` |
-| setFaction | setFaction | `obj:setFaction(...)` |
 | getCurrentPlatoon | getCurrentPlatoon | `obj:getCurrentPlatoon(...)` |
-| setCurrentPlatoon | setCurrentPlatoon | `obj:setCurrentPlatoon(...)` |
 | getCurrentActivePlatoon | getCurrentActivePlatoon | `obj:getCurrentActivePlatoon(...)` |
-| recruit | recruit | `obj:recruit(...)` |
-| selectObject | selectObject | `obj:selectObject(...)` |
+| update | update | `obj:update(...)` |
+| updateUT | updateUT | `obj:updateUT(...)` |
+| isBuildMode | isBuildMode | `obj:isBuildMode(...)` |
+| setCharacterEditMode | setCharacterEditMode | `obj:setCharacterEditMode(...)` |
+| getCharacterEditMode | getCharacterEditMode | `obj:getCharacterEditMode(...)` |
+| unselectAll | unselectAll | `obj:unselectAll(...)` |
+| selectAll | selectAll | `obj:selectAll(...)` |
 | selectPlayerCharacter | selectPlayerCharacter | `obj:selectPlayerCharacter(...)` |
-| selectPlayerCharacterByIndex | selectPlayerCharacterByIndex | `obj:selectPlayerCharacterByIndex(...)` |
-| getNearestSelectedCharacterTo | getNearestSelectedCharacterTo | `obj:getNearestSelectedCharacterTo(...)` |
-| getNearestCharacterTo | getNearestCharacterTo | `obj:getNearestCharacterTo(...)` |
-| unselectPlayerCharacter | unselectPlayerCharacter | `obj:unselectPlayerCharacter(...)` |
-| startTrackCharacter | startTrackCharacter | `obj:startTrackCharacter(...)` |
+| getCameraCenter | getCameraCenter | `obj:getCameraCenter(...)` |
+| getDistanceFromCamera | getDistanceFromCamera | `obj:getDistanceFromCamera(...)` |
+| getSquaredDistanceFromCamera | getSquaredDistanceFromCamera | `obj:getSquaredDistanceFromCamera(...)` |
 | stopTrackCharacter | stopTrackCharacter | `obj:stopTrackCharacter(...)` |
 | isTrackingCharacter | isTrackingCharacter | `obj:isTrackingCharacter(...)` |
-| getAnyPlayerCharacter | getAnyPlayerCharacter | `obj:getAnyPlayerCharacter(...)` |
-| isBuildMode | isBuildMode | `obj:isBuildMode(...)` |
-| unselectAll | unselectAll | `obj:unselectAll(...)` |
-| getSelectedCharacterHandle | getSelectedCharacterHandle | `obj:getSelectedCharacterHandle(...)` |
 | focusCamera | focusCamera | `obj:focusCamera(...)` |
-| focusCameraSelectedCharacter | focusCameraSelectedCharacter | `obj:focusCameraSelectedCharacter(...)` |
 | manuallyOrientCamera | manuallyOrientCamera | `obj:manuallyOrientCamera(...)` |
-| getDistanceFromCamera | getDistanceFromCamera | `obj:getDistanceFromCamera(...)` |
-| getCameraCenter | getCameraCenter | `obj:getCameraCenter(...)` |
+| focusCameraSelectedCharacter | focusCameraSelectedCharacter | `obj:focusCameraSelectedCharacter(...)` |
 | toggleLevelEditorOnSelectedTown | toggleLevelEditorOnSelectedTown | `obj:toggleLevelEditorOnSelectedTown(...)` |
-| newPlayerTaskSelectedCharacters | newPlayerTaskSelectedCharacters | `obj:newPlayerTaskSelectedCharacters(...)` |
-| getPlayerTaskProbability | getPlayerTaskProbability | `obj:getPlayerTaskProbability(...)` |
-| addOrderSelectedCharacters | addOrderSelectedCharacters | `obj:addOrderSelectedCharacters(...)` |
-| addJobSelectedCharacters | addJobSelectedCharacters | `obj:addJobSelectedCharacters(...)` |
+| isLevelEditMode | isLevelEditMode | `obj:isLevelEditMode(...)` |
+| isObjectPlacementMode | isObjectPlacementMode | `obj:isObjectPlacementMode(...)` |
+| setOrderSelectedCharacters | setOrderSelectedCharacters | `obj:setOrderSelectedCharacters(...)` |
+| getCurrentFloor | getCurrentFloor | `obj:getCurrentFloor(...)` |
+| setCurrentFloor | setCurrentFloor | `obj:setCurrentFloor(...)` |
+| getNearestSelectedCharacterTo | getNearestSelectedCharacterTo | `obj:getNearestSelectedCharacterTo(...)` |
+| getNearestCharacterTo | getNearestCharacterTo | `obj:getNearestCharacterTo(...)` |
 | removeJobSelectedCharacters | removeJobSelectedCharacters | `obj:removeJobSelectedCharacters(...)` |
 | removePermaJobSelectedCharacters | removePermaJobSelectedCharacters | `obj:removePermaJobSelectedCharacters(...)` |
-| isFactionKnown | isFactionKnown | `obj:isFactionKnown(...)` |
-| encounterFaction | encounterFaction | `obj:encounterFaction(...)` |
-| pickupItem | pickupItem | `obj:pickupItem(...)` |
-| characterSelected | characterSelected | `obj:characterSelected(...)` |
-| itemSelected | itemSelected | `obj:itemSelected(...)` |
-| buildingSelected | buildingSelected | `obj:buildingSelected(...)` |
-| playerMove | playerMove | `obj:playerMove(...)` |
-| _isPlayerCharacter | _isPlayerCharacter | `obj:_isPlayerCharacter(...)` |
+| selectedCharactersUnconcious | selectedCharactersUnconcious | `obj:selectedCharactersUnconcious(...)` |
+| selectedCharactersLayingLow | selectedCharactersLayingLow | `obj:selectedCharactersLayingLow(...)` |
+| useSpeedGroup | useSpeedGroup | `obj:useSpeedGroup(...)` |
+| assignSpeedGroup | assignSpeedGroup | `obj:assignSpeedGroup(...)` |
+| cycleSquad | cycleSquad | `obj:cycleSquad(...)` |
+| cycleCharacter | cycleCharacter | `obj:cycleCharacter(...)` |
+| stopCharactersMovement | stopCharactersMovement | `obj:stopCharactersMovement(...)` |
+| getAnyPlayerCharacter | getAnyPlayerCharacter | `obj:getAnyPlayerCharacter(...)` |
+| isOrderValidForSelection | isOrderValidForSelection | `obj:isOrderValidForSelection(...)` |
+| setVisibilityForReflections | setVisibilityForReflections | `obj:setVisibilityForReflections(...)` |
+| resetFloorsVisibility | resetFloorsVisibility | `obj:resetFloorsVisibility(...)` |
+| setFloorsVisibility | setFloorsVisibility | `obj:setFloorsVisibility(...)` |
+| clearSelection | clearSelection | `obj:clearSelection(...)` |
+| mouseScan | mouseScan | `obj:mouseScan(...)` |
 
 ## RaceData
 **Header:** `extern/KenshiLib/Include/kenshi/RaceData.h`
@@ -1168,6 +3403,8 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
+| specialFoods | specialFoods | unknown | RW | `obj.specialFoods = <value>` |
+| data | data | unknown | RW | `obj.data = <value>` |
 | runSpeedMaxSkill | runSpeedMaxSkill | number | RW | `obj.runSpeedMaxSkill = <value>` |
 | runSpeedMinSkill | runSpeedMinSkill | number | RW | `obj.runSpeedMinSkill = <value>` |
 | originalBloodMin | originalBloodMin | number | RW | `obj.originalBloodMin = <value>` |
@@ -1176,9 +3413,10 @@
 | bleedRate | bleedRate | number | RW | `obj.bleedRate = <value>` |
 | swimSpeed | swimSpeed | number | RW | `obj.swimSpeed = <value>` |
 | walkSpeed | walkSpeed | number | RW | `obj.walkSpeed = <value>` |
+| swimOffset | swimOffset | number | RW | `obj.swimOffset = <value>` |
+| waterAvoidance | waterAvoidance | number | RW | `obj.waterAvoidance = <value>` |
 | hungerRate | hungerRate | number | RW | `obj.hungerRate = <value>` |
 | visionMultiplier | visionMultiplier | number | RW | `obj.visionMultiplier = <value>` |
-| extraAttackSlots | extraAttackSlots | integer | RW | `obj.extraAttackSlots = <value>` |
 | gigantic | gigantic | boolean | RW | `obj.gigantic = <value>` |
 | swims | swims | boolean | RW | `obj.swims = <value>` |
 | carriable | carriable | boolean | RW | `obj.carriable = <value>` |
@@ -1188,14 +3426,91 @@
 | noHats | noHats | boolean | RW | `obj.noHats = <value>` |
 | noShirts | noShirts | boolean | RW | `obj.noShirts = <value>` |
 | noShoes | noShoes | boolean | RW | `obj.noShoes = <value>` |
+| extraAttackSlots | extraAttackSlots | integer | RW | `obj.extraAttackSlots = <value>` |
+| firstAidSkill | (lua_Integer | integer | RW | `obj.firstAidSkill = <value>` |
+| bloodColour | bloodColour | unknown | RW | `obj.bloodColour = <value>` |
 | canGoIndoors | canGoIndoors | boolean | RW | `obj.canGoIndoors = <value>` |
+| statMods | statMods | unknown | RW | `obj.statMods = <value>` |
+| weatherImmunities | weatherImmunities | unknown | RW | `obj.weatherImmunities = <value>` |
+| raceGroup | raceGroup | unknown | RW | `obj.raceGroup = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| isRelatedRace | isRelatedRace | `obj:isRelatedRace(...)` |
-| canEat | canEat | `obj:canEat(...)` |
+| getStatMod | getStatMod | `obj:getStatMod(...)` |
 | isImmune | isImmune | `obj:isImmune(...)` |
+
+## RaceLimiter
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| limits | limits | unknown | RW | `obj.limits = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## RelationData
+**Header:** `extern/KenshiLib/Include/kenshi/FactionRelations.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| alliance | alliance | boolean | RW | `obj.alliance = <value>` |
+| peaceTreaty | peaceTreaty | boolean | RW | `obj.peaceTreaty = <value>` |
+| war | war | boolean | RW | `obj.war = <value>` |
+| coexists | coexists | boolean | RW | `obj.coexists = <value>` |
+| relation | relation | number | RW | `obj.relation = <value>` |
+| trustPositives | trustPositives | number | RW | `obj.trustPositives = <value>` |
+| trustNegatives | trustNegatives | number | RW | `obj.trustNegatives = <value>` |
+| percievedStrength | percievedStrength | number | RW | `obj.percievedStrength = <value>` |
+| stateVariables | stateVariables | unknown | RW | `obj.stateVariables = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## RepetitionCounter
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| states | states | unknown | RW | `obj.states = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| setup | setup | `obj:setup(...)` |
+| count | count | `obj:count(...)` |
+| getTimeSinceLastTrigger | getTimeSinceLastTrigger | `obj:getTimeSinceLastTrigger(...)` |
+| getCount | getCount | `obj:getCount(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## RobotLimbs
+**Header:** `extern/KenshiLib/Include/kenshi/MedicalSystem.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| character | character | unknown | RW | `obj.character = <value>` |
+| inventory | inventory | unknown | RW | `obj.inventory = <value>` |
+| states | states | unknown | RW | `obj.states = <value>` |
+| items | items | unknown | RW | `obj.items = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| getLimb | getLimb | `obj:getLimb(...)` |
+| getMask | getMask | `obj:getMask(...)` |
+| getInventoryInterface | getInventoryInterface | `obj:getInventoryInterface(...)` |
+| destroyInventoryInterface | destroyInventoryInterface | `obj:destroyInventoryInterface(...)` |
+| getLimbItem | getLimbItem | `obj:getLimbItem(...)` |
 
 ## RootObject
 **Header:** `extern/KenshiLib/Include/kenshi/CameraClass.h`
@@ -1203,54 +3518,480 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| visible | getVisible | boolean | R | `obj.visible` |
-| classType | getDataType | integer | R | `obj.classType` |
-| money | getMoney | integer | R | `obj.money` |
-| name | getName | string | R | `obj.name` |
-| modelName | getModelName | string | R | `obj.modelName` |
-| rotation | q.w | number | R | `obj.rotation` |
-| inventory | (void*)inv | lightuserdata | R | `obj.inventory` |
-
-### Methods
-| Lua Name | C++ Method | Example |
-|---|---|---|
-| getName | getName | `obj:getName(...)` |
-| getPosition | getPosition | `obj:getPosition(...)` |
-| getRotation | getRotation | `obj:getRotation(...)` |
-| getVisible | getVisible | `obj:getVisible(...)` |
-| getModelName | getModelName | `obj:getModelName(...)` |
-| getMoney | getMoney | `obj:getMoney(...)` |
-| getTown | getTown | `obj:getTown(...)` |
-| getInventory | getInventory | `obj:getInventory(...)` |
-| setVisible | setVisible | `obj:setVisible(...)` |
-| takeMoney | takeMoney | `obj:takeMoney(...)` |
-| say | say | `obj:say(...)` |
-
-## ShopTrader
-**Header:** `extern/KenshiLib/Include/kenshi/ShopTrader.h`
+| container | container | unknown | RW | `obj.container = <value>` |
+| isInsideBuilding | isInsideBuilding | unknown | RW | `obj.isInsideBuilding = <value>` |
+| isInsideTownWalls | isInsideTownWalls | integer | RW | `obj.isInsideTownWalls = <value>` |
+| floorNum | floorNum | integer | RW | `obj.floorNum = <value>` |
+| spacialKey | spacialKey | integer | RW | `obj.spacialKey = <value>` |
+| outdoorDelayNotification_timer | outdoorDelayNotification_timer | integer | RW | `obj.outdoorDelayNotification_timer = <value>` |
+| rot | rot | Quaternion | RW | `obj.rot = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
 | _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| needsSaving | needsSaving | `obj:needsSaving(...)` |
+| _NV_needsSaving | _NV_needsSaving | `obj:_NV_needsSaving(...)` |
+| getOrientation | getOrientation | `obj:getOrientation(...)` |
+| _NV_getOrientation | _NV_getOrientation | `obj:_NV_getOrientation(...)` |
+| getRace | getRace | `obj:getRace(...)` |
+| _NV_getRace | _NV_getRace | `obj:_NV_getRace(...)` |
+| threadedUpdate | threadedUpdate | `obj:threadedUpdate(...)` |
+| _NV_threadedUpdate | _NV_threadedUpdate | `obj:_NV_threadedUpdate(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| isPhysical | isPhysical | `obj:isPhysical(...)` |
+| setVisible | setVisible | `obj:setVisible(...)` |
+| getVisible | getVisible | `obj:getVisible(...)` |
+| _NV_getVisible | _NV_getVisible | `obj:_NV_getVisible(...)` |
+| isDisabled | isDisabled | `obj:isDisabled(...)` |
+| _NV_isDisabled | _NV_isDisabled | `obj:_NV_isDisabled(...)` |
+| amInsideTownWalls | amInsideTownWalls | `obj:amInsideTownWalls(...)` |
+| _NV_amInsideTownWalls | _NV_amInsideTownWalls | `obj:_NV_amInsideTownWalls(...)` |
+| setInsideTownWalls | setInsideTownWalls | `obj:setInsideTownWalls(...)` |
+| _NV_setInsideTownWalls | _NV_setInsideTownWalls | `obj:_NV_setInsideTownWalls(...)` |
+| getFloor | getFloor | `obj:getFloor(...)` |
+| _NV_getFloor | _NV_getFloor | `obj:_NV_getFloor(...)` |
+| setFloor | setFloor | `obj:setFloor(...)` |
+| _NV_setFloor | _NV_setFloor | `obj:_NV_setFloor(...)` |
+| select | select | `obj:select(...)` |
+| _NV_select | _NV_select | `obj:_NV_select(...)` |
+| unselect | unselect | `obj:unselect(...)` |
+| _NV_unselect | _NV_unselect | `obj:_NV_unselect(...)` |
+| setStandingOrder | setStandingOrder | `obj:setStandingOrder(...)` |
+| _NV_setStandingOrder | _NV_setStandingOrder | `obj:_NV_setStandingOrder(...)` |
 | getInventory | getInventory | `obj:getInventory(...)` |
 | _NV_getInventory | _NV_getInventory | `obj:_NV_getInventory(...)` |
 | takeMoney | takeMoney | `obj:takeMoney(...)` |
 | _NV_takeMoney | _NV_takeMoney | `obj:_NV_takeMoney(...)` |
 | getMoney | getMoney | `obj:getMoney(...)` |
 | _NV_getMoney | _NV_getMoney | `obj:_NV_getMoney(...)` |
+| say | say | `obj:say(...)` |
+| _NV_say | _NV_say | `obj:_NV_say(...)` |
+| notifyOutdoors | notifyOutdoors | `obj:notifyOutdoors(...)` |
+| _NV_notifyOutdoors | _NV_notifyOutdoors | `obj:_NV_notifyOutdoors(...)` |
+| isOnARoof | isOnARoof | `obj:isOnARoof(...)` |
+| _NV_isOnARoof | _NV_isOnARoof | `obj:_NV_isOnARoof(...)` |
+| getIntendedAggression | getIntendedAggression | `obj:getIntendedAggression(...)` |
+| _NV_getIntendedAggression | _NV_getIntendedAggression | `obj:_NV_getIntendedAggression(...)` |
+| createPhysical | createPhysical | `obj:createPhysical(...)` |
+| destroyPhysical | destroyPhysical | `obj:destroyPhysical(...)` |
+| notifyEffect | notifyEffect | `obj:notifyEffect(...)` |
+| _NV_notifyEffect | _NV_notifyEffect | `obj:_NV_notifyEffect(...)` |
+| loadUnloadCheck | loadUnloadCheck | `obj:loadUnloadCheck(...)` |
+| _NV_loadUnloadCheck | _NV_loadUnloadCheck | `obj:_NV_loadUnloadCheck(...)` |
+
+## RootObjectBase
+**Header:** `extern/KenshiLib/Include/kenshi/FactionWarMgr.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| validKey | validKey | integer | RW | `obj.validKey = <value>` |
+| owner | owner | unknown | RW | `obj.owner = <value>` |
+| displayName | displayName | string | RW | `obj.displayName = <value>` |
+| data | data | unknown | RW | `obj.data = <value>` |
+| pos | pos | Vector3 | RW | `obj.pos = <value>` |
+| handle | handle | unknown | RW | `obj.handle = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| isValid | isValid | `obj:isValid(...)` |
+| getName | getName | `obj:getName(...)` |
+| _NV_getName | _NV_getName | `obj:_NV_getName(...)` |
+| setName | setName | `obj:setName(...)` |
+| _NV_setName | _NV_setName | `obj:_NV_setName(...)` |
+| getGameData | getGameData | `obj:getGameData(...)` |
+| _NV_getGameData | _NV_getGameData | `obj:_NV_getGameData(...)` |
+| getDataType | getDataType | `obj:getDataType(...)` |
+| _NV_getDataType | _NV_getDataType | `obj:_NV_getDataType(...)` |
+| typeIsAnItem | typeIsAnItem | `obj:typeIsAnItem(...)` |
+| _NV_typeIsAnItem | _NV_typeIsAnItem | `obj:_NV_typeIsAnItem(...)` |
+| isUnconcious | isUnconcious | `obj:isUnconcious(...)` |
+| _NV_isUnconcious | _NV_isUnconcious | `obj:_NV_isUnconcious(...)` |
+| getPositionForWaypoint | getPositionForWaypoint | `obj:getPositionForWaypoint(...)` |
+| _NV_getPositionForWaypoint | _NV_getPositionForWaypoint | `obj:_NV_getPositionForWaypoint(...)` |
+| getPosition | getPosition | `obj:getPosition(...)` |
+| _NV_getPosition | _NV_getPosition | `obj:_NV_getPosition(...)` |
+| getMovementSpeed | getMovementSpeed | `obj:getMovementSpeed(...)` |
+| _NV_getMovementSpeed | _NV_getMovementSpeed | `obj:_NV_getMovementSpeed(...)` |
+| getMovementDirection | getMovementDirection | `obj:getMovementDirection(...)` |
+| _NV_getMovementDirection | _NV_getMovementDirection | `obj:_NV_getMovementDirection(...)` |
+| getFaction | getFaction | `obj:getFaction(...)` |
+| _NV_getFaction | _NV_getFaction | `obj:_NV_getFaction(...)` |
+| hasFaction | hasFaction | `obj:hasFaction(...)` |
 | getFloor | getFloor | `obj:getFloor(...)` |
 | _NV_getFloor | _NV_getFloor | `obj:_NV_getFloor(...)` |
-| getTrader | getTrader | `obj:getTrader(...)` |
-| isPhysical | isPhysical | `obj:isPhysical(...)` |
-| _NV_isPhysical | _NV_isPhysical | `obj:_NV_isPhysical(...)` |
-| setVisible | setVisible | `obj:setVisible(...)` |
-| _NV_setVisible | _NV_setVisible | `obj:_NV_setVisible(...)` |
-| createPhysical | createPhysical | `obj:createPhysical(...)` |
-| _NV_createPhysical | _NV_createPhysical | `obj:_NV_createPhysical(...)` |
-| destroyPhysical | destroyPhysical | `obj:destroyPhysical(...)` |
-| _NV_destroyPhysical | _NV_destroyPhysical | `obj:_NV_destroyPhysical(...)` |
-| updateInventory | updateInventory | `obj:updateInventory(...)` |
+| getOwnerships | getOwnerships | `obj:getOwnerships(...)` |
+| _NV_getOwnerships | _NV_getOwnerships | `obj:_NV_getOwnerships(...)` |
+
+## RootObjectContainer
+**Header:** `extern/KenshiLib/Include/kenshi/PlayerInterface.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| things | things | unknown | RW | `obj.things = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| getThing | getThing | `obj:getThing(...)` |
+| getNumThings | getNumThings | `obj:getNumThings(...)` |
+
+## RootObjectFactory
+**Header:** `extern/KenshiLib/Include/kenshi/GameWorld.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| todoMutex | todoMutex | unknown | RW | `obj.todoMutex = <value>` |
+| todoList | todoList | unknown | RW | `obj.todoList = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| mainThreadUpdate | mainThreadUpdate | `obj:mainThreadUpdate(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## SectionItem
+**Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| item | item | unknown | RW | `obj.item = <value>` |
+| x | x | integer | RW | `obj.x = <value>` |
+| y | y | integer | RW | `obj.y = <value>` |
+| w | w | integer | RW | `obj.w = <value>` |
+| h | h | integer | RW | `obj.h = <value>` |
+
+## SeenSomeone
+**Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| lastPosition | lastPosition | Vector3 | RW | `obj.lastPosition = <value>` |
+| lastSeenTime | lastSeenTime | unknown | RW | `obj.lastSeenTime = <value>` |
+| percievedFaction | percievedFaction | unknown | RW | `obj.percievedFaction = <value>` |
+| percievedSlave | (lua_Integer | integer | RW | `obj.percievedSlave = <value>` |
+| FOVScore | FOVScore | number | RW | `obj.FOVScore = <value>` |
+| type | type | unknown | RW | `obj.type = <value>` |
+| canSee | canSee | boolean | RW | `obj.canSee = <value>` |
+| canHear | canHear | boolean | RW | `obj.canHear = <value>` |
+| alarmState | alarmState | number | RW | `obj.alarmState = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| lastSeenInSeconds | lastSeenInSeconds | `obj:lastSeenInSeconds(...)` |
+| getPosition | getPosition | `obj:getPosition(...)` |
+| getFaction | getFaction | `obj:getFaction(...)` |
+
+## SelectionBox
+**Header:** `extern/KenshiLib/Include/kenshi/PlayerInterface.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| startPos | startPos | unknown | RW | `obj.startPos = <value>` |
+| volume | volume | unknown | RW | `obj.volume = <value>` |
+| widget | (lua_Integer | integer | RW | `obj.widget = <value>` |
+| active | active | boolean | RW | `obj.active = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| cancel | cancel | `obj:cancel(...)` |
+| isActive | isActive | `obj:isActive(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## SenseItr
+**Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| it | it | unknown | RW | `obj.it = <value>` |
+| _end | _end | unknown | RW | `obj._end = <value>` |
+| flagsAny | flagsAny | integer | RW | `obj.flagsAny = <value>` |
+| flagsNot | flagsNot | integer | RW | `obj.flagsNot = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| getCharacter | getCharacter | `obj:getCharacter(...)` |
+| ended | ended | `obj:ended(...)` |
+| increment | increment | `obj:increment(...)` |
+
+## SensoryData
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| nearestEnemy | nearestEnemy | number | RW | `obj.nearestEnemy = <value>` |
+| seen | seen | unknown | RW | `obj.seen = <value>` |
+| numUnconsciousAllies | numUnconsciousAllies | integer | RW | `obj.numUnconsciousAllies = <value>` |
+| numConsciousAllies | numConsciousAllies | integer | RW | `obj.numConsciousAllies = <value>` |
+| threats | threats | unknown | RW | `obj.threats = <value>` |
+| flockingList | flockingList | unknown | RW | `obj.flockingList = <value>` |
+| totalThreatLevelPersonal | totalThreatLevelPersonal | number | RW | `obj.totalThreatLevelPersonal = <value>` |
+| totalThreatLevelAllies | totalThreatLevelAllies | number | RW | `obj.totalThreatLevelAllies = <value>` |
+| totalIntendedThreatLevelGeneral | totalIntendedThreatLevelGeneral | number | RW | `obj.totalIntendedThreatLevelGeneral = <value>` |
+| numEnemies | numEnemies | integer | RW | `obj.numEnemies = <value>` |
+| numNeutrals | numNeutrals | integer | RW | `obj.numNeutrals = <value>` |
+| lastThreat | lastThreat | number | RW | `obj.lastThreat = <value>` |
+| hearTestTimers | hearTestTimers | unknown | RW | `obj.hearTestTimers = <value>` |
+| killList | killList | unknown | RW | `obj.killList = <value>` |
+| currentAssessIndex | currentAssessIndex | integer | RW | `obj.currentAssessIndex = <value>` |
+| currentAssessList | currentAssessList | integer | RW | `obj.currentAssessList = <value>` |
+| assessList | assessList | unknown | RW | `obj.assessList = <value>` |
+| me | me | unknown | RW | `obj.me = <value>` |
+| spottedSneakingPeople | spottedSneakingPeople | unknown | RW | `obj.spottedSneakingPeople = <value>` |
+| spottedSuspiciousPeople | spottedSuspiciousPeople | unknown | RW | `obj.spottedSuspiciousPeople = <value>` |
+| progressBar | progressBar | unknown | RW | `obj.progressBar = <value>` |
+| progressBarStillNeeded | progressBarStillNeeded | integer | RW | `obj.progressBarStillNeeded = <value>` |
+| spottedGuyIndexForProgressBar | spottedGuyIndexForProgressBar | unknown | RW | `obj.spottedGuyIndexForProgressBar = <value>` |
+| amSharingThisFrame | amSharingThisFrame | boolean | RW | `obj.amSharingThisFrame = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| periodicUpdate_KOed | periodicUpdate_KOed | `obj:periodicUpdate_KOed(...)` |
+| getVisionRange | getVisionRange | `obj:getVisionRange(...)` |
+| update | update | `obj:update(...)` |
+| notifyKO | notifyKO | `obj:notifyKO(...)` |
+| getNearestEnemyDistanceSq | getNearestEnemyDistanceSq | `obj:getNearestEnemyDistanceSq(...)` |
+| getCharacter | getCharacter | `obj:getCharacter(...)` |
+| dialogAssessmentUpdate | dialogAssessmentUpdate | `obj:dialogAssessmentUpdate(...)` |
+| processKillList | processKillList | `obj:processKillList(...)` |
+| updateMyProgressBar | updateMyProgressBar | `obj:updateMyProgressBar(...)` |
+| buildingSpotterUpdate | buildingSpotterUpdate | `obj:buildingSpotterUpdate(...)` |
+
+## SimpleTimeStamper
+**Header:** `extern/KenshiLib/Include/kenshi/GameWorld.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| timer | timer | unknown | RW | `obj.timer = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| getTime | getTime | `obj:getTime(...)` |
+| stampTime | stampTime | `obj:stampTime(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## SpecificItemLoadFirst
+**Header:** `extern/KenshiLib/Include/kenshi/RootObject.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| baseTypes | (lua_Integer | integer | RW | `obj.baseTypes = <value>` |
+| stateEnum | (lua_Integer | integer | RW | `obj.stateEnum = <value>` |
+| specificProperty | specificProperty | string | RW | `obj.specificProperty = <value>` |
+| desiredSpecificProperty | desiredSpecificProperty | boolean | RW | `obj.desiredSpecificProperty = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| flip | flip | `obj:flip(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## SpeedGroup
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| members | members | unknown | RW | `obj.members = <value>` |
+| position | position | Vector3 | RW | `obj.position = <value>` |
+| direction | direction | Vector3 | RW | `obj.direction = <value>` |
+| speed | speed | number | RW | `obj.speed = <value>` |
+| last | last | integer | RW | `obj.last = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## Spot
+**Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| timeSoFar | timeSoFar | number | RW | `obj.timeSoFar = <value>` |
+| timeLimitMax | timeLimitMax | number | RW | `obj.timeLimitMax = <value>` |
+| stillSeen | stillSeen | boolean | RW | `obj.stillSeen = <value>` |
+
+## SpottingPeopleMgr
+**Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| spottedPeople | spottedPeople | unknown | RW | `obj.spottedPeople = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| update | update | `obj:update(...)` |
+| resetSeenFlags | resetSeenFlags | `obj:resetSeenFlags(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## Sword
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| cutDamage | cutDamage | number | RW | `obj.cutDamage = <value>` |
+| bluntDamage | bluntDamage | number | RW | `obj.bluntDamage = <value>` |
+| minCutDamage | minCutDamage | number | RW | `obj.minCutDamage = <value>` |
+| modDefence | modDefence | integer | RW | `obj.modDefence = <value>` |
+| modIndoors | modIndoors | integer | RW | `obj.modIndoors = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| getClassType | getClassType | `obj:getClassType(...)` |
+| _NV_getClassType | _NV_getClassType | `obj:_NV_getClassType(...)` |
+| isSword | isSword | `obj:isSword(...)` |
+| _NV_isSword | _NV_isSword | `obj:_NV_isSword(...)` |
+| getSkillModIndoors | getSkillModIndoors | `obj:getSkillModIndoors(...)` |
+| _NV_getSkillModIndoors | _NV_getSkillModIndoors | `obj:_NV_getSkillModIndoors(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## SysMessage
+**Header:** `extern/KenshiLib/Include/kenshi/GameWorld.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| msg | (lua_Integer | integer | RW | `obj.msg = <value>` |
+| target | target | unknown | RW | `obj.target = <value>` |
+| from | from | unknown | RW | `obj.from = <value>` |
+| on | on | boolean | RW | `obj.on = <value>` |
+| number | number | number | RW | `obj.number = <value>` |
+| data | data | unknown | RW | `obj.data = <value>` |
+
+## TaskData
+**Header:** `extern/KenshiLib/Include/kenshi/Tasker.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| infrequentGoalChecks | infrequentGoalChecks | boolean | RW | `obj.infrequentGoalChecks = <value>` |
+| permaJob | permaJob | unknown | RW | `obj.permaJob = <value>` |
+| permaJob_FixedTarget | permaJob_FixedTarget | boolean | RW | `obj.permaJob_FixedTarget = <value>` |
+| permaJob_Associated | (lua_Integer | integer | RW | `obj.permaJob_Associated = <value>` |
+| permaJob_Associated_Secondary | (lua_Integer | integer | RW | `obj.permaJob_Associated_Secondary = <value>` |
+| requirementsAlwaysFalse | requirementsAlwaysFalse | boolean | RW | `obj.requirementsAlwaysFalse = <value>` |
+| _resultsAlwaysFalse | _resultsAlwaysFalse | boolean | RW | `obj._resultsAlwaysFalse = <value>` |
+| _requirementsCantEndActionPrematurely | _requirementsCantEndActionPrematurely | boolean | RW | `obj._requirementsCantEndActionPrematurely = <value>` |
+| durationMin | durationMin | number | RW | `obj.durationMin = <value>` |
+| durationFuzz | durationFuzz | number | RW | `obj.durationFuzz = <value>` |
+| isDurationBased | isDurationBased | boolean | RW | `obj.isDurationBased = <value>` |
+| endsAfterTime | endsAfterTime | boolean | RW | `obj.endsAfterTime = <value>` |
+| isUnstoppableTask | isUnstoppableTask | boolean | RW | `obj.isUnstoppableTask = <value>` |
+| canDoTaskInStages | canDoTaskInStages | boolean | RW | `obj.canDoTaskInStages = <value>` |
+| aggressionLevel | aggressionLevel | number | RW | `obj.aggressionLevel = <value>` |
+| noisyness | noisyness | number | RW | `obj.noisyness = <value>` |
+| aidLevel | aidLevel | number | RW | `obj.aidLevel = <value>` |
+| followMeWeight | followMeWeight | number | RW | `obj.followMeWeight = <value>` |
+| copyMeInfluence | copyMeInfluence | number | RW | `obj.copyMeInfluence = <value>` |
+| normallyLeadsToSomething | normallyLeadsToSomething | boolean | RW | `obj.normallyLeadsToSomething = <value>` |
+| alertnessMult | alertnessMult | number | RW | `obj.alertnessMult = <value>` |
+| forDirectPlayerOrdersOnly | forDirectPlayerOrdersOnly | boolean | RW | `obj.forDirectPlayerOrdersOnly = <value>` |
+| forFulfillPlayerOrdersOrNPCOnly | forFulfillPlayerOrdersOrNPCOnly | boolean | RW | `obj.forFulfillPlayerOrdersOrNPCOnly = <value>` |
+| key | (lua_Integer | integer | RW | `obj.key = <value>` |
+| needsTarget | needsTarget | boolean | RW | `obj.needsTarget = <value>` |
+| numResults | numResults | integer | RW | `obj.numResults = <value>` |
+| results | results | unknown | RW | `obj.results = <value>` |
+| numRequirements | numRequirements | integer | RW | `obj.numRequirements = <value>` |
+| requirements | requirementsAlwaysFalse | boolean | RW | `obj.requirements = <value>` |
+| scoreFunction | scoreFunction | unknown | RW | `obj.scoreFunction = <value>` |
+| justDoOneTarget | justDoOneTarget | boolean | RW | `obj.justDoOneTarget = <value>` |
+| subTask | subTask | unknown | RW | `obj.subTask = <value>` |
+| dialogueDelivery | (lua_Integer | integer | RW | `obj.dialogueDelivery = <value>` |
+| hasAction | hasAction | boolean | RW | `obj.hasAction = <value>` |
+| description | description | string | RW | `obj.description = <value>` |
+| _findTarget | _findTarget | unknown | RW | `obj._findTarget = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| setCharacteristics | setCharacteristics | `obj:setCharacteristics(...)` |
+| setInfrequentGoalChecks | setInfrequentGoalChecks | `obj:setInfrequentGoalChecks(...)` |
+| setAlertnessMult | setAlertnessMult | `obj:setAlertnessMult(...)` |
+| setRequirementsCantEndActionPrematurely | setRequirementsCantEndActionPrematurely | `obj:setRequirementsCantEndActionPrematurely(...)` |
+| setCopyMeInfluence | setCopyMeInfluence | `obj:setCopyMeInfluence(...)` |
+| setFollowMeWeight | setFollowMeWeight | `obj:setFollowMeWeight(...)` |
+| setSelfRegulation | setSelfRegulation | `obj:setSelfRegulation(...)` |
+| setDurationBased | setDurationBased | `obj:setDurationBased(...)` |
+| hasInfrequentGoalChecks | hasInfrequentGoalChecks | `obj:hasInfrequentGoalChecks(...)` |
+| getRequirementsCantEndActionPrematurely | getRequirementsCantEndActionPrematurely | `obj:getRequirementsCantEndActionPrematurely(...)` |
+| isPermaJob | isPermaJob | `obj:isPermaJob(...)` |
+| isPermaJobFixedTarget | isPermaJobFixedTarget | `obj:isPermaJobFixedTarget(...)` |
+| getPermaJobAssociation | getPermaJobAssociation | `obj:getPermaJobAssociation(...)` |
+| getPermaJobAssociation_secondary | getPermaJobAssociation_secondary | `obj:getPermaJobAssociation_secondary(...)` |
+| isTargetFinder | isTargetFinder | `obj:isTargetFinder(...)` |
+| setDialogueDeliveryTag | setDialogueDeliveryTag | `obj:setDialogueDeliveryTag(...)` |
+
+## TaskStateData
+**Header:** `extern/KenshiLib/Include/kenshi/Tasker.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| key | key | unknown | RW | `obj.key = <value>` |
+| val | val | boolean | RW | `obj.val = <value>` |
+| progressionOnly | progressionOnly | boolean | RW | `obj.progressionOnly = <value>` |
+
+## Tasker
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| priority | priority | unknown | RW | `obj.priority = <value>` |
+| resetsWhenDone | resetsWhenDone | boolean | RW | `obj.resetsWhenDone = <value>` |
+| subject | subject | unknown | RW | `obj.subject = <value>` |
+| weight | weight | number | RW | `obj.weight = <value>` |
+| currentSubTarget | currentSubTarget | unknown | RW | `obj.currentSubTarget = <value>` |
+| location | location | Vector3 | RW | `obj.location = <value>` |
+| startTime | startTime | integer | RW | `obj.startTime = <value>` |
+| endTime | endTime | integer | RW | `obj.endTime = <value>` |
+| taskData | taskData | unknown | RW | `obj.taskData = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| checkTimeOfDay | checkTimeOfDay | `obj:checkTimeOfDay(...)` |
+| key | key | `obj:key(...)` |
+| unSkippableJob | unSkippableJob | `obj:unSkippableJob(...)` |
+| getLocation | getLocation | `obj:getLocation(...)` |
+| setLocation | setLocation | `obj:setLocation(...)` |
+| hasActionFunc | hasActionFunc | `obj:hasActionFunc(...)` |
+| isSubTasker | isSubTasker | `obj:isSubTasker(...)` |
+| isInfiniteGoal | isInfiniteGoal | `obj:isInfiniteGoal(...)` |
+| needsSubjectOrLocation | needsSubjectOrLocation | `obj:needsSubjectOrLocation(...)` |
+| getTaskData | getTaskData | `obj:getTaskData(...)` |
 
 ## Town
 **Header:** `extern/KenshiLib/Include/kenshi/FactionUniqueSquadManager.h`
@@ -1258,47 +3999,408 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| isActive | isActive | boolean | R | `obj.isActive` |
-| isDead | isDead | boolean | R | `obj.isDead` |
-| isOutpost | isOutpost | boolean | R | `obj.isOutpost` |
-| isPublic | isPublic | boolean | R | `obj.isPublic` |
-| hasGates | hasGates | boolean | R | `obj.hasGates` |
-| isValid | isValid | boolean | R | `obj.isValid` |
-| isNotFriendly | isNotFriendly | boolean | R | `obj.isNotFriendly` |
-| alarmState | getAlarmState | integer | R | `obj.alarmState` |
-| townType | townType | integer | RW | `obj.townType = <value>` |
-| playerTownLevel | playerTownLevel | integer | RW | `obj.playerTownLevel = <value>` |
-| name | getKnownName | string | R | `obj.name` |
-| unexploredName | unexploredName | string | RW | `obj.unexploredName = <value>` |
-| discovered | discovered | boolean | RW | `obj.discovered = <value>` |
-| explored | explored | boolean | RW | `obj.explored = <value>` |
+| replacementTown | replacementTown | unknown | RW | `obj.replacementTown = <value>` |
+| isAccessible | isAccessible | boolean | RW | `obj.isAccessible = <value>` |
+| alarms | alarms | unknown | RW | `obj.alarms = <value>` |
+| instanceID | instanceID | unknown | RW | `obj.instanceID = <value>` |
 | openToPublic | openToPublic | boolean | RW | `obj.openToPublic = <value>` |
+| minFoliageRange | minFoliageRange | number | RW | `obj.minFoliageRange = <value>` |
+| playerTownLevel | playerTownLevel | integer | RW | `obj.playerTownLevel = <value>` |
+| gates | gates | unknown | RW | `obj.gates = <value>` |
+| playerHasBuildingsInThisTown | playerHasBuildingsInThisTown | boolean | RW | `obj.playerHasBuildingsInThisTown = <value>` |
+| powerInList | powerInList | unknown | RW | `obj.powerInList = <value>` |
+| powerOutList | powerOutList | unknown | RW | `obj.powerOutList = <value>` |
+| batteryList | batteryList | unknown | RW | `obj.batteryList = <value>` |
+| batteryMode | batteryMode | boolean | RW | `obj.batteryMode = <value>` |
 | power_Stat | power_Stat | number | RW | `obj.power_Stat = <value>` |
 | maxPower_Stat | maxPower_Stat | number | RW | `obj.maxPower_Stat = <value>` |
+| neededPowerTotal_Stat | neededPowerTotal_Stat | number | RW | `obj.neededPowerTotal_Stat = <value>` |
+| batteryPowerTotal_Stat | batteryPowerTotal_Stat | number | RW | `obj.batteryPowerTotal_Stat = <value>` |
+| batteryDrain_Stat | batteryDrain_Stat | number | RW | `obj.batteryDrain_Stat = <value>` |
+| batteryChargingupTotal | batteryChargingupTotal | number | RW | `obj.batteryChargingupTotal = <value>` |
+| batteryCharge_Stat | batteryCharge_Stat | number | RW | `obj.batteryCharge_Stat = <value>` |
+| batteryChargeMax_Stat | batteryChargeMax_Stat | number | RW | `obj.batteryChargeMax_Stat = <value>` |
+| _facilitesWeHaveHere | _facilitesWeHaveHere | unknown | RW | `obj._facilitesWeHaveHere = <value>` |
+| tradeCulture | tradeCulture | unknown | RW | `obj.tradeCulture = <value>` |
+| tradeGoodsMults | tradeGoodsMults | unknown | RW | `obj.tradeGoodsMults = <value>` |
+| buildingMaterial | buildingMaterial | unknown | RW | `obj.buildingMaterial = <value>` |
+| distantTown | distantTown | unknown | RW | `obj.distantTown = <value>` |
+| nestSpots | nestSpots | unknown | RW | `obj.nestSpots = <value>` |
+| nestsLoaded | nestsLoaded | boolean | RW | `obj.nestsLoaded = <value>` |
+| overrideRange | overrideRange | number | RW | `obj.overrideRange = <value>` |
 | townRangeMultiplier | townRangeMultiplier | number | RW | `obj.townRangeMultiplier = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
 |---|---|---|
-| getName | getName | `obj:getName(...)` |
-| getPosition | getPosition | `obj:getPosition(...)` |
-| getFaction | getFaction | `obj:getFaction(...)` |
-| setFaction | setFaction | `obj:setFaction(...)` |
-| getAlarmState | getAlarmState | `obj:getAlarmState(...)` |
-| setAlarmState | setAlarmState | `obj:setAlarmState(...)` |
-| isActive | isActive | `obj:isActive(...)` |
-| isDead | isDead | `obj:isDead(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| initialiseResidentData | initialiseResidentData | `obj:initialiseResidentData(...)` |
+| getGameData | getGameData | `obj:getGameData(...)` |
+| _NV_getGameData | _NV_getGameData | `obj:_NV_getGameData(...)` |
+| getOriginalGameData | getOriginalGameData | `obj:getOriginalGameData(...)` |
+| _reset | _reset | `obj:_reset(...)` |
+| _NV__reset | _NV__reset | `obj:_NV__reset(...)` |
+| getDataType | getDataType | `obj:getDataType(...)` |
+| _NV_getDataType | _NV_getDataType | `obj:_NV_getDataType(...)` |
+| reassessTownPosition | reassessTownPosition | `obj:reassessTownPosition(...)` |
+| _NV_reassessTownPosition | _NV_reassessTownPosition | `obj:_NV_reassessTownPosition(...)` |
+| showDistantTown | showDistantTown | `obj:showDistantTown(...)` |
 | isOutpost | isOutpost | `obj:isOutpost(...)` |
+| spawnTheBarFlies | spawnTheBarFlies | `obj:spawnTheBarFlies(...)` |
+| townLoadedEvent | townLoadedEvent | `obj:townLoadedEvent(...)` |
+| notifyUnloading | notifyUnloading | `obj:notifyUnloading(...)` |
+| getBuildingMaterial | getBuildingMaterial | `obj:getBuildingMaterial(...)` |
+| isTown | isTown | `obj:isTown(...)` |
+| _NV_isTown | _NV_isTown | `obj:_NV_isTown(...)` |
 | isPublic | isPublic | `obj:isPublic(...)` |
+| _NV_isPublic | _NV_isPublic | `obj:_NV_isPublic(...)` |
+| needsSaving | needsSaving | `obj:needsSaving(...)` |
+| _NV_needsSaving | _NV_needsSaving | `obj:_NV_needsSaving(...)` |
+| setPosition | setPosition | `obj:setPosition(...)` |
+| getRadius | getRadius | `obj:getRadius(...)` |
+| _NV_getRadius | _NV_getRadius | `obj:_NV_getRadius(...)` |
+| isActive | isActive | `obj:isActive(...)` |
+| _NV_isActive | _NV_isActive | `obj:_NV_isActive(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| updatePowerGrid | updatePowerGrid | `obj:updatePowerGrid(...)` |
+| _NV_updatePowerGrid | _NV_updatePowerGrid | `obj:_NV_updatePowerGrid(...)` |
+| gatesAllClosed | gatesAllClosed | `obj:gatesAllClosed(...)` |
+| _NV_gatesAllClosed | _NV_gatesAllClosed | `obj:_NV_gatesAllClosed(...)` |
 | hasGates | hasGates | `obj:hasGates(...)` |
-| isValid | isValid | `obj:isValid(...)` |
+| _NV_hasGates | _NV_hasGates | `obj:_NV_hasGates(...)` |
+| notifyAccesibility | notifyAccesibility | `obj:notifyAccesibility(...)` |
+| getPositionOutsideTownGates | getPositionOutsideTownGates | `obj:getPositionOutsideTownGates(...)` |
+| _NV_getPositionOutsideTownGates | _NV_getPositionOutsideTownGates | `obj:_NV_getPositionOutsideTownGates(...)` |
+| isPlayerBuildingsInThisTown | isPlayerBuildingsInThisTown | `obj:isPlayerBuildingsInThisTown(...)` |
+| setPlayerBuildingsInThisTown | setPlayerBuildingsInThisTown | `obj:setPlayerBuildingsInThisTown(...)` |
+| getRequiredPower | getRequiredPower | `obj:getRequiredPower(...)` |
+| getTotalPower | getTotalPower | `obj:getTotalPower(...)` |
+| hasSparePower | hasSparePower | `obj:hasSparePower(...)` |
+| getBatteryDrain | getBatteryDrain | `obj:getBatteryDrain(...)` |
+| getBatteryChargeMax | getBatteryChargeMax | `obj:getBatteryChargeMax(...)` |
+| getBatteryCharge | getBatteryCharge | `obj:getBatteryCharge(...)` |
+| getBatteryCharge01 | getBatteryCharge01 | `obj:getBatteryCharge01(...)` |
+| getBatteryChargingUpAmount | getBatteryChargingUpAmount | `obj:getBatteryChargingUpAmount(...)` |
+| getBatteryPowerTotal | getBatteryPowerTotal | `obj:getBatteryPowerTotal(...)` |
+| isBatteryMode | isBatteryMode | `obj:isBatteryMode(...)` |
+| clearNests | clearNests | `obj:clearNests(...)` |
+| getMapMarker | getMapMarker | `obj:getMapMarker(...)` |
+| _NV_getMapMarker | _NV_getMapMarker | `obj:_NV_getMapMarker(...)` |
+| getMapMarkerZoomLevel | getMapMarkerZoomLevel | `obj:getMapMarkerZoomLevel(...)` |
+| _NV_getMapMarkerZoomLevel | _NV_getMapMarkerZoomLevel | `obj:_NV_getMapMarkerZoomLevel(...)` |
+| recalculatePlayerTownLevel | recalculatePlayerTownLevel | `obj:recalculatePlayerTownLevel(...)` |
+| deActivationCheck | deActivationCheck | `obj:deActivationCheck(...)` |
+
+## TownBase
+**Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| positionCacher | positionCacher | unknown | RW | `obj.positionCacher = <value>` |
+| townType | townType | unknown | RW | `obj.townType = <value>` |
+| population | population | unknown | RW | `obj.population = <value>` |
+| factionsResidentHere | factionsResidentHere | unknown | RW | `obj.factionsResidentHere = <value>` |
+| alreadyInitialisedPopulationParams | alreadyInitialisedPopulationParams | boolean | RW | `obj.alreadyInitialisedPopulationParams = <value>` |
+| isSecret | isSecret | boolean | RW | `obj.isSecret = <value>` |
+| occupiers | occupiers | unknown | RW | `obj.occupiers = <value>` |
+| timeOfDeath | timeOfDeath | unknown | RW | `obj.timeOfDeath = <value>` |
+| p_TIME | p_TIME | number | RW | `obj.p_TIME = <value>` |
+| nestBatcher | nestBatcher | unknown | RW | `obj.nestBatcher = <value>` |
+| unexploredName | unexploredName | string | RW | `obj.unexploredName = <value>` |
+| discovered | discovered | boolean | RW | `obj.discovered = <value>` |
+| explored | explored | boolean | RW | `obj.explored = <value>` |
+| recentlyDiscovered | recentlyDiscovered | boolean | RW | `obj.recentlyDiscovered = <value>` |
+| entityMarker | entityMarker | unknown | RW | `obj.entityMarker = <value>` |
+| entityLabel | entityLabel | unknown | RW | `obj.entityLabel = <value>` |
+| clickHull | clickHull | unknown | RW | `obj.clickHull = <value>` |
+| biome | biome | unknown | RW | `obj.biome = <value>` |
+| alarmState | alarmState | unknown | RW | `obj.alarmState = <value>` |
+| isActivated | isActivated | boolean | RW | `obj.isActivated = <value>` |
+| myZoneCoverage | myZoneCoverage | unknown | RW | `obj.myZoneCoverage = <value>` |
+| populatedZones | populatedZones | unknown | RW | `obj.populatedZones = <value>` |
+| artifacts | artifacts | unknown | RW | `obj.artifacts = <value>` |
+| currentFloorVisibility | currentFloorVisibility | integer | RW | `obj.currentFloorVisibility = <value>` |
+| buildingsManager | buildingsManager | unknown | RW | `obj.buildingsManager = <value>` |
+| residentsSpawned | residentsSpawned | unknown | RW | `obj.residentsSpawned = <value>` |
+| residentsSpawned_BarsOrSomething | residentsSpawned_BarsOrSomething | unknown | RW | `obj.residentsSpawned_BarsOrSomething = <value>` |
+| defaultResident | defaultResident | unknown | RW | `obj.defaultResident = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| isActive | isActive | `obj:isActive(...)` |
+| _NV_isActive | _NV_isActive | `obj:_NV_isActive(...)` |
+| _reset | _reset | `obj:_reset(...)` |
+| _NV__reset | _NV__reset | `obj:_NV__reset(...)` |
+| getKnownName | getKnownName | `obj:getKnownName(...)` |
+| reassessTownPosition | reassessTownPosition | `obj:reassessTownPosition(...)` |
+| _NV_reassessTownPosition | _NV_reassessTownPosition | `obj:_NV_reassessTownPosition(...)` |
 | isNotFriendly | isNotFriendly | `obj:isNotFriendly(...)` |
+| _NV_isNotFriendly | _NV_isNotFriendly | `obj:_NV_isNotFriendly(...)` |
+| isPhysical | isPhysical | `obj:isPhysical(...)` |
+| _NV_isPhysical | _NV_isPhysical | `obj:_NV_isPhysical(...)` |
 | setVisible | setVisible | `obj:setVisible(...)` |
-| setRecentlyDiscovered | setRecentlyDiscovered | `obj:setRecentlyDiscovered(...)` |
-| distanceTo | distanceTo | `obj:distanceTo(...)` |
+| _NV_setVisible | _NV_setVisible | `obj:_NV_setVisible(...)` |
+| getDataType | getDataType | `obj:getDataType(...)` |
+| _NV_getDataType | _NV_getDataType | `obj:_NV_getDataType(...)` |
+| isTown | isTown | `obj:isTown(...)` |
+| _NV_isTown | _NV_isTown | `obj:_NV_isTown(...)` |
+| isOutpost | isOutpost | `obj:isOutpost(...)` |
 | withinBordersRange | withinBordersRange | `obj:withinBordersRange(...)` |
-| getPowerStats | getPowerStats | `obj:getPowerStats(...)` |
-| isMyTown | isMyTown | `obj:isMyTown(...)` |
+| withinDiscoveryRange | withinDiscoveryRange | `obj:withinDiscoveryRange(...)` |
+| distanceTo | distanceTo | `obj:distanceTo(...)` |
+| squaredDistanceTo | squaredDistanceTo | `obj:squaredDistanceTo(...)` |
+| isDead | isDead | `obj:isDead(...)` |
+| _NV_isDead | _NV_isDead | `obj:_NV_isDead(...)` |
+| getPositionOutsideTownGates | getPositionOutsideTownGates | `obj:getPositionOutsideTownGates(...)` |
+| _NV_getPositionOutsideTownGates | _NV_getPositionOutsideTownGates | `obj:_NV_getPositionOutsideTownGates(...)` |
+| isPublic | isPublic | `obj:isPublic(...)` |
+| _NV_isPublic | _NV_isPublic | `obj:_NV_isPublic(...)` |
+| getRadius | getRadius | `obj:getRadius(...)` |
+| _NV_getRadius | _NV_getRadius | `obj:_NV_getRadius(...)` |
+| update | update | `obj:update(...)` |
+| _NV_update | _NV_update | `obj:_NV_update(...)` |
+| periodicUpdate | periodicUpdate | `obj:periodicUpdate(...)` |
+| _NV_periodicUpdate | _NV_periodicUpdate | `obj:_NV_periodicUpdate(...)` |
+| updatePowerGrid | updatePowerGrid | `obj:updatePowerGrid(...)` |
+| _NV_updatePowerGrid | _NV_updatePowerGrid | `obj:_NV_updatePowerGrid(...)` |
+| allBuildingsDoorsOpen | allBuildingsDoorsOpen | `obj:allBuildingsDoorsOpen(...)` |
+| _NV_allBuildingsDoorsOpen | _NV_allBuildingsDoorsOpen | `obj:_NV_allBuildingsDoorsOpen(...)` |
+| destroyPhysical | destroyPhysical | `obj:destroyPhysical(...)` |
+| _NV_destroyPhysical | _NV_destroyPhysical | `obj:_NV_destroyPhysical(...)` |
+| getPosition | getPosition | `obj:getPosition(...)` |
+| _NV_getPosition | _NV_getPosition | `obj:_NV_getPosition(...)` |
+| getPositionForWaypoint | getPositionForWaypoint | `obj:getPositionForWaypoint(...)` |
+| _NV_getPositionForWaypoint | _NV_getPositionForWaypoint | `obj:_NV_getPositionForWaypoint(...)` |
+| createPhysical | createPhysical | `obj:createPhysical(...)` |
+| _NV_createPhysical | _NV_createPhysical | `obj:_NV_createPhysical(...)` |
+| hasGates | hasGates | `obj:hasGates(...)` |
+| _NV_hasGates | _NV_hasGates | `obj:_NV_hasGates(...)` |
+| gatesAllClosed | gatesAllClosed | `obj:gatesAllClosed(...)` |
+| _NV_gatesAllClosed | _NV_gatesAllClosed | `obj:_NV_gatesAllClosed(...)` |
+| isRecentlyDiscovered | isRecentlyDiscovered | `obj:isRecentlyDiscovered(...)` |
+| _NV_isRecentlyDiscovered | _NV_isRecentlyDiscovered | `obj:_NV_isRecentlyDiscovered(...)` |
+| setRecentlyDiscovered | setRecentlyDiscovered | `obj:setRecentlyDiscovered(...)` |
+| _NV_setRecentlyDiscovered | _NV_setRecentlyDiscovered | `obj:_NV_setRecentlyDiscovered(...)` |
+| isDiscovered | isDiscovered | `obj:isDiscovered(...)` |
+| _NV_isDiscovered | _NV_isDiscovered | `obj:_NV_isDiscovered(...)` |
+| setDiscovered | setDiscovered | `obj:setDiscovered(...)` |
+| _NV_setDiscovered | _NV_setDiscovered | `obj:_NV_setDiscovered(...)` |
+| setDead | setDead | `obj:setDead(...)` |
+| _NV_setDead | _NV_setDead | `obj:_NV_setDead(...)` |
+| isExplored | isExplored | `obj:isExplored(...)` |
+| _NV_isExplored | _NV_isExplored | `obj:_NV_isExplored(...)` |
+| setExplored | setExplored | `obj:setExplored(...)` |
+| _NV_setExplored | _NV_setExplored | `obj:_NV_setExplored(...)` |
+| getItemArtifactsMinValue | getItemArtifactsMinValue | `obj:getItemArtifactsMinValue(...)` |
+| _NV_getItemArtifactsMinValue | _NV_getItemArtifactsMinValue | `obj:_NV_getItemArtifactsMinValue(...)` |
+| getItemArtifactsMaxValue | getItemArtifactsMaxValue | `obj:getItemArtifactsMaxValue(...)` |
+| _NV_getItemArtifactsMaxValue | _NV_getItemArtifactsMaxValue | `obj:_NV_getItemArtifactsMaxValue(...)` |
+| getGearArtifactsMinValue | getGearArtifactsMinValue | `obj:getGearArtifactsMinValue(...)` |
+| _NV_getGearArtifactsMinValue | _NV_getGearArtifactsMinValue | `obj:_NV_getGearArtifactsMinValue(...)` |
+| getGearArtifactsMaxValue | getGearArtifactsMaxValue | `obj:getGearArtifactsMaxValue(...)` |
+| _NV_getGearArtifactsMaxValue | _NV_getGearArtifactsMaxValue | `obj:_NV_getGearArtifactsMaxValue(...)` |
+| resetBuildingsFloorVisibility | resetBuildingsFloorVisibility | `obj:resetBuildingsFloorVisibility(...)` |
+| getTownFloorVisiblity | getTownFloorVisiblity | `obj:getTownFloorVisiblity(...)` |
+| setTownFloorVisiblity | setTownFloorVisiblity | `obj:setTownFloorVisiblity(...)` |
+| resetTownFloorVisibility | resetTownFloorVisibility | `obj:resetTownFloorVisibility(...)` |
+| getMapMarker | getMapMarker | `obj:getMapMarker(...)` |
+| _NV_getMapMarker | _NV_getMapMarker | `obj:_NV_getMapMarker(...)` |
+| getMapMarkerZoomLevel | getMapMarkerZoomLevel | `obj:getMapMarkerZoomLevel(...)` |
+| _NV_getMapMarkerZoomLevel | _NV_getMapMarkerZoomLevel | `obj:_NV_getMapMarkerZoomLevel(...)` |
+| isOccupied | isOccupied | `obj:isOccupied(...)` |
+| distributeArtifacts | distributeArtifacts | `obj:distributeArtifacts(...)` |
+
+## TownBuildingsManager
+**Header:** `extern/KenshiLib/Include/kenshi/GameWorld.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| buildingEntities | buildingEntities | unknown | RW | `obj.buildingEntities = <value>` |
+| instancesManagers | instancesManagers | unknown | RW | `obj.instancesManagers = <value>` |
+| signs | signs | unknown | RW | `obj.signs = <value>` |
+| signsVisible | signsVisible | boolean | RW | `obj.signsVisible = <value>` |
+| town | town | unknown | RW | `obj.town = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+| clear | clear | `obj:clear(...)` |
+| setAllVisible | setAllVisible | `obj:setAllVisible(...)` |
+| resetAllVisible | resetAllVisible | `obj:resetAllVisible(...)` |
+| setSignsVisible | setSignsVisible | `obj:setSignsVisible(...)` |
+
+## TownPositionCacher
+**Header:** `extern/KenshiLib/Include/kenshi/Town.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| lastUpdateStamp | lastUpdateStamp | unknown | RW | `obj.lastUpdateStamp = <value>` |
+| updateRateInHours | updateRateInHours | number | RW | `obj.updateRateInHours = <value>` |
+| pos | pos | Vector3 | RW | `obj.pos = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| stampUpdate | stampUpdate | `obj:stampUpdate(...)` |
+| needsUpdate | needsUpdate | `obj:needsUpdate(...)` |
+
+## VisibleObjectInfo
+**Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| handle | handle | unknown | RW | `obj.handle = <value>` |
+| range | range | number | RW | `obj.range = <value>` |
+| isEnemy | isEnemy | boolean | RW | `obj.isEnemy = <value>` |
+
+## Weapon
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| bleedDamage | bleedDamage | number | RW | `obj.bleedDamage = <value>` |
+| modAttack | modAttack | integer | RW | `obj.modAttack = <value>` |
+| combatWeight | combatWeight | number | RW | `obj.combatWeight = <value>` |
+| category | (lua_Integer | integer | RW | `obj.category = <value>` |
+| category_animationOverride | (lua_Integer | integer | RW | `obj.category_animationOverride = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| getItemWeight | getItemWeight | `obj:getItemWeight(...)` |
+| _NV_getItemWeight | _NV_getItemWeight | `obj:_NV_getItemWeight(...)` |
+| getValueSingle | getValueSingle | `obj:getValueSingle(...)` |
+| _NV_getValueSingle | _NV_getValueSingle | `obj:_NV_getValueSingle(...)` |
+| getCategory | getCategory | `obj:getCategory(...)` |
+| getCategory_animationOverride | getCategory_animationOverride | `obj:getCategory_animationOverride(...)` |
+| is2HandedOnly | is2HandedOnly | `obj:is2HandedOnly(...)` |
+| getCombatWeight | getCombatWeight | `obj:getCombatWeight(...)` |
+| getCraftTime | getCraftTime | `obj:getCraftTime(...)` |
+| _NV_getCraftTime | _NV_getCraftTime | `obj:_NV_getCraftTime(...)` |
+| getCraftMaterialMult | getCraftMaterialMult | `obj:getCraftMaterialMult(...)` |
+| _NV_getCraftMaterialMult | _NV_getCraftMaterialMult | `obj:_NV_getCraftMaterialMult(...)` |
+| isWeapon | isWeapon | `obj:isWeapon(...)` |
+| _NV_isWeapon | _NV_isWeapon | `obj:_NV_isWeapon(...)` |
+| isSword | isSword | `obj:isSword(...)` |
+| _NV_isSword | _NV_isSword | `obj:_NV_isSword(...)` |
+| isCrossbow | isCrossbow | `obj:isCrossbow(...)` |
+| _NV_isCrossbow | _NV_isCrossbow | `obj:_NV_isCrossbow(...)` |
+| getSkillModIndoors | getSkillModIndoors | `obj:getSkillModIndoors(...)` |
+| _NV_getSkillModIndoors | _NV_getSkillModIndoors | `obj:_NV_getSkillModIndoors(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## WhoSeesMe
+**Header:** `extern/KenshiLib/Include/kenshi/Character.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| lastUpdated | lastUpdated | number | RW | `obj.lastUpdated = <value>` |
+| seeState | seeState | unknown | RW | `obj.seeState = <value>` |
+| progressOfMaybe | progressOfMaybe | number | RW | `obj.progressOfMaybe = <value>` |
+
+## WorldEventStateQuery
+**Header:** `extern/KenshiLib/Include/kenshi/WorldEventStateQuery.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| uniqueNPCsAre | uniqueNPCsAre | unknown | RW | `obj.uniqueNPCsAre = <value>` |
+| uniqueNPCsAreNot | uniqueNPCsAreNot | unknown | RW | `obj.uniqueNPCsAreNot = <value>` |
+| towns | towns | unknown | RW | `obj.towns = <value>` |
+| isAllyOf | isAllyOf | unknown | RW | `obj.isAllyOf = <value>` |
+| isEnemyOf | isEnemyOf | unknown | RW | `obj.isEnemyOf = <value>` |
+| playerInvolvement | playerInvolvement | boolean | RW | `obj.playerInvolvement = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| isTrue | isTrue | `obj:isTrue(...)` |
+
+## WorldEventStateQueryList
+**Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| statesList | statesList | unknown | RW | `obj.statesList = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| reset | reset | `obj:reset(...)` |
+| isTrue | isTrue | `obj:isTrue(...)` |
+| _DESTRUCTOR | _DESTRUCTOR | `obj:_DESTRUCTOR(...)` |
+
+## hand
+**Header:** `extern/KenshiLib/Include/kenshi/CombatClass.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| type | (lua_Integer | integer | RW | `obj.type = <value>` |
+| container | container | integer | RW | `obj.container = <value>` |
+| containerSerial | containerSerial | integer | RW | `obj.containerSerial = <value>` |
+| index | index | integer | RW | `obj.index = <value>` |
+| serial | serial | integer | RW | `obj.serial = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| toString | toString | `obj:toString(...)` |
+| fromString | fromString | `obj:fromString(...)` |
+| getCharacter | getCharacter | `obj:getCharacter(...)` |
+| getPlatoon | getPlatoon | `obj:getPlatoon(...)` |
+| getActivePlatoon | getActivePlatoon | `obj:getActivePlatoon(...)` |
+| getBuilding | getBuilding | `obj:getBuilding(...)` |
+| getItem | getItem | `obj:getItem(...)` |
+| getRootObject | getRootObject | `obj:getRootObject(...)` |
+| getRootObjectBase | getRootObjectBase | `obj:getRootObjectBase(...)` |
+| getTown | getTown | `obj:getTown(...)` |
+| debugWhatHappenedToMe | debugWhatHappenedToMe | `obj:debugWhatHappenedToMe(...)` |
+| setNull | setNull | `obj:setNull(...)` |
+| isNull | isNull | `obj:isNull(...)` |
+| isValid | isValid | `obj:isValid(...)` |
+| canCastToRootObject | canCastToRootObject | `obj:canCastToRootObject(...)` |
+
+## physHit
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| _defaultAltitudeFallback | _defaultAltitudeFallback | number | RW | `obj._defaultAltitudeFallback = <value>` |
+| _traceWasAborted | _traceWasAborted | boolean | RW | `obj._traceWasAborted = <value>` |
+| _doNotAbort | _doNotAbort | boolean | RW | `obj._doNotAbort = <value>` |
+| _needsGroup | _needsGroup | boolean | RW | `obj._needsGroup = <value>` |
+| hit | hit | boolean | RW | `obj.hit = <value>` |
+| position | position | Vector3 | RW | `obj.position = <value>` |
+| normal | normal | Vector3 | RW | `obj.normal = <value>` |
+| distance | distance | number | RW | `obj.distance = <value>` |
+| shape | shape | unknown | RW | `obj.shape = <value>` |
+| hitObject | hitObject | unknown | RW | `obj.hitObject = <value>` |
+| _group | _group | integer | RW | `obj._group = <value>` |
+| _hitObjectUnsafePtr | _hitObjectUnsafePtr | unknown | RW | `obj._hitObjectUnsafePtr = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Example |
+|---|---|---|
+| traceWasAborted | traceWasAborted | `obj:traceWasAborted(...)` |
+| reset | reset | `obj:reset(...)` |
+| hitObjectUnsafePtr | hitObjectUnsafePtr | `obj:hitObjectUnsafePtr(...)` |
+| getBuilding | getBuilding | `obj:getBuilding(...)` |
+| group | group | `obj:group(...)` |
 
 ## Enums
 
@@ -1306,66 +4408,60 @@
 | Name | Value |
 |---|---|
 | BD_NONE | BuildingDesignation::BD_NONE |
-| BD_SHOP | BuildingDesignation::BD_SHOP |
-| BD_BARRACKS | BuildingDesignation::BD_BARRACKS |
-| BD_BAR | BuildingDesignation::BD_BAR |
-| BD_HOSPITAL | BuildingDesignation::BD_HOSPITAL |
-| BD_ARMOURY | BuildingDesignation::BD_ARMOURY |
-| BD_TREASURE | BuildingDesignation::BD_TREASURE |
-| BD_PRISON | BuildingDesignation::BD_PRISON |
-| BD_HQ | BuildingDesignation::BD_HQ |
-| BD_RESIDENTIAL | BuildingDesignation::BD_RESIDENTIAL |
-| BD_SLAVE_STORAGE | BuildingDesignation::BD_SLAVE_STORAGE |
-| BD_RESIDENTIAL_SMALL | BuildingDesignation::BD_RESIDENTIAL_SMALL |
-#### or
-| Name | Value |
-|---|---|
 | NONE | BuildingDesignation::BD_NONE |
+| BD_SHOP | BuildingDesignation::BD_SHOP |
 | SHOP | BuildingDesignation::BD_SHOP |
+| BD_BARRACKS | BuildingDesignation::BD_BARRACKS |
 | BARRACKS | BuildingDesignation::BD_BARRACKS |
+| BD_BAR | BuildingDesignation::BD_BAR |
 | BAR | BuildingDesignation::BD_BAR |
+| BD_HOSPITAL | BuildingDesignation::BD_HOSPITAL |
 | HOSPITAL | BuildingDesignation::BD_HOSPITAL |
+| BD_ARMOURY | BuildingDesignation::BD_ARMOURY |
 | ARMOURY | BuildingDesignation::BD_ARMOURY |
+| BD_TREASURE | BuildingDesignation::BD_TREASURE |
 | TREASURE | BuildingDesignation::BD_TREASURE |
+| BD_PRISON | BuildingDesignation::BD_PRISON |
 | PRISON | BuildingDesignation::BD_PRISON |
+| BD_HQ | BuildingDesignation::BD_HQ |
 | HQ | BuildingDesignation::BD_HQ |
+| BD_RESIDENTIAL | BuildingDesignation::BD_RESIDENTIAL |
 | RESIDENTIAL | BuildingDesignation::BD_RESIDENTIAL |
+| BD_SLAVE_STORAGE | BuildingDesignation::BD_SLAVE_STORAGE |
 | SLAVE_STORAGE | BuildingDesignation::BD_SLAVE_STORAGE |
+| BD_RESIDENTIAL_SMALL | BuildingDesignation::BD_RESIDENTIAL_SMALL |
 | RESIDENTIAL_SMALL | BuildingDesignation::BD_RESIDENTIAL_SMALL |
 
 ### BuildingClassType
 | Name | Value |
 |---|---|
 | BCTYPE_FLUFF | BuildingClassType::BCTYPE_FLUFF |
-| BCTYPE_DOOR | BuildingClassType::BCTYPE_DOOR |
-| BCTYPE_USABLE | BuildingClassType::BCTYPE_USABLE |
-| BCTYPE_STORAGE | BuildingClassType::BCTYPE_STORAGE |
-| BCTYPE_PRODUCTION | BuildingClassType::BCTYPE_PRODUCTION |
-| BCTYPE_RESEARCH | BuildingClassType::BCTYPE_RESEARCH |
-| BCTYPE_CRAFTING | BuildingClassType::BCTYPE_CRAFTING |
-| BCTYPE_GATEWAY | BuildingClassType::BCTYPE_GATEWAY |
-| BCTYPE_TURRET | BuildingClassType::BCTYPE_TURRET |
-| BCTYPE_WALL | BuildingClassType::BCTYPE_WALL |
-| BCTYPE_ITEM_FURNACE | BuildingClassType::BCTYPE_ITEM_FURNACE |
-| BCTYPE_LIGHT | BuildingClassType::BCTYPE_LIGHT |
-| BCTYPE_SHELL_WITH_INTERIOR | BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR |
-| BCTYPE_FARM | BuildingClassType::BCTYPE_FARM |
-#### or
-| Name | Value |
-|---|---|
 | FLUFF | BuildingClassType::BCTYPE_FLUFF |
+| BCTYPE_DOOR | BuildingClassType::BCTYPE_DOOR |
 | DOOR | BuildingClassType::BCTYPE_DOOR |
+| BCTYPE_USABLE | BuildingClassType::BCTYPE_USABLE |
 | USABLE | BuildingClassType::BCTYPE_USABLE |
+| BCTYPE_STORAGE | BuildingClassType::BCTYPE_STORAGE |
 | STORAGE | BuildingClassType::BCTYPE_STORAGE |
+| BCTYPE_PRODUCTION | BuildingClassType::BCTYPE_PRODUCTION |
 | PRODUCTION | BuildingClassType::BCTYPE_PRODUCTION |
+| BCTYPE_RESEARCH | BuildingClassType::BCTYPE_RESEARCH |
 | RESEARCH | BuildingClassType::BCTYPE_RESEARCH |
+| BCTYPE_CRAFTING | BuildingClassType::BCTYPE_CRAFTING |
 | CRAFTING | BuildingClassType::BCTYPE_CRAFTING |
+| BCTYPE_GATEWAY | BuildingClassType::BCTYPE_GATEWAY |
 | GATEWAY | BuildingClassType::BCTYPE_GATEWAY |
+| BCTYPE_TURRET | BuildingClassType::BCTYPE_TURRET |
 | TURRET | BuildingClassType::BCTYPE_TURRET |
+| BCTYPE_WALL | BuildingClassType::BCTYPE_WALL |
 | WALL | BuildingClassType::BCTYPE_WALL |
+| BCTYPE_ITEM_FURNACE | BuildingClassType::BCTYPE_ITEM_FURNACE |
 | ITEM_FURNACE | BuildingClassType::BCTYPE_ITEM_FURNACE |
+| BCTYPE_LIGHT | BuildingClassType::BCTYPE_LIGHT |
 | LIGHT | BuildingClassType::BCTYPE_LIGHT |
+| BCTYPE_SHELL_WITH_INTERIOR | BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR |
 | SHELL_WITH_INTERIOR | BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR |
+| BCTYPE_FARM | BuildingClassType::BCTYPE_FARM |
 | FARM | BuildingClassType::BCTYPE_FARM |
 
 ### BuildingPlacementGroundType
@@ -1379,50 +4475,41 @@
 | Name | Value |
 |---|---|
 | PLACEMENT_VALID | PreviewBuilding::PlacementResult::PLACEMENT_VALID |
-| PLACEMENT_OUTSIDE | PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE |
-| PLACEMENT_INVALID | PreviewBuilding::PlacementResult::PLACEMENT_INVALID |
-#### or
-| Name | Value |
-|---|---|
 | VALID | PreviewBuilding::PlacementResult::PLACEMENT_VALID |
+| PLACEMENT_OUTSIDE | PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE |
 | OUTSIDE | PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE |
+| PLACEMENT_INVALID | PreviewBuilding::PlacementResult::PLACEMENT_INVALID |
 | INVALID | PreviewBuilding::PlacementResult::PLACEMENT_INVALID |
 
 ### PreviewBuildingClassType
 | Name | Value |
 |---|---|
 | PREVIEW_NORMAL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL |
-| PREVIEW_WALL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL |
-#### or
-| Name | Value |
-|---|---|
 | NORMAL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL |
+| PREVIEW_WALL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL |
 | WALL | PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL |
 
 ### ProneState
 | Name | Value |
 |---|---|
 | PS_NORMAL | ProneState::PS_NORMAL |
+| NORMAL | ProneState::PS_NORMAL |
 | PS_STAYING_LOW | ProneState::PS_STAYING_LOW |
+| STAYING_LOW | ProneState::PS_STAYING_LOW |
 | PS_CRIPPLED | ProneState::PS_CRIPPLED |
+| CRIPPLED | ProneState::PS_CRIPPLED |
 | PS_PLAYING_DEAD | ProneState::PS_PLAYING_DEAD |
+| PLAYING_DEAD | ProneState::PS_PLAYING_DEAD |
 | PS_KO | ProneState::PS_KO |
-#### or
-| Name | Value |
-|---|---|
-| NORMAL | PS_NORMAL |
-| STAYING_LOW | PS_STAYING_LOW |
-| CRIPPLED | PS_CRIPPLED |
-| PLAYING_DEAD | PS_PLAYING_DEAD |
 | KO | ProneState::PS_KO |
 
 ### WaterState
 | Name | Value |
 |---|---|
-| NO_WATER | WaterState::NO_WATER |
-| VERY_SHALLOW_WATER | WaterState::VERY_SHALLOW_WATER |
-| THIGH_DEEP_WATER | WaterState::THIGH_DEEP_WATER |
-| DEEP_WATER | WaterState::DEEP_WATER |
+| NO_WATER | WaterState::Enum::NO_WATER |
+| VERY_SHALLOW_WATER | WaterState::Enum::VERY_SHALLOW_WATER |
+| THIGH_DEEP_WATER | WaterState::Enum::THIGH_DEEP_WATER |
+| DEEP_WATER | WaterState::Enum::DEEP_WATER |
 
 ### RagdollPart
 | Name | Value |
@@ -1442,225 +4529,104 @@
 ### CharacterPerceptionTags_ShortTerm
 | Name | Value |
 |---|---|
-| ST_NONE | ST_NONE |
-| ST_INTRUDER | ST_INTRUDER |
-| ST_AGGRESSOR | ST_AGGRESSOR |
-| ST_TEMPORARY_ALLY | ST_TEMPORARY_ALLY |
-| ST_TEMPORARY_ENEMY | ST_TEMPORARY_ENEMY |
-| ST_PRISONER | ST_PRISONER |
-| ST_HAS_BEEN_LOOTED | ST_HAS_BEEN_LOOTED |
-| ST_CRIMINAL | ST_CRIMINAL |
-#### or
-| Name | Value |
-|---|---|
-| NONE | ST_NONE |
-| INTRUDER | ST_INTRUDER |
-| AGGRESSOR | ST_AGGRESSOR |
-| TEMPORARY_ALLY | ST_TEMPORARY_ALLY |
-| TEMPORARY_ENEMY | ST_TEMPORARY_ENEMY |
-| PRISONER | ST_PRISONER |
-| HAS_BEEN_LOOTED | ST_HAS_BEEN_LOOTED |
-| CRIMINAL | ST_CRIMINAL |
+| ST_NONE | CharacterPerceptionTags_ShortTerm::ST_NONE |
+| NONE | CharacterPerceptionTags_ShortTerm::ST_NONE |
+| ST_INTRUDER | CharacterPerceptionTags_ShortTerm::ST_INTRUDER |
+| INTRUDER | CharacterPerceptionTags_ShortTerm::ST_INTRUDER |
+| ST_AGGRESSOR | CharacterPerceptionTags_ShortTerm::ST_AGGRESSOR |
+| AGGRESSOR | CharacterPerceptionTags_ShortTerm::ST_AGGRESSOR |
+| ST_TEMPORARY_ALLY | CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ALLY |
+| TEMPORARY_ALLY | CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ALLY |
+| ST_TEMPORARY_ENEMY | CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ENEMY |
+| TEMPORARY_ENEMY | CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ENEMY |
+| ST_PRISONER | CharacterPerceptionTags_ShortTerm::ST_PRISONER |
+| PRISONER | CharacterPerceptionTags_ShortTerm::ST_PRISONER |
+| ST_HAS_BEEN_LOOTED | CharacterPerceptionTags_ShortTerm::ST_HAS_BEEN_LOOTED |
+| HAS_BEEN_LOOTED | CharacterPerceptionTags_ShortTerm::ST_HAS_BEEN_LOOTED |
+| ST_CRIMINAL | CharacterPerceptionTags_ShortTerm::ST_CRIMINAL |
+| CRIMINAL | CharacterPerceptionTags_ShortTerm::ST_CRIMINAL |
 
 ### CharacterPerceptionTags_LongTerm
 | Name | Value |
 |---|---|
-| LT_NONE | LT_NONE |
-| LT_MY_INTRUDER | LT_MY_INTRUDER |
-| LT_MY_LIFESAVER | LT_MY_LIFESAVER |
-| LT_FREED_ME | LT_FREED_ME |
-| LT_STOLE_FROM_ME | LT_STOLE_FROM_ME |
-| LT_MY_CAPTOR | LT_MY_CAPTOR |
-| LT_FRIENDLY_AQUAINTANCE | LT_FRIENDLY_AQUAINTANCE |
-| LT_DEFEATED_MY_SQUAD_ONCE | LT_DEFEATED_MY_SQUAD_ONCE |
-| LT_SQUAD_LOST_TO_ME_ONCE | LT_SQUAD_LOST_TO_ME_ONCE |
-| LT_KILLED_MY_FRIEND | LT_KILLED_MY_FRIEND |
-| LT_I_SCREWED_THIS_GUY | LT_I_SCREWED_THIS_GUY |
-| LT_MAX | LT_MAX |
-#### or
-| Name | Value |
-|---|---|
-| NONE | LT_NONE |
-| MY_INTRUDER | LT_MY_INTRUDER |
-| MY_LIFESAVER | LT_MY_LIFESAVER |
-| FREED_ME | LT_FREED_ME |
-| STOLE_FROM_ME | LT_STOLE_FROM_ME |
-| MY_CAPTOR | LT_MY_CAPTOR |
-| FRIENDLY_AQUAINTANCE | LT_FRIENDLY_AQUAINTANCE |
-| DEFEATED_MY_SQUAD_ONCE | LT_DEFEATED_MY_SQUAD_ONCE |
-| SQUAD_LOST_TO_ME_ONCE | LT_SQUAD_LOST_TO_ME_ONCE |
-| KILLED_MY_FRIEND | LT_KILLED_MY_FRIEND |
-| I_SCREWED_THIS_GUY | LT_I_SCREWED_THIS_GUY |
-| MAX | LT_MAX |
+| LT_NONE | CharacterPerceptionTags_LongTerm::LT_NONE |
+| NONE | CharacterPerceptionTags_LongTerm::LT_NONE |
+| LT_MY_INTRUDER | CharacterPerceptionTags_LongTerm::LT_MY_INTRUDER |
+| MY_INTRUDER | CharacterPerceptionTags_LongTerm::LT_MY_INTRUDER |
+| LT_MY_LIFESAVER | CharacterPerceptionTags_LongTerm::LT_MY_LIFESAVER |
+| MY_LIFESAVER | CharacterPerceptionTags_LongTerm::LT_MY_LIFESAVER |
+| LT_FREED_ME | CharacterPerceptionTags_LongTerm::LT_FREED_ME |
+| FREED_ME | CharacterPerceptionTags_LongTerm::LT_FREED_ME |
+| LT_STOLE_FROM_ME | CharacterPerceptionTags_LongTerm::LT_STOLE_FROM_ME |
+| STOLE_FROM_ME | CharacterPerceptionTags_LongTerm::LT_STOLE_FROM_ME |
+| LT_MY_CAPTOR | CharacterPerceptionTags_LongTerm::LT_MY_CAPTOR |
+| MY_CAPTOR | CharacterPerceptionTags_LongTerm::LT_MY_CAPTOR |
+| LT_FRIENDLY_AQUAINTANCE | CharacterPerceptionTags_LongTerm::LT_FRIENDLY_AQUAINTANCE |
+| FRIENDLY_AQUAINTANCE | CharacterPerceptionTags_LongTerm::LT_FRIENDLY_AQUAINTANCE |
+| LT_DEFEATED_MY_SQUAD_ONCE | CharacterPerceptionTags_LongTerm::LT_DEFEATED_MY_SQUAD_ONCE |
+| DEFEATED_MY_SQUAD_ONCE | CharacterPerceptionTags_LongTerm::LT_DEFEATED_MY_SQUAD_ONCE |
+| LT_SQUAD_LOST_TO_ME_ONCE | CharacterPerceptionTags_LongTerm::LT_SQUAD_LOST_TO_ME_ONCE |
+| SQUAD_LOST_TO_ME_ONCE | CharacterPerceptionTags_LongTerm::LT_SQUAD_LOST_TO_ME_ONCE |
+| LT_KILLED_MY_FRIEND | CharacterPerceptionTags_LongTerm::LT_KILLED_MY_FRIEND |
+| KILLED_MY_FRIEND | CharacterPerceptionTags_LongTerm::LT_KILLED_MY_FRIEND |
+| LT_I_SCREWED_THIS_GUY | CharacterPerceptionTags_LongTerm::LT_I_SCREWED_THIS_GUY |
+| I_SCREWED_THIS_GUY | CharacterPerceptionTags_LongTerm::LT_I_SCREWED_THIS_GUY |
+| LT_MAX | CharacterPerceptionTags_LongTerm::LT_MAX |
+| MAX | CharacterPerceptionTags_LongTerm::LT_MAX |
 
 ### SoundRange
 | Name | Value |
 |---|---|
-| SOUNDRANGE_SHORT | SOUNDRANGE_SHORT |
-| SOUNDRANGE_LONG | SOUNDRANGE_LONG |
-| SOUNDRANGE_ALWAYS | SOUNDRANGE_ALWAYS |
-#### or
-| Name | Value |
-|---|---|
-| SHORT | SOUNDRANGE_SHORT |
-| LONG | SOUNDRANGE_LONG |
-| ALWAYS | SOUNDRANGE_ALWAYS |
+| SOUNDRANGE_SHORT | SoundRange::SOUNDRANGE_SHORT |
+| SHORT | SoundRange::SOUNDRANGE_SHORT |
+| SOUNDRANGE_LONG | SoundRange::SOUNDRANGE_LONG |
+| LONG | SoundRange::SOUNDRANGE_LONG |
+| SOUNDRANGE_ALWAYS | SoundRange::SOUNDRANGE_ALWAYS |
+| ALWAYS | SoundRange::SOUNDRANGE_ALWAYS |
 
 ### SquadMemberType
 | Name | Value |
 |---|---|
-| SQUAD_1 | SQUAD_1 |
-| SQUAD_2 | SQUAD_2 |
-| SQUAD_LEADER | SQUAD_LEADER |
-| SQUAD_SIGNALS_PLAN | SQUAD_SIGNALS_PLAN |
-| SQUAD_SLAVE | SQUAD_SLAVE |
-#### or
-| Name | Value |
-|---|---|
-| 1 | SQUAD_1 |
-| 2 | SQUAD_2 |
-| LEADER | SQUAD_LEADER |
-| SIGNALS_PLAN | SQUAD_SIGNALS_PLAN |
-| SLAVE | SQUAD_SLAVE |
+| SQUAD_1 | SquadMemberType::SQUAD_1 |
+| 1 | SquadMemberType::SQUAD_1 |
+| SQUAD_2 | SquadMemberType::SQUAD_2 |
+| 2 | SquadMemberType::SQUAD_2 |
+| SQUAD_LEADER | SquadMemberType::SQUAD_LEADER |
+| LEADER | SquadMemberType::SQUAD_LEADER |
+| SQUAD_SIGNALS_PLAN | SquadMemberType::SQUAD_SIGNALS_PLAN |
+| SIGNALS_PLAN | SquadMemberType::SQUAD_SIGNALS_PLAN |
+| SQUAD_SLAVE | SquadMemberType::SQUAD_SLAVE |
+| SLAVE | SquadMemberType::SQUAD_SLAVE |
 
 ### CharacterMessage
 | Name | Value |
-|---|
+|---|---|
 | ATTACKING_MELEE | ATTACKING_MELEE |
 
 ### Talker
 | Name | Value |
 |---|---|
 | T_ME | T_ME |
-| T_TARGET | T_TARGET |
-| T_TARGET_IF_PLAYER | T_TARGET_IF_PLAYER |
-| T_INTERJECTOR1 | T_INTERJECTOR1 |
-| T_INTERJECTOR2 | T_INTERJECTOR2 |
-| T_INTERJECTOR3 | T_INTERJECTOR3 |
-| T_WHOLE_SQUAD | T_WHOLE_SQUAD |
-| T_TARGET_WITH_RACE | T_TARGET_WITH_RACE |
-#### or
-| Name | Value |
-|---|---|
 | ME | T_ME |
+| T_TARGET | T_TARGET |
 | TARGET | T_TARGET |
+| T_TARGET_IF_PLAYER | T_TARGET_IF_PLAYER |
 | TARGET_IF_PLAYER | T_TARGET_IF_PLAYER |
+| T_INTERJECTOR1 | T_INTERJECTOR1 |
 | INTERJECTOR1 | T_INTERJECTOR1 |
+| T_INTERJECTOR2 | T_INTERJECTOR2 |
 | INTERJECTOR2 | T_INTERJECTOR2 |
+| T_INTERJECTOR3 | T_INTERJECTOR3 |
 | INTERJECTOR3 | T_INTERJECTOR3 |
+| T_WHOLE_SQUAD | T_WHOLE_SQUAD |
 | WHOLE_SQUAD | T_WHOLE_SQUAD |
+| T_TARGET_WITH_RACE | T_TARGET_WITH_RACE |
 | TARGET_WITH_RACE | T_TARGET_WITH_RACE |
 
 ### DialogueAction
 | Name | Value |
 |---|---|
 | DA_NONE | DA_NONE |
-| DA_TRADE | DA_TRADE |
-| DA_TALK_TO_LEADER | DA_TALK_TO_LEADER |
-| DA_JOIN_SQUAD_WITH_EDIT | DA_JOIN_SQUAD_WITH_EDIT |
-| DA_AFFECT_RELATIONS | DA_AFFECT_RELATIONS |
-| DA_AFFECT_REPUTATION | DA_AFFECT_REPUTATION |
-| DA_ATTACK_CHASE_FOREVER | DA_ATTACK_CHASE_FOREVER |
-| DA_GO_HOME | DA_GO_HOME |
-| DA_TAKE_MONEY | DA_TAKE_MONEY |
-| DA_GIVE_MONEY | DA_GIVE_MONEY |
-| DA_PAY_BOUNTY | DA_PAY_BOUNTY |
-| DA_CHARACTER_EDITOR | DA_CHARACTER_EDITOR |
-| DA_FORCE_SPEECH_TIMER | DA_FORCE_SPEECH_TIMER |
-| DA_DECLARE_WAR | DA_DECLARE_WAR |
-| DA_END_WAR | DA_END_WAR |
-| DA_CLEAR_AI | DA_CLEAR_AI |
-| DA_FOLLOW_WHILE_TALKING | DA_FOLLOW_WHILE_TALKING |
-| DA_THUG_HUNTER | DA_THUG_HUNTER |
-| DA_JOIN_SQUAD_FAST | DA_JOIN_SQUAD_FAST |
-| DA_REMEMBER_CHARACTER | DA_REMEMBER_CHARACTER |
-| DA_FLAG_TEMP_ALLY | DA_FLAG_TEMP_ALLY |
-| DA_FLAG_TEMP_ENEMY | DA_FLAG_TEMP_ENEMY |
-| DA_MATES_KILL_ME | DA_MATES_KILL_ME |
-| DA_MAKE_TARGET_RUN_FASTER | DA_MAKE_TARGET_RUN_FASTER |
-| DA_GIVE_TARGET_MY_SLAVES | DA_GIVE_TARGET_MY_SLAVES |
-| DA_TAG_ESCAPED_SLAVE | DA_TAG_ESCAPED_SLAVE |
-| DA_FREE_TARGET_SLAVE | DA_FREE_TARGET_SLAVE |
-| DA_MERGE_WITH_SIMILAR_SQUADS | DA_MERGE_WITH_SIMILAR_SQUADS |
-| DA_SEPARATE_TO_MY_OWN_SQUAD | DA_SEPARATE_TO_MY_OWN_SQUAD |
-| DA_ARREST_TARGET | DA_ARREST_TARGET |
-| DA_ARREST_TARGETS_CARRIED_PERSON | DA_ARREST_TARGETS_CARRIED_PERSON |
-| DA_ATTACK_TOWN | DA_ATTACK_TOWN |
-| DA_ASSIGN_BOUNTY | DA_ASSIGN_BOUNTY |
-| DA_CRIME_ALARM | DA_CRIME_ALARM |
-| DA_RUN_AWAY | DA_RUN_AWAY |
-| DA_INCREASE_FACTION_RANK | DA_INCREASE_FACTION_RANK |
-| DA_LOCK_THIS_DIALOG | DA_LOCK_THIS_DIALOG |
-| DA_ASSAULT_PHASE | DA_ASSAULT_PHASE |
-| DA_RETREAT_PHASE | DA_RETREAT_PHASE |
-| DA_VICTORY_PHASE | DA_VICTORY_PHASE |
-| DA_ENSLAVE_TARGETS_CARRIED_PERSON | DA_ENSLAVE_TARGETS_CARRIED_PERSON |
-| DA_CLEAR_BOUNTY | DA_CLEAR_BOUNTY |
-| DA_PLAYER_SELL_PRISONERS | DA_PLAYER_SELL_PRISONERS |
-| DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE | DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE |
-| DA_SUMMON_MY_SQUAD | DA_SUMMON_MY_SQUAD |
-| DA_REMOVE_SLAVE_STATUS | DA_REMOVE_SLAVE_STATUS |
-| DA_OPEN_NEAREST_GATE | DA_OPEN_NEAREST_GATE |
-| DA_ATTACK_STAY_NEAR_HOME | DA_ATTACK_STAY_NEAR_HOME |
-| DA_MASSIVE_ALARM | DA_MASSIVE_ALARM |
-| DA_ATTACK_IF_NO_COEXIST | DA_ATTACK_IF_NO_COEXIST |
-| DA_KNOCKOUT | DA_KNOCKOUT |
-| DA_END | DA_END |
-#### or
-| Name | Value |
-|---|---|
-| NONE | DA_NONE |
-| TRADE | DA_TRADE |
-| TALK_TO_LEADER | DA_TALK_TO_LEADER |
-| JOIN_SQUAD_WITH_EDIT | DA_JOIN_SQUAD_WITH_EDIT |
-| AFFECT_RELATIONS | DA_AFFECT_RELATIONS |
-| AFFECT_REPUTATION | DA_AFFECT_REPUTATION |
-| ATTACK_CHASE_FOREVER | DA_ATTACK_CHASE_FOREVER |
-| GO_HOME | DA_GO_HOME |
-| TAKE_MONEY | DA_TAKE_MONEY |
-| GIVE_MONEY | DA_GIVE_MONEY |
-| PAY_BOUNTY | DA_PAY_BOUNTY |
-| CHARACTER_EDITOR | DA_CHARACTER_EDITOR |
-| FORCE_SPEECH_TIMER | DA_FORCE_SPEECH_TIMER |
-| DECLARE_WAR | DA_DECLARE_WAR |
-| END_WAR | DA_END_WAR |
-| CLEAR_AI | DA_CLEAR_AI |
-| FOLLOW_WHILE_TALKING | DA_FOLLOW_WHILE_TALKING |
-| THUG_HUNTER | DA_THUG_HUNTER |
-| JOIN_SQUAD_FAST | DA_JOIN_SQUAD_FAST |
-| REMEMBER_CHARACTER | DA_REMEMBER_CHARACTER |
-| FLAG_TEMP_ALLY | DA_FLAG_TEMP_ALLY |
-| FLAG_TEMP_ENEMY | DA_FLAG_TEMP_ENEMY |
-| MATES_KILL_ME | DA_MATES_KILL_ME |
-| MAKE_TARGET_RUN_FASTER | DA_MAKE_TARGET_RUN_FASTER |
-| GIVE_TARGET_MY_SLAVES | DA_GIVE_TARGET_MY_SLAVES |
-| TAG_ESCAPED_SLAVE | DA_TAG_ESCAPED_SLAVE |
-| FREE_TARGET_SLAVE | DA_FREE_TARGET_SLAVE |
-| MERGE_WITH_SIMILAR_SQUADS | DA_MERGE_WITH_SIMILAR_SQUADS |
-| SEPARATE_TO_MY_OWN_SQUAD | DA_SEPARATE_TO_MY_OWN_SQUAD |
-| ARREST_TARGET | DA_ARREST_TARGET |
-| ARREST_TARGETS_CARRIED_PERSON | DA_ARREST_TARGETS_CARRIED_PERSON |
-| ATTACK_TOWN | DA_ATTACK_TOWN |
-| ASSIGN_BOUNTY | DA_ASSIGN_BOUNTY |
-| CRIME_ALARM | DA_CRIME_ALARM |
-| RUN_AWAY | DA_RUN_AWAY |
-| INCREASE_FACTION_RANK | DA_INCREASE_FACTION_RANK |
-| LOCK_THIS_DIALOG | DA_LOCK_THIS_DIALOG |
-| ASSAULT_PHASE | DA_ASSAULT_PHASE |
-| RETREAT_PHASE | DA_RETREAT_PHASE |
-| VICTORY_PHASE | DA_VICTORY_PHASE |
-| ENSLAVE_TARGETS_CARRIED_PERSON | DA_ENSLAVE_TARGETS_CARRIED_PERSON |
-| CLEAR_BOUNTY | DA_CLEAR_BOUNTY |
-| PLAYER_SELL_PRISONERS | DA_PLAYER_SELL_PRISONERS |
-| PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE | DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE |
-| SUMMON_MY_SQUAD | DA_SUMMON_MY_SQUAD |
-| REMOVE_SLAVE_STATUS | DA_REMOVE_SLAVE_STATUS |
-| OPEN_NEAREST_GATE | DA_OPEN_NEAREST_GATE |
-| ATTACK_STAY_NEAR_HOME | DA_ATTACK_STAY_NEAR_HOME |
-| MASSIVE_ALARM | DA_MASSIVE_ALARM |
-| ATTACK_IF_NO_COEXIST | DA_ATTACK_IF_NO_COEXIST |
-| KNOCKOUT | DA_KNOCKOUT |
-| END | DA_END |
 
 ### itemType
 | Name | Value |
@@ -1784,98 +4750,92 @@
 ### BuildingFunction
 | Name | Value |
 |---|---|
-| BF_ANY | BuildingFunction::BF_ANY |
-| BF_MINE | BuildingFunction::BF_MINE |
-| BF_RESOURCE_STORAGE | BuildingFunction::BF_RESOURCE_STORAGE |
-| BF_RESEARCH | BuildingFunction::BF_RESEARCH |
-| BF_REFINERY | BuildingFunction::BF_REFINERY |
-| BF_GENERATOR | BuildingFunction::BF_GENERATOR |
-| BF_BED | BuildingFunction::BF_BED |
-| BF_TRAINING | BuildingFunction::BF_TRAINING |
-| BF_CAGE | BuildingFunction::BF_CAGE |
-| BF_SHOP | BuildingFunction::BF_SHOP |
-| BF_CRAFTING | BuildingFunction::BF_CRAFTING |
-| BF_CORPSE_DISPOSAL | BuildingFunction::BF_CORPSE_DISPOSAL |
-| BF_TURRET | BuildingFunction::BF_TURRET |
-| BF_GENERAL_STORAGE | BuildingFunction::BF_GENERAL_STORAGE |
-| BF_ITEM_FURNACE | BuildingFunction::BF_ITEM_FURNACE |
-| BF_LIGHT | BuildingFunction::BF_LIGHT |
-| BF_TABLE | BuildingFunction::BF_TABLE |
-| BF_CHAIR | BuildingFunction::BF_CHAIR |
-| BF_FLUFF | BuildingFunction::BF_FLUFF |
-| BF_SHELL_WITH_INTERIOR | BuildingFunction::BF_SHELL_WITH_INTERIOR |
-| BF_WALL | BuildingFunction::BF_WALL |
-| BF_GATE | BuildingFunction::BF_GATE |
-| BF_DOOR | BuildingFunction::BF_DOOR |
-| BF_BATTERY | BuildingFunction::BF_BATTERY |
-| BF_THRONE | BuildingFunction::BF_THRONE |
-| BF_SKELETON_BED | BuildingFunction::BF_SKELETON_BED |
-| BF_RAIN_COLLECTOR | BuildingFunction::BF_RAIN_COLLECTOR |
-| BF_MINE_NATURAL | BuildingFunction::BF_MINE_NATURAL |
-| BF_STEERING | BuildingFunction::BF_STEERING |
-| BF_ENGINE | BuildingFunction::BF_ENGINE |
-| BF_LIQUID_TANK | BuildingFunction::BF_LIQUID_TANK |
-#### or
-| Name | Value |
-|---|---|
 | ANY | BuildingFunction::BF_ANY |
+| BF_ANY | BuildingFunction::BF_ANY |
 | MINE | BuildingFunction::BF_MINE |
+| BF_MINE | BuildingFunction::BF_MINE |
 | RESOURCE_STORAGE | BuildingFunction::BF_RESOURCE_STORAGE |
+| BF_RESOURCE_STORAGE | BuildingFunction::BF_RESOURCE_STORAGE |
 | RESEARCH | BuildingFunction::BF_RESEARCH |
+| BF_RESEARCH | BuildingFunction::BF_RESEARCH |
 | REFINERY | BuildingFunction::BF_REFINERY |
+| BF_REFINERY | BuildingFunction::BF_REFINERY |
 | GENERATOR | BuildingFunction::BF_GENERATOR |
+| BF_GENERATOR | BuildingFunction::BF_GENERATOR |
 | BED | BuildingFunction::BF_BED |
+| BF_BED | BuildingFunction::BF_BED |
 | TRAINING | BuildingFunction::BF_TRAINING |
+| BF_TRAINING | BuildingFunction::BF_TRAINING |
 | CAGE | BuildingFunction::BF_CAGE |
+| BF_CAGE | BuildingFunction::BF_CAGE |
 | SHOP | BuildingFunction::BF_SHOP |
+| BF_SHOP | BuildingFunction::BF_SHOP |
 | CRAFTING | BuildingFunction::BF_CRAFTING |
+| BF_CRAFTING | BuildingFunction::BF_CRAFTING |
 | CORPSE_DISPOSAL | BuildingFunction::BF_CORPSE_DISPOSAL |
+| BF_CORPSE_DISPOSAL | BuildingFunction::BF_CORPSE_DISPOSAL |
 | TURRET | BuildingFunction::BF_TURRET |
+| BF_TURRET | BuildingFunction::BF_TURRET |
 | GENERAL_STORAGE | BuildingFunction::BF_GENERAL_STORAGE |
+| BF_GENERAL_STORAGE | BuildingFunction::BF_GENERAL_STORAGE |
 | ITEM_FURNACE | BuildingFunction::BF_ITEM_FURNACE |
+| BF_ITEM_FURNACE | BuildingFunction::BF_ITEM_FURNACE |
 | LIGHT | BuildingFunction::BF_LIGHT |
+| BF_LIGHT | BuildingFunction::BF_LIGHT |
 | TABLE | BuildingFunction::BF_TABLE |
+| BF_TABLE | BuildingFunction::BF_TABLE |
 | CHAIR | BuildingFunction::BF_CHAIR |
+| BF_CHAIR | BuildingFunction::BF_CHAIR |
 | FLUFF | BuildingFunction::BF_FLUFF |
+| BF_FLUFF | BuildingFunction::BF_FLUFF |
 | SHELL_WITH_INTERIOR | BuildingFunction::BF_SHELL_WITH_INTERIOR |
+| BF_SHELL_WITH_INTERIOR | BuildingFunction::BF_SHELL_WITH_INTERIOR |
 | WALL | BuildingFunction::BF_WALL |
+| BF_WALL | BuildingFunction::BF_WALL |
 | GATE | BuildingFunction::BF_GATE |
+| BF_GATE | BuildingFunction::BF_GATE |
 | DOOR | BuildingFunction::BF_DOOR |
+| BF_DOOR | BuildingFunction::BF_DOOR |
 | BATTERY | BuildingFunction::BF_BATTERY |
+| BF_BATTERY | BuildingFunction::BF_BATTERY |
 | THRONE | BuildingFunction::BF_THRONE |
+| BF_THRONE | BuildingFunction::BF_THRONE |
 | SKELETON_BED | BuildingFunction::BF_SKELETON_BED |
+| BF_SKELETON_BED | BuildingFunction::BF_SKELETON_BED |
 | RAIN_COLLECTOR | BuildingFunction::BF_RAIN_COLLECTOR |
+| BF_RAIN_COLLECTOR | BuildingFunction::BF_RAIN_COLLECTOR |
 | MINE_NATURAL | BuildingFunction::BF_MINE_NATURAL |
+| BF_MINE_NATURAL | BuildingFunction::BF_MINE_NATURAL |
 | STEERING | BuildingFunction::BF_STEERING |
+| BF_STEERING | BuildingFunction::BF_STEERING |
 | ENGINE | BuildingFunction::BF_ENGINE |
+| BF_ENGINE | BuildingFunction::BF_ENGINE |
 | LIQUID_TANK | BuildingFunction::BF_LIQUID_TANK |
+| BF_LIQUID_TANK | BuildingFunction::BF_LIQUID_TANK |
 
 ### CutDirection
 | Name | Value |
 |---|---|
-| CUT_DEFAULT | CutDirection::CUT_DEFAULT |
-| CUT_DOWNWARD | CutDirection::CUT_DOWNWARD |
-| CUT_LEFT | CutDirection::CUT_LEFT |
-| CUT_RIGHT | CutDirection::CUT_RIGHT |
-| CUT_THRUST | CutDirection::CUT_THRUST |
-| CUT_UPWARDS | CutDirection::CUT_UPWARDS |
-| CUT_PIERCED | CutDirection::CUT_PIERCED |
-| CUT_REAR_DOWNWARD | CutDirection::CUT_REAR_DOWNWARD |
-| CUT_REAR_LEFT | CutDirection::CUT_REAR_LEFT |
-| CUT_REAR_RIGHT | CutDirection::CUT_REAR_RIGHT |
-#### or
-| Name | Value |
-|---|---|
 | DEFAULT | CutDirection::CUT_DEFAULT |
+| CUT_DEFAULT | CutDirection::CUT_DEFAULT |
 | DOWNWARD | CutDirection::CUT_DOWNWARD |
+| CUT_DOWNWARD | CutDirection::CUT_DOWNWARD |
 | LEFT | CutDirection::CUT_LEFT |
+| CUT_LEFT | CutDirection::CUT_LEFT |
 | RIGHT | CutDirection::CUT_RIGHT |
+| CUT_RIGHT | CutDirection::CUT_RIGHT |
 | THRUST | CutDirection::CUT_THRUST |
+| CUT_THRUST | CutDirection::CUT_THRUST |
 | UPWARDS | CutDirection::CUT_UPWARDS |
+| CUT_UPWARDS | CutDirection::CUT_UPWARDS |
 | PIERCED | CutDirection::CUT_PIERCED |
+| CUT_PIERCED | CutDirection::CUT_PIERCED |
 | REAR_DOWNWARD | CutDirection::CUT_REAR_DOWNWARD |
+| CUT_REAR_DOWNWARD | CutDirection::CUT_REAR_DOWNWARD |
 | REAR_LEFT | CutDirection::CUT_REAR_LEFT |
+| CUT_REAR_LEFT | CutDirection::CUT_REAR_LEFT |
 | REAR_RIGHT | CutDirection::CUT_REAR_RIGHT |
+| CUT_REAR_RIGHT | CutDirection::CUT_REAR_RIGHT |
 
 ### CutOrigination
 | Name | Value |
@@ -1888,86 +4848,77 @@
 ### HitMaterialType
 | Name | Value |
 |---|---|
-| HIT_MISSED | HitMaterialType::HIT_MISSED |
-| HIT_METAL | HitMaterialType::HIT_METAL |
-| HIT_FLESH | HitMaterialType::HIT_FLESH |
-| HIT_SAND | HitMaterialType::HIT_SAND |
-| HIT_WOOD | HitMaterialType::HIT_WOOD |
-| HIT_SWORD | HitMaterialType::HIT_SWORD |
-| HIT_CHAIN | HitMaterialType::HIT_CHAIN |
-#### or
-| Name | Value |
-|---|---|
 | MISSED | HitMaterialType::HIT_MISSED |
+| HIT_MISSED | HitMaterialType::HIT_MISSED |
 | METAL | HitMaterialType::HIT_METAL |
+| HIT_METAL | HitMaterialType::HIT_METAL |
 | FLESH | HitMaterialType::HIT_FLESH |
+| HIT_FLESH | HitMaterialType::HIT_FLESH |
 | SAND | HitMaterialType::HIT_SAND |
+| HIT_SAND | HitMaterialType::HIT_SAND |
 | WOOD | HitMaterialType::HIT_WOOD |
+| HIT_WOOD | HitMaterialType::HIT_WOOD |
 | SWORD | HitMaterialType::HIT_SWORD |
+| HIT_SWORD | HitMaterialType::HIT_SWORD |
 | CHAIN | HitMaterialType::HIT_CHAIN |
+| HIT_CHAIN | HitMaterialType::HIT_CHAIN |
 
 ### WeatherAffecting
 | Name | Value |
 |---|---|
-| WA_NONE | WeatherAffecting::WA_NONE |
-| WA_DUSTSTORM | WeatherAffecting::WA_DUSTSTORM |
-| WA_ACID | WeatherAffecting::WA_ACID |
-| WA_BURNING | WeatherAffecting::WA_BURNING |
-| WA_GAS | WeatherAffecting::WA_GAS |
-| WA_RAIN | WeatherAffecting::WA_RAIN |
-#### or
-| Name | Value |
-|---|---|
 | NONE | WeatherAffecting::WA_NONE |
+| WA_NONE | WeatherAffecting::WA_NONE |
 | DUSTSTORM | WeatherAffecting::WA_DUSTSTORM |
+| WA_DUSTSTORM | WeatherAffecting::WA_DUSTSTORM |
 | ACID | WeatherAffecting::WA_ACID |
+| WA_ACID | WeatherAffecting::WA_ACID |
 | BURNING | WeatherAffecting::WA_BURNING |
+| WA_BURNING | WeatherAffecting::WA_BURNING |
 | GAS | WeatherAffecting::WA_GAS |
+| WA_GAS | WeatherAffecting::WA_GAS |
 | RAIN | WeatherAffecting::WA_RAIN |
+| WA_RAIN | WeatherAffecting::WA_RAIN |
 
 ### AttachSlot
 | Name | Value |
 |---|---|
 | ATTACH_WEAPON | AttachSlot::ATTACH_WEAPON |
-| ATTACH_BACK | AttachSlot::ATTACH_BACK |
-| ATTACH_HAIR | AttachSlot::ATTACH_HAIR |
-| ATTACH_HAT | AttachSlot::ATTACH_HAT |
-| ATTACH_EYES | AttachSlot::ATTACH_EYES |
-| ATTACH_BODY | AttachSlot::ATTACH_BODY |
-| ATTACH_LEGS | AttachSlot::ATTACH_LEGS |
-| ATTACH_NONE | AttachSlot::ATTACH_NONE |
-| ATTACH_SHIRT | AttachSlot::ATTACH_SHIRT |
-| ATTACH_BOOTS | AttachSlot::ATTACH_BOOTS |
-| ATTACH_GLOVES | AttachSlot::ATTACH_GLOVES |
-| ATTACH_NECK | AttachSlot::ATTACH_NECK |
-| ATTACH_BACKPACK | AttachSlot::ATTACH_BACKPACK |
-| ATTACH_BEARD | AttachSlot::ATTACH_BEARD |
-| ATTACH_BELT | AttachSlot::ATTACH_BELT |
-| ATTACH_LEFT_ARM | AttachSlot::ATTACH_LEFT_ARM |
-| ATTACH_RIGHT_ARM | AttachSlot::ATTACH_RIGHT_ARM |
-| ATTACH_LEFT_LEG | AttachSlot::ATTACH_LEFT_LEG |
-| ATTACH_RIGHT_LEG | AttachSlot::ATTACH_RIGHT_LEG |
-#### or
-| Name | Value |
-|---|---|
 | WEAPON | AttachSlot::ATTACH_WEAPON |
+| ATTACH_BACK | AttachSlot::ATTACH_BACK |
 | BACK | AttachSlot::ATTACH_BACK |
+| ATTACH_HAIR | AttachSlot::ATTACH_HAIR |
 | HAIR | AttachSlot::ATTACH_HAIR |
+| ATTACH_HAT | AttachSlot::ATTACH_HAT |
 | HAT | AttachSlot::ATTACH_HAT |
+| ATTACH_EYES | AttachSlot::ATTACH_EYES |
 | EYES | AttachSlot::ATTACH_EYES |
+| ATTACH_BODY | AttachSlot::ATTACH_BODY |
 | BODY | AttachSlot::ATTACH_BODY |
+| ATTACH_LEGS | AttachSlot::ATTACH_LEGS |
 | LEGS | AttachSlot::ATTACH_LEGS |
+| ATTACH_NONE | AttachSlot::ATTACH_NONE |
 | NONE | AttachSlot::ATTACH_NONE |
+| ATTACH_SHIRT | AttachSlot::ATTACH_SHIRT |
 | SHIRT | AttachSlot::ATTACH_SHIRT |
+| ATTACH_BOOTS | AttachSlot::ATTACH_BOOTS |
 | BOOTS | AttachSlot::ATTACH_BOOTS |
+| ATTACH_GLOVES | AttachSlot::ATTACH_GLOVES |
 | GLOVES | AttachSlot::ATTACH_GLOVES |
+| ATTACH_NECK | AttachSlot::ATTACH_NECK |
 | NECK | AttachSlot::ATTACH_NECK |
+| ATTACH_BACKPACK | AttachSlot::ATTACH_BACKPACK |
 | BACKPACK | AttachSlot::ATTACH_BACKPACK |
+| ATTACH_BEARD | AttachSlot::ATTACH_BEARD |
 | BEARD | AttachSlot::ATTACH_BEARD |
+| ATTACH_BELT | AttachSlot::ATTACH_BELT |
 | BELT | AttachSlot::ATTACH_BELT |
+| ATTACH_LEFT_ARM | AttachSlot::ATTACH_LEFT_ARM |
 | LEFT_ARM | AttachSlot::ATTACH_LEFT_ARM |
+| ATTACH_RIGHT_ARM | AttachSlot::ATTACH_RIGHT_ARM |
 | RIGHT_ARM | AttachSlot::ATTACH_RIGHT_ARM |
+| ATTACH_LEFT_LEG | AttachSlot::ATTACH_LEFT_LEG |
 | LEFT_LEG | AttachSlot::ATTACH_LEFT_LEG |
+| ATTACH_RIGHT_LEG | AttachSlot::ATTACH_RIGHT_LEG |
 | RIGHT_LEG | AttachSlot::ATTACH_RIGHT_LEG |
 
 ### ItemFunction
@@ -2022,29 +4973,26 @@
 | Name | Value |
 |---|---|
 | OT_NONE | CharacterTypeEnum::OT_NONE |
-| OT_LAW_ENFORCEMENT | CharacterTypeEnum::OT_LAW_ENFORCEMENT |
-| OT_MILITARY | CharacterTypeEnum::OT_MILITARY |
-| OT_TRADER | CharacterTypeEnum::OT_TRADER |
-| OT_CIVILIAN | CharacterTypeEnum::OT_CIVILIAN |
-| OT_DIPLOMAT | CharacterTypeEnum::OT_DIPLOMAT |
-| OT_SLAVE | CharacterTypeEnum::OT_SLAVE |
-| OT_SLAVER | CharacterTypeEnum::OT_SLAVER |
-| OT_BANDIT | CharacterTypeEnum::OT_BANDIT |
-| OT_ADVENTURER | CharacterTypeEnum::OT_ADVENTURER |
-| OT_END | CharacterTypeEnum::OT_END |
-#### or
-| Name | Value |
-|---|---|
 | NONE | CharacterTypeEnum::OT_NONE |
+| OT_LAW_ENFORCEMENT | CharacterTypeEnum::OT_LAW_ENFORCEMENT |
 | LAW_ENFORCEMENT | CharacterTypeEnum::OT_LAW_ENFORCEMENT |
+| OT_MILITARY | CharacterTypeEnum::OT_MILITARY |
 | MILITARY | CharacterTypeEnum::OT_MILITARY |
+| OT_TRADER | CharacterTypeEnum::OT_TRADER |
 | TRADER | CharacterTypeEnum::OT_TRADER |
+| OT_CIVILIAN | CharacterTypeEnum::OT_CIVILIAN |
 | CIVILIAN | CharacterTypeEnum::OT_CIVILIAN |
+| OT_DIPLOMAT | CharacterTypeEnum::OT_DIPLOMAT |
 | DIPLOMAT | CharacterTypeEnum::OT_DIPLOMAT |
+| OT_SLAVE | CharacterTypeEnum::OT_SLAVE |
 | SLAVE | CharacterTypeEnum::OT_SLAVE |
+| OT_SLAVER | CharacterTypeEnum::OT_SLAVER |
 | SLAVER | CharacterTypeEnum::OT_SLAVER |
+| OT_BANDIT | CharacterTypeEnum::OT_BANDIT |
 | BANDIT | CharacterTypeEnum::OT_BANDIT |
+| OT_ADVENTURER | CharacterTypeEnum::OT_ADVENTURER |
 | ADVENTURER | CharacterTypeEnum::OT_ADVENTURER |
+| OT_END | CharacterTypeEnum::OT_END |
 | END | CharacterTypeEnum::OT_END |
 
 ### SlaveStateEnum
@@ -2354,52 +5302,48 @@
 | Name | Value |
 |---|---|
 | SKILL_KATANAS | WeaponCategory::SKILL_KATANAS |
-| SKILL_SABRES | WeaponCategory::SKILL_SABRES |
-| SKILL_BLUNT | WeaponCategory::SKILL_BLUNT |
-| SKILL_HEAVY | WeaponCategory::SKILL_HEAVY |
-| SKILL_HACKERS | WeaponCategory::SKILL_HACKERS |
-| SKILL_UNARMED | WeaponCategory::SKILL_UNARMED |
-| SKILL_BOW | WeaponCategory::SKILL_BOW |
-| SKILL_TURRET | WeaponCategory::SKILL_TURRET |
-| ATTACK_POLEARMS | WeaponCategory::ATTACK_POLEARMS |
-| ATTACK_ELEPHANT | WeaponCategory::ATTACK_ELEPHANT |
-| ATTACK_DOG | WeaponCategory::ATTACK_DOG |
-| ATTACK_BULL | WeaponCategory::ATTACK_BULL |
-| ATTACK_ROBOTSPIDER | WeaponCategory::ATTACK_ROBOTSPIDER |
-| ATTACK_SPIDER | WeaponCategory::ATTACK_SPIDER |
-| ATTACK_CAGEBEAST | WeaponCategory::ATTACK_CAGEBEAST |
-| ATTACK_DUCK | WeaponCategory::ATTACK_DUCK |
-| ATTACK_GORILLA | WeaponCategory::ATTACK_GORILLA |
-| ATTACK_GAR | WeaponCategory::ATTACK_GAR |
-| ATTACK_FROG | WeaponCategory::ATTACK_FROG |
-| ATTACK_GOAT | WeaponCategory::ATTACK_GOAT |
-| ATTACK_GIRAFFE | WeaponCategory::ATTACK_GIRAFFE |
-| ATTACK_NULL | WeaponCategory::ATTACK_NULL |
-| NUM_SKILL_TYPES | WeaponCategory::NUM_SKILL_TYPES |
-#### or
-| Name | Value |
-|---|---|
 | KATANAS | WeaponCategory::SKILL_KATANAS |
+| SKILL_SABRES | WeaponCategory::SKILL_SABRES |
 | SABRES | WeaponCategory::SKILL_SABRES |
+| SKILL_BLUNT | WeaponCategory::SKILL_BLUNT |
 | BLUNT | WeaponCategory::SKILL_BLUNT |
+| SKILL_HEAVY | WeaponCategory::SKILL_HEAVY |
 | HEAVY | WeaponCategory::SKILL_HEAVY |
+| SKILL_HACKERS | WeaponCategory::SKILL_HACKERS |
 | HACKERS | WeaponCategory::SKILL_HACKERS |
+| SKILL_UNARMED | WeaponCategory::SKILL_UNARMED |
 | UNARMED | WeaponCategory::SKILL_UNARMED |
+| SKILL_BOW | WeaponCategory::SKILL_BOW |
 | BOW | WeaponCategory::SKILL_BOW |
+| SKILL_TURRET | WeaponCategory::SKILL_TURRET |
 | TURRET | WeaponCategory::SKILL_TURRET |
+| ATTACK_POLEARMS | WeaponCategory::ATTACK_POLEARMS |
 | POLEARMS | WeaponCategory::ATTACK_POLEARMS |
+| ATTACK_ELEPHANT | WeaponCategory::ATTACK_ELEPHANT |
 | ELEPHANT | WeaponCategory::ATTACK_ELEPHANT |
+| ATTACK_DOG | WeaponCategory::ATTACK_DOG |
 | DOG | WeaponCategory::ATTACK_DOG |
+| ATTACK_BULL | WeaponCategory::ATTACK_BULL |
 | BULL | WeaponCategory::ATTACK_BULL |
+| ATTACK_ROBOTSPIDER | WeaponCategory::ATTACK_ROBOTSPIDER |
 | ROBOTSPIDER | WeaponCategory::ATTACK_ROBOTSPIDER |
+| ATTACK_SPIDER | WeaponCategory::ATTACK_SPIDER |
 | SPIDER | WeaponCategory::ATTACK_SPIDER |
+| ATTACK_CAGEBEAST | WeaponCategory::ATTACK_CAGEBEAST |
 | CAGEBEAST | WeaponCategory::ATTACK_CAGEBEAST |
+| ATTACK_DUCK | WeaponCategory::ATTACK_DUCK |
 | DUCK | WeaponCategory::ATTACK_DUCK |
+| ATTACK_GORILLA | WeaponCategory::ATTACK_GORILLA |
 | GORILLA | WeaponCategory::ATTACK_GORILLA |
+| ATTACK_GAR | WeaponCategory::ATTACK_GAR |
 | GAR | WeaponCategory::ATTACK_GAR |
+| ATTACK_FROG | WeaponCategory::ATTACK_FROG |
 | FROG | WeaponCategory::ATTACK_FROG |
+| ATTACK_GOAT | WeaponCategory::ATTACK_GOAT |
 | GOAT | WeaponCategory::ATTACK_GOAT |
+| ATTACK_GIRAFFE | WeaponCategory::ATTACK_GIRAFFE |
 | GIRAFFE | WeaponCategory::ATTACK_GIRAFFE |
+| ATTACK_NULL | WeaponCategory::ATTACK_NULL |
 | NULL | WeaponCategory::ATTACK_NULL |
 | NUM_SKILL_TYPES | WeaponCategory::NUM_SKILL_TYPES |
 
@@ -2407,22 +5351,20 @@
 | Name | Value |
 |---|---|
 | SIDE_NEITHER | LeftRight::SIDE_NEITHER |
-| SIDE_LEFT | LeftRight::SIDE_LEFT |
-| SIDE_RIGHT | LeftRight::SIDE_RIGHT |
-| SIDE_BOTH | LeftRight::SIDE_BOTH |
-#### or
 | NEITHER | LeftRight::SIDE_NEITHER |
+| SIDE_LEFT | LeftRight::SIDE_LEFT |
 | LEFT | LeftRight::SIDE_LEFT |
+| SIDE_RIGHT | LeftRight::SIDE_RIGHT |
 | RIGHT | LeftRight::SIDE_RIGHT |
+| SIDE_BOTH | LeftRight::SIDE_BOTH |
 | BOTH | LeftRight::SIDE_BOTH |
 
 ### MessageType
 | Name | Value |
 |---|---|
 | M_UNSELECT_ALL | MessageForB::MessageType::M_UNSELECT_ALL |
-| M_GIVE_TASK | MessageForB::MessageType::M_GIVE_TASK |
-#### or
 | UNSELECT_ALL | MessageForB::MessageType::M_UNSELECT_ALL |
+| M_GIVE_TASK | MessageForB::MessageType::M_GIVE_TASK |
 | GIVE_TASK | MessageForB::MessageType::M_GIVE_TASK |
 
 ### MessageB::StandingOrder
@@ -2450,606 +5392,485 @@
 ### StatsEnumerated
 | Name | Value |
 |---|---|
-| STAT_NONE | StatsEnumerated::STAT_NONE |
-| STAT_STRENGTH | StatsEnumerated::STAT_STRENGTH |
-| STAT_MELEE_ATTACK | StatsEnumerated::STAT_MELEE_ATTACK |
-| STAT_LABOURING | StatsEnumerated::STAT_LABOURING |
-| STAT_SCIENCE | StatsEnumerated::STAT_SCIENCE |
-| STAT_ENGINEERING | StatsEnumerated::STAT_ENGINEERING |
-| STAT_ROBOTICS | StatsEnumerated::STAT_ROBOTICS |
-| STAT_SMITHING_WEAPON | StatsEnumerated::STAT_SMITHING_WEAPON |
-| STAT_SMITHING_ARMOUR | StatsEnumerated::STAT_SMITHING_ARMOUR |
-| STAT_MEDIC | StatsEnumerated::STAT_MEDIC |
-| STAT_THIEVING | StatsEnumerated::STAT_THIEVING |
-| STAT_TURRETS | StatsEnumerated::STAT_TURRETS |
-| STAT_FARMING | StatsEnumerated::STAT_FARMING |
-| STAT_COOKING | StatsEnumerated::STAT_COOKING |
-| STAT_HIVEMEDIC | StatsEnumerated::STAT_HIVEMEDIC |
-| STAT_VET | StatsEnumerated::STAT_VET |
-| STAT_STEALTH | StatsEnumerated::STAT_STEALTH |
-| STAT_ATHLETICS | StatsEnumerated::STAT_ATHLETICS |
-| STAT_DEXTERITY | StatsEnumerated::STAT_DEXTERITY |
-| STAT_MELEE_DEFENCE | StatsEnumerated::STAT_MELEE_DEFENCE |
-| STAT_WEAPONS | StatsEnumerated::STAT_WEAPONS |
-| STAT_TOUGHNESS | StatsEnumerated::STAT_TOUGHNESS |
-| STAT_ASSASSINATION | StatsEnumerated::STAT_ASSASSINATION |
-| STAT_SWIMMING | StatsEnumerated::STAT_SWIMMING |
-| STAT_PERCEPTION | StatsEnumerated::STAT_PERCEPTION |
-| STAT_KATANAS | StatsEnumerated::STAT_KATANAS |
-| STAT_SABRES | StatsEnumerated::STAT_SABRES |
-| STAT_HACKERS | StatsEnumerated::STAT_HACKERS |
-| STAT_HEAVYWEAPONS | StatsEnumerated::STAT_HEAVYWEAPONS |
-| STAT_BLUNT | StatsEnumerated::STAT_BLUNT |
-| STAT_MARTIALARTS | StatsEnumerated::STAT_MARTIALARTS |
-| STAT_MASSCOMBAT | StatsEnumerated::STAT_MASSCOMBAT |
-| STAT_DODGE | StatsEnumerated::STAT_DODGE |
-| STAT_SURVIVAL | StatsEnumerated::STAT_SURVIVAL |
-| STAT_POLEARMS | StatsEnumerated::STAT_POLEARMS |
-| STAT_CROSSBOWS | StatsEnumerated::STAT_CROSSBOWS |
-| STAT_FRIENDLY_FIRE | StatsEnumerated::STAT_FRIENDLY_FIRE |
-| STAT_LOCKPICKING | StatsEnumerated::STAT_LOCKPICKING |
-| STAT_SMITHING_BOW | StatsEnumerated::STAT_SMITHING_BOW |
-| STAT_END | StatsEnumerated::STAT_END |
-| _PrimaryWeaponDamage | StatsEnumerated::_PrimaryWeaponDamage |
-| _PrimaryWeaponSpeed | StatsEnumerated::_PrimaryWeaponSpeed |
-| _SecondaryWeaponDamage | StatsEnumerated::_SecondaryWeaponDamage |
-| _SecondaryWeaponSpeed | StatsEnumerated::_SecondaryWeaponSpeed |
-| _MaxCarryWeight | StatsEnumerated::_MaxCarryWeight |
-| _StrengthXPRateWalk | StatsEnumerated::_StrengthXPRateWalk |
-| _StrengthXPRateCombat | StatsEnumerated::_StrengthXPRateCombat |
-| _AttackSpeedHeavyWeapons | StatsEnumerated::_AttackSpeedHeavyWeapons |
-| _DamageResistance | StatsEnumerated::_DamageResistance |
-| _ToughnessXPRate | StatsEnumerated::_ToughnessXPRate |
-| _KnockoutTime | StatsEnumerated::_KnockoutTime |
-| _ToughnessKnockoutPoint | StatsEnumerated::_ToughnessKnockoutPoint |
-| _WoundDeteriorationSpeed | StatsEnumerated::_WoundDeteriorationSpeed |
-| _MaxRunSpeed | StatsEnumerated::_MaxRunSpeed |
-| _CurrentRunSpeed | StatsEnumerated::_CurrentRunSpeed |
-| _AthleticsXPBonus | StatsEnumerated::_AthleticsXPBonus |
-| _TurretAccuracy | StatsEnumerated::_TurretAccuracy |
-| _TurretRateOfFire | StatsEnumerated::_TurretRateOfFire |
-| _TurretFriendlyFireAvoidance | StatsEnumerated::_TurretFriendlyFireAvoidance |
-| _BuildingRate | StatsEnumerated::_BuildingRate |
-| _RepairingRate | StatsEnumerated::_RepairingRate |
-| _Mining | StatsEnumerated::_Mining |
-| _Farming | StatsEnumerated::_Farming |
-| _UsingMachinery | StatsEnumerated::_UsingMachinery |
-| _encumbrance | StatsEnumerated::_encumbrance |
-| _combatSpeed | StatsEnumerated::_combatSpeed |
-#### or
-| Name | Value |
-|---|---|
 | NONE | StatsEnumerated::STAT_NONE |
+| STAT_NONE | StatsEnumerated::STAT_NONE |
 | STRENGTH | StatsEnumerated::STAT_STRENGTH |
+| STAT_STRENGTH | StatsEnumerated::STAT_STRENGTH |
 | MELEE_ATTACK | StatsEnumerated::STAT_MELEE_ATTACK |
+| STAT_MELEE_ATTACK | StatsEnumerated::STAT_MELEE_ATTACK |
 | LABOURING | StatsEnumerated::STAT_LABOURING |
+| STAT_LABOURING | StatsEnumerated::STAT_LABOURING |
 | SCIENCE | StatsEnumerated::STAT_SCIENCE |
+| STAT_SCIENCE | StatsEnumerated::STAT_SCIENCE |
 | ENGINEERING | StatsEnumerated::STAT_ENGINEERING |
+| STAT_ENGINEERING | StatsEnumerated::STAT_ENGINEERING |
 | ROBOTICS | StatsEnumerated::STAT_ROBOTICS |
+| STAT_ROBOTICS | StatsEnumerated::STAT_ROBOTICS |
 | SMITHING_WEAPON | StatsEnumerated::STAT_SMITHING_WEAPON |
+| STAT_SMITHING_WEAPON | StatsEnumerated::STAT_SMITHING_WEAPON |
 | SMITHING_ARMOUR | StatsEnumerated::STAT_SMITHING_ARMOUR |
+| STAT_SMITHING_ARMOUR | StatsEnumerated::STAT_SMITHING_ARMOUR |
 | MEDIC | StatsEnumerated::STAT_MEDIC |
+| STAT_MEDIC | StatsEnumerated::STAT_MEDIC |
 | THIEVING | StatsEnumerated::STAT_THIEVING |
+| STAT_THIEVING | StatsEnumerated::STAT_THIEVING |
 | TURRETS | StatsEnumerated::STAT_TURRETS |
+| STAT_TURRETS | StatsEnumerated::STAT_TURRETS |
 | FARMING | StatsEnumerated::STAT_FARMING |
+| STAT_FARMING | StatsEnumerated::STAT_FARMING |
 | COOKING | StatsEnumerated::STAT_COOKING |
+| STAT_COOKING | StatsEnumerated::STAT_COOKING |
 | HIVEMEDIC | StatsEnumerated::STAT_HIVEMEDIC |
+| STAT_HIVEMEDIC | StatsEnumerated::STAT_HIVEMEDIC |
 | VET | StatsEnumerated::STAT_VET |
+| STAT_VET | StatsEnumerated::STAT_VET |
 | STEALTH | StatsEnumerated::STAT_STEALTH |
+| STAT_STEALTH | StatsEnumerated::STAT_STEALTH |
 | ATHLETICS | StatsEnumerated::STAT_ATHLETICS |
+| STAT_ATHLETICS | StatsEnumerated::STAT_ATHLETICS |
 | DEXTERITY | StatsEnumerated::STAT_DEXTERITY |
+| STAT_DEXTERITY | StatsEnumerated::STAT_DEXTERITY |
 | MELEE_DEFENCE | StatsEnumerated::STAT_MELEE_DEFENCE |
+| STAT_MELEE_DEFENCE | StatsEnumerated::STAT_MELEE_DEFENCE |
 | WEAPONS | StatsEnumerated::STAT_WEAPONS |
+| STAT_WEAPONS | StatsEnumerated::STAT_WEAPONS |
 | TOUGHNESS | StatsEnumerated::STAT_TOUGHNESS |
+| STAT_TOUGHNESS | StatsEnumerated::STAT_TOUGHNESS |
 | ASSASSINATION | StatsEnumerated::STAT_ASSASSINATION |
+| STAT_ASSASSINATION | StatsEnumerated::STAT_ASSASSINATION |
 | SWIMMING | StatsEnumerated::STAT_SWIMMING |
+| STAT_SWIMMING | StatsEnumerated::STAT_SWIMMING |
 | PERCEPTION | StatsEnumerated::STAT_PERCEPTION |
+| STAT_PERCEPTION | StatsEnumerated::STAT_PERCEPTION |
 | KATANAS | StatsEnumerated::STAT_KATANAS |
+| STAT_KATANAS | StatsEnumerated::STAT_KATANAS |
 | SABRES | StatsEnumerated::STAT_SABRES |
+| STAT_SABRES | StatsEnumerated::STAT_SABRES |
 | HACKERS | StatsEnumerated::STAT_HACKERS |
+| STAT_HACKERS | StatsEnumerated::STAT_HACKERS |
 | HEAVYWEAPONS | StatsEnumerated::STAT_HEAVYWEAPONS |
+| STAT_HEAVYWEAPONS | StatsEnumerated::STAT_HEAVYWEAPONS |
 | BLUNT | StatsEnumerated::STAT_BLUNT |
+| STAT_BLUNT | StatsEnumerated::STAT_BLUNT |
 | MARTIALARTS | StatsEnumerated::STAT_MARTIALARTS |
+| STAT_MARTIALARTS | StatsEnumerated::STAT_MARTIALARTS |
 | MASSCOMBAT | StatsEnumerated::STAT_MASSCOMBAT |
+| STAT_MASSCOMBAT | StatsEnumerated::STAT_MASSCOMBAT |
 | DODGE | StatsEnumerated::STAT_DODGE |
+| STAT_DODGE | StatsEnumerated::STAT_DODGE |
 | SURVIVAL | StatsEnumerated::STAT_SURVIVAL |
+| STAT_SURVIVAL | StatsEnumerated::STAT_SURVIVAL |
 | POLEARMS | StatsEnumerated::STAT_POLEARMS |
+| STAT_POLEARMS | StatsEnumerated::STAT_POLEARMS |
 | CROSSBOWS | StatsEnumerated::STAT_CROSSBOWS |
+| STAT_CROSSBOWS | StatsEnumerated::STAT_CROSSBOWS |
 | FRIENDLY_FIRE | StatsEnumerated::STAT_FRIENDLY_FIRE |
+| STAT_FRIENDLY_FIRE | StatsEnumerated::STAT_FRIENDLY_FIRE |
 | LOCKPICKING | StatsEnumerated::STAT_LOCKPICKING |
+| STAT_LOCKPICKING | StatsEnumerated::STAT_LOCKPICKING |
 | SMITHING_BOW | StatsEnumerated::STAT_SMITHING_BOW |
+| STAT_SMITHING_BOW | StatsEnumerated::STAT_SMITHING_BOW |
 | END | StatsEnumerated::STAT_END |
+| STAT_END | StatsEnumerated::STAT_END |
 | PrimaryWeaponDamage | StatsEnumerated::_PrimaryWeaponDamage |
+| _PrimaryWeaponDamage | StatsEnumerated::_PrimaryWeaponDamage |
 | PrimaryWeaponSpeed | StatsEnumerated::_PrimaryWeaponSpeed |
+| _PrimaryWeaponSpeed | StatsEnumerated::_PrimaryWeaponSpeed |
 | SecondaryWeaponDamage | StatsEnumerated::_SecondaryWeaponDamage |
+| _SecondaryWeaponDamage | StatsEnumerated::_SecondaryWeaponDamage |
 | SecondaryWeaponSpeed | StatsEnumerated::_SecondaryWeaponSpeed |
+| _SecondaryWeaponSpeed | StatsEnumerated::_SecondaryWeaponSpeed |
 | MaxCarryWeight | StatsEnumerated::_MaxCarryWeight |
+| _MaxCarryWeight | StatsEnumerated::_MaxCarryWeight |
 | StrengthXPRateWalk | StatsEnumerated::_StrengthXPRateWalk |
+| _StrengthXPRateWalk | StatsEnumerated::_StrengthXPRateWalk |
 | StrengthXPRateCombat | StatsEnumerated::_StrengthXPRateCombat |
+| _StrengthXPRateCombat | StatsEnumerated::_StrengthXPRateCombat |
 | AttackSpeedHeavyWeapons | StatsEnumerated::_AttackSpeedHeavyWeapons |
+| _AttackSpeedHeavyWeapons | StatsEnumerated::_AttackSpeedHeavyWeapons |
 | DamageResistance | StatsEnumerated::_DamageResistance |
+| _DamageResistance | StatsEnumerated::_DamageResistance |
 | ToughnessXPRate | StatsEnumerated::_ToughnessXPRate |
+| _ToughnessXPRate | StatsEnumerated::_ToughnessXPRate |
 | KnockoutTime | StatsEnumerated::_KnockoutTime |
+| _KnockoutTime | StatsEnumerated::_KnockoutTime |
 | ToughnessKnockoutPoint | StatsEnumerated::_ToughnessKnockoutPoint |
+| _ToughnessKnockoutPoint | StatsEnumerated::_ToughnessKnockoutPoint |
 | WoundDeteriorationSpeed | StatsEnumerated::_WoundDeteriorationSpeed |
+| _WoundDeteriorationSpeed | StatsEnumerated::_WoundDeteriorationSpeed |
 | MaxRunSpeed | StatsEnumerated::_MaxRunSpeed |
+| _MaxRunSpeed | StatsEnumerated::_MaxRunSpeed |
 | CurrentRunSpeed | StatsEnumerated::_CurrentRunSpeed |
+| _CurrentRunSpeed | StatsEnumerated::_CurrentRunSpeed |
 | AthleticsXPBonus | StatsEnumerated::_AthleticsXPBonus |
+| _AthleticsXPBonus | StatsEnumerated::_AthleticsXPBonus |
 | TurretAccuracy | StatsEnumerated::_TurretAccuracy |
+| _TurretAccuracy | StatsEnumerated::_TurretAccuracy |
 | TurretRateOfFire | StatsEnumerated::_TurretRateOfFire |
+| _TurretRateOfFire | StatsEnumerated::_TurretRateOfFire |
 | TurretFriendlyFireAvoidance | StatsEnumerated::_TurretFriendlyFireAvoidance |
+| _TurretFriendlyFireAvoidance | StatsEnumerated::_TurretFriendlyFireAvoidance |
 | BuildingRate | StatsEnumerated::_BuildingRate |
+| _BuildingRate | StatsEnumerated::_BuildingRate |
 | RepairingRate | StatsEnumerated::_RepairingRate |
+| _RepairingRate | StatsEnumerated::_RepairingRate |
 | Mining | StatsEnumerated::_Mining |
+| _Mining | StatsEnumerated::_Mining |
 | Farming | StatsEnumerated::_Farming |
+| _Farming | StatsEnumerated::_Farming |
 | UsingMachinery | StatsEnumerated::_UsingMachinery |
+| _UsingMachinery | StatsEnumerated::_UsingMachinery |
 | Encumbrance | StatsEnumerated::_encumbrance |
-| CombatSpeed | StatsEnumerated::_combatSpeed |
-#### also
-| Name | Value |
-|---|---|
 | encumbrance | StatsEnumerated::_encumbrance |
+| _encumbrance | StatsEnumerated::_encumbrance |
+| CombatSpeed | StatsEnumerated::_combatSpeed |
 | combatSpeed | StatsEnumerated::_combatSpeed |
+| _combatSpeed | StatsEnumerated::_combatSpeed |
 
 ### EventTriggerEnum
 | Name | Value |
 |---|---|
 | EV_NONE | EventTriggerEnum::EV_NONE |
-| EV_PLAYER_TALK_TO_ME | EventTriggerEnum::EV_PLAYER_TALK_TO_ME |
-| EV_ANNOUNCEMENT | EventTriggerEnum::EV_ANNOUNCEMENT |
-| EV_I_SEE_NEUTRAL_SQUAD | EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD |
-| EV_I_SEE_RAGDOLL | EventTriggerEnum::EV_I_SEE_RAGDOLL |
-| EV_______ | EventTriggerEnum::EV_______ |
-| EV_I_________ | EventTriggerEnum::EV_I_________ |
-| EV_SHOO_FROM_MY_BUILDING | EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING |
-| EV_MARKED_FOR_DEATH | EventTriggerEnum::EV_MARKED_FOR_DEATH |
-| EV_SCREAMING_TORTURE | EventTriggerEnum::EV_SCREAMING_TORTURE |
-| EV_BAR_TALK | EventTriggerEnum::EV_BAR_TALK |
-| EV_UNLOCK_MY_CAGE_OR_SHACKLES | EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES |
-| EV_UNLOCK_MY_CAGE_ATTEMPT | EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT |
-| EV_I_DEFEATED_SQUAD | EventTriggerEnum::EV_I_DEFEATED_SQUAD |
-| EV_LAUNCH_ATTACK | EventTriggerEnum::EV_LAUNCH_ATTACK |
-| EV_INTRUDER_FOUND | EventTriggerEnum::EV_INTRUDER_FOUND |
-| EV_HEALING_OTHER_START | EventTriggerEnum::EV_HEALING_OTHER_START |
-| EV_BEING_HEALED_START | EventTriggerEnum::EV_BEING_HEALED_START |
-| EV_HEALING_OTHER_FINISHED | EventTriggerEnum::EV_HEALING_OTHER_FINISHED |
-| EV_BEING_HEALED_FINISHED | EventTriggerEnum::EV_BEING_HEALED_FINISHED |
-| EV_FIRSTAID_KIT_EMPTY | EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY |
-| EV_GET_UP_PEACE | EventTriggerEnum::EV_GET_UP_PEACE |
-| EV_GET_UP_FIGHT | EventTriggerEnum::EV_GET_UP_FIGHT |
-| EV_GET_UP_UNNECCESSARY_FIGHT | EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT |
-| EV_HARRASSMENT_SHOUTS | EventTriggerEnum::EV_HARRASSMENT_SHOUTS |
-| EV_I_SEE_ANIMAL_SQUAD | EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD |
-| EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET |
-| EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS |
-| EV_CONTRACT_JOB_ENDED | EventTriggerEnum::EV_CONTRACT_JOB_ENDED |
-| EV_BETRAYAL | EventTriggerEnum::EV_BETRAYAL |
-| EV_LOOTING_WEAPON_ONLY | EventTriggerEnum::EV_LOOTING_WEAPON_ONLY |
-| EV_LOOTING_EVERYTHING | EventTriggerEnum::EV_LOOTING_EVERYTHING |
-| EV_I_SEE_UNIFORM_IMPOSTER | EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER |
-| EV_INTRODUCING_NEW_SLAVE | EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE |
-| EV_ESCAPING_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED |
-| EV_RECAPTURED_A_SLAVE | EventTriggerEnum::EV_RECAPTURED_A_SLAVE |
-| EV_SHOUT_AT_SLAVE_WORKER | EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER |
-| EV_SLAVE_DELIVERY | EventTriggerEnum::EV_SLAVE_DELIVERY |
-| EV_ESCAPED_EX_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED |
-| EV_WITNESS_GENERIC_ASSAULT | EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT |
-| EV_WITNESS_LOOTING_ALLY | EventTriggerEnum::EV_WITNESS_LOOTING_ALLY |
-| EV_WITNESS_THIEF_OR_LOCKPICK | EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK |
-| EV_BOUNTY_SPOTTED | EventTriggerEnum::EV_BOUNTY_SPOTTED |
-| EV_ESCAPED_PRISONER_SPOTTED | EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED |
-| EV_PRISONER_FREE_TO_GO | EventTriggerEnum::EV_PRISONER_FREE_TO_GO |
-| EV_ALMOST_WOKE_UP | EventTriggerEnum::EV_ALMOST_WOKE_UP |
-| EV_ENTER_BIOME | EventTriggerEnum::EV_ENTER_BIOME |
-| EV_ENTER_TOWN | EventTriggerEnum::EV_ENTER_TOWN |
-| EV_SQUAD_BROKEN | EventTriggerEnum::EV_SQUAD_BROKEN |
-| EV_BOUGHT_ME_FROM_SLAVERY | EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY |
-| EV_EATING_SOMETHING_SOUNDS | EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS |
-| EV_WORSHIPING_SOMETHING | EventTriggerEnum::EV_WORSHIPING_SOMETHING |
-| EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR |
-| EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE |
-| EV_ASSASSINATION_FAILED | EventTriggerEnum::EV_ASSASSINATION_FAILED |
-| EV_EATING_MY_CROPS | EventTriggerEnum::EV_EATING_MY_CROPS |
-| EV_KIDNAPPING_MY_ALLY | EventTriggerEnum::EV_KIDNAPPING_MY_ALLY |
-| EV_USING_MY_TRAINING_EQUIPMENT | EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT |
-| EV_GIVE_UP_CHASE | EventTriggerEnum::EV_GIVE_UP_CHASE |
-| EV_ACID_FEET | EventTriggerEnum::EV_ACID_FEET |
-| EV_ACID_RAIN | EventTriggerEnum::EV_ACID_RAIN |
-| EV_ACID_WATER | EventTriggerEnum::EV_ACID_WATER |
-| EV_WINDY | EventTriggerEnum::EV_WINDY |
-| EV_POISON_GAS | EventTriggerEnum::EV_POISON_GAS |
-| EV_I_SEE_ENEMY_PLAYER | EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER |
-| EV_I_SEE_ALLY_PLAYER | EventTriggerEnum::EV_I_SEE_ALLY_PLAYER |
-| EV_I_SEE_ILLEGAL_PLAYER_BUILDING | EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING |
-| EV_BURNING | EventTriggerEnum::EV_BURNING |
-| EV_LOST_LEG | EventTriggerEnum::EV_LOST_LEG |
-| EV_LOST_ARM | EventTriggerEnum::EV_LOST_ARM |
-| EV_I_SEE_PLAYER_NICE_BUILDING | EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING |
-| EV_TAKEN_OVER_PLAYER_TOWN | EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN |
-| EV_CROWD_TRIGGERED | EventTriggerEnum::EV_CROWD_TRIGGERED |
-| EV_MAX | EventTriggerEnum::EV_MAX |
-#### or
-| Name | Value |
-|---|---|
 | NONE | EventTriggerEnum::EV_NONE |
+| EV_PLAYER_TALK_TO_ME | EventTriggerEnum::EV_PLAYER_TALK_TO_ME |
 | PLAYER_TALK_TO_ME | EventTriggerEnum::EV_PLAYER_TALK_TO_ME |
+| EV_ANNOUNCEMENT | EventTriggerEnum::EV_ANNOUNCEMENT |
 | ANNOUNCEMENT | EventTriggerEnum::EV_ANNOUNCEMENT |
+| EV_I_SEE_NEUTRAL_SQUAD | EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD |
 | I_SEE_NEUTRAL_SQUAD | EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD |
+| EV_I_SEE_RAGDOLL | EventTriggerEnum::EV_I_SEE_RAGDOLL |
 | I_SEE_RAGDOLL | EventTriggerEnum::EV_I_SEE_RAGDOLL |
+| EV_______ | EventTriggerEnum::EV_______ |
 | ______ | EventTriggerEnum::EV_______ |
+| EV_I_________ | EventTriggerEnum::EV_I_________ |
 | I_________ | EventTriggerEnum::EV_I_________ |
+| EV_SHOO_FROM_MY_BUILDING | EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING |
 | SHOO_FROM_MY_BUILDING | EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING |
+| EV_MARKED_FOR_DEATH | EventTriggerEnum::EV_MARKED_FOR_DEATH |
 | MARKED_FOR_DEATH | EventTriggerEnum::EV_MARKED_FOR_DEATH |
+| EV_SCREAMING_TORTURE | EventTriggerEnum::EV_SCREAMING_TORTURE |
 | SCREAMING_TORTURE | EventTriggerEnum::EV_SCREAMING_TORTURE |
+| EV_BAR_TALK | EventTriggerEnum::EV_BAR_TALK |
 | BAR_TALK | EventTriggerEnum::EV_BAR_TALK |
+| EV_UNLOCK_MY_CAGE_OR_SHACKLES | EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES |
 | UNLOCK_MY_CAGE_OR_SHACKLES | EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES |
+| EV_UNLOCK_MY_CAGE_ATTEMPT | EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT |
 | UNLOCK_MY_CAGE_ATTEMPT | EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT |
+| EV_I_DEFEATED_SQUAD | EventTriggerEnum::EV_I_DEFEATED_SQUAD |
 | I_DEFEATED_SQUAD | EventTriggerEnum::EV_I_DEFEATED_SQUAD |
+| EV_LAUNCH_ATTACK | EventTriggerEnum::EV_LAUNCH_ATTACK |
 | LAUNCH_ATTACK | EventTriggerEnum::EV_LAUNCH_ATTACK |
+| EV_INTRUDER_FOUND | EventTriggerEnum::EV_INTRUDER_FOUND |
 | INTRUDER_FOUND | EventTriggerEnum::EV_INTRUDER_FOUND |
+| EV_HEALING_OTHER_START | EventTriggerEnum::EV_HEALING_OTHER_START |
 | HEALING_OTHER_START | EventTriggerEnum::EV_HEALING_OTHER_START |
+| EV_BEING_HEALED_START | EventTriggerEnum::EV_BEING_HEALED_START |
 | BEING_HEALED_START | EventTriggerEnum::EV_BEING_HEALED_START |
+| EV_HEALING_OTHER_FINISHED | EventTriggerEnum::EV_HEALING_OTHER_FINISHED |
 | HEALING_OTHER_FINISHED | EventTriggerEnum::EV_HEALING_OTHER_FINISHED |
+| EV_BEING_HEALED_FINISHED | EventTriggerEnum::EV_BEING_HEALED_FINISHED |
 | BEING_HEALED_FINISHED | EventTriggerEnum::EV_BEING_HEALED_FINISHED |
+| EV_FIRSTAID_KIT_EMPTY | EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY |
 | FIRSTAID_KIT_EMPTY | EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY |
+| EV_GET_UP_PEACE | EventTriggerEnum::EV_GET_UP_PEACE |
 | GET_UP_PEACE | EventTriggerEnum::EV_GET_UP_PEACE |
+| EV_GET_UP_FIGHT | EventTriggerEnum::EV_GET_UP_FIGHT |
 | GET_UP_FIGHT | EventTriggerEnum::EV_GET_UP_FIGHT |
+| EV_GET_UP_UNNECCESSARY_FIGHT | EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT |
 | GET_UP_UNNECCESSARY_FIGHT | EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT |
+| EV_HARRASSMENT_SHOUTS | EventTriggerEnum::EV_HARRASSMENT_SHOUTS |
 | HARRASSMENT_SHOUTS | EventTriggerEnum::EV_HARRASSMENT_SHOUTS |
+| EV_I_SEE_ANIMAL_SQUAD | EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD |
 | I_SEE_ANIMAL_SQUAD | EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD |
+| EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET |
 | SPEECH_INTERRUPTED_ATTACKED_BY_TARGET | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET |
+| EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS |
 | SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS | EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS |
+| EV_CONTRACT_JOB_ENDED | EventTriggerEnum::EV_CONTRACT_JOB_ENDED |
 | CONTRACT_JOB_ENDED | EventTriggerEnum::EV_CONTRACT_JOB_ENDED |
+| EV_BETRAYAL | EventTriggerEnum::EV_BETRAYAL |
 | BETRAYAL | EventTriggerEnum::EV_BETRAYAL |
+| EV_LOOTING_WEAPON_ONLY | EventTriggerEnum::EV_LOOTING_WEAPON_ONLY |
 | LOOTING_WEAPON_ONLY | EventTriggerEnum::EV_LOOTING_WEAPON_ONLY |
+| EV_LOOTING_EVERYTHING | EventTriggerEnum::EV_LOOTING_EVERYTHING |
 | LOOTING_EVERYTHING | EventTriggerEnum::EV_LOOTING_EVERYTHING |
+| EV_I_SEE_UNIFORM_IMPOSTER | EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER |
 | I_SEE_UNIFORM_IMPOSTER | EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER |
+| EV_INTRODUCING_NEW_SLAVE | EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE |
 | INTRODUCING_NEW_SLAVE | EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE |
+| EV_ESCAPING_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED |
 | ESCAPING_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED |
+| EV_RECAPTURED_A_SLAVE | EventTriggerEnum::EV_RECAPTURED_A_SLAVE |
 | RECAPTURED_A_SLAVE | EventTriggerEnum::EV_RECAPTURED_A_SLAVE |
+| EV_SHOUT_AT_SLAVE_WORKER | EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER |
 | SHOUT_AT_SLAVE_WORKER | EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER |
+| EV_SLAVE_DELIVERY | EventTriggerEnum::EV_SLAVE_DELIVERY |
 | SLAVE_DELIVERY | EventTriggerEnum::EV_SLAVE_DELIVERY |
+| EV_ESCAPED_EX_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED |
 | ESCAPED_EX_SLAVE_SPOTTED | EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED |
+| EV_WITNESS_GENERIC_ASSAULT | EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT |
 | WITNESS_GENERIC_ASSAULT | EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT |
+| EV_WITNESS_LOOTING_ALLY | EventTriggerEnum::EV_WITNESS_LOOTING_ALLY |
 | WITNESS_LOOTING_ALLY | EventTriggerEnum::EV_WITNESS_LOOTING_ALLY |
+| EV_WITNESS_THIEF_OR_LOCKPICK | EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK |
 | WITNESS_THIEF_OR_LOCKPICK | EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK |
+| EV_BOUNTY_SPOTTED | EventTriggerEnum::EV_BOUNTY_SPOTTED |
 | BOUNTY_SPOTTED | EventTriggerEnum::EV_BOUNTY_SPOTTED |
+| EV_ESCAPED_PRISONER_SPOTTED | EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED |
 | ESCAPED_PRISONER_SPOTTED | EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED |
+| EV_PRISONER_FREE_TO_GO | EventTriggerEnum::EV_PRISONER_FREE_TO_GO |
 | PRISONER_FREE_TO_GO | EventTriggerEnum::EV_PRISONER_FREE_TO_GO |
+| EV_ALMOST_WOKE_UP | EventTriggerEnum::EV_ALMOST_WOKE_UP |
 | ALMOST_WOKE_UP | EventTriggerEnum::EV_ALMOST_WOKE_UP |
+| EV_ENTER_BIOME | EventTriggerEnum::EV_ENTER_BIOME |
 | ENTER_BIOME | EventTriggerEnum::EV_ENTER_BIOME |
+| EV_ENTER_TOWN | EventTriggerEnum::EV_ENTER_TOWN |
 | ENTER_TOWN | EventTriggerEnum::EV_ENTER_TOWN |
+| EV_SQUAD_BROKEN | EventTriggerEnum::EV_SQUAD_BROKEN |
 | SQUAD_BROKEN | EventTriggerEnum::EV_SQUAD_BROKEN |
+| EV_BOUGHT_ME_FROM_SLAVERY | EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY |
 | BOUGHT_ME_FROM_SLAVERY | EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY |
+| EV_EATING_SOMETHING_SOUNDS | EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS |
 | EATING_SOMETHING_SOUNDS | EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS |
+| EV_WORSHIPING_SOMETHING | EventTriggerEnum::EV_WORSHIPING_SOMETHING |
 | WORSHIPING_SOMETHING | EventTriggerEnum::EV_WORSHIPING_SOMETHING |
+| EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR |
 | SLAVE_ESCAPE_OPPORTUNITY_SAVIOR | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR |
+| EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE |
 | SLAVE_ESCAPE_OPPORTUNITY_ALONE | EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE |
+| EV_ASSASSINATION_FAILED | EventTriggerEnum::EV_ASSASSINATION_FAILED |
 | ASSASSINATION_FAILED | EventTriggerEnum::EV_ASSASSINATION_FAILED |
+| EV_EATING_MY_CROPS | EventTriggerEnum::EV_EATING_MY_CROPS |
 | EATING_MY_CROPS | EventTriggerEnum::EV_EATING_MY_CROPS |
+| EV_KIDNAPPING_MY_ALLY | EventTriggerEnum::EV_KIDNAPPING_MY_ALLY |
 | KIDNAPPING_MY_ALLY | EventTriggerEnum::EV_KIDNAPPING_MY_ALLY |
+| EV_USING_MY_TRAINING_EQUIPMENT | EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT |
 | USING_MY_TRAINING_EQUIPMENT | EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT |
+| EV_GIVE_UP_CHASE | EventTriggerEnum::EV_GIVE_UP_CHASE |
 | GIVE_UP_CHASE | EventTriggerEnum::EV_GIVE_UP_CHASE |
+| EV_ACID_FEET | EventTriggerEnum::EV_ACID_FEET |
 | ACID_FEET | EventTriggerEnum::EV_ACID_FEET |
+| EV_ACID_RAIN | EventTriggerEnum::EV_ACID_RAIN |
 | ACID_RAIN | EventTriggerEnum::EV_ACID_RAIN |
+| EV_ACID_WATER | EventTriggerEnum::EV_ACID_WATER |
 | ACID_WATER | EventTriggerEnum::EV_ACID_WATER |
+| EV_WINDY | EventTriggerEnum::EV_WINDY |
 | WINDY | EventTriggerEnum::EV_WINDY |
+| EV_POISON_GAS | EventTriggerEnum::EV_POISON_GAS |
 | POISON_GAS | EventTriggerEnum::EV_POISON_GAS |
+| EV_I_SEE_ENEMY_PLAYER | EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER |
 | I_SEE_ENEMY_PLAYER | EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER |
+| EV_I_SEE_ALLY_PLAYER | EventTriggerEnum::EV_I_SEE_ALLY_PLAYER |
 | I_SEE_ALLY_PLAYER | EventTriggerEnum::EV_I_SEE_ALLY_PLAYER |
+| EV_I_SEE_ILLEGAL_PLAYER_BUILDING | EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING |
 | I_SEE_ILLEGAL_PLAYER_BUILDING | EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING |
+| EV_BURNING | EventTriggerEnum::EV_BURNING |
 | BURNING | EventTriggerEnum::EV_BURNING |
+| EV_LOST_LEG | EventTriggerEnum::EV_LOST_LEG |
 | LOST_LEG | EventTriggerEnum::EV_LOST_LEG |
+| EV_LOST_ARM | EventTriggerEnum::EV_LOST_ARM |
 | LOST_ARM | EventTriggerEnum::EV_LOST_ARM |
+| EV_I_SEE_PLAYER_NICE_BUILDING | EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING |
 | I_SEE_PLAYER_NICE_BUILDING | EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING |
+| EV_TAKEN_OVER_PLAYER_TOWN | EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN |
 | TAKEN_OVER_PLAYER_TOWN | EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN |
+| EV_CROWD_TRIGGERED | EventTriggerEnum::EV_CROWD_TRIGGERED |
 | CROWD_TRIGGERED | EventTriggerEnum::EV_CROWD_TRIGGERED |
+| EV_MAX | EventTriggerEnum::EV_MAX |
 | MAX | EventTriggerEnum::EV_MAX |
 
 ### DialogConditionEnum
 | Name | Value |
 |---|---|
 | DC_NONE | DialogConditionEnum::DC_NONE |
-| DC_RELATIONS | DialogConditionEnum::DC_RELATIONS |
-| DC_PLAYERMONEY | DialogConditionEnum::DC_PLAYERMONEY |
-| DC_REPUTATION | DialogConditionEnum::DC_REPUTATION |
-| DC_CARRYING_BOUNTY_ALIVE | DialogConditionEnum::DC_CARRYING_BOUNTY_ALIVE |
-| DC_CARRYING_BOUNTY_DEAD | DialogConditionEnum::DC_CARRYING_BOUNTY_DEAD |
-| DC_FACTION_VARIABLE | DialogConditionEnum::DC_FACTION_VARIABLE |
-| DC_IMPRISONED_BY_TARGET | DialogConditionEnum::DC_IMPRISONED_BY_TARGET |
-| DC_IMPRISONED_BY_OTHER | DialogConditionEnum::DC_IMPRISONED_BY_OTHER |
-| DC_IS_A_TRADER | DialogConditionEnum::DC_IS_A_TRADER |
-| DC_FACTION_RANK | DialogConditionEnum::DC_FACTION_RANK |
-| DC_BUILDING_IS_CLOSED_AND_SECURED | DialogConditionEnum::DC_BUILDING_IS_CLOSED_AND_SECURED |
-| DC_PLAYER_TECH_LEVEL | DialogConditionEnum::DC_PLAYER_TECH_LEVEL |
-| DC_NUM_DIALOG_EVENT_REPEATS | DialogConditionEnum::DC_NUM_DIALOG_EVENT_REPEATS |
-| DC_IS_IMPRISONED | DialogConditionEnum::DC_IS_IMPRISONED |
-| DC_IMPRISONMENT_IS_DEATHROW | DialogConditionEnum::DC_IMPRISONMENT_IS_DEATHROW |
-| DC_TARGET_IN_TALKING_RANGE | DialogConditionEnum::DC_TARGET_IN_TALKING_RANGE |
-| DC_IN_MY_BUILDING | DialogConditionEnum::DC_IN_MY_BUILDING |
-| DC_TARGET_LAST_SEEN_X_HOURS_AGO | DialogConditionEnum::DC_TARGET_LAST_SEEN_X_HOURS_AGO |
-| DC_IS_LEADER | DialogConditionEnum::DC_IS_LEADER |
-| DC_MET_TARGET_BEFORE | DialogConditionEnum::DC_MET_TARGET_BEFORE |
-| DC_WEAKER_THAN_ME | DialogConditionEnum::DC_WEAKER_THAN_ME |
-| DC_STRONGER_THAN_ME | DialogConditionEnum::DC_STRONGER_THAN_ME |
-| DC_HAS_TAG | DialogConditionEnum::DC_HAS_TAG |
-| DC_IS_ALLY | DialogConditionEnum::DC_IS_ALLY |
-| DC_IS_ENEMY | DialogConditionEnum::DC_IS_ENEMY |
-| DC_PERSONALITY_TAG | DialogConditionEnum::DC_PERSONALITY_TAG |
-| DC_BROKEN_LEG | DialogConditionEnum::DC_BROKEN_LEG |
-| DC_BROKEN_ARM | DialogConditionEnum::DC_BROKEN_ARM |
-| DC_DAMAGED_HEAD | DialogConditionEnum::DC_DAMAGED_HEAD |
-| DC_NEARLY_KO | DialogConditionEnum::DC_NEARLY_KO |
-| DC_IN_A_NON_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_NON_PLAYER_TOWN |
-| DC_IS_RUNNING | DialogConditionEnum::DC_IS_RUNNING |
-| DC_COPS_AROUND | DialogConditionEnum::DC_COPS_AROUND |
-| DC_SQUAD_SIZE | DialogConditionEnum::DC_SQUAD_SIZE |
-| DC_IS_PLAYER | DialogConditionEnum::DC_IS_PLAYER |
-| DC_NUM_BACKPACKS | DialogConditionEnum::DC_NUM_BACKPACKS |
-| DC_SQUAD_ONLY_ANIMALS | DialogConditionEnum::DC_SQUAD_ONLY_ANIMALS |
-| DC_IS_OUTNUMBERED | DialogConditionEnum::DC_IS_OUTNUMBERED |
-| DC_BOUNTY_AMOUNT_PERCEIVED | DialogConditionEnum::DC_BOUNTY_AMOUNT_PERCEIVED |
-| DC_IS_KO | DialogConditionEnum::DC_IS_KO |
-| DC_IS_NEARLY_KO | DialogConditionEnum::DC_IS_NEARLY_KO |
-| DC_SQUAD_IS_DOWN | DialogConditionEnum::DC_SQUAD_IS_DOWN |
-| DC_IS_DEAD | DialogConditionEnum::DC_IS_DEAD |
-| DC_IS_FEMALE | DialogConditionEnum::DC_IS_FEMALE |
-| DC_CARRYING_SOMEONE_TO_ENSLAVE | DialogConditionEnum::DC_CARRYING_SOMEONE_TO_ENSLAVE |
-| DC_BOUNTY_AMOUNT_ACTUAL | DialogConditionEnum::DC_BOUNTY_AMOUNT_ACTUAL |
-| DC_IM_UNARMED | DialogConditionEnum::DC_IM_UNARMED |
-| DC_TOWN_HAS_FORTIFICATIONS_WALLS | DialogConditionEnum::DC_TOWN_HAS_FORTIFICATIONS_WALLS |
-| DC_TARGET_IS_MY_MISSION_TARGET | DialogConditionEnum::DC_TARGET_IS_MY_MISSION_TARGET |
-| DC_MY_MISSION_IS_FRIENDLY | DialogConditionEnum::DC_MY_MISSION_IS_FRIENDLY |
-| DC_I_LOVE_THIS_GUY | DialogConditionEnum::DC_I_LOVE_THIS_GUY |
-| DC_I_HATE_THIS_GUY | DialogConditionEnum::DC_I_HATE_THIS_GUY |
-| DC_I_SHOULD_SCREW_THIS_GUY_OVER | DialogConditionEnum::DC_I_SHOULD_SCREW_THIS_GUY_OVER |
-| DC_I_SHOULD_HELP_THIS_GUY | DialogConditionEnum::DC_I_SHOULD_HELP_THIS_GUY |
-| DC_IN_COMBAT | DialogConditionEnum::DC_IN_COMBAT |
-| DC_WITHIN_TOWN_WALLS | DialogConditionEnum::DC_WITHIN_TOWN_WALLS |
-| DC_TOWN_WALLS_LOCKED_UP | DialogConditionEnum::DC_TOWN_WALLS_LOCKED_UP |
-| DC_IS_SLAVE | DialogConditionEnum::DC_IS_SLAVE |
-| DC_HAS_A_BASE_NEARBY | DialogConditionEnum::DC_HAS_A_BASE_NEARBY |
-| DC_TARGET_IS_SLAVE_OF_MY_FACTION | DialogConditionEnum::DC_TARGET_IS_SLAVE_OF_MY_FACTION |
-| DC_IS_ESCAPED_SLAVE | DialogConditionEnum::DC_IS_ESCAPED_SLAVE |
-| DC_IS_IN_LOCKED_CAGE | DialogConditionEnum::DC_IS_IN_LOCKED_CAGE |
-| DC_WEARING_LOCKED_SHACKLES | DialogConditionEnum::DC_WEARING_LOCKED_SHACKLES |
-| DC_IS_SAME_RACE_AS_ME | DialogConditionEnum::DC_IS_SAME_RACE_AS_ME |
-| DC_CAN_AFFORD_BOUNTY | DialogConditionEnum::DC_CAN_AFFORD_BOUNTY |
-| DC_IS_SNEAKING | DialogConditionEnum::DC_IS_SNEAKING |
-| DC_IS_INDOORS | DialogConditionEnum::DC_IS_INDOORS |
-| DC_HAS_ILLEGAL_ITEM | DialogConditionEnum::DC_HAS_ILLEGAL_ITEM |
-| DC_USING_MY_TRAINING_EQUIPMENT | DialogConditionEnum::DC_USING_MY_TRAINING_EQUIPMENT |
-| DC_STARVING | DialogConditionEnum::DC_STARVING |
-| DC_MIXED_GENDER_GROUP | DialogConditionEnum::DC_MIXED_GENDER_GROUP |
-| DC_TOWN_LEVEL_CURRENT_LOCATION | DialogConditionEnum::DC_TOWN_LEVEL_CURRENT_LOCATION |
-| DC_PLAYERS_BEST_TOWN_LEVEL | DialogConditionEnum::DC_PLAYERS_BEST_TOWN_LEVEL |
-| DC_IN_A_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_PLAYER_TOWN |
-| DC_TARGET_CHARACTER_EXISTS | DialogConditionEnum::DC_TARGET_CHARACTER_EXISTS |
-| DC_IS_RECRUITABLE | DialogConditionEnum::DC_IS_RECRUITABLE |
-| DC_HAS_AI_CONTRACT | DialogConditionEnum::DC_HAS_AI_CONTRACT |
-| DC_HAS_ROBOT_LIMBS | DialogConditionEnum::DC_HAS_ROBOT_LIMBS |
-| DC_END | DialogConditionEnum::DC_END |
-#### or
-| Name | Value |
-|---|---|
 | NONE | DialogConditionEnum::DC_NONE |
+| DC_RELATIONS | DialogConditionEnum::DC_RELATIONS |
 | RELATIONS | DialogConditionEnum::DC_RELATIONS |
+| DC_PLAYERMONEY | DialogConditionEnum::DC_PLAYERMONEY |
 | PLAYERMONEY | DialogConditionEnum::DC_PLAYERMONEY |
+| DC_REPUTATION | DialogConditionEnum::DC_REPUTATION |
 | REPUTATION | DialogConditionEnum::DC_REPUTATION |
+| DC_CARRYING_BOUNTY_ALIVE | DialogConditionEnum::DC_CARRYING_BOUNTY_ALIVE |
 | CARRYING_BOUNTY_ALIVE | DialogConditionEnum::DC_CARRYING_BOUNTY_ALIVE |
+| DC_CARRYING_BOUNTY_DEAD | DialogConditionEnum::DC_CARRYING_BOUNTY_DEAD |
 | CARRYING_BOUNTY_DEAD | DialogConditionEnum::DC_CARRYING_BOUNTY_DEAD |
+| DC_FACTION_VARIABLE | DialogConditionEnum::DC_FACTION_VARIABLE |
 | FACTION_VARIABLE | DialogConditionEnum::DC_FACTION_VARIABLE |
+| DC_IMPRISONED_BY_TARGET | DialogConditionEnum::DC_IMPRISONED_BY_TARGET |
 | IMPRISONED_BY_TARGET | DialogConditionEnum::DC_IMPRISONED_BY_TARGET |
+| DC_IMPRISONED_BY_OTHER | DialogConditionEnum::DC_IMPRISONED_BY_OTHER |
 | IMPRISONED_BY_OTHER | DialogConditionEnum::DC_IMPRISONED_BY_OTHER |
+| DC_IS_A_TRADER | DialogConditionEnum::DC_IS_A_TRADER |
 | IS_A_TRADER | DialogConditionEnum::DC_IS_A_TRADER |
+| DC_FACTION_RANK | DialogConditionEnum::DC_FACTION_RANK |
 | FACTION_RANK | DialogConditionEnum::DC_FACTION_RANK |
+| DC_BUILDING_IS_CLOSED_AND_SECURED | DialogConditionEnum::DC_BUILDING_IS_CLOSED_AND_SECURED |
 | BUILDING_IS_CLOSED_AND_SECURED | DialogConditionEnum::DC_BUILDING_IS_CLOSED_AND_SECURED |
+| DC_PLAYER_TECH_LEVEL | DialogConditionEnum::DC_PLAYER_TECH_LEVEL |
 | PLAYER_TECH_LEVEL | DialogConditionEnum::DC_PLAYER_TECH_LEVEL |
+| DC_NUM_DIALOG_EVENT_REPEATS | DialogConditionEnum::DC_NUM_DIALOG_EVENT_REPEATS |
 | NUM_DIALOG_EVENT_REPEATS | DialogConditionEnum::DC_NUM_DIALOG_EVENT_REPEATS |
+| DC_IS_IMPRISONED | DialogConditionEnum::DC_IS_IMPRISONED |
 | IS_IMPRISONED | DialogConditionEnum::DC_IS_IMPRISONED |
+| DC_IMPRISONMENT_IS_DEATHROW | DialogConditionEnum::DC_IMPRISONMENT_IS_DEATHROW |
 | IMPRISONMENT_IS_DEATHROW | DialogConditionEnum::DC_IMPRISONMENT_IS_DEATHROW |
+| DC_TARGET_IN_TALKING_RANGE | DialogConditionEnum::DC_TARGET_IN_TALKING_RANGE |
 | TARGET_IN_TALKING_RANGE | DialogConditionEnum::DC_TARGET_IN_TALKING_RANGE |
+| DC_IN_MY_BUILDING | DialogConditionEnum::DC_IN_MY_BUILDING |
 | IN_MY_BUILDING | DialogConditionEnum::DC_IN_MY_BUILDING |
+| DC_TARGET_LAST_SEEN_X_HOURS_AGO | DialogConditionEnum::DC_TARGET_LAST_SEEN_X_HOURS_AGO |
 | TARGET_LAST_SEEN_X_HOURS_AGO | DialogConditionEnum::DC_TARGET_LAST_SEEN_X_HOURS_AGO |
+| DC_IS_LEADER | DialogConditionEnum::DC_IS_LEADER |
 | IS_LEADER | DialogConditionEnum::DC_IS_LEADER |
+| DC_MET_TARGET_BEFORE | DialogConditionEnum::DC_MET_TARGET_BEFORE |
 | MET_TARGET_BEFORE | DialogConditionEnum::DC_MET_TARGET_BEFORE |
+| DC_WEAKER_THAN_ME | DialogConditionEnum::DC_WEAKER_THAN_ME |
 | WEAKER_THAN_ME | DialogConditionEnum::DC_WEAKER_THAN_ME |
+| DC_STRONGER_THAN_ME | DialogConditionEnum::DC_STRONGER_THAN_ME |
 | STRONGER_THAN_ME | DialogConditionEnum::DC_STRONGER_THAN_ME |
+| DC_HAS_TAG | DialogConditionEnum::DC_HAS_TAG |
 | HAS_TAG | DialogConditionEnum::DC_HAS_TAG |
+| DC_IS_ALLY | DialogConditionEnum::DC_IS_ALLY |
 | IS_ALLY | DialogConditionEnum::DC_IS_ALLY |
+| DC_IS_ENEMY | DialogConditionEnum::DC_IS_ENEMY |
 | IS_ENEMY | DialogConditionEnum::DC_IS_ENEMY |
+| DC_PERSONALITY_TAG | DialogConditionEnum::DC_PERSONALITY_TAG |
 | PERSONALITY_TAG | DialogConditionEnum::DC_PERSONALITY_TAG |
+| DC_BROKEN_LEG | DialogConditionEnum::DC_BROKEN_LEG |
 | BROKEN_LEG | DialogConditionEnum::DC_BROKEN_LEG |
+| DC_BROKEN_ARM | DialogConditionEnum::DC_BROKEN_ARM |
 | BROKEN_ARM | DialogConditionEnum::DC_BROKEN_ARM |
+| DC_DAMAGED_HEAD | DialogConditionEnum::DC_DAMAGED_HEAD |
 | DAMAGED_HEAD | DialogConditionEnum::DC_DAMAGED_HEAD |
+| DC_NEARLY_KO | DialogConditionEnum::DC_NEARLY_KO |
 | NEARLY_KO | DialogConditionEnum::DC_NEARLY_KO |
+| DC_IN_A_NON_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_NON_PLAYER_TOWN |
 | IN_A_NON_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_NON_PLAYER_TOWN |
+| DC_IS_RUNNING | DialogConditionEnum::DC_IS_RUNNING |
 | IS_RUNNING | DialogConditionEnum::DC_IS_RUNNING |
+| DC_COPS_AROUND | DialogConditionEnum::DC_COPS_AROUND |
 | COPS_AROUND | DialogConditionEnum::DC_COPS_AROUND |
+| DC_SQUAD_SIZE | DialogConditionEnum::DC_SQUAD_SIZE |
 | SQUAD_SIZE | DialogConditionEnum::DC_SQUAD_SIZE |
+| DC_IS_PLAYER | DialogConditionEnum::DC_IS_PLAYER |
 | IS_PLAYER | DialogConditionEnum::DC_IS_PLAYER |
+| DC_NUM_BACKPACKS | DialogConditionEnum::DC_NUM_BACKPACKS |
 | NUM_BACKPACKS | DialogConditionEnum::DC_NUM_BACKPACKS |
+| DC_SQUAD_ONLY_ANIMALS | DialogConditionEnum::DC_SQUAD_ONLY_ANIMALS |
 | SQUAD_ONLY_ANIMALS | DialogConditionEnum::DC_SQUAD_ONLY_ANIMALS |
+| DC_IS_OUTNUMBERED | DialogConditionEnum::DC_IS_OUTNUMBERED |
 | IS_OUTNUMBERED | DialogConditionEnum::DC_IS_OUTNUMBERED |
+| DC_BOUNTY_AMOUNT_PERCEIVED | DialogConditionEnum::DC_BOUNTY_AMOUNT_PERCEIVED |
 | BOUNTY_AMOUNT_PERCEIVED | DialogConditionEnum::DC_BOUNTY_AMOUNT_PERCEIVED |
+| DC_IS_KO | DialogConditionEnum::DC_IS_KO |
 | IS_KO | DialogConditionEnum::DC_IS_KO |
+| DC_IS_NEARLY_KO | DialogConditionEnum::DC_IS_NEARLY_KO |
 | IS_NEARLY_KO | DialogConditionEnum::DC_IS_NEARLY_KO |
+| DC_SQUAD_IS_DOWN | DialogConditionEnum::DC_SQUAD_IS_DOWN |
 | SQUAD_IS_DOWN | DialogConditionEnum::DC_SQUAD_IS_DOWN |
+| DC_IS_DEAD | DialogConditionEnum::DC_IS_DEAD |
 | IS_DEAD | DialogConditionEnum::DC_IS_DEAD |
+| DC_IS_FEMALE | DialogConditionEnum::DC_IS_FEMALE |
 | IS_FEMALE | DialogConditionEnum::DC_IS_FEMALE |
+| DC_CARRYING_SOMEONE_TO_ENSLAVE | DialogConditionEnum::DC_CARRYING_SOMEONE_TO_ENSLAVE |
 | CARRYING_SOMEONE_TO_ENSLAVE | DialogConditionEnum::DC_CARRYING_SOMEONE_TO_ENSLAVE |
+| DC_BOUNTY_AMOUNT_ACTUAL | DialogConditionEnum::DC_BOUNTY_AMOUNT_ACTUAL |
 | BOUNTY_AMOUNT_ACTUAL | DialogConditionEnum::DC_BOUNTY_AMOUNT_ACTUAL |
+| DC_IM_UNARMED | DialogConditionEnum::DC_IM_UNARMED |
 | IM_UNARMED | DialogConditionEnum::DC_IM_UNARMED |
+| DC_TOWN_HAS_FORTIFICATIONS_WALLS | DialogConditionEnum::DC_TOWN_HAS_FORTIFICATIONS_WALLS |
 | TOWN_HAS_FORTIFICATIONS_WALLS | DialogConditionEnum::DC_TOWN_HAS_FORTIFICATIONS_WALLS |
+| DC_TARGET_IS_MY_MISSION_TARGET | DialogConditionEnum::DC_TARGET_IS_MY_MISSION_TARGET |
 | TARGET_IS_MY_MISSION_TARGET | DialogConditionEnum::DC_TARGET_IS_MY_MISSION_TARGET |
+| DC_MY_MISSION_IS_FRIENDLY | DialogConditionEnum::DC_MY_MISSION_IS_FRIENDLY |
 | MY_MISSION_IS_FRIENDLY | DialogConditionEnum::DC_MY_MISSION_IS_FRIENDLY |
+| DC_I_LOVE_THIS_GUY | DialogConditionEnum::DC_I_LOVE_THIS_GUY |
 | I_LOVE_THIS_GUY | DialogConditionEnum::DC_I_LOVE_THIS_GUY |
+| DC_I_HATE_THIS_GUY | DialogConditionEnum::DC_I_HATE_THIS_GUY |
 | I_HATE_THIS_GUY | DialogConditionEnum::DC_I_HATE_THIS_GUY |
+| DC_I_SHOULD_SCREW_THIS_GUY_OVER | DialogConditionEnum::DC_I_SHOULD_SCREW_THIS_GUY_OVER |
 | I_SHOULD_SCREW_THIS_GUY_OVER | DialogConditionEnum::DC_I_SHOULD_SCREW_THIS_GUY_OVER |
+| DC_I_SHOULD_HELP_THIS_GUY | DialogConditionEnum::DC_I_SHOULD_HELP_THIS_GUY |
 | I_SHOULD_HELP_THIS_GUY | DialogConditionEnum::DC_I_SHOULD_HELP_THIS_GUY |
+| DC_IN_COMBAT | DialogConditionEnum::DC_IN_COMBAT |
 | IN_COMBAT | DialogConditionEnum::DC_IN_COMBAT |
+| DC_WITHIN_TOWN_WALLS | DialogConditionEnum::DC_WITHIN_TOWN_WALLS |
 | WITHIN_TOWN_WALLS | DialogConditionEnum::DC_WITHIN_TOWN_WALLS |
+| DC_TOWN_WALLS_LOCKED_UP | DialogConditionEnum::DC_TOWN_WALLS_LOCKED_UP |
 | TOWN_WALLS_LOCKED_UP | DialogConditionEnum::DC_TOWN_WALLS_LOCKED_UP |
+| DC_IS_SLAVE | DialogConditionEnum::DC_IS_SLAVE |
 | IS_SLAVE | DialogConditionEnum::DC_IS_SLAVE |
+| DC_HAS_A_BASE_NEARBY | DialogConditionEnum::DC_HAS_A_BASE_NEARBY |
 | HAS_A_BASE_NEARBY | DialogConditionEnum::DC_HAS_A_BASE_NEARBY |
+| DC_TARGET_IS_SLAVE_OF_MY_FACTION | DialogConditionEnum::DC_TARGET_IS_SLAVE_OF_MY_FACTION |
 | TARGET_IS_SLAVE_OF_MY_FACTION | DialogConditionEnum::DC_TARGET_IS_SLAVE_OF_MY_FACTION |
+| DC_IS_ESCAPED_SLAVE | DialogConditionEnum::DC_IS_ESCAPED_SLAVE |
 | IS_ESCAPED_SLAVE | DialogConditionEnum::DC_IS_ESCAPED_SLAVE |
+| DC_IS_IN_LOCKED_CAGE | DialogConditionEnum::DC_IS_IN_LOCKED_CAGE |
 | IS_IN_LOCKED_CAGE | DialogConditionEnum::DC_IS_IN_LOCKED_CAGE |
+| DC_WEARING_LOCKED_SHACKLES | DialogConditionEnum::DC_WEARING_LOCKED_SHACKLES |
 | WEARING_LOCKED_SHACKLES | DialogConditionEnum::DC_WEARING_LOCKED_SHACKLES |
+| DC_IS_SAME_RACE_AS_ME | DialogConditionEnum::DC_IS_SAME_RACE_AS_ME |
 | IS_SAME_RACE_AS_ME | DialogConditionEnum::DC_IS_SAME_RACE_AS_ME |
+| DC_CAN_AFFORD_BOUNTY | DialogConditionEnum::DC_CAN_AFFORD_BOUNTY |
 | CAN_AFFORD_BOUNTY | DialogConditionEnum::DC_CAN_AFFORD_BOUNTY |
+| DC_IS_SNEAKING | DialogConditionEnum::DC_IS_SNEAKING |
 | IS_SNEAKING | DialogConditionEnum::DC_IS_SNEAKING |
+| DC_IS_INDOORS | DialogConditionEnum::DC_IS_INDOORS |
 | IS_INDOORS | DialogConditionEnum::DC_IS_INDOORS |
+| DC_HAS_ILLEGAL_ITEM | DialogConditionEnum::DC_HAS_ILLEGAL_ITEM |
 | HAS_ILLEGAL_ITEM | DialogConditionEnum::DC_HAS_ILLEGAL_ITEM |
+| DC_USING_MY_TRAINING_EQUIPMENT | DialogConditionEnum::DC_USING_MY_TRAINING_EQUIPMENT |
 | USING_MY_TRAINING_EQUIPMENT | DialogConditionEnum::DC_USING_MY_TRAINING_EQUIPMENT |
+| DC_STARVING | DialogConditionEnum::DC_STARVING |
 | STARVING | DialogConditionEnum::DC_STARVING |
+| DC_MIXED_GENDER_GROUP | DialogConditionEnum::DC_MIXED_GENDER_GROUP |
 | MIXED_GENDER_GROUP | DialogConditionEnum::DC_MIXED_GENDER_GROUP |
+| DC_TOWN_LEVEL_CURRENT_LOCATION | DialogConditionEnum::DC_TOWN_LEVEL_CURRENT_LOCATION |
 | TOWN_LEVEL_CURRENT_LOCATION | DialogConditionEnum::DC_TOWN_LEVEL_CURRENT_LOCATION |
+| DC_PLAYERS_BEST_TOWN_LEVEL | DialogConditionEnum::DC_PLAYERS_BEST_TOWN_LEVEL |
 | PLAYERS_BEST_TOWN_LEVEL | DialogConditionEnum::DC_PLAYERS_BEST_TOWN_LEVEL |
+| DC_IN_A_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_PLAYER_TOWN |
 | IN_A_PLAYER_TOWN | DialogConditionEnum::DC_IN_A_PLAYER_TOWN |
+| DC_TARGET_CHARACTER_EXISTS | DialogConditionEnum::DC_TARGET_CHARACTER_EXISTS |
 | TARGET_CHARACTER_EXISTS | DialogConditionEnum::DC_TARGET_CHARACTER_EXISTS |
+| DC_IS_RECRUITABLE | DialogConditionEnum::DC_IS_RECRUITABLE |
 | IS_RECRUITABLE | DialogConditionEnum::DC_IS_RECRUITABLE |
+| DC_HAS_AI_CONTRACT | DialogConditionEnum::DC_HAS_AI_CONTRACT |
 | HAS_AI_CONTRACT | DialogConditionEnum::DC_HAS_AI_CONTRACT |
+| DC_HAS_ROBOT_LIMBS | DialogConditionEnum::DC_HAS_ROBOT_LIMBS |
 | HAS_ROBOT_LIMBS | DialogConditionEnum::DC_HAS_ROBOT_LIMBS |
+| DC_END | DialogConditionEnum::DC_END |
 | END | DialogConditionEnum::DC_END |
 
 ### ComparisonEnum
 | Name | Value |
 |---|---|
 | CE_EQUALS | ComparisonEnum::CE_EQUALS |
-| CE_LESS_THAN | ComparisonEnum::CE_LESS_THAN |
-| CE_MORE_THAN | ComparisonEnum::CE_MORE_THAN |
-#### or
-| Name | Value |
-|---|---|
 | EQUALS | ComparisonEnum::CE_EQUALS |
+| CE_LESS_THAN | ComparisonEnum::CE_LESS_THAN |
 | LESS_THAN | ComparisonEnum::CE_LESS_THAN |
+| CE_MORE_THAN | ComparisonEnum::CE_MORE_THAN |
 | MORE_THAN | ComparisonEnum::CE_MORE_THAN |
 
 ### GroundType
 | Name | Value |
 |---|---|
 | GROUND_SAND | GroundType::GROUND_SAND |
-| GROUND_GRASS | GroundType::GROUND_GRASS |
-| GROUND_CONCRETE | GroundType::GROUND_CONCRETE |
-| GROUND_WOOD | GroundType::GROUND_WOOD |
-| GROUND_METAL | GroundType::GROUND_METAL |
-| GROUND_WATER | GroundType::GROUND_WATER |
-| GROUND_MUD | GroundType::GROUND_MUD |
-| GROUND_SNOW | GroundType::GROUND_SNOW |
-| GROUND_DIRT | GroundType::GROUND_DIRT |
-#### or
-| Name | Value |
-|---|---|
 | SAND | GroundType::GROUND_SAND |
+| GROUND_GRASS | GroundType::GROUND_GRASS |
 | GRASS | GroundType::GROUND_GRASS |
+| GROUND_CONCRETE | GroundType::GROUND_CONCRETE |
 | CONCRETE | GroundType::GROUND_CONCRETE |
+| GROUND_WOOD | GroundType::GROUND_WOOD |
 | WOOD | GroundType::GROUND_WOOD |
+| GROUND_METAL | GroundType::GROUND_METAL |
 | METAL | GroundType::GROUND_METAL |
+| GROUND_WATER | GroundType::GROUND_WATER |
 | WATER | GroundType::GROUND_WATER |
+| GROUND_MUD | GroundType::GROUND_MUD |
 | MUD | GroundType::GROUND_MUD |
+| GROUND_SNOW | GroundType::GROUND_SNOW |
 | SNOW | GroundType::GROUND_SNOW |
+| GROUND_DIRT | GroundType::GROUND_DIRT |
 | DIRT | GroundType::GROUND_DIRT |
-
-### EffectType
-| Name | Value |
-|---|---|
-| NONE | EffectType::Enum::NONE |
-| CAMERA | EffectType::Enum::CAMERA |
-| POINT | EffectType::Enum::POINT |
-| WANDERING | EffectType::Enum::WANDERING |
-| GLOBAL | EffectType::Enum::GLOBAL |
-| CAMERA_RAIN | EffectType::Enum::CAMERA_RAIN |
-| CAMERA_ACID_RAIN | EffectType::Enum::CAMERA_ACID_RAIN |
-| POINT_LIGHTING | EffectType::Enum::POINT_LIGHTING |
-| WANDERING_STORM | EffectType::Enum::WANDERING_STORM |
-| WANDERING_GAS | EffectType::Enum::WANDERING_GAS |
-| GLOBAL_POINT | EffectType::Enum::GLOBAL_POINT |
-
-### SquadType
-| Name | Value |
-|---|---|
-| SQ_UNKNOWN | SquadType::SQ_UNKNOWN |
-| SQ_RESIDENT | SquadType::SQ_RESIDENT |
-| SQ_ROAMING | SquadType::SQ_ROAMING |
-
-### MoveSpeed
-| Name | Value |
-|---|---|
-| WALK | MoveSpeed::WALK |
-| JOG | MoveSpeed::JOG |
-| RUN | MoveSpeed::RUN |
-| GROUPED | MoveSpeed::GROUPED |
-| NO_SPEED_CHANGE | MoveSpeed::NO_SPEED_CHANGE |
-
-### SwordStateEnum
-| Name | Value |
-|---|---|
-| CHOP_WEAPON | swordStateEnum::CHOP_WEAPON |
-| BLOCK | swordStateEnum::BLOCK |
-| REACTION_BLOCK | swordStateEnum::REACTION_BLOCK |
-| STARTUP_STATE | swordStateEnum::STARTUP_STATE |
-| DECISION | swordStateEnum::DECISION |
-| CIRCLE_MENACINGLY | swordStateEnum::CIRCLE_MENACINGLY |
-| WAIT_MENACINGLY | swordStateEnum::WAIT_MENACINGLY |
-| HESITATE | swordStateEnum::HESITATE |
-| STUMBLE | swordStateEnum::STUMBLE |
-| COMBAT_FINISHED | swordStateEnum::COMBAT_FINISHED |
-| TARGET_PATHFINDING_STARTUP | swordStateEnum::TARGET_PATHFINDING_STARTUP |
-| TARGET_PATHFINDING | swordStateEnum::TARGET_PATHFINDING |
-
-### MiningResource
-| Name | Value |
-|---|---|
-| NONE | MiningResource::NONE |
-| IRON | MiningResource::IRON |
-| STONE | MiningResource::STONE |
-| COPPER | MiningResource::COPPER |
-| CARBON | MiningResource::CARBON |
-| WATER | MiningResource::WATER |
-| GROUND | MiningResource::GROUND |
-
-### CursorType
-| Name | Value |
-|---|---|
-| DEFAULT_CURSOR | CursorType::DEFAULT_CURSOR |
-| MEDIC_CURSOR | CursorType::MEDIC_CURSOR |
-| LOOT_CURSOR | CursorType::LOOT_CURSOR |
-| LIFT_CURSOR | CursorType::LIFT_CURSOR |
-| PICKUP_ITEM_CURSOR | CursorType::PICKUP_ITEM_CURSOR |
-| ATTACK_CURSOR | CursorType::ATTACK_CURSOR |
-| GUARD_CURSOR | CursorType::GUARD_CURSOR |
-| TALK_CURSOR | CursorType::TALK_CURSOR |
-| SPECIAL_TALK_CURSOR | CursorType::SPECIAL_TALK_CURSOR |
-| USE_CURSOR | CursorType::USE_CURSOR |
-| TRADER_CURSOR | CursorType::TRADER_CURSOR |
-| BUILD_CURSOR | CursorType::BUILD_CURSOR |
-| OPEN_DOOR_CURSOR | CursorType::OPEN_DOOR_CURSOR |
-| DOOR_ESCAPE_CURSOR | CursorType::DOOR_ESCAPE_CURSOR |
-| LOCKED_CURSOR | CursorType::LOCKED_CURSOR |
-| PICK_LOCK_CURSOR | CursorType::PICK_LOCK_CURSOR |
-| BUY_HOUSE_CURSOR | CursorType::BUY_HOUSE_CURSOR |
-| GREEN_CURSOR | CursorType::GREEN_CURSOR |
-| MINE_CURSOR | CursorType::MINE_CURSOR |
-| REPAIR_CURSOR | CursorType::REPAIR_CURSOR |
-| LIGHT_CURSOR | CursorType::LIGHT_CURSOR |
-| STEAL_CURSOR | CursorType::STEAL_CURSOR |
-| HAND_CURSOR | CursorType::HAND_CURSOR |
-| INVALID_MOVEMENT_CURSOR | CursorType::INVALID_MOVEMENT_CURSOR |
-| LOOT_CURSOR_RED | CursorType::LOOT_CURSOR_RED |
-| KNOCKOUT_CURSOR | CursorType::KNOCKOUT_CURSOR |
-
-### MapZoomLevel
-| Name | Value |
-|---|---|
-| ZOOM_MIN | MapZoomLevel::ZOOM_MIN |
-| ZOOM_MID | MapZoomLevel::ZOOM_MID |
-| ZOOM_MAX | MapZoomLevel::ZOOM_MAX |
-| ZOOM_CHARACTERS | MapZoomLevel::ZOOM_CHARACTERS |
-#### or
-| Name | Value |
-|---|---|
-| MIN | MapZoomLevel::ZOOM_MIN |
-| MID | MapZoomLevel::ZOOM_MID |
-| MAX | MapZoomLevel::ZOOM_MAX |
-| CHARACTERS | MapZoomLevel::ZOOM_CHARACTERS |
