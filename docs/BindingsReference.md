@@ -142,20 +142,20 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | officiallyStopped | officiallyStopped | boolean | RW | `obj.officiallyStopped = <value>` |
-| speedGroup | speedGroup | unknown | RW | `obj.speedGroup = <value>` |
+| speedGroup | speedGroup | Ogre::SharedPtr<SpeedGroup> | RW | `obj.speedGroup = <value>` |
 | speedOrders | (lua_Integer | integer | RW | `obj.speedOrders = <value>` |
 | currentlyMoving | currentlyMoving | boolean | RW | `obj.currentlyMoving = <value>` |
-| positionSmoother | positionSmoother | unknown | RW | `obj.positionSmoother = <value>` |
+| positionSmoother | positionSmoother | MedianFilter2DVector | RW | `obj.positionSmoother = <value>` |
 | currentMotion | currentMotion | Vector3 | RW | `obj.currentMotion = <value>` |
 | maxSpeed | maxSpeed | number | RW | `obj.maxSpeed = <value>` |
 | currentSpeed | currentSpeed | number | RW | `obj.currentSpeed = <value>` |
 | desiredSpeed | desiredSpeed | number | RW | `obj.desiredSpeed = <value>` |
 | walkSpeed | walkSpeed | number | RW | `obj.walkSpeed = <value>` |
-| pos | pos | unknown | RW | `obj.pos = <value>` |
+| pos | pos | Vector3 | RW | `obj.pos = <value>` |
 | direction | direction | Vector3 | RW | `obj.direction = <value>` |
 | destination | destination | Vector3 | RW | `obj.destination = <value>` |
 | pathDestination | pathDestination | Vector3 | RW | `obj.pathDestination = <value>` |
-| roadFollower | roadFollower | unknown | RW | `obj.roadFollower = <value>` |
+| roadFollower | roadFollower | RoadFollower* | RW | `obj.roadFollower = <value>` |
 | roadWeight | roadWeight | number | RW | `obj.roadWeight = <value>` |
 
 ### Methods
@@ -208,22 +208,22 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| _groupSense | _groupSense | unknown | RW | `obj._groupSense = <value>` |
+| _groupSense | _groupSense | GroupSense* | RW | `obj._groupSense = <value>` |
 | isAnimalsOnly | isAnimalsOnly | boolean | RW | `obj.isAnimalsOnly = <value>` |
-| me | me | unknown | RW | `obj.me = <value>` |
-| characterHandles | characterHandles | unknown | RW | `obj.characterHandles = <value>` |
+| me | me | Platoon | RW | `obj.me = <value>` |
+| characterHandles | characterHandles | HandleList* | RW | `obj.characterHandles = <value>` |
 | p_TIME | p_TIME | number | RW | `obj.p_TIME = <value>` |
-| lastActiveZone | lastActiveZone | unknown | RW | `obj.lastActiveZone = <value>` |
-| _myMemory | _myMemory | unknown | RW | `obj._myMemory = <value>` |
-| squadleader | squadleader | unknown | RW | `obj.squadleader = <value>` |
-| backupLeader | backupLeader | unknown | RW | `obj.backupLeader = <value>` |
+| lastActiveZone | lastActiveZone | ZoneMap* | RW | `obj.lastActiveZone = <value>` |
+| _myMemory | _myMemory | CharacterMemory* | RW | `obj._myMemory = <value>` |
+| squadleader | squadleader | Character | RW | `obj.squadleader = <value>` |
+| backupLeader | backupLeader | Character | RW | `obj.backupLeader = <value>` |
 | deactivationTimer | deactivationTimer | number | RW | `obj.deactivationTimer = <value>` |
 | workingPos | workingPos | Vector3 | RW | `obj.workingPos = <value>` |
-| currentGoal | currentGoal | unknown | RW | `obj.currentGoal = <value>` |
+| currentGoal | currentGoal | Tasker* | RW | `obj.currentGoal = <value>` |
 | positionMoved | positionMoved | Vector3 | RW | `obj.positionMoved = <value>` |
 | teleportTo | teleportTo | Vector3 | RW | `obj.teleportTo = <value>` |
 | teleportMessage | teleportMessage | boolean | RW | `obj.teleportMessage = <value>` |
-| isPlayer | isPlayer | unknown | RW | `obj.isPlayer = <value>` |
+| isPlayer | isPlayer | PlayerInterface | RW | `obj.isPlayer = <value>` |
 | isPhysical | isPhysical | boolean | RW | `obj.isPhysical = <value>` |
 
 ### Methods
@@ -293,34 +293,34 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| slots | slots | unknown | RW | `obj.slots = <value>` |
-| attachedObjects | attachedObjects | unknown | RW | `obj.attachedObjects = <value>` |
-| attachedHarpoons | attachedHarpoons | unknown | RW | `obj.attachedHarpoons = <value>` |
+| slots | slots | const boost::unordered::unordered_map<std::string, AttachmentData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachmentData*>, Ogre::GeneralAllocPolicy > >* | RW | `obj.slots = <value>` |
+| attachedObjects | attachedObjects | boost::unordered::unordered_map<std::string, AttachedEntity*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachedEntity*>, Ogre::GeneralAllocPolicy > > | RW | `obj.attachedObjects = <value>` |
+| attachedHarpoons | attachedHarpoons | Ogre::FastArray<Harpoon*> | RW | `obj.attachedHarpoons = <value>` |
 | msgClearHarpoons | msgClearHarpoons | boolean | RW | `obj.msgClearHarpoons = <value>` |
-| attachedEffects | attachedEffects | unknown | RW | `obj.attachedEffects = <value>` |
-| attachedEffectsToRemove | attachedEffectsToRemove | unknown | RW | `obj.attachedEffectsToRemove = <value>` |
-| woundsList | woundsList | unknown | RW | `obj.woundsList = <value>` |
+| attachedEffects | attachedEffects | Ogre::FastArray<AttachedEffect*> | RW | `obj.attachedEffects = <value>` |
+| attachedEffectsToRemove | attachedEffectsToRemove | Ogre::FastArray<AttachedEffect*> | RW | `obj.attachedEffectsToRemove = <value>` |
+| woundsList | woundsList | Ogre::FastArray<Wound*> | RW | `obj.woundsList = <value>` |
 | woundsListMutex | woundsListMutex | unknown | RW | `obj.woundsListMutex = <value>` |
-| body | body | unknown | RW | `obj.body = <value>` |
-| bodyLoader | bodyLoader | unknown | RW | `obj.bodyLoader = <value>` |
+| body | body | Ogre::Entity* | RW | `obj.body = <value>` |
+| bodyLoader | bodyLoader | Ogre::Entity* | RW | `obj.bodyLoader = <value>` |
 | isCreatingBody | isCreatingBody | boolean | RW | `obj.isCreatingBody = <value>` |
 | bodyRadius | bodyRadius | number | RW | `obj.bodyRadius = <value>` |
-| me | me | unknown | RW | `obj.me = <value>` |
+| me | me | Character | RW | `obj.me = <value>` |
 | visible | visible | boolean | RW | `obj.visible = <value>` |
 | bodyFilename | bodyFilename | string | RW | `obj.bodyFilename = <value>` |
-| bodyMaterial | bodyMaterial | unknown | RW | `obj.bodyMaterial = <value>` |
-| animation | animation | unknown | RW | `obj.animation = <value>` |
+| bodyMaterial | bodyMaterial | Ogre::SharedPtr<Ogre::Material> | RW | `obj.bodyMaterial = <value>` |
+| animation | animation | AnimationClass* | RW | `obj.animation = <value>` |
 | female | female | boolean | RW | `obj.female = <value>` |
 | updatedAttachments | updatedAttachments | boolean | RW | `obj.updatedAttachments = <value>` |
 | updatedAppearanceData | updatedAppearanceData | boolean | RW | `obj.updatedAppearanceData = <value>` |
 | updateBody | updateBody | boolean | RW | `obj.updateBody = <value>` |
 | suid | suid | integer | RW | `obj.suid = <value>` |
-| appearanceData | appearanceData | unknown | RW | `obj.appearanceData = <value>` |
-| raceData | raceData | unknown | RW | `obj.raceData = <value>` |
-| factionColor | factionColor | unknown | RW | `obj.factionColor = <value>` |
-| hairStyle | hairStyle | unknown | RW | `obj.hairStyle = <value>` |
+| appearanceData | appearanceData | GameDataCopyStandalone* | RW | `obj.appearanceData = <value>` |
+| raceData | raceData | GameData | RW | `obj.raceData = <value>` |
+| factionColor | factionColor | GameData | RW | `obj.factionColor = <value>` |
+| hairStyle | hairStyle | GameData | RW | `obj.hairStyle = <value>` |
 | shaved | shaved | boolean | RW | `obj.shaved = <value>` |
-| waterline | waterline | unknown | RW | `obj.waterline = <value>` |
+| waterline | waterline | Ogre::Vector4 | RW | `obj.waterline = <value>` |
 | waterLineFadeTimer | waterLineFadeTimer | number | RW | `obj.waterLineFadeTimer = <value>` |
 | barefoot | barefoot | boolean | RW | `obj.barefoot = <value>` |
 | hideAttachments | hideAttachments | boolean | RW | `obj.hideAttachments = <value>` |
@@ -400,7 +400,7 @@
 | muscleMult | muscleMult | number | RW | `obj.muscleMult = <value>` |
 | skinnyMult | skinnyMult | number | RW | `obj.skinnyMult = <value>` |
 | flayed | flayed | boolean | RW | `obj.flayed = <value>` |
-| beard | beard | unknown | RW | `obj.beard = <value>` |
+| beard | beard | GameData | RW | `obj.beard = <value>` |
 | hiddenPartsEnabled | hiddenPartsEnabled | boolean | RW | `obj.hiddenPartsEnabled = <value>` |
 
 ### Methods
@@ -443,8 +443,8 @@
 | minCutResistance | minCutResistance | number | RW | `obj.minCutResistance = <value>` |
 | cutToStun | cutToStun | number | RW | `obj.cutToStun = <value>` |
 | materialType | (lua_Integer | integer | RW | `obj.materialType = <value>` |
-| armourClassEnum | armourClassEnum | unknown | RW | `obj.armourClassEnum = <value>` |
-| stigma | stigma | unknown | RW | `obj.stigma = <value>` |
+| armourClassEnum | armourClassEnum | ArmourClass | RW | `obj.armourClassEnum = <value>` |
+| stigma | stigma | CharacterTypeEnum | RW | `obj.stigma = <value>` |
 | athleticsMult | athleticsMult | number | RW | `obj.athleticsMult = <value>` |
 | combatSkillBonusAttk | combatSkillBonusAttk | integer | RW | `obj.combatSkillBonusAttk = <value>` |
 | combatSkillBonusDef | combatSkillBonusDef | integer | RW | `obj.combatSkillBonusDef = <value>` |
@@ -459,8 +459,8 @@
 | fistInjuryMult | fistInjuryMult | number | RW | `obj.fistInjuryMult = <value>` |
 | weatherProtectionAmount | weatherProtectionAmount | number | RW | `obj.weatherProtectionAmount = <value>` |
 | rangedSkillMult | rangedSkillMult | number | RW | `obj.rangedSkillMult = <value>` |
-| weatherProtections | weatherProtections | unknown | RW | `obj.weatherProtections = <value>` |
-| bodypartCoverage | bodypartCoverage | unknown | RW | `obj.bodypartCoverage = <value>` |
+| weatherProtections | weatherProtections | std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > > | RW | `obj.weatherProtections = <value>` |
+| bodypartCoverage | bodypartCoverage | ogre_unordered_map<GameData*, float>::type | RW | `obj.bodypartCoverage = <value>` |
 | craftTime | craftTime | number | RW | `obj.craftTime = <value>` |
 
 ### Methods
@@ -486,7 +486,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| ents | ents | unknown | RW | `obj.ents = <value>` |
+| ents | ents | lektor<Ogre::Entity*> | RW | `obj.ents = <value>` |
 | index | index | integer | RW | `obj.index = <value>` |
 
 ### Methods
@@ -507,7 +507,7 @@
 | amount | amount | integer | RW | `obj.amount = <value>` |
 | crimes | crimes | integer | RW | `obj.crimes = <value>` |
 | bountyHasBeenClaimedOnce | bountyHasBeenClaimedOnce | boolean | RW | `obj.bountyHasBeenClaimedOnce = <value>` |
-| bountyAssignmentStartedTime | bountyAssignmentStartedTime | unknown | RW | `obj.bountyAssignmentStartedTime = <value>` |
+| bountyAssignmentStartedTime | bountyAssignmentStartedTime | TimeOfDay | RW | `obj.bountyAssignmentStartedTime = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -520,16 +520,16 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| bounties | bounties | unknown | RW | `obj.bounties = <value>` |
-| me | me | unknown | RW | `obj.me = <value>` |
-| _hasAccessPass | _hasAccessPass | unknown | RW | `obj._hasAccessPass = <value>` |
-| accessPassExpirationTime | accessPassExpirationTime | unknown | RW | `obj.accessPassExpirationTime = <value>` |
-| committingCrime | committingCrime | unknown | RW | `obj.committingCrime = <value>` |
-| crimeAgainstFaction | crimeAgainstFaction | unknown | RW | `obj.crimeAgainstFaction = <value>` |
-| usingTrainingEquipmentOf | usingTrainingEquipmentOf | unknown | RW | `obj.usingTrainingEquipmentOf = <value>` |
-| crimeAgainst | crimeAgainst | unknown | RW | `obj.crimeAgainst = <value>` |
+| bounties | bounties | ogre_unordered_map<Faction*, Bounty>::type | RW | `obj.bounties = <value>` |
+| me | me | Character | RW | `obj.me = <value>` |
+| _hasAccessPass | _hasAccessPass | Faction | RW | `obj._hasAccessPass = <value>` |
+| accessPassExpirationTime | accessPassExpirationTime | TimeOfDay | RW | `obj.accessPassExpirationTime = <value>` |
+| committingCrime | committingCrime | CrimeEnum | RW | `obj.committingCrime = <value>` |
+| crimeAgainstFaction | crimeAgainstFaction | Faction | RW | `obj.crimeAgainstFaction = <value>` |
+| usingTrainingEquipmentOf | usingTrainingEquipmentOf | Faction | RW | `obj.usingTrainingEquipmentOf = <value>` |
+| crimeAgainst | crimeAgainst | hand | RW | `obj.crimeAgainst = <value>` |
 | crimeExpiry | crimeExpiry | number | RW | `obj.crimeExpiry = <value>` |
-| prisonSentenceBeganTime | prisonSentenceBeganTime | unknown | RW | `obj.prisonSentenceBeganTime = <value>` |
+| prisonSentenceBeganTime | prisonSentenceBeganTime | TimeOfDay | RW | `obj.prisonSentenceBeganTime = <value>` |
 | prisonSentenceToServe | prisonSentenceToServe | number | RW | `obj.prisonSentenceToServe = <value>` |
 | _hadABountyAssignedForCurrentCrime | _hadABountyAssignedForCurrentCrime | boolean | RW | `obj._hadABountyAssignedForCurrentCrime = <value>` |
 
@@ -551,8 +551,8 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| toReplace | toReplace | unknown | RW | `obj.toReplace = <value>` |
-| replaceWith | replaceWith | unknown | RW | `obj.replaceWith = <value>` |
+| toReplace | toReplace | ogre_unordered_set<GameData*>::type | RW | `obj.toReplace = <value>` |
+| replaceWith | replaceWith | FitnessSelector<GameData*> | RW | `obj.replaceWith = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -566,24 +566,24 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | isRotating | isRotating | boolean | RW | `obj.isRotating = <value>` |
-| lastMousePos | lastMousePos | unknown | RW | `obj.lastMousePos = <value>` |
-| rotationMarker | rotationMarker | unknown | RW | `obj.rotationMarker = <value>` |
+| lastMousePos | lastMousePos | tagPOINT | RW | `obj.lastMousePos = <value>` |
+| rotationMarker | rotationMarker | Ogre::Entity* | RW | `obj.rotationMarker = <value>` |
 | yaw | yaw | number | RW | `obj.yaw = <value>` |
 | pitch | pitch | number | RW | `obj.pitch = <value>` |
 | initialised | initialised | boolean | RW | `obj.initialised = <value>` |
 | terrainLoaded | terrainLoaded | boolean | RW | `obj.terrainLoaded = <value>` |
-| objectCurrentlyFollowing | objectCurrentlyFollowing | unknown | RW | `obj.objectCurrentlyFollowing = <value>` |
+| objectCurrentlyFollowing | objectCurrentlyFollowing | hand | RW | `obj.objectCurrentlyFollowing = <value>` |
 | objectCurrentlyFollowingOffset | objectCurrentlyFollowingOffset | Vector3 | RW | `obj.objectCurrentlyFollowingOffset = <value>` |
-| center | center | unknown | RW | `obj.center = <value>` |
+| center | center | Ogre::SceneNode* | RW | `obj.center = <value>` |
 | altitude | altitude | number | RW | `obj.altitude = <value>` |
-| camera | camera | unknown | RW | `obj.camera = <value>` |
-| node | node | unknown | RW | `obj.node = <value>` |
+| camera | camera | Ogre::Camera* | RW | `obj.camera = <value>` |
+| node | node | Ogre::SceneNode* | RW | `obj.node = <value>` |
 | currentMusic | currentMusic | integer | RW | `obj.currentMusic = <value>` |
-| inBuilding | inBuilding | unknown | RW | `obj.inBuilding = <value>` |
+| inBuilding | inBuilding | hand | RW | `obj.inBuilding = <value>` |
 | timeInGame | timeInGame | number | RW | `obj.timeInGame = <value>` |
 | targetPositionY | targetPositionY | number | RW | `obj.targetPositionY = <value>` |
 | speedY | speedY | number | RW | `obj.speedY = <value>` |
-| centerBuilding | centerBuilding | unknown | RW | `obj.centerBuilding = <value>` |
+| centerBuilding | centerBuilding | Building | RW | `obj.centerBuilding = <value>` |
 | centerBuildingY | centerBuildingY | number | RW | `obj.centerBuildingY = <value>` |
 | currentCollisionGroup | currentCollisionGroup | integer | RW | `obj.currentCollisionGroup = <value>` |
 | currentFloor | currentFloor | integer | RW | `obj.currentFloor = <value>` |
@@ -619,7 +619,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| what | what | unknown | RW | `obj.what = <value>` |
+| what | what | GameData | RW | `obj.what = <value>` |
 | minTime | minTime | integer | RW | `obj.minTime = <value>` |
 | maxTime | maxTime | integer | RW | `obj.maxTime = <value>` |
 | chance | chance | number | RW | `obj.chance = <value>` |
@@ -630,19 +630,19 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| combatClass | combatClass | unknown | RW | `obj.combatClass = <value>` |
-| animation | animation | unknown | RW | `obj.animation = <value>` |
-| character | character | unknown | RW | `obj.character = <value>` |
-| stats | stats | unknown | RW | `obj.stats = <value>` |
-| target | target | unknown | RW | `obj.target = <value>` |
+| combatClass | combatClass | CombatClass* | RW | `obj.combatClass = <value>` |
+| animation | animation | AnimationClass* | RW | `obj.animation = <value>` |
+| character | character | Character | RW | `obj.character = <value>` |
+| stats | stats | CharStats | RW | `obj.stats = <value>` |
+| target | target | hand | RW | `obj.target = <value>` |
 | gotItem | gotItem | boolean | RW | `obj.gotItem = <value>` |
 | crouched | crouched | boolean | RW | `obj.crouched = <value>` |
 | jogMode | jogMode | boolean | RW | `obj.jogMode = <value>` |
 | arbitraryCatchupDist | arbitraryCatchupDist | number | RW | `obj.arbitraryCatchupDist = <value>` |
-| ai | ai | unknown | RW | `obj.ai = <value>` |
-| movement | movement | unknown | RW | `obj.movement = <value>` |
+| ai | ai | AI* | RW | `obj.ai = <value>` |
+| movement | movement | CharMovement* | RW | `obj.movement = <value>` |
 | frameTIME | frameTIME | number | RW | `obj.frameTIME = <value>` |
-| currentAction | currentAction | unknown | RW | `obj.currentAction = <value>` |
+| currentAction | currentAction | Tasker* | RW | `obj.currentAction = <value>` |
 | amIdle | amIdle | boolean | RW | `obj.amIdle = <value>` |
 
 ### Methods
@@ -681,16 +681,16 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | flockingVector | flockingVector | Vector3 | RW | `obj.flockingVector = <value>` |
-| combatMover | combatMover | unknown | RW | `obj.combatMover = <value>` |
-| combatMover2 | combatMover2 | unknown | RW | `obj.combatMover2 = <value>` |
-| flockingTools | flockingTools | unknown | RW | `obj.flockingTools = <value>` |
-| formation | formation | unknown | RW | `obj.formation = <value>` |
-| enemyFormation | enemyFormation | unknown | RW | `obj.enemyFormation = <value>` |
-| havokCharacter | havokCharacter | unknown | RW | `obj.havokCharacter = <value>` |
-| tracer | tracer | unknown | RW | `obj.tracer = <value>` |
+| combatMover | combatMover | CombatMovementController | RW | `obj.combatMover = <value>` |
+| combatMover2 | combatMover2 | FormationMover | RW | `obj.combatMover2 = <value>` |
+| flockingTools | flockingTools | FlockingTools | RW | `obj.flockingTools = <value>` |
+| formation | formation | Formation* | RW | `obj.formation = <value>` |
+| enemyFormation | enemyFormation | Formation* | RW | `obj.enemyFormation = <value>` |
+| havokCharacter | havokCharacter | HavokCharacter* | RW | `obj.havokCharacter = <value>` |
+| tracer | tracer | ConstantTracerT* | RW | `obj.tracer = <value>` |
 | dontEverRecreateMe | dontEverRecreateMe | boolean | RW | `obj.dontEverRecreateMe = <value>` |
 | floorGroup | floorGroup | integer | RW | `obj.floorGroup = <value>` |
-| building | building | unknown | RW | `obj.building = <value>` |
+| building | building | hand | RW | `obj.building = <value>` |
 | initCheck | initCheck | boolean | RW | `obj.initCheck = <value>` |
 | _combatMoveSpeedMult | _combatMoveSpeedMult | number | RW | `obj._combatMoveSpeedMult = <value>` |
 | destinationLoaded | destinationLoaded | boolean | RW | `obj.destinationLoaded = <value>` |
@@ -699,14 +699,14 @@
 | _lastOffMeshCheck | _lastOffMeshCheck | number | RW | `obj._lastOffMeshCheck = <value>` |
 | movingToEdge | movingToEdge | boolean | RW | `obj.movingToEdge = <value>` |
 | lastStepTime | lastStepTime | number | RW | `obj.lastStepTime = <value>` |
-| movementMode | movementMode | unknown | RW | `obj.movementMode = <value>` |
+| movementMode | movementMode | MovementMode | RW | `obj.movementMode = <value>` |
 | animationOverride | animationOverride | boolean | RW | `obj.animationOverride = <value>` |
 | trackingAnimRelocationVector | trackingAnimRelocationVector | Vector3 | RW | `obj.trackingAnimRelocationVector = <value>` |
 | desiredMotion | desiredMotion | Vector3 | RW | `obj.desiredMotion = <value>` |
 | moveLimit | moveLimit | number | RW | `obj.moveLimit = <value>` |
-| animation | animationOverride | boolean | RW | `obj.animation = <value>` |
-| character | character | unknown | RW | `obj.character = <value>` |
-| clickHull | clickHull | unknown | RW | `obj.clickHull = <value>` |
+| animation | animation | AnimationClass* | RW | `obj.animation = <value>` |
+| character | character | Character | RW | `obj.character = <value>` |
+| clickHull | clickHull | PhysicsHullT* | RW | `obj.clickHull = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -776,8 +776,8 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| medical | medical | unknown | RW | `obj.medical = <value>` |
-| me | me | unknown | RW | `obj.me = <value>` |
+| medical | medical | MedicalSystem | RW | `obj.medical = <value>` |
+| me | me | Character | RW | `obj.me = <value>` |
 | athleticsMultiplier | athleticsMultiplier | number | RW | `obj.athleticsMultiplier = <value>` |
 | combatSpeedMultiplier | combatSpeedMultiplier | number | RW | `obj.combatSpeedMultiplier = <value>` |
 | _skillBonusAttack | _skillBonusAttack | integer | RW | `obj._skillBonusAttack = <value>` |
@@ -793,14 +793,14 @@
 | skillMultDamage | skillMultDamage | number | RW | `obj.skillMultDamage = <value>` |
 | fistInjuryEquipmentMult | fistInjuryEquipmentMult | number | RW | `obj.fistInjuryEquipmentMult = <value>` |
 | skillMultRanged | skillMultRanged | number | RW | `obj.skillMultRanged = <value>` |
-| _weatherProtections | _weatherProtections | unknown | RW | `obj._weatherProtections = <value>` |
+| _weatherProtections | _weatherProtections | std::map<WeatherAffecting, float, std::less<WeatherAffecting>, Ogre::STLAllocator<std::pair<WeatherAffecting const, float>, Ogre::GeneralAllocPolicy > > | RW | `obj._weatherProtections = <value>` |
 | _strength | _strength | number | RW | `obj._strength = <value>` |
 | fitness | fitness | number | RW | `obj.fitness = <value>` |
 | _dexterity | _dexterity | number | RW | `obj._dexterity = <value>` |
 | perception | perception | number | RW | `obj.perception = <value>` |
 | _toughness | _toughness | number | RW | `obj._toughness = <value>` |
 | _athletics | _athletics | number | RW | `obj._athletics = <value>` |
-| medic | medic | unknown | RW | `obj.medic = <value>` |
+| medic | medic | number | RW | `obj.medic = <value>` |
 | massCombat | massCombat | number | RW | `obj.massCombat = <value>` |
 | arrowDefence | arrowDefence | number | RW | `obj.arrowDefence = <value>` |
 | stealth | stealth | number | RW | `obj.stealth = <value>` |
@@ -876,12 +876,12 @@
 | bonusHumans | bonusHumans | number | RW | `obj.bonusHumans = <value>` |
 | bonusAnimals | bonusAnimals | number | RW | `obj.bonusAnimals = <value>` |
 | bonusArmourPenetration | bonusArmourPenetration | number | RW | `obj.bonusArmourPenetration = <value>` |
-| bonusRaces | bonusRaces | unknown | RW | `obj.bonusRaces = <value>` |
+| bonusRaces | bonusRaces | std::map<GameData*, float, std::less<GameData*>, Ogre::STLAllocator<std::pair<GameData*const, float>, Ogre::GeneralAllocPolicy > > | RW | `obj.bonusRaces = <value>` |
 | currentWeaponType | (lua_Integer | integer | RW | `obj.currentWeaponType = <value>` |
 | pCurrentWeaponSkill | pCurrentWeaponSkill | number | RW | `obj.pCurrentWeaponSkill = <value>` |
 | currentWeaponLength | currentWeaponLength | number | RW | `obj.currentWeaponLength = <value>` |
-| weapon | weaponSmith | number | RW | `obj.weapon = <value>` |
-| weaponWeight | weaponWeightSpeedMult | number | RW | `obj.weaponWeight = <value>` |
+| weapon | weapon | hand | RW | `obj.weapon = <value>` |
+| weaponWeight | weaponWeight | number | RW | `obj.weaponWeight = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1011,69 +1011,69 @@
 | _currentProneState | (lua_Integer | integer | RW | `obj._currentProneState = <value>` |
 | isVisibleUpdateMode | isVisibleUpdateMode | boolean | RW | `obj.isVisibleUpdateMode = <value>` |
 | setVisibleMsg | setVisibleMsg | boolean | RW | `obj.setVisibleMsg = <value>` |
-| stealthUnseen | stealthUnseen | unknown | RW | `obj.stealthUnseen = <value>` |
+| stealthUnseen | stealthUnseen | YesNoMaybe | RW | `obj.stealthUnseen = <value>` |
 | playerWantsMeToGetUp | playerWantsMeToGetUp | boolean | RW | `obj.playerWantsMeToGetUp = <value>` |
-| crimes | crimes | unknown | RW | `obj.crimes = <value>` |
+| crimes | crimes | BountyManager | RW | `obj.crimes = <value>` |
 | currentSkillUsing | (lua_Integer | integer | RW | `obj.currentSkillUsing = <value>` |
-| stateBroadcast | stateBroadcast | unknown | RW | `obj.stateBroadcast = <value>` |
+| stateBroadcast | stateBroadcast | StateBroadcastData* | RW | `obj.stateBroadcast = <value>` |
 | isVisibleAndNear | isVisibleAndNear | boolean | RW | `obj.isVisibleAndNear = <value>` |
 | isOnScreen | isOnScreen | boolean | RW | `obj.isOnScreen = <value>` |
-| disguiseGUIFeedbacks | disguiseGUIFeedbacks | unknown | RW | `obj.disguiseGUIFeedbacks = <value>` |
-| whoSeesMeSneaking | whoSeesMeSneaking | unknown | RW | `obj.whoSeesMeSneaking = <value>` |
-| stealthMarkerArrows | stealthMarkerArrows | unknown | RW | `obj.stealthMarkerArrows = <value>` |
+| disguiseGUIFeedbacks | disguiseGUIFeedbacks | ogre_unordered_map<Character::DisguiseGUIFeedback, float>::type | RW | `obj.disguiseGUIFeedbacks = <value>` |
+| whoSeesMeSneaking | whoSeesMeSneaking | ogre_unordered_map<hand, Character::WhoSeesMe>::type | RW | `obj.whoSeesMeSneaking = <value>` |
+| stealthMarkerArrows | stealthMarkerArrows | Character::AttachedArrowManager | RW | `obj.stealthMarkerArrows = <value>` |
 | _isEngagedWithAPlayer | _isEngagedWithAPlayer | boolean | RW | `obj._isEngagedWithAPlayer = <value>` |
-| isUsingTurret | isUsingTurret | unknown | RW | `obj.isUsingTurret = <value>` |
+| isUsingTurret | isUsingTurret | hand | RW | `obj.isUsingTurret = <value>` |
 | isCurrentlyGettingUp | isCurrentlyGettingUp | boolean | RW | `obj.isCurrentlyGettingUp = <value>` |
 | isGettingEaten | isGettingEaten | integer | RW | `obj.isGettingEaten = <value>` |
-| dialogue | dialogue | unknown | RW | `obj.dialogue = <value>` |
+| dialogue | dialogue | Dialogue | RW | `obj.dialogue = <value>` |
 | currentStumblePainAnimation | currentStumblePainAnimation | string | RW | `obj.currentStumblePainAnimation = <value>` |
 | _isLiterallyUnderMeleeAttackRightNowForSure | _isLiterallyUnderMeleeAttackRightNowForSure | boolean | RW | `obj._isLiterallyUnderMeleeAttackRightNowForSure = <value>` |
-| _myMemory | _myMemory | unknown | RW | `obj._myMemory = <value>` |
-| lastGuyWhoDefeatedMe | lastGuyWhoDefeatedMe | unknown | RW | `obj.lastGuyWhoDefeatedMe = <value>` |
-| myRace | myRace | unknown | RW | `obj.myRace = <value>` |
-| inventory | inventory | unknown | RW | `obj.inventory = <value>` |
-| rangedCombat | rangedCombat | unknown | RW | `obj.rangedCombat = <value>` |
-| inSomething | inSomething | unknown | RW | `obj.inSomething = <value>` |
-| inWhat | inWhat | unknown | RW | `obj.inWhat = <value>` |
+| _myMemory | _myMemory | CharacterMemory* | RW | `obj._myMemory = <value>` |
+| lastGuyWhoDefeatedMe | lastGuyWhoDefeatedMe | hand | RW | `obj.lastGuyWhoDefeatedMe = <value>` |
+| myRace | myRace | RaceData | RW | `obj.myRace = <value>` |
+| inventory | inventory | Inventory | RW | `obj.inventory = <value>` |
+| rangedCombat | rangedCombat | RangedCombatClass* | RW | `obj.rangedCombat = <value>` |
+| inSomething | inSomething | UseStuffState | RW | `obj.inSomething = <value>` |
+| inWhat | inWhat | hand | RW | `obj.inWhat = <value>` |
 | isChained | isChained | boolean | RW | `obj.isChained = <value>` |
-| slaveOwner | slaveOwner | unknown | RW | `obj.slaveOwner = <value>` |
+| slaveOwner | slaveOwner | hand | RW | `obj.slaveOwner = <value>` |
 | isCarryingSomething | isCarryingSomething | boolean | RW | `obj.isCarryingSomething = <value>` |
 | carringObjectLeftOrRight | carringObjectLeftOrRight | string | RW | `obj.carringObjectLeftOrRight = <value>` |
 | isCarryingLeftSide | isCarryingLeftSide | boolean | RW | `obj.isCarryingLeftSide = <value>` |
-| carryingObject | carryingObject | unknown | RW | `obj.carryingObject = <value>` |
+| carryingObject | carryingObject | hand | RW | `obj.carryingObject = <value>` |
 | messages | (lua_Integer | integer | RW | `obj.messages = <value>` |
-| messageSubject | messageSubject | unknown | RW | `obj.messageSubject = <value>` |
+| messageSubject | messageSubject | hand | RW | `obj.messageSubject = <value>` |
 | ragdollNavmeshPosition | ragdollNavmeshPosition | Vector3 | RW | `obj.ragdollNavmeshPosition = <value>` |
 | _isBeingCarried | _isBeingCarried | boolean | RW | `obj._isBeingCarried = <value>` |
 | lastUsedWeaponCategory | (lua_Integer | integer | RW | `obj.lastUsedWeaponCategory = <value>` |
-| ragdollMessages | ragdollMessages | unknown | RW | `obj.ragdollMessages = <value>` |
+| ragdollMessages | ragdollMessages | std::deque<Character::RagdollMsg, std::allocator<Character::RagdollMsg> > | RW | `obj.ragdollMessages = <value>` |
 | msgCarryMode | (lua_Integer | integer | RW | `obj.msgCarryMode = <value>` |
 | squadMemberID | squadMemberID | integer | RW | `obj.squadMemberID = <value>` |
 | diplomacyMultiplier | diplomacyMultiplier | number | RW | `obj.diplomacyMultiplier = <value>` |
-| _destinationInsideBuilding | _destinationInsideBuilding | unknown | RW | `obj._destinationInsideBuilding = <value>` |
+| _destinationInsideBuilding | _destinationInsideBuilding | hand | RW | `obj._destinationInsideBuilding = <value>` |
 | _destinationInsideWalls | _destinationInsideWalls | integer | RW | `obj._destinationInsideWalls = <value>` |
-| animation | animation | unknown | RW | `obj.animation = <value>` |
-| stats | stats | unknown | RW | `obj.stats = <value>` |
-| medical | medical | unknown | RW | `obj.medical = <value>` |
+| animation | animation | AnimationClass* | RW | `obj.animation = <value>` |
+| stats | stats | CharStats | RW | `obj.stats = <value>` |
+| medical | medical | MedicalSystem | RW | `obj.medical = <value>` |
 | isPhysicalMode | isPhysicalMode | boolean | RW | `obj.isPhysicalMode = <value>` |
 | sex | sex | string | RW | `obj.sex = <value>` |
-| nameTag | nameTag | unknown | RW | `obj.nameTag = <value>` |
-| movement | movement | unknown | RW | `obj.movement = <value>` |
-| body | bodyDecayTimer | number | RW | `obj.body = <value>` |
-| ai | ai | unknown | RW | `obj.ai = <value>` |
-| platoon | platoon | unknown | RW | `obj.platoon = <value>` |
+| nameTag | nameTag | CharacterNameTag* | RW | `obj.nameTag = <value>` |
+| movement | movement | CharMovement* | RW | `obj.movement = <value>` |
+| body | body | CharBody* | RW | `obj.body = <value>` |
+| ai | ai | AI* | RW | `obj.ai = <value>` |
+| platoon | platoon | ActivePlatoon* | RW | `obj.platoon = <value>` |
 | portraitIndex | portraitIndex | integer | RW | `obj.portraitIndex = <value>` |
 | portraitSerial | portraitSerial | integer | RW | `obj.portraitSerial = <value>` |
-| audioObject | audioObject | unknown | RW | `obj.audioObject = <value>` |
-| audioData | audioData | unknown | RW | `obj.audioData = <value>` |
+| audioObject | audioObject | unsigned __int64 | RW | `obj.audioObject = <value>` |
+| audioData | audioData | AkSoundPosition | RW | `obj.audioData = <value>` |
 | groundType | (lua_Integer | integer | RW | `obj.groundType = <value>` |
 | armourType | (lua_Integer | integer | RW | `obj.armourType = <value>` |
-| audioEmitter | audioEmitter | unknown | RW | `obj.audioEmitter = <value>` |
+| audioEmitter | audioEmitter | SoundEmitter* | RW | `obj.audioEmitter = <value>` |
 | terrainHeightPosition | terrainHeightPosition | number | RW | `obj.terrainHeightPosition = <value>` |
 | inDoorsSetCooldown | inDoorsSetCooldown | integer | RW | `obj.inDoorsSetCooldown = <value>` |
-| activeEffects | activeEffects | unknown | RW | `obj.activeEffects = <value>` |
-| particleEffects | particleEffects | unknown | RW | `obj.particleEffects = <value>` |
-| naturalWeapon | naturalWeapon | unknown | RW | `obj.naturalWeapon = <value>` |
+| activeEffects | activeEffects | lektor<std::pair<WeatherAffecting, float> > | RW | `obj.activeEffects = <value>` |
+| particleEffects | particleEffects | lektor<Effect*> | RW | `obj.particleEffects = <value>` |
+| naturalWeapon | naturalWeapon | Sword | RW | `obj.naturalWeapon = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1393,15 +1393,15 @@
 |---|---|---|---|---|
 | weaponIsTechnicallyEquipped | weaponIsTechnicallyEquipped | boolean | RW | `obj.weaponIsTechnicallyEquipped = <value>` |
 | HPMultiplier | HPMultiplier | number | RW | `obj.HPMultiplier = <value>` |
-| itemInMouthTimeStamp | itemInMouthTimeStamp | unknown | RW | `obj.itemInMouthTimeStamp = <value>` |
+| itemInMouthTimeStamp | itemInMouthTimeStamp | TimeOfDay | RW | `obj.itemInMouthTimeStamp = <value>` |
 | smellThresholdBlood | smellThresholdBlood | number | RW | `obj.smellThresholdBlood = <value>` |
 | smellThresholdEggs | smellThresholdEggs | number | RW | `obj.smellThresholdEggs = <value>` |
 | ageSizeMin | ageSizeMin | number | RW | `obj.ageSizeMin = <value>` |
 | ageSizeMax | ageSizeMax | number | RW | `obj.ageSizeMax = <value>` |
 | lifespanInDays | lifespanInDays | number | RW | `obj.lifespanInDays = <value>` |
 | lastUpdatedAge | lastUpdatedAge | number | RW | `obj.lastUpdatedAge = <value>` |
-| age | ageSizeMin | number | RW | `obj.age = <value>` |
-| weaponInHands | weaponInHands | unknown | RW | `obj.weaponInHands = <value>` |
+| age | age | number | RW | `obj.age = <value>` |
+| weaponInHands | weaponInHands | Weapon | RW | `obj.weaponInHands = <value>` |
 | audioTimeStamp | audioTimeStamp | number | RW | `obj.audioTimeStamp = <value>` |
 
 ### Methods
@@ -1452,7 +1452,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| weaponInHands | weaponInHands | unknown | RW | `obj.weaponInHands = <value>` |
+| weaponInHands | weaponInHands | Weapon | RW | `obj.weaponInHands = <value>` |
 | weaponInHandsSheathLocation | weaponInHandsSheathLocation | string | RW | `obj.weaponInHandsSheathLocation = <value>` |
 
 ### Methods
@@ -1500,16 +1500,16 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| characterCollisions | characterCollisions | unknown | RW | `obj.characterCollisions = <value>` |
-| movement | movement | unknown | RW | `obj.movement = <value>` |
+| characterCollisions | characterCollisions | ogre_unordered_map<hand, float>::type | RW | `obj.characterCollisions = <value>` |
+| movement | movement | CharMovement* | RW | `obj.movement = <value>` |
 | chaseMode | chaseMode | boolean | RW | `obj.chaseMode = <value>` |
 | chaseStateTimer | chaseStateTimer | number | RW | `obj.chaseStateTimer = <value>` |
 | hasForcedWP | hasForcedWP | boolean | RW | `obj.hasForcedWP = <value>` |
 | forcedWP | forcedWP | Vector3 | RW | `obj.forcedWP = <value>` |
-| flockFilterX | flockFilterX | unknown | RW | `obj.flockFilterX = <value>` |
-| flockFilterZ | flockFilterZ | unknown | RW | `obj.flockFilterZ = <value>` |
-| flockingControl | flockingControl | unknown | RW | `obj.flockingControl = <value>` |
-| stats | stats | unknown | RW | `obj.stats = <value>` |
+| flockFilterX | flockFilterX | MotionFilter | RW | `obj.flockFilterX = <value>` |
+| flockFilterZ | flockFilterZ | MotionFilter | RW | `obj.flockFilterZ = <value>` |
+| flockingControl | flockingControl | FlockingTools | RW | `obj.flockingControl = <value>` |
+| stats | stats | CharStats | RW | `obj.stats = <value>` |
 | radius | radius | number | RW | `obj.radius = <value>` |
 | jogMode | jogMode | boolean | RW | `obj.jogMode = <value>` |
 | TOTALREPULSION_DAMPING | TOTALREPULSION_DAMPING | number | RW | `obj.TOTALREPULSION_DAMPING = <value>` |
@@ -1532,8 +1532,8 @@
 | canStrafe | canStrafe | boolean | RW | `obj.canStrafe = <value>` |
 | speedLimit | speedLimit | number | RW | `obj.speedLimit = <value>` |
 | currentAccelSpeed | currentAccelSpeed | number | RW | `obj.currentAccelSpeed = <value>` |
-| lookAtCharacter | lookAtCharacter | unknown | RW | `obj.lookAtCharacter = <value>` |
-| combatTarget | combatTarget | unknown | RW | `obj.combatTarget = <value>` |
+| lookAtCharacter | lookAtCharacter | hand | RW | `obj.lookAtCharacter = <value>` |
+| combatTarget | combatTarget | hand | RW | `obj.combatTarget = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1553,14 +1553,14 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| callbackOwner | callbackOwner | unknown | RW | `obj.callbackOwner = <value>` |
+| callbackOwner | callbackOwner | RootObject | RW | `obj.callbackOwner = <value>` |
 | athleticsMult | athleticsMult | number | RW | `obj.athleticsMult = <value>` |
 | weightMult | weightMult | number | RW | `obj.weightMult = <value>` |
 | combatSpeedMult | combatSpeedMult | number | RW | `obj.combatSpeedMult = <value>` |
 | combatSkillBonus | combatSkillBonus | integer | RW | `obj.combatSkillBonus = <value>` |
 | stealthMult | stealthMult | number | RW | `obj.stealthMult = <value>` |
-| racesExclude | racesExclude | unknown | RW | `obj.racesExclude = <value>` |
-| inventory | inventory | unknown | RW | `obj.inventory = <value>` |
+| racesExclude | racesExclude | ogre_unordered_set<GameData*>::type | RW | `obj.racesExclude = <value>` |
+| inventory | inventory | Inventory | RW | `obj.inventory = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1585,10 +1585,10 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | rightMouseActivated | rightMouseActivated | boolean | RW | `obj.rightMouseActivated = <value>` |
-| orders | orders | unknown | RW | `obj.orders = <value>` |
+| orders | orders | lektor<int> | RW | `obj.orders = <value>` |
 | contextMenuName | contextMenuName | string | RW | `obj.contextMenuName = <value>` |
-| menuGUI | menuGUI | unknown | RW | `obj.menuGUI = <value>` |
-| menuGUI2 | menuGUI2 | unknown | RW | `obj.menuGUI2 = <value>` |
+| menuGUI | menuGUI | ContextMenuGUI* | RW | `obj.menuGUI = <value>` |
+| menuGUI2 | menuGUI2 | ContextMenuGUI* | RW | `obj.menuGUI2 = <value>` |
 | delayedDestroyFlag | delayedDestroyFlag | boolean | RW | `obj.delayedDestroyFlag = <value>` |
 
 ### Methods
@@ -1605,15 +1605,15 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| container | container | unknown | RW | `obj.container = <value>` |
-| homeBuilding | homeBuilding | unknown | RW | `obj.homeBuilding = <value>` |
-| faction | faction | unknown | RW | `obj.faction = <value>` |
-| data | data | unknown | RW | `obj.data = <value>` |
+| container | container | RootObjectContainer | RW | `obj.container = <value>` |
+| homeBuilding | homeBuilding | Building | RW | `obj.homeBuilding = <value>` |
+| faction | faction | Faction | RW | `obj.faction = <value>` |
+| data | data | GameData | RW | `obj.data = <value>` |
 | position | position | Vector3 | RW | `obj.position = <value>` |
 | isFromActiveLevelMod | isFromActiveLevelMod | boolean | RW | `obj.isFromActiveLevelMod = <value>` |
 | rotation | rotation | Quaternion | RW | `obj.rotation = <value>` |
-| callbackObject | callbackObject | unknown | RW | `obj.callbackObject = <value>` |
-| saveState | saveState | unknown | RW | `obj.saveState = <value>` |
+| callbackObject | callbackObject | FactoryCallbackInterface* | RW | `obj.callbackObject = <value>` |
+| saveState | saveState | GameSaveState* | RW | `obj.saveState = <value>` |
 | age | age | number | RW | `obj.age = <value>` |
 
 ## Crossbow
@@ -1622,7 +1622,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| gunClass | gunClass | unknown | RW | `obj.gunClass = <value>` |
+| gunClass | gunClass | GunClass* | RW | `obj.gunClass = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1670,7 +1670,7 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | isStored | isStored | boolean | RW | `obj.isStored = <value>` |
-| objectDatas | objectDatas | unknown | RW | `obj.objectDatas = <value>` |
+| objectDatas | objectDatas | GameDataContainer* | RW | `obj.objectDatas = <value>` |
 | datasFile | datasFile | string | RW | `obj.datasFile = <value>` |
 | selfType | (lua_Integer | integer | RW | `obj.selfType = <value>` |
 
@@ -1687,11 +1687,11 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| parentTown | parentTown | unknown | RW | `obj.parentTown = <value>` |
-| item | item | unknown | RW | `obj.item = <value>` |
-| nestData | nestData | unknown | RW | `obj.nestData = <value>` |
+| parentTown | parentTown | hand | RW | `obj.parentTown = <value>` |
+| item | item | Item | RW | `obj.item = <value>` |
+| nestData | nestData | GameData | RW | `obj.nestData = <value>` |
 | pos | pos | Vector3 | RW | `obj.pos = <value>` |
-| insideBuilding | insideBuilding | unknown | RW | `obj.insideBuilding = <value>` |
+| insideBuilding | insideBuilding | hand | RW | `obj.insideBuilding = <value>` |
 
 ## DialogAction
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
@@ -1699,7 +1699,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| key | key | unknown | RW | `obj.key = <value>` |
+| key | key | DialogActionEnum | RW | `obj.key = <value>` |
 | value | value | integer | RW | `obj.value = <value>` |
 
 ## DialogChoiceList
@@ -1708,7 +1708,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| conversationChoices | conversationChoices | unknown | RW | `obj.conversationChoices = <value>` |
+| conversationChoices | conversationChoices | lektor<DialogLineData*> | RW | `obj.conversationChoices = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1724,7 +1724,7 @@
 |---|---|---|---|---|
 | key | (lua_Integer | integer | RW | `obj.key = <value>` |
 | compareBy | (lua_Integer | integer | RW | `obj.compareBy = <value>` |
-| who | who | unknown | RW | `obj.who = <value>` |
+| who | who | TalkerEnum | RW | `obj.who = <value>` |
 | value | value | integer | RW | `obj.value = <value>` |
 
 ## DialogDataManager
@@ -1740,48 +1740,48 @@
 | targetFlagsNotWanted | targetFlagsNotWanted | integer | RW | `obj.targetFlagsNotWanted = <value>` |
 | personalityNeeded | personalityNeeded | integer | RW | `obj.personalityNeeded = <value>` |
 | personalityNotWanted | personalityNotWanted | integer | RW | `obj.personalityNotWanted = <value>` |
-| campaignTriggers | campaignTriggers | unknown | RW | `obj.campaignTriggers = <value>` |
-| isTargetRace | isTargetRace | unknown | RW | `obj.isTargetRace = <value>` |
-| isTargetSubRace_specificallyTheTarget | isTargetSubRace_specificallyTheTarget | unknown | RW | `obj.isTargetSubRace_specificallyTheTarget = <value>` |
-| givesItem | givesItem | unknown | RW | `obj.givesItem = <value>` |
-| inTownOf | inTownOf | unknown | RW | `obj.inTownOf = <value>` |
-| isTargetFaction | isTargetFaction | unknown | RW | `obj.isTargetFaction = <value>` |
-| isMyFaction | isMyFaction | unknown | RW | `obj.isMyFaction = <value>` |
-| isCharacter | isCharacter | unknown | RW | `obj.isCharacter = <value>` |
-| isTargetCarryingCharacter | isTargetCarryingCharacter | unknown | RW | `obj.isTargetCarryingCharacter = <value>` |
-| _hasPackage | _hasPackage | unknown | RW | `obj._hasPackage = <value>` |
-| isMyRace | isMyRace | unknown | RW | `obj.isMyRace = <value>` |
-| isMySubRace | isMySubRace | unknown | RW | `obj.isMySubRace = <value>` |
+| campaignTriggers | campaignTriggers | FitnessSelector<CampaignTriggerData*> | RW | `obj.campaignTriggers = <value>` |
+| isTargetRace | isTargetRace | lektor<GameData*> | RW | `obj.isTargetRace = <value>` |
+| isTargetSubRace_specificallyTheTarget | isTargetSubRace_specificallyTheTarget | lektor<GameData*> | RW | `obj.isTargetSubRace_specificallyTheTarget = <value>` |
+| givesItem | givesItem | lektor<GameDataValuePair> | RW | `obj.givesItem = <value>` |
+| inTownOf | inTownOf | std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > > | RW | `obj.inTownOf = <value>` |
+| isTargetFaction | isTargetFaction | std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > > | RW | `obj.isTargetFaction = <value>` |
+| isMyFaction | isMyFaction | std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > > | RW | `obj.isMyFaction = <value>` |
+| isCharacter | isCharacter | lektor<GameData*> | RW | `obj.isCharacter = <value>` |
+| isTargetCarryingCharacter | isTargetCarryingCharacter | lektor<GameData*> | RW | `obj.isTargetCarryingCharacter = <value>` |
+| _hasPackage | _hasPackage | lektor<GameData*> | RW | `obj._hasPackage = <value>` |
+| isMyRace | isMyRace | lektor<GameData*> | RW | `obj.isMyRace = <value>` |
+| isMySubRace | isMySubRace | lektor<GameData*> | RW | `obj.isMySubRace = <value>` |
 | hasItemType | (lua_Integer | integer | RW | `obj.hasItemType = <value>` |
-| hasItem | (lua_Integer | integer | RW | `obj.hasItem = <value>` |
-| worldState | worldState | unknown | RW | `obj.worldState = <value>` |
-| data | data | unknown | RW | `obj.data = <value>` |
+| hasItem | hasItem | lektor<GameData*> | RW | `obj.hasItem = <value>` |
+| worldState | worldState | WorldEventStateQueryList* | RW | `obj.worldState = <value>` |
+| data | data | GameData | RW | `obj.data = <value>` |
 | onceOnly | onceOnly | boolean | RW | `obj.onceOnly = <value>` |
 | isMonologue | isMonologue | boolean | RW | `obj.isMonologue = <value>` |
-| forCertainType | forCertainType | unknown | RW | `obj.forCertainType = <value>` |
-| children | children | unknown | RW | `obj.children = <value>` |
-| conditions | conditions | unknown | RW | `obj.conditions = <value>` |
-| actions | actions | unknown | RW | `obj.actions = <value>` |
+| forCertainType | forCertainType | CharacterTypeEnum | RW | `obj.forCertainType = <value>` |
+| children | children | DialogChoiceList | RW | `obj.children = <value>` |
+| conditions | conditions | lektor<DialogLineData::DialogCondition*> | RW | `obj.conditions = <value>` |
+| actions | actions | lektor<DialogLineData::DialogAction*> | RW | `obj.actions = <value>` |
 | lineCount | lineCount | integer | RW | `obj.lineCount = <value>` |
 | texts | texts | string | RW | `obj.texts = <value>` |
-| parent | parent | unknown | RW | `obj.parent = <value>` |
+| parent | parent | DialogLineData* | RW | `obj.parent = <value>` |
 | chancePermanent | chancePermanent | number | RW | `obj.chancePermanent = <value>` |
 | chanceTemporary | chanceTemporary | number | RW | `obj.chanceTemporary = <value>` |
 | unique | unique | boolean | RW | `obj.unique = <value>` |
-| uniqueOwner | uniqueOwner | unknown | RW | `obj.uniqueOwner = <value>` |
+| uniqueOwner | uniqueOwner | hand | RW | `obj.uniqueOwner = <value>` |
 | dialogRepeatMinTimeInHours | dialogRepeatMinTimeInHours | number | RW | `obj.dialogRepeatMinTimeInHours = <value>` |
-| lastTimeSaid | lastTimeSaid | unknown | RW | `obj.lastTimeSaid = <value>` |
+| lastTimeSaid | lastTimeSaid | TimeOfDay | RW | `obj.lastTimeSaid = <value>` |
 | score | score | integer | RW | `obj.score = <value>` |
 | oneAtATime | oneAtATime | boolean | RW | `obj.oneAtATime = <value>` |
 | isLocked | isLocked | boolean | RW | `obj.isLocked = <value>` |
-| locks | locks | unknown | RW | `obj.locks = <value>` |
-| unlocks_lockMe | unlocks_lockMe | unknown | RW | `obj.unlocks_lockMe = <value>` |
-| unlocks_dontLockMe | unlocks_dontLockMe | unknown | RW | `obj.unlocks_dontLockMe = <value>` |
-| crowdTrigger | crowdTrigger | unknown | RW | `obj.crowdTrigger = <value>` |
-| factionRelationEffects | factionRelationEffects | unknown | RW | `obj.factionRelationEffects = <value>` |
-| playerInterruptionDialog | playerInterruptionDialog | unknown | RW | `obj.playerInterruptionDialog = <value>` |
+| locks | locks | lektor<DialogLineData*> | RW | `obj.locks = <value>` |
+| unlocks_lockMe | unlocks_lockMe | lektor<DialogLineData*> | RW | `obj.unlocks_lockMe = <value>` |
+| unlocks_dontLockMe | unlocks_dontLockMe | lektor<DialogLineData*> | RW | `obj.unlocks_dontLockMe = <value>` |
+| crowdTrigger | crowdTrigger | DialogLineData* | RW | `obj.crowdTrigger = <value>` |
+| factionRelationEffects | factionRelationEffects | ogre_unordered_map<GameData*, int>::type | RW | `obj.factionRelationEffects = <value>` |
+| playerInterruptionDialog | playerInterruptionDialog | DialogLineData* | RW | `obj.playerInterruptionDialog = <value>` |
 | isInterjection | isInterjection | boolean | RW | `obj.isInterjection = <value>` |
-| speaker | speaker | unknown | RW | `obj.speaker = <value>` |
+| speaker | speaker | TalkerEnum | RW | `obj.speaker = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1818,38 +1818,38 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| repCounter | repCounter | unknown | RW | `obj.repCounter = <value>` |
+| repCounter | repCounter | RepetitionCounter | RW | `obj.repCounter = <value>` |
 | _needsDynamicAssessments | _needsDynamicAssessments | boolean | RW | `obj._needsDynamicAssessments = <value>` |
-| locked | locked | unknown | RW | `obj.locked = <value>` |
+| locked | locked | std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > > | RW | `obj.locked = <value>` |
 | sayMsg | sayMsg | string | RW | `obj.sayMsg = <value>` |
-| threadMessages | threadMessages | unknown | RW | `obj.threadMessages = <value>` |
-| pacakgesIHave | pacakgesIHave | unknown | RW | `obj.pacakgesIHave = <value>` |
-| playerInterruptionDialog | playerInterruptionDialog | unknown | RW | `obj.playerInterruptionDialog = <value>` |
-| eventRepeatTimers | eventRepeatTimers | unknown | RW | `obj.eventRepeatTimers = <value>` |
-| eventDeliveredStates | eventDeliveredStates | unknown | RW | `obj.eventDeliveredStates = <value>` |
-| _hasChanceLines | _hasChanceLines | unknown | RW | `obj._hasChanceLines = <value>` |
+| threadMessages | threadMessages | Ogre::vector<Dialogue::DT_MSG>::type | RW | `obj.threadMessages = <value>` |
+| pacakgesIHave | pacakgesIHave | std::set<GameData*, std::less<GameData*>, Ogre::STLAllocator<GameData*, Ogre::GeneralAllocPolicy > > | RW | `obj.pacakgesIHave = <value>` |
+| playerInterruptionDialog | playerInterruptionDialog | DialogLineData* | RW | `obj.playerInterruptionDialog = <value>` |
+| eventRepeatTimers | eventRepeatTimers | std::map<EventTriggerEnum, float, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, float>, Ogre::GeneralAllocPolicy > > | RW | `obj.eventRepeatTimers = <value>` |
+| eventDeliveredStates | eventDeliveredStates | std::map<EventTriggerEnum, hand, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, hand>, Ogre::GeneralAllocPolicy > > | RW | `obj.eventDeliveredStates = <value>` |
+| _hasChanceLines | _hasChanceLines | std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > > | RW | `obj._hasChanceLines = <value>` |
 | _hasEnded | _hasEnded | boolean | RW | `obj._hasEnded = <value>` |
 | shouting | shouting | boolean | RW | `obj.shouting = <value>` |
 | staysOnScreen | staysOnScreen | boolean | RW | `obj.staysOnScreen = <value>` |
-| me | me | unknown | RW | `obj.me = <value>` |
+| me | me | Character | RW | `obj.me = <value>` |
 | conversationTarget | conversationTarget | hand | RW | `obj.conversationTarget = <value>` |
-| stats | stats | unknown | RW | `obj.stats = <value>` |
-| movement | movement | unknown | RW | `obj.movement = <value>` |
+| stats | stats | CharStats | RW | `obj.stats = <value>` |
+| movement | movement | CharMovement* | RW | `obj.movement = <value>` |
 | currentConversationType | (lua_Integer | integer | RW | `obj.currentConversationType = <value>` |
-| currentConversation | (lua_Integer | integer | RW | `obj.currentConversation = <value>` |
-| currentLine | currentLine | unknown | RW | `obj.currentLine = <value>` |
-| conversationsMain | conversationsMain | unknown | RW | `obj.conversationsMain = <value>` |
-| interjector1 | interjector1 | unknown | RW | `obj.interjector1 = <value>` |
-| interjector2 | interjector2 | unknown | RW | `obj.interjector2 = <value>` |
-| interjector3 | interjector3 | unknown | RW | `obj.interjector3 = <value>` |
-| speechBubblePanel | speechBubblePanel | unknown | RW | `obj.speechBubblePanel = <value>` |
+| currentConversation | currentConversation | DialogLineData* | RW | `obj.currentConversation = <value>` |
+| currentLine | currentLine | DialogLineData* | RW | `obj.currentLine = <value>` |
+| conversationsMain | conversationsMain | std::map<EventTriggerEnum, DialogChoiceList*, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, DialogChoiceList*>, Ogre::GeneralAllocPolicy > > | RW | `obj.conversationsMain = <value>` |
+| interjector1 | interjector1 | hand | RW | `obj.interjector1 = <value>` |
+| interjector2 | interjector2 | hand | RW | `obj.interjector2 = <value>` |
+| interjector3 | interjector3 | hand | RW | `obj.interjector3 = <value>` |
+| speechBubblePanel | speechBubblePanel | DialogueSpeechBubble* | RW | `obj.speechBubblePanel = <value>` |
 | speechTextTimer | speechTextTimer | number | RW | `obj.speechTextTimer = <value>` |
 | speechTextTimer_forced | speechTextTimer_forced | number | RW | `obj.speechTextTimer_forced = <value>` |
-| replyIds | replyIds | unknown | RW | `obj.replyIds = <value>` |
-| responses | responses | unknown | RW | `obj.responses = <value>` |
+| replyIds | replyIds | Ogre::vector<std::string>::type | RW | `obj.replyIds = <value>` |
+| responses | responses | Ogre::vector<std::string>::type | RW | `obj.responses = <value>` |
 | npcReplyText | npcReplyText | string | RW | `obj.npcReplyText = <value>` |
-| conversationMaster | conversationMaster | unknown | RW | `obj.conversationMaster = <value>` |
-| waitingForReplyFrom | waitingForReplyFrom | unknown | RW | `obj.waitingForReplyFrom = <value>` |
+| conversationMaster | conversationMaster | hand | RW | `obj.conversationMaster = <value>` |
+| waitingForReplyFrom | waitingForReplyFrom | hand | RW | `obj.waitingForReplyFrom = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1896,7 +1896,7 @@
 | marginW | marginW | integer | RW | `obj.marginW = <value>` |
 | marginH | marginH | integer | RW | `obj.marginH = <value>` |
 | textBox | (lua_Integer | integer | RW | `obj.textBox = <value>` |
-| baseSize | baseSize | unknown | RW | `obj.baseSize = <value>` |
+| baseSize | baseSize | MyGUI::types::TSize<int> | RW | `obj.baseSize = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1914,37 +1914,37 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | _antiSlavery | _antiSlavery | boolean | RW | `obj._antiSlavery = <value>` |
-| characteristicsData | characteristicsData | unknown | RW | `obj.characteristicsData = <value>` |
-| ranks | ranks | unknown | RW | `obj.ranks = <value>` |
+| characteristicsData | characteristicsData | Faction::CharacteristicsData | RW | `obj.characteristicsData = <value>` |
+| ranks | ranks | lektor<std::string > | RW | `obj.ranks = <value>` |
 | allowSlavesWeapons | allowSlavesWeapons | boolean | RW | `obj.allowSlavesWeapons = <value>` |
-| fundamentalNPCType | fundamentalNPCType | unknown | RW | `obj.fundamentalNPCType = <value>` |
-| myLawEnforcementFaction | myLawEnforcementFaction | unknown | RW | `obj.myLawEnforcementFaction = <value>` |
+| fundamentalNPCType | fundamentalNPCType | CharacterTypeEnum | RW | `obj.fundamentalNPCType = <value>` |
+| myLawEnforcementFaction | myLawEnforcementFaction | Faction | RW | `obj.myLawEnforcementFaction = <value>` |
 | isALawEnforcementFaction | isALawEnforcementFaction | boolean | RW | `obj.isALawEnforcementFaction = <value>` |
-| factionLeader | factionLeader | unknown | RW | `obj.factionLeader = <value>` |
-| diplomatMgr | diplomatMgr | unknown | RW | `obj.diplomatMgr = <value>` |
-| relations | relations | unknown | RW | `obj.relations = <value>` |
-| factionOwnerships | factionOwnerships | unknown | RW | `obj.factionOwnerships = <value>` |
-| warMgr | warMgr | unknown | RW | `obj.warMgr = <value>` |
-| tradeCulture | tradeCulture | unknown | RW | `obj.tradeCulture = <value>` |
-| raceSelector | raceSelector | unknown | RW | `obj.raceSelector = <value>` |
+| factionLeader | factionLeader | FactionLeader | RW | `obj.factionLeader = <value>` |
+| diplomatMgr | diplomatMgr | FactionUniqueSquadManager* | RW | `obj.diplomatMgr = <value>` |
+| relations | relations | FactionRelations* | RW | `obj.relations = <value>` |
+| factionOwnerships | factionOwnerships | Ownerships | RW | `obj.factionOwnerships = <value>` |
+| warMgr | warMgr | FactionWarMgr* | RW | `obj.warMgr = <value>` |
+| tradeCulture | tradeCulture | TradeCulture | RW | `obj.tradeCulture = <value>` |
+| raceSelector | raceSelector | FitnessSelector<GameData*> | RW | `obj.raceSelector = <value>` |
 | name | name | string | RW | `obj.name = <value>` |
 | notARealFaction | notARealFaction | boolean | RW | `obj.notARealFaction = <value>` |
 | roadPreference | roadPreference | number | RW | `obj.roadPreference = <value>` |
-| platoonKillList | platoonKillList | unknown | RW | `obj.platoonKillList = <value>` |
-| platoonRemoveList | platoonRemoveList | unknown | RW | `obj.platoonRemoveList = <value>` |
-| activePlatoons | activePlatoons | unknown | RW | `obj.activePlatoons = <value>` |
-| unloadedPlatoons | unloadedPlatoons | unknown | RW | `obj.unloadedPlatoons = <value>` |
+| platoonKillList | platoonKillList | lektor<Platoon*> | RW | `obj.platoonKillList = <value>` |
+| platoonRemoveList | platoonRemoveList | lektor<Platoon*> | RW | `obj.platoonRemoveList = <value>` |
+| activePlatoons | activePlatoons | lektor<Platoon*> | RW | `obj.activePlatoons = <value>` |
+| unloadedPlatoons | unloadedPlatoons | lektor<Platoon*> | RW | `obj.unloadedPlatoons = <value>` |
 | periodicUpdateCounter_active | periodicUpdateCounter_active | integer | RW | `obj.periodicUpdateCounter_active = <value>` |
 | periodicUpdateCounter_unloaded | periodicUpdateCounter_unloaded | integer | RW | `obj.periodicUpdateCounter_unloaded = <value>` |
-| data | data | unknown | RW | `obj.data = <value>` |
-| isAI | isAI | unknown | RW | `obj.isAI = <value>` |
-| isPlayer | isPlayer | unknown | RW | `obj.isPlayer = <value>` |
+| data | data | GameData | RW | `obj.data = <value>` |
+| isAI | isAI | AIPlayer* | RW | `obj.isAI = <value>` |
+| isPlayer | isPlayer | PlayerInterface | RW | `obj.isPlayer = <value>` |
 | spawnTimeStamp | spawnTimeStamp | integer | RW | `obj.spawnTimeStamp = <value>` |
 | diplomatTimeStamp | diplomatTimeStamp | integer | RW | `obj.diplomatTimeStamp = <value>` |
 | platoonIDs | platoonIDs | integer | RW | `obj.platoonIDs = <value>` |
 | p_TIME | p_TIME | number | RW | `obj.p_TIME = <value>` |
 | platoonPeriodicUpdateIndex | platoonPeriodicUpdateIndex | integer | RW | `obj.platoonPeriodicUpdateIndex = <value>` |
-| buildingSwaps | buildingSwaps | unknown | RW | `obj.buildingSwaps = <value>` |
+| buildingSwaps | buildingSwaps | lektor<Faction::BuildingSwaps> | RW | `obj.buildingSwaps = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -1986,9 +1986,9 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| faction | faction | unknown | RW | `obj.faction = <value>` |
-| biomeTerritory | biomeTerritory | unknown | RW | `obj.biomeTerritory = <value>` |
-| worstEnemy | worstEnemy | unknown | RW | `obj.worstEnemy = <value>` |
+| faction | faction | Faction | RW | `obj.faction = <value>` |
+| biomeTerritory | biomeTerritory | lektor<GameData*> | RW | `obj.biomeTerritory = <value>` |
+| worstEnemy | worstEnemy | Faction | RW | `obj.worstEnemy = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2001,9 +2001,9 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| participants | participants | unknown | RW | `obj.participants = <value>` |
+| participants | participants | lektor<Faction*> | RW | `obj.participants = <value>` |
 | addListMuto | addListMuto | unknown | RW | `obj.addListMuto = <value>` |
-| toAddList | toAddList | unknown | RW | `obj.toAddList = <value>` |
+| toAddList | toAddList | lektor<Platoon*> | RW | `obj.toAddList = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2027,11 +2027,11 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| me | me | unknown | RW | `obj.me = <value>` |
+| me | me | Faction | RW | `obj.me = <value>` |
 | playerRank | playerRank | integer | RW | `obj.playerRank = <value>` |
 | globalReputationTrust | globalReputationTrust | number | RW | `obj.globalReputationTrust = <value>` |
 | globalReputationForBadassery | globalReputationForBadassery | number | RW | `obj.globalReputationForBadassery = <value>` |
-| _factionRelations | _factionRelations | unknown | RW | `obj._factionRelations = <value>` |
+| _factionRelations | _factionRelations | ogre_unordered_map<Faction*, RelationData>::type | RW | `obj._factionRelations = <value>` |
 | defaultFactionRelation | defaultFactionRelation | number | RW | `obj.defaultFactionRelation = <value>` |
 
 ### Methods
@@ -2064,10 +2064,10 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| getOutOfTheWayOfCharacter | getOutOfTheWayOfCharacter | unknown | RW | `obj.getOutOfTheWayOfCharacter = <value>` |
+| getOutOfTheWayOfCharacter | getOutOfTheWayOfCharacter | hand | RW | `obj.getOutOfTheWayOfCharacter = <value>` |
 | currentPosition | currentPosition | Vector3 | RW | `obj.currentPosition = <value>` |
-| me | me | unknown | RW | `obj.me = <value>` |
-| combatMover | combatMover | unknown | RW | `obj.combatMover = <value>` |
+| me | me | Character | RW | `obj.me = <value>` |
+| combatMover | combatMover | CombatMovementController* | RW | `obj.combatMover = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2081,10 +2081,10 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| me | me | unknown | RW | `obj.me = <value>` |
+| me | me | Character | RW | `obj.me = <value>` |
 | destination | destination | Vector3 | RW | `obj.destination = <value>` |
 | direction | direction | Vector3 | RW | `obj.direction = <value>` |
-| movementTarget | movementTarget | unknown | RW | `obj.movementTarget = <value>` |
+| movementTarget | movementTarget | hand | RW | `obj.movementTarget = <value>` |
 | currentFormationID | currentFormationID | integer | RW | `obj.currentFormationID = <value>` |
 
 ### Methods
@@ -2101,7 +2101,7 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | validity | validity | integer | RW | `obj.validity = <value>` |
-| sourceContainer | sourceContainer | unknown | RW | `obj.sourceContainer = <value>` |
+| sourceContainer | sourceContainer | GameDataContainer* | RW | `obj.sourceContainer = <value>` |
 | isStandalone | isStandalone | boolean | RW | `obj.isStandalone = <value>` |
 | id | id | integer | RW | `obj.id = <value>` |
 | readOnly | readOnly | boolean | RW | `obj.readOnly = <value>` |
@@ -2109,17 +2109,17 @@
 | type | (lua_Integer | integer | RW | `obj.type = <value>` |
 | stringID | stringID | string | RW | `obj.stringID = <value>` |
 | isFromActiveFile | isFromActiveFile | boolean | RW | `obj.isFromActiveFile = <value>` |
-| instances | instances | unknown | RW | `obj.instances = <value>` |
+| instances | instances | std::map<std::string, GameData::ObjectInstance, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData::ObjectInstance>, Ogre::GeneralAllocPolicy > > | RW | `obj.instances = <value>` |
 | currentID | currentID | integer | RW | `obj.currentID = <value>` |
-| activeValues | activeValues | unknown | RW | `obj.activeValues = <value>` |
-| bdata | bdata | unknown | RW | `obj.bdata = <value>` |
-| sdata | sdata | unknown | RW | `obj.sdata = <value>` |
-| idata | idata | unknown | RW | `obj.idata = <value>` |
-| fdata | fdata | unknown | RW | `obj.fdata = <value>` |
-| filesdata | filesdata | unknown | RW | `obj.filesdata = <value>` |
-| vecdata | vecdata | unknown | RW | `obj.vecdata = <value>` |
-| quatdata | quatdata | unknown | RW | `obj.quatdata = <value>` |
-| objectReferences | objectReferences | unknown | RW | `obj.objectReferences = <value>` |
+| activeValues | activeValues | boost::unordered::unordered_map<std::string, bool, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy > > | RW | `obj.activeValues = <value>` |
+| bdata | bdata | boost::unordered::unordered_map<std::string, bool, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy > > | RW | `obj.bdata = <value>` |
+| sdata | sdata | boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > > | RW | `obj.sdata = <value>` |
+| idata | idata | boost::unordered::unordered_map<std::string, int, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > > | RW | `obj.idata = <value>` |
+| fdata | fdata | boost::unordered::unordered_map<std::string, float, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, float>, Ogre::GeneralAllocPolicy > > | RW | `obj.fdata = <value>` |
+| filesdata | filesdata | boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > > | RW | `obj.filesdata = <value>` |
+| vecdata | vecdata | boost::unordered::unordered_map<std::string, Ogre::Vector3, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Vector3>, Ogre::GeneralAllocPolicy > > | RW | `obj.vecdata = <value>` |
+| quatdata | quatdata | boost::unordered::unordered_map<std::string, Ogre::Quaternion, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Quaternion>, Ogre::GeneralAllocPolicy > > | RW | `obj.quatdata = <value>` |
+| objectReferences | objectReferences | boost::unordered::unordered_map<std::string, Ogre::vector<GameDataReference>::type, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::vector<GameDataReference>::type >, Ogre::GeneralAllocPolicy > > | RW | `obj.objectReferences = <value>` |
 | createdIndex | createdIndex | integer | RW | `obj.createdIndex = <value>` |
 
 ### Methods
@@ -2156,11 +2156,11 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | currentID | currentID | integer | RW | `obj.currentID = <value>` |
-| gamedataCatName | gamedataCatName | unknown | RW | `obj.gamedataCatName = <value>` |
-| gamedataID | gamedataID | unknown | RW | `obj.gamedataID = <value>` |
-| gamedataCatSID | gamedataCatSID | unknown | RW | `obj.gamedataCatSID = <value>` |
-| gamedataSID | gamedataSID | unknown | RW | `obj.gamedataSID = <value>` |
-| mainList | mainList | unknown | RW | `obj.mainList = <value>` |
+| gamedataCatName | gamedataCatName | boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > > | RW | `obj.gamedataCatName = <value>` |
+| gamedataID | gamedataID | ogre_unordered_map<int, GameData*>::type | RW | `obj.gamedataID = <value>` |
+| gamedataCatSID | gamedataCatSID | boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > > | RW | `obj.gamedataCatSID = <value>` |
+| gamedataSID | gamedataSID | boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > | RW | `obj.gamedataSID = <value>` |
+| mainList | mainList | ogre_unordered_set<GameData*>::type | RW | `obj.mainList = <value>` |
 | name | name | string | RW | `obj.name = <value>` |
 | isBaseDatafile | isBaseDatafile | boolean | RW | `obj.isBaseDatafile = <value>` |
 | readOnly | readOnly | boolean | RW | `obj.readOnly = <value>` |
@@ -2199,8 +2199,8 @@
 | author | author | string | RW | `obj.author = <value>` |
 | version | version | integer | RW | `obj.version = <value>` |
 | description | description | string | RW | `obj.description = <value>` |
-| dependencies | dependencies | unknown | RW | `obj.dependencies = <value>` |
-| references | references | unknown | RW | `obj.references = <value>` |
+| dependencies | dependencies | lektor<std::string > | RW | `obj.dependencies = <value>` |
+| references | references | lektor<std::string > | RW | `obj.references = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2224,9 +2224,9 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| values | values | unknown | RW | `obj.values = <value>` |
+| values | values | TripleInt | RW | `obj.values = <value>` |
 | sid | sid | string | RW | `obj.sid = <value>` |
-| ptr | ptr | unknown | RW | `obj.ptr = <value>` |
+| ptr | ptr | GameData | RW | `obj.ptr = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2239,7 +2239,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| data | data | unknown | RW | `obj.data = <value>` |
+| data | data | GameData | RW | `obj.data = <value>` |
 | val0 | val0 | integer | RW | `obj.val0 = <value>` |
 
 ## GameWorld
@@ -2250,49 +2250,49 @@
 |---|---|---|---|---|
 | tempSpawnsDisableTimer | tempSpawnsDisableTimer | number | RW | `obj.tempSpawnsDisableTimer = <value>` |
 | initialized | initialized | boolean | RW | `obj.initialized = <value>` |
-| render | render | unknown | RW | `obj.render = <value>` |
-| physics | physics | unknown | RW | `obj.physics = <value>` |
-| gamedata | gamedata | unknown | RW | `obj.gamedata = <value>` |
-| leveldata | leveldata | unknown | RW | `obj.leveldata = <value>` |
-| savedata | savedata | unknown | RW | `obj.savedata = <value>` |
-| theFactory | theFactory | unknown | RW | `obj.theFactory = <value>` |
-| factionMgr | factionMgr | unknown | RW | `obj.factionMgr = <value>` |
-| navmesh | navmesh | unknown | RW | `obj.navmesh = <value>` |
-| nodeList | nodeList | unknown | RW | `obj.nodeList = <value>` |
-| guiDisplayObject | guiDisplayObject | unknown | RW | `obj.guiDisplayObject = <value>` |
-| messageRoller | messageRoller | unknown | RW | `obj.messageRoller = <value>` |
-| ogreLogger | ogreLogger | unknown | RW | `obj.ogreLogger = <value>` |
+| render | render | RendererT* | RW | `obj.render = <value>` |
+| physics | physics | PhysicsInterface* | RW | `obj.physics = <value>` |
+| gamedata | gamedata | GameDataManager | RW | `obj.gamedata = <value>` |
+| leveldata | leveldata | GameDataManager | RW | `obj.leveldata = <value>` |
+| savedata | savedata | GameDataManager | RW | `obj.savedata = <value>` |
+| theFactory | theFactory | RootObjectFactory* | RW | `obj.theFactory = <value>` |
+| factionMgr | factionMgr | FactionManager* | RW | `obj.factionMgr = <value>` |
+| navmesh | navmesh | NavMesh* | RW | `obj.navmesh = <value>` |
+| nodeList | nodeList | NodeList* | RW | `obj.nodeList = <value>` |
+| guiDisplayObject | guiDisplayObject | hand | RW | `obj.guiDisplayObject = <value>` |
+| messageRoller | messageRoller | MessageRoller* | RW | `obj.messageRoller = <value>` |
+| ogreLogger | ogreLogger | Ogre::Log* | RW | `obj.ogreLogger = <value>` |
 | steamEnabled | steamEnabled | boolean | RW | `obj.steamEnabled = <value>` |
-| baseMods | baseMods | unknown | RW | `obj.baseMods = <value>` |
-| baseModsNames | baseModsNames | unknown | RW | `obj.baseModsNames = <value>` |
-| activeMods | activeMods | unknown | RW | `obj.activeMods = <value>` |
-| availableModsByName | availableModsByName | unknown | RW | `obj.availableModsByName = <value>` |
-| availabelModsOrderedList | availabelModsOrderedList | unknown | RW | `obj.availabelModsOrderedList = <value>` |
-| player | player | unknown | RW | `obj.player = <value>` |
-| charactersWithLights | charactersWithLights | unknown | RW | `obj.charactersWithLights = <value>` |
-| sysMessageList | sysMessageList | unknown | RW | `obj.sysMessageList = <value>` |
-| updatePortraitsMap | updatePortraitsMap | unknown | RW | `obj.updatePortraitsMap = <value>` |
-| dynamicDestroyBuildingsList | dynamicDestroyBuildingsList | unknown | RW | `obj.dynamicDestroyBuildingsList = <value>` |
-| destroyListAE | destroyListAE | unknown | RW | `obj.destroyListAE = <value>` |
-| destroyListOE | destroyListOE | unknown | RW | `obj.destroyListOE = <value>` |
-| destroyListTBM | destroyListTBM | unknown | RW | `obj.destroyListTBM = <value>` |
+| baseMods | baseMods | lektor<ModInfo> | RW | `obj.baseMods = <value>` |
+| baseModsNames | baseModsNames | lektor<std::string > | RW | `obj.baseModsNames = <value>` |
+| activeMods | activeMods | lektor<ModInfo*> | RW | `obj.activeMods = <value>` |
+| availableModsByName | availableModsByName | std::map<std::string, ModInfo, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, ModInfo>, Ogre::GeneralAllocPolicy > > | RW | `obj.availableModsByName = <value>` |
+| availabelModsOrderedList | availabelModsOrderedList | lektor<ModInfo*> | RW | `obj.availabelModsOrderedList = <value>` |
+| player | player | PlayerInterface | RW | `obj.player = <value>` |
+| charactersWithLights | charactersWithLights | ogre_unordered_set<Character*>::type | RW | `obj.charactersWithLights = <value>` |
+| sysMessageList | sysMessageList | std::list<GameWorld::SysMessage, Ogre::STLAllocator<GameWorld::SysMessage, Ogre::GeneralAllocPolicy > > | RW | `obj.sysMessageList = <value>` |
+| updatePortraitsMap | updatePortraitsMap | ogre_unordered_map<hand, float>::type | RW | `obj.updatePortraitsMap = <value>` |
+| dynamicDestroyBuildingsList | dynamicDestroyBuildingsList | lektor<hand> | RW | `obj.dynamicDestroyBuildingsList = <value>` |
+| destroyListAE | destroyListAE | ogre_unordered_set<AttachedEntity*>::type | RW | `obj.destroyListAE = <value>` |
+| destroyListOE | destroyListOE | ogre_unordered_set<Ogre::MovableObject*>::type | RW | `obj.destroyListOE = <value>` |
+| destroyListTBM | destroyListTBM | ogre_unordered_set<TownBuildingsManager*>::type | RW | `obj.destroyListTBM = <value>` |
 | frameSpeedMult | frameSpeedMult | number | RW | `obj.frameSpeedMult = <value>` |
-| deathParade | deathParade | unknown | RW | `obj.deathParade = <value>` |
+| deathParade | deathParade | ogre_unordered_map<hand, Character*>::type | RW | `obj.deathParade = <value>` |
 | deathParadeWasMeddledWith | deathParadeWasMeddledWith | boolean | RW | `obj.deathParadeWasMeddledWith = <value>` |
 | charUpdateListMain_inUse | charUpdateListMain_inUse | boolean | RW | `obj.charUpdateListMain_inUse = <value>` |
-| charUpdateListMain | charUpdateListMain_inUse | boolean | RW | `obj.charUpdateListMain = <value>` |
-| _AINonRenderThread | _AINonRenderThread | unknown | RW | `obj._AINonRenderThread = <value>` |
-| nestBatcherKillList | nestBatcherKillList | unknown | RW | `obj.nestBatcherKillList = <value>` |
-| killListPhase0 | killListPhase0 | unknown | RW | `obj.killListPhase0 = <value>` |
-| killListPhase1 | killListPhase1 | unknown | RW | `obj.killListPhase1 = <value>` |
-| killListPhase2 | killListPhase2 | unknown | RW | `obj.killListPhase2 = <value>` |
-| mainUpdateListRemovalQueue | mainUpdateListRemovalQueue | unknown | RW | `obj.mainUpdateListRemovalQueue = <value>` |
-| timeStamper | timeStamper | unknown | RW | `obj.timeStamper = <value>` |
-| zoneMgr | zoneMgr | unknown | RW | `obj.zoneMgr = <value>` |
+| charUpdateListMain | charUpdateListMain | ogre_unordered_set<Character*>::type | RW | `obj.charUpdateListMain = <value>` |
+| _AINonRenderThread | _AINonRenderThread | RenderTimeBackthread* | RW | `obj._AINonRenderThread = <value>` |
+| nestBatcherKillList | nestBatcherKillList | std::deque<NestBatcher*, Ogre::STLAllocator<NestBatcher*, Ogre::GeneralAllocPolicy > > | RW | `obj.nestBatcherKillList = <value>` |
+| killListPhase0 | killListPhase0 | ogre_unordered_set<RootObject*>::type | RW | `obj.killListPhase0 = <value>` |
+| killListPhase1 | killListPhase1 | ogre_unordered_map<RootObject*, float>::type | RW | `obj.killListPhase1 = <value>` |
+| killListPhase2 | killListPhase2 | std::deque<RootObject*, Ogre::STLAllocator<RootObject*, Ogre::GeneralAllocPolicy > > | RW | `obj.killListPhase2 = <value>` |
+| mainUpdateListRemovalQueue | mainUpdateListRemovalQueue | lektor<Character*> | RW | `obj.mainUpdateListRemovalQueue = <value>` |
+| timeStamper | timeStamper | SimpleTimeStamper | RW | `obj.timeStamper = <value>` |
+| zoneMgr | zoneMgr | ZoneManager* | RW | `obj.zoneMgr = <value>` |
 | debugFlag | debugFlag | boolean | RW | `obj.debugFlag = <value>` |
 | paused | paused | boolean | RW | `obj.paused = <value>` |
 | gameResetting | gameResetting | boolean | RW | `obj.gameResetting = <value>` |
-| audioThread | audioThread | unknown | RW | `obj.audioThread = <value>` |
+| audioThread | audioThread | AudioSystemGlobal* | RW | `obj.audioThread = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2382,7 +2382,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| isUniform | isUniform | unknown | RW | `obj.isUniform = <value>` |
+| isUniform | isUniform | Faction | RW | `obj.isUniform = <value>` |
 | value | value | integer | RW | `obj.value = <value>` |
 | crafter | crafter | string | RW | `obj.crafter = <value>` |
 | level | level | number | RW | `obj.level = <value>` |
@@ -2411,7 +2411,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| itemStates | itemStates | unknown | RW | `obj.itemStates = <value>` |
+| itemStates | itemStates | std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > > | RW | `obj.itemStates = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2425,12 +2425,12 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| data | data | unknown | RW | `obj.data = <value>` |
+| data | data | GameData | RW | `obj.data = <value>` |
 | whatAmI | (lua_Integer | integer | RW | `obj.whatAmI = <value>` |
-| medical | medical | unknown | RW | `obj.medical = <value>` |
-| me | me | unknown | RW | `obj.me = <value>` |
+| medical | medical | MedicalSystem | RW | `obj.medical = <value>` |
+| me | me | Character | RW | `obj.me = <value>` |
 | side | (lua_Integer | integer | RW | `obj.side = <value>` |
-| robotLimb | robotLimb | unknown | RW | `obj.robotLimb = <value>` |
+| robotLimb | robotLimb | RobotLimbItem* | RW | `obj.robotLimb = <value>` |
 | selfHealing | selfHealing | boolean | RW | `obj.selfHealing = <value>` |
 | collapses | collapses | boolean | RW | `obj.collapses = <value>` |
 | fatal | fatal | boolean | RW | `obj.fatal = <value>` |
@@ -2468,12 +2468,12 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| commands | commands | unknown | RW | `obj.commands = <value>` |
-| map | map | unknown | RW | `obj.map = <value>` |
-| editMap | editMap | unknown | RW | `obj.editMap = <value>` |
-| events | events | unknown | RW | `obj.events = <value>` |
+| commands | commands | std::map<std::string, Command, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, Command>, Ogre::GeneralAllocPolicy > > | RW | `obj.commands = <value>` |
+| map | map | std::map<int, Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, Command*>, Ogre::GeneralAllocPolicy > > | RW | `obj.map = <value>` |
+| editMap | editMap | std::map<int, Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, Command*>, Ogre::GeneralAllocPolicy > > | RW | `obj.editMap = <value>` |
+| events | events | std::set<Command*, std::less<Command*>, Ogre::STLAllocator<Command*, Ogre::GeneralAllocPolicy > > | RW | `obj.events = <value>` |
 | keyboard | (lua_Integer | integer | RW | `obj.keyboard = <value>` |
-| keyNameMap | keyNameMap | unknown | RW | `obj.keyNameMap = <value>` |
+| keyNameMap | keyNameMap | std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > > | RW | `obj.keyNameMap = <value>` |
 | controlEnabled | controlEnabled | boolean | RW | `obj.controlEnabled = <value>` |
 | gameMode | (lua_Integer | integer | RW | `obj.gameMode = <value>` |
 | ctrl | ctrl | boolean | RW | `obj.ctrl = <value>` |
@@ -2486,7 +2486,7 @@
 | space | space | boolean | RW | `obj.space = <value>` |
 | pgup | pgup | boolean | RW | `obj.pgup = <value>` |
 | pgdn | pgdn | boolean | RW | `obj.pgdn = <value>` |
-| comma | comma | unknown | RW | `obj.comma = <value>` |
+| comma | comma | boolean | RW | `obj.comma = <value>` |
 | period | period | boolean | RW | `obj.period = <value>` |
 | f1 | f1 | boolean | RW | `obj.f1 = <value>` |
 | f2 | f2 | boolean | RW | `obj.f2 = <value>` |
@@ -2512,8 +2512,8 @@
 | mLUp | mLUp | boolean | RW | `obj.mLUp = <value>` |
 | mRUp | mRUp | boolean | RW | `obj.mRUp = <value>` |
 | swapMouseButtons | swapMouseButtons | boolean | RW | `obj.swapMouseButtons = <value>` |
-| mPos | mPos | unknown | RW | `obj.mPos = <value>` |
-| mPosAbs | mPosAbs | unknown | RW | `obj.mPosAbs = <value>` |
+| mPos | mPos | Ogre::Vector2 | RW | `obj.mPos = <value>` |
+| mPosAbs | mPosAbs | Ogre::Vector2 | RW | `obj.mPosAbs = <value>` |
 | mSpeed | mSpeed | Vector3 | RW | `obj.mSpeed = <value>` |
 | mWheel | mWheel | integer | RW | `obj.mWheel = <value>` |
 
@@ -2544,11 +2544,11 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | hasRoomCache | (lua_Integer | integer | RW | `obj.hasRoomCache = <value>` |
-| _allItems | _allItems | unknown | RW | `obj._allItems = <value>` |
-| sections | sections | unknown | RW | `obj.sections = <value>` |
-| sectionsInSearchOrder | sectionsInSearchOrder | unknown | RW | `obj.sectionsInSearchOrder = <value>` |
-| callbackObject | callbackObject | unknown | RW | `obj.callbackObject = <value>` |
-| owner | owner | unknown | RW | `obj.owner = <value>` |
+| _allItems | _allItems | lektor<Item*> | RW | `obj._allItems = <value>` |
+| sections | sections | boost::unordered::unordered_map<std::string, InventorySection*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, InventorySection*>, Ogre::GeneralAllocPolicy > > | RW | `obj.sections = <value>` |
+| sectionsInSearchOrder | sectionsInSearchOrder | lektor<InventorySection*> | RW | `obj.sectionsInSearchOrder = <value>` |
+| callbackObject | callbackObject | RootObject | RW | `obj.callbackObject = <value>` |
+| owner | owner | RootObject | RW | `obj.owner = <value>` |
 | totalWeight | totalWeight | number | RW | `obj.totalWeight = <value>` |
 
 ### Methods
@@ -2589,11 +2589,11 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| manufacturerData | manufacturerData | unknown | RW | `obj.manufacturerData = <value>` |
-| materialData | materialData | unknown | RW | `obj.materialData = <value>` |
-| coloriseData | coloriseData | unknown | RW | `obj.coloriseData = <value>` |
+| manufacturerData | manufacturerData | GameData | RW | `obj.manufacturerData = <value>` |
+| materialData | materialData | GameData | RW | `obj.materialData = <value>` |
+| coloriseData | coloriseData | GameData | RW | `obj.coloriseData = <value>` |
 | isInInventory | isInInventory | boolean | RW | `obj.isInInventory = <value>` |
-| inventoryPos | inventoryPos | unknown | RW | `obj.inventoryPos = <value>` |
+| inventoryPos | inventoryPos | iVector2 | RW | `obj.inventoryPos = <value>` |
 | inventorySection | inventorySection | string | RW | `obj.inventorySection = <value>` |
 | slotType | (lua_Integer | integer | RW | `obj.slotType = <value>` |
 | originalFullChargeAmount | originalFullChargeAmount | number | RW | `obj.originalFullChargeAmount = <value>` |
@@ -2609,10 +2609,10 @@
 | itemHeight | itemHeight | integer | RW | `obj.itemHeight = <value>` |
 | deathItem | deathItem | boolean | RW | `obj.deathItem = <value>` |
 | objectType | (lua_Integer | integer | RW | `obj.objectType = <value>` |
-| properOwner | properOwner | unknown | RW | `obj.properOwner = <value>` |
-| _whosInventoryWeAreIn | _whosInventoryWeAreIn | unknown | RW | `obj._whosInventoryWeAreIn = <value>` |
+| properOwner | properOwner | hand | RW | `obj.properOwner = <value>` |
+| _whosInventoryWeAreIn | _whosInventoryWeAreIn | hand | RW | `obj._whosInventoryWeAreIn = <value>` |
 | _isResearchArtifact | _isResearchArtifact | boolean | RW | `obj._isResearchArtifact = <value>` |
-| itemGroup | itemGroup | unknown | RW | `obj.itemGroup = <value>` |
+| itemGroup | itemGroup | BuildingItemGroup* | RW | `obj.itemGroup = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2653,19 +2653,19 @@
 | width | width | integer | RW | `obj.width = <value>` |
 | height | height | integer | RW | `obj.height = <value>` |
 | armourOnly | armourOnly | boolean | RW | `obj.armourOnly = <value>` |
-| items | items | unknown | RW | `obj.items = <value>` |
-| content | content | unknown | RW | `obj.content = <value>` |
+| items | items | Ogre::vector<InventorySection::SectionItem>::type | RW | `obj.items = <value>` |
+| content | content | Array2d<Item> | RW | `obj.content = <value>` |
 | stackingBonusMin | stackingBonusMin | integer | RW | `obj.stackingBonusMin = <value>` |
 | stackingBonusMult | stackingBonusMult | number | RW | `obj.stackingBonusMult = <value>` |
-| veryLimitedSlot | veryLimitedSlot | unknown | RW | `obj.veryLimitedSlot = <value>` |
+| veryLimitedSlot | veryLimitedSlot | lektor<GameData*> | RW | `obj.veryLimitedSlot = <value>` |
 | itemsLimit | itemsLimit | integer | RW | `obj.itemsLimit = <value>` |
 | weightMultiplier | weightMultiplier | number | RW | `obj.weightMultiplier = <value>` |
 | totalWeight | totalWeight | number | RW | `obj.totalWeight = <value>` |
 | isAnEquippedItemSection | isAnEquippedItemSection | boolean | RW | `obj.isAnEquippedItemSection = <value>` |
 | limitedSlot | (lua_Integer | integer | RW | `obj.limitedSlot = <value>` |
 | containerSlot | containerSlot | boolean | RW | `obj.containerSlot = <value>` |
-| callbackObject | callbackObject | unknown | RW | `obj.callbackObject = <value>` |
-| parentInventory | parentInventory | unknown | RW | `obj.parentInventory = <value>` |
+| callbackObject | callbackObject | RootObject | RW | `obj.callbackObject = <value>` |
+| parentInventory | parentInventory | Inventory | RW | `obj.parentInventory = <value>` |
 | enabled | enabled | boolean | RW | `obj.enabled = <value>` |
 
 ### Methods
@@ -2704,15 +2704,15 @@
 |---|---|---|---|---|
 | physicalShouldExist | physicalShouldExist | boolean | RW | `obj.physicalShouldExist = <value>` |
 | existAsBareWeapon | existAsBareWeapon | boolean | RW | `obj.existAsBareWeapon = <value>` |
-| persistant | persistant | unknown | RW | `obj.persistant = <value>` |
+| persistant | persistant | hand | RW | `obj.persistant = <value>` |
 | visible | visible | boolean | RW | `obj.visible = <value>` |
-| physical | physicalShouldExist | boolean | RW | `obj.physical = <value>` |
+| physical | physical | SimplePhysXEntity* | RW | `obj.physical = <value>` |
 | _isPhysical | _isPhysical | boolean | RW | `obj._isPhysical = <value>` |
-| physicalEntity | physicalEntity | unknown | RW | `obj.physicalEntity = <value>` |
+| physicalEntity | physicalEntity | Ogre::Entity* | RW | `obj.physicalEntity = <value>` |
 | creatingPhysical | creatingPhysical | boolean | RW | `obj.creatingPhysical = <value>` |
 | fixedPhysicalPosition | fixedPhysicalPosition | boolean | RW | `obj.fixedPhysicalPosition = <value>` |
 | useDynamicPhysics | useDynamicPhysics | boolean | RW | `obj.useDynamicPhysics = <value>` |
-| loadingEntity | loadingEntity | unknown | RW | `obj.loadingEntity = <value>` |
+| loadingEntity | loadingEntity | Ogre::Entity* | RW | `obj.loadingEntity = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2791,7 +2791,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| character | character | unknown | RW | `obj.character = <value>` |
+| character | character | Character | RW | `obj.character = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2804,8 +2804,8 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| racesExclude | racesExclude | unknown | RW | `obj.racesExclude = <value>` |
-| racesInclude | racesInclude | unknown | RW | `obj.racesInclude = <value>` |
+| racesExclude | racesExclude | std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > > | RW | `obj.racesExclude = <value>` |
+| racesInclude | racesInclude | std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > > | RW | `obj.racesInclude = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2818,7 +2818,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| lock | lock | unknown | RW | `obj.lock = <value>` |
+| lock | lock | DoorLock* | RW | `obj.lock = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2838,7 +2838,7 @@
 | isPositionsFilter | isPositionsFilter | boolean | RW | `obj.isPositionsFilter = <value>` |
 | edgeSkips | edgeSkips | integer | RW | `obj.edgeSkips = <value>` |
 | maxLength | maxLength | integer | RW | `obj.maxLength = <value>` |
-| mHistoryBufferX | mHistoryBufferX | unknown | RW | `obj.mHistoryBufferX = <value>` |
+| mHistoryBufferX | mHistoryBufferX | std::deque<float, std::allocator<float> > | RW | `obj.mHistoryBufferX = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2854,7 +2854,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| filters | filters | unknown | RW | `obj.filters = <value>` |
+| filters | filters | MedianFilter | RW | `obj.filters = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2869,11 +2869,11 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| status | status | unknown | RW | `obj.status = <value>` |
-| armourList | armourList | unknown | RW | `obj.armourList = <value>` |
+| status | status | ogre_unordered_map<GameData*, MedicalSystem::HealthPartStatus>::type | RW | `obj.status = <value>` |
+| armourList | armourList | lektor<Armour*> | RW | `obj.armourList = <value>` |
 | hunger | hunger | number | RW | `obj.hunger = <value>` |
 | fed | fed | number | RW | `obj.fed = <value>` |
-| lastPeriodicUpdate | lastPeriodicUpdate | unknown | RW | `obj.lastPeriodicUpdate = <value>` |
+| lastPeriodicUpdate | lastPeriodicUpdate | TimeOfDay | RW | `obj.lastPeriodicUpdate = <value>` |
 | blood | blood | number | RW | `obj.blood = <value>` |
 | extraBloodLossFromBodyparts | extraBloodLossFromBodyparts | number | RW | `obj.extraBloodLossFromBodyparts = <value>` |
 | currentBleedRate | currentBleedRate | number | RW | `obj.currentBleedRate = <value>` |
@@ -2891,15 +2891,15 @@
 | partHead | partHead | number | RW | `obj.partHead = <value>` |
 | partWorstTorso | partWorstTorso | number | RW | `obj.partWorstTorso = <value>` |
 | dazedOrAlert | dazedOrAlert | number | RW | `obj.dazedOrAlert = <value>` |
-| robotLimbs | robotLimbs | unknown | RW | `obj.robotLimbs = <value>` |
+| robotLimbs | robotLimbs | RobotLimbs | RW | `obj.robotLimbs = <value>` |
 | bloodynessChanged | bloodynessChanged | boolean | RW | `obj.bloodynessChanged = <value>` |
 | bloodynessCleanedUp | bloodynessCleanedUp | boolean | RW | `obj.bloodynessCleanedUp = <value>` |
-| animation | animation | unknown | RW | `obj.animation = <value>` |
-| me | me | unknown | RW | `obj.me = <value>` |
-| weatherGUIfeedback | weatherGUIfeedback | unknown | RW | `obj.weatherGUIfeedback = <value>` |
+| animation | animation | AnimationClass* | RW | `obj.animation = <value>` |
+| me | me | Character | RW | `obj.me = <value>` |
+| weatherGUIfeedback | weatherGUIfeedback | StringPair | RW | `obj.weatherGUIfeedback = <value>` |
 | currentWeatherAffect | (lua_Integer | integer | RW | `obj.currentWeatherAffect = <value>` |
 | currentWeatherAffectStrength | currentWeatherAffectStrength | number | RW | `obj.currentWeatherAffectStrength = <value>` |
-| lastHungerKO | lastHungerKO | unknown | RW | `obj.lastHungerKO = <value>` |
+| lastHungerKO | lastHungerKO | TimeOfDay | RW | `obj.lastHungerKO = <value>` |
 | nextKOTime | nextKOTime | number | RW | `obj.nextKOTime = <value>` |
 | _eatenDeathDelay | _eatenDeathDelay | integer | RW | `obj._eatenDeathDelay = <value>` |
 | crippled | crippled | boolean | RW | `obj.crippled = <value>` |
@@ -2910,9 +2910,9 @@
 | rightArmOk | rightArmOk | boolean | RW | `obj.rightArmOk = <value>` |
 | leftArmOk | leftArmOk | boolean | RW | `obj.leftArmOk = <value>` |
 | lastBloodPosition | lastBloodPosition | Vector3 | RW | `obj.lastBloodPosition = <value>` |
-| wounds | wounds | unknown | RW | `obj.wounds = <value>` |
-| anatomy | anatomy | unknown | RW | `obj.anatomy = <value>` |
-| stats | stats | unknown | RW | `obj.stats = <value>` |
+| wounds | wounds | Ogre::FastArray<Wound*> | RW | `obj.wounds = <value>` |
+| anatomy | anatomy | lektor<MedicalSystem::HealthPartStatus*> | RW | `obj.anatomy = <value>` |
+| stats | stats | CharStats | RW | `obj.stats = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -2990,10 +2990,10 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| boneAssignments | boneAssignments | unknown | RW | `obj.boneAssignments = <value>` |
-| vertCount | vertCount | unknown | RW | `obj.vertCount = <value>` |
-| verts | verts | unknown | RW | `obj.verts = <value>` |
-| uvs | uvs | unknown | RW | `obj.uvs = <value>` |
+| boneAssignments | boneAssignments | boost::unordered::unordered_map<Ogre::IdString, lektor<lektor<int> >, boost::hash<Ogre::IdString>, std::equal_to<Ogre::IdString>, Ogre::STLAllocator<std::pair<Ogre::IdString const, lektor<lektor<int> > >, Ogre::GeneralAllocPolicy > > | RW | `obj.boneAssignments = <value>` |
+| vertCount | vertCount | unsigned __int64 | RW | `obj.vertCount = <value>` |
+| verts | verts | Ogre::Vector3* | RW | `obj.verts = <value>` |
+| uvs | uvs | Ogre::Vector2* | RW | `obj.uvs = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3007,7 +3007,7 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | mWeightModifier | mWeightModifier | number | RW | `obj.mWeightModifier = <value>` |
-| mHistoryBufferX | mHistoryBufferX | unknown | RW | `obj.mHistoryBufferX = <value>` |
+| mHistoryBufferX | mHistoryBufferX | std::deque<float, std::allocator<float> > | RW | `obj.mHistoryBufferX = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3108,7 +3108,7 @@
 | refID | refID | string | RW | `obj.refID = <value>` |
 | created | created | integer | RW | `obj.created = <value>` |
 | modified | modified | integer | RW | `obj.modified = <value>` |
-| stateIDs | stateIDs | unknown | RW | `obj.stateIDs = <value>` |
+| stateIDs | stateIDs | lektor<std::string > | RW | `obj.stateIDs = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3168,7 +3168,7 @@
 | ddsTextureMipMapGimping | ddsTextureMipMapGimping | integer | RW | `obj.ddsTextureMipMapGimping = <value>` |
 | reflectionMode | reflectionMode | integer | RW | `obj.reflectionMode = <value>` |
 | reflectionDistance | reflectionDistance | number | RW | `obj.reflectionDistance = <value>` |
-| compositors | compositors | unknown | RW | `obj.compositors = <value>` |
+| compositors | compositors | lektor<std::pair<std::string, bool> > | RW | `obj.compositors = <value>` |
 | musicVolume | musicVolume | number | RW | `obj.musicVolume = <value>` |
 | ambientVolume | ambientVolume | number | RW | `obj.ambientVolume = <value>` |
 | footstepVolume | footstepVolume | number | RW | `obj.footstepVolume = <value>` |
@@ -3179,7 +3179,7 @@
 | autosavetime | autosavetime | number | RW | `obj.autosavetime = <value>` |
 | fullscreen | fullscreen | boolean | RW | `obj.fullscreen = <value>` |
 | borderless | borderless | boolean | RW | `obj.borderless = <value>` |
-| autosave | autosavetime | number | RW | `obj.autosave = <value>` |
+| autosave | autosave | boolean | RW | `obj.autosave = <value>` |
 | userSaves | userSaves | boolean | RW | `obj.userSaves = <value>` |
 | blood | blood | boolean | RW | `obj.blood = <value>` |
 | censorship | censorship | boolean | RW | `obj.censorship = <value>` |
@@ -3199,13 +3199,13 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| slaves | slaves | unknown | RW | `obj.slaves = <value>` |
-| _homeTown | _homeTown | unknown | RW | `obj._homeTown = <value>` |
-| _homeBuilding | _homeBuilding | unknown | RW | `obj._homeBuilding = <value>` |
-| stuff | stuff | unknown | RW | `obj.stuff = <value>` |
-| faction | faction | unknown | RW | `obj.faction = <value>` |
-| me | me | unknown | RW | `obj.me = <value>` |
-| occupiedTown | occupiedTown | unknown | RW | `obj.occupiedTown = <value>` |
+| slaves | slaves | std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > > | RW | `obj.slaves = <value>` |
+| _homeTown | _homeTown | TownBase* | RW | `obj._homeTown = <value>` |
+| _homeBuilding | _homeBuilding | hand | RW | `obj._homeBuilding = <value>` |
+| stuff | stuff | lektor<hand> | RW | `obj.stuff = <value>` |
+| faction | faction | Faction | RW | `obj.faction = <value>` |
+| me | me | Platoon | RW | `obj.me = <value>` |
+| occupiedTown | occupiedTown | TownBase* | RW | `obj.occupiedTown = <value>` |
 | money | money | integer | RW | `obj.money = <value>` |
 
 ### Methods
@@ -3232,34 +3232,34 @@
 | _characterCountCurrent | _characterCountCurrent | integer | RW | `obj._characterCountCurrent = <value>` |
 | _characterCountOriginal | _characterCountOriginal | integer | RW | `obj._characterCountOriginal = <value>` |
 | squadType | (lua_Integer | integer | RW | `obj.squadType = <value>` |
-| hasUniques | hasUniques | unknown | RW | `obj.hasUniques = <value>` |
+| hasUniques | hasUniques | YesNoMaybe | RW | `obj.hasUniques = <value>` |
 | speedOverride | (lua_Integer | integer | RW | `obj.speedOverride = <value>` |
-| isSeparatedSquad | isSeparatedSquad | unknown | RW | `obj.isSeparatedSquad = <value>` |
+| isSeparatedSquad | isSeparatedSquad | hand | RW | `obj.isSeparatedSquad = <value>` |
 | canRefresh | canRefresh | boolean | RW | `obj.canRefresh = <value>` |
 | regenerates | regenerates | boolean | RW | `obj.regenerates = <value>` |
-| myBaseHomeTownData | myBaseHomeTownData | unknown | RW | `obj.myBaseHomeTownData = <value>` |
+| myBaseHomeTownData | myBaseHomeTownData | GameData | RW | `obj.myBaseHomeTownData = <value>` |
 | priceMultWhenITrade | priceMultWhenITrade | number | RW | `obj.priceMultWhenITrade = <value>` |
 | _iBuyStolenGoods | _iBuyStolenGoods | boolean | RW | `obj._iBuyStolenGoods = <value>` |
 | _iBuyIllegalGoods | _iBuyIllegalGoods | boolean | RW | `obj._iBuyIllegalGoods = <value>` |
-| locatorModel | locatorModel | unknown | RW | `obj.locatorModel = <value>` |
-| blackboard | blackboard | unknown | RW | `obj.blackboard = <value>` |
+| locatorModel | locatorModel | Ogre::Entity* | RW | `obj.locatorModel = <value>` |
+| blackboard | blackboard | Blackboard* | RW | `obj.blackboard = <value>` |
 | _isIntact | _isIntact | boolean | RW | `obj._isIntact = <value>` |
-| squadTemplate | squadTemplate | unknown | RW | `obj.squadTemplate = <value>` |
+| squadTemplate | squadTemplate | GameData | RW | `obj.squadTemplate = <value>` |
 | malnourishedLevel | malnourishedLevel | number | RW | `obj.malnourishedLevel = <value>` |
 | hasNeverBeenActivated | hasNeverBeenActivated | boolean | RW | `obj.hasNeverBeenActivated = <value>` |
 | _persistentSquad | _persistentSquad | boolean | RW | `obj._persistentSquad = <value>` |
 | isResidentSquad | isResidentSquad | boolean | RW | `obj.isResidentSquad = <value>` |
-| messageOnActivation | messageOnActivation | unknown | RW | `obj.messageOnActivation = <value>` |
-| currentSpawnArea | currentSpawnArea | unknown | RW | `obj.currentSpawnArea = <value>` |
-| squadleader | squadleader | unknown | RW | `obj.squadleader = <value>` |
-| ownerships | ownerships | unknown | RW | `obj.ownerships = <value>` |
-| activePlatoon | activePlatoon | unknown | RW | `obj.activePlatoon = <value>` |
-| unloadedPlatoon | unloadedPlatoon | unknown | RW | `obj.unloadedPlatoon = <value>` |
-| patrolSettings | patrolSettings | unknown | RW | `obj.patrolSettings = <value>` |
+| messageOnActivation | messageOnActivation | PlatoonCreationMessage | RW | `obj.messageOnActivation = <value>` |
+| currentSpawnArea | currentSpawnArea | AreaSector* | RW | `obj.currentSpawnArea = <value>` |
+| squadleader | squadleader | hand | RW | `obj.squadleader = <value>` |
+| ownerships | ownerships | Ownerships | RW | `obj.ownerships = <value>` |
+| activePlatoon | activePlatoon | ActivePlatoon* | RW | `obj.activePlatoon = <value>` |
+| unloadedPlatoon | unloadedPlatoon | UnloadedPlatoon* | RW | `obj.unloadedPlatoon = <value>` |
+| patrolSettings | patrolSettings | PatrolInfo* | RW | `obj.patrolSettings = <value>` |
 | isDead | isDead | boolean | RW | `obj.isDead = <value>` |
 | imprisoned | imprisoned | boolean | RW | `obj.imprisoned = <value>` |
 | index | index | integer | RW | `obj.index = <value>` |
-| traderInventoryRefreshTime | traderInventoryRefreshTime | unknown | RW | `obj.traderInventoryRefreshTime = <value>` |
+| traderInventoryRefreshTime | traderInventoryRefreshTime | TimeOfDay | RW | `obj.traderInventoryRefreshTime = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3310,36 +3310,36 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | factionName | factionName | string | RW | `obj.factionName = <value>` |
-| camera | camera | unknown | RW | `obj.camera = <value>` |
-| technology | technology | unknown | RW | `obj.technology = <value>` |
+| camera | camera | CameraClass | RW | `obj.camera = <value>` |
+| technology | technology | Research* | RW | `obj.technology = <value>` |
 | selectedObjectsChangedThisFrame | selectedObjectsChangedThisFrame | boolean | RW | `obj.selectedObjectsChangedThisFrame = <value>` |
-| contextMenu | contextMenu | unknown | RW | `obj.contextMenu = <value>` |
-| selectBox | selectBox | unknown | RW | `obj.selectBox = <value>` |
-| moveMarker | moveMarker | unknown | RW | `obj.moveMarker = <value>` |
+| contextMenu | contextMenu | ContextMenu | RW | `obj.contextMenu = <value>` |
+| selectBox | selectBox | SelectionBox | RW | `obj.selectBox = <value>` |
+| moveMarker | moveMarker | MoveMarker* | RW | `obj.moveMarker = <value>` |
 | selectedCharacter | selectedCharacter | hand | RW | `obj.selectedCharacter = <value>` |
-| aiOptions | aiOptions | unknown | RW | `obj.aiOptions = <value>` |
-| zonesVisibilities | zonesVisibilities | unknown | RW | `obj.zonesVisibilities = <value>` |
-| townsActive | townsActive | unknown | RW | `obj.townsActive = <value>` |
-| interiorsVisible | interiorsVisible | unknown | RW | `obj.interiorsVisible = <value>` |
+| aiOptions | aiOptions | PlayerInterface::AIOptions | RW | `obj.aiOptions = <value>` |
+| zonesVisibilities | zonesVisibilities | ogre_unordered_map<ZoneMap*, unsigned char>::type | RW | `obj.zonesVisibilities = <value>` |
+| townsActive | townsActive | ogre_unordered_set<TownBase*>::type | RW | `obj.townsActive = <value>` |
+| interiorsVisible | interiorsVisible | ogre_unordered_set<hand>::type | RW | `obj.interiorsVisible = <value>` |
 | interiorsVisibleHash | interiorsVisibleHash | integer | RW | `obj.interiorsVisibleHash = <value>` |
 | currentFloor | currentFloor | integer | RW | `obj.currentFloor = <value>` |
 | currentMouseTask | (lua_Integer | integer | RW | `obj.currentMouseTask = <value>` |
 | mouseTaskTypeRestriction | (lua_Integer | integer | RW | `obj.mouseTaskTypeRestriction = <value>` |
 | mouseRightTargetSet | mouseRightTargetSet | boolean | RW | `obj.mouseRightTargetSet = <value>` |
-| mouseRightTarget | mouseRightTargetSet | boolean | RW | `obj.mouseRightTarget = <value>` |
+| mouseRightTarget | mouseRightTarget | RootObject | RW | `obj.mouseRightTarget = <value>` |
 | rmouseTimer | rmouseTimer | number | RW | `obj.rmouseTimer = <value>` |
-| selectedCharacters | selectedCharacters | unknown | RW | `obj.selectedCharacters = <value>` |
-| selectedObject | selectedObjectsChangedThisFrame | boolean | RW | `obj.selectedObject = <value>` |
+| selectedCharacters | selectedCharacters | ogre_unordered_set<hand>::type | RW | `obj.selectedCharacters = <value>` |
+| selectedObject | selectedObject | hand | RW | `obj.selectedObject = <value>` |
 | onlyAnimalsSelected | onlyAnimalsSelected | boolean | RW | `obj.onlyAnimalsSelected = <value>` |
 | selectedLoadedLeft | selectedLoadedLeft | integer | RW | `obj.selectedLoadedLeft = <value>` |
 | trackedCharacterHandle | trackedCharacterHandle | hand | RW | `obj.trackedCharacterHandle = <value>` |
 | trackedCharacterFloor | trackedCharacterFloor | integer | RW | `obj.trackedCharacterFloor = <value>` |
-| levelEditor | levelEditor | unknown | RW | `obj.levelEditor = <value>` |
-| participant | participant | unknown | RW | `obj.participant = <value>` |
-| currentPlatoon | currentPlatoon | unknown | RW | `obj.currentPlatoon = <value>` |
-| playerCharacters | playerCharacters | unknown | RW | `obj.playerCharacters = <value>` |
+| levelEditor | levelEditor | LevelEditor* | RW | `obj.levelEditor = <value>` |
+| participant | participant | Faction | RW | `obj.participant = <value>` |
+| currentPlatoon | currentPlatoon | Platoon | RW | `obj.currentPlatoon = <value>` |
+| playerCharacters | playerCharacters | lektor<Character*> | RW | `obj.playerCharacters = <value>` |
 | deadPlayerSquad | deadPlayerSquad | hand | RW | `obj.deadPlayerSquad = <value>` |
-| placementObject | placementObject | unknown | RW | `obj.placementObject = <value>` |
+| placementObject | placementObject | PlacementObject* | RW | `obj.placementObject = <value>` |
 | characterEditorMode | characterEditorMode | boolean | RW | `obj.characterEditorMode = <value>` |
 | mLeftUp | mLeftUp | boolean | RW | `obj.mLeftUp = <value>` |
 | mLeftDown | mLeftDown | boolean | RW | `obj.mLeftDown = <value>` |
@@ -3403,8 +3403,8 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| specialFoods | specialFoods | unknown | RW | `obj.specialFoods = <value>` |
-| data | data | unknown | RW | `obj.data = <value>` |
+| specialFoods | specialFoods | ogre_unordered_set<GameData*>::type | RW | `obj.specialFoods = <value>` |
+| data | data | GameData | RW | `obj.data = <value>` |
 | runSpeedMaxSkill | runSpeedMaxSkill | number | RW | `obj.runSpeedMaxSkill = <value>` |
 | runSpeedMinSkill | runSpeedMinSkill | number | RW | `obj.runSpeedMinSkill = <value>` |
 | originalBloodMin | originalBloodMin | number | RW | `obj.originalBloodMin = <value>` |
@@ -3428,11 +3428,11 @@
 | noShoes | noShoes | boolean | RW | `obj.noShoes = <value>` |
 | extraAttackSlots | extraAttackSlots | integer | RW | `obj.extraAttackSlots = <value>` |
 | firstAidSkill | (lua_Integer | integer | RW | `obj.firstAidSkill = <value>` |
-| bloodColour | bloodColour | unknown | RW | `obj.bloodColour = <value>` |
+| bloodColour | bloodColour | Ogre::ColourValue | RW | `obj.bloodColour = <value>` |
 | canGoIndoors | canGoIndoors | boolean | RW | `obj.canGoIndoors = <value>` |
-| statMods | statMods | unknown | RW | `obj.statMods = <value>` |
-| weatherImmunities | weatherImmunities | unknown | RW | `obj.weatherImmunities = <value>` |
-| raceGroup | raceGroup | unknown | RW | `obj.raceGroup = <value>` |
+| statMods | statMods | ogre_unordered_map<StatsEnumerated, float>::type | RW | `obj.statMods = <value>` |
+| weatherImmunities | weatherImmunities | ogre_unordered_set<WeatherAffecting>::type | RW | `obj.weatherImmunities = <value>` |
+| raceGroup | raceGroup | RaceGroupData* | RW | `obj.raceGroup = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3446,7 +3446,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| limits | limits | unknown | RW | `obj.limits = <value>` |
+| limits | limits | ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type | RW | `obj.limits = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3467,7 +3467,7 @@
 | trustPositives | trustPositives | number | RW | `obj.trustPositives = <value>` |
 | trustNegatives | trustNegatives | number | RW | `obj.trustNegatives = <value>` |
 | percievedStrength | percievedStrength | number | RW | `obj.percievedStrength = <value>` |
-| stateVariables | stateVariables | unknown | RW | `obj.stateVariables = <value>` |
+| stateVariables | stateVariables | std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > > | RW | `obj.stateVariables = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3480,7 +3480,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| states | states | unknown | RW | `obj.states = <value>` |
+| states | states | std::map<EventTriggerEnum, Dialogue::RepetitionCounter::DialogState, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, Dialogue::RepetitionCounter::DialogState>, Ogre::GeneralAllocPolicy > > | RW | `obj.states = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3497,10 +3497,10 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| character | character | unknown | RW | `obj.character = <value>` |
-| inventory | inventory | unknown | RW | `obj.inventory = <value>` |
-| states | states | unknown | RW | `obj.states = <value>` |
-| items | items | unknown | RW | `obj.items = <value>` |
+| character | character | Character | RW | `obj.character = <value>` |
+| inventory | inventory | RootObject | RW | `obj.inventory = <value>` |
+| states | states | LimbState | RW | `obj.states = <value>` |
+| items | items | Item | RW | `obj.items = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3518,8 +3518,8 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| container | container | unknown | RW | `obj.container = <value>` |
-| isInsideBuilding | isInsideBuilding | unknown | RW | `obj.isInsideBuilding = <value>` |
+| container | container | RootObjectContainer | RW | `obj.container = <value>` |
+| isInsideBuilding | isInsideBuilding | hand | RW | `obj.isInsideBuilding = <value>` |
 | isInsideTownWalls | isInsideTownWalls | integer | RW | `obj.isInsideTownWalls = <value>` |
 | floorNum | floorNum | integer | RW | `obj.floorNum = <value>` |
 | spacialKey | spacialKey | integer | RW | `obj.spacialKey = <value>` |
@@ -3590,11 +3590,11 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | validKey | validKey | integer | RW | `obj.validKey = <value>` |
-| owner | owner | unknown | RW | `obj.owner = <value>` |
+| owner | owner | Faction | RW | `obj.owner = <value>` |
 | displayName | displayName | string | RW | `obj.displayName = <value>` |
-| data | data | unknown | RW | `obj.data = <value>` |
+| data | data | GameData | RW | `obj.data = <value>` |
 | pos | pos | Vector3 | RW | `obj.pos = <value>` |
-| handle | handle | unknown | RW | `obj.handle = <value>` |
+| handle | handle | hand | RW | `obj.handle = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3635,7 +3635,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| things | things | unknown | RW | `obj.things = <value>` |
+| things | things | lektor<RootObject*> | RW | `obj.things = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3653,7 +3653,7 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | todoMutex | todoMutex | unknown | RW | `obj.todoMutex = <value>` |
-| todoList | todoList | unknown | RW | `obj.todoList = <value>` |
+| todoList | todoList | std::deque<RootObjectFactory::CreatelistItem*, std::allocator<RootObjectFactory::CreatelistItem*> > | RW | `obj.todoList = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3667,7 +3667,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| item | item | unknown | RW | `obj.item = <value>` |
+| item | item | Item | RW | `obj.item = <value>` |
 | x | x | integer | RW | `obj.x = <value>` |
 | y | y | integer | RW | `obj.y = <value>` |
 | w | w | integer | RW | `obj.w = <value>` |
@@ -3680,11 +3680,11 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | lastPosition | lastPosition | Vector3 | RW | `obj.lastPosition = <value>` |
-| lastSeenTime | lastSeenTime | unknown | RW | `obj.lastSeenTime = <value>` |
-| percievedFaction | percievedFaction | unknown | RW | `obj.percievedFaction = <value>` |
+| lastSeenTime | lastSeenTime | TimeOfDay | RW | `obj.lastSeenTime = <value>` |
+| percievedFaction | percievedFaction | Faction | RW | `obj.percievedFaction = <value>` |
 | percievedSlave | (lua_Integer | integer | RW | `obj.percievedSlave = <value>` |
 | FOVScore | FOVScore | number | RW | `obj.FOVScore = <value>` |
-| type | type | unknown | RW | `obj.type = <value>` |
+| type | type | TagsClass<SenseType> | RW | `obj.type = <value>` |
 | canSee | canSee | boolean | RW | `obj.canSee = <value>` |
 | canHear | canHear | boolean | RW | `obj.canHear = <value>` |
 | alarmState | alarmState | number | RW | `obj.alarmState = <value>` |
@@ -3702,8 +3702,8 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| startPos | startPos | unknown | RW | `obj.startPos = <value>` |
-| volume | volume | unknown | RW | `obj.volume = <value>` |
+| startPos | startPos | Ogre::Vector2 | RW | `obj.startPos = <value>` |
+| volume | volume | Ogre::PlaneBoundedVolume | RW | `obj.volume = <value>` |
 | widget | (lua_Integer | integer | RW | `obj.widget = <value>` |
 | active | active | boolean | RW | `obj.active = <value>` |
 
@@ -3720,8 +3720,8 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| it | it | unknown | RW | `obj.it = <value>` |
-| _end | _end | unknown | RW | `obj._end = <value>` |
+| it | it | boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > > | RW | `obj.it = <value>` |
+| _end | _end | boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > > | RW | `obj._end = <value>` |
 | flagsAny | flagsAny | integer | RW | `obj.flagsAny = <value>` |
 | flagsNot | flagsNot | integer | RW | `obj.flagsNot = <value>` |
 
@@ -3739,28 +3739,28 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | nearestEnemy | nearestEnemy | number | RW | `obj.nearestEnemy = <value>` |
-| seen | seen | unknown | RW | `obj.seen = <value>` |
+| seen | seen | ogre_unordered_map<hand, SeenSomeone*>::type | RW | `obj.seen = <value>` |
 | numUnconsciousAllies | numUnconsciousAllies | integer | RW | `obj.numUnconsciousAllies = <value>` |
 | numConsciousAllies | numConsciousAllies | integer | RW | `obj.numConsciousAllies = <value>` |
-| threats | threats | unknown | RW | `obj.threats = <value>` |
-| flockingList | flockingList | unknown | RW | `obj.flockingList = <value>` |
+| threats | threats | lektor<hand> | RW | `obj.threats = <value>` |
+| flockingList | flockingList | Ogre::vector<VisibleObjectInfo>::type | RW | `obj.flockingList = <value>` |
 | totalThreatLevelPersonal | totalThreatLevelPersonal | number | RW | `obj.totalThreatLevelPersonal = <value>` |
 | totalThreatLevelAllies | totalThreatLevelAllies | number | RW | `obj.totalThreatLevelAllies = <value>` |
 | totalIntendedThreatLevelGeneral | totalIntendedThreatLevelGeneral | number | RW | `obj.totalIntendedThreatLevelGeneral = <value>` |
 | numEnemies | numEnemies | integer | RW | `obj.numEnemies = <value>` |
 | numNeutrals | numNeutrals | integer | RW | `obj.numNeutrals = <value>` |
 | lastThreat | lastThreat | number | RW | `obj.lastThreat = <value>` |
-| hearTestTimers | hearTestTimers | unknown | RW | `obj.hearTestTimers = <value>` |
-| killList | killList | unknown | RW | `obj.killList = <value>` |
+| hearTestTimers | hearTestTimers | std::map<hand, float, std::less<hand>, std::allocator<std::pair<hand const, float> > > | RW | `obj.hearTestTimers = <value>` |
+| killList | killList | ogre_unordered_set<hand>::type | RW | `obj.killList = <value>` |
 | currentAssessIndex | currentAssessIndex | integer | RW | `obj.currentAssessIndex = <value>` |
 | currentAssessList | currentAssessList | integer | RW | `obj.currentAssessList = <value>` |
-| assessList | assessList | unknown | RW | `obj.assessList = <value>` |
-| me | me | unknown | RW | `obj.me = <value>` |
-| spottedSneakingPeople | spottedSneakingPeople | unknown | RW | `obj.spottedSneakingPeople = <value>` |
-| spottedSuspiciousPeople | spottedSuspiciousPeople | unknown | RW | `obj.spottedSuspiciousPeople = <value>` |
-| progressBar | progressBar | unknown | RW | `obj.progressBar = <value>` |
+| assessList | assessList | ogre_unordered_set<hand>::type | RW | `obj.assessList = <value>` |
+| me | me | Character | RW | `obj.me = <value>` |
+| spottedSneakingPeople | spottedSneakingPeople | SensoryData::SpottingPeopleMgr | RW | `obj.spottedSneakingPeople = <value>` |
+| spottedSuspiciousPeople | spottedSuspiciousPeople | SensoryData::SpottingPeopleMgr | RW | `obj.spottedSuspiciousPeople = <value>` |
+| progressBar | progressBar | FloatingProgressBar* | RW | `obj.progressBar = <value>` |
 | progressBarStillNeeded | progressBarStillNeeded | integer | RW | `obj.progressBarStillNeeded = <value>` |
-| spottedGuyIndexForProgressBar | spottedGuyIndexForProgressBar | unknown | RW | `obj.spottedGuyIndexForProgressBar = <value>` |
+| spottedGuyIndexForProgressBar | spottedGuyIndexForProgressBar | hand | RW | `obj.spottedGuyIndexForProgressBar = <value>` |
 | amSharingThisFrame | amSharingThisFrame | boolean | RW | `obj.amSharingThisFrame = <value>` |
 
 ### Methods
@@ -3785,7 +3785,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| timer | timer | unknown | RW | `obj.timer = <value>` |
+| timer | timer | CPerfTimer | RW | `obj.timer = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3817,7 +3817,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| members | members | unknown | RW | `obj.members = <value>` |
+| members | members | ogre_unordered_set<hand>::type | RW | `obj.members = <value>` |
 | position | position | Vector3 | RW | `obj.position = <value>` |
 | direction | direction | Vector3 | RW | `obj.direction = <value>` |
 | speed | speed | number | RW | `obj.speed = <value>` |
@@ -3844,7 +3844,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| spottedPeople | spottedPeople | unknown | RW | `obj.spottedPeople = <value>` |
+| spottedPeople | spottedPeople | std::map<hand, SensoryData::SpottingPeopleMgr::Spot, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, SensoryData::SpottingPeopleMgr::Spot>, Ogre::GeneralAllocPolicy > > | RW | `obj.spottedPeople = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3883,11 +3883,11 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | msg | (lua_Integer | integer | RW | `obj.msg = <value>` |
-| target | target | unknown | RW | `obj.target = <value>` |
-| from | from | unknown | RW | `obj.from = <value>` |
+| target | target | hand | RW | `obj.target = <value>` |
+| from | from | hand | RW | `obj.from = <value>` |
 | on | on | boolean | RW | `obj.on = <value>` |
 | number | number | number | RW | `obj.number = <value>` |
-| data | data | unknown | RW | `obj.data = <value>` |
+| data | data | void* | RW | `obj.data = <value>` |
 
 ## TaskData
 **Header:** `extern/KenshiLib/Include/kenshi/Tasker.h`
@@ -3896,7 +3896,7 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | infrequentGoalChecks | infrequentGoalChecks | boolean | RW | `obj.infrequentGoalChecks = <value>` |
-| permaJob | permaJob | unknown | RW | `obj.permaJob = <value>` |
+| permaJob | permaJob | PermajobType | RW | `obj.permaJob = <value>` |
 | permaJob_FixedTarget | permaJob_FixedTarget | boolean | RW | `obj.permaJob_FixedTarget = <value>` |
 | permaJob_Associated | (lua_Integer | integer | RW | `obj.permaJob_Associated = <value>` |
 | permaJob_Associated_Secondary | (lua_Integer | integer | RW | `obj.permaJob_Associated_Secondary = <value>` |
@@ -3921,16 +3921,16 @@
 | key | (lua_Integer | integer | RW | `obj.key = <value>` |
 | needsTarget | needsTarget | boolean | RW | `obj.needsTarget = <value>` |
 | numResults | numResults | integer | RW | `obj.numResults = <value>` |
-| results | results | unknown | RW | `obj.results = <value>` |
+| results | results | TaskStateData | RW | `obj.results = <value>` |
 | numRequirements | numRequirements | integer | RW | `obj.numRequirements = <value>` |
-| requirements | requirementsAlwaysFalse | boolean | RW | `obj.requirements = <value>` |
-| scoreFunction | scoreFunction | unknown | RW | `obj.scoreFunction = <value>` |
+| requirements | requirements | TaskStateData | RW | `obj.requirements = <value>` |
+| scoreFunction | scoreFunction | function* | RW | `obj.scoreFunction = <value>` |
 | justDoOneTarget | justDoOneTarget | boolean | RW | `obj.justDoOneTarget = <value>` |
-| subTask | subTask | unknown | RW | `obj.subTask = <value>` |
+| subTask | subTask | TaskStateData* | RW | `obj.subTask = <value>` |
 | dialogueDelivery | (lua_Integer | integer | RW | `obj.dialogueDelivery = <value>` |
 | hasAction | hasAction | boolean | RW | `obj.hasAction = <value>` |
 | description | description | string | RW | `obj.description = <value>` |
-| _findTarget | _findTarget | unknown | RW | `obj._findTarget = <value>` |
+| _findTarget | _findTarget | function* | RW | `obj._findTarget = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3958,7 +3958,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| key | key | unknown | RW | `obj.key = <value>` |
+| key | key | StateType | RW | `obj.key = <value>` |
 | val | val | boolean | RW | `obj.val = <value>` |
 | progressionOnly | progressionOnly | boolean | RW | `obj.progressionOnly = <value>` |
 
@@ -3968,15 +3968,15 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| priority | priority | unknown | RW | `obj.priority = <value>` |
+| priority | priority | taskPriority | RW | `obj.priority = <value>` |
 | resetsWhenDone | resetsWhenDone | boolean | RW | `obj.resetsWhenDone = <value>` |
-| subject | subject | unknown | RW | `obj.subject = <value>` |
+| subject | subject | hand | RW | `obj.subject = <value>` |
 | weight | weight | number | RW | `obj.weight = <value>` |
-| currentSubTarget | currentSubTarget | unknown | RW | `obj.currentSubTarget = <value>` |
+| currentSubTarget | currentSubTarget | hand | RW | `obj.currentSubTarget = <value>` |
 | location | location | Vector3 | RW | `obj.location = <value>` |
 | startTime | startTime | integer | RW | `obj.startTime = <value>` |
 | endTime | endTime | integer | RW | `obj.endTime = <value>` |
-| taskData | taskData | unknown | RW | `obj.taskData = <value>` |
+| taskData | taskData | TaskData | RW | `obj.taskData = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -3999,18 +3999,18 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| replacementTown | replacementTown | unknown | RW | `obj.replacementTown = <value>` |
+| replacementTown | replacementTown | GameData | RW | `obj.replacementTown = <value>` |
 | isAccessible | isAccessible | boolean | RW | `obj.isAccessible = <value>` |
-| alarms | alarms | unknown | RW | `obj.alarms = <value>` |
-| instanceID | instanceID | unknown | RW | `obj.instanceID = <value>` |
+| alarms | alarms | AlarmManager* | RW | `obj.alarms = <value>` |
+| instanceID | instanceID | InstanceID | RW | `obj.instanceID = <value>` |
 | openToPublic | openToPublic | boolean | RW | `obj.openToPublic = <value>` |
 | minFoliageRange | minFoliageRange | number | RW | `obj.minFoliageRange = <value>` |
 | playerTownLevel | playerTownLevel | integer | RW | `obj.playerTownLevel = <value>` |
-| gates | gates | unknown | RW | `obj.gates = <value>` |
+| gates | gates | ogre_unordered_set<hand>::type | RW | `obj.gates = <value>` |
 | playerHasBuildingsInThisTown | playerHasBuildingsInThisTown | boolean | RW | `obj.playerHasBuildingsInThisTown = <value>` |
-| powerInList | powerInList | unknown | RW | `obj.powerInList = <value>` |
-| powerOutList | powerOutList | unknown | RW | `obj.powerOutList = <value>` |
-| batteryList | batteryList | unknown | RW | `obj.batteryList = <value>` |
+| powerInList | powerInList | Ogre::FastArray<hand> | RW | `obj.powerInList = <value>` |
+| powerOutList | powerOutList | ogre_unordered_set<hand>::type | RW | `obj.powerOutList = <value>` |
+| batteryList | batteryList | ogre_unordered_set<hand>::type | RW | `obj.batteryList = <value>` |
 | batteryMode | batteryMode | boolean | RW | `obj.batteryMode = <value>` |
 | power_Stat | power_Stat | number | RW | `obj.power_Stat = <value>` |
 | maxPower_Stat | maxPower_Stat | number | RW | `obj.maxPower_Stat = <value>` |
@@ -4020,12 +4020,12 @@
 | batteryChargingupTotal | batteryChargingupTotal | number | RW | `obj.batteryChargingupTotal = <value>` |
 | batteryCharge_Stat | batteryCharge_Stat | number | RW | `obj.batteryCharge_Stat = <value>` |
 | batteryChargeMax_Stat | batteryChargeMax_Stat | number | RW | `obj.batteryChargeMax_Stat = <value>` |
-| _facilitesWeHaveHere | _facilitesWeHaveHere | unknown | RW | `obj._facilitesWeHaveHere = <value>` |
-| tradeCulture | tradeCulture | unknown | RW | `obj.tradeCulture = <value>` |
-| tradeGoodsMults | tradeGoodsMults | unknown | RW | `obj.tradeGoodsMults = <value>` |
-| buildingMaterial | buildingMaterial | unknown | RW | `obj.buildingMaterial = <value>` |
-| distantTown | distantTown | unknown | RW | `obj.distantTown = <value>` |
-| nestSpots | nestSpots | unknown | RW | `obj.nestSpots = <value>` |
+| _facilitesWeHaveHere | _facilitesWeHaveHere | TagsClass<BuildingDesignation> | RW | `obj._facilitesWeHaveHere = <value>` |
+| tradeCulture | tradeCulture | TradeCulture* | RW | `obj.tradeCulture = <value>` |
+| tradeGoodsMults | tradeGoodsMults | ogre_unordered_map<GameData*, float>::type | RW | `obj.tradeGoodsMults = <value>` |
+| buildingMaterial | buildingMaterial | GameData | RW | `obj.buildingMaterial = <value>` |
+| distantTown | distantTown | DistantTown* | RW | `obj.distantTown = <value>` |
+| nestSpots | nestSpots | lektor<Town::NestSpot> | RW | `obj.nestSpots = <value>` |
 | nestsLoaded | nestsLoaded | boolean | RW | `obj.nestsLoaded = <value>` |
 | overrideRange | overrideRange | number | RW | `obj.overrideRange = <value>` |
 | townRangeMultiplier | townRangeMultiplier | number | RW | `obj.townRangeMultiplier = <value>` |
@@ -4100,34 +4100,34 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| positionCacher | positionCacher | unknown | RW | `obj.positionCacher = <value>` |
-| townType | townType | unknown | RW | `obj.townType = <value>` |
-| population | population | unknown | RW | `obj.population = <value>` |
-| factionsResidentHere | factionsResidentHere | unknown | RW | `obj.factionsResidentHere = <value>` |
+| positionCacher | positionCacher | TownPositionCacher | RW | `obj.positionCacher = <value>` |
+| townType | townType | TownType | RW | `obj.townType = <value>` |
+| population | population | BasePopulationManager* | RW | `obj.population = <value>` |
+| factionsResidentHere | factionsResidentHere | std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > > | RW | `obj.factionsResidentHere = <value>` |
 | alreadyInitialisedPopulationParams | alreadyInitialisedPopulationParams | boolean | RW | `obj.alreadyInitialisedPopulationParams = <value>` |
 | isSecret | isSecret | boolean | RW | `obj.isSecret = <value>` |
-| occupiers | occupiers | unknown | RW | `obj.occupiers = <value>` |
-| timeOfDeath | timeOfDeath | unknown | RW | `obj.timeOfDeath = <value>` |
+| occupiers | occupiers | std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > > | RW | `obj.occupiers = <value>` |
+| timeOfDeath | timeOfDeath | TimeOfDay | RW | `obj.timeOfDeath = <value>` |
 | p_TIME | p_TIME | number | RW | `obj.p_TIME = <value>` |
-| nestBatcher | nestBatcher | unknown | RW | `obj.nestBatcher = <value>` |
+| nestBatcher | nestBatcher | NestBatcher* | RW | `obj.nestBatcher = <value>` |
 | unexploredName | unexploredName | string | RW | `obj.unexploredName = <value>` |
 | discovered | discovered | boolean | RW | `obj.discovered = <value>` |
 | explored | explored | boolean | RW | `obj.explored = <value>` |
 | recentlyDiscovered | recentlyDiscovered | boolean | RW | `obj.recentlyDiscovered = <value>` |
-| entityMarker | entityMarker | unknown | RW | `obj.entityMarker = <value>` |
-| entityLabel | entityLabel | unknown | RW | `obj.entityLabel = <value>` |
-| clickHull | clickHull | unknown | RW | `obj.clickHull = <value>` |
-| biome | biome | unknown | RW | `obj.biome = <value>` |
-| alarmState | alarmState | unknown | RW | `obj.alarmState = <value>` |
+| entityMarker | entityMarker | Ogre::Entity* | RW | `obj.entityMarker = <value>` |
+| entityLabel | entityLabel | ScreenLabel* | RW | `obj.entityLabel = <value>` |
+| clickHull | clickHull | PhysicsHullT* | RW | `obj.clickHull = <value>` |
+| biome | biome | AreaBiomeGroup* | RW | `obj.biome = <value>` |
+| alarmState | alarmState | TownAlarmState | RW | `obj.alarmState = <value>` |
 | isActivated | isActivated | boolean | RW | `obj.isActivated = <value>` |
-| myZoneCoverage | myZoneCoverage | unknown | RW | `obj.myZoneCoverage = <value>` |
-| populatedZones | populatedZones | unknown | RW | `obj.populatedZones = <value>` |
-| artifacts | artifacts | unknown | RW | `obj.artifacts = <value>` |
+| myZoneCoverage | myZoneCoverage | ogre_unordered_set<ZoneMap*>::type | RW | `obj.myZoneCoverage = <value>` |
+| populatedZones | populatedZones | ogre_unordered_map<ZoneMap*, bool>::type | RW | `obj.populatedZones = <value>` |
+| artifacts | artifacts | Ogre::FastArray<ArtifactItemData> | RW | `obj.artifacts = <value>` |
 | currentFloorVisibility | currentFloorVisibility | integer | RW | `obj.currentFloorVisibility = <value>` |
-| buildingsManager | buildingsManager | unknown | RW | `obj.buildingsManager = <value>` |
-| residentsSpawned | residentsSpawned | unknown | RW | `obj.residentsSpawned = <value>` |
-| residentsSpawned_BarsOrSomething | residentsSpawned_BarsOrSomething | unknown | RW | `obj.residentsSpawned_BarsOrSomething = <value>` |
-| defaultResident | defaultResident | unknown | RW | `obj.defaultResident = <value>` |
+| buildingsManager | buildingsManager | TownBuildingsManager | RW | `obj.buildingsManager = <value>` |
+| residentsSpawned | residentsSpawned | lektor<ResidentData> | RW | `obj.residentsSpawned = <value>` |
+| residentsSpawned_BarsOrSomething | residentsSpawned_BarsOrSomething | lektor<ResidentData> | RW | `obj.residentsSpawned_BarsOrSomething = <value>` |
+| defaultResident | defaultResident | GameData | RW | `obj.defaultResident = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -4222,11 +4222,11 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| buildingEntities | buildingEntities | unknown | RW | `obj.buildingEntities = <value>` |
-| instancesManagers | instancesManagers | unknown | RW | `obj.instancesManagers = <value>` |
-| signs | signs | unknown | RW | `obj.signs = <value>` |
+| buildingEntities | buildingEntities | ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>::type | RW | `obj.buildingEntities = <value>` |
+| instancesManagers | instancesManagers | boost::unordered::unordered_map<std::string, Ogre::InstanceManager*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::InstanceManager*>, Ogre::GeneralAllocPolicy > > | RW | `obj.instancesManagers = <value>` |
+| signs | signs | Ogre::FastArray<std::pair<Building*, Ogre::Entity*> > | RW | `obj.signs = <value>` |
 | signsVisible | signsVisible | boolean | RW | `obj.signsVisible = <value>` |
-| town | town | unknown | RW | `obj.town = <value>` |
+| town | town | TownBase* | RW | `obj.town = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -4243,7 +4243,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| lastUpdateStamp | lastUpdateStamp | unknown | RW | `obj.lastUpdateStamp = <value>` |
+| lastUpdateStamp | lastUpdateStamp | TimeOfDay | RW | `obj.lastUpdateStamp = <value>` |
 | updateRateInHours | updateRateInHours | number | RW | `obj.updateRateInHours = <value>` |
 | pos | pos | Vector3 | RW | `obj.pos = <value>` |
 
@@ -4259,7 +4259,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| handle | handle | unknown | RW | `obj.handle = <value>` |
+| handle | handle | hand | RW | `obj.handle = <value>` |
 | range | range | number | RW | `obj.range = <value>` |
 | isEnemy | isEnemy | boolean | RW | `obj.isEnemy = <value>` |
 
@@ -4307,7 +4307,7 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | lastUpdated | lastUpdated | number | RW | `obj.lastUpdated = <value>` |
-| seeState | seeState | unknown | RW | `obj.seeState = <value>` |
+| seeState | seeState | YesNoMaybe | RW | `obj.seeState = <value>` |
 | progressOfMaybe | progressOfMaybe | number | RW | `obj.progressOfMaybe = <value>` |
 
 ## WorldEventStateQuery
@@ -4316,11 +4316,11 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| uniqueNPCsAre | uniqueNPCsAre | unknown | RW | `obj.uniqueNPCsAre = <value>` |
-| uniqueNPCsAreNot | uniqueNPCsAreNot | unknown | RW | `obj.uniqueNPCsAreNot = <value>` |
-| towns | towns | unknown | RW | `obj.towns = <value>` |
-| isAllyOf | isAllyOf | unknown | RW | `obj.isAllyOf = <value>` |
-| isEnemyOf | isEnemyOf | unknown | RW | `obj.isEnemyOf = <value>` |
+| uniqueNPCsAre | uniqueNPCsAre | ogre_unordered_map<GameData*, WorldStateEnum>::type | RW | `obj.uniqueNPCsAre = <value>` |
+| uniqueNPCsAreNot | uniqueNPCsAreNot | ogre_unordered_map<GameData*, WorldStateEnum>::type | RW | `obj.uniqueNPCsAreNot = <value>` |
+| towns | towns | ogre_unordered_map<GameData*, WorldStateEnum>::type | RW | `obj.towns = <value>` |
+| isAllyOf | isAllyOf | ogre_unordered_map<Faction*, bool>::type | RW | `obj.isAllyOf = <value>` |
+| isEnemyOf | isEnemyOf | ogre_unordered_map<Faction*, bool>::type | RW | `obj.isEnemyOf = <value>` |
 | playerInvolvement | playerInvolvement | boolean | RW | `obj.playerInvolvement = <value>` |
 
 ### Methods
@@ -4334,7 +4334,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| statesList | statesList | unknown | RW | `obj.statesList = <value>` |
+| statesList | statesList | ogre_unordered_map<WorldEventStateQuery*, bool>::type | RW | `obj.statesList = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |
@@ -4388,10 +4388,10 @@
 | position | position | Vector3 | RW | `obj.position = <value>` |
 | normal | normal | Vector3 | RW | `obj.normal = <value>` |
 | distance | distance | number | RW | `obj.distance = <value>` |
-| shape | shape | unknown | RW | `obj.shape = <value>` |
-| hitObject | hitObject | unknown | RW | `obj.hitObject = <value>` |
+| shape | shape | NxShape* | RW | `obj.shape = <value>` |
+| hitObject | hitObject | hand | RW | `obj.hitObject = <value>` |
 | _group | _group | integer | RW | `obj._group = <value>` |
-| _hitObjectUnsafePtr | _hitObjectUnsafePtr | unknown | RW | `obj._hitObjectUnsafePtr = <value>` |
+| _hitObjectUnsafePtr | _hitObjectUnsafePtr | RootObject | RW | `obj._hitObjectUnsafePtr = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Example |

@@ -36,9 +36,21 @@ def find_header_for_class(class_name: str) -> str:
 
 def find_function_body(content, marker):
     """Find function body enclosed in braces starting from marker."""
-    idx = content.find(marker)
-    if idx == -1:
-        return ""
+    idx = 0
+    while True:
+        idx = content.find(marker, idx)
+        if idx == -1:
+            return ""
+        # Check that it's not a substring of a longer identifier
+        end_idx = idx + len(marker)
+        if end_idx < len(content) and (content[end_idx].isalnum() or content[end_idx] == '_'):
+            idx = end_idx
+            continue
+        if idx > 0 and (content[idx-1].isalnum() or content[idx-1] == '_'):
+            idx = end_idx
+            continue
+        break
+        
     brace_start = content.find('{', idx)
     if brace_start == -1:
         return ""
@@ -83,15 +95,15 @@ def parse_binding_file(filepath: pathlib.Path):
             
             if body:
                 push_match = re.search(
-                    r"(?:lua_push(\w+)|(pushObject(?:T)?)|(pushVector3)|(pushQuaternion)|(handBinding::push))\s*\(\s*L\s*,\s*([^;)]+)", 
+                    r"(?:lua_push(\w+)|(pushObject(?:T)?)(?:\s*<\s*[\w:*&\s<>]+>\s*)?|(pushVector3)|(pushQuaternion)|(handBinding::push))\s*\(\s*L\s*,\s*([^;)]+)", 
                     body
                 )
                 if push_match:
                     if push_match.group(1):
                         push_type = push_match.group(1).lower()
                     elif push_match.group(2):
-                        template_match = re.search(r"pushObject(?:T)?\s*<\s*(\w+)\s*>", body)
-                        push_type = template_match.group(1) if template_match else "object"
+                        template_match = re.search(r"pushObject(?:T)?\s*<\s*([\w:*&\s<>]+)\s*>", body)
+                        push_type = template_match.group(1).strip() if template_match else "object"
                     elif push_match.group(3):
                         push_type = "Vector3"
                     elif push_match.group(4):
@@ -105,6 +117,11 @@ def parse_binding_file(filepath: pathlib.Path):
                         member = member_match.group(1)
                     else:
                         member = expr
+                        
+            if push_type == "unknown" and body:
+                unsupported_match = re.search(r"Unsupported type for\s+\w+\s+\(([^)]+)\)", body)
+                if unsupported_match:
+                    push_type = unsupported_match.group(1).strip()
             
             setter_exists = f"{class_name}_set_{lua_name}" in content
             rw = "RW" if setter_exists else "R"
