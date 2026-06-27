@@ -16,7 +16,7 @@ KenshiLua currently provides:
 
 ## How much of KenshiLib can be used from Lua?
 
-A large amount of KenshiLib has been exposed for use from Lua. View [BindingReference.md](docs/BindingReference.md) for a full list of available functions and classes.
+A large amount of KenshiLib has been exposed for use from Lua. View [BindingReference.md](docs/BindingsReference.md) for a full list of available functions and classes.
 
 ## Things to Add
 * Support for more C++ container classes.
