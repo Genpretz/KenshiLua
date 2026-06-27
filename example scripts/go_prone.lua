@@ -1,4 +1,5 @@
 -- go_prone.lua
+local log = KenshiLua.log
 local KC_V = 47
 
 local function toggle_prone()
@@ -10,7 +11,7 @@ local function toggle_prone()
         return
     end
 
-    local c = world:getPlayer():getSelectedCharacterHandle():getCharacter()
+    local c = getPlayerInterface().selectedCharacter:getCharacter()
     if not c then
         log("[Go Prone] No selected character")
         return
