@@ -37,12 +37,20 @@ public:
     static int xpStat_timeBased(lua_State* L);
     static int xpStat_eventBased(lua_State* L);
     static int xpDodgeEvent(lua_State* L);
-    static int strengthActual(lua_State* L);
-    static int strengthBase(lua_State* L);
+    static int strengthActual(lua_State* L); //original
+    static int strengthBase(lua_State* L); //original
     static int _NV_strengthBase(lua_State* L);
-    static int dexterityBase(lua_State* L);
-    static int dexterityActual(lua_State* L);
-    static int toughness(lua_State* L);
+    static int dexterityBase(lua_State* L); //original
+    static int dexterityActual(lua_State* L); //original
+    static int toughness(lua_State* L); //original
+    static int getStrength(lua_State* L); //alias
+    static int getStrengthBase(lua_State* L); //alias
+    static int getDexterity(lua_State* L); //alias
+    static int getDexterityBase(lua_State* L); //alias
+    static int getToughness(lua_State* L); //alias
+    static int getPerception(lua_State* L); //alias
+    static int getAthletics(lua_State* L); //alias
+    static int getThieving(lua_State* L); //alias
     static int getToughnessMult(lua_State* L);
     static int getRangedFriendlyFireAvoidanceChance(lua_State* L);
     static int getRangedAccuracyMult(lua_State* L);

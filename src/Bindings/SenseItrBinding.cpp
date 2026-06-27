@@ -2,6 +2,7 @@
 #include "kenshi\SensoryData.h"
 #include "SenseItrBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
 
 namespace KenshiLua
 {

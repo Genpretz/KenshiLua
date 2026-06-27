@@ -3,6 +3,7 @@
 #include "RootObjectContainerBinding.h"
 #include "RootObjectBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/RootObjectBinding.h"
 
 namespace KenshiLua
 {

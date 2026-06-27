@@ -17,6 +17,7 @@ public:
     static int tostring(lua_State* L);
 
     static int setupWordSwaps(lua_State* L);
+    static int getConversationTarget(lua_State* L);
     static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int getCharacter(lua_State* L);

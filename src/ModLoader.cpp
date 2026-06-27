@@ -8,6 +8,7 @@
 #include <kenshi/util/lektor.h>
 
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <boost/system/error_code.hpp>
 
 #include <algorithm>
@@ -49,7 +50,7 @@ static std::string makeChunkName(const std::string& modName, const std::string& 
     out += "/";
     out += relPath;
     // Lua truncates chunknames to LUA_IDSIZE (usually 60) in traceback output,
-    // which is fine - it'll keep the right-most useful part.
+    // which is fine. It'll keep the right-most useful part.
     return out;
 }
 
@@ -59,7 +60,7 @@ static std::string makeChunkName(const std::string& modName, const std::string& 
 // We use a *shared* lua_State (the global one) but give every script its own
 // _ENV table so its locals/file-locals can't collide with another mod's.  The
 // sandbox table's __index falls back to the real global table so scripts can
-// still read `ou`, `player`, `key`, `KenshiLua.log`, etc.  Writes go into the
+// still read `ou`, `player`, `key`, `log`, etc.  Writes go into the
 // sandbox table by default - to deliberately expose a global to other scripts,
 // a mod can write to `_G.foo = ...`.
 // -----------------------------------------------------------------------------
@@ -118,13 +119,13 @@ void ModLoader::discover()
         if (mi->path.empty()) continue;
 
         fs::path modRoot(mi->path);
+        fs::path initDir = modRoot / "scripts" / "init";
         boost::system::error_code ec;
-        if (!fs::exists(modRoot, ec) || !fs::is_directory(modRoot, ec)) continue;
+        if (!fs::exists(initDir, ec) || !fs::is_directory(initDir, ec)) continue;
 
-        // Recursive walk for *.lua.  We collect, sort, then store - guarantees
-        // a deterministic load order regardless of OS file-listing quirks.
+        // Recursive walk under modRoot/scripts/init for startup scripts
         std::vector<std::string> found;
-        fs::recursive_directory_iterator it(modRoot, ec);
+        fs::recursive_directory_iterator it(initDir, ec);
         fs::recursive_directory_iterator end;
         for (; !ec && it != end; it.increment(ec)) {
             if (ec) break;
@@ -170,26 +171,27 @@ bool ModLoader::runScript(lua_State* L, LoadedScript& s)
     int top = lua_gettop(L);
 
     // Read the file ourselves (avoids luaL_loadfile's BOM-only handling
-    // quirks across encodings).  Use C stdio - boost::filesystem::ifstream
-    // would also work.
-    FILE* f = 0;
-    if (fopen_s(&f, s.absolutePath.c_str(), "rb") != 0 || !f) {
+    // quirks across encodings).  Use boost::filesystem::ifstream.
+    fs::path path(s.absolutePath);
+    fs::ifstream f(path, std::ios::binary | std::ios::ate);
+    if (!f) {
         s.lastError = "could not open " + s.absolutePath;
         logToFile("ModLoader: " + s.lastError);
         lua_settop(L, top);
         return false;
     }
-    fseek(f, 0, SEEK_END);
-    long sz = ftell(f);
-    if (sz < 0) sz = 0;
-    fseek(f, 0, SEEK_SET);
+    std::streamsize sz = f.tellg();
+    f.seekg(0, std::ios::beg);
     std::string buf;
-    buf.resize((size_t)sz);
     if (sz > 0) {
-        size_t r = fread(&buf[0], 1, (size_t)sz, f);
-        buf.resize(r);
+        buf.resize(static_cast<size_t>(sz));
+        if (!f.read(&buf[0], sz)) {
+            s.lastError = "failed to read " + s.absolutePath;
+            logToFile("ModLoader: " + s.lastError);
+            lua_settop(L, top);
+            return false;
+        }
     }
-    fclose(f);
 
     int loadResult = luaL_loadbuffer(L, buf.data(), buf.size(), s.chunkName.c_str());
     if (loadResult != LUA_OK) {
@@ -242,6 +244,7 @@ void ModLoader::loadAll(lua_State* L)
 void ModLoader::reloadAll(lua_State* L)
 {
     if (!L) return;
+    m_resolvedScriptPaths.clear();
     discover();
     for (size_t i = 0; i < m_scripts.size(); ++i) {
         m_scripts[i].loaded = false;
@@ -249,6 +252,70 @@ void ModLoader::reloadAll(lua_State* L)
         runScript(L, m_scripts[i]);
     }
     m_loaded = true;
+}
+
+std::string ModLoader::resolveScriptPath(const std::string& filename)
+{
+    auto it = m_resolvedScriptPaths.find(filename);
+    if (it != m_resolvedScriptPaths.end())
+    {
+        return it->second;
+    }
+
+    if (!::ou) return "";
+
+    // Normalize filename slashes to forward slashes for matching
+    std::string normFilename = filename;
+    for (size_t i = 0; i < normFilename.size(); ++i)
+    {
+        if (normFilename[i] == '\\') normFilename[i] = '/';
+    }
+
+    const auto& mods = ::ou->activeMods;
+    for (int i = 0; i < static_cast<int>(mods.size()); ++i)
+    {
+        ModInfo* mi = mods[i];
+        if (!mi || mi->path.empty()) continue;
+
+        fs::path modRoot(mi->path);
+        boost::system::error_code ec;
+        if (!fs::exists(modRoot, ec) || !fs::is_directory(modRoot, ec)) continue;
+
+        // Direct check (in case the filename is relative to the mod root, e.g. "scripts/go_prone.lua")
+        fs::path directPath = modRoot / normFilename;
+        if (fs::exists(directPath, ec) && fs::is_regular_file(directPath, ec))
+        {
+            std::string pathStr = directPath.string();
+            m_resolvedScriptPaths[filename] = pathStr;
+            return pathStr;
+        }
+
+        // Recursive fallback scan inside the mod directory
+        fs::recursive_directory_iterator rit(modRoot, ec);
+        fs::recursive_directory_iterator end;
+        for (; !ec && rit != end; rit.increment(ec))
+        {
+            if (ec) break;
+            if (!fs::is_regular_file(rit->status())) continue;
+
+            std::string p = rit->path().string();
+            std::string normP = p;
+            for (size_t j = 0; j < normP.size(); ++j)
+            {
+                if (normP[j] == '\\') normP[j] = '/';
+            }
+
+            // If the path ends with "/" + normFilename, we found it
+            std::string suffix = "/" + normFilename;
+            if (normP.size() >= suffix.size() && normP.compare(normP.size() - suffix.size(), suffix.size(), suffix) == 0)
+            {
+                m_resolvedScriptPaths[filename] = p;
+                return p;
+            }
+        }
+    }
+
+    return "";
 }
 
 } // namespace KenshiLua

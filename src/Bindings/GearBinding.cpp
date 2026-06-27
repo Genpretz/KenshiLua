@@ -2,6 +2,7 @@
 #include "kenshi\Gear.h"
 #include "GearBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/FactionBinding.h"
 
 namespace KenshiLua
 {

@@ -4,6 +4,7 @@
 #include "kenshi/PlayerInterface.h"
 #include "PlayerInterfaceBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/PlayerInterfaceBinding.h"
 
 namespace KenshiLua
 {

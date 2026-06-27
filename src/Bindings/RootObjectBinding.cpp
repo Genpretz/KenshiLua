@@ -7,6 +7,9 @@
 #include "kenshi/RaceData.h"
 #include "RaceDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/RaceDataBinding.h"
+#include "Bindings/RootObjectContainerBinding.h"
 
 namespace KenshiLua
 {

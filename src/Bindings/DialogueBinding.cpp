@@ -8,6 +8,12 @@
 #include "RepetitionCounterBinding.h"
 #include "DialogChoiceListBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharStatsBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/DialogChoiceListBinding.h"
+#include "Bindings/RepetitionCounterBinding.h"
+#include "Bindings/HandBinding.h"
+#include "kenshi/util/hand.h"
 
 typedef Dialogue::RepetitionCounter RepetitionCounter;
 
@@ -141,9 +147,7 @@ static int Dialogue_get_conversationTarget(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    // TODO: Unsupported type for conversationTarget (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->conversationTarget);
 }
 
 static int Dialogue_get_stats(lua_State* L)
@@ -404,7 +408,11 @@ static int Dialogue_set_conversationTarget(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationTarget");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (val) {
+        b->conversationTarget = *val;
+    }
+    return 0;
 }
 
 static int Dialogue_set_stats(lua_State* L)
@@ -564,6 +572,15 @@ int DialogueBinding::getCharacter(lua_State* L)
 
     Character* result = b->getCharacter();
     return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
+}
+
+int DialogueBinding::getConversationTarget(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+
+    hand result = b->getConversationTarget();
+    return handBinding::push(L, result);
 }
 
 int DialogueBinding::setInDialog(lua_State* L)
@@ -881,6 +898,7 @@ void DialogueBinding::registerBinding(lua_State* L)
         { "_CONSTRUCTOR", DialogueBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", DialogueBinding::_DESTRUCTOR },
         { "getCharacter", DialogueBinding::getCharacter },
+        { "getConversationTarget", DialogueBinding::getConversationTarget },
         { "setInDialog", DialogueBinding::setInDialog },
         { "clearDialogues", DialogueBinding::clearDialogues },
         { "clearAnnouncements", DialogueBinding::clearAnnouncements },

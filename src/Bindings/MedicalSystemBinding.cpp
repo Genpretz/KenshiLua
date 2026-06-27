@@ -6,6 +6,9 @@
 #include "CharacterBinding.h"
 #include "CharStatsBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharStatsBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/RobotLimbsBinding.h"
 
 namespace KenshiLua
 {

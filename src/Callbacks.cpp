@@ -12,6 +12,8 @@
 #include "Bindings/ItemBinding.h"
 #include "Bindings/PlayerInterfaceBinding.h"
 #include "Bindings/FactionBinding.h"
+#include "Bindings/Gui/DialogueWindowBinding.h"
+#include "Bindings/DialogueBinding.h"
 
 // KenshiLib headers
 #include <kenshi/Character.h>
@@ -20,6 +22,8 @@
 #include <kenshi/PlayerInterface.h>
 #include <kenshi/Faction.h>
 #include <kenshi/Damages.h>
+#include <kenshi/gui/DialogueWindow.h>
+#include <kenshi/Dialogue.h>
 
 extern "C" {
 #include <lua.h>
@@ -42,6 +46,8 @@ namespace KenshiLua
     static inline const char* ItemMetatable()            { return ItemBinding::getMetatableName(); }
     static inline const char* PlayerInterfaceMetatable() { return PlayerInterfaceBinding::getMetatableName(); }
     static inline const char* FactionMetatable()         { return FactionBinding::getMetatableName(); }
+    static inline const char* DialogueWindowMetatable()  { return DialogueWindowBinding::getMetatableName(); }
+    static inline const char* DialogueMetatable()        { return DialogueBinding::getMetatableName(); }
 
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, int val)                 { lua_pushinteger(L, val); }
@@ -58,6 +64,8 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, Item* val)               { pushObject<Item>(L, val, ItemMetatable()); }
     static inline void pushArg(lua_State* L, Faction* val)            { pushObject<Faction>(L, val, FactionMetatable()); }
     static inline void pushArg(lua_State* L, PlayerInterface* val)    { pushObject<PlayerInterface>(L, val, PlayerInterfaceMetatable()); }
+    static inline void pushArg(lua_State* L, DialogueWindow* val)    { pushObject<DialogueWindow>(L, val, DialogueWindowMetatable()); }
+    static inline void pushArg(lua_State* L, Dialogue* val)          { pushObject<Dialogue>(L, val, DialogueMetatable()); }
 
     static inline void pushArg(lua_State* L, RootObject* val)         { pushObject<RootObject>(L, val, "KenshiLua.RootObject"); }
     static inline void pushArg(lua_State* L, Inventory* val)          { pushObject<Inventory>(L, val, "KenshiLua.Inventory"); }
@@ -366,5 +374,29 @@ void CallItemStolenCallbacks(Item* item, RootObject* obj)
 {
     ArgPusher2<Item*, RootObject*> pusher(item, obj);
     KenshiLua::EventSystem::get().callHandlers("onItemStolen", &pusher);
+}
+
+void CallCrimeWitnessedCallbacks(Character* character, Faction* against, const hand& againstWho, int expiryTime, int crimeType)
+{
+    ArgPusher5<Character*, Faction*, const hand&, int, int> pusher(character, against, againstWho, expiryTime, crimeType);
+    KenshiLua::EventSystem::get().callHandlers("onCrimeWitnessed", &pusher);
+}
+
+void CallFactionRelationsAffectedCallbacks(Faction* faction, Faction* other, int eventType, float multiplier)
+{
+    ArgPusher4<Faction*, Faction*, int, float> pusher(faction, other, eventType, multiplier);
+    KenshiLua::EventSystem::get().callHandlers("onFactionRelationsAffected", &pusher);
+}
+
+void CallLimbAmputatedCallbacks(Character* character, int limb, bool createSeveredItem, const Ogre::Vector3& force)
+{
+    ArgPusher4<Character*, int, bool, const Ogre::Vector3&> pusher(character, limb, createSeveredItem, force);
+    KenshiLua::EventSystem::get().callHandlers("onLimbAmputated", &pusher);
+}
+
+void CallDialogueWindowShowCallbacks(DialogueWindow* thisptr, Dialogue* dialogue)
+{
+    ArgPusher2<DialogueWindow*, Dialogue*> pusher(thisptr, dialogue);
+    KenshiLua::EventSystem::get().callHandlers("onDialogueWindowShow", &pusher);
 }
 

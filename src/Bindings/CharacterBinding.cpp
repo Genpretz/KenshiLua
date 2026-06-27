@@ -21,6 +21,29 @@
 #include "OwnershipsBinding.h"
 
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharStatsBinding.h"
+#include "Bindings/CharacterAnimalBinding.h"
+#include "Bindings/ContainerItemBinding.h"
+#include "Bindings/CrossbowBinding.h"
+#include "Bindings/DialogueBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/LockedArmourBinding.h"
+#include "Bindings/MedicalSystemBinding.h"
+#include "Bindings/OwnershipsBinding.h"
+#include "Bindings/PlatoonBinding.h"
+#include "Bindings/RaceDataBinding.h"
+#include "Bindings/SwordBinding.h"
+#include "Bindings/WeaponBinding.h"
+
+#include "kenshi/CharacterHuman.h"
+#include "kenshi/SensoryData.h"
+#include "kenshi/Town.h"
+#include "Bindings/CharacterHumanBinding.h"
+#include "Bindings/SensoryDataBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/RootObjectBinding.h"
 
 namespace KenshiLua
 {
@@ -3863,6 +3886,431 @@ int CharacterBinding::_NV_reCalculateNaturalWeapon(lua_State* L)
     return 0;
 }
 
+int CharacterBinding::rememberCharacter(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    if (!who) return luaL_error(L, "Character argument is nil");
+
+    bool is_long_term = false;
+    CharacterPerceptionTags_ShortTerm st_tag = ST_NONE;
+    CharacterPerceptionTags_LongTerm lt_tag = LT_NONE;
+
+    if (lua_isnumber(L, 3))
+    {
+        int val = (int)lua_tointeger(L, 3);
+        if (lua_toboolean(L, 4))
+        {
+            is_long_term = true;
+            lt_tag = (CharacterPerceptionTags_LongTerm)val;
+        }
+        else
+        {
+            st_tag = (CharacterPerceptionTags_ShortTerm)val;
+        }
+    }
+    else if (lua_isstring(L, 3))
+    {
+        std::string str = lua_tostring(L, 3);
+        std::string norm = "";
+        for (size_t i = 0; i < str.length(); ++i) {
+            char c = str[i];
+            if (c >= 'A' && c <= 'Z') norm += (c - 'A' + 'a');
+            else if (c == '_' || c == ' ') { /* skip */ }
+            else norm += c;
+        }
+
+        if (norm == "none") { st_tag = ST_NONE; }
+        else if (norm == "intruder") { st_tag = ST_INTRUDER; }
+        else if (norm == "aggressor") { st_tag = ST_AGGRESSOR; }
+        else if (norm == "temporaryally") { st_tag = ST_TEMPORARY_ALLY; }
+        else if (norm == "temporaryenemy") { st_tag = ST_TEMPORARY_ENEMY; }
+        else if (norm == "prisoner") { st_tag = ST_PRISONER; }
+        else if (norm == "hasbeenlooted") { st_tag = ST_HAS_BEEN_LOOTED; }
+        else if (norm == "criminal") { st_tag = ST_CRIMINAL; }
+        
+        else if (norm == "myintruder") { is_long_term = true; lt_tag = LT_MY_INTRUDER; }
+        else if (norm == "mylifesaver") { is_long_term = true; lt_tag = LT_MY_LIFESAVER; }
+        else if (norm == "freedme") { is_long_term = true; lt_tag = LT_FREED_ME; }
+        else if (norm == "stolefromme") { is_long_term = true; lt_tag = LT_STOLE_FROM_ME; }
+        else if (norm == "mycaptor") { is_long_term = true; lt_tag = LT_MY_CAPTOR; }
+        else if (norm == "friendlyaquaintance") { is_long_term = true; lt_tag = LT_FRIENDLY_AQUAINTANCE; }
+        else if (norm == "defeatedmysquadonce") { is_long_term = true; lt_tag = LT_DEFEATED_MY_SQUAD_ONCE; }
+        else if (norm == "squadlosttomeonce") { is_long_term = true; lt_tag = LT_SQUAD_LOST_TO_ME_ONCE; }
+        else if (norm == "killedmyfriend") { is_long_term = true; lt_tag = LT_KILLED_MY_FRIEND; }
+        else if (norm == "iscrewedthisguy") { is_long_term = true; lt_tag = LT_I_SCREWED_THIS_GUY; }
+        else {
+            return luaL_error(L, "Unknown perception tag: %s", str.c_str());
+        }
+    }
+    else
+    {
+        return luaL_error(L, "Tag must be an integer or string");
+    }
+
+    if (is_long_term)
+    {
+        b->rememberCharacter(who, lt_tag);
+    }
+    else
+    {
+        b->rememberCharacter(who, st_tag);
+    }
+    return 0;
+}
+
+int CharacterBinding::attackTarget(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    if (!who) return luaL_error(L, "Character argument is nil");
+
+    b->attackTarget(who);
+    return 0;
+}
+
+int CharacterBinding::isHuman(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    CharacterHuman* result = b->isHuman();
+    return pushObject<CharacterHuman>(L, result, CharacterHumanBinding::getMetatableName());
+}
+
+int CharacterBinding::_NV_isHuman(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    CharacterHuman* result = b->_NV_isHuman();
+    return pushObject<CharacterHuman>(L, result, CharacterHumanBinding::getMetatableName());
+}
+
+int CharacterBinding::isResident(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    TownBase* result = b->isResident();
+    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
+}
+
+int CharacterBinding::getSensoryData(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    SensoryData* result = b->getSensoryData();
+    return pushObject<SensoryData>(L, result, SensoryDataBinding::getMetatableName());
+}
+
+int CharacterBinding::_NV_getSensoryData(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    SensoryData* result = b->_NV_getSensoryData();
+    return pushObject<SensoryData>(L, result, SensoryDataBinding::getMetatableName());
+}
+
+int CharacterBinding::getCurrentTownLocation(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    TownBase* result = b->getCurrentTownLocation();
+    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
+}
+
+int CharacterBinding::_NV_getCurrentTownLocation(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    TownBase* result = b->_NV_getCurrentTownLocation();
+    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
+}
+
+int CharacterBinding::lineOfSightCheck(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    if (!who) return luaL_error(L, "Character argument is nil");
+    lua_pushnumber(L, (lua_Number)b->lineOfSightCheck(who));
+    return 1;
+}
+
+int CharacterBinding::isItOkForMeToLoot(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    RootObject* victim = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    lua_pushboolean(L, b->isItOkForMeToLoot(victim, item));
+    return 1;
+}
+
+int CharacterBinding::_NV_isItOkForMeToLoot(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    RootObject* victim = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    lua_pushboolean(L, b->_NV_isItOkForMeToLoot(victim, item));
+    return 1;
+}
+
+int CharacterBinding::ImStealingDoYouNotice(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    RootObject* stealFrom = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    lua_pushboolean(L, b->ImStealingDoYouNotice(stealFrom, item));
+    return 1;
+}
+
+int CharacterBinding::_NV_ImStealingDoYouNotice(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    RootObject* stealFrom = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    lua_pushboolean(L, b->_NV_ImStealingDoYouNotice(stealFrom, item));
+    return 1;
+}
+
+int CharacterBinding::getFencingSuccessChance(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    RootObject* thief = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    lua_pushnumber(L, b->getFencingSuccessChance(item, thief));
+    return 1;
+}
+
+int CharacterBinding::stolenGoodsDetectionCheck(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    RootObject* thief = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    lua_pushboolean(L, b->stolenGoodsDetectionCheck(item, thief));
+    return 1;
+}
+
+int CharacterBinding::_NV_stolenGoodsDetectionCheck(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    RootObject* thief = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    lua_pushboolean(L, b->_NV_stolenGoodsDetectionCheck(item, thief));
+    return 1;
+}
+
+int CharacterBinding::sellingUniformDetectionCheck(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    Character* thief = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->sellingUniformDetectionCheck(item, thief));
+    return 1;
+}
+
+int CharacterBinding::_NV_sellingUniformDetectionCheck(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    Character* thief = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->_NV_sellingUniformDetectionCheck(item, thief));
+    return 1;
+}
+
+int CharacterBinding::smugglingTradeCheck(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    Character* who = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    lua_pushinteger(L, static_cast<int>(b->smugglingTradeCheck(item, who).key));
+    return 1;
+}
+
+int CharacterBinding::_NV_smugglingTradeCheck(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    Character* who = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    lua_pushinteger(L, static_cast<int>(b->_NV_smugglingTradeCheck(item, who).key));
+    return 1;
+}
+
+int CharacterBinding::eatItem(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* food = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    Inventory* from = checkObject<Inventory>(L, 3, InventoryBinding::getMetatableName());
+    lua_pushboolean(L, b->eatItem(food, from));
+    return 1;
+}
+
+int CharacterBinding::giveItem(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    bool dropOnFail = lua_toboolean(L, 3) != 0;
+    bool destroyOnFail = lua_toboolean(L, 4) != 0;
+    lua_pushboolean(L, b->giveItem(item, dropOnFail, destroyOnFail));
+    return 1;
+}
+
+int CharacterBinding::_NV_giveItem(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    bool dropOnFail = lua_toboolean(L, 3) != 0;
+    bool destroyOnFail = lua_toboolean(L, 4) != 0;
+    lua_pushboolean(L, b->_NV_giveItem(item, dropOnFail, destroyOnFail));
+    return 1;
+}
+
+int CharacterBinding::hasRoomForItem(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    lua_pushboolean(L, b->hasRoomForItem(item));
+    return 1;
+}
+
+int CharacterBinding::_NV_hasRoomForItem(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    lua_pushboolean(L, b->_NV_hasRoomForItem(item));
+    return 1;
+}
+
+int CharacterBinding::hasItem(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    lua_pushboolean(L, b->hasItem(item));
+    return 1;
+}
+
+int CharacterBinding::_NV_hasItem(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    lua_pushboolean(L, b->_NV_hasItem(item));
+    return 1;
+}
+
+int CharacterBinding::hasAmmoFor(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Crossbow* c = checkObject<Crossbow>(L, 2, CrossbowBinding::getMetatableName());
+    lua_pushboolean(L, b->hasAmmoFor(c));
+    return 1;
+}
+
+int CharacterBinding::_NV_hasAmmoFor(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Crossbow* c = checkObject<Crossbow>(L, 2, CrossbowBinding::getMetatableName());
+    lua_pushboolean(L, b->_NV_hasAmmoFor(c));
+    return 1;
+}
+
+int CharacterBinding::shouldIHelpThisGuy(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->shouldIHelpThisGuy(who));
+    return 1;
+}
+
+int CharacterBinding::shouldIScrewThisGuyOver(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->shouldIScrewThisGuyOver(who));
+    return 1;
+}
+
+int CharacterBinding::ILoveThisGuyBecauseOfStuffThatHappened(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->ILoveThisGuyBecauseOfStuffThatHappened(who));
+    return 1;
+}
+
+int CharacterBinding::IHateThisGuyBecauseOfStuffThatHappened(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->IHateThisGuyBecauseOfStuffThatHappened(who));
+    return 1;
+}
+
+int CharacterBinding::isEnemy(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool factorInDisguises = lua_toboolean(L, 3) != 0;
+    lua_pushboolean(L, b->isEnemy(who, factorInDisguises));
+    return 1;
+}
+
+int CharacterBinding::_NV_isEnemy(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool factorInDisguises = lua_toboolean(L, 3) != 0;
+    lua_pushboolean(L, b->_NV_isEnemy(who, factorInDisguises));
+    return 1;
+}
+
+int CharacterBinding::isAlly(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool factorInDisguises = lua_toboolean(L, 3) != 0;
+    lua_pushboolean(L, b->isAlly(who, factorInDisguises));
+    return 1;
+}
+
+int CharacterBinding::_NV_isAlly(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool factorInDisguises = lua_toboolean(L, 3) != 0;
+    lua_pushboolean(L, b->_NV_isAlly(who, factorInDisguises));
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 187: Character* _CONSTRUCTOR(...) - unsupported arg type
@@ -4329,6 +4777,44 @@ void CharacterBinding::registerBinding(lua_State* L)
         { "_NV_postRagdollCallback", CharacterBinding::_NV_postRagdollCallback },
         { "reCalculateNaturalWeapon", CharacterBinding::reCalculateNaturalWeapon },
         { "_NV_reCalculateNaturalWeapon", CharacterBinding::_NV_reCalculateNaturalWeapon },
+        { "rememberCharacter", CharacterBinding::rememberCharacter },
+        { "attackTarget", CharacterBinding::attackTarget },
+        { "isHuman", CharacterBinding::isHuman },
+        { "_NV_isHuman", CharacterBinding::_NV_isHuman },
+        { "isResident", CharacterBinding::isResident },
+        { "getSensoryData", CharacterBinding::getSensoryData },
+        { "_NV_getSensoryData", CharacterBinding::_NV_getSensoryData },
+        { "getCurrentTownLocation", CharacterBinding::getCurrentTownLocation },
+        { "_NV_getCurrentTownLocation", CharacterBinding::_NV_getCurrentTownLocation },
+        { "lineOfSightCheck", CharacterBinding::lineOfSightCheck },
+        { "isItOkForMeToLoot", CharacterBinding::isItOkForMeToLoot },
+        { "_NV_isItOkForMeToLoot", CharacterBinding::_NV_isItOkForMeToLoot },
+        { "ImStealingDoYouNotice", CharacterBinding::ImStealingDoYouNotice },
+        { "_NV_ImStealingDoYouNotice", CharacterBinding::_NV_ImStealingDoYouNotice },
+        { "getFencingSuccessChance", CharacterBinding::getFencingSuccessChance },
+        { "stolenGoodsDetectionCheck", CharacterBinding::stolenGoodsDetectionCheck },
+        { "_NV_stolenGoodsDetectionCheck", CharacterBinding::_NV_stolenGoodsDetectionCheck },
+        { "sellingUniformDetectionCheck", CharacterBinding::sellingUniformDetectionCheck },
+        { "_NV_sellingUniformDetectionCheck", CharacterBinding::_NV_sellingUniformDetectionCheck },
+        { "smugglingTradeCheck", CharacterBinding::smugglingTradeCheck },
+        { "_NV_smugglingTradeCheck", CharacterBinding::_NV_smugglingTradeCheck },
+        { "eatItem", CharacterBinding::eatItem },
+        { "giveItem", CharacterBinding::giveItem },
+        { "_NV_giveItem", CharacterBinding::_NV_giveItem },
+        { "hasRoomForItem", CharacterBinding::hasRoomForItem },
+        { "_NV_hasRoomForItem", CharacterBinding::_NV_hasRoomForItem },
+        { "hasItem", CharacterBinding::hasItem },
+        { "_NV_hasItem", CharacterBinding::_NV_hasItem },
+        { "hasAmmoFor", CharacterBinding::hasAmmoFor },
+        { "_NV_hasAmmoFor", CharacterBinding::_NV_hasAmmoFor },
+        { "shouldIHelpThisGuy", CharacterBinding::shouldIHelpThisGuy },
+        { "shouldIScrewThisGuyOver", CharacterBinding::shouldIScrewThisGuyOver },
+        { "ILoveThisGuyBecauseOfStuffThatHappened", CharacterBinding::ILoveThisGuyBecauseOfStuffThatHappened },
+        { "IHateThisGuyBecauseOfStuffThatHappened", CharacterBinding::IHateThisGuyBecauseOfStuffThatHappened },
+        { "isEnemy", CharacterBinding::isEnemy },
+        { "_NV_isEnemy", CharacterBinding::_NV_isEnemy },
+        { "isAlly", CharacterBinding::isAlly },
+        { "_NV_isAlly", CharacterBinding::_NV_isAlly },
         { 0, 0 }
     };
 

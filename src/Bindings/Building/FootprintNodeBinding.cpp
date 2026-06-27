@@ -3,6 +3,7 @@
 #include "FootprintNodeBinding.h"
 #include "FootprintBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Building/FootprintBinding.h"
 
 namespace KenshiLua
 {
@@ -171,7 +172,7 @@ void FootprintNodeBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to PreviewBuilding::Footprint
-    setPlayableParent(L, FootprintNodeBinding::getMetatableName(), FootprintBinding::getMetatableName());
+    setMetatableParent(L, FootprintNodeBinding::getMetatableName(), FootprintBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

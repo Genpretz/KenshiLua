@@ -4,6 +4,8 @@
 #include "kenshi/MedicalSystem.h"
 #include "MedicalSystemBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/MedicalSystemBinding.h"
 
 namespace KenshiLua
 {
@@ -1998,6 +2000,70 @@ int CharStatsBinding::toughness(lua_State* L)
     return 1;
 }
 
+int CharStatsBinding::getStrength(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lua_pushnumber(L, b->strengthActual());
+    return 1;
+}
+
+int CharStatsBinding::getStrengthBase(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lua_pushnumber(L, b->strengthBase());
+    return 1;
+}
+
+int CharStatsBinding::getDexterity(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lua_pushnumber(L, b->dexterityActual());
+    return 1;
+}
+
+int CharStatsBinding::getDexterityBase(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lua_pushnumber(L, b->dexterityBase());
+    return 1;
+}
+
+int CharStatsBinding::getToughness(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lua_pushnumber(L, b->toughness());
+    return 1;
+}
+
+int CharStatsBinding::getPerception(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lua_pushnumber(L, b->perception);
+    return 1;
+}
+
+int CharStatsBinding::getAthletics(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lua_pushnumber(L, b->_athletics);
+    return 1;
+}
+
+int CharStatsBinding::getThieving(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lua_pushnumber(L, b->thieving);
+    return 1;
+}
+
 int CharStatsBinding::getToughnessMult(lua_State* L)
 {
     CharStats* b = getB(L, 1);
@@ -2804,12 +2870,20 @@ void CharStatsBinding::registerBinding(lua_State* L)
         { "xpStat_timeBased", CharStatsBinding::xpStat_timeBased },
         { "xpStat_eventBased", CharStatsBinding::xpStat_eventBased },
         { "xpDodgeEvent", CharStatsBinding::xpDodgeEvent },
-        { "strengthActual", CharStatsBinding::strengthActual },
-        { "strengthBase", CharStatsBinding::strengthBase },
-        { "_NV_strengthBase", CharStatsBinding::_NV_strengthBase },
-        { "dexterityBase", CharStatsBinding::dexterityBase },
-        { "dexterityActual", CharStatsBinding::dexterityActual },
-        { "toughness", CharStatsBinding::toughness },
+        { "strengthActual", CharStatsBinding::strengthActual }, //original
+        { "strengthBase", CharStatsBinding::strengthBase }, //original
+        { "_NV_strengthBase", CharStatsBinding::_NV_strengthBase }, //original
+        { "dexterityBase", CharStatsBinding::dexterityBase }, //original
+        { "dexterityActual", CharStatsBinding::dexterityActual }, //original
+        { "toughness", CharStatsBinding::toughness }, //original
+        { "getStrength", CharStatsBinding::getStrength }, //alias
+        { "getStrengthRaw", CharStatsBinding::getStrengthBase }, //alias
+        { "getDexterity", CharStatsBinding::getDexterity }, //alias
+        { "getDexterityRaw", CharStatsBinding::getDexterityBase }, //alias
+        { "getToughness", CharStatsBinding::getToughness }, //alias
+        { "getPerception", CharStatsBinding::getPerception }, //alias
+        { "getAthletics", CharStatsBinding::getAthletics }, //alias
+        { "getThieving", CharStatsBinding::getThieving }, //alias
         { "getToughnessMult", CharStatsBinding::getToughnessMult },
         { "getRangedFriendlyFireAvoidanceChance", CharStatsBinding::getRangedFriendlyFireAvoidanceChance },
         { "getRangedAccuracyMult", CharStatsBinding::getRangedAccuracyMult },

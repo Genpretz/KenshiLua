@@ -6,6 +6,10 @@
 #include "FactionBinding.h"
 #include "GameDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/RootObjectContainerBinding.h"
 
 namespace KenshiLua
 {

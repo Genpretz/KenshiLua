@@ -284,5 +284,45 @@ public:
     static int _NV_postRagdollCallback(lua_State* L);
     static int reCalculateNaturalWeapon(lua_State* L);
     static int _NV_reCalculateNaturalWeapon(lua_State* L);
+
+    static int rememberCharacter(lua_State* L);
+    static int attackTarget(lua_State* L);
+
+    static int isHuman(lua_State* L);
+    static int _NV_isHuman(lua_State* L);
+    static int isResident(lua_State* L);
+    static int getSensoryData(lua_State* L);
+    static int _NV_getSensoryData(lua_State* L);
+    static int getCurrentTownLocation(lua_State* L);
+    static int _NV_getCurrentTownLocation(lua_State* L);
+    static int lineOfSightCheck(lua_State* L);
+    static int isItOkForMeToLoot(lua_State* L);
+    static int _NV_isItOkForMeToLoot(lua_State* L);
+    static int ImStealingDoYouNotice(lua_State* L);
+    static int _NV_ImStealingDoYouNotice(lua_State* L);
+    static int getFencingSuccessChance(lua_State* L);
+    static int stolenGoodsDetectionCheck(lua_State* L);
+    static int _NV_stolenGoodsDetectionCheck(lua_State* L);
+    static int sellingUniformDetectionCheck(lua_State* L);
+    static int _NV_sellingUniformDetectionCheck(lua_State* L);
+    static int smugglingTradeCheck(lua_State* L);
+    static int _NV_smugglingTradeCheck(lua_State* L);
+    static int eatItem(lua_State* L);
+    static int giveItem(lua_State* L);
+    static int _NV_giveItem(lua_State* L);
+    static int hasRoomForItem(lua_State* L);
+    static int _NV_hasRoomForItem(lua_State* L);
+    static int hasItem(lua_State* L);
+    static int _NV_hasItem(lua_State* L);
+    static int hasAmmoFor(lua_State* L);
+    static int _NV_hasAmmoFor(lua_State* L);
+    static int shouldIHelpThisGuy(lua_State* L);
+    static int shouldIScrewThisGuyOver(lua_State* L);
+    static int ILoveThisGuyBecauseOfStuffThatHappened(lua_State* L);
+    static int IHateThisGuyBecauseOfStuffThatHappened(lua_State* L);
+    static int isEnemy(lua_State* L);
+    static int _NV_isEnemy(lua_State* L);
+    static int isAlly(lua_State* L);
+    static int _NV_isAlly(lua_State* L);
 };
 }

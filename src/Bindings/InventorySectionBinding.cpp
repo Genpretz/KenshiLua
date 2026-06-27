@@ -5,6 +5,9 @@
 #include "InventoryBinding.h"
 #include "ItemBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/RootObjectBinding.h"
 
 namespace KenshiLua
 {

@@ -688,7 +688,7 @@
     <ClInclude Include="src\Bindings\TownBuildingsManagerBinding.h" />
     <ClInclude Include="src\Bindings\TownPositionCacherBinding.h" />
     <ClInclude Include="src\Bindings\VisibleObjectInfoBinding.h" />
-    <ClInclude Include="src\Bindings\WaterStateBinding.h" />
+
     <ClInclude Include="src\Bindings\WeaponBinding.h" />
     <ClInclude Include="src\Bindings\WhoSeesMeBinding.h" />
     <ClInclude Include="src\Bindings\WorldEventStateQueryBinding.h" />
@@ -704,6 +704,7 @@
     <ClInclude Include="src\Lua\LuaBindings.h" />
     <ClInclude Include="src\Lua\Logger.h" />
     <ClInclude Include="src\Lua\Benchmark.h" />
+    <ClInclude Include="src\Lua\Config.h" />
     <ClInclude Include="src\EventSystem.h" />
     <ClInclude Include="src\ScriptQueue.h" />
 
@@ -711,6 +712,40 @@
     <ClInclude Include="src\Bindings\CharacterBinding.h" />
     <ClInclude Include="src\Bindings\HandBinding.h" />
     <ClInclude Include="src\Bindings\MyGuiBinding.h" />
+    <ClInclude Include="src\Bindings\FactionRelationsBinding.h" />
+    <ClInclude Include="src\Bindings\RelationDataBinding.h" />
+    <ClInclude Include="src\Bindings\FactionLeaderBinding.h" />
+
+    <ClInclude Include="src\Bindings\Gui\DialogueWindowBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DatapanelGUIBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\GUIWindowBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLineBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_ButtonBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_CheckBoxBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_DropBoxBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_FactionBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_KeyConfigBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_ProgressBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_ResearchBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_SliderBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_SliderEditableBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_TextBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\DataPanelLine_TextEditableBinding.h" />
+    <ClInclude Include="src\Bindings\Building\BuildInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Building\BuildingContainerInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Building\ConsumptionItemBinding.h" />
+    <ClInclude Include="src\Bindings\Building\CraftingBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\CraftingInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Building\GameDataGroupBinding.h" />
+    <ClInclude Include="src\Bindings\Building\GeneratorBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\GenericInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Building\ProductionBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\ProductionInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Building\ResearchBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\ResearchBuildingInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Building\StorageBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\UseableStuffBinding.h" />
+    <ClInclude Include="src\Bindings\Building\WindGeneratorBuildingBinding.h" />
     <ClInclude Include="src\Bindings\GlobalBinding.h" />
     <ClInclude Include="src\Bindings\EnumBinding.h" />
     <ClInclude Include="src\Bindings\BountyBinding.h" />
@@ -720,6 +755,7 @@
     <ClInclude Include="src\Bindings\RootObjectBinding.h" />
     <ClInclude Include="src\Lua\BindingHelpers.h" />
     <ClInclude Include="src\ModLoader.h" />
+    <ClInclude Include="src\LuaScriptChecker.h" />
 
     <ClInclude Include="src\Bindings\CharacterAnimalBinding.h" />
     <ClInclude Include="src\Bindings\Building\BuildMaterialBinding.h" />
@@ -823,7 +859,7 @@
     <ClCompile Include="src\Bindings\TownBuildingsManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\TownPositionCacherBinding.cpp" />
     <ClCompile Include="src\Bindings\VisibleObjectInfoBinding.cpp" />
-    <ClCompile Include="src\Bindings\WaterStateBinding.cpp" />
+
     <ClCompile Include="src\Bindings\WeaponBinding.cpp" />
     <ClCompile Include="src\Bindings\WhoSeesMeBinding.cpp" />
     <ClCompile Include="src\Bindings\WorldEventStateQueryBinding.cpp" />
@@ -842,6 +878,7 @@
     <ClCompile Include="src\Lua\LuaBindings.cpp" />
     <ClCompile Include="src\Lua\Logger.cpp" />
     <ClCompile Include="src\Lua\Benchmark.cpp" />
+    <ClCompile Include="src\Lua\Config.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
     <ClCompile Include="src\ScriptQueue.cpp" />
 
@@ -849,6 +886,41 @@
     <ClCompile Include="src\Bindings\CharacterBinding.cpp" />
     <ClCompile Include="src\Bindings\HandBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGuiBinding.cpp" />
+    <ClCompile Include="src\Bindings\FactionRelationsBinding.cpp" />
+    <ClCompile Include="src\Bindings\RelationDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\FactionLeaderBinding.cpp" />
+
+
+    <ClCompile Include="src\Bindings\Gui\DialogueWindowBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DatapanelGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\GUIWindowBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLineBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_ButtonBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_CheckBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_DropBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_FactionBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_KeyConfigBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_ProgressBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_ResearchBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_SliderBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_SliderEditableBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_TextBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\DataPanelLine_TextEditableBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\BuildInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\BuildingContainerInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\ConsumptionItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\CraftingBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\CraftingInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\GameDataGroupBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\GeneratorBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\GenericInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\ProductionBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\ProductionInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\ResearchBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\ResearchBuildingInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\StorageBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\UseableStuffBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\WindGeneratorBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\GlobalBinding.cpp" />
     <ClCompile Include="src\Bindings\EnumBinding.cpp" />
     <ClCompile Include="src\Bindings\BountyBinding.cpp" />
@@ -863,6 +935,7 @@
 
     <ClCompile Include="src\Bindings\GameWorldBinding.cpp" />
     <ClCompile Include="src\ModLoader.cpp" />
+    <ClCompile Include="src\LuaScriptChecker.cpp" />
 
     <ClCompile Include="src\Bindings\CharacterAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\BuildMaterialBinding.cpp" />

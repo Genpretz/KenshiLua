@@ -5,6 +5,8 @@
 #include "kenshi/Item.h"
 #include "ItemBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/WeaponBinding.h"
 
 namespace KenshiLua
 {

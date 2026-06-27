@@ -39,12 +39,14 @@
 
     <ClCompile Include="src\Bindings\GameWorldBinding.cpp" />
     <ClCompile Include="src\ModLoader.cpp" />
+    <ClCompile Include="src\LuaScriptChecker.cpp" />
     <ClCompile Include="src\Bindings\GearBinding.cpp" />
     <ClCompile Include="src\Callbacks.cpp" />
     <ClCompile Include="src\Hooks.cpp" />
 
     <ClCompile Include="src\Bindings\CharBodyBinding.cpp" />
     <ClCompile Include="src\Lua\Benchmark.cpp" />
+    <ClCompile Include="src\Lua\Config.cpp" />
     <ClCompile Include="src\Bindings\CharacterAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\AbstractMovementBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\ActivePlatoonBinding.cpp" />
@@ -124,7 +126,7 @@
     <ClCompile Include="src\Bindings\TownBuildingsManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\TownPositionCacherBinding.cpp" />
     <ClCompile Include="src\Bindings\VisibleObjectInfoBinding.cpp" />
-    <ClCompile Include="src\Bindings\WaterStateBinding.cpp" />
+
     <ClCompile Include="src\Bindings\WeaponBinding.cpp" />
     <ClCompile Include="src\Bindings\WhoSeesMeBinding.cpp" />
     <ClCompile Include="src\Bindings\WorldEventStateQueryBinding.cpp" />
@@ -178,6 +180,7 @@
     <ClInclude Include="src\Bindings\RootObjectBinding.h" />
     <ClInclude Include="src\Lua\BindingHelpers.h" />
     <ClInclude Include="src\ModLoader.h" />
+    <ClInclude Include="src\LuaScriptChecker.h" />
     <ClInclude Include="src\Bindings\GearBinding.h" />
 
     <ClInclude Include="src\Callbacks.h" />
@@ -636,6 +639,7 @@
     <ClInclude Include="extern\kenshilib\Include\ogre\WIN32\OgreMinGWSupport.h" />
     <ClInclude Include="extern\kenshilib\Include\ogre\WIN32\OgreTimerImp.h" />
     <ClInclude Include="src\Lua\Benchmark.h" />
+    <ClInclude Include="src\Lua\Config.h" />
     <ClInclude Include="src\Bindings\CharacterAnimalBinding.h" />
     <ClInclude Include="src\Bindings\AbstractMovementBaseBinding.h" />
     <ClInclude Include="src\Bindings\ActivePlatoonBinding.h" />
@@ -715,7 +719,7 @@
     <ClInclude Include="src\Bindings\TownBuildingsManagerBinding.h" />
     <ClInclude Include="src\Bindings\TownPositionCacherBinding.h" />
     <ClInclude Include="src\Bindings\VisibleObjectInfoBinding.h" />
-    <ClInclude Include="src\Bindings\WaterStateBinding.h" />
+
     <ClInclude Include="src\Bindings\WeaponBinding.h" />
     <ClInclude Include="src\Bindings\WhoSeesMeBinding.h" />
     <ClInclude Include="src\Bindings\WorldEventStateQueryBinding.h" />

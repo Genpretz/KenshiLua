@@ -4,6 +4,8 @@
 #include "CharacterBinding.h"
 #include "FactionBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/FactionBinding.h"
 
 namespace KenshiLua
 {

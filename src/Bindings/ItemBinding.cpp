@@ -10,6 +10,13 @@
 #include "kenshi/Inventory.h"
 #include "InventoryBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/ArmourBinding.h"
+#include "Bindings/CrossbowBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GearBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/LockedArmourBinding.h"
+#include "Bindings/WeaponBinding.h"
 
 namespace KenshiLua
 {

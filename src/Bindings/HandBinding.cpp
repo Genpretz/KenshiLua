@@ -285,9 +285,19 @@ Skipped methods needing manual binding:
   line 66: bool squadMatch(...) - unsupported arg type
 */
 
+int handBinding::push(lua_State* L, const hand& h)
+{
+    hand* heapHand = new hand(h);
+    return pushObject<hand>(L, heapHand, handBinding::getMetatableName());
+}
+
 int handBinding::gc(lua_State* L)
 {
-    // Implementation depends on ownership model
+    void** ud = (void**)lua_touserdata(L, 1);
+    if (ud && *ud) {
+        delete (hand*)*ud;
+        *ud = nullptr;
+    }
     return 0;
 }
 

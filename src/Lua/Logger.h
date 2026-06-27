@@ -7,6 +7,7 @@
 
 #include <boost/thread/mutex.hpp>
 #include <boost/array.hpp>
+#include "Config.h"
 
 namespace KenshiLua
 {
@@ -55,7 +56,7 @@ namespace KenshiLua
     void initLogger();
     void shutdownLogger();
 
-    // Single-string overload — use when you already have a formatted string.
+    // Single-string overload - use when you already have a formatted string.
     void logToFile(const std::string& message);
 
     // ---------------------------------------------------------------------------
@@ -63,7 +64,7 @@ namespace KenshiLua
     //
     // printf-style overload.  Formats into a fixed-size stack buffer then
     // forwards to logToFile(std::string).  Safe for MSVC 2010 (no variadic
-    // templates needed — plain C varargs).
+    // templates needed - plain C varargs).
     //
     // Usage:
     //   logToFilef("AddHook failed (status %d).", (int)status);
@@ -71,6 +72,31 @@ namespace KenshiLua
     // ---------------------------------------------------------------------------
     inline void logToFilef(const char* fmt, ...)
     {
+        char buf[1024];
+        va_list args;
+        va_start(args, fmt);
+        _vsnprintf(buf, sizeof(buf) - 1, fmt, args);
+        va_end(args);
+        buf[sizeof(buf) - 1] = '\0';
+        logToFile(std::string(buf));
+    }
+
+    // ---------------------------------------------------------------------------
+    // logToFileDebug
+    //
+    // Logs a message only if debug logging is enabled in the configuration.
+    // ---------------------------------------------------------------------------
+    void logToFileDebug(const std::string& message);
+
+    // ---------------------------------------------------------------------------
+    // logToFileDebugf
+    //
+    // printf-style overload that only logs when debug logging is enabled.
+    // ---------------------------------------------------------------------------
+    inline void logToFileDebugf(const char* fmt, ...)
+    {
+        if (!KenshiLua::Config::get().isDebugLoggingEnabled()) return;
+
         char buf[1024];
         va_list args;
         va_start(args, fmt);

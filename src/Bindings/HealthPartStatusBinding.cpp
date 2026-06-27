@@ -3,6 +3,9 @@
 #include "HealthPartStatusBinding.h"
 #include "MedicalSystemBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/MedicalSystemBinding.h"
 
 namespace KenshiLua
 {

@@ -8,6 +8,11 @@
 #include "kenshi/Item.h"
 #include "ItemBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/InventorySectionBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/WeaponBinding.h"
 
 namespace KenshiLua
 {

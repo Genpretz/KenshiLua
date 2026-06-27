@@ -4,11 +4,13 @@
 #include "Gui/InitializeGui.h"
 #include "Hooks.h"
 #include "Lua/Logger.h"
+#include "Lua/Config.h"
 #include "Lua/LuaBindings.h"
 #include "Lua/LuaState.h"
 #include "ModLoader.h"
 #include "ScriptQueue.h"
 #include "Bindings/MyGuiBinding.h"
+#include "LuaScriptChecker.h"
 #include "Lua/Benchmark.h"
 #include <ogre/OgreFrameListener.h>
 #include <ogre/OgreRoot.h>
@@ -137,6 +139,9 @@ static void installKenshiLuaTable(lua_State* L)
     lua_pushcfunction(L, KenshiLua::luaKenshiVersion);
     lua_setfield(L, -2, "version");
 
+    lua_pushcfunction(L, KenshiLua::luaKenshiRunBenchmark);
+    lua_setfield(L, -2, "runBenchmark");
+
     // Enqueue helpers
     lua_pushcfunction(L, lua_enqueueString);
     lua_setfield(L, -2, "enqueueString");
@@ -146,6 +151,18 @@ static void installKenshiLuaTable(lua_State* L)
 
     lua_pushcfunction(L, lua_enqueueHandler);
     lua_setfield(L, -2, "enqueueHandler");
+
+    lua_pushcfunction(L, KenshiLua::luaCheckLuaScriptReferences);
+    lua_setfield(L, -2, "checkLuaScriptReferences");
+
+    lua_pushcfunction(L, KenshiLua::luaGetGameData);
+    lua_setfield(L, -2, "getGameData");
+
+    lua_pushcfunction(L, KenshiLua::luaKenshiLog);
+    lua_setfield(L, -2, "log");
+
+    lua_pushcfunction(L, KenshiLua::luaKenshiError);
+    lua_setfield(L, -2, "error");
 
     lua_setglobal(L, "KenshiLua");
 }
@@ -157,6 +174,11 @@ static bool initializeLua()
     KenshiLua::setLoggerDllModule(g_dllModule);
     KenshiLua::initLogger();
     KenshiLua::logToFile("Initializing KenshiLua...");
+
+    KenshiLua::Config::get().load(g_dllModule);
+    KenshiLua::logToFilef("Config loaded: enable_benchmark=%s, debug_logging=%s",
+        KenshiLua::Config::get().isBenchmarkEnabled() ? "true" : "false",
+        KenshiLua::Config::get().isDebugLoggingEnabled() ? "true" : "false");
 
     KenshiLua::g_luaState = new KenshiLua::LuaState();
     if (!KenshiLua::g_luaState->initialize()) {
@@ -245,6 +267,9 @@ _declspec(dllexport) void startPlugin()
 
     // Always install keydown hook so the dev GUI hotkey works by default
     KenshiLua::InstallHookForEvent("onKeyDown");
+
+    // Install LuaScriptChecker hooks for dialogue and world event queries
+    KenshiLua::InstallLuaScriptCheckerHooks();
 
     // Bring up the developer GUI (hidden by default; toggled with F11).
     KenshiLua::KenshiLuaGui::get().requestInitialize(KenshiLua::g_luaState);

@@ -7,6 +7,9 @@
 #include "PlayerInterfaceBinding.h"
 #include "GameDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/OwnershipsBinding.h"
+#include "Bindings/PlayerInterfaceBinding.h"
 
 namespace KenshiLua
 {

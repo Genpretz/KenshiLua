@@ -4,6 +4,8 @@
 #include "kenshi/Item.h"
 #include "ItemBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/ItemBinding.h"
 
 typedef Town::DelayedSpawnMsg DelayedSpawnMsg;
 

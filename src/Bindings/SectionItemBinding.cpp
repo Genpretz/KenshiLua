@@ -3,6 +3,7 @@
 #include "SectionItemBinding.h"
 #include "ItemBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/ItemBinding.h"
 
 namespace KenshiLua
 {

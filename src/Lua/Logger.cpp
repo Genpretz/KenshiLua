@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Logger.h"
+#include "Config.h"
 #include <string>
 #include <ctime>
 #include <fstream>
@@ -138,6 +139,13 @@ void initLogger()
 void logToFile(const std::string& message)
 {
     Logger::get().log(message);
+}
+
+void logToFileDebug(const std::string& message)
+{
+    if (Config::get().isDebugLoggingEnabled()) {
+        Logger::get().log(message);
+    }
 }
 
 void logBenchmark(const std::string& message)

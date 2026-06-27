@@ -2,6 +2,7 @@
 #include "kenshi\CharMovement.h"
 #include "FlockingToolsBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
 
 namespace KenshiLua
 {

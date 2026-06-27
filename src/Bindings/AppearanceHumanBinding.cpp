@@ -2,6 +2,7 @@
 #include "kenshi\Appearance.h"
 #include "AppearanceHumanBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {

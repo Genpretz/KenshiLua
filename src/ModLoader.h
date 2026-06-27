@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 extern "C" {
 #include <lua.h>
@@ -47,6 +48,10 @@ public:
     // List of mod names we considered (active mods).  Useful for the GUI.
     const std::vector<std::string>& activeModNames() const { return m_activeModNames; }
 
+    // Resolves a script path on-demand by checking active mod directories.
+    // Caches the results to prevent performance hitching during game frames.
+    std::string resolveScriptPath(const std::string& filename);
+
 private:
     ModLoader(const ModLoader&);
     ModLoader& operator=(const ModLoader&);
@@ -56,6 +61,7 @@ private:
 
     std::vector<LoadedScript>  m_scripts;
     std::vector<std::string>   m_activeModNames;
+    std::unordered_map<std::string, std::string> m_resolvedScriptPaths;
     bool                       m_loaded;
 };
 

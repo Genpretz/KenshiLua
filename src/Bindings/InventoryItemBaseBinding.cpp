@@ -4,6 +4,8 @@
 #include "kenshi/Inventory.h"
 #include "InventoryBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/InventoryBinding.h"
 
 namespace KenshiLua
 {

@@ -2,6 +2,7 @@
 #include <kenshi/Building/Building.h>
 #include "BuildMaterialBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {

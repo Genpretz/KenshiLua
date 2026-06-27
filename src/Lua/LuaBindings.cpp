@@ -29,12 +29,47 @@
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/EnumBinding.h"
+#include "Bindings/RootObjectBaseBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/RaceDataBinding.h"
 #include "Bindings/BountyBinding.h"
 #include "Bindings/BountyManagerBinding.h"
 #include "Bindings/CameraClassBinding.h"
 #include "Bindings/MyGuiBinding.h"
+#include "Bindings/FactionRelationsBinding.h"
+#include "Bindings/RelationDataBinding.h"
+#include "Bindings/FactionLeaderBinding.h"
+#include "Bindings/Gui/DialogueWindowBinding.h"
+#include "Bindings/Gui/GUIWindowBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Gui/DataPanelLine_ButtonBinding.h"
+#include "Bindings/Gui/DataPanelLine_CheckBoxBinding.h"
+#include "Bindings/Gui/DataPanelLine_DropBoxBinding.h"
+#include "Bindings/Gui/DataPanelLine_FactionBinding.h"
+#include "Bindings/Gui/DataPanelLine_KeyConfigBinding.h"
+#include "Bindings/Gui/DataPanelLine_ProgressBinding.h"
+#include "Bindings/Gui/DataPanelLine_ResearchBinding.h"
+#include "Bindings/Gui/DataPanelLine_SliderBinding.h"
+#include "Bindings/Gui/DataPanelLine_SliderEditableBinding.h"
+#include "Bindings/Gui/DataPanelLine_TextBinding.h"
+#include "Bindings/Gui/DataPanelLine_TextEditableBinding.h"
+#include "Bindings/Building/UseableStuffBinding.h"
+#include "Bindings/Building/StorageBuildingBinding.h"
+#include "Bindings/Building/ProductionBuildingBinding.h"
+#include "Bindings/Building/CraftingBuildingBinding.h"
+#include "Bindings/Building/GeneratorBuildingBinding.h"
+#include "Bindings/Building/WindGeneratorBuildingBinding.h"
+#include "Bindings/Building/ResearchBuildingBinding.h"
+#include "Bindings/Building/ResearchBuildingInventoryLayoutBinding.h"
+#include "Bindings/Building/GenericInventoryLayoutBinding.h"
+#include "Bindings/Building/BuildingContainerInventoryLayoutBinding.h"
+#include "Bindings/Building/BuildInventoryLayoutBinding.h"
+#include "Bindings/Building/ProductionInventoryLayoutBinding.h"
+#include "Bindings/Building/CraftingInventoryLayoutBinding.h"
+#include "Bindings/Building/GameDataGroupBinding.h"
+#include "Bindings/Building/ConsumptionItemBinding.h"
+
 #include "Bindings/CharacterAnimalBinding.h"
 #include "Bindings/InventoryItemBaseBinding.h"
 #include "Bindings/WeaponBinding.h"
@@ -60,10 +95,8 @@ namespace KenshiLua
 {
 
 static const luaL_Reg KenshiLuaLib[] = {
-    { "log", luaKenshiLog },
-    { "error", luaKenshiError },
-    { "version", luaKenshiVersion },
-    { "runBenchmark", luaKenshiRunBenchmark },
+    // Add global functions here, e.g.:
+    // { "myGlobalFunc", luaMyGlobalFunc },
     { NULL, NULL }
 };
 
@@ -75,6 +108,7 @@ void LuaBindings::registerAll(lua_State* L)
     }
 
     // Order: dependency-free metatables first; ones that reference others afterwards when possible
+    RootObjectBaseBinding::registerBinding(L);
     RootObjectBinding::registerBinding(L);
     RaceDataBinding::registerBinding(L);
     BountyBinding::registerBinding(L);
@@ -114,6 +148,41 @@ void LuaBindings::registerAll(lua_State* L)
     GameWorldBinding::registerBinding(L);
     GameDataBinding::registerBinding(L);
     MyGuiBinding::registerBinding(L);
+    FactionRelationsBinding::registerBinding(L);
+    RelationDataBinding::registerBinding(L);
+    FactionLeaderBinding::registerBinding(L);
+    DialogueWindowBinding::registerBinding(L);
+    GUIWindowBinding::registerBinding(L);
+    DatapanelGUIBinding::registerBinding(L);
+    DataPanelLineBinding::registerBinding(L);
+    DataPanelLine_ButtonBinding::registerBinding(L);
+    DataPanelLine_CheckBoxBinding::registerBinding(L);
+    DataPanelLine_DropBoxBinding::registerBinding(L);
+    DataPanelLine_FactionBinding::registerBinding(L);
+    DataPanelLine_KeyConfigBinding::registerBinding(L);
+    DataPanelLine_ProgressBinding::registerBinding(L);
+    DataPanelLine_ResearchBinding::registerBinding(L);
+    DataPanelLine_SliderBinding::registerBinding(L);
+    DataPanelLine_SliderEditableBinding::registerBinding(L);
+    DataPanelLine_TextBinding::registerBinding(L);
+    DataPanelLine_TextEditableBinding::registerBinding(L);
+
+    UseableStuffBinding::registerBinding(L);
+    StorageBuildingBinding::registerBinding(L);
+    ProductionBuildingBinding::registerBinding(L);
+    CraftingBuildingBinding::registerBinding(L);
+    GeneratorBuildingBinding::registerBinding(L);
+    WindGeneratorBuildingBinding::registerBinding(L);
+    ResearchBuildingBinding::registerBinding(L);
+    ResearchBuildingInventoryLayoutBinding::registerBinding(L);
+    GenericInventoryLayoutBinding::registerBinding(L);
+    BuildingContainerInventoryLayoutBinding::registerBinding(L);
+    BuildInventoryLayoutBinding::registerBinding(L);
+    ProductionInventoryLayoutBinding::registerBinding(L);
+    CraftingInventoryLayoutBinding::registerBinding(L);
+    GameDataGroupBinding::registerBinding(L);
+    ConsumptionItemBinding::registerBinding(L);
+
     //ShopTraderBinding::registerBinding(L);
     AnimalInventoryLayoutBinding::registerBinding(L);
     CharacterAnimalBinding::registerBinding(L);
@@ -122,22 +191,54 @@ void LuaBindings::registerAll(lua_State* L)
     registerGlobals(L);
 
     // Configure class metatable inheritance chains
-    setPlayableParent(L, "KenshiLua.CharacterAnimal", "KenshiLua.Character");
-    setPlayableParent(L, "KenshiLua.Character", "KenshiLua.RootObject");
-    setPlayableParent(L, "KenshiLua.RootObject", "KenshiLua.RootObjectBase");
+    setMetatableParent(L, "KenshiLua.CharacterAnimal", "KenshiLua.Character");
+    setMetatableParent(L, "KenshiLua.Character", "KenshiLua.RootObject");
+    setMetatableParent(L, "KenshiLua.RootObject", "KenshiLua.RootObjectBase");
 
-    setPlayableParent(L, "KenshiLua.Platoon", "KenshiLua.RootObjectBase");
-    setPlayableParent(L, "KenshiLua.Town", "KenshiLua.TownBase");
-    setPlayableParent(L, "KenshiLua.TownBase", "KenshiLua.RootObject");
+    setMetatableParent(L, "KenshiLua.Platoon", "KenshiLua.RootObjectBase");
+    setMetatableParent(L, "KenshiLua.Town", "KenshiLua.TownBase");
+    setMetatableParent(L, "KenshiLua.TownBase", "KenshiLua.RootObject");
 
-    setPlayableParent(L, "KenshiLua.Item", "KenshiLua.InventoryItemBase");
-    setPlayableParent(L, "KenshiLua.InventoryItemBase", "KenshiLua.RootObject");
-    setPlayableParent(L, "KenshiLua.Gear", "KenshiLua.Item");
-    setPlayableParent(L, "KenshiLua.Weapon", "KenshiLua.Gear");
-    setPlayableParent(L, "KenshiLua.Sword", "KenshiLua.Weapon");
-    setPlayableParent(L, "KenshiLua.Crossbow", "KenshiLua.Weapon");
-    setPlayableParent(L, "KenshiLua.Armour", "KenshiLua.Gear");
-    setPlayableParent(L, "KenshiLua.LockedArmour", "KenshiLua.Armour");
+    setMetatableParent(L, "KenshiLua.Item", "KenshiLua.InventoryItemBase");
+    setMetatableParent(L, "KenshiLua.InventoryItemBase", "KenshiLua.RootObject");
+    setMetatableParent(L, "KenshiLua.Gear", "KenshiLua.Item");
+    setMetatableParent(L, "KenshiLua.Weapon", "KenshiLua.Gear");
+    setMetatableParent(L, "KenshiLua.Sword", "KenshiLua.Weapon");
+    setMetatableParent(L, "KenshiLua.Crossbow", "KenshiLua.Weapon");
+    setMetatableParent(L, "KenshiLua.Armour", "KenshiLua.Gear");
+    setMetatableParent(L, "KenshiLua.LockedArmour", "KenshiLua.Armour");
+
+    // GUI and Dialog chains
+    setMetatableParent(L, "KenshiLua.DialogueWindow", "KenshiLua.GUIWindow");
+    setMetatableParent(L, "KenshiLua.DatapanelGUI", "KenshiLua.GUIWindow");
+    
+    // DataPanelLine chains
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Faction", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Research", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Button", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_SliderEditable", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Text", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_TextEditable", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Slider", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Progress", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_CheckBox", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_DropBox", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_KeyConfig", "KenshiLua.DataPanelLine");
+
+    // Building chains
+    setMetatableParent(L, "KenshiLua.UseableStuff", "KenshiLua.Building");
+    setMetatableParent(L, "KenshiLua.StorageBuilding", "KenshiLua.UseableStuff");
+    setMetatableParent(L, "KenshiLua.ProductionBuilding", "KenshiLua.StorageBuilding");
+    setMetatableParent(L, "KenshiLua.CraftingBuilding", "KenshiLua.ProductionBuilding");
+    setMetatableParent(L, "KenshiLua.GeneratorBuilding", "KenshiLua.ProductionBuilding");
+    setMetatableParent(L, "KenshiLua.WindGeneratorBuilding", "KenshiLua.GeneratorBuilding");
+    setMetatableParent(L, "KenshiLua.ResearchBuilding", "KenshiLua.UseableStuff");
+    
+    // Layout chains
+    setMetatableParent(L, "KenshiLua.BuildingContainerInventoryLayout", "KenshiLua.GenericInventoryLayout");
+    setMetatableParent(L, "KenshiLua.ProductionInventoryLayout", "KenshiLua.BuildInventoryLayout");
+    setMetatableParent(L, "KenshiLua.CraftingInventoryLayout", "KenshiLua.BuildInventoryLayout");
+    setMetatableParent(L, "KenshiLua.ResearchBuildingInventoryLayout", "KenshiLua.GenericInventoryLayout");
 }
 
 int luaKenshiLog(lua_State* L)

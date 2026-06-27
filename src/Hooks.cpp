@@ -16,6 +16,11 @@
 #include <kenshi/gui/TitleScreen.h>
 #include <kenshi/InputHandler.h>
 #include <kenshi/util/YesNoMaybe.h>
+#include <kenshi/BountyManager.h>
+#include <kenshi/FactionRelations.h>
+#include <kenshi/MedicalSystem.h>
+#include <kenshi/gui/DialogueWindow.h>
+#include <kenshi/Dialogue.h>
 #include "core/Functions.h"
 
 #include <cstddef>
@@ -688,6 +693,74 @@ DEFINE_HOOK_INSTALLER(InstallHook_Item_NotifyTheftFrom,
     Item_notifyTheftFrom_hook, Item_notifyTheftFrom_orig)
 
 // ---------------------------------------------------------------------------
+// Hook: BountyManager::notifyCrimeWitnessed
+// ---------------------------------------------------------------------------
+
+static void (*BountyManager_notifyCrimeWitnessed_orig)(BountyManager*, Faction*, const hand&, int, CrimeEnum) = NULL;
+
+static void BountyManager_notifyCrimeWitnessed_hook(BountyManager* thisptr, Faction* against, const hand& againstWho, int expirytime, CrimeEnum what)
+{
+    BountyManager_notifyCrimeWitnessed_orig(thisptr, against, againstWho, expirytime, what);
+    CallCrimeWitnessedCallbacks(thisptr->me, against, againstWho, expirytime, static_cast<int>(what));
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_BountyManager_NotifyCrimeWitnessed,
+    "BountyManager::notifyCrimeWitnessed",
+    KenshiLib::GetRealAddress(&BountyManager::notifyCrimeWitnessed),
+    BountyManager_notifyCrimeWitnessed_hook, BountyManager_notifyCrimeWitnessed_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: FactionRelations::affectRelations
+// ---------------------------------------------------------------------------
+
+static void (*FactionRelations_affectRelations_orig)(FactionRelations*, Faction*, FactionRelations::FactionEvent, float) = NULL;
+
+static void FactionRelations_affectRelations_hook(FactionRelations* thisptr, Faction* p, FactionRelations::FactionEvent e, float mult)
+{
+    FactionRelations_affectRelations_orig(thisptr, p, e, mult);
+    CallFactionRelationsAffectedCallbacks(thisptr->me, p, static_cast<int>(e), mult);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_FactionRelations_AffectRelations,
+    "FactionRelations::_NV_affectRelations",
+    KenshiLib::GetRealAddress(static_cast<void (FactionRelations::*)(Faction*, FactionRelations::FactionEvent, float)>(&FactionRelations::_NV_affectRelations)),
+    FactionRelations_affectRelations_hook, FactionRelations_affectRelations_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: MedicalSystem::amputate
+// ---------------------------------------------------------------------------
+
+static void (*MedicalSystem_amputate_orig)(MedicalSystem*, RobotLimbs::Limb, bool, const Ogre::Vector3&) = NULL;
+
+static void MedicalSystem_amputate_hook(MedicalSystem* thisptr, RobotLimbs::Limb limb, bool createSeveredItem, const Ogre::Vector3& force)
+{
+    MedicalSystem_amputate_orig(thisptr, limb, createSeveredItem, force);
+    CallLimbAmputatedCallbacks(thisptr->me, static_cast<int>(limb), createSeveredItem, force);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_Amputate,
+    "MedicalSystem::amputate",
+    KenshiLib::GetRealAddress(&MedicalSystem::amputate),
+    MedicalSystem_amputate_hook, MedicalSystem_amputate_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: DialogueWindow::show
+// ---------------------------------------------------------------------------
+
+static void (*DialogueWindow_show_orig)(DialogueWindow*, Dialogue*) = NULL;
+
+static void DialogueWindow_show_hook(DialogueWindow* thisptr, Dialogue* dialogue)
+{
+    DialogueWindow_show_orig(thisptr, dialogue);
+    CallDialogueWindowShowCallbacks(thisptr, dialogue);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_DialogueWindow_Show,
+    "DialogueWindow::show",
+    KenshiLib::GetRealAddress(static_cast<void (DialogueWindow::*)(Dialogue*)>(&DialogueWindow::show)),
+    DialogueWindow_show_hook, DialogueWindow_show_orig)
+
+// ---------------------------------------------------------------------------
 // Hook registry
 //
 // Each entry is {display name, installer function}. Adding a new hook means
@@ -705,42 +778,46 @@ namespace KenshiLua
     };
 
     static const HookRegistryEntry g_hookRegistry[] = {
-        { "InputHandler::keyDownEvent",                     InstallHook_InputHandler_KeyDown },
-        { "GameWorld::charsUpdate",                         InstallHook_GameWorld_CharsUpdate },
-        { "Character::_NV_select",                          InstallHook_Character_Select },
-        { "Character::_NV_unselect",                        InstallHook_Character_Unselect },
-        { "Character::declareDead",                         InstallHook_Character_DeclareDead },
-        { "Character::_NV_say",                             InstallHook_Character_Say },
-        { "Character::pickupObject",                        InstallHook_Character_PickupObject },
-        { "Character::getPickedUp",                         InstallHook_Character_GetPickedUp },
-        { "CharStats::setHoldLocation",                     InstallHook_CharStats_SetHoldLocation },
-        { "CharStats::clearHoldLocation",                   InstallHook_CharStats_ClearHoldLocation },
-        { "CharStats::chooseAttack",                        InstallHook_CharStats_ChooseAttack },
-        { "CharStats::xpRunning",                           InstallHook_CharStats_XpRunning },
-        { "CharStats::xpFirstAid",                          InstallHook_CharStats_XpFirstAid },
-        { "CharStats::xpStealth",                           InstallHook_CharStats_XpStealth },
-        { "CharStats::xpToughness_GetUpEvent",              InstallHook_CharStats_XpToughness_GetUpEvent },
-        { "CharStats::xpToughness_RagdollEvent",            InstallHook_CharStats_XpToughness_RagdollEvent },
-        { "CharStats::xpToughness_PunchSomething",          InstallHook_CharStats_XpToughness_PunchSomething },
-        { "CharStats::xpEngineering",                       InstallHook_CharStats_XpEngineering },
-        { "CharStats::xpLockpicking",                       InstallHook_CharStats_XpLockpicking },
-        { "Character::_NV_takeMoney",                       InstallHook_Character_TakeMoney },
-        { "Character::eatItem",                             InstallHook_Character_EatItem },
-        { "Character::_NV_hitByMeleeAttack",                InstallHook_Character_HitByMeleeAttack },
-        { "Character::_NV_gettingEaten",                    InstallHook_Character_GettingEaten },
-        { "Character::_NV_setStandingOrder",                InstallHook_Character_SetStandingOrder },
-        { "Character::_NV_setFaction",                      InstallHook_Character_SetFaction },
-        { "Character::_NV_equipItem",                       InstallHook_Character_EquipItem },
-        { "Character::_NV_unequipItem",                     InstallHook_Character_UnequipItem },
-        { "Character::_NV_ImStealingDoYouNotice",           InstallHook_Character_ImStealingDoYouNotice },
-        { "Character::_NV_smugglingTradeCheck",             InstallHook_Character_SmugglingTradeCheck },
-        { "PlayerInterface::recruit",                       InstallHook_PlayerInterface_Recruit },
-        { "PlayerInterface::selectObject",                  InstallHook_PlayerInterface_SelectObject },
-        { "PlayerInterface::newPlayerTaskSelectedCharacters", InstallHook_PlayerInterface_NewPlayerTaskSelectedCharacters },
-        { "ActivePlatoon::_NV_addActiveObject",             InstallHook_ActivePlatoon_AddActiveObject },
-        { "ActivePlatoon::_NV_removeObject",                InstallHook_ActivePlatoon_RemoveObject },
-        { "Platoon::taskIsComplete",                        InstallHook_Platoon_TaskIsComplete },
-        { "Item::_NV_notifyTheftFrom",                      InstallHook_Item_NotifyTheftFrom },
+        { "InputHandler::keyDownEvent",                         InstallHook_InputHandler_KeyDown },
+        { "GameWorld::charsUpdate",                             InstallHook_GameWorld_CharsUpdate },
+        { "Character::_NV_select",                              InstallHook_Character_Select },
+        { "Character::_NV_unselect",                            InstallHook_Character_Unselect },
+        { "Character::declareDead",                             InstallHook_Character_DeclareDead },
+        { "Character::_NV_say",                                 InstallHook_Character_Say },
+        { "Character::pickupObject",                            InstallHook_Character_PickupObject },
+        { "Character::getPickedUp",                             InstallHook_Character_GetPickedUp },
+        { "CharStats::setHoldLocation",                         InstallHook_CharStats_SetHoldLocation },
+        { "CharStats::clearHoldLocation",                       InstallHook_CharStats_ClearHoldLocation },
+        { "CharStats::chooseAttack",                            InstallHook_CharStats_ChooseAttack },
+        { "CharStats::xpRunning",                               InstallHook_CharStats_XpRunning },
+        { "CharStats::xpFirstAid",                              InstallHook_CharStats_XpFirstAid },
+        { "CharStats::xpStealth",                               InstallHook_CharStats_XpStealth },
+        { "CharStats::xpToughness_GetUpEvent",                  InstallHook_CharStats_XpToughness_GetUpEvent },
+        { "CharStats::xpToughness_RagdollEvent",                InstallHook_CharStats_XpToughness_RagdollEvent },
+        { "CharStats::xpToughness_PunchSomething",              InstallHook_CharStats_XpToughness_PunchSomething },
+        { "CharStats::xpEngineering",                           InstallHook_CharStats_XpEngineering },
+        { "CharStats::xpLockpicking",                           InstallHook_CharStats_XpLockpicking },
+        { "Character::_NV_takeMoney",                           InstallHook_Character_TakeMoney },
+        { "Character::eatItem",                                 InstallHook_Character_EatItem },
+        { "Character::_NV_hitByMeleeAttack",                    InstallHook_Character_HitByMeleeAttack },
+        { "Character::_NV_gettingEaten",                        InstallHook_Character_GettingEaten },
+        { "Character::_NV_setStandingOrder",                    InstallHook_Character_SetStandingOrder },
+        { "Character::_NV_setFaction",                          InstallHook_Character_SetFaction },
+        { "Character::_NV_equipItem",                           InstallHook_Character_EquipItem },
+        { "Character::_NV_unequipItem",                         InstallHook_Character_UnequipItem },
+        { "Character::_NV_ImStealingDoYouNotice",               InstallHook_Character_ImStealingDoYouNotice },
+        { "Character::_NV_smugglingTradeCheck",                 InstallHook_Character_SmugglingTradeCheck },
+        { "PlayerInterface::recruit",                           InstallHook_PlayerInterface_Recruit },
+        { "PlayerInterface::selectObject",                      InstallHook_PlayerInterface_SelectObject },
+        { "PlayerInterface::newPlayerTaskSelectedCharacters",   InstallHook_PlayerInterface_NewPlayerTaskSelectedCharacters },
+        { "ActivePlatoon::_NV_addActiveObject",                 InstallHook_ActivePlatoon_AddActiveObject },
+        { "ActivePlatoon::_NV_removeObject",                    InstallHook_ActivePlatoon_RemoveObject },
+        { "Platoon::taskIsComplete",                            InstallHook_Platoon_TaskIsComplete },
+        { "Item::_NV_notifyTheftFrom",                          InstallHook_Item_NotifyTheftFrom },
+        { "BountyManager::notifyCrimeWitnessed",                InstallHook_BountyManager_NotifyCrimeWitnessed },
+        { "FactionRelations::_NV_affectRelations",              InstallHook_FactionRelations_AffectRelations },
+        { "MedicalSystem::amputate",                            InstallHook_MedicalSystem_Amputate },
+        { "DialogueWindow::show",                               InstallHook_DialogueWindow_Show },
     };
 
     static const size_t g_hookRegistryCount = sizeof(g_hookRegistry) / sizeof(g_hookRegistry[0]);
@@ -805,6 +882,10 @@ namespace KenshiLua
         { "onPlatoonMemberRemoved",             InstallHook_ActivePlatoon_RemoveObject },
         { "onPlatoonTaskComplete",              InstallHook_Platoon_TaskIsComplete },
         { "onItemStolen",                       InstallHook_Item_NotifyTheftFrom },
+        { "onCrimeWitnessed",                   InstallHook_BountyManager_NotifyCrimeWitnessed },
+        { "onFactionRelationsAffected",         InstallHook_FactionRelations_AffectRelations },
+        { "onLimbAmputated",                    InstallHook_MedicalSystem_Amputate },
+        { "onDialogueWindowShow",               InstallHook_DialogueWindow_Show },
     };
 
     static const size_t g_eventHookRegistryCount = sizeof(g_eventHookRegistry) / sizeof(g_eventHookRegistry[0]);

@@ -3,6 +3,7 @@
 #include "CameraClassBinding.h"
 //#include "BuildingBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Building/BuildingBinding.h"
 
 namespace KenshiLua
 {

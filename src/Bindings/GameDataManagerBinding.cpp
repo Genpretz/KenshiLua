@@ -2,6 +2,7 @@
 #include "kenshi\GameDataManager.h"
 #include "GameDataManagerBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {

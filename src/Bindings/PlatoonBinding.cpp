@@ -3,6 +3,9 @@
 #include "PlatoonBinding.h"
 #include "OwnershipsBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/OwnershipsBinding.h"
 
 namespace KenshiLua
 {

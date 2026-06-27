@@ -3,6 +3,7 @@
 #include "TaskerBinding.h"
 #include "TaskDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/TaskDataBinding.h"
 
 namespace KenshiLua
 {

@@ -5,6 +5,9 @@
 #include "FactionBinding.h"
 #include "OwnershipsBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/OwnershipsBinding.h"
 
 namespace KenshiLua
 {

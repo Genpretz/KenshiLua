@@ -2,6 +2,13 @@
 #include "kenshi\PlayerInterface.h"
 #include "PlayerInterfaceBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CameraClassBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/PlatoonBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/RootObjectContainerBinding.h"
+#include "Bindings/HandBinding.h"
 #include "kenshi\CameraClass.h"
 #include "CameraClassBinding.h"
 #include "kenshi\RootObject.h"
@@ -83,9 +90,7 @@ static int PlayerInterface_get_selectedCharacter(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for selectedCharacter (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->selectedCharacter);
 }
 
 static int PlayerInterface_get_aiOptions(lua_State* L)
@@ -192,9 +197,7 @@ static int PlayerInterface_get_selectedObject(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for selectedObject (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->selectedObject);
 }
 
 static int PlayerInterface_get_onlyAnimalsSelected(lua_State* L)
@@ -217,9 +220,7 @@ static int PlayerInterface_get_trackedCharacterHandle(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for trackedCharacterHandle (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->trackedCharacterHandle);
 }
 
 static int PlayerInterface_get_trackedCharacterFloor(lua_State* L)
@@ -266,9 +267,7 @@ static int PlayerInterface_get_deadPlayerSquad(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for deadPlayerSquad (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->deadPlayerSquad);
 }
 
 static int PlayerInterface_get_placementObject(lua_State* L)
@@ -376,7 +375,10 @@ static int PlayerInterface_set_selectedCharacter(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for selectedCharacter");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (!val) return luaL_error(L, "hand is nil");
+    b->selectedCharacter = *val;
+    return 0;
 }
 
 static int PlayerInterface_set_aiOptions(lua_State* L)
@@ -473,7 +475,10 @@ static int PlayerInterface_set_selectedObject(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for selectedObject");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (!val) return luaL_error(L, "hand is nil");
+    b->selectedObject = *val;
+    return 0;
 }
 
 static int PlayerInterface_set_onlyAnimalsSelected(lua_State* L)
@@ -496,7 +501,10 @@ static int PlayerInterface_set_trackedCharacterHandle(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for trackedCharacterHandle");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (!val) return luaL_error(L, "hand is nil");
+    b->trackedCharacterHandle = *val;
+    return 0;
 }
 
 static int PlayerInterface_set_trackedCharacterFloor(lua_State* L)
@@ -539,7 +547,10 @@ static int PlayerInterface_set_deadPlayerSquad(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for deadPlayerSquad");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (!val) return luaL_error(L, "hand is nil");
+    b->deadPlayerSquad = *val;
+    return 0;
 }
 
 static int PlayerInterface_set_placementObject(lua_State* L)

@@ -2,6 +2,7 @@
 #include "kenshi\Faction.h"
 #include "FactionManagerBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/FactionBinding.h"
 
 namespace KenshiLua
 {

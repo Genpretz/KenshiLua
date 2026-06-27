@@ -2,6 +2,7 @@
 #include "kenshi\Town.h"
 #include "TownBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {

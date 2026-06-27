@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Lua/Benchmark.h"
+#include "Lua/Config.h"
 #include "Lua/LuaBindings.h"
 #include "Lua/LuaUtils.h"
 #include "Lua/Logger.h"
@@ -191,41 +192,9 @@ int luaKenshiRunBenchmark(lua_State* L)
     return 1;
 }
 
-static bool readConfigBenchmarkEnabled()
-{
-    HMODULE hMod = GetModuleHandleA("KenshiLua.dll");
-    char modulePath[MAX_PATH] = {0};
-    GetModuleFileNameA(hMod, modulePath, MAX_PATH);
-
-    std::string dllPath(modulePath);
-    size_t pos = dllPath.find_last_of("\\/");
-    if (pos != std::string::npos) {
-        dllPath = dllPath.substr(0, pos);
-    } else {
-        dllPath = ".";
-    }
-
-    std::string configPath = dllPath + "\\KenshiLua_config.txt";
-    std::ifstream file(configPath.c_str());
-    if (!file.is_open()) {
-        return false;
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        if (line.find("enable_benchmark=true") != std::string::npos ||
-            line.find("enable_benchmark=1") != std::string::npos) {
-            file.close();
-            return true;
-        }
-    }
-    file.close();
-    return false;
-}
-
 bool isBenchmarkEnabled()
 {
-    return readConfigBenchmarkEnabled();
+    return Config::get().isBenchmarkEnabled();
 }
 
 void runBenchmarkOnStartup(lua_State* L)

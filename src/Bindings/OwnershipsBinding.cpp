@@ -2,6 +2,8 @@
 #include "kenshi\Platoon.h"
 #include "OwnershipsBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/PlatoonBinding.h"
 
 namespace KenshiLua
 {

@@ -5,6 +5,8 @@
 #include "WeaponBinding.h"
 #include "CrossbowBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CrossbowBinding.h"
+#include "Bindings/WeaponBinding.h"
 
 namespace KenshiLua
 {

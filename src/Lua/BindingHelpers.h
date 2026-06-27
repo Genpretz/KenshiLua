@@ -284,55 +284,58 @@ namespace KenshiLua
     }
 
     // Establishes metatable inheritance for methods, getters, and setters between two class metatables.
-    inline void setPlayableParent(lua_State* L, const char* childMeta, const char* parentMeta)
+    inline void setMetatableParent(lua_State* L, const char* childMeta, const char* parentMeta)
     {
         // 1. Link child metatable __index fallback to parent metatable
         luaL_getmetatable(L, childMeta);
         if (lua_istable(L, -1)) {
-            lua_newtable(L);
             luaL_getmetatable(L, parentMeta);
-            lua_setfield(L, -2, "__index");
-            lua_setmetatable(L, -2); // Set childMT's metatable to { __index = parentMT }
+            if (!lua_istable(L, -1)) {
+                // Parent metatable doesn't exist, log a warning or return safely
+                lua_pop(L, 2); // pop child metatable and nil parent metatable
+                return;
+            }
+
+            lua_newtable(L);
+            lua_pushvalue(L, -2); // duplicate parentMT
+            lua_setfield(L, -2, "__index"); // newtable.__index = parentMT
+            lua_setmetatable(L, -3); // childMT's metatable is newtable
 
             // 2. Link child __getters table __index fallback to parent __getters
             lua_pushstring(L, "__getters");
-            lua_rawget(L, -2);
+            lua_rawget(L, -3); // childMT is at -3
             if (lua_istable(L, -1)) {
                 lua_newtable(L);
-                luaL_getmetatable(L, parentMeta);
                 lua_pushstring(L, "__getters");
-                lua_rawget(L, -2);
+                lua_rawget(L, -4); // parentMT is at -4
                 if (lua_istable(L, -1)) {
                     lua_setfield(L, -2, "__index");
-                    lua_setmetatable(L, -3); // Set childGetters's metatable to { __index = parentGetters }
+                    lua_setmetatable(L, -2);
                 } else {
-                    lua_pop(L, 1); // pop nil/non-table parentGetters
-                    lua_pop(L, 1); // pop parentMT
-                    lua_pop(L, 1); // pop childGettersMT
+                    lua_pop(L, 2);
                 }
             }
             lua_pop(L, 1); // pop childGetters
 
             // 3. Link child __setters table __index fallback to parent __setters
             lua_pushstring(L, "__setters");
-            lua_rawget(L, -2);
+            lua_rawget(L, -3); // childMT is at -3
             if (lua_istable(L, -1)) {
                 lua_newtable(L);
-                luaL_getmetatable(L, parentMeta);
                 lua_pushstring(L, "__setters");
-                lua_rawget(L, -2);
+                lua_rawget(L, -4); // parentMT is at -4
                 if (lua_istable(L, -1)) {
                     lua_setfield(L, -2, "__index");
-                    lua_setmetatable(L, -3); // Set childSetters's metatable to { __index = parentSetters }
+                    lua_setmetatable(L, -2);
                 } else {
-                    lua_pop(L, 1); // pop nil/non-table parentSetters
-                    lua_pop(L, 1); // pop parentMT
-                    lua_pop(L, 1); // pop childSettersMT
+                    lua_pop(L, 2);
                 }
             }
             lua_pop(L, 1); // pop childSetters
+
+            lua_pop(L, 1); // pop parentMT
         }
-        lua_pop(L, 1); // pop child metatable
+        lua_pop(L, 1); // pop childMT
     }
 
 } // namespace KenshiLua

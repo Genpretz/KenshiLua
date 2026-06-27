@@ -4,6 +4,8 @@
 #include "CharacterBinding.h"
 #include "GameDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {

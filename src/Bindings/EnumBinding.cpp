@@ -257,16 +257,16 @@ namespace KenshiLua
     {
         lua_newtable(L);
 
-        lua_pushinteger(L, WaterState::NO_WATER);
+        lua_pushinteger(L, WaterState::Enum::NO_WATER);
         lua_setfield(L, -2, "NO_WATER");
 
-        lua_pushinteger(L, WaterState::VERY_SHALLOW_WATER);
+        lua_pushinteger(L, WaterState::Enum::VERY_SHALLOW_WATER);
         lua_setfield(L, -2, "VERY_SHALLOW_WATER");
 
-        lua_pushinteger(L, WaterState::THIGH_DEEP_WATER);
+        lua_pushinteger(L, WaterState::Enum::THIGH_DEEP_WATER);
         lua_setfield(L, -2, "THIGH_DEEP_WATER");
 
-        lua_pushinteger(L, WaterState::DEEP_WATER);
+        lua_pushinteger(L, WaterState::Enum::DEEP_WATER);
         lua_setfield(L, -2, "DEEP_WATER");
 
         lua_setglobal(L, "WaterState");
@@ -4366,6 +4366,55 @@ lua_pushinteger(L, ItemFunction::ITEM_CONTAINER);
 		lua_setfield(L, -2, "CHARACTERS");
 
         lua_setglobal(L, "MapZoomLevel");
+    }
+
+    // --------------------------------------
+    // InputHandler.h
+    // --------------------------------------
+
+    void registerMasks(lua_State* L)
+    {
+        lua_createtable(L, 0, 10);
+
+        lua_pushinteger(L, InputHandler::SHIFT_MASK);
+        lua_setfield(L, -2, "SHIFT_MASK");
+        lua_pushinteger(L, InputHandler::SHIFT_MASK);
+        lua_setfield(L, -2, "SHIFT");
+
+        lua_pushinteger(L, InputHandler::CTRL_MASK);
+        lua_setfield(L, -2, "CTRL_MASK");
+        lua_pushinteger(L, InputHandler::CTRL_MASK);
+        lua_setfield(L, -2, "CTRL");
+
+        lua_pushinteger(L, InputHandler::ALT_MASK);
+        lua_setfield(L, -2, "ALT_MASK");
+        lua_pushinteger(L, InputHandler::ALT_MASK);
+        lua_setfield(L, -2, "ALT");
+
+        lua_pushinteger(L, InputHandler::ALL_MASK);
+        lua_setfield(L, -2, "ALL_MASK");
+        lua_pushinteger(L, InputHandler::ALL_MASK);
+        lua_setfield(L, -2, "ALL");
+
+        lua_pushinteger(L, InputHandler::NONE_MASK);
+        lua_setfield(L, -2, "NONE_MASK");
+        lua_pushinteger(L, InputHandler::NONE_MASK);
+        lua_setfield(L, -2, "NONE");
+
+        lua_setglobal(L, "Masks");
+    }
+
+    void registerGlobalMode(lua_State* L)
+    {
+        lua_createtable(L, 0, 2);
+
+        lua_pushinteger(L, InputHandler::GLOBAL);
+        lua_setfield(L, -2, "GLOBAL");
+
+        lua_pushinteger(L, InputHandler::EDITOR);
+        lua_setfield(L, -2, "EDITOR");
+
+        lua_setglobal(L, "GlobalMode");
     }
 
     // --------------------------------------

@@ -3,6 +3,8 @@
 #include "CombatMovementControllerBinding.h"
 #include "FlockingToolsBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharStatsBinding.h"
+#include "Bindings/FlockingToolsBinding.h"
 
 namespace KenshiLua
 {

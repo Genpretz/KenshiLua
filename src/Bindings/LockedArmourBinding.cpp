@@ -3,6 +3,7 @@
 #include "LockedArmourBinding.h"
 #include "ArmourBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/ArmourBinding.h"
 
 namespace KenshiLua
 {

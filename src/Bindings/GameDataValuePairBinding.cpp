@@ -2,6 +2,7 @@
 #include "kenshi\Dialogue.h"
 #include "GameDataValuePairBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {

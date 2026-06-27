@@ -2,6 +2,10 @@
 #include "kenshi\CharBody.h"
 #include "CharBodyBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharStatsBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/PlatoonBinding.h"
 
 namespace KenshiLua
 {

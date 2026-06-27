@@ -5,6 +5,9 @@
 #include "Bindings/InventoryBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/TownBinding.h"
 
 namespace KenshiLua
 {
@@ -3240,7 +3243,7 @@ void BuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to RootObject
-    setPlayableParent(L, BuildingBinding::getMetatableName(), RootObjectBinding::getMetatableName());
+    setMetatableParent(L, BuildingBinding::getMetatableName(), RootObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

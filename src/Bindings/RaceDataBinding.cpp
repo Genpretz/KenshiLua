@@ -2,6 +2,7 @@
 #include "kenshi\RaceData.h"
 #include "RaceDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {

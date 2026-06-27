@@ -19,6 +19,9 @@ class Tasker;
 class Building;
 class PlayerInterface;
 class hand;
+class BountyManager;
+class DialogueWindow;
+class Dialogue;
 namespace Ogre {
     class Vector3;
 }
@@ -231,5 +234,25 @@ void CallPlatoonTaskCompleteCallbacks(Platoon* platoon, Tasker* t);
 // Lua event name: "onItemStolen"
 // Lua signature:  function(item, victim)
 void CallItemStolenCallbacks(Item* item, RootObject* obj);
+
+// Fired by BountyManager::notifyCrimeWitnessed hook.
+// Lua event name: "onCrimeWitnessed"
+// Lua signature:  function(character, faction, againstWho, expiryTime, crimeType)
+void CallCrimeWitnessedCallbacks(Character* character, Faction* against, const hand& againstWho, int expiryTime, int crimeType);
+
+// Fired by FactionRelations::affectRelations hook.
+// Lua event name: "onFactionRelationsAffected"
+// Lua signature:  function(faction, otherFaction, eventType, multiplier)
+void CallFactionRelationsAffectedCallbacks(Faction* faction, Faction* other, int eventType, float multiplier);
+
+// Fired by MedicalSystem::amputate hook.
+// Lua event name: "onLimbAmputated"
+// Lua signature:  function(character, limb, createSeveredItem, forceVector)
+void CallLimbAmputatedCallbacks(Character* character, int limb, bool createSeveredItem, const Ogre::Vector3& force);
+
+// Fired by DialogueWindow::show hook.
+// Lua event name: "onDialogueWindowShow"
+// Lua signature:  function(dialogueWindow, dialogue)
+void CallDialogueWindowShowCallbacks(DialogueWindow* thisptr, Dialogue* dialogue);
 
 

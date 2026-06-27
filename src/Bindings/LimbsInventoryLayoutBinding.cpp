@@ -2,6 +2,7 @@
 #include "kenshi\MedicalSystem.h"
 #include "LimbsInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
 
 namespace KenshiLua
 {
