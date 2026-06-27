@@ -3,3 +3,6 @@
 
 # Set to true to run the benchmark system on game startup and log results to KenshiLua_Benchmark.log
 enable_benchmark=false
+
+# Set to true to enable verbose debug logging
+debug_logging=false
