@@ -4,8 +4,6 @@
 -- character's name, strength, dexterity, and toughness in a custom MyGUI window.
 -- It also includes buttons to heal the character or buff their strength.
 
-local log = KenshiLua.log
-
 -- Clean up any existing window from a previous run to avoid overlaying zombie windows
 if CharInspectorWindow then
     CharInspectorWindow:destroy()
