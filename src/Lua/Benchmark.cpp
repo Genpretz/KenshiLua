@@ -87,10 +87,14 @@ namespace KenshiLua
                 LuaBindings::registerAll(L_temp);
                 
                 // Mock EventSystem registration
-                lua_pushcfunction(L_temp, luaRegisterHandler);
-                lua_setglobal(L_temp, "registerHandler");
-                lua_pushcfunction(L_temp, luaUnregisterHandler);
-                lua_setglobal(L_temp, "unregisterHandler");
+                lua_getglobal(L_temp, "KenshiLua");
+                if (lua_istable(L_temp, -1)) {
+                    lua_pushcfunction(L_temp, luaRegisterHandler);
+                    lua_setfield(L_temp, -2, "registerHandler");
+                    lua_pushcfunction(L_temp, luaUnregisterHandler);
+                    lua_setfield(L_temp, -2, "unregisterHandler");
+                }
+                lua_pop(L_temp, 1);
                 double bind_time = t_bind.elapsed_ms();
                 total_binding_registration += bind_time;
                 lua_close(L_temp);
@@ -189,7 +193,7 @@ namespace KenshiLua
         } else {
             dllPath = ".";
         }
-        std::string configPath = dllPath + "\\KenshiLua_config.txt";
+        std::string configPath = dllPath + "\\config.txt";
         std::ifstream file(configPath.c_str());
         if (!file.is_open()) {
             return false;
