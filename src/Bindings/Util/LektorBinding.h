@@ -3,21 +3,8 @@
 #include <kenshi/util/lektor.h>
 #include <kenshi/util/LektorPushBack.h>
 
-// inline const char* LektorCharacterPtrMeta() { return "lektor<Character*>"; }
-// inline const char* CharacterElemMeta() { return CharacterBinding::getMetatableName(); }
-// using LektorCharacterPtrBinding = LektorPtrBinding<Character*, LektorCharacterPtrMeta, CharacterElemMeta>;
-
-// local members = platoon.members
-// print(#members)
-// local c = members[1]          -- get Character
-// members[#members + 1] = newC   -- push via newindex
-// members:push(newC)             -- or explicit push
-// members:removeAt(2)
-
-
 namespace KenshiLua
 {
-
     // One binding per element type T (T = pointer type, e.g. Character*)
     // Metatable name must be unique per instantiation, e.g. "lektor<Character*>"
     template <typename T, const char* MetaName(), const char* ElemMetaName()>
