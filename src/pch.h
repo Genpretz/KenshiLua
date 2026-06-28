@@ -51,8 +51,9 @@ inline const char* luaL_tolstring(lua_State* L, int idx, size_t* len) {
     switch (lua_type(L, idx)) {
         case LUA_TNUMBER: {
             lua_pushvalue(L, idx);
+            const char* s = lua_tostring(L, -1);
             if (len) *len = lua_objlen(L, -1);
-            return lua_tostring(L, -1);
+            return s;
         }
         case LUA_TSTRING: {
             lua_pushvalue(L, idx);
