@@ -90,6 +90,9 @@ bool LuaState::initialize()
 
     luaL_openlibs(m_L);
 
+    // Enable Generational Garbage Collection
+    lua_gc(m_L, LUA_GCGEN, 0, 0);
+
     m_lastError = LUA_OK;
     m_errorMessage.clear();
     return true;
