@@ -13,6 +13,7 @@
 #include "Bindings/DialogChoiceListBinding.h"
 #include "Bindings/RepetitionCounterBinding.h"
 #include "Bindings/HandBinding.h"
+#include "Bindings/DialogLineDataBinding.h"
 #include "kenshi/util/hand.h"
 
 typedef Dialogue::RepetitionCounter RepetitionCounter;
@@ -46,8 +47,7 @@ static int Dialogue_get_locked(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for locked (std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'locked' (type: std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int Dialogue_get_sayMsg(lua_State* L)
@@ -63,8 +63,7 @@ static int Dialogue_get_threadMessages(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for threadMessages (Ogre::vector<Dialogue::DT_MSG>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'threadMessages' (type: Ogre::vector<Dialogue::DT_MSG>::type)");
 }
 
 static int Dialogue_get_pacakgesIHave(lua_State* L)
@@ -72,8 +71,7 @@ static int Dialogue_get_pacakgesIHave(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for pacakgesIHave (std::set<GameData*, std::less<GameData*>, Ogre::STLAllocator<GameData*, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'pacakgesIHave' (type: std::set<GameData*, std::less<GameData*>, Ogre::STLAllocator<GameData*, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int Dialogue_get_playerInterruptionDialog(lua_State* L)
@@ -81,8 +79,7 @@ static int Dialogue_get_playerInterruptionDialog(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for playerInterruptionDialog (DialogLineData*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'playerInterruptionDialog' (type: DialogLineData*)");
 }
 
 static int Dialogue_get_eventRepeatTimers(lua_State* L)
@@ -90,8 +87,7 @@ static int Dialogue_get_eventRepeatTimers(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for eventRepeatTimers (std::map<EventTriggerEnum, float, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, float>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'eventRepeatTimers' (type: std::map<EventTriggerEnum, float, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, float>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int Dialogue_get_eventDeliveredStates(lua_State* L)
@@ -99,8 +95,7 @@ static int Dialogue_get_eventDeliveredStates(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for eventDeliveredStates (std::map<EventTriggerEnum, hand, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, hand>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'eventDeliveredStates' (type: std::map<EventTriggerEnum, hand, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, hand>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int Dialogue_get__hasChanceLines(lua_State* L)
@@ -108,8 +103,7 @@ static int Dialogue_get__hasChanceLines(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for _hasChanceLines (std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property '_hasChanceLines' (type: std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int Dialogue_get__hasEnded(lua_State* L)
@@ -162,8 +156,7 @@ static int Dialogue_get_movement(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for movement (CharMovement*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'movement' (type: CharMovement*)");
 }
 
 static int Dialogue_get_currentConversationType(lua_State* L)
@@ -179,8 +172,7 @@ static int Dialogue_get_currentConversation(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for currentConversation (DialogLineData*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'currentConversation' (type: DialogLineData*)");
 }
 
 static int Dialogue_get_currentLine(lua_State* L)
@@ -188,8 +180,7 @@ static int Dialogue_get_currentLine(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for currentLine (DialogLineData*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'currentLine' (type: DialogLineData*)");
 }
 
 static int Dialogue_get_conversationsMain(lua_State* L)
@@ -197,35 +188,28 @@ static int Dialogue_get_conversationsMain(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for conversationsMain (std::map<EventTriggerEnum, DialogChoiceList*, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, DialogChoiceList*>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'conversationsMain' (type: std::map<EventTriggerEnum, DialogChoiceList*, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, DialogChoiceList*>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int Dialogue_get_interjector1(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    // TODO: Unsupported type for interjector1 (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->interjector1);
 }
 
 static int Dialogue_get_interjector2(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    // TODO: Unsupported type for interjector2 (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->interjector2);
 }
 
 static int Dialogue_get_interjector3(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    // TODO: Unsupported type for interjector3 (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->interjector3);
 }
 
 static int Dialogue_get_speechBubblePanel(lua_State* L)
@@ -233,8 +217,7 @@ static int Dialogue_get_speechBubblePanel(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for speechBubblePanel (DialogueSpeechBubble*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'speechBubblePanel' (type: DialogueSpeechBubble*)");
 }
 
 static int Dialogue_get_speechTextTimer(lua_State* L)
@@ -258,8 +241,7 @@ static int Dialogue_get_replyIds(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for replyIds (Ogre::vector<std::string>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'replyIds' (type: Ogre::vector<std::string>::type)");
 }
 
 static int Dialogue_get_responses(lua_State* L)
@@ -267,8 +249,7 @@ static int Dialogue_get_responses(lua_State* L)
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
     // TODO: Unsupported type for responses (Ogre::vector<std::string>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'responses' (type: Ogre::vector<std::string>::type)");
 }
 
 static int Dialogue_get_npcReplyText(lua_State* L)
@@ -283,18 +264,14 @@ static int Dialogue_get_conversationMaster(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    // TODO: Unsupported type for conversationMaster (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->conversationMaster);
 }
 
 static int Dialogue_get_waitingForReplyFrom(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    // TODO: Unsupported type for waitingForReplyFrom (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->waitingForReplyFrom);
 }
 
 // --- Setters for Dialogue ---
@@ -462,21 +439,27 @@ static int Dialogue_set_interjector1(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for interjector1");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->interjector1 = *val;
+    return 0;
 }
 
 static int Dialogue_set_interjector2(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for interjector2");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->interjector2 = *val;
+    return 0;
 }
 
 static int Dialogue_set_interjector3(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for interjector3");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->interjector3 = *val;
+    return 0;
 }
 
 static int Dialogue_set_speechBubblePanel(lua_State* L)
@@ -528,14 +511,18 @@ static int Dialogue_set_conversationMaster(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationMaster");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->conversationMaster = *val;
+    return 0;
 }
 
 static int Dialogue_set_waitingForReplyFrom(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for waitingForReplyFrom");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->waitingForReplyFrom = *val;
+    return 0;
 }
 
 int DialogueBinding::setupWordSwaps(lua_State* L)
@@ -822,9 +809,46 @@ int DialogueBinding::setConversationReplyGUI(lua_State* L)
 {
     Dialogue* b = getB(L, 1);
     if (!b) return luaL_error(L, "Dialogue is nil");
-
     b->setConversationReplyGUI();
     return 0;
+}
+
+static int Dialogue_getHandle(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    hand result = b->getHandle();
+    handBinding::push(L, result);
+    return 1;
+}
+
+static int Dialogue_getConversationTarget(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    hand result = b->getConversationTarget();
+    handBinding::push(L, result);
+    return 1;
+}
+
+static int Dialogue_getSpeaker(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    TalkerEnum who = (TalkerEnum)luaL_checkinteger(L, 2);
+    DialogLineData* line = checkObject<DialogLineData>(L, 3, DialogLineDataBinding::getMetatableName());
+    bool isForWordswaps = lua_toboolean(L, 4) != 0;
+    Character* result = b->getSpeaker(who, line, isForWordswaps);
+    return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
+}
+
+static int Dialogue_findInterjectionCharacter(lua_State* L)
+{
+    Dialogue* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Dialogue is nil");
+    DialogLineData* line = checkObject<DialogLineData>(L, 2, DialogLineDataBinding::getMetatableName());
+    Character* result = b->findInterjectionCharacter(line);
+    return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
 }
 
 /*
@@ -834,7 +858,6 @@ Skipped methods needing manual binding:
   line 333: void insertWordSwaps(...) - non-string reference arg
   line 334: void getGUIData(...) - unsupported arg type
   line 335: void create(...) - unsupported arg type
-  line 336: hand getHandle(...) - unsupported return type
   line 338: void setLineLocked(...) - unsupported arg type
   line 339: bool isLocked(...) - unsupported arg type
   line 345: void addDialoguePackage(...) - unsupported arg type
@@ -843,7 +866,6 @@ Skipped methods needing manual binding:
   line 351: bool sendEvent(...) - unsupported arg type
   line 353: bool runCustomDialog(...) - unsupported arg type
   line 354: int scoreCustomDialog(...) - unsupported arg type
-  line 356: hand getConversationTarget(...) - unsupported return type
   line 357: void changeConversationTarget(...) - unsupported arg type
   line 359: bool makeAnnouncement(...) - unsupported arg type
   line 362: void notifyUnderAttack(...) - unsupported arg type
@@ -860,11 +882,9 @@ Skipped methods needing manual binding:
   line 377: void load(...) - unsupported arg type
   line 378: void replyClicked(...) - overloaded method
   line 379: void replyClicked(...) - overloaded method
-  line 380: Character* getSpeaker(...) - unsupported arg type
   line 381: bool isCurrentConversationRunning(...) - unsupported arg type
   line 382: void resolveOverlappedSpeechBubbles(...) - static method
   line 383: void _wordSwapCharacterName(...) - non-string reference arg
-  line 386: Character* findInterjectionCharacter(...) - unsupported arg type
   line 390: bool startPlayerConversation(...) - unsupported arg type
   line 391: bool startConversation(...) - unsupported arg type
   line 404: void _doActions(...) - unsupported arg type
@@ -924,6 +944,10 @@ void DialogueBinding::registerBinding(lua_State* L)
         { "clearResponesGUI", DialogueBinding::clearResponesGUI },
         { "setResponesGUI", DialogueBinding::setResponesGUI },
         { "setConversationReplyGUI", DialogueBinding::setConversationReplyGUI },
+        { "getHandle", Dialogue_getHandle },
+        { "getConversationTarget", Dialogue_getConversationTarget },
+        { "getSpeaker", Dialogue_getSpeaker },
+        { "findInterjectionCharacter", Dialogue_findInterjectionCharacter },
         { 0, 0 }
     };
 

@@ -59,8 +59,7 @@ static int ObjectInstance_get_stateIDs(lua_State* L)
     ObjectInstance* b = getB(L, 1);
     if (!b) return luaL_error(L, "ObjectInstance is nil");
     // TODO: Unsupported type for stateIDs (lektor<std::string >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'stateIDs' (type: lektor<std::string >)");
 }
 
 // --- Setters for ObjectInstance ---

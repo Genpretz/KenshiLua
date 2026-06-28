@@ -17,8 +17,7 @@ static int AttachedArrowManager_get_ents(lua_State* L)
     Character::AttachedArrowManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "AttachedArrowManager is nil");
     // TODO: Unsupported type for ents (lektor<Ogre::Entity*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'ents' (type: lektor<Ogre::Entity*>)");
 }
 
 static int AttachedArrowManager_get_index(lua_State* L)

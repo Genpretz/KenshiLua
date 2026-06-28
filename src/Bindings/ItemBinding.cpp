@@ -17,6 +17,7 @@
 #include "Bindings/InventoryBinding.h"
 #include "Bindings/LockedArmourBinding.h"
 #include "Bindings/WeaponBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -47,9 +48,7 @@ static int Item_get_persistant(lua_State* L)
 {
     Item* b = getB(L, 1);
     if (!b) return luaL_error(L, "Item is nil");
-    // TODO: Unsupported type for persistant (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->persistant);
 }
 
 static int Item_get_visible(lua_State* L)
@@ -65,8 +64,7 @@ static int Item_get_physical(lua_State* L)
     Item* b = getB(L, 1);
     if (!b) return luaL_error(L, "Item is nil");
     // TODO: Unsupported type for physical (SimplePhysXEntity*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'physical' (type: SimplePhysXEntity*)");
 }
 
 static int Item_get__isPhysical(lua_State* L)
@@ -82,8 +80,7 @@ static int Item_get_physicalEntity(lua_State* L)
     Item* b = getB(L, 1);
     if (!b) return luaL_error(L, "Item is nil");
     // TODO: Unsupported type for physicalEntity (Ogre::Entity*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'physicalEntity' (type: Ogre::Entity*)");
 }
 
 static int Item_get_creatingPhysical(lua_State* L)
@@ -115,8 +112,7 @@ static int Item_get_loadingEntity(lua_State* L)
     Item* b = getB(L, 1);
     if (!b) return luaL_error(L, "Item is nil");
     // TODO: Unsupported type for loadingEntity (Ogre::Entity*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'loadingEntity' (type: Ogre::Entity*)");
 }
 
 // --- Setters for Item ---
@@ -140,7 +136,9 @@ static int Item_set_persistant(lua_State* L)
 {
     Item* b = getB(L, 1);
     if (!b) return luaL_error(L, "Item is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for persistant");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->persistant = *val;
+    return 0;
 }
 
 static int Item_set_visible(lua_State* L)
@@ -729,8 +727,6 @@ Skipped methods needing manual binding:
   line 182: const hand& findProperOwner(...) - static method
   line 183: const hand& findProperOwner(...) - static method
   line 184: void setInventoryWeAreIn(...) - unsupported arg type
-  line 185: void _NV_setInventoryWeAreIn(...) - unsupported arg type
-  line 186: const hand& getInventoryWeAreIn(...) - reference return type
   line 188: void setPersistant(...) - overloaded method
   line 189: void setPersistant(...) - overloaded method
   line 193: Item* _CONSTRUCTOR(...) - unsupported arg type
@@ -738,6 +734,33 @@ Skipped methods needing manual binding:
   line 203: void itemEntityCreated(...) - unsupported arg type
   line 204: void _NV_itemEntityCreated(...) - unsupported arg type
 */
+
+static int Item_getInventoryWeAreIn(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    const hand& result = b->getInventoryWeAreIn();
+    handBinding::push(L, result);
+    return 1;
+}
+
+static int Item_setInventoryWeAreIn(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->setInventoryWeAreIn(*h);
+    return 0;
+}
+
+static int Item__NV_setInventoryWeAreIn(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->_NV_setInventoryWeAreIn(*h);
+    return 0;
+}
 
 int ItemBinding::gc(lua_State* L)
 {
@@ -811,6 +834,9 @@ void ItemBinding::registerBinding(lua_State* L)
         { "_NV_destroyPhysical", ItemBinding::_NV_destroyPhysical },
         { "loadUnloadCheck", ItemBinding::loadUnloadCheck },
         { "_NV_loadUnloadCheck", ItemBinding::_NV_loadUnloadCheck },
+        { "getInventoryWeAreIn", Item_getInventoryWeAreIn },
+        { "setInventoryWeAreIn", Item_setInventoryWeAreIn },
+        { "_NV_setInventoryWeAreIn", Item__NV_setInventoryWeAreIn },
         { 0, 0 }
     };
 

@@ -5,6 +5,7 @@
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/InventoryBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -19,18 +20,14 @@ static int UseableStuff_get_shopOwner(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    // TODO: Unsupported type for shopOwner (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, instance->shopOwner);
 }
 
 static int UseableStuff_get_callbackOwner(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    // TODO: Unsupported type for callbackOwner (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, instance->callbackOwner);
 }
 
 static int UseableStuff_get_hasProgressBarWhenUsed(lua_State* L)
@@ -150,8 +147,7 @@ static int UseableStuff_get_currentOperators(lua_State* L)
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
     // TODO: Unsupported type for currentOperators (std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'currentOperators' (type: std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int UseableStuff_get_usesStat(lua_State* L)
@@ -230,14 +226,18 @@ static int UseableStuff_set_shopOwner(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for shopOwner");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->shopOwner = *val;
+    return 0;
 }
 
 static int UseableStuff_set_callbackOwner(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for callbackOwner");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->callbackOwner = *val;
+    return 0;
 }
 
 static int UseableStuff_set_hasProgressBarWhenUsed(lua_State* L)

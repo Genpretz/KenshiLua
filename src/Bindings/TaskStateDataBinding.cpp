@@ -17,8 +17,7 @@ static int TaskStateData_get_key(lua_State* L)
     TaskStateData* b = getB(L, 1);
     if (!b) return luaL_error(L, "TaskStateData is nil");
     // TODO: Unsupported type for key (StateType)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'key' (type: StateType)");
 }
 
 static int TaskStateData_get_val(lua_State* L)

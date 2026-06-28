@@ -32,8 +32,7 @@ static int DialogCondition_get_who(lua_State* L)
 {
     DialogLineData::DialogCondition* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogCondition is nil");
-    // TODO: Unsupported type for who (TalkerEnum)
-    lua_pushnil(L);
+    lua_pushinteger(L, (lua_Integer)b->who);
     return 1;
 }
 
@@ -66,7 +65,8 @@ static int DialogCondition_set_who(lua_State* L)
 {
     DialogLineData::DialogCondition* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogCondition is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for who");
+    b->who = (TalkerEnum)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int DialogCondition_set_value(lua_State* L)

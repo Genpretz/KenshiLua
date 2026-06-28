@@ -3,6 +3,7 @@
 #include "FormationMoverBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -40,9 +41,7 @@ static int FormationMover_get_movementTarget(lua_State* L)
 {
     FormationMover* b = getB(L, 1);
     if (!b) return luaL_error(L, "FormationMover is nil");
-    // TODO: Unsupported type for movementTarget (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->movementTarget);
 }
 
 static int FormationMover_get_currentFormationID(lua_State* L)
@@ -81,7 +80,9 @@ static int FormationMover_set_movementTarget(lua_State* L)
 {
     FormationMover* b = getB(L, 1);
     if (!b) return luaL_error(L, "FormationMover is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for movementTarget");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->movementTarget = *val;
+    return 0;
 }
 
 static int FormationMover_set_currentFormationID(lua_State* L)

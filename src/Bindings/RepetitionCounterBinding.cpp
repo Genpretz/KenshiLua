@@ -19,8 +19,7 @@ static int RepetitionCounter_get_states(lua_State* L)
     RepetitionCounter* b = getB(L, 1);
     if (!b) return luaL_error(L, "RepetitionCounter is nil");
     // TODO: Unsupported type for states (std::map<EventTriggerEnum, Dialogue::RepetitionCounter::DialogState, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, Dialogue::RepetitionCounter::DialogState>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'states' (type: std::map<EventTriggerEnum, Dialogue::RepetitionCounter::DialogState, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, Dialogue::RepetitionCounter::DialogState>, Ogre::GeneralAllocPolicy > >)");
 }
 
 // --- Setters for RepetitionCounter ---

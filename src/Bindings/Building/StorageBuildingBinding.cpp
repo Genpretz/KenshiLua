@@ -43,8 +43,7 @@ static int StorageBuilding_get_manyLimitItems(lua_State* L)
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
     // TODO: Unsupported type for manyLimitItems (lektor<StorageBuilding::ConsumptionItem*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'manyLimitItems' (type: lektor<StorageBuilding::ConsumptionItem*>)");
 }
 
 // --- Setters for StorageBuilding ---

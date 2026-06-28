@@ -3,6 +3,9 @@
 #include "FactionBinding.h"
 #include "kenshi/Platoon.h"
 #include "OwnershipsBinding.h"
+#include "Bindings/PlatoonBinding.h"
+#include "HandBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
 #include "kenshi/PlayerInterface.h"
 #include "PlayerInterfaceBinding.h"
 #include "GameDataBinding.h"
@@ -33,8 +36,7 @@ static int Faction_get_characteristicsData(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for characteristicsData (Faction::CharacteristicsData)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'characteristicsData' (type: Faction::CharacteristicsData)");
 }
 
 static int Faction_get_ranks(lua_State* L)
@@ -42,8 +44,7 @@ static int Faction_get_ranks(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for ranks (lektor<std::string >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'ranks' (type: lektor<std::string >)");
 }
 
 static int Faction_get_allowSlavesWeapons(lua_State* L)
@@ -59,8 +60,7 @@ static int Faction_get_fundamentalNPCType(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for fundamentalNPCType (CharacterTypeEnum)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'fundamentalNPCType' (type: CharacterTypeEnum)");
 }
 
 static int Faction_get_myLawEnforcementFaction(lua_State* L)
@@ -83,8 +83,7 @@ static int Faction_get_factionLeader(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for factionLeader (FactionLeader)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'factionLeader' (type: FactionLeader)");
 }
 
 static int Faction_get_diplomatMgr(lua_State* L)
@@ -92,8 +91,7 @@ static int Faction_get_diplomatMgr(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for diplomatMgr (FactionUniqueSquadManager*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'diplomatMgr' (type: FactionUniqueSquadManager*)");
 }
 
 static int Faction_get_relations(lua_State* L)
@@ -101,8 +99,7 @@ static int Faction_get_relations(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for relations (FactionRelations*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'relations' (type: FactionRelations*)");
 }
 
 static int Faction_get_factionOwnerships(lua_State* L)
@@ -117,8 +114,7 @@ static int Faction_get_warMgr(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for warMgr (FactionWarMgr*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'warMgr' (type: FactionWarMgr*)");
 }
 
 static int Faction_get_tradeCulture(lua_State* L)
@@ -126,8 +122,7 @@ static int Faction_get_tradeCulture(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for tradeCulture (TradeCulture)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'tradeCulture' (type: TradeCulture)");
 }
 
 static int Faction_get_raceSelector(lua_State* L)
@@ -135,8 +130,7 @@ static int Faction_get_raceSelector(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for raceSelector (FitnessSelector<GameData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'raceSelector' (type: FitnessSelector<GameData*>)");
 }
 
 static int Faction_get_name(lua_State* L)
@@ -167,8 +161,11 @@ static int Faction_get_platoonKillList(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    // TODO: Unsupported type for platoonKillList (lektor<Platoon*>)
-    lua_pushnil(L);
+    lua_createtable(L, b->platoonKillList.size(), 0);
+    for (uint32_t i = 0; i < b->platoonKillList.size(); ++i) {
+        pushObject<Platoon>(L, b->platoonKillList[i], PlatoonBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -176,8 +173,11 @@ static int Faction_get_platoonRemoveList(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    // TODO: Unsupported type for platoonRemoveList (lektor<Platoon*>)
-    lua_pushnil(L);
+    lua_createtable(L, b->platoonRemoveList.size(), 0);
+    for (uint32_t i = 0; i < b->platoonRemoveList.size(); ++i) {
+        pushObject<Platoon>(L, b->platoonRemoveList[i], PlatoonBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -185,8 +185,11 @@ static int Faction_get_activePlatoons(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    // TODO: Unsupported type for activePlatoons (lektor<Platoon*>)
-    lua_pushnil(L);
+    lua_createtable(L, b->activePlatoons.size(), 0);
+    for (uint32_t i = 0; i < b->activePlatoons.size(); ++i) {
+        pushObject<Platoon>(L, b->activePlatoons[i], PlatoonBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -194,8 +197,11 @@ static int Faction_get_unloadedPlatoons(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    // TODO: Unsupported type for unloadedPlatoons (lektor<Platoon*>)
-    lua_pushnil(L);
+    lua_createtable(L, b->unloadedPlatoons.size(), 0);
+    for (uint32_t i = 0; i < b->unloadedPlatoons.size(); ++i) {
+        pushObject<Platoon>(L, b->unloadedPlatoons[i], PlatoonBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -227,8 +233,7 @@ static int Faction_get_isAI(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for isAI (AIPlayer*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'isAI' (type: AIPlayer*)");
 }
 
 static int Faction_get_isPlayer(lua_State* L)
@@ -283,8 +288,7 @@ static int Faction_get_buildingSwaps(lua_State* L)
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
     // TODO: Unsupported type for buildingSwaps (lektor<Faction::BuildingSwaps>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'buildingSwaps' (type: lektor<Faction::BuildingSwaps>)");
 }
 
 // --- Setters for Faction ---
@@ -863,6 +867,56 @@ Skipped methods needing manual binding:
   line 141: void deactivatePlatoon(...) - unsupported arg type
   line 142: void activatePlatoon(...) - unsupported arg type
 */
+static int Faction_getSquadThatOwns(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    Building* what = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    Platoon* result = b->getSquadThatOwns(what);
+    return pushObject<Platoon>(L, result, PlatoonBinding::getMetatableName());
+}
+
+static int Faction_getActivePlatoons_method(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    const lektor<Platoon*>* result = b->getActivePlatoons();
+    if (!result) { lua_pushnil(L); return 1; }
+    lua_createtable(L, result->size(), 0);
+    for (uint32_t i = 0; i < result->size(); ++i) {
+        pushObject<Platoon>(L, result->operator[](i), PlatoonBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+static int Faction_getUnloadedPlatoons_method(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    const lektor<Platoon*>* result = b->getUnloadedPlatoons();
+    if (!result) { lua_pushnil(L); return 1; }
+    lua_createtable(L, result->size(), 0);
+    for (uint32_t i = 0; i < result->size(); ++i) {
+        pushObject<Platoon>(L, result->operator[](i), PlatoonBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+static int Faction_getAllActiveSquads(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    const lektor<Platoon*>* result = b->getAllActiveSquads();
+    if (!result) { lua_pushnil(L); return 1; }
+    lua_createtable(L, result->size(), 0);
+    for (uint32_t i = 0; i < result->size(); ++i) {
+        pushObject<Platoon>(L, result->operator[](i), PlatoonBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
 
 int FactionBinding::gc(lua_State* L)
 {
@@ -915,6 +969,10 @@ void FactionBinding::registerBinding(lua_State* L)
         { "updateActivePlatoons", FactionBinding::updateActivePlatoons },
         { "spawnSquadMissionsUpdate", FactionBinding::spawnSquadMissionsUpdate },
         { "_spawnASquad", FactionBinding::_spawnASquad },
+        { "getSquadThatOwns", Faction_getSquadThatOwns },
+        { "getActivePlatoons", Faction_getActivePlatoons_method },
+        { "getUnloadedPlatoons", Faction_getUnloadedPlatoons_method },
+        { "getAllActiveSquads", Faction_getAllActiveSquads },
         { 0, 0 }
     };
 

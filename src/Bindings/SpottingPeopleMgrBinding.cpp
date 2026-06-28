@@ -19,8 +19,7 @@ static int SpottingPeopleMgr_get_spottedPeople(lua_State* L)
     SpottingPeopleMgr* b = getB(L, 1);
     if (!b) return luaL_error(L, "SpottingPeopleMgr is nil");
     // TODO: Unsupported type for spottedPeople (std::map<hand, SensoryData::SpottingPeopleMgr::Spot, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, SensoryData::SpottingPeopleMgr::Spot>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'spottedPeople' (type: std::map<hand, SensoryData::SpottingPeopleMgr::Spot, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, SensoryData::SpottingPeopleMgr::Spot>, Ogre::GeneralAllocPolicy > >)");
 }
 
 // --- Setters for SpottingPeopleMgr ---

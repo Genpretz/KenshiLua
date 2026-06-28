@@ -17,8 +17,7 @@ static int MeshDataLookup_get_boneAssignments(lua_State* L)
     MeshDataLookup* b = getB(L, 1);
     if (!b) return luaL_error(L, "MeshDataLookup is nil");
     // TODO: Unsupported type for boneAssignments (boost::unordered::unordered_map<Ogre::IdString, lektor<lektor<int> >, boost::hash<Ogre::IdString>, std::equal_to<Ogre::IdString>, Ogre::STLAllocator<std::pair<Ogre::IdString const, lektor<lektor<int> > >, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'boneAssignments' (type: boost::unordered::unordered_map<Ogre::IdString, lektor<lektor<int> >, boost::hash<Ogre::IdString>, std::equal_to<Ogre::IdString>, Ogre::STLAllocator<std::pair<Ogre::IdString const, lektor<lektor<int> > >, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int MeshDataLookup_get_vertCount(lua_State* L)
@@ -26,8 +25,7 @@ static int MeshDataLookup_get_vertCount(lua_State* L)
     MeshDataLookup* b = getB(L, 1);
     if (!b) return luaL_error(L, "MeshDataLookup is nil");
     // TODO: Unsupported type for vertCount (unsigned __int64)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'vertCount' (type: unsigned __int64)");
 }
 
 static int MeshDataLookup_get_verts(lua_State* L)
@@ -35,8 +33,7 @@ static int MeshDataLookup_get_verts(lua_State* L)
     MeshDataLookup* b = getB(L, 1);
     if (!b) return luaL_error(L, "MeshDataLookup is nil");
     // TODO: Unsupported type for verts (Ogre::Vector3*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'verts' (type: Ogre::Vector3*)");
 }
 
 static int MeshDataLookup_get_uvs(lua_State* L)
@@ -44,8 +41,7 @@ static int MeshDataLookup_get_uvs(lua_State* L)
     MeshDataLookup* b = getB(L, 1);
     if (!b) return luaL_error(L, "MeshDataLookup is nil");
     // TODO: Unsupported type for uvs (Ogre::Vector2*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'uvs' (type: Ogre::Vector2*)");
 }
 
 // --- Setters for MeshDataLookup ---

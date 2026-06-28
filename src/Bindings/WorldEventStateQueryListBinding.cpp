@@ -17,8 +17,7 @@ static int WorldEventStateQueryList_get_statesList(lua_State* L)
     WorldEventStateQueryList* b = getB(L, 1);
     if (!b) return luaL_error(L, "WorldEventStateQueryList is nil");
     // TODO: Unsupported type for statesList (ogre_unordered_map<WorldEventStateQuery*, bool>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'statesList' (type: ogre_unordered_map<WorldEventStateQuery*, bool>::type)");
 }
 
 // --- Setters for WorldEventStateQueryList ---

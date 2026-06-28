@@ -17,8 +17,7 @@ static int VisibleObjectInfo_get_handle(lua_State* L)
     VisibleObjectInfo* b = getB(L, 1);
     if (!b) return luaL_error(L, "VisibleObjectInfo is nil");
     // TODO: Unsupported type for handle (hand)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'handle' (type: hand)");
 }
 
 static int VisibleObjectInfo_get_range(lua_State* L)

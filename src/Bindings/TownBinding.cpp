@@ -3,6 +3,8 @@
 #include "TownBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/Building/UseableStuffBinding.h"
 
 namespace KenshiLua
 {
@@ -33,8 +35,7 @@ static int Town_get_alarms(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for alarms (AlarmManager*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'alarms' (type: AlarmManager*)");
 }
 
 static int Town_get_instanceID(lua_State* L)
@@ -42,8 +43,7 @@ static int Town_get_instanceID(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for instanceID (InstanceID)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'instanceID' (type: InstanceID)");
 }
 
 static int Town_get_openToPublic(lua_State* L)
@@ -75,8 +75,7 @@ static int Town_get_gates(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for gates (ogre_unordered_set<hand>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'gates' (type: ogre_unordered_set<hand>::type)");
 }
 
 static int Town_get_playerHasBuildingsInThisTown(lua_State* L)
@@ -92,8 +91,7 @@ static int Town_get_powerInList(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for powerInList (Ogre::FastArray<hand>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'powerInList' (type: Ogre::FastArray<hand>)");
 }
 
 static int Town_get_powerOutList(lua_State* L)
@@ -101,8 +99,7 @@ static int Town_get_powerOutList(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for powerOutList (ogre_unordered_set<hand>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'powerOutList' (type: ogre_unordered_set<hand>::type)");
 }
 
 static int Town_get_batteryList(lua_State* L)
@@ -110,8 +107,7 @@ static int Town_get_batteryList(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for batteryList (ogre_unordered_set<hand>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'batteryList' (type: ogre_unordered_set<hand>::type)");
 }
 
 static int Town_get_batteryMode(lua_State* L)
@@ -191,8 +187,7 @@ static int Town_get__facilitesWeHaveHere(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for _facilitesWeHaveHere (TagsClass<BuildingDesignation>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property '_facilitesWeHaveHere' (type: TagsClass<BuildingDesignation>)");
 }
 
 static int Town_get_tradeCulture(lua_State* L)
@@ -200,8 +195,7 @@ static int Town_get_tradeCulture(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for tradeCulture (TradeCulture*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'tradeCulture' (type: TradeCulture*)");
 }
 
 static int Town_get_tradeGoodsMults(lua_State* L)
@@ -209,8 +203,7 @@ static int Town_get_tradeGoodsMults(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for tradeGoodsMults (ogre_unordered_map<GameData*, float>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'tradeGoodsMults' (type: ogre_unordered_map<GameData*, float>::type)");
 }
 
 static int Town_get_buildingMaterial(lua_State* L)
@@ -225,8 +218,7 @@ static int Town_get_distantTown(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for distantTown (DistantTown*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'distantTown' (type: DistantTown*)");
 }
 
 static int Town_get_nestSpots(lua_State* L)
@@ -234,8 +226,7 @@ static int Town_get_nestSpots(lua_State* L)
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
     // TODO: Unsupported type for nestSpots (lektor<Town::NestSpot>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'nestSpots' (type: lektor<Town::NestSpot>)");
 }
 
 static int Town_get_nestsLoaded(lua_State* L)
@@ -1115,10 +1106,30 @@ Skipped methods needing manual binding:
   line 440: bool removeNest(...) - unsupported arg type
   line 452: TownType getPlayerTownTypeEnum(...) - unsupported return type
   line 453: TagsClass<BuildingDesignation> facilitesWeHaveHere(...) - unsupported return type
-  line 455: bool powerBuilding(...) - unsupported arg type
   line 456: bool drainBattery(...) - unsupported arg type
   line 472: void _initialiseResidentData(...) - unsupported arg type
 */
+
+static int Town_addBuilding(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    UseableStuff* building = checkObject<UseableStuff>(L, 2, UseableStuffBinding::getMetatableName());
+    bool powerIn = lua_toboolean(L, 3) != 0;
+    bool powerOut = lua_toboolean(L, 4) != 0;
+    bool battery = lua_toboolean(L, 5) != 0;
+    b->addBuilding(building, powerIn, powerOut, battery);
+    return 0;
+}
+
+static int Town_removeBuilding(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    UseableStuff* building = checkObject<UseableStuff>(L, 2, UseableStuffBinding::getMetatableName());
+    b->removeBuilding(building);
+    return 0;
+}
 
 int TownBinding::gc(lua_State* L)
 {
@@ -1201,6 +1212,8 @@ void TownBinding::registerBinding(lua_State* L)
         { "_NV_getMapMarkerZoomLevel", TownBinding::_NV_getMapMarkerZoomLevel },
         { "recalculatePlayerTownLevel", TownBinding::recalculatePlayerTownLevel },
         { "deActivationCheck", TownBinding::deActivationCheck },
+        { "addBuilding", Town_addBuilding },
+        { "removeBuilding", Town_removeBuilding },
         { 0, 0 }
     };
 

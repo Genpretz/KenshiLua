@@ -26,8 +26,7 @@ static int DataPanelLine_Text_get_textAlign(lua_State* L)
     DataPanelLine_Text* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Text is nil");
     // TODO: Unsupported type for textAlign (MyGUI::Align)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'textAlign' (type: MyGUI::Align)");
 }
 
 static int DataPanelLine_Text_get_wordWrap(lua_State* L)

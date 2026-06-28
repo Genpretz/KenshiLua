@@ -5,6 +5,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharStatsBinding.h"
 #include "Bindings/FlockingToolsBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -20,8 +21,7 @@ static int CombatMovementController_get_characterCollisions(lua_State* L)
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
     // TODO: Unsupported type for characterCollisions (ogre_unordered_map<hand, float>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'characterCollisions' (type: ogre_unordered_map<hand, float>::type)");
 }
 
 static int CombatMovementController_get_movement(lua_State* L)
@@ -29,8 +29,7 @@ static int CombatMovementController_get_movement(lua_State* L)
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
     // TODO: Unsupported type for movement (CharMovement*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'movement' (type: CharMovement*)");
 }
 
 static int CombatMovementController_get_chaseMode(lua_State* L)
@@ -70,8 +69,7 @@ static int CombatMovementController_get_flockFilterX(lua_State* L)
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
     // TODO: Unsupported type for flockFilterX (MotionFilter)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'flockFilterX' (type: MotionFilter)");
 }
 
 static int CombatMovementController_get_flockFilterZ(lua_State* L)
@@ -79,8 +77,7 @@ static int CombatMovementController_get_flockFilterZ(lua_State* L)
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
     // TODO: Unsupported type for flockFilterZ (MotionFilter)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'flockFilterZ' (type: MotionFilter)");
 }
 
 static int CombatMovementController_get_flockingControl(lua_State* L)
@@ -277,18 +274,14 @@ static int CombatMovementController_get_lookAtCharacter(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    // TODO: Unsupported type for lookAtCharacter (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->lookAtCharacter);
 }
 
 static int CombatMovementController_get_combatTarget(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    // TODO: Unsupported type for combatTarget (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->combatTarget);
 }
 
 // --- Setters for CombatMovementController ---
@@ -546,14 +539,18 @@ static int CombatMovementController_set_lookAtCharacter(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for lookAtCharacter");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->lookAtCharacter = *val;
+    return 0;
 }
 
 static int CombatMovementController_set_combatTarget(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for combatTarget");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->combatTarget = *val;
+    return 0;
 }
 
 int CombatMovementControllerBinding::collisionUpdate(lua_State* L)

@@ -82,8 +82,7 @@ static int RelationData_get_stateVariables(lua_State* L)
     RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     // TODO: Unsupported type for stateVariables (std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'stateVariables' (type: std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >)");
 }
 
 // --- Setters for RelationData ---

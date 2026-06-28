@@ -2,6 +2,7 @@
 #include <kenshi/gui/GUIWindow.h>
 #include "GUIWindowBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -24,9 +25,7 @@ static int GUIWindow_get_selectedObject(lua_State* L)
 {
     GUIWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GUIWindow is nil");
-    // TODO: Unsupported type for selectedObject (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, instance->selectedObject);
 }
 
 // --- Setters for GUIWindow ---
@@ -41,7 +40,9 @@ static int GUIWindow_set_selectedObject(lua_State* L)
 {
     GUIWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GUIWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for selectedObject");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->selectedObject = *val;
+    return 0;
 }
 
 int GUIWindowBinding::_CONSTRUCTOR(lua_State* L)

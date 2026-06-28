@@ -19,8 +19,7 @@ static int DatapanelGUI_get_tabEvent(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
     // TODO: Unsupported type for tabEvent (MyGUI::delegates::CMultiDelegate2<DatapanelGUI*, int>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'tabEvent' (type: MyGUI::delegates::CMultiDelegate2<DatapanelGUI*, int>)");
 }
 
 static int DatapanelGUI_get_frequentUpdatesWanted(lua_State* L)
@@ -68,8 +67,7 @@ static int DatapanelGUI_get_content(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
     // TODO: Unsupported type for content (std::map<int, std::map<std::string, DataPanelLine*, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, DataPanelLine*>, Ogre::GeneralAllocPolicy > >, std::less<int>, Ogre::STLAllocator<std::pair<int const, std::map<std::string, DataPanelLine*, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, DataPanelLine*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'content' (type: std::map<int, std::map<std::string, DataPanelLine*, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, DataPanelLine*>, Ogre::GeneralAllocPolicy > >, std::less<int>, Ogre::STLAllocator<std::pair<int const, std::map<std::string, DataPanelLine*, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, DataPanelLine*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int DatapanelGUI_get_bottomLine(lua_State* L)
@@ -77,8 +75,7 @@ static int DatapanelGUI_get_bottomLine(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
     // TODO: Unsupported type for bottomLine (std::map<int, DataPanelLine*, std::less<int>, Ogre::STLAllocator<std::pair<int const, DataPanelLine*>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'bottomLine' (type: std::map<int, DataPanelLine*, std::less<int>, Ogre::STLAllocator<std::pair<int const, DataPanelLine*>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int DatapanelGUI_get_currentCategory(lua_State* L)
@@ -134,8 +131,7 @@ static int DatapanelGUI_get_tabs(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
     // TODO: Unsupported type for tabs (lektor<MyGUI::Button*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'tabs' (type: lektor<MyGUI::Button*>)");
 }
 
 static int DatapanelGUI_get_panelName(lua_State* L)

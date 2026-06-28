@@ -17,8 +17,7 @@ static int MedianFilter2DVector_get_filters(lua_State* L)
     MedianFilter2DVector* b = getB(L, 1);
     if (!b) return luaL_error(L, "MedianFilter2DVector is nil");
     // TODO: Unsupported type for filters (MedianFilter)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'filters' (type: MedianFilter)");
 }
 
 // --- Setters for MedianFilter2DVector ---

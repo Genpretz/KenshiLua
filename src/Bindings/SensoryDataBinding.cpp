@@ -26,8 +26,7 @@ static int SensoryData_get_seen(lua_State* L)
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
     // TODO: Unsupported type for seen (ogre_unordered_map<hand, SeenSomeone*>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'seen' (type: ogre_unordered_map<hand, SeenSomeone*>::type)");
 }
 
 static int SensoryData_get_numUnconsciousAllies(lua_State* L)
@@ -51,8 +50,7 @@ static int SensoryData_get_threats(lua_State* L)
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
     // TODO: Unsupported type for threats (lektor<hand>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'threats' (type: lektor<hand>)");
 }
 
 static int SensoryData_get_flockingList(lua_State* L)
@@ -60,8 +58,7 @@ static int SensoryData_get_flockingList(lua_State* L)
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
     // TODO: Unsupported type for flockingList (Ogre::vector<VisibleObjectInfo>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'flockingList' (type: Ogre::vector<VisibleObjectInfo>::type)");
 }
 
 static int SensoryData_get_totalThreatLevelPersonal(lua_State* L)
@@ -117,8 +114,7 @@ static int SensoryData_get_hearTestTimers(lua_State* L)
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
     // TODO: Unsupported type for hearTestTimers (std::map<hand, float, std::less<hand>, std::allocator<std::pair<hand const, float> > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'hearTestTimers' (type: std::map<hand, float, std::less<hand>, std::allocator<std::pair<hand const, float> > >)");
 }
 
 static int SensoryData_get_killList(lua_State* L)
@@ -126,8 +122,7 @@ static int SensoryData_get_killList(lua_State* L)
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
     // TODO: Unsupported type for killList (ogre_unordered_set<hand>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'killList' (type: ogre_unordered_set<hand>::type)");
 }
 
 static int SensoryData_get_currentAssessIndex(lua_State* L)
@@ -151,8 +146,7 @@ static int SensoryData_get_assessList(lua_State* L)
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
     // TODO: Unsupported type for assessList (ogre_unordered_set<hand>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'assessList' (type: ogre_unordered_set<hand>::type)");
 }
 
 static int SensoryData_get_me(lua_State* L)
@@ -167,8 +161,7 @@ static int SensoryData_get_spottedSneakingPeople(lua_State* L)
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
     // TODO: Unsupported type for spottedSneakingPeople (SensoryData::SpottingPeopleMgr)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'spottedSneakingPeople' (type: SensoryData::SpottingPeopleMgr)");
 }
 
 static int SensoryData_get_spottedSuspiciousPeople(lua_State* L)
@@ -176,8 +169,7 @@ static int SensoryData_get_spottedSuspiciousPeople(lua_State* L)
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
     // TODO: Unsupported type for spottedSuspiciousPeople (SensoryData::SpottingPeopleMgr)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'spottedSuspiciousPeople' (type: SensoryData::SpottingPeopleMgr)");
 }
 
 static int SensoryData_get_progressBar(lua_State* L)
@@ -185,8 +177,7 @@ static int SensoryData_get_progressBar(lua_State* L)
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
     // TODO: Unsupported type for progressBar (FloatingProgressBar*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'progressBar' (type: FloatingProgressBar*)");
 }
 
 static int SensoryData_get_progressBarStillNeeded(lua_State* L)
@@ -202,8 +193,7 @@ static int SensoryData_get_spottedGuyIndexForProgressBar(lua_State* L)
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
     // TODO: Unsupported type for spottedGuyIndexForProgressBar (hand)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'spottedGuyIndexForProgressBar' (type: hand)");
 }
 
 static int SensoryData_get_amSharingThisFrame(lua_State* L)

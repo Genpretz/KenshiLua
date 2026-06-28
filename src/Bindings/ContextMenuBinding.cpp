@@ -25,8 +25,7 @@ static int ContextMenu_get_orders(lua_State* L)
     ContextMenu* b = getB(L, 1);
     if (!b) return luaL_error(L, "ContextMenu is nil");
     // TODO: Unsupported type for orders (lektor<int>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'orders' (type: lektor<int>)");
 }
 
 static int ContextMenu_get_contextMenuName(lua_State* L)
@@ -42,8 +41,7 @@ static int ContextMenu_get_menuGUI(lua_State* L)
     ContextMenu* b = getB(L, 1);
     if (!b) return luaL_error(L, "ContextMenu is nil");
     // TODO: Unsupported type for menuGUI (ContextMenuGUI*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'menuGUI' (type: ContextMenuGUI*)");
 }
 
 static int ContextMenu_get_menuGUI2(lua_State* L)
@@ -51,8 +49,7 @@ static int ContextMenu_get_menuGUI2(lua_State* L)
     ContextMenu* b = getB(L, 1);
     if (!b) return luaL_error(L, "ContextMenu is nil");
     // TODO: Unsupported type for menuGUI2 (ContextMenuGUI*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'menuGUI2' (type: ContextMenuGUI*)");
 }
 
 static int ContextMenu_get_delayedDestroyFlag(lua_State* L)

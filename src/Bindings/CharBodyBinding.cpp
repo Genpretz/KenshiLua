@@ -4,8 +4,10 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharStatsBinding.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/HandBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/PlatoonBinding.h"
+#include "TaskerBinding.h"
 
 namespace KenshiLua
 {
@@ -21,8 +23,7 @@ static int CharBody_get_combatClass(lua_State* L)
     CharBody* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharBody is nil");
     // TODO: Unsupported type for combatClass (CombatClass*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'combatClass' (type: CombatClass*)");
 }
 
 static int CharBody_get_animation(lua_State* L)
@@ -30,8 +31,7 @@ static int CharBody_get_animation(lua_State* L)
     CharBody* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharBody is nil");
     // TODO: Unsupported type for animation (AnimationClass*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'animation' (type: AnimationClass*)");
 }
 
 static int CharBody_get_character(lua_State* L)
@@ -52,9 +52,7 @@ static int CharBody_get_target(lua_State* L)
 {
     CharBody* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharBody is nil");
-    // TODO: Unsupported type for target (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->target);
 }
 
 static int CharBody_get_gotItem(lua_State* L)
@@ -94,8 +92,7 @@ static int CharBody_get_ai(lua_State* L)
     CharBody* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharBody is nil");
     // TODO: Unsupported type for ai (AI*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'ai' (type: AI*)");
 }
 
 static int CharBody_get_movement(lua_State* L)
@@ -103,8 +100,7 @@ static int CharBody_get_movement(lua_State* L)
     CharBody* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharBody is nil");
     // TODO: Unsupported type for movement (CharMovement*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'movement' (type: CharMovement*)");
 }
 
 static int CharBody_get_frameTIME(lua_State* L)
@@ -120,8 +116,7 @@ static int CharBody_get_currentAction(lua_State* L)
     CharBody* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharBody is nil");
     // TODO: Unsupported type for currentAction (Tasker*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'currentAction' (type: Tasker*)");
 }
 
 static int CharBody_get_amIdle(lua_State* L)
@@ -165,7 +160,9 @@ static int CharBody_set_target(lua_State* L)
 {
     CharBody* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharBody is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for target");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->target = *val;
+    return 0;
 }
 
 static int CharBody_set_gotItem(lua_State* L)
@@ -473,6 +470,40 @@ int CharBodyBinding::_NV__endAction(lua_State* L)
     return 0;
 }
 
+static int CharBody_getCurrentAction(lua_State* L)
+{
+    CharBody* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharBody is nil");
+    Tasker* result = b->getCurrentAction();
+    return pushObject<Tasker>(L, result, TaskerBinding::getMetatableName());
+}
+
+static int CharBody_getCurrentActionOrMessage(lua_State* L)
+{
+    CharBody* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharBody is nil");
+    Tasker* result = b->getCurrentActionOrMessage();
+    return pushObject<Tasker>(L, result, TaskerBinding::getMetatableName());
+}
+
+static int CharBody_getHandle(lua_State* L)
+{
+    CharBody* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharBody is nil");
+    hand result = b->getHandle();
+    handBinding::push(L, result);
+    return 1;
+}
+
+static int CharBody_getCurrentSubject(lua_State* L)
+{
+    CharBody* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharBody is nil");
+    hand result = b->getCurrentSubject();
+    handBinding::push(L, result);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 26: CharBody* _CONSTRUCTOR(...) - unsupported return type
@@ -486,12 +517,8 @@ Skipped methods needing manual binding:
   line 44: CombatClass* getCombatClass(...) - unsupported return type
   line 53: CharBody* getCharBody(...) - unsupported return type
   line 54: CharBody* _NV_getCharBody(...) - unsupported return type
-  line 67: Tasker* getCurrentAction(...) - unsupported return type
-  line 68: Tasker* getCurrentActionOrMessage(...) - unsupported return type
-  line 72: hand getHandle(...) - unsupported return type
   line 76: void _move(...) - unsupported arg type
   line 77: void _patrol(...) - unsupported arg type
-  line 78: hand getCurrentSubject(...) - unsupported return type
 */
 
 int CharBodyBinding::gc(lua_State* L)
@@ -540,6 +567,10 @@ void CharBodyBinding::registerBinding(lua_State* L)
         { "getFaction", CharBodyBinding::getFaction },
         { "_endAction", CharBodyBinding::_endAction },
         { "_NV__endAction", CharBodyBinding::_NV__endAction },
+        { "getCurrentAction", CharBody_getCurrentAction },
+        { "getCurrentActionOrMessage", CharBody_getCurrentActionOrMessage },
+        { "getHandle", CharBody_getHandle },
+        { "getCurrentSubject", CharBody_getCurrentSubject },
         { 0, 0 }
     };
 

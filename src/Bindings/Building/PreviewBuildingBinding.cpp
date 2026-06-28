@@ -21,8 +21,7 @@ static int PreviewBuilding_get_parentNode(lua_State* L)
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
     // TODO: Unsupported type for parentNode (Ogre::SceneNode*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'parentNode' (type: Ogre::SceneNode*)");
 }
 
 static int PreviewBuilding_get_entitiesList(lua_State* L)
@@ -30,8 +29,7 @@ static int PreviewBuilding_get_entitiesList(lua_State* L)
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
     // TODO: Unsupported type for entitiesList (Ogre::vector<Ogre::Entity*>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'entitiesList' (type: Ogre::vector<Ogre::Entity*>::type)");
 }
 
 static int PreviewBuilding_get_footprints(lua_State* L)
@@ -39,8 +37,7 @@ static int PreviewBuilding_get_footprints(lua_State* L)
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
     // TODO: Unsupported type for footprints (lektor<Footprint>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'footprints' (type: lektor<Footprint>)");
 }
 
 static int PreviewBuilding_get_isCurrentlySnapped(lua_State* L)
@@ -63,8 +60,7 @@ static int PreviewBuilding_get_usageNodes(lua_State* L)
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
     // TODO: Unsupported type for usageNodes (lektor<FootprintNode>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'usageNodes' (type: lektor<FootprintNode>)");
 }
 
 static int PreviewBuilding_get_prospectingInformation(lua_State* L)
@@ -72,8 +68,7 @@ static int PreviewBuilding_get_prospectingInformation(lua_State* L)
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
     // TODO: Unsupported type for prospectingInformation (DatapanelGUI*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'prospectingInformation' (type: DatapanelGUI*)");
 }
 
 static int PreviewBuilding_get_prospectResource(lua_State* L)
@@ -208,8 +203,7 @@ static int PreviewBuilding_get_nodeResults(lua_State* L)
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
     // TODO: Unsupported type for nodeResults (lektor<PlacementResult>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'nodeResults' (type: lektor<PlacementResult>)");
 }
 
 static int PreviewBuilding_get_justBeenBuilt(lua_State* L)
@@ -254,8 +248,7 @@ static int PreviewBuilding_get_AABB(lua_State* L)
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
     // TODO: Unsupported type for AABB (Ogre::Aabb)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'AABB' (type: Ogre::Aabb)");
 }
 
 static int PreviewBuilding_get_buildDataPtr(lua_State* L)

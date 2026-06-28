@@ -18,8 +18,7 @@ static int FlockingTools_get_getOutOfTheWayOfCharacter(lua_State* L)
     FlockingTools* b = getB(L, 1);
     if (!b) return luaL_error(L, "FlockingTools is nil");
     // TODO: Unsupported type for getOutOfTheWayOfCharacter (hand)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'getOutOfTheWayOfCharacter' (type: hand)");
 }
 
 static int FlockingTools_get_currentPosition(lua_State* L)
@@ -42,8 +41,7 @@ static int FlockingTools_get_combatMover(lua_State* L)
     FlockingTools* b = getB(L, 1);
     if (!b) return luaL_error(L, "FlockingTools is nil");
     // TODO: Unsupported type for combatMover (CombatMovementController*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'combatMover' (type: CombatMovementController*)");
 }
 
 // --- Setters for FlockingTools ---

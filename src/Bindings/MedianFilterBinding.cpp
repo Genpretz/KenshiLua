@@ -41,8 +41,7 @@ static int MedianFilter_get_mHistoryBufferX(lua_State* L)
     MedianFilter* b = getB(L, 1);
     if (!b) return luaL_error(L, "MedianFilter is nil");
     // TODO: Unsupported type for mHistoryBufferX (std::deque<float, std::allocator<float> >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'mHistoryBufferX' (type: std::deque<float, std::allocator<float> >)");
 }
 
 // --- Setters for MedianFilter ---

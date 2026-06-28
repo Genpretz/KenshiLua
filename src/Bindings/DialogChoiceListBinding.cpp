@@ -17,8 +17,7 @@ static int DialogChoiceList_get_conversationChoices(lua_State* L)
     DialogChoiceList* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogChoiceList is nil");
     // TODO: Unsupported type for conversationChoices (lektor<DialogLineData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'conversationChoices' (type: lektor<DialogLineData*>)");
 }
 
 // --- Setters for DialogChoiceList ---

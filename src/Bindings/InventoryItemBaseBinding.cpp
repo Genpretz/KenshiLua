@@ -6,6 +6,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/InventoryBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -50,8 +51,7 @@ static int InventoryItemBase_get_inventoryPos(lua_State* L)
     InventoryItemBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventoryItemBase is nil");
     // TODO: Unsupported type for inventoryPos (iVector2)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'inventoryPos' (type: iVector2)");
 }
 
 static int InventoryItemBase_get_inventorySection(lua_State* L)
@@ -178,18 +178,14 @@ static int InventoryItemBase_get_properOwner(lua_State* L)
 {
     InventoryItemBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventoryItemBase is nil");
-    // TODO: Unsupported type for properOwner (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->properOwner);
 }
 
 static int InventoryItemBase_get__whosInventoryWeAreIn(lua_State* L)
 {
     InventoryItemBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventoryItemBase is nil");
-    // TODO: Unsupported type for _whosInventoryWeAreIn (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->_whosInventoryWeAreIn);
 }
 
 static int InventoryItemBase_get__isResearchArtifact(lua_State* L)
@@ -205,8 +201,7 @@ static int InventoryItemBase_get_itemGroup(lua_State* L)
     InventoryItemBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventoryItemBase is nil");
     // TODO: Unsupported type for itemGroup (BuildingItemGroup*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'itemGroup' (type: BuildingItemGroup*)");
 }
 
 // --- Setters for InventoryItemBase ---
@@ -370,14 +365,18 @@ static int InventoryItemBase_set_properOwner(lua_State* L)
 {
     InventoryItemBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventoryItemBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for properOwner");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->properOwner = *val;
+    return 0;
 }
 
 static int InventoryItemBase_set__whosInventoryWeAreIn(lua_State* L)
 {
     InventoryItemBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventoryItemBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _whosInventoryWeAreIn");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->_whosInventoryWeAreIn = *val;
+    return 0;
 }
 
 static int InventoryItemBase_set__isResearchArtifact(lua_State* L)

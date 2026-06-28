@@ -34,8 +34,7 @@ static int DataPanelLine_TextEditable_get_textAlign(lua_State* L)
     DataPanelLine_TextEditable* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
     // TODO: Unsupported type for textAlign (MyGUI::Align)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'textAlign' (type: MyGUI::Align)");
 }
 
 static int DataPanelLine_TextEditable_get_showKey(lua_State* L)

@@ -47,8 +47,7 @@ static int PlayerInterface_get_technology(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for technology (Research*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'technology' (type: Research*)");
 }
 
 static int PlayerInterface_get_selectedObjectsChangedThisFrame(lua_State* L)
@@ -64,8 +63,7 @@ static int PlayerInterface_get_contextMenu(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for contextMenu (ContextMenu)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'contextMenu' (type: ContextMenu)");
 }
 
 static int PlayerInterface_get_selectBox(lua_State* L)
@@ -73,8 +71,7 @@ static int PlayerInterface_get_selectBox(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for selectBox (SelectionBox)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'selectBox' (type: SelectionBox)");
 }
 
 static int PlayerInterface_get_moveMarker(lua_State* L)
@@ -82,8 +79,7 @@ static int PlayerInterface_get_moveMarker(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for moveMarker (MoveMarker*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'moveMarker' (type: MoveMarker*)");
 }
 
 static int PlayerInterface_get_selectedCharacter(lua_State* L)
@@ -98,8 +94,7 @@ static int PlayerInterface_get_aiOptions(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for aiOptions (PlayerInterface::AIOptions)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'aiOptions' (type: PlayerInterface::AIOptions)");
 }
 
 static int PlayerInterface_get_zonesVisibilities(lua_State* L)
@@ -107,8 +102,7 @@ static int PlayerInterface_get_zonesVisibilities(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for zonesVisibilities (ogre_unordered_map<ZoneMap*, unsigned char>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'zonesVisibilities' (type: ogre_unordered_map<ZoneMap*, unsigned char>::type)");
 }
 
 static int PlayerInterface_get_townsActive(lua_State* L)
@@ -116,8 +110,7 @@ static int PlayerInterface_get_townsActive(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for townsActive (ogre_unordered_set<TownBase*>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'townsActive' (type: ogre_unordered_set<TownBase*>::type)");
 }
 
 static int PlayerInterface_get_interiorsVisible(lua_State* L)
@@ -125,8 +118,7 @@ static int PlayerInterface_get_interiorsVisible(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for interiorsVisible (ogre_unordered_set<hand>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'interiorsVisible' (type: ogre_unordered_set<hand>::type)");
 }
 
 static int PlayerInterface_get_interiorsVisibleHash(lua_State* L)
@@ -189,8 +181,7 @@ static int PlayerInterface_get_selectedCharacters(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for selectedCharacters (ogre_unordered_set<hand>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'selectedCharacters' (type: ogre_unordered_set<hand>::type)");
 }
 
 static int PlayerInterface_get_selectedObject(lua_State* L)
@@ -236,8 +227,7 @@ static int PlayerInterface_get_levelEditor(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for levelEditor (LevelEditor*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'levelEditor' (type: LevelEditor*)");
 }
 
 static int PlayerInterface_get_participant(lua_State* L)
@@ -259,8 +249,7 @@ static int PlayerInterface_get_playerCharacters(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for playerCharacters (lektor<Character*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'playerCharacters' (type: lektor<Character*>)");
 }
 
 static int PlayerInterface_get_deadPlayerSquad(lua_State* L)
@@ -275,8 +264,7 @@ static int PlayerInterface_get_placementObject(lua_State* L)
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
     // TODO: Unsupported type for placementObject (PlacementObject*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'placementObject' (type: PlacementObject*)");
 }
 
 static int PlayerInterface_get_characterEditorMode(lua_State* L)

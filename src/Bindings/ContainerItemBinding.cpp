@@ -69,8 +69,7 @@ static int ContainerItem_get_racesExclude(lua_State* L)
     ContainerItem* b = getB(L, 1);
     if (!b) return luaL_error(L, "ContainerItem is nil");
     // TODO: Unsupported type for racesExclude (ogre_unordered_set<GameData*>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'racesExclude' (type: ogre_unordered_set<GameData*>::type)");
 }
 
 static int ContainerItem_get_inventory(lua_State* L)

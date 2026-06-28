@@ -17,8 +17,7 @@ static int SimpleTimeStamper_get_timer(lua_State* L)
     SimpleTimeStamper* b = getB(L, 1);
     if (!b) return luaL_error(L, "SimpleTimeStamper is nil");
     // TODO: Unsupported type for timer (CPerfTimer)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'timer' (type: CPerfTimer)");
 }
 
 // --- Setters for SimpleTimeStamper ---

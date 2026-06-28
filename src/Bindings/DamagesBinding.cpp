@@ -147,7 +147,13 @@ Skipped methods needing manual binding:
 
 int DamagesBinding::gc(lua_State* L)
 {
-    // Implementation depends on ownership model
+    void** ud = (void**)lua_touserdata(L, 1);
+    if (ud && *ud) {
+        Damages* d = (Damages*)*ud;
+        d->~Damages();
+        ::operator delete(d);
+        *ud = nullptr;
+    }
     return 0;
 }
 

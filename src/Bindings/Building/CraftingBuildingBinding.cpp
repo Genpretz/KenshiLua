@@ -6,6 +6,7 @@ class CraftingItem {};
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/ItemBinding.h"
 #include "Bindings/Building/ProductionBuildingBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -29,8 +30,7 @@ static int CraftingBuilding_get_crafting(lua_State* L)
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
     // TODO: Unsupported type for crafting (std::deque<CraftingItem, std::allocator<CraftingItem> >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'crafting' (type: std::deque<CraftingItem, std::allocator<CraftingItem> >)");
 }
 
 static int CraftingBuilding_get_specialCraftItemType(lua_State* L)
@@ -53,9 +53,7 @@ static int CraftingBuilding_get_whosCrafting(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-    // TODO: Unsupported type for whosCrafting (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, instance->whosCrafting);
 }
 
 static int CraftingBuilding_get_itemCrafted(lua_State* L)
@@ -92,8 +90,11 @@ static int CraftingBuilding_get_inItems(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-    // TODO: Unsupported type for inItems (lektor<Item*>)
-    lua_pushnil(L);
+    lua_createtable(L, instance->inItems.size(), 0);
+    for (uint32_t i = 0; i < instance->inItems.size(); ++i) {
+        pushObject<Item>(L, instance->inItems[i], ItemBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -102,8 +103,7 @@ static int CraftingBuilding_get_partialItems(lua_State* L)
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
     // TODO: Unsupported type for partialItems (ogre_unordered_map<GameData*, float>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'partialItems' (type: ogre_unordered_map<GameData*, float>::type)");
 }
 
 // --- Setters for CraftingBuilding ---
@@ -142,7 +142,9 @@ static int CraftingBuilding_set_whosCrafting(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for whosCrafting");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->whosCrafting = *val;
+    return 0;
 }
 
 static int CraftingBuilding_set_itemCrafted(lua_State* L)

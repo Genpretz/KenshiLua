@@ -49,8 +49,7 @@ static int GameDataHeader_get_dependencies(lua_State* L)
     GameDataHeader* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameDataHeader is nil");
     // TODO: Unsupported type for dependencies (lektor<std::string >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'dependencies' (type: lektor<std::string >)");
 }
 
 static int GameDataHeader_get_references(lua_State* L)
@@ -58,8 +57,7 @@ static int GameDataHeader_get_references(lua_State* L)
     GameDataHeader* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameDataHeader is nil");
     // TODO: Unsupported type for references (lektor<std::string >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'references' (type: lektor<std::string >)");
 }
 
 // --- Setters for GameDataHeader ---

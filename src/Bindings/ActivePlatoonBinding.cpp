@@ -7,6 +7,8 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/PlayerInterfaceBinding.h"
+#include "TaskerBinding.h"
+#include "RootObjectBinding.h"
 
 namespace KenshiLua
 {
@@ -22,8 +24,7 @@ static int ActivePlatoon_get__groupSense(lua_State* L)
     ActivePlatoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "ActivePlatoon is nil");
     // TODO: Unsupported type for _groupSense (GroupSense*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property '_groupSense' (type: GroupSense*)");
 }
 
 static int ActivePlatoon_get_isAnimalsOnly(lua_State* L)
@@ -46,8 +47,7 @@ static int ActivePlatoon_get_characterHandles(lua_State* L)
     ActivePlatoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "ActivePlatoon is nil");
     // TODO: Unsupported type for characterHandles (HandleList*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'characterHandles' (type: HandleList*)");
 }
 
 static int ActivePlatoon_get_p_TIME(lua_State* L)
@@ -63,8 +63,7 @@ static int ActivePlatoon_get_lastActiveZone(lua_State* L)
     ActivePlatoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "ActivePlatoon is nil");
     // TODO: Unsupported type for lastActiveZone (ZoneMap*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'lastActiveZone' (type: ZoneMap*)");
 }
 
 static int ActivePlatoon_get__myMemory(lua_State* L)
@@ -72,8 +71,7 @@ static int ActivePlatoon_get__myMemory(lua_State* L)
     ActivePlatoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "ActivePlatoon is nil");
     // TODO: Unsupported type for _myMemory (CharacterMemory*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property '_myMemory' (type: CharacterMemory*)");
 }
 
 static int ActivePlatoon_get_squadleader(lua_State* L)
@@ -110,9 +108,7 @@ static int ActivePlatoon_get_currentGoal(lua_State* L)
 {
     ActivePlatoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "ActivePlatoon is nil");
-    // TODO: Unsupported type for currentGoal (Tasker*)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<Tasker>(L, b->currentGoal, TaskerBinding::getMetatableName());
 }
 
 static int ActivePlatoon_get_positionMoved(lua_State* L)
@@ -240,7 +236,12 @@ static int ActivePlatoon_set_currentGoal(lua_State* L)
 {
     ActivePlatoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "ActivePlatoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for currentGoal");
+    if (lua_isnil(L, 2)) {
+        b->currentGoal = nullptr;
+    } else {
+        b->currentGoal = checkObject<Tasker>(L, 2, TaskerBinding::getMetatableName());
+    }
+    return 0;
 }
 
 static int ActivePlatoon_set_positionMoved(lua_State* L)
@@ -667,6 +668,75 @@ Skipped methods needing manual binding:
   line 286: void loadInstance(...) - unsupported arg type
   line 287: void _NV_loadInstance(...) - unsupported arg type
 */
+static int ActivePlatoon_removeObject(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->removeObject(c);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+static int ActivePlatoon__NV_removeObject(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->_NV_removeObject(c);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+static int ActivePlatoon_addActiveObject(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->addActiveObject(c);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+static int ActivePlatoon__NV_addActiveObject(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->_NV_addActiveObject(c);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+static int ActivePlatoon_addCharacterAt(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    int index = (int)luaL_checkinteger(L, 3);
+    b->addCharacterAt(c, index);
+    return 0;
+}
+
+static int ActivePlatoon_setSquadLeader(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->setSquadLeader(who);
+    return 0;
+}
+
+static int ActivePlatoon_getName(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    const std::string& result = b->getName();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+
 
 int ActivePlatoonBinding::gc(lua_State* L)
 {
@@ -726,6 +796,13 @@ void ActivePlatoonBinding::registerBinding(lua_State* L)
         { "saveToDisk", ActivePlatoonBinding::saveToDisk },
         { "calculateCurrentPos", ActivePlatoonBinding::calculateCurrentPos },
         { "_checkForUniqueCharactersOnUnload", ActivePlatoonBinding::_checkForUniqueCharactersOnUnload },
+        { "removeObject", ActivePlatoon_removeObject },
+        { "_NV_removeObject", ActivePlatoon__NV_removeObject },
+        { "addActiveObject", ActivePlatoon_addActiveObject },
+        { "_NV_addActiveObject", ActivePlatoon__NV_addActiveObject },
+        { "addCharacterAt", ActivePlatoon_addCharacterAt },
+        { "setSquadLeader", ActivePlatoon_setSquadLeader },
+        { "getName", ActivePlatoon_getName },
         { 0, 0 }
     };
 

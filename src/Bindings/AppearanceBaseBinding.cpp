@@ -21,8 +21,7 @@ static int AppearanceBase_get_slots(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for slots (const boost::unordered::unordered_map<std::string, AttachmentData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachmentData*>, Ogre::GeneralAllocPolicy > >*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'slots' (type: const boost::unordered::unordered_map<std::string, AttachmentData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachmentData*>, Ogre::GeneralAllocPolicy > >*)");
 }
 
 static int AppearanceBase_get_attachedObjects(lua_State* L)
@@ -30,8 +29,7 @@ static int AppearanceBase_get_attachedObjects(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for attachedObjects (boost::unordered::unordered_map<std::string, AttachedEntity*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachedEntity*>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'attachedObjects' (type: boost::unordered::unordered_map<std::string, AttachedEntity*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachedEntity*>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int AppearanceBase_get_attachedHarpoons(lua_State* L)
@@ -39,8 +37,7 @@ static int AppearanceBase_get_attachedHarpoons(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for attachedHarpoons (Ogre::FastArray<Harpoon*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'attachedHarpoons' (type: Ogre::FastArray<Harpoon*>)");
 }
 
 static int AppearanceBase_get_msgClearHarpoons(lua_State* L)
@@ -56,8 +53,7 @@ static int AppearanceBase_get_attachedEffects(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for attachedEffects (Ogre::FastArray<AttachedEffect*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'attachedEffects' (type: Ogre::FastArray<AttachedEffect*>)");
 }
 
 static int AppearanceBase_get_attachedEffectsToRemove(lua_State* L)
@@ -65,8 +61,7 @@ static int AppearanceBase_get_attachedEffectsToRemove(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for attachedEffectsToRemove (Ogre::FastArray<AttachedEffect*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'attachedEffectsToRemove' (type: Ogre::FastArray<AttachedEffect*>)");
 }
 
 static int AppearanceBase_get_woundsList(lua_State* L)
@@ -74,8 +69,7 @@ static int AppearanceBase_get_woundsList(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for woundsList (Ogre::FastArray<Wound*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'woundsList' (type: Ogre::FastArray<Wound*>)");
 }
 
 static int AppearanceBase_get_woundsListMutex(lua_State* L)
@@ -92,8 +86,7 @@ static int AppearanceBase_get_body(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for body (Ogre::Entity*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'body' (type: Ogre::Entity*)");
 }
 
 static int AppearanceBase_get_bodyLoader(lua_State* L)
@@ -101,8 +94,7 @@ static int AppearanceBase_get_bodyLoader(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for bodyLoader (Ogre::Entity*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'bodyLoader' (type: Ogre::Entity*)");
 }
 
 static int AppearanceBase_get_isCreatingBody(lua_State* L)
@@ -149,8 +141,7 @@ static int AppearanceBase_get_bodyMaterial(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for bodyMaterial (Ogre::SharedPtr<Ogre::Material>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'bodyMaterial' (type: Ogre::SharedPtr<Ogre::Material>)");
 }
 
 static int AppearanceBase_get_animation(lua_State* L)
@@ -158,8 +149,7 @@ static int AppearanceBase_get_animation(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for animation (AnimationClass*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'animation' (type: AnimationClass*)");
 }
 
 static int AppearanceBase_get_female(lua_State* L)
@@ -207,8 +197,7 @@ static int AppearanceBase_get_appearanceData(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for appearanceData (GameDataCopyStandalone*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'appearanceData' (type: GameDataCopyStandalone*)");
 }
 
 static int AppearanceBase_get_raceData(lua_State* L)
@@ -245,8 +234,7 @@ static int AppearanceBase_get_waterline(lua_State* L)
     AppearanceBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AppearanceBase is nil");
     // TODO: Unsupported type for waterline (Ogre::Vector4)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'waterline' (type: Ogre::Vector4)");
 }
 
 static int AppearanceBase_get_waterLineFadeTimer(lua_State* L)

@@ -19,8 +19,7 @@ static int HasRoomCache_get_itemStates(lua_State* L)
     HasRoomCache* b = getB(L, 1);
     if (!b) return luaL_error(L, "HasRoomCache is nil");
     // TODO: Unsupported type for itemStates (std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'itemStates' (type: std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >)");
 }
 
 // --- Setters for HasRoomCache ---

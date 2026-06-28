@@ -4,6 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/PlatoonBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -19,8 +20,7 @@ static int Ownerships_get_slaves(lua_State* L)
     Ownerships* b = getB(L, 1);
     if (!b) return luaL_error(L, "Ownerships is nil");
     // TODO: Unsupported type for slaves (std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'slaves' (type: std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int Ownerships_get__homeTown(lua_State* L)
@@ -28,17 +28,14 @@ static int Ownerships_get__homeTown(lua_State* L)
     Ownerships* b = getB(L, 1);
     if (!b) return luaL_error(L, "Ownerships is nil");
     // TODO: Unsupported type for _homeTown (TownBase*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property '_homeTown' (type: TownBase*)");
 }
 
 static int Ownerships_get__homeBuilding(lua_State* L)
 {
     Ownerships* b = getB(L, 1);
     if (!b) return luaL_error(L, "Ownerships is nil");
-    // TODO: Unsupported type for _homeBuilding (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->_homeBuilding);
 }
 
 static int Ownerships_get_stuff(lua_State* L)
@@ -46,8 +43,7 @@ static int Ownerships_get_stuff(lua_State* L)
     Ownerships* b = getB(L, 1);
     if (!b) return luaL_error(L, "Ownerships is nil");
     // TODO: Unsupported type for stuff (lektor<hand>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'stuff' (type: lektor<hand>)");
 }
 
 static int Ownerships_get_faction(lua_State* L)
@@ -69,8 +65,7 @@ static int Ownerships_get_occupiedTown(lua_State* L)
     Ownerships* b = getB(L, 1);
     if (!b) return luaL_error(L, "Ownerships is nil");
     // TODO: Unsupported type for occupiedTown (TownBase*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'occupiedTown' (type: TownBase*)");
 }
 
 static int Ownerships_get_money(lua_State* L)
@@ -100,7 +95,9 @@ static int Ownerships_set__homeBuilding(lua_State* L)
 {
     Ownerships* b = getB(L, 1);
     if (!b) return luaL_error(L, "Ownerships is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _homeBuilding");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->_homeBuilding = *val;
+    return 0;
 }
 
 static int Ownerships_set_stuff(lua_State* L)

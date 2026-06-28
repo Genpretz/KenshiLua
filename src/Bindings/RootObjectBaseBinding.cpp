@@ -8,6 +8,9 @@
 #include "Bindings/FactionBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/OwnershipsBinding.h"
+#include "Bindings/HandBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/ActivePlatoonBinding.h"
 
 namespace KenshiLua
 {
@@ -60,9 +63,7 @@ static int RootObjectBase_get_handle(lua_State* L)
 {
     RootObjectBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectBase is nil");
-    // TODO: Unsupported type for handle (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->handle);
 }
 
 // --- Setters for RootObjectBase ---
@@ -108,7 +109,9 @@ static int RootObjectBase_set_handle(lua_State* L)
 {
     RootObjectBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for handle");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->handle = *val;
+    return 0;
 }
 
 int RootObjectBaseBinding::_DESTRUCTOR(lua_State* L)
@@ -416,6 +419,57 @@ Skipped methods needing manual binding:
   line 74: void _NV_setFaction(...) - unsupported arg type
 */
 
+static int RootObjectBase_getHandle(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    const hand& result = b->getHandle();
+    handBinding::push(L, result);
+    return 1;
+}
+
+static int RootObjectBase_getCurrentTownLocation(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    TownBase* result = b->getCurrentTownLocation();
+    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
+}
+
+static int RootObjectBase__NV_getCurrentTownLocation(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    TownBase* result = b->_NV_getCurrentTownLocation();
+    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
+}
+
+static int RootObjectBase_setFaction(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    ActivePlatoon* a = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        a = checkObject<ActivePlatoon>(L, 3, ActivePlatoonBinding::getMetatableName());
+    }
+    b->setFaction(f, a);
+    return 0;
+}
+
+static int RootObjectBase__NV_setFaction(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    ActivePlatoon* a = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        a = checkObject<ActivePlatoon>(L, 3, ActivePlatoonBinding::getMetatableName());
+    }
+    b->_NV_setFaction(f, a);
+    return 0;
+}
+
 int RootObjectBaseBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -466,6 +520,11 @@ void RootObjectBaseBinding::registerBinding(lua_State* L)
         { "_NV_getFloor", RootObjectBaseBinding::_NV_getFloor },
         { "getOwnerships", RootObjectBaseBinding::getOwnerships },
         { "_NV_getOwnerships", RootObjectBaseBinding::_NV_getOwnerships },
+        { "getHandle", RootObjectBase_getHandle },
+        { "getCurrentTownLocation", RootObjectBase_getCurrentTownLocation },
+        { "_NV_getCurrentTownLocation", RootObjectBase__NV_getCurrentTownLocation },
+        { "setFaction", RootObjectBase_setFaction },
+        { "_NV_setFaction", RootObjectBase__NV_setFaction },
         { 0, 0 }
     };
 

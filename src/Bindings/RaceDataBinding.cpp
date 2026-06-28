@@ -18,8 +18,7 @@ static int RaceData_get_specialFoods(lua_State* L)
     RaceData* b = getB(L, 1);
     if (!b) return luaL_error(L, "RaceData is nil");
     // TODO: Unsupported type for specialFoods (ogre_unordered_set<GameData*>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'specialFoods' (type: ogre_unordered_set<GameData*>::type)");
 }
 
 static int RaceData_get_data(lua_State* L)
@@ -218,8 +217,7 @@ static int RaceData_get_bloodColour(lua_State* L)
     RaceData* b = getB(L, 1);
     if (!b) return luaL_error(L, "RaceData is nil");
     // TODO: Unsupported type for bloodColour (Ogre::ColourValue)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'bloodColour' (type: Ogre::ColourValue)");
 }
 
 static int RaceData_get_canGoIndoors(lua_State* L)
@@ -235,8 +233,7 @@ static int RaceData_get_statMods(lua_State* L)
     RaceData* b = getB(L, 1);
     if (!b) return luaL_error(L, "RaceData is nil");
     // TODO: Unsupported type for statMods (ogre_unordered_map<StatsEnumerated, float>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'statMods' (type: ogre_unordered_map<StatsEnumerated, float>::type)");
 }
 
 static int RaceData_get_weatherImmunities(lua_State* L)
@@ -244,8 +241,7 @@ static int RaceData_get_weatherImmunities(lua_State* L)
     RaceData* b = getB(L, 1);
     if (!b) return luaL_error(L, "RaceData is nil");
     // TODO: Unsupported type for weatherImmunities (ogre_unordered_set<WeatherAffecting>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'weatherImmunities' (type: ogre_unordered_set<WeatherAffecting>::type)");
 }
 
 static int RaceData_get_raceGroup(lua_State* L)
@@ -253,8 +249,7 @@ static int RaceData_get_raceGroup(lua_State* L)
     RaceData* b = getB(L, 1);
     if (!b) return luaL_error(L, "RaceData is nil");
     // TODO: Unsupported type for raceGroup (RaceGroupData*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'raceGroup' (type: RaceGroupData*)");
 }
 
 // --- Setters for RaceData ---

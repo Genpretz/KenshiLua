@@ -19,8 +19,7 @@ static int LockedArmour_get_lock(lua_State* L)
     LockedArmour* b = getB(L, 1);
     if (!b) return luaL_error(L, "LockedArmour is nil");
     // TODO: Unsupported type for lock (DoorLock*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'lock' (type: DoorLock*)");
 }
 
 // --- Setters for LockedArmour ---

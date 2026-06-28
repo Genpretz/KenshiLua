@@ -17,8 +17,7 @@ static int SelectionBox_get_startPos(lua_State* L)
     SelectionBox* b = getB(L, 1);
     if (!b) return luaL_error(L, "SelectionBox is nil");
     // TODO: Unsupported type for startPos (Ogre::Vector2)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'startPos' (type: Ogre::Vector2)");
 }
 
 static int SelectionBox_get_volume(lua_State* L)
@@ -26,8 +25,7 @@ static int SelectionBox_get_volume(lua_State* L)
     SelectionBox* b = getB(L, 1);
     if (!b) return luaL_error(L, "SelectionBox is nil");
     // TODO: Unsupported type for volume (Ogre::PlaneBoundedVolume)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'volume' (type: Ogre::PlaneBoundedVolume)");
 }
 
 static int SelectionBox_get_widget(lua_State* L)

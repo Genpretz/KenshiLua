@@ -57,8 +57,7 @@ static int DialogueSpeechBubble_get_baseSize(lua_State* L)
     DialogueSpeechBubble* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
     // TODO: Unsupported type for baseSize (MyGUI::types::TSize<int>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'baseSize' (type: MyGUI::types::TSize<int>)");
 }
 
 // --- Setters for DialogueSpeechBubble ---

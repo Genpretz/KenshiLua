@@ -58,8 +58,7 @@ static int ConstructionState_get_mats(lua_State* L)
     ConstructionState* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ConstructionState is nil");
     // TODO: Unsupported type for mats (lektor<ConstructionState::BuildMaterial*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'mats' (type: lektor<ConstructionState::BuildMaterial*>)");
 }
 
 static int ConstructionState_get_totalMats(lua_State* L)

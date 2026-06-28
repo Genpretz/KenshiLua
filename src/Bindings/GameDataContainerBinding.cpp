@@ -26,8 +26,7 @@ static int GameDataContainer_get_gamedataCatName(lua_State* L)
     GameDataContainer* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameDataContainer is nil");
     // TODO: Unsupported type for gamedataCatName (boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'gamedataCatName' (type: boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int GameDataContainer_get_gamedataID(lua_State* L)
@@ -35,8 +34,7 @@ static int GameDataContainer_get_gamedataID(lua_State* L)
     GameDataContainer* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameDataContainer is nil");
     // TODO: Unsupported type for gamedataID (ogre_unordered_map<int, GameData*>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'gamedataID' (type: ogre_unordered_map<int, GameData*>::type)");
 }
 
 static int GameDataContainer_get_gamedataCatSID(lua_State* L)
@@ -44,8 +42,7 @@ static int GameDataContainer_get_gamedataCatSID(lua_State* L)
     GameDataContainer* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameDataContainer is nil");
     // TODO: Unsupported type for gamedataCatSID (boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'gamedataCatSID' (type: boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int GameDataContainer_get_gamedataSID(lua_State* L)
@@ -53,8 +50,7 @@ static int GameDataContainer_get_gamedataSID(lua_State* L)
     GameDataContainer* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameDataContainer is nil");
     // TODO: Unsupported type for gamedataSID (boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'gamedataSID' (type: boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int GameDataContainer_get_mainList(lua_State* L)
@@ -62,8 +58,7 @@ static int GameDataContainer_get_mainList(lua_State* L)
     GameDataContainer* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameDataContainer is nil");
     // TODO: Unsupported type for mainList (ogre_unordered_set<GameData*>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'mainList' (type: ogre_unordered_set<GameData*>::type)");
 }
 
 static int GameDataContainer_get_name(lua_State* L)

@@ -50,8 +50,7 @@ static int Footprint_get_ent(lua_State* L)
     Footprint* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Footprint is nil");
     // TODO: Unsupported type for ent (Ogre::Entity*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'ent' (type: Ogre::Entity*)");
 }
 
 static int Footprint_get_box(lua_State* L)
@@ -59,8 +58,7 @@ static int Footprint_get_box(lua_State* L)
     Footprint* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Footprint is nil");
     // TODO: Unsupported type for box (NxBox)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'box' (type: NxBox)");
 }
 
 static int Footprint_get_pos(lua_State* L)
@@ -100,8 +98,7 @@ static int Footprint_get_parent(lua_State* L)
     Footprint* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Footprint is nil");
     // TODO: Unsupported type for parent (PreviewBuilding*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'parent' (type: PreviewBuilding*)");
 }
 
 static int Footprint_get_corners(lua_State* L)
@@ -109,8 +106,7 @@ static int Footprint_get_corners(lua_State* L)
     Footprint* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Footprint is nil");
     // TODO: Unsupported type for corners (Ogre::vector<Ogre::Vector3>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'corners' (type: Ogre::vector<Ogre::Vector3>::type)");
 }
 
 // --- Setters for Footprint ---

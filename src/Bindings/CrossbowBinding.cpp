@@ -17,8 +17,7 @@ static int Crossbow_get_gunClass(lua_State* L)
     Crossbow* b = getB(L, 1);
     if (!b) return luaL_error(L, "Crossbow is nil");
     // TODO: Unsupported type for gunClass (GunClass*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'gunClass' (type: GunClass*)");
 }
 
 // --- Setters for Crossbow ---

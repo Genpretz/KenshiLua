@@ -3,6 +3,7 @@
 #include "CharMovementBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
+#include "HandBinding.h"
 
 namespace KenshiLua
 {
@@ -26,8 +27,7 @@ static int CharMovement_get_combatMover(lua_State* L)
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
     // TODO: Unsupported type for combatMover (CombatMovementController)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'combatMover' (type: CombatMovementController)");
 }
 
 static int CharMovement_get_combatMover2(lua_State* L)
@@ -35,8 +35,7 @@ static int CharMovement_get_combatMover2(lua_State* L)
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
     // TODO: Unsupported type for combatMover2 (FormationMover)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'combatMover2' (type: FormationMover)");
 }
 
 static int CharMovement_get_flockingTools(lua_State* L)
@@ -44,8 +43,7 @@ static int CharMovement_get_flockingTools(lua_State* L)
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
     // TODO: Unsupported type for flockingTools (FlockingTools)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'flockingTools' (type: FlockingTools)");
 }
 
 static int CharMovement_get_formation(lua_State* L)
@@ -53,8 +51,7 @@ static int CharMovement_get_formation(lua_State* L)
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
     // TODO: Unsupported type for formation (Formation*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'formation' (type: Formation*)");
 }
 
 static int CharMovement_get_enemyFormation(lua_State* L)
@@ -62,8 +59,7 @@ static int CharMovement_get_enemyFormation(lua_State* L)
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
     // TODO: Unsupported type for enemyFormation (Formation*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'enemyFormation' (type: Formation*)");
 }
 
 static int CharMovement_get_havokCharacter(lua_State* L)
@@ -71,8 +67,7 @@ static int CharMovement_get_havokCharacter(lua_State* L)
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
     // TODO: Unsupported type for havokCharacter (HavokCharacter*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'havokCharacter' (type: HavokCharacter*)");
 }
 
 static int CharMovement_get_tracer(lua_State* L)
@@ -80,8 +75,7 @@ static int CharMovement_get_tracer(lua_State* L)
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
     // TODO: Unsupported type for tracer (ConstantTracerT*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'tracer' (type: ConstantTracerT*)");
 }
 
 static int CharMovement_get_dontEverRecreateMe(lua_State* L)
@@ -104,9 +98,7 @@ static int CharMovement_get_building(lua_State* L)
 {
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
-    // TODO: Unsupported type for building (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->building);
 }
 
 static int CharMovement_get_initCheck(lua_State* L)
@@ -178,8 +170,7 @@ static int CharMovement_get_movementMode(lua_State* L)
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
     // TODO: Unsupported type for movementMode (MovementMode)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'movementMode' (type: MovementMode)");
 }
 
 static int CharMovement_get_animationOverride(lua_State* L)
@@ -219,8 +210,7 @@ static int CharMovement_get_animation(lua_State* L)
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
     // TODO: Unsupported type for animation (AnimationClass*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'animation' (type: AnimationClass*)");
 }
 
 static int CharMovement_get_character(lua_State* L)
@@ -235,8 +225,7 @@ static int CharMovement_get_clickHull(lua_State* L)
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
     // TODO: Unsupported type for clickHull (PhysicsHullT*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'clickHull' (type: PhysicsHullT*)");
 }
 
 // --- Setters for CharMovement ---
@@ -317,7 +306,8 @@ static int CharMovement_set_building(lua_State* L)
 {
     CharMovement* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharMovement is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for building");
+    b->building = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
 }
 
 static int CharMovement_set_initCheck(lua_State* L)
@@ -1070,6 +1060,24 @@ Skipped methods needing manual binding:
   line 476: NxControllerAction _NV_onControllerHit(...) - unsupported return type
 */
 
+static int CharMovement_getHandle(lua_State* L)
+{
+    CharMovement* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharMovement is nil");
+    hand result = b->getHandle();
+    handBinding::push(L, result);
+    return 1;
+}
+
+static int CharMovement__NV_getHandle(lua_State* L)
+{
+    CharMovement* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharMovement is nil");
+    hand result = b->_NV_getHandle();
+    handBinding::push(L, result);
+    return 1;
+}
+
 int CharMovementBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -1149,6 +1157,8 @@ void CharMovementBinding::registerBinding(lua_State* L)
         { "toGround", CharMovementBinding::toGround },
         { "updateGroundMaterial", CharMovementBinding::updateGroundMaterial },
         { "getCombatMoveSpeedMult", CharMovementBinding::getCombatMoveSpeedMult },
+        { "getHandle", CharMovement_getHandle },
+        { "_NV_getHandle", CharMovement__NV_getHandle },
         { 0, 0 }
     };
 

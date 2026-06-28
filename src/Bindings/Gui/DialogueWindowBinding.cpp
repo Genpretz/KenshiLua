@@ -154,8 +154,7 @@ static int DialogueWindow_get_conversationTextColor(lua_State* L)
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
     // TODO: Unsupported type for conversationTextColor (MyGUI::Colour)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'conversationTextColor' (type: MyGUI::Colour)");
 }
 
 static int DialogueWindow_get_conversationTextSelectedColor(lua_State* L)
@@ -163,8 +162,7 @@ static int DialogueWindow_get_conversationTextSelectedColor(lua_State* L)
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
     // TODO: Unsupported type for conversationTextSelectedColor (MyGUI::Colour)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'conversationTextSelectedColor' (type: MyGUI::Colour)");
 }
 
 static int DialogueWindow_get_replyTexts(lua_State* L)
@@ -172,8 +170,7 @@ static int DialogueWindow_get_replyTexts(lua_State* L)
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
     // TODO: Unsupported type for replyTexts (Ogre::FastArray<MyGUI::EditBox*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'replyTexts' (type: Ogre::FastArray<MyGUI::EditBox*>)");
 }
 
 // --- Setters for DialogueWindow ---

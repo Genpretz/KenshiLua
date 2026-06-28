@@ -25,8 +25,7 @@ static int TaskData_get_permaJob(lua_State* L)
     TaskData* b = getB(L, 1);
     if (!b) return luaL_error(L, "TaskData is nil");
     // TODO: Unsupported type for permaJob (PermajobType)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'permaJob' (type: PermajobType)");
 }
 
 static int TaskData_get_permaJob_FixedTarget(lua_State* L)
@@ -226,8 +225,7 @@ static int TaskData_get_results(lua_State* L)
     TaskData* b = getB(L, 1);
     if (!b) return luaL_error(L, "TaskData is nil");
     // TODO: Unsupported type for results (TaskStateData)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'results' (type: TaskStateData)");
 }
 
 static int TaskData_get_numRequirements(lua_State* L)
@@ -243,8 +241,7 @@ static int TaskData_get_requirements(lua_State* L)
     TaskData* b = getB(L, 1);
     if (!b) return luaL_error(L, "TaskData is nil");
     // TODO: Unsupported type for requirements (TaskStateData)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'requirements' (type: TaskStateData)");
 }
 
 static int TaskData_get_scoreFunction(lua_State* L)
@@ -252,8 +249,7 @@ static int TaskData_get_scoreFunction(lua_State* L)
     TaskData* b = getB(L, 1);
     if (!b) return luaL_error(L, "TaskData is nil");
     // TODO: Unsupported type for scoreFunction (function*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'scoreFunction' (type: function*)");
 }
 
 static int TaskData_get_justDoOneTarget(lua_State* L)
@@ -269,8 +265,7 @@ static int TaskData_get_subTask(lua_State* L)
     TaskData* b = getB(L, 1);
     if (!b) return luaL_error(L, "TaskData is nil");
     // TODO: Unsupported type for subTask (TaskStateData*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'subTask' (type: TaskStateData*)");
 }
 
 static int TaskData_get_dialogueDelivery(lua_State* L)
@@ -302,8 +297,7 @@ static int TaskData_get__findTarget(lua_State* L)
     TaskData* b = getB(L, 1);
     if (!b) return luaL_error(L, "TaskData is nil");
     // TODO: Unsupported type for _findTarget (function*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property '_findTarget' (type: function*)");
 }
 
 // --- Setters for TaskData ---

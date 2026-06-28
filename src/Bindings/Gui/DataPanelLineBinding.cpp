@@ -41,8 +41,7 @@ static int DataPanelLine_get_callback(lua_State* L)
     DataPanelLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine is nil");
     // TODO: Unsupported type for callback (MyGUI::delegates::CDelegate1<DataPanelLine*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'callback' (type: MyGUI::delegates::CDelegate1<DataPanelLine*>)");
 }
 
 static int DataPanelLine_get_keyValue(lua_State* L)
@@ -106,8 +105,7 @@ static int DataPanelLine_get_widgets(lua_State* L)
     DataPanelLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine is nil");
     // TODO: Unsupported type for widgets (Ogre::vector<MyGUI::Widget*>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'widgets' (type: Ogre::vector<MyGUI::Widget*>::type)");
 }
 
 static int DataPanelLine_get_classType(lua_State* L)

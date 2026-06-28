@@ -19,8 +19,7 @@ static int InputHandler_get_commands(lua_State* L)
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
     // TODO: Unsupported type for commands (std::map<std::string, Command, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, Command>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'commands' (type: std::map<std::string, Command, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, Command>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int InputHandler_get_map(lua_State* L)
@@ -28,8 +27,7 @@ static int InputHandler_get_map(lua_State* L)
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
     // TODO: Unsupported type for map (std::map<int, Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, Command*>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'map' (type: std::map<int, Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, Command*>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int InputHandler_get_editMap(lua_State* L)
@@ -37,8 +35,7 @@ static int InputHandler_get_editMap(lua_State* L)
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
     // TODO: Unsupported type for editMap (std::map<int, Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, Command*>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'editMap' (type: std::map<int, Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, Command*>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int InputHandler_get_events(lua_State* L)
@@ -46,8 +43,7 @@ static int InputHandler_get_events(lua_State* L)
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
     // TODO: Unsupported type for events (std::set<Command*, std::less<Command*>, Ogre::STLAllocator<Command*, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'events' (type: std::set<Command*, std::less<Command*>, Ogre::STLAllocator<Command*, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int InputHandler_get_keyboard(lua_State* L)
@@ -63,8 +59,7 @@ static int InputHandler_get_keyNameMap(lua_State* L)
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
     // TODO: Unsupported type for keyNameMap (std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'keyNameMap' (type: std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int InputHandler_get_controlEnabled(lua_State* L)
@@ -376,8 +371,7 @@ static int InputHandler_get_mPos(lua_State* L)
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
     // TODO: Unsupported type for mPos (Ogre::Vector2)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'mPos' (type: Ogre::Vector2)");
 }
 
 static int InputHandler_get_mPosAbs(lua_State* L)
@@ -385,8 +379,7 @@ static int InputHandler_get_mPosAbs(lua_State* L)
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
     // TODO: Unsupported type for mPosAbs (Ogre::Vector2)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'mPosAbs' (type: Ogre::Vector2)");
 }
 
 static int InputHandler_get_mSpeed(lua_State* L)

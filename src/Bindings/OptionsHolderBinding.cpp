@@ -393,8 +393,7 @@ static int OptionsHolder_get_compositors(lua_State* L)
     OptionsHolder* b = getB(L, 1);
     if (!b) return luaL_error(L, "OptionsHolder is nil");
     // TODO: Unsupported type for compositors (lektor<std::pair<std::string, bool> >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'compositors' (type: lektor<std::pair<std::string, bool> >)");
 }
 
 static int OptionsHolder_get_musicVolume(lua_State* L)

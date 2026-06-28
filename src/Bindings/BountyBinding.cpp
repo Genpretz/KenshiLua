@@ -41,8 +41,7 @@ static int Bounty_get_bountyAssignmentStartedTime(lua_State* L)
     Bounty* b = getB(L, 1);
     if (!b) return luaL_error(L, "Bounty is nil");
     // TODO: Unsupported type for bountyAssignmentStartedTime (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'bountyAssignmentStartedTime' (type: TimeOfDay)");
 }
 
 // --- Setters for Bounty ---

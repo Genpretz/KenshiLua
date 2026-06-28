@@ -49,8 +49,7 @@ static int FactionRelations_get__factionRelations(lua_State* L)
     FactionRelations* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionRelations is nil");
     // TODO: Unsupported type for _factionRelations (ogre_unordered_map<Faction*, RelationData>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property '_factionRelations' (type: ogre_unordered_map<Faction*, RelationData>::type)");
 }
 
 static int FactionRelations_get_defaultFactionRelation(lua_State* L)

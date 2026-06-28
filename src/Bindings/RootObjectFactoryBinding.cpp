@@ -25,8 +25,7 @@ static int RootObjectFactory_get_todoList(lua_State* L)
     RootObjectFactory* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectFactory is nil");
     // TODO: Unsupported type for todoList (std::deque<RootObjectFactory::CreatelistItem*, std::allocator<RootObjectFactory::CreatelistItem*> >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'todoList' (type: std::deque<RootObjectFactory::CreatelistItem*, std::allocator<RootObjectFactory::CreatelistItem*> >)");
 }
 
 // --- Setters for RootObjectFactory ---

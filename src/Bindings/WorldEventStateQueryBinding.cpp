@@ -17,8 +17,7 @@ static int WorldEventStateQuery_get_uniqueNPCsAre(lua_State* L)
     WorldEventStateQuery* b = getB(L, 1);
     if (!b) return luaL_error(L, "WorldEventStateQuery is nil");
     // TODO: Unsupported type for uniqueNPCsAre (ogre_unordered_map<GameData*, WorldStateEnum>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'uniqueNPCsAre' (type: ogre_unordered_map<GameData*, WorldStateEnum>::type)");
 }
 
 static int WorldEventStateQuery_get_uniqueNPCsAreNot(lua_State* L)
@@ -26,8 +25,7 @@ static int WorldEventStateQuery_get_uniqueNPCsAreNot(lua_State* L)
     WorldEventStateQuery* b = getB(L, 1);
     if (!b) return luaL_error(L, "WorldEventStateQuery is nil");
     // TODO: Unsupported type for uniqueNPCsAreNot (ogre_unordered_map<GameData*, WorldStateEnum>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'uniqueNPCsAreNot' (type: ogre_unordered_map<GameData*, WorldStateEnum>::type)");
 }
 
 static int WorldEventStateQuery_get_towns(lua_State* L)
@@ -35,8 +33,7 @@ static int WorldEventStateQuery_get_towns(lua_State* L)
     WorldEventStateQuery* b = getB(L, 1);
     if (!b) return luaL_error(L, "WorldEventStateQuery is nil");
     // TODO: Unsupported type for towns (ogre_unordered_map<GameData*, WorldStateEnum>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'towns' (type: ogre_unordered_map<GameData*, WorldStateEnum>::type)");
 }
 
 static int WorldEventStateQuery_get_isAllyOf(lua_State* L)
@@ -44,8 +41,7 @@ static int WorldEventStateQuery_get_isAllyOf(lua_State* L)
     WorldEventStateQuery* b = getB(L, 1);
     if (!b) return luaL_error(L, "WorldEventStateQuery is nil");
     // TODO: Unsupported type for isAllyOf (ogre_unordered_map<Faction*, bool>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'isAllyOf' (type: ogre_unordered_map<Faction*, bool>::type)");
 }
 
 static int WorldEventStateQuery_get_isEnemyOf(lua_State* L)
@@ -53,8 +49,7 @@ static int WorldEventStateQuery_get_isEnemyOf(lua_State* L)
     WorldEventStateQuery* b = getB(L, 1);
     if (!b) return luaL_error(L, "WorldEventStateQuery is nil");
     // TODO: Unsupported type for isEnemyOf (ogre_unordered_map<Faction*, bool>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'isEnemyOf' (type: ogre_unordered_map<Faction*, bool>::type)");
 }
 
 static int WorldEventStateQuery_get_playerInvolvement(lua_State* L)

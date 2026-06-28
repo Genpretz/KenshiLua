@@ -21,8 +21,7 @@ static int BountyManager_get_bounties(lua_State* L)
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
     // TODO: Unsupported type for bounties (ogre_unordered_map<Faction*, Bounty>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'bounties' (type: ogre_unordered_map<Faction*, Bounty>::type)");
 }
 
 static int BountyManager_get_me(lua_State* L)
@@ -44,8 +43,7 @@ static int BountyManager_get_accessPassExpirationTime(lua_State* L)
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
     // TODO: Unsupported type for accessPassExpirationTime (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'accessPassExpirationTime' (type: TimeOfDay)");
 }
 
 static int BountyManager_get_committingCrime(lua_State* L)
@@ -53,8 +51,7 @@ static int BountyManager_get_committingCrime(lua_State* L)
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
     // TODO: Unsupported type for committingCrime (CrimeEnum)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'committingCrime' (type: CrimeEnum)");
 }
 
 static int BountyManager_get_crimeAgainstFaction(lua_State* L)
@@ -76,8 +73,7 @@ static int BountyManager_get_crimeAgainst(lua_State* L)
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
     // TODO: Unsupported type for crimeAgainst (hand)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'crimeAgainst' (type: hand)");
 }
 
 static int BountyManager_get_crimeExpiry(lua_State* L)
@@ -93,8 +89,7 @@ static int BountyManager_get_prisonSentenceBeganTime(lua_State* L)
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
     // TODO: Unsupported type for prisonSentenceBeganTime (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'prisonSentenceBeganTime' (type: TimeOfDay)");
 }
 
 static int BountyManager_get_prisonSentenceToServe(lua_State* L)

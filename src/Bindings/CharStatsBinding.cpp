@@ -4,8 +4,10 @@
 #include "kenshi/MedicalSystem.h"
 #include "MedicalSystemBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "DamagesBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/MedicalSystemBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -155,8 +157,7 @@ static int CharStats_get__weatherProtections(lua_State* L)
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
     // TODO: Unsupported type for _weatherProtections (std::map<WeatherAffecting, float, std::less<WeatherAffecting>, Ogre::STLAllocator<std::pair<WeatherAffecting const, float>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property '_weatherProtections' (type: std::map<WeatherAffecting, float, std::less<WeatherAffecting>, Ogre::STLAllocator<std::pair<WeatherAffecting const, float>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int CharStats_get__strength(lua_State* L)
@@ -820,8 +821,7 @@ static int CharStats_get_bonusRaces(lua_State* L)
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
     // TODO: Unsupported type for bonusRaces (std::map<GameData*, float, std::less<GameData*>, Ogre::STLAllocator<std::pair<GameData*const, float>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'bonusRaces' (type: std::map<GameData*, float, std::less<GameData*>, Ogre::STLAllocator<std::pair<GameData*const, float>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int CharStats_get_currentWeaponType(lua_State* L)
@@ -852,9 +852,7 @@ static int CharStats_get_weapon(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    // TODO: Unsupported type for weapon (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->weapon);
 }
 
 static int CharStats_get_weaponWeight(lua_State* L)
@@ -1697,7 +1695,9 @@ static int CharStats_set_weapon(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for weapon");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->weapon = *val;
+    return 0;
 }
 
 static int CharStats_set_weaponWeight(lua_State* L)
@@ -2827,6 +2827,19 @@ Skipped methods needing manual binding:
   line 241: void printExertionHungerMultTooltip(...) - unsupported arg type
   line 265: void setupCombatTechniques(...) - static method
 */
+static int CharStats_getTotalAttackDamageFor(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    Character* target = nullptr;
+    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2)) {
+        target = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    }
+    Damages result = b->getTotalAttackDamageFor(target);
+    void* mem = ::operator new(sizeof(Damages));
+    Damages* heapD = ::new(mem) Damages(result);
+    return pushObject<Damages>(L, heapD, DamagesBinding::getMetatableName());
+}
 
 int CharStatsBinding::gc(lua_State* L)
 {
@@ -2955,6 +2968,7 @@ void CharStatsBinding::registerBinding(lua_State* L)
         { "setEquippedWeaponSkill", CharStatsBinding::setEquippedWeaponSkill },
         { "_NV_setEquippedWeaponSkill", CharStatsBinding::_NV_setEquippedWeaponSkill },
         { "_DESTRUCTOR", CharStatsBinding::_DESTRUCTOR },
+        { "getTotalAttackDamageFor", CharStats_getTotalAttackDamageFor },
         { 0, 0 }
     };
 

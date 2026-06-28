@@ -17,8 +17,7 @@ static int TownBuildingsManager_get_buildingEntities(lua_State* L)
     TownBuildingsManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBuildingsManager is nil");
     // TODO: Unsupported type for buildingEntities (ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'buildingEntities' (type: ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>::type)");
 }
 
 static int TownBuildingsManager_get_instancesManagers(lua_State* L)
@@ -26,8 +25,7 @@ static int TownBuildingsManager_get_instancesManagers(lua_State* L)
     TownBuildingsManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBuildingsManager is nil");
     // TODO: Unsupported type for instancesManagers (boost::unordered::unordered_map<std::string, Ogre::InstanceManager*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::InstanceManager*>, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'instancesManagers' (type: boost::unordered::unordered_map<std::string, Ogre::InstanceManager*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::InstanceManager*>, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int TownBuildingsManager_get_signs(lua_State* L)
@@ -35,8 +33,7 @@ static int TownBuildingsManager_get_signs(lua_State* L)
     TownBuildingsManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBuildingsManager is nil");
     // TODO: Unsupported type for signs (Ogre::FastArray<std::pair<Building*, Ogre::Entity*> >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'signs' (type: Ogre::FastArray<std::pair<Building*, Ogre::Entity*> >)");
 }
 
 static int TownBuildingsManager_get_signsVisible(lua_State* L)
@@ -52,8 +49,7 @@ static int TownBuildingsManager_get_town(lua_State* L)
     TownBuildingsManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBuildingsManager is nil");
     // TODO: Unsupported type for town (TownBase*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'town' (type: TownBase*)");
 }
 
 // --- Setters for TownBuildingsManager ---

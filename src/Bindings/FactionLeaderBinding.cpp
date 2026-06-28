@@ -25,8 +25,7 @@ static int FactionLeader_get_biomeTerritory(lua_State* L)
     FactionLeader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionLeader is nil");
     // TODO: Unsupported type for biomeTerritory (lektor<GameData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'biomeTerritory' (type: lektor<GameData*>)");
 }
 
 static int FactionLeader_get_worstEnemy(lua_State* L)

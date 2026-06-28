@@ -6,6 +6,10 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/OwnershipsBinding.h"
+#include "Bindings/HandBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/ActivePlatoonBinding.h"
 
 namespace KenshiLua
 {
@@ -53,8 +57,7 @@ static int Platoon_get_hasUniques(lua_State* L)
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     // TODO: Unsupported type for hasUniques (YesNoMaybe)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'hasUniques' (type: YesNoMaybe)");
 }
 
 static int Platoon_get_speedOverride(lua_State* L)
@@ -69,9 +72,7 @@ static int Platoon_get_isSeparatedSquad(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for isSeparatedSquad (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->isSeparatedSquad);
 }
 
 static int Platoon_get_canRefresh(lua_State* L)
@@ -126,8 +127,7 @@ static int Platoon_get_locatorModel(lua_State* L)
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     // TODO: Unsupported type for locatorModel (Ogre::Entity*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'locatorModel' (type: Ogre::Entity*)");
 }
 
 static int Platoon_get_blackboard(lua_State* L)
@@ -135,8 +135,7 @@ static int Platoon_get_blackboard(lua_State* L)
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     // TODO: Unsupported type for blackboard (Blackboard*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'blackboard' (type: Blackboard*)");
 }
 
 static int Platoon_get__isIntact(lua_State* L)
@@ -191,8 +190,7 @@ static int Platoon_get_messageOnActivation(lua_State* L)
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     // TODO: Unsupported type for messageOnActivation (PlatoonCreationMessage)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'messageOnActivation' (type: PlatoonCreationMessage)");
 }
 
 static int Platoon_get_currentSpawnArea(lua_State* L)
@@ -200,17 +198,14 @@ static int Platoon_get_currentSpawnArea(lua_State* L)
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     // TODO: Unsupported type for currentSpawnArea (AreaSector*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'currentSpawnArea' (type: AreaSector*)");
 }
 
 static int Platoon_get_squadleader(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for squadleader (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->squadleader);
 }
 
 static int Platoon_get_ownerships(lua_State* L)
@@ -218,8 +213,7 @@ static int Platoon_get_ownerships(lua_State* L)
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     // TODO: Unsupported type for ownerships (Ownerships)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'ownerships' (type: Ownerships)");
 }
 
 static int Platoon_get_activePlatoon(lua_State* L)
@@ -227,8 +221,7 @@ static int Platoon_get_activePlatoon(lua_State* L)
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     // TODO: Unsupported type for activePlatoon (ActivePlatoon*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'activePlatoon' (type: ActivePlatoon*)");
 }
 
 static int Platoon_get_unloadedPlatoon(lua_State* L)
@@ -236,8 +229,7 @@ static int Platoon_get_unloadedPlatoon(lua_State* L)
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     // TODO: Unsupported type for unloadedPlatoon (UnloadedPlatoon*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'unloadedPlatoon' (type: UnloadedPlatoon*)");
 }
 
 static int Platoon_get_patrolSettings(lua_State* L)
@@ -245,8 +237,7 @@ static int Platoon_get_patrolSettings(lua_State* L)
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     // TODO: Unsupported type for patrolSettings (PatrolInfo*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'patrolSettings' (type: PatrolInfo*)");
 }
 
 static int Platoon_get_isDead(lua_State* L)
@@ -278,8 +269,7 @@ static int Platoon_get_traderInventoryRefreshTime(lua_State* L)
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     // TODO: Unsupported type for traderInventoryRefreshTime (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'traderInventoryRefreshTime' (type: TimeOfDay)");
 }
 
 // --- Setters for Platoon ---
@@ -334,7 +324,9 @@ static int Platoon_set_isSeparatedSquad(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isSeparatedSquad");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->isSeparatedSquad = *val;
+    return 0;
 }
 
 static int Platoon_set_canRefresh(lua_State* L)
@@ -463,7 +455,9 @@ static int Platoon_set_squadleader(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for squadleader");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->squadleader = *val;
+    return 0;
 }
 
 static int Platoon_set_ownerships(lua_State* L)
@@ -929,6 +923,66 @@ Skipped methods needing manual binding:
   line 194: const hand& getSquadLeader_theRealOne(...) - reference return type
 */
 
+static int Platoon_chooseNewHome(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    hand result = b->chooseNewHome();
+    handBinding::push(L, result);
+    return 1;
+}
+
+static int Platoon_getCurrentTownLocation(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    TownBase* result = b->getCurrentTownLocation();
+    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
+}
+
+static int Platoon__NV_getCurrentTownLocation(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    TownBase* result = b->_NV_getCurrentTownLocation();
+    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
+}
+
+static int Platoon_setFaction(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    b->setFaction(f);
+    return 0;
+}
+
+static int Platoon__NV_setFaction(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    b->_NV_setFaction(f);
+    return 0;
+}
+
+static int Platoon_getActivePlatoon(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    ActivePlatoon* result = b->getActivePlatoon();
+    return pushObject<ActivePlatoon>(L, result, ActivePlatoonBinding::getMetatableName());
+}
+
+static int Platoon_getSquadLeader_theRealOne(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    const hand& result = b->getSquadLeader_theRealOne();
+    handBinding::push(L, result);
+    return 1;
+}
+
 int PlatoonBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -988,6 +1042,13 @@ void PlatoonBinding::registerBinding(lua_State* L)
         { "needsNewCharacters", PlatoonBinding::needsNewCharacters },
         { "reCheckPersistenceOnUnload", PlatoonBinding::reCheckPersistenceOnUnload },
         { "_NV_reCheckPersistenceOnUnload", PlatoonBinding::_NV_reCheckPersistenceOnUnload },
+        { "chooseNewHome", Platoon_chooseNewHome },
+        { "getCurrentTownLocation", Platoon_getCurrentTownLocation },
+        { "_NV_getCurrentTownLocation", Platoon__NV_getCurrentTownLocation },
+        { "setFaction", Platoon_setFaction },
+        { "_NV_setFaction", Platoon__NV_setFaction },
+        { "getActivePlatoon", Platoon_getActivePlatoon },
+        { "getSquadLeader_theRealOne", Platoon_getSquadLeader_theRealOne },
         { 0, 0 }
     };
 

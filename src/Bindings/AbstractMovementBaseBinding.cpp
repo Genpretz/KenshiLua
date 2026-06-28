@@ -2,6 +2,9 @@
 #include "kenshi\CharMovement.h"
 #include "AbstractMovementBaseBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "SpeedGroupBinding.h"
+#include "MedianFilter2DVectorBinding.h"
+#include "HandBinding.h"
 
 namespace KenshiLua
 {
@@ -24,9 +27,7 @@ static int AbstractMovementBase_get_speedGroup(lua_State* L)
 {
     AbstractMovementBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AbstractMovementBase is nil");
-    // TODO: Unsupported type for speedGroup (Ogre::SharedPtr<SpeedGroup>)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<SpeedGroup>(L, b->speedGroup.get(), SpeedGroupBinding::getMetatableName());
 }
 
 static int AbstractMovementBase_get_speedOrders(lua_State* L)
@@ -49,9 +50,7 @@ static int AbstractMovementBase_get_positionSmoother(lua_State* L)
 {
     AbstractMovementBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AbstractMovementBase is nil");
-    // TODO: Unsupported type for positionSmoother (MedianFilter2DVector)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<MedianFilter2DVector>(L, &b->positionSmoother, MedianFilter2DVectorBinding::getMetatableName());
 }
 
 static int AbstractMovementBase_get_currentMotion(lua_State* L)
@@ -131,8 +130,7 @@ static int AbstractMovementBase_get_roadFollower(lua_State* L)
     AbstractMovementBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AbstractMovementBase is nil");
     // TODO: Unsupported type for roadFollower (RoadFollower*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'roadFollower' (type: RoadFollower*)");
 }
 
 static int AbstractMovementBase_get_roadWeight(lua_State* L)
@@ -156,7 +154,13 @@ static int AbstractMovementBase_set_speedGroup(lua_State* L)
 {
     AbstractMovementBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AbstractMovementBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for speedGroup");
+    if (lua_isnil(L, 2)) {
+        b->speedGroup.setNull();
+    } else {
+        SpeedGroup* sg = checkObject<SpeedGroup>(L, 2, SpeedGroupBinding::getMetatableName());
+        b->speedGroup = Ogre::SharedPtr<SpeedGroup>(sg);
+    }
+    return 0;
 }
 
 static int AbstractMovementBase_set_speedOrders(lua_State* L)
@@ -179,7 +183,9 @@ static int AbstractMovementBase_set_positionSmoother(lua_State* L)
 {
     AbstractMovementBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "AbstractMovementBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for positionSmoother");
+    MedianFilter2DVector* mf = checkObject<MedianFilter2DVector>(L, 2, MedianFilter2DVectorBinding::getMetatableName());
+    b->positionSmoother = *mf;
+    return 0;
 }
 
 static int AbstractMovementBase_set_currentMotion(lua_State* L)
@@ -679,13 +685,54 @@ int AbstractMovementBaseBinding::leaveSpeedGroup(lua_State* L)
     return 0;
 }
 
+static int AbstractMovementBase_getHandle(lua_State* L)
+{
+    AbstractMovementBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "AbstractMovementBase is nil");
+    hand result = b->getHandle();
+    handBinding::push(L, result);
+    return 1;
+}
+
+static int AbstractMovementBase__NV_getHandle(lua_State* L)
+{
+    AbstractMovementBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "AbstractMovementBase is nil");
+    hand result = b->_NV_getHandle();
+    handBinding::push(L, result);
+    return 1;
+}
+
+static int AbstractMovementBase_getPosition(lua_State* L)
+{
+    AbstractMovementBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "AbstractMovementBase is nil");
+    const Ogre::Vector3& result = b->getPosition();
+    pushVector3(L, result);
+    return 1;
+}
+
+static int AbstractMovementBase__NV_getPosition(lua_State* L)
+{
+    AbstractMovementBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "AbstractMovementBase is nil");
+    const Ogre::Vector3& result = b->_NV_getPosition();
+    pushVector3(L, result);
+    return 1;
+}
+
+static int AbstractMovementBase_getFacingDirection(lua_State* L)
+{
+    AbstractMovementBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "AbstractMovementBase is nil");
+    const Ogre::Vector3& result = b->getFacingDirection();
+    pushVector3(L, result);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 142: AbstractMovementBase* _CONSTRUCTOR(...) - unsupported return type
-  line 146: hand getHandle(...) - unsupported return type
-  line 147: hand _NV_getHandle(...) - unsupported return type
-  line 156: const Ogre::Vector3& getPosition(...) - reference return type
-  line 157: const Ogre::Vector3& _NV_getPosition(...) - reference return type
   line 158: const Ogre::Vector3& getFacingDirection(...) - reference return type
   line 173: void setDestination(...) - overloaded method
   line 174: void _NV_setDestination(...) - overloaded method
@@ -711,13 +758,15 @@ Skipped methods needing manual binding:
 
 int AbstractMovementBaseBinding::gc(lua_State* L)
 {
-    // Implementation depends on ownership model
+    // None needed as this is a raw pointer container without lua-owned GC for this wrapper pattern usually
     return 0;
 }
 
 int AbstractMovementBaseBinding::tostring(lua_State* L)
 {
-    lua_pushstring(L, "KenshiLua.AbstractMovementBase object");
+    char buf[64];
+    _snprintf(buf, sizeof(buf), "%s: %p", getMetatableName(), getB(L, 1));
+    lua_pushstring(L, buf);
     return 1;
 }
 
@@ -770,6 +819,11 @@ void AbstractMovementBaseBinding::registerBinding(lua_State* L)
         { "getCurrentSpeedRelativeToMax01", AbstractMovementBaseBinding::getCurrentSpeedRelativeToMax01 },
         { "getSpeedOrders", AbstractMovementBaseBinding::getSpeedOrders },
         { "leaveSpeedGroup", AbstractMovementBaseBinding::leaveSpeedGroup },
+        { "getHandle", AbstractMovementBase_getHandle },
+        { "_NV_getHandle", AbstractMovementBase__NV_getHandle },
+        { "getPosition", AbstractMovementBase_getPosition },
+        { "_NV_getPosition", AbstractMovementBase__NV_getPosition },
+        { "getFacingDirection", AbstractMovementBase_getFacingDirection },
         { 0, 0 }
     };
 

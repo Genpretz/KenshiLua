@@ -25,8 +25,7 @@ static int DataObjectContainer_get_objectDatas(lua_State* L)
     DataObjectContainer* b = getB(L, 1);
     if (!b) return luaL_error(L, "DataObjectContainer is nil");
     // TODO: Unsupported type for objectDatas (GameDataContainer*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'objectDatas' (type: GameDataContainer*)");
 }
 
 static int DataObjectContainer_get_datasFile(lua_State* L)

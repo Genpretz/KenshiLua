@@ -17,8 +17,7 @@ static int SpeedGroup_get_members(lua_State* L)
     SpeedGroup* b = getB(L, 1);
     if (!b) return luaL_error(L, "SpeedGroup is nil");
     // TODO: Unsupported type for members (ogre_unordered_set<hand>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'members' (type: ogre_unordered_set<hand>::type)");
 }
 
 static int SpeedGroup_get_position(lua_State* L)

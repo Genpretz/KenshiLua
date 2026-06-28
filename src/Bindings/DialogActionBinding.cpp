@@ -19,8 +19,7 @@ static int DialogAction_get_key(lua_State* L)
     DialogAction* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogAction is nil");
     // TODO: Unsupported type for key (DialogActionEnum)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'key' (type: DialogActionEnum)");
 }
 
 static int DialogAction_get_value(lua_State* L)

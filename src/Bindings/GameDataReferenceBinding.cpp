@@ -18,8 +18,7 @@ static int GameDataReference_get_values(lua_State* L)
     GameDataReference* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameDataReference is nil");
     // TODO: Unsupported type for values (TripleInt)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'values' (type: TripleInt)");
 }
 
 static int GameDataReference_get_sid(lua_State* L)

@@ -26,8 +26,7 @@ static int SeenSomeone_get_lastSeenTime(lua_State* L)
     SeenSomeone* b = getB(L, 1);
     if (!b) return luaL_error(L, "SeenSomeone is nil");
     // TODO: Unsupported type for lastSeenTime (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'lastSeenTime' (type: TimeOfDay)");
 }
 
 static int SeenSomeone_get_percievedFaction(lua_State* L)
@@ -58,8 +57,7 @@ static int SeenSomeone_get_type(lua_State* L)
     SeenSomeone* b = getB(L, 1);
     if (!b) return luaL_error(L, "SeenSomeone is nil");
     // TODO: Unsupported type for type (TagsClass<SenseType>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'type' (type: TagsClass<SenseType>)");
 }
 
 static int SeenSomeone_get_canSee(lua_State* L)

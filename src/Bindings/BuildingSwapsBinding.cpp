@@ -17,8 +17,7 @@ static int BuildingSwaps_get_toReplace(lua_State* L)
     Faction::BuildingSwaps* b = getB(L, 1);
     if (!b) return luaL_error(L, "BuildingSwaps is nil");
     // TODO: Unsupported type for toReplace (ogre_unordered_set<GameData*>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'toReplace' (type: ogre_unordered_set<GameData*>::type)");
 }
 
 static int BuildingSwaps_get_replaceWith(lua_State* L)
@@ -26,8 +25,7 @@ static int BuildingSwaps_get_replaceWith(lua_State* L)
     Faction::BuildingSwaps* b = getB(L, 1);
     if (!b) return luaL_error(L, "BuildingSwaps is nil");
     // TODO: Unsupported type for replaceWith (FitnessSelector<GameData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'replaceWith' (type: FitnessSelector<GameData*>)");
 }
 
 // --- Setters for BuildingSwaps ---

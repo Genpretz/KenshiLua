@@ -27,8 +27,7 @@ static int WhoSeesMe_get_seeState(lua_State* L)
     WhoSeesMe* b = getB(L, 1);
     if (!b) return luaL_error(L, "WhoSeesMe is nil");
     // TODO: Unsupported type for seeState (YesNoMaybe)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'seeState' (type: YesNoMaybe)");
 }
 
 static int WhoSeesMe_get_progressOfMaybe(lua_State* L)

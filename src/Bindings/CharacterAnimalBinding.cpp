@@ -38,8 +38,7 @@ static int CharacterAnimal_get_itemInMouthTimeStamp(lua_State* L)
     CharacterAnimal* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharacterAnimal is nil");
     // TODO: Unsupported type for itemInMouthTimeStamp (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'itemInMouthTimeStamp' (type: TimeOfDay)");
 }
 
 static int CharacterAnimal_get_smellThresholdBlood(lua_State* L)

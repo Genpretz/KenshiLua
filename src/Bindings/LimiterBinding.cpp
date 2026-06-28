@@ -19,8 +19,7 @@ static int Limiter_get_racesExclude(lua_State* L)
     Limiter* b = getB(L, 1);
     if (!b) return luaL_error(L, "Limiter is nil");
     // TODO: Unsupported type for racesExclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'racesExclude' (type: std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int Limiter_get_racesInclude(lua_State* L)
@@ -28,8 +27,7 @@ static int Limiter_get_racesInclude(lua_State* L)
     Limiter* b = getB(L, 1);
     if (!b) return luaL_error(L, "Limiter is nil");
     // TODO: Unsupported type for racesInclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'racesInclude' (type: std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)");
 }
 
 // --- Setters for Limiter ---

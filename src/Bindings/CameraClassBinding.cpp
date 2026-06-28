@@ -4,6 +4,7 @@
 //#include "BuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -27,8 +28,7 @@ static int CameraClass_get_lastMousePos(lua_State* L)
     CameraClass* b = getB(L, 1);
     if (!b) return luaL_error(L, "CameraClass is nil");
     // TODO: Unsupported type for lastMousePos (tagPOINT)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'lastMousePos' (type: tagPOINT)");
 }
 
 static int CameraClass_get_rotationMarker(lua_State* L)
@@ -36,8 +36,7 @@ static int CameraClass_get_rotationMarker(lua_State* L)
     CameraClass* b = getB(L, 1);
     if (!b) return luaL_error(L, "CameraClass is nil");
     // TODO: Unsupported type for rotationMarker (Ogre::Entity*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'rotationMarker' (type: Ogre::Entity*)");
 }
 
 static int CameraClass_get_yaw(lua_State* L)
@@ -76,9 +75,7 @@ static int CameraClass_get_objectCurrentlyFollowing(lua_State* L)
 {
     CameraClass* b = getB(L, 1);
     if (!b) return luaL_error(L, "CameraClass is nil");
-    // TODO: Unsupported type for objectCurrentlyFollowing (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->objectCurrentlyFollowing);
 }
 
 static int CameraClass_get_objectCurrentlyFollowingOffset(lua_State* L)
@@ -94,8 +91,7 @@ static int CameraClass_get_center(lua_State* L)
     CameraClass* b = getB(L, 1);
     if (!b) return luaL_error(L, "CameraClass is nil");
     // TODO: Unsupported type for center (Ogre::SceneNode*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'center' (type: Ogre::SceneNode*)");
 }
 
 static int CameraClass_get_altitude(lua_State* L)
@@ -111,8 +107,7 @@ static int CameraClass_get_camera(lua_State* L)
     CameraClass* b = getB(L, 1);
     if (!b) return luaL_error(L, "CameraClass is nil");
     // TODO: Unsupported type for camera (Ogre::Camera*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'camera' (type: Ogre::Camera*)");
 }
 
 static int CameraClass_get_node(lua_State* L)
@@ -120,8 +115,7 @@ static int CameraClass_get_node(lua_State* L)
     CameraClass* b = getB(L, 1);
     if (!b) return luaL_error(L, "CameraClass is nil");
     // TODO: Unsupported type for node (Ogre::SceneNode*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'node' (type: Ogre::SceneNode*)");
 }
 
 static int CameraClass_get_currentMusic(lua_State* L)
@@ -136,9 +130,7 @@ static int CameraClass_get_inBuilding(lua_State* L)
 {
     CameraClass* b = getB(L, 1);
     if (!b) return luaL_error(L, "CameraClass is nil");
-    // TODO: Unsupported type for inBuilding (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->inBuilding);
 }
 
 static int CameraClass_get_timeInGame(lua_State* L)
@@ -263,7 +255,9 @@ static int CameraClass_set_objectCurrentlyFollowing(lua_State* L)
 {
     CameraClass* b = getB(L, 1);
     if (!b) return luaL_error(L, "CameraClass is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for objectCurrentlyFollowing");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->objectCurrentlyFollowing = *val;
+    return 0;
 }
 
 static int CameraClass_set_objectCurrentlyFollowingOffset(lua_State* L)
@@ -315,7 +309,8 @@ static int CameraClass_set_inBuilding(lua_State* L)
 {
     CameraClass* b = getB(L, 1);
     if (!b) return luaL_error(L, "CameraClass is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for inBuilding");
+    b->inBuilding = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
 }
 
 static int CameraClass_set_timeInGame(lua_State* L)

@@ -52,8 +52,7 @@ static int DialogLineData_get_campaignTriggers(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for campaignTriggers (FitnessSelector<CampaignTriggerData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'campaignTriggers' (type: FitnessSelector<CampaignTriggerData*>)");
 }
 
 static int DialogLineData_get_isTargetRace(lua_State* L)
@@ -61,8 +60,7 @@ static int DialogLineData_get_isTargetRace(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for isTargetRace (lektor<GameData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'isTargetRace' (type: lektor<GameData*>)");
 }
 
 static int DialogLineData_get_isTargetSubRace_specificallyTheTarget(lua_State* L)
@@ -70,8 +68,7 @@ static int DialogLineData_get_isTargetSubRace_specificallyTheTarget(lua_State* L
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for isTargetSubRace_specificallyTheTarget (lektor<GameData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'isTargetSubRace_specificallyTheTarget' (type: lektor<GameData*>)");
 }
 
 static int DialogLineData_get_givesItem(lua_State* L)
@@ -79,8 +76,7 @@ static int DialogLineData_get_givesItem(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for givesItem (lektor<GameDataValuePair>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'givesItem' (type: lektor<GameDataValuePair>)");
 }
 
 static int DialogLineData_get_inTownOf(lua_State* L)
@@ -88,8 +84,7 @@ static int DialogLineData_get_inTownOf(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for inTownOf (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'inTownOf' (type: std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int DialogLineData_get_isTargetFaction(lua_State* L)
@@ -97,8 +92,7 @@ static int DialogLineData_get_isTargetFaction(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for isTargetFaction (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'isTargetFaction' (type: std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int DialogLineData_get_isMyFaction(lua_State* L)
@@ -106,16 +100,19 @@ static int DialogLineData_get_isMyFaction(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for isMyFaction (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'isMyFaction' (type: std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int DialogLineData_get_isCharacter(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for isCharacter (lektor<GameData*>)
-    lua_pushnil(L);
+    lua_newtable(L);
+    for (unsigned int i = 0; i < b->isCharacter.size(); ++i)
+    {
+        pushObject<GameData>(L, b->isCharacter[i], GameDataBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -123,8 +120,12 @@ static int DialogLineData_get_isTargetCarryingCharacter(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for isTargetCarryingCharacter (lektor<GameData*>)
-    lua_pushnil(L);
+    lua_newtable(L);
+    for (unsigned int i = 0; i < b->isTargetCarryingCharacter.size(); ++i)
+    {
+        pushObject<GameData>(L, b->isTargetCarryingCharacter[i], GameDataBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -132,8 +133,12 @@ static int DialogLineData_get__hasPackage(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for _hasPackage (lektor<GameData*>)
-    lua_pushnil(L);
+    lua_newtable(L);
+    for (unsigned int i = 0; i < b->_hasPackage.size(); ++i)
+    {
+        pushObject<GameData>(L, b->_hasPackage[i], GameDataBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -141,8 +146,12 @@ static int DialogLineData_get_isMyRace(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for isMyRace (lektor<GameData*>)
-    lua_pushnil(L);
+    lua_newtable(L);
+    for (unsigned int i = 0; i < b->isMyRace.size(); ++i)
+    {
+        pushObject<GameData>(L, b->isMyRace[i], GameDataBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -150,8 +159,12 @@ static int DialogLineData_get_isMySubRace(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for isMySubRace (lektor<GameData*>)
-    lua_pushnil(L);
+    lua_newtable(L);
+    for (unsigned int i = 0; i < b->isMySubRace.size(); ++i)
+    {
+        pushObject<GameData>(L, b->isMySubRace[i], GameDataBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -168,8 +181,7 @@ static int DialogLineData_get_hasItem(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for hasItem (lektor<GameData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'hasItem' (type: lektor<GameData*>)");
 }
 
 static int DialogLineData_get_worldState(lua_State* L)
@@ -177,8 +189,7 @@ static int DialogLineData_get_worldState(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for worldState (WorldEventStateQueryList*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'worldState' (type: WorldEventStateQueryList*)");
 }
 
 static int DialogLineData_get_data(lua_State* L)
@@ -209,8 +220,7 @@ static int DialogLineData_get_forCertainType(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for forCertainType (CharacterTypeEnum)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'forCertainType' (type: CharacterTypeEnum)");
 }
 
 static int DialogLineData_get_children(lua_State* L)
@@ -225,8 +235,7 @@ static int DialogLineData_get_conditions(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for conditions (lektor<DialogLineData::DialogCondition*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'conditions' (type: lektor<DialogLineData::DialogCondition*>)");
 }
 
 static int DialogLineData_get_actions(lua_State* L)
@@ -234,8 +243,7 @@ static int DialogLineData_get_actions(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for actions (lektor<DialogLineData::DialogAction*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'actions' (type: lektor<DialogLineData::DialogAction*>)");
 }
 
 static int DialogLineData_get_lineCount(lua_State* L)
@@ -259,8 +267,7 @@ static int DialogLineData_get_parent(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for parent (DialogLineData*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'parent' (type: DialogLineData*)");
 }
 
 static int DialogLineData_get_chancePermanent(lua_State* L)
@@ -292,8 +299,7 @@ static int DialogLineData_get_uniqueOwner(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for uniqueOwner (hand)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'uniqueOwner' (type: hand)");
 }
 
 static int DialogLineData_get_dialogRepeatMinTimeInHours(lua_State* L)
@@ -309,8 +315,7 @@ static int DialogLineData_get_lastTimeSaid(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for lastTimeSaid (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'lastTimeSaid' (type: TimeOfDay)");
 }
 
 static int DialogLineData_get_score(lua_State* L)
@@ -342,8 +347,7 @@ static int DialogLineData_get_locks(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for locks (lektor<DialogLineData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'locks' (type: lektor<DialogLineData*>)");
 }
 
 static int DialogLineData_get_unlocks_lockMe(lua_State* L)
@@ -351,8 +355,7 @@ static int DialogLineData_get_unlocks_lockMe(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for unlocks_lockMe (lektor<DialogLineData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'unlocks_lockMe' (type: lektor<DialogLineData*>)");
 }
 
 static int DialogLineData_get_unlocks_dontLockMe(lua_State* L)
@@ -360,8 +363,7 @@ static int DialogLineData_get_unlocks_dontLockMe(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for unlocks_dontLockMe (lektor<DialogLineData*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'unlocks_dontLockMe' (type: lektor<DialogLineData*>)");
 }
 
 static int DialogLineData_get_crowdTrigger(lua_State* L)
@@ -369,8 +371,7 @@ static int DialogLineData_get_crowdTrigger(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for crowdTrigger (DialogLineData*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'crowdTrigger' (type: DialogLineData*)");
 }
 
 static int DialogLineData_get_factionRelationEffects(lua_State* L)
@@ -378,8 +379,7 @@ static int DialogLineData_get_factionRelationEffects(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for factionRelationEffects (ogre_unordered_map<GameData*, int>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'factionRelationEffects' (type: ogre_unordered_map<GameData*, int>::type)");
 }
 
 static int DialogLineData_get_playerInterruptionDialog(lua_State* L)
@@ -387,8 +387,7 @@ static int DialogLineData_get_playerInterruptionDialog(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for playerInterruptionDialog (DialogLineData*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'playerInterruptionDialog' (type: DialogLineData*)");
 }
 
 static int DialogLineData_get_isInterjection(lua_State* L)
@@ -404,8 +403,7 @@ static int DialogLineData_get_speaker(lua_State* L)
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
     // TODO: Unsupported type for speaker (TalkerEnum)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'speaker' (type: TalkerEnum)");
 }
 
 // --- Setters for DialogLineData ---

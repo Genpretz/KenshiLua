@@ -3,6 +3,7 @@
 #include "DataPanelLine_ButtonBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -17,9 +18,7 @@ static int DataPanelLine_Button_get_userData(lua_State* L)
 {
     DataPanelLine_Button* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
-    // TODO: Unsupported type for userData (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, instance->userData);
 }
 
 static int DataPanelLine_Button_get_button(lua_State* L)
@@ -59,7 +58,9 @@ static int DataPanelLine_Button_set_userData(lua_State* L)
 {
     DataPanelLine_Button* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for userData");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->userData = *val;
+    return 0;
 }
 
 static int DataPanelLine_Button_set_button(lua_State* L)

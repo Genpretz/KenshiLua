@@ -4,6 +4,7 @@
 #include "TaskDataBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/TaskDataBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -19,8 +20,7 @@ static int Tasker_get_priority(lua_State* L)
     Tasker* b = getB(L, 1);
     if (!b) return luaL_error(L, "Tasker is nil");
     // TODO: Unsupported type for priority (taskPriority)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'priority' (type: taskPriority)");
 }
 
 static int Tasker_get_resetsWhenDone(lua_State* L)
@@ -35,9 +35,7 @@ static int Tasker_get_subject(lua_State* L)
 {
     Tasker* b = getB(L, 1);
     if (!b) return luaL_error(L, "Tasker is nil");
-    // TODO: Unsupported type for subject (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->subject);
 }
 
 static int Tasker_get_weight(lua_State* L)
@@ -52,9 +50,7 @@ static int Tasker_get_currentSubTarget(lua_State* L)
 {
     Tasker* b = getB(L, 1);
     if (!b) return luaL_error(L, "Tasker is nil");
-    // TODO: Unsupported type for currentSubTarget (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->currentSubTarget);
 }
 
 static int Tasker_get_location(lua_State* L)
@@ -108,7 +104,9 @@ static int Tasker_set_subject(lua_State* L)
 {
     Tasker* b = getB(L, 1);
     if (!b) return luaL_error(L, "Tasker is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for subject");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->subject = *val;
+    return 0;
 }
 
 static int Tasker_set_weight(lua_State* L)
@@ -123,7 +121,9 @@ static int Tasker_set_currentSubTarget(lua_State* L)
 {
     Tasker* b = getB(L, 1);
     if (!b) return luaL_error(L, "Tasker is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for currentSubTarget");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->currentSubTarget = *val;
+    return 0;
 }
 
 static int Tasker_set_location(lua_State* L)

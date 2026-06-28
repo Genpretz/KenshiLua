@@ -19,8 +19,7 @@ static int TownPositionCacher_get_lastUpdateStamp(lua_State* L)
     TownPositionCacher* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownPositionCacher is nil");
     // TODO: Unsupported type for lastUpdateStamp (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'lastUpdateStamp' (type: TimeOfDay)");
 }
 
 static int TownPositionCacher_get_updateRateInHours(lua_State* L)

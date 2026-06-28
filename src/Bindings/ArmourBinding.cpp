@@ -65,8 +65,7 @@ static int Armour_get_armourClassEnum(lua_State* L)
     Armour* b = getB(L, 1);
     if (!b) return luaL_error(L, "Armour is nil");
     // TODO: Unsupported type for armourClassEnum (ArmourClass)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'armourClassEnum' (type: ArmourClass)");
 }
 
 static int Armour_get_stigma(lua_State* L)
@@ -74,8 +73,7 @@ static int Armour_get_stigma(lua_State* L)
     Armour* b = getB(L, 1);
     if (!b) return luaL_error(L, "Armour is nil");
     // TODO: Unsupported type for stigma (CharacterTypeEnum)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'stigma' (type: CharacterTypeEnum)");
 }
 
 static int Armour_get_athleticsMult(lua_State* L)
@@ -195,8 +193,7 @@ static int Armour_get_weatherProtections(lua_State* L)
     Armour* b = getB(L, 1);
     if (!b) return luaL_error(L, "Armour is nil");
     // TODO: Unsupported type for weatherProtections (std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'weatherProtections' (type: std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int Armour_get_bodypartCoverage(lua_State* L)
@@ -204,8 +201,7 @@ static int Armour_get_bodypartCoverage(lua_State* L)
     Armour* b = getB(L, 1);
     if (!b) return luaL_error(L, "Armour is nil");
     // TODO: Unsupported type for bodypartCoverage (ogre_unordered_map<GameData*, float>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'bodypartCoverage' (type: ogre_unordered_map<GameData*, float>::type)");
 }
 
 static int Armour_get_craftTime(lua_State* L)

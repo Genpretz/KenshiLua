@@ -20,8 +20,7 @@ static int FootprintNode_get_aabb(lua_State* L)
     FootprintNode* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FootprintNode is nil");
     // TODO: Unsupported type for aabb (Ogre::Aabb)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'aabb' (type: Ogre::Aabb)");
 }
 
 static int FootprintNode_get_nodeId(lua_State* L)

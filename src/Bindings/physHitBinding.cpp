@@ -4,6 +4,7 @@
 #include "RootObjectBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RootObjectBinding.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -83,17 +84,14 @@ static int physHit_get_shape(lua_State* L)
     physHit* b = getB(L, 1);
     if (!b) return luaL_error(L, "physHit is nil");
     // TODO: Unsupported type for shape (NxShape*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'shape' (type: NxShape*)");
 }
 
 static int physHit_get_hitObject(lua_State* L)
 {
     physHit* b = getB(L, 1);
     if (!b) return luaL_error(L, "physHit is nil");
-    // TODO: Unsupported type for hitObject (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->hitObject);
 }
 
 static int physHit_get__group(lua_State* L)
@@ -187,7 +185,9 @@ static int physHit_set_hitObject(lua_State* L)
 {
     physHit* b = getB(L, 1);
     if (!b) return luaL_error(L, "physHit is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for hitObject");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->hitObject = *val;
+    return 0;
 }
 
 static int physHit_set__group(lua_State* L)

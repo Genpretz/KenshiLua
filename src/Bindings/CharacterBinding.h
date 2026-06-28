@@ -324,5 +324,38 @@ public:
     static int _NV_isEnemy(lua_State* L);
     static int isAlly(lua_State* L);
     static int _NV_isAlly(lua_State* L);
+
+    static int setHandle(lua_State* L);
+    static int _NV_setHandle(lua_State* L);
+    static int getStealingSuccessChance(lua_State* L);
+    static int canGoIndoors(lua_State* L);
+    static int _NV_canGoIndoors(lua_State* L);
+    static int isIndoors(lua_State* L);
+    static int _NV_isIndoors(lua_State* L);
+    static int isStandingOnBuilding(lua_State* L);
+    static int _NV_isStandingOnBuilding(lua_State* L);
+    static int notifyIndoors(lua_State* L);
+    static int _NV_notifyIndoors(lua_State* L);
+    static int destinationIndoors(lua_State* L);
+    static int setDestinationIndoors(lua_State* L);
+    static int getAppearanceData(lua_State* L);
+    static int setAppearanceData(lua_State* L);
+    static int setFaction(lua_State* L);
+    static int _NV_setFaction(lua_State* L);
+    static int getBody(lua_State* L);
+    static int getAttackTarget(lua_State* L);
+    static int getMovement(lua_State* L);
+    static int getAppearance(lua_State* L);
+    static int getPlatoon(lua_State* L);
+    static int getCarryingObject(lua_State* L);
+    static int getAudioObject(lua_State* L);
+    static int equipItem(lua_State* L);
+    static int _NV_equipItem(lua_State* L);
+    static int unequipItem(lua_State* L);
+    static int _NV_unequipItem(lua_State* L);
+    static int getStealthKOChance(lua_State* L);
+    static int getKidnappingChance(lua_State* L);
+    static int getKidnappingEscapeChance_skill(lua_State* L);
+    static int getKidnappingEscapeChance_strength(lua_State* L);
 };
 }

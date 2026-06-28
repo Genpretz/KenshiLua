@@ -2,6 +2,7 @@
 #include "kenshi\GameWorld.h"
 #include "SysMessageBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -26,18 +27,14 @@ static int SysMessage_get_target(lua_State* L)
 {
     SysMessage* b = getB(L, 1);
     if (!b) return luaL_error(L, "SysMessage is nil");
-    // TODO: Unsupported type for target (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->target);
 }
 
 static int SysMessage_get_from(lua_State* L)
 {
     SysMessage* b = getB(L, 1);
     if (!b) return luaL_error(L, "SysMessage is nil");
-    // TODO: Unsupported type for from (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->from);
 }
 
 static int SysMessage_get_on(lua_State* L)
@@ -61,8 +58,7 @@ static int SysMessage_get_data(lua_State* L)
     SysMessage* b = getB(L, 1);
     if (!b) return luaL_error(L, "SysMessage is nil");
     // TODO: Unsupported type for data (void*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'data' (type: void*)");
 }
 
 // --- Setters for SysMessage ---
@@ -78,14 +74,18 @@ static int SysMessage_set_target(lua_State* L)
 {
     SysMessage* b = getB(L, 1);
     if (!b) return luaL_error(L, "SysMessage is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for target");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->target = *val;
+    return 0;
 }
 
 static int SysMessage_set_from(lua_State* L)
 {
     SysMessage* b = getB(L, 1);
     if (!b) return luaL_error(L, "SysMessage is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for from");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->from = *val;
+    return 0;
 }
 
 static int SysMessage_set_on(lua_State* L)

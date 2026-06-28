@@ -19,8 +19,7 @@ static int RootObjectContainer_get_things(lua_State* L)
     RootObjectContainer* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectContainer is nil");
     // TODO: Unsupported type for things (lektor<RootObject*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'things' (type: lektor<RootObject*>)");
 }
 
 // --- Setters for RootObjectContainer ---

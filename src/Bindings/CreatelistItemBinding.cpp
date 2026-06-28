@@ -77,8 +77,7 @@ static int CreatelistItem_get_callbackObject(lua_State* L)
     RootObjectFactory::CreatelistItem* b = getB(L, 1);
     if (!b) return luaL_error(L, "CreatelistItem is nil");
     // TODO: Unsupported type for callbackObject (FactoryCallbackInterface*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'callbackObject' (type: FactoryCallbackInterface*)");
 }
 
 static int CreatelistItem_get_saveState(lua_State* L)
@@ -86,8 +85,7 @@ static int CreatelistItem_get_saveState(lua_State* L)
     RootObjectFactory::CreatelistItem* b = getB(L, 1);
     if (!b) return luaL_error(L, "CreatelistItem is nil");
     // TODO: Unsupported type for saveState (GameSaveState*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'saveState' (type: GameSaveState*)");
 }
 
 static int CreatelistItem_get_age(lua_State* L)

@@ -17,8 +17,7 @@ static int RaceLimiter_get_limits(lua_State* L)
     RaceLimiter* b = getB(L, 1);
     if (!b) return luaL_error(L, "RaceLimiter is nil");
     // TODO: Unsupported type for limits (ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'limits' (type: ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type)");
 }
 
 // --- Setters for RaceLimiter ---

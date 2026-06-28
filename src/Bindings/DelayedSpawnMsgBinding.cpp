@@ -6,6 +6,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/ItemBinding.h"
+#include "Bindings/HandBinding.h"
 
 typedef Town::DelayedSpawnMsg DelayedSpawnMsg;
 
@@ -22,9 +23,7 @@ static int DelayedSpawnMsg_get_parentTown(lua_State* L)
 {
     DelayedSpawnMsg* b = getB(L, 1);
     if (!b) return luaL_error(L, "DelayedSpawnMsg is nil");
-    // TODO: Unsupported type for parentTown (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->parentTown);
 }
 
 static int DelayedSpawnMsg_get_item(lua_State* L)
@@ -53,9 +52,7 @@ static int DelayedSpawnMsg_get_insideBuilding(lua_State* L)
 {
     DelayedSpawnMsg* b = getB(L, 1);
     if (!b) return luaL_error(L, "DelayedSpawnMsg is nil");
-    // TODO: Unsupported type for insideBuilding (hand)
-    lua_pushnil(L);
-    return 1;
+    return handBinding::push(L, b->insideBuilding);
 }
 
 // --- Setters for DelayedSpawnMsg ---
@@ -63,7 +60,9 @@ static int DelayedSpawnMsg_set_parentTown(lua_State* L)
 {
     DelayedSpawnMsg* b = getB(L, 1);
     if (!b) return luaL_error(L, "DelayedSpawnMsg is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for parentTown");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->parentTown = *val;
+    return 0;
 }
 
 static int DelayedSpawnMsg_set_item(lua_State* L)
@@ -92,7 +91,9 @@ static int DelayedSpawnMsg_set_insideBuilding(lua_State* L)
 {
     DelayedSpawnMsg* b = getB(L, 1);
     if (!b) return luaL_error(L, "DelayedSpawnMsg is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for insideBuilding");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->insideBuilding = *val;
+    return 0;
 }
 
 /*

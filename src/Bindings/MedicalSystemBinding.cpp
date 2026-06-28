@@ -24,8 +24,7 @@ static int MedicalSystem_get_status(lua_State* L)
     MedicalSystem* b = getB(L, 1);
     if (!b) return luaL_error(L, "MedicalSystem is nil");
     // TODO: Unsupported type for status (ogre_unordered_map<GameData*, MedicalSystem::HealthPartStatus>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'status' (type: ogre_unordered_map<GameData*, MedicalSystem::HealthPartStatus>::type)");
 }
 
 static int MedicalSystem_get_armourList(lua_State* L)
@@ -33,8 +32,7 @@ static int MedicalSystem_get_armourList(lua_State* L)
     MedicalSystem* b = getB(L, 1);
     if (!b) return luaL_error(L, "MedicalSystem is nil");
     // TODO: Unsupported type for armourList (lektor<Armour*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'armourList' (type: lektor<Armour*>)");
 }
 
 static int MedicalSystem_get_hunger(lua_State* L)
@@ -58,8 +56,7 @@ static int MedicalSystem_get_lastPeriodicUpdate(lua_State* L)
     MedicalSystem* b = getB(L, 1);
     if (!b) return luaL_error(L, "MedicalSystem is nil");
     // TODO: Unsupported type for lastPeriodicUpdate (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'lastPeriodicUpdate' (type: TimeOfDay)");
 }
 
 static int MedicalSystem_get_blood(lua_State* L)
@@ -226,8 +223,7 @@ static int MedicalSystem_get_animation(lua_State* L)
     MedicalSystem* b = getB(L, 1);
     if (!b) return luaL_error(L, "MedicalSystem is nil");
     // TODO: Unsupported type for animation (AnimationClass*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'animation' (type: AnimationClass*)");
 }
 
 static int MedicalSystem_get_me(lua_State* L)
@@ -242,8 +238,7 @@ static int MedicalSystem_get_weatherGUIfeedback(lua_State* L)
     MedicalSystem* b = getB(L, 1);
     if (!b) return luaL_error(L, "MedicalSystem is nil");
     // TODO: Unsupported type for weatherGUIfeedback (StringPair)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'weatherGUIfeedback' (type: StringPair)");
 }
 
 static int MedicalSystem_get_currentWeatherAffect(lua_State* L)
@@ -267,8 +262,7 @@ static int MedicalSystem_get_lastHungerKO(lua_State* L)
     MedicalSystem* b = getB(L, 1);
     if (!b) return luaL_error(L, "MedicalSystem is nil");
     // TODO: Unsupported type for lastHungerKO (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'lastHungerKO' (type: TimeOfDay)");
 }
 
 static int MedicalSystem_get_nextKOTime(lua_State* L)
@@ -356,8 +350,7 @@ static int MedicalSystem_get_wounds(lua_State* L)
     MedicalSystem* b = getB(L, 1);
     if (!b) return luaL_error(L, "MedicalSystem is nil");
     // TODO: Unsupported type for wounds (Ogre::FastArray<Wound*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'wounds' (type: Ogre::FastArray<Wound*>)");
 }
 
 static int MedicalSystem_get_anatomy(lua_State* L)
@@ -365,8 +358,7 @@ static int MedicalSystem_get_anatomy(lua_State* L)
     MedicalSystem* b = getB(L, 1);
     if (!b) return luaL_error(L, "MedicalSystem is nil");
     // TODO: Unsupported type for anatomy (lektor<MedicalSystem::HealthPartStatus*>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'anatomy' (type: lektor<MedicalSystem::HealthPartStatus*>)");
 }
 
 static int MedicalSystem_get_stats(lua_State* L)

@@ -4,6 +4,11 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/TownBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/ActivePlatoonBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "HandBinding.h"
 
 namespace KenshiLua
 {
@@ -19,8 +24,7 @@ static int TownBase_get_positionCacher(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for positionCacher (TownPositionCacher)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'positionCacher' (type: TownPositionCacher)");
 }
 
 static int TownBase_get_townType(lua_State* L)
@@ -28,8 +32,7 @@ static int TownBase_get_townType(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for townType (TownType)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'townType' (type: TownType)");
 }
 
 static int TownBase_get_population(lua_State* L)
@@ -37,8 +40,7 @@ static int TownBase_get_population(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for population (BasePopulationManager*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'population' (type: BasePopulationManager*)");
 }
 
 static int TownBase_get_factionsResidentHere(lua_State* L)
@@ -46,8 +48,7 @@ static int TownBase_get_factionsResidentHere(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for factionsResidentHere (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'factionsResidentHere' (type: std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int TownBase_get_alreadyInitialisedPopulationParams(lua_State* L)
@@ -71,8 +72,7 @@ static int TownBase_get_occupiers(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for occupiers (std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'occupiers' (type: std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)");
 }
 
 static int TownBase_get_timeOfDeath(lua_State* L)
@@ -80,8 +80,7 @@ static int TownBase_get_timeOfDeath(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for timeOfDeath (TimeOfDay)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'timeOfDeath' (type: TimeOfDay)");
 }
 
 static int TownBase_get_p_TIME(lua_State* L)
@@ -97,8 +96,7 @@ static int TownBase_get_nestBatcher(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for nestBatcher (NestBatcher*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'nestBatcher' (type: NestBatcher*)");
 }
 
 static int TownBase_get_unexploredName(lua_State* L)
@@ -138,8 +136,7 @@ static int TownBase_get_entityMarker(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for entityMarker (Ogre::Entity*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'entityMarker' (type: Ogre::Entity*)");
 }
 
 static int TownBase_get_entityLabel(lua_State* L)
@@ -147,8 +144,7 @@ static int TownBase_get_entityLabel(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for entityLabel (ScreenLabel*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'entityLabel' (type: ScreenLabel*)");
 }
 
 static int TownBase_get_clickHull(lua_State* L)
@@ -156,8 +152,7 @@ static int TownBase_get_clickHull(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for clickHull (PhysicsHullT*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'clickHull' (type: PhysicsHullT*)");
 }
 
 static int TownBase_get_biome(lua_State* L)
@@ -165,8 +160,7 @@ static int TownBase_get_biome(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for biome (AreaBiomeGroup*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'biome' (type: AreaBiomeGroup*)");
 }
 
 static int TownBase_get_alarmState(lua_State* L)
@@ -174,8 +168,7 @@ static int TownBase_get_alarmState(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for alarmState (TownAlarmState)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'alarmState' (type: TownAlarmState)");
 }
 
 static int TownBase_get_isActivated(lua_State* L)
@@ -191,8 +184,7 @@ static int TownBase_get_myZoneCoverage(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for myZoneCoverage (ogre_unordered_set<ZoneMap*>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'myZoneCoverage' (type: ogre_unordered_set<ZoneMap*>::type)");
 }
 
 static int TownBase_get_populatedZones(lua_State* L)
@@ -200,8 +192,7 @@ static int TownBase_get_populatedZones(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for populatedZones (ogre_unordered_map<ZoneMap*, bool>::type)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'populatedZones' (type: ogre_unordered_map<ZoneMap*, bool>::type)");
 }
 
 static int TownBase_get_artifacts(lua_State* L)
@@ -209,8 +200,7 @@ static int TownBase_get_artifacts(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for artifacts (Ogre::FastArray<ArtifactItemData>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'artifacts' (type: Ogre::FastArray<ArtifactItemData>)");
 }
 
 static int TownBase_get_currentFloorVisibility(lua_State* L)
@@ -226,8 +216,7 @@ static int TownBase_get_buildingsManager(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for buildingsManager (TownBuildingsManager)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'buildingsManager' (type: TownBuildingsManager)");
 }
 
 static int TownBase_get_residentsSpawned(lua_State* L)
@@ -235,8 +224,7 @@ static int TownBase_get_residentsSpawned(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for residentsSpawned (lektor<ResidentData>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'residentsSpawned' (type: lektor<ResidentData>)");
 }
 
 static int TownBase_get_residentsSpawned_BarsOrSomething(lua_State* L)
@@ -244,8 +232,7 @@ static int TownBase_get_residentsSpawned_BarsOrSomething(lua_State* L)
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
     // TODO: Unsupported type for residentsSpawned_BarsOrSomething (lektor<ResidentData>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'residentsSpawned_BarsOrSomething' (type: lektor<ResidentData>)");
 }
 
 static int TownBase_get_defaultResident(lua_State* L)
@@ -1353,6 +1340,142 @@ Skipped methods needing manual binding:
   line 274: void spawnDebris(...) - unsupported arg type
 */
 
+static int TownBase_setFaction(lua_State* L)
+{
+    TownBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "TownBase is nil");
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    ActivePlatoon* a = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        a = checkObject<ActivePlatoon>(L, 3, ActivePlatoonBinding::getMetatableName());
+    }
+    b->setFaction(f, a);
+    return 0;
+}
+
+static int TownBase__NV_setFaction(lua_State* L)
+{
+    TownBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "TownBase is nil");
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    ActivePlatoon* a = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        a = checkObject<ActivePlatoon>(L, 3, ActivePlatoonBinding::getMetatableName());
+    }
+    b->_NV_setFaction(f, a);
+    return 0;
+}
+
+static int TownBase_findAllBuildingsOfType(lua_State* L)
+{
+    TownBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "TownBase is nil");
+    BuildingDesignation func = (BuildingDesignation)luaL_checkinteger(L, 2);
+    Character* me = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    }
+    lektor<Building*>* result = b->findAllBuildingsOfType(func, me);
+    if (!result) { lua_pushnil(L); return 1; }
+    lua_createtable(L, result->size(), 0);
+    for (uint32_t i = 0; i < result->size(); ++i) {
+        pushObject<Building>(L, result->operator[](i), BuildingBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+static int TownBase__NV_findAllBuildingsOfType(lua_State* L)
+{
+    TownBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "TownBase is nil");
+    BuildingDesignation func = (BuildingDesignation)luaL_checkinteger(L, 2);
+    Character* me = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    }
+    lektor<Building*>* result = b->_NV_findAllBuildingsOfType(func, me);
+    if (!result) { lua_pushnil(L); return 1; }
+    lua_createtable(L, result->size(), 0);
+    for (uint32_t i = 0; i < result->size(); ++i) {
+        pushObject<Building>(L, result->operator[](i), BuildingBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+static int TownBase_findAllBuildingsWithFunction(lua_State* L)
+{
+    TownBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "TownBase is nil");
+    BuildingFunction func = (BuildingFunction)luaL_checkinteger(L, 2);
+    Character* me = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    }
+    lektor<Building*>* result = b->findAllBuildingsWithFunction(func, me);
+    if (!result) { lua_pushnil(L); return 1; }
+    lua_createtable(L, result->size(), 0);
+    for (uint32_t i = 0; i < result->size(); ++i) {
+        pushObject<Building>(L, result->operator[](i), BuildingBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+static int TownBase__NV_findAllBuildingsWithFunction(lua_State* L)
+{
+    TownBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "TownBase is nil");
+    BuildingFunction func = (BuildingFunction)luaL_checkinteger(L, 2);
+    Character* me = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    }
+    lektor<Building*>* result = b->_NV_findAllBuildingsWithFunction(func, me);
+    if (!result) { lua_pushnil(L); return 1; }
+    lua_createtable(L, result->size(), 0);
+    for (uint32_t i = 0; i < result->size(); ++i) {
+        pushObject<Building>(L, result->operator[](i), BuildingBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+static int TownBase_getCurrentTownLocation(lua_State* L)
+{
+    TownBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "TownBase is nil");
+    TownBase* result = b->getCurrentTownLocation();
+    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
+}
+
+static int TownBase__NV_getCurrentTownLocation(lua_State* L)
+{
+    TownBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "TownBase is nil");
+    TownBase* result = b->_NV_getCurrentTownLocation();
+    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
+}
+
+static int TownBase_getUnexploredName(lua_State* L)
+{
+    TownBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "TownBase is nil");
+    const std::string& result = b->getUnexploredName();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+static int TownBase__NV_getUnexploredName(lua_State* L)
+{
+    TownBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "TownBase is nil");
+    const std::string& result = b->_NV_getUnexploredName();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
 int TownBaseBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -1457,6 +1580,16 @@ void TownBaseBinding::registerBinding(lua_State* L)
         { "_NV_getMapMarkerZoomLevel", TownBaseBinding::_NV_getMapMarkerZoomLevel },
         { "isOccupied", TownBaseBinding::isOccupied },
         { "distributeArtifacts", TownBaseBinding::distributeArtifacts },
+        { "setFaction", TownBase_setFaction },
+        { "_NV_setFaction", TownBase__NV_setFaction },
+        { "findAllBuildingsOfType", TownBase_findAllBuildingsOfType },
+        { "_NV_findAllBuildingsOfType", TownBase__NV_findAllBuildingsOfType },
+        { "findAllBuildingsWithFunction", TownBase_findAllBuildingsWithFunction },
+        { "_NV_findAllBuildingsWithFunction", TownBase__NV_findAllBuildingsWithFunction },
+        { "getCurrentTownLocation", TownBase_getCurrentTownLocation },
+        { "_NV_getCurrentTownLocation", TownBase__NV_getCurrentTownLocation },
+        { "getUnexploredName", TownBase_getUnexploredName },
+        { "_NV_getUnexploredName", TownBase__NV_getUnexploredName },
         { 0, 0 }
     };
 

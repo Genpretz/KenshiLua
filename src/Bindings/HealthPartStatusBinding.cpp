@@ -58,8 +58,7 @@ static int HealthPartStatus_get_robotLimb(lua_State* L)
     MedicalSystem::HealthPartStatus* b = getB(L, 1);
     if (!b) return luaL_error(L, "HealthPartStatus is nil");
     // TODO: Unsupported type for robotLimb (RobotLimbItem*)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'robotLimb' (type: RobotLimbItem*)");
 }
 
 static int HealthPartStatus_get_selfHealing(lua_State* L)

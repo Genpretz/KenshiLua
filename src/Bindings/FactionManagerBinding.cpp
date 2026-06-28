@@ -3,6 +3,7 @@
 #include "FactionManagerBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/FactionBinding.h"
+#include "Bindings/PlatoonBinding.h"
 
 namespace KenshiLua
 {
@@ -17,8 +18,11 @@ static int FactionManager_get_participants(lua_State* L)
 {
     FactionManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "FactionManager is nil");
-    // TODO: Unsupported type for participants (lektor<Faction*>)
-    lua_pushnil(L);
+    lua_createtable(L, b->participants.size(), 0);
+    for (uint32_t i = 0; i < b->participants.size(); ++i) {
+        pushObject<Faction>(L, b->participants[i], FactionBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -34,8 +38,11 @@ static int FactionManager_get_toAddList(lua_State* L)
 {
     FactionManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "FactionManager is nil");
-    // TODO: Unsupported type for toAddList (lektor<Platoon*>)
-    lua_pushnil(L);
+    lua_createtable(L, b->toAddList.size(), 0);
+    for (uint32_t i = 0; i < b->toAddList.size(); ++i) {
+        pushObject<Platoon>(L, b->toAddList[i], PlatoonBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
 }
 
@@ -176,6 +183,29 @@ int FactionManagerBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
+static int FactionManager_getFactionBySquad(lua_State* L)
+{
+    FactionManager* b = getB(L, 1);
+    if (!b) return luaL_error(L, "FactionManager is nil");
+    GameData* squad = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Faction* result = b->getFactionBySquad(squad);
+    return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
+}
+
+static int FactionManager_getAllFactions(lua_State* L)
+{
+    FactionManager* b = getB(L, 1);
+    if (!b) return luaL_error(L, "FactionManager is nil");
+    const lektor<Faction*>* result = b->getAllFactions();
+    if (!result) { lua_pushnil(L); return 1; }
+    lua_createtable(L, result->size(), 0);
+    for (uint32_t i = 0; i < result->size(); ++i) {
+        pushObject<Faction>(L, result->operator[](i), FactionBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 175: FactionManager* _CONSTRUCTOR(...) - unsupported return type
@@ -183,9 +213,7 @@ Skipped methods needing manual binding:
   line 177: void savePlayerGameState(...) - unsupported arg type
   line 181: Faction* getOrCreateFaction(...) - overloaded method
   line 182: Faction* getOrCreateFaction(...) - overloaded method
-  line 187: Faction* getFactionBySquad(...) - unsupported arg type
   line 188: void getCampaignGUIInfos(...) - unsupported arg type
-  line 194: const lektor<Faction*>* getAllFactions(...) - unsupported return type
 */
 
 int FactionManagerBinding::gc(lua_State* L)
@@ -221,6 +249,8 @@ void FactionManagerBinding::registerBinding(lua_State* L)
         { "updateThreaded", FactionManagerBinding::updateThreaded },
         { "_showDebugPlatoonMarkers", FactionManagerBinding::_showDebugPlatoonMarkers },
         { "_DESTRUCTOR", FactionManagerBinding::_DESTRUCTOR },
+        { "getFactionBySquad", FactionManager_getFactionBySquad },
+        { "getAllFactions", FactionManager_getAllFactions },
         { 0, 0 }
     };
 

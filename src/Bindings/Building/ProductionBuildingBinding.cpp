@@ -42,8 +42,7 @@ static int ProductionBuilding_get_consumptionItems(lua_State* L)
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
     // TODO: Unsupported type for consumptionItems (lektor<StorageBuilding::ConsumptionItem>)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'consumptionItems' (type: lektor<StorageBuilding::ConsumptionItem>)");
 }
 
 // --- Setters for ProductionBuilding ---

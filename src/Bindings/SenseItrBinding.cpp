@@ -18,8 +18,7 @@ static int SenseItr_get_it(lua_State* L)
     SenseItr* b = getB(L, 1);
     if (!b) return luaL_error(L, "SenseItr is nil");
     // TODO: Unsupported type for it (boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'it' (type: boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)");
 }
 
 static int SenseItr_get__end(lua_State* L)
@@ -27,8 +26,7 @@ static int SenseItr_get__end(lua_State* L)
     SenseItr* b = getB(L, 1);
     if (!b) return luaL_error(L, "SenseItr is nil");
     // TODO: Unsupported type for _end (boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property '_end' (type: boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)");
 }
 
 static int SenseItr_get_flagsAny(lua_State* L)

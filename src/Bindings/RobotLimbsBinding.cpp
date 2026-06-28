@@ -39,8 +39,7 @@ static int RobotLimbs_get_states(lua_State* L)
     RobotLimbs* b = getB(L, 1);
     if (!b) return luaL_error(L, "RobotLimbs is nil");
     // TODO: Unsupported type for states (LimbState)
-    lua_pushnil(L);
-    return 1;
+    return luaL_error(L, "Unsupported property 'states' (type: LimbState)");
 }
 
 static int RobotLimbs_get_items(lua_State* L)
