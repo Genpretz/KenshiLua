@@ -81,6 +81,24 @@
 #include "Bindings/InventorySectionBinding.h"
 #include "Bindings/SectionItemBinding.h"
 #include "Bindings/AnimalInventoryLayoutBinding.h"
+#include "Bindings/AbstractMovementBaseBinding.h"
+#include "Bindings/ActivePlatoonBinding.h"
+#include "Bindings/CharBodyBinding.h"
+#include "Bindings/CharMovementBinding.h"
+#include "Bindings/CombatMovementControllerBinding.h"
+#include "Bindings/ContainerItemBinding.h"
+#include "Bindings/DialogChoiceListBinding.h"
+#include "Bindings/DialogConditionBinding.h"
+#include "Bindings/DialogActionBinding.h"
+#include "Bindings/DialogLineDataBinding.h"
+#include "Bindings/DialogStateBinding.h"
+#include "Bindings/FactionManagerBinding.h"
+#include "Bindings/FlockingToolsBinding.h"
+#include "Bindings/MedianFilter2DVectorBinding.h"
+#include "Bindings/ObjectInstanceBinding.h"
+#include "Bindings/SpeedGroupBinding.h"
+#include "Bindings/TaskerBinding.h"
+#include "Bindings/HealthPartStatusBinding.h"
 //#include "Bindings/ShopTraderBinding.h"
 #include "Lua/Benchmark.h"
 #include <string>
@@ -187,6 +205,25 @@ void LuaBindings::registerAll(lua_State* L)
     AnimalInventoryLayoutBinding::registerBinding(L);
     CharacterAnimalBinding::registerBinding(L);
 
+    AbstractMovementBaseBinding::registerBinding(L);
+    CharMovementBinding::registerBinding(L);
+    ActivePlatoonBinding::registerBinding(L);
+    CharBodyBinding::registerBinding(L);
+    CombatMovementControllerBinding::registerBinding(L);
+    ContainerItemBinding::registerBinding(L);
+    DialogChoiceListBinding::registerBinding(L);
+    DialogConditionBinding::registerBinding(L);
+    DialogActionBinding::registerBinding(L);
+    DialogLineDataBinding::registerBinding(L);
+    DialogStateBinding::registerBinding(L);
+    FactionManagerBinding::registerBinding(L);
+    FlockingToolsBinding::registerBinding(L);
+    MedianFilter2DVectorBinding::registerBinding(L);
+    ObjectInstanceBinding::registerBinding(L);
+    SpeedGroupBinding::registerBinding(L);
+    TaskerBinding::registerBinding(L);
+    HealthPartStatusBinding::registerBinding(L);
+
 	registerEnumBindings(L);
     registerGlobals(L);
 
@@ -196,6 +233,9 @@ void LuaBindings::registerAll(lua_State* L)
     setMetatableParent(L, "KenshiLua.RootObject", "KenshiLua.RootObjectBase");
 
     setMetatableParent(L, "KenshiLua.Platoon", "KenshiLua.RootObjectBase");
+    setMetatableParent(L, "KenshiLua.ActivePlatoon", "KenshiLua.Platoon");
+    setMetatableParent(L, "KenshiLua.CharMovement", "KenshiLua.AbstractMovementBase");
+
     setMetatableParent(L, "KenshiLua.Town", "KenshiLua.TownBase");
     setMetatableParent(L, "KenshiLua.TownBase", "KenshiLua.RootObject");
 
