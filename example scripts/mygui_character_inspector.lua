@@ -44,7 +44,7 @@ local function getOrCreateWindow()
     -- The 8th parameter is the layer name ("Window").
     CharInspectorWindow = KenshiLua.createWidget("Window", "Kenshi_WindowCX", 150, 150, 450, 320, "CharInspectorWindow", "Window")
     if not CharInspectorWindow then
-        log("[CharInspector] Failed to create inspector window")
+        KenshiLua.log("[CharInspector] Failed to create inspector window")
         return nil
     end
 
@@ -86,7 +86,7 @@ local function getOrCreateWindow()
         btnHeal:registerCallback("MouseButtonClick", function(widget)
             if inspectingChar and inspectingChar:isValid() then
                 inspectingChar:healCompletely()
-                log("[CharInspector] Healed character: " .. inspectingChar:getName())
+                KenshiLua.log("[CharInspector] Healed character: " .. inspectingChar:getName())
             end
         end)
     end
@@ -101,7 +101,7 @@ local function getOrCreateWindow()
                 if stats then
                     stats._strength = 100.0
                     updateStatsLabels()
-                    log("[CharInspector] Set strength of " .. inspectingChar:getName() .. " to 100")
+                    KenshiLua.log("[CharInspector] Set strength of " .. inspectingChar:getName() .. " to 100")
                 end
             end
         end)
@@ -140,8 +140,8 @@ local function onUpdate()
     end
 end
 
-log("[CharInspector] Registering character select/unselect/update event handlers")
-registerHandler("onCharacterSelect", onSelect)
-registerHandler("onCharacterUnselect", onUnselect)
-registerHandler("onCharsUpdate", onUpdate)
-log("[CharInspector] Initialization complete")
+KenshiLua.log("[CharInspector] Registering character select/unselect/update event handlers")
+KenshiLua.registerHandler("onCharacterSelect", onSelect)
+KenshiLua.registerHandler("onCharacterUnselect", onUnselect)
+KenshiLua.registerHandler("onCharsUpdate", onUpdate)
+KenshiLua.log("[CharInspector] Initialization complete")
