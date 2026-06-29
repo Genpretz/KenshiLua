@@ -53,10 +53,9 @@ handlerId = KenshiLua.registerHandler("onCharsUpdate", function()
         playerChar:takeMoney(-2000)
         npc:say("Unbelievable luck! You got a 6. Here is your 2,000 cats.")
     else
-        -- Caught: NPC shouts catchphrase, marks player as criminal, and attacks
+        -- Caught: NPC shouts catchphrase, marks player as thief.
         npc:say("I dont play with cheats!")
-        npc:rememberCharacter(playerChar, "criminal")
-        npc:attackTarget(playerChar)
+        npc:rememberCharacter(playerChar, CharacterPerceptionTags_LongTerm.STOLE_FROM_ME)
     end
 end)
 

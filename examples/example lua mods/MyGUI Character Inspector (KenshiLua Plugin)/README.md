@@ -14,6 +14,7 @@ This mod listens for character selection events and overlays a custom status pan
 
 ## Technical Details
 
-1. **Event Listeners**: Registers callbacks for `onCharacterSelect`, `onCharacterUnselect`, and `onCharsUpdate` (which handles real-time updates).
-2. **UI Construction**: Calls `KenshiLua.createWidget` to create the inspector window (`Kenshi_WindowCX` template) on the GUI "Window" layer. Labels and action buttons are child widgets added under the window client area.
-3. **Focus & Cleanup**: Closes cleanly via callback when the standard window close button is pressed, resetting keyboard focus using `KenshiLua.resetKeyFocus()`. Includes safety cleanup code to destroy any residual windows from previous runs.
+1. **Script Loader**: KenshiLua looks for .lua files in `./scripts/init` directory and executes these on startup
+2. **Event Listeners**: Registers callbacks for `onCharacterSelect`, `onCharacterUnselect`, and `onCharsUpdate` (which handles real-time updates).
+3. **UI Construction**: Calls `MyGUI.createWidget` to create the inspector window (`Kenshi_WindowCX` template) on the GUI "Window" layer. Labels and action buttons are child widgets added under the window client area.
+4. **Focus & Cleanup**: Closes cleanly via callback when the standard window close button is pressed, resetting keyboard focus using `MyGUI.resetKeyFocus()`. Includes safety cleanup code to destroy any residual windows from previous runs.

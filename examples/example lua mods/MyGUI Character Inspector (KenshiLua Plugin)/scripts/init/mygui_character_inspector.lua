@@ -56,7 +56,7 @@ local function getOrCreateWindow()
     CharInspectorWindow:registerCallback("WindowButtonPressed", function(window, buttonName)
         if buttonName == "close" then
             window:setVisible(false)
-            KenshiLua.resetKeyFocus()
+            MyGUI.resetKeyFocus()
         end
     end)
 

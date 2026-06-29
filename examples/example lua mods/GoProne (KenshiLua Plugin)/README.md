@@ -11,6 +11,7 @@ The mod runs on game startup and sets up a global keyboard listener to toggle th
 
 ## Implementation Details
 
-1. **Key Registration**: Calls `registerHandler("onKeyDown", on_key_down)` to intercept keystrokes.
-2. **Character Detection**: When `V` is pressed, the script fetches the `PlayerInterface` object, retrieves the `selectedCharacter` handle, and checks if a character is currently selected.
-3. **Stance Change**: Queries the character's current prone state with `c:getProneState()`, then calls `c:setProneState(...)` with the opposite state to toggle it.
+1. **Mod Loader**: KenshiLua looks for .lua files in `./scripts/init` directory and executes these on startup
+2. **Key Registration**: Calls `registerHandler("onKeyDown", on_key_down)` to intercept keystrokes.
+3. **Character Detection**: When `V` is pressed, the script fetches the `PlayerInterface` object, retrieves the `selectedCharacter` handle, and checks if a character is currently selected.
+4. **Stance Change**: Queries the character's current prone state with `c:getProneState()`, then calls `c:setProneState(...)` with the opposite state to toggle it.
