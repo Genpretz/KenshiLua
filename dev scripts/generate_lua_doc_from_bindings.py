@@ -123,7 +123,15 @@ def parse_binding_file(filepath: pathlib.Path):
                 if unsupported_match:
                     push_type = unsupported_match.group(1).strip()
             
-            setter_exists = f"{class_name}_set_{lua_name}" in content
+            setter_exists = False
+            setter_name = f"{class_name}_set_{lua_name}"
+            if setter_name in content:
+                setter_body = find_function_body(content, setter_name)
+                setter_body_lower = setter_body.lower()
+                if "read-only" in setter_body_lower or "read only" in setter_body_lower or "unsupported setter" in setter_body_lower:
+                    setter_exists = False
+                else:
+                    setter_exists = True
             rw = "RW" if setter_exists else "R"
             fields.append({"lua_name": lua_name, "member": member, "type": push_type, "rw": rw, "class": class_name, "header": header})
             
