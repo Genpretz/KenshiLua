@@ -20,7 +20,7 @@ Logger& Logger::get()
 void Logger::init(const std::string& filepath)
 {
     if (!m_initialized) {
-        m_file.open(filepath, std::ios::app);
+        m_file.open(filepath, std::ios::out);
         m_initialized = m_file.is_open();
     }
 }

@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "Lua/Config.h"
-#include "Lua/Logger.h"
+#include "Config.h"
+#include "Logger.h"
 #include <windows.h>
 #include <fstream>
 #include <algorithm>

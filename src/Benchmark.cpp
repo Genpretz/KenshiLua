@@ -1,9 +1,8 @@
 #include "pch.h"
-#include "Lua/Benchmark.h"
-#include "Lua/Config.h"
+#include "Benchmark.h"
+#include "Config.h"
 #include "Lua/LuaBindings.h"
-#include "Lua/LuaUtils.h"
-#include "Lua/Logger.h"
+#include "Logger.h"
 #include "EventSystem.h"
 #include <windows.h>
 #include <sstream>
