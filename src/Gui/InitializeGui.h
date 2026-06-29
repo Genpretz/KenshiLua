@@ -14,6 +14,7 @@ public:
     void shutdown();
     void toggle();
     bool isInitialized() const;
+    void checkKeyboardShortcut(OIS::KeyCode key, InputHandler* thisptr);
 
 private:
     KenshiLuaGui();

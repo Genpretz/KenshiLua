@@ -66,6 +66,28 @@ static bool InstallHookT(const char* name, intptr_t addr, T hookFn, T* origStora
         return InstallHookT(displayName, (intptr_t)(addrExpr), &hookFn, &origVar); \
     }
 
+
+// ---------------------------------------------------------------------------
+// Hook: InputHandler::keyDownEvent
+// ---------------------------------------------------------------------------
+
+static void (*InputHandler_keyDownEvent_orig)(InputHandler* thisptr, OIS::KeyCode key) = NULL;
+
+static void InputHandler_keyDownEvent_hook(InputHandler* thisptr, OIS::KeyCode key)
+{
+    InputHandler_keyDownEvent_orig(thisptr, key);
+
+    KenshiLua::KenshiLuaGui::get().checkKeyboardShortcut(key, thisptr);
+
+    CallKeyDownCallbacks(static_cast<int>(key));
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_InputHandler_KeyDown,
+    "InputHandler::keyDownEvent",
+    KenshiLib::GetRealAddress(&InputHandler::keyDownEvent),
+    InputHandler_keyDownEvent_hook, InputHandler_keyDownEvent_orig)
+
+
 // ---------------------------------------------------------------------------
 // Hook: Character::say
 // ---------------------------------------------------------------------------
@@ -168,26 +190,6 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_GetPickedUp,
     KenshiLib::GetRealAddress(&Character::getPickedUp),
     Character_getPickedUp_hook, Character_getPickedUp_orig)
 
-// ---------------------------------------------------------------------------
-// Hook: InputHandler::keyDownEvent
-// ---------------------------------------------------------------------------
-
-static void (*InputHandler_keyDownEvent_orig)(InputHandler* thisptr, OIS::KeyCode key) = NULL;
-
-static void InputHandler_keyDownEvent_hook(InputHandler* thisptr, OIS::KeyCode key)
-{
-    InputHandler_keyDownEvent_orig(thisptr, key);
-
-    if (key == OIS::KC_L && thisptr->ctrl && thisptr->shift)
-        KenshiLua::KenshiLuaGui::get().toggle();
-
-    CallKeyDownCallbacks(static_cast<int>(key));
-}
-
-DEFINE_HOOK_INSTALLER(InstallHook_InputHandler_KeyDown,
-    "InputHandler::keyDownEvent",
-    KenshiLib::GetRealAddress(&InputHandler::keyDownEvent),
-    InputHandler_keyDownEvent_hook, InputHandler_keyDownEvent_orig)
 
 // ---------------------------------------------------------------------------
 // Hook: GameWorld::charsUpdate

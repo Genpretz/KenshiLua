@@ -125,4 +125,10 @@ namespace KenshiLua
         return m_initialized;
     }
 
+    void KenshiLuaGui::checkKeyboardShortcut(OIS::KeyCode key, InputHandler* thisptr)
+    {
+        if (key == OIS::KC_L && thisptr->ctrl && thisptr->shift)
+            toggle();
+    }
+
 } // namespace KenshiLua
