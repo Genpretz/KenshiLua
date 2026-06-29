@@ -1,9 +1,12 @@
 #include "pch.h"
 #include "Lua/LuaBindings.h"
-#include "Lua/LuaUtils.h"
 #include "Lua/LuaState.h"
-#include "Lua/Logger.h"
+#include "Logger.h"
 #include "Lua/BindingHelpers.h"
+#include "EventSystem.h"
+#include "Gui/InitializeGui.h"
+#include "ScriptLoader.h"
+#include "DialogueScriptBridge.h"
 #include "Bindings/HandBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/DialogueBinding.h"
@@ -100,7 +103,7 @@
 #include "Bindings/TaskerBinding.h"
 #include "Bindings/HealthPartStatusBinding.h"
 //#include "Bindings/ShopTraderBinding.h"
-#include "Lua/Benchmark.h"
+#include "Benchmark.h"
 #include <string>
 #include <cstdio>
 
@@ -111,6 +114,67 @@ extern "C" {
 
 namespace KenshiLua
 {
+
+static int lua_reloadMods(lua_State* L)
+{
+    ScriptLoader::get().reloadAll(L);
+    lua_pushinteger(L, (lua_Integer)ScriptLoader::get().scripts().size());
+    return 1;
+}
+
+static int lua_toggleGui(lua_State* L)
+{
+    KenshiLuaGui::get().toggle();
+    return 0;
+}
+
+
+
+static void installKenshiLuaTable(lua_State* L)
+{
+    // KenshiLua.* namespace for management helpers.
+    lua_getglobal(L, "KenshiLua");
+    if (!lua_istable(L, -1)) {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
+
+    lua_pushcfunction(L, lua_reloadMods);
+    lua_setfield(L, -2, "reloadMods");
+
+    lua_pushcfunction(L, lua_toggleGui);
+    lua_setfield(L, -2, "toggleGui");
+
+    // Aliases for the existing global event-handler functions.
+    lua_pushcfunction(L, luaRegisterHandler);
+    lua_setfield(L, -2, "registerHandler");
+
+    lua_pushcfunction(L, luaUnregisterHandler);
+    lua_setfield(L, -2, "unregisterHandler");
+
+    // Version check helper.
+    lua_pushcfunction(L, luaKenshiVersion);
+    lua_setfield(L, -2, "version");
+
+    lua_pushcfunction(L, luaKenshiRunBenchmark);
+    lua_setfield(L, -2, "runBenchmark");
+
+
+
+    lua_pushcfunction(L, luaCheckLuaScriptReferences);
+    lua_setfield(L, -2, "checkLuaScriptReferences");
+
+    lua_pushcfunction(L, luaGetGameData);
+    lua_setfield(L, -2, "getGameData");
+
+    lua_pushcfunction(L, luaKenshiLog);
+    lua_setfield(L, -2, "log");
+
+    lua_pushcfunction(L, luaKenshiError);
+    lua_setfield(L, -2, "error");
+
+    lua_setglobal(L, "KenshiLua");
+}
 
 static const luaL_Reg KenshiLuaLib[] = {
     // Add global functions here, e.g.:
@@ -279,6 +343,8 @@ void LuaBindings::registerAll(lua_State* L)
     setMetatableParent(L, "KenshiLua.ProductionInventoryLayout", "KenshiLua.BuildInventoryLayout");
     setMetatableParent(L, "KenshiLua.CraftingInventoryLayout", "KenshiLua.BuildInventoryLayout");
     setMetatableParent(L, "KenshiLua.ResearchBuildingInventoryLayout", "KenshiLua.GenericInventoryLayout");
+
+    installKenshiLuaTable(L);
 }
 
 int luaKenshiLog(lua_State* L)
