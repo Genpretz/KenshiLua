@@ -24,35 +24,55 @@ namespace KenshiLua
 
     void DialogueScriptBridge(Dialogue* thisptr, DialogLineData* dialogLine)
     {
-        if (dialogLine && dialogLine->data)
+        KenshiLua::logToFileDebug("DialogueScriptBridge entered.");
+        if (!dialogLine)
         {
-            GameData* gd = dialogLine->data;
-            auto sdataIt = gd->sdata.find("lua script");
-            if (sdataIt != gd->sdata.end())
+            KenshiLua::logToFileDebug("DialogueScriptBridge: dialogLine is null.");
+            return;
+        }
+        if (!dialogLine->data)
+        {
+            KenshiLua::logToFileDebug("DialogueScriptBridge: dialogLine->data is null.");
+            return;
+        }
+
+        GameData* gd = dialogLine->data;
+        KenshiLua::logToFileDebug("DialogueScriptBridge: Checking GameData item Type=" + std::to_string((long long)gd->type) + " ID=" + gd->stringID + " Name=" + gd->name);
+
+        // Log all filesdata keys
+        for (auto it = gd->filesdata.begin(); it != gd->filesdata.end(); ++it)
+        {
+            KenshiLua::logToFileDebug("DialogueScriptBridge: filesdata key: '" + it->first + "' = '" + it->second + "'");
+        }
+        // Log all sdata keys
+        for (auto it = gd->sdata.begin(); it != gd->sdata.end(); ++it)
+        {
+            KenshiLua::logToFileDebug("DialogueScriptBridge: sdata key: '" + it->first + "' = '" + it->second + "'");
+        }
+
+        auto filesdataIt = gd->filesdata.find("lua script");
+        if (filesdataIt != gd->filesdata.end())
+        {
+            std::string filename = filesdataIt->second;
+            KenshiLua::logToFileDebug("DialogueScriptBridge: Found lua script value: " + filename);
+            if (!filename.empty())
             {
-                std::string filename = sdataIt->second;
-                if (!filename.empty())
+                std::string absolutePath = ScriptLoader::get().resolveScriptPath(filename);
+                KenshiLua::logToFileDebug("DialogueScriptBridge: Resolved script path: " + absolutePath);
+                if (!absolutePath.empty())
                 {
-                    std::string absolutePath = ScriptLoader::get().resolveScriptPath(filename);
-                    if (!absolutePath.empty())
+                    KenshiLua::logToFile("DialogueScriptBridge: Triggered Dialogue action Lua script: " + filename);
+                    lua_State* L = g_luaState ? g_luaState->getState() : nullptr;
+                    if (L)
                     {
-                        KenshiLua::logToFileDebug("DialogueScriptBridge: Triggered Dialogue action Lua script: " + filename);
-                        lua_State* L = g_luaState ? g_luaState->getState() : nullptr;
-                        if (L)
-                        {
-                            pushObject<Dialogue>(L, thisptr, DialogueBinding::getMetatableName());
-                            lua_setglobal(L, "currentDialogue");
+                        pushObject<Dialogue>(L, thisptr, DialogueBinding::getMetatableName());
+                        lua_setglobal(L, "currentDialogue");
 
-                            // Call the centralized sandboxed runner in ScriptLoader
-                            ScriptLoader::get().runScriptSandboxed(L, absolutePath, "@" + filename);
+                        // Call the centralized sandboxed runner in ScriptLoader
+                        ScriptLoader::get().runScriptSandboxed(L, absolutePath, "@" + filename);
 
-                            lua_pushnil(L);
-                            lua_setglobal(L, "currentDialogue");
-                        }
-                    }
-                    else
-                    {
-                        KenshiLua::logToFileDebug("DialogueScriptBridge: Script file " + filename + " referenced by Dialogue not found in active mods.");
+                        lua_pushnil(L);
+                        lua_setglobal(L, "currentDialogue");
                     }
                 }
             }
@@ -83,13 +103,13 @@ namespace KenshiLua
             GameData* gd = *it;
             if (!gd) continue;
 
-            auto sdataIt = gd->sdata.find("lua script");
-            if (sdataIt != gd->sdata.end())
+            auto filesdataIt = gd->filesdata.find("lua script");
+            if (filesdataIt != gd->filesdata.end())
             {
                 scriptFieldCount++;
                 ss << "- Item Type: " << static_cast<int>(gd->type)
                    << " (\"" << gd->stringID << "\" / \"" << gd->name << "\")\n"
-                   << "    lua script: \"" << sdataIt->second << "\"\n";
+                   << "    lua script: \"" << filesdataIt->second << "\"\n";
             }
         }
         ss << "Total items with 'lua script' fields: " << scriptFieldCount << "\n";
