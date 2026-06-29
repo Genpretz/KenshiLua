@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "ModLoader.h"
-#include "Lua/Logger.h"
+#include "ScriptLoader.h"
+#include "Logger.h"
 
 #include <kenshi/Globals.h>
 #include <kenshi/GameWorld.h>
@@ -14,19 +14,12 @@
 #include <algorithm>
 #include <cstring>
 
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-}
+#include <lua.hpp>
 
 namespace KenshiLua
 {
 
 namespace fs = boost::filesystem;
-
-// -----------------------------------------------------------------------------
-// Small helpers
-// -----------------------------------------------------------------------------
 
 static bool endsWithCaseInsensitive(const std::string& s, const std::string& suffix)
 {
@@ -41,73 +34,49 @@ static bool endsWithCaseInsensitive(const std::string& s, const std::string& suf
     return true;
 }
 
-// Build the chunk name we feed to luaL_loadbuffer.  Prefixing with '@' makes
-// Lua treat the rest as a filename in stack traces.
 static std::string makeChunkName(const std::string& modName, const std::string& relPath)
 {
     std::string out = "@";
     out += modName;
     out += "/";
     out += relPath;
-    // Lua truncates chunknames to LUA_IDSIZE (usually 60) in traceback output,
-    // which is fine. It'll keep the right-most useful part.
     return out;
 }
 
-// -----------------------------------------------------------------------------
-// Per-script sandbox setup
-//
-// We use a *shared* lua_State (the global one) but give every script its own
-// _ENV table so its locals/file-locals can't collide with another mod's.  The
-// sandbox table's __index falls back to the real global table so scripts can
-// still read `ou`, `player`, `key`, `log`, etc.  Writes go into the
-// sandbox table by default - to deliberately expose a global to other scripts,
-// a mod can write to `_G.foo = ...`.
-// -----------------------------------------------------------------------------
-
 static void createSandboxEnv(lua_State* L)
 {
-    // Stack after this function: [sandboxTable]
-    lua_newtable(L);              // sandbox
-
-    // Provide _G as a fallback for read-through.
-    lua_newtable(L);              // sandbox, meta
-    lua_pushglobaltable(L);       // sandbox, meta, _G
+    lua_newtable(L);
+    lua_newtable(L);
+    lua_pushglobaltable(L);
     lua_setfield(L, -2, "__index");
     lua_setmetatable(L, -2);
-
-    // Self-reference so scripts can `_ENV._something = ...` explicitly.
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "_ENV");
 }
 
-// -----------------------------------------------------------------------------
-// ModLoader
-// -----------------------------------------------------------------------------
+ScriptLoader::ScriptLoader() : m_loaded(false) {}
+ScriptLoader::~ScriptLoader() {}
 
-ModLoader::ModLoader() : m_loaded(false) {}
-ModLoader::~ModLoader() {}
-
-ModLoader& ModLoader::get()
+ScriptLoader& ScriptLoader::get()
 {
-    static ModLoader instance;
+    static ScriptLoader instance;
     return instance;
 }
 
-void ModLoader::discover()
+void ScriptLoader::discover()
 {
     m_scripts.clear();
     m_activeModNames.clear();
 
     if (!::ou) {
-        logToFile("ModLoader: GameWorld (ou) not yet available - skipping mod discovery");
+        logToFile("ScriptLoader: GameWorld (ou) not yet available - skipping mod discovery");
         return;
     }
 
     lektor<ModInfo*>& mods = ::ou->activeMods;
     int n = (int)mods.size();
     if (n == 0) {
-        logToFile("ModLoader: no active mods");
+        logToFile("ScriptLoader: no active mods");
         return;
     }
 
@@ -123,7 +92,6 @@ void ModLoader::discover()
         boost::system::error_code ec;
         if (!fs::exists(initDir, ec) || !fs::is_directory(initDir, ec)) continue;
 
-        // Recursive walk under modRoot/scripts/init for startup scripts
         std::vector<std::string> found;
         fs::recursive_directory_iterator it(initDir, ec);
         fs::recursive_directory_iterator end;
@@ -143,15 +111,12 @@ void ModLoader::discover()
             s.modPath = mi->path;
             s.absolutePath = found[k];
 
-            // Build relative path manually (boost::filesystem::relative is
-            // 1.60-conditional; do it ourselves to be safe).
             if (s.absolutePath.size() > s.modPath.size() + 1
                 && s.absolutePath.compare(0, s.modPath.size(), s.modPath) == 0) {
                 s.relativePath = s.absolutePath.substr(s.modPath.size() + 1);
             } else {
                 s.relativePath = s.absolutePath;
             }
-            // Normalize slashes for nicer chunk names.
             for (size_t j = 0; j < s.relativePath.size(); ++j) {
                 if (s.relativePath[j] == '\\') s.relativePath[j] = '/';
             }
@@ -161,23 +126,21 @@ void ModLoader::discover()
         }
     }
 
-    logToFile("ModLoader: discovered " + std::to_string((long long)m_scripts.size())
+    logToFile("ScriptLoader: discovered " + std::to_string((long long)m_scripts.size())
               + " script(s) across "
               + std::to_string((long long)m_activeModNames.size()) + " active mod(s)");
 }
 
-bool ModLoader::runScript(lua_State* L, LoadedScript& s)
+bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absolutePath, const std::string& chunkName, std::string* outError)
 {
     int top = lua_gettop(L);
 
-    // Read the file ourselves (avoids luaL_loadfile's BOM-only handling
-    // quirks across encodings).  Use boost::filesystem::ifstream.
-    fs::path path(s.absolutePath);
+    fs::path path(absolutePath);
     fs::ifstream f(path, std::ios::binary | std::ios::ate);
     if (!f) {
-        s.lastError = "could not open " + s.absolutePath;
-        logToFile("ModLoader: " + s.lastError);
-        lua_settop(L, top);
+        std::string errStr = "could not open " + absolutePath;
+        logToFile("ScriptLoader: " + errStr);
+        if (outError) *outError = errStr;
         return false;
     }
     std::streamsize sz = f.tellg();
@@ -186,50 +149,57 @@ bool ModLoader::runScript(lua_State* L, LoadedScript& s)
     if (sz > 0) {
         buf.resize(static_cast<size_t>(sz));
         if (!f.read(&buf[0], sz)) {
-            s.lastError = "failed to read " + s.absolutePath;
-            logToFile("ModLoader: " + s.lastError);
+            std::string errStr = "failed to read " + absolutePath;
+            logToFile("ScriptLoader: " + errStr);
+            if (outError) *outError = errStr;
             lua_settop(L, top);
             return false;
         }
     }
 
-    int loadResult = luaL_loadbuffer(L, buf.data(), buf.size(), s.chunkName.c_str());
+    int loadResult = luaL_loadbuffer(L, buf.data(), buf.size(), chunkName.c_str());
     if (loadResult != LUA_OK) {
         const char* err = lua_tostring(L, -1);
-        s.lastError = err ? err : "load error";
-        logToFile("ModLoader: load failed: " + s.chunkName + " : " + s.lastError);
+        std::string errStr = err ? err : "load error";
+        logToFile("ScriptLoader: load failed: " + chunkName + " : " + errStr);
+        if (outError) *outError = errStr;
         lua_settop(L, top);
         return false;
     }
 
-    // Install a per-script sandbox environment.
+    createSandboxEnv(L);
 #if LUA_VERSION_NUM >= 502
-    createSandboxEnv(L);                            // top: chunk, env
-    if (lua_setupvalue(L, -2, 1) == 0) {            // top: chunk  (no upvalue#1?!)
-        // No upvalues to set - chunk just uses real globals.  Drop the env.
+    if (lua_setupvalue(L, -2, 1) == 0) {
         lua_pop(L, 1);
     }
 #else
-    createSandboxEnv(L);                            // top: chunk, env
-    lua_setfenv(L, -2);                             // top: chunk
+    lua_setfenv(L, -2);
 #endif
 
     if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
         const char* err = lua_tostring(L, -1);
-        s.lastError = err ? err : "runtime error";
-        logToFile("ModLoader: runtime error in " + s.chunkName + " : " + s.lastError);
+        std::string errStr = err ? err : "runtime error";
+        logToFile("ScriptLoader: runtime error in " + chunkName + " : " + errStr);
+        if (outError) *outError = errStr;
         lua_settop(L, top);
         return false;
     }
 
-    s.loaded = true;
-    s.lastError.clear();
-    logToFile("ModLoader: loaded " + s.chunkName);
     lua_settop(L, top);
     return true;
 }
 
-void ModLoader::loadAll(lua_State* L)
+bool ScriptLoader::runScript(lua_State* L, LoadedScript& s)
+{
+    bool res = runScriptSandboxed(L, s.absolutePath, s.chunkName, &s.lastError);
+    s.loaded = res;
+    if (res) {
+        logToFile("ScriptLoader: loaded " + s.chunkName);
+    }
+    return res;
+}
+
+void ScriptLoader::loadAll(lua_State* L)
 {
     if (!L) return;
     if (m_loaded) return;
@@ -241,7 +211,7 @@ void ModLoader::loadAll(lua_State* L)
     }
 }
 
-void ModLoader::reloadAll(lua_State* L)
+void ScriptLoader::reloadAll(lua_State* L)
 {
     if (!L) return;
     m_resolvedScriptPaths.clear();
@@ -254,7 +224,7 @@ void ModLoader::reloadAll(lua_State* L)
     m_loaded = true;
 }
 
-std::string ModLoader::resolveScriptPath(const std::string& filename)
+std::string ScriptLoader::resolveScriptPath(const std::string& filename)
 {
     auto it = m_resolvedScriptPaths.find(filename);
     if (it != m_resolvedScriptPaths.end())
@@ -264,11 +234,36 @@ std::string ModLoader::resolveScriptPath(const std::string& filename)
 
     if (!::ou) return "";
 
-    // Normalize filename slashes to forward slashes for matching
     std::string normFilename = filename;
     for (size_t i = 0; i < normFilename.size(); ++i)
     {
         if (normFilename[i] == '\\') normFilename[i] = '/';
+    }
+
+    if (normFilename.size() >= 2 && normFilename[0] == '.' && normFilename[1] == '/')
+    {
+        normFilename = normFilename.substr(2);
+    }
+
+    // Direct check relative to game CWD
+    fs::path directP(normFilename);
+    boost::system::error_code ec;
+    if (fs::exists(directP, ec) && fs::is_regular_file(directP, ec))
+    {
+        std::string absPath = fs::absolute(directP).string();
+        m_resolvedScriptPaths[filename] = absPath;
+        return absPath;
+    }
+
+    std::string suffix = normFilename;
+    size_t modsPos = normFilename.find("mods/");
+    if (modsPos != std::string::npos)
+    {
+        size_t nextSlash = normFilename.find('/', modsPos + 5);
+        if (nextSlash != std::string::npos)
+        {
+            suffix = normFilename.substr(nextSlash + 1);
+        }
     }
 
     const auto& mods = ::ou->activeMods;
@@ -278,19 +273,14 @@ std::string ModLoader::resolveScriptPath(const std::string& filename)
         if (!mi || mi->path.empty()) continue;
 
         fs::path modRoot(mi->path);
-        boost::system::error_code ec;
-        if (!fs::exists(modRoot, ec) || !fs::is_directory(modRoot, ec)) continue;
-
-        // Direct check (in case the filename is relative to the mod root, e.g. "scripts/go_prone.lua")
-        fs::path directPath = modRoot / normFilename;
-        if (fs::exists(directPath, ec) && fs::is_regular_file(directPath, ec))
+        fs::path targetPath = modRoot / suffix;
+        if (fs::exists(targetPath, ec) && fs::is_regular_file(targetPath, ec))
         {
-            std::string pathStr = directPath.string();
+            std::string pathStr = fs::absolute(targetPath).string();
             m_resolvedScriptPaths[filename] = pathStr;
             return pathStr;
         }
 
-        // Recursive fallback scan inside the mod directory
         fs::recursive_directory_iterator rit(modRoot, ec);
         fs::recursive_directory_iterator end;
         for (; !ec && rit != end; rit.increment(ec))
@@ -305,12 +295,12 @@ std::string ModLoader::resolveScriptPath(const std::string& filename)
                 if (normP[j] == '\\') normP[j] = '/';
             }
 
-            // If the path ends with "/" + normFilename, we found it
-            std::string suffix = "/" + normFilename;
-            if (normP.size() >= suffix.size() && normP.compare(normP.size() - suffix.size(), suffix.size(), suffix) == 0)
+            std::string matchSuffix = "/" + suffix;
+            if (normP.size() >= matchSuffix.size() && normP.compare(normP.size() - matchSuffix.size(), matchSuffix.size(), matchSuffix) == 0)
             {
-                m_resolvedScriptPaths[filename] = p;
-                return p;
+                std::string absFoundPath = fs::absolute(rit->path()).string();
+                m_resolvedScriptPaths[filename] = absFoundPath;
+                return absFoundPath;
             }
         }
     }

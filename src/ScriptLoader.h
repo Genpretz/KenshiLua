@@ -23,38 +23,39 @@ struct LoadedScript
     std::string lastError;     // last error message, if any
 };
 
-class ModLoader
+class ScriptLoader
 {
 public:
-    ModLoader();
-    ~ModLoader();
+    ScriptLoader();
+    ~ScriptLoader();
 
-    static ModLoader& get();
+    static ScriptLoader& get();
 
     // Walks ou->activeMods, discovers all *.lua files, executes each one in
-    // its own sandboxed _ENV table.  Safe to call exactly once per game
+    // its own sandboxed _ENV table. Safe to call exactly once per game
     // session; subsequent calls without reload() are no-ops.
     void loadAll(lua_State* L);
 
-    // Discards script-introduced globals and re-runs every script.  Used by
-    // the GUI's "Reload" button.  This DOES NOT recreate the lua_State, so
-    // C-side bindings persist and metatables don't churn.
+    // Discards script-introduced globals and re-runs every script.
     void reloadAll(lua_State* L);
 
     bool hasLoaded() const { return m_loaded; }
 
     const std::vector<LoadedScript>& scripts() const { return m_scripts; }
 
-    // List of mod names we considered (active mods).  Useful for the GUI.
+    // List of mod names we considered (active mods). Useful for the GUI.
     const std::vector<std::string>& activeModNames() const { return m_activeModNames; }
 
     // Resolves a script path on-demand by checking active mod directories.
     // Caches the results to prevent performance hitching during game frames.
     std::string resolveScriptPath(const std::string& filename);
 
+    // Centralized sandboxed runner for Lua script files.
+    bool runScriptSandboxed(lua_State* L, const std::string& absolutePath, const std::string& chunkName, std::string* outError = NULL);
+
 private:
-    ModLoader(const ModLoader&);
-    ModLoader& operator=(const ModLoader&);
+    ScriptLoader(const ScriptLoader&);
+    ScriptLoader& operator=(const ScriptLoader&);
 
     void discover();
     bool runScript(lua_State* L, LoadedScript& s);
