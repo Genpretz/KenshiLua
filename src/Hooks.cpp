@@ -764,6 +764,50 @@ DEFINE_HOOK_INSTALLER(InstallHook_DialogueWindow_Show,
     DialogueWindow_show_hook, DialogueWindow_show_orig)
 
 // ---------------------------------------------------------------------------
+// Hook: Dialogue::doActions
+// ---------------------------------------------------------------------------
+
+static void (*Dialogue_doActions_orig)(Dialogue*, DialogLineData*) = nullptr;
+
+static void Dialogue_doActions_hook(Dialogue* thisptr, DialogLineData* dialogLine)
+{
+    KenshiLua::logToFileDebug("Dialogue_doActions_hook called!");
+    Dialogue_doActions_orig(thisptr, dialogLine);
+
+    // Loading lua scripts when a dialogue line occurs
+    KenshiLua::DialogueScriptBridge(thisptr, dialogLine);
+
+    CallDialogueDoActionsCallbacks(thisptr, dialogLine);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Dialogue_DoActions,
+    "Dialogue::_doActions",
+    KenshiLib::GetRealAddress(&Dialogue::_doActions),
+    Dialogue_doActions_hook, Dialogue_doActions_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Dialogue::say
+// ---------------------------------------------------------------------------
+
+static void (*Dialogue_say_orig)(Dialogue*, DialogLineData*) = nullptr;
+
+static void Dialogue_say_hook(Dialogue* thisptr, DialogLineData* dialogLine)
+{
+    KenshiLua::logToFileDebug("Dialogue_say_hook called!");
+    Dialogue_say_orig(thisptr, dialogLine);
+
+    // Loading lua scripts when a dialogue line occurs
+    KenshiLua::DialogueScriptBridge(thisptr, dialogLine);
+
+    CallDialogueSayCallbacks(thisptr, dialogLine);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Dialogue_Say,
+    "Dialogue::say",
+    KenshiLib::GetRealAddress(static_cast<void (Dialogue::*)(DialogLineData*)>(&Dialogue::say)),
+    Dialogue_say_hook, Dialogue_say_orig)
+
+// ---------------------------------------------------------------------------
 // Hook registry
 //
 // Each entry is {display name, installer function}. Adding a new hook means
@@ -773,75 +817,6 @@ DEFINE_HOOK_INSTALLER(InstallHook_DialogueWindow_Show,
 
 namespace KenshiLua
 {
-
-    struct HookRegistryEntry
-    {
-        const char* name;
-        bool (*install)();
-    };
-
-    static const HookRegistryEntry g_hookRegistry[] = {
-        { "InputHandler::keyDownEvent",                         InstallHook_InputHandler_KeyDown },
-        { "GameWorld::charsUpdate",                             InstallHook_GameWorld_CharsUpdate },
-        { "Character::_NV_select",                              InstallHook_Character_Select },
-        { "Character::_NV_unselect",                            InstallHook_Character_Unselect },
-        { "Character::declareDead",                             InstallHook_Character_DeclareDead },
-        { "Character::_NV_say",                                 InstallHook_Character_Say },
-        { "Character::pickupObject",                            InstallHook_Character_PickupObject },
-        { "Character::getPickedUp",                             InstallHook_Character_GetPickedUp },
-        { "CharStats::setHoldLocation",                         InstallHook_CharStats_SetHoldLocation },
-        { "CharStats::clearHoldLocation",                       InstallHook_CharStats_ClearHoldLocation },
-        { "CharStats::chooseAttack",                            InstallHook_CharStats_ChooseAttack },
-        { "CharStats::xpRunning",                               InstallHook_CharStats_XpRunning },
-        { "CharStats::xpFirstAid",                              InstallHook_CharStats_XpFirstAid },
-        { "CharStats::xpStealth",                               InstallHook_CharStats_XpStealth },
-        { "CharStats::xpToughness_GetUpEvent",                  InstallHook_CharStats_XpToughness_GetUpEvent },
-        { "CharStats::xpToughness_RagdollEvent",                InstallHook_CharStats_XpToughness_RagdollEvent },
-        { "CharStats::xpToughness_PunchSomething",              InstallHook_CharStats_XpToughness_PunchSomething },
-        { "CharStats::xpEngineering",                           InstallHook_CharStats_XpEngineering },
-        { "CharStats::xpLockpicking",                           InstallHook_CharStats_XpLockpicking },
-        { "Character::_NV_takeMoney",                           InstallHook_Character_TakeMoney },
-        { "Character::eatItem",                                 InstallHook_Character_EatItem },
-        { "Character::_NV_hitByMeleeAttack",                    InstallHook_Character_HitByMeleeAttack },
-        { "Character::_NV_gettingEaten",                        InstallHook_Character_GettingEaten },
-        { "Character::_NV_setStandingOrder",                    InstallHook_Character_SetStandingOrder },
-        { "Character::_NV_setFaction",                          InstallHook_Character_SetFaction },
-        { "Character::_NV_equipItem",                           InstallHook_Character_EquipItem },
-        { "Character::_NV_unequipItem",                         InstallHook_Character_UnequipItem },
-        { "Character::_NV_ImStealingDoYouNotice",               InstallHook_Character_ImStealingDoYouNotice },
-        { "Character::_NV_smugglingTradeCheck",                 InstallHook_Character_SmugglingTradeCheck },
-        { "PlayerInterface::recruit",                           InstallHook_PlayerInterface_Recruit },
-        { "PlayerInterface::selectObject",                      InstallHook_PlayerInterface_SelectObject },
-        { "PlayerInterface::newPlayerTaskSelectedCharacters",   InstallHook_PlayerInterface_NewPlayerTaskSelectedCharacters },
-        { "ActivePlatoon::_NV_addActiveObject",                 InstallHook_ActivePlatoon_AddActiveObject },
-        { "ActivePlatoon::_NV_removeObject",                    InstallHook_ActivePlatoon_RemoveObject },
-        { "Platoon::taskIsComplete",                            InstallHook_Platoon_TaskIsComplete },
-        { "Item::_NV_notifyTheftFrom",                          InstallHook_Item_NotifyTheftFrom },
-        { "BountyManager::notifyCrimeWitnessed",                InstallHook_BountyManager_NotifyCrimeWitnessed },
-        { "FactionRelations::_NV_affectRelations",              InstallHook_FactionRelations_AffectRelations },
-        { "MedicalSystem::amputate",                            InstallHook_MedicalSystem_Amputate },
-        { "DialogueWindow::show",                               InstallHook_DialogueWindow_Show },
-    };
-
-    static const size_t g_hookRegistryCount = sizeof(g_hookRegistry) / sizeof(g_hookRegistry[0]);
-
-    bool InstallAllHooks()
-    {
-        bool ok = true;
-        for (size_t i = 0; i < g_hookRegistryCount; ++i)
-        {
-            if (!g_hookRegistry[i].install())
-                ok = false;
-        }
-
-        if (ok)
-            KenshiLua::logToFile("All hooks installed successfully.");
-        else
-            KenshiLua::logToFile("One or more hooks failed - see errors above.");
-
-        return ok;
-    }
-
     struct EventHookRegistryEntry
     {
         const char* eventName;
@@ -889,6 +864,8 @@ namespace KenshiLua
         { "onFactionRelationsAffected",         InstallHook_FactionRelations_AffectRelations },
         { "onLimbAmputated",                    InstallHook_MedicalSystem_Amputate },
         { "onDialogueWindowShow",               InstallHook_DialogueWindow_Show },
+        { "onDialogueDoActions",                  InstallHook_Dialogue_DoActions },
+        { "onDialogueSay",                      InstallHook_Dialogue_Say },
     };
 
     static const size_t g_eventHookRegistryCount = sizeof(g_eventHookRegistry) / sizeof(g_eventHookRegistry[0]);
