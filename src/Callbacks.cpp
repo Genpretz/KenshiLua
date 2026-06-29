@@ -14,6 +14,7 @@
 #include "Bindings/FactionBinding.h"
 #include "Bindings/Gui/DialogueWindowBinding.h"
 #include "Bindings/DialogueBinding.h"
+#include "Bindings/DialogLineDataBinding.h"
 
 // KenshiLib headers
 #include <kenshi/Character.h>
@@ -25,12 +26,7 @@
 #include <kenshi/gui/DialogueWindow.h>
 #include <kenshi/Dialogue.h>
 
-extern "C" {
-#include <lua.h>
-#include <lualib.h>
-#include <luaconf.h>
-#include <lauxlib.h>
-}
+#include <lua.hpp>
 
 // ---------------------------------------------------------------------------
 // Generic Argument Pusher Templates & Overloads
@@ -48,6 +44,7 @@ namespace KenshiLua
     static inline const char* FactionMetatable()         { return FactionBinding::getMetatableName(); }
     static inline const char* DialogueWindowMetatable()  { return DialogueWindowBinding::getMetatableName(); }
     static inline const char* DialogueMetatable()        { return DialogueBinding::getMetatableName(); }
+    static inline const char* DialogLineDataMetatable()  { return DialogLineDataBinding::getMetatableName(); }
 
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, int val)                 { lua_pushinteger(L, val); }
@@ -64,8 +61,9 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, Item* val)               { pushObject<Item>(L, val, ItemMetatable()); }
     static inline void pushArg(lua_State* L, Faction* val)            { pushObject<Faction>(L, val, FactionMetatable()); }
     static inline void pushArg(lua_State* L, PlayerInterface* val)    { pushObject<PlayerInterface>(L, val, PlayerInterfaceMetatable()); }
-    static inline void pushArg(lua_State* L, DialogueWindow* val)    { pushObject<DialogueWindow>(L, val, DialogueWindowMetatable()); }
-    static inline void pushArg(lua_State* L, Dialogue* val)          { pushObject<Dialogue>(L, val, DialogueMetatable()); }
+    static inline void pushArg(lua_State* L, DialogueWindow* val)     { pushObject<DialogueWindow>(L, val, DialogueWindowMetatable()); }
+    static inline void pushArg(lua_State* L, Dialogue* val)           { pushObject<Dialogue>(L, val, DialogueMetatable()); }
+    static inline void pushArg(lua_State* L, DialogLineData* val)     { pushObject<DialogLineData>(L, val, DialogLineDataMetatable()); }
 
     static inline void pushArg(lua_State* L, RootObject* val)         { pushObject<RootObject>(L, val, "KenshiLua.RootObject"); }
     static inline void pushArg(lua_State* L, Inventory* val)          { pushObject<Inventory>(L, val, "KenshiLua.Inventory"); }
@@ -400,3 +398,14 @@ void CallDialogueWindowShowCallbacks(DialogueWindow* thisptr, Dialogue* dialogue
     KenshiLua::EventSystem::get().callHandlers("onDialogueWindowShow", &pusher);
 }
 
+void CallDialogueDoActionsCallbacks(Dialogue* thisptr, DialogLineData* dialogLine)
+{
+    ArgPusher2<Dialogue*, DialogLineData*> pusher(thisptr, dialogLine);
+    KenshiLua::EventSystem::get().callHandlers("onDialogueDoActions", &pusher);
+}
+
+void CallDialogueSayCallbacks(Dialogue* thisptr, DialogLineData* dialogLine)
+{
+    ArgPusher2<Dialogue*, DialogLineData*> pusher(thisptr, dialogLine);
+    KenshiLua::EventSystem::get().callHandlers("onDialogueSay", &pusher);
+}

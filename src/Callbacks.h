@@ -255,4 +255,14 @@ void CallLimbAmputatedCallbacks(Character* character, int limb, bool createSever
 // Lua signature:  function(dialogueWindow, dialogue)
 void CallDialogueWindowShowCallbacks(DialogueWindow* thisptr, Dialogue* dialogue);
 
+// Fired by Dialogue::_doActions hook.
+// Lua event name: "onDialogueDoActions"
+// Lua signature:  function(dialogue, dialogLine)
+void CallDialogueDoActionsCallbacks(Dialogue* thisptr, DialogLineData* dialogLine);
+
+// Fired by Dialogue::say hook.
+// Lua event name: "onDialogueSay"
+// Lua signature:  function(dialogue, dialogLine)
+void CallDialogueSayCallbacks(Dialogue* thisptr, DialogLineData* dialogLine);
+
 

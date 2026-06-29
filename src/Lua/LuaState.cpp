@@ -12,6 +12,7 @@ extern "C" {
 
 namespace KenshiLua
 {
+LuaState* g_luaState = 0;
 
 static void* defaultAlloc(void* ud, void* ptr, size_t osize, size_t nsize)
 {
