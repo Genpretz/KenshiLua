@@ -101,6 +101,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zm200 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -126,6 +127,7 @@
       <OmitFramePointers>false</OmitFramePointers>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalOptions>/Zm200 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -700,13 +702,12 @@
     <ClInclude Include="src\Hooks.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Lua\LuaState.h" />
-    <ClInclude Include="src\Lua\LuaUtils.h" />
     <ClInclude Include="src\Lua\LuaBindings.h" />
-    <ClInclude Include="src\Lua\Logger.h" />
-    <ClInclude Include="src\Lua\Benchmark.h" />
-    <ClInclude Include="src\Lua\Config.h" />
+    <ClInclude Include="src\Logger.h" />
+    <ClInclude Include="src\Benchmark.h" />
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\EventSystem.h" />
-    <ClInclude Include="src\ScriptQueue.h" />
+    <ClInclude Include="src\Plugin.h" />
 
     <ClInclude Include="src\Bindings\PlayerInterfaceBinding.h" />
     <ClInclude Include="src\Bindings\CharacterBinding.h" />
@@ -754,8 +755,8 @@
     <ClInclude Include="src\Bindings\RaceDataBinding.h" />
     <ClInclude Include="src\Bindings\RootObjectBinding.h" />
     <ClInclude Include="src\Lua\BindingHelpers.h" />
-    <ClInclude Include="src\ModLoader.h" />
-    <ClInclude Include="src\LuaScriptChecker.h" />
+    <ClInclude Include="src\ScriptLoader.h" />
+    <ClInclude Include="src\DialogueScriptBridge.h" />
 
     <ClInclude Include="src\Bindings\CharacterAnimalBinding.h" />
     <ClInclude Include="src\Bindings\Building\BuildMaterialBinding.h" />
@@ -865,6 +866,7 @@
     <ClCompile Include="src\Bindings\WorldEventStateQueryBinding.cpp" />
     <ClCompile Include="src\Bindings\WorldEventStateQueryListBinding.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\Plugin.cpp" />
     <ClCompile Include="src\Callbacks.cpp" />
     <ClCompile Include="src\Gui\InitializeGui.cpp" />
     <ClCompile Include="src\Gui\ScriptEditor.cpp" />
@@ -874,13 +876,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Lua\LuaState.cpp" />
-    <ClCompile Include="src\Lua\LuaUtils.cpp" />
     <ClCompile Include="src\Lua\LuaBindings.cpp" />
-    <ClCompile Include="src\Lua\Logger.cpp" />
-    <ClCompile Include="src\Lua\Benchmark.cpp" />
-    <ClCompile Include="src\Lua\Config.cpp" />
+    <ClCompile Include="src\Logger.cpp" />
+    <ClCompile Include="src\Benchmark.cpp" />
+    <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
-    <ClCompile Include="src\ScriptQueue.cpp" />
+
 
     <ClCompile Include="src\Bindings\PlayerInterfaceBinding.cpp" />
     <ClCompile Include="src\Bindings\CharacterBinding.cpp" />
@@ -934,8 +935,8 @@
     <ClCompile Include="src\Bindings\ItemBinding.cpp" />
 
     <ClCompile Include="src\Bindings\GameWorldBinding.cpp" />
-    <ClCompile Include="src\ModLoader.cpp" />
-    <ClCompile Include="src\LuaScriptChecker.cpp" />
+    <ClCompile Include="src\ScriptLoader.cpp" />
+    <ClCompile Include="src\DialogueScriptBridge.cpp" />
 
     <ClCompile Include="src\Bindings\CharacterAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\BuildMaterialBinding.cpp" />

@@ -11,15 +11,15 @@
     <ClCompile Include="src\Bindings\MedicalSystemBinding.cpp" />
     <ClCompile Include="src\Bindings\PlatoonBinding.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\Plugin.cpp" />
     <ClCompile Include="src\Gui\InitializeGui.cpp" />
     <ClCompile Include="src\Gui\ScriptEditor.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\Lua\LuaState.cpp" />
-    <ClCompile Include="src\Lua\LuaUtils.cpp" />
     <ClCompile Include="src\Lua\LuaBindings.cpp" />
-    <ClCompile Include="src\Lua\Logger.cpp" />
+    <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
-    <ClCompile Include="src\ScriptQueue.cpp" />
+
 
     <ClCompile Include="src\Bindings\PlayerInterfaceBinding.cpp" />
     <ClCompile Include="src\Bindings\CharacterBinding.cpp" />
@@ -38,15 +38,15 @@
     <ClCompile Include="src\Bindings\ItemBinding.cpp" />
 
     <ClCompile Include="src\Bindings\GameWorldBinding.cpp" />
-    <ClCompile Include="src\ModLoader.cpp" />
-    <ClCompile Include="src\LuaScriptChecker.cpp" />
+    <ClCompile Include="src\ScriptLoader.cpp" />
+    <ClCompile Include="src\DialogueScriptBridge.cpp" />
     <ClCompile Include="src\Bindings\GearBinding.cpp" />
     <ClCompile Include="src\Callbacks.cpp" />
     <ClCompile Include="src\Hooks.cpp" />
 
     <ClCompile Include="src\Bindings\CharBodyBinding.cpp" />
-    <ClCompile Include="src\Lua\Benchmark.cpp" />
-    <ClCompile Include="src\Lua\Config.cpp" />
+    <ClCompile Include="src\Benchmark.cpp" />
+    <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Bindings\CharacterAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\AbstractMovementBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\ActivePlatoonBinding.cpp" />
@@ -161,11 +161,10 @@
     <ClInclude Include="src\Gui\ScriptEditor.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Lua\LuaState.h" />
-    <ClInclude Include="src\Lua\LuaUtils.h" />
     <ClInclude Include="src\Lua\LuaBindings.h" />
-    <ClInclude Include="src\Lua\Logger.h" />
+    <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\EventSystem.h" />
-    <ClInclude Include="src\ScriptQueue.h" />
+    <ClInclude Include="src\Plugin.h" />
 
     <ClInclude Include="src\Bindings\PlayerInterfaceBinding.h" />
     <ClInclude Include="src\Bindings\CharacterBinding.h" />
@@ -179,8 +178,8 @@
     <ClInclude Include="src\Bindings\RaceDataBinding.h" />
     <ClInclude Include="src\Bindings\RootObjectBinding.h" />
     <ClInclude Include="src\Lua\BindingHelpers.h" />
-    <ClInclude Include="src\ModLoader.h" />
-    <ClInclude Include="src\LuaScriptChecker.h" />
+    <ClInclude Include="src\ScriptLoader.h" />
+    <ClInclude Include="src\DialogueScriptBridge.h" />
     <ClInclude Include="src\Bindings\GearBinding.h" />
 
     <ClInclude Include="src\Callbacks.h" />
@@ -638,8 +637,8 @@
     <ClInclude Include="extern\kenshilib\Include\ogre\WIN32\OgreErrorDialogImp.h" />
     <ClInclude Include="extern\kenshilib\Include\ogre\WIN32\OgreMinGWSupport.h" />
     <ClInclude Include="extern\kenshilib\Include\ogre\WIN32\OgreTimerImp.h" />
-    <ClInclude Include="src\Lua\Benchmark.h" />
-    <ClInclude Include="src\Lua\Config.h" />
+    <ClInclude Include="src\Benchmark.h" />
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\Bindings\CharacterAnimalBinding.h" />
     <ClInclude Include="src\Bindings\AbstractMovementBaseBinding.h" />
     <ClInclude Include="src\Bindings\ActivePlatoonBinding.h" />
