@@ -16,12 +16,31 @@
 #include <functional>
 #include <iostream>
 
-extern "C" {
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
-}
+// Include LuaJIT headers
+#include <lua.hpp>
 
+// Include KenshiLib headers
+#include <core/Functions.h>
+#include <kenshi/Building/Building.h>
+#include <kenshi/Character.h>
+#include <kenshi/CharStats.h>
+#include <kenshi/Damages.h>
+#include <kenshi/Faction.h>
+#include <kenshi/Globals.h>
+#include <kenshi/Item.h>
+#include <kenshi/Inventory.h>
+#include <kenshi/PlayerInterface.h>
+#include <kenshi/InputHandler.h>
+#include <kenshi/GameWorld.h>
+#include <kenshi/GameData.h>
+#include <kenshi/MedicalSystem.h>
+#include <kenshi/Dialogue.h>
+#include <kenshi/Platoon.h>
+#include <kenshi/RootObject.h>
+#include <kenshi/Town.h>
+#include <kenshi/util/hand.h>
+
+// Include Lua bindings
 #include "CharacterBinding.h"
 #include "CharStatsBinding.h"
 #include "GameDataBinding.h"
@@ -82,21 +101,5 @@ inline const char* luaL_tolstring(lua_State* L, int idx, size_t* len) {
 }
 
 #endif
-
-
-#include <core/Functions.h>
-#include <kenshi/Building/Building.h>
-#include <kenshi/Character.h>
-#include <kenshi/CharStats.h>
-#include <kenshi/Damages.h>
-#include <kenshi/Faction.h>
-#include <kenshi/PlayerInterface.h>
-#include <kenshi/InputHandler.h>
-#include <kenshi/GameWorld.h>
-#include <kenshi/GameData.h>
-#include <kenshi/MedicalSystem.h>
-#include <kenshi/Dialogue.h>
-#include <kenshi/Platoon.h>
-#include <kenshi/util/hand.h>
 
 #endif // PCH_H
