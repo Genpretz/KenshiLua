@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "Gui/InitializeGui.h"
 #include "Gui/ScriptEditor.h"
-#include "Lua/Logger.h"
+#include "Logger.h"
 
 #include <MyGUI.h>
+#include <kenshi/InputHandler.h>
+#include <OISKeyboard.h>
 
 namespace KenshiLua
 {

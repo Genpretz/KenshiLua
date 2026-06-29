@@ -2,7 +2,7 @@
 #include "Callbacks.h"
 #include "EventSystem.h"
 #include "Lua/BindingHelpers.h"
-#include "Lua/Logger.h"
+#include "Logger.h"
 
 // KenshiLib x Lua Bindings
 #include "Bindings/CharacterBinding.h"

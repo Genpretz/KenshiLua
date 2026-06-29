@@ -3,7 +3,8 @@
 #include "Callbacks.h"
 #include "Gui/InitializeGui.h"
 #include "Hooks.h"
-#include "Lua/Logger.h"
+#include "Logger.h"
+#include "DialogueScriptBridge.h"
 
 #include <kenshi/Character.h>
 #include <kenshi/GameWorld.h>
@@ -21,7 +22,7 @@
 #include <kenshi/MedicalSystem.h>
 #include <kenshi/gui/DialogueWindow.h>
 #include <kenshi/Dialogue.h>
-#include "core/Functions.h"
+#include <core/Functions.h>
 
 #include <cstddef>
 

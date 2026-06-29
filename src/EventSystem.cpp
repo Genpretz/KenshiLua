@@ -1,14 +1,10 @@
 #include "pch.h"
 
 #include "EventSystem.h"
-#include "Lua/Logger.h"
+#include "Logger.h"
 #include "Hooks.h"
 
-
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-}
+#include <lua.hpp>
 
 namespace KenshiLua
 {

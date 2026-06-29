@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Gui/ScriptEditor.h"
 #include "Lua/LuaState.h"
-#include "Lua/Logger.h"
+#include "Logger.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>

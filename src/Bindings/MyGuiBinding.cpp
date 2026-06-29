@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Bindings/MyGuiBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Lua/Logger.h"
+#include "Logger.h"
 
 #include <MyGUI.h>
 #include <map>
