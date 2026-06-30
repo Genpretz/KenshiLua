@@ -55,7 +55,7 @@
     <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
-    <OutDir>C:\GOG Games\Kenshi\mods\KenshiLuaJIT\</OutDir>
+    <OutDir>$(SolutionDir)bin\KenshiLuaJIT\</OutDir>
     <SourcePath>$(SolutionDir)src;$(SourcePath)</SourcePath>
     <TargetName>KenshiLuaJIT</TargetName>
   </PropertyGroup>
