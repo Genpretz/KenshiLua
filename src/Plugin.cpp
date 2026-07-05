@@ -2,7 +2,7 @@
 #include "Plugin.h"
 
 #include "EventSystem.h"
-#include "Gui/InitializeGui.h"
+#include "Gui.h"
 #include "Hooks.h"
 #include "Logger.h"
 #include "Config.h"
@@ -105,10 +105,10 @@ void Plugin::start()
     InstallHookForEvent("onDialogueDoActions");
     InstallHookForEvent("onDialogueSay");
 
-    // Bring up the developer GUI (hidden by default, toggle with 'Ctrl+Shift+L').
-    KenshiLuaGui::get().requestInitialize(g_luaState);
+    // initialize developer GUI (hidden by default, toggle with 'Ctrl+Shift+L' by default).
+    ScriptEditor::get().requestInitialize(g_luaState);
 
-    // Discover *.lua files under each active mod folder and execute each.
+    // Discover *.lua files under each active mod's ./scripts/init/ folder and execute.
     ScriptLoader::get().loadAll(g_luaState->getState());
 }
 

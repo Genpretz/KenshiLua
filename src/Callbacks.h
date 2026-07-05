@@ -22,6 +22,10 @@ class hand;
 class BountyManager;
 class DialogueWindow;
 class Dialogue;
+class GameData;
+class RaceData;
+class InventorySection;
+template <typename T> class lektor;
 namespace Ogre {
     class Vector3;
 }
@@ -264,5 +268,12 @@ void CallDialogueDoActionsCallbacks(Dialogue* thisptr, DialogLineData* dialogLin
 // Lua event name: "onDialogueSay"
 // Lua signature:  function(dialogue, dialogLine)
 void CallDialogueSayCallbacks(Dialogue* thisptr, DialogLineData* dialogLine);
+
+// Callbacks for Extra Inventory Sections port
+void CallCharacterInitCallbacks(Character* character);
+void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, const std::string& listName, RaceData* race, bool noShoes);
+std::string CallBaseLayoutInitialiseCallbacks(const std::string& layout);
+InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type);
+
 
 

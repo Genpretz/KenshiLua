@@ -5,16 +5,26 @@
 #include "Logger.h"
 
 // KenshiLib x Lua Bindings
+#include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/CharStatsBinding.h"
+#include "Bindings/CombatTechniqueDataBinding.h"
 #include "Bindings/DamagesBinding.h"
-#include "Bindings/PlatoonBinding.h"
-#include "Bindings/ItemBinding.h"
-#include "Bindings/PlayerInterfaceBinding.h"
-#include "Bindings/FactionBinding.h"
-#include "Bindings/Gui/DialogueWindowBinding.h"
-#include "Bindings/DialogueBinding.h"
 #include "Bindings/DialogLineDataBinding.h"
+#include "Bindings/DialogueBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Gui/DialogueWindowBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/InventorySectionBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/PlatoonBinding.h"
+#include "Bindings/PlayerInterfaceBinding.h"
+#include "Bindings/RaceDataBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/TaskerBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 // KenshiLib headers
 #include <kenshi/Character.h>
@@ -25,6 +35,7 @@
 #include <kenshi/Damages.h>
 #include <kenshi/gui/DialogueWindow.h>
 #include <kenshi/Dialogue.h>
+#include <kenshi/util/lektor.h>
 
 #include <lua.hpp>
 
@@ -35,16 +46,25 @@
 namespace KenshiLua
 {
     // Shorthand metatable helpers
-    static inline const char* CharacterMetatable()       { return CharacterBinding::getMetatableName(); }
-    static inline const char* CharStatsMetatable()       { return CharStatsBinding::getMetatableName(); }
-    static inline const char* DamagesMetatable()         { return DamagesBinding::getMetatableName(); }
-    static inline const char* PlatoonMetatable()         { return PlatoonBinding::getMetatableName(); }
-    static inline const char* ItemMetatable()            { return ItemBinding::getMetatableName(); }
-    static inline const char* PlayerInterfaceMetatable() { return PlayerInterfaceBinding::getMetatableName(); }
-    static inline const char* FactionMetatable()         { return FactionBinding::getMetatableName(); }
-    static inline const char* DialogueWindowMetatable()  { return DialogueWindowBinding::getMetatableName(); }
-    static inline const char* DialogueMetatable()        { return DialogueBinding::getMetatableName(); }
-    static inline const char* DialogLineDataMetatable()  { return DialogLineDataBinding::getMetatableName(); }
+    static inline const char* CharacterMetatable()              { return CharacterBinding::getMetatableName(); }
+    static inline const char* CharStatsMetatable()              { return CharStatsBinding::getMetatableName(); }
+    static inline const char* DamagesMetatable()                { return DamagesBinding::getMetatableName(); }
+    static inline const char* PlatoonMetatable()                { return PlatoonBinding::getMetatableName(); }
+    static inline const char* ItemMetatable()                   { return ItemBinding::getMetatableName(); }
+    static inline const char* PlayerInterfaceMetatable()        { return PlayerInterfaceBinding::getMetatableName(); }
+    static inline const char* FactionMetatable()                { return FactionBinding::getMetatableName(); }
+    static inline const char* DialogueWindowMetatable()         { return DialogueWindowBinding::getMetatableName(); }
+    static inline const char* DialogueMetatable()               { return DialogueBinding::getMetatableName(); }
+    static inline const char* DialogLineDataMetatable()         { return DialogLineDataBinding::getMetatableName(); }
+    static inline const char* RootObjectMetatable()             { return RootObjectBinding::getMetatableName(); }
+    static inline const char* InventoryMetatable()              { return InventoryBinding::getMetatableName(); }
+    static inline const char* CombatTechniqueDataMetatable()    { return CombatTechniqueDataBinding::getMetatableName(); }
+    static inline const char* TaskerMetatable()                 { return TaskerBinding::getMetatableName(); }
+    static inline const char* BuildingMetatable()               { return BuildingBinding::getMetatableName(); }
+    static inline const char* HandMetatable()                   { return handBinding::getMetatableName(); }
+    static inline const char* GameDataMetatable()               { return GameDataBinding::getMetatableName(); }
+    static inline const char* RaceDataMetatable()               { return RaceDataBinding::getMetatableName(); }
+    static inline const char* InventorySectionMetatable()       { return InventorySectionBinding::getMetatableName(); }
 
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, int val)                 { lua_pushinteger(L, val); }
@@ -65,15 +85,19 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, Dialogue* val)           { pushObject<Dialogue>(L, val, DialogueMetatable()); }
     static inline void pushArg(lua_State* L, DialogLineData* val)     { pushObject<DialogLineData>(L, val, DialogLineDataMetatable()); }
 
-    static inline void pushArg(lua_State* L, RootObject* val)         { pushObject<RootObject>(L, val, "KenshiLua.RootObject"); }
-    static inline void pushArg(lua_State* L, Inventory* val)          { pushObject<Inventory>(L, val, "KenshiLua.Inventory"); }
-    static inline void pushArg(lua_State* L, CombatTechniqueData* val){ pushObject<CombatTechniqueData>(L, val, "KenshiLua.CombatTechniqueData"); }
-    static inline void pushArg(lua_State* L, Tasker* val)             { pushObject<Tasker>(L, val, "KenshiLua.Tasker"); }
-    static inline void pushArg(lua_State* L, Building* val)           { pushObject<Building>(L, val, "KenshiLua.Building"); }
+    static inline void pushArg(lua_State* L, RootObject* val)         { pushObject<RootObject>(L, val, RootObjectMetatable()); }
+    static inline void pushArg(lua_State* L, Inventory* val)          { pushObject<Inventory>(L, val, InventoryMetatable()); }
+    static inline void pushArg(lua_State* L, CombatTechniqueData* val){ pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
+    static inline void pushArg(lua_State* L, Tasker* val)             { pushObject<Tasker>(L, val, TaskerMetatable()); }
+    static inline void pushArg(lua_State* L, Building* val)           { pushObject<Building>(L, val, BuildingMetatable()); }
 
-    static inline void pushArg(lua_State* L, const hand& val)         { pushObject<hand>(L, const_cast<hand*>(&val), "KenshiLua.hand"); }
+    static inline void pushArg(lua_State* L, const hand& val)         { pushObject<hand>(L, const_cast<hand*>(&val), HandMetatable()); }
     static inline void pushArg(lua_State* L, const Ogre::Vector3& val){ pushVector3(L, val); }
     static inline void pushArg(lua_State* L, YesNoMaybe val)          { lua_pushinteger(L, static_cast<int>(val.key)); }
+    static inline void pushArg(lua_State* L, GameData* val)           { pushObject<GameData>(L, val, GameDataMetatable()); }
+    static inline void pushArg(lua_State* L, RaceData* val)           { pushObject<RaceData>(L, val, RaceDataMetatable()); }
+    static inline void pushArg(lua_State* L, InventorySection* val)   { pushObject<InventorySection>(L, val, InventorySectionMetatable()); }
+    static inline void pushArg(lua_State* L, lektor<GameData*>& val)  { pushObject<lektor<GameData*>>(L, &val, LektorPtrBinding<GameData*>::metaName); }
 }
 
 namespace {
@@ -409,3 +433,29 @@ void CallDialogueSayCallbacks(Dialogue* thisptr, DialogLineData* dialogLine)
     ArgPusher2<Dialogue*, DialogLineData*> pusher(thisptr, dialogLine);
     KenshiLua::EventSystem::get().callHandlers("onDialogueSay", &pusher);
 }
+
+void CallCharacterInitCallbacks(Character* character)
+{
+    ArgPusher1<Character*> pusher(character);
+    KenshiLua::EventSystem::get().callHandlers("onCharacterInit", &pusher);
+}
+
+void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, const std::string& listName, RaceData* race, bool noShoes)
+{
+    ArgPusher5<lektor<GameData*>&, GameData*, const std::string&, RaceData*, bool> pusher(gear, dataList, listName, race, noShoes);
+    KenshiLua::EventSystem::get().callHandlers("onChooseMyClothing", &pusher);
+}
+
+std::string CallBaseLayoutInitialiseCallbacks(const std::string& layout)
+{
+    ArgPusher1<const std::string&> pusher(layout);
+    return KenshiLua::EventSystem::get().callHandlersString("onBaseLayoutInitialise", &pusher);
+}
+
+InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type)
+{
+    ArgPusher2<Inventory*, int> pusher(inventory, type);
+    return static_cast<InventorySection*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onInventoryGetSectionOfType", "KenshiLua.InventorySection", &pusher));
+}
+

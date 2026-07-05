@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "Callbacks.h"
-#include "Gui/InitializeGui.h"
+#include "Gui.h"
 #include "Hooks.h"
 #include "Logger.h"
 #include "DialogueScriptBridge.h"
@@ -23,6 +23,9 @@
 #include <kenshi/gui/DialogueWindow.h>
 #include <kenshi/Dialogue.h>
 #include <core/Functions.h>
+#include <kenshi/Enums.h>
+#include <kenshi/Inventory.h>
+#include <kenshi/RootObjectFactory.h>
 
 #include <cstddef>
 
@@ -59,7 +62,7 @@ static bool InstallHookT(const char* name, intptr_t addr, T hookFn, T* origStora
     return true;
 }
 
-// Defines a small static "installer" function for one hook.
+// ToDo: Should this be a macro?
 #define DEFINE_HOOK_INSTALLER(fnName, displayName, addrExpr, hookFn, origVar) \
     static bool fnName() \
     { \
@@ -77,7 +80,7 @@ static void InputHandler_keyDownEvent_hook(InputHandler* thisptr, OIS::KeyCode k
 {
     InputHandler_keyDownEvent_orig(thisptr, key);
 
-    KenshiLua::KenshiLuaGui::get().checkKeyboardShortcut(key, thisptr);
+    KenshiLua::ScriptEditor::get().checkKeyboardShortcut(key, thisptr);
 
     CallKeyDownCallbacks(static_cast<int>(key));
 }
@@ -808,7 +811,94 @@ DEFINE_HOOK_INSTALLER(InstallHook_Dialogue_Say,
     Dialogue_say_hook, Dialogue_say_orig)
 
 // ---------------------------------------------------------------------------
+// Hook: Character::_NV_init
+// ---------------------------------------------------------------------------
+
+static void (*Character_NV_init_orig)(Character*) = NULL;
+
+static void Character_NV_init_hook(Character* thisptr)
+{
+    Character_NV_init_orig(thisptr);
+    CallCharacterInitCallbacks(thisptr);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Character_NV_init,
+    "Character::_NV_init",
+    KenshiLib::GetRealAddress(&Character::_NV_init),
+    Character_NV_init_hook, Character_NV_init_orig)
+
+
+// ---------------------------------------------------------------------------
+// Hook: RootObjectFactory::chooseMyClothing
+// ---------------------------------------------------------------------------
+
+static void (*RootObjectFactory_chooseMyClothing_orig)(lektor<GameData*>&, GameData*, const std::string&, RaceData*, bool) = NULL;
+
+static void RootObjectFactory_chooseMyClothing_hook(lektor<GameData*>& gear, GameData* dataList, const std::string& listName, RaceData* race, bool noShoes)
+{
+    RootObjectFactory_chooseMyClothing_orig(gear, dataList, listName, race, noShoes);
+    CallChooseMyClothingCallbacks(gear, dataList, listName, race, noShoes);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_RootObjectFactory_chooseMyClothing,
+    "RootObjectFactory::chooseMyClothing",
+    KenshiLib::GetRealAddress(&RootObjectFactory::chooseMyClothing),
+    RootObjectFactory_chooseMyClothing_hook, RootObjectFactory_chooseMyClothing_orig)
+
+
+
+// ---------------------------------------------------------------------------
+// Hook: wraps::BaseLayout::initialise
+// ---------------------------------------------------------------------------
+
+static void (*BaseLayout_initialise_orig)(wraps::BaseLayout*, const std::string&, MyGUI::Widget*, bool, bool) = NULL;
+
+static void BaseLayout_initialise_hook(wraps::BaseLayout* thisptr, const std::string& layout, MyGUI::Widget* parent, bool _throw, bool _createFakeWidgets)
+{
+    std::string finalLayout = CallBaseLayoutInitialiseCallbacks(layout);
+    if (finalLayout.empty())
+    {
+        finalLayout = layout;
+    }
+    BaseLayout_initialise_orig(thisptr, finalLayout, parent, _throw, _createFakeWidgets);
+}
+
+static bool InstallHook_BaseLayout_initialise()
+{
+    void* stubAddr = GetProcAddress(GetModuleHandleA("KenshiLib.dll"),
+        "?initialise@BaseLayout@wraps@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAVWidget@MyGUI@@_N2@Z");
+    if (!stubAddr)
+    {
+        KenshiLua::logToFilef("Error: Failed to locate wraps::BaseLayout::initialise export in KenshiLib.dll");
+        return false;
+    }
+    intptr_t realAddr = KenshiLib::GetRealAddress(stubAddr);
+    return InstallHookT("wraps::BaseLayout::initialise", realAddr, &BaseLayout_initialise_hook, &BaseLayout_initialise_orig);
+}
+
+
+// ---------------------------------------------------------------------------
+// Hook: Inventory::getSectionOfType
+// ---------------------------------------------------------------------------
+
+static InventorySection* (*Inventory_getSectionOfType_orig)(Inventory*, AttachSlot) = NULL;
+
+static InventorySection* Inventory_getSectionOfType_hook(Inventory* thisptr, AttachSlot type)
+{
+    InventorySection* current = Inventory_getSectionOfType_orig(thisptr, type);
+    InventorySection* overrideSec = CallInventoryGetSectionOfTypeCallbacks(thisptr, static_cast<int>(type));
+    return overrideSec ? overrideSec : current;
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_getSectionOfType,
+    "Inventory::getSectionOfType",
+    KenshiLib::GetRealAddress(&Inventory::getSectionOfType),
+    Inventory_getSectionOfType_hook, Inventory_getSectionOfType_orig)
+
+
+// ---------------------------------------------------------------------------
 // Hook registry
+
 //
 // Each entry is {display name, installer function}. Adding a new hook means
 // writing the _orig pointer + _hook function + DEFINE_HOOK_INSTALLER line
@@ -864,8 +954,12 @@ namespace KenshiLua
         { "onFactionRelationsAffected",         InstallHook_FactionRelations_AffectRelations },
         { "onLimbAmputated",                    InstallHook_MedicalSystem_Amputate },
         { "onDialogueWindowShow",               InstallHook_DialogueWindow_Show },
-        { "onDialogueDoActions",                  InstallHook_Dialogue_DoActions },
+        { "onDialogueDoActions",                InstallHook_Dialogue_DoActions },
         { "onDialogueSay",                      InstallHook_Dialogue_Say },
+        { "onCharacterInit",                    InstallHook_Character_NV_init },
+        { "onChooseMyClothing",                 InstallHook_RootObjectFactory_chooseMyClothing },
+        { "onBaseLayoutInitialise",             InstallHook_BaseLayout_initialise },
+        { "onInventoryGetSectionOfType",        InstallHook_Inventory_getSectionOfType },
     };
 
     static const size_t g_eventHookRegistryCount = sizeof(g_eventHookRegistry) / sizeof(g_eventHookRegistry[0]);
