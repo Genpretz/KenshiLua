@@ -55,12 +55,12 @@
     <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\KenshiLuaJIT\</OutDir>
+    <OutDir>C:\GOG Games\Kenshi\mods\KenshiLua\</OutDir>
     <SourcePath>$(SolutionDir)src;$(SourcePath)</SourcePath>
-    <TargetName>KenshiLuaJIT</TargetName>
+    <TargetName>KenshiLua</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -100,7 +100,7 @@
       <PreprocessorDefinitions>_DEBUG;KENSHILUA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm200 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -600,7 +600,6 @@
     <ClInclude Include="src\Bindings\AppearanceHumanBinding.h" />
     <ClInclude Include="src\Bindings\ArmourBinding.h" />
     <ClInclude Include="src\Bindings\AttachedArrowManagerBinding.h" />
-
     <ClInclude Include="src\Bindings\BuildingSwapsBinding.h" />
     <ClInclude Include="src\Bindings\CampaignTriggerDataBinding.h" />
     <ClInclude Include="src\Bindings\CharacterHumanBinding.h" />
@@ -624,7 +623,6 @@
     <ClInclude Include="src\Bindings\DialogStateBinding.h" />
     <ClInclude Include="src\Bindings\DialogueBinding.h" />
     <ClInclude Include="src\Bindings\DialogueSpeechBubbleBinding.h" />
-
     <ClInclude Include="src\Bindings\FactionBinding.h" />
     <ClInclude Include="src\Bindings\FactionManagerBinding.h" />
     <ClInclude Include="src\Bindings\FactoryCallbackInterfaceBinding.h" />
@@ -649,7 +647,6 @@
     <ClInclude Include="src\Bindings\InventorySectionBinding.h" />
     <ClInclude Include="src\Bindings\ItemBinding.h" />
     <ClInclude Include="src\Bindings\ItemDataBinding.h" />
-
     <ClInclude Include="src\Bindings\LimbsInventoryLayoutBinding.h" />
     <ClInclude Include="src\Bindings\LimiterBinding.h" />
     <ClInclude Include="src\Bindings\LockedArmourBinding.h" />
@@ -660,7 +657,6 @@
     <ClInclude Include="src\Bindings\MotionFilterBinding.h" />
     <ClInclude Include="src\Bindings\NxUserControllerHitReportBinding.h" />
     <ClInclude Include="src\Bindings\ObjectInstanceBinding.h" />
-
     <ClInclude Include="src\Bindings\OptionsHolderBinding.h" />
     <ClInclude Include="src\Bindings\OwnershipsBinding.h" />
     <ClInclude Include="src\Bindings\physHitBinding.h" />
@@ -673,8 +669,12 @@
     <ClInclude Include="src\Bindings\RootObjectFactoryBinding.h" />
     <ClInclude Include="src\Bindings\SectionItemBinding.h" />
     <ClInclude Include="src\Bindings\SeenSomeoneBinding.h" />
+    <ClInclude Include="src\Bindings\SelectionBoxBinding.h" />
     <ClInclude Include="src\Bindings\SenseItrBinding.h" />
     <ClInclude Include="src\Bindings\SensoryDataBinding.h" />
+    <ClInclude Include="src\Bindings\ShopTraderBinding.h" />
+    <ClInclude Include="src\Bindings\ShopTraderInventoryBinding.h" />
+    <ClInclude Include="src\Bindings\ShopTraderInventorySectionBinding.h" />
     <ClInclude Include="src\Bindings\SimpleTimeStamperBinding.h" />
     <ClInclude Include="src\Bindings\SpecificItemLoadFirstBinding.h" />
     <ClInclude Include="src\Bindings\SpeedGroupBinding.h" />
@@ -690,7 +690,6 @@
     <ClInclude Include="src\Bindings\TownBuildingsManagerBinding.h" />
     <ClInclude Include="src\Bindings\TownPositionCacherBinding.h" />
     <ClInclude Include="src\Bindings\VisibleObjectInfoBinding.h" />
-
     <ClInclude Include="src\Bindings\WeaponBinding.h" />
     <ClInclude Include="src\Bindings\WhoSeesMeBinding.h" />
     <ClInclude Include="src\Bindings\WorldEventStateQueryBinding.h" />
@@ -708,15 +707,13 @@
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\EventSystem.h" />
     <ClInclude Include="src\Plugin.h" />
-
     <ClInclude Include="src\Bindings\PlayerInterfaceBinding.h" />
     <ClInclude Include="src\Bindings\CharacterBinding.h" />
-    <ClInclude Include="src\Bindings\HandBinding.h" />
+    <ClInclude Include="src\Bindings\Util\HandBinding.h" />
     <ClInclude Include="src\Bindings\MyGuiBinding.h" />
     <ClInclude Include="src\Bindings\FactionRelationsBinding.h" />
     <ClInclude Include="src\Bindings\RelationDataBinding.h" />
     <ClInclude Include="src\Bindings\FactionLeaderBinding.h" />
-
     <ClInclude Include="src\Bindings\Gui\DialogueWindowBinding.h" />
     <ClInclude Include="src\Bindings\Gui\DatapanelGUIBinding.h" />
     <ClInclude Include="src\Bindings\Gui\GUIWindowBinding.h" />
@@ -749,15 +746,17 @@
     <ClInclude Include="src\Bindings\Building\WindGeneratorBuildingBinding.h" />
     <ClInclude Include="src\Bindings\GlobalBinding.h" />
     <ClInclude Include="src\Bindings\EnumBinding.h" />
+    <ClInclude Include="src\Bindings\CombatTechniqueDataBinding.h" />
+    <ClInclude Include="src\Bindings\ImpactPointBinding.h" />
     <ClInclude Include="src\Bindings\BountyBinding.h" />
     <ClInclude Include="src\Bindings\BountyManagerBinding.h" />
     <ClInclude Include="src\Bindings\CameraClassBinding.h" />
     <ClInclude Include="src\Bindings\RaceDataBinding.h" />
     <ClInclude Include="src\Bindings\RootObjectBinding.h" />
+    <ClInclude Include="src\Bindings\ModInfoBinding.h" />
     <ClInclude Include="src\Lua\BindingHelpers.h" />
     <ClInclude Include="src\ScriptLoader.h" />
     <ClInclude Include="src\DialogueScriptBridge.h" />
-
     <ClInclude Include="src\Bindings\CharacterAnimalBinding.h" />
     <ClInclude Include="src\Bindings\Building\BuildMaterialBinding.h" />
     <ClInclude Include="src\Bindings\Building\BuildingBinding.h" />
@@ -766,6 +765,7 @@
     <ClInclude Include="src\Bindings\Building\FootprintBinding.h" />
     <ClInclude Include="src\Bindings\Building\FootprintNodeBinding.h" />
     <ClInclude Include="src\Bindings\Building\PreviewBuildingBinding.h" />
+    <ClInclude Include="src\Gui.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Bindings\AbstractMovementBaseBinding.cpp" />
@@ -777,7 +777,6 @@
     <ClCompile Include="src\Bindings\AppearanceHumanBinding.cpp" />
     <ClCompile Include="src\Bindings\ArmourBinding.cpp" />
     <ClCompile Include="src\Bindings\AttachedArrowManagerBinding.cpp" />
-
     <ClCompile Include="src\Bindings\BuildingSwapsBinding.cpp" />
     <ClCompile Include="src\Bindings\CampaignTriggerDataBinding.cpp" />
     <ClCompile Include="src\Bindings\CharacterHumanBinding.cpp" />
@@ -786,6 +785,8 @@
     <ClCompile Include="src\Bindings\CharMovementBinding.cpp" />
     <ClCompile Include="src\Bindings\CharStatsBinding.cpp" />
     <ClCompile Include="src\Bindings\CombatMovementControllerBinding.cpp" />
+    <ClCompile Include="src\Bindings\CombatTechniqueDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\ImpactPointBinding.cpp" />
     <ClCompile Include="src\Bindings\ContainerItemBinding.cpp" />
     <ClCompile Include="src\Bindings\ContextMenuBinding.cpp" />
     <ClCompile Include="src\Bindings\CreatelistItemBinding.cpp" />
@@ -800,7 +801,6 @@
     <ClCompile Include="src\Bindings\DialogLineDataBinding.cpp" />
     <ClCompile Include="src\Bindings\DialogStateBinding.cpp" />
     <ClCompile Include="src\Bindings\DialogueSpeechBubbleBinding.cpp" />
-
     <ClCompile Include="src\Bindings\FactionManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\FactoryCallbackInterfaceBinding.cpp" />
     <ClCompile Include="src\Bindings\FlagConditionBinding.cpp" />
@@ -844,8 +844,12 @@
     <ClCompile Include="src\Bindings\RootObjectFactoryBinding.cpp" />
     <ClCompile Include="src\Bindings\SectionItemBinding.cpp" />
     <ClCompile Include="src\Bindings\SeenSomeoneBinding.cpp" />
+    <ClCompile Include="src\Bindings\SelectionBoxBinding.cpp" />
     <ClCompile Include="src\Bindings\SenseItrBinding.cpp" />
     <ClCompile Include="src\Bindings\SensoryDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\ShopTraderBinding.cpp" />
+    <ClCompile Include="src\Bindings\ShopTraderInventoryBinding.cpp" />
+    <ClCompile Include="src\Bindings\ShopTraderInventorySectionBinding.cpp" />
     <ClCompile Include="src\Bindings\SimpleTimeStamperBinding.cpp" />
     <ClCompile Include="src\Bindings\SpecificItemLoadFirstBinding.cpp" />
     <ClCompile Include="src\Bindings\SpeedGroupBinding.cpp" />
@@ -860,7 +864,6 @@
     <ClCompile Include="src\Bindings\TownBuildingsManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\TownPositionCacherBinding.cpp" />
     <ClCompile Include="src\Bindings\VisibleObjectInfoBinding.cpp" />
-
     <ClCompile Include="src\Bindings\WeaponBinding.cpp" />
     <ClCompile Include="src\Bindings\WhoSeesMeBinding.cpp" />
     <ClCompile Include="src\Bindings\WorldEventStateQueryBinding.cpp" />
@@ -868,8 +871,7 @@
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\Plugin.cpp" />
     <ClCompile Include="src\Callbacks.cpp" />
-    <ClCompile Include="src\Gui\InitializeGui.cpp" />
-    <ClCompile Include="src\Gui\ScriptEditor.cpp" />
+    <ClCompile Include="src\Gui.cpp" />
     <ClCompile Include="src\Hooks.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -881,17 +883,13 @@
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
-
-
     <ClCompile Include="src\Bindings\PlayerInterfaceBinding.cpp" />
     <ClCompile Include="src\Bindings\CharacterBinding.cpp" />
-    <ClCompile Include="src\Bindings\HandBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\HandBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGuiBinding.cpp" />
     <ClCompile Include="src\Bindings\FactionRelationsBinding.cpp" />
     <ClCompile Include="src\Bindings\RelationDataBinding.cpp" />
     <ClCompile Include="src\Bindings\FactionLeaderBinding.cpp" />
-
-
     <ClCompile Include="src\Bindings\Gui\DialogueWindowBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\DatapanelGUIBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\GUIWindowBinding.cpp" />
@@ -933,11 +931,10 @@
     <ClCompile Include="src\Bindings\FactionBinding.cpp" />
     <ClCompile Include="src\Bindings\TownBinding.cpp" />
     <ClCompile Include="src\Bindings\ItemBinding.cpp" />
-
     <ClCompile Include="src\Bindings\GameWorldBinding.cpp" />
+    <ClCompile Include="src\Bindings\ModInfoBinding.cpp" />
     <ClCompile Include="src\ScriptLoader.cpp" />
     <ClCompile Include="src\DialogueScriptBridge.cpp" />
-
     <ClCompile Include="src\Bindings\CharacterAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\BuildMaterialBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\BuildingBinding.cpp" />
