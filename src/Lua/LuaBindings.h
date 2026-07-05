@@ -19,6 +19,7 @@ public:
 
 // Free functions exposed as Lua globals.
 int luaKenshiLog(lua_State* L);
+int luaKenshiLogDebug(lua_State* L);
 int luaKenshiError(lua_State* L);
 int luaKenshiVersion(lua_State* L);
 
