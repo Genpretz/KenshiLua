@@ -4,7 +4,7 @@
 #include "TaskDataBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/TaskDataBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

@@ -31,7 +31,7 @@ static int CreatelistItem_get_homeBuilding(lua_State* L)
 {
     RootObjectFactory::CreatelistItem* b = getB(L, 1);
     if (!b) return luaL_error(L, "CreatelistItem is nil");
-    return pushObject<Building>(L, b->homeBuilding, "KenshiLua.Building");
+    return pushObject<Building>(L, b->homeBuilding, BuildingBinding::getMetatableName());
 }
 
 static int CreatelistItem_get_faction(lua_State* L)

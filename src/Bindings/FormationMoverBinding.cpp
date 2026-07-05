@@ -3,7 +3,7 @@
 #include "FormationMoverBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

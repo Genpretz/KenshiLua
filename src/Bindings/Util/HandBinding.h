@@ -5,6 +5,9 @@ extern "C" {
 #include <lauxlib.h>
 }
 
+class hand;
+std::size_t hash_value(const hand& h);
+
 namespace KenshiLua
 {
 class handBinding

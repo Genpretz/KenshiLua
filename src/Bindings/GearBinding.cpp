@@ -3,6 +3,7 @@
 #include "GearBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/FactionBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -92,6 +93,7 @@ static int Gear_set_level_0_100(lua_State* L)
     return 0;
 }
 
+// --- Methods for Gear ---
 int GearBinding::isGear(lua_State* L)
 {
     Gear* b = getB(L, 1);
@@ -184,6 +186,24 @@ int GearBinding::_DESTRUCTOR(lua_State* L)
     if (!b) return luaL_error(L, "Gear is nil");
 
     b->_DESTRUCTOR();
+    return 0;
+}
+
+int GearBinding::setInventoryWeAreIn(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->setInventoryWeAreIn(*h);
+    return 0;
+}
+
+int GearBinding::_NV_setInventoryWeAreIn(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->_NV_setInventoryWeAreIn(*h);
     return 0;
 }
 

@@ -28,6 +28,7 @@ static int Crossbow_set_gunClass(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for gunClass");
 }
 
+// --- Methods for Crossbow ---
 int CrossbowBinding::isCrossbow(lua_State* L)
 {
     Crossbow* b = getB(L, 1);

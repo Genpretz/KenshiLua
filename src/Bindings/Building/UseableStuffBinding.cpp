@@ -5,7 +5,7 @@
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/InventoryBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

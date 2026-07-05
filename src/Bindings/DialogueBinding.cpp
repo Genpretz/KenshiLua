@@ -12,7 +12,7 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/DialogChoiceListBinding.h"
 #include "Bindings/RepetitionCounterBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/DialogLineDataBinding.h"
 #include "kenshi/util/hand.h"
 

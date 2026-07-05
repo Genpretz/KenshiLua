@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "kenshi\Gear.h"
 #include "ArmourBinding.h"
+#include "Bindings/EnumBinding.h"
+#include "Bindings/GameDataBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -64,16 +66,16 @@ static int Armour_get_armourClassEnum(lua_State* L)
 {
     Armour* b = getB(L, 1);
     if (!b) return luaL_error(L, "Armour is nil");
-    // TODO: Unsupported type for armourClassEnum (ArmourClass)
-    return luaL_error(L, "Unsupported property 'armourClassEnum' (type: ArmourClass)");
+    lua_pushinteger(L, (lua_Integer)b->armourClassEnum);
+    return 1;
 }
 
 static int Armour_get_stigma(lua_State* L)
 {
     Armour* b = getB(L, 1);
     if (!b) return luaL_error(L, "Armour is nil");
-    // TODO: Unsupported type for stigma (CharacterTypeEnum)
-    return luaL_error(L, "Unsupported property 'stigma' (type: CharacterTypeEnum)");
+    lua_pushinteger(L, (lua_Integer)b->stigma);
+    return 1;
 }
 
 static int Armour_get_athleticsMult(lua_State* L)
@@ -265,14 +267,16 @@ static int Armour_set_armourClassEnum(lua_State* L)
 {
     Armour* b = getB(L, 1);
     if (!b) return luaL_error(L, "Armour is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for armourClassEnum");
+    b->armourClassEnum = (ArmourClass)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int Armour_set_stigma(lua_State* L)
 {
     Armour* b = getB(L, 1);
     if (!b) return luaL_error(L, "Armour is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for stigma");
+    b->stigma = (CharacterTypeEnum)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int Armour_set_athleticsMult(lua_State* L)
@@ -387,13 +391,14 @@ static int Armour_set_rangedSkillMult(lua_State* L)
     return 0;
 }
 
+// ToDo
 static int Armour_set_weatherProtections(lua_State* L)
 {
     Armour* b = getB(L, 1);
     if (!b) return luaL_error(L, "Armour is nil");
     return luaL_error(L, "Read-only or unsupported setter type for weatherProtections");
 }
-
+// ToDo
 static int Armour_set_bodypartCoverage(lua_State* L)
 {
     Armour* b = getB(L, 1);
@@ -409,6 +414,7 @@ static int Armour_set_craftTime(lua_State* L)
     return 0;
 }
 
+// --- Methods for Armour ---
 int ArmourBinding::getClassType(lua_State* L)
 {
     Armour* b = getB(L, 1);
@@ -539,14 +545,32 @@ int ArmourBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
+int ArmourBinding::didIHitFlesh(lua_State* L)
+{
+    Armour* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Armour is nil");
+    GameData* bodypart = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    if (!bodypart) return luaL_error(L, "Bodypart is nil");
+    bool result = b->didIHitFlesh(bodypart);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ArmourBinding::getArmourCraftingMaterialConsumptionRate(lua_State* L)
+{
+    Armour* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Armour is nil");
+    float result = Armour::getArmourCraftingMaterialConsumptionRate(b->data);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 168: void getTooltipData1(...) - unsupported arg type
   line 169: void _NV_getTooltipData1(...) - unsupported arg type
   line 170: void getTooltipData2(...) - unsupported arg type
   line 171: void _NV_getTooltipData2(...) - unsupported arg type
-  line 172: bool didIHitFlesh(...) - unsupported arg type
-  line 176: float getArmourCraftingMaterialConsumptionRate(...) - static method
   line 204: Armour* _CONSTRUCTOR(...) - unsupported arg type
 */
 
@@ -584,6 +608,8 @@ void ArmourBinding::registerBinding(lua_State* L)
         { "_NV_getCraftTime", ArmourBinding::_NV_getCraftTime },
         { "getWeatherProtection_simple", ArmourBinding::getWeatherProtection_simple },
         { "_DESTRUCTOR", ArmourBinding::_DESTRUCTOR },
+        { "didIHitFlesh", ArmourBinding::didIHitFlesh },
+        { "getArmourCraftingMaterialConsumptionRate", ArmourBinding::getArmourCraftingMaterialConsumptionRate },
         { 0, 0 }
     };
 

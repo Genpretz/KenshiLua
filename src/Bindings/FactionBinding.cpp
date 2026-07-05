@@ -4,7 +4,7 @@
 #include "kenshi/Platoon.h"
 #include "OwnershipsBinding.h"
 #include "Bindings/PlatoonBinding.h"
-#include "HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "kenshi/PlayerInterface.h"
 #include "PlayerInterfaceBinding.h"
@@ -529,6 +529,7 @@ static int Faction_set_buildingSwaps(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for buildingSwaps");
 }
 
+// --- Methods for Faction ---
 int FactionBinding::_CONSTRUCTOR(lua_State* L)
 {
     Faction* b = getB(L, 1);

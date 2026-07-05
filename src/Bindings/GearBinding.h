@@ -26,5 +26,7 @@ public:
     static int _NV_isAFactionUniform(lua_State* L);
     static int isPlayerCrafted(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
+	static int setInventoryWeAreIn(lua_State* L);
+	static int _NV_setInventoryWeAreIn(lua_State* L);
 };
 }

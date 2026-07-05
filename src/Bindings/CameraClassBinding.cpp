@@ -4,7 +4,7 @@
 //#include "BuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -161,7 +161,7 @@ static int CameraClass_get_centerBuilding(lua_State* L)
 {
     CameraClass* b = getB(L, 1);
     if (!b) return luaL_error(L, "CameraClass is nil");
-    return pushObject<Building>(L, b->centerBuilding, "KenshiLua.Building");
+    return pushObject<Building>(L, b->centerBuilding, BuildingBinding::getMetatableName());
 }
 
 static int CameraClass_get_centerBuildingY(lua_State* L)

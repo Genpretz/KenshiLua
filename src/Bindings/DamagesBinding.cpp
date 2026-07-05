@@ -109,6 +109,7 @@ static int Damages_set_armourPenetration(lua_State* L)
     return 0;
 }
 
+// --- Methods for Damages ---
 int DamagesBinding::multiply(lua_State* L)
 {
     Damages* b = getB(L, 1);

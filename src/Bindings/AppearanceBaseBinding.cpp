@@ -541,6 +541,7 @@ static int AppearanceBase_set_characterHeight_0to1(lua_State* L)
     return 0;
 }
 
+// --- Methods for AppearanceBase ---
 int AppearanceBaseBinding::_DESTRUCTOR(lua_State* L)
 {
     AppearanceBase* b = getB(L, 1);

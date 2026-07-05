@@ -44,6 +44,7 @@ static int AttachedArrowManager_set_index(lua_State* L)
     return 0;
 }
 
+// --- Methods for AttachedArrowManager ---
 int AttachedArrowManagerBinding::_DESTRUCTOR(lua_State* L)
 {
     Character::AttachedArrowManager* b = getB(L, 1);

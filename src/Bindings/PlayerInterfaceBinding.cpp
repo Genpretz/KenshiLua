@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\PlayerInterface.h"
 #include "PlayerInterfaceBinding.h"
+#include "Util/OgreUnorderedBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CameraClassBinding.h"
 #include "Bindings/CharacterBinding.h"
@@ -8,7 +9,7 @@
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/RootObjectContainerBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "kenshi\CameraClass.h"
 #include "CameraClassBinding.h"
 #include "kenshi\RootObject.h"
@@ -176,12 +177,14 @@ static int PlayerInterface_get_rmouseTimer(lua_State* L)
     return 1;
 }
 
+static const char* SelectedCharactersSet_metaName() { return "KenshiLua.SelectedCharactersSet"; }
+typedef OgreUnorderedSetBinding<hand> SelectedCharactersSetBinding;
+
 static int PlayerInterface_get_selectedCharacters(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for selectedCharacters (ogre_unordered_set<hand>::type)
-    return luaL_error(L, "Unsupported property 'selectedCharacters' (type: ogre_unordered_set<hand>::type)");
+    return pushObject<ogre_unordered_set<hand>::type>(L, &b->selectedCharacters, SelectedCharactersSet_metaName());
 }
 
 static int PlayerInterface_get_selectedObject(lua_State* L)
@@ -1331,6 +1334,8 @@ void PlayerInterfaceBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, PlayerInterface_set_mRightDown);
     lua_setfield(L, -2, "mRightDown");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    SelectedCharactersSetBinding::registerBinding(L, SelectedCharactersSet_metaName(), handBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -6,7 +6,7 @@ class CraftingItem {};
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/ItemBinding.h"
 #include "Bindings/Building/ProductionBuildingBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

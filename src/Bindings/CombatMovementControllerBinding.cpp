@@ -5,7 +5,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharStatsBinding.h"
 #include "Bindings/FlockingToolsBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -553,6 +553,7 @@ static int CombatMovementController_set_combatTarget(lua_State* L)
     return 0;
 }
 
+// --- Methods for CombatMovementController ---
 int CombatMovementControllerBinding::collisionUpdate(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);

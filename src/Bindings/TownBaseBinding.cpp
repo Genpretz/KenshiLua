@@ -8,7 +8,9 @@
 #include "Bindings/FactionBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/Building/BuildingBinding.h"
-#include "HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/EnumBinding.h"
 
 namespace KenshiLua
 {
@@ -31,8 +33,8 @@ static int TownBase_get_townType(lua_State* L)
 {
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
-    // TODO: Unsupported type for townType (TownType)
-    return luaL_error(L, "Unsupported property 'townType' (type: TownType)");
+    lua_pushinteger(L, b->townType);
+    return 1;
 }
 
 static int TownBase_get_population(lua_State* L)
@@ -254,7 +256,9 @@ static int TownBase_set_townType(lua_State* L)
 {
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for townType");
+    TownType tt = (TownType)luaL_checkinteger(L, 2);
+    b->townType = tt;
+    return 0;
 }
 
 static int TownBase_set_population(lua_State* L)
@@ -1376,13 +1380,7 @@ static int TownBase_findAllBuildingsOfType(lua_State* L)
         me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
     }
     lektor<Building*>* result = b->findAllBuildingsOfType(func, me);
-    if (!result) { lua_pushnil(L); return 1; }
-    lua_createtable(L, result->size(), 0);
-    for (uint32_t i = 0; i < result->size(); ++i) {
-        pushObject<Building>(L, result->operator[](i), BuildingBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
 }
 
 static int TownBase__NV_findAllBuildingsOfType(lua_State* L)
@@ -1395,13 +1393,7 @@ static int TownBase__NV_findAllBuildingsOfType(lua_State* L)
         me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
     }
     lektor<Building*>* result = b->_NV_findAllBuildingsOfType(func, me);
-    if (!result) { lua_pushnil(L); return 1; }
-    lua_createtable(L, result->size(), 0);
-    for (uint32_t i = 0; i < result->size(); ++i) {
-        pushObject<Building>(L, result->operator[](i), BuildingBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
 }
 
 static int TownBase_findAllBuildingsWithFunction(lua_State* L)
@@ -1414,13 +1406,7 @@ static int TownBase_findAllBuildingsWithFunction(lua_State* L)
         me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
     }
     lektor<Building*>* result = b->findAllBuildingsWithFunction(func, me);
-    if (!result) { lua_pushnil(L); return 1; }
-    lua_createtable(L, result->size(), 0);
-    for (uint32_t i = 0; i < result->size(); ++i) {
-        pushObject<Building>(L, result->operator[](i), BuildingBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
 }
 
 static int TownBase__NV_findAllBuildingsWithFunction(lua_State* L)
@@ -1433,13 +1419,7 @@ static int TownBase__NV_findAllBuildingsWithFunction(lua_State* L)
         me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
     }
     lektor<Building*>* result = b->_NV_findAllBuildingsWithFunction(func, me);
-    if (!result) { lua_pushnil(L); return 1; }
-    lua_createtable(L, result->size(), 0);
-    for (uint32_t i = 0; i < result->size(); ++i) {
-        pushObject<Building>(L, result->operator[](i), BuildingBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
 }
 
 static int TownBase_getCurrentTownLocation(lua_State* L)
@@ -1720,6 +1700,8 @@ void TownBaseBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, TownBase_set_defaultResident);
     lua_setfield(L, -2, "defaultResident");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    LektorPtrBinding<Building*>::registerBinding(L, "lektor<Building*>", BuildingBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

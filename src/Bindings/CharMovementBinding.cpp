@@ -3,7 +3,7 @@
 #include "CharMovementBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
-#include "HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -434,6 +434,7 @@ static int CharMovement_set_clickHull(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for clickHull");
 }
 
+// --- Methods for CharMovement ---
 int CharMovementBinding::_DESTRUCTOR(lua_State* L)
 {
     CharMovement* b = getB(L, 1);

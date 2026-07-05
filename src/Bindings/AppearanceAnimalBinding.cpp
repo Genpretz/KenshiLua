@@ -13,6 +13,7 @@ static AppearanceAnimal* getB(lua_State* L, int idx)
 
 // --- Getters for AppearanceAnimal ---
 // --- Setters for AppearanceAnimal ---
+// --- Methods for AppearanceAnimal ---
 int AppearanceAnimalBinding::_DESTRUCTOR(lua_State* L)
 {
     AppearanceAnimal* b = getB(L, 1);

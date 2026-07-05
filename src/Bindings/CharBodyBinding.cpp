@@ -4,7 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharStatsBinding.h"
 #include "Bindings/CharacterBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/PlatoonBinding.h"
 #include "TaskerBinding.h"

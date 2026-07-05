@@ -13,19 +13,12 @@
 #include "Bindings/ItemBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/WeaponBinding.h"
-#include "HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
-inline const char* LektorItemPtrMeta() { return "lektor<Item*>"; }
-inline const char* ItemElemMeta() { return ItemBinding::getMetatableName(); }
-typedef LektorPtrBinding<Item*, LektorItemPtrMeta, ItemElemMeta> LektorItemPtrBinding;
-
-inline const char* LektorInventorySectionPtrMeta() { return "lektor<InventorySection*>"; }
-inline const char* InventorySectionElemMeta() { return InventorySectionBinding::getMetatableName(); }
-typedef LektorPtrBinding<InventorySection*, LektorInventorySectionPtrMeta, InventorySectionElemMeta> LektorInventorySectionPtrBinding;
 
 static Inventory* getB(lua_State* L, int idx)
 {
@@ -45,7 +38,7 @@ static int Inventory_get__allItems(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
-    return pushObject<lektor<Item*>>(L, &b->_allItems, LektorItemPtrMeta());
+    return pushObject<lektor<Item*>>(L, &b->_allItems, LektorPtrBinding<Item*>::metaName);
 }
 
 static int Inventory_get_sections(lua_State* L)
@@ -66,7 +59,7 @@ static int Inventory_get_sectionsInSearchOrder(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
-    return pushObject<lektor<InventorySection*>>(L, &b->sectionsInSearchOrder, LektorInventorySectionPtrMeta());
+    return pushObject<lektor<InventorySection*>>(L, &b->sectionsInSearchOrder, LektorPtrBinding<InventorySection*>::metaName);
 }
 
 static int Inventory_get_callbackObject(lua_State* L)
@@ -142,6 +135,7 @@ static int Inventory_set_totalWeight(lua_State* L)
     return 0;
 }
 
+// --- Methods for Inventory ---
 int InventoryBinding::_DESTRUCTOR(lua_State* L)
 {
     Inventory* b = getB(L, 1);
@@ -232,6 +226,20 @@ int InventoryBinding::getSectionOfType(lua_State* L)
     AttachSlot type = (AttachSlot)luaL_checkinteger(L, 2);
     InventorySection* result = b->getSectionOfType(type);
     return pushObject<InventorySection>(L, result, InventorySectionBinding::getMetatableName());
+}
+
+int InventoryBinding::resizeSection(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+
+    InventorySection* sect = checkObject<InventorySection>(L, 2, InventorySectionBinding::getMetatableName());
+    int w = (int)luaL_checkinteger(L, 3);
+    int h = (int)luaL_checkinteger(L, 4);
+    bool clearContent = lua_toboolean(L, 5) != 0;
+
+    b->resizeSection(sect, w, h, clearContent);
+    return 0;
 }
 
 int InventoryBinding::getCallbackCharacter(lua_State* L)
@@ -649,6 +657,7 @@ void InventoryBinding::registerBinding(lua_State* L)
         { "removeAllSections", InventoryBinding::removeAllSections },
         { "getSection", InventoryBinding::getSection },
         { "getSectionOfType", InventoryBinding::getSectionOfType },
+        { "resizeSection", InventoryBinding::resizeSection },
         { "getCallbackCharacter", InventoryBinding::getCallbackCharacter },
         { "hasItemType", InventoryBinding::hasItemType },
         { "hasStolenItems", InventoryBinding::hasStolenItems },
@@ -728,8 +737,8 @@ void InventoryBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "totalWeight");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    LektorItemPtrBinding::registerBinding(L);
-    LektorInventorySectionPtrBinding::registerBinding(L);
+    LektorPtrBinding<Item*>::registerBinding(L, "lektor<Item*>", ItemBinding::getMetatableName());
+    LektorPtrBinding<InventorySection*>::registerBinding(L, "lektor<InventorySection*>", InventorySectionBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -17,7 +17,7 @@
 #include "Bindings/InventoryBinding.h"
 #include "Bindings/LockedArmourBinding.h"
 #include "Bindings/WeaponBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -735,7 +735,7 @@ Skipped methods needing manual binding:
   line 204: void _NV_itemEntityCreated(...) - unsupported arg type
 */
 
-static int Item_getInventoryWeAreIn(lua_State* L)
+int ItemBinding::getInventoryWeAreIn(lua_State* L)
 {
     Item* b = getB(L, 1);
     if (!b) return luaL_error(L, "Item is nil");
@@ -744,7 +744,7 @@ static int Item_getInventoryWeAreIn(lua_State* L)
     return 1;
 }
 
-static int Item_setInventoryWeAreIn(lua_State* L)
+int ItemBinding::setInventoryWeAreIn(lua_State* L)
 {
     Item* b = getB(L, 1);
     if (!b) return luaL_error(L, "Item is nil");
@@ -753,7 +753,7 @@ static int Item_setInventoryWeAreIn(lua_State* L)
     return 0;
 }
 
-static int Item__NV_setInventoryWeAreIn(lua_State* L)
+int ItemBinding::_NV_setInventoryWeAreIn(lua_State* L)
 {
     Item* b = getB(L, 1);
     if (!b) return luaL_error(L, "Item is nil");
@@ -834,9 +834,9 @@ void ItemBinding::registerBinding(lua_State* L)
         { "_NV_destroyPhysical", ItemBinding::_NV_destroyPhysical },
         { "loadUnloadCheck", ItemBinding::loadUnloadCheck },
         { "_NV_loadUnloadCheck", ItemBinding::_NV_loadUnloadCheck },
-        { "getInventoryWeAreIn", Item_getInventoryWeAreIn },
-        { "setInventoryWeAreIn", Item_setInventoryWeAreIn },
-        { "_NV_setInventoryWeAreIn", Item__NV_setInventoryWeAreIn },
+        { "getInventoryWeAreIn", ItemBinding::getInventoryWeAreIn },
+        { "setInventoryWeAreIn", ItemBinding::setInventoryWeAreIn },
+        { "_NV_setInventoryWeAreIn", ItemBinding::_NV_setInventoryWeAreIn },
         { 0, 0 }
     };
 

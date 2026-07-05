@@ -76,6 +76,7 @@ static int DataObjectContainer_set_selfType(lua_State* L)
     return 0;
 }
 
+// --- Methods for DataObjectContainer ---
 int DataObjectContainerBinding::_DESTRUCTOR(lua_State* L)
 {
     DataObjectContainer* b = getB(L, 1);

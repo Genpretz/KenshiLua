@@ -5,9 +5,7 @@
 #include "InventoryBinding.h"
 #include "ItemBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/InventoryBinding.h"
-#include "Bindings/ItemBinding.h"
-#include "Bindings/RootObjectBinding.h"
+#include "GameDataBinding.h"
 
 namespace KenshiLua
 {
@@ -300,6 +298,23 @@ static int InventorySection_set_enabled(lua_State* L)
     return 0;
 }
 
+int InventorySectionBinding::_CONSTRUCTOR(lua_State* L)
+{
+    InventorySection* instance = getB(L, 1);
+    if (!instance) return luaL_error(L, "InventorySection is nil");
+    std::string name = luaL_checkstring(L, 2);
+    int w = (int)luaL_checkinteger(L, 3);
+    int h = (int)luaL_checkinteger(L, 4);
+    int slot = (int)luaL_checkinteger(L, 5);
+    Inventory* inventory = checkObject<Inventory>(L, 6, InventoryBinding::getMetatableName());
+    bool containerSlot = lua_toboolean(L, 7) != 0;
+    bool equipSlot = lua_toboolean(L, 8) != 0;
+    bool enabled = lua_toboolean(L, 9) != 0;
+
+    InventorySection* result = instance->_CONSTRUCTOR(name, w, h, (AttachSlot)slot, inventory, containerSlot, equipSlot, enabled);
+    return pushObject<InventorySection>(L, result, InventorySectionBinding::getMetatableName());
+}
+
 int InventorySectionBinding::_DESTRUCTOR(lua_State* L)
 {
     InventorySection* b = getB(L, 1);
@@ -539,38 +554,108 @@ int InventorySectionBinding::resize(lua_State* L)
     return 0;
 }
 
+int InventorySectionBinding::hasItem_GameData(lua_State* L)
+{
+    InventorySection* b = getB(L, 1);
+    if (!b) return luaL_error(L, "InventorySection is nil");
+    GameData* itemData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    if (!itemData) return luaL_error(L, "GameData is nil");
+    bool result = b->hasItem(itemData);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventorySectionBinding::hasItem_Item(lua_State* L)
+{
+    InventorySection* b = getB(L, 1);
+    if (!b) return luaL_error(L, "InventorySection is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    if (!item) return luaL_error(L, "Item is nil");
+    bool result = b->hasItem(item);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventorySectionBinding::hasRoomForItem(lua_State* L)
+{
+    InventorySection* b = getB(L, 1);
+    if (!b) return luaL_error(L, "InventorySection is nil");
+    GameData* itemData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    if (!itemData) return luaL_error(L, "GameData is nil");
+    int quantity = (int)luaL_checkinteger(L, 3);
+    bool result = b->hasRoomForItem(itemData, quantity);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventorySectionBinding::_NV_hasRoomForItem(lua_State* L)
+{
+    InventorySection* b = getB(L, 1);
+    if (!b) return luaL_error(L, "InventorySection is nil");
+    GameData* itemData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    if (!itemData) return luaL_error(L, "GameData is nil");
+    int quantity = (int)luaL_checkinteger(L, 3);
+    bool result = b->_NV_hasRoomForItem(itemData, quantity);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventorySectionBinding::isLimitedSlotCompatible(lua_State* L)
+{
+    InventorySection* b = getB(L, 1);
+    if (!b)
+        return luaL_error(L, "InventorySection is nil");
+
+    if (GameData* gd = testObject<GameData>(L, 2, GameDataBinding::getMetatableName()))
+    {
+        lua_pushboolean(L, b->isLimitedSlotCompatible(gd));
+        return 1;
+    }
+
+    if (Item* item = testObject<Item>(L, 2, ItemBinding::getMetatableName()))
+    {
+        lua_pushboolean(L, b->isLimitedSlotCompatible(item));
+        return 1;
+    }
+
+    return luaL_error(
+        L,
+        "Expected GameData or Item for argument #2"
+    );
+}
+
+int InventorySectionBinding::getValidInventoryPosition(lua_State* L)
+{
+    InventorySection* b = getB(L, 1);
+    if (!b) return luaL_error(L, "InventorySection is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    if (!item) return luaL_error(L, "Item is nil");
+    int x, y;
+    bool result = b->getValidInventoryPosition(item, x, y);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushinteger(L, x);
+    lua_pushinteger(L, y);
+    return 3;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 34: InventorySection* _CONSTRUCTOR(...) - unsupported arg type
-  line 37: bool hasRoomForItem(...) - unsupported arg type
-  line 38: bool _NV_hasRoomForItem(...) - unsupported arg type
-  line 40: bool addItem(...) - unsupported arg type
-  line 41: bool _NV_addItem(...) - unsupported arg type
-  line 42: void _addItem(...) - unsupported arg type
-  line 43: void _NV__addItem(...) - unsupported arg type
-  line 46: bool hasItem(...) - overloaded method
-  line 47: bool hasItem(...) - overloaded method
   line 51: void getAllItemsOfType(...) - overloaded method
   line 52: void getAllItemsOfType(...) - overloaded method
   line 53: void getAllItemsOfName(...) - unsupported arg type
-  line 56: bool removeItem(...) - unsupported arg type
-  line 58: bool canItemGoHere(...) - unsupported arg type
   line 59: bool getValidInventoryPosition(...) - unsupported arg type
   line 60: bool findNearestPlaceForItem(...) - unsupported arg type
   line 61: int getItemsInFootprint(...) - overloaded method
   line 62: int getItemsInFootprint(...) - overloaded method
-  line 63: bool existsItemInFootprint(...) - unsupported arg type
   line 65: void setupContainerData(...) - unsupported arg type
   line 72: void addVeryLimitedSlot(...) - unsupported arg type
   line 74: const lektor<GameData*>& getVeryLimitedSlot(...) - reference return type
-  line 75: bool isLimitedSlotCompatible(...) - overloaded method
-  line 76: bool isLimitedSlotCompatible(...) - overloaded method
   line 85: const Ogre::vector<InventorySection::SectionItem>::type& getItems(...) - reference return type
   line 91: void setupEquipCallbacks(...) - unsupported arg type
   line 92: int numItemsInFootprint(...) - unsupported arg type
 */
 
-static int InventorySection_addItem(lua_State* L)
+int InventorySectionBinding::addItem(lua_State* L)
 {
     InventorySection* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventorySection is nil");
@@ -581,7 +666,7 @@ static int InventorySection_addItem(lua_State* L)
     return 1;
 }
 
-static int InventorySection__NV_addItem(lua_State* L)
+int InventorySectionBinding::_NV_addItem(lua_State* L)
 {
     InventorySection* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventorySection is nil");
@@ -592,29 +677,7 @@ static int InventorySection__NV_addItem(lua_State* L)
     return 1;
 }
 
-static int InventorySection__addItem_method(lua_State* L)
-{
-    InventorySection* b = getB(L, 1);
-    if (!b) return luaL_error(L, "InventorySection is nil");
-    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
-    int x = (int)luaL_checkinteger(L, 3);
-    int y = (int)luaL_checkinteger(L, 4);
-    b->_addItem(item, x, y);
-    return 0;
-}
-
-static int InventorySection__NV__addItem_method(lua_State* L)
-{
-    InventorySection* b = getB(L, 1);
-    if (!b) return luaL_error(L, "InventorySection is nil");
-    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
-    int x = (int)luaL_checkinteger(L, 3);
-    int y = (int)luaL_checkinteger(L, 4);
-    b->_NV__addItem(item, x, y);
-    return 0;
-}
-
-static int InventorySection_removeItem(lua_State* L)
+int InventorySectionBinding::removeItem(lua_State* L)
 {
     InventorySection* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventorySection is nil");
@@ -624,7 +687,7 @@ static int InventorySection_removeItem(lua_State* L)
     return 1;
 }
 
-static int InventorySection_canItemGoHere(lua_State* L)
+int InventorySectionBinding::canItemGoHere(lua_State* L)
 {
     InventorySection* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventorySection is nil");
@@ -636,7 +699,7 @@ static int InventorySection_canItemGoHere(lua_State* L)
     return 1;
 }
 
-static int InventorySection_existsItemInFootprint(lua_State* L)
+int InventorySectionBinding::existsItemInFootprint(lua_State* L)
 {
     InventorySection* b = getB(L, 1);
     if (!b) return luaL_error(L, "InventorySection is nil");
@@ -669,9 +732,14 @@ void InventorySectionBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", InventorySectionBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", InventorySectionBinding::_DESTRUCTOR },
         { "notifyModified", InventorySectionBinding::notifyModified },
         { "getItemAt", InventorySectionBinding::getItemAt },
+        { "hasRoomForItem", InventorySectionBinding::hasRoomForItem },
+        { "_NV_hasRoomForItem", InventorySectionBinding::_NV_hasRoomForItem },
+        { "hasItem", InventorySectionBinding::hasItem_Item },
+        { "hasItem", InventorySectionBinding::hasItem_GameData },
         { "hasItemType", InventorySectionBinding::hasItemType },
         { "autoArrange", InventorySectionBinding::autoArrange },
         { "_NV_autoArrange", InventorySectionBinding::_NV_autoArrange },
@@ -693,13 +761,13 @@ void InventorySectionBinding::registerBinding(lua_State* L)
         { "getFillPercentage", InventorySectionBinding::getFillPercentage },
         { "getItem", InventorySectionBinding::getItem },
         { "resize", InventorySectionBinding::resize },
-        { "addItem", InventorySection_addItem },
-        { "_NV_addItem", InventorySection__NV_addItem },
-        { "_addItem", InventorySection__addItem_method },
-        { "_NV__addItem", InventorySection__NV__addItem_method },
-        { "removeItem", InventorySection_removeItem },
-        { "canItemGoHere", InventorySection_canItemGoHere },
-        { "existsItemInFootprint", InventorySection_existsItemInFootprint },
+        { "addItem", InventorySectionBinding::addItem },
+        { "_NV_addItem", InventorySectionBinding::_NV_addItem },
+        { "removeItem", InventorySectionBinding::removeItem },
+        { "canItemGoHere", InventorySectionBinding::canItemGoHere },
+        { "existsItemInFootprint", InventorySectionBinding::existsItemInFootprint },
+        { "isLimitedSlotCompatible", InventorySectionBinding::isLimitedSlotCompatible },
+        { "getValidInventoryPosition", InventorySectionBinding::getValidInventoryPosition },
         { 0, 0 }
     };
 

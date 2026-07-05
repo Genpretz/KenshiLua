@@ -9,6 +9,9 @@
 #include "Bindings/PlayerInterfaceBinding.h"
 #include "TaskerBinding.h"
 #include "RootObjectBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "FactoryCallbackInterfaceBinding.h"
+#include "Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -283,6 +286,7 @@ static int ActivePlatoon_set_isPhysical(lua_State* L)
     return 0;
 }
 
+// --- Methods for ActivePlatoon ---
 int ActivePlatoonBinding::_recalculateIsIntact(lua_State* L)
 {
     ActivePlatoon* b = getB(L, 1);
@@ -649,24 +653,7 @@ int ActivePlatoonBinding::_checkForUniqueCharactersOnUnload(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 225: bool loadFromDisk(...) - unsupported arg type
-  line 226: bool _NV_loadFromDisk(...) - unsupported arg type
-  line 232: GroupSense* getGroupSense(...) - unsupported return type
-  line 233: CharacterMemory* getMemory(...) - unsupported return type
-  line 234: bool removeObject(...) - unsupported arg type
-  line 235: bool _NV_removeObject(...) - unsupported arg type
-  line 236: bool addActiveObject(...) - unsupported arg type
-  line 237: bool _NV_addActiveObject(...) - unsupported arg type
-  line 238: void addCharacterAt(...) - unsupported arg type
-  line 244: void getCharactersInArea(...) - unsupported arg type
-  line 249: void setSquadLeader(...) - unsupported arg type
-  line 263: const std::string& getName(...) - reference return type
   line 275: ActivePlatoon* _CONSTRUCTOR(...) - unsupported return type
-  line 280: YesNoMaybe setupCheck(...) - unsupported return type
-  line 284: void loadCharacters(...) - unsupported arg type
-  line 285: void _NV_loadCharacters(...) - unsupported arg type
-  line 286: void loadInstance(...) - unsupported arg type
-  line 287: void _NV_loadInstance(...) - unsupported arg type
 */
 static int ActivePlatoon_removeObject(lua_State* L)
 {
@@ -736,6 +723,177 @@ static int ActivePlatoon_getName(lua_State* L)
     return 1;
 }
 
+static int ActivePlatoon_loadFromDisk(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    bool force = lua_toboolean(L, 2) != 0;
+    Serialisable* extra = nullptr;
+    if (!lua_isnil(L, 3)) {
+        extra = (Serialisable*)lua_touserdata(L, 3);
+        if (!extra) return luaL_error(L, "Argument 3 must be lightuserdata (Serialisable*) or nil");
+    }
+    bool result = b->loadFromDisk(force, extra);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+static int ActivePlatoon__NV_loadFromDisk(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    bool force = lua_toboolean(L, 2) != 0;
+    Serialisable* extra = nullptr;
+    if (!lua_isnil(L, 3)) {
+        extra = (Serialisable*)lua_touserdata(L, 3);
+        if (!extra) return luaL_error(L, "Argument 3 must be lightuserdata (Serialisable*) or nil");
+    }
+    bool result = b->_NV_loadFromDisk(force, extra);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+static int ActivePlatoon_getGroupSense(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    GroupSense* gs = b->getGroupSense();
+    if (gs) {
+        lua_pushlightuserdata(L, (void*)gs);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int ActivePlatoon_getMemory(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    CharacterMemory* cm = b->getMemory();
+    if (cm) {
+        lua_pushlightuserdata(L, (void*)cm);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int ActivePlatoon_getCharactersInArea(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 must be a lektor<RootObject*>");
+
+    Ogre::Vector3 pos;
+    readVector3(L, 3, pos);
+
+    float radius = (float)luaL_checknumber(L, 4);
+    bool standingOnly = lua_toboolean(L, 5) != 0;
+
+    b->getCharactersInArea(*out, pos, radius, standingOnly);
+    return 0;
+}
+
+static int ActivePlatoon_setupCheck(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+    YesNoMaybe result = b->setupCheck();
+    lua_pushinteger(L, static_cast<int>(result.key));
+    return 1;
+}
+
+static int ActivePlatoon_loadCharacters(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+
+    Ogre::Vector3 pos;
+    readVector3(L, 2, pos);
+
+    FactoryCallbackInterface* callback = nullptr;
+    if (!lua_isnil(L, 3)) {
+        callback = checkObject<FactoryCallbackInterface>(L, 3, FactoryCallbackInterfaceBinding::getMetatableName());
+    }
+
+    b->loadCharacters(pos, callback);
+    return 0;
+}
+
+static int ActivePlatoon__NV_loadCharacters(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+
+    Ogre::Vector3 pos;
+    readVector3(L, 2, pos);
+
+    FactoryCallbackInterface* callback = nullptr;
+    if (!lua_isnil(L, 3)) {
+        callback = checkObject<FactoryCallbackInterface>(L, 3, FactoryCallbackInterfaceBinding::getMetatableName());
+    }
+
+    b->_NV_loadCharacters(pos, callback);
+    return 0;
+}
+
+static int ActivePlatoon_loadInstance(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+
+    bool skipSaveState = lua_toboolean(L, 3) != 0;
+
+    Ogre::Vector3 pos;
+    readVector3(L, 4, pos);
+
+    Ogre::Quaternion rot;
+    readQuaternion(L, 5, rot);
+
+    FactoryCallbackInterface* callback = nullptr;
+    if (!lua_isnil(L, 6)) {
+        callback = checkObject<FactoryCallbackInterface>(L, 6, FactoryCallbackInterfaceBinding::getMetatableName());
+    }
+
+    Ogre::Vector3 positionMoved;
+    readVector3(L, 7, positionMoved);
+
+    b->loadInstance(*state, skipSaveState, pos, rot, callback, positionMoved);
+    return 0;
+}
+
+static int ActivePlatoon__NV_loadInstance(lua_State* L)
+{
+    ActivePlatoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "ActivePlatoon is nil");
+
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+
+    bool skipSaveState = lua_toboolean(L, 3) != 0;
+
+    Ogre::Vector3 pos;
+    readVector3(L, 4, pos);
+
+    Ogre::Quaternion rot;
+    readQuaternion(L, 5, rot);
+
+    FactoryCallbackInterface* callback = nullptr;
+    if (!lua_isnil(L, 6)) {
+        callback = checkObject<FactoryCallbackInterface>(L, 6, FactoryCallbackInterfaceBinding::getMetatableName());
+    }
+
+    Ogre::Vector3 positionMoved;
+    readVector3(L, 7, positionMoved);
+
+    b->_NV_loadInstance(*state, skipSaveState, pos, rot, callback, positionMoved);
+    return 0;
+}
+
 
 
 int ActivePlatoonBinding::gc(lua_State* L)
@@ -803,6 +961,16 @@ void ActivePlatoonBinding::registerBinding(lua_State* L)
         { "addCharacterAt", ActivePlatoon_addCharacterAt },
         { "setSquadLeader", ActivePlatoon_setSquadLeader },
         { "getName", ActivePlatoon_getName },
+        { "loadFromDisk", ActivePlatoon_loadFromDisk },
+        { "_NV_loadFromDisk", ActivePlatoon__NV_loadFromDisk },
+        { "getGroupSense", ActivePlatoon_getGroupSense },
+        { "getMemory", ActivePlatoon_getMemory },
+        { "getCharactersInArea", ActivePlatoon_getCharactersInArea },
+        { "setupCheck", ActivePlatoon_setupCheck },
+        { "loadCharacters", ActivePlatoon_loadCharacters },
+        { "_NV_loadCharacters", ActivePlatoon__NV_loadCharacters },
+        { "loadInstance", ActivePlatoon_loadInstance },
+        { "_NV_loadInstance", ActivePlatoon__NV_loadInstance },
         { 0, 0 }
     };
 
@@ -889,6 +1057,8 @@ void ActivePlatoonBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, ActivePlatoon_set_isPhysical);
     lua_setfield(L, -2, "isPhysical");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+    
+    LektorPtrBinding<RootObject*>::registerBinding(L, "lektor<RootObject*>", RootObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\Bounty.h"
 #include "BountyBinding.h"
+#include "EnumBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -36,6 +37,7 @@ static int Bounty_get_bountyHasBeenClaimedOnce(lua_State* L)
     return 1;
 }
 
+// ToDo
 static int Bounty_get_bountyAssignmentStartedTime(lua_State* L)
 {
     Bounty* b = getB(L, 1);
@@ -69,6 +71,7 @@ static int Bounty_set_bountyHasBeenClaimedOnce(lua_State* L)
     return 0;
 }
 
+// ToDo
 static int Bounty_set_bountyAssignmentStartedTime(lua_State* L)
 {
     Bounty* b = getB(L, 1);
@@ -85,11 +88,25 @@ int BountyBinding::_CONSTRUCTOR(lua_State* L)
     return pushObject<Bounty>(L, result, BountyBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 37: void addCrime(...) - unsupported arg type
-  line 38: bool hasCrime(...) - unsupported arg type
-*/
+int BountyBinding::addCrime(lua_State* L)
+{
+    Bounty* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Bounty is nil");
+    
+    CrimeEnum crime = (CrimeEnum)luaL_checkinteger(L, 2);
+    b->addCrime(crime);
+    return 0;
+}
+
+int BountyBinding::hasCrime(lua_State* L)
+{
+    Bounty* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Bounty is nil");
+    
+    CrimeEnum crime = (CrimeEnum)luaL_checkinteger(L, 2);
+    lua_pushboolean(L, b->hasCrime(crime) ? 1 : 0);
+    return 1;
+}
 
 int BountyBinding::gc(lua_State* L)
 {
@@ -113,6 +130,8 @@ void BountyBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", BountyBinding::_CONSTRUCTOR },
+        { "addCrime", BountyBinding::addCrime },
+        { "hasCrime", BountyBinding::hasCrime },
         { 0, 0 }
     };
 

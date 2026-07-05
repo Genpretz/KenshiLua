@@ -44,6 +44,10 @@ public:
     static int _NV_halt(lua_State* L);
     static int setRoadDestination(lua_State* L);
     static int setRoadPreference(lua_State* L);
+    static int setDestination(lua_State* L);
+    static int _NV_setDestination(lua_State* L);
+    static int setDesiredSpeed(lua_State* L);
+    static int setDesiredSpeedOrders(lua_State* L);
     static int _NV_setDesiredSpeed(lua_State* L);
     static int setStandardWalkSpeed(lua_State* L);
     static int getStandardWalkSpeed(lua_State* L);

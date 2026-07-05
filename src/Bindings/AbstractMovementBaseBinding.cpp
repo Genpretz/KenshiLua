@@ -4,7 +4,10 @@
 #include "Lua/BindingHelpers.h"
 #include "SpeedGroupBinding.h"
 #include "MedianFilter2DVectorBinding.h"
-#include "HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/RootObjectBaseBinding.h"
 
 namespace KenshiLua
 {
@@ -275,6 +278,7 @@ static int AbstractMovementBase_set_roadWeight(lua_State* L)
     return 0;
 }
 
+// --- Methods for AbstractMovementBase ---
 int AbstractMovementBaseBinding::_DESTRUCTOR(lua_State* L)
 {
     AbstractMovementBase* b = getB(L, 1);
@@ -567,6 +571,103 @@ int AbstractMovementBaseBinding::setRoadPreference(lua_State* L)
     return 0;
 }
 
+int AbstractMovementBaseBinding::setDestination(lua_State* L)
+{
+    AbstractMovementBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "AbstractMovementBase is nil");
+
+    if (lua_istable(L, 2)) {
+        Ogre::Vector3 dest;
+        readVector3(L, 2, dest);
+        UpdatePriority pri = (UpdatePriority)luaL_checkinteger(L, 3);
+        bool _a3 = lua_toboolean(L, 4) != 0;
+        b->setDestination(dest, pri, _a3);
+        return 0;
+    }
+    else {
+        UpdatePriority pri = (UpdatePriority)luaL_checkinteger(L, 3);
+        if (Character* who = testObject<Character>(L, 2, CharacterBinding::getMetatableName())) {
+            b->setDestination(who, pri);
+            return 0;
+        }
+        else if (Building* building = testObject<Building>(L, 2, BuildingBinding::getMetatableName())) {
+            b->setDestination(building, pri);
+            return 0;
+        }
+        else if (RootObjectBase* target = testObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName())) {
+            b->setDestination(target, pri);
+            return 0;
+        }
+        else {
+            return luaL_error(L, "Invalid arguments to setDestination: expected Vector3 table, Character, Building, or RootObjectBase at parameter 2");
+        }
+    }
+}
+
+int AbstractMovementBaseBinding::_NV_setDestination(lua_State* L)
+{
+    AbstractMovementBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "AbstractMovementBase is nil");
+
+    if (lua_istable(L, 2)) {
+        Ogre::Vector3 dest;
+        readVector3(L, 2, dest);
+        UpdatePriority pri = (UpdatePriority)luaL_checkinteger(L, 3);
+        bool _a3 = lua_toboolean(L, 4) != 0;
+        b->_NV_setDestination(dest, pri, _a3);
+        return 0;
+    }
+    else {
+        UpdatePriority pri = (UpdatePriority)luaL_checkinteger(L, 3);
+        if (Character* who = testObject<Character>(L, 2, CharacterBinding::getMetatableName())) {
+            b->_NV_setDestination(who, pri);
+            return 0;
+        }
+        else if (Building* building = testObject<Building>(L, 2, BuildingBinding::getMetatableName())) {
+            b->_NV_setDestination(building, pri);
+            return 0;
+        }
+        else if (RootObjectBase* target = testObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName())) {
+            b->_NV_setDestination(target, pri);
+            return 0;
+        }
+        else {
+            return luaL_error(L, "Invalid arguments to _NV_setDestination: expected Vector3 table, Character, Building, or RootObjectBase at parameter 2");
+        }
+    }
+}
+
+int AbstractMovementBaseBinding::setDesiredSpeed(lua_State* L)
+{
+    AbstractMovementBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "AbstractMovementBase is nil");
+
+    double val = luaL_checknumber(L, 2);
+    if (val >= 0.0 && val <= 4.0 && val == (int)val) {
+        b->setDesiredSpeed((MoveSpeed)(int)val);
+    }
+    else {
+        b->setDesiredSpeed((float)val);
+    }
+    return 0;
+}
+
+int AbstractMovementBaseBinding::setDesiredSpeedOrders(lua_State* L)
+{
+    AbstractMovementBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "AbstractMovementBase is nil");
+
+    double val = luaL_checknumber(L, 2);
+    if (val >= 0.0 && val <= 4.0 && val == (int)val) {
+        b->setDesiredSpeedOrders((MoveSpeed)(int)val);
+    }
+    else {
+        b->setDesiredSpeedOrders((float)val);
+    }
+    return 0;
+}
+
+
 int AbstractMovementBaseBinding::_NV_setDesiredSpeed(lua_State* L)
 {
     AbstractMovementBase* b = getB(L, 1);
@@ -733,23 +834,10 @@ static int AbstractMovementBase_getFacingDirection(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 142: AbstractMovementBase* _CONSTRUCTOR(...) - unsupported return type
-  line 158: const Ogre::Vector3& getFacingDirection(...) - reference return type
-  line 173: void setDestination(...) - overloaded method
-  line 174: void _NV_setDestination(...) - overloaded method
-  line 175: void setDestination(...) - overloaded method
-  line 176: void _NV_setDestination(...) - overloaded method
-  line 177: void setDestination(...) - overloaded method
-  line 178: void _NV_setDestination(...) - overloaded method
-  line 179: void setDestination(...) - overloaded method
-  line 180: void _NV_setDestination(...) - overloaded method
   line 185: RoadFollower* extractRoadFollower(...) - unsupported return type
   line 186: void setCurrentRoadFollower(...) - unsupported arg type
   line 187: void setPatrolInput(...) - unsupported arg type
   line 188: void _NV_setPatrolInput(...) - unsupported arg type
-  line 189: void setDesiredSpeed(...) - overloaded method
-  line 191: void setDesiredSpeed(...) - overloaded method
-  line 192: void setDesiredSpeedOrders(...) - overloaded method
-  line 193: void setDesiredSpeedOrders(...) - overloaded method
   line 222: NxControllerAction onShapeHit(...) - unsupported return type
   line 223: NxControllerAction _NV_onShapeHit(...) - unsupported return type
   line 224: NxControllerAction onControllerHit(...) - unsupported return type
@@ -807,6 +895,10 @@ void AbstractMovementBaseBinding::registerBinding(lua_State* L)
         { "_NV_halt", AbstractMovementBaseBinding::_NV_halt },
         { "setRoadDestination", AbstractMovementBaseBinding::setRoadDestination },
         { "setRoadPreference", AbstractMovementBaseBinding::setRoadPreference },
+        { "setDestination", AbstractMovementBaseBinding::setDestination },
+        { "_NV_setDestination", AbstractMovementBaseBinding::_NV_setDestination },
+        { "setDesiredSpeed", AbstractMovementBaseBinding::setDesiredSpeed },
+        { "setDesiredSpeedOrders", AbstractMovementBaseBinding::setDesiredSpeedOrders },
         { "_NV_setDesiredSpeed", AbstractMovementBaseBinding::_NV_setDesiredSpeed },
         { "setStandardWalkSpeed", AbstractMovementBaseBinding::setStandardWalkSpeed },
         { "getStandardWalkSpeed", AbstractMovementBaseBinding::getStandardWalkSpeed },

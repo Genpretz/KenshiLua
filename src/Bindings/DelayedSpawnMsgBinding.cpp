@@ -6,7 +6,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/ItemBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 typedef Town::DelayedSpawnMsg DelayedSpawnMsg;
 

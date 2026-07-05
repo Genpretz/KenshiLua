@@ -6,7 +6,7 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/OwnershipsBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"

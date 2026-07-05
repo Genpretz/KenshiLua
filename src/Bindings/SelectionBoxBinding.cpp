@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "E:\Kenshi\dev\projects\KenshiLua\extern\KenshiLib\Include\kenshi\PlayerInterface.h"
+#include "kenshi\PlayerInterface.h"
 #include "SelectionBoxBinding.h"
 #include "Lua/BindingHelpers.h"
 

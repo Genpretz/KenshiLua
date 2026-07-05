@@ -13,6 +13,7 @@ static AnimalInventoryLayout* getB(lua_State* L, int idx)
 
 // --- Getters for AnimalInventoryLayout ---
 // --- Setters for AnimalInventoryLayout ---
+// --- Methods for AnimalInventoryLayout ---
 int AnimalInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
     AnimalInventoryLayout* b = getB(L, 1);

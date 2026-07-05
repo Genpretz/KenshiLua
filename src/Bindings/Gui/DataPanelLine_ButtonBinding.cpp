@@ -3,7 +3,7 @@
 #include "DataPanelLine_ButtonBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

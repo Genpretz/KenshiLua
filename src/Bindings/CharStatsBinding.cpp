@@ -7,7 +7,15 @@
 #include "DamagesBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/MedicalSystemBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/WeaponBinding.h"
+#include "Bindings/EnumBinding.h"
+#include "Bindings/CombatTechniqueDataBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -998,6 +1006,7 @@ static int CharStats_set_skillMultRanged(lua_State* L)
     return 0;
 }
 
+// ToDo
 static int CharStats_set__weatherProtections(lua_State* L)
 {
     CharStats* b = getB(L, 1);
@@ -1661,6 +1670,7 @@ static int CharStats_set_bonusArmourPenetration(lua_State* L)
     return 0;
 }
 
+// ToDo
 static int CharStats_set_bonusRaces(lua_State* L)
 {
     CharStats* b = getB(L, 1);
@@ -1680,7 +1690,9 @@ static int CharStats_set_pCurrentWeaponSkill(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for pCurrentWeaponSkill");
+    float val = luaL_checknumber(L, 2);
+    b->pCurrentWeaponSkill = &val;
+    return 0;
 }
 
 static int CharStats_set_currentWeaponLength(lua_State* L)
@@ -1708,6 +1720,7 @@ static int CharStats_set_weaponWeight(lua_State* L)
     return 0;
 }
 
+// --- Methods for CharStats ---
 int CharStatsBinding::getWeatherProtection(lua_State* L)
 {
     CharStats* b = getB(L, 1);
@@ -2791,41 +2804,286 @@ int CharStatsBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
+int CharStatsBinding::serialise(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    b->serialise(data);
+    return 0;
+}
+
+int CharStatsBinding::updateStats(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    GameData* statData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    b->updateStats(statData);
+    return 0;
+}
+
+int CharStatsBinding::init(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    MedicalSystem* _med = checkObject<MedicalSystem>(L, 3, MedicalSystemBinding::getMetatableName());
+    Character* charact = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    b->init(data, _med, charact);
+    return 0;
+}
+
+int CharStatsBinding::_NV_init(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    MedicalSystem* _med = checkObject<MedicalSystem>(L, 3, MedicalSystemBinding::getMetatableName());
+    Character* charact = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    b->_NV_init(data, _med, charact);
+    return 0;
+}
+
+int CharStatsBinding::getGUIData(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    DatapanelGUI* panel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    b->getGUIData(panel, category);
+    return 0;
+}
+
+int CharStatsBinding::printStealthStats(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    std::string out;
+    b->printStealthStats(out);
+    lua_pushlstring(L, out.c_str(), out.size());
+    return 1;
+}
+
+int CharStatsBinding::printRunSpeedStatMax(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    std::string out;
+    b->printRunSpeedStatMax(out);
+    lua_pushlstring(L, out.c_str(), out.size());
+    return 1;
+}
+
+int CharStatsBinding::getGUIDataForMainInfo(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    bool combatMode = lua_toboolean(L, 4) != 0;
+    b->getGUIDataForMainInfo(datapanel, category, combatMode);
+    return 0;
+}
+
+int CharStatsBinding::formatWholeStatStringWithBonuses(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    int top = lua_gettop(L);
+    if (top >= 3) {
+        int base = (int)luaL_checkinteger(L, 2);
+        int current = (int)luaL_checkinteger(L, 3);
+        std::string result = b->formatWholeStatStringWithBonuses(base, current);
+        lua_pushlstring(L, result.c_str(), result.size());
+        return 1;
+    } else {
+        StatsEnumerated stat = (StatsEnumerated)luaL_checkinteger(L, 2);
+        std::string result = b->formatWholeStatStringWithBonuses(stat);
+        lua_pushlstring(L, result.c_str(), result.size());
+        return 1;
+    }
+}
+
+int CharStatsBinding::getStatRef(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    StatsEnumerated what = (StatsEnumerated)luaL_checkinteger(L, 2);
+    float& result = b->getStatRef(what);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int CharStatsBinding::getStatName(lua_State* L)
+{
+    int idx = 1;
+    if (lua_isuserdata(L, 1)) idx = 2;
+    StatsEnumerated what = (StatsEnumerated)luaL_checkinteger(L, idx);
+    std::string result = CharStats::getStatName(what);
+    lua_pushlstring(L, result.c_str(), result.size());
+    return 1;
+}
+
+int CharStatsBinding::getMeleeAttackRef(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    float& result = b->getMeleeAttackRef();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int CharStatsBinding::getMaxHealAmount(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    Item* equipment = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    Building* bed = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
+    bool isRobot = lua_toboolean(L, 4) != 0;
+    float result = b->getMaxHealAmount(equipment, bed, isRobot);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int CharStatsBinding::getBashAnimation(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    float range = (float)luaL_checknumber(L, 2);
+    CombatTechniqueData* result = b->getBashAnimation(range);
+    if (result) {
+        lua_pushlightuserdata(L, (void*)result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int CharStatsBinding::chooseAttack(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    float range = (float)luaL_checknumber(L, 2);
+    float weaponReach = (float)luaL_checknumber(L, 3);
+    CombatTechniqueData* lastAttack = (CombatTechniqueData*)lua_touserdata(L, 4);
+    bool opponentIsStationary = lua_toboolean(L, 5) != 0;
+    CombatTechniqueData* result = b->chooseAttack(range, weaponReach, lastAttack, opponentIsStationary);
+    if (result) {
+        lua_pushlightuserdata(L, (void*)result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int CharStatsBinding::chooseBlock(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    float opponentAttackSkill = (float)luaL_checknumber(L, 3);
+    CutOrigination from = (CutOrigination)luaL_checkinteger(L, 4);
+    Character* opponent = checkObject<Character>(L, 5, CharacterBinding::getMetatableName());
+    CombatTechniqueData* result = b->chooseBlock(dir, opponentAttackSkill, from, opponent);
+    if (result) {
+        lua_pushlightuserdata(L, (void*)result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int CharStatsBinding::getPainAnim(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    GameData* anatomyHit = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    const std::string& result = b->getPainAnim(anatomyHit);
+    lua_pushlstring(L, result.c_str(), result.size());
+    return 1;
+}
+
+int CharStatsBinding::xpMelee(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    CharStats::DeadTimeState what = (CharStats::DeadTimeState)luaL_checkinteger(L, 2);
+    Character* target = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    Damages* damage = checkObject<Damages>(L, 4, DamagesBinding::getMetatableName());
+    b->xpMelee(what, target, *damage);
+    return 0;
+}
+
+int CharStatsBinding::xpFirstAid(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    Character* patient = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float time = (float)luaL_checknumber(L, 3);
+    StatsEnumerated medicStat = (StatsEnumerated)luaL_checkinteger(L, 4);
+    b->xpFirstAid(patient, time, medicStat);
+    return 0;
+}
+
+int CharStatsBinding::xpStealth(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    float time = (float)luaL_checknumber(L, 2);
+    bool enemiesAbout = lua_toboolean(L, 3) != 0;
+    YesNoMaybe seen = (YesNoMaybe)(int)luaL_checkinteger(L, 4);
+    bool isMoving = lua_toboolean(L, 5) != 0;
+    b->xpStealth(time, enemiesAbout, seen, isMoving);
+    return 0;
+}
+
+int CharStatsBinding::setWeapon(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    Weapon* _weapon = nullptr;
+    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2)) {
+        _weapon = checkObject<Weapon>(L, 2, WeaponBinding::getMetatableName());
+    }
+    b->setWeapon(_weapon);
+    return 0;
+}
+
+int CharStatsBinding::_convertWeaponWeightToBluntMultiplier(lua_State* L)
+{
+    int idx = 1;
+    if (lua_isuserdata(L, 1)) idx = 2;
+    float weaponWeight = (float)luaL_checknumber(L, idx);
+    float result = CharStats::_convertWeaponWeightToBluntMultiplier(weaponWeight);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int CharStatsBinding::_convertBluntMultiplierToWeaponWeight(lua_State* L)
+{
+    int idx = 1;
+    if (lua_isuserdata(L, 1)) idx = 2;
+    float blunt = (float)luaL_checknumber(L, idx);
+    float result = CharStats::_convertBluntMultiplierToWeaponWeight(blunt);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int CharStatsBinding::setupCombatTechniques(lua_State* L)
+{
+    CharStats::setupCombatTechniques();
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 54: void serialise(...) - unsupported arg type
-  line 55: void updateStats(...) - unsupported arg type
-  line 56: void init(...) - unsupported arg type
-  line 57: void _NV_init(...) - unsupported arg type
-  line 59: void getGUIData(...) - unsupported arg type
-  line 60: void printStealthStats(...) - non-string reference arg
-  line 61: void getStealthTooltip(...) - unsupported arg type
-  line 62: void printRunSpeedStatMax(...) - non-string reference arg
-  line 63: void getAthleticsTooltip(...) - unsupported arg type
-  line 64: void getGUIDataForMainInfo(...) - unsupported arg type
-  line 65: std::string formatWholeStatStringWithBonuses(...) - overloaded method
-  line 66: std::string formatWholeStatStringWithBonuses(...) - overloaded method
-  line 80: float& getStatRef(...) - reference return type
-  line 82: std::string getStatName(...) - static method
-  line 85: bool getStatPenaltiesForGUI(...) - unsupported arg type
-  line 143: float& getMeleeAttackRef(...) - reference return type
-  line 144: void _chooseAttacks(...) - unsupported arg type
-  line 155: float getMaxHealAmount(...) - unsupported arg type
-  line 172: CombatTechniqueData* getBashAnimation(...) - unsupported return type
-  line 173: CombatTechniqueData* chooseAttack(...) - unsupported return type
-  line 175: CombatTechniqueData* chooseBlock(...) - unsupported return type
-  line 177: const std::string& getPainAnim(...) - reference return type
-  line 186: Damages getTotalAttackDamageFor(...) - unsupported return type
-  line 209: void xpMelee(...) - unsupported arg type
-  line 213: void xpFirstAid(...) - unsupported arg type
-  line 215: void xpStealth(...) - unsupported arg type
-  line 217: StringPair stealthXPMultForGUI(...) - unsupported return type
-  line 223: void xpTraining(...) - non-string reference arg
-  line 227: void setWeapon(...) - unsupported arg type
-  line 237: float _convertWeaponWeightToBluntMultiplier(...) - static method
-  line 238: float _convertBluntMultiplierToWeaponWeight(...) - static method
-  line 241: void printExertionHungerMultTooltip(...) - unsupported arg type
-  line 265: void setupCombatTechniques(...) - static method
+  line 61: void getStealthTooltip(...) - unsupported arg type (requires StringPair binding)
+  line 63: void getAthleticsTooltip(...) - unsupported arg type (requires StringPair binding)
+  line 85: bool getStatPenaltiesForGUI(...) - unsupported arg type (requires StringPair binding)
+  line 144: void _chooseAttacks(...) - unsupported arg type (requires FitnessSelector binding)
+  line 217: StringPair stealthXPMultForGUI(...) - unsupported return type (requires StringPair binding)
+  line 223: void xpTraining(...) - non-string reference arg (requires float reference support)
+  line 241: void printExertionHungerMultTooltip(...) - unsupported arg type (requires StringPair binding)
 */
 static int CharStats_getTotalAttackDamageFor(lua_State* L)
 {
@@ -2851,6 +3109,18 @@ int CharStatsBinding::tostring(lua_State* L)
 {
     lua_pushstring(L, "KenshiLua.CharStats object");
     return 1;
+}
+
+int CharStatsBinding::getAttacks(lua_State* L)
+{
+    static lektor<CombatTechniqueData*>* pAttacks = (lektor<CombatTechniqueData*>*)( (char*)GetModuleHandleA(NULL) + 0x200EF78 );
+    return pushObject<lektor<CombatTechniqueData*>>(L, pAttacks, "lektor<CombatTechniqueData*>");
+}
+
+int CharStatsBinding::getBlocks(lua_State* L)
+{
+    static lektor<CombatTechniqueData*>* pBlocks = (lektor<CombatTechniqueData*>*)( (char*)GetModuleHandleA(NULL) + 0x200EF90 );
+    return pushObject<lektor<CombatTechniqueData*>>(L, pBlocks, "lektor<CombatTechniqueData*>");
 }
 
 void CharStatsBinding::registerBinding(lua_State* L)
@@ -2969,6 +3239,30 @@ void CharStatsBinding::registerBinding(lua_State* L)
         { "_NV_setEquippedWeaponSkill", CharStatsBinding::_NV_setEquippedWeaponSkill },
         { "_DESTRUCTOR", CharStatsBinding::_DESTRUCTOR },
         { "getTotalAttackDamageFor", CharStats_getTotalAttackDamageFor },
+        { "serialise", CharStatsBinding::serialise },
+        { "updateStats", CharStatsBinding::updateStats },
+        { "init", CharStatsBinding::init },
+        { "_NV_init", CharStatsBinding::_NV_init },
+        { "getGUIData", CharStatsBinding::getGUIData },
+        { "printStealthStats", CharStatsBinding::printStealthStats },
+        { "printRunSpeedStatMax", CharStatsBinding::printRunSpeedStatMax },
+        { "getGUIDataForMainInfo", CharStatsBinding::getGUIDataForMainInfo },
+        { "formatWholeStatStringWithBonuses", CharStatsBinding::formatWholeStatStringWithBonuses },
+        { "getStatRef", CharStatsBinding::getStatRef },
+        { "getStatName", CharStatsBinding::getStatName },
+        { "getMeleeAttackRef", CharStatsBinding::getMeleeAttackRef },
+        { "getMaxHealAmount", CharStatsBinding::getMaxHealAmount },
+        { "getBashAnimation", CharStatsBinding::getBashAnimation },
+        { "chooseAttack", CharStatsBinding::chooseAttack },
+        { "chooseBlock", CharStatsBinding::chooseBlock },
+        { "getPainAnim", CharStatsBinding::getPainAnim },
+        { "xpMelee", CharStatsBinding::xpMelee },
+        { "xpFirstAid", CharStatsBinding::xpFirstAid },
+        { "xpStealth", CharStatsBinding::xpStealth },
+        { "setWeapon", CharStatsBinding::setWeapon },
+        { "_convertWeaponWeightToBluntMultiplier", CharStatsBinding::_convertWeaponWeightToBluntMultiplier },
+        { "_convertBluntMultiplierToWeaponWeight", CharStatsBinding::_convertBluntMultiplierToWeaponWeight },
+        { "setupCombatTechniques", CharStatsBinding::setupCombatTechniques },
         { 0, 0 }
     };
 
@@ -3188,7 +3482,7 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, CharStats_get_currentWeaponType);
     lua_setfield(L, -2, "currentWeaponType");
     lua_pushcfunction(L, CharStats_get_pCurrentWeaponSkill);
-    lua_setfield(L, -2, "pCurrentWeaponSkill");
+    lua_setfield(L, -2, "currentWeaponSkill");
     lua_pushcfunction(L, CharStats_get_currentWeaponLength);
     lua_setfield(L, -2, "currentWeaponLength");
     lua_pushcfunction(L, CharStats_get_weapon);
@@ -3403,7 +3697,7 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, CharStats_set_currentWeaponType);
     lua_setfield(L, -2, "currentWeaponType");
     lua_pushcfunction(L, CharStats_set_pCurrentWeaponSkill);
-    lua_setfield(L, -2, "pCurrentWeaponSkill");
+    lua_setfield(L, -2, "currentWeaponSkill");
     lua_pushcfunction(L, CharStats_set_currentWeaponLength);
     lua_setfield(L, -2, "currentWeaponLength");
     lua_pushcfunction(L, CharStats_set_weapon);
@@ -3413,6 +3707,25 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register CombatTechniqueData lektor binding
+    LektorPtrBinding<CombatTechniqueData*>::registerBinding(L, "lektor<CombatTechniqueData*>", CombatTechniqueDataBinding::getMetatableName());
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    lua_pushcfunction(L, CharStatsBinding::getStatName);
+    lua_setfield(L, -2, "getStatName");
+    lua_pushcfunction(L, CharStatsBinding::_convertWeaponWeightToBluntMultiplier);
+    lua_setfield(L, -2, "convertWeaponWeightToBluntMultiplier");
+    lua_pushcfunction(L, CharStatsBinding::_convertBluntMultiplierToWeaponWeight);
+    lua_setfield(L, -2, "convertBluntMultiplierToWeaponWeight");
+    lua_pushcfunction(L, CharStatsBinding::setupCombatTechniques);
+    lua_setfield(L, -2, "setupCombatTechniques");
+    lua_pushcfunction(L, CharStatsBinding::getAttacks);
+    lua_setfield(L, -2, "getAttacks");
+    lua_pushcfunction(L, CharStatsBinding::getBlocks);
+    lua_setfield(L, -2, "getBlocks");
+    lua_setglobal(L, "CharStats");
 }
 
 } // namespace KenshiLua

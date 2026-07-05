@@ -67,5 +67,8 @@ public:
     static int _NV_destroyPhysical(lua_State* L);
     static int loadUnloadCheck(lua_State* L);
     static int _NV_loadUnloadCheck(lua_State* L);
+	static int getInventoryWeAreIn(lua_State* L);
+	static int setInventoryWeAreIn(lua_State* L);
+	static int _NV_setInventoryWeAreIn(lua_State* L);
 };
 }

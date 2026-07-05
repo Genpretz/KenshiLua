@@ -28,6 +28,7 @@ static int DialogChoiceList_set_conversationChoices(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for conversationChoices");
 }
 
+// --- Methods for DialogChoiceList ---
 int DialogChoiceListBinding::_CONSTRUCTOR(lua_State* L)
 {
     DialogChoiceList* b = getB(L, 1);

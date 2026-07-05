@@ -1,12 +1,15 @@
 #include "pch.h"
 #include "kenshi\GameWorld.h"
+#include "kenshi/ModInfo.h"
 #include "GameWorldBinding.h"
 #include "kenshi/PlayerInterface.h"
 #include "PlayerInterfaceBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/PlayerInterfaceBinding.h"
-#include "HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/ModInfoBinding.h"
 
 namespace KenshiLua
 {
@@ -140,24 +143,21 @@ static int GameWorld_get_baseMods(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for baseMods (lektor<ModInfo>)
-    return luaL_error(L, "Unsupported property 'baseMods' (type: lektor<ModInfo>)");
+    return pushObject<lektor<ModInfo>>(L, &b->baseMods, LektorValueBinding<ModInfo>::metaName);
 }
 
 static int GameWorld_get_baseModsNames(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for baseModsNames (lektor<std::string >)
-    return luaL_error(L, "Unsupported property 'baseModsNames' (type: lektor<std::string >)");
+    return pushObject<lektor<std::string>>(L, &b->baseModsNames, LektorStringBinding<std::string>::metaName);
 }
 
 static int GameWorld_get_activeMods(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for activeMods (lektor<ModInfo*>)
-    return luaL_error(L, "Unsupported property 'activeMods' (type: lektor<ModInfo*>)");
+    return pushObject<lektor<ModInfo*>>(L, &b->activeMods, LektorPtrBinding<ModInfo*>::metaName);
 }
 
 static int GameWorld_get_availableModsByName(lua_State* L)
@@ -701,6 +701,7 @@ static int GameWorld_set_audioThread(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for audioThread");
 }
 
+// --- Methods for GameWorld ---
 int GameWorldBinding::startUpThreads(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
@@ -1561,6 +1562,10 @@ void GameWorldBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, GameWorld_set_audioThread);
     lua_setfield(L, -2, "audioThread");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    LektorValueBinding<ModInfo>::registerBinding(L, "lektor<ModInfo>", ModInfoBinding::getMetatableName());
+    LektorPtrBinding<ModInfo*>::registerBinding(L, "lektor<ModInfo*>", ModInfoBinding::getMetatableName());
+    LektorStringBinding<std::string>::registerBinding(L, "lektor<string>");
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

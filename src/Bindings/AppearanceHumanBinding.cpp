@@ -140,6 +140,7 @@ static int AppearanceHuman_set_hiddenPartsEnabled(lua_State* L)
     return 0;
 }
 
+// --- Methods for AppearanceHuman ---
 int AppearanceHumanBinding::_DESTRUCTOR(lua_State* L)
 {
     AppearanceHuman* b = getB(L, 1);

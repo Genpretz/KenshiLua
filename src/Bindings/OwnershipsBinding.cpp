@@ -4,7 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/PlatoonBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

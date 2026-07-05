@@ -2,7 +2,7 @@
 #include <kenshi/gui/GUIWindow.h>
 #include "GUIWindowBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

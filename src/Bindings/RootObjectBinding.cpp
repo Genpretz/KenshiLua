@@ -10,7 +10,7 @@
 #include "Bindings/InventoryBinding.h"
 #include "Bindings/RaceDataBinding.h"
 #include "Bindings/RootObjectContainerBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/ItemBinding.h"

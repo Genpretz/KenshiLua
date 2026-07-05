@@ -141,6 +141,7 @@ static int ContainerItem_set_inventory(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for inventory");
 }
 
+// --- Methods for ContainerItem ---
 int ContainerItemBinding::_DESTRUCTOR(lua_State* L)
 {
     ContainerItem* b = getB(L, 1);

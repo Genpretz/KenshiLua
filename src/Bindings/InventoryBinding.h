@@ -24,6 +24,7 @@ public:
     static int removeAllSections(lua_State* L);
     static int getSection(lua_State* L);
     static int getSectionOfType(lua_State* L);
+    static int resizeSection(lua_State* L);
     static int getCallbackCharacter(lua_State* L);
     static int hasItemType(lua_State* L);
     static int hasStolenItems(lua_State* L);

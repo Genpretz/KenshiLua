@@ -16,8 +16,13 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int notifyModified(lua_State* L);
+    static int hasRoomForItem(lua_State* L);
+    static int _NV_hasRoomForItem(lua_State* L);
+    static int addItem(lua_State* L);
+    static int _NV_addItem(lua_State* L);
     static int getItemAt(lua_State* L);
     static int hasItemType(lua_State* L);
     static int autoArrange(lua_State* L);
@@ -40,5 +45,12 @@ public:
     static int getFillPercentage(lua_State* L);
     static int getItem(lua_State* L);
     static int resize(lua_State* L);
+    static int hasItem_Item(lua_State* L);
+    static int hasItem_GameData(lua_State* L);
+    static int removeItem(lua_State* L);
+    static int canItemGoHere(lua_State* L);
+    static int existsItemInFootprint(lua_State* L);
+    static int isLimitedSlotCompatible(lua_State* L);
+    static int getValidInventoryPosition(lua_State* L);
 };
 }

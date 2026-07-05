@@ -4,7 +4,8 @@
 #include "RootObjectBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RootObjectBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
 
 namespace KenshiLua
 {
@@ -239,7 +240,7 @@ int physHitBinding::getBuilding(lua_State* L)
     if (!b) return luaL_error(L, "physHit is nil");
 
     Building* result = b->getBuilding();
-    return pushObject<Building>(L, result, "KenshiLua.Building");
+    return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
 }
 
 int physHitBinding::group(lua_State* L)

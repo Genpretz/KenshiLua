@@ -8,7 +8,7 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/TownBinding.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/Building/ConstructionStateBinding.h"
 #include "Bindings/Building/StorageBuildingBinding.h"
 #include "Bindings/Building/UseableStuffBinding.h"
@@ -521,6 +521,7 @@ static int Building_set_residentSquad(lua_State* L)
     return 0;
 }
 
+// Todo
 static int Building_set_residentSquadTemplate(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -536,6 +537,7 @@ static int Building_set_isAnInteriorObject(lua_State* L)
     return 0;
 }
 
+// Todo
 static int Building_set_instanceID(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -559,6 +561,7 @@ static int Building_set_specialFunction(lua_State* L)
     return 0;
 }
 
+// Todo
 static int Building_set__buildState(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -654,6 +657,7 @@ static int Building_set_saveVersion(lua_State* L)
     return 0;
 }
 
+// Todo
 static int Building_set_doors(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -670,6 +674,7 @@ static int Building_set__town(lua_State* L)
     return 0;
 }
 
+// Todo
 static int Building_set_myInterior(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -677,6 +682,7 @@ static int Building_set_myInterior(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for myInterior");
 }
 
+// Todo
 static int Building_set_buildingsManager(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -684,6 +690,7 @@ static int Building_set_buildingsManager(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for buildingsManager");
 }
 
+// Todo
 static int Building_set_rootNode(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -691,6 +698,7 @@ static int Building_set_rootNode(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for rootNode");
 }
 
+// Todo
 static int Building_set_audioObject(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -698,6 +706,7 @@ static int Building_set_audioObject(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for audioObject");
 }
 
+// Todo
 static int Building_set_soundEmitter(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -729,6 +738,7 @@ static int Building_set_exteriorGround(lua_State* L)
     return 0;
 }
 
+// ToDo
 static int Building_set_physical(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -752,6 +762,7 @@ static int Building_set_entitiesLoaded(lua_State* L)
     return 0;
 }
 
+// Todo
 static int Building_set_isFurnitureOf(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -829,6 +840,7 @@ static int Building_set_heightAboveGround(lua_State* L)
     return 0;
 }
 
+// ToDo
 static int Building_set_AABB(lua_State* L)
 {
     Building* instance = getInstance(L, 1);

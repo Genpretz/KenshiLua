@@ -29,5 +29,7 @@ public:
     static int _NV_getCraftTime(lua_State* L);
     static int getWeatherProtection_simple(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
+    static int didIHitFlesh(lua_State* L);
+    static int getArmourCraftingMaterialConsumptionRate(lua_State* L);
 };
 }

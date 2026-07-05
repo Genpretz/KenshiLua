@@ -2,6 +2,7 @@
 #include "kenshi\GameData.h"
 #include "GameDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -338,6 +339,7 @@ static int GameData_set_createdIndex(lua_State* L)
     return 0;
 }
 
+// --- Methods for GameData ---
 int GameDataBinding::_DESTRUCTOR(lua_State* L)
 {
     GameData* b = getB(L, 1);
@@ -771,6 +773,8 @@ void GameDataBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, GameData_set_createdIndex);
     lua_setfield(L, -2, "createdIndex");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", GameDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -5,6 +5,8 @@
 #include "Bindings/PlayerInterfaceBinding.h"
 #include "Bindings/InputHandlerBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/RootObjectFactoryBinding.h"
+#include <kenshi/RootObjectFactory.h>
 
 #include <kenshi/Globals.h>
 #include <kenshi/GameWorld.h>
@@ -93,6 +95,12 @@ void registerGlobals(lua_State* L)
         lua_setglobal(L, "key");
         pushObject<InputHandler>(L, ::key, InputHandlerBinding::getMetatableName());
         lua_setglobal(L, "InputHandler");
+    }
+
+    // RootObjectFactory
+    if (::ou && ::ou->theFactory) {
+        pushObject<RootObjectFactory>(L, ::ou->theFactory, RootObjectFactoryBinding::getMetatableName());
+        lua_setglobal(L, "RootObjectFactoryInstance");
     }
 
     // The remaining engine singletons don't have dedicated bindings yet;

@@ -33,10 +33,8 @@
 #include "Bindings/MedicalSystemBinding.h"
 #include "Bindings/OwnershipsBinding.h"
 #include "Bindings/PlatoonBinding.h"
-#include "Bindings/RaceDataBinding.h"
-#include "Bindings/SwordBinding.h"
-#include "Bindings/WeaponBinding.h"
-#include "Bindings/HandBinding.h"
+
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/BountyManagerBinding.h"
 #include "Bindings/CharMovementBinding.h"
 #include "Bindings/CharBodyBinding.h"

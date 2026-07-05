@@ -106,6 +106,7 @@ static int ContextMenu_set_delayedDestroyFlag(lua_State* L)
     return 0;
 }
 
+// --- Methods for ContextMenu ---
 int ContextMenuBinding::_DESTRUCTOR(lua_State* L)
 {
     ContextMenu* b = getB(L, 1);

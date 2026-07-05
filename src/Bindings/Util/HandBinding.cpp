@@ -1,5 +1,6 @@
 #include "pch.h"
-#include "Bindings/HandBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/PlatoonBinding.h"
@@ -173,7 +174,7 @@ int handBinding::getBuilding(lua_State* L)
     if (!b) return luaL_error(L, "hand is nil");
 
     Building* result = b->getBuilding();
-    return pushObject<Building>(L, result, "KenshiLua.Building");
+    return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
 }
 
 int handBinding::getItem(lua_State* L)
