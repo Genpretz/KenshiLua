@@ -5,6 +5,8 @@
 #include "Hooks.h"
 
 #include <lua.hpp>
+#include "Lua/BindingHelpers.h"
+
 
 namespace KenshiLua
 {
@@ -184,6 +186,111 @@ namespace KenshiLua
         return result;
     }
 
+    std::string EventSystem::callHandlersString(const char* eventName, IArgPusher* pusher)
+    {
+        std::vector<HandlerInfo> snapshot;
+        for (size_t i = 0; i < m_handlers.size(); ++i)
+        {
+            if (m_handlers[i].first == eventName)
+            {
+                snapshot = m_handlers[i].second;
+                break;
+            }
+        }
+
+        if (snapshot.empty())
+            return "";
+
+        std::string result = "";
+        for (size_t i = 0; i < snapshot.size(); ++i)
+        {
+            lua_rawgeti(m_L, LUA_REGISTRYINDEX, snapshot[i].luaRef);
+            if (!lua_isfunction(m_L, -1))
+            {
+                lua_pop(m_L, 1);
+                continue;
+            }
+
+            int nargs = 0;
+            if (pusher)
+                nargs = pusher->push(m_L);
+
+            if (lua_pcall(m_L, nargs, 1, 0) == LUA_OK)
+            {
+                if (lua_isstring(m_L, -1))
+                {
+                    result = lua_tostring(m_L, -1);
+                }
+            }
+            else
+            {
+                const char* err = lua_tostring(m_L, -1);
+                logToFilef("Lua error in '%s' handler: %s",
+                    eventName,
+                    err ? err : "(non-string error)");
+            }
+
+            lua_pop(m_L, 1);
+
+            if (!result.empty())
+                break;
+        }
+
+        return result;
+    }
+
+    void* EventSystem::callHandlersObject(const char* eventName, const char* metatableName, IArgPusher* pusher)
+    {
+        std::vector<HandlerInfo> snapshot;
+        for (size_t i = 0; i < m_handlers.size(); ++i)
+        {
+            if (m_handlers[i].first == eventName)
+            {
+                snapshot = m_handlers[i].second;
+                break;
+            }
+        }
+
+        if (snapshot.empty())
+            return NULL;
+
+        void* result = NULL;
+        for (size_t i = 0; i < snapshot.size(); ++i)
+        {
+            lua_rawgeti(m_L, LUA_REGISTRYINDEX, snapshot[i].luaRef);
+            if (!lua_isfunction(m_L, -1))
+            {
+                lua_pop(m_L, 1);
+                continue;
+            }
+
+            int nargs = 0;
+            if (pusher)
+                nargs = pusher->push(m_L);
+
+            if (lua_pcall(m_L, nargs, 1, 0) == LUA_OK)
+            {
+                // Use testObject to safely check if it matches the expected type
+                result = testObject<void>(m_L, -1, metatableName);
+            }
+            else
+            {
+                const char* err = lua_tostring(m_L, -1);
+                logToFilef("Lua error in '%s' handler: %s",
+                    eventName,
+                    err ? err : "(non-string error)");
+            }
+
+            lua_pop(m_L, 1);
+
+            if (result)
+                break;
+        }
+
+        return result;
+    }
+
+
     // ---------------------------------------------------------------------------
     // clear
     // ---------------------------------------------------------------------------
@@ -201,6 +308,24 @@ namespace KenshiLua
             handlers.clear();
         }
         m_handlers.clear();
+    }
+
+    std::vector<EventSystem::RegisteredCallbackInfo> EventSystem::getRegisteredCallbacks() const
+    {
+        std::vector<RegisteredCallbackInfo> result;
+        for (size_t i = 0; i < m_handlers.size(); ++i)
+        {
+            const std::string& name = m_handlers[i].first;
+            const std::vector<HandlerInfo>& list = m_handlers[i].second;
+            for (size_t j = 0; j < list.size(); ++j)
+            {
+                RegisteredCallbackInfo info;
+                info.eventName = name;
+                info.handlerId = list[j].id;
+                result.push_back(info);
+            }
+        }
+        return result;
     }
 
     // ---------------------------------------------------------------------------
