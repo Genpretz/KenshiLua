@@ -118,22 +118,4 @@ namespace KenshiLua
         lua_pushstring(L, ss.str().c_str());
         return 1;
     }
-
-    int luaGetGameData(lua_State* L)
-    {
-        if (!::ou)
-        {
-            lua_pushnil(L);
-            return 1;
-        }
-        const char* sid = luaL_checkstring(L, 1);
-        GameData* gd = ::ou->gamedata.getData(sid);
-        if (!gd)
-        {
-            lua_pushnil(L);
-            return 1;
-        }
-        pushObject<GameData>(L, gd, GameDataBinding::getMetatableName());
-        return 1;
-    }
 }
