@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <OISKeyboard.h>
 
 namespace KenshiLua
 {
@@ -16,6 +17,11 @@ namespace KenshiLua
         bool isBenchmarkEnabled() const;
         bool isDebugLoggingEnabled() const;
 
+        OIS::KeyCode getToggleGuiKey() const;
+        bool isToggleGuiCtrl() const;
+        bool isToggleGuiShift() const;
+        bool isToggleGuiAlt() const;
+
     private:
         Config();
         ~Config();
@@ -26,5 +32,10 @@ namespace KenshiLua
 
         bool m_benchmarkEnabled;
         bool m_debugLoggingEnabled;
+
+        OIS::KeyCode m_toggleGuiKey;
+        bool m_toggleGuiCtrl;
+        bool m_toggleGuiShift;
+        bool m_toggleGuiAlt;
     };
 }
