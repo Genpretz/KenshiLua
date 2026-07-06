@@ -855,12 +855,8 @@ static void (*BaseLayout_initialise_orig)(wraps::BaseLayout*, const std::string&
 
 static void BaseLayout_initialise_hook(wraps::BaseLayout* thisptr, const std::string& layout, MyGUI::Widget* parent, bool _throw, bool _createFakeWidgets)
 {
-    std::string finalLayout = CallBaseLayoutInitialiseCallbacks(layout);
-    if (finalLayout.empty())
-    {
-        finalLayout = layout;
-    }
-    BaseLayout_initialise_orig(thisptr, finalLayout, parent, _throw, _createFakeWidgets);
+    BaseLayout_initialise_orig(thisptr, layout, parent, _throw, _createFakeWidgets);
+    CallBaseLayoutInitialiseCallbacks(layout);
 }
 
 static bool InstallHook_BaseLayout_initialise()

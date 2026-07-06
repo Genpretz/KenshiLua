@@ -446,10 +446,10 @@ void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, 
     KenshiLua::EventSystem::get().callHandlers("onChooseMyClothing", &pusher);
 }
 
-std::string CallBaseLayoutInitialiseCallbacks(const std::string& layout)
+void CallBaseLayoutInitialiseCallbacks(const std::string& layout)
 {
     ArgPusher1<const std::string&> pusher(layout);
-    return KenshiLua::EventSystem::get().callHandlersString("onBaseLayoutInitialise", &pusher);
+    KenshiLua::EventSystem::get().callHandlers("onBaseLayoutInitialise", &pusher);
 }
 
 InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type)
