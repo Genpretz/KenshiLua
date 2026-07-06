@@ -1,8 +1,7 @@
 #include "pch.h"
-#include "kenshi\ModInfo.h"
+#include <kenshi/ModInfo.h>
 #include "ModInfoBinding.h"
 #include "Lua/BindingHelpers.h"
-// #include "Bindings/Ogre/GeneralAllocatedObjectBinding.h"
 
 namespace KenshiLua
 {
@@ -136,8 +135,17 @@ int ModInfoBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
+/*
+Skipped methods needing manual binding:
+  line 11: ModInfo* _CONSTRUCTOR(...) - overloaded method
+  line 13: ModInfo* _CONSTRUCTOR(...) - overloaded method
+  line 21: bool getLocale(...) - non-string reference arg
+  line 24: ModInfo& operator=(...) - operator
+*/
+
 int ModInfoBinding::gc(lua_State* L)
 {
+    // Implementation depends on ownership model
     return 0;
 }
 
@@ -203,9 +211,6 @@ void ModInfoBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, ModInfo_set_header);
     lua_setfield(L, -2, "header");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
-
-    // Wire up inheritance to Ogre::GeneralAllocatedObject
-    // setPlayableParent(L, ModInfoBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

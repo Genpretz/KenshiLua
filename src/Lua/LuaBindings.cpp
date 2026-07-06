@@ -24,18 +24,31 @@
 #include "Bindings/Building/ConstructionStateBinding.h"
 #include "Bindings/Building/CraftingBuildingBinding.h"
 #include "Bindings/Building/CraftingInventoryLayoutBinding.h"
+#include "Bindings/Building/DoorStuffBinding.h"
+#include "Bindings/Building/FarmBatchBinding.h"
+#include "Bindings/Building/FarmBuildingBinding.h"
 #include "Bindings/Building/FootprintBinding.h"
 #include "Bindings/Building/FootprintNodeBinding.h"
+#include "Bindings/Building/FurnaceBuildingBinding.h"
+#include "Bindings/Building/FurnaceInventoryLayoutBinding.h"
 #include "Bindings/Building/GameDataGroupBinding.h"
+#include "Bindings/GameplayOptionsBinding.h"
+#include "Bindings/Building/GatewayBuildingBinding.h"
 #include "Bindings/Building/GeneratorBuildingBinding.h"
 #include "Bindings/Building/GenericInventoryLayoutBinding.h"
+#include "Bindings/Building/LightBuildingBinding.h"
 #include "Bindings/Building/PreviewBuildingBinding.h"
 #include "Bindings/Building/ProductionBuildingBinding.h"
 #include "Bindings/Building/ProductionInventoryLayoutBinding.h"
+#include "Bindings/Building/RainCollectorBuildingBinding.h"
 #include "Bindings/Building/ResearchBuildingBinding.h"
 #include "Bindings/Building/ResearchBuildingInventoryLayoutBinding.h"
 #include "Bindings/Building/StorageBuildingBinding.h"
+#include "Bindings/Building/TortureBuildingBinding.h"
+#include "Bindings/Building/TradeCultureBinding.h"
+#include "Bindings/Building/TurretBuildingBinding.h"
 #include "Bindings/Building/UseableStuffBinding.h"
+#include "Bindings/Building/WallBuildingBinding.h"
 #include "Bindings/Building/WindGeneratorBuildingBinding.h"
 #include "Bindings/CameraClassBinding.h"
 #include "Bindings/CharBodyBinding.h"
@@ -64,6 +77,7 @@
 #include "Bindings/GameWorldBinding.h"
 #include "Bindings/GearBinding.h"
 #include "Bindings/GlobalBinding.h"
+#include "Bindings/OptionsHolderBinding.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
 #include "Bindings/Gui/DataPanelLine_ButtonBinding.h"
 #include "Bindings/Gui/DataPanelLine_CheckBoxBinding.h"
@@ -98,6 +112,7 @@
 #include "Bindings/RelationDataBinding.h"
 #include "Bindings/RootObjectBaseBinding.h"
 #include "Bindings/RootObjectBinding.h"
+#include "Bindings/RootObjectFactoryBinding.h"
 #include "Bindings/SectionItemBinding.h"
 #include "Bindings/ShopTraderBinding.h"
 #include "Bindings/SpeedGroupBinding.h"
@@ -106,6 +121,10 @@
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/TownBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
+#include "Bindings/Util/TimeOfDayBinding.h"
+#include "Bindings/Util/YesNoMaybeBinding.h"
+#include "Bindings/Util/iVector2Binding.h"
 #include "Bindings/WeaponBinding.h"
 
 #include <string>
@@ -195,6 +214,7 @@ void LuaBindings::registerAll(lua_State* L)
     // Order: try to register dependency-free metatables first; ones that reference others afterwards when possible
     RootObjectBaseBinding::registerBinding(L);
     RootObjectBinding::registerBinding(L);
+    RootObjectFactoryBinding::registerBinding(L);
     RaceDataBinding::registerBinding(L);
     BountyBinding::registerBinding(L);
     BountyManagerBinding::registerBinding(L);
@@ -254,6 +274,20 @@ void LuaBindings::registerAll(lua_State* L)
     DataPanelLine_TextBinding::registerBinding(L);
     DataPanelLine_TextEditableBinding::registerBinding(L);
 
+    DoorStuffBinding::registerBinding(L);
+    FarmBatchBinding::registerBinding(L);
+    FarmBuildingBinding::registerBinding(L);
+    FurnaceBuildingBinding::registerBinding(L);
+    FurnaceInventoryLayoutBinding::registerBinding(L);
+    GameplayOptionsBinding::registerBinding(L);
+    GatewayBuildingBinding::registerBinding(L);
+    LightBuildingBinding::registerBinding(L);
+    RainCollectorBuildingBinding::registerBinding(L);
+    TortureBuildingBinding::registerBinding(L);
+    TradeCultureBinding::registerBinding(L);
+    TurretBuildingBinding::registerBinding(L);
+    WallBuildingBinding::registerBinding(L);
+
     UseableStuffBinding::registerBinding(L);
     StorageBuildingBinding::registerBinding(L);
     ProductionBuildingBinding::registerBinding(L);
@@ -293,6 +327,11 @@ void LuaBindings::registerAll(lua_State* L)
     TaskerBinding::registerBinding(L);
     HealthPartStatusBinding::registerBinding(L);
     ModInfoBinding::registerBinding(L);
+    OptionsHolderBinding::registerBinding(L);
+    StringPairBinding::registerBinding(L);
+    TimeOfDayBinding::registerBinding(L);
+    YesNoMaybeBinding::registerBinding(L);
+    iVector2Binding::registerBinding(L);
 
 	registerEnumBindings(L);
     registerGlobals(L);

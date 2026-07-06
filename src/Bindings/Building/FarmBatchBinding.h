@@ -7,15 +7,17 @@ extern "C" {
 
 namespace KenshiLua
 {
-class ModInfoBinding
+class FarmBatchBinding
 {
 public:
-    static const char* getMetatableName() { return "KenshiLua.ModInfo"; }
+    static const char* getMetatableName() { return "KenshiLua.FarmBatch"; }
     static void registerBinding(lua_State* L);
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int load(lua_State* L);
+    static int createGeometry(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };
 }

@@ -7,10 +7,10 @@ extern "C" {
 
 namespace KenshiLua
 {
-class ModInfoBinding
+class StringPairBinding
 {
 public:
-    static const char* getMetatableName() { return "KenshiLua.ModInfo"; }
+    static const char* getMetatableName() { return "KenshiLua.StringPair"; }
     static void registerBinding(lua_State* L);
 
     static int gc(lua_State* L);
