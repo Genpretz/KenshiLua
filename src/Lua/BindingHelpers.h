@@ -189,6 +189,53 @@ namespace KenshiLua
         return any;
     }
 
+    // Build a TripleInt-like Lua table {val1, val2, val3} from any object
+    // exposing .value[3].
+    template <class TI>
+    inline void pushTripleInt(lua_State* L, const TI& t)
+    {
+        lua_createtable(L, 3, 0);
+        lua_pushinteger(L, t.value[0]); lua_rawseti(L, -2, 1);
+        lua_pushinteger(L, t.value[1]); lua_rawseti(L, -2, 2);
+        lua_pushinteger(L, t.value[2]); lua_rawseti(L, -2, 3);
+    }
+
+    // Read a TripleInt-like Lua table {val1, val2, val3} at idx.
+    template <class TI>
+    inline bool readTripleInt(lua_State* L, int idx, TI& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        lua_rawgeti(L, idx, 1); out.value[0] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, idx, 2); out.value[1] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, idx, 3); out.value[2] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+        return true;
+    }
+
+    // Build a ColourValue-like Lua table {r=,g=,b=,a=} from any object
+    // exposing .r/.g/.b/.a.
+    template <class CV>
+    inline void pushColourValue(lua_State* L, const CV& c)
+    {
+        lua_createtable(L, 0, 4);
+        lua_pushnumber(L, c.r); lua_setfield(L, -2, "r");
+        lua_pushnumber(L, c.g); lua_setfield(L, -2, "g");
+        lua_pushnumber(L, c.b); lua_setfield(L, -2, "b");
+        lua_pushnumber(L, c.a); lua_setfield(L, -2, "a");
+    }
+
+    // Read a ColourValue-like Lua table at idx.
+    template <class CV>
+    inline bool readColourValue(lua_State* L, int idx, CV& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        bool any = false;
+        lua_getfield(L, idx, "r"); if (!lua_isnil(L, -1)) { out.r = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "g"); if (!lua_isnil(L, -1)) { out.g = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "b"); if (!lua_isnil(L, -1)) { out.b = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "a"); if (!lua_isnil(L, -1)) { out.a = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        return any;
+    }
+
     // Generic __tostring that produces "Type:%p".
     inline int genericTostringPtr(lua_State* L, const char* typeName, void* ptr)
     {

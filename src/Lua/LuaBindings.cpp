@@ -74,6 +74,8 @@
 #include "Bindings/FactionRelationsBinding.h"
 #include "Bindings/FlockingToolsBinding.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/GameDataReferenceBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
 #include "Bindings/GameWorldBinding.h"
 #include "Bindings/GearBinding.h"
 #include "Bindings/GlobalBinding.h"
@@ -254,6 +256,8 @@ void LuaBindings::registerAll(lua_State* L)
     InputHandlerBinding::registerBinding(L);
     GameWorldBinding::registerBinding(L);
     GameDataBinding::registerBinding(L);
+    GameDataReferenceBinding::registerBinding(L);
+    GameSaveStateBinding::registerBinding(L);
     MyGuiBinding::registerBinding(L);
     FactionRelationsBinding::registerBinding(L);
     RelationDataBinding::registerBinding(L);
