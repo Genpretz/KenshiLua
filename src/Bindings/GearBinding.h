@@ -28,5 +28,11 @@ public:
     static int _DESTRUCTOR(lua_State* L);
 	static int setInventoryWeAreIn(lua_State* L);
 	static int _NV_setInventoryWeAreIn(lua_State* L);
+
+    static int _CONSTRUCTOR(lua_State* L);
+    static int _serialise(lua_State* L);
+    static int _NV__serialise(lua_State* L);
+    static int _loadFromSerialise(lua_State* L);
+    static int _NV__loadFromSerialise(lua_State* L);
 };
 }

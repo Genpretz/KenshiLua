@@ -16,6 +16,11 @@
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/Util/LektorBinding.h"
+#include "kenshi/GameSaveState.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/HasRoomCacheBinding.h"
 
 namespace KenshiLua
 {
@@ -30,8 +35,7 @@ static int Inventory_get_hasRoomCache(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
-    lua_pushinteger(L, (lua_Integer)b->hasRoomCache);
-    return 1;
+    return pushObject<Inventory::HasRoomCache>(L, b->hasRoomCache, HasRoomCacheBinding::getMetatableName());
 }
 
 static int Inventory_get__allItems(lua_State* L)
@@ -89,7 +93,12 @@ static int Inventory_set_hasRoomCache(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for hasRoomCache");
+    Inventory::HasRoomCache* cache = nullptr;
+    if (!lua_isnil(L, 2)) {
+        cache = checkObject<Inventory::HasRoomCache>(L, 2, HasRoomCacheBinding::getMetatableName());
+    }
+    b->hasRoomCache = cache;
+    return 0;
 }
 
 static int Inventory_set__allItems(lua_State* L)
@@ -117,14 +126,24 @@ static int Inventory_set_callbackObject(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for callbackObject");
+    RootObject* obj = nullptr;
+    if (!lua_isnil(L, 2)) {
+        obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    }
+    b->callbackObject = obj;
+    return 0;
 }
 
 static int Inventory_set_owner(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for owner");
+    RootObject* obj = nullptr;
+    if (!lua_isnil(L, 2)) {
+        obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    }
+    b->owner = obj;
+    return 0;
 }
 
 static int Inventory_set_totalWeight(lua_State* L)
@@ -436,71 +455,8 @@ int InventoryBinding::getCallbackObject(lua_State* L)
     return pushObject<RootObject>(L, result, RootObjectBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 125: Inventory* _CONSTRUCTOR(...) - unsupported arg type
-  line 128: const hand& getHandle(...) - reference return type
-  line 130: GameData* serialise(...) - unsupported arg type
-  line 131: void loadFrom(...) - overloaded method
-  line 132: void loadFrom(...) - overloaded method
-  line 134: void fillFromVendorList(...) - overloaded method
-  line 135: void fillFromVendorList(...) - overloaded method
-  line 138: void resizeSection(...) - unsupported arg type
-  line 142: void getAllSectionsOfType(...) - unsupported arg type
-  line 143: lektor<InventorySection*>& getAllSections(...) - reference return type
-  line 144: bool getExcessLoot(...) - unsupported arg type
-  line 145: void getResourceItems(...) - unsupported arg type
-  line 146: int getNumItems(...) - overloaded method
-  line 147: int getNumItems(...) - overloaded method
-  line 149: bool addItem(...) - unsupported arg type
-  line 150: bool _NV_addItem(...) - unsupported arg type
-  line 151: bool tryAddItem(...) - unsupported arg type
-  line 152: bool _NV_tryAddItem(...) - unsupported arg type
-  line 170: bool hasRoomForItem(...) - unsupported arg type
-  line 171: bool _NV_hasRoomForItem(...) - unsupported arg type
-  line 172: Item* removeItemDontDestroy_returnsItem(...) - unsupported arg type
-  line 173: Item* _NV_removeItemDontDestroy_returnsItem(...) - unsupported arg type
-  line 174: bool removeItemAutoDestroy(...) - unsupported arg type
-  line 175: bool _NV_removeItemAutoDestroy(...) - unsupported arg type
-  line 176: void dropItem(...) - unsupported arg type
-  line 177: void _NV_dropItem(...) - unsupported arg type
-  line 178: bool transferMouseItem(...) - unsupported arg type
-  line 179: bool hasItem(...) - overloaded method
-  line 180: bool hasItem(...) - overloaded method
-  line 181: int countItems(...) - unsupported arg type
-  line 182: Item* getItem(...) - unsupported arg type
-  line 184: void getAllStolenItems(...) - unsupported arg type
-  line 186: void getAllItemsOfType(...) - unsupported arg type
-  line 187: void getEquippedWeapons(...) - unsupported arg type
-  line 190: void getEquippedArmour(...) - unsupported arg type
-  line 191: Item* takeOneItemOnly(...) - unsupported arg type
-  line 192: bool deathCheck(...) - unsupported arg type
-  line 193: bool takeItem_EntireStack(...) - overloaded method
-  line 194: Item* takeItem_EntireStack(...) - overloaded method
-  line 196: void getAllItemsWithFunction(...) - unsupported arg type
-  line 198: Item* getBestItemWithLowestCharges(...) - overloaded method
-  line 199: Item* getBestItemWithLowestCharges(...) - overloaded method
-  line 200: Item* getBestFoodItem(...) - unsupported arg type
-  line 201: int getNumFoodItems(...) - unsupported arg type
-  line 202: Item* _getBestFoodItem(...) - unsupported arg type
-  line 203: int _getNumFoodItems(...) - unsupported arg type
-  line 205: bool equipItem(...) - unsupported arg type
-  line 214: Item* buyItem(...) - unsupported arg type
-  line 215: InventoryGUI* getInventoryGUI(...) - unsupported return type
-  line 217: void _sectionAddItemCallback(...) - unsupported arg type
-  line 218: void _NV__sectionAddItemCallback(...) - unsupported arg type
-  line 219: void _sectionUpdateItemCallback(...) - unsupported arg type
-  line 220: void _NV__sectionUpdateItemCallback(...) - unsupported arg type
-  line 221: void _sectionRemoveItemCallback(...) - unsupported arg type
-  line 222: void _NV__sectionRemoveItemCallback(...) - unsupported arg type
-  line 227: const lektor<Item*>& getAllItems(...) - reference return type
-  line 228: void _addToList(...) - unsupported arg type
-  line 229: void _NV__addToList(...) - unsupported arg type
-  line 230: void _removeFromList(...) - unsupported arg type
-  line 231: void _NV__removeFromList(...) - unsupported arg type
-*/
 
-static int Inventory_getHandle(lua_State* L)
+int InventoryBinding::getHandle(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -509,7 +465,7 @@ static int Inventory_getHandle(lua_State* L)
     return 1;
 }
 
-static int Inventory_addItem(lua_State* L)
+int InventoryBinding::addItem(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -522,7 +478,7 @@ static int Inventory_addItem(lua_State* L)
     return 1;
 }
 
-static int Inventory__NV_addItem(lua_State* L)
+int InventoryBinding::_NV_addItem(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -535,7 +491,7 @@ static int Inventory__NV_addItem(lua_State* L)
     return 1;
 }
 
-static int Inventory_tryAddItem(lua_State* L)
+int InventoryBinding::tryAddItem(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -546,7 +502,7 @@ static int Inventory_tryAddItem(lua_State* L)
     return 1;
 }
 
-static int Inventory__NV_tryAddItem(lua_State* L)
+int InventoryBinding::_NV_tryAddItem(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -557,7 +513,7 @@ static int Inventory__NV_tryAddItem(lua_State* L)
     return 1;
 }
 
-static int Inventory_removeItemDontDestroy_returnsItem(lua_State* L)
+int InventoryBinding::removeItemDontDestroy_returnsItem(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -568,7 +524,7 @@ static int Inventory_removeItemDontDestroy_returnsItem(lua_State* L)
     return pushObject<Item>(L, result, ItemBinding::getMetatableName());
 }
 
-static int Inventory__NV_removeItemDontDestroy_returnsItem(lua_State* L)
+int InventoryBinding::_NV_removeItemDontDestroy_returnsItem(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -579,7 +535,7 @@ static int Inventory__NV_removeItemDontDestroy_returnsItem(lua_State* L)
     return pushObject<Item>(L, result, ItemBinding::getMetatableName());
 }
 
-static int Inventory_removeItemAutoDestroy(lua_State* L)
+int InventoryBinding::removeItemAutoDestroy(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -590,7 +546,7 @@ static int Inventory_removeItemAutoDestroy(lua_State* L)
     return 1;
 }
 
-static int Inventory__NV_removeItemAutoDestroy(lua_State* L)
+int InventoryBinding::_NV_removeItemAutoDestroy(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -601,7 +557,7 @@ static int Inventory__NV_removeItemAutoDestroy(lua_State* L)
     return 1;
 }
 
-static int Inventory_dropItem(lua_State* L)
+int InventoryBinding::dropItem(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -610,7 +566,7 @@ static int Inventory_dropItem(lua_State* L)
     return 0;
 }
 
-static int Inventory__NV_dropItem(lua_State* L)
+int InventoryBinding::_NV_dropItem(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
@@ -619,13 +575,474 @@ static int Inventory__NV_dropItem(lua_State* L)
     return 0;
 }
 
-static int Inventory_getItem(lua_State* L)
+int InventoryBinding::getItem(lua_State* L)
 {
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
     GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Item* result = b->getItem(data);
     return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+}
+
+int InventoryBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    RootObject* owner = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    Inventory* result = b->_CONSTRUCTOR(owner);
+    return pushObject<Inventory>(L, result, InventoryBinding::getMetatableName());
+}
+
+int InventoryBinding::serialise(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    GameData* result = b->serialise(container, refList);
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+}
+
+int InventoryBinding::loadFrom(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+        GameData* inventoryState = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+        b->loadFrom(container, inventoryState);
+    } else {
+        GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+        b->loadFrom(state);
+    }
+    return 0;
+}
+
+int InventoryBinding::fillFromVendorList(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Faction* f = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
+    if (lua_isuserdata(L, 2)) {
+        lua_getmetatable(L, 2);
+        luaL_getmetatable(L, GameDataBinding::getMetatableName());
+        bool isGameData = lua_rawequal(L, -1, -2) != 0;
+        lua_pop(L, 2);
+        if (isGameData) {
+            GameData* vendorData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+            b->fillFromVendorList(vendorData, f);
+        } else {
+            lektor<GameData*>* list = LektorPtrBinding<GameData*>::get(L, 2);
+            b->fillFromVendorList(*list, f);
+        }
+    }
+    return 0;
+}
+
+int InventoryBinding::getAllSectionsOfType(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    lektor<InventorySection*>* out = LektorPtrBinding<InventorySection*>::get(L, 2);
+    AttachSlot type = (AttachSlot)luaL_checkinteger(L, 3);
+    b->getAllSectionsOfType(*out, type);
+    return 0;
+}
+
+int InventoryBinding::getAllSections(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    lektor<InventorySection*>& result = b->getAllSections();
+    return pushObject<lektor<InventorySection*>>(L, &result, LektorPtrBinding<InventorySection*>::metaName);
+}
+
+int InventoryBinding::getExcessLoot(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    hand* me = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    lektor<Item*>* out = LektorPtrBinding<Item*>::get(L, 3);
+    bool justAsking = lua_toboolean(L, 4) != 0;
+    bool result = b->getExcessLoot(*me, *out, justAsking);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryBinding::getResourceItems(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    ogre_unordered_set<GameData*>::type* out = OgreUnorderedSetBinding<GameData*>::get(L, 2);
+    bool buildingMatsToo = lua_toboolean(L, 3) != 0;
+    b->getResourceItems(*out, buildingMatsToo);
+    return 0;
+}
+
+int InventoryBinding::getNumItems(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2)) {
+        GameData* itemType = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+        int result = b->getNumItems(itemType);
+        lua_pushinteger(L, result);
+    } else {
+        int result = b->getNumItems();
+        lua_pushinteger(L, result);
+    }
+    return 1;
+}
+
+int InventoryBinding::hasRoomForItem(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = b->hasRoomForItem(item);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryBinding::_NV_hasRoomForItem(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = b->_NV_hasRoomForItem(item);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryBinding::transferMouseItem(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    bool result = b->transferMouseItem(item);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryBinding::hasItem(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    if (lua_isuserdata(L, 2)) {
+        lua_getmetatable(L, 2);
+        luaL_getmetatable(L, GameDataBinding::getMetatableName());
+        bool isGameData = lua_rawequal(L, -1, -2) != 0;
+        lua_pop(L, 2);
+        if (isGameData) {
+            GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+            int quantity = (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) ? (int)luaL_checkinteger(L, 3) : 1;
+            bool result = b->hasItem(data, quantity);
+            lua_pushboolean(L, result ? 1 : 0);
+        } else {
+            Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+            bool result = b->hasItem(item);
+            lua_pushboolean(L, result ? 1 : 0);
+        }
+    } else {
+        lua_pushboolean(L, 0);
+    }
+    return 1;
+}
+
+int InventoryBinding::countItems(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    int result = b->countItems(item);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int InventoryBinding::getAllStolenItems(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    lektor<Item*>* all = LektorPtrBinding<Item*>::get(L, 2);
+    bool includeUnknown = lua_toboolean(L, 3) != 0;
+    b->getAllStolenItems(*all, includeUnknown);
+    return 0;
+}
+
+int InventoryBinding::getAllItemsOfType(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    lektor<Item*>* all = LektorPtrBinding<Item*>::get(L, 2);
+    itemType ty = (itemType)luaL_checkinteger(L, 3);
+    bool skipEquipped = lua_toboolean(L, 4) != 0;
+    b->getAllItemsOfType(*all, ty, skipEquipped);
+    return 0;
+}
+
+int InventoryBinding::getEquippedWeapons(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    lektor<Item*>* all = LektorPtrBinding<Item*>::get(L, 2);
+    b->getEquippedWeapons(*all);
+    return 0;
+}
+
+int InventoryBinding::getEquippedArmour(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    lektor<Item*>* all = LektorPtrBinding<Item*>::get(L, 2);
+    b->getEquippedArmour(*all);
+    return 0;
+}
+
+int InventoryBinding::takeOneItemOnly(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Item* result = b->takeOneItemOnly(item);
+    return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+}
+
+int InventoryBinding::deathCheck(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    bool result = b->deathCheck(item);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryBinding::takeItem_EntireStack(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    if (lua_isuserdata(L, 2)) {
+        lua_getmetatable(L, 2);
+        luaL_getmetatable(L, GameDataBinding::getMetatableName());
+        bool isGameData = lua_rawequal(L, -1, -2) != 0;
+        lua_pop(L, 2);
+        if (isGameData) {
+            GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+            Item* result = b->takeItem_EntireStack(item);
+            return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+        } else {
+            Item* what = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+            bool result = b->takeItem_EntireStack(what);
+            lua_pushboolean(L, result ? 1 : 0);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int InventoryBinding::getAllItemsWithFunction(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    lektor<Item*>* out = LektorPtrBinding<Item*>::get(L, 2);
+    ItemFunction type = (ItemFunction)luaL_checkinteger(L, 3);
+    b->getAllItemsWithFunction(*out, type);
+    return 0;
+}
+
+int InventoryBinding::getBestItemWithLowestCharges(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    if (lua_isuserdata(L, 2)) {
+        lua_getmetatable(L, 2);
+        luaL_getmetatable(L, GameDataBinding::getMetatableName());
+        bool isGameData = lua_rawequal(L, -1, -2) != 0;
+        lua_pop(L, 2);
+        if (isGameData) {
+            GameData* what = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+            Item* result = b->getBestItemWithLowestCharges(what);
+            return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+        }
+    }
+    ItemFunction type = (ItemFunction)luaL_checkinteger(L, 2);
+    Item* result = b->getBestItemWithLowestCharges(type);
+    return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+}
+
+int InventoryBinding::getBestFoodItem(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Character* race = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    Item* result = b->getBestFoodItem(race);
+    return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+}
+
+int InventoryBinding::getNumFoodItems(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Character* race = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    int result = b->getNumFoodItems(race);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int InventoryBinding::_getBestFoodItem(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    ItemFunction type = (ItemFunction)luaL_checkinteger(L, 2);
+    Character* race = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    Item* result = b->_getBestFoodItem(type, race);
+    return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+}
+
+int InventoryBinding::_getNumFoodItems(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    ItemFunction type = (ItemFunction)luaL_checkinteger(L, 2);
+    Character* race = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    int result = b->_getNumFoodItems(type, race);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int InventoryBinding::equipItem(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    bool result = b->equipItem(item);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryBinding::buyItem(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* itemToBuy = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    RootObject* sendingTo = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    Item* result = b->buyItem(itemToBuy, sendingTo);
+    return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+}
+
+int InventoryBinding::getInventoryGUI(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    InventoryGUI* result = b->getInventoryGUI();
+    if (result) {
+        lua_pushlightuserdata(L, (void*)result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int InventoryBinding::_sectionAddItemCallback(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    b->_sectionAddItemCallback(item);
+    return 0;
+}
+
+int InventoryBinding::_NV__sectionAddItemCallback(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    b->_NV__sectionAddItemCallback(item);
+    return 0;
+}
+
+int InventoryBinding::_sectionUpdateItemCallback(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    int quantity = (int)luaL_checkinteger(L, 3);
+    b->_sectionUpdateItemCallback(item, quantity);
+    return 0;
+}
+
+int InventoryBinding::_NV__sectionUpdateItemCallback(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    int quantity = (int)luaL_checkinteger(L, 3);
+    b->_NV__sectionUpdateItemCallback(item, quantity);
+    return 0;
+}
+
+int InventoryBinding::_sectionRemoveItemCallback(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    b->_sectionRemoveItemCallback(item);
+    return 0;
+}
+
+int InventoryBinding::_NV__sectionRemoveItemCallback(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    b->_NV__sectionRemoveItemCallback(item);
+    return 0;
+}
+
+int InventoryBinding::_addToList(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    b->_addToList(item);
+    return 0;
+}
+
+int InventoryBinding::_NV__addToList(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    b->_NV__addToList(item);
+    return 0;
+}
+
+int InventoryBinding::_removeFromList(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    bool checkEverything = lua_toboolean(L, 3) != 0;
+    b->_removeFromList(item, checkEverything);
+    return 0;
+}
+
+int InventoryBinding::_NV__removeFromList(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    bool checkEverything = lua_toboolean(L, 3) != 0;
+    b->_NV__removeFromList(item, checkEverything);
+    return 0;
+}
+
+int InventoryBinding::getAllItems(lua_State* L)
+{
+    Inventory* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Inventory is nil");
+    const lektor<Item*>& result = b->getAllItems();
+    return pushObject<lektor<Item*>>(L, const_cast<lektor<Item*>*>(&result), LektorPtrBinding<Item*>::metaName);
 }
 
 int InventoryBinding::gc(lua_State* L)
@@ -678,18 +1095,59 @@ void InventoryBinding::registerBinding(lua_State* L)
         { "_NV_refreshGui", InventoryBinding::_NV_refreshGui },
         { "autoArrange", InventoryBinding::autoArrange },
         { "getCallbackObject", InventoryBinding::getCallbackObject },
-        { "getHandle", Inventory_getHandle },
-        { "addItem", Inventory_addItem },
-        { "_NV_addItem", Inventory__NV_addItem },
-        { "tryAddItem", Inventory_tryAddItem },
-        { "_NV_tryAddItem", Inventory__NV_tryAddItem },
-        { "removeItemDontDestroy_returnsItem", Inventory_removeItemDontDestroy_returnsItem },
-        { "_NV_removeItemDontDestroy_returnsItem", Inventory__NV_removeItemDontDestroy_returnsItem },
-        { "removeItemAutoDestroy", Inventory_removeItemAutoDestroy },
-        { "_NV_removeItemAutoDestroy", Inventory__NV_removeItemAutoDestroy },
-        { "dropItem", Inventory_dropItem },
-        { "_NV_dropItem", Inventory__NV_dropItem },
-        { "getItem", Inventory_getItem },
+        { "getHandle", InventoryBinding::getHandle },
+        { "addItem", InventoryBinding::addItem },
+        { "_NV_addItem", InventoryBinding::_NV_addItem },
+        { "tryAddItem", InventoryBinding::tryAddItem },
+        { "_NV_tryAddItem", InventoryBinding::_NV_tryAddItem },
+        { "removeItemDontDestroy_returnsItem", InventoryBinding::removeItemDontDestroy_returnsItem },
+        { "_NV_removeItemDontDestroy_returnsItem", InventoryBinding::_NV_removeItemDontDestroy_returnsItem },
+        { "removeItemAutoDestroy", InventoryBinding::removeItemAutoDestroy },
+        { "_NV_removeItemAutoDestroy", InventoryBinding::_NV_removeItemAutoDestroy },
+        { "dropItem", InventoryBinding::dropItem },
+        { "_NV_dropItem", InventoryBinding::_NV_dropItem },
+        { "getItem", InventoryBinding::getItem },
+        { "_CONSTRUCTOR", InventoryBinding::_CONSTRUCTOR },
+        { "serialise", InventoryBinding::serialise },
+        { "loadFrom", InventoryBinding::loadFrom },
+        { "fillFromVendorList", InventoryBinding::fillFromVendorList },
+        { "getAllSectionsOfType", InventoryBinding::getAllSectionsOfType },
+        { "getAllSections", InventoryBinding::getAllSections },
+        { "getExcessLoot", InventoryBinding::getExcessLoot },
+        { "getResourceItems", InventoryBinding::getResourceItems },
+        { "getNumItems", InventoryBinding::getNumItems },
+        { "hasRoomForItem", InventoryBinding::hasRoomForItem },
+        { "_NV_hasRoomForItem", InventoryBinding::_NV_hasRoomForItem },
+        { "transferMouseItem", InventoryBinding::transferMouseItem },
+        { "hasItem", InventoryBinding::hasItem },
+        { "countItems", InventoryBinding::countItems },
+        { "getAllStolenItems", InventoryBinding::getAllStolenItems },
+        { "getAllItemsOfType", InventoryBinding::getAllItemsOfType },
+        { "getEquippedWeapons", InventoryBinding::getEquippedWeapons },
+        { "getEquippedArmour", InventoryBinding::getEquippedArmour },
+        { "takeOneItemOnly", InventoryBinding::takeOneItemOnly },
+        { "deathCheck", InventoryBinding::deathCheck },
+        { "takeItem_EntireStack", InventoryBinding::takeItem_EntireStack },
+        { "getAllItemsWithFunction", InventoryBinding::getAllItemsWithFunction },
+        { "getBestItemWithLowestCharges", InventoryBinding::getBestItemWithLowestCharges },
+        { "getBestFoodItem", InventoryBinding::getBestFoodItem },
+        { "getNumFoodItems", InventoryBinding::getNumFoodItems },
+        { "_getBestFoodItem", InventoryBinding::_getBestFoodItem },
+        { "_getNumFoodItems", InventoryBinding::_getNumFoodItems },
+        { "equipItem", InventoryBinding::equipItem },
+        { "buyItem", InventoryBinding::buyItem },
+        { "getInventoryGUI", InventoryBinding::getInventoryGUI },
+        { "_sectionAddItemCallback", InventoryBinding::_sectionAddItemCallback },
+        { "_NV__sectionAddItemCallback", InventoryBinding::_NV__sectionAddItemCallback },
+        { "_sectionUpdateItemCallback", InventoryBinding::_sectionUpdateItemCallback },
+        { "_NV__sectionUpdateItemCallback", InventoryBinding::_NV__sectionUpdateItemCallback },
+        { "_sectionRemoveItemCallback", InventoryBinding::_sectionRemoveItemCallback },
+        { "_NV__sectionRemoveItemCallback", InventoryBinding::_NV__sectionRemoveItemCallback },
+        { "_addToList", InventoryBinding::_addToList },
+        { "_NV__addToList", InventoryBinding::_NV__addToList },
+        { "_removeFromList", InventoryBinding::_removeFromList },
+        { "_NV__removeFromList", InventoryBinding::_NV__removeFromList },
+        { "getAllItems", InventoryBinding::getAllItems },
         { 0, 0 }
     };
 
@@ -718,7 +1176,7 @@ void InventoryBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "owner");
     lua_pushcfunction(L, Inventory_get_totalWeight);
     lua_setfield(L, -2, "totalWeight");
-    lua_setfield(L, -2, "__getters"); // Bind to metatable
+    lua_setfield(L, -2, "__getters"); // Bind to metatableUsage
 
     lua_newtable(L); // Create __setters table
     lua_pushcfunction(L, Inventory_set_hasRoomCache);
@@ -739,6 +1197,8 @@ void InventoryBinding::registerBinding(lua_State* L)
 
     LektorPtrBinding<Item*>::registerBinding(L, "lektor<Item*>", ItemBinding::getMetatableName());
     LektorPtrBinding<InventorySection*>::registerBinding(L, "lektor<InventorySection*>", InventorySectionBinding::getMetatableName());
+    LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", GameDataBinding::getMetatableName());
+    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "ogre_unordered_set<GameData*>", GameDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

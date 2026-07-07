@@ -13,6 +13,13 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/OwnershipsBinding.h"
 #include "Bindings/PlayerInterfaceBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/ActivePlatoonBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/FactionRelationsBinding.h"
+#include "Bindings/Building/TradeCultureBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/RootObjectBinding.h"
 
 namespace KenshiLua
 {
@@ -43,8 +50,7 @@ static int Faction_get_ranks(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    // TODO: Unsupported type for ranks (lektor<std::string >)
-    return luaL_error(L, "Unsupported property 'ranks' (type: lektor<std::string >)");
+    return pushObject<lektor<std::string>>(L, &b->ranks, LektorStringBinding<std::string>::metaName);
 }
 
 static int Faction_get_allowSlavesWeapons(lua_State* L)
@@ -59,8 +65,8 @@ static int Faction_get_fundamentalNPCType(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    // TODO: Unsupported type for fundamentalNPCType (CharacterTypeEnum)
-    return luaL_error(L, "Unsupported property 'fundamentalNPCType' (type: CharacterTypeEnum)");
+    lua_pushinteger(L, (lua_Integer)b->fundamentalNPCType);
+    return 1;
 }
 
 static int Faction_get_myLawEnforcementFaction(lua_State* L)
@@ -98,8 +104,7 @@ static int Faction_get_relations(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    // TODO: Unsupported type for relations (FactionRelations*)
-    return luaL_error(L, "Unsupported property 'relations' (type: FactionRelations*)");
+    return pushObject<FactionRelations>(L, b->relations, FactionRelationsBinding::getMetatableName());
 }
 
 static int Faction_get_factionOwnerships(lua_State* L)
@@ -121,8 +126,7 @@ static int Faction_get_tradeCulture(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    // TODO: Unsupported type for tradeCulture (TradeCulture)
-    return luaL_error(L, "Unsupported property 'tradeCulture' (type: TradeCulture)");
+    return pushObject<TradeCulture>(L, &b->tradeCulture, TradeCultureBinding::getMetatableName());
 }
 
 static int Faction_get_raceSelector(lua_State* L)
@@ -161,48 +165,28 @@ static int Faction_get_platoonKillList(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    lua_createtable(L, b->platoonKillList.size(), 0);
-    for (uint32_t i = 0; i < b->platoonKillList.size(); ++i) {
-        pushObject<Platoon>(L, b->platoonKillList[i], PlatoonBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Platoon*>>(L, &b->platoonKillList, LektorPtrBinding<Platoon*>::metaName);
 }
 
 static int Faction_get_platoonRemoveList(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    lua_createtable(L, b->platoonRemoveList.size(), 0);
-    for (uint32_t i = 0; i < b->platoonRemoveList.size(); ++i) {
-        pushObject<Platoon>(L, b->platoonRemoveList[i], PlatoonBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Platoon*>>(L, &b->platoonRemoveList, LektorPtrBinding<Platoon*>::metaName);
 }
 
 static int Faction_get_activePlatoons(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    lua_createtable(L, b->activePlatoons.size(), 0);
-    for (uint32_t i = 0; i < b->activePlatoons.size(); ++i) {
-        pushObject<Platoon>(L, b->activePlatoons[i], PlatoonBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Platoon*>>(L, &b->activePlatoons, LektorPtrBinding<Platoon*>::metaName);
 }
 
 static int Faction_get_unloadedPlatoons(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    lua_createtable(L, b->unloadedPlatoons.size(), 0);
-    for (uint32_t i = 0; i < b->unloadedPlatoons.size(); ++i) {
-        pushObject<Platoon>(L, b->unloadedPlatoons[i], PlatoonBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Platoon*>>(L, &b->unloadedPlatoons, LektorPtrBinding<Platoon*>::metaName);
 }
 
 static int Faction_get_periodicUpdateCounter_active(lua_State* L)
@@ -326,7 +310,8 @@ static int Faction_set_fundamentalNPCType(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for fundamentalNPCType");
+    b->fundamentalNPCType = (CharacterTypeEnum)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int Faction_set_myLawEnforcementFaction(lua_State* L)
@@ -362,7 +347,8 @@ static int Faction_set_relations(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for relations");
+    b->relations = checkObject<FactionRelations>(L, 2, FactionRelationsBinding::getMetatableName());
+    return 0;
 }
 
 static int Faction_set_factionOwnerships(lua_State* L)
@@ -383,7 +369,9 @@ static int Faction_set_tradeCulture(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for tradeCulture");
+    TradeCulture* tc = checkObject<TradeCulture>(L, 2, TradeCultureBinding::getMetatableName());
+    if (tc) b->tradeCulture = *tc;
+    return 0;
 }
 
 static int Faction_set_raceSelector(lua_State* L)
@@ -822,52 +810,416 @@ int FactionBinding::_spawnASquad(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 65: CharacterTypeEnum getFundamentalNPCType(...) - unsupported return type
-  line 68: bool setup(...) - unsupported arg type
-  line 73: Platoon* createNewEmptyUnloadedPlatoon(...) - unsupported arg type
-  line 74: Platoon* createNewEmptyActivePlatoon(...) - unsupported arg type
-  line 75: void createPlatoonUnloaded(...) - unsupported arg type
-  line 76: void createPlatoonAuto(...) - unsupported arg type
-  line 77: void createPlatoonsAuto(...) - unsupported arg type
-  line 79: void restorePlatoon(...) - unsupported arg type
-  line 81: int countPopulation(...) - unsupported arg type
-  line 82: int countNumSquads(...) - unsupported arg type
-  line 83: void destroyPlatoon(...) - unsupported arg type
-  line 84: void removePlatoon(...) - unsupported arg type
-  line 85: int getRandomLockLevel(...) - unsupported arg type
-  line 87: void getGUIData(...) - unsupported arg type
-  line 90: void loadState(...) - unsupported arg type
-  line 91: GameData* saveState(...) - unsupported arg type
-  line 93: void getCharactersInArea(...) - unsupported arg type
-  line 94: void _NV_getCharactersInArea(...) - unsupported arg type
-  line 95: void getSelectedObjects(...) - unsupported arg type
-  line 96: void _NV_getSelectedObjects(...) - unsupported arg type
-  line 97: void removeObject(...) - unsupported arg type
-  line 98: void _NV_removeObject(...) - unsupported arg type
-  line 99: void destroyObject(...) - unsupported arg type
-  line 100: void _NV_destroyObject(...) - unsupported arg type
-  line 103: bool addActiveObject(...) - unsupported arg type
-  line 104: bool _NV_addActiveObject(...) - unsupported arg type
-  line 105: ActivePlatoon* choosePlatoon(...) - unsupported return type
-  line 106: const lektor<Platoon*>* getActivePlatoons(...) - unsupported return type
-  line 107: const lektor<Platoon*>* getUnloadedPlatoons(...) - unsupported return type
-  line 115: const std::string& getName(...) - reference return type
-  line 117: int getNumPlatoons(...) - unsupported arg type
-  line 118: Platoon* getSquadThatOwns(...) - unsupported arg type
-  line 119: void getAllSquadsThatOwn(...) - unsupported arg type
-  line 120: const lektor<Platoon*>* getAllActiveSquads(...) - unsupported return type
-  line 130: GameData* chooseARace(...) - unsupported arg type
-  line 132: GameData* getBuildingReplacement(...) - unsupported arg type
-  line 135: void _switchToUnloadedPlatoon(...) - unsupported arg type
-  line 137: Platoon* _newPlatoon(...) - unsupported arg type
-  line 138: void _addActivePlatoonToList(...) - unsupported arg type
-  line 139: void addPlatoon(...) - unsupported arg type
-  line 140: void changePlatoonIndex(...) - unsupported arg type
-  line 141: void deactivatePlatoon(...) - unsupported arg type
-  line 142: void activatePlatoon(...) - unsupported arg type
-*/
+int FactionBinding::getFundamentalNPCType(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    CharacterTypeEnum result = b->getFundamentalNPCType();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int FactionBinding::setup(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = b->setup(data);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int FactionBinding::createNewEmptyUnloadedPlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameData* squadTemplate = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Ogre::Vector3 pos;
+    readVector3(L, 3, pos);
+    GameDataContainer* forcecharacterDatas = (GameDataContainer*)lua_touserdata(L, 4);
+    bool persistent = lua_toboolean(L, 5) != 0;
+    
+    Platoon* result = b->createNewEmptyUnloadedPlatoon(squadTemplate, pos, forcecharacterDatas, persistent);
+    return pushObject<Platoon>(L, result, PlatoonBinding::getMetatableName());
+}
+
+int FactionBinding::createNewEmptyActivePlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameData* squadTemplate = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool permanent = lua_toboolean(L, 3) != 0;
+    Ogre::Vector3 p;
+    readVector3(L, 4, p);
+    
+    Platoon* result = b->createNewEmptyActivePlatoon(squadTemplate, permanent, p);
+    return pushObject<Platoon>(L, result, PlatoonBinding::getMetatableName());
+}
+
+int FactionBinding::createPlatoonUnloaded(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameData* platoonstate = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    GameDataContainer* charactersState = (GameDataContainer*)lua_touserdata(L, 3);
+    GameData* squadTemplate = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
+    Ogre::Vector3 pos;
+    readVector3(L, 5, pos);
+    bool persistent = lua_toboolean(L, 6) != 0;
+    
+    b->createPlatoonUnloaded(platoonstate, charactersState, squadTemplate, pos, persistent);
+    return 0;
+}
+
+int FactionBinding::createPlatoonAuto(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameData* platoonstate = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    GameData* squadTemplate = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    Ogre::Vector3 pos;
+    readVector3(L, 4, pos);
+    
+    b->createPlatoonAuto(platoonstate, squadTemplate, pos);
+    return 0;
+}
+
+int FactionBinding::createPlatoonsAuto(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    lektor<GameData*>* platoons = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!platoons) return luaL_error(L, "platoons is nil");
+    b->createPlatoonsAuto(*platoons);
+    return 0;
+}
+
+int FactionBinding::restorePlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    Platoon* p = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    b->restorePlatoon(p);
+    return 0;
+}
+
+int FactionBinding::countPopulation(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    TownBase* t = checkObject<TownBase>(L, 2, TownBaseBinding::getMetatableName());
+    int result = b->countPopulation(t);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int FactionBinding::countNumSquads(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameData* squadTemplate = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    TownBase* squadHome = checkObject<TownBase>(L, 3, TownBaseBinding::getMetatableName());
+    int result = b->countNumSquads(squadTemplate, squadHome);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int FactionBinding::destroyPlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    Platoon* platoon = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    b->destroyPlatoon(platoon);
+    return 0;
+}
+
+int FactionBinding::removePlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    Platoon* platoon = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    b->removePlatoon(platoon);
+    return 0;
+}
+
+int FactionBinding::getRandomLockLevel(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameData* objData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    int result = b->getRandomLockLevel(objData);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int FactionBinding::getGUIData(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    DatapanelGUI* panel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    b->getGUIData(panel, category);
+    return 0;
+}
+
+int FactionBinding::loadState(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameDataContainer* saveSource = (GameDataContainer*)lua_touserdata(L, 2);
+    GameData* gamestate_faction = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    b->loadState(saveSource, gamestate_faction);
+    return 0;
+}
+
+int FactionBinding::saveState(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameDataContainer* container = (GameDataContainer*)lua_touserdata(L, 2);
+    bool leveleditor = lua_toboolean(L, 3) != 0;
+    GameData* result = b->saveState(container, leveleditor);
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+}
+
+int FactionBinding::getCharactersInArea(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!out) return luaL_error(L, "out is nil");
+    Ogre::Vector3 pos;
+    readVector3(L, 3, pos);
+    float radius = (float)luaL_checknumber(L, 4);
+    bool standingOnly = lua_toboolean(L, 5) != 0;
+    b->getCharactersInArea(*out, pos, radius, standingOnly);
+    return 0;
+}
+
+int FactionBinding::_NV_getCharactersInArea(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!out) return luaL_error(L, "out is nil");
+    Ogre::Vector3 pos;
+    readVector3(L, 3, pos);
+    float radius = (float)luaL_checknumber(L, 4);
+    bool standingOnly = lua_toboolean(L, 5) != 0;
+    b->_NV_getCharactersInArea(*out, pos, radius, standingOnly);
+    return 0;
+}
+
+int FactionBinding::getSelectedObjects(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!out) return luaL_error(L, "out is nil");
+    itemType type = (itemType)luaL_checkinteger(L, 3);
+    bool selectedOnly = lua_toboolean(L, 4) != 0;
+    b->getSelectedObjects(*out, type, selectedOnly);
+    return 0;
+}
+
+int FactionBinding::_NV_getSelectedObjects(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!out) return luaL_error(L, "out is nil");
+    itemType type = (itemType)luaL_checkinteger(L, 3);
+    bool selectedOnly = lua_toboolean(L, 4) != 0;
+    b->_NV_getSelectedObjects(*out, type, selectedOnly);
+    return 0;
+}
+
+int FactionBinding::removeObject(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->removeObject(c);
+    return 0;
+}
+
+int FactionBinding::_NV_removeObject(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->_NV_removeObject(c);
+    return 0;
+}
+
+int FactionBinding::destroyObject(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->destroyObject(c);
+    return 0;
+}
+
+int FactionBinding::_NV_destroyObject(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->_NV_destroyObject(c);
+    return 0;
+}
+
+int FactionBinding::addActiveObject(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    ActivePlatoon* p = checkObject<ActivePlatoon>(L, 3, ActivePlatoonBinding::getMetatableName());
+    bool result = b->addActiveObject(c, p);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int FactionBinding::_NV_addActiveObject(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    RootObject* c = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    ActivePlatoon* p = checkObject<ActivePlatoon>(L, 3, ActivePlatoonBinding::getMetatableName());
+    bool result = b->_NV_addActiveObject(c, p);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int FactionBinding::choosePlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    ActivePlatoon* result = b->choosePlatoon();
+    return pushObject<ActivePlatoon>(L, result, ActivePlatoonBinding::getMetatableName());
+}
+
+int FactionBinding::getName(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    const std::string& result = b->getName();
+    lua_pushlstring(L, result.c_str(), result.length());
+    return 1;
+}
+
+int FactionBinding::getNumPlatoons(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameData* squadTemplate = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool tempsOnly = lua_toboolean(L, 3) != 0;
+    TownBase* hometown = checkObject<TownBase>(L, 4, TownBaseBinding::getMetatableName());
+    int result = b->getNumPlatoons(squadTemplate, tempsOnly, hometown);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int FactionBinding::getAllSquadsThatOwn(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    lektor<Platoon*>* out = LektorPtrBinding<Platoon*>::get(L, 2);
+    if (!out) return luaL_error(L, "out is nil");
+    Building* what = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
+    b->getAllSquadsThatOwn(*out, what);
+    return 0;
+}
+
+int FactionBinding::chooseARace(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameData* character = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    GameData* squadTemplate = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    GameData* result = b->chooseARace(character, squadTemplate);
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+}
+
+int FactionBinding::getBuildingReplacement(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    GameData* building = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    GameData* result = b->getBuildingReplacement(building);
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+}
+
+int FactionBinding::_switchToUnloadedPlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    ActivePlatoon* platoon = checkObject<ActivePlatoon>(L, 2, ActivePlatoonBinding::getMetatableName());
+    b->_switchToUnloadedPlatoon(platoon);
+    return 0;
+}
+
+int FactionBinding::_newPlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    GameData* squadTemplate = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    GameData* platoonState = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
+    Ogre::Vector3 pos;
+    readVector3(L, 5, pos);
+    bool persistent = lua_toboolean(L, 6) != 0;
+    
+    Platoon* result = b->_newPlatoon(f, squadTemplate, platoonState, pos, persistent);
+    return pushObject<Platoon>(L, result, PlatoonBinding::getMetatableName());
+}
+
+int FactionBinding::_addActivePlatoonToList(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    Platoon* platoon = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    b->_addActivePlatoonToList(platoon);
+    return 0;
+}
+
+int FactionBinding::addPlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    Platoon* platoon = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    b->addPlatoon(platoon);
+    return 0;
+}
+
+int FactionBinding::changePlatoonIndex(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    Platoon* platoon = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    int index = (int)luaL_checkinteger(L, 3);
+    b->changePlatoonIndex(platoon, index);
+    return 0;
+}
+
+int FactionBinding::deactivatePlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    Platoon* p = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    b->deactivatePlatoon(p);
+    return 0;
+}
+
+int FactionBinding::activatePlatoon(lua_State* L)
+{
+    Faction* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Faction is nil");
+    Platoon* p = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    b->activatePlatoon(p);
+    return 0;
+}
 static int Faction_getSquadThatOwns(lua_State* L)
 {
     Faction* b = getB(L, 1);
@@ -883,12 +1235,7 @@ static int Faction_getActivePlatoons_method(lua_State* L)
     if (!b) return luaL_error(L, "Faction is nil");
     const lektor<Platoon*>* result = b->getActivePlatoons();
     if (!result) { lua_pushnil(L); return 1; }
-    lua_createtable(L, result->size(), 0);
-    for (uint32_t i = 0; i < result->size(); ++i) {
-        pushObject<Platoon>(L, result->operator[](i), PlatoonBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Platoon*>>(L, const_cast<lektor<Platoon*>*>(result), LektorPtrBinding<Platoon*>::metaName);
 }
 
 static int Faction_getUnloadedPlatoons_method(lua_State* L)
@@ -897,12 +1244,7 @@ static int Faction_getUnloadedPlatoons_method(lua_State* L)
     if (!b) return luaL_error(L, "Faction is nil");
     const lektor<Platoon*>* result = b->getUnloadedPlatoons();
     if (!result) { lua_pushnil(L); return 1; }
-    lua_createtable(L, result->size(), 0);
-    for (uint32_t i = 0; i < result->size(); ++i) {
-        pushObject<Platoon>(L, result->operator[](i), PlatoonBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Platoon*>>(L, const_cast<lektor<Platoon*>*>(result), LektorPtrBinding<Platoon*>::metaName);
 }
 
 static int Faction_getAllActiveSquads(lua_State* L)
@@ -911,12 +1253,7 @@ static int Faction_getAllActiveSquads(lua_State* L)
     if (!b) return luaL_error(L, "Faction is nil");
     const lektor<Platoon*>* result = b->getAllActiveSquads();
     if (!result) { lua_pushnil(L); return 1; }
-    lua_createtable(L, result->size(), 0);
-    for (uint32_t i = 0; i < result->size(); ++i) {
-        pushObject<Platoon>(L, result->operator[](i), PlatoonBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    return pushObject<lektor<Platoon*>>(L, const_cast<lektor<Platoon*>*>(result), LektorPtrBinding<Platoon*>::metaName);
 }
 
 int FactionBinding::gc(lua_State* L)
@@ -974,6 +1311,46 @@ void FactionBinding::registerBinding(lua_State* L)
         { "getActivePlatoons", Faction_getActivePlatoons_method },
         { "getUnloadedPlatoons", Faction_getUnloadedPlatoons_method },
         { "getAllActiveSquads", Faction_getAllActiveSquads },
+
+        { "getFundamentalNPCType", FactionBinding::getFundamentalNPCType },
+        { "setup", FactionBinding::setup },
+        { "createNewEmptyUnloadedPlatoon", FactionBinding::createNewEmptyUnloadedPlatoon },
+        { "createNewEmptyActivePlatoon", FactionBinding::createNewEmptyActivePlatoon },
+        { "createPlatoonUnloaded", FactionBinding::createPlatoonUnloaded },
+        { "createPlatoonAuto", FactionBinding::createPlatoonAuto },
+        { "createPlatoonsAuto", FactionBinding::createPlatoonsAuto },
+        { "restorePlatoon", FactionBinding::restorePlatoon },
+        { "countPopulation", FactionBinding::countPopulation },
+        { "countNumSquads", FactionBinding::countNumSquads },
+        { "destroyPlatoon", FactionBinding::destroyPlatoon },
+        { "removePlatoon", FactionBinding::removePlatoon },
+        { "getRandomLockLevel", FactionBinding::getRandomLockLevel },
+        { "getGUIData", FactionBinding::getGUIData },
+        { "loadState", FactionBinding::loadState },
+        { "saveState", FactionBinding::saveState },
+        { "getCharactersInArea", FactionBinding::getCharactersInArea },
+        { "_NV_getCharactersInArea", FactionBinding::_NV_getCharactersInArea },
+        { "getSelectedObjects", FactionBinding::getSelectedObjects },
+        { "_NV_getSelectedObjects", FactionBinding::_NV_getSelectedObjects },
+        { "removeObject", FactionBinding::removeObject },
+        { "_NV_removeObject", FactionBinding::_NV_removeObject },
+        { "destroyObject", FactionBinding::destroyObject },
+        { "_NV_destroyObject", FactionBinding::_NV_destroyObject },
+        { "addActiveObject", FactionBinding::addActiveObject },
+        { "_NV_addActiveObject", FactionBinding::_NV_addActiveObject },
+        { "choosePlatoon", FactionBinding::choosePlatoon },
+        { "getName", FactionBinding::getName },
+        { "getNumPlatoons", FactionBinding::getNumPlatoons },
+        { "getAllSquadsThatOwn", FactionBinding::getAllSquadsThatOwn },
+        { "chooseARace", FactionBinding::chooseARace },
+        { "getBuildingReplacement", FactionBinding::getBuildingReplacement },
+        { "_switchToUnloadedPlatoon", FactionBinding::_switchToUnloadedPlatoon },
+        { "_newPlatoon", FactionBinding::_newPlatoon },
+        { "_addActivePlatoonToList", FactionBinding::_addActivePlatoonToList },
+        { "addPlatoon", FactionBinding::addPlatoon },
+        { "changePlatoonIndex", FactionBinding::changePlatoonIndex },
+        { "deactivatePlatoon", FactionBinding::deactivatePlatoon },
+        { "activatePlatoon", FactionBinding::activatePlatoon },
         { 0, 0 }
     };
 
@@ -985,6 +1362,8 @@ void FactionBinding::registerBinding(lua_State* L)
         genericPropertyIndex, 
         genericPropertyNewIndex
     );
+
+    LektorPtrBinding<Platoon*>::registerBinding(L, "lektor<Platoon*>", PlatoonBinding::getMetatableName());
 
     luaL_getmetatable(L, FactionBinding::getMetatableName());
     lua_newtable(L); // Create __getters table

@@ -11,6 +11,11 @@
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
+#include "kenshi/SensoryData.h"
+#include "kenshi/GameSaveState.h"
+#include "Bindings/SensoryDataBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
 
 namespace KenshiLua
 {
@@ -401,25 +406,9 @@ int RootObjectBaseBinding::_NV_getOwnerships(lua_State* L)
     return pushObject<Ownerships>(L, result, OwnershipsBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 28: RootObjectBase* _CONSTRUCTOR(...) - unsupported arg type
-  line 57: SensoryData* getSensoryData(...) - unsupported return type
-  line 58: SensoryData* _NV_getSensoryData(...) - unsupported return type
-  line 59: StateBroadcastData* getStateBroadcast(...) - unsupported return type
-  line 60: StateBroadcastData* _NV_getStateBroadcast(...) - unsupported return type
-  line 61: TownBase* getCurrentTownLocation(...) - unsupported return type
-  line 62: TownBase* _NV_getCurrentTownLocation(...) - unsupported return type
-  line 63: const hand& getHandle(...) - reference return type
-  line 64: void setHandle(...) - unsupported arg type
-  line 65: void _NV_setHandle(...) - unsupported arg type
-  line 66: GameSaveState serialise(...) - unsupported return type
-  line 67: void loadFromSerialise(...) - unsupported arg type
-  line 73: void setFaction(...) - unsupported arg type
-  line 74: void _NV_setFaction(...) - unsupported arg type
-*/
 
-static int RootObjectBase_getHandle(lua_State* L)
+
+int RootObjectBaseBinding::getHandle(lua_State* L)
 {
     RootObjectBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectBase is nil");
@@ -428,7 +417,7 @@ static int RootObjectBase_getHandle(lua_State* L)
     return 1;
 }
 
-static int RootObjectBase_getCurrentTownLocation(lua_State* L)
+int RootObjectBaseBinding::getCurrentTownLocation(lua_State* L)
 {
     RootObjectBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectBase is nil");
@@ -436,7 +425,7 @@ static int RootObjectBase_getCurrentTownLocation(lua_State* L)
     return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
 }
 
-static int RootObjectBase__NV_getCurrentTownLocation(lua_State* L)
+int RootObjectBaseBinding::_NV_getCurrentTownLocation(lua_State* L)
 {
     RootObjectBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectBase is nil");
@@ -444,7 +433,7 @@ static int RootObjectBase__NV_getCurrentTownLocation(lua_State* L)
     return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
 }
 
-static int RootObjectBase_setFaction(lua_State* L)
+int RootObjectBaseBinding::setFaction(lua_State* L)
 {
     RootObjectBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectBase is nil");
@@ -457,7 +446,7 @@ static int RootObjectBase_setFaction(lua_State* L)
     return 0;
 }
 
-static int RootObjectBase__NV_setFaction(lua_State* L)
+int RootObjectBaseBinding::_NV_setFaction(lua_State* L)
 {
     RootObjectBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectBase is nil");
@@ -467,6 +456,98 @@ static int RootObjectBase__NV_setFaction(lua_State* L)
         a = checkObject<ActivePlatoon>(L, 3, ActivePlatoonBinding::getMetatableName());
     }
     b->_NV_setFaction(f, a);
+    return 0;
+}
+
+int RootObjectBaseBinding::_CONSTRUCTOR(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Faction* ownr = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 4, handBinding::getMetatableName());
+    RootObjectBase* result = b->_CONSTRUCTOR(d, ownr, *h);
+    return pushObject<RootObjectBase>(L, result, RootObjectBaseBinding::getMetatableName());
+}
+
+int RootObjectBaseBinding::getSensoryData(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    SensoryData* result = b->getSensoryData();
+    return pushObject<SensoryData>(L, result, SensoryDataBinding::getMetatableName());
+}
+
+int RootObjectBaseBinding::_NV_getSensoryData(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    SensoryData* result = b->_NV_getSensoryData();
+    return pushObject<SensoryData>(L, result, SensoryDataBinding::getMetatableName());
+}
+
+int RootObjectBaseBinding::getStateBroadcast(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    StateBroadcastData* res = b->getStateBroadcast();
+    if (res) {
+        lua_pushlightuserdata(L, (void*)res);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int RootObjectBaseBinding::_NV_getStateBroadcast(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    StateBroadcastData* res = b->_NV_getStateBroadcast();
+    if (res) {
+        lua_pushlightuserdata(L, (void*)res);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int RootObjectBaseBinding::setHandle(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->setHandle(*h);
+    return 0;
+}
+
+int RootObjectBaseBinding::_NV_setHandle(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->_NV_setHandle(*h);
+    return 0;
+}
+
+int RootObjectBaseBinding::serialise(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = b->serialise(container, refList, offset);
+    GameSaveState* heapResult = new GameSaveState(result);
+    return pushObject<GameSaveState>(L, heapResult, GameSaveStateBinding::getMetatableName());
+}
+
+int RootObjectBaseBinding::loadFromSerialise(lua_State* L)
+{
+    RootObjectBase* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectBase is nil");
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    b->loadFromSerialise(state);
     return 0;
 }
 
@@ -520,11 +601,20 @@ void RootObjectBaseBinding::registerBinding(lua_State* L)
         { "_NV_getFloor", RootObjectBaseBinding::_NV_getFloor },
         { "getOwnerships", RootObjectBaseBinding::getOwnerships },
         { "_NV_getOwnerships", RootObjectBaseBinding::_NV_getOwnerships },
-        { "getHandle", RootObjectBase_getHandle },
-        { "getCurrentTownLocation", RootObjectBase_getCurrentTownLocation },
-        { "_NV_getCurrentTownLocation", RootObjectBase__NV_getCurrentTownLocation },
-        { "setFaction", RootObjectBase_setFaction },
-        { "_NV_setFaction", RootObjectBase__NV_setFaction },
+        { "getHandle", RootObjectBaseBinding::getHandle },
+        { "getCurrentTownLocation", RootObjectBaseBinding::getCurrentTownLocation },
+        { "_NV_getCurrentTownLocation", RootObjectBaseBinding::_NV_getCurrentTownLocation },
+        { "setFaction", RootObjectBaseBinding::setFaction },
+        { "_NV_setFaction", RootObjectBaseBinding::_NV_setFaction },
+        { "_CONSTRUCTOR", RootObjectBaseBinding::_CONSTRUCTOR },
+        { "getSensoryData", RootObjectBaseBinding::getSensoryData },
+        { "_NV_getSensoryData", RootObjectBaseBinding::_NV_getSensoryData },
+        { "getStateBroadcast", RootObjectBaseBinding::getStateBroadcast },
+        { "_NV_getStateBroadcast", RootObjectBaseBinding::_NV_getStateBroadcast },
+        { "setHandle", RootObjectBaseBinding::setHandle },
+        { "_NV_setHandle", RootObjectBaseBinding::_NV_setHandle },
+        { "serialise", RootObjectBaseBinding::serialise },
+        { "loadFromSerialise", RootObjectBaseBinding::loadFromSerialise },
         { 0, 0 }
     };
 

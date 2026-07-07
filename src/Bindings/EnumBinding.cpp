@@ -2,18 +2,37 @@
 #include "Bindings/EnumBinding.h"
 #include "Lua/BindingHelpers.h"
 
+#include "kenshi/Appearance.h"
+#include "kenshi/Bounty.h"
 #include "kenshi/Character.h"
 #include "kenshi/CharMovement.h"
 #include "kenshi/Dialogue.h"
 #include "kenshi/Enums.h"
 #include "kenshi/MedicalSystem.h"
 #include "kenshi/Platoon.h"
+#include "kenshi/SaveManager.h"
+#include "kenshi/SensoryData.h"
 #include "kenshi/Town.h"
 
 #include <lua.hpp>
 
 namespace KenshiLua
 {       
+    // ------------------------------------------
+    // Appearance.h
+    // -----------------------------------------
+
+    void registerMeshDataLookup(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "FRONT", MeshDataLookup::Dir::FRONT);
+        setEnum(L, "BACK", MeshDataLookup::Dir::BACK);
+        setEnum(L, "NUM_DIRS", MeshDataLookup::Dir::NUM_DIRS);
+
+        lua_setglobal(L, "MeshDataLookup");
+    }
+
     // -------------------------------------------
     // Bounty.h
     // ------------------------------------------
@@ -393,6 +412,38 @@ namespace KenshiLua
         lua_setglobal(L, "CharacterMessage");
     }
 
+    void registerUseStuffState(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "IN_NOTHING", UseStuffState::IN_NOTHING);
+        setEnum(L, "IN_BED", UseStuffState::IN_BED);
+        setEnum(L, "IN_PRISON", UseStuffState::IN_PRISON);
+
+        lua_setglobal(L, "UseStuffState");
+    }
+
+    void registerDisguiseGUIFeedback(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "DGF_SAME_FACTION", Character::DGF_SAME_FACTION);
+        setEnum(L, "DGF_MY_SLAVE", Character::DGF_MY_SLAVE);
+        setEnum(L, "DGF_I_HATE_YOU", Character::DGF_I_HATE_YOU);
+
+        lua_setglobal(L, "DisguiseGUIFeedback");
+    }
+
+    void registerCharMessage(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "CHARMESSAGE_NONE", Character::CHARMESSAGE_NONE);
+        setEnum(L, "CHARMESSAGE_CARRY", Character::CHARMESSAGE_CARRY);
+        setEnum(L, "CHARMESSAGE_CAGE", Character::CHARMESSAGE_CAGE);
+
+        lua_setglobal(L, "CharMessage");
+    }
 
 
     // --------------------------------------------------
@@ -1053,11 +1104,8 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_newtable(L);
 
         setEnum(L, "CLOTH", ArmourType::CLOTH);
-
         setEnum(L, "LEATHER", ArmourType::LEATHER);
-
         setEnum(L, "CHAIN", ArmourType::CHAIN);
-
         setEnum(L, "METAL_PLATE", ArmourType::METAL_PLATE);
 
         lua_setglobal(L, "ArmourType");
@@ -2289,30 +2337,23 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_newtable(L);
 
         setEnum(L, "GROUND_SAND", GroundType::GROUND_SAND);
-		setEnum(L, "SAND", GroundType::GROUND_SAND);
-
         setEnum(L, "GROUND_GRASS", GroundType::GROUND_GRASS);
-		setEnum(L, "GRASS", GroundType::GROUND_GRASS);
-
         setEnum(L, "GROUND_CONCRETE", GroundType::GROUND_CONCRETE);
-		setEnum(L, "CONCRETE", GroundType::GROUND_CONCRETE);
-
         setEnum(L, "GROUND_WOOD", GroundType::GROUND_WOOD);
-		setEnum(L, "WOOD", GroundType::GROUND_WOOD);
-
         setEnum(L, "GROUND_METAL", GroundType::GROUND_METAL);
-		setEnum(L, "METAL", GroundType::GROUND_METAL);
-
         setEnum(L, "GROUND_WATER", GroundType::GROUND_WATER);
-		setEnum(L, "WATER", GroundType::GROUND_WATER);
-
         setEnum(L, "GROUND_MUD", GroundType::GROUND_MUD);
-		setEnum(L, "MUD", GroundType::GROUND_MUD);
-
         setEnum(L, "GROUND_SNOW", GroundType::GROUND_SNOW);
-		setEnum(L, "SNOW", GroundType::GROUND_SNOW);
-
         setEnum(L, "GROUND_DIRT", GroundType::GROUND_DIRT);
+
+        setEnum(L, "SAND", GroundType::GROUND_SAND);
+		setEnum(L, "GRASS", GroundType::GROUND_GRASS);
+		setEnum(L, "CONCRETE", GroundType::GROUND_CONCRETE);
+		setEnum(L, "WOOD", GroundType::GROUND_WOOD);
+		setEnum(L, "METAL", GroundType::GROUND_METAL);
+		setEnum(L, "WATER", GroundType::GROUND_WATER);
+		setEnum(L, "MUD", GroundType::GROUND_MUD);
+		setEnum(L, "SNOW", GroundType::GROUND_SNOW);
 		setEnum(L, "DIRT", GroundType::GROUND_DIRT);
 
         lua_setglobal(L, "GroundType");
@@ -2323,25 +2364,15 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_createtable(L, 0, 11);
 
         setEnum(L, "NONE", EffectType::Enum::NONE);
-
         setEnum(L, "CAMERA", EffectType::Enum::CAMERA);
-
         setEnum(L, "POINT", EffectType::Enum::POINT);
-
         setEnum(L, "WANDERING", EffectType::Enum::WANDERING);
-
         setEnum(L, "GLOBAL", EffectType::Enum::GLOBAL);
-
         setEnum(L, "CAMERA_RAIN", EffectType::Enum::CAMERA_RAIN);
-
         setEnum(L, "CAMERA_ACID_RAIN", EffectType::Enum::CAMERA_ACID_RAIN);
-
         setEnum(L, "POINT_LIGHTING", EffectType::Enum::POINT_LIGHTING);
-
         setEnum(L, "WANDERING_STORM", EffectType::Enum::WANDERING_STORM);
-
         setEnum(L, "WANDERING_GAS", EffectType::Enum::WANDERING_GAS);
-
         setEnum(L, "GLOBAL_POINT", EffectType::Enum::GLOBAL_POINT);
 
         lua_setglobal(L, "EffectType");
@@ -2352,9 +2383,7 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_createtable(L, 0, 3);
 
         setEnum(L, "SQ_UNKNOWN", SquadType::SQ_UNKNOWN);
-
         setEnum(L, "SQ_RESIDENT", SquadType::SQ_RESIDENT);
-
         setEnum(L, "SQ_ROAMING", SquadType::SQ_ROAMING);
 
         lua_setglobal(L, "SquadType");
@@ -2365,13 +2394,9 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_createtable(L, 0, 5);
 
         setEnum(L, "WALK", MoveSpeed::WALK);
-
         setEnum(L, "JOG", MoveSpeed::JOG);
-
         setEnum(L, "RUN", MoveSpeed::RUN);
-
         setEnum(L, "GROUPED", MoveSpeed::GROUPED);
-
         setEnum(L, "NO_SPEED_CHANGE", MoveSpeed::NO_SPEED_CHANGE);
 
         lua_setglobal(L, "MoveSpeed");
@@ -2382,27 +2407,16 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_createtable(L, 0, 12);
 
         setEnum(L, "CHOP_WEAPON", swordStateEnum::CHOP_WEAPON);
-
         setEnum(L, "BLOCK", swordStateEnum::BLOCK);
-
         setEnum(L, "REACTION_BLOCK", swordStateEnum::REACTION_BLOCK);
-
         setEnum(L, "STARTUP_STATE", swordStateEnum::STARTUP_STATE);
-
         setEnum(L, "DECISION", swordStateEnum::DECISION);
-
         setEnum(L, "CIRCLE_MENACINGLY", swordStateEnum::CIRCLE_MENACINGLY);
-
         setEnum(L, "WAIT_MENACINGLY", swordStateEnum::WAIT_MENACINGLY);
-
         setEnum(L, "HESITATE", swordStateEnum::HESITATE);
-
         setEnum(L, "STUMBLE", swordStateEnum::STUMBLE);
-
         setEnum(L, "COMBAT_FINISHED", swordStateEnum::COMBAT_FINISHED);
-
         setEnum(L, "TARGET_PATHFINDING_STARTUP", swordStateEnum::TARGET_PATHFINDING_STARTUP);
-
         setEnum(L, "TARGET_PATHFINDING", swordStateEnum::TARGET_PATHFINDING);
 
         lua_pushvalue(L, -1);
@@ -2415,17 +2429,11 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_createtable(L, 0, 7);
 
         setEnum(L, "NONE", MiningResource::NONE);
-
         setEnum(L, "IRON", MiningResource::IRON);
-
         setEnum(L, "STONE", MiningResource::STONE);
-
         setEnum(L, "COPPER", MiningResource::COPPER);
-
         setEnum(L, "CARBON", MiningResource::CARBON);
-
         setEnum(L, "WATER", MiningResource::WATER);
-
         setEnum(L, "GROUND", MiningResource::GROUND);
 
         lua_setglobal(L, "MiningResource");
@@ -2468,19 +2476,17 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerMapZoomLevel(lua_State* L)
     {
         lua_createtable(L, 0, 8);
-
+        //original c++ enums
         setEnum(L, "ZOOM_MIN", MapZoomLevel::ZOOM_MIN);
-		setEnum(L, "MIN", MapZoomLevel::ZOOM_MIN);
-
         setEnum(L, "ZOOM_MID", MapZoomLevel::ZOOM_MID);
-		setEnum(L, "MID", MapZoomLevel::ZOOM_MID);
-
         setEnum(L, "ZOOM_MAX", MapZoomLevel::ZOOM_MAX);
-		setEnum(L, "MAX", MapZoomLevel::ZOOM_MAX);
-
         setEnum(L, "ZOOM_CHARACTERS", MapZoomLevel::ZOOM_CHARACTERS);
+        //aliases
+        setEnum(L, "MIN", MapZoomLevel::ZOOM_MIN);
+		setEnum(L, "MID", MapZoomLevel::ZOOM_MID);
+		setEnum(L, "MAX", MapZoomLevel::ZOOM_MAX);
 		setEnum(L, "CHARACTERS", MapZoomLevel::ZOOM_CHARACTERS);
-
+        //set the global variable
         lua_setglobal(L, "MapZoomLevel");
     }
 
@@ -2515,7 +2521,6 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_createtable(L, 0, 2);
 
         setEnum(L, "GLOBAL", InputHandler::GLOBAL);
-
         setEnum(L, "EDITOR", InputHandler::EDITOR);
 
         lua_setglobal(L, "GlobalMode");
@@ -2528,17 +2533,15 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerLimbState(lua_State* L)
     {
         lua_createtable(L, 0, 8);
-
+        // original c++
         setEnum(L, "LIMB_ORIGINAL", LimbState::LIMB_ORIGINAL);
-        setEnum(L, "ORIGINAL", LimbState::LIMB_ORIGINAL);
-
         setEnum(L, "LIMB_STUMP", LimbState::LIMB_STUMP);
-        setEnum(L, "STUMP", LimbState::LIMB_STUMP);
-
         setEnum(L, "LIMB_REPLACED", LimbState::LIMB_REPLACED);
-        setEnum(L, "REPLACED", LimbState::LIMB_REPLACED);
-
         setEnum(L, "LIMB_CRUSHED", LimbState::LIMB_CRUSHED);
+        // aliases
+        setEnum(L, "ORIGINAL", LimbState::LIMB_ORIGINAL);
+        setEnum(L, "STUMP", LimbState::LIMB_STUMP);
+        setEnum(L, "REPLACED", LimbState::LIMB_REPLACED);
         setEnum(L, "CRUSHED", LimbState::LIMB_CRUSHED);
 
         lua_setglobal(L, "LimbState");
@@ -2574,35 +2577,32 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerHealthPartStatus(lua_State* L)
     {
         lua_createtable(L, 0, 8);
-
+        // original c++ enums
         setEnum(L, "PART_TORSO", MedicalSystem::HealthPartStatus::PART_TORSO);
-        setEnum(L, "TORSO", MedicalSystem::HealthPartStatus::PART_TORSO);
-
         setEnum(L, "PART_LEG", MedicalSystem::HealthPartStatus::PartType::PART_LEG);
-        setEnum(L, "LEG", MedicalSystem::HealthPartStatus::PartType::PART_LEG);
-
         setEnum(L, "PART_ARM", MedicalSystem::HealthPartStatus::PartType::PART_ARM);
-        setEnum(L, "ARM", MedicalSystem::HealthPartStatus::PartType::PART_ARM);
-
         setEnum(L, "PART_HEAD", MedicalSystem::HealthPartStatus::PartType::PART_HEAD);
+        // aliases
+        setEnum(L, "TORSO", MedicalSystem::HealthPartStatus::PART_TORSO);
+        setEnum(L, "LEG", MedicalSystem::HealthPartStatus::PartType::PART_LEG);
+        setEnum(L, "ARM", MedicalSystem::HealthPartStatus::PartType::PART_ARM);
         setEnum(L, "HEAD", MedicalSystem::HealthPartStatus::PartType::PART_HEAD);
-
+        // set the global variable
         lua_setglobal(L, "HealthPartStatus");
     }
 
     void registerCollapseStage(lua_State* L)
     {
         lua_createtable(L, 0, 6);
-
+        // original c++ enums
         setEnum(L, "COLLAPSE_NONE", MedicalSystem::CollapseStage::COLLAPSE_NONE);
-        setEnum(L, "NONE", MedicalSystem::CollapseStage::COLLAPSE_NONE);
-
         setEnum(L, "COLLAPSE_BUT_NO_RAGDOLL", MedicalSystem::CollapseStage::COLLAPSE_BUT_NO_RAGDOLL);
-        setEnum(L, "BUT_NO_RAGDOLL", MedicalSystem::CollapseStage::COLLAPSE_BUT_NO_RAGDOLL);
-
         setEnum(L, "COLLAPSE_KO", MedicalSystem::CollapseStage::COLLAPSE_KO);
+        // aliases
+        setEnum(L, "NONE", MedicalSystem::CollapseStage::COLLAPSE_NONE);
+        setEnum(L, "BUT_NO_RAGDOLL", MedicalSystem::CollapseStage::COLLAPSE_BUT_NO_RAGDOLL);
         setEnum(L, "KO", MedicalSystem::CollapseStage::COLLAPSE_KO);
-
+        //set the global variable
         lua_setglobal(L, "CollapseStage");
     }
     // --------------------------------------
@@ -2612,24 +2612,80 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerPlatoonCreationMessage(lua_State* L)
     {
         lua_createtable(L, 0, 8);
-
+        // original C++ enums
         setEnum(L, "CM_NO_MESSAGE", PlatoonCreationMessage::CM_NO_MESSAGE);
-        setEnum(L, "NO_MESSAGE", PlatoonCreationMessage::CM_NO_MESSAGE);
-
         setEnum(L, "CM_REFRESH", PlatoonCreationMessage::CM_REFRESH);
-        setEnum(L, "REFRESH", PlatoonCreationMessage::CM_REFRESH);
-
         setEnum(L, "CM_DECIMATE", PlatoonCreationMessage::CM_DECIMATE);
-        setEnum(L, "DECIMATE", PlatoonCreationMessage::CM_DECIMATE);
-
         setEnum(L, "CM_DELETE", PlatoonCreationMessage::CM_DELETE);
-        setEnum(L, "DELETE", PlatoonCreationMessage::CM_DELETE);
-
         setEnum(L, "CM_EMPTY", PlatoonCreationMessage::CM_EMPTY);
+        // aliases
+        setEnum(L, "NO_MESSAGE", PlatoonCreationMessage::CM_NO_MESSAGE);
+        setEnum(L, "REFRESH", PlatoonCreationMessage::CM_REFRESH);
+        setEnum(L, "DECIMATE", PlatoonCreationMessage::CM_DECIMATE);
+        setEnum(L, "DELETE", PlatoonCreationMessage::CM_DELETE);
         setEnum(L, "EMPTY", PlatoonCreationMessage::CM_EMPTY);
-
+        // set the global variable
         lua_setglobal(L, "PlatoonCreationMessage");
     }
+
+    // -------------------------------------
+    // SaveManager.h
+    // -------------------------------------
+
+    void registerSaveManagerFlags(lua_State* L)
+    {
+        lua_createtable(L, 0, 6);
+
+        setEnum(L, "RESET_POSITION", SaveManager::Flags::RESET_POSITION);
+        setEnum(L, "IMPORT_SQUAD", SaveManager::Flags::IMPORT_SQUAD);
+        setEnum(L, "IMPORT_BUILDINGS", SaveManager::Flags::IMPORT_BUILDINGS);
+        setEnum(L, "IMPORT_RESEARCH", SaveManager::Flags::IMPORT_RESEARCH);
+        setEnum(L, "IMPORT_NPC_STATES", SaveManager::Flags::IMPORT_NPC_STATES);
+        setEnum(L, "IMPORT_RELATIONS", SaveManager::Flags::IMPORT_RELATIONS);
+
+        lua_setglobal(L, "SaveManagerFlags");
+    }
+
+    void registerSaveManagerSignals(lua_State* L)
+    {
+        lua_createtable(L, 0, 4);
+
+        setEnum(L, "SAVEGAME", SaveManager::Signal::SAVEGAME);
+        setEnum(L, "LOADGAME", SaveManager::Signal::LOADGAME);
+        setEnum(L, "IMPORTGAME", SaveManager::Signal::IMPORTGAME);
+        setEnum(L, "NEWGAME", SaveManager::Signal::NEWGAME);
+
+        lua_setglobal(L, "SaveManagerSignals");
+    }
+
+    // -------------------------------------
+    // SensoryData.h
+    // -------------------------------------
+
+    void registerSenseType(lua_State* L)
+    {
+        lua_createtable(L, 0, 6);
+
+        setEnum(L, "SENSE_ALLY", SENSE_ALLY);
+        setEnum(L, "SENSE_NEUTRAL", SENSE_NEUTRAL);
+        setEnum(L, "SENSE_ENEMY", SENSE_ENEMY);
+        setEnum(L, "SENSE_KO", SENSE_KO);
+        setEnum(L, "SENSE_DEAD", SENSE_DEAD);
+        setEnum(L, "SENSE_SLAVE", SENSE_SLAVE);
+        setEnum(L, "SENSE_ESCAPED_SLAVE", SENSE_ESCAPED_SLAVE);
+        setEnum(L, "SENSE_AUTHORITY_FIGURE", SENSE_AUTHORITY_FIGURE);
+        setEnum(L, "SENSE_CANT_SEE", SENSE_CANT_SEE);
+        setEnum(L, "SENSE_IN_CAGE", SENSE_IN_CAGE);
+        setEnum(L, "SENSE_SAME_FACTION", SENSE_SAME_FACTION);
+        setEnum(L, "SENSE_ROBOTS", SENSE_ROBOTS);
+        setEnum(L, "SENSE_ENEMY_OF_MY_SLAVEMASTER", SENSE_ENEMY_OF_MY_SLAVEMASTER);
+        setEnum(L, "SENSE_PLAYER", SENSE_PLAYER);
+        setEnum(L, "SENSE_CRAWLING", SENSE_CRAWLING);
+        setEnum(L, "SENSE_CARRIED", SENSE_CARRIED);
+
+        lua_setglobal(L, "SenseType");
+    }
+
     // --------------------------------------
     // Town.h
     // --------------------------------------
@@ -2685,6 +2741,8 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
 
     void registerEnumBindings(lua_State* L)
     {
+        registerMeshDataLookup(L);
+        registerCrimeEnum(L);
         registerBuildingDesignation(L);
         registerBuildingClassType(L);
         registerBuildingPlacementGroundType(L);
@@ -2698,6 +2756,9 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         registerSoundRange(L);
         registerSquadMemberType(L);
         registerCharacterMessage(L);
+        registerUseStuffState(L);
+        registerDisguiseGUIFeedback(L);
+        registerCharMessage(L);
         registerTalker(L);
         registerDialogueAction(L);
         registersItemType(L);
@@ -2734,6 +2795,9 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         registerHealthPartStatus(L);
         registerCollapseStage(L);
         registerPlatoonCreationMessage(L);
+        registerSaveManagerFlags(L);
+        registerSaveManagerSignals(L);
+        registerSenseType(L);
         registerTownAlarmState(L);
         registerTownType(L);
 	}

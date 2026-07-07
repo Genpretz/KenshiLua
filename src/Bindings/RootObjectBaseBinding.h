@@ -45,5 +45,21 @@ public:
     static int _NV_getFloor(lua_State* L);
     static int getOwnerships(lua_State* L);
     static int _NV_getOwnerships(lua_State* L);
+
+    static int _CONSTRUCTOR(lua_State* L);
+    static int getSensoryData(lua_State* L);
+    static int _NV_getSensoryData(lua_State* L);
+    static int getStateBroadcast(lua_State* L);
+    static int _NV_getStateBroadcast(lua_State* L);
+    static int setHandle(lua_State* L);
+    static int _NV_setHandle(lua_State* L);
+    static int serialise(lua_State* L);
+    static int loadFromSerialise(lua_State* L);
+
+    static int getHandle(lua_State* L);
+    static int getCurrentTownLocation(lua_State* L);
+    static int _NV_getCurrentTownLocation(lua_State* L);
+    static int setFaction(lua_State* L);
+    static int _NV_setFaction(lua_State* L);
 };
 }

@@ -4,6 +4,8 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
 
 namespace KenshiLua
 {
@@ -58,7 +60,12 @@ static int Gear_set_isUniform(lua_State* L)
 {
     Gear* b = getB(L, 1);
     if (!b) return luaL_error(L, "Gear is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isUniform");
+    Faction* f = nullptr;
+    if (!lua_isnil(L, 2)) {
+        f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    }
+    b->isUniform = f;
+    return 0;
 }
 
 static int Gear_set_value(lua_State* L)
@@ -207,16 +214,62 @@ int GearBinding::_NV_setInventoryWeAreIn(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 11: Gear* _CONSTRUCTOR(...) - unsupported arg type
-  line 22: GameData* _serialise(...) - unsupported arg type
-  line 23: GameData* _NV__serialise(...) - unsupported arg type
-  line 24: void _loadFromSerialise(...) - unsupported arg type
-  line 25: void _NV__loadFromSerialise(...) - unsupported arg type
-  line 26: void setInventoryWeAreIn(...) - unsupported arg type
-  line 27: void _NV_setInventoryWeAreIn(...) - unsupported arg type
-*/
+int GearBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Gear* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Gear is nil");
+    GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    GameData* companyData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    GameData* materialData = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
+    hand* _handle = checkObject<hand>(L, 5, handBinding::getMetatableName());
+    int _level = (int)luaL_checkinteger(L, 6);
+    Faction* uniform = nullptr;
+    if (lua_gettop(L) >= 7 && !lua_isnil(L, 7)) {
+        uniform = checkObject<Faction>(L, 7, FactionBinding::getMetatableName());
+    }
+    Gear* result = b->_CONSTRUCTOR(baseData, companyData, materialData, *_handle, _level, uniform);
+    return pushObject<Gear>(L, result, GearBinding::getMetatableName());
+}
+
+int GearBinding::_serialise(lua_State* L)
+{
+    Gear* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Gear is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    itemType type = (itemType)luaL_checkinteger(L, 3);
+    GameData* result = b->_serialise(container, type);
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+}
+
+int GearBinding::_NV__serialise(lua_State* L)
+{
+    Gear* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Gear is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    itemType type = (itemType)luaL_checkinteger(L, 3);
+    GameData* result = b->_NV__serialise(container, type);
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+}
+
+int GearBinding::_loadFromSerialise(lua_State* L)
+{
+    Gear* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Gear is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* state = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    b->_loadFromSerialise(container, state);
+    return 0;
+}
+
+int GearBinding::_NV__loadFromSerialise(lua_State* L)
+{
+    Gear* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Gear is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* state = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    b->_NV__loadFromSerialise(container, state);
+    return 0;
+}
 
 int GearBinding::gc(lua_State* L)
 {
@@ -249,6 +302,13 @@ void GearBinding::registerBinding(lua_State* L)
         { "_NV_isAFactionUniform", GearBinding::_NV_isAFactionUniform },
         { "isPlayerCrafted", GearBinding::isPlayerCrafted },
         { "_DESTRUCTOR", GearBinding::_DESTRUCTOR },
+        { "setInventoryWeAreIn", GearBinding::setInventoryWeAreIn },
+        { "_NV_setInventoryWeAreIn", GearBinding::_NV_setInventoryWeAreIn },
+        { "_CONSTRUCTOR", GearBinding::_CONSTRUCTOR },
+        { "_serialise", GearBinding::_serialise },
+        { "_NV__serialise", GearBinding::_NV__serialise },
+        { "_loadFromSerialise", GearBinding::_loadFromSerialise },
+        { "_NV__loadFromSerialise", GearBinding::_NV__loadFromSerialise },
         { 0, 0 }
     };
 

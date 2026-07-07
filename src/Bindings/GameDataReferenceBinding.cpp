@@ -17,8 +17,8 @@ static int GameDataReference_get_values(lua_State* L)
 {
     GameDataReference* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameDataReference is nil");
-    // TODO: Unsupported type for values (TripleInt)
-    return luaL_error(L, "Unsupported property 'values' (type: TripleInt)");
+    pushTripleInt(L, b->values);
+    return 1;
 }
 
 static int GameDataReference_get_sid(lua_State* L)
@@ -41,7 +41,8 @@ static int GameDataReference_set_values(lua_State* L)
 {
     GameDataReference* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameDataReference is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for values");
+    readTripleInt(L, 2, b->values);
+    return 0;
 }
 
 static int GameDataReference_set_sid(lua_State* L)

@@ -16,6 +16,18 @@
 #include "Bindings/ItemBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/Building/BuildingBinding.h"
+#include "kenshi/InstanceID.h"
+#include "kenshi/ZoneManager.h"
+#include "kenshi/gui/InventoryGUI.h"
+#include "kenshi/Damages.h"
+#include "kenshi/CombatTechniqueData.h"
+#include "kenshi/Character.h"
+#include "Bindings/DamagesBinding.h"
+#include "Bindings/CombatTechniqueDataBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
 
 namespace KenshiLua
 {
@@ -655,52 +667,9 @@ int RootObjectBinding::_NV_loadUnloadCheck(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 25: RootObject* _CONSTRUCTOR(...) - unsupported arg type
-  line 30: InstanceID* getInstanceID(...) - unsupported return type
-  line 31: InstanceID* _NV_getInstanceID(...) - unsupported return type
-  line 32: const std::string& getLayoutInstanceID(...) - reference return type
-  line 33: const std::string& _NV_getLayoutInstanceID(...) - reference return type
-  line 36: ZoneMap* getZoneMapLocation(...) - unsupported return type
-  line 37: ZoneMap* _NV_getZoneMapLocation(...) - unsupported return type
-  line 47: const Ogre::Aabb& getAABB(...) - reference return type
-  line 48: const Ogre::Aabb& _NV_getAABB(...) - reference return type
-  line 55: void setFaction(...) - unsupported arg type
-  line 56: void _NV_setFaction(...) - unsupported arg type
-  line 69: void getGUIData(...) - unsupported arg type
-  line 70: void _NV_getGUIData(...) - unsupported arg type
-  line 71: void getGUIDataCategories(...) - unsupported arg type
-  line 72: void _NV_getGUIDataCategories(...) - unsupported arg type
-  line 75: void getOrders(...) - unsupported arg type
-  line 76: void _NV_getOrders(...) - unsupported arg type
-  line 79: bool giveItem(...) - unsupported arg type
-  line 80: bool _NV_giveItem(...) - unsupported arg type
-  line 81: bool hasRoomForItem(...) - unsupported arg type
-  line 82: bool _NV_hasRoomForItem(...) - unsupported arg type
-  line 83: bool hasItem(...) - unsupported arg type
-  line 84: bool _NV_hasItem(...) - unsupported arg type
-  line 85: InventoryLayout* createInventoryLayout(...) - unsupported return type
-  line 86: InventoryLayout* _NV_createInventoryLayout(...) - unsupported return type
-  line 87: bool ImStealingDoYouNotice(...) - unsupported arg type
-  line 88: bool _NV_ImStealingDoYouNotice(...) - unsupported arg type
-  line 89: bool stolenGoodsDetectionCheck(...) - unsupported arg type
-  line 90: bool _NV_stolenGoodsDetectionCheck(...) - unsupported arg type
-  line 91: void equipItem(...) - unsupported arg type
-  line 92: void _NV_equipItem(...) - unsupported arg type
-  line 93: void unequipItem(...) - unsupported arg type
-  line 94: void _NV_unequipItem(...) - unsupported arg type
-  line 95: void dropItem(...) - unsupported arg type
-  line 96: void _NV_dropItem(...) - unsupported arg type
-  line 103: void notifyIndoors(...) - unsupported arg type
-  line 104: void _NV_notifyIndoors(...) - unsupported arg type
-  line 113: HitMaterialType hitByMeleeAttack(...) - unsupported arg type
-  line 114: HitMaterialType _NV_hitByMeleeAttack(...) - unsupported arg type
-  line 115: PlatoonAI* getPlatoonAI(...) - unsupported return type
-  line 116: PlatoonAI* _NV_getPlatoonAI(...) - unsupported return type
-*/
 
-static int RootObject_setFaction(lua_State* L)
+
+int RootObjectBinding::setFaction(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -713,7 +682,7 @@ static int RootObject_setFaction(lua_State* L)
     return 0;
 }
 
-static int RootObject__NV_setFaction(lua_State* L)
+int RootObjectBinding::_NV_setFaction(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -726,7 +695,7 @@ static int RootObject__NV_setFaction(lua_State* L)
     return 0;
 }
 
-static int RootObject_giveItem(lua_State* L)
+int RootObjectBinding::giveItem(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -738,7 +707,7 @@ static int RootObject_giveItem(lua_State* L)
     return 1;
 }
 
-static int RootObject__NV_giveItem(lua_State* L)
+int RootObjectBinding::_NV_giveItem(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -750,7 +719,7 @@ static int RootObject__NV_giveItem(lua_State* L)
     return 1;
 }
 
-static int RootObject_hasItem(lua_State* L)
+int RootObjectBinding::hasItem(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -760,7 +729,7 @@ static int RootObject_hasItem(lua_State* L)
     return 1;
 }
 
-static int RootObject__NV_hasItem(lua_State* L)
+int RootObjectBinding::_NV_hasItem(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -770,7 +739,7 @@ static int RootObject__NV_hasItem(lua_State* L)
     return 1;
 }
 
-static int RootObject_equipItem(lua_State* L)
+int RootObjectBinding::equipItem(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -780,7 +749,7 @@ static int RootObject_equipItem(lua_State* L)
     return 0;
 }
 
-static int RootObject__NV_equipItem(lua_State* L)
+int RootObjectBinding::_NV_equipItem(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -790,7 +759,7 @@ static int RootObject__NV_equipItem(lua_State* L)
     return 0;
 }
 
-static int RootObject_unequipItem(lua_State* L)
+int RootObjectBinding::unequipItem(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -800,7 +769,7 @@ static int RootObject_unequipItem(lua_State* L)
     return 0;
 }
 
-static int RootObject__NV_unequipItem(lua_State* L)
+int RootObjectBinding::_NV_unequipItem(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -810,7 +779,7 @@ static int RootObject__NV_unequipItem(lua_State* L)
     return 0;
 }
 
-static int RootObject_dropItem(lua_State* L)
+int RootObjectBinding::dropItem(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -819,7 +788,7 @@ static int RootObject_dropItem(lua_State* L)
     return 0;
 }
 
-static int RootObject__NV_dropItem(lua_State* L)
+int RootObjectBinding::_NV_dropItem(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -828,7 +797,7 @@ static int RootObject__NV_dropItem(lua_State* L)
     return 0;
 }
 
-static int RootObject_isIndoors(lua_State* L)
+int RootObjectBinding::isIndoors(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -837,7 +806,7 @@ static int RootObject_isIndoors(lua_State* L)
     return 1;
 }
 
-static int RootObject__NV_isIndoors(lua_State* L)
+int RootObjectBinding::_NV_isIndoors(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -846,7 +815,7 @@ static int RootObject__NV_isIndoors(lua_State* L)
     return 1;
 }
 
-static int RootObject_setIsInsideBuilding(lua_State* L)
+int RootObjectBinding::setIsInsideBuilding(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
@@ -855,13 +824,344 @@ static int RootObject_setIsInsideBuilding(lua_State* L)
     return 0;
 }
 
-static int RootObject__NV_setIsInsideBuilding(lua_State* L)
+int RootObjectBinding::_NV_setIsInsideBuilding(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
     hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
     b->_NV_setIsInsideBuilding(*h);
     return 0;
+}
+
+int RootObjectBinding::_CONSTRUCTOR(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Faction* ownr = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
+    hand* _h = checkObject<hand>(L, 4, handBinding::getMetatableName());
+    RootObject* result = b->_CONSTRUCTOR(d, ownr, *_h);
+    return pushObject<RootObject>(L, result, RootObjectBinding::getMetatableName());
+}
+
+int RootObjectBinding::getInstanceID(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    InstanceID* res = b->getInstanceID();
+    if (res) {
+        lua_pushlightuserdata(L, (void*)res);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int RootObjectBinding::_NV_getInstanceID(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    InstanceID* res = b->_NV_getInstanceID();
+    if (res) {
+        lua_pushlightuserdata(L, (void*)res);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int RootObjectBinding::getLayoutInstanceID(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    const std::string& res = b->getLayoutInstanceID();
+    lua_pushstring(L, res.c_str());
+    return 1;
+}
+
+int RootObjectBinding::_NV_getLayoutInstanceID(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    const std::string& res = b->_NV_getLayoutInstanceID();
+    lua_pushstring(L, res.c_str());
+    return 1;
+}
+
+int RootObjectBinding::getZoneMapLocation(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    ZoneMap* res = b->getZoneMapLocation();
+    if (res) {
+        lua_pushlightuserdata(L, (void*)res);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int RootObjectBinding::_NV_getZoneMapLocation(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    ZoneMap* res = b->_NV_getZoneMapLocation();
+    if (res) {
+        lua_pushlightuserdata(L, (void*)res);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int RootObjectBinding::getAABB(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    const Ogre::Aabb& res = b->getAABB();
+    lua_pushlightuserdata(L, (void*)&res);
+    return 1;
+}
+
+int RootObjectBinding::_NV_getAABB(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    const Ogre::Aabb& res = b->_NV_getAABB();
+    lua_pushlightuserdata(L, (void*)&res);
+    return 1;
+}
+
+int RootObjectBinding::getGUIData(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    DatapanelGUI* gui = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    b->getGUIData(gui, category);
+    return 0;
+}
+
+int RootObjectBinding::_NV_getGUIData(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    DatapanelGUI* gui = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    b->_NV_getGUIData(gui, category);
+    return 0;
+}
+
+int RootObjectBinding::getGUIDataCategories(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    if (!out) return luaL_error(L, "lektor<StringPair> is nil or invalid");
+    b->getGUIDataCategories(*out);
+    return 0;
+}
+
+int RootObjectBinding::_NV_getGUIDataCategories(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    if (!out) return luaL_error(L, "lektor<StringPair> is nil or invalid");
+    b->_NV_getGUIDataCategories(*out);
+    return 0;
+}
+
+int RootObjectBinding::getOrders(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    lektor<std::string>* out = LektorStringBinding<std::string>::get(L, 2);
+    if (!out) return luaL_error(L, "lektor<string> is nil or invalid");
+    b->getOrders(*out);
+    return 0;
+}
+
+int RootObjectBinding::_NV_getOrders(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    lektor<std::string>* out = LektorStringBinding<std::string>::get(L, 2);
+    if (!out) return luaL_error(L, "lektor<string> is nil or invalid");
+    b->_NV_getOrders(*out);
+    return 0;
+}
+
+int RootObjectBinding::hasRoomForItem(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = b->hasRoomForItem(data);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int RootObjectBinding::_NV_hasRoomForItem(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = b->_NV_hasRoomForItem(data);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int RootObjectBinding::createInventoryLayout(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    InventoryLayout* res = b->createInventoryLayout();
+    if (res) {
+        lua_pushlightuserdata(L, (void*)res);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int RootObjectBinding::_NV_createInventoryLayout(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    InventoryLayout* res = b->_NV_createInventoryLayout();
+    if (res) {
+        lua_pushlightuserdata(L, (void*)res);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int RootObjectBinding::ImStealingDoYouNotice(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    RootObject* thief = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->ImStealingDoYouNotice(thief);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int RootObjectBinding::_NV_ImStealingDoYouNotice(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    RootObject* thief = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->_NV_ImStealingDoYouNotice(thief);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int RootObjectBinding::stolenGoodsDetectionCheck(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    RootObject* thief = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    bool result = b->stolenGoodsDetectionCheck(item, thief);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int RootObjectBinding::_NV_stolenGoodsDetectionCheck(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    RootObject* thief = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    bool result = b->_NV_stolenGoodsDetectionCheck(item, thief);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int RootObjectBinding::notifyIndoors(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    hand* in = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->notifyIndoors(*in);
+    return 0;
+}
+
+int RootObjectBinding::_NV_notifyIndoors(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    hand* in = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->_NV_notifyIndoors(*in);
+    return 0;
+}
+
+int RootObjectBinding::hitByMeleeAttack(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    Character* who = nullptr;
+    if (lua_gettop(L) >= 4 && !lua_isnil(L, 4)) {
+        who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    }
+    CombatTechniqueData* attack = nullptr;
+    if (lua_gettop(L) >= 5 && !lua_isnil(L, 5)) {
+        attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    }
+    int comboID = (int)luaL_checkinteger(L, 6);
+    HitMaterialType res = b->hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)res);
+    return 1;
+}
+
+int RootObjectBinding::_NV_hitByMeleeAttack(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    Character* who = nullptr;
+    if (lua_gettop(L) >= 4 && !lua_isnil(L, 4)) {
+        who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    }
+    CombatTechniqueData* attack = nullptr;
+    if (lua_gettop(L) >= 5 && !lua_isnil(L, 5)) {
+        attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    }
+    int comboID = (int)luaL_checkinteger(L, 6);
+    HitMaterialType res = b->_NV_hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)res);
+    return 1;
+}
+
+int RootObjectBinding::getPlatoonAI(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    PlatoonAI* res = b->getPlatoonAI();
+    if (res) {
+        lua_pushlightuserdata(L, (void*)res);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+int RootObjectBinding::_NV_getPlatoonAI(lua_State* L)
+{
+    RootObject* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObject is nil");
+    PlatoonAI* res = b->_NV_getPlatoonAI();
+    if (res) {
+        lua_pushlightuserdata(L, (void*)res);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 int RootObjectBinding::gc(lua_State* L)
@@ -878,6 +1178,8 @@ int RootObjectBinding::tostring(lua_State* L)
 
 void RootObjectBinding::registerBinding(lua_State* L)
 {
+    LektorValueBinding<StringPair>::registerBinding(L, "lektor<StringPair>", StringPairBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       RootObjectBinding::gc },
         { "__tostring", RootObjectBinding::tostring },
@@ -938,22 +1240,51 @@ void RootObjectBinding::registerBinding(lua_State* L)
         { "_NV_notifyEffect", RootObjectBinding::_NV_notifyEffect },
         { "loadUnloadCheck", RootObjectBinding::loadUnloadCheck },
         { "_NV_loadUnloadCheck", RootObjectBinding::_NV_loadUnloadCheck },
-        { "setFaction", RootObject_setFaction },
-        { "_NV_setFaction", RootObject__NV_setFaction },
-        { "giveItem", RootObject_giveItem },
-        { "_NV_giveItem", RootObject__NV_giveItem },
-        { "hasItem", RootObject_hasItem },
-        { "_NV_hasItem", RootObject__NV_hasItem },
-        { "equipItem", RootObject_equipItem },
-        { "_NV_equipItem", RootObject__NV_equipItem },
-        { "unequipItem", RootObject_unequipItem },
-        { "_NV_unequipItem", RootObject__NV_unequipItem },
-        { "dropItem", RootObject_dropItem },
-        { "_NV_dropItem", RootObject__NV_dropItem },
-        { "isIndoors", RootObject_isIndoors },
-        { "_NV_isIndoors", RootObject__NV_isIndoors },
-        { "setIsInsideBuilding", RootObject_setIsInsideBuilding },
-        { "_NV_setIsInsideBuilding", RootObject__NV_setIsInsideBuilding },
+        { "setFaction", RootObjectBinding::setFaction },
+        { "_NV_setFaction", RootObjectBinding::_NV_setFaction },
+        { "giveItem", RootObjectBinding::giveItem },
+        { "_NV_giveItem", RootObjectBinding::_NV_giveItem },
+        { "hasItem", RootObjectBinding::hasItem },
+        { "_NV_hasItem", RootObjectBinding::_NV_hasItem },
+        { "equipItem", RootObjectBinding::equipItem },
+        { "_NV_equipItem", RootObjectBinding::_NV_equipItem },
+        { "unequipItem", RootObjectBinding::unequipItem },
+        { "_NV_unequipItem", RootObjectBinding::_NV_unequipItem },
+        { "dropItem", RootObjectBinding::dropItem },
+        { "_NV_dropItem", RootObjectBinding::_NV_dropItem },
+        { "isIndoors", RootObjectBinding::isIndoors },
+        { "_NV_isIndoors", RootObjectBinding::_NV_isIndoors },
+        { "setIsInsideBuilding", RootObjectBinding::setIsInsideBuilding },
+        { "_NV_setIsInsideBuilding", RootObjectBinding::_NV_setIsInsideBuilding },
+        { "_CONSTRUCTOR", RootObjectBinding::_CONSTRUCTOR },
+        { "getInstanceID", RootObjectBinding::getInstanceID },
+        { "_NV_getInstanceID", RootObjectBinding::_NV_getInstanceID },
+        { "getLayoutInstanceID", RootObjectBinding::getLayoutInstanceID },
+        { "_NV_getLayoutInstanceID", RootObjectBinding::_NV_getLayoutInstanceID },
+        { "getZoneMapLocation", RootObjectBinding::getZoneMapLocation },
+        { "_NV_getZoneMapLocation", RootObjectBinding::_NV_getZoneMapLocation },
+        { "getAABB", RootObjectBinding::getAABB },
+        { "_NV_getAABB", RootObjectBinding::_NV_getAABB },
+        { "getGUIData", RootObjectBinding::getGUIData },
+        { "_NV_getGUIData", RootObjectBinding::_NV_getGUIData },
+        { "getGUIDataCategories", RootObjectBinding::getGUIDataCategories },
+        { "_NV_getGUIDataCategories", RootObjectBinding::_NV_getGUIDataCategories },
+        { "getOrders", RootObjectBinding::getOrders },
+        { "_NV_getOrders", RootObjectBinding::_NV_getOrders },
+        { "hasRoomForItem", RootObjectBinding::hasRoomForItem },
+        { "_NV_hasRoomForItem", RootObjectBinding::_NV_hasRoomForItem },
+        { "createInventoryLayout", RootObjectBinding::createInventoryLayout },
+        { "_NV_createInventoryLayout", RootObjectBinding::_NV_createInventoryLayout },
+        { "ImStealingDoYouNotice", RootObjectBinding::ImStealingDoYouNotice },
+        { "_NV_ImStealingDoYouNotice", RootObjectBinding::_NV_ImStealingDoYouNotice },
+        { "stolenGoodsDetectionCheck", RootObjectBinding::stolenGoodsDetectionCheck },
+        { "_NV_stolenGoodsDetectionCheck", RootObjectBinding::_NV_stolenGoodsDetectionCheck },
+        { "notifyIndoors", RootObjectBinding::notifyIndoors },
+        { "_NV_notifyIndoors", RootObjectBinding::_NV_notifyIndoors },
+        { "hitByMeleeAttack", RootObjectBinding::hitByMeleeAttack },
+        { "_NV_hitByMeleeAttack", RootObjectBinding::_NV_hitByMeleeAttack },
+        { "getPlatoonAI", RootObjectBinding::getPlatoonAI },
+        { "_NV_getPlatoonAI", RootObjectBinding::_NV_getPlatoonAI },
         { 0, 0 }
     };
 
