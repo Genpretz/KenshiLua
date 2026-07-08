@@ -9,6 +9,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/DialogueBinding.h"
+#include "Bindings/DialogLineDataBinding.h"
 #include "ScriptLoader.h"
 #include <core/Functions.h>
 
@@ -68,11 +69,17 @@ namespace KenshiLua
                         pushObject<Dialogue>(L, thisptr, DialogueBinding::getMetatableName());
                         lua_setglobal(L, "currentDialogue");
 
+                        pushObject<DialogLineData>(L, dialogLine, DialogLineDataBinding::getMetatableName());
+                        lua_setglobal(L, "currentDialogueLine");
+
                         // Call the centralized sandboxed runner in ScriptLoader
                         ScriptLoader::get().runScriptSandboxed(L, absolutePath, "@" + filename);
 
                         lua_pushnil(L);
                         lua_setglobal(L, "currentDialogue");
+
+                        lua_pushnil(L);
+                        lua_setglobal(L, "currentDialogueLine");
                     }
                 }
             }
