@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/GameDataBinding.h"
+
 #include <kenshi/GameSaveState.h>
 #include "Bindings/GameSaveStateBinding.h"
 #include "Lua/BindingHelpers.h"

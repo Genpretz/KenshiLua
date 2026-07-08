@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/FactionBinding.h"
+
 #include "kenshi\Character.h"
 #include "CharacterBinding.h"
 #include "DialogueBinding.h"

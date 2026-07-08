@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
+
 #include <kenshi/Building/ProductionBuilding.h>
 #include "BuildInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"

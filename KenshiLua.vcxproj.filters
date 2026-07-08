@@ -79,7 +79,7 @@
     <ClCompile Include="src\Bindings\GameDataManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\GameDataReferenceBinding.cpp" />
     <ClCompile Include="src\Bindings\GameDataValuePairBinding.cpp" />
-    <ClCompile Include="src\Bindings\GameplayOptionsBinding.cpp" />
+    <ClCompile Include="src\Bindings\GameSaveStateBinding.cpp" />
     <ClCompile Include="src\Bindings\HasRoomCacheBinding.cpp" />
     <ClCompile Include="src\Bindings\HealthPartStatusBinding.cpp" />
     <ClCompile Include="src\Bindings\InventoryItemBaseBinding.cpp" />
@@ -172,6 +172,23 @@
     <ClCompile Include="src\Bindings\Building\UseableStuffBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\WindGeneratorBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\SelectionBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\DoorStuffBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FarmBatchBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FarmBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FurnaceBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FurnaceInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\GameplayOptionsBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\GatewayBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\LightBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\RainCollectorBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\TortureBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\TradeCultureBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\TurretBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\WallBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\StringPairBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\TimeOfDayBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\YesNoMaybeBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\iVector2Binding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Bindings\CharStatsBinding.h" />
@@ -702,7 +719,7 @@
     <ClInclude Include="src\Bindings\GameDataManagerBinding.h" />
     <ClInclude Include="src\Bindings\GameDataReferenceBinding.h" />
     <ClInclude Include="src\Bindings\GameDataValuePairBinding.h" />
-    <ClInclude Include="src\Bindings\GameplayOptionsBinding.h" />
+    <ClInclude Include="src\Bindings\GameSaveStateBinding.h" />
     <ClInclude Include="src\Bindings\HasRoomCacheBinding.h" />
     <ClInclude Include="src\Bindings\HealthPartStatusBinding.h" />
     <ClInclude Include="src\Bindings\InventoryItemBaseBinding.h" />
@@ -797,6 +814,24 @@
     <ClInclude Include="src\Bindings\CombatTechniqueDataBinding.h" />
     <ClInclude Include="src\Bindings\ImpactPointBinding.h" />
     <ClInclude Include="src\Bindings\SelectionBoxBinding.h" />
+    <ClInclude Include="src\Bindings\Building\DoorStuffBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FarmBatchBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FarmBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FurnaceBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FurnaceInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\GameplayOptionsBinding.h" />
+    <ClInclude Include="src\Bindings\Building\GatewayBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\LightBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\RainCollectorBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\TortureBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\TradeCultureBinding.h" />
+    <ClInclude Include="src\Bindings\Building\TurretBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\WallBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Util\BoostUnorderedBinding.h" />
+    <ClInclude Include="src\Bindings\Util\StringPairBinding.h" />
+    <ClInclude Include="src\Bindings\Util\TimeOfDayBinding.h" />
+    <ClInclude Include="src\Bindings\Util\YesNoMaybeBinding.h" />
+    <ClInclude Include="src\Bindings\Util\iVector2Binding.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="generators\parse_enums.py" />

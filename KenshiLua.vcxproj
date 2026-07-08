@@ -64,7 +64,7 @@
     <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <VcpkgInstalledDir>C:\Users\trist\vcpkg\installed</VcpkgInstalledDir>
+    <VcpkgInstalledDir>$(VCPKG_ROOT)/installed</VcpkgInstalledDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -636,7 +636,7 @@
     <ClInclude Include="src\Bindings\GameDataManagerBinding.h" />
     <ClInclude Include="src\Bindings\GameDataReferenceBinding.h" />
     <ClInclude Include="src\Bindings\GameDataValuePairBinding.h" />
-    <ClInclude Include="src\Bindings\GameplayOptionsBinding.h" />
+    <ClInclude Include="src\Bindings\GameSaveStateBinding.h" />
     <ClInclude Include="src\Bindings\GameWorldBinding.h" />
     <ClInclude Include="src\Bindings\GearBinding.h" />
     <ClInclude Include="src\Bindings\HasRoomCacheBinding.h" />
@@ -765,6 +765,73 @@
     <ClInclude Include="src\Bindings\Building\FootprintBinding.h" />
     <ClInclude Include="src\Bindings\Building\FootprintNodeBinding.h" />
     <ClInclude Include="src\Bindings\Building\PreviewBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\DoorStuffBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FarmBatchBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FarmBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FurnaceBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FurnaceInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\GameplayOptionsBinding.h" />
+    <ClInclude Include="src\Bindings\Building\GatewayBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\LightBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\RainCollectorBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\TortureBuildingBinding.h" />
+    
+    <ClInclude Include="src\Bindings\Building\TurretBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\WallBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Util\BoostUnorderedBinding.h" />
+    <ClInclude Include="src\Bindings\Util\StringPairBinding.h" />
+    <ClInclude Include="src\Bindings\Util\TimeOfDayBinding.h" />
+    <ClInclude Include="src\Bindings\Util\YesNoMaybeBinding.h" />
+    <ClInclude Include="src\Bindings\Util\iVector2Binding.h" />
+    <ClInclude Include="src\Bindings\AABB2DBinding.h" />
+    <ClInclude Include="src\Bindings\BackThreadMessagesToMainTBinding.h" />
+    <ClInclude Include="src\Bindings\MainthreadStateReaderTBinding.h" />
+    <ClInclude Include="src\Bindings\ParticlePoolBinding.h" />
+    <ClInclude Include="src\Bindings\StateTBinding.h" />
+    <ClInclude Include="src\Bindings\TradeCultureBinding.h" />
+    <ClInclude Include="src\Bindings\ZoneManagerBinding.h" />
+    <ClInclude Include="src\Bindings\ZoneManagerInterfaceTBinding.h" />
+    <ClInclude Include="src\Bindings\ZoneMapBinding.h" />
+    <ClInclude Include="src\Bindings\ZoneSpacialGridBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\BackpackInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\BuildModeWindowBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\BuildingCategoryBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\BuildingGroupBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\CharacterStatsWindowBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\CharacterTradingWindowBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\FactionRelationsLineBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\FactionsScreenBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\ForgottenGUIBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\GameDataEditorWindowBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\GenericFixedInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\InventoryGUIBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\InventoryIconBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\InventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\InventorySectionGUIBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\InventoryTradeDataBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\MainBarGUIBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\MainTabPortraitPlatoonBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\OpenSaveFileDialogBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\OptionsWindowBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\OrderCellViewBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\OrderDataBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\OrdersItemBoxBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\OrdersPanelBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\StatBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\StatGroupBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\ToolTipBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\ToolTipDynamicBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\ToolTipFixedBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\ToolTipInventoryBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\ToolTipLineBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\ToolTipStaticBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\TradeResultBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\TransformWindowBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\TutorialGUIBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\TutorialGUILineBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\TutorialItemBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\TutorialSubItemBinding.h" />
+    <ClInclude Include="src\Bindings\Gui\TutorialpediaGUIBinding.h" />
     <ClInclude Include="src\Gui.h" />
   </ItemGroup>
   <ItemGroup>
@@ -813,7 +880,7 @@
     <ClCompile Include="src\Bindings\GameDataManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\GameDataReferenceBinding.cpp" />
     <ClCompile Include="src\Bindings\GameDataValuePairBinding.cpp" />
-    <ClCompile Include="src\Bindings\GameplayOptionsBinding.cpp" />
+    <ClCompile Include="src\Bindings\GameSaveStateBinding.cpp" />
     <ClCompile Include="src\Bindings\GearBinding.cpp" />
     <ClCompile Include="src\Bindings\HasRoomCacheBinding.cpp" />
     <ClCompile Include="src\Bindings\HealthPartStatusBinding.cpp" />
@@ -943,6 +1010,72 @@
     <ClCompile Include="src\Bindings\Building\FootprintBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FootprintNodeBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\PreviewBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\DoorStuffBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FarmBatchBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FarmBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FurnaceBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FurnaceInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\GameplayOptionsBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\GatewayBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\LightBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\RainCollectorBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\TortureBuildingBinding.cpp" />
+    
+    <ClCompile Include="src\Bindings\Building\TurretBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\WallBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\StringPairBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\TimeOfDayBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\YesNoMaybeBinding.cpp" />
+    <ClCompile Include="src\Bindings\AABB2DBinding.cpp" />
+    <ClCompile Include="src\Bindings\BackThreadMessagesToMainTBinding.cpp" />
+    <ClCompile Include="src\Bindings\MainthreadStateReaderTBinding.cpp" />
+    <ClCompile Include="src\Bindings\ParticlePoolBinding.cpp" />
+    <ClCompile Include="src\Bindings\StateTBinding.cpp" />
+    <ClCompile Include="src\Bindings\TradeCultureBinding.cpp" />
+    <ClCompile Include="src\Bindings\ZoneManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\ZoneManagerInterfaceTBinding.cpp" />
+    <ClCompile Include="src\Bindings\ZoneMapBinding.cpp" />
+    <ClCompile Include="src\Bindings\ZoneSpacialGridBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\BackpackInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\BuildModeWindowBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\BuildingCategoryBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\BuildingGroupBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\CharacterStatsWindowBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\CharacterTradingWindowBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\FactionRelationsLineBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\FactionsScreenBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\ForgottenGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\GameDataEditorWindowBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\GenericFixedInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\InventoryGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\InventoryIconBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\InventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\InventorySectionGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\InventoryTradeDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\MainBarGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\MainTabPortraitPlatoonBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\OpenSaveFileDialogBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\OptionsWindowBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\OrderCellViewBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\OrderDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\OrdersItemBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\OrdersPanelBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\StatBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\StatGroupBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\ToolTipBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\ToolTipDynamicBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\ToolTipFixedBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\ToolTipInventoryBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\ToolTipLineBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\ToolTipStaticBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\TradeResultBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\TransformWindowBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\TutorialGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\TutorialGUILineBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\TutorialItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\TutorialSubItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\TutorialpediaGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\iVector2Binding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\kenshilib\Include\ogre\Animation\OgreBone.inl" />
@@ -967,17 +1100,6 @@
     <None Include="extern\kenshilib\Include\ogre\OgreLight.inl" />
     <None Include="extern\kenshilib\Include\ogre\OgreLodStrategyPrivate.inl" />
     <None Include="extern\kenshilib\Include\ogre\OgreMovableObject.inl" />
-    <None Include="generators\parse_enums.py" />
-    <None Include="scripts\go_prone.lua" />
-    <None Include="scripts\log_stats_on_key.lua" />
-    <None Include="scripts\log_char_name_health_on_select.lua" />
-    <None Include="scripts\log_when_carrying_something.lua" />
-    <None Include="scripts\misc_test_script.lua" />
-    <None Include="scripts\pause_game_on_key.lua" />
-    <None Include="scripts\print_log_on_say.lua" />
-    <None Include="scripts\print_stats_on_update.lua" />
-    <None Include="scripts\test_script.lua" />
-    <None Include="src\Gui\ScriptEditor_EditBox.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/FactionBinding.h"
+
 #include <kenshi/Building/DoorStuff.h>
 #include "DoorStuffBinding.h"
 #include "BuildingBinding.h"

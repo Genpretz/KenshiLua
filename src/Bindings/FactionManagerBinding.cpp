@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/GameDataBinding.h"
+
 #include "kenshi\Faction.h"
 #include "FactionManagerBinding.h"
 #include "Lua/BindingHelpers.h"

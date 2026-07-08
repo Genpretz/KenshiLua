@@ -1,0 +1,24 @@
+#pragma once
+#include <kenshi/gui/ToolTip.h>
+
+
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+}
+
+namespace KenshiLua
+{
+    typedef ToolTip::ToolTipLine ToolTipLine;
+class ToolTipLineBinding
+{
+public:
+    static const char* getMetatableName() { return "KenshiLua.ToolTipLine"; }
+    static void registerBinding(lua_State* L);
+
+    static int gc(lua_State* L);
+    static int tostring(lua_State* L);
+
+    static int _DESTRUCTOR(lua_State* L);
+};
+}

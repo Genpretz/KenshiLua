@@ -18,6 +18,7 @@
 #include <kenshi/InputHandler.h>
 #include <kenshi/util/YesNoMaybe.h>
 #include <kenshi/BountyManager.h>
+#include <kenshi/Building/Building.h>
 #include <kenshi/FactionRelations.h>
 #include <kenshi/MedicalSystem.h>
 #include <kenshi/gui/DialogueWindow.h>
@@ -767,7 +768,7 @@ DEFINE_HOOK_INSTALLER(InstallHook_DialogueWindow_Show,
     DialogueWindow_show_hook, DialogueWindow_show_orig)
 
 // ---------------------------------------------------------------------------
-// Hook: Dialogue::doActions
+// Hook: Dialogue::_doActions
 // ---------------------------------------------------------------------------
 
 static void (*Dialogue_doActions_orig)(Dialogue*, DialogLineData*) = nullptr;
@@ -893,6 +894,230 @@ DEFINE_HOOK_INSTALLER(InstallHook_Inventory_getSectionOfType,
 
 
 // ---------------------------------------------------------------------------
+// Hook: Inventory::getBestFoodItem
+// ---------------------------------------------------------------------------
+
+static Item* (*Inventory_getBestFoodItem_orig)(const Inventory*, Character*) = NULL;
+
+static Item* Inventory_getBestFoodItem_hook(const Inventory* thisptr, Character* race)
+{
+    Item* current = Inventory_getBestFoodItem_orig(thisptr, race);
+    Item* overrideFood = CallInventoryGetBestFoodItemCallbacks(const_cast<Inventory*>(thisptr), race);
+    return overrideFood ? overrideFood : current;
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_getBestFoodItem,
+    "Inventory::getBestFoodItem",
+    KenshiLib::GetRealAddress(&Inventory::getBestFoodItem),
+    Inventory_getBestFoodItem_hook, Inventory_getBestFoodItem_orig)
+
+
+// ---------------------------------------------------------------------------
+// Hook: Character::isItOkForMeToLoot
+// ---------------------------------------------------------------------------
+
+static bool (*Character_isItOkForMeToLoot_orig)(Character*, RootObject*, Item*) = NULL;
+
+static bool Character_isItOkForMeToLoot_hook(Character* thisptr, RootObject* victim, Item* item)
+{
+    bool current = Character_isItOkForMeToLoot_orig(thisptr, victim, item);
+    return CallCharacterIsItOkForMeToLootCallbacks(thisptr, victim, item, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Character_isItOkForMeToLoot,
+    "Character::isItOkForMeToLoot",
+    KenshiLib::GetRealAddress(&Character::_NV_isItOkForMeToLoot),
+    Character_isItOkForMeToLoot_hook, Character_isItOkForMeToLoot_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Character::getFencingSuccessChance
+// ---------------------------------------------------------------------------
+
+static float (*Character_getFencingSuccessChance_orig)(Character*, Item*, RootObject*) = NULL;
+
+static float Character_getFencingSuccessChance_hook(Character* thisptr, Item* item, RootObject* thief)
+{
+    float current = Character_getFencingSuccessChance_orig(thisptr, item, thief);
+    return CallCharacterGetFencingSuccessChanceCallbacks(thisptr, item, thief, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Character_getFencingSuccessChance,
+    "Character::getFencingSuccessChance",
+    KenshiLib::GetRealAddress(&Character::getFencingSuccessChance),
+    Character_getFencingSuccessChance_hook, Character_getFencingSuccessChance_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: CharStats::getStat
+// ---------------------------------------------------------------------------
+
+static float (*CharStats_getStat_orig)(const CharStats*, StatsEnumerated, bool) = NULL;
+
+static float CharStats_getStat_hook(const CharStats* thisptr, StatsEnumerated what, bool unmodified)
+{
+    float current = CharStats_getStat_orig(thisptr, what, unmodified);
+    return CallCharStatsGetStatCallbacks(thisptr, static_cast<int>(what), unmodified, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_CharStats_getStat,
+    "CharStats::getStat",
+    KenshiLib::GetRealAddress(&CharStats::getStat),
+    CharStats_getStat_hook, CharStats_getStat_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Faction::chooseARace
+// ---------------------------------------------------------------------------
+
+static GameData* (*Faction_chooseARace_orig)(Faction*, GameData*, GameData*) = NULL;
+
+static GameData* Faction_chooseARace_hook(Faction* thisptr, GameData* character, GameData* squadTemplate)
+{
+    GameData* current = Faction_chooseARace_orig(thisptr, character, squadTemplate);
+    return CallFactionChooseARaceCallbacks(thisptr, character, squadTemplate, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Faction_chooseARace,
+    "Faction::chooseARace",
+    KenshiLib::GetRealAddress(&Faction::chooseARace),
+    Faction_chooseARace_hook, Faction_chooseARace_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Faction::getBuildingReplacement
+// ---------------------------------------------------------------------------
+
+static GameData* (*Faction_getBuildingReplacement_orig)(Faction*, GameData*) = NULL;
+
+static GameData* Faction_getBuildingReplacement_hook(Faction* thisptr, GameData* building)
+{
+    GameData* current = Faction_getBuildingReplacement_orig(thisptr, building);
+    return CallFactionGetBuildingReplacementCallbacks(thisptr, building, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Faction_getBuildingReplacement,
+    "Faction::getBuildingReplacement",
+    KenshiLib::GetRealAddress(&Faction::getBuildingReplacement),
+    Faction_getBuildingReplacement_hook, Faction_getBuildingReplacement_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Ownerships::canIUseThisBuilding
+// ---------------------------------------------------------------------------
+
+static bool (*Ownerships_canIUseThisBuilding_orig)(Ownerships*, Building*, Character*) = NULL;
+
+static bool Ownerships_canIUseThisBuilding_hook(Ownerships* thisptr, Building* b, Character* me)
+{
+    bool current = Ownerships_canIUseThisBuilding_orig(thisptr, b, me);
+    return CallOwnershipsCanIUseThisBuildingCallbacks(thisptr, b, me, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Ownerships_canIUseThisBuilding,
+    "Ownerships::canIUseThisBuilding",
+    KenshiLib::GetRealAddress(&Ownerships::canIUseThisBuilding),
+    Ownerships_canIUseThisBuilding_hook, Ownerships_canIUseThisBuilding_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Platoon::iBuyStolenGoods
+// ---------------------------------------------------------------------------
+
+static bool (*Platoon_iBuyStolenGoods_orig)(Platoon*, Item*) = NULL;
+
+static bool Platoon_iBuyStolenGoods_hook(Platoon* thisptr, Item* what)
+{
+    bool current = Platoon_iBuyStolenGoods_orig(thisptr, what);
+    return CallPlatoonIBuyStolenGoodsCallbacks(thisptr, what, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Platoon_iBuyStolenGoods,
+    "Platoon::iBuyStolenGoods",
+    KenshiLib::GetRealAddress(&Platoon::iBuyStolenGoods),
+    Platoon_iBuyStolenGoods_hook, Platoon_iBuyStolenGoods_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Platoon::iBuyIllegalGoods
+// ---------------------------------------------------------------------------
+
+static bool (*Platoon_iBuyIllegalGoods_orig)(Platoon*) = NULL;
+
+static bool Platoon_iBuyIllegalGoods_hook(Platoon* thisptr)
+{
+    bool current = Platoon_iBuyIllegalGoods_orig(thisptr);
+    return CallPlatoonIBuyIllegalGoodsCallbacks(thisptr, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Platoon_iBuyIllegalGoods,
+    "Platoon::iBuyIllegalGoods",
+    KenshiLib::GetRealAddress(&Platoon::iBuyIllegalGoods),
+    Platoon_iBuyIllegalGoods_hook, Platoon_iBuyIllegalGoods_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Building::isPublic
+// ---------------------------------------------------------------------------
+
+static bool (*Building_isPublic_orig)(const Building*) = NULL;
+
+static bool Building_isPublic_hook(const Building* thisptr)
+{
+    bool current = Building_isPublic_orig(thisptr);
+    return CallBuildingIsPublicCallbacks(thisptr, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Building_isPublic,
+    "Building::isPublic",
+    KenshiLib::GetRealAddress(&Building::_NV_isPublic),
+    Building_isPublic_hook, Building_isPublic_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Building::isForSale
+// ---------------------------------------------------------------------------
+
+static bool (*Building_isForSale_orig)(Building*) = NULL;
+
+static bool Building_isForSale_hook(Building* thisptr)
+{
+    bool current = Building_isForSale_orig(thisptr);
+    return CallBuildingIsForSaleCallbacks(thisptr, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Building_isForSale,
+    "Building::isForSale",
+    KenshiLib::GetRealAddress(&Building::_NV_isForSale),
+    Building_isForSale_hook, Building_isForSale_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Building::calculateSaleValue
+// ---------------------------------------------------------------------------
+
+static int (*Building_calculateSaleValue_orig)(Building*) = NULL;
+
+static int Building_calculateSaleValue_hook(Building* thisptr)
+{
+    int current = Building_calculateSaleValue_orig(thisptr);
+    return CallBuildingCalculateSaleValueCallbacks(thisptr, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Building_calculateSaleValue,
+    "Building::calculateSaleValue",
+    KenshiLib::GetRealAddress(&Building::calculateSaleValue),
+    Building_calculateSaleValue_hook, Building_calculateSaleValue_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: InventoryItemBase::getValueSingle
+// ---------------------------------------------------------------------------
+
+static int (*InventoryItemBase_getValueSingle_orig)(const InventoryItemBase*, bool) = NULL;
+
+static int InventoryItemBase_getValueSingle_hook(const InventoryItemBase* thisptr, bool isPlayer)
+{
+    int current = InventoryItemBase_getValueSingle_orig(thisptr, isPlayer);
+    return CallInventoryItemBaseGetValueSingleCallbacks(thisptr, isPlayer, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_InventoryItemBase_getValueSingle,
+    "InventoryItemBase::getValueSingle",
+    KenshiLib::GetRealAddress(&InventoryItemBase::_NV_getValueSingle),
+    InventoryItemBase_getValueSingle_hook, InventoryItemBase_getValueSingle_orig)
+
+
+// ---------------------------------------------------------------------------
 // Hook registry
 
 //
@@ -956,6 +1181,19 @@ namespace KenshiLua
         { "onChooseMyClothing",                 InstallHook_RootObjectFactory_chooseMyClothing },
         { "onBaseLayoutInitialise",             InstallHook_BaseLayout_initialise },
         { "onInventoryGetSectionOfType",        InstallHook_Inventory_getSectionOfType },
+        { "onInventoryGetBestFoodItem",         InstallHook_Inventory_getBestFoodItem },
+        { "onCharacterLootCheck",               InstallHook_Character_isItOkForMeToLoot },
+        { "onGetFencingChance",                 InstallHook_Character_getFencingSuccessChance },
+        { "onGetStat",                          InstallHook_CharStats_getStat },
+        { "onFactionChooseRace",                InstallHook_Faction_chooseARace },
+        { "onFactionGetBuildingReplacement",    InstallHook_Faction_getBuildingReplacement },
+        { "onBuildingUseCheck",                 InstallHook_Ownerships_canIUseThisBuilding },
+        { "onPlatoonIBuyStolenGoods",           InstallHook_Platoon_iBuyStolenGoods },
+        { "onPlatoonIBuyIllegalGoods",          InstallHook_Platoon_iBuyIllegalGoods },
+        { "onBuildingIsPublic",                 InstallHook_Building_isPublic },
+        { "onBuildingIsForSale",                InstallHook_Building_isForSale },
+        { "onBuildingCalculateSaleValue",       InstallHook_Building_calculateSaleValue },
+        { "onItemGetValueSingle",               InstallHook_InventoryItemBase_getValueSingle },
     };
 
     static const size_t g_eventHookRegistryCount = sizeof(g_eventHookRegistry) / sizeof(g_eventHookRegistry[0]);

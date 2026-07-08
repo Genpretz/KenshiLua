@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/GameDataBinding.h"
+
 #include <kenshi/Building/WallBuilding.h>
 #include "WallBuildingBinding.h"
 #include "BuildingBinding.h"

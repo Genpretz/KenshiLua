@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Building/BuildingBinding.h"
+
 
 // KenshiLua
 #include "RootObjectFactoryBinding.h"

@@ -13,6 +13,15 @@
 #include "kenshi/SaveManager.h"
 #include "kenshi/SensoryData.h"
 #include "kenshi/Town.h"
+#include "kenshi/Tasker.h"
+#include "kenshi/gui/CharacterStatsWindow.h"
+#include "kenshi/gui/DataPanelLine.h"
+#include "kenshi/gui/ForgottenGUI.h"
+#include "kenshi/gui/ManagementScreen.h"
+#include "kenshi/gui/ScreenLabel.h"
+#include "kenshi/gui/SquadManagementScreen.h"
+#include "kenshi/gui/ToolTip.h"
+#include "kenshi/gui/TutorialGUI.h"
 
 #include <lua.hpp>
 
@@ -2739,7 +2748,380 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "TownType");
     }
 
-    void registerEnumBindings(lua_State* L)
+        // ------------------------------------------
+    // CharacterStatsWindow.h
+    // ------------------------------------------
+
+    void registerCharacterStatsWindowGroup(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "NONE", CharacterStatsWindow::StatGroup::NONE);
+    setEnum(L, "WEAPONS", CharacterStatsWindow::StatGroup::WEAPONS);
+    setEnum(L, "COMBAT", CharacterStatsWindow::StatGroup::COMBAT);
+    setEnum(L, "THIEVERY", CharacterStatsWindow::StatGroup::THIEVERY);
+    setEnum(L, "ATHLETICS", CharacterStatsWindow::StatGroup::ATHLETICS);
+    setEnum(L, "SCIENCES", CharacterStatsWindow::StatGroup::SCIENCES);
+    setEnum(L, "TRADES", CharacterStatsWindow::StatGroup::TRADES);
+    setEnum(L, "RANGED", CharacterStatsWindow::StatGroup::RANGED);
+    lua_setglobal(L, "Group");
+    }
+
+    // ------------------------------------------
+    // DataPanelLine.h
+    // ------------------------------------------
+
+    void registerDataPanelLineLineType(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "DPL_BASE", DataPanelLine::DPL_BASE);
+    setEnum(L, "DPL_MEDICAL", DataPanelLine::DPL_MEDICAL);
+    setEnum(L, "DPL_FACTION", DataPanelLine::DPL_FACTION);
+    setEnum(L, "DPL_RESEARCH", DataPanelLine::DPL_RESEARCH);
+    setEnum(L, "DPL_BUTTON", DataPanelLine::DPL_BUTTON);
+    setEnum(L, "DPL_EDIT", DataPanelLine::DPL_EDIT);
+    setEnum(L, "DPL_CHECK", DataPanelLine::DPL_CHECK);
+    setEnum(L, "DPL_DROPBOX", DataPanelLine::DPL_DROPBOX);
+    setEnum(L, "DPL_TEXT", DataPanelLine::DPL_TEXT);
+    setEnum(L, "DPL_TEXT_EDIT", DataPanelLine::DPL_TEXT_EDIT);
+    setEnum(L, "DPL_SLIDER", DataPanelLine::DPL_SLIDER);
+    setEnum(L, "DPL_PROGRESS", DataPanelLine::DPL_PROGRESS);
+    setEnum(L, "DPL_CUSTOM", DataPanelLine::DPL_CUSTOM);
+    lua_setglobal(L, "LineType");
+    }
+
+    // ------------------------------------------
+    // ForgottenGUI.h
+    // ------------------------------------------
+
+    void registerForgottenGUITradeWindowType(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "TW_OFF", TradeWindowType::TW_OFF);
+    setEnum(L, "TW_MONEY_TRADING", TradeWindowType::TW_MONEY_TRADING);
+    setEnum(L, "TW_LOOTING", TradeWindowType::TW_LOOTING);
+    setEnum(L, "TW_AUTO", TradeWindowType::TW_AUTO);
+    lua_setglobal(L, "TradeWindowType");
+    }
+
+    // ------------------------------------------
+    // ManagementScreen.h
+    // ------------------------------------------
+
+    void registerManagementScreenMessageLogColor(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "ML_NORMAL", MessageLogColor::ML_NORMAL);
+    setEnum(L, "ML_PLAYER", MessageLogColor::ML_PLAYER);
+    setEnum(L, "ML_SYSTEM", MessageLogColor::ML_SYSTEM);
+    lua_setglobal(L, "MessageLogColor");
+    }
+
+    // ------------------------------------------
+    // ScreenLabel.h
+    // ------------------------------------------
+
+    void registerScreenLabelRisingSpeed(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "RS_STOPPED", ScreenLabel::RS_STOPPED);
+    setEnum(L, "RS_SLOW", ScreenLabel::RS_SLOW);
+    setEnum(L, "RS_NORMAL", ScreenLabel::RS_NORMAL);
+    setEnum(L, "RS_FAST", ScreenLabel::RS_FAST);
+    lua_setglobal(L, "RisingSpeed");
+    }
+
+    void registerScreenLabelLabelSize(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "LS_SMALL", ScreenLabel::LS_SMALL);
+    setEnum(L, "LS_MEDIUM", ScreenLabel::LS_MEDIUM);
+    setEnum(L, "LS_LARGE", ScreenLabel::LS_LARGE);
+    lua_setglobal(L, "LabelSize");
+    }
+
+    // ------------------------------------------
+    // SquadManagementScreen.h
+    // ------------------------------------------
+
+    void registerSquadManagementScreenState(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "NORMAL", PortraitData::NORMAL);
+    setEnum(L, "SELECTED", PortraitData::SELECTED);
+    setEnum(L, "HURT", PortraitData::HURT);
+    setEnum(L, "DOWN", PortraitData::DOWN);
+    setEnum(L, "COMBAT", PortraitData::COMBAT);
+    setEnum(L, "SLAVE", PortraitData::SLAVE);
+    setEnum(L, "PRISON", PortraitData::PRISON);
+    setEnum(L, "EATEN", PortraitData::EATEN);
+    setEnum(L, "HUNGER", PortraitData::HUNGER);
+    lua_setglobal(L, "PortraitState");
+    }
+
+    // ------------------------------------------
+    // Tasker.h
+    // ------------------------------------------
+
+    void registerTaskertaskPriority(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "TP_JUST_ACTION", taskPriority::TP_JUST_ACTION);
+    setEnum(L, "TP_FLUFF", taskPriority::TP_FLUFF);
+    setEnum(L, "TP_NON_URGENT", taskPriority::TP_NON_URGENT);
+    setEnum(L, "TP_URGENT", taskPriority::TP_URGENT);
+    setEnum(L, "TP_OBEDIENCE", taskPriority::TP_OBEDIENCE);
+    setEnum(L, "TP_MAX_SIZE", taskPriority::TP_MAX_SIZE);
+    lua_setglobal(L, "taskPriority");
+    }
+
+    void registerTaskerStateType(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "NONE_RESULT", StateType::NONE_RESULT);
+    setEnum(L, "AT_LOCATION", StateType::AT_LOCATION);
+    setEnum(L, "BUILDING_COMPLETE", StateType::BUILDING_COMPLETE);
+    setEnum(L, "SUBJECT_IN_INVENTORY", StateType::SUBJECT_IN_INVENTORY);
+    setEnum(L, "HAS_WEAPON", StateType::HAS_WEAPON);
+    setEnum(L, "HAS_WEAPON_EQUIPPED", StateType::HAS_WEAPON_EQUIPPED);
+    setEnum(L, "NO_ENEMIES_IN_VICINITY", StateType::NO_ENEMIES_IN_VICINITY);
+    setEnum(L, "TARGET_DOWN", StateType::TARGET_DOWN);
+    setEnum(L, "WEAPON_AS_TARGET", StateType::WEAPON_AS_TARGET);
+    setEnum(L, "HOSTILE_APPROACHING", StateType::HOSTILE_APPROACHING);
+    setEnum(L, "UNDER_MELEE_ATTACK", StateType::UNDER_MELEE_ATTACK);
+    setEnum(L, "UNDER_RANGED_ATTACK", StateType::UNDER_RANGED_ATTACK);
+    setEnum(L, "ALLIES_UNDER_ATTACK", StateType::ALLIES_UNDER_ATTACK);
+    setEnum(L, "TARGETED_ENEMY", StateType::TARGETED_ENEMY);
+    setEnum(L, "TARGETED_ATTACKER_OF_ALLY", StateType::TARGETED_ATTACKER_OF_ALLY);
+    setEnum(L, "ITEM_IS_PHYSICALLY_LOOTABLE", StateType::ITEM_IS_PHYSICALLY_LOOTABLE);
+    setEnum(L, "AGGRESSION_TOWARDS_TARGET", StateType::AGGRESSION_TOWARDS_TARGET);
+    setEnum(L, "AM_IDLE", StateType::AM_IDLE);
+    setEnum(L, "AT_HOME_BUILDING", StateType::AT_HOME_BUILDING);
+    setEnum(L, "VILLAGE_RAZED", StateType::VILLAGE_RAZED);
+    setEnum(L, "NONE_REQUIREMENT", StateType::NONE_REQUIREMENT);
+    setEnum(L, "CHARACTER_HEALTH_IN_DANGER", StateType::CHARACTER_HEALTH_IN_DANGER);
+    setEnum(L, "NEEDS_FIRST_AID", StateType::NEEDS_FIRST_AID);
+    setEnum(L, "HAS_FIRST_AID_KIT", StateType::HAS_FIRST_AID_KIT);
+    setEnum(L, "IS_CROUCHING", StateType::IS_CROUCHING);
+    setEnum(L, "IS_LYING", StateType::IS_LYING);
+    setEnum(L, "IS_CROUCHING_OR_LYING", StateType::IS_CROUCHING_OR_LYING);
+    setEnum(L, "MOVEMENT_ALLOWED", StateType::MOVEMENT_ALLOWED);
+    setEnum(L, "NEAR_TO", StateType::NEAR_TO);
+    setEnum(L, "GENERAL_AGGRESSION_LEVEL", StateType::GENERAL_AGGRESSION_LEVEL);
+    setEnum(L, "NODE_UNOCCUPIED_BY_OTHERS", StateType::NODE_UNOCCUPIED_BY_OTHERS);
+    setEnum(L, "AT_NODE", StateType::AT_NODE);
+    setEnum(L, "HAS_VALID_TARGET_TOWN", StateType::HAS_VALID_TARGET_TOWN);
+    setEnum(L, "TIRED", StateType::TIRED);
+    setEnum(L, "FOLLOW_ME_MODE", StateType::FOLLOW_ME_MODE);
+    setEnum(L, "HAS_ENOUGH_GUARDS", StateType::HAS_ENOUGH_GUARDS);
+    setEnum(L, "AT_TARGET_TOWN", StateType::AT_TARGET_TOWN);
+    setEnum(L, "READY_FOR_MELEE_ACTION", StateType::READY_FOR_MELEE_ACTION);
+    setEnum(L, "HAS_ONE_WORKING_ARM", StateType::HAS_ONE_WORKING_ARM);
+    setEnum(L, "AGGRESSION_TOWARDS_ME", StateType::AGGRESSION_TOWARDS_ME);
+    setEnum(L, "WITHIN_10_METERS", StateType::WITHIN_10_METERS);
+    setEnum(L, "WITHIN_50_METERS", StateType::WITHIN_50_METERS);
+    setEnum(L, "TARGET_STANDING_STILL", StateType::TARGET_STANDING_STILL);
+    setEnum(L, "I_AM_DOWN", StateType::I_AM_DOWN);
+    setEnum(L, "WANTS_TO_GET_UP", StateType::WANTS_TO_GET_UP);
+    setEnum(L, "CAN_GET_UP", StateType::CAN_GET_UP);
+    setEnum(L, "AT_LOCATION_ASAP", StateType::AT_LOCATION_ASAP);
+    setEnum(L, "IS_CARRYING_SOMETHING", StateType::IS_CARRYING_SOMETHING);
+    setEnum(L, "IS_CARRYING_TARGET", StateType::IS_CARRYING_TARGET);
+    setEnum(L, "PLAYER_FORCES_GET_UP", StateType::PLAYER_FORCES_GET_UP);
+    setEnum(L, "HAS_SOME_BUILDING_MATERIALS", StateType::HAS_SOME_BUILDING_MATERIALS);
+    setEnum(L, "BUILDING_HAS_SOME_BUILDING_MATERIALS", StateType::BUILDING_HAS_SOME_BUILDING_MATERIALS);
+    setEnum(L, "DOOR_IS_OPEN", StateType::DOOR_IS_OPEN);
+    setEnum(L, "DOOR_IS_OPEN_HERE", StateType::DOOR_IS_OPEN_HERE);
+    setEnum(L, "DOOR_IS_LOCKED", StateType::DOOR_IS_LOCKED);
+    setEnum(L, "DOOR_IS_LOCKED_HERE", StateType::DOOR_IS_LOCKED_HERE);
+    setEnum(L, "DOOR_IS_BROKEN", StateType::DOOR_IS_BROKEN);
+    setEnum(L, "AT_LOCATION_BUILDING_DOOR", StateType::AT_LOCATION_BUILDING_DOOR);
+    setEnum(L, "AT_CURRENT_LOCATION_BUILDING_DOOR", StateType::AT_CURRENT_LOCATION_BUILDING_DOOR);
+    setEnum(L, "DESTINATION_IS_ACCESSIBLE", StateType::DESTINATION_IS_ACCESSIBLE);
+    setEnum(L, "LOCATION_IS_ACCESSIBLE", StateType::LOCATION_IS_ACCESSIBLE);
+    setEnum(L, "INVENTORY_FULL_OF_RESOURCES", StateType::INVENTORY_FULL_OF_RESOURCES);
+    setEnum(L, "MACHINES_INPUTS_EMPTY", StateType::MACHINES_INPUTS_EMPTY);
+    setEnum(L, "MACHINES_OUTPUTS_FULL", StateType::MACHINES_OUTPUTS_FULL);
+    setEnum(L, "MACHINE_IS_JAMMED", StateType::MACHINE_IS_JAMMED);
+    setEnum(L, "ANY_MACHINES_JAMMED", StateType::ANY_MACHINES_JAMMED);
+    setEnum(L, "HAVE_SOME_RESOURCES_FROM", StateType::HAVE_SOME_RESOURCES_FROM);
+    setEnum(L, "HAVE_SOME_RESOURCES_FOR", StateType::HAVE_SOME_RESOURCES_FOR);
+    setEnum(L, "HAVE_SOME_LOOT_FROM", StateType::HAVE_SOME_LOOT_FROM);
+    setEnum(L, "ROUTE_IS_BLOCKED", StateType::ROUTE_IS_BLOCKED);
+    setEnum(L, "I_OWN_OBJECT", StateType::I_OWN_OBJECT);
+    setEnum(L, "BUILDING_IS_DAMAGED", StateType::BUILDING_IS_DAMAGED);
+    setEnum(L, "IS_FULLY_RESTED", StateType::IS_FULLY_RESTED);
+    setEnum(L, "MACHINE_HAS_FREE_OPERATOR_SLOT", StateType::MACHINE_HAS_FREE_OPERATOR_SLOT);
+    setEnum(L, "ENEMY_FORCE_DEFEATED", StateType::ENEMY_FORCE_DEFEATED);
+    setEnum(L, "MY_FORCE_DEFEATED", StateType::MY_FORCE_DEFEATED);
+    setEnum(L, "MESSAGE_DELIVERED", StateType::MESSAGE_DELIVERED);
+    setEnum(L, "CARRIED_DUDE_NOW_IN_BED", StateType::CARRIED_DUDE_NOW_IN_BED);
+    setEnum(L, "TARGET_IS_IMPRISONED", StateType::TARGET_IS_IMPRISONED);
+    setEnum(L, "I_AM_IMPRISONED", StateType::I_AM_IMPRISONED);
+    setEnum(L, "CARRYING_ARM_IS_OK", StateType::CARRYING_ARM_IS_OK);
+    setEnum(L, "CARRIED_DUDE_NOW_IN_CAGE", StateType::CARRIED_DUDE_NOW_IN_CAGE);
+    setEnum(L, "GOT_INVENTORY_ROOM_FOR_RESOURCES", StateType::GOT_INVENTORY_ROOM_FOR_RESOURCES);
+    setEnum(L, "I_AM_IN_BED", StateType::I_AM_IN_BED);
+    setEnum(L, "AT_A_SHOP", StateType::AT_A_SHOP);
+    setEnum(L, "BOUGHT_SHIT", StateType::BOUGHT_SHIT);
+    setEnum(L, "AT_A_TOWN", StateType::AT_A_TOWN);
+    setEnum(L, "ALL_DOORS_LOCKED_UP", StateType::ALL_DOORS_LOCKED_UP);
+    setEnum(L, "INSIDE_BUILDING", StateType::INSIDE_BUILDING);
+    setEnum(L, "HAVE_SOME_RESOURCES_FROM_THIS_MACHINE_BUT_WANT_THEM_GONE_IF_POSSIBLE", StateType::HAVE_SOME_RESOURCES_FROM_THIS_MACHINE_BUT_WANT_THEM_GONE_IF_POSSIBLE);
+    setEnum(L, "DESTINATION_NOT_BLOCKED_BY_FORTIFICATIONS", StateType::DESTINATION_NOT_BLOCKED_BY_FORTIFICATIONS);
+    setEnum(L, "AT_LOCATION_FORTIFICATION_GATE", StateType::AT_LOCATION_FORTIFICATION_GATE);
+    setEnum(L, "IS_ENEMY", StateType::IS_ENEMY);
+    setEnum(L, "BUILDING_HAS_POWER", StateType::BUILDING_HAS_POWER);
+    setEnum(L, "AT_TARGET_TOWN_FAST", StateType::AT_TARGET_TOWN_FAST);
+    setEnum(L, "AT_HOME_TOWN", StateType::AT_HOME_TOWN);
+    setEnum(L, "TARGET_IS_FREE", StateType::TARGET_IS_FREE);
+    setEnum(L, "CAGES_ARE_ALL_FULL", StateType::CAGES_ARE_ALL_FULL);
+    setEnum(L, "MACHINE_OCCUPANT_IS_ALIVE", StateType::MACHINE_OCCUPANT_IS_ALIVE);
+    setEnum(L, "CARRYING_A_DEAD_GUY", StateType::CARRYING_A_DEAD_GUY);
+    setEnum(L, "CARRIED_DUDE_NOW_IN_DISPOSAL_MACHINE", StateType::CARRIED_DUDE_NOW_IN_DISPOSAL_MACHINE);
+    setEnum(L, "LEADER_IS_DOWN", StateType::LEADER_IS_DOWN);
+    setEnum(L, "SQUAD_UNDER_ATTACK", StateType::SQUAD_UNDER_ATTACK);
+    setEnum(L, "MY_LEGS_MESSED_UP", StateType::MY_LEGS_MESSED_UP);
+    setEnum(L, "USING_TARGET_TURRET", StateType::USING_TARGET_TURRET);
+    setEnum(L, "MACHINES_OUTPUTS_EMPTY", StateType::MACHINES_OUTPUTS_EMPTY);
+    setEnum(L, "MACHINES_INPUTS_FULL", StateType::MACHINES_INPUTS_FULL);
+    setEnum(L, "I_AM_INSIDE_TARGET_BUILDING", StateType::I_AM_INSIDE_TARGET_BUILDING);
+    setEnum(L, "STRANGERS_INSIDE_MY_BUILDING", StateType::STRANGERS_INSIDE_MY_BUILDING);
+    setEnum(L, "SPOKEN_TO", StateType::SPOKEN_TO);
+    setEnum(L, "SPOKEN_TO_WITHOUT_MOVING", StateType::SPOKEN_TO_WITHOUT_MOVING);
+    setEnum(L, "AT_LOCATION_BUILDING_DOOR_INSIDE", StateType::AT_LOCATION_BUILDING_DOOR_INSIDE);
+    setEnum(L, "DOOR_IS_LOCKED_AND_IM_INSIDE", StateType::DOOR_IS_LOCKED_AND_IM_INSIDE);
+    setEnum(L, "TARGET_IN_TOWN", StateType::TARGET_IN_TOWN);
+    setEnum(L, "TARGET_CUFFS_ARE_LOCKED", StateType::TARGET_CUFFS_ARE_LOCKED);
+    setEnum(L, "IS_CARRYING_TARGET_HEALTHY", StateType::IS_CARRYING_TARGET_HEALTHY);
+    setEnum(L, "TARGET_IS_MY_SLAVE", StateType::TARGET_IS_MY_SLAVE);
+    setEnum(L, "TARGET_HAS_BEEN_LOOTED", StateType::TARGET_HAS_BEEN_LOOTED);
+    setEnum(L, "TARGET_IS_UNARMED", StateType::TARGET_IS_UNARMED);
+    setEnum(L, "TARGET_IS_SURRENDERED", StateType::TARGET_IS_SURRENDERED);
+    setEnum(L, "TARGET_LOOKS_LIKE_A_SLAVE", StateType::TARGET_LOOKS_LIKE_A_SLAVE);
+    setEnum(L, "CARRYING_EXCESS_LOOT", StateType::CARRYING_EXCESS_LOOT);
+    setEnum(L, "HAS_TOOLS", StateType::HAS_TOOLS);
+    setEnum(L, "IS_WORKING", StateType::IS_WORKING);
+    setEnum(L, "TARGET_IS_ESCAPEE_OR_FREE", StateType::TARGET_IS_ESCAPEE_OR_FREE);
+    setEnum(L, "TARGET_IS_CONSCIOUS", StateType::TARGET_IS_CONSCIOUS);
+    setEnum(L, "AT_LOCATION_BUILDING_DOOR_OUTSIDE", StateType::AT_LOCATION_BUILDING_DOOR_OUTSIDE);
+    setEnum(L, "DOOR_IS_LOCKED_AND_IM_OUTSIDE", StateType::DOOR_IS_LOCKED_AND_IM_OUTSIDE);
+    setEnum(L, "IS_ALLY", StateType::IS_ALLY);
+    setEnum(L, "TARGET_IS_ARRESTED", StateType::TARGET_IS_ARRESTED);
+    setEnum(L, "ALARMS_IN_THE_VICINITY", StateType::ALARMS_IN_THE_VICINITY);
+    setEnum(L, "AT_PACKAGE_TARGET", StateType::AT_PACKAGE_TARGET);
+    setEnum(L, "HAS_REPAIR_KIT", StateType::HAS_REPAIR_KIT);
+    setEnum(L, "NEEDS_REPAIR_ROBOT", StateType::NEEDS_REPAIR_ROBOT);
+    setEnum(L, "TARGET_IS_WEARING_CUFFS", StateType::TARGET_IS_WEARING_CUFFS);
+    setEnum(L, "TARGET_IS_EATEN", StateType::TARGET_IS_EATEN);
+    setEnum(L, "IS_WORKING_PRETEND", StateType::IS_WORKING_PRETEND);
+    setEnum(L, "INTRUDER_IS_OUTSIDE_BUILDING", StateType::INTRUDER_IS_OUTSIDE_BUILDING);
+    setEnum(L, "AT_A_TOWN_FOR_SLAVE_SELLING", StateType::AT_A_TOWN_FOR_SLAVE_SELLING);
+    setEnum(L, "IM_SWIMMING", StateType::IM_SWIMMING);
+    setEnum(L, "TARGET_SWIMMING", StateType::TARGET_SWIMMING);
+    setEnum(L, "STRANGERS_INSIDE_MY_BUILDING_AND_ITS_PRIVATE", StateType::STRANGERS_INSIDE_MY_BUILDING_AND_ITS_PRIVATE);
+    setEnum(L, "TARGET_IS_RESTRAINED_OR_KO", StateType::TARGET_IS_RESTRAINED_OR_KO);
+    setEnum(L, "TARGET_FARM_HAS_FOOD", StateType::TARGET_FARM_HAS_FOOD);
+    setEnum(L, "AM_HUNGRY", StateType::AM_HUNGRY);
+    setEnum(L, "IS_USING_ANY_TURRET", StateType::IS_USING_ANY_TURRET);
+    setEnum(L, "TARGET_WORSHIPPED", StateType::TARGET_WORSHIPPED);
+    setEnum(L, "DITCHED_ALL_RESOURCES", StateType::DITCHED_ALL_RESOURCES);
+    setEnum(L, "LOOTED_STORABLE_ITEMS", StateType::LOOTED_STORABLE_ITEMS);
+    setEnum(L, "GOT_A_FOOD_ITEM", StateType::GOT_A_FOOD_ITEM);
+    setEnum(L, "HAVE_SOME_BUILD_MATS", StateType::HAVE_SOME_BUILD_MATS);
+    setEnum(L, "HAS_SPLINT_KIT", StateType::HAS_SPLINT_KIT);
+    setEnum(L, "NEEDS_SPLINT", StateType::NEEDS_SPLINT);
+    setEnum(L, "FINAL_GOT_A_KIDNAP_VICTIM", StateType::FINAL_GOT_A_KIDNAP_VICTIM);
+    setEnum(L, "FINAL_FOUND_AND_PUT_CARRIED_IN_A_CAGE", StateType::FINAL_FOUND_AND_PUT_CARRIED_IN_A_CAGE);
+    setEnum(L, "I_AM_PRONE", StateType::I_AM_PRONE);
+    setEnum(L, "BUILDING_IS_DESTROYED", StateType::BUILDING_IS_DESTROYED);
+    setEnum(L, "INTRUDER_IS_OUTSIDE_GATES", StateType::INTRUDER_IS_OUTSIDE_GATES);
+    setEnum(L, "CROWD_LIMIT_8_PEOPLE", StateType::CROWD_LIMIT_8_PEOPLE);
+    setEnum(L, "I_HAVE_SUFFICIENT_LOCK_SKILL", StateType::I_HAVE_SUFFICIENT_LOCK_SKILL);
+    setEnum(L, "I_HAVE_SUFFICIENT_LOCK_SKILL_FOR_SHACKLES", StateType::I_HAVE_SUFFICIENT_LOCK_SKILL_FOR_SHACKLES);
+    setEnum(L, "DESTINATION_IS_ACCESSIBLE_ANIMAL", StateType::DESTINATION_IS_ACCESSIBLE_ANIMAL);
+    setEnum(L, "MACHINE_HAS_INVALID_INPUTS", StateType::MACHINE_HAS_INVALID_INPUTS);
+    lua_setglobal(L, "StateType");
+    }
+
+    void registerTaskerPermajobType(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "NOT_A_PERMAJOB", PermajobType::NOT_A_PERMAJOB);
+    setEnum(L, "PERMAJOB_NORMAL", PermajobType::PERMAJOB_NORMAL);
+    setEnum(L, "PERMAJOB_HIGHCOMBAT", PermajobType::PERMAJOB_HIGHCOMBAT);
+    lua_setglobal(L, "PermajobType");
+    }
+
+    // ------------------------------------------
+    // ToolTip.h
+    // ------------------------------------------
+
+    void registerToolTipType(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "TEXT", ToolTip::TEXT);
+    setEnum(L, "MULTILINE", ToolTip::MULTILINE);
+    setEnum(L, "GAMEDATA", ToolTip::GAMEDATA);
+    setEnum(L, "ITEM", ToolTip::ITEM);
+    setEnum(L, "HAND", ToolTip::HAND);
+    lua_setglobal(L, "ToolTipType");
+    }
+
+    // ------------------------------------------
+    // TutorialGUI.h
+    // ------------------------------------------
+
+    void registerTutorialGUIState(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "INACTIVE", TutorialItem::INACTIVE);
+    setEnum(L, "ACTIVE", TutorialItem::ACTIVE);
+    setEnum(L, "ENDED", TutorialItem::ENDED);
+    lua_setglobal(L, "TutorialItemState");
+    }
+
+    void registerTutorialGUIHighlightItem(lua_State* L)
+    {
+    lua_newtable(L);
+    setEnum(L, "NONE", TutorialGUI::NONE);
+    setEnum(L, "PORTRAITS", TutorialGUI::PORTRAITS);
+    setEnum(L, "PANEL_STATS", TutorialGUI::PANEL_STATS);
+    setEnum(L, "PANEL_STATS_BOTTOM", TutorialGUI::PANEL_STATS_BOTTOM);
+    setEnum(L, "PANEL_STATS_BOTTOM_POWER_BUTTON", TutorialGUI::PANEL_STATS_BOTTOM_POWER_BUTTON);
+    setEnum(L, "PANEL_STATS_BOTTOM_WORKERS", TutorialGUI::PANEL_STATS_BOTTOM_WORKERS);
+    setEnum(L, "PANEL_MEDICAL", TutorialGUI::PANEL_MEDICAL);
+    setEnum(L, "PANEL_MEDICAL_STATUS", TutorialGUI::PANEL_MEDICAL_STATUS);
+    setEnum(L, "PANEL_MEDICAL_BAR_BODY", TutorialGUI::PANEL_MEDICAL_BAR_BODY);
+    setEnum(L, "PANEL_MEDICAL_BAR_LIMBS", TutorialGUI::PANEL_MEDICAL_BAR_LIMBS);
+    setEnum(L, "PANEL_MEDICAL_BAR_BLOOD", TutorialGUI::PANEL_MEDICAL_BAR_BLOOD);
+    setEnum(L, "PANEL_MEDICAL_BAR_POWER", TutorialGUI::PANEL_MEDICAL_BAR_POWER);
+    setEnum(L, "PANEL_MEDICAL_BAR_MATERIALS", TutorialGUI::PANEL_MEDICAL_BAR_MATERIALS);
+    setEnum(L, "PANEL_MEDICAL_BAR_MATERIALS_BUILDING", TutorialGUI::PANEL_MEDICAL_BAR_MATERIALS_BUILDING);
+    setEnum(L, "PANEL_MEDICAL_BAR_CONDITION", TutorialGUI::PANEL_MEDICAL_BAR_CONDITION);
+    setEnum(L, "PANEL_MEDICAL_BAR_CONDITION_BUILDING", TutorialGUI::PANEL_MEDICAL_BAR_CONDITION_BUILDING);
+    setEnum(L, "PANEL_GAME_SPEED", TutorialGUI::PANEL_GAME_SPEED);
+    setEnum(L, "PANEL_TIME_MONEY", TutorialGUI::PANEL_TIME_MONEY);
+    setEnum(L, "BUTTON_BUILD", TutorialGUI::BUTTON_BUILD);
+    setEnum(L, "PANEL_BOUNTY", TutorialGUI::PANEL_BOUNTY);
+    setEnum(L, "PANEL_MENU_BAR", TutorialGUI::PANEL_MENU_BAR);
+    setEnum(L, "PANEL_MENU_BAR_SQUAD", TutorialGUI::PANEL_MENU_BAR_SQUAD);
+    setEnum(L, "PANEL_MENU_BAR_STATS", TutorialGUI::PANEL_MENU_BAR_STATS);
+    setEnum(L, "PANEL_MENU_BAR_TECH", TutorialGUI::PANEL_MENU_BAR_TECH);
+    setEnum(L, "PANEL_ORDERS", TutorialGUI::PANEL_ORDERS);
+    setEnum(L, "PANEL_ORDERS_COMMANDS", TutorialGUI::PANEL_ORDERS_COMMANDS);
+    setEnum(L, "PANEL_ORDERS_JOBS", TutorialGUI::PANEL_ORDERS_JOBS);
+    setEnum(L, "PANEL_ORDERS_JOB_REMOVE", TutorialGUI::PANEL_ORDERS_JOB_REMOVE);
+    setEnum(L, "PANEL_ORDERS_JOB_OBEDIENCE", TutorialGUI::PANEL_ORDERS_JOB_OBEDIENCE);
+    setEnum(L, "PANEL_ORDERS_MEDIC_BUTTON", TutorialGUI::PANEL_ORDERS_MEDIC_BUTTON);
+    setEnum(L, "PANEL_ORDERS_RESCUE_BUTTON", TutorialGUI::PANEL_ORDERS_RESCUE_BUTTON);
+    setEnum(L, "MAPSCREEN_CRAFT_TAB", TutorialGUI::MAPSCREEN_CRAFT_TAB);
+    setEnum(L, "MAPSCREEN_CRAFT_TAB_ITEMS", TutorialGUI::MAPSCREEN_CRAFT_TAB_ITEMS);
+    setEnum(L, "BUILDING_INVENTORY_INPUT", TutorialGUI::BUILDING_INVENTORY_INPUT);
+    setEnum(L, "BUILD_MODE_PANEL_BUILDINGS", TutorialGUI::BUILD_MODE_PANEL_BUILDINGS);
+    lua_setglobal(L, "HighlightItem");
+    }
+
+void registerEnumBindings(lua_State* L)
     {
         registerMeshDataLookup(L);
         registerCrimeEnum(L);
@@ -2800,5 +3182,18 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         registerSenseType(L);
         registerTownAlarmState(L);
         registerTownType(L);
-	}
+        registerCharacterStatsWindowGroup(L);
+        registerDataPanelLineLineType(L);
+        registerForgottenGUITradeWindowType(L);
+        registerManagementScreenMessageLogColor(L);
+        registerScreenLabelLabelSize(L);
+        registerScreenLabelRisingSpeed(L);
+        registerSquadManagementScreenState(L);
+        registerTaskerPermajobType(L);
+        registerTaskerStateType(L);
+        registerTaskertaskPriority(L);
+        registerToolTipType(L);
+        registerTutorialGUIHighlightItem(L);
+        registerTutorialGUIState(L);
+    }
 } // namespace KenshiLua

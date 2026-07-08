@@ -290,6 +290,116 @@ namespace KenshiLua
         return result;
     }
 
+    bool EventSystem::callHandlersBool(const char* eventName, IArgPusher* pusher, bool defaultVal)
+    {
+        std::vector<HandlerInfo> snapshot;
+        for (size_t i = 0; i < m_handlers.size(); ++i)
+        {
+            if (m_handlers[i].first == eventName)
+            {
+                snapshot = m_handlers[i].second;
+                break;
+            }
+        }
+
+        if (snapshot.empty())
+            return defaultVal;
+
+        bool hasResult = false;
+        bool result = defaultVal;
+        for (size_t i = 0; i < snapshot.size(); ++i)
+        {
+            lua_rawgeti(m_L, LUA_REGISTRYINDEX, snapshot[i].luaRef);
+            if (!lua_isfunction(m_L, -1))
+            {
+                lua_pop(m_L, 1);
+                continue;
+            }
+
+            int nargs = 0;
+            if (pusher)
+                nargs = pusher->push(m_L);
+
+            if (lua_pcall(m_L, nargs, 1, 0) == LUA_OK)
+            {
+                if (lua_isboolean(m_L, -1))
+                {
+                    result = lua_toboolean(m_L, -1) != 0;
+                    hasResult = true;
+                }
+            }
+            else
+            {
+                const char* err = lua_tostring(m_L, -1);
+                logToFilef("Lua error in '%s' handler: %s",
+                    eventName,
+                    err ? err : "(non-string error)");
+            }
+
+            lua_pop(m_L, 1);
+
+            if (hasResult)
+                break;
+        }
+
+        return result;
+    }
+
+    double EventSystem::callHandlersNumber(const char* eventName, IArgPusher* pusher, double defaultVal)
+    {
+        std::vector<HandlerInfo> snapshot;
+        for (size_t i = 0; i < m_handlers.size(); ++i)
+        {
+            if (m_handlers[i].first == eventName)
+            {
+                snapshot = m_handlers[i].second;
+                break;
+            }
+        }
+
+        if (snapshot.empty())
+            return defaultVal;
+
+        bool hasResult = false;
+        double result = defaultVal;
+        for (size_t i = 0; i < snapshot.size(); ++i)
+        {
+            lua_rawgeti(m_L, LUA_REGISTRYINDEX, snapshot[i].luaRef);
+            if (!lua_isfunction(m_L, -1))
+            {
+                lua_pop(m_L, 1);
+                continue;
+            }
+
+            int nargs = 0;
+            if (pusher)
+                nargs = pusher->push(m_L);
+
+            if (lua_pcall(m_L, nargs, 1, 0) == LUA_OK)
+            {
+                if (lua_isnumber(m_L, -1))
+                {
+                    result = (double)lua_tonumber(m_L, -1);
+                    hasResult = true;
+                }
+            }
+            else
+            {
+                const char* err = lua_tostring(m_L, -1);
+                logToFilef("Lua error in '%s' handler: %s",
+                    eventName,
+                    err ? err : "(non-string error)");
+            }
+
+            lua_pop(m_L, 1);
+
+            if (hasResult)
+                break;
+        }
+
+        return result;
+    }
+
 
     // ---------------------------------------------------------------------------
     // clear

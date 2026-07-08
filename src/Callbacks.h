@@ -25,6 +25,8 @@ class Dialogue;
 class GameData;
 class RaceData;
 class InventorySection;
+class Ownerships;
+class InventoryItemBase;
 template <typename T> class lektor;
 namespace Ogre {
     class Vector3;
@@ -269,11 +271,23 @@ void CallDialogueDoActionsCallbacks(Dialogue* thisptr, DialogLineData* dialogLin
 // Lua signature:  function(dialogue, dialogLine)
 void CallDialogueSayCallbacks(Dialogue* thisptr, DialogLineData* dialogLine);
 
-// Callbacks for Extra Inventory Sections port
 void CallCharacterInitCallbacks(Character* character);
 void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, const std::string& listName, RaceData* race, bool noShoes);
 void CallBaseLayoutInitialiseCallbacks(const std::string& layout);
 InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type);
+Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race);
+bool CallCharacterIsItOkForMeToLootCallbacks(Character* me, RootObject* victim, Item* item, bool defaultVal);
+float CallCharacterGetFencingSuccessChanceCallbacks(Character* merchant, Item* item, RootObject* thief, float defaultVal);
+float CallCharStatsGetStatCallbacks(const CharStats* stats, int what, bool unmodified, float defaultVal);
+GameData* CallFactionChooseARaceCallbacks(Faction* faction, GameData* character, GameData* squadTemplate, GameData* defaultVal);
+GameData* CallFactionGetBuildingReplacementCallbacks(Faction* faction, GameData* building, GameData* defaultVal);
+bool CallOwnershipsCanIUseThisBuildingCallbacks(Ownerships* ownerships, Building* b, Character* me, bool defaultVal);
+bool CallPlatoonIBuyStolenGoodsCallbacks(Platoon* platoon, Item* what, bool defaultVal);
+bool CallPlatoonIBuyIllegalGoodsCallbacks(Platoon* platoon, bool defaultVal);
+bool CallBuildingIsPublicCallbacks(const Building* b, bool defaultVal);
+bool CallBuildingIsForSaleCallbacks(Building* b, bool defaultVal);
+int CallBuildingCalculateSaleValueCallbacks(Building* b, int defaultVal);
+int CallInventoryItemBaseGetValueSingleCallbacks(const InventoryItemBase* item, bool isPlayer, int defaultVal);
 
 
 

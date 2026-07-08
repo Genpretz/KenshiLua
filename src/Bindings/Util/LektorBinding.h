@@ -1,7 +1,48 @@
 // LektorBinding.h
 #pragma once
 #include <kenshi/util/lektor.h>
-#include <kenshi/util/LektorPushBack.h>
+#include <string.h>
+#include <assert.h>
+
+template<typename T>
+void lektor_push_back(lektor<T>& lek, const T& val)
+{
+    if (lek.count >= lek.maxSize)
+    {
+        uint32_t newMax = lek.maxSize == 0 ? 4 : lek.maxSize * 2;
+        T* newStuff = (T*)Ogre::AllocatedObject<
+            Ogre::CategorisedAllocPolicy<Ogre::MEMCATEGORY_GENERAL>
+        >::operator new(newMax * sizeof(T));
+        if (lek.stuff)
+        {
+            memcpy(newStuff, lek.stuff, lek.count * sizeof(T));
+            Ogre::AllocatedObject<
+                Ogre::CategorisedAllocPolicy<Ogre::MEMCATEGORY_GENERAL>
+            >::operator delete(lek.stuff);
+        }
+        lek.stuff = newStuff;
+        lek.maxSize = newMax;
+    }
+    lek.stuff[lek.count++] = val;
+}
+
+template<typename T>
+void lektor_pop_back(lektor<T>& lek)
+{
+    assert(lek.count > 0 && "lektor_pop_back: container is empty");
+    --lek.count;
+    lek.stuff[lek.count].~T();
+}
+
+template<typename T>
+T lektor_pop_back_val(lektor<T>& lek)
+{
+    assert(lek.count > 0 && "lektor_pop_back_val: container is empty");
+    T val = lek.stuff[lek.count - 1];
+    --lek.count;
+    lek.stuff[lek.count].~T();
+    return val;
+}
 
 namespace KenshiLua
 {

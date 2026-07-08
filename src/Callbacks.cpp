@@ -17,6 +17,8 @@
 #include "Bindings/Gui/DialogueWindowBinding.h"
 #include "Bindings/InventoryBinding.h"
 #include "Bindings/InventorySectionBinding.h"
+#include "Bindings/InventoryItemBaseBinding.h"
+#include "Bindings/OwnershipsBinding.h"
 #include "Bindings/ItemBinding.h"
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/PlayerInterfaceBinding.h"
@@ -58,6 +60,8 @@ namespace KenshiLua
     static inline const char* DialogLineDataMetatable()         { return DialogLineDataBinding::getMetatableName(); }
     static inline const char* RootObjectMetatable()             { return RootObjectBinding::getMetatableName(); }
     static inline const char* InventoryMetatable()              { return InventoryBinding::getMetatableName(); }
+    static inline const char* OwnershipsMetatable()             { return OwnershipsBinding::getMetatableName(); }
+    static inline const char* InventoryItemBaseMetatable()      { return InventoryItemBaseBinding::getMetatableName(); }
     static inline const char* CombatTechniqueDataMetatable()    { return CombatTechniqueDataBinding::getMetatableName(); }
     static inline const char* TaskerMetatable()                 { return TaskerBinding::getMetatableName(); }
     static inline const char* BuildingMetatable()               { return BuildingBinding::getMetatableName(); }
@@ -90,6 +94,10 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, CombatTechniqueData* val){ pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
     static inline void pushArg(lua_State* L, Tasker* val)             { pushObject<Tasker>(L, val, TaskerMetatable()); }
     static inline void pushArg(lua_State* L, Building* val)           { pushObject<Building>(L, val, BuildingMetatable()); }
+    static inline void pushArg(lua_State* L, const Building* val)     { pushObject<Building>(L, const_cast<Building*>(val), BuildingMetatable()); }
+    static inline void pushArg(lua_State* L, const CharStats* val)    { pushObject<CharStats>(L, const_cast<CharStats*>(val), CharStatsMetatable()); }
+    static inline void pushArg(lua_State* L, Ownerships* val)         { pushObject<Ownerships>(L, val, OwnershipsMetatable()); }
+    static inline void pushArg(lua_State* L, const InventoryItemBase* val) { pushObject<InventoryItemBase>(L, const_cast<InventoryItemBase*>(val), InventoryItemBaseMetatable()); }
 
     static inline void pushArg(lua_State* L, const hand& val)         { pushObject<hand>(L, const_cast<hand*>(&val), HandMetatable()); }
     static inline void pushArg(lua_State* L, const Ogre::Vector3& val){ pushVector3(L, val); }
@@ -457,5 +465,88 @@ InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, i
     ArgPusher2<Inventory*, int> pusher(inventory, type);
     return static_cast<InventorySection*>(KenshiLua::EventSystem::get().callHandlersObject(
         "onInventoryGetSectionOfType", "KenshiLua.InventorySection", &pusher));
+}
+
+Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race)
+{
+    ArgPusher2<Inventory*, Character*> pusher(inventory, race);
+    return static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onInventoryGetBestFoodItem", "KenshiLua.Item", &pusher));
+}
+
+bool CallCharacterIsItOkForMeToLootCallbacks(Character* me, RootObject* victim, Item* item, bool defaultVal)
+{
+    ArgPusher3<Character*, RootObject*, Item*> pusher(me, victim, item);
+    return KenshiLua::EventSystem::get().callHandlersBool("onCharacterLootCheck", &pusher, defaultVal);
+}
+
+float CallCharacterGetFencingSuccessChanceCallbacks(Character* merchant, Item* item, RootObject* thief, float defaultVal)
+{
+    ArgPusher3<Character*, Item*, RootObject*> pusher(merchant, item, thief);
+    return (float)KenshiLua::EventSystem::get().callHandlersNumber("onGetFencingChance", &pusher, defaultVal);
+}
+
+float CallCharStatsGetStatCallbacks(const CharStats* stats, int what, bool unmodified, float defaultVal)
+{
+    ArgPusher3<const CharStats*, int, bool> pusher(stats, what, unmodified);
+    return (float)KenshiLua::EventSystem::get().callHandlersNumber("onGetStat", &pusher, defaultVal);
+}
+
+GameData* CallFactionChooseARaceCallbacks(Faction* faction, GameData* character, GameData* squadTemplate, GameData* defaultVal)
+{
+    ArgPusher3<Faction*, GameData*, GameData*> pusher(faction, character, squadTemplate);
+    GameData* overrideVal = static_cast<GameData*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onFactionChooseRace", "KenshiLua.GameData", &pusher));
+    return overrideVal ? overrideVal : defaultVal;
+}
+
+GameData* CallFactionGetBuildingReplacementCallbacks(Faction* faction, GameData* building, GameData* defaultVal)
+{
+    ArgPusher2<Faction*, GameData*> pusher(faction, building);
+    GameData* overrideVal = static_cast<GameData*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onFactionGetBuildingReplacement", "KenshiLua.GameData", &pusher));
+    return overrideVal ? overrideVal : defaultVal;
+}
+
+bool CallOwnershipsCanIUseThisBuildingCallbacks(Ownerships* ownerships, Building* b, Character* me, bool defaultVal)
+{
+    ArgPusher3<Ownerships*, Building*, Character*> pusher(ownerships, b, me);
+    return KenshiLua::EventSystem::get().callHandlersBool("onBuildingUseCheck", &pusher, defaultVal);
+}
+
+bool CallPlatoonIBuyStolenGoodsCallbacks(Platoon* platoon, Item* what, bool defaultVal)
+{
+    ArgPusher2<Platoon*, Item*> pusher(platoon, what);
+    return KenshiLua::EventSystem::get().callHandlersBool("onPlatoonIBuyStolenGoods", &pusher, defaultVal);
+}
+
+bool CallPlatoonIBuyIllegalGoodsCallbacks(Platoon* platoon, bool defaultVal)
+{
+    ArgPusher1<Platoon*> pusher(platoon);
+    return KenshiLua::EventSystem::get().callHandlersBool("onPlatoonIBuyIllegalGoods", &pusher, defaultVal);
+}
+
+bool CallBuildingIsPublicCallbacks(const Building* b, bool defaultVal)
+{
+    ArgPusher1<const Building*> pusher(b);
+    return KenshiLua::EventSystem::get().callHandlersBool("onBuildingIsPublic", &pusher, defaultVal);
+}
+
+bool CallBuildingIsForSaleCallbacks(Building* b, bool defaultVal)
+{
+    ArgPusher1<Building*> pusher(b);
+    return KenshiLua::EventSystem::get().callHandlersBool("onBuildingIsForSale", &pusher, defaultVal);
+}
+
+int CallBuildingCalculateSaleValueCallbacks(Building* b, int defaultVal)
+{
+    ArgPusher1<Building*> pusher(b);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("onBuildingCalculateSaleValue", &pusher, defaultVal);
+}
+
+int CallInventoryItemBaseGetValueSingleCallbacks(const InventoryItemBase* item, bool isPlayer, int defaultVal)
+{
+    ArgPusher2<const InventoryItemBase*, bool> pusher(item, isPlayer);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("onItemGetValueSingle", &pusher, defaultVal);
 }
 

@@ -45,7 +45,7 @@
 #include "Bindings/Building/ResearchBuildingInventoryLayoutBinding.h"
 #include "Bindings/Building/StorageBuildingBinding.h"
 #include "Bindings/Building/TortureBuildingBinding.h"
-#include "Bindings/Building/TradeCultureBinding.h"
+
 #include "Bindings/Building/TurretBuildingBinding.h"
 #include "Bindings/Building/UseableStuffBinding.h"
 #include "Bindings/Building/WallBuildingBinding.h"
@@ -128,6 +128,65 @@
 #include "Bindings/Util/YesNoMaybeBinding.h"
 #include "Bindings/Util/iVector2Binding.h"
 #include "Bindings/WeaponBinding.h"
+
+
+
+
+
+
+
+
+
+
+#include "Bindings/AABB2DBinding.h"
+#include "Bindings/BackThreadMessagesToMainTBinding.h"
+#include "Bindings/Gui/BackpackInventoryLayoutBinding.h"
+#include "Bindings/Gui/BuildModeWindowBinding.h"
+#include "Bindings/Gui/BuildingCategoryBinding.h"
+#include "Bindings/Gui/BuildingGroupBinding.h"
+#include "Bindings/Gui/CharacterStatsWindowBinding.h"
+#include "Bindings/Gui/CharacterTradingWindowBinding.h"
+#include "Bindings/Gui/FactionRelationsLineBinding.h"
+#include "Bindings/Gui/FactionsScreenBinding.h"
+#include "Bindings/Gui/ForgottenGUIBinding.h"
+#include "Bindings/Gui/GameDataEditorWindowBinding.h"
+#include "Bindings/Gui/GenericFixedInventoryLayoutBinding.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
+#include "Bindings/Gui/InventoryIconBinding.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
+#include "Bindings/Gui/InventorySectionGUIBinding.h"
+#include "Bindings/Gui/InventoryTradeDataBinding.h"
+#include "Bindings/Gui/MainBarGUIBinding.h"
+#include "Bindings/Gui/MainTabPortraitPlatoonBinding.h"
+#include "Bindings/Gui/OpenSaveFileDialogBinding.h"
+#include "Bindings/Gui/OptionsWindowBinding.h"
+#include "Bindings/Gui/OrderCellViewBinding.h"
+#include "Bindings/Gui/OrderDataBinding.h"
+#include "Bindings/Gui/OrdersItemBoxBinding.h"
+#include "Bindings/Gui/OrdersPanelBinding.h"
+#include "Bindings/Gui/StatBinding.h"
+#include "Bindings/Gui/StatGroupBinding.h"
+#include "Bindings/Gui/ToolTipBinding.h"
+#include "Bindings/Gui/ToolTipDynamicBinding.h"
+#include "Bindings/Gui/ToolTipFixedBinding.h"
+#include "Bindings/Gui/ToolTipInventoryBinding.h"
+#include "Bindings/Gui/ToolTipLineBinding.h"
+#include "Bindings/Gui/ToolTipStaticBinding.h"
+#include "Bindings/Gui/TradeResultBinding.h"
+#include "Bindings/Gui/TransformWindowBinding.h"
+#include "Bindings/Gui/TutorialGUIBinding.h"
+#include "Bindings/Gui/TutorialGUILineBinding.h"
+#include "Bindings/Gui/TutorialItemBinding.h"
+#include "Bindings/Gui/TutorialSubItemBinding.h"
+#include "Bindings/Gui/TutorialpediaGUIBinding.h"
+#include "Bindings/MainthreadStateReaderTBinding.h"
+#include "Bindings/ParticlePoolBinding.h"
+#include "Bindings/StateTBinding.h"
+#include "Bindings/TradeCultureBinding.h"
+#include "Bindings/ZoneManagerBinding.h"
+#include "Bindings/ZoneManagerInterfaceTBinding.h"
+#include "Bindings/ZoneMapBinding.h"
+#include "Bindings/ZoneSpacialGridBinding.h"
 
 #include <string>
 #include <cstdio>
@@ -298,6 +357,64 @@ void LuaBindings::registerAll(lua_State* L)
     CraftingBuildingBinding::registerBinding(L);
     GeneratorBuildingBinding::registerBinding(L);
     WindGeneratorBuildingBinding::registerBinding(L);
+
+
+
+
+
+
+
+
+
+
+    AABB2DBinding::registerBinding(L);
+    BackThreadMessagesToMainTBinding::registerBinding(L);
+    BackpackInventoryLayoutBinding::registerBinding(L);
+    BuildModeWindowBinding::registerBinding(L);
+    BuildingCategoryBinding::registerBinding(L);
+    BuildingGroupBinding::registerBinding(L);
+    CharacterStatsWindowBinding::registerBinding(L);
+    CharacterTradingWindowBinding::registerBinding(L);
+    FactionRelationsLineBinding::registerBinding(L);
+    FactionsScreenBinding::registerBinding(L);
+    ForgottenGUIBinding::registerBinding(L);
+    GameDataEditorWindowBinding::registerBinding(L);
+    GenericFixedInventoryLayoutBinding::registerBinding(L);
+    InventoryGUIBinding::registerBinding(L);
+    InventoryIconBinding::registerBinding(L);
+    InventoryLayoutBinding::registerBinding(L);
+    InventorySectionGUIBinding::registerBinding(L);
+    InventoryTradeDataBinding::registerBinding(L);
+    MainBarGUIBinding::registerBinding(L);
+    MainTabPortraitPlatoonBinding::registerBinding(L);
+    MainthreadStateReaderTBinding::registerBinding(L);
+    OpenSaveFileDialogBinding::registerBinding(L);
+    OptionsWindowBinding::registerBinding(L);
+    OrderCellViewBinding::registerBinding(L);
+    OrderDataBinding::registerBinding(L);
+    OrdersItemBoxBinding::registerBinding(L);
+    OrdersPanelBinding::registerBinding(L);
+    ParticlePoolBinding::registerBinding(L);
+    StatBinding::registerBinding(L);
+    StatGroupBinding::registerBinding(L);
+    StateTBinding::registerBinding(L);
+    ToolTipBinding::registerBinding(L);
+    ToolTipDynamicBinding::registerBinding(L);
+    ToolTipFixedBinding::registerBinding(L);
+    ToolTipInventoryBinding::registerBinding(L);
+    ToolTipLineBinding::registerBinding(L);
+    ToolTipStaticBinding::registerBinding(L);
+    TradeResultBinding::registerBinding(L);
+    TransformWindowBinding::registerBinding(L);
+    TutorialGUIBinding::registerBinding(L);
+    TutorialGUILineBinding::registerBinding(L);
+    TutorialItemBinding::registerBinding(L);
+    TutorialSubItemBinding::registerBinding(L);
+    TutorialpediaGUIBinding::registerBinding(L);
+    ZoneManagerBinding::registerBinding(L);
+    ZoneManagerInterfaceTBinding::registerBinding(L);
+    ZoneMapBinding::registerBinding(L);
+    ZoneSpacialGridBinding::registerBinding(L);
     ResearchBuildingBinding::registerBinding(L);
     ResearchBuildingInventoryLayoutBinding::registerBinding(L);
     GenericInventoryLayoutBinding::registerBinding(L);

@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/FactionBinding.h"
+
 #include "kenshi\Inventory.h"
 #include "InventoryBinding.h"
 #include "RootObjectBinding.h"

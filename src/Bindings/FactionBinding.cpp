@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/TradeCultureBinding.h"
+
 #include "kenshi\Faction.h"
 #include "FactionBinding.h"
 #include "kenshi/Platoon.h"
@@ -17,7 +19,7 @@
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/FactionRelationsBinding.h"
-#include "Bindings/Building/TradeCultureBinding.h"
+#include "Bindings/TradeCultureBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/RootObjectBinding.h"
 
