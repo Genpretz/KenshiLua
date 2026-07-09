@@ -55,9 +55,9 @@
     <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
-    <OutDir>C:\GOG Games\Kenshi\mods\KenshiLua\</OutDir>
     <SourcePath>$(SolutionDir)src;$(SourcePath)</SourcePath>
     <TargetName>KenshiLua</TargetName>
+    <OutDir>$(SolutionDir)bin\KenshiLua\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
@@ -136,6 +136,8 @@
       <AdditionalDependencies>lua51.lib;KenshiLib.lib;OgreMain_x64.lib;MyGUIEngine_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AssemblyDebug>true</AssemblyDebug>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -696,8 +698,12 @@
     <ClInclude Include="src\Bindings\WorldEventStateQueryListBinding.h" />
     <ClInclude Include="src\Callbacks.h" />
     <ClInclude Include="src\framework.h" />
-    <ClInclude Include="src\Gui\InitializeGui.h" />
-    <ClInclude Include="src\Gui\ScriptEditor.h" />
+    <ClInclude Include="src\Gui\KenshiLua_Console.h" />
+    <ClInclude Include="src\Gui\KenshiLua_Hub.h" />
+    <ClInclude Include="src\Gui\KenshiLua_LogViewer.h" />
+    <ClInclude Include="src\Gui\KenshiLua_ScriptEditor.h" />
+    <ClInclude Include="src\Gui\KenshiLua_ScriptManager.h" />
+    <ClInclude Include="src\Gui\KenshiLua_Settings.h" />
     <ClInclude Include="src\Hooks.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Lua\LuaState.h" />
@@ -775,7 +781,6 @@
     <ClInclude Include="src\Bindings\Building\LightBuildingBinding.h" />
     <ClInclude Include="src\Bindings\Building\RainCollectorBuildingBinding.h" />
     <ClInclude Include="src\Bindings\Building\TortureBuildingBinding.h" />
-    
     <ClInclude Include="src\Bindings\Building\TurretBuildingBinding.h" />
     <ClInclude Include="src\Bindings\Building\WallBuildingBinding.h" />
     <ClInclude Include="src\Bindings\Util\BoostUnorderedBinding.h" />
@@ -832,7 +837,7 @@
     <ClInclude Include="src\Bindings\Gui\TutorialItemBinding.h" />
     <ClInclude Include="src\Bindings\Gui\TutorialSubItemBinding.h" />
     <ClInclude Include="src\Bindings\Gui\TutorialpediaGUIBinding.h" />
-    <ClInclude Include="src\Gui.h" />
+    <ClInclude Include="src\Gui\Gui.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Bindings\AbstractMovementBaseBinding.cpp" />
@@ -936,9 +941,15 @@
     <ClCompile Include="src\Bindings\WorldEventStateQueryBinding.cpp" />
     <ClCompile Include="src\Bindings\WorldEventStateQueryListBinding.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\Gui\KenshiLua_Console.cpp" />
+    <ClCompile Include="src\Gui\KenshiLua_Hub.cpp" />
+    <ClCompile Include="src\Gui\KenshiLua_LogViewer.cpp" />
+    <ClCompile Include="src\Gui\KenshiLua_ScriptEditor.cpp" />
+    <ClCompile Include="src\Gui\KenshiLua_ScriptManager.cpp" />
+    <ClCompile Include="src\Gui\KenshiLua_Settings.cpp" />
     <ClCompile Include="src\Plugin.cpp" />
     <ClCompile Include="src\Callbacks.cpp" />
-    <ClCompile Include="src\Gui.cpp" />
+    <ClCompile Include="src\Gui\Gui.cpp" />
     <ClCompile Include="src\Hooks.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -1020,7 +1031,6 @@
     <ClCompile Include="src\Bindings\Building\LightBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\RainCollectorBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\TortureBuildingBinding.cpp" />
-    
     <ClCompile Include="src\Bindings\Building\TurretBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\WallBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\StringPairBinding.cpp" />
