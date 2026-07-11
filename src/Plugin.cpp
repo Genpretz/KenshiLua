@@ -2,7 +2,7 @@
 #include "Plugin.h"
 
 #include "EventSystem.h"
-#include "Gui.h"
+#include "Gui/GuiHelpers.h"
 #include "Hooks.h"
 #include "Logger.h"
 #include "Config.h"

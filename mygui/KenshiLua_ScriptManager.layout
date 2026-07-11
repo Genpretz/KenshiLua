@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Window" skin="Kenshi_WindowCX" position="180 234 860 576" layer="Window" name="Root">
+        <Property key="Caption" value="Script Manager"/>
+        <Property key="MinSize" value="420 300"/>
+        <Widget type="TextBox" skin="Kenshi_TextboxPaintedText_Large" position="15 10 50 24" align="Left Top" name="ScriptManager_FilterLabel">
+            <Property key="Caption" value="Filter:"/>
+            <Property key="TextAlign" value="Left VCenter"/>
+        </Widget>
+        <Widget type="EditBox" skin="Kenshi_EditBox" position="75 10 692 24" align="Left Top HStretch" name="ScriptManager_FilterEdit">
+            <Property key="Caption" value=""/>
+            <Property key="TextAlign" value="Left VCenter"/>
+            <Property key="OverflowToTheLeft" value="false"/>
+        </Widget>
+        <Widget type="MultiListBox" skin="Kenshi_MultiListBox" position="10 40 830 440" align="Left Top Right Bottom Stretch" name="ScriptManager_ScriptList"/>
+        <Widget type="TextBox" skin="Kenshi_TextboxPaintedText_Large" position="20 480 90 40" align="Left Bottom" name="ScriptManager_CountLabel">
+            <Property key="Caption" value="0 scripts"/>
+            <Property key="TextAlign" value="Left VCenter"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position="654 485 84 34" align="Right Bottom" name="ScriptManager_StartButton">
+            <Property key="Caption" value="Start"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position="739 485 84 34" align="Right Bottom" name="ScriptManager_StopButton">
+            <Property key="Caption" value="Stop"/>
+        </Widget>
+    </Widget>
+    <CodeGeneratorSettings/>
+</MyGUI>

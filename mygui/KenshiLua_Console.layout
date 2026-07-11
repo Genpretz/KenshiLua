@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Window" skin="Kenshi_WindowCX" position="350 330 620 425" align="Default" layer="Window" name="Root">
+        <Property key="Caption" value="CONSOLE"/>
+        <Property key="Movable" value="true"/>
+        <Property key="Snap" value="true"/>
+        <Widget type="TextBox" skin="Kenshi_TextBoxEmptySkin" position="14 10 400 18" align="Left Top" name="Console_ContextLabel">
+            <Property key="Caption" value="Executing against: global Lua state"/>
+            <Property key="FontName" value="Default"/>
+            <Property key="TextColour" value="0.35 0.31 0.28"/>
+            <Property key="TextAlign" value="Left VCenter"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1Skin" position="460 5 125 35" align="Right Top" name="Console_ClearButton">
+            <Property key="Caption" value="CLEAR OUTPUT"/>
+            <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="EditBox" skin="Kenshi_ScriptEditor_EditBox" position="14 45 586 272" align="HStretch VStretch" name="Console_OutputBox">
+            <Property key="MultiLine" value="true"/>
+            <Property key="ReadOnly" value="true"/>
+            <Property key="VisibleVScroll" value="true"/>
+            <Property key="WordWrap" value="true"/>
+            <Property key="FontName" value="Kenshi_StandardFont_Small"/>
+            <Property key="TextColour" value="0.08 0.03 0.02"/>
+        </Widget>
+        <Widget type="TextBox" skin="Kenshi_TextBoxEmptySkin" position="20 332 30 35" align="Left Bottom" name="Console_PromptLabel">
+            <Property key="Caption" value="&gt;"/>
+            <Property key="FontName" value="Default"/>
+            <Property key="TextColour" value="0.4 0.38 0.356"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="EditBox" skin="Kenshi_EditBox" position="50 332 440 30" align="HStretch Bottom" name="Console_InputBox">
+            <Property key="Pointer" value="beam"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1Skin" position="500 325 90 40" align="Right Bottom" name="Console_RunButton">
+            <Property key="Caption" value="RUN"/>
+            <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+    </Widget>
+    <CodeGeneratorSettings/>
+</MyGUI>

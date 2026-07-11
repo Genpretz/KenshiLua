@@ -1,11 +1,12 @@
 #include "pch.h"
 
 #include "Callbacks.h"
-#include "Gui.h"
+#include "Gui/GuiHelpers.h"
 #include "Hooks.h"
 #include "Logger.h"
 #include "DialogueScriptBridge.h"
 
+#include <core/Functions.h>
 #include <kenshi/Character.h>
 #include <kenshi/GameWorld.h>
 #include <kenshi/CharStats.h>
@@ -23,7 +24,6 @@
 #include <kenshi/MedicalSystem.h>
 #include <kenshi/gui/DialogueWindow.h>
 #include <kenshi/Dialogue.h>
-#include <core/Functions.h>
 #include <kenshi/Enums.h>
 #include <kenshi/Inventory.h>
 #include <kenshi/RootObjectFactory.h>
@@ -48,18 +48,18 @@ static bool InstallHookT(const char* name, intptr_t addr, T hookFn, T* origStora
 
     if (!addr)
     {
-        KenshiLua::logToFilef("Could not resolve address for %s.", name);
+        KenshiLua::logToFilef("Error: Could not resolve address for %s.", name);
         return false;
     }
     
     KenshiLib::HookStatus status = KenshiLib::AddHook(addr, hookFn, origStorage);
     if (status != KenshiLib::SUCCESS)
     {
-        KenshiLua::logToFilef("AddHook failed for %s (status %d).", name, (int)status);
+        KenshiLua::logToFilef("Error: AddHook failed for %s (status %d).", name, (int)status);
         return false;
     }
 
-    KenshiLua::logToFilef("Hook installed: %s", name);
+    KenshiLua::logToFileDebugf("Hook installed: %s", name);
     return true;
 }
 

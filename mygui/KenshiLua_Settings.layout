@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Window" skin="Kenshi_WindowCX" position="680 340 380 475" align="Default" layer="Window" name="Root">
+        <Property key="Caption" value="SETTINGS"/>
+        <Property key="Movable" value="true"/>
+        <Property key="Snap" value="true"/>
+        <Widget type="Button" skin="Kenshi_Button1Skin" position="15 385 120 30" align="Left Bottom" name="Settings_DefaultsButton">
+            <Property key="Caption" value="DEFAULTS"/>
+            <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1Skin" position="147 390 100 30" align="Right Bottom" name="Settings_CancelButton">
+            <Property key="Caption" value="CANCEL"/>
+            <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1Skin" position="252 390 110 30" align="Right Bottom" name="Settings_SaveButton">
+            <Property key="Caption" value="SAVE"/>
+            <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="Widget" skin="Kenshi_OrdersTextboxSkin" position="10 5 352 375" align="Stretch"/>
+    </Widget>
+    <CodeGeneratorSettings/>
+</MyGUI>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Window" skin="Kenshi_WindowCX" position="890 300 680 844" align="Default" layer="Window" name="Root">
+        <Property key="Caption" value="Script Editor"/>
+        <Property key="Movable" value="true"/>
+        <Property key="Snap" value="true"/>
+        <Widget type="Widget" skin="PanelEmpty" position="10 5 655 780" name="datapanel">
+            <Widget type="EditBox" skin="Kenshi_ScriptEditor_EditBox" position="5 50 645 495" name="ScriptEditor_InputBox">
+                <Property key="VisibleHScroll" value="true"/>
+                <Property key="VisibleVScroll" value="true"/>
+            </Widget>
+            <Widget type="EditBox" skin="Kenshi_ScriptEditor_EditBox" position="5 555 645 215" name="ScriptEditor_OutputBox">
+                <Property key="ReadOnly" value="true"/>
+                <Property key="VisibleHScroll" value="true"/>
+                <Property key="VisibleVScroll" value="true"/>
+            </Widget>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position="15 10 60 35" name="ScriptEditor_OpenButton">
+            <Property key="Caption" value="Open"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position="75 10 60 35" name="ScriptEditor_SaveButton">
+            <Property key="Caption" value="Save"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position="135 10 75 35" name="ScriptEditor_SaveAsButton">
+            <Property key="Caption" value="Save As"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position="600 10 60 35" name="ScriptEditor_ClearButton">
+            <Property key="Caption" value="Clear"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position="540 10 60 35" name="ScriptEditor_RunButton">
+            <Property key="Caption" value="Run"/>
+        </Widget>
+    </Widget>
+    <CodeGeneratorSettings/>
+</MyGUI>

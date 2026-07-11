@@ -5,7 +5,7 @@
 #include "Benchmark.h"
 #include "DialogueScriptBridge.h"
 #include "EventSystem.h"
-#include "Gui.h"
+#include "Gui/GuiHelpers.h"
 #include "Logger.h"
 #include "ScriptLoader.h"
 
@@ -128,16 +128,6 @@
 #include "Bindings/Util/YesNoMaybeBinding.h"
 #include "Bindings/Util/iVector2Binding.h"
 #include "Bindings/WeaponBinding.h"
-
-
-
-
-
-
-
-
-
-
 #include "Bindings/AABB2DBinding.h"
 #include "Bindings/BackThreadMessagesToMainTBinding.h"
 #include "Bindings/Gui/BackpackInventoryLayoutBinding.h"
@@ -241,8 +231,6 @@ static void installKenshiLuaTable(lua_State* L)
     lua_pushcfunction(L, luaKenshiRunBenchmark);
     lua_setfield(L, -2, "runBenchmark");
 
-
-
     lua_pushcfunction(L, luaCheckLuaScriptReferences);
     lua_setfield(L, -2, "checkLuaScriptReferences");
 
@@ -254,7 +242,6 @@ static void installKenshiLuaTable(lua_State* L)
 
     lua_pushcfunction(L, luaKenshiError);
     lua_setfield(L, -2, "error");
-
 
     lua_setglobal(L, "KenshiLua");
 }
@@ -357,15 +344,6 @@ void LuaBindings::registerAll(lua_State* L)
     CraftingBuildingBinding::registerBinding(L);
     GeneratorBuildingBinding::registerBinding(L);
     WindGeneratorBuildingBinding::registerBinding(L);
-
-
-
-
-
-
-
-
-
 
     AABB2DBinding::registerBinding(L);
     BackThreadMessagesToMainTBinding::registerBinding(L);
@@ -578,6 +556,6 @@ int luaKenshiError(lua_State* L)
     return lua_error(L);
 }
 
-int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.0"); return 1; }
+int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.1"); return 1; }
 
 } // namespace KenshiLua
