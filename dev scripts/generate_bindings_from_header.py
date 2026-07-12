@@ -436,53 +436,54 @@ def generate_header(info, extra_enums, known_bindings):
     out.append("}")
     return "\n".join(out)
 
-def generate_property_getters(info, extra_enums, known_bindings):
+def is_property_supported(member, info, extra_enums, known_bindings):
+    stmt = push_statement(member.type, "dummy", info, extra_enums, known_bindings)
+    return stmt is not None
+
+def is_setter_supported(member, info, extra_enums):
+    if is_struct_type(member.type):
+        return True
+    expr = read_expression(member.type, 2, info, extra_enums)
+    return (expr is not None) and not is_pointer(member.type) and not is_reference(member.type)
+
+def generate_property_getters(info, members, extra_enums, known_bindings):
     out = []
     out.append(f"// --- Getters for {info.name} ---")
-    for member in info.members:
+    for member in members:
         out.append(f"static int {info.name}_get_{member.name}(lua_State* L)")
         out.append("{")
         out.append(f"    {info.name}* instance = getInstance(L, 1);")
         out.append(f"    if (!instance) return luaL_error(L, \"{info.name} is nil\");")
         
         stmt = push_statement(member.type, "instance->" + member.name, info, extra_enums, known_bindings)
-        
-        if stmt:
-            if stmt.startswith("return "):
-                out.append(f"    {stmt}")
-            else:
-                out.append(f"    {stmt}")
-                out.append("    return 1;")
+        if stmt.startswith("return "):
+            out.append(f"    {stmt}")
         else:
-            out.append(f"    // TODO: Unsupported type for {member.name} ({member.type})")
-            out.append("    lua_pushnil(L);")
+            out.append(f"    {stmt}")
             out.append("    return 1;")
         out.append("}\n")
     return "\n".join(out)
 
-def generate_property_setters(info, extra_enums):
+def generate_property_setters(info, members, extra_enums):
     out = []
     out.append(f"// --- Setters for {info.name} ---")
-
-    for member in info.members:
-        out.append(f"static int {info.name}_set_{member.name}(lua_State* L)")
-        out.append("{")
-        out.append(f"    {info.name}* instance = getInstance(L, 1);")
-        out.append(f"    if (!instance) return luaL_error(L, \"{info.name} is nil\");")
-        
-        if is_struct_type(member.type):
-            t = base_type(member.type)
-            struct_name = "Vector3" if "Vector3" in t else "Quaternion"
-            out.append(f"    read{struct_name}(L, 2, instance->{member.name});")
-            out.append("    return 0;")
-        else:
-            expr = read_expression(member.type, 2, info, extra_enums)
-            if expr and not is_pointer(member.type) and not is_reference(member.type):
-                out.append(f"    instance->{member.name} = {expr};")
+    for member in members:
+        if is_setter_supported(member, info, extra_enums):
+            out.append(f"static int {info.name}_set_{member.name}(lua_State* L)")
+            out.append("{")
+            out.append(f"    {info.name}* instance = getInstance(L, 1);")
+            out.append(f"    if (!instance) return luaL_error(L, \"{info.name} is nil\");")
+            
+            if is_struct_type(member.type):
+                t = base_type(member.type)
+                struct_name = "Vector3" if "Vector3" in t else "Quaternion"
+                out.append(f"    read{struct_name}(L, 2, instance->{member.name});")
                 out.append("    return 0;")
             else:
-                out.append(f"    return luaL_error(L, \"Read-only or unsupported setter type for {member.name}\");")
-        out.append("}\n")
+                expr = read_expression(member.type, 2, info, extra_enums)
+                out.append(f"    instance->{member.name} = {expr};")
+                out.append("    return 0;")
+            out.append("}\n")
     return "\n".join(out)
 
 def generate_cpp(info, header_path, extra_enums, known_bindings):
@@ -505,13 +506,30 @@ def generate_cpp(info, header_path, extra_enums, known_bindings):
     out.append("}")
     out.append("")
 
+    supported_members = []
+    skipped_properties = []
+    for member in info.members:
+        if is_property_supported(member, info, extra_enums, known_bindings):
+            supported_members.append(member)
+        else:
+            skipped_properties.append((member, "unsupported type"))
+
     # 2. Inject Getter and Setter C-Closures
-    out.append(generate_property_getters(info, extra_enums, known_bindings))
-    out.append(generate_property_setters(info, extra_enums))
+    out.append(generate_property_getters(info, supported_members, extra_enums, known_bindings))
+    out.append(generate_property_setters(info, supported_members, extra_enums))
 
     # 3. Generate Methods
     out.append(generate_methods(info, extra_enums, known_bindings))
     out.append("")
+
+    # 3.5. Commented list of skipped properties
+    if skipped_properties:
+        out.append("/*")
+        out.append("Skipped properties needing manual binding:")
+        for member, reason in skipped_properties:
+            out.append(f"  line {member.line}: {member.name} ({member.type}) - {reason}")
+        out.append("*/")
+        out.append("")
 
     # 4. Generate definitions for GC and Tostring
     out.append(f"int {info.name}Binding::gc(lua_State* L)")
@@ -561,7 +579,7 @@ def generate_cpp(info, header_path, extra_enums, known_bindings):
     # 6. Populate the __getters table
     out.append(f"    luaL_getmetatable(L, {info.name}Binding::getMetatableName());")
     out.append("    lua_newtable(L); // Create __getters table")
-    for member in info.members:
+    for member in supported_members:
         out.append(f"    lua_pushcfunction(L, {info.name}_get_{member.name});")
         out.append(f"    lua_setfield(L, -2, \"{member.name}\");")
     out.append("    lua_setfield(L, -2, \"__getters\"); // Bind to metatable")
@@ -569,9 +587,10 @@ def generate_cpp(info, header_path, extra_enums, known_bindings):
     
     # 7. Populate the __setters table
     out.append("    lua_newtable(L); // Create __setters table")
-    for member in info.members:
-        out.append(f"    lua_pushcfunction(L, {info.name}_set_{member.name});")
-        out.append(f"    lua_setfield(L, -2, \"{member.name}\");")
+    for member in supported_members:
+        if is_setter_supported(member, info, extra_enums):
+            out.append(f"    lua_pushcfunction(L, {info.name}_set_{member.name});")
+            out.append(f"    lua_setfield(L, -2, \"{member.name}\");")
     out.append("    lua_setfield(L, -2, \"__setters\"); // Bind to metatable")
     out.append("")
     
@@ -591,6 +610,23 @@ def generate_cpp(info, header_path, extra_enums, known_bindings):
     out.append("} // namespace KenshiLua")
 
     return "\n".join(out)
+
+
+def discover_known_bindings():
+    known = {}
+    bindings_dir = Path("src/Bindings")
+    if not bindings_dir.is_dir():
+        script_dir = Path(__file__).resolve().parent.parent
+        bindings_dir = script_dir / "src" / "Bindings"
+    
+    if bindings_dir.is_dir():
+        for path in bindings_dir.rglob("*Binding.h"):
+            filename = path.name
+            if filename.endswith("Binding.h"):
+                class_name = filename[:-len("Binding.h")]
+                if class_name:
+                    known[class_name] = class_name + "Binding"
+    return known
 
 
 def parse_known_bindings(values):
@@ -617,8 +653,9 @@ def main():
     parser = argparse.ArgumentParser(description="Generate KenshiLua binding scaffolds from KenshiLib-style headers.")
     parser.add_argument("header", help="Header file to parse")
     parser.add_argument("--write-dir", help="Write .h/.cpp files to this directory")
-    parser.add_argument("--known-binding", action="append", default=[], help="Map pointer type to binding class, e.g. Character=CharacterBinding")
-    parser.add_argument("--enum", action="append", default=[], help="Additional enum type name(s), comma-separated")
+    parser.add_argument("--bind-map", "--known-binding", action="append", default=[], dest="bind_map", help="Map pointer type to binding class, e.g. Character=CharacterBinding")
+    parser.add_argument("--classes", "--known-classes", dest="classes", help="Comma-separated list of known classes, automatically mapped to %%classname%%Binding")
+    parser.add_argument("--enums", "--enum", action="append", default=[], dest="enums", help="Additional enum type name(s), comma-separated")
     args = parser.parse_args()
 
     header_path = Path(args.header)
@@ -627,8 +664,16 @@ def main():
     text = re.compile(r"//.*").sub("", text)
 
     classes = parse_classes(text)
-    known_bindings = parse_known_bindings(args.known_binding)
-    extra_enums = parse_extra_enums(args.enum)
+    known_bindings = discover_known_bindings()
+    discovered_count = len(known_bindings)
+    known_bindings.update(parse_known_bindings(args.bind_map))
+    print(f"Discovered {discovered_count} existing bindings in project.")
+    if args.classes:
+        for c in args.classes.split(","):
+            c = c.strip()
+            if c:
+                known_bindings[c] = c + "Binding"
+    extra_enums = parse_extra_enums(args.enums)
 
     for info in classes:
         header = generate_header(info, extra_enums, known_bindings)
