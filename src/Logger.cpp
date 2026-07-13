@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "Logger.h"
 #include "Config.h"
+
 #include <string>
 #include <ctime>
 #include <fstream>
+
 #include <boost/chrono.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
@@ -20,13 +22,30 @@ Logger& Logger::get()
 void Logger::init(const std::string& filepath)
 {
     if (!m_initialized) {
-        m_file.open(filepath, std::ios::out);
+        m_file.open(filepath, std::ios::out | std::ios::app);
         m_initialized = m_file.is_open();
     }
 }
 
-void Logger::log(const std::string& message)
+static int getLogLevelSeverity(int level)
 {
+    switch (level)
+    {
+        case LogLevel_Debug: return 0;
+        case LogLevel_Log:   return 1;
+        case LogLevel_Warn:  return 2;
+        case LogLevel_Error: return 3;
+        default:             return 1;
+    }
+}
+
+void Logger::log(LogLevel level, const std::string& message)
+{
+    if (getLogLevelSeverity(level) < getLogLevelSeverity(Config::get().getLogLevel()))
+    {
+        return;
+    }
+
     boost::chrono::system_clock::time_point now = boost::chrono::system_clock::now();
     time_t time = boost::chrono::system_clock::to_time_t(now);
     boost::chrono::milliseconds ms = boost::chrono::duration_cast<boost::chrono::milliseconds>(
@@ -45,10 +64,18 @@ void Logger::log(const std::string& message)
     _snprintf(msBuf, sizeof(msBuf), ".%03lld", (long long)ms.count());
 
     std::string formatted;
-    formatted.reserve(message.size() + 64);
+    formatted.reserve(message.size() + 80);
     formatted += tsBuf;
     formatted += msBuf;
     formatted += " ";
+
+    switch (level) {
+    case LogLevel_Log:   formatted += "[LOG] "; break;
+    case LogLevel_Warn:  formatted += "[WARN] "; break;
+    case LogLevel_Error: formatted += "[ERROR] "; break;
+    case LogLevel_Debug: formatted += "[DEBUG] "; break;
+    }
+
     formatted += message;
 
     {
@@ -66,6 +93,11 @@ void Logger::log(const std::string& message)
         m_file << formatted << std::endl;
         m_file.flush();
     }
+}
+
+void Logger::log(const std::string& message)
+{
+    log(LogLevel_Log, message);
 }
 
 void Logger::snapshot(std::vector<std::string>& out, size_t maxLines) const
@@ -132,19 +164,33 @@ static std::string getLogFilepath()
 void initLogger()
 {
     Logger::get().init(getLogFilepath());
-    Logger::get().log("------------------------------ Begin ------------------------------");
     Logger::get().log("KenshiLua logger initialized");
 }
 
 void logToFile(const std::string& message)
 {
-    Logger::get().log(message);
+    Logger::get().log(LogLevel_Log, message);
+}
+
+void logToFile(LogLevel level, const std::string& message)
+{
+    Logger::get().log(level, message);
+}
+
+void logToFileWarn(const std::string& message)
+{
+    Logger::get().log(LogLevel_Warn, message);
+}
+
+void logToFileError(const std::string& message)
+{
+    Logger::get().log(LogLevel_Error, message);
 }
 
 void logToFileDebug(const std::string& message)
 {
     if (Config::get().isDebugLoggingEnabled()) {
-        Logger::get().log(message);
+        Logger::get().log(LogLevel_Debug, message);
     }
 }
 
@@ -185,7 +231,6 @@ void logBenchmark(const std::string& message)
 void shutdownLogger()
 {
     Logger::get().log("KenshiLua logger shutting down");
-    Logger::get().log("------------------------------  End  ------------------------------");
     Logger::get().shutdown();
 }
 

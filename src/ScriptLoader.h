@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <set>
 
 extern "C" {
 #include <lua.h>
@@ -39,6 +40,9 @@ public:
     // Discards script-introduced globals and re-runs every script.
     void reloadAll(lua_State* L);
 
+    // Resets the script loader state so scripts can be re-discovered and loaded again.
+    void reset();
+
     bool hasLoaded() const { return m_loaded; }
 
     const std::vector<LoadedScript>& scripts() const { return m_scripts; }
@@ -53,17 +57,24 @@ public:
     // Centralized sandboxed runner for Lua script files.
     bool runScriptSandboxed(lua_State* L, const std::string& absolutePath, const std::string& chunkName, std::string* outError = NULL);
 
+    void addStoppedScript(const std::string& path) { m_stoppedScripts.insert(path); }
+    void removeStoppedScript(const std::string& path) { m_stoppedScripts.erase(path); }
+    bool isScriptStopped(const std::string& path) const { return m_stoppedScripts.find(path) != m_stoppedScripts.end(); }
+
+    // Walks ou->activeMods, discovers all *.lua files.
+    void discover();
+
 private:
     ScriptLoader(const ScriptLoader&);
     ScriptLoader& operator=(const ScriptLoader&);
 
-    void discover();
     bool runScript(lua_State* L, LoadedScript& s);
 
     std::vector<LoadedScript>  m_scripts;
     std::vector<std::string>   m_activeModNames;
     std::unordered_map<std::string, std::string> m_resolvedScriptPaths;
     bool                       m_loaded;
+    std::set<std::string>      m_stoppedScripts;
 };
 
 } // namespace KenshiLua

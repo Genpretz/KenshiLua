@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "Callbacks.h"
-#include "Gui/GuiHelpers.h"
+#include "Gui/GuiManager.h"
 #include "Hooks.h"
 #include "Logger.h"
 #include "DialogueScriptBridge.h"
@@ -81,7 +81,7 @@ static void InputHandler_keyDownEvent_hook(InputHandler* thisptr, OIS::KeyCode k
 {
     InputHandler_keyDownEvent_orig(thisptr, key);
 
-    KenshiLua::ScriptEditor::get().checkKeyboardShortcut(key, thisptr);
+    KenshiLua::GuiManager::get().checkKeyboardShortcut(key, thisptr);
 
     CallKeyDownCallbacks(static_cast<int>(key));
 }

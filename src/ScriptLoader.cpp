@@ -15,6 +15,7 @@
 #include <cstring>
 
 #include <lua.hpp>
+#include "Lua/LuaState.h"
 
 namespace KenshiLua
 {
@@ -65,6 +66,12 @@ ScriptLoader& ScriptLoader::get()
 
 void ScriptLoader::discover()
 {
+    // Save existing running state
+    std::unordered_map<std::string, std::pair<bool, std::string>> runningState;
+    for (size_t i = 0; i < m_scripts.size(); ++i) {
+        runningState[m_scripts[i].absolutePath] = std::make_pair(m_scripts[i].loaded, m_scripts[i].lastError);
+    }
+
     m_scripts.clear();
     m_activeModNames.clear();
 
@@ -88,12 +95,12 @@ void ScriptLoader::discover()
         if (mi->path.empty()) continue;
 
         fs::path modRoot(mi->path);
-        fs::path initDir = modRoot / "scripts" / "init";
+        fs::path scriptsDir = modRoot / "scripts";
         boost::system::error_code ec;
-        if (!fs::exists(initDir, ec) || !fs::is_directory(initDir, ec)) continue;
+        if (!fs::exists(scriptsDir, ec) || !fs::is_directory(scriptsDir, ec)) continue;
 
         std::vector<std::string> found;
-        fs::recursive_directory_iterator it(initDir, ec);
+        fs::recursive_directory_iterator it(scriptsDir, ec);
         fs::recursive_directory_iterator end;
         for (; !ec && it != end; it.increment(ec)) {
             if (ec) break;
@@ -121,7 +128,16 @@ void ScriptLoader::discover()
                 if (s.relativePath[j] == '\\') s.relativePath[j] = '/';
             }
             s.chunkName = makeChunkName(s.modName, s.relativePath);
-            s.loaded = false;
+
+            // Restore previous running state if it existed
+            auto stateIt = runningState.find(s.absolutePath);
+            if (stateIt != runningState.end()) {
+                s.loaded = stateIt->second.first;
+                s.lastError = stateIt->second.second;
+            } else {
+                s.loaded = false;
+            }
+
             m_scripts.push_back(s);
         }
     }
@@ -141,6 +157,13 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
         std::string errStr = "could not open " + absolutePath;
         logToFile("ScriptLoader: " + errStr);
         if (outError) *outError = errStr;
+        for (size_t i = 0; i < m_scripts.size(); ++i) {
+            if (m_scripts[i].absolutePath == absolutePath) {
+                m_scripts[i].loaded = false;
+                m_scripts[i].lastError = errStr;
+                break;
+            }
+        }
         return false;
     }
     std::streamsize sz = f.tellg();
@@ -153,6 +176,13 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
             logToFile("ScriptLoader: " + errStr);
             if (outError) *outError = errStr;
             lua_settop(L, top);
+            for (size_t i = 0; i < m_scripts.size(); ++i) {
+                if (m_scripts[i].absolutePath == absolutePath) {
+                    m_scripts[i].loaded = false;
+                    m_scripts[i].lastError = errStr;
+                    break;
+                }
+            }
             return false;
         }
     }
@@ -164,6 +194,13 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
         logToFile("ScriptLoader: load failed: " + chunkName + " : " + errStr);
         if (outError) *outError = errStr;
         lua_settop(L, top);
+        for (size_t i = 0; i < m_scripts.size(); ++i) {
+            if (m_scripts[i].absolutePath == absolutePath) {
+                m_scripts[i].loaded = false;
+                m_scripts[i].lastError = errStr;
+                break;
+            }
+        }
         return false;
     }
 
@@ -176,16 +213,29 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
     lua_setfenv(L, -2);
 #endif
 
-    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-        const char* err = lua_tostring(L, -1);
-        std::string errStr = err ? err : "runtime error";
-        logToFile("ScriptLoader: runtime error in " + chunkName + " : " + errStr);
-        if (outError) *outError = errStr;
+    std::string pcallErr;
+    if (!LuaState::pcallWithTraceback(L, 0, 0, &pcallErr)) {
+        logToFile("ScriptLoader: runtime error in " + chunkName + " : " + pcallErr);
+        if (outError) *outError = pcallErr;
         lua_settop(L, top);
+        for (size_t i = 0; i < m_scripts.size(); ++i) {
+            if (m_scripts[i].absolutePath == absolutePath) {
+                m_scripts[i].loaded = false;
+                m_scripts[i].lastError = pcallErr;
+                break;
+            }
+        }
         return false;
     }
 
     lua_settop(L, top);
+    for (size_t i = 0; i < m_scripts.size(); ++i) {
+        if (m_scripts[i].absolutePath == absolutePath) {
+            m_scripts[i].loaded = true;
+            m_scripts[i].lastError.clear();
+            break;
+        }
+    }
     return true;
 }
 
@@ -207,7 +257,15 @@ void ScriptLoader::loadAll(lua_State* L)
 
     discover();
     for (size_t i = 0; i < m_scripts.size(); ++i) {
-        runScript(L, m_scripts[i]);
+        if (isScriptStopped(m_scripts[i].absolutePath)) {
+            logToFile("ScriptLoader: skipping auto-start of stopped script: " + m_scripts[i].chunkName);
+            continue;
+        }
+        // Only auto-start scripts inside scripts/init/
+        if (m_scripts[i].relativePath.size() >= 13 &&
+            _strnicmp(m_scripts[i].relativePath.c_str(), "scripts/init/", 13) == 0) {
+            runScript(L, m_scripts[i]);
+        }
     }
 }
 
@@ -219,9 +277,24 @@ void ScriptLoader::reloadAll(lua_State* L)
     for (size_t i = 0; i < m_scripts.size(); ++i) {
         m_scripts[i].loaded = false;
         m_scripts[i].lastError.clear();
-        runScript(L, m_scripts[i]);
+        if (isScriptStopped(m_scripts[i].absolutePath)) {
+            continue;
+        }
+        // Only auto-start scripts inside scripts/init/
+        if (m_scripts[i].relativePath.size() >= 13 &&
+            _strnicmp(m_scripts[i].relativePath.c_str(), "scripts/init/", 13) == 0) {
+            runScript(L, m_scripts[i]);
+        }
     }
     m_loaded = true;
+}
+
+void ScriptLoader::reset()
+{
+    m_scripts.clear();
+    m_activeModNames.clear();
+    m_resolvedScriptPaths.clear();
+    m_loaded = false;
 }
 
 std::string ScriptLoader::resolveScriptPath(const std::string& filename)
@@ -273,34 +346,50 @@ std::string ScriptLoader::resolveScriptPath(const std::string& filename)
         if (!mi || mi->path.empty()) continue;
 
         fs::path modRoot(mi->path);
-        fs::path targetPath = modRoot / suffix;
-        if (fs::exists(targetPath, ec) && fs::is_regular_file(targetPath, ec))
+        
+        // 1. Check direct path under modRoot
+        fs::path targetPathDirect = modRoot / suffix;
+        if (fs::exists(targetPathDirect, ec) && fs::is_regular_file(targetPathDirect, ec))
         {
-            std::string pathStr = fs::absolute(targetPath).string();
+            std::string pathStr = fs::absolute(targetPathDirect).string();
             m_resolvedScriptPaths[filename] = pathStr;
             return pathStr;
         }
 
-        fs::recursive_directory_iterator rit(modRoot, ec);
-        fs::recursive_directory_iterator end;
-        for (; !ec && rit != end; rit.increment(ec))
+        // 2. Check direct path under modRoot/scripts
+        fs::path scriptsDir = modRoot / "scripts";
+        fs::path targetPathScripts = scriptsDir / suffix;
+        if (fs::exists(targetPathScripts, ec) && fs::is_regular_file(targetPathScripts, ec))
         {
-            if (ec) break;
-            if (!fs::is_regular_file(rit->status())) continue;
+            std::string pathStr = fs::absolute(targetPathScripts).string();
+            m_resolvedScriptPaths[filename] = pathStr;
+            return pathStr;
+        }
 
-            std::string p = rit->path().string();
-            std::string normP = p;
-            for (size_t j = 0; j < normP.size(); ++j)
+        // 3. Fallback: recursively scan only modRoot/scripts
+        if (fs::exists(scriptsDir, ec) && fs::is_directory(scriptsDir, ec))
+        {
+            fs::recursive_directory_iterator rit(scriptsDir, ec);
+            fs::recursive_directory_iterator end;
+            for (; !ec && rit != end; rit.increment(ec))
             {
-                if (normP[j] == '\\') normP[j] = '/';
-            }
+                if (ec) break;
+                if (!fs::is_regular_file(rit->status())) continue;
 
-            std::string matchSuffix = "/" + suffix;
-            if (normP.size() >= matchSuffix.size() && normP.compare(normP.size() - matchSuffix.size(), matchSuffix.size(), matchSuffix) == 0)
-            {
-                std::string absFoundPath = fs::absolute(rit->path()).string();
-                m_resolvedScriptPaths[filename] = absFoundPath;
-                return absFoundPath;
+                std::string p = rit->path().string();
+                std::string normP = p;
+                for (size_t j = 0; j < normP.size(); ++j)
+                {
+                    if (normP[j] == '\\') normP[j] = '/';
+                }
+
+                std::string matchSuffix = "/" + suffix;
+                if (normP.size() >= matchSuffix.size() && normP.compare(normP.size() - matchSuffix.size(), matchSuffix.size(), matchSuffix) == 0)
+                {
+                    std::string absFoundPath = fs::absolute(rit->path()).string();
+                    m_resolvedScriptPaths[filename] = absFoundPath;
+                    return absFoundPath;
+                }
             }
         }
     }

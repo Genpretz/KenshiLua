@@ -6,6 +6,7 @@
 
 #include <lua.hpp>
 #include "Lua/BindingHelpers.h"
+#include "Lua/LuaState.h"
 
 
 namespace KenshiLua
@@ -162,22 +163,21 @@ namespace KenshiLua
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            if (lua_pcall(m_L, nargs, 1, 0) == LUA_OK)
+            std::string pcallErr;
+            if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
             {
                 // A handler returning false consumes the event and stops
                 // subsequent handlers from running.
                 if (lua_isboolean(m_L, -1) && !lua_toboolean(m_L, -1))
                     result = -1;
+                lua_pop(m_L, 1);
             }
             else
             {
-                const char* err = lua_tostring(m_L, -1);
                 logToFilef("Lua error in '%s' handler: %s",
                     eventName,
-                    err ? err : "(non-string error)");
+                    pcallErr.c_str());
             }
-
-            lua_pop(m_L, 1);
 
             if (result == -1)
                 break;
@@ -215,22 +215,21 @@ namespace KenshiLua
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            if (lua_pcall(m_L, nargs, 1, 0) == LUA_OK)
+            std::string pcallErr;
+            if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
             {
                 if (lua_isstring(m_L, -1))
                 {
                     result = lua_tostring(m_L, -1);
                 }
+                lua_pop(m_L, 1);
             }
             else
             {
-                const char* err = lua_tostring(m_L, -1);
                 logToFilef("Lua error in '%s' handler: %s",
                     eventName,
-                    err ? err : "(non-string error)");
+                    pcallErr.c_str());
             }
-
-            lua_pop(m_L, 1);
 
             if (!result.empty())
                 break;
@@ -268,20 +267,19 @@ namespace KenshiLua
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            if (lua_pcall(m_L, nargs, 1, 0) == LUA_OK)
+            std::string pcallErr;
+            if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
             {
                 // Use testObject to safely check if it matches the expected type
                 result = testObject<void>(m_L, -1, metatableName);
+                lua_pop(m_L, 1);
             }
             else
             {
-                const char* err = lua_tostring(m_L, -1);
                 logToFilef("Lua error in '%s' handler: %s",
                     eventName,
-                    err ? err : "(non-string error)");
+                    pcallErr.c_str());
             }
-
-            lua_pop(m_L, 1);
 
             if (result)
                 break;
@@ -320,23 +318,22 @@ namespace KenshiLua
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            if (lua_pcall(m_L, nargs, 1, 0) == LUA_OK)
+            std::string pcallErr;
+            if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
             {
                 if (lua_isboolean(m_L, -1))
                 {
                     result = lua_toboolean(m_L, -1) != 0;
                     hasResult = true;
                 }
+                lua_pop(m_L, 1);
             }
             else
             {
-                const char* err = lua_tostring(m_L, -1);
                 logToFilef("Lua error in '%s' handler: %s",
                     eventName,
-                    err ? err : "(non-string error)");
+                    pcallErr.c_str());
             }
-
-            lua_pop(m_L, 1);
 
             if (hasResult)
                 break;
@@ -375,23 +372,22 @@ namespace KenshiLua
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            if (lua_pcall(m_L, nargs, 1, 0) == LUA_OK)
+            std::string pcallErr;
+            if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
             {
                 if (lua_isnumber(m_L, -1))
                 {
                     result = (double)lua_tonumber(m_L, -1);
                     hasResult = true;
                 }
+                lua_pop(m_L, 1);
             }
             else
             {
-                const char* err = lua_tostring(m_L, -1);
                 logToFilef("Lua error in '%s' handler: %s",
                     eventName,
-                    err ? err : "(non-string error)");
+                    pcallErr.c_str());
             }
-
-            lua_pop(m_L, 1);
 
             if (hasResult)
                 break;

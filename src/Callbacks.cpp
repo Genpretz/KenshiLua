@@ -26,7 +26,7 @@
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/TaskerBinding.h"
 #include "Bindings/Util/HandBinding.h"
-#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 
 // KenshiLib headers
 #include <kenshi/Character.h>

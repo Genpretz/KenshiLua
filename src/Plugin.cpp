@@ -2,7 +2,8 @@
 #include "Plugin.h"
 
 #include "EventSystem.h"
-#include "Gui/GuiHelpers.h"
+#include "Gui/GuiManager.h"
+#include "Gui/KenshiLua_ScriptManager.h"
 #include "Hooks.h"
 #include "Logger.h"
 #include "Config.h"
@@ -12,6 +13,7 @@
 #include "Bindings/MyGuiBinding.h"
 #include "DialogueScriptBridge.h"
 #include "Benchmark.h"
+#include <mygui/MyGUI.h>
 
 namespace KenshiLua
 {
@@ -76,8 +78,7 @@ void Plugin::shutdown()
     logToFile("Shutting down KenshiLua...");
 
     MyGuiBinding::shutdown();
-
-
+    ScriptLoader::get().reset();
 
     if (g_luaState) {
         EventSystem::get().clear();
@@ -106,7 +107,14 @@ void Plugin::start()
     InstallHookForEvent("onDialogueSay");
 
     // initialize developer GUI (hidden by default, toggle with 'Ctrl+Shift+L' by default).
-    ScriptEditor::get().requestInitialize(g_luaState);
+    if (GuiManager::get().isInitialized())
+    {
+        GuiManager::get().updateLuaState(g_luaState);
+    }
+    else
+    {
+        GuiManager::get().requestInitialize(g_luaState);
+    }
 
     // Discover *.lua files under each active mod's ./scripts/init/ folder and execute.
     ScriptLoader::get().loadAll(g_luaState->getState());
