@@ -4,6 +4,13 @@
 #include <cstring>
 #include <cstdio>
 
+#include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/is_enum.hpp>
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/type_traits/is_same.hpp>
+
+
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -11,6 +18,8 @@ extern "C" {
 
 namespace KenshiLua
 {
+
+
     template <class T>
     inline T* testObject(lua_State* L, int idx, const char* metatableName)
     {
@@ -86,6 +95,20 @@ namespace KenshiLua
         }
         lua_setmetatable(L, -2);
         return 1;
+    }
+
+
+
+    inline void registerGetter(lua_State* L, const char* name, lua_CFunction getter)
+    {
+        lua_pushcfunction(L, getter);
+        lua_setfield(L, -2, name);
+    }
+
+    inline void registerSetter(lua_State* L, const char* name, lua_CFunction setter)
+    {
+        lua_pushcfunction(L, setter);
+        lua_setfield(L, -2, name);
     }
 
     // Same as pushObject<T> but uses BindingT::getMetatableName() so call sites
@@ -386,3 +409,5 @@ namespace KenshiLua
     }
 
 } // namespace KenshiLua
+
+#include "Lua/LuaCodec.h"

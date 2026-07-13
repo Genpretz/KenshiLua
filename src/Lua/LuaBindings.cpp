@@ -5,10 +5,17 @@
 #include "Benchmark.h"
 #include "DialogueScriptBridge.h"
 #include "EventSystem.h"
-#include "Gui/GuiHelpers.h"
+#include "Gui/GuiManager.h"
 #include "Logger.h"
 #include "ScriptLoader.h"
-
+#include "Bindings/Templates/StdMapBinding.h"
+#include "Bindings/Templates/FitnessSelectorBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include <kenshi/CombatTechniqueData.h>
+#include <kenshi/GameData.h>
+#include <kenshi/Item.h>
+#include <kenshi/Inventory.h>
 #include "Bindings/AbstractMovementBaseBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/AnimalInventoryLayoutBinding.h"
@@ -198,7 +205,7 @@ static int lua_reloadMods(lua_State* L)
 
 static int lua_toggleGui(lua_State* L)
 {
-    ScriptEditor::get().toggle();
+    GuiManager::get().toggle();
     return 0;
 }
 
@@ -239,6 +246,14 @@ static void installKenshiLuaTable(lua_State* L)
 
     lua_pushcfunction(L, luaKenshiLogDebug);
     lua_setfield(L, -2, "logDebug");
+
+    lua_pushcfunction(L, luaKenshiLogWarn);
+    lua_setfield(L, -2, "warn");
+    lua_pushcfunction(L, luaKenshiLogWarn);
+    lua_setfield(L, -2, "logWarn");
+
+    lua_pushcfunction(L, luaKenshiLogError);
+    lua_setfield(L, -2, "logError");
 
     lua_pushcfunction(L, luaKenshiError);
     lua_setfield(L, -2, "error");
@@ -290,6 +305,24 @@ void LuaBindings::registerAll(lua_State* L)
     TownBinding::registerBinding(L);
     MedicalSystemBinding::registerBinding(L);
     CharStatsBinding::registerBinding(L);
+    
+    // Register templates centrally before classes are bound
+    LektorPtrBinding<CombatTechniqueData*>::registerBinding(L, "lektor<CombatTechniqueData*>", "KenshiLua.CombatTechniqueData");
+    LektorPtrBinding<Item*>::registerBinding(L, "lektor<Item*>", "KenshiLua.Item");
+    LektorPtrBinding<InventorySection*>::registerBinding(L, "lektor<InventorySection*>", "KenshiLua.InventorySection");
+    LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", "KenshiLua.GameData");
+    
+    OgreUnorderedMapBinding<GameData*, float>::registerBinding(L, "KenshiLua.GameDataFloatMap", "KenshiLua.GameData", nullptr);
+    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "ogre_unordered_set<GameData*>", "KenshiLua.GameData");
+    
+    StdMapBinding<float, CombatTechniqueData*>::registerBinding(L, "OgreMap<float, CombatTechniqueData*>", nullptr, "KenshiLua.CombatTechniqueData");
+    StdMapBinding<CombatTechniqueData*, float>::registerBinding(L, "OgreMap<CombatTechniqueData*, float>", "KenshiLua.CombatTechniqueData", nullptr);
+    StdMapBinding<float, GameData*>::registerBinding(L, "OgreMap<float, GameData*>", nullptr, "KenshiLua.GameData");
+    StdMapBinding<GameData*, float>::registerBinding(L, "OgreMap<GameData*, float>", "KenshiLua.GameData", nullptr);
+    
+    FitnessSelectorBinding<CombatTechniqueData*>::registerBinding(L, "KenshiLua.FitnessSelector_CombatTechniqueData", "KenshiLua.CombatTechniqueData", "OgreMap<float, CombatTechniqueData*>", "OgreMap<CombatTechniqueData*, float>");
+    FitnessSelectorBinding<GameData*>::registerBinding(L, "KenshiLua.FitnessSelector_GameData", "KenshiLua.GameData", "OgreMap<float, GameData*>", "OgreMap<GameData*, float>");
+
     CombatTechniqueDataBinding::registerBinding(L);
     ImpactPointBinding::registerBinding(L);
     DamagesBinding::registerBinding(L);
@@ -534,6 +567,18 @@ int luaKenshiLogDebug(lua_State* L)
     return 0;
 }
 
+int luaKenshiLogWarn(lua_State* L)
+{
+    logToFile(LogLevel_Warn, formatLuaArgs(L));
+    return 0;
+}
+
+int luaKenshiLogError(lua_State* L)
+{
+    logToFile(LogLevel_Error, formatLuaArgs(L));
+    return 0;
+}
+
 int luaKenshiError(lua_State* L)
 {
     int n = lua_gettop(L);
@@ -550,7 +595,7 @@ int luaKenshiError(lua_State* L)
             break;
         }
     }
-    logToFile(msg);
+    logToFile(LogLevel_Error, msg);
     lua_settop(L, 0);
     lua_pushlstring(L, msg.c_str(), msg.size());
     return lua_error(L);
