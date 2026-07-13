@@ -10,9 +10,13 @@ The goal is to provide a Lua scripting workflow to mod Kenshi and lower the barr
 Loaded at runtime through RE_Kenshi, KenshiLua exposes selected portions of KenshiLib through a mixture of generated and hand-written Lua bindings, enabling rapid development, experimentation, and mod creation without requiring direct interaction with the underlying C++ APIs.
 
 * Exposes KenshiLib functionality through Lua
-* Provides a Script Editor GUI for writing and running scripts in-game
-* Allows for Lua scripts to be loaded from a mod folder at runtime
-* Exposes selected engine event callbacks to Lua
+* Allows for Lua scripts to be loaded from a mod folder at runtime or exectued dynamically from predefined dialogues using FCS Extended.
+* Exposes a varierty of core gameplay events to registered scripts in the form of callbacks
+* Provides a GUI that includes:
+    - a Script Manager detialing which scripts have been loaded from active mods
+    - a Script Editor for creating or editing scripts in-game
+    - a Console for executing simple lua commands
+    - and a detailed Logger which can be used to troubleshoot issues with any lua scripts
 
 ## How much of KenshiLib can be used from Lua?
 
@@ -59,33 +63,21 @@ world.userPause = false
 
 #### Dialogue Scripting Bridge
    - Using FCS Extended ([Github](https://github.com/BFrizzleFoShizzle/FCS_extended) | [Nexus](https://www.nexusmods.com/kenshi/mods/1825)) with KenshiLua enabled, you'll find a new `run lua script` option available for DIALOGUE, DIALOGUE_LINE, or WORD_SWAP. When the given dialogue plays, the script runs.
-<img width="2558" height="1540" alt="Screenshot 2026-07-07 101548" src="https://github.com/user-attachments/assets/3d95b861-eb9e-489e-aee2-911492f2e7c5" />
+<img width="2558" height="1548" alt="Screenshot 2026-07-13 140858" src="https://github.com/user-attachments/assets/c899339c-05f3-4aa2-aa28-cb6bd3eca7c5" />
      *The example shown in this image, available in the repository, uses the players Dexterity and Thieving stats to give the player an advatage in a game of dice. The script runs whenever the given dialogue option is chosen by the player.
 
-#### Script Editor GUI
-   - Pressing `Ctrl` + `Shift` + `L` in-game will open KenshiLua's Script Editor GUI. From here you can load, edit, save, and run scripts using the buttons on the Script Editor's toolbar.
-   - Currently the keybind can be configured using `config.txt` located in the KenshiLua mod directory, e.g. `./mods/KenshiLua/config.txt`
-<img width="2560" height="1600" alt="ScriptEditor" src="https://github.com/user-attachments/assets/a6787b96-93b7-4dfc-8045-8cb591357e9a" />
+#### In-Game GUI
+   - Pressing `Ctrl` + `Shift` + `L` in-game will open KenshiLua's Main GUI. From here you can access the Script Editor and load, edit, save, and run scripts using the buttons on the Script Editor's toolbar as well as access other features.
+<img width="2560" height="1600" alt="kenshi Screenshot 2026 07 13 - 14 33 49 79" src="https://github.com/user-attachments/assets/1dd44684-220b-4db2-ba56-7e9fba7f7d91" />
 
-## Compiling from Source - NOT FINISHED
+## Building from Scratch
 
-### Quick Guide
-
-1. Build KenshiLib and LuaJit against MSVC2010.
+1. Build KenshiLib and LuaJit against v100 Platform Toolset or Windows 7.1 SDK
 2. Link against both KenshiLib and LuaJit in the KenshiLua project.
-3. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi).
+3. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi and KenshiLib).
 4. Using the FCS, create a new mod named `KenshiLua`.
-5. Place the newly built `KenshiLua.dll` binary along with `Kenshi_ScriptEditor_EditBox.xml`, `RE_Kenshi.json` and `fcs.def` into the `KenshiLua` mod directory.
-6. ...
-7. Profit?
-
-### Prerequisites
-* Visual Studio 2010 Professional/Ultimate
-* Visual Studio 2026 Community
-
-* LuaJIT
-* Boost 1.60.0
-* KenshiLib
+5. Copy the repository's `mygui` directory to the KenshiLua mod directory, `./Kenshi/mods/KenshiLua`
+6. Place the newly built `KenshiLua.dll` and `lua51.dll` binaryies `RE_Kenshi.json`, `fcs.def` into the same `KenshiLua` mod directory.
 
 #### Notes on Toolchain Constraints
 * The game and KenshiLib are built against MSVC2010-era assumptions, including C++ ABI layout and runtime library behavior. KenshiLua and all ofther dependencies must match these constraints to ensure stable integration.
