@@ -2,7 +2,7 @@
 #pragma once
 #include <kenshi/util/lektor.h>
 #include <string.h>
-#include <assert.h>
+#include <release_assert.h>
 
 template<typename T>
 void lektor_push_back(lektor<T>& lek, const T& val)
@@ -29,7 +29,7 @@ void lektor_push_back(lektor<T>& lek, const T& val)
 template<typename T>
 void lektor_pop_back(lektor<T>& lek)
 {
-    assert(lek.count > 0 && "lektor_pop_back: container is empty");
+    assert_release(lek.count > 0 && "lektor_pop_back: container is empty");
     --lek.count;
     lek.stuff[lek.count].~T();
 }
@@ -37,7 +37,7 @@ void lektor_pop_back(lektor<T>& lek)
 template<typename T>
 T lektor_pop_back_val(lektor<T>& lek)
 {
-    assert(lek.count > 0 && "lektor_pop_back_val: container is empty");
+    assert_release(lek.count > 0 && "lektor_pop_back_val: container is empty");
     T val = lek.stuff[lek.count - 1];
     --lek.count;
     lek.stuff[lek.count].~T();

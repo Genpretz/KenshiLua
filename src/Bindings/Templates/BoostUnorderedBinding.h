@@ -1,16 +1,21 @@
 #pragma once
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
+#include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"
-#include "Bindings/Util/OgreUnorderedBinding.h" // For LuaCodec specialization
 
 namespace KenshiLua
 {
     // Generic Boost Unordered Set Binding
+    //
+    // Alloc defaults to the Ogre::STLAllocator<K, GeneralAllocPolicy> convention
+    // used throughout this codebase. Override explicitly at the call site if a
+    // particular set field uses a different allocation policy - see the caveat
+    // in StdMapBinding.h about unchecked casts before relying on this default.
     template <typename K, 
               typename Hash = boost::hash<K>, 
               typename Pred = std::equal_to<K>, 
-              typename Alloc = std::allocator<K> >
+              typename Alloc = Ogre::STLAllocator<K, Ogre::GeneralAllocPolicy> >
     struct BoostUnorderedSetBinding
     {
         typedef boost::unordered::unordered_set<K, Hash, Pred, Alloc> SetType;
@@ -154,10 +159,16 @@ namespace KenshiLua
 
 
     // Generic Boost Unordered Map Binding
+    //
+    // Alloc defaults to the Ogre::STLAllocator<..., GeneralAllocPolicy> convention
+    // used by every boost::unordered_map member field in this codebase (see e.g.
+    // GameData.h). Most call sites only need to specify K and V - see
+    // GameDataBinding.cpp. See the caveat in StdMapBinding.h before relying on
+    // this default for a field you haven't verified.
     template <typename K, typename V,
               typename Hash = boost::hash<K>,
               typename Pred = std::equal_to<K>,
-              typename Alloc = std::allocator<std::pair<const K, V> > >
+              typename Alloc = Ogre::STLAllocator<std::pair<const K, V>, Ogre::GeneralAllocPolicy> >
     struct BoostUnorderedMapBinding
     {
         typedef boost::unordered::unordered_map<K, V, Hash, Pred, Alloc> MapType;

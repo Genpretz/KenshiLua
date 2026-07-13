@@ -2,7 +2,6 @@
 #include <vector>
 #include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"
-#include "Bindings/Util/OgreUnorderedBinding.h" // For LuaCodec
 
 namespace KenshiLua
 {

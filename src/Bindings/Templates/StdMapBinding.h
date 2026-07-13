@@ -1,14 +1,22 @@
 #pragma once
 #include <map>
+#include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"
-#include "Bindings/Util/OgreUnorderedBinding.h" // For LuaCodec
 
 namespace KenshiLua
 {
     // Generic Std Map Binding
+    //
+    // Alloc defaults to the Ogre::STLAllocator<..., GeneralAllocPolicy> convention
+    // used by every std::map member field in this codebase (see e.g. GameData.h).
+    // This means most call sites only need to specify K and V - see GameDataBinding.cpp.
+    // If a field ever uses a different allocation policy, override Alloc explicitly
+    // at that call site; do NOT assume the default without checking the field's
+    // actual declared type, since checkObject<T> performs an unchecked cast and a
+    // mismatched Alloc/Compare will silently corrupt memory rather than fail loudly.
     template <typename K, typename V,
               typename Compare = std::less<K>,
-              typename Alloc = std::allocator<std::pair<const K, V> > >
+              typename Alloc = Ogre::STLAllocator<std::pair<const K, V>, Ogre::GeneralAllocPolicy> >
     struct StdMapBinding
     {
         typedef std::map<K, V, Compare, Alloc> MapType;
