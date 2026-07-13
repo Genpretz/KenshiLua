@@ -16,12 +16,9 @@ Loaded at runtime through RE_Kenshi, KenshiLua exposes selected portions of Kens
 
 ## How much of KenshiLib can be used from Lua?
 
-A large amount of KenshiLib has been exposed for use from Lua. This includes all major classes and a majority of their contents. View [BindingReference.md](docs/BindingsReference.md) for a full list of methods and properties available from Lua.
-
-To do:
-* Additional support for more C++ container classes.
-* More comprehensive MyGUI bindings.
-* Additional engine event callbacks.
+A large amount of KenshiLib has been exposed for use from Lua. This includes almost the entirety of KenshiLib 0.3.0.
+* [BindingReference.md](docs/BindingsReference.md) - View for a list of methods and properties available from Lua.
+* [UnboundReference.md](docs/UnboundReference.md) - View for a list of methods and properties that exist in KenshiLib 0.3.0 but are not currently exposed to Lua.
 
 ## Installation
 
@@ -56,27 +53,31 @@ world.userPause = false
 ### Ways to load Lua scripts:
 
 #### Loaded On Start
-   - When the game starts, KenshiLua will check whether any active mods contain any `.lua` files inside of their `./scripts/init/` directory, and if found will automatically load them.
+   - When the game starts, KenshiLua will check whether any **active** mods contain any `.lua` files inside of their `./scripts/init/` directory, and if found will automatically load them.
+   - So to clarify for a mod named `MyMod`, if you have a script at `./mods/MyMod/scripts/init/my_script.lua`, it will be loaded automatically when the game starts.
+   - Scripts found in other directories within `./mods/MyMod/scripts/` (e.g. `./mods/MyMod/scripts/world_scripts.lua`) will not be loaded automatically.
 
 #### Dialogue Scripting Bridge
-   - Using FCS Extended ([Github](https://github.com/BFrizzleFoShizzle/FCS_extended) | [Nexus](https://www.nexusmods.com/kenshi/mods/1825)) with KenshiLua enabled, you'll find a new `lua script` field available for DIALOGUE, DIALOGUE_LINE, or WORD_SWAP. When the given dialogue plays, the script runs.
+   - Using FCS Extended ([Github](https://github.com/BFrizzleFoShizzle/FCS_extended) | [Nexus](https://www.nexusmods.com/kenshi/mods/1825)) with KenshiLua enabled, you'll find a new `run lua script` option available for DIALOGUE, DIALOGUE_LINE, or WORD_SWAP. When the given dialogue plays, the script runs.
 <img width="2558" height="1540" alt="Screenshot 2026-07-07 101548" src="https://github.com/user-attachments/assets/3d95b861-eb9e-489e-aee2-911492f2e7c5" />
      *The example shown in this image, available in the repository, uses the players Dexterity and Thieving stats to give the player an advatage in a game of dice. The script runs whenever the given dialogue option is chosen by the player.
 
 #### Script Editor GUI
    - Pressing `Ctrl` + `Shift` + `L` in-game will open KenshiLua's Script Editor GUI. From here you can load, edit, save, and run scripts using the buttons on the Script Editor's toolbar.
-   - Currently the keybind can be configured from config.txt
+   - Currently the keybind can be configured using `config.txt` located in the KenshiLua mod directory, e.g. `./mods/KenshiLua/config.txt`
 <img width="2560" height="1600" alt="ScriptEditor" src="https://github.com/user-attachments/assets/a6787b96-93b7-4dfc-8045-8cb591357e9a" />
 
 ## Compiling from Source - NOT FINISHED
 
 ### Quick Guide
 
-1. Link MSVC2010 build of LuaJIT.
-2. Compile Source
-3. Place newly built `KenshiLua.dll` binary along with `Kenshi_ScriptEditor_EditBox.xml`, `RE_Kenshi.json` and `fcs.def` into a mod folder named `KenshiLua`.
-4. ...
-5. Profit?
+1. Build KenshiLib and LuaJit against MSVC2010.
+2. Link against both KenshiLib and LuaJit in the KenshiLua project.
+3. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi).
+4. Using the FCS, create a new mod named `KenshiLua`.
+5. Place the newly built `KenshiLua.dll` binary along with `Kenshi_ScriptEditor_EditBox.xml`, `RE_Kenshi.json` and `fcs.def` into the `KenshiLua` mod directory.
+6. ...
+7. Profit?
 
 ### Prerequisites
 * Visual Studio 2010 Professional/Ultimate
@@ -90,8 +91,13 @@ world.userPause = false
 * The game and KenshiLib are built against MSVC2010-era assumptions, including C++ ABI layout and runtime library behavior. KenshiLua and all ofther dependencies must match these constraints to ensure stable integration.
 * LuaJIT doesn't have any public binaries compiled using MSVC2010. One is included in the repository, but if you choose not to use it, then compiling LuaJIT from source for MSVC2010 is required.
 
+---
+
 ### About KenshiLua's Development
 
-Originally when working on KenshiPy, an analogous Python extension for Kenshi, I discovered that while SWIG did allow for generating bindings with very little work, SWIG 3.0.12 was difficult to work with when trying to wrap certain parts of KenshiLib. The SWIG generated bindings were too opaque and made it difficult to grasp what parts of KenshiLib had actually been exposed. SWIG was also limited to the use of a single translation unit for it's bindings which meant that if optimizations were enabled the compile time could often be almost an hour. All this coupled with Python 3.4 being so outdated was just too much. I invenstigated various other methods for generating bindings. SWIG allows for generating bindings in a variety of languages using the same interface files and headers and so after some thought with Lua's similarity to Python and its widespread use in modding, it seemed like the right choise.
+Originally, while working on KenshiPy, an analogous Python extension for Kenshi, I discovered that although SWIG made it possible to generate bindings with very little effort, SWIG 3.0.12 became difficult to work with when wrapping certain parts of KenshiLib. The generated bindings ended up as one **huge** monolithic file, totaling **259,649 lines** the last time I checked. Because SWIG generates bindings as a single translation unit, they can't easily be split across multiple source files. This made the generated code difficult to manage, and with compiler optimizations enabled, build times could easily approach an hour. Combined with the fact that KenshiPy relied on the long-outdated Python 3.4, the overall development experience became increasingly frustrating. While SWIG's language-agnostic interface files would have made switching to another language relatively straightforward, changing languages alone wouldn't have solved most of these underlying issues.
 
-So I decided to create KenshiLua as a Lua-based scripting extension for Kenshi. I intended to have SWIG generate the Lua bindings, but in order to avoid the previously mentioned issues associated with SWIG, hand-written bindings seemed the best option. Lua 5.4 is the latest release with pre-built MSVC10 binaries available but eventually I built 5.5 (the newest release version) from source. Further research led me to discovering the existence of LuaJIT, a just-in-time compiler built on Lua 5.1 that offers performance close to that of C. Before the project got any larger I made a branch using LuaJIT. The performance `should` be better than standard Lua. My attempts at benchmarking the two branches shows very small differences in performance currently. Whether or not LuaJIT's performance gains outweigh the additional features available in 5.5 is yet to be seen.
+Around this time, I decided that Lua was a better fit for the project. Its similarity to Python and widespread use in the modding community made it a natural choice. Lua also had relatively recent release in v5.4 with pre-built MSVC2010 binaries, but luckily building Lua 5.5 with MSVC2010 turned out to be straightforward. I explored several binding libraries, including sol2, luabind, and others, but most were not immediately compatible with the MSVC2010 toolchain used by Kenshi and KenshiLib or were limited in the version of Lua they were compatible with. In the end, I decided to write the bindings manually. Fortunately, once you've implemented the binding code for one method or member variable, the rest largely follows the same pattern, making it easy to reuse and adapt the code. I decided to leverage the use of AI tools to generate scripts for parsing KenshiLib's headers in order to generate all the simplest bindings and scaffolding needed to move forward as well as scripts for generating minimal documentation of the bindings. AI undoubtly expediated the development process, but it led to many issues including duplicated functionality, broken bindings, and orphaned code. One instance in which it was helpful was when the project switched to LuaJIT.
+
+Further research had led me to discover LuaJIT, a just-in-time compiler based on Lua 5.1 that is often reported to deliver performance approaching native C. Since it promised better performance than standard Lua, I wanted to evaluate it before the project grew any larger. After confirming that LuaJIT could also be built with MSVC2010, I created a separate branch using it. That branch has since become the project's main branch. My own benchmarking has shown only very small performance differences between the two implementations so far, so whether LuaJIT's potential performance gains ultimately outweigh the additional language features available in Lua 5.5 remains an open question.
+
