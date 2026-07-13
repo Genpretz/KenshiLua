@@ -64,6 +64,123 @@ def find_function_body(content, marker):
         i += 1
     return content[brace_start:i]
 
+def extract_args_from_body(body: str):
+    """Extract argument names and types from a C++ function body by analyzing stack index checks.
+    Returns list of dicts: [{'name': 'var', 'type': 'type', 'index': idx}]
+    """
+    if not body:
+        return []
+    indices = {}
+    
+    # Pattern A: readVector3/readQuaternion(L, idx, var)
+    for m in re.finditer(r"\bread(Vector3|Quaternion)\s*\(\s*L\s*,\s*(\d+)\s*,\s*([\w_]+)\)", body):
+        type_name = m.group(1)
+        idx = int(m.group(2))
+        var = m.group(3)
+        if idx >= 2:
+            indices[idx] = {"name": var, "type": type_name}
+            
+    # Pattern B: var = ...checkObject/luaL_check...(L, idx)
+    for m in re.finditer(r"\b([\w_]+)\s*=\s*[^;]*?\b(?:lua[lL]?_check(\w+)|lua[lL]?_to(\w+)|checkObject\s*<\s*([\w:*&\s<>]+)\s*>|handBinding::read)\b[^;]*?\(\s*L\s*,\s*(\d+)", body):
+        var = m.group(1)
+        check_type = m.group(2) or m.group(3)
+        check_obj_type = m.group(4)
+        idx = int(m.group(5))
+        
+        if idx >= 2:
+            if check_obj_type:
+                t = check_obj_type.strip()
+            elif check_type:
+                t = check_type.lower()
+                if t == "integer":
+                    t = "integer"
+                elif t == "number":
+                    t = "number"
+                elif t == "string":
+                    t = "string"
+                elif t == "boolean":
+                    t = "boolean"
+            else:
+                t = "hand"
+            indices[idx] = {"name": var, "type": t}
+            
+    # Pattern C: catch any other L usage with indices to know the max index
+    for m in re.finditer(r"\b(?:lua[lL]?_check(\w+)|lua[lL]?_to(\w+)|checkObject\s*<\s*([\w:*&\s<>]+)\s*>|readVector3|readQuaternion|handBinding::read)\b[^;]*?\(\s*L\s*,\s*(\d+)", body):
+        check_type = m.group(1) or m.group(2)
+        check_obj_type = m.group(3)
+        idx = int(m.group(4))
+        
+        if idx >= 2 and idx not in indices:
+            if check_obj_type:
+                t = check_obj_type.strip()
+            elif check_type:
+                t = check_type.lower()
+            else:
+                t = "unknown"
+            indices[idx] = {"name": f"arg{idx - 1}", "type": t}
+            
+    sorted_args = []
+    for idx in sorted(indices.keys()):
+        sorted_args.append(indices[idx])
+        
+    return sorted_args
+
+def extract_return_type_from_body(body: str) -> str:
+    """Extract returned type from a C++ function body by analyzing return/push statements."""
+    if not body:
+        return "void"
+        
+    m = re.search(r"return\s+pushObject(?:T)?\s*<\s*([\w:*&\s<>]+)\s*>\s*\(", body)
+    if m:
+        return m.group(1).strip()
+        
+    if re.search(r"return\s+handBinding::push\s*\(", body) or re.search(r"handBinding::push\s*\(.*?\);\s*return\s+\d+", body):
+        return "hand"
+        
+    m = re.search(r"pushObject(?:T)?\s*<\s*([\w:*&\s<>]+)\s*>\s*\(.*?\);\s*return\s+\d+", body)
+    if m:
+        return m.group(1).strip()
+        
+    if re.search(r"pushVector3\s*\(", body):
+        return "Vector3"
+    if re.search(r"pushQuaternion\s*\(", body):
+        return "Quaternion"
+        
+    pushes = set()
+    for m in re.finditer(r"lua_push(\w+)\s*\(", body):
+        ptype = m.group(1).lower()
+        if ptype != "nil":
+            if ptype == "integer":
+                pushes.add("integer")
+            elif ptype == "number":
+                pushes.add("number")
+            elif ptype == "boolean":
+                pushes.add("boolean")
+            elif ptype == "string":
+                pushes.add("string")
+            elif ptype == "lightuserdata":
+                var_match = re.search(r"lua_pushlightuserdata\s*\(\s*L\s*,\s*([^)]+)\)", body)
+                if var_match:
+                    var_name = var_match.group(1).strip()
+                    decl_match = re.search(r"\b([\w_:]+)\s*\*\s+" + re.escape(var_name) + r"\b", body)
+                    if decl_match:
+                        pushes.add(decl_match.group(1).strip() + "*")
+                    else:
+                        pushes.add("lightuserdata")
+                else:
+                    pushes.add("lightuserdata")
+                    
+    if "lightuserdata" in pushes and len(pushes) > 1:
+        pushes.remove("lightuserdata")
+        
+    if pushes:
+        return "|".join(sorted(list(pushes)))
+        
+    if "return 0;" in body and not pushes:
+        return "void"
+        
+    return "void"
+
 def parse_binding_file(filepath: pathlib.Path):
     """Parse a single binding cpp file and return a list of tuples (class_name, fields, methods)."""
     content = filepath.read_text(encoding='utf-8', errors='ignore')
@@ -77,7 +194,14 @@ def parse_binding_file(filepath: pathlib.Path):
     classes = []
     for cb in class_bindings:
         class_name = cb.replace('Binding', '')
-        header = find_header_for_class(class_name)
+        
+        # Try to find header directly from #include in the file
+        header_match = re.search(r'#\s*include\s+["<](kenshi[/\\][^">]+)[">]', content)
+        if header_match:
+            rel_header = header_match.group(1).replace('\\', '/')
+            header = f"extern/KenshiLib/Include/{rel_header}"
+        else:
+            header = find_header_for_class(class_name)
         
         index_body = find_function_body(content, cb + "::index")
         newindex_body = find_function_body(content, cb + "::newindex")
@@ -171,8 +295,17 @@ def parse_binding_file(filepath: pathlib.Path):
                 if m:
                     lua_name, func = m.group(1), m.group(2)
                     method_name = func.split('::')[-1]
-                    methods.append({"lua_name": lua_name, "c_method": method_name, "class": class_name, "header": header})
-        classes.append((class_name, fields, methods))
+                    
+                    body = find_function_body(content, func)
+                    if not body:
+                        body = find_function_body(content, cb + "::" + method_name)
+                    if not body:
+                        body = find_function_body(content, method_name)
+                        
+                    args = extract_args_from_body(body)
+                    ret_type = extract_return_type_from_body(body)
+                    methods.append({"lua_name": lua_name, "c_method": method_name, "class": class_name, "header": header, "args": args, "ret_type": ret_type})
+        classes.append((class_name, fields, methods, header))
     return classes
 
 def parse_enum_file(filepath: pathlib.Path):
@@ -212,10 +345,13 @@ def generate_markdown(data_by_class, enums):
             lines.append("")
         if methods:
             lines.append("### Methods")
-            lines.append("| Lua Name | C++ Method | Example |")
-            lines.append("|---|---|---|")
+            lines.append("| Lua Name | C++ Method | Arguments | Return Type | Example |")
+            lines.append("|---|---|---|---|---|")
             for m in methods:
-                lines.append(f"| {m['lua_name']} | {m['c_method']} | `obj:{m['lua_name']}(...)` |")
+                args_str = ", ".join([f"{a['name']}: {a['type']}" for a in m['args']])
+                example_args = ", ".join([a['name'] for a in m['args']])
+                example = f"obj:{m['lua_name']}({example_args})"
+                lines.append(f"| {m['lua_name']} | {m['c_method']} | `{args_str}` | `{m['ret_type']}` | `{example}` |")
             lines.append("")
     if enums:
         lines.append("## Enums")
@@ -231,18 +367,15 @@ def generate_markdown(data_by_class, enums):
 
 def main():
     data_by_class = {}
-    for entry in os.listdir(BINDINGS_DIR):
-        if not entry.endswith('.cpp') or entry.endswith('EnumBinding.cpp'):
+    for path in BINDINGS_DIR.rglob('*.cpp'):
+        if path.name.endswith('EnumBinding.cpp'):
             continue
-        path = BINDINGS_DIR / entry
         parsed_classes = parse_binding_file(path)
-        for cls, fields, methods in parsed_classes:
-            header = find_header_for_class(cls)
+        for cls, fields, methods, header in parsed_classes:
             data_by_class[cls] = (fields, methods, header)
     enums = {}
-    for entry in os.listdir(BINDINGS_DIR):
-        if entry.endswith('EnumBinding.cpp'):
-            path = BINDINGS_DIR / entry
+    for path in BINDINGS_DIR.rglob('*.cpp'):
+        if path.name.endswith('EnumBinding.cpp'):
             file_enums = parse_enum_file(path)
             enums.update(file_enums)
     md = generate_markdown(data_by_class, enums)
