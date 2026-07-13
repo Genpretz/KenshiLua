@@ -26,7 +26,7 @@
 #include "Bindings/CombatTechniqueDataBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
-#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 #include "Bindings/Util/StringPairBinding.h"
 
 namespace KenshiLua
@@ -1333,6 +1333,8 @@ void RootObjectBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorPtrBinding<RootObject*>::registerBinding(L, "lektor<RootObject*>", RootObjectBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

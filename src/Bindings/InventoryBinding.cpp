@@ -17,12 +17,13 @@
 #include "Bindings/WeaponBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/GameDataBinding.h"
-#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 #include "kenshi/GameSaveState.h"
 #include "Bindings/GameSaveStateBinding.h"
 #include "Bindings/GameDataContainerBinding.h"
-#include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
 #include "Bindings/HasRoomCacheBinding.h"
+#include "Bindings/Templates/BoostUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -52,7 +53,7 @@ static int Inventory_get_sections(lua_State* L)
     Inventory* b = getB(L, 1);
     if (!b) return luaL_error(L, "Inventory is nil");
     lua_newtable(L);
-    typedef boost::unordered::unordered_map<std::string, InventorySection*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, InventorySection*>, Ogre::GeneralAllocPolicy > > SectionsMap;
+    typedef BoostUnorderedMapBinding<std::string, InventorySection*>::MapType SectionsMap;
     for (SectionsMap::const_iterator it = b->sections.begin(); it != b->sections.end(); ++it)
     {
         pushObject<InventorySection>(L, it->second, InventorySectionBinding::getMetatableName());
@@ -1197,10 +1198,7 @@ void InventoryBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "totalWeight");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    LektorPtrBinding<Item*>::registerBinding(L, "lektor<Item*>", ItemBinding::getMetatableName());
-    LektorPtrBinding<InventorySection*>::registerBinding(L, "lektor<InventorySection*>", InventorySectionBinding::getMetatableName());
-    LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", GameDataBinding::getMetatableName());
-    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "ogre_unordered_set<GameData*>", GameDataBinding::getMetatableName());
+
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

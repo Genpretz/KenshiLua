@@ -2,6 +2,7 @@
 #include "kenshi\Bounty.h"
 #include "BountyBinding.h"
 #include "EnumBinding.h"
+#include "Bindings/Util/TimeOfDayBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -37,13 +38,11 @@ static int Bounty_get_bountyHasBeenClaimedOnce(lua_State* L)
     return 1;
 }
 
-// ToDo
 static int Bounty_get_bountyAssignmentStartedTime(lua_State* L)
 {
     Bounty* b = getB(L, 1);
     if (!b) return luaL_error(L, "Bounty is nil");
-    // TODO: Unsupported type for bountyAssignmentStartedTime (TimeOfDay)
-    return luaL_error(L, "Unsupported property 'bountyAssignmentStartedTime' (type: TimeOfDay)");
+    return pushObject<TimeOfDay>(L, &b->bountyAssignmentStartedTime, TimeOfDayBinding::getMetatableName());
 }
 
 // --- Setters for Bounty ---
@@ -71,12 +70,14 @@ static int Bounty_set_bountyHasBeenClaimedOnce(lua_State* L)
     return 0;
 }
 
-// ToDo
 static int Bounty_set_bountyAssignmentStartedTime(lua_State* L)
 {
     Bounty* b = getB(L, 1);
     if (!b) return luaL_error(L, "Bounty is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bountyAssignmentStartedTime");
+    TimeOfDay* val = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Expected TimeOfDay object");
+    b->bountyAssignmentStartedTime = *val;
+    return 0;
 }
 
 int BountyBinding::_CONSTRUCTOR(lua_State* L)

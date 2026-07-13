@@ -7,7 +7,7 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/BountyBinding.h"
-#include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/GameDataBinding.h"
 

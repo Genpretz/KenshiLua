@@ -2,6 +2,7 @@
 #include "Bindings/MyGuiBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Logger.h"
+#include "Lua/LuaState.h"
 
 #include <MyGUI.h>
 #include <map>
@@ -213,12 +214,9 @@ private:
         lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
 
-        if (lua_pcall(m_L, 1, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top);
     }
 
@@ -233,12 +231,9 @@ private:
         lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
 
-        if (lua_pcall(m_L, 1, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top);
     }
 
@@ -254,12 +249,9 @@ private:
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
         lua_pushstring(m_L, name.c_str());
 
-        if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top);
     }
 
@@ -277,12 +269,9 @@ private:
         lua_pushinteger(m_L, top);
         lua_pushinteger(m_L, id.getValue());
 
-        if (lua_pcall(m_L, 4, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 4, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -300,12 +289,9 @@ private:
         lua_pushinteger(m_L, top);
         lua_pushinteger(m_L, id.getValue());
 
-        if (lua_pcall(m_L, 4, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 4, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -321,12 +307,9 @@ private:
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
         pushObject<MyGUI::Widget>(m_L, old, MyGuiBinding::getMetatableName());
 
-        if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -342,12 +325,9 @@ private:
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
         pushObject<MyGUI::Widget>(m_L, new_, MyGuiBinding::getMetatableName());
 
-        if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -364,12 +344,9 @@ private:
         lua_pushinteger(m_L, left);
         lua_pushinteger(m_L, top);
 
-        if (lua_pcall(m_L, 3, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 3, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -385,12 +362,9 @@ private:
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
         lua_pushinteger(m_L, rel);
 
-        if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -407,12 +381,9 @@ private:
         lua_pushinteger(m_L, key.getValue());
         lua_pushinteger(m_L, ch);
 
-        if (lua_pcall(m_L, 3, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 3, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -428,12 +399,9 @@ private:
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
         lua_pushinteger(m_L, key.getValue());
 
-        if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -449,12 +417,9 @@ private:
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
         lua_pushinteger(m_L, index);
 
-        if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -470,12 +435,9 @@ private:
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
         lua_pushinteger(m_L, index);
 
-        if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -491,12 +453,9 @@ private:
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
         lua_pushinteger(m_L, index);
 
-        if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -532,12 +491,9 @@ private:
         lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
 
-        if (lua_pcall(m_L, 1, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
+            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 };

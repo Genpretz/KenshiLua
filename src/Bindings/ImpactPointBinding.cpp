@@ -5,6 +5,7 @@
 #include "ImpactPointBinding.h"
 #include "EnumBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Templates/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -165,6 +166,8 @@ void ImpactPointBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorValueReadOnlyBinding<CombatTechniqueData::ImpactPoint>::registerBinding(L, "lektor<CombatTechniqueData::ImpactPoint>", ImpactPointBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

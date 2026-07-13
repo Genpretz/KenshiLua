@@ -3,12 +3,12 @@
 #include "CombatTechniqueDataBinding.h"
 #include "Bindings/ImpactPointBinding.h"
 #include "Bindings/GameDataBinding.h"
-#include "Bindings/Util/LektorBinding.h"
-#include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Templates/FitnessSelectorBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
+typedef FitnessSelectorBinding<CombatTechniqueData*> FitnessSelector_CombatTechniqueData_Binding;
 
 static CombatTechniqueData* getInstance(lua_State* L, int idx)
 {
@@ -494,9 +494,6 @@ void CombatTechniqueDataBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    // Register container bindings
-    LektorValueReadOnlyBinding<CombatTechniqueData::ImpactPoint>::registerBinding(L, "lektor<CombatTechniqueData::ImpactPoint>", ImpactPointBinding::getMetatableName());
-    OgreUnorderedMapBinding<GameData*, float>::registerBinding(L, "KenshiLua.GameDataFloatMap", GameDataBinding::getMetatableName(), nullptr);
 }
 
 } // namespace KenshiLua

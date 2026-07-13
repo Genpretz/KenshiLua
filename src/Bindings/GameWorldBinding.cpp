@@ -8,7 +8,7 @@
 #include "Bindings/PlayerInterfaceBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/CharacterBinding.h"
-#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 #include "Bindings/ModInfoBinding.h"
 
 namespace KenshiLua

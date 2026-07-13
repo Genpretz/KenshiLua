@@ -4,6 +4,7 @@
 #include "RootObjectBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RootObjectBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -18,8 +19,7 @@ static int RootObjectContainer_get_things(lua_State* L)
 {
     RootObjectContainer* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectContainer is nil");
-    // TODO: Unsupported type for things (lektor<RootObject*>)
-    return luaL_error(L, "Unsupported property 'things' (type: lektor<RootObject*>)");
+    return pushObject<lektor<RootObject*>>(L, &b->things, LektorPtrBinding<RootObject*>::metaName);
 }
 
 // --- Setters for RootObjectContainer ---
@@ -79,6 +79,45 @@ int RootObjectContainerBinding::getNumThings(lua_State* L)
     return 1;
 }
 
+int RootObjectContainerBinding::getThings(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    lektor<RootObject*>* result = b->getThings();
+    return pushObject<lektor<RootObject*>>(L, result, LektorPtrBinding<RootObject*>::metaName);
+}
+
+int RootObjectContainerBinding::getSelectedObjects(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 must be a lektor<RootObject*>");
+
+    itemType type = (itemType)luaL_checkinteger(L, 3);
+    bool selectedOnly = lua_toboolean(L, 4) != 0;
+
+    b->getSelectedObjects(*out, type, selectedOnly);
+    return 0;
+}
+
+int RootObjectContainerBinding::_NV_getSelectedObjects(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 must be a lektor<RootObject*>");
+
+    itemType type = (itemType)luaL_checkinteger(L, 3);
+    bool selectedOnly = lua_toboolean(L, 4) != 0;
+
+    b->_NV_getSelectedObjects(*out, type, selectedOnly);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 183: RootObjectContainer* _CONSTRUCTOR(...) - overloaded method
@@ -124,6 +163,9 @@ void RootObjectContainerBinding::registerBinding(lua_State* L)
         { "_NV_update", RootObjectContainerBinding::_NV_update },
         { "getThing", RootObjectContainerBinding::getThing },
         { "getNumThings", RootObjectContainerBinding::getNumThings },
+        { "getThings", RootObjectContainerBinding::getThings },
+        { "getSelectedObjects", RootObjectContainerBinding::getSelectedObjects },
+        { "_NV_getSelectedObjects", RootObjectContainerBinding::_NV_getSelectedObjects },
         { 0, 0 }
     };
 

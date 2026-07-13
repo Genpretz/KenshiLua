@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "kenshi\PlayerInterface.h"
 #include "PlayerInterfaceBinding.h"
-#include "Util/OgreUnorderedBinding.h"
+#include "Templates/OgreUnorderedBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CameraClassBinding.h"
 #include "Bindings/CharacterBinding.h"

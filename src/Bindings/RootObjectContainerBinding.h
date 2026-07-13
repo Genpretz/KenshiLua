@@ -21,5 +21,8 @@ public:
     static int _NV_update(lua_State* L);
     static int getThing(lua_State* L);
     static int getNumThings(lua_State* L);
+    static int getThings(lua_State* L);
+    static int getSelectedObjects(lua_State* L);
+    static int _NV_getSelectedObjects(lua_State* L);
 };
 }

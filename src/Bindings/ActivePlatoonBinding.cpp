@@ -11,7 +11,7 @@
 #include "RootObjectBinding.h"
 #include "Bindings/GameSaveStateBinding.h"
 #include "FactoryCallbackInterfaceBinding.h"
-#include "Util/LektorBinding.h"
+#include "Templates/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -1058,8 +1058,6 @@ void ActivePlatoonBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "isPhysical");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
     
-    LektorPtrBinding<RootObject*>::registerBinding(L, "lektor<RootObject*>", RootObjectBinding::getMetatableName());
-
     lua_pop(L, 1); // Pop the metatable off the stack
 }
 

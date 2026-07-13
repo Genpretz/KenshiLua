@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "kenshi\Faction.h"
 #include "BuildingSwapsBinding.h"
+#include "GameDataBinding.h"
+#include <kenshi/GameData.h>
+#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/Templates/FitnessSelectorBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -16,16 +20,14 @@ static int BuildingSwaps_get_toReplace(lua_State* L)
 {
     Faction::BuildingSwaps* b = getB(L, 1);
     if (!b) return luaL_error(L, "BuildingSwaps is nil");
-    // TODO: Unsupported type for toReplace (ogre_unordered_set<GameData*>::type)
-    return luaL_error(L, "Unsupported property 'toReplace' (type: ogre_unordered_set<GameData*>::type)");
+    return pushObject<ogre_unordered_set<GameData*>::type>(L, &b->toReplace, OgreUnorderedSetBinding<GameData*>::metaName);
 }
 
 static int BuildingSwaps_get_replaceWith(lua_State* L)
 {
     Faction::BuildingSwaps* b = getB(L, 1);
     if (!b) return luaL_error(L, "BuildingSwaps is nil");
-    // TODO: Unsupported type for replaceWith (FitnessSelector<GameData*>)
-    return luaL_error(L, "Unsupported property 'replaceWith' (type: FitnessSelector<GameData*>)");
+    return pushObject<FitnessSelector<GameData*>>(L, &b->replaceWith, FitnessSelectorBinding<GameData*>::metaName);
 }
 
 // --- Setters for BuildingSwaps ---
@@ -33,14 +35,20 @@ static int BuildingSwaps_set_toReplace(lua_State* L)
 {
     Faction::BuildingSwaps* b = getB(L, 1);
     if (!b) return luaL_error(L, "BuildingSwaps is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for toReplace");
+    ogre_unordered_set<GameData*>::type* val = OgreUnorderedSetBinding<GameData*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected ogre_unordered_set<GameData*>");
+    b->toReplace = *val;
+    return 0;
 }
 
 static int BuildingSwaps_set_replaceWith(lua_State* L)
 {
     Faction::BuildingSwaps* b = getB(L, 1);
     if (!b) return luaL_error(L, "BuildingSwaps is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for replaceWith");
+    FitnessSelector<GameData*>* val = FitnessSelectorBinding<GameData*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected FitnessSelector_GameData");
+    b->replaceWith = *val;
+    return 0;
 }
 
 int BuildingSwapsBinding::_DESTRUCTOR(lua_State* L)
@@ -54,12 +62,60 @@ int BuildingSwapsBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 38: Faction::BuildingSwaps* _CONSTRUCTOR(...) - overloaded method
-  line 40: Faction::BuildingSwaps* _CONSTRUCTOR(...) - overloaded method
-  line 41: bool hasReplacement(...) - unsupported arg type
-  line 42: GameData* getReplacement(...) - unsupported arg type
   line 47: Faction::BuildingSwaps& operator=(...) - operator
 */
+
+int BuildingSwapsBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Faction::BuildingSwaps* b = getB(L, 1);
+    if (!b) return luaL_error(L, "BuildingSwaps is nil");
+
+    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2))
+    {
+        GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+        if (!data) return luaL_error(L, "Expected GameData object for constructor");
+        Faction::BuildingSwaps* result = b->_CONSTRUCTOR(data);
+        return pushObject<Faction::BuildingSwaps>(L, result, BuildingSwapsBinding::getMetatableName());
+    }
+    else
+    {
+        Faction::BuildingSwaps* result = b->_CONSTRUCTOR();
+        return pushObject<Faction::BuildingSwaps>(L, result, BuildingSwapsBinding::getMetatableName());
+    }
+}
+
+int BuildingSwapsBinding::hasReplacement(lua_State* L)
+{
+    Faction::BuildingSwaps* b = getB(L, 1);
+    if (!b) return luaL_error(L, "BuildingSwaps is nil");
+
+    GameData* building = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    if (!building) return luaL_error(L, "Expected GameData object");
+
+    bool result = b->hasReplacement(building);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int BuildingSwapsBinding::getReplacement(lua_State* L)
+{
+    Faction::BuildingSwaps* b = getB(L, 1);
+    if (!b) return luaL_error(L, "BuildingSwaps is nil");
+
+    GameData* building = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    if (!building) return luaL_error(L, "Expected GameData object");
+
+    GameData* result = b->getReplacement(building);
+    if (!result)
+    {
+        lua_pushnil(L);
+    }
+    else
+    {
+        pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+    }
+    return 1;
+}
 
 int BuildingSwapsBinding::gc(lua_State* L)
 {
@@ -83,6 +139,9 @@ void BuildingSwapsBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", BuildingSwapsBinding::_DESTRUCTOR },
+        { "_CONSTRUCTOR", BuildingSwapsBinding::_CONSTRUCTOR },
+        { "hasReplacement", BuildingSwapsBinding::hasReplacement },
+        { "getReplacement", BuildingSwapsBinding::getReplacement },
         { 0, 0 }
     };
 

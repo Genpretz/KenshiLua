@@ -46,6 +46,13 @@
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/GameDataCopyStandaloneBinding.h"
 #include "Bindings/AttachedArrowManagerBinding.h"
+#include "Bindings/Util/YesNoMaybeBinding.h"
+#include <kenshi/gui/InventoryGUI.h>
+#include "Bindings/Gui/InventoryLayoutBinding.h"
+#include "Bindings/RootObjectBaseBinding.h"
+#include "Bindings/PlatoonBinding.h"
+#include "Bindings/DamagesBinding.h"
+#include "Bindings/CombatTechniqueDataBinding.h"
 
 #include "kenshi/CharacterHuman.h"
 #include "kenshi/SensoryData.h"
@@ -164,8 +171,7 @@ static int Character_get_stealthUnseen(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    // TODO: Unsupported type for stealthUnseen (YesNoMaybe)
-    return luaL_error(L, "Unsupported property 'stealthUnseen' (type: YesNoMaybe)");
+    return pushObject<YesNoMaybe>(L, &b->stealthUnseen, YesNoMaybeBinding::getMetatableName());
 }
 
 static int Character_get_playerWantsMeToGetUp(lua_State* L)
@@ -195,8 +201,12 @@ static int Character_get_stateBroadcast(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    // TODO: Unsupported type for stateBroadcast (StateBroadcastData*)
-    return luaL_error(L, "Unsupported property 'stateBroadcast' (type: StateBroadcastData*)");
+    if (b->stateBroadcast) {
+        lua_pushlightuserdata(L, b->stateBroadcast);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 static int Character_get_isVisibleAndNear(lua_State* L)
@@ -310,8 +320,12 @@ static int Character_get__myMemory(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    // TODO: Unsupported type for _myMemory (CharacterMemory*)
-    return luaL_error(L, "Unsupported property '_myMemory' (type: CharacterMemory*)");
+    if (b->_myMemory) {
+        lua_pushlightuserdata(L, b->_myMemory);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 static int Character_get_lastGuyWhoDefeatedMe(lua_State* L)
@@ -339,16 +353,20 @@ static int Character_get_rangedCombat(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    // TODO: Unsupported type for rangedCombat (RangedCombatClass*)
-    return luaL_error(L, "Unsupported property 'rangedCombat' (type: RangedCombatClass*)");
+    if (b->rangedCombat) {
+        lua_pushlightuserdata(L, b->rangedCombat);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 static int Character_get_inSomething(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    // TODO: Unsupported type for inSomething (UseStuffState)
-    return luaL_error(L, "Unsupported property 'inSomething' (type: UseStuffState)");
+    lua_pushinteger(L, (lua_Integer)b->inSomething);
+    return 1;
 }
 
 static int Character_get_inWhat(lua_State* L)
@@ -455,7 +473,11 @@ static int Character_get_msgCarryMode(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    lua_pushinteger(L, (lua_Integer)b->msgCarryMode);
+    if (b->msgCarryMode) {
+        lua_pushlightuserdata(L, b->msgCarryMode);
+    } else {
+        lua_pushnil(L);
+    }
     return 1;
 }
 
@@ -494,8 +516,12 @@ static int Character_get_animation(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    // TODO: Unsupported type for animation (AnimationClass*)
-    return luaL_error(L, "Unsupported property 'animation' (type: AnimationClass*)");
+    if (b->animation) {
+        lua_pushlightuserdata(L, b->animation);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 static int Character_get_stats(lua_State* L)
@@ -532,8 +558,12 @@ static int Character_get_nameTag(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    // TODO: Unsupported type for nameTag (CharacterNameTag*)
-    return luaL_error(L, "Unsupported property 'nameTag' (type: CharacterNameTag*)");
+    if (b->nameTag) {
+        lua_pushlightuserdata(L, b->nameTag);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 static int Character_get_movement(lua_State* L)
@@ -554,8 +584,12 @@ static int Character_get_ai(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    // TODO: Unsupported type for ai (AI*)
-    return luaL_error(L, "Unsupported property 'ai' (type: AI*)");
+    if (b->ai) {
+        lua_pushlightuserdata(L, b->ai);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 static int Character_get_platoon(lua_State* L)
@@ -617,8 +651,12 @@ static int Character_get_audioEmitter(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    // TODO: Unsupported type for audioEmitter (SoundEmitter*)
-    return luaL_error(L, "Unsupported property 'audioEmitter' (type: SoundEmitter*)");
+    if (b->audioEmitter) {
+        lua_pushlightuserdata(L, b->audioEmitter);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 static int Character_get_terrainHeightPosition(lua_State* L)
@@ -767,7 +805,11 @@ static int Character_set_stealthUnseen(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for stealthUnseen");
+    YesNoMaybe* val = checkObject<YesNoMaybe>(L, 2, YesNoMaybeBinding::getMetatableName());
+    if (val) {
+        b->stealthUnseen = *val;
+    }
+    return 0;
 }
 
 static int Character_set_playerWantsMeToGetUp(lua_State* L)
@@ -799,7 +841,8 @@ static int Character_set_stateBroadcast(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for stateBroadcast");
+    b->stateBroadcast = (StateBroadcastData*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Character_set_isVisibleAndNear(lua_State* L)
@@ -899,7 +942,8 @@ static int Character_set__myMemory(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _myMemory");
+    b->_myMemory = (CharacterMemory*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Character_set_lastGuyWhoDefeatedMe(lua_State* L)
@@ -930,14 +974,16 @@ static int Character_set_rangedCombat(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for rangedCombat");
+    b->rangedCombat = (RangedCombatClass*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Character_set_inSomething(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for inSomething");
+    b->inSomething = (UseStuffState)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int Character_set_inWhat(lua_State* L)
@@ -1047,7 +1093,8 @@ static int Character_set_msgCarryMode(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for msgCarryMode");
+    b->msgCarryMode = (Character::CarryMsg*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Character_set_squadMemberID(lua_State* L)
@@ -1086,7 +1133,8 @@ static int Character_set_animation(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for animation");
+    b->animation = (AnimationClass*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Character_set_stats(lua_State* L)
@@ -1126,7 +1174,8 @@ static int Character_set_nameTag(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for nameTag");
+    b->nameTag = (CharacterNameTag*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Character_set_movement(lua_State* L)
@@ -1149,7 +1198,8 @@ static int Character_set_ai(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for ai");
+    b->ai = (AI*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Character_set_platoon(lua_State* L)
@@ -1211,7 +1261,8 @@ static int Character_set_audioEmitter(lua_State* L)
 {
     Character* b = getB(L, 1);
     if (!b) return luaL_error(L, "Character is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for audioEmitter");
+    b->audioEmitter = (SoundEmitter*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Character_set_terrainHeightPosition(lua_State* L)
@@ -4645,18 +4696,27 @@ int CharacterBinding::getKidnappingEscapeChance_strength(lua_State* L)
 }
 
 /*
+Types requiring lightuserdata due to a lack of available bindings:
+- StateBroadcastData* (used in stateBroadcast getter/setter, getStateBroadcast, _NV_getStateBroadcast)
+- CharacterMemory* (used in _myMemory getter/setter)
+- RangedCombatClass* (used in rangedCombat getter/setter)
+- AnimationClass* (used in animation getter/setter, getAnimationClass)
+- CharacterNameTag* (used in nameTag getter/setter)
+- AI* (used in ai getter/setter, getAI)
+- SoundEmitter* (used in audioEmitter getter/setter)
+- Character::CarryMsg* (used in msgCarryMode getter/setter)
+- Blackboard* (used in getBlackboard)
+- OrdersReceiver* (used in getOrdersReciever)
+- CampaignInstance* (used in isInAWarCampaign)
+- Formation* (used in getFormation, _NV_getFormation, getEnemyFormation, _NV_getEnemyFormation)
+- CombatClass* (used in getCombatClass)
+- Ogre::Aabb* (used in getAABB, _NV_getAABB)
+*/
+
+/*
 Skipped methods needing manual binding:
   line 187: Character* _CONSTRUCTOR(...) - unsupported arg type
-  line 227: CampaignInstance* isInAWarCampaign(...) - unsupported return type
-  line 253: StateBroadcastData* getStateBroadcast(...) - unsupported return type
-  line 254: StateBroadcastData* _NV_getStateBroadcast(...) - unsupported return type
-  line 255: Formation* getFormation(...) - unsupported return type
-  line 256: Formation* _NV_getFormation(...) - unsupported return type
-  line 257: Formation* getEnemyFormation(...) - unsupported return type
-  line 258: Formation* _NV_getEnemyFormation(...) - unsupported return type
   line 259: void formationUpdateCallback(...) - unsupported arg type
-  line 260: bool AIDestinationIndoorOutdoorCheck(...) - unsupported arg type
-  line 287: void notifyICanSeeYouSneaking(...) - unsupported arg type
   line 352: GameSaveState serialise(...) - unsupported return type
   line 353: GameSaveState _NV_serialise(...) - unsupported return type
   line 354: void loadFromSerialise(...) - unsupported arg type
@@ -4669,85 +4729,27 @@ Skipped methods needing manual binding:
   line 389: void _NV_getGUIData(...) - unsupported arg type
   line 411: bool hasItemsFrom(...) - unsupported arg type
   line 412: bool _NV_hasItemsFrom(...) - unsupported arg type
-  line 419: InventoryLayout* createInventoryLayout(...) - unsupported return type
-  line 420: InventoryLayout* _NV_createInventoryLayout(...) - unsupported return type
   line 427: float getLockpickChance(...) - unsupported arg type
   line 440: void updateGUIStatsDetails(...) - unsupported arg type
   line 441: void _printRaceXPBonusLine(...) - unsupported arg type
-  line 442: void addGoal(...) - unsupported arg type
-  line 444: void addJob(...) - unsupported arg type
-  line 449: const std::string& getPermajobName(...) - reference return type
   line 451: const Tasker* getPermajobData(...) - unsupported return type
-  line 453: const Ogre::Aabb& getAABB(...) - reference return type
-  line 454: const Ogre::Aabb& _NV_getAABB(...) - reference return type
-  line 455: void addOrder(...) - unsupported arg type
-  line 456: void updateLastTask(...) - unsupported arg type
-  line 457: void _NV_updateLastTask(...) - unsupported arg type
-  line 458: void playerMoveOrderDefault(...) - unsupported arg type
-  line 459: void _NV_playerMoveOrderDefault(...) - unsupported arg type
-  line 474: int destinationInsideWalls(...) - unsupported arg type
   line 509: bool giveBirth(...) - unsupported arg type
   line 510: bool _NV_giveBirth(...) - unsupported arg type
-  line 517: bool sendDialogEventOverride(...) - unsupported arg type
-  line 518: bool sendDialogEvent(...) - unsupported arg type
-  line 524: void teleport(...) - overloaded method
-  line 525: void teleport(...) - overloaded method
   line 528: void debugIndicateCharacters(...) - unsupported arg type
-  line 530: void notifyTheCampaignOfAnAttack(...) - unsupported arg type
-  line 531: bool iShouldntAggravateThisTarget(...) - unsupported arg type
   line 532: void sendMessage(...) - unsupported arg type
   line 533: void attackingYou(...) - unsupported arg type
   line 534: bool iShotYou(...) - unsupported arg type
-  line 535: HitMaterialType hitByMeleeAttack(...) - unsupported arg type
-  line 536: HitMaterialType _NV_hitByMeleeAttack(...) - unsupported arg type
   line 537: bool gettingEaten(...) - unsupported arg type
   line 538: bool _NV_gettingEaten(...) - unsupported arg type
   line 539: void _startStumble(...) - unsupported arg type
-  line 540: CutOrigination getAttackOriginationDirection(...) - unsupported arg type
-  line 541: CutDirection convertCutDirection(...) - overloaded method
-  line 542: CutDirection convertCutDirection(...) - overloaded method
-  line 559: CombatClass* getCombatClass(...) - unsupported return type
-  line 563: AI* getAI(...) - unsupported return type
   line 564: void getSquadMissionTarget(...) - unsupported arg type
   line 572: unsigned int conglomerateTagsFor(...) - unsupported arg type
-  line 574: void clearTempEnemyStatus(...) - unsupported arg type
-  line 578: bool getCharacterMemoryTag(...) - overloaded method
-  line 579: bool getCharacterMemoryTag(...) - overloaded method
-  line 580: float lastSeenInHoursAgo(...) - unsupported arg type
-  line 581: bool haveMetBefore(...) - unsupported arg type
-  line 582: hand getIDForMemoryTagging(...) - unsupported return type
-  line 587: bool areYouGonnaGetMe(...) - unsupported arg type
-  line 588: lektor<hand>& getAllAttackers(...) - reference return type
-  line 592: void setRace(...) - unsupported arg type
-  line 593: void _NV_setRace(...) - unsupported arg type
-  line 597: bool checkPlayerOrderForProblems(...) - unsupported arg type
-  line 598: bool breakFollowOrderLoop(...) - unsupported arg type
-  line 605: bool drawWeapon(...) - unsupported arg type
-  line 615: void _setPlatoon(...) - unsupported arg type
-  line 619: Blackboard* getBlackboard(...) - unsupported return type
-  line 621: OrdersReceiver* getOrdersReciever(...) - unsupported return type
   line 625: void setPrisonMode(...) - unsupported arg type
   line 626: void setBedMode(...) - unsupported arg type
   line 630: void setChainedMode(...) - unsupported arg type
-  line 633: hand getMySlaveOwner(...) - unsupported return type
-  line 635: void changeSlaveOwner(...) - unsupported arg type
-  line 636: bool isMySlave(...) - unsupported arg type
-  line 637: bool isMyFactionsSlave(...) - unsupported arg type
-  line 644: void pickupObject(...) - unsupported arg type
-  line 645: void getPickedUp(...) - unsupported arg type
-  line 663: AnimationClass* getAnimationClass(...) - unsupported return type
-  line 672: bool audioEvent(...) - pointer arg
-  line 673: void audioValue(...) - overloaded method
-  line 674: void audioValue(...) - overloaded method
-  line 679: bool wearingUniformOf(...) - unsupported arg type
-  line 680: bool _NV_wearingUniformOf(...) - unsupported arg type
-  line 683: bool startEffect(...) - unsupported arg type
-  line 684: bool stopEffect(...) - unsupported arg type
   line 718: bool _ragdollMode(...) - non-string reference arg
   line 728: void calculateDestinationState(...) - unsupported arg type
-  line 731: Item* generateWeapon(...) - unsupported arg type
   line 736: bool createComponents(...) - unsupported arg type
-  line 761: void setEffectBT(...) - unsupported arg type
 */
 
 static int Character_getIDForMemoryTagging(lua_State* L)
@@ -4797,6 +4799,740 @@ static int Character__NV_getName(lua_State* L)
     const std::string& result = b->_NV_getName();
     lua_pushstring(L, result.c_str());
     return 1;
+}
+
+static int Character_getAnimationClass(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    AnimationClass* result = b->getAnimationClass();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character_getAI(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    AI* result = b->getAI();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character_getCombatClass(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    CombatClass* result = b->getCombatClass();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character_getBlackboard(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Blackboard* result = b->getBlackboard();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character_getOrdersReciever(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    OrdersReceiver* result = b->getOrdersReciever();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character_isMySlave(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* slave = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->isMySlave(slave) ? 1 : 0);
+    return 1;
+}
+
+static int Character_isMyFactionsSlave(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* slave = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->isMyFactionsSlave(slave) ? 1 : 0);
+    return 1;
+}
+
+static int Character_changeSlaveOwner(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    hand* newOwner = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (newOwner) {
+        b->changeSlaveOwner(*newOwner);
+    }
+    return 0;
+}
+
+static int Character_pickupObject(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->pickupObject(who);
+    return 0;
+}
+
+static int Character_getPickedUp(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* byWhom = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->getPickedUp(byWhom);
+    return 0;
+}
+
+static int Character_wearingUniformOf(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    lua_pushboolean(L, b->wearingUniformOf(f) ? 1 : 0);
+    return 1;
+}
+
+static int Character__NV_wearingUniformOf(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    lua_pushboolean(L, b->_NV_wearingUniformOf(f) ? 1 : 0);
+    return 1;
+}
+
+static int Character_startEffect(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    GameData* effect = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    lua_pushboolean(L, b->startEffect(effect) ? 1 : 0);
+    return 1;
+}
+
+static int Character_stopEffect(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    GameData* effect = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    lua_pushboolean(L, b->stopEffect(effect) ? 1 : 0);
+    return 1;
+}
+
+static int Character_setEffectBT(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    GameData* effect = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool active = lua_toboolean(L, 3) != 0;
+    b->setEffectBT(effect, active);
+    return 0;
+}
+
+static int Character_teleport(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Ogre::Vector3 moveBy;
+    readVector3(L, 2, moveBy);
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3))
+    {
+        Ogre::Quaternion rot;
+        readQuaternion(L, 3, rot);
+        b->teleport(moveBy, rot);
+    }
+    else
+    {
+        b->teleport(moveBy);
+    }
+    return 0;
+}
+
+static int Character_audioValue(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    const char* name = luaL_checkstring(L, 2);
+    if (lua_isnumber(L, 3))
+    {
+        float value = (float)lua_tonumber(L, 3);
+        b->audioValue(name, value);
+    }
+    else
+    {
+        const char* value = luaL_checkstring(L, 3);
+        b->audioValue(name, value);
+    }
+    return 0;
+}
+
+static int Character_audioEvent(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    const char* name = luaL_checkstring(L, 2);
+    SoundRange range = (SoundRange)luaL_checkinteger(L, 3);
+    lua_pushboolean(L, b->audioEvent(name, range) ? 1 : 0);
+    return 1;
+}
+
+static int Character_getPermajobName(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    int slot = (int)luaL_checkinteger(L, 2);
+    const std::string& name = b->getPermajobName(slot);
+    lua_pushstring(L, name.c_str());
+    return 1;
+}
+
+static int Character_getAABB(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    lua_pushlightuserdata(L, const_cast<Ogre::Aabb*>(&b->getAABB()));
+    return 1;
+}
+
+static int Character__NV_getAABB(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    lua_pushlightuserdata(L, const_cast<Ogre::Aabb*>(&b->_NV_getAABB()));
+    return 1;
+}
+
+static int Character_getAllAttackers(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    lektor<hand> out;
+    b->getAllAttackers(out);
+    lua_newtable(L);
+    for (uint32_t i = 0; i < out.count; ++i) {
+        handBinding::push(L, out.stuff[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    if (out.stuff) {
+        Ogre::AllocatedObject<Ogre::CategorisedAllocPolicy<Ogre::MEMCATEGORY_GENERAL>>::operator delete(out.stuff);
+    }
+    return 1;
+}
+
+static int Character_createInventoryLayout(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    InventoryLayout* result = b->createInventoryLayout();
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
+}
+
+static int Character__NV_createInventoryLayout(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    InventoryLayout* result = b->_NV_createInventoryLayout();
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
+}
+
+static int Character_isInAWarCampaign(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    CampaignInstance* result = b->isInAWarCampaign();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character_getStateBroadcast(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    StateBroadcastData* result = b->getStateBroadcast();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character__NV_getStateBroadcast(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    StateBroadcastData* result = b->_NV_getStateBroadcast();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character_getFormation(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Formation* result = b->getFormation();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character__NV_getFormation(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Formation* result = b->_NV_getFormation();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character_getEnemyFormation(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Formation* result = b->getEnemyFormation();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character__NV_getEnemyFormation(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Formation* result = b->_NV_getEnemyFormation();
+    if (result) {
+        lua_pushlightuserdata(L, result);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
+static int Character_AIDestinationIndoorOutdoorCheck(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    RootObject* who = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    lua_pushboolean(L, b->AIDestinationIndoorOutdoorCheck(who) ? 1 : 0);
+    return 1;
+}
+
+static int Character_notifyICanSeeYouSneaking(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    YesNoMaybe* seeing = checkObject<YesNoMaybe>(L, 3, YesNoMaybeBinding::getMetatableName());
+    float maybeProgress01 = (float)luaL_checknumber(L, 4);
+    if (seeing) {
+        b->notifyICanSeeYouSneaking(who, *seeing, maybeProgress01);
+    }
+    return 0;
+}
+
+static int Character_addGoal(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    TaskType t = (TaskType)luaL_checkinteger(L, 2);
+    RootObjectBase* subject = checkObject<RootObjectBase>(L, 3, RootObjectBaseBinding::getMetatableName());
+    b->addGoal(t, subject);
+    return 0;
+}
+
+static int Character_addJob(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    TaskType t = (TaskType)luaL_checkinteger(L, 2);
+    RootObject* subject = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    }
+    bool shift = lua_toboolean(L, 4) != 0;
+    bool addDontClear = lua_toboolean(L, 5) != 0;
+    Ogre::Vector3 location = Ogre::Vector3::ZERO;
+    if (lua_gettop(L) >= 6 && !lua_isnil(L, 6)) {
+        readVector3(L, 6, location);
+    }
+    b->addJob(t, subject, shift, addDontClear, location);
+    return 0;
+}
+
+static int Character_addOrder(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Building* dest = nullptr;
+    if (!lua_isnil(L, 2)) {
+        dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    }
+    TaskType t = (TaskType)luaL_checkinteger(L, 3);
+    RootObject* subject = nullptr;
+    if (lua_gettop(L) >= 4 && !lua_isnil(L, 4)) {
+        subject = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    }
+    bool shift = lua_toboolean(L, 5) != 0;
+    bool clear = lua_toboolean(L, 6) != 0;
+    Ogre::Vector3 location = Ogre::Vector3::ZERO;
+    if (lua_gettop(L) >= 7 && !lua_isnil(L, 7)) {
+        readVector3(L, 7, location);
+    }
+    b->addOrder(dest, t, subject, shift, clear, location);
+    return 0;
+}
+
+static int Character_updateLastTask(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Building* dest = nullptr;
+    if (!lua_isnil(L, 2)) {
+        dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    }
+    TaskType t = (TaskType)luaL_checkinteger(L, 3);
+    RootObject* subject = nullptr;
+    if (lua_gettop(L) >= 4 && !lua_isnil(L, 4)) {
+        subject = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    }
+    Ogre::Vector3 location = Ogre::Vector3::ZERO;
+    if (lua_gettop(L) >= 5 && !lua_isnil(L, 5)) {
+        readVector3(L, 5, location);
+    }
+    b->updateLastTask(dest, t, subject, location);
+    return 0;
+}
+
+static int Character__NV_updateLastTask(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Building* dest = nullptr;
+    if (!lua_isnil(L, 2)) {
+        dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    }
+    TaskType t = (TaskType)luaL_checkinteger(L, 3);
+    RootObject* subject = nullptr;
+    if (lua_gettop(L) >= 4 && !lua_isnil(L, 4)) {
+        subject = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    }
+    Ogre::Vector3 location = Ogre::Vector3::ZERO;
+    if (lua_gettop(L) >= 5 && !lua_isnil(L, 5)) {
+        readVector3(L, 5, location);
+    }
+    b->_NV_updateLastTask(dest, t, subject, location);
+    return 0;
+}
+
+static int Character_playerMoveOrderDefault(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Building* dest = nullptr;
+    if (!lua_isnil(L, 2)) {
+        dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    }
+    RootObject* subject = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    }
+    Ogre::Vector3 location = Ogre::Vector3::ZERO;
+    if (lua_gettop(L) >= 4 && !lua_isnil(L, 4)) {
+        readVector3(L, 4, location);
+    }
+    b->playerMoveOrderDefault(dest, subject, location);
+    return 0;
+}
+
+static int Character__NV_playerMoveOrderDefault(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Building* dest = nullptr;
+    if (!lua_isnil(L, 2)) {
+        dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    }
+    RootObject* subject = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    }
+    Ogre::Vector3 location = Ogre::Vector3::ZERO;
+    if (lua_gettop(L) >= 4 && !lua_isnil(L, 4)) {
+        readVector3(L, 4, location);
+    }
+    b->_NV_playerMoveOrderDefault(dest, subject, location);
+    return 0;
+}
+
+static int Character_destinationInsideWalls(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    RootObject* r = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    lua_pushinteger(L, b->destinationInsideWalls(r));
+    return 1;
+}
+
+static int Character_sendDialogEvent(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* target = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    EventTriggerEnum what = (EventTriggerEnum)luaL_checkinteger(L, 3);
+    lua_pushboolean(L, b->sendDialogEvent(target, what) ? 1 : 0);
+    return 1;
+}
+
+static int Character_sendDialogEventOverride(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* target = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    EventTriggerEnum what = (EventTriggerEnum)luaL_checkinteger(L, 3);
+    bool forceRepeat = lua_toboolean(L, 4) != 0;
+    lua_pushboolean(L, b->sendDialogEventOverride(target, what, forceRepeat) ? 1 : 0);
+    return 1;
+}
+
+static int Character_getCharacterMemoryTag(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    int mem = (int)luaL_checkinteger(L, 3);
+    bool isLongTerm = true;
+    if (lua_gettop(L) >= 4) {
+        isLongTerm = lua_toboolean(L, 4) != 0;
+    }
+    if (isLongTerm) {
+        lua_pushboolean(L, b->getCharacterMemoryTag(who, (CharacterPerceptionTags_LongTerm)mem) ? 1 : 0);
+    } else {
+        lua_pushboolean(L, b->getCharacterMemoryTag(who, (CharacterPerceptionTags_ShortTerm)mem) ? 1 : 0);
+    }
+    return 1;
+}
+
+static int Character__setPlatoon(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    ActivePlatoon* p = nullptr;
+    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2)) {
+        p = checkObject<ActivePlatoon>(L, 2, ActivePlatoonBinding::getMetatableName());
+    }
+    int idnum = (int)luaL_checkinteger(L, 3);
+    b->_setPlatoon(p, idnum);
+    return 0;
+}
+
+static int Character_hitByMeleeAttack(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Damages is nil");
+    Character* who = nullptr;
+    if (lua_gettop(L) >= 4 && !lua_isnil(L, 4)) {
+        who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    }
+    CombatTechniqueData* attack = nullptr;
+    if (lua_gettop(L) >= 5 && !lua_isnil(L, 5)) {
+        attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    }
+    int comboID = (int)luaL_checkinteger(L, 6);
+    HitMaterialType result = b->hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+static int Character_getAttackOriginationDirection(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* attacker = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    CutOrigination result = b->getAttackOriginationDirection(attacker);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+static int Character_convertCutDirection(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    CutDirection cut = (CutDirection)luaL_checkinteger(L, 2);
+    if (lua_isnumber(L, 3)) {
+        CutOrigination from = (CutOrigination)lua_tointeger(L, 3);
+        lua_pushinteger(L, (lua_Integer)b->convertCutDirection(cut, from));
+    } else {
+        Character* attacker = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+        lua_pushinteger(L, (lua_Integer)b->convertCutDirection(cut, attacker));
+    }
+    return 1;
+}
+
+static int Character_notifyTheCampaignOfAnAttack(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* attacker = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->notifyTheCampaignOfAnAttack(attacker);
+    return 0;
+}
+
+static int Character_iShouldntAggravateThisTarget(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* target = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->iShouldntAggravateThisTarget(target) ? 1 : 0);
+    return 1;
+}
+
+static int Character_attackingYou(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* attacker = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool so = lua_toboolean(L, 3) != 0;
+    bool doAwarenessCheck = lua_toboolean(L, 4) != 0;
+    b->attackingYou(attacker, so, doAwarenessCheck);
+    return 0;
+}
+
+static int Character_clearTempEnemyStatus(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* theEnemy = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->clearTempEnemyStatus(theEnemy);
+    return 0;
+}
+
+static int Character_lastSeenInHoursAgo(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lua_pushnumber(L, (lua_Number)b->lastSeenInHoursAgo(c));
+    return 1;
+}
+
+static int Character_haveMetBefore(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* h = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->haveMetBefore(h) ? 1 : 0);
+    return 1;
+}
+
+static int Character_areYouGonnaGetMe(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lua_pushboolean(L, b->areYouGonnaGetMe(who) ? 1 : 0);
+    return 1;
+}
+
+static int Character_checkPlayerOrderForProblems(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    TaskType t = (TaskType)luaL_checkinteger(L, 2);
+    RootObject* subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    lua_pushboolean(L, b->checkPlayerOrderForProblems(t, subject) ? 1 : 0);
+    return 1;
+}
+
+static int Character_breakFollowOrderLoop(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    hand* start = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (start) {
+        lua_pushboolean(L, b->breakFollowOrderLoop(*start) ? 1 : 0);
+    } else {
+        lua_pushboolean(L, 0);
+    }
+    return 1;
+}
+
+static int Character_drawWeapon(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    const char* anim = luaL_checkstring(L, 3);
+    lua_pushboolean(L, b->drawWeapon(item, anim) ? 1 : 0);
+    return 1;
+}
+
+static int Character_setRace(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    GameData* r = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    b->setRace(r);
+    return 0;
+}
+
+static int Character__NV_setRace(lua_State* L)
+{
+    Character* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Character is nil");
+    GameData* r = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    b->_NV_setRace(r);
+    return 0;
 }
 
 int CharacterBinding::gc(lua_State* L)
@@ -5163,6 +5899,66 @@ void CharacterBinding::registerBinding(lua_State* L)
         { "generateWeapon", Character_generateWeapon },
         { "getName", Character_getName },
         { "_NV_getName", Character__NV_getName },
+        { "getAnimationClass", Character_getAnimationClass },
+        { "getAI", Character_getAI },
+        { "getCombatClass", Character_getCombatClass },
+        { "getBlackboard", Character_getBlackboard },
+        { "getOrdersReciever", Character_getOrdersReciever },
+        { "isMySlave", Character_isMySlave },
+        { "isMyFactionsSlave", Character_isMyFactionsSlave },
+        { "changeSlaveOwner", Character_changeSlaveOwner },
+        { "pickupObject", Character_pickupObject },
+        { "getPickedUp", Character_getPickedUp },
+        { "wearingUniformOf", Character_wearingUniformOf },
+        { "_NV_wearingUniformOf", Character__NV_wearingUniformOf },
+        { "startEffect", Character_startEffect },
+        { "stopEffect", Character_stopEffect },
+        { "setEffectBT", Character_setEffectBT },
+        { "teleport", Character_teleport },
+        { "audioValue", Character_audioValue },
+        { "audioEvent", Character_audioEvent },
+        { "getPermajobName", Character_getPermajobName },
+        { "getAABB", Character_getAABB },
+        { "_NV_getAABB", Character__NV_getAABB },
+        { "getAllAttackers", Character_getAllAttackers },
+        { "createInventoryLayout", Character_createInventoryLayout },
+        { "_NV_createInventoryLayout", Character__NV_createInventoryLayout },
+        { "isInAWarCampaign", Character_isInAWarCampaign },
+        { "getStateBroadcast", Character_getStateBroadcast },
+        { "_NV_getStateBroadcast", Character__NV_getStateBroadcast },
+        { "getFormation", Character_getFormation },
+        { "_NV_getFormation", Character__NV_getFormation },
+        { "getEnemyFormation", Character_getEnemyFormation },
+        { "_NV_getEnemyFormation", Character__NV_getEnemyFormation },
+        { "AIDestinationIndoorOutdoorCheck", Character_AIDestinationIndoorOutdoorCheck },
+        { "notifyICanSeeYouSneaking", Character_notifyICanSeeYouSneaking },
+        { "addGoal", Character_addGoal },
+        { "addJob", Character_addJob },
+        { "addOrder", Character_addOrder },
+        { "updateLastTask", Character_updateLastTask },
+        { "_NV_updateLastTask", Character__NV_updateLastTask },
+        { "playerMoveOrderDefault", Character_playerMoveOrderDefault },
+        { "_NV_playerMoveOrderDefault", Character__NV_playerMoveOrderDefault },
+        { "destinationInsideWalls", Character_destinationInsideWalls },
+        { "sendDialogEvent", Character_sendDialogEvent },
+        { "sendDialogEventOverride", Character_sendDialogEventOverride },
+        { "getCharacterMemoryTag", Character_getCharacterMemoryTag },
+        { "_setPlatoon", Character__setPlatoon },
+        { "hitByMeleeAttack", Character_hitByMeleeAttack },
+        { "getAttackOriginationDirection", Character_getAttackOriginationDirection },
+        { "convertCutDirection", Character_convertCutDirection },
+        { "notifyTheCampaignOfAnAttack", Character_notifyTheCampaignOfAnAttack },
+        { "iShouldntAggravateThisTarget", Character_iShouldntAggravateThisTarget },
+        { "attackingYou", Character_attackingYou },
+        { "clearTempEnemyStatus", Character_clearTempEnemyStatus },
+        { "lastSeenInHoursAgo", Character_lastSeenInHoursAgo },
+        { "haveMetBefore", Character_haveMetBefore },
+        { "areYouGonnaGetMe", Character_areYouGonnaGetMe },
+        { "checkPlayerOrderForProblems", Character_checkPlayerOrderForProblems },
+        { "breakFollowOrderLoop", Character_breakFollowOrderLoop },
+        { "drawWeapon", Character_drawWeapon },
+        { "setRace", Character_setRace },
+        { "_NV_setRace", Character__NV_setRace },
         { 0, 0 }
     };
 

@@ -10,6 +10,7 @@
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -1197,6 +1198,8 @@ void PlatoonBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorPtrBinding<Platoon*>::registerBinding(L, "lektor<Platoon*>", PlatoonBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

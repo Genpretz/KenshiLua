@@ -2,10 +2,11 @@
 #include "kenshi/GameData.h"
 #include "GameDataBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/Util/LektorBinding.h"
-#include "Bindings/Util/OgreVectorBinding.h"
-#include "Bindings/Util/StdMapBinding.h"
-#include "Bindings/Util/BoostUnorderedBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Templates/OgreVectorBinding.h"
+#include "Bindings/Templates/StdMapBinding.h"
+#include "Bindings/Templates/BoostUnorderedBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
 #include "Bindings/GameDataContainerBinding.h"
 #include "Bindings/GameDataReferenceBinding.h"
 #include "Bindings/GameSaveStateBinding.h"
@@ -47,68 +48,19 @@ struct LuaCodec<Ogre::vector<GameDataReference>::type>
     }
 };
 
-typedef StdMapBinding<
-    std::string, 
-    GameData::ObjectInstance, 
-    std::less<std::string>, 
-    Ogre::STLAllocator<std::pair<std::string const, GameData::ObjectInstance>, Ogre::GeneralAllocPolicy>
-> InstancesMapBinding;
+// NOTE: StdMapBinding / BoostUnorderedMapBinding now default their Compare/Hash/Pred/Alloc
+// template args to std::less<K> / boost::hash<K> / std::equal_to<K> / Ogre::STLAllocator<...,
+// Ogre::GeneralAllocPolicy> - the convention every field below actually uses in GameData.h.
+// So these aliases now only need to name K and V.
+typedef StdMapBinding<std::string, GameData::ObjectInstance> InstancesMapBinding;
 
-typedef BoostUnorderedMapBinding<
-    std::string, 
-    bool, 
-    boost::hash<std::string>, 
-    std::equal_to<std::string>, 
-    Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy>
-> ActiveValuesMapBinding;
-
-typedef BoostUnorderedMapBinding<
-    std::string, 
-    std::string, 
-    boost::hash<std::string>, 
-    std::equal_to<std::string>, 
-    Ogre::STLAllocator<std::pair<std::string const, std::string>, Ogre::GeneralAllocPolicy>
-> StringMapBinding;
-
-typedef BoostUnorderedMapBinding<
-    std::string, 
-    int, 
-    boost::hash<std::string>, 
-    std::equal_to<std::string>, 
-    Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy>
-> IntMapBinding;
-
-typedef BoostUnorderedMapBinding<
-    std::string, 
-    float, 
-    boost::hash<std::string>, 
-    std::equal_to<std::string>, 
-    Ogre::STLAllocator<std::pair<std::string const, float>, Ogre::GeneralAllocPolicy>
-> FloatMapBinding;
-
-typedef BoostUnorderedMapBinding<
-    std::string, 
-    Ogre::Vector3, 
-    boost::hash<std::string>, 
-    std::equal_to<std::string>, 
-    Ogre::STLAllocator<std::pair<std::string const, Ogre::Vector3>, Ogre::GeneralAllocPolicy>
-> Vector3MapBinding;
-
-typedef BoostUnorderedMapBinding<
-    std::string, 
-    Ogre::Quaternion, 
-    boost::hash<std::string>, 
-    std::equal_to<std::string>, 
-    Ogre::STLAllocator<std::pair<std::string const, Ogre::Quaternion>, Ogre::GeneralAllocPolicy>
-> QuaternionMapBinding;
-
-typedef BoostUnorderedMapBinding<
-    std::string, 
-    Ogre::vector<GameDataReference>::type, 
-    boost::hash<std::string>, 
-    std::equal_to<std::string>, 
-    Ogre::STLAllocator<std::pair<std::string const, Ogre::vector<GameDataReference>::type>, Ogre::GeneralAllocPolicy>
-> ObjectReferencesMapBinding;
+typedef BoostUnorderedMapBinding<std::string, bool> ActiveValuesMapBinding;
+typedef BoostUnorderedMapBinding<std::string, std::string> StringMapBinding;
+typedef BoostUnorderedMapBinding<std::string, int> IntMapBinding;
+typedef BoostUnorderedMapBinding<std::string, float> FloatMapBinding;
+typedef BoostUnorderedMapBinding<std::string, Ogre::Vector3> Vector3MapBinding;
+typedef BoostUnorderedMapBinding<std::string, Ogre::Quaternion> QuaternionMapBinding;
+typedef BoostUnorderedMapBinding<std::string, Ogre::vector<GameDataReference>::type> ObjectReferencesMapBinding;
 
 static GameData* getB(lua_State* L, int idx)
 {

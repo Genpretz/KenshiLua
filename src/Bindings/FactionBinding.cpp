@@ -17,7 +17,7 @@
 #include "Bindings/PlayerInterfaceBinding.h"
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
-#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 #include "Bindings/FactionRelationsBinding.h"
 #include "Bindings/TradeCultureBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
@@ -1364,8 +1364,6 @@ void FactionBinding::registerBinding(lua_State* L)
         genericPropertyIndex, 
         genericPropertyNewIndex
     );
-
-    LektorPtrBinding<Platoon*>::registerBinding(L, "lektor<Platoon*>", PlatoonBinding::getMetatableName());
 
     luaL_getmetatable(L, FactionBinding::getMetatableName());
     lua_newtable(L); // Create __getters table

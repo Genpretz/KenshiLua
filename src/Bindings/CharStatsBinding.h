@@ -148,5 +148,11 @@ public:
     static int setupCombatTechniques(lua_State* L);
     static int getAttacks(lua_State* L);
     static int getBlocks(lua_State* L);
+    static int getStealthTooltip(lua_State* L);
+    static int getAthleticsTooltip(lua_State* L);
+    static int getStatPenaltiesForGUI(lua_State* L);
+    static int _chooseAttacks(lua_State* L);
+    static int stealthXPMultForGUI(lua_State* L);
+    static int printExertionHungerMultTooltip(lua_State* L);
 };
 }

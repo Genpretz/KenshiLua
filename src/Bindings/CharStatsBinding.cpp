@@ -15,10 +15,51 @@
 #include "Bindings/WeaponBinding.h"
 #include "Bindings/EnumBinding.h"
 #include "Bindings/CombatTechniqueDataBinding.h"
-#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
+#include "Bindings/Templates/StdMapBinding.h"
+#include "Bindings/Templates/FitnessSelectorBinding.h"
 
 namespace KenshiLua
 {
+
+// Specialization of LuaCodec for WeatherAffecting enum
+template <>
+struct LuaCodec<WeatherAffecting>
+{
+    static void push(lua_State* L, WeatherAffecting val, const char* meta)
+    {
+        lua_pushinteger(L, (lua_Integer)val);
+    }
+
+    static WeatherAffecting read(lua_State* L, int idx, const char* meta)
+    {
+        return (WeatherAffecting)luaL_checkinteger(L, idx);
+    }
+};
+
+// Map bindings
+// WeatherProtectionsMapBinding - key is WeatherAffecting, confirmed to use standard Ogre::GeneralAllocPolicy.
+typedef StdMapBinding<WeatherAffecting, float> WeatherProtectionsMapBinding;
+
+// CharStats::bonusRaces (CharStats.h) - key is GameData*, confirmed to use the
+// standard Ogre::GeneralAllocPolicy convention, so this collapses to K,V.
+// This map is owned by CharStats (not GameData - GameData* is only its key
+// type), so its typedef, getter/setter, and registerBinding call all live here.
+typedef StdMapBinding<GameData*, float> BonusRacesMapBinding;
+
+
+
+static int OwnedStringPair_gc(lua_State* L)
+{
+    void** ud = (void**)lua_touserdata(L, 1);
+    if (ud && *ud)
+    {
+        delete (StringPair*)*ud;
+        *ud = nullptr;
+    }
+    return 0;
+}
 
 static CharStats* getB(lua_State* L, int idx)
 {
@@ -164,8 +205,7 @@ static int CharStats_get__weatherProtections(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    // TODO: Unsupported type for _weatherProtections (std::map<WeatherAffecting, float, std::less<WeatherAffecting>, Ogre::STLAllocator<std::pair<WeatherAffecting const, float>, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property '_weatherProtections' (type: std::map<WeatherAffecting, float, std::less<WeatherAffecting>, Ogre::STLAllocator<std::pair<WeatherAffecting const, float>, Ogre::GeneralAllocPolicy > >)");
+    return pushObject<WeatherProtectionsMapBinding::MapType>(L, &b->_weatherProtections, "std::map<WeatherAffecting, float>");
 }
 
 static int CharStats_get__strength(lua_State* L)
@@ -828,8 +868,7 @@ static int CharStats_get_bonusRaces(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    // TODO: Unsupported type for bonusRaces (std::map<GameData*, float, std::less<GameData*>, Ogre::STLAllocator<std::pair<GameData*const, float>, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'bonusRaces' (type: std::map<GameData*, float, std::less<GameData*>, Ogre::STLAllocator<std::pair<GameData*const, float>, Ogre::GeneralAllocPolicy > >)");
+    return pushObject<BonusRacesMapBinding::MapType>(L, &b->bonusRaces, "std::map<GameData*, float>");
 }
 
 static int CharStats_get_currentWeaponType(lua_State* L)
@@ -876,14 +915,24 @@ static int CharStats_set_medical(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for medical");
+    if (lua_isnil(L, 2)) {
+        b->medical = nullptr;
+    } else {
+        b->medical = checkObject<MedicalSystem>(L, 2, MedicalSystemBinding::getMetatableName());
+    }
+    return 0;
 }
 
 static int CharStats_set_me(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for me");
+    if (lua_isnil(L, 2)) {
+        b->me = nullptr;
+    } else {
+        b->me = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    }
+    return 0;
 }
 
 static int CharStats_set_athleticsMultiplier(lua_State* L)
@@ -1006,12 +1055,29 @@ static int CharStats_set_skillMultRanged(lua_State* L)
     return 0;
 }
 
-// ToDo
 static int CharStats_set__weatherProtections(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _weatherProtections");
+    if (auto* other = testObject<WeatherProtectionsMapBinding::MapType>(L, 2, "std::map<WeatherAffecting, float>"))
+    {
+        b->_weatherProtections = *other;
+        return 0;
+    }
+    if (lua_istable(L, 2))
+    {
+        b->_weatherProtections.clear();
+        lua_pushnil(L);
+        while (lua_next(L, 2) != 0)
+        {
+            WeatherAffecting key = (WeatherAffecting)luaL_checkinteger(L, -2);
+            float val = (float)luaL_checknumber(L, -1);
+            b->_weatherProtections[key] = val;
+            lua_pop(L, 1);
+        }
+        return 0;
+    }
+    return luaL_error(L, "Expected table or std::map<WeatherAffecting, float> for _weatherProtections");
 }
 
 static int CharStats_set__strength(lua_State* L)
@@ -1670,12 +1736,29 @@ static int CharStats_set_bonusArmourPenetration(lua_State* L)
     return 0;
 }
 
-// ToDo
 static int CharStats_set_bonusRaces(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bonusRaces");
+    if (auto* other = testObject<BonusRacesMapBinding::MapType>(L, 2, "std::map<GameData*, float>"))
+    {
+        b->bonusRaces = *other;
+        return 0;
+    }
+    if (lua_istable(L, 2))
+    {
+        b->bonusRaces.clear();
+        lua_pushnil(L);
+        while (lua_next(L, 2) != 0)
+        {
+            GameData* key = checkObject<GameData>(L, -2, GameDataBinding::getMetatableName());
+            float val = (float)luaL_checknumber(L, -1);
+            b->bonusRaces[key] = val;
+            lua_pop(L, 1);
+        }
+        return 0;
+    }
+    return luaL_error(L, "Expected table or std::map<GameData*, float> for bonusRaces");
 }
 
 static int CharStats_set_currentWeaponType(lua_State* L)
@@ -1690,7 +1773,7 @@ static int CharStats_set_pCurrentWeaponSkill(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    float val = luaL_checknumber(L, 2);
+    float val = (float)luaL_checknumber(L, 2);
     b->pCurrentWeaponSkill = &val;
     return 0;
 }
@@ -3123,6 +3206,81 @@ int CharStatsBinding::getBlocks(lua_State* L)
     return pushObject<lektor<CombatTechniqueData*>>(L, pBlocks, "lektor<CombatTechniqueData*>");
 }
 
+int CharStatsBinding::getStealthTooltip(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, "lektor<StringPair>");
+    b->getStealthTooltip(dats);
+    return 0;
+}
+
+int CharStatsBinding::getAthleticsTooltip(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, "lektor<StringPair>");
+    b->getAthleticsTooltip(dats);
+    return 0;
+}
+
+int CharStatsBinding::getStatPenaltiesForGUI(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    std::string statName = luaL_checkstring(L, 2);
+    StatsEnumerated stat = (StatsEnumerated)luaL_checkinteger(L, 3);
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 4, "lektor<StringPair>");
+    if (!dats) return luaL_error(L, "lektor<StringPair> is nil");
+    bool result = b->getStatPenaltiesForGUI(statName, stat, *dats);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int CharStatsBinding::_chooseAttacks(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    FitnessSelector<CombatTechniqueData*>* possibleAttacks = checkObject<FitnessSelector<CombatTechniqueData*>>(L, 2, "KenshiLua.FitnessSelector_CombatTechniqueData");
+    if (!possibleAttacks) return luaL_error(L, "FitnessSelector<CombatTechniqueData*> is nil");
+    float range = (float)luaL_checknumber(L, 3);
+    float weaponReach = (float)luaL_checknumber(L, 4);
+    CombatTechniqueData* lastAttack = nullptr;
+    if (lua_gettop(L) >= 5 && !lua_isnil(L, 5)) {
+        lastAttack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    }
+    bool opponentIsStationary = lua_toboolean(L, 6) != 0;
+    bool skipMedicals = lua_toboolean(L, 7) != 0;
+    WeaponCategory _weaponType = (WeaponCategory)luaL_checkinteger(L, 8);
+    float _weaponSkill = (float)luaL_checknumber(L, 9);
+    
+    b->_chooseAttacks(*possibleAttacks, range, weaponReach, lastAttack, opponentIsStationary, skipMedicals, _weaponType, _weaponSkill);
+    return 0;
+}
+
+int CharStatsBinding::stealthXPMultForGUI(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    StringPair result = b->stealthXPMultForGUI();
+    StringPair* copy = new StringPair(result);
+    
+    void** ud = (void**)lua_newuserdata(L, sizeof(void*));
+    *ud = (void*)copy;
+    luaL_getmetatable(L, "KenshiLua.StringPair.Owned");
+    lua_setmetatable(L, -2);
+    return 1;
+}
+
+int CharStatsBinding::printExertionHungerMultTooltip(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, "lektor<StringPair>");
+    b->printExertionHungerMultTooltip(dats);
+    return 0;
+}
+
 void CharStatsBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -3263,6 +3421,12 @@ void CharStatsBinding::registerBinding(lua_State* L)
         { "_convertWeaponWeightToBluntMultiplier", CharStatsBinding::_convertWeaponWeightToBluntMultiplier },
         { "_convertBluntMultiplierToWeaponWeight", CharStatsBinding::_convertBluntMultiplierToWeaponWeight },
         { "setupCombatTechniques", CharStatsBinding::setupCombatTechniques },
+        { "getStealthTooltip", CharStatsBinding::getStealthTooltip },
+        { "getAthleticsTooltip", CharStatsBinding::getAthleticsTooltip },
+        { "getStatPenaltiesForGUI", CharStatsBinding::getStatPenaltiesForGUI },
+        { "_chooseAttacks", CharStatsBinding::_chooseAttacks },
+        { "stealthXPMultForGUI", CharStatsBinding::stealthXPMultForGUI },
+        { "printExertionHungerMultTooltip", CharStatsBinding::printExertionHungerMultTooltip },
         { 0, 0 }
     };
 
@@ -3708,8 +3872,16 @@ void CharStatsBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    // Register CombatTechniqueData lektor binding
-    LektorPtrBinding<CombatTechniqueData*>::registerBinding(L, "lektor<CombatTechniqueData*>", CombatTechniqueDataBinding::getMetatableName());
+    // Register owned StringPair metatable
+    static const luaL_Reg ownedMeta[] = {
+        { "__gc",       OwnedStringPair_gc },
+        { 0, 0 }
+    };
+    registerClass(L, "KenshiLua.StringPair.Owned", ownedMeta, nullptr, genericPropertyIndex, genericPropertyNewIndex);
+
+    WeatherProtectionsMapBinding::registerBinding(L, "std::map<WeatherAffecting, float>");
+    BonusRacesMapBinding::registerBinding(L, "std::map<GameData*, float>", GameDataBinding::getMetatableName());
+
 
     // Register global class table for static methods
     lua_newtable(L);
