@@ -1,13 +1,12 @@
 #include "pch.h"
 #include "KenshiLua_ScriptEditor.h"
-#include "Gui/GuiHelpers.h"
+#include "Gui/GuiManager.h"
 #include "Logger.h"
 #include "Config.h"
 #include "Lua/LuaState.h"
 #include <fstream>
 #include <sstream>
-#include <Windows.h>
-#include <commdlg.h>
+
 
 #include <kenshi/InputHandler.h>
 
@@ -25,43 +24,7 @@ extern "C" {
 namespace KenshiLua
 {
 
-	// ---------------------------------------------------------------------------
-	// File Dialogs (local helpers)
-	// ---------------------------------------------------------------------------
 
-	static std::string OpenFileDialog(const std::string& currentPath)
-	{
-		char filename[MAX_PATH] = "";
-		OPENFILENAMEA ofn = {};
-		ofn.lStructSize = sizeof(ofn);
-		ofn.lpstrFilter = "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0";
-		ofn.lpstrFile = filename;
-		ofn.nMaxFile = MAX_PATH;
-		ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
-		ofn.lpstrDefExt = "lua";
-		ofn.lpstrTitle = "Open Lua Script";
-
-		return GetOpenFileNameA(&ofn) ? std::string(filename) : "";
-	}
-
-	static std::string SaveFileDialog(const std::string& currentPath)
-	{
-		char filename[MAX_PATH] = "";
-
-		if (!currentPath.empty())
-			strncpy_s(filename, currentPath.c_str(), MAX_PATH - 1);
-
-		OPENFILENAMEA ofn = {};
-		ofn.lStructSize = sizeof(ofn);
-		ofn.lpstrFilter = "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0";
-		ofn.lpstrFile = filename;
-		ofn.nMaxFile = MAX_PATH;
-		ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
-		ofn.lpstrDefExt = "lua";
-		ofn.lpstrTitle = "Save Lua Script";
-
-		return GetSaveFileNameA(&ofn) ? std::string(filename) : "";
-	}
 
 	// ---------------------------------------------------------------------------
 	// KenshiLua_ScriptEditor (UI panel) Implementation
@@ -176,8 +139,11 @@ namespace KenshiLua
 					chunkName = "@" + m_currentFilePath;
 			}
 
+			lua_pushcfunction(L, LuaState::genericTraceback);
+			int tracebackIdx = lua_gettop(L);
+
 			if (luaL_loadbuffer(L, code.c_str(), code.size(), chunkName.c_str()) != LUA_OK ||
-				lua_pcall(L, 0, LUA_MULTRET, 0) != LUA_OK)
+				lua_pcall(L, 0, LUA_MULTRET, tracebackIdx) != LUA_OK)
 			{
 				const char* err = lua_tostring(L, -1);
 				std::string e = err ? err : "(error)";
@@ -186,7 +152,7 @@ namespace KenshiLua
 			}
 			else
 			{
-				int nres = lua_gettop(L) - top;
+				int nres = lua_gettop(L) - tracebackIdx;
 				if (nres > 0)
 				{
 					for (int i = 1; i <= nres; ++i)
@@ -210,7 +176,7 @@ namespace KenshiLua
 
 	void KenshiLua_ScriptEditor::onOpenClicked(MyGUI::Widget*)
 	{
-		std::string path = OpenFileDialog(m_currentFilePath);
+		std::string path = GuiHelpers::openFileDialog("Open Lua Script", "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0", "lua", m_currentFilePath);
 		if (path.empty())
 			return;
 
@@ -236,7 +202,7 @@ namespace KenshiLua
 			return;
 
 		std::string path = m_currentFilePath.empty()
-			? SaveFileDialog(m_currentFilePath)
+			? GuiHelpers::saveFileDialog("Save Lua Script", "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0", "lua", "", m_currentFilePath)
 			: m_currentFilePath;
 
 		if (path.empty())
@@ -250,7 +216,7 @@ namespace KenshiLua
 		if (!mScriptEditor_InputBoxEditBox)
 			return;
 
-		std::string path = SaveFileDialog(m_currentFilePath);
+		std::string path = GuiHelpers::saveFileDialog("Save Lua Script", "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0", "lua", "", m_currentFilePath);
 
 		if (path.empty())
 			return;
@@ -281,193 +247,6 @@ namespace KenshiLua
 
 		appendOutput("Saved: " + path + "\n");
 		return true;
-	}
-
-	// ---------------------------------------------------------------------------
-	// ScriptEditor (Singleton Manager) Implementation
-	// ---------------------------------------------------------------------------
-
-	static ScriptEditor* s_instance = 0;
-
-	static int lua_customPrint(lua_State* L)
-	{
-		int n = lua_gettop(L);
-		std::string msg;
-		for (int i = 1; i <= n; i++) {
-			if (i > 1) msg += "\t";
-			size_t len = 0;
-			const char* s = luaL_tolstring(L, i, &len);
-			if (s) {
-				msg.append(s, len);
-			}
-			lua_pop(L, 1);
-		}
-		msg += "\n";
-		ScriptEditor::get().appendOutput(msg);
-		return 0;
-	}
-
-	ScriptEditor& ScriptEditor::get()
-	{
-		static ScriptEditor inst;
-		s_instance = &inst;
-		return inst;
-	}
-
-	ScriptEditor::ScriptEditor()
-		: m_luaState(nullptr)
-		, m_pendingLuaState(nullptr)
-		, m_initialized(false)
-		, m_visible(false)
-		, m_hub(nullptr)
-		, m_editor(nullptr)
-		, m_console(nullptr)
-		, m_logViewer(nullptr)
-		, m_scriptManager(nullptr)
-		, m_settings(nullptr)
-	{
-	}
-
-	ScriptEditor::~ScriptEditor()
-	{
-		shutdown();
-	}
-
-	void ScriptEditor::requestInitialize(LuaState* luaState)
-	{
-		if (m_initialized || m_pendingLuaState != nullptr)
-		{
-			logToFile("ScriptEditor: Already initialized or initialization pending - ignoring request");
-			return;
-		}
-		m_pendingLuaState = luaState;
-
-		MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
-		if (gui)
-		{
-			gui->eventFrameStart += MyGUI::newDelegate(this, &ScriptEditor::initFrameHandler);
-			logToFile("ScriptEditor: Subscribed to eventFrameStart");
-		}
-		else
-		{
-			logToFile("ScriptEditor: MyGUI singleton not yet available in requestInitialize");
-		}
-	}
-
-	void ScriptEditor::initFrameHandler(float)
-	{
-		if (m_initialized)
-			return;
-
-		MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
-		if (!gui)
-			return;
-
-		MyGUI::WidgetPtr versionText = GuiHelpers::FindWidget(gui->getEnumerator(), "VersionText");
-		if (versionText == nullptr)
-			return;
-
-		gui->eventFrameStart -=
-			MyGUI::newDelegate(this, &ScriptEditor::initFrameHandler);
-
-		//logToFile("Initializing Layout Editor UI Suite");
-
-		m_luaState = m_pendingLuaState;
-
-		if (m_luaState)
-		{
-			lua_State* L = m_luaState->getState();
-			lua_pushcfunction(L, lua_customPrint);
-			lua_setglobal(L, "print");
-		}
-
-		MyGUI::ResourceManager* res = MyGUI::ResourceManager::getInstancePtr();
-		if (!res->load("Kenshi_ScriptEditor_EditBox.xml"))
-			logToFile("Kenshi_ScriptEditor_EditBox.xml not found.");
-
-		try
-		{
-			m_hub = new KenshiLua_Hub();
-			m_editor = new KenshiLua_ScriptEditor();
-			m_console = new KenshiLua_Console();
-			m_logViewer = new KenshiLua_LogViewer();
-			m_scriptManager = new KenshiLua_ScriptManager();
-			m_settings = new KenshiLua_Settings();
-
-			m_initialized = true;
-			//logToFile("Layout Editor UI Suite successfully initialized.");
-		}
-		catch (const std::exception& e)
-		{
-			logToFilef("ERROR during UI initialization: %s", e.what());
-		}
-		catch (...)
-		{
-			logToFile("ERROR during UI initialization (unknown exception)");
-		}
-	}
-
-	void ScriptEditor::shutdown()
-	{
-		m_initialized = false;
-		delete m_hub; m_hub = nullptr;
-		delete m_editor; m_editor = nullptr;
-		delete m_console; m_console = nullptr;
-		delete m_logViewer; m_logViewer = nullptr;
-		delete m_scriptManager; m_scriptManager = nullptr;
-		delete m_settings; m_settings = nullptr;
-	}
-
-	void ScriptEditor::toggle()
-	{
-		if (m_initialized && m_hub)
-		{
-			setVisible(!m_hub->getVisible());
-		}
-	}
-
-	void ScriptEditor::setVisible(bool visible)
-	{
-		if (m_hub)
-		{
-			m_hub->setVisible(visible);
-			m_visible = visible;
-		}
-	}
-
-	bool ScriptEditor::isInitialized() const
-	{
-		return m_initialized;
-	}
-
-	void ScriptEditor::checkKeyboardShortcut(OIS::KeyCode key, InputHandler* thisptr)
-	{
-		const Config& conf = Config::get();
-		if (key == conf.getToggleGuiKey() &&
-			thisptr->ctrl == conf.isToggleGuiCtrl() &&
-			thisptr->shift == conf.isToggleGuiShift() &&
-			thisptr->alt == conf.isToggleGuiAlt())
-		{
-			toggle();
-		}
-	}
-
-	void ScriptEditor::appendOutput(const std::string& text)
-	{
-		logToFile(text);
-
-		if (m_editor && m_editor->getVisible())
-			m_editor->appendOutput(text);
-		if (m_console && m_console->getVisible())
-			m_console->appendOutput(text);
-	}
-
-	void ScriptEditor::clearOutput()
-	{
-		if (m_editor)
-			m_editor->clearOutput();
-		if (m_console)
-			m_console->clear();
 	}
 
 } // KenshiLua

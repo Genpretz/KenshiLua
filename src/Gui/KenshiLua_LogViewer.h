@@ -33,9 +33,6 @@ namespace KenshiLua
 		MyGUI::Button* mLogViewer_ClearButtonButton;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_LogViewer, mLogViewer_OutputBoxEditBox, "LogViewer_OutputBox");
 		MyGUI::EditBox* mLogViewer_OutputBoxEditBox;
-
-		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_LogViewer, mLogViewer_AutoScrollToggleButton, "LogViewer_AutoScrollToggle");
-		MyGUI::Button* mLogViewer_AutoScrollToggleButton;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_LogViewer, mLogViewer_SaveLogButtonButton, "LogViewer_SaveLogButton");
 		MyGUI::Button* mLogViewer_SaveLogButtonButton;
 	//%LE Widget_Declaration list end

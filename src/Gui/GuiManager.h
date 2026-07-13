@@ -36,6 +36,19 @@ namespace KenshiLua
             const std::string& name,
             bool multiLine,
             bool readOnly);
+
+        std::string openFileDialog(
+            const std::string& title,
+            const std::string& filter,
+            const std::string& defaultExt,
+            const std::string& currentPath = "");
+
+        std::string saveFileDialog(
+            const std::string& title,
+            const std::string& filter,
+            const std::string& defaultExt,
+            const std::string& defaultFilename = "",
+            const std::string& currentPath = "");
     } // namespace GuiHelpers
 
     class LuaState;
@@ -46,12 +59,13 @@ namespace KenshiLua
     class KenshiLua_ScriptManager;
     class KenshiLua_Settings;
 
-    class ScriptEditor
+    class GuiManager
     {
     public:
-        static ScriptEditor& get();
+        static GuiManager& get();
 
         void requestInitialize(LuaState* luaState);
+        void updateLuaState(LuaState* luaState);
         void shutdown();
         void toggle();
         void setVisible(bool visible);
@@ -69,10 +83,10 @@ namespace KenshiLua
         KenshiLua_Settings* getSettings() const { return m_settings; }
 
     private:
-        ScriptEditor();
-        ~ScriptEditor();
-        ScriptEditor(const ScriptEditor&);
-        ScriptEditor& operator=(const ScriptEditor&);
+        GuiManager();
+        ~GuiManager();
+        GuiManager(const GuiManager&);
+        GuiManager& operator=(const GuiManager&);
 
         void initFrameHandler(float frameTime);
 

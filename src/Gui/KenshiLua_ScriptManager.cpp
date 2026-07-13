@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "KenshiLua_ScriptManager.h"
 #include "KenshiLua_ScriptEditor.h"
-#include "Gui/GuiHelpers.h"
+#include "Gui/GuiManager.h"
 #include "Logger.h"
 #include "ScriptLoader.h"
 #include "Lua/LuaState.h"
@@ -19,38 +19,22 @@
 
 namespace KenshiLua
 {
-
-	static bool endsWithCaseInsensitive(const std::string& s, const std::string& suffix)
-	{
-		if (s.size() < suffix.size()) return false;
-		for (size_t i = 0; i < suffix.size(); ++i) {
-			char a = s[s.size() - suffix.size() + i];
-			char b = suffix[i];
-			if (a >= 'A' && a <= 'Z') a = (char)(a + ('a' - 'A'));
-			if (b >= 'A' && b <= 'Z') b = (char)(b + ('a' - 'A'));
-			if (a != b) return false;
-		}
-		return true;
-	}
-
 	KenshiLua_ScriptManager::KenshiLua_ScriptManager(MyGUI::Widget* _parent)
 		: m_selectedIndex(-1)
 	{
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_ScriptManagerRootWindow = mMainWidget->castType<MyGUI::Window>(false);
-		logToFileDebugf("ScriptManager initialization: mMainWidget=%p, mKenshiLua_ScriptManagerRootWindow=%p", mMainWidget, mKenshiLua_ScriptManagerRootWindow);
 
 		// Configure MultiListBox columns
 		if (mScriptManager_ScriptListMultiList)
 		{
 			mScriptManager_ScriptListMultiList->addColumn("Filename", 250);
-			mScriptManager_ScriptListMultiList->addColumn("Location", 250);
-			mScriptManager_ScriptListMultiList->addColumn("Active", 90);
-			mScriptManager_ScriptListMultiList->setColumnResizingPolicyAt(0, MyGUI::ResizingPolicy::Auto);
-			mScriptManager_ScriptListMultiList->setColumnResizingPolicyAt(1, MyGUI::ResizingPolicy::Auto);
+			mScriptManager_ScriptListMultiList->addColumn("Mod", 250);
+			mScriptManager_ScriptListMultiList->addColumn("  Active  ", 90);
+			mScriptManager_ScriptListMultiList->setColumnResizingPolicyAt(0, MyGUI::ResizingPolicy::Fill);
+			mScriptManager_ScriptListMultiList->setColumnResizingPolicyAt(1, MyGUI::ResizingPolicy::Fill);
 			mScriptManager_ScriptListMultiList->setColumnResizingPolicyAt(2, MyGUI::ResizingPolicy::Auto);
-			mScriptManager_ScriptListMultiList->eventListChangePosition += MyGUI::newDelegate(this, &KenshiLua_ScriptManager::onListSelectChanged);
-			
+			mScriptManager_ScriptListMultiList->eventListChangePosition += MyGUI::newDelegate(this, &KenshiLua_ScriptManager::onListSelectChanged);	
 		}
 
 		if (mScriptManager_StartButtonButton)
@@ -95,79 +79,40 @@ namespace KenshiLua
 		m_scripts.clear();
 		m_selectedIndex = -1;
 
-		if (!::ou)
+		ScriptLoader::get().discover();
+		const std::vector<LoadedScript>& loaderScripts = ScriptLoader::get().scripts();
+
+		for (size_t i = 0; i < loaderScripts.size(); ++i)
 		{
-			logToFile("Error: ScriptManager::refreshList: GameWorld not available");
-			return;
-		}
+			const LoadedScript& ls = loaderScripts[i];
+			ScriptInfo script;
+			script.modName = ls.modName;
+			script.modPath = ls.modPath;
+			script.absolutePath = ls.absolutePath;
+			script.relativePath = ls.relativePath;
+			script.chunkName = ls.chunkName;
 
-		std::set<std::string> activeModNames;
-		for (int i = 0; i < (int)::ou->activeMods.size(); ++i)
-		{
-			if (::ou->activeMods[i])
-				activeModNames.insert(::ou->activeMods[i]->name);
-		}
+			// isActiveMod indicates if it auto-runs on startup/reload (i.e. is under scripts/init/)
+			script.isActiveMod = (ls.relativePath.size() >= 13 &&
+				_strnicmp(ls.relativePath.c_str(), "scripts/init/", 13) == 0);
 
-		int n = (int)::ou->availabelModsOrderedList.size();
-		for (int i = 0; i < n; ++i)
-		{
-			ModInfo* mi = ::ou->availabelModsOrderedList[i];
-			if (!mi || mi->path.empty()) continue;
-
-			namespace fs = boost::filesystem;
-			fs::path modRoot(mi->path);
-			fs::path initDir = modRoot / "scripts" / "init";
-			boost::system::error_code ec;
-			if (!fs::exists(initDir, ec) || !fs::is_directory(initDir, ec)) continue;
-
-			fs::recursive_directory_iterator rit(initDir, ec);
-			fs::recursive_directory_iterator end;
-			for (; !ec && rit != end; rit.increment(ec))
+			if (ls.loaded)
 			{
-				if (ec) break;
-				if (!fs::is_regular_file(rit->status())) continue;
-
-				std::string absPath = rit->path().string();
-				if (!endsWithCaseInsensitive(absPath, ".lua")) continue;
-
-				ScriptInfo script;
-				script.modName = mi->name;
-				script.modPath = mi->path;
-				script.absolutePath = absPath;
-
-				if (absPath.size() > mi->path.size() + 1 &&
-					absPath.compare(0, mi->path.size(), mi->path) == 0)
-				{
-					script.relativePath = absPath.substr(mi->path.size() + 1);
-				}
-				else
-				{
-					script.relativePath = absPath;
-				}
-
-				for (size_t j = 0; j < script.relativePath.size(); ++j)
-				{
-					if (script.relativePath[j] == '\\') script.relativePath[j] = '/';
-				}
-
-				script.chunkName = "@" + mi->name + "/" + script.relativePath;
-				script.isActiveMod = (activeModNames.find(mi->name) != activeModNames.end());
-				script.isRunning = false;
-
-				const std::vector<LoadedScript>& loadedScripts = ScriptLoader::get().scripts();
-				for (size_t k = 0; k < loadedScripts.size(); ++k)
-				{
-					const LoadedScript& ls = loadedScripts[k];
-					if (ls.absolutePath == absPath && ls.loaded)
-					{
-						script.isRunning = true;
-						script.lastError = ls.lastError;
-						break;
-					}
-				}
-
-				m_scripts.push_back(script);
+				script.isRunning = true;
+				script.lastError.clear();
 			}
+			else if (!ls.lastError.empty())
+			{
+				script.isRunning = true;
+				script.lastError = ls.lastError;
+			}
+			else
+			{
+				script.isRunning = false;
+				script.lastError.clear();
+			}
+
+			m_scripts.push_back(script);
 		}
 
 		refreshListUI();
@@ -272,6 +217,7 @@ namespace KenshiLua
 		if (g_luaState)
 		{
 			std::string err;
+			ScriptLoader::get().removeStoppedScript(script.absolutePath);
 			bool success = ScriptLoader::get().runScriptSandboxed(g_luaState->getState(), script.absolutePath, script.chunkName, &err);
 			if (success)
 			{
@@ -294,13 +240,20 @@ namespace KenshiLua
 
 	void KenshiLua_ScriptManager::onStopSelectedClicked(MyGUI::Widget*)
 	{
+		if (m_selectedIndex >= 0 && m_selectedIndex < (int)m_scripts.size())
+		{
+			std::string stoppedPath = m_scripts[m_selectedIndex].absolutePath;
+			ScriptLoader::get().addStoppedScript(stoppedPath);
+			logToFile("ScriptManager: Stopping script: " + stoppedPath);
+		}
+
 		logToFile("ScriptManager: Restarting KenshiLua runtime to unload scripts...");
 		void* hModule = Plugin::get().getDllModule();
 		Plugin::get().shutdown();
 		Plugin::get().initialize(hModule);
 		Plugin::get().start();
 
-		auto mgr = ScriptEditor::get().getScriptManager();
+		auto mgr = GuiManager::get().getScriptManager();
 		if (mgr)
 		{
 			mgr->setVisible(true);

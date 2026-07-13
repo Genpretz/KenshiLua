@@ -1,35 +1,35 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Window" skin="Kenshi_WindowCX" position="0 0 260 355" align="Default" layer="Window" name="Root">
+    <Widget type="Window" skin="Kenshi_WindowCX" position_real="0 0 0.101563 0.221875" align="Default" layer="Window" name="Root">
         <Property key="Caption" value="KENSHILUA"/>
         <Property key="Movable" value="false"/>
         <Property key="Snap" value="true"/>
         <Property key="TextAlign" value="Center"/>
-        <Widget type="TextBox" skin="Kenshi_TextboxPaintedText_Large" position="95 270 135 15" align="Left Top" name="HubVersionLabel">
-            <Property key="Caption" value="KenshiLua v0.2.1"/>
+        <Widget type="TextBox" skin="Kenshi_TextboxPaintedText" position_real="0.0787402 0.854839 0.822835 0.0967742" align="Left Top" name="HubVersionLabel">
+            <Property key="Caption" value="KenshiLua 0.2.1"/>
             <Property key="TextAlign" value="Right Bottom"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position="15 10 220 45" align="Left Top" name="HubBtn_ScriptManager">
+        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.0511811 0.0322581 0.866142 0.13871" align="Left Top" name="HubBtn_ScriptManager">
             <Property key="Caption" value="SCRIPT MANAGER"/>
             <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
             <Property key="TextAlign" value="Center"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position="15 60 220 45" align="Left Top" name="HubBtn_ScriptEditor">
+        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.0511811 0.190323 0.866142 0.13871" align="Left Top" name="HubBtn_ScriptEditor">
             <Property key="Caption" value="SCRIPT EDITOR"/>
             <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
             <Property key="TextAlign" value="Center"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position="15 110 220 45" align="Left Top" name="HubBtn_Console">
+        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.0511811 0.354839 0.866142 0.13871" align="Left Top" name="HubBtn_Console">
             <Property key="Caption" value="CONSOLE"/>
             <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
             <Property key="TextAlign" value="Center"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position="15 160 220 45" align="Left Top" name="HubBtn_LogViewer">
+        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.0511811 0.516129 0.866142 0.13871" align="Left Top" name="HubBtn_LogViewer">
             <Property key="Caption" value="LOG VIEWER"/>
             <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
             <Property key="TextAlign" value="Center"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position="15 210 220 45" align="Left Top" name="HubBtn_Settings">
+        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.0511811 0.674194 0.866142 0.13871" align="Left Top" name="HubBtn_Settings">
             <Property key="Caption" value="SETTINGS"/>
             <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
             <Property key="TextAlign" value="Center"/>

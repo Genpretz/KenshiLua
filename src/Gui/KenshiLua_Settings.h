@@ -20,6 +20,18 @@ namespace KenshiLua
 	private:
 		void onCancelClicked(MyGUI::Widget* sender);
 		void onWindowButtonPressed(MyGUI::Window* sender, const std::string& name);
+		void onSaveClicked(MyGUI::Widget* sender);
+		void onDefaultsClicked(MyGUI::Widget* sender);
+		void onKeyBindClicked(MyGUI::Widget* sender);
+		void onKeyButtonPressed(MyGUI::Widget* sender, MyGUI::KeyCode key, MyGUI::Char ch);
+		void onStartMinimizedClicked(MyGUI::Widget* sender);
+
+		bool m_tempToggleCtrl;
+		bool m_tempToggleShift;
+		bool m_tempToggleAlt;
+		OIS::KeyCode m_tempToggleKey;
+		bool m_isCapturingKeybind;
+
 	//%LE Widget_Declaration list start
 		MyGUI::Window* mKenshiLua_SettingsRootWindow;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Settings, mSettings_DefaultsButtonButton, "Settings_DefaultsButton");
@@ -28,6 +40,12 @@ namespace KenshiLua
 		MyGUI::Button* mSettings_CancelButtonButton;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Settings, mSettings_SaveButtonButton, "Settings_SaveButton");
 		MyGUI::Button* mSettings_SaveButtonButton;
+		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Settings, mKeyBind_ButtonButton, "KeyBind_Button");
+		MyGUI::Button* mKeyBind_ButtonButton;
+		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Settings, mLogLevel_ComboBoxComboBox, "LogLevel_ComboBox");
+		MyGUI::ComboBox* mLogLevel_ComboBoxComboBox;
+		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Settings, mStartMinimized_TickBoxButton, "StartMinimized_TickBox");
+		MyGUI::Button* mStartMinimized_TickBoxButton;
 	//%LE Widget_Declaration list end
 	};
 

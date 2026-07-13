@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "KenshiLua_LogViewer.h"
-#include "Gui/GuiHelpers.h"
+#include "Gui/GuiManager.h"
 #include "Logger.h"
 
 #include <Windows.h>
@@ -10,27 +10,10 @@
 
 namespace KenshiLua
 {
-
-	static std::string SaveFileDialog()
-	{
-		char filename[MAX_PATH] = "kenshilua_log.txt";
-		OPENFILENAMEA ofn = {};
-		ofn.lStructSize = sizeof(ofn);
-		ofn.lpstrFilter = "Text Files (*.txt)\0*.txt\0Log Files (*.log)\0*.log\0All Files (*.*)\0*.*\0";
-		ofn.lpstrFile = filename;
-		ofn.nMaxFile = MAX_PATH;
-		ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
-		ofn.lpstrDefExt = "txt";
-		ofn.lpstrTitle = "Save Log Copy";
-
-		return GetSaveFileNameA(&ofn) ? std::string(filename) : "";
-	}
-
 	KenshiLua_LogViewer::KenshiLua_LogViewer(MyGUI::Widget* _parent)
 	{
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_LogViewerRootWindow = mMainWidget->castType<MyGUI::Window>(false);
-		logToFileDebugf("LogViewer initialization: mMainWidget=%p, mKenshiLua_LogViewerRootWindow=%p", mMainWidget, mKenshiLua_LogViewerRootWindow);
 
 		if (mLogViewer_ClearButtonButton)
 			mLogViewer_ClearButtonButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_LogViewer::onClearClicked);
@@ -114,7 +97,7 @@ namespace KenshiLua
 		if (!mLogViewer_OutputBoxEditBox)
 			return;
 
-		std::string path = SaveFileDialog();
+		std::string path = GuiHelpers::saveFileDialog("Save Log Copy", "Text Files (*.txt)\0*.txt\0Log Files (*.log)\0*.log\0All Files (*.*)\0*.*\0", "txt", "kenshilua_log.txt");
 		if (path.empty())
 			return;
 

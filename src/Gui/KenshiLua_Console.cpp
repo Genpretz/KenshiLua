@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "KenshiLua_Console.h"
-#include "Gui/GuiHelpers.h"
+#include "Gui/GuiManager.h"
 #include "Logger.h"
 #include "Lua/LuaState.h"
 
@@ -110,17 +110,21 @@ namespace KenshiLua
 			lua_State* L = g_luaState->getState();
 			int top = lua_gettop(L);
 
+			// Push traceback handler for both paths
+			lua_pushcfunction(L, LuaState::genericTraceback);
+			int tracebackIdx = lua_gettop(L);
+
 			// 1. Try running as "return [statement]" first
 			std::string evalCode = "return " + code;
 			if (luaL_loadbuffer(L, evalCode.c_str(), evalCode.size(), "<console>") == LUA_OK)
 			{
-				if (lua_pcall(L, 0, LUA_MULTRET, 0) == LUA_OK)
+				if (lua_pcall(L, 0, LUA_MULTRET, tracebackIdx) == LUA_OK)
 				{
-					int nres = lua_gettop(L) - top;
+					int nres = lua_gettop(L) - tracebackIdx;
 					for (int i = 1; i <= nres; ++i)
 					{
 						size_t len = 0;
-						const char* res = luaL_tolstring(L, top + i, &len);
+						const char* res = luaL_tolstring(L, tracebackIdx + i, &len);
 						if (res)
 						{
 							appendOutput(std::string(res, len) + "\n");
@@ -134,8 +138,11 @@ namespace KenshiLua
 
 			// 2. If eval failed, fallback to normal block execution
 			lua_settop(L, top);
+			lua_pushcfunction(L, LuaState::genericTraceback);
+			tracebackIdx = lua_gettop(L);
+
 			if (luaL_loadbuffer(L, code.c_str(), code.size(), "<console>") != LUA_OK ||
-				lua_pcall(L, 0, LUA_MULTRET, 0) != LUA_OK)
+				lua_pcall(L, 0, LUA_MULTRET, tracebackIdx) != LUA_OK)
 			{
 				const char* err = lua_tostring(L, -1);
 				std::string e = err ? err : "(error)";
@@ -144,11 +151,11 @@ namespace KenshiLua
 			}
 			else
 			{
-				int nres = lua_gettop(L) - top;
+				int nres = lua_gettop(L) - tracebackIdx;
 				for (int i = 1; i <= nres; ++i)
 				{
 					size_t len = 0;
-					const char* res = luaL_tolstring(L, top + i, &len);
+					const char* res = luaL_tolstring(L, tracebackIdx + i, &len);
 					if (res)
 					{
 						appendOutput(std::string(res, len) + "\n");

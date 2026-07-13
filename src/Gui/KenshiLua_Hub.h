@@ -16,7 +16,6 @@ namespace KenshiLua
 
 		void setVisible(bool visible);
 		bool getVisible();
-		//void updateStatus(const std::string& status);
 
 	private:
 		void onBtnScriptEditor(MyGUI::Widget* sender);
@@ -24,9 +23,8 @@ namespace KenshiLua
 		void onBtnLogViewer(MyGUI::Widget* sender);
 		void onBtnScriptManager(MyGUI::Widget* sender);
 		void onBtnSettings(MyGUI::Widget* sender);
-		// void onBtnStopAll(MyGUI::Widget* sender);
-		// void onBtnRestartAll(MyGUI::Widget* sender);
 		void onWindowButtonPressed(MyGUI::Window* sender, const std::string& name);
+
 	//%LE Widget_Declaration list start
 		MyGUI::Window* mKenshiLua_HubRootWindow;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Hub, mHubVersionLabelTextBox, "HubVersionLabel");
@@ -41,18 +39,6 @@ namespace KenshiLua
 		MyGUI::Button* mHubBtn_LogViewerButton;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Hub, mHubBtn_SettingsButton, "HubBtn_Settings");
 		MyGUI::Button* mHubBtn_SettingsButton;
-		// ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Hub, mHubActiveScriptsPanelWidget, "HubActiveScriptsPanel");
-		// MyGUI::Widget* mHubActiveScriptsPanelWidget;
-		// ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Hub, mHubActiveScriptsHeaderTextBox, "HubActiveScriptsHeader");
-		// MyGUI::TextBox* mHubActiveScriptsHeaderTextBox;
-		// ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Hub, mHubActiveScriptsList_ClientWidget, "HubActiveScriptsList_Client");
-		// MyGUI::Widget* mHubActiveScriptsList_ClientWidget;
-		// ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Hub, mHubBtn_StopAllButton, "HubBtn_StopAll");
-		// MyGUI::Button* mHubBtn_StopAllButton;
-		// ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Hub, mHubBtn_RestartAllButton, "HubBtn_RestartAll");
-		// MyGUI::Button* mHubBtn_RestartAllButton;
-		// ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Hub, mHubStatusLabelTextBox, "HubStatusLabel");
-		// MyGUI::TextBox* mHubStatusLabelTextBox;
 	//%LE Widget_Declaration list end
 	};
 
