@@ -24,6 +24,7 @@
     <ProjectGuid>{7dc59728-cff5-4542-aacf-bc0c76b76b81}</ProjectGuid>
     <RootNamespace>KenshiLua</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <GenerateFullPaths>true</GenerateFullPaths>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -101,7 +102,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>/Zm200 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm200 /FC %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -127,7 +128,7 @@
       <OmitFramePointers>false</OmitFramePointers>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalOptions>/Zm200 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm200 /FC %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -691,6 +692,10 @@
     <ClInclude Include="src\Bindings\TownBinding.h" />
     <ClInclude Include="src\Bindings\TownBuildingsManagerBinding.h" />
     <ClInclude Include="src\Bindings\TownPositionCacherBinding.h" />
+    <ClInclude Include="src\Bindings\Util\LektorBinding.h" />
+    <ClInclude Include="src\Bindings\Util\OgreUnorderedBinding.h" />
+    <ClInclude Include="src\Bindings\Util\OgreVectorBinding.h" />
+    <ClInclude Include="src\Bindings\Util\StdMapBinding.h" />
     <ClInclude Include="src\Bindings\VisibleObjectInfoBinding.h" />
     <ClInclude Include="src\Bindings\WeaponBinding.h" />
     <ClInclude Include="src\Bindings\WhoSeesMeBinding.h" />
@@ -698,6 +703,7 @@
     <ClInclude Include="src\Bindings\WorldEventStateQueryListBinding.h" />
     <ClInclude Include="src\Callbacks.h" />
     <ClInclude Include="src\framework.h" />
+    <ClInclude Include="src\Gui\GuiManager.h" />
     <ClInclude Include="src\Gui\KenshiLua_Console.h" />
     <ClInclude Include="src\Gui\KenshiLua_Hub.h" />
     <ClInclude Include="src\Gui\KenshiLua_LogViewer.h" />
@@ -949,7 +955,7 @@
     <ClCompile Include="src\Gui\KenshiLua_Settings.cpp" />
     <ClCompile Include="src\Plugin.cpp" />
     <ClCompile Include="src\Callbacks.cpp" />
-    <ClCompile Include="src\Gui\Gui.cpp" />
+    <ClCompile Include="src\Gui\GuiManager.cpp" />
     <ClCompile Include="src\Hooks.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
