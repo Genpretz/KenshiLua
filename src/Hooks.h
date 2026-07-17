@@ -20,7 +20,6 @@
 // ---------------------------------------------------------------------------
 namespace KenshiLua
 {
-    bool InstallAllHooks();
     bool InstallHookForEvent(const std::string& eventName);
 }
 

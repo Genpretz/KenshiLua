@@ -1,133 +1,108 @@
 #include "pch.h"
-#include "Bindings/Building/WindGeneratorBuildingBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/GeneratorBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "WindGeneratorBuildingBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Building/GeneratorBuildingBinding.h"
 
 namespace KenshiLua
 {
 
-static WindGeneratorBuilding* getS(lua_State* L, int idx)
+static WindGeneratorBuilding* getInstance(lua_State* L, int idx)
 {
     return checkObject<WindGeneratorBuilding>(L, idx, WindGeneratorBuildingBinding::getMetatableName());
 }
 
-int WindGeneratorBuildingBinding::gc(lua_State* L) { return noopGc(L); }
-
-int WindGeneratorBuildingBinding::tostring(lua_State* L)
-{
-    WindGeneratorBuilding* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int WindGeneratorBuildingBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, WindGeneratorBuildingBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    WindGeneratorBuilding* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-
-    lua_pushnil(L);
-    return 1;
-}
-
-int WindGeneratorBuildingBinding::newindex(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-    WindGeneratorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "WindGeneratorBuilding is nil");
-
-
-    return luaL_error(L, "unknown or read-only field '%s'", key);
-}
-
+// --- Getters for WindGeneratorBuilding ---
+// --- Setters for WindGeneratorBuilding ---
 int WindGeneratorBuildingBinding::getPowerOutput(lua_State* L)
 {
-    WindGeneratorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "WindGeneratorBuilding is nil");
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
 
-    float result = s->getPowerOutput();
+    float result = instance->getPowerOutput();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WindGeneratorBuildingBinding::_NV_getPowerOutput(lua_State* L)
 {
-    WindGeneratorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "WindGeneratorBuilding is nil");
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
 
-    float result = s->_NV_getPowerOutput();
+    float result = instance->_NV_getPowerOutput();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WindGeneratorBuildingBinding::getSoundIntensity(lua_State* L)
 {
-    WindGeneratorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "WindGeneratorBuilding is nil");
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
 
-    float result = s->getSoundIntensity();
+    float result = instance->getSoundIntensity();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WindGeneratorBuildingBinding::_NV_getSoundIntensity(lua_State* L)
 {
-    WindGeneratorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "WindGeneratorBuilding is nil");
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
 
-    float result = s->_NV_getSoundIntensity();
+    float result = instance->_NV_getSoundIntensity();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WindGeneratorBuildingBinding::isAnyInputsEmpty(lua_State* L)
 {
-    WindGeneratorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "WindGeneratorBuilding is nil");
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
 
-    bool result = s->isAnyInputsEmpty();
+    bool result = instance->isAnyInputsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int WindGeneratorBuildingBinding::_NV_isAnyInputsEmpty(lua_State* L)
 {
-    WindGeneratorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "WindGeneratorBuilding is nil");
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
 
-    bool result = s->_NV_isAnyInputsEmpty();
+    bool result = instance->_NV_isAnyInputsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int WindGeneratorBuildingBinding::_DESTRUCTOR(lua_State* L)
 {
-    WindGeneratorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "WindGeneratorBuilding is nil");
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 32: WindGeneratorBuilding* _CONSTRUCTOR(...) - unsupported return type
+  line 32: WindGeneratorBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 35: void getGUIState(...) - unsupported arg type
   line 36: void _NV_getGUIState(...) - unsupported arg type
   line 37: void getGUIPower(...) - unsupported arg type
   line 38: void _NV_getGUIPower(...) - unsupported arg type
 */
+
+int WindGeneratorBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int WindGeneratorBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.WindGeneratorBuilding object");
+    return 1;
+}
 
 void WindGeneratorBuildingBinding::registerBinding(lua_State* L)
 {
@@ -136,6 +111,7 @@ void WindGeneratorBuildingBinding::registerBinding(lua_State* L)
         { "__tostring", WindGeneratorBuildingBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "getPowerOutput", WindGeneratorBuildingBinding::getPowerOutput },
         { "_NV_getPowerOutput", WindGeneratorBuildingBinding::_NV_getPowerOutput },
@@ -146,7 +122,27 @@ void WindGeneratorBuildingBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", WindGeneratorBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, WindGeneratorBuildingBinding::getMetatableName(), meta, methods, WindGeneratorBuildingBinding::index, WindGeneratorBuildingBinding::newindex);
+
+    registerClass(
+        L, 
+        WindGeneratorBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, WindGeneratorBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to GeneratorBuilding
+    setMetatableParent(L, WindGeneratorBuildingBinding::getMetatableName(), GeneratorBuildingBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

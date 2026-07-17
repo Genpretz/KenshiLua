@@ -1,84 +1,80 @@
 #include "pch.h"
-#include "Bindings/Building/BuildingContainerInventoryLayoutBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/StorageBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "BuildingContainerInventoryLayoutBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Building/GenericInventoryLayoutBinding.h"
 
 namespace KenshiLua
 {
 
-static BuildingContainerInventoryLayout* getS(lua_State* L, int idx)
+static BuildingContainerInventoryLayout* getInstance(lua_State* L, int idx)
 {
     return checkObject<BuildingContainerInventoryLayout>(L, idx, BuildingContainerInventoryLayoutBinding::getMetatableName());
 }
 
-int BuildingContainerInventoryLayoutBinding::gc(lua_State* L) { return noopGc(L); }
-
-int BuildingContainerInventoryLayoutBinding::tostring(lua_State* L)
+// --- Getters for BuildingContainerInventoryLayout ---
+static int BuildingContainerInventoryLayout_get_capacityText(lua_State* L)
 {
-    BuildingContainerInventoryLayout* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int BuildingContainerInventoryLayoutBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, BuildingContainerInventoryLayoutBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    BuildingContainerInventoryLayout* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "capacityText") == 0) { lua_pushinteger(L, (lua_Integer)s->capacityText); return 1; }
-
-    lua_pushnil(L);
+    BuildingContainerInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->capacityText);
     return 1;
 }
 
-int BuildingContainerInventoryLayoutBinding::newindex(lua_State* L)
+// --- Setters for BuildingContainerInventoryLayout ---
+static int BuildingContainerInventoryLayout_set_capacityText(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    BuildingContainerInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
+    BuildingContainerInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for capacityText");
+}
 
-    // TODO MyGUI::EditBox* capacityText; unsupported __newindex type from header line 19
+int BuildingContainerInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
+{
+    BuildingContainerInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+    BuildingContainerInventoryLayout* result = instance->_CONSTRUCTOR();
+    return pushObject<BuildingContainerInventoryLayout>(L, result, BuildingContainerInventoryLayoutBinding::getMetatableName());
 }
 
 int BuildingContainerInventoryLayoutBinding::setCapacity(lua_State* L)
 {
-    BuildingContainerInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
+    BuildingContainerInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
 
     int value = (int)luaL_checkinteger(L, 2);
     bool full = lua_toboolean(L, 3) != 0;
-    s->setCapacity(value, full);
+    instance->setCapacity(value, full);
     return 0;
 }
 
 int BuildingContainerInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
-    BuildingContainerInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
+    BuildingContainerInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 15: BuildingContainerInventoryLayout* _CONSTRUCTOR(...) - unsupported return type
   line 16: void setupSections(...) - unsupported arg type
   line 17: void _NV_setupSections(...) - unsupported arg type
 */
+
+int BuildingContainerInventoryLayoutBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int BuildingContainerInventoryLayoutBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.BuildingContainerInventoryLayout object");
+    return 1;
+}
 
 void BuildingContainerInventoryLayoutBinding::registerBinding(lua_State* L)
 {
@@ -87,12 +83,38 @@ void BuildingContainerInventoryLayoutBinding::registerBinding(lua_State* L)
         { "__tostring", BuildingContainerInventoryLayoutBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", BuildingContainerInventoryLayoutBinding::_CONSTRUCTOR },
         { "setCapacity", BuildingContainerInventoryLayoutBinding::setCapacity },
         { "_DESTRUCTOR", BuildingContainerInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, BuildingContainerInventoryLayoutBinding::getMetatableName(), meta, methods, BuildingContainerInventoryLayoutBinding::index, BuildingContainerInventoryLayoutBinding::newindex);
+
+    registerClass(
+        L, 
+        BuildingContainerInventoryLayoutBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, BuildingContainerInventoryLayoutBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, BuildingContainerInventoryLayout_get_capacityText);
+    lua_setfield(L, -2, "capacityText");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, BuildingContainerInventoryLayout_set_capacityText);
+    lua_setfield(L, -2, "capacityText");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to GenericInventoryLayout
+    setMetatableParent(L, BuildingContainerInventoryLayoutBinding::getMetatableName(), GenericInventoryLayoutBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

@@ -1,10 +1,12 @@
 #include "pch.h"
 
 #include "Callbacks.h"
-#include "Gui/InitializeGui.h"
+#include "Gui/GuiManager.h"
 #include "Hooks.h"
-#include "Lua/Logger.h"
+#include "Logger.h"
+#include "DialogueScriptBridge.h"
 
+#include <core/Functions.h>
 #include <kenshi/Character.h>
 #include <kenshi/GameWorld.h>
 #include <kenshi/CharStats.h>
@@ -16,7 +18,15 @@
 #include <kenshi/gui/TitleScreen.h>
 #include <kenshi/InputHandler.h>
 #include <kenshi/util/YesNoMaybe.h>
-#include "core/Functions.h"
+#include <kenshi/BountyManager.h>
+#include <kenshi/Building/Building.h>
+#include <kenshi/FactionRelations.h>
+#include <kenshi/MedicalSystem.h>
+#include <kenshi/gui/DialogueWindow.h>
+#include <kenshi/Dialogue.h>
+#include <kenshi/Enums.h>
+#include <kenshi/Inventory.h>
+#include <kenshi/RootObjectFactory.h>
 
 #include <cstddef>
 
@@ -38,27 +48,49 @@ static bool InstallHookT(const char* name, intptr_t addr, T hookFn, T* origStora
 
     if (!addr)
     {
-        KenshiLua::logToFilef("Could not resolve address for %s.", name);
+        KenshiLua::logToFilef("Error: Could not resolve address for %s.", name);
         return false;
     }
     
     KenshiLib::HookStatus status = KenshiLib::AddHook(addr, hookFn, origStorage);
     if (status != KenshiLib::SUCCESS)
     {
-        KenshiLua::logToFilef("AddHook failed for %s (status %d).", name, (int)status);
+        KenshiLua::logToFilef("Error: AddHook failed for %s (status %d).", name, (int)status);
         return false;
     }
 
-    KenshiLua::logToFilef("Hook installed: %s", name);
+    KenshiLua::logToFileDebugf("Hook installed: %s", name);
     return true;
 }
 
-// Defines a small static "installer" function for one hook.
+// ToDo: Should this be a macro?
 #define DEFINE_HOOK_INSTALLER(fnName, displayName, addrExpr, hookFn, origVar) \
     static bool fnName() \
     { \
         return InstallHookT(displayName, (intptr_t)(addrExpr), &hookFn, &origVar); \
     }
+
+
+// ---------------------------------------------------------------------------
+// Hook: InputHandler::keyDownEvent
+// ---------------------------------------------------------------------------
+
+static void (*InputHandler_keyDownEvent_orig)(InputHandler* thisptr, OIS::KeyCode key) = NULL;
+
+static void InputHandler_keyDownEvent_hook(InputHandler* thisptr, OIS::KeyCode key)
+{
+    InputHandler_keyDownEvent_orig(thisptr, key);
+
+    KenshiLua::GuiManager::get().checkKeyboardShortcut(key, thisptr);
+
+    CallKeyDownCallbacks(static_cast<int>(key));
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_InputHandler_KeyDown,
+    "InputHandler::keyDownEvent",
+    KenshiLib::GetRealAddress(&InputHandler::keyDownEvent),
+    InputHandler_keyDownEvent_hook, InputHandler_keyDownEvent_orig)
+
 
 // ---------------------------------------------------------------------------
 // Hook: Character::say
@@ -162,26 +194,6 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_GetPickedUp,
     KenshiLib::GetRealAddress(&Character::getPickedUp),
     Character_getPickedUp_hook, Character_getPickedUp_orig)
 
-// ---------------------------------------------------------------------------
-// Hook: InputHandler::keyDownEvent
-// ---------------------------------------------------------------------------
-
-static void (*InputHandler_keyDownEvent_orig)(InputHandler* thisptr, OIS::KeyCode key) = NULL;
-
-static void InputHandler_keyDownEvent_hook(InputHandler* thisptr, OIS::KeyCode key)
-{
-    InputHandler_keyDownEvent_orig(thisptr, key);
-
-    if (key == OIS::KC_L && thisptr->ctrl && thisptr->shift)
-        KenshiLua::KenshiLuaGui::get().toggle();
-
-    CallKeyDownCallbacks(static_cast<int>(key));
-}
-
-DEFINE_HOOK_INSTALLER(InstallHook_InputHandler_KeyDown,
-    "InputHandler::keyDownEvent",
-    KenshiLib::GetRealAddress(&InputHandler::keyDownEvent),
-    InputHandler_keyDownEvent_hook, InputHandler_keyDownEvent_orig)
 
 // ---------------------------------------------------------------------------
 // Hook: GameWorld::charsUpdate
@@ -688,7 +700,426 @@ DEFINE_HOOK_INSTALLER(InstallHook_Item_NotifyTheftFrom,
     Item_notifyTheftFrom_hook, Item_notifyTheftFrom_orig)
 
 // ---------------------------------------------------------------------------
+// Hook: BountyManager::notifyCrimeWitnessed
+// ---------------------------------------------------------------------------
+
+static void (*BountyManager_notifyCrimeWitnessed_orig)(BountyManager*, Faction*, const hand&, int, CrimeEnum) = NULL;
+
+static void BountyManager_notifyCrimeWitnessed_hook(BountyManager* thisptr, Faction* against, const hand& againstWho, int expirytime, CrimeEnum what)
+{
+    BountyManager_notifyCrimeWitnessed_orig(thisptr, against, againstWho, expirytime, what);
+    CallCrimeWitnessedCallbacks(thisptr->me, against, againstWho, expirytime, static_cast<int>(what));
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_BountyManager_NotifyCrimeWitnessed,
+    "BountyManager::notifyCrimeWitnessed",
+    KenshiLib::GetRealAddress(&BountyManager::notifyCrimeWitnessed),
+    BountyManager_notifyCrimeWitnessed_hook, BountyManager_notifyCrimeWitnessed_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: FactionRelations::affectRelations
+// ---------------------------------------------------------------------------
+
+static void (*FactionRelations_affectRelations_orig)(FactionRelations*, Faction*, FactionRelations::FactionEvent, float) = NULL;
+
+static void FactionRelations_affectRelations_hook(FactionRelations* thisptr, Faction* p, FactionRelations::FactionEvent e, float mult)
+{
+    FactionRelations_affectRelations_orig(thisptr, p, e, mult);
+    CallFactionRelationsAffectedCallbacks(thisptr->me, p, static_cast<int>(e), mult);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_FactionRelations_AffectRelations,
+    "FactionRelations::_NV_affectRelations",
+    KenshiLib::GetRealAddress(static_cast<void (FactionRelations::*)(Faction*, FactionRelations::FactionEvent, float)>(&FactionRelations::_NV_affectRelations)),
+    FactionRelations_affectRelations_hook, FactionRelations_affectRelations_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: MedicalSystem::amputate
+// ---------------------------------------------------------------------------
+
+static void (*MedicalSystem_amputate_orig)(MedicalSystem*, RobotLimbs::Limb, bool, const Ogre::Vector3&) = NULL;
+
+static void MedicalSystem_amputate_hook(MedicalSystem* thisptr, RobotLimbs::Limb limb, bool createSeveredItem, const Ogre::Vector3& force)
+{
+    MedicalSystem_amputate_orig(thisptr, limb, createSeveredItem, force);
+    CallLimbAmputatedCallbacks(thisptr->me, static_cast<int>(limb), createSeveredItem, force);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_Amputate,
+    "MedicalSystem::amputate",
+    KenshiLib::GetRealAddress(&MedicalSystem::amputate),
+    MedicalSystem_amputate_hook, MedicalSystem_amputate_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: DialogueWindow::show
+// ---------------------------------------------------------------------------
+
+static void (*DialogueWindow_show_orig)(DialogueWindow*, Dialogue*) = NULL;
+
+static void DialogueWindow_show_hook(DialogueWindow* thisptr, Dialogue* dialogue)
+{
+    DialogueWindow_show_orig(thisptr, dialogue);
+    CallDialogueWindowShowCallbacks(thisptr, dialogue);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_DialogueWindow_Show,
+    "DialogueWindow::show",
+    KenshiLib::GetRealAddress(static_cast<void (DialogueWindow::*)(Dialogue*)>(&DialogueWindow::show)),
+    DialogueWindow_show_hook, DialogueWindow_show_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Dialogue::_doActions
+// ---------------------------------------------------------------------------
+
+static void (*Dialogue_doActions_orig)(Dialogue*, DialogLineData*) = nullptr;
+
+static void Dialogue_doActions_hook(Dialogue* thisptr, DialogLineData* dialogLine)
+{
+    KenshiLua::logToFileDebug("Dialogue_doActions_hook called!");
+    Dialogue_doActions_orig(thisptr, dialogLine);
+
+    // Loading lua scripts when a dialogue line occurs
+    KenshiLua::DialogueScriptBridge(thisptr, dialogLine);
+
+    CallDialogueDoActionsCallbacks(thisptr, dialogLine);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Dialogue_DoActions,
+    "Dialogue::_doActions",
+    KenshiLib::GetRealAddress(&Dialogue::_doActions),
+    Dialogue_doActions_hook, Dialogue_doActions_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Dialogue::say
+// ---------------------------------------------------------------------------
+
+static void (*Dialogue_say_orig)(Dialogue*, DialogLineData*) = nullptr;
+
+static void Dialogue_say_hook(Dialogue* thisptr, DialogLineData* dialogLine)
+{
+    KenshiLua::logToFileDebug("Dialogue_say_hook called!");
+    Dialogue_say_orig(thisptr, dialogLine);
+
+    // Loading lua scripts when a dialogue line occurs
+    KenshiLua::DialogueScriptBridge(thisptr, dialogLine);
+
+    CallDialogueSayCallbacks(thisptr, dialogLine);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Dialogue_Say,
+    "Dialogue::say",
+    KenshiLib::GetRealAddress(static_cast<void (Dialogue::*)(DialogLineData*)>(&Dialogue::say)),
+    Dialogue_say_hook, Dialogue_say_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Character::_NV_init
+// ---------------------------------------------------------------------------
+
+static void (*Character_NV_init_orig)(Character*) = NULL;
+
+static void Character_NV_init_hook(Character* thisptr)
+{
+    Character_NV_init_orig(thisptr);
+    CallCharacterInitCallbacks(thisptr);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Character_NV_init,
+    "Character::_NV_init",
+    KenshiLib::GetRealAddress(&Character::_NV_init),
+    Character_NV_init_hook, Character_NV_init_orig)
+
+
+// ---------------------------------------------------------------------------
+// Hook: RootObjectFactory::chooseMyClothing
+// ---------------------------------------------------------------------------
+
+static void (*RootObjectFactory_chooseMyClothing_orig)(lektor<GameData*>&, GameData*, const std::string&, RaceData*, bool) = NULL;
+
+static void RootObjectFactory_chooseMyClothing_hook(lektor<GameData*>& gear, GameData* dataList, const std::string& listName, RaceData* race, bool noShoes)
+{
+    RootObjectFactory_chooseMyClothing_orig(gear, dataList, listName, race, noShoes);
+    CallChooseMyClothingCallbacks(gear, dataList, listName, race, noShoes);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_RootObjectFactory_chooseMyClothing,
+    "RootObjectFactory::chooseMyClothing",
+    KenshiLib::GetRealAddress(&RootObjectFactory::chooseMyClothing),
+    RootObjectFactory_chooseMyClothing_hook, RootObjectFactory_chooseMyClothing_orig)
+
+
+
+// ---------------------------------------------------------------------------
+// Hook: wraps::BaseLayout::initialise
+// ---------------------------------------------------------------------------
+
+static void (*BaseLayout_initialise_orig)(wraps::BaseLayout*, const std::string&, MyGUI::Widget*, bool, bool) = NULL;
+
+static void BaseLayout_initialise_hook(wraps::BaseLayout* thisptr, const std::string& layout, MyGUI::Widget* parent, bool _throw, bool _createFakeWidgets)
+{
+    BaseLayout_initialise_orig(thisptr, layout, parent, _throw, _createFakeWidgets);
+    CallBaseLayoutInitialiseCallbacks(layout);
+}
+
+static bool InstallHook_BaseLayout_initialise()
+{
+    void* stubAddr = GetProcAddress(GetModuleHandleA("KenshiLib.dll"),
+        "?initialise@BaseLayout@wraps@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAVWidget@MyGUI@@_N2@Z");
+    if (!stubAddr)
+    {
+        KenshiLua::logToFilef("Error: Failed to locate wraps::BaseLayout::initialise export in KenshiLib.dll");
+        return false;
+    }
+    intptr_t realAddr = KenshiLib::GetRealAddress(stubAddr);
+    return InstallHookT("wraps::BaseLayout::initialise", realAddr, &BaseLayout_initialise_hook, &BaseLayout_initialise_orig);
+}
+
+
+// ---------------------------------------------------------------------------
+// Hook: Inventory::getSectionOfType
+// ---------------------------------------------------------------------------
+
+static InventorySection* (*Inventory_getSectionOfType_orig)(Inventory*, AttachSlot) = NULL;
+
+static InventorySection* Inventory_getSectionOfType_hook(Inventory* thisptr, AttachSlot type)
+{
+    InventorySection* current = Inventory_getSectionOfType_orig(thisptr, type);
+    InventorySection* overrideSec = CallInventoryGetSectionOfTypeCallbacks(thisptr, static_cast<int>(type));
+    return overrideSec ? overrideSec : current;
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_getSectionOfType,
+    "Inventory::getSectionOfType",
+    KenshiLib::GetRealAddress(&Inventory::getSectionOfType),
+    Inventory_getSectionOfType_hook, Inventory_getSectionOfType_orig)
+
+
+// ---------------------------------------------------------------------------
+// Hook: Inventory::getBestFoodItem
+// ---------------------------------------------------------------------------
+
+static Item* (*Inventory_getBestFoodItem_orig)(const Inventory*, Character*) = NULL;
+
+static Item* Inventory_getBestFoodItem_hook(const Inventory* thisptr, Character* race)
+{
+    Item* current = Inventory_getBestFoodItem_orig(thisptr, race);
+    Item* overrideFood = CallInventoryGetBestFoodItemCallbacks(const_cast<Inventory*>(thisptr), race);
+    return overrideFood ? overrideFood : current;
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_getBestFoodItem,
+    "Inventory::getBestFoodItem",
+    KenshiLib::GetRealAddress(&Inventory::getBestFoodItem),
+    Inventory_getBestFoodItem_hook, Inventory_getBestFoodItem_orig)
+
+
+// ---------------------------------------------------------------------------
+// Hook: Character::isItOkForMeToLoot
+// ---------------------------------------------------------------------------
+
+static bool (*Character_isItOkForMeToLoot_orig)(Character*, RootObject*, Item*) = NULL;
+
+static bool Character_isItOkForMeToLoot_hook(Character* thisptr, RootObject* victim, Item* item)
+{
+    bool current = Character_isItOkForMeToLoot_orig(thisptr, victim, item);
+    return CallCharacterIsItOkForMeToLootCallbacks(thisptr, victim, item, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Character_isItOkForMeToLoot,
+    "Character::isItOkForMeToLoot",
+    KenshiLib::GetRealAddress(&Character::_NV_isItOkForMeToLoot),
+    Character_isItOkForMeToLoot_hook, Character_isItOkForMeToLoot_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Character::getFencingSuccessChance
+// ---------------------------------------------------------------------------
+
+static float (*Character_getFencingSuccessChance_orig)(Character*, Item*, RootObject*) = NULL;
+
+static float Character_getFencingSuccessChance_hook(Character* thisptr, Item* item, RootObject* thief)
+{
+    float current = Character_getFencingSuccessChance_orig(thisptr, item, thief);
+    return CallCharacterGetFencingSuccessChanceCallbacks(thisptr, item, thief, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Character_getFencingSuccessChance,
+    "Character::getFencingSuccessChance",
+    KenshiLib::GetRealAddress(&Character::getFencingSuccessChance),
+    Character_getFencingSuccessChance_hook, Character_getFencingSuccessChance_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: CharStats::getStat
+// ---------------------------------------------------------------------------
+
+static float (*CharStats_getStat_orig)(const CharStats*, StatsEnumerated, bool) = NULL;
+
+static float CharStats_getStat_hook(const CharStats* thisptr, StatsEnumerated what, bool unmodified)
+{
+    float current = CharStats_getStat_orig(thisptr, what, unmodified);
+    return CallCharStatsGetStatCallbacks(thisptr, static_cast<int>(what), unmodified, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_CharStats_getStat,
+    "CharStats::getStat",
+    KenshiLib::GetRealAddress(&CharStats::getStat),
+    CharStats_getStat_hook, CharStats_getStat_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Faction::chooseARace
+// ---------------------------------------------------------------------------
+
+static GameData* (*Faction_chooseARace_orig)(Faction*, GameData*, GameData*) = NULL;
+
+static GameData* Faction_chooseARace_hook(Faction* thisptr, GameData* character, GameData* squadTemplate)
+{
+    GameData* current = Faction_chooseARace_orig(thisptr, character, squadTemplate);
+    return CallFactionChooseARaceCallbacks(thisptr, character, squadTemplate, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Faction_chooseARace,
+    "Faction::chooseARace",
+    KenshiLib::GetRealAddress(&Faction::chooseARace),
+    Faction_chooseARace_hook, Faction_chooseARace_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Faction::getBuildingReplacement
+// ---------------------------------------------------------------------------
+
+static GameData* (*Faction_getBuildingReplacement_orig)(Faction*, GameData*) = NULL;
+
+static GameData* Faction_getBuildingReplacement_hook(Faction* thisptr, GameData* building)
+{
+    GameData* current = Faction_getBuildingReplacement_orig(thisptr, building);
+    return CallFactionGetBuildingReplacementCallbacks(thisptr, building, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Faction_getBuildingReplacement,
+    "Faction::getBuildingReplacement",
+    KenshiLib::GetRealAddress(&Faction::getBuildingReplacement),
+    Faction_getBuildingReplacement_hook, Faction_getBuildingReplacement_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Ownerships::canIUseThisBuilding
+// ---------------------------------------------------------------------------
+
+static bool (*Ownerships_canIUseThisBuilding_orig)(Ownerships*, Building*, Character*) = NULL;
+
+static bool Ownerships_canIUseThisBuilding_hook(Ownerships* thisptr, Building* b, Character* me)
+{
+    bool current = Ownerships_canIUseThisBuilding_orig(thisptr, b, me);
+    return CallOwnershipsCanIUseThisBuildingCallbacks(thisptr, b, me, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Ownerships_canIUseThisBuilding,
+    "Ownerships::canIUseThisBuilding",
+    KenshiLib::GetRealAddress(&Ownerships::canIUseThisBuilding),
+    Ownerships_canIUseThisBuilding_hook, Ownerships_canIUseThisBuilding_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Platoon::iBuyStolenGoods
+// ---------------------------------------------------------------------------
+
+static bool (*Platoon_iBuyStolenGoods_orig)(Platoon*, Item*) = NULL;
+
+static bool Platoon_iBuyStolenGoods_hook(Platoon* thisptr, Item* what)
+{
+    bool current = Platoon_iBuyStolenGoods_orig(thisptr, what);
+    return CallPlatoonIBuyStolenGoodsCallbacks(thisptr, what, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Platoon_iBuyStolenGoods,
+    "Platoon::iBuyStolenGoods",
+    KenshiLib::GetRealAddress(&Platoon::iBuyStolenGoods),
+    Platoon_iBuyStolenGoods_hook, Platoon_iBuyStolenGoods_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Platoon::iBuyIllegalGoods
+// ---------------------------------------------------------------------------
+
+static bool (*Platoon_iBuyIllegalGoods_orig)(Platoon*) = NULL;
+
+static bool Platoon_iBuyIllegalGoods_hook(Platoon* thisptr)
+{
+    bool current = Platoon_iBuyIllegalGoods_orig(thisptr);
+    return CallPlatoonIBuyIllegalGoodsCallbacks(thisptr, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Platoon_iBuyIllegalGoods,
+    "Platoon::iBuyIllegalGoods",
+    KenshiLib::GetRealAddress(&Platoon::iBuyIllegalGoods),
+    Platoon_iBuyIllegalGoods_hook, Platoon_iBuyIllegalGoods_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Building::isPublic
+// ---------------------------------------------------------------------------
+
+static bool (*Building_isPublic_orig)(const Building*) = NULL;
+
+static bool Building_isPublic_hook(const Building* thisptr)
+{
+    bool current = Building_isPublic_orig(thisptr);
+    return CallBuildingIsPublicCallbacks(thisptr, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Building_isPublic,
+    "Building::isPublic",
+    KenshiLib::GetRealAddress(&Building::_NV_isPublic),
+    Building_isPublic_hook, Building_isPublic_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Building::isForSale
+// ---------------------------------------------------------------------------
+
+static bool (*Building_isForSale_orig)(Building*) = NULL;
+
+static bool Building_isForSale_hook(Building* thisptr)
+{
+    bool current = Building_isForSale_orig(thisptr);
+    return CallBuildingIsForSaleCallbacks(thisptr, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Building_isForSale,
+    "Building::isForSale",
+    KenshiLib::GetRealAddress(&Building::_NV_isForSale),
+    Building_isForSale_hook, Building_isForSale_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: Building::calculateSaleValue
+// ---------------------------------------------------------------------------
+
+static int (*Building_calculateSaleValue_orig)(Building*) = NULL;
+
+static int Building_calculateSaleValue_hook(Building* thisptr)
+{
+    int current = Building_calculateSaleValue_orig(thisptr);
+    return CallBuildingCalculateSaleValueCallbacks(thisptr, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Building_calculateSaleValue,
+    "Building::calculateSaleValue",
+    KenshiLib::GetRealAddress(&Building::calculateSaleValue),
+    Building_calculateSaleValue_hook, Building_calculateSaleValue_orig)
+
+// ---------------------------------------------------------------------------
+// Hook: InventoryItemBase::getValueSingle
+// ---------------------------------------------------------------------------
+
+static int (*InventoryItemBase_getValueSingle_orig)(const InventoryItemBase*, bool) = NULL;
+
+static int InventoryItemBase_getValueSingle_hook(const InventoryItemBase* thisptr, bool isPlayer)
+{
+    int current = InventoryItemBase_getValueSingle_orig(thisptr, isPlayer);
+    return CallInventoryItemBaseGetValueSingleCallbacks(thisptr, isPlayer, current);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_InventoryItemBase_getValueSingle,
+    "InventoryItemBase::getValueSingle",
+    KenshiLib::GetRealAddress(&InventoryItemBase::_NV_getValueSingle),
+    InventoryItemBase_getValueSingle_hook, InventoryItemBase_getValueSingle_orig)
+
+
+// ---------------------------------------------------------------------------
 // Hook registry
+
 //
 // Each entry is {display name, installer function}. Adding a new hook means
 // writing the _orig pointer + _hook function + DEFINE_HOOK_INSTALLER line
@@ -697,71 +1128,6 @@ DEFINE_HOOK_INSTALLER(InstallHook_Item_NotifyTheftFrom,
 
 namespace KenshiLua
 {
-
-    struct HookRegistryEntry
-    {
-        const char* name;
-        bool (*install)();
-    };
-
-    static const HookRegistryEntry g_hookRegistry[] = {
-        { "InputHandler::keyDownEvent",                     InstallHook_InputHandler_KeyDown },
-        { "GameWorld::charsUpdate",                         InstallHook_GameWorld_CharsUpdate },
-        { "Character::_NV_select",                          InstallHook_Character_Select },
-        { "Character::_NV_unselect",                        InstallHook_Character_Unselect },
-        { "Character::declareDead",                         InstallHook_Character_DeclareDead },
-        { "Character::_NV_say",                             InstallHook_Character_Say },
-        { "Character::pickupObject",                        InstallHook_Character_PickupObject },
-        { "Character::getPickedUp",                         InstallHook_Character_GetPickedUp },
-        { "CharStats::setHoldLocation",                     InstallHook_CharStats_SetHoldLocation },
-        { "CharStats::clearHoldLocation",                   InstallHook_CharStats_ClearHoldLocation },
-        { "CharStats::chooseAttack",                        InstallHook_CharStats_ChooseAttack },
-        { "CharStats::xpRunning",                           InstallHook_CharStats_XpRunning },
-        { "CharStats::xpFirstAid",                          InstallHook_CharStats_XpFirstAid },
-        { "CharStats::xpStealth",                           InstallHook_CharStats_XpStealth },
-        { "CharStats::xpToughness_GetUpEvent",              InstallHook_CharStats_XpToughness_GetUpEvent },
-        { "CharStats::xpToughness_RagdollEvent",            InstallHook_CharStats_XpToughness_RagdollEvent },
-        { "CharStats::xpToughness_PunchSomething",          InstallHook_CharStats_XpToughness_PunchSomething },
-        { "CharStats::xpEngineering",                       InstallHook_CharStats_XpEngineering },
-        { "CharStats::xpLockpicking",                       InstallHook_CharStats_XpLockpicking },
-        { "Character::_NV_takeMoney",                       InstallHook_Character_TakeMoney },
-        { "Character::eatItem",                             InstallHook_Character_EatItem },
-        { "Character::_NV_hitByMeleeAttack",                InstallHook_Character_HitByMeleeAttack },
-        { "Character::_NV_gettingEaten",                    InstallHook_Character_GettingEaten },
-        { "Character::_NV_setStandingOrder",                InstallHook_Character_SetStandingOrder },
-        { "Character::_NV_setFaction",                      InstallHook_Character_SetFaction },
-        { "Character::_NV_equipItem",                       InstallHook_Character_EquipItem },
-        { "Character::_NV_unequipItem",                     InstallHook_Character_UnequipItem },
-        { "Character::_NV_ImStealingDoYouNotice",           InstallHook_Character_ImStealingDoYouNotice },
-        { "Character::_NV_smugglingTradeCheck",             InstallHook_Character_SmugglingTradeCheck },
-        { "PlayerInterface::recruit",                       InstallHook_PlayerInterface_Recruit },
-        { "PlayerInterface::selectObject",                  InstallHook_PlayerInterface_SelectObject },
-        { "PlayerInterface::newPlayerTaskSelectedCharacters", InstallHook_PlayerInterface_NewPlayerTaskSelectedCharacters },
-        { "ActivePlatoon::_NV_addActiveObject",             InstallHook_ActivePlatoon_AddActiveObject },
-        { "ActivePlatoon::_NV_removeObject",                InstallHook_ActivePlatoon_RemoveObject },
-        { "Platoon::taskIsComplete",                        InstallHook_Platoon_TaskIsComplete },
-        { "Item::_NV_notifyTheftFrom",                      InstallHook_Item_NotifyTheftFrom },
-    };
-
-    static const size_t g_hookRegistryCount = sizeof(g_hookRegistry) / sizeof(g_hookRegistry[0]);
-
-    bool InstallAllHooks()
-    {
-        bool ok = true;
-        for (size_t i = 0; i < g_hookRegistryCount; ++i)
-        {
-            if (!g_hookRegistry[i].install())
-                ok = false;
-        }
-
-        if (ok)
-            KenshiLua::logToFile("All hooks installed successfully.");
-        else
-            KenshiLua::logToFile("One or more hooks failed - see errors above.");
-
-        return ok;
-    }
-
     struct EventHookRegistryEntry
     {
         const char* eventName;
@@ -805,6 +1171,29 @@ namespace KenshiLua
         { "onPlatoonMemberRemoved",             InstallHook_ActivePlatoon_RemoveObject },
         { "onPlatoonTaskComplete",              InstallHook_Platoon_TaskIsComplete },
         { "onItemStolen",                       InstallHook_Item_NotifyTheftFrom },
+        { "onCrimeWitnessed",                   InstallHook_BountyManager_NotifyCrimeWitnessed },
+        { "onFactionRelationsAffected",         InstallHook_FactionRelations_AffectRelations },
+        { "onLimbAmputated",                    InstallHook_MedicalSystem_Amputate },
+        { "onDialogueWindowShow",               InstallHook_DialogueWindow_Show },
+        { "onDialogueDoActions",                InstallHook_Dialogue_DoActions },
+        { "onDialogueSay",                      InstallHook_Dialogue_Say },
+        { "onCharacterInit",                    InstallHook_Character_NV_init },
+        { "onChooseMyClothing",                 InstallHook_RootObjectFactory_chooseMyClothing },
+        { "onBaseLayoutInitialise",             InstallHook_BaseLayout_initialise },
+        { "onInventoryGetSectionOfType",        InstallHook_Inventory_getSectionOfType },
+        { "onInventoryGetBestFoodItem",         InstallHook_Inventory_getBestFoodItem },
+        { "onCharacterLootCheck",               InstallHook_Character_isItOkForMeToLoot },
+        { "onGetFencingChance",                 InstallHook_Character_getFencingSuccessChance },
+        { "onGetStat",                          InstallHook_CharStats_getStat },
+        { "onFactionChooseRace",                InstallHook_Faction_chooseARace },
+        { "onFactionGetBuildingReplacement",    InstallHook_Faction_getBuildingReplacement },
+        { "onBuildingUseCheck",                 InstallHook_Ownerships_canIUseThisBuilding },
+        { "onPlatoonIBuyStolenGoods",           InstallHook_Platoon_iBuyStolenGoods },
+        { "onPlatoonIBuyIllegalGoods",          InstallHook_Platoon_iBuyIllegalGoods },
+        { "onBuildingIsPublic",                 InstallHook_Building_isPublic },
+        { "onBuildingIsForSale",                InstallHook_Building_isForSale },
+        { "onBuildingCalculateSaleValue",       InstallHook_Building_calculateSaleValue },
+        { "onItemGetValueSingle",               InstallHook_InventoryItemBase_getValueSingle },
     };
 
     static const size_t g_eventHookRegistryCount = sizeof(g_eventHookRegistry) / sizeof(g_eventHookRegistry[0]);

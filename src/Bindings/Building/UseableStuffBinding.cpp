@@ -1,758 +1,1191 @@
 #include "pch.h"
-#include "Bindings/Building/UseableStuffBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/UseableStuff.h>
-
-#include <cstring>
-#include <cstdio>
+#include "UseableStuffBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
 
-static UseableStuff* getS(lua_State* L, int idx)
+static UseableStuff* getInstance(lua_State* L, int idx)
 {
     return checkObject<UseableStuff>(L, idx, UseableStuffBinding::getMetatableName());
 }
 
-int UseableStuffBinding::gc(lua_State* L) { return noopGc(L); }
-
-int UseableStuffBinding::tostring(lua_State* L)
+// --- Getters for UseableStuff ---
+static int UseableStuff_get_shopOwner(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return handBinding::push(L, instance->shopOwner);
 }
 
-int UseableStuffBinding::index(lua_State* L)
+static int UseableStuff_get_callbackOwner(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return handBinding::push(L, instance->callbackOwner);
+}
 
-    luaL_getmetatable(L, UseableStuffBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    UseableStuff* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    // TODO hand shopOwner; unsupported __index type from header line 37
-    // TODO hand callbackOwner; unsupported __index type from header line 38
-    if (strcmp(key, "hasProgressBarWhenUsed") == 0) { lua_pushboolean(L, s->hasProgressBarWhenUsed ? 1 : 0); return 1; }
-    if (strcmp(key, "progressBarLevel") == 0) { lua_pushnumber(L, s->progressBarLevel); return 1; }
-    if (strcmp(key, "occupantSelection") == 0) { lua_pushboolean(L, s->occupantSelection ? 1 : 0); return 1; }
-    if (strcmp(key, "needsOperating") == 0) { lua_pushboolean(L, s->needsOperating ? 1 : 0); return 1; }
-    if (strcmp(key, "numOperatorsMax") == 0) { lua_pushinteger(L, s->numOperatorsMax); return 1; }
-    if (strcmp(key, "hungerRate") == 0) { lua_pushnumber(L, s->hungerRate); return 1; }
-    if (strcmp(key, "_recievesBatteryPower") == 0) { lua_pushboolean(L, s->_recievesBatteryPower ? 1 : 0); return 1; }
-    if (strcmp(key, "powerOn") == 0) { lua_pushboolean(L, s->powerOn ? 1 : 0); return 1; }
-    if (strcmp(key, "_isBroken") == 0) { lua_pushboolean(L, s->_isBroken ? 1 : 0); return 1; }
-    if (strcmp(key, "batteryOutputStat") == 0) { lua_pushnumber(L, s->batteryOutputStat); return 1; }
-    if (strcmp(key, "_powerOutputMax") == 0) { lua_pushnumber(L, s->_powerOutputMax); return 1; }
-    if (strcmp(key, "currentPower") == 0) { lua_pushnumber(L, s->currentPower); return 1; }
-    if (strcmp(key, "powerTimeStored") == 0) { lua_pushnumber(L, s->powerTimeStored); return 1; }
-    if (strcmp(key, "_powerTimeStoreMax") == 0) { lua_pushnumber(L, s->_powerTimeStoreMax); return 1; }
-    // TODO std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > > currentOperators; unsupported __index type from header line 167
-    // TODO StatsEnumerated usesStat; unsupported __index type from header line 168
-    if (strcmp(key, "functionalityData") == 0) { return pushObject<GameData>(L, s->functionalityData, GameDataBinding::getMetatableName()); }
-    if (strcmp(key, "animation") == 0) { return pushObject<GameData>(L, s->animation, GameDataBinding::getMetatableName()); }
-    if (strcmp(key, "animationKO") == 0) { return pushObject<GameData>(L, s->animationKO, GameDataBinding::getMetatableName()); }
-    if (strcmp(key, "animationDazed") == 0) { return pushObject<GameData>(L, s->animationDazed, GameDataBinding::getMetatableName()); }
-    if (strcmp(key, "maxUseRange") == 0) { lua_pushnumber(L, s->maxUseRange); return 1; }
-    if (strcmp(key, "sfxTime") == 0) { lua_pushnumber(L, s->sfxTime); return 1; }
-    if (strcmp(key, "inventory") == 0) { return pushObject<Inventory>(L, s->inventory, InventoryBinding::getMetatableName()); }
-    // TODO DoorLock* doorLock; unsupported __index type from header line 176
-
-    lua_pushnil(L);
+static int UseableStuff_get_hasProgressBarWhenUsed(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushboolean(L, instance->hasProgressBarWhenUsed ? 1 : 0);
     return 1;
 }
 
-int UseableStuffBinding::newindex(lua_State* L)
+static int UseableStuff_get_progressBarLevel(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushnumber(L, instance->progressBarLevel);
+    return 1;
+}
 
-    // TODO hand shopOwner; unsupported __newindex type from header line 37
-    // TODO hand callbackOwner; unsupported __newindex type from header line 38
-    if (strcmp(key, "hasProgressBarWhenUsed") == 0) { s->hasProgressBarWhenUsed = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "progressBarLevel") == 0) { s->progressBarLevel = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "occupantSelection") == 0) { s->occupantSelection = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "needsOperating") == 0) { s->needsOperating = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "numOperatorsMax") == 0) { s->numOperatorsMax = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "hungerRate") == 0) { s->hungerRate = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "_recievesBatteryPower") == 0) { s->_recievesBatteryPower = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "powerOn") == 0) { s->powerOn = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "_isBroken") == 0) { s->_isBroken = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "batteryOutputStat") == 0) { s->batteryOutputStat = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "_powerOutputMax") == 0) { s->_powerOutputMax = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "currentPower") == 0) { s->currentPower = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "powerTimeStored") == 0) { s->powerTimeStored = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "_powerTimeStoreMax") == 0) { s->_powerTimeStoreMax = (float)luaL_checknumber(L, 3); return 0; }
-    // TODO std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > > currentOperators; unsupported __newindex type from header line 167
-    // TODO StatsEnumerated usesStat; unsupported __newindex type from header line 168
-    // TODO GameData* functionalityData; unsupported __newindex type from header line 169
-    // TODO GameData* animation; unsupported __newindex type from header line 170
-    // TODO GameData* animationKO; unsupported __newindex type from header line 171
-    // TODO GameData* animationDazed; unsupported __newindex type from header line 172
-    if (strcmp(key, "maxUseRange") == 0) { s->maxUseRange = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "sfxTime") == 0) { s->sfxTime = (float)luaL_checknumber(L, 3); return 0; }
-    // TODO Inventory* inventory; unsupported __newindex type from header line 175
-    // TODO DoorLock* doorLock; unsupported __newindex type from header line 176
+static int UseableStuff_get_occupantSelection(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushboolean(L, instance->occupantSelection ? 1 : 0);
+    return 1;
+}
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+static int UseableStuff_get_needsOperating(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushboolean(L, instance->needsOperating ? 1 : 0);
+    return 1;
+}
+
+static int UseableStuff_get_numOperatorsMax(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushinteger(L, instance->numOperatorsMax);
+    return 1;
+}
+
+static int UseableStuff_get_hungerRate(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushnumber(L, instance->hungerRate);
+    return 1;
+}
+
+static int UseableStuff_get__recievesBatteryPower(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushboolean(L, instance->_recievesBatteryPower ? 1 : 0);
+    return 1;
+}
+
+static int UseableStuff_get_powerOn(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushboolean(L, instance->powerOn ? 1 : 0);
+    return 1;
+}
+
+static int UseableStuff_get__isBroken(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushboolean(L, instance->_isBroken ? 1 : 0);
+    return 1;
+}
+
+static int UseableStuff_get_batteryOutputStat(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushnumber(L, instance->batteryOutputStat);
+    return 1;
+}
+
+static int UseableStuff_get__powerOutputMax(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushnumber(L, instance->_powerOutputMax);
+    return 1;
+}
+
+static int UseableStuff_get_currentPower(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushnumber(L, instance->currentPower);
+    return 1;
+}
+
+static int UseableStuff_get_powerTimeStored(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushnumber(L, instance->powerTimeStored);
+    return 1;
+}
+
+static int UseableStuff_get__powerTimeStoreMax(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushnumber(L, instance->_powerTimeStoreMax);
+    return 1;
+}
+
+static int UseableStuff_get_currentOperators(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    // TODO: Unsupported type for currentOperators (std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)
+    return luaL_error(L, "Unsupported property 'currentOperators' (type: std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)");
+}
+
+static int UseableStuff_get_usesStat(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushinteger(L, (lua_Integer)instance->usesStat);
+    return 1;
+}
+
+static int UseableStuff_get_functionalityData(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return pushObject<GameData>(L, instance->functionalityData, GameDataBinding::getMetatableName());
+}
+
+static int UseableStuff_get_animation(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return pushObject<GameData>(L, instance->animation, GameDataBinding::getMetatableName());
+}
+
+static int UseableStuff_get_animationKO(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return pushObject<GameData>(L, instance->animationKO, GameDataBinding::getMetatableName());
+}
+
+static int UseableStuff_get_animationDazed(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return pushObject<GameData>(L, instance->animationDazed, GameDataBinding::getMetatableName());
+}
+
+static int UseableStuff_get_maxUseRange(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushnumber(L, instance->maxUseRange);
+    return 1;
+}
+
+static int UseableStuff_get_sfxTime(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_newtable(L);
+    lua_pushnumber(L, instance->sfxTime[0]);
+    lua_rawseti(L, -2, 1);
+    lua_pushnumber(L, instance->sfxTime[1]);
+    lua_rawseti(L, -2, 2);
+    return 1;
+}
+
+static int UseableStuff_get_inventory(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return pushObject<Inventory>(L, instance->inventory, InventoryBinding::getMetatableName());
+}
+
+static int UseableStuff_get_doorLock(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lua_pushlightuserdata(L, (void*)instance->doorLock);
+    return 1;
+}
+
+// --- Setters for UseableStuff ---
+static int UseableStuff_set_shopOwner(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->shopOwner = *val;
+    return 0;
+}
+
+static int UseableStuff_set_callbackOwner(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->callbackOwner = *val;
+    return 0;
+}
+
+static int UseableStuff_set_hasProgressBarWhenUsed(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->hasProgressBarWhenUsed = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int UseableStuff_set_progressBarLevel(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->progressBarLevel = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int UseableStuff_set_occupantSelection(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->occupantSelection = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int UseableStuff_set_needsOperating(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->needsOperating = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int UseableStuff_set_numOperatorsMax(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->numOperatorsMax = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int UseableStuff_set_hungerRate(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->hungerRate = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int UseableStuff_set__recievesBatteryPower(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->_recievesBatteryPower = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int UseableStuff_set_powerOn(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->powerOn = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int UseableStuff_set__isBroken(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->_isBroken = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int UseableStuff_set_batteryOutputStat(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->batteryOutputStat = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int UseableStuff_set__powerOutputMax(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->_powerOutputMax = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int UseableStuff_set_currentPower(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->currentPower = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int UseableStuff_set_powerTimeStored(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->powerTimeStored = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int UseableStuff_set__powerTimeStoreMax(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->_powerTimeStoreMax = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int UseableStuff_set_currentOperators(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for currentOperators");
+}
+
+static int UseableStuff_set_usesStat(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->usesStat = (StatsEnumerated)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int UseableStuff_set_functionalityData(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for functionalityData");
+}
+
+static int UseableStuff_set_animation(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for animation");
+}
+
+static int UseableStuff_set_animationKO(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for animationKO");
+}
+
+static int UseableStuff_set_animationDazed(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for animationDazed");
+}
+
+static int UseableStuff_set_maxUseRange(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    instance->maxUseRange = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int UseableStuff_set_sfxTime(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    if (lua_istable(L, 2)) {
+        lua_rawgeti(L, 2, 1);
+        instance->sfxTime[0] = (float)lua_tonumber(L, -1);
+        lua_pop(L, 1);
+        lua_rawgeti(L, 2, 2);
+        instance->sfxTime[1] = (float)lua_tonumber(L, -1);
+        lua_pop(L, 1);
+    }
+    return 0;
+}
+
+static int UseableStuff_set_inventory(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for inventory");
+}
+
+static int UseableStuff_set_doorLock(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for doorLock");
 }
 
 int UseableStuffBinding::_DESTRUCTOR(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
+}
+
+int UseableStuffBinding::getUseableStuff(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    UseableStuff* result = instance->getUseableStuff();
+    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
+}
+
+int UseableStuffBinding::_NV_getUseableStuff(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    UseableStuff* result = instance->_NV_getUseableStuff();
+    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
+}
+
+int UseableStuffBinding::createInventoryLayout(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    InventoryLayout* result = instance->createInventoryLayout();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
+}
+
+int UseableStuffBinding::_NV_createInventoryLayout(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    InventoryLayout* result = instance->_NV_createInventoryLayout();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
 }
 
 int UseableStuffBinding::takeMoney(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     int n = (int)luaL_checkinteger(L, 2);
-    bool result = s->takeMoney(n);
+    bool result = instance->takeMoney(n);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::_NV_takeMoney(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     int n = (int)luaL_checkinteger(L, 2);
-    bool result = s->_NV_takeMoney(n);
+    bool result = instance->_NV_takeMoney(n);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::getMoney(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    int result = s->getMoney();
+    int result = instance->getMoney();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int UseableStuffBinding::_NV_getMoney(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    int result = s->_NV_getMoney();
+    int result = instance->_NV_getMoney();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int UseableStuffBinding::getInventory(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    Inventory result = s->getInventory();
+    Inventory* result = instance->getInventory();
     return pushObject<Inventory>(L, result, InventoryBinding::getMetatableName());
 }
 
 int UseableStuffBinding::_NV_getInventory(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    Inventory result = s->_NV_getInventory();
+    Inventory* result = instance->_NV_getInventory();
     return pushObject<Inventory>(L, result, InventoryBinding::getMetatableName());
 }
 
 int UseableStuffBinding::isAnyInputsEmpty(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->isAnyInputsEmpty();
+    bool result = instance->isAnyInputsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::_NV_isAnyInputsEmpty(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->_NV_isAnyInputsEmpty();
+    bool result = instance->_NV_isAnyInputsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::needsUpdate(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->needsUpdate();
+    bool result = instance->needsUpdate();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::_NV_needsUpdate(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->_NV_needsUpdate();
+    bool result = instance->_NV_needsUpdate();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::threadedUpdate(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    s->threadedUpdate();
+    instance->threadedUpdate();
     return 0;
 }
 
 int UseableStuffBinding::_NV_threadedUpdate(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    s->_NV_threadedUpdate();
+    instance->_NV_threadedUpdate();
     return 0;
 }
 
 int UseableStuffBinding::calculateEfficiencyMult(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->calculateEfficiencyMult();
+    float result = instance->calculateEfficiencyMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::_NV_calculateEfficiencyMult(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->_NV_calculateEfficiencyMult();
+    float result = instance->_NV_calculateEfficiencyMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::isOutOfPower(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->isOutOfPower();
+    float result = instance->isOutOfPower();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::_NV_isOutOfPower(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->_NV_isOutOfPower();
+    float result = instance->_NV_isOutOfPower();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::isBroken(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->isBroken();
+    bool result = instance->isBroken();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::_NV_isBroken(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->_NV_isBroken();
+    bool result = instance->_NV_isBroken();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::setBroken(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    s->setBroken(on);
+    instance->setBroken(on);
     return 0;
 }
 
 int UseableStuffBinding::_NV_setBroken(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    s->_NV_setBroken(on);
+    instance->_NV_setBroken(on);
     return 0;
 }
 
 int UseableStuffBinding::isDisabled(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->isDisabled();
+    bool result = instance->isDisabled();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::_NV_isDisabled(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->_NV_isDisabled();
+    bool result = instance->_NV_isDisabled();
     lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int UseableStuffBinding::getMouseCursor(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    CursorType result = instance->getMouseCursor();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int UseableStuffBinding::_NV_getMouseCursor(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    CursorType result = instance->_NV_getMouseCursor();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int UseableStuffBinding::getDefaultTask(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    TaskType result = instance->getDefaultTask();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int UseableStuffBinding::_NV_getDefaultTask(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    TaskType result = instance->_NV_getDefaultTask();
+    lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int UseableStuffBinding::getReachRange(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->getReachRange();
+    float result = instance->getReachRange();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::_NV_getReachRange(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->_NV_getReachRange();
+    float result = instance->_NV_getReachRange();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::dontNeedWorkRightNow(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->dontNeedWorkRightNow();
+    bool result = instance->dontNeedWorkRightNow();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::_NV_dontNeedWorkRightNow(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->_NV_dontNeedWorkRightNow();
+    bool result = instance->_NV_dontNeedWorkRightNow();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::isForSale(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->isForSale();
+    bool result = instance->isForSale();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::_NV_isForSale(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->_NV_isForSale();
+    bool result = instance->_NV_isForSale();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::takePowerFrom(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
     float frameTime = (float)luaL_checknumber(L, 3);
-    float result = s->takePowerFrom(amount, frameTime);
+    float result = instance->takePowerFrom(amount, frameTime);
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::howMuchPowerDoYouWantMax(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->howMuchPowerDoYouWantMax();
+    float result = instance->howMuchPowerDoYouWantMax();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::howMuchPowerDoYouWantForSortingFunction(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->howMuchPowerDoYouWantForSortingFunction();
+    float result = instance->howMuchPowerDoYouWantForSortingFunction();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::_NV_howMuchPowerDoYouWantForSortingFunction(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->_NV_howMuchPowerDoYouWantForSortingFunction();
+    float result = instance->_NV_howMuchPowerDoYouWantForSortingFunction();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::howMuchPowerDoYouWantNow(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->howMuchPowerDoYouWantNow();
+    float result = instance->howMuchPowerDoYouWantNow();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::needPowerRightNow(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->needPowerRightNow();
+    bool result = instance->needPowerRightNow();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::_NV_needPowerRightNow(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->_NV_needPowerRightNow();
+    bool result = instance->_NV_needPowerRightNow();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::givePower(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    s->givePower(amount);
+    instance->givePower(amount);
     return 0;
 }
 
 int UseableStuffBinding::_NV_givePower(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    s->_NV_givePower(amount);
+    instance->_NV_givePower(amount);
     return 0;
 }
 
 int UseableStuffBinding::resetPower(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    s->resetPower();
+    instance->resetPower();
     return 0;
 }
 
 int UseableStuffBinding::getMaxPower(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->getMaxPower();
+    float result = instance->getMaxPower();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::getPowerOutput(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->getPowerOutput();
+    float result = instance->getPowerOutput();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::_NV_getPowerOutput(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->_NV_getPowerOutput();
+    float result = instance->_NV_getPowerOutput();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::getFuelConsumptionRate(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->getFuelConsumptionRate();
+    float result = instance->getFuelConsumptionRate();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::_NV_getFuelConsumptionRate(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->_NV_getFuelConsumptionRate();
+    float result = instance->_NV_getFuelConsumptionRate();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::isBattery(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->isBattery();
+    bool result = instance->isBattery();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::isGenerator(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->isGenerator();
+    bool result = instance->isGenerator();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::getBatteryCharge(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->getBatteryCharge();
+    float result = instance->getBatteryCharge();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::getBatteryChargeMax(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->getBatteryChargeMax();
+    float result = instance->getBatteryChargeMax();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::setupFromData(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    s->setupFromData();
+    instance->setupFromData();
     return 0;
 }
 
 int UseableStuffBinding::_NV_setupFromData(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    s->_NV_setupFromData();
+    instance->_NV_setupFromData();
     return 0;
 }
 
 int UseableStuffBinding::switchPowerOn(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    s->switchPowerOn(on);
+    instance->switchPowerOn(on);
     return 0;
 }
 
 int UseableStuffBinding::_NV_switchPowerOn(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    s->_NV_switchPowerOn(on);
+    instance->_NV_switchPowerOn(on);
     return 0;
 }
 
 int UseableStuffBinding::hasPower(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->hasPower();
+    bool result = instance->hasPower();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::isPowerOn(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->isPowerOn();
+    bool result = instance->isPowerOn();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::_NV_isPowerOn(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->_NV_isPowerOn();
+    bool result = instance->_NV_isPowerOn();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::isRecievesBatteryPower(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->isRecievesBatteryPower();
+    bool result = instance->isRecievesBatteryPower();
     lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int UseableStuffBinding::getStatUsed(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    StatsEnumerated result = instance->getStatUsed();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int UseableStuffBinding::getDoorLock(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    DoorLock* result = instance->getDoorLock();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
+}
+
+int UseableStuffBinding::_NV_getDoorLock(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    DoorLock* result = instance->_NV_getDoorLock();
+    lua_pushlightuserdata(L, (void*)result);
     return 1;
 }
 
 int UseableStuffBinding::hasDoorLock(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->hasDoorLock();
+    bool result = instance->hasDoorLock();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::_NV_hasDoorLock(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    bool result = s->_NV_hasDoorLock();
+    bool result = instance->_NV_hasDoorLock();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int UseableStuffBinding::getFunctionalityData(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    GameData* result = s->getFunctionalityData();
+    GameData* result = instance->getFunctionalityData();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int UseableStuffBinding::setup(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    s->setup();
+    instance->setup();
     return 0;
 }
 
 int UseableStuffBinding::_NV_setup(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    s->_NV_setup();
+    instance->_NV_setup();
     return 0;
 }
 
 int UseableStuffBinding::getOutputBasedRotationSpeedMult(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->getOutputBasedRotationSpeedMult();
+    float result = instance->getOutputBasedRotationSpeedMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::_NV_getOutputBasedRotationSpeedMult(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    float result = s->_NV_getOutputBasedRotationSpeedMult();
+    float result = instance->_NV_getOutputBasedRotationSpeedMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int UseableStuffBinding::getGUIPowerEfficiencyToolTipString(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    std::string result = s->getGUIPowerEfficiencyToolTipString();
+    std::string result = instance->getGUIPowerEfficiencyToolTipString();
     lua_pushstring(L, result.c_str());
     return 1;
 }
 
 int UseableStuffBinding::_NV_getGUIPowerEfficiencyToolTipString(lua_State* L)
 {
-    UseableStuff* s = getS(L, 1);
-    if (!s) return luaL_error(L, "UseableStuff is nil");
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
 
-    std::string result = s->_NV_getGUIPowerEfficiencyToolTipString();
+    std::string result = instance->_NV_getGUIPowerEfficiencyToolTipString();
     lua_pushstring(L, result.c_str());
     return 1;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 30: UseableStuff* _CONSTRUCTOR(...) - unsupported return type
-  line 33: UseableStuff* getUseableStuff(...) - unsupported return type
-  line 34: UseableStuff* _NV_getUseableStuff(...) - unsupported return type
-  line 35: InventoryLayout* createInventoryLayout(...) - unsupported return type
-  line 36: InventoryLayout* _NV_createInventoryLayout(...) - unsupported return type
+  line 30: UseableStuff* _CONSTRUCTOR(...) - unsupported arg type
   line 39: void equipItem(...) - unsupported arg type
   line 40: void _NV_equipItem(...) - unsupported arg type
   line 41: void unequipItem(...) - unsupported arg type
@@ -779,12 +1212,8 @@ Skipped methods needing manual binding:
   line 80: GameSaveState _NV_serialise(...) - unsupported return type
   line 81: void loadFromSerialise(...) - unsupported arg type
   line 82: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 83: HitMaterialType hitByMeleeAttack(...) - unsupported return type
-  line 84: HitMaterialType _NV_hitByMeleeAttack(...) - unsupported return type
-  line 91: CursorType getMouseCursor(...) - unsupported return type
-  line 92: CursorType _NV_getMouseCursor(...) - unsupported return type
-  line 93: TaskType getDefaultTask(...) - unsupported return type
-  line 94: TaskType _NV_getDefaultTask(...) - unsupported return type
+  line 83: HitMaterialType hitByMeleeAttack(...) - unsupported arg type
+  line 84: HitMaterialType _NV_hitByMeleeAttack(...) - unsupported arg type
   line 95: const std::string& getAnimation(...) - reference return type
   line 96: const std::string& getAnimationKO(...) - reference return type
   line 97: const std::string& getAnimationDazed(...) - reference return type
@@ -801,10 +1230,19 @@ Skipped methods needing manual binding:
   line 116: void _NV_togglePowerButton(...) - unsupported arg type
   line 117: void toggleBattButton(...) - unsupported arg type
   line 118: void _NV_toggleBattButton(...) - unsupported arg type
-  line 148: StatsEnumerated getStatUsed(...) - unsupported return type
-  line 149: DoorLock* getDoorLock(...) - unsupported return type
-  line 150: DoorLock* _NV_getDoorLock(...) - unsupported return type
 */
+
+int UseableStuffBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int UseableStuffBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.UseableStuff object");
+    return 1;
+}
 
 void UseableStuffBinding::registerBinding(lua_State* L)
 {
@@ -813,8 +1251,13 @@ void UseableStuffBinding::registerBinding(lua_State* L)
         { "__tostring", UseableStuffBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", UseableStuffBinding::_DESTRUCTOR },
+        { "getUseableStuff", UseableStuffBinding::getUseableStuff },
+        { "_NV_getUseableStuff", UseableStuffBinding::_NV_getUseableStuff },
+        { "createInventoryLayout", UseableStuffBinding::createInventoryLayout },
+        { "_NV_createInventoryLayout", UseableStuffBinding::_NV_createInventoryLayout },
         { "takeMoney", UseableStuffBinding::takeMoney },
         { "_NV_takeMoney", UseableStuffBinding::_NV_takeMoney },
         { "getMoney", UseableStuffBinding::getMoney },
@@ -837,6 +1280,10 @@ void UseableStuffBinding::registerBinding(lua_State* L)
         { "_NV_setBroken", UseableStuffBinding::_NV_setBroken },
         { "isDisabled", UseableStuffBinding::isDisabled },
         { "_NV_isDisabled", UseableStuffBinding::_NV_isDisabled },
+        { "getMouseCursor", UseableStuffBinding::getMouseCursor },
+        { "_NV_getMouseCursor", UseableStuffBinding::_NV_getMouseCursor },
+        { "getDefaultTask", UseableStuffBinding::getDefaultTask },
+        { "_NV_getDefaultTask", UseableStuffBinding::_NV_getDefaultTask },
         { "getReachRange", UseableStuffBinding::getReachRange },
         { "_NV_getReachRange", UseableStuffBinding::_NV_getReachRange },
         { "dontNeedWorkRightNow", UseableStuffBinding::dontNeedWorkRightNow },
@@ -870,6 +1317,9 @@ void UseableStuffBinding::registerBinding(lua_State* L)
         { "isPowerOn", UseableStuffBinding::isPowerOn },
         { "_NV_isPowerOn", UseableStuffBinding::_NV_isPowerOn },
         { "isRecievesBatteryPower", UseableStuffBinding::isRecievesBatteryPower },
+        { "getStatUsed", UseableStuffBinding::getStatUsed },
+        { "getDoorLock", UseableStuffBinding::getDoorLock },
+        { "_NV_getDoorLock", UseableStuffBinding::_NV_getDoorLock },
         { "hasDoorLock", UseableStuffBinding::hasDoorLock },
         { "_NV_hasDoorLock", UseableStuffBinding::_NV_hasDoorLock },
         { "getFunctionalityData", UseableStuffBinding::getFunctionalityData },
@@ -881,7 +1331,131 @@ void UseableStuffBinding::registerBinding(lua_State* L)
         { "_NV_getGUIPowerEfficiencyToolTipString", UseableStuffBinding::_NV_getGUIPowerEfficiencyToolTipString },
         { 0, 0 }
     };
-    registerClass(L, UseableStuffBinding::getMetatableName(), meta, methods, UseableStuffBinding::index, UseableStuffBinding::newindex);
+
+    registerClass(
+        L, 
+        UseableStuffBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, UseableStuffBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, UseableStuff_get_shopOwner);
+    lua_setfield(L, -2, "shopOwner");
+    lua_pushcfunction(L, UseableStuff_get_callbackOwner);
+    lua_setfield(L, -2, "callbackOwner");
+    lua_pushcfunction(L, UseableStuff_get_hasProgressBarWhenUsed);
+    lua_setfield(L, -2, "hasProgressBarWhenUsed");
+    lua_pushcfunction(L, UseableStuff_get_progressBarLevel);
+    lua_setfield(L, -2, "progressBarLevel");
+    lua_pushcfunction(L, UseableStuff_get_occupantSelection);
+    lua_setfield(L, -2, "occupantSelection");
+    lua_pushcfunction(L, UseableStuff_get_needsOperating);
+    lua_setfield(L, -2, "needsOperating");
+    lua_pushcfunction(L, UseableStuff_get_numOperatorsMax);
+    lua_setfield(L, -2, "numOperatorsMax");
+    lua_pushcfunction(L, UseableStuff_get_hungerRate);
+    lua_setfield(L, -2, "hungerRate");
+    lua_pushcfunction(L, UseableStuff_get__recievesBatteryPower);
+    lua_setfield(L, -2, "_recievesBatteryPower");
+    lua_pushcfunction(L, UseableStuff_get_powerOn);
+    lua_setfield(L, -2, "powerOn");
+    lua_pushcfunction(L, UseableStuff_get__isBroken);
+    lua_setfield(L, -2, "_isBroken");
+    lua_pushcfunction(L, UseableStuff_get_batteryOutputStat);
+    lua_setfield(L, -2, "batteryOutputStat");
+    lua_pushcfunction(L, UseableStuff_get__powerOutputMax);
+    lua_setfield(L, -2, "_powerOutputMax");
+    lua_pushcfunction(L, UseableStuff_get_currentPower);
+    lua_setfield(L, -2, "currentPower");
+    lua_pushcfunction(L, UseableStuff_get_powerTimeStored);
+    lua_setfield(L, -2, "powerTimeStored");
+    lua_pushcfunction(L, UseableStuff_get__powerTimeStoreMax);
+    lua_setfield(L, -2, "_powerTimeStoreMax");
+    lua_pushcfunction(L, UseableStuff_get_currentOperators);
+    lua_setfield(L, -2, "currentOperators");
+    lua_pushcfunction(L, UseableStuff_get_usesStat);
+    lua_setfield(L, -2, "usesStat");
+    lua_pushcfunction(L, UseableStuff_get_functionalityData);
+    lua_setfield(L, -2, "functionalityData");
+    lua_pushcfunction(L, UseableStuff_get_animation);
+    lua_setfield(L, -2, "animation");
+    lua_pushcfunction(L, UseableStuff_get_animationKO);
+    lua_setfield(L, -2, "animationKO");
+    lua_pushcfunction(L, UseableStuff_get_animationDazed);
+    lua_setfield(L, -2, "animationDazed");
+    lua_pushcfunction(L, UseableStuff_get_maxUseRange);
+    lua_setfield(L, -2, "maxUseRange");
+    lua_pushcfunction(L, UseableStuff_get_sfxTime);
+    lua_setfield(L, -2, "sfxTime");
+    lua_pushcfunction(L, UseableStuff_get_inventory);
+    lua_setfield(L, -2, "inventory");
+    lua_pushcfunction(L, UseableStuff_get_doorLock);
+    lua_setfield(L, -2, "doorLock");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, UseableStuff_set_shopOwner);
+    lua_setfield(L, -2, "shopOwner");
+    lua_pushcfunction(L, UseableStuff_set_callbackOwner);
+    lua_setfield(L, -2, "callbackOwner");
+    lua_pushcfunction(L, UseableStuff_set_hasProgressBarWhenUsed);
+    lua_setfield(L, -2, "hasProgressBarWhenUsed");
+    lua_pushcfunction(L, UseableStuff_set_progressBarLevel);
+    lua_setfield(L, -2, "progressBarLevel");
+    lua_pushcfunction(L, UseableStuff_set_occupantSelection);
+    lua_setfield(L, -2, "occupantSelection");
+    lua_pushcfunction(L, UseableStuff_set_needsOperating);
+    lua_setfield(L, -2, "needsOperating");
+    lua_pushcfunction(L, UseableStuff_set_numOperatorsMax);
+    lua_setfield(L, -2, "numOperatorsMax");
+    lua_pushcfunction(L, UseableStuff_set_hungerRate);
+    lua_setfield(L, -2, "hungerRate");
+    lua_pushcfunction(L, UseableStuff_set__recievesBatteryPower);
+    lua_setfield(L, -2, "_recievesBatteryPower");
+    lua_pushcfunction(L, UseableStuff_set_powerOn);
+    lua_setfield(L, -2, "powerOn");
+    lua_pushcfunction(L, UseableStuff_set__isBroken);
+    lua_setfield(L, -2, "_isBroken");
+    lua_pushcfunction(L, UseableStuff_set_batteryOutputStat);
+    lua_setfield(L, -2, "batteryOutputStat");
+    lua_pushcfunction(L, UseableStuff_set__powerOutputMax);
+    lua_setfield(L, -2, "_powerOutputMax");
+    lua_pushcfunction(L, UseableStuff_set_currentPower);
+    lua_setfield(L, -2, "currentPower");
+    lua_pushcfunction(L, UseableStuff_set_powerTimeStored);
+    lua_setfield(L, -2, "powerTimeStored");
+    lua_pushcfunction(L, UseableStuff_set__powerTimeStoreMax);
+    lua_setfield(L, -2, "_powerTimeStoreMax");
+    lua_pushcfunction(L, UseableStuff_set_currentOperators);
+    lua_setfield(L, -2, "currentOperators");
+    lua_pushcfunction(L, UseableStuff_set_usesStat);
+    lua_setfield(L, -2, "usesStat");
+    lua_pushcfunction(L, UseableStuff_set_functionalityData);
+    lua_setfield(L, -2, "functionalityData");
+    lua_pushcfunction(L, UseableStuff_set_animation);
+    lua_setfield(L, -2, "animation");
+    lua_pushcfunction(L, UseableStuff_set_animationKO);
+    lua_setfield(L, -2, "animationKO");
+    lua_pushcfunction(L, UseableStuff_set_animationDazed);
+    lua_setfield(L, -2, "animationDazed");
+    lua_pushcfunction(L, UseableStuff_set_maxUseRange);
+    lua_setfield(L, -2, "maxUseRange");
+    lua_pushcfunction(L, UseableStuff_set_sfxTime);
+    lua_setfield(L, -2, "sfxTime");
+    lua_pushcfunction(L, UseableStuff_set_inventory);
+    lua_setfield(L, -2, "inventory");
+    lua_pushcfunction(L, UseableStuff_set_doorLock);
+    lua_setfield(L, -2, "doorLock");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to Building
+    setMetatableParent(L, UseableStuffBinding::getMetatableName(), BuildingBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

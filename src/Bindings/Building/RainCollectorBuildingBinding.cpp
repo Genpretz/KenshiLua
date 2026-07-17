@@ -1,103 +1,79 @@
 #include "pch.h"
-#include "Bindings/Building/RainCollectorBuildingBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/RainCollectorBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "RainCollectorBuildingBinding.h"
+#include "ProductionBuildingBinding.h"
+#include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
 
-static RainCollectorBuilding* getS(lua_State* L, int idx)
+static RainCollectorBuilding* getInstance(lua_State* L, int idx)
 {
     return checkObject<RainCollectorBuilding>(L, idx, RainCollectorBuildingBinding::getMetatableName());
 }
 
-int RainCollectorBuildingBinding::gc(lua_State* L) { return noopGc(L); }
-
-int RainCollectorBuildingBinding::tostring(lua_State* L)
-{
-    RainCollectorBuilding* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int RainCollectorBuildingBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, RainCollectorBuildingBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    RainCollectorBuilding* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-
-    lua_pushnil(L);
-    return 1;
-}
-
-int RainCollectorBuildingBinding::newindex(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-    RainCollectorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "RainCollectorBuilding is nil");
-
-
-    return luaL_error(L, "unknown or read-only field '%s'", key);
-}
-
+// --- Getters for RainCollectorBuilding ---
+// --- Setters for RainCollectorBuilding ---
+// --- Methods for RainCollectorBuilding ---
 int RainCollectorBuildingBinding::calculateEfficiencyMult(lua_State* L)
 {
-    RainCollectorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "RainCollectorBuilding is nil");
+    RainCollectorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
 
-    float result = s->calculateEfficiencyMult();
+    float result = instance->calculateEfficiencyMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int RainCollectorBuildingBinding::_NV_calculateEfficiencyMult(lua_State* L)
 {
-    RainCollectorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "RainCollectorBuilding is nil");
+    RainCollectorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
 
-    float result = s->_NV_calculateEfficiencyMult();
+    float result = instance->_NV_calculateEfficiencyMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int RainCollectorBuildingBinding::getRainAmount(lua_State* L)
 {
-    RainCollectorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "RainCollectorBuilding is nil");
+    RainCollectorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
 
-    float result = s->getRainAmount();
+    float result = instance->getRainAmount();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int RainCollectorBuildingBinding::_DESTRUCTOR(lua_State* L)
 {
-    RainCollectorBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "RainCollectorBuilding is nil");
+    RainCollectorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 11: RainCollectorBuilding* _CONSTRUCTOR(...) - unsupported return type
+  line 11: RainCollectorBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 14: void getGUIState(...) - unsupported arg type
   line 15: void _NV_getGUIState(...) - unsupported arg type
   line 16: void getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
   line 17: void _NV_getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
 */
+
+int RainCollectorBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int RainCollectorBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.RainCollectorBuilding object");
+    return 1;
+}
 
 void RainCollectorBuildingBinding::registerBinding(lua_State* L)
 {
@@ -106,6 +82,7 @@ void RainCollectorBuildingBinding::registerBinding(lua_State* L)
         { "__tostring", RainCollectorBuildingBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "calculateEfficiencyMult", RainCollectorBuildingBinding::calculateEfficiencyMult },
         { "_NV_calculateEfficiencyMult", RainCollectorBuildingBinding::_NV_calculateEfficiencyMult },
@@ -113,7 +90,27 @@ void RainCollectorBuildingBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", RainCollectorBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, RainCollectorBuildingBinding::getMetatableName(), meta, methods, RainCollectorBuildingBinding::index, RainCollectorBuildingBinding::newindex);
+
+    registerClass(
+        L, 
+        RainCollectorBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, RainCollectorBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to ProductionBuilding
+    setMetatableParent(L, RainCollectorBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

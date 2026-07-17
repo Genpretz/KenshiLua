@@ -15,14 +15,8 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
-    static int getName(lua_State* L);
     static int getScale(lua_State* L);
-    static int getBuildState(lua_State* L);
-    static int _NV_getBuildState(lua_State* L);
-    static int getBuildState_ActualNonShared(lua_State* L);
     static int select(lua_State* L);
     static int _NV_select(lua_State* L);
     static int getBuildingDesignation(lua_State* L);
@@ -61,6 +55,7 @@ public:
     static int affectsNavmesh(lua_State* L);
     static int getResidentSquadLeader(lua_State* L);
     static int setDesignation(lua_State* L);
+    static int getWallEndPosition(lua_State* L);
     static int setupMiningResourceLevel(lua_State* L);
     static int _NV_setupMiningResourceLevel(lua_State* L);
     static int getMiningResourceLevel(lua_State* L);
@@ -74,8 +69,6 @@ public:
     static int _NV_postCreationPathfinderSetupStuff(lua_State* L);
     static int getSpecialFunction(lua_State* L);
     static int _NV_getSpecialFunction(lua_State* L);
-    static int getFunctionStuff(lua_State* L);
-    static int _NV_getFunctionStuff(lua_State* L);
     static int isBroken(lua_State* L);
     static int _NV_isBroken(lua_State* L);
     static int setBroken(lua_State* L);
@@ -97,6 +90,7 @@ public:
     static int setNestTag(lua_State* L);
     static int getReachRange(lua_State* L);
     static int _NV_getReachRange(lua_State* L);
+    static int hasShopCountersSelling(lua_State* L);
     static int getBuildingClass(lua_State* L);
     static int _NV_getBuildingClass(lua_State* L);
     static int needsSaving(lua_State* L);
@@ -112,8 +106,6 @@ public:
     static int loadUnloadCheck(lua_State* L);
     static int _NV_loadUnloadCheck(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
-    static int getProductionBuilding(lua_State* L);
-    static int _NV_getProductionBuilding(lua_State* L);
     static int getProductionMultForGUI(lua_State* L);
     static int _NV_getProductionMultForGUI(lua_State* L);
     static int getProductionMult(lua_State* L);
@@ -147,6 +139,10 @@ public:
     static int _NV_getVisible(lua_State* L);
     static int hasDoorLock(lua_State* L);
     static int _NV_hasDoorLock(lua_State* L);
+    static int getMouseCursor(lua_State* L);
+    static int _NV_getMouseCursor(lua_State* L);
+    static int getDefaultTask(lua_State* L);
+    static int _NV_getDefaultTask(lua_State* L);
     static int getInventory(lua_State* L);
     static int _NV_getInventory(lua_State* L);
     static int getTown(lua_State* L);
@@ -166,6 +162,7 @@ public:
     static int buildingComplete_RestoreMaterial(lua_State* L);
     static int loadInteriorPhysical(lua_State* L);
     static int loadInteriorGraphics(lua_State* L);
+    static int calculateLeftPost(lua_State* L);
     static int getLinkLength(lua_State* L);
     static int _NV_getLinkLength(lua_State* L);
     static int clearTownBuildingsManagerPtr(lua_State* L);
@@ -180,6 +177,13 @@ public:
     static int switchEffects(lua_State* L);
     static int _NV_switchEffects(lua_State* L);
     static int hasAnyGoodPositionMarkersLeft(lua_State* L);
+    static int notifyBadPositionMarker(lua_State* L);
+    static int getPositionMarker(lua_State* L);
+    static int _NV_getPositionMarker(lua_State* L);
+    static int getDirectionMarker(lua_State* L);
+    static int _NV_getDirectionMarker(lua_State* L);
+    static int getDirectionMarkerQuat(lua_State* L);
+    static int _NV_getDirectionMarkerQuat(lua_State* L);
     static int isCreated(lua_State* L);
     static int _NV_isCreated(lua_State* L);
     static int updateUsageNodes(lua_State* L);
@@ -187,23 +191,13 @@ public:
     static int addUsageNode(lua_State* L);
     static int removeUsageNode(lua_State* L);
     static int clearUsageNodes(lua_State* L);
+    static int notifyEffect(lua_State* L);
+    static int _NV_notifyEffect(lua_State* L);
     static int updatePhysicalWithProgress(lua_State* L);
     static int recalculateWorldAABB(lua_State* L);
     static int getSeed(lua_State* L);
     static int onBuildingLoaded(lua_State* L);
     static int _NV_onBuildingLoaded(lua_State* L);
     static int updateBadNodes(lua_State* L);
-    static int getMouseCursor(lua_State* L);
-    static int _NV_getMouseCursor(lua_State* L);
-    static int getWallEndPosition(lua_State* L);
-    static int getDefaultTask(lua_State* L);
-    static int _NV_getDefaultTask(lua_State* L);
-    static int calculateLeftPost(lua_State* L);
-    static int getPosition(lua_State* L);
-    static int _NV_getPositionMarker(lua_State* L);
-    static int getDirectionMarker(lua_State* L);
-    static int _NV_getDirectionMarker(lua_State* L);
-    static int getDirectionMarkerQuat(lua_State* L);
-    static int _NV_getDirectionMarkerQuat(lua_State* L);
 };
 }

@@ -1,66 +1,57 @@
 #include "pch.h"
-#include "Bindings/StatGroupBinding.h"
+#include <kenshi/gui/CharacterStatsWindow.h>
+#include "StatGroupBinding.h"
 #include "Lua/BindingHelpers.h"
-
-#include <kenshi/CharacterStatsWindow.h>
-
-#include <cstring>
-#include <cstdio>
 
 namespace KenshiLua
 {
+    typedef CharacterStatsWindow::StatGroup StatGroup;
 
-static StatGroup* getS(lua_State* L, int idx)
+static StatGroup* getInstance(lua_State* L, int idx)
 {
     return checkObject<StatGroup>(L, idx, StatGroupBinding::getMetatableName());
 }
 
-int StatGroupBinding::gc(lua_State* L) { return noopGc(L); }
-
-int StatGroupBinding::tostring(lua_State* L)
+// --- Getters for StatGroup ---
+static int StatGroup_get_group(lua_State* L)
 {
-    StatGroup* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int StatGroupBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, StatGroupBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    StatGroup* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "group") == 0) { lua_pushinteger(L, (lua_Integer)s->group); return 1; }
-    if (strcmp(key, "name") == 0) { lua_pushstring(L, s->name.c_str()); return 1; }
-
-    lua_pushnil(L);
+    StatGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StatGroup is nil");
+    lua_pushinteger(L, (lua_Integer)instance->group);
     return 1;
 }
 
-int StatGroupBinding::newindex(lua_State* L)
+static int StatGroup_get_name(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    StatGroup* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StatGroup is nil");
+    StatGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StatGroup is nil");
+    lua_pushstring(L, instance->name.c_str());
+    return 1;
+}
 
-    if (strcmp(key, "group") == 0) { s->group = (CharacterStatsWindow::StatGroup::Group)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "name") == 0) { s->name = luaL_checkstring(L, 3); return 0; }
+// --- Setters for StatGroup ---
+static int StatGroup_set_group(lua_State* L)
+{
+    StatGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StatGroup is nil");
+    instance->group = (CharacterStatsWindow::StatGroup::Group)luaL_checkinteger(L, 2);
+    return 0;
+}
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+static int StatGroup_set_name(lua_State* L)
+{
+    StatGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StatGroup is nil");
+    instance->name = luaL_checkstring(L, 2);
+    return 0;
 }
 
 int StatGroupBinding::_DESTRUCTOR(lua_State* L)
 {
-    StatGroup* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StatGroup is nil");
+    StatGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StatGroup is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -71,6 +62,18 @@ Skipped methods needing manual binding:
   line 55: StatGroup* _CONSTRUCTOR(...) - overloaded method
 */
 
+int StatGroupBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int StatGroupBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.StatGroup object");
+    return 1;
+}
+
 void StatGroupBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -78,11 +81,37 @@ void StatGroupBinding::registerBinding(lua_State* L)
         { "__tostring", StatGroupBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", StatGroupBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, StatGroupBinding::getMetatableName(), meta, methods, StatGroupBinding::index, StatGroupBinding::newindex);
+
+    registerClass(
+        L, 
+        StatGroupBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, StatGroupBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, StatGroup_get_group);
+    lua_setfield(L, -2, "group");
+    lua_pushcfunction(L, StatGroup_get_name);
+    lua_setfield(L, -2, "name");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, StatGroup_set_group);
+    lua_setfield(L, -2, "group");
+    lua_pushcfunction(L, StatGroup_set_name);
+    lua_setfield(L, -2, "name");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

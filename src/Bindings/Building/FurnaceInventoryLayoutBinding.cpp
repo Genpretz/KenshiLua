@@ -1,71 +1,59 @@
 #include "pch.h"
-#include "Bindings/Building/FurnaceInventoryLayoutBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/FurnaceBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "FurnaceInventoryLayoutBinding.h"
+#include "BuildInventoryLayoutBinding.h"
+#include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
 
-static FurnaceInventoryLayout* getS(lua_State* L, int idx)
+static FurnaceInventoryLayout* getInstance(lua_State* L, int idx)
 {
     return checkObject<FurnaceInventoryLayout>(L, idx, FurnaceInventoryLayoutBinding::getMetatableName());
 }
 
-int FurnaceInventoryLayoutBinding::gc(lua_State* L) { return noopGc(L); }
-
-int FurnaceInventoryLayoutBinding::tostring(lua_State* L)
+// --- Getters for FurnaceInventoryLayout ---
+// --- Setters for FurnaceInventoryLayout ---
+// --- Methods for FurnaceInventoryLayout ---
+int FurnaceInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
 {
-    FurnaceInventoryLayout* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
+    FurnaceInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceInventoryLayout is nil");
 
-int FurnaceInventoryLayoutBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, FurnaceInventoryLayoutBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    FurnaceInventoryLayout* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-
-    lua_pushnil(L);
+    std::string title = luaL_checkstring(L, 2);
+    int ins = (int)luaL_checkinteger(L, 3);
+    int outs = (int)luaL_checkinteger(L, 4);
+    FurnaceInventoryLayout* result = instance->_CONSTRUCTOR(title, ins, outs);
+    lua_pushlightuserdata(L, (void*)result);
     return 1;
-}
-
-int FurnaceInventoryLayoutBinding::newindex(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-    FurnaceInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FurnaceInventoryLayout is nil");
-
-
-    return luaL_error(L, "unknown or read-only field '%s'", key);
 }
 
 int FurnaceInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
-    FurnaceInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FurnaceInventoryLayout is nil");
+    FurnaceInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceInventoryLayout is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 12: FurnaceInventoryLayout* _CONSTRUCTOR(...) - unsupported return type
   line 13: void setupSections(...) - unsupported arg type
   line 14: void _NV_setupSections(...) - unsupported arg type
 */
+
+int FurnaceInventoryLayoutBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int FurnaceInventoryLayoutBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.FurnaceInventoryLayout object");
+    return 1;
+}
 
 void FurnaceInventoryLayoutBinding::registerBinding(lua_State* L)
 {
@@ -74,11 +62,33 @@ void FurnaceInventoryLayoutBinding::registerBinding(lua_State* L)
         { "__tostring", FurnaceInventoryLayoutBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", FurnaceInventoryLayoutBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", FurnaceInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, FurnaceInventoryLayoutBinding::getMetatableName(), meta, methods, FurnaceInventoryLayoutBinding::index, FurnaceInventoryLayoutBinding::newindex);
+
+    registerClass(
+        L, 
+        FurnaceInventoryLayoutBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, FurnaceInventoryLayoutBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to BuildInventoryLayout
+    setMetatableParent(L, FurnaceInventoryLayoutBinding::getMetatableName(), BuildInventoryLayoutBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

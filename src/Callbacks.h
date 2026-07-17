@@ -19,6 +19,15 @@ class Tasker;
 class Building;
 class PlayerInterface;
 class hand;
+class BountyManager;
+class DialogueWindow;
+class Dialogue;
+class GameData;
+class RaceData;
+class InventorySection;
+class Ownerships;
+class InventoryItemBase;
+template <typename T> class lektor;
 namespace Ogre {
     class Vector3;
 }
@@ -231,5 +240,54 @@ void CallPlatoonTaskCompleteCallbacks(Platoon* platoon, Tasker* t);
 // Lua event name: "onItemStolen"
 // Lua signature:  function(item, victim)
 void CallItemStolenCallbacks(Item* item, RootObject* obj);
+
+// Fired by BountyManager::notifyCrimeWitnessed hook.
+// Lua event name: "onCrimeWitnessed"
+// Lua signature:  function(character, faction, againstWho, expiryTime, crimeType)
+void CallCrimeWitnessedCallbacks(Character* character, Faction* against, const hand& againstWho, int expiryTime, int crimeType);
+
+// Fired by FactionRelations::affectRelations hook.
+// Lua event name: "onFactionRelationsAffected"
+// Lua signature:  function(faction, otherFaction, eventType, multiplier)
+void CallFactionRelationsAffectedCallbacks(Faction* faction, Faction* other, int eventType, float multiplier);
+
+// Fired by MedicalSystem::amputate hook.
+// Lua event name: "onLimbAmputated"
+// Lua signature:  function(character, limb, createSeveredItem, forceVector)
+void CallLimbAmputatedCallbacks(Character* character, int limb, bool createSeveredItem, const Ogre::Vector3& force);
+
+// Fired by DialogueWindow::show hook.
+// Lua event name: "onDialogueWindowShow"
+// Lua signature:  function(dialogueWindow, dialogue)
+void CallDialogueWindowShowCallbacks(DialogueWindow* thisptr, Dialogue* dialogue);
+
+// Fired by Dialogue::_doActions hook.
+// Lua event name: "onDialogueDoActions"
+// Lua signature:  function(dialogue, dialogLine)
+void CallDialogueDoActionsCallbacks(Dialogue* thisptr, DialogLineData* dialogLine);
+
+// Fired by Dialogue::say hook.
+// Lua event name: "onDialogueSay"
+// Lua signature:  function(dialogue, dialogLine)
+void CallDialogueSayCallbacks(Dialogue* thisptr, DialogLineData* dialogLine);
+
+void CallCharacterInitCallbacks(Character* character);
+void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, const std::string& listName, RaceData* race, bool noShoes);
+void CallBaseLayoutInitialiseCallbacks(const std::string& layout);
+InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type);
+Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race);
+bool CallCharacterIsItOkForMeToLootCallbacks(Character* me, RootObject* victim, Item* item, bool defaultVal);
+float CallCharacterGetFencingSuccessChanceCallbacks(Character* merchant, Item* item, RootObject* thief, float defaultVal);
+float CallCharStatsGetStatCallbacks(const CharStats* stats, int what, bool unmodified, float defaultVal);
+GameData* CallFactionChooseARaceCallbacks(Faction* faction, GameData* character, GameData* squadTemplate, GameData* defaultVal);
+GameData* CallFactionGetBuildingReplacementCallbacks(Faction* faction, GameData* building, GameData* defaultVal);
+bool CallOwnershipsCanIUseThisBuildingCallbacks(Ownerships* ownerships, Building* b, Character* me, bool defaultVal);
+bool CallPlatoonIBuyStolenGoodsCallbacks(Platoon* platoon, Item* what, bool defaultVal);
+bool CallPlatoonIBuyIllegalGoodsCallbacks(Platoon* platoon, bool defaultVal);
+bool CallBuildingIsPublicCallbacks(const Building* b, bool defaultVal);
+bool CallBuildingIsForSaleCallbacks(Building* b, bool defaultVal);
+int CallBuildingCalculateSaleValueCallbacks(Building* b, int defaultVal);
+int CallInventoryItemBaseGetValueSingleCallbacks(const InventoryItemBase* item, bool isPlayer, int defaultVal);
+
 
 

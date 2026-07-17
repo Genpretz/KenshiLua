@@ -1,169 +1,271 @@
 #include "pch.h"
-#include "Bindings/Building/ConstructionStateBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/Building.h>
-
-#include <cstring>
-#include <cstdio>
+#include "ConstructionStateBinding.h"
+#include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
+typedef Building::ConstructionState ConstructionState;
 
-static Building::ConstructionState* getB(lua_State* L, int idx)
+static ConstructionState* getInstance(lua_State* L, int idx)
 {
-    return checkObject<Building::ConstructionState>(L, idx, ConstructionStateBinding::getMetatableName());
+    return checkObject<ConstructionState>(L, idx, ConstructionStateBinding::getMetatableName());
 }
 
-int ConstructionStateBinding::gc(lua_State* L) { return noopGc(L); }
-
-int ConstructionStateBinding::tostring(lua_State* L)
+// --- Getters for ConstructionState ---
+static int ConstructionState_get_isComplete(lua_State* L)
 {
-    Building::ConstructionState* b = getB(L, 1);
-    return genericTostringPtr(L, "%s", b);
-}
-
-int ConstructionStateBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, ConstructionStateBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "isComplete") == 0) { lua_pushboolean(L, b->isComplete ? 1 : 0); return 1; }
-    if (strcmp(key, "isPaused") == 0) { lua_pushboolean(L, b->isPaused ? 1 : 0); return 1; }
-    if (strcmp(key, "isDismantled") == 0) { lua_pushboolean(L, b->isDismantled ? 1 : 0); return 1; }
-    if (strcmp(key, "constructionProgress") == 0) { lua_pushnumber(L, b->constructionProgress); return 1; }
-    if (strcmp(key, "msgDismantleAmount") == 0) { lua_pushnumber(L, b->msgDismantleAmount); return 1; }
-    // TODO lektor<ConstructionState::BuildMaterial*> mats; unsupported __index type from header line 135
-    if (strcmp(key, "totalMats") == 0) { lua_pushnumber(L, b->totalMats); return 1; }
-    if (strcmp(key, "buildTimeMult") == 0) { lua_pushnumber(L, b->buildTimeMult); return 1; }
-    if (strcmp(key, "buildersThisFrame") == 0) { lua_pushinteger(L, b->buildersThisFrame); return 1; }
-    if (strcmp(key, "pathThreshold") == 0) { lua_pushnumber(L, b->pathThreshold); return 1; }
-
-    lua_pushnil(L);
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    lua_pushboolean(L, instance->isComplete ? 1 : 0);
     return 1;
 }
 
-int ConstructionStateBinding::newindex(lua_State* L)
+static int ConstructionState_get_isPaused(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ConstructionState is nil");
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    lua_pushboolean(L, instance->isPaused ? 1 : 0);
+    return 1;
+}
 
-    if (strcmp(key, "isComplete") == 0) { b->isComplete = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "isPaused") == 0) { b->isPaused = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "isDismantled") == 0) { b->isDismantled = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "constructionProgress") == 0) { b->constructionProgress = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "msgDismantleAmount") == 0) { b->msgDismantleAmount = (float)luaL_checknumber(L, 3); return 0; }
-    // TODO lektor<ConstructionState::BuildMaterial*> mats; unsupported __newindex type from header line 135
-    if (strcmp(key, "totalMats") == 0) { b->totalMats = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "buildTimeMult") == 0) { b->buildTimeMult = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "buildersThisFrame") == 0) { b->buildersThisFrame = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "pathThreshold") == 0) { b->pathThreshold = (float)luaL_checknumber(L, 3); return 0; }
+static int ConstructionState_get_isDismantled(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    lua_pushboolean(L, instance->isDismantled ? 1 : 0);
+    return 1;
+}
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+static int ConstructionState_get_constructionProgress(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    lua_pushnumber(L, instance->constructionProgress);
+    return 1;
+}
+
+static int ConstructionState_get_msgDismantleAmount(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    lua_pushnumber(L, instance->msgDismantleAmount);
+    return 1;
+}
+
+static int ConstructionState_get_mats(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    // TODO: Unsupported type for mats (lektor<ConstructionState::BuildMaterial*>)
+    return luaL_error(L, "Unsupported property 'mats' (type: lektor<ConstructionState::BuildMaterial*>)");
+}
+
+static int ConstructionState_get_totalMats(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    lua_pushnumber(L, instance->totalMats);
+    return 1;
+}
+
+static int ConstructionState_get_buildTimeMult(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    lua_pushnumber(L, instance->buildTimeMult);
+    return 1;
+}
+
+static int ConstructionState_get_buildersThisFrame(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    lua_pushinteger(L, instance->buildersThisFrame);
+    return 1;
+}
+
+static int ConstructionState_get_pathThreshold(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    lua_pushnumber(L, instance->pathThreshold);
+    return 1;
+}
+
+// --- Setters for ConstructionState ---
+static int ConstructionState_set_isComplete(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    instance->isComplete = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int ConstructionState_set_isPaused(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    instance->isPaused = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int ConstructionState_set_isDismantled(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    instance->isDismantled = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int ConstructionState_set_constructionProgress(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    instance->constructionProgress = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int ConstructionState_set_msgDismantleAmount(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    instance->msgDismantleAmount = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int ConstructionState_set_mats(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for mats");
+}
+
+static int ConstructionState_set_totalMats(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    instance->totalMats = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int ConstructionState_set_buildTimeMult(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    instance->buildTimeMult = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int ConstructionState_set_buildersThisFrame(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    instance->buildersThisFrame = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int ConstructionState_set_pathThreshold(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    instance->pathThreshold = (float)luaL_checknumber(L, 2);
+    return 0;
 }
 
 int ConstructionStateBinding::_DESTRUCTOR(lua_State* L)
 {
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ConstructionState is nil");
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 int ConstructionStateBinding::materialsEmpty(lua_State* L)
 {
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ConstructionState is nil");
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
 
-    bool result = b->materialsEmpty();
+    bool result = instance->materialsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ConstructionStateBinding::isOverThreshold(lua_State* L)
 {
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ConstructionState is nil");
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
 
-    bool result = b->isOverThreshold();
+    bool result = instance->isOverThreshold();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ConstructionStateBinding::getHealthBarProgress(lua_State* L)
 {
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ConstructionState is nil");
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
 
-    float result = b->getHealthBarProgress();
+    float result = instance->getHealthBarProgress();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ConstructionStateBinding::getConstructionMaterialProgress(lua_State* L)
 {
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ConstructionState is nil");
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
 
-    float result = b->getConstructionMaterialProgress();
+    float result = instance->getConstructionMaterialProgress();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ConstructionStateBinding::getHealthBarActual(lua_State* L)
 {
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ConstructionState is nil");
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
 
-    std::string result = b->getHealthBarActual();
+    std::string result = instance->getHealthBarActual();
     lua_pushstring(L, result.c_str());
     return 1;
 }
 
 int ConstructionStateBinding::getTotalMats(lua_State* L)
 {
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ConstructionState is nil");
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
 
-    float result = b->getTotalMats();
+    float result = instance->getTotalMats();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ConstructionStateBinding::getTotalMatsPresent(lua_State* L)
 {
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ConstructionState is nil");
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
 
-    float result = b->getTotalMatsPresent();
+    float result = instance->getTotalMatsPresent();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ConstructionStateBinding::needMats(lua_State* L)
 {
-    Building::ConstructionState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ConstructionState is nil");
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
 
-    bool result = b->needMats();
+    bool result = instance->needMats();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 101: Building::ConstructionState* _CONSTRUCTOR(...) - overloaded method
-  line 103: Building::ConstructionState* _CONSTRUCTOR(...) - overloaded method
+  line 101: ConstructionState* _CONSTRUCTOR(...) - overloaded method
+  line 103: ConstructionState* _CONSTRUCTOR(...) - overloaded method
   line 106: void addMaterials(...) - unsupported arg type
   line 126: ConstructionState::BuildMaterial* getMaterial(...) - unsupported arg type
   line 127: void setup(...) - unsupported arg type
@@ -173,6 +275,18 @@ Skipped methods needing manual binding:
   line 134: float getBuildingTimeInHours(...) - static method
 */
 
+int ConstructionStateBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int ConstructionStateBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.ConstructionState object");
+    return 1;
+}
+
 void ConstructionStateBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -180,6 +294,7 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
         { "__tostring", ConstructionStateBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", ConstructionStateBinding::_DESTRUCTOR },
         { "materialsEmpty", ConstructionStateBinding::materialsEmpty },
@@ -192,7 +307,66 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
         { "needMats", ConstructionStateBinding::needMats },
         { 0, 0 }
     };
-    registerClass(L, ConstructionStateBinding::getMetatableName(), meta, methods, ConstructionStateBinding::index, ConstructionStateBinding::newindex);
-}
 
-} // namespace KenshiLua
+    registerClass(
+        L, 
+        ConstructionStateBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, ConstructionStateBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, ConstructionState_get_isComplete);
+    lua_setfield(L, -2, "isComplete");
+    lua_pushcfunction(L, ConstructionState_get_isPaused);
+    lua_setfield(L, -2, "isPaused");
+    lua_pushcfunction(L, ConstructionState_get_isDismantled);
+    lua_setfield(L, -2, "isDismantled");
+    lua_pushcfunction(L, ConstructionState_get_constructionProgress);
+    lua_setfield(L, -2, "constructionProgress");
+    lua_pushcfunction(L, ConstructionState_get_msgDismantleAmount);
+    lua_setfield(L, -2, "msgDismantleAmount");
+    lua_pushcfunction(L, ConstructionState_get_mats);
+    lua_setfield(L, -2, "mats");
+    lua_pushcfunction(L, ConstructionState_get_totalMats);
+    lua_setfield(L, -2, "totalMats");
+    lua_pushcfunction(L, ConstructionState_get_buildTimeMult);
+    lua_setfield(L, -2, "buildTimeMult");
+    lua_pushcfunction(L, ConstructionState_get_buildersThisFrame);
+    lua_setfield(L, -2, "buildersThisFrame");
+    lua_pushcfunction(L, ConstructionState_get_pathThreshold);
+    lua_setfield(L, -2, "pathThreshold");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, ConstructionState_set_isComplete);
+    lua_setfield(L, -2, "isComplete");
+    lua_pushcfunction(L, ConstructionState_set_isPaused);
+    lua_setfield(L, -2, "isPaused");
+    lua_pushcfunction(L, ConstructionState_set_isDismantled);
+    lua_setfield(L, -2, "isDismantled");
+    lua_pushcfunction(L, ConstructionState_set_constructionProgress);
+    lua_setfield(L, -2, "constructionProgress");
+    lua_pushcfunction(L, ConstructionState_set_msgDismantleAmount);
+    lua_setfield(L, -2, "msgDismantleAmount");
+    lua_pushcfunction(L, ConstructionState_set_mats);
+    lua_setfield(L, -2, "mats");
+    lua_pushcfunction(L, ConstructionState_set_totalMats);
+    lua_setfield(L, -2, "totalMats");
+    lua_pushcfunction(L, ConstructionState_set_buildTimeMult);
+    lua_setfield(L, -2, "buildTimeMult");
+    lua_pushcfunction(L, ConstructionState_set_buildersThisFrame);
+    lua_setfield(L, -2, "buildersThisFrame");
+    lua_pushcfunction(L, ConstructionState_set_pathThreshold);
+    lua_setfield(L, -2, "pathThreshold");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to Ogre::GeneralAllocatedObject
+    // // // // // // // // // // // // // // setMetatableParent(L, ConstructionStateBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
+}
+}

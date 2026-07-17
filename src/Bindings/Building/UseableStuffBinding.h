@@ -15,10 +15,12 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
     static int _DESTRUCTOR(lua_State* L);
+    static int getUseableStuff(lua_State* L);
+    static int _NV_getUseableStuff(lua_State* L);
+    static int createInventoryLayout(lua_State* L);
+    static int _NV_createInventoryLayout(lua_State* L);
     static int takeMoney(lua_State* L);
     static int _NV_takeMoney(lua_State* L);
     static int getMoney(lua_State* L);
@@ -41,6 +43,10 @@ public:
     static int _NV_setBroken(lua_State* L);
     static int isDisabled(lua_State* L);
     static int _NV_isDisabled(lua_State* L);
+    static int getMouseCursor(lua_State* L);
+    static int _NV_getMouseCursor(lua_State* L);
+    static int getDefaultTask(lua_State* L);
+    static int _NV_getDefaultTask(lua_State* L);
     static int getReachRange(lua_State* L);
     static int _NV_getReachRange(lua_State* L);
     static int dontNeedWorkRightNow(lua_State* L);
@@ -74,6 +80,9 @@ public:
     static int isPowerOn(lua_State* L);
     static int _NV_isPowerOn(lua_State* L);
     static int isRecievesBatteryPower(lua_State* L);
+    static int getStatUsed(lua_State* L);
+    static int getDoorLock(lua_State* L);
+    static int _NV_getDoorLock(lua_State* L);
     static int hasDoorLock(lua_State* L);
     static int _NV_hasDoorLock(lua_State* L);
     static int getFunctionalityData(lua_State* L);

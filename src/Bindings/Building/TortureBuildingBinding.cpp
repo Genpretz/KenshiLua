@@ -1,91 +1,98 @@
 #include "pch.h"
-#include "Bindings/Building/TortureBuildingBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/TortureBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "TortureBuildingBinding.h"
+#include "ProductionBuildingBinding.h"
+#include "StorageBuildingBinding.h"
+#include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
 
-static TortureBuilding* getS(lua_State* L, int idx)
+static TortureBuilding* getInstance(lua_State* L, int idx)
 {
     return checkObject<TortureBuilding>(L, idx, TortureBuildingBinding::getMetatableName());
 }
 
-int TortureBuildingBinding::gc(lua_State* L) { return noopGc(L); }
-
-int TortureBuildingBinding::tostring(lua_State* L)
+// --- Getters for TortureBuilding ---
+static int TortureBuilding_get_timer(lua_State* L)
 {
-    TortureBuilding* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int TortureBuildingBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, TortureBuildingBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    TortureBuilding* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "timer") == 0) { lua_pushnumber(L, s->timer); return 1; }
-
-    lua_pushnil(L);
+    TortureBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TortureBuilding is nil");
+    lua_pushnumber(L, instance->timer);
     return 1;
 }
 
-int TortureBuildingBinding::newindex(lua_State* L)
+// --- Setters for TortureBuilding ---
+static int TortureBuilding_set_timer(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    TortureBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TortureBuilding is nil");
+    TortureBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TortureBuilding is nil");
+    instance->timer = (float)luaL_checknumber(L, 2);
+    return 0;
+}
 
-    if (strcmp(key, "timer") == 0) { s->timer = (float)luaL_checknumber(L, 3); return 0; }
+// --- Methods for TortureBuilding ---
+int TortureBuildingBinding::getFunctionStuff(lua_State* L)
+{
+    TortureBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TortureBuilding is nil");
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+    StorageBuilding* result = instance->getFunctionStuff();
+    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
+}
+
+int TortureBuildingBinding::_NV_getFunctionStuff(lua_State* L)
+{
+    TortureBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TortureBuilding is nil");
+
+    StorageBuilding* result = instance->_NV_getFunctionStuff();
+    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
 }
 
 int TortureBuildingBinding::update(lua_State* L)
 {
-    TortureBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TortureBuilding is nil");
+    TortureBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TortureBuilding is nil");
 
-    s->update();
+    instance->update();
     return 0;
 }
 
 int TortureBuildingBinding::_NV_update(lua_State* L)
 {
-    TortureBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TortureBuilding is nil");
+    TortureBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TortureBuilding is nil");
 
-    s->_NV_update();
+    instance->_NV_update();
     return 0;
 }
 
 int TortureBuildingBinding::_DESTRUCTOR(lua_State* L)
 {
-    TortureBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TortureBuilding is nil");
+    TortureBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TortureBuilding is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 11: TortureBuilding* _CONSTRUCTOR(...) - unsupported return type
-  line 12: StorageBuilding* getFunctionStuff(...) - unsupported return type
-  line 13: StorageBuilding* _NV_getFunctionStuff(...) - unsupported return type
+  line 11: TortureBuilding* _CONSTRUCTOR(...) - unsupported arg type
 */
+
+int TortureBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int TortureBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.TortureBuilding object");
+    return 1;
+}
 
 void TortureBuildingBinding::registerBinding(lua_State* L)
 {
@@ -94,13 +101,40 @@ void TortureBuildingBinding::registerBinding(lua_State* L)
         { "__tostring", TortureBuildingBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
+        { "getFunctionStuff", TortureBuildingBinding::getFunctionStuff },
+        { "_NV_getFunctionStuff", TortureBuildingBinding::_NV_getFunctionStuff },
         { "update", TortureBuildingBinding::update },
         { "_NV_update", TortureBuildingBinding::_NV_update },
         { "_DESTRUCTOR", TortureBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, TortureBuildingBinding::getMetatableName(), meta, methods, TortureBuildingBinding::index, TortureBuildingBinding::newindex);
+
+    registerClass(
+        L, 
+        TortureBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, TortureBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, TortureBuilding_get_timer);
+    lua_setfield(L, -2, "timer");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, TortureBuilding_set_timer);
+    lua_setfield(L, -2, "timer");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to ProductionBuilding
+    setMetatableParent(L, TortureBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Window" skin="Kenshi_WindowCX" position_real="0.101563 0 0.234375 0.46875" align="Default" layer="Window" name="Root">
+        <Property key="Caption" value="Script Editor"/>
+        <Property key="Movable" value="true"/>
+        <Property key="Snap" value="true"/>
+        <Widget type="Widget" skin="PanelEmpty" position_real="0.00841751 0.00425532 0.984848 0.987234" align="Stretch" name="datapanel">
+            <Widget type="EditBox" skin="Kenshi_ScriptEditor_EditBox" position_real="0.00854701 0.0632184 0.986325 0.62931" align="HStretch VStretch" name="ScriptEditor_InputBox">
+                <Property key="VisibleHScroll" value="true"/>
+                <Property key="VisibleVScroll" value="true"/>
+                <Property key="Pointer" value="beam"/>
+            </Widget>
+            <Widget type="EditBox" skin="Kenshi_ScriptEditor_EditBox" position_real="0.00854701 0.702586 0.986325 0.284483" align="HStretch Bottom" name="ScriptEditor_OutputBox">
+                <Property key="ReadOnly" value="true"/>
+                <Property key="VisibleHScroll" value="true"/>
+                <Property key="VisibleVScroll" value="true"/>
+                <Property key="Pointer" value="beam"/>
+            </Widget>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position_real="0.0218855 0.012766 0.112795 0.0510638" align="Left Top" name="ScriptEditor_OpenButton">
+            <Property key="Caption" value="Open"/>
+            <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position_real="0.13468 0.012766 0.109428 0.0510638" align="Left Top" name="ScriptEditor_SaveButton">
+            <Property key="Caption" value="Save"/>
+            <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position_real="0.244108 0.0141844 0.13468 0.0510638" align="Left Top" name="ScriptEditor_SaveAsButton">
+            <Property key="Caption" value="Save As"/>
+            <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position_real="0.858586 0.012766 0.126263 0.0510638" align="Right Top" name="ScriptEditor_ClearButton">
+            <Property key="Caption" value="Clear"/>
+            <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position_real="0.732323 0.012766 0.124579 0.0510638" align="Right Top" name="ScriptEditor_RunButton">
+            <Property key="Caption" value="Run"/>
+            <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
+        </Widget>
+    </Widget>
+    <CodeGeneratorSettings/>
+</MyGUI>

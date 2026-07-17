@@ -1,391 +1,726 @@
 #include "pch.h"
-#include "Bindings/Building/FarmBuildingBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/FarmBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "FarmBuildingBinding.h"
+#include "ProductionBuildingBinding.h"
+#include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
 
-static FarmBuilding* getS(lua_State* L, int idx)
+static FarmBuilding* getInstance(lua_State* L, int idx)
 {
     return checkObject<FarmBuilding>(L, idx, FarmBuildingBinding::getMetatableName());
 }
 
-int FarmBuildingBinding::gc(lua_State* L) { return noopGc(L); }
-
-int FarmBuildingBinding::tostring(lua_State* L)
+// --- Getters for FarmBuilding ---
+static int FarmBuilding_get_cropMultipliers(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int FarmBuildingBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, FarmBuildingBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    FarmBuilding* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    // TODO ogre_unordered_map<CropType, float>::type cropMultipliers; unsupported __index type from header line 66
-    // TODO Ogre::SharedPtr<Ogre::Material> material; unsupported __index type from header line 141
-    // TODO Ogre::Entity* plantEntity; unsupported __index type from header line 142
-    // TODO lektor<FarmBuilding::Plant> plants; unsupported __index type from header line 143
-    // TODO StaticBoxEntity* clickHull; unsupported __index type from header line 144
-    if (strcmp(key, "batch") == 0) { lua_pushinteger(L, (lua_Integer)s->batch); return 1; }
-    if (strcmp(key, "lastUpdated") == 0) { lua_pushnumber(L, s->lastUpdated); return 1; }
-    if (strcmp(key, "eatingTime") == 0) { lua_pushnumber(L, s->eatingTime); return 1; }
-    if (strcmp(key, "grown") == 0) { lua_pushnumber(L, s->grown); return 1; }
-    if (strcmp(key, "died") == 0) { lua_pushnumber(L, s->died); return 1; }
-    if (strcmp(key, "cleared") == 0) { lua_pushnumber(L, s->cleared); return 1; }
-    if (strcmp(key, "growStart") == 0) { lua_pushnumber(L, s->growStart); return 1; }
-    if (strcmp(key, "harvested") == 0) { lua_pushinteger(L, s->harvested); return 1; }
-    if (strcmp(key, "itemsPerPlant") == 0) { lua_pushnumber(L, s->itemsPerPlant); return 1; }
-    if (strcmp(key, "clearRate") == 0) { lua_pushnumber(L, s->clearRate); return 1; }
-    if (strcmp(key, "consumptionRate") == 0) { lua_pushnumber(L, s->consumptionRate); return 1; }
-    if (strcmp(key, "harvestRate") == 0) { lua_pushnumber(L, s->harvestRate); return 1; }
-    if (strcmp(key, "growthTime") == 0) { lua_pushnumber(L, s->growthTime); return 1; }
-    if (strcmp(key, "harvestTime") == 0) { lua_pushnumber(L, s->harvestTime); return 1; }
-    if (strcmp(key, "deathTime") == 0) { lua_pushnumber(L, s->deathTime); return 1; }
-    if (strcmp(key, "droughtTime") == 0) { lua_pushnumber(L, s->droughtTime); return 1; }
-    if (strcmp(key, "deathThreshold") == 0) { lua_pushnumber(L, s->deathThreshold); return 1; }
-    if (strcmp(key, "droughtMultiplier") == 0) { lua_pushnumber(L, s->droughtMultiplier); return 1; }
-    if (strcmp(key, "fertilityMultiplier") == 0) { lua_pushnumber(L, s->fertilityMultiplier); return 1; }
-    if (strcmp(key, "isHydroponic") == 0) { lua_pushboolean(L, s->isHydroponic ? 1 : 0); return 1; }
-
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    // TODO: Unsupported type for cropMultipliers (ogre_unordered_map<CropType, float>::type)
     lua_pushnil(L);
     return 1;
 }
 
-int FarmBuildingBinding::newindex(lua_State* L)
+static int FarmBuilding_get_material(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
-
-    // TODO ogre_unordered_map<CropType, float>::type cropMultipliers; unsupported __newindex type from header line 66
-    // TODO Ogre::SharedPtr<Ogre::Material> material; unsupported __newindex type from header line 141
-    // TODO Ogre::Entity* plantEntity; unsupported __newindex type from header line 142
-    // TODO lektor<FarmBuilding::Plant> plants; unsupported __newindex type from header line 143
-    // TODO StaticBoxEntity* clickHull; unsupported __newindex type from header line 144
-    // TODO FarmBuilding::FarmBatch* batch; unsupported __newindex type from header line 145
-    if (strcmp(key, "lastUpdated") == 0) { s->lastUpdated = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "eatingTime") == 0) { s->eatingTime = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "grown") == 0) { s->grown = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "died") == 0) { s->died = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "cleared") == 0) { s->cleared = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "growStart") == 0) { s->growStart = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "harvested") == 0) { s->harvested = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "itemsPerPlant") == 0) { s->itemsPerPlant = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "clearRate") == 0) { s->clearRate = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "consumptionRate") == 0) { s->consumptionRate = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "harvestRate") == 0) { s->harvestRate = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "growthTime") == 0) { s->growthTime = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "harvestTime") == 0) { s->harvestTime = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "deathTime") == 0) { s->deathTime = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "droughtTime") == 0) { s->droughtTime = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "deathThreshold") == 0) { s->deathThreshold = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "droughtMultiplier") == 0) { s->droughtMultiplier = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "fertilityMultiplier") == 0) { s->fertilityMultiplier = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "isHydroponic") == 0) { s->isHydroponic = lua_toboolean(L, 3) != 0; return 0; }
-
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    // TODO: Unsupported type for material (Ogre::SharedPtr<Ogre::Material>)
+    lua_pushnil(L);
+    return 1;
 }
 
+static int FarmBuilding_get_plantEntity(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushlightuserdata(L, (void*)instance->plantEntity);
+    return 1;
+}
+
+static int FarmBuilding_get_plants(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    // TODO: Unsupported type for plants (lektor<FarmBuilding::Plant>)
+    lua_pushnil(L);
+    return 1;
+}
+
+static int FarmBuilding_get_clickHull(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushlightuserdata(L, (void*)instance->clickHull);
+    return 1;
+}
+
+static int FarmBuilding_get_batch(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushlightuserdata(L, (void*)instance->batch);
+    return 1;
+}
+
+static int FarmBuilding_get_lastUpdated(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->lastUpdated);
+    return 1;
+}
+
+static int FarmBuilding_get_eatingTime(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->eatingTime);
+    return 1;
+}
+
+static int FarmBuilding_get_grown(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->grown);
+    return 1;
+}
+
+static int FarmBuilding_get_died(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->died);
+    return 1;
+}
+
+static int FarmBuilding_get_cleared(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->cleared);
+    return 1;
+}
+
+static int FarmBuilding_get_growStart(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->growStart);
+    return 1;
+}
+
+static int FarmBuilding_get_harvested(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushinteger(L, instance->harvested);
+    return 1;
+}
+
+static int FarmBuilding_get_itemsPerPlant(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->itemsPerPlant);
+    return 1;
+}
+
+static int FarmBuilding_get_clearRate(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->clearRate);
+    return 1;
+}
+
+static int FarmBuilding_get_consumptionRate(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->consumptionRate);
+    return 1;
+}
+
+static int FarmBuilding_get_harvestRate(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->harvestRate);
+    return 1;
+}
+
+static int FarmBuilding_get_growthTime(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->growthTime);
+    return 1;
+}
+
+static int FarmBuilding_get_harvestTime(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->harvestTime);
+    return 1;
+}
+
+static int FarmBuilding_get_deathTime(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->deathTime);
+    return 1;
+}
+
+static int FarmBuilding_get_droughtTime(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->droughtTime);
+    return 1;
+}
+
+static int FarmBuilding_get_deathThreshold(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->deathThreshold);
+    return 1;
+}
+
+static int FarmBuilding_get_droughtMultiplier(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->droughtMultiplier);
+    return 1;
+}
+
+static int FarmBuilding_get_fertilityMultiplier(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushnumber(L, instance->fertilityMultiplier);
+    return 1;
+}
+
+static int FarmBuilding_get_isHydroponic(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    lua_pushboolean(L, instance->isHydroponic ? 1 : 0);
+    return 1;
+}
+
+// --- Setters for FarmBuilding ---
+static int FarmBuilding_set_cropMultipliers(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for cropMultipliers");
+}
+
+static int FarmBuilding_set_material(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for material");
+}
+
+static int FarmBuilding_set_plantEntity(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for plantEntity");
+}
+
+static int FarmBuilding_set_plants(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for plants");
+}
+
+static int FarmBuilding_set_clickHull(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for clickHull");
+}
+
+static int FarmBuilding_set_batch(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for batch");
+}
+
+static int FarmBuilding_set_lastUpdated(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->lastUpdated = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_eatingTime(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->eatingTime = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_grown(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->grown = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_died(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->died = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_cleared(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->cleared = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_growStart(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->growStart = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_harvested(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->harvested = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_itemsPerPlant(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->itemsPerPlant = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_clearRate(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->clearRate = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_consumptionRate(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->consumptionRate = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_harvestRate(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->harvestRate = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_growthTime(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->growthTime = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_harvestTime(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->harvestTime = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_deathTime(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->deathTime = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_droughtTime(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->droughtTime = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_deathThreshold(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->deathThreshold = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_droughtMultiplier(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->droughtMultiplier = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_fertilityMultiplier(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->fertilityMultiplier = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int FarmBuilding_set_isHydroponic(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    instance->isHydroponic = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+// --- Methods for FarmBuilding
 int FarmBuildingBinding::_DESTRUCTOR(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 int FarmBuildingBinding::createPhysical(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->createPhysical();
+    bool result = instance->createPhysical();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::_NV_createPhysical(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->_NV_createPhysical();
+    bool result = instance->_NV_createPhysical();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::destroyPhysical(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    s->destroyPhysical();
+    instance->destroyPhysical();
     return 0;
 }
 
 int FarmBuildingBinding::_NV_destroyPhysical(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    s->_NV_destroyPhysical();
+    instance->_NV_destroyPhysical();
     return 0;
 }
 
 int FarmBuildingBinding::setVisible(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    s->setVisible(on);
+    instance->setVisible(on);
     return 0;
 }
 
 int FarmBuildingBinding::_NV_setVisible(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    s->_NV_setVisible(on);
+    instance->_NV_setVisible(on);
     return 0;
 }
 
 int FarmBuildingBinding::update(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    s->update();
+    instance->update();
     return 0;
 }
 
 int FarmBuildingBinding::_NV_update(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    s->_NV_update();
+    instance->_NV_update();
     return 0;
 }
 
 int FarmBuildingBinding::needsUpdate(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->needsUpdate();
+    bool result = instance->needsUpdate();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::_NV_needsUpdate(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->_NV_needsUpdate();
+    bool result = instance->_NV_needsUpdate();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::isAnyInputsEmpty(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->isAnyInputsEmpty();
+    bool result = instance->isAnyInputsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::_NV_isAnyInputsEmpty(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->_NV_isAnyInputsEmpty();
+    bool result = instance->_NV_isAnyInputsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::isProductionFull(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->isProductionFull();
+    bool result = instance->isProductionFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::_NV_isProductionFull(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->_NV_isProductionFull();
+    bool result = instance->_NV_isProductionFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::howMuchPowerDoYouWantForSortingFunction(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    float result = s->howMuchPowerDoYouWantForSortingFunction();
+    float result = instance->howMuchPowerDoYouWantForSortingFunction();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int FarmBuildingBinding::_NV_howMuchPowerDoYouWantForSortingFunction(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    float result = s->_NV_howMuchPowerDoYouWantForSortingFunction();
+    float result = instance->_NV_howMuchPowerDoYouWantForSortingFunction();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int FarmBuildingBinding::setupMiningResourceLevel(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    s->setupMiningResourceLevel();
+    instance->setupMiningResourceLevel();
     return 0;
 }
 
 int FarmBuildingBinding::_NV_setupMiningResourceLevel(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    s->_NV_setupMiningResourceLevel();
+    instance->_NV_setupMiningResourceLevel();
     return 0;
 }
 
 int FarmBuildingBinding::destroyAPlant(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->destroyAPlant();
+    bool result = instance->destroyAPlant();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::timeSkip(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
     float h = (float)luaL_checknumber(L, 2);
     bool ignoreWater = lua_toboolean(L, 3) != 0;
-    s->timeSkip(h, ignoreWater);
+    instance->timeSkip(h, ignoreWater);
     return 0;
 }
 
 int FarmBuildingBinding::_updateInputs(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
     float rate = (float)luaL_checknumber(L, 2);
-    bool result = s->_updateInputs(rate);
+    bool result = instance->_updateInputs(rate);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::isCropsEdible(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->isCropsEdible();
+    bool result = instance->isCropsEdible();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::eat(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
     float rate = (float)luaL_checknumber(L, 2);
-    s->eat(rate);
+    instance->eat(rate);
     return 0;
+}
+
+int FarmBuildingBinding::getDirectionMarker(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    Ogre::Vector3 currentPosition;
+    readVector3(L, 2, currentPosition);
+    Ogre::Vector3 result = instance->getDirectionMarker(currentPosition);
+    pushVector3(L, result);
+    return 1;
+}
+
+int FarmBuildingBinding::_NV_getDirectionMarker(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    Ogre::Vector3 currentPosition;
+    readVector3(L, 2, currentPosition);
+    Ogre::Vector3 result = instance->_NV_getDirectionMarker(currentPosition);
+    pushVector3(L, result);
+    return 1;
 }
 
 int FarmBuildingBinding::dontNeedWorkRightNow(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->dontNeedWorkRightNow();
+    bool result = instance->dontNeedWorkRightNow();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::_NV_dontNeedWorkRightNow(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    bool result = s->_NV_dontNeedWorkRightNow();
+    bool result = instance->_NV_dontNeedWorkRightNow();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FarmBuildingBinding::setupMaterial(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    s->setupMaterial();
+    instance->setupMaterial();
     return 0;
 }
 
 int FarmBuildingBinding::updateMaterial(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    s->updateMaterial();
+    instance->updateMaterial();
     return 0;
 }
 
 int FarmBuildingBinding::resetFarm(lua_State* L)
 {
-    FarmBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "FarmBuilding is nil");
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
 
-    s->resetFarm();
+    instance->resetFarm();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 21: FarmBuilding* _CONSTRUCTOR(...) - unsupported return type
+  line 21: FarmBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 34: void operate(...) - unsupported arg type
   line 35: void _NV_operate(...) - unsupported arg type
   line 44: void getGUIData(...) - unsupported arg type
@@ -409,14 +744,24 @@ Skipped methods needing manual binding:
   line 68: GameSaveState _NV_serialise(...) - unsupported return type
   line 69: void loadFromSerialise(...) - unsupported arg type
   line 70: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 71: Ogre::Vector3 getDirectionMarker(...) - unsupported return type
-  line 72: Ogre::Vector3 _NV_getDirectionMarker(...) - unsupported return type
   line 75: float getFertilityMultiplier(...) - static method
   line 149: void updatePlantInstance(...) - non-string reference arg
   line 150: void createPlants(...) - pointer arg
   line 151: void createClickHull(...) - pointer arg
   line 152: void createEntity(...) - pointer arg
 */
+
+int FarmBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int FarmBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.FarmBuilding object");
+    return 1;
+}
 
 void FarmBuildingBinding::registerBinding(lua_State* L)
 {
@@ -425,6 +770,7 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
         { "__tostring", FarmBuildingBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", FarmBuildingBinding::_DESTRUCTOR },
         { "createPhysical", FarmBuildingBinding::createPhysical },
@@ -450,6 +796,8 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
         { "_updateInputs", FarmBuildingBinding::_updateInputs },
         { "isCropsEdible", FarmBuildingBinding::isCropsEdible },
         { "eat", FarmBuildingBinding::eat },
+        { "getDirectionMarker", FarmBuildingBinding::getDirectionMarker },
+        { "_NV_getDirectionMarker", FarmBuildingBinding::_NV_getDirectionMarker },
         { "dontNeedWorkRightNow", FarmBuildingBinding::dontNeedWorkRightNow },
         { "_NV_dontNeedWorkRightNow", FarmBuildingBinding::_NV_dontNeedWorkRightNow },
         { "setupMaterial", FarmBuildingBinding::setupMaterial },
@@ -457,7 +805,127 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
         { "resetFarm", FarmBuildingBinding::resetFarm },
         { 0, 0 }
     };
-    registerClass(L, FarmBuildingBinding::getMetatableName(), meta, methods, FarmBuildingBinding::index, FarmBuildingBinding::newindex);
+
+    registerClass(
+        L, 
+        FarmBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, FarmBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, FarmBuilding_get_cropMultipliers);
+    lua_setfield(L, -2, "cropMultipliers");
+    lua_pushcfunction(L, FarmBuilding_get_material);
+    lua_setfield(L, -2, "material");
+    lua_pushcfunction(L, FarmBuilding_get_plantEntity);
+    lua_setfield(L, -2, "plantEntity");
+    lua_pushcfunction(L, FarmBuilding_get_plants);
+    lua_setfield(L, -2, "plants");
+    lua_pushcfunction(L, FarmBuilding_get_clickHull);
+    lua_setfield(L, -2, "clickHull");
+    lua_pushcfunction(L, FarmBuilding_get_batch);
+    lua_setfield(L, -2, "batch");
+    lua_pushcfunction(L, FarmBuilding_get_lastUpdated);
+    lua_setfield(L, -2, "lastUpdated");
+    lua_pushcfunction(L, FarmBuilding_get_eatingTime);
+    lua_setfield(L, -2, "eatingTime");
+    lua_pushcfunction(L, FarmBuilding_get_grown);
+    lua_setfield(L, -2, "grown");
+    lua_pushcfunction(L, FarmBuilding_get_died);
+    lua_setfield(L, -2, "died");
+    lua_pushcfunction(L, FarmBuilding_get_cleared);
+    lua_setfield(L, -2, "cleared");
+    lua_pushcfunction(L, FarmBuilding_get_growStart);
+    lua_setfield(L, -2, "growStart");
+    lua_pushcfunction(L, FarmBuilding_get_harvested);
+    lua_setfield(L, -2, "harvested");
+    lua_pushcfunction(L, FarmBuilding_get_itemsPerPlant);
+    lua_setfield(L, -2, "itemsPerPlant");
+    lua_pushcfunction(L, FarmBuilding_get_clearRate);
+    lua_setfield(L, -2, "clearRate");
+    lua_pushcfunction(L, FarmBuilding_get_consumptionRate);
+    lua_setfield(L, -2, "consumptionRate");
+    lua_pushcfunction(L, FarmBuilding_get_harvestRate);
+    lua_setfield(L, -2, "harvestRate");
+    lua_pushcfunction(L, FarmBuilding_get_growthTime);
+    lua_setfield(L, -2, "growthTime");
+    lua_pushcfunction(L, FarmBuilding_get_harvestTime);
+    lua_setfield(L, -2, "harvestTime");
+    lua_pushcfunction(L, FarmBuilding_get_deathTime);
+    lua_setfield(L, -2, "deathTime");
+    lua_pushcfunction(L, FarmBuilding_get_droughtTime);
+    lua_setfield(L, -2, "droughtTime");
+    lua_pushcfunction(L, FarmBuilding_get_deathThreshold);
+    lua_setfield(L, -2, "deathThreshold");
+    lua_pushcfunction(L, FarmBuilding_get_droughtMultiplier);
+    lua_setfield(L, -2, "droughtMultiplier");
+    lua_pushcfunction(L, FarmBuilding_get_fertilityMultiplier);
+    lua_setfield(L, -2, "fertilityMultiplier");
+    lua_pushcfunction(L, FarmBuilding_get_isHydroponic);
+    lua_setfield(L, -2, "isHydroponic");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, FarmBuilding_set_cropMultipliers);
+    lua_setfield(L, -2, "cropMultipliers");
+    lua_pushcfunction(L, FarmBuilding_set_material);
+    lua_setfield(L, -2, "material");
+    lua_pushcfunction(L, FarmBuilding_set_plantEntity);
+    lua_setfield(L, -2, "plantEntity");
+    lua_pushcfunction(L, FarmBuilding_set_plants);
+    lua_setfield(L, -2, "plants");
+    lua_pushcfunction(L, FarmBuilding_set_clickHull);
+    lua_setfield(L, -2, "clickHull");
+    lua_pushcfunction(L, FarmBuilding_set_batch);
+    lua_setfield(L, -2, "batch");
+    lua_pushcfunction(L, FarmBuilding_set_lastUpdated);
+    lua_setfield(L, -2, "lastUpdated");
+    lua_pushcfunction(L, FarmBuilding_set_eatingTime);
+    lua_setfield(L, -2, "eatingTime");
+    lua_pushcfunction(L, FarmBuilding_set_grown);
+    lua_setfield(L, -2, "grown");
+    lua_pushcfunction(L, FarmBuilding_set_died);
+    lua_setfield(L, -2, "died");
+    lua_pushcfunction(L, FarmBuilding_set_cleared);
+    lua_setfield(L, -2, "cleared");
+    lua_pushcfunction(L, FarmBuilding_set_growStart);
+    lua_setfield(L, -2, "growStart");
+    lua_pushcfunction(L, FarmBuilding_set_harvested);
+    lua_setfield(L, -2, "harvested");
+    lua_pushcfunction(L, FarmBuilding_set_itemsPerPlant);
+    lua_setfield(L, -2, "itemsPerPlant");
+    lua_pushcfunction(L, FarmBuilding_set_clearRate);
+    lua_setfield(L, -2, "clearRate");
+    lua_pushcfunction(L, FarmBuilding_set_consumptionRate);
+    lua_setfield(L, -2, "consumptionRate");
+    lua_pushcfunction(L, FarmBuilding_set_harvestRate);
+    lua_setfield(L, -2, "harvestRate");
+    lua_pushcfunction(L, FarmBuilding_set_growthTime);
+    lua_setfield(L, -2, "growthTime");
+    lua_pushcfunction(L, FarmBuilding_set_harvestTime);
+    lua_setfield(L, -2, "harvestTime");
+    lua_pushcfunction(L, FarmBuilding_set_deathTime);
+    lua_setfield(L, -2, "deathTime");
+    lua_pushcfunction(L, FarmBuilding_set_droughtTime);
+    lua_setfield(L, -2, "droughtTime");
+    lua_pushcfunction(L, FarmBuilding_set_deathThreshold);
+    lua_setfield(L, -2, "deathThreshold");
+    lua_pushcfunction(L, FarmBuilding_set_droughtMultiplier);
+    lua_setfield(L, -2, "droughtMultiplier");
+    lua_pushcfunction(L, FarmBuilding_set_fertilityMultiplier);
+    lua_setfield(L, -2, "fertilityMultiplier");
+    lua_pushcfunction(L, FarmBuilding_set_isHydroponic);
+    lua_setfield(L, -2, "isHydroponic");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to ProductionBuilding
+    setMetatableParent(L, FarmBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

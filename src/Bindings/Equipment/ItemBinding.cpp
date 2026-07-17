@@ -1,4 +1,5 @@
 #include "pch.h"
+<<<<<<< HEAD:src/Bindings/Equipment/ItemBinding.cpp
 #include "Bindings/Equipment/ItemBinding.h"
 #include "Bindings/Core/GameDataBinding.h"
 #include "Bindings/Core/RootObjectBinding.h"
@@ -18,704 +19,780 @@
 
 #include <cstdio>
 #include <cstring>
+=======
+#include "kenshi\Item.h"
+#include "ItemBinding.h"
+#include "kenshi/Gear.h"
+#include "GearBinding.h"
+#include "CrossbowBinding.h"
+#include "ArmourBinding.h"
+#include "WeaponBinding.h"
+#include "LockedArmourBinding.h"
+#include "kenshi/Inventory.h"
+#include "InventoryBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/ArmourBinding.h"
+#include "Bindings/CrossbowBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GearBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/LockedArmourBinding.h"
+#include "Bindings/WeaponBinding.h"
+#include "Bindings/Util/HandBinding.h"
+>>>>>>> main:src/Bindings/ItemBinding.cpp
 
 namespace KenshiLua
 {
 
-// -----------------------------------------------------------------------------
-// InventoryItemBaseBinding
-// -----------------------------------------------------------------------------
-
-static InventoryItemBase* getBase(lua_State* L, int idx)
+static Item* getB(lua_State* L, int idx)
 {
-    return InventoryItemBaseBinding::checkItem(L, idx);
+    return checkObject<Item>(L, idx, ItemBinding::getMetatableName());
 }
 
-int InventoryItemBaseBinding::pushInventoryItemBase(lua_State* L, InventoryItemBase* item)
+// --- Getters for Item ---
+static int Item_get_physicalShouldExist(lua_State* L)
 {
-    if (item == nullptr)
-    {
-        lua_pushnil(L);
-        return 1;
-    }
-    Item* it = dynamic_cast<Item*>(item);
-    if (it)
-    {
-        return ItemBinding::pushItem(L, it);
-    }
-    return pushObject<InventoryItemBase>(L, item, InventoryItemBaseBinding::getMetatableName());
-}
-
-InventoryItemBase* InventoryItemBaseBinding::getItem(lua_State* L, int idx)
-{
-    InventoryItemBase* i = testObject<InventoryItemBase>(L, idx, InventoryItemBaseBinding::getMetatableName());
-    if (i) return i;
-    return ItemBinding::getItem(L, idx);
-}
-
-InventoryItemBase* InventoryItemBaseBinding::checkItem(lua_State* L, int idx)
-{
-    InventoryItemBase* i = getItem(L, idx);
-    if (!i)
-    {
-        luaL_argerror(L, idx, "InventoryItemBase");
-    }
-    return i;
-}
-
-int InventoryItemBaseBinding::gc(lua_State* L) { return noopGc(L); }
-
-int InventoryItemBaseBinding::tostring(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) { lua_pushstring(L, "InventoryItemBase:nil"); return 1; }
-    char buf[160];
-    _snprintf(buf, sizeof(buf), "InventoryItemBase:%s(%p)", i->getName().c_str(), (void*)i);
-    lua_pushstring(L, buf);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    lua_pushboolean(L, b->physicalShouldExist ? 1 : 0);
     return 1;
 }
 
-int InventoryItemBaseBinding::index(lua_State* L)
+static int Item_get_existAsBareWeapon(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, InventoryItemBaseBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) { lua_pushnil(L); return 1; }
-
-    // --- boolean members ---
-    if (strcmp(key, "isResearchArtifact") == 0) { lua_pushboolean(L, i->isResearchArtifact() ? 1 : 0); return 1; }
-    if (strcmp(key, "isEquipped") == 0) { lua_pushboolean(L, i->isEquipped ? 1 : 0); return 1; }
-    if (strcmp(key, "onGround") == 0) { lua_pushboolean(L, i->onGround() ? 1 : 0); return 1; }
-    if (strcmp(key, "isValid") == 0) { lua_pushboolean(L, i->isValid() ? 1 : 0); return 1; }
-    if (strcmp(key, "isInInventory") == 0) { lua_pushboolean(L, i->isInInventory ? 1 : 0); return 1; }
-    if (strcmp(key, "isTradeItem") == 0) { lua_pushboolean(L, i->isTradeItem ? 1 : 0); return 1; }
-    if (strcmp(key, "isUnique") == 0) { lua_pushboolean(L, i->isUnique ? 1 : 0); return 1; }
-    if (strcmp(key, "deathItem") == 0) { lua_pushboolean(L, i->deathItem ? 1 : 0); return 1; }
-
-    // --- float members ---
-    if (strcmp(key, "quality") == 0) { lua_pushnumber(L, i->quality); return 1; }
-    if (strcmp(key, "itemWeight") == 0) { lua_pushnumber(L, i->getItemWeight()); return 1; }
-    if (strcmp(key, "itemWeightSingle") == 0) { lua_pushnumber(L, i->getItemWeightSingle()); return 1; }
-    if (strcmp(key, "originalFullChargeAmount") == 0) { lua_pushnumber(L, i->originalFullChargeAmount); return 1; }
-    if (strcmp(key, "chargesLeft") == 0) { lua_pushnumber(L, i->chargesLeft); return 1; }
-
-    // --- integer/enum members ---
-    if (strcmp(key, "level") == 0) { lua_pushinteger(L, i->getLevel()); return 1; }
-    if (strcmp(key, "quantity") == 0) { lua_pushinteger(L, i->quantity); return 1; }
-    if (strcmp(key, "slotType") == 0) { lua_pushinteger(L, (int)i->slotType); return 1; }
-    if (strcmp(key, "itemFunction") == 0) { lua_pushinteger(L, (int)i->itemFunction); return 1; }
-    if (strcmp(key, "itemWidth") == 0) { lua_pushinteger(L, i->itemWidth); return 1; }
-    if (strcmp(key, "itemHeight") == 0) { lua_pushinteger(L, i->itemHeight); return 1; }
-    if (strcmp(key, "objectType") == 0) { lua_pushinteger(L, (int)i->objectType); return 1; }
-
-    // --- string members ---
-    if (strcmp(key, "inventorySection") == 0) { lua_pushstring(L, i->inventorySection.c_str()); return 1; }
-
-    // --- special/object members ---
-    if (strcmp(key, "properOwner") == 0) {
-        return HandBinding::pushHand(L, i->properOwner);
-    }
-    if (strcmp(key, "whosInventoryWeAreIn") == 0) {
-        return HandBinding::pushHand(L, i->_whosInventoryWeAreIn);
-    }
-    if (strcmp(key, "manufacturerData") == 0) {
-        return pushObject<GameData>(L, i->manufacturerData, GameDataBinding::getMetatableName());
-    }
-    if (strcmp(key, "materialData") == 0) {
-        return pushObject<GameData>(L, i->materialData, GameDataBinding::getMetatableName());
-    }
-    if (strcmp(key, "coloriseData") == 0) {
-        return pushObject<GameData>(L, i->coloriseData, GameDataBinding::getMetatableName());
-    }
-    if (strcmp(key, "inventoryPos") == 0) {
-        lua_createtable(L, 0, 2);
-        lua_pushinteger(L, i->inventoryPos.x); lua_setfield(L, -2, "x");
-        lua_pushinteger(L, i->inventoryPos.y); lua_setfield(L, -2, "y");
-        return 1;
-    }
-
-    // 3. Fall back to RootObject index
-    return RootObjectBinding::index(L);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    lua_pushboolean(L, b->existAsBareWeapon ? 1 : 0);
+    return 1;
 }
 
-int InventoryItemBaseBinding::newindex(lua_State* L)
+static int Item_get_persistant(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) return luaL_error(L, "InventoryItemBase is nil");
-
-    // --- writable members ---
-    if (strcmp(key, "inventorySection") == 0) {
-        i->inventorySection = luaL_checkstring(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "isResearchArtifact") == 0) { i->_isResearchArtifact = (lua_toboolean(L, 3) != 0); return 0; }
-    if (strcmp(key, "onGround") == 0) return luaL_error(L, "onGround is read-only");
-    if (strcmp(key, "isValid") == 0) return luaL_error(L, "isValid is read-only");
-    if (strcmp(key, "isInInventory") == 0) { i->isInInventory = (lua_toboolean(L, 3) != 0); return 0; }
-    if (strcmp(key, "isTradeItem") == 0) { i->isTradeItem = (lua_toboolean(L, 3) != 0); return 0; }
-    if (strcmp(key, "isUnique") == 0) { i->isUnique = (lua_toboolean(L, 3) != 0); return 0; }
-    if (strcmp(key, "deathItem") == 0) { i->deathItem = (lua_toboolean(L, 3) != 0); return 0; }
-    if (strcmp(key, "isEquipped") == 0) { i->isEquipped = (lua_toboolean(L, 3) != 0); return 0; }
-
-    if (strcmp(key, "quality") == 0) { i->quality = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "originalFullChargeAmount") == 0) { i->originalFullChargeAmount = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "chargesLeft") == 0) { i->chargesLeft = (float)luaL_checknumber(L, 3); return 0; }
-
-    if (strcmp(key, "quantity") == 0) { i->quantity = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "slotType") == 0) { i->slotType = (AttachSlot)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "itemFunction") == 0) { i->itemFunction = (ItemFunction)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "itemWidth") == 0) { i->itemWidth = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "itemHeight") == 0) { i->itemHeight = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "objectType") == 0) { i->objectType = (itemType)luaL_checkinteger(L, 3); return 0; }
-
-    if (strcmp(key, "properOwner") == 0) {
-        if (lua_isnil(L, 3)) {
-            i->properOwner.setNull();
-        } else {
-            hand* h = (hand*)luaL_checkudata(L, 3, HandBinding::getMetatableName());
-            if (h) i->properOwner = *h;
-        }
-        return 0;
-    }
-    if (strcmp(key, "whosInventoryWeAreIn") == 0) {
-        if (lua_isnil(L, 3)) {
-            i->_whosInventoryWeAreIn.setNull();
-        } else {
-            hand* h = (hand*)luaL_checkudata(L, 3, HandBinding::getMetatableName());
-            if (h) i->_whosInventoryWeAreIn = *h;
-        }
-        return 0;
-    }
-    if (strcmp(key, "inventoryPos") == 0) {
-        if (!lua_istable(L, 3)) return luaL_error(L, "expected table {x,y}");
-        lua_getfield(L, 3, "x"); i->inventoryPos.x = (int)luaL_checkinteger(L, -1); lua_pop(L, 1);
-        lua_getfield(L, 3, "y"); i->inventoryPos.y = (int)luaL_checkinteger(L, -1); lua_pop(L, 1);
-        return 0;
-    }
-
-    // Fall back to RootObject newindex
-    return RootObjectBinding::newindex(L);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    return handBinding::push(L, b->persistant);
 }
 
-int InventoryItemBaseBinding::resetCharges(lua_State* L)
+static int Item_get_visible(lua_State* L)
 {
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) return luaL_error(L, "InventoryItemBase is nil");
-    bool randomise = lua_toboolean(L, 2) != 0;
-    i->resetCharges(randomise);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    lua_pushboolean(L, b->visible ? 1 : 0);
+    return 1;
+}
+
+static int Item_get_physical(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    // TODO: Unsupported type for physical (SimplePhysXEntity*)
+    return luaL_error(L, "Unsupported property 'physical' (type: SimplePhysXEntity*)");
+}
+
+static int Item_get__isPhysical(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    lua_pushboolean(L, b->_isPhysical ? 1 : 0);
+    return 1;
+}
+
+static int Item_get_physicalEntity(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    // TODO: Unsupported type for physicalEntity (Ogre::Entity*)
+    return luaL_error(L, "Unsupported property 'physicalEntity' (type: Ogre::Entity*)");
+}
+
+static int Item_get_creatingPhysical(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    lua_pushboolean(L, b->creatingPhysical ? 1 : 0);
+    return 1;
+}
+
+static int Item_get_fixedPhysicalPosition(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    lua_pushboolean(L, b->fixedPhysicalPosition ? 1 : 0);
+    return 1;
+}
+
+static int Item_get_useDynamicPhysics(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    lua_pushboolean(L, b->useDynamicPhysics ? 1 : 0);
+    return 1;
+}
+
+static int Item_get_loadingEntity(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    // TODO: Unsupported type for loadingEntity (Ogre::Entity*)
+    return luaL_error(L, "Unsupported property 'loadingEntity' (type: Ogre::Entity*)");
+}
+
+// --- Setters for Item ---
+static int Item_set_physicalShouldExist(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    b->physicalShouldExist = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
-int InventoryItemBaseBinding::addQuantity(lua_State* L)
+static int Item_set_existAsBareWeapon(lua_State* L)
 {
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) return luaL_error(L, "InventoryItemBase is nil");
-    int amount = (int)luaL_checkinteger(L, 2);
-    Item* addedItem = ItemBinding::checkItem(L, 3);
-    InventorySection* section = nullptr;
-    if (!lua_isnoneornil(L, 4))
-    {
-        section = (InventorySection*)testObject<InventorySection>(L, 4, InventorySectionBinding::getMetatableName());
-    }
-    i->addQuantity(amount, addedItem, section);
-    lua_pushinteger(L, amount);
-    return 1;
-}
-
-int InventoryItemBaseBinding::subtractQuantity(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) return luaL_error(L, "InventoryItemBase is nil");
-    int amount = (int)luaL_checkinteger(L, 2);
-    i->quantity -= amount;
-    if (i->quantity < 0) i->quantity = 0;
-    lua_pushinteger(L, i->quantity);
-    return 1;
-}
-
-int InventoryItemBaseBinding::getItemWeight(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (i) lua_pushnumber(L, i->getItemWeight()); else lua_pushnil(L);
-    return 1;
-}
-
-int InventoryItemBaseBinding::getItemWeightSingle(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (i) lua_pushnumber(L, i->getItemWeightSingle()); else lua_pushnil(L);
-    return 1;
-}
-
-int InventoryItemBaseBinding::getValueSingle(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) { lua_pushinteger(L, 0); return 1; }
-    bool isPlayer = lua_isnoneornil(L, 2) ? true : (lua_toboolean(L, 2) != 0);
-    lua_pushinteger(L, i->getValueSingle(isPlayer));
-    return 1;
-}
-
-int InventoryItemBaseBinding::getValueAll(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) { lua_pushinteger(L, 0); return 1; }
-    bool isPlayer = lua_isnoneornil(L, 2) ? true : (lua_toboolean(L, 2) != 0);
-    lua_pushinteger(L, i->getValueAll(isPlayer));
-    return 1;
-}
-
-int InventoryItemBaseBinding::getQuantity(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (i) lua_pushinteger(L, i->quantity); else lua_pushnil(L);
-    return 1;
-}
-
-int InventoryItemBaseBinding::getQuality(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (i) lua_pushnumber(L, i->quality); else lua_pushnil(L);
-    return 1;
-}
-
-int InventoryItemBaseBinding::isResearchArtifact(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    lua_pushboolean(L, i && i->isResearchArtifact() ? 1 : 0);
-    return 1;
-}
-
-int InventoryItemBaseBinding::onGround(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    lua_pushboolean(L, i && i->onGround() ? 1 : 0);
-    return 1;
-}
-
-int InventoryItemBaseBinding::isStolen(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) { lua_pushboolean(L, 0); return 1; }
-    bool includeUnknown = lua_toboolean(L, 2) != 0;
-    lua_pushboolean(L, i->isStolen(includeUnknown) ? 1 : 0);
-    return 1;
-}
-
-int InventoryItemBaseBinding::getLevel(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (i) lua_pushinteger(L, i->getLevel()); else lua_pushnil(L);
-    return 1;
-}
-
-int InventoryItemBaseBinding::getInventory(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) { lua_pushnil(L); return 1; }
-    Inventory* inv = i->getInventory();
-    if (inv) lua_pushlightuserdata(L, (void*)inv);
-    else     lua_pushnil(L);
-    return 1;
-}
-
-int InventoryItemBaseBinding::getMaxAffordable(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) { lua_pushinteger(L, 0); return 1; }
-    int cash = (int)luaL_checkinteger(L, 2);
-    bool isPlayer = lua_isnoneornil(L, 3) ? true : (lua_toboolean(L, 3) != 0);
-    lua_pushinteger(L, i->getMaxAffordableNum(cash, isPlayer));
-    return 1;
-}
-
-int InventoryItemBaseBinding::getItemType(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (i) lua_pushinteger(L, (int)i->getItemType()); else lua_pushnil(L);
-    return 1;
-}
-
-int InventoryItemBaseBinding::getAvgPrice(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (i) lua_pushinteger(L, i->getAvgPrice()); else lua_pushnil(L);
-    return 1;
-}
-
-int InventoryItemBaseBinding::isStackable(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) { lua_pushinteger(L, 0); return 1; }
-    InventorySection* sec = (InventorySection*)testObject<InventorySection>(L, 2, "KenshiLua.InventorySection");
-    lua_pushinteger(L, i->isStackable(sec));
-    return 1;
-}
-
-int InventoryItemBaseBinding::canStackWith(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) { lua_pushboolean(L, 0); return 1; }
-    InventoryItemBase* other = InventoryItemBaseBinding::getItem(L, 2);
-    lua_pushboolean(L, i->canStackWith(other) ? 1 : 0);
-    return 1;
-}
-
-int InventoryItemBaseBinding::getProperOwner(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) { lua_pushnil(L); return 1; }
-    return HandBinding::pushHand(L, i->getProperOwner());
-}
-
-int InventoryItemBaseBinding::setProperOwner(lua_State* L)
-{
-    InventoryItemBase* i = getBase(L, 1);
-    if (!i) return luaL_error(L, "InventoryItemBase is nil");
-    if (lua_isnil(L, 2)) {
-        i->setProperOwner(hand());
-    } else {
-        hand* h = (hand*)luaL_checkudata(L, 2, HandBinding::getMetatableName());
-        if (h) i->setProperOwner(*h);
-    }
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    b->existAsBareWeapon = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
-void InventoryItemBaseBinding::registerBinding(lua_State* L)
+static int Item_set_persistant(lua_State* L)
 {
-    static const luaL_Reg meta[] = {
-        { "__gc",       InventoryItemBaseBinding::gc },
-        { "__tostring", InventoryItemBaseBinding::tostring },
-        { 0, 0 }
-    };
-    static const luaL_Reg methods[] = {
-        { "resetCharges",         InventoryItemBaseBinding::resetCharges },
-        { "getItemType",          InventoryItemBaseBinding::getItemType },
-        { "getItemWeight",        InventoryItemBaseBinding::getItemWeight },
-        { "getItemWeightSingle",  InventoryItemBaseBinding::getItemWeightSingle },
-        { "getAvgPrice",          InventoryItemBaseBinding::getAvgPrice },
-        { "addQuantity",          InventoryItemBaseBinding::addQuantity },
-        { "subtractQuantity",     InventoryItemBaseBinding::subtractQuantity },
-        { "getValueSingle",       InventoryItemBaseBinding::getValueSingle },
-        { "getValueAll",          InventoryItemBaseBinding::getValueAll },
-        { "isStackable",          InventoryItemBaseBinding::isStackable },
-        { "canStackWith",         InventoryItemBaseBinding::canStackWith },
-        { "getInventory",         InventoryItemBaseBinding::getInventory },
-        { "getProperOwner",       InventoryItemBaseBinding::getProperOwner },
-        { "setProperOwner",       InventoryItemBaseBinding::setProperOwner },
-        { "getQuantity",          InventoryItemBaseBinding::getQuantity },
-        { "getQuality",           InventoryItemBaseBinding::getQuality },
-        { "isResearchArtifact",   InventoryItemBaseBinding::isResearchArtifact },
-        { "onGround",             InventoryItemBaseBinding::onGround },
-        { "isStolen",             InventoryItemBaseBinding::isStolen },
-        { "getLevel",             InventoryItemBaseBinding::getLevel },
-        { "getMaxAffordable",     InventoryItemBaseBinding::getMaxAffordable },
-        { 0, 0 }
-    };
-    registerClass(L, InventoryItemBaseBinding::getMetatableName(), meta, methods, InventoryItemBaseBinding::index, InventoryItemBaseBinding::newindex);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->persistant = *val;
+    return 0;
 }
 
-
-// -----------------------------------------------------------------------------
-// ItemBinding
-// -----------------------------------------------------------------------------
-
-static Item* getI(lua_State* L, int idx)
+static int Item_set_visible(lua_State* L)
 {
-    return ItemBinding::checkItem(L, idx);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    b->visible = lua_toboolean(L, 2) != 0;
+    return 0;
 }
 
-int ItemBinding::pushItem(lua_State* L, Item* item)
+static int Item_set_physical(lua_State* L)
 {
-    if (item == nullptr)
-    {
-        lua_pushnil(L);
-        return 1;
-    }
-    if (item->isLockedArmour())
-    {
-        return pushObject<LockedArmour>(L, item->isLockedArmour(), LockedArmourBinding::getMetatableName());
-    }
-    if (item->isArmour())
-    {
-        return pushObject<Armour>(L, item->isArmour(), ArmourBinding::getMetatableName());
-    }
-    Weapon* w = item->isWeapon();
-    if (w)
-    {
-        if (w->isSword())
-        {
-            return pushObject<Sword>(L, w->isSword(), SwordBinding::getMetatableName());
-        }
-        if (w->isCrossbow())
-        {
-            return pushObject<Crossbow>(L, w->isCrossbow(), CrossbowBinding::getMetatableName());
-        }
-        return pushObject<Weapon>(L, w, WeaponBinding::getMetatableName());
-    }
-    if (item->isGear())
-    {
-        return pushObject<Gear>(L, item->isGear(), GearBinding::getMetatableName());
-    }
-    return pushObject<Item>(L, item, ItemBinding::getMetatableName());
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for physical");
 }
 
-Item* ItemBinding::getItem(lua_State* L, int idx)
+static int Item_set__isPhysical(lua_State* L)
 {
-    Item* i = testObject<Item>(L, idx, ItemBinding::getMetatableName());
-    if (i) return i;
-    i = (Item*)testObject<LockedArmour>(L, idx, LockedArmourBinding::getMetatableName());
-    if (i) return i;
-    i = (Item*)testObject<Armour>(L, idx, ArmourBinding::getMetatableName());
-    if (i) return i;
-    i = (Item*)testObject<Sword>(L, idx, SwordBinding::getMetatableName());
-    if (i) return i;
-    i = (Item*)testObject<Crossbow>(L, idx, CrossbowBinding::getMetatableName());
-    if (i) return i;
-    i = (Item*)testObject<Weapon>(L, idx, WeaponBinding::getMetatableName());
-    if (i) return i;
-    i = (Item*)testObject<Gear>(L, idx, GearBinding::getMetatableName());
-    if (i) return i;
-
-    // Check generic InventoryItemBase and dynamic_cast it to Item*
-    InventoryItemBase* baseItem = testObject<InventoryItemBase>(L, idx, InventoryItemBaseBinding::getMetatableName());
-    if (baseItem)
-    {
-        return dynamic_cast<Item*>(baseItem);
-    }
-    return nullptr;
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    b->_isPhysical = lua_toboolean(L, 2) != 0;
+    return 0;
 }
 
-Item* ItemBinding::checkItem(lua_State* L, int idx)
+static int Item_set_physicalEntity(lua_State* L)
 {
-    Item* i = getItem(L, idx);
-    if (!i)
-    {
-        luaL_argerror(L, idx, "Item");
-    }
-    return i;
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for physicalEntity");
 }
 
-int ItemBinding::gc(lua_State* L)       { return noopGc(L); }
-
-int ItemBinding::index(lua_State* L)
+static int Item_set_creatingPhysical(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, ItemBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    Item* i = getI(L, 1);
-    if (!i) { lua_pushnil(L); return 1; }
-
-    // --- boolean members ---
-    if (strcmp(key, "visible") == 0) { lua_pushboolean(L, i->getVisible() ? 1 : 0); return 1; }
-    if (strcmp(key, "isPersistant") == 0 || strcmp(key, "persistant") == 0) { lua_pushboolean(L, i->isPersistant() ? 1 : 0); return 1; }
-
-    // --- float members ---
-    if (strcmp(key, "athleticsMult") == 0) {
-        float val = 1.0f;
-        if (i->isArmour()) val = i->isArmour()->athleticsMult;
-        else if (i->getClassType() == CONTAINER) val = ((ContainerItem*)i)->athleticsMult;
-        lua_pushnumber(L, val);
-        return 1;
-    }
-    if (strcmp(key, "stealthMult") == 0) {
-        float val = 1.0f;
-        if (i->isArmour()) val = i->isArmour()->stealthMult;
-        else if (i->getClassType() == CONTAINER) val = ((ContainerItem*)i)->stealthMult;
-        lua_pushnumber(L, val);
-        return 1;
-    }
-    if (strcmp(key, "combatSpeedMult") == 0) {
-        float val = 1.0f;
-        if (i->isArmour()) val = i->isArmour()->combatSpeedMult;
-        else if (i->getClassType() == CONTAINER) val = ((ContainerItem*)i)->combatSpeedMult;
-        lua_pushnumber(L, val);
-        return 1;
-    }
-
-    // --- integer/enum members ---
-    if (strcmp(key, "classType") == 0) { lua_pushinteger(L, (int)i->getClassType()); return 1; }
-    if (strcmp(key, "combatSkillBonus") == 0) {
-        int val = 0;
-        if (i->isArmour()) val = i->isArmour()->combatSkillBonusAttk;
-        else if (i->getClassType() == CONTAINER) val = ((ContainerItem*)i)->combatSkillBonus;
-        lua_pushinteger(L, val);
-        return 1;
-    }
-
-    // --- string members ---
-    if (strcmp(key, "modelName") == 0) { lua_pushstring(L, i->getModelName().c_str()); return 1; }
-
-    // 3. Fall back to InventoryItemBase index
-    return InventoryItemBaseBinding::index(L);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    b->creatingPhysical = lua_toboolean(L, 2) != 0;
+    return 0;
 }
 
-int ItemBinding::newindex(lua_State* L)
+static int Item_set_fixedPhysicalPosition(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    Item* i = getI(L, 1);
-    if (!i) return luaL_error(L, "Item is nil");
-
-    // --- boolean members ---
-    if (strcmp(key, "visible") == 0) { i->setVisible(lua_toboolean(L, 3) != 0); return 0; }
-    if (strcmp(key, "isPersistant") == 0 || strcmp(key, "persistant") == 0) {
-        if (lua_isboolean(L, 3)) {
-            i->setPersistant(lua_toboolean(L, 3) != 0);
-        } else if (lua_isnil(L, 3)) {
-            i->persistant.setNull();
-        } else {
-            hand* h = (hand*)luaL_checkudata(L, 3, HandBinding::getMetatableName());
-            if (h) i->setPersistant(*h);
-        }
-        return 0;
-    }
-
-    // --- float members ---
-    if (strcmp(key, "athleticsMult") == 0) {
-        float val = (float)luaL_checknumber(L, 3);
-        if (i->isArmour()) i->isArmour()->athleticsMult = val;
-        else if (i->getClassType() == CONTAINER) ((ContainerItem*)i)->athleticsMult = val;
-        return 0;
-    }
-    if (strcmp(key, "stealthMult") == 0) {
-        float val = (float)luaL_checknumber(L, 3);
-        if (i->isArmour()) i->isArmour()->stealthMult = val;
-        else if (i->getClassType() == CONTAINER) ((ContainerItem*)i)->stealthMult = val;
-        return 0;
-    }
-    if (strcmp(key, "combatSpeedMult") == 0) {
-        float val = (float)luaL_checknumber(L, 3);
-        if (i->isArmour()) i->isArmour()->combatSpeedMult = val;
-        else if (i->getClassType() == CONTAINER) ((ContainerItem*)i)->combatSpeedMult = val;
-        return 0;
-    }
-
-    // --- integer members ---
-    if (strcmp(key, "combatSkillBonus") == 0) {
-        int val = (int)luaL_checkinteger(L, 3);
-        if (i->isArmour()) {
-            i->isArmour()->combatSkillBonusAttk = val;
-        } else if (i->getClassType() == CONTAINER) {
-            ((ContainerItem*)i)->combatSkillBonus = val;
-        }
-        return 0;
-    }
-
-    // Fall back to InventoryItemBase newindex
-    return InventoryItemBaseBinding::newindex(L);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    b->fixedPhysicalPosition = lua_toboolean(L, 2) != 0;
+    return 0;
 }
 
-int ItemBinding::tostring(lua_State* L)
+static int Item_set_useDynamicPhysics(lua_State* L)
 {
-    Item* it = getI(L, 1);
-    if (!it) { lua_pushstring(L, "Item:nil"); return 1; }
-    char buf[160];
-    _snprintf(buf, sizeof(buf), "Item:%s(%p)", it->getName().c_str(), (void*)it);
-    lua_pushstring(L, buf);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    b->useDynamicPhysics = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Item_set_loadingEntity(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for loadingEntity");
+}
+
+int ItemBinding::isGear(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Gear* result = b->isGear();
+    return pushObject<Gear>(L, result, GearBinding::getMetatableName());
+}
+
+int ItemBinding::_NV_isGear(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Gear* result = b->_NV_isGear();
+    return pushObject<Gear>(L, result, GearBinding::getMetatableName());
+}
+
+int ItemBinding::getClassType(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    itemType result = b->getClassType();
+    lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
-int ItemBinding::getName(lua_State* L)
+int ItemBinding::_NV_getClassType(lua_State* L)
 {
-    Item* it = getI(L, 1);
-    if (it) lua_pushstring(L, it->getName().c_str()); else lua_pushnil(L);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    itemType result = b->_NV_getClassType();
+    lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
-int ItemBinding::getPosition(lua_State* L)
+int ItemBinding::resetAfterCopy(lua_State* L)
 {
-    Item* it = getI(L, 1);
-    if (!it) { lua_pushnil(L); return 1; }
-    Ogre::Vector3 p = it->getPosition();
-    pushVector3(L, p);
-    return 1;
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->resetAfterCopy();
+    return 0;
 }
 
-int ItemBinding::getClassType(lua_State* L)         { Item* i = getI(L, 1); if (i) lua_pushinteger(L, (int)i->getClassType()); else lua_pushnil(L); return 1; }
-int ItemBinding::getVisible(lua_State* L)           { Item* i = getI(L, 1); lua_pushboolean(L, i && i->getVisible() ? 1 : 0); return 1; }
-int ItemBinding::getLevel(lua_State* L)             { Item* i = getI(L, 1); if (i) lua_pushinteger(L, i->getLevel()); else lua_pushnil(L); return 1; }
-int ItemBinding::getModelName(lua_State* L)         { Item* i = getI(L, 1); if (i) lua_pushstring(L, i->getModelName().c_str()); else lua_pushnil(L); return 1; }
-int ItemBinding::isPersistant(lua_State* L)         { Item* i = getI(L, 1); lua_pushboolean(L, i && i->isPersistant() ? 1 : 0); return 1; }
-int ItemBinding::isValid(lua_State* L)              { Item* i = getI(L, 1); lua_pushboolean(L, i && i->isValid() ? 1 : 0); return 1; }
-
-int ItemBinding::getInventory(lua_State* L)
+int ItemBinding::_NV_resetAfterCopy(lua_State* L)
 {
-    Item* i = getI(L, 1);
-    if (!i) { lua_pushnil(L); return 1; }
-    Inventory* inv = i->getInventory();
-    if (inv) lua_pushlightuserdata(L, (void*)inv);
-    else     lua_pushnil(L);
-    return 1;
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->_NV_resetAfterCopy();
+    return 0;
 }
 
-int ItemBinding::setVisible(lua_State* L)
+int ItemBinding::deactivate(lua_State* L)
 {
-    Item* i = getI(L, 1);
-    if (!i) return luaL_error(L, "Item is nil");
-    i->setVisible(lua_toboolean(L, 2) != 0);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->deactivate();
+    return 0;
+}
+
+int ItemBinding::_NV_deactivate(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->_NV_deactivate();
     return 0;
 }
 
 int ItemBinding::setPositionRotation(lua_State* L)
 {
-    Item* i = getI(L, 1);
-    if (!i) return luaL_error(L, "Item is nil");
-    Ogre::Vector3 pos(0.0f, 0.0f, 0.0f);
-    if (!readVector3(L, 2, pos)) return luaL_error(L, "setPositionRotation: expected {x,y,z}");
-    float qw = (float)luaL_optnumber(L, 3, 1.0);
-    float qx = (float)luaL_optnumber(L, 4, 0.0);
-    float qy = (float)luaL_optnumber(L, 5, 0.0);
-    float qz = (float)luaL_optnumber(L, 6, 0.0);
-    Ogre::Quaternion rot(qw, qx, qy, qz);
-    bool fixed = lua_isnoneornil(L, 7) ? true : (lua_toboolean(L, 7) != 0);
-    i->setPositionRotation(pos, rot, fixed);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Ogre::Vector3 position;
+    readVector3(L, 2, position);
+    Ogre::Quaternion rotation;
+    readQuaternion(L, 3, rotation);
+    bool fixedPosition = lua_toboolean(L, 4) != 0;
+    b->setPositionRotation(position, rotation, fixedPosition);
     return 0;
+}
+
+int ItemBinding::_NV_setPositionRotation(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Ogre::Vector3 position;
+    readVector3(L, 2, position);
+    Ogre::Quaternion rotation;
+    readQuaternion(L, 3, rotation);
+    bool fixedPosition = lua_toboolean(L, 4) != 0;
+    b->_NV_setPositionRotation(position, rotation, fixedPosition);
+    return 0;
+}
+
+int ItemBinding::isCrossbow(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Crossbow* result = b->isCrossbow();
+    return pushObject<Crossbow>(L, result, CrossbowBinding::getMetatableName());
+}
+
+int ItemBinding::_NV_isCrossbow(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Crossbow* result = b->_NV_isCrossbow();
+    return pushObject<Crossbow>(L, result, CrossbowBinding::getMetatableName());
+}
+
+int ItemBinding::isArmour(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Armour* result = b->isArmour();
+    return pushObject<Armour>(L, result, ArmourBinding::getMetatableName());
+}
+
+int ItemBinding::_NV_isArmour(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Armour* result = b->_NV_isArmour();
+    return pushObject<Armour>(L, result, ArmourBinding::getMetatableName());
+}
+
+int ItemBinding::isWeapon(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Weapon* result = b->isWeapon();
+    return pushObject<Weapon>(L, result, WeaponBinding::getMetatableName());
+}
+
+int ItemBinding::_NV_isWeapon(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Weapon* result = b->_NV_isWeapon();
+    return pushObject<Weapon>(L, result, WeaponBinding::getMetatableName());
+}
+
+int ItemBinding::isLockedArmour(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    LockedArmour* result = b->isLockedArmour();
+    return pushObject<LockedArmour>(L, result, LockedArmourBinding::getMetatableName());
+}
+
+int ItemBinding::_NV_isLockedArmour(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    LockedArmour* result = b->_NV_isLockedArmour();
+    return pushObject<LockedArmour>(L, result, LockedArmourBinding::getMetatableName());
+}
+
+int ItemBinding::isAFactionUniform(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Faction* result = b->isAFactionUniform();
+    return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
+}
+
+int ItemBinding::_NV_isAFactionUniform(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Faction* result = b->_NV_isAFactionUniform();
+    return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
+}
+
+int ItemBinding::isPhysical(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->isPhysical();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::_NV_isPhysical(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->_NV_isPhysical();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::setVisible(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool on = lua_toboolean(L, 2) != 0;
+    b->setVisible(on);
+    return 0;
+}
+
+int ItemBinding::_NV_setVisible(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool on = lua_toboolean(L, 2) != 0;
+    b->_NV_setVisible(on);
+    return 0;
+}
+
+int ItemBinding::getVisible(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->getVisible();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::_NV_getVisible(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->_NV_getVisible();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::getModelName(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    std::string result = b->getModelName();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+int ItemBinding::_NV_getModelName(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    std::string result = b->_NV_getModelName();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+int ItemBinding::getInventory(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Inventory* result = b->getInventory();
+    return pushObject<Inventory>(L, result, InventoryBinding::getMetatableName());
+}
+
+int ItemBinding::_NV_getInventory(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    Inventory* result = b->_NV_getInventory();
+    return pushObject<Inventory>(L, result, InventoryBinding::getMetatableName());
+}
+
+int ItemBinding::hasIngredients(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->hasIngredients();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::_NV_hasIngredients(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->_NV_hasIngredients();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::isGoodFood(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->isGoodFood();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::_NV_isGoodFood(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->_NV_isGoodFood();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::getCraftTime(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    float result = b->getCraftTime();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int ItemBinding::_NV_getCraftTime(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    float result = b->_NV_getCraftTime();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int ItemBinding::getCraftMaterialMult(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    float result = b->getCraftMaterialMult();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int ItemBinding::_NV_getCraftMaterialMult(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    float result = b->_NV_getCraftMaterialMult();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int ItemBinding::getLevel(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    int result = b->getLevel();
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int ItemBinding::_NV_getLevel(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    int result = b->_NV_getLevel();
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int ItemBinding::destroyItemEntityCallback_Equipping(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->destroyItemEntityCallback_Equipping();
+    return 0;
+}
+
+int ItemBinding::_NV_destroyItemEntityCallback_Equipping(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->_NV_destroyItemEntityCallback_Equipping();
+    return 0;
+}
+
+int ItemBinding::isPersistant(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->isPersistant();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::persistantOwnerExists(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->persistantOwnerExists();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::_DESTRUCTOR(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->_DESTRUCTOR();
+    return 0;
+}
+
+int ItemBinding::createPhysical(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->createPhysical();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::_NV_createPhysical(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    bool result = b->_NV_createPhysical();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ItemBinding::destroyPhysical(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->destroyPhysical();
+    return 0;
+}
+
+int ItemBinding::_NV_destroyPhysical(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->_NV_destroyPhysical();
+    return 0;
+}
+
+int ItemBinding::loadUnloadCheck(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->loadUnloadCheck();
+    return 0;
+}
+
+int ItemBinding::_NV_loadUnloadCheck(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+
+    b->_NV_loadUnloadCheck();
+    return 0;
+}
+
+/*
+Skipped methods needing manual binding:
+  line 112: bool isFood(...) - static method
+  line 119: void activate(...) - overloaded method
+  line 120: void _NV_activate(...) - overloaded method
+  line 121: void activate(...) - overloaded method
+  line 122: void _NV_activate(...) - overloaded method
+  line 151: Ogre::Entity* getEntity(...) - unsupported return type
+  line 152: Ogre::Entity* _NV_getEntity(...) - unsupported return type
+  line 153: TimeOfDay getTimeout(...) - unsupported return type
+  line 154: TimeOfDay _NV_getTimeout(...) - unsupported return type
+  line 155: GameData* _serialise(...) - unsupported arg type
+  line 156: GameData* _NV__serialise(...) - unsupported arg type
+  line 157: void _loadFromSerialise(...) - unsupported arg type
+  line 158: void _NV__loadFromSerialise(...) - unsupported arg type
+  line 159: GameSaveState serialise(...) - unsupported return type
+  line 160: GameSaveState _NV_serialise(...) - unsupported return type
+  line 161: void loadFromSerialise(...) - unsupported arg type
+  line 162: void _NV_loadFromSerialise(...) - unsupported arg type
+  line 163: GameData* serialiseInInventory(...) - unsupported arg type
+  line 164: GameData* _NV_serialiseInInventory(...) - unsupported arg type
+  line 165: void loadFromSerialiseInInventory(...) - unsupported arg type
+  line 166: void _NV_loadFromSerialiseInInventory(...) - unsupported arg type
+  line 174: void createItemEntityCallback_Equipping(...) - unsupported arg type
+  line 175: void _NV_createItemEntityCallback_Equipping(...) - unsupported arg type
+  line 178: void notifyTheftFrom(...) - overloaded method
+  line 179: void _NV_notifyTheftFrom(...) - overloaded method
+  line 180: void notifyTheftFrom(...) - overloaded method
+  line 181: void _NV_notifyTheftFrom(...) - overloaded method
+  line 182: const hand& findProperOwner(...) - static method
+  line 183: const hand& findProperOwner(...) - static method
+  line 184: void setInventoryWeAreIn(...) - unsupported arg type
+  line 188: void setPersistant(...) - overloaded method
+  line 189: void setPersistant(...) - overloaded method
+  line 193: Item* _CONSTRUCTOR(...) - unsupported arg type
+  line 202: void createItemEntityCallback(...) - unsupported arg type
+  line 203: void itemEntityCreated(...) - unsupported arg type
+  line 204: void _NV_itemEntityCreated(...) - unsupported arg type
+*/
+
+int ItemBinding::getInventoryWeAreIn(lua_State* L)
+{
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    const hand& result = b->getInventoryWeAreIn();
+    handBinding::push(L, result);
+    return 1;
 }
 
 int ItemBinding::setInventoryWeAreIn(lua_State* L)
 {
-    Item* i = getI(L, 1);
-    if (!i) return luaL_error(L, "Item is nil");
-    const char* handStr = luaL_checkstring(L, 2);
-    hand h;
-    h.fromString(handStr);
-    i->setInventoryWeAreIn(h);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->setInventoryWeAreIn(*h);
     return 0;
 }
 
-int ItemBinding::setPersistant(lua_State* L)
+int ItemBinding::_NV_setInventoryWeAreIn(lua_State* L)
 {
-    Item* i = getI(L, 1);
-    if (!i) return luaL_error(L, "Item is nil");
-    i->setPersistant(lua_toboolean(L, 2) != 0);
+    Item* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Item is nil");
+    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->_NV_setInventoryWeAreIn(*h);
     return 0;
 }
 
-int ItemBinding::stolenGoodsDetectionCheck(lua_State* L)
+int ItemBinding::gc(lua_State* L)
 {
-    Item* i = getI(L, 1);
-    if (!i) return luaL_error(L, "Item is nil");
-    Item* targetItem = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
-    if (!targetItem) return luaL_error(L, "stolenGoodsDetectionCheck: expected Item userdata as argument 2");
-    RootObject* thief = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
-    if (!thief) {
-        thief = (RootObject*)checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
-    }
-    if (!thief) return luaL_error(L, "stolenGoodsDetectionCheck: expected RootObject/Character userdata as argument 3");
-    
-    lua_pushboolean(L, i->stolenGoodsDetectionCheck(targetItem, thief) ? 1 : 0);
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int ItemBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.Item object");
     return 1;
 }
 
@@ -726,24 +803,126 @@ void ItemBinding::registerBinding(lua_State* L)
         { "__tostring", ItemBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
-        { "getName",              ItemBinding::getName },
-        { "getPosition",          ItemBinding::getPosition },
-        { "getClassType",         ItemBinding::getClassType },
-        { "getVisible",           ItemBinding::getVisible },
-        { "getInventory",         ItemBinding::getInventory },
-        { "getLevel",             ItemBinding::getLevel },
-        { "getModelName",         ItemBinding::getModelName },
-        { "isPersistant",         ItemBinding::isPersistant },
-        { "isValid",              ItemBinding::isValid },
-        { "setVisible",           ItemBinding::setVisible },
-        { "setPositionRotation",  ItemBinding::setPositionRotation },
-        { "setInventoryWeAreIn",  ItemBinding::setInventoryWeAreIn },
-        { "setPersistant",        ItemBinding::setPersistant },
-        { "stolenGoodsDetectionCheck", ItemBinding::stolenGoodsDetectionCheck },
+        { "isGear", ItemBinding::isGear },
+        { "_NV_isGear", ItemBinding::_NV_isGear },
+        { "getClassType", ItemBinding::getClassType },
+        { "_NV_getClassType", ItemBinding::_NV_getClassType },
+        { "resetAfterCopy", ItemBinding::resetAfterCopy },
+        { "_NV_resetAfterCopy", ItemBinding::_NV_resetAfterCopy },
+        { "deactivate", ItemBinding::deactivate },
+        { "_NV_deactivate", ItemBinding::_NV_deactivate },
+        { "setPositionRotation", ItemBinding::setPositionRotation },
+        { "_NV_setPositionRotation", ItemBinding::_NV_setPositionRotation },
+        { "isCrossbow", ItemBinding::isCrossbow },
+        { "_NV_isCrossbow", ItemBinding::_NV_isCrossbow },
+        { "isArmour", ItemBinding::isArmour },
+        { "_NV_isArmour", ItemBinding::_NV_isArmour },
+        { "isWeapon", ItemBinding::isWeapon },
+        { "_NV_isWeapon", ItemBinding::_NV_isWeapon },
+        { "isLockedArmour", ItemBinding::isLockedArmour },
+        { "_NV_isLockedArmour", ItemBinding::_NV_isLockedArmour },
+        { "isAFactionUniform", ItemBinding::isAFactionUniform },
+        { "_NV_isAFactionUniform", ItemBinding::_NV_isAFactionUniform },
+        { "isPhysical", ItemBinding::isPhysical },
+        { "_NV_isPhysical", ItemBinding::_NV_isPhysical },
+        { "setVisible", ItemBinding::setVisible },
+        { "_NV_setVisible", ItemBinding::_NV_setVisible },
+        { "getVisible", ItemBinding::getVisible },
+        { "_NV_getVisible", ItemBinding::_NV_getVisible },
+        { "getModelName", ItemBinding::getModelName },
+        { "_NV_getModelName", ItemBinding::_NV_getModelName },
+        { "getInventory", ItemBinding::getInventory },
+        { "_NV_getInventory", ItemBinding::_NV_getInventory },
+        { "hasIngredients", ItemBinding::hasIngredients },
+        { "_NV_hasIngredients", ItemBinding::_NV_hasIngredients },
+        { "isGoodFood", ItemBinding::isGoodFood },
+        { "_NV_isGoodFood", ItemBinding::_NV_isGoodFood },
+        { "getCraftTime", ItemBinding::getCraftTime },
+        { "_NV_getCraftTime", ItemBinding::_NV_getCraftTime },
+        { "getCraftMaterialMult", ItemBinding::getCraftMaterialMult },
+        { "_NV_getCraftMaterialMult", ItemBinding::_NV_getCraftMaterialMult },
+        { "getLevel", ItemBinding::getLevel },
+        { "_NV_getLevel", ItemBinding::_NV_getLevel },
+        { "destroyItemEntityCallback_Equipping", ItemBinding::destroyItemEntityCallback_Equipping },
+        { "_NV_destroyItemEntityCallback_Equipping", ItemBinding::_NV_destroyItemEntityCallback_Equipping },
+        { "isPersistant", ItemBinding::isPersistant },
+        { "persistantOwnerExists", ItemBinding::persistantOwnerExists },
+        { "_DESTRUCTOR", ItemBinding::_DESTRUCTOR },
+        { "createPhysical", ItemBinding::createPhysical },
+        { "_NV_createPhysical", ItemBinding::_NV_createPhysical },
+        { "destroyPhysical", ItemBinding::destroyPhysical },
+        { "_NV_destroyPhysical", ItemBinding::_NV_destroyPhysical },
+        { "loadUnloadCheck", ItemBinding::loadUnloadCheck },
+        { "_NV_loadUnloadCheck", ItemBinding::_NV_loadUnloadCheck },
+        { "getInventoryWeAreIn", ItemBinding::getInventoryWeAreIn },
+        { "setInventoryWeAreIn", ItemBinding::setInventoryWeAreIn },
+        { "_NV_setInventoryWeAreIn", ItemBinding::_NV_setInventoryWeAreIn },
         { 0, 0 }
     };
-    registerClass(L, ItemBinding::getMetatableName(), meta, methods, ItemBinding::index, ItemBinding::newindex);
+
+    registerClass(
+        L, 
+        ItemBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, ItemBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, Item_get_physicalShouldExist);
+    lua_setfield(L, -2, "physicalShouldExist");
+    lua_pushcfunction(L, Item_get_existAsBareWeapon);
+    lua_setfield(L, -2, "existAsBareWeapon");
+    lua_pushcfunction(L, Item_get_persistant);
+    lua_setfield(L, -2, "persistant");
+    lua_pushcfunction(L, Item_get_visible);
+    lua_setfield(L, -2, "visible");
+    lua_pushcfunction(L, Item_get_physical);
+    lua_setfield(L, -2, "physical");
+    lua_pushcfunction(L, Item_get__isPhysical);
+    lua_setfield(L, -2, "_isPhysical");
+    lua_pushcfunction(L, Item_get_physicalEntity);
+    lua_setfield(L, -2, "physicalEntity");
+    lua_pushcfunction(L, Item_get_creatingPhysical);
+    lua_setfield(L, -2, "creatingPhysical");
+    lua_pushcfunction(L, Item_get_fixedPhysicalPosition);
+    lua_setfield(L, -2, "fixedPhysicalPosition");
+    lua_pushcfunction(L, Item_get_useDynamicPhysics);
+    lua_setfield(L, -2, "useDynamicPhysics");
+    lua_pushcfunction(L, Item_get_loadingEntity);
+    lua_setfield(L, -2, "loadingEntity");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, Item_set_physicalShouldExist);
+    lua_setfield(L, -2, "physicalShouldExist");
+    lua_pushcfunction(L, Item_set_existAsBareWeapon);
+    lua_setfield(L, -2, "existAsBareWeapon");
+    lua_pushcfunction(L, Item_set_persistant);
+    lua_setfield(L, -2, "persistant");
+    lua_pushcfunction(L, Item_set_visible);
+    lua_setfield(L, -2, "visible");
+    lua_pushcfunction(L, Item_set_physical);
+    lua_setfield(L, -2, "physical");
+    lua_pushcfunction(L, Item_set__isPhysical);
+    lua_setfield(L, -2, "_isPhysical");
+    lua_pushcfunction(L, Item_set_physicalEntity);
+    lua_setfield(L, -2, "physicalEntity");
+    lua_pushcfunction(L, Item_set_creatingPhysical);
+    lua_setfield(L, -2, "creatingPhysical");
+    lua_pushcfunction(L, Item_set_fixedPhysicalPosition);
+    lua_setfield(L, -2, "fixedPhysicalPosition");
+    lua_pushcfunction(L, Item_set_useDynamicPhysics);
+    lua_setfield(L, -2, "useDynamicPhysics");
+    lua_pushcfunction(L, Item_set_loadingEntity);
+    lua_setfield(L, -2, "loadingEntity");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

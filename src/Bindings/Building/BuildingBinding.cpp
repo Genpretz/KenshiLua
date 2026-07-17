@@ -1,2042 +1,2702 @@
 #include "pch.h"
-#include "Bindings/Building/BuildingBinding.h"
-#include "Bindings/Building/ConstructionStateBinding.h"
-#include "Bindings/Building/ProductionBuildingBinding.h"
-#include "Bindings/Building/StorageBuildingBinding.h"
-#include "Bindings/Equipment/InventoryBinding.h"
-#include "Bindings/Character/CharacterBinding.h"
-#include "Bindings/Core/EnumBinding.h"
-#include "Bindings/World/FactionBinding.h"
-#include "Bindings/Core/GameDataBinding.h"
-#include "Bindings/World/TownBinding.h"
+#include "kenshi\Building\Building.h"
+#include "BuildingBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/RootObjectBinding.h"
 #include "Lua/BindingHelpers.h"
-
-#include <kenshi/Building/Building.h>
-
-#include <cstring>
-#include <cstdio>
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/TownBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Building/ConstructionStateBinding.h"
+#include "Bindings/Building/StorageBuildingBinding.h"
+#include "Bindings/Building/UseableStuffBinding.h"
+#include "Bindings/Building/ProductionBuildingBinding.h"
 
 namespace KenshiLua
 {
 
-static Building* getB(lua_State* L, int idx)
+static Building* getInstance(lua_State* L, int idx)
 {
     return checkObject<Building>(L, idx, BuildingBinding::getMetatableName());
 }
 
-int BuildingBinding::gc(lua_State* L) { return noopGc(L); }
-
-int BuildingBinding::tostring(lua_State* L)
+// --- Getters for Building ---
+static int Building_get_isFoliage(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    return genericTostringPtr(L, "%s",b);
-}
-
-int BuildingBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, BuildingBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    Building* b = getB(L, 1);
-    if (!b) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "isFoliage") == 0) { lua_pushboolean(L, b->isFoliage ? 1 : 0); return 1; }
-    if (strcmp(key, "hasTerrainInside") == 0) { lua_pushboolean(L, b->hasTerrainInside ? 1 : 0); return 1; }
-    if (strcmp(key, "isCavernous") == 0) { lua_pushboolean(L, b->isCavernous ? 1 : 0); return 1; }
-    if (strcmp(key, "enforceCeiling") == 0) { lua_pushboolean(L, b->enforceCeiling ? 1 : 0); return 1; }
-    if (strcmp(key, "designation") == 0) { lua_pushinteger(L, (lua_Integer)b->designation); return 1; }
-    if (strcmp(key, "publicDaytime") == 0) { lua_pushboolean(L, b->publicDaytime ? 1 : 0); return 1; }
-    // TODO hand residentSquad; unsupported __index type from header line 198
-    if (strcmp(key, "residentSquadTemplate") == 0) { return pushObject<GameData>(L, b->residentSquadTemplate, GameDataBinding::getMetatableName()); }
-    if (strcmp(key, "isAnInteriorObject") == 0) { lua_pushboolean(L, b->isAnInteriorObject ? 1 : 0); return 1; }
-    // TODO InstanceID instanceID; unsupported __index type from header line 254
-    if (strcmp(key, "layoutInstanceID") == 0) { lua_pushstring(L, b->layoutInstanceID.c_str()); return 1; }
-    if (strcmp(key, "specialFunction") == 0) { lua_pushinteger(L, (lua_Integer)b->specialFunction); return 1; }
-    // TODO ConstructionState _buildState; unsupported __index type from header line 264
-    if (strcmp(key, "classType") == 0) { lua_pushinteger(L, (lua_Integer)b->classType); return 1; }
-    if (strcmp(key, "updateNavmesh") == 0) { lua_pushboolean(L, b->updateNavmesh ? 1 : 0); return 1; }
-    if (strcmp(key, "visible") == 0) { lua_pushboolean(L, b->visible ? 1 : 0); return 1; }
-    if (strcmp(key, "interiorVisibility") == 0) { lua_pushboolean(L, b->interiorVisibility ? 1 : 0); return 1; }
-    if (strcmp(key, "justBeenUpgradedFlag") == 0) { lua_pushboolean(L, b->justBeenUpgradedFlag ? 1 : 0); return 1; }
-    if (strcmp(key, "imADoor") == 0) { lua_pushboolean(L, b->imADoor ? 1 : 0); return 1; }
-    if (strcmp(key, "destroyed") == 0) { lua_pushboolean(L, b->destroyed ? 1 : 0); return 1; }
-    if (strcmp(key, "productionMult") == 0) { lua_pushnumber(L, b->productionMult); return 1; }
-    if (strcmp(key, "productionMult_baseData") == 0) { lua_pushnumber(L, b->productionMult_baseData); return 1; }
-    if (strcmp(key, "hasMovingParts") == 0) { lua_pushboolean(L, b->hasMovingParts ? 1 : 0); return 1; }
-    if (strcmp(key, "saveVersion") == 0) { lua_pushinteger(L, b->saveVersion); return 1; }
-
-    // TODO lektor<Building*> doors; unsupported __index type from header line 313
-    if (strcmp(key, "doors") == 0) {
-        lua_createtable(L, b->doors.size(), 0);
-        for (uint32_t i = 0; i < b->doors.size(); ++i) {
-            pushObject<Building>(L, b->doors[i], BuildingBinding::getMetatableName());
-            lua_rawseti(L, -2, i + 1);
-        }
-        return 1;
-    }
-
-    // TODO hand _town; unsupported __index type from header line 371
-    // TODO BuildingInterior* myInterior; unsupported __index type from header line 404
-    // TODO TownBuildingsManager* buildingsManager; unsupported __index type from header line 410
-    // TODO Ogre::SceneNode* rootNode; unsupported __index type from header line 411
-    // TODO unsigned __int64 audioObject; unsupported __index type from header line 417
-    // TODO SoundEmitter* soundEmitter; unsupported __index type from header line 418
-    if (strcmp(key, "hasAudio") == 0) { lua_pushboolean(L, b->hasAudio ? 1 : 0); return 1; }
-    if (strcmp(key, "interiorGround") == 0) { lua_pushinteger(L, (lua_Integer)b->interiorGround); return 1; }
-    if (strcmp(key, "exteriorGround") == 0) { lua_pushinteger(L, (lua_Integer)b->exteriorGround); return 1; }
-    // TODO PhysicsCollection* physical; unsupported __index type from header line 422
-    if (strcmp(key, "entitiesToLoad") == 0) { lua_pushinteger(L, b->entitiesToLoad); return 1; }
-    if (strcmp(key, "entitiesLoaded") == 0) { lua_pushboolean(L, b->entitiesLoaded ? 1 : 0); return 1; }
-
-    // TODO Layout* isFurnitureOf; unsupported __index type from header line 425
-    if (strcmp(key, "isFurnitureOf") == 0) {
-            if (b->isFurnitureOf) lua_pushlightuserdata(L, (void*)b->isFurnitureOf);
-            else                 lua_pushnil(L);
-            return 1;
-    }
-    
-    if (strcmp(key, "isOutsideFurniture") == 0) { lua_pushboolean(L, b->isOutsideFurniture ? 1 : 0); return 1; }
-    if (strcmp(key, "isNestItem") == 0) { lua_pushboolean(L, b->isNestItem ? 1 : 0); return 1; }
-    if (strcmp(key, "baseMaterial") == 0) { return pushObject<GameData>(L, b->baseMaterial, GameDataBinding::getMetatableName()); }
-    // TODO lektor<std::pair<PhysicalEntity*, Effect*> > effects; unsupported __index type from header line 429
-    if (strcmp(key, "effectsVisible") == 0) { lua_pushboolean(L, b->effectsVisible ? 1 : 0); return 1; }
-    if (strcmp(key, "effectsActive") == 0) { lua_pushboolean(L, b->effectsActive ? 1 : 0); return 1; }
-    if (strcmp(key, "lightsVisible") == 0) { lua_pushboolean(L, b->lightsVisible ? 1 : 0); return 1; }
-    // TODO Ogre::Vector3 positionMarker; unsupported __index type from header line 459
-    if (strcmp(key, "heightAboveGround") == 0) { lua_pushnumber(L, b->heightAboveGround); return 1; }
-    // TODO Ogre::Aabb AABB; unsupported __index type from header line 464
-    if (strcmp(key, "isRedDebugTextureMode") == 0) { lua_pushboolean(L, b->isRedDebugTextureMode ? 1 : 0); return 1; }
-    if (strcmp(key, "materialName") == 0) { lua_pushstring(L, b->materialName.c_str()); return 1; }
-    // TODO std::set<std::string, std::less<std::string >, Ogre::STLAllocator<std::string, Ogre::GeneralAllocPolicy > > usageNodesIds; unsupported __index type from header line 484
-    // TODO lektor<UsageNode*> usageNodes; unsupported __index type from header line 485
-    // TODO ogre_unordered_map<int, float>::type badNodes; unsupported __index type from header line 486
-    // TODO SimplePhysXEntity* triggerVolume; unsupported __index type from header line 488
-    // TODO lektor<std::pair<char, float> > activeEffects; unsupported __index type from header line 489
-
-    lua_pushnil(L);
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->isFoliage ? 1 : 0);
     return 1;
 }
 
-int BuildingBinding::newindex(lua_State* L)
+static int Building_get_hasTerrainInside(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    if (strcmp(key, "isFoliage") == 0) { b->isFoliage = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "hasTerrainInside") == 0) { b->hasTerrainInside = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "isCavernous") == 0) { b->isCavernous = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "enforceCeiling") == 0) { b->enforceCeiling = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "designation") == 0) { b->designation = (BuildingDesignation)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "publicDaytime") == 0) { b->publicDaytime = lua_toboolean(L, 3) != 0; return 0; }
-    // TODO hand residentSquad; unsupported __newindex type from header line 198
-    // TODO GameData* residentSquadTemplate; unsupported __newindex type from header line 199
-    if (strcmp(key, "isAnInteriorObject") == 0) { b->isAnInteriorObject = lua_toboolean(L, 3) != 0; return 0; }
-    // TODO InstanceID instanceID; unsupported __newindex type from header line 254
-    if (strcmp(key, "layoutInstanceID") == 0) { b->layoutInstanceID = luaL_checkstring(L, 3); return 0; }
-    if (strcmp(key, "specialFunction") == 0) { b->specialFunction = (BuildingFunction)luaL_checkinteger(L, 3); return 0; }
-    // TODO ConstructionState _buildState; unsupported __newindex type from header line 264
-    if (strcmp(key, "classType") == 0) { b->classType = (BuildingClassType)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "updateNavmesh") == 0) { b->updateNavmesh = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "visible") == 0) { b->visible = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "interiorVisibility") == 0) { b->interiorVisibility = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "justBeenUpgradedFlag") == 0) { b->justBeenUpgradedFlag = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "imADoor") == 0) { b->imADoor = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "destroyed") == 0) { b->destroyed = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "productionMult") == 0) { b->productionMult = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "productionMult_baseData") == 0) { b->productionMult_baseData = (float)luaL_checknumber(L, 3); return 0; }
-    if (strcmp(key, "hasMovingParts") == 0) { b->hasMovingParts = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "saveVersion") == 0) { b->saveVersion = (int)luaL_checkinteger(L, 3); return 0; }
-    // TODO lektor<Building*> doors; unsupported __newindex type from header line 313
-    // TODO hand _town; unsupported __newindex type from header line 371
-    // TODO BuildingInterior* myInterior; unsupported __newindex type from header line 404
-    // TODO TownBuildingsManager* buildingsManager; unsupported __newindex type from header line 410
-    // TODO Ogre::SceneNode* rootNode; unsupported __newindex type from header line 411
-    // TODO unsigned __int64 audioObject; unsupported __newindex type from header line 417
-    // TODO SoundEmitter* soundEmitter; unsupported __newindex type from header line 418
-    if (strcmp(key, "hasAudio") == 0) { b->hasAudio = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "interiorGround") == 0) { b->interiorGround = (GroundType)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "exteriorGround") == 0) { b->exteriorGround = (GroundType)luaL_checkinteger(L, 3); return 0; }
-    // TODO PhysicsCollection* physical; unsupported __newindex type from header line 422
-    if (strcmp(key, "entitiesToLoad") == 0) { b->entitiesToLoad = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "entitiesLoaded") == 0) { b->entitiesLoaded = lua_toboolean(L, 3) != 0; return 0; }
-    // TODO Layout* isFurnitureOf; unsupported __newindex type from header line 425
-    if (strcmp(key, "isOutsideFurniture") == 0) { b->isOutsideFurniture = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "isNestItem") == 0) { b->isNestItem = lua_toboolean(L, 3) != 0; return 0; }
-    // TODO GameData* baseMaterial; unsupported __newindex type from header line 428
-    // TODO lektor<std::pair<PhysicalEntity*, Effect*> > effects; unsupported __newindex type from header line 429
-    if (strcmp(key, "effectsVisible") == 0) { b->effectsVisible = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "effectsActive") == 0) { b->effectsActive = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "lightsVisible") == 0) { b->lightsVisible = lua_toboolean(L, 3) != 0; return 0; }
-    // TODO Ogre::Vector3 positionMarker; unsupported __newindex type from header line 459
-    if (strcmp(key, "heightAboveGround") == 0) { b->heightAboveGround = (float)luaL_checknumber(L, 3); return 0; }
-    // TODO Ogre::Aabb AABB; unsupported __newindex type from header line 464
-    if (strcmp(key, "isRedDebugTextureMode") == 0) { b->isRedDebugTextureMode = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "materialName") == 0) { b->materialName = luaL_checkstring(L, 3); return 0; }
-    // TODO std::set<std::string, std::less<std::string >, Ogre::STLAllocator<std::string, Ogre::GeneralAllocPolicy > > usageNodesIds; unsupported __newindex type from header line 484
-    // TODO lektor<UsageNode*> usageNodes; unsupported __newindex type from header line 485
-    // TODO ogre_unordered_map<int, float>::type badNodes; unsupported __newindex type from header line 486
-    // TODO SimplePhysXEntity* triggerVolume; unsupported __newindex type from header line 488
-    // TODO lektor<std::pair<char, float> > activeEffects; unsupported __newindex type from header line 489
-
-    return luaL_error(L, "unknown or read-only field '%s'", key);
-}
-
-int BuildingBinding::getName(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (b) lua_pushstring(L, b->getName().c_str()); else lua_pushnil(L);
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->hasTerrainInside ? 1 : 0);
     return 1;
 }
 
-// int BuildingBinding::getConstructionProgress(lua_State* L)
-// {
-//     Building* b = getB(L, 1);
-//     if (!b) { lua_pushnil(L); return 1; }
-//     Building::ConstructionState* s = b->getBuildState();
-//     if (s) lua_pushnumber(L, s->constructionProgress);
-//     else   lua_pushnumber(L, 0);
-//     return 1;
-// }
+static int Building_get_isCavernous(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->isCavernous ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_enforceCeiling(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->enforceCeiling ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_designation(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushinteger(L, (lua_Integer)instance->designation);
+    return 1;
+}
+
+static int Building_get_publicDaytime(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->publicDaytime ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_residentSquad(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return handBinding::push(L, instance->residentSquad);
+}
+
+static int Building_get_residentSquadTemplate(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return pushObject<GameData>(L, instance->residentSquadTemplate, GameDataBinding::getMetatableName());
+}
+
+static int Building_get_isAnInteriorObject(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->isAnInteriorObject ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_instanceID(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for instanceID (InstanceID)
+    return luaL_error(L, "Unsupported property 'instanceID' (type: InstanceID)");
+}
+
+static int Building_get_layoutInstanceID(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushstring(L, instance->layoutInstanceID.c_str());
+    return 1;
+}
+
+static int Building_get_specialFunction(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushinteger(L, (lua_Integer)instance->specialFunction);
+    return 1;
+}
+
+static int Building_get__buildState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for _buildState (ConstructionState)
+    return luaL_error(L, "Unsupported property '_buildState' (type: ConstructionState)");
+}
+
+static int Building_get_classType(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushinteger(L, (lua_Integer)instance->classType);
+    return 1;
+}
+
+static int Building_get_updateNavmesh(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->updateNavmesh ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_visible(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->visible ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_interiorVisibility(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->interiorVisibility ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_justBeenUpgradedFlag(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->justBeenUpgradedFlag ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_imADoor(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->imADoor ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_destroyed(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->destroyed ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_productionMult(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushnumber(L, instance->productionMult);
+    return 1;
+}
+
+static int Building_get_productionMult_baseData(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushnumber(L, instance->productionMult_baseData);
+    return 1;
+}
+
+static int Building_get_hasMovingParts(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->hasMovingParts ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_saveVersion(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushinteger(L, instance->saveVersion);
+    return 1;
+}
+
+static int Building_get_doors(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_createtable(L, instance->doors.size(), 0);
+    for (uint32_t i = 0; i < instance->doors.size(); ++i) {
+        pushObject<Building>(L, instance->doors[i], BuildingBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+static int Building_get__town(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return handBinding::push(L, instance->_town);
+}
+
+static int Building_get_myInterior(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for myInterior (BuildingInterior*)
+    return luaL_error(L, "Unsupported property 'myInterior' (type: BuildingInterior*)");
+}
+
+static int Building_get_buildingsManager(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for buildingsManager (TownBuildingsManager*)
+    return luaL_error(L, "Unsupported property 'buildingsManager' (type: TownBuildingsManager*)");
+}
+
+static int Building_get_rootNode(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for rootNode (Ogre::SceneNode*)
+    return luaL_error(L, "Unsupported property 'rootNode' (type: Ogre::SceneNode*)");
+}
+
+static int Building_get_audioObject(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for audioObject (unsigned __int64)
+    return luaL_error(L, "Unsupported property 'audioObject' (type: unsigned __int64)");
+}
+
+static int Building_get_soundEmitter(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for soundEmitter (SoundEmitter*)
+    return luaL_error(L, "Unsupported property 'soundEmitter' (type: SoundEmitter*)");
+}
+
+static int Building_get_hasAudio(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->hasAudio ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_interiorGround(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushinteger(L, (lua_Integer)instance->interiorGround);
+    return 1;
+}
+
+static int Building_get_exteriorGround(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushinteger(L, (lua_Integer)instance->exteriorGround);
+    return 1;
+}
+
+static int Building_get_physical(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for physical (PhysicsCollection*)
+    return luaL_error(L, "Unsupported property 'physical' (type: PhysicsCollection*)");
+}
+
+static int Building_get_entitiesToLoad(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushinteger(L, instance->entitiesToLoad);
+    return 1;
+}
+
+static int Building_get_entitiesLoaded(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->entitiesLoaded ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_isFurnitureOf(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for isFurnitureOf (Layout*)
+    return luaL_error(L, "Unsupported property 'isFurnitureOf' (type: Layout*)");
+}
+
+static int Building_get_isOutsideFurniture(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->isOutsideFurniture ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_isNestItem(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->isNestItem ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_baseMaterial(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return pushObject<GameData>(L, instance->baseMaterial, GameDataBinding::getMetatableName());
+}
+
+static int Building_get_effects(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for effects (lektor<std::pair<PhysicalEntity*, Effect*> >)
+    return luaL_error(L, "Unsupported property 'effects' (type: lektor<std::pair<PhysicalEntity*, Effect*> >)");
+}
+
+static int Building_get_effectsVisible(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->effectsVisible ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_effectsActive(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->effectsActive ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_lightsVisible(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->lightsVisible ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_positionMarker(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    pushVector3(L, instance->positionMarker);
+    return 1;
+}
+
+static int Building_get_heightAboveGround(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushnumber(L, instance->heightAboveGround);
+    return 1;
+}
+
+static int Building_get_AABB(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for AABB (Ogre::Aabb)
+    return luaL_error(L, "Unsupported property 'AABB' (type: Ogre::Aabb)");
+}
+
+static int Building_get_isRedDebugTextureMode(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushboolean(L, instance->isRedDebugTextureMode ? 1 : 0);
+    return 1;
+}
+
+static int Building_get_materialName(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lua_pushstring(L, instance->materialName.c_str());
+    return 1;
+}
+
+static int Building_get_usageNodesIds(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for usageNodesIds (std::set<std::string, std::less<std::string >, Ogre::STLAllocator<std::string, Ogre::GeneralAllocPolicy > >)
+    return luaL_error(L, "Unsupported property 'usageNodesIds' (type: std::set<std::string, std::less<std::string >, Ogre::STLAllocator<std::string, Ogre::GeneralAllocPolicy > >)");
+}
+
+static int Building_get_usageNodes(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for usageNodes (lektor<UsageNode*>)
+    return luaL_error(L, "Unsupported property 'usageNodes' (type: lektor<UsageNode*>)");
+}
+
+static int Building_get_badNodes(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for badNodes (ogre_unordered_map<int, float>::type)
+    return luaL_error(L, "Unsupported property 'badNodes' (type: ogre_unordered_map<int, float>::type)");
+}
+
+static int Building_get_triggerVolume(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for triggerVolume (SimplePhysXEntity*)
+    return luaL_error(L, "Unsupported property 'triggerVolume' (type: SimplePhysXEntity*)");
+}
+
+static int Building_get_activeEffects(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    // TODO: Unsupported type for activeEffects (lektor<std::pair<char, float> >)
+    return luaL_error(L, "Unsupported property 'activeEffects' (type: lektor<std::pair<char, float> >)");
+}
+
+// --- Setters for Building ---
+static int Building_set_isFoliage(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->isFoliage = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_hasTerrainInside(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->hasTerrainInside = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_isCavernous(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->isCavernous = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_enforceCeiling(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->enforceCeiling = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_designation(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->designation = (BuildingDesignation)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Building_set_publicDaytime(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->publicDaytime = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_residentSquad(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->residentSquad = *val;
+    return 0;
+}
+
+// Todo
+static int Building_set_residentSquadTemplate(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for residentSquadTemplate");
+}
+
+static int Building_set_isAnInteriorObject(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->isAnInteriorObject = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+// Todo
+static int Building_set_instanceID(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for instanceID");
+}
+
+static int Building_set_layoutInstanceID(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->layoutInstanceID = luaL_checkstring(L, 2);
+    return 0;
+}
+
+static int Building_set_specialFunction(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->specialFunction = (BuildingFunction)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+// Todo
+static int Building_set__buildState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for _buildState");
+}
+
+static int Building_set_classType(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->classType = (BuildingClassType)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Building_set_updateNavmesh(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->updateNavmesh = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_visible(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->visible = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_interiorVisibility(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->interiorVisibility = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_justBeenUpgradedFlag(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->justBeenUpgradedFlag = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_imADoor(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->imADoor = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_destroyed(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->destroyed = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_productionMult(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->productionMult = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Building_set_productionMult_baseData(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->productionMult_baseData = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int Building_set_hasMovingParts(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->hasMovingParts = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_saveVersion(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->saveVersion = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+// Todo
+static int Building_set_doors(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for doors");
+}
+
+static int Building_set__town(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->_town = *val;
+    return 0;
+}
+
+// Todo
+static int Building_set_myInterior(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for myInterior");
+}
+
+// Todo
+static int Building_set_buildingsManager(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for buildingsManager");
+}
+
+// Todo
+static int Building_set_rootNode(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for rootNode");
+}
+
+// Todo
+static int Building_set_audioObject(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for audioObject");
+}
+
+// Todo
+static int Building_set_soundEmitter(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for soundEmitter");
+}
+
+static int Building_set_hasAudio(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->hasAudio = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_interiorGround(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->interiorGround = (GroundType)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Building_set_exteriorGround(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->exteriorGround = (GroundType)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+// ToDo
+static int Building_set_physical(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for physical");
+}
+
+static int Building_set_entitiesToLoad(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->entitiesToLoad = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Building_set_entitiesLoaded(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->entitiesLoaded = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+// Todo
+static int Building_set_isFurnitureOf(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for isFurnitureOf");
+}
+
+static int Building_set_isOutsideFurniture(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->isOutsideFurniture = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_isNestItem(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->isNestItem = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_baseMaterial(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for baseMaterial");
+}
+
+static int Building_set_effects(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for effects");
+}
+
+static int Building_set_effectsVisible(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->effectsVisible = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_effectsActive(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->effectsActive = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_lightsVisible(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->lightsVisible = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_positionMarker(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    readVector3(L, 2, instance->positionMarker);
+    return 0;
+}
+
+static int Building_set_heightAboveGround(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->heightAboveGround = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+// ToDo
+static int Building_set_AABB(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for AABB");
+}
+
+static int Building_set_isRedDebugTextureMode(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->isRedDebugTextureMode = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_materialName(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->materialName = luaL_checkstring(L, 2);
+    return 0;
+}
+
+static int Building_set_usageNodesIds(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for usageNodesIds");
+}
+
+static int Building_set_usageNodes(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for usageNodes");
+}
+
+static int Building_set_badNodes(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for badNodes");
+}
+
+static int Building_set_triggerVolume(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for triggerVolume");
+}
+
+static int Building_set_activeEffects(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for activeEffects");
+}
 
 int BuildingBinding::getScale(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->getScale();
+    float result = instance->getScale();
     lua_pushnumber(L, result);
     return 1;
 }
 
-int BuildingBinding::getBuildState(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    Building::ConstructionState* result = b->getBuildState();
-    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
-}
-
-// int BuildingBinding::getBuildState(lua_State* L)
-// {
-//     Building* b = getB(L, 1);
-//     if (!b) { lua_pushnil(L); return 1; }
-//     Building::ConstructionState* state = b->getBuildState();
-//     if (!state) { lua_pushnil(L); return 1; }
-//     lua_createtable(L, 0, 6);
-//     lua_pushboolean(L, state->isComplete ? 1 : 0);     lua_setfield(L, -2, "isComplete");
-//     lua_pushboolean(L, state->isPaused ? 1 : 0);       lua_setfield(L, -2, "isPaused");
-//     lua_pushboolean(L, state->isDismantled ? 1 : 0);   lua_setfield(L, -2, "isDismantled");
-//     lua_pushnumber(L,  state->constructionProgress);   lua_setfield(L, -2, "constructionProgress");
-//     lua_pushnumber(L,  state->getHealthBarProgress()); lua_setfield(L, -2, "healthBarProgress");
-//     lua_pushnumber(L,  state->getConstructionMaterialProgress()); lua_setfield(L, -2, "materialProgress");
-//     return 1;
-// }
-
-int BuildingBinding::_NV_getBuildState(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    Building::ConstructionState* result = b->_NV_getBuildState();
-    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
-}
-
-int BuildingBinding::getBuildState_ActualNonShared(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    Building::ConstructionState* result = b->getBuildState_ActualNonShared();
-    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
-}
-
 int BuildingBinding::select(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->select();
+    instance->select();
     return 0;
 }
 
 int BuildingBinding::_NV_select(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_select();
+    instance->_NV_select();
     return 0;
 }
 
 int BuildingBinding::getBuildingDesignation(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    BuildingDesignation result = b->getBuildingDesignation();
+    BuildingDesignation result = instance->getBuildingDesignation();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int BuildingBinding::addConstructionProgress(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    b->addConstructionProgress(amount);
+    instance->addConstructionProgress(amount);
     return 0;
 }
 
 int BuildingBinding::_NV_addConstructionProgress(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    b->_NV_addConstructionProgress(amount);
+    instance->_NV_addConstructionProgress(amount);
     return 0;
 }
 
 int BuildingBinding::setConstructionProgress(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    b->setConstructionProgress(amount);
+    instance->setConstructionProgress(amount);
     return 0;
 }
 
 int BuildingBinding::_NV_setConstructionProgress(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    b->_NV_setConstructionProgress(amount);
+    instance->_NV_setConstructionProgress(amount);
     return 0;
 }
 
 int BuildingBinding::notifyConstructionComplete(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->notifyConstructionComplete();
+    instance->notifyConstructionComplete();
     return 0;
 }
 
 int BuildingBinding::_NV_notifyConstructionComplete(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_notifyConstructionComplete();
+    instance->_NV_notifyConstructionComplete();
     return 0;
 }
 
 int BuildingBinding::addDismantleProgress(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    bool result = b->addDismantleProgress(amount);
+    bool result = instance->addDismantleProgress(amount);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_addDismantleProgress(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    bool result = b->_NV_addDismantleProgress(amount);
+    bool result = instance->_NV_addDismantleProgress(amount);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::notifyConstructionDismantling(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->notifyConstructionDismantling();
+    instance->notifyConstructionDismantling();
     return 0;
 }
 
 int BuildingBinding::_NV_notifyConstructionDismantling(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_notifyConstructionDismantling();
+    instance->_NV_notifyConstructionDismantling();
     return 0;
 }
 
 int BuildingBinding::dropMats(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->dropMats();
+    instance->dropMats();
     return 0;
 }
 
 int BuildingBinding::canUpgrade(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    GameData* result = b->canUpgrade();
+    GameData* result = instance->canUpgrade();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int BuildingBinding::_NV_canUpgrade(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    GameData* result = b->_NV_canUpgrade();
+    GameData* result = instance->_NV_canUpgrade();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int BuildingBinding::canDowngrade(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    GameData* result = b->canDowngrade();
+    GameData* result = instance->canDowngrade();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int BuildingBinding::_NV_canDowngrade(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    GameData* result = b->_NV_canDowngrade();
+    GameData* result = instance->_NV_canDowngrade();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int BuildingBinding::canDismantle(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->canDismantle();
+    bool result = instance->canDismantle();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_canDismantle(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_canDismantle();
+    bool result = instance->_NV_canDismantle();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::buyMeCallback(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     int result = (int)luaL_checkinteger(L, 2);
-    b->buyMeCallback(result);
+    instance->buyMeCallback(result);
     return 0;
 }
 
 int BuildingBinding::_NV_buyMeCallback(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     int result = (int)luaL_checkinteger(L, 2);
-    b->_NV_buyMeCallback(result);
+    instance->_NV_buyMeCallback(result);
     return 0;
 }
 
 int BuildingBinding::calculateSaleValue(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    int result = b->calculateSaleValue();
+    int result = instance->calculateSaleValue();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int BuildingBinding::loadNodes(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->loadNodes();
+    instance->loadNodes();
     return 0;
 }
 
 int BuildingBinding::isPublic(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isPublic();
+    bool result = instance->isPublic();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isPublic(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isPublic();
+    bool result = instance->_NV_isPublic();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::confirmDismantle(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     int r = (int)luaL_checkinteger(L, 2);
-    b->confirmDismantle(r);
+    instance->confirmDismantle(r);
     return 0;
 }
 
 int BuildingBinding::_NV_confirmDismantle(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     int r = (int)luaL_checkinteger(L, 2);
-    b->_NV_confirmDismantle(r);
+    instance->_NV_confirmDismantle(r);
     return 0;
 }
 
 int BuildingBinding::isAShop(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isAShop();
+    bool result = instance->isAShop();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isAShop(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isAShop();
+    bool result = instance->_NV_isAShop();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::isForSale(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isForSale();
+    bool result = instance->isForSale();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isForSale(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isForSale();
+    bool result = instance->_NV_isForSale();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::isAWallRamp(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isAWallRamp();
+    bool result = instance->isAWallRamp();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isAWallRamp(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isAWallRamp();
+    bool result = instance->_NV_isAWallRamp();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::hasInterior(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->hasInterior();
+    bool result = instance->hasInterior();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::affectsNavmesh(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->affectsNavmesh();
+    bool result = instance->affectsNavmesh();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::getResidentSquadLeader(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    Character* result = b->getResidentSquadLeader();
+    Character* result = instance->getResidentSquadLeader();
     return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
 }
 
 int BuildingBinding::setDesignation(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     BuildingDesignation d = (BuildingDesignation)luaL_checkinteger(L, 2);
-    b->setDesignation(d);
+    instance->setDesignation(d);
     return 0;
+}
+
+int BuildingBinding::getWallEndPosition(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Ogre::Vector3 result = instance->getWallEndPosition();
+    pushVector3(L, result);
+    return 1;
 }
 
 int BuildingBinding::setupMiningResourceLevel(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->setupMiningResourceLevel();
+    instance->setupMiningResourceLevel();
     return 0;
 }
 
 int BuildingBinding::_NV_setupMiningResourceLevel(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_setupMiningResourceLevel();
+    instance->_NV_setupMiningResourceLevel();
     return 0;
 }
 
 int BuildingBinding::getMiningResourceLevel(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->getMiningResourceLevel();
+    float result = instance->getMiningResourceLevel();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::_NV_getMiningResourceLevel(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->_NV_getMiningResourceLevel();
+    float result = instance->_NV_getMiningResourceLevel();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::getNumInternalBuildings(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    int result = b->getNumInternalBuildings();
+    int result = instance->getNumInternalBuildings();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int BuildingBinding::moveMountedBuildings(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->moveMountedBuildings();
+    instance->moveMountedBuildings();
     return 0;
 }
 
 int BuildingBinding::reCheckInsideOutsideFortificationStatus(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->reCheckInsideOutsideFortificationStatus();
+    instance->reCheckInsideOutsideFortificationStatus();
     return 0;
 }
 
 int BuildingBinding::setInsideTownWalls(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     int code = (int)luaL_checkinteger(L, 2);
-    b->setInsideTownWalls(code);
+    instance->setInsideTownWalls(code);
     return 0;
 }
 
 int BuildingBinding::_NV_setInsideTownWalls(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     int code = (int)luaL_checkinteger(L, 2);
-    b->_NV_setInsideTownWalls(code);
+    instance->_NV_setInsideTownWalls(code);
     return 0;
 }
 
 int BuildingBinding::postCreationPathfinderSetupStuff(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->postCreationPathfinderSetupStuff();
+    instance->postCreationPathfinderSetupStuff();
     return 0;
 }
 
 int BuildingBinding::_NV_postCreationPathfinderSetupStuff(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_postCreationPathfinderSetupStuff();
+    instance->_NV_postCreationPathfinderSetupStuff();
     return 0;
 }
 
 int BuildingBinding::getSpecialFunction(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    BuildingFunction result = b->getSpecialFunction();
+    BuildingFunction result = instance->getSpecialFunction();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int BuildingBinding::_NV_getSpecialFunction(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    BuildingFunction result = b->_NV_getSpecialFunction();
+    BuildingFunction result = instance->_NV_getSpecialFunction();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
-int BuildingBinding::getFunctionStuff(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    StorageBuilding* result = b->getFunctionStuff();
-    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
-}
-
-int BuildingBinding::_NV_getFunctionStuff(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    StorageBuilding* result = b->_NV_getFunctionStuff();
-    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
-}
-
 int BuildingBinding::isBroken(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isBroken();
+    bool result = instance->isBroken();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isBroken(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isBroken();
+    bool result = instance->_NV_isBroken();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::setBroken(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool _a1 = lua_toboolean(L, 2) != 0;
-    b->setBroken(_a1);
+    instance->setBroken(_a1);
     return 0;
 }
 
 int BuildingBinding::_NV_setBroken(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool _a1 = lua_toboolean(L, 2) != 0;
-    b->_NV_setBroken(_a1);
+    instance->_NV_setBroken(_a1);
     return 0;
 }
 
 int BuildingBinding::switchPowerOn(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->switchPowerOn(on);
+    instance->switchPowerOn(on);
     return 0;
 }
 
 int BuildingBinding::_NV_switchPowerOn(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->_NV_switchPowerOn(on);
+    instance->_NV_switchPowerOn(on);
     return 0;
 }
 
 int BuildingBinding::isPowerOn(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isPowerOn();
+    bool result = instance->isPowerOn();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isPowerOn(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isPowerOn();
+    bool result = instance->_NV_isPowerOn();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::isDamaged(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isDamaged();
+    bool result = instance->isDamaged();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isDamaged(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isDamaged();
+    bool result = instance->_NV_isDamaged();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::isDestroyed(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isDestroyed();
+    bool result = instance->isDestroyed();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isDestroyed(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isDestroyed();
+    bool result = instance->_NV_isDestroyed();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::isSign(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isSign();
+    bool result = instance->isSign();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isSign(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isSign();
+    bool result = instance->_NV_isSign();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::setDestroyed(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool d = lua_toboolean(L, 2) != 0;
-    b->setDestroyed(d);
+    instance->setDestroyed(d);
     return 0;
 }
 
 int BuildingBinding::_NV_setDestroyed(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool d = lua_toboolean(L, 2) != 0;
-    b->_NV_setDestroyed(d);
+    instance->_NV_setDestroyed(d);
     return 0;
 }
 
 int BuildingBinding::canBeDestroyed(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->canBeDestroyed();
+    bool result = instance->canBeDestroyed();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_canBeDestroyed(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_canBeDestroyed();
+    bool result = instance->_NV_canBeDestroyed();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::setNestTag(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->setNestTag();
+    instance->setNestTag();
     return 0;
 }
 
 int BuildingBinding::getReachRange(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->getReachRange();
+    float result = instance->getReachRange();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::_NV_getReachRange(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->_NV_getReachRange();
+    float result = instance->_NV_getReachRange();
     lua_pushnumber(L, result);
+    return 1;
+}
+
+int BuildingBinding::hasShopCountersSelling(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    ItemFunction type = (ItemFunction)luaL_checkinteger(L, 2);
+    bool result = instance->hasShopCountersSelling(type);
+    lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::getBuildingClass(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    BuildingClassType result = b->getBuildingClass();
+    BuildingClassType result = instance->getBuildingClass();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int BuildingBinding::_NV_getBuildingClass(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    BuildingClassType result = b->_NV_getBuildingClass();
+    BuildingClassType result = instance->_NV_getBuildingClass();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int BuildingBinding::needsSaving(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     std::string mod = luaL_checkstring(L, 2);
-    bool result = b->needsSaving(mod);
+    bool result = instance->needsSaving(mod);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_needsSaving(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     std::string mod = luaL_checkstring(L, 2);
-    bool result = b->_NV_needsSaving(mod);
+    bool result = instance->_NV_needsSaving(mod);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::notifyChange(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->notifyChange();
+    instance->notifyChange();
     return 0;
 }
 
 int BuildingBinding::setToDefaultFactionDivision(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->setToDefaultFactionDivision();
+    instance->setToDefaultFactionDivision();
     return 0;
 }
 
 int BuildingBinding::getOutputBasedRotationSpeedMult(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->getOutputBasedRotationSpeedMult();
+    float result = instance->getOutputBasedRotationSpeedMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::_NV_getOutputBasedRotationSpeedMult(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->_NV_getOutputBasedRotationSpeedMult();
+    float result = instance->_NV_getOutputBasedRotationSpeedMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::calculateEfficiencyMult(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->calculateEfficiencyMult();
+    float result = instance->calculateEfficiencyMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::_NV_calculateEfficiencyMult(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->_NV_calculateEfficiencyMult();
+    float result = instance->_NV_calculateEfficiencyMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::getSoundIntensity(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->getSoundIntensity();
+    float result = instance->getSoundIntensity();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::_NV_getSoundIntensity(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->_NV_getSoundIntensity();
+    float result = instance->_NV_getSoundIntensity();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::loadUnloadCheck(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->loadUnloadCheck();
+    instance->loadUnloadCheck();
     return 0;
 }
 
 int BuildingBinding::_NV_loadUnloadCheck(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_loadUnloadCheck();
+    instance->_NV_loadUnloadCheck();
     return 0;
 }
 
 int BuildingBinding::_DESTRUCTOR(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
-}
-
-int BuildingBinding::getProductionBuilding(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    ProductionBuilding* result = b->getProductionBuilding();
-    return pushObject<ProductionBuilding>(L, result, ProductionBuildingBinding::getMetatableName());
-}
-
-int BuildingBinding::_NV_getProductionBuilding(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    ProductionBuilding* result = b->_NV_getProductionBuilding();
-    return pushObject<ProductionBuilding>(L, result, ProductionBuildingBinding::getMetatableName());
 }
 
 int BuildingBinding::getProductionMultForGUI(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->getProductionMultForGUI();
+    float result = instance->getProductionMultForGUI();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::_NV_getProductionMultForGUI(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->_NV_getProductionMultForGUI();
+    float result = instance->_NV_getProductionMultForGUI();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::getProductionMult(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->getProductionMult();
+    float result = instance->getProductionMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::_NV_getProductionMult(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->_NV_getProductionMult();
+    float result = instance->_NV_getProductionMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::isThePlayer(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isThePlayer();
+    bool result = instance->isThePlayer();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::doorParentBuilding(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    Building* result = b->doorParentBuilding();
+    Building* result = instance->doorParentBuilding();
     return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
 }
 
 int BuildingBinding::_NV_doorParentBuilding(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    Building* result = b->_NV_doorParentBuilding();
+    Building* result = instance->_NV_doorParentBuilding();
     return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
 }
 
 int BuildingBinding::isDoor(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isDoor();
+    bool result = instance->isDoor();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::isFurniture(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isFurniture();
+    bool result = instance->isFurniture();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::isFurnitureOrDoor(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isFurnitureOrDoor();
+    bool result = instance->isFurnitureOrDoor();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::getIsOutsideFurniture(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->getIsOutsideFurniture();
+    bool result = instance->getIsOutsideFurniture();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::setIsOutsideFurniture(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool value = lua_toboolean(L, 2) != 0;
-    b->setIsOutsideFurniture(value);
+    instance->setIsOutsideFurniture(value);
     return 0;
 }
 
 int BuildingBinding::getCurrentTownLocation(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    TownBase* result = b->getCurrentTownLocation();
+    TownBase* result = instance->getCurrentTownLocation();
     return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
 }
 
 int BuildingBinding::_NV_getCurrentTownLocation(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    TownBase* result = b->_NV_getCurrentTownLocation();
+    TownBase* result = instance->_NV_getCurrentTownLocation();
     return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
 }
 
 int BuildingBinding::furnitureParentBuilding(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    Building* result = b->furnitureParentBuilding();
+    Building* result = instance->furnitureParentBuilding();
     return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
 }
 
 int BuildingBinding::hasAnOpenDoor(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->hasAnOpenDoor();
+    bool result = instance->hasAnOpenDoor();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::allowAnimals(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->allowAnimals();
+    bool result = instance->allowAnimals();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::update(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->update();
+    instance->update();
     return 0;
 }
 
 int BuildingBinding::_NV_update(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_update();
+    instance->_NV_update();
     return 0;
 }
 
 int BuildingBinding::threadedUpdate(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->threadedUpdate();
+    instance->threadedUpdate();
     return 0;
 }
 
 int BuildingBinding::_NV_threadedUpdate(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_threadedUpdate();
+    instance->_NV_threadedUpdate();
     return 0;
 }
 
 int BuildingBinding::needsUpdate(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->needsUpdate();
+    bool result = instance->needsUpdate();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_needsUpdate(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_needsUpdate();
+    bool result = instance->_NV_needsUpdate();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::isPhysical(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isPhysical();
+    bool result = instance->isPhysical();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isPhysical(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isPhysical();
+    bool result = instance->_NV_isPhysical();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::checkLoadedProperly(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->checkLoadedProperly();
+    instance->checkLoadedProperly();
     return 0;
 }
 
 int BuildingBinding::_NV_checkLoadedProperly(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_checkLoadedProperly();
+    instance->_NV_checkLoadedProperly();
     return 0;
 }
 
 int BuildingBinding::setVisible(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->setVisible(on);
+    instance->setVisible(on);
     return 0;
 }
 
 int BuildingBinding::_NV_setVisible(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->_NV_setVisible(on);
+    instance->_NV_setVisible(on);
     return 0;
 }
 
 int BuildingBinding::getVisible(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->getVisible();
+    bool result = instance->getVisible();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_getVisible(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_getVisible();
+    bool result = instance->_NV_getVisible();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::hasDoorLock(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->hasDoorLock();
+    bool result = instance->hasDoorLock();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_hasDoorLock(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_hasDoorLock();
+    bool result = instance->_NV_hasDoorLock();
     lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int BuildingBinding::getMouseCursor(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    CursorType result = instance->getMouseCursor();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int BuildingBinding::_NV_getMouseCursor(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    CursorType result = instance->_NV_getMouseCursor();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int BuildingBinding::getDefaultTask(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    TaskType result = instance->getDefaultTask();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int BuildingBinding::_NV_getDefaultTask(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    TaskType result = instance->_NV_getDefaultTask();
+    lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int BuildingBinding::getInventory(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    Inventory* result = b->getInventory();
+    Inventory* result = instance->getInventory();
     return pushObject<Inventory>(L, result, InventoryBinding::getMetatableName());
 }
 
 int BuildingBinding::_NV_getInventory(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    Inventory* result = b->_NV_getInventory();
+    Inventory* result = instance->_NV_getInventory();
     return pushObject<Inventory>(L, result, InventoryBinding::getMetatableName());
 }
 
 int BuildingBinding::getTown(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    TownBase* result = b->getTown();
+    TownBase* result = instance->getTown();
     return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
 }
 
 int BuildingBinding::getRealTown(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    Town* result = b->getRealTown();
+    Town* result = instance->getRealTown();
     return pushObject<Town>(L, result, TownBinding::getMetatableName());
 }
 
 int BuildingBinding::createPhysical(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->createPhysical();
+    bool result = instance->createPhysical();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_createPhysical(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_createPhysical();
+    bool result = instance->_NV_createPhysical();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::destroyPhysical(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->destroyPhysical();
+    instance->destroyPhysical();
     return 0;
 }
 
 int BuildingBinding::_NV_destroyPhysical(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_destroyPhysical();
+    instance->_NV_destroyPhysical();
     return 0;
 }
 
 int BuildingBinding::destroyDoors(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->destroyDoors();
+    instance->destroyDoors();
     return 0;
 }
 
 int BuildingBinding::createTriggerHull(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->createTriggerHull();
+    instance->createTriggerHull();
     return 0;
 }
 
 int BuildingBinding::destroyAudioObject(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->destroyAudioObject();
+    instance->destroyAudioObject();
     return 0;
 }
 
 int BuildingBinding::getGroundType(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool inside = lua_toboolean(L, 2) != 0;
-    GroundType result = b->getGroundType(inside);
+    GroundType result = instance->getGroundType(inside);
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int BuildingBinding::isCeilingMounted(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isCeilingMounted();
+    bool result = instance->isCeilingMounted();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isCeilingMounted(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isCeilingMounted();
+    bool result = instance->_NV_isCeilingMounted();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::setFloorVisibility(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     int floor = (int)luaL_checkinteger(L, 2);
     bool vis = lua_toboolean(L, 3) != 0;
-    b->setFloorVisibility(floor, vis);
+    instance->setFloorVisibility(floor, vis);
     return 0;
 }
 
 int BuildingBinding::getNumFloors(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    int result = b->getNumFloors();
+    int result = instance->getNumFloors();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int BuildingBinding::buildingComplete_RestoreMaterial(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->buildingComplete_RestoreMaterial();
+    instance->buildingComplete_RestoreMaterial();
     return 0;
 }
 
 int BuildingBinding::loadInteriorPhysical(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->loadInteriorPhysical(on);
+    instance->loadInteriorPhysical(on);
     return 0;
 }
 
 int BuildingBinding::loadInteriorGraphics(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->loadInteriorGraphics(on);
+    instance->loadInteriorGraphics(on);
     return 0;
+}
+
+int BuildingBinding::calculateLeftPost(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Ogre::Vector3 result = instance->calculateLeftPost();
+    pushVector3(L, result);
+    return 1;
 }
 
 int BuildingBinding::getLinkLength(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->getLinkLength();
+    float result = instance->getLinkLength();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::_NV_getLinkLength(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    float result = b->_NV_getLinkLength();
+    float result = instance->_NV_getLinkLength();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int BuildingBinding::clearTownBuildingsManagerPtr(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->clearTownBuildingsManagerPtr();
+    instance->clearTownBuildingsManagerPtr();
     return 0;
 }
 
 int BuildingBinding::_NV_clearTownBuildingsManagerPtr(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_clearTownBuildingsManagerPtr();
+    instance->_NV_clearTownBuildingsManagerPtr();
     return 0;
 }
 
 int BuildingBinding::setup(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->setup();
+    instance->setup();
     return 0;
 }
 
 int BuildingBinding::_NV_setup(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_setup();
+    instance->_NV_setup();
     return 0;
 }
 
 int BuildingBinding::setupFromData(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->setupFromData();
+    instance->setupFromData();
     return 0;
 }
 
 int BuildingBinding::_NV_setupFromData(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_setupFromData();
+    instance->_NV_setupFromData();
     return 0;
 }
 
 int BuildingBinding::setupAudio(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->setupAudio();
+    instance->setupAudio();
     return 0;
 }
 
 int BuildingBinding::switchLights(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->switchLights(on);
+    instance->switchLights(on);
     return 0;
 }
 
 int BuildingBinding::_NV_switchLights(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->_NV_switchLights(on);
+    instance->_NV_switchLights(on);
     return 0;
 }
 
 int BuildingBinding::switchEffects(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->switchEffects(on);
+    instance->switchEffects(on);
     return 0;
 }
 
 int BuildingBinding::_NV_switchEffects(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->_NV_switchEffects(on);
+    instance->_NV_switchEffects(on);
     return 0;
 }
 
 int BuildingBinding::hasAnyGoodPositionMarkersLeft(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->hasAnyGoodPositionMarkersLeft();
+    bool result = instance->hasAnyGoodPositionMarkersLeft();
     lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int BuildingBinding::notifyBadPositionMarker(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Ogre::Vector3 what;
+    readVector3(L, 2, what);
+    instance->notifyBadPositionMarker(what);
+    return 0;
+}
+
+int BuildingBinding::getPositionMarker(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Ogre::Vector3 currentPosition;
+    readVector3(L, 2, currentPosition);
+    Ogre::Vector3 result = instance->getPositionMarker(currentPosition);
+    pushVector3(L, result);
+    return 1;
+}
+
+int BuildingBinding::_NV_getPositionMarker(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Ogre::Vector3 currentPosition;
+    readVector3(L, 2, currentPosition);
+    Ogre::Vector3 result = instance->_NV_getPositionMarker(currentPosition);
+    pushVector3(L, result);
+    return 1;
+}
+
+int BuildingBinding::getDirectionMarker(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Ogre::Vector3 currentPosition;
+    readVector3(L, 2, currentPosition);
+    Ogre::Vector3 result = instance->getDirectionMarker(currentPosition);
+    pushVector3(L, result);
+    return 1;
+}
+
+int BuildingBinding::_NV_getDirectionMarker(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Ogre::Vector3 currentPosition;
+    readVector3(L, 2, currentPosition);
+    Ogre::Vector3 result = instance->_NV_getDirectionMarker(currentPosition);
+    pushVector3(L, result);
+    return 1;
+}
+
+int BuildingBinding::getDirectionMarkerQuat(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Ogre::Vector3 currentPosition;
+    readVector3(L, 2, currentPosition);
+    Ogre::Quaternion result = instance->getDirectionMarkerQuat(currentPosition);
+    pushQuaternion(L, result);
+    return 1;
+}
+
+int BuildingBinding::_NV_getDirectionMarkerQuat(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Ogre::Vector3 currentPosition;
+    readVector3(L, 2, currentPosition);
+    Ogre::Quaternion result = instance->_NV_getDirectionMarkerQuat(currentPosition);
+    pushQuaternion(L, result);
     return 1;
 }
 
 int BuildingBinding::isCreated(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->isCreated();
+    bool result = instance->isCreated();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::_NV_isCreated(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    bool result = b->_NV_isCreated();
+    bool result = instance->_NV_isCreated();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingBinding::updateUsageNodes(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->updateUsageNodes();
+    instance->updateUsageNodes();
     return 0;
 }
 
 int BuildingBinding::forceValidUsageNodesValidation(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->forceValidUsageNodesValidation();
+    instance->forceValidUsageNodesValidation();
     return 0;
 }
 
 int BuildingBinding::addUsageNode(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     std::string nodeId = luaL_checkstring(L, 2);
-    b->addUsageNode(nodeId);
+    instance->addUsageNode(nodeId);
     return 0;
 }
 
 int BuildingBinding::removeUsageNode(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
     std::string nodeId = luaL_checkstring(L, 2);
-    b->removeUsageNode(nodeId);
+    instance->removeUsageNode(nodeId);
     return 0;
 }
 
 int BuildingBinding::clearUsageNodes(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->clearUsageNodes();
+    instance->clearUsageNodes();
+    return 0;
+}
+
+int BuildingBinding::notifyEffect(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    EffectType::Enum type = (EffectType::Enum)luaL_checkinteger(L, 2);
+    WeatherAffecting what = (WeatherAffecting)luaL_checkinteger(L, 3);
+    float strength = (float)luaL_checknumber(L, 4);
+    instance->notifyEffect(type, what, strength);
+    return 0;
+}
+
+int BuildingBinding::_NV_notifyEffect(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    EffectType::Enum type = (EffectType::Enum)luaL_checkinteger(L, 2);
+    WeatherAffecting what = (WeatherAffecting)luaL_checkinteger(L, 3);
+    float strength = (float)luaL_checknumber(L, 4);
+    instance->_NV_notifyEffect(type, what, strength);
     return 0;
 }
 
 int BuildingBinding::updatePhysicalWithProgress(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->updatePhysicalWithProgress();
+    instance->updatePhysicalWithProgress();
     return 0;
 }
 
 int BuildingBinding::recalculateWorldAABB(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->recalculateWorldAABB();
+    instance->recalculateWorldAABB();
     return 0;
 }
 
 int BuildingBinding::getSeed(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    unsigned int result = b->getSeed();
+    unsigned int result = instance->getSeed();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int BuildingBinding::onBuildingLoaded(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->onBuildingLoaded();
+    instance->onBuildingLoaded();
     return 0;
 }
 
 int BuildingBinding::_NV_onBuildingLoaded(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->_NV_onBuildingLoaded();
+    instance->_NV_onBuildingLoaded();
     return 0;
 }
 
 int BuildingBinding::updateBadNodes(lua_State* L)
 {
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
 
-    b->updateBadNodes();
+    instance->updateBadNodes();
     return 0;
 }
 
-// line 359: CursorType getMouseCursor(...) - unsupported return type
-int BuildingBinding::getMouseCursor(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    CursorType result = b->getMouseCursor();
-    lua_pushinteger(L, (lua_Integer)result);
-    return 1;
-}
-
-// line 360: CursorType _NV_getMouseCursor(...) - unsupported return type
-int BuildingBinding::_NV_getMouseCursor(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    CursorType result = b->_NV_getMouseCursor();
-    lua_pushinteger(L, (lua_Integer)result);
-    return 1;
-}
-
-// line 361: TaskType getDefaultTask(...) - unsupported return type
-int BuildingBinding::getDefaultTask(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    TaskType result = b->getDefaultTask();
-    lua_pushinteger(L, (lua_Integer)result);
-    return 1;
-}
-
-// line 362: TaskType _NV_getDefaultTask(...) - unsupported return type
-int BuildingBinding::_NV_getDefaultTask(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    TaskType result = b->_NV_getDefaultTask();
-    lua_pushinteger(L, (lua_Integer)result);
-    return 1;
-}
-
-// line 203: Ogre::Vector3 getWallEndPosition(...) - unsupported return type
-int BuildingBinding::getWallEndPosition(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    Ogre::Vector3 result = b->getWallEndPosition();
-    pushVector3(L, result);
-    return 1;
-}
-
-// line 400: Ogre::Vector3 calculateLeftPost(...)
-int BuildingBinding::calculateLeftPost(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Building is nil");
-
-    Ogre::Vector3 result = b->calculateLeftPost();
-    pushVector3(L, result);
-    return 1;
-}
-
-// line 439: Ogre::Vector3 getPositionMarker(...) - unsupported return type
-int BuildingBinding::getPosition(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) { lua_pushnil(L); return 1; }
-    Ogre::Vector3 p = b->getPosition();
-    pushVector3(L, p);
-    return 1;
-}
-
-// line 440: Ogre::Vector3 _NV_getPositionMarker(...) - unsupported return type
-int BuildingBinding::_NV_getPositionMarker(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) { lua_pushnil(L); return 1; }
-
-    Ogre::Vector3 p = b->getPosition();
-    Ogre::Vector3 result = b->_NV_getPositionMarker(p);
-    pushVector3(L, result);
-    return 1;
-}
-
-// line 441: Ogre::Vector3 getDirectionMarker(...) - unsupported return type
-int BuildingBinding::getDirectionMarker(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) { lua_pushnil(L); return 1; }
-
-    Ogre::Vector3 p = b->getPosition();
-    Ogre::Vector3 result = b->getDirectionMarker(p);
-    pushVector3(L, result);
-    return 1;
-}
-
-// line 442: Ogre::Vector3 _NV_getDirectionMarker(...) - unsupported return type
-int BuildingBinding::_NV_getDirectionMarker(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) { lua_pushnil(L); return 1; }
-
-    Ogre::Vector3 p = b->getPosition();
-    Ogre::Vector3 result = b->_NV_getDirectionMarker(p);
-    pushVector3(L, result);
-    return 1;
-}
-
-// line 443: Ogre::Quaternion getDirectionMarkerQuat(...) - unsupported return type
-int BuildingBinding::getDirectionMarkerQuat(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) { lua_pushnil(L); return 1; }
-
-    Ogre::Vector3 p = b->getPosition();
-    Ogre::Quaternion result = b->getDirectionMarkerQuat(p);
-    pushQuaternion(L, result);
-    return 1;
-}
-
-// line 444: Ogre::Quaternion _NV_getDirectionMarkerQuat(...) - unsupported return type
-int BuildingBinding::_NV_getDirectionMarkerQuat(lua_State* L)
-{
-    Building* b = getB(L, 1);
-    if (!b) { lua_pushnil(L); return 1; }
-
-    Ogre::Vector3 p = b->getPosition();
-    Ogre::Quaternion result = b->_NV_getDirectionMarkerQuat(p);
-    pushQuaternion(L, result);
-    return 1;
-}
-
-
 /*
 Skipped methods needing manual binding:
+  line 143: ConstructionState* getBuildState(...) - unsupported return type
+  line 144: ConstructionState* _NV_getBuildState(...) - unsupported return type
+  line 145: ConstructionState* getBuildState_ActualNonShared(...) - unsupported return type
   line 161: void upgrade(...) - unsupported arg type
   line 162: void _NV_upgrade(...) - unsupported arg type
   line 163: void downgrade(...) - unsupported arg type
@@ -2052,7 +2712,6 @@ Skipped methods needing manual binding:
   line 192: WallBuilding* isAWall(...) - unsupported return type
   line 193: WallBuilding* _NV_isAWall(...) - unsupported return type
   line 200: void setResidentSquad(...) - unsupported arg type
-  line 203: Ogre::Vector3 getWallEndPosition(...) - unsupported return type
   line 208: void addAnInternalBuilding(...) - unsupported arg type
   line 209: void removeAnInternalBuilding(...) - unsupported arg type
   line 211: void addAnInternalItem(...) - unsupported arg type
@@ -2060,9 +2719,10 @@ Skipped methods needing manual binding:
   line 214: int getMountedBuildings(...) - unsupported arg type
   line 216: void setHandle(...) - unsupported arg type
   line 217: void _NV_setHandle(...) - unsupported arg type
+  line 225: StorageBuilding* getFunctionStuff(...) - unsupported return type
+  line 226: StorageBuilding* _NV_getFunctionStuff(...) - unsupported return type
   line 227: UseableStuff* getUseableStuff(...) - unsupported return type
   line 228: UseableStuff* _NV_getUseableStuff(...) - unsupported return type
-  line 251: bool hasShopCountersSelling(...) - unsupported arg type
   line 258: InstanceID* getInstanceID(...) - unsupported return type
   line 259: InstanceID* _NV_getInstanceID(...) - unsupported return type
   line 260: const std::string& getLayoutInstanceID(...) - reference return type
@@ -2083,6 +2743,8 @@ Skipped methods needing manual binding:
   line 302: void getGUIDestroyButton(...) - unsupported arg type
   line 303: void _NV_getGUIDestroyButton(...) - unsupported arg type
   line 305: void findAllFurnitureWithFunction(...) - unsupported arg type
+  line 306: ProductionBuilding* getProductionBuilding(...) - unsupported return type
+  line 307: ProductionBuilding* _NV_getProductionBuilding(...) - unsupported return type
   line 314: DoorStuff* doorStuff(...) - unsupported return type
   line 315: DoorStuff* _NV_doorStuff(...) - unsupported return type
   line 319: GatewayBuilding* isGate(...) - unsupported return type
@@ -2121,9 +2783,6 @@ Skipped methods needing manual binding:
   line 405: Ogre::SceneNode* getRootNode(...) - unsupported return type
   line 406: ZoneMap* getZoneMapLocation(...) - unsupported return type
   line 407: ZoneMap* _NV_getZoneMapLocation(...) - unsupported return type
-  line 438: void notifyBadPositionMarker(...) - unsupported arg type
-  line 453: void notifyEffect(...) - unsupported arg type
-  line 454: void _NV_notifyEffect(...) - unsupported arg type
   line 456: Ogre::SharedPtr<Ogre::Material> getBuildingPartMaterial(...) - static method
   line 457: void setBuildingPartMaterial(...) - static method
   line 458: void restoreMaterialToPhysical(...) - unsupported arg type
@@ -2144,6 +2803,90 @@ Skipped methods needing manual binding:
   line 483: void _NV_setPartVisible(...) - unsupported arg type
 */
 
+static int Building_getBuildState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    Building::ConstructionState* result = instance->getBuildState();
+    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
+}
+
+static int Building__NV_getBuildState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    Building::ConstructionState* result = instance->_NV_getBuildState();
+    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
+}
+
+static int Building_getBuildState_ActualNonShared(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    Building::ConstructionState* result = instance->getBuildState_ActualNonShared();
+    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
+}
+
+static int Building_getFunctionStuff(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    StorageBuilding* result = instance->getFunctionStuff();
+    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
+}
+
+static int Building__NV_getFunctionStuff(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    StorageBuilding* result = instance->_NV_getFunctionStuff();
+    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
+}
+
+static int Building_getUseableStuff(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    UseableStuff* result = instance->getUseableStuff();
+    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
+}
+
+static int Building__NV_getUseableStuff(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    UseableStuff* result = instance->_NV_getUseableStuff();
+    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
+}
+
+static int Building_getProductionBuilding(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    ProductionBuilding* result = instance->getProductionBuilding();
+    return pushObject<ProductionBuilding>(L, result, ProductionBuildingBinding::getMetatableName());
+}
+
+static int Building__NV_getProductionBuilding(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    ProductionBuilding* result = instance->_NV_getProductionBuilding();
+    return pushObject<ProductionBuilding>(L, result, ProductionBuildingBinding::getMetatableName());
+}
+
+int BuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int BuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.Building object");
+    return 1;
+}
+
 void BuildingBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -2151,13 +2894,9 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "__tostring", BuildingBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
-        { "getName", BuildingBinding::getName },
-        { "getPosition", BuildingBinding::getPosition },
         { "getScale", BuildingBinding::getScale },
-        { "getBuildState", BuildingBinding::getBuildState },
-        { "_NV_getBuildState", BuildingBinding::_NV_getBuildState },
-        { "getBuildState_ActualNonShared", BuildingBinding::getBuildState_ActualNonShared },
         { "select", BuildingBinding::select },
         { "_NV_select", BuildingBinding::_NV_select },
         { "getBuildingDesignation", BuildingBinding::getBuildingDesignation },
@@ -2196,6 +2935,7 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "affectsNavmesh", BuildingBinding::affectsNavmesh },
         { "getResidentSquadLeader", BuildingBinding::getResidentSquadLeader },
         { "setDesignation", BuildingBinding::setDesignation },
+        { "getWallEndPosition", BuildingBinding::getWallEndPosition },
         { "setupMiningResourceLevel", BuildingBinding::setupMiningResourceLevel },
         { "_NV_setupMiningResourceLevel", BuildingBinding::_NV_setupMiningResourceLevel },
         { "getMiningResourceLevel", BuildingBinding::getMiningResourceLevel },
@@ -2209,8 +2949,6 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "_NV_postCreationPathfinderSetupStuff", BuildingBinding::_NV_postCreationPathfinderSetupStuff },
         { "getSpecialFunction", BuildingBinding::getSpecialFunction },
         { "_NV_getSpecialFunction", BuildingBinding::_NV_getSpecialFunction },
-        { "getFunctionStuff", BuildingBinding::getFunctionStuff },
-        { "_NV_getFunctionStuff", BuildingBinding::_NV_getFunctionStuff },
         { "isBroken", BuildingBinding::isBroken },
         { "_NV_isBroken", BuildingBinding::_NV_isBroken },
         { "setBroken", BuildingBinding::setBroken },
@@ -2232,6 +2970,7 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "setNestTag", BuildingBinding::setNestTag },
         { "getReachRange", BuildingBinding::getReachRange },
         { "_NV_getReachRange", BuildingBinding::_NV_getReachRange },
+        { "hasShopCountersSelling", BuildingBinding::hasShopCountersSelling },
         { "getBuildingClass", BuildingBinding::getBuildingClass },
         { "_NV_getBuildingClass", BuildingBinding::_NV_getBuildingClass },
         { "needsSaving", BuildingBinding::needsSaving },
@@ -2247,8 +2986,6 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "loadUnloadCheck", BuildingBinding::loadUnloadCheck },
         { "_NV_loadUnloadCheck", BuildingBinding::_NV_loadUnloadCheck },
         { "_DESTRUCTOR", BuildingBinding::_DESTRUCTOR },
-        { "getProductionBuilding", BuildingBinding::getProductionBuilding },
-        { "_NV_getProductionBuilding", BuildingBinding::_NV_getProductionBuilding },
         { "getProductionMultForGUI", BuildingBinding::getProductionMultForGUI },
         { "_NV_getProductionMultForGUI", BuildingBinding::_NV_getProductionMultForGUI },
         { "getProductionMult", BuildingBinding::getProductionMult },
@@ -2282,6 +3019,10 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "_NV_getVisible", BuildingBinding::_NV_getVisible },
         { "hasDoorLock", BuildingBinding::hasDoorLock },
         { "_NV_hasDoorLock", BuildingBinding::_NV_hasDoorLock },
+        { "getMouseCursor", BuildingBinding::getMouseCursor },
+        { "_NV_getMouseCursor", BuildingBinding::_NV_getMouseCursor },
+        { "getDefaultTask", BuildingBinding::getDefaultTask },
+        { "_NV_getDefaultTask", BuildingBinding::_NV_getDefaultTask },
         { "getInventory", BuildingBinding::getInventory },
         { "_NV_getInventory", BuildingBinding::_NV_getInventory },
         { "getTown", BuildingBinding::getTown },
@@ -2301,6 +3042,7 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "buildingComplete_RestoreMaterial", BuildingBinding::buildingComplete_RestoreMaterial },
         { "loadInteriorPhysical", BuildingBinding::loadInteriorPhysical },
         { "loadInteriorGraphics", BuildingBinding::loadInteriorGraphics },
+        { "calculateLeftPost", BuildingBinding::calculateLeftPost },
         { "getLinkLength", BuildingBinding::getLinkLength },
         { "_NV_getLinkLength", BuildingBinding::_NV_getLinkLength },
         { "clearTownBuildingsManagerPtr", BuildingBinding::clearTownBuildingsManagerPtr },
@@ -2315,6 +3057,13 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "switchEffects", BuildingBinding::switchEffects },
         { "_NV_switchEffects", BuildingBinding::_NV_switchEffects },
         { "hasAnyGoodPositionMarkersLeft", BuildingBinding::hasAnyGoodPositionMarkersLeft },
+        { "notifyBadPositionMarker", BuildingBinding::notifyBadPositionMarker },
+        { "getPositionMarker", BuildingBinding::getPositionMarker },
+        { "_NV_getPositionMarker", BuildingBinding::_NV_getPositionMarker },
+        { "getDirectionMarker", BuildingBinding::getDirectionMarker },
+        { "_NV_getDirectionMarker", BuildingBinding::_NV_getDirectionMarker },
+        { "getDirectionMarkerQuat", BuildingBinding::getDirectionMarkerQuat },
+        { "_NV_getDirectionMarkerQuat", BuildingBinding::_NV_getDirectionMarkerQuat },
         { "isCreated", BuildingBinding::isCreated },
         { "_NV_isCreated", BuildingBinding::_NV_isCreated },
         { "updateUsageNodes", BuildingBinding::updateUsageNodes },
@@ -2322,27 +3071,265 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "addUsageNode", BuildingBinding::addUsageNode },
         { "removeUsageNode", BuildingBinding::removeUsageNode },
         { "clearUsageNodes", BuildingBinding::clearUsageNodes },
+        { "notifyEffect", BuildingBinding::notifyEffect },
+        { "_NV_notifyEffect", BuildingBinding::_NV_notifyEffect },
         { "updatePhysicalWithProgress", BuildingBinding::updatePhysicalWithProgress },
         { "recalculateWorldAABB", BuildingBinding::recalculateWorldAABB },
         { "getSeed", BuildingBinding::getSeed },
         { "onBuildingLoaded", BuildingBinding::onBuildingLoaded },
         { "_NV_onBuildingLoaded", BuildingBinding::_NV_onBuildingLoaded },
         { "updateBadNodes", BuildingBinding::updateBadNodes },
-        { "getMouseCursor", BuildingBinding::getMouseCursor },
-        { "_NV_getMouseCursor", BuildingBinding::_NV_getMouseCursor },
-        { "getDefaultTask", BuildingBinding::getDefaultTask },
-        { "_NV_getDefaultTask", BuildingBinding::_NV_getDefaultTask },
-        { "getWallEndPosition", BuildingBinding::getWallEndPosition },
-        { "calculateLeftPost", BuildingBinding::calculateLeftPost },
-        { "getPosition", BuildingBinding::getPosition },
-        { "_NV_getPositionMarker", BuildingBinding::_NV_getPositionMarker },
-        { "getDirectionMarker", BuildingBinding::getDirectionMarker },
-        { "_NV_getDirectionMarker", BuildingBinding::_NV_getDirectionMarker },
-        { "getDirectionMarkerQuat", BuildingBinding::getDirectionMarkerQuat },
-        { "_NV_getDirectionMarkerQuat", BuildingBinding::_NV_getDirectionMarkerQuat },
+        { "getBuildState", Building_getBuildState },
+        { "_NV_getBuildState", Building__NV_getBuildState },
+        { "getBuildState_ActualNonShared", Building_getBuildState_ActualNonShared },
+        { "getFunctionStuff", Building_getFunctionStuff },
+        { "_NV_getFunctionStuff", Building__NV_getFunctionStuff },
+        { "getUseableStuff", Building_getUseableStuff },
+        { "_NV_getUseableStuff", Building__NV_getUseableStuff },
+        { "getProductionBuilding", Building_getProductionBuilding },
+        { "_NV_getProductionBuilding", Building__NV_getProductionBuilding },
         { 0, 0 }
     };
-    registerClass(L, BuildingBinding::getMetatableName(), meta, methods, BuildingBinding::index, BuildingBinding::newindex);
-}
 
-} // namespace KenshiLua
+    registerClass(
+        L, 
+        BuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, BuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, Building_get_isFoliage);
+    lua_setfield(L, -2, "isFoliage");
+    lua_pushcfunction(L, Building_get_hasTerrainInside);
+    lua_setfield(L, -2, "hasTerrainInside");
+    lua_pushcfunction(L, Building_get_isCavernous);
+    lua_setfield(L, -2, "isCavernous");
+    lua_pushcfunction(L, Building_get_enforceCeiling);
+    lua_setfield(L, -2, "enforceCeiling");
+    lua_pushcfunction(L, Building_get_designation);
+    lua_setfield(L, -2, "designation");
+    lua_pushcfunction(L, Building_get_publicDaytime);
+    lua_setfield(L, -2, "publicDaytime");
+    lua_pushcfunction(L, Building_get_residentSquad);
+    lua_setfield(L, -2, "residentSquad");
+    lua_pushcfunction(L, Building_get_residentSquadTemplate);
+    lua_setfield(L, -2, "residentSquadTemplate");
+    lua_pushcfunction(L, Building_get_isAnInteriorObject);
+    lua_setfield(L, -2, "isAnInteriorObject");
+    lua_pushcfunction(L, Building_get_instanceID);
+    lua_setfield(L, -2, "instanceID");
+    lua_pushcfunction(L, Building_get_layoutInstanceID);
+    lua_setfield(L, -2, "layoutInstanceID");
+    lua_pushcfunction(L, Building_get_specialFunction);
+    lua_setfield(L, -2, "specialFunction");
+    lua_pushcfunction(L, Building_get__buildState);
+    lua_setfield(L, -2, "_buildState");
+    lua_pushcfunction(L, Building_get_classType);
+    lua_setfield(L, -2, "classType");
+    lua_pushcfunction(L, Building_get_updateNavmesh);
+    lua_setfield(L, -2, "updateNavmesh");
+    lua_pushcfunction(L, Building_get_visible);
+    lua_setfield(L, -2, "visible");
+    lua_pushcfunction(L, Building_get_interiorVisibility);
+    lua_setfield(L, -2, "interiorVisibility");
+    lua_pushcfunction(L, Building_get_justBeenUpgradedFlag);
+    lua_setfield(L, -2, "justBeenUpgradedFlag");
+    lua_pushcfunction(L, Building_get_imADoor);
+    lua_setfield(L, -2, "imADoor");
+    lua_pushcfunction(L, Building_get_destroyed);
+    lua_setfield(L, -2, "destroyed");
+    lua_pushcfunction(L, Building_get_productionMult);
+    lua_setfield(L, -2, "productionMult");
+    lua_pushcfunction(L, Building_get_productionMult_baseData);
+    lua_setfield(L, -2, "productionMult_baseData");
+    lua_pushcfunction(L, Building_get_hasMovingParts);
+    lua_setfield(L, -2, "hasMovingParts");
+    lua_pushcfunction(L, Building_get_saveVersion);
+    lua_setfield(L, -2, "saveVersion");
+    lua_pushcfunction(L, Building_get_doors);
+    lua_setfield(L, -2, "doors");
+    lua_pushcfunction(L, Building_get__town);
+    lua_setfield(L, -2, "_town");
+    lua_pushcfunction(L, Building_get_myInterior);
+    lua_setfield(L, -2, "myInterior");
+    lua_pushcfunction(L, Building_get_buildingsManager);
+    lua_setfield(L, -2, "buildingsManager");
+    lua_pushcfunction(L, Building_get_rootNode);
+    lua_setfield(L, -2, "rootNode");
+    lua_pushcfunction(L, Building_get_audioObject);
+    lua_setfield(L, -2, "audioObject");
+    lua_pushcfunction(L, Building_get_soundEmitter);
+    lua_setfield(L, -2, "soundEmitter");
+    lua_pushcfunction(L, Building_get_hasAudio);
+    lua_setfield(L, -2, "hasAudio");
+    lua_pushcfunction(L, Building_get_interiorGround);
+    lua_setfield(L, -2, "interiorGround");
+    lua_pushcfunction(L, Building_get_exteriorGround);
+    lua_setfield(L, -2, "exteriorGround");
+    lua_pushcfunction(L, Building_get_physical);
+    lua_setfield(L, -2, "physical");
+    lua_pushcfunction(L, Building_get_entitiesToLoad);
+    lua_setfield(L, -2, "entitiesToLoad");
+    lua_pushcfunction(L, Building_get_entitiesLoaded);
+    lua_setfield(L, -2, "entitiesLoaded");
+    lua_pushcfunction(L, Building_get_isFurnitureOf);
+    lua_setfield(L, -2, "isFurnitureOf");
+    lua_pushcfunction(L, Building_get_isOutsideFurniture);
+    lua_setfield(L, -2, "isOutsideFurniture");
+    lua_pushcfunction(L, Building_get_isNestItem);
+    lua_setfield(L, -2, "isNestItem");
+    lua_pushcfunction(L, Building_get_baseMaterial);
+    lua_setfield(L, -2, "baseMaterial");
+    lua_pushcfunction(L, Building_get_effects);
+    lua_setfield(L, -2, "effects");
+    lua_pushcfunction(L, Building_get_effectsVisible);
+    lua_setfield(L, -2, "effectsVisible");
+    lua_pushcfunction(L, Building_get_effectsActive);
+    lua_setfield(L, -2, "effectsActive");
+    lua_pushcfunction(L, Building_get_lightsVisible);
+    lua_setfield(L, -2, "lightsVisible");
+    lua_pushcfunction(L, Building_get_positionMarker);
+    lua_setfield(L, -2, "positionMarker");
+    lua_pushcfunction(L, Building_get_heightAboveGround);
+    lua_setfield(L, -2, "heightAboveGround");
+    lua_pushcfunction(L, Building_get_AABB);
+    lua_setfield(L, -2, "AABB");
+    lua_pushcfunction(L, Building_get_isRedDebugTextureMode);
+    lua_setfield(L, -2, "isRedDebugTextureMode");
+    lua_pushcfunction(L, Building_get_materialName);
+    lua_setfield(L, -2, "materialName");
+    lua_pushcfunction(L, Building_get_usageNodesIds);
+    lua_setfield(L, -2, "usageNodesIds");
+    lua_pushcfunction(L, Building_get_usageNodes);
+    lua_setfield(L, -2, "usageNodes");
+    lua_pushcfunction(L, Building_get_badNodes);
+    lua_setfield(L, -2, "badNodes");
+    lua_pushcfunction(L, Building_get_triggerVolume);
+    lua_setfield(L, -2, "triggerVolume");
+    lua_pushcfunction(L, Building_get_activeEffects);
+    lua_setfield(L, -2, "activeEffects");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, Building_set_isFoliage);
+    lua_setfield(L, -2, "isFoliage");
+    lua_pushcfunction(L, Building_set_hasTerrainInside);
+    lua_setfield(L, -2, "hasTerrainInside");
+    lua_pushcfunction(L, Building_set_isCavernous);
+    lua_setfield(L, -2, "isCavernous");
+    lua_pushcfunction(L, Building_set_enforceCeiling);
+    lua_setfield(L, -2, "enforceCeiling");
+    lua_pushcfunction(L, Building_set_designation);
+    lua_setfield(L, -2, "designation");
+    lua_pushcfunction(L, Building_set_publicDaytime);
+    lua_setfield(L, -2, "publicDaytime");
+    lua_pushcfunction(L, Building_set_residentSquad);
+    lua_setfield(L, -2, "residentSquad");
+    lua_pushcfunction(L, Building_set_residentSquadTemplate);
+    lua_setfield(L, -2, "residentSquadTemplate");
+    lua_pushcfunction(L, Building_set_isAnInteriorObject);
+    lua_setfield(L, -2, "isAnInteriorObject");
+    lua_pushcfunction(L, Building_set_instanceID);
+    lua_setfield(L, -2, "instanceID");
+    lua_pushcfunction(L, Building_set_layoutInstanceID);
+    lua_setfield(L, -2, "layoutInstanceID");
+    lua_pushcfunction(L, Building_set_specialFunction);
+    lua_setfield(L, -2, "specialFunction");
+    lua_pushcfunction(L, Building_set__buildState);
+    lua_setfield(L, -2, "_buildState");
+    lua_pushcfunction(L, Building_set_classType);
+    lua_setfield(L, -2, "classType");
+    lua_pushcfunction(L, Building_set_updateNavmesh);
+    lua_setfield(L, -2, "updateNavmesh");
+    lua_pushcfunction(L, Building_set_visible);
+    lua_setfield(L, -2, "visible");
+    lua_pushcfunction(L, Building_set_interiorVisibility);
+    lua_setfield(L, -2, "interiorVisibility");
+    lua_pushcfunction(L, Building_set_justBeenUpgradedFlag);
+    lua_setfield(L, -2, "justBeenUpgradedFlag");
+    lua_pushcfunction(L, Building_set_imADoor);
+    lua_setfield(L, -2, "imADoor");
+    lua_pushcfunction(L, Building_set_destroyed);
+    lua_setfield(L, -2, "destroyed");
+    lua_pushcfunction(L, Building_set_productionMult);
+    lua_setfield(L, -2, "productionMult");
+    lua_pushcfunction(L, Building_set_productionMult_baseData);
+    lua_setfield(L, -2, "productionMult_baseData");
+    lua_pushcfunction(L, Building_set_hasMovingParts);
+    lua_setfield(L, -2, "hasMovingParts");
+    lua_pushcfunction(L, Building_set_saveVersion);
+    lua_setfield(L, -2, "saveVersion");
+    lua_pushcfunction(L, Building_set_doors);
+    lua_setfield(L, -2, "doors");
+    lua_pushcfunction(L, Building_set__town);
+    lua_setfield(L, -2, "_town");
+    lua_pushcfunction(L, Building_set_myInterior);
+    lua_setfield(L, -2, "myInterior");
+    lua_pushcfunction(L, Building_set_buildingsManager);
+    lua_setfield(L, -2, "buildingsManager");
+    lua_pushcfunction(L, Building_set_rootNode);
+    lua_setfield(L, -2, "rootNode");
+    lua_pushcfunction(L, Building_set_audioObject);
+    lua_setfield(L, -2, "audioObject");
+    lua_pushcfunction(L, Building_set_soundEmitter);
+    lua_setfield(L, -2, "soundEmitter");
+    lua_pushcfunction(L, Building_set_hasAudio);
+    lua_setfield(L, -2, "hasAudio");
+    lua_pushcfunction(L, Building_set_interiorGround);
+    lua_setfield(L, -2, "interiorGround");
+    lua_pushcfunction(L, Building_set_exteriorGround);
+    lua_setfield(L, -2, "exteriorGround");
+    lua_pushcfunction(L, Building_set_physical);
+    lua_setfield(L, -2, "physical");
+    lua_pushcfunction(L, Building_set_entitiesToLoad);
+    lua_setfield(L, -2, "entitiesToLoad");
+    lua_pushcfunction(L, Building_set_entitiesLoaded);
+    lua_setfield(L, -2, "entitiesLoaded");
+    lua_pushcfunction(L, Building_set_isFurnitureOf);
+    lua_setfield(L, -2, "isFurnitureOf");
+    lua_pushcfunction(L, Building_set_isOutsideFurniture);
+    lua_setfield(L, -2, "isOutsideFurniture");
+    lua_pushcfunction(L, Building_set_isNestItem);
+    lua_setfield(L, -2, "isNestItem");
+    lua_pushcfunction(L, Building_set_baseMaterial);
+    lua_setfield(L, -2, "baseMaterial");
+    lua_pushcfunction(L, Building_set_effects);
+    lua_setfield(L, -2, "effects");
+    lua_pushcfunction(L, Building_set_effectsVisible);
+    lua_setfield(L, -2, "effectsVisible");
+    lua_pushcfunction(L, Building_set_effectsActive);
+    lua_setfield(L, -2, "effectsActive");
+    lua_pushcfunction(L, Building_set_lightsVisible);
+    lua_setfield(L, -2, "lightsVisible");
+    lua_pushcfunction(L, Building_set_positionMarker);
+    lua_setfield(L, -2, "positionMarker");
+    lua_pushcfunction(L, Building_set_heightAboveGround);
+    lua_setfield(L, -2, "heightAboveGround");
+    lua_pushcfunction(L, Building_set_AABB);
+    lua_setfield(L, -2, "AABB");
+    lua_pushcfunction(L, Building_set_isRedDebugTextureMode);
+    lua_setfield(L, -2, "isRedDebugTextureMode");
+    lua_pushcfunction(L, Building_set_materialName);
+    lua_setfield(L, -2, "materialName");
+    lua_pushcfunction(L, Building_set_usageNodesIds);
+    lua_setfield(L, -2, "usageNodesIds");
+    lua_pushcfunction(L, Building_set_usageNodes);
+    lua_setfield(L, -2, "usageNodes");
+    lua_pushcfunction(L, Building_set_badNodes);
+    lua_setfield(L, -2, "badNodes");
+    lua_pushcfunction(L, Building_set_triggerVolume);
+    lua_setfield(L, -2, "triggerVolume");
+    lua_pushcfunction(L, Building_set_activeEffects);
+    lua_setfield(L, -2, "activeEffects");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to RootObject
+    setMetatableParent(L, BuildingBinding::getMetatableName(), RootObjectBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
+}
+}

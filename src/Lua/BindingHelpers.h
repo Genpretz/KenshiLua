@@ -1,22 +1,15 @@
 #pragma once
 
-// -----------------------------------------------------------------------------
-// BindingHelpers.h
-//
-// One canonical place for the binding boilerplate that was previously copy-
-// pasted across every Bindings/*.cpp file.  Keeps things MSVC2010 / v100
-// compatible: no variadic templates, no lambdas, no auto.
-//
-// Lifetime model: we wrap *engine-owned* pointers (Character*, Faction*, ...).
-// The userdata stores a single 'void*' slot.  We never delete the wrapped
-// pointer in __gc; Kenshi owns it.  Value-type wrappers (Damages, hand) that
-// are placement-newed into the userdata have their own __gc that calls the
-// destructor and must NOT use this helper.
-// -----------------------------------------------------------------------------
-
 #include <string>
 #include <cstring>
 #include <cstdio>
+
+#include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/is_enum.hpp>
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/type_traits/is_same.hpp>
+
+
 
 extern "C" {
 #include <lua.h>
@@ -26,370 +19,395 @@ extern "C" {
 namespace KenshiLua
 {
 
-// Generic per-type binding traits.  Each binding specializes (or relies on a
-// matching BindingT::getMetatableName()) by way of using its static method.
-// We avoid a real traits class to keep things simple - the convention is just
-// that every binding class B has a `static const char* getMetatableName()`.
 
-template <class T>
-inline T* checkObject(lua_State* L, int idx, const char* metatableName)
-{
-    void** ud = (void**)luaL_checkudata(L, idx, metatableName);
-    return ud ? (T*)*ud : 0;
-}
+    template <class T>
+    inline T* testObject(lua_State* L, int idx, const char* metatableName)
+    {
+        if (!lua_isuserdata(L, idx)) return 0;
 
-template <class T>
-inline T* testObject(lua_State* L, int idx, const char* metatableName)
-{
-    void* raw = luaL_testudata(L, idx, metatableName);
-    if (!raw) return 0;
-    return (T*)*((void**)raw);
-}
+        int top = lua_gettop(L);
+        bool match = false;
+        if (lua_getmetatable(L, idx)) { // Stack: MT
+            while (true) {
+                lua_pushstring(L, "__name");
+                lua_rawget(L, -2);
+                const char* name = lua_tostring(L, -1);
+                lua_pop(L, 1);
 
-// Helper to check the userdata's associated user value table for a custom key.
-inline bool lookupUserValue(lua_State* L, int udIdx, const char* key)
-{
-    if (lua_getiuservalue(L, udIdx, 1) != LUA_TNIL) {
-        if (lua_istable(L, -1)) {
-            lua_pushstring(L, key);
+                if (name && strcmp(name, metatableName) == 0) {
+                    match = true;
+                    break;
+                }
+
+                if (!lua_getmetatable(L, -1)) {
+                    break;
+                }
+
+                lua_pushstring(L, "__index");
+                lua_rawget(L, -2);
+                if (lua_istable(L, -1)) {
+                    lua_replace(L, -3);
+                    lua_pop(L, 1);
+                } else {
+                    break;
+                }
+            }
+        }
+        lua_settop(L, top);
+
+        if (match) {
+            void* raw = lua_touserdata(L, idx);
+            return raw ? (T*)*((void**)raw) : 0;
+        }
+        return 0;
+    }
+
+    template <class T>
+    inline T* checkObject(lua_State* L, int idx, const char* metatableName)
+    {
+        T* ptr = testObject<T>(L, idx, metatableName);
+        if (!ptr) {
+            const char* msg = lua_pushfstring(L, "%s expected, got %s",
+                metatableName, luaL_typename(L, idx));
+            luaL_argerror(L, idx, msg);
+            return 0;
+        }
+        return ptr;
+    }
+
+    // Allocates a new userdata wrapping `ptr` and assigns the named metatable.
+    // If ptr is null, pushes nil instead.  Always returns 1 (one Lua value pushed).
+    template <class T>
+    inline int pushObject(lua_State* L, T* ptr, const char* metatableName)
+    {
+        if (!ptr) {
+            lua_pushnil(L);
+            return 1;
+        }
+        void** ud = (void**)lua_newuserdata(L, sizeof(void*));
+        *ud = (void*)ptr;
+        luaL_getmetatable(L, metatableName);
+        if (lua_isnil(L, -1)) {
+            // Metatable missing - bail out rather than producing an opaque userdata.
+            lua_pop(L, 2); // pop nil metatable + the new userdata
+            lua_pushnil(L);
+            return 1;
+        }
+        lua_setmetatable(L, -2);
+        return 1;
+    }
+
+
+
+    inline void registerGetter(lua_State* L, const char* name, lua_CFunction getter)
+    {
+        lua_pushcfunction(L, getter);
+        lua_setfield(L, -2, name);
+    }
+
+    inline void registerSetter(lua_State* L, const char* name, lua_CFunction setter)
+    {
+        lua_pushcfunction(L, setter);
+        lua_setfield(L, -2, name);
+    }
+
+    // Same as pushObject<T> but uses BindingT::getMetatableName() so call sites
+    // can be terse:  pushObjectT<Character, CharacterBinding>(L, c);
+    template <class T, class BindingT>
+    inline int pushObjectT(lua_State* L, T* ptr)
+    {
+        return pushObject<T>(L, ptr, BindingT::getMetatableName());
+    }
+
+    inline void registerClass(lua_State* L,
+        const char* metatableName,
+        const luaL_Reg* metamethods,
+        const luaL_Reg* methods,
+        lua_CFunction indexFunc = NULL,
+        lua_CFunction newindexFunc = NULL)
+    {
+        if (!luaL_newmetatable(L, metatableName)) {
+            // Already registered? Bail. Pop the existing metatable and return.
+            lua_pop(L, 1);
+            return;
+        }
+
+        lua_pushstring(L, metatableName);
+        lua_setfield(L, -2, "__name");
+
+        if (indexFunc) {
+            // Caller supplies a C __index that handles both method dispatch and
+            // raw field access.
+            lua_pushcfunction(L, indexFunc);
+            lua_setfield(L, -2, "__index");
+        }
+        else {
+            // Standard idiom: __index = metatable (method-table class).
+            lua_pushvalue(L, -1);
+            lua_setfield(L, -2, "__index");
+        }
+
+        if (newindexFunc) {
+            lua_pushcfunction(L, newindexFunc);
+            lua_setfield(L, -2, "__newindex");
+        }
+
+        if (metamethods) {
+            luaL_setfuncs(L, metamethods, 0);
+        }
+        if (methods) {
+            luaL_setfuncs(L, methods, 0);
+        }
+
+        lua_pop(L, 1);
+    }
+
+    // Build a Vector3-like Lua table {x=,y=,z=} from any object
+    // exposing .x/.y/.z (Ogre::Vector3 fits).
+    template <class V3>
+    inline void pushVector3(lua_State* L, const V3& v)
+    {
+        lua_createtable(L, 0, 3);
+        lua_pushnumber(L, v.x); lua_setfield(L, -2, "x");
+        lua_pushnumber(L, v.y); lua_setfield(L, -2, "y");
+        lua_pushnumber(L, v.z); lua_setfield(L, -2, "z");
+    }
+
+    // Read a {x,y,z} table at idx. Missing fields default to 0. Returns true
+    // if any of the three fields was actually present.
+    template <class V3>
+    inline bool readVector3(lua_State* L, int idx, V3& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        bool any = false;
+        lua_getfield(L, idx, "x"); if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "y"); if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "z"); if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        return any;
+    }
+
+    // Build a Quaternion-like Lua table {w=,x=,y=,z=} from any object
+    // exposing .w/.x/.y/.z (Ogre::Quaternion fits).
+    template <class Q4>
+    inline void pushQuaternion(lua_State* L, const Q4& q)
+    {
+        lua_createtable(L, 0, 4);
+        lua_pushnumber(L, q.w); lua_setfield(L, -2, "w");
+        lua_pushnumber(L, q.x); lua_setfield(L, -2, "x");
+        lua_pushnumber(L, q.y); lua_setfield(L, -2, "y");
+        lua_pushnumber(L, q.z); lua_setfield(L, -2, "z");
+    }
+
+    // Read a {w,x,y,z} table at idx. Missing fields default to 0. Returns true
+    // if any of the four fields was actually present.
+    template <class Q4>
+    inline bool readQuaternion(lua_State* L, int idx, Q4& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        bool any = false;
+        lua_getfield(L, idx, "w"); if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "x"); if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "y"); if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "z"); if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        return any;
+    }
+
+    // Build a TripleInt-like Lua table {val1, val2, val3} from any object
+    // exposing .value[3].
+    template <class TI>
+    inline void pushTripleInt(lua_State* L, const TI& t)
+    {
+        lua_createtable(L, 3, 0);
+        lua_pushinteger(L, t.value[0]); lua_rawseti(L, -2, 1);
+        lua_pushinteger(L, t.value[1]); lua_rawseti(L, -2, 2);
+        lua_pushinteger(L, t.value[2]); lua_rawseti(L, -2, 3);
+    }
+
+    // Read a TripleInt-like Lua table {val1, val2, val3} at idx.
+    template <class TI>
+    inline bool readTripleInt(lua_State* L, int idx, TI& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        lua_rawgeti(L, idx, 1); out.value[0] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, idx, 2); out.value[1] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, idx, 3); out.value[2] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+        return true;
+    }
+
+    // Build a ColourValue-like Lua table {r=,g=,b=,a=} from any object
+    // exposing .r/.g/.b/.a.
+    template <class CV>
+    inline void pushColourValue(lua_State* L, const CV& c)
+    {
+        lua_createtable(L, 0, 4);
+        lua_pushnumber(L, c.r); lua_setfield(L, -2, "r");
+        lua_pushnumber(L, c.g); lua_setfield(L, -2, "g");
+        lua_pushnumber(L, c.b); lua_setfield(L, -2, "b");
+        lua_pushnumber(L, c.a); lua_setfield(L, -2, "a");
+    }
+
+    // Read a ColourValue-like Lua table at idx.
+    template <class CV>
+    inline bool readColourValue(lua_State* L, int idx, CV& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        bool any = false;
+        lua_getfield(L, idx, "r"); if (!lua_isnil(L, -1)) { out.r = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "g"); if (!lua_isnil(L, -1)) { out.g = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "b"); if (!lua_isnil(L, -1)) { out.b = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "a"); if (!lua_isnil(L, -1)) { out.a = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        return any;
+    }
+
+    // Generic __tostring that produces "Type:%p".
+    inline int genericTostringPtr(lua_State* L, const char* typeName, void* ptr)
+    {
+        char buf[96];
+        _snprintf(buf, sizeof(buf), "%s:%p", typeName ? typeName : "obj", ptr);
+        lua_pushstring(L, buf);
+        return 1;
+    }
+
+    // Generic __newindex rejecter.
+    inline int rejectNewIndex(lua_State* L)
+    {
+        return luaL_error(L, "object is read-only from Lua");
+    }
+
+    // Generic __gc no-op for engine-owned pointers.
+    inline int noopGc(lua_State* /*L*/)
+    {
+        return 0;
+    }
+
+    template<typename T>
+    inline void setEnum(lua_State* L, const char* name, T value)
+    {
+        lua_pushinteger(L, static_cast<lua_Integer>(value));
+        lua_setfield(L, -2, name);
+    }
+
+    // -----------------------------------------------------------------------------
+    // Universal Property Dispatchers
+    // -----------------------------------------------------------------------------
+
+    // Intercepts obj.property and routes it to the correct getter in __getters, 
+    // or returns the method if it exists in the metatable.
+    inline int genericPropertyIndex(lua_State* L)
+    {
+        // Stack: 1 = userdata (object), 2 = string (key)
+        const char* key = luaL_checkstring(L, 2);
+
+        if (lua_getmetatable(L, 1)) {
+            // 1. Check for a method in the metatable first
+            lua_pushvalue(L, 2);
             lua_gettable(L, -2);
             if (!lua_isnil(L, -1)) {
-                lua_replace(L, -2); // replace table with the lookup value
-                return true;
+                return 1; // It's a method! Return the function pointer.
             }
-            lua_pop(L, 1); // pop nil
+            lua_pop(L, 1); // pop the nil
+
+            // 2. Check the __getters table
+            lua_pushstring(L, "__getters");
+            lua_gettable(L, -2);
+            if (lua_istable(L, -1)) {
+                lua_pushvalue(L, 2);  // push the key again
+                lua_gettable(L, -2);
+                if (lua_iscfunction(L, -1)) {
+                    // We found the getter function! Execute it.
+                    lua_pushvalue(L, 1); // Pass the C++ object as the first argument
+                    lua_call(L, 1, 1);   // Call with 1 arg, expect 1 return
+                    return 1;
+                }
+            }
         }
-    }
-    lua_pop(L, 1); // pop nil or table
-    return false;
-}
 
-// Helper to set a custom key-value pair in the userdata's associated user value table.
-inline bool setUserValue(lua_State* L, int udIdx, const char* key, int valIdx)
-{
-    if (lua_getiuservalue(L, udIdx, 1) == LUA_TNIL) {
-        lua_pop(L, 1); // pop nil
-        lua_newtable(L);
-        lua_pushvalue(L, -1);
-        lua_setiuservalue(L, udIdx, 1);
-    }
-    lua_pushstring(L, key);
-    lua_pushvalue(L, valIdx);
-    lua_settable(L, -3);
-    lua_pop(L, 1); // pop table
-    return true;
-}
-
-// Allocates a new userdata wrapping `ptr` and assigns the named metatable.
-// If ptr is null, pushes nil instead.  Always returns 1 (one Lua value pushed).
-template <class T>
-inline int pushObject(lua_State* L, T* ptr, const char* metatableName)
-{
-    if (!ptr) {
+        // Nothing found
         lua_pushnil(L);
         return 1;
     }
-    // Allocate userdata with 1 associated user value slot (initially nil)
-    void** ud = (void**)lua_newuserdatauv(L, sizeof(void*), 1);
-    *ud = (void*)ptr;
-    luaL_getmetatable(L, metatableName);
-    if (lua_isnil(L, -1)) {
-        // Metatable missing - bail out rather than producing an opaque userdata.
-        lua_pop(L, 2); // pop nil metatable + the new userdata
-        lua_pushnil(L);
-        return 1;
-    }
-    lua_setmetatable(L, -2);
-    return 1;
-}
 
-// Same as pushObject<T> but uses BindingT::getMetatableName() so call sites
-// can be terse:  pushObjectT<Character, CharacterBinding>(L, c);
-template <class T, class BindingT>
-inline int pushObjectT(lua_State* L, T* ptr)
-{
-    return pushObject<T>(L, ptr, BindingT::getMetatableName());
-}
+    // Intercepts obj.property = value and routes it to the correct setter in __setters.
+    inline int genericPropertyNewIndex(lua_State* L)
+    {
+        // Stack: 1 = userdata, 2 = key, 3 = value
 
-// Standardised metatable construction.  Use this in every binding's
-// registerBinding(L).  The fix vs. the legacy pattern: we set __index to the
-// metatable itself exactly once.  The metatable doubles as the method table,
-// so listing methods directly on it (via luaL_setfuncs) makes them callable
-// as `obj:method(...)` without an extra C `__index` strcmp chain.
-//
-// methods may be NULL if you only want metamethods.
-// Standardised metatable construction.  Use this in every binding's
-// registerBinding(L).
-//
-// When indexFunc / newindexFunc are NULL (the default), __index is set to the
-// metatable itself (the standard Lua method-table idiom) suitable for
-// bindings that expose only methods and no raw member fields via dot-access.
-//
-// When indexFunc / newindexFunc are provided, they are registered as C-function
-// metamethods instead.  The C function is then responsible for checking the
-// metatable for method lookups first (see e.g. BuildingBinding::index) so that
-// obj:method() syntax continues to work alongside obj.field dot-access.
-//
-// methods may be NULL if you only want metamethods.
-inline void registerClass(lua_State* L,
-    const char* metatableName,
-    const luaL_Reg* metamethods,
-    const luaL_Reg* methods,
-    lua_CFunction indexFunc = NULL,
-    lua_CFunction newindexFunc = NULL)
-{
-    if (!luaL_newmetatable(L, metatableName)) {
-        // Already registered bail.  Pop the existing metatable and return.
-        lua_pop(L, 1);
-        return;
+        if (lua_getmetatable(L, 1)) {
+            lua_pushstring(L, "__setters");
+            lua_gettable(L, -2);
+
+            if (lua_istable(L, -1)) {
+                lua_pushvalue(L, 2); // push key
+                lua_gettable(L, -2);   // look up the key in __setters
+
+                if (lua_iscfunction(L, -1)) {
+                    // We found the setter function! Execute it.
+                    lua_pushvalue(L, 1); // Pass the C++ object (arg 1)
+                    lua_pushvalue(L, 3); // Pass the new value (arg 2)
+                    lua_call(L, 2, 0);   // Call with 2 args, expect 0 returns
+                    return 0;
+                }
+            }
+        }
+
+        return luaL_error(L, "Property '%s' is read-only or does not exist", lua_tostring(L, 2));
     }
 
-    lua_pushstring(L, metatableName);
-    lua_setfield(L, -2, "__name");
+    // Establishes metatable inheritance for methods, getters, and setters between two class metatables.
+    inline void setMetatableParent(lua_State* L, const char* childMeta, const char* parentMeta)
+    {
+        // 1. Link child metatable __index fallback to parent metatable
+        luaL_getmetatable(L, childMeta);
+        if (lua_istable(L, -1)) {
+            luaL_getmetatable(L, parentMeta);
+            if (!lua_istable(L, -1)) {
+                // Parent metatable doesn't exist, log a warning or return safely
+                lua_pop(L, 2); // pop child metatable and nil parent metatable
+                return;
+            }
 
-    if (indexFunc) {
-        // Caller supplies a C __index that handles both method dispatch and
-        // raw field access.
-        lua_pushcfunction(L, indexFunc);
-        lua_setfield(L, -2, "__index");
+            lua_newtable(L);
+            lua_pushvalue(L, -2); // duplicate parentMT
+            lua_setfield(L, -2, "__index"); // newtable.__index = parentMT
+            lua_setmetatable(L, -3); // childMT's metatable is newtable
+
+            // 2. Link child __getters table __index fallback to parent __getters
+            lua_pushstring(L, "__getters");
+            lua_rawget(L, -3); // childMT is at -3
+            if (lua_istable(L, -1)) {
+                lua_newtable(L);
+                lua_pushstring(L, "__getters");
+                lua_rawget(L, -4); // parentMT is at -4
+                if (lua_istable(L, -1)) {
+                    lua_setfield(L, -2, "__index");
+                    lua_setmetatable(L, -2);
+                } else {
+                    lua_pop(L, 2);
+                }
+            }
+            lua_pop(L, 1); // pop childGetters
+
+            // 3. Link child __setters table __index fallback to parent __setters
+            lua_pushstring(L, "__setters");
+            lua_rawget(L, -3); // childMT is at -3
+            if (lua_istable(L, -1)) {
+                lua_newtable(L);
+                lua_pushstring(L, "__setters");
+                lua_rawget(L, -4); // parentMT is at -4
+                if (lua_istable(L, -1)) {
+                    lua_setfield(L, -2, "__index");
+                    lua_setmetatable(L, -2);
+                } else {
+                    lua_pop(L, 2);
+                }
+            }
+            lua_pop(L, 1); // pop childSetters
+
+            lua_pop(L, 1); // pop parentMT
+        }
+        lua_pop(L, 1); // pop childMT
     }
-    else {
-        // Standard idiom: __index = metatable (method-table class).
-        lua_pushvalue(L, -1);
-        lua_setfield(L, -2, "__index");
-    }
-
-    if (newindexFunc) {
-        lua_pushcfunction(L, newindexFunc);
-        lua_setfield(L, -2, "__newindex");
-    }
-
-    if (metamethods) {
-        luaL_setfuncs(L, metamethods, 0);
-    }
-    if (methods) {
-        luaL_setfuncs(L, methods, 0);
-    }
-
-    lua_pop(L, 1);
-}
-
-// Convenience: build a Vector3-like Lua table {x=,y=,z=} from any object
-// exposing .x/.y/.z (Ogre::Vector3 fits).  Templated so we don't drag the
-// Ogre header into this helper.
-template <class V3>
-inline void pushVector3(lua_State* L, const V3& v)
-{
-    lua_createtable(L, 0, 3);
-    lua_pushnumber(L, v.x); lua_setfield(L, -2, "x");
-    lua_pushnumber(L, v.y); lua_setfield(L, -2, "y");
-    lua_pushnumber(L, v.z); lua_setfield(L, -2, "z");
-}
-
-// Read a {x,y,z} table at idx.  Missing fields default to 0.  Returns true
-// if any of the three fields was actually present.
-template <class V3>
-inline bool readVector3(lua_State* L, int idx, V3& out)
-{
-    if (!lua_istable(L, idx)) return false;
-    bool any = false;
-    lua_getfield(L, idx, "x"); if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-    lua_getfield(L, idx, "y"); if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-    lua_getfield(L, idx, "z"); if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-    return any;
-}
-
-// Convenience: build a Quaternion-like Lua table {w=,x=,y=,z=} from any object
-// exposing .w/.x/.y/.z (Ogre::Quaternion fits). Templated so we don't drag the
-// Ogre header into this helper.
-template <class Q4>
-inline void pushQuaternion(lua_State* L, const Q4& q)
-{
-    lua_createtable(L, 0, 4);
-    lua_pushnumber(L, q.w); lua_setfield(L, -2, "w");
-    lua_pushnumber(L, q.x); lua_setfield(L, -2, "x");
-    lua_pushnumber(L, q.y); lua_setfield(L, -2, "y");
-    lua_pushnumber(L, q.z); lua_setfield(L, -2, "z");
-}
-
-// Read a {w,x,y,z} table at idx. Missing fields default to 0. Returns true
-// if any of the four fields was actually present.
-template <class Q4>
-inline bool readQuaternion(lua_State* L, int idx, Q4& out)
-{
-    if (!lua_istable(L, idx)) return false;
-    bool any = false;
-    lua_getfield(L, idx, "w"); if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-    lua_getfield(L, idx, "x"); if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-    lua_getfield(L, idx, "y"); if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-    lua_getfield(L, idx, "z"); if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-    return any;
-}
-
-// Generic __tostring that produces "Type:%p".  Most bindings can point their
-// metatable's __tostring at a one-line wrapper that calls this.
-inline int genericTostringPtr(lua_State* L, const char* typeName, void* ptr)
-{
-    char buf[96];
-    _snprintf(buf, sizeof(buf), "%s:%p", typeName ? typeName : "obj", ptr);
-    lua_pushstring(L, buf);
-    return 1;
-}
-
-// Generic __newindex rejecter.
-inline int rejectNewIndex(lua_State* L)
-{
-    return luaL_error(L, "object is read-only from Lua");
-}
-
-// Generic __gc no-op for engine-owned pointers.
-inline int noopGc(lua_State* /*L*/)
-{
-    return 0;
-}
-
-template<typename T>
-inline void setEnum(lua_State* L, const char* name, T value)
-{
-    lua_pushinteger(L, static_cast<lua_Integer>(value));
-    lua_setfield(L, -2, name);
-}
 
 } // namespace KenshiLua
 
-// -----------------------------------------
-// Helper Macros
-// -----------------------------------------
-
-// Getters
-#define LUA_GET_FLOAT_MEMBER(name) \
-    if (strcmp(key, #name) == 0) { \
-        lua_pushnumber(L, m->name); \
-        return 1; \
-    }
-
-#define LUA_GET_FLOAT_MEMBER_ALIAS(name, alias) \
-    if (strcmp(key, #alias) == 0) { \
-        lua_pushnumber(L, m->name); \
-        return 1; \
-    }
-
-#define LUA_GET_INT_MEMBER(name) \
-    if (strcmp(key, #name) == 0) { \
-        lua_pushinteger(L, m->name); \
-        return 1; \
-    }
-
-#define LUA_GET_INT_MEMBER_ALIAS(name, alias) \
-    if (strcmp(key, #alias) == 0) { \
-        lua_pushinteger(L, m->name); \
-        return 1; \
-    }
-
-#define LUA_GET_BOOL_MEMBER(name) \
-    if (strcmp(key, #name) == 0) { \
-        lua_pushboolean(L, m->name); \
-        return 1; \
-    }
-
-#define LUA_GET_BOOL_MEMBER_ALIAS(name, alias) \
-    if (strcmp(key, #alias) == 0) { \
-        lua_pushboolean(L, m->name); \
-        return 1; \
-    }
-
-#define LUA_GET_ENUM_MEMBER(name, EnumType) \
-    if (strcmp(key, #name) == 0) { \
-        lua_pushinteger(L, static_cast<lua_Integer>(m->name)); \
-        return 1; \
-    }
-
-#define LUA_GET_ENUM_MEMBER_ALIAS(name, alias, EnumType) \
-    if (strcmp(key, #alias) == 0) { \
-        lua_pushinteger(L, static_cast<lua_Integer>(m->name)); \
-        return 1; \
-    }
-
-#define LUA_GET_STRING_MEMBER(name) \
-    if (strcmp(key, #name) == 0) { \
-        lua_pushstring(L, m->name.c_str()); \
-        return 1; \
-    }
-
-#define LUA_GET_STRING_MEMBER_ALIAS(name, alias) \
-    if (strcmp(key, #alias) == 0) { \
-        lua_pushstring(L, m->name.c_str()); \
-        return 1; \
-    }
-
-// Setters
-#define LUA_SET_FLOAT_MEMBER(name) \
-    if (strcmp(key, #name) == 0) { \
-        m->name = static_cast<float>(luaL_checknumber(L, 3)); \
-        return 0; \
-    }
-
-#define LUA_SET_FLOAT_MEMBER_ALIAS(name, alias) \
-    if (strcmp(key, #alias) == 0) { \
-        m->name = static_cast<float>(luaL_checknumber(L, 3)); \
-        return 0; \
-    }
-
-#define LUA_SET_INT_MEMBER(name) \
-    if (strcmp(key, #name) == 0) { \
-        m->name = static_cast<int>(luaL_checkinteger(L, 3)); \
-        return 0; \
-    }
-
-#define LUA_SET_INT_MEMBER_ALIAS(name, alias) \
-    if (strcmp(key, #alias) == 0) { \
-        m->name = static_cast<int>(luaL_checkinteger(L, 3)); \
-        return 0; \
-    }
-
-#define LUA_SET_BOOL_MEMBER(name) \
-    if (strcmp(key, #name) == 0) { \
-        m->name = (lua_toboolean(L, 3) != 0); \
-        return 0; \
-    }
-
-#define LUA_SET_BOOL_MEMBER_ALIAS(name, alias) \
-    if (strcmp(key, #alias) == 0) { \
-        m->name = (lua_toboolean(L, 3) != 0); \
-        return 0; \
-    }
-
-#define LUA_SET_ENUM_MEMBER(name, EnumType) \
-    if (strcmp(key, #name) == 0) { \
-        m->name = static_cast<EnumType>(luaL_checkinteger(L, 3)); \
-        return 0; \
-    }
-
-#define LUA_SET_ENUM_MEMBER_ALIAS(name, alias, EnumType) \
-    if (strcmp(key, #alias) == 0) { \
-        m->name = static_cast<EnumType>(luaL_checkinteger(L, 3)); \
-        return 0; \
-    }
-    
-#define LUA_SET_STRING_MEMBER(name) \
-    if (strcmp(key, #name) == 0) { \
-        m->name = luaL_checkstring(L, 3); \
-        return 0; \
-    }
-
-#define LUA_SET_STRING_MEMBER_ALIAS(name, alias) \
-    if (strcmp(key, #alias) == 0) { \
-        m->name = luaL_checkstring(L, 3); \
-        return 0; \
-    }
-
-// examples
-// LUA_GET_FLOAT_MEMBER(blood);
-//
-// LUA_SET_BOOL_MEMBER(dead);
-//
-// LUA_SET_ENUM_MEMBER(proneState, ProneState)
-//
-// LUA_GET_SET_FLOAT_MEMBER_ALIAS(name, alias)
-//
-// LUA_GET_SET_ENUM_MEMBER_ALIAS(name, alias, EnumType)
+#include "Lua/LuaCodec.h"

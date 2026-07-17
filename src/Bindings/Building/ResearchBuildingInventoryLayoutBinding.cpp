@@ -1,83 +1,80 @@
 #include "pch.h"
-#include "Bindings/Building/ResearchBuildingInventoryLayoutBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/ResearchBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "ResearchBuildingInventoryLayoutBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Building/GenericInventoryLayoutBinding.h"
 
 namespace KenshiLua
 {
 
-static ResearchBuildingInventoryLayout* getS(lua_State* L, int idx)
+static ResearchBuildingInventoryLayout* getInstance(lua_State* L, int idx)
 {
     return checkObject<ResearchBuildingInventoryLayout>(L, idx, ResearchBuildingInventoryLayoutBinding::getMetatableName());
 }
 
-int ResearchBuildingInventoryLayoutBinding::gc(lua_State* L) { return noopGc(L); }
-
-int ResearchBuildingInventoryLayoutBinding::tostring(lua_State* L)
+// --- Getters for ResearchBuildingInventoryLayout ---
+static int ResearchBuildingInventoryLayout_get_researchButton(lua_State* L)
 {
-    ResearchBuildingInventoryLayout* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int ResearchBuildingInventoryLayoutBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, ResearchBuildingInventoryLayoutBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    ResearchBuildingInventoryLayout* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "researchButton") == 0) { lua_pushinteger(L, (lua_Integer)s->researchButton); return 1; }
-
-    lua_pushnil(L);
+    ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->researchButton);
     return 1;
 }
 
-int ResearchBuildingInventoryLayoutBinding::newindex(lua_State* L)
+// --- Setters for ResearchBuildingInventoryLayout ---
+static int ResearchBuildingInventoryLayout_set_researchButton(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    ResearchBuildingInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
+    ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for researchButton");
+}
 
-    // TODO MyGUI::Button* researchButton; unsupported __newindex type from header line 17
+int ResearchBuildingInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
+{
+    ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+    ResearchBuildingInventoryLayout* result = instance->_CONSTRUCTOR();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
 }
 
 int ResearchBuildingInventoryLayoutBinding::getResearchButton(lua_State* L)
 {
-    ResearchBuildingInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
+    ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
 
-    MyGUI::Widget result = s->getResearchButton();
-    lua_pushinteger(L, (lua_Integer)result);
+    MyGUI::Widget* result = instance->getResearchButton();
+    lua_pushlightuserdata(L, (void*)result);
     return 1;
 }
 
 int ResearchBuildingInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
-    ResearchBuildingInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
+    ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 13: ResearchBuildingInventoryLayout* _CONSTRUCTOR(...) - unsupported return type
   line 14: void setupSections(...) - unsupported arg type
   line 15: void _NV_setupSections(...) - unsupported arg type
 */
+
+int ResearchBuildingInventoryLayoutBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int ResearchBuildingInventoryLayoutBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.ResearchBuildingInventoryLayout object");
+    return 1;
+}
 
 void ResearchBuildingInventoryLayoutBinding::registerBinding(lua_State* L)
 {
@@ -86,12 +83,38 @@ void ResearchBuildingInventoryLayoutBinding::registerBinding(lua_State* L)
         { "__tostring", ResearchBuildingInventoryLayoutBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", ResearchBuildingInventoryLayoutBinding::_CONSTRUCTOR },
         { "getResearchButton", ResearchBuildingInventoryLayoutBinding::getResearchButton },
         { "_DESTRUCTOR", ResearchBuildingInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, ResearchBuildingInventoryLayoutBinding::getMetatableName(), meta, methods, ResearchBuildingInventoryLayoutBinding::index, ResearchBuildingInventoryLayoutBinding::newindex);
+
+    registerClass(
+        L, 
+        ResearchBuildingInventoryLayoutBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, ResearchBuildingInventoryLayoutBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, ResearchBuildingInventoryLayout_get_researchButton);
+    lua_setfield(L, -2, "researchButton");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, ResearchBuildingInventoryLayout_set_researchButton);
+    lua_setfield(L, -2, "researchButton");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to GenericInventoryLayout
+    setMetatableParent(L, ResearchBuildingInventoryLayoutBinding::getMetatableName(), GenericInventoryLayoutBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

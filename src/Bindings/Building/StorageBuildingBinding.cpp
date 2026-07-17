@@ -1,298 +1,366 @@
 #include "pch.h"
-#include "Bindings/Building/StorageBuildingBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/StorageBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "StorageBuildingBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Building/UseableStuffBinding.h"
 
 namespace KenshiLua
 {
 
-static StorageBuilding* getS(lua_State* L, int idx)
+static StorageBuilding* getInstance(lua_State* L, int idx)
 {
     return checkObject<StorageBuilding>(L, idx, StorageBuildingBinding::getMetatableName());
 }
 
-int StorageBuildingBinding::gc(lua_State* L) { return noopGc(L); }
-
-int StorageBuildingBinding::tostring(lua_State* L)
+// --- Getters for StorageBuilding ---
+static int StorageBuilding_get_specialItemTypesOnly(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int StorageBuildingBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, StorageBuildingBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    StorageBuilding* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "specialItemTypesOnly") == 0) { lua_pushinteger(L, (lua_Integer)s->specialItemTypesOnly); return 1; }
-    if (strcmp(key, "endOfTheLine") == 0) { lua_pushboolean(L, s->endOfTheLine ? 1 : 0); return 1; }
-    if (strcmp(key, "productionItem") == 0) { lua_pushinteger(L, (lua_Integer)s->productionItem); return 1; }
-    // TODO lektor<StorageBuilding::ConsumptionItem*> manyLimitItems; unsupported __index type from header line 92
-
-    lua_pushnil(L);
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    lua_pushinteger(L, (lua_Integer)instance->specialItemTypesOnly);
     return 1;
 }
 
-int StorageBuildingBinding::newindex(lua_State* L)
+static int StorageBuilding_get_endOfTheLine(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    lua_pushboolean(L, instance->endOfTheLine ? 1 : 0);
+    return 1;
+}
 
-    if (strcmp(key, "specialItemTypesOnly") == 0) { s->specialItemTypesOnly = (itemType)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "endOfTheLine") == 0) { s->endOfTheLine = lua_toboolean(L, 3) != 0; return 0; }
-    // TODO StorageBuilding::ConsumptionItem* productionItem; unsupported __newindex type from header line 91
-    // TODO lektor<StorageBuilding::ConsumptionItem*> manyLimitItems; unsupported __newindex type from header line 92
+static int StorageBuilding_get_productionItem(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    lua_pushlightuserdata(L, (void*)instance->productionItem);
+    return 1;
+}
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+static int StorageBuilding_get_manyLimitItems(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    // TODO: Unsupported type for manyLimitItems (lektor<StorageBuilding::ConsumptionItem*>)
+    return luaL_error(L, "Unsupported property 'manyLimitItems' (type: lektor<StorageBuilding::ConsumptionItem*>)");
+}
+
+// --- Setters for StorageBuilding ---
+static int StorageBuilding_set_specialItemTypesOnly(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    instance->specialItemTypesOnly = (itemType)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int StorageBuilding_set_endOfTheLine(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    instance->endOfTheLine = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int StorageBuilding_set_productionItem(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for productionItem");
+}
+
+static int StorageBuilding_set_manyLimitItems(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for manyLimitItems");
 }
 
 int StorageBuildingBinding::_DESTRUCTOR(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
+}
+
+int StorageBuildingBinding::getFunctionStuff(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+
+    StorageBuilding* result = instance->getFunctionStuff();
+    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
+}
+
+int StorageBuildingBinding::_NV_getFunctionStuff(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+
+    StorageBuilding* result = instance->_NV_getFunctionStuff();
+    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
+}
+
+int StorageBuildingBinding::getUseableStuff(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+
+    UseableStuff* result = instance->getUseableStuff();
+    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
+}
+
+int StorageBuildingBinding::_NV_getUseableStuff(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+
+    UseableStuff* result = instance->_NV_getUseableStuff();
+    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
 }
 
 int StorageBuildingBinding::update(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    s->update();
+    instance->update();
     return 0;
 }
 
 int StorageBuildingBinding::_NV_update(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    s->_NV_update();
+    instance->_NV_update();
     return 0;
+}
+
+int StorageBuildingBinding::getDefaultTask(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+
+    TaskType result = instance->getDefaultTask();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int StorageBuildingBinding::_NV_getDefaultTask(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+
+    TaskType result = instance->_NV_getDefaultTask();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
 }
 
 int StorageBuildingBinding::getProductionItemData(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    GameData* result = s->getProductionItemData();
+    GameData* result = instance->getProductionItemData();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int StorageBuildingBinding::_NV_getProductionItemData(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    GameData* result = s->_NV_getProductionItemData();
+    GameData* result = instance->_NV_getProductionItemData();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int StorageBuildingBinding::getProductionItem(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    StorageBuilding::ConsumptionItem result = s->getProductionItem();
-    lua_pushinteger(L, (lua_Integer)result);
+    StorageBuilding::ConsumptionItem* result = instance->getProductionItem();
+    lua_pushlightuserdata(L, (void*)result);
     return 1;
 }
 
 int StorageBuildingBinding::getCurrentProductionQuantity(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    int result = s->getCurrentProductionQuantity();
+    int result = instance->getCurrentProductionQuantity();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int StorageBuildingBinding::_NV_getCurrentProductionQuantity(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    int result = s->_NV_getCurrentProductionQuantity();
+    int result = instance->_NV_getCurrentProductionQuantity();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int StorageBuildingBinding::isAnyInputsEmpty(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    bool result = s->isAnyInputsEmpty();
+    bool result = instance->isAnyInputsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int StorageBuildingBinding::_NV_isAnyInputsEmpty(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    bool result = s->_NV_isAnyInputsEmpty();
+    bool result = instance->_NV_isAnyInputsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int StorageBuildingBinding::isAnyInputsFull(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    bool result = s->isAnyInputsFull();
+    bool result = instance->isAnyInputsFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int StorageBuildingBinding::_NV_isAnyInputsFull(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    bool result = s->_NV_isAnyInputsFull();
+    bool result = instance->_NV_isAnyInputsFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int StorageBuildingBinding::isProductionFull(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    bool result = s->isProductionFull();
+    bool result = instance->isProductionFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int StorageBuildingBinding::_NV_isProductionFull(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    bool result = s->_NV_isProductionFull();
+    bool result = instance->_NV_isProductionFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int StorageBuildingBinding::isProductionEmpty(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    bool result = s->isProductionEmpty();
+    bool result = instance->isProductionEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int StorageBuildingBinding::_NV_isProductionEmpty(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    bool result = s->_NV_isProductionEmpty();
+    bool result = instance->_NV_isProductionEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int StorageBuildingBinding::getNumConsumtionItems(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    int result = s->getNumConsumtionItems();
+    int result = instance->getNumConsumtionItems();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int StorageBuildingBinding::_NV_getNumConsumtionItems(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    int result = s->_NV_getNumConsumtionItems();
+    int result = instance->_NV_getNumConsumtionItems();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int StorageBuildingBinding::getConsumtionItems(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
     int id = (int)luaL_checkinteger(L, 2);
-    StorageBuilding::ConsumptionItem result = s->getConsumtionItems(id);
-    lua_pushinteger(L, (lua_Integer)result);
+    StorageBuilding::ConsumptionItem* result = instance->getConsumtionItems(id);
+    lua_pushlightuserdata(L, (void*)result);
     return 1;
 }
 
 int StorageBuildingBinding::_NV_getConsumtionItems(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
     int id = (int)luaL_checkinteger(L, 2);
-    StorageBuilding::ConsumptionItem result = s->_NV_getConsumtionItems(id);
-    lua_pushinteger(L, (lua_Integer)result);
+    StorageBuilding::ConsumptionItem* result = instance->_NV_getConsumtionItems(id);
+    lua_pushlightuserdata(L, (void*)result);
     return 1;
 }
 
 int StorageBuildingBinding::limitedByType(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    bool result = s->limitedByType();
+    bool result = instance->limitedByType();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int StorageBuildingBinding::updateInventoryWindow(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    s->updateInventoryWindow();
+    instance->updateInventoryWindow();
     return 0;
 }
 
 int StorageBuildingBinding::_NV_updateInventoryWindow(lua_State* L)
 {
-    StorageBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "StorageBuilding is nil");
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
 
-    s->_NV_updateInventoryWindow();
+    instance->_NV_updateInventoryWindow();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 48: StorageBuilding* _CONSTRUCTOR(...) - unsupported return type
-  line 51: StorageBuilding* getFunctionStuff(...) - unsupported return type
-  line 52: StorageBuilding* _NV_getFunctionStuff(...) - unsupported return type
-  line 53: UseableStuff* getUseableStuff(...) - unsupported return type
-  line 54: UseableStuff* _NV_getUseableStuff(...) - unsupported return type
-  line 57: TaskType getDefaultTask(...) - unsupported return type
-  line 58: TaskType _NV_getDefaultTask(...) - unsupported return type
+  line 48: StorageBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 59: void getItemsWeWantRidOf(...) - unsupported arg type
   line 60: void _NV_getItemsWeWantRidOf(...) - unsupported arg type
   line 66: bool canHaveSomeOfThese(...) - unsupported arg type
@@ -304,6 +372,18 @@ Skipped methods needing manual binding:
   line 84: void getConsumtionItems_inStock(...) - unsupported arg type
 */
 
+int StorageBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int StorageBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.StorageBuilding object");
+    return 1;
+}
+
 void StorageBuildingBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -311,10 +391,17 @@ void StorageBuildingBinding::registerBinding(lua_State* L)
         { "__tostring", StorageBuildingBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", StorageBuildingBinding::_DESTRUCTOR },
+        { "getFunctionStuff", StorageBuildingBinding::getFunctionStuff },
+        { "_NV_getFunctionStuff", StorageBuildingBinding::_NV_getFunctionStuff },
+        { "getUseableStuff", StorageBuildingBinding::getUseableStuff },
+        { "_NV_getUseableStuff", StorageBuildingBinding::_NV_getUseableStuff },
         { "update", StorageBuildingBinding::update },
         { "_NV_update", StorageBuildingBinding::_NV_update },
+        { "getDefaultTask", StorageBuildingBinding::getDefaultTask },
+        { "_NV_getDefaultTask", StorageBuildingBinding::_NV_getDefaultTask },
         { "getProductionItemData", StorageBuildingBinding::getProductionItemData },
         { "_NV_getProductionItemData", StorageBuildingBinding::_NV_getProductionItemData },
         { "getProductionItem", StorageBuildingBinding::getProductionItem },
@@ -337,7 +424,43 @@ void StorageBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateInventoryWindow", StorageBuildingBinding::_NV_updateInventoryWindow },
         { 0, 0 }
     };
-    registerClass(L, StorageBuildingBinding::getMetatableName(), meta, methods, StorageBuildingBinding::index, StorageBuildingBinding::newindex);
+
+    registerClass(
+        L, 
+        StorageBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, StorageBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, StorageBuilding_get_specialItemTypesOnly);
+    lua_setfield(L, -2, "specialItemTypesOnly");
+    lua_pushcfunction(L, StorageBuilding_get_endOfTheLine);
+    lua_setfield(L, -2, "endOfTheLine");
+    lua_pushcfunction(L, StorageBuilding_get_productionItem);
+    lua_setfield(L, -2, "productionItem");
+    lua_pushcfunction(L, StorageBuilding_get_manyLimitItems);
+    lua_setfield(L, -2, "manyLimitItems");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, StorageBuilding_set_specialItemTypesOnly);
+    lua_setfield(L, -2, "specialItemTypesOnly");
+    lua_pushcfunction(L, StorageBuilding_set_endOfTheLine);
+    lua_setfield(L, -2, "endOfTheLine");
+    lua_pushcfunction(L, StorageBuilding_set_productionItem);
+    lua_setfield(L, -2, "productionItem");
+    lua_pushcfunction(L, StorageBuilding_set_manyLimitItems);
+    lua_setfield(L, -2, "manyLimitItems");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to UseableStuff
+    setMetatableParent(L, StorageBuildingBinding::getMetatableName(), UseableStuffBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

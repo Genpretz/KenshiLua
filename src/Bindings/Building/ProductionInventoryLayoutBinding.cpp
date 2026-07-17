@@ -1,69 +1,51 @@
 #include "pch.h"
-#include "Bindings/Building/ProductionInventoryLayoutBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/ProductionBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "ProductionInventoryLayoutBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Building/BuildInventoryLayoutBinding.h"
 
 namespace KenshiLua
 {
 
-static ProductionInventoryLayout* getS(lua_State* L, int idx)
+static ProductionInventoryLayout* getInstance(lua_State* L, int idx)
 {
     return checkObject<ProductionInventoryLayout>(L, idx, ProductionInventoryLayoutBinding::getMetatableName());
 }
 
-int ProductionInventoryLayoutBinding::gc(lua_State* L) { return noopGc(L); }
-
-int ProductionInventoryLayoutBinding::tostring(lua_State* L)
+// --- Getters for ProductionInventoryLayout ---
+// --- Setters for ProductionInventoryLayout ---
+int ProductionInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
 {
-    ProductionInventoryLayout* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
+    ProductionInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionInventoryLayout is nil");
 
-int ProductionInventoryLayoutBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, ProductionInventoryLayoutBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    ProductionInventoryLayout* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-
-    lua_pushnil(L);
-    return 1;
-}
-
-int ProductionInventoryLayoutBinding::newindex(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-    ProductionInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionInventoryLayout is nil");
-
-
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+    std::string title = luaL_checkstring(L, 2);
+    int ins = (int)luaL_checkinteger(L, 3);
+    int outs = (int)luaL_checkinteger(L, 4);
+    ProductionInventoryLayout* result = instance->_CONSTRUCTOR(title, ins, outs);
+    return pushObject<ProductionInventoryLayout>(L, result, ProductionInventoryLayoutBinding::getMetatableName());
 }
 
 int ProductionInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
-    ProductionInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionInventoryLayout is nil");
+    ProductionInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionInventoryLayout is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 51: ProductionInventoryLayout* _CONSTRUCTOR(...) - unsupported return type
-*/
+int ProductionInventoryLayoutBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int ProductionInventoryLayoutBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.ProductionInventoryLayout object");
+    return 1;
+}
 
 void ProductionInventoryLayoutBinding::registerBinding(lua_State* L)
 {
@@ -72,11 +54,33 @@ void ProductionInventoryLayoutBinding::registerBinding(lua_State* L)
         { "__tostring", ProductionInventoryLayoutBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", ProductionInventoryLayoutBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", ProductionInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, ProductionInventoryLayoutBinding::getMetatableName(), meta, methods, ProductionInventoryLayoutBinding::index, ProductionInventoryLayoutBinding::newindex);
+
+    registerClass(
+        L, 
+        ProductionInventoryLayoutBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, ProductionInventoryLayoutBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to BuildInventoryLayout
+    setMetatableParent(L, ProductionInventoryLayoutBinding::getMetatableName(), BuildInventoryLayoutBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

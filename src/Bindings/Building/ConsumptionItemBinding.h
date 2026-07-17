@@ -15,8 +15,6 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
     static int isFull(lua_State* L);
     static int isEmpty(lua_State* L);

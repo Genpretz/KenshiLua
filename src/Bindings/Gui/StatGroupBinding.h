@@ -1,4 +1,6 @@
 #pragma once
+#include <kenshi/gui/CharacterStatsWindow.h>
+
 
 extern "C" {
 #include <lua.h>
@@ -7,6 +9,7 @@ extern "C" {
 
 namespace KenshiLua
 {
+    typedef CharacterStatsWindow::StatGroup StatGroup;
 class StatGroupBinding
 {
 public:
@@ -15,8 +18,6 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
     static int _DESTRUCTOR(lua_State* L);
 };

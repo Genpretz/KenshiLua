@@ -1,43 +1,192 @@
 #include "pch.h"
 #include "Lua/LuaBindings.h"
-#include "Lua/LuaUtils.h"
 #include "Lua/LuaState.h"
-#include "Lua/Logger.h"
-#include "Lua/Benchmark.h"
-#include "Bindings/Utility/HandBinding.h"
-#include "Bindings/Character/CharacterBinding.h"
-#include "Bindings/Dialogue/DialogueBinding.h"
-#include "Bindings/World/FactionBinding.h"
-#include "Bindings/World/TownBinding.h"
-#include "Bindings/Equipment/ItemBinding.h"
-#include "Bindings/Equipment/GearBinding.h"
-#include "Bindings/Equipment/InventoryBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Benchmark.h"
+#include "DialogueScriptBridge.h"
+#include "EventSystem.h"
+#include "Gui/GuiManager.h"
+#include "Logger.h"
+#include "ScriptLoader.h"
+#include "Bindings/Templates/StdMapBinding.h"
+#include "Bindings/Templates/FitnessSelectorBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include <kenshi/CombatTechniqueData.h>
+#include <kenshi/GameData.h>
+#include <kenshi/Item.h>
+#include <kenshi/Inventory.h>
+#include "Bindings/AbstractMovementBaseBinding.h"
+#include "Bindings/ActivePlatoonBinding.h"
+#include "Bindings/AnimalInventoryLayoutBinding.h"
+#include "Bindings/ArmourBinding.h"
+#include "Bindings/BountyBinding.h"
+#include "Bindings/BountyManagerBinding.h"
+#include "Bindings/Building/BuildInventoryLayoutBinding.h"
+#include "Bindings/Building/BuildMaterialBinding.h"
 #include "Bindings/Building/BuildingBinding.h"
-#include "Bindings/World/GameWorldBinding.h"
-#include "Bindings/Core/PlayerInterfaceBinding.h"
-#include "Bindings/Core/GlobalBinding.h"
-#include "Bindings/Character/CharStatsBinding.h"
-#include "Bindings/System/DamagesBinding.h"
-#include "Bindings/System/MedicalSystemBinding.h"
-#include "Bindings/Core/InputHandlerBinding.h"
-#include "Bindings/World/PlatoonBinding.h"
-#include "Bindings/Core/GameDataBinding.h"
-#include "Bindings/Utility/OgreUnorderedBinding.h"
-#include "Bindings/Core/EnumBinding.h"
-#include "Bindings/Core/RootObjectBinding.h"
-#include "Bindings/Character/RaceDataBinding.h"
-#include "Bindings/System/BountyBinding.h"
-#include "Bindings/System/BountyManagerBinding.h"
-#include "Bindings/Gui/CameraClassBinding.h"
-#include "Bindings/Gui/MyGuiBinding.h"
-#include "Bindings/Character/CharacterAnimalBinding.h"
-#include "Bindings/Character/ShopTraderBinding.h"
-#include "Bindings/Character/CharBodyBinding.h"
-#include "Bindings/Character/Combat/CombatMovementControllerBinding.h"
-#include "Bindings/Character/Combat/ImpactPointBinding.h"
+#include "Bindings/Building/BuildingContainerInventoryLayoutBinding.h"
+#include "Bindings/Building/BuildingPlacementGroundTypeBinding.h"
+#include "Bindings/Building/ConsumptionItemBinding.h"
+#include "Bindings/Building/ConstructionStateBinding.h"
+#include "Bindings/Building/CraftingBuildingBinding.h"
+#include "Bindings/Building/CraftingInventoryLayoutBinding.h"
+#include "Bindings/Building/DoorStuffBinding.h"
+#include "Bindings/Building/FarmBatchBinding.h"
+#include "Bindings/Building/FarmBuildingBinding.h"
+#include "Bindings/Building/FootprintBinding.h"
+#include "Bindings/Building/FootprintNodeBinding.h"
+#include "Bindings/Building/FurnaceBuildingBinding.h"
+#include "Bindings/Building/FurnaceInventoryLayoutBinding.h"
+#include "Bindings/Building/GameDataGroupBinding.h"
+#include "Bindings/GameplayOptionsBinding.h"
+#include "Bindings/Building/GatewayBuildingBinding.h"
+#include "Bindings/Building/GeneratorBuildingBinding.h"
+#include "Bindings/Building/GenericInventoryLayoutBinding.h"
+#include "Bindings/Building/LightBuildingBinding.h"
+#include "Bindings/Building/PreviewBuildingBinding.h"
+#include "Bindings/Building/ProductionBuildingBinding.h"
+#include "Bindings/Building/ProductionInventoryLayoutBinding.h"
+#include "Bindings/Building/RainCollectorBuildingBinding.h"
+#include "Bindings/Building/ResearchBuildingBinding.h"
+#include "Bindings/Building/ResearchBuildingInventoryLayoutBinding.h"
+#include "Bindings/Building/StorageBuildingBinding.h"
+#include "Bindings/Building/TortureBuildingBinding.h"
+
+#include "Bindings/Building/TurretBuildingBinding.h"
+#include "Bindings/Building/UseableStuffBinding.h"
+#include "Bindings/Building/WallBuildingBinding.h"
+#include "Bindings/Building/WindGeneratorBuildingBinding.h"
+#include "Bindings/CameraClassBinding.h"
+#include "Bindings/CharBodyBinding.h"
+#include "Bindings/CharacterAnimalBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/CharMovementBinding.h"
+#include "Bindings/CharStatsBinding.h"
+#include "Bindings/CombatMovementControllerBinding.h"
+#include "Bindings/CombatTechniqueDataBinding.h"
+#include "Bindings/ContainerItemBinding.h"
+#include "Bindings/CrossbowBinding.h"
+#include "Bindings/DamagesBinding.h"
+#include "Bindings/DialogActionBinding.h"
+#include "Bindings/DialogChoiceListBinding.h"
+#include "Bindings/DialogConditionBinding.h"
+#include "Bindings/DialogLineDataBinding.h"
+#include "Bindings/DialogueBinding.h"
+#include "Bindings/DialogStateBinding.h"
+#include "Bindings/EnumBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/FactionLeaderBinding.h"
+#include "Bindings/FactionManagerBinding.h"
+#include "Bindings/FactionRelationsBinding.h"
+#include "Bindings/FlockingToolsBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/GameDataReferenceBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/GameWorldBinding.h"
+#include "Bindings/GearBinding.h"
+#include "Bindings/GlobalBinding.h"
+#include "Bindings/OptionsHolderBinding.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Gui/DataPanelLine_ButtonBinding.h"
+#include "Bindings/Gui/DataPanelLine_CheckBoxBinding.h"
+#include "Bindings/Gui/DataPanelLine_DropBoxBinding.h"
+#include "Bindings/Gui/DataPanelLine_FactionBinding.h"
+#include "Bindings/Gui/DataPanelLine_KeyConfigBinding.h"
+#include "Bindings/Gui/DataPanelLine_ProgressBinding.h"
+#include "Bindings/Gui/DataPanelLine_ResearchBinding.h"
+#include "Bindings/Gui/DataPanelLine_SliderBinding.h"
+#include "Bindings/Gui/DataPanelLine_SliderEditableBinding.h"
+#include "Bindings/Gui/DataPanelLine_TextBinding.h"
+#include "Bindings/Gui/DataPanelLine_TextEditableBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Gui/DialogueWindowBinding.h"
+#include "Bindings/Gui/GUIWindowBinding.h"
+#include "Bindings/HealthPartStatusBinding.h"
+#include "Bindings/ImpactPointBinding.h"
+#include "Bindings/InputHandlerBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/InventoryItemBaseBinding.h"
+#include "Bindings/InventorySectionBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/LockedArmourBinding.h"
+#include "Bindings/MedianFilter2DVectorBinding.h"
+#include "Bindings/MedicalSystemBinding.h"
+#include "Bindings/ModInfoBinding.h"
+#include "Bindings/MyGuiBinding.h"
+#include "Bindings/ObjectInstanceBinding.h"
+#include "Bindings/PlatoonBinding.h"
+#include "Bindings/PlayerInterfaceBinding.h"
+#include "Bindings/RaceDataBinding.h"
+#include "Bindings/RelationDataBinding.h"
+#include "Bindings/RootObjectBaseBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/RootObjectFactoryBinding.h"
+#include "Bindings/SectionItemBinding.h"
+#include "Bindings/ShopTraderBinding.h"
+#include "Bindings/SpeedGroupBinding.h"
+#include "Bindings/SwordBinding.h"
+#include "Bindings/TaskerBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/TownBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
+#include "Bindings/Util/TimeOfDayBinding.h"
+#include "Bindings/Util/YesNoMaybeBinding.h"
+#include "Bindings/Util/iVector2Binding.h"
+#include "Bindings/WeaponBinding.h"
+#include "Bindings/AABB2DBinding.h"
+#include "Bindings/BackThreadMessagesToMainTBinding.h"
+#include "Bindings/Gui/BackpackInventoryLayoutBinding.h"
+#include "Bindings/Gui/BuildModeWindowBinding.h"
+#include "Bindings/Gui/BuildingCategoryBinding.h"
+#include "Bindings/Gui/BuildingGroupBinding.h"
+#include "Bindings/Gui/CharacterStatsWindowBinding.h"
+#include "Bindings/Gui/CharacterTradingWindowBinding.h"
+#include "Bindings/Gui/FactionRelationsLineBinding.h"
+#include "Bindings/Gui/FactionsScreenBinding.h"
+#include "Bindings/Gui/ForgottenGUIBinding.h"
+#include "Bindings/Gui/GameDataEditorWindowBinding.h"
+#include "Bindings/Gui/GenericFixedInventoryLayoutBinding.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
+#include "Bindings/Gui/InventoryIconBinding.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
+#include "Bindings/Gui/InventorySectionGUIBinding.h"
+#include "Bindings/Gui/InventoryTradeDataBinding.h"
+#include "Bindings/Gui/MainBarGUIBinding.h"
+#include "Bindings/Gui/MainTabPortraitPlatoonBinding.h"
+#include "Bindings/Gui/OpenSaveFileDialogBinding.h"
+#include "Bindings/Gui/OptionsWindowBinding.h"
+#include "Bindings/Gui/OrderCellViewBinding.h"
+#include "Bindings/Gui/OrderDataBinding.h"
+#include "Bindings/Gui/OrdersItemBoxBinding.h"
+#include "Bindings/Gui/OrdersPanelBinding.h"
+#include "Bindings/Gui/StatBinding.h"
+#include "Bindings/Gui/StatGroupBinding.h"
+#include "Bindings/Gui/ToolTipBinding.h"
+#include "Bindings/Gui/ToolTipDynamicBinding.h"
+#include "Bindings/Gui/ToolTipFixedBinding.h"
+#include "Bindings/Gui/ToolTipInventoryBinding.h"
+#include "Bindings/Gui/ToolTipLineBinding.h"
+#include "Bindings/Gui/ToolTipStaticBinding.h"
+#include "Bindings/Gui/TradeResultBinding.h"
+#include "Bindings/Gui/TransformWindowBinding.h"
+#include "Bindings/Gui/TutorialGUIBinding.h"
+#include "Bindings/Gui/TutorialGUILineBinding.h"
+#include "Bindings/Gui/TutorialItemBinding.h"
+#include "Bindings/Gui/TutorialSubItemBinding.h"
+#include "Bindings/Gui/TutorialpediaGUIBinding.h"
+#include "Bindings/MainthreadStateReaderTBinding.h"
+#include "Bindings/ParticlePoolBinding.h"
+#include "Bindings/StateTBinding.h"
+#include "Bindings/TradeCultureBinding.h"
+#include "Bindings/ZoneManagerBinding.h"
+#include "Bindings/ZoneManagerInterfaceTBinding.h"
+#include "Bindings/ZoneMapBinding.h"
+#include "Bindings/ZoneSpacialGridBinding.h"
+
 #include <string>
 #include <cstdio>
-#include <cstdlib>
 
 extern "C" {
 #include <lua.h>
@@ -47,30 +196,94 @@ extern "C" {
 namespace KenshiLua
 {
 
+static int lua_reloadMods(lua_State* L)
+{
+    ScriptLoader::get().reloadAll(L);
+    lua_pushinteger(L, (lua_Integer)ScriptLoader::get().scripts().size());
+    return 1;
+}
+
+static int lua_toggleGui(lua_State* L)
+{
+    GuiManager::get().toggle();
+    return 0;
+}
+
+static void installKenshiLuaTable(lua_State* L)
+{
+    // KenshiLua.* namespace for management helpers.
+    lua_getglobal(L, "KenshiLua");
+    if (!lua_istable(L, -1)) {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
+
+    lua_pushcfunction(L, lua_reloadMods);
+    lua_setfield(L, -2, "reloadMods");
+
+    lua_pushcfunction(L, lua_toggleGui);
+    lua_setfield(L, -2, "toggleGui");
+
+    // Aliases for the existing global event-handler functions.
+    lua_pushcfunction(L, luaRegisterHandler);
+    lua_setfield(L, -2, "registerHandler");
+
+    lua_pushcfunction(L, luaUnregisterHandler);
+    lua_setfield(L, -2, "unregisterHandler");
+
+    // Version check helper.
+    lua_pushcfunction(L, luaKenshiVersion);
+    lua_setfield(L, -2, "version");
+
+    lua_pushcfunction(L, luaKenshiRunBenchmark);
+    lua_setfield(L, -2, "runBenchmark");
+
+    lua_pushcfunction(L, luaCheckLuaScriptReferences);
+    lua_setfield(L, -2, "checkLuaScriptReferences");
+
+    lua_pushcfunction(L, luaKenshiLog);
+    lua_setfield(L, -2, "log");
+
+    lua_pushcfunction(L, luaKenshiLogDebug);
+    lua_setfield(L, -2, "logDebug");
+
+    lua_pushcfunction(L, luaKenshiLogWarn);
+    lua_setfield(L, -2, "warn");
+    lua_pushcfunction(L, luaKenshiLogWarn);
+    lua_setfield(L, -2, "logWarn");
+
+    lua_pushcfunction(L, luaKenshiLogError);
+    lua_setfield(L, -2, "logError");
+
+    lua_pushcfunction(L, luaKenshiError);
+    lua_setfield(L, -2, "error");
+
+    lua_setglobal(L, "KenshiLua");
+}
+
 static const luaL_Reg KenshiLuaLib[] = {
-    { "log", luaKenshiLog },
-    { "error", luaKenshiError },
-    { "version", luaKenshiVersion },
-    { "getLuaVersion", luaKenshiGetLuaVersion },
-    { "toJSON", luaKenshiToJSON },
-    { "fromJSON", luaKenshiFromJSON },
-    { "runBenchmark", luaKenshiRunBenchmark },
+    // Add global functions here, e.g.:
+    // { "myGlobalFunc", luaMyGlobalFunc },
     { NULL, NULL }
 };
 
 void LuaBindings::registerAll(lua_State* L)
 {
-    luaL_newlib(L, KenshiLuaLib);
-    lua_setglobal(L, "KenshiLua");
+    for (const luaL_Reg* lib = KenshiLuaLib; lib->name; lib++) {
+        lua_pushcfunction(L, lib->func);
+        lua_setglobal(L, lib->name);
+    }
 
-    // Order: dependency-free metatables first; ones that reference others afterwards when possible
+    // Order: try to register dependency-free metatables first; ones that reference others afterwards when possible
+    RootObjectBaseBinding::registerBinding(L);
     RootObjectBinding::registerBinding(L);
+    RootObjectFactoryBinding::registerBinding(L);
     RaceDataBinding::registerBinding(L);
     BountyBinding::registerBinding(L);
     BountyManagerBinding::registerBinding(L);
     CameraClassBinding::registerBinding(L);
 
-    HandBinding::registerBinding(L);
+    handBinding::registerBinding(L);
     PlatoonBinding::registerBinding(L);
     FactionBinding::registerBinding(L);
     InventoryItemBaseBinding::registerBinding(L);
@@ -81,11 +294,37 @@ void LuaBindings::registerAll(lua_State* L)
     ArmourBinding::registerBinding(L);
     LockedArmourBinding::registerBinding(L);
     CrossbowBinding::registerBinding(L);
+    FootprintBinding::registerBinding(L);
+    FootprintNodeBinding::registerBinding(L);
+    ConstructionStateBinding::registerBinding(L);
+    BuildingPlacementGroundTypeBinding::registerBinding(L);
+    BuildMaterialBinding::registerBinding(L);
     BuildingBinding::registerBinding(L);
+    PreviewBuildingBinding::registerBinding(L);
     TownBaseBinding::registerBinding(L);
     TownBinding::registerBinding(L);
     MedicalSystemBinding::registerBinding(L);
     CharStatsBinding::registerBinding(L);
+    
+    // Register templates centrally before classes are bound
+    LektorPtrBinding<CombatTechniqueData*>::registerBinding(L, "lektor<CombatTechniqueData*>", "KenshiLua.CombatTechniqueData");
+    LektorPtrBinding<Item*>::registerBinding(L, "lektor<Item*>", "KenshiLua.Item");
+    LektorPtrBinding<InventorySection*>::registerBinding(L, "lektor<InventorySection*>", "KenshiLua.InventorySection");
+    LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", "KenshiLua.GameData");
+    
+    OgreUnorderedMapBinding<GameData*, float>::registerBinding(L, "KenshiLua.GameDataFloatMap", "KenshiLua.GameData", nullptr);
+    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "ogre_unordered_set<GameData*>", "KenshiLua.GameData");
+    
+    StdMapBinding<float, CombatTechniqueData*>::registerBinding(L, "OgreMap<float, CombatTechniqueData*>", nullptr, "KenshiLua.CombatTechniqueData");
+    StdMapBinding<CombatTechniqueData*, float>::registerBinding(L, "OgreMap<CombatTechniqueData*, float>", "KenshiLua.CombatTechniqueData", nullptr);
+    StdMapBinding<float, GameData*>::registerBinding(L, "OgreMap<float, GameData*>", nullptr, "KenshiLua.GameData");
+    StdMapBinding<GameData*, float>::registerBinding(L, "OgreMap<GameData*, float>", "KenshiLua.GameData", nullptr);
+    
+    FitnessSelectorBinding<CombatTechniqueData*>::registerBinding(L, "KenshiLua.FitnessSelector_CombatTechniqueData", "KenshiLua.CombatTechniqueData", "OgreMap<float, CombatTechniqueData*>", "OgreMap<CombatTechniqueData*, float>");
+    FitnessSelectorBinding<GameData*>::registerBinding(L, "KenshiLua.FitnessSelector_GameData", "KenshiLua.GameData", "OgreMap<float, GameData*>", "OgreMap<GameData*, float>");
+
+    CombatTechniqueDataBinding::registerBinding(L);
+    ImpactPointBinding::registerBinding(L);
     DamagesBinding::registerBinding(L);
     InventoryBinding::registerBinding(L);
     InventorySectionBinding::registerBinding(L);
@@ -96,20 +335,199 @@ void LuaBindings::registerAll(lua_State* L)
     InputHandlerBinding::registerBinding(L);
     GameWorldBinding::registerBinding(L);
     GameDataBinding::registerBinding(L);
-    registerOgreUnorderedBindings(L);
+    GameDataReferenceBinding::registerBinding(L);
+    GameSaveStateBinding::registerBinding(L);
     MyGuiBinding::registerBinding(L);
+    FactionRelationsBinding::registerBinding(L);
+    RelationDataBinding::registerBinding(L);
+    FactionLeaderBinding::registerBinding(L);
+    DialogueWindowBinding::registerBinding(L);
+    GUIWindowBinding::registerBinding(L);
+    DatapanelGUIBinding::registerBinding(L);
+    DataPanelLineBinding::registerBinding(L);
+    DataPanelLine_ButtonBinding::registerBinding(L);
+    DataPanelLine_CheckBoxBinding::registerBinding(L);
+    DataPanelLine_DropBoxBinding::registerBinding(L);
+    DataPanelLine_FactionBinding::registerBinding(L);
+    DataPanelLine_KeyConfigBinding::registerBinding(L);
+    DataPanelLine_ProgressBinding::registerBinding(L);
+    DataPanelLine_ResearchBinding::registerBinding(L);
+    DataPanelLine_SliderBinding::registerBinding(L);
+    DataPanelLine_SliderEditableBinding::registerBinding(L);
+    DataPanelLine_TextBinding::registerBinding(L);
+    DataPanelLine_TextEditableBinding::registerBinding(L);
+
+    DoorStuffBinding::registerBinding(L);
+    FarmBatchBinding::registerBinding(L);
+    FarmBuildingBinding::registerBinding(L);
+    FurnaceBuildingBinding::registerBinding(L);
+    FurnaceInventoryLayoutBinding::registerBinding(L);
+    GameplayOptionsBinding::registerBinding(L);
+    GatewayBuildingBinding::registerBinding(L);
+    LightBuildingBinding::registerBinding(L);
+    RainCollectorBuildingBinding::registerBinding(L);
+    TortureBuildingBinding::registerBinding(L);
+    TradeCultureBinding::registerBinding(L);
+    TurretBuildingBinding::registerBinding(L);
+    WallBuildingBinding::registerBinding(L);
+
+    UseableStuffBinding::registerBinding(L);
+    StorageBuildingBinding::registerBinding(L);
+    ProductionBuildingBinding::registerBinding(L);
+    CraftingBuildingBinding::registerBinding(L);
+    GeneratorBuildingBinding::registerBinding(L);
+    WindGeneratorBuildingBinding::registerBinding(L);
+
+    AABB2DBinding::registerBinding(L);
+    BackThreadMessagesToMainTBinding::registerBinding(L);
+    BackpackInventoryLayoutBinding::registerBinding(L);
+    BuildModeWindowBinding::registerBinding(L);
+    BuildingCategoryBinding::registerBinding(L);
+    BuildingGroupBinding::registerBinding(L);
+    CharacterStatsWindowBinding::registerBinding(L);
+    CharacterTradingWindowBinding::registerBinding(L);
+    FactionRelationsLineBinding::registerBinding(L);
+    FactionsScreenBinding::registerBinding(L);
+    ForgottenGUIBinding::registerBinding(L);
+    GameDataEditorWindowBinding::registerBinding(L);
+    GenericFixedInventoryLayoutBinding::registerBinding(L);
+    InventoryGUIBinding::registerBinding(L);
+    InventoryIconBinding::registerBinding(L);
+    InventoryLayoutBinding::registerBinding(L);
+    InventorySectionGUIBinding::registerBinding(L);
+    InventoryTradeDataBinding::registerBinding(L);
+    MainBarGUIBinding::registerBinding(L);
+    MainTabPortraitPlatoonBinding::registerBinding(L);
+    MainthreadStateReaderTBinding::registerBinding(L);
+    OpenSaveFileDialogBinding::registerBinding(L);
+    OptionsWindowBinding::registerBinding(L);
+    OrderCellViewBinding::registerBinding(L);
+    OrderDataBinding::registerBinding(L);
+    OrdersItemBoxBinding::registerBinding(L);
+    OrdersPanelBinding::registerBinding(L);
+    ParticlePoolBinding::registerBinding(L);
+    StatBinding::registerBinding(L);
+    StatGroupBinding::registerBinding(L);
+    StateTBinding::registerBinding(L);
+    ToolTipBinding::registerBinding(L);
+    ToolTipDynamicBinding::registerBinding(L);
+    ToolTipFixedBinding::registerBinding(L);
+    ToolTipInventoryBinding::registerBinding(L);
+    ToolTipLineBinding::registerBinding(L);
+    ToolTipStaticBinding::registerBinding(L);
+    TradeResultBinding::registerBinding(L);
+    TransformWindowBinding::registerBinding(L);
+    TutorialGUIBinding::registerBinding(L);
+    TutorialGUILineBinding::registerBinding(L);
+    TutorialItemBinding::registerBinding(L);
+    TutorialSubItemBinding::registerBinding(L);
+    TutorialpediaGUIBinding::registerBinding(L);
+    ZoneManagerBinding::registerBinding(L);
+    ZoneManagerInterfaceTBinding::registerBinding(L);
+    ZoneMapBinding::registerBinding(L);
+    ZoneSpacialGridBinding::registerBinding(L);
+    ResearchBuildingBinding::registerBinding(L);
+    ResearchBuildingInventoryLayoutBinding::registerBinding(L);
+    GenericInventoryLayoutBinding::registerBinding(L);
+    BuildingContainerInventoryLayoutBinding::registerBinding(L);
+    BuildInventoryLayoutBinding::registerBinding(L);
+    ProductionInventoryLayoutBinding::registerBinding(L);
+    CraftingInventoryLayoutBinding::registerBinding(L);
+    GameDataGroupBinding::registerBinding(L);
+    ConsumptionItemBinding::registerBinding(L);
+
     ShopTraderBinding::registerBinding(L);
     AnimalInventoryLayoutBinding::registerBinding(L);
     CharacterAnimalBinding::registerBinding(L);
+
+    AbstractMovementBaseBinding::registerBinding(L);
+    CharMovementBinding::registerBinding(L);
+    ActivePlatoonBinding::registerBinding(L);
     CharBodyBinding::registerBinding(L);
     CombatMovementControllerBinding::registerBinding(L);
-    ImpactPointBinding::registerBinding(L);
+    ContainerItemBinding::registerBinding(L);
+    DialogChoiceListBinding::registerBinding(L);
+    DialogConditionBinding::registerBinding(L);
+    DialogActionBinding::registerBinding(L);
+    DialogLineDataBinding::registerBinding(L);
+    DialogStateBinding::registerBinding(L);
+    FactionManagerBinding::registerBinding(L);
+    FlockingToolsBinding::registerBinding(L);
+    MedianFilter2DVectorBinding::registerBinding(L);
+    ObjectInstanceBinding::registerBinding(L);
+    SpeedGroupBinding::registerBinding(L);
+    TaskerBinding::registerBinding(L);
+    HealthPartStatusBinding::registerBinding(L);
+    ModInfoBinding::registerBinding(L);
+    OptionsHolderBinding::registerBinding(L);
+    StringPairBinding::registerBinding(L);
+    TimeOfDayBinding::registerBinding(L);
+    YesNoMaybeBinding::registerBinding(L);
+    iVector2Binding::registerBinding(L);
 
-	registerEnums(L);
+	registerEnumBindings(L);
     registerGlobals(L);
+
+    // Configure class metatable inheritance chains
+    setMetatableParent(L, "KenshiLua.CharacterAnimal", "KenshiLua.Character");
+    setMetatableParent(L, "KenshiLua.Character", "KenshiLua.RootObject");
+    setMetatableParent(L, "KenshiLua.RootObject", "KenshiLua.RootObjectBase");
+
+    setMetatableParent(L, "KenshiLua.Platoon", "KenshiLua.RootObjectBase");
+    setMetatableParent(L, "KenshiLua.ActivePlatoon", "KenshiLua.Platoon");
+    setMetatableParent(L, "KenshiLua.CharMovement", "KenshiLua.AbstractMovementBase");
+
+    setMetatableParent(L, "KenshiLua.Town", "KenshiLua.TownBase");
+    setMetatableParent(L, "KenshiLua.TownBase", "KenshiLua.RootObject");
+
+    setMetatableParent(L, "KenshiLua.Item", "KenshiLua.InventoryItemBase");
+    setMetatableParent(L, "KenshiLua.InventoryItemBase", "KenshiLua.RootObject");
+    setMetatableParent(L, "KenshiLua.Gear", "KenshiLua.Item");
+    setMetatableParent(L, "KenshiLua.Weapon", "KenshiLua.Gear");
+    setMetatableParent(L, "KenshiLua.Sword", "KenshiLua.Weapon");
+    setMetatableParent(L, "KenshiLua.Crossbow", "KenshiLua.Weapon");
+    setMetatableParent(L, "KenshiLua.Armour", "KenshiLua.Gear");
+    setMetatableParent(L, "KenshiLua.LockedArmour", "KenshiLua.Armour");
+
+    // GUI and Dialog chains
+    setMetatableParent(L, "KenshiLua.DialogueWindow", "KenshiLua.GUIWindow");
+    setMetatableParent(L, "KenshiLua.DatapanelGUI", "KenshiLua.GUIWindow");
+    
+    // DataPanelLine chains
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Faction", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Research", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Button", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_SliderEditable", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Text", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_TextEditable", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Slider", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_Progress", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_CheckBox", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_DropBox", "KenshiLua.DataPanelLine");
+    setMetatableParent(L, "KenshiLua.DataPanelLine_KeyConfig", "KenshiLua.DataPanelLine");
+
+    // Building chains
+    setMetatableParent(L, "KenshiLua.UseableStuff", "KenshiLua.Building");
+    setMetatableParent(L, "KenshiLua.StorageBuilding", "KenshiLua.UseableStuff");
+    setMetatableParent(L, "KenshiLua.ProductionBuilding", "KenshiLua.StorageBuilding");
+    setMetatableParent(L, "KenshiLua.CraftingBuilding", "KenshiLua.ProductionBuilding");
+    setMetatableParent(L, "KenshiLua.GeneratorBuilding", "KenshiLua.ProductionBuilding");
+    setMetatableParent(L, "KenshiLua.WindGeneratorBuilding", "KenshiLua.GeneratorBuilding");
+    setMetatableParent(L, "KenshiLua.ResearchBuilding", "KenshiLua.UseableStuff");
+    
+    // Layout chains
+    setMetatableParent(L, "KenshiLua.BuildingContainerInventoryLayout", "KenshiLua.GenericInventoryLayout");
+    setMetatableParent(L, "KenshiLua.ProductionInventoryLayout", "KenshiLua.BuildInventoryLayout");
+    setMetatableParent(L, "KenshiLua.CraftingInventoryLayout", "KenshiLua.BuildInventoryLayout");
+    setMetatableParent(L, "KenshiLua.ResearchBuildingInventoryLayout", "KenshiLua.GenericInventoryLayout");
+
+    // Inventory chains
+    setMetatableParent(L, "KenshiLua.ShopTraderInventoryLayout", "KenshiLua.GenericInventoryLayout");
+
+    installKenshiLuaTable(L);
 }
 
-int luaKenshiLog(lua_State* L)
+static std::string formatLuaArgs(lua_State* L)
 {
     int n = lua_gettop(L);
     std::string msg;
@@ -134,7 +552,30 @@ int luaKenshiLog(lua_State* L)
             break;
         }
     }
-    logToFile(msg);
+    return msg;
+}
+
+int luaKenshiLog(lua_State* L)
+{
+    logToFile(formatLuaArgs(L));
+    return 0;
+}
+
+int luaKenshiLogDebug(lua_State* L)
+{
+    logToFileDebug(formatLuaArgs(L));
+    return 0;
+}
+
+int luaKenshiLogWarn(lua_State* L)
+{
+    logToFile(LogLevel_Warn, formatLuaArgs(L));
+    return 0;
+}
+
+int luaKenshiLogError(lua_State* L)
+{
+    logToFile(LogLevel_Error, formatLuaArgs(L));
     return 0;
 }
 
@@ -154,107 +595,12 @@ int luaKenshiError(lua_State* L)
             break;
         }
     }
-    logToFile(msg);
+    logToFile(LogLevel_Error, msg);
     lua_settop(L, 0);
     lua_pushlstring(L, msg.c_str(), msg.size());
     return lua_error(L);
 }
 
-int luaKenshiGetLuaVersion(lua_State* L)
-{
-    // Returns the Lua version string (e.g., "Lua 5.5")
-    lua_pushstring(L, LUA_VERSION);
-    return 1;
-}
-
-int luaKenshiToJSON(lua_State* L)
-{
-    // Stack: 1 = value to encode
-    // Uses Lua 5.5's json.encode if available, otherwise falls back to simple conversion
-    if (luaL_getmetafield(L, 1, "__name") != 0) {
-        // Complex type - try to use json library if available
-        luaL_getsubtable(L, LUA_REGISTRYINDEX, "_LOADED");
-        lua_getfield(L, -1, "json");
-        if (lua_istable(L, -1)) {
-            lua_getfield(L, -1, "encode");
-            if (lua_isfunction(L, -1)) {
-                lua_pushvalue(L, 1);
-                if (lua_pcall(L, 1, 1, 0) == LUA_OK) {
-                    return 1;
-                }
-            }
-        }
-    }
-
-    // Fallback: simple string representation for basic types
-    switch (lua_type(L, 1)) {
-    case LUA_TNIL:
-        lua_pushstring(L, "null");
-        return 1;
-    case LUA_TBOOLEAN:
-        lua_pushstring(L, lua_toboolean(L, 1) ? "true" : "false");
-        return 1;
-    case LUA_TNUMBER:
-        lua_pushvalue(L, 1);
-        lua_tostring(L, -1);
-        return 1;
-    case LUA_TSTRING:
-        lua_pushvalue(L, 1);
-        return 1;
-    default:
-        luaL_error(L, "Cannot convert %s to JSON", lua_typename(L, lua_type(L, 1)));
-        return 0;
-    }
-}
-
-int luaKenshiFromJSON(lua_State* L)
-{
-    // Stack: 1 = JSON string to decode
-    const char* json_str = luaL_checkstring(L, 1);
-
-    // Try to use json library if available
-    luaL_getsubtable(L, LUA_REGISTRYINDEX, "_LOADED");
-    lua_getfield(L, -1, "json");
-    if (lua_istable(L, -1)) {
-        lua_getfield(L, -1, "decode");
-        if (lua_isfunction(L, -1)) {
-            lua_pushstring(L, json_str);
-            if (lua_pcall(L, 1, 1, 0) == LUA_OK) {
-                return 1;
-            }
-        }
-    }
-
-    // Fallback: simple parsing for literals
-    lua_pop(L, 2);  // Remove json table and registry subtable
-
-    if (strcmp(json_str, "null") == 0) {
-        lua_pushnil(L);
-        return 1;
-    } else if (strcmp(json_str, "true") == 0) {
-        lua_pushboolean(L, 1);
-        return 1;
-    } else if (strcmp(json_str, "false") == 0) {
-        lua_pushboolean(L, 0);
-        return 1;
-    } else if (json_str[0] == '"' && json_str[strlen(json_str) - 1] == '"') {
-        // String literal
-        lua_pushlstring(L, json_str + 1, strlen(json_str) - 2);
-        return 1;
-    } else {
-        // Try to parse as number
-        char* endptr = nullptr;
-        lua_Number num = strtod(json_str, &endptr);
-        if (endptr != json_str && *endptr == '\0') {
-            lua_pushnumber(L, num);
-            return 1;
-        }
-    }
-
-    luaL_error(L, "Failed to decode JSON string: %s", json_str);
-    return 0;
-}
-
-int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.0 (Lua 5.5)"); return 1; }
+int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.1"); return 1; }
 
 } // namespace KenshiLua

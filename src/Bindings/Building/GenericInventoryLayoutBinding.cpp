@@ -1,90 +1,67 @@
 #include "pch.h"
-#include "Bindings/Building/GenericInventoryLayoutBinding.h"
-#include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
 
 #include <kenshi/Building/UseableStuff.h>
-
-#include <cstring>
-#include <cstdio>
+#include "GenericInventoryLayoutBinding.h"
+#include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
 
-static GenericInventoryLayout* getS(lua_State* L, int idx)
+static GenericInventoryLayout* getInstance(lua_State* L, int idx)
 {
     return checkObject<GenericInventoryLayout>(L, idx, GenericInventoryLayoutBinding::getMetatableName());
 }
 
-int GenericInventoryLayoutBinding::gc(lua_State* L) { return noopGc(L); }
-
-int GenericInventoryLayoutBinding::tostring(lua_State* L)
+// --- Getters for GenericInventoryLayout ---
+static int GenericInventoryLayout_get_arrangeButton(lua_State* L)
 {
-    GenericInventoryLayout* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int GenericInventoryLayoutBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, GenericInventoryLayoutBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    GenericInventoryLayout* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "arrangeButton") == 0) { lua_pushinteger(L, (lua_Integer)s->arrangeButton); return 1; }
-
-    lua_pushnil(L);
+    GenericInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GenericInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->arrangeButton);
     return 1;
 }
 
-int GenericInventoryLayoutBinding::newindex(lua_State* L)
+// --- Setters for GenericInventoryLayout ---
+static int GenericInventoryLayout_set_arrangeButton(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    GenericInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GenericInventoryLayout is nil");
-
-    // TODO MyGUI::Widget* arrangeButton; unsupported __newindex type from header line 16
-
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+    GenericInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GenericInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for arrangeButton");
 }
 
 int GenericInventoryLayoutBinding::setSize(lua_State* L)
 {
-    GenericInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GenericInventoryLayout is nil");
+    GenericInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GenericInventoryLayout is nil");
 
     int slotsW = (int)luaL_checkinteger(L, 2);
     int slotsH = (int)luaL_checkinteger(L, 3);
     bool hasArrange = lua_toboolean(L, 4) != 0;
     bool hasType = lua_toboolean(L, 5) != 0;
-    s->setSize(slotsW, slotsH, hasArrange, hasType);
+    instance->setSize(slotsW, slotsH, hasArrange, hasType);
     return 0;
 }
 
 int GenericInventoryLayoutBinding::_NV_setSize(lua_State* L)
 {
-    GenericInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GenericInventoryLayout is nil");
+    GenericInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GenericInventoryLayout is nil");
 
     int slotsW = (int)luaL_checkinteger(L, 2);
     int slotsH = (int)luaL_checkinteger(L, 3);
     bool hasArrange = lua_toboolean(L, 4) != 0;
     bool hasType = lua_toboolean(L, 5) != 0;
-    s->_NV_setSize(slotsW, slotsH, hasArrange, hasType);
+    instance->_NV_setSize(slotsW, slotsH, hasArrange, hasType);
     return 0;
 }
 
 int GenericInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
-    GenericInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "GenericInventoryLayout is nil");
+    GenericInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GenericInventoryLayout is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -94,6 +71,18 @@ Skipped methods needing manual binding:
   line 13: GenericInventoryLayout* _CONSTRUCTOR(...) - overloaded method
 */
 
+int GenericInventoryLayoutBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int GenericInventoryLayoutBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.GenericInventoryLayout object");
+    return 1;
+}
+
 void GenericInventoryLayoutBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -101,13 +90,38 @@ void GenericInventoryLayoutBinding::registerBinding(lua_State* L)
         { "__tostring", GenericInventoryLayoutBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "setSize", GenericInventoryLayoutBinding::setSize },
         { "_NV_setSize", GenericInventoryLayoutBinding::_NV_setSize },
         { "_DESTRUCTOR", GenericInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, GenericInventoryLayoutBinding::getMetatableName(), meta, methods, GenericInventoryLayoutBinding::index, GenericInventoryLayoutBinding::newindex);
+
+    registerClass(
+        L, 
+        GenericInventoryLayoutBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, GenericInventoryLayoutBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, GenericInventoryLayout_get_arrangeButton);
+    lua_setfield(L, -2, "arrangeButton");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, GenericInventoryLayout_set_arrangeButton);
+    lua_setfield(L, -2, "arrangeButton");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to InventoryLayout
+    // // setMetatableParent(L, GenericInventoryLayoutBinding::getMetatableName(), InventoryLayoutBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

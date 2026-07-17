@@ -1,322 +1,469 @@
 #include "pch.h"
-#include "BindingsBuilding/CraftingBuildingBinding.h"
-#include "Lua/BindingHelpers.h"
-
+class CraftingItem {};
 #include <kenshi/Building/CraftingBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "CraftingBuildingBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/Building/ProductionBuildingBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
 
-static CraftingBuilding* getS(lua_State* L, int idx)
+static CraftingBuilding* getInstance(lua_State* L, int idx)
 {
     return checkObject<CraftingBuilding>(L, idx, CraftingBuildingBinding::getMetatableName());
 }
 
-int CraftingBuildingBinding::gc(lua_State* L) { return noopGc(L); }
-
-int CraftingBuildingBinding::tostring(lua_State* L)
+// --- Getters for CraftingBuilding ---
+static int CraftingBuilding_get_maxCraftLevel(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int CraftingBuildingBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, CraftingBuildingBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "maxCraftLevel") == 0) { lua_pushinteger(L, s->maxCraftLevel); return 1; }
-    // TODO std::deque<CraftingItem, std::allocator<CraftingItem> > crafting; unsupported __index type from header line 92
-    if (strcmp(key, "specialCraftItemType") == 0) { lua_pushinteger(L, (lua_Integer)s->specialCraftItemType); return 1; }
-    if (strcmp(key, "repeat") == 0) { lua_pushboolean(L, s->repeat ? 1 : 0); return 1; }
-    // TODO hand whosCrafting; unsupported __index type from header line 95
-    if (strcmp(key, "itemCrafted") == 0) { lua_pushboolean(L, s->itemCrafted ? 1 : 0); return 1; }
-    if (strcmp(key, "failiureNotified") == 0) { lua_pushboolean(L, s->failiureNotified ? 1 : 0); return 1; }
-    if (strcmp(key, "biggestCraftableItem") == 0) { return pushObject<GameData>(L, s->biggestCraftableItem, GameDataBinding::getMetatableName()); }
-    if (strcmp(key, "outItem") == 0) { return pushObject<Item>(L, s->outItem, ItemBinding::getMetatableName()); }
-    // TODO lektor<Item*> inItems; unsupported __index type from header line 118
-    // TODO ogre_unordered_map<GameData*, float>::type partialItems; unsupported __index type from header line 119
-
-    lua_pushnil(L);
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    lua_pushinteger(L, instance->maxCraftLevel);
     return 1;
 }
 
-int CraftingBuildingBinding::newindex(lua_State* L)
+static int CraftingBuilding_get_crafting(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    // TODO: Unsupported type for crafting (std::deque<CraftingItem, std::allocator<CraftingItem> >)
+    return luaL_error(L, "Unsupported property 'crafting' (type: std::deque<CraftingItem, std::allocator<CraftingItem> >)");
+}
 
-    if (strcmp(key, "maxCraftLevel") == 0) { s->maxCraftLevel = (int)luaL_checkinteger(L, 3); return 0; }
-    // TODO std::deque<CraftingItem, std::allocator<CraftingItem> > crafting; unsupported __newindex type from header line 92
-    if (strcmp(key, "specialCraftItemType") == 0) { s->specialCraftItemType = (itemType)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "repeat") == 0) { s->repeat = lua_toboolean(L, 3) != 0; return 0; }
-    // TODO hand whosCrafting; unsupported __newindex type from header line 95
-    if (strcmp(key, "itemCrafted") == 0) { s->itemCrafted = lua_toboolean(L, 3) != 0; return 0; }
-    if (strcmp(key, "failiureNotified") == 0) { s->failiureNotified = lua_toboolean(L, 3) != 0; return 0; }
-    // TODO GameData* biggestCraftableItem; unsupported __newindex type from header line 116
-    // TODO Item* outItem; unsupported __newindex type from header line 117
-    // TODO lektor<Item*> inItems; unsupported __newindex type from header line 118
-    // TODO ogre_unordered_map<GameData*, float>::type partialItems; unsupported __newindex type from header line 119
+static int CraftingBuilding_get_specialCraftItemType(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    lua_pushinteger(L, (lua_Integer)instance->specialCraftItemType);
+    return 1;
+}
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+static int CraftingBuilding_get_repeat(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    lua_pushboolean(L, instance->repeat ? 1 : 0);
+    return 1;
+}
+
+static int CraftingBuilding_get_whosCrafting(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    return handBinding::push(L, instance->whosCrafting);
+}
+
+static int CraftingBuilding_get_itemCrafted(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    lua_pushboolean(L, instance->itemCrafted ? 1 : 0);
+    return 1;
+}
+
+static int CraftingBuilding_get_failiureNotified(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    lua_pushboolean(L, instance->failiureNotified ? 1 : 0);
+    return 1;
+}
+
+static int CraftingBuilding_get_biggestCraftableItem(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    return pushObject<GameData>(L, instance->biggestCraftableItem, GameDataBinding::getMetatableName());
+}
+
+static int CraftingBuilding_get_outItem(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    return pushObject<Item>(L, instance->outItem, ItemBinding::getMetatableName());
+}
+
+static int CraftingBuilding_get_inItems(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    lua_createtable(L, instance->inItems.size(), 0);
+    for (uint32_t i = 0; i < instance->inItems.size(); ++i) {
+        pushObject<Item>(L, instance->inItems[i], ItemBinding::getMetatableName());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+static int CraftingBuilding_get_partialItems(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    // TODO: Unsupported type for partialItems (ogre_unordered_map<GameData*, float>::type)
+    return luaL_error(L, "Unsupported property 'partialItems' (type: ogre_unordered_map<GameData*, float>::type)");
+}
+
+// --- Setters for CraftingBuilding ---
+static int CraftingBuilding_set_maxCraftLevel(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    instance->maxCraftLevel = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int CraftingBuilding_set_crafting(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for crafting");
+}
+
+static int CraftingBuilding_set_specialCraftItemType(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    instance->specialCraftItemType = (itemType)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int CraftingBuilding_set_repeat(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    instance->repeat = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int CraftingBuilding_set_whosCrafting(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->whosCrafting = *val;
+    return 0;
+}
+
+static int CraftingBuilding_set_itemCrafted(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    instance->itemCrafted = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int CraftingBuilding_set_failiureNotified(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    instance->failiureNotified = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int CraftingBuilding_set_biggestCraftableItem(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for biggestCraftableItem");
+}
+
+static int CraftingBuilding_set_outItem(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for outItem");
+}
+
+static int CraftingBuilding_set_inItems(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for inItems");
+}
+
+static int CraftingBuilding_set_partialItems(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for partialItems");
 }
 
 int CraftingBuildingBinding::_DESTRUCTOR(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
+}
+
+int CraftingBuildingBinding::createInventoryLayout(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+
+    InventoryLayout* result = instance->createInventoryLayout();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
+}
+
+int CraftingBuildingBinding::_NV_createInventoryLayout(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+
+    InventoryLayout* result = instance->_NV_createInventoryLayout();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
 }
 
 int CraftingBuildingBinding::update(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    s->update();
+    instance->update();
     return 0;
 }
 
 int CraftingBuildingBinding::_NV_update(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    s->_NV_update();
+    instance->_NV_update();
     return 0;
 }
 
 int CraftingBuildingBinding::givePower(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    s->givePower(amount);
+    instance->givePower(amount);
     return 0;
 }
 
 int CraftingBuildingBinding::_NV_givePower(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    s->_NV_givePower(amount);
+    instance->_NV_givePower(amount);
     return 0;
 }
 
 int CraftingBuildingBinding::hasCraftingQueued(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    bool result = s->hasCraftingQueued();
+    bool result = instance->hasCraftingQueued();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int CraftingBuildingBinding::_NV_hasCraftingQueued(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    bool result = s->_NV_hasCraftingQueued();
+    bool result = instance->_NV_hasCraftingQueued();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int CraftingBuildingBinding::isProductionFull(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    bool result = s->isProductionFull();
+    bool result = instance->isProductionFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int CraftingBuildingBinding::_NV_isProductionFull(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    bool result = s->_NV_isProductionFull();
+    bool result = instance->_NV_isProductionFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int CraftingBuildingBinding::getProductionItemData(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    GameData* result = s->getProductionItemData();
+    GameData* result = instance->getProductionItemData();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int CraftingBuildingBinding::_NV_getProductionItemData(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    GameData* result = s->_NV_getProductionItemData();
+    GameData* result = instance->_NV_getProductionItemData();
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int CraftingBuildingBinding::getCurrentProductionQuantity(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    int result = s->getCurrentProductionQuantity();
+    int result = instance->getCurrentProductionQuantity();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int CraftingBuildingBinding::_NV_getCurrentProductionQuantity(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    int result = s->_NV_getCurrentProductionQuantity();
+    int result = instance->_NV_getCurrentProductionQuantity();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int CraftingBuildingBinding::isAnyInputsInvalidType(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    bool result = s->isAnyInputsInvalidType();
+    bool result = instance->isAnyInputsInvalidType();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int CraftingBuildingBinding::_NV_isAnyInputsInvalidType(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    bool result = s->_NV_isAnyInputsInvalidType();
+    bool result = instance->_NV_isAnyInputsInvalidType();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int CraftingBuildingBinding::notifyCraftFailiure(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    s->notifyCraftFailiure();
+    instance->notifyCraftFailiure();
     return 0;
 }
 
 int CraftingBuildingBinding::_removeCraft(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
     int index = (int)luaL_checkinteger(L, 2);
-    s->_removeCraft(index);
+    instance->_removeCraft(index);
     return 0;
+}
+
+int CraftingBuildingBinding::getCraft(lua_State* L)
+{
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
+
+    int id = (int)luaL_checkinteger(L, 2);
+    CraftingItem* result = instance->getCraft(id);
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
 }
 
 int CraftingBuildingBinding::destroyProductionItem(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    s->destroyProductionItem();
+    instance->destroyProductionItem();
     return 0;
 }
 
 int CraftingBuildingBinding::getCriticalSuccessWeapon(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
     int normalWeaponLevel = (int)luaL_checkinteger(L, 2);
-    GameData* result = s->getCriticalSuccessWeapon(normalWeaponLevel);
+    GameData* result = instance->getCriticalSuccessWeapon(normalWeaponLevel);
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 int CraftingBuildingBinding::setupFromData(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    s->setupFromData();
+    instance->setupFromData();
     return 0;
 }
 
 int CraftingBuildingBinding::_NV_setupFromData(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    s->_NV_setupFromData();
+    instance->_NV_setupFromData();
     return 0;
 }
 
 int CraftingBuildingBinding::updateOutput(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
     float rate = (float)luaL_checknumber(L, 2);
-    s->updateOutput(rate);
+    instance->updateOutput(rate);
     return 0;
 }
 
 int CraftingBuildingBinding::_NV_updateOutput(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
     float rate = (float)luaL_checknumber(L, 2);
-    s->_NV_updateOutput(rate);
+    instance->_NV_updateOutput(rate);
     return 0;
 }
 
 int CraftingBuildingBinding::updateInventoryWindow(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    s->updateInventoryWindow();
+    instance->updateInventoryWindow();
     return 0;
 }
 
 int CraftingBuildingBinding::_NV_updateInventoryWindow(lua_State* L)
 {
-    CraftingBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "CraftingBuilding is nil");
+    CraftingBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    s->_NV_updateInventoryWindow();
+    instance->_NV_updateInventoryWindow();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 50: CraftingBuilding* _CONSTRUCTOR(...) - unsupported return type
-  line 53: InventoryLayout* createInventoryLayout(...) - unsupported return type
-  line 54: InventoryLayout* _NV_createInventoryLayout(...) - unsupported return type
+  line 50: CraftingBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 57: void operate(...) - unsupported arg type
   line 58: void _NV_operate(...) - unsupported arg type
   line 61: void getGUIData(...) - unsupported arg type
@@ -325,15 +472,14 @@ Skipped methods needing manual binding:
   line 64: GameSaveState _NV_serialise(...) - unsupported return type
   line 65: void loadFromSerialise(...) - unsupported arg type
   line 66: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 77: void newCraftingButton(...) - pointer arg
-  line 78: void _NV_newCraftingButton(...) - pointer arg
+  line 77: void newCraftingButton(...) - unsupported arg type
+  line 78: void _NV_newCraftingButton(...) - unsupported arg type
   line 79: void addFinishedCraftItem(...) - unsupported arg type
   line 81: bool tryOperate(...) - unsupported arg type
   line 82: bool _NV_tryOperate(...) - unsupported arg type
   line 83: GameData* playerManufacturerData(...) - static method
   line 84: void getAvailableCrafts(...) - unsupported arg type
-  line 85: CraftingItem* _addCraft(...) - unsupported return type
-  line 87: CraftingItem* getCraft(...) - unsupported return type
+  line 85: CraftingItem* _addCraft(...) - unsupported arg type
   line 96: GameData* predictCraftersBestWeapon(...) - unsupported arg type
   line 97: float calculateCriticalChance(...) - unsupported arg type
   line 99: void getItemsWeWantRidOf(...) - unsupported arg type
@@ -347,6 +493,18 @@ Skipped methods needing manual binding:
   line 113: void _NV_setProductionItem(...) - unsupported arg type
 */
 
+int CraftingBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int CraftingBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.CraftingBuilding object");
+    return 1;
+}
+
 void CraftingBuildingBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -354,8 +512,11 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
         { "__tostring", CraftingBuildingBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", CraftingBuildingBinding::_DESTRUCTOR },
+        { "createInventoryLayout", CraftingBuildingBinding::createInventoryLayout },
+        { "_NV_createInventoryLayout", CraftingBuildingBinding::_NV_createInventoryLayout },
         { "update", CraftingBuildingBinding::update },
         { "_NV_update", CraftingBuildingBinding::_NV_update },
         { "givePower", CraftingBuildingBinding::givePower },
@@ -372,6 +533,7 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
         { "_NV_isAnyInputsInvalidType", CraftingBuildingBinding::_NV_isAnyInputsInvalidType },
         { "notifyCraftFailiure", CraftingBuildingBinding::notifyCraftFailiure },
         { "_removeCraft", CraftingBuildingBinding::_removeCraft },
+        { "getCraft", CraftingBuildingBinding::getCraft },
         { "destroyProductionItem", CraftingBuildingBinding::destroyProductionItem },
         { "getCriticalSuccessWeapon", CraftingBuildingBinding::getCriticalSuccessWeapon },
         { "setupFromData", CraftingBuildingBinding::setupFromData },
@@ -382,7 +544,71 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateInventoryWindow", CraftingBuildingBinding::_NV_updateInventoryWindow },
         { 0, 0 }
     };
-    registerClass(L, CraftingBuildingBinding::getMetatableName(), meta, methods, CraftingBuildingBinding::index, CraftingBuildingBinding::newindex);
+
+    registerClass(
+        L, 
+        CraftingBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, CraftingBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, CraftingBuilding_get_maxCraftLevel);
+    lua_setfield(L, -2, "maxCraftLevel");
+    lua_pushcfunction(L, CraftingBuilding_get_crafting);
+    lua_setfield(L, -2, "crafting");
+    lua_pushcfunction(L, CraftingBuilding_get_specialCraftItemType);
+    lua_setfield(L, -2, "specialCraftItemType");
+    lua_pushcfunction(L, CraftingBuilding_get_repeat);
+    lua_setfield(L, -2, "repeat");
+    lua_pushcfunction(L, CraftingBuilding_get_whosCrafting);
+    lua_setfield(L, -2, "whosCrafting");
+    lua_pushcfunction(L, CraftingBuilding_get_itemCrafted);
+    lua_setfield(L, -2, "itemCrafted");
+    lua_pushcfunction(L, CraftingBuilding_get_failiureNotified);
+    lua_setfield(L, -2, "failiureNotified");
+    lua_pushcfunction(L, CraftingBuilding_get_biggestCraftableItem);
+    lua_setfield(L, -2, "biggestCraftableItem");
+    lua_pushcfunction(L, CraftingBuilding_get_outItem);
+    lua_setfield(L, -2, "outItem");
+    lua_pushcfunction(L, CraftingBuilding_get_inItems);
+    lua_setfield(L, -2, "inItems");
+    lua_pushcfunction(L, CraftingBuilding_get_partialItems);
+    lua_setfield(L, -2, "partialItems");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, CraftingBuilding_set_maxCraftLevel);
+    lua_setfield(L, -2, "maxCraftLevel");
+    lua_pushcfunction(L, CraftingBuilding_set_crafting);
+    lua_setfield(L, -2, "crafting");
+    lua_pushcfunction(L, CraftingBuilding_set_specialCraftItemType);
+    lua_setfield(L, -2, "specialCraftItemType");
+    lua_pushcfunction(L, CraftingBuilding_set_repeat);
+    lua_setfield(L, -2, "repeat");
+    lua_pushcfunction(L, CraftingBuilding_set_whosCrafting);
+    lua_setfield(L, -2, "whosCrafting");
+    lua_pushcfunction(L, CraftingBuilding_set_itemCrafted);
+    lua_setfield(L, -2, "itemCrafted");
+    lua_pushcfunction(L, CraftingBuilding_set_failiureNotified);
+    lua_setfield(L, -2, "failiureNotified");
+    lua_pushcfunction(L, CraftingBuilding_set_biggestCraftableItem);
+    lua_setfield(L, -2, "biggestCraftableItem");
+    lua_pushcfunction(L, CraftingBuilding_set_outItem);
+    lua_setfield(L, -2, "outItem");
+    lua_pushcfunction(L, CraftingBuilding_set_inItems);
+    lua_setfield(L, -2, "inItems");
+    lua_pushcfunction(L, CraftingBuilding_set_partialItems);
+    lua_setfield(L, -2, "partialItems");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to ProductionBuilding
+    setMetatableParent(L, CraftingBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

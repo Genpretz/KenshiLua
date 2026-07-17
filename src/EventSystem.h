@@ -59,10 +59,22 @@ namespace KenshiLua
         // to put event arguments on the stack.
         // Returns 0 normally, or -1 if any handler returned false (consumed).
         int callHandlers(const char* eventName, IArgPusher* pusher = NULL);
+        std::string callHandlersString(const char* eventName, IArgPusher* pusher = NULL);
+        void* callHandlersObject(const char* eventName, const char* metatableName, IArgPusher* pusher = NULL);
+        bool callHandlersBool(const char* eventName, IArgPusher* pusher = NULL, bool defaultVal = false);
+        double callHandlersNumber(const char* eventName, IArgPusher* pusher = NULL, double defaultVal = 0.0);
 
         // Unref all registered Lua functions and clear all handler lists.
         // Must be called before destroying the Lua state.
         void clear();
+
+        struct RegisteredCallbackInfo
+        {
+            std::string eventName;
+            int handlerId;
+        };
+
+        std::vector<RegisteredCallbackInfo> getRegisteredCallbacks() const;
 
     private:
         EventSystem();

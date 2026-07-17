@@ -1,177 +1,127 @@
 #include "pch.h"
+<<<<<<< HEAD:src/Bindings/System/BountyBinding.cpp
 #include "Bindings/System/BountyBinding.h"
+=======
+#include "kenshi\Bounty.h"
+#include "BountyBinding.h"
+#include "EnumBinding.h"
+#include "Bindings/Util/TimeOfDayBinding.h"
+>>>>>>> main:src/Bindings/BountyBinding.cpp
 #include "Lua/BindingHelpers.h"
-
-#include <kenshi/Bounty.h>
-#include <new>
-#include <cstdio>
-#include <cstring>
-
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-}
 
 namespace KenshiLua
 {
 
-void BountyEnumBinding::registerCrimeEnum(lua_State* L)
-{
-    lua_newtable(L);
-
-    lua_pushinteger(L, CrimeEnum::CRIME_NONE);
-    lua_setfield(L, -2, "CRIME_NONE");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_ENSLAVING);
-    lua_setfield(L, -2, "CRIME_ENSLAVING");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_LOCKPICKING);
-    lua_setfield(L, -2, "CRIME_LOCKPICKING");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_STEALING);
-    lua_setfield(L, -2, "CRIME_STEALING");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_MURDER);
-    lua_setfield(L, -2, "CRIME_MURDER");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_ASSAULT);
-    lua_setfield(L, -2, "CRIME_ASSAULT");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_ASSAULT_VIP);
-    lua_setfield(L, -2, "CRIME_ASSAULT_VIP");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_SLAVE_FREEING);
-    lua_setfield(L, -2, "CRIME_SLAVE_FREEING");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_SMUGGLING);
-    lua_setfield(L, -2, "CRIME_SMUGGLING");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_TERRORISM);
-    lua_setfield(L, -2, "CRIME_TERRORISM");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_LOOTING);
-    lua_setfield(L, -2, "CRIME_LOOTING");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_TRESSPASSING);
-    lua_setfield(L, -2, "CRIME_TRESSPASSING");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_ESCAPE_PRISON);
-    lua_setfield(L, -2, "CRIME_ESCAPE_PRISON");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_FENCING);
-    lua_setfield(L, -2, "CRIME_FENCING");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_FARM_EATING);
-    lua_setfield(L, -2, "CRIME_FARM_EATING");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_KIDNAPPING);
-    lua_setfield(L, -2, "CRIME_KIDNAPPING");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_UNIFORM_THEFT);
-    lua_setfield(L, -2, "CRIME_UNIFORM_THEFT");
-
-    lua_pushinteger(L, CrimeEnum::CRIME_END);
-    lua_setfield(L, -2, "CRIME_END");
-
-    lua_setglobal(L, "CrimeEnum");
-}
-
 static Bounty* getB(lua_State* L, int idx)
 {
-    return (Bounty*)luaL_checkudata(L, idx, BountyBinding::getMetatableName());
+    return checkObject<Bounty>(L, idx, BountyBinding::getMetatableName());
 }
 
-int BountyBinding::pushBounty(lua_State* L, const Bounty& b)
+// --- Getters for Bounty ---
+static int Bounty_get_amount(lua_State* L)
 {
-    void* mem = lua_newuserdata(L, sizeof(Bounty));
-    new (mem) Bounty(b);
-    luaL_getmetatable(L, BountyBinding::getMetatableName());
-    lua_setmetatable(L, -2);
+    Bounty* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Bounty is nil");
+    lua_pushinteger(L, b->amount);
     return 1;
 }
 
-int BountyBinding::gc(lua_State* L)
+static int Bounty_get_crimes(lua_State* L)
 {
-    Bounty* b = (Bounty*)luaL_checkudata(L, 1, getMetatableName());
-    if (b != 0) b->~Bounty();
+    Bounty* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Bounty is nil");
+    lua_pushinteger(L, b->crimes);
+    return 1;
+}
+
+static int Bounty_get_bountyHasBeenClaimedOnce(lua_State* L)
+{
+    Bounty* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Bounty is nil");
+    lua_pushboolean(L, b->bountyHasBeenClaimedOnce ? 1 : 0);
+    return 1;
+}
+
+static int Bounty_get_bountyAssignmentStartedTime(lua_State* L)
+{
+    Bounty* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Bounty is nil");
+    return pushObject<TimeOfDay>(L, &b->bountyAssignmentStartedTime, TimeOfDayBinding::getMetatableName());
+}
+
+// --- Setters for Bounty ---
+static int Bounty_set_amount(lua_State* L)
+{
+    Bounty* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Bounty is nil");
+    b->amount = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
-int BountyBinding::tostring(lua_State* L)
+static int Bounty_set_crimes(lua_State* L)
 {
     Bounty* b = getB(L, 1);
-    if (b == 0) { lua_pushstring(L, "Bounty:nil"); return 1; }
-    char buf[160];
-    _snprintf(buf, sizeof(buf), "Bounty(amount=%d, claimed=%s)", b->amount, b->bountyHasBeenClaimedOnce ? "true" : "false");
-    lua_pushstring(L, buf);
-    return 1;
+    if (!b) return luaL_error(L, "Bounty is nil");
+    b->crimes = (unsigned int)luaL_checkinteger(L, 2);
+    return 0;
 }
 
-int BountyBinding::index(lua_State* L)
+static int Bounty_set_bountyHasBeenClaimedOnce(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, BountyBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
     Bounty* b = getB(L, 1);
-    if (b == 0) { lua_pushnil(L); return 1; }
-
-    // --- integer members ---
-    if (strcmp(key, "amount") == 0) { lua_pushinteger(L, b->amount); return 1; }
-    if (strcmp(key, "crimes") == 0) { lua_pushinteger(L, b->crimes); return 1; }
-
-    // --- boolean members ---
-    if (strcmp(key, "bountyHasBeenClaimedOnce") == 0 || strcmp(key, "claimed") == 0) {
-        lua_pushboolean(L, b->bountyHasBeenClaimedOnce ? 1 : 0);
-        return 1;
-    }
-
-    lua_pushnil(L);
-    return 1;
+    if (!b) return luaL_error(L, "Bounty is nil");
+    b->bountyHasBeenClaimedOnce = lua_toboolean(L, 2) != 0;
+    return 0;
 }
 
-int BountyBinding::newindex(lua_State* L)
+static int Bounty_set_bountyAssignmentStartedTime(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
     Bounty* b = getB(L, 1);
-    if (b == 0) return luaL_error(L, "Bounty is nil");
+    if (!b) return luaL_error(L, "Bounty is nil");
+    TimeOfDay* val = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Expected TimeOfDay object");
+    b->bountyAssignmentStartedTime = *val;
+    return 0;
+}
 
-    // --- writable properties ---
-    if (strcmp(key, "amount") == 0) {
-        b->amount = (int)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "crimes") == 0) {
-        b->crimes = (unsigned int)luaL_checkinteger(L, 3);
-        return 0;
-    }
-    if (strcmp(key, "bountyHasBeenClaimedOnce") == 0 || strcmp(key, "claimed") == 0) {
-        b->bountyHasBeenClaimedOnce = (lua_toboolean(L, 3) != 0);
-        return 0;
-    }
+int BountyBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Bounty* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Bounty is nil");
 
-    return luaL_error(L, "Bounty: field '%s' is read-only or does not exist", key);
+    Bounty* result = b->_CONSTRUCTOR();
+    return pushObject<Bounty>(L, result, BountyBinding::getMetatableName());
 }
 
 int BountyBinding::addCrime(lua_State* L)
 {
     Bounty* b = getB(L, 1);
-    if (b == 0) return luaL_error(L, "Bounty is nil");
-    int crime = (int)luaL_checkinteger(L, 2);
-    b->addCrime((CrimeEnum)crime);
+    if (!b) return luaL_error(L, "Bounty is nil");
+    
+    CrimeEnum crime = (CrimeEnum)luaL_checkinteger(L, 2);
+    b->addCrime(crime);
     return 0;
 }
 
 int BountyBinding::hasCrime(lua_State* L)
 {
     Bounty* b = getB(L, 1);
-    if (b == 0) return luaL_error(L, "Bounty is nil");
-    int crime = (int)luaL_checkinteger(L, 2);
-    lua_pushboolean(L, b->hasCrime((CrimeEnum)crime) ? 1 : 0);
+    if (!b) return luaL_error(L, "Bounty is nil");
+    
+    CrimeEnum crime = (CrimeEnum)luaL_checkinteger(L, 2);
+    lua_pushboolean(L, b->hasCrime(crime) ? 1 : 0);
+    return 1;
+}
+
+int BountyBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int BountyBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.Bounty object");
     return 1;
 }
 
@@ -182,12 +132,47 @@ void BountyBinding::registerBinding(lua_State* L)
         { "__tostring", BountyBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", BountyBinding::_CONSTRUCTOR },
         { "addCrime", BountyBinding::addCrime },
         { "hasCrime", BountyBinding::hasCrime },
         { 0, 0 }
     };
-    registerClass(L, BountyBinding::getMetatableName(), meta, methods, BountyBinding::index, BountyBinding::newindex);
+
+    registerClass(
+        L, 
+        BountyBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, BountyBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, Bounty_get_amount);
+    lua_setfield(L, -2, "amount");
+    lua_pushcfunction(L, Bounty_get_crimes);
+    lua_setfield(L, -2, "crimes");
+    lua_pushcfunction(L, Bounty_get_bountyHasBeenClaimedOnce);
+    lua_setfield(L, -2, "bountyHasBeenClaimedOnce");
+    lua_pushcfunction(L, Bounty_get_bountyAssignmentStartedTime);
+    lua_setfield(L, -2, "bountyAssignmentStartedTime");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, Bounty_set_amount);
+    lua_setfield(L, -2, "amount");
+    lua_pushcfunction(L, Bounty_set_crimes);
+    lua_setfield(L, -2, "crimes");
+    lua_pushcfunction(L, Bounty_set_bountyHasBeenClaimedOnce);
+    lua_setfield(L, -2, "bountyHasBeenClaimedOnce");
+    lua_pushcfunction(L, Bounty_set_bountyAssignmentStartedTime);
+    lua_setfield(L, -2, "bountyAssignmentStartedTime");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

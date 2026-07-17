@@ -1,163 +1,385 @@
 #include "pch.h"
-#include "Bindings/Building/BuildInventoryLayoutBinding.h"
-#include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
 
 #include <kenshi/Building/ProductionBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "BuildInventoryLayoutBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/ItemBinding.h"
 
 namespace KenshiLua
 {
 
-static BuildInventoryLayout* getS(lua_State* L, int idx)
+static BuildInventoryLayout* getInstance(lua_State* L, int idx)
 {
     return checkObject<BuildInventoryLayout>(L, idx, BuildInventoryLayoutBinding::getMetatableName());
 }
 
-int BuildInventoryLayoutBinding::gc(lua_State* L) { return noopGc(L); }
-
-int BuildInventoryLayoutBinding::tostring(lua_State* L)
+// --- Getters for BuildInventoryLayout ---
+static int BuildInventoryLayout_get_input1NameText(lua_State* L)
 {
-    BuildInventoryLayout* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int BuildInventoryLayoutBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, BuildInventoryLayoutBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    BuildInventoryLayout* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "input1NameText") == 0) { lua_pushinteger(L, (lua_Integer)s->input1NameText); return 1; }
-    if (strcmp(key, "input2NameText") == 0) { lua_pushinteger(L, (lua_Integer)s->input2NameText); return 1; }
-    if (strcmp(key, "input1StatusText") == 0) { lua_pushinteger(L, (lua_Integer)s->input1StatusText); return 1; }
-    if (strcmp(key, "input2StatusText") == 0) { lua_pushinteger(L, (lua_Integer)s->input2StatusText); return 1; }
-    if (strcmp(key, "input1ItemIcon") == 0) { lua_pushinteger(L, (lua_Integer)s->input1ItemIcon); return 1; }
-    if (strcmp(key, "input2ItemIcon") == 0) { lua_pushinteger(L, (lua_Integer)s->input2ItemIcon); return 1; }
-    if (strcmp(key, "outputNameText") == 0) { lua_pushinteger(L, (lua_Integer)s->outputNameText); return 1; }
-    if (strcmp(key, "outputItemIcon") == 0) { lua_pushinteger(L, (lua_Integer)s->outputItemIcon); return 1; }
-    if (strcmp(key, "input1Panel") == 0) { lua_pushinteger(L, (lua_Integer)s->input1Panel); return 1; }
-    if (strcmp(key, "input2Panel") == 0) { lua_pushinteger(L, (lua_Integer)s->input2Panel); return 1; }
-    if (strcmp(key, "input1Progress") == 0) { lua_pushinteger(L, (lua_Integer)s->input1Progress); return 1; }
-    if (strcmp(key, "input2Progress") == 0) { lua_pushinteger(L, (lua_Integer)s->input2Progress); return 1; }
-    if (strcmp(key, "outputProgress") == 0) { lua_pushinteger(L, (lua_Integer)s->outputProgress); return 1; }
-    if (strcmp(key, "inputs") == 0) { lua_pushinteger(L, s->inputs); return 1; }
-    if (strcmp(key, "outputs") == 0) { lua_pushinteger(L, s->outputs); return 1; }
-    if (strcmp(key, "input1Item") == 0) { return pushObject<Item>(L, s->input1Item, ItemBinding::getMetatableName()); }
-    if (strcmp(key, "input2Item") == 0) { return pushObject<Item>(L, s->input2Item, ItemBinding::getMetatableName()); }
-    if (strcmp(key, "outputItem") == 0) { return pushObject<Item>(L, s->outputItem, ItemBinding::getMetatableName()); }
-
-    lua_pushnil(L);
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->input1NameText);
     return 1;
 }
 
-int BuildInventoryLayoutBinding::newindex(lua_State* L)
+static int BuildInventoryLayout_get_input2NameText(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    BuildInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildInventoryLayout is nil");
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->input2NameText);
+    return 1;
+}
 
-    // TODO MyGUI::TextBox* input1NameText; unsupported __newindex type from header line 21
-    // TODO MyGUI::TextBox* input2NameText; unsupported __newindex type from header line 22
-    // TODO MyGUI::TextBox* input1StatusText; unsupported __newindex type from header line 23
-    // TODO MyGUI::TextBox* input2StatusText; unsupported __newindex type from header line 24
-    // TODO MyGUI::ImageBox* input1ItemIcon; unsupported __newindex type from header line 25
-    // TODO MyGUI::ImageBox* input2ItemIcon; unsupported __newindex type from header line 26
-    // TODO MyGUI::TextBox* outputNameText; unsupported __newindex type from header line 27
-    // TODO MyGUI::ImageBox* outputItemIcon; unsupported __newindex type from header line 28
-    // TODO MyGUI::Widget* input1Panel; unsupported __newindex type from header line 29
-    // TODO MyGUI::Widget* input2Panel; unsupported __newindex type from header line 30
-    // TODO MyGUI::ProgressBar* input1Progress; unsupported __newindex type from header line 31
-    // TODO MyGUI::ProgressBar* input2Progress; unsupported __newindex type from header line 32
-    // TODO MyGUI::ProgressBar* outputProgress; unsupported __newindex type from header line 33
-    if (strcmp(key, "inputs") == 0) { s->inputs = (int)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "outputs") == 0) { s->outputs = (int)luaL_checkinteger(L, 3); return 0; }
-    // TODO Item* input1Item; unsupported __newindex type from header line 36
-    // TODO Item* input2Item; unsupported __newindex type from header line 37
-    // TODO Item* outputItem; unsupported __newindex type from header line 38
+static int BuildInventoryLayout_get_input1StatusText(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->input1StatusText);
+    return 1;
+}
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+static int BuildInventoryLayout_get_input2StatusText(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->input2StatusText);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_input1ItemIcon(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->input1ItemIcon);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_input2ItemIcon(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->input2ItemIcon);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_outputNameText(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->outputNameText);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_outputItemIcon(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->outputItemIcon);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_input1Panel(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->input1Panel);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_input2Panel(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->input2Panel);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_input1Progress(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->input1Progress);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_input2Progress(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->input2Progress);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_outputProgress(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushlightuserdata(L, (void*)instance->outputProgress);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_inputs(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushinteger(L, instance->inputs);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_outputs(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    lua_pushinteger(L, instance->outputs);
+    return 1;
+}
+
+static int BuildInventoryLayout_get_input1Item(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return pushObject<Item>(L, instance->input1Item, ItemBinding::getMetatableName());
+}
+
+static int BuildInventoryLayout_get_input2Item(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return pushObject<Item>(L, instance->input2Item, ItemBinding::getMetatableName());
+}
+
+static int BuildInventoryLayout_get_outputItem(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return pushObject<Item>(L, instance->outputItem, ItemBinding::getMetatableName());
+}
+
+// --- Setters for BuildInventoryLayout ---
+static int BuildInventoryLayout_set_input1NameText(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input1NameText");
+}
+
+static int BuildInventoryLayout_set_input2NameText(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input2NameText");
+}
+
+static int BuildInventoryLayout_set_input1StatusText(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input1StatusText");
+}
+
+static int BuildInventoryLayout_set_input2StatusText(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input2StatusText");
+}
+
+static int BuildInventoryLayout_set_input1ItemIcon(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input1ItemIcon");
+}
+
+static int BuildInventoryLayout_set_input2ItemIcon(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input2ItemIcon");
+}
+
+static int BuildInventoryLayout_set_outputNameText(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for outputNameText");
+}
+
+static int BuildInventoryLayout_set_outputItemIcon(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for outputItemIcon");
+}
+
+static int BuildInventoryLayout_set_input1Panel(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input1Panel");
+}
+
+static int BuildInventoryLayout_set_input2Panel(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input2Panel");
+}
+
+static int BuildInventoryLayout_set_input1Progress(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input1Progress");
+}
+
+static int BuildInventoryLayout_set_input2Progress(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input2Progress");
+}
+
+static int BuildInventoryLayout_set_outputProgress(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for outputProgress");
+}
+
+static int BuildInventoryLayout_set_inputs(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    instance->inputs = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int BuildInventoryLayout_set_outputs(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    instance->outputs = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int BuildInventoryLayout_set_input1Item(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input1Item");
+}
+
+static int BuildInventoryLayout_set_input2Item(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for input2Item");
+}
+
+static int BuildInventoryLayout_set_outputItem(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for outputItem");
+}
+
+int BuildInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
+{
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
+
+    std::string title = luaL_checkstring(L, 2);
+    int ins = (int)luaL_checkinteger(L, 3);
+    int outs = (int)luaL_checkinteger(L, 4);
+    bool hasQueue = lua_toboolean(L, 5) != 0;
+    BuildInventoryLayout* result = instance->_CONSTRUCTOR(title, ins, outs, hasQueue);
+    return pushObject<BuildInventoryLayout>(L, result, BuildInventoryLayoutBinding::getMetatableName());
 }
 
 int BuildInventoryLayoutBinding::setInput(lua_State* L)
 {
-    BuildInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildInventoryLayout is nil");
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
 
     int inputIndex = (int)luaL_checkinteger(L, 2);
     std::string name = luaL_checkstring(L, 3);
     std::string status = luaL_checkstring(L, 4);
-    s->setInput(inputIndex, name, status);
+    instance->setInput(inputIndex, name, status);
     return 0;
 }
 
 int BuildInventoryLayoutBinding::setOutput(lua_State* L)
 {
-    BuildInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildInventoryLayout is nil");
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
 
     std::string name = luaL_checkstring(L, 2);
-    s->setOutput(name);
+    instance->setOutput(name);
     return 0;
 }
 
 int BuildInventoryLayoutBinding::setInputProgress(lua_State* L)
 {
-    BuildInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildInventoryLayout is nil");
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
 
     int inputIdx = (int)luaL_checkinteger(L, 2);
     float progress = (float)luaL_checknumber(L, 3);
-    s->setInputProgress(inputIdx, progress);
+    instance->setInputProgress(inputIdx, progress);
     return 0;
 }
 
 int BuildInventoryLayoutBinding::setInputEnabled(lua_State* L)
 {
-    BuildInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildInventoryLayout is nil");
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
 
     int inputIdx = (int)luaL_checkinteger(L, 2);
     bool value = lua_toboolean(L, 3) != 0;
-    s->setInputEnabled(inputIdx, value);
+    instance->setInputEnabled(inputIdx, value);
     return 0;
 }
 
 int BuildInventoryLayoutBinding::setOutputProgress(lua_State* L)
 {
-    BuildInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildInventoryLayout is nil");
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
 
     float progress = (float)luaL_checknumber(L, 2);
-    s->setOutputProgress(progress);
+    instance->setOutputProgress(progress);
     return 0;
 }
 
 int BuildInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
-    BuildInventoryLayout* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildInventoryLayout is nil");
+    BuildInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 11: BuildInventoryLayout* _CONSTRUCTOR(...) - unsupported return type
   line 12: void setupSections(...) - unsupported arg type
   line 13: void _NV_setupSections(...) - unsupported arg type
   line 19: void setInputItem(...) - unsupported arg type
   line 20: void setOutputItem(...) - unsupported arg type
 */
+
+int BuildInventoryLayoutBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int BuildInventoryLayoutBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.BuildInventoryLayout object");
+    return 1;
+}
 
 void BuildInventoryLayoutBinding::registerBinding(lua_State* L)
 {
@@ -166,7 +388,9 @@ void BuildInventoryLayoutBinding::registerBinding(lua_State* L)
         { "__tostring", BuildInventoryLayoutBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", BuildInventoryLayoutBinding::_CONSTRUCTOR },
         { "setInput", BuildInventoryLayoutBinding::setInput },
         { "setOutput", BuildInventoryLayoutBinding::setOutput },
         { "setInputProgress", BuildInventoryLayoutBinding::setInputProgress },
@@ -175,7 +399,99 @@ void BuildInventoryLayoutBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", BuildInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, BuildInventoryLayoutBinding::getMetatableName(), meta, methods, BuildInventoryLayoutBinding::index, BuildInventoryLayoutBinding::newindex);
+
+    registerClass(
+        L, 
+        BuildInventoryLayoutBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, BuildInventoryLayoutBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, BuildInventoryLayout_get_input1NameText);
+    lua_setfield(L, -2, "input1NameText");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input2NameText);
+    lua_setfield(L, -2, "input2NameText");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input1StatusText);
+    lua_setfield(L, -2, "input1StatusText");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input2StatusText);
+    lua_setfield(L, -2, "input2StatusText");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input1ItemIcon);
+    lua_setfield(L, -2, "input1ItemIcon");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input2ItemIcon);
+    lua_setfield(L, -2, "input2ItemIcon");
+    lua_pushcfunction(L, BuildInventoryLayout_get_outputNameText);
+    lua_setfield(L, -2, "outputNameText");
+    lua_pushcfunction(L, BuildInventoryLayout_get_outputItemIcon);
+    lua_setfield(L, -2, "outputItemIcon");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input1Panel);
+    lua_setfield(L, -2, "input1Panel");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input2Panel);
+    lua_setfield(L, -2, "input2Panel");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input1Progress);
+    lua_setfield(L, -2, "input1Progress");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input2Progress);
+    lua_setfield(L, -2, "input2Progress");
+    lua_pushcfunction(L, BuildInventoryLayout_get_outputProgress);
+    lua_setfield(L, -2, "outputProgress");
+    lua_pushcfunction(L, BuildInventoryLayout_get_inputs);
+    lua_setfield(L, -2, "inputs");
+    lua_pushcfunction(L, BuildInventoryLayout_get_outputs);
+    lua_setfield(L, -2, "outputs");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input1Item);
+    lua_setfield(L, -2, "input1Item");
+    lua_pushcfunction(L, BuildInventoryLayout_get_input2Item);
+    lua_setfield(L, -2, "input2Item");
+    lua_pushcfunction(L, BuildInventoryLayout_get_outputItem);
+    lua_setfield(L, -2, "outputItem");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, BuildInventoryLayout_set_input1NameText);
+    lua_setfield(L, -2, "input1NameText");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input2NameText);
+    lua_setfield(L, -2, "input2NameText");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input1StatusText);
+    lua_setfield(L, -2, "input1StatusText");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input2StatusText);
+    lua_setfield(L, -2, "input2StatusText");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input1ItemIcon);
+    lua_setfield(L, -2, "input1ItemIcon");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input2ItemIcon);
+    lua_setfield(L, -2, "input2ItemIcon");
+    lua_pushcfunction(L, BuildInventoryLayout_set_outputNameText);
+    lua_setfield(L, -2, "outputNameText");
+    lua_pushcfunction(L, BuildInventoryLayout_set_outputItemIcon);
+    lua_setfield(L, -2, "outputItemIcon");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input1Panel);
+    lua_setfield(L, -2, "input1Panel");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input2Panel);
+    lua_setfield(L, -2, "input2Panel");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input1Progress);
+    lua_setfield(L, -2, "input1Progress");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input2Progress);
+    lua_setfield(L, -2, "input2Progress");
+    lua_pushcfunction(L, BuildInventoryLayout_set_outputProgress);
+    lua_setfield(L, -2, "outputProgress");
+    lua_pushcfunction(L, BuildInventoryLayout_set_inputs);
+    lua_setfield(L, -2, "inputs");
+    lua_pushcfunction(L, BuildInventoryLayout_set_outputs);
+    lua_setfield(L, -2, "outputs");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input1Item);
+    lua_setfield(L, -2, "input1Item");
+    lua_pushcfunction(L, BuildInventoryLayout_set_input2Item);
+    lua_setfield(L, -2, "input2Item");
+    lua_pushcfunction(L, BuildInventoryLayout_set_outputItem);
+    lua_setfield(L, -2, "outputItem");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to InventoryLayout
+    // // setMetatableParent(L, BuildInventoryLayoutBinding::getMetatableName(), InventoryLayoutBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

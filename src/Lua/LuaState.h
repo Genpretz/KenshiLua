@@ -1,9 +1,6 @@
 #pragma once
 
 #include <string>
-#include <vector>
-#include <functional>
-#include <map>
 
 extern "C" {
 #include <lua.h>
@@ -31,30 +28,22 @@ public:
     bool initialize();
     void close();
 
-    bool loadScript(const char* script, size_t len, const char* chunkname);
-    bool loadScriptFile(const char* filepath);
-
-    bool executeString(const char* str);
-    bool executeFile(const char* filepath);
-
-    int getLastError() const { return m_lastError; }
-    const char* getLastErrorMessage() const { return m_errorMessage.c_str(); }
-
-    void setModName(const std::string& name) { m_modName = name; }
-    const std::string& getModName() const { return m_modName; }
-
     bool isValid() const { return m_L != NULL; }
+
+    /// Lua panic handler installed via lua_atpanic.
+    static int panicHandler(lua_State* L);
+
+    /// Traceback message handler suitable for use as the msgh argument to lua_pcall.
+    /// Appends file:line + stack traceback info to the error string on top of the stack.
+    static int genericTraceback(lua_State* L);
+
+    /// Safe lua_pcall wrapper that installs genericTraceback as the message handler.
+    /// Returns true on LUA_OK. On error, pops the error value and writes it to
+    /// *outError if non-null, then returns false.
+    static bool pcallWithTraceback(lua_State* L, int nargs, int nresults, std::string* outError = NULL);
 
 private:
     lua_State* m_L;
-    int m_lastError;
-    std::string m_errorMessage;
-    std::string m_modName;
-
-    static int panicHandler(lua_State* L);
-    static int genericTraceback(lua_State* L);
-
-    bool executeLuaBlock(int (*block)(lua_State*));
 };
 
 } // namespace KenshiLua

@@ -1,72 +1,105 @@
 #include "pch.h"
-#include "Bindings/StatBinding.h"
+#include <kenshi/gui/CharacterStatsWindow.h>
+#include "StatBinding.h"
 #include "Lua/BindingHelpers.h"
-
-#include <kenshi/CharacterStatsWindow.h>
-
-#include <cstring>
-#include <cstdio>
 
 namespace KenshiLua
 {
+    typedef CharacterStatsWindow::Stat Stat;
 
-static Stat* getS(lua_State* L, int idx)
+static Stat* getInstance(lua_State* L, int idx)
 {
     return checkObject<Stat>(L, idx, StatBinding::getMetatableName());
 }
 
-int StatBinding::gc(lua_State* L) { return noopGc(L); }
-
-int StatBinding::tostring(lua_State* L)
+// --- Getters for Stat ---
+static int Stat_get_type(lua_State* L)
 {
-    Stat* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int StatBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, StatBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    Stat* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    // TODO StatsEnumerated type; unsupported __index type from header line 25
-    if (strcmp(key, "id") == 0) { lua_pushstring(L, s->id.c_str()); return 1; }
-    if (strcmp(key, "name") == 0) { lua_pushstring(L, s->name.c_str()); return 1; }
-    if (strcmp(key, "description") == 0) { lua_pushstring(L, s->description.c_str()); return 1; }
-    if (strcmp(key, "active") == 0) { lua_pushboolean(L, s->active ? 1 : 0); return 1; }
-
-    lua_pushnil(L);
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+    lua_pushinteger(L, (lua_Integer)instance->type);
     return 1;
 }
 
-int StatBinding::newindex(lua_State* L)
+static int Stat_get_id(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    Stat* s = getS(L, 1);
-    if (!s) return luaL_error(L, "Stat is nil");
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+    lua_pushstring(L, instance->id.c_str());
+    return 1;
+}
 
-    // TODO StatsEnumerated type; unsupported __newindex type from header line 25
-    if (strcmp(key, "id") == 0) { s->id = luaL_checkstring(L, 3); return 0; }
-    if (strcmp(key, "name") == 0) { s->name = luaL_checkstring(L, 3); return 0; }
-    if (strcmp(key, "description") == 0) { s->description = luaL_checkstring(L, 3); return 0; }
-    if (strcmp(key, "active") == 0) { s->active = lua_toboolean(L, 3) != 0; return 0; }
+static int Stat_get_name(lua_State* L)
+{
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+    lua_pushstring(L, instance->name.c_str());
+    return 1;
+}
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+static int Stat_get_description(lua_State* L)
+{
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+    lua_pushstring(L, instance->description.c_str());
+    return 1;
+}
+
+static int Stat_get_active(lua_State* L)
+{
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+    lua_pushboolean(L, instance->active ? 1 : 0);
+    return 1;
+}
+
+// --- Setters for Stat ---
+static int Stat_set_type(lua_State* L)
+{
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+    instance->type = (StatsEnumerated)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int Stat_set_id(lua_State* L)
+{
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+    instance->id = luaL_checkstring(L, 2);
+    return 0;
+}
+
+static int Stat_set_name(lua_State* L)
+{
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+    instance->name = luaL_checkstring(L, 2);
+    return 0;
+}
+
+static int Stat_set_description(lua_State* L)
+{
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+    instance->description = luaL_checkstring(L, 2);
+    return 0;
+}
+
+static int Stat_set_active(lua_State* L)
+{
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+    instance->active = lua_toboolean(L, 2) != 0;
+    return 0;
 }
 
 int StatBinding::_DESTRUCTOR(lua_State* L)
 {
-    Stat* s = getS(L, 1);
-    if (!s) return luaL_error(L, "Stat is nil");
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -78,6 +111,18 @@ Skipped methods needing manual binding:
   line 32: CharacterStatsWindow::Stat& operator=(...) - operator
 */
 
+int StatBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int StatBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.Stat object");
+    return 1;
+}
+
 void StatBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -85,11 +130,49 @@ void StatBinding::registerBinding(lua_State* L)
         { "__tostring", StatBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", StatBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, StatBinding::getMetatableName(), meta, methods, StatBinding::index, StatBinding::newindex);
+
+    registerClass(
+        L, 
+        StatBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, StatBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, Stat_get_type);
+    lua_setfield(L, -2, "type");
+    lua_pushcfunction(L, Stat_get_id);
+    lua_setfield(L, -2, "id");
+    lua_pushcfunction(L, Stat_get_name);
+    lua_setfield(L, -2, "name");
+    lua_pushcfunction(L, Stat_get_description);
+    lua_setfield(L, -2, "description");
+    lua_pushcfunction(L, Stat_get_active);
+    lua_setfield(L, -2, "active");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, Stat_set_type);
+    lua_setfield(L, -2, "type");
+    lua_pushcfunction(L, Stat_set_id);
+    lua_setfield(L, -2, "id");
+    lua_pushcfunction(L, Stat_set_name);
+    lua_setfield(L, -2, "name");
+    lua_pushcfunction(L, Stat_set_description);
+    lua_setfield(L, -2, "description");
+    lua_pushcfunction(L, Stat_set_active);
+    lua_setfield(L, -2, "active");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

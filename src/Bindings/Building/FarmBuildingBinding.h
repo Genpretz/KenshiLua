@@ -15,8 +15,6 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
     static int _DESTRUCTOR(lua_State* L);
     static int createPhysical(lua_State* L);
@@ -42,6 +40,8 @@ public:
     static int _updateInputs(lua_State* L);
     static int isCropsEdible(lua_State* L);
     static int eat(lua_State* L);
+    static int getDirectionMarker(lua_State* L);
+    static int _NV_getDirectionMarker(lua_State* L);
     static int dontNeedWorkRightNow(lua_State* L);
     static int _NV_dontNeedWorkRightNow(lua_State* L);
     static int setupMaterial(lua_State* L);

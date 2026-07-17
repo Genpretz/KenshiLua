@@ -15,17 +15,19 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
     static int _DESTRUCTOR(lua_State* L);
     static int dontNeedWorkRightNow(lua_State* L);
     static int _NV_dontNeedWorkRightNow(lua_State* L);
+    static int getDefaultTask(lua_State* L);
+    static int _NV_getDefaultTask(lua_State* L);
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
     static int notifyConstructionComplete(lua_State* L);
     static int _NV_notifyConstructionComplete(lua_State* L);
     static int getTechLevel(lua_State* L);
     static int _NV_getTechLevel(lua_State* L);
+    static int createInventoryLayout(lua_State* L);
+    static int _NV_createInventoryLayout(lua_State* L);
 };
 }

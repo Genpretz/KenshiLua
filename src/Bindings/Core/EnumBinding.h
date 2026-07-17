@@ -1,7 +1,10 @@
 #pragma once
 
+struct lua_State;
+
 namespace KenshiLua
 {
+<<<<<<< HEAD:src/Bindings/Core/EnumBinding.h
     class BuildingEnumBinding
     {
         public:
@@ -74,4 +77,7 @@ namespace KenshiLua
     };
 
 	void registerEnums(lua_State* L);
+=======
+    void registerEnumBindings(lua_State* L);
+>>>>>>> main:src/Bindings/EnumBinding.h
 }

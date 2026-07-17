@@ -2,16 +2,31 @@
 #include "Callbacks.h"
 #include "EventSystem.h"
 #include "Lua/BindingHelpers.h"
-#include "Lua/Logger.h"
+#include "Logger.h"
 
 // KenshiLib x Lua Bindings
-#include "Character/CharacterBinding.h"
-#include "Character/CharStatsBinding.h"
-#include "System/DamagesBinding.h"
-#include "World/PlatoonBinding.h"
-#include "Equipment/ItemBinding.h"
-#include "Core/PlayerInterfaceBinding.h"
-#include "World/FactionBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/CharStatsBinding.h"
+#include "Bindings/CombatTechniqueDataBinding.h"
+#include "Bindings/DamagesBinding.h"
+#include "Bindings/DialogLineDataBinding.h"
+#include "Bindings/DialogueBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Gui/DialogueWindowBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/InventorySectionBinding.h"
+#include "Bindings/InventoryItemBaseBinding.h"
+#include "Bindings/OwnershipsBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/PlatoonBinding.h"
+#include "Bindings/PlayerInterfaceBinding.h"
+#include "Bindings/RaceDataBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/TaskerBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 
 // KenshiLib headers
 #include <kenshi/Character.h>
@@ -20,13 +35,11 @@
 #include <kenshi/PlayerInterface.h>
 #include <kenshi/Faction.h>
 #include <kenshi/Damages.h>
+#include <kenshi/gui/DialogueWindow.h>
+#include <kenshi/Dialogue.h>
+#include <kenshi/util/lektor.h>
 
-extern "C" {
-#include <lua.h>
-#include <lualib.h>
-#include <luaconf.h>
-#include <lauxlib.h>
-}
+#include <lua.hpp>
 
 // ---------------------------------------------------------------------------
 // Generic Argument Pusher Templates & Overloads
@@ -35,13 +48,27 @@ extern "C" {
 namespace KenshiLua
 {
     // Shorthand metatable helpers
-    static inline const char* CharacterMetatable()       { return CharacterBinding::getMetatableName(); }
-    static inline const char* CharStatsMetatable()       { return CharStatsBinding::getMetatableName(); }
-    static inline const char* DamagesMetatable()         { return DamagesBinding::getMetatableName(); }
-    static inline const char* PlatoonMetatable()         { return PlatoonBinding::getMetatableName(); }
-    static inline const char* ItemMetatable()            { return ItemBinding::getMetatableName(); }
-    static inline const char* PlayerInterfaceMetatable() { return PlayerInterfaceBinding::getMetatableName(); }
-    static inline const char* FactionMetatable()         { return FactionBinding::getMetatableName(); }
+    static inline const char* CharacterMetatable()              { return CharacterBinding::getMetatableName(); }
+    static inline const char* CharStatsMetatable()              { return CharStatsBinding::getMetatableName(); }
+    static inline const char* DamagesMetatable()                { return DamagesBinding::getMetatableName(); }
+    static inline const char* PlatoonMetatable()                { return PlatoonBinding::getMetatableName(); }
+    static inline const char* ItemMetatable()                   { return ItemBinding::getMetatableName(); }
+    static inline const char* PlayerInterfaceMetatable()        { return PlayerInterfaceBinding::getMetatableName(); }
+    static inline const char* FactionMetatable()                { return FactionBinding::getMetatableName(); }
+    static inline const char* DialogueWindowMetatable()         { return DialogueWindowBinding::getMetatableName(); }
+    static inline const char* DialogueMetatable()               { return DialogueBinding::getMetatableName(); }
+    static inline const char* DialogLineDataMetatable()         { return DialogLineDataBinding::getMetatableName(); }
+    static inline const char* RootObjectMetatable()             { return RootObjectBinding::getMetatableName(); }
+    static inline const char* InventoryMetatable()              { return InventoryBinding::getMetatableName(); }
+    static inline const char* OwnershipsMetatable()             { return OwnershipsBinding::getMetatableName(); }
+    static inline const char* InventoryItemBaseMetatable()      { return InventoryItemBaseBinding::getMetatableName(); }
+    static inline const char* CombatTechniqueDataMetatable()    { return CombatTechniqueDataBinding::getMetatableName(); }
+    static inline const char* TaskerMetatable()                 { return TaskerBinding::getMetatableName(); }
+    static inline const char* BuildingMetatable()               { return BuildingBinding::getMetatableName(); }
+    static inline const char* HandMetatable()                   { return handBinding::getMetatableName(); }
+    static inline const char* GameDataMetatable()               { return GameDataBinding::getMetatableName(); }
+    static inline const char* RaceDataMetatable()               { return RaceDataBinding::getMetatableName(); }
+    static inline const char* InventorySectionMetatable()       { return InventorySectionBinding::getMetatableName(); }
 
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, int val)                 { lua_pushinteger(L, val); }
@@ -58,16 +85,27 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, Item* val)               { pushObject<Item>(L, val, ItemMetatable()); }
     static inline void pushArg(lua_State* L, Faction* val)            { pushObject<Faction>(L, val, FactionMetatable()); }
     static inline void pushArg(lua_State* L, PlayerInterface* val)    { pushObject<PlayerInterface>(L, val, PlayerInterfaceMetatable()); }
+    static inline void pushArg(lua_State* L, DialogueWindow* val)     { pushObject<DialogueWindow>(L, val, DialogueWindowMetatable()); }
+    static inline void pushArg(lua_State* L, Dialogue* val)           { pushObject<Dialogue>(L, val, DialogueMetatable()); }
+    static inline void pushArg(lua_State* L, DialogLineData* val)     { pushObject<DialogLineData>(L, val, DialogLineDataMetatable()); }
 
-    static inline void pushArg(lua_State* L, RootObject* val)         { pushObject<RootObject>(L, val, "KenshiLua.RootObject"); }
-    static inline void pushArg(lua_State* L, Inventory* val)          { pushObject<Inventory>(L, val, "KenshiLua.Inventory"); }
-    static inline void pushArg(lua_State* L, CombatTechniqueData* val){ pushObject<CombatTechniqueData>(L, val, "KenshiLua.CombatTechniqueData"); }
-    static inline void pushArg(lua_State* L, Tasker* val)             { pushObject<Tasker>(L, val, "KenshiLua.Tasker"); }
-    static inline void pushArg(lua_State* L, Building* val)           { pushObject<Building>(L, val, "KenshiLua.Building"); }
+    static inline void pushArg(lua_State* L, RootObject* val)         { pushObject<RootObject>(L, val, RootObjectMetatable()); }
+    static inline void pushArg(lua_State* L, Inventory* val)          { pushObject<Inventory>(L, val, InventoryMetatable()); }
+    static inline void pushArg(lua_State* L, CombatTechniqueData* val){ pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
+    static inline void pushArg(lua_State* L, Tasker* val)             { pushObject<Tasker>(L, val, TaskerMetatable()); }
+    static inline void pushArg(lua_State* L, Building* val)           { pushObject<Building>(L, val, BuildingMetatable()); }
+    static inline void pushArg(lua_State* L, const Building* val)     { pushObject<Building>(L, const_cast<Building*>(val), BuildingMetatable()); }
+    static inline void pushArg(lua_State* L, const CharStats* val)    { pushObject<CharStats>(L, const_cast<CharStats*>(val), CharStatsMetatable()); }
+    static inline void pushArg(lua_State* L, Ownerships* val)         { pushObject<Ownerships>(L, val, OwnershipsMetatable()); }
+    static inline void pushArg(lua_State* L, const InventoryItemBase* val) { pushObject<InventoryItemBase>(L, const_cast<InventoryItemBase*>(val), InventoryItemBaseMetatable()); }
 
-    static inline void pushArg(lua_State* L, const hand& val)         { pushObject<hand>(L, const_cast<hand*>(&val), "KenshiLua.hand"); }
+    static inline void pushArg(lua_State* L, const hand& val)         { pushObject<hand>(L, const_cast<hand*>(&val), HandMetatable()); }
     static inline void pushArg(lua_State* L, const Ogre::Vector3& val){ pushVector3(L, val); }
     static inline void pushArg(lua_State* L, YesNoMaybe val)          { lua_pushinteger(L, static_cast<int>(val.key)); }
+    static inline void pushArg(lua_State* L, GameData* val)           { pushObject<GameData>(L, val, GameDataMetatable()); }
+    static inline void pushArg(lua_State* L, RaceData* val)           { pushObject<RaceData>(L, val, RaceDataMetatable()); }
+    static inline void pushArg(lua_State* L, InventorySection* val)   { pushObject<InventorySection>(L, val, InventorySectionMetatable()); }
+    static inline void pushArg(lua_State* L, lektor<GameData*>& val)  { pushObject<lektor<GameData*>>(L, &val, LektorPtrBinding<GameData*>::metaName); }
 }
 
 namespace {
@@ -366,5 +404,149 @@ void CallItemStolenCallbacks(Item* item, RootObject* obj)
 {
     ArgPusher2<Item*, RootObject*> pusher(item, obj);
     KenshiLua::EventSystem::get().callHandlers("onItemStolen", &pusher);
+}
+
+void CallCrimeWitnessedCallbacks(Character* character, Faction* against, const hand& againstWho, int expiryTime, int crimeType)
+{
+    ArgPusher5<Character*, Faction*, const hand&, int, int> pusher(character, against, againstWho, expiryTime, crimeType);
+    KenshiLua::EventSystem::get().callHandlers("onCrimeWitnessed", &pusher);
+}
+
+void CallFactionRelationsAffectedCallbacks(Faction* faction, Faction* other, int eventType, float multiplier)
+{
+    ArgPusher4<Faction*, Faction*, int, float> pusher(faction, other, eventType, multiplier);
+    KenshiLua::EventSystem::get().callHandlers("onFactionRelationsAffected", &pusher);
+}
+
+void CallLimbAmputatedCallbacks(Character* character, int limb, bool createSeveredItem, const Ogre::Vector3& force)
+{
+    ArgPusher4<Character*, int, bool, const Ogre::Vector3&> pusher(character, limb, createSeveredItem, force);
+    KenshiLua::EventSystem::get().callHandlers("onLimbAmputated", &pusher);
+}
+
+void CallDialogueWindowShowCallbacks(DialogueWindow* thisptr, Dialogue* dialogue)
+{
+    ArgPusher2<DialogueWindow*, Dialogue*> pusher(thisptr, dialogue);
+    KenshiLua::EventSystem::get().callHandlers("onDialogueWindowShow", &pusher);
+}
+
+void CallDialogueDoActionsCallbacks(Dialogue* thisptr, DialogLineData* dialogLine)
+{
+    ArgPusher2<Dialogue*, DialogLineData*> pusher(thisptr, dialogLine);
+    KenshiLua::EventSystem::get().callHandlers("onDialogueDoActions", &pusher);
+}
+
+void CallDialogueSayCallbacks(Dialogue* thisptr, DialogLineData* dialogLine)
+{
+    ArgPusher2<Dialogue*, DialogLineData*> pusher(thisptr, dialogLine);
+    KenshiLua::EventSystem::get().callHandlers("onDialogueSay", &pusher);
+}
+
+void CallCharacterInitCallbacks(Character* character)
+{
+    ArgPusher1<Character*> pusher(character);
+    KenshiLua::EventSystem::get().callHandlers("onCharacterInit", &pusher);
+}
+
+void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, const std::string& listName, RaceData* race, bool noShoes)
+{
+    ArgPusher5<lektor<GameData*>&, GameData*, const std::string&, RaceData*, bool> pusher(gear, dataList, listName, race, noShoes);
+    KenshiLua::EventSystem::get().callHandlers("onChooseMyClothing", &pusher);
+}
+
+void CallBaseLayoutInitialiseCallbacks(const std::string& layout)
+{
+    ArgPusher1<const std::string&> pusher(layout);
+    KenshiLua::EventSystem::get().callHandlers("onBaseLayoutInitialise", &pusher);
+}
+
+InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type)
+{
+    ArgPusher2<Inventory*, int> pusher(inventory, type);
+    return static_cast<InventorySection*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onInventoryGetSectionOfType", "KenshiLua.InventorySection", &pusher));
+}
+
+Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race)
+{
+    ArgPusher2<Inventory*, Character*> pusher(inventory, race);
+    return static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onInventoryGetBestFoodItem", "KenshiLua.Item", &pusher));
+}
+
+bool CallCharacterIsItOkForMeToLootCallbacks(Character* me, RootObject* victim, Item* item, bool defaultVal)
+{
+    ArgPusher3<Character*, RootObject*, Item*> pusher(me, victim, item);
+    return KenshiLua::EventSystem::get().callHandlersBool("onCharacterLootCheck", &pusher, defaultVal);
+}
+
+float CallCharacterGetFencingSuccessChanceCallbacks(Character* merchant, Item* item, RootObject* thief, float defaultVal)
+{
+    ArgPusher3<Character*, Item*, RootObject*> pusher(merchant, item, thief);
+    return (float)KenshiLua::EventSystem::get().callHandlersNumber("onGetFencingChance", &pusher, defaultVal);
+}
+
+float CallCharStatsGetStatCallbacks(const CharStats* stats, int what, bool unmodified, float defaultVal)
+{
+    ArgPusher3<const CharStats*, int, bool> pusher(stats, what, unmodified);
+    return (float)KenshiLua::EventSystem::get().callHandlersNumber("onGetStat", &pusher, defaultVal);
+}
+
+GameData* CallFactionChooseARaceCallbacks(Faction* faction, GameData* character, GameData* squadTemplate, GameData* defaultVal)
+{
+    ArgPusher3<Faction*, GameData*, GameData*> pusher(faction, character, squadTemplate);
+    GameData* overrideVal = static_cast<GameData*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onFactionChooseRace", "KenshiLua.GameData", &pusher));
+    return overrideVal ? overrideVal : defaultVal;
+}
+
+GameData* CallFactionGetBuildingReplacementCallbacks(Faction* faction, GameData* building, GameData* defaultVal)
+{
+    ArgPusher2<Faction*, GameData*> pusher(faction, building);
+    GameData* overrideVal = static_cast<GameData*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onFactionGetBuildingReplacement", "KenshiLua.GameData", &pusher));
+    return overrideVal ? overrideVal : defaultVal;
+}
+
+bool CallOwnershipsCanIUseThisBuildingCallbacks(Ownerships* ownerships, Building* b, Character* me, bool defaultVal)
+{
+    ArgPusher3<Ownerships*, Building*, Character*> pusher(ownerships, b, me);
+    return KenshiLua::EventSystem::get().callHandlersBool("onBuildingUseCheck", &pusher, defaultVal);
+}
+
+bool CallPlatoonIBuyStolenGoodsCallbacks(Platoon* platoon, Item* what, bool defaultVal)
+{
+    ArgPusher2<Platoon*, Item*> pusher(platoon, what);
+    return KenshiLua::EventSystem::get().callHandlersBool("onPlatoonIBuyStolenGoods", &pusher, defaultVal);
+}
+
+bool CallPlatoonIBuyIllegalGoodsCallbacks(Platoon* platoon, bool defaultVal)
+{
+    ArgPusher1<Platoon*> pusher(platoon);
+    return KenshiLua::EventSystem::get().callHandlersBool("onPlatoonIBuyIllegalGoods", &pusher, defaultVal);
+}
+
+bool CallBuildingIsPublicCallbacks(const Building* b, bool defaultVal)
+{
+    ArgPusher1<const Building*> pusher(b);
+    return KenshiLua::EventSystem::get().callHandlersBool("onBuildingIsPublic", &pusher, defaultVal);
+}
+
+bool CallBuildingIsForSaleCallbacks(Building* b, bool defaultVal)
+{
+    ArgPusher1<Building*> pusher(b);
+    return KenshiLua::EventSystem::get().callHandlersBool("onBuildingIsForSale", &pusher, defaultVal);
+}
+
+int CallBuildingCalculateSaleValueCallbacks(Building* b, int defaultVal)
+{
+    ArgPusher1<Building*> pusher(b);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("onBuildingCalculateSaleValue", &pusher, defaultVal);
+}
+
+int CallInventoryItemBaseGetValueSingleCallbacks(const InventoryItemBase* item, bool isPlayer, int defaultVal)
+{
+    ArgPusher2<const InventoryItemBase*, bool> pusher(item, isPlayer);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("onItemGetValueSingle", &pusher, defaultVal);
 }
 

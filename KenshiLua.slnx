@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="KenshiLua.vcxproj" Id="7dc59728-cff5-4542-aacf-bc0c76b76b81" />
+</Solution>

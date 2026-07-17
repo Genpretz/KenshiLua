@@ -1,316 +1,479 @@
 #include "pch.h"
-#include "Bindings/Building/TurretBuildingBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/TurretBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "TurretBuildingBinding.h"
+#include "UseableStuffBinding.h"
+#include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
 
-static TurretBuilding* getS(lua_State* L, int idx)
+static TurretBuilding* getInstance(lua_State* L, int idx)
 {
     return checkObject<TurretBuilding>(L, idx, TurretBuildingBinding::getMetatableName());
 }
 
-int TurretBuildingBinding::gc(lua_State* L) { return noopGc(L); }
-
-int TurretBuildingBinding::tostring(lua_State* L)
+// --- Getters for TurretBuilding ---
+static int TurretBuilding_get_gunClass(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    lua_pushlightuserdata(L, (void*)instance->gunClass);
+    return 1;
 }
 
-int TurretBuildingBinding::index(lua_State* L)
+static int TurretBuilding_get_aimDistInDegrees(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    lua_pushnumber(L, instance->aimDistInDegrees);
+    return 1;
+}
 
-    luaL_getmetatable(L, TurretBuildingBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
+static int TurretBuilding_get_currentAimDir(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    pushVector3(L, instance->currentAimDir);
+    return 1;
+}
 
-    TurretBuilding* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
+static int TurretBuilding_get_rootAimDir(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    pushVector3(L, instance->rootAimDir);
+    return 1;
+}
 
-    // TODO GunClassTurret* gunClass; unsupported __index type from header line 61
-    if (strcmp(key, "aimDistInDegrees") == 0) { lua_pushnumber(L, s->aimDistInDegrees); return 1; }
-    // TODO Ogre::Vector3 currentAimDir; unsupported __index type from header line 63
-    // TODO Ogre::Vector3 rootAimDir; unsupported __index type from header line 64
-    if (strcmp(key, "currentAimSpeed") == 0) { lua_pushnumber(L, s->currentAimSpeed); return 1; }
-    // TODO Ogre::Vector3 currentAimTarget; unsupported __index type from header line 66
-    // TODO hand mountedBuilding; unsupported __index type from header line 69
-    if (strcmp(key, "hingePart") == 0) { lua_pushinteger(L, (lua_Integer)s->hingePart); return 1; }
-    if (strcmp(key, "gunPart") == 0) { lua_pushinteger(L, (lua_Integer)s->gunPart); return 1; }
-    // TODO Ogre::Vector3 aimTargetPos; unsupported __index type from header line 72
-    if (strcmp(key, "rotating") == 0) { lua_pushinteger(L, s->rotating); return 1; }
+static int TurretBuilding_get_currentAimSpeed(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    lua_pushnumber(L, instance->currentAimSpeed);
+    return 1;
+}
 
+static int TurretBuilding_get_currentAimTarget(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    pushVector3(L, instance->currentAimTarget);
+    return 1;
+}
+
+static int TurretBuilding_get_mountedBuilding(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    // TODO: Unsupported type for mountedBuilding (hand)
     lua_pushnil(L);
     return 1;
 }
 
-int TurretBuildingBinding::newindex(lua_State* L)
+static int TurretBuilding_get_hingePart(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
-
-    // TODO GunClassTurret* gunClass; unsupported __newindex type from header line 61
-    if (strcmp(key, "aimDistInDegrees") == 0) { s->aimDistInDegrees = (float)luaL_checknumber(L, 3); return 0; }
-    // TODO Ogre::Vector3 currentAimDir; unsupported __newindex type from header line 63
-    // TODO Ogre::Vector3 rootAimDir; unsupported __newindex type from header line 64
-    if (strcmp(key, "currentAimSpeed") == 0) { s->currentAimSpeed = (float)luaL_checknumber(L, 3); return 0; }
-    // TODO Ogre::Vector3 currentAimTarget; unsupported __newindex type from header line 66
-    // TODO hand mountedBuilding; unsupported __newindex type from header line 69
-    // TODO PhysicsCollection::RotatingEnt* hingePart; unsupported __newindex type from header line 70
-    // TODO PhysicsCollection::RotatingEnt* gunPart; unsupported __newindex type from header line 71
-    // TODO Ogre::Vector3 aimTargetPos; unsupported __newindex type from header line 72
-    if (strcmp(key, "rotating") == 0) { s->rotating = (int)luaL_checkinteger(L, 3); return 0; }
-
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    lua_pushlightuserdata(L, (void*)instance->hingePart);
+    return 1;
 }
 
+static int TurretBuilding_get_gunPart(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    lua_pushlightuserdata(L, (void*)instance->gunPart);
+    return 1;
+}
+
+static int TurretBuilding_get_aimTargetPos(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    pushVector3(L, instance->aimTargetPos);
+    return 1;
+}
+
+static int TurretBuilding_get_rotating(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    lua_pushinteger(L, instance->rotating);
+    return 1;
+}
+
+// --- Setters for TurretBuilding ---
+static int TurretBuilding_set_gunClass(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for gunClass");
+}
+
+static int TurretBuilding_set_aimDistInDegrees(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    instance->aimDistInDegrees = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int TurretBuilding_set_currentAimDir(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    readVector3(L, 2, instance->currentAimDir);
+    return 0;
+}
+
+static int TurretBuilding_set_rootAimDir(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    readVector3(L, 2, instance->rootAimDir);
+    return 0;
+}
+
+static int TurretBuilding_set_currentAimSpeed(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    instance->currentAimSpeed = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int TurretBuilding_set_currentAimTarget(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    readVector3(L, 2, instance->currentAimTarget);
+    return 0;
+}
+
+static int TurretBuilding_set_mountedBuilding(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for mountedBuilding");
+}
+
+static int TurretBuilding_set_hingePart(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for hingePart");
+}
+
+static int TurretBuilding_set_gunPart(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for gunPart");
+}
+
+static int TurretBuilding_set_aimTargetPos(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    readVector3(L, 2, instance->aimTargetPos);
+    return 0;
+}
+
+static int TurretBuilding_set_rotating(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    instance->rotating = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+// --- Methods for TurretBuilding ---
 int TurretBuildingBinding::_DESTRUCTOR(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
+}
+
+int TurretBuildingBinding::getDefaultTask(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+
+    TaskType result = instance->getDefaultTask();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int TurretBuildingBinding::_NV_getDefaultTask(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+
+    TaskType result = instance->_NV_getDefaultTask();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
 }
 
 int TurretBuildingBinding::setup(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->setup();
+    instance->setup();
     return 0;
 }
 
 int TurretBuildingBinding::_NV_setup(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->_NV_setup();
+    instance->_NV_setup();
     return 0;
 }
 
 int TurretBuildingBinding::update(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->update();
+    instance->update();
     return 0;
 }
 
 int TurretBuildingBinding::_NV_update(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->_NV_update();
+    instance->_NV_update();
     return 0;
 }
 
 int TurretBuildingBinding::needsUpdate(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    bool result = s->needsUpdate();
+    bool result = instance->needsUpdate();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int TurretBuildingBinding::_NV_needsUpdate(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    bool result = s->_NV_needsUpdate();
+    bool result = instance->_NV_needsUpdate();
     lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int TurretBuildingBinding::getStatUsed(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+
+    StatsEnumerated result = instance->getStatUsed();
+    lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int TurretBuildingBinding::getProductionMultForGUI(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    float result = s->getProductionMultForGUI();
+    float result = instance->getProductionMultForGUI();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int TurretBuildingBinding::_NV_getProductionMultForGUI(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    float result = s->_NV_getProductionMultForGUI();
+    float result = instance->_NV_getProductionMultForGUI();
     lua_pushnumber(L, result);
     return 1;
 }
 
+int TurretBuildingBinding::aimAt(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+
+    Ogre::Vector3 who;
+    readVector3(L, 2, who);
+    instance->aimAt(who);
+    return 0;
+}
+
 int TurretBuildingBinding::setVisible(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    s->setVisible(on);
+    instance->setVisible(on);
     return 0;
 }
 
 int TurretBuildingBinding::_NV_setVisible(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    s->_NV_setVisible(on);
+    instance->_NV_setVisible(on);
     return 0;
 }
 
 int TurretBuildingBinding::amInsideTownWalls(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    int result = s->amInsideTownWalls();
+    int result = instance->amInsideTownWalls();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int TurretBuildingBinding::_NV_amInsideTownWalls(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    int result = s->_NV_amInsideTownWalls();
+    int result = instance->_NV_amInsideTownWalls();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int TurretBuildingBinding::notifyConstructionComplete(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->notifyConstructionComplete();
+    instance->notifyConstructionComplete();
     return 0;
 }
 
 int TurretBuildingBinding::_NV_notifyConstructionComplete(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->_NV_notifyConstructionComplete();
+    instance->_NV_notifyConstructionComplete();
     return 0;
 }
 
 int TurretBuildingBinding::createPhysical(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    bool result = s->createPhysical();
+    bool result = instance->createPhysical();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int TurretBuildingBinding::_NV_createPhysical(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    bool result = s->_NV_createPhysical();
+    bool result = instance->_NV_createPhysical();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int TurretBuildingBinding::destroyPhysical(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->destroyPhysical();
+    instance->destroyPhysical();
     return 0;
 }
 
 int TurretBuildingBinding::_NV_destroyPhysical(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->_NV_destroyPhysical();
+    instance->_NV_destroyPhysical();
     return 0;
 }
 
 int TurretBuildingBinding::onBuildingLoaded(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->onBuildingLoaded();
+    instance->onBuildingLoaded();
     return 0;
 }
 
 int TurretBuildingBinding::_NV_onBuildingLoaded(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->_NV_onBuildingLoaded();
+    instance->_NV_onBuildingLoaded();
     return 0;
 }
 
 int TurretBuildingBinding::calculatePowerMult(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    float result = s->calculatePowerMult();
+    float result = instance->calculatePowerMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
+int TurretBuildingBinding::_teleport(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+
+    Ogre::Vector3 p;
+    readVector3(L, 2, p);
+    instance->_teleport(p);
+    return 0;
+}
+
 int TurretBuildingBinding::clearTownBuildingsManagerPtr(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->clearTownBuildingsManagerPtr();
+    instance->clearTownBuildingsManagerPtr();
     return 0;
 }
 
 int TurretBuildingBinding::_NV_clearTownBuildingsManagerPtr(lua_State* L)
 {
-    TurretBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "TurretBuilding is nil");
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
 
-    s->_NV_clearTownBuildingsManagerPtr();
+    instance->_NV_clearTownBuildingsManagerPtr();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 13: TurretBuilding* _CONSTRUCTOR(...) - unsupported return type
-  line 16: TaskType getDefaultTask(...) - unsupported return type
-  line 17: TaskType _NV_getDefaultTask(...) - unsupported return type
+  line 13: TurretBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 24: void operate(...) - unsupported arg type
   line 25: void _NV_operate(...) - unsupported arg type
-  line 26: StatsEnumerated getStatUsed(...) - unsupported return type
   line 29: void getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
   line 30: void _NV_getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-  line 31: void aimAt(...) - unsupported arg type
   line 34: void setMountedBuilding(...) - unsupported arg type
   line 35: const hand& getMountedBuilding(...) - reference return type
   line 36: const hand& _NV_getMountedBuilding(...) - reference return type
@@ -324,10 +487,21 @@ Skipped methods needing manual binding:
   line 54: GameSaveState _NV_serialise(...) - unsupported return type
   line 55: void loadFromSerialise(...) - unsupported arg type
   line 56: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 58: void _teleport(...) - unsupported arg type
   line 67: void setPartVisible(...) - unsupported arg type
   line 68: void _NV_setPartVisible(...) - unsupported arg type
 */
+
+int TurretBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int TurretBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.TurretBuilding object");
+    return 1;
+}
 
 void TurretBuildingBinding::registerBinding(lua_State* L)
 {
@@ -336,16 +510,21 @@ void TurretBuildingBinding::registerBinding(lua_State* L)
         { "__tostring", TurretBuildingBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", TurretBuildingBinding::_DESTRUCTOR },
+        { "getDefaultTask", TurretBuildingBinding::getDefaultTask },
+        { "_NV_getDefaultTask", TurretBuildingBinding::_NV_getDefaultTask },
         { "setup", TurretBuildingBinding::setup },
         { "_NV_setup", TurretBuildingBinding::_NV_setup },
         { "update", TurretBuildingBinding::update },
         { "_NV_update", TurretBuildingBinding::_NV_update },
         { "needsUpdate", TurretBuildingBinding::needsUpdate },
         { "_NV_needsUpdate", TurretBuildingBinding::_NV_needsUpdate },
+        { "getStatUsed", TurretBuildingBinding::getStatUsed },
         { "getProductionMultForGUI", TurretBuildingBinding::getProductionMultForGUI },
         { "_NV_getProductionMultForGUI", TurretBuildingBinding::_NV_getProductionMultForGUI },
+        { "aimAt", TurretBuildingBinding::aimAt },
         { "setVisible", TurretBuildingBinding::setVisible },
         { "_NV_setVisible", TurretBuildingBinding::_NV_setVisible },
         { "amInsideTownWalls", TurretBuildingBinding::amInsideTownWalls },
@@ -359,11 +538,76 @@ void TurretBuildingBinding::registerBinding(lua_State* L)
         { "onBuildingLoaded", TurretBuildingBinding::onBuildingLoaded },
         { "_NV_onBuildingLoaded", TurretBuildingBinding::_NV_onBuildingLoaded },
         { "calculatePowerMult", TurretBuildingBinding::calculatePowerMult },
+        { "_teleport", TurretBuildingBinding::_teleport },
         { "clearTownBuildingsManagerPtr", TurretBuildingBinding::clearTownBuildingsManagerPtr },
         { "_NV_clearTownBuildingsManagerPtr", TurretBuildingBinding::_NV_clearTownBuildingsManagerPtr },
         { 0, 0 }
     };
-    registerClass(L, TurretBuildingBinding::getMetatableName(), meta, methods, TurretBuildingBinding::index, TurretBuildingBinding::newindex);
+
+    registerClass(
+        L, 
+        TurretBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, TurretBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, TurretBuilding_get_gunClass);
+    lua_setfield(L, -2, "gunClass");
+    lua_pushcfunction(L, TurretBuilding_get_aimDistInDegrees);
+    lua_setfield(L, -2, "aimDistInDegrees");
+    lua_pushcfunction(L, TurretBuilding_get_currentAimDir);
+    lua_setfield(L, -2, "currentAimDir");
+    lua_pushcfunction(L, TurretBuilding_get_rootAimDir);
+    lua_setfield(L, -2, "rootAimDir");
+    lua_pushcfunction(L, TurretBuilding_get_currentAimSpeed);
+    lua_setfield(L, -2, "currentAimSpeed");
+    lua_pushcfunction(L, TurretBuilding_get_currentAimTarget);
+    lua_setfield(L, -2, "currentAimTarget");
+    lua_pushcfunction(L, TurretBuilding_get_mountedBuilding);
+    lua_setfield(L, -2, "mountedBuilding");
+    lua_pushcfunction(L, TurretBuilding_get_hingePart);
+    lua_setfield(L, -2, "hingePart");
+    lua_pushcfunction(L, TurretBuilding_get_gunPart);
+    lua_setfield(L, -2, "gunPart");
+    lua_pushcfunction(L, TurretBuilding_get_aimTargetPos);
+    lua_setfield(L, -2, "aimTargetPos");
+    lua_pushcfunction(L, TurretBuilding_get_rotating);
+    lua_setfield(L, -2, "rotating");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, TurretBuilding_set_gunClass);
+    lua_setfield(L, -2, "gunClass");
+    lua_pushcfunction(L, TurretBuilding_set_aimDistInDegrees);
+    lua_setfield(L, -2, "aimDistInDegrees");
+    lua_pushcfunction(L, TurretBuilding_set_currentAimDir);
+    lua_setfield(L, -2, "currentAimDir");
+    lua_pushcfunction(L, TurretBuilding_set_rootAimDir);
+    lua_setfield(L, -2, "rootAimDir");
+    lua_pushcfunction(L, TurretBuilding_set_currentAimSpeed);
+    lua_setfield(L, -2, "currentAimSpeed");
+    lua_pushcfunction(L, TurretBuilding_set_currentAimTarget);
+    lua_setfield(L, -2, "currentAimTarget");
+    lua_pushcfunction(L, TurretBuilding_set_mountedBuilding);
+    lua_setfield(L, -2, "mountedBuilding");
+    lua_pushcfunction(L, TurretBuilding_set_hingePart);
+    lua_setfield(L, -2, "hingePart");
+    lua_pushcfunction(L, TurretBuilding_set_gunPart);
+    lua_setfield(L, -2, "gunPart");
+    lua_pushcfunction(L, TurretBuilding_set_aimTargetPos);
+    lua_setfield(L, -2, "aimTargetPos");
+    lua_pushcfunction(L, TurretBuilding_set_rotating);
+    lua_setfield(L, -2, "rotating");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to UseableStuff
+    setMetatableParent(L, TurretBuildingBinding::getMetatableName(), UseableStuffBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

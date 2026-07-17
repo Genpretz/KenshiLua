@@ -1,66 +1,41 @@
 #include "pch.h"
-#include "Bindings/BuildingGroupBinding.h"
+#include <kenshi/gui/BuildModeWindow.h>
+#include "BuildingGroupBinding.h"
 #include "Lua/BindingHelpers.h"
-
-#include <kenshi/BuildModeWindow.h>
-
-#include <cstring>
-#include <cstdio>
 
 namespace KenshiLua
 {
+    typedef BuildModeWindow::BuildingGroup BuildingGroup;
 
-static BuildingGroup* getS(lua_State* L, int idx)
+static BuildingGroup* getInstance(lua_State* L, int idx)
 {
     return checkObject<BuildingGroup>(L, idx, BuildingGroupBinding::getMetatableName());
 }
 
-int BuildingGroupBinding::gc(lua_State* L) { return noopGc(L); }
-
-int BuildingGroupBinding::tostring(lua_State* L)
+// --- Getters for BuildingGroup ---
+static int BuildingGroup_get_name(lua_State* L)
 {
-    BuildingGroup* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int BuildingGroupBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, BuildingGroupBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    BuildingGroup* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "name") == 0) { lua_pushstring(L, s->name.c_str()); return 1; }
-    // TODO Ogre::vector<GameData*>::type buildings; unsupported __index type from header line 19
-
-    lua_pushnil(L);
+    BuildingGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingGroup is nil");
+    lua_pushstring(L, instance->name.c_str());
     return 1;
 }
 
-int BuildingGroupBinding::newindex(lua_State* L)
+// --- Setters for BuildingGroup ---
+static int BuildingGroup_set_name(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    BuildingGroup* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildingGroup is nil");
-
-    if (strcmp(key, "name") == 0) { s->name = luaL_checkstring(L, 3); return 0; }
-    // TODO Ogre::vector<GameData*>::type buildings; unsupported __newindex type from header line 19
-
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+    BuildingGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingGroup is nil");
+    instance->name = luaL_checkstring(L, 2);
+    return 0;
 }
 
 int BuildingGroupBinding::_DESTRUCTOR(lua_State* L)
 {
-    BuildingGroup* s = getS(L, 1);
-    if (!s) return luaL_error(L, "BuildingGroup is nil");
+    BuildingGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingGroup is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -72,6 +47,23 @@ Skipped methods needing manual binding:
   line 27: BuildModeWindow::BuildingGroup& operator=(...) - operator
 */
 
+/*
+Skipped properties needing manual binding:
+  line 19: buildings (Ogre::vector<GameData*>::type) - unsupported type
+*/
+
+int BuildingGroupBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int BuildingGroupBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.BuildingGroup object");
+    return 1;
+}
+
 void BuildingGroupBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -79,11 +71,33 @@ void BuildingGroupBinding::registerBinding(lua_State* L)
         { "__tostring", BuildingGroupBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", BuildingGroupBinding::_DESTRUCTOR },
         { 0, 0 }
     };
-    registerClass(L, BuildingGroupBinding::getMetatableName(), meta, methods, BuildingGroupBinding::index, BuildingGroupBinding::newindex);
+
+    registerClass(
+        L, 
+        BuildingGroupBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, BuildingGroupBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, BuildingGroup_get_name);
+    lua_setfield(L, -2, "name");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, BuildingGroup_set_name);
+    lua_setfield(L, -2, "name");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

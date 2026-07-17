@@ -15,10 +15,12 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
     static int _DESTRUCTOR(lua_State* L);
+    static int getProductionBuilding(lua_State* L);
+    static int _NV_getProductionBuilding(lua_State* L);
+    static int createInventoryLayout(lua_State* L);
+    static int _NV_createInventoryLayout(lua_State* L);
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
     static int needsUpdate(lua_State* L);
@@ -31,6 +33,10 @@ public:
     static int _NV_setupMiningResourceLevel(lua_State* L);
     static int getMiningResourceLevel(lua_State* L);
     static int _NV_getMiningResourceLevel(lua_State* L);
+    static int getMouseCursor(lua_State* L);
+    static int _NV_getMouseCursor(lua_State* L);
+    static int getDefaultTask(lua_State* L);
+    static int _NV_getDefaultTask(lua_State* L);
     static int isAnyInputsEmpty(lua_State* L);
     static int _NV_isAnyInputsEmpty(lua_State* L);
     static int isAnyInputsInvalidType(lua_State* L);

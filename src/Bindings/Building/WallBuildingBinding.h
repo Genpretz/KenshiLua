@@ -15,10 +15,10 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
     static int _DESTRUCTOR(lua_State* L);
+    static int getUseableStuff(lua_State* L);
+    static int _NV_getUseableStuff(lua_State* L);
     static int getReachRange(lua_State* L);
     static int _NV_getReachRange(lua_State* L);
     static int isForSale(lua_State* L);
@@ -27,7 +27,10 @@ public:
     static int _NV_createPhysical(lua_State* L);
     static int isDamaged(lua_State* L);
     static int _NV_isDamaged(lua_State* L);
+    static int getPositionForWaypoint_outside(lua_State* L);
     static int getOutsideGateCode(lua_State* L);
+    static int isAWall(lua_State* L);
+    static int _NV_isAWall(lua_State* L);
     static int canUpgrade(lua_State* L);
     static int _NV_canUpgrade(lua_State* L);
     static int addConstructionProgress(lua_State* L);

@@ -1,444 +1,535 @@
 #include "pch.h"
-#include "Bindings/Building/ProductionBuildingBinding.h"
-#include "Lua/BindingHelpers.h"
-
 #include <kenshi/Building/ProductionBuilding.h>
-
-#include <cstring>
-#include <cstdio>
+#include "ProductionBuildingBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/InventorySectionBinding.h"
+#include "Bindings/Building/StorageBuildingBinding.h"
 
 namespace KenshiLua
 {
 
-static ProductionBuilding* getS(lua_State* L, int idx)
+static ProductionBuilding* getInstance(lua_State* L, int idx)
 {
     return checkObject<ProductionBuilding>(L, idx, ProductionBuildingBinding::getMetatableName());
 }
 
-int ProductionBuildingBinding::gc(lua_State* L) { return noopGc(L); }
-
-int ProductionBuildingBinding::tostring(lua_State* L)
+// --- Getters for ProductionBuilding ---
+static int ProductionBuilding_get_productionState(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    return genericTostringPtr(L, "%s", s);
-}
-
-int ProductionBuildingBinding::index(lua_State* L)
-{
-    const char* key = luaL_checkstring(L, 2);
-
-    luaL_getmetatable(L, ProductionBuildingBinding::getMetatableName());
-    lua_getfield(L, -1, key);
-    if (!lua_isnil(L, -1))
-        return 1;
-    lua_pop(L, 2);
-
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) { lua_pushnil(L); return 1; }
-
-    if (strcmp(key, "productionState") == 0) { lua_pushinteger(L, (lua_Integer)s->productionState); return 1; }
-    if (strcmp(key, "_resourceMiningLevel") == 0) { lua_pushnumber(L, s->_resourceMiningLevel); return 1; }
-    if (strcmp(key, "outSection") == 0) { return pushObject<InventorySection>(L, s->outSection, InventorySectionBinding::getMetatableName()); }
-    // TODO lektor<StorageBuilding::ConsumptionItem> consumptionItems; unsupported __index type from header line 151
-
-    lua_pushnil(L);
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    lua_pushinteger(L, (lua_Integer)instance->productionState);
     return 1;
 }
 
-int ProductionBuildingBinding::newindex(lua_State* L)
+static int ProductionBuilding_get__resourceMiningLevel(lua_State* L)
 {
-    const char* key = luaL_checkstring(L, 2);
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    lua_pushnumber(L, instance->_resourceMiningLevel);
+    return 1;
+}
 
-    if (strcmp(key, "productionState") == 0) { s->productionState = (ProductionBuilding::ProductionState)luaL_checkinteger(L, 3); return 0; }
-    if (strcmp(key, "_resourceMiningLevel") == 0) { s->_resourceMiningLevel = (float)luaL_checknumber(L, 3); return 0; }
-    // TODO InventorySection* outSection; unsupported __newindex type from header line 150
-    // TODO lektor<StorageBuilding::ConsumptionItem> consumptionItems; unsupported __newindex type from header line 151
+static int ProductionBuilding_get_outSection(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    return pushObject<InventorySection>(L, instance->outSection, InventorySectionBinding::getMetatableName());
+}
 
-    return luaL_error(L, "unknown or read-only field '%s'", key);
+static int ProductionBuilding_get_consumptionItems(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    // TODO: Unsupported type for consumptionItems (lektor<StorageBuilding::ConsumptionItem>)
+    return luaL_error(L, "Unsupported property 'consumptionItems' (type: lektor<StorageBuilding::ConsumptionItem>)");
+}
+
+// --- Setters for ProductionBuilding ---
+static int ProductionBuilding_set_productionState(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    instance->productionState = (ProductionBuilding::ProductionState)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int ProductionBuilding_set__resourceMiningLevel(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    instance->_resourceMiningLevel = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int ProductionBuilding_set_outSection(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for outSection");
+}
+
+static int ProductionBuilding_set_consumptionItems(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for consumptionItems");
 }
 
 int ProductionBuildingBinding::_DESTRUCTOR(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    s->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
+}
+
+int ProductionBuildingBinding::getProductionBuilding(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+
+    ProductionBuilding* result = instance->getProductionBuilding();
+    return pushObject<ProductionBuilding>(L, result, ProductionBuildingBinding::getMetatableName());
+}
+
+int ProductionBuildingBinding::_NV_getProductionBuilding(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+
+    ProductionBuilding* result = instance->_NV_getProductionBuilding();
+    return pushObject<ProductionBuilding>(L, result, ProductionBuildingBinding::getMetatableName());
+}
+
+int ProductionBuildingBinding::createInventoryLayout(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+
+    InventoryLayout* result = instance->createInventoryLayout();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
+}
+
+int ProductionBuildingBinding::_NV_createInventoryLayout(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+
+    InventoryLayout* result = instance->_NV_createInventoryLayout();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
 }
 
 int ProductionBuildingBinding::update(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    s->update();
+    instance->update();
     return 0;
 }
 
 int ProductionBuildingBinding::_NV_update(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    s->_NV_update();
+    instance->_NV_update();
     return 0;
 }
 
 int ProductionBuildingBinding::needsUpdate(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->needsUpdate();
+    bool result = instance->needsUpdate();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_needsUpdate(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->_NV_needsUpdate();
+    bool result = instance->_NV_needsUpdate();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::getProductionMult(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    float result = s->getProductionMult();
+    float result = instance->getProductionMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_getProductionMult(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    float result = s->_NV_getProductionMult();
+    float result = instance->_NV_getProductionMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ProductionBuildingBinding::getProductionMultForGUI(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    float result = s->getProductionMultForGUI();
+    float result = instance->getProductionMultForGUI();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_getProductionMultForGUI(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    float result = s->_NV_getProductionMultForGUI();
+    float result = instance->_NV_getProductionMultForGUI();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ProductionBuildingBinding::setupMiningResourceLevel(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    s->setupMiningResourceLevel();
+    instance->setupMiningResourceLevel();
     return 0;
 }
 
 int ProductionBuildingBinding::_NV_setupMiningResourceLevel(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    s->_NV_setupMiningResourceLevel();
+    instance->_NV_setupMiningResourceLevel();
     return 0;
 }
 
 int ProductionBuildingBinding::getMiningResourceLevel(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    float result = s->getMiningResourceLevel();
+    float result = instance->getMiningResourceLevel();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_getMiningResourceLevel(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    float result = s->_NV_getMiningResourceLevel();
+    float result = instance->_NV_getMiningResourceLevel();
     lua_pushnumber(L, result);
+    return 1;
+}
+
+int ProductionBuildingBinding::getMouseCursor(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+
+    CursorType result = instance->getMouseCursor();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int ProductionBuildingBinding::_NV_getMouseCursor(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+
+    CursorType result = instance->_NV_getMouseCursor();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int ProductionBuildingBinding::getDefaultTask(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+
+    TaskType result = instance->getDefaultTask();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int ProductionBuildingBinding::_NV_getDefaultTask(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+
+    TaskType result = instance->_NV_getDefaultTask();
+    lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int ProductionBuildingBinding::isAnyInputsEmpty(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->isAnyInputsEmpty();
+    bool result = instance->isAnyInputsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_isAnyInputsEmpty(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->_NV_isAnyInputsEmpty();
+    bool result = instance->_NV_isAnyInputsEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::isAnyInputsInvalidType(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->isAnyInputsInvalidType();
+    bool result = instance->isAnyInputsInvalidType();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_isAnyInputsInvalidType(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->_NV_isAnyInputsInvalidType();
+    bool result = instance->_NV_isAnyInputsInvalidType();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::isAnyInputsFull(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->isAnyInputsFull();
+    bool result = instance->isAnyInputsFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_isAnyInputsFull(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->_NV_isAnyInputsFull();
+    bool result = instance->_NV_isAnyInputsFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::isProductionFull(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->isProductionFull();
+    bool result = instance->isProductionFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_isProductionFull(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->_NV_isProductionFull();
+    bool result = instance->_NV_isProductionFull();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::isProductionEmpty(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->isProductionEmpty();
+    bool result = instance->isProductionEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_isProductionEmpty(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    bool result = s->_NV_isProductionEmpty();
+    bool result = instance->_NV_isProductionEmpty();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ProductionBuildingBinding::getOutputBasedRotationSpeedMult(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    float result = s->getOutputBasedRotationSpeedMult();
+    float result = instance->getOutputBasedRotationSpeedMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_getOutputBasedRotationSpeedMult(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    float result = s->_NV_getOutputBasedRotationSpeedMult();
+    float result = instance->_NV_getOutputBasedRotationSpeedMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ProductionBuildingBinding::getOutput(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    float result = s->getOutput();
+    float result = instance->getOutput();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ProductionBuildingBinding::getNumConsumtionItems(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    int result = s->getNumConsumtionItems();
+    int result = instance->getNumConsumtionItems();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_getNumConsumtionItems(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    int result = s->_NV_getNumConsumtionItems();
+    int result = instance->_NV_getNumConsumtionItems();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int ProductionBuildingBinding::getConsumtionItems(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
     int id = (int)luaL_checkinteger(L, 2);
-    StorageBuilding::ConsumptionItem result = s->getConsumtionItems(id);
-    lua_pushinteger(L, (lua_Integer)result);
+    StorageBuilding::ConsumptionItem* result = instance->getConsumtionItems(id);
+    lua_pushlightuserdata(L, (void*)result);
     return 1;
 }
 
 int ProductionBuildingBinding::_NV_getConsumtionItems(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
     int id = (int)luaL_checkinteger(L, 2);
-    StorageBuilding::ConsumptionItem result = s->_NV_getConsumtionItems(id);
-    lua_pushinteger(L, (lua_Integer)result);
+    StorageBuilding::ConsumptionItem* result = instance->_NV_getConsumtionItems(id);
+    lua_pushlightuserdata(L, (void*)result);
     return 1;
 }
 
 int ProductionBuildingBinding::setupFromData(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    s->setupFromData();
+    instance->setupFromData();
     return 0;
 }
 
 int ProductionBuildingBinding::_NV_setupFromData(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    s->_NV_setupFromData();
+    instance->_NV_setupFromData();
     return 0;
 }
 
 int ProductionBuildingBinding::updateInventoryWindow(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    s->updateInventoryWindow();
+    instance->updateInventoryWindow();
     return 0;
 }
 
 int ProductionBuildingBinding::_NV_updateInventoryWindow(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
-    s->_NV_updateInventoryWindow();
+    instance->_NV_updateInventoryWindow();
     return 0;
 }
 
 int ProductionBuildingBinding::updateInputs(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
     float rate = (float)luaL_checknumber(L, 2);
-    s->updateInputs(rate);
+    instance->updateInputs(rate);
     return 0;
 }
 
 int ProductionBuildingBinding::_NV_updateInputs(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
     float rate = (float)luaL_checknumber(L, 2);
-    s->_NV_updateInputs(rate);
+    instance->_NV_updateInputs(rate);
     return 0;
 }
 
 int ProductionBuildingBinding::updateOutput(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
     float rate = (float)luaL_checknumber(L, 2);
-    s->updateOutput(rate);
+    instance->updateOutput(rate);
     return 0;
 }
 
 int ProductionBuildingBinding::_NV_updateOutput(lua_State* L)
 {
-    ProductionBuilding* s = getS(L, 1);
-    if (!s) return luaL_error(L, "ProductionBuilding is nil");
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
     float rate = (float)luaL_checknumber(L, 2);
-    s->_NV_updateOutput(rate);
+    instance->_NV_updateOutput(rate);
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 72: ProductionBuilding* _CONSTRUCTOR(...) - unsupported return type
-  line 75: ProductionBuilding* getProductionBuilding(...) - unsupported return type
-  line 76: ProductionBuilding* _NV_getProductionBuilding(...) - unsupported return type
-  line 77: InventoryLayout* createInventoryLayout(...) - unsupported return type
-  line 78: InventoryLayout* _NV_createInventoryLayout(...) - unsupported return type
+  line 72: ProductionBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 83: void operate(...) - unsupported arg type
   line 84: void _NV_operate(...) - unsupported arg type
   line 85: void getGUIData(...) - unsupported arg type
@@ -449,10 +540,6 @@ Skipped methods needing manual binding:
   line 90: GameSaveState _NV_serialise(...) - unsupported return type
   line 91: void loadFromSerialise(...) - unsupported arg type
   line 92: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 101: CursorType getMouseCursor(...) - unsupported return type
-  line 102: CursorType _NV_getMouseCursor(...) - unsupported return type
-  line 103: TaskType getDefaultTask(...) - unsupported return type
-  line 104: TaskType _NV_getDefaultTask(...) - unsupported return type
   line 105: float getInputValue(...) - unsupported arg type
   line 106: float _NV_getInputValue(...) - unsupported arg type
   line 107: void getResourcesNeededBecauseEmpty(...) - unsupported arg type
@@ -473,6 +560,18 @@ Skipped methods needing manual binding:
   line 148: void _NV_getGUIState(...) - unsupported arg type
 */
 
+int ProductionBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int ProductionBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.ProductionBuilding object");
+    return 1;
+}
+
 void ProductionBuildingBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -480,8 +579,13 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
         { "__tostring", ProductionBuildingBinding::tostring },
         { 0, 0 }
     };
+
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", ProductionBuildingBinding::_DESTRUCTOR },
+        { "getProductionBuilding", ProductionBuildingBinding::getProductionBuilding },
+        { "_NV_getProductionBuilding", ProductionBuildingBinding::_NV_getProductionBuilding },
+        { "createInventoryLayout", ProductionBuildingBinding::createInventoryLayout },
+        { "_NV_createInventoryLayout", ProductionBuildingBinding::_NV_createInventoryLayout },
         { "update", ProductionBuildingBinding::update },
         { "_NV_update", ProductionBuildingBinding::_NV_update },
         { "needsUpdate", ProductionBuildingBinding::needsUpdate },
@@ -494,6 +598,10 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
         { "_NV_setupMiningResourceLevel", ProductionBuildingBinding::_NV_setupMiningResourceLevel },
         { "getMiningResourceLevel", ProductionBuildingBinding::getMiningResourceLevel },
         { "_NV_getMiningResourceLevel", ProductionBuildingBinding::_NV_getMiningResourceLevel },
+        { "getMouseCursor", ProductionBuildingBinding::getMouseCursor },
+        { "_NV_getMouseCursor", ProductionBuildingBinding::_NV_getMouseCursor },
+        { "getDefaultTask", ProductionBuildingBinding::getDefaultTask },
+        { "_NV_getDefaultTask", ProductionBuildingBinding::_NV_getDefaultTask },
         { "isAnyInputsEmpty", ProductionBuildingBinding::isAnyInputsEmpty },
         { "_NV_isAnyInputsEmpty", ProductionBuildingBinding::_NV_isAnyInputsEmpty },
         { "isAnyInputsInvalidType", ProductionBuildingBinding::isAnyInputsInvalidType },
@@ -521,7 +629,43 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateOutput", ProductionBuildingBinding::_NV_updateOutput },
         { 0, 0 }
     };
-    registerClass(L, ProductionBuildingBinding::getMetatableName(), meta, methods, ProductionBuildingBinding::index, ProductionBuildingBinding::newindex);
+
+    registerClass(
+        L, 
+        ProductionBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, ProductionBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, ProductionBuilding_get_productionState);
+    lua_setfield(L, -2, "productionState");
+    lua_pushcfunction(L, ProductionBuilding_get__resourceMiningLevel);
+    lua_setfield(L, -2, "_resourceMiningLevel");
+    lua_pushcfunction(L, ProductionBuilding_get_outSection);
+    lua_setfield(L, -2, "outSection");
+    lua_pushcfunction(L, ProductionBuilding_get_consumptionItems);
+    lua_setfield(L, -2, "consumptionItems");
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, ProductionBuilding_set_productionState);
+    lua_setfield(L, -2, "productionState");
+    lua_pushcfunction(L, ProductionBuilding_set__resourceMiningLevel);
+    lua_setfield(L, -2, "_resourceMiningLevel");
+    lua_pushcfunction(L, ProductionBuilding_set_outSection);
+    lua_setfield(L, -2, "outSection");
+    lua_pushcfunction(L, ProductionBuilding_set_consumptionItems);
+    lua_setfield(L, -2, "consumptionItems");
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to StorageBuilding
+    setMetatableParent(L, ProductionBuildingBinding::getMetatableName(), StorageBuildingBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua

@@ -15,10 +15,10 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
-    static int index(lua_State* L);
-    static int newindex(lua_State* L);
 
     static int _DESTRUCTOR(lua_State* L);
+    static int createInventoryLayout(lua_State* L);
+    static int _NV_createInventoryLayout(lua_State* L);
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
     static int givePower(lua_State* L);
@@ -35,6 +35,7 @@ public:
     static int _NV_isAnyInputsInvalidType(lua_State* L);
     static int notifyCraftFailiure(lua_State* L);
     static int _removeCraft(lua_State* L);
+    static int getCraft(lua_State* L);
     static int destroyProductionItem(lua_State* L);
     static int getCriticalSuccessWeapon(lua_State* L);
     static int setupFromData(lua_State* L);
