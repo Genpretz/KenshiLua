@@ -39,19 +39,22 @@ For example, if KenshiLib contains the class:
 class GameWorld
 {
     void userPause(bool p);
+    bool paused;
 }
 ```
 
 Then you can use it from Lua like this:
 ```lua
--- Get pointer to global GameWorld object
+-- Get the global GameWorld instance.
 local world = getGameWorld()
 
---Call a method on an object
+-- Call a method on the object.
 world:userPause(true)
 
--- or set a field
-world.userPause = false
+-- Read or modify one of the object's properties.
+if world.paused then
+  world.paused = false
+end
 ```
 
 ### Ways to load Lua scripts:
