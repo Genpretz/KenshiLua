@@ -1,0 +1,14 @@
+enum itemType { LUA_SCRIPT = 322 }
+
+[LUA_SCRIPT]
+file: 	"Lua script|*.lua" "run the following .lua script when the dialogue line occurs."
+
+[DIALOGUE,DIALOGUE_LINE,WORD_SWAPS]
+run lua script: LUA_SCRIPT "Attach a Lua script to this dialogue."
+//misc:
+//lua script: 	"Lua script|*.lua" "A script to run when the line occurs."
+
+//[WORLD_EVENT_STATE]
+//lua:
+//lua script: 	"Lua script|*.lua" "A script to run when the worldstate is true."
+//
