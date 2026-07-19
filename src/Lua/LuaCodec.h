@@ -97,7 +97,7 @@ namespace KenshiLua
 
     // 4. Integral / Enum type specialization (excluding bool)
     template <typename T>
-    struct LuaCodec<T, typename std::enable_if<std::is_integral<T>::value && !std::is_same<T, bool>::value>::type>
+    struct LuaCodec<T, typename std::enable_if<(std::is_integral<T>::value || std::is_enum<T>::value) && !std::is_same<T, bool>::value>::type>
     {
         static void push(lua_State* L, T val, const char* meta)
         {

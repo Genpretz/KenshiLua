@@ -604,6 +604,13 @@
     <ClInclude Include="src\Bindings\ArmourBinding.h" />
     <ClInclude Include="src\Bindings\AttachedArrowManagerBinding.h" />
     <ClInclude Include="src\Bindings\BuildingSwapsBinding.h" />
+    <ClInclude Include="src\Bindings\Building\BuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\BuildingPlacementGroundTypeBinding.h" />
+    <ClInclude Include="src\Bindings\Building\BuildMaterialBinding.h" />
+    <ClInclude Include="src\Bindings\Building\ConstructionStateBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FootprintBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FootprintNodeBinding.h" />
+    <ClInclude Include="src\Bindings\Building\PreviewBuildingBinding.h" />
     <ClInclude Include="src\Bindings\CampaignTriggerDataBinding.h" />
     <ClInclude Include="src\Bindings\CharacterHumanBinding.h" />
     <ClInclude Include="src\Bindings\CharacterInventoryLayoutBinding.h" />
@@ -688,6 +695,12 @@
     <ClInclude Include="src\Bindings\TaskDataBinding.h" />
     <ClInclude Include="src\Bindings\TaskerBinding.h" />
     <ClInclude Include="src\Bindings\TaskStateDataBinding.h" />
+    <ClInclude Include="src\Bindings\Templates\BoostUnorderedBinding.h" />
+    <ClInclude Include="src\Bindings\FitnessSelectorBinding.h" />
+    <ClInclude Include="src\Bindings\Templates\LektorBinding.h" />
+    <ClInclude Include="src\Bindings\Templates\OgreUnorderedBinding.h" />
+    <ClInclude Include="src\Bindings\Templates\OgreVectorBinding.h" />
+    <ClInclude Include="src\Bindings\Templates\StdMapBinding.h" />
     <ClInclude Include="src\Bindings\TownBaseBinding.h" />
     <ClInclude Include="src\Bindings\TownBinding.h" />
     <ClInclude Include="src\Bindings\TownBuildingsManagerBinding.h" />
@@ -711,6 +724,7 @@
     <ClInclude Include="src\Gui\KenshiLua_ScriptManager.h" />
     <ClInclude Include="src\Gui\KenshiLua_Settings.h" />
     <ClInclude Include="src\Hooks.h" />
+    <ClInclude Include="src\Lua\LuaCodec.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Lua\LuaState.h" />
     <ClInclude Include="src\Lua\LuaBindings.h" />
@@ -770,13 +784,6 @@
     <ClInclude Include="src\ScriptLoader.h" />
     <ClInclude Include="src\DialogueScriptBridge.h" />
     <ClInclude Include="src\Bindings\CharacterAnimalBinding.h" />
-    <ClInclude Include="src\Bindings\Building\BuildMaterialBinding.h" />
-    <ClInclude Include="src\Bindings\Building\BuildingBinding.h" />
-    <ClInclude Include="src\Bindings\Building\BuildingPlacementGroundTypeBinding.h" />
-    <ClInclude Include="src\Bindings\Building\ConstructionStateBinding.h" />
-    <ClInclude Include="src\Bindings\Building\FootprintBinding.h" />
-    <ClInclude Include="src\Bindings\Building\FootprintNodeBinding.h" />
-    <ClInclude Include="src\Bindings\Building\PreviewBuildingBinding.h" />
     <ClInclude Include="src\Bindings\Building\DoorStuffBinding.h" />
     <ClInclude Include="src\Bindings\Building\FarmBatchBinding.h" />
     <ClInclude Include="src\Bindings\Building\FarmBuildingBinding.h" />
@@ -844,6 +851,21 @@
     <ClInclude Include="src\Bindings\Gui\TutorialSubItemBinding.h" />
     <ClInclude Include="src\Bindings\Gui\TutorialpediaGUIBinding.h" />
     <ClInclude Include="src\Gui\Gui.h" />
+    <ClInclude Include="src\Bindings\AttackSlotManagerBinding.h" />
+    <ClInclude Include="src\Bindings\CombatClassBinding.h" />
+    <ClInclude Include="src\Bindings\FactionUniqueSquadManagerBinding.h" />
+    <ClInclude Include="src\Bindings\GlobalConstantsBinding.h" />
+    <ClInclude Include="src\Bindings\InstanceIDBinding.h" />
+    <ClInclude Include="src\Bindings\MeshLoadDataBinding.h" />
+    <ClInclude Include="src\Bindings\ProsperityManagerBinding.h" />
+    <ClInclude Include="src\Bindings\ResourceLoadRequestMeshBinding.h" />
+    <ClInclude Include="src\Bindings\ResourceLoadRequestTextureBinding.h" />
+    <ClInclude Include="src\Bindings\ResourceLoaderBinding.h" />
+    <ClInclude Include="src\Bindings\SaveFileSystemBinding.h" />
+    <ClInclude Include="src\Bindings\SaveManagerBinding.h" />
+    <ClInclude Include="src\Bindings\TextureArrayLoadDataBinding.h" />
+    <ClInclude Include="src\Bindings\TextureLoadDataBinding.h" />
+    <ClInclude Include="src\Bindings\UniqueSpawnDataBinding.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Bindings\AbstractMovementBaseBinding.cpp" />
@@ -856,6 +878,12 @@
     <ClCompile Include="src\Bindings\ArmourBinding.cpp" />
     <ClCompile Include="src\Bindings\AttachedArrowManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\BuildingSwapsBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\BuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\BuildingPlacementGroundTypeBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\BuildMaterialBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\ConstructionStateBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FootprintBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FootprintNodeBinding.cpp" />
     <ClCompile Include="src\Bindings\CampaignTriggerDataBinding.cpp" />
     <ClCompile Include="src\Bindings\CharacterHumanBinding.cpp" />
     <ClCompile Include="src\Bindings\CharacterInventoryLayoutBinding.cpp" />
@@ -1015,18 +1043,12 @@
     <ClCompile Include="src\Bindings\FactionBinding.cpp" />
     <ClCompile Include="src\Bindings\TownBinding.cpp" />
     <ClCompile Include="src\Bindings\ItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\RobotLimbItemBinding.cpp" />
     <ClCompile Include="src\Bindings\GameWorldBinding.cpp" />
     <ClCompile Include="src\Bindings\ModInfoBinding.cpp" />
     <ClCompile Include="src\ScriptLoader.cpp" />
     <ClCompile Include="src\DialogueScriptBridge.cpp" />
     <ClCompile Include="src\Bindings\CharacterAnimalBinding.cpp" />
-    <ClCompile Include="src\Bindings\Building\BuildMaterialBinding.cpp" />
-    <ClCompile Include="src\Bindings\Building\BuildingBinding.cpp" />
-    <ClCompile Include="src\Bindings\Building\BuildingPlacementGroundTypeBinding.cpp" />
-    <ClCompile Include="src\Bindings\Building\ConstructionStateBinding.cpp" />
-    <ClCompile Include="src\Bindings\Building\FootprintBinding.cpp" />
-    <ClCompile Include="src\Bindings\Building\FootprintNodeBinding.cpp" />
-    <ClCompile Include="src\Bindings\Building\PreviewBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\DoorStuffBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FarmBatchBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FarmBuildingBinding.cpp" />
@@ -1039,6 +1061,7 @@
     <ClCompile Include="src\Bindings\Building\TortureBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\TurretBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\WallBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\PreviewBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\StringPairBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\TimeOfDayBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\YesNoMaybeBinding.cpp" />
@@ -1092,6 +1115,21 @@
     <ClCompile Include="src\Bindings\Gui\TutorialSubItemBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\TutorialpediaGUIBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\iVector2Binding.cpp" />
+    <ClCompile Include="src\Bindings\AttackSlotManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\CombatClassBinding.cpp" />
+    <ClCompile Include="src\Bindings\FactionUniqueSquadManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\GlobalConstantsBinding.cpp" />
+    <ClCompile Include="src\Bindings\InstanceIDBinding.cpp" />
+    <ClCompile Include="src\Bindings\MeshLoadDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\ProsperityManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\ResourceLoadRequestMeshBinding.cpp" />
+    <ClCompile Include="src\Bindings\ResourceLoadRequestTextureBinding.cpp" />
+    <ClCompile Include="src\Bindings\ResourceLoaderBinding.cpp" />
+    <ClCompile Include="src\Bindings\SaveFileSystemBinding.cpp" />
+    <ClCompile Include="src\Bindings\SaveManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\TextureArrayLoadDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\TextureLoadDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\UniqueSpawnDataBinding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\kenshilib\Include\ogre\Animation\OgreBone.inl" />

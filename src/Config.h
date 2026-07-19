@@ -10,8 +10,8 @@ namespace KenshiLua
     public:
         static Config& get();
 
-        // Initializes the config by reading config.txt.
-        // It takes the DLL module handle to find config.txt relative to the DLL path.
+        // Initializes the config by reading config.ini.
+        // It takes the DLL module handle to find config.ini relative to the DLL path.
         void load(void* hModule);
 
         bool isBenchmarkEnabled() const;

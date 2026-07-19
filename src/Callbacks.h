@@ -271,23 +271,87 @@ void CallDialogueDoActionsCallbacks(Dialogue* thisptr, DialogLineData* dialogLin
 // Lua signature:  function(dialogue, dialogLine)
 void CallDialogueSayCallbacks(Dialogue* thisptr, DialogLineData* dialogLine);
 
+// Fired by Character::_NV_init hook
+// Lua event name:
+// Lua signature: function(character)
 void CallCharacterInitCallbacks(Character* character);
+
+// Fired by RootObjectFactory::chooseMyClothing
+// Lua event name:
+// Lua signature:
 void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, const std::string& listName, RaceData* race, bool noShoes);
+
+// Fired by wraps::BaseLayout::initialise
+// Lua event name: "onBaseLayoutInitialise"
+// Lua signature: function(layout)
 void CallBaseLayoutInitialiseCallbacks(const std::string& layout);
+
+// Fired by Inventory::getSectionOfType
+// Lua event name:
+// Lua signature:
 InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type);
+
+// Fired by Inventory::getBestFoodItem
+// Lua event name:
+// Lua signature:
 Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race);
+
+// Fired by "Character::isItOkForMeToLoot
+// Lua event name:
+// Lua signature:
 bool CallCharacterIsItOkForMeToLootCallbacks(Character* me, RootObject* victim, Item* item, bool defaultVal);
+
+// Fired by Character::getFencingSuccessChance
+// Lua event name:
+// Lua signature:
 float CallCharacterGetFencingSuccessChanceCallbacks(Character* merchant, Item* item, RootObject* thief, float defaultVal);
+
+// Fired by CharStats::getStat
+// Lua event name:
+// Lua signature:
 float CallCharStatsGetStatCallbacks(const CharStats* stats, int what, bool unmodified, float defaultVal);
+
+// Fired by Faction::chooseARace
+// Lua event name:
+// Lua signature:
 GameData* CallFactionChooseARaceCallbacks(Faction* faction, GameData* character, GameData* squadTemplate, GameData* defaultVal);
+
+// Fired by Faction::getBuildingReplacement
+// Lua event name:
+// Lua signature:
 GameData* CallFactionGetBuildingReplacementCallbacks(Faction* faction, GameData* building, GameData* defaultVal);
+
+// Fired by Ownerships::canIUseThisBuilding
+// Lua event name:
+// Lua signature:
 bool CallOwnershipsCanIUseThisBuildingCallbacks(Ownerships* ownerships, Building* b, Character* me, bool defaultVal);
+
+// Fired by Platoon::iBuyStolenGoods
+// Lua event name:
+// Lua signature:
 bool CallPlatoonIBuyStolenGoodsCallbacks(Platoon* platoon, Item* what, bool defaultVal);
+
+// Fired by Platoon::iBuyIllegalGoods
+// Lua event name:
+// Lua signature:
 bool CallPlatoonIBuyIllegalGoodsCallbacks(Platoon* platoon, bool defaultVal);
+
+// Fired by Building::isPublic
+// Lua event name:
+// Lua signature:
 bool CallBuildingIsPublicCallbacks(const Building* b, bool defaultVal);
+
+// Fired by Building::isForSale
+// Lua event name:
+// Lua signature:
 bool CallBuildingIsForSaleCallbacks(Building* b, bool defaultVal);
+
+// Fired by Building::calculateSaleValue
+// Lua event name:
+// Lua signature:
 int CallBuildingCalculateSaleValueCallbacks(Building* b, int defaultVal);
+
+// Fired by Inventory::getBaseValueSingle
+// Lua event name:
+// Lua signature:
 int CallInventoryItemBaseGetValueSingleCallbacks(const InventoryItemBase* item, bool isPlayer, int defaultVal);
-
-
-
