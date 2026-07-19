@@ -8,6 +8,8 @@
 #include <sstream>
 #include <iomanip>
 #include <fstream>
+#include <vector>
+#include <ctime>
 
 namespace KenshiLua
 {
