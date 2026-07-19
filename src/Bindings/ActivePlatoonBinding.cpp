@@ -242,7 +242,7 @@ static int ActivePlatoon_set_currentGoal(lua_State* L)
     if (lua_isnil(L, 2)) {
         b->currentGoal = nullptr;
     } else {
-        b->currentGoal = checkObject<Tasker>(L, 2, TaskerBinding::getMetatableName());
+        b->currentGoal = lua_isnoneornil(L, 2) ? nullptr : checkObject<Tasker>(L, 2, TaskerBinding::getMetatableName());
     }
     return 0;
 }

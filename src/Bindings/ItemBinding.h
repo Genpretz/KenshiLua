@@ -70,5 +70,34 @@ public:
 	static int getInventoryWeAreIn(lua_State* L);
 	static int setInventoryWeAreIn(lua_State* L);
 	static int _NV_setInventoryWeAreIn(lua_State* L);
+
+    static int isFood(lua_State* L);
+    static int activate(lua_State* L);
+    static int _NV_activate(lua_State* L);
+    static int getEntity(lua_State* L);
+    static int _NV_getEntity(lua_State* L);
+    static int getTimeout(lua_State* L);
+    static int _NV_getTimeout(lua_State* L);
+    static int _serialise(lua_State* L);
+    static int _NV__serialise(lua_State* L);
+    static int _loadFromSerialise(lua_State* L);
+    static int _NV__loadFromSerialise(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
+    static int loadFromSerialise(lua_State* L);
+    static int _NV_loadFromSerialise(lua_State* L);
+    static int serialiseInInventory(lua_State* L);
+    static int _NV_serialiseInInventory(lua_State* L);
+    static int loadFromSerialiseInInventory(lua_State* L);
+    static int _NV_loadFromSerialiseInInventory(lua_State* L);
+    static int createItemEntityCallback_Equipping(lua_State* L);
+    static int _NV_createItemEntityCallback_Equipping(lua_State* L);
+    static int notifyTheftFrom(lua_State* L);
+    static int _NV_notifyTheftFrom(lua_State* L);
+    static int findProperOwner(lua_State* L);
+    static int setPersistant(lua_State* L);
+    static int _CONSTRUCTOR(lua_State* L);
+    static int itemEntityCreated(lua_State* L);
+    static int _NV_itemEntityCreated(lua_State* L);
 };
 }

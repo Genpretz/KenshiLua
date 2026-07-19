@@ -21,5 +21,6 @@ public:
     static int updateStart(lua_State* L);
     static int addArrow(lua_State* L);
     static int updateEnd(lua_State* L);
+    static int _CONSTRUCTOR(lua_State* L);
 };
 }

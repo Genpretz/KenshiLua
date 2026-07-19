@@ -76,5 +76,16 @@ public:
     static int _NV_getMapMarkerZoomLevel(lua_State* L);
     static int recalculatePlayerTownLevel(lua_State* L);
     static int deActivationCheck(lua_State* L);
+
+    static int _CONSTRUCTOR(lua_State* L);
+    static int notifyRepopulation(lua_State* L);
+    static int isMyOldHomeTownStillValid(lua_State* L);
+    static int setup(lua_State* L);
+    static int _NV_setup(lua_State* L);
+    static int getAlarmMgr(lua_State* L);
+    static int _NV_getAlarmMgr(lua_State* L);
+    static int _setMainResident(lua_State* L);
+    static int chooseResidents(lua_State* L);
+    static int chooseBuildingForResident(lua_State* L);
 };
 }

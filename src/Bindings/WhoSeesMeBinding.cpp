@@ -1,14 +1,14 @@
 #include "pch.h"
-#include "kenshi\Character.h"
-#include "WhoSeesMeBinding.h"
+#include <kenshi/Character.h>
+#include "Bindings/WhoSeesMeBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Util/YesNoMaybeBinding.h"
 
 namespace KenshiLua
 {
-
 typedef Character::WhoSeesMe WhoSeesMe;
 
-static WhoSeesMe* getB(lua_State* L, int idx)
+static WhoSeesMe* getInstance(lua_State* L, int idx)
 {
     return checkObject<WhoSeesMe>(L, idx, WhoSeesMeBinding::getMetatableName());
 }
@@ -16,49 +16,49 @@ static WhoSeesMe* getB(lua_State* L, int idx)
 // --- Getters for WhoSeesMe ---
 static int WhoSeesMe_get_lastUpdated(lua_State* L)
 {
-    WhoSeesMe* b = getB(L, 1);
-    if (!b) return luaL_error(L, "WhoSeesMe is nil");
-    lua_pushnumber(L, b->lastUpdated);
+    WhoSeesMe* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WhoSeesMe is nil");
+    lua_pushnumber(L, instance->lastUpdated);
     return 1;
 }
 
 static int WhoSeesMe_get_seeState(lua_State* L)
 {
-    WhoSeesMe* b = getB(L, 1);
-    if (!b) return luaL_error(L, "WhoSeesMe is nil");
-    // TODO: Unsupported type for seeState (YesNoMaybe)
-    return luaL_error(L, "Unsupported property 'seeState' (type: YesNoMaybe)");
+    WhoSeesMe* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WhoSeesMe is nil");
+    return pushObject<YesNoMaybe>(L, &instance->seeState, YesNoMaybeBinding::getMetatableName());
 }
 
 static int WhoSeesMe_get_progressOfMaybe(lua_State* L)
 {
-    WhoSeesMe* b = getB(L, 1);
-    if (!b) return luaL_error(L, "WhoSeesMe is nil");
-    lua_pushnumber(L, b->progressOfMaybe);
+    WhoSeesMe* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WhoSeesMe is nil");
+    lua_pushnumber(L, instance->progressOfMaybe);
     return 1;
 }
 
 // --- Setters for WhoSeesMe ---
 static int WhoSeesMe_set_lastUpdated(lua_State* L)
 {
-    WhoSeesMe* b = getB(L, 1);
-    if (!b) return luaL_error(L, "WhoSeesMe is nil");
-    b->lastUpdated = (double)luaL_checknumber(L, 2);
+    WhoSeesMe* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WhoSeesMe is nil");
+    instance->lastUpdated = (double)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int WhoSeesMe_set_seeState(lua_State* L)
 {
-    WhoSeesMe* b = getB(L, 1);
-    if (!b) return luaL_error(L, "WhoSeesMe is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for seeState");
+    WhoSeesMe* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WhoSeesMe is nil");
+    instance->seeState = *checkObject<YesNoMaybe>(L, 2, YesNoMaybeBinding::getMetatableName());
+    return 0;
 }
 
 static int WhoSeesMe_set_progressOfMaybe(lua_State* L)
 {
-    WhoSeesMe* b = getB(L, 1);
-    if (!b) return luaL_error(L, "WhoSeesMe is nil");
-    b->progressOfMaybe = (float)luaL_checknumber(L, 2);
+    WhoSeesMe* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WhoSeesMe is nil");
+    instance->progressOfMaybe = (float)luaL_checknumber(L, 2);
     return 0;
 }
 

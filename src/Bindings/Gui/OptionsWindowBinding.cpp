@@ -343,10 +343,7 @@ void OptionsWindowBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to GUIWindow
-    setMetatableParent(L, OptionsWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
-
-        // Wire up inheritance
-    setMetatableParent(L, OptionsWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    // setMetatableParent(L, OptionsWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

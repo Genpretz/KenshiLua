@@ -23,12 +23,12 @@ struct LuaCodec<GameData::ObjectInstance>
 {
     static void push(lua_State* L, const GameData::ObjectInstance& val, const char* meta)
     {
-        pushObject<GameData::ObjectInstance>(L, const_cast<GameData::ObjectInstance*>(&val), "KenshiLua.ObjectInstance");
+        pushObject<GameData::ObjectInstance>(L, const_cast<GameData::ObjectInstance*>(&val), ObjectInstanceBinding::getMetatableName());
     }
 
     static GameData::ObjectInstance read(lua_State* L, int idx, const char* meta)
     {
-        GameData::ObjectInstance* p = checkObject<GameData::ObjectInstance>(L, idx, "KenshiLua.ObjectInstance");
+        GameData::ObjectInstance* p = checkObject<GameData::ObjectInstance>(L, idx, ObjectInstanceBinding::getMetatableName());
         return p ? *p : GameData::ObjectInstance();
     }
 };
@@ -80,7 +80,7 @@ static int GameData_get_sourceContainer(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return pushObject<GameDataContainer>(L, b->sourceContainer, "KenshiLua.GameDataContainer");
+    return pushObject<GameDataContainer>(L, b->sourceContainer, GameDataContainerBinding::getMetatableName());
 }
 
 static int GameData_get_isStandalone(lua_State* L)
@@ -238,7 +238,7 @@ static int GameData_set_sourceContainer(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    GameDataContainer* val = (lua_isnil(L, 2) || lua_isnone(L, 2)) ? nullptr : checkObject<GameDataContainer>(L, 2, "KenshiLua.GameDataContainer");
+    GameDataContainer* val = (lua_isnil(L, 2) || lua_isnone(L, 2)) ? nullptr : checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
     b->sourceContainer = val;
     return 0;
 }
@@ -303,7 +303,8 @@ static int GameData_set_instances(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for instances");
+    b->instances = *checkObject<InstancesMapBinding::MapType>(L, 2, "std::map<string, ObjectInstance>");
+    return 0;
 }
 
 static int GameData_set_currentID(lua_State* L)
@@ -318,63 +319,72 @@ static int GameData_set_activeValues(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for activeValues");
+    b->activeValues = *checkObject<ActiveValuesMapBinding::MapType>(L, 2, "boost::unordered_map<string, bool>");
+    return 0;
 }
 
 static int GameData_set_bdata(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bdata");
+    b->bdata = *checkObject<ActiveValuesMapBinding::MapType>(L, 2, "boost::unordered_map<string, bool>");
+    return 0;
 }
 
 static int GameData_set_sdata(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for sdata");
+    b->sdata = *checkObject<StringMapBinding::MapType>(L, 2, "boost::unordered_map<string, string>");
+    return 0;
 }
 
 static int GameData_set_idata(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for idata");
+    b->idata = *checkObject<IntMapBinding::MapType>(L, 2, "boost::unordered_map<string, int>");
+    return 0;
 }
 
 static int GameData_set_fdata(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for fdata");
+    b->fdata = *checkObject<FloatMapBinding::MapType>(L, 2, "boost::unordered_map<string, float>");
+    return 0;
 }
 
 static int GameData_set_filesdata(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for filesdata");
+    b->filesdata = *checkObject<StringMapBinding::MapType>(L, 2, "boost::unordered_map<string, string>");
+    return 0;
 }
 
 static int GameData_set_vecdata(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for vecdata");
+    b->vecdata = *checkObject<Vector3MapBinding::MapType>(L, 2, "boost::unordered_map<string, Vector3>");
+    return 0;
 }
 
 static int GameData_set_quatdata(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for quatdata");
+    b->quatdata = *checkObject<QuaternionMapBinding::MapType>(L, 2, "boost::unordered_map<string, Quaternion>");
+    return 0;
 }
 
 static int GameData_set_objectReferences(lua_State* L)
 {
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for objectReferences");
+    b->objectReferences = *checkObject<ObjectReferencesMapBinding::MapType>(L, 2, "boost::unordered_map<string, OgreVector_GameDataReference>");
+    return 0;
 }
 
 static int GameData_set_createdIndex(lua_State* L)
@@ -640,7 +650,7 @@ int GameDataBinding::getSourceContainer(lua_State* L)
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
     GameDataContainer* result = b->getSourceContainer();
-    return pushObject<GameDataContainer>(L, result, "KenshiLua.GameDataContainer");
+    return pushObject<GameDataContainer>(L, result, GameDataContainerBinding::getMetatableName());
 }
 
 int GameDataBinding::storeHandleList(lua_State* L)
@@ -654,7 +664,7 @@ int GameDataBinding::storeHandleList(lua_State* L)
     {
         b->storeHandleList(*lek, name);
     }
-    else if (ogre_unordered_set<hand>::type* set = testObject<ogre_unordered_set<hand>::type>(L, 2, "KenshiLua.SelectedCharactersSet"))
+    else if (ogre_unordered_set<hand>::type* set = testObject<ogre_unordered_set<hand>::type>(L, 2, OgreUnorderedSetBinding<hand>::getMetatableName()))
     {
         typedef void (*StoreHandleListOgre_t)(GameData* thisPtr, const ogre_unordered_set<hand>::type& handle, const std::string& _name);
         static StoreHandleListOgre_t fn = (StoreHandleListOgre_t)((char*)GetModuleHandleA(NULL) + 0x6BC4A0);
@@ -662,7 +672,7 @@ int GameDataBinding::storeHandleList(lua_State* L)
     }
     else
     {
-        return luaL_error(L, "Argument 2 to storeHandleList must be lektor<hand> or SelectedCharactersSet");
+        return luaL_error(L, "Argument 2 to storeHandleList must be lektor<hand> or ogre_unordered_set<hand>");
     }
     return 0;
 }
@@ -678,7 +688,7 @@ int GameDataBinding::getHandleList(lua_State* L)
     {
         b->getHandleList(*lek, name);
     }
-    else if (ogre_unordered_set<hand>::type* set = testObject<ogre_unordered_set<hand>::type>(L, 2, "KenshiLua.SelectedCharactersSet"))
+    else if (ogre_unordered_set<hand>::type* set = testObject<ogre_unordered_set<hand>::type>(L, 2, OgreUnorderedSetBinding<hand>::getMetatableName()))
     {
         typedef void (*GetHandleListOgre_t)(GameData* thisPtr, ogre_unordered_set<hand>::type& out, const std::string& _name);
         static GetHandleListOgre_t fn = (GetHandleListOgre_t)((char*)GetModuleHandleA(NULL) + 0x6BC950);
@@ -686,7 +696,7 @@ int GameDataBinding::getHandleList(lua_State* L)
     }
     else
     {
-        return luaL_error(L, "Argument 2 to getHandleList must be lektor<hand> or SelectedCharactersSet");
+        return luaL_error(L, "Argument 2 to getHandleList must be lektor<hand> or ogre_unordered_set<hand>");
     }
     return 0;
 }
@@ -794,7 +804,7 @@ int GameDataBinding::getGameDataReferenceObject(lua_State* L)
     std::string id = luaL_checkstring(L, 3);
 
     GameDataReference* result = b->getGameDataReferenceObject(list, id);
-    return pushObject<GameDataReference>(L, result, "KenshiLua.GameDataReference");
+    return pushObject<GameDataReference>(L, result, GameDataReferenceBinding::getMetatableName());
 }
 
 int GameDataBinding::removeFromList(lua_State* L)
@@ -892,7 +902,7 @@ int GameDataBinding::getAllFromListAsDatas(lua_State* L)
     std::string n = luaL_checkstring(L, 2);
     lektor<GameData*>* list = LektorPtrBinding<GameData*>::get(L, 3);
     if (!list) return luaL_error(L, "Argument 3 to getAllFromListAsDatas must be a valid lektor<GameData*>");
-    GameDataContainer* dataContainer = checkObject<GameDataContainer>(L, 4, "KenshiLua.GameDataContainer");
+    GameDataContainer* dataContainer = checkObject<GameDataContainer>(L, 4, GameDataContainerBinding::getMetatableName());
     itemType type = (itemType)luaL_checkinteger(L, 5);
 
     b->getAllFromListAsDatas(n, *list, dataContainer, type);
@@ -906,7 +916,7 @@ int GameDataBinding::getFromListAsData(lua_State* L)
 
     std::string n = luaL_checkstring(L, 2);
     int index = (int)luaL_checkinteger(L, 3);
-    GameDataContainer* dataContainer = checkObject<GameDataContainer>(L, 4, "KenshiLua.GameDataContainer");
+    GameDataContainer* dataContainer = checkObject<GameDataContainer>(L, 4, GameDataContainerBinding::getMetatableName());
     itemType type = (itemType)luaL_checkinteger(L, 5);
 
     GameData* result = b->getFromListAsData(n, index, dataContainer, type);
@@ -1000,10 +1010,10 @@ int GameDataBinding::addANewInstancedObject(lua_State* L)
     GameData* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameData is nil");
 
-    if (GameData::ObjectInstance* inst = testObject<GameData::ObjectInstance>(L, 2, "KenshiLua.ObjectInstance"))
+    if (GameData::ObjectInstance* inst = testObject<GameData::ObjectInstance>(L, 2, ObjectInstanceBinding::getMetatableName()))
     {
         GameData::ObjectInstance* result = b->addANewInstancedObject(inst);
-        return pushObject<GameData::ObjectInstance>(L, result, "KenshiLua.ObjectInstance");
+        return pushObject<GameData::ObjectInstance>(L, result, ObjectInstanceBinding::getMetatableName());
     }
 
     if (GameData* refObj = testObject<GameData>(L, 2, GameDataBinding::getMetatableName()))
@@ -1029,7 +1039,7 @@ int GameDataBinding::addANewInstancedObject(lua_State* L)
         PosRotPair* offset = (lua_isnil(L, 4) || lua_isnone(L, 4)) ? nullptr : (PosRotPair*)lua_touserdata(L, 4);
 
         GameData::ObjectInstance* result = b->addANewInstancedObject(*saveState, *pos, offset);
-        return pushObject<GameData::ObjectInstance>(L, result, "KenshiLua.ObjectInstance");
+        return pushObject<GameData::ObjectInstance>(L, result, ObjectInstanceBinding::getMetatableName());
     }
 
     return luaL_error(L, "Invalid arguments to addANewInstancedObject");
@@ -1079,7 +1089,6 @@ void GameDataBinding::registerBinding(lua_State* L)
         { "getNewID", GameDataBinding::getNewID },
         { "getColorVec", GameDataBinding::getColorVec },
         { "addDeletedInstance", GameDataBinding::addDeletedInstance },
-
         { "getSourceContainer", GameDataBinding::getSourceContainer },
         { "storeHandleList", GameDataBinding::storeHandleList },
         { "getHandleList", GameDataBinding::getHandleList },
@@ -1207,18 +1216,18 @@ void GameDataBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Register all container bindings
-    InstancesMapBinding::registerBinding(L, "std::map<string, ObjectInstance>", nullptr, "KenshiLua.ObjectInstance");
+    InstancesMapBinding::registerBinding(L, "std::map<string, ObjectInstance>", nullptr, ObjectInstanceBinding::getMetatableName());
     ActiveValuesMapBinding::registerBinding(L, "boost::unordered_map<string, bool>");
     StringMapBinding::registerBinding(L, "boost::unordered_map<string, string>");
     IntMapBinding::registerBinding(L, "boost::unordered_map<string, int>");
     FloatMapBinding::registerBinding(L, "boost::unordered_map<string, float>");
     Vector3MapBinding::registerBinding(L, "boost::unordered_map<string, Vector3>");
     QuaternionMapBinding::registerBinding(L, "boost::unordered_map<string, Quaternion>");
-    OgreVectorValueBinding<GameDataReference>::registerBinding(L, "Ogre::vector<GameDataReference>", "KenshiLua.GameDataReference");
+    OgreVectorValueBinding<GameDataReference>::registerBinding(L, "Ogre::vector<GameDataReference>", GameDataReferenceBinding::getMetatableName());
     ObjectReferencesMapBinding::registerBinding(L, "boost::unordered_map<string, OgreVector_GameDataReference>", nullptr, "Ogre::vector<GameDataReference>");
     
-    LektorValueBinding<hand>::registerBinding(L, "lektor<hand>", "KenshiLua.hand");
-    LektorPtrBinding<GameData::ObjectInstance*>::registerBinding(L, "lektor<GameData::ObjectInstance*>", "KenshiLua.ObjectInstance");
+    LektorValueBinding<hand>::registerBinding(L, "lektor<hand>", handBinding::getMetatableName());
+    LektorPtrBinding<GameData::ObjectInstance*>::registerBinding(L, "lektor<GameData::ObjectInstance*>", ObjectInstanceBinding::getMetatableName());
     LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", GameDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack

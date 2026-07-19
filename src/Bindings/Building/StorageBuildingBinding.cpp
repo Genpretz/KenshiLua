@@ -458,7 +458,7 @@ void StorageBuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to UseableStuff
-    setMetatableParent(L, StorageBuildingBinding::getMetatableName(), UseableStuffBinding::getMetatableName());
+    // setMetatableParent(L, StorageBuildingBinding::getMetatableName(), UseableStuffBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

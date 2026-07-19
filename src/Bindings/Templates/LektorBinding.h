@@ -53,6 +53,8 @@ namespace KenshiLua
         static const char* metaName;
         static const char* elemMetaName;
 
+        static const char* getMetatableName() { return metaName; }
+
         static lektor<T>* get(lua_State* L, int idx)
         {
             return checkObject<lektor<T>>(L, idx, metaName);
@@ -186,6 +188,8 @@ namespace KenshiLua
         static const char* metaName;
         static const char* elemMetaName;
 
+        static const char* getMetatableName() { return metaName; }
+
         static lektor<T>* get(lua_State* L, int idx)
         {
             return checkObject<lektor<T>>(L, idx, metaName);
@@ -313,6 +317,8 @@ namespace KenshiLua
         static const char* metaName;
         static const char* elemMetaName;
 
+        static const char* getMetatableName() { return metaName; }
+
         static lektor<T>* get(lua_State* L, int idx)
         {
             return checkObject<lektor<T>>(L, idx, metaName);
@@ -385,6 +391,8 @@ namespace KenshiLua
     struct LektorStringBinding
     {
         static const char* metaName;
+
+        static const char* getMetatableName() { return metaName; }
 
         static lektor<T>* get(lua_State* L, int idx)
         {

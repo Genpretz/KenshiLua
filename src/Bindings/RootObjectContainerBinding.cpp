@@ -5,6 +5,12 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/DataObjectContainerBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/SpecificItemLoadFirstBinding.h"
+#include "Bindings/FactoryCallbackInterfaceBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
 
 namespace KenshiLua
 {
@@ -118,24 +124,172 @@ int RootObjectContainerBinding::_NV_getSelectedObjects(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 183: RootObjectContainer* _CONSTRUCTOR(...) - overloaded method
-  line 185: RootObjectContainer* _CONSTRUCTOR(...) - overloaded method
-  line 188: bool addActiveObject(...) - unsupported arg type
-  line 189: bool _NV_addActiveObject(...) - unsupported arg type
-  line 190: bool removeObject(...) - unsupported arg type
-  line 191: bool _NV_removeObject(...) - unsupported arg type
-  line 196: lektor<RootObject*>* getThings(...) - unsupported return type
-  line 197: void getSelectedObjects(...) - unsupported arg type
-  line 198: void _NV_getSelectedObjects(...) - unsupported arg type
-  line 200: void serialiseThings(...) - overloaded method
-  line 201: void serialiseThings(...) - overloaded method
-  line 223: void loadToReality(...) - unsupported arg type
-  line 224: void _NV_loadToReality(...) - unsupported arg type
-  line 225: void loadInstance(...) - unsupported arg type
-  line 226: void _NV_loadInstance(...) - unsupported arg type
-*/
+int RootObjectContainerBinding::_CONSTRUCTOR(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    if (lua_isnumber(L, 2))
+    {
+        DataObjectContainer::GroupType type = (DataObjectContainer::GroupType)luaL_checkinteger(L, 2);
+        RootObjectContainer* result = b->_CONSTRUCTOR(type);
+        return pushObject<RootObjectContainer>(L, result, RootObjectContainerBinding::getMetatableName());
+    }
+    else
+    {
+        DataObjectContainer* from = checkObject<DataObjectContainer>(L, 2, DataObjectContainerBinding::getMetatableName());
+        RootObjectContainer* result = b->_CONSTRUCTOR(from);
+        return pushObject<RootObjectContainer>(L, result, RootObjectContainerBinding::getMetatableName());
+    }
+}
+
+int RootObjectContainerBinding::addActiveObject(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->addActiveObject(obj);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int RootObjectContainerBinding::_NV_addActiveObject(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->_NV_addActiveObject(obj);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int RootObjectContainerBinding::removeObject(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->removeObject(obj);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int RootObjectContainerBinding::_NV_removeObject(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->_NV_removeObject(obj);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int RootObjectContainerBinding::serialiseThings(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    if (testObject<lektor<RootObject*>>(L, 2, LektorPtrBinding<RootObject*>::metaName) != nullptr)
+    {
+        lektor<RootObject*>* _things = LektorPtrBinding<RootObject*>::get(L, 2);
+        GameData* gd = lua_isnoneornil(L, 3) ? nullptr : checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+        GameDataContainer* source = lua_isnoneornil(L, 4) ? nullptr : checkObject<GameDataContainer>(L, 4, GameDataContainerBinding::getMetatableName());
+        PosRotPair* offset = lua_isnoneornil(L, 5) ? nullptr : (PosRotPair*)lua_touserdata(L, 5);
+        std::string mod = luaL_checkstring(L, 6);
+
+        b->serialiseThings(*_things, gd, source, offset, mod);
+        return 0;
+    }
+    else
+    {
+        GameData* gd = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+        GameDataContainer* source = lua_isnoneornil(L, 3) ? nullptr : checkObject<GameDataContainer>(L, 3, GameDataContainerBinding::getMetatableName());
+        PosRotPair* offset = lua_isnoneornil(L, 4) ? nullptr : (PosRotPair*)lua_touserdata(L, 4);
+        std::string mod = luaL_checkstring(L, 5);
+
+        b->serialiseThings(gd, source, offset, mod);
+        return 0;
+    }
+}
+
+int RootObjectContainerBinding::loadToReality(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    bool skipSaveState = lua_toboolean(L, 2) != 0;
+    Ogre::Vector3 positionMoved;
+    readVector3(L, 3, positionMoved);
+    Ogre::Quaternion rotOffset;
+    readQuaternion(L, 4, rotOffset);
+    FactoryCallbackInterface* callback = lua_isnoneornil(L, 5) ? nullptr : checkObject<FactoryCallbackInterface>(L, 5, FactoryCallbackInterfaceBinding::getMetatableName());
+    std::string specificSID = luaL_checkstring(L, 6);
+    GameDataContainer* externalContainer = lua_isnoneornil(L, 7) ? nullptr : checkObject<GameDataContainer>(L, 7, GameDataContainerBinding::getMetatableName());
+    RootObjectContainer::SpecificItemLoadFirst* skipperClass = lua_isnoneornil(L, 8) ? nullptr : checkObject<RootObjectContainer::SpecificItemLoadFirst>(L, 8, SpecificItemLoadFirstBinding::getMetatableName());
+
+    b->loadToReality(skipSaveState, positionMoved, rotOffset, callback, specificSID, externalContainer, skipperClass);
+    return 0;
+}
+
+int RootObjectContainerBinding::_NV_loadToReality(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    bool skipSaveState = lua_toboolean(L, 2) != 0;
+    Ogre::Vector3 positionMoved;
+    readVector3(L, 3, positionMoved);
+    Ogre::Quaternion rotOffset;
+    readQuaternion(L, 4, rotOffset);
+    FactoryCallbackInterface* callback = lua_isnoneornil(L, 5) ? nullptr : checkObject<FactoryCallbackInterface>(L, 5, FactoryCallbackInterfaceBinding::getMetatableName());
+    std::string specificSID = luaL_checkstring(L, 6);
+    GameDataContainer* externalContainer = lua_isnoneornil(L, 7) ? nullptr : checkObject<GameDataContainer>(L, 7, GameDataContainerBinding::getMetatableName());
+    RootObjectContainer::SpecificItemLoadFirst* skipperClass = lua_isnoneornil(L, 8) ? nullptr : checkObject<RootObjectContainer::SpecificItemLoadFirst>(L, 8, SpecificItemLoadFirstBinding::getMetatableName());
+
+    b->_NV_loadToReality(skipSaveState, positionMoved, rotOffset, callback, specificSID, externalContainer, skipperClass);
+    return 0;
+}
+
+int RootObjectContainerBinding::loadInstance(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    bool skipSaveState = lua_toboolean(L, 3) != 0;
+    Ogre::Vector3 pos;
+    readVector3(L, 4, pos);
+    Ogre::Quaternion rot;
+    readQuaternion(L, 5, rot);
+    FactoryCallbackInterface* callback = lua_isnoneornil(L, 6) ? nullptr : checkObject<FactoryCallbackInterface>(L, 6, FactoryCallbackInterfaceBinding::getMetatableName());
+    Ogre::Vector3 positionMoved;
+    readVector3(L, 7, positionMoved);
+
+    b->loadInstance(*state, skipSaveState, pos, rot, callback, positionMoved);
+    return 0;
+}
+
+int RootObjectContainerBinding::_NV_loadInstance(lua_State* L)
+{
+    RootObjectContainer* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RootObjectContainer is nil");
+
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    bool skipSaveState = lua_toboolean(L, 3) != 0;
+    Ogre::Vector3 pos;
+    readVector3(L, 4, pos);
+    Ogre::Quaternion rot;
+    readQuaternion(L, 5, rot);
+    FactoryCallbackInterface* callback = lua_isnoneornil(L, 6) ? nullptr : checkObject<FactoryCallbackInterface>(L, 6, FactoryCallbackInterfaceBinding::getMetatableName());
+    Ogre::Vector3 positionMoved;
+    readVector3(L, 7, positionMoved);
+
+    b->_NV_loadInstance(*state, skipSaveState, pos, rot, callback, positionMoved);
+    return 0;
+}
 
 int RootObjectContainerBinding::gc(lua_State* L)
 {
@@ -166,6 +320,16 @@ void RootObjectContainerBinding::registerBinding(lua_State* L)
         { "getThings", RootObjectContainerBinding::getThings },
         { "getSelectedObjects", RootObjectContainerBinding::getSelectedObjects },
         { "_NV_getSelectedObjects", RootObjectContainerBinding::_NV_getSelectedObjects },
+        { "_CONSTRUCTOR", RootObjectContainerBinding::_CONSTRUCTOR },
+        { "addActiveObject", RootObjectContainerBinding::addActiveObject },
+        { "_NV_addActiveObject", RootObjectContainerBinding::_NV_addActiveObject },
+        { "removeObject", RootObjectContainerBinding::removeObject },
+        { "_NV_removeObject", RootObjectContainerBinding::_NV_removeObject },
+        { "serialiseThings", RootObjectContainerBinding::serialiseThings },
+        { "loadToReality", RootObjectContainerBinding::loadToReality },
+        { "_NV_loadToReality", RootObjectContainerBinding::_NV_loadToReality },
+        { "loadInstance", RootObjectContainerBinding::loadInstance },
+        { "_NV_loadInstance", RootObjectContainerBinding::_NV_loadInstance },
         { 0, 0 }
     };
 

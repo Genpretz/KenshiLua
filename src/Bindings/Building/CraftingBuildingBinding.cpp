@@ -606,7 +606,7 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ProductionBuilding
-    setMetatableParent(L, CraftingBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+    // setMetatableParent(L, CraftingBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

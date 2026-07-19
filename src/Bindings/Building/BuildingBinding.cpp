@@ -1,18 +1,30 @@
 #include "pch.h"
 #include "kenshi\Building\Building.h"
 #include "BuildingBinding.h"
-#include "Bindings/TownBaseBinding.h"
-#include "Bindings/InventoryBinding.h"
-#include "Bindings/RootObjectBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/CharacterBinding.h"
-#include "Bindings/GameDataBinding.h"
-#include "Bindings/TownBinding.h"
-#include "Bindings/Util/HandBinding.h"
 #include "Bindings/Building/ConstructionStateBinding.h"
-#include "Bindings/Building/StorageBuildingBinding.h"
-#include "Bindings/Building/UseableStuffBinding.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Building/DoorStuffBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/Building/GatewayBuildingBinding.h"
+#include "Bindings/InstanceIDBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/PlatoonBinding.h"
 #include "Bindings/Building/ProductionBuildingBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/Building/StorageBuildingBinding.h"
+#include "Bindings/TownBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/TownBuildingsManagerBinding.h"
+#include "Bindings/Building/UseableStuffBinding.h"
+#include "Bindings/Building/WallBuildingBinding.h"
+#include "Bindings/ZoneMapBinding.h"
 
 namespace KenshiLua
 {
@@ -97,8 +109,7 @@ static int Building_get_instanceID(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for instanceID (InstanceID)
-    return luaL_error(L, "Unsupported property 'instanceID' (type: InstanceID)");
+    return pushObject<InstanceID>(L, &instance->instanceID, InstanceIDBinding::getMetatableName());
 }
 
 static int Building_get_layoutInstanceID(lua_State* L)
@@ -121,8 +132,7 @@ static int Building_get__buildState(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for _buildState (ConstructionState)
-    return luaL_error(L, "Unsupported property '_buildState' (type: ConstructionState)");
+    return pushObject<Building::ConstructionState>(L, &instance->_buildState, ConstructionStateBinding::getMetatableName());
 }
 
 static int Building_get_classType(lua_State* L)
@@ -213,18 +223,6 @@ static int Building_get_saveVersion(lua_State* L)
     return 1;
 }
 
-static int Building_get_doors(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    lua_createtable(L, instance->doors.size(), 0);
-    for (uint32_t i = 0; i < instance->doors.size(); ++i) {
-        pushObject<Building>(L, instance->doors[i], BuildingBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
 static int Building_get__town(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -232,44 +230,39 @@ static int Building_get__town(lua_State* L)
     return handBinding::push(L, instance->_town);
 }
 
+// todo: implement a proper binding for Interior, instead of just returning a lightuserdata
 static int Building_get_myInterior(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for myInterior (BuildingInterior*)
-    return luaL_error(L, "Unsupported property 'myInterior' (type: BuildingInterior*)");
+    lua_pushlightuserdata(L, (void*)instance->myInterior);
+    return 1;
 }
 
 static int Building_get_buildingsManager(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for buildingsManager (TownBuildingsManager*)
-    return luaL_error(L, "Unsupported property 'buildingsManager' (type: TownBuildingsManager*)");
+    return pushObject<TownBuildingsManager>(L, instance->buildingsManager, TownBuildingsManagerBinding::getMetatableName());
 }
 
+// todo: implement a proper binding for rootNode, instead of just returning a lightuserdata
 static int Building_get_rootNode(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for rootNode (Ogre::SceneNode*)
-    return luaL_error(L, "Unsupported property 'rootNode' (type: Ogre::SceneNode*)");
+    lua_pushlightuserdata(L, (void*)instance->rootNode);
+    return 1;
 }
 
-static int Building_get_audioObject(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for audioObject (unsigned __int64)
-    return luaL_error(L, "Unsupported property 'audioObject' (type: unsigned __int64)");
-}
+// todo: implement a proper binding for soundEmitter, instead of just returning a lightuserdata
 
 static int Building_get_soundEmitter(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for soundEmitter (SoundEmitter*)
-    return luaL_error(L, "Unsupported property 'soundEmitter' (type: SoundEmitter*)");
+    lua_pushlightuserdata(L, (void*)instance->soundEmitter);
+    return 1;
 }
 
 static int Building_get_hasAudio(lua_State* L)
@@ -296,12 +289,13 @@ static int Building_get_exteriorGround(lua_State* L)
     return 1;
 }
 
+// todo: implement a proper binding, instead of just returning a lightuserdata
 static int Building_get_physical(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for physical (PhysicsCollection*)
-    return luaL_error(L, "Unsupported property 'physical' (type: PhysicsCollection*)");
+    lua_pushlightuserdata(L, (void*)instance->physical);
+    return 1;
 }
 
 static int Building_get_entitiesToLoad(lua_State* L)
@@ -320,12 +314,13 @@ static int Building_get_entitiesLoaded(lua_State* L)
     return 1;
 }
 
+// todo: implement a proper binding, instead of just returning a lightuserdata
 static int Building_get_isFurnitureOf(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for isFurnitureOf (Layout*)
-    return luaL_error(L, "Unsupported property 'isFurnitureOf' (type: Layout*)");
+    lua_pushlightuserdata(L, (void*)instance->isFurnitureOf);
+    return 1;
 }
 
 static int Building_get_isOutsideFurniture(lua_State* L)
@@ -349,14 +344,6 @@ static int Building_get_baseMaterial(lua_State* L)
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
     return pushObject<GameData>(L, instance->baseMaterial, GameDataBinding::getMetatableName());
-}
-
-static int Building_get_effects(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for effects (lektor<std::pair<PhysicalEntity*, Effect*> >)
-    return luaL_error(L, "Unsupported property 'effects' (type: lektor<std::pair<PhysicalEntity*, Effect*> >)");
 }
 
 static int Building_get_effectsVisible(lua_State* L)
@@ -399,14 +386,6 @@ static int Building_get_heightAboveGround(lua_State* L)
     return 1;
 }
 
-static int Building_get_AABB(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for AABB (Ogre::Aabb)
-    return luaL_error(L, "Unsupported property 'AABB' (type: Ogre::Aabb)");
-}
-
 static int Building_get_isRedDebugTextureMode(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -423,44 +402,13 @@ static int Building_get_materialName(lua_State* L)
     return 1;
 }
 
-static int Building_get_usageNodesIds(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for usageNodesIds (std::set<std::string, std::less<std::string >, Ogre::STLAllocator<std::string, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'usageNodesIds' (type: std::set<std::string, std::less<std::string >, Ogre::STLAllocator<std::string, Ogre::GeneralAllocPolicy > >)");
-}
-
-static int Building_get_usageNodes(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for usageNodes (lektor<UsageNode*>)
-    return luaL_error(L, "Unsupported property 'usageNodes' (type: lektor<UsageNode*>)");
-}
-
-static int Building_get_badNodes(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for badNodes (ogre_unordered_map<int, float>::type)
-    return luaL_error(L, "Unsupported property 'badNodes' (type: ogre_unordered_map<int, float>::type)");
-}
-
+// todo: implement a proper binding, instead of just returning a lightuserdata
 static int Building_get_triggerVolume(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for triggerVolume (SimplePhysXEntity*)
-    return luaL_error(L, "Unsupported property 'triggerVolume' (type: SimplePhysXEntity*)");
-}
-
-static int Building_get_activeEffects(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    // TODO: Unsupported type for activeEffects (lektor<std::pair<char, float> >)
-    return luaL_error(L, "Unsupported property 'activeEffects' (type: lektor<std::pair<char, float> >)");
+    lua_pushlightuserdata(L, (void*)instance->triggerVolume);
+    return 1;
 }
 
 // --- Setters for Building ---
@@ -516,17 +464,16 @@ static int Building_set_residentSquad(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
-    instance->residentSquad = *val;
+    instance->residentSquad = *checkObject<hand>(L, 2, handBinding::getMetatableName());
     return 0;
 }
 
-// Todo
 static int Building_set_residentSquadTemplate(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for residentSquadTemplate");
+    instance->residentSquadTemplate = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int Building_set_isAnInteriorObject(lua_State* L)
@@ -537,12 +484,12 @@ static int Building_set_isAnInteriorObject(lua_State* L)
     return 0;
 }
 
-// Todo
 static int Building_set_instanceID(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for instanceID");
+    instance->instanceID = *checkObject<InstanceID>(L, 2, InstanceIDBinding::getMetatableName());
+    return 0;
 }
 
 static int Building_set_layoutInstanceID(lua_State* L)
@@ -561,12 +508,12 @@ static int Building_set_specialFunction(lua_State* L)
     return 0;
 }
 
-// Todo
 static int Building_set__buildState(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _buildState");
+    instance->_buildState = *checkObject<Building::ConstructionState>(L, 2, ConstructionStateBinding::getMetatableName());
+    return 0;
 }
 
 static int Building_set_classType(lua_State* L)
@@ -657,61 +604,20 @@ static int Building_set_saveVersion(lua_State* L)
     return 0;
 }
 
-// Todo
-static int Building_set_doors(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for doors");
-}
-
 static int Building_set__town(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
-    instance->_town = *val;
+    instance->_town = *checkObject<hand>(L, 2, handBinding::getMetatableName());
     return 0;
 }
 
-// Todo
-static int Building_set_myInterior(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for myInterior");
-}
-
-// Todo
 static int Building_set_buildingsManager(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for buildingsManager");
-}
-
-// Todo
-static int Building_set_rootNode(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for rootNode");
-}
-
-// Todo
-static int Building_set_audioObject(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for audioObject");
-}
-
-// Todo
-static int Building_set_soundEmitter(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for soundEmitter");
+    instance->buildingsManager = lua_isnoneornil(L, 2) ? nullptr : checkObject<TownBuildingsManager>(L, 2, TownBuildingsManagerBinding::getMetatableName());
+    return 0;
 }
 
 static int Building_set_hasAudio(lua_State* L)
@@ -738,14 +644,6 @@ static int Building_set_exteriorGround(lua_State* L)
     return 0;
 }
 
-// ToDo
-static int Building_set_physical(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for physical");
-}
-
 static int Building_set_entitiesToLoad(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -760,14 +658,6 @@ static int Building_set_entitiesLoaded(lua_State* L)
     if (!instance) return luaL_error(L, "Building is nil");
     instance->entitiesLoaded = lua_toboolean(L, 2) != 0;
     return 0;
-}
-
-// Todo
-static int Building_set_isFurnitureOf(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isFurnitureOf");
 }
 
 static int Building_set_isOutsideFurniture(lua_State* L)
@@ -790,14 +680,8 @@ static int Building_set_baseMaterial(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for baseMaterial");
-}
-
-static int Building_set_effects(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for effects");
+    instance->baseMaterial = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int Building_set_effectsVisible(lua_State* L)
@@ -840,14 +724,6 @@ static int Building_set_heightAboveGround(lua_State* L)
     return 0;
 }
 
-// ToDo
-static int Building_set_AABB(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for AABB");
-}
-
 static int Building_set_isRedDebugTextureMode(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -864,41 +740,6 @@ static int Building_set_materialName(lua_State* L)
     return 0;
 }
 
-static int Building_set_usageNodesIds(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for usageNodesIds");
-}
-
-static int Building_set_usageNodes(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for usageNodes");
-}
-
-static int Building_set_badNodes(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for badNodes");
-}
-
-static int Building_set_triggerVolume(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for triggerVolume");
-}
-
-static int Building_set_activeEffects(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for activeEffects");
-}
-
 int BuildingBinding::getScale(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -907,6 +748,33 @@ int BuildingBinding::getScale(lua_State* L)
     float result = instance->getScale();
     lua_pushnumber(L, result);
     return 1;
+}
+
+int BuildingBinding::getBuildState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Building::ConstructionState* result = instance->getBuildState();
+    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_getBuildState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Building::ConstructionState* result = instance->_NV_getBuildState();
+    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
+}
+
+int BuildingBinding::getBuildState_ActualNonShared(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Building::ConstructionState* result = instance->getBuildState_ActualNonShared();
+    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
 }
 
 int BuildingBinding::select(lua_State* L)
@@ -1044,6 +912,46 @@ int BuildingBinding::dropMats(lua_State* L)
     return 0;
 }
 
+int BuildingBinding::upgrade(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->upgrade(_a1);
+    return 0;
+}
+
+int BuildingBinding::_NV_upgrade(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_upgrade(_a1);
+    return 0;
+}
+
+int BuildingBinding::downgrade(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->downgrade(_a1);
+    return 0;
+}
+
+int BuildingBinding::_NV_downgrade(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_downgrade(_a1);
+    return 0;
+}
+
 int BuildingBinding::canUpgrade(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -1098,6 +1006,26 @@ int BuildingBinding::_NV_canDismantle(lua_State* L)
     bool result = instance->_NV_canDismantle();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
+}
+
+int BuildingBinding::buyMeAsk(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->buyMeAsk(_a1);
+    return 0;
+}
+
+int BuildingBinding::_NV_buyMeAsk(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_buyMeAsk(_a1);
+    return 0;
 }
 
 int BuildingBinding::buyMeCallback(lua_State* L)
@@ -1157,6 +1085,66 @@ int BuildingBinding::_NV_isPublic(lua_State* L)
     bool result = instance->_NV_isPublic();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
+}
+
+int BuildingBinding::togglePublic(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->togglePublic(_a1);
+    return 0;
+}
+
+int BuildingBinding::_NV_togglePublic(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_togglePublic(_a1);
+    return 0;
+}
+
+int BuildingBinding::dismantleButton(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->dismantleButton(_a1);
+    return 0;
+}
+
+int BuildingBinding::_NV_dismantleButton(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_dismantleButton(_a1);
+    return 0;
+}
+
+int BuildingBinding::pauseButton(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->pauseButton(_a1);
+    return 0;
+}
+
+int BuildingBinding::_NV_pauseButton(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_pauseButton(_a1);
+    return 0;
 }
 
 int BuildingBinding::confirmDismantle(lua_State* L)
@@ -1219,6 +1207,24 @@ int BuildingBinding::_NV_isForSale(lua_State* L)
     return 1;
 }
 
+int BuildingBinding::isAWall(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    WallBuilding* result = instance->isAWall();
+    return pushObject<WallBuilding>(L, result, WallBuildingBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_isAWall(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    WallBuilding* result = instance->_NV_isAWall();
+    return pushObject<WallBuilding>(L, result, WallBuildingBinding::getMetatableName());
+}
+
 int BuildingBinding::isAWallRamp(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -1257,6 +1263,16 @@ int BuildingBinding::affectsNavmesh(lua_State* L)
     bool result = instance->affectsNavmesh();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
+}
+
+int BuildingBinding::setResidentSquad(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Platoon* who = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    instance->setResidentSquad(who);
+    return 0;
 }
 
 int BuildingBinding::getResidentSquadLeader(lua_State* L)
@@ -1324,6 +1340,16 @@ int BuildingBinding::_NV_getMiningResourceLevel(lua_State* L)
     float result = instance->_NV_getMiningResourceLevel();
     lua_pushnumber(L, result);
     return 1;
+}
+
+int BuildingBinding::addAnInternalBuilding(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Building* b = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    instance->addAnInternalBuilding(b);
+    return 0;
 }
 
 int BuildingBinding::getNumInternalBuildings(lua_State* L)
@@ -1410,6 +1436,42 @@ int BuildingBinding::_NV_getSpecialFunction(lua_State* L)
     BuildingFunction result = instance->_NV_getSpecialFunction();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
+}
+
+int BuildingBinding::getFunctionStuff(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    StorageBuilding* result = instance->getFunctionStuff();
+    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_getFunctionStuff(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    StorageBuilding* result = instance->_NV_getFunctionStuff();
+    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
+}
+
+int BuildingBinding::getUseableStuff(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    UseableStuff* result = instance->getUseableStuff();
+    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_getUseableStuff(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    UseableStuff* result = instance->_NV_getUseableStuff();
+    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
 }
 
 int BuildingBinding::isBroken(lua_State* L)
@@ -1657,7 +1719,7 @@ int BuildingBinding::needsSaving(lua_State* L)
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
 
-    std::string mod = luaL_checkstring(L, 2);
+    const std::string mod = luaL_checkstring(L, 2);
     bool result = instance->needsSaving(mod);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
@@ -1668,7 +1730,7 @@ int BuildingBinding::_NV_needsSaving(lua_State* L)
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
 
-    std::string mod = luaL_checkstring(L, 2);
+    const std::string mod = luaL_checkstring(L, 2);
     bool result = instance->_NV_needsSaving(mod);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
@@ -1681,6 +1743,24 @@ int BuildingBinding::notifyChange(lua_State* L)
 
     instance->notifyChange();
     return 0;
+}
+
+int BuildingBinding::getInstanceID(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    InstanceID* result = instance->getInstanceID();
+    return pushObject<InstanceID>(L, result, InstanceIDBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_getInstanceID(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    InstanceID* result = instance->_NV_getInstanceID();
+    return pushObject<InstanceID>(L, result, InstanceIDBinding::getMetatableName());
 }
 
 int BuildingBinding::setToDefaultFactionDivision(lua_State* L)
@@ -1779,6 +1859,178 @@ int BuildingBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
+int BuildingBinding::_saveBuildingState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    const std::string doorID = luaL_checkstring(L, 3);
+    instance->_saveBuildingState(state, doorID);
+    return 0;
+}
+
+int BuildingBinding::_NV__saveBuildingState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    const std::string doorID = luaL_checkstring(L, 3);
+    instance->_NV__saveBuildingState(state, doorID);
+    return 0;
+}
+
+int BuildingBinding::_loadBuildingState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    const std::string doorID = luaL_checkstring(L, 3);
+    instance->_loadBuildingState(state, doorID);
+    return 0;
+}
+
+int BuildingBinding::_NV__loadBuildingState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    const std::string doorID = luaL_checkstring(L, 3);
+    instance->_NV__loadBuildingState(state, doorID);
+    return 0;
+}
+
+int BuildingBinding::getGUIName(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIName(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::_NV_getGUIName(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIName(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::getGUIState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIState(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::_NV_getGUIState(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIState(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::getGUICondition(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUICondition(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::_NV_getGUICondition(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUICondition(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::getGUIUpgrade(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIUpgrade(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::_NV_getGUIUpgrade(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIUpgrade(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::getGUIDestroyButton(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIDestroyButton(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::_NV_getGUIDestroyButton(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIDestroyButton(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::getProductionBuilding(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    ProductionBuilding* result = instance->getProductionBuilding();
+    return pushObject<ProductionBuilding>(L, result, ProductionBuildingBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_getProductionBuilding(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    ProductionBuilding* result = instance->_NV_getProductionBuilding();
+    return pushObject<ProductionBuilding>(L, result, ProductionBuildingBinding::getMetatableName());
+}
+
 int BuildingBinding::getProductionMultForGUI(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -1829,6 +2081,24 @@ int BuildingBinding::isThePlayer(lua_State* L)
     return 1;
 }
 
+int BuildingBinding::doorStuff(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DoorStuff* result = instance->doorStuff();
+    return pushObject<DoorStuff>(L, result, DoorStuffBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_doorStuff(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DoorStuff* result = instance->_NV_doorStuff();
+    return pushObject<DoorStuff>(L, result, DoorStuffBinding::getMetatableName());
+}
+
 int BuildingBinding::doorParentBuilding(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -1854,6 +2124,52 @@ int BuildingBinding::isDoor(lua_State* L)
 
     bool result = instance->isDoor();
     lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int BuildingBinding::isGate(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GatewayBuilding* result = instance->isGate();
+    return pushObject<GatewayBuilding>(L, result, GatewayBuildingBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_isGate(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GatewayBuilding* result = instance->_NV_isGate();
+    return pushObject<GatewayBuilding>(L, result, GatewayBuildingBinding::getMetatableName());
+}
+
+int BuildingBinding::getDoor(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DoorStuff* result = instance->getDoor();
+    return pushObject<DoorStuff>(L, result, DoorStuffBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_getDoor(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DoorStuff* result = instance->_NV_getDoor();
+    return pushObject<DoorStuff>(L, result, DoorStuffBinding::getMetatableName());
+}
+
+int BuildingBinding::getParentLayout(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Layout* result = instance->getParentLayout();
+    lua_pushlightuserdata(L, (void*)result);
     return 1;
 }
 
@@ -2038,6 +2354,68 @@ int BuildingBinding::_NV_checkLoadedProperly(lua_State* L)
     return 0;
 }
 
+int BuildingBinding::loadFromSerialise(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GameSaveState* savestate = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->loadFromSerialise(savestate);
+    return 0;
+}
+
+int BuildingBinding::_NV_loadFromSerialise(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GameSaveState* savestate = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->_NV_loadFromSerialise(savestate);
+    return 0;
+}
+
+int BuildingBinding::loadFromSerialise_TheDoors(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GameSaveState* savestate = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->loadFromSerialise_TheDoors(savestate);
+    return 0;
+}
+
+int BuildingBinding::_NV_loadFromSerialise_TheDoors(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GameSaveState* savestate = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->_NV_loadFromSerialise_TheDoors(savestate);
+    return 0;
+}
+
+int BuildingBinding::getGUIData(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIData(datapanel, category);
+    return 0;
+}
+
+int BuildingBinding::_NV_getGUIData(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIData(datapanel, category);
+    return 0;
+}
+
 int BuildingBinding::setVisible(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -2075,6 +2453,28 @@ int BuildingBinding::_NV_getVisible(lua_State* L)
 
     bool result = instance->_NV_getVisible();
     lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+// todo: implement a proper binding, instead of just returning a lightuserdata
+int BuildingBinding::getDoorLock(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DoorLock* result = instance->getDoorLock();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
+}
+
+// todo: implement a proper binding, instead of just returning a lightuserdata
+int BuildingBinding::_NV_getDoorLock(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    DoorLock* result = instance->_NV_getDoorLock();
+    lua_pushlightuserdata(L, (void*)result);
     return 1;
 }
 
@@ -2154,6 +2554,25 @@ int BuildingBinding::_NV_getInventory(lua_State* L)
 
     Inventory* result = instance->_NV_getInventory();
     return pushObject<Inventory>(L, result, InventoryBinding::getMetatableName());
+}
+
+int BuildingBinding::_changeTown(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Town* t = checkObject<Town>(L, 2, TownBinding::getMetatableName());
+    instance->_changeTown(t);
+    return 0;
+}
+
+int BuildingBinding::getTownHandle(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    hand result = instance->getTownHandle();
+    return handBinding::push(L, result);
 }
 
 int BuildingBinding::getTown(lua_State* L)
@@ -2320,6 +2739,28 @@ int BuildingBinding::loadInteriorGraphics(lua_State* L)
     return 0;
 }
 
+int BuildingBinding::setFaction(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Faction* p = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    ActivePlatoon* a = checkObject<ActivePlatoon>(L, 3, ActivePlatoonBinding::getMetatableName());
+    instance->setFaction(p, a);
+    return 0;
+}
+
+int BuildingBinding::_NV_setFaction(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Faction* p = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    ActivePlatoon* a = checkObject<ActivePlatoon>(L, 3, ActivePlatoonBinding::getMetatableName());
+    instance->_NV_setFaction(p, a);
+    return 0;
+}
+
 int BuildingBinding::calculateLeftPost(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -2328,6 +2769,19 @@ int BuildingBinding::calculateLeftPost(lua_State* L)
     Ogre::Vector3 result = instance->calculateLeftPost();
     pushVector3(L, result);
     return 1;
+}
+
+int BuildingBinding::setupLevelData(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    GameData* squad = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    const std::string interior = luaL_checkstring(L, 4);
+    const std::string exterior = luaL_checkstring(L, 5);
+    instance->setupLevelData(f, squad, interior, exterior);
+    return 0;
 }
 
 int BuildingBinding::getLinkLength(lua_State* L)
@@ -2348,6 +2802,34 @@ int BuildingBinding::_NV_getLinkLength(lua_State* L)
     float result = instance->_NV_getLinkLength();
     lua_pushnumber(L, result);
     return 1;
+}
+
+int BuildingBinding::getRootNode(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    Ogre::SceneNode* result = instance->getRootNode();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
+}
+
+int BuildingBinding::getZoneMapLocation(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    ZoneMap* result = instance->getZoneMapLocation();
+    return pushObject<ZoneMap>(L, result, ZoneMapBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_getZoneMapLocation(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    ZoneMap* result = instance->_NV_getZoneMapLocation();
+    return pushObject<ZoneMap>(L, result, ZoneMapBinding::getMetatableName());
 }
 
 int BuildingBinding::clearTownBuildingsManagerPtr(lua_State* L)
@@ -2589,7 +3071,7 @@ int BuildingBinding::addUsageNode(lua_State* L)
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
 
-    std::string nodeId = luaL_checkstring(L, 2);
+    const std::string nodeId = luaL_checkstring(L, 2);
     instance->addUsageNode(nodeId);
     return 0;
 }
@@ -2599,7 +3081,7 @@ int BuildingBinding::removeUsageNode(lua_State* L)
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
 
-    std::string nodeId = luaL_checkstring(L, 2);
+    const std::string nodeId = luaL_checkstring(L, 2);
     instance->removeUsageNode(nodeId);
     return 0;
 }
@@ -2655,6 +3137,16 @@ int BuildingBinding::recalculateWorldAABB(lua_State* L)
     return 0;
 }
 
+int BuildingBinding::selectPartMaterial(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    GameData* partData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    GameData* result = instance->selectPartMaterial(partData);
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+}
+
 int BuildingBinding::getSeed(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -2694,186 +3186,61 @@ int BuildingBinding::updateBadNodes(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 143: ConstructionState* getBuildState(...) - unsupported return type
-  line 144: ConstructionState* _NV_getBuildState(...) - unsupported return type
-  line 145: ConstructionState* getBuildState_ActualNonShared(...) - unsupported return type
-  line 161: void upgrade(...) - unsupported arg type
-  line 162: void _NV_upgrade(...) - unsupported arg type
-  line 163: void downgrade(...) - unsupported arg type
-  line 164: void _NV_downgrade(...) - unsupported arg type
-  line 171: void buyMeAsk(...) - unsupported arg type
-  line 172: void _NV_buyMeAsk(...) - unsupported arg type
-  line 179: void togglePublic(...) - unsupported arg type
-  line 180: void _NV_togglePublic(...) - unsupported arg type
-  line 181: void dismantleButton(...) - unsupported arg type
-  line 182: void _NV_dismantleButton(...) - unsupported arg type
-  line 183: void pauseButton(...) - unsupported arg type
-  line 184: void _NV_pauseButton(...) - unsupported arg type
-  line 192: WallBuilding* isAWall(...) - unsupported return type
-  line 193: WallBuilding* _NV_isAWall(...) - unsupported return type
-  line 200: void setResidentSquad(...) - unsupported arg type
-  line 208: void addAnInternalBuilding(...) - unsupported arg type
-  line 209: void removeAnInternalBuilding(...) - unsupported arg type
-  line 211: void addAnInternalItem(...) - unsupported arg type
-  line 212: void removeAnInternalItem(...) - unsupported arg type
-  line 214: int getMountedBuildings(...) - unsupported arg type
-  line 216: void setHandle(...) - unsupported arg type
-  line 217: void _NV_setHandle(...) - unsupported arg type
-  line 225: StorageBuilding* getFunctionStuff(...) - unsupported return type
-  line 226: StorageBuilding* _NV_getFunctionStuff(...) - unsupported return type
-  line 227: UseableStuff* getUseableStuff(...) - unsupported return type
-  line 228: UseableStuff* _NV_getUseableStuff(...) - unsupported return type
-  line 258: InstanceID* getInstanceID(...) - unsupported return type
-  line 259: InstanceID* _NV_getInstanceID(...) - unsupported return type
-  line 260: const std::string& getLayoutInstanceID(...) - reference return type
-  line 261: const std::string& _NV_getLayoutInstanceID(...) - reference return type
-  line 268: Building* _CONSTRUCTOR(...) - unsupported arg type
-  line 290: void _saveBuildingState(...) - unsupported arg type
-  line 291: void _NV__saveBuildingState(...) - unsupported arg type
-  line 292: void _loadBuildingState(...) - unsupported arg type
-  line 293: void _NV__loadBuildingState(...) - unsupported arg type
-  line 294: void getGUIName(...) - unsupported arg type
-  line 295: void _NV_getGUIName(...) - unsupported arg type
-  line 296: void getGUIState(...) - unsupported arg type
-  line 297: void _NV_getGUIState(...) - unsupported arg type
-  line 298: void getGUICondition(...) - unsupported arg type
-  line 299: void _NV_getGUICondition(...) - unsupported arg type
-  line 300: void getGUIUpgrade(...) - unsupported arg type
-  line 301: void _NV_getGUIUpgrade(...) - unsupported arg type
-  line 302: void getGUIDestroyButton(...) - unsupported arg type
-  line 303: void _NV_getGUIDestroyButton(...) - unsupported arg type
-  line 305: void findAllFurnitureWithFunction(...) - unsupported arg type
-  line 306: ProductionBuilding* getProductionBuilding(...) - unsupported return type
-  line 307: ProductionBuilding* _NV_getProductionBuilding(...) - unsupported return type
-  line 314: DoorStuff* doorStuff(...) - unsupported return type
-  line 315: DoorStuff* _NV_doorStuff(...) - unsupported return type
-  line 319: GatewayBuilding* isGate(...) - unsupported return type
-  line 320: GatewayBuilding* _NV_isGate(...) - unsupported return type
-  line 321: DoorStuff* getDoor(...) - unsupported return type
-  line 322: DoorStuff* _NV_getDoor(...) - unsupported return type
-  line 323: Layout* getParentLayout(...) - unsupported return type
-  line 343: GameSaveState serialise(...) - unsupported return type
-  line 344: GameSaveState _NV_serialise(...) - unsupported return type
-  line 345: void loadFromSerialise(...) - unsupported arg type
-  line 346: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 347: void loadFromSerialise_TheDoors(...) - unsupported arg type
-  line 348: void _NV_loadFromSerialise_TheDoors(...) - unsupported arg type
-  line 349: void getGUIData(...) - unsupported arg type
-  line 350: void _NV_getGUIData(...) - unsupported arg type
-  line 355: DoorLock* getDoorLock(...) - unsupported return type
-  line 356: DoorLock* _NV_getDoorLock(...) - unsupported return type
-  line 365: const Ogre::Aabb& getAABB(...) - overloaded method
-  line 366: const Ogre::Aabb& _NV_getAABB(...) - overloaded method
-  line 367: Ogre::Aabb getAABB(...) - overloaded method
-  line 368: Ogre::Aabb _NV_getAABB(...) - overloaded method
-  line 369: void setAABB(...) - unsupported arg type
-  line 370: void _changeTown(...) - unsupported arg type
-  line 372: hand getTownHandle(...) - unsupported return type
-  line 382: unsigned __int64 getAudioObject(...) - unsupported return type
-  line 386: const hand& isIndoors(...) - reference return type
-  line 387: const hand& _NV_isIndoors(...) - reference return type
-  line 388: const hand& isIndoors_notDestroyed(...) - reference return type
-  line 389: const hand& _NV_isIndoors_notDestroyed(...) - reference return type
-  line 390: const hand& getMountedBuilding(...) - reference return type
-  line 391: const hand& _NV_getMountedBuilding(...) - reference return type
-  line 392: int getLights(...) - unsupported arg type
-  line 398: void setFaction(...) - unsupported arg type
-  line 399: void _NV_setFaction(...) - unsupported arg type
-  line 401: void setupLevelData(...) - unsupported arg type
-  line 405: Ogre::SceneNode* getRootNode(...) - unsupported return type
-  line 406: ZoneMap* getZoneMapLocation(...) - unsupported return type
-  line 407: ZoneMap* _NV_getZoneMapLocation(...) - unsupported return type
-  line 456: Ogre::SharedPtr<Ogre::Material> getBuildingPartMaterial(...) - static method
-  line 457: void setBuildingPartMaterial(...) - static method
-  line 458: void restoreMaterialToPhysical(...) - unsupported arg type
-  line 462: void updateWorldAABB(...) - unsupported arg type
-  line 467: GameData* selectPartMaterial(...) - unsupported arg type
-  line 468: Ogre::SharedPtr<Ogre::Material> getPartMaterial(...) - unsupported return type
-  line 469: void selectParts(...) - static method
-  line 470: void loadParts(...) - unsupported arg type
-  line 471: PhysicalEntity* loadPartEntity(...) - unsupported return type
-  line 472: Ogre::MovableObject* loadEntity(...) - unsupported return type
-  line 473: void loadEntityCallback(...) - unsupported arg type
-  line 474: void loadInstances(...) - unsupported arg type
-  line 476: PhysicalEntity* findPhysicalEntity(...) - unsupported return type
-  line 477: PhysicalEntity* findPhysicalEntityInCollection(...) - static method
-  line 478: bool buildingContainsEntity(...) - static method
-  line 479: std::string getEntityMaterialName(...) - static method
-  line 482: void setPartVisible(...) - unsupported arg type
-  line 483: void _NV_setPartVisible(...) - unsupported arg type
+  line 210: void removeAnInternalBuilding(...) - non-string reference arg
+  line 212: void addAnInternalItem(...) - unsupported arg type
+  line 213: void removeAnInternalItem(...) - unsupported arg type
+  line 215: int getMountedBuildings(...) - unsupported arg type
+  line 217: void setHandle(...) - non-string reference arg
+  line 218: void _NV_setHandle(...) - non-string reference arg
+  line 261: const std::string& getLayoutInstanceID(...) - reference return type
+  line 262: const std::string& _NV_getLayoutInstanceID(...) - reference return type
+  line 269: Building* _CONSTRUCTOR(...) - non-string reference arg
+  line 306: void findAllFurnitureWithFunction(...) - unsupported arg type
+  line 344: GameSaveState serialise(...) - unsupported arg type
+  line 345: GameSaveState _NV_serialise(...) - unsupported arg type
+  line 366: const Ogre::Aabb& getAABB(...) - overloaded method
+  line 367: const Ogre::Aabb& _NV_getAABB(...) - overloaded method
+  line 368: Ogre::Aabb getAABB(...) - overloaded method
+  line 369: Ogre::Aabb _NV_getAABB(...) - overloaded method
+  line 370: void setAABB(...) - unsupported arg type
+  line 383: unsigned __int64 getAudioObject(...) - unsupported return type
+  line 387: const hand& isIndoors(...) - reference return type
+  line 388: const hand& _NV_isIndoors(...) - reference return type
+  line 389: const hand& isIndoors_notDestroyed(...) - reference return type
+  line 390: const hand& _NV_isIndoors_notDestroyed(...) - reference return type
+  line 391: const hand& getMountedBuilding(...) - reference return type
+  line 392: const hand& _NV_getMountedBuilding(...) - reference return type
+  line 393: int getLights(...) - unsupported arg type
+  line 457: Ogre::SharedPtr<Ogre::Material> getBuildingPartMaterial(...) - static method
+  line 458: void setBuildingPartMaterial(...) - static method
+  line 459: void restoreMaterialToPhysical(...) - unsupported arg type
+  line 463: void updateWorldAABB(...) - unsupported arg type
+  line 469: Ogre::SharedPtr<Ogre::Material> getPartMaterial(...) - unsupported return type
+  line 470: void selectParts(...) - static method
+  line 471: void loadParts(...) - unsupported arg type
+  line 472: PhysicalEntity* loadPartEntity(...) - unsupported arg type
+  line 473: Ogre::MovableObject* loadEntity(...) - unsupported arg type
+  line 474: void loadEntityCallback(...) - unsupported arg type
+  line 475: void loadInstances(...) - unsupported arg type
+  line 477: PhysicalEntity* findPhysicalEntity(...) - unsupported arg type
+  line 478: PhysicalEntity* findPhysicalEntityInCollection(...) - static method
+  line 479: bool buildingContainsEntity(...) - static method
+  line 480: std::string getEntityMaterialName(...) - static method
+  line 483: void setPartVisible(...) - unsupported arg type
+  line 484: void _NV_setPartVisible(...) - unsupported arg type
 */
 
-static int Building_getBuildState(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    Building::ConstructionState* result = instance->getBuildState();
-    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
-}
-
-static int Building__NV_getBuildState(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    Building::ConstructionState* result = instance->_NV_getBuildState();
-    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
-}
-
-static int Building_getBuildState_ActualNonShared(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    Building::ConstructionState* result = instance->getBuildState_ActualNonShared();
-    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
-}
-
-static int Building_getFunctionStuff(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    StorageBuilding* result = instance->getFunctionStuff();
-    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
-}
-
-static int Building__NV_getFunctionStuff(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    StorageBuilding* result = instance->_NV_getFunctionStuff();
-    return pushObject<StorageBuilding>(L, result, StorageBuildingBinding::getMetatableName());
-}
-
-static int Building_getUseableStuff(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    UseableStuff* result = instance->getUseableStuff();
-    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
-}
-
-static int Building__NV_getUseableStuff(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    UseableStuff* result = instance->_NV_getUseableStuff();
-    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
-}
-
-static int Building_getProductionBuilding(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    ProductionBuilding* result = instance->getProductionBuilding();
-    return pushObject<ProductionBuilding>(L, result, ProductionBuildingBinding::getMetatableName());
-}
-
-static int Building__NV_getProductionBuilding(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-    ProductionBuilding* result = instance->_NV_getProductionBuilding();
-    return pushObject<ProductionBuilding>(L, result, ProductionBuildingBinding::getMetatableName());
-}
+/*
+Skipped properties needing manual binding:
+  line 314: doors (lektor<Building*>) - unsupported type
+  line 418: audioObject (unsigned __int64) - unsupported type
+  line 430: effects (lektor<std::pair<PhysicalEntity*, Effect*> >) - unsupported type
+  line 465: AABB (Ogre::Aabb) - unsupported type
+  line 485: usageNodesIds (std::set<std::string, std::less<std::string >, Ogre::STLAllocator<std::string, Ogre::GeneralAllocPolicy > >) - unsupported type
+  line 486: usageNodes (lektor<UsageNode*>) - unsupported type
+  line 487: badNodes (ogre_unordered_map<int, float>::type) - unsupported type
+  line 490: activeEffects (lektor<std::pair<char, float> >) - unsupported type
+*/
 
 int BuildingBinding::gc(lua_State* L)
 {
@@ -2897,6 +3264,9 @@ void BuildingBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "getScale", BuildingBinding::getScale },
+        { "getBuildState", BuildingBinding::getBuildState },
+        { "_NV_getBuildState", BuildingBinding::_NV_getBuildState },
+        { "getBuildState_ActualNonShared", BuildingBinding::getBuildState_ActualNonShared },
         { "select", BuildingBinding::select },
         { "_NV_select", BuildingBinding::_NV_select },
         { "getBuildingDesignation", BuildingBinding::getBuildingDesignation },
@@ -2911,28 +3281,43 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "notifyConstructionDismantling", BuildingBinding::notifyConstructionDismantling },
         { "_NV_notifyConstructionDismantling", BuildingBinding::_NV_notifyConstructionDismantling },
         { "dropMats", BuildingBinding::dropMats },
+        { "upgrade", BuildingBinding::upgrade },
+        { "_NV_upgrade", BuildingBinding::_NV_upgrade },
+        { "downgrade", BuildingBinding::downgrade },
+        { "_NV_downgrade", BuildingBinding::_NV_downgrade },
         { "canUpgrade", BuildingBinding::canUpgrade },
         { "_NV_canUpgrade", BuildingBinding::_NV_canUpgrade },
         { "canDowngrade", BuildingBinding::canDowngrade },
         { "_NV_canDowngrade", BuildingBinding::_NV_canDowngrade },
         { "canDismantle", BuildingBinding::canDismantle },
         { "_NV_canDismantle", BuildingBinding::_NV_canDismantle },
+        { "buyMeAsk", BuildingBinding::buyMeAsk },
+        { "_NV_buyMeAsk", BuildingBinding::_NV_buyMeAsk },
         { "buyMeCallback", BuildingBinding::buyMeCallback },
         { "_NV_buyMeCallback", BuildingBinding::_NV_buyMeCallback },
         { "calculateSaleValue", BuildingBinding::calculateSaleValue },
         { "loadNodes", BuildingBinding::loadNodes },
         { "isPublic", BuildingBinding::isPublic },
         { "_NV_isPublic", BuildingBinding::_NV_isPublic },
+        { "togglePublic", BuildingBinding::togglePublic },
+        { "_NV_togglePublic", BuildingBinding::_NV_togglePublic },
+        { "dismantleButton", BuildingBinding::dismantleButton },
+        { "_NV_dismantleButton", BuildingBinding::_NV_dismantleButton },
+        { "pauseButton", BuildingBinding::pauseButton },
+        { "_NV_pauseButton", BuildingBinding::_NV_pauseButton },
         { "confirmDismantle", BuildingBinding::confirmDismantle },
         { "_NV_confirmDismantle", BuildingBinding::_NV_confirmDismantle },
         { "isAShop", BuildingBinding::isAShop },
         { "_NV_isAShop", BuildingBinding::_NV_isAShop },
         { "isForSale", BuildingBinding::isForSale },
         { "_NV_isForSale", BuildingBinding::_NV_isForSale },
+        { "isAWall", BuildingBinding::isAWall },
+        { "_NV_isAWall", BuildingBinding::_NV_isAWall },
         { "isAWallRamp", BuildingBinding::isAWallRamp },
         { "_NV_isAWallRamp", BuildingBinding::_NV_isAWallRamp },
         { "hasInterior", BuildingBinding::hasInterior },
         { "affectsNavmesh", BuildingBinding::affectsNavmesh },
+        { "setResidentSquad", BuildingBinding::setResidentSquad },
         { "getResidentSquadLeader", BuildingBinding::getResidentSquadLeader },
         { "setDesignation", BuildingBinding::setDesignation },
         { "getWallEndPosition", BuildingBinding::getWallEndPosition },
@@ -2940,6 +3325,7 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "_NV_setupMiningResourceLevel", BuildingBinding::_NV_setupMiningResourceLevel },
         { "getMiningResourceLevel", BuildingBinding::getMiningResourceLevel },
         { "_NV_getMiningResourceLevel", BuildingBinding::_NV_getMiningResourceLevel },
+        { "addAnInternalBuilding", BuildingBinding::addAnInternalBuilding },
         { "getNumInternalBuildings", BuildingBinding::getNumInternalBuildings },
         { "moveMountedBuildings", BuildingBinding::moveMountedBuildings },
         { "reCheckInsideOutsideFortificationStatus", BuildingBinding::reCheckInsideOutsideFortificationStatus },
@@ -2949,6 +3335,10 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "_NV_postCreationPathfinderSetupStuff", BuildingBinding::_NV_postCreationPathfinderSetupStuff },
         { "getSpecialFunction", BuildingBinding::getSpecialFunction },
         { "_NV_getSpecialFunction", BuildingBinding::_NV_getSpecialFunction },
+        { "getFunctionStuff", BuildingBinding::getFunctionStuff },
+        { "_NV_getFunctionStuff", BuildingBinding::_NV_getFunctionStuff },
+        { "getUseableStuff", BuildingBinding::getUseableStuff },
+        { "_NV_getUseableStuff", BuildingBinding::_NV_getUseableStuff },
         { "isBroken", BuildingBinding::isBroken },
         { "_NV_isBroken", BuildingBinding::_NV_isBroken },
         { "setBroken", BuildingBinding::setBroken },
@@ -2976,6 +3366,8 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "needsSaving", BuildingBinding::needsSaving },
         { "_NV_needsSaving", BuildingBinding::_NV_needsSaving },
         { "notifyChange", BuildingBinding::notifyChange },
+        { "getInstanceID", BuildingBinding::getInstanceID },
+        { "_NV_getInstanceID", BuildingBinding::_NV_getInstanceID },
         { "setToDefaultFactionDivision", BuildingBinding::setToDefaultFactionDivision },
         { "getOutputBasedRotationSpeedMult", BuildingBinding::getOutputBasedRotationSpeedMult },
         { "_NV_getOutputBasedRotationSpeedMult", BuildingBinding::_NV_getOutputBasedRotationSpeedMult },
@@ -2986,14 +3378,37 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "loadUnloadCheck", BuildingBinding::loadUnloadCheck },
         { "_NV_loadUnloadCheck", BuildingBinding::_NV_loadUnloadCheck },
         { "_DESTRUCTOR", BuildingBinding::_DESTRUCTOR },
+        { "_saveBuildingState", BuildingBinding::_saveBuildingState },
+        { "_NV__saveBuildingState", BuildingBinding::_NV__saveBuildingState },
+        { "_loadBuildingState", BuildingBinding::_loadBuildingState },
+        { "_NV__loadBuildingState", BuildingBinding::_NV__loadBuildingState },
+        { "getGUIName", BuildingBinding::getGUIName },
+        { "_NV_getGUIName", BuildingBinding::_NV_getGUIName },
+        { "getGUIState", BuildingBinding::getGUIState },
+        { "_NV_getGUIState", BuildingBinding::_NV_getGUIState },
+        { "getGUICondition", BuildingBinding::getGUICondition },
+        { "_NV_getGUICondition", BuildingBinding::_NV_getGUICondition },
+        { "getGUIUpgrade", BuildingBinding::getGUIUpgrade },
+        { "_NV_getGUIUpgrade", BuildingBinding::_NV_getGUIUpgrade },
+        { "getGUIDestroyButton", BuildingBinding::getGUIDestroyButton },
+        { "_NV_getGUIDestroyButton", BuildingBinding::_NV_getGUIDestroyButton },
+        { "getProductionBuilding", BuildingBinding::getProductionBuilding },
+        { "_NV_getProductionBuilding", BuildingBinding::_NV_getProductionBuilding },
         { "getProductionMultForGUI", BuildingBinding::getProductionMultForGUI },
         { "_NV_getProductionMultForGUI", BuildingBinding::_NV_getProductionMultForGUI },
         { "getProductionMult", BuildingBinding::getProductionMult },
         { "_NV_getProductionMult", BuildingBinding::_NV_getProductionMult },
         { "isThePlayer", BuildingBinding::isThePlayer },
+        { "doorStuff", BuildingBinding::doorStuff },
+        { "_NV_doorStuff", BuildingBinding::_NV_doorStuff },
         { "doorParentBuilding", BuildingBinding::doorParentBuilding },
         { "_NV_doorParentBuilding", BuildingBinding::_NV_doorParentBuilding },
         { "isDoor", BuildingBinding::isDoor },
+        { "isGate", BuildingBinding::isGate },
+        { "_NV_isGate", BuildingBinding::_NV_isGate },
+        { "getDoor", BuildingBinding::getDoor },
+        { "_NV_getDoor", BuildingBinding::_NV_getDoor },
+        { "getParentLayout", BuildingBinding::getParentLayout },
         { "isFurniture", BuildingBinding::isFurniture },
         { "isFurnitureOrDoor", BuildingBinding::isFurnitureOrDoor },
         { "getIsOutsideFurniture", BuildingBinding::getIsOutsideFurniture },
@@ -3013,10 +3428,18 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "_NV_isPhysical", BuildingBinding::_NV_isPhysical },
         { "checkLoadedProperly", BuildingBinding::checkLoadedProperly },
         { "_NV_checkLoadedProperly", BuildingBinding::_NV_checkLoadedProperly },
+        { "loadFromSerialise", BuildingBinding::loadFromSerialise },
+        { "_NV_loadFromSerialise", BuildingBinding::_NV_loadFromSerialise },
+        { "loadFromSerialise_TheDoors", BuildingBinding::loadFromSerialise_TheDoors },
+        { "_NV_loadFromSerialise_TheDoors", BuildingBinding::_NV_loadFromSerialise_TheDoors },
+        { "getGUIData", BuildingBinding::getGUIData },
+        { "_NV_getGUIData", BuildingBinding::_NV_getGUIData },
         { "setVisible", BuildingBinding::setVisible },
         { "_NV_setVisible", BuildingBinding::_NV_setVisible },
         { "getVisible", BuildingBinding::getVisible },
         { "_NV_getVisible", BuildingBinding::_NV_getVisible },
+        { "getDoorLock", BuildingBinding::getDoorLock },
+        { "_NV_getDoorLock", BuildingBinding::_NV_getDoorLock },
         { "hasDoorLock", BuildingBinding::hasDoorLock },
         { "_NV_hasDoorLock", BuildingBinding::_NV_hasDoorLock },
         { "getMouseCursor", BuildingBinding::getMouseCursor },
@@ -3025,6 +3448,8 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "_NV_getDefaultTask", BuildingBinding::_NV_getDefaultTask },
         { "getInventory", BuildingBinding::getInventory },
         { "_NV_getInventory", BuildingBinding::_NV_getInventory },
+        { "_changeTown", BuildingBinding::_changeTown },
+        { "getTownHandle", BuildingBinding::getTownHandle },
         { "getTown", BuildingBinding::getTown },
         { "getRealTown", BuildingBinding::getRealTown },
         { "createPhysical", BuildingBinding::createPhysical },
@@ -3042,9 +3467,15 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "buildingComplete_RestoreMaterial", BuildingBinding::buildingComplete_RestoreMaterial },
         { "loadInteriorPhysical", BuildingBinding::loadInteriorPhysical },
         { "loadInteriorGraphics", BuildingBinding::loadInteriorGraphics },
+        { "setFaction", BuildingBinding::setFaction },
+        { "_NV_setFaction", BuildingBinding::_NV_setFaction },
         { "calculateLeftPost", BuildingBinding::calculateLeftPost },
+        { "setupLevelData", BuildingBinding::setupLevelData },
         { "getLinkLength", BuildingBinding::getLinkLength },
         { "_NV_getLinkLength", BuildingBinding::_NV_getLinkLength },
+        { "getRootNode", BuildingBinding::getRootNode },
+        { "getZoneMapLocation", BuildingBinding::getZoneMapLocation },
+        { "_NV_getZoneMapLocation", BuildingBinding::_NV_getZoneMapLocation },
         { "clearTownBuildingsManagerPtr", BuildingBinding::clearTownBuildingsManagerPtr },
         { "_NV_clearTownBuildingsManagerPtr", BuildingBinding::_NV_clearTownBuildingsManagerPtr },
         { "setup", BuildingBinding::setup },
@@ -3075,19 +3506,11 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "_NV_notifyEffect", BuildingBinding::_NV_notifyEffect },
         { "updatePhysicalWithProgress", BuildingBinding::updatePhysicalWithProgress },
         { "recalculateWorldAABB", BuildingBinding::recalculateWorldAABB },
+        { "selectPartMaterial", BuildingBinding::selectPartMaterial },
         { "getSeed", BuildingBinding::getSeed },
         { "onBuildingLoaded", BuildingBinding::onBuildingLoaded },
         { "_NV_onBuildingLoaded", BuildingBinding::_NV_onBuildingLoaded },
         { "updateBadNodes", BuildingBinding::updateBadNodes },
-        { "getBuildState", Building_getBuildState },
-        { "_NV_getBuildState", Building__NV_getBuildState },
-        { "getBuildState_ActualNonShared", Building_getBuildState_ActualNonShared },
-        { "getFunctionStuff", Building_getFunctionStuff },
-        { "_NV_getFunctionStuff", Building__NV_getFunctionStuff },
-        { "getUseableStuff", Building_getUseableStuff },
-        { "_NV_getUseableStuff", Building__NV_getUseableStuff },
-        { "getProductionBuilding", Building_getProductionBuilding },
-        { "_NV_getProductionBuilding", Building__NV_getProductionBuilding },
         { 0, 0 }
     };
 
@@ -3150,8 +3573,6 @@ void BuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "hasMovingParts");
     lua_pushcfunction(L, Building_get_saveVersion);
     lua_setfield(L, -2, "saveVersion");
-    lua_pushcfunction(L, Building_get_doors);
-    lua_setfield(L, -2, "doors");
     lua_pushcfunction(L, Building_get__town);
     lua_setfield(L, -2, "_town");
     lua_pushcfunction(L, Building_get_myInterior);
@@ -3160,8 +3581,6 @@ void BuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "buildingsManager");
     lua_pushcfunction(L, Building_get_rootNode);
     lua_setfield(L, -2, "rootNode");
-    lua_pushcfunction(L, Building_get_audioObject);
-    lua_setfield(L, -2, "audioObject");
     lua_pushcfunction(L, Building_get_soundEmitter);
     lua_setfield(L, -2, "soundEmitter");
     lua_pushcfunction(L, Building_get_hasAudio);
@@ -3184,8 +3603,6 @@ void BuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "isNestItem");
     lua_pushcfunction(L, Building_get_baseMaterial);
     lua_setfield(L, -2, "baseMaterial");
-    lua_pushcfunction(L, Building_get_effects);
-    lua_setfield(L, -2, "effects");
     lua_pushcfunction(L, Building_get_effectsVisible);
     lua_setfield(L, -2, "effectsVisible");
     lua_pushcfunction(L, Building_get_effectsActive);
@@ -3196,22 +3613,12 @@ void BuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "positionMarker");
     lua_pushcfunction(L, Building_get_heightAboveGround);
     lua_setfield(L, -2, "heightAboveGround");
-    lua_pushcfunction(L, Building_get_AABB);
-    lua_setfield(L, -2, "AABB");
     lua_pushcfunction(L, Building_get_isRedDebugTextureMode);
     lua_setfield(L, -2, "isRedDebugTextureMode");
     lua_pushcfunction(L, Building_get_materialName);
     lua_setfield(L, -2, "materialName");
-    lua_pushcfunction(L, Building_get_usageNodesIds);
-    lua_setfield(L, -2, "usageNodesIds");
-    lua_pushcfunction(L, Building_get_usageNodes);
-    lua_setfield(L, -2, "usageNodes");
-    lua_pushcfunction(L, Building_get_badNodes);
-    lua_setfield(L, -2, "badNodes");
     lua_pushcfunction(L, Building_get_triggerVolume);
     lua_setfield(L, -2, "triggerVolume");
-    lua_pushcfunction(L, Building_get_activeEffects);
-    lua_setfield(L, -2, "activeEffects");
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -3263,42 +3670,26 @@ void BuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "hasMovingParts");
     lua_pushcfunction(L, Building_set_saveVersion);
     lua_setfield(L, -2, "saveVersion");
-    lua_pushcfunction(L, Building_set_doors);
-    lua_setfield(L, -2, "doors");
     lua_pushcfunction(L, Building_set__town);
     lua_setfield(L, -2, "_town");
-    lua_pushcfunction(L, Building_set_myInterior);
-    lua_setfield(L, -2, "myInterior");
     lua_pushcfunction(L, Building_set_buildingsManager);
     lua_setfield(L, -2, "buildingsManager");
-    lua_pushcfunction(L, Building_set_rootNode);
-    lua_setfield(L, -2, "rootNode");
-    lua_pushcfunction(L, Building_set_audioObject);
-    lua_setfield(L, -2, "audioObject");
-    lua_pushcfunction(L, Building_set_soundEmitter);
-    lua_setfield(L, -2, "soundEmitter");
     lua_pushcfunction(L, Building_set_hasAudio);
     lua_setfield(L, -2, "hasAudio");
     lua_pushcfunction(L, Building_set_interiorGround);
     lua_setfield(L, -2, "interiorGround");
     lua_pushcfunction(L, Building_set_exteriorGround);
     lua_setfield(L, -2, "exteriorGround");
-    lua_pushcfunction(L, Building_set_physical);
-    lua_setfield(L, -2, "physical");
     lua_pushcfunction(L, Building_set_entitiesToLoad);
     lua_setfield(L, -2, "entitiesToLoad");
     lua_pushcfunction(L, Building_set_entitiesLoaded);
     lua_setfield(L, -2, "entitiesLoaded");
-    lua_pushcfunction(L, Building_set_isFurnitureOf);
-    lua_setfield(L, -2, "isFurnitureOf");
     lua_pushcfunction(L, Building_set_isOutsideFurniture);
     lua_setfield(L, -2, "isOutsideFurniture");
     lua_pushcfunction(L, Building_set_isNestItem);
     lua_setfield(L, -2, "isNestItem");
     lua_pushcfunction(L, Building_set_baseMaterial);
     lua_setfield(L, -2, "baseMaterial");
-    lua_pushcfunction(L, Building_set_effects);
-    lua_setfield(L, -2, "effects");
     lua_pushcfunction(L, Building_set_effectsVisible);
     lua_setfield(L, -2, "effectsVisible");
     lua_pushcfunction(L, Building_set_effectsActive);
@@ -3309,27 +3700,16 @@ void BuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "positionMarker");
     lua_pushcfunction(L, Building_set_heightAboveGround);
     lua_setfield(L, -2, "heightAboveGround");
-    lua_pushcfunction(L, Building_set_AABB);
-    lua_setfield(L, -2, "AABB");
     lua_pushcfunction(L, Building_set_isRedDebugTextureMode);
     lua_setfield(L, -2, "isRedDebugTextureMode");
     lua_pushcfunction(L, Building_set_materialName);
     lua_setfield(L, -2, "materialName");
-    lua_pushcfunction(L, Building_set_usageNodesIds);
-    lua_setfield(L, -2, "usageNodesIds");
-    lua_pushcfunction(L, Building_set_usageNodes);
-    lua_setfield(L, -2, "usageNodes");
-    lua_pushcfunction(L, Building_set_badNodes);
-    lua_setfield(L, -2, "badNodes");
-    lua_pushcfunction(L, Building_set_triggerVolume);
-    lua_setfield(L, -2, "triggerVolume");
-    lua_pushcfunction(L, Building_set_activeEffects);
-    lua_setfield(L, -2, "activeEffects");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to RootObject
-    setMetatableParent(L, BuildingBinding::getMetatableName(), RootObjectBinding::getMetatableName());
+    // setMetatableParent(L, BuildingBinding::getMetatableName(), RootObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
-}
+
+} // namespace KenshiLua

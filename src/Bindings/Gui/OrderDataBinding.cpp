@@ -162,7 +162,7 @@ void OrderDataBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
-    // // // // // // // // // setMetatableParent(L, OrderDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, OrderDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

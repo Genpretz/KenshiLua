@@ -482,10 +482,10 @@ void BuildModeWindowBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout
-    // // // // // // // // // setMetatableParent(L, BuildModeWindowBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
+    // setMetatableParent(L, BuildModeWindowBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
 
         // Wire up inheritance
-    setMetatableParent(L, BuildModeWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    // setMetatableParent(L, BuildModeWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

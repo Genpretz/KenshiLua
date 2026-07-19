@@ -23,8 +23,10 @@ public:
     static int getValid(lua_State* L);
     static int validate(lua_State* L);
     static int fakeOppositeValidate(lua_State* L);
+    static int collisionTestBuildings(lua_State* L);
     static int collisionTestCharacters(lua_State* L);
     static int validFloorTest(lua_State* L);
+    static int isIndoorsOK(lua_State* L);
     static int isGroundValid(lua_State* L);
     static int getWorldCorner(lua_State* L);
     static int updateBox(lua_State* L);

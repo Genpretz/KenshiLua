@@ -25,6 +25,12 @@ public:
     static int getPos(lua_State* L);
     static int getRot(lua_State* L);
     static int getTheInstancesData(lua_State* L);
+    static int createFromSerialisedInstanceData(lua_State* L);
+    static int addState(lua_State* L);
+    static int getInstanceID(lua_State* L);
+    // Commented out as this method is not exported by kenshilib:
+    // static int getAllStates(lua_State* L);
+    static int isValid(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };
 }

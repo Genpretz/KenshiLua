@@ -18,7 +18,7 @@
 #include "Bindings/Templates/LektorBinding.h"
 #include "Bindings/Util/StringPairBinding.h"
 #include "Bindings/Templates/StdMapBinding.h"
-#include "Bindings/Templates/FitnessSelectorBinding.h"
+#include "Bindings/FitnessSelectorBinding.h"
 
 namespace KenshiLua
 {
@@ -918,7 +918,7 @@ static int CharStats_set_medical(lua_State* L)
     if (lua_isnil(L, 2)) {
         b->medical = nullptr;
     } else {
-        b->medical = checkObject<MedicalSystem>(L, 2, MedicalSystemBinding::getMetatableName());
+        b->medical = lua_isnoneornil(L, 2) ? nullptr : checkObject<MedicalSystem>(L, 2, MedicalSystemBinding::getMetatableName());
     }
     return 0;
 }
@@ -930,7 +930,7 @@ static int CharStats_set_me(lua_State* L)
     if (lua_isnil(L, 2)) {
         b->me = nullptr;
     } else {
-        b->me = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+        b->me = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
     }
     return 0;
 }

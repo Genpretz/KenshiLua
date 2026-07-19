@@ -3,7 +3,8 @@
 #include "CombatTechniqueDataBinding.h"
 #include "Bindings/ImpactPointBinding.h"
 #include "Bindings/GameDataBinding.h"
-#include "Bindings/Templates/FitnessSelectorBinding.h"
+#include "Bindings/FitnessSelectorBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -156,7 +157,7 @@ static int CombatTechniqueData_get_events(lua_State* L)
 {
     CombatTechniqueData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatTechniqueData is nil");
-    return pushObject<ogre_unordered_map<GameData*, float>::type>(L, &instance->events, "KenshiLua.GameDataFloatMap");
+    return pushObject<ogre_unordered_map<GameData*, float>::type>(L, &instance->events, OgreUnorderedMapBinding<GameData*, float>::getMetatableName());
 }
 
 static int CombatTechniqueData_get_skillTypes(lua_State* L)

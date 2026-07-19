@@ -6,6 +6,8 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/MedicalSystemBinding.h"
+#include "Bindings/DamagesBinding.h"
+#include "Bindings/RobotLimbItemBinding.h"
 
 namespace KenshiLua
 {
@@ -57,8 +59,7 @@ static int HealthPartStatus_get_robotLimb(lua_State* L)
 {
     MedicalSystem::HealthPartStatus* b = getB(L, 1);
     if (!b) return luaL_error(L, "HealthPartStatus is nil");
-    // TODO: Unsupported type for robotLimb (RobotLimbItem*)
-    return luaL_error(L, "Unsupported property 'robotLimb' (type: RobotLimbItem*)");
+    return pushObject<RobotLimbItem>(L, b->robotLimb, RobotLimbItemBinding::getMetatableName());
 }
 
 static int HealthPartStatus_get_selfHealing(lua_State* L)
@@ -223,7 +224,8 @@ static int HealthPartStatus_set_robotLimb(lua_State* L)
 {
     MedicalSystem::HealthPartStatus* b = getB(L, 1);
     if (!b) return luaL_error(L, "HealthPartStatus is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for robotLimb");
+    b->robotLimb = checkObject<RobotLimbItem>(L, 2, RobotLimbItemBinding::getMetatableName());
+    return 0;
 }
 
 static int HealthPartStatus_set_selfHealing(lua_State* L)
@@ -462,16 +464,84 @@ int HealthPartStatusBinding::healthAsPercent(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 132: void serialise(...) - unsupported arg type
-  line 133: void load(...) - unsupported arg type
-  line 150: void setup(...) - unsupported arg type
-  line 153: void applyDamage(...) - unsupported arg type
-  line 154: void applyWearDamage(...) - unsupported arg type
-  line 156: LimbState getRobotLimbState(...) - unsupported return type
-  line 157: void setRobotLimbItem(...) - unsupported arg type
-*/
+int HealthPartStatusBinding::serialise(lua_State* L)
+{
+    MedicalSystem::HealthPartStatus* b = getB(L, 1);
+    if (!b) return luaL_error(L, "HealthPartStatus is nil");
+
+    GameData* out = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    int num = (int)luaL_checkinteger(L, 3);
+    b->serialise(out, num);
+    return 0;
+}
+
+int HealthPartStatusBinding::load(lua_State* L)
+{
+    MedicalSystem::HealthPartStatus* b = getB(L, 1);
+    if (!b) return luaL_error(L, "HealthPartStatus is nil");
+
+    GameData* out = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    int num = (int)luaL_checkinteger(L, 3);
+    b->load(out, num);
+    return 0;
+}
+
+int HealthPartStatusBinding::setup(lua_State* L)
+{
+    MedicalSystem::HealthPartStatus* b = getB(L, 1);
+    if (!b) return luaL_error(L, "HealthPartStatus is nil");
+
+    GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    float _hitchance = (float)luaL_checknumber(L, 3);
+    float _max = (float)luaL_checknumber(L, 4);
+    float _age = (float)luaL_checknumber(L, 5);
+    MedicalSystem* med = checkObject<MedicalSystem>(L, 6, MedicalSystemBinding::getMetatableName());
+    bool selfHeal = lua_toboolean(L, 7) != 0;
+    Character* _me = checkObject<Character>(L, 8, CharacterBinding::getMetatableName());
+    b->setup(dat, _hitchance, _max, _age, med, selfHeal, _me);
+    return 0;
+}
+
+int HealthPartStatusBinding::applyDamage(lua_State* L)
+{
+    MedicalSystem::HealthPartStatus* b = getB(L, 1);
+    if (!b) return luaL_error(L, "HealthPartStatus is nil");
+
+    Damages* damage = checkObject<Damages>(L, 2, DamagesBinding::getMetatableName());
+    b->applyDamage(*damage);
+    return 0;
+}
+
+int HealthPartStatusBinding::applyWearDamage(lua_State* L)
+{
+    MedicalSystem::HealthPartStatus* b = getB(L, 1);
+    if (!b) return luaL_error(L, "HealthPartStatus is nil");
+
+    Damages* damage = checkObject<Damages>(L, 2, DamagesBinding::getMetatableName());
+    b->applyWearDamage(*damage);
+    return 0;
+}
+
+int HealthPartStatusBinding::getRobotLimbState(lua_State* L)
+{
+    MedicalSystem::HealthPartStatus* b = getB(L, 1);
+    if (!b) return luaL_error(L, "HealthPartStatus is nil");
+
+    LimbState result = b->getRobotLimbState();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int HealthPartStatusBinding::setRobotLimbItem(lua_State* L)
+{
+    MedicalSystem::HealthPartStatus* b = getB(L, 1);
+    if (!b) return luaL_error(L, "HealthPartStatus is nil");
+
+    RobotLimbItem* _robotLimb = checkObject<RobotLimbItem>(L, 2, RobotLimbItemBinding::getMetatableName());
+    bool isLoadingASave = lua_toboolean(L, 3) != 0;
+    b->setRobotLimbItem(_robotLimb, isLoadingASave);
+    return 0;
+}
 
 int HealthPartStatusBinding::gc(lua_State* L)
 {
@@ -505,6 +575,13 @@ void HealthPartStatusBinding::registerBinding(lua_State* L)
         { "getBloodynessMult", HealthPartStatusBinding::getBloodynessMult },
         { "maxHealth", HealthPartStatusBinding::maxHealth },
         { "healthAsPercent", HealthPartStatusBinding::healthAsPercent },
+        { "serialise", HealthPartStatusBinding::serialise },
+        { "load", HealthPartStatusBinding::load },
+        { "setup", HealthPartStatusBinding::setup },
+        { "applyDamage", HealthPartStatusBinding::applyDamage },
+        { "applyWearDamage", HealthPartStatusBinding::applyWearDamage },
+        { "getRobotLimbState", HealthPartStatusBinding::getRobotLimbState },
+        { "setRobotLimbItem", HealthPartStatusBinding::setRobotLimbItem },
         { 0, 0 }
     };
 

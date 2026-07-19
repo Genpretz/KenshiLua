@@ -231,7 +231,7 @@ void DataPanelLine_SliderBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to DataPanelLine
-    setMetatableParent(L, DataPanelLine_SliderBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    // setMetatableParent(L, DataPanelLine_SliderBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

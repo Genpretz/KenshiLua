@@ -27,5 +27,16 @@ public:
     static int isInfiniteGoal(lua_State* L);
     static int needsSubjectOrLocation(lua_State* L);
     static int getTaskData(lua_State* L);
+
+    static int _CONSTRUCTOR(lua_State* L);
+    static int getFrameTime(lua_State* L);
+    static int sameAs(lua_State* L);
+    static int score(lua_State* L);
+    static int isResultsComplete(lua_State* L);
+    static int isResultsComplete_ignoreSubtasker(lua_State* L);
+    static int isRequirementsComplete(lua_State* L);
+    static int getRequirementComplaint(lua_State* L);
+    static int getNextSubTarget(lua_State* L);
+    static int getSubTask(lua_State* L);
 };
 }

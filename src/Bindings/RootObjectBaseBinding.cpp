@@ -84,7 +84,8 @@ static int RootObjectBase_set_owner(lua_State* L)
 {
     RootObjectBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for owner");
+    b->owner = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
 }
 
 static int RootObjectBase_set_displayName(lua_State* L)
@@ -99,7 +100,8 @@ static int RootObjectBase_set_data(lua_State* L)
 {
     RootObjectBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObjectBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for data");
+    b->data = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int RootObjectBase_set_pos(lua_State* L)

@@ -11,6 +11,7 @@
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Templates/LektorBinding.h"
 #include "Bindings/EnumBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -221,20 +222,110 @@ static int TownBase_get_buildingsManager(lua_State* L)
     return luaL_error(L, "Unsupported property 'buildingsManager' (type: TownBuildingsManager)");
 }
 
+// --- Getters for ResidentData ---
+static int ResidentData_get_data(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    return pushObject<GameData>(L, b->data, GameDataBinding::getMetatableName());
+}
+static int ResidentData_get_buildingsBad(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    return pushObject<ogre_unordered_set<GameData*>::type>(L, &b->buildingsBad, "ogre_unordered_set<GameData*>");
+}
+static int ResidentData_get_buildingsGood(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    return pushObject<ogre_unordered_set<GameData*>::type>(L, &b->buildingsGood, "ogre_unordered_set<GameData*>");
+}
+static int ResidentData_get_count(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    lua_pushinteger(L, b->count);
+    return 1;
+}
+static int ResidentData_get_chance(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    lua_pushinteger(L, b->chance);
+    return 1;
+}
+static int ResidentData_get_priority(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    lua_pushinteger(L, b->priority);
+    return 1;
+}
+
+// --- Setters for ResidentData ---
+static int ResidentData_set_data(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    b->data = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
+}
+static int ResidentData_set_buildingsBad(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    b->buildingsBad = *checkObject<ogre_unordered_set<GameData*>::type>(L, 2, "ogre_unordered_set<GameData*>");
+    return 0;
+}
+static int ResidentData_set_buildingsGood(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    b->buildingsGood = *checkObject<ogre_unordered_set<GameData*>::type>(L, 2, "ogre_unordered_set<GameData*>");
+    return 0;
+}
+static int ResidentData_set_count(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    b->count = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+static int ResidentData_set_chance(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    b->chance = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+static int ResidentData_set_priority(lua_State* L) {
+    TownBase::ResidentData* b = checkObject<TownBase::ResidentData>(L, 1, "KenshiLua.ResidentData");
+    b->priority = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static void registerResidentDataBinding(lua_State* L) {
+    static const luaL_Reg meta[] = {
+        { "__gc", noopGc },
+        { 0, 0 }
+    };
+    registerClass(L, "KenshiLua.ResidentData", meta, nullptr, genericPropertyIndex, genericPropertyNewIndex);
+    
+    luaL_getmetatable(L, "KenshiLua.ResidentData");
+    lua_newtable(L);
+    registerGetter(L, "data", ResidentData_get_data);
+    registerGetter(L, "buildingsBad", ResidentData_get_buildingsBad);
+    registerGetter(L, "buildingsGood", ResidentData_get_buildingsGood);
+    registerGetter(L, "count", ResidentData_get_count);
+    registerGetter(L, "chance", ResidentData_get_chance);
+    registerGetter(L, "priority", ResidentData_get_priority);
+    lua_setfield(L, -2, "__getters");
+    
+    lua_newtable(L);
+    registerSetter(L, "data", ResidentData_set_data);
+    registerSetter(L, "buildingsBad", ResidentData_set_buildingsBad);
+    registerSetter(L, "buildingsGood", ResidentData_set_buildingsGood);
+    registerSetter(L, "count", ResidentData_set_count);
+    registerSetter(L, "chance", ResidentData_set_chance);
+    registerSetter(L, "priority", ResidentData_set_priority);
+    lua_setfield(L, -2, "__setters");
+    
+    lua_pop(L, 1);
+    
+    LektorValueBinding<TownBase::ResidentData>::registerBinding(L, "lektor<ResidentData>", "KenshiLua.ResidentData");
+}
+
 static int TownBase_get_residentsSpawned(lua_State* L)
 {
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
-    // TODO: Unsupported type for residentsSpawned (lektor<ResidentData>)
-    return luaL_error(L, "Unsupported property 'residentsSpawned' (type: lektor<ResidentData>)");
+    return pushObject<lektor<TownBase::ResidentData>>(L, &b->residentsSpawned, "lektor<ResidentData>");
 }
 
 static int TownBase_get_residentsSpawned_BarsOrSomething(lua_State* L)
 {
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
-    // TODO: Unsupported type for residentsSpawned_BarsOrSomething (lektor<ResidentData>)
-    return luaL_error(L, "Unsupported property 'residentsSpawned_BarsOrSomething' (type: lektor<ResidentData>)");
+    return pushObject<lektor<TownBase::ResidentData>>(L, &b->residentsSpawned_BarsOrSomething, "lektor<ResidentData>");
 }
 
 static int TownBase_get_defaultResident(lua_State* L)
@@ -435,14 +526,18 @@ static int TownBase_set_residentsSpawned(lua_State* L)
 {
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for residentsSpawned");
+    lektor<TownBase::ResidentData>* src = LektorValueBinding<TownBase::ResidentData>::get(L, 2);
+    b->residentsSpawned = *src;
+    return 0;
 }
 
 static int TownBase_set_residentsSpawned_BarsOrSomething(lua_State* L)
 {
     TownBase* b = getB(L, 1);
     if (!b) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for residentsSpawned_BarsOrSomething");
+    lektor<TownBase::ResidentData>* src = LektorValueBinding<TownBase::ResidentData>::get(L, 2);
+    b->residentsSpawned_BarsOrSomething = *src;
+    return 0;
 }
 
 static int TownBase_set_defaultResident(lua_State* L)
@@ -1702,6 +1797,8 @@ void TownBaseBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     LektorPtrBinding<Building*>::registerBinding(L, "lektor<Building*>", BuildingBinding::getMetatableName());
+
+    registerResidentDataBinding(L);
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
