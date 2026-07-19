@@ -10,6 +10,14 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/Templates/LektorBinding.h"
 #include "Bindings/ModInfoBinding.h"
+#include "Bindings/GameDataManagerBinding.h"
+#include "Bindings/RootObjectFactoryBinding.h"
+#include "Bindings/FactionManagerBinding.h"
+#include "Bindings/ZoneManagerBinding.h"
+#include "Bindings/SimpleTimeStamperBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include <kenshi/ZoneManager.h>
+#include <kenshi/Faction.h>
 
 namespace KenshiLua
 {
@@ -56,40 +64,35 @@ static int GameWorld_get_gamedata(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for gamedata (GameDataManager)
-    return luaL_error(L, "Unsupported property 'gamedata' (type: GameDataManager)");
+    return pushObject<GameDataManager>(L, &b->gamedata, GameDataManagerBinding::getMetatableName());
 }
 
 static int GameWorld_get_leveldata(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for leveldata (GameDataManager)
-    return luaL_error(L, "Unsupported property 'leveldata' (type: GameDataManager)");
+    return pushObject<GameDataManager>(L, &b->leveldata, GameDataManagerBinding::getMetatableName());
 }
 
 static int GameWorld_get_savedata(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for savedata (GameDataManager)
-    return luaL_error(L, "Unsupported property 'savedata' (type: GameDataManager)");
+    return pushObject<GameDataManager>(L, &b->savedata, GameDataManagerBinding::getMetatableName());
 }
 
 static int GameWorld_get_theFactory(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for theFactory (RootObjectFactory*)
-    return luaL_error(L, "Unsupported property 'theFactory' (type: RootObjectFactory*)");
+    return pushObject<RootObjectFactory>(L, b->theFactory, RootObjectFactoryBinding::getMetatableName());
 }
 
 static int GameWorld_get_factionMgr(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for factionMgr (FactionManager*)
-    return luaL_error(L, "Unsupported property 'factionMgr' (type: FactionManager*)");
+    return pushObject<FactionManager>(L, b->factionMgr, FactionManagerBinding::getMetatableName());
 }
 
 static int GameWorld_get_navmesh(lua_State* L)
@@ -172,8 +175,7 @@ static int GameWorld_get_availabelModsOrderedList(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for availabelModsOrderedList (lektor<ModInfo*>)
-    return luaL_error(L, "Unsupported property 'availabelModsOrderedList' (type: lektor<ModInfo*>)");
+    return pushObject<lektor<ModInfo*>>(L, &b->availabelModsOrderedList, LektorPtrBinding<ModInfo*>::metaName);
 }
 
 static int GameWorld_get_player(lua_State* L)
@@ -187,8 +189,7 @@ static int GameWorld_get_charactersWithLights(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for charactersWithLights (ogre_unordered_set<Character*>::type)
-    return luaL_error(L, "Unsupported property 'charactersWithLights' (type: ogre_unordered_set<Character*>::type)");
+    return pushObject<ogre_unordered_set<Character*>::type>(L, &b->charactersWithLights, "ogre_unordered_set<Character*>");
 }
 
 static int GameWorld_get_sysMessageList(lua_State* L)
@@ -203,16 +204,14 @@ static int GameWorld_get_updatePortraitsMap(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for updatePortraitsMap (ogre_unordered_map<hand, float>::type)
-    return luaL_error(L, "Unsupported property 'updatePortraitsMap' (type: ogre_unordered_map<hand, float>::type)");
+    return pushObject<ogre_unordered_map<hand, float>::type>(L, &b->updatePortraitsMap, "ogre_unordered_map<hand, float>");
 }
 
 static int GameWorld_get_dynamicDestroyBuildingsList(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for dynamicDestroyBuildingsList (lektor<hand>)
-    return luaL_error(L, "Unsupported property 'dynamicDestroyBuildingsList' (type: lektor<hand>)");
+    return pushObject<lektor<hand>>(L, &b->dynamicDestroyBuildingsList, "lektor<hand>");
 }
 
 static int GameWorld_get_destroyListAE(lua_State* L)
@@ -251,8 +250,7 @@ static int GameWorld_get_deathParade(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for deathParade (ogre_unordered_map<hand, Character*>::type)
-    return luaL_error(L, "Unsupported property 'deathParade' (type: ogre_unordered_map<hand, Character*>::type)");
+    return pushObject<ogre_unordered_map<hand, Character*>::type>(L, &b->deathParade, "ogre_unordered_map<hand, Character*>");
 }
 
 static int GameWorld_get_deathParadeWasMeddledWith(lua_State* L)
@@ -275,8 +273,7 @@ static int GameWorld_get_charUpdateListMain(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for charUpdateListMain (ogre_unordered_set<Character*>::type)
-    return luaL_error(L, "Unsupported property 'charUpdateListMain' (type: ogre_unordered_set<Character*>::type)");
+    return pushObject<ogre_unordered_set<Character*>::type>(L, &b->charUpdateListMain, "ogre_unordered_set<Character*>");
 }
 
 static int GameWorld_get__AINonRenderThread(lua_State* L)
@@ -299,16 +296,14 @@ static int GameWorld_get_killListPhase0(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for killListPhase0 (ogre_unordered_set<RootObject*>::type)
-    return luaL_error(L, "Unsupported property 'killListPhase0' (type: ogre_unordered_set<RootObject*>::type)");
+    return pushObject<ogre_unordered_set<RootObject*>::type>(L, &b->killListPhase0, "ogre_unordered_set<RootObject*>");
 }
 
 static int GameWorld_get_killListPhase1(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for killListPhase1 (ogre_unordered_map<RootObject*, float>::type)
-    return luaL_error(L, "Unsupported property 'killListPhase1' (type: ogre_unordered_map<RootObject*, float>::type)");
+    return pushObject<ogre_unordered_map<RootObject*, float>::type>(L, &b->killListPhase1, "ogre_unordered_map<RootObject*, float>");
 }
 
 static int GameWorld_get_killListPhase2(lua_State* L)
@@ -323,24 +318,21 @@ static int GameWorld_get_mainUpdateListRemovalQueue(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for mainUpdateListRemovalQueue (lektor<Character*>)
-    return luaL_error(L, "Unsupported property 'mainUpdateListRemovalQueue' (type: lektor<Character*>)");
+    return pushObject<lektor<Character*>>(L, &b->mainUpdateListRemovalQueue, "lektor<Character*>");
 }
 
 static int GameWorld_get_timeStamper(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for timeStamper (SimpleTimeStamper)
-    return luaL_error(L, "Unsupported property 'timeStamper' (type: SimpleTimeStamper)");
+    return pushObject<SimpleTimeStamper>(L, &b->timeStamper, SimpleTimeStamperBinding::getMetatableName());
 }
 
 static int GameWorld_get_zoneMgr(lua_State* L)
 {
     GameWorld* b = getB(L, 1);
     if (!b) return luaL_error(L, "GameWorld is nil");
-    // TODO: Unsupported type for zoneMgr (ZoneManager*)
-    return luaL_error(L, "Unsupported property 'zoneMgr' (type: ZoneManager*)");
+    return pushObject<ZoneManager>(L, b->zoneMgr, ZoneManagerBinding::getMetatableName());
 }
 
 static int GameWorld_get_debugFlag(lua_State* L)

@@ -27,5 +27,13 @@ public:
     static int getBloodynessMult(lua_State* L);
     static int maxHealth(lua_State* L);
     static int healthAsPercent(lua_State* L);
+
+    static int serialise(lua_State* L);
+    static int load(lua_State* L);
+    static int setup(lua_State* L);
+    static int applyDamage(lua_State* L);
+    static int applyWearDamage(lua_State* L);
+    static int getRobotLimbState(lua_State* L);
+    static int setRobotLimbItem(lua_State* L);
 };
 }

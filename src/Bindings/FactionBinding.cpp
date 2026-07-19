@@ -349,7 +349,7 @@ static int Faction_set_relations(lua_State* L)
 {
     Faction* b = getB(L, 1);
     if (!b) return luaL_error(L, "Faction is nil");
-    b->relations = checkObject<FactionRelations>(L, 2, FactionRelationsBinding::getMetatableName());
+    b->relations = lua_isnoneornil(L, 2) ? nullptr : checkObject<FactionRelations>(L, 2, FactionRelationsBinding::getMetatableName());
     return 0;
 }
 

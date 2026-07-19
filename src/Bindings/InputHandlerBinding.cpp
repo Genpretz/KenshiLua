@@ -370,16 +370,24 @@ static int InputHandler_get_mPos(lua_State* L)
 {
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
-    // TODO: Unsupported type for mPos (Ogre::Vector2)
-    return luaL_error(L, "Unsupported property 'mPos' (type: Ogre::Vector2)");
+    lua_newtable(L);
+    lua_pushnumber(L, b->mPos.x);
+    lua_setfield(L, -2, "x");
+    lua_pushnumber(L, b->mPos.y);
+    lua_setfield(L, -2, "y");
+    return 1;
 }
 
 static int InputHandler_get_mPosAbs(lua_State* L)
 {
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
-    // TODO: Unsupported type for mPosAbs (Ogre::Vector2)
-    return luaL_error(L, "Unsupported property 'mPosAbs' (type: Ogre::Vector2)");
+    lua_newtable(L);
+    lua_pushnumber(L, b->mPosAbs.x);
+    lua_setfield(L, -2, "x");
+    lua_pushnumber(L, b->mPosAbs.y);
+    lua_setfield(L, -2, "y");
+    return 1;
 }
 
 static int InputHandler_get_mSpeed(lua_State* L)
@@ -749,14 +757,28 @@ static int InputHandler_set_mPos(lua_State* L)
 {
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for mPos");
+    if (!lua_istable(L, 2)) return luaL_error(L, "Expected table for mPos");
+    lua_getfield(L, 2, "x");
+    b->mPos.x = (float)luaL_checknumber(L, -1);
+    lua_pop(L, 1);
+    lua_getfield(L, 2, "y");
+    b->mPos.y = (float)luaL_checknumber(L, -1);
+    lua_pop(L, 1);
+    return 0;
 }
 
 static int InputHandler_set_mPosAbs(lua_State* L)
 {
     InputHandler* b = getB(L, 1);
     if (!b) return luaL_error(L, "InputHandler is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for mPosAbs");
+    if (!lua_istable(L, 2)) return luaL_error(L, "Expected table for mPosAbs");
+    lua_getfield(L, 2, "x");
+    b->mPosAbs.x = (float)luaL_checknumber(L, -1);
+    lua_pop(L, 1);
+    lua_getfield(L, 2, "y");
+    b->mPosAbs.y = (float)luaL_checknumber(L, -1);
+    lua_pop(L, 1);
+    return 0;
 }
 
 static int InputHandler_set_mSpeed(lua_State* L)
@@ -937,17 +959,85 @@ int InputHandlerBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 58: Command* getCommand(...) - unsupported return type
-  line 66: void addCommand(...) - overloaded method
-  line 67: void addCommand(...) - overloaded method
   line 68: void addKey(...) - non-string reference arg
-  line 70: void unbind(...) - overloaded method
-  line 71: void unbind(...) - overloaded method
-  line 73: bool isBound(...) - overloaded method
-  line 74: bool isBound(...) - overloaded method
-  line 81: lektor<int> getBoundKeys(...) - unsupported return type
   line 82: const std::string& getBoundCommand(...) - reference return type
 */
+
+int InputHandlerBinding::getCommand(lua_State* L)
+{
+    InputHandler* b = getB(L, 1);
+    if (!b) return luaL_error(L, "InputHandler is nil");
+    std::string s = luaL_checkstring(L, 2);
+    InputHandler::Command* res = b->getCommand(s);
+    lua_pushlightuserdata(L, (void*)res);
+    return 1;
+}
+
+int InputHandlerBinding::addCommand(lua_State* L)
+{
+    InputHandler* b = getB(L, 1);
+    if (!b) return luaL_error(L, "InputHandler is nil");
+    std::string name = luaL_checkstring(L, 2);
+    int value = (int)luaL_checkinteger(L, 3);
+    int key = (int)luaL_checkinteger(L, 4);
+    int alt = (int)luaL_checkinteger(L, 5);
+    InputHandler::Masks masks = (InputHandler::Masks)luaL_checkinteger(L, 6);
+    GameMode mode = (GameMode)luaL_checkinteger(L, 7);
+    b->addCommand(name, value, key, alt, masks, mode);
+    return 0;
+}
+
+int InputHandlerBinding::unbind(lua_State* L)
+{
+    InputHandler* b = getB(L, 1);
+    if (!b) return luaL_error(L, "InputHandler is nil");
+    if (lua_isnumber(L, 2))
+    {
+        int code = (int)luaL_checkinteger(L, 2);
+        GameMode mode = (GameMode)luaL_checkinteger(L, 3);
+        b->unbind(code, mode);
+    }
+    else
+    {
+        std::string cmd = luaL_checkstring(L, 2);
+        b->unbind(cmd);
+    }
+    return 0;
+}
+
+int InputHandlerBinding::isBound(lua_State* L)
+{
+    InputHandler* b = getB(L, 1);
+    if (!b) return luaL_error(L, "InputHandler is nil");
+    bool res;
+    if (lua_isnumber(L, 2))
+    {
+        int key = (int)luaL_checkinteger(L, 2);
+        res = b->isBound(key);
+    }
+    else
+    {
+        std::string cmd = luaL_checkstring(L, 2);
+        res = b->isBound(cmd);
+    }
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int InputHandlerBinding::getBoundKeys(lua_State* L)
+{
+    InputHandler* b = getB(L, 1);
+    if (!b) return luaL_error(L, "InputHandler is nil");
+    std::string command = luaL_checkstring(L, 2);
+    lektor<int> keys = b->getBoundKeys(command);
+    lua_newtable(L);
+    for (unsigned int i = 0; i < keys.size(); ++i)
+    {
+        lua_pushinteger(L, keys[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
 
 int InputHandlerBinding::gc(lua_State* L)
 {
@@ -986,6 +1076,11 @@ void InputHandlerBinding::registerBinding(lua_State* L)
         { "saveConfig", InputHandlerBinding::saveConfig },
         { "keyString", InputHandlerBinding::keyString },
         { "_DESTRUCTOR", InputHandlerBinding::_DESTRUCTOR },
+        { "getCommand", InputHandlerBinding::getCommand },
+        { "addCommand", InputHandlerBinding::addCommand },
+        { "unbind", InputHandlerBinding::unbind },
+        { "isBound", InputHandlerBinding::isBound },
+        { "getBoundKeys", InputHandlerBinding::getBoundKeys },
         { 0, 0 }
     };
 

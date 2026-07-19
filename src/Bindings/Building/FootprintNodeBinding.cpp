@@ -1,9 +1,10 @@
 #include "pch.h"
-#include <kenshi/Building/Building.h>
+#include "kenshi\Building\Building.h"
 #include "FootprintNodeBinding.h"
-#include "FootprintBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/Building/FootprintBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Building/PreviewBuildingBinding.h"
 
 namespace KenshiLua
 {
@@ -15,14 +16,6 @@ static FootprintNode* getInstance(lua_State* L, int idx)
 }
 
 // --- Getters for FootprintNode ---
-static int FootprintNode_get_aabb(lua_State* L)
-{
-    FootprintNode* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FootprintNode is nil");
-    // TODO: Unsupported type for aabb (Ogre::Aabb)
-    return luaL_error(L, "Unsupported property 'aabb' (type: Ogre::Aabb)");
-}
-
 static int FootprintNode_get_nodeId(lua_State* L)
 {
     FootprintNode* instance = getInstance(L, 1);
@@ -40,13 +33,6 @@ static int FootprintNode_get_enabled(lua_State* L)
 }
 
 // --- Setters for FootprintNode ---
-static int FootprintNode_set_aabb(lua_State* L)
-{
-    FootprintNode* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FootprintNode is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for aabb");
-}
-
 static int FootprintNode_set_nodeId(lua_State* L)
 {
     FootprintNode* instance = getInstance(L, 1);
@@ -102,16 +88,21 @@ int FootprintNodeBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 566: FootprintNode* _CONSTRUCTOR(...) - overloaded method
-  line 568: FootprintNode* _CONSTRUCTOR(...) - overloaded method
-  line 569: const Ogre::Aabb getWorldAABB(...) - unsupported return type
-  line 570: const Ogre::Aabb _NV_getWorldAABB(...) - unsupported return type
-  line 571: const Ogre::Aabb getLocalAABB(...) - unsupported return type
-  line 572: const Ogre::Aabb _NV_getLocalAABB(...) - unsupported return type
-  line 575: const std::string& getNodeId(...) - reference return type
-  line 576: bool collisionTestOK(...) - unsupported arg type
-  line 577: bool _NV_collisionTestOK(...) - unsupported arg type
-  line 584: PreviewBuilding::FootprintNode& operator=(...) - operator
+  line 567: FootprintNode* _CONSTRUCTOR(...) - overloaded method
+  line 569: FootprintNode* _CONSTRUCTOR(...) - overloaded method
+  line 570: const Ogre::Aabb getWorldAABB(...) - unsupported return type
+  line 571: const Ogre::Aabb _NV_getWorldAABB(...) - unsupported return type
+  line 572: const Ogre::Aabb getLocalAABB(...) - unsupported return type
+  line 573: const Ogre::Aabb _NV_getLocalAABB(...) - unsupported return type
+  line 576: const std::string& getNodeId(...) - reference return type
+  line 577: bool collisionTestOK(...) - unsupported arg type
+  line 578: bool _NV_collisionTestOK(...) - unsupported arg type
+  line 585: PreviewBuilding::FootprintNode& operator=(...) - operator
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 580: aabb (Ogre::Aabb) - unsupported type
 */
 
 int FootprintNodeBinding::gc(lua_State* L)
@@ -153,8 +144,6 @@ void FootprintNodeBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FootprintNodeBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FootprintNode_get_aabb);
-    lua_setfield(L, -2, "aabb");
     lua_pushcfunction(L, FootprintNode_get_nodeId);
     lua_setfield(L, -2, "nodeId");
     lua_pushcfunction(L, FootprintNode_get_enabled);
@@ -162,8 +151,6 @@ void FootprintNodeBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FootprintNode_set_aabb);
-    lua_setfield(L, -2, "aabb");
     lua_pushcfunction(L, FootprintNode_set_nodeId);
     lua_setfield(L, -2, "nodeId");
     lua_pushcfunction(L, FootprintNode_set_enabled);
@@ -171,8 +158,9 @@ void FootprintNodeBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to PreviewBuilding::Footprint
-    setMetatableParent(L, FootprintNodeBinding::getMetatableName(), FootprintBinding::getMetatableName());
+    // setMetatableParent(L, FootprintNodeBinding::getMetatableName(), PreviewBuilding::FootprintBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
-}
+
+} // namespace KenshiLua

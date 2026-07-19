@@ -49,6 +49,10 @@
 #include "TownBinding.h"
 #include "WorldEventStateQueryBinding.h"
 
+// Include Lua helpers and codec
+#include "Lua/BindingHelpers.h"
+#include "Lua/LuaCodec.h"
+
 // Lua 5.1/LuaJIT compatibility macros and helpers
 #if LUA_VERSION_NUM < 502
 

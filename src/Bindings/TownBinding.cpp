@@ -5,6 +5,11 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/Building/UseableStuffBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/TradeCultureBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/InstanceIDBinding.h"
 
 namespace KenshiLua
 {
@@ -34,16 +39,15 @@ static int Town_get_alarms(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for alarms (AlarmManager*)
-    return luaL_error(L, "Unsupported property 'alarms' (type: AlarmManager*)");
+    lua_pushlightuserdata(L, (void*)b->alarms);
+    return 1;
 }
 
 static int Town_get_instanceID(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for instanceID (InstanceID)
-    return luaL_error(L, "Unsupported property 'instanceID' (type: InstanceID)");
+    return pushObject<InstanceID>(L, &b->instanceID, InstanceIDBinding::getMetatableName());
 }
 
 static int Town_get_openToPublic(lua_State* L)
@@ -74,8 +78,7 @@ static int Town_get_gates(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for gates (ogre_unordered_set<hand>::type)
-    return luaL_error(L, "Unsupported property 'gates' (type: ogre_unordered_set<hand>::type)");
+    return pushObject<ogre_unordered_set<hand>::type>(L, &b->gates, OgreUnorderedSetBinding<hand>::getMetatableName());
 }
 
 static int Town_get_playerHasBuildingsInThisTown(lua_State* L)
@@ -90,24 +93,26 @@ static int Town_get_powerInList(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for powerInList (Ogre::FastArray<hand>)
-    return luaL_error(L, "Unsupported property 'powerInList' (type: Ogre::FastArray<hand>)");
+    lua_newtable(L);
+    for (size_t i = 0; i < b->powerInList.size(); ++i) {
+        handBinding::push(L, b->powerInList[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
 }
 
 static int Town_get_powerOutList(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for powerOutList (ogre_unordered_set<hand>::type)
-    return luaL_error(L, "Unsupported property 'powerOutList' (type: ogre_unordered_set<hand>::type)");
+    return pushObject<ogre_unordered_set<hand>::type>(L, &b->powerOutList, OgreUnorderedSetBinding<hand>::getMetatableName());
 }
 
 static int Town_get_batteryList(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for batteryList (ogre_unordered_set<hand>::type)
-    return luaL_error(L, "Unsupported property 'batteryList' (type: ogre_unordered_set<hand>::type)");
+    return pushObject<ogre_unordered_set<hand>::type>(L, &b->batteryList, OgreUnorderedSetBinding<hand>::getMetatableName());
 }
 
 static int Town_get_batteryMode(lua_State* L)
@@ -186,24 +191,22 @@ static int Town_get__facilitesWeHaveHere(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for _facilitesWeHaveHere (TagsClass<BuildingDesignation>)
-    return luaL_error(L, "Unsupported property '_facilitesWeHaveHere' (type: TagsClass<BuildingDesignation>)");
+    lua_pushinteger(L, (lua_Integer)b->_facilitesWeHaveHere.flags);
+    return 1;
 }
 
 static int Town_get_tradeCulture(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for tradeCulture (TradeCulture*)
-    return luaL_error(L, "Unsupported property 'tradeCulture' (type: TradeCulture*)");
+    return pushObject<TradeCulture>(L, b->tradeCulture, TradeCultureBinding::getMetatableName());
 }
 
 static int Town_get_tradeGoodsMults(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for tradeGoodsMults (ogre_unordered_map<GameData*, float>::type)
-    return luaL_error(L, "Unsupported property 'tradeGoodsMults' (type: ogre_unordered_map<GameData*, float>::type)");
+    return pushObject<ogre_unordered_map<GameData*, float>::type>(L, &b->tradeGoodsMults, OgreUnorderedMapBinding<GameData*, float>::getMetatableName());
 }
 
 static int Town_get_buildingMaterial(lua_State* L)
@@ -217,16 +220,24 @@ static int Town_get_distantTown(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for distantTown (DistantTown*)
-    return luaL_error(L, "Unsupported property 'distantTown' (type: DistantTown*)");
+    lua_pushlightuserdata(L, (void*)b->distantTown);
+    return 1;
 }
 
 static int Town_get_nestSpots(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    // TODO: Unsupported type for nestSpots (lektor<Town::NestSpot>)
-    return luaL_error(L, "Unsupported property 'nestSpots' (type: lektor<Town::NestSpot>)");
+    lua_newtable(L);
+    for (unsigned int i = 0; i < b->nestSpots.size(); ++i) {
+        lua_newtable(L);
+        pushVector3(L, b->nestSpots[i].pos);
+        lua_setfield(L, -2, "pos");
+        pushObject<GameData>(L, b->nestSpots[i].data, GameDataBinding::getMetatableName());
+        lua_setfield(L, -2, "data");
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
 }
 
 static int Town_get_nestsLoaded(lua_State* L)
@@ -253,6 +264,7 @@ static int Town_get_townRangeMultiplier(lua_State* L)
     return 1;
 }
 
+
 // --- Setters for Town ---
 static int Town_set_replacementTown(lua_State* L)
 {
@@ -273,14 +285,17 @@ static int Town_set_alarms(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for alarms");
+    b->alarms = (AlarmManager*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Town_set_instanceID(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for instanceID");
+    InstanceID* val = checkObject<InstanceID>(L, 2, InstanceIDBinding::getMetatableName());
+    b->instanceID = *val;
+    return 0;
 }
 
 static int Town_set_openToPublic(lua_State* L)
@@ -311,7 +326,8 @@ static int Town_set_gates(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for gates");
+    b->gates = *checkObject<ogre_unordered_set<hand>::type>(L, 2, OgreUnorderedSetBinding<hand>::getMetatableName());
+    return 0;
 }
 
 static int Town_set_playerHasBuildingsInThisTown(lua_State* L)
@@ -326,21 +342,31 @@ static int Town_set_powerInList(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for powerInList");
+    if (!lua_istable(L, 2)) return luaL_error(L, "Expected table for powerInList");
+    b->powerInList.clear();
+    lua_pushnil(L);
+    while (lua_next(L, 2) != 0) {
+        hand* h = checkObject<hand>(L, -1, handBinding::getMetatableName());
+        b->powerInList.push_back(*h);
+        lua_pop(L, 1);
+    }
+    return 0;
 }
 
 static int Town_set_powerOutList(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for powerOutList");
+    b->powerOutList = *checkObject<ogre_unordered_set<hand>::type>(L, 2, OgreUnorderedSetBinding<hand>::getMetatableName());
+    return 0;
 }
 
 static int Town_set_batteryList(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for batteryList");
+    b->batteryList = *checkObject<ogre_unordered_set<hand>::type>(L, 2, OgreUnorderedSetBinding<hand>::getMetatableName());
+    return 0;
 }
 
 static int Town_set_batteryMode(lua_State* L)
@@ -419,42 +445,62 @@ static int Town_set__facilitesWeHaveHere(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _facilitesWeHaveHere");
+    b->_facilitesWeHaveHere.flags = (unsigned int)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int Town_set_tradeCulture(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for tradeCulture");
+    b->tradeCulture = lua_isnoneornil(L, 2) ? nullptr : checkObject<TradeCulture>(L, 2, TradeCultureBinding::getMetatableName());
+    return 0;
 }
 
 static int Town_set_tradeGoodsMults(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for tradeGoodsMults");
+    b->tradeGoodsMults = *checkObject<ogre_unordered_map<GameData*, float>::type>(L, 2, OgreUnorderedMapBinding<GameData*, float>::getMetatableName());
+    return 0;
 }
 
 static int Town_set_buildingMaterial(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for buildingMaterial");
+    b->buildingMaterial = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int Town_set_distantTown(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for distantTown");
+    b->distantTown = (DistantTown*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Town_set_nestSpots(lua_State* L)
 {
     Town* b = getB(L, 1);
     if (!b) return luaL_error(L, "Town is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for nestSpots");
+    if (!lua_istable(L, 2)) return luaL_error(L, "Expected table for nestSpots");
+    b->nestSpots.clear();
+    lua_pushnil(L);
+    while (lua_next(L, 2) != 0) {
+        if (!lua_istable(L, -1)) return luaL_error(L, "Expected table entry in nestSpots list");
+        Town::NestSpot spot;
+        lua_getfield(L, -1, "pos");
+        readVector3(L, -1, spot.pos);
+        lua_pop(L, 1);
+        lua_getfield(L, -1, "data");
+        spot.data = lua_isnoneornil(L, -1) ? nullptr : checkObject<GameData>(L, -1, GameDataBinding::getMetatableName());
+        lua_pop(L, 1);
+        lektor_push_back(b->nestSpots, spot);
+        lua_pop(L, 1);
+    }
+    return 0;
 }
 
 static int Town_set_nestsLoaded(lua_State* L)
@@ -1062,18 +1108,111 @@ int TownBinding::deActivationCheck(lua_State* L)
     return 0;
 }
 
+int TownBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    GameData* data = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Town* result = b->_CONSTRUCTOR(data);
+    return pushObject<Town>(L, result, TownBinding::getMetatableName());
+}
+
+int TownBinding::notifyRepopulation(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    GameData* other = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    b->notifyRepopulation(other);
+    return 0;
+}
+
+int TownBinding::isMyOldHomeTownStillValid(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    GameData* other = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = b->isMyOldHomeTownStillValid(other);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int TownBinding::setup(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    GameData* town = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Ogre::Vector3 pos;
+    readVector3(L, 3, pos);
+    hand* h = checkObject<hand>(L, 4, handBinding::getMetatableName());
+    if (!h) return luaL_error(L, "hand is nil");
+    b->setup(town, pos, *h);
+    return 0;
+}
+
+int TownBinding::_NV_setup(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    GameData* town = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Ogre::Vector3 pos;
+    readVector3(L, 3, pos);
+    hand* h = checkObject<hand>(L, 4, handBinding::getMetatableName());
+    if (!h) return luaL_error(L, "hand is nil");
+    b->_NV_setup(town, pos, *h);
+    return 0;
+}
+
+int TownBinding::getAlarmMgr(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    AlarmManager* result = b->getAlarmMgr();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
+}
+
+int TownBinding::_NV_getAlarmMgr(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    AlarmManager* result = b->_NV_getAlarmMgr();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
+}
+
+int TownBinding::_setMainResident(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    Building* building = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    GameData* residents = lua_isnoneornil(L, 3) ? nullptr : checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    bool forceForGates = lua_toboolean(L, 4) != 0;
+    bool result = b->_setMainResident(building, residents, forceForGates);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int TownBinding::chooseResidents(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    lektor<Building*>* buildings = LektorPtrBinding<Building*>::get(L, 2);
+    b->chooseResidents(*buildings);
+    return 0;
+}
+
+int TownBinding::chooseBuildingForResident(lua_State* L)
+{
+    Town* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Town is nil");
+    lektor<Building*>* buildings = LektorPtrBinding<Building*>::get(L, 2);
+    TownBase::ResidentData* resident = checkObject<TownBase::ResidentData>(L, 3, "KenshiLua.ResidentData");
+    Building* result = b->chooseBuildingForResident(*buildings, resident);
+    return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
-  line 342: Town* _CONSTRUCTOR(...) - unsupported arg type
-  line 350: void notifyRepopulation(...) - unsupported arg type
-  line 352: bool isMyOldHomeTownStillValid(...) - unsupported arg type
-  line 353: void setup(...) - unsupported arg type
-  line 354: void _NV_setup(...) - unsupported arg type
-  line 363: AlarmManager* getAlarmMgr(...) - unsupported return type
-  line 364: AlarmManager* _NV_getAlarmMgr(...) - unsupported return type
-  line 366: bool _setMainResident(...) - unsupported arg type
-  line 367: void chooseResidents(...) - unsupported arg type
-  line 369: Building* chooseBuildingForResident(...) - unsupported arg type
   line 372: void setHandle(...) - unsupported arg type
   line 373: void _NV_setHandle(...) - unsupported arg type
   line 375: float getLocalTradePriceMult(...) - unsupported arg type
@@ -1100,8 +1239,6 @@ Skipped methods needing manual binding:
   line 414: void _NV_addGate(...) - unsupported arg type
   line 421: GatewayBuilding* getNearestGate(...) - unsupported return type
   line 422: GatewayBuilding* _NV_getNearestGate(...) - unsupported return type
-  line 425: void addBuilding(...) - unsupported arg type
-  line 426: void removeBuilding(...) - unsupported arg type
   line 439: void addNest(...) - unsupported arg type
   line 440: bool removeNest(...) - unsupported arg type
   line 452: TownType getPlayerTownTypeEnum(...) - unsupported return type
@@ -1214,6 +1351,16 @@ void TownBinding::registerBinding(lua_State* L)
         { "deActivationCheck", TownBinding::deActivationCheck },
         { "addBuilding", Town_addBuilding },
         { "removeBuilding", Town_removeBuilding },
+        { "_CONSTRUCTOR", TownBinding::_CONSTRUCTOR },
+        { "notifyRepopulation", TownBinding::notifyRepopulation },
+        { "isMyOldHomeTownStillValid", TownBinding::isMyOldHomeTownStillValid },
+        { "setup", TownBinding::setup },
+        { "_NV_setup", TownBinding::_NV_setup },
+        { "getAlarmMgr", TownBinding::getAlarmMgr },
+        { "_NV_getAlarmMgr", TownBinding::_NV_getAlarmMgr },
+        { "_setMainResident", TownBinding::_setMainResident },
+        { "chooseResidents", TownBinding::chooseResidents },
+        { "chooseBuildingForResident", TownBinding::chooseBuildingForResident },
         { 0, 0 }
     };
 
@@ -1288,6 +1435,10 @@ void TownBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "overrideRange");
     lua_pushcfunction(L, Town_get_townRangeMultiplier);
     lua_setfield(L, -2, "townRangeMultiplier");
+    lua_pushcfunction(L, Town_get_alarms);
+    lua_setfield(L, -2, "alarms");
+    lua_pushcfunction(L, Town_get_instanceID);
+    lua_setfield(L, -2, "instanceID");
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table

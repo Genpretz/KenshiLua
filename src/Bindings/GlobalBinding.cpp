@@ -6,7 +6,13 @@
 #include "Bindings/InputHandlerBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RootObjectFactoryBinding.h"
+#include "Bindings/GlobalConstantsBinding.h"
+#include "Bindings/OptionsHolderBinding.h"
+#include "Bindings/Gui/ForgottenGUIBinding.h"
 #include <kenshi/RootObjectFactory.h>
+#include <kenshi/GlobalConstants.h>
+#include <kenshi/OptionsHolder.h>
+#include <kenshi/gui/ForgottenGUI.h>
 
 #include <kenshi/Globals.h>
 #include <kenshi/GameWorld.h>
@@ -103,11 +109,10 @@ void registerGlobals(lua_State* L)
         lua_setglobal(L, "RootObjectFactoryInstance");
     }
 
-    // The remaining engine singletons don't have dedicated bindings yet;
-    // expose them as lightuserdata for advanced scripts that know the ABI.
-    if (::con)     { lua_pushlightuserdata(L, (void*)::con);     lua_setglobal(L, "con"); }
-    if (::options) { lua_pushlightuserdata(L, (void*)::options); lua_setglobal(L, "options"); }
-    if (::gui)     { lua_pushlightuserdata(L, (void*)::gui);     lua_setglobal(L, "gui"); }
+    // The remaining engine singletons now have dedicated bindings; expose them with proper metatables.
+    if (::con)     { pushObject<GlobalConstants>(L, ::con, GlobalConstantsBinding::getMetatableName()); lua_setglobal(L, "con"); }
+    if (::options) { pushObject<OptionsHolder>(L, ::options, OptionsHolderBinding::getMetatableName()); lua_setglobal(L, "options"); }
+    if (::gui)     { pushObject<ForgottenGUI>(L, ::gui, ForgottenGUIBinding::getMetatableName()); lua_setglobal(L, "gui"); }
 }
 
 } // namespace KenshiLua

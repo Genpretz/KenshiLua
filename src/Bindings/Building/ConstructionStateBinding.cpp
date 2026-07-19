@@ -1,7 +1,8 @@
 #include "pch.h"
-#include <kenshi/Building/Building.h>
+#include "kenshi\Building\Building.h"
 #include "ConstructionStateBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {
@@ -51,14 +52,6 @@ static int ConstructionState_get_msgDismantleAmount(lua_State* L)
     if (!instance) return luaL_error(L, "ConstructionState is nil");
     lua_pushnumber(L, instance->msgDismantleAmount);
     return 1;
-}
-
-static int ConstructionState_get_mats(lua_State* L)
-{
-    ConstructionState* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ConstructionState is nil");
-    // TODO: Unsupported type for mats (lektor<ConstructionState::BuildMaterial*>)
-    return luaL_error(L, "Unsupported property 'mats' (type: lektor<ConstructionState::BuildMaterial*>)");
 }
 
 static int ConstructionState_get_totalMats(lua_State* L)
@@ -134,13 +127,6 @@ static int ConstructionState_set_msgDismantleAmount(lua_State* L)
     return 0;
 }
 
-static int ConstructionState_set_mats(lua_State* L)
-{
-    ConstructionState* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ConstructionState is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for mats");
-}
-
 static int ConstructionState_set_totalMats(lua_State* L)
 {
     ConstructionState* instance = getInstance(L, 1);
@@ -179,6 +165,16 @@ int ConstructionStateBinding::_DESTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "ConstructionState is nil");
 
     instance->_DESTRUCTOR();
+    return 0;
+}
+
+int ConstructionStateBinding::addMaterials(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+
+    GameData* mat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->addMaterials(mat);
     return 0;
 }
 
@@ -232,6 +228,27 @@ int ConstructionStateBinding::getHealthBarActual(lua_State* L)
     return 1;
 }
 
+int ConstructionStateBinding::getMaterial(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+
+    const GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    ConstructionState::BuildMaterial* result = instance->getMaterial(d);
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
+}
+
+int ConstructionStateBinding::setup(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+
+    GameData* buildingdata = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->setup(buildingdata);
+    return 0;
+}
+
 int ConstructionStateBinding::getTotalMats(lua_State* L)
 {
     ConstructionState* instance = getInstance(L, 1);
@@ -252,6 +269,17 @@ int ConstructionStateBinding::getTotalMatsPresent(lua_State* L)
     return 1;
 }
 
+int ConstructionStateBinding::needsMat(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+
+    GameData* what = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    int result = instance->needsMat(what);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
 int ConstructionStateBinding::needMats(lua_State* L)
 {
     ConstructionState* instance = getInstance(L, 1);
@@ -264,15 +292,16 @@ int ConstructionStateBinding::needMats(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 101: ConstructionState* _CONSTRUCTOR(...) - overloaded method
-  line 103: ConstructionState* _CONSTRUCTOR(...) - overloaded method
-  line 106: void addMaterials(...) - unsupported arg type
-  line 126: ConstructionState::BuildMaterial* getMaterial(...) - unsupported arg type
-  line 127: void setup(...) - unsupported arg type
-  line 130: void getNeededMats(...) - unsupported arg type
-  line 131: int needsMat(...) - unsupported arg type
-  line 133: float getBuildingSpeedMultiplier(...) - static method
-  line 134: float getBuildingTimeInHours(...) - static method
+  line 102: ConstructionState* _CONSTRUCTOR(...) - overloaded method
+  line 104: ConstructionState* _CONSTRUCTOR(...) - overloaded method
+  line 131: void getNeededMats(...) - unsupported arg type
+  line 134: float getBuildingSpeedMultiplier(...) - static method
+  line 135: float getBuildingTimeInHours(...) - static method
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 136: mats (lektor<ConstructionState::BuildMaterial*>) - unsupported type
 */
 
 int ConstructionStateBinding::gc(lua_State* L)
@@ -297,13 +326,17 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", ConstructionStateBinding::_DESTRUCTOR },
+        { "addMaterials", ConstructionStateBinding::addMaterials },
         { "materialsEmpty", ConstructionStateBinding::materialsEmpty },
         { "isOverThreshold", ConstructionStateBinding::isOverThreshold },
         { "getHealthBarProgress", ConstructionStateBinding::getHealthBarProgress },
         { "getConstructionMaterialProgress", ConstructionStateBinding::getConstructionMaterialProgress },
         { "getHealthBarActual", ConstructionStateBinding::getHealthBarActual },
+        { "getMaterial", ConstructionStateBinding::getMaterial },
+        { "setup", ConstructionStateBinding::setup },
         { "getTotalMats", ConstructionStateBinding::getTotalMats },
         { "getTotalMatsPresent", ConstructionStateBinding::getTotalMatsPresent },
+        { "needsMat", ConstructionStateBinding::needsMat },
         { "needMats", ConstructionStateBinding::needMats },
         { 0, 0 }
     };
@@ -329,8 +362,6 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "constructionProgress");
     lua_pushcfunction(L, ConstructionState_get_msgDismantleAmount);
     lua_setfield(L, -2, "msgDismantleAmount");
-    lua_pushcfunction(L, ConstructionState_get_mats);
-    lua_setfield(L, -2, "mats");
     lua_pushcfunction(L, ConstructionState_get_totalMats);
     lua_setfield(L, -2, "totalMats");
     lua_pushcfunction(L, ConstructionState_get_buildTimeMult);
@@ -352,8 +383,6 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "constructionProgress");
     lua_pushcfunction(L, ConstructionState_set_msgDismantleAmount);
     lua_setfield(L, -2, "msgDismantleAmount");
-    lua_pushcfunction(L, ConstructionState_set_mats);
-    lua_setfield(L, -2, "mats");
     lua_pushcfunction(L, ConstructionState_set_totalMats);
     lua_setfield(L, -2, "totalMats");
     lua_pushcfunction(L, ConstructionState_set_buildTimeMult);
@@ -365,8 +394,9 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
-    // // // // // // // // // // // // // // setMetatableParent(L, ConstructionStateBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, ConstructionStateBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
-}
+
+} // namespace KenshiLua

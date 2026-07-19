@@ -275,8 +275,11 @@ def cpp_identifier(name):
 
 
 def binding_for_type(type_text, known_bindings):
-    t = base_type(type_text)
-    return known_bindings.get(t)
+    t = base_type(type_text).lower()
+    for k, v in known_bindings.items():
+        if k.lower() == t:
+            return v
+    return None
 
 
 def push_statement(type_text, expr, info, extra_enums, known_bindings, allow_ref=False):
@@ -284,10 +287,15 @@ def push_statement(type_text, expr, info, extra_enums, known_bindings, allow_ref
         return None
     t = base_type(type_text)
     
+    if t == "hand":
+        return "return handBinding::push(L, %s);" % expr
+        
+    binding = binding_for_type(type_text, known_bindings)
+    if binding:
+        addr = "" if is_pointer(type_text) else "&"
+        return "return pushObject<%s>(L, %s%s, %s::getMetatableName());" % (t, addr, expr, binding)
+        
     if is_pointer(type_text):
-        binding = binding_for_type(type_text, known_bindings)
-        if binding:
-            return "return pushObject<%s>(L, %s, %s::getMetatableName());" % (t, expr, binding)
         return "lua_pushlightuserdata(L, (void*)%s);" % expr
         
     if t in ("Ogre::Vector3", "Vector3"):
@@ -304,7 +312,7 @@ def push_statement(type_text, expr, info, extra_enums, known_bindings, allow_ref
     return None
 
 
-def read_expression(type_text, idx, info, extra_enums):
+def read_expression(type_text, idx, info, extra_enums, known_bindings=None):
     t = base_type(type_text)
     if t in SCALAR_TYPES:
         return SCALAR_TYPES[t][1].format(idx=idx)
@@ -312,6 +320,13 @@ def read_expression(type_text, idx, info, extra_enums):
         return "luaL_checkstring(L, %s)" % idx
     if is_enum_type(type_text, info, extra_enums):
         return "(%s)luaL_checkinteger(L, %s)" % (t, idx)
+    if known_bindings:
+        binding = binding_for_type(type_text, known_bindings)
+        if binding:
+            if is_pointer(type_text):
+                return "checkObject<%s>(L, %s, %s::getMetatableName())" % (t, idx, binding)
+            else:
+                return "*checkObject<%s>(L, %s, %s::getMetatableName())" % (t, idx, binding)
     return None
 
 
@@ -329,12 +344,10 @@ def method_supported(method, info, extra_enums, known_bindings, overload_counts)
     for arg in method.args:
         if is_struct_type(arg.type):
             continue 
-        if read_expression(arg.type, 0, info, extra_enums) is None:
+        if read_expression(arg.type, 0, info, extra_enums, known_bindings) is None:
             return False, "unsupported arg type"
         if is_reference(arg.type) and not (is_string_type(arg.type) and is_const(arg.type)):
             return False, "non-string reference arg"
-        if is_pointer(arg.type):
-            return False, "pointer arg"
     return True, ""
 
 
@@ -357,8 +370,9 @@ def generate_method_stub(info, method, extra_enums, known_bindings):
             out.append(f"    {t} {local_name};")
             out.append(f"    read{struct_name}(L, {i}, {local_name});")
         else:
-            expr = read_expression(arg.type, i, info, extra_enums)
-            out.append(f"    {base_type(arg.type)} {local_name} = {expr};")
+            expr = read_expression(arg.type, i, info, extra_enums, known_bindings)
+            var_type = arg.type.replace("&", "").strip()
+            out.append(f"    {var_type} {local_name} = {expr};")
 
     call = "instance->%s(%s)" % (method.name, ", ".join(arg_names))
     if base_type(method.return_type) == "void":
@@ -440,10 +454,12 @@ def is_property_supported(member, info, extra_enums, known_bindings):
     stmt = push_statement(member.type, "dummy", info, extra_enums, known_bindings)
     return stmt is not None
 
-def is_setter_supported(member, info, extra_enums):
+def is_setter_supported(member, info, extra_enums, known_bindings):
     if is_struct_type(member.type):
         return True
-    expr = read_expression(member.type, 2, info, extra_enums)
+    if binding_for_type(member.type, known_bindings):
+        return True
+    expr = read_expression(member.type, 2, info, extra_enums, known_bindings)
     return (expr is not None) and not is_pointer(member.type) and not is_reference(member.type)
 
 def generate_property_getters(info, members, extra_enums, known_bindings):
@@ -464,11 +480,11 @@ def generate_property_getters(info, members, extra_enums, known_bindings):
         out.append("}\n")
     return "\n".join(out)
 
-def generate_property_setters(info, members, extra_enums):
+def generate_property_setters(info, members, extra_enums, known_bindings):
     out = []
     out.append(f"// --- Setters for {info.name} ---")
     for member in members:
-        if is_setter_supported(member, info, extra_enums):
+        if is_setter_supported(member, info, extra_enums, known_bindings):
             out.append(f"static int {info.name}_set_{member.name}(lua_State* L)")
             out.append("{")
             out.append(f"    {info.name}* instance = getInstance(L, 1);")
@@ -480,20 +496,70 @@ def generate_property_setters(info, members, extra_enums):
                 out.append(f"    read{struct_name}(L, 2, instance->{member.name});")
                 out.append("    return 0;")
             else:
-                expr = read_expression(member.type, 2, info, extra_enums)
-                out.append(f"    instance->{member.name} = {expr};")
-                out.append("    return 0;")
+                binding = binding_for_type(member.type, known_bindings)
+                if binding:
+                    t = base_type(member.type)
+                    if is_pointer(member.type):
+                        out.append(f"    instance->{member.name} = lua_isnoneornil(L, 2) ? nullptr : checkObject<{t}>(L, 2, {binding}::getMetatableName());")
+                    else:
+                        out.append(f"    instance->{member.name} = *checkObject<{t}>(L, 2, {binding}::getMetatableName());")
+                    out.append("    return 0;")
+                else:
+                    expr = read_expression(member.type, 2, info, extra_enums, known_bindings)
+                    out.append(f"    instance->{member.name} = {expr};")
+                    out.append("    return 0;")
             out.append("}\n")
     return "\n".join(out)
 
-def generate_cpp(info, header_path, extra_enums, known_bindings):
+def generate_cpp(info, header_path, extra_enums, known_bindings, known_headers=None):
     out = []
     
     # 1. Standard Includes
     out.append('#include "pch.h"')
-    out.append(f'#include "{header_path}"')
+    
+    # Strip common include folder prefixes
+    h_str = str(header_path).replace("\\", "/")
+    for prefix in ["extern/KenshiLib/Include/", "extern/kenshilib/Include/", "extern/KenshiLib/include/", "extern/kenshilib/include/"]:
+        if h_str.startswith(prefix):
+            h_str = h_str[len(prefix):]
+            break
+    # Normalize slashes to match project convention
+    h_str = h_str.replace("/", "\\")
+    out.append(f'#include "{h_str}"')
     out.append(f'#include "{info.name}Binding.h"')
     out.append('#include "Lua/BindingHelpers.h"')
+    
+    # Add includes for all referenced types that have bindings
+    if known_headers:
+        referenced_types = set()
+        for member in info.members:
+            referenced_types.add(base_type(member.type))
+        for method in info.methods:
+            referenced_types.add(base_type(method.return_type))
+            for arg in method.args:
+                referenced_types.add(base_type(arg.type))
+        if info.bases:
+            base_names = [b.strip().split()[-1] for b in info.bases.split(",")]
+            for base in base_names:
+                referenced_types.add(base)
+        
+        # We also need HandBinding if hand is used
+        has_hand = False
+        for member in info.members:
+            if "hand" in base_type(member.type):
+                has_hand = True
+        for method in info.methods:
+            if "hand" in base_type(method.return_type):
+                has_hand = True
+            for arg in method.args:
+                if "hand" in base_type(arg.type):
+                    has_hand = True
+        if has_hand:
+            referenced_types.add("hand")
+            
+        for t in sorted(referenced_types):
+            if t in known_headers and t != info.name:
+                out.append(f'#include "{known_headers[t]}"')
     out.append("")
     out.append("namespace KenshiLua")
     out.append("{")
@@ -516,7 +582,7 @@ def generate_cpp(info, header_path, extra_enums, known_bindings):
 
     # 2. Inject Getter and Setter C-Closures
     out.append(generate_property_getters(info, supported_members, extra_enums, known_bindings))
-    out.append(generate_property_setters(info, supported_members, extra_enums))
+    out.append(generate_property_setters(info, supported_members, extra_enums, known_bindings))
 
     # 3. Generate Methods
     out.append(generate_methods(info, extra_enums, known_bindings))
@@ -588,7 +654,7 @@ def generate_cpp(info, header_path, extra_enums, known_bindings):
     # 7. Populate the __setters table
     out.append("    lua_newtable(L); // Create __setters table")
     for member in supported_members:
-        if is_setter_supported(member, info, extra_enums):
+        if is_setter_supported(member, info, extra_enums, known_bindings):
             out.append(f"    lua_pushcfunction(L, {info.name}_set_{member.name});")
             out.append(f"    lua_setfield(L, -2, \"{member.name}\");")
     out.append("    lua_setfield(L, -2, \"__setters\"); // Bind to metatable")
@@ -601,7 +667,7 @@ def generate_cpp(info, header_path, extra_enums, known_bindings):
         primary_base = base_names[0] # Grab the first inherited class
         
         out.append(f"    // Wire up inheritance to {primary_base}")
-        out.append(f"    setPlayableParent(L, {info.name}Binding::getMetatableName(), {primary_base}Binding::getMetatableName());")
+        out.append(f"    // setMetatableParent(L, {info.name}Binding::getMetatableName(), {primary_base}Binding::getMetatableName());")
         out.append("")
 
     out.append("    lua_pop(L, 1); // Pop the metatable off the stack")
@@ -614,6 +680,7 @@ def generate_cpp(info, header_path, extra_enums, known_bindings):
 
 def discover_known_bindings():
     known = {}
+    headers = {}
     bindings_dir = Path("src/Bindings")
     if not bindings_dir.is_dir():
         script_dir = Path(__file__).resolve().parent.parent
@@ -625,8 +692,21 @@ def discover_known_bindings():
             if filename.endswith("Binding.h"):
                 class_name = filename[:-len("Binding.h")]
                 if class_name:
-                    known[class_name] = class_name + "Binding"
-    return known
+                    binding_class = class_name + "Binding"
+                    try:
+                        content = path.read_text(encoding="utf-8", errors="ignore")
+                        m = re.search(r"\b(?:class|struct)\s+(\w+Binding)\b", content)
+                        if m:
+                            binding_class = m.group(1)
+                    except Exception:
+                        pass
+                    known[class_name] = binding_class
+                    try:
+                        rel = path.relative_to(bindings_dir.parent)
+                        headers[class_name] = str(rel).replace("\\", "/")
+                    except ValueError:
+                        headers[class_name] = filename
+    return known, headers
 
 
 def parse_known_bindings(values):
@@ -664,7 +744,7 @@ def main():
     text = re.compile(r"//.*").sub("", text)
 
     classes = parse_classes(text)
-    known_bindings = discover_known_bindings()
+    known_bindings, known_headers = discover_known_bindings()
     discovered_count = len(known_bindings)
     known_bindings.update(parse_known_bindings(args.bind_map))
     print(f"Discovered {discovered_count} existing bindings in project.")
@@ -673,11 +753,16 @@ def main():
             c = c.strip()
             if c:
                 known_bindings[c] = c + "Binding"
+                
+    for c, b in known_bindings.items():
+        if c not in known_headers:
+            known_headers[c] = f"Bindings/{b}.h"
+            
     extra_enums = parse_extra_enums(args.enums)
-
+ 
     for info in classes:
         header = generate_header(info, extra_enums, known_bindings)
-        cpp = generate_cpp(info, header_path, extra_enums, known_bindings)
+        cpp = generate_cpp(info, header_path, extra_enums, known_bindings, known_headers)
         if args.write_dir:
             out_dir = Path(args.write_dir)
             out_dir.mkdir(parents=True, exist_ok=True)

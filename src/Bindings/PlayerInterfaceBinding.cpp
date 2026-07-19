@@ -10,6 +10,8 @@
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/RootObjectContainerBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/ItemBinding.h"
 #include "kenshi\CameraClass.h"
 #include "CameraClassBinding.h"
 #include "kenshi\RootObject.h"
@@ -18,9 +20,19 @@
 #include "kenshi\Platoon.h"
 #include "PlatoonBinding.h"
 #include "FactionBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/ActivePlatoonBinding.h"
+#include "Bindings/ZoneMapBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/AIOptionsBinding.h"
+#include "Bindings/ContextMenuBinding.h"
+#include "Bindings/SelectionBoxBinding.h"
+#include "Bindings/InputHandlerBinding.h"
+#include <kenshi/InputHandler.h>
 
 namespace KenshiLua
 {
+
 
 static PlayerInterface* getB(lua_State* L, int idx)
 {
@@ -47,8 +59,8 @@ static int PlayerInterface_get_technology(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for technology (Research*)
-    return luaL_error(L, "Unsupported property 'technology' (type: Research*)");
+    lua_pushlightuserdata(L, (void*)b->technology);
+    return 1;
 }
 
 static int PlayerInterface_get_selectedObjectsChangedThisFrame(lua_State* L)
@@ -63,24 +75,22 @@ static int PlayerInterface_get_contextMenu(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for contextMenu (ContextMenu)
-    return luaL_error(L, "Unsupported property 'contextMenu' (type: ContextMenu)");
+    return pushObject<ContextMenu>(L, &b->contextMenu, ContextMenuBinding::getMetatableName());
 }
 
 static int PlayerInterface_get_selectBox(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for selectBox (SelectionBox)
-    return luaL_error(L, "Unsupported property 'selectBox' (type: SelectionBox)");
+    return pushObject<SelectionBox>(L, &b->selectBox, SelectionBoxBinding::getMetatableName());
 }
 
 static int PlayerInterface_get_moveMarker(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for moveMarker (MoveMarker*)
-    return luaL_error(L, "Unsupported property 'moveMarker' (type: MoveMarker*)");
+    lua_pushlightuserdata(L, (void*)b->moveMarker);
+    return 1;
 }
 
 static int PlayerInterface_get_selectedCharacter(lua_State* L)
@@ -94,32 +104,28 @@ static int PlayerInterface_get_aiOptions(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for aiOptions (PlayerInterface::AIOptions)
-    return luaL_error(L, "Unsupported property 'aiOptions' (type: PlayerInterface::AIOptions)");
+    return pushObject<PlayerInterface::AIOptions>(L, &b->aiOptions, AIOptionsBinding::getMetatableName());
 }
 
 static int PlayerInterface_get_zonesVisibilities(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for zonesVisibilities (ogre_unordered_map<ZoneMap*, unsigned char>::type)
-    return luaL_error(L, "Unsupported property 'zonesVisibilities' (type: ogre_unordered_map<ZoneMap*, unsigned char>::type)");
+    return pushObject<ogre_unordered_map<ZoneMap*, unsigned char>::type>(L, &b->zonesVisibilities, "ogre_unordered_map<ZoneMap*, unsigned char>");
 }
 
 static int PlayerInterface_get_townsActive(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for townsActive (ogre_unordered_set<TownBase*>::type)
-    return luaL_error(L, "Unsupported property 'townsActive' (type: ogre_unordered_set<TownBase*>::type)");
+    return pushObject<ogre_unordered_set<TownBase*>::type>(L, &b->townsActive, "ogre_unordered_set<TownBase*>");
 }
 
 static int PlayerInterface_get_interiorsVisible(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for interiorsVisible (ogre_unordered_set<hand>::type)
-    return luaL_error(L, "Unsupported property 'interiorsVisible' (type: ogre_unordered_set<hand>::type)");
+    return pushObject<ogre_unordered_set<hand>::type>(L, &b->interiorsVisible, OgreUnorderedSetBinding<hand>::getMetatableName());
 }
 
 static int PlayerInterface_get_interiorsVisibleHash(lua_State* L)
@@ -177,14 +183,11 @@ static int PlayerInterface_get_rmouseTimer(lua_State* L)
     return 1;
 }
 
-static const char* SelectedCharactersSet_metaName() { return "KenshiLua.SelectedCharactersSet"; }
-typedef OgreUnorderedSetBinding<hand> SelectedCharactersSetBinding;
-
 static int PlayerInterface_get_selectedCharacters(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return pushObject<ogre_unordered_set<hand>::type>(L, &b->selectedCharacters, SelectedCharactersSet_metaName());
+    return pushObject<ogre_unordered_set<hand>::type>(L, &b->selectedCharacters, OgreUnorderedSetBinding<hand>::getMetatableName());
 }
 
 static int PlayerInterface_get_selectedObject(lua_State* L)
@@ -229,8 +232,8 @@ static int PlayerInterface_get_levelEditor(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for levelEditor (LevelEditor*)
-    return luaL_error(L, "Unsupported property 'levelEditor' (type: LevelEditor*)");
+    lua_pushlightuserdata(L, (void*)b->levelEditor);
+    return 1;
 }
 
 static int PlayerInterface_get_participant(lua_State* L)
@@ -251,8 +254,7 @@ static int PlayerInterface_get_playerCharacters(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for playerCharacters (lektor<Character*>)
-    return luaL_error(L, "Unsupported property 'playerCharacters' (type: lektor<Character*>)");
+    return pushObject<lektor<Character*>>(L, &b->playerCharacters, "lektor<Character*>");
 }
 
 static int PlayerInterface_get_deadPlayerSquad(lua_State* L)
@@ -266,8 +268,8 @@ static int PlayerInterface_get_placementObject(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    // TODO: Unsupported type for placementObject (PlacementObject*)
-    return luaL_error(L, "Unsupported property 'placementObject' (type: PlacementObject*)");
+    lua_pushlightuserdata(L, (void*)b->placementObject);
+    return 1;
 }
 
 static int PlayerInterface_get_characterEditorMode(lua_State* L)
@@ -323,14 +325,16 @@ static int PlayerInterface_set_camera(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for camera");
+    b->camera = lua_isnoneornil(L, 2) ? nullptr : checkObject<CameraClass>(L, 2, CameraClassBinding::getMetatableName());
+    return 0;
 }
 
 static int PlayerInterface_set_technology(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for technology");
+    b->technology = (Research*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int PlayerInterface_set_selectedObjectsChangedThisFrame(lua_State* L)
@@ -345,21 +349,26 @@ static int PlayerInterface_set_contextMenu(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for contextMenu");
+    ContextMenu* val = checkObject<ContextMenu>(L, 2, ContextMenuBinding::getMetatableName());
+    b->contextMenu = *val;
+    return 0;
 }
 
 static int PlayerInterface_set_selectBox(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for selectBox");
+    SelectionBox* val = checkObject<SelectionBox>(L, 2, SelectionBoxBinding::getMetatableName());
+    b->selectBox = *val;
+    return 0;
 }
 
 static int PlayerInterface_set_moveMarker(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for moveMarker");
+    b->moveMarker = (MoveMarker*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int PlayerInterface_set_selectedCharacter(lua_State* L)
@@ -376,28 +385,33 @@ static int PlayerInterface_set_aiOptions(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for aiOptions");
+    PlayerInterface::AIOptions* val = checkObject<PlayerInterface::AIOptions>(L, 2, AIOptionsBinding::getMetatableName());
+    b->aiOptions = *val;
+    return 0;
 }
 
 static int PlayerInterface_set_zonesVisibilities(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for zonesVisibilities");
+    b->zonesVisibilities = *checkObject<ogre_unordered_map<ZoneMap*, unsigned char>::type>(L, 2, "ogre_unordered_map<ZoneMap*, unsigned char>");
+    return 0;
 }
 
 static int PlayerInterface_set_townsActive(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for townsActive");
+    b->townsActive = *checkObject<ogre_unordered_set<TownBase*>::type>(L, 2, "ogre_unordered_set<TownBase*>");
+    return 0;
 }
 
 static int PlayerInterface_set_interiorsVisible(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for interiorsVisible");
+    b->interiorsVisible = *checkObject<ogre_unordered_set<hand>::type>(L, 2, OgreUnorderedSetBinding<hand>::getMetatableName());
+    return 0;
 }
 
 static int PlayerInterface_set_interiorsVisibleHash(lua_State* L)
@@ -444,7 +458,8 @@ static int PlayerInterface_set_mouseRightTarget(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for mouseRightTarget");
+    b->mouseRightTarget = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    return 0;
 }
 
 static int PlayerInterface_set_rmouseTimer(lua_State* L)
@@ -459,7 +474,8 @@ static int PlayerInterface_set_selectedCharacters(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for selectedCharacters");
+    b->selectedCharacters = *checkObject<ogre_unordered_set<hand>::type>(L, 2, OgreUnorderedSetBinding<hand>::getMetatableName());
+    return 0;
 }
 
 static int PlayerInterface_set_selectedObject(lua_State* L)
@@ -510,28 +526,33 @@ static int PlayerInterface_set_levelEditor(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for levelEditor");
+    b->levelEditor = (LevelEditor*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int PlayerInterface_set_participant(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for participant");
+    b->participant = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
 }
 
 static int PlayerInterface_set_currentPlatoon(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for currentPlatoon");
+    b->currentPlatoon = lua_isnoneornil(L, 2) ? nullptr : checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    return 0;
 }
 
 static int PlayerInterface_set_playerCharacters(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for playerCharacters");
+    lektor<Character*>* src = LektorPtrBinding<Character*>::get(L, 2);
+    b->playerCharacters = *src;
+    return 0;
 }
 
 static int PlayerInterface_set_deadPlayerSquad(lua_State* L)
@@ -548,7 +569,8 @@ static int PlayerInterface_set_placementObject(lua_State* L)
 {
     PlayerInterface* b = getB(L, 1);
     if (!b) return luaL_error(L, "PlayerInterface is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for placementObject");
+    b->placementObject = (PlacementObject*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int PlayerInterface_set_characterEditorMode(lua_State* L)
@@ -1054,55 +1076,483 @@ int PlayerInterfaceBinding::mouseScan(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 107: void playerSetup(...) - unsupported arg type
-  line 109: void factoryObjectCreatedCallback(...) - unsupported arg type
-  line 110: void _NV_factoryObjectCreatedCallback(...) - unsupported arg type
-  line 111: void setFaction(...) - unsupported arg type
-  line 113: bool setCurrentPlatoon(...) - unsupported arg type
-  line 116: bool recruit(...) - overloaded method
-  line 117: bool recruit(...) - overloaded method
-  line 118: ActivePlatoon* createSquad(...) - unsupported return type
-  line 119: ActivePlatoon* getDeadSquad(...) - unsupported return type
-  line 120: const hand& getDeadSquadHandle(...) - reference return type
-  line 124: void activateObjectPlacementMode(...) - unsupported arg type
-  line 126: void activateCharacterEditMode(...) - unsupported arg type
-  line 127: bool triggerAreaArrivalDialogue(...) - unsupported arg type
-  line 132: void selectObject(...) - unsupported arg type
-  line 134: void _selectPlayerCharacter(...) - unsupported arg type
-  line 135: void activateSelection(...) - unsupported arg type
-  line 139: void startTrackCharacter(...) - unsupported arg type
-  line 149: LevelEditor* getLevelEditor(...) - unsupported return type
-  line 150: void objectSelected(...) - unsupported arg type
-  line 151: void toggleObjectSelected(...) - unsupported arg type
-  line 152: bool isObjectSelected(...) - unsupported arg type
-  line 153: void unselectPlayerCharacter(...) - unsupported arg type
-  line 154: void updatePlayerSelection(...) - unsupported arg type
-  line 157: void getAllSelectedObjects(...) - unsupported arg type
-  line 160: void newPlayerTaskSelectedCharacters(...) - unsupported arg type
-  line 161: bool getPlayerTaskProbability(...) - unsupported arg type
-  line 162: void addOrderSelectedCharacters(...) - unsupported arg type
-  line 163: void addJobSelectedCharacters(...) - unsupported arg type
-  line 170: bool isEnemy(...) - unsupported arg type
-  line 171: bool isFactionKnown(...) - unsupported arg type
-  line 172: void encounterFaction(...) - unsupported arg type
-  line 173: void pickupItem(...) - unsupported arg type
-  line 178: void getAllPlayerCharacters(...) - overloaded method
-  line 179: const lektor<Character*>& getAllPlayerCharacters(...) - overloaded method
-  line 181: void serialise(...) - unsupported arg type
-  line 182: void loadFromSerialise(...) - unsupported arg type
-  line 183: bool getInteriorsVisible(...) - unsupported arg type
-  line 216: void updateFloorVisibility(...) - unsupported arg type
-  line 219: void addTaskNearestSelectedCharacter(...) - unsupported arg type
-  line 220: void updateLastMoveWaypointSelectedCharacters(...) - unsupported arg type
-  line 222: void playerControl(...) - unsupported arg type
-  line 226: void characterSelected(...) - unsupported arg type
-  line 227: void itemSelected(...) - unsupported arg type
-  line 228: bool buildingSelected(...) - unsupported arg type
-  line 229: void playerMove(...) - unsupported arg type
-  line 230: bool _isPlayerCharacter(...) - unsupported arg type
-*/
+int PlayerInterfaceBinding::getLevelEditor(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    LevelEditor* result = b->getLevelEditor();
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
+}
+
+int PlayerInterfaceBinding::objectSelected(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool select = lua_toboolean(L, 3) != 0;
+    b->objectSelected(obj, select);
+    return 0;
+}
+
+int PlayerInterfaceBinding::toggleObjectSelected(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->toggleObjectSelected(obj);
+    return 0;
+}
+
+int PlayerInterfaceBinding::isObjectSelected(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->isObjectSelected(obj);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlayerInterfaceBinding::unselectPlayerCharacter(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->unselectPlayerCharacter(obj);
+    return 0;
+}
+
+int PlayerInterfaceBinding::updatePlayerSelection(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    hand* oldHandle = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* newHandle = checkObject<hand>(L, 3, handBinding::getMetatableName());
+    b->updatePlayerSelection(*oldHandle, *newHandle);
+    return 0;
+}
+
+int PlayerInterfaceBinding::getAllSelectedObjects(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    lektor<RootObject*>* out = checkObject<lektor<RootObject*>>(L, 2, "lektor<RootObject*>");
+    itemType type = (itemType)luaL_checkinteger(L, 3);
+    b->getAllSelectedObjects(*out, type);
+    return 0;
+}
+
+int PlayerInterfaceBinding::newPlayerTaskSelectedCharacters(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    TaskType t = (TaskType)luaL_checkinteger(L, 2);
+    hand* targetH = checkObject<hand>(L, 3, handBinding::getMetatableName());
+    Building* destinationIndoors = nullptr;
+    if (!lua_isnil(L, 4)) {
+        destinationIndoors = checkObject<Building>(L, 4, BuildingBinding::getMetatableName());
+    }
+    Ogre::Vector3 clickpos;
+    readVector3(L, 5, clickpos);
+    bool addDontClear = lua_toboolean(L, 6) != 0;
+    b->newPlayerTaskSelectedCharacters(t, *targetH, destinationIndoors, clickpos, addDontClear);
+    return 0;
+}
+
+int PlayerInterfaceBinding::getPlayerTaskProbability(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    TaskType task = (TaskType)luaL_checkinteger(L, 2);
+    RootObject* target = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    float probability = 0.0f;
+    bool result = b->getPlayerTaskProbability(task, target, probability);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushnumber(L, probability);
+    return 2;
+}
+
+int PlayerInterfaceBinding::addOrderSelectedCharacters(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Building* destinationIndoors = nullptr;
+    if (!lua_isnil(L, 2)) {
+        destinationIndoors = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    }
+    TaskType task = (TaskType)luaL_checkinteger(L, 3);
+    RootObject* subject = nullptr;
+    if (!lua_isnil(L, 4)) {
+        subject = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    }
+    bool shift = lua_toboolean(L, 5) != 0;
+    bool addDontClear = lua_toboolean(L, 6) != 0;
+    Ogre::Vector3 location;
+    readVector3(L, 7, location);
+    b->addOrderSelectedCharacters(destinationIndoors, task, subject, shift, addDontClear, location);
+    return 0;
+}
+
+int PlayerInterfaceBinding::addJobSelectedCharacters(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    TaskType task = (TaskType)luaL_checkinteger(L, 2);
+    RootObject* subject = nullptr;
+    if (!lua_isnil(L, 3)) {
+        subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    }
+    bool shift = lua_toboolean(L, 4) != 0;
+    bool add = lua_toboolean(L, 5) != 0;
+    Ogre::Vector3 location;
+    readVector3(L, 6, location);
+    b->addJobSelectedCharacters(task, subject, shift, add, location);
+    return 0;
+}
+
+int PlayerInterfaceBinding::isEnemy(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool result = b->isEnemy(who);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlayerInterfaceBinding::isFactionKnown(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    bool result = b->isFactionKnown(f);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlayerInterfaceBinding::encounterFaction(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Faction* faction = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    b->encounterFaction(faction);
+    return 0;
+}
+
+int PlayerInterfaceBinding::pickupItem(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    b->pickupItem(item);
+    return 0;
+}
+
+int PlayerInterfaceBinding::getAllPlayerCharacters(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    
+    if (lua_gettop(L) >= 2) {
+        lektor<RootObject*>* list = checkObject<lektor<RootObject*>>(L, 2, "lektor<RootObject*>");
+        b->getAllPlayerCharacters(*list);
+        return 0;
+    } else {
+        const lektor<Character*>& result = b->getAllPlayerCharacters();
+        return pushObject<lektor<Character*>>(L, const_cast<lektor<Character*>*>(&result), "lektor<Character*>");
+    }
+}
+
+int PlayerInterfaceBinding::serialise(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    b->serialise(data);
+    return 0;
+}
+
+int PlayerInterfaceBinding::loadFromSerialise(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    b->loadFromSerialise(data);
+    return 0;
+}
+
+int PlayerInterfaceBinding::getInteriorsVisible(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Building* building = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    bool result = b->getInteriorsVisible(building);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlayerInterfaceBinding::updateFloorVisibility(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    lektor<Character*>* characters = checkObject<lektor<Character*>>(L, 2, "lektor<Character*>");
+    b->updateFloorVisibility(*characters);
+    return 0;
+}
+
+int PlayerInterfaceBinding::addTaskNearestSelectedCharacter(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Building* dest = nullptr;
+    if (!lua_isnil(L, 2)) {
+        dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    }
+    TaskType t = (TaskType)luaL_checkinteger(L, 3);
+    RootObject* subject = nullptr;
+    if (!lua_isnil(L, 4)) {
+        subject = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    }
+    bool shift = lua_toboolean(L, 5) != 0;
+    Ogre::Vector3 location;
+    readVector3(L, 6, location);
+    bool noAnimals = lua_toboolean(L, 7) != 0;
+    b->addTaskNearestSelectedCharacter(dest, t, subject, shift, location, noAnimals);
+    return 0;
+}
+
+int PlayerInterfaceBinding::updateLastMoveWaypointSelectedCharacters(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Ogre::Vector3 location;
+    readVector3(L, 2, location);
+    Building* dest = nullptr;
+    if (!lua_isnil(L, 3)) {
+        dest = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
+    }
+    b->updateLastMoveWaypointSelectedCharacters(location, dest);
+    return 0;
+}
+
+int PlayerInterfaceBinding::playerControl(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    InputHandler* key = checkObject<InputHandler>(L, 2, InputHandlerBinding::getMetatableName());
+    b->playerControl(*key);
+    return 0;
+}
+
+int PlayerInterfaceBinding::characterSelected(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Character* target = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->characterSelected(target);
+    return 0;
+}
+
+int PlayerInterfaceBinding::itemSelected(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    b->itemSelected(item);
+    return 0;
+}
+
+int PlayerInterfaceBinding::buildingSelected(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Building* building = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    Ogre::Vector3 position;
+    readVector3(L, 3, position);
+    bool interiorsVisible = lua_toboolean(L, 4) != 0;
+    bool result = b->buildingSelected(building, position, interiorsVisible);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlayerInterfaceBinding::playerMove(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Ogre::Vector3 pos;
+    readVector3(L, 2, pos);
+    Building* destBuilding = nullptr;
+    if (!lua_isnil(L, 3)) {
+        destBuilding = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
+    }
+    b->playerMove(pos, destBuilding);
+    return 0;
+}
+
+int PlayerInterfaceBinding::_isPlayerCharacter(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = b->_isPlayerCharacter(obj);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PlayerInterfaceBinding::playerSetup(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    CameraClass* cam = lua_isnoneornil(L, 2) ? nullptr : checkObject<CameraClass>(L, 2, CameraClassBinding::getMetatableName());
+    b->playerSetup(cam);
+    return 0;
+}
+
+int PlayerInterfaceBinding::factoryObjectCreatedCallback(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->factoryObjectCreatedCallback(obj);
+    return 0;
+}
+
+int PlayerInterfaceBinding::_NV_factoryObjectCreatedCallback(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->_NV_factoryObjectCreatedCallback(obj);
+    return 0;
+}
+
+int PlayerInterfaceBinding::setFaction(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Faction* f = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    b->setFaction(f);
+    return 0;
+}
+
+int PlayerInterfaceBinding::setCurrentPlatoon(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Platoon* squad = lua_isnoneornil(L, 2) ? nullptr : checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    bool res = b->setCurrentPlatoon(squad);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int PlayerInterfaceBinding::recruit(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    bool editor = lua_toboolean(L, 3) != 0;
+    bool res = false;
+    if (testObject<lektor<Character*>>(L, 2, "lektor<Character*>") != nullptr) {
+        lektor<Character*>* list = LektorPtrBinding<Character*>::get(L, 2);
+        res = b->recruit(*list, editor);
+    } else {
+        Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+        res = b->recruit(c, editor);
+    }
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int PlayerInterfaceBinding::createSquad(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    ActivePlatoon* res = b->createSquad();
+    return pushObject<ActivePlatoon>(L, res, ActivePlatoonBinding::getMetatableName());
+}
+
+int PlayerInterfaceBinding::getDeadSquad(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    ActivePlatoon* res = b->getDeadSquad();
+    return pushObject<ActivePlatoon>(L, res, ActivePlatoonBinding::getMetatableName());
+}
+
+int PlayerInterfaceBinding::getDeadSquadHandle(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    const hand& res = b->getDeadSquadHandle();
+    return pushObject<hand>(L, new hand(res), handBinding::getMetatableName());
+}
+
+int PlayerInterfaceBinding::activateObjectPlacementMode(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    GameData* data = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    b->activateObjectPlacementMode(data);
+    return 0;
+}
+
+int PlayerInterfaceBinding::activateCharacterEditMode(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    Character* c = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->activateCharacterEditMode(c);
+    return 0;
+}
+
+int PlayerInterfaceBinding::triggerAreaArrivalDialogue(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    GameData* area = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool res = b->triggerAreaArrivalDialogue(area);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int PlayerInterfaceBinding::selectObject(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool modifier = lua_toboolean(L, 3) != 0;
+    b->selectObject(obj, modifier);
+    return 0;
+}
+
+int PlayerInterfaceBinding::_selectPlayerCharacter(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool modifier = lua_toboolean(L, 3) != 0;
+    bool track = lua_toboolean(L, 4) != 0;
+    b->_selectPlayerCharacter(obj, modifier, track);
+    return 0;
+}
+
+int PlayerInterfaceBinding::activateSelection(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->activateSelection(obj);
+    return 0;
+}
+
+int PlayerInterfaceBinding::startTrackCharacter(lua_State* L)
+{
+    PlayerInterface* b = getB(L, 1);
+    if (!b) return luaL_error(L, "PlayerInterface is nil");
+    RootObject* obj = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->startTrackCharacter(obj);
+    return 0;
+}
 
 int PlayerInterfaceBinding::gc(lua_State* L)
 {
@@ -1172,6 +1622,50 @@ void PlayerInterfaceBinding::registerBinding(lua_State* L)
         { "setFloorsVisibility", PlayerInterfaceBinding::setFloorsVisibility },
         { "clearSelection", PlayerInterfaceBinding::clearSelection },
         { "mouseScan", PlayerInterfaceBinding::mouseScan },
+        { "playerSetup", PlayerInterfaceBinding::playerSetup },
+        { "factoryObjectCreatedCallback", PlayerInterfaceBinding::factoryObjectCreatedCallback },
+        { "_NV_factoryObjectCreatedCallback", PlayerInterfaceBinding::_NV_factoryObjectCreatedCallback },
+        { "setFaction", PlayerInterfaceBinding::setFaction },
+        { "setCurrentPlatoon", PlayerInterfaceBinding::setCurrentPlatoon },
+        { "recruit", PlayerInterfaceBinding::recruit },
+        { "createSquad", PlayerInterfaceBinding::createSquad },
+        { "getDeadSquad", PlayerInterfaceBinding::getDeadSquad },
+        { "getDeadSquadHandle", PlayerInterfaceBinding::getDeadSquadHandle },
+        { "activateObjectPlacementMode", PlayerInterfaceBinding::activateObjectPlacementMode },
+        { "activateCharacterEditMode", PlayerInterfaceBinding::activateCharacterEditMode },
+        { "triggerAreaArrivalDialogue", PlayerInterfaceBinding::triggerAreaArrivalDialogue },
+        { "selectObject", PlayerInterfaceBinding::selectObject },
+        { "_selectPlayerCharacter", PlayerInterfaceBinding::_selectPlayerCharacter },
+        { "activateSelection", PlayerInterfaceBinding::activateSelection },
+        { "startTrackCharacter", PlayerInterfaceBinding::startTrackCharacter },
+        { "getLevelEditor", PlayerInterfaceBinding::getLevelEditor },
+        { "objectSelected", PlayerInterfaceBinding::objectSelected },
+        { "toggleObjectSelected", PlayerInterfaceBinding::toggleObjectSelected },
+        { "isObjectSelected", PlayerInterfaceBinding::isObjectSelected },
+        { "unselectPlayerCharacter", PlayerInterfaceBinding::unselectPlayerCharacter },
+        { "updatePlayerSelection", PlayerInterfaceBinding::updatePlayerSelection },
+        { "getAllSelectedObjects", PlayerInterfaceBinding::getAllSelectedObjects },
+        { "newPlayerTaskSelectedCharacters", PlayerInterfaceBinding::newPlayerTaskSelectedCharacters },
+        { "getPlayerTaskProbability", PlayerInterfaceBinding::getPlayerTaskProbability },
+        { "addOrderSelectedCharacters", PlayerInterfaceBinding::addOrderSelectedCharacters },
+        { "addJobSelectedCharacters", PlayerInterfaceBinding::addJobSelectedCharacters },
+        { "isEnemy", PlayerInterfaceBinding::isEnemy },
+        { "isFactionKnown", PlayerInterfaceBinding::isFactionKnown },
+        { "encounterFaction", PlayerInterfaceBinding::encounterFaction },
+        { "pickupItem", PlayerInterfaceBinding::pickupItem },
+        { "getAllPlayerCharacters", PlayerInterfaceBinding::getAllPlayerCharacters },
+        { "serialise", PlayerInterfaceBinding::serialise },
+        { "loadFromSerialise", PlayerInterfaceBinding::loadFromSerialise },
+        { "getInteriorsVisible", PlayerInterfaceBinding::getInteriorsVisible },
+        { "updateFloorVisibility", PlayerInterfaceBinding::updateFloorVisibility },
+        { "addTaskNearestSelectedCharacter", PlayerInterfaceBinding::addTaskNearestSelectedCharacter },
+        { "updateLastMoveWaypointSelectedCharacters", PlayerInterfaceBinding::updateLastMoveWaypointSelectedCharacters },
+        { "playerControl", PlayerInterfaceBinding::playerControl },
+        { "characterSelected", PlayerInterfaceBinding::characterSelected },
+        { "itemSelected", PlayerInterfaceBinding::itemSelected },
+        { "buildingSelected", PlayerInterfaceBinding::buildingSelected },
+        { "playerMove", PlayerInterfaceBinding::playerMove },
+        { "_isPlayerCharacter", PlayerInterfaceBinding::_isPlayerCharacter },
         { 0, 0 }
     };
 
@@ -1335,7 +1829,6 @@ void PlayerInterfaceBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "mRightDown");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    SelectedCharactersSetBinding::registerBinding(L, SelectedCharactersSet_metaName(), handBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -24,6 +24,8 @@ namespace KenshiLua
         static const char* keyMetaName;
         static const char* valMetaName;
 
+        static const char* getMetatableName() { return metaName; }
+
         static MapType* get(lua_State* L, int idx)
         {
             return checkObject<MapType>(L, idx, metaName);

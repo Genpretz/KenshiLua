@@ -1,5 +1,5 @@
 #include "pch.h"
-#include <kenshi/Building/Building.h>
+#include "kenshi\Building\Building.h"
 #include "BuildMaterialBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
@@ -42,7 +42,8 @@ static int BuildMaterial_set_mat(lua_State* L)
 {
     BuildMaterial* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildMaterial is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for mat");
+    instance->mat = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildMaterial_set_buildMatsTotal(lua_State* L)
@@ -137,4 +138,5 @@ void BuildMaterialBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
-}
+
+} // namespace KenshiLua

@@ -226,7 +226,7 @@ void FurnaceBuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ProductionBuilding
-    setMetatableParent(L, FurnaceBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+    // setMetatableParent(L, FurnaceBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

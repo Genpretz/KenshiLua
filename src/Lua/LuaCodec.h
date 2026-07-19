@@ -1,10 +1,13 @@
 #pragma once
-#include <type_traits>
-#include <string>
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Util/HandBinding.h"
+
+#include <kenshi/util/hand.h>
 #include <ogre/OgreVector3.h>
 #include <ogre/OgreQuaternion.h>
-#include <kenshi/util/hand.h>
-#include "Bindings/Util/HandBinding.h"
+
+#include <type_traits>
+#include <string>
 
 extern "C" {
 #include <lua.h>

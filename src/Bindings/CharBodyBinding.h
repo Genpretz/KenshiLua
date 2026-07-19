@@ -16,6 +16,7 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
@@ -25,6 +26,7 @@ public:
     static int _NV_notifyTaskComplete(lua_State* L);
     static int notifyTaskImpossible(lua_State* L);
     static int _NV_notifyTaskImpossible(lua_State* L);
+    static int getCombatClass(lua_State* L);
     static int isCrouched(lua_State* L);
     static int getPosition(lua_State* L);
     static int _NV_getPosition(lua_State* L);
@@ -33,13 +35,25 @@ public:
     static int _NV_isCharacter(lua_State* L);
     static int getCharacter(lua_State* L);
     static int _NV_getCharacter(lua_State* L);
+    static int getCharBody(lua_State* L);
+    static int _NV_getCharBody(lua_State* L);
     static int getUpFromRagdoll(lua_State* L);
     static int getPlatoon(lua_State* L);
     static int _NV_getPlatoon(lua_State* L);
+    static int getCurrentAction(lua_State* L);
+    static int getCurrentActionOrMessage(lua_State* L);
     static int endAction(lua_State* L);
     static int isIdle(lua_State* L);
     static int getFaction(lua_State* L);
     static int _endAction(lua_State* L);
     static int _NV__endAction(lua_State* L);
+
+    static int create(lua_State* L);
+    static int setCurrentAction(lua_State* L);
+    static int _NV_setCurrentAction(lua_State* L);
+    static int notifyPathImpossible(lua_State* L);
+    static int _NV_notifyPathImpossible(lua_State* L);
+    static int _move(lua_State* L);
+    static int _patrol(lua_State* L);
 };
 }

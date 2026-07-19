@@ -1,103 +1,96 @@
 #include "pch.h"
-#include "kenshi\Character.h"
-#include "AttachedArrowManagerBinding.h"
+#include <kenshi\Character.h>
+#include "Bindings\CharacterBinding.h"
+#include "Bindings\AttachedArrowManagerBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
-
-static Character::AttachedArrowManager* getB(lua_State* L, int idx)
+static Character::AttachedArrowManager* getInstance(lua_State* L, int idx)
 {
     return checkObject<Character::AttachedArrowManager>(L, idx, AttachedArrowManagerBinding::getMetatableName());
 }
 
 // --- Getters for AttachedArrowManager ---
-static int AttachedArrowManager_get_ents(lua_State* L)
-{
-    Character::AttachedArrowManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AttachedArrowManager is nil");
-    // TODO: Unsupported type for ents (lektor<Ogre::Entity*>)
-    return luaL_error(L, "Unsupported property 'ents' (type: lektor<Ogre::Entity*>)");
-}
-
 static int AttachedArrowManager_get_index(lua_State* L)
 {
-    Character::AttachedArrowManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AttachedArrowManager is nil");
-    lua_pushinteger(L, b->index);
+    Character::AttachedArrowManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AttachedArrowManager is nil");
+    lua_pushinteger(L, instance->index);
     return 1;
 }
 
 // --- Setters for AttachedArrowManager ---
-static int AttachedArrowManager_set_ents(lua_State* L)
-{
-    Character::AttachedArrowManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AttachedArrowManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for ents");
-}
-
 static int AttachedArrowManager_set_index(lua_State* L)
 {
-    Character::AttachedArrowManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AttachedArrowManager is nil");
-    b->index = (int)luaL_checkinteger(L, 2);
+    Character::AttachedArrowManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AttachedArrowManager is nil");
+    instance->index = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
-// --- Methods for AttachedArrowManager ---
 int AttachedArrowManagerBinding::_DESTRUCTOR(lua_State* L)
 {
-    Character::AttachedArrowManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AttachedArrowManager is nil");
+    Character::AttachedArrowManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AttachedArrowManager is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 int AttachedArrowManagerBinding::clearAll(lua_State* L)
 {
-    Character::AttachedArrowManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AttachedArrowManager is nil");
+    Character::AttachedArrowManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AttachedArrowManager is nil");
 
-    b->clearAll();
+    instance->clearAll();
     return 0;
 }
 
 int AttachedArrowManagerBinding::updateStart(lua_State* L)
 {
-    Character::AttachedArrowManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AttachedArrowManager is nil");
+    Character::AttachedArrowManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AttachedArrowManager is nil");
 
-    b->updateStart();
+    instance->updateStart();
     return 0;
 }
 
 int AttachedArrowManagerBinding::addArrow(lua_State* L)
 {
-    Character::AttachedArrowManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AttachedArrowManager is nil");
+    Character::AttachedArrowManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AttachedArrowManager is nil");
 
     Ogre::Vector3 pos;
     readVector3(L, 2, pos);
     Ogre::Vector3 targ;
     readVector3(L, 3, targ);
     int color = (int)luaL_checkinteger(L, 4);
-    b->addArrow(pos, targ, color);
+    instance->addArrow(pos, targ, color);
     return 0;
 }
 
 int AttachedArrowManagerBinding::updateEnd(lua_State* L)
 {
-    Character::AttachedArrowManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AttachedArrowManager is nil");
+    Character::AttachedArrowManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AttachedArrowManager is nil");
 
-    b->updateEnd();
+    instance->updateEnd();
     return 0;
 }
 
+int AttachedArrowManagerBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Character::AttachedArrowManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AttachedArrowManager is nil");
+
+    Character::AttachedArrowManager* result = instance->_CONSTRUCTOR();
+    return pushObject<Character::AttachedArrowManager>(L, result, AttachedArrowManagerBinding::getMetatableName());
+}
+
 /*
-Skipped methods needing manual binding:
-  line 343: AttachedArrowManager* _CONSTRUCTOR(...) - unsupported return type
+Skipped properties needing manual binding:
+  line 339: ents (lektor<Ogre::Entity*>) - unsupported type
 */
 
 int AttachedArrowManagerBinding::gc(lua_State* L)
@@ -126,6 +119,7 @@ void AttachedArrowManagerBinding::registerBinding(lua_State* L)
         { "updateStart", AttachedArrowManagerBinding::updateStart },
         { "addArrow", AttachedArrowManagerBinding::addArrow },
         { "updateEnd", AttachedArrowManagerBinding::updateEnd },
+        { "_CONSTRUCTOR", AttachedArrowManagerBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 
@@ -140,15 +134,11 @@ void AttachedArrowManagerBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, AttachedArrowManagerBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, AttachedArrowManager_get_ents);
-    lua_setfield(L, -2, "ents");
     lua_pushcfunction(L, AttachedArrowManager_get_index);
     lua_setfield(L, -2, "index");
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, AttachedArrowManager_set_ents);
-    lua_setfield(L, -2, "ents");
     lua_pushcfunction(L, AttachedArrowManager_set_index);
     lua_setfield(L, -2, "index");
     lua_setfield(L, -2, "__setters"); // Bind to metatable

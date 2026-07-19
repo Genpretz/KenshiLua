@@ -32,5 +32,11 @@ public:
     static int saveConfig(lua_State* L);
     static int keyString(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
+
+    static int getCommand(lua_State* L);
+    static int addCommand(lua_State* L);
+    static int unbind(lua_State* L);
+    static int isBound(lua_State* L);
+    static int getBoundKeys(lua_State* L);
 };
 }

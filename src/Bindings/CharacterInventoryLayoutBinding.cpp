@@ -2,29 +2,40 @@
 #include "kenshi\Character.h"
 #include "CharacterInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
 
 namespace KenshiLua
 {
 
-static CharacterInventoryLayout* getB(lua_State* L, int idx)
+static CharacterInventoryLayout* getInstance(lua_State* L, int idx)
 {
     return checkObject<CharacterInventoryLayout>(L, idx, CharacterInventoryLayoutBinding::getMetatableName());
 }
 
 // --- Getters for CharacterInventoryLayout ---
 // --- Setters for CharacterInventoryLayout ---
+int CharacterInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
+{
+    CharacterInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterInventoryLayout is nil");
+
+    CharacterInventoryLayout* result = instance->_CONSTRUCTOR();
+    return pushObject<CharacterInventoryLayout>(L, result, CharacterInventoryLayoutBinding::getMetatableName());
+}
+
 int CharacterInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
-    CharacterInventoryLayout* b = getB(L, 1);
-    if (!b) return luaL_error(L, "CharacterInventoryLayout is nil");
+    CharacterInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterInventoryLayout is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 170: CharacterInventoryLayout* _CONSTRUCTOR(...) - unsupported return type
   line 171: void setupSections(...) - unsupported arg type
   line 172: void _NV_setupSections(...) - unsupported arg type
 */
@@ -50,6 +61,7 @@ void CharacterInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", CharacterInventoryLayoutBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", CharacterInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -69,6 +81,9 @@ void CharacterInventoryLayoutBinding::registerBinding(lua_State* L)
 
     lua_newtable(L); // Create __setters table
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to InventoryLayout
+    // setMetatableParent(L, CharacterInventoryLayoutBinding::getMetatableName(), InventoryLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

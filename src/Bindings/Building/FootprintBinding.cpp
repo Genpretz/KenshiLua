@@ -1,7 +1,11 @@
 #include "pch.h"
-#include <kenshi/Building/Building.h>
+#include "kenshi\Building\Building.h"
 #include "FootprintBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Building/PreviewBuildingBinding.h"
+#include "Bindings/TownBinding.h"
 
 namespace KenshiLua
 {
@@ -49,16 +53,8 @@ static int Footprint_get_ent(lua_State* L)
 {
     Footprint* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Footprint is nil");
-    // TODO: Unsupported type for ent (Ogre::Entity*)
-    return luaL_error(L, "Unsupported property 'ent' (type: Ogre::Entity*)");
-}
-
-static int Footprint_get_box(lua_State* L)
-{
-    Footprint* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Footprint is nil");
-    // TODO: Unsupported type for box (NxBox)
-    return luaL_error(L, "Unsupported property 'box' (type: NxBox)");
+    lua_pushlightuserdata(L, (void*)instance->ent);
+    return 1;
 }
 
 static int Footprint_get_pos(lua_State* L)
@@ -97,16 +93,7 @@ static int Footprint_get_parent(lua_State* L)
 {
     Footprint* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Footprint is nil");
-    // TODO: Unsupported type for parent (PreviewBuilding*)
-    return luaL_error(L, "Unsupported property 'parent' (type: PreviewBuilding*)");
-}
-
-static int Footprint_get_corners(lua_State* L)
-{
-    Footprint* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Footprint is nil");
-    // TODO: Unsupported type for corners (Ogre::vector<Ogre::Vector3>::type)
-    return luaL_error(L, "Unsupported property 'corners' (type: Ogre::vector<Ogre::Vector3>::type)");
+    return pushObject<PreviewBuilding>(L, instance->parent, PreviewBuildingBinding::getMetatableName());
 }
 
 // --- Setters for Footprint ---
@@ -140,20 +127,6 @@ static int Footprint_set_scale(lua_State* L)
     if (!instance) return luaL_error(L, "Footprint is nil");
     instance->scale = (float)luaL_checknumber(L, 2);
     return 0;
-}
-
-static int Footprint_set_ent(lua_State* L)
-{
-    Footprint* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Footprint is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for ent");
-}
-
-static int Footprint_set_box(lua_State* L)
-{
-    Footprint* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Footprint is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for box");
 }
 
 static int Footprint_set_pos(lua_State* L)
@@ -192,14 +165,8 @@ static int Footprint_set_parent(lua_State* L)
 {
     Footprint* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Footprint is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for parent");
-}
-
-static int Footprint_set_corners(lua_State* L)
-{
-    Footprint* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Footprint is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for corners");
+    instance->parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<PreviewBuilding>(L, 2, PreviewBuildingBinding::getMetatableName());
+    return 0;
 }
 
 int FootprintBinding::_DESTRUCTOR(lua_State* L)
@@ -272,6 +239,19 @@ int FootprintBinding::fakeOppositeValidate(lua_State* L)
     return 1;
 }
 
+int FootprintBinding::collisionTestBuildings(lua_State* L)
+{
+    Footprint* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Footprint is nil");
+
+    bool isFurniture = lua_toboolean(L, 2) != 0;
+    Building* indoors = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
+    int currentFloor = (int)luaL_checkinteger(L, 4);
+    bool result = instance->collisionTestBuildings(isFurniture, indoors, currentFloor);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 int FootprintBinding::collisionTestCharacters(lua_State* L)
 {
     Footprint* instance = getInstance(L, 1);
@@ -288,6 +268,20 @@ int FootprintBinding::validFloorTest(lua_State* L)
     if (!instance) return luaL_error(L, "Footprint is nil");
 
     bool result = instance->validFloorTest();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int FootprintBinding::isIndoorsOK(lua_State* L)
+{
+    Footprint* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Footprint is nil");
+
+    bool isFurniture = lua_toboolean(L, 2) != 0;
+    Building* out = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
+	Building** outPtr = &out;
+    Town* t = checkObject<Town>(L, 4, TownBinding::getMetatableName());
+    bool result = instance->isIndoorsOK(isFurniture, outPtr, t);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
@@ -345,18 +339,22 @@ int FootprintBinding::getGroundHeight(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 518: Footprint* _CONSTRUCTOR(...) - overloaded method
-  line 520: Footprint* _CONSTRUCTOR(...) - overloaded method
-  line 523: const Ogre::Aabb getWorldAABB(...) - unsupported return type
-  line 524: const Ogre::Aabb _NV_getWorldAABB(...) - unsupported return type
-  line 525: const Ogre::Aabb getLocalAABB(...) - unsupported return type
-  line 526: const Ogre::Aabb _NV_getLocalAABB(...) - unsupported return type
-  line 533: bool collisionTestOK(...) - unsupported arg type
-  line 534: bool _NV_collisionTestOK(...) - unsupported arg type
-  line 535: bool collisionTestBuildings(...) - unsupported arg type
-  line 538: bool isIndoorsOK(...) - unsupported arg type
-  line 539: bool blocksAnyBuildingTest(...) - unsupported arg type
-  line 557: PreviewBuilding::Footprint& operator=(...) - operator
+  line 519: Footprint* _CONSTRUCTOR(...) - overloaded method
+  line 521: Footprint* _CONSTRUCTOR(...) - overloaded method
+  line 524: const Ogre::Aabb getWorldAABB(...) - unsupported return type
+  line 525: const Ogre::Aabb _NV_getWorldAABB(...) - unsupported return type
+  line 526: const Ogre::Aabb getLocalAABB(...) - unsupported return type
+  line 527: const Ogre::Aabb _NV_getLocalAABB(...) - unsupported return type
+  line 534: bool collisionTestOK(...) - unsupported arg type
+  line 535: bool _NV_collisionTestOK(...) - unsupported arg type
+  line 540: bool blocksAnyBuildingTest(...) - unsupported arg type
+  line 558: PreviewBuilding::Footprint& operator=(...) - operator
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 551: box (NxBox) - unsupported type
+  line 557: corners (Ogre::vector<Ogre::Vector3>::type) - unsupported type
 */
 
 int FootprintBinding::gc(lua_State* L)
@@ -387,8 +385,10 @@ void FootprintBinding::registerBinding(lua_State* L)
         { "getValid", FootprintBinding::getValid },
         { "validate", FootprintBinding::validate },
         { "fakeOppositeValidate", FootprintBinding::fakeOppositeValidate },
+        { "collisionTestBuildings", FootprintBinding::collisionTestBuildings },
         { "collisionTestCharacters", FootprintBinding::collisionTestCharacters },
         { "validFloorTest", FootprintBinding::validFloorTest },
+        { "isIndoorsOK", FootprintBinding::isIndoorsOK },
         { "isGroundValid", FootprintBinding::isGroundValid },
         { "getWorldCorner", FootprintBinding::getWorldCorner },
         { "updateBox", FootprintBinding::updateBox },
@@ -418,8 +418,6 @@ void FootprintBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "scale");
     lua_pushcfunction(L, Footprint_get_ent);
     lua_setfield(L, -2, "ent");
-    lua_pushcfunction(L, Footprint_get_box);
-    lua_setfield(L, -2, "box");
     lua_pushcfunction(L, Footprint_get_pos);
     lua_setfield(L, -2, "pos");
     lua_pushcfunction(L, Footprint_get_rot);
@@ -430,8 +428,6 @@ void FootprintBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "valid");
     lua_pushcfunction(L, Footprint_get_parent);
     lua_setfield(L, -2, "parent");
-    lua_pushcfunction(L, Footprint_get_corners);
-    lua_setfield(L, -2, "corners");
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -443,10 +439,6 @@ void FootprintBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "space");
     lua_pushcfunction(L, Footprint_set_scale);
     lua_setfield(L, -2, "scale");
-    lua_pushcfunction(L, Footprint_set_ent);
-    lua_setfield(L, -2, "ent");
-    lua_pushcfunction(L, Footprint_set_box);
-    lua_setfield(L, -2, "box");
     lua_pushcfunction(L, Footprint_set_pos);
     lua_setfield(L, -2, "pos");
     lua_pushcfunction(L, Footprint_set_rot);
@@ -457,10 +449,9 @@ void FootprintBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "valid");
     lua_pushcfunction(L, Footprint_set_parent);
     lua_setfield(L, -2, "parent");
-    lua_pushcfunction(L, Footprint_set_corners);
-    lua_setfield(L, -2, "corners");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
-}
+
+} // namespace KenshiLua

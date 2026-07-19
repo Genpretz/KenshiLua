@@ -5,6 +5,8 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/TaskDataBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/CharBodyBinding.h"
+#include "Bindings/TaskStateDataBinding.h"
 
 namespace KenshiLua
 {
@@ -19,8 +21,8 @@ static int Tasker_get_priority(lua_State* L)
 {
     Tasker* b = getB(L, 1);
     if (!b) return luaL_error(L, "Tasker is nil");
-    // TODO: Unsupported type for priority (taskPriority)
-    return luaL_error(L, "Unsupported property 'priority' (type: taskPriority)");
+    lua_pushinteger(L, (lua_Integer)b->priority);
+    return 1;
 }
 
 static int Tasker_get_resetsWhenDone(lua_State* L)
@@ -89,7 +91,8 @@ static int Tasker_set_priority(lua_State* L)
 {
     Tasker* b = getB(L, 1);
     if (!b) return luaL_error(L, "Tasker is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for priority");
+    b->priority = (taskPriority)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int Tasker_set_resetsWhenDone(lua_State* L)
@@ -154,7 +157,8 @@ static int Tasker_set_taskData(lua_State* L)
 {
     Tasker* b = getB(L, 1);
     if (!b) return luaL_error(L, "Tasker is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for taskData");
+    b->taskData = lua_isnoneornil(L, 2) ? nullptr : checkObject<TaskData>(L, 2, TaskDataBinding::getMetatableName());
+    return 0;
 }
 
 int TaskerBinding::_DESTRUCTOR(lua_State* L)
@@ -266,19 +270,106 @@ int TaskerBinding::getTaskData(lua_State* L)
     return pushObject<TaskData>(L, const_cast<TaskData*>(result), TaskDataBinding::getMetatableName());
 }
 
+int TaskerBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Tasker* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Tasker is nil");
+    Tasker* res = b->_CONSTRUCTOR();
+    return pushObject<Tasker>(L, res, TaskerBinding::getMetatableName());
+}
+
+int TaskerBinding::getFrameTime(lua_State* L)
+{
+    Tasker* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Tasker is nil");
+    CharBody* body = checkObject<CharBody>(L, 2, CharBodyBinding::getMetatableName());
+    float res = b->getFrameTime(body);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+int TaskerBinding::sameAs(lua_State* L)
+{
+    Tasker* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Tasker is nil");
+    Tasker* other = checkObject<Tasker>(L, 2, TaskerBinding::getMetatableName());
+    bool res = b->sameAs(other);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int TaskerBinding::score(lua_State* L)
+{
+    Tasker* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Tasker is nil");
+    AI* ai = (AI*)lua_touserdata(L, 2);
+    float res = b->score(ai);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+int TaskerBinding::isResultsComplete(lua_State* L)
+{
+    Tasker* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Tasker is nil");
+    AI* ai = (AI*)lua_touserdata(L, 2);
+    bool res = b->isResultsComplete(ai);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int TaskerBinding::isResultsComplete_ignoreSubtasker(lua_State* L)
+{
+    Tasker* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Tasker is nil");
+    AI* ai = (AI*)lua_touserdata(L, 2);
+    bool res = b->isResultsComplete_ignoreSubtasker(ai);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int TaskerBinding::isRequirementsComplete(lua_State* L)
+{
+    Tasker* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Tasker is nil");
+    AI* ai = (AI*)lua_touserdata(L, 2);
+    bool autoTargetFinder = lua_toboolean(L, 3) != 0;
+    bool res = b->isRequirementsComplete(ai, autoTargetFinder);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int TaskerBinding::getRequirementComplaint(lua_State* L)
+{
+    Tasker* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Tasker is nil");
+    AI* ai = (AI*)lua_touserdata(L, 2);
+    bool autoTargetFinder = lua_toboolean(L, 3) != 0;
+    std::string res = b->getRequirementComplaint(ai, autoTargetFinder);
+    lua_pushstring(L, res.c_str());
+    return 1;
+}
+
+int TaskerBinding::getNextSubTarget(lua_State* L)
+{
+    Tasker* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Tasker is nil");
+    AI* ai = (AI*)lua_touserdata(L, 2);
+    hand res = b->getNextSubTarget(ai);
+    return pushObject<hand>(L, new hand(res), handBinding::getMetatableName());
+}
+
+int TaskerBinding::getSubTask(lua_State* L)
+{
+    Tasker* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Tasker is nil");
+    TaskStateData* res = b->getSubTask();
+    return pushObject<TaskStateData>(L, res, TaskStateDataBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
-  line 307: Tasker* _CONSTRUCTOR(...) - unsupported return type
-  line 311: float getFrameTime(...) - unsupported arg type
-  line 325: bool sameAs(...) - unsupported arg type
   line 326: const std::string& getDescription(...) - reference return type
-  line 328: float score(...) - unsupported arg type
-  line 329: bool isResultsComplete(...) - unsupported arg type
-  line 330: bool isResultsComplete_ignoreSubtasker(...) - unsupported arg type
-  line 332: bool isRequirementsComplete(...) - unsupported arg type
-  line 333: std::string getRequirementComplaint(...) - unsupported arg type
-  line 337: hand getNextSubTarget(...) - unsupported return type
-  line 339: TaskStateData* getSubTask(...) - unsupported return type
   line 341: bool isSubTaskerTargetFinishedWith(...) - unsupported arg type
   line 348: void startAction(...) - unsupported arg type
   line 349: void _NV_startAction(...) - unsupported arg type
@@ -324,6 +415,16 @@ void TaskerBinding::registerBinding(lua_State* L)
         { "isInfiniteGoal", TaskerBinding::isInfiniteGoal },
         { "needsSubjectOrLocation", TaskerBinding::needsSubjectOrLocation },
         { "getTaskData", TaskerBinding::getTaskData },
+        { "_CONSTRUCTOR", TaskerBinding::_CONSTRUCTOR },
+        { "getFrameTime", TaskerBinding::getFrameTime },
+        { "sameAs", TaskerBinding::sameAs },
+        { "score", TaskerBinding::score },
+        { "isResultsComplete", TaskerBinding::isResultsComplete },
+        { "isResultsComplete_ignoreSubtasker", TaskerBinding::isResultsComplete_ignoreSubtasker },
+        { "isRequirementsComplete", TaskerBinding::isRequirementsComplete },
+        { "getRequirementComplaint", TaskerBinding::getRequirementComplaint },
+        { "getNextSubTarget", TaskerBinding::getNextSubTarget },
+        { "getSubTask", TaskerBinding::getSubTask },
         { 0, 0 }
     };
 

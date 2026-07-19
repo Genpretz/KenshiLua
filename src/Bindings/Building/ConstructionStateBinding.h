@@ -17,13 +17,17 @@ public:
     static int tostring(lua_State* L);
 
     static int _DESTRUCTOR(lua_State* L);
+    static int addMaterials(lua_State* L);
     static int materialsEmpty(lua_State* L);
     static int isOverThreshold(lua_State* L);
     static int getHealthBarProgress(lua_State* L);
     static int getConstructionMaterialProgress(lua_State* L);
     static int getHealthBarActual(lua_State* L);
+    static int getMaterial(lua_State* L);
+    static int setup(lua_State* L);
     static int getTotalMats(lua_State* L);
     static int getTotalMatsPresent(lua_State* L);
+    static int needsMat(lua_State* L);
     static int needMats(lua_State* L);
 };
 }

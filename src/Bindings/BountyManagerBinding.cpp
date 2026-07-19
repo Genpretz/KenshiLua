@@ -9,6 +9,7 @@
 #include "Bindings/BountyBinding.h"
 #include "Bindings/Templates/OgreUnorderedBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/TimeOfDayBinding.h"
 #include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
@@ -62,8 +63,7 @@ static int BountyManager_get_accessPassExpirationTime(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    // TODO: Unsupported type for accessPassExpirationTime (TimeOfDay)
-    return luaL_error(L, "Unsupported property 'accessPassExpirationTime' (type: TimeOfDay)");
+    return pushObject<TimeOfDay>(L, &b->accessPassExpirationTime, TimeOfDayBinding::getMetatableName());
 }
 
 static int BountyManager_get_committingCrime(lua_State* L)
@@ -92,8 +92,7 @@ static int BountyManager_get_crimeAgainst(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    // TODO: Unsupported type for crimeAgainst (hand)
-    return luaL_error(L, "Unsupported property 'crimeAgainst' (type: hand)");
+    return handBinding::push(L, b->crimeAgainst);
 }
 
 static int BountyManager_get_crimeExpiry(lua_State* L)
@@ -108,8 +107,7 @@ static int BountyManager_get_prisonSentenceBeganTime(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    // TODO: Unsupported type for prisonSentenceBeganTime (TimeOfDay)
-    return luaL_error(L, "Unsupported property 'prisonSentenceBeganTime' (type: TimeOfDay)");
+    return pushObject<TimeOfDay>(L, &b->prisonSentenceBeganTime, TimeOfDayBinding::getMetatableName());
 }
 
 static int BountyManager_get_prisonSentenceToServe(lua_State* L)
@@ -140,49 +138,60 @@ static int BountyManager_set_me(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for me");
+    b->me = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    return 0;
 }
 
 static int BountyManager_set__hasAccessPass(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _hasAccessPass");
+    b->_hasAccessPass = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
 }
 
 static int BountyManager_set_accessPassExpirationTime(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for accessPassExpirationTime");
+    TimeOfDay* val = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Expected TimeOfDay object");
+    b->accessPassExpirationTime = *val;
+    return 0;
 }
 
 static int BountyManager_set_committingCrime(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for committingCrime");
+    b->committingCrime = (CrimeEnum)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int BountyManager_set_crimeAgainstFaction(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for crimeAgainstFaction");
+    b->crimeAgainstFaction = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
 }
 
 static int BountyManager_set_usingTrainingEquipmentOf(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for usingTrainingEquipmentOf");
+    b->usingTrainingEquipmentOf = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
 }
 
 static int BountyManager_set_crimeAgainst(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for crimeAgainst");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Expected hand object");
+    b->crimeAgainst = *val;
+    return 0;
 }
 
 static int BountyManager_set_crimeExpiry(lua_State* L)
@@ -197,7 +206,10 @@ static int BountyManager_set_prisonSentenceBeganTime(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for prisonSentenceBeganTime");
+    TimeOfDay* val = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Expected TimeOfDay object");
+    b->prisonSentenceBeganTime = *val;
+    return 0;
 }
 
 static int BountyManager_set_prisonSentenceToServe(lua_State* L)

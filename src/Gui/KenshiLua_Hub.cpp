@@ -6,8 +6,6 @@
 #include "KenshiLua_ScriptManager.h"
 #include "KenshiLua_Settings.h"
 #include "Gui/GuiManager.h"
-#include "Plugin.h"
-#include "Logger.h"
 
 namespace KenshiLua
 {

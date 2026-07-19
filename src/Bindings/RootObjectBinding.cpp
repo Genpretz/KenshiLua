@@ -97,7 +97,8 @@ static int RootObject_set_container(lua_State* L)
 {
     RootObject* b = getB(L, 1);
     if (!b) return luaL_error(L, "RootObject is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for container");
+    b->container = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObjectContainer>(L, 2, RootObjectContainerBinding::getMetatableName());
+    return 0;
 }
 
 static int RootObject_set_isInsideBuilding(lua_State* L)

@@ -409,5 +409,3 @@ namespace KenshiLua
     }
 
 } // namespace KenshiLua
-
-#include "Lua/LuaCodec.h"

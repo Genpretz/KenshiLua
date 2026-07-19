@@ -1,11 +1,13 @@
 #include "pch.h"
-#include <kenshi/Building/Building.h>
+#include "kenshi\Building\Building.h"
 #include "PreviewBuildingBinding.h"
-#include "BuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/RootObjectBinding.h"
 #include "Bindings/TownBinding.h"
+#include "Bindings/physHitBinding.h"
 
 namespace KenshiLua
 {
@@ -20,24 +22,8 @@ static int PreviewBuilding_get_parentNode(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    // TODO: Unsupported type for parentNode (Ogre::SceneNode*)
-    return luaL_error(L, "Unsupported property 'parentNode' (type: Ogre::SceneNode*)");
-}
-
-static int PreviewBuilding_get_entitiesList(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    // TODO: Unsupported type for entitiesList (Ogre::vector<Ogre::Entity*>::type)
-    return luaL_error(L, "Unsupported property 'entitiesList' (type: Ogre::vector<Ogre::Entity*>::type)");
-}
-
-static int PreviewBuilding_get_footprints(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    // TODO: Unsupported type for footprints (lektor<Footprint>)
-    return luaL_error(L, "Unsupported property 'footprints' (type: lektor<Footprint>)");
+    lua_pushlightuserdata(L, (void*)instance->parentNode);
+    return 1;
 }
 
 static int PreviewBuilding_get_isCurrentlySnapped(lua_State* L)
@@ -55,20 +41,11 @@ static int PreviewBuilding_get_snappedTo(lua_State* L)
     return pushObject<Building>(L, instance->snappedTo, BuildingBinding::getMetatableName());
 }
 
-static int PreviewBuilding_get_usageNodes(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    // TODO: Unsupported type for usageNodes (lektor<FootprintNode>)
-    return luaL_error(L, "Unsupported property 'usageNodes' (type: lektor<FootprintNode>)");
-}
-
 static int PreviewBuilding_get_prospectingInformation(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    // TODO: Unsupported type for prospectingInformation (DatapanelGUI*)
-    return luaL_error(L, "Unsupported property 'prospectingInformation' (type: DatapanelGUI*)");
+    return pushObject<DatapanelGUI>(L, instance->prospectingInformation, DatapanelGUIBinding::getMetatableName());
 }
 
 static int PreviewBuilding_get_prospectResource(lua_State* L)
@@ -198,14 +175,6 @@ static int PreviewBuilding_get_matchSlope(lua_State* L)
     return 1;
 }
 
-static int PreviewBuilding_get_nodeResults(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    // TODO: Unsupported type for nodeResults (lektor<PlacementResult>)
-    return luaL_error(L, "Unsupported property 'nodeResults' (type: lektor<PlacementResult>)");
-}
-
 static int PreviewBuilding_get_justBeenBuilt(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
@@ -241,14 +210,6 @@ static int PreviewBuilding_get_isIndoors(lua_State* L)
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
     return pushObject<Building>(L, instance->isIndoors, BuildingBinding::getMetatableName());
-}
-
-static int PreviewBuilding_get_AABB(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    // TODO: Unsupported type for AABB (Ogre::Aabb)
-    return luaL_error(L, "Unsupported property 'AABB' (type: Ogre::Aabb)");
 }
 
 static int PreviewBuilding_get_buildDataPtr(lua_State* L)
@@ -314,27 +275,6 @@ static int PreviewBuilding_get_positionHitGroup(lua_State* L)
 }
 
 // --- Setters for PreviewBuilding ---
-static int PreviewBuilding_set_parentNode(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for parentNode");
-}
-
-static int PreviewBuilding_set_entitiesList(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for entitiesList");
-}
-
-static int PreviewBuilding_set_footprints(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for footprints");
-}
-
 static int PreviewBuilding_set_isCurrentlySnapped(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
@@ -347,21 +287,16 @@ static int PreviewBuilding_set_snappedTo(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for snappedTo");
-}
-
-static int PreviewBuilding_set_usageNodes(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for usageNodes");
+    instance->snappedTo = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    return 0;
 }
 
 static int PreviewBuilding_set_prospectingInformation(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for prospectingInformation");
+    instance->prospectingInformation = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
 }
 
 static int PreviewBuilding_set_prospectResource(lua_State* L)
@@ -464,7 +399,8 @@ static int PreviewBuilding_set_inTown(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for inTown");
+    instance->inTown = lua_isnoneornil(L, 2) ? nullptr : checkObject<Town>(L, 2, TownBinding::getMetatableName());
+    return 0;
 }
 
 static int PreviewBuilding_set_floorNum(lua_State* L)
@@ -491,18 +427,12 @@ static int PreviewBuilding_set_matchSlope(lua_State* L)
     return 0;
 }
 
-static int PreviewBuilding_set_nodeResults(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for nodeResults");
-}
-
 static int PreviewBuilding_set_justBeenBuilt(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for justBeenBuilt");
+    instance->justBeenBuilt = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    return 0;
 }
 
 static int PreviewBuilding_set_yaw(lua_State* L)
@@ -525,35 +455,32 @@ static int PreviewBuilding_set_isFurnitureOf(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isFurnitureOf");
+    instance->isFurnitureOf = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    return 0;
 }
 
 static int PreviewBuilding_set_isIndoors(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isIndoors");
-}
-
-static int PreviewBuilding_set_AABB(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for AABB");
+    instance->isIndoors = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    return 0;
 }
 
 static int PreviewBuilding_set_buildDataPtr(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for buildDataPtr");
+    instance->buildDataPtr = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int PreviewBuilding_set_farmData(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for farmData");
+    instance->farmData = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int PreviewBuilding_set_prospectingOK(lua_State* L)
@@ -602,6 +529,17 @@ static int PreviewBuilding_set_positionHitGroup(lua_State* L)
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
     instance->positionHitGroup = (int)luaL_checkinteger(L, 2);
     return 0;
+}
+
+int PreviewBuildingBinding::_CONSTRUCTOR(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Building* _furnitureParent = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
+    PreviewBuilding* result = instance->_CONSTRUCTOR(data, _furnitureParent);
+    return pushObject<PreviewBuilding>(L, result, PreviewBuildingBinding::getMetatableName());
 }
 
 int PreviewBuildingBinding::_DESTRUCTOR(lua_State* L)
@@ -1206,6 +1144,26 @@ int PreviewBuildingBinding::_NV_getEndPos(lua_State* L)
     return 1;
 }
 
+int PreviewBuildingBinding::clearPointersTo(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    PreviewBuilding* _a1 = checkObject<PreviewBuilding>(L, 2, PreviewBuildingBinding::getMetatableName());
+    instance->clearPointersTo(_a1);
+    return 0;
+}
+
+int PreviewBuildingBinding::_NV_clearPointersTo(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    PreviewBuilding* _a1 = checkObject<PreviewBuilding>(L, 2, PreviewBuildingBinding::getMetatableName());
+    instance->_NV_clearPointersTo(_a1);
+    return 0;
+}
+
 int PreviewBuildingBinding::placeFinalPreviewBuilding(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
@@ -1411,19 +1369,25 @@ int PreviewBuildingBinding::validateUsageNodes(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 600: const std::string& getPlacementResultMaterialName(...) - static method
-  line 603: PreviewBuilding* _CONSTRUCTOR(...) - unsupported return type
-  line 625: void buildingPlacementUpdate(...) - unsupported arg type
-  line 626: void _NV_buildingPlacementUpdate(...) - unsupported arg type
-  line 659: const Ogre::Quaternion& getOrientation(...) - reference return type
-  line 662: const Ogre::Vector3& getCentreOffset(...) - reference return type
-  line 670: void clearPointersTo(...) - unsupported arg type
-  line 671: void _NV_clearPointersTo(...) - unsupported arg type
-  line 677: const Ogre::Aabb& getWorldAABB(...) - reference return type
-  line 678: bool isNoCollideWithThisBuilding(...) - overloaded method
-  line 679: bool _NV_isNoCollideWithThisBuilding(...) - overloaded method
-  line 680: bool isNoCollideWithThisBuilding(...) - overloaded method
-  line 681: bool _NV_isNoCollideWithThisBuilding(...) - overloaded method
+  line 601: const std::string& getPlacementResultMaterialName(...) - static method
+  line 626: void buildingPlacementUpdate(...) - non-string reference arg
+  line 627: void _NV_buildingPlacementUpdate(...) - non-string reference arg
+  line 660: const Ogre::Quaternion& getOrientation(...) - reference return type
+  line 663: const Ogre::Vector3& getCentreOffset(...) - reference return type
+  line 678: const Ogre::Aabb& getWorldAABB(...) - reference return type
+  line 679: bool isNoCollideWithThisBuilding(...) - overloaded method
+  line 680: bool _NV_isNoCollideWithThisBuilding(...) - overloaded method
+  line 681: bool isNoCollideWithThisBuilding(...) - overloaded method
+  line 682: bool _NV_isNoCollideWithThisBuilding(...) - overloaded method
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 692: entitiesList (Ogre::vector<Ogre::Entity*>::type) - unsupported type
+  line 693: footprints (lektor<Footprint>) - unsupported type
+  line 703: usageNodes (lektor<FootprintNode>) - unsupported type
+  line 721: nodeResults (lektor<PlacementResult>) - unsupported type
+  line 727: AABB (Ogre::Aabb) - unsupported type
 */
 
 int PreviewBuildingBinding::gc(lua_State* L)
@@ -1447,6 +1411,7 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", PreviewBuildingBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", PreviewBuildingBinding::_DESTRUCTOR },
         { "type", PreviewBuildingBinding::type },
         { "_NV_type", PreviewBuildingBinding::_NV_type },
@@ -1507,6 +1472,8 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
         { "_NV_setEndPosition", PreviewBuildingBinding::_NV_setEndPosition },
         { "getEndPos", PreviewBuildingBinding::getEndPos },
         { "_NV_getEndPos", PreviewBuildingBinding::_NV_getEndPos },
+        { "clearPointersTo", PreviewBuildingBinding::clearPointersTo },
+        { "_NV_clearPointersTo", PreviewBuildingBinding::_NV_clearPointersTo },
         { "placeFinalPreviewBuilding", PreviewBuildingBinding::placeFinalPreviewBuilding },
         { "_NV_placeFinalPreviewBuilding", PreviewBuildingBinding::_NV_placeFinalPreviewBuilding },
         { "insideBuilding", PreviewBuildingBinding::insideBuilding },
@@ -1543,16 +1510,10 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
     lua_newtable(L); // Create __getters table
     lua_pushcfunction(L, PreviewBuilding_get_parentNode);
     lua_setfield(L, -2, "parentNode");
-    lua_pushcfunction(L, PreviewBuilding_get_entitiesList);
-    lua_setfield(L, -2, "entitiesList");
-    lua_pushcfunction(L, PreviewBuilding_get_footprints);
-    lua_setfield(L, -2, "footprints");
     lua_pushcfunction(L, PreviewBuilding_get_isCurrentlySnapped);
     lua_setfield(L, -2, "isCurrentlySnapped");
     lua_pushcfunction(L, PreviewBuilding_get_snappedTo);
     lua_setfield(L, -2, "snappedTo");
-    lua_pushcfunction(L, PreviewBuilding_get_usageNodes);
-    lua_setfield(L, -2, "usageNodes");
     lua_pushcfunction(L, PreviewBuilding_get_prospectingInformation);
     lua_setfield(L, -2, "prospectingInformation");
     lua_pushcfunction(L, PreviewBuilding_get_prospectResource);
@@ -1587,8 +1548,6 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "isOutside");
     lua_pushcfunction(L, PreviewBuilding_get_matchSlope);
     lua_setfield(L, -2, "matchSlope");
-    lua_pushcfunction(L, PreviewBuilding_get_nodeResults);
-    lua_setfield(L, -2, "nodeResults");
     lua_pushcfunction(L, PreviewBuilding_get_justBeenBuilt);
     lua_setfield(L, -2, "justBeenBuilt");
     lua_pushcfunction(L, PreviewBuilding_get_yaw);
@@ -1599,8 +1558,6 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "isFurnitureOf");
     lua_pushcfunction(L, PreviewBuilding_get_isIndoors);
     lua_setfield(L, -2, "isIndoors");
-    lua_pushcfunction(L, PreviewBuilding_get_AABB);
-    lua_setfield(L, -2, "AABB");
     lua_pushcfunction(L, PreviewBuilding_get_buildDataPtr);
     lua_setfield(L, -2, "buildDataPtr");
     lua_pushcfunction(L, PreviewBuilding_get_farmData);
@@ -1620,18 +1577,10 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, PreviewBuilding_set_parentNode);
-    lua_setfield(L, -2, "parentNode");
-    lua_pushcfunction(L, PreviewBuilding_set_entitiesList);
-    lua_setfield(L, -2, "entitiesList");
-    lua_pushcfunction(L, PreviewBuilding_set_footprints);
-    lua_setfield(L, -2, "footprints");
     lua_pushcfunction(L, PreviewBuilding_set_isCurrentlySnapped);
     lua_setfield(L, -2, "isCurrentlySnapped");
     lua_pushcfunction(L, PreviewBuilding_set_snappedTo);
     lua_setfield(L, -2, "snappedTo");
-    lua_pushcfunction(L, PreviewBuilding_set_usageNodes);
-    lua_setfield(L, -2, "usageNodes");
     lua_pushcfunction(L, PreviewBuilding_set_prospectingInformation);
     lua_setfield(L, -2, "prospectingInformation");
     lua_pushcfunction(L, PreviewBuilding_set_prospectResource);
@@ -1666,8 +1615,6 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "isOutside");
     lua_pushcfunction(L, PreviewBuilding_set_matchSlope);
     lua_setfield(L, -2, "matchSlope");
-    lua_pushcfunction(L, PreviewBuilding_set_nodeResults);
-    lua_setfield(L, -2, "nodeResults");
     lua_pushcfunction(L, PreviewBuilding_set_justBeenBuilt);
     lua_setfield(L, -2, "justBeenBuilt");
     lua_pushcfunction(L, PreviewBuilding_set_yaw);
@@ -1678,8 +1625,6 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "isFurnitureOf");
     lua_pushcfunction(L, PreviewBuilding_set_isIndoors);
     lua_setfield(L, -2, "isIndoors");
-    lua_pushcfunction(L, PreviewBuilding_set_AABB);
-    lua_setfield(L, -2, "AABB");
     lua_pushcfunction(L, PreviewBuilding_set_buildDataPtr);
     lua_setfield(L, -2, "buildDataPtr");
     lua_pushcfunction(L, PreviewBuilding_set_farmData);
@@ -1699,8 +1644,9 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
-    // // // // // // // // // // // // // // setMetatableParent(L, PreviewBuildingBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, PreviewBuildingBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
-}
+
+} // namespace KenshiLua
