@@ -244,6 +244,54 @@
     <ClCompile Include="src\Gui\KenshiLua_ScriptManager.cpp" />
     <ClCompile Include="src\Gui\KenshiLua_Settings.cpp" />
     <ClCompile Include="src\Gui\KenshiLua_ScriptEditor.cpp" />
+    <ClCompile Include="src\Bindings\RobotLimbItemBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\AttackSlotManagerBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\CombatClassBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\FactionUniqueSquadManagerBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\GlobalConstantsBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\InstanceIDBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\MeshLoadDataBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\ProsperityManagerBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\ResourceLoadRequestMeshBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\ResourceLoadRequestTextureBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\ResourceLoaderBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\SaveFileSystemBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\SaveManagerBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\TextureArrayLoadDataBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\TextureLoadDataBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\UniqueSpawnDataBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Bindings\CharStatsBinding.h" />
@@ -947,6 +995,51 @@
     <ClInclude Include="src\Bindings\Util\OgreUnorderedBinding.h" />
     <ClInclude Include="src\Bindings\Util\OgreVectorBinding.h" />
     <ClInclude Include="src\Bindings\Util\StdMapBinding.h" />
+    <ClInclude Include="src\Bindings\AttackSlotManagerBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\CombatClassBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\FactionUniqueSquadManagerBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\GlobalConstantsBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\InstanceIDBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\MeshLoadDataBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\ProsperityManagerBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\ResourceLoadRequestMeshBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\ResourceLoadRequestTextureBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\ResourceLoaderBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\SaveFileSystemBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\SaveManagerBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\TextureArrayLoadDataBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\TextureLoadDataBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bindings\UniqueSpawnDataBinding.h">
+      <Filter>Header Files\Bindings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\kenshilib\Include\ogre\Animation\OgreBone.inl" />
