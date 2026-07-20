@@ -50,7 +50,7 @@ bool LuaState::initialize()
         return true;
     }
 
-    m_L = lua_newstate(defaultAlloc, NULL);
+    m_L = lua_newstate(defaultAlloc, NULL, 0);
 
     if (!m_L) {
         return false;
