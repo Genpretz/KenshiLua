@@ -65,5 +65,38 @@ public:
     static int _NV_packPtrsToHandles(lua_State* L);
     static int unpackHandlesToPtrs(lua_State* L);
     static int _NV_unpackHandlesToPtrs(lua_State* L);
+
+    static int _iHitYouAreYouHit(lua_State* L);
+    static int _getHit(lua_State* L);
+    static int _blockHit(lua_State* L);
+    static int isAttacking(lua_State* L);
+    static int informOfFreeAttackSlot(lua_State* L);
+    static int _NV_informOfFreeAttackSlot(lua_State* L);
+    static int _getAttackTarget(lua_State* L);
+    static int isFightingAnAllyOfMine(lua_State* L);
+    static int getAttackers(lua_State* L);
+    static int addAttackerH(lua_State* L);
+    static int isInAttackerListH(lua_State* L);
+    static int removeAttackerH(lua_State* L);
+    static int youDoKnowImAttackingYouRight(lua_State* L);
+    static int getAttackAimAdjustmentThreshold(lua_State* L);
+    static int hasFocusedTarget(lua_State* L);
+    static int _NV_hasFocusedTarget(lua_State* L);
+    static int isInAttackZone(lua_State* L);
+    static int assessIncomingAttacks(lua_State* L);
+    static int calculateCurrentTechniqueSection(lua_State* L);
+    static int getBiggestThreat(lua_State* L);
+    static int gotMoreImportantThingsToDoThanFightingYou(lua_State* L);
+    static int _NV_gotMoreImportantThingsToDoThanFightingYou(lua_State* L);
+    static int setAttackTarget(lua_State* L);
+    static int setAttackTargetHandle(lua_State* L);
+    static int lookatTarget(lua_State* L);
+
+    static int setup(lua_State* L);
+    static int destroy(lua_State* L);
+    static int getCombatEffect(lua_State* L);
+    static int addEffect(lua_State* L);
+    static int shiftEffects(lua_State* L);
+    static int updateEffects(lua_State* L);
 };
 }
