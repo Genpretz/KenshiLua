@@ -10,10 +10,8 @@
 #include <fstream>
 #include <vector>
 #include <ctime>
-
 namespace KenshiLua
 {
-    void logBenchmark(const std::string& message);
 
 class HighResTimer {
     LARGE_INTEGER start_time;
@@ -139,7 +137,6 @@ struct BenchmarkResults {
     double enum_lookup_ms;
     double metatable_method_ms;
     double property_getter_ms;
-    double kenshi_log_ms;
     double tostring_metamethod_ms;
     double ou_method_ms;       // -1 if not available
     double ou_property_ms;     // -1 if not available
@@ -162,14 +159,14 @@ static const char* CSV_HEADER =
     "pure_lua_loop_ms,table_access_ms,table_alloc_ms,load_compile_ms,"
     "require_overhead_ms,pcall_overhead_ms,gc_pause_ms,"
     "enum_lookup_ms,metatable_method_ms,property_getter_ms,"
-    "kenshi_log_ms,tostring_metamethod_ms,"
+    "tostring_metamethod_ms,"
     "ou_method_ms,ou_property_ms,"
     "cb_0args_ms,cb_1arg_ms,cb_2args_ms,cb_5args_ms,"
     "cpp_getter_setter_ms,mod_hook_200_ms,overhead_factor";
 
-static void writeBenchmarkCSV(const BenchmarkResults& r)
+static void writeBenchmarkCSV(const BenchmarkResults& r, const std::string& csvFilename = "KenshiLua_Benchmark.csv")
 {
-    std::string csvPath = getDllDirectory() + "\\KenshiLua_Benchmark.csv";
+    std::string csvPath = getDllDirectory() + "\\" + csvFilename;
 
     // Check if file exists and has content (need header?)
     bool needHeader = false;
@@ -195,7 +192,7 @@ static void writeBenchmarkCSV(const BenchmarkResults& r)
          << r.load_compile_ms << "," << r.require_overhead_ms << "," << r.pcall_overhead_ms << ","
          << r.gc_pause_ms << ","
          << r.enum_lookup_ms << "," << r.metatable_method_ms << "," << r.property_getter_ms << ","
-         << r.kenshi_log_ms << "," << r.tostring_metamethod_ms << ","
+         << r.tostring_metamethod_ms << ","
          << r.ou_method_ms << "," << r.ou_property_ms << ","
          << r.cb_0args_ms << "," << r.cb_1arg_ms << "," << r.cb_2args_ms << "," << r.cb_5args_ms << ","
          << r.cpp_getter_setter_ms << "," << r.mod_hook_200_ms << "," << r.overhead_factor
@@ -208,7 +205,7 @@ static void writeBenchmarkCSV(const BenchmarkResults& r)
 // Main benchmark
 // ---------------------------------------------------------------------------
 
-int luaKenshiRunBenchmark(lua_State* L)
+int luaKenshiRunBenchmarkEx(lua_State* L, const std::string& csvFilename, const std::string& logFilename)
 {
     BenchmarkResults results;
     results.timestamp = getTimestampISO();
@@ -396,15 +393,6 @@ int luaKenshiRunBenchmark(lua_State* L)
     }
     ss << "  Property Getter Dispatch        : " << results.property_getter_ms << " ms\n";
 
-    // KenshiLua.log() - real C function call with string argument
-    const char* log_code =
-        "local log = KenshiLua.log\n"
-        "for i = 1, 100000 do\n"
-        "    log('benchmark')\n"
-        "end\n";
-    results.kenshi_log_ms = time_lua_code(L, log_code);
-    ss << "  KenshiLua.log() (100K)          : " << results.kenshi_log_ms << " ms\n";
-
     // tostring on enum table value - exercises __tostring metamethod if present
     const char* tostring_code =
         "local ts = tostring\n"
@@ -524,13 +512,28 @@ int luaKenshiRunBenchmark(lua_State* L)
     ss << "========================================\n";
 
     std::string log_output = ss.str();
-    logBenchmark(log_output);
+    logBenchmark(log_output, logFilename);
 
     // Write CSV row
-    writeBenchmarkCSV(results);
+    writeBenchmarkCSV(results, csvFilename);
 
     lua_pushstring(L, log_output.c_str());
     return 1;
+}
+
+int luaKenshiRunBenchmark(lua_State* L)
+{
+    std::string csvFilename = "KenshiLua_Benchmark_Runtime.csv";
+    std::string logFilename = "KenshiLua_Benchmark_Runtime.log";
+
+    if (lua_gettop(L) >= 1 && lua_isstring(L, 1)) {
+        csvFilename = lua_tostring(L, 1);
+    }
+    if (lua_gettop(L) >= 2 && lua_isstring(L, 2)) {
+        logFilename = lua_tostring(L, 2);
+    }
+
+    return luaKenshiRunBenchmarkEx(L, csvFilename, logFilename);
 }
 
 bool isBenchmarkEnabled()
@@ -538,12 +541,17 @@ bool isBenchmarkEnabled()
     return Config::get().isBenchmarkEnabled();
 }
 
-void runBenchmarkOnStartup(lua_State* L)
+void runBenchmarkOnStartup(lua_State* L, bool isInitialStartup)
 {
-    logBenchmark("--- Running Startup Benchmark ---");
-    luaKenshiRunBenchmark(L);
+    std::string csvFilename = isInitialStartup ? "KenshiLua_Benchmark.csv" : "KenshiLua_Benchmark_Runtime.csv";
+    std::string logFilename = isInitialStartup ? "KenshiLua_Benchmark.log" : "KenshiLua_Benchmark_Runtime.log";
+    std::string header = isInitialStartup ? "--- Running Startup Benchmark ---" : "--- Running Runtime Restart Benchmark ---";
+    std::string footer = isInitialStartup ? "--- Startup Benchmark Complete ---" : "--- Runtime Restart Benchmark Complete ---";
+
+    logBenchmark(header, logFilename);
+    luaKenshiRunBenchmarkEx(L, csvFilename, logFilename);
     lua_pop(L, 1);
-    logBenchmark("--- Startup Benchmark Complete ---");
+    logBenchmark(footer, logFilename);
 }
 
 } // namespace KenshiLua

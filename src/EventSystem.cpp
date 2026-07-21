@@ -163,20 +163,13 @@ namespace KenshiLua
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            std::string pcallErr;
-            if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
+            if (executeHandler(eventName, nargs))
             {
                 // A handler returning false consumes the event and stops
                 // subsequent handlers from running.
                 if (lua_isboolean(m_L, -1) && !lua_toboolean(m_L, -1))
                     result = -1;
                 lua_pop(m_L, 1);
-            }
-            else
-            {
-                logToFilef("Lua error in '%s' handler: %s",
-                    eventName,
-                    pcallErr.c_str());
             }
 
             if (result == -1)
@@ -215,20 +208,13 @@ namespace KenshiLua
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            std::string pcallErr;
-            if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
+            if (executeHandler(eventName, nargs))
             {
                 if (lua_isstring(m_L, -1))
                 {
                     result = lua_tostring(m_L, -1);
                 }
                 lua_pop(m_L, 1);
-            }
-            else
-            {
-                logToFilef("Lua error in '%s' handler: %s",
-                    eventName,
-                    pcallErr.c_str());
             }
 
             if (!result.empty())
@@ -267,18 +253,11 @@ namespace KenshiLua
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            std::string pcallErr;
-            if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
+            if (executeHandler(eventName, nargs))
             {
                 // Use testObject to safely check if it matches the expected type
                 result = testObject<void>(m_L, -1, metatableName);
                 lua_pop(m_L, 1);
-            }
-            else
-            {
-                logToFilef("Lua error in '%s' handler: %s",
-                    eventName,
-                    pcallErr.c_str());
             }
 
             if (result)
@@ -318,8 +297,7 @@ namespace KenshiLua
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            std::string pcallErr;
-            if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
+            if (executeHandler(eventName, nargs))
             {
                 if (lua_isboolean(m_L, -1))
                 {
@@ -327,12 +305,6 @@ namespace KenshiLua
                     hasResult = true;
                 }
                 lua_pop(m_L, 1);
-            }
-            else
-            {
-                logToFilef("Lua error in '%s' handler: %s",
-                    eventName,
-                    pcallErr.c_str());
             }
 
             if (hasResult)
@@ -372,8 +344,7 @@ namespace KenshiLua
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            std::string pcallErr;
-            if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
+            if (executeHandler(eventName, nargs))
             {
                 if (lua_isnumber(m_L, -1))
                 {
@@ -381,12 +352,6 @@ namespace KenshiLua
                     hasResult = true;
                 }
                 lua_pop(m_L, 1);
-            }
-            else
-            {
-                logToFilef("Lua error in '%s' handler: %s",
-                    eventName,
-                    pcallErr.c_str());
             }
 
             if (hasResult)
@@ -396,6 +361,26 @@ namespace KenshiLua
         return result;
     }
 
+
+    // ---------------------------------------------------------------------------
+    // executeHandler
+    // ---------------------------------------------------------------------------
+
+    bool EventSystem::executeHandler(const char* eventName, int nargs)
+    {
+        std::string pcallErr;
+        if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
+        {
+            return true;
+        }
+        else
+        {
+            logToFileErrorf("Lua error in '%s' handler: %s",
+                eventName,
+                pcallErr.c_str());
+            return false;
+        }
+    }
 
     // ---------------------------------------------------------------------------
     // clear

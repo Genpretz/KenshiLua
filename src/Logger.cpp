@@ -19,10 +19,11 @@ Logger& Logger::get()
     return instance;
 }
 
-void Logger::init(const std::string& filepath)
+void Logger::init(const std::string& filepath, bool append)
 {
     if (!m_initialized) {
-        m_file.open(filepath, std::ios::out | std::ios::app);
+        std::ios_base::openmode mode = std::ios::out | (append ? std::ios::app : std::ios::trunc);
+        m_file.open(filepath, mode);
         m_initialized = m_file.is_open();
     }
 }
@@ -194,7 +195,7 @@ void logToFileDebug(const std::string& message)
     }
 }
 
-void logBenchmark(const std::string& message)
+void logBenchmark(const std::string& message, const std::string& logFilename)
 {
     char modulePath[MAX_PATH] = {0};
     if (s_dllModule) {
@@ -209,7 +210,7 @@ void logBenchmark(const std::string& message)
         dllPath = ".";
     }
 
-    std::string benchmarkPath = dllPath + "\\KenshiLua_Benchmark.log";
+    std::string benchmarkPath = dllPath + "\\" + logFilename;
     std::ofstream file(benchmarkPath, std::ios::app);
     if (file.is_open()) {
         auto now = boost::chrono::system_clock::now();

@@ -21,6 +21,7 @@ namespace KenshiLua
 Plugin::Plugin()
     : m_dllModule(0)
     , m_initialized(false)
+    , m_isInitialStartup(true)
 {
 }
 
@@ -46,13 +47,14 @@ bool Plugin::initialize(void* hModule)
     logToFile("Initializing KenshiLua...");
 
     Config::get().load(m_dllModule);
-    logToFilef("Config loaded: enable_benchmark=%s, debug_logging=%s",
-        Config::get().isBenchmarkEnabled() ? "true" : "false",
-        Config::get().isDebugLoggingEnabled() ? "true" : "false");
+    logToFilef("Config loaded");
+    // logToFilef("Config loaded: enable_benchmark=%s, debug_logging=%s",
+    //     Config::get().isBenchmarkEnabled() ? "true" : "false",
+    //     Config::get().isDebugLoggingEnabled() ? "true" : "false");
 
     g_luaState = new LuaState();
     if (!g_luaState->initialize()) {
-        logToFile("FAILED: LuaState initialization");
+        logToFileError("FAILED: LuaState initialization");
         return false;
     }
     logToFile("LuaState initialized");
@@ -61,7 +63,7 @@ bool Plugin::initialize(void* hModule)
     logToFile("Lua bindings registered");
 
     if (!EventSystem::get().initialize(g_luaState->getState())) {
-        logToFile("FAILED: EventSystem initialization");
+        logToFileError("FAILED: EventSystem initialization");
         return false;
     }
     logToFile("EventSystem initialized");
@@ -96,7 +98,8 @@ void Plugin::start()
     if (!m_initialized) return;
 
     if (isBenchmarkEnabled()) {
-        runBenchmarkOnStartup(g_luaState->getState());
+        runBenchmarkOnStartup(g_luaState->getState(), m_isInitialStartup);
+        m_isInitialStartup = false;
     }
 
     // Always install keydown hook so the dev GUI hotkey works by default

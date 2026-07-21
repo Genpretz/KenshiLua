@@ -73,6 +73,7 @@ private:
     std::vector<LoadedScript>  m_scripts;
     std::vector<std::string>   m_activeModNames;
     std::unordered_map<std::string, std::string> m_resolvedScriptPaths;
+    std::string                m_lastDiscoveredSummary;
     bool                       m_loaded;
     std::set<std::string>      m_stoppedScripts;
 };

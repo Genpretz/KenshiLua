@@ -23,6 +23,7 @@ private:
 
     void* m_dllModule;
     bool m_initialized;
+    bool m_isInitialStartup;
 };
 
 } // namespace KenshiLua

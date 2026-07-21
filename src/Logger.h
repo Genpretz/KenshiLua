@@ -24,7 +24,7 @@ namespace KenshiLua
     public:
         static Logger& get();
 
-        void init(const std::string& filepath);
+        void init(const std::string& filepath, bool append = false);
         void log(const std::string& message);
         void log(LogLevel level, const std::string& message);
         void snapshot(std::vector<std::string>& out, size_t maxLines = 0) const;
@@ -64,6 +64,7 @@ namespace KenshiLua
     void logToFileWarn(const std::string& message);
     void logToFileError(const std::string& message);
     void logToFileDebug(const std::string& message);
+    void logBenchmark(const std::string& message, const std::string& logFilename = "KenshiLua_Benchmark.log");
 
     inline void logToFilef(const char* fmt, ...)
     {

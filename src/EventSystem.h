@@ -80,6 +80,8 @@ namespace KenshiLua
         EventSystem();
         ~EventSystem();
 
+        bool executeHandler(const char* eventName, int nargs);
+
         // Non-copyable
         EventSystem(const EventSystem&);
         EventSystem& operator=(const EventSystem&);

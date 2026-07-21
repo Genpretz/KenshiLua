@@ -76,7 +76,7 @@ void ScriptLoader::discover()
     m_activeModNames.clear();
 
     if (!::ou) {
-        logToFile("ScriptLoader: GameWorld (ou) not yet available - skipping mod discovery");
+        logToFileWarn("ScriptLoader: GameWorld (ou) not yet available - skipping mod discovery");
         return;
     }
 
@@ -142,9 +142,13 @@ void ScriptLoader::discover()
         }
     }
 
-    logToFile("ScriptLoader: discovered " + std::to_string((long long)m_scripts.size())
+    std::string summary = "ScriptLoader: discovered " + std::to_string((long long)m_scripts.size())
               + " script(s) across "
-              + std::to_string((long long)m_activeModNames.size()) + " active mod(s)");
+              + std::to_string((long long)m_activeModNames.size()) + " active mod(s)";
+    if (summary != m_lastDiscoveredSummary) {
+        logToFile(summary);
+        m_lastDiscoveredSummary = summary;
+    }
 }
 
 bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absolutePath, const std::string& chunkName, std::string* outError)
@@ -155,7 +159,7 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
     fs::ifstream f(path, std::ios::binary | std::ios::ate);
     if (!f) {
         std::string errStr = "could not open " + absolutePath;
-        logToFile("ScriptLoader: " + errStr);
+        logToFileError("ScriptLoader: " + errStr);
         if (outError) *outError = errStr;
         for (size_t i = 0; i < m_scripts.size(); ++i) {
             if (m_scripts[i].absolutePath == absolutePath) {
@@ -173,7 +177,7 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
         buf.resize(static_cast<size_t>(sz));
         if (!f.read(&buf[0], sz)) {
             std::string errStr = "failed to read " + absolutePath;
-            logToFile("ScriptLoader: " + errStr);
+            logToFileError("ScriptLoader: " + errStr);
             if (outError) *outError = errStr;
             lua_settop(L, top);
             for (size_t i = 0; i < m_scripts.size(); ++i) {
@@ -191,7 +195,7 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
     if (loadResult != LUA_OK) {
         const char* err = lua_tostring(L, -1);
         std::string errStr = err ? err : "load error";
-        logToFile("ScriptLoader: load failed: " + chunkName + " : " + errStr);
+        logToFileError("ScriptLoader: load failed: " + chunkName + " : " + errStr);
         if (outError) *outError = errStr;
         lua_settop(L, top);
         for (size_t i = 0; i < m_scripts.size(); ++i) {
@@ -215,7 +219,7 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
 
     std::string pcallErr;
     if (!LuaState::pcallWithTraceback(L, 0, 0, &pcallErr)) {
-        logToFile("ScriptLoader: runtime error in " + chunkName + " : " + pcallErr);
+        logToFileError("ScriptLoader: runtime error in " + chunkName + " : " + pcallErr);
         if (outError) *outError = pcallErr;
         lua_settop(L, top);
         for (size_t i = 0; i < m_scripts.size(); ++i) {
@@ -294,6 +298,7 @@ void ScriptLoader::reset()
     m_scripts.clear();
     m_activeModNames.clear();
     m_resolvedScriptPaths.clear();
+    m_lastDiscoveredSummary.clear();
     m_loaded = false;
 }
 
