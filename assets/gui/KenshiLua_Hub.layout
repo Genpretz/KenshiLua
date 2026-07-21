@@ -6,7 +6,7 @@
         <Property key="Snap" value="true"/>
         <Property key="TextAlign" value="Center"/>
         <Widget type="TextBox" skin="Kenshi_TextboxPaintedText" position_real="0.0787402 0.854839 0.822835 0.0967742" align="Left Top" name="HubVersionLabel">
-            <Property key="Caption" value="KenshiLua 0.2.1"/>
+            <Property key="Caption" value="KenshiLua 0.2.2"/>
             <Property key="TextAlign" value="Right Bottom"/>
         </Widget>
         <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.0511811 0.0322581 0.866142 0.13871" align="Left Top" name="HubBtn_ScriptManager">

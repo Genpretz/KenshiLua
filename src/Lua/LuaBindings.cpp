@@ -681,6 +681,6 @@ int luaKenshiError(lua_State* L)
     return lua_error(L);
 }
 
-int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.1"); return 1; }
+int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.2"); return 1; }
 
 } // namespace KenshiLua
