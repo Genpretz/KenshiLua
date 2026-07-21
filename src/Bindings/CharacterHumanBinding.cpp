@@ -7,6 +7,8 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CrossbowBinding.h"
 #include "Bindings/WeaponBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/RootObjectBinding.h"
 
 namespace KenshiLua
 {
@@ -37,7 +39,8 @@ static int CharacterHuman_set_weaponInHands(lua_State* L)
 {
     CharacterHuman* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharacterHuman is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for weaponInHands");
+    b->weaponInHands = lua_isnoneornil(L, 2) ? nullptr : checkObject<Weapon>(L, 2, WeaponBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterHuman_set_weaponInHandsSheathLocation(lua_State* L)
@@ -302,13 +305,83 @@ int CharacterHumanBinding::_NV_reCalculateNaturalWeapon(lua_State* L)
     return 0;
 }
 
+int CharacterHumanBinding::isHuman(lua_State* L)
+{
+    CharacterHuman* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharacterHuman is nil");
+    return pushObject<CharacterHuman>(L, b->isHuman(), CharacterHumanBinding::getMetatableName());
+}
+
+int CharacterHumanBinding::_NV_isHuman(lua_State* L)
+{
+    CharacterHuman* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharacterHuman is nil");
+    return pushObject<CharacterHuman>(L, b->_NV_isHuman(), CharacterHumanBinding::getMetatableName());
+}
+
+int CharacterHumanBinding::drawWeapon(lua_State* L)
+{
+    CharacterHuman* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharacterHuman is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    std::string lastSection = luaL_checkstring(L, 3);
+    bool result = b->drawWeapon(item, lastSection);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int CharacterHumanBinding::_NV_drawWeapon(lua_State* L)
+{
+    CharacterHuman* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharacterHuman is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    std::string lastSection = luaL_checkstring(L, 3);
+    bool result = b->_NV_drawWeapon(item, lastSection);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int CharacterHumanBinding::dropItem(lua_State* L)
+{
+    CharacterHuman* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharacterHuman is nil");
+    RootObject* itembase = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->dropItem(itembase);
+    return 0;
+}
+
+int CharacterHumanBinding::_NV_dropItem(lua_State* L)
+{
+    CharacterHuman* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharacterHuman is nil");
+    RootObject* itembase = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    b->_NV_dropItem(itembase);
+    return 0;
+}
+
+int CharacterHumanBinding::unequipItem(lua_State* L)
+{
+    CharacterHuman* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharacterHuman is nil");
+    std::string section = luaL_checkstring(L, 2);
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    b->unequipItem(section, item);
+    return 0;
+}
+
+int CharacterHumanBinding::_NV_unequipItem(lua_State* L)
+{
+    CharacterHuman* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharacterHuman is nil");
+    std::string section = luaL_checkstring(L, 2);
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    b->_NV_unequipItem(section, item);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 15: CharacterHuman* _CONSTRUCTOR(...) - unsupported return type
-  line 18: CharacterHuman* isHuman(...) - unsupported return type
-  line 19: CharacterHuman* _NV_isHuman(...) - unsupported return type
-  line 20: bool drawWeapon(...) - unsupported arg type
-  line 21: bool _NV_drawWeapon(...) - unsupported arg type
+  line 15: CharacterHuman* _CONSTRUCTOR(...) - overloaded constructor / factory
   line 30: GameSaveState serialise(...) - unsupported return type
   line 31: GameSaveState _NV_serialise(...) - unsupported return type
   line 32: void loadFromSerialise(...) - unsupported arg type
@@ -317,10 +390,6 @@ Skipped methods needing manual binding:
   line 35: bool _NV_giveBirth(...) - unsupported arg type
   line 36: bool setupInventorySections(...) - unsupported arg type
   line 37: bool _NV_setupInventorySections(...) - unsupported arg type
-  line 47: void dropItem(...) - unsupported arg type
-  line 48: void _NV_dropItem(...) - unsupported arg type
-  line 51: void unequipItem(...) - unsupported arg type
-  line 52: void _NV_unequipItem(...) - unsupported arg type
 */
 
 int CharacterHumanBinding::gc(lua_State* L)
@@ -371,6 +440,14 @@ void CharacterHumanBinding::registerBinding(lua_State* L)
         { "_NV_postRagdollCallback", CharacterHumanBinding::_NV_postRagdollCallback },
         { "reCalculateNaturalWeapon", CharacterHumanBinding::reCalculateNaturalWeapon },
         { "_NV_reCalculateNaturalWeapon", CharacterHumanBinding::_NV_reCalculateNaturalWeapon },
+        { "isHuman", CharacterHumanBinding::isHuman },
+        { "_NV_isHuman", CharacterHumanBinding::_NV_isHuman },
+        { "drawWeapon", CharacterHumanBinding::drawWeapon },
+        { "_NV_drawWeapon", CharacterHumanBinding::_NV_drawWeapon },
+        { "dropItem", CharacterHumanBinding::dropItem },
+        { "_NV_dropItem", CharacterHumanBinding::_NV_dropItem },
+        { "unequipItem", CharacterHumanBinding::unequipItem },
+        { "_NV_unequipItem", CharacterHumanBinding::_NV_unequipItem },
         { 0, 0 }
     };
 

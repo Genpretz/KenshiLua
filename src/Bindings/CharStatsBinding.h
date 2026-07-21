@@ -154,5 +154,6 @@ public:
     static int _chooseAttacks(lua_State* L);
     static int stealthXPMultForGUI(lua_State* L);
     static int printExertionHungerMultTooltip(lua_State* L);
+    static int xpTraining(lua_State* L);
 };
 }

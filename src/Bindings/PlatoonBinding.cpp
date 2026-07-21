@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "kenshi\Platoon.h"
+#include "kenshi\GameSaveState.h"
 #include "PlatoonBinding.h"
 #include "OwnershipsBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -11,6 +12,10 @@
 #include "Bindings/FactionBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/TaskerBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
 
 namespace KenshiLua
 {
@@ -57,8 +62,8 @@ static int Platoon_get_hasUniques(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for hasUniques (YesNoMaybe)
-    return luaL_error(L, "Unsupported property 'hasUniques' (type: YesNoMaybe)");
+    lua_pushinteger(L, (lua_Integer)b->hasUniques.key);
+    return 1;
 }
 
 static int Platoon_get_speedOverride(lua_State* L)
@@ -127,16 +132,18 @@ static int Platoon_get_locatorModel(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for locatorModel (Ogre::Entity*)
-    return luaL_error(L, "Unsupported property 'locatorModel' (type: Ogre::Entity*)");
+    if (b->locatorModel) lua_pushlightuserdata(L, b->locatorModel);
+    else lua_pushnil(L);
+    return 1;
 }
 
 static int Platoon_get_blackboard(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for blackboard (Blackboard*)
-    return luaL_error(L, "Unsupported property 'blackboard' (type: Blackboard*)");
+    if (b->blackboard) lua_pushlightuserdata(L, b->blackboard);
+    else lua_pushnil(L);
+    return 1;
 }
 
 static int Platoon_get__isIntact(lua_State* L)
@@ -190,16 +197,17 @@ static int Platoon_get_messageOnActivation(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for messageOnActivation (PlatoonCreationMessage)
-    return luaL_error(L, "Unsupported property 'messageOnActivation' (type: PlatoonCreationMessage)");
+    lua_pushinteger(L, (lua_Integer)b->messageOnActivation);
+    return 1;
 }
 
 static int Platoon_get_currentSpawnArea(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for currentSpawnArea (AreaSector*)
-    return luaL_error(L, "Unsupported property 'currentSpawnArea' (type: AreaSector*)");
+    if (b->currentSpawnArea) lua_pushlightuserdata(L, b->currentSpawnArea);
+    else lua_pushnil(L);
+    return 1;
 }
 
 static int Platoon_get_squadleader(lua_State* L)
@@ -213,32 +221,32 @@ static int Platoon_get_ownerships(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for ownerships (Ownerships)
-    return luaL_error(L, "Unsupported property 'ownerships' (type: Ownerships)");
+    return pushObject<Ownerships>(L, b->getOwnerships(), OwnershipsBinding::getMetatableName());
 }
 
 static int Platoon_get_activePlatoon(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for activePlatoon (ActivePlatoon*)
-    return luaL_error(L, "Unsupported property 'activePlatoon' (type: ActivePlatoon*)");
+    return pushObject<ActivePlatoon>(L, b->getActivePlatoon(), ActivePlatoonBinding::getMetatableName());
 }
 
 static int Platoon_get_unloadedPlatoon(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for unloadedPlatoon (UnloadedPlatoon*)
-    return luaL_error(L, "Unsupported property 'unloadedPlatoon' (type: UnloadedPlatoon*)");
+    if (b->unloadedPlatoon) lua_pushlightuserdata(L, b->unloadedPlatoon);
+    else lua_pushnil(L);
+    return 1;
 }
 
 static int Platoon_get_patrolSettings(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for patrolSettings (PatrolInfo*)
-    return luaL_error(L, "Unsupported property 'patrolSettings' (type: PatrolInfo*)");
+    if (b->patrolSettings) lua_pushlightuserdata(L, b->patrolSettings);
+    else lua_pushnil(L);
+    return 1;
 }
 
 static int Platoon_get_isDead(lua_State* L)
@@ -269,8 +277,8 @@ static int Platoon_get_traderInventoryRefreshTime(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    // TODO: Unsupported type for traderInventoryRefreshTime (TimeOfDay)
-    return luaL_error(L, "Unsupported property 'traderInventoryRefreshTime' (type: TimeOfDay)");
+    lua_pushnumber(L, b->traderInventoryRefreshTime.time);
+    return 1;
 }
 
 // --- Setters for Platoon ---
@@ -310,7 +318,8 @@ static int Platoon_set_hasUniques(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for hasUniques");
+    b->hasUniques = YesNoMaybe((YesNoMaybe::ynm)luaL_checkinteger(L, 2));
+    return 0;
 }
 
 static int Platoon_set_speedOverride(lua_State* L)
@@ -350,7 +359,8 @@ static int Platoon_set_myBaseHomeTownData(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for myBaseHomeTownData");
+    b->myBaseHomeTownData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int Platoon_set_priceMultWhenITrade(lua_State* L)
@@ -381,14 +391,16 @@ static int Platoon_set_locatorModel(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for locatorModel");
+    b->locatorModel = (Ogre::Entity*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Platoon_set_blackboard(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for blackboard");
+    b->blackboard = (Blackboard*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Platoon_set__isIntact(lua_State* L)
@@ -403,7 +415,8 @@ static int Platoon_set_squadTemplate(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for squadTemplate");
+    b->squadTemplate = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int Platoon_set_malnourishedLevel(lua_State* L)
@@ -442,14 +455,16 @@ static int Platoon_set_messageOnActivation(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for messageOnActivation");
+    b->messageOnActivation = (PlatoonCreationMessage)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int Platoon_set_currentSpawnArea(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for currentSpawnArea");
+    b->currentSpawnArea = (AreaSector*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Platoon_set_squadleader(lua_State* L)
@@ -465,28 +480,31 @@ static int Platoon_set_ownerships(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for ownerships");
+    return luaL_error(L, "ownerships is a read-only property");
 }
 
 static int Platoon_set_activePlatoon(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for activePlatoon");
+    b->activePlatoon = checkObject<ActivePlatoon>(L, 2, ActivePlatoonBinding::getMetatableName());
+    return 0;
 }
 
 static int Platoon_set_unloadedPlatoon(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for unloadedPlatoon");
+    b->unloadedPlatoon = (UnloadedPlatoon*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Platoon_set_patrolSettings(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for patrolSettings");
+    b->patrolSettings = (PatrolInfo*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int Platoon_set_isDead(lua_State* L)
@@ -517,7 +535,8 @@ static int Platoon_set_traderInventoryRefreshTime(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for traderInventoryRefreshTime");
+    b->traderInventoryRefreshTime.setTime(luaL_checknumber(L, 2));
+    return 0;
 }
 
 int PlatoonBinding::_DESTRUCTOR(lua_State* L)
@@ -891,37 +910,24 @@ int PlatoonBinding::_NV_reCheckPersistenceOnUnload(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 108: Platoon* _CONSTRUCTOR(...) - unsupported arg type
-  line 121: hand chooseNewHome(...) - unsupported return type
-  line 126: TownBase* getCurrentTownLocation(...) - unsupported return type
-  line 127: TownBase* _NV_getCurrentTownLocation(...) - unsupported return type
-  line 128: CampaignInstance* hasCampaign(...) - unsupported return type
-  line 132: bool iBuyStolenGoods(...) - unsupported arg type
-  line 134: void setFaction(...) - unsupported arg type
-  line 135: void _NV_setFaction(...) - unsupported arg type
-  line 136: bool canTakeRefugees(...) - unsupported arg type
-  line 139: UniquePlatoon* isUnique(...) - unsupported return type
-  line 140: UniquePlatoon* _NV_isUnique(...) - unsupported return type
-  line 142: Blackboard* getBlackboard(...) - unsupported return type
-  line 148: StateBroadcastData* getStateBroadcast(...) - unsupported return type
-  line 149: StateBroadcastData* _NV_getStateBroadcast(...) - unsupported return type
-  line 150: GameData* serialiseEverything(...) - unsupported arg type
-  line 151: GameData* _NV_serialiseEverything(...) - unsupported arg type
-  line 152: void loadStateData(...) - unsupported arg type
-  line 153: void _NV_loadStateData(...) - unsupported arg type
-  line 154: GameSaveState serialise(...) - unsupported return type
-  line 155: GameSaveState _NV_serialise(...) - unsupported return type
-  line 156: void loadFromSerialise(...) - unsupported arg type
-  line 157: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 158: void reprocessTask(...) - unsupported arg type
-  line 159: void taskIsComplete(...) - unsupported arg type
-  line 167: void deactivate(...) - unsupported arg type
-  line 171: ActivePlatoon* getActivePlatoon(...) - unsupported return type
-  line 172: UnloadedPlatoon* getUnloadedPlatoon(...) - unsupported return type
-  line 180: PatrolInfo* getPatrolInfo(...) - unsupported return type
-  line 181: AreaBiomeGroup* getRoamingMapArea(...) - unsupported return type
-  line 182: void setRoamingMapArea(...) - unsupported arg type
-  line 194: const hand& getSquadLeader_theRealOne(...) - reference return type
+  line 108: Platoon* _CONSTRUCTOR(...) - protected constructor
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - Platoon_get_locatorModel / Platoon_set_locatorModel: Ogre::Entity*
+  - Platoon_get_blackboard / Platoon_set_blackboard: Blackboard*
+  - Platoon_get_currentSpawnArea / Platoon_set_currentSpawnArea: AreaSector*
+  - Platoon_get_unloadedPlatoon / Platoon_set_unloadedPlatoon: UnloadedPlatoon*
+  - Platoon_get_patrolSettings / Platoon_set_patrolSettings: PatrolInfo*
+  - Platoon_hasCampaign: CampaignInstance*
+  - Platoon_isUnique / Platoon__NV_isUnique: UniquePlatoon*
+  - Platoon_getBlackboard: Blackboard*
+  - Platoon_getStateBroadcast / Platoon__NV_getStateBroadcast: StateBroadcastData*
+  - Platoon_serialise / Platoon__NV_serialise: PosRotPair* (arg 4)
+  - Platoon_getUnloadedPlatoon: UnloadedPlatoon*
+  - Platoon_getPatrolInfo: PatrolInfo*
+  - Platoon_getRoamingMapArea / Platoon_setRoamingMapArea: AreaBiomeGroup*
 */
 
 static int Platoon_chooseNewHome(lua_State* L)
@@ -949,6 +955,26 @@ static int Platoon__NV_getCurrentTownLocation(lua_State* L)
     return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
 }
 
+static int Platoon_hasCampaign(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    CampaignInstance* res = b->hasCampaign();
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_iBuyStolenGoods(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    Item* what = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    bool res = b->iBuyStolenGoods(what);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
 static int Platoon_setFaction(lua_State* L)
 {
     Platoon* b = getB(L, 1);
@@ -967,12 +993,223 @@ static int Platoon__NV_setFaction(lua_State* L)
     return 0;
 }
 
+static int Platoon_canTakeRefugees(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    Platoon* who = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    bool res = b->canTakeRefugees(who);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int Platoon_isUnique(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    UniquePlatoon* res = b->isUnique();
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon__NV_isUnique(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    UniquePlatoon* res = b->_NV_isUnique();
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_getBlackboard(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    Blackboard* res = b->getBlackboard();
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_getStateBroadcast(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    StateBroadcastData* res = b->getStateBroadcast();
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon__NV_getStateBroadcast(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    StateBroadcastData* res = b->_NV_getStateBroadcast();
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_serialiseEverything(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    GameDataContainer* dataContainer = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    bool levelEditor = lua_toboolean(L, 3) != 0;
+    GameData* res = b->serialiseEverything(dataContainer, levelEditor);
+    return pushObject<GameData>(L, res, GameDataBinding::getMetatableName());
+}
+
+static int Platoon__NV_serialiseEverything(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    GameDataContainer* dataContainer = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    bool levelEditor = lua_toboolean(L, 3) != 0;
+    GameData* res = b->_NV_serialiseEverything(dataContainer, levelEditor);
+    return pushObject<GameData>(L, res, GameDataBinding::getMetatableName());
+}
+
+static int Platoon_loadStateData(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    b->loadStateData(state);
+    return 0;
+}
+
+static int Platoon__NV_loadStateData(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    b->_NV_loadStateData(state);
+    return 0;
+}
+
+static int Platoon_serialise(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offsetPosToSubtract = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState res = b->serialise(container, refList, offsetPosToSubtract);
+    GameSaveState* copy = new GameSaveState(res);
+    return pushObject<GameSaveState>(L, copy, GameSaveStateBinding::getMetatableName());
+}
+
+static int Platoon__NV_serialise(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offsetPosToSubtract = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState res = b->_NV_serialise(container, refList, offsetPosToSubtract);
+    GameSaveState* copy = new GameSaveState(res);
+    return pushObject<GameSaveState>(L, copy, GameSaveStateBinding::getMetatableName());
+}
+
+static int Platoon_loadFromSerialise(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    b->loadFromSerialise(state);
+    return 0;
+}
+
+static int Platoon__NV_loadFromSerialise(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    b->_NV_loadFromSerialise(state);
+    return 0;
+}
+
+static int Platoon_reprocessTask(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    Tasker* t = checkObject<Tasker>(L, 2, TaskerBinding::getMetatableName());
+    b->reprocessTask(t);
+    return 0;
+}
+
+static int Platoon_taskIsComplete(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    Tasker* t = checkObject<Tasker>(L, 2, TaskerBinding::getMetatableName());
+    b->taskIsComplete(t);
+    return 0;
+}
+
+static int Platoon_deactivate(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    GameDataContainer* forceCharacterStates = nullptr;
+    if (lua_isuserdata(L, 2)) {
+        forceCharacterStates = (GameDataContainer*)lua_touserdata(L, 2);
+    } else if (!lua_isnil(L, 2)) {
+        forceCharacterStates = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    }
+    b->deactivate(forceCharacterStates);
+    return 0;
+}
+
 static int Platoon_getActivePlatoon(lua_State* L)
 {
     Platoon* b = getB(L, 1);
     if (!b) return luaL_error(L, "Platoon is nil");
     ActivePlatoon* result = b->getActivePlatoon();
     return pushObject<ActivePlatoon>(L, result, ActivePlatoonBinding::getMetatableName());
+}
+
+static int Platoon_getUnloadedPlatoon(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    UnloadedPlatoon* res = b->getUnloadedPlatoon();
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_getPatrolInfo(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    PatrolInfo* res = b->getPatrolInfo();
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_getRoamingMapArea(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    AreaBiomeGroup* res = b->getRoamingMapArea();
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int Platoon_setRoamingMapArea(lua_State* L)
+{
+    Platoon* b = getB(L, 1);
+    if (!b) return luaL_error(L, "Platoon is nil");
+    AreaBiomeGroup* maparea = (AreaBiomeGroup*)lua_touserdata(L, 2);
+    b->setRoamingMapArea(maparea);
+    return 0;
 }
 
 static int Platoon_getSquadLeader_theRealOne(lua_State* L)
@@ -1046,9 +1283,32 @@ void PlatoonBinding::registerBinding(lua_State* L)
         { "chooseNewHome", Platoon_chooseNewHome },
         { "getCurrentTownLocation", Platoon_getCurrentTownLocation },
         { "_NV_getCurrentTownLocation", Platoon__NV_getCurrentTownLocation },
+        { "hasCampaign", Platoon_hasCampaign },
+        { "iBuyStolenGoods", Platoon_iBuyStolenGoods },
         { "setFaction", Platoon_setFaction },
         { "_NV_setFaction", Platoon__NV_setFaction },
+        { "canTakeRefugees", Platoon_canTakeRefugees },
+        { "isUnique", Platoon_isUnique },
+        { "_NV_isUnique", Platoon__NV_isUnique },
+        { "getBlackboard", Platoon_getBlackboard },
+        { "getStateBroadcast", Platoon_getStateBroadcast },
+        { "_NV_getStateBroadcast", Platoon__NV_getStateBroadcast },
+        { "serialiseEverything", Platoon_serialiseEverything },
+        { "_NV_serialiseEverything", Platoon__NV_serialiseEverything },
+        { "loadStateData", Platoon_loadStateData },
+        { "_NV_loadStateData", Platoon__NV_loadStateData },
+        { "serialise", Platoon_serialise },
+        { "_NV_serialise", Platoon__NV_serialise },
+        { "loadFromSerialise", Platoon_loadFromSerialise },
+        { "_NV_loadFromSerialise", Platoon__NV_loadFromSerialise },
+        { "reprocessTask", Platoon_reprocessTask },
+        { "taskIsComplete", Platoon_taskIsComplete },
+        { "deactivate", Platoon_deactivate },
         { "getActivePlatoon", Platoon_getActivePlatoon },
+        { "getUnloadedPlatoon", Platoon_getUnloadedPlatoon },
+        { "getPatrolInfo", Platoon_getPatrolInfo },
+        { "getRoamingMapArea", Platoon_getRoamingMapArea },
+        { "setRoamingMapArea", Platoon_setRoamingMapArea },
         { "getSquadLeader_theRealOne", Platoon_getSquadLeader_theRealOne },
         { 0, 0 }
     };

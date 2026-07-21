@@ -2,12 +2,24 @@
 #include "kenshi\Dialogue.h"
 #include "DialogLineDataBinding.h"
 #include "DialogChoiceListBinding.h"
+#include "CampaignTriggerDataBinding.h"
+#include "GameDataValuePairBinding.h"
+#include "DialogConditionBinding.h"
+#include "DialogActionBinding.h"
+#include "FactionBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/TimeOfDayBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/FitnessSelectorBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/DialogChoiceListBinding.h"
 #include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {
+
+typedef OgreUnorderedMapBinding<GameData*, int> FactionRelationEffectsMapBinding;
 
 static DialogLineData* getB(lua_State* L, int idx)
 {
@@ -51,56 +63,70 @@ static int DialogLineData_get_campaignTriggers(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for campaignTriggers (FitnessSelector<CampaignTriggerData*>)
-    return luaL_error(L, "Unsupported property 'campaignTriggers' (type: FitnessSelector<CampaignTriggerData*>)");
+    return pushObject<FitnessSelector<CampaignTriggerData*>>(L, &b->campaignTriggers, FitnessSelectorBinding<CampaignTriggerData*>::metaName);
 }
 
 static int DialogLineData_get_isTargetRace(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for isTargetRace (lektor<GameData*>)
-    return luaL_error(L, "Unsupported property 'isTargetRace' (type: lektor<GameData*>)");
+    return pushObject<lektor<GameData*>>(L, &b->isTargetRace, LektorPtrBinding<GameData*>::metaName);
 }
 
 static int DialogLineData_get_isTargetSubRace_specificallyTheTarget(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for isTargetSubRace_specificallyTheTarget (lektor<GameData*>)
-    return luaL_error(L, "Unsupported property 'isTargetSubRace_specificallyTheTarget' (type: lektor<GameData*>)");
+    return pushObject<lektor<GameData*>>(L, &b->isTargetSubRace_specificallyTheTarget, LektorPtrBinding<GameData*>::metaName);
 }
 
 static int DialogLineData_get_givesItem(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for givesItem (lektor<GameDataValuePair>)
-    return luaL_error(L, "Unsupported property 'givesItem' (type: lektor<GameDataValuePair>)");
+    return pushObject<lektor<GameDataValuePair>>(L, &b->givesItem, LektorValueReadOnlyBinding<GameDataValuePair>::metaName);
 }
 
 static int DialogLineData_get_inTownOf(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for inTownOf (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'inTownOf' (type: std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)");
+    lua_newtable(L);
+    int i = 1;
+    for (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy>>::const_iterator it = b->inTownOf.begin(); it != b->inTownOf.end(); ++it)
+    {
+        pushObject<Faction>(L, *it, FactionBinding::getMetatableName());
+        lua_rawseti(L, -2, i++);
+    }
+    return 1;
 }
 
 static int DialogLineData_get_isTargetFaction(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for isTargetFaction (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'isTargetFaction' (type: std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)");
+    lua_newtable(L);
+    int i = 1;
+    for (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy>>::const_iterator it = b->isTargetFaction.begin(); it != b->isTargetFaction.end(); ++it)
+    {
+        pushObject<Faction>(L, *it, FactionBinding::getMetatableName());
+        lua_rawseti(L, -2, i++);
+    }
+    return 1;
 }
 
 static int DialogLineData_get_isMyFaction(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for isMyFaction (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'isMyFaction' (type: std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)");
+    lua_newtable(L);
+    int i = 1;
+    for (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy>>::const_iterator it = b->isMyFaction.begin(); it != b->isMyFaction.end(); ++it)
+    {
+        pushObject<Faction>(L, *it, FactionBinding::getMetatableName());
+        lua_rawseti(L, -2, i++);
+    }
+    return 1;
 }
 
 static int DialogLineData_get_isCharacter(lua_State* L)
@@ -180,16 +206,18 @@ static int DialogLineData_get_hasItem(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for hasItem (lektor<GameData*>)
-    return luaL_error(L, "Unsupported property 'hasItem' (type: lektor<GameData*>)");
+    return pushObject<lektor<GameData*>>(L, &b->hasItem, LektorPtrBinding<GameData*>::metaName);
 }
 
 static int DialogLineData_get_worldState(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for worldState (WorldEventStateQueryList*)
-    return luaL_error(L, "Unsupported property 'worldState' (type: WorldEventStateQueryList*)");
+    if (b->worldState)
+        lua_pushlightuserdata(L, (void*)b->worldState);
+    else
+        lua_pushnil(L);
+    return 1;
 }
 
 static int DialogLineData_get_data(lua_State* L)
@@ -219,8 +247,8 @@ static int DialogLineData_get_forCertainType(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for forCertainType (CharacterTypeEnum)
-    return luaL_error(L, "Unsupported property 'forCertainType' (type: CharacterTypeEnum)");
+    lua_pushinteger(L, (lua_Integer)b->forCertainType);
+    return 1;
 }
 
 static int DialogLineData_get_children(lua_State* L)
@@ -234,16 +262,14 @@ static int DialogLineData_get_conditions(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for conditions (lektor<DialogLineData::DialogCondition*>)
-    return luaL_error(L, "Unsupported property 'conditions' (type: lektor<DialogLineData::DialogCondition*>)");
+    return pushObject<lektor<DialogLineData::DialogCondition*>>(L, &b->conditions, LektorPtrBinding<DialogLineData::DialogCondition*>::metaName);
 }
 
 static int DialogLineData_get_actions(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for actions (lektor<DialogLineData::DialogAction*>)
-    return luaL_error(L, "Unsupported property 'actions' (type: lektor<DialogLineData::DialogAction*>)");
+    return pushObject<lektor<DialogLineData::DialogAction*>>(L, &b->actions, LektorPtrBinding<DialogLineData::DialogAction*>::metaName);
 }
 
 static int DialogLineData_get_lineCount(lua_State* L)
@@ -266,8 +292,7 @@ static int DialogLineData_get_parent(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for parent (DialogLineData*)
-    return luaL_error(L, "Unsupported property 'parent' (type: DialogLineData*)");
+    return pushObject<DialogLineData>(L, b->parent, DialogLineDataBinding::getMetatableName());
 }
 
 static int DialogLineData_get_chancePermanent(lua_State* L)
@@ -298,8 +323,7 @@ static int DialogLineData_get_uniqueOwner(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for uniqueOwner (hand)
-    return luaL_error(L, "Unsupported property 'uniqueOwner' (type: hand)");
+    return handBinding::push(L, b->uniqueOwner);
 }
 
 static int DialogLineData_get_dialogRepeatMinTimeInHours(lua_State* L)
@@ -314,8 +338,7 @@ static int DialogLineData_get_lastTimeSaid(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for lastTimeSaid (TimeOfDay)
-    return luaL_error(L, "Unsupported property 'lastTimeSaid' (type: TimeOfDay)");
+    return pushObject<TimeOfDay>(L, &b->lastTimeSaid, TimeOfDayBinding::getMetatableName());
 }
 
 static int DialogLineData_get_score(lua_State* L)
@@ -346,48 +369,42 @@ static int DialogLineData_get_locks(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for locks (lektor<DialogLineData*>)
-    return luaL_error(L, "Unsupported property 'locks' (type: lektor<DialogLineData*>)");
+    return pushObject<lektor<DialogLineData*>>(L, &b->locks, LektorPtrBinding<DialogLineData*>::metaName);
 }
 
 static int DialogLineData_get_unlocks_lockMe(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for unlocks_lockMe (lektor<DialogLineData*>)
-    return luaL_error(L, "Unsupported property 'unlocks_lockMe' (type: lektor<DialogLineData*>)");
+    return pushObject<lektor<DialogLineData*>>(L, &b->unlocks_lockMe, LektorPtrBinding<DialogLineData*>::metaName);
 }
 
 static int DialogLineData_get_unlocks_dontLockMe(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for unlocks_dontLockMe (lektor<DialogLineData*>)
-    return luaL_error(L, "Unsupported property 'unlocks_dontLockMe' (type: lektor<DialogLineData*>)");
+    return pushObject<lektor<DialogLineData*>>(L, &b->unlocks_dontLockMe, LektorPtrBinding<DialogLineData*>::metaName);
 }
 
 static int DialogLineData_get_crowdTrigger(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for crowdTrigger (DialogLineData*)
-    return luaL_error(L, "Unsupported property 'crowdTrigger' (type: DialogLineData*)");
+    return pushObject<DialogLineData>(L, b->crowdTrigger, DialogLineDataBinding::getMetatableName());
 }
 
 static int DialogLineData_get_factionRelationEffects(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for factionRelationEffects (ogre_unordered_map<GameData*, int>::type)
-    return luaL_error(L, "Unsupported property 'factionRelationEffects' (type: ogre_unordered_map<GameData*, int>::type)");
+    return pushObject<ogre_unordered_map<GameData*, int>::type>(L, &b->factionRelationEffects, FactionRelationEffectsMapBinding::metaName);
 }
 
 static int DialogLineData_get_playerInterruptionDialog(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for playerInterruptionDialog (DialogLineData*)
-    return luaL_error(L, "Unsupported property 'playerInterruptionDialog' (type: DialogLineData*)");
+    return pushObject<DialogLineData>(L, b->playerInterruptionDialog, DialogLineDataBinding::getMetatableName());
 }
 
 static int DialogLineData_get_isInterjection(lua_State* L)
@@ -402,8 +419,8 @@ static int DialogLineData_get_speaker(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    // TODO: Unsupported type for speaker (TalkerEnum)
-    return luaL_error(L, "Unsupported property 'speaker' (type: TalkerEnum)");
+    lua_pushinteger(L, (lua_Integer)b->speaker);
+    return 1;
 }
 
 // --- Setters for DialogLineData ---
@@ -443,84 +460,111 @@ static int DialogLineData_set_campaignTriggers(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for campaignTriggers");
+    FitnessSelector<CampaignTriggerData*>* val = FitnessSelectorBinding<CampaignTriggerData*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected FitnessSelector_CampaignTriggerData");
+    b->campaignTriggers = *val;
+    return 0;
 }
 
 static int DialogLineData_set_isTargetRace(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isTargetRace");
+    lektor<GameData*>* val = checkObject<lektor<GameData*>>(L, 2, LektorPtrBinding<GameData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<GameData*>");
+    b->isTargetRace = *val;
+    return 0;
 }
 
 static int DialogLineData_set_isTargetSubRace_specificallyTheTarget(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isTargetSubRace_specificallyTheTarget");
+    lektor<GameData*>* val = checkObject<lektor<GameData*>>(L, 2, LektorPtrBinding<GameData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<GameData*>");
+    b->isTargetSubRace_specificallyTheTarget = *val;
+    return 0;
 }
 
 static int DialogLineData_set_givesItem(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for givesItem");
+    lektor<GameDataValuePair>* val = checkObject<lektor<GameDataValuePair>>(L, 2, LektorValueReadOnlyBinding<GameDataValuePair>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<GameDataValuePair>");
+    b->givesItem = *val;
+    return 0;
 }
 
 static int DialogLineData_set_inTownOf(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for inTownOf");
+    return luaL_error(L, "Read-only property inTownOf");
 }
 
 static int DialogLineData_set_isTargetFaction(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isTargetFaction");
+    return luaL_error(L, "Read-only property isTargetFaction");
 }
 
 static int DialogLineData_set_isMyFaction(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isMyFaction");
+    return luaL_error(L, "Read-only property isMyFaction");
 }
 
 static int DialogLineData_set_isCharacter(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isCharacter");
+    auto* val = checkObject<lektor<GameData*>>(L, 2, LektorPtrBinding<GameData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<GameData*>");
+    b->isCharacter = *val;
+    return 0;
 }
 
 static int DialogLineData_set_isTargetCarryingCharacter(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isTargetCarryingCharacter");
+    auto* val = checkObject<lektor<GameData*>>(L, 2, LektorPtrBinding<GameData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<GameData*>");
+    b->isTargetCarryingCharacter = *val;
+    return 0;
 }
 
 static int DialogLineData_set__hasPackage(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _hasPackage");
+    auto* val = checkObject<lektor<GameData*>>(L, 2, LektorPtrBinding<GameData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<GameData*>");
+    b->_hasPackage = *val;
+    return 0;
 }
 
 static int DialogLineData_set_isMyRace(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isMyRace");
+    auto* val = checkObject<lektor<GameData*>>(L, 2, LektorPtrBinding<GameData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<GameData*>");
+    b->isMyRace = *val;
+    return 0;
 }
 
 static int DialogLineData_set_isMySubRace(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for isMySubRace");
+    auto* val = checkObject<lektor<GameData*>>(L, 2, LektorPtrBinding<GameData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<GameData*>");
+    b->isMySubRace = *val;
+    return 0;
 }
 
 static int DialogLineData_set_hasItemType(lua_State* L)
@@ -535,21 +579,26 @@ static int DialogLineData_set_hasItem(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for hasItem");
+    lektor<GameData*>* val = checkObject<lektor<GameData*>>(L, 2, LektorPtrBinding<GameData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<GameData*>");
+    b->hasItem = *val;
+    return 0;
 }
 
 static int DialogLineData_set_worldState(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for worldState");
+    b->worldState = (WorldEventStateQueryList*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int DialogLineData_set_data(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for data");
+    b->data = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int DialogLineData_set_onceOnly(lua_State* L)
@@ -572,28 +621,36 @@ static int DialogLineData_set_forCertainType(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for forCertainType");
+    b->forCertainType = (CharacterTypeEnum)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int DialogLineData_set_children(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for children");
+    b->children = lua_isnoneornil(L, 2) ? nullptr : checkObject<DialogChoiceList>(L, 2, DialogChoiceListBinding::getMetatableName());
+    return 0;
 }
 
 static int DialogLineData_set_conditions(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conditions");
+    lektor<DialogLineData::DialogCondition*>* val = checkObject<lektor<DialogLineData::DialogCondition*>>(L, 2, LektorPtrBinding<DialogLineData::DialogCondition*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<DialogCondition*>");
+    b->conditions = *val;
+    return 0;
 }
 
 static int DialogLineData_set_actions(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for actions");
+    lektor<DialogLineData::DialogAction*>* val = checkObject<lektor<DialogLineData::DialogAction*>>(L, 2, LektorPtrBinding<DialogLineData::DialogAction*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<DialogAction*>");
+    b->actions = *val;
+    return 0;
 }
 
 static int DialogLineData_set_lineCount(lua_State* L)
@@ -608,14 +665,17 @@ static int DialogLineData_set_texts(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for texts");
+    if (!b->texts) b->texts = new std::string();
+    *b->texts = luaL_checkstring(L, 2);
+    return 0;
 }
 
 static int DialogLineData_set_parent(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for parent");
+    b->parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<DialogLineData>(L, 2, DialogLineDataBinding::getMetatableName());
+    return 0;
 }
 
 static int DialogLineData_set_chancePermanent(lua_State* L)
@@ -646,7 +706,9 @@ static int DialogLineData_set_uniqueOwner(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for uniqueOwner");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (val) b->uniqueOwner = *val;
+    return 0;
 }
 
 static int DialogLineData_set_dialogRepeatMinTimeInHours(lua_State* L)
@@ -661,7 +723,10 @@ static int DialogLineData_set_lastTimeSaid(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for lastTimeSaid");
+    TimeOfDay* val = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Expected TimeOfDay");
+    b->lastTimeSaid = *val;
+    return 0;
 }
 
 static int DialogLineData_set_score(lua_State* L)
@@ -692,42 +757,56 @@ static int DialogLineData_set_locks(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for locks");
+    lektor<DialogLineData*>* val = checkObject<lektor<DialogLineData*>>(L, 2, LektorPtrBinding<DialogLineData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<DialogLineData*>");
+    b->locks = *val;
+    return 0;
 }
 
 static int DialogLineData_set_unlocks_lockMe(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for unlocks_lockMe");
+    lektor<DialogLineData*>* val = checkObject<lektor<DialogLineData*>>(L, 2, LektorPtrBinding<DialogLineData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<DialogLineData*>");
+    b->unlocks_lockMe = *val;
+    return 0;
 }
 
 static int DialogLineData_set_unlocks_dontLockMe(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for unlocks_dontLockMe");
+    lektor<DialogLineData*>* val = checkObject<lektor<DialogLineData*>>(L, 2, LektorPtrBinding<DialogLineData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<DialogLineData*>");
+    b->unlocks_dontLockMe = *val;
+    return 0;
 }
 
 static int DialogLineData_set_crowdTrigger(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for crowdTrigger");
+    b->crowdTrigger = lua_isnoneornil(L, 2) ? nullptr : checkObject<DialogLineData>(L, 2, DialogLineDataBinding::getMetatableName());
+    return 0;
 }
 
 static int DialogLineData_set_factionRelationEffects(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for factionRelationEffects");
+    ogre_unordered_map<GameData*, int>::type* val = FactionRelationEffectsMapBinding::get(L, 2);
+    if (!val) return luaL_error(L, "Expected FactionRelationEffects map object");
+    b->factionRelationEffects = *val;
+    return 0;
 }
 
 static int DialogLineData_set_playerInterruptionDialog(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for playerInterruptionDialog");
+    b->playerInterruptionDialog = lua_isnoneornil(L, 2) ? nullptr : checkObject<DialogLineData>(L, 2, DialogLineDataBinding::getMetatableName());
+    return 0;
 }
 
 static int DialogLineData_set_isInterjection(lua_State* L)
@@ -742,7 +821,8 @@ static int DialogLineData_set_speaker(lua_State* L)
 {
     DialogLineData* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogLineData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for speaker");
+    b->speaker = (TalkerEnum)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 int DialogLineDataBinding::hasSpecificCharacterRequirement(lua_State* L)
@@ -1149,6 +1229,12 @@ void DialogLineDataBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, DialogLineData_set_speaker);
     lua_setfield(L, -2, "speaker");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    FitnessSelectorBinding<CampaignTriggerData*>::registerBinding(L, "FitnessSelector<CampaignTriggerData*>", CampaignTriggerDataBinding::getMetatableName(), nullptr, nullptr);
+    LektorValueReadOnlyBinding<GameDataValuePair>::registerBinding(L, "lektor<GameDataValuePair>", GameDataValuePairBinding::getMetatableName());
+    LektorPtrBinding<DialogLineData::DialogCondition*>::registerBinding(L, "lektor<DialogCondition*>", DialogConditionBinding::getMetatableName());
+    LektorPtrBinding<DialogLineData::DialogAction*>::registerBinding(L, "lektor<DialogAction*>", DialogActionBinding::getMetatableName());
+    FactionRelationEffectsMapBinding::registerBinding(L, "KenshiLua.FactionRelationEffectsMap", GameDataBinding::getMetatableName(), nullptr);
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

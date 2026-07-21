@@ -3158,16 +3158,6 @@ int CharStatsBinding::setupCombatTechniques(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 61: void getStealthTooltip(...) - unsupported arg type (requires StringPair binding)
-  line 63: void getAthleticsTooltip(...) - unsupported arg type (requires StringPair binding)
-  line 85: bool getStatPenaltiesForGUI(...) - unsupported arg type (requires StringPair binding)
-  line 144: void _chooseAttacks(...) - unsupported arg type (requires FitnessSelector binding)
-  line 217: StringPair stealthXPMultForGUI(...) - unsupported return type (requires StringPair binding)
-  line 223: void xpTraining(...) - non-string reference arg (requires float reference support)
-  line 241: void printExertionHungerMultTooltip(...) - unsupported arg type (requires StringPair binding)
-*/
 static int CharStats_getTotalAttackDamageFor(lua_State* L)
 {
     CharStats* b = getB(L, 1);
@@ -3210,7 +3200,8 @@ int CharStatsBinding::getStealthTooltip(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, "lektor<StringPair>");
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, LektorValueReadOnlyBinding<StringPair>::metaName);
+    if (!dats) return luaL_error(L, "Expected lektor<StringPair>");
     b->getStealthTooltip(dats);
     return 0;
 }
@@ -3219,7 +3210,8 @@ int CharStatsBinding::getAthleticsTooltip(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, "lektor<StringPair>");
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, LektorValueReadOnlyBinding<StringPair>::metaName);
+    if (!dats) return luaL_error(L, "Expected lektor<StringPair>");
     b->getAthleticsTooltip(dats);
     return 0;
 }
@@ -3230,8 +3222,8 @@ int CharStatsBinding::getStatPenaltiesForGUI(lua_State* L)
     if (!b) return luaL_error(L, "CharStats is nil");
     std::string statName = luaL_checkstring(L, 2);
     StatsEnumerated stat = (StatsEnumerated)luaL_checkinteger(L, 3);
-    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 4, "lektor<StringPair>");
-    if (!dats) return luaL_error(L, "lektor<StringPair> is nil");
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 4, LektorValueReadOnlyBinding<StringPair>::metaName);
+    if (!dats) return luaL_error(L, "Expected lektor<StringPair>");
     bool result = b->getStatPenaltiesForGUI(statName, stat, *dats);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
@@ -3241,8 +3233,8 @@ int CharStatsBinding::_chooseAttacks(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    FitnessSelector<CombatTechniqueData*>* possibleAttacks = checkObject<FitnessSelector<CombatTechniqueData*>>(L, 2, "KenshiLua.FitnessSelector_CombatTechniqueData");
-    if (!possibleAttacks) return luaL_error(L, "FitnessSelector<CombatTechniqueData*> is nil");
+    FitnessSelector<CombatTechniqueData*>* possibleAttacks = FitnessSelectorBinding<CombatTechniqueData*>::get(L, 2);
+    if (!possibleAttacks) return luaL_error(L, "Expected FitnessSelector<CombatTechniqueData*>");
     float range = (float)luaL_checknumber(L, 3);
     float weaponReach = (float)luaL_checknumber(L, 4);
     CombatTechniqueData* lastAttack = nullptr;
@@ -3264,21 +3256,31 @@ int CharStatsBinding::stealthXPMultForGUI(lua_State* L)
     if (!b) return luaL_error(L, "CharStats is nil");
     StringPair result = b->stealthXPMultForGUI();
     StringPair* copy = new StringPair(result);
-    
-    void** ud = (void**)lua_newuserdata(L, sizeof(void*));
-    *ud = (void*)copy;
-    luaL_getmetatable(L, "KenshiLua.StringPair.Owned");
-    lua_setmetatable(L, -2);
-    return 1;
+    return pushObject<StringPair>(L, copy, "KenshiLua.StringPair.Owned");
 }
 
 int CharStatsBinding::printExertionHungerMultTooltip(lua_State* L)
 {
     CharStats* b = getB(L, 1);
     if (!b) return luaL_error(L, "CharStats is nil");
-    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, "lektor<StringPair>");
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, LektorValueReadOnlyBinding<StringPair>::metaName);
+    if (!dats) return luaL_error(L, "Expected lektor<StringPair>");
     b->printExertionHungerMultTooltip(dats);
     return 0;
+}
+
+int CharStatsBinding::xpTraining(lua_State* L)
+{
+    CharStats* b = getB(L, 1);
+    if (!b) return luaL_error(L, "CharStats is nil");
+    float time = (float)luaL_checknumber(L, 2);
+    float mult = (float)luaL_checknumber(L, 3);
+    float statVal = (float)luaL_checknumber(L, 4);
+    float upperLimit = (float)luaL_checknumber(L, 5);
+    StatsEnumerated whatStatIsIt = (StatsEnumerated)luaL_checkinteger(L, 6);
+    b->xpTraining(time, mult, statVal, upperLimit, whatStatIsIt);
+    lua_pushnumber(L, statVal);
+    return 1;
 }
 
 void CharStatsBinding::registerBinding(lua_State* L)
@@ -3297,7 +3299,7 @@ void CharStatsBinding::registerBinding(lua_State* L)
         { "skillBonusAttack_melee", CharStatsBinding::skillBonusAttack_melee },
         { "skillBonusAttack_unarmed", CharStatsBinding::skillBonusAttack_unarmed },
         { "skillBonusDefence", CharStatsBinding::skillBonusDefence },
-        { "_randomiseStats", CharStatsBinding::_randomiseStats },
+        { "randomiseStats", CharStatsBinding::_randomiseStats },
         { "getGUIStatsDisplayMode", CharStatsBinding::getGUIStatsDisplayMode },
         { "periodicUpdate", CharStatsBinding::periodicUpdate },
         { "_NV_periodicUpdate", CharStatsBinding::_NV_periodicUpdate },
@@ -3317,14 +3319,14 @@ void CharStatsBinding::registerBinding(lua_State* L)
         { "dexterityBase", CharStatsBinding::dexterityBase }, //original
         { "dexterityActual", CharStatsBinding::dexterityActual }, //original
         { "toughness", CharStatsBinding::toughness }, //original
-        { "getStrength", CharStatsBinding::getStrength }, //alias
-        { "getStrengthRaw", CharStatsBinding::getStrengthBase }, //alias
-        { "getDexterity", CharStatsBinding::getDexterity }, //alias
-        { "getDexterityRaw", CharStatsBinding::getDexterityBase }, //alias
-        { "getToughness", CharStatsBinding::getToughness }, //alias
-        { "getPerception", CharStatsBinding::getPerception }, //alias
-        { "getAthletics", CharStatsBinding::getAthletics }, //alias
-        { "getThieving", CharStatsBinding::getThieving }, //alias
+        // { "getStrength", CharStatsBinding::getStrength }, //alias
+        // { "getStrengthRaw", CharStatsBinding::getStrengthBase }, //alias
+        // { "getDexterity", CharStatsBinding::getDexterity }, //alias
+        // { "getDexterityRaw", CharStatsBinding::getDexterityBase }, //alias
+        // { "getToughness", CharStatsBinding::getToughness }, //alias
+        // { "getPerception", CharStatsBinding::getPerception }, //alias
+        // { "getAthletics", CharStatsBinding::getAthletics }, //alias
+        // { "getThieving", CharStatsBinding::getThieving }, //alias
         { "getToughnessMult", CharStatsBinding::getToughnessMult },
         { "getRangedFriendlyFireAvoidanceChance", CharStatsBinding::getRangedFriendlyFireAvoidanceChance },
         { "getRangedAccuracyMult", CharStatsBinding::getRangedAccuracyMult },
@@ -3339,7 +3341,7 @@ void CharStatsBinding::registerBinding(lua_State* L)
         { "getMeleeAttack", CharStatsBinding::getMeleeAttack },
         { "getMeleeAttack_unarmed", CharStatsBinding::getMeleeAttack_unarmed },
         { "getMeleeAttack_melee", CharStatsBinding::getMeleeAttack_melee },
-        { "_getMeleeAttackBase", CharStatsBinding::_getMeleeAttackBase },
+        { "getMeleeAttackBase", CharStatsBinding::_getMeleeAttackBase },
         { "isDefensiveMode", CharStatsBinding::isDefensiveMode },
         { "holdPositionMode", CharStatsBinding::holdPositionMode },
         { "setHoldLocation", CharStatsBinding::setHoldLocation },
@@ -3382,16 +3384,16 @@ void CharStatsBinding::registerBinding(lua_State* L)
         { "calculateWeaponWeightXPMult", CharStatsBinding::calculateWeaponWeightXPMult },
         { "hasWeapon", CharStatsBinding::hasWeapon },
         { "calculateMaxStealthSpeed", CharStatsBinding::calculateMaxStealthSpeed },
-        { "_calculateMaxSwimSpeed", CharStatsBinding::_calculateMaxSwimSpeed },
+        { "calculateMaxSwimSpeed", CharStatsBinding::_calculateMaxSwimSpeed },
         { "calculateSwimSpeed", CharStatsBinding::calculateSwimSpeed },
         { "calculateDodgeChance", CharStatsBinding::calculateDodgeChance },
         { "calculateMaxRunSpeed", CharStatsBinding::calculateMaxRunSpeed },
-        { "_calculateEncumberanceMult", CharStatsBinding::_calculateEncumberanceMult },
-        { "_calculateWeaponWeightSpeedMultiplier", CharStatsBinding::_calculateWeaponWeightSpeedMultiplier },
+        { "calculateEncumberanceMult", CharStatsBinding::_calculateEncumberanceMult },
+        { "calculateWeaponWeightSpeedMultiplier", CharStatsBinding::_calculateWeaponWeightSpeedMultiplier },
         { "currentWeaponHand", CharStatsBinding::currentWeaponHand },
         { "calculateAttackOrBlockSpeed", CharStatsBinding::calculateAttackOrBlockSpeed },
-        { "_calculateBlockChance", CharStatsBinding::_calculateBlockChance },
-        { "_recalculateStats", CharStatsBinding::_recalculateStats },
+        { "calculateBlockChance", CharStatsBinding::_calculateBlockChance },
+        { "recalculateStats", CharStatsBinding::_recalculateStats },
         { "_NV__recalculateStats", CharStatsBinding::_NV__recalculateStats },
         { "setEquippedWeaponSkill", CharStatsBinding::setEquippedWeaponSkill },
         { "_NV_setEquippedWeaponSkill", CharStatsBinding::_NV_setEquippedWeaponSkill },
@@ -3418,15 +3420,16 @@ void CharStatsBinding::registerBinding(lua_State* L)
         { "xpFirstAid", CharStatsBinding::xpFirstAid },
         { "xpStealth", CharStatsBinding::xpStealth },
         { "setWeapon", CharStatsBinding::setWeapon },
-        { "_convertWeaponWeightToBluntMultiplier", CharStatsBinding::_convertWeaponWeightToBluntMultiplier },
-        { "_convertBluntMultiplierToWeaponWeight", CharStatsBinding::_convertBluntMultiplierToWeaponWeight },
+        { "convertWeaponWeightToBluntMultiplier", CharStatsBinding::_convertWeaponWeightToBluntMultiplier },
+        { "convertBluntMultiplierToWeaponWeight", CharStatsBinding::_convertBluntMultiplierToWeaponWeight },
         { "setupCombatTechniques", CharStatsBinding::setupCombatTechniques },
         { "getStealthTooltip", CharStatsBinding::getStealthTooltip },
         { "getAthleticsTooltip", CharStatsBinding::getAthleticsTooltip },
         { "getStatPenaltiesForGUI", CharStatsBinding::getStatPenaltiesForGUI },
-        { "_chooseAttacks", CharStatsBinding::_chooseAttacks },
+        { "chooseAttacks", CharStatsBinding::_chooseAttacks },
         { "stealthXPMultForGUI", CharStatsBinding::stealthXPMultForGUI },
         { "printExertionHungerMultTooltip", CharStatsBinding::printExertionHungerMultTooltip },
+        { "xpTraining", CharStatsBinding::xpTraining },
         { 0, 0 }
     };
 
@@ -3450,9 +3453,9 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, CharStats_get_combatSpeedMultiplier);
     lua_setfield(L, -2, "combatSpeedMultiplier");
     lua_pushcfunction(L, CharStats_get__skillBonusAttack);
-    lua_setfield(L, -2, "_skillBonusAttack");
+    lua_setfield(L, -2, "skillBonusAttack");
     lua_pushcfunction(L, CharStats_get__skillBonusDefence);
-    lua_setfield(L, -2, "_skillBonusDefence");
+    lua_setfield(L, -2, "skillBonusDefence");
     lua_pushcfunction(L, CharStats_get_skillBonusIndoors);
     lua_setfield(L, -2, "skillBonusIndoors");
     lua_pushcfunction(L, CharStats_get_skillBonusUnarmed);
@@ -3476,19 +3479,19 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, CharStats_get_skillMultRanged);
     lua_setfield(L, -2, "skillMultRanged");
     lua_pushcfunction(L, CharStats_get__weatherProtections);
-    lua_setfield(L, -2, "_weatherProtections");
+    lua_setfield(L, -2, "weatherProtections");
     lua_pushcfunction(L, CharStats_get__strength);
-    lua_setfield(L, -2, "_strength");
+    lua_setfield(L, -2, "strength");
     lua_pushcfunction(L, CharStats_get_fitness);
     lua_setfield(L, -2, "fitness");
     lua_pushcfunction(L, CharStats_get__dexterity);
-    lua_setfield(L, -2, "_dexterity");
+    lua_setfield(L, -2, "dexterity");
     lua_pushcfunction(L, CharStats_get_perception);
     lua_setfield(L, -2, "perception");
     lua_pushcfunction(L, CharStats_get__toughness);
-    lua_setfield(L, -2, "_toughness");
+    lua_setfield(L, -2, "toughness");
     lua_pushcfunction(L, CharStats_get__athletics);
-    lua_setfield(L, -2, "_athletics");
+    lua_setfield(L, -2, "athletics");
     lua_pushcfunction(L, CharStats_get_medic);
     lua_setfield(L, -2, "medic");
     lua_pushcfunction(L, CharStats_get_massCombat);
@@ -3558,17 +3561,17 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, CharStats_get_currentItemMaximumJuryRig);
     lua_setfield(L, -2, "currentItemMaximumJuryRig");
     lua_pushcfunction(L, CharStats_get___meleeAttack);
-    lua_setfield(L, -2, "__meleeAttack");
+    lua_setfield(L, -2, "meleeAttack");
     lua_pushcfunction(L, CharStats_get__meleeDefence);
-    lua_setfield(L, -2, "_meleeDefence");
+    lua_setfield(L, -2, "meleeDefence");
     lua_pushcfunction(L, CharStats_get__defensiveMode);
-    lua_setfield(L, -2, "_defensiveMode");
+    lua_setfield(L, -2, "defensiveMode");
     lua_pushcfunction(L, CharStats_get_rangedMode);
     lua_setfield(L, -2, "rangedMode");
     lua_pushcfunction(L, CharStats_get_tauntMode);
     lua_setfield(L, -2, "tauntMode");
     lua_pushcfunction(L, CharStats_get__holdPositionMode);
-    lua_setfield(L, -2, "_holdPositionMode");
+    lua_setfield(L, -2, "holdPositionMode");
     lua_pushcfunction(L, CharStats_get_passiveCombatMode);
     lua_setfield(L, -2, "passiveCombatMode");
     lua_pushcfunction(L, CharStats_get_holdLocation);
@@ -3600,7 +3603,7 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, CharStats_get_MURDEROUS);
     lua_setfield(L, -2, "MURDEROUS");
     lua_pushcfunction(L, CharStats_get__stealthXPMultForGUI);
-    lua_setfield(L, -2, "_stealthXPMultForGUI");
+    lua_setfield(L, -2, "stealthXPMultForGUI");
     lua_pushcfunction(L, CharStats_get_stealthXPTooManyCooksPenalty);
     lua_setfield(L, -2, "stealthXPTooManyCooksPenalty");
     lua_pushcfunction(L, CharStats_get_currentOperatingMachineHungerRate);
@@ -3665,9 +3668,9 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, CharStats_set_combatSpeedMultiplier);
     lua_setfield(L, -2, "combatSpeedMultiplier");
     lua_pushcfunction(L, CharStats_set__skillBonusAttack);
-    lua_setfield(L, -2, "_skillBonusAttack");
+    lua_setfield(L, -2, "skillBonusAttack");
     lua_pushcfunction(L, CharStats_set__skillBonusDefence);
-    lua_setfield(L, -2, "_skillBonusDefence");
+    lua_setfield(L, -2, "skillBonusDefence");
     lua_pushcfunction(L, CharStats_set_skillBonusIndoors);
     lua_setfield(L, -2, "skillBonusIndoors");
     lua_pushcfunction(L, CharStats_set_skillBonusUnarmed);
@@ -3691,19 +3694,19 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, CharStats_set_skillMultRanged);
     lua_setfield(L, -2, "skillMultRanged");
     lua_pushcfunction(L, CharStats_set__weatherProtections);
-    lua_setfield(L, -2, "_weatherProtections");
+    lua_setfield(L, -2, "weatherProtections");
     lua_pushcfunction(L, CharStats_set__strength);
-    lua_setfield(L, -2, "_strength");
+    lua_setfield(L, -2, "strength");
     lua_pushcfunction(L, CharStats_set_fitness);
     lua_setfield(L, -2, "fitness");
     lua_pushcfunction(L, CharStats_set__dexterity);
-    lua_setfield(L, -2, "_dexterity");
+    lua_setfield(L, -2, "dexterity");
     lua_pushcfunction(L, CharStats_set_perception);
     lua_setfield(L, -2, "perception");
     lua_pushcfunction(L, CharStats_set__toughness);
-    lua_setfield(L, -2, "_toughness");
+    lua_setfield(L, -2, "toughness");
     lua_pushcfunction(L, CharStats_set__athletics);
-    lua_setfield(L, -2, "_athletics");
+    lua_setfield(L, -2, "athletics");
     lua_pushcfunction(L, CharStats_set_medic);
     lua_setfield(L, -2, "medic");
     lua_pushcfunction(L, CharStats_set_massCombat);
@@ -3773,17 +3776,17 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, CharStats_set_currentItemMaximumJuryRig);
     lua_setfield(L, -2, "currentItemMaximumJuryRig");
     lua_pushcfunction(L, CharStats_set___meleeAttack);
-    lua_setfield(L, -2, "__meleeAttack");
+    lua_setfield(L, -2, "meleeAttack");
     lua_pushcfunction(L, CharStats_set__meleeDefence);
-    lua_setfield(L, -2, "_meleeDefence");
+    lua_setfield(L, -2, "meleeDefence");
     lua_pushcfunction(L, CharStats_set__defensiveMode);
-    lua_setfield(L, -2, "_defensiveMode");
+    lua_setfield(L, -2, "defensiveMode");
     lua_pushcfunction(L, CharStats_set_rangedMode);
     lua_setfield(L, -2, "rangedMode");
     lua_pushcfunction(L, CharStats_set_tauntMode);
     lua_setfield(L, -2, "tauntMode");
     lua_pushcfunction(L, CharStats_set__holdPositionMode);
-    lua_setfield(L, -2, "_holdPositionMode");
+    lua_setfield(L, -2, "holdPositionMode");
     lua_pushcfunction(L, CharStats_set_passiveCombatMode);
     lua_setfield(L, -2, "passiveCombatMode");
     lua_pushcfunction(L, CharStats_set_holdLocation);
@@ -3815,7 +3818,7 @@ void CharStatsBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, CharStats_set_MURDEROUS);
     lua_setfield(L, -2, "MURDEROUS");
     lua_pushcfunction(L, CharStats_set__stealthXPMultForGUI);
-    lua_setfield(L, -2, "_stealthXPMultForGUI");
+    lua_setfield(L, -2, "stealthXPMultForGUI");
     lua_pushcfunction(L, CharStats_set_stealthXPTooManyCooksPenalty);
     lua_setfield(L, -2, "stealthXPTooManyCooksPenalty");
     lua_pushcfunction(L, CharStats_set_currentOperatingMachineHungerRate);
@@ -3881,6 +3884,8 @@ void CharStatsBinding::registerBinding(lua_State* L)
 
     WeatherProtectionsMapBinding::registerBinding(L, "std::map<WeatherAffecting, float>");
     BonusRacesMapBinding::registerBinding(L, "std::map<GameData*, float>", GameDataBinding::getMetatableName());
+    LektorValueReadOnlyBinding<StringPair>::registerBinding(L, "lektor<StringPair>", StringPairBinding::getMetatableName());
+    FitnessSelectorBinding<CombatTechniqueData*>::registerBinding(L, "FitnessSelector<CombatTechniqueData*>", CombatTechniqueDataBinding::getMetatableName(), nullptr, nullptr);
 
 
     // Register global class table for static methods

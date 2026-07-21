@@ -3,6 +3,14 @@
 #include "SensoryDataBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/SeenSomeoneBinding.h"
+#include "Bindings/SenseItrBinding.h"
+#include "Bindings/VisibleObjectInfoBinding.h"
+#include "Bindings/SpottingPeopleMgrBinding.h"
+#include "Bindings/RootObjectBaseBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -25,8 +33,8 @@ static int SensoryData_get_seen(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    // TODO: Unsupported type for seen (ogre_unordered_map<hand, SeenSomeone*>::type)
-    return luaL_error(L, "Unsupported property 'seen' (type: ogre_unordered_map<hand, SeenSomeone*>::type)");
+    lua_pushlightuserdata(L, &b->seen);
+    return 1;
 }
 
 static int SensoryData_get_numUnconsciousAllies(lua_State* L)
@@ -49,16 +57,16 @@ static int SensoryData_get_threats(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    // TODO: Unsupported type for threats (lektor<hand>)
-    return luaL_error(L, "Unsupported property 'threats' (type: lektor<hand>)");
+    lua_pushlightuserdata(L, &b->threats);
+    return 1;
 }
 
 static int SensoryData_get_flockingList(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    // TODO: Unsupported type for flockingList (Ogre::vector<VisibleObjectInfo>::type)
-    return luaL_error(L, "Unsupported property 'flockingList' (type: Ogre::vector<VisibleObjectInfo>::type)");
+    lua_pushlightuserdata(L, &b->flockingList);
+    return 1;
 }
 
 static int SensoryData_get_totalThreatLevelPersonal(lua_State* L)
@@ -113,16 +121,16 @@ static int SensoryData_get_hearTestTimers(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    // TODO: Unsupported type for hearTestTimers (std::map<hand, float, std::less<hand>, std::allocator<std::pair<hand const, float> > >)
-    return luaL_error(L, "Unsupported property 'hearTestTimers' (type: std::map<hand, float, std::less<hand>, std::allocator<std::pair<hand const, float> > >)");
+    lua_pushlightuserdata(L, &b->hearTestTimers);
+    return 1;
 }
 
 static int SensoryData_get_killList(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    // TODO: Unsupported type for killList (ogre_unordered_set<hand>::type)
-    return luaL_error(L, "Unsupported property 'killList' (type: ogre_unordered_set<hand>::type)");
+    lua_pushlightuserdata(L, &b->killList);
+    return 1;
 }
 
 static int SensoryData_get_currentAssessIndex(lua_State* L)
@@ -145,8 +153,8 @@ static int SensoryData_get_assessList(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    // TODO: Unsupported type for assessList (ogre_unordered_set<hand>::type)
-    return luaL_error(L, "Unsupported property 'assessList' (type: ogre_unordered_set<hand>::type)");
+    lua_pushlightuserdata(L, &b->assessList);
+    return 1;
 }
 
 static int SensoryData_get_me(lua_State* L)
@@ -160,24 +168,23 @@ static int SensoryData_get_spottedSneakingPeople(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    // TODO: Unsupported type for spottedSneakingPeople (SensoryData::SpottingPeopleMgr)
-    return luaL_error(L, "Unsupported property 'spottedSneakingPeople' (type: SensoryData::SpottingPeopleMgr)");
+    return pushObject<SensoryData::SpottingPeopleMgr>(L, &b->spottedSneakingPeople, SpottingPeopleMgrBinding::getMetatableName());
 }
 
 static int SensoryData_get_spottedSuspiciousPeople(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    // TODO: Unsupported type for spottedSuspiciousPeople (SensoryData::SpottingPeopleMgr)
-    return luaL_error(L, "Unsupported property 'spottedSuspiciousPeople' (type: SensoryData::SpottingPeopleMgr)");
+    return pushObject<SensoryData::SpottingPeopleMgr>(L, &b->spottedSuspiciousPeople, SpottingPeopleMgrBinding::getMetatableName());
 }
 
 static int SensoryData_get_progressBar(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    // TODO: Unsupported type for progressBar (FloatingProgressBar*)
-    return luaL_error(L, "Unsupported property 'progressBar' (type: FloatingProgressBar*)");
+    if (b->progressBar) lua_pushlightuserdata(L, b->progressBar);
+    else lua_pushnil(L);
+    return 1;
 }
 
 static int SensoryData_get_progressBarStillNeeded(lua_State* L)
@@ -192,8 +199,7 @@ static int SensoryData_get_spottedGuyIndexForProgressBar(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    // TODO: Unsupported type for spottedGuyIndexForProgressBar (hand)
-    return luaL_error(L, "Unsupported property 'spottedGuyIndexForProgressBar' (type: hand)");
+    return handBinding::push(L, b->spottedGuyIndexForProgressBar);
 }
 
 static int SensoryData_get_amSharingThisFrame(lua_State* L)
@@ -217,7 +223,7 @@ static int SensoryData_set_seen(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for seen");
+    return luaL_error(L, "seen is a read-only property");
 }
 
 static int SensoryData_set_numUnconsciousAllies(lua_State* L)
@@ -240,14 +246,14 @@ static int SensoryData_set_threats(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for threats");
+    return luaL_error(L, "threats is a read-only property");
 }
 
 static int SensoryData_set_flockingList(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for flockingList");
+    return luaL_error(L, "flockingList is a read-only property");
 }
 
 static int SensoryData_set_totalThreatLevelPersonal(lua_State* L)
@@ -302,14 +308,14 @@ static int SensoryData_set_hearTestTimers(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for hearTestTimers");
+    return luaL_error(L, "hearTestTimers is a read-only property");
 }
 
 static int SensoryData_set_killList(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for killList");
+    return luaL_error(L, "killList is a read-only property");
 }
 
 static int SensoryData_set_currentAssessIndex(lua_State* L)
@@ -332,35 +338,37 @@ static int SensoryData_set_assessList(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for assessList");
+    return luaL_error(L, "assessList is a read-only property");
 }
 
 static int SensoryData_set_me(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for me");
+    b->me = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    return 0;
 }
 
 static int SensoryData_set_spottedSneakingPeople(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for spottedSneakingPeople");
+    return luaL_error(L, "spottedSneakingPeople is a read-only property");
 }
 
 static int SensoryData_set_spottedSuspiciousPeople(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for spottedSuspiciousPeople");
+    return luaL_error(L, "spottedSuspiciousPeople is a read-only property");
 }
 
 static int SensoryData_set_progressBar(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for progressBar");
+    b->progressBar = (FloatingProgressBar*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int SensoryData_set_progressBarStillNeeded(lua_State* L)
@@ -375,7 +383,9 @@ static int SensoryData_set_spottedGuyIndexForProgressBar(lua_State* L)
 {
     SensoryData* b = getB(L, 1);
     if (!b) return luaL_error(L, "SensoryData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for spottedGuyIndexForProgressBar");
+    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->spottedGuyIndexForProgressBar = *val;
+    return 0;
 }
 
 static int SensoryData_set_amSharingThisFrame(lua_State* L)
@@ -505,41 +515,356 @@ int SensoryDataBinding::buildingSpotterUpdate(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 107: SensoryData* _CONSTRUCTOR(...) - unsupported return type
-  line 116: SenseItr getIterator(...) - unsupported return type
-  line 120: bool canISeeThisGuy(...) - unsupported arg type
-  line 121: bool canIHearThisGuy(...) - unsupported arg type
-  line 122: bool amIAwareOfThisGuy(...) - unsupported arg type
-  line 123: Ogre::Vector3 getLastKnownPositionOf(...) - unsupported arg type
-  line 124: SeenSomeone* getDataFor(...) - unsupported return type
-  line 126: void notifyCriminalThreat(...) - unsupported arg type
-  line 129: float getFactionRelation(...) - unsupported arg type
-  line 130: StateBroadcastData* getStateBroadcast(...) - unsupported return type
-  line 131: StateBroadcastData* getStateBroadcastOf(...) - unsupported return type
-  line 139: bool _shareSensesCheck(...) - unsupported arg type
-  line 140: void getGUIData(...) - unsupported arg type
-  line 141: float _calculateFOVScore(...) - unsupported arg type
-  line 142: bool _traceLineOfSightCheck(...) - unsupported arg type
-  line 145: void noticeThisPerson(...) - unsupported arg type
-  line 146: SeenSomeone* add(...) - unsupported return type
-  line 147: void remove(...) - unsupported arg type
-  line 148: void decay(...) - unsupported arg type
-  line 149: bool canSee(...) - unsupported arg type
-  line 150: bool canHear(...) - unsupported arg type
-  line 151: bool disguiseMods(...) - unsupported arg type
-  line 152: void assessCrimes(...) - unsupported arg type
-  line 153: void assessKidnapping(...) - unsupported arg type
-  line 157: void assessNeutral(...) - unsupported arg type
-  line 193: void setupMyProgressBar(...) - unsupported arg type
-  line 196: YesNoMaybe canISeeThisGuyDoinSneakingOrSomething(...) - unsupported return type
-  line 197: bool isIntruder_Base(...) - unsupported arg type
-  line 198: bool isIntruder_Building(...) - unsupported arg type
-  line 199: bool isInMyPrivate_Building(...) - unsupported arg type
-  line 200: bool isEscapee(...) - unsupported arg type
-  line 201: void reassessAll(...) - unsupported arg type
-  line 202: SeenSomeone* reassess(...) - unsupported return type
-  line 203: void addToThreatsAndFlockingList(...) - unsupported arg type
+  line 107: SensoryData* _CONSTRUCTOR(...) - constructor
 */
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - SensoryData_get_flockingList: Ogre::vector<VisibleObjectInfo>::type
+  - SensoryData_get_hearTestTimers: std::map<hand, float...>
+  - SensoryData_get_progressBar / SensoryData_set_progressBar: FloatingProgressBar*
+  - SensoryData_getStateBroadcast / SensoryData_getStateBroadcastOf: StateBroadcastData*
+  - SensoryData__shareSensesCheck: lektor<RootObject*>* (arg 3)
+  - SensoryData_getGUIData: DatapanelGUI* (arg 2)
+*/
+
+static int SensoryData_getIterator(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    unsigned int tagsAny = (unsigned int)luaL_checkinteger(L, 2);
+    unsigned int tagsNOT = (unsigned int)luaL_checkinteger(L, 3);
+    SenseItr res = b->getIterator(tagsAny, tagsNOT);
+    SenseItr* copy = new SenseItr(res);
+    return pushObject<SenseItr>(L, copy, SenseItrBinding::getMetatableName());
+}
+
+static int SensoryData_canISeeThisGuy(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool res = b->canISeeThisGuy(who);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_canIHearThisGuy(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool res = b->canIHearThisGuy(who);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_amIAwareOfThisGuy(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool needToSeeOrHear = lua_toboolean(L, 3) != 0;
+    bool res = b->amIAwareOfThisGuy(who, needToSeeOrHear);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_getLastKnownPositionOf(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    Ogre::Vector3 res = b->getLastKnownPositionOf(who);
+    pushVector3(L, res);
+    return 1;
+}
+
+static int SensoryData_getDataFor(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    SeenSomeone* res = b->getDataFor(who);
+    return pushObject<SeenSomeone>(L, res, SeenSomeoneBinding::getMetatableName());
+}
+
+static int SensoryData_notifyCriminalThreat(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->notifyCriminalThreat(*h);
+    return 0;
+}
+
+static int SensoryData_getFactionRelation(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    RootObjectBase* c = checkObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName());
+    float res = b->getFactionRelation(c);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+static int SensoryData_getStateBroadcast(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    StateBroadcastData* res = b->getStateBroadcast();
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int SensoryData_getStateBroadcastOf(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    hand* who = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    StateBroadcastData* res = b->getStateBroadcastOf(*who);
+    if (res) lua_pushlightuserdata(L, res);
+    else lua_pushnil(L);
+    return 1;
+}
+
+static int SensoryData__shareSensesCheck(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* leader = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    lektor<RootObject*>* list = (lektor<RootObject*>*)lua_touserdata(L, 3);
+    if (!list) return luaL_error(L, "Invalid lektor<RootObject*> userdata");
+    float time = (float)luaL_checknumber(L, 4);
+    bool res = b->_shareSensesCheck(leader, *list, time);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_getGUIData(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    DatapanelGUI* panel = (DatapanelGUI*)lua_touserdata(L, 2);
+    int cat = (int)luaL_checkinteger(L, 3);
+    b->getGUIData(panel, cat);
+    return 0;
+}
+
+static int SensoryData__calculateFOVScore(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float res = b->_calculateFOVScore(who);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+static int SensoryData__traceLineOfSightCheck(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool res = b->_traceLineOfSightCheck(who);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_noticeThisPerson(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool alarmed = lua_toboolean(L, 3) != 0;
+    b->noticeThisPerson(c, alarmed);
+    return 0;
+}
+
+static int SensoryData_add(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool see = lua_toboolean(L, 3) != 0;
+    bool hear = lua_toboolean(L, 4) != 0;
+    SeenSomeone* res = b->add(c, see, hear);
+    return pushObject<SeenSomeone>(L, res, SeenSomeoneBinding::getMetatableName());
+}
+
+static int SensoryData_remove(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->remove(c);
+    return 0;
+}
+
+static int SensoryData_decay(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->decay(c);
+    return 0;
+}
+
+static int SensoryData_canSee(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    SeenSomeone* sees = checkObject<SeenSomeone>(L, 3, SeenSomeoneBinding::getMetatableName());
+    bool res = b->canSee(c, sees);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_canHear(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    SeenSomeone* see = checkObject<SeenSomeone>(L, 3, SeenSomeoneBinding::getMetatableName());
+    bool res = b->canHear(c, see);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_disguiseMods(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float FOV = (float)luaL_checknumber(L, 3);
+    bool res = b->disguiseMods(c, FOV);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_assessCrimes(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->assessCrimes(c);
+    return 0;
+}
+
+static int SensoryData_assessKidnapping(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->assessKidnapping(c);
+    return 0;
+}
+
+static int SensoryData_assessNeutral(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool inDepth = lua_toboolean(L, 3) != 0;
+    b->assessNeutral(who, inDepth);
+    return 0;
+}
+
+static int SensoryData_setupMyProgressBar(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    hand* who = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    b->setupMyProgressBar(*who);
+    return 0;
+}
+
+static int SensoryData_canISeeThisGuyDoinSneakingOrSomething(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float FOVScore = (float)luaL_checknumber(L, 3);
+    SensoryData::SpottingPeopleMgr* memory = checkObject<SensoryData::SpottingPeopleMgr>(L, 4, SpottingPeopleMgrBinding::getMetatableName());
+    float spotTimeMinFOV = (float)luaL_checknumber(L, 5);
+    float spotTimeMaxFOV = (float)luaL_checknumber(L, 6);
+    YesNoMaybe res = b->canISeeThisGuyDoinSneakingOrSomething(who, FOVScore, memory, spotTimeMinFOV, spotTimeMaxFOV);
+    lua_pushinteger(L, (lua_Integer)res.key);
+    return 1;
+}
+
+static int SensoryData_isIntruder_Base(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool res = b->isIntruder_Base(who);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_isIntruder_Building(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool res = b->isIntruder_Building(who);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_isInMyPrivate_Building(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool res = b->isInMyPrivate_Building(who);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_isEscapee(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool res = b->isEscapee(who);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+static int SensoryData_reassessAll(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    lektor<RootObject*>* newTargets = (lektor<RootObject*>*)lua_touserdata(L, 2);
+    if (!newTargets) return luaL_error(L, "Invalid lektor<RootObject*> userdata");
+    float time = (float)luaL_checknumber(L, 3);
+    b->reassessAll(*newTargets, time);
+    return 0;
+}
+
+static int SensoryData_reassess(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    SeenSomeone* sees = checkObject<SeenSomeone>(L, 3, SeenSomeoneBinding::getMetatableName());
+    float time = (float)luaL_checknumber(L, 4);
+    SeenSomeone* res = b->reassess(c, sees, time);
+    return pushObject<SeenSomeone>(L, res, SeenSomeoneBinding::getMetatableName());
+}
+
+static int SensoryData_addToThreatsAndFlockingList(lua_State* L)
+{
+    SensoryData* b = getB(L, 1);
+    if (!b) return luaL_error(L, "SensoryData is nil");
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    b->addToThreatsAndFlockingList(c);
+    return 0;
+}
 
 int SensoryDataBinding::gc(lua_State* L)
 {
@@ -574,6 +899,39 @@ void SensoryDataBinding::registerBinding(lua_State* L)
         { "processKillList", SensoryDataBinding::processKillList },
         { "updateMyProgressBar", SensoryDataBinding::updateMyProgressBar },
         { "buildingSpotterUpdate", SensoryDataBinding::buildingSpotterUpdate },
+        { "getIterator", SensoryData_getIterator },
+        { "canISeeThisGuy", SensoryData_canISeeThisGuy },
+        { "canIHearThisGuy", SensoryData_canIHearThisGuy },
+        { "amIAwareOfThisGuy", SensoryData_amIAwareOfThisGuy },
+        { "getLastKnownPositionOf", SensoryData_getLastKnownPositionOf },
+        { "getDataFor", SensoryData_getDataFor },
+        { "notifyCriminalThreat", SensoryData_notifyCriminalThreat },
+        { "getFactionRelation", SensoryData_getFactionRelation },
+        { "getStateBroadcast", SensoryData_getStateBroadcast },
+        { "getStateBroadcastOf", SensoryData_getStateBroadcastOf },
+        { "_shareSensesCheck", SensoryData__shareSensesCheck },
+        { "getGUIData", SensoryData_getGUIData },
+        { "_calculateFOVScore", SensoryData__calculateFOVScore },
+        { "_traceLineOfSightCheck", SensoryData__traceLineOfSightCheck },
+        { "noticeThisPerson", SensoryData_noticeThisPerson },
+        { "add", SensoryData_add },
+        { "remove", SensoryData_remove },
+        { "decay", SensoryData_decay },
+        { "canSee", SensoryData_canSee },
+        { "canHear", SensoryData_canHear },
+        { "disguiseMods", SensoryData_disguiseMods },
+        { "assessCrimes", SensoryData_assessCrimes },
+        { "assessKidnapping", SensoryData_assessKidnapping },
+        { "assessNeutral", SensoryData_assessNeutral },
+        { "setupMyProgressBar", SensoryData_setupMyProgressBar },
+        { "canISeeThisGuyDoinSneakingOrSomething", SensoryData_canISeeThisGuyDoinSneakingOrSomething },
+        { "isIntruder_Base", SensoryData_isIntruder_Base },
+        { "isIntruder_Building", SensoryData_isIntruder_Building },
+        { "isInMyPrivate_Building", SensoryData_isInMyPrivate_Building },
+        { "isEscapee", SensoryData_isEscapee },
+        { "reassessAll", SensoryData_reassessAll },
+        { "reassess", SensoryData_reassess },
+        { "addToThreatsAndFlockingList", SensoryData_addToThreatsAndFlockingList },
         { 0, 0 }
     };
 

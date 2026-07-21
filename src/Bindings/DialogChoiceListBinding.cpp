@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "kenshi\Dialogue.h"
 #include "DialogChoiceListBinding.h"
+#include "DialogLineDataBinding.h"
+#include "GameDataBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -16,8 +19,7 @@ static int DialogChoiceList_get_conversationChoices(lua_State* L)
 {
     DialogChoiceList* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogChoiceList is nil");
-    // TODO: Unsupported type for conversationChoices (lektor<DialogLineData*>)
-    return luaL_error(L, "Unsupported property 'conversationChoices' (type: lektor<DialogLineData*>)");
+    return pushObject<lektor<DialogLineData*>>(L, &b->conversationChoices, LektorPtrBinding<DialogLineData*>::metaName);
 }
 
 // --- Setters for DialogChoiceList ---
@@ -25,7 +27,10 @@ static int DialogChoiceList_set_conversationChoices(lua_State* L)
 {
     DialogChoiceList* b = getB(L, 1);
     if (!b) return luaL_error(L, "DialogChoiceList is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationChoices");
+    auto* val = checkObject<lektor<DialogLineData*>>(L, 2, LektorPtrBinding<DialogLineData*>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<DialogLineData*>");
+    b->conversationChoices = *val;
+    return 0;
 }
 
 // --- Methods for DialogChoiceList ---
@@ -47,10 +52,15 @@ int DialogChoiceListBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 268: void add(...) - unsupported arg type
-*/
+int DialogChoiceListBinding::add(lua_State* L)
+{
+    DialogChoiceList* b = getB(L, 1);
+    if (!b) return luaL_error(L, "DialogChoiceList is nil");
+    GameData* conv = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    DialogLineData* parent = checkObject<DialogLineData>(L, 3, DialogLineDataBinding::getMetatableName());
+    b->add(conv, parent);
+    return 0;
+}
 
 int DialogChoiceListBinding::gc(lua_State* L)
 {
@@ -75,6 +85,7 @@ void DialogChoiceListBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", DialogChoiceListBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", DialogChoiceListBinding::_DESTRUCTOR },
+        { "add", DialogChoiceListBinding::add },
         { 0, 0 }
     };
 
@@ -97,6 +108,8 @@ void DialogChoiceListBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, DialogChoiceList_set_conversationChoices);
     lua_setfield(L, -2, "conversationChoices");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    LektorPtrBinding<DialogLineData*>::registerBinding(L, "lektor<DialogLineData*>", DialogLineDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

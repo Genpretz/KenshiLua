@@ -41,6 +41,14 @@ public:
     static int leaveSheathEquipped(lua_State* L);
     static int postRagdollCallback(lua_State* L);
     static int _NV_postRagdollCallback(lua_State* L);
+    static int isHuman(lua_State* L);
+    static int _NV_isHuman(lua_State* L);
+    static int drawWeapon(lua_State* L);
+    static int _NV_drawWeapon(lua_State* L);
+    static int dropItem(lua_State* L);
+    static int _NV_dropItem(lua_State* L);
+    static int unequipItem(lua_State* L);
+    static int _NV_unequipItem(lua_State* L);
     static int reCalculateNaturalWeapon(lua_State* L);
     static int _NV_reCalculateNaturalWeapon(lua_State* L);
 };

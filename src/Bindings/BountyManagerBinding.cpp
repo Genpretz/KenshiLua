@@ -131,7 +131,10 @@ static int BountyManager_set_bounties(lua_State* L)
 {
     BountyManager* b = getB(L, 1);
     if (!b) return luaL_error(L, "BountyManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bounties");
+    auto* val = BountiesMapBinding::get(L, 2);
+    if (!val) return luaL_error(L, "Expected BountiesMap object");
+    b->bounties = *val;
+    return 0;
 }
 
 static int BountyManager_set_me(lua_State* L)

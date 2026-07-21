@@ -2,6 +2,8 @@
 #include "kenshi\CharMovement.h"
 #include "CombatMovementControllerBinding.h"
 #include "FlockingToolsBinding.h"
+#include "CharMovementBinding.h"
+#include "MotionFilterBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharStatsBinding.h"
 #include "Bindings/FlockingToolsBinding.h"
@@ -20,16 +22,14 @@ static int CombatMovementController_get_characterCollisions(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    // TODO: Unsupported type for characterCollisions (ogre_unordered_map<hand, float>::type)
-    return luaL_error(L, "Unsupported property 'characterCollisions' (type: ogre_unordered_map<hand, float>::type)");
+    return pushObject<ogre_unordered_map<hand, float>::type>(L, &b->characterCollisions, "ogre_unordered_map<hand, float>");
 }
 
 static int CombatMovementController_get_movement(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    // TODO: Unsupported type for movement (CharMovement*)
-    return luaL_error(L, "Unsupported property 'movement' (type: CharMovement*)");
+    return pushObject<CharMovement>(L, b->movement, CharMovementBinding::getMetatableName());
 }
 
 static int CombatMovementController_get_chaseMode(lua_State* L)
@@ -68,16 +68,14 @@ static int CombatMovementController_get_flockFilterX(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    // TODO: Unsupported type for flockFilterX (MotionFilter)
-    return luaL_error(L, "Unsupported property 'flockFilterX' (type: MotionFilter)");
+    return pushObject<MotionFilter>(L, &b->flockFilterX, MotionFilterBinding::getMetatableName());
 }
 
 static int CombatMovementController_get_flockFilterZ(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    // TODO: Unsupported type for flockFilterZ (MotionFilter)
-    return luaL_error(L, "Unsupported property 'flockFilterZ' (type: MotionFilter)");
+    return pushObject<MotionFilter>(L, &b->flockFilterZ, MotionFilterBinding::getMetatableName());
 }
 
 static int CombatMovementController_get_flockingControl(lua_State* L)
@@ -289,14 +287,18 @@ static int CombatMovementController_set_characterCollisions(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for characterCollisions");
+    auto* val = checkObject<ogre_unordered_map<hand, float>::type>(L, 2, "ogre_unordered_map<hand, float>");
+    if (!val) return luaL_error(L, "Expected ogre_unordered_map<hand, float>");
+    b->characterCollisions = *val;
+    return 0;
 }
 
 static int CombatMovementController_set_movement(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for movement");
+    b->movement = lua_isnoneornil(L, 2) ? nullptr : checkObject<CharMovement>(L, 2, CharMovementBinding::getMetatableName());
+    return 0;
 }
 
 static int CombatMovementController_set_chaseMode(lua_State* L)
@@ -335,14 +337,20 @@ static int CombatMovementController_set_flockFilterX(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for flockFilterX");
+    MotionFilter* val = checkObject<MotionFilter>(L, 2, MotionFilterBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Expected MotionFilter");
+    b->flockFilterX = *val;
+    return 0;
 }
 
 static int CombatMovementController_set_flockFilterZ(lua_State* L)
 {
     CombatMovementController* b = getB(L, 1);
     if (!b) return luaL_error(L, "CombatMovementController is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for flockFilterZ");
+    MotionFilter* val = checkObject<MotionFilter>(L, 2, MotionFilterBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Expected MotionFilter");
+    b->flockFilterZ = *val;
+    return 0;
 }
 
 static int CombatMovementController_set_flockingControl(lua_State* L)
