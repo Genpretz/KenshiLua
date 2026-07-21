@@ -749,7 +749,7 @@ int ItemBinding::activate(lua_State* L)
     int numArgs = lua_gettop(L);
     if (numArgs <= 3) {
         bool createPhysical = lua_toboolean(L, 2) != 0;
-        YesNoMaybe bareWeapon = (YesNoMaybe)luaL_checkinteger(L, 3);
+        YesNoMaybe bareWeapon = (YesNoMaybe)(int)luaL_checkinteger(L, 3);
         b->activate(createPhysical, bareWeapon);
     } else {
         bool createPhysical = lua_toboolean(L, 2) != 0;
@@ -758,7 +758,7 @@ int ItemBinding::activate(lua_State* L)
         Ogre::Quaternion rotation;
         readQuaternion(L, 4, rotation);
         bool fixedPosition = lua_toboolean(L, 5) != 0;
-        YesNoMaybe bareWeapon = (YesNoMaybe)luaL_checkinteger(L, 6);
+        YesNoMaybe bareWeapon = (YesNoMaybe)(int)luaL_checkinteger(L, 6);
         bool dynamicPhysics = lua_toboolean(L, 7) != 0;
         b->activate(createPhysical, position, rotation, fixedPosition, bareWeapon, dynamicPhysics);
     }
@@ -772,7 +772,7 @@ int ItemBinding::_NV_activate(lua_State* L)
     int numArgs = lua_gettop(L);
     if (numArgs <= 3) {
         bool createPhysical = lua_toboolean(L, 2) != 0;
-        YesNoMaybe bareWeapon = (YesNoMaybe)luaL_checkinteger(L, 3);
+        YesNoMaybe bareWeapon = (YesNoMaybe)(int)luaL_checkinteger(L, 3);
         b->_NV_activate(createPhysical, bareWeapon);
     } else {
         bool createPhysical = lua_toboolean(L, 2) != 0;
@@ -781,7 +781,7 @@ int ItemBinding::_NV_activate(lua_State* L)
         Ogre::Quaternion rotation;
         readQuaternion(L, 4, rotation);
         bool fixedPosition = lua_toboolean(L, 5) != 0;
-        YesNoMaybe bareWeapon = (YesNoMaybe)luaL_checkinteger(L, 6);
+        YesNoMaybe bareWeapon = (YesNoMaybe)(int)luaL_checkinteger(L, 6);
         bool dynamicPhysics = lua_toboolean(L, 7) != 0;
         b->_NV_activate(createPhysical, position, rotation, fixedPosition, bareWeapon, dynamicPhysics);
     }

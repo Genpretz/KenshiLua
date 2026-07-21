@@ -96,7 +96,7 @@ static int Town_get_powerInList(lua_State* L)
     lua_newtable(L);
     for (size_t i = 0; i < b->powerInList.size(); ++i) {
         handBinding::push(L, b->powerInList[i]);
-        lua_rawseti(L, -2, i + 1);
+        lua_rawseti(L, -2, (int)(i + 1));
     }
     return 1;
 }
