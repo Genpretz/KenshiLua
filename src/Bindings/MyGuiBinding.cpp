@@ -58,7 +58,11 @@ public:
 
     LuaWidgetCallbackManager() : m_L(nullptr) {}
 
-    void setLuaState(lua_State* L) { m_L = L; }
+    void setLuaState(lua_State* L) {
+        if (!m_L) {
+            m_L = L;
+        }
+    }
 
     void registerCallback(MyGUI::Widget* widget, EventType type, int luaRef)
     {
@@ -216,7 +220,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top);
     }
 
@@ -233,7 +237,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top);
     }
 
@@ -251,7 +255,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top);
     }
 
@@ -271,7 +275,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 4, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -291,7 +295,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 4, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -309,7 +313,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -327,7 +331,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -346,7 +350,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 3, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -364,7 +368,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -383,7 +387,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 3, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -401,7 +405,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -419,7 +423,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -437,7 +441,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -455,7 +459,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -474,7 +478,7 @@ private:
         if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
         {
             const char* err = lua_tostring(m_L, -1);
-            logToFile(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
+            logToFileError(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
             lua_pop(m_L, 1);
         }
         lua_settop(m_L, top_stack);
@@ -493,7 +497,7 @@ private:
 
         std::string pcallErr;
         if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
-            logToFile(std::string("MyGUI Event Error: ") + pcallErr);
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 };
@@ -665,9 +669,18 @@ static int widget_registerCallback(lua_State* L)
     {
         type = LuaWidgetCallbackManager::OnClick;
     }
-    else if (strcmp(eventType, "EditTextChange") == 0 || strcmp(eventType, "change") == 0)
+    else if (strcmp(eventType, "EditTextChange") == 0)
     {
         type = LuaWidgetCallbackManager::OnTextChanged;
+    }
+    else if (strcmp(eventType, "change") == 0 || strcmp(eventType, "select") == 0)
+    {
+        if (w && w->castType<MyGUI::ListBox>(false))
+            type = LuaWidgetCallbackManager::OnListChangePosition;
+        else if (w && w->castType<MyGUI::ComboBox>(false))
+            type = LuaWidgetCallbackManager::OnComboChangePosition;
+        else
+            type = LuaWidgetCallbackManager::OnTextChanged;
     }
     else if (strcmp(eventType, "WindowButtonPressed") == 0 || strcmp(eventType, "windowButtonPressed") == 0)
     {
@@ -774,6 +787,35 @@ static int widget_setCoord(lua_State* L)
     int width = (int)luaL_checkinteger(L, 4);
     int height = (int)luaL_checkinteger(L, 5);
     if (w) w->setCoord(left, top, width, height);
+    return 0;
+}
+
+static int widget_setRealCoord(lua_State* L)
+{
+    MyGUI::Widget* w = getWidget(L, 1);
+    float left = (float)luaL_checknumber(L, 2);
+    float top = (float)luaL_checknumber(L, 3);
+    float width = (float)luaL_checknumber(L, 4);
+    float height = (float)luaL_checknumber(L, 5);
+    if (w) w->setRealCoord(left, top, width, height);
+    return 0;
+}
+
+static int widget_setRealPosition(lua_State* L)
+{
+    MyGUI::Widget* w = getWidget(L, 1);
+    float left = (float)luaL_checknumber(L, 2);
+    float top = (float)luaL_checknumber(L, 3);
+    if (w) w->setRealPosition(left, top);
+    return 0;
+}
+
+static int widget_setRealSize(lua_State* L)
+{
+    MyGUI::Widget* w = getWidget(L, 1);
+    float width = (float)luaL_checknumber(L, 2);
+    float height = (float)luaL_checknumber(L, 3);
+    if (w) w->setRealSize(width, height);
     return 0;
 }
 
@@ -1611,11 +1653,19 @@ static int widget_getImageIndex(lua_State* L)
 static int helper_createWidgetType(lua_State* L, const char* type)
 {
     const char* skin = luaL_checkstring(L, 1);
-    int x = (int)luaL_checkinteger(L, 2);
-    int y = (int)luaL_checkinteger(L, 3);
-    int w = (int)luaL_checkinteger(L, 4);
-    int h = (int)luaL_checkinteger(L, 5);
+    float fx = (float)luaL_checknumber(L, 2);
+    float fy = (float)luaL_checknumber(L, 3);
+    float fw = (float)luaL_checknumber(L, 4);
+    float fh = (float)luaL_checknumber(L, 5);
     const char* name = luaL_checkstring(L, 6);
+
+    bool isReal = (fx <= 1.0f && fy <= 1.0f && fw <= 1.0f && fh <= 1.0f) &&
+                 (fx > 0.0f || fy > 0.0f || fw > 0.0f || fh > 0.0f);
+
+    int x = isReal ? 0 : (int)fx;
+    int y = isReal ? 0 : (int)fy;
+    int w = isReal ? 100 : (int)fw;
+    int h = isReal ? 100 : (int)fh;
 
     MyGUI::Widget* parent = nullptr;
     std::string layer = "Window";
@@ -1648,6 +1698,10 @@ static int helper_createWidgetType(lua_State* L, const char* type)
 
     if (widget)
     {
+        if (isReal)
+        {
+            widget->setRealCoord(fx, fy, fw, fh);
+        }
         return pushObject<MyGUI::Widget>(L, widget, MyGuiBinding::getMetatableName());
     }
     lua_pushnil(L);
@@ -1836,6 +1890,11 @@ void MyGuiBinding::registerBinding(lua_State* L)
         // Coordinate / Hierarchy / General methods
         { "getCoord",             widget_getCoord },
         { "setCoord",             widget_setCoord },
+        { "setRealCoord",         widget_setRealCoord },
+        { "setRealPosition",      widget_setRealPosition },
+        { "setRealSize",          widget_setRealSize },
+        { "setPositionReal",      widget_setRealCoord },
+        { "setCoordReal",         widget_setRealCoord },
         { "getPosition",          widget_getPosition },
         { "getSize",              widget_getSize },
         { "getParent",            widget_getParent },
