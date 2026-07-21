@@ -48,14 +48,14 @@ static bool InstallHookT(const char* name, intptr_t addr, T hookFn, T* origStora
 
     if (!addr)
     {
-        KenshiLua::logToFilef("Error: Could not resolve address for %s.", name);
+        KenshiLua::logToFileErrorf("Error: Could not resolve address for %s.", name);
         return false;
     }
     
     KenshiLib::HookStatus status = KenshiLib::AddHook(addr, hookFn, origStorage);
     if (status != KenshiLib::SUCCESS)
     {
-        KenshiLua::logToFilef("Error: AddHook failed for %s (status %d).", name, (int)status);
+        KenshiLua::logToFileErrorf("Error: AddHook failed for %s (status %d).", name, (int)status);
         return false;
     }
 
@@ -866,7 +866,7 @@ static bool InstallHook_BaseLayout_initialise()
         "?initialise@BaseLayout@wraps@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAVWidget@MyGUI@@_N2@Z");
     if (!stubAddr)
     {
-        KenshiLua::logToFilef("Error: Failed to locate wraps::BaseLayout::initialise export in KenshiLib.dll");
+        KenshiLua::logToFileErrorf("Error: Failed to locate wraps::BaseLayout::initialise export in KenshiLib.dll");
         return false;
     }
     intptr_t realAddr = KenshiLib::GetRealAddress(stubAddr);

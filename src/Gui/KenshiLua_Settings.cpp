@@ -59,6 +59,9 @@ namespace KenshiLua
 		if (mStartMinimized_TickBoxButton)
 			mStartMinimized_TickBoxButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_Settings::onStartMinimizedClicked);
 
+		if (mLogLevel_ComboBoxComboBox)
+			mLogLevel_ComboBoxComboBox->setComboModeDrop(true);
+
 		if (mKenshiLua_SettingsRootWindow)
 			mKenshiLua_SettingsRootWindow->eventWindowButtonPressed += MyGUI::newDelegate(this, &KenshiLua_Settings::onWindowButtonPressed);
 

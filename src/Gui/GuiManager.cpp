@@ -125,7 +125,7 @@ namespace KenshiLua
 
         std::string openFileDialog(
             const std::string& title,
-            const std::string& filter,
+            const char* filter,
             const std::string& defaultExt,
             const std::string& currentPath)
         {
@@ -137,7 +137,7 @@ namespace KenshiLua
 
             OPENFILENAMEA ofn = {};
             ofn.lStructSize = sizeof(ofn);
-            ofn.lpstrFilter = filter.c_str();
+            ofn.lpstrFilter = filter;
             ofn.lpstrFile = filename;
             ofn.nMaxFile = MAX_PATH;
             ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
@@ -149,7 +149,7 @@ namespace KenshiLua
 
         std::string saveFileDialog(
             const std::string& title,
-            const std::string& filter,
+            const char* filter,
             const std::string& defaultExt,
             const std::string& defaultFilename,
             const std::string& currentPath)
@@ -166,7 +166,7 @@ namespace KenshiLua
 
             OPENFILENAMEA ofn = {};
             ofn.lStructSize = sizeof(ofn);
-            ofn.lpstrFilter = filter.c_str();
+            ofn.lpstrFilter = filter;
             ofn.lpstrFile = filename;
             ofn.nMaxFile = MAX_PATH;
             ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
@@ -306,11 +306,11 @@ namespace KenshiLua
 		}
 		catch (const std::exception& e)
 		{
-			logToFilef("ERROR during UI initialization: %s", e.what());
+			logToFileErrorf("ERROR during UI initialization: %s", e.what());
 		}
 		catch (...)
 		{
-			logToFile("ERROR during UI initialization (unknown exception)");
+			logToFileError("ERROR during UI initialization (unknown exception)");
 		}
 	}
 

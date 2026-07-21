@@ -257,7 +257,6 @@ namespace KenshiLua
 		if (mgr)
 		{
 			mgr->setVisible(true);
-			mgr->refreshList();
 		}
 	}
 
