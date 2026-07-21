@@ -30,6 +30,7 @@
                 <Property key="Caption" value="Log Level:"/>
             </Widget>
             <Widget type="ComboBox" skin="Kenshi_ComboBox" position_real="0.45584 0.307692 0.45584 0.153846" name="LogLevel_ComboBox">
+                <Property key="ComboModeDrop" value="true"/>
                 <Property key="FlowDirection" value="TopToBottom"/>
                 <Property key="AddItem" value="Default"/>
                 <Property key="AddItem" value="Warning"/>
