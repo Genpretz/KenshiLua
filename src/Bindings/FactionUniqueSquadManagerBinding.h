@@ -19,7 +19,13 @@ public:
     static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int clearAndReset(lua_State* L);
+    static int initialiseNew(lua_State* L);
     static int chooseRandomSquadToSpawn(lua_State* L);
     static int periodicUpdate(lua_State* L);
+    static int serialise(lua_State* L);
+    static int load(lua_State* L);
+    static int getGUIData(lua_State* L);
+    static int getExistingSquadsFor(lua_State* L);
+    static int spawnNewUniqueSquad(lua_State* L);
 };
 }

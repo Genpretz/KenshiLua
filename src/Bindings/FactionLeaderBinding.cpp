@@ -1,8 +1,13 @@
 #include "pch.h"
-#include <kenshi/FactionLeader.h>
+#include "kenshi\FactionLeader.h"
 #include "FactionLeaderBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -20,14 +25,6 @@ static int FactionLeader_get_faction(lua_State* L)
     return pushObject<Faction>(L, instance->faction, FactionBinding::getMetatableName());
 }
 
-static int FactionLeader_get_biomeTerritory(lua_State* L)
-{
-    FactionLeader* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionLeader is nil");
-    // TODO: Unsupported type for biomeTerritory (lektor<GameData*>)
-    return luaL_error(L, "Unsupported property 'biomeTerritory' (type: lektor<GameData*>)");
-}
-
 static int FactionLeader_get_worstEnemy(lua_State* L)
 {
     FactionLeader* instance = getInstance(L, 1);
@@ -35,26 +32,81 @@ static int FactionLeader_get_worstEnemy(lua_State* L)
     return pushObject<Faction>(L, instance->worstEnemy, FactionBinding::getMetatableName());
 }
 
+static int FactionLeader_get_biomeTerritory(lua_State* L)
+{
+    FactionLeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionLeader is nil");
+    return pushObject<lektor<GameData*>>(L, &instance->biomeTerritory, LektorPtrBinding<GameData*>::metaName);
+}
+
 // --- Setters for FactionLeader ---
 static int FactionLeader_set_faction(lua_State* L)
 {
     FactionLeader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionLeader is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for faction");
-}
-
-static int FactionLeader_set_biomeTerritory(lua_State* L)
-{
-    FactionLeader* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionLeader is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for biomeTerritory");
+    instance->faction = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
 }
 
 static int FactionLeader_set_worstEnemy(lua_State* L)
 {
     FactionLeader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionLeader is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for worstEnemy");
+    instance->worstEnemy = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
+}
+
+static int FactionLeader_set_biomeTerritory(lua_State* L)
+{
+    FactionLeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionLeader is nil");
+    lektor<GameData*>* val = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<GameData*>");
+    instance->biomeTerritory = *val;
+    return 0;
+}
+
+int FactionLeaderBinding::_CONSTRUCTOR(lua_State* L)
+{
+    FactionLeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionLeader is nil");
+
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    FactionLeader* result = instance->_CONSTRUCTOR(f);
+    return pushObject<FactionLeader>(L, result, FactionLeaderBinding::getMetatableName());
+}
+
+int FactionLeaderBinding::setNewLeader(lua_State* L)
+{
+    FactionLeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionLeader is nil");
+
+    Character* _a1 = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    instance->setNewLeader(_a1);
+    return 0;
+}
+
+int FactionLeaderBinding::getEnemyMissionTargetList(lua_State* L)
+{
+    FactionLeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionLeader is nil");
+
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!out) return luaL_error(L, "out is nil");
+    GameData* mission = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    instance->getEnemyMissionTargetList(*out, mission);
+    return 0;
+}
+
+int FactionLeaderBinding::getGUIData(lua_State* L)
+{
+    FactionLeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionLeader is nil");
+
+    DatapanelGUI* _a1 = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int cat = (int)luaL_checkinteger(L, 3);
+    instance->getGUIData(_a1, cat);
+    return 0;
 }
 
 int FactionLeaderBinding::_DESTRUCTOR(lua_State* L)
@@ -65,14 +117,6 @@ int FactionLeaderBinding::_DESTRUCTOR(lua_State* L)
     instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 16: FactionLeader* _CONSTRUCTOR(...) - unsupported arg type
-  line 17: void setNewLeader(...) - unsupported arg type
-  line 18: void getEnemyMissionTargetList(...) - unsupported arg type
-  line 19: void getGUIData(...) - unsupported arg type
-*/
 
 int FactionLeaderBinding::gc(lua_State* L)
 {
@@ -95,6 +139,10 @@ void FactionLeaderBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", FactionLeaderBinding::_CONSTRUCTOR },
+        { "setNewLeader", FactionLeaderBinding::setNewLeader },
+        { "getEnemyMissionTargetList", FactionLeaderBinding::getEnemyMissionTargetList },
+        { "getGUIData", FactionLeaderBinding::getGUIData },
         { "_DESTRUCTOR", FactionLeaderBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -112,19 +160,19 @@ void FactionLeaderBinding::registerBinding(lua_State* L)
     lua_newtable(L); // Create __getters table
     lua_pushcfunction(L, FactionLeader_get_faction);
     lua_setfield(L, -2, "faction");
-    lua_pushcfunction(L, FactionLeader_get_biomeTerritory);
-    lua_setfield(L, -2, "biomeTerritory");
     lua_pushcfunction(L, FactionLeader_get_worstEnemy);
     lua_setfield(L, -2, "worstEnemy");
+    lua_pushcfunction(L, FactionLeader_get_biomeTerritory);
+    lua_setfield(L, -2, "biomeTerritory");
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
     lua_pushcfunction(L, FactionLeader_set_faction);
     lua_setfield(L, -2, "faction");
-    lua_pushcfunction(L, FactionLeader_set_biomeTerritory);
-    lua_setfield(L, -2, "biomeTerritory");
     lua_pushcfunction(L, FactionLeader_set_worstEnemy);
     lua_setfield(L, -2, "worstEnemy");
+    lua_pushcfunction(L, FactionLeader_set_biomeTerritory);
+    lua_setfield(L, -2, "biomeTerritory");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

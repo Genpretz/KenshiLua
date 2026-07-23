@@ -124,7 +124,10 @@ static int FactionRelations_set__factionRelations(lua_State* L)
 {
     FactionRelations* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionRelations is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _factionRelations");
+    auto* val = OgreUnorderedMapBinding<Faction*, FactionRelations::RelationData>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected FactionRelationDataMap object");
+    instance->_factionRelations = *val;
+    return 0;
 }
 
 static int FactionRelations_set_defaultFactionRelation(lua_State* L)

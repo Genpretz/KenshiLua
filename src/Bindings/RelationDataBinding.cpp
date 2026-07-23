@@ -1,11 +1,12 @@
 #include "pch.h"
-#include <kenshi/FactionRelations.h>
+#include "kenshi\FactionRelations.h"
 #include "RelationDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {
-typedef FactionRelations::RelationData RelationData;
 
 static RelationData* getInstance(lua_State* L, int idx)
 {
@@ -77,14 +78,6 @@ static int RelationData_get_percievedStrength(lua_State* L)
     return 1;
 }
 
-static int RelationData_get_stateVariables(lua_State* L)
-{
-    RelationData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RelationData is nil");
-    // TODO: Unsupported type for stateVariables (std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'stateVariables' (type: std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >)");
-}
-
 // --- Setters for RelationData ---
 static int RelationData_set_alliance(lua_State* L)
 {
@@ -150,11 +143,28 @@ static int RelationData_set_percievedStrength(lua_State* L)
     return 0;
 }
 
-static int RelationData_set_stateVariables(lua_State* L)
+int RelationDataBinding::save(lua_State* L)
 {
     RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for stateVariables");
+
+    GameData* factionsList = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    const std::string ID = luaL_checkstring(L, 3);
+    Faction* who = checkObject<Faction>(L, 4, FactionBinding::getMetatableName());
+    instance->save(factionsList, ID, who);
+    return 0;
+}
+
+int RelationDataBinding::load(lua_State* L)
+{
+    RelationData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RelationData is nil");
+
+    GameData* gamestate_faction = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    const std::string ID = luaL_checkstring(L, 3);
+    Faction* who = checkObject<Faction>(L, 4, FactionBinding::getMetatableName());
+    instance->load(gamestate_faction, ID, who);
+    return 0;
 }
 
 int RelationDataBinding::_DESTRUCTOR(lua_State* L)
@@ -170,9 +180,12 @@ int RelationDataBinding::_DESTRUCTOR(lua_State* L)
 Skipped methods needing manual binding:
   line 74: RelationData* _CONSTRUCTOR(...) - overloaded method
   line 76: RelationData* _CONSTRUCTOR(...) - overloaded method
-  line 77: void save(...) - unsupported arg type
-  line 78: void load(...) - unsupported arg type
   line 93: RelationData& operator=(...) - operator
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 90: stateVariables (std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >) - unsupported type
 */
 
 int RelationDataBinding::gc(lua_State* L)
@@ -196,6 +209,8 @@ void RelationDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "save", RelationDataBinding::save },
+        { "load", RelationDataBinding::load },
         { "_DESTRUCTOR", RelationDataBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -227,8 +242,6 @@ void RelationDataBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "trustNegatives");
     lua_pushcfunction(L, RelationData_get_percievedStrength);
     lua_setfield(L, -2, "percievedStrength");
-    lua_pushcfunction(L, RelationData_get_stateVariables);
-    lua_setfield(L, -2, "stateVariables");
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -248,8 +261,6 @@ void RelationDataBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "trustNegatives");
     lua_pushcfunction(L, RelationData_set_percievedStrength);
     lua_setfield(L, -2, "percievedStrength");
-    lua_pushcfunction(L, RelationData_set_stateVariables);
-    lua_setfield(L, -2, "stateVariables");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

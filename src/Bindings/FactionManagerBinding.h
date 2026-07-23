@@ -16,17 +16,24 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
+    static int saveGameState(lua_State* L);
+    static int savePlayerGameState(lua_State* L);
     static int clearAndDestroy(lua_State* L);
     static int activateUnloadedPlatoons(lua_State* L);
+    static int getOrCreateFaction(lua_State* L);
     static int getFactionByName(lua_State* L);
     static int getFactionByStringID(lua_State* L);
     static int getEmptyFaction(lua_State* L);
     static int setupAndLinkAllFactions(lua_State* L);
+    static int getFactionBySquad(lua_State* L);
+    static int getCampaignGUIInfos(lua_State* L);
     static int areAnyHostileCampaignsRunning(lua_State* L);
     static int getNumTempPlatoons(lua_State* L);
     static int updateMT(lua_State* L);
     static int updateThreaded(lua_State* L);
     static int _showDebugPlatoonMarkers(lua_State* L);
+    static int getAllFactions(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };
 }

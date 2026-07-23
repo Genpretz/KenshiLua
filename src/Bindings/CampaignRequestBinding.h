@@ -7,17 +7,16 @@ extern "C" {
 
 namespace KenshiLua
 {
-class RelationDataBinding
+class CampaignRequestBinding
 {
 public:
-    static const char* getMetatableName() { return "KenshiLua.RelationData"; }
+    static const char* getMetatableName() { return "KenshiLua.CampaignRequest"; }
     static void registerBinding(lua_State* L);
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int save(lua_State* L);
-    static int load(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
+    static int _CONSTRUCTOR(lua_State* L);
+    static int tryToChangeTarget(lua_State* L);
 };
 }

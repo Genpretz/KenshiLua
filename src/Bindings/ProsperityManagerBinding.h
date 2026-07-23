@@ -17,7 +17,13 @@ public:
     static int tostring(lua_State* L);
 
     static int _CONSTRUCTOR(lua_State* L);
+    static int setup(lua_State* L);
+    static int load(lua_State* L);
+    static int save(lua_State* L);
     static int getProsperityMultiplier(lua_State* L);
+    static int getGUIData(lua_State* L);
     static int update(lua_State* L);
+    static int notifySquadDefeated(lua_State* L);
+    static int notifySpecialNPCDead(lua_State* L);
 };
 }

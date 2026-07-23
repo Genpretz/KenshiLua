@@ -1,222 +1,268 @@
 #include "pch.h"
-#include "Bindings/GameDataBinding.h"
-
 #include "kenshi\Faction.h"
 #include "FactionManagerBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
 #include "Bindings/PlatoonBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 
 namespace KenshiLua
 {
 
-static FactionManager* getB(lua_State* L, int idx)
+static FactionManager* getInstance(lua_State* L, int idx)
 {
     return checkObject<FactionManager>(L, idx, FactionManagerBinding::getMetatableName());
 }
 
 // --- Getters for FactionManager ---
-static int FactionManager_get_participants(lua_State* L)
+static int FactionManager_get_addListMuto(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
-    lua_createtable(L, b->participants.size(), 0);
-    for (uint32_t i = 0; i < b->participants.size(); ++i) {
-        pushObject<Faction>(L, b->participants[i], FactionBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+    lua_pushlightuserdata(L, (void*)&instance->addListMuto);
     return 1;
 }
 
-static int FactionManager_get_addListMuto(lua_State* L)
+static int FactionManager_get_participants(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
-    lua_pushnil(L);
-    return 1;
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+    return pushObject<lektor<Faction*>>(L, &instance->participants, LektorPtrBinding<Faction*>::metaName);
 }
 
 static int FactionManager_get_toAddList(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
-    lua_createtable(L, b->toAddList.size(), 0);
-    for (uint32_t i = 0; i < b->toAddList.size(); ++i) {
-        pushObject<Platoon>(L, b->toAddList[i], PlatoonBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+    return pushObject<lektor<Platoon*>>(L, &instance->toAddList, LektorPtrBinding<Platoon*>::metaName);
 }
 
 // --- Setters for FactionManager ---
-static int FactionManager_set_participants(lua_State* L)
-{
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for participants");
-}
-
 static int FactionManager_set_addListMuto(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for addListMuto");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+    return luaL_error(L, "addListMuto (boost::shared_mutex) is read-only");
+}
+
+static int FactionManager_set_participants(lua_State* L)
+{
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+    lektor<Faction*>* val = LektorPtrBinding<Faction*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<Faction*>");
+    instance->participants = *val;
+    return 0;
 }
 
 static int FactionManager_set_toAddList(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for toAddList");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<Platoon*>");
+    instance->toAddList = *val;
+    return 0;
+}
+
+int FactionManagerBinding::_CONSTRUCTOR(lua_State* L)
+{
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+
+    FactionManager* result = instance->_CONSTRUCTOR();
+    return pushObject<FactionManager>(L, result, FactionManagerBinding::getMetatableName());
+}
+
+int FactionManagerBinding::saveGameState(lua_State* L)
+{
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    instance->saveGameState(container);
+    return 0;
+}
+
+int FactionManagerBinding::savePlayerGameState(lua_State* L)
+{
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    instance->savePlayerGameState(container);
+    return 0;
 }
 
 int FactionManagerBinding::clearAndDestroy(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
-    b->clearAndDestroy();
+    instance->clearAndDestroy();
     return 0;
 }
 
 int FactionManagerBinding::activateUnloadedPlatoons(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
-    b->activateUnloadedPlatoons();
+    instance->activateUnloadedPlatoons();
     return 0;
+}
+
+int FactionManagerBinding::getOrCreateFaction(lua_State* L)
+{
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+
+    if (lua_isstring(L, 2))
+    {
+        std::string id = luaL_checkstring(L, 2);
+        std::string name = luaL_checkstring(L, 3);
+        Faction* result = instance->getOrCreateFaction(id, name);
+        return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
+    }
+    else
+    {
+        GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+        Faction* result = instance->getOrCreateFaction(data);
+        return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
+    }
 }
 
 int FactionManagerBinding::getFactionByName(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
-    std::string name = luaL_checkstring(L, 2);
-    Faction* result = b->getFactionByName(name);
+    const std::string name = luaL_checkstring(L, 2);
+    Faction* result = instance->getFactionByName(name);
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
 }
 
 int FactionManagerBinding::getFactionByStringID(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
-    std::string sid = luaL_checkstring(L, 2);
-    Faction* result = b->getFactionByStringID(sid);
+    const std::string sid = luaL_checkstring(L, 2);
+    Faction* result = instance->getFactionByStringID(sid);
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
 }
 
 int FactionManagerBinding::getEmptyFaction(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
-    Faction* result = b->getEmptyFaction();
+    Faction* result = instance->getEmptyFaction();
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
 }
 
 int FactionManagerBinding::setupAndLinkAllFactions(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
-    b->setupAndLinkAllFactions();
+    instance->setupAndLinkAllFactions();
+    return 0;
+}
+
+int FactionManagerBinding::getFactionBySquad(lua_State* L)
+{
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+
+    GameData* squadtemplate = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Faction* result = instance->getFactionBySquad(squadtemplate);
+    return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
+}
+
+int FactionManagerBinding::getCampaignGUIInfos(lua_State* L)
+{
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+
+    DatapanelGUI* pan = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int cat = (int)luaL_checkinteger(L, 3);
+    bool playeronly = lua_toboolean(L, 4) != 0;
+    instance->getCampaignGUIInfos(pan, cat, playeronly);
     return 0;
 }
 
 int FactionManagerBinding::areAnyHostileCampaignsRunning(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
-    bool result = b->areAnyHostileCampaignsRunning();
+    bool result = instance->areAnyHostileCampaignsRunning();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int FactionManagerBinding::getNumTempPlatoons(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
-    int result = b->getNumTempPlatoons();
+    int result = instance->getNumTempPlatoons();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int FactionManagerBinding::updateMT(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
     float time = (float)luaL_checknumber(L, 2);
-    b->updateMT(time);
+    instance->updateMT(time);
     return 0;
 }
 
 int FactionManagerBinding::updateThreaded(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
     float time = (float)luaL_checknumber(L, 2);
-    b->updateThreaded(time);
+    instance->updateThreaded(time);
     return 0;
 }
 
 int FactionManagerBinding::_showDebugPlatoonMarkers(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->_showDebugPlatoonMarkers(on);
+    instance->_showDebugPlatoonMarkers(on);
     return 0;
+}
+
+int FactionManagerBinding::getAllFactions(lua_State* L)
+{
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
+
+    const lektor<Faction*>* result = instance->getAllFactions();
+    if (!result) { lua_pushnil(L); return 1; }
+    return pushObject<lektor<Faction*>>(L, const_cast<lektor<Faction*>*>(result), LektorPtrBinding<Faction*>::metaName);
 }
 
 int FactionManagerBinding::_DESTRUCTOR(lua_State* L)
 {
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
+    FactionManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionManager is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
-
-static int FactionManager_getFactionBySquad(lua_State* L)
-{
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
-    GameData* squad = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    Faction* result = b->getFactionBySquad(squad);
-    return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
-}
-
-static int FactionManager_getAllFactions(lua_State* L)
-{
-    FactionManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FactionManager is nil");
-    const lektor<Faction*>* result = b->getAllFactions();
-    if (!result) { lua_pushnil(L); return 1; }
-    lua_createtable(L, result->size(), 0);
-    for (uint32_t i = 0; i < result->size(); ++i) {
-        pushObject<Faction>(L, result->operator[](i), FactionBinding::getMetatableName());
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 175: FactionManager* _CONSTRUCTOR(...) - unsupported return type
-  line 176: void saveGameState(...) - unsupported arg type
-  line 177: void savePlayerGameState(...) - unsupported arg type
-  line 181: Faction* getOrCreateFaction(...) - overloaded method
-  line 182: Faction* getOrCreateFaction(...) - overloaded method
-  line 188: void getCampaignGUIInfos(...) - unsupported arg type
-*/
 
 int FactionManagerBinding::gc(lua_State* L)
 {
@@ -239,20 +285,25 @@ void FactionManagerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", FactionManagerBinding::_CONSTRUCTOR },
+        { "saveGameState", FactionManagerBinding::saveGameState },
+        { "savePlayerGameState", FactionManagerBinding::savePlayerGameState },
         { "clearAndDestroy", FactionManagerBinding::clearAndDestroy },
         { "activateUnloadedPlatoons", FactionManagerBinding::activateUnloadedPlatoons },
+        { "getOrCreateFaction", FactionManagerBinding::getOrCreateFaction },
         { "getFactionByName", FactionManagerBinding::getFactionByName },
         { "getFactionByStringID", FactionManagerBinding::getFactionByStringID },
         { "getEmptyFaction", FactionManagerBinding::getEmptyFaction },
         { "setupAndLinkAllFactions", FactionManagerBinding::setupAndLinkAllFactions },
+        { "getFactionBySquad", FactionManagerBinding::getFactionBySquad },
+        { "getCampaignGUIInfos", FactionManagerBinding::getCampaignGUIInfos },
         { "areAnyHostileCampaignsRunning", FactionManagerBinding::areAnyHostileCampaignsRunning },
         { "getNumTempPlatoons", FactionManagerBinding::getNumTempPlatoons },
         { "updateMT", FactionManagerBinding::updateMT },
         { "updateThreaded", FactionManagerBinding::updateThreaded },
         { "_showDebugPlatoonMarkers", FactionManagerBinding::_showDebugPlatoonMarkers },
+        { "getAllFactions", FactionManagerBinding::getAllFactions },
         { "_DESTRUCTOR", FactionManagerBinding::_DESTRUCTOR },
-        { "getFactionBySquad", FactionManager_getFactionBySquad },
-        { "getAllFactions", FactionManager_getAllFactions },
         { 0, 0 }
     };
 
@@ -267,19 +318,19 @@ void FactionManagerBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FactionManagerBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FactionManager_get_participants);
-    lua_setfield(L, -2, "participants");
     lua_pushcfunction(L, FactionManager_get_addListMuto);
     lua_setfield(L, -2, "addListMuto");
+    lua_pushcfunction(L, FactionManager_get_participants);
+    lua_setfield(L, -2, "participants");
     lua_pushcfunction(L, FactionManager_get_toAddList);
     lua_setfield(L, -2, "toAddList");
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FactionManager_set_participants);
-    lua_setfield(L, -2, "participants");
     lua_pushcfunction(L, FactionManager_set_addListMuto);
     lua_setfield(L, -2, "addListMuto");
+    lua_pushcfunction(L, FactionManager_set_participants);
+    lua_setfield(L, -2, "participants");
     lua_pushcfunction(L, FactionManager_set_toAddList);
     lua_setfield(L, -2, "toAddList");
     lua_setfield(L, -2, "__setters"); // Bind to metatable

@@ -2,6 +2,8 @@
 #include "kenshi\FactionUniqueSquadManager.h"
 #include "ProsperityManagerBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {
@@ -51,8 +53,37 @@ int ProsperityManagerBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "ProsperityManager is nil");
 
     ProsperityManager* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ProsperityManager>(L, result, ProsperityManagerBinding::getMetatableName());
+}
+
+int ProsperityManagerBinding::setup(lua_State* L)
+{
+    ProsperityManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProsperityManager is nil");
+
+    GameData* faction = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->setup(faction);
+    return 0;
+}
+
+int ProsperityManagerBinding::load(lua_State* L)
+{
+    ProsperityManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProsperityManager is nil");
+
+    GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->load(state);
+    return 0;
+}
+
+int ProsperityManagerBinding::save(lua_State* L)
+{
+    ProsperityManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProsperityManager is nil");
+
+    GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->save(state);
+    return 0;
 }
 
 int ProsperityManagerBinding::getProsperityMultiplier(lua_State* L)
@@ -65,6 +96,17 @@ int ProsperityManagerBinding::getProsperityMultiplier(lua_State* L)
     return 1;
 }
 
+int ProsperityManagerBinding::getGUIData(lua_State* L)
+{
+    ProsperityManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProsperityManager is nil");
+
+    DatapanelGUI* panel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int cat = (int)luaL_checkinteger(L, 3);
+    instance->getGUIData(panel, cat);
+    return 0;
+}
+
 int ProsperityManagerBinding::update(lua_State* L)
 {
     ProsperityManager* instance = getInstance(L, 1);
@@ -75,15 +117,25 @@ int ProsperityManagerBinding::update(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 19: void setup(...) - unsupported arg type
-  line 20: void load(...) - unsupported arg type
-  line 21: void save(...) - unsupported arg type
-  line 23: void getGUIData(...) - unsupported arg type
-  line 25: void notifySquadDefeated(...) - unsupported arg type
-  line 26: void notifySpecialNPCDead(...) - unsupported arg type
-*/
+int ProsperityManagerBinding::notifySquadDefeated(lua_State* L)
+{
+    ProsperityManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProsperityManager is nil");
+
+    GameData* squadTemplate = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->notifySquadDefeated(squadTemplate);
+    return 0;
+}
+
+int ProsperityManagerBinding::notifySpecialNPCDead(lua_State* L)
+{
+    ProsperityManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProsperityManager is nil");
+
+    GameData* npc = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->notifySpecialNPCDead(npc);
+    return 0;
+}
 
 int ProsperityManagerBinding::gc(lua_State* L)
 {
@@ -107,8 +159,14 @@ void ProsperityManagerBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", ProsperityManagerBinding::_CONSTRUCTOR },
+        { "setup", ProsperityManagerBinding::setup },
+        { "load", ProsperityManagerBinding::load },
+        { "save", ProsperityManagerBinding::save },
         { "getProsperityMultiplier", ProsperityManagerBinding::getProsperityMultiplier },
+        { "getGUIData", ProsperityManagerBinding::getGUIData },
         { "update", ProsperityManagerBinding::update },
+        { "notifySquadDefeated", ProsperityManagerBinding::notifySquadDefeated },
+        { "notifySpecialNPCDead", ProsperityManagerBinding::notifySpecialNPCDead },
         { 0, 0 }
     };
 

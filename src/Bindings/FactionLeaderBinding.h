@@ -16,6 +16,10 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
+    static int setNewLeader(lua_State* L);
+    static int getEnemyMissionTargetList(lua_State* L);
+    static int getGUIData(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };
 }

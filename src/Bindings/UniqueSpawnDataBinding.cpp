@@ -2,9 +2,13 @@
 #include "kenshi\FactionUniqueSquadManager.h"
 #include "UniqueSpawnDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
 
 namespace KenshiLua
 {
+
 typedef FactionUniqueSquadManager::UniqueSpawnData UniqueSpawnData;
 
 static UniqueSpawnData* getInstance(lua_State* L, int idx)
@@ -36,7 +40,22 @@ static int UniqueSpawnData_get_respawnTimer(lua_State* L)
     return 1;
 }
 
+static int UniqueSpawnData_get_existingSquadsList(lua_State* L)
+{
+    UniqueSpawnData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UniqueSpawnData is nil");
+    return pushObject<lektor<hand>>(L, &instance->existingSquadsList, LektorValueReadOnlyBinding<hand>::metaName);
+}
+
 // --- Setters for UniqueSpawnData ---
+static int UniqueSpawnData_set_squadTemplate(lua_State* L)
+{
+    UniqueSpawnData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UniqueSpawnData is nil");
+    instance->squadTemplate = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
+}
+
 static int UniqueSpawnData_set_desiredNumberToHave(lua_State* L)
 {
     UniqueSpawnData* instance = getInstance(L, 1);
@@ -51,6 +70,27 @@ static int UniqueSpawnData_set_respawnTimer(lua_State* L)
     if (!instance) return luaL_error(L, "UniqueSpawnData is nil");
     instance->respawnTimer = (float)luaL_checknumber(L, 2);
     return 0;
+}
+
+static int UniqueSpawnData_set_existingSquadsList(lua_State* L)
+{
+    UniqueSpawnData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UniqueSpawnData is nil");
+    lektor<hand>* val = checkObject<lektor<hand>>(L, 2, LektorValueReadOnlyBinding<hand>::metaName);
+    if (!val) return luaL_error(L, "Expected lektor<hand> object");
+    instance->existingSquadsList = *val;
+    return 0;
+}
+
+int UniqueSpawnDataBinding::_CONSTRUCTOR(lua_State* L)
+{
+    UniqueSpawnData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UniqueSpawnData is nil");
+
+    GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    int num = (int)luaL_checkinteger(L, 3);
+    UniqueSpawnData* result = instance->_CONSTRUCTOR(d, num);
+    return pushObject<UniqueSpawnData>(L, result, UniqueSpawnDataBinding::getMetatableName());
 }
 
 int UniqueSpawnDataBinding::currentNumber(lua_State* L)
@@ -71,16 +111,6 @@ int UniqueSpawnDataBinding::_DESTRUCTOR(lua_State* L)
     instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 55: UniqueSpawnData* _CONSTRUCTOR(...) - unsupported arg type
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 60: existingSquadsList (lektor<hand>) - unsupported type
-*/
 
 int UniqueSpawnDataBinding::gc(lua_State* L)
 {
@@ -103,6 +133,7 @@ void UniqueSpawnDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", UniqueSpawnDataBinding::_CONSTRUCTOR },
         { "currentNumber", UniqueSpawnDataBinding::currentNumber },
         { "_DESTRUCTOR", UniqueSpawnDataBinding::_DESTRUCTOR },
         { 0, 0 }
@@ -125,13 +156,19 @@ void UniqueSpawnDataBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "desiredNumberToHave");
     lua_pushcfunction(L, UniqueSpawnData_get_respawnTimer);
     lua_setfield(L, -2, "respawnTimer");
+    lua_pushcfunction(L, UniqueSpawnData_get_existingSquadsList);
+    lua_setfield(L, -2, "existingSquadsList");
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    lua_pushcfunction(L, UniqueSpawnData_set_squadTemplate);
+    lua_setfield(L, -2, "squadTemplate");
     lua_pushcfunction(L, UniqueSpawnData_set_desiredNumberToHave);
     lua_setfield(L, -2, "desiredNumberToHave");
     lua_pushcfunction(L, UniqueSpawnData_set_respawnTimer);
     lua_setfield(L, -2, "respawnTimer");
+    lua_pushcfunction(L, UniqueSpawnData_set_existingSquadsList);
+    lua_setfield(L, -2, "existingSquadsList");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
