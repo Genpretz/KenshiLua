@@ -28,9 +28,9 @@ local function updateStatsLabels()
     
     local stats = inspectingChar:getStats()
     if stats then
-        if labelStr then labelStr:setCaption("Strength: " .. string.format("%.1f", stats:getStrength())) end
-        if labelDex then labelDex:setCaption("Dexterity: " .. string.format("%.1f", stats:getDexterity())) end
-        if labelTough then labelTough:setCaption("Toughness: " .. string.format("%.1f", stats:getToughness())) end
+        if labelStr then labelStr:setCaption("Strength: " .. string.format("%.1f", stats:strengthBase())) end
+        if labelDex then labelDex:setCaption("Dexterity: " .. string.format("%.1f", stats:dexterityBase())) end
+        if labelTough then labelTough:setCaption("Toughness: " .. string.format("%.1f", stats:toughness())) end
     else
         if labelStr then labelStr:setCaption("Strength: N/A") end
         if labelDex then labelDex:setCaption("Dexterity: N/A") end
