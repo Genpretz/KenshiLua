@@ -2,6 +2,10 @@
 
 An example mod demonstrating how to use KenshiLua to run scripts triggered by dialogue choices in Kenshi's Forgotten Construction Set (FCS).
 
+## Location & Gameplay
+
+The mod places a character in the Bar inside the town known as **The Hub**. She offers to play dice with the player, allowing you to test the scripting features.
+
 ## How it Works
 
 ### Mod File Setup

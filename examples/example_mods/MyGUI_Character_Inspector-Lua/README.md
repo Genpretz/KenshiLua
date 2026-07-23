@@ -10,7 +10,7 @@ This mod listens for character selection events and overlays a custom status pan
 - **Interactive Actions**:
   - **Heal Completely**: Invokes `inspectingChar:healCompletely()` to instantly heal the character.
   - **Set Strength 100**: Direct mutation of the character's base stats, setting their Strength to `100.0`.
-- **Dynamic Visibility**: The inspector window automatically opens when you select a character and closes when you unselect them.
+- **Dynamic Visibility**: The inspector window automatically opens when you select a character. Since there isn't a way to have 0 characters selected, the mod will only close the window when another character is selected and the 2nd character's window opens instead.
 
 ## Technical Details
 
