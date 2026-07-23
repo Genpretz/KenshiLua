@@ -7,7 +7,6 @@
         <Widget type="TextBox" skin="Kenshi_TextboxPaintedText" position_real="0.026643 0.0101266 0.133215 0.0886076" align="Left Top" name="LogViewer_FilterLabel">
             <Property key="Caption" value="Filter:"/>
             <Property key="FontName" value="Default"/>
-            <Property key="TextColour" value="0.35 0.31 0.28"/>
             <Property key="TextAlign" value="Left VCenter"/>
         </Widget>
         <Widget type="EditBox" skin="Kenshi_EditBox" position_real="0.124334 0.0101266 0.614565 0.0886076" align="Left Top" name="LogViewer_FilterBox">
@@ -24,7 +23,6 @@
             <Property key="VisibleVScroll" value="true"/>
             <Property key="WordWrap" value="false"/>
             <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
-            <Property key="TextColour" value="0.08 0.03 0.02"/>
             <Property key="VisibleHScroll" value="true"/>
             <Property key="Pointer" value="beam"/>
         </Widget>

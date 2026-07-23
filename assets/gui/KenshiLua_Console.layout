@@ -7,7 +7,6 @@
         <Widget type="TextBox" skin="Kenshi_TextBoxEmptySkin" position_real="0.019544 0.0266667 0.651466 0.0666667" align="Left Top" name="Console_ContextLabel">
             <Property key="Caption" value="Executing against: global Lua state"/>
             <Property key="FontName" value="Default"/>
-            <Property key="TextColour" value="0.35 0.31 0.28"/>
             <Property key="TextAlign" value="Left VCenter"/>
         </Widget>
         <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.749186 0.0133333 0.228013 0.0933333" align="Right Top" name="Console_ClearButton">
@@ -21,13 +20,11 @@
             <Property key="VisibleVScroll" value="true"/>
             <Property key="WordWrap" value="true"/>
             <Property key="FontName" value="Kenshi_StandardFont_Small"/>
-            <Property key="TextColour" value="0.08 0.03 0.02"/>
             <Property key="Pointer" value="beam"/>
         </Widget>
         <Widget type="TextBox" skin="Kenshi_TextboxPaintedText_Large" position_real="0.0325733 0.853333 0.0472313 0.08" align="Left Bottom" name="Console_PromptLabel">
             <Property key="Caption" value="&gt;"/>
             <Property key="FontName" value="Default"/>
-            <Property key="TextColour" value="0.4 0.38 0.356"/>
             <Property key="TextAlign" value="Center"/>
         </Widget>
         <Widget type="EditBox" skin="Kenshi_EditBox" position_real="0.0814332 0.84 0.714984 0.109333" align="HStretch Bottom" name="Console_InputBox">
