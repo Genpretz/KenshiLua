@@ -162,6 +162,28 @@ namespace KenshiLua
         lua_pop(L, 1);
     }
 
+    // Build a Vector2-like Lua table {x=,y=} from any object
+    // exposing .x/.y (Ogre::Vector2 fits).
+    template <class V2>
+    inline void pushVector2(lua_State* L, const V2& v)
+    {
+        lua_createtable(L, 0, 2);
+        lua_pushnumber(L, v.x); lua_setfield(L, -2, "x");
+        lua_pushnumber(L, v.y); lua_setfield(L, -2, "y");
+    }
+
+    // Read a {x,y} table at idx. Missing fields default to 0. Returns true
+    // if any of the two fields was actually present.
+    template <class V2>
+    inline bool readVector2(lua_State* L, int idx, V2& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        bool any = false;
+        lua_getfield(L, idx, "x"); if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "y"); if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        return any;
+    }
+
     // Build a Vector3-like Lua table {x=,y=,z=} from any object
     // exposing .x/.y/.z (Ogre::Vector3 fits).
     template <class V3>
