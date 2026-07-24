@@ -1,19 +1,44 @@
 #include "pch.h"
 #include "kenshi\MedicalSystem.h"
 #include "MedicalSystemBinding.h"
-#include "RobotLimbsBinding.h"
-#include "kenshi/Character.h"
-#include "CharacterBinding.h"
-#include "CharStatsBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/ArmourBinding.h"
 #include "Bindings/CharStatsBinding.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/CombatTechniqueDataBinding.h"
+#include "Bindings/DamagesBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/HealthPartStatusBinding.h"
+#include "Bindings/ItemBinding.h"
 #include "Bindings/RobotLimbsBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
+#include "Bindings/Util/TimeOfDayBinding.h"
+#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Templates/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
 
-static MedicalSystem* getB(lua_State* L, int idx)
+template <>
+struct LuaCodec<MedicalSystem::HealthPartStatus>
+{
+    static int push(lua_State* L, const MedicalSystem::HealthPartStatus& val, const char* metaName)
+    {
+        return pushObject<MedicalSystem::HealthPartStatus>(L, const_cast<MedicalSystem::HealthPartStatus*>(&val), metaName ? metaName : HealthPartStatusBinding::getMetatableName());
+    }
+    static MedicalSystem::HealthPartStatus read(lua_State* L, int idx, const char* metaName)
+    {
+        MedicalSystem::HealthPartStatus* obj = checkObject<MedicalSystem::HealthPartStatus>(L, idx, metaName ? metaName : HealthPartStatusBinding::getMetatableName());
+        return obj ? *obj : MedicalSystem::HealthPartStatus();
+    }
+};
+
+typedef OgreUnorderedMapBinding<GameData*, MedicalSystem::HealthPartStatus> HealthStatusMapBinding;
+
+static MedicalSystem* getInstance(lua_State* L, int idx)
 {
     return checkObject<MedicalSystem>(L, idx, MedicalSystemBinding::getMetatableName());
 }
@@ -21,1397 +46,1195 @@ static MedicalSystem* getB(lua_State* L, int idx)
 // --- Getters for MedicalSystem ---
 static int MedicalSystem_get_status(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    // TODO: Unsupported type for status (ogre_unordered_map<GameData*, MedicalSystem::HealthPartStatus>::type)
-    return luaL_error(L, "Unsupported property 'status' (type: ogre_unordered_map<GameData*, MedicalSystem::HealthPartStatus>::type)");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<ogre_unordered_map<GameData*, MedicalSystem::HealthPartStatus>::type>(L, &instance->status, HealthStatusMapBinding::getMetatableName());
 }
 
 static int MedicalSystem_get_armourList(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    // TODO: Unsupported type for armourList (lektor<Armour*>)
-    return luaL_error(L, "Unsupported property 'armourList' (type: lektor<Armour*>)");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<lektor<Armour*>>(L, &instance->armourList, LektorPtrBinding<Armour*>::getMetatableName());
 }
 
 static int MedicalSystem_get_hunger(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->hunger);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->hunger);
     return 1;
 }
 
 static int MedicalSystem_get_fed(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->fed);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->fed);
     return 1;
 }
 
 static int MedicalSystem_get_lastPeriodicUpdate(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    // TODO: Unsupported type for lastPeriodicUpdate (TimeOfDay)
-    return luaL_error(L, "Unsupported property 'lastPeriodicUpdate' (type: TimeOfDay)");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<TimeOfDay>(L, &instance->lastPeriodicUpdate, TimeOfDayBinding::getMetatableName());
 }
 
 static int MedicalSystem_get_blood(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->blood);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->blood);
     return 1;
 }
 
 static int MedicalSystem_get_extraBloodLossFromBodyparts(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->extraBloodLossFromBodyparts);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->extraBloodLossFromBodyparts);
     return 1;
 }
 
 static int MedicalSystem_get_currentBleedRate(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->currentBleedRate);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->currentBleedRate);
     return 1;
 }
 
 static int MedicalSystem_get_leftLeg(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushinteger(L, (lua_Integer)b->leftLeg);
-    return 1;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<MedicalSystem::HealthPartStatus>(L, instance->leftLeg, HealthPartStatusBinding::getMetatableName());
 }
 
 static int MedicalSystem_get_rightLeg(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushinteger(L, (lua_Integer)b->rightLeg);
-    return 1;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<MedicalSystem::HealthPartStatus>(L, instance->rightLeg, HealthPartStatusBinding::getMetatableName());
 }
 
 static int MedicalSystem_get_leftArm(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushinteger(L, (lua_Integer)b->leftArm);
-    return 1;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<MedicalSystem::HealthPartStatus>(L, instance->leftArm, HealthPartStatusBinding::getMetatableName());
 }
 
 static int MedicalSystem_get_rightArm(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushinteger(L, (lua_Integer)b->rightArm);
-    return 1;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<MedicalSystem::HealthPartStatus>(L, instance->rightArm, HealthPartStatusBinding::getMetatableName());
 }
 
 static int MedicalSystem_get_knockoutTimer(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->knockoutTimer);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->knockoutTimer);
     return 1;
 }
 
 static int MedicalSystem_get_worstDamage(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->worstDamage);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->worstDamage);
     return 1;
 }
 
 static int MedicalSystem_get_needsFirstAidScoreTotal_robot(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->needsFirstAidScoreTotal_robot);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->needsFirstAidScoreTotal_robot);
     return 1;
 }
 
 static int MedicalSystem_get_needsFirstAidScoreTotal_fleshy(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->needsFirstAidScoreTotal_fleshy);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->needsFirstAidScoreTotal_fleshy);
     return 1;
 }
 
 static int MedicalSystem_get_restedState(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->restedState);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->restedState);
     return 1;
 }
 
 static int MedicalSystem_get_stealthHinderance(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->stealthHinderance);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->stealthHinderance);
     return 1;
 }
 
 static int MedicalSystem_get_partBestArm(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->partBestArm);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->partBestArm);
     return 1;
 }
 
 static int MedicalSystem_get_partHead(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->partHead);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->partHead);
     return 1;
 }
 
 static int MedicalSystem_get_partWorstTorso(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->partWorstTorso);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->partWorstTorso);
     return 1;
 }
 
 static int MedicalSystem_get_dazedOrAlert(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->dazedOrAlert);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->dazedOrAlert);
     return 1;
 }
 
 static int MedicalSystem_get_robotLimbs(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return pushObject<RobotLimbs>(L, b->robotLimbs, RobotLimbsBinding::getMetatableName());
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<RobotLimbs>(L, instance->robotLimbs, RobotLimbsBinding::getMetatableName());
 }
 
 static int MedicalSystem_get_bloodynessChanged(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushboolean(L, b->bloodynessChanged ? 1 : 0);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushboolean(L, instance->bloodynessChanged ? 1 : 0);
     return 1;
 }
 
 static int MedicalSystem_get_bloodynessCleanedUp(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushboolean(L, b->bloodynessCleanedUp ? 1 : 0);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushboolean(L, instance->bloodynessCleanedUp ? 1 : 0);
     return 1;
-}
-
-static int MedicalSystem_get_animation(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    // TODO: Unsupported type for animation (AnimationClass*)
-    return luaL_error(L, "Unsupported property 'animation' (type: AnimationClass*)");
 }
 
 static int MedicalSystem_get_me(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return pushObject<Character>(L, b->me, CharacterBinding::getMetatableName());
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<Character>(L, instance->me, CharacterBinding::getMetatableName());
 }
 
 static int MedicalSystem_get_weatherGUIfeedback(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    // TODO: Unsupported type for weatherGUIfeedback (StringPair)
-    return luaL_error(L, "Unsupported property 'weatherGUIfeedback' (type: StringPair)");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<StringPair>(L, &instance->weatherGUIfeedback, StringPairBinding::getMetatableName());
 }
 
 static int MedicalSystem_get_currentWeatherAffect(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushinteger(L, (lua_Integer)b->currentWeatherAffect);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushinteger(L, (lua_Integer)instance->currentWeatherAffect);
     return 1;
 }
 
 static int MedicalSystem_get_currentWeatherAffectStrength(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->currentWeatherAffectStrength);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->currentWeatherAffectStrength);
     return 1;
 }
 
 static int MedicalSystem_get_lastHungerKO(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    // TODO: Unsupported type for lastHungerKO (TimeOfDay)
-    return luaL_error(L, "Unsupported property 'lastHungerKO' (type: TimeOfDay)");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<TimeOfDay>(L, &instance->lastHungerKO, TimeOfDayBinding::getMetatableName());
 }
 
 static int MedicalSystem_get_nextKOTime(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushnumber(L, b->nextKOTime);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushnumber(L, instance->nextKOTime);
     return 1;
 }
 
 static int MedicalSystem_get__eatenDeathDelay(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushinteger(L, b->_eatenDeathDelay);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushinteger(L, instance->_eatenDeathDelay);
     return 1;
 }
 
 static int MedicalSystem_get_crippled(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushboolean(L, b->crippled ? 1 : 0);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushboolean(L, instance->crippled ? 1 : 0);
     return 1;
 }
 
 static int MedicalSystem_get_unconcious(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushboolean(L, b->unconcious ? 1 : 0);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushboolean(L, instance->unconcious ? 1 : 0);
     return 1;
 }
 
 static int MedicalSystem_get_sub50KO(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushboolean(L, b->sub50KO ? 1 : 0);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushboolean(L, instance->sub50KO ? 1 : 0);
     return 1;
 }
 
 static int MedicalSystem_get_bloodlossTrauma(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushboolean(L, b->bloodlossTrauma ? 1 : 0);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushboolean(L, instance->bloodlossTrauma ? 1 : 0);
     return 1;
 }
 
 static int MedicalSystem_get_dead(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushboolean(L, b->dead ? 1 : 0);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushboolean(L, instance->dead ? 1 : 0);
     return 1;
 }
 
 static int MedicalSystem_get_rightArmOk(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushboolean(L, b->rightArmOk ? 1 : 0);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushboolean(L, instance->rightArmOk ? 1 : 0);
     return 1;
 }
 
 static int MedicalSystem_get_leftArmOk(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    lua_pushboolean(L, b->leftArmOk ? 1 : 0);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    lua_pushboolean(L, instance->leftArmOk ? 1 : 0);
     return 1;
 }
 
 static int MedicalSystem_get_lastBloodPosition(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    pushVector3(L, b->lastBloodPosition);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    pushVector3(L, instance->lastBloodPosition);
     return 1;
-}
-
-static int MedicalSystem_get_wounds(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    // TODO: Unsupported type for wounds (Ogre::FastArray<Wound*>)
-    return luaL_error(L, "Unsupported property 'wounds' (type: Ogre::FastArray<Wound*>)");
 }
 
 static int MedicalSystem_get_anatomy(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    // TODO: Unsupported type for anatomy (lektor<MedicalSystem::HealthPartStatus*>)
-    return luaL_error(L, "Unsupported property 'anatomy' (type: lektor<MedicalSystem::HealthPartStatus*>)");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<lektor<MedicalSystem::HealthPartStatus*>>(L, &instance->anatomy, LektorPtrBinding<MedicalSystem::HealthPartStatus*>::getMetatableName());
 }
 
 static int MedicalSystem_get_stats(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return pushObject<CharStats>(L, b->stats, CharStatsBinding::getMetatableName());
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<CharStats>(L, instance->stats, CharStatsBinding::getMetatableName());
 }
 
 // --- Setters for MedicalSystem ---
 static int MedicalSystem_set_status(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for status");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    auto* val = HealthStatusMapBinding::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'status' must be ogre_unordered_map<GameData*, HealthPartStatus>");
+    instance->status = *val;
+    return 0;
 }
 
 static int MedicalSystem_set_armourList(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for armourList");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    auto* val = LektorPtrBinding<Armour*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'armourList' must be lektor<Armour*>");
+    instance->armourList = *val;
+    return 0;
 }
 
 static int MedicalSystem_set_hunger(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->hunger = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->hunger = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_fed(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->fed = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->fed = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_lastPeriodicUpdate(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for lastPeriodicUpdate");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    TimeOfDay* val = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
+    if (val) instance->lastPeriodicUpdate = *val;
+    return 0;
 }
 
 static int MedicalSystem_set_blood(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->blood = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->blood = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_extraBloodLossFromBodyparts(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->extraBloodLossFromBodyparts = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->extraBloodLossFromBodyparts = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_currentBleedRate(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->currentBleedRate = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->currentBleedRate = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_leftLeg(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for leftLeg");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->leftLeg = lua_isnoneornil(L, 2) ? nullptr : checkObject<MedicalSystem::HealthPartStatus>(L, 2, HealthPartStatusBinding::getMetatableName());
+    return 0;
 }
 
 static int MedicalSystem_set_rightLeg(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for rightLeg");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->rightLeg = lua_isnoneornil(L, 2) ? nullptr : checkObject<MedicalSystem::HealthPartStatus>(L, 2, HealthPartStatusBinding::getMetatableName());
+    return 0;
 }
 
 static int MedicalSystem_set_leftArm(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for leftArm");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->leftArm = lua_isnoneornil(L, 2) ? nullptr : checkObject<MedicalSystem::HealthPartStatus>(L, 2, HealthPartStatusBinding::getMetatableName());
+    return 0;
 }
 
 static int MedicalSystem_set_rightArm(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for rightArm");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->rightArm = lua_isnoneornil(L, 2) ? nullptr : checkObject<MedicalSystem::HealthPartStatus>(L, 2, HealthPartStatusBinding::getMetatableName());
+    return 0;
 }
 
 static int MedicalSystem_set_knockoutTimer(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->knockoutTimer = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->knockoutTimer = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_worstDamage(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->worstDamage = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->worstDamage = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_needsFirstAidScoreTotal_robot(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->needsFirstAidScoreTotal_robot = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->needsFirstAidScoreTotal_robot = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_needsFirstAidScoreTotal_fleshy(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->needsFirstAidScoreTotal_fleshy = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->needsFirstAidScoreTotal_fleshy = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_restedState(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->restedState = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->restedState = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_stealthHinderance(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->stealthHinderance = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->stealthHinderance = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_partBestArm(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->partBestArm = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->partBestArm = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_partHead(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->partHead = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->partHead = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_partWorstTorso(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->partWorstTorso = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->partWorstTorso = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_dazedOrAlert(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->dazedOrAlert = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->dazedOrAlert = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_robotLimbs(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for robotLimbs");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->robotLimbs = lua_isnoneornil(L, 2) ? nullptr : checkObject<RobotLimbs>(L, 2, RobotLimbsBinding::getMetatableName());
+    return 0;
 }
 
 static int MedicalSystem_set_bloodynessChanged(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->bloodynessChanged = lua_toboolean(L, 2) != 0;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->bloodynessChanged = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int MedicalSystem_set_bloodynessCleanedUp(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->bloodynessCleanedUp = lua_toboolean(L, 2) != 0;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->bloodynessCleanedUp = lua_toboolean(L, 2) != 0;
     return 0;
-}
-
-static int MedicalSystem_set_animation(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for animation");
 }
 
 static int MedicalSystem_set_me(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for me");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->me = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    return 0;
 }
 
 static int MedicalSystem_set_weatherGUIfeedback(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for weatherGUIfeedback");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    StringPair* val = checkObject<StringPair>(L, 2, StringPairBinding::getMetatableName());
+    if (val) instance->weatherGUIfeedback = *val;
+    return 0;
 }
 
 static int MedicalSystem_set_currentWeatherAffect(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->currentWeatherAffect = (WeatherAffecting)luaL_checkinteger(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->currentWeatherAffect = (WeatherAffecting)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_currentWeatherAffectStrength(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->currentWeatherAffectStrength = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->currentWeatherAffectStrength = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_lastHungerKO(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for lastHungerKO");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    TimeOfDay* val = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
+    if (val) instance->lastHungerKO = *val;
+    return 0;
 }
 
 static int MedicalSystem_set_nextKOTime(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->nextKOTime = (float)luaL_checknumber(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->nextKOTime = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set__eatenDeathDelay(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->_eatenDeathDelay = (int)luaL_checkinteger(L, 2);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->_eatenDeathDelay = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int MedicalSystem_set_crippled(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->crippled = lua_toboolean(L, 2) != 0;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->crippled = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int MedicalSystem_set_unconcious(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->unconcious = lua_toboolean(L, 2) != 0;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->unconcious = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int MedicalSystem_set_sub50KO(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->sub50KO = lua_toboolean(L, 2) != 0;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->sub50KO = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int MedicalSystem_set_bloodlossTrauma(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->bloodlossTrauma = lua_toboolean(L, 2) != 0;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->bloodlossTrauma = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int MedicalSystem_set_dead(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->dead = lua_toboolean(L, 2) != 0;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->dead = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int MedicalSystem_set_rightArmOk(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->rightArmOk = lua_toboolean(L, 2) != 0;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->rightArmOk = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int MedicalSystem_set_leftArmOk(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    b->leftArmOk = lua_toboolean(L, 2) != 0;
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->leftArmOk = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int MedicalSystem_set_lastBloodPosition(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    readVector3(L, 2, b->lastBloodPosition);
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    readVector3(L, 2, instance->lastBloodPosition);
     return 0;
-}
-
-static int MedicalSystem_set_wounds(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for wounds");
 }
 
 static int MedicalSystem_set_anatomy(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for anatomy");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    auto* val = LektorPtrBinding<MedicalSystem::HealthPartStatus*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'anatomy' must be lektor<HealthPartStatus*>");
+    instance->anatomy = *val;
+    return 0;
 }
 
 static int MedicalSystem_set_stats(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for stats");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    instance->stats = lua_isnoneornil(L, 2) ? nullptr : checkObject<CharStats>(L, 2, CharStatsBinding::getMetatableName());
+    return 0;
 }
 
 int MedicalSystemBinding::precalculateFirstAidNeedScore(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    b->precalculateFirstAidNeedScore();
-    return 0;
-}
-
-int MedicalSystemBinding::_CONSTRUCTOR(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    MedicalSystem* result = b->_CONSTRUCTOR();
-    return pushObject<MedicalSystem>(L, result, MedicalSystemBinding::getMetatableName());
-}
-
-int MedicalSystemBinding::_DESTRUCTOR(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    b->_DESTRUCTOR();
-    return 0;
-}
-
-int MedicalSystemBinding::updateStats(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    b->updateStats();
-    return 0;
-}
-
-int MedicalSystemBinding::_NV_updateStats(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    b->_NV_updateStats();
-    return 0;
-}
-
-int MedicalSystemBinding::medicalUpdate(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    float frameTime = (float)luaL_checknumber(L, 2);
-    b->medicalUpdate(frameTime);
-    return 0;
-}
-
-int MedicalSystemBinding::periodicUpdate(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    b->periodicUpdate();
-    return 0;
-}
-
-int MedicalSystemBinding::_NV_periodicUpdate(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    b->_NV_periodicUpdate();
+    instance->precalculateFirstAidNeedScore();
     return 0;
 }
 
 int MedicalSystemBinding::scoreFirstAidNeed(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     bool robotAid = lua_toboolean(L, 2) != 0;
-    float result = b->scoreFirstAidNeed(robotAid);
+    float result = instance->scoreFirstAidNeed(robotAid);
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::scoreJuryRigNeed(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     float skills = (float)luaL_checknumber(L, 2);
-    float result = b->scoreJuryRigNeed(skills);
+    float result = instance->scoreJuryRigNeed(skills);
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::isFullyRested(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isFullyRested();
+    bool result = instance->isFullyRested();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
-int MedicalSystemBinding::_setHealth(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    std::string bodypart = luaL_checkstring(L, 2);
-    float amount = (float)luaL_checknumber(L, 3);
-    b->_setHealth(bodypart, amount);
-    return 0;
-}
-
 int MedicalSystemBinding::validateHealthValues(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    b->validateHealthValues();
+    instance->validateHealthValues();
     return 0;
 }
 
 int MedicalSystemBinding::amputate(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     RobotLimbs::Limb limb = (RobotLimbs::Limb)luaL_checkinteger(L, 2);
     bool createSeveredItem = lua_toboolean(L, 3) != 0;
-    Ogre::Vector3 force;
+    Ogre::Vector3 force(0, 0, 0);
     readVector3(L, 4, force);
-    b->amputate(limb, createSeveredItem, force);
+    instance->amputate(limb, createSeveredItem, force);
     return 0;
 }
 
 int MedicalSystemBinding::crushLimb(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     RobotLimbs::Limb limb = (RobotLimbs::Limb)luaL_checkinteger(L, 2);
-    b->crushLimb(limb);
+    instance->crushLimb(limb);
     return 0;
 }
 
 int MedicalSystemBinding::isUselessNoLimbGuy(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isUselessNoLimbGuy();
+    bool result = instance->isUselessNoLimbGuy();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::recalculateStealthHinderance(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->recalculateStealthHinderance();
+    float result = instance->recalculateStealthHinderance();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::getPartCount(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    int result = b->getPartCount();
+    int result = instance->getPartCount();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::hasRobotics(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->hasRobotics();
+    bool result = instance->hasRobotics();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::isFed(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isFed();
+    bool result = instance->isFed();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::getMaxBlood(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->getMaxBlood();
+    float result = instance->getMaxBlood();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::startKnockoutTimer(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    b->startKnockoutTimer();
+    instance->startKnockoutTimer();
     return 0;
 }
 
 int MedicalSystemBinding::knockout(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float skill01 = (float)luaL_checknumber(L, 2);
-    b->knockout(skill01);
+    float skill = (float)luaL_checknumber(L, 2);
+    instance->knockout(skill);
     return 0;
 }
 
 int MedicalSystemBinding::knockoutForceTimer(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     float seconds = (float)luaL_checknumber(L, 2);
-    b->knockoutForceTimer(seconds);
+    instance->knockoutForceTimer(seconds);
     return 0;
 }
 
 int MedicalSystemBinding::pointOfCollapseBloodloss(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->pointOfCollapseBloodloss();
+    float result = instance->pointOfCollapseBloodloss();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::pointOfNoReturn(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->pointOfNoReturn();
-    lua_pushnumber(L, result);
-    return 1;
-}
-
-int MedicalSystemBinding::pointOfNoReturn_Hunger01(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    float mult = (float)luaL_checknumber(L, 2);
-    float result = b->pointOfNoReturn_Hunger01(mult);
+    float result = instance->pointOfNoReturn();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::isHungerKO(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isHungerKO();
+    bool result = instance->isHungerKO();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::getToughnessXpBonus(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->getToughnessXpBonus();
+    float result = instance->getToughnessXpBonus();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::getHungerSpeedModifier(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->getHungerSpeedModifier();
-    lua_pushnumber(L, result);
-    return 1;
-}
-
-int MedicalSystemBinding::getHealthStatModifier(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    StatsEnumerated stat = (StatsEnumerated)luaL_checkinteger(L, 2);
-    bool _hunger = lua_toboolean(L, 3) != 0;
-    bool _wounds = lua_toboolean(L, 4) != 0;
-    bool _darkness = lua_toboolean(L, 5) != 0;
-    bool robotParts = lua_toboolean(L, 6) != 0;
-    bool weather = lua_toboolean(L, 7) != 0;
-    bool gear = lua_toboolean(L, 8) != 0;
-    float result = b->getHealthStatModifier(stat, _hunger, _wounds, _darkness, robotParts, weather, gear);
-    lua_pushnumber(L, result);
-    return 1;
-}
-
-int MedicalSystemBinding::_getRoboticsStatMult(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    StatsEnumerated stat = (StatsEnumerated)luaL_checkinteger(L, 2);
-    float result = b->_getRoboticsStatMult(stat);
+    float result = instance->getHungerSpeedModifier();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::getMissingArmPenaltyMult(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->getMissingArmPenaltyMult();
+    float result = instance->getMissingArmPenaltyMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::getDerivedHeadHealth(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->getDerivedHeadHealth();
+    float result = instance->getDerivedHeadHealth();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::calculateDesiredPainAnimations(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    b->calculateDesiredPainAnimations();
+    instance->calculateDesiredPainAnimations();
     return 0;
 }
 
 int MedicalSystemBinding::getMovementSpeedInjuryMultiplier(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->getMovementSpeedInjuryMultiplier();
-    lua_pushnumber(L, result);
-    return 1;
-}
-
-int MedicalSystemBinding::getStatRoboticsMultiplier(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    StatsEnumerated stat = (StatsEnumerated)luaL_checkinteger(L, 2);
-    float result = b->getStatRoboticsMultiplier(stat);
+    float result = instance->getMovementSpeedInjuryMultiplier();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::getMovementSwimSpeedInjuryMultiplier(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->getMovementSwimSpeedInjuryMultiplier();
+    float result = instance->getMovementSwimSpeedInjuryMultiplier();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::gettingEaten(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
     bool vampire = lua_toboolean(L, 3) != 0;
-    bool result = b->gettingEaten(amount, vampire);
+    bool result = instance->gettingEaten(amount, vampire);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::gettingAcidRain(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    bool result = b->gettingAcidRain(amount);
+    bool result = instance->gettingAcidRain(amount);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::gettingAcidWater(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    bool result = b->gettingAcidWater(amount);
+    bool result = instance->gettingAcidWater(amount);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::gettingAcidFeet(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    bool result = b->gettingAcidFeet(amount);
+    bool result = instance->gettingAcidFeet(amount);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::gettingGassed(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    bool result = b->gettingGassed(amount);
+    bool result = instance->gettingGassed(amount);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::gettingWindyface(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    bool result = b->gettingWindyface(amount);
+    bool result = instance->gettingWindyface(amount);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::gettingBurnt(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     float amount = (float)luaL_checknumber(L, 2);
-    bool result = b->gettingBurnt(amount);
+    bool result = instance->gettingBurnt(amount);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::reassessCollapseMode(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     bool medic = lua_toboolean(L, 2) != 0;
     bool agony = lua_toboolean(L, 3) != 0;
-    b->reassessCollapseMode(medic, agony);
+    instance->reassessCollapseMode(medic, agony);
     return 0;
 }
 
 int MedicalSystemBinding::isUnconcious(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isUnconcious();
+    bool result = instance->isUnconcious();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::isCrippled(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isCrippled();
+    bool result = instance->isCrippled();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::isDead(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isDead();
+    bool result = instance->isDead();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::hasAnArmToFightWith(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->hasAnArmToFightWith();
+    bool result = instance->hasAnArmToFightWith();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::hasFreshlySeveredALimb(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->hasFreshlySeveredALimb();
+    bool result = instance->hasFreshlySeveredALimb();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::isReallyHungry(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isReallyHungry();
+    bool result = instance->isReallyHungry();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::isProbablyDying(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isProbablyDying();
+    bool result = instance->isProbablyDying();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::getOverallHealthRating(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->getOverallHealthRating();
+    float result = instance->getOverallHealthRating();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::canGetUpWakeUp(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->canGetUpWakeUp();
+    bool result = instance->canGetUpWakeUp();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
-int MedicalSystemBinding::_reassessRagdollPartsAssumingWeJustClearedTheEntireRagdoll(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    b->_reassessRagdollPartsAssumingWeJustClearedTheEntireRagdoll();
-    return 0;
-}
-
 int MedicalSystemBinding::isRightArmOk(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isRightArmOk();
+    bool result = instance->isRightArmOk();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::isLeftArmOk(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isLeftArmOk();
+    bool result = instance->isLeftArmOk();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::canIkick(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->canIkick();
+    bool result = instance->canIkick();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::isInBloodlossTrauma(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    bool result = b->isInBloodlossTrauma();
+    bool result = instance->isInBloodlossTrauma();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int MedicalSystemBinding::clearWeatherEffects(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    b->clearWeatherEffects();
+    instance->clearWeatherEffects();
     return 0;
 }
 
 int MedicalSystemBinding::getWeatherStatPenaltyMult(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->getWeatherStatPenaltyMult();
+    float result = instance->getWeatherStatPenaltyMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::getWeatherStatPenalty(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
     float mult = (float)luaL_checknumber(L, 2);
-    int result = b->getWeatherStatPenalty(mult);
+    int result = instance->getWeatherStatPenalty(mult);
     lua_pushinteger(L, result);
     return 1;
 }
 
 int MedicalSystemBinding::calculateBleedRateForFX(lua_State* L)
 {
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    float result = b->calculateBleedRateForFX();
+    float result = instance->calculateBleedRateForFX();
     lua_pushnumber(L, result);
     return 1;
 }
 
-int MedicalSystemBinding::bloodlossUpdate(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    float frameTime = (float)luaL_checknumber(L, 2);
-    b->bloodlossUpdate(frameTime);
-    return 0;
-}
-
-int MedicalSystemBinding::updateDamageState(lua_State* L)
-{
-    MedicalSystem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedicalSystem is nil");
-
-    b->updateDamageState();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 111: void init(...) - unsupported arg type
-  line 114: void notifyRaceChange(...) - unsupported arg type
-  line 123: LimbState getLimbState(...) - unsupported return type
-  line 180: MedicalSystem::HealthPartStatus* getPart(...) - overloaded method
-  line 181: MedicalSystem::HealthPartStatus* getPart(...) - overloaded method
-  line 182: MedicalSystem::HealthPartStatus* getPart(...) - overloaded method
-  line 185: void setRobotLimbItem(...) - unsupported arg type
-  line 188: void addArmour(...) - unsupported arg type
-  line 189: void removeArmour(...) - unsupported arg type
-  line 190: bool wearingUniformOf(...) - unsupported arg type
-  line 191: void serialise(...) - unsupported arg type
-  line 192: void load(...) - unsupported arg type
-  line 193: GameData* addWound(...) - unsupported arg type
-  line 194: float punchSomething(...) - unsupported arg type
-  line 195: const std::string& getBoneNameForBodypart(...) - static method
-  line 230: bool isCollapse(...) - pointer arg
-  line 238: MedicalSystem::CollapseStage getCollapseStage(...) - pointer arg
-  line 250: bool applyFirstAid(...) - unsupported arg type
-  line 251: bool applyDoctoring(...) - unsupported arg type
-  line 252: bool applyRigging(...) - unsupported arg type
-  line 260: float scoreTechnique(...) - unsupported arg type
-  line 261: void getMedicalGUIData(...) - unsupported arg type
-  line 271: void splatBlood(...) - unsupported arg type
-  line 298: void drainMedkit(...) - unsupported arg type
-  line 299: void applyDamage(...) - pointer arg
-  line 300: void ragdollPartCollapse(...) - pointer arg
-*/
-
 int MedicalSystemBinding::gc(lua_State* L)
 {
-    // Implementation depends on ownership model
     return 0;
 }
 
@@ -1431,17 +1254,9 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "precalculateFirstAidNeedScore", MedicalSystemBinding::precalculateFirstAidNeedScore },
-        { "_CONSTRUCTOR", MedicalSystemBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", MedicalSystemBinding::_DESTRUCTOR },
-        { "updateStats", MedicalSystemBinding::updateStats },
-        { "_NV_updateStats", MedicalSystemBinding::_NV_updateStats },
-        { "medicalUpdate", MedicalSystemBinding::medicalUpdate },
-        { "periodicUpdate", MedicalSystemBinding::periodicUpdate },
-        { "_NV_periodicUpdate", MedicalSystemBinding::_NV_periodicUpdate },
         { "scoreFirstAidNeed", MedicalSystemBinding::scoreFirstAidNeed },
         { "scoreJuryRigNeed", MedicalSystemBinding::scoreJuryRigNeed },
         { "isFullyRested", MedicalSystemBinding::isFullyRested },
-        { "_setHealth", MedicalSystemBinding::_setHealth },
         { "validateHealthValues", MedicalSystemBinding::validateHealthValues },
         { "amputate", MedicalSystemBinding::amputate },
         { "crushLimb", MedicalSystemBinding::crushLimb },
@@ -1456,17 +1271,13 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
         { "knockoutForceTimer", MedicalSystemBinding::knockoutForceTimer },
         { "pointOfCollapseBloodloss", MedicalSystemBinding::pointOfCollapseBloodloss },
         { "pointOfNoReturn", MedicalSystemBinding::pointOfNoReturn },
-        { "pointOfNoReturn_Hunger01", MedicalSystemBinding::pointOfNoReturn_Hunger01 },
         { "isHungerKO", MedicalSystemBinding::isHungerKO },
         { "getToughnessXpBonus", MedicalSystemBinding::getToughnessXpBonus },
         { "getHungerSpeedModifier", MedicalSystemBinding::getHungerSpeedModifier },
-        { "getHealthStatModifier", MedicalSystemBinding::getHealthStatModifier },
-        { "_getRoboticsStatMult", MedicalSystemBinding::_getRoboticsStatMult },
         { "getMissingArmPenaltyMult", MedicalSystemBinding::getMissingArmPenaltyMult },
         { "getDerivedHeadHealth", MedicalSystemBinding::getDerivedHeadHealth },
         { "calculateDesiredPainAnimations", MedicalSystemBinding::calculateDesiredPainAnimations },
         { "getMovementSpeedInjuryMultiplier", MedicalSystemBinding::getMovementSpeedInjuryMultiplier },
-        { "getStatRoboticsMultiplier", MedicalSystemBinding::getStatRoboticsMultiplier },
         { "getMovementSwimSpeedInjuryMultiplier", MedicalSystemBinding::getMovementSwimSpeedInjuryMultiplier },
         { "gettingEaten", MedicalSystemBinding::gettingEaten },
         { "gettingAcidRain", MedicalSystemBinding::gettingAcidRain },
@@ -1485,7 +1296,6 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
         { "isProbablyDying", MedicalSystemBinding::isProbablyDying },
         { "getOverallHealthRating", MedicalSystemBinding::getOverallHealthRating },
         { "canGetUpWakeUp", MedicalSystemBinding::canGetUpWakeUp },
-        { "_reassessRagdollPartsAssumingWeJustClearedTheEntireRagdoll", MedicalSystemBinding::_reassessRagdollPartsAssumingWeJustClearedTheEntireRagdoll },
         { "isRightArmOk", MedicalSystemBinding::isRightArmOk },
         { "isLeftArmOk", MedicalSystemBinding::isLeftArmOk },
         { "canIkick", MedicalSystemBinding::canIkick },
@@ -1494,8 +1304,6 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
         { "getWeatherStatPenaltyMult", MedicalSystemBinding::getWeatherStatPenaltyMult },
         { "getWeatherStatPenalty", MedicalSystemBinding::getWeatherStatPenalty },
         { "calculateBleedRateForFX", MedicalSystemBinding::calculateBleedRateForFX },
-        { "bloodlossUpdate", MedicalSystemBinding::bloodlossUpdate },
-        { "updateDamageState", MedicalSystemBinding::updateDamageState },
         { 0, 0 }
     };
 
@@ -1560,8 +1368,6 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "bloodynessChanged");
     lua_pushcfunction(L, MedicalSystem_get_bloodynessCleanedUp);
     lua_setfield(L, -2, "bloodynessCleanedUp");
-    lua_pushcfunction(L, MedicalSystem_get_animation);
-    lua_setfield(L, -2, "animation");
     lua_pushcfunction(L, MedicalSystem_get_me);
     lua_setfield(L, -2, "me");
     lua_pushcfunction(L, MedicalSystem_get_weatherGUIfeedback);
@@ -1592,8 +1398,6 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "leftArmOk");
     lua_pushcfunction(L, MedicalSystem_get_lastBloodPosition);
     lua_setfield(L, -2, "lastBloodPosition");
-    lua_pushcfunction(L, MedicalSystem_get_wounds);
-    lua_setfield(L, -2, "wounds");
     lua_pushcfunction(L, MedicalSystem_get_anatomy);
     lua_setfield(L, -2, "anatomy");
     lua_pushcfunction(L, MedicalSystem_get_stats);
@@ -1651,8 +1455,6 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "bloodynessChanged");
     lua_pushcfunction(L, MedicalSystem_set_bloodynessCleanedUp);
     lua_setfield(L, -2, "bloodynessCleanedUp");
-    lua_pushcfunction(L, MedicalSystem_set_animation);
-    lua_setfield(L, -2, "animation");
     lua_pushcfunction(L, MedicalSystem_set_me);
     lua_setfield(L, -2, "me");
     lua_pushcfunction(L, MedicalSystem_set_weatherGUIfeedback);
@@ -1683,15 +1485,21 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "leftArmOk");
     lua_pushcfunction(L, MedicalSystem_set_lastBloodPosition);
     lua_setfield(L, -2, "lastBloodPosition");
-    lua_pushcfunction(L, MedicalSystem_set_wounds);
-    lua_setfield(L, -2, "wounds");
     lua_pushcfunction(L, MedicalSystem_set_anatomy);
     lua_setfield(L, -2, "anatomy");
     lua_pushcfunction(L, MedicalSystem_set_stats);
     lua_setfield(L, -2, "stats");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
-
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    HealthStatusMapBinding::registerBinding(
+        L, 
+        "KenshiLua.HealthStatusMap", 
+        GameDataBinding::getMetatableName(), 
+        HealthPartStatusBinding::getMetatableName()
+    );
+    LektorPtrBinding<Armour*>::registerBinding(L, "lektor<Armour*>", ArmourBinding::getMetatableName());
+    LektorPtrBinding<MedicalSystem::HealthPartStatus*>::registerBinding(L, "lektor<HealthPartStatus*>", HealthPartStatusBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

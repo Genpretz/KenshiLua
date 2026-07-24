@@ -16,11 +16,16 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
+    static int load(lua_State* L);
+    static int save(lua_State* L);
     static int getLimb(lua_State* L);
     static int getMask(lua_State* L);
     static int getInventoryInterface(lua_State* L);
     static int destroyInventoryInterface(lua_State* L);
     static int getLimbItem(lua_State* L);
+    static int getState(lua_State* L);
+    static int setLimb(lua_State* L);
 };
 }

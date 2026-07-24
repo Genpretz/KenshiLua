@@ -3,11 +3,14 @@
 #include "LimbsInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
 
 namespace KenshiLua
 {
 
-static LimbsInventoryLayout* getB(lua_State* L, int idx)
+static LimbsInventoryLayout* getInstance(lua_State* L, int idx)
 {
     return checkObject<LimbsInventoryLayout>(L, idx, LimbsInventoryLayoutBinding::getMetatableName());
 }
@@ -15,31 +18,41 @@ static LimbsInventoryLayout* getB(lua_State* L, int idx)
 // --- Getters for LimbsInventoryLayout ---
 static int LimbsInventoryLayout_get_character(lua_State* L)
 {
-    LimbsInventoryLayout* b = getB(L, 1);
-    if (!b) return luaL_error(L, "LimbsInventoryLayout is nil");
-    return pushObject<Character>(L, b->character, CharacterBinding::getMetatableName());
+    LimbsInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LimbsInventoryLayout is nil");
+    return pushObject<Character>(L, instance->character, CharacterBinding::getMetatableName());
 }
 
 // --- Setters for LimbsInventoryLayout ---
 static int LimbsInventoryLayout_set_character(lua_State* L)
 {
-    LimbsInventoryLayout* b = getB(L, 1);
-    if (!b) return luaL_error(L, "LimbsInventoryLayout is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for character");
+    LimbsInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LimbsInventoryLayout is nil");
+    instance->character = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    return 0;
+}
+
+int LimbsInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
+{
+    LimbsInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LimbsInventoryLayout is nil");
+
+    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    LimbsInventoryLayout* result = instance->_CONSTRUCTOR(c);
+    return pushObject<LimbsInventoryLayout>(L, result, LimbsInventoryLayoutBinding::getMetatableName());
 }
 
 int LimbsInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
-    LimbsInventoryLayout* b = getB(L, 1);
-    if (!b) return luaL_error(L, "LimbsInventoryLayout is nil");
+    LimbsInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LimbsInventoryLayout is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 33: LimbsInventoryLayout* _CONSTRUCTOR(...) - unsupported return type
   line 36: void setupSections(...) - unsupported arg type
   line 37: void _NV_setupSections(...) - unsupported arg type
 */
@@ -65,6 +78,7 @@ void LimbsInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", LimbsInventoryLayoutBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", LimbsInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -88,6 +102,9 @@ void LimbsInventoryLayoutBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, LimbsInventoryLayout_set_character);
     lua_setfield(L, -2, "character");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to InventoryLayout
+    setMetatableParent(L, LimbsInventoryLayoutBinding::getMetatableName(), InventoryLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
