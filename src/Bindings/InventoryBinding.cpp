@@ -17,13 +17,13 @@
 #include "Bindings/WeaponBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/GameDataBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "kenshi/GameSaveState.h"
 #include "Bindings/GameSaveStateBinding.h"
 #include "Bindings/GameDataContainerBinding.h"
-#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Bindings/HasRoomCacheBinding.h"
-#include "Bindings/Templates/BoostUnorderedBinding.h"
+#include "Bindings/Util/BoostUnorderedBinding.h"
 
 namespace KenshiLua
 {

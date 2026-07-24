@@ -6,7 +6,7 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/RelationDataBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
-#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {

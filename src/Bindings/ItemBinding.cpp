@@ -21,7 +21,7 @@
 #include "kenshi/GameSaveState.h"
 #include "Bindings/GameSaveStateBinding.h"
 #include "Bindings/RootObjectBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/TimeOfDayBinding.h"
 #include "Bindings/GameSaveStateBinding.h"
 #include "Bindings/GameDataBinding.h"

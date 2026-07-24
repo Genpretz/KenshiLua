@@ -18,7 +18,7 @@
 #include "Bindings/TradeCultureBinding.h"
 #include "Bindings/FitnessSelectorBinding.h"
 #include "Bindings/BuildingSwapsBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {

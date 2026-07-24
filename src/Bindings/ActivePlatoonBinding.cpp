@@ -11,7 +11,7 @@
 #include "RootObjectBinding.h"
 #include "Bindings/GameSaveStateBinding.h"
 #include "FactoryCallbackInterfaceBinding.h"
-#include "Templates/LektorBinding.h"
+#include "Util/LektorBinding.h"
 
 namespace KenshiLua
 {

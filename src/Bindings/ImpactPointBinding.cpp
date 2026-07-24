@@ -5,7 +5,7 @@
 #include "ImpactPointBinding.h"
 #include "EnumBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {

@@ -16,8 +16,8 @@
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/Util/StringPairBinding.h"
 #include "Bindings/Util/TimeOfDayBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
-#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {

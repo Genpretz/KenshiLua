@@ -12,7 +12,7 @@
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/FitnessSelectorBinding.h"
 #include "Bindings/CampaignTriggerDataBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {

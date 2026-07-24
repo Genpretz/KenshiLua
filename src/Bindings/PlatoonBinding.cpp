@@ -11,7 +11,7 @@
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Bindings/TaskerBinding.h"
 #include "Bindings/ItemBinding.h"
 #include "Bindings/GameSaveStateBinding.h"

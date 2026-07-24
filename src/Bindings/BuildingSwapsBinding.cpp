@@ -3,7 +3,7 @@
 #include "BuildingSwapsBinding.h"
 #include "GameDataBinding.h"
 #include <kenshi/GameData.h>
-#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Bindings/FitnessSelectorBinding.h"
 #include "Lua/BindingHelpers.h"
 

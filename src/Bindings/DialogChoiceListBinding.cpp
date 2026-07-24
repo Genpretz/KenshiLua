@@ -3,7 +3,7 @@
 #include "DialogChoiceListBinding.h"
 #include "DialogLineDataBinding.h"
 #include "GameDataBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua

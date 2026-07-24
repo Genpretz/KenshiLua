@@ -26,7 +26,7 @@
 #include "Bindings/CombatTechniqueDataBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/StringPairBinding.h"
 
 namespace KenshiLua

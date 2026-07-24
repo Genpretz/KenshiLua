@@ -8,14 +8,14 @@
 #include "Bindings/PlayerInterfaceBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/CharacterBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Bindings/ModInfoBinding.h"
 #include "Bindings/GameDataManagerBinding.h"
 #include "Bindings/RootObjectFactoryBinding.h"
 #include "Bindings/FactionManagerBinding.h"
 #include "Bindings/ZoneManagerBinding.h"
 #include "Bindings/SimpleTimeStamperBinding.h"
-#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 #include <kenshi/ZoneManager.h>
 #include <kenshi/Faction.h>
 

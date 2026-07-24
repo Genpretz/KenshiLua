@@ -7,7 +7,7 @@
 #include "Bindings/FactionBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/RootObjectBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {

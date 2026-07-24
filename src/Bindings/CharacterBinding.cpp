@@ -44,8 +44,8 @@
 #include "Bindings/Util/YesNoMaybeBinding.h"
 #include "Bindings/WhoSeesMeBinding.h"
 #include "Bindings/AttachedArrowManagerBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
-#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 
 namespace KenshiLua

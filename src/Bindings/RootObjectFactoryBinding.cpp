@@ -20,7 +20,7 @@
 #include "FactoryCallbackInterfaceBinding.h"
 #include "GameSaveStateBinding.h"
 #include "CreatelistItemBinding.h"
-#include "Templates/LektorBinding.h"
+#include "Util/LektorBinding.h"
 
 // KenshiLib
 #include <kenshi/RootObjectFactory.h>

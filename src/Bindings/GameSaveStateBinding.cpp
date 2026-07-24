@@ -2,7 +2,7 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataContainerBinding.h"
 #include "Bindings/ObjectInstanceBinding.h"
-#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Bindings/InstanceIDBinding.h"
 
 #include <kenshi/GameSaveState.h>

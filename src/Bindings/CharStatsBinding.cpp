@@ -15,9 +15,9 @@
 #include "Bindings/WeaponBinding.h"
 #include "Bindings/EnumBinding.h"
 #include "Bindings/CombatTechniqueDataBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/StringPairBinding.h"
-#include "Bindings/Templates/StdMapBinding.h"
+#include "Bindings/Util/StdMapBinding.h"
 #include "Bindings/FitnessSelectorBinding.h"
 
 namespace KenshiLua

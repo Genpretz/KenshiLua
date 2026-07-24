@@ -7,7 +7,7 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataContainerBinding.h"
 #include "Bindings/PlatoonBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {

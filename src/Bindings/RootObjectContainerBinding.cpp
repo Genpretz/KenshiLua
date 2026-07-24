@@ -4,7 +4,7 @@
 #include "RootObjectBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RootObjectBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Bindings/DataObjectContainerBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataContainerBinding.h"

@@ -4,7 +4,7 @@
 #include "Bindings/ImpactPointBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/FitnessSelectorBinding.h"
-#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua

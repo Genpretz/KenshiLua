@@ -9,8 +9,8 @@
 #include "Bindings/SpottingPeopleMgrBinding.h"
 #include "Bindings/RootObjectBaseBinding.h"
 #include "Bindings/Util/HandBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
-#include "Bindings/Templates/OgreUnorderedBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
