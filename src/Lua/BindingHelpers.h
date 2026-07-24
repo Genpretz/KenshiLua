@@ -178,9 +178,25 @@ namespace KenshiLua
     inline bool readVector2(lua_State* L, int idx, V2& out)
     {
         if (!lua_istable(L, idx)) return false;
+        out.x = 0.0f; out.y = 0.0f;
         bool any = false;
-        lua_getfield(L, idx, "x"); if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-        lua_getfield(L, idx, "y"); if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "x");
+        if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 1);
+            if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "y");
+        if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 2);
+            if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
         return any;
     }
 
@@ -201,10 +217,34 @@ namespace KenshiLua
     inline bool readVector3(lua_State* L, int idx, V3& out)
     {
         if (!lua_istable(L, idx)) return false;
+        out.x = 0.0f; out.y = 0.0f; out.z = 0.0f;
         bool any = false;
-        lua_getfield(L, idx, "x"); if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-        lua_getfield(L, idx, "y"); if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-        lua_getfield(L, idx, "z"); if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "x");
+        if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 1);
+            if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "y");
+        if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 2);
+            if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "z");
+        if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 3);
+            if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
         return any;
     }
 
@@ -226,11 +266,43 @@ namespace KenshiLua
     inline bool readQuaternion(lua_State* L, int idx, Q4& out)
     {
         if (!lua_istable(L, idx)) return false;
+        out.w = 1.0f; out.x = 0.0f; out.y = 0.0f; out.z = 0.0f;
         bool any = false;
-        lua_getfield(L, idx, "w"); if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-        lua_getfield(L, idx, "x"); if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-        lua_getfield(L, idx, "y"); if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-        lua_getfield(L, idx, "z"); if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "w");
+        if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 1);
+            if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "x");
+        if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 2);
+            if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "y");
+        if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 3);
+            if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "z");
+        if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 4);
+            if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
         return any;
     }
 
@@ -273,6 +345,7 @@ namespace KenshiLua
     inline bool readColourValue(lua_State* L, int idx, CV& out)
     {
         if (!lua_istable(L, idx)) return false;
+        out.r = 0.0f; out.g = 0.0f; out.b = 0.0f; out.a = 1.0f;
         bool any = false;
         lua_getfield(L, idx, "r"); if (!lua_isnil(L, -1)) { out.r = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
         lua_getfield(L, idx, "g"); if (!lua_isnil(L, -1)) { out.g = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
