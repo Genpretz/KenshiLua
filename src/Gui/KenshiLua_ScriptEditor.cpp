@@ -6,6 +6,7 @@
 #include "Lua/LuaState.h"
 #include <fstream>
 #include <sstream>
+#include "Plugin.h"
 
 
 #include <kenshi/InputHandler.h>
@@ -31,13 +32,15 @@ namespace KenshiLua
 	// ---------------------------------------------------------------------------
 
 	KenshiLua_ScriptEditor::KenshiLua_ScriptEditor(MyGUI::Widget* _parent)
+		: m_lastInputVScrollPos(0), m_lastOutputVScrollPos(0)
 	{
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_ScriptEditorWindow = mMainWidget->castType<MyGUI::Window>(false);
-		logToFileDebugf("ScriptEditor initialization: mMainWidget=%p, mKenshiLua_ScriptEditorWindow=%p", mMainWidget, mKenshiLua_ScriptEditorWindow);
 
 		if (mScriptEditor_RunButtonButton)
 			mScriptEditor_RunButtonButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_ScriptEditor::onRunClicked);
+		if (mScriptEditor_StopButtonButton)
+			mScriptEditor_StopButtonButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_ScriptEditor::onStopClicked);
 		if (mScriptEditor_OpenButtonButton)
 			mScriptEditor_OpenButtonButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_ScriptEditor::onOpenClicked);
 		if (mScriptEditor_SaveButtonButton)
@@ -50,21 +53,137 @@ namespace KenshiLua
 		if (mKenshiLua_ScriptEditorWindow)
 			mKenshiLua_ScriptEditorWindow->eventWindowButtonPressed += MyGUI::newDelegate(this, &KenshiLua_ScriptEditor::onWindowButtonPressed);
 
+		if (mScriptEditor_InputGutterEditBox)
+		{
+			mScriptEditor_InputGutterEditBox->setMaxTextLength(MyGUI::ITEM_NONE);
+			mScriptEditor_InputGutterEditBox->setEditMultiLine(true);
+			mScriptEditor_InputGutterEditBox->setEditReadOnly(true);
+			mScriptEditor_InputGutterEditBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::Top);
+		}
+		if (mScriptEditor_OutputGutterEditBox)
+		{
+			mScriptEditor_OutputGutterEditBox->setMaxTextLength(MyGUI::ITEM_NONE);
+			mScriptEditor_OutputGutterEditBox->setEditMultiLine(true);
+			mScriptEditor_OutputGutterEditBox->setEditReadOnly(true);
+			mScriptEditor_OutputGutterEditBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::Top);
+		}
+
 		if (mScriptEditor_InputBoxEditBox)
+		{
 			mScriptEditor_InputBoxEditBox->setMaxTextLength(MyGUI::ITEM_NONE);
+			mScriptEditor_InputBoxEditBox->setEditMultiLine(true);
+			mScriptEditor_InputBoxEditBox->eventEditTextChange += MyGUI::newDelegate(this, &KenshiLua_ScriptEditor::onInputTextChanged);
+		}
 		if (mScriptEditor_OutputBoxEditBox)
+		{
 			mScriptEditor_OutputBoxEditBox->setMaxTextLength(MyGUI::ITEM_NONE);
+			mScriptEditor_OutputBoxEditBox->setEditMultiLine(true);
+		}
+
+		MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
+		if (gui)
+		{
+			gui->eventFrameStart += MyGUI::newDelegate(this, &KenshiLua_ScriptEditor::onFrameStart);
+		}
+
+		updateInputGutter();
+		updateOutputGutter();
 
 		setVisible(false);
 	}
 
 	KenshiLua_ScriptEditor::~KenshiLua_ScriptEditor()
 	{
+		MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
+		if (gui)
+		{
+			gui->eventFrameStart -= MyGUI::newDelegate(this, &KenshiLua_ScriptEditor::onFrameStart);
+		}
+	}
+
+	void KenshiLua_ScriptEditor::onFrameStart(float)
+	{
+		if (!getVisible())
+			return;
+
+		if (mScriptEditor_InputBoxEditBox && mScriptEditor_InputGutterEditBox)
+		{
+			size_t currentPos = mScriptEditor_InputBoxEditBox->getVScrollPosition();
+			if (currentPos != m_lastInputVScrollPos)
+			{
+				m_lastInputVScrollPos = currentPos;
+				mScriptEditor_InputGutterEditBox->setVScrollPosition(currentPos);
+			}
+		}
+
+		if (mScriptEditor_OutputBoxEditBox && mScriptEditor_OutputGutterEditBox)
+		{
+			size_t currentPos = mScriptEditor_OutputBoxEditBox->getVScrollPosition();
+			if (currentPos != m_lastOutputVScrollPos)
+			{
+				m_lastOutputVScrollPos = currentPos;
+				mScriptEditor_OutputGutterEditBox->setVScrollPosition(currentPos);
+			}
+		}
+	}
+
+	void KenshiLua_ScriptEditor::updateInputGutter()
+	{
+		if (!mScriptEditor_InputBoxEditBox || !mScriptEditor_InputGutterEditBox)
+		{
+			return;
+		}
+
+		std::string text = mScriptEditor_InputBoxEditBox->getCaption().asUTF8();
+		size_t lineCount = 1;
+		for (size_t i = 0; i < text.size(); ++i)
+		{
+			if (text[i] == '\n') ++lineCount;
+		}
+
+		std::ostringstream ss;
+		for (size_t i = 1; i <= lineCount; ++i)
+		{
+			ss << i << "\n";
+		}
+
+		std::string resultStr = ss.str();
+		mScriptEditor_InputGutterEditBox->setCaption(MyGUI::UString(resultStr));
+		mScriptEditor_InputGutterEditBox->setVScrollPosition(mScriptEditor_InputBoxEditBox->getVScrollPosition());
+	}
+
+	void KenshiLua_ScriptEditor::updateOutputGutter()
+	{
+		if (!mScriptEditor_OutputBoxEditBox || !mScriptEditor_OutputGutterEditBox)
+		{
+			return;
+		}
+
+		std::string text = mScriptEditor_OutputBoxEditBox->getCaption().asUTF8();
+		size_t lineCount = 1;
+		for (size_t i = 0; i < text.size(); ++i)
+		{
+			if (text[i] == '\n') ++lineCount;
+		}
+
+		std::ostringstream ss;
+		for (size_t i = 1; i <= lineCount; ++i)
+		{
+			ss << i << "\n";
+		}
+
+		std::string resultStr = ss.str();
+		mScriptEditor_OutputGutterEditBox->setCaption(MyGUI::UString(resultStr));
+		mScriptEditor_OutputGutterEditBox->setVScrollPosition(mScriptEditor_OutputBoxEditBox->getVScrollPosition());
+	}
+
+	void KenshiLua_ScriptEditor::onInputTextChanged(MyGUI::EditBox*)
+	{
+		updateInputGutter();
 	}
 
 	void KenshiLua_ScriptEditor::setVisible(bool visible)
 	{
-		logToFileDebugf("ScriptEditor: setVisible(%d) called, mKenshiLua_ScriptEditorWindow=%p", visible, mKenshiLua_ScriptEditorWindow);
 		if (mKenshiLua_ScriptEditorWindow)
 		{
 			mKenshiLua_ScriptEditorWindow->setVisible(visible);
@@ -73,6 +192,8 @@ namespace KenshiLua
 				MyGUI::LayerManager::getInstance().upLayerItem(mKenshiLua_ScriptEditorWindow);
 				if (mScriptEditor_InputBoxEditBox)
 					MyGUI::InputManager::getInstance().setKeyFocusWidget(mScriptEditor_InputBoxEditBox);
+				updateInputGutter();
+				updateOutputGutter();
 			}
 		}
 	}
@@ -90,12 +211,14 @@ namespace KenshiLua
 		mScriptEditor_OutputBoxEditBox->addText(MyGUI::UString(text));
 		size_t length = mScriptEditor_OutputBoxEditBox->getTextLength();
 		mScriptEditor_OutputBoxEditBox->setTextCursor(length);
+		updateOutputGutter();
 	}
 
 	void KenshiLua_ScriptEditor::clearOutput()
 	{
 		if (mScriptEditor_OutputBoxEditBox)
 			mScriptEditor_OutputBoxEditBox->setCaption("");
+		updateOutputGutter();
 	}
 
 	void KenshiLua_ScriptEditor::onWindowButtonPressed(MyGUI::Window*, const std::string& name)
@@ -148,7 +271,7 @@ namespace KenshiLua
 				const char* err = lua_tostring(L, -1);
 				std::string e = err ? err : "(error)";
 				appendOutput("ERROR: " + e + "\n");
-				logToFile("Lua error: " + e);
+				logToFileError("Lua error: " + e);
 			}
 			else
 			{
@@ -174,6 +297,23 @@ namespace KenshiLua
 		}
 	}
 
+	void KenshiLua_ScriptEditor::onStopClicked(MyGUI::Widget*)
+	{
+		appendOutput("=== Stopping Scripts (Restarting Lua Runtime) ===\n");
+		logToFile("ScriptEditor: Restarting KenshiLua runtime to unload scripts...");
+
+		void* hModule = Plugin::get().getDllModule();
+		Plugin::get().shutdown();
+		Plugin::get().initialize(hModule);
+		Plugin::get().start();
+
+		auto editor = GuiManager::get().getEditor();
+		if (editor)
+		{
+			editor->setVisible(true);
+		}
+	}
+
 	void KenshiLua_ScriptEditor::onOpenClicked(MyGUI::Widget*)
 	{
 		std::string path = GuiHelpers::openFileDialog("Open Lua Script", "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0", "lua", m_currentFilePath);
@@ -193,6 +333,7 @@ namespace KenshiLua
 		mScriptEditor_InputBoxEditBox->setCaption(MyGUI::UString(ss.str()));
 		m_currentFilePath = path;
 
+		updateInputGutter();
 		appendOutput("Loaded: " + path + "\n");
 	}
 
@@ -230,6 +371,7 @@ namespace KenshiLua
 			mScriptEditor_InputBoxEditBox->setCaption("");
 
 		m_currentFilePath.clear();
+		updateInputGutter();
 		clearOutput();
 	}
 

@@ -16,26 +16,40 @@ namespace KenshiLua
 
 		void setVisible(bool visible);
 		bool getVisible();
+		MyGUI::Window* getWindow() const { return mKenshiLua_ScriptEditorWindow; }
 		void appendOutput(const std::string& text);
 		void clearOutput();
 
 	private:
 		void onRunClicked(MyGUI::Widget* sender);
+		void onStopClicked(MyGUI::Widget* sender);
 		void onOpenClicked(MyGUI::Widget* sender);
 		void onSaveClicked(MyGUI::Widget* sender);
 		void onSaveAsClicked(MyGUI::Widget* sender);
 		void onClearClicked(MyGUI::Widget* sender);
 		void onWindowButtonPressed(MyGUI::Window* sender, const std::string& name);
 
+		void onInputTextChanged(MyGUI::EditBox* sender);
+		void onFrameStart(float frameTime);
+
+		void updateInputGutter();
+		void updateOutputGutter();
+
 		bool saveToFile(const std::string& path);
 
 		std::string m_currentFilePath;
+		size_t m_lastInputVScrollPos;
+		size_t m_lastOutputVScrollPos;
 	//%LE Widget_Declaration list start
 		MyGUI::Window* mKenshiLua_ScriptEditorWindow;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_ScriptEditor, mdatapanelWidget, "datapanel");
 		MyGUI::Widget* mdatapanelWidget;
+		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_ScriptEditor, mScriptEditor_InputGutterEditBox, "ScriptEditor_InputGutter");
+		MyGUI::EditBox* mScriptEditor_InputGutterEditBox;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_ScriptEditor, mScriptEditor_InputBoxEditBox, "ScriptEditor_InputBox");
 		MyGUI::EditBox* mScriptEditor_InputBoxEditBox;
+		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_ScriptEditor, mScriptEditor_OutputGutterEditBox, "ScriptEditor_OutputGutter");
+		MyGUI::EditBox* mScriptEditor_OutputGutterEditBox;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_ScriptEditor, mScriptEditor_OutputBoxEditBox, "ScriptEditor_OutputBox");
 		MyGUI::EditBox* mScriptEditor_OutputBoxEditBox;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_ScriptEditor, mScriptEditor_OpenButtonButton, "ScriptEditor_OpenButton");
@@ -48,6 +62,8 @@ namespace KenshiLua
 		MyGUI::Button* mScriptEditor_ClearButtonButton;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_ScriptEditor, mScriptEditor_RunButtonButton, "ScriptEditor_RunButton");
 		MyGUI::Button* mScriptEditor_RunButtonButton;
+		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_ScriptEditor, mScriptEditor_StopButtonButton, "ScriptEditor_StopButton");
+		MyGUI::Button* mScriptEditor_StopButtonButton;
 	//%LE Widget_Declaration list end
 	};
 
