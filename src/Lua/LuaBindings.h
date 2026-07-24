@@ -17,6 +17,8 @@ public:
     static void registerAll(lua_State* L);
 };
 
+void installKenshiLuaTable(lua_State* L);
+
 // Free functions exposed as Lua globals.
 int luaKenshiLog(lua_State* L);
 int luaKenshiLogDebug(lua_State* L);
