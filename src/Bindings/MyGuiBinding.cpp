@@ -507,6 +507,32 @@ static MyGUI::Widget* getWidget(lua_State* L, int idx)
     return checkObject<MyGUI::Widget>(L, idx, MyGuiBinding::getMetatableName());
 }
 
+
+static MyGUI::Colour readColour(lua_State* L, int idx)
+{
+    if (lua_isstring(L, idx))
+        return MyGUI::Colour::parse(lua_tostring(L, idx));
+    if (lua_istable(L, idx))
+    {
+        MyGUI::Colour c(1.0f, 1.0f, 1.0f, 1.0f);
+        lua_getfield(L, idx, "r"); if (!lua_isnil(L, -1)) c.red = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+        lua_getfield(L, idx, "g"); if (!lua_isnil(L, -1)) c.green = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+        lua_getfield(L, idx, "b"); if (!lua_isnil(L, -1)) c.blue = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+        lua_getfield(L, idx, "a"); if (!lua_isnil(L, -1)) c.alpha = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+        return c;
+    }
+    return MyGUI::Colour::White;
+}
+
+static void pushColour(lua_State* L, const MyGUI::Colour& c)
+{
+    lua_newtable(L);
+    lua_pushnumber(L, c.red); lua_setfield(L, -2, "r");
+    lua_pushnumber(L, c.green); lua_setfield(L, -2, "g");
+    lua_pushnumber(L, c.blue); lua_setfield(L, -2, "b");
+    lua_pushnumber(L, c.alpha); lua_setfield(L, -2, "a");
+}
+
 static int widget_setSize(lua_State* L)
 {
     MyGUI::Widget* w = getWidget(L, 1);
@@ -1166,6 +1192,12 @@ static int widget_getItemCount(lua_State* L)
             return 1;
         }
     }
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb)
+        {
+            lua_pushinteger(L, mlb->getItemCount());
+            return 1;
+        }
     lua_pushinteger(L, 0);
     return 1;
 }
@@ -1180,7 +1212,13 @@ static int widget_addItem(lua_State* L)
         if (lb)
         {
             lb->addItem(name);
+                MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb)
+        {
+            mlb->addItem(name);
             return 0;
+        }
+    return 0;
         }
         MyGUI::ComboBox* cb = w->castType<MyGUI::ComboBox>(false);
         if (cb)
@@ -1212,7 +1250,13 @@ static int widget_insertItemAt(lua_State* L)
         if (lb)
         {
             lb->insertItemAt(idx, name);
+                MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb)
+        {
+            mlb->insertItemAt(idx, name);
             return 0;
+        }
+    return 0;
         }
         MyGUI::ComboBox* cb = w->castType<MyGUI::ComboBox>(false);
         if (cb)
@@ -1243,7 +1287,13 @@ static int widget_removeItemAt(lua_State* L)
         if (lb)
         {
             lb->removeItemAt(idx);
+                MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb)
+        {
+            mlb->removeItemAt(idx);
             return 0;
+        }
+    return 0;
         }
         MyGUI::ComboBox* cb = w->castType<MyGUI::ComboBox>(false);
         if (cb)
@@ -1270,7 +1320,13 @@ static int widget_removeAllItems(lua_State* L)
         if (lb)
         {
             lb->removeAllItems();
+                MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb)
+        {
+            mlb->removeAllItems();
             return 0;
+        }
+    return 0;
         }
         MyGUI::ComboBox* cb = w->castType<MyGUI::ComboBox>(false);
         if (cb)
@@ -1326,7 +1382,19 @@ static int widget_setIndexSelected(lua_State* L)
         if (lb)
         {
             lb->setIndexSelected(idx);
+                MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb)
+        {
+            mlb->setIndexSelected(idx);
             return 0;
+        }
+        MyGUI::TabControl* tc = w->castType<MyGUI::TabControl>(false);
+        if (tc)
+        {
+            tc->setIndexSelected(idx);
+            return 0;
+        }
+    return 0;
         }
         MyGUI::ComboBox* cb = w->castType<MyGUI::ComboBox>(false);
         if (cb)
@@ -1353,7 +1421,13 @@ static int widget_clearIndexSelected(lua_State* L)
         if (lb)
         {
             lb->clearIndexSelected();
+                MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb)
+        {
+            mlb->clearIndexSelected();
             return 0;
+        }
+    return 0;
         }
         MyGUI::ComboBox* cb = w->castType<MyGUI::ComboBox>(false);
         if (cb)
@@ -1405,7 +1479,13 @@ static int widget_setItemNameAt(lua_State* L)
         if (lb)
         {
             lb->setItemNameAt(idx, name);
+                MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb)
+        {
+            mlb->setItemNameAt(idx, name);
             return 0;
+        }
+    return 0;
         }
         MyGUI::ComboBox* cb = w->castType<MyGUI::ComboBox>(false);
         if (cb)
@@ -1436,6 +1516,18 @@ static int widget_getOptimalHeight(lua_State* L)
             return 1;
         }
     }
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb)
+        {
+            lua_pushinteger(L, mlb->getIndexSelected());
+            return 1;
+        }
+        MyGUI::TabControl* tc = w->castType<MyGUI::TabControl>(false);
+        if (tc)
+        {
+            lua_pushinteger(L, tc->getIndexSelected());
+            return 1;
+        }
     lua_pushinteger(L, 0);
     return 1;
 }
@@ -1761,6 +1853,189 @@ static int lua_isResourceExist(lua_State* L)
     return 1;
 }
 
+
+// TextBox additions
+static int widget_setFontName(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::TextBox* tb = w->castType<MyGUI::TextBox>(false);
+        if (tb) tb->setFontName(luaL_checkstring(L, 2));
+    }
+    return 0;
+}
+static int widget_getFontName(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::TextBox* tb = w->castType<MyGUI::TextBox>(false);
+        if (tb) { lua_pushstring(L, tb->getFontName().c_str()); return 1; }
+    }
+    return 0;
+}
+static int widget_setFontHeight(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::TextBox* tb = w->castType<MyGUI::TextBox>(false);
+        if (tb) tb->setFontHeight((int)luaL_checkinteger(L, 2));
+    }
+    return 0;
+}
+static int widget_getFontHeight(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::TextBox* tb = w->castType<MyGUI::TextBox>(false);
+        if (tb) { lua_pushinteger(L, tb->getFontHeight()); return 1; }
+    }
+    return 0;
+}
+static int widget_setTextAlign(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::TextBox* tb = w->castType<MyGUI::TextBox>(false);
+        if (tb) tb->setTextAlign((MyGUI::Align::Enum)luaL_checkinteger(L, 2));
+    }
+    return 0;
+}
+static int widget_getTextAlign(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::TextBox* tb = w->castType<MyGUI::TextBox>(false);
+        if (tb) { lua_pushinteger(L, tb->getTextAlign().getValue()); return 1; }
+    }
+    return 0;
+}
+static int widget_setTextColour(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::TextBox* tb = w->castType<MyGUI::TextBox>(false);
+        if (tb) tb->setTextColour(readColour(L, 2));
+    }
+    return 0;
+}
+static int widget_getTextColour(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::TextBox* tb = w->castType<MyGUI::TextBox>(false);
+        if (tb) { pushColour(L, tb->getTextColour()); return 1; }
+    }
+    return 0;
+}
+
+// MultiListBox specific
+static int widget_getColumnCount(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) { lua_pushinteger(L, mlb->getColumnCount()); return 1; }
+    }
+    return 0;
+}
+static int widget_insertColumnAt(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) mlb->insertColumnAt((size_t)luaL_checkinteger(L, 2), luaL_checkstring(L, 3), (int)luaL_optinteger(L, 4, 0));
+    }
+    return 0;
+}
+static int widget_addColumn(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) mlb->addColumn(luaL_checkstring(L, 2), (int)luaL_optinteger(L, 3, 0));
+    }
+    return 0;
+}
+static int widget_removeColumnAt(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) mlb->removeColumnAt((size_t)luaL_checkinteger(L, 2));
+    }
+    return 0;
+}
+static int widget_removeAllColumns(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) mlb->removeAllColumns();
+    }
+    return 0;
+}
+static int widget_setColumnNameAt(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) mlb->setColumnNameAt((size_t)luaL_checkinteger(L, 2), luaL_checkstring(L, 3));
+    }
+    return 0;
+}
+static int widget_setColumnWidthAt(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) mlb->setColumnWidthAt((size_t)luaL_checkinteger(L, 2), (int)luaL_checkinteger(L, 3));
+    }
+    return 0;
+}
+static int widget_getColumnNameAt(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) { lua_pushstring(L, mlb->getColumnNameAt((size_t)luaL_checkinteger(L, 2)).asUTF8().c_str()); return 1; }
+    }
+    return 0;
+}
+static int widget_getColumnWidthAt(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) { lua_pushinteger(L, mlb->getColumnWidthAt((size_t)luaL_checkinteger(L, 2))); return 1; }
+    }
+    return 0;
+}
+static int widget_setSubItemNameAt(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) mlb->setSubItemNameAt((size_t)luaL_checkinteger(L, 2), (size_t)luaL_checkinteger(L, 3), luaL_checkstring(L, 4));
+    }
+    return 0;
+}
+static int widget_getSubItemNameAt(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::MultiListBox* mlb = w->castType<MyGUI::MultiListBox>(false);
+        if (mlb) { lua_pushstring(L, mlb->getSubItemNameAt((size_t)luaL_checkinteger(L, 2), (size_t)luaL_checkinteger(L, 3)).asUTF8().c_str()); return 1; }
+    }
+    return 0;
+}
+
+// ImageBox additional methods
+static int widget_setImageInfo(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::ImageBox* ib = w->castType<MyGUI::ImageBox>(false);
+        if (ib) ib->setImageInfo(luaL_checkstring(L, 2), MyGUI::IntCoord((int)luaL_checkinteger(L, 3), (int)luaL_checkinteger(L, 4), (int)luaL_checkinteger(L, 5), (int)luaL_checkinteger(L, 6)), MyGUI::IntSize((int)luaL_checkinteger(L, 7), (int)luaL_checkinteger(L, 8)));
+    }
+    return 0;
+}
+static int widget_setImageRect(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::ImageBox* ib = w->castType<MyGUI::ImageBox>(false);
+        if (ib) ib->setImageRect(MyGUI::IntRect((int)luaL_checkinteger(L, 2), (int)luaL_checkinteger(L, 3), (int)luaL_checkinteger(L, 4), (int)luaL_checkinteger(L, 5)));
+    }
+    return 0;
+}
+static int widget_getImageSize(lua_State* L) {
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w) {
+        MyGUI::ImageBox* ib = w->castType<MyGUI::ImageBox>(false);
+        if (ib) { MyGUI::IntSize sz = ib->getImageSize(); lua_pushinteger(L, sz.width); lua_pushinteger(L, sz.height); return 2; }
+    }
+    return 0;
+}
+
 static int widget_index(lua_State* L)
 {
     const char* key = luaL_checkstring(L, 2);
@@ -1871,6 +2146,32 @@ void MyGuiBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
+
+        { "setFontName",          widget_setFontName },
+        { "getFontName",          widget_getFontName },
+        { "setFontHeight",        widget_setFontHeight },
+        { "getFontHeight",        widget_getFontHeight },
+        { "setTextAlign",         widget_setTextAlign },
+        { "getTextAlign",         widget_getTextAlign },
+        { "setTextColour",        widget_setTextColour },
+        { "getTextColour",        widget_getTextColour },
+        
+        { "getColumnCount",       widget_getColumnCount },
+        { "insertColumnAt",       widget_insertColumnAt },
+        { "addColumn",            widget_addColumn },
+        { "removeColumnAt",       widget_removeColumnAt },
+        { "removeAllColumns",     widget_removeAllColumns },
+        { "setColumnNameAt",      widget_setColumnNameAt },
+        { "setColumnWidthAt",     widget_setColumnWidthAt },
+        { "getColumnNameAt",      widget_getColumnNameAt },
+        { "getColumnWidthAt",     widget_getColumnWidthAt },
+        { "setSubItemNameAt",     widget_setSubItemNameAt },
+        { "getSubItemNameAt",     widget_getSubItemNameAt },
+        
+        { "setImageInfo",         widget_setImageInfo },
+        { "setImageRect",         widget_setImageRect },
+        { "getImageSize",         widget_getImageSize },
+
         { "setSize",              widget_setSize },
         { "setPosition",          widget_setPosition },
         { "setCaption",           widget_setCaption },
@@ -2021,6 +2322,22 @@ void MyGuiBinding::registerBinding(lua_State* L)
 
     lua_pushcfunction(L, lua_isResourceExist);
     lua_setfield(L, -2, "isResourceExist");
+
+
+    // Align Enum constants
+    lua_newtable(L);
+    lua_pushinteger(L, (int)MyGUI::Align::HCenter); lua_setfield(L, -2, "HCenter");
+    lua_pushinteger(L, (int)MyGUI::Align::VCenter); lua_setfield(L, -2, "VCenter");
+    lua_pushinteger(L, (int)MyGUI::Align::Center); lua_setfield(L, -2, "Center");
+    lua_pushinteger(L, (int)MyGUI::Align::Left); lua_setfield(L, -2, "Left");
+    lua_pushinteger(L, (int)MyGUI::Align::Right); lua_setfield(L, -2, "Right");
+    lua_pushinteger(L, (int)MyGUI::Align::HStretch); lua_setfield(L, -2, "HStretch");
+    lua_pushinteger(L, (int)MyGUI::Align::Top); lua_setfield(L, -2, "Top");
+    lua_pushinteger(L, (int)MyGUI::Align::Bottom); lua_setfield(L, -2, "Bottom");
+    lua_pushinteger(L, (int)MyGUI::Align::VStretch); lua_setfield(L, -2, "VStretch");
+    lua_pushinteger(L, (int)MyGUI::Align::Stretch); lua_setfield(L, -2, "Stretch");
+    lua_pushinteger(L, (int)MyGUI::Align::Default); lua_setfield(L, -2, "Default");
+    lua_setfield(L, -2, "Align");
 
     // WidgetStyle enum constants
     lua_newtable(L);
