@@ -22,8 +22,11 @@ public:
     static int getSelectedText(lua_State* L);
     static int clearValues(lua_State* L);
     static int getComboBox(lua_State* L);
+    static int createMe(lua_State* L);
+    static int _NV_createMe(lua_State* L);
     static int refresh(lua_State* L);
     static int _NV_refresh(lua_State* L);
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };
 }

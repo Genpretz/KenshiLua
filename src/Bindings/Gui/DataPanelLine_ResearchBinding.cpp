@@ -1,8 +1,9 @@
 #include "pch.h"
-#include <kenshi/gui/DataPanelLine.h>
+#include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_ResearchBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -102,41 +103,43 @@ static int DataPanelLine_Research_set_barSkin(lua_State* L)
     return 0;
 }
 
-static int DataPanelLine_Research_set_bar(lua_State* L)
-{
-    DataPanelLine_Research* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bar");
-}
-
-static int DataPanelLine_Research_set_but(lua_State* L)
-{
-    DataPanelLine_Research* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for but");
-}
-
-static int DataPanelLine_Research_set_Xbut(lua_State* L)
-{
-    DataPanelLine_Research* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for Xbut");
-}
-
 int DataPanelLine_ResearchBinding::_CONSTRUCTOR(lua_State* L)
 {
     DataPanelLine_Research* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
 
-    std::string a = luaL_checkstring(L, 2);
-    std::string b = luaL_checkstring(L, 3);
+    const std::string a = luaL_checkstring(L, 2);
+    const std::string b = luaL_checkstring(L, 3);
     int cat = (int)luaL_checkinteger(L, 4);
     float vv1 = (float)luaL_checknumber(L, 5);
-    std::string _barColor = luaL_checkstring(L, 6);
+    const std::string _barColor = luaL_checkstring(L, 6);
     bool _Xbut = lua_toboolean(L, 7) != 0;
     DataPanelLine_Research* result = instance->_CONSTRUCTOR(a, b, cat, vv1, _barColor, _Xbut);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<DataPanelLine_Research>(L, result, DataPanelLine_ResearchBinding::getMetatableName());
+}
+
+int DataPanelLine_ResearchBinding::createMe(lua_State* L)
+{
+    DataPanelLine_Research* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->createMe(parent, top, lastLine);
+    return 0;
+}
+
+int DataPanelLine_ResearchBinding::_NV_createMe(lua_State* L)
+{
+    DataPanelLine_Research* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->_NV_createMe(parent, top, lastLine);
+    return 0;
 }
 
 int DataPanelLine_ResearchBinding::_DESTRUCTOR(lua_State* L)
@@ -150,12 +153,10 @@ int DataPanelLine_ResearchBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 120: void setToolTipMainBar(...) - overloaded method
-  line 121: void _NV_setToolTipMainBar(...) - overloaded method
-  line 122: void setToolTipMainBar(...) - overloaded method
-  line 123: void _NV_setToolTipMainBar(...) - overloaded method
-  line 124: void createMe(...) - unsupported arg type
-  line 125: void _NV_createMe(...) - unsupported arg type
+  line 121: void setToolTipMainBar(...) - overloaded method
+  line 122: void _NV_setToolTipMainBar(...) - overloaded method
+  line 123: void setToolTipMainBar(...) - overloaded method
+  line 124: void _NV_setToolTipMainBar(...) - overloaded method
 */
 
 int DataPanelLine_ResearchBinding::gc(lua_State* L)
@@ -180,6 +181,8 @@ void DataPanelLine_ResearchBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", DataPanelLine_ResearchBinding::_CONSTRUCTOR },
+        { "createMe", DataPanelLine_ResearchBinding::createMe },
+        { "_NV_createMe", DataPanelLine_ResearchBinding::_NV_createMe },
         { "_DESTRUCTOR", DataPanelLine_ResearchBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -195,37 +198,20 @@ void DataPanelLine_ResearchBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DataPanelLine_ResearchBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DataPanelLine_Research_get_v1);
-    lua_setfield(L, -2, "v1");
-    lua_pushcfunction(L, DataPanelLine_Research_get_v2);
-    lua_setfield(L, -2, "v2");
-    lua_pushcfunction(L, DataPanelLine_Research_get_hasXBut);
-    lua_setfield(L, -2, "hasXBut");
-    lua_pushcfunction(L, DataPanelLine_Research_get_barSkin);
-    lua_setfield(L, -2, "barSkin");
-    lua_pushcfunction(L, DataPanelLine_Research_get_bar);
-    lua_setfield(L, -2, "bar");
-    lua_pushcfunction(L, DataPanelLine_Research_get_but);
-    lua_setfield(L, -2, "but");
-    lua_pushcfunction(L, DataPanelLine_Research_get_Xbut);
-    lua_setfield(L, -2, "Xbut");
+    registerGetter(L, "v1", DataPanelLine_Research_get_v1);
+    registerGetter(L, "v2", DataPanelLine_Research_get_v2);
+    registerGetter(L, "hasXBut", DataPanelLine_Research_get_hasXBut);
+    registerGetter(L, "barSkin", DataPanelLine_Research_get_barSkin);
+    registerGetter(L, "bar", DataPanelLine_Research_get_bar);
+    registerGetter(L, "but", DataPanelLine_Research_get_but);
+    registerGetter(L, "Xbut", DataPanelLine_Research_get_Xbut);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DataPanelLine_Research_set_v1);
-    lua_setfield(L, -2, "v1");
-    lua_pushcfunction(L, DataPanelLine_Research_set_v2);
-    lua_setfield(L, -2, "v2");
-    lua_pushcfunction(L, DataPanelLine_Research_set_hasXBut);
-    lua_setfield(L, -2, "hasXBut");
-    lua_pushcfunction(L, DataPanelLine_Research_set_barSkin);
-    lua_setfield(L, -2, "barSkin");
-    lua_pushcfunction(L, DataPanelLine_Research_set_bar);
-    lua_setfield(L, -2, "bar");
-    lua_pushcfunction(L, DataPanelLine_Research_set_but);
-    lua_setfield(L, -2, "but");
-    lua_pushcfunction(L, DataPanelLine_Research_set_Xbut);
-    lua_setfield(L, -2, "Xbut");
+    registerSetter(L, "v1", DataPanelLine_Research_set_v1);
+    registerSetter(L, "v2", DataPanelLine_Research_set_v2);
+    registerSetter(L, "hasXBut", DataPanelLine_Research_set_hasXBut);
+    registerSetter(L, "barSkin", DataPanelLine_Research_set_barSkin);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to DataPanelLine

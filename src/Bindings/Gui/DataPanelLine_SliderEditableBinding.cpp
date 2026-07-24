@@ -1,8 +1,10 @@
 #include "pch.h"
-#include <kenshi/gui/DataPanelLine.h>
+#include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_SliderEditableBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGuiBinding.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -118,13 +120,6 @@ static int DataPanelLine_SliderEditable_set_max(lua_State* L)
     return 0;
 }
 
-static int DataPanelLine_SliderEditable_set_valuePtr(lua_State* L)
-{
-    DataPanelLine_SliderEditable* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for valuePtr");
-}
-
 static int DataPanelLine_SliderEditable_set_scale(lua_State* L)
 {
     DataPanelLine_SliderEditable* instance = getInstance(L, 1);
@@ -133,25 +128,17 @@ static int DataPanelLine_SliderEditable_set_scale(lua_State* L)
     return 0;
 }
 
-static int DataPanelLine_SliderEditable_set_nameText(lua_State* L)
+int DataPanelLine_SliderEditableBinding::setEditableValuePtr(lua_State* L)
 {
     DataPanelLine_SliderEditable* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for nameText");
-}
 
-static int DataPanelLine_SliderEditable_set_valueEditBox(lua_State* L)
-{
-    DataPanelLine_SliderEditable* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for valueEditBox");
-}
-
-static int DataPanelLine_SliderEditable_set_sliderBar(lua_State* L)
-{
-    DataPanelLine_SliderEditable* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for sliderBar");
+    float tempVal = (float)luaL_checknumber(L, 2);
+    float* val = &tempVal;
+    float lo = (float)luaL_checknumber(L, 3);
+    float hi = (float)luaL_checknumber(L, 4);
+    instance->setEditableValuePtr(val, lo, hi);
+    return 0;
 }
 
 int DataPanelLine_SliderEditableBinding::getSlider(lua_State* L)
@@ -160,8 +147,7 @@ int DataPanelLine_SliderEditableBinding::getSlider(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
 
     MyGUI::ScrollBar* result = instance->getSlider();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGuiBinding::getMetatableName());
 }
 
 int DataPanelLine_SliderEditableBinding::getEditBox(lua_State* L)
@@ -170,8 +156,7 @@ int DataPanelLine_SliderEditableBinding::getEditBox(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
 
     MyGUI::EditBox* result = instance->getEditBox();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGuiBinding::getMetatableName());
 }
 
 int DataPanelLine_SliderEditableBinding::setValue(lua_State* L)
@@ -212,6 +197,46 @@ int DataPanelLine_SliderEditableBinding::setPrecision(lua_State* L)
     return 0;
 }
 
+int DataPanelLine_SliderEditableBinding::_CONSTRUCTOR(lua_State* L)
+{
+    DataPanelLine_SliderEditable* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
+
+    const std::string text = luaL_checkstring(L, 2);
+    int category = (int)luaL_checkinteger(L, 3);
+    bool showName = lua_toboolean(L, 4) != 0;
+    float min = (float)luaL_checknumber(L, 5);
+    float max = (float)luaL_checknumber(L, 6);
+    float tempVal = (float)luaL_checknumber(L, 7);
+    float* value = &tempVal;
+    DataPanelLine_SliderEditable* result = instance->_CONSTRUCTOR(text, category, showName, min, max, value);
+    return pushObject<DataPanelLine_SliderEditable>(L, result, DataPanelLine_SliderEditableBinding::getMetatableName());
+}
+
+int DataPanelLine_SliderEditableBinding::createMe(lua_State* L)
+{
+    DataPanelLine_SliderEditable* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->createMe(parent, top, lastLine);
+    return 0;
+}
+
+int DataPanelLine_SliderEditableBinding::_NV_createMe(lua_State* L)
+{
+    DataPanelLine_SliderEditable* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->_NV_createMe(parent, top, lastLine);
+    return 0;
+}
+
 int DataPanelLine_SliderEditableBinding::_DESTRUCTOR(lua_State* L)
 {
     DataPanelLine_SliderEditable* instance = getInstance(L, 1);
@@ -223,14 +248,10 @@ int DataPanelLine_SliderEditableBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 163: void setEditableValuePtr(...) - pointer arg
-  line 167: void updateValuePtr(...) - unsupported arg type
-  line 168: void _NV_updateValuePtr(...) - unsupported arg type
-  line 175: DataPanelLine_SliderEditable* _CONSTRUCTOR(...) - pointer arg
-  line 176: void createMe(...) - unsupported arg type
-  line 177: void _NV_createMe(...) - unsupported arg type
-  line 178: void editCallback(...) - unsupported arg type
-  line 179: void sliderCallback(...) - unsupported arg type
+  line 168: void updateValuePtr(...) - unsupported arg type
+  line 169: void _NV_updateValuePtr(...) - unsupported arg type
+  line 179: void editCallback(...) - unsupported arg type
+  line 180: void sliderCallback(...) - unsupported arg type
 */
 
 int DataPanelLine_SliderEditableBinding::gc(lua_State* L)
@@ -254,12 +275,16 @@ void DataPanelLine_SliderEditableBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "setEditableValuePtr", DataPanelLine_SliderEditableBinding::setEditableValuePtr },
         { "getSlider", DataPanelLine_SliderEditableBinding::getSlider },
         { "getEditBox", DataPanelLine_SliderEditableBinding::getEditBox },
         { "setValue", DataPanelLine_SliderEditableBinding::setValue },
         { "refresh", DataPanelLine_SliderEditableBinding::refresh },
         { "_NV_refresh", DataPanelLine_SliderEditableBinding::_NV_refresh },
         { "setPrecision", DataPanelLine_SliderEditableBinding::setPrecision },
+        { "_CONSTRUCTOR", DataPanelLine_SliderEditableBinding::_CONSTRUCTOR },
+        { "createMe", DataPanelLine_SliderEditableBinding::createMe },
+        { "_NV_createMe", DataPanelLine_SliderEditableBinding::_NV_createMe },
         { "_DESTRUCTOR", DataPanelLine_SliderEditableBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -275,45 +300,23 @@ void DataPanelLine_SliderEditableBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DataPanelLine_SliderEditableBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_get_width);
-    lua_setfield(L, -2, "width");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_get_showName);
-    lua_setfield(L, -2, "showName");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_get_min);
-    lua_setfield(L, -2, "min");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_get_max);
-    lua_setfield(L, -2, "max");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_get_valuePtr);
-    lua_setfield(L, -2, "valuePtr");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_get_scale);
-    lua_setfield(L, -2, "scale");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_get_nameText);
-    lua_setfield(L, -2, "nameText");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_get_valueEditBox);
-    lua_setfield(L, -2, "valueEditBox");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_get_sliderBar);
-    lua_setfield(L, -2, "sliderBar");
+    registerGetter(L, "width", DataPanelLine_SliderEditable_get_width);
+    registerGetter(L, "showName", DataPanelLine_SliderEditable_get_showName);
+    registerGetter(L, "min", DataPanelLine_SliderEditable_get_min);
+    registerGetter(L, "max", DataPanelLine_SliderEditable_get_max);
+    registerGetter(L, "valuePtr", DataPanelLine_SliderEditable_get_valuePtr);
+    registerGetter(L, "scale", DataPanelLine_SliderEditable_get_scale);
+    registerGetter(L, "nameText", DataPanelLine_SliderEditable_get_nameText);
+    registerGetter(L, "valueEditBox", DataPanelLine_SliderEditable_get_valueEditBox);
+    registerGetter(L, "sliderBar", DataPanelLine_SliderEditable_get_sliderBar);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_set_width);
-    lua_setfield(L, -2, "width");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_set_showName);
-    lua_setfield(L, -2, "showName");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_set_min);
-    lua_setfield(L, -2, "min");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_set_max);
-    lua_setfield(L, -2, "max");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_set_valuePtr);
-    lua_setfield(L, -2, "valuePtr");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_set_scale);
-    lua_setfield(L, -2, "scale");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_set_nameText);
-    lua_setfield(L, -2, "nameText");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_set_valueEditBox);
-    lua_setfield(L, -2, "valueEditBox");
-    lua_pushcfunction(L, DataPanelLine_SliderEditable_set_sliderBar);
-    lua_setfield(L, -2, "sliderBar");
+    registerSetter(L, "width", DataPanelLine_SliderEditable_set_width);
+    registerSetter(L, "showName", DataPanelLine_SliderEditable_set_showName);
+    registerSetter(L, "min", DataPanelLine_SliderEditable_set_min);
+    registerSetter(L, "max", DataPanelLine_SliderEditable_set_max);
+    registerSetter(L, "scale", DataPanelLine_SliderEditable_set_scale);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to DataPanelLine

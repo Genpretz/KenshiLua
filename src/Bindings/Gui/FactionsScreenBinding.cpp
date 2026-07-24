@@ -1,10 +1,9 @@
 #include "pch.h"
-#include "Bindings/FactionBinding.h"
-#include "Bindings/Gui/DatapanelGUIBinding.h"
-
-#include <kenshi/gui/FactionsScreen.h>
+#include "kenshi\gui\FactionsScreen.h"
 #include "FactionsScreenBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/FactionBinding.h"
 
 namespace KenshiLua
 {
@@ -78,6 +77,14 @@ static int FactionsScreen_get_updateTimer(lua_State* L)
 }
 
 // --- Setters for FactionsScreen ---
+static int FactionsScreen_set_selectedFaction(lua_State* L)
+{
+    FactionsScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionsScreen is nil");
+    instance->selectedFaction = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
+}
+
 static int FactionsScreen_set_scrollListItemTop(lua_State* L)
 {
     FactionsScreen* instance = getInstance(L, 1);
@@ -91,6 +98,14 @@ static int FactionsScreen_set_scrollListItemWidth(lua_State* L)
     FactionsScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionsScreen is nil");
     instance->scrollListItemWidth = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int FactionsScreen_set_infoPanel(lua_State* L)
+{
+    FactionsScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionsScreen is nil");
+    instance->infoPanel = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -213,31 +228,22 @@ void FactionsScreenBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FactionsScreenBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FactionsScreen_get_mainWidget);
-    lua_setfield(L, -2, "mainWidget");
-    lua_pushcfunction(L, FactionsScreen_get_selectedFaction);
-    lua_setfield(L, -2, "selectedFaction");
-    lua_pushcfunction(L, FactionsScreen_get_scrollList);
-    lua_setfield(L, -2, "scrollList");
-    lua_pushcfunction(L, FactionsScreen_get_scrollListItemTop);
-    lua_setfield(L, -2, "scrollListItemTop");
-    lua_pushcfunction(L, FactionsScreen_get_scrollListItemWidth);
-    lua_setfield(L, -2, "scrollListItemWidth");
-    lua_pushcfunction(L, FactionsScreen_get_nameText);
-    lua_setfield(L, -2, "nameText");
-    lua_pushcfunction(L, FactionsScreen_get_infoPanel);
-    lua_setfield(L, -2, "infoPanel");
-    lua_pushcfunction(L, FactionsScreen_get_updateTimer);
-    lua_setfield(L, -2, "updateTimer");
+    registerGetter(L, "mainWidget", FactionsScreen_get_mainWidget);
+    registerGetter(L, "selectedFaction", FactionsScreen_get_selectedFaction);
+    registerGetter(L, "scrollList", FactionsScreen_get_scrollList);
+    registerGetter(L, "scrollListItemTop", FactionsScreen_get_scrollListItemTop);
+    registerGetter(L, "scrollListItemWidth", FactionsScreen_get_scrollListItemWidth);
+    registerGetter(L, "nameText", FactionsScreen_get_nameText);
+    registerGetter(L, "infoPanel", FactionsScreen_get_infoPanel);
+    registerGetter(L, "updateTimer", FactionsScreen_get_updateTimer);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FactionsScreen_set_scrollListItemTop);
-    lua_setfield(L, -2, "scrollListItemTop");
-    lua_pushcfunction(L, FactionsScreen_set_scrollListItemWidth);
-    lua_setfield(L, -2, "scrollListItemWidth");
-    lua_pushcfunction(L, FactionsScreen_set_updateTimer);
-    lua_setfield(L, -2, "updateTimer");
+    registerSetter(L, "selectedFaction", FactionsScreen_set_selectedFaction);
+    registerSetter(L, "scrollListItemTop", FactionsScreen_set_scrollListItemTop);
+    registerSetter(L, "scrollListItemWidth", FactionsScreen_set_scrollListItemWidth);
+    registerSetter(L, "infoPanel", FactionsScreen_set_infoPanel);
+    registerSetter(L, "updateTimer", FactionsScreen_set_updateTimer);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

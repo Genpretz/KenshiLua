@@ -1,9 +1,13 @@
 #include "pch.h"
-#include "Bindings/Gui/DatapanelGUIBinding.h"
-
-#include <kenshi/gui/InventoryGUI.h>
+#include "kenshi\gui\InventoryGUI.h"
 #include "InventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/GameDataCopyStandaloneBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
+#include "Bindings/InventorySectionBinding.h"
+#include "Bindings/Gui/InventorySectionGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -21,6 +25,13 @@ static int InventoryLayout_get_datapanel(lua_State* L)
     return pushObject<DatapanelGUI>(L, instance->datapanel, DatapanelGUIBinding::getMetatableName());
 }
 
+static int InventoryLayout_get_dataPanelInfos(lua_State* L)
+{
+    InventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryLayout is nil");
+    return pushObject<GameDataCopyStandalone>(L, &instance->dataPanelInfos, GameDataCopyStandaloneBinding::getMetatableName());
+}
+
 static int InventoryLayout_get_window(lua_State* L)
 {
     InventoryLayout* instance = getInstance(L, 1);
@@ -30,15 +41,30 @@ static int InventoryLayout_get_window(lua_State* L)
 }
 
 // --- Setters for InventoryLayout ---
+static int InventoryLayout_set_datapanel(lua_State* L)
+{
+    InventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryLayout is nil");
+    instance->datapanel = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int InventoryLayout_set_dataPanelInfos(lua_State* L)
+{
+    InventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryLayout is nil");
+    instance->dataPanelInfos = *checkObject<GameDataCopyStandalone>(L, 2, GameDataCopyStandaloneBinding::getMetatableName());
+    return 0;
+}
+
 int InventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
 {
     InventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryLayout is nil");
 
-    std::string file = luaL_checkstring(L, 2);
+    const std::string file = luaL_checkstring(L, 2);
     InventoryLayout* result = instance->_CONSTRUCTOR(file);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
 }
 
 int InventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
@@ -65,7 +91,7 @@ int InventoryLayoutBinding::getWidget(lua_State* L)
     InventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryLayout is nil");
 
-    std::string name = luaL_checkstring(L, 2);
+    const std::string name = luaL_checkstring(L, 2);
     MyGUI::Widget* result = instance->getWidget(name);
     lua_pushlightuserdata(L, (void*)result);
     return 1;
@@ -94,9 +120,19 @@ int InventoryLayoutBinding::setupDataPanelInfos(lua_State* L)
     InventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryLayout is nil");
 
-    std::string name = luaL_checkstring(L, 2);
+    const std::string name = luaL_checkstring(L, 2);
     instance->setupDataPanelInfos(name);
     return 0;
+}
+
+int InventoryLayoutBinding::createSectionGUI(lua_State* L)
+{
+    InventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryLayout is nil");
+
+    InventorySection* section = checkObject<InventorySection>(L, 2, InventorySectionBinding::getMetatableName());
+    InventorySectionGUI* result = instance->createSectionGUI(section);
+    return pushObject<InventorySectionGUI>(L, result, InventorySectionGUIBinding::getMetatableName());
 }
 
 int InventoryLayoutBinding::setSectionGUIDisabled(lua_State* L)
@@ -104,7 +140,7 @@ int InventoryLayoutBinding::setSectionGUIDisabled(lua_State* L)
     InventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryLayout is nil");
 
-    std::string sectionName = luaL_checkstring(L, 2);
+    const std::string sectionName = luaL_checkstring(L, 2);
     int width = (int)luaL_checkinteger(L, 3);
     int height = (int)luaL_checkinteger(L, 4);
     instance->setSectionGUIDisabled(sectionName, width, height);
@@ -115,14 +151,15 @@ int InventoryLayoutBinding::setSectionGUIDisabled(lua_State* L)
 Skipped methods needing manual binding:
   line 239: void setupSections(...) - unsupported arg type
   line 246: void notifyCellSizeChanged(...) - static method
-  line 249: InventorySectionGUI* createSectionGUI(...) - unsupported arg type
   line 251: MyGUI::types::TSize<int> resizeSection(...) - unsupported return type
   line 252: MyGUI::types::TSize<int> resizeSectionWidget(...) - unsupported return type
 */
 
 /*
-Skipped properties needing manual binding:
-  line 247: dataPanelInfos (GameDataCopyStandalone) - unsupported type
+LIGHTUSERDATA DEPENDENCIES:
+  - InventoryLayout_get_window: MyGUI::Window* (unbound pointer)
+  - InventoryLayoutBinding::getWindow: MyGUI::Window* (unbound pointer)
+  - InventoryLayoutBinding::getWidget: MyGUI::Widget* (unbound pointer)
 */
 
 int InventoryLayoutBinding::gc(lua_State* L)
@@ -153,6 +190,7 @@ void InventoryLayoutBinding::registerBinding(lua_State* L)
         { "getDatapanel", InventoryLayoutBinding::getDatapanel },
         { "_NV_getDatapanel", InventoryLayoutBinding::_NV_getDatapanel },
         { "setupDataPanelInfos", InventoryLayoutBinding::setupDataPanelInfos },
+        { "createSectionGUI", InventoryLayoutBinding::createSectionGUI },
         { "setSectionGUIDisabled", InventoryLayoutBinding::setSectionGUIDisabled },
         { 0, 0 }
     };
@@ -168,13 +206,14 @@ void InventoryLayoutBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, InventoryLayoutBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, InventoryLayout_get_datapanel);
-    lua_setfield(L, -2, "datapanel");
-    lua_pushcfunction(L, InventoryLayout_get_window);
-    lua_setfield(L, -2, "window");
+    registerGetter(L, "datapanel", InventoryLayout_get_datapanel);
+    registerGetter(L, "dataPanelInfos", InventoryLayout_get_dataPanelInfos);
+    registerGetter(L, "window", InventoryLayout_get_window);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "datapanel", InventoryLayout_set_datapanel);
+    registerSetter(L, "dataPanelInfos", InventoryLayout_set_dataPanelInfos);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout

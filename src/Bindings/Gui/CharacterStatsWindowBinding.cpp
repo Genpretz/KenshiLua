@@ -369,43 +369,26 @@ void CharacterStatsWindowBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, CharacterStatsWindowBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, CharacterStatsWindow_get_character);
-    lua_setfield(L, -2, "character");
-    lua_pushcfunction(L, CharacterStatsWindow_get_statsSum);
-    lua_setfield(L, -2, "statsSum");
-    lua_pushcfunction(L, CharacterStatsWindow_get_statProgress);
-    lua_setfield(L, -2, "statProgress");
-    lua_pushcfunction(L, CharacterStatsWindow_get_currentStatIdDescription);
-    lua_setfield(L, -2, "currentStatIdDescription");
-    lua_pushcfunction(L, CharacterStatsWindow_get_attributesDatapanel);
-    lua_setfield(L, -2, "attributesDatapanel");
-    lua_pushcfunction(L, CharacterStatsWindow_get_skills1Datapanel);
-    lua_setfield(L, -2, "skills1Datapanel");
-    lua_pushcfunction(L, CharacterStatsWindow_get_skills2Datapanel);
-    lua_setfield(L, -2, "skills2Datapanel");
-    lua_pushcfunction(L, CharacterStatsWindow_get_skills3Datapanel);
-    lua_setfield(L, -2, "skills3Datapanel");
-    lua_pushcfunction(L, CharacterStatsWindow_get_skills4Datapanel);
-    lua_setfield(L, -2, "skills4Datapanel");
-    lua_pushcfunction(L, CharacterStatsWindow_get_statsDatapanel);
-    lua_setfield(L, -2, "statsDatapanel");
-    lua_pushcfunction(L, CharacterStatsWindow_get_description1Datapanel);
-    lua_setfield(L, -2, "description1Datapanel");
-    lua_pushcfunction(L, CharacterStatsWindow_get_description2Datapanel);
-    lua_setfield(L, -2, "description2Datapanel");
-    lua_pushcfunction(L, CharacterStatsWindow_get_autoUpdateMode);
-    lua_setfield(L, -2, "autoUpdateMode");
+    registerGetter(L, "character", CharacterStatsWindow_get_character);
+    registerGetter(L, "statsSum", CharacterStatsWindow_get_statsSum);
+    registerGetter(L, "statProgress", CharacterStatsWindow_get_statProgress);
+    registerGetter(L, "currentStatIdDescription", CharacterStatsWindow_get_currentStatIdDescription);
+    registerGetter(L, "attributesDatapanel", CharacterStatsWindow_get_attributesDatapanel);
+    registerGetter(L, "skills1Datapanel", CharacterStatsWindow_get_skills1Datapanel);
+    registerGetter(L, "skills2Datapanel", CharacterStatsWindow_get_skills2Datapanel);
+    registerGetter(L, "skills3Datapanel", CharacterStatsWindow_get_skills3Datapanel);
+    registerGetter(L, "skills4Datapanel", CharacterStatsWindow_get_skills4Datapanel);
+    registerGetter(L, "statsDatapanel", CharacterStatsWindow_get_statsDatapanel);
+    registerGetter(L, "description1Datapanel", CharacterStatsWindow_get_description1Datapanel);
+    registerGetter(L, "description2Datapanel", CharacterStatsWindow_get_description2Datapanel);
+    registerGetter(L, "autoUpdateMode", CharacterStatsWindow_get_autoUpdateMode);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, CharacterStatsWindow_set_statsSum);
-    lua_setfield(L, -2, "statsSum");
-    lua_pushcfunction(L, CharacterStatsWindow_set_statProgress);
-    lua_setfield(L, -2, "statProgress");
-    lua_pushcfunction(L, CharacterStatsWindow_set_currentStatIdDescription);
-    lua_setfield(L, -2, "currentStatIdDescription");
-    lua_pushcfunction(L, CharacterStatsWindow_set_autoUpdateMode);
-    lua_setfield(L, -2, "autoUpdateMode");
+    registerSetter(L, "statsSum", CharacterStatsWindow_set_statsSum);
+    registerSetter(L, "statProgress", CharacterStatsWindow_set_statProgress);
+    registerSetter(L, "currentStatIdDescription", CharacterStatsWindow_set_currentStatIdDescription);
+    registerSetter(L, "autoUpdateMode", CharacterStatsWindow_set_autoUpdateMode);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to GUIWindow

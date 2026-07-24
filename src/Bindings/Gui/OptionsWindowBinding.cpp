@@ -1,11 +1,12 @@
 #include "pch.h"
+#include "kenshi\gui\OptionsWindow.h"
+#include "OptionsWindowBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
 #include "Bindings/Gui/DataPanelLine_KeyConfigBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
-
-#include <kenshi/gui/OptionsWindow.h>
-#include "OptionsWindowBinding.h"
-#include "GUIWindowBinding.h"
-#include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/GUIWindowBinding.h"
+#include "Bindings/Gui/ToolTipBinding.h"
 
 namespace KenshiLua
 {
@@ -74,8 +75,7 @@ static int OptionsWindow_get_tooltip(lua_State* L)
 {
     OptionsWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OptionsWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->tooltip);
-    return 1;
+    return pushObject<ToolTip>(L, instance->tooltip, ToolTipBinding::getMetatableName());
 }
 
 static int OptionsWindow_get_previewFontSize(lua_State* L)
@@ -111,11 +111,35 @@ static int OptionsWindow_set_resolutionIndex(lua_State* L)
     return 0;
 }
 
+static int OptionsWindow_set_keyConfig(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+    instance->keyConfig = lua_isnoneornil(L, 2) ? nullptr : checkObject<DataPanelLine_KeyConfig>(L, 2, DataPanelLine_KeyConfigBinding::getMetatableName());
+    return 0;
+}
+
+static int OptionsWindow_set_keysDatapanel(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+    instance->keysDatapanel = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
 static int OptionsWindow_set_created(lua_State* L)
 {
     OptionsWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OptionsWindow is nil");
     instance->created = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int OptionsWindow_set_tooltip(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+    instance->tooltip = lua_isnoneornil(L, 2) ? nullptr : checkObject<ToolTip>(L, 2, ToolTipBinding::getMetatableName());
     return 0;
 }
 
@@ -199,8 +223,7 @@ int OptionsWindowBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "OptionsWindow is nil");
 
     OptionsWindow* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<OptionsWindow>(L, result, OptionsWindowBinding::getMetatableName());
 }
 
 int OptionsWindowBinding::_DESTRUCTOR(lua_State* L)
@@ -209,6 +232,96 @@ int OptionsWindowBinding::_DESTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "OptionsWindow is nil");
 
     instance->_DESTRUCTOR();
+    return 0;
+}
+
+int OptionsWindowBinding::saveLocationChanged(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->saveLocationChanged(line);
+    return 0;
+}
+
+int OptionsWindowBinding::changeFontSize(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->changeFontSize(line);
+    return 0;
+}
+
+int OptionsWindowBinding::changeVolume(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->changeVolume(line);
+    return 0;
+}
+
+int OptionsWindowBinding::toggleNames(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->toggleNames(line);
+    return 0;
+}
+
+int OptionsWindowBinding::resetTutorials(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->resetTutorials(_a1);
+    return 0;
+}
+
+int OptionsWindowBinding::toggleTutorials(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->toggleTutorials(_a1);
+    return 0;
+}
+
+int OptionsWindowBinding::changeDistances(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->changeDistances(_a1);
+    return 0;
+}
+
+int OptionsWindowBinding::toggleCompositor(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    DataPanelLine* l = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->toggleCompositor(l);
+    return 0;
+}
+
+int OptionsWindowBinding::resetAllKeys(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->resetAllKeys(_a1);
     return 0;
 }
 
@@ -245,16 +358,12 @@ Skipped methods needing manual binding:
   line 20: void show(...) - overloaded method
   line 22: void show(...) - overloaded method
   line 27: void setKey(...) - non-string reference arg
-  line 35: void saveLocationChanged(...) - unsupported arg type
-  line 36: void changeFontSize(...) - unsupported arg type
-  line 37: void changeVolume(...) - unsupported arg type
-  line 38: void toggleNames(...) - unsupported arg type
-  line 39: void resetTutorials(...) - unsupported arg type
-  line 40: void toggleTutorials(...) - unsupported arg type
-  line 41: void changeDistances(...) - unsupported arg type
-  line 42: void toggleCompositor(...) - unsupported arg type
-  line 43: void resetAllKeys(...) - unsupported arg type
   line 47: void closeButton(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - OptionsWindow_get_tabs: MyGUI::TabControl* (unbound pointer)
 */
 
 /*
@@ -292,6 +401,15 @@ void OptionsWindowBinding::registerBinding(lua_State* L)
         { "_NV_update", OptionsWindowBinding::_NV_update },
         { "_CONSTRUCTOR", OptionsWindowBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", OptionsWindowBinding::_DESTRUCTOR },
+        { "saveLocationChanged", OptionsWindowBinding::saveLocationChanged },
+        { "changeFontSize", OptionsWindowBinding::changeFontSize },
+        { "changeVolume", OptionsWindowBinding::changeVolume },
+        { "toggleNames", OptionsWindowBinding::toggleNames },
+        { "resetTutorials", OptionsWindowBinding::resetTutorials },
+        { "toggleTutorials", OptionsWindowBinding::toggleTutorials },
+        { "changeDistances", OptionsWindowBinding::changeDistances },
+        { "toggleCompositor", OptionsWindowBinding::toggleCompositor },
+        { "resetAllKeys", OptionsWindowBinding::resetAllKeys },
         { "saveOptions", OptionsWindowBinding::saveOptions },
         { "create", OptionsWindowBinding::create },
         { "updateResolutions", OptionsWindowBinding::updateResolutions },
@@ -309,37 +427,26 @@ void OptionsWindowBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, OptionsWindowBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, OptionsWindow_get_invertX);
-    lua_setfield(L, -2, "invertX");
-    lua_pushcfunction(L, OptionsWindow_get_invertY);
-    lua_setfield(L, -2, "invertY");
-    lua_pushcfunction(L, OptionsWindow_get_resolutionIndex);
-    lua_setfield(L, -2, "resolutionIndex");
-    lua_pushcfunction(L, OptionsWindow_get_keyConfig);
-    lua_setfield(L, -2, "keyConfig");
-    lua_pushcfunction(L, OptionsWindow_get_keysDatapanel);
-    lua_setfield(L, -2, "keysDatapanel");
-    lua_pushcfunction(L, OptionsWindow_get_tabs);
-    lua_setfield(L, -2, "tabs");
-    lua_pushcfunction(L, OptionsWindow_get_created);
-    lua_setfield(L, -2, "created");
-    lua_pushcfunction(L, OptionsWindow_get_tooltip);
-    lua_setfield(L, -2, "tooltip");
-    lua_pushcfunction(L, OptionsWindow_get_previewFontSize);
-    lua_setfield(L, -2, "previewFontSize");
+    registerGetter(L, "invertX", OptionsWindow_get_invertX);
+    registerGetter(L, "invertY", OptionsWindow_get_invertY);
+    registerGetter(L, "resolutionIndex", OptionsWindow_get_resolutionIndex);
+    registerGetter(L, "keyConfig", OptionsWindow_get_keyConfig);
+    registerGetter(L, "keysDatapanel", OptionsWindow_get_keysDatapanel);
+    registerGetter(L, "tabs", OptionsWindow_get_tabs);
+    registerGetter(L, "created", OptionsWindow_get_created);
+    registerGetter(L, "tooltip", OptionsWindow_get_tooltip);
+    registerGetter(L, "previewFontSize", OptionsWindow_get_previewFontSize);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, OptionsWindow_set_invertX);
-    lua_setfield(L, -2, "invertX");
-    lua_pushcfunction(L, OptionsWindow_set_invertY);
-    lua_setfield(L, -2, "invertY");
-    lua_pushcfunction(L, OptionsWindow_set_resolutionIndex);
-    lua_setfield(L, -2, "resolutionIndex");
-    lua_pushcfunction(L, OptionsWindow_set_created);
-    lua_setfield(L, -2, "created");
-    lua_pushcfunction(L, OptionsWindow_set_previewFontSize);
-    lua_setfield(L, -2, "previewFontSize");
+    registerSetter(L, "invertX", OptionsWindow_set_invertX);
+    registerSetter(L, "invertY", OptionsWindow_set_invertY);
+    registerSetter(L, "resolutionIndex", OptionsWindow_set_resolutionIndex);
+    registerSetter(L, "keyConfig", OptionsWindow_set_keyConfig);
+    registerSetter(L, "keysDatapanel", OptionsWindow_set_keysDatapanel);
+    registerSetter(L, "created", OptionsWindow_set_created);
+    registerSetter(L, "tooltip", OptionsWindow_set_tooltip);
+    registerSetter(L, "previewFontSize", OptionsWindow_set_previewFontSize);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to GUIWindow

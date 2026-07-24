@@ -1,8 +1,8 @@
 #include "pch.h"
-#include <kenshi/gui/ToolTip.h>
+#include "kenshi\gui\Tooltip.h"
 #include "ToolTipFixedBinding.h"
-#include "ToolTipBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/ToolTipBinding.h"
 
 namespace KenshiLua
 {
@@ -98,6 +98,11 @@ Skipped methods needing manual binding:
   line 104: void mouseMoved(...) - unsupported arg type
 */
 
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - ToolTipFixed_get_parentPanel: MyGUI::Widget* (unbound pointer)
+*/
+
 int ToolTipFixedBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -138,15 +143,12 @@ void ToolTipFixedBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ToolTipFixedBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ToolTipFixed_get_parentPanel);
-    lua_setfield(L, -2, "parentPanel");
-    lua_pushcfunction(L, ToolTipFixed_get_minHeight);
-    lua_setfield(L, -2, "minHeight");
+    registerGetter(L, "parentPanel", ToolTipFixed_get_parentPanel);
+    registerGetter(L, "minHeight", ToolTipFixed_get_minHeight);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ToolTipFixed_set_minHeight);
-    lua_setfield(L, -2, "minHeight");
+    registerSetter(L, "minHeight", ToolTipFixed_set_minHeight);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ToolTip

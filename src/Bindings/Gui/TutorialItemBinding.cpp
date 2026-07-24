@@ -1,7 +1,8 @@
 #include "pch.h"
-#include <kenshi/gui/TutorialGUI.h>
+#include "kenshi\gui\TutorialGUI.h"
 #include "TutorialItemBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/TutorialSubItemBinding.h"
 
 namespace KenshiLua
 {
@@ -115,8 +116,7 @@ int TutorialItemBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "TutorialItem is nil");
 
     TutorialItem* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<TutorialItem>(L, result, TutorialItemBinding::getMetatableName());
 }
 
 int TutorialItemBinding::_DESTRUCTOR(lua_State* L)
@@ -184,8 +184,7 @@ int TutorialItemBinding::getCurrentSubItem(lua_State* L)
     if (!instance) return luaL_error(L, "TutorialItem is nil");
 
     TutorialSubItem* result = instance->getCurrentSubItem();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<TutorialSubItem>(L, result, TutorialSubItemBinding::getMetatableName());
 }
 
 int TutorialItemBinding::getSubItemAt(lua_State* L)
@@ -195,8 +194,7 @@ int TutorialItemBinding::getSubItemAt(lua_State* L)
 
     int index = (int)luaL_checkinteger(L, 2);
     TutorialSubItem* result = instance->getSubItemAt(index);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<TutorialSubItem>(L, result, TutorialSubItemBinding::getMetatableName());
 }
 
 int TutorialItemBinding::getCurrentSubItemIndex(lua_State* L)
@@ -434,33 +432,21 @@ void TutorialItemBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TutorialItemBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TutorialItem_get_id);
-    lua_setfield(L, -2, "id");
-    lua_pushcfunction(L, TutorialItem_get_started);
-    lua_setfield(L, -2, "started");
-    lua_pushcfunction(L, TutorialItem_get_locked);
-    lua_setfield(L, -2, "locked");
-    lua_pushcfunction(L, TutorialItem_get_title);
-    lua_setfield(L, -2, "title");
-    lua_pushcfunction(L, TutorialItem_get_state);
-    lua_setfield(L, -2, "state");
-    lua_pushcfunction(L, TutorialItem_get_subItemIndex);
-    lua_setfield(L, -2, "subItemIndex");
+    registerGetter(L, "id", TutorialItem_get_id);
+    registerGetter(L, "started", TutorialItem_get_started);
+    registerGetter(L, "locked", TutorialItem_get_locked);
+    registerGetter(L, "title", TutorialItem_get_title);
+    registerGetter(L, "state", TutorialItem_get_state);
+    registerGetter(L, "subItemIndex", TutorialItem_get_subItemIndex);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TutorialItem_set_id);
-    lua_setfield(L, -2, "id");
-    lua_pushcfunction(L, TutorialItem_set_started);
-    lua_setfield(L, -2, "started");
-    lua_pushcfunction(L, TutorialItem_set_locked);
-    lua_setfield(L, -2, "locked");
-    lua_pushcfunction(L, TutorialItem_set_title);
-    lua_setfield(L, -2, "title");
-    lua_pushcfunction(L, TutorialItem_set_state);
-    lua_setfield(L, -2, "state");
-    lua_pushcfunction(L, TutorialItem_set_subItemIndex);
-    lua_setfield(L, -2, "subItemIndex");
+    registerSetter(L, "id", TutorialItem_set_id);
+    registerSetter(L, "started", TutorialItem_set_started);
+    registerSetter(L, "locked", TutorialItem_set_locked);
+    registerSetter(L, "title", TutorialItem_set_title);
+    registerSetter(L, "state", TutorialItem_set_state);
+    registerSetter(L, "subItemIndex", TutorialItem_set_subItemIndex);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

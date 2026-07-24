@@ -1,9 +1,10 @@
 #include "pch.h"
-#include "Bindings/ItemBinding.h"
-
-#include <kenshi/gui/InventoryGUI.h>
+#include "kenshi\gui\InventoryGUI.h"
 #include "InventoryIconBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/Util/iVector2Binding.h"
 
 namespace KenshiLua
 {
@@ -46,6 +47,14 @@ static int InventoryIcon_get_chargesProgress(lua_State* L)
 }
 
 // --- Setters for InventoryIcon ---
+static int InventoryIcon_set_item(lua_State* L)
+{
+    InventoryIcon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryIcon is nil");
+    instance->item = lua_isnoneornil(L, 2) ? nullptr : checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    return 0;
+}
+
 int InventoryIconBinding::update(lua_State* L)
 {
     InventoryIcon* instance = getInstance(L, 1);
@@ -82,6 +91,14 @@ Skipped methods needing manual binding:
   line 28: void createIconImage(...) - static method
   line 29: MyGUI::types::TSize<int> getItemSize(...) - static method
   line 30: MyGUI::types::TPoint<int> getItemPosition(...) - static method
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - InventoryIcon_get_image: MyGUI::ImageBox* (unbound pointer)
+  - InventoryIcon_get_quantityText: MyGUI::TextBox* (unbound pointer)
+  - InventoryIcon_get_chargesProgress: MyGUI::Widget* (unbound pointer)
+  - InventoryIconBinding::getWidget: MyGUI::Widget* (unbound pointer)
 */
 
 int InventoryIconBinding::gc(lua_State* L)
@@ -122,17 +139,14 @@ void InventoryIconBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, InventoryIconBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, InventoryIcon_get_item);
-    lua_setfield(L, -2, "item");
-    lua_pushcfunction(L, InventoryIcon_get_image);
-    lua_setfield(L, -2, "image");
-    lua_pushcfunction(L, InventoryIcon_get_quantityText);
-    lua_setfield(L, -2, "quantityText");
-    lua_pushcfunction(L, InventoryIcon_get_chargesProgress);
-    lua_setfield(L, -2, "chargesProgress");
+    registerGetter(L, "item", InventoryIcon_get_item);
+    registerGetter(L, "image", InventoryIcon_get_image);
+    registerGetter(L, "quantityText", InventoryIcon_get_quantityText);
+    registerGetter(L, "chargesProgress", InventoryIcon_get_chargesProgress);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "item", InventoryIcon_set_item);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout

@@ -1,6 +1,4 @@
 #pragma once
-#include <kenshi/gui/BuildModeWindow.h>
-
 
 extern "C" {
 #include <lua.h>
@@ -9,7 +7,6 @@ extern "C" {
 
 namespace KenshiLua
 {
-    typedef BuildModeWindow::BuildingGroup BuildingGroup;
 class BuildingGroupBinding
 {
 public:

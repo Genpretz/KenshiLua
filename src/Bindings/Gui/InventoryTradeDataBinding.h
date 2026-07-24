@@ -1,6 +1,4 @@
 #pragma once
-#include <kenshi/gui/InventoryGUI.h>
-
 
 extern "C" {
 #include <lua.h>
@@ -9,7 +7,6 @@ extern "C" {
 
 namespace KenshiLua
 {
-    typedef InventoryGUI::InventoryTradeData InventoryTradeData;
 class InventoryTradeDataBinding
 {
 public:

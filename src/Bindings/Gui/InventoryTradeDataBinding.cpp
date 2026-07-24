@@ -1,11 +1,12 @@
 #include "pch.h"
-#include <kenshi/gui/InventoryGUI.h>
+#include "kenshi\gui\InventoryGUI.h"
 #include "InventoryTradeDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
 
 namespace KenshiLua
 {
-    typedef InventoryGUI::InventoryTradeData InventoryTradeData;
+typedef InventoryGUI::InventoryTradeData InventoryTradeData;
 
 static InventoryTradeData* getInstance(lua_State* L, int idx)
 {
@@ -17,8 +18,7 @@ static int InventoryTradeData_get_inventory(lua_State* L)
 {
     InventoryTradeData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryTradeData is nil");
-    lua_pushlightuserdata(L, (void*)instance->inventory);
-    return 1;
+    return pushObject<InventoryGUI>(L, instance->inventory, InventoryGUIBinding::getMetatableName());
 }
 
 static int InventoryTradeData_get_paymentRequired(lua_State* L)
@@ -45,7 +45,22 @@ static int InventoryTradeData_get_isPlayer(lua_State* L)
     return 1;
 }
 
+static int InventoryTradeData_get_owner(lua_State* L)
+{
+    InventoryTradeData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryTradeData is nil");
+    return handBinding::push(L, instance->owner);
+}
+
 // --- Setters for InventoryTradeData ---
+static int InventoryTradeData_set_inventory(lua_State* L)
+{
+    InventoryTradeData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryTradeData is nil");
+    instance->inventory = lua_isnoneornil(L, 2) ? nullptr : checkObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    return 0;
+}
+
 static int InventoryTradeData_set_paymentRequired(lua_State* L)
 {
     InventoryTradeData* instance = getInstance(L, 1);
@@ -70,6 +85,14 @@ static int InventoryTradeData_set_isPlayer(lua_State* L)
     return 0;
 }
 
+static int InventoryTradeData_set_owner(lua_State* L)
+{
+    InventoryTradeData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryTradeData is nil");
+    instance->owner = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
 int InventoryTradeDataBinding::isValid(lua_State* L)
 {
     InventoryTradeData* instance = getInstance(L, 1);
@@ -86,11 +109,6 @@ Skipped methods needing manual binding:
   line 106: InventoryTradeData* _CONSTRUCTOR(...) - overloaded method
   line 108: InventoryTradeData* _CONSTRUCTOR(...) - overloaded method
   line 115: InventoryGUI::InventoryTradeData& operator=(...) - operator
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 114: owner (hand) - unsupported type
 */
 
 int InventoryTradeDataBinding::gc(lua_State* L)
@@ -129,23 +147,19 @@ void InventoryTradeDataBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, InventoryTradeDataBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, InventoryTradeData_get_inventory);
-    lua_setfield(L, -2, "inventory");
-    lua_pushcfunction(L, InventoryTradeData_get_paymentRequired);
-    lua_setfield(L, -2, "paymentRequired");
-    lua_pushcfunction(L, InventoryTradeData_get_canDropItems);
-    lua_setfield(L, -2, "canDropItems");
-    lua_pushcfunction(L, InventoryTradeData_get_isPlayer);
-    lua_setfield(L, -2, "isPlayer");
+    registerGetter(L, "inventory", InventoryTradeData_get_inventory);
+    registerGetter(L, "paymentRequired", InventoryTradeData_get_paymentRequired);
+    registerGetter(L, "canDropItems", InventoryTradeData_get_canDropItems);
+    registerGetter(L, "isPlayer", InventoryTradeData_get_isPlayer);
+    registerGetter(L, "owner", InventoryTradeData_get_owner);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, InventoryTradeData_set_paymentRequired);
-    lua_setfield(L, -2, "paymentRequired");
-    lua_pushcfunction(L, InventoryTradeData_set_canDropItems);
-    lua_setfield(L, -2, "canDropItems");
-    lua_pushcfunction(L, InventoryTradeData_set_isPlayer);
-    lua_setfield(L, -2, "isPlayer");
+    registerSetter(L, "inventory", InventoryTradeData_set_inventory);
+    registerSetter(L, "paymentRequired", InventoryTradeData_set_paymentRequired);
+    registerSetter(L, "canDropItems", InventoryTradeData_set_canDropItems);
+    registerSetter(L, "isPlayer", InventoryTradeData_set_isPlayer);
+    registerSetter(L, "owner", InventoryTradeData_set_owner);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

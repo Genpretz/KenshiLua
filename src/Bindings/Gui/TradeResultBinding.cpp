@@ -1,11 +1,12 @@
 #include "pch.h"
-#include <kenshi/gui/InventoryGUI.h>
+#include "kenshi\gui\InventoryGUI.h"
 #include "TradeResultBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/EnumBinding.h"
 
 namespace KenshiLua
 {
-    typedef InventoryGUI::TradeResult TradeResult;
+typedef InventoryGUI::TradeResult TradeResult;
 
 static TradeResult* getInstance(lua_State* L, int idx)
 {
@@ -37,8 +38,7 @@ int TradeResultBinding::_CONSTRUCTOR(lua_State* L)
 
     TradeResult::Enum value = (TradeResult::Enum)luaL_checkinteger(L, 2);
     TradeResult* result = instance->_CONSTRUCTOR(value);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<TradeResult>(L, result, TradeResultBinding::getMetatableName());
 }
 
 int TradeResultBinding::showMessage(lua_State* L)
@@ -94,13 +94,11 @@ void TradeResultBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TradeResultBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TradeResult_get_value);
-    lua_setfield(L, -2, "value");
+    registerGetter(L, "value", TradeResult_get_value);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TradeResult_set_value);
-    lua_setfield(L, -2, "value");
+    registerSetter(L, "value", TradeResult_set_value);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

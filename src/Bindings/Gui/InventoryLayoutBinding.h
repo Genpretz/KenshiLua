@@ -23,6 +23,7 @@ public:
     static int getDatapanel(lua_State* L);
     static int _NV_getDatapanel(lua_State* L);
     static int setupDataPanelInfos(lua_State* L);
+    static int createSectionGUI(lua_State* L);
     static int setSectionGUIDisabled(lua_State* L);
 };
 }

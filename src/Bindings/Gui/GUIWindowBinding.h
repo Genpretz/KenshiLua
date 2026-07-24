@@ -37,6 +37,8 @@ public:
     static int _NV_isVisible(lua_State* L);
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
+    static int autoChangeSelectedObject(lua_State* L);
+    static int _NV_autoChangeSelectedObject(lua_State* L);
     static int getWidget(lua_State* L);
     static int resize(lua_State* L);
     static int _NV_resize(lua_State* L);

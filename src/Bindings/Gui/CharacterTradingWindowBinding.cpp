@@ -203,16 +203,11 @@ void CharacterTradingWindowBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, CharacterTradingWindowBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, CharacterTradingWindow_get_tradingHandler);
-    lua_setfield(L, -2, "tradingHandler");
-    lua_pushcfunction(L, CharacterTradingWindow_get_charactersBox);
-    lua_setfield(L, -2, "charactersBox");
-    lua_pushcfunction(L, CharacterTradingWindow_get_confirmBtn);
-    lua_setfield(L, -2, "confirmBtn");
-    lua_pushcfunction(L, CharacterTradingWindow_get_currentTotalText);
-    lua_setfield(L, -2, "currentTotalText");
-    lua_pushcfunction(L, CharacterTradingWindow_get_selectedCountText);
-    lua_setfield(L, -2, "selectedCountText");
+    registerGetter(L, "tradingHandler", CharacterTradingWindow_get_tradingHandler);
+    registerGetter(L, "charactersBox", CharacterTradingWindow_get_charactersBox);
+    registerGetter(L, "confirmBtn", CharacterTradingWindow_get_confirmBtn);
+    registerGetter(L, "currentTotalText", CharacterTradingWindow_get_currentTotalText);
+    registerGetter(L, "selectedCountText", CharacterTradingWindow_get_selectedCountText);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table

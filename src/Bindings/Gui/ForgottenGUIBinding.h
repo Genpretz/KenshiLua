@@ -48,6 +48,7 @@ public:
     static int characterStatsWindowVisible(lua_State* L);
     static int selectedObjectsChanged(lua_State* L);
     static int updateToOrdersPanel(lua_State* L);
+    static int notifyTownDeleted(lua_State* L);
     static int update(lua_State* L);
     static int closeTradeWindow(lua_State* L);
     static int closeInventoryBuilding(lua_State* L);
@@ -57,6 +58,10 @@ public:
     static int getInventoryWindowWithMouse(lua_State* L);
     static int isAnyInventoryWindowOpen(lua_State* L);
     static int toggleHelpWindow(lua_State* L);
+    static int addWindowToUpdateList(lua_State* L);
+    static int removeWindowFromUpdateList(lua_State* L);
+    static int addDatapanelToUpdateList(lua_State* L);
+    static int removeDatapanelFromUpdateList(lua_State* L);
     static int setMouseCursorVisible(lua_State* L);
     static int getGuiManager(lua_State* L);
     static int createPanel(lua_State* L);

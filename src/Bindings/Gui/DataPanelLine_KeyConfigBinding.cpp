@@ -1,8 +1,9 @@
 #include "pch.h"
-#include <kenshi/gui/DataPanelLine.h>
+#include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_KeyConfigBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -38,20 +39,6 @@ static int DataPanelLine_KeyConfig_get_command(lua_State* L)
 }
 
 // --- Setters for DataPanelLine_KeyConfig ---
-static int DataPanelLine_KeyConfig_set_btn0(lua_State* L)
-{
-    DataPanelLine_KeyConfig* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for btn0");
-}
-
-static int DataPanelLine_KeyConfig_set_btn1(lua_State* L)
-{
-    DataPanelLine_KeyConfig* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for btn1");
-}
-
 static int DataPanelLine_KeyConfig_set_command(lua_State* L)
 {
     DataPanelLine_KeyConfig* instance = getInstance(L, 1);
@@ -65,12 +52,11 @@ int DataPanelLine_KeyConfigBinding::_CONSTRUCTOR(lua_State* L)
     DataPanelLine_KeyConfig* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
 
-    std::string cmd = luaL_checkstring(L, 2);
-    std::string text = luaL_checkstring(L, 3);
+    const std::string cmd = luaL_checkstring(L, 2);
+    const std::string text = luaL_checkstring(L, 3);
     int cat = (int)luaL_checkinteger(L, 4);
     DataPanelLine_KeyConfig* result = instance->_CONSTRUCTOR(cmd, text, cat);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<DataPanelLine_KeyConfig>(L, result, DataPanelLine_KeyConfigBinding::getMetatableName());
 }
 
 int DataPanelLine_KeyConfigBinding::oldKey(lua_State* L)
@@ -88,7 +74,7 @@ int DataPanelLine_KeyConfigBinding::setKey(lua_State* L)
     DataPanelLine_KeyConfig* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
 
-    std::string s = luaL_checkstring(L, 2);
+    const std::string s = luaL_checkstring(L, 2);
     instance->setKey(s);
     return 0;
 }
@@ -98,7 +84,7 @@ int DataPanelLine_KeyConfigBinding::eraseKey(lua_State* L)
     DataPanelLine_KeyConfig* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
 
-    std::string key = luaL_checkstring(L, 2);
+    const std::string key = luaL_checkstring(L, 2);
     instance->eraseKey(key);
     return 0;
 }
@@ -130,6 +116,30 @@ int DataPanelLine_KeyConfigBinding::cancel(lua_State* L)
     return 0;
 }
 
+int DataPanelLine_KeyConfigBinding::createMe(lua_State* L)
+{
+    DataPanelLine_KeyConfig* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
+
+    DatapanelGUI* p = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float vpos = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->createMe(p, vpos, lastLine);
+    return 0;
+}
+
+int DataPanelLine_KeyConfigBinding::_NV_createMe(lua_State* L)
+{
+    DataPanelLine_KeyConfig* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
+
+    DatapanelGUI* p = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float vpos = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->_NV_createMe(p, vpos, lastLine);
+    return 0;
+}
+
 int DataPanelLine_KeyConfigBinding::_DESTRUCTOR(lua_State* L)
 {
     DataPanelLine_KeyConfig* instance = getInstance(L, 1);
@@ -141,10 +151,8 @@ int DataPanelLine_KeyConfigBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 358: const std::string& getCommand(...) - reference return type
-  line 365: void createMe(...) - unsupported arg type
-  line 366: void _NV_createMe(...) - unsupported arg type
-  line 367: void clickButton(...) - unsupported arg type
+  line 359: const std::string& getCommand(...) - reference return type
+  line 368: void clickButton(...) - unsupported arg type
 */
 
 int DataPanelLine_KeyConfigBinding::gc(lua_State* L)
@@ -175,6 +183,8 @@ void DataPanelLine_KeyConfigBinding::registerBinding(lua_State* L)
         { "refresh", DataPanelLine_KeyConfigBinding::refresh },
         { "_NV_refresh", DataPanelLine_KeyConfigBinding::_NV_refresh },
         { "cancel", DataPanelLine_KeyConfigBinding::cancel },
+        { "createMe", DataPanelLine_KeyConfigBinding::createMe },
+        { "_NV_createMe", DataPanelLine_KeyConfigBinding::_NV_createMe },
         { "_DESTRUCTOR", DataPanelLine_KeyConfigBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -190,21 +200,13 @@ void DataPanelLine_KeyConfigBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DataPanelLine_KeyConfigBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DataPanelLine_KeyConfig_get_btn0);
-    lua_setfield(L, -2, "btn0");
-    lua_pushcfunction(L, DataPanelLine_KeyConfig_get_btn1);
-    lua_setfield(L, -2, "btn1");
-    lua_pushcfunction(L, DataPanelLine_KeyConfig_get_command);
-    lua_setfield(L, -2, "command");
+    registerGetter(L, "btn0", DataPanelLine_KeyConfig_get_btn0);
+    registerGetter(L, "btn1", DataPanelLine_KeyConfig_get_btn1);
+    registerGetter(L, "command", DataPanelLine_KeyConfig_get_command);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DataPanelLine_KeyConfig_set_btn0);
-    lua_setfield(L, -2, "btn0");
-    lua_pushcfunction(L, DataPanelLine_KeyConfig_set_btn1);
-    lua_setfield(L, -2, "btn1");
-    lua_pushcfunction(L, DataPanelLine_KeyConfig_set_command);
-    lua_setfield(L, -2, "command");
+    registerSetter(L, "command", DataPanelLine_KeyConfig_set_command);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to DataPanelLine

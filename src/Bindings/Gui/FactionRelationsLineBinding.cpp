@@ -1,13 +1,13 @@
 #include "pch.h"
-#include "Bindings/FactionBinding.h"
-
-#include <kenshi/gui/FactionsScreen.h>
+#include "kenshi\gui\FactionsScreen.h"
 #include "FactionRelationsLineBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/FactionBinding.h"
 
 namespace KenshiLua
 {
-    typedef FactionsScreen::FactionRelationsLine FactionRelationsLine;
+
+typedef FactionsScreen::FactionRelationsLine FactionRelationsLine;
 
 static FactionRelationsLine* getInstance(lua_State* L, int idx)
 {
@@ -55,12 +55,30 @@ static int FactionRelationsLine_get_rightBar(lua_State* L)
 }
 
 // --- Setters for FactionRelationsLine ---
+static int FactionRelationsLine_set_faction(lua_State* L)
+{
+    FactionRelationsLine* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionRelationsLine is nil");
+    instance->faction = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
+}
+
 static int FactionRelationsLine_set_value(lua_State* L)
 {
     FactionRelationsLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionRelationsLine is nil");
     instance->value = (float)luaL_checknumber(L, 2);
     return 0;
+}
+
+int FactionRelationsLineBinding::_CONSTRUCTOR(lua_State* L)
+{
+    FactionRelationsLine* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionRelationsLine is nil");
+
+    Faction* faction = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    FactionRelationsLine* result = instance->_CONSTRUCTOR(faction);
+    return pushObject<FactionRelationsLine>(L, result, FactionRelationsLineBinding::getMetatableName());
 }
 
 int FactionRelationsLineBinding::update(lua_State* L)
@@ -83,7 +101,6 @@ int FactionRelationsLineBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 19: FactionRelationsLine* _CONSTRUCTOR(...) - unsupported arg type
   line 20: void attachToWidget(...) - unsupported arg type
 */
 
@@ -108,6 +125,7 @@ void FactionRelationsLineBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", FactionRelationsLineBinding::_CONSTRUCTOR },
         { "update", FactionRelationsLineBinding::update },
         { "_DESTRUCTOR", FactionRelationsLineBinding::_DESTRUCTOR },
         { 0, 0 }
@@ -124,21 +142,16 @@ void FactionRelationsLineBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FactionRelationsLineBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FactionRelationsLine_get_faction);
-    lua_setfield(L, -2, "faction");
-    lua_pushcfunction(L, FactionRelationsLine_get_value);
-    lua_setfield(L, -2, "value");
-    lua_pushcfunction(L, FactionRelationsLine_get_valueText);
-    lua_setfield(L, -2, "valueText");
-    lua_pushcfunction(L, FactionRelationsLine_get_leftBar);
-    lua_setfield(L, -2, "leftBar");
-    lua_pushcfunction(L, FactionRelationsLine_get_rightBar);
-    lua_setfield(L, -2, "rightBar");
+    registerGetter(L, "faction", FactionRelationsLine_get_faction);
+    registerGetter(L, "value", FactionRelationsLine_get_value);
+    registerGetter(L, "valueText", FactionRelationsLine_get_valueText);
+    registerGetter(L, "leftBar", FactionRelationsLine_get_leftBar);
+    registerGetter(L, "rightBar", FactionRelationsLine_get_rightBar);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FactionRelationsLine_set_value);
-    lua_setfield(L, -2, "value");
+    registerSetter(L, "faction", FactionRelationsLine_set_faction);
+    registerSetter(L, "value", FactionRelationsLine_set_value);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout

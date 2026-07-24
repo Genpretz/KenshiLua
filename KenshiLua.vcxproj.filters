@@ -14,6 +14,40 @@
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\Lua\LuaState.cpp" />
     <ClCompile Include="src\Lua\LuaBindings.cpp" />
+    <ClCompile Include="src\Lua\RegisterBindings.cpp" />
+    <ClCompile Include="src\Bindings\Gui\BoxBinding.cpp">
+      <Filter>Source Files\Bindings\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\Gui\CharacterEditWindowBinding.cpp">
+      <Filter>Source Files\Bindings\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\Gui\ContextMenuBinding.cpp">
+      <Filter>Source Files\Bindings\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\Gui\ContextMenuGUIBinding.cpp">
+      <Filter>Source Files\Bindings\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\Gui\GamedataSelectionListBinding.cpp">
+      <Filter>Source Files\Bindings\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\Gui\SquadCellViewBinding.cpp">
+      <Filter>Source Files\Bindings\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\Gui\SquadDataBinding.cpp">
+      <Filter>Source Files\Bindings\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\Gui\SquadItemBoxBinding.cpp">
+      <Filter>Source Files\Bindings\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\Gui\SquadListWindowBinding.cpp">
+      <Filter>Source Files\Bindings\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\Gui\SquadManagementScreenBinding.cpp">
+      <Filter>Source Files\Bindings\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bindings\RobotLimbItemBinding.cpp">
+      <Filter>Source Files\Bindings</Filter>
+    </ClCompile>
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
     <ClCompile Include="src\Bindings\PlayerInterfaceBinding.cpp" />
@@ -969,12 +1003,12 @@
     <ClInclude Include="src\Bindings\TextureArrayLoadDataBinding.h" />
     <ClInclude Include="src\Bindings\TextureLoadDataBinding.h" />
     <ClInclude Include="src\Bindings\UniqueSpawnDataBinding.h" />
-    <ClInclude Include="src\Bindings\Templates\BoostUnorderedBinding.h" />
+    <ClInclude Include="src\Bindings\Util\BoostUnorderedBinding.h" />
     <ClInclude Include="src\Bindings\FitnessSelectorBinding.h" />
-    <ClInclude Include="src\Bindings\Templates\LektorBinding.h" />
-    <ClInclude Include="src\Bindings\Templates\OgreUnorderedBinding.h" />
-    <ClInclude Include="src\Bindings\Templates\OgreVectorBinding.h" />
-    <ClInclude Include="src\Bindings\Templates\StdMapBinding.h" />
+    <ClInclude Include="src\Bindings\Util\LektorBinding.h" />
+    <ClInclude Include="src\Bindings\Util\OgreUnorderedBinding.h" />
+    <ClInclude Include="src\Bindings\Util\OgreVectorBinding.h" />
+    <ClInclude Include="src\Bindings\Util\StdMapBinding.h" />
     <ClInclude Include="src\Lua\LuaCodec.h" />
     <ClInclude Include="src\Bindings\WhoSeesMeBinding.h" />
     <ClInclude Include="src\Bindings\Building\BuildingBinding.h" />

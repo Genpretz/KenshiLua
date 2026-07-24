@@ -1,14 +1,20 @@
 #include "pch.h"
+#include "kenshi\gui\InventoryGUI.h"
+#include "InventoryGUIBinding.h"
+#include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/ContainerItemBinding.h"
+#include "Bindings/Gui/GUIWindowBinding.h"
 #include "Bindings/InventoryBinding.h"
+#include "Bindings/Gui/InventoryIconBinding.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
+#include "Bindings/InventorySectionBinding.h"
+#include "Bindings/Gui/InventorySectionGUIBinding.h"
 #include "Bindings/ItemBinding.h"
+#include "Bindings/LockedArmourBinding.h"
 #include "Bindings/RootObjectBinding.h"
-
-#include <kenshi/gui/InventoryGUI.h>
-#include "InventoryGUIBinding.h"
-#include "GUIWindowBinding.h"
-#include "Lua/BindingHelpers.h"
+#include "Bindings/TownBinding.h"
+#include "Bindings/Util/iVector2Binding.h"
 
 namespace KenshiLua
 {
@@ -23,24 +29,21 @@ static int InventoryGUI_get_layoutMgr(lua_State* L)
 {
     InventoryGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->layoutMgr);
-    return 1;
+    return pushObject<InventoryLayout>(L, instance->layoutMgr, InventoryLayoutBinding::getMetatableName());
 }
 
 static int InventoryGUI_get_ownerInventory(lua_State* L)
 {
     InventoryGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->ownerInventory);
-    return 1;
+    return pushObject<InventoryGUI>(L, instance->ownerInventory, InventoryGUIBinding::getMetatableName());
 }
 
 static int InventoryGUI_get_childInventory(lua_State* L)
 {
     InventoryGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->childInventory);
-    return 1;
+    return pushObject<InventoryGUI>(L, instance->childInventory, InventoryGUIBinding::getMetatableName());
 }
 
 static int InventoryGUI_get_mouseFocus(lua_State* L)
@@ -75,11 +78,43 @@ static int InventoryGUI_get_visible(lua_State* L)
 }
 
 // --- Setters for InventoryGUI ---
+static int InventoryGUI_set_layoutMgr(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    instance->layoutMgr = lua_isnoneornil(L, 2) ? nullptr : checkObject<InventoryLayout>(L, 2, InventoryLayoutBinding::getMetatableName());
+    return 0;
+}
+
+static int InventoryGUI_set_ownerInventory(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    instance->ownerInventory = lua_isnoneornil(L, 2) ? nullptr : checkObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int InventoryGUI_set_childInventory(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    instance->childInventory = lua_isnoneornil(L, 2) ? nullptr : checkObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    return 0;
+}
+
 static int InventoryGUI_set_mouseFocus(lua_State* L)
 {
     InventoryGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
     instance->mouseFocus = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int InventoryGUI_set_callbackObject(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    instance->callbackObject = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
     return 0;
 }
 
@@ -179,6 +214,16 @@ int InventoryGUIBinding::_NV_isVisible(lua_State* L)
     return 1;
 }
 
+int InventoryGUIBinding::_NV_refreshSection(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    InventorySection* section = checkObject<InventorySection>(L, 2, InventorySectionBinding::getMetatableName());
+    instance->_NV_refreshSection(section);
+    return 0;
+}
+
 int InventoryGUIBinding::showBackpack(lua_State* L)
 {
     InventoryGUI* instance = getInstance(L, 1);
@@ -214,6 +259,17 @@ int InventoryGUIBinding::_NV_getInventory(lua_State* L)
 
     Inventory* result = instance->_NV_getInventory();
     return pushObject<Inventory>(L, result, InventoryBinding::getMetatableName());
+}
+
+int InventoryGUIBinding::hasSameOwner(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    const InventoryGUI* other = checkObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    bool result = instance->hasSameOwner(other);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
 }
 
 int InventoryGUIBinding::getCallbackCharacter(lua_State* L)
@@ -257,7 +313,7 @@ int InventoryGUIBinding::getSelectedItem(lua_State* L)
     InventoryGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
 
-    std::string sectionName = luaL_checkstring(L, 2);
+    const std::string sectionName = luaL_checkstring(L, 2);
     Item* result = instance->getSelectedItem(sectionName);
     return pushObject<Item>(L, result, ItemBinding::getMetatableName());
 }
@@ -269,6 +325,18 @@ int InventoryGUIBinding::stealingGUIInfoUpdate(lua_State* L)
 
     instance->stealingGUIInfoUpdate();
     return 0;
+}
+
+int InventoryGUIBinding::_CONSTRUCTOR(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    Inventory* inv = checkObject<Inventory>(L, 2, InventoryBinding::getMetatableName());
+    InventoryLayout* layout = checkObject<InventoryLayout>(L, 3, InventoryLayoutBinding::getMetatableName());
+    RootObject* callback = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    InventoryGUI* result = instance->_CONSTRUCTOR(inv, layout, callback);
+    return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
 }
 
 int InventoryGUIBinding::_DESTRUCTOR(lua_State* L)
@@ -285,7 +353,7 @@ int InventoryGUIBinding::pickupItemToMouse(lua_State* L)
     InventoryGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
 
-    std::string sectionName = luaL_checkstring(L, 2);
+    const std::string sectionName = luaL_checkstring(L, 2);
     bool result = instance->pickupItemToMouse(sectionName);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
@@ -298,6 +366,106 @@ int InventoryGUIBinding::getMouseItem(lua_State* L)
 
     Item* result = instance->getMouseItem();
     return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+}
+
+int InventoryGUIBinding::takeCertainAmountFrom(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    Item* baseItem = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    int amount = (int)luaL_checkinteger(L, 3);
+    Item* result = instance->takeCertainAmountFrom(baseItem, amount);
+    return pushObject<Item>(L, result, ItemBinding::getMetatableName());
+}
+
+int InventoryGUIBinding::RClickAutoTrade(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    const std::string invSectionName = luaL_checkstring(L, 2);
+    int x = (int)luaL_checkinteger(L, 3);
+    int y = (int)luaL_checkinteger(L, 4);
+    InventoryGUI* sendingTo = checkObject<InventoryGUI>(L, 5, InventoryGUIBinding::getMetatableName());
+    bool thieveryChecks = lua_toboolean(L, 6) != 0;
+    bool first = lua_toboolean(L, 7) != 0;
+    InventoryGUI::TradeResult result = instance->RClickAutoTrade(invSectionName, x, y, sendingTo, thieveryChecks, first);
+    lua_pushinteger(L, (lua_Integer)result.value);
+    return 1;
+}
+
+int InventoryGUIBinding::RClickAutoTradeAll(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    const std::string invSectionName = luaL_checkstring(L, 2);
+    int x = (int)luaL_checkinteger(L, 3);
+    int y = (int)luaL_checkinteger(L, 4);
+    InventoryGUI* sendingTo = checkObject<InventoryGUI>(L, 5, InventoryGUIBinding::getMetatableName());
+    bool thieveryChecks = lua_toboolean(L, 6) != 0;
+    bool first = lua_toboolean(L, 7) != 0;
+    InventoryGUI::TradeResult result = instance->RClickAutoTradeAll(invSectionName, x, y, sendingTo, thieveryChecks, first);
+    lua_pushinteger(L, (lua_Integer)result.value);
+    return 1;
+}
+
+int InventoryGUIBinding::isTradingForMoney(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    InventoryGUI* cameFrom = checkObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    bool result = instance->isTradingForMoney(cameFrom);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryGUIBinding::isStealing(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    InventoryGUI* cameFrom = checkObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    bool result = instance->isStealing(cameFrom);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryGUIBinding::isWithinRangeToTrade(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    RootObject* otherOwner = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool stealing = lua_toboolean(L, 3) != 0;
+    bool result = instance->isWithinRangeToTrade(otherOwner, stealing);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryGUIBinding::setItemToPlayerPortrait(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    Character* character = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    bool result = instance->setItemToPlayerPortrait(item, character);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryGUIBinding::playSound(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    const std::string eventId = luaL_checkstring(L, 2);
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    instance->playSound(eventId.c_str(), item);
+    return 0;
 }
 
 int InventoryGUIBinding::fencingConfirmationCallback(lua_State* L)
@@ -346,6 +514,29 @@ int InventoryGUIBinding::rightClickAutoEquipping(lua_State* L)
     return 0;
 }
 
+int InventoryGUIBinding::tryToEquip(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    bool replace = lua_toboolean(L, 3) != 0;
+    bool result = instance->tryToEquip(item, replace);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryGUIBinding::returnItem(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    const std::string sectionName = luaL_checkstring(L, 3);
+    instance->returnItem(item, sectionName);
+    return 0;
+}
+
 int InventoryGUIBinding::hasMouse(lua_State* L)
 {
     InventoryGUI* instance = getInstance(L, 1);
@@ -366,6 +557,15 @@ int InventoryGUIBinding::getSectionWithMouseLocal(lua_State* L)
     return 1;
 }
 
+int InventoryGUIBinding::getSlotWithMouse(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    iVector2 result = instance->getSlotWithMouse();
+    return pushObject<iVector2>(L, &result, iVector2Binding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
   line 118: bool lockedItemCheck(...) - static method
@@ -375,38 +575,24 @@ Skipped methods needing manual binding:
   line 122: void removeTradePartner(...) - static method
   line 123: void clearTradePartners(...) - static method
   line 124: bool canDropMouseItemWithoutPaying(...) - static method
-  line 125: void autoChangeSelectedObject(...) - unsupported arg type
-  line 126: void _NV_autoChangeSelectedObject(...) - unsupported arg type
+  line 125: void autoChangeSelectedObject(...) - non-string reference arg
+  line 126: void _NV_autoChangeSelectedObject(...) - non-string reference arg
   line 135: void refreshSection(...) - overloaded method
-  line 136: void _NV_refreshSection(...) - unsupported arg type
   line 137: void refreshSection(...) - overloaded method
   line 138: void autoArrangeButton(...) - unsupported arg type
   line 139: void openBackpackButton(...) - unsupported arg type
   line 140: void openLimbsInterface(...) - unsupported arg type
   line 143: void windowButtonPressed(...) - unsupported arg type
-  line 147: bool hasSameOwner(...) - unsupported arg type
   line 153: MyGUI::types::TCoord<int> getWindowCoord(...) - unsupported return type
-  line 156: void getTrader1Trader2(...) - unsupported arg type
+  line 156: void getTrader1Trader2(...) - non-string reference arg
   line 157: Character* getNPCTrader(...) - static method
   line 158: RootObject* isTradingForMoney_static(...) - static method
   line 159: RootObject* isTradingAndStealing_static(...) - static method
   line 160: float getTraderPriceMultiplier(...) - static method
-  line 164: InventoryGUI* _CONSTRUCTOR(...) - unsupported arg type
   line 169: bool placeItemFromMouse(...) - unsupported arg type
-  line 171: Item* takeCertainAmountFrom(...) - unsupported arg type
-  line 172: InventoryGUI::TradeResult RClickAutoTrade(...) - unsupported arg type
-  line 173: InventoryGUI::TradeResult RClickAutoTradeAll(...) - unsupported arg type
-  line 174: bool isTradingForMoney(...) - unsupported arg type
-  line 175: bool isStealing(...) - unsupported arg type
-  line 176: bool isWithinRangeToTrade(...) - unsupported arg type
-  line 177: bool setItemToPlayerPortrait(...) - unsupported arg type
-  line 178: void playSound(...) - pointer arg
   line 193: bool fencingConfirmation(...) - unsupported arg type
-  line 199: bool tryToEquip(...) - unsupported arg type
-  line 200: void returnItem(...) - unsupported arg type
   line 201: InventorySection* getSection(...) - overloaded method
   line 202: InventorySection* getSection(...) - overloaded method
-  line 205: iVector2 getSlotWithMouse(...) - unsupported return type
   line 206: void sectionMouseButtonPressed(...) - unsupported arg type
   line 207: void sectionMouseButtonReleased(...) - unsupported arg type
   line 208: void onWindowFocus(...) - unsupported arg type
@@ -448,26 +634,40 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
         { "_NV_setPositionReal", InventoryGUIBinding::_NV_setPositionReal },
         { "isVisible", InventoryGUIBinding::isVisible },
         { "_NV_isVisible", InventoryGUIBinding::_NV_isVisible },
+        { "_NV_refreshSection", InventoryGUIBinding::_NV_refreshSection },
         { "showBackpack", InventoryGUIBinding::showBackpack },
         { "getBackpack", InventoryGUIBinding::getBackpack },
         { "getInventory", InventoryGUIBinding::getInventory },
         { "_NV_getInventory", InventoryGUIBinding::_NV_getInventory },
+        { "hasSameOwner", InventoryGUIBinding::hasSameOwner },
         { "getCallbackCharacter", InventoryGUIBinding::getCallbackCharacter },
         { "_NV_getCallbackCharacter", InventoryGUIBinding::_NV_getCallbackCharacter },
         { "getCallbackObject", InventoryGUIBinding::getCallbackObject },
         { "_NV_getCallbackObject", InventoryGUIBinding::_NV_getCallbackObject },
         { "getSelectedItem", InventoryGUIBinding::getSelectedItem },
         { "stealingGUIInfoUpdate", InventoryGUIBinding::stealingGUIInfoUpdate },
+        { "_CONSTRUCTOR", InventoryGUIBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", InventoryGUIBinding::_DESTRUCTOR },
         { "pickupItemToMouse", InventoryGUIBinding::pickupItemToMouse },
         { "getMouseItem", InventoryGUIBinding::getMouseItem },
+        { "takeCertainAmountFrom", InventoryGUIBinding::takeCertainAmountFrom },
+        { "RClickAutoTrade", InventoryGUIBinding::RClickAutoTrade },
+        { "RClickAutoTradeAll", InventoryGUIBinding::RClickAutoTradeAll },
+        { "isTradingForMoney", InventoryGUIBinding::isTradingForMoney },
+        { "isStealing", InventoryGUIBinding::isStealing },
+        { "isWithinRangeToTrade", InventoryGUIBinding::isWithinRangeToTrade },
+        { "setItemToPlayerPortrait", InventoryGUIBinding::setItemToPlayerPortrait },
+        { "playSound", InventoryGUIBinding::playSound },
         { "fencingConfirmationCallback", InventoryGUIBinding::fencingConfirmationCallback },
         { "getPlayerTradeCharacter", InventoryGUIBinding::getPlayerTradeCharacter },
         { "refreshAllSections", InventoryGUIBinding::refreshAllSections },
         { "updateDatapanel", InventoryGUIBinding::updateDatapanel },
         { "rightClickAutoEquipping", InventoryGUIBinding::rightClickAutoEquipping },
+        { "tryToEquip", InventoryGUIBinding::tryToEquip },
+        { "returnItem", InventoryGUIBinding::returnItem },
         { "hasMouse", InventoryGUIBinding::hasMouse },
         { "getSectionWithMouseLocal", InventoryGUIBinding::getSectionWithMouseLocal },
+        { "getSlotWithMouse", InventoryGUIBinding::getSlotWithMouse },
         { 0, 0 }
     };
 
@@ -482,29 +682,23 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, InventoryGUIBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, InventoryGUI_get_layoutMgr);
-    lua_setfield(L, -2, "layoutMgr");
-    lua_pushcfunction(L, InventoryGUI_get_ownerInventory);
-    lua_setfield(L, -2, "ownerInventory");
-    lua_pushcfunction(L, InventoryGUI_get_childInventory);
-    lua_setfield(L, -2, "childInventory");
-    lua_pushcfunction(L, InventoryGUI_get_mouseFocus);
-    lua_setfield(L, -2, "mouseFocus");
-    lua_pushcfunction(L, InventoryGUI_get_callbackObject);
-    lua_setfield(L, -2, "callbackObject");
-    lua_pushcfunction(L, InventoryGUI_get_needItemsUpdate);
-    lua_setfield(L, -2, "needItemsUpdate");
-    lua_pushcfunction(L, InventoryGUI_get_visible);
-    lua_setfield(L, -2, "visible");
+    registerGetter(L, "layoutMgr", InventoryGUI_get_layoutMgr);
+    registerGetter(L, "ownerInventory", InventoryGUI_get_ownerInventory);
+    registerGetter(L, "childInventory", InventoryGUI_get_childInventory);
+    registerGetter(L, "mouseFocus", InventoryGUI_get_mouseFocus);
+    registerGetter(L, "callbackObject", InventoryGUI_get_callbackObject);
+    registerGetter(L, "needItemsUpdate", InventoryGUI_get_needItemsUpdate);
+    registerGetter(L, "visible", InventoryGUI_get_visible);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, InventoryGUI_set_mouseFocus);
-    lua_setfield(L, -2, "mouseFocus");
-    lua_pushcfunction(L, InventoryGUI_set_needItemsUpdate);
-    lua_setfield(L, -2, "needItemsUpdate");
-    lua_pushcfunction(L, InventoryGUI_set_visible);
-    lua_setfield(L, -2, "visible");
+    registerSetter(L, "layoutMgr", InventoryGUI_set_layoutMgr);
+    registerSetter(L, "ownerInventory", InventoryGUI_set_ownerInventory);
+    registerSetter(L, "childInventory", InventoryGUI_set_childInventory);
+    registerSetter(L, "mouseFocus", InventoryGUI_set_mouseFocus);
+    registerSetter(L, "callbackObject", InventoryGUI_set_callbackObject);
+    registerSetter(L, "needItemsUpdate", InventoryGUI_set_needItemsUpdate);
+    registerSetter(L, "visible", InventoryGUI_set_visible);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to GUIWindow

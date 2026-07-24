@@ -1,10 +1,21 @@
 #include "pch.h"
-#include "Bindings/Gui/DatapanelGUIBinding.h"
-#include "Bindings/Gui/DialogueWindowBinding.h"
-
-#include <kenshi/gui/ForgottenGUI.h>
+#include "kenshi\gui\ForgottenGUI.h"
 #include "ForgottenGUIBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/CharacterEditWindowBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Gui/DialogueWindowBinding.h"
+#include "Bindings/Gui/FloatingProgressBarBinding.h"
+#include "Bindings/Gui/GUIWindowBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
+#include "Bindings/Gui/MainBarGUIBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/Gui/ToolTipBinding.h"
+#include "Bindings/TownBinding.h"
+#include "Bindings/Gui/TutorialGUIBinding.h"
+#include "Bindings/Gui/TutorialpediaGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -27,16 +38,14 @@ static int ForgottenGUI_get_mainbar(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->mainbar);
-    return 1;
+    return pushObject<MainBarGUI>(L, instance->mainbar, MainBarGUIBinding::getMetatableName());
 }
 
 static int ForgottenGUI_get_tooltip(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->tooltip);
-    return 1;
+    return pushObject<ToolTip>(L, instance->tooltip, ToolTipBinding::getMetatableName());
 }
 
 static int ForgottenGUI_get_dialogue(lua_State* L)
@@ -50,16 +59,14 @@ static int ForgottenGUI_get_tutorial(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->tutorial);
-    return 1;
+    return pushObject<TutorialGUI>(L, instance->tutorial, TutorialGUIBinding::getMetatableName());
 }
 
 static int ForgottenGUI_get_tutorialpedia(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->tutorialpedia);
-    return 1;
+    return pushObject<TutorialpediaGUI>(L, instance->tutorialpedia, TutorialpediaGUIBinding::getMetatableName());
 }
 
 static int ForgottenGUI_get_currentCursor(lua_State* L)
@@ -67,6 +74,14 @@ static int ForgottenGUI_get_currentCursor(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
     lua_pushinteger(L, (lua_Integer)instance->currentCursor);
+    return 1;
+}
+
+static int ForgottenGUI_get_Scale(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    pushVector2(L, instance->Scale);
     return 1;
 }
 
@@ -94,14 +109,76 @@ static int ForgottenGUI_get__closeTradeWindowMsg(lua_State* L)
     return 1;
 }
 
+static int ForgottenGUI_get_tradeA(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return handBinding::push(L, instance->tradeA);
+}
+
+static int ForgottenGUI_get_tradeB(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return handBinding::push(L, instance->tradeB);
+}
+
+static int ForgottenGUI_get_inventoryWindowBuilding(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return handBinding::push(L, instance->inventoryWindowBuilding);
+}
+
+static int ForgottenGUI_get_inventoryWindowCharacter(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return handBinding::push(L, instance->inventoryWindowCharacter);
+}
+
+static int ForgottenGUI_get_inventoryWindowTrader(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return handBinding::push(L, instance->inventoryWindowTrader);
+}
+
+static int ForgottenGUI_get_inventoryWindowNPC(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return handBinding::push(L, instance->inventoryWindowNPC);
+}
+
 static int ForgottenGUI_get_characterEditor(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->characterEditor);
+    return pushObject<CharacterEditWindow>(L, instance->characterEditor, CharacterEditWindowBinding::getMetatableName());
+}
+
+static int ForgottenGUI_get_guiScreenLabelsMutex(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    lua_pushlightuserdata(L, (void*)&instance->guiScreenLabelsMutex);
     return 1;
 }
 
+static int ForgottenGUI_get_selectedObject(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return handBinding::push(L, instance->selectedObject);
+}
+
+static int ForgottenGUI_get_selectedPlayerCharacter(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return handBinding::push(L, instance->selectedPlayerCharacter);
+}
 
 static int ForgottenGUI_get_cursorPanel(lua_State* L)
 {
@@ -116,6 +193,20 @@ static int ForgottenGUI_get_cursorAction(lua_State* L)
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
     lua_pushboolean(L, instance->cursorAction ? 1 : 0);
     return 1;
+}
+
+static int ForgottenGUI_get_cursorActionPlayer(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return handBinding::push(L, instance->cursorActionPlayer);
+}
+
+static int ForgottenGUI_get_cursorActionTarget(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return handBinding::push(L, instance->cursorActionTarget);
 }
 
 static int ForgottenGUI_get_visible(lua_State* L)
@@ -143,11 +234,59 @@ static int ForgottenGUI_set_hasMouse(lua_State* L)
     return 0;
 }
 
+static int ForgottenGUI_set_mainbar(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->mainbar = lua_isnoneornil(L, 2) ? nullptr : checkObject<MainBarGUI>(L, 2, MainBarGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_tooltip(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->tooltip = lua_isnoneornil(L, 2) ? nullptr : checkObject<ToolTip>(L, 2, ToolTipBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_dialogue(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->dialogue = lua_isnoneornil(L, 2) ? nullptr : checkObject<DialogueWindow>(L, 2, DialogueWindowBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_tutorial(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->tutorial = lua_isnoneornil(L, 2) ? nullptr : checkObject<TutorialGUI>(L, 2, TutorialGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_tutorialpedia(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->tutorialpedia = lua_isnoneornil(L, 2) ? nullptr : checkObject<TutorialpediaGUI>(L, 2, TutorialpediaGUIBinding::getMetatableName());
+    return 0;
+}
+
 static int ForgottenGUI_set_currentCursor(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
     instance->currentCursor = (CursorType)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int ForgottenGUI_set_Scale(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    readVector2(L, 2, instance->Scale);
     return 0;
 }
 
@@ -159,12 +298,112 @@ static int ForgottenGUI_set__closeTradeWindowMsg(lua_State* L)
     return 0;
 }
 
+static int ForgottenGUI_set_tradeA(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->tradeA = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_tradeB(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->tradeB = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_inventoryWindowBuilding(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->inventoryWindowBuilding = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_inventoryWindowCharacter(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->inventoryWindowCharacter = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_inventoryWindowTrader(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->inventoryWindowTrader = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_inventoryWindowNPC(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->inventoryWindowNPC = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_characterEditor(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->characterEditor = lua_isnoneornil(L, 2) ? nullptr : checkObject<CharacterEditWindow>(L, 2, CharacterEditWindowBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_guiScreenLabelsMutex(lua_State* L)
+{
+    return luaL_error(L, "guiScreenLabelsMutex is read-only");
+}
+
+static int ForgottenGUI_set_selectedObject(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->selectedObject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_selectedPlayerCharacter(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->selectedPlayerCharacter = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_cursorPanel(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->cursorPanel = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
 
 static int ForgottenGUI_set_cursorAction(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
     instance->cursorAction = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int ForgottenGUI_set_cursorActionPlayer(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->cursorActionPlayer = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
+static int ForgottenGUI_set_cursorActionTarget(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->cursorActionTarget = *checkObject<hand>(L, 2, handBinding::getMetatableName());
     return 0;
 }
 
@@ -190,8 +429,7 @@ int ForgottenGUIBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
     ForgottenGUI* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ForgottenGUI>(L, result, ForgottenGUIBinding::getMetatableName());
 }
 
 int ForgottenGUIBinding::_DESTRUCTOR(lua_State* L)
@@ -384,8 +622,7 @@ int ForgottenGUIBinding::getToolTip(lua_State* L)
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
     ToolTip* result = instance->getToolTip();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ToolTip>(L, result, ToolTipBinding::getMetatableName());
 }
 
 int ForgottenGUIBinding::isVisible(lua_State* L)
@@ -493,6 +730,16 @@ int ForgottenGUIBinding::updateToOrdersPanel(lua_State* L)
     return 0;
 }
 
+int ForgottenGUIBinding::notifyTownDeleted(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    Town* t = checkObject<Town>(L, 2, TownBinding::getMetatableName());
+    instance->notifyTownDeleted(t);
+    return 0;
+}
+
 int ForgottenGUIBinding::update(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
@@ -554,8 +801,7 @@ int ForgottenGUIBinding::getInventoryWindowWithMouse(lua_State* L)
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
     InventoryGUI* result = instance->getInventoryWindowWithMouse();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
 }
 
 int ForgottenGUIBinding::isAnyInventoryWindowOpen(lua_State* L)
@@ -574,6 +820,46 @@ int ForgottenGUIBinding::toggleHelpWindow(lua_State* L)
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
     instance->toggleHelpWindow();
+    return 0;
+}
+
+int ForgottenGUIBinding::addWindowToUpdateList(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    GUIWindow* win = checkObject<GUIWindow>(L, 2, GUIWindowBinding::getMetatableName());
+    instance->addWindowToUpdateList(win);
+    return 0;
+}
+
+int ForgottenGUIBinding::removeWindowFromUpdateList(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    GUIWindow* win = checkObject<GUIWindow>(L, 2, GUIWindowBinding::getMetatableName());
+    instance->removeWindowFromUpdateList(win);
+    return 0;
+}
+
+int ForgottenGUIBinding::addDatapanelToUpdateList(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    instance->addDatapanelToUpdateList(datapanel);
+    return 0;
+}
+
+int ForgottenGUIBinding::removeDatapanelFromUpdateList(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    instance->removeDatapanelFromUpdateList(datapanel);
     return 0;
 }
 
@@ -602,7 +888,7 @@ int ForgottenGUIBinding::createPanel(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    std::string name = luaL_checkstring(L, 2);
+    const std::string name = luaL_checkstring(L, 2);
     float top = (float)luaL_checknumber(L, 3);
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
@@ -619,7 +905,7 @@ int ForgottenGUIBinding::createPanelAbs(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    std::string name = luaL_checkstring(L, 2);
+    const std::string name = luaL_checkstring(L, 2);
     float top = (float)luaL_checknumber(L, 3);
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
@@ -636,13 +922,13 @@ int ForgottenGUIBinding::createTabPanel(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    std::string name = luaL_checkstring(L, 2);
+    const std::string name = luaL_checkstring(L, 2);
     float top = (float)luaL_checknumber(L, 3);
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
     float height = (float)luaL_checknumber(L, 6);
-    std::string layer = luaL_checkstring(L, 7);
-    std::string skin = luaL_checkstring(L, 8);
+    const std::string layer = luaL_checkstring(L, 7);
+    const std::string skin = luaL_checkstring(L, 8);
     MyGUI::TabControl* result = instance->createTabPanel(name, top, left, width, height, layer, skin);
     lua_pushlightuserdata(L, (void*)result);
     return 1;
@@ -653,7 +939,7 @@ int ForgottenGUIBinding::createFloatingImage(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    std::string image = luaL_checkstring(L, 2);
+    const std::string image = luaL_checkstring(L, 2);
     float top = (float)luaL_checknumber(L, 3);
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
@@ -669,7 +955,7 @@ int ForgottenGUIBinding::createFloatingImageAbs(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    std::string image = luaL_checkstring(L, 2);
+    const std::string image = luaL_checkstring(L, 2);
     float top = (float)luaL_checknumber(L, 3);
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
@@ -686,8 +972,7 @@ int ForgottenGUIBinding::createFloatingProgressBar(lua_State* L)
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
     FloatingProgressBar* result = instance->createFloatingProgressBar();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<FloatingProgressBar>(L, result, FloatingProgressBarBinding::getMetatableName());
 }
 
 int ForgottenGUIBinding::createScreenLabelD(lua_State* L)
@@ -695,7 +980,7 @@ int ForgottenGUIBinding::createScreenLabelD(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    std::string text = luaL_checkstring(L, 2);
+    const std::string text = luaL_checkstring(L, 2);
     float time = (float)luaL_checknumber(L, 3);
     ScreenLabelDebug* result = instance->createScreenLabelD(text, time);
     lua_pushlightuserdata(L, (void*)result);
@@ -712,28 +997,23 @@ Skipped methods needing manual binding:
   line 69: DatapanelGUI* createDatapanel(...) - overloaded method
   line 70: MyGUI::Window* messageBox(...) - unsupported arg type
   line 82: void showCharacterEditor(...) - unsupported arg type
-  line 85: void showCharacterStatsWindow(...) - unsupported arg type
-  line 86: void closeCharacterStatsWindow(...) - unsupported arg type
-  line 89: void toggleStatsWindow(...) - unsupported arg type
-  line 90: void toggleCharacterStatsWindowPermanent(...) - unsupported arg type
-  line 94: void notifyTownDeleted(...) - unsupported arg type
-  line 96: void showTradeWindow(...) - unsupported arg type
-  line 98: InventoryGUI* showInventory(...) - unsupported arg type
-  line 99: InventoryGUI* showTraderInventory(...) - unsupported arg type
-  line 100: InventoryGUI* showInventoryBuilding(...) - unsupported arg type
-  line 101: InventoryGUI* showInventoryNPC(...) - unsupported arg type
-  line 102: void closeInventory(...) - unsupported arg type
-  line 106: InventoryGUI* getInventoryWindow(...) - unsupported arg type
-  line 107: InventoryGUI* toggleInventory(...) - unsupported arg type
-  line 110: bool hasInventoryWindowOpen(...) - unsupported arg type
-  line 112: void toggleInventoryWindowPermanent(...) - unsupported arg type
+  line 85: void showCharacterStatsWindow(...) - non-string reference arg
+  line 86: void closeCharacterStatsWindow(...) - non-string reference arg
+  line 89: void toggleStatsWindow(...) - non-string reference arg
+  line 90: void toggleCharacterStatsWindowPermanent(...) - non-string reference arg
+  line 96: void showTradeWindow(...) - non-string reference arg
+  line 98: InventoryGUI* showInventory(...) - non-string reference arg
+  line 99: InventoryGUI* showTraderInventory(...) - non-string reference arg
+  line 100: InventoryGUI* showInventoryBuilding(...) - non-string reference arg
+  line 101: InventoryGUI* showInventoryNPC(...) - non-string reference arg
+  line 102: void closeInventory(...) - non-string reference arg
+  line 106: InventoryGUI* getInventoryWindow(...) - non-string reference arg
+  line 107: InventoryGUI* toggleInventory(...) - non-string reference arg
+  line 110: bool hasInventoryWindowOpen(...) - non-string reference arg
+  line 112: void toggleInventoryWindowPermanent(...) - non-string reference arg
   line 114: const hand& getSelectedObject(...) - reference return type
   line 115: const hand& getSelectedPlayerCharacter(...) - reference return type
-  line 116: void addWindowToUpdateList(...) - unsupported arg type
-  line 117: void removeWindowFromUpdateList(...) - unsupported arg type
   line 118: void addScreenLabel(...) - unsupported arg type
-  line 119: void addDatapanelToUpdateList(...) - unsupported arg type
-  line 120: void removeDatapanelFromUpdateList(...) - unsupported arg type
   line 121: void destroyWidget(...) - unsupported arg type
   line 122: void destroyWidgets(...) - overloaded method
   line 123: void destroyWidgets(...) - overloaded method
@@ -742,10 +1022,10 @@ Skipped methods needing manual binding:
   line 133: void changeMouseCursor(...) - overloaded method
   line 134: void changeMouseCursor(...) - overloaded method
   line 141: void _showTradeWindow(...) - unsupported arg type
-  line 142: void setInventoryPosition(...) - unsupported arg type
+  line 142: void setInventoryPosition(...) - non-string reference arg
   line 143: InventoryGUI* createInventoryWindow(...) - overloaded method
   line 144: InventoryGUI* createInventoryWindow(...) - overloaded method
-  line 145: void inventoriesSelectedObjectUpdate(...) - unsupported arg type
+  line 145: void inventoriesSelectedObjectUpdate(...) - non-string reference arg
   line 174: void keepWindownOnScreen(...) - unsupported arg type
   line 175: const std::string& getDataLineColor(...) - reference return type
   line 179: MyGUI::ImageBox* createImage(...) - unsupported arg type
@@ -775,16 +1055,22 @@ Skipped methods needing manual binding:
 */
 
 /*
+LIGHTUSERDATA DEPENDENCIES:
+  - ForgottenGUI_get_manager: MyGUI::Gui* (unbound pointer)
+  - ForgottenGUI_get_guiPlatform: MyGUI::OgrePlatform* (unbound pointer)
+  - ForgottenGUIBinding::getGuiManager: MyGUI::Gui* (unbound pointer)
+  - ForgottenGUIBinding::createPanel: MyGUI::Window* (unbound pointer)
+  - ForgottenGUIBinding::createPanelAbs: MyGUI::Window* (unbound pointer)
+  - ForgottenGUIBinding::createTabPanel: MyGUI::TabControl* (unbound pointer)
+  - ForgottenGUIBinding::createFloatingImage: MyGUI::Window* (unbound pointer)
+  - ForgottenGUIBinding::createFloatingImageAbs: MyGUI::Window* (unbound pointer)
+  - ForgottenGUIBinding::createScreenLabelD: ScreenLabelDebug* (unbound pointer)
+*/
+
+/*
 Skipped properties needing manual binding:
-  line 138: Scale (Ogre::Vector2) - unsupported type
   line 146: _showTradeWindowMsg (TradeWindowType) - unsupported type
-  line 148: tradeA (hand) - unsupported type
-  line 149: tradeB (hand) - unsupported type
   line 150: inventoryWindowsOpen (ogre_unordered_map<hand, InventoryGUI*>::type) - unsupported type
-  line 151: inventoryWindowBuilding (hand) - unsupported type
-  line 152: inventoryWindowCharacter (hand) - unsupported type
-  line 153: inventoryWindowTrader (hand) - unsupported type
-  line 154: inventoryWindowNPC (hand) - unsupported type
   line 155: inventoryWindowsPermanent (ogre_unordered_set<hand>::type) - unsupported type
   line 156: inventoryWindowsKillList (Ogre::vector<InventoryGUI*>::type) - unsupported type
   line 158: characterStatsWindows (Ogre::vector<CharacterStatsWindow*>::type) - unsupported type
@@ -794,10 +1080,6 @@ Skipped properties needing manual binding:
   line 163: guiScreenLabels (lektor<ScreenLabelInterface*>) - unsupported type
   line 164: guiScreenLabelsToAdd (lektor<ScreenLabelInterface*>) - unsupported type
   line 165: guiScreenLabelsToRemove (lektor<ScreenLabelInterface*>) - unsupported type
-  line 166: selectedObject (hand) - unsupported type
-  line 167: selectedPlayerCharacter (hand) - unsupported type
-  line 170: cursorActionPlayer (hand) - unsupported type
-  line 171: cursorActionTarget (hand) - unsupported type
 */
 
 int ForgottenGUIBinding::gc(lua_State* L)
@@ -853,6 +1135,7 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
         { "characterStatsWindowVisible", ForgottenGUIBinding::characterStatsWindowVisible },
         { "selectedObjectsChanged", ForgottenGUIBinding::selectedObjectsChanged },
         { "updateToOrdersPanel", ForgottenGUIBinding::updateToOrdersPanel },
+        { "notifyTownDeleted", ForgottenGUIBinding::notifyTownDeleted },
         { "update", ForgottenGUIBinding::update },
         { "closeTradeWindow", ForgottenGUIBinding::closeTradeWindow },
         { "closeInventoryBuilding", ForgottenGUIBinding::closeInventoryBuilding },
@@ -862,6 +1145,10 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
         { "getInventoryWindowWithMouse", ForgottenGUIBinding::getInventoryWindowWithMouse },
         { "isAnyInventoryWindowOpen", ForgottenGUIBinding::isAnyInventoryWindowOpen },
         { "toggleHelpWindow", ForgottenGUIBinding::toggleHelpWindow },
+        { "addWindowToUpdateList", ForgottenGUIBinding::addWindowToUpdateList },
+        { "removeWindowFromUpdateList", ForgottenGUIBinding::removeWindowFromUpdateList },
+        { "addDatapanelToUpdateList", ForgottenGUIBinding::addDatapanelToUpdateList },
+        { "removeDatapanelFromUpdateList", ForgottenGUIBinding::removeDatapanelFromUpdateList },
         { "setMouseCursorVisible", ForgottenGUIBinding::setMouseCursorVisible },
         { "getGuiManager", ForgottenGUIBinding::getGuiManager },
         { "createPanel", ForgottenGUIBinding::createPanel },
@@ -885,51 +1172,61 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ForgottenGUIBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ForgottenGUI_get_hasMouse);
-    lua_setfield(L, -2, "hasMouse");
-    lua_pushcfunction(L, ForgottenGUI_get_mainbar);
-    lua_setfield(L, -2, "mainbar");
-    lua_pushcfunction(L, ForgottenGUI_get_tooltip);
-    lua_setfield(L, -2, "tooltip");
-    lua_pushcfunction(L, ForgottenGUI_get_dialogue);
-    lua_setfield(L, -2, "dialogue");
-    lua_pushcfunction(L, ForgottenGUI_get_tutorial);
-    lua_setfield(L, -2, "tutorial");
-    lua_pushcfunction(L, ForgottenGUI_get_tutorialpedia);
-    lua_setfield(L, -2, "tutorialpedia");
-    lua_pushcfunction(L, ForgottenGUI_get_currentCursor);
-    lua_setfield(L, -2, "currentCursor");
-    lua_pushcfunction(L, ForgottenGUI_get_manager);
-    lua_setfield(L, -2, "manager");
-    lua_pushcfunction(L, ForgottenGUI_get_guiPlatform);
-    lua_setfield(L, -2, "guiPlatform");
-    lua_pushcfunction(L, ForgottenGUI_get__closeTradeWindowMsg);
-    lua_setfield(L, -2, "_closeTradeWindowMsg");
-    lua_pushcfunction(L, ForgottenGUI_get_characterEditor);
-    lua_setfield(L, -2, "characterEditor");
-    lua_pushcfunction(L, ForgottenGUI_get_cursorPanel);
-    lua_setfield(L, -2, "cursorPanel");
-    lua_pushcfunction(L, ForgottenGUI_get_cursorAction);
-    lua_setfield(L, -2, "cursorAction");
-    lua_pushcfunction(L, ForgottenGUI_get_visible);
-    lua_setfield(L, -2, "visible");
-    lua_pushcfunction(L, ForgottenGUI_get_created);
-    lua_setfield(L, -2, "created");
+    registerGetter(L, "hasMouse", ForgottenGUI_get_hasMouse);
+    registerGetter(L, "mainbar", ForgottenGUI_get_mainbar);
+    registerGetter(L, "tooltip", ForgottenGUI_get_tooltip);
+    registerGetter(L, "dialogue", ForgottenGUI_get_dialogue);
+    registerGetter(L, "tutorial", ForgottenGUI_get_tutorial);
+    registerGetter(L, "tutorialpedia", ForgottenGUI_get_tutorialpedia);
+    registerGetter(L, "currentCursor", ForgottenGUI_get_currentCursor);
+    registerGetter(L, "Scale", ForgottenGUI_get_Scale);
+    registerGetter(L, "manager", ForgottenGUI_get_manager);
+    registerGetter(L, "guiPlatform", ForgottenGUI_get_guiPlatform);
+    registerGetter(L, "_closeTradeWindowMsg", ForgottenGUI_get__closeTradeWindowMsg);
+    registerGetter(L, "tradeA", ForgottenGUI_get_tradeA);
+    registerGetter(L, "tradeB", ForgottenGUI_get_tradeB);
+    registerGetter(L, "inventoryWindowBuilding", ForgottenGUI_get_inventoryWindowBuilding);
+    registerGetter(L, "inventoryWindowCharacter", ForgottenGUI_get_inventoryWindowCharacter);
+    registerGetter(L, "inventoryWindowTrader", ForgottenGUI_get_inventoryWindowTrader);
+    registerGetter(L, "inventoryWindowNPC", ForgottenGUI_get_inventoryWindowNPC);
+    registerGetter(L, "characterEditor", ForgottenGUI_get_characterEditor);
+    registerGetter(L, "guiScreenLabelsMutex", ForgottenGUI_get_guiScreenLabelsMutex);
+    registerGetter(L, "selectedObject", ForgottenGUI_get_selectedObject);
+    registerGetter(L, "selectedPlayerCharacter", ForgottenGUI_get_selectedPlayerCharacter);
+    registerGetter(L, "cursorPanel", ForgottenGUI_get_cursorPanel);
+    registerGetter(L, "cursorAction", ForgottenGUI_get_cursorAction);
+    registerGetter(L, "cursorActionPlayer", ForgottenGUI_get_cursorActionPlayer);
+    registerGetter(L, "cursorActionTarget", ForgottenGUI_get_cursorActionTarget);
+    registerGetter(L, "visible", ForgottenGUI_get_visible);
+    registerGetter(L, "created", ForgottenGUI_get_created);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ForgottenGUI_set_hasMouse);
-    lua_setfield(L, -2, "hasMouse");
-    lua_pushcfunction(L, ForgottenGUI_set_currentCursor);
-    lua_setfield(L, -2, "currentCursor");
-    lua_pushcfunction(L, ForgottenGUI_set__closeTradeWindowMsg);
-    lua_setfield(L, -2, "_closeTradeWindowMsg");
-    lua_pushcfunction(L, ForgottenGUI_set_cursorAction);
-    lua_setfield(L, -2, "cursorAction");
-    lua_pushcfunction(L, ForgottenGUI_set_visible);
-    lua_setfield(L, -2, "visible");
-    lua_pushcfunction(L, ForgottenGUI_set_created);
-    lua_setfield(L, -2, "created");
+    registerSetter(L, "hasMouse", ForgottenGUI_set_hasMouse);
+    registerSetter(L, "mainbar", ForgottenGUI_set_mainbar);
+    registerSetter(L, "tooltip", ForgottenGUI_set_tooltip);
+    registerSetter(L, "dialogue", ForgottenGUI_set_dialogue);
+    registerSetter(L, "tutorial", ForgottenGUI_set_tutorial);
+    registerSetter(L, "tutorialpedia", ForgottenGUI_set_tutorialpedia);
+    registerSetter(L, "currentCursor", ForgottenGUI_set_currentCursor);
+    registerSetter(L, "Scale", ForgottenGUI_set_Scale);
+    registerSetter(L, "_closeTradeWindowMsg", ForgottenGUI_set__closeTradeWindowMsg);
+    registerSetter(L, "tradeA", ForgottenGUI_set_tradeA);
+    registerSetter(L, "tradeB", ForgottenGUI_set_tradeB);
+    registerSetter(L, "inventoryWindowBuilding", ForgottenGUI_set_inventoryWindowBuilding);
+    registerSetter(L, "inventoryWindowCharacter", ForgottenGUI_set_inventoryWindowCharacter);
+    registerSetter(L, "inventoryWindowTrader", ForgottenGUI_set_inventoryWindowTrader);
+    registerSetter(L, "inventoryWindowNPC", ForgottenGUI_set_inventoryWindowNPC);
+    registerSetter(L, "characterEditor", ForgottenGUI_set_characterEditor);
+    registerSetter(L, "guiScreenLabelsMutex", ForgottenGUI_set_guiScreenLabelsMutex);
+    registerSetter(L, "selectedObject", ForgottenGUI_set_selectedObject);
+    registerSetter(L, "selectedPlayerCharacter", ForgottenGUI_set_selectedPlayerCharacter);
+    registerSetter(L, "cursorPanel", ForgottenGUI_set_cursorPanel);
+    registerSetter(L, "cursorAction", ForgottenGUI_set_cursorAction);
+    registerSetter(L, "cursorActionPlayer", ForgottenGUI_set_cursorActionPlayer);
+    registerSetter(L, "cursorActionTarget", ForgottenGUI_set_cursorActionTarget);
+    registerSetter(L, "visible", ForgottenGUI_set_visible);
+    registerSetter(L, "created", ForgottenGUI_set_created);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

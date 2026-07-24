@@ -28,8 +28,10 @@ public:
     static int setEnabled(lua_State* L);
     static int show(lua_State* L);
     static int _NV_show(lua_State* L);
+    static int removeTutorialFromList(lua_State* L);
     static int arrangeList(lua_State* L);
     static int refreshUI(lua_State* L);
+    static int showTutorialWindow(lua_State* L);
     static int closeTutorialWindow(lua_State* L);
     static int updateCurrentItem(lua_State* L);
 };

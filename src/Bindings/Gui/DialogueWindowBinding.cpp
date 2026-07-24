@@ -1,5 +1,5 @@
 #include "pch.h"
-#include <kenshi/gui/DialogueWindow.h>
+#include "kenshi\gui\DialogueWindow.h"
 #include "DialogueWindowBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
@@ -149,36 +149,13 @@ static int DialogueWindow_get_conversationPCPortrait(lua_State* L)
     return 1;
 }
 
-static int DialogueWindow_get_conversationTextColor(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    // TODO: Unsupported type for conversationTextColor (MyGUI::Colour)
-    return luaL_error(L, "Unsupported property 'conversationTextColor' (type: MyGUI::Colour)");
-}
-
-static int DialogueWindow_get_conversationTextSelectedColor(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    // TODO: Unsupported type for conversationTextSelectedColor (MyGUI::Colour)
-    return luaL_error(L, "Unsupported property 'conversationTextSelectedColor' (type: MyGUI::Colour)");
-}
-
-static int DialogueWindow_get_replyTexts(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    // TODO: Unsupported type for replyTexts (Ogre::FastArray<MyGUI::EditBox*>)
-    return luaL_error(L, "Unsupported property 'replyTexts' (type: Ogre::FastArray<MyGUI::EditBox*>)");
-}
-
 // --- Setters for DialogueWindow ---
 static int DialogueWindow_set_dialogue(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for dialogue");
+    instance->dialogue = lua_isnoneornil(L, 2) ? nullptr : checkObject<Dialogue>(L, 2, DialogueBinding::getMetatableName());
+    return 0;
 }
 
 static int DialogueWindow_set_conversationPanelsMargin(lua_State* L)
@@ -233,91 +210,8 @@ static int DialogueWindow_set_conversationPC(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationPC");
-}
-
-static int DialogueWindow_set_conversationPCPanel(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationPCPanel");
-}
-
-static int DialogueWindow_set_conversationNPCPanel(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationNPCPanel");
-}
-
-static int DialogueWindow_set_conversationNPCNameText(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationNPCNameText");
-}
-
-static int DialogueWindow_set_conversationPCNameText(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationPCNameText");
-}
-
-static int DialogueWindow_set_conversationPCMoneyText(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationPCMoneyText");
-}
-
-static int DialogueWindow_set_conversationNPCSpeech(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationNPCSpeech");
-}
-
-static int DialogueWindow_set_conversationPCSpeechPanel(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationPCSpeechPanel");
-}
-
-static int DialogueWindow_set_conversationNPCPortrait(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationNPCPortrait");
-}
-
-static int DialogueWindow_set_conversationPCPortrait(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationPCPortrait");
-}
-
-static int DialogueWindow_set_conversationTextColor(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationTextColor");
-}
-
-static int DialogueWindow_set_conversationTextSelectedColor(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for conversationTextSelectedColor");
-}
-
-static int DialogueWindow_set_replyTexts(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for replyTexts");
+    instance->conversationPC = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    return 0;
 }
 
 int DialogueWindowBinding::getVisible(lua_State* L)
@@ -347,6 +241,16 @@ int DialogueWindowBinding::_NV_show(lua_State* L)
 
     bool on = lua_toboolean(L, 2) != 0;
     instance->_NV_show(on);
+    return 0;
+}
+
+int DialogueWindowBinding::hide(lua_State* L)
+{
+    DialogueWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueWindow is nil");
+
+    Dialogue* _dialogue = checkObject<Dialogue>(L, 2, DialogueBinding::getMetatableName());
+    instance->hide(_dialogue);
     return 0;
 }
 
@@ -413,7 +317,7 @@ int DialogueWindowBinding::setNPCText(lua_State* L)
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
 
-    std::string text = luaL_checkstring(L, 2);
+    const std::string text = luaL_checkstring(L, 2);
     instance->setNPCText(text);
     return 0;
 }
@@ -424,6 +328,17 @@ int DialogueWindowBinding::clearResponses(lua_State* L)
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
 
     instance->clearResponses();
+    return 0;
+}
+
+int DialogueWindowBinding::changePortrait(lua_State* L)
+{
+    DialogueWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueWindow is nil");
+
+    Character* character = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    bool player = lua_toboolean(L, 3) != 0;
+    instance->changePortrait(character, player);
     return 0;
 }
 
@@ -458,9 +373,14 @@ int DialogueWindowBinding::updatePanelsPosition(lua_State* L)
 Skipped methods needing manual binding:
   line 16: void show(...) - overloaded method
   line 18: void show(...) - overloaded method
-  line 19: void hide(...) - unsupported arg type
   line 27: void setResponses(...) - unsupported arg type
-  line 29: void changePortrait(...) - unsupported arg type
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 53: conversationTextColor (MyGUI::Colour) - unsupported type
+  line 54: conversationTextSelectedColor (MyGUI::Colour) - unsupported type
+  line 55: replyTexts (Ogre::FastArray<MyGUI::EditBox*>) - unsupported type
 */
 
 int DialogueWindowBinding::gc(lua_State* L)
@@ -487,6 +407,7 @@ void DialogueWindowBinding::registerBinding(lua_State* L)
         { "getVisible", DialogueWindowBinding::getVisible },
         { "setVisible", DialogueWindowBinding::setVisible },
         { "_NV_show", DialogueWindowBinding::_NV_show },
+        { "hide", DialogueWindowBinding::hide },
         { "isVisible", DialogueWindowBinding::isVisible },
         { "_NV_isVisible", DialogueWindowBinding::_NV_isVisible },
         { "update", DialogueWindowBinding::update },
@@ -495,6 +416,7 @@ void DialogueWindowBinding::registerBinding(lua_State* L)
         { "activateResponse", DialogueWindowBinding::activateResponse },
         { "setNPCText", DialogueWindowBinding::setNPCText },
         { "clearResponses", DialogueWindowBinding::clearResponses },
+        { "changePortrait", DialogueWindowBinding::changePortrait },
         { "_CONSTRUCTOR", DialogueWindowBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", DialogueWindowBinding::_DESTRUCTOR },
         { "updatePanelsPosition", DialogueWindowBinding::updatePanelsPosition },
@@ -512,89 +434,34 @@ void DialogueWindowBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DialogueWindowBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DialogueWindow_get_dialogue);
-    lua_setfield(L, -2, "dialogue");
-    lua_pushcfunction(L, DialogueWindow_get_conversationPanelsMargin);
-    lua_setfield(L, -2, "conversationPanelsMargin");
-    lua_pushcfunction(L, DialogueWindow_get_converstaionPCPanelBottom);
-    lua_setfield(L, -2, "converstaionPCPanelBottom");
-    lua_pushcfunction(L, DialogueWindow_get_conversationPCSpeechPanelMinHeight);
-    lua_setfield(L, -2, "conversationPCSpeechPanelMinHeight");
-    lua_pushcfunction(L, DialogueWindow_get_conversationNPCSpeechPanelMinHeight);
-    lua_setfield(L, -2, "conversationNPCSpeechPanelMinHeight");
-    lua_pushcfunction(L, DialogueWindow_get_conversationPCPanelHeightDiffSpeechPanel);
-    lua_setfield(L, -2, "conversationPCPanelHeightDiffSpeechPanel");
-    lua_pushcfunction(L, DialogueWindow_get_conversationNPCPanelHeightDiffSpeechPanel);
-    lua_setfield(L, -2, "conversationNPCPanelHeightDiffSpeechPanel");
-    lua_pushcfunction(L, DialogueWindow_get_conversationPC);
-    lua_setfield(L, -2, "conversationPC");
-    lua_pushcfunction(L, DialogueWindow_get_conversationPCPanel);
-    lua_setfield(L, -2, "conversationPCPanel");
-    lua_pushcfunction(L, DialogueWindow_get_conversationNPCPanel);
-    lua_setfield(L, -2, "conversationNPCPanel");
-    lua_pushcfunction(L, DialogueWindow_get_conversationNPCNameText);
-    lua_setfield(L, -2, "conversationNPCNameText");
-    lua_pushcfunction(L, DialogueWindow_get_conversationPCNameText);
-    lua_setfield(L, -2, "conversationPCNameText");
-    lua_pushcfunction(L, DialogueWindow_get_conversationPCMoneyText);
-    lua_setfield(L, -2, "conversationPCMoneyText");
-    lua_pushcfunction(L, DialogueWindow_get_conversationNPCSpeech);
-    lua_setfield(L, -2, "conversationNPCSpeech");
-    lua_pushcfunction(L, DialogueWindow_get_conversationPCSpeechPanel);
-    lua_setfield(L, -2, "conversationPCSpeechPanel");
-    lua_pushcfunction(L, DialogueWindow_get_conversationNPCPortrait);
-    lua_setfield(L, -2, "conversationNPCPortrait");
-    lua_pushcfunction(L, DialogueWindow_get_conversationPCPortrait);
-    lua_setfield(L, -2, "conversationPCPortrait");
-    lua_pushcfunction(L, DialogueWindow_get_conversationTextColor);
-    lua_setfield(L, -2, "conversationTextColor");
-    lua_pushcfunction(L, DialogueWindow_get_conversationTextSelectedColor);
-    lua_setfield(L, -2, "conversationTextSelectedColor");
-    lua_pushcfunction(L, DialogueWindow_get_replyTexts);
-    lua_setfield(L, -2, "replyTexts");
+    registerGetter(L, "dialogue", DialogueWindow_get_dialogue);
+    registerGetter(L, "conversationPanelsMargin", DialogueWindow_get_conversationPanelsMargin);
+    registerGetter(L, "converstaionPCPanelBottom", DialogueWindow_get_converstaionPCPanelBottom);
+    registerGetter(L, "conversationPCSpeechPanelMinHeight", DialogueWindow_get_conversationPCSpeechPanelMinHeight);
+    registerGetter(L, "conversationNPCSpeechPanelMinHeight", DialogueWindow_get_conversationNPCSpeechPanelMinHeight);
+    registerGetter(L, "conversationPCPanelHeightDiffSpeechPanel", DialogueWindow_get_conversationPCPanelHeightDiffSpeechPanel);
+    registerGetter(L, "conversationNPCPanelHeightDiffSpeechPanel", DialogueWindow_get_conversationNPCPanelHeightDiffSpeechPanel);
+    registerGetter(L, "conversationPC", DialogueWindow_get_conversationPC);
+    registerGetter(L, "conversationPCPanel", DialogueWindow_get_conversationPCPanel);
+    registerGetter(L, "conversationNPCPanel", DialogueWindow_get_conversationNPCPanel);
+    registerGetter(L, "conversationNPCNameText", DialogueWindow_get_conversationNPCNameText);
+    registerGetter(L, "conversationPCNameText", DialogueWindow_get_conversationPCNameText);
+    registerGetter(L, "conversationPCMoneyText", DialogueWindow_get_conversationPCMoneyText);
+    registerGetter(L, "conversationNPCSpeech", DialogueWindow_get_conversationNPCSpeech);
+    registerGetter(L, "conversationPCSpeechPanel", DialogueWindow_get_conversationPCSpeechPanel);
+    registerGetter(L, "conversationNPCPortrait", DialogueWindow_get_conversationNPCPortrait);
+    registerGetter(L, "conversationPCPortrait", DialogueWindow_get_conversationPCPortrait);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DialogueWindow_set_dialogue);
-    lua_setfield(L, -2, "dialogue");
-    lua_pushcfunction(L, DialogueWindow_set_conversationPanelsMargin);
-    lua_setfield(L, -2, "conversationPanelsMargin");
-    lua_pushcfunction(L, DialogueWindow_set_converstaionPCPanelBottom);
-    lua_setfield(L, -2, "converstaionPCPanelBottom");
-    lua_pushcfunction(L, DialogueWindow_set_conversationPCSpeechPanelMinHeight);
-    lua_setfield(L, -2, "conversationPCSpeechPanelMinHeight");
-    lua_pushcfunction(L, DialogueWindow_set_conversationNPCSpeechPanelMinHeight);
-    lua_setfield(L, -2, "conversationNPCSpeechPanelMinHeight");
-    lua_pushcfunction(L, DialogueWindow_set_conversationPCPanelHeightDiffSpeechPanel);
-    lua_setfield(L, -2, "conversationPCPanelHeightDiffSpeechPanel");
-    lua_pushcfunction(L, DialogueWindow_set_conversationNPCPanelHeightDiffSpeechPanel);
-    lua_setfield(L, -2, "conversationNPCPanelHeightDiffSpeechPanel");
-    lua_pushcfunction(L, DialogueWindow_set_conversationPC);
-    lua_setfield(L, -2, "conversationPC");
-    lua_pushcfunction(L, DialogueWindow_set_conversationPCPanel);
-    lua_setfield(L, -2, "conversationPCPanel");
-    lua_pushcfunction(L, DialogueWindow_set_conversationNPCPanel);
-    lua_setfield(L, -2, "conversationNPCPanel");
-    lua_pushcfunction(L, DialogueWindow_set_conversationNPCNameText);
-    lua_setfield(L, -2, "conversationNPCNameText");
-    lua_pushcfunction(L, DialogueWindow_set_conversationPCNameText);
-    lua_setfield(L, -2, "conversationPCNameText");
-    lua_pushcfunction(L, DialogueWindow_set_conversationPCMoneyText);
-    lua_setfield(L, -2, "conversationPCMoneyText");
-    lua_pushcfunction(L, DialogueWindow_set_conversationNPCSpeech);
-    lua_setfield(L, -2, "conversationNPCSpeech");
-    lua_pushcfunction(L, DialogueWindow_set_conversationPCSpeechPanel);
-    lua_setfield(L, -2, "conversationPCSpeechPanel");
-    lua_pushcfunction(L, DialogueWindow_set_conversationNPCPortrait);
-    lua_setfield(L, -2, "conversationNPCPortrait");
-    lua_pushcfunction(L, DialogueWindow_set_conversationPCPortrait);
-    lua_setfield(L, -2, "conversationPCPortrait");
-    lua_pushcfunction(L, DialogueWindow_set_conversationTextColor);
-    lua_setfield(L, -2, "conversationTextColor");
-    lua_pushcfunction(L, DialogueWindow_set_conversationTextSelectedColor);
-    lua_setfield(L, -2, "conversationTextSelectedColor");
-    lua_pushcfunction(L, DialogueWindow_set_replyTexts);
-    lua_setfield(L, -2, "replyTexts");
+    registerSetter(L, "dialogue", DialogueWindow_set_dialogue);
+    registerSetter(L, "conversationPanelsMargin", DialogueWindow_set_conversationPanelsMargin);
+    registerSetter(L, "converstaionPCPanelBottom", DialogueWindow_set_converstaionPCPanelBottom);
+    registerSetter(L, "conversationPCSpeechPanelMinHeight", DialogueWindow_set_conversationPCSpeechPanelMinHeight);
+    registerSetter(L, "conversationNPCSpeechPanelMinHeight", DialogueWindow_set_conversationNPCSpeechPanelMinHeight);
+    registerSetter(L, "conversationPCPanelHeightDiffSpeechPanel", DialogueWindow_set_conversationPCPanelHeightDiffSpeechPanel);
+    registerSetter(L, "conversationNPCPanelHeightDiffSpeechPanel", DialogueWindow_set_conversationNPCPanelHeightDiffSpeechPanel);
+    registerSetter(L, "conversationPC", DialogueWindow_set_conversationPC);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to GUIWindow

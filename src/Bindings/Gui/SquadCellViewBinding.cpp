@@ -5,7 +5,6 @@
 
 namespace KenshiLua
 {
-
 typedef SquadManagementScreen::SquadCellView SquadCellView;
 
 static SquadCellView* getInstance(lua_State* L, int idx)
@@ -72,6 +71,14 @@ Skipped methods needing manual binding:
   line 123: void getCellDimension(...) - static method
   line 126: void onNameChanged(...) - unsupported arg type
   line 127: void onRemove(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - SquadCellView_get_portraitsBox: SquadManagementScreen::PortraitSquadItemBox* (unbound pointer)
+  - SquadCellView_get_txtName: MyGUI::EditBox* (unbound pointer)
+  - SquadCellView_get_txtSquadSize: MyGUI::TextBox* (unbound pointer)
+  - SquadCellView_get_squad: SquadManagementScreen::SquadData* (unbound pointer)
 */
 
 int SquadCellViewBinding::gc(lua_State* L)

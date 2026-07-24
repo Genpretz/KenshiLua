@@ -1,11 +1,11 @@
 #include "pch.h"
-#include <kenshi/gui/ToolTip.h>
+#include "kenshi\gui\Tooltip.h"
 #include "ToolTipLineBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
-    typedef ToolTip::ToolTipLine ToolTipLine;
+typedef ToolTip::ToolTipLine ToolTipLine;
 
 static ToolTipLine* getInstance(lua_State* L, int idx)
 {
@@ -68,6 +68,13 @@ Skipped methods needing manual binding:
   line 27: ToolTipLine* _CONSTRUCTOR(...) - unsupported arg type
 */
 
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - ToolTipLine_get_content: MyGUI::Widget* (unbound pointer)
+  - ToolTipLine_get_leftBox: MyGUI::EditBox* (unbound pointer)
+  - ToolTipLine_get_rightBox: MyGUI::EditBox* (unbound pointer)
+*/
+
 int ToolTipLineBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -104,19 +111,14 @@ void ToolTipLineBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ToolTipLineBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ToolTipLine_get_content);
-    lua_setfield(L, -2, "content");
-    lua_pushcfunction(L, ToolTipLine_get_leftBox);
-    lua_setfield(L, -2, "leftBox");
-    lua_pushcfunction(L, ToolTipLine_get_rightBox);
-    lua_setfield(L, -2, "rightBox");
-    lua_pushcfunction(L, ToolTipLine_get_width);
-    lua_setfield(L, -2, "width");
+    registerGetter(L, "content", ToolTipLine_get_content);
+    registerGetter(L, "leftBox", ToolTipLine_get_leftBox);
+    registerGetter(L, "rightBox", ToolTipLine_get_rightBox);
+    registerGetter(L, "width", ToolTipLine_get_width);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ToolTipLine_set_width);
-    lua_setfield(L, -2, "width");
+    registerSetter(L, "width", ToolTipLine_set_width);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

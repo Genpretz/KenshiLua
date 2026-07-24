@@ -1,7 +1,8 @@
 #include "pch.h"
-#include <kenshi/gui/OrdersPanel.h>
+#include "kenshi\gui\OrdersPanel.h"
 #include "OrderCellViewBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/OrderDataBinding.h"
 
 namespace KenshiLua
 {
@@ -32,11 +33,18 @@ static int OrderCellView_get_data(lua_State* L)
 {
     OrderCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrderCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->data);
-    return 1;
+    return pushObject<OrderData>(L, instance->data, OrderDataBinding::getMetatableName());
 }
 
 // --- Setters for OrderCellView ---
+static int OrderCellView_set_data(lua_State* L)
+{
+    OrderCellView* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrderCellView is nil");
+    instance->data = lua_isnoneornil(L, 2) ? nullptr : checkObject<OrderData>(L, 2, OrderDataBinding::getMetatableName());
+    return 0;
+}
+
 int OrderCellViewBinding::_DESTRUCTOR(lua_State* L)
 {
     OrderCellView* instance = getInstance(L, 1);
@@ -67,10 +75,17 @@ int OrderCellViewBinding::resize(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 21: OrderCellView* _CONSTRUCTOR(...) - unsupported arg type
-  line 24: void update(...) - unsupported arg type
-  line 25: void getCellDimension(...) - static method
-  line 29: void onRemove(...) - unsupported arg type
+  line 23: OrderCellView* _CONSTRUCTOR(...) - unsupported arg type
+  line 26: void update(...) - unsupported arg type
+  line 27: void getCellDimension(...) - static method
+  line 31: void onRemove(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - OrderCellView_get_orderText: MyGUI::TextBox* (unbound pointer)
+  - OrderCellView_get_removeButton: MyGUI::Button* (unbound pointer)
+  - OrderCellViewBinding::getWidget: MyGUI::Widget* (unbound pointer)
 */
 
 int OrderCellViewBinding::gc(lua_State* L)
@@ -111,15 +126,13 @@ void OrderCellViewBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, OrderCellViewBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, OrderCellView_get_orderText);
-    lua_setfield(L, -2, "orderText");
-    lua_pushcfunction(L, OrderCellView_get_removeButton);
-    lua_setfield(L, -2, "removeButton");
-    lua_pushcfunction(L, OrderCellView_get_data);
-    lua_setfield(L, -2, "data");
+    registerGetter(L, "orderText", OrderCellView_get_orderText);
+    registerGetter(L, "removeButton", OrderCellView_get_removeButton);
+    registerGetter(L, "data", OrderCellView_get_data);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "data", OrderCellView_set_data);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseCellView<OrderData*>

@@ -3,7 +3,7 @@
 #include "Bindings/Gui/ContextMenuBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RootObjectBinding.h"
-#include "Bindings/Templates/LektorBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {

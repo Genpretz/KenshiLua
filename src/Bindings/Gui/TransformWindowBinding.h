@@ -19,6 +19,7 @@ public:
     static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int setCaption(lua_State* L);
+    static int updateState(lua_State* L);
     static int close(lua_State* L);
     static int refresh(lua_State* L);
     static int updateGizmo(lua_State* L);
@@ -30,5 +31,10 @@ public:
     static int setMode(lua_State* L);
     static int getLastZone(lua_State* L);
     static int getZone(lua_State* L);
+    static int changeMode(lua_State* L);
+    static int changeCoord(lua_State* L);
+    static int changeValue(lua_State* L);
+    static int reset(lua_State* L);
+    static int revert(lua_State* L);
 };
 }

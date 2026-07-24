@@ -1,5 +1,5 @@
 #include "pch.h"
-#include <kenshi/gui/TutorialGUI.h>
+#include "kenshi\gui\TutorialGUI.h"
 #include "TutorialSubItemBinding.h"
 #include "Lua/BindingHelpers.h"
 
@@ -158,17 +158,13 @@ void TutorialSubItemBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TutorialSubItemBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TutorialSubItem_get_description);
-    lua_setfield(L, -2, "description");
-    lua_pushcfunction(L, TutorialSubItem_get_skippeable);
-    lua_setfield(L, -2, "skippeable");
+    registerGetter(L, "description", TutorialSubItem_get_description);
+    registerGetter(L, "skippeable", TutorialSubItem_get_skippeable);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TutorialSubItem_set_description);
-    lua_setfield(L, -2, "description");
-    lua_pushcfunction(L, TutorialSubItem_set_skippeable);
-    lua_setfield(L, -2, "skippeable");
+    registerSetter(L, "description", TutorialSubItem_set_description);
+    registerSetter(L, "skippeable", TutorialSubItem_set_skippeable);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

@@ -1,8 +1,8 @@
 #include "pch.h"
-#include <kenshi/gui/ToolTip.h>
+#include "kenshi\gui\Tooltip.h"
 #include "ToolTipDynamicBinding.h"
-#include "ToolTipBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/ToolTipBinding.h"
 
 namespace KenshiLua
 {
@@ -20,8 +20,7 @@ int ToolTipDynamicBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "ToolTipDynamic is nil");
 
     ToolTipDynamic* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ToolTipDynamic>(L, result, ToolTipDynamicBinding::getMetatableName());
 }
 
 int ToolTipDynamicBinding::_DESTRUCTOR(lua_State* L)

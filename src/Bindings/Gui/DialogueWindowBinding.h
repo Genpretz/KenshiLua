@@ -19,6 +19,7 @@ public:
     static int getVisible(lua_State* L);
     static int setVisible(lua_State* L);
     static int _NV_show(lua_State* L);
+    static int hide(lua_State* L);
     static int isVisible(lua_State* L);
     static int _NV_isVisible(lua_State* L);
     static int update(lua_State* L);
@@ -27,6 +28,7 @@ public:
     static int activateResponse(lua_State* L);
     static int setNPCText(lua_State* L);
     static int clearResponses(lua_State* L);
+    static int changePortrait(lua_State* L);
     static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int updatePanelsPosition(lua_State* L);

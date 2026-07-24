@@ -1,8 +1,8 @@
 #include "pch.h"
-#include <kenshi/gui/ToolTip.h>
+#include "kenshi\gui\Tooltip.h"
 #include "ToolTipInventoryBinding.h"
-#include "ToolTipBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/ToolTipBinding.h"
 
 namespace KenshiLua
 {
@@ -17,19 +17,25 @@ static int ToolTipInventory_get_compareTooltip(lua_State* L)
 {
     ToolTipInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipInventory is nil");
-    lua_pushlightuserdata(L, (void*)instance->compareTooltip);
-    return 1;
+    return pushObject<ToolTipInventory>(L, instance->compareTooltip, ToolTipInventoryBinding::getMetatableName());
 }
 
 // --- Setters for ToolTipInventory ---
+static int ToolTipInventory_set_compareTooltip(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    instance->compareTooltip = lua_isnoneornil(L, 2) ? nullptr : checkObject<ToolTipInventory>(L, 2, ToolTipInventoryBinding::getMetatableName());
+    return 0;
+}
+
 int ToolTipInventoryBinding::_CONSTRUCTOR(lua_State* L)
 {
     ToolTipInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipInventory is nil");
 
     ToolTipInventory* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ToolTipInventory>(L, result, ToolTipInventoryBinding::getMetatableName());
 }
 
 int ToolTipInventoryBinding::_DESTRUCTOR(lua_State* L)
@@ -115,11 +121,11 @@ void ToolTipInventoryBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ToolTipInventoryBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ToolTipInventory_get_compareTooltip);
-    lua_setfield(L, -2, "compareTooltip");
+    registerGetter(L, "compareTooltip", ToolTipInventory_get_compareTooltip);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "compareTooltip", ToolTipInventory_set_compareTooltip);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ToolTip

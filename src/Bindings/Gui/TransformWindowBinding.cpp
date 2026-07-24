@@ -1,11 +1,13 @@
 #include "pch.h"
+#include "kenshi\gui\TransformWindow.h"
+#include "TransformWindowBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
 #include "Bindings/Gui/DataPanelLine_ButtonBinding.h"
 #include "Bindings/Gui/DataPanelLine_TextEditableBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
-
-#include <kenshi/gui/TransformWindow.h>
-#include "TransformWindowBinding.h"
-#include "Lua/BindingHelpers.h"
+#include "Bindings/InstanceIDBinding.h"
+#include "Bindings/ZoneMapBinding.h"
 
 namespace KenshiLua
 {
@@ -117,24 +119,21 @@ static int TransformWindow_get_lastZone(lua_State* L)
 {
     TransformWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TransformWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->lastZone);
-    return 1;
+    return pushObject<ZoneMap>(L, instance->lastZone, ZoneMapBinding::getMetatableName());
 }
 
 static int TransformWindow_get_currentZone(lua_State* L)
 {
     TransformWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TransformWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->currentZone);
-    return 1;
+    return pushObject<ZoneMap>(L, instance->currentZone, ZoneMapBinding::getMetatableName());
 }
 
 static int TransformWindow_get_currentInstance(lua_State* L)
 {
     TransformWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TransformWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->currentInstance);
-    return 1;
+    return pushObject<InstanceID>(L, const_cast<InstanceID*>(instance->currentInstance), InstanceIDBinding::getMetatableName());
 }
 
 static int TransformWindow_get_changed(lua_State* L)
@@ -153,7 +152,71 @@ static int TransformWindow_get_editChanged(lua_State* L)
     return 1;
 }
 
+static int TransformWindow_get_lastMouse(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    pushVector2(L, instance->lastMouse);
+    return 1;
+}
+
 // --- Setters for TransformWindow ---
+static int TransformWindow_set_window(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->window = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int TransformWindow_set_windowXValue(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->windowXValue = lua_isnoneornil(L, 2) ? nullptr : checkObject<DataPanelLine_TextEditable>(L, 2, DataPanelLine_TextEditableBinding::getMetatableName());
+    return 0;
+}
+
+static int TransformWindow_set_windowYValue(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->windowYValue = lua_isnoneornil(L, 2) ? nullptr : checkObject<DataPanelLine_TextEditable>(L, 2, DataPanelLine_TextEditableBinding::getMetatableName());
+    return 0;
+}
+
+static int TransformWindow_set_windowZValue(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->windowZValue = lua_isnoneornil(L, 2) ? nullptr : checkObject<DataPanelLine_TextEditable>(L, 2, DataPanelLine_TextEditableBinding::getMetatableName());
+    return 0;
+}
+
+static int TransformWindow_set_modeButton(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->modeButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<DataPanelLine_Button>(L, 2, DataPanelLine_ButtonBinding::getMetatableName());
+    return 0;
+}
+
+static int TransformWindow_set_axisButton(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->axisButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<DataPanelLine_Button>(L, 2, DataPanelLine_ButtonBinding::getMetatableName());
+    return 0;
+}
+
+static int TransformWindow_set_revertButton(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->revertButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<DataPanelLine_Button>(L, 2, DataPanelLine_ButtonBinding::getMetatableName());
+    return 0;
+}
+
 static int TransformWindow_set_mode(lua_State* L)
 {
     TransformWindow* instance = getInstance(L, 1);
@@ -178,6 +241,30 @@ static int TransformWindow_set_hasScale(lua_State* L)
     return 0;
 }
 
+static int TransformWindow_set_lastZone(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->lastZone = lua_isnoneornil(L, 2) ? nullptr : checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    return 0;
+}
+
+static int TransformWindow_set_currentZone(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->currentZone = lua_isnoneornil(L, 2) ? nullptr : checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    return 0;
+}
+
+static int TransformWindow_set_currentInstance(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->currentInstance = lua_isnoneornil(L, 2) ? nullptr : checkObject<InstanceID>(L, 2, InstanceIDBinding::getMetatableName());
+    return 0;
+}
+
 static int TransformWindow_set_changed(lua_State* L)
 {
     TransformWindow* instance = getInstance(L, 1);
@@ -194,14 +281,21 @@ static int TransformWindow_set_editChanged(lua_State* L)
     return 0;
 }
 
+static int TransformWindow_set_lastMouse(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    readVector2(L, 2, instance->lastMouse);
+    return 0;
+}
+
 int TransformWindowBinding::_CONSTRUCTOR(lua_State* L)
 {
     TransformWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TransformWindow is nil");
 
     TransformWindow* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<TransformWindow>(L, result, TransformWindowBinding::getMetatableName());
 }
 
 int TransformWindowBinding::_DESTRUCTOR(lua_State* L)
@@ -218,8 +312,18 @@ int TransformWindowBinding::setCaption(lua_State* L)
     TransformWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TransformWindow is nil");
 
-    std::string s = luaL_checkstring(L, 2);
+    const std::string s = luaL_checkstring(L, 2);
     instance->setCaption(s);
+    return 0;
+}
+
+int TransformWindowBinding::updateState(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+
+    const InstanceID* id = checkObject<InstanceID>(L, 2, InstanceIDBinding::getMetatableName());
+    instance->updateState(id);
     return 0;
 }
 
@@ -317,8 +421,7 @@ int TransformWindowBinding::getLastZone(lua_State* L)
     if (!instance) return luaL_error(L, "TransformWindow is nil");
 
     ZoneMap* result = instance->getLastZone();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ZoneMap>(L, result, ZoneMapBinding::getMetatableName());
 }
 
 int TransformWindowBinding::getZone(lua_State* L)
@@ -327,27 +430,72 @@ int TransformWindowBinding::getZone(lua_State* L)
     if (!instance) return luaL_error(L, "TransformWindow is nil");
 
     ZoneMap* result = instance->getZone();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ZoneMap>(L, result, ZoneMapBinding::getMetatableName());
+}
+
+int TransformWindowBinding::changeMode(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->changeMode(line);
+    return 0;
+}
+
+int TransformWindowBinding::changeCoord(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->changeCoord(line);
+    return 0;
+}
+
+int TransformWindowBinding::changeValue(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->changeValue(line);
+    return 0;
+}
+
+int TransformWindowBinding::reset(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->reset(_a1);
+    return 0;
+}
+
+int TransformWindowBinding::revert(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+
+    DataPanelLine* _a1 = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->revert(_a1);
+    return 0;
 }
 
 /*
 Skipped methods needing manual binding:
   line 19: TransformWindow* getSingleton(...) - static method
   line 24: void show(...) - unsupported arg type
-  line 26: void updateState(...) - unsupported arg type
-  line 39: void changeMode(...) - unsupported arg type
-  line 40: void changeCoord(...) - unsupported arg type
-  line 41: void changeValue(...) - unsupported arg type
   line 42: void confirmValue(...) - unsupported arg type
-  line 43: void reset(...) - unsupported arg type
-  line 44: void revert(...) - unsupported arg type
   line 45: void hide(...) - unsupported arg type
 */
 
 /*
-Skipped properties needing manual binding:
-  line 65: lastMouse (Ogre::Vector2) - unsupported type
+LIGHTUSERDATA DEPENDENCIES:
+  - TransformWindow_get_node: Ogre::SceneNode* (unbound pointer)
+  - TransformWindow_get_parentNode: Ogre::SceneNode* (unbound pointer)
+  - TransformWindow_get_gizmo: Gizmo* (unbound pointer)
 */
 
 int TransformWindowBinding::gc(lua_State* L)
@@ -374,6 +522,7 @@ void TransformWindowBinding::registerBinding(lua_State* L)
         { "_CONSTRUCTOR", TransformWindowBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", TransformWindowBinding::_DESTRUCTOR },
         { "setCaption", TransformWindowBinding::setCaption },
+        { "updateState", TransformWindowBinding::updateState },
         { "close", TransformWindowBinding::close },
         { "refresh", TransformWindowBinding::refresh },
         { "updateGizmo", TransformWindowBinding::updateGizmo },
@@ -385,6 +534,11 @@ void TransformWindowBinding::registerBinding(lua_State* L)
         { "setMode", TransformWindowBinding::setMode },
         { "getLastZone", TransformWindowBinding::getLastZone },
         { "getZone", TransformWindowBinding::getZone },
+        { "changeMode", TransformWindowBinding::changeMode },
+        { "changeCoord", TransformWindowBinding::changeCoord },
+        { "changeValue", TransformWindowBinding::changeValue },
+        { "reset", TransformWindowBinding::reset },
+        { "revert", TransformWindowBinding::revert },
         { 0, 0 }
     };
 
@@ -399,55 +553,44 @@ void TransformWindowBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TransformWindowBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TransformWindow_get_window);
-    lua_setfield(L, -2, "window");
-    lua_pushcfunction(L, TransformWindow_get_windowXValue);
-    lua_setfield(L, -2, "windowXValue");
-    lua_pushcfunction(L, TransformWindow_get_windowYValue);
-    lua_setfield(L, -2, "windowYValue");
-    lua_pushcfunction(L, TransformWindow_get_windowZValue);
-    lua_setfield(L, -2, "windowZValue");
-    lua_pushcfunction(L, TransformWindow_get_modeButton);
-    lua_setfield(L, -2, "modeButton");
-    lua_pushcfunction(L, TransformWindow_get_axisButton);
-    lua_setfield(L, -2, "axisButton");
-    lua_pushcfunction(L, TransformWindow_get_revertButton);
-    lua_setfield(L, -2, "revertButton");
-    lua_pushcfunction(L, TransformWindow_get_node);
-    lua_setfield(L, -2, "node");
-    lua_pushcfunction(L, TransformWindow_get_parentNode);
-    lua_setfield(L, -2, "parentNode");
-    lua_pushcfunction(L, TransformWindow_get_gizmo);
-    lua_setfield(L, -2, "gizmo");
-    lua_pushcfunction(L, TransformWindow_get_mode);
-    lua_setfield(L, -2, "mode");
-    lua_pushcfunction(L, TransformWindow_get_coordinateSystem);
-    lua_setfield(L, -2, "coordinateSystem");
-    lua_pushcfunction(L, TransformWindow_get_hasScale);
-    lua_setfield(L, -2, "hasScale");
-    lua_pushcfunction(L, TransformWindow_get_lastZone);
-    lua_setfield(L, -2, "lastZone");
-    lua_pushcfunction(L, TransformWindow_get_currentZone);
-    lua_setfield(L, -2, "currentZone");
-    lua_pushcfunction(L, TransformWindow_get_currentInstance);
-    lua_setfield(L, -2, "currentInstance");
-    lua_pushcfunction(L, TransformWindow_get_changed);
-    lua_setfield(L, -2, "changed");
-    lua_pushcfunction(L, TransformWindow_get_editChanged);
-    lua_setfield(L, -2, "editChanged");
+    registerGetter(L, "window", TransformWindow_get_window);
+    registerGetter(L, "windowXValue", TransformWindow_get_windowXValue);
+    registerGetter(L, "windowYValue", TransformWindow_get_windowYValue);
+    registerGetter(L, "windowZValue", TransformWindow_get_windowZValue);
+    registerGetter(L, "modeButton", TransformWindow_get_modeButton);
+    registerGetter(L, "axisButton", TransformWindow_get_axisButton);
+    registerGetter(L, "revertButton", TransformWindow_get_revertButton);
+    registerGetter(L, "node", TransformWindow_get_node);
+    registerGetter(L, "parentNode", TransformWindow_get_parentNode);
+    registerGetter(L, "gizmo", TransformWindow_get_gizmo);
+    registerGetter(L, "mode", TransformWindow_get_mode);
+    registerGetter(L, "coordinateSystem", TransformWindow_get_coordinateSystem);
+    registerGetter(L, "hasScale", TransformWindow_get_hasScale);
+    registerGetter(L, "lastZone", TransformWindow_get_lastZone);
+    registerGetter(L, "currentZone", TransformWindow_get_currentZone);
+    registerGetter(L, "currentInstance", TransformWindow_get_currentInstance);
+    registerGetter(L, "changed", TransformWindow_get_changed);
+    registerGetter(L, "editChanged", TransformWindow_get_editChanged);
+    registerGetter(L, "lastMouse", TransformWindow_get_lastMouse);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TransformWindow_set_mode);
-    lua_setfield(L, -2, "mode");
-    lua_pushcfunction(L, TransformWindow_set_coordinateSystem);
-    lua_setfield(L, -2, "coordinateSystem");
-    lua_pushcfunction(L, TransformWindow_set_hasScale);
-    lua_setfield(L, -2, "hasScale");
-    lua_pushcfunction(L, TransformWindow_set_changed);
-    lua_setfield(L, -2, "changed");
-    lua_pushcfunction(L, TransformWindow_set_editChanged);
-    lua_setfield(L, -2, "editChanged");
+    registerSetter(L, "window", TransformWindow_set_window);
+    registerSetter(L, "windowXValue", TransformWindow_set_windowXValue);
+    registerSetter(L, "windowYValue", TransformWindow_set_windowYValue);
+    registerSetter(L, "windowZValue", TransformWindow_set_windowZValue);
+    registerSetter(L, "modeButton", TransformWindow_set_modeButton);
+    registerSetter(L, "axisButton", TransformWindow_set_axisButton);
+    registerSetter(L, "revertButton", TransformWindow_set_revertButton);
+    registerSetter(L, "mode", TransformWindow_set_mode);
+    registerSetter(L, "coordinateSystem", TransformWindow_set_coordinateSystem);
+    registerSetter(L, "hasScale", TransformWindow_set_hasScale);
+    registerSetter(L, "lastZone", TransformWindow_set_lastZone);
+    registerSetter(L, "currentZone", TransformWindow_set_currentZone);
+    registerSetter(L, "currentInstance", TransformWindow_set_currentInstance);
+    registerSetter(L, "changed", TransformWindow_set_changed);
+    registerSetter(L, "editChanged", TransformWindow_set_editChanged);
+    registerSetter(L, "lastMouse", TransformWindow_set_lastMouse);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include <kenshi/gui/OrdersPanel.h>
+#include "kenshi\gui\OrdersPanel.h"
 #include "OrdersItemBoxBinding.h"
 #include "Lua/BindingHelpers.h"
 
@@ -24,7 +24,7 @@ int OrdersItemBoxBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 65: OrdersItemBox* _CONSTRUCTOR(...) - unsupported arg type
+  line 67: OrdersItemBox* _CONSTRUCTOR(...) - unsupported arg type
 */
 
 int OrdersItemBoxBinding::gc(lua_State* L)

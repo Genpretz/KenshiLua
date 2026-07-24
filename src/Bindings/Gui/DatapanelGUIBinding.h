@@ -55,8 +55,12 @@ public:
     static int setLineTextButton(lua_State* L);
     static int setLineButton(lua_State* L);
     static int setLineToggleButton(lua_State* L);
+    static int setLineSliderEditable(lua_State* L);
+    static int setLineSlider(lua_State* L);
     static int setLineProgress(lua_State* L);
     static int removeLine(lua_State* L);
+    static int setLineCheckbox(lua_State* L);
+    static int setLineDropBox(lua_State* L);
     static int addSpace(lua_State* L);
     static int setCategoryIcon(lua_State* L);
     static int _NV_setCategoryIcon(lua_State* L);
@@ -64,6 +68,9 @@ public:
     static int _NV_changeCategory(lua_State* L);
     static int getCurrentCategory(lua_State* L);
     static int _NV_getCurrentCategory(lua_State* L);
+    static int addCustomLine(lua_State* L);
+    static int getObject(lua_State* L);
+    static int _NV_getObject(lua_State* L);
     static int setLineSpacing(lua_State* L);
     static int _NV_setLineSpacing(lua_State* L);
     static int getLine(lua_State* L);
@@ -73,6 +80,7 @@ public:
     static int getNumLines(lua_State* L);
     static int getLineByNum(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
+    static int createLine(lua_State* L);
     static int getNextVerticalPos(lua_State* L);
     static int dataExists(lua_State* L);
     static int clearCategoryTabs(lua_State* L);

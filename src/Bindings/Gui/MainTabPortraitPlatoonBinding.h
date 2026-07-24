@@ -16,6 +16,8 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
+    static int addTab(lua_State* L);
     static int detach(lua_State* L);
     static int setFlash(lua_State* L);
     static int update(lua_State* L);

@@ -1,7 +1,9 @@
 #include "pch.h"
-#include <kenshi/gui/InventoryGUI.h>
+#include "kenshi\gui\InventoryGUI.h"
 #include "InventorySectionGUIBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/InventorySectionBinding.h"
+#include "Bindings/ItemBinding.h"
 
 namespace KenshiLua
 {
@@ -60,6 +62,16 @@ int InventorySectionGUIBinding::setEnabled(lua_State* L)
     return 0;
 }
 
+int InventorySectionGUIBinding::refreshIcons(lua_State* L)
+{
+    InventorySectionGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventorySectionGUI is nil");
+
+    InventorySection* section = checkObject<InventorySection>(L, 2, InventorySectionBinding::getMetatableName());
+    instance->refreshIcons(section);
+    return 0;
+}
+
 int InventorySectionGUIBinding::update(lua_State* L)
 {
     InventorySectionGUI* instance = getInstance(L, 1);
@@ -75,7 +87,12 @@ Skipped methods needing manual binding:
   line 50: MyGUI::types::TPoint<int> getItemAbsolutePosition(...) - unsupported return type
   line 52: MyGUI::types::TPoint<int> getPositionSlot(...) - unsupported return type
   line 53: bool getBestPositionSlot(...) - unsupported arg type
-  line 55: void refreshIcons(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - InventorySectionGUI_get_widget: MyGUI::Widget* (unbound pointer)
+  - InventorySectionGUIBinding::getWidget: MyGUI::Widget* (unbound pointer)
 */
 
 /*
@@ -108,6 +125,7 @@ void InventorySectionGUIBinding::registerBinding(lua_State* L)
         { "hasMouse", InventorySectionGUIBinding::hasMouse },
         { "getWidget", InventorySectionGUIBinding::getWidget },
         { "setEnabled", InventorySectionGUIBinding::setEnabled },
+        { "refreshIcons", InventorySectionGUIBinding::refreshIcons },
         { "update", InventorySectionGUIBinding::update },
         { 0, 0 }
     };
@@ -123,8 +141,7 @@ void InventorySectionGUIBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, InventorySectionGUIBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, InventorySectionGUI_get_widget);
-    lua_setfield(L, -2, "widget");
+    registerGetter(L, "widget", InventorySectionGUI_get_widget);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table

@@ -6,7 +6,6 @@
 
 namespace KenshiLua
 {
-
 typedef LevelEditor::SquadListWindow SquadListWindow;
 
 static SquadListWindow* getInstance(lua_State* L, int idx)

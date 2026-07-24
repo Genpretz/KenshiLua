@@ -1,8 +1,10 @@
 #include "pch.h"
-#include <kenshi/gui/InventoryGUI.h>
+#include "kenshi\gui\InventoryGUI.h"
 #include "BackpackInventoryLayoutBinding.h"
-#include "GenericFixedInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/GenericFixedInventoryLayoutBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -21,8 +23,7 @@ int BackpackInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
 
     bool standAlone = lua_toboolean(L, 2) != 0;
     BackpackInventoryLayout* result = instance->_CONSTRUCTOR(standAlone);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<BackpackInventoryLayout>(L, result, BackpackInventoryLayoutBinding::getMetatableName());
 }
 
 int BackpackInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)

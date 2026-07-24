@@ -1,8 +1,9 @@
 #include "pch.h"
-#include <kenshi/gui/TutorialGUI.h>
+#include "kenshi\gui\TutorialGUI.h"
 #include "TutorialGUIBinding.h"
-#include "GUIWindowBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/GUIWindowBinding.h"
+#include "Bindings/Gui/TutorialItemBinding.h"
 
 namespace KenshiLua
 {
@@ -113,8 +114,7 @@ static int TutorialGUI_get_currentTutorialItem(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->currentTutorialItem);
-    return 1;
+    return pushObject<TutorialItem>(L, instance->currentTutorialItem, TutorialItemBinding::getMetatableName());
 }
 
 static int TutorialGUI_get_flashNewItem(lua_State* L)
@@ -158,6 +158,14 @@ static int TutorialGUI_set_highlightAlpha(lua_State* L)
     return 0;
 }
 
+static int TutorialGUI_set_currentTutorialItem(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+    instance->currentTutorialItem = lua_isnoneornil(L, 2) ? nullptr : checkObject<TutorialItem>(L, 2, TutorialItemBinding::getMetatableName());
+    return 0;
+}
+
 static int TutorialGUI_set_flashNewItem(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
@@ -180,8 +188,7 @@ int TutorialGUIBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
 
     TutorialGUI* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<TutorialGUI>(L, result, TutorialGUIBinding::getMetatableName());
 }
 
 int TutorialGUIBinding::_DESTRUCTOR(lua_State* L)
@@ -287,6 +294,16 @@ int TutorialGUIBinding::_NV_show(lua_State* L)
     return 0;
 }
 
+int TutorialGUIBinding::removeTutorialFromList(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+
+    TutorialItem* tutorial = checkObject<TutorialItem>(L, 2, TutorialItemBinding::getMetatableName());
+    instance->removeTutorialFromList(tutorial);
+    return 0;
+}
+
 int TutorialGUIBinding::arrangeList(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
@@ -302,6 +319,16 @@ int TutorialGUIBinding::refreshUI(lua_State* L)
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
 
     instance->refreshUI();
+    return 0;
+}
+
+int TutorialGUIBinding::showTutorialWindow(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+
+    TutorialItem* item = checkObject<TutorialItem>(L, 2, TutorialItemBinding::getMetatableName());
+    instance->showTutorialWindow(item);
     return 0;
 }
 
@@ -326,14 +353,12 @@ int TutorialGUIBinding::updateCurrentItem(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 164: void addTutorialsToList(...) - unsupported arg type
-  line 165: void removeTutorialFromList(...) - unsupported arg type
   line 168: void windowButtonEvent(...) - unsupported arg type
   line 169: void windowPrevEvent(...) - unsupported arg type
   line 170: void windowNextEvent(...) - unsupported arg type
   line 171: void dismissButtonEvent(...) - unsupported arg type
   line 172: void tooltipOpen(...) - unsupported arg type
   line 173: void tooltipClose(...) - unsupported arg type
-  line 174: void showTutorialWindow(...) - unsupported arg type
 */
 
 /*
@@ -375,8 +400,10 @@ void TutorialGUIBinding::registerBinding(lua_State* L)
         { "setEnabled", TutorialGUIBinding::setEnabled },
         { "show", TutorialGUIBinding::show },
         { "_NV_show", TutorialGUIBinding::_NV_show },
+        { "removeTutorialFromList", TutorialGUIBinding::removeTutorialFromList },
         { "arrangeList", TutorialGUIBinding::arrangeList },
         { "refreshUI", TutorialGUIBinding::refreshUI },
+        { "showTutorialWindow", TutorialGUIBinding::showTutorialWindow },
         { "closeTutorialWindow", TutorialGUIBinding::closeTutorialWindow },
         { "updateCurrentItem", TutorialGUIBinding::updateCurrentItem },
         { 0, 0 }
@@ -393,55 +420,33 @@ void TutorialGUIBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TutorialGUIBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TutorialGUI_get_highlightItem);
-    lua_setfield(L, -2, "highlightItem");
-    lua_pushcfunction(L, TutorialGUI_get_highlightItemWidget);
-    lua_setfield(L, -2, "highlightItemWidget");
-    lua_pushcfunction(L, TutorialGUI_get_highlightPanel);
-    lua_setfield(L, -2, "highlightPanel");
-    lua_pushcfunction(L, TutorialGUI_get_highlightDirection);
-    lua_setfield(L, -2, "highlightDirection");
-    lua_pushcfunction(L, TutorialGUI_get_highlightAlpha);
-    lua_setfield(L, -2, "highlightAlpha");
-    lua_pushcfunction(L, TutorialGUI_get_window);
-    lua_setfield(L, -2, "window");
-    lua_pushcfunction(L, TutorialGUI_get_windowPrevButton);
-    lua_setfield(L, -2, "windowPrevButton");
-    lua_pushcfunction(L, TutorialGUI_get_windowNextButton);
-    lua_setfield(L, -2, "windowNextButton");
-    lua_pushcfunction(L, TutorialGUI_get_windowText);
-    lua_setfield(L, -2, "windowText");
-    lua_pushcfunction(L, TutorialGUI_get_dismissButton);
-    lua_setfield(L, -2, "dismissButton");
-    lua_pushcfunction(L, TutorialGUI_get_pagingText);
-    lua_setfield(L, -2, "pagingText");
-    lua_pushcfunction(L, TutorialGUI_get_tooltipsPanel);
-    lua_setfield(L, -2, "tooltipsPanel");
-    lua_pushcfunction(L, TutorialGUI_get_currentTutorialItem);
-    lua_setfield(L, -2, "currentTutorialItem");
-    lua_pushcfunction(L, TutorialGUI_get_flashNewItem);
-    lua_setfield(L, -2, "flashNewItem");
-    lua_pushcfunction(L, TutorialGUI_get_enabled);
-    lua_setfield(L, -2, "enabled");
+    registerGetter(L, "highlightItem", TutorialGUI_get_highlightItem);
+    registerGetter(L, "highlightItemWidget", TutorialGUI_get_highlightItemWidget);
+    registerGetter(L, "highlightPanel", TutorialGUI_get_highlightPanel);
+    registerGetter(L, "highlightDirection", TutorialGUI_get_highlightDirection);
+    registerGetter(L, "highlightAlpha", TutorialGUI_get_highlightAlpha);
+    registerGetter(L, "window", TutorialGUI_get_window);
+    registerGetter(L, "windowPrevButton", TutorialGUI_get_windowPrevButton);
+    registerGetter(L, "windowNextButton", TutorialGUI_get_windowNextButton);
+    registerGetter(L, "windowText", TutorialGUI_get_windowText);
+    registerGetter(L, "dismissButton", TutorialGUI_get_dismissButton);
+    registerGetter(L, "pagingText", TutorialGUI_get_pagingText);
+    registerGetter(L, "tooltipsPanel", TutorialGUI_get_tooltipsPanel);
+    registerGetter(L, "currentTutorialItem", TutorialGUI_get_currentTutorialItem);
+    registerGetter(L, "flashNewItem", TutorialGUI_get_flashNewItem);
+    registerGetter(L, "enabled", TutorialGUI_get_enabled);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TutorialGUI_set_highlightItem);
-    lua_setfield(L, -2, "highlightItem");
-    lua_pushcfunction(L, TutorialGUI_set_highlightDirection);
-    lua_setfield(L, -2, "highlightDirection");
-    lua_pushcfunction(L, TutorialGUI_set_highlightAlpha);
-    lua_setfield(L, -2, "highlightAlpha");
-    lua_pushcfunction(L, TutorialGUI_set_flashNewItem);
-    lua_setfield(L, -2, "flashNewItem");
-    lua_pushcfunction(L, TutorialGUI_set_enabled);
-    lua_setfield(L, -2, "enabled");
+    registerSetter(L, "highlightItem", TutorialGUI_set_highlightItem);
+    registerSetter(L, "highlightDirection", TutorialGUI_set_highlightDirection);
+    registerSetter(L, "highlightAlpha", TutorialGUI_set_highlightAlpha);
+    registerSetter(L, "currentTutorialItem", TutorialGUI_set_currentTutorialItem);
+    registerSetter(L, "flashNewItem", TutorialGUI_set_flashNewItem);
+    registerSetter(L, "enabled", TutorialGUI_set_enabled);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to GUIWindow
-    // setMetatableParent(L, TutorialGUIBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
-
-        // Wire up inheritance
     // setMetatableParent(L, TutorialGUIBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack

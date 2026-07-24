@@ -1,7 +1,8 @@
 #include "pch.h"
-#include <kenshi/gui/ToolTip.h>
+#include "kenshi\gui\Tooltip.h"
 #include "ToolTipBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {
@@ -173,8 +174,8 @@ int ToolTipBinding::addLine(lua_State* L)
     ToolTip* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTip is nil");
 
-    std::string textLeft = luaL_checkstring(L, 2);
-    std::string textRight = luaL_checkstring(L, 3);
+    const std::string textLeft = luaL_checkstring(L, 2);
+    const std::string textRight = luaL_checkstring(L, 3);
     instance->addLine(textLeft, textRight);
     return 0;
 }
@@ -212,6 +213,12 @@ Skipped methods needing manual binding:
   line 66: void setPosition(...) - unsupported arg type
   line 67: void _NV_setPosition(...) - unsupported arg type
   line 70: void notifyToolTip(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - ToolTip_get_panel: MyGUI::Widget* (unbound pointer)
+  - ToolTip_get_caller: MyGUI::Widget* (unbound pointer)
 */
 
 /*
@@ -264,29 +271,19 @@ void ToolTipBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ToolTipBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ToolTip_get_panel);
-    lua_setfield(L, -2, "panel");
-    lua_pushcfunction(L, ToolTip_get_panelWidth);
-    lua_setfield(L, -2, "panelWidth");
-    lua_pushcfunction(L, ToolTip_get_lineMarginH);
-    lua_setfield(L, -2, "lineMarginH");
-    lua_pushcfunction(L, ToolTip_get_panelMarginV);
-    lua_setfield(L, -2, "panelMarginV");
-    lua_pushcfunction(L, ToolTip_get_lineSpacing);
-    lua_setfield(L, -2, "lineSpacing");
-    lua_pushcfunction(L, ToolTip_get_caller);
-    lua_setfield(L, -2, "caller");
+    registerGetter(L, "panel", ToolTip_get_panel);
+    registerGetter(L, "panelWidth", ToolTip_get_panelWidth);
+    registerGetter(L, "lineMarginH", ToolTip_get_lineMarginH);
+    registerGetter(L, "panelMarginV", ToolTip_get_panelMarginV);
+    registerGetter(L, "lineSpacing", ToolTip_get_lineSpacing);
+    registerGetter(L, "caller", ToolTip_get_caller);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ToolTip_set_panelWidth);
-    lua_setfield(L, -2, "panelWidth");
-    lua_pushcfunction(L, ToolTip_set_lineMarginH);
-    lua_setfield(L, -2, "lineMarginH");
-    lua_pushcfunction(L, ToolTip_set_panelMarginV);
-    lua_setfield(L, -2, "panelMarginV");
-    lua_pushcfunction(L, ToolTip_set_lineSpacing);
-    lua_setfield(L, -2, "lineSpacing");
+    registerSetter(L, "panelWidth", ToolTip_set_panelWidth);
+    registerSetter(L, "lineMarginH", ToolTip_set_lineMarginH);
+    registerSetter(L, "panelMarginV", ToolTip_set_panelMarginV);
+    registerSetter(L, "lineSpacing", ToolTip_set_lineSpacing);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

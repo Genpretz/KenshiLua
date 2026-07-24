@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "Bindings/Gui/GUIWindowBinding.h"
-
-#include <kenshi/gui/TutorialGUI.h>
+#include "kenshi\gui\TutorialGUI.h"
 #include "TutorialpediaGUIBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/GUIWindowBinding.h"
+#include "Bindings/Gui/TutorialItemBinding.h"
 
 namespace KenshiLua
 {
@@ -18,8 +18,7 @@ static int TutorialpediaGUI_get_currentItem(lua_State* L)
 {
     TutorialpediaGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->currentItem);
-    return 1;
+    return pushObject<TutorialItem>(L, instance->currentItem, TutorialItemBinding::getMetatableName());
 }
 
 static int TutorialpediaGUI_get_currentItemIndex(lua_State* L)
@@ -79,6 +78,14 @@ static int TutorialpediaGUI_get_pagingText(lua_State* L)
 }
 
 // --- Setters for TutorialpediaGUI ---
+static int TutorialpediaGUI_set_currentItem(lua_State* L)
+{
+    TutorialpediaGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
+    instance->currentItem = lua_isnoneornil(L, 2) ? nullptr : checkObject<TutorialItem>(L, 2, TutorialItemBinding::getMetatableName());
+    return 0;
+}
+
 static int TutorialpediaGUI_set_currentItemIndex(lua_State* L)
 {
     TutorialpediaGUI* instance = getInstance(L, 1);
@@ -151,8 +158,7 @@ int TutorialpediaGUIBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
 
     TutorialpediaGUI* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<TutorialpediaGUI>(L, result, TutorialpediaGUIBinding::getMetatableName());
 }
 
 int TutorialpediaGUIBinding::_DESTRUCTOR(lua_State* L)
@@ -236,27 +242,19 @@ void TutorialpediaGUIBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TutorialpediaGUIBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TutorialpediaGUI_get_currentItem);
-    lua_setfield(L, -2, "currentItem");
-    lua_pushcfunction(L, TutorialpediaGUI_get_currentItemIndex);
-    lua_setfield(L, -2, "currentItemIndex");
-    lua_pushcfunction(L, TutorialpediaGUI_get_tutorialsList);
-    lua_setfield(L, -2, "tutorialsList");
-    lua_pushcfunction(L, TutorialpediaGUI_get_descriptionText);
-    lua_setfield(L, -2, "descriptionText");
-    lua_pushcfunction(L, TutorialpediaGUI_get_activateButton);
-    lua_setfield(L, -2, "activateButton");
-    lua_pushcfunction(L, TutorialpediaGUI_get_prevButton);
-    lua_setfield(L, -2, "prevButton");
-    lua_pushcfunction(L, TutorialpediaGUI_get_nextButton);
-    lua_setfield(L, -2, "nextButton");
-    lua_pushcfunction(L, TutorialpediaGUI_get_pagingText);
-    lua_setfield(L, -2, "pagingText");
+    registerGetter(L, "currentItem", TutorialpediaGUI_get_currentItem);
+    registerGetter(L, "currentItemIndex", TutorialpediaGUI_get_currentItemIndex);
+    registerGetter(L, "tutorialsList", TutorialpediaGUI_get_tutorialsList);
+    registerGetter(L, "descriptionText", TutorialpediaGUI_get_descriptionText);
+    registerGetter(L, "activateButton", TutorialpediaGUI_get_activateButton);
+    registerGetter(L, "prevButton", TutorialpediaGUI_get_prevButton);
+    registerGetter(L, "nextButton", TutorialpediaGUI_get_nextButton);
+    registerGetter(L, "pagingText", TutorialpediaGUI_get_pagingText);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TutorialpediaGUI_set_currentItemIndex);
-    lua_setfield(L, -2, "currentItemIndex");
+    registerSetter(L, "currentItem", TutorialpediaGUI_set_currentItem);
+    registerSetter(L, "currentItemIndex", TutorialpediaGUI_set_currentItemIndex);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to GUIWindow

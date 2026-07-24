@@ -1,11 +1,12 @@
 #include "pch.h"
-#include <kenshi/gui/CharacterStatsWindow.h>
+#include "kenshi\gui\CharacterStatsWindow.h"
 #include "StatBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
-    typedef CharacterStatsWindow::Stat Stat;
+
+typedef CharacterStatsWindow::Stat Stat;
 
 static Stat* getInstance(lua_State* L, int idx)
 {
@@ -147,29 +148,19 @@ void StatBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, StatBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, Stat_get_type);
-    lua_setfield(L, -2, "type");
-    lua_pushcfunction(L, Stat_get_id);
-    lua_setfield(L, -2, "id");
-    lua_pushcfunction(L, Stat_get_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, Stat_get_description);
-    lua_setfield(L, -2, "description");
-    lua_pushcfunction(L, Stat_get_active);
-    lua_setfield(L, -2, "active");
+    registerGetter(L, "type", Stat_get_type);
+    registerGetter(L, "id", Stat_get_id);
+    registerGetter(L, "name", Stat_get_name);
+    registerGetter(L, "description", Stat_get_description);
+    registerGetter(L, "active", Stat_get_active);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, Stat_set_type);
-    lua_setfield(L, -2, "type");
-    lua_pushcfunction(L, Stat_set_id);
-    lua_setfield(L, -2, "id");
-    lua_pushcfunction(L, Stat_set_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, Stat_set_description);
-    lua_setfield(L, -2, "description");
-    lua_pushcfunction(L, Stat_set_active);
-    lua_setfield(L, -2, "active");
+    registerSetter(L, "type", Stat_set_type);
+    registerSetter(L, "id", Stat_set_id);
+    registerSetter(L, "name", Stat_set_name);
+    registerSetter(L, "description", Stat_set_description);
+    registerSetter(L, "active", Stat_set_active);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

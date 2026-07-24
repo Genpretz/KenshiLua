@@ -6,7 +6,6 @@
 
 namespace KenshiLua
 {
-
 typedef SquadManagementScreen::SquadData SquadData;
 
 static SquadData* getInstance(lua_State* L, int idx)
@@ -38,8 +37,7 @@ int SquadDataBinding::_CONSTRUCTOR(lua_State* L)
 
     ActivePlatoon* platoon = checkObject<ActivePlatoon>(L, 2, ActivePlatoonBinding::getMetatableName());
     SquadData* result = instance->_CONSTRUCTOR(platoon);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<SquadData>(L, result, SquadDataBinding::getMetatableName());
 }
 
 int SquadDataBinding::_DESTRUCTOR(lua_State* L)

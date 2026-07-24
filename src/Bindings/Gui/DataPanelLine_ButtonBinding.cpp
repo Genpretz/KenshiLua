@@ -1,9 +1,9 @@
 #include "pch.h"
-#include <kenshi/gui/DataPanelLine.h>
+#include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_ButtonBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
-#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -58,16 +58,8 @@ static int DataPanelLine_Button_set_userData(lua_State* L)
 {
     DataPanelLine_Button* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
-    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
-    instance->userData = *val;
+    instance->userData = *checkObject<hand>(L, 2, handBinding::getMetatableName());
     return 0;
-}
-
-static int DataPanelLine_Button_set_button(lua_State* L)
-{
-    DataPanelLine_Button* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for button");
 }
 
 static int DataPanelLine_Button_set_buttonWidth(lua_State* L)
@@ -99,14 +91,55 @@ int DataPanelLine_ButtonBinding::_CONSTRUCTOR(lua_State* L)
     DataPanelLine_Button* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
 
-    std::string a = luaL_checkstring(L, 2);
-    std::string b = luaL_checkstring(L, 3);
+    const std::string a = luaL_checkstring(L, 2);
+    const std::string b = luaL_checkstring(L, 3);
     int cat = (int)luaL_checkinteger(L, 4);
     float w = (float)luaL_checknumber(L, 5);
-    std::string skin = luaL_checkstring(L, 6);
+    const std::string skin = luaL_checkstring(L, 6);
     DataPanelLine_Button* result = instance->_CONSTRUCTOR(a, b, cat, w, skin);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<DataPanelLine_Button>(L, result, DataPanelLine_ButtonBinding::getMetatableName());
+}
+
+int DataPanelLine_ButtonBinding::getUserData(lua_State* L)
+{
+    DataPanelLine_Button* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
+
+    hand result = instance->getUserData();
+    return handBinding::push(L, result);
+}
+
+int DataPanelLine_ButtonBinding::_NV_getUserData(lua_State* L)
+{
+    DataPanelLine_Button* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
+
+    hand result = instance->_NV_getUserData();
+    return handBinding::push(L, result);
+}
+
+int DataPanelLine_ButtonBinding::createMe(lua_State* L)
+{
+    DataPanelLine_Button* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->createMe(parent, top, lastLine);
+    return 0;
+}
+
+int DataPanelLine_ButtonBinding::_NV_createMe(lua_State* L)
+{
+    DataPanelLine_Button* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->_NV_createMe(parent, top, lastLine);
+    return 0;
 }
 
 int DataPanelLine_ButtonBinding::_DESTRUCTOR(lua_State* L)
@@ -120,15 +153,11 @@ int DataPanelLine_ButtonBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 139: void pressCallback(...) - unsupported arg type
-  line 140: hand getUserData(...) - unsupported return type
-  line 141: hand _NV_getUserData(...) - unsupported return type
-  line 147: void createMe(...) - unsupported arg type
-  line 148: void _NV_createMe(...) - unsupported arg type
-  line 149: void setToolTipMainBar(...) - overloaded method
-  line 150: void _NV_setToolTipMainBar(...) - overloaded method
-  line 151: void setToolTipMainBar(...) - overloaded method
-  line 152: void _NV_setToolTipMainBar(...) - overloaded method
+  line 140: void pressCallback(...) - unsupported arg type
+  line 150: void setToolTipMainBar(...) - overloaded method
+  line 151: void _NV_setToolTipMainBar(...) - overloaded method
+  line 152: void setToolTipMainBar(...) - overloaded method
+  line 153: void _NV_setToolTipMainBar(...) - overloaded method
 */
 
 int DataPanelLine_ButtonBinding::gc(lua_State* L)
@@ -153,6 +182,10 @@ void DataPanelLine_ButtonBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", DataPanelLine_ButtonBinding::_CONSTRUCTOR },
+        { "getUserData", DataPanelLine_ButtonBinding::getUserData },
+        { "_NV_getUserData", DataPanelLine_ButtonBinding::_NV_getUserData },
+        { "createMe", DataPanelLine_ButtonBinding::createMe },
+        { "_NV_createMe", DataPanelLine_ButtonBinding::_NV_createMe },
         { "_DESTRUCTOR", DataPanelLine_ButtonBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -168,29 +201,18 @@ void DataPanelLine_ButtonBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DataPanelLine_ButtonBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DataPanelLine_Button_get_userData);
-    lua_setfield(L, -2, "userData");
-    lua_pushcfunction(L, DataPanelLine_Button_get_button);
-    lua_setfield(L, -2, "button");
-    lua_pushcfunction(L, DataPanelLine_Button_get_buttonWidth);
-    lua_setfield(L, -2, "buttonWidth");
-    lua_pushcfunction(L, DataPanelLine_Button_get_buttonHeight);
-    lua_setfield(L, -2, "buttonHeight");
-    lua_pushcfunction(L, DataPanelLine_Button_get_buttonSkin);
-    lua_setfield(L, -2, "buttonSkin");
+    registerGetter(L, "userData", DataPanelLine_Button_get_userData);
+    registerGetter(L, "button", DataPanelLine_Button_get_button);
+    registerGetter(L, "buttonWidth", DataPanelLine_Button_get_buttonWidth);
+    registerGetter(L, "buttonHeight", DataPanelLine_Button_get_buttonHeight);
+    registerGetter(L, "buttonSkin", DataPanelLine_Button_get_buttonSkin);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DataPanelLine_Button_set_userData);
-    lua_setfield(L, -2, "userData");
-    lua_pushcfunction(L, DataPanelLine_Button_set_button);
-    lua_setfield(L, -2, "button");
-    lua_pushcfunction(L, DataPanelLine_Button_set_buttonWidth);
-    lua_setfield(L, -2, "buttonWidth");
-    lua_pushcfunction(L, DataPanelLine_Button_set_buttonHeight);
-    lua_setfield(L, -2, "buttonHeight");
-    lua_pushcfunction(L, DataPanelLine_Button_set_buttonSkin);
-    lua_setfield(L, -2, "buttonSkin");
+    registerSetter(L, "userData", DataPanelLine_Button_set_userData);
+    registerSetter(L, "buttonWidth", DataPanelLine_Button_set_buttonWidth);
+    registerSetter(L, "buttonHeight", DataPanelLine_Button_set_buttonHeight);
+    registerSetter(L, "buttonSkin", DataPanelLine_Button_set_buttonSkin);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to DataPanelLine

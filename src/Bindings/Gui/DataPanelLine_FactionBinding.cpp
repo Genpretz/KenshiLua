@@ -1,8 +1,9 @@
 #include "pch.h"
-#include <kenshi/gui/DataPanelLine.h>
+#include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_FactionBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -70,40 +71,42 @@ static int DataPanelLine_Faction_set_v2(lua_State* L)
     return 0;
 }
 
-static int DataPanelLine_Faction_set_bar(lua_State* L)
-{
-    DataPanelLine_Faction* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bar");
-}
-
-static int DataPanelLine_Faction_set_bar2(lua_State* L)
-{
-    DataPanelLine_Faction* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bar2");
-}
-
-static int DataPanelLine_Faction_set_but(lua_State* L)
-{
-    DataPanelLine_Faction* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for but");
-}
-
 int DataPanelLine_FactionBinding::_CONSTRUCTOR(lua_State* L)
 {
     DataPanelLine_Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
 
-    std::string a = luaL_checkstring(L, 2);
-    std::string b = luaL_checkstring(L, 3);
+    const std::string a = luaL_checkstring(L, 2);
+    const std::string b = luaL_checkstring(L, 3);
     int cat = (int)luaL_checkinteger(L, 4);
     float vv1 = (float)luaL_checknumber(L, 5);
     float vv2 = (float)luaL_checknumber(L, 6);
     DataPanelLine_Faction* result = instance->_CONSTRUCTOR(a, b, cat, vv1, vv2);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<DataPanelLine_Faction>(L, result, DataPanelLine_FactionBinding::getMetatableName());
+}
+
+int DataPanelLine_FactionBinding::createMe(lua_State* L)
+{
+    DataPanelLine_Faction* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->createMe(parent, top, lastLine);
+    return 0;
+}
+
+int DataPanelLine_FactionBinding::_NV_createMe(lua_State* L)
+{
+    DataPanelLine_Faction* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->_NV_createMe(parent, top, lastLine);
+    return 0;
 }
 
 int DataPanelLine_FactionBinding::_DESTRUCTOR(lua_State* L)
@@ -114,12 +117,6 @@ int DataPanelLine_FactionBinding::_DESTRUCTOR(lua_State* L)
     instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 97: void createMe(...) - unsupported arg type
-  line 98: void _NV_createMe(...) - unsupported arg type
-*/
 
 int DataPanelLine_FactionBinding::gc(lua_State* L)
 {
@@ -143,6 +140,8 @@ void DataPanelLine_FactionBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", DataPanelLine_FactionBinding::_CONSTRUCTOR },
+        { "createMe", DataPanelLine_FactionBinding::createMe },
+        { "_NV_createMe", DataPanelLine_FactionBinding::_NV_createMe },
         { "_DESTRUCTOR", DataPanelLine_FactionBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -158,29 +157,16 @@ void DataPanelLine_FactionBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DataPanelLine_FactionBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DataPanelLine_Faction_get_v1);
-    lua_setfield(L, -2, "v1");
-    lua_pushcfunction(L, DataPanelLine_Faction_get_v2);
-    lua_setfield(L, -2, "v2");
-    lua_pushcfunction(L, DataPanelLine_Faction_get_bar);
-    lua_setfield(L, -2, "bar");
-    lua_pushcfunction(L, DataPanelLine_Faction_get_bar2);
-    lua_setfield(L, -2, "bar2");
-    lua_pushcfunction(L, DataPanelLine_Faction_get_but);
-    lua_setfield(L, -2, "but");
+    registerGetter(L, "v1", DataPanelLine_Faction_get_v1);
+    registerGetter(L, "v2", DataPanelLine_Faction_get_v2);
+    registerGetter(L, "bar", DataPanelLine_Faction_get_bar);
+    registerGetter(L, "bar2", DataPanelLine_Faction_get_bar2);
+    registerGetter(L, "but", DataPanelLine_Faction_get_but);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DataPanelLine_Faction_set_v1);
-    lua_setfield(L, -2, "v1");
-    lua_pushcfunction(L, DataPanelLine_Faction_set_v2);
-    lua_setfield(L, -2, "v2");
-    lua_pushcfunction(L, DataPanelLine_Faction_set_bar);
-    lua_setfield(L, -2, "bar");
-    lua_pushcfunction(L, DataPanelLine_Faction_set_bar2);
-    lua_setfield(L, -2, "bar2");
-    lua_pushcfunction(L, DataPanelLine_Faction_set_but);
-    lua_setfield(L, -2, "but");
+    registerSetter(L, "v1", DataPanelLine_Faction_set_v1);
+    registerSetter(L, "v2", DataPanelLine_Faction_set_v2);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to DataPanelLine

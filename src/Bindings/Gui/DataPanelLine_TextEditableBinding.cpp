@@ -1,8 +1,9 @@
 #include "pch.h"
-#include <kenshi/gui/DataPanelLine.h>
+#include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_TextEditableBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -27,14 +28,6 @@ static int DataPanelLine_TextEditable_get_nameText(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
     lua_pushlightuserdata(L, (void*)instance->nameText);
     return 1;
-}
-
-static int DataPanelLine_TextEditable_get_textAlign(lua_State* L)
-{
-    DataPanelLine_TextEditable* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
-    // TODO: Unsupported type for textAlign (MyGUI::Align)
-    return luaL_error(L, "Unsupported property 'textAlign' (type: MyGUI::Align)");
 }
 
 static int DataPanelLine_TextEditable_get_showKey(lua_State* L)
@@ -62,27 +55,6 @@ static int DataPanelLine_TextEditable_get_width(lua_State* L)
 }
 
 // --- Setters for DataPanelLine_TextEditable ---
-static int DataPanelLine_TextEditable_set_editBox(lua_State* L)
-{
-    DataPanelLine_TextEditable* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for editBox");
-}
-
-static int DataPanelLine_TextEditable_set_nameText(lua_State* L)
-{
-    DataPanelLine_TextEditable* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for nameText");
-}
-
-static int DataPanelLine_TextEditable_set_textAlign(lua_State* L)
-{
-    DataPanelLine_TextEditable* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for textAlign");
-}
-
 static int DataPanelLine_TextEditable_set_showKey(lua_State* L)
 {
     DataPanelLine_TextEditable* instance = getInstance(L, 1);
@@ -127,6 +99,30 @@ int DataPanelLine_TextEditableBinding::getNameBox(lua_State* L)
     return 1;
 }
 
+int DataPanelLine_TextEditableBinding::createMe(lua_State* L)
+{
+    DataPanelLine_TextEditable* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->createMe(parent, top, lastLine);
+    return 0;
+}
+
+int DataPanelLine_TextEditableBinding::_NV_createMe(lua_State* L)
+{
+    DataPanelLine_TextEditable* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->_NV_createMe(parent, top, lastLine);
+    return 0;
+}
+
 int DataPanelLine_TextEditableBinding::_DESTRUCTOR(lua_State* L)
 {
     DataPanelLine_TextEditable* instance = getInstance(L, 1);
@@ -138,10 +134,13 @@ int DataPanelLine_TextEditableBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 222: DataPanelLine_TextEditable* _CONSTRUCTOR(...) - unsupported arg type
-  line 223: void createMe(...) - unsupported arg type
-  line 224: void _NV_createMe(...) - unsupported arg type
-  line 225: void textChanged(...) - unsupported arg type
+  line 223: DataPanelLine_TextEditable* _CONSTRUCTOR(...) - unsupported arg type
+  line 226: void textChanged(...) - unsupported arg type
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 229: textAlign (MyGUI::Align) - unsupported type
 */
 
 int DataPanelLine_TextEditableBinding::gc(lua_State* L)
@@ -167,6 +166,8 @@ void DataPanelLine_TextEditableBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "getEditBox", DataPanelLine_TextEditableBinding::getEditBox },
         { "getNameBox", DataPanelLine_TextEditableBinding::getNameBox },
+        { "createMe", DataPanelLine_TextEditableBinding::createMe },
+        { "_NV_createMe", DataPanelLine_TextEditableBinding::_NV_createMe },
         { "_DESTRUCTOR", DataPanelLine_TextEditableBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -182,33 +183,17 @@ void DataPanelLine_TextEditableBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DataPanelLine_TextEditableBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DataPanelLine_TextEditable_get_editBox);
-    lua_setfield(L, -2, "editBox");
-    lua_pushcfunction(L, DataPanelLine_TextEditable_get_nameText);
-    lua_setfield(L, -2, "nameText");
-    lua_pushcfunction(L, DataPanelLine_TextEditable_get_textAlign);
-    lua_setfield(L, -2, "textAlign");
-    lua_pushcfunction(L, DataPanelLine_TextEditable_get_showKey);
-    lua_setfield(L, -2, "showKey");
-    lua_pushcfunction(L, DataPanelLine_TextEditable_get_multiLine);
-    lua_setfield(L, -2, "multiLine");
-    lua_pushcfunction(L, DataPanelLine_TextEditable_get_width);
-    lua_setfield(L, -2, "width");
+    registerGetter(L, "editBox", DataPanelLine_TextEditable_get_editBox);
+    registerGetter(L, "nameText", DataPanelLine_TextEditable_get_nameText);
+    registerGetter(L, "showKey", DataPanelLine_TextEditable_get_showKey);
+    registerGetter(L, "multiLine", DataPanelLine_TextEditable_get_multiLine);
+    registerGetter(L, "width", DataPanelLine_TextEditable_get_width);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DataPanelLine_TextEditable_set_editBox);
-    lua_setfield(L, -2, "editBox");
-    lua_pushcfunction(L, DataPanelLine_TextEditable_set_nameText);
-    lua_setfield(L, -2, "nameText");
-    lua_pushcfunction(L, DataPanelLine_TextEditable_set_textAlign);
-    lua_setfield(L, -2, "textAlign");
-    lua_pushcfunction(L, DataPanelLine_TextEditable_set_showKey);
-    lua_setfield(L, -2, "showKey");
-    lua_pushcfunction(L, DataPanelLine_TextEditable_set_multiLine);
-    lua_setfield(L, -2, "multiLine");
-    lua_pushcfunction(L, DataPanelLine_TextEditable_set_width);
-    lua_setfield(L, -2, "width");
+    registerSetter(L, "showKey", DataPanelLine_TextEditable_set_showKey);
+    registerSetter(L, "multiLine", DataPanelLine_TextEditable_set_multiLine);
+    registerSetter(L, "width", DataPanelLine_TextEditable_set_width);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to DataPanelLine

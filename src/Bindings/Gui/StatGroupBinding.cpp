@@ -1,11 +1,12 @@
 #include "pch.h"
-#include <kenshi/gui/CharacterStatsWindow.h>
+#include "kenshi\gui\CharacterStatsWindow.h"
 #include "StatGroupBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
-    typedef CharacterStatsWindow::StatGroup StatGroup;
+
+typedef CharacterStatsWindow::StatGroup StatGroup;
 
 static StatGroup* getInstance(lua_State* L, int idx)
 {
@@ -98,17 +99,13 @@ void StatGroupBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, StatGroupBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, StatGroup_get_group);
-    lua_setfield(L, -2, "group");
-    lua_pushcfunction(L, StatGroup_get_name);
-    lua_setfield(L, -2, "name");
+    registerGetter(L, "group", StatGroup_get_group);
+    registerGetter(L, "name", StatGroup_get_name);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, StatGroup_set_group);
-    lua_setfield(L, -2, "group");
-    lua_pushcfunction(L, StatGroup_set_name);
-    lua_setfield(L, -2, "name");
+    registerSetter(L, "group", StatGroup_set_group);
+    registerSetter(L, "name", StatGroup_set_name);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

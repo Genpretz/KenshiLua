@@ -2,10 +2,12 @@
 #include "kenshi\gui\SquadManagementScreen.h"
 #include "SquadManagementScreenBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGuiBinding.h"
+#include "Bindings/Gui/SquadDataBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/FactionBinding.h"
-#include "Bindings/Gui/SquadDataBinding.h"
+#include "Bindings/Gui/ManagementScreenBinding.h"
 
 namespace KenshiLua
 {
@@ -103,6 +105,16 @@ static int SquadManagementScreen_set_faction(lua_State* L)
     return 0;
 }
 
+int SquadManagementScreenBinding::_CONSTRUCTOR(lua_State* L)
+{
+    SquadManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
+
+    ManagementScreen* screen = checkObject<ManagementScreen>(L, 2, ManagementScreenBinding::getMetatableName());
+    SquadManagementScreen* result = instance->_CONSTRUCTOR(screen);
+    return pushObject<SquadManagementScreen>(L, result, SquadManagementScreenBinding::getMetatableName());
+}
+
 int SquadManagementScreenBinding::_DESTRUCTOR(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
@@ -154,12 +166,17 @@ int SquadManagementScreenBinding::notifyEndDropSquad(lua_State* L)
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
 
-    wraps::BaseLayout* _sender = (wraps::BaseLayout*)lua_touserdata(L, 2);
-    wraps::DDItemInfo* _info = (wraps::DDItemInfo*)lua_touserdata(L, 3);
-    bool _result = lua_toboolean(L, 4) != 0;
-    if (_info) {
-        instance->notifyEndDropSquad(_sender, *_info, _result);
+    wraps::BaseLayout* _sender = nullptr;
+    if (lua_isuserdata(L, 2)) {
+        void* raw = lua_touserdata(L, 2);
+        _sender = (wraps::BaseLayout*)(raw ? *(void**)raw : nullptr);
+    } else if (lua_islightuserdata(L, 2)) {
+        _sender = (wraps::BaseLayout*)lua_touserdata(L, 2);
     }
+    MyGUI::DDItemInfo myGuiInfo;
+    wraps::DDItemInfo _info(myGuiInfo);
+    bool _result = lua_toboolean(L, 4) != 0;
+    instance->notifyEndDropSquad(_sender, _info, _result);
     return 0;
 }
 
@@ -168,12 +185,17 @@ int SquadManagementScreenBinding::notifyEndDropPortrait(lua_State* L)
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
 
-    wraps::BaseLayout* _sender = (wraps::BaseLayout*)lua_touserdata(L, 2);
-    wraps::DDItemInfo* _info = (wraps::DDItemInfo*)lua_touserdata(L, 3);
-    bool _result = lua_toboolean(L, 4) != 0;
-    if (_info) {
-        instance->notifyEndDropPortrait(_sender, *_info, _result);
+    wraps::BaseLayout* _sender = nullptr;
+    if (lua_isuserdata(L, 2)) {
+        void* raw = lua_touserdata(L, 2);
+        _sender = (wraps::BaseLayout*)(raw ? *(void**)raw : nullptr);
+    } else if (lua_islightuserdata(L, 2)) {
+        _sender = (wraps::BaseLayout*)lua_touserdata(L, 2);
     }
+    MyGUI::DDItemInfo myGuiInfo;
+    wraps::DDItemInfo _info(myGuiInfo);
+    bool _result = lua_toboolean(L, 4) != 0;
+    instance->notifyEndDropPortrait(_sender, _info, _result);
     return 0;
 }
 
@@ -210,12 +232,21 @@ int SquadManagementScreenBinding::dismissCharacter(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 65: SquadManagementScreen* _CONSTRUCTOR(...) - unsupported arg type
   line 161: void notifyStartDropSquad(...) - non-string reference arg
   line 162: void notifyRequestDropSquad(...) - non-string reference arg
   line 164: void notifyStartDropPortrait(...) - non-string reference arg
   line 165: void notifyRequestDropPortrait(...) - non-string reference arg
   line 167: void onAddSquad(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - SquadManagementScreen_get_mainWidget: MyGUI::Widget* (unbound pointer)
+  - SquadManagementScreen_get_btnAddSquad: MyGUI::Button* (unbound pointer)
+  - SquadManagementScreen_get_txtFactionSize: MyGUI::TextBox* (unbound pointer)
+  - SquadManagementScreen_get_panelSquads: SquadManagementScreen::SquadItemBox* (unbound pointer)
+  - SquadManagementScreen_get_panelDismiss: SquadManagementScreen::PortraitSquadItemBox* (unbound pointer)
+  - SquadManagementScreenBinding::getSquad: SquadManagementScreen::SquadData* (unbound pointer)
 */
 
 /*
@@ -246,6 +277,7 @@ void SquadManagementScreenBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", SquadManagementScreenBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", SquadManagementScreenBinding::_DESTRUCTOR },
         { "getVisible", SquadManagementScreenBinding::getVisible },
         { "update", SquadManagementScreenBinding::update },

@@ -1,11 +1,13 @@
 #include "pch.h"
-#include <kenshi/gui/TutorialGUI.h>
+#include "kenshi\gui\TutorialGUI.h"
 #include "TutorialGUILineBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/TutorialItemBinding.h"
 
 namespace KenshiLua
 {
-    typedef TutorialGUI::TutorialGUILine TutorialGUILine;
+
+typedef TutorialGUI::TutorialGUILine TutorialGUILine;
 
 static TutorialGUILine* getInstance(lua_State* L, int idx)
 {
@@ -100,12 +102,9 @@ void TutorialGUILineBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TutorialGUILineBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TutorialGUILine_get_nameButton);
-    lua_setfield(L, -2, "nameButton");
-    lua_pushcfunction(L, TutorialGUILine_get_closeButton);
-    lua_setfield(L, -2, "closeButton");
-    lua_pushcfunction(L, TutorialGUILine_get_flashWidget);
-    lua_setfield(L, -2, "flashWidget");
+    registerGetter(L, "nameButton", TutorialGUILine_get_nameButton);
+    registerGetter(L, "closeButton", TutorialGUILine_get_closeButton);
+    registerGetter(L, "flashWidget", TutorialGUILine_get_flashWidget);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table

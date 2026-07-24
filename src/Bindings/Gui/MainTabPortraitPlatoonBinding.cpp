@@ -1,9 +1,10 @@
 #include "pch.h"
-#include "Bindings/ActivePlatoonBinding.h"
-
-#include <kenshi/gui/MainBarGUI.h>
+#include "kenshi\gui\MainBarGUI.h"
 #include "MainTabPortraitPlatoonBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/ActivePlatoonBinding.h"
+#include "Bindings/Gui/MainBarGUIBinding.h"
+#include "Bindings/MyGuiBinding.h"
 
 namespace KenshiLua
 {
@@ -33,8 +34,7 @@ static int MainTabPortraitPlatoon_get_tab(lua_State* L)
 {
     MainTabPortraitPlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
-    lua_pushlightuserdata(L, (void*)instance->tab);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->tab, MyGuiBinding::getMetatableName());
 }
 
 static int MainTabPortraitPlatoon_get_tabIndex(lua_State* L)
@@ -49,8 +49,7 @@ static int MainTabPortraitPlatoon_get_flashImage(lua_State* L)
 {
     MainTabPortraitPlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
-    lua_pushlightuserdata(L, (void*)instance->flashImage);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->flashImage, MyGuiBinding::getMetatableName());
 }
 
 static int MainTabPortraitPlatoon_get_flashing(lua_State* L)
@@ -81,11 +80,18 @@ static int MainTabPortraitPlatoon_get_mainbar(lua_State* L)
 {
     MainTabPortraitPlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
-    lua_pushlightuserdata(L, (void*)instance->mainbar);
-    return 1;
+    return pushObject<MainBarGUI>(L, instance->mainbar, MainBarGUIBinding::getMetatableName());
 }
 
 // --- Setters for MainTabPortraitPlatoon ---
+static int MainTabPortraitPlatoon_set_platoon(lua_State* L)
+{
+    MainTabPortraitPlatoon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
+    instance->platoon = lua_isnoneornil(L, 2) ? nullptr : checkObject<ActivePlatoon>(L, 2, ActivePlatoonBinding::getMetatableName());
+    return 0;
+}
+
 static int MainTabPortraitPlatoon_set_tabIndex(lua_State* L)
 {
     MainTabPortraitPlatoon* instance = getInstance(L, 1);
@@ -115,6 +121,45 @@ static int MainTabPortraitPlatoon_set_currentAlpha(lua_State* L)
     MainTabPortraitPlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
     instance->currentAlpha = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int MainTabPortraitPlatoon_set_mainbar(lua_State* L)
+{
+    MainTabPortraitPlatoon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
+    instance->mainbar = lua_isnoneornil(L, 2) ? nullptr : checkObject<MainBarGUI>(L, 2, MainBarGUIBinding::getMetatableName());
+    return 0;
+}
+
+int MainTabPortraitPlatoonBinding::_CONSTRUCTOR(lua_State* L)
+{
+    MainTabPortraitPlatoon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
+
+    if (lua_gettop(L) >= 3)
+    {
+        ActivePlatoon* platoon = checkObject<ActivePlatoon>(L, 2, ActivePlatoonBinding::getMetatableName());
+        MainBarGUI* mainbar = checkObject<MainBarGUI>(L, 3, MainBarGUIBinding::getMetatableName());
+        instance->_CONSTRUCTOR(platoon, mainbar);
+    }
+    else
+    {
+        instance->_CONSTRUCTOR();
+    }
+    return 0;
+}
+
+int MainTabPortraitPlatoonBinding::addTab(lua_State* L)
+{
+    MainTabPortraitPlatoon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
+
+    MyGUI::Widget* tabControl = checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    if (!tabControl) return luaL_error(L, "Argument 2 to addTab must be MyGUI::Widget");
+    bool visible = lua_toboolean(L, 3) != 0;
+
+    instance->addTab((MyGUI::TabControl*)tabControl, visible);
     return 0;
 }
 
@@ -157,9 +202,11 @@ int MainTabPortraitPlatoonBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 22: MainTabPortraitPlatoon* _CONSTRUCTOR(...) - overloaded method
-  line 24: MainTabPortraitPlatoon* _CONSTRUCTOR(...) - overloaded method
-  line 25: void addTab(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - MainTabPortraitPlatoon_get_portraitBox: PortraitMainItemBox* (unbound pointer)
 */
 
 int MainTabPortraitPlatoonBinding::gc(lua_State* L)
@@ -183,6 +230,8 @@ void MainTabPortraitPlatoonBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", MainTabPortraitPlatoonBinding::_CONSTRUCTOR },
+        { "addTab", MainTabPortraitPlatoonBinding::addTab },
         { "detach", MainTabPortraitPlatoonBinding::detach },
         { "setFlash", MainTabPortraitPlatoonBinding::setFlash },
         { "update", MainTabPortraitPlatoonBinding::update },
@@ -201,35 +250,24 @@ void MainTabPortraitPlatoonBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, MainTabPortraitPlatoonBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, MainTabPortraitPlatoon_get_portraitBox);
-    lua_setfield(L, -2, "portraitBox");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_get_platoon);
-    lua_setfield(L, -2, "platoon");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_get_tab);
-    lua_setfield(L, -2, "tab");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_get_tabIndex);
-    lua_setfield(L, -2, "tabIndex");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_get_flashImage);
-    lua_setfield(L, -2, "flashImage");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_get_flashing);
-    lua_setfield(L, -2, "flashing");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_get_animationTime);
-    lua_setfield(L, -2, "animationTime");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_get_currentAlpha);
-    lua_setfield(L, -2, "currentAlpha");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_get_mainbar);
-    lua_setfield(L, -2, "mainbar");
+    registerGetter(L, "portraitBox", MainTabPortraitPlatoon_get_portraitBox);
+    registerGetter(L, "platoon", MainTabPortraitPlatoon_get_platoon);
+    registerGetter(L, "tab", MainTabPortraitPlatoon_get_tab);
+    registerGetter(L, "tabIndex", MainTabPortraitPlatoon_get_tabIndex);
+    registerGetter(L, "flashImage", MainTabPortraitPlatoon_get_flashImage);
+    registerGetter(L, "flashing", MainTabPortraitPlatoon_get_flashing);
+    registerGetter(L, "animationTime", MainTabPortraitPlatoon_get_animationTime);
+    registerGetter(L, "currentAlpha", MainTabPortraitPlatoon_get_currentAlpha);
+    registerGetter(L, "mainbar", MainTabPortraitPlatoon_get_mainbar);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, MainTabPortraitPlatoon_set_tabIndex);
-    lua_setfield(L, -2, "tabIndex");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_set_flashing);
-    lua_setfield(L, -2, "flashing");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_set_animationTime);
-    lua_setfield(L, -2, "animationTime");
-    lua_pushcfunction(L, MainTabPortraitPlatoon_set_currentAlpha);
-    lua_setfield(L, -2, "currentAlpha");
+    registerSetter(L, "platoon", MainTabPortraitPlatoon_set_platoon);
+    registerSetter(L, "tabIndex", MainTabPortraitPlatoon_set_tabIndex);
+    registerSetter(L, "flashing", MainTabPortraitPlatoon_set_flashing);
+    registerSetter(L, "animationTime", MainTabPortraitPlatoon_set_animationTime);
+    registerSetter(L, "currentAlpha", MainTabPortraitPlatoon_set_currentAlpha);
+    registerSetter(L, "mainbar", MainTabPortraitPlatoon_set_mainbar);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

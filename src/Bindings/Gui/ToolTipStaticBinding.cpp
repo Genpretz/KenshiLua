@@ -1,8 +1,8 @@
 #include "pch.h"
-#include <kenshi/gui/ToolTip.h>
+#include "kenshi\gui\Tooltip.h"
 #include "ToolTipStaticBinding.h"
-#include "ToolTipBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/ToolTipBinding.h"
 
 namespace KenshiLua
 {

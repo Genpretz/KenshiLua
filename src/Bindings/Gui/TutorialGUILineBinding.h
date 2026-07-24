@@ -1,6 +1,4 @@
 #pragma once
-#include <kenshi/gui/TutorialGUI.h>
-
 
 extern "C" {
 #include <lua.h>
@@ -9,7 +7,6 @@ extern "C" {
 
 namespace KenshiLua
 {
-    typedef TutorialGUI::TutorialGUILine TutorialGUILine;
 class TutorialGUILineBinding
 {
 public:

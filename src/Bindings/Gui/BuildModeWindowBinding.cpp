@@ -1,13 +1,10 @@
 #include "pch.h"
-#include "Bindings/Gui/BuildingGroupBinding.h"
-
-#include "Bindings/GameDataBinding.h"
-#include "Bindings/Gui/DatapanelGUIBinding.h"
-
-#include <kenshi/gui/BuildModeWindow.h>
+#include "kenshi\gui\BuildModeWindow.h"
 #include "BuildModeWindowBinding.h"
-#include "GUIWindowBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Gui/BuildingGroupBinding.h"
 
 namespace KenshiLua
 {
@@ -54,7 +51,7 @@ static int BuildModeWindow_get_currentBuildingGroup(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    return pushObject(L, &instance->currentBuildingGroup, BuildingGroupBinding::getMetatableName());
+    return pushObject<BuildModeWindow::BuildingGroup>(L, &instance->currentBuildingGroup, BuildingGroupBinding::getMetatableName());
 }
 
 static int BuildModeWindow_get_currentBuildingInfo(lua_State* L)
@@ -220,8 +217,17 @@ static int BuildModeWindow_set_currentBuildingGroup(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    BuildModeWindow::BuildingGroup* val = checkObject<BuildModeWindow::BuildingGroup>(L, 2, BuildingGroupBinding::getMetatableName());
-    if (val) instance->currentBuildingGroup = *val;
+    auto* val = checkObject<BuildModeWindow::BuildingGroup>(L, 2, BuildingGroupBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Argument 2 to set 'currentBuildingGroup' must be BuildingGroup");
+    instance->currentBuildingGroup = *val;
+    return 0;
+}
+
+static int BuildModeWindow_set_currentBuildingInfo(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->currentBuildingInfo = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     return 0;
 }
 
@@ -241,6 +247,14 @@ static int BuildModeWindow_set_switchBuildingIndex(lua_State* L)
     return 0;
 }
 
+static int BuildModeWindow_set_statsDataPanel(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->statsDataPanel = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
 int BuildModeWindowBinding::_DESTRUCTOR(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
@@ -255,7 +269,7 @@ int BuildModeWindowBinding::setMessage(lua_State* L)
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
 
-    std::string message = luaL_checkstring(L, 2);
+    const std::string message = luaL_checkstring(L, 2);
     instance->setMessage(message);
     return 0;
 }
@@ -420,72 +434,43 @@ void BuildModeWindowBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, BuildModeWindowBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, BuildModeWindow_get_playerBuildMode);
-    lua_setfield(L, -2, "playerBuildMode");
-    lua_pushcfunction(L, BuildModeWindow_get_levelEditorMode);
-    lua_setfield(L, -2, "levelEditorMode");
-    lua_pushcfunction(L, BuildModeWindow_get_playerResearch);
-    lua_setfield(L, -2, "playerResearch");
-    lua_pushcfunction(L, BuildModeWindow_get_currentBuildingCategory);
-    lua_setfield(L, -2, "currentBuildingCategory");
-    lua_pushcfunction(L, BuildModeWindow_get_currentBuildingGroup);
-    lua_setfield(L, -2, "currentBuildingGroup");
-    lua_pushcfunction(L, BuildModeWindow_get_currentBuildingInfo);
-    lua_setfield(L, -2, "currentBuildingInfo");
-    lua_pushcfunction(L, BuildModeWindow_get_currentBuildingIndex);
-    lua_setfield(L, -2, "currentBuildingIndex");
-    lua_pushcfunction(L, BuildModeWindow_get_switchBuildingIndex);
-    lua_setfield(L, -2, "switchBuildingIndex");
-    lua_pushcfunction(L, BuildModeWindow_get_statsDataPanel);
-    lua_setfield(L, -2, "statsDataPanel");
-    lua_pushcfunction(L, BuildModeWindow_get_confirmButton);
-    lua_setfield(L, -2, "confirmButton");
-    lua_pushcfunction(L, BuildModeWindow_get_undoButton);
-    lua_setfield(L, -2, "undoButton");
-    lua_pushcfunction(L, BuildModeWindow_get_closeButton);
-    lua_setfield(L, -2, "closeButton");
-    lua_pushcfunction(L, BuildModeWindow_get_categoriesList);
-    lua_setfield(L, -2, "categoriesList");
-    lua_pushcfunction(L, BuildModeWindow_get_buildingsList);
-    lua_setfield(L, -2, "buildingsList");
-    lua_pushcfunction(L, BuildModeWindow_get_buildingTxt);
-    lua_setfield(L, -2, "buildingTxt");
-    lua_pushcfunction(L, BuildModeWindow_get_buildingTypePrevButton);
-    lua_setfield(L, -2, "buildingTypePrevButton");
-    lua_pushcfunction(L, BuildModeWindow_get_buildingTypeNextButton);
-    lua_setfield(L, -2, "buildingTypeNextButton");
-    lua_pushcfunction(L, BuildModeWindow_get_buildingImageBox);
-    lua_setfield(L, -2, "buildingImageBox");
-    lua_pushcfunction(L, BuildModeWindow_get_statsPanel);
-    lua_setfield(L, -2, "statsPanel");
-    lua_pushcfunction(L, BuildModeWindow_get_descriptionTxt);
-    lua_setfield(L, -2, "descriptionTxt");
-    lua_pushcfunction(L, BuildModeWindow_get_messageTextBox);
-    lua_setfield(L, -2, "messageTextBox");
-    lua_pushcfunction(L, BuildModeWindow_get_floorDownButton);
-    lua_setfield(L, -2, "floorDownButton");
-    lua_pushcfunction(L, BuildModeWindow_get_floorUpButton);
-    lua_setfield(L, -2, "floorUpButton");
-    lua_pushcfunction(L, BuildModeWindow_get_floorText);
-    lua_setfield(L, -2, "floorText");
+    registerGetter(L, "playerBuildMode", BuildModeWindow_get_playerBuildMode);
+    registerGetter(L, "levelEditorMode", BuildModeWindow_get_levelEditorMode);
+    registerGetter(L, "playerResearch", BuildModeWindow_get_playerResearch);
+    registerGetter(L, "currentBuildingCategory", BuildModeWindow_get_currentBuildingCategory);
+    registerGetter(L, "currentBuildingGroup", BuildModeWindow_get_currentBuildingGroup);
+    registerGetter(L, "currentBuildingInfo", BuildModeWindow_get_currentBuildingInfo);
+    registerGetter(L, "currentBuildingIndex", BuildModeWindow_get_currentBuildingIndex);
+    registerGetter(L, "switchBuildingIndex", BuildModeWindow_get_switchBuildingIndex);
+    registerGetter(L, "statsDataPanel", BuildModeWindow_get_statsDataPanel);
+    registerGetter(L, "confirmButton", BuildModeWindow_get_confirmButton);
+    registerGetter(L, "undoButton", BuildModeWindow_get_undoButton);
+    registerGetter(L, "closeButton", BuildModeWindow_get_closeButton);
+    registerGetter(L, "categoriesList", BuildModeWindow_get_categoriesList);
+    registerGetter(L, "buildingsList", BuildModeWindow_get_buildingsList);
+    registerGetter(L, "buildingTxt", BuildModeWindow_get_buildingTxt);
+    registerGetter(L, "buildingTypePrevButton", BuildModeWindow_get_buildingTypePrevButton);
+    registerGetter(L, "buildingTypeNextButton", BuildModeWindow_get_buildingTypeNextButton);
+    registerGetter(L, "buildingImageBox", BuildModeWindow_get_buildingImageBox);
+    registerGetter(L, "statsPanel", BuildModeWindow_get_statsPanel);
+    registerGetter(L, "descriptionTxt", BuildModeWindow_get_descriptionTxt);
+    registerGetter(L, "messageTextBox", BuildModeWindow_get_messageTextBox);
+    registerGetter(L, "floorDownButton", BuildModeWindow_get_floorDownButton);
+    registerGetter(L, "floorUpButton", BuildModeWindow_get_floorUpButton);
+    registerGetter(L, "floorText", BuildModeWindow_get_floorText);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, BuildModeWindow_set_levelEditorMode);
-    lua_setfield(L, -2, "levelEditorMode");
-    lua_pushcfunction(L, BuildModeWindow_set_currentBuildingGroup);
-    lua_setfield(L, -2, "currentBuildingGroup");
-    lua_pushcfunction(L, BuildModeWindow_set_currentBuildingIndex);
-    lua_setfield(L, -2, "currentBuildingIndex");
-    lua_pushcfunction(L, BuildModeWindow_set_switchBuildingIndex);
-    lua_setfield(L, -2, "switchBuildingIndex");
+    registerSetter(L, "levelEditorMode", BuildModeWindow_set_levelEditorMode);
+    registerSetter(L, "currentBuildingGroup", BuildModeWindow_set_currentBuildingGroup);
+    registerSetter(L, "currentBuildingInfo", BuildModeWindow_set_currentBuildingInfo);
+    registerSetter(L, "currentBuildingIndex", BuildModeWindow_set_currentBuildingIndex);
+    registerSetter(L, "switchBuildingIndex", BuildModeWindow_set_switchBuildingIndex);
+    registerSetter(L, "statsDataPanel", BuildModeWindow_set_statsDataPanel);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout
     // setMetatableParent(L, BuildModeWindowBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
-
-        // Wire up inheritance
-    // setMetatableParent(L, BuildModeWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

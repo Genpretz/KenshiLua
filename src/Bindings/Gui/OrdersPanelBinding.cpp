@@ -1,7 +1,12 @@
 #include "pch.h"
-#include <kenshi/gui/OrdersPanel.h>
+#include "kenshi\gui\OrdersPanel.h"
 #include "OrdersPanelBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGuiBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/Gui/MainBarGUIBinding.h"
+#include "Bindings/Gui/OrderDataBinding.h"
+#include "Bindings/Gui/OrdersItemBoxBinding.h"
 
 namespace KenshiLua
 {
@@ -12,12 +17,18 @@ static OrdersPanel* getInstance(lua_State* L, int idx)
 }
 
 // --- Getters for OrdersPanel ---
+static int OrdersPanel_get_ordersCharacter(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+    return handBinding::push(L, instance->ordersCharacter);
+}
+
 static int OrdersPanel_get_ordersItemBox(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->ordersItemBox);
-    return 1;
+    return pushObject<OrdersItemBox>(L, instance->ordersItemBox, OrdersItemBoxBinding::getMetatableName());
 }
 
 static int OrdersPanel_get_ordersItemWidth(lua_State* L)
@@ -141,6 +152,22 @@ static int OrdersPanel_get_speedImageNamesIdx(lua_State* L)
 }
 
 // --- Setters for OrdersPanel ---
+static int OrdersPanel_set_ordersCharacter(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+    instance->ordersCharacter = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
+}
+
+static int OrdersPanel_set_ordersItemBox(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+    instance->ordersItemBox = lua_isnoneornil(L, 2) ? nullptr : checkObject<OrdersItemBox>(L, 2, OrdersItemBoxBinding::getMetatableName());
+    return 0;
+}
+
 static int OrdersPanel_set_ordersItemWidth(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
@@ -179,6 +206,16 @@ int OrdersPanelBinding::_DESTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
 
     instance->_DESTRUCTOR();
+    return 0;
+}
+
+int OrdersPanelBinding::update(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    Character* character = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    instance->update(character);
     return 0;
 }
 
@@ -221,6 +258,35 @@ int OrdersPanelBinding::moveJob(lua_State* L)
     return 0;
 }
 
+int OrdersPanelBinding::removeJob(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    OrderData* data = checkObject<OrderData>(L, 2, OrderDataBinding::getMetatableName());
+    instance->removeJob(data);
+    return 0;
+}
+
+int OrdersPanelBinding::notifyEndDropOrder(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    wraps::BaseLayout* _sender = nullptr;
+    if (lua_isuserdata(L, 2)) {
+        void* raw = lua_touserdata(L, 2);
+        _sender = (wraps::BaseLayout*)(raw ? *(void**)raw : nullptr);
+    } else if (lua_islightuserdata(L, 2)) {
+        _sender = (wraps::BaseLayout*)lua_touserdata(L, 2);
+    }
+    MyGUI::DDItemInfo myGuiInfo;
+    wraps::DDItemInfo _info(myGuiInfo);
+    bool _result = lua_toboolean(L, 4) != 0;
+    instance->notifyEndDropOrder(_sender, _info, _result);
+    return 0;
+}
+
 int OrdersPanelBinding::setSpeed(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
@@ -243,31 +309,42 @@ int OrdersPanelBinding::setSpeedImage(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 81: OrdersPanel* _CONSTRUCTOR(...) - unsupported arg type
-  line 84: void update(...) - unsupported arg type
-  line 89: void removeJob(...) - unsupported arg type
-  line 90: void notifyStartDropOrder(...) - pointer arg
-  line 91: void notifyRequestDropOrder(...) - pointer arg
-  line 92: void notifyEndDropOrder(...) - pointer arg
-  line 93: void toggleStealth(...) - unsupported arg type
-  line 94: void toggleRanged(...) - unsupported arg type
-  line 97: void speedPrevious(...) - unsupported arg type
-  line 98: void speedNext(...) - unsupported arg type
-  line 99: void blockmodeButton(...) - unsupported arg type
-  line 100: void holdButtonCallback(...) - unsupported arg type
-  line 101: void passiveButtonCallback(...) - unsupported arg type
-  line 102: void chaseButtonCallback(...) - unsupported arg type
-  line 103: void tauntButtonCallback(...) - unsupported arg type
-  line 104: void medicButton(...) - unsupported arg type
-  line 105: void liftButton(...) - unsupported arg type
-  line 106: void prospectingButton(...) - unsupported arg type
+  line 83: OrdersPanel* _CONSTRUCTOR(...) - unsupported arg type
+  line 92: void notifyStartDropOrder(...) - non-string reference arg
+  line 93: void notifyRequestDropOrder(...) - non-string reference arg
+  line 95: void toggleStealth(...) - unsupported arg type
+  line 96: void toggleRanged(...) - unsupported arg type
+  line 99: void speedPrevious(...) - unsupported arg type
+  line 100: void speedNext(...) - unsupported arg type
+  line 101: void blockmodeButton(...) - unsupported arg type
+  line 102: void holdButtonCallback(...) - unsupported arg type
+  line 103: void passiveButtonCallback(...) - unsupported arg type
+  line 104: void chaseButtonCallback(...) - unsupported arg type
+  line 105: void tauntButtonCallback(...) - unsupported arg type
+  line 106: void medicButton(...) - unsupported arg type
+  line 107: void liftButton(...) - unsupported arg type
+  line 108: void prospectingButton(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - OrdersPanel_get_ordersEmptyPanel: MyGUI::Widget* (unbound pointer)
+  - OrdersPanel_get_blocksCheckbox: MyGUI::Button* (unbound pointer)
+  - OrdersPanel_get_holdCheckBox: MyGUI::Button* (unbound pointer)
+  - OrdersPanel_get_passiveCheckBox: MyGUI::Button* (unbound pointer)
+  - OrdersPanel_get_chaseCheckBox: MyGUI::Button* (unbound pointer)
+  - OrdersPanel_get_tauntCheckBox: MyGUI::Button* (unbound pointer)
+  - OrdersPanel_get_rangedCheckBox: MyGUI::Button* (unbound pointer)
+  - OrdersPanel_get_stealthCheckBox: MyGUI::Button* (unbound pointer)
+  - OrdersPanel_get_speedPrevButton: MyGUI::Button* (unbound pointer)
+  - OrdersPanel_get_speedNextButton: MyGUI::Button* (unbound pointer)
+  - OrdersPanel_get_speedImagePanel: MyGUI::ImageBox* (unbound pointer)
 */
 
 /*
 Skipped properties needing manual binding:
-  line 107: ordersCharacter (hand) - unsupported type
-  line 113: orders (lektor<OrderData>) - unsupported type
-  line 124: speedImageNames (Ogre::vector<std::string>::type) - unsupported type
+  line 115: orders (lektor<OrderData>) - unsupported type
+  line 126: speedImageNames (Ogre::vector<std::string>::type) - unsupported type
 */
 
 int OrdersPanelBinding::gc(lua_State* L)
@@ -292,10 +369,13 @@ void OrdersPanelBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", OrdersPanelBinding::_DESTRUCTOR },
+        { "update", OrdersPanelBinding::update },
         { "clear", OrdersPanelBinding::clear },
         { "command", OrdersPanelBinding::command },
         { "refreshOrders", OrdersPanelBinding::refreshOrders },
         { "moveJob", OrdersPanelBinding::moveJob },
+        { "removeJob", OrdersPanelBinding::removeJob },
+        { "notifyEndDropOrder", OrdersPanelBinding::notifyEndDropOrder },
         { "setSpeed", OrdersPanelBinding::setSpeed },
         { "setSpeedImage", OrdersPanelBinding::setSpeedImage },
         { 0, 0 }
@@ -312,49 +392,32 @@ void OrdersPanelBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, OrdersPanelBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, OrdersPanel_get_ordersItemBox);
-    lua_setfield(L, -2, "ordersItemBox");
-    lua_pushcfunction(L, OrdersPanel_get_ordersItemWidth);
-    lua_setfield(L, -2, "ordersItemWidth");
-    lua_pushcfunction(L, OrdersPanel_get_ordersItemBoxScrollBarSize);
-    lua_setfield(L, -2, "ordersItemBoxScrollBarSize");
-    lua_pushcfunction(L, OrdersPanel_get_ordersItemBoxMaxVisible);
-    lua_setfield(L, -2, "ordersItemBoxMaxVisible");
-    lua_pushcfunction(L, OrdersPanel_get_ordersEmptyPanel);
-    lua_setfield(L, -2, "ordersEmptyPanel");
-    lua_pushcfunction(L, OrdersPanel_get_blocksCheckbox);
-    lua_setfield(L, -2, "blocksCheckbox");
-    lua_pushcfunction(L, OrdersPanel_get_holdCheckBox);
-    lua_setfield(L, -2, "holdCheckBox");
-    lua_pushcfunction(L, OrdersPanel_get_passiveCheckBox);
-    lua_setfield(L, -2, "passiveCheckBox");
-    lua_pushcfunction(L, OrdersPanel_get_chaseCheckBox);
-    lua_setfield(L, -2, "chaseCheckBox");
-    lua_pushcfunction(L, OrdersPanel_get_tauntCheckBox);
-    lua_setfield(L, -2, "tauntCheckBox");
-    lua_pushcfunction(L, OrdersPanel_get_rangedCheckBox);
-    lua_setfield(L, -2, "rangedCheckBox");
-    lua_pushcfunction(L, OrdersPanel_get_stealthCheckBox);
-    lua_setfield(L, -2, "stealthCheckBox");
-    lua_pushcfunction(L, OrdersPanel_get_speedPrevButton);
-    lua_setfield(L, -2, "speedPrevButton");
-    lua_pushcfunction(L, OrdersPanel_get_speedNextButton);
-    lua_setfield(L, -2, "speedNextButton");
-    lua_pushcfunction(L, OrdersPanel_get_speedImagePanel);
-    lua_setfield(L, -2, "speedImagePanel");
-    lua_pushcfunction(L, OrdersPanel_get_speedImageNamesIdx);
-    lua_setfield(L, -2, "speedImageNamesIdx");
+    registerGetter(L, "ordersCharacter", OrdersPanel_get_ordersCharacter);
+    registerGetter(L, "ordersItemBox", OrdersPanel_get_ordersItemBox);
+    registerGetter(L, "ordersItemWidth", OrdersPanel_get_ordersItemWidth);
+    registerGetter(L, "ordersItemBoxScrollBarSize", OrdersPanel_get_ordersItemBoxScrollBarSize);
+    registerGetter(L, "ordersItemBoxMaxVisible", OrdersPanel_get_ordersItemBoxMaxVisible);
+    registerGetter(L, "ordersEmptyPanel", OrdersPanel_get_ordersEmptyPanel);
+    registerGetter(L, "blocksCheckbox", OrdersPanel_get_blocksCheckbox);
+    registerGetter(L, "holdCheckBox", OrdersPanel_get_holdCheckBox);
+    registerGetter(L, "passiveCheckBox", OrdersPanel_get_passiveCheckBox);
+    registerGetter(L, "chaseCheckBox", OrdersPanel_get_chaseCheckBox);
+    registerGetter(L, "tauntCheckBox", OrdersPanel_get_tauntCheckBox);
+    registerGetter(L, "rangedCheckBox", OrdersPanel_get_rangedCheckBox);
+    registerGetter(L, "stealthCheckBox", OrdersPanel_get_stealthCheckBox);
+    registerGetter(L, "speedPrevButton", OrdersPanel_get_speedPrevButton);
+    registerGetter(L, "speedNextButton", OrdersPanel_get_speedNextButton);
+    registerGetter(L, "speedImagePanel", OrdersPanel_get_speedImagePanel);
+    registerGetter(L, "speedImageNamesIdx", OrdersPanel_get_speedImageNamesIdx);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, OrdersPanel_set_ordersItemWidth);
-    lua_setfield(L, -2, "ordersItemWidth");
-    lua_pushcfunction(L, OrdersPanel_set_ordersItemBoxScrollBarSize);
-    lua_setfield(L, -2, "ordersItemBoxScrollBarSize");
-    lua_pushcfunction(L, OrdersPanel_set_ordersItemBoxMaxVisible);
-    lua_setfield(L, -2, "ordersItemBoxMaxVisible");
-    lua_pushcfunction(L, OrdersPanel_set_speedImageNamesIdx);
-    lua_setfield(L, -2, "speedImageNamesIdx");
+    registerSetter(L, "ordersCharacter", OrdersPanel_set_ordersCharacter);
+    registerSetter(L, "ordersItemBox", OrdersPanel_set_ordersItemBox);
+    registerSetter(L, "ordersItemWidth", OrdersPanel_set_ordersItemWidth);
+    registerSetter(L, "ordersItemBoxScrollBarSize", OrdersPanel_set_ordersItemBoxScrollBarSize);
+    registerSetter(L, "ordersItemBoxMaxVisible", OrdersPanel_set_ordersItemBoxMaxVisible);
+    registerSetter(L, "speedImageNamesIdx", OrdersPanel_set_speedImageNamesIdx);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

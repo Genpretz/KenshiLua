@@ -1,8 +1,8 @@
 #include "pch.h"
-#include <kenshi/gui/GUIWindow.h>
+#include "kenshi\gui\GUIWindow.h"
 #include "GUIWindowBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/Util/HandBinding.h"
+#include "Bindings/MyGuiBinding.h"
 
 namespace KenshiLua
 {
@@ -17,8 +17,7 @@ static int GUIWindow_get_win(lua_State* L)
 {
     GUIWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GUIWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->win);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, instance->win, MyGuiBinding::getMetatableName());
 }
 
 static int GUIWindow_get_selectedObject(lua_State* L)
@@ -29,19 +28,11 @@ static int GUIWindow_get_selectedObject(lua_State* L)
 }
 
 // --- Setters for GUIWindow ---
-static int GUIWindow_set_win(lua_State* L)
-{
-    GUIWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GUIWindow is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for win");
-}
-
 static int GUIWindow_set_selectedObject(lua_State* L)
 {
     GUIWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GUIWindow is nil");
-    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
-    instance->selectedObject = *val;
+    instance->selectedObject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
     return 0;
 }
 
@@ -253,14 +244,35 @@ int GUIWindowBinding::_NV_update(lua_State* L)
     return 0;
 }
 
+int GUIWindowBinding::autoChangeSelectedObject(lua_State* L)
+{
+    GUIWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GUIWindow is nil");
+
+    hand* obj = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (!obj) return luaL_error(L, "Argument 2 to autoChangeSelectedObject must be hand");
+    instance->autoChangeSelectedObject(*obj);
+    return 0;
+}
+
+int GUIWindowBinding::_NV_autoChangeSelectedObject(lua_State* L)
+{
+    GUIWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GUIWindow is nil");
+
+    hand* obj = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    if (!obj) return luaL_error(L, "Argument 2 to _NV_autoChangeSelectedObject must be hand");
+    instance->_NV_autoChangeSelectedObject(*obj);
+    return 0;
+}
+
 int GUIWindowBinding::getWidget(lua_State* L)
 {
     GUIWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GUIWindow is nil");
 
     MyGUI::Widget* result = instance->getWidget();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
 }
 
 int GUIWindowBinding::resize(lua_State* L)
@@ -284,12 +296,6 @@ int GUIWindowBinding::_NV_resize(lua_State* L)
     instance->_NV_resize(w, h);
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 36: void autoChangeSelectedObject(...) - unsupported arg type
-  line 37: void _NV_autoChangeSelectedObject(...) - unsupported arg type
-*/
 
 int GUIWindowBinding::gc(lua_State* L)
 {
@@ -333,6 +339,8 @@ void GUIWindowBinding::registerBinding(lua_State* L)
         { "_NV_isVisible", GUIWindowBinding::_NV_isVisible },
         { "update", GUIWindowBinding::update },
         { "_NV_update", GUIWindowBinding::_NV_update },
+        { "autoChangeSelectedObject", GUIWindowBinding::autoChangeSelectedObject },
+        { "_NV_autoChangeSelectedObject", GUIWindowBinding::_NV_autoChangeSelectedObject },
         { "getWidget", GUIWindowBinding::getWidget },
         { "resize", GUIWindowBinding::resize },
         { "_NV_resize", GUIWindowBinding::_NV_resize },
@@ -350,21 +358,16 @@ void GUIWindowBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, GUIWindowBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, GUIWindow_get_win);
-    lua_setfield(L, -2, "win");
-    lua_pushcfunction(L, GUIWindow_get_selectedObject);
-    lua_setfield(L, -2, "selectedObject");
+    registerGetter(L, "win", GUIWindow_get_win);
+    registerGetter(L, "selectedObject", GUIWindow_get_selectedObject);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, GUIWindow_set_win);
-    lua_setfield(L, -2, "win");
-    lua_pushcfunction(L, GUIWindow_set_selectedObject);
-    lua_setfield(L, -2, "selectedObject");
+    registerSetter(L, "selectedObject", GUIWindow_set_selectedObject);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
-    //  setMetatableParent(L, GUIWindowBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, GUIWindowBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

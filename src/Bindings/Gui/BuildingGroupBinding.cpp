@@ -1,11 +1,12 @@
 #include "pch.h"
-#include <kenshi/gui/BuildModeWindow.h>
+#include "kenshi\gui\BuildModeWindow.h"
 #include "BuildingGroupBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
-    typedef BuildModeWindow::BuildingGroup BuildingGroup;
+
+typedef BuildModeWindow::BuildingGroup BuildingGroup;
 
 static BuildingGroup* getInstance(lua_State* L, int idx)
 {
@@ -88,13 +89,11 @@ void BuildingGroupBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, BuildingGroupBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, BuildingGroup_get_name);
-    lua_setfield(L, -2, "name");
+    registerGetter(L, "name", BuildingGroup_get_name);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, BuildingGroup_set_name);
-    lua_setfield(L, -2, "name");
+    registerSetter(L, "name", BuildingGroup_set_name);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

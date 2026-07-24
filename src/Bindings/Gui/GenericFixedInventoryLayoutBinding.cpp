@@ -1,8 +1,8 @@
 #include "pch.h"
-#include <kenshi/gui/InventoryGUI.h>
+#include "kenshi\gui\InventoryGUI.h"
 #include "GenericFixedInventoryLayoutBinding.h"
-#include "InventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
 
 namespace KenshiLua
 {
@@ -20,8 +20,7 @@ int GenericFixedInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "GenericFixedInventoryLayout is nil");
 
     GenericFixedInventoryLayout* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<GenericFixedInventoryLayout>(L, result, GenericFixedInventoryLayoutBinding::getMetatableName());
 }
 
 int GenericFixedInventoryLayoutBinding::setSize(lua_State* L)
@@ -100,9 +99,6 @@ void GenericFixedInventoryLayoutBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to InventoryLayout
-    // setMetatableParent(L, GenericFixedInventoryLayoutBinding::getMetatableName(), InventoryLayoutBinding::getMetatableName());
-
-        // Wire up inheritance
     // setMetatableParent(L, GenericFixedInventoryLayoutBinding::getMetatableName(), InventoryLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -5,7 +5,6 @@
 
 namespace KenshiLua
 {
-
 typedef SquadManagementScreen::SquadItemBox SquadItemBox;
 
 static SquadItemBox* getInstance(lua_State* L, int idx)

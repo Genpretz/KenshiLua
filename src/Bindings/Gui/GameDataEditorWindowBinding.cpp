@@ -1,10 +1,9 @@
 #include "pch.h"
-#include "Bindings/GameDataBinding.h"
-#include "Bindings/Gui/DatapanelGUIBinding.h"
-
-#include <kenshi/gui/GameDataEditorWindow.h>
+#include "kenshi\gui\GameDataEditorWindow.h"
 #include "GameDataEditorWindowBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {
@@ -30,6 +29,22 @@ static int GameDataEditorWindow_get_data(lua_State* L)
 }
 
 // --- Setters for GameDataEditorWindow ---
+static int GameDataEditorWindow_set_win(lua_State* L)
+{
+    GameDataEditorWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataEditorWindow is nil");
+    instance->win = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int GameDataEditorWindow_set_data(lua_State* L)
+{
+    GameDataEditorWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataEditorWindow is nil");
+    instance->data = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
+}
+
 int GameDataEditorWindowBinding::_DESTRUCTOR(lua_State* L)
 {
     GameDataEditorWindow* instance = getInstance(L, 1);
@@ -102,13 +117,13 @@ void GameDataEditorWindowBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, GameDataEditorWindowBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, GameDataEditorWindow_get_win);
-    lua_setfield(L, -2, "win");
-    lua_pushcfunction(L, GameDataEditorWindow_get_data);
-    lua_setfield(L, -2, "data");
+    registerGetter(L, "win", GameDataEditorWindow_get_win);
+    registerGetter(L, "data", GameDataEditorWindow_get_data);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "win", GameDataEditorWindow_set_win);
+    registerSetter(L, "data", GameDataEditorWindow_set_data);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

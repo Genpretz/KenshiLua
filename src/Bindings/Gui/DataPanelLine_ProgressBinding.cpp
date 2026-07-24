@@ -1,8 +1,9 @@
 #include "pch.h"
-#include <kenshi/gui/DataPanelLine.h>
+#include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_ProgressBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -46,27 +47,6 @@ static int DataPanelLine_Progress_get_showKey(lua_State* L)
 }
 
 // --- Setters for DataPanelLine_Progress ---
-static int DataPanelLine_Progress_set_textBox(lua_State* L)
-{
-    DataPanelLine_Progress* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for textBox");
-}
-
-static int DataPanelLine_Progress_set_progress(lua_State* L)
-{
-    DataPanelLine_Progress* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for progress");
-}
-
-static int DataPanelLine_Progress_set_progressText(lua_State* L)
-{
-    DataPanelLine_Progress* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for progressText");
-}
-
 static int DataPanelLine_Progress_set_showKey(lua_State* L)
 {
     DataPanelLine_Progress* instance = getInstance(L, 1);
@@ -81,7 +61,7 @@ int DataPanelLine_ProgressBinding::setProgress(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
 
     float value = (float)luaL_checknumber(L, 2);
-    std::string text = luaL_checkstring(L, 3);
+    const std::string text = luaL_checkstring(L, 3);
     instance->setProgress(value, text);
     return 0;
 }
@@ -91,12 +71,35 @@ int DataPanelLine_ProgressBinding::_CONSTRUCTOR(lua_State* L)
     DataPanelLine_Progress* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
 
-    std::string key = luaL_checkstring(L, 2);
+    const std::string key = luaL_checkstring(L, 2);
     int category = (int)luaL_checkinteger(L, 3);
     bool showKey = lua_toboolean(L, 4) != 0;
     DataPanelLine_Progress* result = instance->_CONSTRUCTOR(key, category, showKey);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<DataPanelLine_Progress>(L, result, DataPanelLine_ProgressBinding::getMetatableName());
+}
+
+int DataPanelLine_ProgressBinding::createMe(lua_State* L)
+{
+    DataPanelLine_Progress* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->createMe(parent, top, lastLine);
+    return 0;
+}
+
+int DataPanelLine_ProgressBinding::_NV_createMe(lua_State* L)
+{
+    DataPanelLine_Progress* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
+
+    DatapanelGUI* parent = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    bool lastLine = lua_toboolean(L, 4) != 0;
+    instance->_NV_createMe(parent, top, lastLine);
+    return 0;
 }
 
 int DataPanelLine_ProgressBinding::_DESTRUCTOR(lua_State* L)
@@ -107,12 +110,6 @@ int DataPanelLine_ProgressBinding::_DESTRUCTOR(lua_State* L)
     instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 279: void createMe(...) - unsupported arg type
-  line 280: void _NV_createMe(...) - unsupported arg type
-*/
 
 int DataPanelLine_ProgressBinding::gc(lua_State* L)
 {
@@ -137,6 +134,8 @@ void DataPanelLine_ProgressBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "setProgress", DataPanelLine_ProgressBinding::setProgress },
         { "_CONSTRUCTOR", DataPanelLine_ProgressBinding::_CONSTRUCTOR },
+        { "createMe", DataPanelLine_ProgressBinding::createMe },
+        { "_NV_createMe", DataPanelLine_ProgressBinding::_NV_createMe },
         { "_DESTRUCTOR", DataPanelLine_ProgressBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -152,25 +151,14 @@ void DataPanelLine_ProgressBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DataPanelLine_ProgressBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DataPanelLine_Progress_get_textBox);
-    lua_setfield(L, -2, "textBox");
-    lua_pushcfunction(L, DataPanelLine_Progress_get_progress);
-    lua_setfield(L, -2, "progress");
-    lua_pushcfunction(L, DataPanelLine_Progress_get_progressText);
-    lua_setfield(L, -2, "progressText");
-    lua_pushcfunction(L, DataPanelLine_Progress_get_showKey);
-    lua_setfield(L, -2, "showKey");
+    registerGetter(L, "textBox", DataPanelLine_Progress_get_textBox);
+    registerGetter(L, "progress", DataPanelLine_Progress_get_progress);
+    registerGetter(L, "progressText", DataPanelLine_Progress_get_progressText);
+    registerGetter(L, "showKey", DataPanelLine_Progress_get_showKey);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DataPanelLine_Progress_set_textBox);
-    lua_setfield(L, -2, "textBox");
-    lua_pushcfunction(L, DataPanelLine_Progress_set_progress);
-    lua_setfield(L, -2, "progress");
-    lua_pushcfunction(L, DataPanelLine_Progress_set_progressText);
-    lua_setfield(L, -2, "progressText");
-    lua_pushcfunction(L, DataPanelLine_Progress_set_showKey);
-    lua_setfield(L, -2, "showKey");
+    registerSetter(L, "showKey", DataPanelLine_Progress_set_showKey);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to DataPanelLine

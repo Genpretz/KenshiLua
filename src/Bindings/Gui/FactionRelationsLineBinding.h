@@ -1,6 +1,4 @@
 #pragma once
-#include <kenshi/gui/FactionsScreen.h>
-
 
 extern "C" {
 #include <lua.h>
@@ -9,7 +7,6 @@ extern "C" {
 
 namespace KenshiLua
 {
-    typedef FactionsScreen::FactionRelationsLine FactionRelationsLine;
 class FactionRelationsLineBinding
 {
 public:
@@ -19,6 +16,7 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int update(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };
