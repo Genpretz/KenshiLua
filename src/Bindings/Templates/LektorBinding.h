@@ -509,4 +509,133 @@ namespace KenshiLua
 
     template <typename T>
     const char* LektorStringBinding<T>::metaName = nullptr;
+
+    // Binding for lektor<int>
+    template <typename T = int>
+    struct LektorIntBinding
+    {
+        static const char* metaName;
+
+        static const char* getMetatableName() { return metaName; }
+
+        static lektor<T>* get(lua_State* L, int idx)
+        {
+            return checkObject<lektor<T>>(L, idx, metaName);
+        }
+
+        static int push(lua_State* L, lektor<T>* lek)
+        {
+            return pushObject<lektor<T>>(L, lek, metaName);
+        }
+
+        static int gc(lua_State* L) { return noopGc(L); }
+
+        static int len(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            lua_pushinteger(L, lek ? lek->count : 0);
+            return 1;
+        }
+
+        static int index(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) { lua_pushnil(L); return 1; }
+
+            if (lua_isnumber(L, 2))
+            {
+                uint32_t i = (uint32_t)lua_tointeger(L, 2);
+                if (i < 1 || i > lek->count) { lua_pushnil(L); return 1; }
+                lua_pushinteger(L, lek->stuff[i - 1]);
+                return 1;
+            }
+
+            luaL_getmetatable(L, metaName);
+            lua_getfield(L, -1, luaL_checkstring(L, 2));
+            return 1;
+        }
+
+        static int newindex(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return luaL_error(L, "lektor is nil");
+
+            if (!lua_isnumber(L, 2))
+                return luaL_error(L, "lektor: only numeric indices are writable");
+
+            uint32_t i = (uint32_t)lua_tointeger(L, 2);
+            int val = (int)luaL_checkinteger(L, 3);
+
+            if (i >= 1 && i <= lek->count)
+            {
+                lek->stuff[i - 1] = val;
+                return 0;
+            }
+            if (i == lek->count + 1)
+            {
+                lektor_push_back(*lek, val);
+                return 0;
+            }
+            return luaL_error(L, "lektor: index %u out of range (size=%u, can append at %u)",
+                i, lek->count, lek->count + 1);
+        }
+
+        static int pushVal(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return luaL_error(L, "lektor is nil");
+            int val = (int)luaL_checkinteger(L, 2);
+            lektor_push_back(*lek, val);
+            return 0;
+        }
+
+        static int removeAt(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return luaL_error(L, "lektor is nil");
+            uint32_t i = (uint32_t)luaL_checkinteger(L, 2);
+            if (i < 1 || i > lek->count) return luaL_error(L, "lektor:removeAt index out of range");
+
+            for (uint32_t j = i; j < lek->count; ++j)
+                lek->stuff[j - 1] = lek->stuff[j];
+            --lek->count;
+            return 0;
+        }
+
+        static int clear(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (lek) lek->clear();
+            return 0;
+        }
+
+        static int size(lua_State* L)
+        {
+            return len(L);
+        }
+
+        static void registerBinding(lua_State* L, const char* name)
+        {
+            metaName = name;
+
+            static const luaL_Reg meta[] = {
+                { "__gc",       gc },
+                { "__len",      len },
+                { "__index",    index },
+                { "__newindex", newindex },
+                { 0, 0 }
+            };
+            static const luaL_Reg methods[] = {
+                { "push",      pushVal },
+                { "removeAt",  removeAt },
+                { "clear",     clear },
+                { "size",      size },
+                { 0, 0 }
+            };
+            registerClass(L, metaName, meta, methods, index, newindex);
+        }
+    };
+
+    template <typename T>
+    const char* LektorIntBinding<T>::metaName = nullptr;
 } // namespace KenshiLua
