@@ -16,6 +16,7 @@ namespace KenshiLua
 
 		void setVisible(bool visible);
 		bool getVisible();
+		MyGUI::Window* getWindow() const { return mKenshiLua_SettingsRootWindow; }
 
 	private:
 		void onCancelClicked(MyGUI::Widget* sender);
@@ -25,6 +26,8 @@ namespace KenshiLua
 		void onKeyBindClicked(MyGUI::Widget* sender);
 		void onKeyButtonPressed(MyGUI::Widget* sender, MyGUI::KeyCode key, MyGUI::Char ch);
 		void onStartMinimizedClicked(MyGUI::Widget* sender);
+
+		bool mEdgeHideEnabled;
 
 		bool m_tempToggleCtrl;
 		bool m_tempToggleShift;

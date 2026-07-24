@@ -28,12 +28,15 @@ namespace KenshiLua
 
 		void setVisible(bool visible);
 		bool getVisible();
+		MyGUI::Window* getWindow() const { return mKenshiLua_ScriptManagerRootWindow; }
 
 		void refreshList();
 		void refreshListUI();
 
 	private:
 		void onWindowButtonPressed(MyGUI::Window* sender, const std::string& name);
+
+		bool mEdgeHideEnabled;
 		void onFilterChanged(MyGUI::EditBox* sender);
 		void onListSelectChanged(MyGUI::MultiListBox* sender, size_t index);
 		void onRunSelectedClicked(MyGUI::Widget* sender);

@@ -21,6 +21,7 @@ namespace KenshiLua
 {
 	KenshiLua_ScriptManager::KenshiLua_ScriptManager(MyGUI::Widget* _parent)
 		: m_selectedIndex(-1)
+		, mEdgeHideEnabled(false)
 	{
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_ScriptManagerRootWindow = mMainWidget->castType<MyGUI::Window>(false);
@@ -64,6 +65,7 @@ namespace KenshiLua
 			if (visible)
 			{
 				MyGUI::LayerManager::getInstance().upLayerItem(mKenshiLua_ScriptManagerRootWindow);
+				MyGUI::InputManager::getInstance().setKeyFocusWidget(mKenshiLua_ScriptManagerRootWindow);
 				refreshList();
 			}
 		}
@@ -228,13 +230,13 @@ namespace KenshiLua
 			else
 			{
 				script.lastError = err;
-				logToFile("ScriptManager: Error running " + script.chunkName + ": " + err);
+				logToFileError("ScriptManager: Error running " + script.chunkName + ": " + err);
 			}
 			refreshListUI();
 		}
 		else
 		{
-			logToFile("ScriptManager: Lua state not initialized");
+			logToFileWarn("ScriptManager: Lua state not initialized");
 		}
 	}
 
@@ -260,11 +262,24 @@ namespace KenshiLua
 		}
 	}
 
-	void KenshiLua_ScriptManager::onWindowButtonPressed(MyGUI::Window*, const std::string& name)
+	void KenshiLua_ScriptManager::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 	{
 		if (name == "close")
 		{
 			setVisible(false);
+		}
+		else if (name == "minimize")
+		{
+			mEdgeHideEnabled = !mEdgeHideEnabled;
+			MyGUI::ControllerManager::getInstance().removeItem(sender);
+			if (mEdgeHideEnabled)
+			{
+				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
+				if (item)
+				{
+					MyGUI::ControllerManager::getInstance().addItem(sender, item);
+				}
+			}
 		}
 	}
 

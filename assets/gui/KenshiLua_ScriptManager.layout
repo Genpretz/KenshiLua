@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Window" skin="Kenshi_WindowCX" position_real="0.101563 0 0.335938 0.36" layer="Window" name="Root">
+    <Widget type="Window" skin="Kenshi_WindowCXM" position_real="0.101563 0 0.335938 0.36" layer="Window" name="Root">
         <Property key="Caption" value="Script Manager"/>
         <Widget type="TextBox" skin="Kenshi_TextboxPaintedText_Large" position_real="0.0117096 0.0094162 0.0995316 0.0659134" align="Left Top" name="ScriptManager_FilterLabel">
             <Property key="Caption" value="Filter:"/>

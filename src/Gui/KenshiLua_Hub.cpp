@@ -11,6 +11,7 @@ namespace KenshiLua
 {
 
 	KenshiLua_Hub::KenshiLua_Hub(MyGUI::Widget* _parent)
+		: mEdgeHideEnabled(false)
 	{
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_HubRootWindow = mMainWidget->castType<MyGUI::Window>(false);
@@ -43,6 +44,7 @@ namespace KenshiLua
 			if (visible)
 			{
 				MyGUI::LayerManager::getInstance().upLayerItem(mKenshiLua_HubRootWindow);
+				MyGUI::InputManager::getInstance().setKeyFocusWidget(mKenshiLua_HubRootWindow);
 			}
 		}
 	}
@@ -107,6 +109,19 @@ namespace KenshiLua
 		if (name == "close")
 		{
 			setVisible(false);
+		}
+		else if (name == "minimize")
+		{
+			mEdgeHideEnabled = !mEdgeHideEnabled;
+			MyGUI::ControllerManager::getInstance().removeItem(sender);
+			if (mEdgeHideEnabled)
+			{
+				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
+				if (item)
+				{
+					MyGUI::ControllerManager::getInstance().addItem(sender, item);
+				}
+			}
 		}
 	}
 } // KenshiLua

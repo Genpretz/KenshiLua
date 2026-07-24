@@ -33,6 +33,7 @@ namespace KenshiLua
 
 	KenshiLua_ScriptEditor::KenshiLua_ScriptEditor(MyGUI::Widget* _parent)
 		: m_lastInputVScrollPos(0), m_lastOutputVScrollPos(0)
+		, mEdgeHideEnabled(false)
 	{
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_ScriptEditorWindow = mMainWidget->castType<MyGUI::Window>(false);
@@ -221,12 +222,25 @@ namespace KenshiLua
 		updateOutputGutter();
 	}
 
-	void KenshiLua_ScriptEditor::onWindowButtonPressed(MyGUI::Window*, const std::string& name)
+	void KenshiLua_ScriptEditor::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 	{
 		if (name == "close")
 		{
 			setVisible(false);
 			MyGUI::InputManager::getInstance().resetKeyFocusWidget();
+		}
+		else if (name == "minimize")
+		{
+			mEdgeHideEnabled = !mEdgeHideEnabled;
+			MyGUI::ControllerManager::getInstance().removeItem(sender);
+			if (mEdgeHideEnabled)
+			{
+				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
+				if (item)
+				{
+					MyGUI::ControllerManager::getInstance().addItem(sender, item);
+				}
+			}
 		}
 	}
 

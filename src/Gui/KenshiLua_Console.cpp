@@ -10,10 +10,10 @@ namespace KenshiLua
 {
 
 	KenshiLua_Console::KenshiLua_Console(MyGUI::Widget* _parent)
+		: mEdgeHideEnabled(false)
 	{
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_ConsoleRootWindow = mMainWidget->castType<MyGUI::Window>(false);
-		logToFileDebugf("Console initialization: mMainWidget=%p, mKenshiLua_ConsoleRootWindow=%p", mMainWidget, mKenshiLua_ConsoleRootWindow);
 
 		if (mConsole_RunButtonButton)
 			mConsole_RunButtonButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_Console::onRunClicked);
@@ -83,12 +83,25 @@ namespace KenshiLua
 		clear();
 	}
 
-	void KenshiLua_Console::onWindowButtonPressed(MyGUI::Window*, const std::string& name)
+	void KenshiLua_Console::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 	{
 		if (name == "close")
 		{
 			setVisible(false);
 			MyGUI::InputManager::getInstance().resetKeyFocusWidget();
+		}
+		else if (name == "minimize")
+		{
+			mEdgeHideEnabled = !mEdgeHideEnabled;
+			MyGUI::ControllerManager::getInstance().removeItem(sender);
+			if (mEdgeHideEnabled)
+			{
+				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
+				if (item)
+				{
+					MyGUI::ControllerManager::getInstance().addItem(sender, item);
+				}
+			}
 		}
 	}
 
@@ -147,7 +160,7 @@ namespace KenshiLua
 				const char* err = lua_tostring(L, -1);
 				std::string e = err ? err : "(error)";
 				appendOutput("ERROR: " + e + "\n");
-				logToFile("Lua console error: " + e);
+				logToFileError("Lua console error: " + e);
 			}
 			else
 			{

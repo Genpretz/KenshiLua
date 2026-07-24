@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Window" skin="Kenshi_WindowCX" position_real="0 0 0.101563 0.221875" align="Default" layer="Window" name="Root">
+    <Widget type="Window" skin="Kenshi_WindowCXM" position_real="0 0 0.101563 0.221875" align="Default" layer="Window" name="Root">
         <Property key="Caption" value="KENSHILUA"/>
         <Property key="Movable" value="false"/>
         <Property key="Snap" value="true"/>

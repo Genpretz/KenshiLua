@@ -244,7 +244,7 @@ namespace KenshiLua
 		}
 		else
 		{
-			logToFile("GuiManager: MyGUI singleton not yet available in requestInitialize");
+			logToFileWarn("GuiManager: MyGUI singleton not yet available in requestInitialize");
 		}
 	}
 
@@ -286,7 +286,7 @@ namespace KenshiLua
 
 		MyGUI::ResourceManager* res = MyGUI::ResourceManager::getInstancePtr();
 		if (!res->load("Kenshi_ScriptEditor_EditBox.xml"))
-			logToFile("Kenshi_ScriptEditor_EditBox.xml not found.");
+			logToFileWarn("Kenshi_ScriptEditor_EditBox.xml not found.");
 
 		try
 		{
@@ -298,6 +298,7 @@ namespace KenshiLua
 			m_settings = new KenshiLua_Settings();
 
 			m_initialized = true;
+
 
 			if (!Config::get().isStartMinimized())
 			{
@@ -329,16 +330,17 @@ namespace KenshiLua
 	{
 		if (m_initialized && m_hub)
 		{
-			setVisible(!m_hub->getVisible());
+			m_visible = !m_visible;
+			m_hub->setVisible(m_visible);
 		}
 	}
 
 	void GuiManager::setVisible(bool visible)
 	{
+		m_visible = visible;
 		if (m_hub)
 		{
 			m_hub->setVisible(visible);
-			m_visible = visible;
 		}
 	}
 
@@ -376,5 +378,6 @@ namespace KenshiLua
 		if (m_console)
 			m_console->clear();
 	}
+
 
 } // namespace KenshiLua

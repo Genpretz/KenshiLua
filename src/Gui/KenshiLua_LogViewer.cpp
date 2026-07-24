@@ -11,6 +11,7 @@
 namespace KenshiLua
 {
 	KenshiLua_LogViewer::KenshiLua_LogViewer(MyGUI::Widget* _parent)
+		: mEdgeHideEnabled(false)
 	{
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_LogViewerRootWindow = mMainWidget->castType<MyGUI::Window>(false);
@@ -45,6 +46,7 @@ namespace KenshiLua
 			if (visible)
 			{
 				MyGUI::LayerManager::getInstance().upLayerItem(mKenshiLua_LogViewerRootWindow);
+				MyGUI::InputManager::getInstance().setKeyFocusWidget(mKenshiLua_LogViewerRootWindow);
 				refreshLog();
 			}
 		}
@@ -104,7 +106,7 @@ namespace KenshiLua
 		std::ofstream f(path.c_str(), std::ios::binary);
 		if (!f.is_open())
 		{
-			logToFile("LogViewer: Failed to open file for saving: " + path);
+			logToFileError("LogViewer: Failed to open file for saving: " + path);
 			return;
 		}
 
@@ -117,11 +119,24 @@ namespace KenshiLua
 		refreshLog();
 	}
 
-	void KenshiLua_LogViewer::onWindowButtonPressed(MyGUI::Window*, const std::string& name)
+	void KenshiLua_LogViewer::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 	{
 		if (name == "close")
 		{
 			setVisible(false);
+		}
+		else if (name == "minimize")
+		{
+			mEdgeHideEnabled = !mEdgeHideEnabled;
+			MyGUI::ControllerManager::getInstance().removeItem(sender);
+			if (mEdgeHideEnabled)
+			{
+				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
+				if (item)
+				{
+					MyGUI::ControllerManager::getInstance().addItem(sender, item);
+				}
+			}
 		}
 	}
 

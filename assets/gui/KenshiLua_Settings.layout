@@ -1,35 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Window" skin="Kenshi_WindowCX" position_real="0.101563 0 0.148438 0.225" align="Default" layer="Window" name="Root">
+    <Widget type="Window" skin="Kenshi_WindowCXM" position_real="0.101563 0 0.189453 0.196875" align="Default" layer="Window" name="Root">
         <Property key="Caption" value="SETTINGS"/>
         <Property key="Movable" value="true"/>
         <Property key="Snap" value="true"/>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.040107 0.857143 0.320856 0.0920635" align="Left Bottom" name="Settings_DefaultsButton">
+        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.0313152 0.833333 0.250522 0.107407" align="Left Bottom" name="Settings_DefaultsButton">
             <Property key="Caption" value="DEFAULTS"/>
             <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
             <Property key="TextAlign" value="Center"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.387701 0.857143 0.26738 0.0920635" align="Right Bottom" name="Settings_CancelButton">
+        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.521921 0.833333 0.208768 0.107407" align="Right Bottom" name="Settings_CancelButton">
             <Property key="Caption" value="CANCEL"/>
             <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
             <Property key="TextAlign" value="Center"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.673797 0.857143 0.294118 0.0920635" align="Right Bottom" name="Settings_SaveButton">
+        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.745303 0.833333 0.229645 0.107407" align="Right Bottom" name="Settings_SaveButton">
             <Property key="Caption" value="SAVE"/>
             <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
             <Property key="TextAlign" value="Center"/>
         </Widget>
-        <Widget type="Widget" skin="Kenshi_OrdersTextboxSkin" position_real="0.026738 0.00952381 0.938503 0.825397" align="Stretch">
-            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0712251 0.115385 0.384615 0.115385" align="Left Top">
+        <Widget type="Widget" skin="Kenshi_OrdersTextboxSkin" position_real="0.0208768 0.0111111 0.951983 0.796296" align="Stretch">
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0307018 0.111628 0.473684 0.139535" align="Left Top">
                 <Property key="Caption" value="Keyboard Shortcut:"/>
+                <Property key="TextAlign" value="Right VCenter"/>
             </Widget>
-            <Widget type="Button" skin="Kenshi_Button1" position_real="0.45584 0.0769231 0.45584 0.153846" align="Right Top" name="KeyBind_Button">
+            <Widget type="Button" skin="Kenshi_Button1" position_real="0.574561 0.0930233 0.383772 0.181395" align="Right Top" name="KeyBind_Button">
                 <Property key="Caption" value="Ctrl + Shift + L"/>
             </Widget>
-            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0712251 0.326923 0.327635 0.0769231">
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0328947 0.372093 0.460526 0.144186" align="Left Top">
                 <Property key="Caption" value="Log Level:"/>
+                <Property key="TextAlign" value="Right VCenter"/>
             </Widget>
-            <Widget type="ComboBox" skin="Kenshi_ComboBox" position_real="0.45584 0.307692 0.45584 0.153846" name="LogLevel_ComboBox">
+            <Widget type="ComboBox" skin="Kenshi_ComboBox" position_real="0.570175 0.372093 0.383772 0.181395" align="Right Top" name="LogLevel_ComboBox">
                 <Property key="ComboModeDrop" value="true"/>
                 <Property key="FlowDirection" value="TopToBottom"/>
                 <Property key="AddItem" value="Default"/>
@@ -37,10 +39,11 @@
                 <Property key="AddItem" value="Error"/>
                 <Property key="AddItem" value="Debug"/>
             </Widget>
-            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0712251 0.557692 0.669516 0.0769231">
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0328947 0.651163 0.471491 0.148837" align="Left Top">
                 <Property key="Caption" value="Start Minimized:"/>
+                <Property key="TextAlign" value="Right VCenter"/>
             </Widget>
-            <Widget type="Button" skin="Kenshi_TickBoxSkin" position_real="0.769231 0.538462 0.128205 0.153846" name="StartMinimized_TickBox">
+            <Widget type="Button" skin="Kenshi_TickBoxSkin" position_real="0.855263 0.674419 0.0921053 0.181395" align="Right Top" name="StartMinimized_TickBox">
                 <Property key="StateSelected" value="true"/>
             </Widget>
         </Widget>

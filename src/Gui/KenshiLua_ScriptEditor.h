@@ -29,6 +29,8 @@ namespace KenshiLua
 		void onClearClicked(MyGUI::Widget* sender);
 		void onWindowButtonPressed(MyGUI::Window* sender, const std::string& name);
 
+		bool mEdgeHideEnabled;
+
 		void onInputTextChanged(MyGUI::EditBox* sender);
 		void onFrameStart(float frameTime);
 

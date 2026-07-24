@@ -37,6 +37,7 @@ namespace KenshiLua
 		, m_tempToggleAlt(false)
 		, m_tempToggleKey(OIS::KC_L)
 		, m_isCapturingKeybind(false)
+		, mEdgeHideEnabled(false)
 	{
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_SettingsRootWindow = mMainWidget->castType<MyGUI::Window>(false);
@@ -59,6 +60,8 @@ namespace KenshiLua
 		if (mStartMinimized_TickBoxButton)
 			mStartMinimized_TickBoxButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_Settings::onStartMinimizedClicked);
 
+
+
 		if (mLogLevel_ComboBoxComboBox)
 			mLogLevel_ComboBoxComboBox->setComboModeDrop(true);
 
@@ -80,6 +83,7 @@ namespace KenshiLua
 			if (visible)
 			{
 				MyGUI::LayerManager::getInstance().upLayerItem(mKenshiLua_SettingsRootWindow);
+				MyGUI::InputManager::getInstance().setKeyFocusWidget(mKenshiLua_SettingsRootWindow);
 
 				// Populate fields from config
 				Config& conf = Config::get();
@@ -133,11 +137,24 @@ namespace KenshiLua
 		setVisible(false);
 	}
 
-	void KenshiLua_Settings::onWindowButtonPressed(MyGUI::Window*, const std::string& name)
+	void KenshiLua_Settings::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 	{
 		if (name == "close")
 		{
 			setVisible(false);
+		}
+		else if (name == "minimize")
+		{
+			mEdgeHideEnabled = !mEdgeHideEnabled;
+			MyGUI::ControllerManager::getInstance().removeItem(sender);
+			if (mEdgeHideEnabled)
+			{
+				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
+				if (item)
+				{
+					MyGUI::ControllerManager::getInstance().addItem(sender, item);
+				}
+			}
 		}
 	}
 
@@ -160,6 +177,8 @@ namespace KenshiLua
 		{
 			conf.setStartMinimized(mStartMinimized_TickBoxButton->getStateSelected());
 		}
+
+
 
 		conf.save();
 		setVisible(false);
@@ -186,6 +205,7 @@ namespace KenshiLua
 		{
 			mStartMinimized_TickBoxButton->setStateSelected(true);
 		}
+
 	}
 
 	void KenshiLua_Settings::onKeyBindClicked(MyGUI::Widget* sender)

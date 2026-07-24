@@ -16,6 +16,7 @@ namespace KenshiLua
 
 		void setVisible(bool visible);
 		bool getVisible();
+		MyGUI::Window* getWindow() const { return mKenshiLua_HubRootWindow; }
 
 	private:
 		void onBtnScriptEditor(MyGUI::Widget* sender);
@@ -24,6 +25,8 @@ namespace KenshiLua
 		void onBtnScriptManager(MyGUI::Widget* sender);
 		void onBtnSettings(MyGUI::Widget* sender);
 		void onWindowButtonPressed(MyGUI::Window* sender, const std::string& name);
+
+		bool mEdgeHideEnabled;
 
 	//%LE Widget_Declaration list start
 		MyGUI::Window* mKenshiLua_HubRootWindow;

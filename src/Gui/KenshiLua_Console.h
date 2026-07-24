@@ -16,6 +16,7 @@ namespace KenshiLua
 
 		void setVisible(bool visible);
 		bool getVisible();
+		MyGUI::Window* getWindow() const { return mKenshiLua_ConsoleRootWindow; }
 		void appendOutput(const std::string& text);
 		void clear();
 
@@ -24,6 +25,8 @@ namespace KenshiLua
 		void onClearClicked(MyGUI::Widget* sender);
 		void onEditSelectAccept(MyGUI::EditBox* sender);
 		void onWindowButtonPressed(MyGUI::Window* sender, const std::string& name);
+
+		bool mEdgeHideEnabled;
 	//%LE Widget_Declaration list start
 		MyGUI::Window* mKenshiLua_ConsoleRootWindow;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Console, mConsole_ContextLabelTextBox, "Console_ContextLabel");
