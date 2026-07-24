@@ -8,15 +8,15 @@
 namespace KenshiLua
 {
 
-static RelationData* getInstance(lua_State* L, int idx)
+static FactionRelations::RelationData* getInstance(lua_State* L, int idx)
 {
-    return checkObject<RelationData>(L, idx, RelationDataBinding::getMetatableName());
+    return checkObject<FactionRelations::RelationData>(L, idx, RelationDataBinding::getMetatableName());
 }
 
 // --- Getters for RelationData ---
 static int RelationData_get_alliance(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     lua_pushboolean(L, instance->alliance ? 1 : 0);
     return 1;
@@ -24,7 +24,7 @@ static int RelationData_get_alliance(lua_State* L)
 
 static int RelationData_get_peaceTreaty(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     lua_pushboolean(L, instance->peaceTreaty ? 1 : 0);
     return 1;
@@ -32,7 +32,7 @@ static int RelationData_get_peaceTreaty(lua_State* L)
 
 static int RelationData_get_war(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     lua_pushboolean(L, instance->war ? 1 : 0);
     return 1;
@@ -40,7 +40,7 @@ static int RelationData_get_war(lua_State* L)
 
 static int RelationData_get_coexists(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     lua_pushboolean(L, instance->coexists ? 1 : 0);
     return 1;
@@ -48,7 +48,7 @@ static int RelationData_get_coexists(lua_State* L)
 
 static int RelationData_get_relation(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     lua_pushnumber(L, instance->relation);
     return 1;
@@ -56,7 +56,7 @@ static int RelationData_get_relation(lua_State* L)
 
 static int RelationData_get_trustPositives(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     lua_pushnumber(L, instance->trustPositives);
     return 1;
@@ -64,7 +64,7 @@ static int RelationData_get_trustPositives(lua_State* L)
 
 static int RelationData_get_trustNegatives(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     lua_pushnumber(L, instance->trustNegatives);
     return 1;
@@ -72,7 +72,7 @@ static int RelationData_get_trustNegatives(lua_State* L)
 
 static int RelationData_get_percievedStrength(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     lua_pushnumber(L, instance->percievedStrength);
     return 1;
@@ -81,7 +81,7 @@ static int RelationData_get_percievedStrength(lua_State* L)
 // --- Setters for RelationData ---
 static int RelationData_set_alliance(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     instance->alliance = lua_toboolean(L, 2) != 0;
     return 0;
@@ -89,7 +89,7 @@ static int RelationData_set_alliance(lua_State* L)
 
 static int RelationData_set_peaceTreaty(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     instance->peaceTreaty = lua_toboolean(L, 2) != 0;
     return 0;
@@ -97,7 +97,7 @@ static int RelationData_set_peaceTreaty(lua_State* L)
 
 static int RelationData_set_war(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     instance->war = lua_toboolean(L, 2) != 0;
     return 0;
@@ -105,7 +105,7 @@ static int RelationData_set_war(lua_State* L)
 
 static int RelationData_set_coexists(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     instance->coexists = lua_toboolean(L, 2) != 0;
     return 0;
@@ -113,7 +113,7 @@ static int RelationData_set_coexists(lua_State* L)
 
 static int RelationData_set_relation(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     instance->relation = (float)luaL_checknumber(L, 2);
     return 0;
@@ -121,7 +121,7 @@ static int RelationData_set_relation(lua_State* L)
 
 static int RelationData_set_trustPositives(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     instance->trustPositives = (float)luaL_checknumber(L, 2);
     return 0;
@@ -129,7 +129,7 @@ static int RelationData_set_trustPositives(lua_State* L)
 
 static int RelationData_set_trustNegatives(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     instance->trustNegatives = (float)luaL_checknumber(L, 2);
     return 0;
@@ -137,7 +137,7 @@ static int RelationData_set_trustNegatives(lua_State* L)
 
 static int RelationData_set_percievedStrength(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
     instance->percievedStrength = (float)luaL_checknumber(L, 2);
     return 0;
@@ -145,7 +145,7 @@ static int RelationData_set_percievedStrength(lua_State* L)
 
 int RelationDataBinding::save(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
 
     GameData* factionsList = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
@@ -157,7 +157,7 @@ int RelationDataBinding::save(lua_State* L)
 
 int RelationDataBinding::load(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
 
     GameData* gamestate_faction = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
@@ -169,28 +169,15 @@ int RelationDataBinding::load(lua_State* L)
 
 int RelationDataBinding::_DESTRUCTOR(lua_State* L)
 {
-    RelationData* instance = getInstance(L, 1);
+    FactionRelations::RelationData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RelationData is nil");
 
     instance->_DESTRUCTOR();
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 74: RelationData* _CONSTRUCTOR(...) - overloaded method
-  line 76: RelationData* _CONSTRUCTOR(...) - overloaded method
-  line 93: RelationData& operator=(...) - operator
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 90: stateVariables (std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >) - unsupported type
-*/
-
 int RelationDataBinding::gc(lua_State* L)
 {
-    // Implementation depends on ownership model
     return 0;
 }
 

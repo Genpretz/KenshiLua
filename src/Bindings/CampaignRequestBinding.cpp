@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "kenshi\FactionWarMgr.h"
+#include "kenshi/FactionWarMgr.h"
 #include "CampaignRequestBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/FactionBinding.h"
@@ -7,6 +7,8 @@
 
 namespace KenshiLua
 {
+
+typedef FactionWarMgr::CampaignRequest CampaignRequest;
 
 static CampaignRequest* getInstance(lua_State* L, int idx)
 {
