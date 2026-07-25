@@ -1,3 +1,5 @@
 {
-    "Plugins" : [ "KenshiLua.dll" ]
+    "Plugins": [
+        "plugin/KenshiLua.dll"
+    ]
 }
