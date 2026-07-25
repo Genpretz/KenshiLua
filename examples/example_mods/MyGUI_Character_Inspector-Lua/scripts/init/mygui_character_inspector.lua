@@ -101,7 +101,7 @@ local function getOrCreateWindow()
             if inspectingChar and inspectingChar:isValid() then
                 local stats = inspectingChar:getStats()
                 if stats then
-                    stats._strength = 100.0
+                    stats.strength = 100.0
                     updateStatsLabels()
                     log("[CharInspector] Set strength of " .. inspectingChar:getName() .. " to 100")
                 end
