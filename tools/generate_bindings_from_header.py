@@ -255,7 +255,7 @@ def is_reference(type_text):
 
 
 def is_struct_type(type_text):
-    return base_type(type_text) in ("Ogre::Vector3", "Vector3", "Ogre::Quaternion", "Quaternion")
+    return base_type(type_text) in ("Ogre::Vector2", "Vector2", "Ogre::Vector3", "Vector3", "Ogre::Quaternion", "Quaternion")
 
 
 def is_enum_type(type_text, info, extra_enums):
@@ -298,6 +298,8 @@ def push_statement(type_text, expr, info, extra_enums, known_bindings, allow_ref
     if is_pointer(type_text):
         return "lua_pushlightuserdata(L, (void*)%s);" % expr
         
+    if t in ("Ogre::Vector2", "Vector2"):
+        return "pushVector2(L, %s);" % expr
     if t in ("Ogre::Vector3", "Vector3"):
         return "pushVector3(L, %s);" % expr
     if t in ("Ogre::Quaternion", "Quaternion"):
@@ -366,7 +368,12 @@ def generate_method_stub(info, method, extra_enums, known_bindings):
         
         if is_struct_type(arg.type):
             t = base_type(arg.type)
-            struct_name = "Vector3" if "Vector3" in t else "Quaternion"
+            if "Vector2" in t:
+                struct_name = "Vector2"
+            elif "Vector3" in t:
+                struct_name = "Vector3"
+            else:
+                struct_name = "Quaternion"
             out.append(f"    {t} {local_name};")
             out.append(f"    read{struct_name}(L, {i}, {local_name});")
         else:
@@ -492,7 +499,12 @@ def generate_property_setters(info, members, extra_enums, known_bindings):
             
             if is_struct_type(member.type):
                 t = base_type(member.type)
-                struct_name = "Vector3" if "Vector3" in t else "Quaternion"
+                if "Vector2" in t:
+                    struct_name = "Vector2"
+                elif "Vector3" in t:
+                    struct_name = "Vector3"
+                else:
+                    struct_name = "Quaternion"
                 out.append(f"    read{struct_name}(L, 2, instance->{member.name});")
                 out.append("    return 0;")
             else:
@@ -588,6 +600,29 @@ def generate_cpp(info, header_path, extra_enums, known_bindings, known_headers=N
     out.append(generate_methods(info, extra_enums, known_bindings))
     out.append("")
 
+    # 3.4. Commented list of lightuserdata dependencies
+    lightuserdata_deps = []
+    for member in supported_members:
+        if is_pointer(member.type) and not binding_for_type(member.type, known_bindings):
+            lightuserdata_deps.append(f"  - {info.name}_get_{member.name}: {member.type} (unbound pointer)")
+
+    overload_counts = {}
+    for method in info.methods:
+        overload_counts[method.name] = overload_counts.get(method.name, 0) + 1
+    for method in info.methods:
+        ok, _ = method_supported(method, info, extra_enums, known_bindings, overload_counts)
+        if ok:
+            if is_pointer(method.return_type) and not binding_for_type(method.return_type, known_bindings):
+                lightuserdata_deps.append(f"  - {info.name}Binding::{cpp_identifier(method.name)}: {method.return_type} (unbound pointer)")
+
+    if lightuserdata_deps:
+        out.append("/*")
+        out.append("LIGHTUSERDATA DEPENDENCIES:")
+        for dep in lightuserdata_deps:
+            out.append(dep)
+        out.append("*/")
+        out.append("")
+
     # 3.5. Commented list of skipped properties
     if skipped_properties:
         out.append("/*")
@@ -646,8 +681,7 @@ def generate_cpp(info, header_path, extra_enums, known_bindings, known_headers=N
     out.append(f"    luaL_getmetatable(L, {info.name}Binding::getMetatableName());")
     out.append("    lua_newtable(L); // Create __getters table")
     for member in supported_members:
-        out.append(f"    lua_pushcfunction(L, {info.name}_get_{member.name});")
-        out.append(f"    lua_setfield(L, -2, \"{member.name}\");")
+        out.append(f'    registerGetter(L, "{member.name}", {info.name}_get_{member.name});')
     out.append("    lua_setfield(L, -2, \"__getters\"); // Bind to metatable")
     out.append("")
     
@@ -655,8 +689,7 @@ def generate_cpp(info, header_path, extra_enums, known_bindings, known_headers=N
     out.append("    lua_newtable(L); // Create __setters table")
     for member in supported_members:
         if is_setter_supported(member, info, extra_enums, known_bindings):
-            out.append(f"    lua_pushcfunction(L, {info.name}_set_{member.name});")
-            out.append(f"    lua_setfield(L, -2, \"{member.name}\");")
+            out.append(f'    registerSetter(L, "{member.name}", {info.name}_set_{member.name});')
     out.append("    lua_setfield(L, -2, \"__setters\"); // Bind to metatable")
     out.append("")
     
