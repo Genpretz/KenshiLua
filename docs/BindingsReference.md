@@ -16,6 +16,7 @@
 - [BackpackInventoryLayout](#backpackinventorylayout)
 - [Bounty](#bounty)
 - [BountyManager](#bountymanager)
+- [Box](#box)
 - [BuildInventoryLayout](#buildinventorylayout)
 - [BuildMaterial](#buildmaterial)
 - [BuildModeWindow](#buildmodewindow)
@@ -26,12 +27,14 @@
 - [BuildingPlacementGroundType](#buildingplacementgroundtype)
 - [BuildingSwaps](#buildingswaps)
 - [CameraClass](#cameraclass)
+- [CampaignRequest](#campaignrequest)
 - [CampaignTriggerData](#campaigntriggerdata)
 - [CharBody](#charbody)
 - [CharMovement](#charmovement)
 - [CharStats](#charstats)
 - [Character](#character)
 - [CharacterAnimal](#characteranimal)
+- [CharacterEditWindow](#charactereditwindow)
 - [CharacterHuman](#characterhuman)
 - [CharacterInventoryLayout](#characterinventorylayout)
 - [CharacterStatsWindow](#characterstatswindow)
@@ -43,6 +46,7 @@
 - [ConsumptionItem](#consumptionitem)
 - [ContainerItem](#containeritem)
 - [ContextMenu](#contextmenu)
+- [ContextMenuGUI](#contextmenugui)
 - [CraftingBuilding](#craftingbuilding)
 - [CraftingInventoryLayout](#craftinginventorylayout)
 - [CreatelistItem](#createlistitem)
@@ -75,16 +79,20 @@
 - [DoorStuff](#doorstuff)
 - [Faction](#faction)
 - [FactionLeader](#factionleader)
+- [FactionListWindow](#factionlistwindow)
 - [FactionManager](#factionmanager)
 - [FactionRelations](#factionrelations)
 - [FactionRelationsLine](#factionrelationsline)
 - [FactionUniqueSquadManager](#factionuniquesquadmanager)
+- [FactionWarMgr](#factionwarmgr)
 - [FactionsScreen](#factionsscreen)
 - [FactoryCallbackInterface](#factorycallbackinterface)
 - [FarmBatch](#farmbatch)
 - [FarmBuilding](#farmbuilding)
 - [FlagCondition](#flagcondition)
+- [FloatingProgressBar](#floatingprogressbar)
 - [FlockingTools](#flockingtools)
+- [FogEditor](#fogeditor)
 - [Footprint](#footprint)
 - [FootprintNode](#footprintnode)
 - [ForgottenGUI](#forgottengui)
@@ -103,6 +111,7 @@
 - [GameDataValuePair](#gamedatavaluepair)
 - [GameSaveState](#gamesavestate)
 - [GameWorld](#gameworld)
+- [GamedataSelectionList](#gamedataselectionlist)
 - [GameplayOptions](#gameplayoptions)
 - [GatewayBuilding](#gatewaybuilding)
 - [Gear](#gear)
@@ -114,8 +123,10 @@
 - [HasRoomCache](#hasroomcache)
 - [HealthPartStatus](#healthpartstatus)
 - [ImpactPoint](#impactpoint)
+- [ImportGameMenu](#importgamemenu)
 - [InputHandler](#inputhandler)
 - [InstanceID](#instanceid)
+- [InteriorModeButtonWindow](#interiormodebuttonwindow)
 - [Inventory](#inventory)
 - [InventoryGUI](#inventorygui)
 - [InventoryIcon](#inventoryicon)
@@ -124,23 +135,38 @@
 - [InventorySection](#inventorysection)
 - [InventorySectionGUI](#inventorysectiongui)
 - [InventoryTradeData](#inventorytradedata)
+- [InventoryTraderGUI](#inventorytradergui)
 - [Item](#item)
 - [ItemData](#itemdata)
+- [ItemListWindow](#itemlistwindow)
+- [LevelEditor](#leveleditor)
 - [LightBuilding](#lightbuilding)
 - [LimbsInventoryLayout](#limbsinventorylayout)
 - [Limiter](#limiter)
+- [ListScrollBar](#listscrollbar)
+- [LoadSaveWindow](#loadsavewindow)
+- [LoadingWindow](#loadingwindow)
 - [LockedArmour](#lockedarmour)
 - [MainBarGUI](#mainbargui)
 - [MainTabPortraitPlatoon](#maintabportraitplatoon)
 - [MainthreadStateReaderT](#mainthreadstatereadert)
+- [ManagementScreen](#managementscreen)
+- [MapMarkerCharacter](#mapmarkercharacter)
+- [MapMarkerTown](#mapmarkertown)
+- [MapScreen](#mapscreen)
 - [MedianFilter](#medianfilter)
 - [MedianFilter2DVector](#medianfilter2dvector)
 - [MedicalSystem](#medicalsystem)
 - [MeshDataLookup](#meshdatalookup)
 - [MeshLoadData](#meshloaddata)
+- [MessageBoxManager](#messageboxmanager)
 - [ModInfo](#modinfo)
 - [MotionFilter](#motionfilter)
+- [MultiSlider](#multislider)
 - [MyGui](#mygui)
+- [NewGameOptionsWindow](#newgameoptionswindow)
+- [NewGameWindow](#newgamewindow)
+- [NpcListWindow](#npclistwindow)
 - [NxUserControllerHitReport](#nxusercontrollerhitreport)
 - [ObjectInstance](#objectinstance)
 - [OpenSaveFileDialog](#opensavefiledialog)
@@ -154,17 +180,27 @@
 - [ParticlePool](#particlepool)
 - [Platoon](#platoon)
 - [PlayerInterface](#playerinterface)
+- [PortraitData](#portraitdata)
+- [PortraitImage](#portraitimage)
+- [PortraitMainCellView](#portraitmaincellview)
+- [PortraitManager](#portraitmanager)
+- [PortraitSquadCellView](#portraitsquadcellview)
+- [PortraitSquadItemBox](#portraitsquaditembox)
 - [PreviewBuilding](#previewbuilding)
 - [ProductionBuilding](#productionbuilding)
 - [ProductionInventoryLayout](#productioninventorylayout)
+- [ProgressBarWidget](#progressbarwidget)
+- [ProspectingWindow](#prospectingwindow)
 - [ProsperityManager](#prosperitymanager)
 - [RaceData](#racedata)
 - [RaceLimiter](#racelimiter)
 - [RainCollectorBuilding](#raincollectorbuilding)
 - [RelationData](#relationdata)
+- [ReorderableList](#reorderablelist)
 - [RepetitionCounter](#repetitioncounter)
 - [ResearchBuilding](#researchbuilding)
 - [ResearchBuildingInventoryLayout](#researchbuildinginventorylayout)
+- [ResourceLinePanel](#resourcelinepanel)
 - [ResourceLoadRequestMesh](#resourceloadrequestmesh)
 - [ResourceLoadRequestTexture](#resourceloadrequesttexture)
 - [ResourceLoader](#resourceloader)
@@ -176,6 +212,9 @@
 - [RootObjectFactory](#rootobjectfactory)
 - [SaveFileSystem](#savefilesystem)
 - [SaveManager](#savemanager)
+- [ScreenLabel](#screenlabel)
+- [ScreenLabelDebug](#screenlabeldebug)
+- [ScreenLabelInterface](#screenlabelinterface)
 - [SectionItem](#sectionitem)
 - [SeenSomeone](#seensomeone)
 - [SelectionBox](#selectionbox)
@@ -185,10 +224,17 @@
 - [ShopTraderInventory](#shoptraderinventory)
 - [ShopTraderInventorySection](#shoptraderinventorysection)
 - [SimpleTimeStamper](#simpletimestamper)
+- [Slider](#slider)
 - [SpecificItemLoadFirst](#specificitemloadfirst)
 - [SpeedGroup](#speedgroup)
+- [SplashScreen](#splashscreen)
 - [Spot](#spot)
 - [SpottingPeopleMgr](#spottingpeoplemgr)
+- [SquadCellView](#squadcellview)
+- [SquadData](#squaddata)
+- [SquadItemBox](#squaditembox)
+- [SquadListWindow](#squadlistwindow)
+- [SquadManagementScreen](#squadmanagementscreen)
 - [Stat](#stat)
 - [StatGroup](#statgroup)
 - [StateT](#statet)
@@ -202,6 +248,7 @@
 - [TextureArrayLoadData](#texturearrayloaddata)
 - [TextureLoadData](#textureloaddata)
 - [TimeOfDay](#timeofday)
+- [TitleScreen](#titlescreen)
 - [ToolTip](#tooltip)
 - [ToolTipDynamic](#tooltipdynamic)
 - [ToolTipFixed](#tooltipfixed)
@@ -212,9 +259,11 @@
 - [Town](#town)
 - [TownBase](#townbase)
 - [TownBuildingsManager](#townbuildingsmanager)
+- [TownListWindow](#townlistwindow)
 - [TownPositionCacher](#townpositioncacher)
 - [TradeCulture](#tradeculture)
 - [TradeResult](#traderesult)
+- [TraderInventoryLayout](#traderinventorylayout)
 - [TransformWindow](#transformwindow)
 - [TurretBuilding](#turretbuilding)
 - [TutorialGUI](#tutorialgui)
@@ -704,7 +753,7 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `standAlone: boolean` | `lightuserdata` | `obj:_CONSTRUCTOR(standAlone)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `standAlone: boolean` | `BackpackInventoryLayout` | `obj:_CONSTRUCTOR(standAlone)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## Bounty
@@ -776,6 +825,21 @@
 | getPrisonSentenceInHours | getPrisonSentenceInHours | `` | `integer` | `obj:getPrisonSentenceInHours()` |
 | getBountyExpirationTime | getBountyExpirationTime | `` | `number` | `obj:getBountyExpirationTime()` |
 
+## Box
+**Header:** `extern/KenshiLib/Include/kenshi/gui/MessageBoxManager.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| modal | modal | boolean | RW | `obj.modal = <value>` |
+| callback | (void* | lightuserdata | R | `obj.callback` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `MessageBoxManager::Box` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
 ## BuildInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Building/ProductionBuilding.h`
 
@@ -838,11 +902,11 @@
 | levelEditorMode | levelEditorMode | boolean | RW | `obj.levelEditorMode = <value>` |
 | playerResearch | (void* | lightuserdata | R | `obj.playerResearch` |
 | currentBuildingCategory | (void* | lightuserdata | R | `obj.currentBuildingCategory` |
-| currentBuildingGroup | currentBuildingGroup | object | RW | `obj.currentBuildingGroup = <value>` |
-| currentBuildingInfo | currentBuildingInfo | GameData | R | `obj.currentBuildingInfo` |
+| currentBuildingGroup | currentBuildingGroup | BuildModeWindow::BuildingGroup | RW | `obj.currentBuildingGroup = <value>` |
+| currentBuildingInfo | currentBuildingInfo | GameData | RW | `obj.currentBuildingInfo = <value>` |
 | currentBuildingIndex | currentBuildingIndex | integer | RW | `obj.currentBuildingIndex = <value>` |
 | switchBuildingIndex | switchBuildingIndex | integer | RW | `obj.switchBuildingIndex = <value>` |
-| statsDataPanel | statsDataPanel | DatapanelGUI | R | `obj.statsDataPanel` |
+| statsDataPanel | statsDataPanel | DatapanelGUI | RW | `obj.statsDataPanel = <value>` |
 | confirmButton | (void* | lightuserdata | R | `obj.confirmButton` |
 | undoButton | (void* | lightuserdata | R | `obj.undoButton` |
 | closeButton | (void* | lightuserdata | R | `obj.closeButton` |
@@ -1295,6 +1359,25 @@
 | rotate | rotate | `_yaw: number, _pitch: number` | `void` | `obj:rotate(_yaw, _pitch)` |
 | rotationUpdate | rotationUpdate | `` | `void` | `obj:rotationUpdate()` |
 | updateAudio | updateAudio | `` | `void` | `obj:updateAudio()` |
+
+## CampaignRequest
+**Header:** `extern/KenshiLib/Include/kenshi/FactionWarMgr.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| timeToStart | timeToStart | TimeOfDay | RW | `obj.timeToStart = <value>` |
+| data | (void* | lightuserdata | R | `obj.data` |
+| target | target | hand | RW | `obj.target = <value>` |
+| homeBase | homeBase | hand | RW | `obj.homeBase = <value>` |
+| enemy | enemy | Faction | RW | `obj.enemy = <value>` |
+| numAttempts | numAttempts | integer | RW | `obj.numAttempts = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| tryToChangeTarget | tryToChangeTarget | `` | `boolean` | `obj:tryToChangeTarget()` |
 
 ## CampaignTriggerData
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
@@ -2298,6 +2381,83 @@
 | init | init | `` | `void` | `obj:init()` |
 | _NV_init | _NV_init | `` | `void` | `obj:_NV_init()` |
 
+## CharacterEditWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/CharacterEditWindow.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| camera | (void* | lightuserdata | R | `obj.camera` |
+| txtName | (void* | lightuserdata | R | `obj.txtName` |
+| txtGender | (void* | lightuserdata | R | `obj.txtGender` |
+| txtRace | (void* | lightuserdata | R | `obj.txtRace` |
+| txtSubRace | (void* | lightuserdata | R | `obj.txtSubRace` |
+| txtCharIdx | (void* | lightuserdata | R | `obj.txtCharIdx` |
+| importButton | (void* | lightuserdata | R | `obj.importButton` |
+| exportButton | (void* | lightuserdata | R | `obj.exportButton` |
+| panelTabs | (void* | lightuserdata | R | `obj.panelTabs` |
+| panelTabsView | (void* | lightuserdata | R | `obj.panelTabsView` |
+| btnPrevGender | (void* | lightuserdata | R | `obj.btnPrevGender` |
+| btnNextGender | (void* | lightuserdata | R | `obj.btnNextGender` |
+| btnPrevRace | (void* | lightuserdata | R | `obj.btnPrevRace` |
+| btnNextRace | (void* | lightuserdata | R | `obj.btnNextRace` |
+| btnPrevSubRace | (void* | lightuserdata | R | `obj.btnPrevSubRace` |
+| btnNextSubRace | (void* | lightuserdata | R | `obj.btnNextSubRace` |
+| btnReset | (void* | lightuserdata | R | `obj.btnReset` |
+| btnRandomiseAll | (void* | lightuserdata | R | `obj.btnRandomiseAll` |
+| btnRandomisePart | (void* | lightuserdata | R | `obj.btnRandomisePart` |
+| descriptionPanel | (void* | lightuserdata | R | `obj.descriptionPanel` |
+| descriptionPanelText | (void* | lightuserdata | R | `obj.descriptionPanelText` |
+| statsPanel | (void* | lightuserdata | R | `obj.statsPanel` |
+| statsDataPanel | statsDataPanel | DatapanelGUI | RW | `obj.statsDataPanel = <value>` |
+| dialog | dialog | OpenSaveFileDialog | RW | `obj.dialog = <value>` |
+| isMidGame | isMidGame | boolean | RW | `obj.isMidGame = <value>` |
+| multipleCharactersChangedCheck | multipleCharactersChangedCheck | integer | RW | `obj.multipleCharactersChangedCheck = <value>` |
+| characterEntityUpdated | characterEntityUpdated | boolean | RW | `obj.characterEntityUpdated = <value>` |
+| clothVisible | clothVisible | boolean | RW | `obj.clothVisible = <value>` |
+| appearanceData | appearanceData | GameDataCopyStandalone | RW | `obj.appearanceData = <value>` |
+| raceData | raceData | GameData | RW | `obj.raceData = <value>` |
+| currentCategory | (lua_Integer | integer | RW | `obj.currentCategory = <value>` |
+| currentRaceGroupIndex | currentRaceGroupIndex | integer | RW | `obj.currentRaceGroupIndex = <value>` |
+| currentSubRaceIndex | currentSubRaceIndex | integer | RW | `obj.currentSubRaceIndex = <value>` |
+| currentGender | (lua_Integer | integer | RW | `obj.currentGender = <value>` |
+| currentRaceData | (void* | lightuserdata | R | `obj.currentRaceData` |
+| currentEditData | (void* | lightuserdata | R | `obj.currentEditData` |
+| character | character | Character | RW | `obj.character = <value>` |
+| currentCharacterIdx | currentCharacterIdx | integer | RW | `obj.currentCharacterIdx = <value>` |
+| currentAnimation | (void* | lightuserdata | R | `obj.currentAnimation` |
+| raceLimits | (void* | lightuserdata | R | `obj.raceLimits` |
+| showNamesOption | showNamesOption | boolean | RW | `obj.showNamesOption = <value>` |
+| editorRootNode | (void* | lightuserdata | R | `obj.editorRootNode` |
+| characterPositionNode | (void* | lightuserdata | R | `obj.characterPositionNode` |
+| characterRotationNode | (void* | lightuserdata | R | `obj.characterRotationNode` |
+| workspace | (void* | lightuserdata | R | `obj.workspace` |
+| platform | (void* | lightuserdata | R | `obj.platform` |
+| requestUpdateLiveObject | requestUpdateLiveObject | boolean | RW | `obj.requestUpdateLiveObject = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| update | update | `` | `void` | `obj:update()` |
+| loadData | loadData | `` | `void` | `obj:loadData()` |
+| initCharacters | initCharacters | `` | `void` | `obj:initCharacters()` |
+| updateRace | updateRace | `` | `void` | `obj:updateRace()` |
+| updateCharacterPoses | updateCharacterPoses | `` | `void` | `obj:updateCharacterPoses()` |
+| clearCharacterPoses | clearCharacterPoses | `` | `void` | `obj:clearCharacterPoses()` |
+| updateCharacter | updateCharacter | `` | `void` | `obj:updateCharacter()` |
+| showCharacter | showCharacter | `on: boolean` | `void` | `obj:showCharacter(on)` |
+| updateCurrentCategory | updateCurrentCategory | `` | `void` | `obj:updateCurrentCategory()` |
+| loadImportedCharacter | loadImportedCharacter | `accept: boolean, result: string` | `void` | `obj:loadImportedCharacter(accept, result)` |
+| setClothesVisible | setClothesVisible | `visible: boolean` | `void` | `obj:setClothesVisible(visible)` |
+| confirmMessageCallback | confirmMessageCallback | `_btn: integer` | `void` | `obj:confirmMessageCallback(_btn)` |
+| setupUI | setupUI | `` | `void` | `obj:setupUI()` |
+| setUIEnabled | setUIEnabled | `enabled: boolean` | `void` | `obj:setUIEnabled(enabled)` |
+| refreshUI | refreshUI | `` | `void` | `obj:refreshUI()` |
+| updateLiveObject | updateLiveObject | `` | `void` | `obj:updateLiveObject()` |
+| refreshCharacterPoses | refreshCharacterPoses | `` | `void` | `obj:refreshCharacterPoses()` |
+| exportMeshes | exportMeshes | `` | `void` | `obj:exportMeshes()` |
+
 ## CharacterHuman
 **Header:** `extern/KenshiLib/Include/kenshi/CharacterHuman.h`
 
@@ -2727,19 +2887,41 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | rightMouseActivated | rightMouseActivated | boolean | RW | `obj.rightMouseActivated = <value>` |
-| orders | orders | lektor<int> | R | `obj.orders` |
+| orders | orders | unknown | RW | `obj.orders = <value>` |
 | contextMenuName | contextMenuName | string | RW | `obj.contextMenuName = <value>` |
-| menuGUI | menuGUI | ContextMenuGUI* | R | `obj.menuGUI` |
-| menuGUI2 | menuGUI2 | ContextMenuGUI* | R | `obj.menuGUI2` |
+| menuGUI | (void* | lightuserdata | RW | `obj.menuGUI = <value>` |
+| menuGUI2 | (void* | lightuserdata | RW | `obj.menuGUI2 = <value>` |
 | delayedDestroyFlag | delayedDestroyFlag | boolean | RW | `obj.delayedDestroyFlag = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `ContextMenu` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| showContextMenu | showContextMenu | `on: boolean` | `void` | `obj:showContextMenu(on)` |
 | isVisible | isVisible | `` | `boolean` | `obj:isVisible()` |
 | update | update | `` | `void` | `obj:update()` |
 | _destroyMenuGUICheck | _destroyMenuGUICheck | `` | `void` | `obj:_destroyMenuGUICheck()` |
+
+## ContextMenuGUI
+**Header:** `extern/KenshiLib/Include/kenshi/gui/ContextMenu.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| contextMenuTarget | contextMenuTarget | hand | RW | `obj.contextMenuTarget = <value>` |
+| name | name | string | RW | `obj.name = <value>` |
+| nameText | (void* | lightuserdata | R | `obj.nameText` |
+| optionsList | (void* | lightuserdata | R | `obj.optionsList` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| getMainWidget | getMainWidget | `` | `lightuserdata` | `obj:getMainWidget()` |
+| getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
+| setVisible | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
 
 ## CraftingBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/CraftingBuilding.h`
@@ -2902,7 +3084,6 @@
 | w1 | (void* | lightuserdata | R | `obj.w1` |
 | w2 | (void* | lightuserdata | R | `obj.w2` |
 | category | category | integer | RW | `obj.category = <value>` |
-| callback | callback | MyGUI::delegates::CDelegate1<DataPanelLine*> | R | `obj.callback` |
 | keyValue | keyValue | string | RW | `obj.keyValue = <value>` |
 | s1 | s1 | string | RW | `obj.s1 = <value>` |
 | s2 | s2 | string | RW | `obj.s2 = <value>` |
@@ -2910,7 +3091,6 @@
 | hi | hi | integer | RW | `obj.hi = <value>` |
 | skinW1 | skinW1 | string | RW | `obj.skinW1 = <value>` |
 | skinW2 | skinW2 | string | RW | `obj.skinW2 = <value>` |
-| widgets | widgets | Ogre::vector<MyGUI::Widget*>::type | R | `obj.widgets` |
 | classType | (lua_Integer | integer | RW | `obj.classType = <value>` |
 
 ### Methods
@@ -2923,11 +3103,15 @@
 | _NV_setEnabled | _NV_setEnabled | `on: boolean` | `void` | `obj:_NV_setEnabled(on)` |
 | refresh | refresh | `` | `void` | `obj:refresh()` |
 | _NV_refresh | _NV_refresh | `` | `void` | `obj:_NV_refresh()` |
+| createMe | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
+| _NV_createMe | _NV_createMe | `top: number, lastLine: boolean` | `void` | `obj:_NV_createMe(top, lastLine)` |
 | resize | resize | `width: integer, height: integer` | `void` | `obj:resize(width, height)` |
 | _NV_resize | _NV_resize | `width: integer, height: integer` | `void` | `obj:_NV_resize(width, height)` |
 | getBottom | getBottom | `` | `integer` | `obj:getBottom()` |
 | _NV_getBottom | _NV_getBottom | `` | `integer` | `obj:_NV_getBottom()` |
 | getType | getType | `` | `integer` | `obj:getType()` |
+| getUserData | getUserData | `` | `hand` | `obj:getUserData()` |
+| _NV_getUserData | _NV_getUserData | `` | `hand` | `obj:_NV_getUserData()` |
 | getNumWidgets | getNumWidgets | `` | `integer` | `obj:getNumWidgets()` |
 | getWidget | getWidget | `index: integer` | `lightuserdata` | `obj:getWidget(index)` |
 
@@ -2938,7 +3122,7 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | userData | userData | hand | RW | `obj.userData = <value>` |
-| button | (void* | lightuserdata | R | `obj.button` |
+| button | (void* | lightuserdata | RW | `obj.button = <value>` |
 | buttonWidth | buttonWidth | number | RW | `obj.buttonWidth = <value>` |
 | buttonHeight | buttonHeight | number | RW | `obj.buttonHeight = <value>` |
 | buttonSkin | buttonSkin | string | RW | `obj.buttonSkin = <value>` |
@@ -2946,7 +3130,11 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `a: string, b: string, cat: integer, w: number, skin: string` | `lightuserdata` | `obj:_CONSTRUCTOR(a, b, cat, w, skin)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `a: string, b: string, cat: integer, w: number, skin: string` | `DataPanelLine_Button` | `obj:_CONSTRUCTOR(a, b, cat, w, skin)` |
+| getUserData | getUserData | `` | `hand` | `obj:getUserData()` |
+| _NV_getUserData | _NV_getUserData | `` | `hand` | `obj:_NV_getUserData()` |
+| createMe | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
+| _NV_createMe | _NV_createMe | `top: number, lastLine: boolean` | `void` | `obj:_NV_createMe(top, lastLine)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DataPanelLine_CheckBox
@@ -2965,8 +3153,12 @@
 | refresh | refresh | `` | `void` | `obj:refresh()` |
 | _NV_refresh | _NV_refresh | `` | `void` | `obj:_NV_refresh()` |
 | setValue | setValue | `checked: boolean` | `void` | `obj:setValue(checked)` |
-| getTextBox | getTextBox | `` | `lightuserdata` | `obj:getTextBox()` |
-| getCheckBox | getCheckBox | `` | `lightuserdata` | `obj:getCheckBox()` |
+| setValuePtr | setValuePtr | `bVal: boolean` | `void` | `obj:setValuePtr(bVal)` |
+| getTextBox | getTextBox | `` | `MyGUI::Widget` | `obj:getTextBox()` |
+| getCheckBox | getCheckBox | `` | `MyGUI::Widget` | `obj:getCheckBox()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `key: string, cat: integer, bVal: boolean` | `DataPanelLine_CheckBox` | `obj:_CONSTRUCTOR(key, cat, bVal)` |
+| createMe | createMe | `topReal: number, lastLine: boolean` | `void` | `obj:createMe(topReal, lastLine)` |
+| _NV_createMe | _NV_createMe | `topReal: number, lastLine: boolean` | `void` | `obj:_NV_createMe(topReal, lastLine)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DataPanelLine_DropBox
@@ -2990,8 +3182,11 @@
 | getSelectedText | getSelectedText | `` | `string` | `obj:getSelectedText()` |
 | clearValues | clearValues | `` | `void` | `obj:clearValues()` |
 | getComboBox | getComboBox | `` | `lightuserdata` | `obj:getComboBox()` |
+| createMe | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
+| _NV_createMe | _NV_createMe | `top: number, lastLine: boolean` | `void` | `obj:_NV_createMe(top, lastLine)` |
 | refresh | refresh | `` | `void` | `obj:refresh()` |
 | _NV_refresh | _NV_refresh | `` | `void` | `obj:_NV_refresh()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `text: string, category: integer, valInt: integer, width: number, hasGobox: boolean` | `DataPanelLine_DropBox` | `obj:_CONSTRUCTOR(text, category, valInt, width, hasGobox)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DataPanelLine_Faction
@@ -3009,7 +3204,9 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `a: string, b: string, cat: integer, vv1: number, vv2: number` | `lightuserdata` | `obj:_CONSTRUCTOR(a, b, cat, vv1, vv2)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `a: string, b: string, cat: integer, vv1: number, vv2: number` | `DataPanelLine_Faction` | `obj:_CONSTRUCTOR(a, b, cat, vv1, vv2)` |
+| createMe | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
+| _NV_createMe | _NV_createMe | `top: number, lastLine: boolean` | `void` | `obj:_NV_createMe(top, lastLine)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DataPanelLine_KeyConfig
@@ -3025,13 +3222,15 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `cmd: string, text: string, cat: integer` | `lightuserdata` | `obj:_CONSTRUCTOR(cmd, text, cat)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `cmd: string, text: string, cat: integer` | `DataPanelLine_KeyConfig` | `obj:_CONSTRUCTOR(cmd, text, cat)` |
 | oldKey | oldKey | `` | `integer` | `obj:oldKey()` |
 | setKey | setKey | `s: string` | `void` | `obj:setKey(s)` |
 | eraseKey | eraseKey | `key: string` | `void` | `obj:eraseKey(key)` |
 | refresh | refresh | `` | `void` | `obj:refresh()` |
 | _NV_refresh | _NV_refresh | `` | `void` | `obj:_NV_refresh()` |
 | cancel | cancel | `` | `void` | `obj:cancel()` |
+| createMe | createMe | `vpos: number, lastLine: boolean` | `void` | `obj:createMe(vpos, lastLine)` |
+| _NV_createMe | _NV_createMe | `vpos: number, lastLine: boolean` | `void` | `obj:_NV_createMe(vpos, lastLine)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DataPanelLine_Progress
@@ -3049,7 +3248,9 @@
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
 | setProgress | setProgress | `value: number, text: string` | `void` | `obj:setProgress(value, text)` |
-| _CONSTRUCTOR | _CONSTRUCTOR | `key: string, category: integer, showKey: boolean` | `lightuserdata` | `obj:_CONSTRUCTOR(key, category, showKey)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `key: string, category: integer, showKey: boolean` | `DataPanelLine_Progress` | `obj:_CONSTRUCTOR(key, category, showKey)` |
+| createMe | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
+| _NV_createMe | _NV_createMe | `top: number, lastLine: boolean` | `void` | `obj:_NV_createMe(top, lastLine)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DataPanelLine_Research
@@ -3062,14 +3263,16 @@
 | v2 | v2 | number | RW | `obj.v2 = <value>` |
 | hasXBut | hasXBut | boolean | RW | `obj.hasXBut = <value>` |
 | barSkin | barSkin | string | RW | `obj.barSkin = <value>` |
-| bar | (void* | lightuserdata | R | `obj.bar` |
+| bar | (void* | lightuserdata | RW | `obj.bar = <value>` |
 | but | (void* | lightuserdata | R | `obj.but` |
 | Xbut | (void* | lightuserdata | R | `obj.Xbut` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `a: string, b: string, cat: integer, vv1: number, _barColor: string, _Xbut: boolean` | `lightuserdata` | `obj:_CONSTRUCTOR(a, b, cat, vv1, _barColor, _Xbut)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `a: string, b: string, cat: integer, vv1: number, _barColor: string, _Xbut: boolean` | `DataPanelLine_Research` | `obj:_CONSTRUCTOR(a, b, cat, vv1, _barColor, _Xbut)` |
+| createMe | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
+| _NV_createMe | _NV_createMe | `top: number, lastLine: boolean` | `void` | `obj:_NV_createMe(top, lastLine)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DataPanelLine_Slider
@@ -3087,11 +3290,13 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `key: string, text: string, min: number, max: number, category: integer, scale: number` | `lightuserdata` | `obj:_CONSTRUCTOR(key, text, min, max, category, scale)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `key: string, text: string, min: number, max: number, category: integer, scale: number` | `DataPanelLine_Slider` | `obj:_CONSTRUCTOR(key, text, min, max, category, scale)` |
 | setValue | setValue | `value: number` | `void` | `obj:setValue(value)` |
 | getValue | getValue | `` | `number` | `obj:getValue()` |
 | refresh | refresh | `` | `void` | `obj:refresh()` |
 | _NV_refresh | _NV_refresh | `` | `void` | `obj:_NV_refresh()` |
+| createMe | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
+| _NV_createMe | _NV_createMe | `top: number, lastLine: boolean` | `void` | `obj:_NV_createMe(top, lastLine)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DataPanelLine_SliderEditable
@@ -3113,12 +3318,16 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| getSlider | getSlider | `` | `lightuserdata` | `obj:getSlider()` |
-| getEditBox | getEditBox | `` | `lightuserdata` | `obj:getEditBox()` |
+| setEditableValuePtr | setEditableValuePtr | `tempVal: number, lo: number, hi: number` | `void` | `obj:setEditableValuePtr(tempVal, lo, hi)` |
+| getSlider | getSlider | `` | `MyGUI::Widget` | `obj:getSlider()` |
+| getEditBox | getEditBox | `` | `MyGUI::Widget` | `obj:getEditBox()` |
 | setValue | setValue | `v: number` | `void` | `obj:setValue(v)` |
 | refresh | refresh | `` | `void` | `obj:refresh()` |
 | _NV_refresh | _NV_refresh | `` | `void` | `obj:_NV_refresh()` |
 | setPrecision | setPrecision | `dp: integer` | `void` | `obj:setPrecision(dp)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `text: string, category: integer, showName: boolean, min: number, max: number, tempVal: number` | `DataPanelLine_SliderEditable` | `obj:_CONSTRUCTOR(text, category, showName, min, max, tempVal)` |
+| createMe | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
+| _NV_createMe | _NV_createMe | `top: number, lastLine: boolean` | `void` | `obj:_NV_createMe(top, lastLine)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DataPanelLine_Text
@@ -3128,12 +3337,13 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | editBox | (void* | lightuserdata | R | `obj.editBox` |
-| textAlign | textAlign | MyGUI::Align | R | `obj.textAlign` |
 | wordWrap | wordWrap | boolean | RW | `obj.wordWrap = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| createMe | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
+| _NV_createMe | _NV_createMe | `top: number, lastLine: boolean` | `void` | `obj:_NV_createMe(top, lastLine)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DataPanelLine_TextEditable
@@ -3144,7 +3354,6 @@
 |---|---|---|---|---|
 | editBox | (void* | lightuserdata | R | `obj.editBox` |
 | nameText | (void* | lightuserdata | R | `obj.nameText` |
-| textAlign | textAlign | MyGUI::Align | R | `obj.textAlign` |
 | showKey | showKey | boolean | RW | `obj.showKey = <value>` |
 | multiLine | multiLine | boolean | RW | `obj.multiLine = <value>` |
 | width | width | number | RW | `obj.width = <value>` |
@@ -3154,6 +3363,8 @@
 |---|---|---|---|---|
 | getEditBox | getEditBox | `` | `lightuserdata` | `obj:getEditBox()` |
 | getNameBox | getNameBox | `` | `lightuserdata` | `obj:getNameBox()` |
+| createMe | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
+| _NV_createMe | _NV_createMe | `top: number, lastLine: boolean` | `void` | `obj:_NV_createMe(top, lastLine)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## DatapanelGUI
@@ -3162,21 +3373,17 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| tabEvent | tabEvent | MyGUI::delegates::CMultiDelegate2<DatapanelGUI*, int> | R | `obj.tabEvent` |
 | frequentUpdatesWanted | frequentUpdatesWanted | boolean | RW | `obj.frequentUpdatesWanted = <value>` |
 | scrollWin | (void* | lightuserdata | R | `obj.scrollWin` |
 | premadeParentWindow | premadeParentWindow | boolean | RW | `obj.premadeParentWindow = <value>` |
 | scrolling | scrolling | boolean | RW | `obj.scrolling = <value>` |
 | isWindow | isWindow | boolean | RW | `obj.isWindow = <value>` |
-| content | content | std::map<int, std::map<std::string, DataPanelLine*, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, DataPanelLine*>, Ogre::GeneralAllocPolicy > >, std::less<int>, Ogre::STLAllocator<std::pair<int const, std::map<std::string, DataPanelLine*, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, DataPanelLine*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > > | R | `obj.content` |
-| bottomLine | bottomLine | std::map<int, DataPanelLine*, std::less<int>, Ogre::STLAllocator<std::pair<int const, DataPanelLine*>, Ogre::GeneralAllocPolicy > > | R | `obj.bottomLine` |
 | currentCategory | currentCategory | integer | RW | `obj.currentCategory = <value>` |
 | mouseOverEvent | (void* | lightuserdata | R | `obj.mouseOverEvent` |
 | mouseOverEventDatas | (void* | lightuserdata | R | `obj.mouseOverEventDatas` |
 | automaticRefresh | automaticRefresh | boolean | RW | `obj.automaticRefresh = <value>` |
 | automaticTarget | automaticTarget | boolean | RW | `obj.automaticTarget = <value>` |
 | tabWin | (void* | lightuserdata | R | `obj.tabWin` |
-| tabs | tabs | lektor<MyGUI::Button*> | R | `obj.tabs` |
 | panelName | panelName | string | RW | `obj.panelName = <value>` |
 | x | x | number | RW | `obj.x = <value>` |
 | y | y | number | RW | `obj.y = <value>` |
@@ -3226,12 +3433,16 @@
 | _zeroLines | _zeroLines | `cat: integer` | `DataPanelLine` | `obj:_zeroLines(cat)` |
 | _NV__zeroLines | _NV__zeroLines | `cat: integer` | `DataPanelLine` | `obj:_NV__zeroLines(cat)` |
 | setLineStatInfo | setLineStatInfo | `s1: string, s2: string, category: integer` | `DataPanelLine` | `obj:setLineStatInfo(s1, s2, category)` |
-| setLineFaction | setLineFaction | `s1: string, s2: string, category: integer, v1: number, v2: number` | `lightuserdata` | `obj:setLineFaction(s1, s2, category, v1, v2)` |
-| setLineTextButton | setLineTextButton | `text: string, caption: string, category: integer, buttonWidth: number, skin: string` | `lightuserdata` | `obj:setLineTextButton(text, caption, category, buttonWidth, skin)` |
-| setLineButton | setLineButton | `key: string, caption: string, category: integer` | `lightuserdata` | `obj:setLineButton(key, caption, category)` |
-| setLineToggleButton | setLineToggleButton | `key: string, caption: string, category: integer` | `lightuserdata` | `obj:setLineToggleButton(key, caption, category)` |
-| setLineProgress | setLineProgress | `key: string, category: integer, progressValue: number, progressText: string, showKey: boolean` | `lightuserdata` | `obj:setLineProgress(key, category, progressValue, progressText, showKey)` |
+| setLineFaction | setLineFaction | `s1: string, s2: string, category: integer, v1: number, v2: number` | `DataPanelLine_Faction` | `obj:setLineFaction(s1, s2, category, v1, v2)` |
+| setLineTextButton | setLineTextButton | `text: string, caption: string, category: integer, buttonWidth: number, skin: string` | `DataPanelLine_Button` | `obj:setLineTextButton(text, caption, category, buttonWidth, skin)` |
+| setLineButton | setLineButton | `key: string, caption: string, category: integer` | `DataPanelLine_Button` | `obj:setLineButton(key, caption, category)` |
+| setLineToggleButton | setLineToggleButton | `key: string, caption: string, category: integer` | `DataPanelLine_Button` | `obj:setLineToggleButton(key, caption, category)` |
+| setLineSliderEditable | setLineSliderEditable | `key: string, category: integer, showName: boolean, min: number, max: number, tempVal: number` | `DataPanelLine_SliderEditable` | `obj:setLineSliderEditable(key, category, showName, min, max, tempVal)` |
+| setLineSlider | setLineSlider | `key: string, caption: string, min: number, max: number, category: integer, tempVal: number, scale: number` | `DataPanelLine_Slider` | `obj:setLineSlider(key, caption, min, max, category, tempVal, scale)` |
+| setLineProgress | setLineProgress | `key: string, category: integer, progressValue: number, progressText: string, showKey: boolean` | `DataPanelLine_Progress` | `obj:setLineProgress(key, category, progressValue, progressText, showKey)` |
 | removeLine | removeLine | `s1: string, category: integer` | `void` | `obj:removeLine(s1, category)` |
+| setLineCheckbox | setLineCheckbox | `s1: string, tempBool: boolean, category: integer` | `DataPanelLine_CheckBox` | `obj:setLineCheckbox(s1, tempBool, category)` |
+| setLineDropBox | setLineDropBox | `key: string, category: integer, tempInt: integer, goBox: boolean, width: number` | `DataPanelLine_DropBox` | `obj:setLineDropBox(key, category, tempInt, goBox, width)` |
 | addSpace | addSpace | `category: integer, h: number` | `void` | `obj:addSpace(category, h)` |
 | setCategoryIcon | setCategoryIcon | `cat: integer, image: string` | `void` | `obj:setCategoryIcon(cat, image)` |
 | _NV_setCategoryIcon | _NV_setCategoryIcon | `cat: integer, image: string` | `void` | `obj:_NV_setCategoryIcon(cat, image)` |
@@ -3239,6 +3450,9 @@
 | _NV_changeCategory | _NV_changeCategory | `cat: integer` | `void` | `obj:_NV_changeCategory(cat)` |
 | getCurrentCategory | getCurrentCategory | `` | `integer` | `obj:getCurrentCategory()` |
 | _NV_getCurrentCategory | _NV_getCurrentCategory | `` | `integer` | `obj:_NV_getCurrentCategory()` |
+| addCustomLine | addCustomLine | `` | `void` | `obj:addCustomLine()` |
+| getObject | getObject | `` | `hand` | `obj:getObject()` |
+| _NV_getObject | _NV_getObject | `` | `hand` | `obj:_NV_getObject()` |
 | setLineSpacing | setLineSpacing | `numLinesPerScreen: number` | `void` | `obj:setLineSpacing(numLinesPerScreen)` |
 | _NV_setLineSpacing | _NV_setLineSpacing | `numLinesPerScreen: number` | `void` | `obj:_NV_setLineSpacing(numLinesPerScreen)` |
 | getLine | getLine | `key: string, cat: integer` | `DataPanelLine` | `obj:getLine(key, cat)` |
@@ -3248,6 +3462,7 @@
 | getNumLines | getNumLines | `cat: integer` | `integer` | `obj:getNumLines(cat)` |
 | getLineByNum | getLineByNum | `cat: integer, i: integer` | `DataPanelLine` | `obj:getLineByNum(cat, i)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| createLine | createLine | `category: integer, lastLine: boolean` | `DataPanelLine` | `obj:createLine(category, lastLine)` |
 | getNextVerticalPos | getNextVerticalPos | `category: integer` | `number` | `obj:getNextVerticalPos(category)` |
 | dataExists | dataExists | `cat: integer, name: string` | `boolean` | `obj:dataExists(cat, name)` |
 | clearCategoryTabs | clearCategoryTabs | `` | `void` | `obj:clearCategoryTabs()` |
@@ -3489,26 +3704,23 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| dialogue | dialogue | Dialogue | R | `obj.dialogue` |
+| dialogue | dialogue | Dialogue | RW | `obj.dialogue = <value>` |
 | conversationPanelsMargin | conversationPanelsMargin | integer | RW | `obj.conversationPanelsMargin = <value>` |
 | converstaionPCPanelBottom | converstaionPCPanelBottom | integer | RW | `obj.converstaionPCPanelBottom = <value>` |
 | conversationPCSpeechPanelMinHeight | conversationPCSpeechPanelMinHeight | integer | RW | `obj.conversationPCSpeechPanelMinHeight = <value>` |
 | conversationNPCSpeechPanelMinHeight | conversationNPCSpeechPanelMinHeight | integer | RW | `obj.conversationNPCSpeechPanelMinHeight = <value>` |
 | conversationPCPanelHeightDiffSpeechPanel | conversationPCPanelHeightDiffSpeechPanel | integer | RW | `obj.conversationPCPanelHeightDiffSpeechPanel = <value>` |
 | conversationNPCPanelHeightDiffSpeechPanel | conversationNPCPanelHeightDiffSpeechPanel | integer | RW | `obj.conversationNPCPanelHeightDiffSpeechPanel = <value>` |
-| conversationPC | conversationPC | Character | R | `obj.conversationPC` |
-| conversationPCPanel | (void* | lightuserdata | R | `obj.conversationPCPanel` |
-| conversationNPCPanel | (void* | lightuserdata | R | `obj.conversationNPCPanel` |
+| conversationPC | conversationPC | Character | RW | `obj.conversationPC = <value>` |
+| conversationPCPanel | (void* | lightuserdata | RW | `obj.conversationPCPanel = <value>` |
+| conversationNPCPanel | (void* | lightuserdata | RW | `obj.conversationNPCPanel = <value>` |
 | conversationNPCNameText | (void* | lightuserdata | R | `obj.conversationNPCNameText` |
 | conversationPCNameText | (void* | lightuserdata | R | `obj.conversationPCNameText` |
 | conversationPCMoneyText | (void* | lightuserdata | R | `obj.conversationPCMoneyText` |
-| conversationNPCSpeech | (void* | lightuserdata | R | `obj.conversationNPCSpeech` |
-| conversationPCSpeechPanel | (void* | lightuserdata | R | `obj.conversationPCSpeechPanel` |
+| conversationNPCSpeech | (void* | lightuserdata | RW | `obj.conversationNPCSpeech = <value>` |
+| conversationPCSpeechPanel | (void* | lightuserdata | RW | `obj.conversationPCSpeechPanel = <value>` |
 | conversationNPCPortrait | (void* | lightuserdata | R | `obj.conversationNPCPortrait` |
 | conversationPCPortrait | (void* | lightuserdata | R | `obj.conversationPCPortrait` |
-| conversationTextColor | conversationTextColor | MyGUI::Colour | R | `obj.conversationTextColor` |
-| conversationTextSelectedColor | conversationTextSelectedColor | MyGUI::Colour | R | `obj.conversationTextSelectedColor` |
-| replyTexts | replyTexts | Ogre::FastArray<MyGUI::EditBox*> | R | `obj.replyTexts` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
@@ -3516,6 +3728,7 @@
 | getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
 | setVisible | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
 | _NV_show | _NV_show | `on: boolean` | `void` | `obj:_NV_show(on)` |
+| hide | hide | `` | `void` | `obj:hide()` |
 | isVisible | isVisible | `` | `boolean` | `obj:isVisible()` |
 | _NV_isVisible | _NV_isVisible | `` | `boolean` | `obj:_NV_isVisible()` |
 | update | update | `` | `void` | `obj:update()` |
@@ -3524,6 +3737,7 @@
 | activateResponse | activateResponse | `index: integer` | `void` | `obj:activateResponse(index)` |
 | setNPCText | setNPCText | `text: string` | `void` | `obj:setNPCText(text)` |
 | clearResponses | clearResponses | `` | `void` | `obj:clearResponses()` |
+| changePortrait | changePortrait | `player: boolean` | `void` | `obj:changePortrait(player)` |
 | _CONSTRUCTOR | _CONSTRUCTOR | `` | `DialogueWindow` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | updatePanelsPosition | updatePanelsPosition | `` | `void` | `obj:updatePanelsPosition()` |
@@ -3621,37 +3835,37 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | _antiSlavery | _antiSlavery | boolean | RW | `obj._antiSlavery = <value>` |
-| characteristicsData | characteristicsData | Faction::CharacteristicsData | R | `obj.characteristicsData` |
-| ranks | ranks | lektor<std::string> | R | `obj.ranks` |
+| characteristicsData | (void* | lightuserdata | RW | `obj.characteristicsData = <value>` |
+| ranks | ranks | lektor<std::string> | RW | `obj.ranks = <value>` |
 | allowSlavesWeapons | allowSlavesWeapons | boolean | RW | `obj.allowSlavesWeapons = <value>` |
 | fundamentalNPCType | (lua_Integer | integer | RW | `obj.fundamentalNPCType = <value>` |
-| myLawEnforcementFaction | myLawEnforcementFaction | Faction | R | `obj.myLawEnforcementFaction` |
+| myLawEnforcementFaction | myLawEnforcementFaction | Faction | RW | `obj.myLawEnforcementFaction = <value>` |
 | isALawEnforcementFaction | isALawEnforcementFaction | boolean | RW | `obj.isALawEnforcementFaction = <value>` |
-| factionLeader | factionLeader | FactionLeader | R | `obj.factionLeader` |
-| diplomatMgr | diplomatMgr | FactionUniqueSquadManager* | R | `obj.diplomatMgr` |
+| factionLeader | factionLeader | FactionLeader | RW | `obj.factionLeader = <value>` |
+| diplomatMgr | diplomatMgr | FactionUniqueSquadManager | RW | `obj.diplomatMgr = <value>` |
 | relations | relations | FactionRelations | RW | `obj.relations = <value>` |
-| factionOwnerships | factionOwnerships | Ownerships | R | `obj.factionOwnerships` |
-| warMgr | warMgr | FactionWarMgr* | R | `obj.warMgr` |
+| factionOwnerships | factionOwnerships | Ownerships | RW | `obj.factionOwnerships = <value>` |
+| warMgr | (void* | lightuserdata | RW | `obj.warMgr = <value>` |
 | tradeCulture | tradeCulture | TradeCulture | RW | `obj.tradeCulture = <value>` |
-| raceSelector | raceSelector | FitnessSelector<GameData*> | R | `obj.raceSelector` |
+| raceSelector | raceSelector | FitnessSelector<GameData*> | RW | `obj.raceSelector = <value>` |
 | name | name | string | RW | `obj.name = <value>` |
 | notARealFaction | notARealFaction | boolean | RW | `obj.notARealFaction = <value>` |
 | roadPreference | roadPreference | number | RW | `obj.roadPreference = <value>` |
-| platoonKillList | platoonKillList | lektor<Platoon*> | R | `obj.platoonKillList` |
-| platoonRemoveList | platoonRemoveList | lektor<Platoon*> | R | `obj.platoonRemoveList` |
-| activePlatoons | activePlatoons | lektor<Platoon*> | R | `obj.activePlatoons` |
-| unloadedPlatoons | unloadedPlatoons | lektor<Platoon*> | R | `obj.unloadedPlatoons` |
+| platoonKillList | platoonKillList | lektor<Platoon*> | RW | `obj.platoonKillList = <value>` |
+| platoonRemoveList | platoonRemoveList | lektor<Platoon*> | RW | `obj.platoonRemoveList = <value>` |
+| activePlatoons | activePlatoons | lektor<Platoon*> | RW | `obj.activePlatoons = <value>` |
+| unloadedPlatoons | unloadedPlatoons | lektor<Platoon*> | RW | `obj.unloadedPlatoons = <value>` |
 | periodicUpdateCounter_active | periodicUpdateCounter_active | integer | RW | `obj.periodicUpdateCounter_active = <value>` |
 | periodicUpdateCounter_unloaded | periodicUpdateCounter_unloaded | integer | RW | `obj.periodicUpdateCounter_unloaded = <value>` |
-| data | data | GameData | R | `obj.data` |
-| isAI | isAI | AIPlayer* | R | `obj.isAI` |
-| isPlayer | isPlayer | PlayerInterface | R | `obj.isPlayer` |
+| data | data | GameData | RW | `obj.data = <value>` |
+| isAI | (void* | lightuserdata | RW | `obj.isAI = <value>` |
+| isPlayer | isPlayer | PlayerInterface | RW | `obj.isPlayer = <value>` |
 | spawnTimeStamp | spawnTimeStamp | integer | RW | `obj.spawnTimeStamp = <value>` |
 | diplomatTimeStamp | diplomatTimeStamp | integer | RW | `obj.diplomatTimeStamp = <value>` |
 | platoonIDs | platoonIDs | integer | RW | `obj.platoonIDs = <value>` |
 | p_TIME | p_TIME | number | RW | `obj.p_TIME = <value>` |
 | platoonPeriodicUpdateIndex | platoonPeriodicUpdateIndex | integer | RW | `obj.platoonPeriodicUpdateIndex = <value>` |
-| buildingSwaps | buildingSwaps | lektor<Faction::BuildingSwaps> | R | `obj.buildingSwaps` |
+| buildingSwaps | buildingSwaps | lektor<Faction::BuildingSwaps> | RW | `obj.buildingSwaps = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
@@ -3660,52 +3874,31 @@
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | getProsperityMultiplier | getProsperityMultiplier | `` | `number` | `obj:getProsperityMultiplier()` |
 | clearAndDestroy | clearAndDestroy | `` | `void` | `obj:clearAndDestroy()` |
+| setup | setup | `` | `boolean` | `obj:setup()` |
 | setup2 | setup2 | `` | `boolean` | `obj:setup2()` |
 | setup3 | setup3 | `` | `void` | `obj:setup3()` |
 | getNewPlatoonID | getNewPlatoonID | `` | `string` | `obj:getNewPlatoonID()` |
 | resetPlatoonID | resetPlatoonID | `` | `void` | `obj:resetPlatoonID()` |
-| createReplacementPlatoonForPlayerWhenSavegameIsCorrupt | createReplacementPlatoonForPlayerWhenSavegameIsCorrupt | `src: string` | `void` | `obj:createReplacementPlatoonForPlayerWhenSavegameIsCorrupt(src)` |
-| resetSquadPositions | resetSquadPositions | `target: Vector3` | `boolean` | `obj:resetSquadPositions(target)` |
-| getData | getData | `` | `GameData` | `obj:getData()` |
-| getDefaultDivision | getDefaultDivision | `` | `GameData` | `obj:getDefaultDivision()` |
-| getFactionColorScheme | getFactionColorScheme | `` | `GameData` | `obj:getFactionColorScheme()` |
-| _activateUnloadedPlatoons | _activateUnloadedPlatoons | `` | `void` | `obj:_activateUnloadedPlatoons()` |
-| processKillList | processKillList | `` | `void` | `obj:processKillList()` |
-| _NV_processKillList | _NV_processKillList | `` | `void` | `obj:_NV_processKillList()` |
-| getFactionSize | getFactionSize | `` | `integer` | `obj:getFactionSize()` |
-| update | update | `time: number` | `void` | `obj:update(time)` |
-| periodicUpdateThreaded | periodicUpdateThreaded | `` | `boolean` | `obj:periodicUpdateThreaded()` |
-| periodicUpdateMT | periodicUpdateMT | `` | `boolean` | `obj:periodicUpdateMT()` |
-| isThePlayer | isThePlayer | `` | `boolean` | `obj:isThePlayer()` |
-| isNotARealFaction | isNotARealFaction | `` | `boolean` | `obj:isNotARealFaction()` |
-| getRoadPreference | getRoadPreference | `` | `number` | `obj:getRoadPreference()` |
-| isAntiSlavery | isAntiSlavery | `` | `boolean` | `obj:isAntiSlavery()` |
-| getLawEnforcementFaction | getLawEnforcementFaction | `` | `Faction` | `obj:getLawEnforcementFaction()` |
-| setName | setName | `_name: string` | `void` | `obj:setName(_name)` |
-| updateUnloadedPlatoons | updateUnloadedPlatoons | `time: number` | `void` | `obj:updateUnloadedPlatoons(time)` |
-| updateActivePlatoons | updateActivePlatoons | `time: number` | `void` | `obj:updateActivePlatoons(time)` |
-| spawnSquadMissionsUpdate | spawnSquadMissionsUpdate | `` | `void` | `obj:spawnSquadMissionsUpdate()` |
-| _spawnASquad | _spawnASquad | `listname: string, sizeMultiplier: number` | `boolean` | `obj:_spawnASquad(listname, sizeMultiplier)` |
-| getSquadThatOwns | Faction_getSquadThatOwns | `` | `Platoon` | `obj:getSquadThatOwns()` |
-| getActivePlatoons | Faction_getActivePlatoons_method | `` | `lektor<Platoon*>` | `obj:getActivePlatoons()` |
-| getUnloadedPlatoons | Faction_getUnloadedPlatoons_method | `` | `lektor<Platoon*>` | `obj:getUnloadedPlatoons()` |
-| getAllActiveSquads | Faction_getAllActiveSquads | `` | `lektor<Platoon*>` | `obj:getAllActiveSquads()` |
-| getFundamentalNPCType | getFundamentalNPCType | `` | `integer` | `obj:getFundamentalNPCType()` |
-| setup | setup | `` | `boolean` | `obj:setup()` |
-| createNewEmptyUnloadedPlatoon | createNewEmptyUnloadedPlatoon | `pos: Vector3, forcecharacterDatas: userdata, persistent: boolean` | `Platoon` | `obj:createNewEmptyUnloadedPlatoon(pos, forcecharacterDatas, persistent)` |
+| createNewEmptyUnloadedPlatoon | createNewEmptyUnloadedPlatoon | `pos: Vector3, persistent: boolean` | `Platoon` | `obj:createNewEmptyUnloadedPlatoon(pos, persistent)` |
 | createNewEmptyActivePlatoon | createNewEmptyActivePlatoon | `permanent: boolean, p: Vector3` | `Platoon` | `obj:createNewEmptyActivePlatoon(permanent, p)` |
-| createPlatoonUnloaded | createPlatoonUnloaded | `charactersState: userdata, pos: Vector3, persistent: boolean` | `void` | `obj:createPlatoonUnloaded(charactersState, pos, persistent)` |
+| createPlatoonUnloaded | createPlatoonUnloaded | `pos: Vector3, persistent: boolean` | `void` | `obj:createPlatoonUnloaded(pos, persistent)` |
 | createPlatoonAuto | createPlatoonAuto | `pos: Vector3` | `void` | `obj:createPlatoonAuto(pos)` |
 | createPlatoonsAuto | createPlatoonsAuto | `` | `void` | `obj:createPlatoonsAuto()` |
+| createReplacementPlatoonForPlayerWhenSavegameIsCorrupt | createReplacementPlatoonForPlayerWhenSavegameIsCorrupt | `src: string` | `void` | `obj:createReplacementPlatoonForPlayerWhenSavegameIsCorrupt(src)` |
 | restorePlatoon | restorePlatoon | `` | `void` | `obj:restorePlatoon()` |
+| resetSquadPositions | resetSquadPositions | `target: Vector3` | `boolean` | `obj:resetSquadPositions(target)` |
 | countPopulation | countPopulation | `` | `integer` | `obj:countPopulation()` |
 | countNumSquads | countNumSquads | `` | `integer` | `obj:countNumSquads()` |
 | destroyPlatoon | destroyPlatoon | `` | `void` | `obj:destroyPlatoon()` |
 | removePlatoon | removePlatoon | `` | `void` | `obj:removePlatoon()` |
 | getRandomLockLevel | getRandomLockLevel | `` | `integer` | `obj:getRandomLockLevel()` |
+| getData | getData | `` | `GameData` | `obj:getData()` |
 | getGUIData | getGUIData | `category: integer` | `void` | `obj:getGUIData(category)` |
-| loadState | loadState | `saveSource: userdata` | `void` | `obj:loadState(saveSource)` |
-| saveState | saveState | `container: userdata, leveleditor: boolean` | `GameData` | `obj:saveState(container, leveleditor)` |
+| getDefaultDivision | getDefaultDivision | `` | `GameData` | `obj:getDefaultDivision()` |
+| getFactionColorScheme | getFactionColorScheme | `` | `GameData` | `obj:getFactionColorScheme()` |
+| loadState | loadState | `` | `void` | `obj:loadState()` |
+| saveState | saveState | `leveleditor: boolean` | `GameData` | `obj:saveState(leveleditor)` |
+| _activateUnloadedPlatoons | _activateUnloadedPlatoons | `` | `void` | `obj:_activateUnloadedPlatoons()` |
 | getCharactersInArea | getCharactersInArea | `pos: Vector3, radius: number, standingOnly: boolean` | `void` | `obj:getCharactersInArea(pos, radius, standingOnly)` |
 | _NV_getCharactersInArea | _NV_getCharactersInArea | `pos: Vector3, radius: number, standingOnly: boolean` | `void` | `obj:_NV_getCharactersInArea(pos, radius, standingOnly)` |
 | getSelectedObjects | getSelectedObjects | `type: integer, selectedOnly: boolean` | `void` | `obj:getSelectedObjects(type, selectedOnly)` |
@@ -3714,13 +3907,29 @@
 | _NV_removeObject | _NV_removeObject | `` | `void` | `obj:_NV_removeObject()` |
 | destroyObject | destroyObject | `` | `void` | `obj:destroyObject()` |
 | _NV_destroyObject | _NV_destroyObject | `` | `void` | `obj:_NV_destroyObject()` |
+| processKillList | processKillList | `` | `void` | `obj:processKillList()` |
+| _NV_processKillList | _NV_processKillList | `` | `void` | `obj:_NV_processKillList()` |
 | addActiveObject | addActiveObject | `` | `boolean` | `obj:addActiveObject()` |
 | _NV_addActiveObject | _NV_addActiveObject | `` | `boolean` | `obj:_NV_addActiveObject()` |
 | choosePlatoon | choosePlatoon | `` | `ActivePlatoon` | `obj:choosePlatoon()` |
+| getActivePlatoons | getActivePlatoons | `` | `lektor<Platoon*>` | `obj:getActivePlatoons()` |
+| getUnloadedPlatoons | getUnloadedPlatoons | `` | `lektor<Platoon*>` | `obj:getUnloadedPlatoons()` |
+| getFactionSize | getFactionSize | `` | `integer` | `obj:getFactionSize()` |
+| update | update | `time: number` | `void` | `obj:update(time)` |
+| periodicUpdateThreaded | periodicUpdateThreaded | `` | `boolean` | `obj:periodicUpdateThreaded()` |
+| periodicUpdateMT | periodicUpdateMT | `` | `boolean` | `obj:periodicUpdateMT()` |
+| isThePlayer | isThePlayer | `` | `boolean` | `obj:isThePlayer()` |
+| isNotARealFaction | isNotARealFaction | `` | `boolean` | `obj:isNotARealFaction()` |
 | getName | getName | `` | `void` | `obj:getName()` |
 | getNumPlatoons | getNumPlatoons | `tempsOnly: boolean` | `integer` | `obj:getNumPlatoons(tempsOnly)` |
+| getSquadThatOwns | getSquadThatOwns | `` | `Platoon` | `obj:getSquadThatOwns()` |
 | getAllSquadsThatOwn | getAllSquadsThatOwn | `` | `void` | `obj:getAllSquadsThatOwn()` |
+| getAllActiveSquads | getAllActiveSquads | `` | `lektor<Platoon*>` | `obj:getAllActiveSquads()` |
+| getRoadPreference | getRoadPreference | `` | `number` | `obj:getRoadPreference()` |
+| isAntiSlavery | isAntiSlavery | `` | `boolean` | `obj:isAntiSlavery()` |
+| getLawEnforcementFaction | getLawEnforcementFaction | `` | `Faction` | `obj:getLawEnforcementFaction()` |
 | chooseARace | chooseARace | `` | `GameData` | `obj:chooseARace()` |
+| setName | setName | `_name: string` | `void` | `obj:setName(_name)` |
 | getBuildingReplacement | getBuildingReplacement | `` | `GameData` | `obj:getBuildingReplacement()` |
 | _switchToUnloadedPlatoon | _switchToUnloadedPlatoon | `` | `void` | `obj:_switchToUnloadedPlatoon()` |
 | _newPlatoon | _newPlatoon | `pos: Vector3, persistent: boolean` | `Platoon` | `obj:_newPlatoon(pos, persistent)` |
@@ -3729,6 +3938,11 @@
 | changePlatoonIndex | changePlatoonIndex | `index: integer` | `void` | `obj:changePlatoonIndex(index)` |
 | deactivatePlatoon | deactivatePlatoon | `` | `void` | `obj:deactivatePlatoon()` |
 | activatePlatoon | activatePlatoon | `` | `void` | `obj:activatePlatoon()` |
+| updateUnloadedPlatoons | updateUnloadedPlatoons | `time: number` | `void` | `obj:updateUnloadedPlatoons(time)` |
+| updateActivePlatoons | updateActivePlatoons | `time: number` | `void` | `obj:updateActivePlatoons(time)` |
+| spawnSquadMissionsUpdate | spawnSquadMissionsUpdate | `` | `void` | `obj:spawnSquadMissionsUpdate()` |
+| _spawnASquad | _spawnASquad | `listname: string, sizeMultiplier: number` | `boolean` | `obj:_spawnASquad(listname, sizeMultiplier)` |
+| getFundamentalNPCType | getFundamentalNPCType | `` | `integer` | `obj:getFundamentalNPCType()` |
 
 ## FactionLeader
 **Header:** `extern/KenshiLib/Include/kenshi/FactionLeader.h`
@@ -3736,13 +3950,27 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| faction | faction | Faction | R | `obj.faction` |
-| biomeTerritory | biomeTerritory | lektor<GameData*> | R | `obj.biomeTerritory` |
-| worstEnemy | worstEnemy | Faction | R | `obj.worstEnemy` |
+| faction | faction | Faction | RW | `obj.faction = <value>` |
+| worstEnemy | worstEnemy | Faction | RW | `obj.worstEnemy = <value>` |
+| biomeTerritory | biomeTerritory | lektor<GameData*> | RW | `obj.biomeTerritory = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `FactionLeader` | `obj:_CONSTRUCTOR()` |
+| setNewLeader | setNewLeader | `` | `void` | `obj:setNewLeader()` |
+| getEnemyMissionTargetList | getEnemyMissionTargetList | `` | `void` | `obj:getEnemyMissionTargetList()` |
+| getGUIData | getGUIData | `cat: integer` | `void` | `obj:getGUIData(cat)` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## FactionListWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| itemSelected | itemSelected | `` | `void` | `obj:itemSelected()` |
+| _NV_itemSelected | _NV_itemSelected | `` | `void` | `obj:_NV_itemSelected()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## FactionManager
@@ -3751,27 +3979,32 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| participants | participants | Faction | R | `obj.participants` |
-| addListMuto | addListMuto | unknown | R | `obj.addListMuto` |
-| toAddList | toAddList | Platoon | R | `obj.toAddList` |
+| addListMuto | (void* | lightuserdata | R | `obj.addListMuto` |
+| participants | participants | lektor<Faction*> | RW | `obj.participants = <value>` |
+| toAddList | toAddList | lektor<Platoon*> | RW | `obj.toAddList = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `FactionManager` | `obj:_CONSTRUCTOR()` |
+| saveGameState | saveGameState | `` | `void` | `obj:saveGameState()` |
+| savePlayerGameState | savePlayerGameState | `` | `void` | `obj:savePlayerGameState()` |
 | clearAndDestroy | clearAndDestroy | `` | `void` | `obj:clearAndDestroy()` |
 | activateUnloadedPlatoons | activateUnloadedPlatoons | `` | `void` | `obj:activateUnloadedPlatoons()` |
+| getOrCreateFaction | getOrCreateFaction | `id: string, name: string` | `Faction` | `obj:getOrCreateFaction(id, name)` |
 | getFactionByName | getFactionByName | `name: string` | `Faction` | `obj:getFactionByName(name)` |
 | getFactionByStringID | getFactionByStringID | `sid: string` | `Faction` | `obj:getFactionByStringID(sid)` |
 | getEmptyFaction | getEmptyFaction | `` | `Faction` | `obj:getEmptyFaction()` |
 | setupAndLinkAllFactions | setupAndLinkAllFactions | `` | `void` | `obj:setupAndLinkAllFactions()` |
+| getFactionBySquad | getFactionBySquad | `` | `Faction` | `obj:getFactionBySquad()` |
+| getCampaignGUIInfos | getCampaignGUIInfos | `cat: integer, playeronly: boolean` | `void` | `obj:getCampaignGUIInfos(cat, playeronly)` |
 | areAnyHostileCampaignsRunning | areAnyHostileCampaignsRunning | `` | `boolean` | `obj:areAnyHostileCampaignsRunning()` |
 | getNumTempPlatoons | getNumTempPlatoons | `` | `integer` | `obj:getNumTempPlatoons()` |
 | updateMT | updateMT | `time: number` | `void` | `obj:updateMT(time)` |
 | updateThreaded | updateThreaded | `time: number` | `void` | `obj:updateThreaded(time)` |
 | _showDebugPlatoonMarkers | _showDebugPlatoonMarkers | `on: boolean` | `void` | `obj:_showDebugPlatoonMarkers(on)` |
+| getAllFactions | getAllFactions | `` | `lektor<Faction*>` | `obj:getAllFactions()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
-| getFactionBySquad | FactionManager_getFactionBySquad | `` | `Faction` | `obj:getFactionBySquad()` |
-| getAllFactions | FactionManager_getAllFactions | `` | `void` | `obj:getAllFactions()` |
 
 ## FactionRelations
 **Header:** `extern/KenshiLib/Include/kenshi/FactionRelations.h`
@@ -3783,7 +4016,7 @@
 | playerRank | playerRank | integer | RW | `obj.playerRank = <value>` |
 | globalReputationTrust | globalReputationTrust | number | RW | `obj.globalReputationTrust = <value>` |
 | globalReputationForBadassery | globalReputationForBadassery | number | RW | `obj.globalReputationForBadassery = <value>` |
-| _factionRelations | _factionRelations | unknown | R | `obj._factionRelations` |
+| _factionRelations | _factionRelations | unknown | RW | `obj._factionRelations = <value>` |
 | defaultFactionRelation | defaultFactionRelation | number | RW | `obj.defaultFactionRelation = <value>` |
 
 ### Methods
@@ -3834,7 +4067,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| faction | faction | Faction | R | `obj.faction` |
+| faction | faction | Faction | RW | `obj.faction = <value>` |
 | value | value | number | RW | `obj.value = <value>` |
 | valueText | (void* | lightuserdata | R | `obj.valueText` |
 | leftBar | (void* | lightuserdata | R | `obj.leftBar` |
@@ -3843,6 +4076,7 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `FactionRelationsLine` | `obj:_CONSTRUCTOR()` |
 | update | update | `` | `void` | `obj:update()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
@@ -3852,18 +4086,73 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| me | me | Faction | R | `obj.me` |
-| squadListData | squadListData | GameData | R | `obj.squadListData` |
-| homeTown | homeTown | Town | R | `obj.homeTown` |
+| prosperityMgr | prosperityMgr | ProsperityManager | RW | `obj.prosperityMgr = <value>` |
+| me | me | Faction | RW | `obj.me = <value>` |
+| squadListData | squadListData | GameData | RW | `obj.squadListData = <value>` |
+| homeTown | homeTown | Town | RW | `obj.homeTown = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `FactionUniqueSquadManager` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | clearAndReset | clearAndReset | `` | `void` | `obj:clearAndReset()` |
+| initialiseNew | initialiseNew | `` | `void` | `obj:initialiseNew()` |
 | chooseRandomSquadToSpawn | chooseRandomSquadToSpawn | `time: number` | `GameData` | `obj:chooseRandomSquadToSpawn(time)` |
 | periodicUpdate | periodicUpdate | `time: number` | `void` | `obj:periodicUpdate(time)` |
+| serialise | serialise | `` | `void` | `obj:serialise()` |
+| load | load | `import: boolean` | `void` | `obj:load(import)` |
+| getGUIData | getGUIData | `cat: integer` | `void` | `obj:getGUIData(cat)` |
+| getExistingSquadsFor | getExistingSquadsFor | `` | `lightuserdata` | `obj:getExistingSquadsFor()` |
+| spawnNewUniqueSquad | spawnNewUniqueSquad | `` | `lightuserdata` | `obj:spawnNewUniqueSquad()` |
+
+## FactionWarMgr
+**Header:** `extern/KenshiLib/Include/kenshi/FactionWarMgr.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| me | me | Faction | RW | `obj.me = <value>` |
+| lastID | lastID | integer | RW | `obj.lastID = <value>` |
+| nextUpdateTime | nextUpdateTime | TimeOfDay | RW | `obj.nextUpdateTime = <value>` |
+| myTowns | myTowns | lektor<TownBase*> | RW | `obj.myTowns = <value>` |
+| hiredForces | hiredForces | lektor<hand> | RW | `obj.hiredForces = <value>` |
+| activeCampaigns | (void* | lightuserdata | RW | `obj.activeCampaigns = <value>` |
+| biomeTerritories | (void* | lightuserdata | RW | `obj.biomeTerritories = <value>` |
+| biomeNoGoZones | (void* | lightuserdata | RW | `obj.biomeNoGoZones = <value>` |
+| campaignRequests | (void* | lightuserdata | RW | `obj.campaignRequests = <value>` |
+| possibleCampaigns | (void* | lightuserdata | RW | `obj.possibleCampaigns = <value>` |
+| forces | (void* | lightuserdata | RW | `obj.forces = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `FactionWarMgr` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| reset | reset | `` | `void` | `obj:reset()` |
+| save | save | `` | `void` | `obj:save()` |
+| load | load | `` | `void` | `obj:load()` |
+| removePlatoon | removePlatoon | `` | `void` | `obj:removePlatoon()` |
+| addPlatoon | addPlatoon | `` | `void` | `obj:addPlatoon()` |
+| getGUIData | getGUIData | `cat: integer, playeronly: boolean` | `void` | `obj:getGUIData(cat, playeronly)` |
+| areAnyHostileCampaignsRunning | areAnyHostileCampaignsRunning | `playeronly: boolean` | `boolean` | `obj:areAnyHostileCampaignsRunning(playeronly)` |
+| endCampaign | endCampaign | `c: userdata` | `void` | `obj:endCampaign(c)` |
+| getAllTheForces | getAllTheForces | `c: userdata` | `void` | `obj:getAllTheForces(c)` |
+| _generateForcesForTown | _generateForcesForTown | `c: userdata` | `void` | `obj:_generateForcesForTown(c)` |
+| canGenerateThisManyForces | canGenerateThisManyForces | `num: integer` | `boolean` | `obj:canGenerateThisManyForces(num)` |
+| periodicUpdate | periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
+| debugButton | debugButton | `` | `void` | `obj:debugButton()` |
+| triggerCampaign | triggerCampaign | `data: userdata, minTime: number, forceDuplicate: boolean, forceDuplicate: boolean` | `lightuserdata` | `obj:triggerCampaign(data, minTime, forceDuplicate, forceDuplicate)` |
+| getCurrentCampaign | getCurrentCampaign | `` | `lightuserdata` | `obj:getCurrentCampaign()` |
+| getAITarget | getAITarget | `` | `hand` | `obj:getAITarget()` |
+| getMyUnloadedAI | getMyUnloadedAI | `` | `integer` | `obj:getMyUnloadedAI()` |
+| isBiomeHomeTerritory | isBiomeHomeTerritory | `area: userdata` | `boolean` | `obj:isBiomeHomeTerritory(area)` |
+| getNearestTown | getNearestTown | `p: Vector3` | `TownBase` | `obj:getNearestTown(p)` |
+| getTownsInBiome | getTownsInBiome | `b: userdata` | `void` | `obj:getTownsInBiome(b)` |
+| getMyTownsWithEnoughFreePopulation | getMyTownsWithEnoughFreePopulation | `popNeeded: integer` | `void` | `obj:getMyTownsWithEnoughFreePopulation(popNeeded)` |
+| getActiveCampaign | getActiveCampaign | `uniqueID: integer` | `lightuserdata` | `obj:getActiveCampaign(uniqueID)` |
+| setup | setup | `` | `void` | `obj:setup()` |
+| _createCampaignData | _createCampaignData | `` | `lightuserdata` | `obj:_createCampaignData()` |
 
 ## FactionsScreen
 **Header:** `extern/KenshiLib/Include/kenshi/gui/FactionsScreen.h`
@@ -3872,12 +4161,12 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | mainWidget | (void* | lightuserdata | R | `obj.mainWidget` |
-| selectedFaction | selectedFaction | Faction | R | `obj.selectedFaction` |
+| selectedFaction | selectedFaction | Faction | RW | `obj.selectedFaction = <value>` |
 | scrollList | (void* | lightuserdata | RW | `obj.scrollList = <value>` |
 | scrollListItemTop | scrollListItemTop | integer | RW | `obj.scrollListItemTop = <value>` |
 | scrollListItemWidth | scrollListItemWidth | integer | RW | `obj.scrollListItemWidth = <value>` |
 | nameText | (void* | lightuserdata | R | `obj.nameText` |
-| infoPanel | infoPanel | DatapanelGUI | R | `obj.infoPanel` |
+| infoPanel | infoPanel | DatapanelGUI | RW | `obj.infoPanel = <value>` |
 | updateTimer | updateTimer | number | RW | `obj.updateTimer = <value>` |
 
 ### Methods
@@ -3991,6 +4280,26 @@
 | want | want | boolean | RW | `obj.want = <value>` |
 | flags | flags | integer | RW | `obj.flags = <value>` |
 
+## FloatingProgressBar
+**Header:** `extern/KenshiLib/Include/kenshi/gui/ScreenLabel.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| caption | caption | string | RW | `obj.caption = <value>` |
+| progress | progress | integer | RW | `obj.progress = <value>` |
+| bar | (void* | lightuserdata | R | `obj.bar` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `FloatingProgressBar` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| setProgress | setProgress | `value: number` | `void` | `obj:setProgress(value)` |
+| setCaption | setCaption | `value: string` | `void` | `obj:setCaption(value)` |
+| update | update | `` | `void` | `obj:update()` |
+| _NV_update | _NV_update | `` | `void` | `obj:_NV_update()` |
+
 ## FlockingTools
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
 
@@ -4007,6 +4316,41 @@
 |---|---|---|---|---|
 | _CONSTRUCTOR | _CONSTRUCTOR | `` | `FlockingTools` | `obj:_CONSTRUCTOR()` |
 | setCurrentPosition | setCurrentPosition | `_pos: Vector3` | `void` | `obj:setCurrentPosition(_pos)` |
+
+## FogEditor
+**Header:** `extern/KenshiLib/Include/kenshi/gui/FogEditor.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| window | (void* | lightuserdata | R | `obj.window` |
+| fogList | (void* | lightuserdata | R | `obj.fogList` |
+| typeList | (void* | lightuserdata | R | `obj.typeList` |
+| panel | panel | DatapanelGUI | RW | `obj.panel = <value>` |
+| selectedFog | (void* | lightuserdata | R | `obj.selectedFog` |
+| selectedSide | selectedSide | integer | RW | `obj.selectedSide = <value>` |
+| colour | colour | Vector3 | RW | `obj.colour = <value>` |
+| distance | distance | number | RW | `obj.distance = <value>` |
+| radius | radius | number | RW | `obj.radius = <value>` |
+| edge | edge | number | RW | `obj.edge = <value>` |
+| editCage | (void* | lightuserdata | R | `obj.editCage` |
+| editNode | (void* | lightuserdata | R | `obj.editNode` |
+| editPos | editPos | Vector3 | RW | `obj.editPos = <value>` |
+| editRot | editRot | Quaternion | RW | `obj.editRot = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| show | show | `` | `void` | `obj:show()` |
+| close | close | `` | `void` | `obj:close()` |
+| isActive | isActive | `` | `boolean` | `obj:isActive()` |
+| update | update | `` | `boolean` | `obj:update()` |
+| save | save | `filename: string` | `void` | `obj:save(filename)` |
+| updateFogName | updateFogName | `` | `void` | `obj:updateFogName()` |
+| updateFogValues | updateFogValues | `` | `void` | `obj:updateFogValues()` |
+| selectNextEdge | selectNextEdge | `` | `void` | `obj:selectNextEdge()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## Footprint
 **Header:** `extern/KenshiLib/Include/kenshi/Building/Building.h`
@@ -4069,25 +4413,37 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | hasMouse | hasMouse | boolean | RW | `obj.hasMouse = <value>` |
-| mainbar | (void* | lightuserdata | R | `obj.mainbar` |
-| tooltip | (void* | lightuserdata | R | `obj.tooltip` |
-| dialogue | dialogue | DialogueWindow | R | `obj.dialogue` |
-| tutorial | (void* | lightuserdata | R | `obj.tutorial` |
-| tutorialpedia | (void* | lightuserdata | R | `obj.tutorialpedia` |
+| mainbar | mainbar | MainBarGUI | RW | `obj.mainbar = <value>` |
+| tooltip | tooltip | ToolTip | RW | `obj.tooltip = <value>` |
+| dialogue | dialogue | DialogueWindow | RW | `obj.dialogue = <value>` |
+| tutorial | tutorial | TutorialGUI | RW | `obj.tutorial = <value>` |
+| tutorialpedia | tutorialpedia | TutorialpediaGUI | RW | `obj.tutorialpedia = <value>` |
 | currentCursor | (lua_Integer | integer | RW | `obj.currentCursor = <value>` |
+| Scale | Scale | unknown | RW | `obj.Scale = <value>` |
 | manager | (void* | lightuserdata | R | `obj.manager` |
 | guiPlatform | (void* | lightuserdata | R | `obj.guiPlatform` |
 | _closeTradeWindowMsg | _closeTradeWindowMsg | boolean | RW | `obj._closeTradeWindowMsg = <value>` |
-| characterEditor | (void* | lightuserdata | R | `obj.characterEditor` |
-| cursorPanel | cursorPanel | DatapanelGUI | R | `obj.cursorPanel` |
+| tradeA | tradeA | hand | RW | `obj.tradeA = <value>` |
+| tradeB | tradeB | hand | RW | `obj.tradeB = <value>` |
+| inventoryWindowBuilding | inventoryWindowBuilding | hand | RW | `obj.inventoryWindowBuilding = <value>` |
+| inventoryWindowCharacter | inventoryWindowCharacter | hand | RW | `obj.inventoryWindowCharacter = <value>` |
+| inventoryWindowTrader | inventoryWindowTrader | hand | RW | `obj.inventoryWindowTrader = <value>` |
+| inventoryWindowNPC | inventoryWindowNPC | hand | RW | `obj.inventoryWindowNPC = <value>` |
+| characterEditor | characterEditor | CharacterEditWindow | RW | `obj.characterEditor = <value>` |
+| guiScreenLabelsMutex | (void* | lightuserdata | R | `obj.guiScreenLabelsMutex` |
+| selectedObject | selectedObject | hand | RW | `obj.selectedObject = <value>` |
+| selectedPlayerCharacter | selectedPlayerCharacter | hand | RW | `obj.selectedPlayerCharacter = <value>` |
+| cursorPanel | cursorPanel | DatapanelGUI | RW | `obj.cursorPanel = <value>` |
 | cursorAction | cursorAction | boolean | RW | `obj.cursorAction = <value>` |
+| cursorActionPlayer | cursorActionPlayer | hand | RW | `obj.cursorActionPlayer = <value>` |
+| cursorActionTarget | cursorActionTarget | hand | RW | `obj.cursorActionTarget = <value>` |
 | visible | visible | boolean | RW | `obj.visible = <value>` |
 | created | created | boolean | RW | `obj.created = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `ForgottenGUI` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | clearGUI | clearGUI | `` | `void` | `obj:clearGUI()` |
 | shutDown | shutDown | `` | `void` | `obj:shutDown()` |
@@ -4107,7 +4463,7 @@
 | showMainbar | showMainbar | `on: boolean` | `void` | `obj:showMainbar(on)` |
 | updateBountyPanelVisibility | updateBountyPanelVisibility | `` | `void` | `obj:updateBountyPanelVisibility()` |
 | getInDialogue | getInDialogue | `` | `boolean` | `obj:getInDialogue()` |
-| getToolTip | getToolTip | `` | `lightuserdata` | `obj:getToolTip()` |
+| getToolTip | getToolTip | `` | `ToolTip` | `obj:getToolTip()` |
 | isVisible | isVisible | `` | `boolean` | `obj:isVisible()` |
 | toggle | toggle | `` | `void` | `obj:toggle()` |
 | showNames | showNames | `on: boolean` | `void` | `obj:showNames(on)` |
@@ -4119,15 +4475,20 @@
 | characterStatsWindowVisible | characterStatsWindowVisible | `` | `boolean` | `obj:characterStatsWindowVisible()` |
 | selectedObjectsChanged | selectedObjectsChanged | `` | `void` | `obj:selectedObjectsChanged()` |
 | updateToOrdersPanel | updateToOrdersPanel | `` | `void` | `obj:updateToOrdersPanel()` |
+| notifyTownDeleted | notifyTownDeleted | `` | `void` | `obj:notifyTownDeleted()` |
 | update | update | `` | `void` | `obj:update()` |
 | closeTradeWindow | closeTradeWindow | `` | `void` | `obj:closeTradeWindow()` |
 | closeInventoryBuilding | closeInventoryBuilding | `` | `void` | `obj:closeInventoryBuilding()` |
 | closeAllInventories | closeAllInventories | `` | `void` | `obj:closeAllInventories()` |
 | closeAllWindows | closeAllWindows | `` | `void` | `obj:closeAllWindows()` |
 | getNumOpenInventoryWindows | getNumOpenInventoryWindows | `` | `integer` | `obj:getNumOpenInventoryWindows()` |
-| getInventoryWindowWithMouse | getInventoryWindowWithMouse | `` | `lightuserdata` | `obj:getInventoryWindowWithMouse()` |
+| getInventoryWindowWithMouse | getInventoryWindowWithMouse | `` | `InventoryGUI` | `obj:getInventoryWindowWithMouse()` |
 | isAnyInventoryWindowOpen | isAnyInventoryWindowOpen | `` | `boolean` | `obj:isAnyInventoryWindowOpen()` |
 | toggleHelpWindow | toggleHelpWindow | `` | `void` | `obj:toggleHelpWindow()` |
+| addWindowToUpdateList | addWindowToUpdateList | `` | `void` | `obj:addWindowToUpdateList()` |
+| removeWindowFromUpdateList | removeWindowFromUpdateList | `` | `void` | `obj:removeWindowFromUpdateList()` |
+| addDatapanelToUpdateList | addDatapanelToUpdateList | `` | `void` | `obj:addDatapanelToUpdateList()` |
+| removeDatapanelFromUpdateList | removeDatapanelFromUpdateList | `` | `void` | `obj:removeDatapanelFromUpdateList()` |
 | setMouseCursorVisible | setMouseCursorVisible | `visible: boolean` | `void` | `obj:setMouseCursorVisible(visible)` |
 | getGuiManager | getGuiManager | `` | `lightuserdata` | `obj:getGuiManager()` |
 | createPanel | createPanel | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `lightuserdata` | `obj:createPanel(name, top, left, width, height, layer, skin)` |
@@ -4135,7 +4496,7 @@
 | createTabPanel | createTabPanel | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `lightuserdata` | `obj:createTabPanel(name, top, left, width, height, layer, skin)` |
 | createFloatingImage | createFloatingImage | `image: string, top: number, left: number, width: number, height: number, layer: string` | `lightuserdata` | `obj:createFloatingImage(image, top, left, width, height, layer)` |
 | createFloatingImageAbs | createFloatingImageAbs | `image: string, top: number, left: number, width: number, height: number, layer: string` | `lightuserdata` | `obj:createFloatingImageAbs(image, top, left, width, height, layer)` |
-| createFloatingProgressBar | createFloatingProgressBar | `` | `lightuserdata` | `obj:createFloatingProgressBar()` |
+| createFloatingProgressBar | createFloatingProgressBar | `` | `FloatingProgressBar` | `obj:createFloatingProgressBar()` |
 | createScreenLabelD | createScreenLabelD | `text: string, time: number` | `lightuserdata` | `obj:createScreenLabelD(text, time)` |
 
 ## FormationMover
@@ -4196,7 +4557,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| win | (void* | lightuserdata | R | `obj.win` |
+| win | win | MyGUI::Widget | R | `obj.win` |
 | selectedObject | selectedObject | hand | RW | `obj.selectedObject = <value>` |
 
 ### Methods
@@ -4223,7 +4584,9 @@
 | _NV_isVisible | _NV_isVisible | `` | `boolean` | `obj:_NV_isVisible()` |
 | update | update | `` | `void` | `obj:update()` |
 | _NV_update | _NV_update | `` | `void` | `obj:_NV_update()` |
-| getWidget | getWidget | `` | `lightuserdata` | `obj:getWidget()` |
+| autoChangeSelectedObject | autoChangeSelectedObject | `` | `void` | `obj:autoChangeSelectedObject()` |
+| _NV_autoChangeSelectedObject | _NV_autoChangeSelectedObject | `` | `void` | `obj:_NV_autoChangeSelectedObject()` |
+| getWidget | getWidget | `` | `MyGUI::Widget` | `obj:getWidget()` |
 | resize | resize | `w: integer, h: integer` | `void` | `obj:resize(w, h)` |
 | _NV_resize | _NV_resize | `w: integer, h: integer` | `void` | `obj:_NV_resize(w, h)` |
 
@@ -4351,8 +4714,8 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| win | win | DatapanelGUI | R | `obj.win` |
-| data | data | GameData | R | `obj.data` |
+| win | win | DatapanelGUI | RW | `obj.win = <value>` |
+| data | data | GameData | RW | `obj.data = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
@@ -4572,6 +4935,32 @@
 | getLengthOfHourInRealSeconds | getLengthOfHourInRealSeconds | `` | `number` | `obj:getLengthOfHourInRealSeconds()` |
 | getFromDeathParade | GameWorld_getFromDeathParade | `` | `Character` | `obj:getFromDeathParade()` |
 
+## GamedataSelectionList
+**Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| win | (MyGUI::Widget* | MyGUI::Widget | R | `obj.win` |
+| list | (MyGUI::Widget* | MyGUI::Widget | R | `obj.list` |
+| items | items | lektor<GameData*> | R | `obj.items` |
+| levelEditor | levelEditor | LevelEditor | R | `obj.levelEditor` |
+| lastItem | (lua_Integer | integer | RW | `obj.lastItem = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `type: integer, top: number, left: number, w: number, h: number` | `GamedataSelectionList` | `obj:_CONSTRUCTOR(type, top, left, w, h)` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| deselectItem | deselectItem | `` | `void` | `obj:deselectItem()` |
+| selectItem | selectItem | `` | `boolean` | `obj:selectItem()` |
+| getSelectedItem | getSelectedItem | `` | `GameData` | `obj:getSelectedItem()` |
+| itemSelected | itemSelected | `` | `void` | `obj:itemSelected()` |
+| formatItem | formatItem | `` | `string` | `obj:formatItem()` |
+| _NV_formatItem | _NV_formatItem | `` | `string` | `obj:_NV_formatItem()` |
+| listItemSelected | listItemSelected | `_index: integer` | `void` | `obj:listItemSelected(_index)` |
+| changeFilter | changeFilter | `` | `void` | `obj:changeFilter()` |
+
 ## GameplayOptions
 **Header:** `extern/KenshiLib/Include/kenshi/GameplayOptions.h`
 
@@ -4672,7 +5061,7 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `GenericFixedInventoryLayout` | `obj:_CONSTRUCTOR()` |
 | setSize | setSize | `slotsW: integer, slotsH: integer` | `void` | `obj:setSize(slotsW, slotsH)` |
 | _NV_setSize | _NV_setSize | `slotsW: integer, slotsH: integer` | `void` | `obj:_NV_setSize(slotsW, slotsH)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
@@ -4821,10 +5210,10 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| data | data | GameData | R | `obj.data` |
+| data | data | GameData | RW | `obj.data = <value>` |
 | whatAmI | (lua_Integer | integer | RW | `obj.whatAmI = <value>` |
-| medical | medical | MedicalSystem | R | `obj.medical` |
-| me | me | Character | R | `obj.me` |
+| medical | medical | MedicalSystem | RW | `obj.medical = <value>` |
+| me | me | Character | RW | `obj.me = <value>` |
 | side | (lua_Integer | integer | RW | `obj.side = <value>` |
 | robotLimb | robotLimb | RobotLimbItem | RW | `obj.robotLimb = <value>` |
 | selfHealing | selfHealing | boolean | RW | `obj.selfHealing = <value>` |
@@ -4846,24 +5235,21 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| serialise | serialise | `num: integer` | `void` | `obj:serialise(num)` |
+| load | load | `num: integer` | `void` | `obj:load(num)` |
 | isRobotic | isRobotic | `` | `boolean` | `obj:isRobotic()` |
 | getData | getData | `` | `GameData` | `obj:getData()` |
 | getRobotLimbEnum | getRobotLimbEnum | `` | `integer` | `obj:getRobotLimbEnum()` |
+| setup | setup | `_hitchance: number, _max: number, _age: number, selfHeal: boolean` | `void` | `obj:setup(_hitchance, _max, _age, selfHeal)` |
 | update | update | `frameTIME: number, healMultFlesh: number, healMultRobot: number, degenerationRate: number, _age: number, robotWear: number` | `boolean` | `obj:update(frameTIME, healMultFlesh, healMultRobot, degenerationRate, _age, robotWear)` |
 | updateDerivedHealths | updateDerivedHealths | `` | `void` | `obj:updateDerivedHealths()` |
 | getWorstDamage | getWorstDamage | `brokenBoneValue: number` | `number` | `obj:getWorstDamage(brokenBoneValue)` |
+| setRobotLimbItem | setRobotLimbItem | `isLoadingASave: boolean` | `void` | `obj:setRobotLimbItem(isLoadingASave)` |
 | getExtraBleedingAmount | getExtraBleedingAmount | `` | `number` | `obj:getExtraBleedingAmount()` |
 | isDead | isDead | `` | `boolean` | `obj:isDead()` |
 | getBloodynessMult | getBloodynessMult | `` | `number` | `obj:getBloodynessMult()` |
 | maxHealth | maxHealth | `` | `number` | `obj:maxHealth()` |
 | healthAsPercent | healthAsPercent | `healt: number` | `number` | `obj:healthAsPercent(healt)` |
-| serialise | serialise | `num: integer` | `void` | `obj:serialise(num)` |
-| load | load | `num: integer` | `void` | `obj:load(num)` |
-| setup | setup | `_hitchance: number, _max: number, _age: number, selfHeal: boolean` | `void` | `obj:setup(_hitchance, _max, _age, selfHeal)` |
-| applyDamage | applyDamage | `` | `void` | `obj:applyDamage()` |
-| applyWearDamage | applyWearDamage | `` | `void` | `obj:applyWearDamage()` |
-| getRobotLimbState | getRobotLimbState | `` | `integer` | `obj:getRobotLimbState()` |
-| setRobotLimbItem | setRobotLimbItem | `isLoadingASave: boolean` | `void` | `obj:setRobotLimbItem(isLoadingASave)` |
 
 ## ImpactPoint
 **Header:** `extern/KenshiLib/Include/kenshi/CombatTechniqueData.h`
@@ -4876,6 +5262,22 @@
 | impactAnimationFrame | impactAnimationFrame | number | RW | `obj.impactAnimationFrame = <value>` |
 | motionStopsAnimationFrame | motionStopsAnimationFrame | number | RW | `obj.motionStopsAnimationFrame = <value>` |
 | limb | (lua_Integer | integer | RW | `obj.limb = <value>` |
+
+## ImportGameMenu
+**Header:** `extern/KenshiLib/Include/kenshi/gui/LoadSaveWindow.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| newGameOptions | (void* | lightuserdata | R | `obj.newGameOptions` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| select | select | `index: integer` | `void` | `obj:select(index)` |
+| _NV_select | _NV_select | `index: integer` | `void` | `obj:_NV_select(index)` |
 
 ## InputHandler
 **Header:** `extern/KenshiLib/Include/kenshi/InputHandler.h`
@@ -4980,6 +5382,51 @@
 | empty | empty | `` | `boolean` | `obj:empty()` |
 | getBaseIndex | getBaseIndex | `` | `integer` | `obj:getBaseIndex()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## InteriorModeButtonWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/InteriorModeButtonWindow.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| exteriorsInvisible | exteriorsInvisible | boolean | RW | `obj.exteriorsInvisible = <value>` |
+| interiorMode | interiorMode | boolean | RW | `obj.interiorMode = <value>` |
+| dataEditWindow | dataEditWindow | GameDataEditorWindow | RW | `obj.dataEditWindow = <value>` |
+| currentBuilding | currentBuilding | hand | RW | `obj.currentBuilding = <value>` |
+| currentInterior | currentInterior | string | RW | `obj.currentInterior = <value>` |
+| currentExterior | currentExterior | string | RW | `obj.currentExterior = <value>` |
+| interiorModeButton | (void* | lightuserdata | R | `obj.interiorModeButton` |
+| win | (void* | lightuserdata | R | `obj.win` |
+| centerButton | (void* | lightuserdata | R | `obj.centerButton` |
+| exteriorButton | (void* | lightuserdata | R | `obj.exteriorButton` |
+| titleLabel | (void* | lightuserdata | R | `obj.titleLabel` |
+| saveBut | (void* | lightuserdata | R | `obj.saveBut` |
+| deleteBut | (void* | lightuserdata | R | `obj.deleteBut` |
+| listbox | (void* | lightuserdata | R | `obj.listbox` |
+| namebox | (void* | lightuserdata | R | `obj.namebox` |
+| saveBut2 | (void* | lightuserdata | R | `obj.saveBut2` |
+| deleteBut2 | (void* | lightuserdata | R | `obj.deleteBut2` |
+| listbox2 | (void* | lightuserdata | R | `obj.listbox2` |
+| namebox2 | (void* | lightuserdata | R | `obj.namebox2` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| toggleInteriorMode | toggleInteriorMode | `` | `void` | `obj:toggleInteriorMode()` |
+| setVisible | setVisible | `v: boolean` | `void` | `obj:setVisible(v)` |
+| wantExteriorsInvisible | wantExteriorsInvisible | `` | `boolean` | `obj:wantExteriorsInvisible()` |
+| setSelectedBuilding | setSelectedBuilding | `` | `void` | `obj:setSelectedBuilding()` |
+| getSelectedBuilding | getSelectedBuilding | `` | `Building` | `obj:getSelectedBuilding()` |
+| updateUsageNodes | updateUsageNodes | `` | `boolean` | `obj:updateUsageNodes()` |
+| refresh | refresh | `` | `void` | `obj:refresh()` |
+| activateInteriorMode | activateInteriorMode | `on: boolean` | `void` | `obj:activateInteriorMode(on)` |
+| confirmDeleteInteriorLayout | confirmDeleteInteriorLayout | `c: integer` | `void` | `obj:confirmDeleteInteriorLayout(c)` |
+| confirmDeleteExteriorLayout | confirmDeleteExteriorLayout | `c: integer` | `void` | `obj:confirmDeleteExteriorLayout(c)` |
+| setInteriorLayout | setInteriorLayout | `name: string` | `void` | `obj:setInteriorLayout(name)` |
+| setExteriorLayout | setExteriorLayout | `name: string` | `void` | `obj:setExteriorLayout(name)` |
+| recheckOutsideFurniture | recheckOutsideFurniture | `` | `void` | `obj:recheckOutsideFurniture()` |
 
 ## Inventory
 **Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
@@ -5087,11 +5534,11 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| layoutMgr | (void* | lightuserdata | R | `obj.layoutMgr` |
-| ownerInventory | (void* | lightuserdata | R | `obj.ownerInventory` |
-| childInventory | (void* | lightuserdata | R | `obj.childInventory` |
+| layoutMgr | layoutMgr | InventoryLayout | RW | `obj.layoutMgr = <value>` |
+| ownerInventory | ownerInventory | InventoryGUI | RW | `obj.ownerInventory = <value>` |
+| childInventory | childInventory | InventoryGUI | RW | `obj.childInventory = <value>` |
 | mouseFocus | mouseFocus | boolean | RW | `obj.mouseFocus = <value>` |
-| callbackObject | callbackObject | RootObject | R | `obj.callbackObject` |
+| callbackObject | callbackObject | RootObject | RW | `obj.callbackObject = <value>` |
 | needItemsUpdate | needItemsUpdate | boolean | RW | `obj.needItemsUpdate = <value>` |
 | visible | visible | boolean | RW | `obj.visible = <value>` |
 
@@ -5106,26 +5553,40 @@
 | _NV_setPositionReal | _NV_setPositionReal | `x: number, y: number` | `void` | `obj:_NV_setPositionReal(x, y)` |
 | isVisible | isVisible | `` | `boolean` | `obj:isVisible()` |
 | _NV_isVisible | _NV_isVisible | `` | `boolean` | `obj:_NV_isVisible()` |
+| _NV_refreshSection | _NV_refreshSection | `` | `void` | `obj:_NV_refreshSection()` |
 | showBackpack | showBackpack | `on: boolean` | `void` | `obj:showBackpack(on)` |
 | getBackpack | getBackpack | `` | `ContainerItem` | `obj:getBackpack()` |
 | getInventory | getInventory | `` | `Inventory` | `obj:getInventory()` |
 | _NV_getInventory | _NV_getInventory | `` | `Inventory` | `obj:_NV_getInventory()` |
+| hasSameOwner | hasSameOwner | `` | `boolean` | `obj:hasSameOwner()` |
 | getCallbackCharacter | getCallbackCharacter | `` | `Character` | `obj:getCallbackCharacter()` |
 | _NV_getCallbackCharacter | _NV_getCallbackCharacter | `` | `Character` | `obj:_NV_getCallbackCharacter()` |
 | getCallbackObject | getCallbackObject | `` | `RootObject` | `obj:getCallbackObject()` |
 | _NV_getCallbackObject | _NV_getCallbackObject | `` | `RootObject` | `obj:_NV_getCallbackObject()` |
 | getSelectedItem | getSelectedItem | `sectionName: string` | `Item` | `obj:getSelectedItem(sectionName)` |
 | stealingGUIInfoUpdate | stealingGUIInfoUpdate | `` | `void` | `obj:stealingGUIInfoUpdate()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `InventoryGUI` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | pickupItemToMouse | pickupItemToMouse | `sectionName: string` | `boolean` | `obj:pickupItemToMouse(sectionName)` |
 | getMouseItem | getMouseItem | `` | `Item` | `obj:getMouseItem()` |
+| takeCertainAmountFrom | takeCertainAmountFrom | `amount: integer` | `Item` | `obj:takeCertainAmountFrom(amount)` |
+| RClickAutoTrade | RClickAutoTrade | `invSectionName: string, x: integer, y: integer, thieveryChecks: boolean, first: boolean` | `integer` | `obj:RClickAutoTrade(invSectionName, x, y, thieveryChecks, first)` |
+| RClickAutoTradeAll | RClickAutoTradeAll | `invSectionName: string, x: integer, y: integer, thieveryChecks: boolean, first: boolean` | `integer` | `obj:RClickAutoTradeAll(invSectionName, x, y, thieveryChecks, first)` |
+| isTradingForMoney | isTradingForMoney | `` | `boolean` | `obj:isTradingForMoney()` |
+| isStealing | isStealing | `` | `boolean` | `obj:isStealing()` |
+| isWithinRangeToTrade | isWithinRangeToTrade | `stealing: boolean` | `boolean` | `obj:isWithinRangeToTrade(stealing)` |
+| setItemToPlayerPortrait | setItemToPlayerPortrait | `` | `boolean` | `obj:setItemToPlayerPortrait()` |
+| playSound | playSound | `eventId: string` | `void` | `obj:playSound(eventId)` |
 | fencingConfirmationCallback | fencingConfirmationCallback | `b: integer` | `void` | `obj:fencingConfirmationCallback(b)` |
 | getPlayerTradeCharacter | getPlayerTradeCharacter | `` | `RootObject` | `obj:getPlayerTradeCharacter()` |
 | refreshAllSections | refreshAllSections | `` | `void` | `obj:refreshAllSections()` |
 | updateDatapanel | updateDatapanel | `` | `void` | `obj:updateDatapanel()` |
 | rightClickAutoEquipping | rightClickAutoEquipping | `` | `void` | `obj:rightClickAutoEquipping()` |
+| tryToEquip | tryToEquip | `replace: boolean` | `boolean` | `obj:tryToEquip(replace)` |
+| returnItem | returnItem | `sectionName: string` | `void` | `obj:returnItem(sectionName)` |
 | hasMouse | hasMouse | `` | `boolean` | `obj:hasMouse()` |
 | getSectionWithMouseLocal | getSectionWithMouseLocal | `` | `string` | `obj:getSectionWithMouseLocal()` |
+| getSlotWithMouse | getSlotWithMouse | `` | `iVector2` | `obj:getSlotWithMouse()` |
 
 ## InventoryIcon
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
@@ -5133,7 +5594,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| item | item | Item | R | `obj.item` |
+| item | item | Item | RW | `obj.item = <value>` |
 | image | (void* | lightuserdata | R | `obj.image` |
 | quantityText | (void* | lightuserdata | R | `obj.quantityText` |
 | chargesProgress | (void* | lightuserdata | R | `obj.chargesProgress` |
@@ -5211,19 +5672,21 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| datapanel | datapanel | DatapanelGUI | R | `obj.datapanel` |
+| datapanel | datapanel | DatapanelGUI | RW | `obj.datapanel = <value>` |
+| dataPanelInfos | dataPanelInfos | GameDataCopyStandalone | RW | `obj.dataPanelInfos = <value>` |
 | window | (void* | lightuserdata | R | `obj.window` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `file: string` | `lightuserdata` | `obj:_CONSTRUCTOR(file)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `file: string` | `InventoryLayout` | `obj:_CONSTRUCTOR(file)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | getWindow | getWindow | `` | `lightuserdata` | `obj:getWindow()` |
 | getWidget | getWidget | `name: string` | `lightuserdata` | `obj:getWidget(name)` |
 | getDatapanel | getDatapanel | `` | `DatapanelGUI` | `obj:getDatapanel()` |
 | _NV_getDatapanel | _NV_getDatapanel | `` | `DatapanelGUI` | `obj:_NV_getDatapanel()` |
 | setupDataPanelInfos | setupDataPanelInfos | `name: string` | `void` | `obj:setupDataPanelInfos(name)` |
+| createSectionGUI | createSectionGUI | `` | `InventorySectionGUI` | `obj:createSectionGUI()` |
 | setSectionGUIDisabled | setSectionGUIDisabled | `sectionName: string, width: integer, height: integer` | `void` | `obj:setSectionGUIDisabled(sectionName, width, height)` |
 
 ## InventorySection
@@ -5306,6 +5769,7 @@
 | hasMouse | hasMouse | `` | `boolean` | `obj:hasMouse()` |
 | getWidget | getWidget | `` | `lightuserdata` | `obj:getWidget()` |
 | setEnabled | setEnabled | `value: boolean` | `void` | `obj:setEnabled(value)` |
+| refreshIcons | refreshIcons | `` | `void` | `obj:refreshIcons()` |
 | update | update | `` | `void` | `obj:update()` |
 
 ## InventoryTradeData
@@ -5314,15 +5778,39 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| inventory | (void* | lightuserdata | R | `obj.inventory` |
+| inventory | inventory | InventoryGUI | RW | `obj.inventory = <value>` |
 | paymentRequired | paymentRequired | boolean | RW | `obj.paymentRequired = <value>` |
 | canDropItems | canDropItems | boolean | RW | `obj.canDropItems = <value>` |
 | isPlayer | isPlayer | boolean | RW | `obj.isPlayer = <value>` |
+| owner | owner | hand | RW | `obj.owner = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
 | isValid | isValid | `` | `boolean` | `obj:isValid()` |
+
+## InventoryTraderGUI
+**Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryTraderGUI.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| sectionWidth | sectionWidth | integer | RW | `obj.sectionWidth = <value>` |
+| sectionHeight | sectionHeight | integer | RW | `obj.sectionHeight = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| getInventory | getInventory | `` | `Inventory` | `obj:getInventory()` |
+| _NV_getInventory | _NV_getInventory | `` | `Inventory` | `obj:_NV_getInventory()` |
+| getCallbackCharacter | getCallbackCharacter | `` | `Character` | `obj:getCallbackCharacter()` |
+| _NV_getCallbackCharacter | _NV_getCallbackCharacter | `` | `Character` | `obj:_NV_getCallbackCharacter()` |
+| getCallbackObject | getCallbackObject | `` | `RootObject` | `obj:getCallbackObject()` |
+| _NV_getCallbackObject | _NV_getCallbackObject | `` | `RootObject` | `obj:_NV_getCallbackObject()` |
+| refreshSection | refreshSection | `` | `void` | `obj:refreshSection()` |
+| _NV_refreshSection | _NV_refreshSection | `` | `void` | `obj:_NV_refreshSection()` |
 
 ## Item
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
@@ -5444,6 +5932,88 @@
 | minValue | minValue | integer | RW | `obj.minValue = <value>` |
 | isSlider | isSlider | boolean | RW | `obj.isSlider = <value>` |
 
+## ItemListWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| itemSelected | itemSelected | `` | `void` | `obj:itemSelected()` |
+| _NV_itemSelected | _NV_itemSelected | `` | `void` | `obj:_NV_itemSelected()` |
+
+## LevelEditor
+**Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| levelEditModeOn | levelEditModeOn | boolean | RW | `obj.levelEditModeOn = <value>` |
+| panel | (void* | lightuserdata | R | `obj.panel` |
+| interiorModeWindow | (void* | lightuserdata | R | `obj.interiorModeWindow` |
+| selectedLocked | selectedLocked | integer | RW | `obj.selectedLocked = <value>` |
+| selectedObject | selectedObject | hand | RW | `obj.selectedObject = <value>` |
+| selectedFeature | (void* | lightuserdata | R | `obj.selectedFeature` |
+| seedMode | seedMode | integer | RW | `obj.seedMode = <value>` |
+| roadMode | roadMode | integer | RW | `obj.roadMode = <value>` |
+| roadIndex | roadIndex | integer | RW | `obj.roadIndex = <value>` |
+| roadMarker | (void* | lightuserdata | R | `obj.roadMarker` |
+| roadMakerMO | (void* | lightuserdata | R | `obj.roadMakerMO` |
+| foliageEraser | (void* | lightuserdata | R | `obj.foliageEraser` |
+| fogEditor | fogEditor | FogEditor | RW | `obj.fogEditor = <value>` |
+| townListWindow | (void* | lightuserdata | R | `obj.townListWindow` |
+| factionListWindow | (void* | lightuserdata | R | `obj.factionListWindow` |
+| squadListWindow | (void* | lightuserdata | R | `obj.squadListWindow` |
+| npcListWindow | (void* | lightuserdata | R | `obj.npcListWindow` |
+| featureListWindow | (void* | lightuserdata | R | `obj.featureListWindow` |
+| itemListWindow | (void* | lightuserdata | R | `obj.itemListWindow` |
+| navmeshWindow | navmeshWindow | DatapanelGUI | RW | `obj.navmeshWindow = <value>` |
+| editMapTitleWindow | (void* | lightuserdata | R | `obj.editMapTitleWindow` |
+| factionTxt | (void* | lightuserdata | R | `obj.factionTxt` |
+| altitudeTxt | (void* | lightuserdata | R | `obj.altitudeTxt` |
+| activeModTxt | (void* | lightuserdata | R | `obj.activeModTxt` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| close | close | `` | `void` | `obj:close()` |
+| update | update | `` | `void` | `obj:update()` |
+| updateGizmo | updateGizmo | `` | `boolean` | `obj:updateGizmo()` |
+| levelEditMode | levelEditMode | `on: boolean` | `void` | `obj:levelEditMode(on)` |
+| isInteriorEditMode | isInteriorEditMode | `` | `boolean` | `obj:isInteriorEditMode()` |
+| getActiveModIndex | getActiveModIndex | `` | `integer` | `obj:getActiveModIndex()` |
+| getActiveMod | getActiveMod | `` | `string` | `obj:getActiveMod()` |
+| isBaseActive | isBaseActive | `` | `boolean` | `obj:isBaseActive()` |
+| setEditSquad | setEditSquad | `` | `void` | `obj:setEditSquad()` |
+| repath | repath | `` | `void` | `obj:repath()` |
+| toggleSeedMode | toggleSeedMode | `` | `void` | `obj:toggleSeedMode()` |
+| clearSeedPoints | clearSeedPoints | `` | `void` | `obj:clearSeedPoints()` |
+| setSeedMode | setSeedMode | `mode: integer` | `void` | `obj:setSeedMode(mode)` |
+| toggleRoadEditor | toggleRoadEditor | `tab: integer` | `void` | `obj:toggleRoadEditor(tab)` |
+| toggleFoliageRemoval | toggleFoliageRemoval | `` | `void` | `obj:toggleFoliageRemoval()` |
+| clearChanges | clearChanges | `` | `boolean` | `obj:clearChanges()` |
+| deleteDuplicateBuildings | deleteDuplicateBuildings | `` | `integer` | `obj:deleteDuplicateBuildings()` |
+| fixMountedBuildings | fixMountedBuildings | `` | `integer` | `obj:fixMountedBuildings()` |
+| deleteAll | deleteAll | `confirmed: boolean` | `integer` | `obj:deleteAll(confirmed)` |
+| adjustAltitudeSpeed | adjustAltitudeSpeed | `s: number` | `void` | `obj:adjustAltitudeSpeed(s)` |
+| fixInvalidInteriorFurnitureStates | fixInvalidInteriorFurnitureStates | `` | `integer` | `obj:fixInvalidInteriorFurnitureStates()` |
+| fixBuildingFloorState | fixBuildingFloorState | `` | `boolean` | `obj:fixBuildingFloorState()` |
+| setSelectedObject | setSelectedObject | `` | `void` | `obj:setSelectedObject()` |
+| updateRoadEditor | updateRoadEditor | `` | `void` | `obj:updateRoadEditor()` |
+| setRoadWidth | setRoadWidth | `` | `void` | `obj:setRoadWidth()` |
+| setRoadHidden | setRoadHidden | `` | `void` | `obj:setRoadHidden()` |
+| drawRoads | drawRoads | `` | `void` | `obj:drawRoads()` |
+| eraseRoads | eraseRoads | `` | `void` | `obj:eraseRoads()` |
+| drawAllRoads | drawAllRoads | `` | `void` | `obj:drawAllRoads()` |
+| projectRoads | projectRoads | `` | `void` | `obj:projectRoads()` |
+| validateRoads | validateRoads | `` | `void` | `obj:validateRoads()` |
+| createRoadMarker | createRoadMarker | `` | `void` | `obj:createRoadMarker()` |
+| destroyRoadMaker | destroyRoadMaker | `` | `void` | `obj:destroyRoadMaker()` |
+| updateFoliageRemoval | updateFoliageRemoval | `` | `void` | `obj:updateFoliageRemoval()` |
+| updateSeedEditor | updateSeedEditor | `` | `void` | `obj:updateSeedEditor()` |
+
 ## LightBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/LightBuilding.h`
 
@@ -5471,11 +6041,12 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| character | character | Character | R | `obj.character` |
+| character | character | Character | RW | `obj.character = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `LimbsInventoryLayout` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## Limiter
@@ -5491,6 +6062,72 @@
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## ListScrollBar
+**Header:** `extern/KenshiLib/Include/kenshi/gui/MyGUI_ListScrollBar.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| disableEvents | disableEvents | boolean | RW | `obj.disableEvents = <value>` |
+| mListName | (void* | lightuserdata | R | `obj.mListName` |
+| mListValue | (void* | lightuserdata | R | `obj.mListValue` |
+| mListIndex | (void* | lightuserdata | R | `obj.mListIndex` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| setEnabled | setEnabled | `_a1: boolean` | `void` | `obj:setEnabled(_a1)` |
+| initialiseOverride | initialiseOverride | `` | `void` | `obj:initialiseOverride()` |
+| shutdownOverride | shutdownOverride | `` | `void` | `obj:shutdownOverride()` |
+
+## LoadSaveWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/LoadSaveWindow.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| list | (void* | lightuserdata | R | `obj.list` |
+| infoPanel | infoPanel | DatapanelGUI | RW | `obj.infoPanel = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `layout: string` | `lightuserdata` | `obj:_CONSTRUCTOR(layout)` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| select | select | `index: integer` | `void` | `obj:select(index)` |
+| _NV_select | _NV_select | `index: integer` | `void` | `obj:_NV_select(index)` |
+| getWidget | getWidget | `` | `lightuserdata` | `obj:getWidget()` |
+| deleteSelectedSave | deleteSelectedSave | `mbResult: integer` | `void` | `obj:deleteSelectedSave(mbResult)` |
+| addOption | addOption | `key: integer, check: string, label: string, caption: string` | `void` | `obj:addOption(key, check, label, caption)` |
+| enableOption | enableOption | `key: integer, enabled: boolean` | `void` | `obj:enableOption(key, enabled)` |
+| getOptions | getOptions | `` | `integer` | `obj:getOptions()` |
+
+## LoadingWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/LoadingWindow.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| currentIndex | currentIndex | integer | RW | `obj.currentIndex = <value>` |
+| currentTime | currentTime | number | RW | `obj.currentTime = <value>` |
+| loadingText | (void* | lightuserdata | R | `obj.loadingText` |
+| messageText | (void* | lightuserdata | R | `obj.messageText` |
+| backgroundImage | (void* | lightuserdata | R | `obj.backgroundImage` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| reload | reload | `` | `void` | `obj:reload()` |
+| setVisible | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
+| getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
+| show | show | `` | `void` | `obj:show()` |
+| hide | hide | `` | `void` | `obj:hide()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| frameEntered | frameEntered | `_frame: number` | `void` | `obj:frameEntered(_frame)` |
+| setRandomBackground | setRandomBackground | `` | `void` | `obj:setRandomBackground()` |
+| setRandomTip | setRandomTip | `` | `void` | `obj:setRandomTip()` |
 
 ## LockedArmour
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
@@ -5518,41 +6155,42 @@
 | closeManagerWindowMsg | closeManagerWindowMsg | integer | RW | `obj.closeManagerWindowMsg = <value>` |
 | isLevelEditMode | isLevelEditMode | boolean | RW | `obj.isLevelEditMode = <value>` |
 | isInteriorLevelEditMode | isInteriorLevelEditMode | boolean | RW | `obj.isInteriorLevelEditMode = <value>` |
-| bountyPanel | (void* | lightuserdata | R | `obj.bountyPanel` |
-| bountyDatapanel | bountyDatapanel | DatapanelGUI | R | `obj.bountyDatapanel` |
+| bountyPanel | bountyPanel | MyGUI::Widget | R | `obj.bountyPanel` |
+| bountyDatapanel | bountyDatapanel | DatapanelGUI | RW | `obj.bountyDatapanel = <value>` |
 | townPanel | (void* | lightuserdata | R | `obj.townPanel` |
-| portraitsTabPanel | (void* | lightuserdata | R | `obj.portraitsTabPanel` |
-| floorDownButton | (void* | lightuserdata | R | `obj.floorDownButton` |
-| floorUpButton | (void* | lightuserdata | R | `obj.floorUpButton` |
-| floorText | (void* | lightuserdata | R | `obj.floorText` |
-| dayText | (void* | lightuserdata | R | `obj.dayText` |
-| moneyLabel | (void* | lightuserdata | R | `obj.moneyLabel` |
-| moneyText | (void* | lightuserdata | R | `obj.moneyText` |
-| timeText | (void* | lightuserdata | R | `obj.timeText` |
+| portraitsTabPanel | (MyGUI::Widget* | MyGUI::Widget | R | `obj.portraitsTabPanel` |
+| floorDownButton | (MyGUI::Widget* | MyGUI::Widget | R | `obj.floorDownButton` |
+| floorUpButton | (MyGUI::Widget* | MyGUI::Widget | R | `obj.floorUpButton` |
+| floorText | (MyGUI::Widget* | MyGUI::Widget | R | `obj.floorText` |
+| dayText | (MyGUI::Widget* | MyGUI::Widget | R | `obj.dayText` |
+| moneyLabel | (MyGUI::Widget* | MyGUI::Widget | R | `obj.moneyLabel` |
+| moneyText | (MyGUI::Widget* | MyGUI::Widget | R | `obj.moneyText` |
+| timeText | (MyGUI::Widget* | MyGUI::Widget | R | `obj.timeText` |
 | medicalPanel | (void* | lightuserdata | R | `obj.medicalPanel` |
-| ordersDataPanel | (void* | lightuserdata | R | `obj.ordersDataPanel` |
-| extendInfoPanelButton | (void* | lightuserdata | R | `obj.extendInfoPanelButton` |
-| extendedInfoPanel | (void* | lightuserdata | RW | `obj.extendedInfoPanel = <value>` |
+| ordersDataPanel | ordersDataPanel | OrdersPanel | RW | `obj.ordersDataPanel = <value>` |
+| extendInfoPanelButton | (MyGUI::Widget* | MyGUI::Widget | R | `obj.extendInfoPanelButton` |
+| extendedInfoPanel | extendedInfoPanel | MyGUI::Widget | RW | `obj.extendedInfoPanel = <value>` |
 | extendedInfoPanelDuration | extendedInfoPanelDuration | number | RW | `obj.extendedInfoPanelDuration = <value>` |
 | infoPanelEnabled | infoPanelEnabled | boolean | RW | `obj.infoPanelEnabled = <value>` |
 | infoPanelExtended | infoPanelExtended | boolean | RW | `obj.infoPanelExtended = <value>` |
-| biomePanel | (void* | lightuserdata | RW | `obj.biomePanel = <value>` |
-| biomePanelText | (void* | lightuserdata | R | `obj.biomePanelText` |
+| biomePanel | biomePanel | MyGUI::Widget | RW | `obj.biomePanel = <value>` |
+| biomePanelText | (MyGUI::Widget* | MyGUI::Widget | R | `obj.biomePanelText` |
 | biomePanelVisibleTimer | biomePanelVisibleTimer | number | RW | `obj.biomePanelVisibleTimer = <value>` |
 | biomeTimer | biomeTimer | number | RW | `obj.biomeTimer = <value>` |
-| lastFrameBiomeGroup | lastFrameBiomeGroup | GameData | R | `obj.lastFrameBiomeGroup` |
-| rememberlastBiomeGroup | rememberlastBiomeGroup | GameData | R | `obj.rememberlastBiomeGroup` |
+| lastFrameBiomeGroup | lastFrameBiomeGroup | GameData | RW | `obj.lastFrameBiomeGroup = <value>` |
+| rememberlastBiomeGroup | rememberlastBiomeGroup | GameData | RW | `obj.rememberlastBiomeGroup = <value>` |
+| portraitContextMenuTarget | portraitContextMenuTarget | hand | RW | `obj.portraitContextMenuTarget = <value>` |
 | portraitContextMenuTimer | portraitContextMenuTimer | number | RW | `obj.portraitContextMenuTimer = <value>` |
 | portraitSelectedContextIndex | portraitSelectedContextIndex | integer | RW | `obj.portraitSelectedContextIndex = <value>` |
 | portraitsUpdating | portraitsUpdating | boolean | RW | `obj.portraitsUpdating = <value>` |
-| toolTip | (void* | lightuserdata | R | `obj.toolTip` |
-| pausePanel | (void* | lightuserdata | R | `obj.pausePanel` |
-| loadingPanel | (void* | lightuserdata | R | `obj.loadingPanel` |
+| toolTip | toolTip | ToolTipFixed | RW | `obj.toolTip = <value>` |
+| pausePanel | pausePanel | MyGUI::Widget | R | `obj.pausePanel` |
+| loadingPanel | loadingPanel | MyGUI::Widget | R | `obj.loadingPanel` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `MainBarGUI` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | clear | clear | `` | `void` | `obj:clear()` |
 | _NV_clear | _NV_clear | `` | `void` | `obj:_NV_clear()` |
@@ -5566,19 +6204,44 @@
 | setLevelEditMode | setLevelEditMode | `on: boolean` | `void` | `obj:setLevelEditMode(on)` |
 | setLevelEditInteriorMode | setLevelEditInteriorMode | `interiorMode: boolean` | `void` | `obj:setLevelEditInteriorMode(interiorMode)` |
 | pressedKey | pressedKey | `keycode: integer` | `void` | `obj:pressedKey(keycode)` |
+| platoonUpdated | platoonUpdated | `charAdded: boolean` | `void` | `obj:platoonUpdated(charAdded)` |
 | updatePotraitsPlatoon | updatePotraitsPlatoon | `` | `void` | `obj:updatePotraitsPlatoon()` |
 | updatePortraits | updatePortraits | `` | `void` | `obj:updatePortraits()` |
 | refreshPortraitTabs | refreshPortraitTabs | `` | `void` | `obj:refreshPortraitTabs()` |
-| getPausePanel | getPausePanel | `` | `lightuserdata` | `obj:getPausePanel()` |
-| getLoadingPanel | getLoadingPanel | `` | `lightuserdata` | `obj:getLoadingPanel()` |
+| updatePortraitSize | updatePortraitSize | `` | `void` | `obj:updatePortraitSize()` |
+| getPausePanel | getPausePanel | `` | `MyGUI::Widget` | `obj:getPausePanel()` |
+| getLoadingPanel | getLoadingPanel | `` | `MyGUI::Widget` | `obj:getLoadingPanel()` |
 | getMedicalPanel | getMedicalPanel | `` | `lightuserdata` | `obj:getMedicalPanel()` |
 | ordersPanelClear | ordersPanelClear | `` | `void` | `obj:ordersPanelClear()` |
-| getToolTip | getToolTip | `` | `lightuserdata` | `obj:getToolTip()` |
-| _NV_getToolTip | _NV_getToolTip | `` | `lightuserdata` | `obj:_NV_getToolTip()` |
+| getToolTip | getToolTip | `` | `ToolTip` | `obj:getToolTip()` |
+| _NV_getToolTip | _NV_getToolTip | `` | `ToolTip` | `obj:_NV_getToolTip()` |
 | getDatapanel | getDatapanel | `id: string` | `DatapanelGUI` | `obj:getDatapanel(id)` |
 | setMessagePosition | setMessagePosition | `` | `void` | `obj:setMessagePosition()` |
+| serialise | serialise | `` | `void` | `obj:serialise()` |
+| loadFromSerialise | loadFromSerialise | `` | `void` | `obj:loadFromSerialise()` |
 | setExtendInfoPanelEnabled | setExtendInfoPanelEnabled | `enabled: boolean` | `void` | `obj:setExtendInfoPanelEnabled(enabled)` |
-| _getWidget | _getWidget | `name: string` | `lightuserdata` | `obj:_getWidget(name)` |
+| _getWidget | _getWidget | `name: string` | `MyGUI::Widget` | `obj:_getWidget(name)` |
+| autoChangeSelectedObject | autoChangeSelectedObject | `` | `void` | `obj:autoChangeSelectedObject()` |
+| _NV_autoChangeSelectedObject | _NV_autoChangeSelectedObject | `` | `void` | `obj:_NV_autoChangeSelectedObject()` |
+| getPortrait | getPortrait | `left: integer, top: integer` | `lightuserdata` | `obj:getPortrait(left, top)` |
+| updatePortrait | updatePortrait | `` | `void` | `obj:updatePortrait()` |
+| closeMapWindow | closeMapWindow | `` | `void` | `obj:closeMapWindow()` |
+| toggleMapWindow | toggleMapWindow | `` | `void` | `obj:toggleMapWindow()` |
+| toggleFactionWindow | toggleFactionWindow | `` | `void` | `obj:toggleFactionWindow()` |
+| toggleTechWindow | toggleTechWindow | `` | `void` | `obj:toggleTechWindow()` |
+| toggleCraftWindow | toggleCraftWindow | `` | `void` | `obj:toggleCraftWindow()` |
+| toggleSquadWindow | toggleSquadWindow | `` | `void` | `obj:toggleSquadWindow()` |
+| changeFloorButtonUp | changeFloorButtonUp | `` | `void` | `obj:changeFloorButtonUp()` |
+| changeFloorButtonDown | changeFloorButtonDown | `` | `void` | `obj:changeFloorButtonDown()` |
+| ordersPanelFill | ordersPanelFill | `` | `void` | `obj:ordersPanelFill()` |
+| getBuildingInventoryPosition | getBuildingInventoryPosition | `` | `integer` | `obj:getBuildingInventoryPosition()` |
+| getTabPlatoonPortrait | getTabPlatoonPortrait | `idx: integer` | `MainTabPortraitPlatoon` | `obj:getTabPlatoonPortrait(idx)` |
+| extendInfoPanel | extendInfoPanel | `_a2: integer, _a3: integer, arg4: integer` | `void` | `obj:extendInfoPanel(_a2, _a3, arg4)` |
+| toggleInventory | toggleInventory | `` | `void` | `obj:toggleInventory()` |
+| toggleStatsWindow | toggleStatsWindow | `` | `void` | `obj:toggleStatsWindow()` |
+| toggleHelpWindow | toggleHelpWindow | `` | `void` | `obj:toggleHelpWindow()` |
+| changeSpeed | changeSpeed | `` | `void` | `obj:changeSpeed()` |
+| buildButton | buildButton | `` | `void` | `obj:buildButton()` |
 
 ## MainTabPortraitPlatoon
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MainBarGUI.h`
@@ -5587,18 +6250,20 @@
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
 | portraitBox | (void* | lightuserdata | R | `obj.portraitBox` |
-| platoon | platoon | ActivePlatoon | R | `obj.platoon` |
-| tab | (void* | lightuserdata | RW | `obj.tab = <value>` |
+| platoon | platoon | ActivePlatoon | RW | `obj.platoon = <value>` |
+| tab | (MyGUI::Widget* | MyGUI::Widget | RW | `obj.tab = <value>` |
 | tabIndex | tabIndex | integer | RW | `obj.tabIndex = <value>` |
-| flashImage | (void* | lightuserdata | R | `obj.flashImage` |
+| flashImage | (MyGUI::Widget* | MyGUI::Widget | R | `obj.flashImage` |
 | flashing | flashing | integer | RW | `obj.flashing = <value>` |
 | animationTime | animationTime | number | RW | `obj.animationTime = <value>` |
 | currentAlpha | currentAlpha | number | RW | `obj.currentAlpha = <value>` |
-| mainbar | (void* | lightuserdata | R | `obj.mainbar` |
+| mainbar | mainbar | MainBarGUI | RW | `obj.mainbar = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `void` | `obj:_CONSTRUCTOR()` |
+| addTab | addTab | `visible: boolean` | `void` | `obj:addTab(visible)` |
 | detach | detach | `` | `void` | `obj:detach()` |
 | setFlash | setFlash | `flash: boolean` | `void` | `obj:setFlash(flash)` |
 | update | update | `` | `void` | `obj:update()` |
@@ -5611,6 +6276,153 @@
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
 | updateBackDataCheck | updateBackDataCheck | `` | `boolean` | `obj:updateBackDataCheck()` |
+
+## ManagementScreen
+**Header:** `extern/KenshiLib/Include/kenshi/gui/ManagementScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| squadScreen | squadScreen | SquadManagementScreen | RW | `obj.squadScreen = <value>` |
+| mapScreen | (void* | lightuserdata | R | `obj.mapScreen` |
+| factionScreen | factionScreen | FactionsScreen | RW | `obj.factionScreen = <value>` |
+| researchCategoriesListBox | (void* | lightuserdata | R | `obj.researchCategoriesListBox` |
+| availableList | availableList | DatapanelGUI | RW | `obj.availableList = <value>` |
+| info | info | DatapanelGUI | RW | `obj.info = <value>` |
+| info2 | info2 | DatapanelGUI | RW | `obj.info2 = <value>` |
+| techCategory | techCategory | string | RW | `obj.techCategory = <value>` |
+| currentResearch | currentResearch | GameData | RW | `obj.currentResearch = <value>` |
+| researchBenchMessage | (void* | lightuserdata | R | `obj.researchBenchMessage` |
+| researchDescriptionUpdateRequest | researchDescriptionUpdateRequest | boolean | RW | `obj.researchDescriptionUpdateRequest = <value>` |
+| lastResearchRate | lastResearchRate | number | RW | `obj.lastResearchRate = <value>` |
+| todoList | (void* | lightuserdata | R | `obj.todoList` |
+| craftingQueue | (void* | lightuserdata | R | `obj.craftingQueue` |
+| messagesTextBox | (void* | lightuserdata | R | `obj.messagesTextBox` |
+| messagesUpdated | messagesUpdated | boolean | RW | `obj.messagesUpdated = <value>` |
+| messagesMutex | (void* | lightuserdata | R | `obj.messagesMutex` |
+| messagesPlayerColor | messagesPlayerColor | string | RW | `obj.messagesPlayerColor = <value>` |
+| messagesNPCColor | messagesNPCColor | string | RW | `obj.messagesNPCColor = <value>` |
+| aiScreen | aiScreen | DatapanelGUI | RW | `obj.aiScreen = <value>` |
+| aiToolTip | aiToolTip | ToolTip | RW | `obj.aiToolTip = <value>` |
+| toolTip | toolTip | ToolTip | RW | `obj.toolTip = <value>` |
+| window | (void* | lightuserdata | R | `obj.window` |
+| tabs | (void* | lightuserdata | R | `obj.tabs` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| update | update | `` | `void` | `obj:update()` |
+| clear | clear | `` | `void` | `obj:clear()` |
+| getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
+| setVisible | setVisible | `on: boolean, tab: integer` | `void` | `obj:setVisible(on, tab)` |
+| getCurrentTab | getCurrentTab | `` | `integer` | `obj:getCurrentTab()` |
+| getTab | getTab | `index: integer` | `lightuserdata` | `obj:getTab(index)` |
+| getWidget | getWidget | `name: string` | `lightuserdata` | `obj:getWidget(name)` |
+| refresh | refresh | `progress: number` | `void` | `obj:refresh(progress)` |
+| refreshResearchList | refreshResearchList | `` | `void` | `obj:refreshResearchList()` |
+| refreshResearchRate | refreshResearchRate | `` | `void` | `obj:refreshResearchRate()` |
+| refreshDiplomacy | refreshDiplomacy | `` | `void` | `obj:refreshDiplomacy()` |
+| refreshSquads | refreshSquads | `` | `void` | `obj:refreshSquads()` |
+| refreshMap | refreshMap | `centerCamera: boolean` | `void` | `obj:refreshMap(centerCamera)` |
+| showRoads | showRoads | `v: boolean` | `void` | `obj:showRoads(v)` |
+| addSquadToMap | addSquadToMap | `` | `void` | `obj:addSquadToMap()` |
+| removeSquadFromMap | removeSquadFromMap | `` | `void` | `obj:removeSquadFromMap()` |
+| resetSquads | resetSquads | `` | `void` | `obj:resetSquads()` |
+| refreshMessages | refreshMessages | `` | `void` | `obj:refreshMessages()` |
+| refreshAI | refreshAI | `` | `void` | `obj:refreshAI()` |
+| showDebugMarker | showDebugMarker | `p: Vector3` | `void` | `obj:showDebugMarker(p)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| updateResearchListRate | updateResearchListRate | `` | `void` | `obj:updateResearchListRate()` |
+| refreshResearchListDescription | refreshResearchListDescription | `` | `void` | `obj:refreshResearchListDescription()` |
+
+## MapMarkerCharacter
+**Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| handle | handle | hand | RW | `obj.handle = <value>` |
+| image | (void* | lightuserdata | R | `obj.image` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| setVisible | setVisible | `value: boolean` | `void` | `obj:setVisible(value)` |
+| getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
+
+## MapMarkerTown
+**Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| handle | handle | hand | RW | `obj.handle = <value>` |
+| zoomLayer | (lua_Integer | integer | RW | `obj.zoomLayer = <value>` |
+| root | (void* | lightuserdata | R | `obj.root` |
+| image | (void* | lightuserdata | R | `obj.image` |
+| label | (void* | lightuserdata | R | `obj.label` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| setVisible | setVisible | `value: boolean` | `void` | `obj:setVisible(value)` |
+| getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
+
+## MapScreen
+**Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| updateTimer | updateTimer | number | RW | `obj.updateTimer = <value>` |
+| toolTip | toolTip | ToolTip | RW | `obj.toolTip = <value>` |
+| mainWidget | (void* | lightuserdata | R | `obj.mainWidget` |
+| mapScrollView | (void* | lightuserdata | R | `obj.mapScrollView` |
+| mapImage | (void* | lightuserdata | R | `obj.mapImage` |
+| cameraMarker | (void* | lightuserdata | R | `obj.cameraMarker` |
+| cameraMarkerSkin | (void* | lightuserdata | R | `obj.cameraMarkerSkin` |
+| zoomUpdated | zoomUpdated | boolean | RW | `obj.zoomUpdated = <value>` |
+| zoomValueBase | zoomValueBase | number | RW | `obj.zoomValueBase = <value>` |
+| zoomValueMax | zoomValueMax | number | RW | `obj.zoomValueMax = <value>` |
+| zoomValueCurrent | zoomValueCurrent | number | RW | `obj.zoomValueCurrent = <value>` |
+| zoomLevelCurrent | (lua_Integer | integer | RW | `obj.zoomLevelCurrent = <value>` |
+| mapOverlaysContainer | (void* | lightuserdata | R | `obj.mapOverlaysContainer` |
+| zoomLevels | zoomLevels | number | RW | `obj.zoomLevels = <value>` |
+| mapMarkerMovement | (void* | lightuserdata | RW | `obj.mapMarkerMovement = <value>` |
+| mapMarkerMovementPosition | mapMarkerMovementPosition | Vector3 | RW | `obj.mapMarkerMovementPosition = <value>` |
+| mapMarkerMovementFadeOutDelay | mapMarkerMovementFadeOutDelay | number | RW | `obj.mapMarkerMovementFadeOutDelay = <value>` |
+| mapDragging | mapDragging | boolean | RW | `obj.mapDragging = <value>` |
+| mapMouseLastPosition | mapMouseLastPosition | unknown | RW | `obj.mapMouseLastPosition = <value>` |
+| mapOffsetView | mapOffsetView | unknown | RW | `obj.mapOffsetView = <value>` |
+| worldSize | worldSize | unknown | RW | `obj.worldSize = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| clear | clear | `` | `void` | `obj:clear()` |
+| getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
+| centerCamera | centerCamera | `` | `void` | `obj:centerCamera()` |
+| clearTempMarkers | clearTempMarkers | `` | `void` | `obj:clearTempMarkers()` |
+| refresh | refresh | `` | `void` | `obj:refresh()` |
+| update | update | `` | `void` | `obj:update()` |
+| addSquad | addSquad | `` | `void` | `obj:addSquad()` |
+| removeSquad | removeSquad | `` | `void` | `obj:removeSquad()` |
+| hide | hide | `` | `void` | `obj:hide()` |
+| setMovementMarker | setMovementMarker | `p: Vector3, time: number` | `void` | `obj:setMovementMarker(p, time)` |
+| showRoads | showRoads | `on: boolean` | `void` | `obj:showRoads(on)` |
+| updateZoom | updateZoom | `` | `void` | `obj:updateZoom()` |
+| updateCameraMarker | updateCameraMarker | `` | `void` | `obj:updateCameraMarker()` |
+| refreshTowns | refreshTowns | `` | `void` | `obj:refreshTowns()` |
+| refreshSquads | refreshSquads | `` | `void` | `obj:refreshSquads()` |
+| updateCharacterMarker | updateCharacterMarker | `` | `void` | `obj:updateCharacterMarker()` |
+| getMouseWorldPosition | getMouseWorldPosition | `position: Vector3` | `boolean` | `obj:getMouseWorldPosition(position)` |
+| setupRoads | setupRoads | `` | `void` | `obj:setupRoads()` |
+| updateRoads | updateRoads | `` | `void` | `obj:updateRoads()` |
 
 ## MedianFilter
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
@@ -5652,18 +6464,18 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| status | status | ogre_unordered_map<GameData*, MedicalSystem::HealthPartStatus>::type | R | `obj.status` |
-| armourList | armourList | lektor<Armour*> | R | `obj.armourList` |
+| status | status | unknown | RW | `obj.status = <value>` |
+| armourList | armourList | lektor<Armour*> | RW | `obj.armourList = <value>` |
 | hunger | hunger | number | RW | `obj.hunger = <value>` |
 | fed | fed | number | RW | `obj.fed = <value>` |
-| lastPeriodicUpdate | lastPeriodicUpdate | TimeOfDay | R | `obj.lastPeriodicUpdate` |
+| lastPeriodicUpdate | lastPeriodicUpdate | TimeOfDay | RW | `obj.lastPeriodicUpdate = <value>` |
 | blood | blood | number | RW | `obj.blood = <value>` |
 | extraBloodLossFromBodyparts | extraBloodLossFromBodyparts | number | RW | `obj.extraBloodLossFromBodyparts = <value>` |
 | currentBleedRate | currentBleedRate | number | RW | `obj.currentBleedRate = <value>` |
-| leftLeg | (lua_Integer | integer | R | `obj.leftLeg` |
-| rightLeg | (lua_Integer | integer | R | `obj.rightLeg` |
-| leftArm | (lua_Integer | integer | R | `obj.leftArm` |
-| rightArm | (lua_Integer | integer | R | `obj.rightArm` |
+| leftLeg | leftLeg | MedicalSystem::HealthPartStatus | RW | `obj.leftLeg = <value>` |
+| rightLeg | rightLeg | MedicalSystem::HealthPartStatus | RW | `obj.rightLeg = <value>` |
+| leftArm | leftArm | MedicalSystem::HealthPartStatus | RW | `obj.leftArm = <value>` |
+| rightArm | rightArm | MedicalSystem::HealthPartStatus | RW | `obj.rightArm = <value>` |
 | knockoutTimer | knockoutTimer | number | RW | `obj.knockoutTimer = <value>` |
 | worstDamage | worstDamage | number | RW | `obj.worstDamage = <value>` |
 | needsFirstAidScoreTotal_robot | needsFirstAidScoreTotal_robot | number | RW | `obj.needsFirstAidScoreTotal_robot = <value>` |
@@ -5674,15 +6486,14 @@
 | partHead | partHead | number | RW | `obj.partHead = <value>` |
 | partWorstTorso | partWorstTorso | number | RW | `obj.partWorstTorso = <value>` |
 | dazedOrAlert | dazedOrAlert | number | RW | `obj.dazedOrAlert = <value>` |
-| robotLimbs | robotLimbs | RobotLimbs | R | `obj.robotLimbs` |
+| robotLimbs | robotLimbs | RobotLimbs | RW | `obj.robotLimbs = <value>` |
 | bloodynessChanged | bloodynessChanged | boolean | RW | `obj.bloodynessChanged = <value>` |
 | bloodynessCleanedUp | bloodynessCleanedUp | boolean | RW | `obj.bloodynessCleanedUp = <value>` |
-| animation | animation | AnimationClass* | R | `obj.animation` |
-| me | me | Character | R | `obj.me` |
-| weatherGUIfeedback | weatherGUIfeedback | StringPair | R | `obj.weatherGUIfeedback` |
+| me | me | Character | RW | `obj.me = <value>` |
+| weatherGUIfeedback | weatherGUIfeedback | StringPair | RW | `obj.weatherGUIfeedback = <value>` |
 | currentWeatherAffect | (lua_Integer | integer | RW | `obj.currentWeatherAffect = <value>` |
 | currentWeatherAffectStrength | currentWeatherAffectStrength | number | RW | `obj.currentWeatherAffectStrength = <value>` |
-| lastHungerKO | lastHungerKO | TimeOfDay | R | `obj.lastHungerKO` |
+| lastHungerKO | lastHungerKO | TimeOfDay | RW | `obj.lastHungerKO = <value>` |
 | nextKOTime | nextKOTime | number | RW | `obj.nextKOTime = <value>` |
 | _eatenDeathDelay | _eatenDeathDelay | integer | RW | `obj._eatenDeathDelay = <value>` |
 | crippled | crippled | boolean | RW | `obj.crippled = <value>` |
@@ -5693,25 +6504,16 @@
 | rightArmOk | rightArmOk | boolean | RW | `obj.rightArmOk = <value>` |
 | leftArmOk | leftArmOk | boolean | RW | `obj.leftArmOk = <value>` |
 | lastBloodPosition | lastBloodPosition | Vector3 | RW | `obj.lastBloodPosition = <value>` |
-| wounds | wounds | Ogre::FastArray<Wound*> | R | `obj.wounds` |
-| anatomy | anatomy | lektor<MedicalSystem::HealthPartStatus*> | R | `obj.anatomy` |
-| stats | stats | CharStats | R | `obj.stats` |
+| anatomy | anatomy | lektor<MedicalSystem::HealthPartStatus*> | RW | `obj.anatomy = <value>` |
+| stats | stats | CharStats | RW | `obj.stats = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
 | precalculateFirstAidNeedScore | precalculateFirstAidNeedScore | `` | `void` | `obj:precalculateFirstAidNeedScore()` |
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `MedicalSystem` | `obj:_CONSTRUCTOR()` |
-| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
-| updateStats | updateStats | `` | `void` | `obj:updateStats()` |
-| _NV_updateStats | _NV_updateStats | `` | `void` | `obj:_NV_updateStats()` |
-| medicalUpdate | medicalUpdate | `frameTime: number` | `void` | `obj:medicalUpdate(frameTime)` |
-| periodicUpdate | periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
-| _NV_periodicUpdate | _NV_periodicUpdate | `` | `void` | `obj:_NV_periodicUpdate()` |
 | scoreFirstAidNeed | scoreFirstAidNeed | `robotAid: boolean` | `number` | `obj:scoreFirstAidNeed(robotAid)` |
 | scoreJuryRigNeed | scoreJuryRigNeed | `skills: number` | `number` | `obj:scoreJuryRigNeed(skills)` |
 | isFullyRested | isFullyRested | `` | `boolean` | `obj:isFullyRested()` |
-| _setHealth | _setHealth | `bodypart: string, amount: number` | `void` | `obj:_setHealth(bodypart, amount)` |
 | validateHealthValues | validateHealthValues | `` | `void` | `obj:validateHealthValues()` |
 | amputate | amputate | `limb: integer, createSeveredItem: boolean, force: Vector3` | `void` | `obj:amputate(limb, createSeveredItem, force)` |
 | crushLimb | crushLimb | `limb: integer` | `void` | `obj:crushLimb(limb)` |
@@ -5722,21 +6524,17 @@
 | isFed | isFed | `` | `boolean` | `obj:isFed()` |
 | getMaxBlood | getMaxBlood | `` | `number` | `obj:getMaxBlood()` |
 | startKnockoutTimer | startKnockoutTimer | `` | `void` | `obj:startKnockoutTimer()` |
-| knockout | knockout | `skill01: number` | `void` | `obj:knockout(skill01)` |
+| knockout | knockout | `skill: number` | `void` | `obj:knockout(skill)` |
 | knockoutForceTimer | knockoutForceTimer | `seconds: number` | `void` | `obj:knockoutForceTimer(seconds)` |
 | pointOfCollapseBloodloss | pointOfCollapseBloodloss | `` | `number` | `obj:pointOfCollapseBloodloss()` |
 | pointOfNoReturn | pointOfNoReturn | `` | `number` | `obj:pointOfNoReturn()` |
-| pointOfNoReturn_Hunger01 | pointOfNoReturn_Hunger01 | `mult: number` | `number` | `obj:pointOfNoReturn_Hunger01(mult)` |
 | isHungerKO | isHungerKO | `` | `boolean` | `obj:isHungerKO()` |
 | getToughnessXpBonus | getToughnessXpBonus | `` | `number` | `obj:getToughnessXpBonus()` |
 | getHungerSpeedModifier | getHungerSpeedModifier | `` | `number` | `obj:getHungerSpeedModifier()` |
-| getHealthStatModifier | getHealthStatModifier | `stat: integer, _hunger: boolean, _wounds: boolean, _darkness: boolean, robotParts: boolean, weather: boolean, gear: boolean` | `number` | `obj:getHealthStatModifier(stat, _hunger, _wounds, _darkness, robotParts, weather, gear)` |
-| _getRoboticsStatMult | _getRoboticsStatMult | `stat: integer` | `number` | `obj:_getRoboticsStatMult(stat)` |
 | getMissingArmPenaltyMult | getMissingArmPenaltyMult | `` | `number` | `obj:getMissingArmPenaltyMult()` |
 | getDerivedHeadHealth | getDerivedHeadHealth | `` | `number` | `obj:getDerivedHeadHealth()` |
 | calculateDesiredPainAnimations | calculateDesiredPainAnimations | `` | `void` | `obj:calculateDesiredPainAnimations()` |
 | getMovementSpeedInjuryMultiplier | getMovementSpeedInjuryMultiplier | `` | `number` | `obj:getMovementSpeedInjuryMultiplier()` |
-| getStatRoboticsMultiplier | getStatRoboticsMultiplier | `stat: integer` | `number` | `obj:getStatRoboticsMultiplier(stat)` |
 | getMovementSwimSpeedInjuryMultiplier | getMovementSwimSpeedInjuryMultiplier | `` | `number` | `obj:getMovementSwimSpeedInjuryMultiplier()` |
 | gettingEaten | gettingEaten | `amount: number, vampire: boolean` | `boolean` | `obj:gettingEaten(amount, vampire)` |
 | gettingAcidRain | gettingAcidRain | `amount: number` | `boolean` | `obj:gettingAcidRain(amount)` |
@@ -5755,7 +6553,6 @@
 | isProbablyDying | isProbablyDying | `` | `boolean` | `obj:isProbablyDying()` |
 | getOverallHealthRating | getOverallHealthRating | `` | `number` | `obj:getOverallHealthRating()` |
 | canGetUpWakeUp | canGetUpWakeUp | `` | `boolean` | `obj:canGetUpWakeUp()` |
-| _reassessRagdollPartsAssumingWeJustClearedTheEntireRagdoll | _reassessRagdollPartsAssumingWeJustClearedTheEntireRagdoll | `` | `void` | `obj:_reassessRagdollPartsAssumingWeJustClearedTheEntireRagdoll()` |
 | isRightArmOk | isRightArmOk | `` | `boolean` | `obj:isRightArmOk()` |
 | isLeftArmOk | isLeftArmOk | `` | `boolean` | `obj:isLeftArmOk()` |
 | canIkick | canIkick | `` | `boolean` | `obj:canIkick()` |
@@ -5764,8 +6561,6 @@
 | getWeatherStatPenaltyMult | getWeatherStatPenaltyMult | `` | `number` | `obj:getWeatherStatPenaltyMult()` |
 | getWeatherStatPenalty | getWeatherStatPenalty | `mult: number` | `integer` | `obj:getWeatherStatPenalty(mult)` |
 | calculateBleedRateForFX | calculateBleedRateForFX | `` | `number` | `obj:calculateBleedRateForFX()` |
-| bloodlossUpdate | bloodlossUpdate | `frameTime: number` | `void` | `obj:bloodlossUpdate(frameTime)` |
-| updateDamageState | updateDamageState | `` | `void` | `obj:updateDamageState()` |
 
 ## MeshDataLookup
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
@@ -5797,6 +6592,9 @@
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## MessageBoxManager
+**Header:** `extern/KenshiLib/Include/kenshi/gui/MessageBoxManager.h`
 
 ## ModInfo
 **Header:** `extern/KenshiLib/Include/kenshi/ModInfo.h`
@@ -5832,12 +6630,49 @@
 | SetHistoryBufferLength | SetHistoryBufferLength | `length: integer, fill: number` | `boolean` | `obj:SetHistoryBufferLength(length, fill)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
+## MultiSlider
+**Header:** `extern/KenshiLib/Include/kenshi/gui/MyGUI_MultiSlider.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| mName | (void* | lightuserdata | R | `obj.mName` |
+| mDisableEvents | mDisableEvents | boolean | RW | `obj.mDisableEvents = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| initialiseOverride | initialiseOverride | `` | `void` | `obj:initialiseOverride()` |
+| shutdownOverride | shutdownOverride | `` | `void` | `obj:shutdownOverride()` |
+
 ## MyGui
 **Header:** `???`
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| setFontName | widget_setFontName | `arg1: string` | `void` | `obj:setFontName(arg1)` |
+| getFontName | widget_getFontName | `` | `string` | `obj:getFontName()` |
+| setFontHeight | widget_setFontHeight | `arg1: integer` | `void` | `obj:setFontHeight(arg1)` |
+| getFontHeight | widget_getFontHeight | `` | `integer` | `obj:getFontHeight()` |
+| setTextAlign | widget_setTextAlign | `arg1: integer` | `void` | `obj:setTextAlign(arg1)` |
+| getTextAlign | widget_getTextAlign | `` | `integer` | `obj:getTextAlign()` |
+| setTextColour | widget_setTextColour | `` | `void` | `obj:setTextColour()` |
+| getTextColour | widget_getTextColour | `` | `void` | `obj:getTextColour()` |
+| getColumnCount | widget_getColumnCount | `` | `integer` | `obj:getColumnCount()` |
+| insertColumnAt | widget_insertColumnAt | `arg1: integer, arg2: string` | `void` | `obj:insertColumnAt(arg1, arg2)` |
+| addColumn | widget_addColumn | `arg1: string` | `void` | `obj:addColumn(arg1)` |
+| removeColumnAt | widget_removeColumnAt | `arg1: integer` | `void` | `obj:removeColumnAt(arg1)` |
+| removeAllColumns | widget_removeAllColumns | `` | `void` | `obj:removeAllColumns()` |
+| setColumnNameAt | widget_setColumnNameAt | `arg1: integer, arg2: string` | `void` | `obj:setColumnNameAt(arg1, arg2)` |
+| setColumnWidthAt | widget_setColumnWidthAt | `arg1: integer, arg2: integer` | `void` | `obj:setColumnWidthAt(arg1, arg2)` |
+| getColumnNameAt | widget_getColumnNameAt | `arg1: integer` | `string` | `obj:getColumnNameAt(arg1)` |
+| getColumnWidthAt | widget_getColumnWidthAt | `arg1: integer` | `integer` | `obj:getColumnWidthAt(arg1)` |
+| setSubItemNameAt | widget_setSubItemNameAt | `arg1: integer, arg2: integer, arg3: string` | `void` | `obj:setSubItemNameAt(arg1, arg2, arg3)` |
+| getSubItemNameAt | widget_getSubItemNameAt | `arg1: integer, arg2: integer` | `string` | `obj:getSubItemNameAt(arg1, arg2)` |
+| setImageInfo | widget_setImageInfo | `arg1: string, arg2: integer, arg3: integer, arg4: integer, arg5: integer, arg6: integer, arg7: integer` | `void` | `obj:setImageInfo(arg1, arg2, arg3, arg4, arg5, arg6, arg7)` |
+| setImageRect | widget_setImageRect | `arg1: integer, arg2: integer, arg3: integer, arg4: integer` | `void` | `obj:setImageRect(arg1, arg2, arg3, arg4)` |
+| getImageSize | widget_getImageSize | `` | `integer` | `obj:getImageSize()` |
 | setSize | widget_setSize | `width: integer, height: integer` | `void` | `obj:setSize(width, height)` |
 | setPosition | widget_setPosition | `x: integer, y: integer` | `void` | `obj:setPosition(x, y)` |
 | setCaption | widget_setCaption | `caption: string` | `void` | `obj:setCaption(caption)` |
@@ -5910,6 +6745,63 @@
 | setImageTile | widget_setImageTile | `width: integer, height: integer` | `void` | `obj:setImageTile(width, height)` |
 | setImageIndex | widget_setImageIndex | `idx: integer` | `void` | `obj:setImageIndex(idx)` |
 | getImageIndex | widget_getImageIndex | `` | `integer` | `obj:getImageIndex()` |
+
+## NewGameOptionsWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/NewGameOptionsWindow.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| optionsPanel | optionsPanel | DatapanelGUI | RW | `obj.optionsPanel = <value>` |
+| tooltip | tooltip | ToolTip | RW | `obj.tooltip = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| setVisible | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
+| getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
+| setPosition | setPosition | `x: integer, y: integer` | `void` | `obj:setPosition(x, y)` |
+| update | update | `` | `void` | `obj:update()` |
+
+## NewGameWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/NewGameWindow.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| currentStart | currentStart | integer | RW | `obj.currentStart = <value>` |
+| startInfo | startInfo | DatapanelGUI | RW | `obj.startInfo = <value>` |
+| startNameTextBox | (void* | lightuserdata | R | `obj.startNameTextBox` |
+| newGameOptions | newGameOptions | NewGameOptionsWindow | RW | `obj.newGameOptions = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| setVisible | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
+| getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
+| setRealPosition | setRealPosition | `x: number, y: number` | `void` | `obj:setRealPosition(x, y)` |
+| setPosition | setPosition | `x: integer, y: integer` | `void` | `obj:setPosition(x, y)` |
+| _NV_setPosition | _NV_setPosition | `x: integer, y: integer` | `void` | `obj:_NV_setPosition(x, y)` |
+| show | show | `_a1: boolean` | `void` | `obj:show(_a1)` |
+| _NV_show | _NV_show | `_a1: boolean` | `void` | `obj:_NV_show(_a1)` |
+| update | update | `` | `void` | `obj:update()` |
+| _NV_update | _NV_update | `` | `void` | `obj:_NV_update()` |
+| loadData | loadData | `` | `void` | `obj:loadData()` |
+| updateCurrentData | updateCurrentData | `` | `void` | `obj:updateCurrentData()` |
+
+## NpcListWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| itemSelected | itemSelected | `` | `void` | `obj:itemSelected()` |
+| _NV_itemSelected | _NV_itemSelected | `` | `void` | `obj:_NV_itemSelected()` |
 
 ## NxUserControllerHitReport
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
@@ -6053,11 +6945,11 @@
 | invertX | invertX | boolean | RW | `obj.invertX = <value>` |
 | invertY | invertY | boolean | RW | `obj.invertY = <value>` |
 | resolutionIndex | resolutionIndex | integer | RW | `obj.resolutionIndex = <value>` |
-| keyConfig | keyConfig | DataPanelLine_KeyConfig | R | `obj.keyConfig` |
-| keysDatapanel | keysDatapanel | DatapanelGUI | R | `obj.keysDatapanel` |
+| keyConfig | keyConfig | DataPanelLine_KeyConfig | RW | `obj.keyConfig = <value>` |
+| keysDatapanel | keysDatapanel | DatapanelGUI | RW | `obj.keysDatapanel = <value>` |
 | tabs | (void* | lightuserdata | R | `obj.tabs` |
 | created | created | boolean | RW | `obj.created = <value>` |
-| tooltip | (void* | lightuserdata | R | `obj.tooltip` |
+| tooltip | tooltip | ToolTip | RW | `obj.tooltip = <value>` |
 | previewFontSize | previewFontSize | boolean | RW | `obj.previewFontSize = <value>` |
 
 ### Methods
@@ -6070,8 +6962,17 @@
 | waitingForKey | waitingForKey | `` | `boolean` | `obj:waitingForKey()` |
 | update | update | `` | `void` | `obj:update()` |
 | _NV_update | _NV_update | `` | `void` | `obj:_NV_update()` |
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `OptionsWindow` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| saveLocationChanged | saveLocationChanged | `` | `void` | `obj:saveLocationChanged()` |
+| changeFontSize | changeFontSize | `` | `void` | `obj:changeFontSize()` |
+| changeVolume | changeVolume | `` | `void` | `obj:changeVolume()` |
+| toggleNames | toggleNames | `` | `void` | `obj:toggleNames()` |
+| resetTutorials | resetTutorials | `` | `void` | `obj:resetTutorials()` |
+| toggleTutorials | toggleTutorials | `` | `void` | `obj:toggleTutorials()` |
+| changeDistances | changeDistances | `` | `void` | `obj:changeDistances()` |
+| toggleCompositor | toggleCompositor | `` | `void` | `obj:toggleCompositor()` |
+| resetAllKeys | resetAllKeys | `` | `void` | `obj:resetAllKeys()` |
 | saveOptions | saveOptions | `` | `void` | `obj:saveOptions()` |
 | create | create | `` | `void` | `obj:create()` |
 | updateResolutions | updateResolutions | `` | `void` | `obj:updateResolutions()` |
@@ -6084,7 +6985,7 @@
 |---|---|---|---|---|
 | orderText | (void* | lightuserdata | R | `obj.orderText` |
 | removeButton | (void* | lightuserdata | R | `obj.removeButton` |
-| data | (void* | lightuserdata | R | `obj.data` |
+| data | data | OrderData | RW | `obj.data = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
@@ -6099,7 +7000,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| task | task | Tasker | R | `obj.task` |
+| task | task | Tasker | RW | `obj.task = <value>` |
 | index | index | integer | RW | `obj.index = <value>` |
 | text | text | string | RW | `obj.text = <value>` |
 | enabled | enabled | boolean | RW | `obj.enabled = <value>` |
@@ -6107,7 +7008,8 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `OrderData` | `obj:_CONSTRUCTOR()` |
+| set | set | `_index: integer, _enabled: boolean` | `void` | `obj:set(_index, _enabled)` |
 | updateText | updateText | `` | `void` | `obj:updateText()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
@@ -6125,7 +7027,8 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| ordersItemBox | (void* | lightuserdata | RW | `obj.ordersItemBox = <value>` |
+| ordersCharacter | ordersCharacter | hand | RW | `obj.ordersCharacter = <value>` |
+| ordersItemBox | ordersItemBox | OrdersItemBox | RW | `obj.ordersItemBox = <value>` |
 | ordersItemWidth | ordersItemWidth | integer | RW | `obj.ordersItemWidth = <value>` |
 | ordersItemBoxScrollBarSize | ordersItemBoxScrollBarSize | integer | RW | `obj.ordersItemBoxScrollBarSize = <value>` |
 | ordersItemBoxMaxVisible | ordersItemBoxMaxVisible | integer | RW | `obj.ordersItemBoxMaxVisible = <value>` |
@@ -6146,10 +7049,13 @@
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| update | update | `` | `void` | `obj:update()` |
 | clear | clear | `` | `void` | `obj:clear()` |
 | command | command | `cmd: integer` | `void` | `obj:command(cmd)` |
 | refreshOrders | refreshOrders | `` | `void` | `obj:refreshOrders()` |
 | moveJob | moveJob | `orderIdx: integer, targetIdx: integer` | `void` | `obj:moveJob(orderIdx, targetIdx)` |
+| removeJob | removeJob | `` | `void` | `obj:removeJob()` |
+| notifyEndDropOrder | notifyEndDropOrder | `_sender: userdata, _result: boolean` | `void` | `obj:notifyEndDropOrder(_sender, _result)` |
 | setSpeed | setSpeed | `moveSpeed: integer` | `void` | `obj:setSpeed(moveSpeed)` |
 | setSpeedImage | setSpeedImage | `moveSpeed: integer` | `void` | `obj:setSpeedImage(moveSpeed)` |
 
@@ -6453,6 +7359,134 @@
 | playerMove | playerMove | `pos: Vector3` | `void` | `obj:playerMove(pos)` |
 | _isPlayerCharacter | _isPlayerCharacter | `` | `boolean` | `obj:_isPlayerCharacter()` |
 
+## PortraitData
+**Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| name | name | string | RW | `obj.name = <value>` |
+| flashing | flashing | integer | RW | `obj.flashing = <value>` |
+| state | (lua_Integer | integer | RW | `obj.state = <value>` |
+| reloadPortrait | reloadPortrait | boolean | RW | `obj.reloadPortrait = <value>` |
+| characterHandle | characterHandle | hand | RW | `obj.characterHandle = <value>` |
+| updateRequested | updateRequested | boolean | RW | `obj.updateRequested = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| getCharacter | getCharacter | `` | `Character` | `obj:getCharacter()` |
+| update | update | `` | `boolean` | `obj:update()` |
+| forceUpdate | forceUpdate | `` | `void` | `obj:forceUpdate()` |
+| isSelected | isSelected | `` | `boolean` | `obj:isSelected()` |
+| isDown | isDown | `` | `boolean` | `obj:isDown()` |
+| getBackgroundImageName | getBackgroundImageName | `` | `string` | `obj:getBackgroundImageName()` |
+| getBackOverlayImageName | getBackOverlayImageName | `` | `string` | `obj:getBackOverlayImageName()` |
+| getFrontOverlayImageName | getFrontOverlayImageName | `` | `string` | `obj:getFrontOverlayImageName()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## PortraitImage
+**Header:** `extern/KenshiLib/Include/kenshi/gui/PortraitManager.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| index | index | integer | RW | `obj.index = <value>` |
+| created | created | boolean | RW | `obj.created = <value>` |
+| textureName | textureName | string | RW | `obj.textureName = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## PortraitMainCellView
+**Header:** `extern/KenshiLib/Include/kenshi/gui/PortraitManager.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| characterHandle | characterHandle | hand | RW | `obj.characterHandle = <value>` |
+| name | name | string | RW | `obj.name = <value>` |
+| border | (void* | lightuserdata | R | `obj.border` |
+| imageBackground | (void* | lightuserdata | R | `obj.imageBackground` |
+| imagePortrait | (void* | lightuserdata | R | `obj.imagePortrait` |
+| imageOverlayBack | (void* | lightuserdata | R | `obj.imageOverlayBack` |
+| imageOverlayFront | (void* | lightuserdata | R | `obj.imageOverlayFront` |
+| textName | (void* | lightuserdata | R | `obj.textName` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| resize | resize | `size: integer` | `void` | `obj:resize(size)` |
+| setName | setName | `newName: string` | `void` | `obj:setName(newName)` |
+
+## PortraitManager
+**Header:** `extern/KenshiLib/Include/kenshi/gui/PortraitManager.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| textureSize | textureSize | iVector2 | RW | `obj.textureSize = <value>` |
+| textureName | textureName | string | RW | `obj.textureName = <value>` |
+| texturePortraitSize | texturePortraitSize | iVector2 | RW | `obj.texturePortraitSize = <value>` |
+| maxIndex | maxIndex | integer | RW | `obj.maxIndex = <value>` |
+| imagesIndices | (void* | lightuserdata | R | `obj.imagesIndices` |
+| disableUpdate | disableUpdate | boolean | RW | `obj.disableUpdate = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| init | init | `` | `void` | `obj:init()` |
+| destroy | destroy | `` | `void` | `obj:destroy()` |
+| setUpdateEnabled | setUpdateEnabled | `enabled: boolean` | `void` | `obj:setUpdateEnabled(enabled)` |
+| reloadPortraits | reloadPortraits | `` | `void` | `obj:reloadPortraits()` |
+| reloadTexture | reloadTexture | `` | `void` | `obj:reloadTexture()` |
+| saveTexture | saveTexture | `` | `void` | `obj:saveTexture()` |
+| clearPortraits | clearPortraits | `loadTexture: boolean` | `void` | `obj:clearPortraits(loadTexture)` |
+| getCharacterFlashing | getCharacterFlashing | `` | `boolean` | `obj:getCharacterFlashing()` |
+| getCharacterInCombat | getCharacterInCombat | `` | `boolean` | `obj:getCharacterInCombat()` |
+| getCharacterDown | getCharacterDown | `` | `boolean` | `obj:getCharacterDown()` |
+| getSquadFlashing | getSquadFlashing | `` | `boolean` | `obj:getSquadFlashing()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## PortraitSquadCellView
+**Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| characterHandle | characterHandle | hand | RW | `obj.characterHandle = <value>` |
+| name | name | string | RW | `obj.name = <value>` |
+| border | (void* | lightuserdata | R | `obj.border` |
+| imgBoxPortrait | (void* | lightuserdata | R | `obj.imgBoxPortrait` |
+| txtName | (void* | lightuserdata | R | `obj.txtName` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| resize | resize | `` | `void` | `obj:resize()` |
+| setName | setName | `newName: string` | `void` | `obj:setName(newName)` |
+
+## PortraitSquadItemBox
+**Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| squad | (void* | lightuserdata | R | `obj.squad` |
+| squadView | (void* | lightuserdata | R | `obj.squadView` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| getItemCount | getItemCount | `` | `integer` | `obj:getItemCount()` |
+| update | update | `` | `void` | `obj:update()` |
+
 ## PreviewBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/Building.h`
 
@@ -6650,6 +7684,58 @@
 | _CONSTRUCTOR | _CONSTRUCTOR | `title: string, ins: integer, outs: integer` | `ProductionInventoryLayout` | `obj:_CONSTRUCTOR(title, ins, outs)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
+## ProgressBarWidget
+**Header:** `extern/KenshiLib/Include/kenshi/gui/ScreenLabel.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| bar | (void* | lightuserdata | R | `obj.bar` |
+| label | (void* | lightuserdata | R | `obj.label` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| setVisible | setVisible | `value: boolean` | `void` | `obj:setVisible(value)` |
+| setProgress | setProgress | `value: integer` | `void` | `obj:setProgress(value)` |
+| setPosition | setPosition | `x: integer, y: integer` | `void` | `obj:setPosition(x, y)` |
+| setCaption | setCaption | `value: string` | `void` | `obj:setCaption(value)` |
+
+## ProspectingWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/ProspectingWindow.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| window | (void* | lightuserdata | R | `obj.window` |
+| imgMap | (void* | lightuserdata | R | `obj.imgMap` |
+| listResourcesPanel | (void* | lightuserdata | R | `obj.listResourcesPanel` |
+| listResourcesSelected | (void* | lightuserdata | R | `obj.listResourcesSelected` |
+| cameraMarker | (void* | lightuserdata | R | `obj.cameraMarker` |
+| cameraMarkerSkin | (void* | lightuserdata | R | `obj.cameraMarkerSkin` |
+| datapanelOverview1 | datapanelOverview1 | DatapanelGUI | RW | `obj.datapanelOverview1 = <value>` |
+| datapanelOverview2 | datapanelOverview2 | DatapanelGUI | RW | `obj.datapanelOverview2 = <value>` |
+| resourceImage | (void* | lightuserdata | R | `obj.resourceImage` |
+| lastPos | lastPos | Vector3 | RW | `obj.lastPos = <value>` |
+| lastSkill | lastSkill | number | RW | `obj.lastSkill = <value>` |
+| lastName | lastName | string | RW | `obj.lastName = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| showT | showT | `pos: Vector3, skill: number, name: string` | `void` | `obj:showT(pos, skill, name)` |
+| _show | _show | `` | `void` | `obj:_show()` |
+| hide | hide | `` | `void` | `obj:hide()` |
+| getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
+| updateCameraMarker | updateCameraMarker | `` | `void` | `obj:updateCameraMarker()` |
+| updateMap | updateMap | `resource: integer` | `void` | `obj:updateMap(resource)` |
+| refresh | refresh | `` | `void` | `obj:refresh()` |
+| clear | clear | `` | `void` | `obj:clear()` |
+
 ## ProsperityManager
 **Header:** `extern/KenshiLib/Include/kenshi/FactionUniqueSquadManager.h`
 
@@ -6662,9 +7748,15 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `ProsperityManager` | `obj:_CONSTRUCTOR()` |
+| setup | setup | `` | `void` | `obj:setup()` |
+| load | load | `` | `void` | `obj:load()` |
+| save | save | `` | `void` | `obj:save()` |
 | getProsperityMultiplier | getProsperityMultiplier | `` | `number` | `obj:getProsperityMultiplier()` |
+| getGUIData | getGUIData | `cat: integer` | `void` | `obj:getGUIData(cat)` |
 | update | update | `time: number` | `void` | `obj:update(time)` |
+| notifySquadDefeated | notifySquadDefeated | `` | `void` | `obj:notifySquadDefeated()` |
+| notifySpecialNPCDead | notifySpecialNPCDead | `` | `void` | `obj:notifySpecialNPCDead()` |
 
 ## RaceData
 **Header:** `extern/KenshiLib/Include/kenshi/RaceData.h`
@@ -6747,12 +7839,29 @@
 | trustPositives | trustPositives | number | RW | `obj.trustPositives = <value>` |
 | trustNegatives | trustNegatives | number | RW | `obj.trustNegatives = <value>` |
 | percievedStrength | percievedStrength | number | RW | `obj.percievedStrength = <value>` |
-| stateVariables | stateVariables | std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > > | R | `obj.stateVariables` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| save | save | `ID: string` | `void` | `obj:save(ID)` |
+| load | load | `ID: string` | `void` | `obj:load(ID)` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## ReorderableList
+**Header:** `extern/KenshiLib/Include/kenshi/gui/ManagementScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| data | (void* | lightuserdata | R | `obj.data` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| clear | clear | `` | `void` | `obj:clear()` |
+| refresh | refresh | `force: boolean` | `void` | `obj:refresh(force)` |
+| notifyEndDrop | notifyEndDrop | `sender: integer, info: integer, result: boolean` | `void` | `obj:notifyEndDrop(sender, info, result)` |
+| notifyRemoved | notifyRemoved | `index: integer` | `void` | `obj:notifyRemoved(index)` |
 
 ## RepetitionCounter
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
@@ -6805,6 +7914,20 @@
 | _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
 | getResearchButton | getResearchButton | `` | `lightuserdata` | `obj:getResearchButton()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## ResourceLinePanel
+**Header:** `extern/KenshiLib/Include/kenshi/gui/ProspectingWindow.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| button | (MyGUI::Widget* | MyGUI::Widget | R | `obj.button` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| getWidget | getWidget | `` | `MyGUI::Widget` | `obj:getWidget()` |
 
 ## ResourceLoadRequestMesh
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
@@ -6867,20 +7990,25 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| character | character | Character | R | `obj.character` |
-| inventory | inventory | RootObject | R | `obj.inventory` |
-| states | states | LimbState | R | `obj.states` |
-| items | items | Item | R | `obj.items` |
+| character | character | Character | RW | `obj.character = <value>` |
+| inventory | inventory | RootObject | RW | `obj.inventory = <value>` |
+| states | (lua_Integer | integer | RW | `obj.states = <value>` |
+| items | items | Item | RW | `obj.items = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `RobotLimbs` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| load | load | `` | `void` | `obj:load()` |
+| save | save | `` | `void` | `obj:save()` |
 | getLimb | getLimb | `limb: integer` | `Item` | `obj:getLimb(limb)` |
 | getMask | getMask | `` | `integer` | `obj:getMask()` |
 | getInventoryInterface | getInventoryInterface | `create: boolean` | `RootObject` | `obj:getInventoryInterface(create)` |
 | destroyInventoryInterface | destroyInventoryInterface | `` | `void` | `obj:destroyInventoryInterface()` |
 | getLimbItem | getLimbItem | `l: integer` | `Item` | `obj:getLimbItem(l)` |
+| getState | getState | `limb: integer` | `integer` | `obj:getState(limb)` |
+| setLimb | setLimb | `limb: integer, state: integer` | `void` | `obj:setLimb(limb, state)` |
 
 ## RootObject
 **Header:** `extern/KenshiLib/Include/kenshi/RootObject.h`
@@ -7203,6 +8331,72 @@
 | importPlayerBuildings | importPlayerBuildings | `path: string, file: string` | `integer` | `obj:importPlayerBuildings(path, file)` |
 | importOldPlayerBuildings | importOldPlayerBuildings | `path: string, name: string` | `integer` | `obj:importOldPlayerBuildings(path, name)` |
 
+## ScreenLabel
+**Header:** `extern/KenshiLib/Include/kenshi/gui/ScreenLabel.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| caption | caption | string | RW | `obj.caption = <value>` |
+| textWidget | (void* | lightuserdata | R | `obj.textWidget` |
+| risingSpeed | risingSpeed | number | RW | `obj.risingSpeed = <value>` |
+| risingHeight | risingHeight | number | RW | `obj.risingHeight = <value>` |
+| labelSize | (lua_Integer | integer | RW | `obj.labelSize = <value>` |
+| trackingHandle | trackingHandle | hand | RW | `obj.trackingHandle = <value>` |
+| trackingOffset | trackingOffset | Vector3 | RW | `obj.trackingOffset = <value>` |
+| destroyed | destroyed | boolean | RW | `obj.destroyed = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| setCaption | setCaption | `value: string` | `void` | `obj:setCaption(value)` |
+| _NV_setCaption | _NV_setCaption | `value: string` | `void` | `obj:_NV_setCaption(value)` |
+| setRisingSpeed | setRisingSpeed | `value: integer` | `void` | `obj:setRisingSpeed(value)` |
+| _NV_setRisingSpeed | _NV_setRisingSpeed | `value: integer` | `void` | `obj:_NV_setRisingSpeed(value)` |
+| setPosition | setPosition | `value: Vector3` | `void` | `obj:setPosition(value)` |
+| _NV_setPosition | _NV_setPosition | `value: Vector3` | `void` | `obj:_NV_setPosition(value)` |
+| update | update | `` | `void` | `obj:update()` |
+| _NV_update | _NV_update | `` | `void` | `obj:_NV_update()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| destroy | destroy | `` | `void` | `obj:destroy()` |
+
+## ScreenLabelDebug
+**Header:** `extern/KenshiLib/Include/kenshi/gui/ScreenLabel.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| timeLeft | timeLeft | number | RW | `obj.timeLeft = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| update | update | `` | `void` | `obj:update()` |
+| _NV_update | _NV_update | `` | `void` | `obj:_NV_update()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `caption: string, time: number` | `lightuserdata` | `obj:_CONSTRUCTOR(caption, time)` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## ScreenLabelInterface
+**Header:** `extern/KenshiLib/Include/kenshi/gui/ScreenLabel.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| visible | visible | boolean | RW | `obj.visible = <value>` |
+| position | position | Vector3 | RW | `obj.position = <value>` |
+| needUpdate | needUpdate | boolean | RW | `obj.needUpdate = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| update | update | `` | `void` | `obj:update()` |
+| setVisible | setVisible | `value: boolean` | `void` | `obj:setVisible(value)` |
+| _NV_setVisible | _NV_setVisible | `value: boolean` | `void` | `obj:_NV_setVisible(value)` |
+| setPosition | setPosition | `value: Vector3` | `void` | `obj:setPosition(value)` |
+| _NV_setPosition | _NV_setPosition | `value: Vector3` | `void` | `obj:_NV_setPosition(value)` |
+
 ## SectionItem
 **Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
 
@@ -7446,6 +8640,25 @@
 | stampTime | stampTime | `` | `number` | `obj:stampTime()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
+## Slider
+**Header:** `extern/KenshiLib/Include/kenshi/gui/MyGUI_Slider.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| mDisableEvents | mDisableEvents | boolean | RW | `obj.mDisableEvents = <value>` |
+| mScrollbar | (void* | lightuserdata | R | `obj.mScrollbar` |
+| mSliderName | (void* | lightuserdata | R | `obj.mSliderName` |
+| mSliderValue | (void* | lightuserdata | R | `obj.mSliderValue` |
+| mLoValue | mLoValue | integer | RW | `obj.mLoValue = <value>` |
+| mHiValue | mHiValue | integer | RW | `obj.mHiValue = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| initialiseOverride | initialiseOverride | `` | `void` | `obj:initialiseOverride()` |
+| shutdownOverride | shutdownOverride | `` | `void` | `obj:shutdownOverride()` |
+
 ## SpecificItemLoadFirst
 **Header:** `extern/KenshiLib/Include/kenshi/RootObject.h`
 
@@ -7480,6 +8693,29 @@
 |---|---|---|---|---|
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
+## SplashScreen
+**Header:** `extern/KenshiLib/Include/kenshi/gui/SplashScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| currentState | currentState | integer | RW | `obj.currentState = <value>` |
+| startTime | startTime | number | RW | `obj.startTime = <value>` |
+| skipLogo | skipLogo | boolean | RW | `obj.skipLogo = <value>` |
+| delay | delay | integer | RW | `obj.delay = <value>` |
+| mainPanel | (void* | lightuserdata | R | `obj.mainPanel` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| update | update | `` | `void` | `obj:update()` |
+| getState | getState | `` | `integer` | `obj:getState()` |
+| getEnded | getEnded | `` | `boolean` | `obj:getEnded()` |
+| skip | skip | `` | `void` | `obj:skip()` |
+| addLogo | addLogo | `file: string, scale: number` | `void` | `obj:addLogo(file, scale)` |
+
 ## Spot
 **Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
 
@@ -7504,6 +8740,89 @@
 | update | update | `time: number` | `void` | `obj:update(time)` |
 | resetSeenFlags | resetSeenFlags | `` | `void` | `obj:resetSeenFlags()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## SquadCellView
+**Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| portraitsBox | (void* | lightuserdata | R | `obj.portraitsBox` |
+| txtName | (void* | lightuserdata | R | `obj.txtName` |
+| txtSquadSize | (void* | lightuserdata | R | `obj.txtSquadSize` |
+| squad | (void* | lightuserdata | R | `obj.squad` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| updateSquadSize | updateSquadSize | `` | `void` | `obj:updateSquadSize()` |
+
+## SquadData
+**Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| platoon | platoon | ActivePlatoon | RW | `obj.platoon = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `SquadData` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| setName | setName | `name: string` | `void` | `obj:setName(name)` |
+
+## SquadItemBox
+**Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| setCellSize | setCellSize | `width: integer, height: integer` | `void` | `obj:setCellSize(width, height)` |
+| getItemCount | getItemCount | `` | `integer` | `obj:getItemCount()` |
+
+## SquadListWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| refresh | refresh | `` | `void` | `obj:refresh()` |
+| itemSelected | itemSelected | `` | `void` | `obj:itemSelected()` |
+| _NV_itemSelected | _NV_itemSelected | `` | `void` | `obj:_NV_itemSelected()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
+## SquadManagementScreen
+**Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| mainWidget | (void* | lightuserdata | R | `obj.mainWidget` |
+| btnAddSquad | (void* | lightuserdata | R | `obj.btnAddSquad` |
+| txtFactionSize | (void* | lightuserdata | R | `obj.txtFactionSize` |
+| factionSize | factionSize | integer | RW | `obj.factionSize = <value>` |
+| panelSquads | (void* | lightuserdata | R | `obj.panelSquads` |
+| panelDismiss | (void* | lightuserdata | R | `obj.panelDismiss` |
+| dismissChar | dismissChar | Character | RW | `obj.dismissChar = <value>` |
+| faction | faction | Faction | RW | `obj.faction = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `SquadManagementScreen` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| getVisible | getVisible | `` | `boolean` | `obj:getVisible()` |
+| update | update | `` | `void` | `obj:update()` |
+| reset | reset | `` | `void` | `obj:reset()` |
+| refreshSquads | refreshSquads | `` | `void` | `obj:refreshSquads()` |
+| notifyEndDropSquad | notifyEndDropSquad | `_sender: userdata, _result: boolean` | `void` | `obj:notifyEndDropSquad(_sender, _result)` |
+| notifyEndDropPortrait | notifyEndDropPortrait | `_sender: userdata, _result: boolean` | `void` | `obj:notifyEndDropPortrait(_sender, _result)` |
+| removeSquad | removeSquad | `` | `void` | `obj:removeSquad()` |
+| getSquad | getSquad | `` | `lightuserdata` | `obj:getSquad()` |
+| dismissCharacter | dismissCharacter | `result: integer` | `void` | `obj:dismissCharacter(result)` |
 
 ## Stat
 **Header:** `extern/KenshiLib/Include/kenshi/gui/CharacterStatsWindow.h`
@@ -7821,8 +9140,34 @@
 | getTimeRemainingString | getTimeRemainingString | `` | `string` | `obj:getTimeRemainingString()` |
 | getTotalTimeString | getTotalTimeString | `` | `string` | `obj:getTotalTimeString()` |
 
+## TitleScreen
+**Header:** `extern/KenshiLib/Include/kenshi/gui/TitleScreen.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| newGameWindow | newGameWindow | NewGameWindow | RW | `obj.newGameWindow = <value>` |
+| creditsPanel | (void* | lightuserdata | R | `obj.creditsPanel` |
+| creditsText | (void* | lightuserdata | R | `obj.creditsText` |
+| creditsLoaded | creditsLoaded | boolean | RW | `obj.creditsLoaded = <value>` |
+| creditsPosition | creditsPosition | number | RW | `obj.creditsPosition = <value>` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+| clear | clear | `` | `void` | `obj:clear()` |
+| _NV_clear | _NV_clear | `` | `void` | `obj:_NV_clear()` |
+| show | show | `on: boolean` | `void` | `obj:show(on)` |
+| _NV_show | _NV_show | `on: boolean` | `void` | `obj:_NV_show(on)` |
+| update | update | `` | `void` | `obj:update()` |
+| _NV_update | _NV_update | `` | `void` | `obj:_NV_update()` |
+| closeTheOtherBits | closeTheOtherBits | `` | `boolean` | `obj:closeTheOtherBits()` |
+| setCreditsVisible | setCreditsVisible | `value: boolean` | `void` | `obj:setCreditsVisible(value)` |
+
 ## ToolTip
-**Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
+**Header:** `extern/KenshiLib/Include/kenshi/gui/Tooltip.h`
 
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
@@ -7849,18 +9194,18 @@
 | clearLines | clearLines | `` | `void` | `obj:clearLines()` |
 
 ## ToolTipDynamic
-**Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
+**Header:** `extern/KenshiLib/Include/kenshi/gui/Tooltip.h`
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `ToolTipDynamic` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | setVisible | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
 | _NV_setVisible | _NV_setVisible | `visible: boolean` | `void` | `obj:_NV_setVisible(visible)` |
 
 ## ToolTipFixed
-**Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
+**Header:** `extern/KenshiLib/Include/kenshi/gui/Tooltip.h`
 
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
@@ -7878,23 +9223,23 @@
 | _NV_setVisible | _NV_setVisible | `visible: boolean` | `void` | `obj:_NV_setVisible(visible)` |
 
 ## ToolTipInventory
-**Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
+**Header:** `extern/KenshiLib/Include/kenshi/gui/Tooltip.h`
 
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| compareTooltip | (void* | lightuserdata | R | `obj.compareTooltip` |
+| compareTooltip | compareTooltip | ToolTipInventory | RW | `obj.compareTooltip = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `ToolTipInventory` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | update | update | `` | `void` | `obj:update()` |
 | _NV_update | _NV_update | `` | `void` | `obj:_NV_update()` |
 
 ## ToolTipLine
-**Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
+**Header:** `extern/KenshiLib/Include/kenshi/gui/Tooltip.h`
 
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
@@ -7910,7 +9255,7 @@
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## ToolTipStatic
-**Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
+**Header:** `extern/KenshiLib/Include/kenshi/gui/Tooltip.h`
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
@@ -8204,6 +9549,16 @@
 | resetAllVisible | resetAllVisible | `` | `void` | `obj:resetAllVisible()` |
 | setSignsVisible | setSignsVisible | `value: boolean` | `void` | `obj:setSignsVisible(value)` |
 
+## TownListWindow
+**Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| formatItem | formatItem | `` | `string` | `obj:formatItem()` |
+| _NV_formatItem | _NV_formatItem | `` | `string` | `obj:_NV_formatItem()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
+
 ## TownPositionCacher
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
 
@@ -8242,8 +9597,22 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `value: integer` | `lightuserdata` | `obj:_CONSTRUCTOR(value)` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `value: integer` | `TradeResult` | `obj:_CONSTRUCTOR(value)` |
 | showMessage | showMessage | `` | `void` | `obj:showMessage()` |
+
+## TraderInventoryLayout
+**Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryTraderGUI.h`
+
+### Fields
+| Lua Name | C++ Member | Type | R/W | Example |
+|---|---|---|---|---|
+| scrollBackpack | (void* | lightuserdata | R | `obj.scrollBackpack` |
+
+### Methods
+| Lua Name | C++ Method | Arguments | Return Type | Example |
+|---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 
 ## TransformWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TransformWindow.h`
@@ -8251,31 +9620,33 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| window | window | DatapanelGUI | R | `obj.window` |
-| windowXValue | windowXValue | DataPanelLine_TextEditable | R | `obj.windowXValue` |
-| windowYValue | windowYValue | DataPanelLine_TextEditable | R | `obj.windowYValue` |
-| windowZValue | windowZValue | DataPanelLine_TextEditable | R | `obj.windowZValue` |
-| modeButton | modeButton | DataPanelLine_Button | R | `obj.modeButton` |
-| axisButton | axisButton | DataPanelLine_Button | R | `obj.axisButton` |
-| revertButton | revertButton | DataPanelLine_Button | R | `obj.revertButton` |
+| window | window | DatapanelGUI | RW | `obj.window = <value>` |
+| windowXValue | windowXValue | DataPanelLine_TextEditable | RW | `obj.windowXValue = <value>` |
+| windowYValue | windowYValue | DataPanelLine_TextEditable | RW | `obj.windowYValue = <value>` |
+| windowZValue | windowZValue | DataPanelLine_TextEditable | RW | `obj.windowZValue = <value>` |
+| modeButton | modeButton | DataPanelLine_Button | RW | `obj.modeButton = <value>` |
+| axisButton | axisButton | DataPanelLine_Button | RW | `obj.axisButton = <value>` |
+| revertButton | revertButton | DataPanelLine_Button | RW | `obj.revertButton = <value>` |
 | node | (void* | lightuserdata | R | `obj.node` |
 | parentNode | (void* | lightuserdata | R | `obj.parentNode` |
 | gizmo | (void* | lightuserdata | R | `obj.gizmo` |
 | mode | mode | integer | RW | `obj.mode = <value>` |
 | coordinateSystem | coordinateSystem | integer | RW | `obj.coordinateSystem = <value>` |
 | hasScale | hasScale | boolean | RW | `obj.hasScale = <value>` |
-| lastZone | (void* | lightuserdata | R | `obj.lastZone` |
-| currentZone | (void* | lightuserdata | R | `obj.currentZone` |
-| currentInstance | (void* | lightuserdata | R | `obj.currentInstance` |
+| lastZone | lastZone | ZoneMap | RW | `obj.lastZone = <value>` |
+| currentZone | currentZone | ZoneMap | RW | `obj.currentZone = <value>` |
+| currentInstance | currentInstance | InstanceID | RW | `obj.currentInstance = <value>` |
 | changed | changed | boolean | RW | `obj.changed = <value>` |
 | editChanged | editChanged | boolean | RW | `obj.editChanged = <value>` |
+| lastMouse | lastMouse | unknown | RW | `obj.lastMouse = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `TransformWindow` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | setCaption | setCaption | `s: string` | `void` | `obj:setCaption(s)` |
+| updateState | updateState | `` | `void` | `obj:updateState()` |
 | close | close | `` | `void` | `obj:close()` |
 | refresh | refresh | `` | `void` | `obj:refresh()` |
 | updateGizmo | updateGizmo | `` | `boolean` | `obj:updateGizmo()` |
@@ -8285,8 +9656,13 @@
 | clearChangedFlag | clearChangedFlag | `` | `void` | `obj:clearChangedFlag()` |
 | getMode | getMode | `` | `integer` | `obj:getMode()` |
 | setMode | setMode | `m: integer` | `boolean` | `obj:setMode(m)` |
-| getLastZone | getLastZone | `` | `lightuserdata` | `obj:getLastZone()` |
-| getZone | getZone | `` | `lightuserdata` | `obj:getZone()` |
+| getLastZone | getLastZone | `` | `ZoneMap` | `obj:getLastZone()` |
+| getZone | getZone | `` | `ZoneMap` | `obj:getZone()` |
+| changeMode | changeMode | `` | `void` | `obj:changeMode()` |
+| changeCoord | changeCoord | `` | `void` | `obj:changeCoord()` |
+| changeValue | changeValue | `` | `void` | `obj:changeValue()` |
+| reset | reset | `` | `void` | `obj:reset()` |
+| revert | revert | `` | `void` | `obj:revert()` |
 
 ## TurretBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/TurretBuilding.h`
@@ -8357,14 +9733,14 @@
 | dismissButton | (void* | lightuserdata | R | `obj.dismissButton` |
 | pagingText | (void* | lightuserdata | R | `obj.pagingText` |
 | tooltipsPanel | (void* | lightuserdata | R | `obj.tooltipsPanel` |
-| currentTutorialItem | (void* | lightuserdata | R | `obj.currentTutorialItem` |
+| currentTutorialItem | currentTutorialItem | TutorialItem | RW | `obj.currentTutorialItem = <value>` |
 | flashNewItem | flashNewItem | boolean | RW | `obj.flashNewItem = <value>` |
 | enabled | enabled | boolean | RW | `obj.enabled = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `TutorialGUI` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | clear | clear | `` | `void` | `obj:clear()` |
 | _NV_clear | _NV_clear | `` | `void` | `obj:_NV_clear()` |
@@ -8376,8 +9752,10 @@
 | setEnabled | setEnabled | `value: boolean` | `void` | `obj:setEnabled(value)` |
 | show | show | `value: boolean` | `void` | `obj:show(value)` |
 | _NV_show | _NV_show | `value: boolean` | `void` | `obj:_NV_show(value)` |
+| removeTutorialFromList | removeTutorialFromList | `` | `void` | `obj:removeTutorialFromList()` |
 | arrangeList | arrangeList | `` | `void` | `obj:arrangeList()` |
 | refreshUI | refreshUI | `` | `void` | `obj:refreshUI()` |
+| showTutorialWindow | showTutorialWindow | `` | `void` | `obj:showTutorialWindow()` |
 | closeTutorialWindow | closeTutorialWindow | `` | `void` | `obj:closeTutorialWindow()` |
 | updateCurrentItem | updateCurrentItem | `` | `void` | `obj:updateCurrentItem()` |
 
@@ -8413,15 +9791,15 @@
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `TutorialItem` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | getId | getId | `` | `integer` | `obj:getId()` |
 | isLastSubItem | isLastSubItem | `` | `boolean` | `obj:isLastSubItem()` |
 | isSkippable | isSkippable | `` | `boolean` | `obj:isSkippable()` |
 | isActive | isActive | `` | `boolean` | `obj:isActive()` |
 | hasEnded | hasEnded | `` | `boolean` | `obj:hasEnded()` |
-| getCurrentSubItem | getCurrentSubItem | `` | `lightuserdata` | `obj:getCurrentSubItem()` |
-| getSubItemAt | getSubItemAt | `index: integer` | `lightuserdata` | `obj:getSubItemAt(index)` |
+| getCurrentSubItem | getCurrentSubItem | `` | `TutorialSubItem` | `obj:getCurrentSubItem()` |
+| getSubItemAt | getSubItemAt | `index: integer` | `TutorialSubItem` | `obj:getSubItemAt(index)` |
 | getCurrentSubItemIndex | getCurrentSubItemIndex | `` | `integer` | `obj:getCurrentSubItemIndex()` |
 | getNumSubItems | getNumSubItems | `` | `integer` | `obj:getNumSubItems()` |
 | hasNextSubItem | hasNextSubItem | `` | `boolean` | `obj:hasNextSubItem()` |
@@ -8466,7 +9844,7 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| currentItem | (void* | lightuserdata | RW | `obj.currentItem = <value>` |
+| currentItem | currentItem | TutorialItem | RW | `obj.currentItem = <value>` |
 | currentItemIndex | currentItemIndex | integer | RW | `obj.currentItemIndex = <value>` |
 | tutorialsList | (void* | lightuserdata | R | `obj.tutorialsList` |
 | descriptionText | (void* | lightuserdata | R | `obj.descriptionText` |
@@ -8484,7 +9862,7 @@
 | _NV_clear | _NV_clear | `` | `void` | `obj:_NV_clear()` |
 | isVisible | isVisible | `` | `boolean` | `obj:isVisible()` |
 | _NV_isVisible | _NV_isVisible | `` | `boolean` | `obj:_NV_isVisible()` |
-| _CONSTRUCTOR | _CONSTRUCTOR | `` | `lightuserdata` | `obj:_CONSTRUCTOR()` |
+| _CONSTRUCTOR | _CONSTRUCTOR | `` | `TutorialpediaGUI` | `obj:_CONSTRUCTOR()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 | setup | setup | `` | `void` | `obj:setup()` |
 | updateCurrentItem | updateCurrentItem | `` | `void` | `obj:updateCurrentItem()` |
@@ -8495,13 +9873,15 @@
 ### Fields
 | Lua Name | C++ Member | Type | R/W | Example |
 |---|---|---|---|---|
-| squadTemplate | squadTemplate | GameData | R | `obj.squadTemplate` |
+| squadTemplate | squadTemplate | GameData | RW | `obj.squadTemplate = <value>` |
 | desiredNumberToHave | desiredNumberToHave | integer | RW | `obj.desiredNumberToHave = <value>` |
 | respawnTimer | respawnTimer | number | RW | `obj.respawnTimer = <value>` |
+| existingSquadsList | existingSquadsList | lektor<hand> | RW | `obj.existingSquadsList = <value>` |
 
 ### Methods
 | Lua Name | C++ Method | Arguments | Return Type | Example |
 |---|---|---|---|---|
+| _CONSTRUCTOR | _CONSTRUCTOR | `num: integer` | `UniqueSpawnData` | `obj:_CONSTRUCTOR(num)` |
 | currentNumber | currentNumber | `` | `integer` | `obj:currentNumber()` |
 | _DESTRUCTOR | _DESTRUCTOR | `` | `void` | `obj:_DESTRUCTOR()` |
 

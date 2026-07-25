@@ -21,18 +21,29 @@ unregisterHandler(handlerId)
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
-## 1. Notification Callbacks (45)
+## 1. Notification Callbacks (65)
 
 | Event Name | Source Engine Hook | Lua Signature | Dispatcher Function |
 | :--- | :--- | :--- | :--- |
+| `onKeyDown` | `InputHandler::keyDownEvent hook` | `function(keyCode)` | `CallKeyDownCallbacks` |
+| `onCharsUpdate` | `GameWorld::charsUpdate hook` | `function()` | `CallCharsUpdateCallbacks` |
 | `onCharacterDeath` | `Character::declareDead hook` | `function(character)` | `CallCharacterDeclareDeadCallbacks` |
 | `onCharacterSelect` | `Character::_NV_select hook` | `function(character)` | `CallCharacterSelectCallbacks` |
 | `onCharacterUnselect` | `Character::_NV_unselect hook` | `function(character)` | `CallCharacterUnselectCallbacks` |
 | `onCharacterSay` | `Character::_NV_say hook` | `function(character, message)` | `CallCharacterSayCallbacks` |
 | `onCharacterPickupObject` | `Character::pickupObject hook` | `function(character)` | `CallCharacterPickupObjectCallbacks` |
 | `onCharacterGetPickedUp` | `Character::getPickedUp hook` | `function(character)` | `CallCharacterGetPickedUpCallbacks` |
-| `onCharsUpdate` | `GameWorld::charsUpdate hook` | `function()` | `CallCharsUpdateCallbacks` |
-| `onKeyDown` | `InputHandler::keyDownEvent hook` | `function(keyCode)` | `CallKeyDownCallbacks` |
+| `onCharacterTakeMoney` | `Character::_NV_takeMoney hook` | `function(character, amount)` | `CallCharacterTakeMoneyCallbacks` |
+| `onCharacterEat` | `Character::eatItem hook` | `function(character, foodItem, inventory)` | `CallCharacterEatCallbacks` |
+| `onCharacterHitByMelee` | `Character::_NV_hitByMeleeAttack hook` | `function(character, attacker, damage, cutDir, attack, comboID)` | `CallCharacterHitByMeleeCallbacks` |
+| `onCharacterGettingEaten` | `Character::_NV_gettingEaten hook` | `function(character, eater, amount)` | `CallCharacterGettingEatenCallbacks` |
+| `onCharacterStandingOrderChanged` | `Character::_NV_setStandingOrder hook` | `function(character, orderID, enabled)` | `CallCharacterStandingOrderChangedCallbacks` |
+| `onCharacterFactionChanged` | `Character::_NV_setFaction hook` | `function(character, faction, platoon)` | `CallCharacterFactionChangedCallbacks` |
+| `onCharacterEquip` | `Character::_NV_equipItem hook` | `function(character, item, slotName)` | `CallCharacterEquipCallbacks` |
+| `onCharacterUnequip` | `Character::_NV_unequipItem hook` | `function(character, item, slotName)` | `CallCharacterUnequipCallbacks` |
+| `onPlayerStealCheck` | `Character::_NV_ImStealingDoYouNotice hook` | `function(thief, victim, item, noticed)` | `CallCharacterStealNoticeCallbacks` |
+| `onSmugglingTradeCheck` | `Character::_NV_smugglingTradeCheck hook` | `function(contrabandist, examiner, item, result)` | `CallCharacterSmugglingCheckCallbacks` |
+| `onCharacterInit` | `Character::_NV_init hook` | `function(character)` | `CallCharacterInitCallbacks` |
 | `setHoldLocation` | `CharStats::setHoldLocation hook` | `function(charStats, vector3Table)` | `CallCharStatsSetHoldLocationCallbacks` |
 | `clearHoldLocation` | `CharStats::clearHoldLocation hook` | `function(charStats)` | `CallCharStatsClearHoldLocationCallbacks` |
 | `chooseAttack` | `CharStats::chooseAttack hook` | `function(charStats, range, weaponReach, lastAttack, opponentIsStationary, chosenAttack)` | `CallCharStatsChooseAttackCallbacks` |
@@ -44,16 +55,6 @@ unregisterHandler(handlerId)
 | `xpToughness_PunchSomething` | `CharStats::xpToughness_PunchSomething hook` | `function(charStats, mat)` | `CallCharStatsXpToughness_PunchSomethingCallbacks` |
 | `xpEngineering` | `CharStats::xpEngineering hook` | `function(charStats, time)` | `CallCharStatsXpEngineeringCallbacks` |
 | `xpLockpicking` | `CharStats::xpLockpicking hook` | `function(charStats, lockLevel, success)` | `CallCharStatsXpLockpickingCallbacks` |
-| `onCharacterTakeMoney` | `Character::_NV_takeMoney hook` | `function(character, amount)` | `CallCharacterTakeMoneyCallbacks` |
-| `onCharacterEat` | `Character::eatItem hook` | `function(character, foodItem, inventory)` | `CallCharacterEatCallbacks` |
-| `onCharacterHitByMelee` | `Character::_NV_hitByMeleeAttack hook` | `function(character, attacker, damage, cutDir, attack, comboID)` | `CallCharacterHitByMeleeCallbacks` |
-| `onCharacterGettingEaten` | `Character::_NV_gettingEaten hook` | `function(character, eater, amount)` | `CallCharacterGettingEatenCallbacks` |
-| `onCharacterStandingOrderChanged` | `Character::_NV_setStandingOrder hook` | `function(character, orderID, enabled)` | `CallCharacterStandingOrderChangedCallbacks` |
-| `onCharacterFactionChanged` | `Character::_NV_setFaction hook` | `function(character, faction, platoon)` | `CallCharacterFactionChangedCallbacks` |
-| `onCharacterEquip` | `Character::_NV_equipItem hook` | `function(character, item, slotName)` | `CallCharacterEquipCallbacks` |
-| `onCharacterUnequip` | `Character::_NV_unequipItem hook` | `function(character, item, slotName)` | `CallCharacterUnequipCallbacks` |
-| `onPlayerStealCheck` | `Character::_NV_ImStealingDoYouNotice hook` | `function(thief, victim, item, noticed)` | `CallCharacterStealNoticeCallbacks` |
-| `onSmugglingTradeCheck` | `Character::_NV_smugglingTradeCheck hook` | `function(contrabandist, examiner, item, result)` | `CallCharacterSmugglingCheckCallbacks` |
 | `onPlayerRecruit` | `PlayerInterface::recruit hook` | `function(character, isEditor)` | `CallPlayerRecruitCallbacks` |
 | `onPlayerSelectObject` | `PlayerInterface::selectObject hook` | `function(selectedObject, modifierKeyActive)` | `CallPlayerSelectCallbacks` |
 | `onPlayerOrderGiven` | `PlayerInterface::newPlayerTaskSelectedCharacters hook` | `function(taskType, targetHandle, destinationBuilding, clickPos, queueOrder)` | `CallPlayerOrderGivenCallbacks` |
@@ -67,28 +68,53 @@ unregisterHandler(handlerId)
 | `onDialogueWindowShow` | `DialogueWindow::show hook` | `function(dialogueWindow, dialogue)` | `CallDialogueWindowShowCallbacks` |
 | `onDialogueDoActions` | `Dialogue::_doActions hook` | `function(dialogue, dialogLine)` | `CallDialogueDoActionsCallbacks` |
 | `onDialogueSay` | `Dialogue::say hook` | `function(dialogue, dialogLine)` | `CallDialogueSayCallbacks` |
-| `onCharacterInit` | `Character::_NV_init hook` | `function(character)` | `CallCharacterInitCallbacks` |
+| `onDialogueEndDialogue` | `Dialogue::endDialogue hook` | `function(dialogue, definitelyTheEnd)` | `CallDialogueEndDialogueCallbacks` |
+| `onDialogueEndPlayerConversation` | `Dialogue::_endPlayerConversation hook` | `function(dialogue, finished)` | `CallDialogueEndPlayerConversationCallbacks` |
+| `onDialogueStopEvent` | `Dialogue::stopEvent hook` | `function(dialogue, what)` | `CallDialogueStopEventCallbacks` |
 | `onChooseMyClothing` | `RootObjectFactory::chooseMyClothing hook` | `function(gearLektor, dataList, listName, race, noShoes)` | `CallChooseMyClothingCallbacks` |
 | `onBaseLayoutInitialise` | `wraps::BaseLayout::initialise hook` | `function(layoutName)` | `CallBaseLayoutInitialiseCallbacks` |
+| `onCharStatsXpStatEvent` | `CharStats::xpStat_eventBased hook` | `function(charStats, statType, amount)` | `CallCharStatsXpStatEventBasedCallbacks` |
+| `onCharStatsXpDodgeEvent` | `CharStats::xpDodgeEvent hook` | `function(charStats, enemySkill, successful)` | `CallCharStatsXpDodgeEventCallbacks` |
+| `onPlayerActivateCharacterEditMode` | `PlayerInterface::activateCharacterEditMode hook` | `function(player, character)` | `CallPlayerActivateCharacterEditModeCallbacks` |
+| `onPlayerCreateSquad` | `PlayerInterface::createSquad hook` | `function(player, newSquad)` | `CallPlayerCreateSquadCallbacks` |
+| `onBuildingSetResidentSquad` | `Building::setResidentSquad hook` | `function(building, platoon)` | `CallBuildingSetResidentSquadCallbacks` |
+| `onBuildingAddInternalBuilding` | `Building::addAnInternalBuilding hook` | `function(building, internalBuilding)` | `CallBuildingAddInternalBuildingCallbacks` |
+| `onInventoryAddTradePartner` | `InventoryGUI::addTradePartner hook` | `function(tradeWith, payment, canDrop, isPlayer, whoHand)` | `CallInventoryAddTradePartnerCallbacks` |
+| `onBuildModeConfirm` | `BuildModeWindow::confirm hook` | `function(buildModeWindow, widget)` | `CallBuildModeWindowConfirmCallbacks` |
+| `onSquadRemoved` | `SquadManagementScreen::removeSquad hook` | `function(squadManagementScreen, squadData)` | `CallSquadManagementScreenRemoveSquadCallbacks` |
+| `onManagementScreenMessageAdded` | `ManagementScreen::addMessage hook` | `function(managementScreen, owner, message, logColor)` | `CallManagementScreenAddMessageCallbacks` |
+| `onTitleScreenLoadGame` | `TitleScreen::loadGame hook` | `function(titleScreen, widget)` | `CallTitleScreenLoadGameCallbacks` |
+| `onCharacterAddGoal` | `Character::addGoal hook` | `function(character, taskType, subject)` | `CallCharacterAddGoalCallbacks` |
+| `onCharacterAddJob` | `Character::addJob hook` | `function(character, taskType, subject, shift, addDontClear, location)` | `CallCharacterAddJobCallbacks` |
+| `onCharacterAddOrder` | `Character::addOrder hook` | `function(character, destBuilding, taskType, subject, shift, clear, location)` | `CallCharacterAddOrderCallbacks` |
+| `onCharacterRemoveJob` | `Character::removeJob hook` | `function(character, taskType)` | `CallCharacterRemoveJobCallbacks` |
+| `onPlayerAddJobSelectedCharacters` | `PlayerInterface::addJobSelectedCharacters hook` | `function(player, taskType, subject, shift, add, location)` | `CallPlayerInterfaceAddJobSelectedCharactersCallbacks` |
+| `onPlayerAddOrderSelectedCharacters` | `PlayerInterface::addOrderSelectedCharacters hook` | `function(player, destinationIndoors, taskType, subject, shift, addDontClear, location)` | `CallPlayerInterfaceAddOrderSelectedCharactersCallbacks` |
 
-## 2. Override Callbacks (14)
+## 2. Override Callbacks (20)
 
 | Event Name | Source Engine Hook | Lua Signature & Expected Return | Dispatcher Function |
 | :--- | :--- | :--- | :--- |
-| `onInventoryGetSectionOfType` | `Inventory::getSectionOfType hook` | `function(inventory, type) -> InventorySection` | `CallInventoryGetSectionOfTypeCallbacks` |
-| `onInventoryGetBestFoodItem` | `Inventory::getBestFoodItem hook` | `function(inventory, race) -> Item` | `CallInventoryGetBestFoodItemCallbacks` |
 | `onCharacterLootCheck` | `Character::isItOkForMeToLoot hook` | `function(me, victim, item, defaultVal) -> boolean` | `CallCharacterIsItOkForMeToLootCallbacks` |
 | `onGetFencingChance` | `Character::getFencingSuccessChance hook` | `function(merchant, item, thief, defaultVal) -> number` | `CallCharacterGetFencingSuccessChanceCallbacks` |
 | `onGetStat` | `CharStats::getStat hook` | `function(stats, statType, unmodified, defaultVal) -> number` | `CallCharStatsGetStatCallbacks` |
-| `onFactionChooseRace` | `Faction::chooseARace hook` | `function(faction, character, squadTemplate, defaultVal) -> GameData` | `CallFactionChooseARaceCallbacks` |
-| `onFactionGetBuildingReplacement` | `Faction::getBuildingReplacement hook` | `function(faction, building, defaultVal) -> GameData` | `CallFactionGetBuildingReplacementCallbacks` |
-| `onBuildingUseCheck` | `Ownerships::canIUseThisBuilding hook` | `function(ownerships, building, character, defaultVal) -> boolean` | `CallOwnershipsCanIUseThisBuildingCallbacks` |
 | `onPlatoonIBuyStolenGoods` | `Platoon::iBuyStolenGoods hook` | `function(platoon, item, defaultVal) -> boolean` | `CallPlatoonIBuyStolenGoodsCallbacks` |
 | `onPlatoonIBuyIllegalGoods` | `Platoon::iBuyIllegalGoods hook` | `function(platoon, defaultVal) -> boolean` | `CallPlatoonIBuyIllegalGoodsCallbacks` |
+| `onBuildingUseCheck` | `Ownerships::canIUseThisBuilding hook` | `function(ownerships, building, character, defaultVal) -> boolean` | `CallOwnershipsCanIUseThisBuildingCallbacks` |
+| `onInventoryGetSectionOfType` | `Inventory::getSectionOfType hook` | `function(inventory, type) -> InventorySection` | `CallInventoryGetSectionOfTypeCallbacks` |
+| `onInventoryGetBestFoodItem` | `Inventory::getBestFoodItem hook` | `function(inventory, race) -> Item` | `CallInventoryGetBestFoodItemCallbacks` |
+| `onItemGetValueSingle` | `Inventory::getBaseValueSingle hook` | `function(item, isPlayer, defaultVal) -> integer` | `CallInventoryItemBaseGetValueSingleCallbacks` |
+| `onFactionChooseRace` | `Faction::chooseARace hook` | `function(faction, character, squadTemplate, defaultVal) -> GameData` | `CallFactionChooseARaceCallbacks` |
+| `onFactionGetBuildingReplacement` | `Faction::getBuildingReplacement hook` | `function(faction, building, defaultVal) -> GameData` | `CallFactionGetBuildingReplacementCallbacks` |
+| `onDialogueCheckCondition` | `Dialogue::_checkCondition hook` | `function(dialogue, conditionName, compareBy, val, target, actualConversationTarget, defaultVal) -> boolean` | `CallDialogueCheckConditionCallbacks` |
+| `onDialogueStartConversation` | `Dialogue::startConversation hook` | `function(dialogue, target, talk, ev, force, defaultVal) -> boolean` | `CallDialogueStartConversationCallbacks` |
+| `onDialogueStartPlayerConversation` | `Dialogue::startPlayerConversation hook` | `function(dialogue, target, talk, defaultVal) -> boolean` | `CallDialogueStartPlayerConversationCallbacks` |
+| `onDialogueSendEvent` | `Dialogue::sendEvent hook` | `function(dialogue, who, what, defaultVal) -> boolean` | `CallDialogueSendEventCallbacks` |
 | `onBuildingIsPublic` | `Building::isPublic hook` | `function(building, defaultVal) -> boolean` | `CallBuildingIsPublicCallbacks` |
 | `onBuildingIsForSale` | `Building::isForSale hook` | `function(building, defaultVal) -> boolean` | `CallBuildingIsForSaleCallbacks` |
 | `onBuildingCalculateSaleValue` | `Building::calculateSaleValue hook` | `function(building, defaultVal) -> integer` | `CallBuildingCalculateSaleValueCallbacks` |
-| `onItemGetValueSingle` | `Inventory::getBaseValueSingle hook` | `function(item, isPlayer, defaultVal) -> integer` | `CallInventoryItemBaseGetValueSingleCallbacks` |
+| `onCharMovementIsRunning` | `CharMovement::isRunning hook` | `function(charMovement, defaultVal) -> boolean` | `CallCharMovementIsRunningCallbacks` |
+| `onCharMovementIsRunningAway` | `CharMovement::isRunningAway hook` | `function(charMovement, from, defaultVal) -> boolean` | `CallCharMovementIsRunningAwayCallbacks` |
 
 ## Detailed Callback Documentation
 
@@ -113,6 +139,20 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallBaseLayoutInitialiseCallbacks(const std::string& layout)`
 - **Lua Signature**: `function(layoutName)`
 
+### `onBuildModeConfirm`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `BuildModeWindow::confirm hook`
+- **C++ Dispatcher**: `void CallBuildModeWindowConfirmCallbacks(BuildModeWindow* window, MyGUI::Widget* sender)`
+- **Lua Signature**: `function(buildModeWindow, widget)`
+
+### `onBuildingAddInternalBuilding`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Building::addAnInternalBuilding hook`
+- **C++ Dispatcher**: `void CallBuildingAddInternalBuildingCallbacks(Building* building, Building* b)`
+- **Lua Signature**: `function(building, internalBuilding)`
+
 ### `onBuildingCalculateSaleValue`
 
 - **Category**: Override / Interceptor
@@ -134,12 +174,68 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `bool CallBuildingIsPublicCallbacks(const Building* b, bool defaultVal)`
 - **Lua Signature**: `function(building, defaultVal) -> boolean`
 
+### `onBuildingSetResidentSquad`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Building::setResidentSquad hook`
+- **C++ Dispatcher**: `void CallBuildingSetResidentSquadCallbacks(Building* building, Platoon* who)`
+- **Lua Signature**: `function(building, platoon)`
+
 ### `onBuildingUseCheck`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `Ownerships::canIUseThisBuilding hook`
 - **C++ Dispatcher**: `bool CallOwnershipsCanIUseThisBuildingCallbacks(Ownerships* ownerships, Building* b, Character* me, bool defaultVal)`
 - **Lua Signature**: `function(ownerships, building, character, defaultVal) -> boolean`
+
+### `onCharMovementIsRunning`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `CharMovement::isRunning hook`
+- **C++ Dispatcher**: `bool CallCharMovementIsRunningCallbacks(CharMovement* thisptr, bool defaultVal)`
+- **Lua Signature**: `function(charMovement, defaultVal) -> boolean`
+
+### `onCharMovementIsRunningAway`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `CharMovement::isRunningAway hook`
+- **C++ Dispatcher**: `bool CallCharMovementIsRunningAwayCallbacks(CharMovement* thisptr, const Ogre::Vector3& from, bool defaultVal)`
+- **Lua Signature**: `function(charMovement, from, defaultVal) -> boolean`
+
+### `onCharStatsXpDodgeEvent`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharStats::xpDodgeEvent hook`
+- **C++ Dispatcher**: `void CallCharStatsXpDodgeEventCallbacks(CharStats* stats, float enemySkill, bool successful)`
+- **Lua Signature**: `function(charStats, enemySkill, successful)`
+
+### `onCharStatsXpStatEvent`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharStats::xpStat_eventBased hook`
+- **C++ Dispatcher**: `void CallCharStatsXpStatEventBasedCallbacks(CharStats* stats, int stat, float amount)`
+- **Lua Signature**: `function(charStats, statType, amount)`
+
+### `onCharacterAddGoal`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Character::addGoal hook`
+- **C++ Dispatcher**: `void CallCharacterAddGoalCallbacks(Character* character, int task, RootObject* subject)`
+- **Lua Signature**: `function(character, taskType, subject)`
+
+### `onCharacterAddJob`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Character::addJob hook`
+- **C++ Dispatcher**: `void CallCharacterAddJobCallbacks(Character* character, int task, RootObject* subject, bool shift, bool addDontClear, const Ogre::Vector3& location)`
+- **Lua Signature**: `function(character, taskType, subject, shift, addDontClear, location)`
+
+### `onCharacterAddOrder`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Character::addOrder hook`
+- **C++ Dispatcher**: `void CallCharacterAddOrderCallbacks(Character* character, Building* dest, int task, RootObject* subject, bool shift, bool clear, const Ogre::Vector3& location)`
+- **Lua Signature**: `function(character, destBuilding, taskType, subject, shift, clear, location)`
 
 ### `onCharacterDeath`
 
@@ -211,6 +307,13 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallCharacterPickupObjectCallbacks(Character* character)`
 - **Lua Signature**: `function(character)`
 
+### `onCharacterRemoveJob`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Character::removeJob hook`
+- **C++ Dispatcher**: `void CallCharacterRemoveJobCallbacks(Character* character, int task)`
+- **Lua Signature**: `function(character, taskType)`
+
 ### `onCharacterSay`
 
 - **Category**: Notification / Observer
@@ -275,6 +378,13 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallCrimeWitnessedCallbacks(Character* character, Faction* against, const hand& againstWho, int expiryTime, int crimeType)`
 - **Lua Signature**: `function(character, faction, againstWho, expiryTime, crimeType)`
 
+### `onDialogueCheckCondition`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `Dialogue::_checkCondition hook`
+- **C++ Dispatcher**: `bool CallDialogueCheckConditionCallbacks(Dialogue* dialogue, DialogConditionEnum conditionName, ComparisonEnum compareBy, int val, Character* target, Character* actualConversationTarget, bool defaultVal)`
+- **Lua Signature**: `function(dialogue, conditionName, compareBy, val, target, actualConversationTarget, defaultVal) -> boolean`
+
 ### `onDialogueDoActions`
 
 - **Category**: Notification / Observer
@@ -282,12 +392,54 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallDialogueDoActionsCallbacks(Dialogue* thisptr, DialogLineData* dialogLine)`
 - **Lua Signature**: `function(dialogue, dialogLine)`
 
+### `onDialogueEndDialogue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Dialogue::endDialogue hook`
+- **C++ Dispatcher**: `void CallDialogueEndDialogueCallbacks(Dialogue* dialogue, bool definitelyTheEnd)`
+- **Lua Signature**: `function(dialogue, definitelyTheEnd)`
+
+### `onDialogueEndPlayerConversation`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Dialogue::_endPlayerConversation hook`
+- **C++ Dispatcher**: `void CallDialogueEndPlayerConversationCallbacks(Dialogue* dialogue, bool finished)`
+- **Lua Signature**: `function(dialogue, finished)`
+
 ### `onDialogueSay`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `Dialogue::say hook`
 - **C++ Dispatcher**: `void CallDialogueSayCallbacks(Dialogue* thisptr, DialogLineData* dialogLine)`
 - **Lua Signature**: `function(dialogue, dialogLine)`
+
+### `onDialogueSendEvent`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `Dialogue::sendEvent hook`
+- **C++ Dispatcher**: `bool CallDialogueSendEventCallbacks(Dialogue* dialogue, Character* who, EventTriggerEnum what, bool defaultVal)`
+- **Lua Signature**: `function(dialogue, who, what, defaultVal) -> boolean`
+
+### `onDialogueStartConversation`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `Dialogue::startConversation hook`
+- **C++ Dispatcher**: `bool CallDialogueStartConversationCallbacks(Dialogue* dialogue, Character* target, DialogLineData* talk, EventTriggerEnum ev, bool force, bool defaultVal)`
+- **Lua Signature**: `function(dialogue, target, talk, ev, force, defaultVal) -> boolean`
+
+### `onDialogueStartPlayerConversation`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `Dialogue::startPlayerConversation hook`
+- **C++ Dispatcher**: `bool CallDialogueStartPlayerConversationCallbacks(Dialogue* dialogue, Character* target, DialogLineData* talk, bool defaultVal)`
+- **Lua Signature**: `function(dialogue, target, talk, defaultVal) -> boolean`
+
+### `onDialogueStopEvent`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Dialogue::stopEvent hook`
+- **C++ Dispatcher**: `void CallDialogueStopEventCallbacks(Dialogue* dialogue, EventTriggerEnum what)`
+- **Lua Signature**: `function(dialogue, what)`
 
 ### `onDialogueWindowShow`
 
@@ -330,6 +482,13 @@ unregisterHandler(handlerId)
 - **Engine Hook**: `CharStats::getStat hook`
 - **C++ Dispatcher**: `float CallCharStatsGetStatCallbacks(const CharStats* stats, int what, bool unmodified, float defaultVal)`
 - **Lua Signature**: `function(stats, statType, unmodified, defaultVal) -> number`
+
+### `onInventoryAddTradePartner`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `InventoryGUI::addTradePartner hook`
+- **C++ Dispatcher**: `void CallInventoryAddTradePartnerCallbacks(InventoryGUI* tradeWith, bool payment, bool canDrop, bool isPlayer, const hand& who)`
+- **Lua Signature**: `function(tradeWith, payment, canDrop, isPlayer, whoHand)`
 
 ### `onInventoryGetBestFoodItem`
 
@@ -374,6 +533,13 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallLimbAmputatedCallbacks(Character* character, int limb, bool createSeveredItem, const Ogre::Vector3& force)`
 - **Lua Signature**: `function(character, limb, createSeveredItem, forceVector)`
 
+### `onManagementScreenMessageAdded`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ManagementScreen::addMessage hook`
+- **C++ Dispatcher**: `void CallManagementScreenAddMessageCallbacks(ManagementScreen* screen, const std::string& owner, const std::string& message, int logColor)`
+- **Lua Signature**: `function(managementScreen, owner, message, logColor)`
+
 ### `onPlatoonIBuyIllegalGoods`
 
 - **Category**: Override / Interceptor
@@ -409,6 +575,34 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallPlatoonTaskCompleteCallbacks(Platoon* platoon, Tasker* t)`
 - **Lua Signature**: `function(platoon, completedTask)`
 
+### `onPlayerActivateCharacterEditMode`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `PlayerInterface::activateCharacterEditMode hook`
+- **C++ Dispatcher**: `void CallPlayerActivateCharacterEditModeCallbacks(PlayerInterface* player, Character* character)`
+- **Lua Signature**: `function(player, character)`
+
+### `onPlayerAddJobSelectedCharacters`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `PlayerInterface::addJobSelectedCharacters hook`
+- **C++ Dispatcher**: `void CallPlayerInterfaceAddJobSelectedCharactersCallbacks(PlayerInterface* player, int task, RootObject* subject, bool shift, bool add, const Ogre::Vector3& location)`
+- **Lua Signature**: `function(player, taskType, subject, shift, add, location)`
+
+### `onPlayerAddOrderSelectedCharacters`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `PlayerInterface::addOrderSelectedCharacters hook`
+- **C++ Dispatcher**: `void CallPlayerInterfaceAddOrderSelectedCharactersCallbacks(PlayerInterface* player, Building* destinationIndoors, int task, RootObject* subject, bool shift, bool addDontClear, const Ogre::Vector3& location)`
+- **Lua Signature**: `function(player, destinationIndoors, taskType, subject, shift, addDontClear, location)`
+
+### `onPlayerCreateSquad`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `PlayerInterface::createSquad hook`
+- **C++ Dispatcher**: `void CallPlayerCreateSquadCallbacks(PlayerInterface* player, ActivePlatoon* newSquad)`
+- **Lua Signature**: `function(player, newSquad)`
+
 ### `onPlayerOrderGiven`
 
 - **Category**: Notification / Observer
@@ -443,6 +637,20 @@ unregisterHandler(handlerId)
 - **Engine Hook**: `Character::_NV_smugglingTradeCheck hook`
 - **C++ Dispatcher**: `void CallCharacterSmugglingCheckCallbacks(Character* character, Item* item, Character* who, int result)`
 - **Lua Signature**: `function(contrabandist, examiner, item, result)`
+
+### `onSquadRemoved`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SquadManagementScreen::removeSquad hook`
+- **C++ Dispatcher**: `void CallSquadManagementScreenRemoveSquadCallbacks(SquadManagementScreen* screen, void* squadData)`
+- **Lua Signature**: `function(squadManagementScreen, squadData)`
+
+### `onTitleScreenLoadGame`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `TitleScreen::loadGame hook`
+- **C++ Dispatcher**: `void CallTitleScreenLoadGameCallbacks(TitleScreen* titleScreen, MyGUI::Widget* sender)`
+- **Lua Signature**: `function(titleScreen, widget)`
 
 ### `setHoldLocation`
 
