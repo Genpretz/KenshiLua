@@ -22,11 +22,19 @@ class hand;
 class BountyManager;
 class DialogueWindow;
 class Dialogue;
+class DialogLineData;
 class GameData;
 class RaceData;
 class InventorySection;
 class Ownerships;
 class InventoryItemBase;
+class CharMovement;
+class InventoryGUI;
+class BuildModeWindow;
+class SquadManagementScreen;
+class ManagementScreen;
+class TitleScreen;
+namespace MyGUI { class Widget; }
 template <typename T> class lektor;
 namespace Ogre {
     class Vector3;
@@ -42,6 +50,25 @@ namespace Ogre {
 // These are plain free functions (no namespace) so that Hooks.cpp can include
 // this header without depending on any KenshiLua internal headers.
 // ---------------------------------------------------------------------------
+
+// -----------------------------------------------------------
+// Callbacks for hooks in InputHandler.h
+// -----------------------------------------------------------
+
+// Fired by InputHandler::keyDownEvent hook.
+// Lua event name: "onKeyDown"
+// Lua signature:  function(keyCode)
+// keyCode is the raw OIS::KeyCode cast to int.
+void CallKeyDownCallbacks(int keyCode);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in GameWorld.h
+// -----------------------------------------------------------
+
+// Fired by GameWorld::charsUpdate hook.
+// Lua event name: "onCharsUpdate"
+// Lua signature:  function()
+void CallCharsUpdateCallbacks();
 
 // -----------------------------------------------------------
 // Callbacks for hooks in Character.h
@@ -78,24 +105,70 @@ void CallCharacterPickupObjectCallbacks(Character* character);
 // Lua signature:  function(character)
 void CallCharacterGetPickedUpCallbacks(Character* byWhom);
 
-// -----------------------------------------------------------
-// Callback for hook in GameWorld.h
-// -----------------------------------------------------------
+// Fired by Character::_NV_takeMoney hook.
+// Lua event name: "onCharacterTakeMoney"
+// Lua signature:  function(character, amount)
+void CallCharacterTakeMoneyCallbacks(Character* character, int amount);
 
-// Fired by GameWorld::charsUpdate hook.
-// Lua event name: "onCharsUpdate"
-// Lua signature:  function()
-void CallCharsUpdateCallbacks();
+// Fired by Character::eatItem hook.
+// Lua event name: "onCharacterEat"
+// Lua signature:  function(character, foodItem, inventory)
+void CallCharacterEatCallbacks(Character* character, Item* food, Inventory* from);
 
-// -----------------------------------------------------------
-// Callbacks for hooks in InputHandler.h
-// -----------------------------------------------------------
+// Fired by Character::_NV_hitByMeleeAttack hook.
+// Lua event name: "onCharacterHitByMelee"
+// Lua signature:  function(character, attacker, damage, cutDir, attack, comboID)
+void CallCharacterHitByMeleeCallbacks(Character* character, Character* attacker, Damages* damage, int cutDir, CombatTechniqueData* attack, int comboID);
 
-// Fired by InputHandler::keyDownEvent hook.
-// Lua event name: "onKeyDown"
-// Lua signature:  function(keyCode)
-// keyCode is the raw OIS::KeyCode cast to int.
-void CallKeyDownCallbacks(int keyCode);
+// Fired by Character::_NV_gettingEaten hook.
+// Lua event name: "onCharacterGettingEaten"
+// Lua signature:  function(character, eater, amount)
+void CallCharacterGettingEatenCallbacks(Character* character, Character* eater, float amount);
+
+// Fired by Character::_NV_setStandingOrder hook.
+// Lua event name: "onCharacterStandingOrderChanged"
+// Lua signature:  function(character, orderID, enabled)
+void CallCharacterStandingOrderChangedCallbacks(Character* character, int orderID, bool on);
+
+// Fired by Character::_NV_setFaction hook.
+// Lua event name: "onCharacterFactionChanged"
+// Lua signature:  function(character, faction, platoon)
+void CallCharacterFactionChangedCallbacks(Character* character, Faction* faction, ActivePlatoon* platoon);
+
+// Fired by Character::_NV_equipItem hook.
+// Lua event name: "onCharacterEquip"
+// Lua signature:  function(character, item, slotName)
+void CallCharacterEquipCallbacks(Character* character, const std::string& sectionName, Item* item);
+
+// Fired by Character::_NV_unequipItem hook.
+// Lua event name: "onCharacterUnequip"
+// Lua signature:  function(character, item, slotName)
+void CallCharacterUnequipCallbacks(Character* character, const std::string& sectionName, Item* item);
+
+// Fired by Character::_NV_ImStealingDoYouNotice hook.
+// Lua event name: "onPlayerStealCheck"
+// Lua signature:  function(thief, victim, item, noticed)
+void CallCharacterStealNoticeCallbacks(Character* character, RootObject* stealFrom, Item* item, bool noticed);
+
+// Fired by Character::_NV_smugglingTradeCheck hook.
+// Lua event name: "onSmugglingTradeCheck"
+// Lua signature:  function(contrabandist, examiner, item, result)
+void CallCharacterSmugglingCheckCallbacks(Character* character, Item* item, Character* who, int result);
+
+// Fired by Character::_NV_init hook
+// Lua event name: "onCharacterInit"
+// Lua signature:  function(character)
+void CallCharacterInitCallbacks(Character* character);
+
+// Fired by Character::isItOkForMeToLoot hook
+// Lua event name: "onCharacterLootCheck"
+// Lua signature:  function(me, victim, item, defaultVal) -> boolean
+bool CallCharacterIsItOkForMeToLootCallbacks(Character* me, RootObject* victim, Item* item, bool defaultVal);
+
+// Fired by Character::getFencingSuccessChance hook
+// Lua event name: "onGetFencingChance"
+// Lua signature:  function(merchant, item, thief, defaultVal) -> number
+float CallCharacterGetFencingSuccessChanceCallbacks(Character* merchant, Item* item, RootObject* thief, float defaultVal);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in CharStats.h
@@ -156,55 +229,14 @@ void CallCharStatsXpEngineeringCallbacks(CharStats* stats, float time);
 // Lua signature:  function(charStats, lockLevel, success)
 void CallCharStatsXpLockpickingCallbacks(CharStats* stats, int lockLevel, bool success);
 
-// Fired by Character::_NV_takeMoney hook.
-// Lua event name: "onCharacterTakeMoney"
-// Lua signature:  function(character, amount)
-void CallCharacterTakeMoneyCallbacks(Character* character, int amount);
+// Fired by CharStats::getStat hook
+// Lua event name: "onGetStat"
+// Lua signature:  function(stats, statType, unmodified, defaultVal) -> number
+float CallCharStatsGetStatCallbacks(const CharStats* stats, int what, bool unmodified, float defaultVal);
 
-// Fired by Character::eatItem hook.
-// Lua event name: "onCharacterEat"
-// Lua signature:  function(character, foodItem, inventory)
-void CallCharacterEatCallbacks(Character* character, Item* food, Inventory* from);
-
-// Fired by Character::_NV_hitByMeleeAttack hook.
-// Lua event name: "onCharacterHitByMelee"
-// Lua signature:  function(character, attacker, damage, cutDir, attack, comboID)
-void CallCharacterHitByMeleeCallbacks(Character* character, Character* attacker, Damages* damage, int cutDir, CombatTechniqueData* attack, int comboID);
-
-// Fired by Character::_NV_gettingEaten hook.
-// Lua event name: "onCharacterGettingEaten"
-// Lua signature:  function(character, eater, amount)
-void CallCharacterGettingEatenCallbacks(Character* character, Character* eater, float amount);
-
-// Fired by Character::_NV_setStandingOrder hook.
-// Lua event name: "onCharacterStandingOrderChanged"
-// Lua signature:  function(character, orderID, enabled)
-void CallCharacterStandingOrderChangedCallbacks(Character* character, int orderID, bool on);
-
-// Fired by Character::_NV_setFaction hook.
-// Lua event name: "onCharacterFactionChanged"
-// Lua signature:  function(character, faction, platoon)
-void CallCharacterFactionChangedCallbacks(Character* character, Faction* faction, ActivePlatoon* platoon);
-
-// Fired by Character::_NV_equipItem hook.
-// Lua event name: "onCharacterEquip"
-// Lua signature:  function(character, item, slotName)
-void CallCharacterEquipCallbacks(Character* character, const std::string& sectionName, Item* item);
-
-// Fired by Character::_NV_unequipItem hook.
-// Lua event name: "onCharacterUnequip"
-// Lua signature:  function(character, item, slotName)
-void CallCharacterUnequipCallbacks(Character* character, const std::string& sectionName, Item* item);
-
-// Fired by Character::_NV_ImStealingDoYouNotice hook.
-// Lua event name: "onPlayerStealCheck"
-// Lua signature:  function(thief, victim, item, noticed)
-void CallCharacterStealNoticeCallbacks(Character* character, RootObject* stealFrom, Item* item, bool noticed);
-
-// Fired by Character::_NV_smugglingTradeCheck hook.
-// Lua event name: "onSmugglingTradeCheck"
-// Lua signature:  function(contrabandist, examiner, item, result)
-void CallCharacterSmugglingCheckCallbacks(Character* character, Item* item, Character* who, int result);
+// -----------------------------------------------------------
+// Callbacks for hooks in PlayerInterface.h
+// -----------------------------------------------------------
 
 // Fired by PlayerInterface::recruit hook.
 // Lua event name: "onPlayerRecruit"
@@ -221,6 +253,10 @@ void CallPlayerSelectCallbacks(PlayerInterface* player, RootObject* obj, bool mo
 // Lua signature:  function(taskType, targetHandle, destinationBuilding, clickPos, queueOrder)
 void CallPlayerOrderGivenCallbacks(PlayerInterface* player, int taskType, const hand& targetH, Building* destinationIndoors, const Ogre::Vector3& clickpos, bool addDontClear);
 
+// -----------------------------------------------------------
+// Callbacks for hooks in Platoon.h
+// -----------------------------------------------------------
+
 // Fired by ActivePlatoon::_NV_addActiveObject hook.
 // Lua event name: "onPlatoonMemberAdded"
 // Lua signature:  function(platoon, character)
@@ -236,30 +272,102 @@ void CallPlatoonMemberRemovedCallbacks(ActivePlatoon* platoon, RootObject* c);
 // Lua signature:  function(platoon, completedTask)
 void CallPlatoonTaskCompleteCallbacks(Platoon* platoon, Tasker* t);
 
+// Fired by Platoon::iBuyStolenGoods hook
+// Lua event name: "onPlatoonIBuyStolenGoods"
+// Lua signature:  function(platoon, item, defaultVal) -> boolean
+bool CallPlatoonIBuyStolenGoodsCallbacks(Platoon* platoon, Item* what, bool defaultVal);
+
+// Fired by Platoon::iBuyIllegalGoods hook
+// Lua event name: "onPlatoonIBuyIllegalGoods"
+// Lua signature:  function(platoon, defaultVal) -> boolean
+bool CallPlatoonIBuyIllegalGoodsCallbacks(Platoon* platoon, bool defaultVal);
+
+// Fired by Ownerships::canIUseThisBuilding hook
+// Lua event name: "onBuildingUseCheck"
+// Lua signature:  function(ownerships, building, character, defaultVal) -> boolean
+bool CallOwnershipsCanIUseThisBuildingCallbacks(Ownerships* ownerships, Building* b, Character* me, bool defaultVal);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Item.h
+// -----------------------------------------------------------
+
 // Fired by Item::_NV_notifyTheftFrom hook.
 // Lua event name: "onItemStolen"
 // Lua signature:  function(item, victim)
 void CallItemStolenCallbacks(Item* item, RootObject* obj);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Inventory.h / InventoryItemBase.h
+// -----------------------------------------------------------
+
+// Fired by Inventory::getSectionOfType hook
+// Lua event name: "onInventoryGetSectionOfType"
+// Lua signature:  function(inventory, type) -> InventorySection
+InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type);
+
+// Fired by Inventory::getBestFoodItem hook
+// Lua event name: "onInventoryGetBestFoodItem"
+// Lua signature:  function(inventory, race) -> Item
+Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race);
+
+// Fired by Inventory::getBaseValueSingle hook
+// Lua event name: "onItemGetValueSingle"
+// Lua signature:  function(item, isPlayer, defaultVal) -> integer
+int CallInventoryItemBaseGetValueSingleCallbacks(const InventoryItemBase* item, bool isPlayer, int defaultVal);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in BountyManager.h
+// -----------------------------------------------------------
 
 // Fired by BountyManager::notifyCrimeWitnessed hook.
 // Lua event name: "onCrimeWitnessed"
 // Lua signature:  function(character, faction, againstWho, expiryTime, crimeType)
 void CallCrimeWitnessedCallbacks(Character* character, Faction* against, const hand& againstWho, int expiryTime, int crimeType);
 
+// -----------------------------------------------------------
+// Callbacks for hooks in FactionRelations.h
+// -----------------------------------------------------------
+
 // Fired by FactionRelations::affectRelations hook.
 // Lua event name: "onFactionRelationsAffected"
 // Lua signature:  function(faction, otherFaction, eventType, multiplier)
 void CallFactionRelationsAffectedCallbacks(Faction* faction, Faction* other, int eventType, float multiplier);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Faction.h
+// -----------------------------------------------------------
+
+// Fired by Faction::chooseARace hook
+// Lua event name: "onFactionChooseRace"
+// Lua signature:  function(faction, character, squadTemplate, defaultVal) -> GameData
+GameData* CallFactionChooseARaceCallbacks(Faction* faction, GameData* character, GameData* squadTemplate, GameData* defaultVal);
+
+// Fired by Faction::getBuildingReplacement hook
+// Lua event name: "onFactionGetBuildingReplacement"
+// Lua signature:  function(faction, building, defaultVal) -> GameData
+GameData* CallFactionGetBuildingReplacementCallbacks(Faction* faction, GameData* building, GameData* defaultVal);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in MedicalSystem.h
+// -----------------------------------------------------------
 
 // Fired by MedicalSystem::amputate hook.
 // Lua event name: "onLimbAmputated"
 // Lua signature:  function(character, limb, createSeveredItem, forceVector)
 void CallLimbAmputatedCallbacks(Character* character, int limb, bool createSeveredItem, const Ogre::Vector3& force);
 
+// -----------------------------------------------------------
+// Callbacks for hooks in gui/DialogueWindow.h
+// -----------------------------------------------------------
+
 // Fired by DialogueWindow::show hook.
 // Lua event name: "onDialogueWindowShow"
 // Lua signature:  function(dialogueWindow, dialogue)
 void CallDialogueWindowShowCallbacks(DialogueWindow* thisptr, Dialogue* dialogue);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Dialogue.h
+// -----------------------------------------------------------
 
 // Fired by Dialogue::_doActions hook.
 // Lua event name: "onDialogueDoActions"
@@ -271,87 +379,175 @@ void CallDialogueDoActionsCallbacks(Dialogue* thisptr, DialogLineData* dialogLin
 // Lua signature:  function(dialogue, dialogLine)
 void CallDialogueSayCallbacks(Dialogue* thisptr, DialogLineData* dialogLine);
 
-// Fired by Character::_NV_init hook
-// Lua event name:
-// Lua signature: function(character)
-void CallCharacterInitCallbacks(Character* character);
+// Fired by Dialogue::endDialogue hook.
+// Lua event name: "onDialogueEndDialogue"
+// Lua signature:  function(dialogue, definitelyTheEnd)
+void CallDialogueEndDialogueCallbacks(Dialogue* dialogue, bool definitelyTheEnd);
 
-// Fired by RootObjectFactory::chooseMyClothing
-// Lua event name:
-// Lua signature:
+// Fired by Dialogue::_checkCondition hook.
+// Lua event name: "onDialogueCheckCondition"
+// Lua signature:  function(dialogue, conditionName, compareBy, val, target, actualConversationTarget, defaultVal) -> boolean
+bool CallDialogueCheckConditionCallbacks(Dialogue* dialogue, DialogConditionEnum conditionName, ComparisonEnum compareBy, int val, Character* target, Character* actualConversationTarget, bool defaultVal);
+
+// Fired by Dialogue::startConversation hook.
+// Lua event name: "onDialogueStartConversation"
+// Lua signature:  function(dialogue, target, talk, ev, force, defaultVal) -> boolean
+bool CallDialogueStartConversationCallbacks(Dialogue* dialogue, Character* target, DialogLineData* talk, EventTriggerEnum ev, bool force, bool defaultVal);
+
+// Fired by Dialogue::_endPlayerConversation hook.
+// Lua event name: "onDialogueEndPlayerConversation"
+// Lua signature:  function(dialogue, finished)
+void CallDialogueEndPlayerConversationCallbacks(Dialogue* dialogue, bool finished);
+
+// Fired by Dialogue::startPlayerConversation hook.
+// Lua event name: "onDialogueStartPlayerConversation"
+// Lua signature:  function(dialogue, target, talk, defaultVal) -> boolean
+bool CallDialogueStartPlayerConversationCallbacks(Dialogue* dialogue, Character* target, DialogLineData* talk, bool defaultVal);
+
+// Fired by Dialogue::sendEvent hook.
+// Lua event name: "onDialogueSendEvent"
+// Lua signature:  function(dialogue, who, what, defaultVal) -> boolean
+bool CallDialogueSendEventCallbacks(Dialogue* dialogue, Character* who, EventTriggerEnum what, bool defaultVal);
+
+// Fired by Dialogue::stopEvent hook.
+// Lua event name: "onDialogueStopEvent"
+// Lua signature:  function(dialogue, what)
+void CallDialogueStopEventCallbacks(Dialogue* dialogue, EventTriggerEnum what);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in RootObjectFactory.h
+// -----------------------------------------------------------
+
+// Fired by RootObjectFactory::chooseMyClothing hook
+// Lua event name: "onChooseMyClothing"
+// Lua signature:  function(gearLektor, dataList, listName, race, noShoes)
 void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, const std::string& listName, RaceData* race, bool noShoes);
 
-// Fired by wraps::BaseLayout::initialise
+// -----------------------------------------------------------
+// Callbacks for hooks in mygui/common/baselayout/BaseLayout.h
+// -----------------------------------------------------------
+
+// Fired by wraps::BaseLayout::initialise hook
 // Lua event name: "onBaseLayoutInitialise"
-// Lua signature: function(layout)
+// Lua signature:  function(layoutName)
 void CallBaseLayoutInitialiseCallbacks(const std::string& layout);
 
-// Fired by Inventory::getSectionOfType
-// Lua event name:
-// Lua signature:
-InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type);
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/Building.h
+// -----------------------------------------------------------
 
-// Fired by Inventory::getBestFoodItem
-// Lua event name:
-// Lua signature:
-Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race);
-
-// Fired by "Character::isItOkForMeToLoot
-// Lua event name:
-// Lua signature:
-bool CallCharacterIsItOkForMeToLootCallbacks(Character* me, RootObject* victim, Item* item, bool defaultVal);
-
-// Fired by Character::getFencingSuccessChance
-// Lua event name:
-// Lua signature:
-float CallCharacterGetFencingSuccessChanceCallbacks(Character* merchant, Item* item, RootObject* thief, float defaultVal);
-
-// Fired by CharStats::getStat
-// Lua event name:
-// Lua signature:
-float CallCharStatsGetStatCallbacks(const CharStats* stats, int what, bool unmodified, float defaultVal);
-
-// Fired by Faction::chooseARace
-// Lua event name:
-// Lua signature:
-GameData* CallFactionChooseARaceCallbacks(Faction* faction, GameData* character, GameData* squadTemplate, GameData* defaultVal);
-
-// Fired by Faction::getBuildingReplacement
-// Lua event name:
-// Lua signature:
-GameData* CallFactionGetBuildingReplacementCallbacks(Faction* faction, GameData* building, GameData* defaultVal);
-
-// Fired by Ownerships::canIUseThisBuilding
-// Lua event name:
-// Lua signature:
-bool CallOwnershipsCanIUseThisBuildingCallbacks(Ownerships* ownerships, Building* b, Character* me, bool defaultVal);
-
-// Fired by Platoon::iBuyStolenGoods
-// Lua event name:
-// Lua signature:
-bool CallPlatoonIBuyStolenGoodsCallbacks(Platoon* platoon, Item* what, bool defaultVal);
-
-// Fired by Platoon::iBuyIllegalGoods
-// Lua event name:
-// Lua signature:
-bool CallPlatoonIBuyIllegalGoodsCallbacks(Platoon* platoon, bool defaultVal);
-
-// Fired by Building::isPublic
-// Lua event name:
-// Lua signature:
+// Fired by Building::isPublic hook
+// Lua event name: "onBuildingIsPublic"
+// Lua signature:  function(building, defaultVal) -> boolean
 bool CallBuildingIsPublicCallbacks(const Building* b, bool defaultVal);
 
-// Fired by Building::isForSale
-// Lua event name:
-// Lua signature:
+// Fired by Building::isForSale hook
+// Lua event name: "onBuildingIsForSale"
+// Lua signature:  function(building, defaultVal) -> boolean
 bool CallBuildingIsForSaleCallbacks(Building* b, bool defaultVal);
 
-// Fired by Building::calculateSaleValue
-// Lua event name:
-// Lua signature:
+// Fired by Building::calculateSaleValue hook
+// Lua event name: "onBuildingCalculateSaleValue"
+// Lua signature:  function(building, defaultVal) -> integer
 int CallBuildingCalculateSaleValueCallbacks(Building* b, int defaultVal);
 
-// Fired by Inventory::getBaseValueSingle
-// Lua event name:
-// Lua signature:
-int CallInventoryItemBaseGetValueSingleCallbacks(const InventoryItemBase* item, bool isPlayer, int defaultVal);
+//---------------------------------------------------------
+// Callbacks for hooks in CharMovement.h
+//---------------------------------------------------------
+
+// Fired by CharMovement::isRunning hook
+// Lua event name: "onCharMovementIsRunning"
+// Lua signature:  function(charMovement, defaultVal) -> boolean
+bool CallCharMovementIsRunningCallbacks(CharMovement* thisptr, bool defaultVal);
+
+// Fired by CharMovement::isRunningAway hook
+// Lua event name: "onCharMovementIsRunningAway"
+// Lua signature:  function(charMovement, from, defaultVal) -> boolean
+bool CallCharMovementIsRunningAwayCallbacks(CharMovement* thisptr, const Ogre::Vector3& from, bool defaultVal);
+
+// Fired by CharStats::xpStat_eventBased hook
+// Lua event name: "onCharStatsXpStatEvent"
+// Lua signature:  function(charStats, statType, amount)
+void CallCharStatsXpStatEventBasedCallbacks(CharStats* stats, int stat, float amount);
+
+// Fired by CharStats::xpDodgeEvent hook
+// Lua event name: "onCharStatsXpDodgeEvent"
+// Lua signature:  function(charStats, enemySkill, successful)
+void CallCharStatsXpDodgeEventCallbacks(CharStats* stats, float enemySkill, bool successful);
+
+// Fired by PlayerInterface::activateCharacterEditMode hook
+// Lua event name: "onPlayerActivateCharacterEditMode"
+// Lua signature:  function(player, character)
+void CallPlayerActivateCharacterEditModeCallbacks(PlayerInterface* player, Character* character);
+
+// Fired by PlayerInterface::createSquad hook
+// Lua event name: "onPlayerCreateSquad"
+// Lua signature:  function(player, newSquad)
+void CallPlayerCreateSquadCallbacks(PlayerInterface* player, ActivePlatoon* newSquad);
+
+// Fired by Building::setResidentSquad hook
+// Lua event name: "onBuildingSetResidentSquad"
+// Lua signature:  function(building, platoon)
+void CallBuildingSetResidentSquadCallbacks(Building* building, Platoon* who);
+
+// Fired by Building::addAnInternalBuilding hook
+// Lua event name: "onBuildingAddInternalBuilding"
+// Lua signature:  function(building, internalBuilding)
+void CallBuildingAddInternalBuildingCallbacks(Building* building, Building* b);
+
+// Fired by InventoryGUI::addTradePartner hook
+// Lua event name: "onInventoryAddTradePartner"
+// Lua signature:  function(tradeWith, payment, canDrop, isPlayer, whoHand)
+void CallInventoryAddTradePartnerCallbacks(InventoryGUI* tradeWith, bool payment, bool canDrop, bool isPlayer, const hand& who);
+
+// Fired by BuildModeWindow::confirm hook
+// Lua event name: "onBuildModeConfirm"
+// Lua signature:  function(buildModeWindow, widget)
+void CallBuildModeWindowConfirmCallbacks(BuildModeWindow* window, MyGUI::Widget* sender);
+
+// Fired by SquadManagementScreen::removeSquad hook
+// Lua event name: "onSquadRemoved"
+// Lua signature:  function(squadManagementScreen, squadData)
+void CallSquadManagementScreenRemoveSquadCallbacks(SquadManagementScreen* screen, void* squadData);
+
+// Fired by ManagementScreen::addMessage hook
+// Lua event name: "onManagementScreenMessageAdded"
+// Lua signature:  function(managementScreen, owner, message, logColor)
+void CallManagementScreenAddMessageCallbacks(ManagementScreen* screen, const std::string& owner, const std::string& message, int logColor);
+
+// Fired by TitleScreen::loadGame hook
+// Lua event name: "onTitleScreenLoadGame"
+// Lua signature:  function(titleScreen, widget)
+void CallTitleScreenLoadGameCallbacks(TitleScreen* titleScreen, MyGUI::Widget* sender);
+
+// Fired by Character::addGoal hook
+// Lua event name: "onCharacterAddGoal"
+// Lua signature:  function(character, taskType, subject)
+void CallCharacterAddGoalCallbacks(Character* character, int task, RootObject* subject);
+
+// Fired by Character::addJob hook
+// Lua event name: "onCharacterAddJob"
+// Lua signature:  function(character, taskType, subject, shift, addDontClear, location)
+void CallCharacterAddJobCallbacks(Character* character, int task, RootObject* subject, bool shift, bool addDontClear, const Ogre::Vector3& location);
+
+// Fired by Character::addOrder hook
+// Lua event name: "onCharacterAddOrder"
+// Lua signature:  function(character, destBuilding, taskType, subject, shift, clear, location)
+void CallCharacterAddOrderCallbacks(Character* character, Building* dest, int task, RootObject* subject, bool shift, bool clear, const Ogre::Vector3& location);
+
+// Fired by Character::removeJob hook
+// Lua event name: "onCharacterRemoveJob"
+// Lua signature:  function(character, taskType)
+void CallCharacterRemoveJobCallbacks(Character* character, int task);
+
+// Fired by PlayerInterface::addJobSelectedCharacters hook
+// Lua event name: "onPlayerAddJobSelectedCharacters"
+// Lua signature:  function(player, taskType, subject, shift, add, location)
+void CallPlayerInterfaceAddJobSelectedCharactersCallbacks(PlayerInterface* player, int task, RootObject* subject, bool shift, bool add, const Ogre::Vector3& location);
+
+// Fired by PlayerInterface::addOrderSelectedCharacters hook
+// Lua event name: "onPlayerAddOrderSelectedCharacters"
+// Lua signature:  function(player, destinationIndoors, taskType, subject, shift, addDontClear, location)
+void CallPlayerInterfaceAddOrderSelectedCharactersCallbacks(PlayerInterface* player, Building* destinationIndoors, int task, RootObject* subject, bool shift, bool addDontClear, const Ogre::Vector3& location);
+
+
