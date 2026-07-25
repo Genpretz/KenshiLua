@@ -292,6 +292,8 @@ namespace KenshiLua
 
 void LuaBindings::registerAll(lua_State* L)
 {
+    installKenshiLuaTable(L);
+
     // Register Enums
     registerEnumBindings(L);
 
@@ -581,6 +583,94 @@ void LuaBindings::registerAll(lua_State* L)
     ZoneMapBinding::registerBinding(L);
     ZoneSpacialGridBinding::registerBinding(L);
     physHitBinding::registerBinding(L);
-}
 
+    // RESTORED METATABLE INHERITANCE:
+    
+    // Core object inheritance
+    setMetatableParent(L, CharacterBinding::getMetatableName(), RootObjectBaseBinding::getMetatableName());
+    setMetatableParent(L, ActivePlatoonBinding::getMetatableName(), PlatoonBinding::getMetatableName());
+    setMetatableParent(L, CharMovementBinding::getMetatableName(), AbstractMovementBaseBinding::getMetatableName());
+
+    setMetatableParent(L, TownBinding::getMetatableName(), TownBaseBinding::getMetatableName());
+    setMetatableParent(L, TownBaseBinding::getMetatableName(), RootObjectBinding::getMetatableName());
+
+    setMetatableParent(L, ItemBinding::getMetatableName(), InventoryItemBaseBinding::getMetatableName());
+    setMetatableParent(L, InventoryItemBaseBinding::getMetatableName(), RootObjectBinding::getMetatableName());
+    setMetatableParent(L, GearBinding::getMetatableName(), ItemBinding::getMetatableName());
+    setMetatableParent(L, WeaponBinding::getMetatableName(), GearBinding::getMetatableName());
+    setMetatableParent(L, SwordBinding::getMetatableName(), WeaponBinding::getMetatableName());
+    setMetatableParent(L, CrossbowBinding::getMetatableName(), WeaponBinding::getMetatableName());
+    setMetatableParent(L, ArmourBinding::getMetatableName(), GearBinding::getMetatableName());
+    setMetatableParent(L, LockedArmourBinding::getMetatableName(), ArmourBinding::getMetatableName());
+
+    // GUI and Dialog chains
+    setMetatableParent(L, DialogueWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    setMetatableParent(L, DatapanelGUIBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    setMetatableParent(L, OptionsWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    setMetatableParent(L, InventoryGUIBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    setMetatableParent(L, MainBarGUIBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    setMetatableParent(L, BuildModeWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    setMetatableParent(L, CharacterStatsWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    setMetatableParent(L, CharacterTradingWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    setMetatableParent(L, TutorialGUIBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+    setMetatableParent(L, TutorialpediaGUIBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+
+    // ToolTip chains
+    setMetatableParent(L, ToolTipDynamicBinding::getMetatableName(), ToolTipBinding::getMetatableName());
+    setMetatableParent(L, ToolTipFixedBinding::getMetatableName(), ToolTipBinding::getMetatableName());
+    setMetatableParent(L, ToolTipInventoryBinding::getMetatableName(), ToolTipBinding::getMetatableName());
+    setMetatableParent(L, ToolTipStaticBinding::getMetatableName(), ToolTipBinding::getMetatableName());
+    
+    // DataPanelLine chains
+    setMetatableParent(L, DataPanelLine_FactionBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    setMetatableParent(L, DataPanelLine_ResearchBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    setMetatableParent(L, DataPanelLine_ButtonBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    setMetatableParent(L, DataPanelLine_SliderEditableBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    setMetatableParent(L, DataPanelLine_TextBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    setMetatableParent(L, DataPanelLine_TextEditableBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    setMetatableParent(L, DataPanelLine_SliderBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    setMetatableParent(L, DataPanelLine_ProgressBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    setMetatableParent(L, DataPanelLine_CheckBoxBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    setMetatableParent(L, DataPanelLine_DropBoxBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+    setMetatableParent(L, DataPanelLine_KeyConfigBinding::getMetatableName(), DataPanelLineBinding::getMetatableName());
+
+    // Building chains
+    setMetatableParent(L, BuildingBinding::getMetatableName(), RootObjectBinding::getMetatableName());
+    setMetatableParent(L, UseableStuffBinding::getMetatableName(), BuildingBinding::getMetatableName());
+    setMetatableParent(L, StorageBuildingBinding::getMetatableName(), UseableStuffBinding::getMetatableName());
+    setMetatableParent(L, ProductionBuildingBinding::getMetatableName(), StorageBuildingBinding::getMetatableName());
+    setMetatableParent(L, CraftingBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+    setMetatableParent(L, GeneratorBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+    setMetatableParent(L, WindGeneratorBuildingBinding::getMetatableName(), GeneratorBuildingBinding::getMetatableName());
+    setMetatableParent(L, ResearchBuildingBinding::getMetatableName(), UseableStuffBinding::getMetatableName());
+    setMetatableParent(L, DoorStuffBinding::getMetatableName(), BuildingBinding::getMetatableName());
+    setMetatableParent(L, GatewayBuildingBinding::getMetatableName(), BuildingBinding::getMetatableName());
+    setMetatableParent(L, WallBuildingBinding::getMetatableName(), BuildingBinding::getMetatableName());
+    setMetatableParent(L, FootprintNodeBinding::getMetatableName(), FootprintBinding::getMetatableName());
+    setMetatableParent(L, FarmBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+    setMetatableParent(L, FurnaceBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+    setMetatableParent(L, RainCollectorBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+    setMetatableParent(L, TortureBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
+    setMetatableParent(L, LightBuildingBinding::getMetatableName(), UseableStuffBinding::getMetatableName());
+    setMetatableParent(L, TurretBuildingBinding::getMetatableName(), UseableStuffBinding::getMetatableName());
+    
+    // Layout chains
+    setMetatableParent(L, BuildingContainerInventoryLayoutBinding::getMetatableName(), GenericInventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, ProductionInventoryLayoutBinding::getMetatableName(), BuildInventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, CraftingInventoryLayoutBinding::getMetatableName(), BuildInventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, ResearchBuildingInventoryLayoutBinding::getMetatableName(), GenericInventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, FurnaceInventoryLayoutBinding::getMetatableName(), BuildInventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, BackpackInventoryLayoutBinding::getMetatableName(), GenericFixedInventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, GenericFixedInventoryLayoutBinding::getMetatableName(), InventoryLayoutBinding::getMetatableName());
+
+    // Inventory chains
+    setMetatableParent(L, "KenshiLua.ShopTraderInventoryLayout", GenericInventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, ShopTraderInventoryBinding::getMetatableName(), InventoryBinding::getMetatableName());
+    setMetatableParent(L, ShopTraderInventorySectionBinding::getMetatableName(), InventorySectionBinding::getMetatableName());
+
+    // Other chains
+    setMetatableParent(L, ShopTraderBinding::getMetatableName(), RootObjectBinding::getMetatableName());
+    setMetatableParent(L, ZoneManagerBinding::getMetatableName(), ZoneManagerInterfaceTBinding::getMetatableName());
+    setMetatableParent(L, TextureArrayLoadDataBinding::getMetatableName(), TextureLoadDataBinding::getMetatableName());
+}
 } // namespace KenshiLua
