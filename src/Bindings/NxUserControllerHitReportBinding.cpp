@@ -6,7 +6,7 @@
 namespace KenshiLua
 {
 
-static NxUserControllerHitReport* getB(lua_State* L, int idx)
+static NxUserControllerHitReport* getInstance(lua_State* L, int idx)
 {
     return checkObject<NxUserControllerHitReport>(L, idx, NxUserControllerHitReportBinding::getMetatableName());
 }
@@ -15,18 +15,26 @@ static NxUserControllerHitReport* getB(lua_State* L, int idx)
 // --- Setters for NxUserControllerHitReport ---
 int NxUserControllerHitReportBinding::_DESTRUCTOR(lua_State* L)
 {
-    NxUserControllerHitReport* b = getB(L, 1);
-    if (!b) return luaL_error(L, "NxUserControllerHitReport is nil");
+    NxUserControllerHitReport* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxUserControllerHitReport is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
+}
+
+int NxUserControllerHitReportBinding::_CONSTRUCTOR(lua_State* L)
+{
+    NxUserControllerHitReport* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxUserControllerHitReport is nil");
+
+    NxUserControllerHitReport* result = instance->_CONSTRUCTOR();
+    return pushObject<NxUserControllerHitReport>(L, result, NxUserControllerHitReportBinding::getMetatableName());
 }
 
 /*
 Skipped methods needing manual binding:
   line 123: NxControllerAction onShapeHit(...) - unsupported return type
   line 124: NxControllerAction onControllerHit(...) - unsupported return type
-  line 129: NxUserControllerHitReport* _CONSTRUCTOR(...) - unsupported return type
 */
 
 int NxUserControllerHitReportBinding::gc(lua_State* L)
@@ -51,6 +59,7 @@ void NxUserControllerHitReportBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", NxUserControllerHitReportBinding::_DESTRUCTOR },
+        { "_CONSTRUCTOR", NxUserControllerHitReportBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

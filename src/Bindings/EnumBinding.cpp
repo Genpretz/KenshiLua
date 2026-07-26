@@ -108,6 +108,26 @@ namespace KenshiLua
     }
 
     // ----------------------------------------------
+    // CharMovement.h
+    // ----------------------------------------------
+
+    void registerUpdatePriority(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "LOW_PRIORITY", UpdatePriority::LOW_PRIORITY);
+        setEnum(L, "LOW", UpdatePriority::LOW_PRIORITY);
+
+        setEnum(L, "MED_PRIORITY", UpdatePriority::MED_PRIORITY);
+        setEnum(L, "MED", UpdatePriority::MED_PRIORITY);
+
+        setEnum(L, "HIGH_PRIORITY", UpdatePriority::HIGH_PRIORITY);
+        setEnum(L, "HIGH", UpdatePriority::HIGH_PRIORITY);
+
+        lua_setglobal(L, "UpdatePriority");
+    }
+
+    // ----------------------------------------------
     // Building.h
     // ----------------------------------------------
 
@@ -933,28 +953,23 @@ namespace KenshiLua
     void registerHitMaterialType(lua_State* L)
     {
         lua_newtable(L);
-
-        setEnum(L, "MISSED", HitMaterialType::HIT_MISSED);
+        // original
 		setEnum(L, "HIT_MISSED", HitMaterialType::HIT_MISSED);
-
-        setEnum(L, "METAL", HitMaterialType::HIT_METAL);
 		setEnum(L, "HIT_METAL", HitMaterialType::HIT_METAL);
-
+        setEnum(L, "HIT_FLESH", HitMaterialType::HIT_FLESH);
+        setEnum(L, "HIT_SAND", HitMaterialType::HIT_SAND);
+        setEnum(L, "HIT_WOOD", HitMaterialType::HIT_WOOD);
+        setEnum(L, "HIT_SWORD", HitMaterialType::HIT_SWORD);
+        setEnum(L, "HIT_CHAIN", HitMaterialType::HIT_CHAIN);
+        //aliases
+        setEnum(L, "MISSED", HitMaterialType::HIT_MISSED);
+        setEnum(L, "METAL", HitMaterialType::HIT_METAL);
         setEnum(L, "FLESH", HitMaterialType::HIT_FLESH);
-		setEnum(L, "HIT_FLESH", HitMaterialType::HIT_FLESH);
-
         setEnum(L, "SAND", HitMaterialType::HIT_SAND);
-		setEnum(L, "HIT_SAND", HitMaterialType::HIT_SAND);
-
         setEnum(L, "WOOD", HitMaterialType::HIT_WOOD);
-		setEnum(L, "HIT_WOOD", HitMaterialType::HIT_WOOD);
-
         setEnum(L, "SWORD", HitMaterialType::HIT_SWORD);
-		setEnum(L, "HIT_SWORD", HitMaterialType::HIT_SWORD);
-
         setEnum(L, "CHAIN", HitMaterialType::HIT_CHAIN);
-		setEnum(L, "HIT_CHAIN", HitMaterialType::HIT_CHAIN);
-
+        // global
         lua_setglobal(L, "HitMaterialType");
     }
 
@@ -1172,11 +1187,8 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_newtable(L);
 
         setEnum(L, "NOT_SLAVE", SlaveStateEnum::NOT_SLAVE);
-
         setEnum(L, "IS_SLAVE", SlaveStateEnum::IS_SLAVE);
-
         setEnum(L, "ESCAPING_SLAVE", SlaveStateEnum::ESCAPING_SLAVE);
-
         setEnum(L, "EX_SLAVE", SlaveStateEnum::EX_SLAVE);
 
         lua_pushvalue(L, -1);
@@ -2326,16 +2338,15 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerComparisonEnum(lua_State* L)
     {
         lua_newtable(L);
-
+        // original c++
         setEnum(L, "CE_EQUALS", ComparisonEnum::CE_EQUALS);
-        setEnum(L, "EQUALS", ComparisonEnum::CE_EQUALS);
-
         setEnum(L, "CE_LESS_THAN", ComparisonEnum::CE_LESS_THAN);
-        setEnum(L, "LESS_THAN", ComparisonEnum::CE_LESS_THAN);
-
         setEnum(L, "CE_MORE_THAN", ComparisonEnum::CE_MORE_THAN);
+        // aliases
+        setEnum(L, "EQUALS", ComparisonEnum::CE_EQUALS);
+        setEnum(L, "LESS_THAN", ComparisonEnum::CE_LESS_THAN);
         setEnum(L, "MORE_THAN", ComparisonEnum::CE_MORE_THAN);
-
+        // global
         lua_pushvalue(L, -1);
         lua_setglobal(L, "ComparisonEnum");
         lua_setglobal(L, "Comparison");
@@ -2354,7 +2365,7 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         setEnum(L, "GROUND_MUD", GroundType::GROUND_MUD);
         setEnum(L, "GROUND_SNOW", GroundType::GROUND_SNOW);
         setEnum(L, "GROUND_DIRT", GroundType::GROUND_DIRT);
-
+        // aliases
         setEnum(L, "SAND", GroundType::GROUND_SAND);
 		setEnum(L, "GRASS", GroundType::GROUND_GRASS);
 		setEnum(L, "CONCRETE", GroundType::GROUND_CONCRETE);
@@ -2364,7 +2375,7 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
 		setEnum(L, "MUD", GroundType::GROUND_MUD);
 		setEnum(L, "SNOW", GroundType::GROUND_SNOW);
 		setEnum(L, "DIRT", GroundType::GROUND_DIRT);
-
+        // global
         lua_setglobal(L, "GroundType");
     }
 
@@ -2390,11 +2401,15 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerSquadType(lua_State* L)
     {
         lua_createtable(L, 0, 3);
-
+        // original
         setEnum(L, "SQ_UNKNOWN", SquadType::SQ_UNKNOWN);
         setEnum(L, "SQ_RESIDENT", SquadType::SQ_RESIDENT);
         setEnum(L, "SQ_ROAMING", SquadType::SQ_ROAMING);
-
+        // aliases
+        setEnum(L, "UNKNOWN", SquadType::SQ_UNKNOWN);
+        setEnum(L, "RESIDENT", SquadType::SQ_RESIDENT);
+        setEnum(L, "ROAMING", SquadType::SQ_ROAMING);
+        // global
         lua_setglobal(L, "SquadType");
     }
 
@@ -2451,7 +2466,7 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerCursorType(lua_State* L)
     {
         lua_createtable(L, 0, 16);
-
+        // original
         setEnum(L, "DEFAULT_CURSOR", CursorType::DEFAULT_CURSOR);
         setEnum(L, "MEDIC_CURSOR", CursorType::MEDIC_CURSOR);
         setEnum(L, "LOOT_CURSOR", CursorType::LOOT_CURSOR);
@@ -2478,7 +2493,34 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         setEnum(L, "INVALID_MOVEMENT_CURSOR", CursorType::INVALID_MOVEMENT_CURSOR);
         setEnum(L, "LOOT_CURSOR_RED", CursorType::LOOT_CURSOR_RED);
         setEnum(L, "KNOCKOUT_CURSOR", CursorType::KNOCKOUT_CURSOR);
-
+        // aliases
+        setEnum(L, "DEFAULT", CursorType::DEFAULT_CURSOR);
+        setEnum(L, "MEDIC", CursorType::MEDIC_CURSOR);
+        setEnum(L, "LOOT", CursorType::LOOT_CURSOR);
+        setEnum(L, "LIFT", CursorType::LIFT_CURSOR);
+        setEnum(L, "PICKUP_ITEM", CursorType::PICKUP_ITEM_CURSOR);
+        setEnum(L, "ATTACK", CursorType::ATTACK_CURSOR);
+        setEnum(L, "GUARD", CursorType::GUARD_CURSOR);
+        setEnum(L, "TALK", CursorType::TALK_CURSOR);
+        setEnum(L, "SPECIAL_TALK", CursorType::SPECIAL_TALK_CURSOR);
+        setEnum(L, "USE", CursorType::USE_CURSOR);
+        setEnum(L, "TRADER", CursorType::TRADER_CURSOR);
+        setEnum(L, "BUILD", CursorType::BUILD_CURSOR);
+        setEnum(L, "OPEN_DOOR", CursorType::OPEN_DOOR_CURSOR);
+        setEnum(L, "DOOR_ESCAPE", CursorType::DOOR_ESCAPE_CURSOR);
+        setEnum(L, "LOCKED", CursorType::LOCKED_CURSOR);
+        setEnum(L, "PICK_LOCK", CursorType::PICK_LOCK_CURSOR);
+        setEnum(L, "BUY_HOUSE", CursorType::BUY_HOUSE_CURSOR);
+        setEnum(L, "GREEN", CursorType::GREEN_CURSOR);
+        setEnum(L, "MINE", CursorType::MINE_CURSOR);
+        setEnum(L, "REPAIR", CursorType::REPAIR_CURSOR);
+        setEnum(L, "LIGHT", CursorType::LIGHT_CURSOR);
+        setEnum(L, "STEAL", CursorType::STEAL_CURSOR);
+        setEnum(L, "HAND", CursorType::HAND_CURSOR);
+        setEnum(L, "INVALID_MOVEMENT", CursorType::INVALID_MOVEMENT_CURSOR);
+        setEnum(L, "LOOT_RED", CursorType::LOOT_CURSOR_RED);
+        setEnum(L, "KNOCKOUT", CursorType::KNOCKOUT_CURSOR);
+        // global
         lua_setglobal(L, "CursorType");
     }
 
@@ -2507,21 +2549,19 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     {
         lua_createtable(L, 0, 10);
 
+        // original
         setEnum(L, "SHIFT_MASK", InputHandler::SHIFT_MASK);
-        setEnum(L, "SHIFT", InputHandler::SHIFT_MASK);
-
         setEnum(L, "CTRL_MASK", InputHandler::CTRL_MASK);
-        setEnum(L, "CTRL", InputHandler::CTRL_MASK);
-
         setEnum(L, "ALT_MASK", InputHandler::ALT_MASK);
-        setEnum(L, "ALT", InputHandler::ALT_MASK);
-
         setEnum(L, "ALL_MASK", InputHandler::ALL_MASK);
-        setEnum(L, "ALL", InputHandler::ALL_MASK);
-
         setEnum(L, "NONE_MASK", InputHandler::NONE_MASK);
+        // aliases
+        setEnum(L, "SHIFT", InputHandler::SHIFT_MASK);
+        setEnum(L, "CTRL", InputHandler::CTRL_MASK);
+        setEnum(L, "ALT", InputHandler::ALT_MASK);
+        setEnum(L, "ALL", InputHandler::ALL_MASK);
         setEnum(L, "NONE", InputHandler::NONE_MASK);
-
+        // global
         lua_setglobal(L, "Masks");
     }
 
@@ -2691,7 +2731,24 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         setEnum(L, "SENSE_PLAYER", SENSE_PLAYER);
         setEnum(L, "SENSE_CRAWLING", SENSE_CRAWLING);
         setEnum(L, "SENSE_CARRIED", SENSE_CARRIED);
-
+        // aliases
+        setEnum(L, "ALLY", SENSE_ALLY);
+        setEnum(L, "NEUTRAL", SENSE_NEUTRAL);
+        setEnum(L, "ENEMY", SENSE_ENEMY);
+        setEnum(L, "KO", SENSE_KO);
+        setEnum(L, "DEAD", SENSE_DEAD);
+        setEnum(L, "SLAVE", SENSE_SLAVE);
+        setEnum(L, "ESCAPED_SLAVE", SENSE_ESCAPED_SLAVE);
+        setEnum(L, "AUTHORITY_FIGURE", SENSE_AUTHORITY_FIGURE);
+        setEnum(L, "CANT_SEE", SENSE_CANT_SEE);
+        setEnum(L, "IN_CAGE", SENSE_IN_CAGE);
+        setEnum(L, "SAME_FACTION", SENSE_SAME_FACTION);
+        setEnum(L, "ROBOTS", SENSE_ROBOTS);
+        setEnum(L, "ENEMY_OF_MY_SLAVEMASTER", SENSE_ENEMY_OF_MY_SLAVEMASTER);
+        setEnum(L, "PLAYER", SENSE_PLAYER);
+        setEnum(L, "CRAWLING", SENSE_CRAWLING);
+        setEnum(L, "CARRIED", SENSE_CARRIED);
+        // global
         lua_setglobal(L, "SenseType");
     }
 
@@ -2773,6 +2830,7 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerDataPanelLineLineType(lua_State* L)
     {
     lua_newtable(L);
+    // original
     setEnum(L, "DPL_BASE", DataPanelLine::DPL_BASE);
     setEnum(L, "DPL_MEDICAL", DataPanelLine::DPL_MEDICAL);
     setEnum(L, "DPL_FACTION", DataPanelLine::DPL_FACTION);
@@ -2786,6 +2844,21 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     setEnum(L, "DPL_SLIDER", DataPanelLine::DPL_SLIDER);
     setEnum(L, "DPL_PROGRESS", DataPanelLine::DPL_PROGRESS);
     setEnum(L, "DPL_CUSTOM", DataPanelLine::DPL_CUSTOM);
+    // aliases
+    setEnum(L, "BASE", DataPanelLine::DPL_BASE);
+    setEnum(L, "MEDICAL", DataPanelLine::DPL_MEDICAL);
+    setEnum(L, "FACTION", DataPanelLine::DPL_FACTION);
+    setEnum(L, "RESEARCH", DataPanelLine::DPL_RESEARCH);
+    setEnum(L, "BUTTON", DataPanelLine::DPL_BUTTON);
+    setEnum(L, "EDIT", DataPanelLine::DPL_EDIT);
+    setEnum(L, "CHECK", DataPanelLine::DPL_CHECK);
+    setEnum(L, "DROPBOX", DataPanelLine::DPL_DROPBOX);
+    setEnum(L, "TEXT", DataPanelLine::DPL_TEXT);
+    setEnum(L, "TEXT_EDIT", DataPanelLine::DPL_TEXT_EDIT);
+    setEnum(L, "SLIDER", DataPanelLine::DPL_SLIDER);
+    setEnum(L, "PROGRESS", DataPanelLine::DPL_PROGRESS);
+    setEnum(L, "CUSTOM", DataPanelLine::DPL_CUSTOM);
+    // global
     lua_setglobal(L, "LineType");
     }
 
@@ -2796,10 +2869,17 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerForgottenGUITradeWindowType(lua_State* L)
     {
     lua_newtable(L);
+    // original
     setEnum(L, "TW_OFF", TradeWindowType::TW_OFF);
     setEnum(L, "TW_MONEY_TRADING", TradeWindowType::TW_MONEY_TRADING);
     setEnum(L, "TW_LOOTING", TradeWindowType::TW_LOOTING);
     setEnum(L, "TW_AUTO", TradeWindowType::TW_AUTO);
+    // aliases
+    setEnum(L, "OFF", TradeWindowType::TW_OFF);
+    setEnum(L, "MONEY_TRADING", TradeWindowType::TW_MONEY_TRADING);
+    setEnum(L, "LOOTING", TradeWindowType::TW_LOOTING);
+    setEnum(L, "AUTO", TradeWindowType::TW_AUTO);
+    // global
     lua_setglobal(L, "TradeWindowType");
     }
 
@@ -2810,9 +2890,15 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerManagementScreenMessageLogColor(lua_State* L)
     {
     lua_newtable(L);
+    // original
     setEnum(L, "ML_NORMAL", MessageLogColor::ML_NORMAL);
     setEnum(L, "ML_PLAYER", MessageLogColor::ML_PLAYER);
     setEnum(L, "ML_SYSTEM", MessageLogColor::ML_SYSTEM);
+    // aliases
+    setEnum(L, "NORMAL", MessageLogColor::ML_NORMAL);
+    setEnum(L, "PLAYER", MessageLogColor::ML_PLAYER);
+    setEnum(L, "SYSTEM", MessageLogColor::ML_SYSTEM);
+    // global 
     lua_setglobal(L, "MessageLogColor");
     }
 
@@ -2823,19 +2909,31 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerScreenLabelRisingSpeed(lua_State* L)
     {
     lua_newtable(L);
+    // original
     setEnum(L, "RS_STOPPED", ScreenLabel::RS_STOPPED);
     setEnum(L, "RS_SLOW", ScreenLabel::RS_SLOW);
     setEnum(L, "RS_NORMAL", ScreenLabel::RS_NORMAL);
     setEnum(L, "RS_FAST", ScreenLabel::RS_FAST);
+    // aliases
+    setEnum(L, "STOPPED", ScreenLabel::RS_STOPPED);
+    setEnum(L, "SLOW", ScreenLabel::RS_SLOW);
+    setEnum(L, "NORMAL", ScreenLabel::RS_NORMAL);
+    setEnum(L, "FAST", ScreenLabel::RS_FAST);
     lua_setglobal(L, "RisingSpeed");
     }
 
     void registerScreenLabelLabelSize(lua_State* L)
     {
     lua_newtable(L);
+    // original
     setEnum(L, "LS_SMALL", ScreenLabel::LS_SMALL);
     setEnum(L, "LS_MEDIUM", ScreenLabel::LS_MEDIUM);
     setEnum(L, "LS_LARGE", ScreenLabel::LS_LARGE);
+    // aliases
+    setEnum(L, "SMALL", ScreenLabel::LS_SMALL);
+    setEnum(L, "MEDIUM", ScreenLabel::LS_MEDIUM);
+    setEnum(L, "LARGE", ScreenLabel::LS_LARGE);
+    // global
     lua_setglobal(L, "LabelSize");
     }
 
@@ -2865,12 +2963,21 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     void registerTaskertaskPriority(lua_State* L)
     {
     lua_newtable(L);
+    // original
     setEnum(L, "TP_JUST_ACTION", taskPriority::TP_JUST_ACTION);
     setEnum(L, "TP_FLUFF", taskPriority::TP_FLUFF);
     setEnum(L, "TP_NON_URGENT", taskPriority::TP_NON_URGENT);
     setEnum(L, "TP_URGENT", taskPriority::TP_URGENT);
     setEnum(L, "TP_OBEDIENCE", taskPriority::TP_OBEDIENCE);
     setEnum(L, "TP_MAX_SIZE", taskPriority::TP_MAX_SIZE);
+    // aliases
+    setEnum(L, "JUST_ACTION", taskPriority::TP_JUST_ACTION);
+    setEnum(L, "FLUFF", taskPriority::TP_FLUFF);
+    setEnum(L, "NON_URGENT", taskPriority::TP_NON_URGENT);
+    setEnum(L, "URGENT", taskPriority::TP_URGENT);
+    setEnum(L, "OBEDIENCE", taskPriority::TP_OBEDIENCE);
+    setEnum(L, "MAX_SIZE", taskPriority::TP_MAX_SIZE);
+    // global
     lua_setglobal(L, "taskPriority");
     }
 
@@ -3121,7 +3228,22 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     lua_setglobal(L, "HighlightItem");
     }
 
-void registerEnumBindings(lua_State* L)
+    void registerMovementMode(lua_State* L)
+    {
+        lua_newtable(L);
+        // original
+        setEnum(L, "MOVE_NORMAL", MovementMode::MOVE_NORMAL);
+        setEnum(L, "MOVE_COMBAT", MovementMode::MOVE_COMBAT);
+        setEnum(L, "MOVE_DIRECTION", MovementMode::MOVE_DIRECTION);
+        // aliases
+        setEnum(L, "NORMAL", MovementMode::MOVE_NORMAL);
+        setEnum(L, "COMBAT", MovementMode::MOVE_COMBAT);
+        setEnum(L, "DIRECTION", MovementMode::MOVE_DIRECTION);
+        // global
+        lua_setglobal(L, "MovementMode");
+    }
+
+    void registerEnumBindings(lua_State* L)
     {
         registerMeshDataLookup(L);
         registerCrimeEnum(L);
@@ -3167,6 +3289,7 @@ void registerEnumBindings(lua_State* L)
         registerEffectType(L);
         registerSquadType(L);
         registerMoveSpeed(L);
+        registerMovementMode(L);
         registerSwordStateEnum(L);
         registerMiningResource(L);
         registerCursorType(L);
@@ -3195,5 +3318,6 @@ void registerEnumBindings(lua_State* L)
         registerToolTipType(L);
         registerTutorialGUIHighlightItem(L);
         registerTutorialGUIState(L);
+        registerUpdatePriority(L);
     }
 } // namespace KenshiLua

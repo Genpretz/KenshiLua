@@ -16,6 +16,7 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int _setPositionAndTeleport(lua_State* L);
     static int _NV__setPositionAndTeleport(lua_State* L);
@@ -26,6 +27,8 @@ public:
     static int isRunning(lua_State* L);
     static int isRunningAway(lua_State* L);
     static int trackAnimationMovement(lua_State* L);
+    static int getHandle(lua_State* L);
+    static int _NV_getHandle(lua_State* L);
     static int handleChanged(lua_State* L);
     static int _NV_handleChanged(lua_State* L);
     static int getRadius(lua_State* L);
@@ -70,9 +73,13 @@ public:
     static int isTrackingAnimationMode(lua_State* L);
     static int isWaypointMoveMode(lua_State* L);
     static int setDirectMovement(lua_State* L);
+    static int getLastGroundTraceResultMT(lua_State* L);
     static int getCharacter(lua_State* L);
     static int toGround(lua_State* L);
     static int updateGroundMaterial(lua_State* L);
     static int getCombatMoveSpeedMult(lua_State* L);
+    static int setDestination(lua_State* L);
+    static int _NV_setDestination(lua_State* L);
+    static int setLookatTarget(lua_State* L);
 };
 }

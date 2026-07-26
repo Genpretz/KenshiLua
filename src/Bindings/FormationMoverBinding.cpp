@@ -3,12 +3,11 @@
 #include "FormationMoverBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
-#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
 
-static FormationMover* getB(lua_State* L, int idx)
+static FormationMover* getInstance(lua_State* L, int idx)
 {
     return checkObject<FormationMover>(L, idx, FormationMoverBinding::getMetatableName());
 }
@@ -16,115 +15,123 @@ static FormationMover* getB(lua_State* L, int idx)
 // --- Getters for FormationMover ---
 static int FormationMover_get_me(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
-    return pushObject<Character>(L, b->me, CharacterBinding::getMetatableName());
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+    return pushObject<Character>(L, instance->me, CharacterBinding::getMetatableName());
 }
 
 static int FormationMover_get_destination(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
-    pushVector3(L, b->destination);
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+    pushVector3(L, instance->destination);
     return 1;
 }
 
 static int FormationMover_get_direction(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
-    pushVector3(L, b->direction);
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+    pushVector3(L, instance->direction);
     return 1;
 }
 
 static int FormationMover_get_movementTarget(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
-    return handBinding::push(L, b->movementTarget);
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+    return handBinding::push(L, instance->movementTarget);
 }
 
 static int FormationMover_get_currentFormationID(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
-    lua_pushinteger(L, b->currentFormationID);
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+    lua_pushinteger(L, instance->currentFormationID);
     return 1;
 }
 
 // --- Setters for FormationMover ---
 static int FormationMover_set_me(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for me");
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+    instance->me = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    return 0;
 }
 
 static int FormationMover_set_destination(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
-    readVector3(L, 2, b->destination);
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+    readVector3(L, 2, instance->destination);
     return 0;
 }
 
 static int FormationMover_set_direction(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
-    readVector3(L, 2, b->direction);
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+    readVector3(L, 2, instance->direction);
     return 0;
 }
 
 static int FormationMover_set_movementTarget(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
-    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
-    b->movementTarget = *val;
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+    instance->movementTarget = *checkObject<hand>(L, 2, handBinding::getMetatableName());
     return 0;
 }
 
 static int FormationMover_set_currentFormationID(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
-    b->currentFormationID = (int)luaL_checkinteger(L, 2);
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+    instance->currentFormationID = (int)luaL_checkinteger(L, 2);
     return 0;
+}
+
+int FormationMoverBinding::_CONSTRUCTOR(lua_State* L)
+{
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+
+    FormationMover* result = instance->_CONSTRUCTOR();
+    return pushObject<FormationMover>(L, result, FormationMoverBinding::getMetatableName());
 }
 
 int FormationMoverBinding::_DESTRUCTOR(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 int FormationMoverBinding::update(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
 
-    b->update();
+    instance->update();
     return 0;
 }
 
 int FormationMoverBinding::stopFormationMode(lua_State* L)
 {
-    FormationMover* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FormationMover is nil");
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
 
-    b->stopFormationMode();
+    instance->stopFormationMode();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 351: FormationMover* _CONSTRUCTOR(...) - unsupported return type
   line 358: void getSpeeds(...) - non-string reference arg
-  line 359: void setFormationMode(...) - unsupported arg type
+  line 359: void setFormationMode(...) - non-string reference arg
 */
 
 int FormationMoverBinding::gc(lua_State* L)
@@ -148,6 +155,7 @@ void FormationMoverBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", FormationMoverBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", FormationMoverBinding::_DESTRUCTOR },
         { "update", FormationMoverBinding::update },
         { "stopFormationMode", FormationMoverBinding::stopFormationMode },
@@ -165,29 +173,19 @@ void FormationMoverBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FormationMoverBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FormationMover_get_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, FormationMover_get_destination);
-    lua_setfield(L, -2, "destination");
-    lua_pushcfunction(L, FormationMover_get_direction);
-    lua_setfield(L, -2, "direction");
-    lua_pushcfunction(L, FormationMover_get_movementTarget);
-    lua_setfield(L, -2, "movementTarget");
-    lua_pushcfunction(L, FormationMover_get_currentFormationID);
-    lua_setfield(L, -2, "currentFormationID");
+    registerGetter(L, "me", FormationMover_get_me);
+    registerGetter(L, "destination", FormationMover_get_destination);
+    registerGetter(L, "direction", FormationMover_get_direction);
+    registerGetter(L, "movementTarget", FormationMover_get_movementTarget);
+    registerGetter(L, "currentFormationID", FormationMover_get_currentFormationID);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FormationMover_set_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, FormationMover_set_destination);
-    lua_setfield(L, -2, "destination");
-    lua_pushcfunction(L, FormationMover_set_direction);
-    lua_setfield(L, -2, "direction");
-    lua_pushcfunction(L, FormationMover_set_movementTarget);
-    lua_setfield(L, -2, "movementTarget");
-    lua_pushcfunction(L, FormationMover_set_currentFormationID);
-    lua_setfield(L, -2, "currentFormationID");
+    registerSetter(L, "me", FormationMover_set_me);
+    registerSetter(L, "destination", FormationMover_set_destination);
+    registerSetter(L, "direction", FormationMover_set_direction);
+    registerSetter(L, "movementTarget", FormationMover_set_movementTarget);
+    registerSetter(L, "currentFormationID", FormationMover_set_currentFormationID);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

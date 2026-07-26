@@ -2,11 +2,12 @@
 #include "kenshi\CharMovement.h"
 #include "MedianFilter2DVectorBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MedianFilterBinding.h"
 
 namespace KenshiLua
 {
 
-static MedianFilter2DVector* getB(lua_State* L, int idx)
+static MedianFilter2DVector* getInstance(lua_State* L, int idx)
 {
     return checkObject<MedianFilter2DVector>(L, idx, MedianFilter2DVectorBinding::getMetatableName());
 }
@@ -14,54 +15,68 @@ static MedianFilter2DVector* getB(lua_State* L, int idx)
 // --- Getters for MedianFilter2DVector ---
 static int MedianFilter2DVector_get_filters(lua_State* L)
 {
-    MedianFilter2DVector* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedianFilter2DVector is nil");
-    // TODO: Unsupported type for filters (MedianFilter)
-    return luaL_error(L, "Unsupported property 'filters' (type: MedianFilter)");
+    MedianFilter2DVector* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedianFilter2DVector is nil");
+    int index = (int)luaL_optinteger(L, 2, 1);
+    if (index < 1 || index > 2) return luaL_error(L, "Index out of range for filters (expected 1 or 2)");
+    return pushObject<MedianFilter>(L, &instance->filters[index - 1], MedianFilterBinding::getMetatableName());
 }
 
 // --- Setters for MedianFilter2DVector ---
 static int MedianFilter2DVector_set_filters(lua_State* L)
 {
-    MedianFilter2DVector* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedianFilter2DVector is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for filters");
+    MedianFilter2DVector* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedianFilter2DVector is nil");
+    int index = 1;
+    int objIdx = 2;
+    if (lua_isnumber(L, 2)) {
+        index = (int)lua_tointeger(L, 2);
+        objIdx = 3;
+    }
+    if (index < 1 || index > 2) return luaL_error(L, "Index out of range for filters (expected 1 or 2)");
+    MedianFilter* val = checkObject<MedianFilter>(L, objIdx, MedianFilterBinding::getMetatableName());
+    instance->filters[index - 1] = *val;
+    return 0;
+}
+
+int MedianFilter2DVectorBinding::_CONSTRUCTOR(lua_State* L)
+{
+    MedianFilter2DVector* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedianFilter2DVector is nil");
+
+    MedianFilter2DVector* result = instance->_CONSTRUCTOR();
+    return pushObject<MedianFilter2DVector>(L, result, MedianFilter2DVectorBinding::getMetatableName());
 }
 
 int MedianFilter2DVectorBinding::setup(lua_State* L)
 {
-    MedianFilter2DVector* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedianFilter2DVector is nil");
+    MedianFilter2DVector* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedianFilter2DVector is nil");
 
     int numFrames = (int)luaL_checkinteger(L, 2);
     int numSamples = (int)luaL_checkinteger(L, 3);
     bool positions = lua_toboolean(L, 4) != 0;
-    b->setup(numFrames, numSamples, positions);
+    instance->setup(numFrames, numSamples, positions);
     return 0;
 }
 
 int MedianFilter2DVectorBinding::reset(lua_State* L)
 {
-    MedianFilter2DVector* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedianFilter2DVector is nil");
+    MedianFilter2DVector* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedianFilter2DVector is nil");
 
-    b->reset();
+    instance->reset();
     return 0;
 }
 
 int MedianFilter2DVectorBinding::_DESTRUCTOR(lua_State* L)
 {
-    MedianFilter2DVector* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MedianFilter2DVector is nil");
+    MedianFilter2DVector* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedianFilter2DVector is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 107: MedianFilter2DVector* _CONSTRUCTOR(...) - unsupported return type
-*/
 
 int MedianFilter2DVectorBinding::gc(lua_State* L)
 {
@@ -84,6 +99,7 @@ void MedianFilter2DVectorBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", MedianFilter2DVectorBinding::_CONSTRUCTOR },
         { "setup", MedianFilter2DVectorBinding::setup },
         { "reset", MedianFilter2DVectorBinding::reset },
         { "_DESTRUCTOR", MedianFilter2DVectorBinding::_DESTRUCTOR },
@@ -101,13 +117,11 @@ void MedianFilter2DVectorBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, MedianFilter2DVectorBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, MedianFilter2DVector_get_filters);
-    lua_setfield(L, -2, "filters");
+    registerGetter(L, "filters", MedianFilter2DVector_get_filters);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, MedianFilter2DVector_set_filters);
-    lua_setfield(L, -2, "filters");
+    registerSetter(L, "filters", MedianFilter2DVector_set_filters);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

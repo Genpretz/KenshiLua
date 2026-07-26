@@ -23,6 +23,8 @@
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/PlayerInterfaceBinding.h"
 #include "Bindings/CharMovementBinding.h"
+#include "Bindings/CombatClassBinding.h"
+#include "Bindings/GameWorldBinding.h"
 #include "Bindings/RaceDataBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/TaskerBinding.h"
@@ -37,6 +39,8 @@
 
 // KenshiLib headers
 #include <kenshi/CharMovement.h>
+#include <kenshi/CombatClass.h>
+#include <kenshi/GameWorld.h>
 
 // KenshiLib headers
 #include <kenshi/Character.h>
@@ -80,6 +84,8 @@ namespace KenshiLua
     static inline const char* RaceDataMetatable()               { return RaceDataBinding::getMetatableName(); }
     static inline const char* InventorySectionMetatable()       { return InventorySectionBinding::getMetatableName(); }
     static inline const char* CharMovementMetatable()          { return CharMovementBinding::getMetatableName(); }
+    static inline const char* CombatClassMetatable()           { return CombatClassBinding::getMetatableName(); }
+    static inline const char* GameWorldMetatable()             { return GameWorldBinding::getMetatableName(); }
 
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, int val)                 { lua_pushinteger(L, val); }
@@ -104,6 +110,8 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, Inventory* val)          { pushObject<Inventory>(L, val, InventoryMetatable()); }
     static inline void pushArg(lua_State* L, CombatTechniqueData* val){ pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
     static inline void pushArg(lua_State* L, Tasker* val)             { pushObject<Tasker>(L, val, TaskerMetatable()); }
+    static inline void pushArg(lua_State* L, CombatClass* val)        { pushObject<CombatClass>(L, val, CombatClassMetatable()); }
+    static inline void pushArg(lua_State* L, GameWorld* val)          { pushObject<GameWorld>(L, val, GameWorldMetatable()); }
     static inline void pushArg(lua_State* L, Building* val)           { pushObject<Building>(L, val, BuildingMetatable()); }
     static inline void pushArg(lua_State* L, const Building* val)     { pushObject<Building>(L, const_cast<Building*>(val), BuildingMetatable()); }
     static inline void pushArg(lua_State* L, const CharStats* val)    { pushObject<CharStats>(L, const_cast<CharStats*>(val), CharStatsMetatable()); }
@@ -744,5 +752,3 @@ void CallPlayerInterfaceAddOrderSelectedCharactersCallbacks(PlayerInterface* pla
     ArgPusher7<PlayerInterface*, Building*, int, RootObject*, bool, bool, const Ogre::Vector3&> pusher(player, destinationIndoors, task, subject, shift, addDontClear, location);
     KenshiLua::EventSystem::get().callHandlers("onPlayerAddOrderSelectedCharacters", &pusher);
 }
-
-

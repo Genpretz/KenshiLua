@@ -16,8 +16,11 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int create(lua_State* L);
+    static int getHandle(lua_State* L);
+    static int _NV_getHandle(lua_State* L);
     static int _setPositionAndTeleport(lua_State* L);
     static int _NV__setPositionAndTeleport(lua_State* L);
     static int _setPositionSimple(lua_State* L);
@@ -44,10 +47,7 @@ public:
     static int _NV_halt(lua_State* L);
     static int setRoadDestination(lua_State* L);
     static int setRoadPreference(lua_State* L);
-    static int setDestination(lua_State* L);
-    static int _NV_setDestination(lua_State* L);
-    static int setDesiredSpeed(lua_State* L);
-    static int setDesiredSpeedOrders(lua_State* L);
+    static int extractRoadFollower(lua_State* L);
     static int _NV_setDesiredSpeed(lua_State* L);
     static int setStandardWalkSpeed(lua_State* L);
     static int getStandardWalkSpeed(lua_State* L);
@@ -60,5 +60,15 @@ public:
     static int getCurrentSpeedRelativeToMax01(lua_State* L);
     static int getSpeedOrders(lua_State* L);
     static int leaveSpeedGroup(lua_State* L);
+    static int getPosition(lua_State* L);
+    static int _NV_getPosition(lua_State* L);
+    static int getFacingDirection(lua_State* L);
+    static int setDestination(lua_State* L);
+    static int _NV_setDestination(lua_State* L);
+    static int setCurrentRoadFollower(lua_State* L);
+    static int setPatrolInput(lua_State* L);
+    static int _NV_setPatrolInput(lua_State* L);
+    static int setDesiredSpeed(lua_State* L);
+    static int setDesiredSpeedOrders(lua_State* L);
 };
 }

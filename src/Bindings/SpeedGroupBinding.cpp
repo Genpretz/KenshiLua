@@ -2,111 +2,120 @@
 #include "kenshi\CharMovement.h"
 #include "SpeedGroupBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/CharacterBinding.h"
 
 namespace KenshiLua
 {
 
-static SpeedGroup* getB(lua_State* L, int idx)
+static SpeedGroup* getInstance(lua_State* L, int idx)
 {
     return checkObject<SpeedGroup>(L, idx, SpeedGroupBinding::getMetatableName());
 }
 
 // --- Getters for SpeedGroup ---
-static int SpeedGroup_get_members(lua_State* L)
-{
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
-    // TODO: Unsupported type for members (ogre_unordered_set<hand>::type)
-    return luaL_error(L, "Unsupported property 'members' (type: ogre_unordered_set<hand>::type)");
-}
-
 static int SpeedGroup_get_position(lua_State* L)
 {
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
-    pushVector3(L, b->position);
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+    pushVector3(L, instance->position);
     return 1;
 }
 
 static int SpeedGroup_get_direction(lua_State* L)
 {
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
-    pushVector3(L, b->direction);
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+    pushVector3(L, instance->direction);
     return 1;
 }
 
 static int SpeedGroup_get_speed(lua_State* L)
 {
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
-    lua_pushnumber(L, b->speed);
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+    lua_pushnumber(L, instance->speed);
     return 1;
 }
 
 static int SpeedGroup_get_last(lua_State* L)
 {
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
-    lua_pushinteger(L, b->last);
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+    lua_pushinteger(L, instance->last);
     return 1;
 }
 
 // --- Setters for SpeedGroup ---
-static int SpeedGroup_set_members(lua_State* L)
-{
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for members");
-}
-
 static int SpeedGroup_set_position(lua_State* L)
 {
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
-    readVector3(L, 2, b->position);
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+    readVector3(L, 2, instance->position);
     return 0;
 }
 
 static int SpeedGroup_set_direction(lua_State* L)
 {
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
-    readVector3(L, 2, b->direction);
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+    readVector3(L, 2, instance->direction);
     return 0;
 }
 
 static int SpeedGroup_set_speed(lua_State* L)
 {
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
-    b->speed = (float)luaL_checknumber(L, 2);
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+    instance->speed = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int SpeedGroup_set_last(lua_State* L)
 {
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
-    b->last = (unsigned long)luaL_checkinteger(L, 2);
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+    instance->last = (unsigned long)luaL_checkinteger(L, 2);
     return 0;
+}
+
+int SpeedGroupBinding::_CONSTRUCTOR(lua_State* L)
+{
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+
+    SpeedGroup* result = instance->_CONSTRUCTOR();
+    return pushObject<SpeedGroup>(L, result, SpeedGroupBinding::getMetatableName());
+}
+
+int SpeedGroupBinding::getSpeed(lua_State* L)
+{
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float result = instance->getSpeed(who);
+    lua_pushnumber(L, result);
+    return 1;
 }
 
 int SpeedGroupBinding::_DESTRUCTOR(lua_State* L)
 {
-    SpeedGroup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpeedGroup is nil");
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 67: SpeedGroup* _CONSTRUCTOR(...) - unsupported return type
-  line 68: void insert(...) - unsupported arg type
-  line 69: void erase(...) - unsupported arg type
-  line 70: float getSpeed(...) - unsupported arg type
+  line 68: void insert(...) - non-string reference arg
+  line 69: void erase(...) - non-string reference arg
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 71: members (ogre_unordered_set<hand>::type) - unsupported type
 */
 
 int SpeedGroupBinding::gc(lua_State* L)
@@ -130,6 +139,8 @@ void SpeedGroupBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", SpeedGroupBinding::_CONSTRUCTOR },
+        { "getSpeed", SpeedGroupBinding::getSpeed },
         { "_DESTRUCTOR", SpeedGroupBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -145,29 +156,17 @@ void SpeedGroupBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, SpeedGroupBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, SpeedGroup_get_members);
-    lua_setfield(L, -2, "members");
-    lua_pushcfunction(L, SpeedGroup_get_position);
-    lua_setfield(L, -2, "position");
-    lua_pushcfunction(L, SpeedGroup_get_direction);
-    lua_setfield(L, -2, "direction");
-    lua_pushcfunction(L, SpeedGroup_get_speed);
-    lua_setfield(L, -2, "speed");
-    lua_pushcfunction(L, SpeedGroup_get_last);
-    lua_setfield(L, -2, "last");
+    registerGetter(L, "position", SpeedGroup_get_position);
+    registerGetter(L, "direction", SpeedGroup_get_direction);
+    registerGetter(L, "speed", SpeedGroup_get_speed);
+    registerGetter(L, "last", SpeedGroup_get_last);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, SpeedGroup_set_members);
-    lua_setfield(L, -2, "members");
-    lua_pushcfunction(L, SpeedGroup_set_position);
-    lua_setfield(L, -2, "position");
-    lua_pushcfunction(L, SpeedGroup_set_direction);
-    lua_setfield(L, -2, "direction");
-    lua_pushcfunction(L, SpeedGroup_set_speed);
-    lua_setfield(L, -2, "speed");
-    lua_pushcfunction(L, SpeedGroup_set_last);
-    lua_setfield(L, -2, "last");
+    registerSetter(L, "position", SpeedGroup_set_position);
+    registerSetter(L, "direction", SpeedGroup_set_direction);
+    registerSetter(L, "speed", SpeedGroup_set_speed);
+    registerSetter(L, "last", SpeedGroup_set_last);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

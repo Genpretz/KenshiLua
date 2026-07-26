@@ -17,6 +17,9 @@ public:
     static int tostring(lua_State* L);
 
     static int _CONSTRUCTOR(lua_State* L);
+    static int create(lua_State* L);
     static int setCurrentPosition(lua_State* L);
+    static int calculateCurrentRepulsionVector(lua_State* L);
+    static int getSensoryData(lua_State* L);
 };
 }
