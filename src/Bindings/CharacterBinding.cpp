@@ -6608,7 +6608,7 @@ void CharacterBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to RootObject
-    // setMetatableParent(L, CharacterBinding::getMetatableName(), RootObjectBinding::getMetatableName());
+    setMetatableParent(L, CharacterBinding::getMetatableName(), RootObjectBinding::getMetatableName());
 
     LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
 

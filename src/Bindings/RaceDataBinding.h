@@ -16,6 +16,8 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
+    static int isSpecificRace(lua_State* L);
     static int getStatMod(lua_State* L);
     static int isImmune(lua_State* L);
 };

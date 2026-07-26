@@ -18,6 +18,7 @@ public:
 
     static int _DESTRUCTOR(lua_State* L);
     static int getType(lua_State* L);
+    static int setupDataFile(lua_State* L);
     static int destroyObjectDatas(lua_State* L);
 };
 }

@@ -21,5 +21,6 @@ public:
     static int inflate(lua_State* L);
     static int sizeX(lua_State* L);
     static int sizeY(lua_State* L);
+    static int intersects2(lua_State* L);
 };
 }

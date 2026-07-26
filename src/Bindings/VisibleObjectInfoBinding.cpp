@@ -6,7 +6,7 @@
 namespace KenshiLua
 {
 
-static VisibleObjectInfo* getB(lua_State* L, int idx)
+static VisibleObjectInfo* getInstance(lua_State* L, int idx)
 {
     return checkObject<VisibleObjectInfo>(L, idx, VisibleObjectInfoBinding::getMetatableName());
 }
@@ -14,49 +14,49 @@ static VisibleObjectInfo* getB(lua_State* L, int idx)
 // --- Getters for VisibleObjectInfo ---
 static int VisibleObjectInfo_get_handle(lua_State* L)
 {
-    VisibleObjectInfo* b = getB(L, 1);
-    if (!b) return luaL_error(L, "VisibleObjectInfo is nil");
-    // TODO: Unsupported type for handle (hand)
-    return luaL_error(L, "Unsupported property 'handle' (type: hand)");
+    VisibleObjectInfo* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "VisibleObjectInfo is nil");
+    return handBinding::push(L, instance->handle);
 }
 
 static int VisibleObjectInfo_get_range(lua_State* L)
 {
-    VisibleObjectInfo* b = getB(L, 1);
-    if (!b) return luaL_error(L, "VisibleObjectInfo is nil");
-    lua_pushnumber(L, b->range);
+    VisibleObjectInfo* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "VisibleObjectInfo is nil");
+    lua_pushnumber(L, instance->range);
     return 1;
 }
 
 static int VisibleObjectInfo_get_isEnemy(lua_State* L)
 {
-    VisibleObjectInfo* b = getB(L, 1);
-    if (!b) return luaL_error(L, "VisibleObjectInfo is nil");
-    lua_pushboolean(L, b->isEnemy ? 1 : 0);
+    VisibleObjectInfo* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "VisibleObjectInfo is nil");
+    lua_pushboolean(L, instance->isEnemy ? 1 : 0);
     return 1;
 }
 
 // --- Setters for VisibleObjectInfo ---
 static int VisibleObjectInfo_set_handle(lua_State* L)
 {
-    VisibleObjectInfo* b = getB(L, 1);
-    if (!b) return luaL_error(L, "VisibleObjectInfo is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for handle");
+    VisibleObjectInfo* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "VisibleObjectInfo is nil");
+    instance->handle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    return 0;
 }
 
 static int VisibleObjectInfo_set_range(lua_State* L)
 {
-    VisibleObjectInfo* b = getB(L, 1);
-    if (!b) return luaL_error(L, "VisibleObjectInfo is nil");
-    b->range = (float)luaL_checknumber(L, 2);
+    VisibleObjectInfo* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "VisibleObjectInfo is nil");
+    instance->range = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int VisibleObjectInfo_set_isEnemy(lua_State* L)
 {
-    VisibleObjectInfo* b = getB(L, 1);
-    if (!b) return luaL_error(L, "VisibleObjectInfo is nil");
-    b->isEnemy = lua_toboolean(L, 2) != 0;
+    VisibleObjectInfo* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "VisibleObjectInfo is nil");
+    instance->isEnemy = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
@@ -102,21 +102,15 @@ void VisibleObjectInfoBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, VisibleObjectInfoBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, VisibleObjectInfo_get_handle);
-    lua_setfield(L, -2, "handle");
-    lua_pushcfunction(L, VisibleObjectInfo_get_range);
-    lua_setfield(L, -2, "range");
-    lua_pushcfunction(L, VisibleObjectInfo_get_isEnemy);
-    lua_setfield(L, -2, "isEnemy");
+    registerGetter(L, "handle", VisibleObjectInfo_get_handle);
+    registerGetter(L, "range", VisibleObjectInfo_get_range);
+    registerGetter(L, "isEnemy", VisibleObjectInfo_get_isEnemy);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, VisibleObjectInfo_set_handle);
-    lua_setfield(L, -2, "handle");
-    lua_pushcfunction(L, VisibleObjectInfo_set_range);
-    lua_setfield(L, -2, "range");
-    lua_pushcfunction(L, VisibleObjectInfo_set_isEnemy);
-    lua_setfield(L, -2, "isEnemy");
+    registerSetter(L, "handle", VisibleObjectInfo_set_handle);
+    registerSetter(L, "range", VisibleObjectInfo_set_range);
+    registerSetter(L, "isEnemy", VisibleObjectInfo_set_isEnemy);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

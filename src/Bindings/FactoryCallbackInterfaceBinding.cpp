@@ -2,22 +2,36 @@
 #include "kenshi\PlayerInterface.h"
 #include "FactoryCallbackInterfaceBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/RootObjectBinding.h"
 
 namespace KenshiLua
 {
 
-static FactoryCallbackInterface* getB(lua_State* L, int idx)
+static FactoryCallbackInterface* getInstance(lua_State* L, int idx)
 {
     return checkObject<FactoryCallbackInterface>(L, idx, FactoryCallbackInterfaceBinding::getMetatableName());
 }
 
 // --- Getters for FactoryCallbackInterface ---
 // --- Setters for FactoryCallbackInterface ---
-/*
-Skipped methods needing manual binding:
-  line 21: void factoryObjectCreatedCallback(...) - unsupported arg type
-  line 24: FactoryCallbackInterface* _CONSTRUCTOR(...) - unsupported return type
-*/
+int FactoryCallbackInterfaceBinding::factoryObjectCreatedCallback(lua_State* L)
+{
+    FactoryCallbackInterface* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactoryCallbackInterface is nil");
+
+    RootObject* _a1 = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    instance->factoryObjectCreatedCallback(_a1);
+    return 0;
+}
+
+int FactoryCallbackInterfaceBinding::_CONSTRUCTOR(lua_State* L)
+{
+    FactoryCallbackInterface* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactoryCallbackInterface is nil");
+
+    FactoryCallbackInterface* result = instance->_CONSTRUCTOR();
+    return pushObject<FactoryCallbackInterface>(L, result, FactoryCallbackInterfaceBinding::getMetatableName());
+}
 
 int FactoryCallbackInterfaceBinding::gc(lua_State* L)
 {
@@ -40,6 +54,8 @@ void FactoryCallbackInterfaceBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "factoryObjectCreatedCallback", FactoryCallbackInterfaceBinding::factoryObjectCreatedCallback },
+        { "_CONSTRUCTOR", FactoryCallbackInterfaceBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

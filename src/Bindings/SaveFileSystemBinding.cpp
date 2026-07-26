@@ -449,7 +449,7 @@ void SaveFileSystemBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "failedToCopyError");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to ThreadClass
+    // TODO: ThreadClassBinding does not exist yet - create binding or remove if unnecessary
     // setMetatableParent(L, SaveFileSystemBinding::getMetatableName(), ThreadClassBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack

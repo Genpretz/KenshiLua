@@ -16,10 +16,15 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int isArmour(lua_State* L);
     static int _NV_isArmour(lua_State* L);
     static int isLockedArmour(lua_State* L);
     static int _NV_isLockedArmour(lua_State* L);
+    static int _serialise(lua_State* L);
+    static int _NV__serialise(lua_State* L);
+    static int _loadFromSerialise(lua_State* L);
+    static int _NV__loadFromSerialise(lua_State* L);
 };
 }

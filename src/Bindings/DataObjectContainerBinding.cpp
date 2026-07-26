@@ -2,11 +2,13 @@
 #include "kenshi\RootObject.h"
 #include "DataObjectContainerBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/RootObjectContainerBinding.h"
 
 namespace KenshiLua
 {
 
-static DataObjectContainer* getB(lua_State* L, int idx)
+static DataObjectContainer* getInstance(lua_State* L, int idx)
 {
     return checkObject<DataObjectContainer>(L, idx, DataObjectContainerBinding::getMetatableName());
 }
@@ -14,94 +16,104 @@ static DataObjectContainer* getB(lua_State* L, int idx)
 // --- Getters for DataObjectContainer ---
 static int DataObjectContainer_get_isStored(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
-    lua_pushboolean(L, b->isStored ? 1 : 0);
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
+    lua_pushboolean(L, instance->isStored ? 1 : 0);
     return 1;
 }
 
 static int DataObjectContainer_get_objectDatas(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
-    // TODO: Unsupported type for objectDatas (GameDataContainer*)
-    return luaL_error(L, "Unsupported property 'objectDatas' (type: GameDataContainer*)");
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
+    return pushObject<GameDataContainer>(L, instance->objectDatas, GameDataContainerBinding::getMetatableName());
 }
 
 static int DataObjectContainer_get_datasFile(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
-    lua_pushstring(L, b->datasFile.c_str());
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
+    lua_pushstring(L, instance->datasFile.c_str());
     return 1;
 }
 
 static int DataObjectContainer_get_selfType(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
-    lua_pushinteger(L, (lua_Integer)b->selfType);
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
+    lua_pushinteger(L, (lua_Integer)instance->selfType);
     return 1;
 }
 
 // --- Setters for DataObjectContainer ---
 static int DataObjectContainer_set_isStored(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
-    b->isStored = lua_toboolean(L, 2) != 0;
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
+    instance->isStored = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int DataObjectContainer_set_objectDatas(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for objectDatas");
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
+    instance->objectDatas = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    return 0;
 }
 
 static int DataObjectContainer_set_datasFile(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
-    b->datasFile = luaL_checkstring(L, 2);
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
+    instance->datasFile = luaL_checkstring(L, 2);
     return 0;
 }
 
 static int DataObjectContainer_set_selfType(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
-    b->selfType = (DataObjectContainer::GroupType)luaL_checkinteger(L, 2);
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
+    instance->selfType = (DataObjectContainer::GroupType)luaL_checkinteger(L, 2);
     return 0;
 }
 
-// --- Methods for DataObjectContainer ---
 int DataObjectContainerBinding::_DESTRUCTOR(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 int DataObjectContainerBinding::getType(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
 
-    DataObjectContainer::GroupType result = b->getType();
+    DataObjectContainer::GroupType result = instance->getType();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
+int DataObjectContainerBinding::setupDataFile(lua_State* L)
+{
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
+
+    const std::string filename = luaL_checkstring(L, 2);
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 3, GameDataContainerBinding::getMetatableName());
+    instance->setupDataFile(filename, container);
+    return 0;
+}
+
 int DataObjectContainerBinding::destroyObjectDatas(lua_State* L)
 {
-    DataObjectContainer* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DataObjectContainer is nil");
+    DataObjectContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
 
-    b->destroyObjectDatas();
+    instance->destroyObjectDatas();
     return 0;
 }
 
@@ -109,7 +121,6 @@ int DataObjectContainerBinding::destroyObjectDatas(lua_State* L)
 Skipped methods needing manual binding:
   line 155: DataObjectContainer* _CONSTRUCTOR(...) - overloaded method
   line 157: DataObjectContainer* _CONSTRUCTOR(...) - overloaded method
-  line 161: void setupDataFile(...) - unsupported arg type
   line 167: bool loadFromDisk(...) - unsupported arg type
   line 168: bool _NV_loadFromDisk(...) - unsupported arg type
 */
@@ -137,6 +148,7 @@ void DataObjectContainerBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", DataObjectContainerBinding::_DESTRUCTOR },
         { "getType", DataObjectContainerBinding::getType },
+        { "setupDataFile", DataObjectContainerBinding::setupDataFile },
         { "destroyObjectDatas", DataObjectContainerBinding::destroyObjectDatas },
         { 0, 0 }
     };
@@ -152,25 +164,17 @@ void DataObjectContainerBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DataObjectContainerBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DataObjectContainer_get_isStored);
-    lua_setfield(L, -2, "isStored");
-    lua_pushcfunction(L, DataObjectContainer_get_objectDatas);
-    lua_setfield(L, -2, "objectDatas");
-    lua_pushcfunction(L, DataObjectContainer_get_datasFile);
-    lua_setfield(L, -2, "datasFile");
-    lua_pushcfunction(L, DataObjectContainer_get_selfType);
-    lua_setfield(L, -2, "selfType");
+    registerGetter(L, "isStored", DataObjectContainer_get_isStored);
+    registerGetter(L, "objectDatas", DataObjectContainer_get_objectDatas);
+    registerGetter(L, "datasFile", DataObjectContainer_get_datasFile);
+    registerGetter(L, "selfType", DataObjectContainer_get_selfType);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DataObjectContainer_set_isStored);
-    lua_setfield(L, -2, "isStored");
-    lua_pushcfunction(L, DataObjectContainer_set_objectDatas);
-    lua_setfield(L, -2, "objectDatas");
-    lua_pushcfunction(L, DataObjectContainer_set_datasFile);
-    lua_setfield(L, -2, "datasFile");
-    lua_pushcfunction(L, DataObjectContainer_set_selfType);
-    lua_setfield(L, -2, "selfType");
+    registerSetter(L, "isStored", DataObjectContainer_set_isStored);
+    registerSetter(L, "objectDatas", DataObjectContainer_set_objectDatas);
+    registerSetter(L, "datasFile", DataObjectContainer_set_datasFile);
+    registerSetter(L, "selfType", DataObjectContainer_set_selfType);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

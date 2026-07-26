@@ -13,31 +13,10 @@ static MedianFilter2DVector* getInstance(lua_State* L, int idx)
 }
 
 // --- Getters for MedianFilter2DVector ---
-static int MedianFilter2DVector_get_filters(lua_State* L)
-{
-    MedianFilter2DVector* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MedianFilter2DVector is nil");
-    int index = (int)luaL_optinteger(L, 2, 1);
-    if (index < 1 || index > 2) return luaL_error(L, "Index out of range for filters (expected 1 or 2)");
-    return pushObject<MedianFilter>(L, &instance->filters[index - 1], MedianFilterBinding::getMetatableName());
-}
+static int MedianFilter2DVector_get_filters(lua_State* L) { return 0; }
 
 // --- Setters for MedianFilter2DVector ---
-static int MedianFilter2DVector_set_filters(lua_State* L)
-{
-    MedianFilter2DVector* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MedianFilter2DVector is nil");
-    int index = 1;
-    int objIdx = 2;
-    if (lua_isnumber(L, 2)) {
-        index = (int)lua_tointeger(L, 2);
-        objIdx = 3;
-    }
-    if (index < 1 || index > 2) return luaL_error(L, "Index out of range for filters (expected 1 or 2)");
-    MedianFilter* val = checkObject<MedianFilter>(L, objIdx, MedianFilterBinding::getMetatableName());
-    instance->filters[index - 1] = *val;
-    return 0;
-}
+static int MedianFilter2DVector_set_filters(lua_State* L) { return 0; }
 
 int MedianFilter2DVectorBinding::_CONSTRUCTOR(lua_State* L)
 {

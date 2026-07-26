@@ -16,10 +16,16 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int clear(lua_State* L);
+    static int moveBuildingsTo(lua_State* L);
+    static int removeBuilding(lua_State* L);
+    static int setFloorVisible(lua_State* L);
     static int setAllVisible(lua_State* L);
     static int resetAllVisible(lua_State* L);
     static int setSignsVisible(lua_State* L);
+    static int factoryObjectCreatedCallback(lua_State* L);
+    static int _NV_factoryObjectCreatedCallback(lua_State* L);
 };
 }

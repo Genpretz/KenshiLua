@@ -3,11 +3,12 @@
 #include "SeenSomeoneBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/FactionBinding.h"
+#include "Bindings/Util/TimeOfDayBinding.h"
 
 namespace KenshiLua
 {
 
-static SeenSomeone* getB(lua_State* L, int idx)
+static SeenSomeone* getInstance(lua_State* L, int idx)
 {
     return checkObject<SeenSomeone>(L, idx, SeenSomeoneBinding::getMetatableName());
 }
@@ -15,177 +16,172 @@ static SeenSomeone* getB(lua_State* L, int idx)
 // --- Getters for SeenSomeone ---
 static int SeenSomeone_get_lastPosition(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    pushVector3(L, b->lastPosition);
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    pushVector3(L, instance->lastPosition);
     return 1;
 }
 
 static int SeenSomeone_get_lastSeenTime(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    // TODO: Unsupported type for lastSeenTime (TimeOfDay)
-    return luaL_error(L, "Unsupported property 'lastSeenTime' (type: TimeOfDay)");
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    return pushObject<TimeOfDay>(L, &instance->lastSeenTime, TimeOfDayBinding::getMetatableName());
 }
 
 static int SeenSomeone_get_percievedFaction(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    return pushObject<Faction>(L, b->percievedFaction, FactionBinding::getMetatableName());
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    return pushObject<Faction>(L, instance->percievedFaction, FactionBinding::getMetatableName());
 }
 
 static int SeenSomeone_get_percievedSlave(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    lua_pushinteger(L, (lua_Integer)b->percievedSlave);
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    lua_pushinteger(L, (lua_Integer)instance->percievedSlave);
     return 1;
 }
 
 static int SeenSomeone_get_FOVScore(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    lua_pushnumber(L, b->FOVScore);
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    lua_pushnumber(L, instance->FOVScore);
     return 1;
-}
-
-static int SeenSomeone_get_type(lua_State* L)
-{
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    // TODO: Unsupported type for type (TagsClass<SenseType>)
-    return luaL_error(L, "Unsupported property 'type' (type: TagsClass<SenseType>)");
 }
 
 static int SeenSomeone_get_canSee(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    lua_pushboolean(L, b->canSee ? 1 : 0);
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    lua_pushboolean(L, instance->canSee ? 1 : 0);
     return 1;
 }
 
 static int SeenSomeone_get_canHear(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    lua_pushboolean(L, b->canHear ? 1 : 0);
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    lua_pushboolean(L, instance->canHear ? 1 : 0);
     return 1;
 }
 
 static int SeenSomeone_get_alarmState(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    lua_pushnumber(L, b->alarmState);
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    lua_pushnumber(L, instance->alarmState);
     return 1;
 }
 
 // --- Setters for SeenSomeone ---
 static int SeenSomeone_set_lastPosition(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    readVector3(L, 2, b->lastPosition);
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    readVector3(L, 2, instance->lastPosition);
     return 0;
 }
 
 static int SeenSomeone_set_lastSeenTime(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for lastSeenTime");
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    instance->lastSeenTime = *checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
+    return 0;
 }
 
 static int SeenSomeone_set_percievedFaction(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for percievedFaction");
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    instance->percievedFaction = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
 }
 
 static int SeenSomeone_set_percievedSlave(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    b->percievedSlave = (SlaveStateEnum)luaL_checkinteger(L, 2);
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    instance->percievedSlave = (SlaveStateEnum)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int SeenSomeone_set_FOVScore(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    b->FOVScore = (float)luaL_checknumber(L, 2);
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    instance->FOVScore = (float)luaL_checknumber(L, 2);
     return 0;
-}
-
-static int SeenSomeone_set_type(lua_State* L)
-{
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for type");
 }
 
 static int SeenSomeone_set_canSee(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    b->canSee = lua_toboolean(L, 2) != 0;
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    instance->canSee = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int SeenSomeone_set_canHear(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    b->canHear = lua_toboolean(L, 2) != 0;
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    instance->canHear = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int SeenSomeone_set_alarmState(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
-    b->alarmState = (float)luaL_checknumber(L, 2);
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    instance->alarmState = (float)luaL_checknumber(L, 2);
     return 0;
+}
+
+int SeenSomeoneBinding::_CONSTRUCTOR(lua_State* L)
+{
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+
+    SeenSomeone* result = instance->_CONSTRUCTOR();
+    return pushObject<SeenSomeone>(L, result, SeenSomeoneBinding::getMetatableName());
 }
 
 int SeenSomeoneBinding::lastSeenInSeconds(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
 
-    float result = b->lastSeenInSeconds();
+    float result = instance->lastSeenInSeconds();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int SeenSomeoneBinding::getPosition(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
 
-    Ogre::Vector3 result = b->getPosition();
+    Ogre::Vector3 result = instance->getPosition();
     pushVector3(L, result);
     return 1;
 }
 
 int SeenSomeoneBinding::getFaction(lua_State* L)
 {
-    SeenSomeone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SeenSomeone is nil");
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
 
-    Faction* result = b->getFaction();
+    Faction* result = instance->getFaction();
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
 }
 
 /*
-Skipped methods needing manual binding:
-  line 45: SeenSomeone* _CONSTRUCTOR(...) - unsupported return type
+Skipped properties needing manual binding:
+  line 51: type (TagsClass<SenseType>) - unsupported type
 */
 
 int SeenSomeoneBinding::gc(lua_State* L)
@@ -200,6 +196,25 @@ int SeenSomeoneBinding::tostring(lua_State* L)
     return 1;
 }
 
+
+
+static int SeenSomeone_get_type(lua_State* L)
+{
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    // TODO: Unsupported type for type (TagsClass<SenseType>)
+    return luaL_error(L, "Unsupported property 'type' (type: TagsClass<SenseType>)");
+}
+
+
+static int SeenSomeone_set_type(lua_State* L)
+{
+    SeenSomeone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SeenSomeone is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for type");
+}
+
+
 void SeenSomeoneBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -209,6 +224,7 @@ void SeenSomeoneBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", SeenSomeoneBinding::_CONSTRUCTOR },
         { "lastSeenInSeconds", SeenSomeoneBinding::lastSeenInSeconds },
         { "getPosition", SeenSomeoneBinding::getPosition },
         { "getFaction", SeenSomeoneBinding::getFaction },
@@ -226,45 +242,27 @@ void SeenSomeoneBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, SeenSomeoneBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, SeenSomeone_get_lastPosition);
-    lua_setfield(L, -2, "lastPosition");
-    lua_pushcfunction(L, SeenSomeone_get_lastSeenTime);
-    lua_setfield(L, -2, "lastSeenTime");
-    lua_pushcfunction(L, SeenSomeone_get_percievedFaction);
-    lua_setfield(L, -2, "percievedFaction");
-    lua_pushcfunction(L, SeenSomeone_get_percievedSlave);
-    lua_setfield(L, -2, "percievedSlave");
-    lua_pushcfunction(L, SeenSomeone_get_FOVScore);
-    lua_setfield(L, -2, "FOVScore");
-    lua_pushcfunction(L, SeenSomeone_get_type);
-    lua_setfield(L, -2, "type");
-    lua_pushcfunction(L, SeenSomeone_get_canSee);
-    lua_setfield(L, -2, "canSee");
-    lua_pushcfunction(L, SeenSomeone_get_canHear);
-    lua_setfield(L, -2, "canHear");
-    lua_pushcfunction(L, SeenSomeone_get_alarmState);
-    lua_setfield(L, -2, "alarmState");
+    registerGetter(L, "lastPosition", SeenSomeone_get_lastPosition);
+    registerGetter(L, "lastSeenTime", SeenSomeone_get_lastSeenTime);
+    registerGetter(L, "percievedFaction", SeenSomeone_get_percievedFaction);
+    registerGetter(L, "percievedSlave", SeenSomeone_get_percievedSlave);
+    registerGetter(L, "FOVScore", SeenSomeone_get_FOVScore);
+    registerGetter(L, "canSee", SeenSomeone_get_canSee);
+    registerGetter(L, "canHear", SeenSomeone_get_canHear);
+    registerGetter(L, "alarmState", SeenSomeone_get_alarmState);
+        registerGetter(L, "type", SeenSomeone_get_type);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, SeenSomeone_set_lastPosition);
-    lua_setfield(L, -2, "lastPosition");
-    lua_pushcfunction(L, SeenSomeone_set_lastSeenTime);
-    lua_setfield(L, -2, "lastSeenTime");
-    lua_pushcfunction(L, SeenSomeone_set_percievedFaction);
-    lua_setfield(L, -2, "percievedFaction");
-    lua_pushcfunction(L, SeenSomeone_set_percievedSlave);
-    lua_setfield(L, -2, "percievedSlave");
-    lua_pushcfunction(L, SeenSomeone_set_FOVScore);
-    lua_setfield(L, -2, "FOVScore");
-    lua_pushcfunction(L, SeenSomeone_set_type);
-    lua_setfield(L, -2, "type");
-    lua_pushcfunction(L, SeenSomeone_set_canSee);
-    lua_setfield(L, -2, "canSee");
-    lua_pushcfunction(L, SeenSomeone_set_canHear);
-    lua_setfield(L, -2, "canHear");
-    lua_pushcfunction(L, SeenSomeone_set_alarmState);
-    lua_setfield(L, -2, "alarmState");
+    registerSetter(L, "lastPosition", SeenSomeone_set_lastPosition);
+    registerSetter(L, "lastSeenTime", SeenSomeone_set_lastSeenTime);
+    registerSetter(L, "percievedFaction", SeenSomeone_set_percievedFaction);
+    registerSetter(L, "percievedSlave", SeenSomeone_set_percievedSlave);
+    registerSetter(L, "FOVScore", SeenSomeone_set_FOVScore);
+    registerSetter(L, "canSee", SeenSomeone_set_canSee);
+    registerSetter(L, "canHear", SeenSomeone_set_canHear);
+    registerSetter(L, "alarmState", SeenSomeone_set_alarmState);
+        registerSetter(L, "type", SeenSomeone_set_type);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

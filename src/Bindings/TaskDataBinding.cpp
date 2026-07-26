@@ -2,11 +2,12 @@
 #include "kenshi\Tasker.h"
 #include "TaskDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/TaskStateDataBinding.h"
 
 namespace KenshiLua
 {
 
-static TaskData* getB(lua_State* L, int idx)
+static TaskData* getInstance(lua_State* L, int idx)
 {
     return checkObject<TaskData>(L, idx, TaskDataBinding::getMetatableName());
 }
@@ -14,737 +15,686 @@ static TaskData* getB(lua_State* L, int idx)
 // --- Getters for TaskData ---
 static int TaskData_get_infrequentGoalChecks(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->infrequentGoalChecks ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->infrequentGoalChecks ? 1 : 0);
     return 1;
-}
-
-static int TaskData_get_permaJob(lua_State* L)
-{
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    // TODO: Unsupported type for permaJob (PermajobType)
-    return luaL_error(L, "Unsupported property 'permaJob' (type: PermajobType)");
 }
 
 static int TaskData_get_permaJob_FixedTarget(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->permaJob_FixedTarget ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->permaJob_FixedTarget ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_permaJob_Associated(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushinteger(L, (lua_Integer)b->permaJob_Associated);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushinteger(L, (lua_Integer)instance->permaJob_Associated);
     return 1;
 }
 
 static int TaskData_get_permaJob_Associated_Secondary(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushinteger(L, (lua_Integer)b->permaJob_Associated_Secondary);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushinteger(L, (lua_Integer)instance->permaJob_Associated_Secondary);
     return 1;
 }
 
 static int TaskData_get_requirementsAlwaysFalse(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->requirementsAlwaysFalse ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->requirementsAlwaysFalse ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get__resultsAlwaysFalse(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->_resultsAlwaysFalse ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->_resultsAlwaysFalse ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get__requirementsCantEndActionPrematurely(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->_requirementsCantEndActionPrematurely ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->_requirementsCantEndActionPrematurely ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_durationMin(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushnumber(L, b->durationMin);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushnumber(L, instance->durationMin);
     return 1;
 }
 
 static int TaskData_get_durationFuzz(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushnumber(L, b->durationFuzz);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushnumber(L, instance->durationFuzz);
     return 1;
 }
 
 static int TaskData_get_isDurationBased(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->isDurationBased ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->isDurationBased ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_endsAfterTime(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->endsAfterTime ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->endsAfterTime ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_isUnstoppableTask(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->isUnstoppableTask ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->isUnstoppableTask ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_canDoTaskInStages(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->canDoTaskInStages ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->canDoTaskInStages ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_aggressionLevel(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushnumber(L, b->aggressionLevel);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushnumber(L, instance->aggressionLevel);
     return 1;
 }
 
 static int TaskData_get_noisyness(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushnumber(L, b->noisyness);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushnumber(L, instance->noisyness);
     return 1;
 }
 
 static int TaskData_get_aidLevel(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushnumber(L, b->aidLevel);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushnumber(L, instance->aidLevel);
     return 1;
 }
 
 static int TaskData_get_followMeWeight(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushnumber(L, b->followMeWeight);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushnumber(L, instance->followMeWeight);
     return 1;
 }
 
 static int TaskData_get_copyMeInfluence(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushnumber(L, b->copyMeInfluence);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushnumber(L, instance->copyMeInfluence);
     return 1;
 }
 
 static int TaskData_get_normallyLeadsToSomething(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->normallyLeadsToSomething ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->normallyLeadsToSomething ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_alertnessMult(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushnumber(L, b->alertnessMult);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushnumber(L, instance->alertnessMult);
     return 1;
 }
 
 static int TaskData_get_forDirectPlayerOrdersOnly(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->forDirectPlayerOrdersOnly ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->forDirectPlayerOrdersOnly ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_forFulfillPlayerOrdersOrNPCOnly(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->forFulfillPlayerOrdersOrNPCOnly ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->forFulfillPlayerOrdersOrNPCOnly ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_key(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushinteger(L, (lua_Integer)b->key);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushinteger(L, (lua_Integer)instance->key);
     return 1;
 }
 
 static int TaskData_get_needsTarget(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->needsTarget ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->needsTarget ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_numResults(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushinteger(L, b->numResults);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushinteger(L, instance->numResults);
     return 1;
 }
 
-static int TaskData_get_results(lua_State* L)
-{
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    // TODO: Unsupported type for results (TaskStateData)
-    return luaL_error(L, "Unsupported property 'results' (type: TaskStateData)");
-}
+static int TaskData_get_results(lua_State* L) { return 0; }
 
 static int TaskData_get_numRequirements(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushinteger(L, b->numRequirements);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushinteger(L, instance->numRequirements);
     return 1;
 }
 
-static int TaskData_get_requirements(lua_State* L)
-{
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    // TODO: Unsupported type for requirements (TaskStateData)
-    return luaL_error(L, "Unsupported property 'requirements' (type: TaskStateData)");
-}
+static int TaskData_get_requirements(lua_State* L) { return 0; }
 
 static int TaskData_get_scoreFunction(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    // TODO: Unsupported type for scoreFunction (function*)
-    return luaL_error(L, "Unsupported property 'scoreFunction' (type: function*)");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushlightuserdata(L, (void*)instance->scoreFunction);
+    return 1;
 }
 
 static int TaskData_get_justDoOneTarget(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->justDoOneTarget ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->justDoOneTarget ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_subTask(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    // TODO: Unsupported type for subTask (TaskStateData*)
-    return luaL_error(L, "Unsupported property 'subTask' (type: TaskStateData*)");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    return pushObject<TaskStateData>(L, instance->subTask, TaskStateDataBinding::getMetatableName());
 }
 
 static int TaskData_get_dialogueDelivery(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushinteger(L, (lua_Integer)b->dialogueDelivery);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushinteger(L, (lua_Integer)instance->dialogueDelivery);
     return 1;
 }
 
 static int TaskData_get_hasAction(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushboolean(L, b->hasAction ? 1 : 0);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushboolean(L, instance->hasAction ? 1 : 0);
     return 1;
 }
 
 static int TaskData_get_description(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    lua_pushstring(L, b->description.c_str());
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushstring(L, instance->description.c_str());
     return 1;
 }
 
 static int TaskData_get__findTarget(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    // TODO: Unsupported type for _findTarget (function*)
-    return luaL_error(L, "Unsupported property '_findTarget' (type: function*)");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    lua_pushlightuserdata(L, (void*)instance->_findTarget);
+    return 1;
 }
 
 // --- Setters for TaskData ---
 static int TaskData_set_infrequentGoalChecks(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->infrequentGoalChecks = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->infrequentGoalChecks = lua_toboolean(L, 2) != 0;
     return 0;
-}
-
-static int TaskData_set_permaJob(lua_State* L)
-{
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for permaJob");
 }
 
 static int TaskData_set_permaJob_FixedTarget(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->permaJob_FixedTarget = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->permaJob_FixedTarget = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_permaJob_Associated(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->permaJob_Associated = (TaskType)luaL_checkinteger(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->permaJob_Associated = (TaskType)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int TaskData_set_permaJob_Associated_Secondary(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->permaJob_Associated_Secondary = (TaskType)luaL_checkinteger(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->permaJob_Associated_Secondary = (TaskType)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int TaskData_set_requirementsAlwaysFalse(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->requirementsAlwaysFalse = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->requirementsAlwaysFalse = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set__resultsAlwaysFalse(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->_resultsAlwaysFalse = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->_resultsAlwaysFalse = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set__requirementsCantEndActionPrematurely(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->_requirementsCantEndActionPrematurely = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->_requirementsCantEndActionPrematurely = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_durationMin(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->durationMin = (float)luaL_checknumber(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->durationMin = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int TaskData_set_durationFuzz(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->durationFuzz = (float)luaL_checknumber(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->durationFuzz = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int TaskData_set_isDurationBased(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->isDurationBased = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->isDurationBased = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_endsAfterTime(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->endsAfterTime = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->endsAfterTime = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_isUnstoppableTask(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->isUnstoppableTask = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->isUnstoppableTask = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_canDoTaskInStages(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->canDoTaskInStages = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->canDoTaskInStages = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_aggressionLevel(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->aggressionLevel = (float)luaL_checknumber(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->aggressionLevel = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int TaskData_set_noisyness(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->noisyness = (float)luaL_checknumber(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->noisyness = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int TaskData_set_aidLevel(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->aidLevel = (float)luaL_checknumber(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->aidLevel = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int TaskData_set_followMeWeight(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->followMeWeight = (float)luaL_checknumber(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->followMeWeight = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int TaskData_set_copyMeInfluence(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->copyMeInfluence = (float)luaL_checknumber(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->copyMeInfluence = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int TaskData_set_normallyLeadsToSomething(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->normallyLeadsToSomething = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->normallyLeadsToSomething = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_alertnessMult(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->alertnessMult = (float)luaL_checknumber(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->alertnessMult = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int TaskData_set_forDirectPlayerOrdersOnly(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->forDirectPlayerOrdersOnly = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->forDirectPlayerOrdersOnly = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_forFulfillPlayerOrdersOrNPCOnly(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->forFulfillPlayerOrdersOrNPCOnly = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->forFulfillPlayerOrdersOrNPCOnly = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_key(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->key = (TaskType)luaL_checkinteger(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->key = (TaskType)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int TaskData_set_needsTarget(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->needsTarget = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->needsTarget = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_numResults(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->numResults = (int)luaL_checkinteger(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->numResults = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
-static int TaskData_set_results(lua_State* L)
-{
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for results");
-}
+static int TaskData_set_results(lua_State* L) { return 0; }
 
 static int TaskData_set_numRequirements(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->numRequirements = (int)luaL_checkinteger(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->numRequirements = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
-static int TaskData_set_requirements(lua_State* L)
-{
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for requirements");
-}
-
-static int TaskData_set_scoreFunction(lua_State* L)
-{
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for scoreFunction");
-}
+static int TaskData_set_requirements(lua_State* L) { return 0; }
 
 static int TaskData_set_justDoOneTarget(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->justDoOneTarget = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->justDoOneTarget = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_subTask(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for subTask");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->subTask = lua_isnoneornil(L, 2) ? nullptr : checkObject<TaskStateData>(L, 2, TaskStateDataBinding::getMetatableName());
+    return 0;
 }
 
 static int TaskData_set_dialogueDelivery(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->dialogueDelivery = (EventTriggerEnum)luaL_checkinteger(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->dialogueDelivery = (EventTriggerEnum)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int TaskData_set_hasAction(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->hasAction = lua_toboolean(L, 2) != 0;
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->hasAction = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int TaskData_set_description(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    b->description = luaL_checkstring(L, 2);
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    instance->description = luaL_checkstring(L, 2);
     return 0;
-}
-
-static int TaskData_set__findTarget(lua_State* L)
-{
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _findTarget");
 }
 
 int TaskDataBinding::setCharacteristics(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
     float _aid = (float)luaL_checknumber(L, 2);
     float _aggressionLevel = (float)luaL_checknumber(L, 3);
     float noise = (float)luaL_checknumber(L, 4);
     bool leadsSomewhere = lua_toboolean(L, 5) != 0;
-    b->setCharacteristics(_aid, _aggressionLevel, noise, leadsSomewhere);
+    instance->setCharacteristics(_aid, _aggressionLevel, noise, leadsSomewhere);
     return 0;
 }
 
 int TaskDataBinding::setInfrequentGoalChecks(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
-    b->setInfrequentGoalChecks();
+    instance->setInfrequentGoalChecks();
     return 0;
 }
 
 int TaskDataBinding::setAlertnessMult(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
     float a = (float)luaL_checknumber(L, 2);
-    b->setAlertnessMult(a);
+    instance->setAlertnessMult(a);
     return 0;
 }
 
 int TaskDataBinding::setRequirementsCantEndActionPrematurely(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
     bool on = lua_toboolean(L, 2) != 0;
-    b->setRequirementsCantEndActionPrematurely(on);
+    instance->setRequirementsCantEndActionPrematurely(on);
     return 0;
 }
 
 int TaskDataBinding::setCopyMeInfluence(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
     float weight = (float)luaL_checknumber(L, 2);
-    b->setCopyMeInfluence(weight);
+    instance->setCopyMeInfluence(weight);
     return 0;
 }
 
 int TaskDataBinding::setFollowMeWeight(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
     float weight = (float)luaL_checknumber(L, 2);
-    b->setFollowMeWeight(weight);
+    instance->setFollowMeWeight(weight);
     return 0;
 }
 
 int TaskDataBinding::setSelfRegulation(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
     bool requirements = lua_toboolean(L, 2) != 0;
     bool results = lua_toboolean(L, 3) != 0;
-    b->setSelfRegulation(requirements, results);
+    instance->setSelfRegulation(requirements, results);
     return 0;
 }
 
 int TaskDataBinding::setDurationBased(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
     float mintime = (float)luaL_checknumber(L, 2);
     float fuzz = (float)luaL_checknumber(L, 3);
     bool _endsAfterTime = lua_toboolean(L, 4) != 0;
-    b->setDurationBased(mintime, fuzz, _endsAfterTime);
+    instance->setDurationBased(mintime, fuzz, _endsAfterTime);
     return 0;
 }
 
 int TaskDataBinding::hasInfrequentGoalChecks(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
-    bool result = b->hasInfrequentGoalChecks();
+    bool result = instance->hasInfrequentGoalChecks();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int TaskDataBinding::getRequirementsCantEndActionPrematurely(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
-    bool result = b->getRequirementsCantEndActionPrematurely();
+    bool result = instance->getRequirementsCantEndActionPrematurely();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int TaskDataBinding::isPermaJob(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
-    bool result = b->isPermaJob();
+    bool result = instance->isPermaJob();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int TaskDataBinding::isPermaJobFixedTarget(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
-    bool result = b->isPermaJobFixedTarget();
+    bool result = instance->isPermaJobFixedTarget();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int TaskDataBinding::getPermaJobAssociation(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
-    TaskType result = b->getPermaJobAssociation();
+    TaskType result = instance->getPermaJobAssociation();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int TaskDataBinding::getPermaJobAssociation_secondary(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
-    TaskType result = b->getPermaJobAssociation_secondary();
+    TaskType result = instance->getPermaJobAssociation_secondary();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int TaskDataBinding::isTargetFinder(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
-    bool result = b->isTargetFinder();
+    bool result = instance->isTargetFinder();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int TaskDataBinding::setDialogueDeliveryTag(lua_State* L)
 {
-    TaskData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "TaskData is nil");
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
 
     EventTriggerEnum d = (EventTriggerEnum)luaL_checkinteger(L, 2);
-    b->setDialogueDeliveryTag(d);
+    instance->setDialogueDeliveryTag(d);
     return 0;
 }
 
@@ -766,6 +716,17 @@ Skipped methods needing manual binding:
   line 293: bool _targetsRemaining(...) - unsupported arg type
 */
 
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - TaskData_get_scoreFunction: function* (unbound pointer)
+  - TaskData_get__findTarget: function* (unbound pointer)
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 237: permaJob (PermajobType) - unsupported type
+*/
+
 int TaskDataBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -777,6 +738,41 @@ int TaskDataBinding::tostring(lua_State* L)
     lua_pushstring(L, "KenshiLua.TaskData object");
     return 1;
 }
+
+
+
+static int TaskData_get_permaJob(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    // TODO: Unsupported type for permaJob (PermajobType)
+    return luaL_error(L, "Unsupported property 'permaJob' (type: PermajobType)");
+}
+
+
+static int TaskData_set__findTarget(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for _findTarget");
+}
+
+
+static int TaskData_set_permaJob(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for permaJob");
+}
+
+
+static int TaskData_set_scoreFunction(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for scoreFunction");
+}
+
 
 void TaskDataBinding::registerBinding(lua_State* L)
 {
@@ -817,154 +813,83 @@ void TaskDataBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TaskDataBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TaskData_get_infrequentGoalChecks);
-    lua_setfield(L, -2, "infrequentGoalChecks");
-    lua_pushcfunction(L, TaskData_get_permaJob);
-    lua_setfield(L, -2, "permaJob");
-    lua_pushcfunction(L, TaskData_get_permaJob_FixedTarget);
-    lua_setfield(L, -2, "permaJob_FixedTarget");
-    lua_pushcfunction(L, TaskData_get_permaJob_Associated);
-    lua_setfield(L, -2, "permaJob_Associated");
-    lua_pushcfunction(L, TaskData_get_permaJob_Associated_Secondary);
-    lua_setfield(L, -2, "permaJob_Associated_Secondary");
-    lua_pushcfunction(L, TaskData_get_requirementsAlwaysFalse);
-    lua_setfield(L, -2, "requirementsAlwaysFalse");
-    lua_pushcfunction(L, TaskData_get__resultsAlwaysFalse);
-    lua_setfield(L, -2, "_resultsAlwaysFalse");
-    lua_pushcfunction(L, TaskData_get__requirementsCantEndActionPrematurely);
-    lua_setfield(L, -2, "_requirementsCantEndActionPrematurely");
-    lua_pushcfunction(L, TaskData_get_durationMin);
-    lua_setfield(L, -2, "durationMin");
-    lua_pushcfunction(L, TaskData_get_durationFuzz);
-    lua_setfield(L, -2, "durationFuzz");
-    lua_pushcfunction(L, TaskData_get_isDurationBased);
-    lua_setfield(L, -2, "isDurationBased");
-    lua_pushcfunction(L, TaskData_get_endsAfterTime);
-    lua_setfield(L, -2, "endsAfterTime");
-    lua_pushcfunction(L, TaskData_get_isUnstoppableTask);
-    lua_setfield(L, -2, "isUnstoppableTask");
-    lua_pushcfunction(L, TaskData_get_canDoTaskInStages);
-    lua_setfield(L, -2, "canDoTaskInStages");
-    lua_pushcfunction(L, TaskData_get_aggressionLevel);
-    lua_setfield(L, -2, "aggressionLevel");
-    lua_pushcfunction(L, TaskData_get_noisyness);
-    lua_setfield(L, -2, "noisyness");
-    lua_pushcfunction(L, TaskData_get_aidLevel);
-    lua_setfield(L, -2, "aidLevel");
-    lua_pushcfunction(L, TaskData_get_followMeWeight);
-    lua_setfield(L, -2, "followMeWeight");
-    lua_pushcfunction(L, TaskData_get_copyMeInfluence);
-    lua_setfield(L, -2, "copyMeInfluence");
-    lua_pushcfunction(L, TaskData_get_normallyLeadsToSomething);
-    lua_setfield(L, -2, "normallyLeadsToSomething");
-    lua_pushcfunction(L, TaskData_get_alertnessMult);
-    lua_setfield(L, -2, "alertnessMult");
-    lua_pushcfunction(L, TaskData_get_forDirectPlayerOrdersOnly);
-    lua_setfield(L, -2, "forDirectPlayerOrdersOnly");
-    lua_pushcfunction(L, TaskData_get_forFulfillPlayerOrdersOrNPCOnly);
-    lua_setfield(L, -2, "forFulfillPlayerOrdersOrNPCOnly");
-    lua_pushcfunction(L, TaskData_get_key);
-    lua_setfield(L, -2, "key");
-    lua_pushcfunction(L, TaskData_get_needsTarget);
-    lua_setfield(L, -2, "needsTarget");
-    lua_pushcfunction(L, TaskData_get_numResults);
-    lua_setfield(L, -2, "numResults");
-    lua_pushcfunction(L, TaskData_get_results);
-    lua_setfield(L, -2, "results");
-    lua_pushcfunction(L, TaskData_get_numRequirements);
-    lua_setfield(L, -2, "numRequirements");
-    lua_pushcfunction(L, TaskData_get_requirements);
-    lua_setfield(L, -2, "requirements");
-    lua_pushcfunction(L, TaskData_get_scoreFunction);
-    lua_setfield(L, -2, "scoreFunction");
-    lua_pushcfunction(L, TaskData_get_justDoOneTarget);
-    lua_setfield(L, -2, "justDoOneTarget");
-    lua_pushcfunction(L, TaskData_get_subTask);
-    lua_setfield(L, -2, "subTask");
-    lua_pushcfunction(L, TaskData_get_dialogueDelivery);
-    lua_setfield(L, -2, "dialogueDelivery");
-    lua_pushcfunction(L, TaskData_get_hasAction);
-    lua_setfield(L, -2, "hasAction");
-    lua_pushcfunction(L, TaskData_get_description);
-    lua_setfield(L, -2, "description");
-    lua_pushcfunction(L, TaskData_get__findTarget);
-    lua_setfield(L, -2, "_findTarget");
+    registerGetter(L, "infrequentGoalChecks", TaskData_get_infrequentGoalChecks);
+    registerGetter(L, "permaJob_FixedTarget", TaskData_get_permaJob_FixedTarget);
+    registerGetter(L, "permaJob_Associated", TaskData_get_permaJob_Associated);
+    registerGetter(L, "permaJob_Associated_Secondary", TaskData_get_permaJob_Associated_Secondary);
+    registerGetter(L, "requirementsAlwaysFalse", TaskData_get_requirementsAlwaysFalse);
+    registerGetter(L, "_resultsAlwaysFalse", TaskData_get__resultsAlwaysFalse);
+    registerGetter(L, "_requirementsCantEndActionPrematurely", TaskData_get__requirementsCantEndActionPrematurely);
+    registerGetter(L, "durationMin", TaskData_get_durationMin);
+    registerGetter(L, "durationFuzz", TaskData_get_durationFuzz);
+    registerGetter(L, "isDurationBased", TaskData_get_isDurationBased);
+    registerGetter(L, "endsAfterTime", TaskData_get_endsAfterTime);
+    registerGetter(L, "isUnstoppableTask", TaskData_get_isUnstoppableTask);
+    registerGetter(L, "canDoTaskInStages", TaskData_get_canDoTaskInStages);
+    registerGetter(L, "aggressionLevel", TaskData_get_aggressionLevel);
+    registerGetter(L, "noisyness", TaskData_get_noisyness);
+    registerGetter(L, "aidLevel", TaskData_get_aidLevel);
+    registerGetter(L, "followMeWeight", TaskData_get_followMeWeight);
+    registerGetter(L, "copyMeInfluence", TaskData_get_copyMeInfluence);
+    registerGetter(L, "normallyLeadsToSomething", TaskData_get_normallyLeadsToSomething);
+    registerGetter(L, "alertnessMult", TaskData_get_alertnessMult);
+    registerGetter(L, "forDirectPlayerOrdersOnly", TaskData_get_forDirectPlayerOrdersOnly);
+    registerGetter(L, "forFulfillPlayerOrdersOrNPCOnly", TaskData_get_forFulfillPlayerOrdersOrNPCOnly);
+    registerGetter(L, "key", TaskData_get_key);
+    registerGetter(L, "needsTarget", TaskData_get_needsTarget);
+    registerGetter(L, "numResults", TaskData_get_numResults);
+    registerGetter(L, "results", TaskData_get_results);
+    registerGetter(L, "numRequirements", TaskData_get_numRequirements);
+    registerGetter(L, "requirements", TaskData_get_requirements);
+    registerGetter(L, "scoreFunction", TaskData_get_scoreFunction);
+    registerGetter(L, "justDoOneTarget", TaskData_get_justDoOneTarget);
+    registerGetter(L, "subTask", TaskData_get_subTask);
+    registerGetter(L, "dialogueDelivery", TaskData_get_dialogueDelivery);
+    registerGetter(L, "hasAction", TaskData_get_hasAction);
+    registerGetter(L, "description", TaskData_get_description);
+    registerGetter(L, "_findTarget", TaskData_get__findTarget);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TaskData_set_infrequentGoalChecks);
-    lua_setfield(L, -2, "infrequentGoalChecks");
-    lua_pushcfunction(L, TaskData_set_permaJob);
-    lua_setfield(L, -2, "permaJob");
-    lua_pushcfunction(L, TaskData_set_permaJob_FixedTarget);
-    lua_setfield(L, -2, "permaJob_FixedTarget");
-    lua_pushcfunction(L, TaskData_set_permaJob_Associated);
-    lua_setfield(L, -2, "permaJob_Associated");
-    lua_pushcfunction(L, TaskData_set_permaJob_Associated_Secondary);
-    lua_setfield(L, -2, "permaJob_Associated_Secondary");
-    lua_pushcfunction(L, TaskData_set_requirementsAlwaysFalse);
-    lua_setfield(L, -2, "requirementsAlwaysFalse");
-    lua_pushcfunction(L, TaskData_set__resultsAlwaysFalse);
-    lua_setfield(L, -2, "_resultsAlwaysFalse");
-    lua_pushcfunction(L, TaskData_set__requirementsCantEndActionPrematurely);
-    lua_setfield(L, -2, "_requirementsCantEndActionPrematurely");
-    lua_pushcfunction(L, TaskData_set_durationMin);
-    lua_setfield(L, -2, "durationMin");
-    lua_pushcfunction(L, TaskData_set_durationFuzz);
-    lua_setfield(L, -2, "durationFuzz");
-    lua_pushcfunction(L, TaskData_set_isDurationBased);
-    lua_setfield(L, -2, "isDurationBased");
-    lua_pushcfunction(L, TaskData_set_endsAfterTime);
-    lua_setfield(L, -2, "endsAfterTime");
-    lua_pushcfunction(L, TaskData_set_isUnstoppableTask);
-    lua_setfield(L, -2, "isUnstoppableTask");
-    lua_pushcfunction(L, TaskData_set_canDoTaskInStages);
-    lua_setfield(L, -2, "canDoTaskInStages");
-    lua_pushcfunction(L, TaskData_set_aggressionLevel);
-    lua_setfield(L, -2, "aggressionLevel");
-    lua_pushcfunction(L, TaskData_set_noisyness);
-    lua_setfield(L, -2, "noisyness");
-    lua_pushcfunction(L, TaskData_set_aidLevel);
-    lua_setfield(L, -2, "aidLevel");
-    lua_pushcfunction(L, TaskData_set_followMeWeight);
-    lua_setfield(L, -2, "followMeWeight");
-    lua_pushcfunction(L, TaskData_set_copyMeInfluence);
-    lua_setfield(L, -2, "copyMeInfluence");
-    lua_pushcfunction(L, TaskData_set_normallyLeadsToSomething);
-    lua_setfield(L, -2, "normallyLeadsToSomething");
-    lua_pushcfunction(L, TaskData_set_alertnessMult);
-    lua_setfield(L, -2, "alertnessMult");
-    lua_pushcfunction(L, TaskData_set_forDirectPlayerOrdersOnly);
-    lua_setfield(L, -2, "forDirectPlayerOrdersOnly");
-    lua_pushcfunction(L, TaskData_set_forFulfillPlayerOrdersOrNPCOnly);
-    lua_setfield(L, -2, "forFulfillPlayerOrdersOrNPCOnly");
-    lua_pushcfunction(L, TaskData_set_key);
-    lua_setfield(L, -2, "key");
-    lua_pushcfunction(L, TaskData_set_needsTarget);
-    lua_setfield(L, -2, "needsTarget");
-    lua_pushcfunction(L, TaskData_set_numResults);
-    lua_setfield(L, -2, "numResults");
-    lua_pushcfunction(L, TaskData_set_results);
-    lua_setfield(L, -2, "results");
-    lua_pushcfunction(L, TaskData_set_numRequirements);
-    lua_setfield(L, -2, "numRequirements");
-    lua_pushcfunction(L, TaskData_set_requirements);
-    lua_setfield(L, -2, "requirements");
-    lua_pushcfunction(L, TaskData_set_scoreFunction);
-    lua_setfield(L, -2, "scoreFunction");
-    lua_pushcfunction(L, TaskData_set_justDoOneTarget);
-    lua_setfield(L, -2, "justDoOneTarget");
-    lua_pushcfunction(L, TaskData_set_subTask);
-    lua_setfield(L, -2, "subTask");
-    lua_pushcfunction(L, TaskData_set_dialogueDelivery);
-    lua_setfield(L, -2, "dialogueDelivery");
-    lua_pushcfunction(L, TaskData_set_hasAction);
-    lua_setfield(L, -2, "hasAction");
-    lua_pushcfunction(L, TaskData_set_description);
-    lua_setfield(L, -2, "description");
-    lua_pushcfunction(L, TaskData_set__findTarget);
-    lua_setfield(L, -2, "_findTarget");
+    registerSetter(L, "infrequentGoalChecks", TaskData_set_infrequentGoalChecks);
+    registerSetter(L, "permaJob_FixedTarget", TaskData_set_permaJob_FixedTarget);
+    registerSetter(L, "permaJob_Associated", TaskData_set_permaJob_Associated);
+    registerSetter(L, "permaJob_Associated_Secondary", TaskData_set_permaJob_Associated_Secondary);
+    registerSetter(L, "requirementsAlwaysFalse", TaskData_set_requirementsAlwaysFalse);
+    registerSetter(L, "_resultsAlwaysFalse", TaskData_set__resultsAlwaysFalse);
+    registerSetter(L, "_requirementsCantEndActionPrematurely", TaskData_set__requirementsCantEndActionPrematurely);
+    registerSetter(L, "durationMin", TaskData_set_durationMin);
+    registerSetter(L, "durationFuzz", TaskData_set_durationFuzz);
+    registerSetter(L, "isDurationBased", TaskData_set_isDurationBased);
+    registerSetter(L, "endsAfterTime", TaskData_set_endsAfterTime);
+    registerSetter(L, "isUnstoppableTask", TaskData_set_isUnstoppableTask);
+    registerSetter(L, "canDoTaskInStages", TaskData_set_canDoTaskInStages);
+    registerSetter(L, "aggressionLevel", TaskData_set_aggressionLevel);
+    registerSetter(L, "noisyness", TaskData_set_noisyness);
+    registerSetter(L, "aidLevel", TaskData_set_aidLevel);
+    registerSetter(L, "followMeWeight", TaskData_set_followMeWeight);
+    registerSetter(L, "copyMeInfluence", TaskData_set_copyMeInfluence);
+    registerSetter(L, "normallyLeadsToSomething", TaskData_set_normallyLeadsToSomething);
+    registerSetter(L, "alertnessMult", TaskData_set_alertnessMult);
+    registerSetter(L, "forDirectPlayerOrdersOnly", TaskData_set_forDirectPlayerOrdersOnly);
+    registerSetter(L, "forFulfillPlayerOrdersOrNPCOnly", TaskData_set_forFulfillPlayerOrdersOrNPCOnly);
+    registerSetter(L, "key", TaskData_set_key);
+    registerSetter(L, "needsTarget", TaskData_set_needsTarget);
+    registerSetter(L, "numResults", TaskData_set_numResults);
+    registerSetter(L, "results", TaskData_set_results);
+    registerSetter(L, "numRequirements", TaskData_set_numRequirements);
+    registerSetter(L, "requirements", TaskData_set_requirements);
+    registerSetter(L, "justDoOneTarget", TaskData_set_justDoOneTarget);
+    registerSetter(L, "subTask", TaskData_set_subTask);
+    registerSetter(L, "dialogueDelivery", TaskData_set_dialogueDelivery);
+    registerSetter(L, "hasAction", TaskData_set_hasAction);
+    registerSetter(L, "description", TaskData_set_description);
+        registerSetter(L, "_findTarget", TaskData_set__findTarget);
+        registerSetter(L, "scoreFunction", TaskData_set_scoreFunction);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to Ogre::GeneralAllocatedObject
+    // setMetatableParent(L, TaskDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\gui\ProspectingWindow.h"
 #include "ResourceLinePanelBinding.h"
+#include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/MyGuiBinding.h"
 
@@ -92,7 +93,7 @@ void ResourceLinePanelBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout
-    // setMetatableParent(L, ResourceLinePanelBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
+    setMetatableParent(L, ResourceLinePanelBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

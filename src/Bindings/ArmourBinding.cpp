@@ -1,14 +1,16 @@
 #include "pch.h"
 #include "kenshi\Gear.h"
 #include "ArmourBinding.h"
-#include "Bindings/EnumBinding.h"
-#include "Bindings/GameDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/GearBinding.h"
+#include "Bindings/EnumBinding.h"
 
 namespace KenshiLua
 {
 
-static Armour* getB(lua_State* L, int idx)
+static Armour* getInstance(lua_State* L, int idx)
 {
     return checkObject<Armour>(L, idx, ArmourBinding::getMetatableName());
 }
@@ -16,553 +18,494 @@ static Armour* getB(lua_State* L, int idx)
 // --- Getters for Armour ---
 static int Armour_get_cutResistance(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->cutResistance);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->cutResistance);
     return 1;
 }
 
 static int Armour_get_bluntResistance(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->bluntResistance);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->bluntResistance);
     return 1;
 }
 
 static int Armour_get_pierceResistance(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->pierceResistance);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->pierceResistance);
     return 1;
 }
 
 static int Armour_get_minCutResistance(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->minCutResistance);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->minCutResistance);
     return 1;
 }
 
 static int Armour_get_cutToStun(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->cutToStun);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->cutToStun);
     return 1;
 }
 
 static int Armour_get_materialType(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushinteger(L, (lua_Integer)b->materialType);
-    return 1;
-}
-
-static int Armour_get_armourClassEnum(lua_State* L)
-{
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushinteger(L, (lua_Integer)b->armourClassEnum);
-    return 1;
-}
-
-static int Armour_get_stigma(lua_State* L)
-{
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushinteger(L, (lua_Integer)b->stigma);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushinteger(L, (lua_Integer)instance->materialType);
     return 1;
 }
 
 static int Armour_get_athleticsMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->athleticsMult);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->athleticsMult);
     return 1;
 }
 
 static int Armour_get_combatSkillBonusAttk(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushinteger(L, b->combatSkillBonusAttk);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushinteger(L, instance->combatSkillBonusAttk);
     return 1;
 }
 
 static int Armour_get_combatSkillBonusDef(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushinteger(L, b->combatSkillBonusDef);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushinteger(L, instance->combatSkillBonusDef);
     return 1;
 }
 
 static int Armour_get_perceptionBonus(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushinteger(L, b->perceptionBonus);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushinteger(L, instance->perceptionBonus);
     return 1;
 }
 
 static int Armour_get_combatSpeedMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->combatSpeedMult);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->combatSpeedMult);
     return 1;
 }
 
 static int Armour_get_stealthMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->stealthMult);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->stealthMult);
     return 1;
 }
 
 static int Armour_get_assassinMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->assassinMult);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->assassinMult);
     return 1;
 }
 
 static int Armour_get_dexterityMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->dexterityMult);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->dexterityMult);
     return 1;
 }
 
 static int Armour_get_damageMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->damageMult);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->damageMult);
     return 1;
 }
 
 static int Armour_get_dodgeMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->dodgeMult);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->dodgeMult);
     return 1;
 }
 
 static int Armour_get_unarmedBonus(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushinteger(L, b->unarmedBonus);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushinteger(L, instance->unarmedBonus);
     return 1;
 }
 
 static int Armour_get_fistInjuryMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->fistInjuryMult);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->fistInjuryMult);
     return 1;
 }
 
 static int Armour_get_weatherProtectionAmount(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->weatherProtectionAmount);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->weatherProtectionAmount);
     return 1;
 }
 
 static int Armour_get_rangedSkillMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->rangedSkillMult);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->rangedSkillMult);
     return 1;
-}
-
-static int Armour_get_weatherProtections(lua_State* L)
-{
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    // TODO: Unsupported type for weatherProtections (std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'weatherProtections' (type: std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >)");
-}
-
-static int Armour_get_bodypartCoverage(lua_State* L)
-{
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    // TODO: Unsupported type for bodypartCoverage (ogre_unordered_map<GameData*, float>::type)
-    return luaL_error(L, "Unsupported property 'bodypartCoverage' (type: ogre_unordered_map<GameData*, float>::type)");
 }
 
 static int Armour_get_craftTime(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    lua_pushnumber(L, b->craftTime);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushnumber(L, instance->craftTime);
     return 1;
 }
 
 // --- Setters for Armour ---
 static int Armour_set_cutResistance(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->cutResistance = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->cutResistance = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_bluntResistance(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->bluntResistance = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->bluntResistance = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_pierceResistance(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->pierceResistance = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->pierceResistance = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_minCutResistance(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->minCutResistance = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->minCutResistance = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_cutToStun(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->cutToStun = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->cutToStun = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_materialType(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->materialType = (ArmourType)luaL_checkinteger(L, 2);
-    return 0;
-}
-
-static int Armour_set_armourClassEnum(lua_State* L)
-{
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->armourClassEnum = (ArmourClass)luaL_checkinteger(L, 2);
-    return 0;
-}
-
-static int Armour_set_stigma(lua_State* L)
-{
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->stigma = (CharacterTypeEnum)luaL_checkinteger(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->materialType = (ArmourType)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int Armour_set_athleticsMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->athleticsMult = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->athleticsMult = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_combatSkillBonusAttk(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->combatSkillBonusAttk = (int)luaL_checkinteger(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->combatSkillBonusAttk = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int Armour_set_combatSkillBonusDef(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->combatSkillBonusDef = (int)luaL_checkinteger(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->combatSkillBonusDef = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int Armour_set_perceptionBonus(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->perceptionBonus = (int)luaL_checkinteger(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->perceptionBonus = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int Armour_set_combatSpeedMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->combatSpeedMult = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->combatSpeedMult = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_stealthMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->stealthMult = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->stealthMult = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_assassinMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->assassinMult = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->assassinMult = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_dexterityMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->dexterityMult = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->dexterityMult = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_damageMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->damageMult = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->damageMult = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_dodgeMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->dodgeMult = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->dodgeMult = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_unarmedBonus(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->unarmedBonus = (int)luaL_checkinteger(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->unarmedBonus = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int Armour_set_fistInjuryMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->fistInjuryMult = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->fistInjuryMult = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_weatherProtectionAmount(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->weatherProtectionAmount = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->weatherProtectionAmount = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Armour_set_rangedSkillMult(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->rangedSkillMult = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->rangedSkillMult = (float)luaL_checknumber(L, 2);
     return 0;
-}
-
-// ToDo
-static int Armour_set_weatherProtections(lua_State* L)
-{
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for weatherProtections");
-}
-// ToDo
-static int Armour_set_bodypartCoverage(lua_State* L)
-{
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bodypartCoverage");
 }
 
 static int Armour_set_craftTime(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    b->craftTime = (float)luaL_checknumber(L, 2);
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->craftTime = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
-// --- Methods for Armour ---
 int ArmourBinding::getClassType(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
-    itemType result = b->getClassType();
+    itemType result = instance->getClassType();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int ArmourBinding::_NV_getClassType(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
-    itemType result = b->_NV_getClassType();
+    itemType result = instance->_NV_getClassType();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int ArmourBinding::isArmour(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
-    Armour* result = b->isArmour();
+    Armour* result = instance->isArmour();
     return pushObject<Armour>(L, result, ArmourBinding::getMetatableName());
 }
 
 int ArmourBinding::_NV_isArmour(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
-    Armour* result = b->_NV_isArmour();
+    Armour* result = instance->_NV_isArmour();
     return pushObject<Armour>(L, result, ArmourBinding::getMetatableName());
 }
 
 int ArmourBinding::getItemWeight(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
-    float result = b->getItemWeight();
+    float result = instance->getItemWeight();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ArmourBinding::_NV_getItemWeight(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
-    float result = b->_NV_getItemWeight();
+    float result = instance->_NV_getItemWeight();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ArmourBinding::getValueSingle(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
     bool isPlayer = lua_toboolean(L, 2) != 0;
-    int result = b->getValueSingle(isPlayer);
+    int result = instance->getValueSingle(isPlayer);
     lua_pushinteger(L, result);
     return 1;
 }
 
 int ArmourBinding::_NV_getValueSingle(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
     bool isPlayer = lua_toboolean(L, 2) != 0;
-    int result = b->_NV_getValueSingle(isPlayer);
+    int result = instance->_NV_getValueSingle(isPlayer);
     lua_pushinteger(L, result);
+    return 1;
+}
+
+int ArmourBinding::didIHitFlesh(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+
+    GameData* bodypart = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->didIHitFlesh(bodypart);
+    lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ArmourBinding::hasArmourCoverage(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
-    bool result = b->hasArmourCoverage();
+    bool result = instance->hasArmourCoverage();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int ArmourBinding::getCraftTime(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
-    float result = b->getCraftTime();
+    float result = instance->getCraftTime();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ArmourBinding::_NV_getCraftTime(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
-    float result = b->_NV_getCraftTime();
+    float result = instance->_NV_getCraftTime();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int ArmourBinding::getWeatherProtection_simple(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
     WeatherAffecting weather = (WeatherAffecting)luaL_checkinteger(L, 2);
-    float result = b->getWeatherProtection_simple(weather);
+    float result = instance->getWeatherProtection_simple(weather);
     lua_pushnumber(L, result);
     return 1;
+}
+
+int ArmourBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+
+    GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    GameData* _materialData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    Faction* _uniformFlag = checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
+    int _level = (int)luaL_checkinteger(L, 6);
+    Armour* result = instance->_CONSTRUCTOR(baseData, _materialData, _handle, _uniformFlag, _level);
+    return pushObject<Armour>(L, result, ArmourBinding::getMetatableName());
 }
 
 int ArmourBinding::_DESTRUCTOR(lua_State* L)
 {
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
-}
-
-int ArmourBinding::didIHitFlesh(lua_State* L)
-{
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    GameData* bodypart = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    if (!bodypart) return luaL_error(L, "Bodypart is nil");
-    bool result = b->didIHitFlesh(bodypart);
-    lua_pushboolean(L, result ? 1 : 0);
-    return 1;
-}
-
-int ArmourBinding::getArmourCraftingMaterialConsumptionRate(lua_State* L)
-{
-    Armour* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Armour is nil");
-    float result = Armour::getArmourCraftingMaterialConsumptionRate(b->data);
-    lua_pushnumber(L, result);
-    return 1;
 }
 
 /*
@@ -571,7 +514,15 @@ Skipped methods needing manual binding:
   line 169: void _NV_getTooltipData1(...) - unsupported arg type
   line 170: void getTooltipData2(...) - unsupported arg type
   line 171: void _NV_getTooltipData2(...) - unsupported arg type
-  line 204: Armour* _CONSTRUCTOR(...) - unsupported arg type
+  line 176: float getArmourCraftingMaterialConsumptionRate(...) - static method
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 183: armourClassEnum (ArmourClass) - unsupported type
+  line 184: stigma (CharacterTypeEnum) - unsupported type
+  line 199: weatherProtections (std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >) - unsupported type
+  line 207: bodypartCoverage (ogre_unordered_map<GameData*, float>::type) - unsupported type
 */
 
 int ArmourBinding::gc(lua_State* L)
@@ -585,6 +536,88 @@ int ArmourBinding::tostring(lua_State* L)
     lua_pushstring(L, "KenshiLua.Armour object");
     return 1;
 }
+
+
+
+static int Armour_get_armourClassEnum(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushinteger(L, (lua_Integer)instance->armourClassEnum);
+    return 1;
+}
+
+
+static int Armour_get_bodypartCoverage(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    // TODO: Unsupported type for bodypartCoverage (ogre_unordered_map<GameData*, float>::type)
+    return luaL_error(L, "Unsupported property 'bodypartCoverage' (type: ogre_unordered_map<GameData*, float>::type)");
+}
+
+
+static int Armour_get_stigma(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    lua_pushinteger(L, (lua_Integer)instance->stigma);
+    return 1;
+}
+
+
+static int Armour_get_weatherProtections(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    // TODO: Unsupported type for weatherProtections (std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >)
+    return luaL_error(L, "Unsupported property 'weatherProtections' (type: std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >)");
+}
+
+
+static int Armour_set_armourClassEnum(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->armourClassEnum = (ArmourClass)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+
+static int Armour_set_bodypartCoverage(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for bodypartCoverage");
+}
+
+
+static int Armour_set_stigma(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    instance->stigma = (CharacterTypeEnum)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+
+static int Armour_set_weatherProtections(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for weatherProtections");
+}
+
+
+int ArmourBinding::getArmourCraftingMaterialConsumptionRate(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    float result = Armour::getArmourCraftingMaterialConsumptionRate(instance->data);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
 
 void ArmourBinding::registerBinding(lua_State* L)
 {
@@ -603,13 +636,14 @@ void ArmourBinding::registerBinding(lua_State* L)
         { "_NV_getItemWeight", ArmourBinding::_NV_getItemWeight },
         { "getValueSingle", ArmourBinding::getValueSingle },
         { "_NV_getValueSingle", ArmourBinding::_NV_getValueSingle },
+        { "didIHitFlesh", ArmourBinding::didIHitFlesh },
         { "hasArmourCoverage", ArmourBinding::hasArmourCoverage },
         { "getCraftTime", ArmourBinding::getCraftTime },
         { "_NV_getCraftTime", ArmourBinding::_NV_getCraftTime },
         { "getWeatherProtection_simple", ArmourBinding::getWeatherProtection_simple },
+        { "_CONSTRUCTOR", ArmourBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", ArmourBinding::_DESTRUCTOR },
-        { "didIHitFlesh", ArmourBinding::didIHitFlesh },
-        { "getArmourCraftingMaterialConsumptionRate", ArmourBinding::getArmourCraftingMaterialConsumptionRate },
+                { "getArmourCraftingMaterialConsumptionRate", ArmourBinding::getArmourCraftingMaterialConsumptionRate },
         { 0, 0 }
     };
 
@@ -624,110 +658,63 @@ void ArmourBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ArmourBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, Armour_get_cutResistance);
-    lua_setfield(L, -2, "cutResistance");
-    lua_pushcfunction(L, Armour_get_bluntResistance);
-    lua_setfield(L, -2, "bluntResistance");
-    lua_pushcfunction(L, Armour_get_pierceResistance);
-    lua_setfield(L, -2, "pierceResistance");
-    lua_pushcfunction(L, Armour_get_minCutResistance);
-    lua_setfield(L, -2, "minCutResistance");
-    lua_pushcfunction(L, Armour_get_cutToStun);
-    lua_setfield(L, -2, "cutToStun");
-    lua_pushcfunction(L, Armour_get_materialType);
-    lua_setfield(L, -2, "materialType");
-    lua_pushcfunction(L, Armour_get_armourClassEnum);
-    lua_setfield(L, -2, "armourClassEnum");
-    lua_pushcfunction(L, Armour_get_stigma);
-    lua_setfield(L, -2, "stigma");
-    lua_pushcfunction(L, Armour_get_athleticsMult);
-    lua_setfield(L, -2, "athleticsMult");
-    lua_pushcfunction(L, Armour_get_combatSkillBonusAttk);
-    lua_setfield(L, -2, "combatSkillBonusAttk");
-    lua_pushcfunction(L, Armour_get_combatSkillBonusDef);
-    lua_setfield(L, -2, "combatSkillBonusDef");
-    lua_pushcfunction(L, Armour_get_perceptionBonus);
-    lua_setfield(L, -2, "perceptionBonus");
-    lua_pushcfunction(L, Armour_get_combatSpeedMult);
-    lua_setfield(L, -2, "combatSpeedMult");
-    lua_pushcfunction(L, Armour_get_stealthMult);
-    lua_setfield(L, -2, "stealthMult");
-    lua_pushcfunction(L, Armour_get_assassinMult);
-    lua_setfield(L, -2, "assassinMult");
-    lua_pushcfunction(L, Armour_get_dexterityMult);
-    lua_setfield(L, -2, "dexterityMult");
-    lua_pushcfunction(L, Armour_get_damageMult);
-    lua_setfield(L, -2, "damageMult");
-    lua_pushcfunction(L, Armour_get_dodgeMult);
-    lua_setfield(L, -2, "dodgeMult");
-    lua_pushcfunction(L, Armour_get_unarmedBonus);
-    lua_setfield(L, -2, "unarmedBonus");
-    lua_pushcfunction(L, Armour_get_fistInjuryMult);
-    lua_setfield(L, -2, "fistInjuryMult");
-    lua_pushcfunction(L, Armour_get_weatherProtectionAmount);
-    lua_setfield(L, -2, "weatherProtectionAmount");
-    lua_pushcfunction(L, Armour_get_rangedSkillMult);
-    lua_setfield(L, -2, "rangedSkillMult");
-    lua_pushcfunction(L, Armour_get_weatherProtections);
-    lua_setfield(L, -2, "weatherProtections");
-    lua_pushcfunction(L, Armour_get_bodypartCoverage);
-    lua_setfield(L, -2, "bodypartCoverage");
-    lua_pushcfunction(L, Armour_get_craftTime);
-    lua_setfield(L, -2, "craftTime");
+    registerGetter(L, "cutResistance", Armour_get_cutResistance);
+    registerGetter(L, "bluntResistance", Armour_get_bluntResistance);
+    registerGetter(L, "pierceResistance", Armour_get_pierceResistance);
+    registerGetter(L, "minCutResistance", Armour_get_minCutResistance);
+    registerGetter(L, "cutToStun", Armour_get_cutToStun);
+    registerGetter(L, "materialType", Armour_get_materialType);
+    registerGetter(L, "athleticsMult", Armour_get_athleticsMult);
+    registerGetter(L, "combatSkillBonusAttk", Armour_get_combatSkillBonusAttk);
+    registerGetter(L, "combatSkillBonusDef", Armour_get_combatSkillBonusDef);
+    registerGetter(L, "perceptionBonus", Armour_get_perceptionBonus);
+    registerGetter(L, "combatSpeedMult", Armour_get_combatSpeedMult);
+    registerGetter(L, "stealthMult", Armour_get_stealthMult);
+    registerGetter(L, "assassinMult", Armour_get_assassinMult);
+    registerGetter(L, "dexterityMult", Armour_get_dexterityMult);
+    registerGetter(L, "damageMult", Armour_get_damageMult);
+    registerGetter(L, "dodgeMult", Armour_get_dodgeMult);
+    registerGetter(L, "unarmedBonus", Armour_get_unarmedBonus);
+    registerGetter(L, "fistInjuryMult", Armour_get_fistInjuryMult);
+    registerGetter(L, "weatherProtectionAmount", Armour_get_weatherProtectionAmount);
+    registerGetter(L, "rangedSkillMult", Armour_get_rangedSkillMult);
+    registerGetter(L, "craftTime", Armour_get_craftTime);
+    registerGetter(L, "armourClassEnum", Armour_get_armourClassEnum);
+    registerGetter(L, "bodypartCoverage", Armour_get_bodypartCoverage);
+    registerGetter(L, "stigma", Armour_get_stigma);
+    registerGetter(L, "weatherProtections", Armour_get_weatherProtections);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, Armour_set_cutResistance);
-    lua_setfield(L, -2, "cutResistance");
-    lua_pushcfunction(L, Armour_set_bluntResistance);
-    lua_setfield(L, -2, "bluntResistance");
-    lua_pushcfunction(L, Armour_set_pierceResistance);
-    lua_setfield(L, -2, "pierceResistance");
-    lua_pushcfunction(L, Armour_set_minCutResistance);
-    lua_setfield(L, -2, "minCutResistance");
-    lua_pushcfunction(L, Armour_set_cutToStun);
-    lua_setfield(L, -2, "cutToStun");
-    lua_pushcfunction(L, Armour_set_materialType);
-    lua_setfield(L, -2, "materialType");
-    lua_pushcfunction(L, Armour_set_armourClassEnum);
-    lua_setfield(L, -2, "armourClassEnum");
-    lua_pushcfunction(L, Armour_set_stigma);
-    lua_setfield(L, -2, "stigma");
-    lua_pushcfunction(L, Armour_set_athleticsMult);
-    lua_setfield(L, -2, "athleticsMult");
-    lua_pushcfunction(L, Armour_set_combatSkillBonusAttk);
-    lua_setfield(L, -2, "combatSkillBonusAttk");
-    lua_pushcfunction(L, Armour_set_combatSkillBonusDef);
-    lua_setfield(L, -2, "combatSkillBonusDef");
-    lua_pushcfunction(L, Armour_set_perceptionBonus);
-    lua_setfield(L, -2, "perceptionBonus");
-    lua_pushcfunction(L, Armour_set_combatSpeedMult);
-    lua_setfield(L, -2, "combatSpeedMult");
-    lua_pushcfunction(L, Armour_set_stealthMult);
-    lua_setfield(L, -2, "stealthMult");
-    lua_pushcfunction(L, Armour_set_assassinMult);
-    lua_setfield(L, -2, "assassinMult");
-    lua_pushcfunction(L, Armour_set_dexterityMult);
-    lua_setfield(L, -2, "dexterityMult");
-    lua_pushcfunction(L, Armour_set_damageMult);
-    lua_setfield(L, -2, "damageMult");
-    lua_pushcfunction(L, Armour_set_dodgeMult);
-    lua_setfield(L, -2, "dodgeMult");
-    lua_pushcfunction(L, Armour_set_unarmedBonus);
-    lua_setfield(L, -2, "unarmedBonus");
-    lua_pushcfunction(L, Armour_set_fistInjuryMult);
-    lua_setfield(L, -2, "fistInjuryMult");
-    lua_pushcfunction(L, Armour_set_weatherProtectionAmount);
-    lua_setfield(L, -2, "weatherProtectionAmount");
-    lua_pushcfunction(L, Armour_set_rangedSkillMult);
-    lua_setfield(L, -2, "rangedSkillMult");
-    lua_pushcfunction(L, Armour_set_weatherProtections);
-    lua_setfield(L, -2, "weatherProtections");
-    lua_pushcfunction(L, Armour_set_bodypartCoverage);
-    lua_setfield(L, -2, "bodypartCoverage");
-    lua_pushcfunction(L, Armour_set_craftTime);
-    lua_setfield(L, -2, "craftTime");
+    registerSetter(L, "cutResistance", Armour_set_cutResistance);
+    registerSetter(L, "bluntResistance", Armour_set_bluntResistance);
+    registerSetter(L, "pierceResistance", Armour_set_pierceResistance);
+    registerSetter(L, "minCutResistance", Armour_set_minCutResistance);
+    registerSetter(L, "cutToStun", Armour_set_cutToStun);
+    registerSetter(L, "materialType", Armour_set_materialType);
+    registerSetter(L, "athleticsMult", Armour_set_athleticsMult);
+    registerSetter(L, "combatSkillBonusAttk", Armour_set_combatSkillBonusAttk);
+    registerSetter(L, "combatSkillBonusDef", Armour_set_combatSkillBonusDef);
+    registerSetter(L, "perceptionBonus", Armour_set_perceptionBonus);
+    registerSetter(L, "combatSpeedMult", Armour_set_combatSpeedMult);
+    registerSetter(L, "stealthMult", Armour_set_stealthMult);
+    registerSetter(L, "assassinMult", Armour_set_assassinMult);
+    registerSetter(L, "dexterityMult", Armour_set_dexterityMult);
+    registerSetter(L, "damageMult", Armour_set_damageMult);
+    registerSetter(L, "dodgeMult", Armour_set_dodgeMult);
+    registerSetter(L, "unarmedBonus", Armour_set_unarmedBonus);
+    registerSetter(L, "fistInjuryMult", Armour_set_fistInjuryMult);
+    registerSetter(L, "weatherProtectionAmount", Armour_set_weatherProtectionAmount);
+    registerSetter(L, "rangedSkillMult", Armour_set_rangedSkillMult);
+    registerSetter(L, "craftTime", Armour_set_craftTime);
+    registerSetter(L, "armourClassEnum", Armour_set_armourClassEnum);
+    registerSetter(L, "bodypartCoverage", Armour_set_bodypartCoverage);
+    registerSetter(L, "stigma", Armour_set_stigma);
+    registerSetter(L, "weatherProtections", Armour_set_weatherProtections);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to Gear
+    setMetatableParent(L, ArmourBinding::getMetatableName(), GearBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

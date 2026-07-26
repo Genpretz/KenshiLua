@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\gui\ScreenLabel.h"
 #include "FloatingProgressBarBinding.h"
+#include "ScreenLabelInterfaceBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -166,7 +167,7 @@ void FloatingProgressBarBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ScreenLabelInterface
-    // setMetatableParent(L, FloatingProgressBarBinding::getMetatableName(), ScreenLabelInterfaceBinding::getMetatableName());
+    setMetatableParent(L, FloatingProgressBarBinding::getMetatableName(), ScreenLabelInterfaceBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

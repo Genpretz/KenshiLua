@@ -1,7 +1,9 @@
 #include "pch.h"
-#include <kenshi/ZoneManager.h>
+#include "kenshi\ZoneManager.h"
 #include "ParticlePoolBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
+#include <kenshi/ZoneManager.h>
 
 namespace KenshiLua
 {
@@ -77,8 +79,7 @@ int ParticlePoolBinding::_CONSTRUCTOR(lua_State* L)
     int limit = (int)luaL_checkinteger(L, 2);
     float ttl = (float)luaL_checknumber(L, 3);
     ParticlePool* result = instance->_CONSTRUCTOR(limit, ttl);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ParticlePool>(L, result, ParticlePoolBinding::getMetatableName());
 }
 
 int ParticlePoolBinding::_DESTRUCTOR(lua_State* L)
@@ -143,6 +144,11 @@ Skipped methods needing manual binding:
   line 304: bool addParticle(...) - unsupported arg type
 */
 
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - ParticlePool_get_particles: ParticlePool::ParticleData* (unbound pointer)
+*/
+
 int ParticlePoolBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -185,23 +191,16 @@ void ParticlePoolBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ParticlePoolBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ParticlePool_get_limit);
-    lua_setfield(L, -2, "limit");
-    lua_pushcfunction(L, ParticlePool_get_lastIndex);
-    lua_setfield(L, -2, "lastIndex");
-    lua_pushcfunction(L, ParticlePool_get_particles);
-    lua_setfield(L, -2, "particles");
-    lua_pushcfunction(L, ParticlePool_get_maxTTL);
-    lua_setfield(L, -2, "maxTTL");
+    registerGetter(L, "limit", ParticlePool_get_limit);
+    registerGetter(L, "lastIndex", ParticlePool_get_lastIndex);
+    registerGetter(L, "particles", ParticlePool_get_particles);
+    registerGetter(L, "maxTTL", ParticlePool_get_maxTTL);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ParticlePool_set_limit);
-    lua_setfield(L, -2, "limit");
-    lua_pushcfunction(L, ParticlePool_set_lastIndex);
-    lua_setfield(L, -2, "lastIndex");
-    lua_pushcfunction(L, ParticlePool_set_maxTTL);
-    lua_setfield(L, -2, "maxTTL");
+    registerSetter(L, "limit", ParticlePool_set_limit);
+    registerSetter(L, "lastIndex", ParticlePool_set_lastIndex);
+    registerSetter(L, "maxTTL", ParticlePool_set_maxTTL);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

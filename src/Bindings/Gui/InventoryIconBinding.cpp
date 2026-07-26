@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\gui\InventoryGUI.h"
 #include "InventoryIconBinding.h"
+#include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/ItemBinding.h"
@@ -150,7 +151,7 @@ void InventoryIconBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout
-    // setMetatableParent(L, InventoryIconBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
+    setMetatableParent(L, InventoryIconBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

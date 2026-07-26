@@ -1,7 +1,10 @@
 #include "pch.h"
-#include <kenshi/ZoneManager.h>
+#include "kenshi\ZoneManager.h"
 #include "ZoneSpacialGridBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/ZoneMapBinding.h"
+#include <kenshi/ZoneManager.h>
 
 namespace KenshiLua
 {
@@ -44,6 +47,7 @@ static int ZoneSpacialGrid_get_cellSize(lua_State* L)
     return 1;
 }
 
+static int ZoneSpacialGrid_get_mutex(lua_State* L) { return 0; }
 
 // --- Setters for ZoneSpacialGrid ---
 static int ZoneSpacialGrid_set_cellCount(lua_State* L)
@@ -62,6 +66,7 @@ static int ZoneSpacialGrid_set_cellSize(lua_State* L)
     return 0;
 }
 
+static int ZoneSpacialGrid_set_mutex(lua_State* L) { return 0; }
 
 int ZoneSpacialGridBinding::_CONSTRUCTOR(lua_State* L)
 {
@@ -69,8 +74,7 @@ int ZoneSpacialGridBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "ZoneSpacialGrid is nil");
 
     ZoneSpacialGrid* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ZoneSpacialGrid>(L, result, ZoneSpacialGridBinding::getMetatableName());
 }
 
 int ZoneSpacialGridBinding::_DESTRUCTOR(lua_State* L)
@@ -82,6 +86,59 @@ int ZoneSpacialGridBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
+int ZoneSpacialGridBinding::add(lua_State* L)
+{
+    ZoneSpacialGrid* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneSpacialGrid is nil");
+
+    RootObject* o = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    unsigned int result = instance->add(o);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int ZoneSpacialGridBinding::remove(lua_State* L)
+{
+    ZoneSpacialGrid* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneSpacialGrid is nil");
+
+    RootObject* o = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    bool result = instance->remove(o);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ZoneSpacialGridBinding::update(lua_State* L)
+{
+    ZoneSpacialGrid* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneSpacialGrid is nil");
+
+    RootObject* o = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    ZoneSpacialGrid::Result result = instance->update(o);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int ZoneSpacialGridBinding::addZone(lua_State* L)
+{
+    ZoneSpacialGrid* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneSpacialGrid is nil");
+
+    ZoneMap* z = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    instance->addZone(z);
+    return 0;
+}
+
+int ZoneSpacialGridBinding::removeZone(lua_State* L)
+{
+    ZoneSpacialGrid* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneSpacialGrid is nil");
+
+    ZoneMap* z = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    instance->removeZone(z);
+    return 0;
+}
+
 int ZoneSpacialGridBinding::getZoneKey(lua_State* L)
 {
     ZoneSpacialGrid* instance = getInstance(L, 1);
@@ -90,6 +147,19 @@ int ZoneSpacialGridBinding::getZoneKey(lua_State* L)
     Ogre::Vector3 p;
     readVector3(L, 2, p);
     unsigned int result = instance->getZoneKey(p);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int ZoneSpacialGridBinding::getCellKey(lua_State* L)
+{
+    ZoneSpacialGrid* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneSpacialGrid is nil");
+
+    ZoneMap* zone = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    Ogre::Vector3 p;
+    readVector3(L, 3, p);
+    unsigned int result = instance->getCellKey(zone, p);
     lua_pushinteger(L, result);
     return 1;
 }
@@ -118,14 +188,14 @@ int ZoneSpacialGridBinding::initialiseGrid(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 106: unsigned int add(...) - unsupported arg type
-  line 107: bool remove(...) - unsupported arg type
-  line 108: ZoneSpacialGrid::Result update(...) - unsupported arg type
   line 109: int getObjects(...) - overloaded method
   line 110: int getObjects(...) - overloaded method
-  line 111: void addZone(...) - unsupported arg type
-  line 112: void removeZone(...) - unsupported arg type
-  line 120: unsigned int getCellKey(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - ZoneSpacialGrid_get_zones: ZoneSpacialGrid::ZoneCell** (unbound pointer)
+  - ZoneSpacialGrid_get_createCellsFunc: function* (unbound pointer)
 */
 
 int ZoneSpacialGridBinding::gc(lua_State* L)
@@ -151,7 +221,13 @@ void ZoneSpacialGridBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", ZoneSpacialGridBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", ZoneSpacialGridBinding::_DESTRUCTOR },
+        { "add", ZoneSpacialGridBinding::add },
+        { "remove", ZoneSpacialGridBinding::remove },
+        { "update", ZoneSpacialGridBinding::update },
+        { "addZone", ZoneSpacialGridBinding::addZone },
+        { "removeZone", ZoneSpacialGridBinding::removeZone },
         { "getZoneKey", ZoneSpacialGridBinding::getZoneKey },
+        { "getCellKey", ZoneSpacialGridBinding::getCellKey },
         { "getFullKey", ZoneSpacialGridBinding::getFullKey },
         { "initialiseGrid", ZoneSpacialGridBinding::initialiseGrid },
         { 0, 0 }
@@ -168,21 +244,17 @@ void ZoneSpacialGridBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ZoneSpacialGridBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ZoneSpacialGrid_get_zones);
-    lua_setfield(L, -2, "zones");
-    lua_pushcfunction(L, ZoneSpacialGrid_get_createCellsFunc);
-    lua_setfield(L, -2, "createCellsFunc");
-    lua_pushcfunction(L, ZoneSpacialGrid_get_cellCount);
-    lua_setfield(L, -2, "cellCount");
-    lua_pushcfunction(L, ZoneSpacialGrid_get_cellSize);
-    lua_setfield(L, -2, "cellSize");
+    registerGetter(L, "zones", ZoneSpacialGrid_get_zones);
+    registerGetter(L, "createCellsFunc", ZoneSpacialGrid_get_createCellsFunc);
+    registerGetter(L, "cellCount", ZoneSpacialGrid_get_cellCount);
+    registerGetter(L, "cellSize", ZoneSpacialGrid_get_cellSize);
+    registerGetter(L, "mutex", ZoneSpacialGrid_get_mutex);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ZoneSpacialGrid_set_cellCount);
-    lua_setfield(L, -2, "cellCount");
-    lua_pushcfunction(L, ZoneSpacialGrid_set_cellSize);
-    lua_setfield(L, -2, "cellSize");
+    registerSetter(L, "cellCount", ZoneSpacialGrid_set_cellCount);
+    registerSetter(L, "cellSize", ZoneSpacialGrid_set_cellSize);
+    registerSetter(L, "mutex", ZoneSpacialGrid_set_mutex);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

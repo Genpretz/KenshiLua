@@ -2,50 +2,60 @@
 #include "kenshi\Item.h"
 #include "RaceLimiterBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/RaceDataBinding.h"
+#include "Bindings/RootObjectBinding.h"
 
 namespace KenshiLua
 {
 
-static RaceLimiter* getB(lua_State* L, int idx)
+static RaceLimiter* getInstance(lua_State* L, int idx)
 {
     return checkObject<RaceLimiter>(L, idx, RaceLimiterBinding::getMetatableName());
 }
 
 // --- Getters for RaceLimiter ---
-static int RaceLimiter_get_limits(lua_State* L)
+// --- Setters for RaceLimiter ---
+int RaceLimiterBinding::addLimit(lua_State* L)
 {
-    RaceLimiter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceLimiter is nil");
-    // TODO: Unsupported type for limits (ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type)
-    return luaL_error(L, "Unsupported property 'limits' (type: ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type)");
+    RaceLimiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceLimiter is nil");
+
+    GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->addLimit(dat);
+    return 0;
 }
 
-// --- Setters for RaceLimiter ---
-static int RaceLimiter_set_limits(lua_State* L)
+int RaceLimiterBinding::_CONSTRUCTOR(lua_State* L)
 {
-    RaceLimiter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceLimiter is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for limits");
+    RaceLimiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceLimiter is nil");
+
+    RaceLimiter* result = instance->_CONSTRUCTOR();
+    return pushObject<RaceLimiter>(L, result, RaceLimiterBinding::getMetatableName());
 }
 
 int RaceLimiterBinding::_DESTRUCTOR(lua_State* L)
 {
-    RaceLimiter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceLimiter is nil");
+    RaceLimiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceLimiter is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
   line 242: RaceLimiter* getSingleton(...) - static method
-  line 243: void addLimit(...) - unsupported arg type
   line 244: bool canEquip(...) - overloaded method
   line 245: bool _NV_canEquip(...) - overloaded method
   line 246: bool canEquip(...) - overloaded method
   line 247: bool _NV_canEquip(...) - overloaded method
-  line 250: RaceLimiter* _CONSTRUCTOR(...) - unsupported return type
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 241: limits (ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type) - unsupported type
 */
 
 int RaceLimiterBinding::gc(lua_State* L)
@@ -60,6 +70,25 @@ int RaceLimiterBinding::tostring(lua_State* L)
     return 1;
 }
 
+
+
+static int RaceLimiter_get_limits(lua_State* L)
+{
+    RaceLimiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceLimiter is nil");
+    // TODO: Unsupported type for limits (ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type)
+    return luaL_error(L, "Unsupported property 'limits' (type: ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type)");
+}
+
+
+static int RaceLimiter_set_limits(lua_State* L)
+{
+    RaceLimiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceLimiter is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for limits");
+}
+
+
 void RaceLimiterBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -69,6 +98,8 @@ void RaceLimiterBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "addLimit", RaceLimiterBinding::addLimit },
+        { "_CONSTRUCTOR", RaceLimiterBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", RaceLimiterBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -84,13 +115,11 @@ void RaceLimiterBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, RaceLimiterBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, RaceLimiter_get_limits);
-    lua_setfield(L, -2, "limits");
+        registerGetter(L, "limits", RaceLimiter_get_limits);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, RaceLimiter_set_limits);
-    lua_setfield(L, -2, "limits");
+        registerSetter(L, "limits", RaceLimiter_set_limits);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

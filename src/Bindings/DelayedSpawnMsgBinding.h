@@ -1,4 +1,5 @@
 #pragma once
+#include <kenshi/Town.h>
 
 extern "C" {
 #include <lua.h>
@@ -7,6 +8,8 @@ extern "C" {
 
 namespace KenshiLua
 {
+    typedef TownBase::DelayedSpawnMsg DelayedSpawnMsg;
+
 class DelayedSpawnMsgBinding
 {
 public:
@@ -16,5 +19,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
 };
 }

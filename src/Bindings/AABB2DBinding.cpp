@@ -1,7 +1,8 @@
 #include "pch.h"
-#include <kenshi/ZoneManager.h>
+#include "kenshi\ZoneManager.h"
 #include "AABB2DBinding.h"
 #include "Lua/BindingHelpers.h"
+#include <kenshi/ZoneManager.h>
 
 namespace KenshiLua
 {
@@ -128,6 +129,20 @@ int AABB2DBinding::sizeY(lua_State* L)
     return 1;
 }
 
+int AABB2DBinding::intersects2(lua_State* L)
+{
+    AABB2D* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AABB2D is nil");
+
+    Ogre::Vector2 rayorig;
+    readVector2(L, 2, rayorig);
+    Ogre::Vector2 raydirection;
+    readVector2(L, 3, raydirection);
+    Ogre::Vector2 result = instance->intersects2(rayorig, raydirection);
+    pushVector2(L, result);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 18: AABB2D* _CONSTRUCTOR(...) - overloaded method
@@ -135,7 +150,6 @@ Skipped methods needing manual binding:
   line 43: bool intersects(...) - overloaded method
   line 44: bool intersects(...) - overloaded method
   line 45: bool intersects(...) - overloaded method
-  line 46: Ogre::Vector2 intersects2(...) - unsupported return type
 */
 
 int AABB2DBinding::gc(lua_State* L)
@@ -164,6 +178,7 @@ void AABB2DBinding::registerBinding(lua_State* L)
         { "inflate", AABB2DBinding::inflate },
         { "sizeX", AABB2DBinding::sizeX },
         { "sizeY", AABB2DBinding::sizeY },
+        { "intersects2", AABB2DBinding::intersects2 },
         { 0, 0 }
     };
 
@@ -178,25 +193,17 @@ void AABB2DBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, AABB2DBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, AABB2D_get_x);
-    lua_setfield(L, -2, "x");
-    lua_pushcfunction(L, AABB2D_get_y);
-    lua_setfield(L, -2, "y");
-    lua_pushcfunction(L, AABB2D_get_x2);
-    lua_setfield(L, -2, "x2");
-    lua_pushcfunction(L, AABB2D_get_y2);
-    lua_setfield(L, -2, "y2");
+    registerGetter(L, "x", AABB2D_get_x);
+    registerGetter(L, "y", AABB2D_get_y);
+    registerGetter(L, "x2", AABB2D_get_x2);
+    registerGetter(L, "y2", AABB2D_get_y2);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, AABB2D_set_x);
-    lua_setfield(L, -2, "x");
-    lua_pushcfunction(L, AABB2D_set_y);
-    lua_setfield(L, -2, "y");
-    lua_pushcfunction(L, AABB2D_set_x2);
-    lua_setfield(L, -2, "x2");
-    lua_pushcfunction(L, AABB2D_set_y2);
-    lua_setfield(L, -2, "y2");
+    registerSetter(L, "x", AABB2D_set_x);
+    registerSetter(L, "y", AABB2D_set_y);
+    registerSetter(L, "x2", AABB2D_set_x2);
+    registerSetter(L, "y2", AABB2D_set_y2);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -2,13 +2,12 @@
 #include "kenshi\RootObject.h"
 #include "SpecificItemLoadFirstBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameSaveStateBinding.h"
 
 namespace KenshiLua
 {
 
-typedef RootObjectContainer::SpecificItemLoadFirst SpecificItemLoadFirst;
-
-static SpecificItemLoadFirst* getB(lua_State* L, int idx)
+static SpecificItemLoadFirst* getInstance(lua_State* L, int idx)
 {
     return checkObject<SpecificItemLoadFirst>(L, idx, SpecificItemLoadFirstBinding::getMetatableName());
 }
@@ -16,93 +15,121 @@ static SpecificItemLoadFirst* getB(lua_State* L, int idx)
 // --- Getters for SpecificItemLoadFirst ---
 static int SpecificItemLoadFirst_get_baseTypes(lua_State* L)
 {
-    SpecificItemLoadFirst* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpecificItemLoadFirst is nil");
-    lua_pushinteger(L, (lua_Integer)b->baseTypes);
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+    lua_pushinteger(L, (lua_Integer)instance->baseTypes);
     return 1;
 }
 
 static int SpecificItemLoadFirst_get_stateEnum(lua_State* L)
 {
-    SpecificItemLoadFirst* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpecificItemLoadFirst is nil");
-    lua_pushinteger(L, (lua_Integer)b->stateEnum);
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+    lua_pushinteger(L, (lua_Integer)instance->stateEnum);
     return 1;
 }
 
 static int SpecificItemLoadFirst_get_specificProperty(lua_State* L)
 {
-    SpecificItemLoadFirst* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpecificItemLoadFirst is nil");
-    lua_pushstring(L, b->specificProperty.c_str());
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+    lua_pushstring(L, instance->specificProperty.c_str());
     return 1;
 }
 
 static int SpecificItemLoadFirst_get_desiredSpecificProperty(lua_State* L)
 {
-    SpecificItemLoadFirst* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpecificItemLoadFirst is nil");
-    lua_pushboolean(L, b->desiredSpecificProperty ? 1 : 0);
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+    lua_pushboolean(L, instance->desiredSpecificProperty ? 1 : 0);
     return 1;
 }
 
 // --- Setters for SpecificItemLoadFirst ---
 static int SpecificItemLoadFirst_set_baseTypes(lua_State* L)
 {
-    SpecificItemLoadFirst* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpecificItemLoadFirst is nil");
-    b->baseTypes = (itemType)luaL_checkinteger(L, 2);
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+    instance->baseTypes = (itemType)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int SpecificItemLoadFirst_set_stateEnum(lua_State* L)
 {
-    SpecificItemLoadFirst* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpecificItemLoadFirst is nil");
-    b->stateEnum = (itemType)luaL_checkinteger(L, 2);
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+    instance->stateEnum = (itemType)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int SpecificItemLoadFirst_set_specificProperty(lua_State* L)
 {
-    SpecificItemLoadFirst* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpecificItemLoadFirst is nil");
-    b->specificProperty = luaL_checkstring(L, 2);
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+    instance->specificProperty = luaL_checkstring(L, 2);
     return 0;
 }
 
 static int SpecificItemLoadFirst_set_desiredSpecificProperty(lua_State* L)
 {
-    SpecificItemLoadFirst* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpecificItemLoadFirst is nil");
-    b->desiredSpecificProperty = lua_toboolean(L, 2) != 0;
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+    instance->desiredSpecificProperty = lua_toboolean(L, 2) != 0;
     return 0;
+}
+
+int SpecificItemLoadFirstBinding::_CONSTRUCTOR(lua_State* L)
+{
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+
+    itemType BaseItemType = (itemType)luaL_checkinteger(L, 2);
+    itemType _stateEnum = (itemType)luaL_checkinteger(L, 3);
+    const std::string _specificProperty = luaL_checkstring(L, 4);
+    bool _desiredSpecificProperty = lua_toboolean(L, 5) != 0;
+    SpecificItemLoadFirst* result = instance->_CONSTRUCTOR(BaseItemType, _stateEnum, _specificProperty, _desiredSpecificProperty);
+    return pushObject<SpecificItemLoadFirst>(L, result, SpecificItemLoadFirstBinding::getMetatableName());
+}
+
+int SpecificItemLoadFirstBinding::shouldSkip(lua_State* L)
+{
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    bool result = instance->shouldSkip(state);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int SpecificItemLoadFirstBinding::_NV_shouldSkip(lua_State* L)
+{
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
+
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    bool result = instance->_NV_shouldSkip(state);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
 }
 
 int SpecificItemLoadFirstBinding::flip(lua_State* L)
 {
-    SpecificItemLoadFirst* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpecificItemLoadFirst is nil");
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
 
-    b->flip();
+    instance->flip();
     return 0;
 }
 
 int SpecificItemLoadFirstBinding::_DESTRUCTOR(lua_State* L)
 {
-    SpecificItemLoadFirst* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SpecificItemLoadFirst is nil");
+    SpecificItemLoadFirst* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 208: SpecificItemLoadFirst* _CONSTRUCTOR(...) - unsupported return type
-  line 214: bool shouldSkip(...) - unsupported arg type
-  line 215: bool _NV_shouldSkip(...) - unsupported arg type
-*/
 
 int SpecificItemLoadFirstBinding::gc(lua_State* L)
 {
@@ -125,6 +152,9 @@ void SpecificItemLoadFirstBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", SpecificItemLoadFirstBinding::_CONSTRUCTOR },
+        { "shouldSkip", SpecificItemLoadFirstBinding::shouldSkip },
+        { "_NV_shouldSkip", SpecificItemLoadFirstBinding::_NV_shouldSkip },
         { "flip", SpecificItemLoadFirstBinding::flip },
         { "_DESTRUCTOR", SpecificItemLoadFirstBinding::_DESTRUCTOR },
         { 0, 0 }
@@ -141,25 +171,17 @@ void SpecificItemLoadFirstBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, SpecificItemLoadFirstBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, SpecificItemLoadFirst_get_baseTypes);
-    lua_setfield(L, -2, "baseTypes");
-    lua_pushcfunction(L, SpecificItemLoadFirst_get_stateEnum);
-    lua_setfield(L, -2, "stateEnum");
-    lua_pushcfunction(L, SpecificItemLoadFirst_get_specificProperty);
-    lua_setfield(L, -2, "specificProperty");
-    lua_pushcfunction(L, SpecificItemLoadFirst_get_desiredSpecificProperty);
-    lua_setfield(L, -2, "desiredSpecificProperty");
+    registerGetter(L, "baseTypes", SpecificItemLoadFirst_get_baseTypes);
+    registerGetter(L, "stateEnum", SpecificItemLoadFirst_get_stateEnum);
+    registerGetter(L, "specificProperty", SpecificItemLoadFirst_get_specificProperty);
+    registerGetter(L, "desiredSpecificProperty", SpecificItemLoadFirst_get_desiredSpecificProperty);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, SpecificItemLoadFirst_set_baseTypes);
-    lua_setfield(L, -2, "baseTypes");
-    lua_pushcfunction(L, SpecificItemLoadFirst_set_stateEnum);
-    lua_setfield(L, -2, "stateEnum");
-    lua_pushcfunction(L, SpecificItemLoadFirst_set_specificProperty);
-    lua_setfield(L, -2, "specificProperty");
-    lua_pushcfunction(L, SpecificItemLoadFirst_set_desiredSpecificProperty);
-    lua_setfield(L, -2, "desiredSpecificProperty");
+    registerSetter(L, "baseTypes", SpecificItemLoadFirst_set_baseTypes);
+    registerSetter(L, "stateEnum", SpecificItemLoadFirst_set_stateEnum);
+    registerSetter(L, "specificProperty", SpecificItemLoadFirst_set_specificProperty);
+    registerSetter(L, "desiredSpecificProperty", SpecificItemLoadFirst_set_desiredSpecificProperty);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

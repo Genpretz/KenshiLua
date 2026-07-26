@@ -1,10 +1,20 @@
 #include "pch.h"
-#include "Bindings/GameDataBinding.h"
-#include "Bindings/ZoneManagerInterfaceTBinding.h"
-
-#include <kenshi/ZoneManager.h>
+#include "kenshi\ZoneManager.h"
 #include "ZoneManagerBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/AABB2DBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/OwnershipsBinding.h"
+#include "Bindings/ParticlePoolBinding.h"
+#include "Bindings/TownBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/ZoneManagerInterfaceTBinding.h"
+#include "Bindings/ZoneMapBinding.h"
+#include "Bindings/ZoneSpacialGridBinding.h"
+#include "Bindings/Util/iVector2Binding.h"
+#include <kenshi/ZoneManager.h>
 
 namespace KenshiLua
 {
@@ -21,6 +31,27 @@ static int ZoneManager_get_justLoadedAGame(lua_State* L)
     if (!instance) return luaL_error(L, "ZoneManager is nil");
     lua_pushboolean(L, instance->justLoadedAGame ? 1 : 0);
     return 1;
+}
+
+static int ZoneManager_get_characterGrid(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+    return pushObject<ZoneSpacialGrid>(L, &instance->characterGrid, ZoneSpacialGridBinding::getMetatableName());
+}
+
+static int ZoneManager_get_buildingGrid(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+    return pushObject<ZoneSpacialGrid>(L, &instance->buildingGrid, ZoneSpacialGridBinding::getMetatableName());
+}
+
+static int ZoneManager_get_itemGrid(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+    return pushObject<ZoneSpacialGrid>(L, &instance->itemGrid, ZoneSpacialGridBinding::getMetatableName());
 }
 
 static int ZoneManager_get__needCalculateIslands(lua_State* L)
@@ -47,12 +78,18 @@ static int ZoneManager_get_spawnUpdateTimerTT(lua_State* L)
     return 1;
 }
 
+static int ZoneManager_get_distantTownCentre(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+    return pushObject<iVector2>(L, &instance->distantTownCentre, iVector2Binding::getMetatableName());
+}
+
 static int ZoneManager_get_centralZone(lua_State* L)
 {
     ZoneManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneManager is nil");
-    lua_pushlightuserdata(L, (void*)instance->centralZone);
-    return 1;
+    return pushObject<ZoneMap>(L, instance->centralZone, ZoneMapBinding::getMetatableName());
 }
 
 static int ZoneManager_get_loadingPhase(lua_State* L)
@@ -71,6 +108,13 @@ static int ZoneManager_get_biomeMap(lua_State* L)
     return 1;
 }
 
+static int ZoneManager_get_groundEffectsPool(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+    return pushObject<ParticlePool>(L, &instance->groundEffectsPool, ParticlePoolBinding::getMetatableName());
+}
+
 // --- Setters for ZoneManager ---
 static int ZoneManager_set_justLoadedAGame(lua_State* L)
 {
@@ -79,6 +123,12 @@ static int ZoneManager_set_justLoadedAGame(lua_State* L)
     instance->justLoadedAGame = lua_toboolean(L, 2) != 0;
     return 0;
 }
+
+static int ZoneManager_set_characterGrid(lua_State* L) { return luaL_error(L, "ZoneSpacialGrid property is read-only"); }
+
+static int ZoneManager_set_buildingGrid(lua_State* L) { return luaL_error(L, "ZoneSpacialGrid property is read-only"); }
+
+static int ZoneManager_set_itemGrid(lua_State* L) { return luaL_error(L, "ZoneSpacialGrid property is read-only"); }
 
 static int ZoneManager_set__needCalculateIslands(lua_State* L)
 {
@@ -104,11 +154,35 @@ static int ZoneManager_set_spawnUpdateTimerTT(lua_State* L)
     return 0;
 }
 
+static int ZoneManager_set_distantTownCentre(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+    instance->distantTownCentre = *checkObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
+    return 0;
+}
+
+static int ZoneManager_set_centralZone(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+    instance->centralZone = lua_isnoneornil(L, 2) ? nullptr : checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    return 0;
+}
+
 static int ZoneManager_set_loadingPhase(lua_State* L)
 {
     ZoneManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneManager is nil");
     instance->loadingPhase = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int ZoneManager_set_groundEffectsPool(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+    instance->groundEffectsPool = *checkObject<ParticlePool>(L, 2, ParticlePoolBinding::getMetatableName());
     return 0;
 }
 
@@ -118,8 +192,7 @@ int ZoneManagerBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "ZoneManager is nil");
 
     ZoneManager* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ZoneManager>(L, result, ZoneManagerBinding::getMetatableName());
 }
 
 int ZoneManagerBinding::_DESTRUCTOR(lua_State* L)
@@ -189,6 +262,27 @@ int ZoneManagerBinding::getNumActiveZones(lua_State* L)
     return 1;
 }
 
+int ZoneManagerBinding::findShop(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    Town* t = checkObject<Town>(L, 2, TownBinding::getMetatableName());
+    ItemFunction selling = (ItemFunction)luaL_checkinteger(L, 3);
+    Building* result = instance->findShop(t, selling);
+    return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
+}
+
+int ZoneManagerBinding::findAnyShop(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    Town* t = checkObject<Town>(L, 2, TownBinding::getMetatableName());
+    Building* result = instance->findAnyShop(t);
+    return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
+}
+
 int ZoneManagerBinding::setup(lua_State* L)
 {
     ZoneManager* instance = getInstance(L, 1);
@@ -250,14 +344,44 @@ int ZoneManagerBinding::levelEditorDeleteAllSelectedObjects(lua_State* L)
     return 0;
 }
 
+int ZoneManagerBinding::getCurrentMapSector(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    iVector2 result = instance->getCurrentMapSector();
+    return pushObject<iVector2>(L, &result, iVector2Binding::getMetatableName());
+}
+
 int ZoneManagerBinding::getCurrentZoneMap(lua_State* L)
 {
     ZoneManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneManager is nil");
 
     ZoneMap* result = instance->getCurrentZoneMap();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ZoneMap>(L, result, ZoneMapBinding::getMetatableName());
+}
+
+int ZoneManagerBinding::getSubMapSector(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    float X = (float)luaL_checknumber(L, 2);
+    float Z = (float)luaL_checknumber(L, 3);
+    iVector2 result = instance->getSubMapSector(X, Z);
+    return pushObject<iVector2>(L, &result, iVector2Binding::getMetatableName());
+}
+
+int ZoneManagerBinding::getZoneMapFromResolutionCoord(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    float X = (float)luaL_checknumber(L, 2);
+    float Z = (float)luaL_checknumber(L, 3);
+    iVector2 result = instance->getZoneMapFromResolutionCoord(X, Z);
+    return pushObject<iVector2>(L, &result, iVector2Binding::getMetatableName());
 }
 
 int ZoneManagerBinding::playerActivate(lua_State* L)
@@ -270,6 +394,17 @@ int ZoneManagerBinding::playerActivate(lua_State* L)
     bool result = instance->playerActivate(pos);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
+}
+
+int ZoneManagerBinding::deactivateZoneMap(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    ZoneMap* map = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    bool saveZoneState = lua_toboolean(L, 3) != 0;
+    instance->deactivateZoneMap(map, saveZoneState);
+    return 0;
 }
 
 int ZoneManagerBinding::getBiome(lua_State* L)
@@ -327,6 +462,18 @@ int ZoneManagerBinding::getGroundType(lua_State* L)
     GroundType result = instance->getGroundType(pos);
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
+}
+
+int ZoneManagerBinding::addGroundEffect(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    GameData* effectData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Ogre::Vector3 position;
+    readVector3(L, 3, position);
+    instance->addGroundEffect(effectData, position);
+    return 0;
 }
 
 int ZoneManagerBinding::shiftGroundEffects(lua_State* L)
@@ -396,8 +543,8 @@ int ZoneManagerBinding::saveLevelData(lua_State* L)
     ZoneManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneManager is nil");
 
-    std::string path = luaL_checkstring(L, 2);
-    std::string modName = luaL_checkstring(L, 3);
+    const std::string path = luaL_checkstring(L, 2);
+    const std::string modName = luaL_checkstring(L, 3);
     instance->saveLevelData(path, modName);
     return 0;
 }
@@ -483,14 +630,24 @@ int ZoneManagerBinding::_unloadAllZones(lua_State* L)
     return 0;
 }
 
+int ZoneManagerBinding::checkForRepopulateTown(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    Town* t = checkObject<Town>(L, 2, TownBinding::getMetatableName());
+    bool result = instance->checkForRepopulateTown(t);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 int ZoneManagerBinding::getCentralZone(lua_State* L)
 {
     ZoneManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneManager is nil");
 
     ZoneMap* result = instance->getCentralZone();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ZoneMap>(L, result, ZoneMapBinding::getMetatableName());
 }
 
 int ZoneManagerBinding::isLoading(lua_State* L)
@@ -577,55 +734,48 @@ Skipped methods needing manual binding:
   line 334: void _NV_getAllActiveZonesT(...) - unsupported arg type
   line 335: void getAllActiveIslandNumbers(...) - unsupported arg type
   line 336: void getAllActiveZones(...) - unsupported arg type
-  line 338: Building* findShop(...) - unsupported arg type
-  line 339: Building* findAnyShop(...) - unsupported arg type
   line 340: void findBuilding(...) - overloaded method
   line 341: Building* findBuilding(...) - overloaded method
   line 342: void getBuildingsThatLinkTo(...) - unsupported arg type
   line 343: void findAllBuildings(...) - unsupported arg type
   line 344: void findOverlappingActiveZones(...) - unsupported arg type
   line 351: void levelEditorGetAllSelectedObjects(...) - unsupported arg type
-  line 352: iVector2 getCurrentMapSector(...) - unsupported return type
-  line 354: iVector2 getSubMapSector(...) - unsupported return type
   line 355: iVector2 getMapSector(...) - overloaded method
   line 356: iVector2 getMapSector(...) - overloaded method
   line 357: Ogre::Vector4 getZoneMapSectorBounds(...) - unsupported return type
-  line 358: iVector2 getZoneMapFromResolutionCoord(...) - unsupported return type
   line 359: ZoneMap* getZoneMap(...) - overloaded method
   line 360: ZoneMap* getZoneMap(...) - overloaded method
   line 361: ZoneMap* getZoneMap(...) - overloaded method
-  line 362: ZoneMap* getZoneMapFromBuildingHandle(...) - unsupported arg type
+  line 362: ZoneMap* getZoneMapFromBuildingHandle(...) - non-string reference arg
   line 364: bool activateZoneMap(...) - overloaded method
   line 365: bool activateZoneMap(...) - overloaded method
-  line 366: void deactivateZoneMap(...) - unsupported arg type
   line 367: void getZonesTouchingTown(...) - unsupported arg type
   line 368: const lektor<MapFeatureList*>& getLoadedFeatureLists(...) - reference return type
-  line 369: ZoneMapOverlay* getOverlay(...) - unsupported arg type
+  line 369: ZoneMapOverlay* getOverlay(...) - non-string reference arg
   line 375: const char* getGroundSound(...) - static method
   line 376: const char* getGroundSound(...) - overloaded method
-  line 377: bool getGroundEffect(...) - unsupported arg type
-  line 378: void addGroundEffect(...) - unsupported arg type
+  line 377: bool getGroundEffect(...) - non-string reference arg
   line 388: float getResource(...) - unsupported arg type
   line 389: float getResourceBase(...) - unsupported arg type
   line 400: void getIsland(...) - unsupported arg type
-  line 405: bool checkForRepopulateTown(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - ZoneManager_get_biomeMap: BiomeMap* (unbound pointer)
+  - ZoneManagerBinding::getBiomeMap: const BiomeMap* (unbound pointer)
 */
 
 /*
 Skipped properties needing manual binding:
-  line 409: characterGrid (ZoneSpacialGrid) - unsupported type
-  line 410: buildingGrid (ZoneSpacialGrid) - unsupported type
-  line 411: itemGrid (ZoneSpacialGrid) - unsupported type
   line 425: processingNewActiveZones (ogre_unordered_set<ZoneMap*>::type) - unsupported type
   line 426: activeZones (ogre_unordered_set<ZoneMap*>::type) - unsupported type
   line 427: updatedTownOverrides (ogre_unordered_set<Town*>::type) - unsupported type
   line 429: loadedFeatureLists (lektor<MapFeatureList*>) - unsupported type
   line 431: distantTownList (std::set<Town*, std::less<Town*>, Ogre::STLAllocator<Town*, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 432: distantTownCentre (iVector2) - unsupported type
   line 440: overlays (ogre_unordered_map<iVector2, ZoneMapOverlay*>::type) - unsupported type
   line 442: groundTypes (ogre_unordered_map<int, unsigned char*>::type) - unsupported type
   line 443: groundEffects (ogre_unordered_map<int, ZoneManager::BiomeGroundEffects>::type) - unsupported type
-  line 444: groundEffectsPool (ParticlePool) - unsupported type
 */
 
 int ZoneManagerBinding::gc(lua_State* L)
@@ -656,19 +806,26 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
         { "isZoneBeingLoadedT", ZoneManagerBinding::isZoneBeingLoadedT },
         { "_NV_isZoneBeingLoadedT", ZoneManagerBinding::_NV_isZoneBeingLoadedT },
         { "getNumActiveZones", ZoneManagerBinding::getNumActiveZones },
+        { "findShop", ZoneManagerBinding::findShop },
+        { "findAnyShop", ZoneManagerBinding::findAnyShop },
         { "setup", ZoneManagerBinding::setup },
         { "updateMainThread", ZoneManagerBinding::updateMainThread },
         { "updateRendertimeThread", ZoneManagerBinding::updateRendertimeThread },
         { "updateGPUSafeThread", ZoneManagerBinding::updateGPUSafeThread },
         { "spawnChecksUpdateThreaded", ZoneManagerBinding::spawnChecksUpdateThreaded },
         { "levelEditorDeleteAllSelectedObjects", ZoneManagerBinding::levelEditorDeleteAllSelectedObjects },
+        { "getCurrentMapSector", ZoneManagerBinding::getCurrentMapSector },
         { "getCurrentZoneMap", ZoneManagerBinding::getCurrentZoneMap },
+        { "getSubMapSector", ZoneManagerBinding::getSubMapSector },
+        { "getZoneMapFromResolutionCoord", ZoneManagerBinding::getZoneMapFromResolutionCoord },
         { "playerActivate", ZoneManagerBinding::playerActivate },
+        { "deactivateZoneMap", ZoneManagerBinding::deactivateZoneMap },
         { "getBiome", ZoneManagerBinding::getBiome },
         { "getBiomeCode", ZoneManagerBinding::getBiomeCode },
         { "getBiomeMap", ZoneManagerBinding::getBiomeMap },
         { "getGroundTypeIndex", ZoneManagerBinding::getGroundTypeIndex },
         { "getGroundType", ZoneManagerBinding::getGroundType },
+        { "addGroundEffect", ZoneManagerBinding::addGroundEffect },
         { "shiftGroundEffects", ZoneManagerBinding::shiftGroundEffects },
         { "checkZoneFiles", ZoneManagerBinding::checkZoneFiles },
         { "resetStates", ZoneManagerBinding::resetStates },
@@ -685,6 +842,7 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
         { "_reloadAllFoliage", ZoneManagerBinding::_reloadAllFoliage },
         { "_reloadGroundTextures", ZoneManagerBinding::_reloadGroundTextures },
         { "_unloadAllZones", ZoneManagerBinding::_unloadAllZones },
+        { "checkForRepopulateTown", ZoneManagerBinding::checkForRepopulateTown },
         { "getCentralZone", ZoneManagerBinding::getCentralZone },
         { "isLoading", ZoneManagerBinding::isLoading },
         { "_calculateIslands", ZoneManagerBinding::_calculateIslands },
@@ -708,37 +866,36 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ZoneManagerBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ZoneManager_get_justLoadedAGame);
-    lua_setfield(L, -2, "justLoadedAGame");
-    lua_pushcfunction(L, ZoneManager_get__needCalculateIslands);
-    lua_setfield(L, -2, "_needCalculateIslands");
-    lua_pushcfunction(L, ZoneManager_get_spawnUpdateTimerMT);
-    lua_setfield(L, -2, "spawnUpdateTimerMT");
-    lua_pushcfunction(L, ZoneManager_get_spawnUpdateTimerTT);
-    lua_setfield(L, -2, "spawnUpdateTimerTT");
-    lua_pushcfunction(L, ZoneManager_get_centralZone);
-    lua_setfield(L, -2, "centralZone");
-    lua_pushcfunction(L, ZoneManager_get_loadingPhase);
-    lua_setfield(L, -2, "loadingPhase");
-    lua_pushcfunction(L, ZoneManager_get_biomeMap);
-    lua_setfield(L, -2, "biomeMap");
+    registerGetter(L, "justLoadedAGame", ZoneManager_get_justLoadedAGame);
+    registerGetter(L, "characterGrid", ZoneManager_get_characterGrid);
+    registerGetter(L, "buildingGrid", ZoneManager_get_buildingGrid);
+    registerGetter(L, "itemGrid", ZoneManager_get_itemGrid);
+    registerGetter(L, "_needCalculateIslands", ZoneManager_get__needCalculateIslands);
+    registerGetter(L, "spawnUpdateTimerMT", ZoneManager_get_spawnUpdateTimerMT);
+    registerGetter(L, "spawnUpdateTimerTT", ZoneManager_get_spawnUpdateTimerTT);
+    registerGetter(L, "distantTownCentre", ZoneManager_get_distantTownCentre);
+    registerGetter(L, "centralZone", ZoneManager_get_centralZone);
+    registerGetter(L, "loadingPhase", ZoneManager_get_loadingPhase);
+    registerGetter(L, "biomeMap", ZoneManager_get_biomeMap);
+    registerGetter(L, "groundEffectsPool", ZoneManager_get_groundEffectsPool);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ZoneManager_set_justLoadedAGame);
-    lua_setfield(L, -2, "justLoadedAGame");
-    lua_pushcfunction(L, ZoneManager_set__needCalculateIslands);
-    lua_setfield(L, -2, "_needCalculateIslands");
-    lua_pushcfunction(L, ZoneManager_set_spawnUpdateTimerMT);
-    lua_setfield(L, -2, "spawnUpdateTimerMT");
-    lua_pushcfunction(L, ZoneManager_set_spawnUpdateTimerTT);
-    lua_setfield(L, -2, "spawnUpdateTimerTT");
-    lua_pushcfunction(L, ZoneManager_set_loadingPhase);
-    lua_setfield(L, -2, "loadingPhase");
+    registerSetter(L, "justLoadedAGame", ZoneManager_set_justLoadedAGame);
+    registerSetter(L, "characterGrid", ZoneManager_set_characterGrid);
+    registerSetter(L, "buildingGrid", ZoneManager_set_buildingGrid);
+    registerSetter(L, "itemGrid", ZoneManager_set_itemGrid);
+    registerSetter(L, "_needCalculateIslands", ZoneManager_set__needCalculateIslands);
+    registerSetter(L, "spawnUpdateTimerMT", ZoneManager_set_spawnUpdateTimerMT);
+    registerSetter(L, "spawnUpdateTimerTT", ZoneManager_set_spawnUpdateTimerTT);
+    registerSetter(L, "distantTownCentre", ZoneManager_set_distantTownCentre);
+    registerSetter(L, "centralZone", ZoneManager_set_centralZone);
+    registerSetter(L, "loadingPhase", ZoneManager_set_loadingPhase);
+    registerSetter(L, "groundEffectsPool", ZoneManager_set_groundEffectsPool);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ZoneManagerInterfaceT
-    // setMetatableParent(L, ZoneManagerBinding::getMetatableName(), ZoneManagerInterfaceTBinding::getMetatableName());
+    setMetatableParent(L, ZoneManagerBinding::getMetatableName(), ZoneManagerInterfaceTBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

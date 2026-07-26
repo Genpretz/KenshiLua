@@ -17,6 +17,7 @@ public:
     static int tostring(lua_State* L);
 
     static int _CONSTRUCTOR(lua_State* L);
+    static int isInIsland(lua_State* L);
     static int initialise(lua_State* L);
     static int threadedUpdate(lua_State* L);
     static int update(lua_State* L);
@@ -37,6 +38,7 @@ public:
     static int isBeingLoadedBT(lua_State* L);
     static int isLoadedMT(lua_State* L);
     static int isBeingLoadedMT(lua_State* L);
+    static int isANeighbour(lua_State* L);
     static int isTerrainCollisionLoaded(lua_State* L);
     static int _makeSureTerrainHeightmapLoaded(lua_State* L);
     static int _dactivateMT(lua_State* L);

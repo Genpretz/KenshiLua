@@ -1,14 +1,15 @@
 #pragma once
+#include <kenshi/ZoneManager.h>
 
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
 }
 
-#include <kenshi/ZoneManager.h>
 namespace KenshiLua
 {
     typedef ::BackThreadMessagesToMainT<ZoneMap::ZONE_MESSAGE> BackThreadMessagesToMainT;
+
 class BackThreadMessagesToMainTBinding
 {
 public:

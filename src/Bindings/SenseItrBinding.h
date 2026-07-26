@@ -17,6 +17,7 @@ public:
     static int tostring(lua_State* L);
 
     static int getCharacter(lua_State* L);
+    static int getData(lua_State* L);
     static int ended(lua_State* L);
     static int increment(lua_State* L);
 };

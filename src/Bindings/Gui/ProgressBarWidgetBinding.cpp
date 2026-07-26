@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\gui\ScreenLabel.h"
 #include "ProgressBarWidgetBinding.h"
+#include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -147,7 +148,7 @@ void ProgressBarWidgetBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout
-    // setMetatableParent(L, ProgressBarWidgetBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
+    setMetatableParent(L, ProgressBarWidgetBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

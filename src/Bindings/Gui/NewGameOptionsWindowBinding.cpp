@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\gui\NewGameOptionsWindow.h"
 #include "NewGameOptionsWindowBinding.h"
+#include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/GameplayOptionsBinding.h"
@@ -166,7 +167,7 @@ void NewGameOptionsWindowBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout
-    // setMetatableParent(L, NewGameOptionsWindowBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
+    setMetatableParent(L, NewGameOptionsWindowBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

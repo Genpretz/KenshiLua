@@ -2,63 +2,64 @@
 #include "kenshi\Item.h"
 #include "LimiterBinding.h"
 #include "Lua/BindingHelpers.h"
-
-typedef RaceLimiter::Limiter Limiter;
+#include "Bindings/RaceDataBinding.h"
 
 namespace KenshiLua
 {
 
-static Limiter* getB(lua_State* L, int idx)
+static Limiter* getInstance(lua_State* L, int idx)
 {
     return checkObject<Limiter>(L, idx, LimiterBinding::getMetatableName());
 }
 
 // --- Getters for Limiter ---
-static int Limiter_get_racesExclude(lua_State* L)
-{
-    Limiter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Limiter is nil");
-    // TODO: Unsupported type for racesExclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'racesExclude' (type: std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)");
-}
-
-static int Limiter_get_racesInclude(lua_State* L)
-{
-    Limiter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Limiter is nil");
-    // TODO: Unsupported type for racesInclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'racesInclude' (type: std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)");
-}
-
 // --- Setters for Limiter ---
-static int Limiter_set_racesExclude(lua_State* L)
+int LimiterBinding::canEquip(lua_State* L)
 {
-    Limiter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Limiter is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for racesExclude");
+    Limiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Limiter is nil");
+
+    RaceData* race = checkObject<RaceData>(L, 2, RaceDataBinding::getMetatableName());
+    bool isAnimal = lua_toboolean(L, 3) != 0;
+    bool result = instance->canEquip(race, isAnimal);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
 }
 
-static int Limiter_set_racesInclude(lua_State* L)
+int LimiterBinding::_NV_canEquip(lua_State* L)
 {
-    Limiter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Limiter is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for racesInclude");
+    Limiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Limiter is nil");
+
+    RaceData* race = checkObject<RaceData>(L, 2, RaceDataBinding::getMetatableName());
+    bool isAnimal = lua_toboolean(L, 3) != 0;
+    bool result = instance->_NV_canEquip(race, isAnimal);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int LimiterBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Limiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Limiter is nil");
+
+    Limiter* result = instance->_CONSTRUCTOR();
+    return pushObject<Limiter>(L, result, LimiterBinding::getMetatableName());
 }
 
 int LimiterBinding::_DESTRUCTOR(lua_State* L)
 {
-    Limiter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Limiter is nil");
+    Limiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Limiter is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
-Skipped methods needing manual binding:
-  line 231: bool canEquip(...) - unsupported arg type
-  line 232: bool _NV_canEquip(...) - unsupported arg type
-  line 235: Limiter* _CONSTRUCTOR(...) - unsupported return type
+Skipped properties needing manual binding:
+  line 229: racesExclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >) - unsupported type
+  line 230: racesInclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >) - unsupported type
 */
 
 int LimiterBinding::gc(lua_State* L)
@@ -73,6 +74,42 @@ int LimiterBinding::tostring(lua_State* L)
     return 1;
 }
 
+
+
+static int Limiter_get_racesExclude(lua_State* L)
+{
+    Limiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Limiter is nil");
+    // TODO: Unsupported type for racesExclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)
+    return luaL_error(L, "Unsupported property 'racesExclude' (type: std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)");
+}
+
+
+static int Limiter_get_racesInclude(lua_State* L)
+{
+    Limiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Limiter is nil");
+    // TODO: Unsupported type for racesInclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)
+    return luaL_error(L, "Unsupported property 'racesInclude' (type: std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)");
+}
+
+
+static int Limiter_set_racesExclude(lua_State* L)
+{
+    Limiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Limiter is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for racesExclude");
+}
+
+
+static int Limiter_set_racesInclude(lua_State* L)
+{
+    Limiter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Limiter is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for racesInclude");
+}
+
+
 void LimiterBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -82,6 +119,9 @@ void LimiterBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "canEquip", LimiterBinding::canEquip },
+        { "_NV_canEquip", LimiterBinding::_NV_canEquip },
+        { "_CONSTRUCTOR", LimiterBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", LimiterBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -97,17 +137,13 @@ void LimiterBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, LimiterBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, Limiter_get_racesExclude);
-    lua_setfield(L, -2, "racesExclude");
-    lua_pushcfunction(L, Limiter_get_racesInclude);
-    lua_setfield(L, -2, "racesInclude");
+    registerGetter(L, "racesExclude", Limiter_get_racesExclude);
+    registerGetter(L, "racesInclude", Limiter_get_racesInclude);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, Limiter_set_racesExclude);
-    lua_setfield(L, -2, "racesExclude");
-    lua_pushcfunction(L, Limiter_set_racesInclude);
-    lua_setfield(L, -2, "racesInclude");
+    registerSetter(L, "racesExclude", Limiter_set_racesExclude);
+    registerSetter(L, "racesInclude", Limiter_set_racesInclude);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

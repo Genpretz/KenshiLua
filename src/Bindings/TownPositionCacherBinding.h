@@ -1,4 +1,5 @@
 #pragma once
+#include <kenshi/Town.h>
 
 extern "C" {
 #include <lua.h>
@@ -7,6 +8,8 @@ extern "C" {
 
 namespace KenshiLua
 {
+    typedef TownBase::TownPositionCacher TownPositionCacher;
+
 class TownPositionCacherBinding
 {
 public:
@@ -16,6 +19,7 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int stampUpdate(lua_State* L);
     static int needsUpdate(lua_State* L);
 };

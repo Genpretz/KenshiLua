@@ -1,14 +1,15 @@
 #pragma once
+#include <kenshi/ZoneManager.h>
 
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
 }
 
-#include <kenshi/ZoneManager.h>
 namespace KenshiLua
 {
-    typedef ::MainthreadStateReaderT<ZoneMap::StateT> MainthreadStateReaderT;
+    typedef ::MainthreadStateReaderT<ZoneMap::ZONE_MESSAGE> MainthreadStateReaderT;
+
 class MainthreadStateReaderTBinding
 {
 public:
@@ -22,5 +23,7 @@ public:
     static int _DESTRUCTOR(lua_State* L);
     static int updateBackDataCheck(lua_State* L);
     static int _NV_updateBackDataCheck(lua_State* L);
+    static int getMainData(lua_State* L);
+    static int getBackData(lua_State* L);
 };
 }

@@ -1,7 +1,8 @@
 #include "pch.h"
-#include <kenshi/ZoneManager.h>
+#include "kenshi\ZoneManager.h"
 #include "MainthreadStateReaderTBinding.h"
 #include "Lua/BindingHelpers.h"
+#include <kenshi/ZoneManager.h>
 
 namespace KenshiLua
 {
@@ -12,8 +13,21 @@ static MainthreadStateReaderT* getInstance(lua_State* L, int idx)
 }
 
 // --- Getters for MainthreadStateReaderT ---
+static int MainthreadStateReaderT_get_swapMutex(lua_State* L) { return 0; }
 
 // --- Setters for MainthreadStateReaderT ---
+static int MainthreadStateReaderT_set_swapMutex(lua_State* L) { return 0; }
+
+int MainthreadStateReaderTBinding::gc(lua_State* L)
+{
+    return 0;
+}
+
+int MainthreadStateReaderTBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.MainthreadStateReaderT object");
+    return 1;
+}
 
 int MainthreadStateReaderTBinding::_CONSTRUCTOR(lua_State* L)
 {
@@ -22,10 +36,6 @@ int MainthreadStateReaderTBinding::_CONSTRUCTOR(lua_State* L)
 
 int MainthreadStateReaderTBinding::_DESTRUCTOR(lua_State* L)
 {
-    MainthreadStateReaderT* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MainthreadStateReaderT is nil");
-
-    instance->~MainthreadStateReaderT();
     return 0;
 }
 
@@ -33,7 +43,6 @@ int MainthreadStateReaderTBinding::updateBackDataCheck(lua_State* L)
 {
     MainthreadStateReaderT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainthreadStateReaderT is nil");
-
     bool result = instance->updateBackDataCheck();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
@@ -41,37 +50,17 @@ int MainthreadStateReaderTBinding::updateBackDataCheck(lua_State* L)
 
 int MainthreadStateReaderTBinding::_NV_updateBackDataCheck(lua_State* L)
 {
-    MainthreadStateReaderT* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MainthreadStateReaderT is nil");
-
-    bool result = instance->updateBackDataCheck();
-    lua_pushboolean(L, result ? 1 : 0);
-    return 1;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 181: T& getMainData(...) - overloaded method
-  line 182: const T& getMainData(...) - overloaded method
-  line 183: const T& getBackData(...) - reference return type
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 185: mainThreadData (T) - unsupported type
-  line 186: backThreadData (T) - unsupported type
-*/
-
-int MainthreadStateReaderTBinding::gc(lua_State* L)
-{
-    // Implementation depends on ownership model
     return 0;
 }
 
-int MainthreadStateReaderTBinding::tostring(lua_State* L)
+int MainthreadStateReaderTBinding::getMainData(lua_State* L)
 {
-    lua_pushstring(L, "KenshiLua.MainthreadStateReaderT object");
-    return 1;
+    return 0;
+}
+
+int MainthreadStateReaderTBinding::getBackData(lua_State* L)
+{
+    return 0;
 }
 
 void MainthreadStateReaderTBinding::registerBinding(lua_State* L)
@@ -83,10 +72,12 @@ void MainthreadStateReaderTBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        // { "_CONSTRUCTOR", MainthreadStateReaderTBinding::_CONSTRUCTOR },
-        // { "_DESTRUCTOR", MainthreadStateReaderTBinding::_DESTRUCTOR },
+        { "_CONSTRUCTOR", MainthreadStateReaderTBinding::_CONSTRUCTOR },
+        { "_DESTRUCTOR", MainthreadStateReaderTBinding::_DESTRUCTOR },
         { "updateBackDataCheck", MainthreadStateReaderTBinding::updateBackDataCheck },
-        // { "_NV_updateBackDataCheck", MainthreadStateReaderTBinding::_NV_updateBackDataCheck },
+        { "_NV_updateBackDataCheck", MainthreadStateReaderTBinding::_NV_updateBackDataCheck },
+        { "getMainData", MainthreadStateReaderTBinding::getMainData },
+        { "getBackData", MainthreadStateReaderTBinding::getBackData },
         { 0, 0 }
     };
 
@@ -100,16 +91,15 @@ void MainthreadStateReaderTBinding::registerBinding(lua_State* L)
     );
 
     luaL_getmetatable(L, MainthreadStateReaderTBinding::getMetatableName());
-    lua_newtable(L); // Create __getters table
-    lua_setfield(L, -2, "__getters"); // Bind to metatable
+    lua_newtable(L);
+    registerGetter(L, "swapMutex", MainthreadStateReaderT_get_swapMutex);
+    lua_setfield(L, -2, "__getters");
 
-    lua_newtable(L); // Create __setters table
-    lua_setfield(L, -2, "__setters"); // Bind to metatable
+    lua_newtable(L);
+    registerSetter(L, "swapMutex", MainthreadStateReaderT_set_swapMutex);
+    lua_setfield(L, -2, "__setters");
 
-    // Wire up inheritance to Ogre::GeneralAllocatedObject
-    // setMetatableParent(L, MainthreadStateReaderTBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
-
-    lua_pop(L, 1); // Pop the metatable off the stack
+    lua_pop(L, 1);
 }
 
 } // namespace KenshiLua

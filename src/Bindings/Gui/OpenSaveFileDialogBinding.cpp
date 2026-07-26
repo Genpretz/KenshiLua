@@ -1,6 +1,7 @@
 #include "pch.h"
 #include <kenshi/gui/OpenSaveFileDialog.h>
 #include "OpenSaveFileDialogBinding.h"
+#include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -299,7 +300,7 @@ void OpenSaveFileDialogBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout
-    // setMetatableParent(L, OpenSaveFileDialogBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
+    setMetatableParent(L, OpenSaveFileDialogBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

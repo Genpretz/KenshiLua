@@ -16,6 +16,7 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int isCrossbow(lua_State* L);
     static int _NV_isCrossbow(lua_State* L);
     static int getClassType(lua_State* L);

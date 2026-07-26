@@ -1,9 +1,10 @@
 #include "pch.h"
-#include "Bindings/GameDataBinding.h"
-
-#include <kenshi/ZoneManager.h>
+#include "kenshi\ZoneManager.h"
 #include "ZoneMapBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Util/iVector2Binding.h"
+#include <kenshi/ZoneManager.h>
 
 namespace KenshiLua
 {
@@ -38,6 +39,13 @@ static int ZoneMap_get_zoneSmell(lua_State* L)
     return 1;
 }
 
+static int ZoneMap_get_coordinates(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+    return pushObject<iVector2>(L, &instance->coordinates, iVector2Binding::getMetatableName());
+}
+
 static int ZoneMap_get_island(lua_State* L)
 {
     ZoneMap* instance = getInstance(L, 1);
@@ -62,17 +70,7 @@ static int ZoneMap_get_terrainCollision(lua_State* L)
     return 1;
 }
 
-static int ZoneMap_get_activatedCountdown(lua_State* L)
-{
-    ZoneMap* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneMap is nil");
-    lua_newtable(L);
-    for (int i = 0; i < 3; ++i) {
-        lua_pushnumber(L, instance->activatedCountdown[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
+static int ZoneMap_get_activatedCountdown(lua_State* L) { return 0; }
 
 static int ZoneMap_get__generateNavMeshesFlag(lua_State* L)
 {
@@ -98,23 +96,19 @@ static int ZoneMap_get_loadCount(lua_State* L)
     return 1;
 }
 
-static int ZoneMap_get_neighbors(lua_State* L)
-{
-    ZoneMap* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneMap is nil");
-    lua_pushlightuserdata(L, (void*)instance->neighbors);
-    return 1;
-}
+static int ZoneMap_get_neighbors(lua_State* L) { return 0; }
 
-static int ZoneMap_get_neighborsDiagonal(lua_State* L)
-{
-    ZoneMap* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneMap is nil");
-    lua_pushlightuserdata(L, (void*)instance->neighborsDiagonal);
-    return 1;
-}
+static int ZoneMap_get_neighborsDiagonal(lua_State* L) { return 0; }
 
 // --- Setters for ZoneMap ---
+static int ZoneMap_set_coordinates(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+    instance->coordinates = *checkObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
+    return 0;
+}
+
 static int ZoneMap_set_island(lua_State* L)
 {
     ZoneMap* instance = getInstance(L, 1);
@@ -131,19 +125,7 @@ static int ZoneMap_set_hasFile(lua_State* L)
     return 0;
 }
 
-static int ZoneMap_set_activatedCountdown(lua_State* L)
-{
-    ZoneMap* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneMap is nil");
-    if (lua_istable(L, 2)) {
-        for (int i = 0; i < 3; ++i) {
-            lua_rawgeti(L, 2, i + 1);
-            instance->activatedCountdown[i] = (float)lua_tonumber(L, -1);
-            lua_pop(L, 1);
-        }
-    }
-    return 0;
-}
+static int ZoneMap_set_activatedCountdown(lua_State* L) { return 0; }
 
 static int ZoneMap_set__generateNavMeshesFlag(lua_State* L)
 {
@@ -169,13 +151,27 @@ static int ZoneMap_set_loadCount(lua_State* L)
     return 0;
 }
 
+static int ZoneMap_set_neighbors(lua_State* L) { return 0; }
+
+static int ZoneMap_set_neighborsDiagonal(lua_State* L) { return 0; }
+
 int ZoneMapBinding::_CONSTRUCTOR(lua_State* L)
 {
     ZoneMap* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneMap is nil");
 
     ZoneMap* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
+    return pushObject<ZoneMap>(L, result, ZoneMapBinding::getMetatableName());
+}
+
+int ZoneMapBinding::isInIsland(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    ZoneMap* other = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    bool result = instance->isInIsland(other);
+    lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
@@ -389,6 +385,17 @@ int ZoneMapBinding::isBeingLoadedMT(lua_State* L)
     return 1;
 }
 
+int ZoneMapBinding::isANeighbour(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    ZoneMap* who = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    bool result = instance->isANeighbour(who);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 int ZoneMapBinding::isTerrainCollisionLoaded(lua_State* L)
 {
     ZoneMap* instance = getInstance(L, 1);
@@ -448,9 +455,8 @@ int ZoneMapBinding::_DESTRUCTOR(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 206: void init(...) - unsupported arg type
+  line 206: void init(...) - non-string reference arg
   line 207: void getActiveZoneIsland(...) - unsupported arg type
-  line 208: bool isInIsland(...) - unsupported arg type
   line 220: const Ogre::Vector4& getBounds(...) - reference return type
   line 221: const Ogre::Aabb& getBoundingBox(...) - reference return type
   line 222: Ogre::Vector4 getBoundsMinusUnloadedEdges(...) - unsupported return type
@@ -458,7 +464,6 @@ Skipped methods needing manual binding:
   line 229: bool isActivationType(...) - unsupported arg type
   line 235: void getActiveNeighbours4(...) - unsupported arg type
   line 236: void getActiveNeighbours8(...) - unsupported arg type
-  line 237: bool isANeighbour(...) - unsupported arg type
   line 239: void getMaterialValues(...) - static method
   line 240: Ogre::SharedPtr<Ogre::Material> getTerrainMaterial_DX11(...) - static method
   line 241: std::string getBiomeTextureArrayData(...) - static method
@@ -469,8 +474,18 @@ Skipped methods needing manual binding:
 */
 
 /*
+LIGHTUSERDATA DEPENDENCIES:
+  - ZoneMap_get_mapContent: ZoneMapContent* (unbound pointer)
+  - ZoneMap_get_mapFeatures: MapFeatureList* (unbound pointer)
+  - ZoneMap_get_zoneSmell: ZoneSmell* (unbound pointer)
+  - ZoneMap_get_terrainCollision: TerrainSector* (unbound pointer)
+  - ZoneMapBinding::getOverlay: ZoneMapOverlay* (unbound pointer)
+  - ZoneMapBinding::getAreaSector: AreaSector* (unbound pointer)
+  - ZoneMapBinding::getTerrainSector: TerrainSector* (unbound pointer)
+*/
+
+/*
 Skipped properties needing manual binding:
-  line 248: coordinates (iVector2) - unsupported type
   line 252: zoneIncomingMessagesT (BackThreadMessagesToMainT<ZONE_MESSAGE>) - unsupported type
   line 266: stateT (MainthreadStateReaderT<ZoneMap::StateT>) - unsupported type
   line 270: bounds (Ogre::Aabb) - unsupported type
@@ -500,6 +515,7 @@ void ZoneMapBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", ZoneMapBinding::_CONSTRUCTOR },
+        { "isInIsland", ZoneMapBinding::isInIsland },
         { "initialise", ZoneMapBinding::initialise },
         { "threadedUpdate", ZoneMapBinding::threadedUpdate },
         { "update", ZoneMapBinding::update },
@@ -520,6 +536,7 @@ void ZoneMapBinding::registerBinding(lua_State* L)
         { "isBeingLoadedBT", ZoneMapBinding::isBeingLoadedBT },
         { "isLoadedMT", ZoneMapBinding::isLoadedMT },
         { "isBeingLoadedMT", ZoneMapBinding::isBeingLoadedMT },
+        { "isANeighbour", ZoneMapBinding::isANeighbour },
         { "isTerrainCollisionLoaded", ZoneMapBinding::isTerrainCollisionLoaded },
         { "_makeSureTerrainHeightmapLoaded", ZoneMapBinding::_makeSureTerrainHeightmapLoaded },
         { "_dactivateMT", ZoneMapBinding::_dactivateMT },
@@ -540,45 +557,31 @@ void ZoneMapBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ZoneMapBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ZoneMap_get_mapContent);
-    lua_setfield(L, -2, "mapContent");
-    lua_pushcfunction(L, ZoneMap_get_mapFeatures);
-    lua_setfield(L, -2, "mapFeatures");
-    lua_pushcfunction(L, ZoneMap_get_zoneSmell);
-    lua_setfield(L, -2, "zoneSmell");
-    lua_pushcfunction(L, ZoneMap_get_island);
-    lua_setfield(L, -2, "island");
-    lua_pushcfunction(L, ZoneMap_get_hasFile);
-    lua_setfield(L, -2, "hasFile");
-    lua_pushcfunction(L, ZoneMap_get_terrainCollision);
-    lua_setfield(L, -2, "terrainCollision");
-    lua_pushcfunction(L, ZoneMap_get_activatedCountdown);
-    lua_setfield(L, -2, "activatedCountdown");
-    lua_pushcfunction(L, ZoneMap_get__generateNavMeshesFlag);
-    lua_setfield(L, -2, "_generateNavMeshesFlag");
-    lua_pushcfunction(L, ZoneMap_get_center);
-    lua_setfield(L, -2, "center");
-    lua_pushcfunction(L, ZoneMap_get_loadCount);
-    lua_setfield(L, -2, "loadCount");
-    lua_pushcfunction(L, ZoneMap_get_neighbors);
-    lua_setfield(L, -2, "neighbors");
-    lua_pushcfunction(L, ZoneMap_get_neighborsDiagonal);
-    lua_setfield(L, -2, "neighborsDiagonal");
+    registerGetter(L, "mapContent", ZoneMap_get_mapContent);
+    registerGetter(L, "mapFeatures", ZoneMap_get_mapFeatures);
+    registerGetter(L, "zoneSmell", ZoneMap_get_zoneSmell);
+    registerGetter(L, "coordinates", ZoneMap_get_coordinates);
+    registerGetter(L, "island", ZoneMap_get_island);
+    registerGetter(L, "hasFile", ZoneMap_get_hasFile);
+    registerGetter(L, "terrainCollision", ZoneMap_get_terrainCollision);
+    registerGetter(L, "activatedCountdown", ZoneMap_get_activatedCountdown);
+    registerGetter(L, "_generateNavMeshesFlag", ZoneMap_get__generateNavMeshesFlag);
+    registerGetter(L, "center", ZoneMap_get_center);
+    registerGetter(L, "loadCount", ZoneMap_get_loadCount);
+    registerGetter(L, "neighbors", ZoneMap_get_neighbors);
+    registerGetter(L, "neighborsDiagonal", ZoneMap_get_neighborsDiagonal);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ZoneMap_set_island);
-    lua_setfield(L, -2, "island");
-    lua_pushcfunction(L, ZoneMap_set_hasFile);
-    lua_setfield(L, -2, "hasFile");
-    lua_pushcfunction(L, ZoneMap_set_activatedCountdown);
-    lua_setfield(L, -2, "activatedCountdown");
-    lua_pushcfunction(L, ZoneMap_set__generateNavMeshesFlag);
-    lua_setfield(L, -2, "_generateNavMeshesFlag");
-    lua_pushcfunction(L, ZoneMap_set_center);
-    lua_setfield(L, -2, "center");
-    lua_pushcfunction(L, ZoneMap_set_loadCount);
-    lua_setfield(L, -2, "loadCount");
+    registerSetter(L, "coordinates", ZoneMap_set_coordinates);
+    registerSetter(L, "island", ZoneMap_set_island);
+    registerSetter(L, "hasFile", ZoneMap_set_hasFile);
+    registerSetter(L, "activatedCountdown", ZoneMap_set_activatedCountdown);
+    registerSetter(L, "_generateNavMeshesFlag", ZoneMap_set__generateNavMeshesFlag);
+    registerSetter(L, "center", ZoneMap_set_center);
+    registerSetter(L, "loadCount", ZoneMap_set_loadCount);
+    registerSetter(L, "neighbors", ZoneMap_set_neighbors);
+    registerSetter(L, "neighborsDiagonal", ZoneMap_set_neighborsDiagonal);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

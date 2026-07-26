@@ -1,16 +1,18 @@
 #include "pch.h"
 #include "kenshi\Gear.h"
 #include "WeaponBinding.h"
-#include "SwordBinding.h"
-#include "CrossbowBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CrossbowBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/GearBinding.h"
 #include "Bindings/SwordBinding.h"
+#include "CrossbowBinding.h"
+#include "SwordBinding.h"
 
 namespace KenshiLua
 {
 
-static Weapon* getB(lua_State* L, int idx)
+static Weapon* getInstance(lua_State* L, int idx)
 {
     return checkObject<Weapon>(L, idx, WeaponBinding::getMetatableName());
 }
@@ -18,294 +20,307 @@ static Weapon* getB(lua_State* L, int idx)
 // --- Getters for Weapon ---
 static int Weapon_get_bleedDamage(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
-    lua_pushnumber(L, b->bleedDamage);
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    lua_pushnumber(L, instance->bleedDamage);
     return 1;
 }
 
 static int Weapon_get_modAttack(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
-    lua_pushinteger(L, b->modAttack);
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    lua_pushinteger(L, instance->modAttack);
     return 1;
 }
 
 static int Weapon_get_combatWeight(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
-    lua_pushnumber(L, b->combatWeight);
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    lua_pushnumber(L, instance->combatWeight);
     return 1;
 }
 
 static int Weapon_get_category(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
-    lua_pushinteger(L, (lua_Integer)b->category);
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    lua_pushinteger(L, (lua_Integer)instance->category);
     return 1;
 }
 
 static int Weapon_get_category_animationOverride(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
-    lua_pushinteger(L, (lua_Integer)b->category_animationOverride);
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    lua_pushinteger(L, (lua_Integer)instance->category_animationOverride);
     return 1;
 }
 
 // --- Setters for Weapon ---
 static int Weapon_set_bleedDamage(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
-    b->bleedDamage = (float)luaL_checknumber(L, 2);
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    instance->bleedDamage = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Weapon_set_modAttack(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
-    b->modAttack = (int)luaL_checkinteger(L, 2);
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    instance->modAttack = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int Weapon_set_combatWeight(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
-    b->combatWeight = (float)luaL_checknumber(L, 2);
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    instance->combatWeight = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Weapon_set_category(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
-    b->category = (WeaponCategory)luaL_checkinteger(L, 2);
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    instance->category = (WeaponCategory)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int Weapon_set_category_animationOverride(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
-    b->category_animationOverride = (WeaponCategory)luaL_checkinteger(L, 2);
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    instance->category_animationOverride = (WeaponCategory)luaL_checkinteger(L, 2);
     return 0;
 }
 
 int WeaponBinding::getItemWeight(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    float result = b->getItemWeight();
+    float result = instance->getItemWeight();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WeaponBinding::_NV_getItemWeight(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    float result = b->_NV_getItemWeight();
+    float result = instance->_NV_getItemWeight();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WeaponBinding::getValueSingle(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
     bool isPlayer = lua_toboolean(L, 2) != 0;
-    int result = b->getValueSingle(isPlayer);
+    int result = instance->getValueSingle(isPlayer);
     lua_pushinteger(L, result);
     return 1;
 }
 
 int WeaponBinding::_NV_getValueSingle(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
     bool isPlayer = lua_toboolean(L, 2) != 0;
-    int result = b->_NV_getValueSingle(isPlayer);
+    int result = instance->_NV_getValueSingle(isPlayer);
     lua_pushinteger(L, result);
     return 1;
 }
 
 int WeaponBinding::getCategory(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    WeaponCategory result = b->getCategory();
+    WeaponCategory result = instance->getCategory();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int WeaponBinding::getCategory_animationOverride(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    WeaponCategory result = b->getCategory_animationOverride();
+    WeaponCategory result = instance->getCategory_animationOverride();
     lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
 int WeaponBinding::is2HandedOnly(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    bool result = b->is2HandedOnly();
+    bool result = instance->is2HandedOnly();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int WeaponBinding::getCombatWeight(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    float result = b->getCombatWeight();
+    float result = instance->getCombatWeight();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WeaponBinding::getCraftTime(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    float result = b->getCraftTime();
+    float result = instance->getCraftTime();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WeaponBinding::_NV_getCraftTime(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    float result = b->_NV_getCraftTime();
+    float result = instance->_NV_getCraftTime();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WeaponBinding::getCraftMaterialMult(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    float result = b->getCraftMaterialMult();
+    float result = instance->getCraftMaterialMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WeaponBinding::_NV_getCraftMaterialMult(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    float result = b->_NV_getCraftMaterialMult();
+    float result = instance->_NV_getCraftMaterialMult();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int WeaponBinding::isWeapon(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    Weapon* result = b->isWeapon();
+    Weapon* result = instance->isWeapon();
     return pushObject<Weapon>(L, result, WeaponBinding::getMetatableName());
 }
 
 int WeaponBinding::_NV_isWeapon(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    Weapon* result = b->_NV_isWeapon();
+    Weapon* result = instance->_NV_isWeapon();
     return pushObject<Weapon>(L, result, WeaponBinding::getMetatableName());
 }
 
 int WeaponBinding::isSword(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    Sword* result = b->isSword();
+    Sword* result = instance->isSword();
     return pushObject<Sword>(L, result, SwordBinding::getMetatableName());
 }
 
 int WeaponBinding::_NV_isSword(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    Sword* result = b->_NV_isSword();
+    Sword* result = instance->_NV_isSword();
     return pushObject<Sword>(L, result, SwordBinding::getMetatableName());
 }
 
 int WeaponBinding::isCrossbow(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    Crossbow* result = b->isCrossbow();
+    Crossbow* result = instance->isCrossbow();
     return pushObject<Crossbow>(L, result, CrossbowBinding::getMetatableName());
 }
 
 int WeaponBinding::_NV_isCrossbow(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    Crossbow* result = b->_NV_isCrossbow();
+    Crossbow* result = instance->_NV_isCrossbow();
     return pushObject<Crossbow>(L, result, CrossbowBinding::getMetatableName());
 }
 
 int WeaponBinding::getSkillModIndoors(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    int result = b->getSkillModIndoors();
+    int result = instance->getSkillModIndoors();
     lua_pushinteger(L, result);
     return 1;
 }
 
 int WeaponBinding::_NV_getSkillModIndoors(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    int result = b->_NV_getSkillModIndoors();
+    int result = instance->_NV_getSkillModIndoors();
     lua_pushinteger(L, result);
     return 1;
 }
 
+int WeaponBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+
+    GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    GameData* companyData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    GameData* materialData = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 5, handBinding::getMetatableName());
+    int _level = (int)luaL_checkinteger(L, 6);
+    Weapon* result = instance->_CONSTRUCTOR(baseData, companyData, materialData, _handle, _level);
+    return pushObject<Weapon>(L, result, WeaponBinding::getMetatableName());
+}
+
 int WeaponBinding::_DESTRUCTOR(lua_State* L)
 {
-    Weapon* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Weapon is nil");
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
   line 57: void getTooltipData1(...) - unsupported arg type
-  line 70: Weapon* _CONSTRUCTOR(...) - unsupported arg type
 */
 
 int WeaponBinding::gc(lua_State* L)
@@ -349,6 +364,7 @@ void WeaponBinding::registerBinding(lua_State* L)
         { "_NV_isCrossbow", WeaponBinding::_NV_isCrossbow },
         { "getSkillModIndoors", WeaponBinding::getSkillModIndoors },
         { "_NV_getSkillModIndoors", WeaponBinding::_NV_getSkillModIndoors },
+        { "_CONSTRUCTOR", WeaponBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", WeaponBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -364,30 +380,23 @@ void WeaponBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, WeaponBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, Weapon_get_bleedDamage);
-    lua_setfield(L, -2, "bleedDamage");
-    lua_pushcfunction(L, Weapon_get_modAttack);
-    lua_setfield(L, -2, "modAttack");
-    lua_pushcfunction(L, Weapon_get_combatWeight);
-    lua_setfield(L, -2, "combatWeight");
-    lua_pushcfunction(L, Weapon_get_category);
-    lua_setfield(L, -2, "category");
-    lua_pushcfunction(L, Weapon_get_category_animationOverride);
-    lua_setfield(L, -2, "category_animationOverride");
+    registerGetter(L, "bleedDamage", Weapon_get_bleedDamage);
+    registerGetter(L, "modAttack", Weapon_get_modAttack);
+    registerGetter(L, "combatWeight", Weapon_get_combatWeight);
+    registerGetter(L, "category", Weapon_get_category);
+    registerGetter(L, "category_animationOverride", Weapon_get_category_animationOverride);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, Weapon_set_bleedDamage);
-    lua_setfield(L, -2, "bleedDamage");
-    lua_pushcfunction(L, Weapon_set_modAttack);
-    lua_setfield(L, -2, "modAttack");
-    lua_pushcfunction(L, Weapon_set_combatWeight);
-    lua_setfield(L, -2, "combatWeight");
-    lua_pushcfunction(L, Weapon_set_category);
-    lua_setfield(L, -2, "category");
-    lua_pushcfunction(L, Weapon_set_category_animationOverride);
-    lua_setfield(L, -2, "category_animationOverride");
+    registerSetter(L, "bleedDamage", Weapon_set_bleedDamage);
+    registerSetter(L, "modAttack", Weapon_set_modAttack);
+    registerSetter(L, "combatWeight", Weapon_set_combatWeight);
+    registerSetter(L, "category", Weapon_set_category);
+    registerSetter(L, "category_animationOverride", Weapon_set_category_animationOverride);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to Gear
+    setMetatableParent(L, WeaponBinding::getMetatableName(), GearBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

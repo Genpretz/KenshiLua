@@ -3,112 +3,97 @@
 #include "SenseItrBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/SeenSomeoneBinding.h"
 
 namespace KenshiLua
 {
 
-static SenseItr* getB(lua_State* L, int idx)
+static SenseItr* getInstance(lua_State* L, int idx)
 {
     return checkObject<SenseItr>(L, idx, SenseItrBinding::getMetatableName());
 }
 
 // --- Getters for SenseItr ---
-static int SenseItr_get_it(lua_State* L)
-{
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
-    // TODO: Unsupported type for it (boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)
-    return luaL_error(L, "Unsupported property 'it' (type: boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)");
-}
-
-static int SenseItr_get__end(lua_State* L)
-{
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
-    // TODO: Unsupported type for _end (boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)
-    return luaL_error(L, "Unsupported property '_end' (type: boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)");
-}
-
 static int SenseItr_get_flagsAny(lua_State* L)
 {
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
-    lua_pushinteger(L, b->flagsAny);
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
+    lua_pushinteger(L, instance->flagsAny);
     return 1;
 }
 
 static int SenseItr_get_flagsNot(lua_State* L)
 {
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
-    lua_pushinteger(L, b->flagsNot);
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
+    lua_pushinteger(L, instance->flagsNot);
     return 1;
 }
 
 // --- Setters for SenseItr ---
-static int SenseItr_set_it(lua_State* L)
-{
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for it");
-}
-
-static int SenseItr_set__end(lua_State* L)
-{
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _end");
-}
-
 static int SenseItr_set_flagsAny(lua_State* L)
 {
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
-    b->flagsAny = (unsigned int)luaL_checkinteger(L, 2);
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
+    instance->flagsAny = (unsigned int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int SenseItr_set_flagsNot(lua_State* L)
 {
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
-    b->flagsNot = (unsigned int)luaL_checkinteger(L, 2);
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
+    instance->flagsNot = (unsigned int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 int SenseItrBinding::getCharacter(lua_State* L)
 {
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
 
-    Character* result = b->getCharacter();
+    Character* result = instance->getCharacter();
     return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
+}
+
+int SenseItrBinding::getData(lua_State* L)
+{
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
+
+    SeenSomeone* result = instance->getData();
+    return pushObject<SeenSomeone>(L, result, SeenSomeoneBinding::getMetatableName());
 }
 
 int SenseItrBinding::ended(lua_State* L)
 {
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
 
-    bool result = b->ended();
+    bool result = instance->ended();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int SenseItrBinding::increment(lua_State* L)
 {
-    SenseItr* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SenseItr is nil");
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
 
-    b->increment();
+    instance->increment();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 68: SeenSomeone* getData(...) - unsupported return type
   line 71: void operator++(...) - operator
-  line 74: SenseItr* _CONSTRUCTOR(...) - unsupported return type
+  line 74: SenseItr* _CONSTRUCTOR(...) - unsupported arg type
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 75: it (boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >) - unsupported type
+  line 76: _end (boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >) - unsupported type
 */
 
 int SenseItrBinding::gc(lua_State* L)
@@ -123,6 +108,42 @@ int SenseItrBinding::tostring(lua_State* L)
     return 1;
 }
 
+
+
+static int SenseItr_get__end(lua_State* L)
+{
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
+    // TODO: Unsupported type for _end (boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)
+    return luaL_error(L, "Unsupported property '_end' (type: boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)");
+}
+
+
+static int SenseItr_get_it(lua_State* L)
+{
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
+    // TODO: Unsupported type for it (boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)
+    return luaL_error(L, "Unsupported property 'it' (type: boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >)");
+}
+
+
+static int SenseItr_set__end(lua_State* L)
+{
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for _end");
+}
+
+
+static int SenseItr_set_it(lua_State* L)
+{
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for it");
+}
+
+
 void SenseItrBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -133,6 +154,7 @@ void SenseItrBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "getCharacter", SenseItrBinding::getCharacter },
+        { "getData", SenseItrBinding::getData },
         { "ended", SenseItrBinding::ended },
         { "increment", SenseItrBinding::increment },
         { 0, 0 }
@@ -149,25 +171,17 @@ void SenseItrBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, SenseItrBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, SenseItr_get_it);
-    lua_setfield(L, -2, "it");
-    lua_pushcfunction(L, SenseItr_get__end);
-    lua_setfield(L, -2, "_end");
-    lua_pushcfunction(L, SenseItr_get_flagsAny);
-    lua_setfield(L, -2, "flagsAny");
-    lua_pushcfunction(L, SenseItr_get_flagsNot);
-    lua_setfield(L, -2, "flagsNot");
+    registerGetter(L, "flagsAny", SenseItr_get_flagsAny);
+    registerGetter(L, "flagsNot", SenseItr_get_flagsNot);
+        registerGetter(L, "_end", SenseItr_get__end);
+        registerGetter(L, "it", SenseItr_get_it);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, SenseItr_set_it);
-    lua_setfield(L, -2, "it");
-    lua_pushcfunction(L, SenseItr_set__end);
-    lua_setfield(L, -2, "_end");
-    lua_pushcfunction(L, SenseItr_set_flagsAny);
-    lua_setfield(L, -2, "flagsAny");
-    lua_pushcfunction(L, SenseItr_set_flagsNot);
-    lua_setfield(L, -2, "flagsNot");
+    registerSetter(L, "flagsAny", SenseItr_set_flagsAny);
+    registerSetter(L, "flagsNot", SenseItr_set_flagsNot);
+        registerSetter(L, "_end", SenseItr_set__end);
+        registerSetter(L, "it", SenseItr_set_it);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

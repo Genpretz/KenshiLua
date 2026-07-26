@@ -78,8 +78,8 @@ public:
     static int toGround(lua_State* L);
     static int updateGroundMaterial(lua_State* L);
     static int getCombatMoveSpeedMult(lua_State* L);
-    static int setDestination(lua_State* L);
     static int _NV_setDestination(lua_State* L);
+    static int setDestination(lua_State* L);
     static int setLookatTarget(lua_State* L);
 };
 }

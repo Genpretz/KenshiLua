@@ -20,12 +20,20 @@ public:
     static int _NV_isAnimal(lua_State* L);
     static int createAnimationClass(lua_State* L);
     static int _NV_createAnimationClass(lua_State* L);
+    static int drawWeapon(lua_State* L);
+    static int _NV_drawWeapon(lua_State* L);
     static int sheatheWeapon(lua_State* L);
     static int _NV_sheatheWeapon(lua_State* L);
     static int getCurrentWeapon(lua_State* L);
     static int _NV_getCurrentWeapon(lua_State* L);
     static int getThePreferredWeapon(lua_State* L);
     static int _NV_getThePreferredWeapon(lua_State* L);
+    static int createInventoryLayout(lua_State* L);
+    static int _NV_createInventoryLayout(lua_State* L);
+    static int giveBirth(lua_State* L);
+    static int _NV_giveBirth(lua_State* L);
+    static int setupInventorySections(lua_State* L);
+    static int _NV_setupInventorySections(lua_State* L);
     static int setupAudio(lua_State* L);
     static int _NV_setupAudio(lua_State* L);
     static int periodicUpdate(lua_State* L);
@@ -40,6 +48,8 @@ public:
     static int _NV_getAge0to1(lua_State* L);
     static int getDefaultTaskRepertoireEnum(lua_State* L);
     static int _NV_getDefaultTaskRepertoireEnum(lua_State* L);
+    static int canGoIndoors(lua_State* L);
+    static int _NV_canGoIndoors(lua_State* L);
     static int getSmellHuntingThresholdBlood(lua_State* L);
     static int _NV_getSmellHuntingThresholdBlood(lua_State* L);
     static int getSmellHuntingThresholdEggs(lua_State* L);
@@ -48,11 +58,15 @@ public:
     static int _NV_getHPMultiplier(lua_State* L);
     static int foodUpdate(lua_State* L);
     static int _NV_foodUpdate(lua_State* L);
+    static int pickupItemInMouth(lua_State* L);
     static int dropItemInMouth(lua_State* L);
     static int getItemInMouth(lua_State* L);
     static int eatItemInMouth(lua_State* L);
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int init(lua_State* L);
     static int _NV_init(lua_State* L);
+    static int dropItem(lua_State* L);
+    static int _NV_dropItem(lua_State* L);
 };
 }

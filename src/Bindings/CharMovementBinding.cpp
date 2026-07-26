@@ -1017,89 +1017,24 @@ int CharMovementBinding::getCombatMoveSpeedMult(lua_State* L)
     return 1;
 }
 
-int CharMovementBinding::setDestination(lua_State* L)
-{
-    CharMovement* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharMovement is nil");
-
-    if (Character* who = testObject<Character>(L, 2, CharacterBinding::getMetatableName())) {
-        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
-        instance->setDestination(who, pri);
-        return 0;
-    }
-    if (Building* who = testObject<Building>(L, 2, BuildingBinding::getMetatableName())) {
-        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
-        instance->setDestination(who, pri);
-        return 0;
-    }
-    if (RootObjectBase* target = testObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName())) {
-        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
-        instance->setDestination(target, pri);
-        return 0;
-    }
-    if (lua_istable(L, 2)) {
-        Ogre::Vector3 dest;
-        readVector3(L, 2, dest);
-        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
-        bool notVertical = lua_toboolean(L, 4) != 0;
-        instance->setDestination(dest, pri, notVertical);
-        return 0;
-    }
-
-    return luaL_error(L, "Argument 2 to setDestination must be a Vector3 table, Character, Building, or RootObjectBase, got %s", luaL_typename(L, 2));
-}
-
-int CharMovementBinding::_NV_setDestination(lua_State* L)
-{
-    CharMovement* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharMovement is nil");
-
-    if (Character* who = testObject<Character>(L, 2, CharacterBinding::getMetatableName())) {
-        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
-        instance->_NV_setDestination(who, pri);
-        return 0;
-    }
-    if (Building* who = testObject<Building>(L, 2, BuildingBinding::getMetatableName())) {
-        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
-        instance->_NV_setDestination(who, pri);
-        return 0;
-    }
-    if (RootObjectBase* target = testObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName())) {
-        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
-        instance->_NV_setDestination(target, pri);
-        return 0;
-    }
-    if (lua_istable(L, 2)) {
-        Ogre::Vector3 dest;
-        readVector3(L, 2, dest);
-        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
-        bool notVertical = lua_toboolean(L, 4) != 0;
-        instance->_NV_setDestination(dest, pri, notVertical);
-        return 0;
-    }
-
-    return luaL_error(L, "Argument 2 to _NV_setDestination must be a Vector3 table, Character, Building, or RootObjectBase, got %s", luaL_typename(L, 2));
-}
-
-int CharMovementBinding::setLookatTarget(lua_State* L)
-{
-    CharMovement* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharMovement is nil");
-
-    hand* lookatCharacter = checkObject<hand>(L, 2, handBinding::getMetatableName());
-    instance->setLookatTarget(*lookatCharacter);
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 390: void create(...) - unsupported arg type
   line 391: void _NV_create(...) - unsupported arg type
   line 407: void formationUpdateCallback(...) - non-string reference arg
   line 434: const hand& isStandingOnSomething(...) - reference return type
+  line 435: void setDestination(...) - overloaded method
+  line 436: void _NV_setDestination(...) - overloaded method
+  line 437: void setDestination(...) - overloaded method
+  line 438: void _NV_setDestination(...) - overloaded method
+  line 439: void setDestination(...) - overloaded method
+  line 440: void _NV_setDestination(...) - overloaded method
+  line 441: void setDestination(...) - overloaded method
+  line 442: void _NV_setDestination(...) - overloaded method
   line 448: void setPatrolInput(...) - unsupported arg type
   line 449: void _NV_setPatrolInput(...) - unsupported arg type
   line 451: void combatMovementOffensive(...) - non-string reference arg
+  line 453: void setLookatTarget(...) - non-string reference arg
   line 457: Ogre::Aabb getAABB(...) - unsupported return type
   line 469: void setMovementMode(...) - unsupported arg type
   line 473: NxControllerAction onShapeHit(...) - unsupported return type
@@ -1134,6 +1069,85 @@ int CharMovementBinding::tostring(lua_State* L)
     lua_pushstring(L, "KenshiLua.CharMovement object");
     return 1;
 }
+
+
+
+int CharMovementBinding::_NV_setDestination(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+
+    if (Character* who = testObject<Character>(L, 2, CharacterBinding::getMetatableName())) {
+        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
+        instance->_NV_setDestination(who, pri);
+        return 0;
+    }
+    if (Building* who = testObject<Building>(L, 2, BuildingBinding::getMetatableName())) {
+        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
+        instance->_NV_setDestination(who, pri);
+        return 0;
+    }
+    if (RootObjectBase* target = testObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName())) {
+        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
+        instance->_NV_setDestination(target, pri);
+        return 0;
+    }
+    if (lua_istable(L, 2)) {
+        Ogre::Vector3 dest;
+        readVector3(L, 2, dest);
+        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
+        bool notVertical = lua_toboolean(L, 4) != 0;
+        instance->_NV_setDestination(dest, pri, notVertical);
+        return 0;
+    }
+
+    return luaL_error(L, "Argument 2 to _NV_setDestination must be a Vector3 table, Character, Building, or RootObjectBase, got %s", luaL_typename(L, 2));
+}
+
+
+int CharMovementBinding::setDestination(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+
+    if (Character* who = testObject<Character>(L, 2, CharacterBinding::getMetatableName())) {
+        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
+        instance->setDestination(who, pri);
+        return 0;
+    }
+    if (Building* who = testObject<Building>(L, 2, BuildingBinding::getMetatableName())) {
+        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
+        instance->setDestination(who, pri);
+        return 0;
+    }
+    if (RootObjectBase* target = testObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName())) {
+        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
+        instance->setDestination(target, pri);
+        return 0;
+    }
+    if (lua_istable(L, 2)) {
+        Ogre::Vector3 dest;
+        readVector3(L, 2, dest);
+        UpdatePriority pri = (UpdatePriority)luaL_optinteger(L, 3, 0);
+        bool notVertical = lua_toboolean(L, 4) != 0;
+        instance->setDestination(dest, pri, notVertical);
+        return 0;
+    }
+
+    return luaL_error(L, "Argument 2 to setDestination must be a Vector3 table, Character, Building, or RootObjectBase, got %s", luaL_typename(L, 2));
+}
+
+
+int CharMovementBinding::setLookatTarget(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+
+    hand* lookatCharacter = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->setLookatTarget(*lookatCharacter);
+    return 0;
+}
+
 
 void CharMovementBinding::registerBinding(lua_State* L)
 {
@@ -1206,7 +1220,7 @@ void CharMovementBinding::registerBinding(lua_State* L)
         { "toGround", CharMovementBinding::toGround },
         { "updateGroundMaterial", CharMovementBinding::updateGroundMaterial },
         { "getCombatMoveSpeedMult", CharMovementBinding::getCombatMoveSpeedMult },
-        { "setDestination", CharMovementBinding::setDestination },
+                { "setDestination", CharMovementBinding::setDestination },
         { "_NV_setDestination", CharMovementBinding::_NV_setDestination },
         { "setLookatTarget", CharMovementBinding::setLookatTarget },
         { 0, 0 }

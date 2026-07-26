@@ -16,6 +16,8 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
+    static int setHandle(lua_State* L);
     static int takeMoney(lua_State* L);
     static int _NV_takeMoney(lua_State* L);
     static int takeMoneyByForce(lua_State* L);
@@ -24,6 +26,13 @@ public:
     static int addMoney(lua_State* L);
     static int setMoney(lua_State* L);
     static int setHomeBuildingDesignation(lua_State* L);
+    static int copyFrom(lua_State* L);
+    static int serialise(lua_State* L);
+    static int load(lua_State* L);
+    static int setHomeTown(lua_State* L);
+    static int isMyTown(lua_State* L);
+    static int canIUseThisBuilding(lua_State* L);
+    static int declareOccupiedTown(lua_State* L);
     static int getOccupiedTownFaction(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };

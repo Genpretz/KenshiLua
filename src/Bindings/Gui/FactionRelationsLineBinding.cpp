@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\gui\FactionsScreen.h"
 #include "FactionRelationsLineBinding.h"
+#include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/FactionBinding.h"
 
@@ -155,7 +156,7 @@ void FactionRelationsLineBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout
-    // setMetatableParent(L, FactionRelationsLineBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
+    setMetatableParent(L, FactionRelationsLineBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

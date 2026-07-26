@@ -1,7 +1,10 @@
 #include "pch.h"
-#include <kenshi/ZoneManager.h>
+#include "kenshi\ZoneManager.h"
 #include "ZoneManagerInterfaceTBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/AABB2DBinding.h"
+#include "Bindings/Util/iVector2Binding.h"
+#include <kenshi/ZoneManager.h>
 
 namespace KenshiLua
 {
@@ -43,8 +46,7 @@ int ZoneManagerInterfaceTBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "ZoneManagerInterfaceT is nil");
 
     ZoneManagerInterfaceT* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ZoneManagerInterfaceT>(L, result, ZoneManagerInterfaceTBinding::getMetatableName());
 }
 
 /*

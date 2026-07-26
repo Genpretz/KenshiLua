@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\gui\ScreenLabel.h"
 #include "ScreenLabelBinding.h"
+#include "ScreenLabelInterfaceBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -315,7 +316,7 @@ void ScreenLabelBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ScreenLabelInterface
-    // setMetatableParent(L, ScreenLabelBinding::getMetatableName(), ScreenLabelInterfaceBinding::getMetatableName());
+    setMetatableParent(L, ScreenLabelBinding::getMetatableName(), ScreenLabelInterfaceBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

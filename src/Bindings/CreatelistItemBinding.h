@@ -1,4 +1,6 @@
 #pragma once
+#include <kenshi/RootObject.h>
+#include <kenshi/RootObjectFactory.h>
 
 extern "C" {
 #include <lua.h>
@@ -7,6 +9,8 @@ extern "C" {
 
 namespace KenshiLua
 {
+    typedef RootObjectFactory::CreatelistItem CreatelistItem;
+
 class CreatelistItemBinding
 {
 public:
@@ -16,5 +20,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
 };
 }

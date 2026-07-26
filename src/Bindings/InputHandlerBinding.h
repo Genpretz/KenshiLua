@@ -18,6 +18,7 @@ public:
 
     static int getKeyUTF8(lua_State* L);
     static int parseKey(lua_State* L);
+    static int getCommand(lua_State* L);
     static int keyDownEvent(lua_State* L);
     static int keyUpEvent(lua_State* L);
     static int clearMessages(lua_State* L);
@@ -32,11 +33,9 @@ public:
     static int saveConfig(lua_State* L);
     static int keyString(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
-
-    static int getCommand(lua_State* L);
     static int addCommand(lua_State* L);
-    static int unbind(lua_State* L);
-    static int isBound(lua_State* L);
     static int getBoundKeys(lua_State* L);
+    static int isBound(lua_State* L);
+    static int unbind(lua_State* L);
 };
 }

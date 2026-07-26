@@ -19,6 +19,13 @@ public:
     static int _recalculateIsIntact(lua_State* L);
     static int isAnyoneCaptured(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
+    static int getGroupSense(lua_State* L);
+    static int getMemory(lua_State* L);
+    static int removeObject(lua_State* L);
+    static int _NV_removeObject(lua_State* L);
+    static int addActiveObject(lua_State* L);
+    static int _NV_addActiveObject(lua_State* L);
+    static int addCharacterAt(lua_State* L);
     static int swapCharacters(lua_State* L);
     static int emptySquadCheck(lua_State* L);
     static int clearAllTheUniqueNPCStates(lua_State* L);
@@ -27,6 +34,7 @@ public:
     static int getNearestActiveCharacter(lua_State* L);
     static int getSquadLeader(lua_State* L);
     static int getSquadSize(lua_State* L);
+    static int setSquadLeader(lua_State* L);
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
     static int refreshInventory(lua_State* L);
@@ -47,10 +55,14 @@ public:
     static int putTheSpecialCharactersInNewSquads_captured(lua_State* L);
     static int checkForCharactersBeingCarried(lua_State* L);
     static int restoreSquad(lua_State* L);
+    static int _CONSTRUCTOR(lua_State* L);
     static int unloadCheck(lua_State* L);
+    static int setupCheck(lua_State* L);
     static int destroyCharacters(lua_State* L);
     static int serialiseCharacterData(lua_State* L);
     static int saveToDisk(lua_State* L);
+    static int loadCharacters(lua_State* L);
+    static int _NV_loadCharacters(lua_State* L);
     static int calculateCurrentPos(lua_State* L);
     static int _checkForUniqueCharactersOnUnload(lua_State* L);
 };

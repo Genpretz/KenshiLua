@@ -2,58 +2,81 @@
 #include "kenshi\Inventory.h"
 #include "HasRoomCacheBinding.h"
 #include "Lua/BindingHelpers.h"
-
-typedef Inventory::HasRoomCache HasRoomCache;
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {
 
-static HasRoomCache* getB(lua_State* L, int idx)
+static HasRoomCache* getInstance(lua_State* L, int idx)
 {
     return checkObject<HasRoomCache>(L, idx, HasRoomCacheBinding::getMetatableName());
 }
 
 // --- Getters for HasRoomCache ---
-static int HasRoomCache_get_itemStates(lua_State* L)
-{
-    HasRoomCache* b = getB(L, 1);
-    if (!b) return luaL_error(L, "HasRoomCache is nil");
-    // TODO: Unsupported type for itemStates (std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >)
-    return luaL_error(L, "Unsupported property 'itemStates' (type: std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >)");
-}
-
 // --- Setters for HasRoomCache ---
-static int HasRoomCache_set_itemStates(lua_State* L)
-{
-    HasRoomCache* b = getB(L, 1);
-    if (!b) return luaL_error(L, "HasRoomCache is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for itemStates");
-}
-
 int HasRoomCacheBinding::modified(lua_State* L)
 {
-    HasRoomCache* b = getB(L, 1);
-    if (!b) return luaL_error(L, "HasRoomCache is nil");
+    HasRoomCache* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HasRoomCache is nil");
 
-    b->modified();
+    instance->modified();
     return 0;
+}
+
+int HasRoomCacheBinding::knowsAbout(lua_State* L)
+{
+    HasRoomCache* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HasRoomCache is nil");
+
+    GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->knowsAbout(item);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int HasRoomCacheBinding::hasRoomFor(lua_State* L)
+{
+    HasRoomCache* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HasRoomCache is nil");
+
+    GameData* item = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->hasRoomFor(item);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int HasRoomCacheBinding::remember(lua_State* L)
+{
+    HasRoomCache* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HasRoomCache is nil");
+
+    GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool state = lua_toboolean(L, 3) != 0;
+    instance->remember(d, state);
+    return 0;
+}
+
+int HasRoomCacheBinding::_CONSTRUCTOR(lua_State* L)
+{
+    HasRoomCache* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HasRoomCache is nil");
+
+    HasRoomCache* result = instance->_CONSTRUCTOR();
+    return pushObject<HasRoomCache>(L, result, HasRoomCacheBinding::getMetatableName());
 }
 
 int HasRoomCacheBinding::_DESTRUCTOR(lua_State* L)
 {
-    HasRoomCache* b = getB(L, 1);
-    if (!b) return luaL_error(L, "HasRoomCache is nil");
+    HasRoomCache* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HasRoomCache is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
-Skipped methods needing manual binding:
-  line 158: bool knowsAbout(...) - unsupported arg type
-  line 159: bool hasRoomFor(...) - unsupported arg type
-  line 160: void remember(...) - unsupported arg type
-  line 163: HasRoomCache* _CONSTRUCTOR(...) - unsupported return type
+Skipped properties needing manual binding:
+  line 156: itemStates (std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >) - unsupported type
 */
 
 int HasRoomCacheBinding::gc(lua_State* L)
@@ -68,6 +91,25 @@ int HasRoomCacheBinding::tostring(lua_State* L)
     return 1;
 }
 
+
+
+static int HasRoomCache_get_itemStates(lua_State* L)
+{
+    HasRoomCache* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HasRoomCache is nil");
+    // TODO: Unsupported type for itemStates (std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >)
+    return luaL_error(L, "Unsupported property 'itemStates' (type: std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >)");
+}
+
+
+static int HasRoomCache_set_itemStates(lua_State* L)
+{
+    HasRoomCache* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HasRoomCache is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for itemStates");
+}
+
+
 void HasRoomCacheBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -78,6 +120,10 @@ void HasRoomCacheBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "modified", HasRoomCacheBinding::modified },
+        { "knowsAbout", HasRoomCacheBinding::knowsAbout },
+        { "hasRoomFor", HasRoomCacheBinding::hasRoomFor },
+        { "remember", HasRoomCacheBinding::remember },
+        { "_CONSTRUCTOR", HasRoomCacheBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", HasRoomCacheBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -93,13 +139,11 @@ void HasRoomCacheBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, HasRoomCacheBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, HasRoomCache_get_itemStates);
-    lua_setfield(L, -2, "itemStates");
+        registerGetter(L, "itemStates", HasRoomCache_get_itemStates);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, HasRoomCache_set_itemStates);
-    lua_setfield(L, -2, "itemStates");
+        registerSetter(L, "itemStates", HasRoomCache_set_itemStates);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

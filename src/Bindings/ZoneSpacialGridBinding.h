@@ -18,7 +18,13 @@ public:
 
     static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
+    static int add(lua_State* L);
+    static int remove(lua_State* L);
+    static int update(lua_State* L);
+    static int addZone(lua_State* L);
+    static int removeZone(lua_State* L);
     static int getZoneKey(lua_State* L);
+    static int getCellKey(lua_State* L);
     static int getFullKey(lua_State* L);
     static int initialiseGrid(lua_State* L);
 };

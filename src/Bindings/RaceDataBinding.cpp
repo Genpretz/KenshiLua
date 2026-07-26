@@ -3,508 +3,464 @@
 #include "RaceDataBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/ItemBinding.h"
 
 namespace KenshiLua
 {
 
-static RaceData* getB(lua_State* L, int idx)
+static RaceData* getInstance(lua_State* L, int idx)
 {
     return checkObject<RaceData>(L, idx, RaceDataBinding::getMetatableName());
 }
 
 // --- Getters for RaceData ---
-static int RaceData_get_specialFoods(lua_State* L)
-{
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    // TODO: Unsupported type for specialFoods (ogre_unordered_set<GameData*>::type)
-    return luaL_error(L, "Unsupported property 'specialFoods' (type: ogre_unordered_set<GameData*>::type)");
-}
-
 static int RaceData_get_data(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    return pushObject<GameData>(L, b->data, GameDataBinding::getMetatableName());
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    return pushObject<GameData>(L, instance->data, GameDataBinding::getMetatableName());
 }
 
 static int RaceData_get_runSpeedMaxSkill(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->runSpeedMaxSkill);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->runSpeedMaxSkill);
     return 1;
 }
 
 static int RaceData_get_runSpeedMinSkill(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->runSpeedMinSkill);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->runSpeedMinSkill);
     return 1;
 }
 
 static int RaceData_get_originalBloodMin(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->originalBloodMin);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->originalBloodMin);
     return 1;
 }
 
 static int RaceData_get_originalBloodMax(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->originalBloodMax);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->originalBloodMax);
     return 1;
 }
 
 static int RaceData_get_healRate(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->healRate);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->healRate);
     return 1;
 }
 
 static int RaceData_get_bleedRate(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->bleedRate);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->bleedRate);
     return 1;
 }
 
 static int RaceData_get_swimSpeed(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->swimSpeed);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->swimSpeed);
     return 1;
 }
 
 static int RaceData_get_walkSpeed(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->walkSpeed);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->walkSpeed);
     return 1;
 }
 
 static int RaceData_get_swimOffset(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->swimOffset);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->swimOffset);
     return 1;
 }
 
 static int RaceData_get_waterAvoidance(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->waterAvoidance);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->waterAvoidance);
     return 1;
 }
 
 static int RaceData_get_hungerRate(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->hungerRate);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->hungerRate);
     return 1;
 }
 
 static int RaceData_get_visionMultiplier(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushnumber(L, b->visionMultiplier);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushnumber(L, instance->visionMultiplier);
     return 1;
 }
 
 static int RaceData_get_gigantic(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushboolean(L, b->gigantic ? 1 : 0);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushboolean(L, instance->gigantic ? 1 : 0);
     return 1;
 }
 
 static int RaceData_get_swims(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushboolean(L, b->swims ? 1 : 0);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushboolean(L, instance->swims ? 1 : 0);
     return 1;
 }
 
 static int RaceData_get_carriable(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushboolean(L, b->carriable ? 1 : 0);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushboolean(L, instance->carriable ? 1 : 0);
     return 1;
 }
 
 static int RaceData_get_singleGender(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushboolean(L, b->singleGender ? 1 : 0);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushboolean(L, instance->singleGender ? 1 : 0);
     return 1;
 }
 
 static int RaceData_get_robot(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushboolean(L, b->robot ? 1 : 0);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushboolean(L, instance->robot ? 1 : 0);
     return 1;
 }
 
 static int RaceData_get_vampiric(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushboolean(L, b->vampiric ? 1 : 0);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushboolean(L, instance->vampiric ? 1 : 0);
     return 1;
 }
 
 static int RaceData_get_noHats(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushboolean(L, b->noHats ? 1 : 0);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushboolean(L, instance->noHats ? 1 : 0);
     return 1;
 }
 
 static int RaceData_get_noShirts(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushboolean(L, b->noShirts ? 1 : 0);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushboolean(L, instance->noShirts ? 1 : 0);
     return 1;
 }
 
 static int RaceData_get_noShoes(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushboolean(L, b->noShoes ? 1 : 0);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushboolean(L, instance->noShoes ? 1 : 0);
     return 1;
 }
 
 static int RaceData_get_extraAttackSlots(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushinteger(L, b->extraAttackSlots);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushinteger(L, instance->extraAttackSlots);
     return 1;
 }
 
 static int RaceData_get_firstAidSkill(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushinteger(L, (lua_Integer)b->firstAidSkill);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushinteger(L, (lua_Integer)instance->firstAidSkill);
     return 1;
-}
-
-static int RaceData_get_bloodColour(lua_State* L)
-{
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    // TODO: Unsupported type for bloodColour (Ogre::ColourValue)
-    return luaL_error(L, "Unsupported property 'bloodColour' (type: Ogre::ColourValue)");
 }
 
 static int RaceData_get_canGoIndoors(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    lua_pushboolean(L, b->canGoIndoors ? 1 : 0);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushboolean(L, instance->canGoIndoors ? 1 : 0);
     return 1;
-}
-
-static int RaceData_get_statMods(lua_State* L)
-{
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    // TODO: Unsupported type for statMods (ogre_unordered_map<StatsEnumerated, float>::type)
-    return luaL_error(L, "Unsupported property 'statMods' (type: ogre_unordered_map<StatsEnumerated, float>::type)");
-}
-
-static int RaceData_get_weatherImmunities(lua_State* L)
-{
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    // TODO: Unsupported type for weatherImmunities (ogre_unordered_set<WeatherAffecting>::type)
-    return luaL_error(L, "Unsupported property 'weatherImmunities' (type: ogre_unordered_set<WeatherAffecting>::type)");
 }
 
 static int RaceData_get_raceGroup(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    // TODO: Unsupported type for raceGroup (RaceGroupData*)
-    return luaL_error(L, "Unsupported property 'raceGroup' (type: RaceGroupData*)");
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    lua_pushlightuserdata(L, (void*)instance->raceGroup);
+    return 1;
 }
 
 // --- Setters for RaceData ---
-static int RaceData_set_specialFoods(lua_State* L)
-{
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for specialFoods");
-}
-
 static int RaceData_set_data(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for data");
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->data = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int RaceData_set_runSpeedMaxSkill(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->runSpeedMaxSkill = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->runSpeedMaxSkill = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_runSpeedMinSkill(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->runSpeedMinSkill = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->runSpeedMinSkill = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_originalBloodMin(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->originalBloodMin = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->originalBloodMin = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_originalBloodMax(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->originalBloodMax = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->originalBloodMax = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_healRate(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->healRate = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->healRate = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_bleedRate(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->bleedRate = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->bleedRate = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_swimSpeed(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->swimSpeed = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->swimSpeed = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_walkSpeed(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->walkSpeed = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->walkSpeed = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_swimOffset(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->swimOffset = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->swimOffset = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_waterAvoidance(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->waterAvoidance = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->waterAvoidance = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_hungerRate(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->hungerRate = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->hungerRate = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_visionMultiplier(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->visionMultiplier = (float)luaL_checknumber(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->visionMultiplier = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int RaceData_set_gigantic(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->gigantic = lua_toboolean(L, 2) != 0;
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->gigantic = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int RaceData_set_swims(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->swims = lua_toboolean(L, 2) != 0;
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->swims = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int RaceData_set_carriable(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->carriable = lua_toboolean(L, 2) != 0;
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->carriable = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int RaceData_set_singleGender(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->singleGender = lua_toboolean(L, 2) != 0;
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->singleGender = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int RaceData_set_robot(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->robot = lua_toboolean(L, 2) != 0;
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->robot = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int RaceData_set_vampiric(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->vampiric = lua_toboolean(L, 2) != 0;
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->vampiric = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int RaceData_set_noHats(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->noHats = lua_toboolean(L, 2) != 0;
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->noHats = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int RaceData_set_noShirts(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->noShirts = lua_toboolean(L, 2) != 0;
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->noShirts = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int RaceData_set_noShoes(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->noShoes = lua_toboolean(L, 2) != 0;
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->noShoes = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int RaceData_set_extraAttackSlots(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->extraAttackSlots = (int)luaL_checkinteger(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->extraAttackSlots = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int RaceData_set_firstAidSkill(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->firstAidSkill = (StatsEnumerated)luaL_checkinteger(L, 2);
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->firstAidSkill = (StatsEnumerated)luaL_checkinteger(L, 2);
     return 0;
-}
-
-static int RaceData_set_bloodColour(lua_State* L)
-{
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bloodColour");
 }
 
 static int RaceData_set_canGoIndoors(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    b->canGoIndoors = lua_toboolean(L, 2) != 0;
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    instance->canGoIndoors = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
-static int RaceData_set_statMods(lua_State* L)
+int RaceDataBinding::_CONSTRUCTOR(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for statMods");
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    RaceData* result = instance->_CONSTRUCTOR(data);
+    return pushObject<RaceData>(L, result, RaceDataBinding::getMetatableName());
 }
 
-static int RaceData_set_weatherImmunities(lua_State* L)
+int RaceDataBinding::isSpecificRace(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for weatherImmunities");
-}
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
 
-static int RaceData_set_raceGroup(lua_State* L)
-{
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for raceGroup");
+    GameData* subrace = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->isSpecificRace(subrace);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
 }
 
 int RaceDataBinding::getStatMod(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
 
     StatsEnumerated stat = (StatsEnumerated)luaL_checkinteger(L, 2);
-    float result = b->getStatMod(stat);
+    float result = instance->getStatMod(stat);
     lua_pushnumber(L, result);
     return 1;
 }
 
 int RaceDataBinding::isImmune(lua_State* L)
 {
-    RaceData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RaceData is nil");
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
 
     WeatherAffecting w = (WeatherAffecting)luaL_checkinteger(L, 2);
-    bool result = b->isImmune(w);
+    bool result = instance->isImmune(w);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
@@ -513,12 +469,23 @@ int RaceDataBinding::isImmune(lua_State* L)
 Skipped methods needing manual binding:
   line 20: RaceData* getRaceData(...) - static method
   line 21: RaceData* getRaceData(...) - static method
-  line 24: RaceData* _CONSTRUCTOR(...) - unsupported arg type
   line 25: bool isRelatedRace(...) - overloaded method
   line 26: bool isRelatedRace(...) - overloaded method
-  line 27: bool isSpecificRace(...) - unsupported arg type
   line 29: bool canEat(...) - overloaded method
   line 30: bool canEat(...) - overloaded method
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - RaceData_get_raceGroup: RaceGroupData* (unbound pointer)
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 18: specialFoods (ogre_unordered_set<GameData*>::type) - unsupported type
+  line 55: bloodColour (Ogre::ColourValue) - unsupported type
+  line 57: statMods (ogre_unordered_map<StatsEnumerated, float>::type) - unsupported type
+  line 58: weatherImmunities (ogre_unordered_set<WeatherAffecting>::type) - unsupported type
 */
 
 int RaceDataBinding::gc(lua_State* L)
@@ -533,6 +500,84 @@ int RaceDataBinding::tostring(lua_State* L)
     return 1;
 }
 
+
+
+static int RaceData_get_bloodColour(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    // TODO: Unsupported type for bloodColour (Ogre::ColourValue)
+    return luaL_error(L, "Unsupported property 'bloodColour' (type: Ogre::ColourValue)");
+}
+
+
+static int RaceData_get_specialFoods(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    // TODO: Unsupported type for specialFoods (ogre_unordered_set<GameData*>::type)
+    return luaL_error(L, "Unsupported property 'specialFoods' (type: ogre_unordered_set<GameData*>::type)");
+}
+
+
+static int RaceData_get_statMods(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    // TODO: Unsupported type for statMods (ogre_unordered_map<StatsEnumerated, float>::type)
+    return luaL_error(L, "Unsupported property 'statMods' (type: ogre_unordered_map<StatsEnumerated, float>::type)");
+}
+
+
+static int RaceData_get_weatherImmunities(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    // TODO: Unsupported type for weatherImmunities (ogre_unordered_set<WeatherAffecting>::type)
+    return luaL_error(L, "Unsupported property 'weatherImmunities' (type: ogre_unordered_set<WeatherAffecting>::type)");
+}
+
+
+static int RaceData_set_bloodColour(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for bloodColour");
+}
+
+
+static int RaceData_set_raceGroup(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for raceGroup");
+}
+
+
+static int RaceData_set_specialFoods(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for specialFoods");
+}
+
+
+static int RaceData_set_statMods(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for statMods");
+}
+
+
+static int RaceData_set_weatherImmunities(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+    return luaL_error(L, "Read-only or unsupported setter type for weatherImmunities");
+}
+
+
 void RaceDataBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -542,6 +587,8 @@ void RaceDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", RaceDataBinding::_CONSTRUCTOR },
+        { "isSpecificRace", RaceDataBinding::isSpecificRace },
         { "getStatMod", RaceDataBinding::getStatMod },
         { "isImmune", RaceDataBinding::isImmune },
         { 0, 0 }
@@ -558,129 +605,69 @@ void RaceDataBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, RaceDataBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, RaceData_get_specialFoods);
-    lua_setfield(L, -2, "specialFoods");
-    lua_pushcfunction(L, RaceData_get_data);
-    lua_setfield(L, -2, "data");
-    lua_pushcfunction(L, RaceData_get_runSpeedMaxSkill);
-    lua_setfield(L, -2, "runSpeedMaxSkill");
-    lua_pushcfunction(L, RaceData_get_runSpeedMinSkill);
-    lua_setfield(L, -2, "runSpeedMinSkill");
-    lua_pushcfunction(L, RaceData_get_originalBloodMin);
-    lua_setfield(L, -2, "originalBloodMin");
-    lua_pushcfunction(L, RaceData_get_originalBloodMax);
-    lua_setfield(L, -2, "originalBloodMax");
-    lua_pushcfunction(L, RaceData_get_healRate);
-    lua_setfield(L, -2, "healRate");
-    lua_pushcfunction(L, RaceData_get_bleedRate);
-    lua_setfield(L, -2, "bleedRate");
-    lua_pushcfunction(L, RaceData_get_swimSpeed);
-    lua_setfield(L, -2, "swimSpeed");
-    lua_pushcfunction(L, RaceData_get_walkSpeed);
-    lua_setfield(L, -2, "walkSpeed");
-    lua_pushcfunction(L, RaceData_get_swimOffset);
-    lua_setfield(L, -2, "swimOffset");
-    lua_pushcfunction(L, RaceData_get_waterAvoidance);
-    lua_setfield(L, -2, "waterAvoidance");
-    lua_pushcfunction(L, RaceData_get_hungerRate);
-    lua_setfield(L, -2, "hungerRate");
-    lua_pushcfunction(L, RaceData_get_visionMultiplier);
-    lua_setfield(L, -2, "visionMultiplier");
-    lua_pushcfunction(L, RaceData_get_gigantic);
-    lua_setfield(L, -2, "gigantic");
-    lua_pushcfunction(L, RaceData_get_swims);
-    lua_setfield(L, -2, "swims");
-    lua_pushcfunction(L, RaceData_get_carriable);
-    lua_setfield(L, -2, "carriable");
-    lua_pushcfunction(L, RaceData_get_singleGender);
-    lua_setfield(L, -2, "singleGender");
-    lua_pushcfunction(L, RaceData_get_robot);
-    lua_setfield(L, -2, "robot");
-    lua_pushcfunction(L, RaceData_get_vampiric);
-    lua_setfield(L, -2, "vampiric");
-    lua_pushcfunction(L, RaceData_get_noHats);
-    lua_setfield(L, -2, "noHats");
-    lua_pushcfunction(L, RaceData_get_noShirts);
-    lua_setfield(L, -2, "noShirts");
-    lua_pushcfunction(L, RaceData_get_noShoes);
-    lua_setfield(L, -2, "noShoes");
-    lua_pushcfunction(L, RaceData_get_extraAttackSlots);
-    lua_setfield(L, -2, "extraAttackSlots");
-    lua_pushcfunction(L, RaceData_get_firstAidSkill);
-    lua_setfield(L, -2, "firstAidSkill");
-    lua_pushcfunction(L, RaceData_get_bloodColour);
-    lua_setfield(L, -2, "bloodColour");
-    lua_pushcfunction(L, RaceData_get_canGoIndoors);
-    lua_setfield(L, -2, "canGoIndoors");
-    lua_pushcfunction(L, RaceData_get_statMods);
-    lua_setfield(L, -2, "statMods");
-    lua_pushcfunction(L, RaceData_get_weatherImmunities);
-    lua_setfield(L, -2, "weatherImmunities");
-    lua_pushcfunction(L, RaceData_get_raceGroup);
-    lua_setfield(L, -2, "raceGroup");
+    registerGetter(L, "data", RaceData_get_data);
+    registerGetter(L, "runSpeedMaxSkill", RaceData_get_runSpeedMaxSkill);
+    registerGetter(L, "runSpeedMinSkill", RaceData_get_runSpeedMinSkill);
+    registerGetter(L, "originalBloodMin", RaceData_get_originalBloodMin);
+    registerGetter(L, "originalBloodMax", RaceData_get_originalBloodMax);
+    registerGetter(L, "healRate", RaceData_get_healRate);
+    registerGetter(L, "bleedRate", RaceData_get_bleedRate);
+    registerGetter(L, "swimSpeed", RaceData_get_swimSpeed);
+    registerGetter(L, "walkSpeed", RaceData_get_walkSpeed);
+    registerGetter(L, "swimOffset", RaceData_get_swimOffset);
+    registerGetter(L, "waterAvoidance", RaceData_get_waterAvoidance);
+    registerGetter(L, "hungerRate", RaceData_get_hungerRate);
+    registerGetter(L, "visionMultiplier", RaceData_get_visionMultiplier);
+    registerGetter(L, "gigantic", RaceData_get_gigantic);
+    registerGetter(L, "swims", RaceData_get_swims);
+    registerGetter(L, "carriable", RaceData_get_carriable);
+    registerGetter(L, "singleGender", RaceData_get_singleGender);
+    registerGetter(L, "robot", RaceData_get_robot);
+    registerGetter(L, "vampiric", RaceData_get_vampiric);
+    registerGetter(L, "noHats", RaceData_get_noHats);
+    registerGetter(L, "noShirts", RaceData_get_noShirts);
+    registerGetter(L, "noShoes", RaceData_get_noShoes);
+    registerGetter(L, "extraAttackSlots", RaceData_get_extraAttackSlots);
+    registerGetter(L, "firstAidSkill", RaceData_get_firstAidSkill);
+    registerGetter(L, "canGoIndoors", RaceData_get_canGoIndoors);
+    registerGetter(L, "raceGroup", RaceData_get_raceGroup);
+        registerGetter(L, "bloodColour", RaceData_get_bloodColour);
+        registerGetter(L, "specialFoods", RaceData_get_specialFoods);
+        registerGetter(L, "statMods", RaceData_get_statMods);
+        registerGetter(L, "weatherImmunities", RaceData_get_weatherImmunities);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, RaceData_set_specialFoods);
-    lua_setfield(L, -2, "specialFoods");
-    lua_pushcfunction(L, RaceData_set_data);
-    lua_setfield(L, -2, "data");
-    lua_pushcfunction(L, RaceData_set_runSpeedMaxSkill);
-    lua_setfield(L, -2, "runSpeedMaxSkill");
-    lua_pushcfunction(L, RaceData_set_runSpeedMinSkill);
-    lua_setfield(L, -2, "runSpeedMinSkill");
-    lua_pushcfunction(L, RaceData_set_originalBloodMin);
-    lua_setfield(L, -2, "originalBloodMin");
-    lua_pushcfunction(L, RaceData_set_originalBloodMax);
-    lua_setfield(L, -2, "originalBloodMax");
-    lua_pushcfunction(L, RaceData_set_healRate);
-    lua_setfield(L, -2, "healRate");
-    lua_pushcfunction(L, RaceData_set_bleedRate);
-    lua_setfield(L, -2, "bleedRate");
-    lua_pushcfunction(L, RaceData_set_swimSpeed);
-    lua_setfield(L, -2, "swimSpeed");
-    lua_pushcfunction(L, RaceData_set_walkSpeed);
-    lua_setfield(L, -2, "walkSpeed");
-    lua_pushcfunction(L, RaceData_set_swimOffset);
-    lua_setfield(L, -2, "swimOffset");
-    lua_pushcfunction(L, RaceData_set_waterAvoidance);
-    lua_setfield(L, -2, "waterAvoidance");
-    lua_pushcfunction(L, RaceData_set_hungerRate);
-    lua_setfield(L, -2, "hungerRate");
-    lua_pushcfunction(L, RaceData_set_visionMultiplier);
-    lua_setfield(L, -2, "visionMultiplier");
-    lua_pushcfunction(L, RaceData_set_gigantic);
-    lua_setfield(L, -2, "gigantic");
-    lua_pushcfunction(L, RaceData_set_swims);
-    lua_setfield(L, -2, "swims");
-    lua_pushcfunction(L, RaceData_set_carriable);
-    lua_setfield(L, -2, "carriable");
-    lua_pushcfunction(L, RaceData_set_singleGender);
-    lua_setfield(L, -2, "singleGender");
-    lua_pushcfunction(L, RaceData_set_robot);
-    lua_setfield(L, -2, "robot");
-    lua_pushcfunction(L, RaceData_set_vampiric);
-    lua_setfield(L, -2, "vampiric");
-    lua_pushcfunction(L, RaceData_set_noHats);
-    lua_setfield(L, -2, "noHats");
-    lua_pushcfunction(L, RaceData_set_noShirts);
-    lua_setfield(L, -2, "noShirts");
-    lua_pushcfunction(L, RaceData_set_noShoes);
-    lua_setfield(L, -2, "noShoes");
-    lua_pushcfunction(L, RaceData_set_extraAttackSlots);
-    lua_setfield(L, -2, "extraAttackSlots");
-    lua_pushcfunction(L, RaceData_set_firstAidSkill);
-    lua_setfield(L, -2, "firstAidSkill");
-    lua_pushcfunction(L, RaceData_set_bloodColour);
-    lua_setfield(L, -2, "bloodColour");
-    lua_pushcfunction(L, RaceData_set_canGoIndoors);
-    lua_setfield(L, -2, "canGoIndoors");
-    lua_pushcfunction(L, RaceData_set_statMods);
-    lua_setfield(L, -2, "statMods");
-    lua_pushcfunction(L, RaceData_set_weatherImmunities);
-    lua_setfield(L, -2, "weatherImmunities");
-    lua_pushcfunction(L, RaceData_set_raceGroup);
-    lua_setfield(L, -2, "raceGroup");
+    registerSetter(L, "data", RaceData_set_data);
+    registerSetter(L, "runSpeedMaxSkill", RaceData_set_runSpeedMaxSkill);
+    registerSetter(L, "runSpeedMinSkill", RaceData_set_runSpeedMinSkill);
+    registerSetter(L, "originalBloodMin", RaceData_set_originalBloodMin);
+    registerSetter(L, "originalBloodMax", RaceData_set_originalBloodMax);
+    registerSetter(L, "healRate", RaceData_set_healRate);
+    registerSetter(L, "bleedRate", RaceData_set_bleedRate);
+    registerSetter(L, "swimSpeed", RaceData_set_swimSpeed);
+    registerSetter(L, "walkSpeed", RaceData_set_walkSpeed);
+    registerSetter(L, "swimOffset", RaceData_set_swimOffset);
+    registerSetter(L, "waterAvoidance", RaceData_set_waterAvoidance);
+    registerSetter(L, "hungerRate", RaceData_set_hungerRate);
+    registerSetter(L, "visionMultiplier", RaceData_set_visionMultiplier);
+    registerSetter(L, "gigantic", RaceData_set_gigantic);
+    registerSetter(L, "swims", RaceData_set_swims);
+    registerSetter(L, "carriable", RaceData_set_carriable);
+    registerSetter(L, "singleGender", RaceData_set_singleGender);
+    registerSetter(L, "robot", RaceData_set_robot);
+    registerSetter(L, "vampiric", RaceData_set_vampiric);
+    registerSetter(L, "noHats", RaceData_set_noHats);
+    registerSetter(L, "noShirts", RaceData_set_noShirts);
+    registerSetter(L, "noShoes", RaceData_set_noShoes);
+    registerSetter(L, "extraAttackSlots", RaceData_set_extraAttackSlots);
+    registerSetter(L, "firstAidSkill", RaceData_set_firstAidSkill);
+    registerSetter(L, "canGoIndoors", RaceData_set_canGoIndoors);
+        registerSetter(L, "bloodColour", RaceData_set_bloodColour);
+        registerSetter(L, "raceGroup", RaceData_set_raceGroup);
+        registerSetter(L, "specialFoods", RaceData_set_specialFoods);
+        registerSetter(L, "statMods", RaceData_set_statMods);
+        registerSetter(L, "weatherImmunities", RaceData_set_weatherImmunities);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

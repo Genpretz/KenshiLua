@@ -6,9 +6,7 @@
 namespace KenshiLua
 {
 
-typedef SensoryData::SpottingPeopleMgr::Spot Spot;
-
-static Spot* getB(lua_State* L, int idx)
+static Spot* getInstance(lua_State* L, int idx)
 {
     return checkObject<Spot>(L, idx, SpotBinding::getMetatableName());
 }
@@ -16,57 +14,61 @@ static Spot* getB(lua_State* L, int idx)
 // --- Getters for Spot ---
 static int Spot_get_timeSoFar(lua_State* L)
 {
-    Spot* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Spot is nil");
-    lua_pushnumber(L, b->timeSoFar);
+    Spot* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Spot is nil");
+    lua_pushnumber(L, instance->timeSoFar);
     return 1;
 }
 
 static int Spot_get_timeLimitMax(lua_State* L)
 {
-    Spot* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Spot is nil");
-    lua_pushnumber(L, b->timeLimitMax);
+    Spot* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Spot is nil");
+    lua_pushnumber(L, instance->timeLimitMax);
     return 1;
 }
 
 static int Spot_get_stillSeen(lua_State* L)
 {
-    Spot* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Spot is nil");
-    lua_pushboolean(L, b->stillSeen ? 1 : 0);
+    Spot* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Spot is nil");
+    lua_pushboolean(L, instance->stillSeen ? 1 : 0);
     return 1;
 }
 
 // --- Setters for Spot ---
 static int Spot_set_timeSoFar(lua_State* L)
 {
-    Spot* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Spot is nil");
-    b->timeSoFar = (float)luaL_checknumber(L, 2);
+    Spot* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Spot is nil");
+    instance->timeSoFar = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Spot_set_timeLimitMax(lua_State* L)
 {
-    Spot* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Spot is nil");
-    b->timeLimitMax = (float)luaL_checknumber(L, 2);
+    Spot* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Spot is nil");
+    instance->timeLimitMax = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int Spot_set_stillSeen(lua_State* L)
 {
-    Spot* b = getB(L, 1);
-    if (!b) return luaL_error(L, "Spot is nil");
-    b->stillSeen = lua_toboolean(L, 2) != 0;
+    Spot* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Spot is nil");
+    instance->stillSeen = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 175: Spot* _CONSTRUCTOR(...) - unsupported return type
-*/
+int SpotBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Spot* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Spot is nil");
+
+    Spot* result = instance->_CONSTRUCTOR();
+    return pushObject<Spot>(L, result, SpotBinding::getMetatableName());
+}
 
 int SpotBinding::gc(lua_State* L)
 {
@@ -89,6 +91,7 @@ void SpotBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", SpotBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 
@@ -103,21 +106,15 @@ void SpotBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, SpotBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, Spot_get_timeSoFar);
-    lua_setfield(L, -2, "timeSoFar");
-    lua_pushcfunction(L, Spot_get_timeLimitMax);
-    lua_setfield(L, -2, "timeLimitMax");
-    lua_pushcfunction(L, Spot_get_stillSeen);
-    lua_setfield(L, -2, "stillSeen");
+    registerGetter(L, "timeSoFar", Spot_get_timeSoFar);
+    registerGetter(L, "timeLimitMax", Spot_get_timeLimitMax);
+    registerGetter(L, "stillSeen", Spot_get_stillSeen);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, Spot_set_timeSoFar);
-    lua_setfield(L, -2, "timeSoFar");
-    lua_pushcfunction(L, Spot_set_timeLimitMax);
-    lua_setfield(L, -2, "timeLimitMax");
-    lua_pushcfunction(L, Spot_set_stillSeen);
-    lua_setfield(L, -2, "stillSeen");
+    registerSetter(L, "timeSoFar", Spot_set_timeSoFar);
+    registerSetter(L, "timeLimitMax", Spot_set_timeLimitMax);
+    registerSetter(L, "stillSeen", Spot_set_stillSeen);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

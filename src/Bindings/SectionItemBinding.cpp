@@ -1,16 +1,14 @@
 #include "pch.h"
 #include "kenshi\Inventory.h"
 #include "SectionItemBinding.h"
-#include "ItemBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/ItemBinding.h"
+#include "ItemBinding.h"
 
 namespace KenshiLua
 {
 
-typedef InventorySection::SectionItem SectionItem;
-
-static SectionItem* getB(lua_State* L, int idx)
+static SectionItem* getInstance(lua_State* L, int idx)
 {
     return checkObject<SectionItem>(L, idx, SectionItemBinding::getMetatableName());
 }
@@ -18,80 +16,81 @@ static SectionItem* getB(lua_State* L, int idx)
 // --- Getters for SectionItem ---
 static int SectionItem_get_item(lua_State* L)
 {
-    SectionItem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SectionItem is nil");
-    return pushObject<Item>(L, b->item, ItemBinding::getMetatableName());
+    SectionItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SectionItem is nil");
+    return pushObject<Item>(L, instance->item, ItemBinding::getMetatableName());
 }
 
 static int SectionItem_get_x(lua_State* L)
 {
-    SectionItem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SectionItem is nil");
-    lua_pushinteger(L, b->x);
+    SectionItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SectionItem is nil");
+    lua_pushinteger(L, instance->x);
     return 1;
 }
 
 static int SectionItem_get_y(lua_State* L)
 {
-    SectionItem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SectionItem is nil");
-    lua_pushinteger(L, b->y);
+    SectionItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SectionItem is nil");
+    lua_pushinteger(L, instance->y);
     return 1;
 }
 
 static int SectionItem_get_w(lua_State* L)
 {
-    SectionItem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SectionItem is nil");
-    lua_pushinteger(L, b->w);
+    SectionItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SectionItem is nil");
+    lua_pushinteger(L, instance->w);
     return 1;
 }
 
 static int SectionItem_get_h(lua_State* L)
 {
-    SectionItem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SectionItem is nil");
-    lua_pushinteger(L, b->h);
+    SectionItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SectionItem is nil");
+    lua_pushinteger(L, instance->h);
     return 1;
 }
 
 // --- Setters for SectionItem ---
 static int SectionItem_set_item(lua_State* L)
 {
-    SectionItem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SectionItem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for item");
+    SectionItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SectionItem is nil");
+    instance->item = lua_isnoneornil(L, 2) ? nullptr : checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    return 0;
 }
 
 static int SectionItem_set_x(lua_State* L)
 {
-    SectionItem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SectionItem is nil");
-    b->x = (unsigned short)luaL_checkinteger(L, 2);
+    SectionItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SectionItem is nil");
+    instance->x = (unsigned short)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int SectionItem_set_y(lua_State* L)
 {
-    SectionItem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SectionItem is nil");
-    b->y = (unsigned short)luaL_checkinteger(L, 2);
+    SectionItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SectionItem is nil");
+    instance->y = (unsigned short)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int SectionItem_set_w(lua_State* L)
 {
-    SectionItem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SectionItem is nil");
-    b->w = (unsigned short)luaL_checkinteger(L, 2);
+    SectionItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SectionItem is nil");
+    instance->w = (unsigned short)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int SectionItem_set_h(lua_State* L)
 {
-    SectionItem* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SectionItem is nil");
-    b->h = (unsigned short)luaL_checkinteger(L, 2);
+    SectionItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SectionItem is nil");
+    instance->h = (unsigned short)luaL_checkinteger(L, 2);
     return 0;
 }
 
@@ -132,29 +131,19 @@ void SectionItemBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, SectionItemBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, SectionItem_get_item);
-    lua_setfield(L, -2, "item");
-    lua_pushcfunction(L, SectionItem_get_x);
-    lua_setfield(L, -2, "x");
-    lua_pushcfunction(L, SectionItem_get_y);
-    lua_setfield(L, -2, "y");
-    lua_pushcfunction(L, SectionItem_get_w);
-    lua_setfield(L, -2, "w");
-    lua_pushcfunction(L, SectionItem_get_h);
-    lua_setfield(L, -2, "h");
+    registerGetter(L, "item", SectionItem_get_item);
+    registerGetter(L, "x", SectionItem_get_x);
+    registerGetter(L, "y", SectionItem_get_y);
+    registerGetter(L, "w", SectionItem_get_w);
+    registerGetter(L, "h", SectionItem_get_h);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, SectionItem_set_item);
-    lua_setfield(L, -2, "item");
-    lua_pushcfunction(L, SectionItem_set_x);
-    lua_setfield(L, -2, "x");
-    lua_pushcfunction(L, SectionItem_set_y);
-    lua_setfield(L, -2, "y");
-    lua_pushcfunction(L, SectionItem_set_w);
-    lua_setfield(L, -2, "w");
-    lua_pushcfunction(L, SectionItem_set_h);
-    lua_setfield(L, -2, "h");
+    registerSetter(L, "item", SectionItem_set_item);
+    registerSetter(L, "x", SectionItem_set_x);
+    registerSetter(L, "y", SectionItem_set_y);
+    registerSetter(L, "w", SectionItem_set_w);
+    registerSetter(L, "h", SectionItem_set_h);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

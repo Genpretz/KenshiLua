@@ -1,11 +1,11 @@
 #include "pch.h"
-#include <kenshi/ZoneManager.h>
+#include "kenshi\ZoneManager.h"
 #include "StateTBinding.h"
 #include "Lua/BindingHelpers.h"
+#include <kenshi/ZoneManager.h>
 
 namespace KenshiLua
 {
-    typedef ZoneMap::StateT StateT;
 
 static StateT* getInstance(lua_State* L, int idx)
 {
@@ -52,8 +52,7 @@ int StateTBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "StateT is nil");
 
     StateT* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<StateT>(L, result, StateTBinding::getMetatableName());
 }
 
 int StateTBinding::gc(lua_State* L)
@@ -92,17 +91,13 @@ void StateTBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, StateTBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, StateT_get__zoneBeingLoaded);
-    lua_setfield(L, -2, "_zoneBeingLoaded");
-    lua_pushcfunction(L, StateT_get__zoneIsLoaded);
-    lua_setfield(L, -2, "_zoneIsLoaded");
+    registerGetter(L, "_zoneBeingLoaded", StateT_get__zoneBeingLoaded);
+    registerGetter(L, "_zoneIsLoaded", StateT_get__zoneIsLoaded);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, StateT_set__zoneBeingLoaded);
-    lua_setfield(L, -2, "_zoneBeingLoaded");
-    lua_pushcfunction(L, StateT_set__zoneIsLoaded);
-    lua_setfield(L, -2, "_zoneIsLoaded");
+    registerSetter(L, "_zoneBeingLoaded", StateT_set__zoneBeingLoaded);
+    registerSetter(L, "_zoneIsLoaded", StateT_set__zoneIsLoaded);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
