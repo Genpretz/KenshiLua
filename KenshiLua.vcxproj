@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -58,7 +58,7 @@
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
     <SourcePath>$(SolutionDir)src;$(SourcePath)</SourcePath>
     <TargetName>KenshiLua</TargetName>
-    <OutDir>$(SolutionDir)bin\KenshiLua\</OutDir>
+    <OutDir>$(SolutionDir)bin\KenshiLua\plugin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
@@ -140,7 +140,14 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
-    <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>xcopy /Y /S "$(ProjectDir)assets\gui\*" "$(OutDir)..\gui\"
+copy /Y "$(ProjectDir)assets\config\fcs.def" "$(OutDir)..\"
+copy /Y "$(ProjectDir)assets\config\config.ini" "$(OutDir)"
+copy /Y "$(ProjectDir)assets\config\RE_Kenshi.json" "$(OutDir)..\"
+copy /Y "$(ProjectDir)assets\KenshiLua.mod" "$(OutDir)..\"
+copy /Y "$(ProjectDir)extern\luajit\lib\lua51.dll" "$(OutDir)..\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="extern\kenshilib\Include\ogre\Animation\OgreBone.h" />
@@ -869,7 +876,7 @@
     <ClInclude Include="src\Bindings\TextureArrayLoadDataBinding.h" />
     <ClInclude Include="src\Bindings\TextureLoadDataBinding.h" />
     <ClInclude Include="src\Bindings\UniqueSpawnDataBinding.h" />
-  </ItemGroup>
+  <ClInclude Include="src\Bindings\Gui\BaseLayoutBinding.h" /></ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Bindings\AbstractMovementBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\ActivePlatoonBinding.cpp" />
@@ -1182,7 +1189,7 @@
     <ClCompile Include="src\Bindings\TextureArrayLoadDataBinding.cpp" />
     <ClCompile Include="src\Bindings\TextureLoadDataBinding.cpp" />
     <ClCompile Include="src\Bindings\UniqueSpawnDataBinding.cpp" />
-  </ItemGroup>
+  <ClCompile Include="src\Bindings\Gui\BaseLayoutBinding.cpp" /></ItemGroup>
   <ItemGroup>
     <None Include="extern\kenshilib\Include\ogre\Animation\OgreBone.inl" />
     <None Include="extern\kenshilib\Include\ogre\Math\Array\NEON\Single\OgreArrayAabb.inl" />
