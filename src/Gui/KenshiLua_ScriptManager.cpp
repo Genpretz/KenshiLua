@@ -127,7 +127,7 @@ namespace KenshiLua
 		mScriptManager_ScriptListMultiList->removeAllItems();
 		m_filteredIndices.clear();
 
-		std::string filterStr = mScriptManager_FilterEditEditBox ? mScriptManager_FilterEditEditBox->getCaption().asUTF8() : "";
+		std::string filterStr = mScriptManager_FilterEditEditBox ? mScriptManager_FilterEditEditBox->getOnlyText().asUTF8() : "";
 		std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), ::tolower);
 
 		for (size_t i = 0; i < m_scripts.size(); ++i)

@@ -175,6 +175,23 @@ namespace KenshiLua
 
             return GetSaveFileNameA(&ofn) ? std::string(filename) : "";
         }
+
+		std::string EscapeMyGuiColourTags(const std::string& text)
+		{
+			// MyGUI parses "#rrggbb" as an inline colour tag in any caption, including
+			// ones set programmatically. "##" is MyGUI's own escape for a literal '#',
+			// so double every '#' before handing loaded file content to setCaption().
+			std::string out;
+			out.reserve(text.size());
+			for (size_t i = 0; i < text.size(); ++i)
+			{
+				out += text[i];
+				if (text[i] == '#')
+					out += '#';
+			}
+			return out;
+		}
+
     } // namespace GuiHelpers
 
 	// ---------------------------------------------------------------------------

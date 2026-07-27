@@ -49,6 +49,8 @@ namespace KenshiLua
             const std::string& defaultExt,
             const std::string& defaultFilename = "",
             const std::string& currentPath = "");
+
+		std::string EscapeMyGuiColourTags(const std::string& text);
     } // namespace GuiHelpers
 
     class LuaState;

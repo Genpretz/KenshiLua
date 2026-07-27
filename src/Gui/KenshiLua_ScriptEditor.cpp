@@ -209,7 +209,8 @@ namespace KenshiLua
 		if (!mScriptEditor_OutputBoxEditBox)
 			return;
 
-		mScriptEditor_OutputBoxEditBox->addText(MyGUI::UString(text));
+		// mScriptEditor_OutputBoxEditBox->addText(MyGUI::UString(text));
+		mScriptEditor_OutputBoxEditBox->addText(MyGUI::UString(GuiHelpers::EscapeMyGuiColourTags(text)));
 		size_t length = mScriptEditor_OutputBoxEditBox->getTextLength();
 		mScriptEditor_OutputBoxEditBox->setTextCursor(length);
 		updateOutputGutter();
@@ -249,7 +250,7 @@ namespace KenshiLua
 		if (!mScriptEditor_InputBoxEditBox)
 			return;
 
-		std::string code = mScriptEditor_InputBoxEditBox->getCaption().asUTF8();
+		std::string code = mScriptEditor_InputBoxEditBox->getOnlyText().asUTF8();
 
 		if (code.empty())
 		{
@@ -344,7 +345,8 @@ namespace KenshiLua
 		std::ostringstream ss;
 		ss << f.rdbuf();
 
-		mScriptEditor_InputBoxEditBox->setCaption(MyGUI::UString(ss.str()));
+		//mScriptEditor_InputBoxEditBox->setCaption(MyGUI::UString(ss.str()));
+		mScriptEditor_InputBoxEditBox->setCaption(MyGUI::UString(GuiHelpers::EscapeMyGuiColourTags(ss.str())));
 		m_currentFilePath = path;
 
 		updateInputGutter();
@@ -398,7 +400,7 @@ namespace KenshiLua
 			return false;
 		}
 
-		f << mScriptEditor_InputBoxEditBox->getCaption().asUTF8();
+		f << mScriptEditor_InputBoxEditBox->getOnlyText().asUTF8();
 		m_currentFilePath = path;
 
 		appendOutput("Saved: " + path + "\n");

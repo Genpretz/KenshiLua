@@ -62,7 +62,7 @@ namespace KenshiLua
 		if (!mConsole_OutputBoxEditBox)
 			return;
 
-		mConsole_OutputBoxEditBox->addText(MyGUI::UString(text));
+		mConsole_OutputBoxEditBox->addText(MyGUI::UString(GuiHelpers::EscapeMyGuiColourTags(text)));
 		size_t length = mConsole_OutputBoxEditBox->getTextLength();
 		mConsole_OutputBoxEditBox->setTextCursor(length);
 	}
@@ -110,7 +110,7 @@ namespace KenshiLua
 		if (!mConsole_InputBoxEditBox)
 			return;
 
-		std::string code = mConsole_InputBoxEditBox->getCaption().asUTF8();
+		std::string code = mConsole_InputBoxEditBox->getOnlyText().asUTF8();
 		if (code.empty())
 			return;
 

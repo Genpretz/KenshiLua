@@ -65,7 +65,7 @@ namespace KenshiLua
 		std::vector<std::string> lines;
 		Logger::get().snapshot(lines);
 
-		std::string filterStr = mLogViewer_FilterBoxEditBox ? mLogViewer_FilterBoxEditBox->getCaption().asUTF8() : "";
+		std::string filterStr = mLogViewer_FilterBoxEditBox ? mLogViewer_FilterBoxEditBox->getOnlyText().asUTF8() : "";
 		std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), ::tolower);
 
 		std::string outputText;
@@ -81,7 +81,7 @@ namespace KenshiLua
 			outputText += lines[i] + "\n";
 		}
 
-		mLogViewer_OutputBoxEditBox->setCaption(MyGUI::UString(outputText));
+		mLogViewer_OutputBoxEditBox->setOnlyText(MyGUI::UString(outputText));
 
 		// Scroll to bottom
 		size_t length = mLogViewer_OutputBoxEditBox->getTextLength();
@@ -110,7 +110,7 @@ namespace KenshiLua
 			return;
 		}
 
-		f << mLogViewer_OutputBoxEditBox->getCaption().asUTF8();
+		f << mLogViewer_OutputBoxEditBox->getOnlyText().asUTF8();
 		logToFile("LogViewer: Saved copy of the log to: " + path);
 	}
 
