@@ -184,8 +184,15 @@ namespace KenshiLua
             K key = LuaCodec<K>::read(L, 2, keyMetaName);
             auto it = m->find(key);
             if (it == m->end()) { lua_pushnil(L); return 1; }
-            LuaCodec<V>::push(L, it->second, valMetaName);
-            return 1;
+            if (valMetaName)
+            {
+                return pushObject<V>(L, &it->second, valMetaName);
+            }
+            else
+            {
+                LuaCodec<V>::push(L, it->second, nullptr);
+                return 1;
+            }
         }
 
         static int newindex(lua_State* L)
@@ -201,7 +208,18 @@ namespace KenshiLua
                 return 0;
             }
 
-            V val = LuaCodec<V>::read(L, 3, valMetaName);
+            V val;
+            if (valMetaName)
+            {
+                V* ptr = checkObject<V>(L, 3, valMetaName);
+                if (!ptr) return luaL_error(L, "map: expected valid object for assignment");
+                val = *ptr;
+            }
+            else
+            {
+                val = LuaCodec<V>::read(L, 3, nullptr);
+            }
+
             (*m)[key] = val;
             return 0;
         }
@@ -246,7 +264,14 @@ namespace KenshiLua
             for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
             {
                 LuaCodec<K>::push(L, it->first, keyMetaName);
-                LuaCodec<V>::push(L, it->second, valMetaName);
+                if (valMetaName)
+                {
+                    pushObject<V>(L, const_cast<V*>(&it->second), valMetaName);
+                }
+                else
+                {
+                    LuaCodec<V>::push(L, it->second, nullptr);
+                }
                 lua_settable(L, -3);
             }
             return 1;
