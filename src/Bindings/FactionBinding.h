@@ -89,5 +89,6 @@ public:
     static int spawnSquadMissionsUpdate(lua_State* L);
     static int _spawnASquad(lua_State* L);
     static int getFundamentalNPCType(lua_State* L);
+
 };
 }

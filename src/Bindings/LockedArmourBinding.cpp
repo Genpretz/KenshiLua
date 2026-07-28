@@ -205,7 +205,8 @@ void LockedArmourBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Armour
-    setMetatableParent(L, LockedArmourBinding::getMetatableName(), ArmourBinding::getMetatableName());
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, LockedArmourBinding::getMetatableName(), ArmourBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

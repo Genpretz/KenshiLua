@@ -347,7 +347,8 @@ void GearBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Item
-    setMetatableParent(L, GearBinding::getMetatableName(), ItemBinding::getMetatableName());
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, GearBinding::getMetatableName(), ItemBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

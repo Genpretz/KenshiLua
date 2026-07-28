@@ -1203,7 +1203,8 @@ void ActivePlatoonBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to RootObjectContainer
-    setMetatableParent(L, ActivePlatoonBinding::getMetatableName(), RootObjectContainerBinding::getMetatableName());
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, ActivePlatoonBinding::getMetatableName(), RootObjectContainerBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

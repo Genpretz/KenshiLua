@@ -1,121 +1,113 @@
 #include "pch.h"
-#include "kenshi\Faction.h"
+#include "kenshi\faction.h"
 #include "BuildingSwapsBinding.h"
-#include "GameDataBinding.h"
-#include <kenshi/GameData.h>
+#include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Bindings/FitnessSelectorBinding.h"
-#include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
 
-static Faction::BuildingSwaps* getB(lua_State* L, int idx)
+typedef Faction::BuildingSwaps BuildingSwaps;
+
+static BuildingSwaps* getInstance(lua_State* L, int idx)
 {
-    return checkObject<Faction::BuildingSwaps>(L, idx, BuildingSwapsBinding::getMetatableName());
+    return checkObject<BuildingSwaps>(L, idx, BuildingSwapsBinding::getMetatableName());
 }
 
 // --- Getters for BuildingSwaps ---
 static int BuildingSwaps_get_toReplace(lua_State* L)
 {
-    Faction::BuildingSwaps* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BuildingSwaps is nil");
-    return pushObject<ogre_unordered_set<GameData*>::type>(L, &b->toReplace, OgreUnorderedSetBinding<GameData*>::metaName);
+    Faction::BuildingSwaps* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
+    return pushObject<ogre_unordered_set<GameData*>::type>(L, &instance->toReplace, OgreUnorderedSetBinding<GameData*>::metaName);
 }
 
 static int BuildingSwaps_get_replaceWith(lua_State* L)
 {
-    Faction::BuildingSwaps* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BuildingSwaps is nil");
-    return pushObject<FitnessSelector<GameData*>>(L, &b->replaceWith, FitnessSelectorBinding<GameData*>::metaName);
+    Faction::BuildingSwaps* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
+    return pushObject<FitnessSelector<GameData*>>(L, &instance->replaceWith, FitnessSelectorBinding<GameData*>::metaName);
 }
 
 // --- Setters for BuildingSwaps ---
 static int BuildingSwaps_set_toReplace(lua_State* L)
 {
-    Faction::BuildingSwaps* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BuildingSwaps is nil");
+    Faction::BuildingSwaps* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
     ogre_unordered_set<GameData*>::type* val = OgreUnorderedSetBinding<GameData*>::get(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_unordered_set<GameData*>");
-    b->toReplace = *val;
+    instance->toReplace = *val;
     return 0;
 }
 
 static int BuildingSwaps_set_replaceWith(lua_State* L)
 {
-    Faction::BuildingSwaps* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BuildingSwaps is nil");
+    Faction::BuildingSwaps* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
     FitnessSelector<GameData*>* val = FitnessSelectorBinding<GameData*>::get(L, 2);
     if (!val) return luaL_error(L, "Expected FitnessSelector_GameData");
-    b->replaceWith = *val;
+    instance->replaceWith = *val;
     return 0;
-}
-
-int BuildingSwapsBinding::_DESTRUCTOR(lua_State* L)
-{
-    Faction::BuildingSwaps* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BuildingSwaps is nil");
-
-    b->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 47: Faction::BuildingSwaps& operator=(...) - operator
-*/
-
-int BuildingSwapsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Faction::BuildingSwaps* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BuildingSwaps is nil");
-
-    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2))
-    {
-        GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-        if (!data) return luaL_error(L, "Expected GameData object for constructor");
-        Faction::BuildingSwaps* result = b->_CONSTRUCTOR(data);
-        return pushObject<Faction::BuildingSwaps>(L, result, BuildingSwapsBinding::getMetatableName());
-    }
-    else
-    {
-        Faction::BuildingSwaps* result = b->_CONSTRUCTOR();
-        return pushObject<Faction::BuildingSwaps>(L, result, BuildingSwapsBinding::getMetatableName());
-    }
 }
 
 int BuildingSwapsBinding::hasReplacement(lua_State* L)
 {
-    Faction::BuildingSwaps* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BuildingSwaps is nil");
+    BuildingSwaps* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
 
     GameData* building = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    if (!building) return luaL_error(L, "Expected GameData object");
-
-    bool result = b->hasReplacement(building);
+    bool result = instance->hasReplacement(building);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BuildingSwapsBinding::getReplacement(lua_State* L)
 {
-    Faction::BuildingSwaps* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BuildingSwaps is nil");
+    BuildingSwaps* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
 
     GameData* building = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    if (!building) return luaL_error(L, "Expected GameData object");
 
-    GameData* result = b->getReplacement(building);
-    if (!result)
+    return pushObject<GameData>(
+        L,
+        instance->getReplacement(building),
+        GameDataBinding::getMetatableName());
+}
+
+int BuildingSwapsBinding::_DESTRUCTOR(lua_State* L)
+{
+    BuildingSwaps* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
+
+    instance->_DESTRUCTOR();
+    return 0;
+}
+
+int BuildingSwapsBinding::_CONSTRUCTOR(lua_State* L)
+{
+    Faction::BuildingSwaps* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
+
+    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2))
     {
-        lua_pushnil(L);
+        GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+        if (!data) return luaL_error(L, "Expected GameData object for constructor");
+        Faction::BuildingSwaps* result = instance->_CONSTRUCTOR(data);
+        return pushObject<Faction::BuildingSwaps>(L, result, BuildingSwapsBinding::getMetatableName());
     }
     else
     {
-        pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+        Faction::BuildingSwaps* result = instance->_CONSTRUCTOR();
+        return pushObject<Faction::BuildingSwaps>(L, result, BuildingSwapsBinding::getMetatableName());
     }
-    return 1;
 }
+
+/*
+Skipped methods needing manual binding:
+  line 47: Faction::BuildingSwaps& operator=(...) - operator
+*/
 
 int BuildingSwapsBinding::gc(lua_State* L)
 {
@@ -138,10 +130,9 @@ void BuildingSwapsBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", BuildingSwapsBinding::_DESTRUCTOR },
-        { "_CONSTRUCTOR", BuildingSwapsBinding::_CONSTRUCTOR },
         { "hasReplacement", BuildingSwapsBinding::hasReplacement },
         { "getReplacement", BuildingSwapsBinding::getReplacement },
+        { "_DESTRUCTOR", BuildingSwapsBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 
@@ -156,17 +147,13 @@ void BuildingSwapsBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, BuildingSwapsBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, BuildingSwaps_get_toReplace);
-    lua_setfield(L, -2, "toReplace");
-    lua_pushcfunction(L, BuildingSwaps_get_replaceWith);
-    lua_setfield(L, -2, "replaceWith");
+    registerGetter(L, "toReplace", BuildingSwaps_get_toReplace);
+    registerGetter(L, "replaceWith", BuildingSwaps_get_replaceWith);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, BuildingSwaps_set_toReplace);
-    lua_setfield(L, -2, "toReplace");
-    lua_pushcfunction(L, BuildingSwaps_set_replaceWith);
-    lua_setfield(L, -2, "replaceWith");
+    registerSetter(L, "toReplace", BuildingSwaps_set_toReplace);
+    registerSetter(L, "replaceWith", BuildingSwaps_set_replaceWith);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

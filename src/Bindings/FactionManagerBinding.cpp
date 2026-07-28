@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "kenshi\Faction.h"
+#include "kenshi\faction.h"
 #include "FactionManagerBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/FactionBinding.h"
+#include "Bindings/PlatoonBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataContainerBinding.h"
-#include "Bindings/PlatoonBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
@@ -18,13 +18,13 @@ static FactionManager* getInstance(lua_State* L, int idx)
 }
 
 // --- Getters for FactionManager ---
-static int FactionManager_get_addListMuto(lua_State* L)
-{
-    FactionManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionManager is nil");
-    lua_pushlightuserdata(L, (void*)&instance->addListMuto);
-    return 1;
-}
+// static int FactionManager_get_addListMuto(lua_State* L)
+// {
+//     FactionManager* instance = getInstance(L, 1);
+//     if (!instance) return luaL_error(L, "FactionManager is nil");
+//     lua_pushinteger(L, (lua_Integer)instance->addListMuto);
+//     return 1;
+// }
 
 static int FactionManager_get_participants(lua_State* L)
 {
@@ -40,13 +40,15 @@ static int FactionManager_get_toAddList(lua_State* L)
     return pushObject<lektor<Platoon*>>(L, &instance->toAddList, LektorPtrBinding<Platoon*>::metaName);
 }
 
+
 // --- Setters for FactionManager ---
-static int FactionManager_set_addListMuto(lua_State* L)
-{
-    FactionManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionManager is nil");
-    return luaL_error(L, "addListMuto (boost::shared_mutex) is read-only");
-}
+// static int FactionManager_set_addListMuto(lua_State* L)
+// {
+//     FactionManager* instance = getInstance(L, 1);
+//     if (!instance) return luaL_error(L, "FactionManager is nil");
+//     instance->addListMuto = (boost::shared_mutex)luaL_checkinteger(L, 2);
+//     return 0;
+// }
 
 static int FactionManager_set_participants(lua_State* L)
 {
@@ -251,8 +253,8 @@ int FactionManagerBinding::getAllFactions(lua_State* L)
     if (!instance) return luaL_error(L, "FactionManager is nil");
 
     const lektor<Faction*>* result = instance->getAllFactions();
-    if (!result) { lua_pushnil(L); return 1; }
-    return pushObject<lektor<Faction*>>(L, const_cast<lektor<Faction*>*>(result), LektorPtrBinding<Faction*>::metaName);
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
 }
 
 int FactionManagerBinding::_DESTRUCTOR(lua_State* L)
@@ -263,6 +265,11 @@ int FactionManagerBinding::_DESTRUCTOR(lua_State* L)
     instance->_DESTRUCTOR();
     return 0;
 }
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - FactionManagerBinding::getAllFactions: const lektor<Faction*>* (unbound pointer)
+*/
 
 int FactionManagerBinding::gc(lua_State* L)
 {
@@ -318,22 +325,19 @@ void FactionManagerBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FactionManagerBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FactionManager_get_addListMuto);
-    lua_setfield(L, -2, "addListMuto");
-    lua_pushcfunction(L, FactionManager_get_participants);
-    lua_setfield(L, -2, "participants");
-    lua_pushcfunction(L, FactionManager_get_toAddList);
-    lua_setfield(L, -2, "toAddList");
+    //registerGetter(L, "addListMuto", FactionManager_get_addListMuto);
+    registerGetter(L, "participants", FactionManager_get_participants);
+    registerGetter(L, "toAddList", FactionManager_get_toAddList);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FactionManager_set_addListMuto);
-    lua_setfield(L, -2, "addListMuto");
-    lua_pushcfunction(L, FactionManager_set_participants);
-    lua_setfield(L, -2, "participants");
-    lua_pushcfunction(L, FactionManager_set_toAddList);
-    lua_setfield(L, -2, "toAddList");
+    //registerSetter(L, "addListMuto", FactionManager_set_addListMuto);
+    registerSetter(L, "participants", FactionManager_set_participants);
+    registerSetter(L, "toAddList", FactionManager_set_toAddList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to Ogre::GeneralAllocatedObject
+    // setMetatableParent(L, FactionManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

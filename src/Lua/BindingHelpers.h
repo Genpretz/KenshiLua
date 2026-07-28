@@ -18,6 +18,7 @@ extern "C" {
 
 namespace KenshiLua
 {
+    void logToFileWarn(const std::string& message);
 
 
     template <class T>
@@ -457,6 +458,7 @@ namespace KenshiLua
             luaL_getmetatable(L, parentMeta);
             if (!lua_istable(L, -1)) {
                 // Parent metatable doesn't exist, log a warning or return safely
+                KenshiLua::logToFileWarn(std::string("[BindingHelpers] setMetatableParent: parent '") + parentMeta + "' not found for child '" + childMeta + "'");
                 lua_pop(L, 2); // pop child metatable and nil parent metatable
                 return;
             }

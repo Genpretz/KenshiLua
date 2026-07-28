@@ -507,7 +507,9 @@ namespace KenshiLua
         setEnum(L, "T_TARGET_WITH_RACE", T_TARGET_WITH_RACE);
         setEnum(L, "TARGET_WITH_RACE", T_TARGET_WITH_RACE);
 
+        lua_pushvalue(L, -1);
 		lua_setglobal(L, "Talker");
+        lua_setglobal(L, "TalkerEnum");
     }
 
     void registerDialogueAction(lua_State* L)

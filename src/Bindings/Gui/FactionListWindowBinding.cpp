@@ -95,7 +95,8 @@ void FactionListWindowBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to LevelEditor::GamedataSelectionList
-    setMetatableParent(L, FactionListWindowBinding::getMetatableName(), KenshiLua::GamedataSelectionListBinding::getMetatableName());
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, FactionListWindowBinding::getMetatableName(), KenshiLua::GamedataSelectionListBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

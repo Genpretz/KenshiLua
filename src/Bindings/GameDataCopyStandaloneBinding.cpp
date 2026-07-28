@@ -2,30 +2,35 @@
 #include "kenshi\GameData.h"
 #include "GameDataCopyStandaloneBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {
 
-static GameDataCopyStandalone* getB(lua_State* L, int idx)
+static GameDataCopyStandalone* getInstance(lua_State* L, int idx)
 {
     return checkObject<GameDataCopyStandalone>(L, idx, GameDataCopyStandaloneBinding::getMetatableName());
 }
 
 // --- Getters for GameDataCopyStandalone ---
 // --- Setters for GameDataCopyStandalone ---
-int GameDataCopyStandaloneBinding::_DESTRUCTOR(lua_State* L)
+int GameDataCopyStandaloneBinding::_CONSTRUCTOR(lua_State* L)
 {
-    GameDataCopyStandalone* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataCopyStandalone is nil");
+    GameDataCopyStandalone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataCopyStandalone is nil");
 
-    b->_DESTRUCTOR();
-    return 0;
+    GameDataCopyStandalone* result = instance->_CONSTRUCTOR();
+    return pushObject<GameDataCopyStandalone>(L, result, GameDataCopyStandaloneBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 213: GameDataCopyStandalone* _CONSTRUCTOR(...) - unsupported return type
-*/
+int GameDataCopyStandaloneBinding::_DESTRUCTOR(lua_State* L)
+{
+    GameDataCopyStandalone* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataCopyStandalone is nil");
+
+    instance->_DESTRUCTOR();
+    return 0;
+}
 
 int GameDataCopyStandaloneBinding::gc(lua_State* L)
 {
@@ -48,6 +53,7 @@ void GameDataCopyStandaloneBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", GameDataCopyStandaloneBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", GameDataCopyStandaloneBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -67,6 +73,9 @@ void GameDataCopyStandaloneBinding::registerBinding(lua_State* L)
 
     lua_newtable(L); // Create __setters table
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to GameData
+    // setMetatableParent(L, GameDataCopyStandaloneBinding::getMetatableName(), GameDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

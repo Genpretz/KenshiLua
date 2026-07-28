@@ -1,67 +1,69 @@
 #include "pch.h"
-#include "kenshi\Appearance.h"
+#include "kenshi\appearance.h"
 #include "AppearanceAnimalBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/AppearanceBaseBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/GameDataCopyStandaloneBinding.h"
 
 namespace KenshiLua
 {
 
-static AppearanceAnimal* getB(lua_State* L, int idx)
+static AppearanceAnimal* getInstance(lua_State* L, int idx)
 {
     return checkObject<AppearanceAnimal>(L, idx, AppearanceAnimalBinding::getMetatableName());
 }
 
 // --- Getters for AppearanceAnimal ---
 // --- Setters for AppearanceAnimal ---
-// --- Methods for AppearanceAnimal ---
 int AppearanceAnimalBinding::_DESTRUCTOR(lua_State* L)
 {
-    AppearanceAnimal* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AppearanceAnimal is nil");
+    AppearanceAnimal* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceAnimal is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 int AppearanceAnimalBinding::createBody(lua_State* L)
 {
-    AppearanceAnimal* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AppearanceAnimal is nil");
+    AppearanceAnimal* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceAnimal is nil");
 
-    b->createBody();
+    instance->createBody();
     return 0;
 }
 
 int AppearanceAnimalBinding::_NV_createBody(lua_State* L)
 {
-    AppearanceAnimal* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AppearanceAnimal is nil");
+    AppearanceAnimal* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceAnimal is nil");
 
-    b->_NV_createBody();
+    instance->_NV_createBody();
     return 0;
 }
 
 int AppearanceAnimalBinding::updateCharaterTexture(lua_State* L)
 {
-    AppearanceAnimal* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AppearanceAnimal is nil");
+    AppearanceAnimal* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceAnimal is nil");
 
-    b->updateCharaterTexture();
+    instance->updateCharaterTexture();
     return 0;
 }
 
 int AppearanceAnimalBinding::_NV_updateCharaterTexture(lua_State* L)
 {
-    AppearanceAnimal* b = getB(L, 1);
-    if (!b) return luaL_error(L, "AppearanceAnimal is nil");
+    AppearanceAnimal* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceAnimal is nil");
 
-    b->_NV_updateCharaterTexture();
+    instance->_NV_updateCharaterTexture();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 252: AppearanceAnimal* _CONSTRUCTOR(...) - unsupported return type
+  line 252: AppearanceAnimal* _CONSTRUCTOR(...) - unsupported arg type
 */
 
 int AppearanceAnimalBinding::gc(lua_State* L)
@@ -108,6 +110,10 @@ void AppearanceAnimalBinding::registerBinding(lua_State* L)
 
     lua_newtable(L); // Create __setters table
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to AppearanceBase
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, AppearanceAnimalBinding::getMetatableName(), AppearanceBaseBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

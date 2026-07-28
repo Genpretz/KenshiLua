@@ -6,7 +6,7 @@
 namespace KenshiLua
 {
 
-static GameDataHeader* getB(lua_State* L, int idx)
+static GameDataHeader* getInstance(lua_State* L, int idx)
 {
     return checkObject<GameDataHeader>(L, idx, GameDataHeaderBinding::getMetatableName());
 }
@@ -14,105 +14,75 @@ static GameDataHeader* getB(lua_State* L, int idx)
 // --- Getters for GameDataHeader ---
 static int GameDataHeader_get_name(lua_State* L)
 {
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    lua_pushstring(L, b->name.c_str());
+    GameDataHeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataHeader is nil");
+    lua_pushstring(L, instance->name.c_str());
     return 1;
 }
 
 static int GameDataHeader_get_author(lua_State* L)
 {
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    lua_pushstring(L, b->author.c_str());
+    GameDataHeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataHeader is nil");
+    lua_pushstring(L, instance->author.c_str());
     return 1;
 }
 
 static int GameDataHeader_get_version(lua_State* L)
 {
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    lua_pushinteger(L, b->version);
+    GameDataHeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataHeader is nil");
+    lua_pushinteger(L, instance->version);
     return 1;
 }
 
 static int GameDataHeader_get_description(lua_State* L)
 {
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    lua_pushstring(L, b->description.c_str());
+    GameDataHeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataHeader is nil");
+    lua_pushstring(L, instance->description.c_str());
     return 1;
-}
-
-static int GameDataHeader_get_dependencies(lua_State* L)
-{
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    // TODO: Unsupported type for dependencies (lektor<std::string >)
-    return luaL_error(L, "Unsupported property 'dependencies' (type: lektor<std::string >)");
-}
-
-static int GameDataHeader_get_references(lua_State* L)
-{
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    // TODO: Unsupported type for references (lektor<std::string >)
-    return luaL_error(L, "Unsupported property 'references' (type: lektor<std::string >)");
 }
 
 // --- Setters for GameDataHeader ---
 static int GameDataHeader_set_name(lua_State* L)
 {
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    b->name = luaL_checkstring(L, 2);
+    GameDataHeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataHeader is nil");
+    instance->name = luaL_checkstring(L, 2);
     return 0;
 }
 
 static int GameDataHeader_set_author(lua_State* L)
 {
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    b->author = luaL_checkstring(L, 2);
+    GameDataHeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataHeader is nil");
+    instance->author = luaL_checkstring(L, 2);
     return 0;
 }
 
 static int GameDataHeader_set_version(lua_State* L)
 {
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    b->version = (int)luaL_checkinteger(L, 2);
+    GameDataHeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataHeader is nil");
+    instance->version = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int GameDataHeader_set_description(lua_State* L)
 {
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    b->description = luaL_checkstring(L, 2);
+    GameDataHeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataHeader is nil");
+    instance->description = luaL_checkstring(L, 2);
     return 0;
-}
-
-static int GameDataHeader_set_dependencies(lua_State* L)
-{
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for dependencies");
-}
-
-static int GameDataHeader_set_references(lua_State* L)
-{
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for references");
 }
 
 int GameDataHeaderBinding::_DESTRUCTOR(lua_State* L)
 {
-    GameDataHeader* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataHeader is nil");
+    GameDataHeader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataHeader is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -122,6 +92,12 @@ Skipped methods needing manual binding:
   line 28: GameDataHeader* _CONSTRUCTOR(...) - overloaded method
   line 30: GameDataHeader* _CONSTRUCTOR(...) - overloaded method
   line 39: GameDataHeader& operator=(...) - operator
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 35: dependencies (lektor<std::string >) - unsupported type
+  line 36: references (lektor<std::string >) - unsupported type
 */
 
 int GameDataHeaderBinding::gc(lua_State* L)
@@ -160,33 +136,17 @@ void GameDataHeaderBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, GameDataHeaderBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, GameDataHeader_get_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, GameDataHeader_get_author);
-    lua_setfield(L, -2, "author");
-    lua_pushcfunction(L, GameDataHeader_get_version);
-    lua_setfield(L, -2, "version");
-    lua_pushcfunction(L, GameDataHeader_get_description);
-    lua_setfield(L, -2, "description");
-    lua_pushcfunction(L, GameDataHeader_get_dependencies);
-    lua_setfield(L, -2, "dependencies");
-    lua_pushcfunction(L, GameDataHeader_get_references);
-    lua_setfield(L, -2, "references");
+    registerGetter(L, "name", GameDataHeader_get_name);
+    registerGetter(L, "author", GameDataHeader_get_author);
+    registerGetter(L, "version", GameDataHeader_get_version);
+    registerGetter(L, "description", GameDataHeader_get_description);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, GameDataHeader_set_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, GameDataHeader_set_author);
-    lua_setfield(L, -2, "author");
-    lua_pushcfunction(L, GameDataHeader_set_version);
-    lua_setfield(L, -2, "version");
-    lua_pushcfunction(L, GameDataHeader_set_description);
-    lua_setfield(L, -2, "description");
-    lua_pushcfunction(L, GameDataHeader_set_dependencies);
-    lua_setfield(L, -2, "dependencies");
-    lua_pushcfunction(L, GameDataHeader_set_references);
-    lua_setfield(L, -2, "references");
+    registerSetter(L, "name", GameDataHeader_set_name);
+    registerSetter(L, "author", GameDataHeader_set_author);
+    registerSetter(L, "version", GameDataHeader_set_version);
+    registerSetter(L, "description", GameDataHeader_set_description);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

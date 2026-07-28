@@ -7,9 +7,39 @@
 #include <MyGUI.h>
 #include <map>
 #include <string>
+#include <unordered_set>
+#include <vector>
+#include <algorithm>
 
 namespace KenshiLua
 {
+
+static std::unordered_set<MyGUI::Widget*> g_luaCreatedWidgets;
+static std::vector<MyGUI::Widget*> g_luaCreatedRootWidgets;
+
+static void trackLuaCreatedWidget(MyGUI::Widget* widget, MyGUI::Widget* parent)
+{
+    if (!widget) return;
+    g_luaCreatedWidgets.insert(widget);
+    if (!parent || g_luaCreatedWidgets.find(parent) == g_luaCreatedWidgets.end())
+    {
+        if (std::find(g_luaCreatedRootWidgets.begin(), g_luaCreatedRootWidgets.end(), widget) == g_luaCreatedRootWidgets.end())
+        {
+            g_luaCreatedRootWidgets.push_back(widget);
+        }
+    }
+}
+
+static void untrackLuaCreatedWidget(MyGUI::Widget* widget)
+{
+    if (!widget) return;
+    auto it = std::find(g_luaCreatedRootWidgets.begin(), g_luaCreatedRootWidgets.end(), widget);
+    if (it != g_luaCreatedRootWidgets.end())
+    {
+        g_luaCreatedRootWidgets.erase(it);
+    }
+    g_luaCreatedWidgets.erase(widget);
+}
 
 class LuaWidgetCallbackManager
 {
@@ -59,9 +89,7 @@ public:
     LuaWidgetCallbackManager() : m_L(nullptr) {}
 
     void setLuaState(lua_State* L) {
-        if (!m_L) {
-            m_L = L;
-        }
+        m_L = L;
     }
 
     void registerCallback(MyGUI::Widget* widget, EventType type, int luaRef)
@@ -204,6 +232,7 @@ public:
             }
         }
         m_callbacks.clear();
+        m_L = nullptr;
     }
 
 private:
@@ -628,6 +657,7 @@ static int widget_destroy(lua_State* L)
     MyGUI::Widget* w = getWidget(L, 1);
     if (w)
     {
+        untrackLuaCreatedWidget(w);
         LuaWidgetCallbackManager::get().clearCallbacksForWidget(w);
         MyGUI::Gui::getInstance().destroyWidget(w);
     }
@@ -1634,6 +1664,7 @@ static int widget_destroySmooth(lua_State* L)
     MyGUI::Widget* w = getWidget(L, 1);
     if (w)
     {
+        untrackLuaCreatedWidget(w);
         MyGUI::Window* win = w->castType<MyGUI::Window>(false);
         if (win)
         {
@@ -1790,6 +1821,7 @@ static int helper_createWidgetType(lua_State* L, const char* type)
 
     if (widget)
     {
+        trackLuaCreatedWidget(widget, parent);
         if (isReal)
         {
             widget->setRealCoord(fx, fy, fw, fh);
@@ -1825,6 +1857,7 @@ static int lua_unloadLayout(lua_State* L)
             if (w)
             {
                 widgets.push_back(w);
+                untrackLuaCreatedWidget(w);
                 LuaWidgetCallbackManager::get().clearCallbacksForWidget(w);
             }
             lua_pop(L, 1);
@@ -2058,7 +2091,14 @@ static int widget_newindex(lua_State* L)
 
 static int lua_resetKeyFocus(lua_State* L)
 {
-    MyGUI::InputManager::getInstance().resetKeyFocusWidget();
+    if (MyGUI::InputManager::getInstancePtr())
+    {
+        MyGUI::Widget* keyFocus = MyGUI::InputManager::getInstance().getKeyFocusWidget();
+        if (keyFocus)
+        {
+            MyGUI::InputManager::getInstance().resetKeyFocusWidget();
+        }
+    }
     return 0;
 }
 
@@ -2103,6 +2143,7 @@ static int lua_createWidget(lua_State* L)
 
     if (widget)
     {
+        trackLuaCreatedWidget(widget, parent);
         return pushObject<MyGUI::Widget>(L, widget, MyGuiBinding::getMetatableName());
     }
     lua_pushnil(L);
@@ -2132,6 +2173,7 @@ static int lua_loadLayout(lua_State* L)
     lua_newtable(L);
     for (size_t i = 0; i < widgets.size(); ++i)
     {
+        trackLuaCreatedWidget(widgets[i], parent);
         pushObject<MyGUI::Widget>(L, widgets[i], MyGuiBinding::getMetatableName());
         lua_rawseti(L, -2, (int)(i + 1));
     }
@@ -2354,6 +2396,26 @@ void MyGuiBinding::registerBinding(lua_State* L)
 
 void MyGuiBinding::shutdown()
 {
+    MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
+    if (gui)
+    {
+        for (auto it = g_luaCreatedRootWidgets.rbegin(); it != g_luaCreatedRootWidgets.rend(); ++it)
+        {
+            MyGUI::Widget* w = *it;
+            try
+            {
+                LuaWidgetCallbackManager::get().clearCallbacksForWidget(w);
+                gui->destroyWidget(w);
+            }
+            catch (...)
+            {
+                // ignore if already destroyed by game/MyGUI
+            }
+        }
+    }
+    g_luaCreatedRootWidgets.clear();
+    g_luaCreatedWidgets.clear();
+
     LuaWidgetCallbackManager::get().clearAll();
 }
 

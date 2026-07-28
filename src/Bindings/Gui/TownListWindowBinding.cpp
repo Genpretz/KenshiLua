@@ -97,7 +97,8 @@ void TownListWindowBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to LevelEditor::NpcListWindow
-    setMetatableParent(L, TownListWindowBinding::getMetatableName(), KenshiLua::NpcListWindowBinding::getMetatableName());
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, TownListWindowBinding::getMetatableName(), KenshiLua::NpcListWindowBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

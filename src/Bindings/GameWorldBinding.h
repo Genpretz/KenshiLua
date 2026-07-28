@@ -16,6 +16,7 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int justLoadFactionRelations(lua_State* L);
     static int startUpThreads(lua_State* L);
     static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
@@ -24,16 +25,20 @@ public:
     static int initialisation(lua_State* L);
     static int initialisationGameData(lua_State* L);
     static int dailyUpdates(lua_State* L);
+    static int initialiseNewGameWorld(lua_State* L);
     static int errorToLogReleaseMode(lua_State* L);
     static int errorD(lua_State* L);
     static int logToSave(lua_State* L);
     static int log(lua_State* L);
+    static int getIsInKillList(lua_State* L);
     static int flushKillList(lua_State* L);
     static int allThreadQueuesAreClear(lua_State* L);
     static int initBaseMods(lua_State* L);
     static int initModsList(lua_State* L);
     static int getModIndex(lua_State* L);
+    static int buildingIntersectionTestCapsule(lua_State* L);
     static int getLightLevel(lua_State* L);
+    static int populateMapArea_nonPermanent(lua_State* L);
     static int findValidSpawnPos(lua_State* L);
     static int togglePause(lua_State* L);
     static int getFrameSpeedMultiplier(lua_State* L);
@@ -46,10 +51,16 @@ public:
     static int fixNaNPosition(lua_State* L);
     static int getWindSpeed(lua_State* L);
     static int isLoadingFromASaveGame(lua_State* L);
+    static int addToUpdateListMain(lua_State* L);
+    static int removeFromUpdateListMain(lua_State* L);
+    static int addToDeathParade(lua_State* L);
+    static int removeFromDeathParade(lua_State* L);
+    static int removeFromDeathParadeByPlatoon(lua_State* L);
     static int hideContextMenu(lua_State* L);
     static int showPlayerAMessage_withLog(lua_State* L);
     static int showPlayerAMessage(lua_State* L);
     static int showPlayerAMessageD(lua_State* L);
+    //static int playNotification(lua_State* L);
     static int mainLoop_GPUSensitiveStuff(lua_State* L);
     static int _NV_mainLoop_GPUSensitiveStuff(lua_State* L);
     static int clearPortaitsUpdate(lua_State* L);
@@ -62,6 +73,7 @@ public:
     static int charsUpdatePaused(lua_State* L);
     static int charsUpdateDeathParade(lua_State* L);
     static int threadSafeRagdollUpdates(lua_State* L);
+    static int AINonRenderThread(lua_State* L);
     static int processAttachmentsKillList(lua_State* L);
     static int processKillList(lua_State* L);
     static int processUpdateRemovalList(lua_State* L);
@@ -69,6 +81,7 @@ public:
     static int reCalculateFortificationInsideOutsideStateForAllCharacters(lua_State* L);
     static int getTimeStamp(lua_State* L);
     static int getTimeFromStamp_inGameHours(lua_State* L);
+    static int getTimeStamp_inGameHours(lua_State* L);
     static int getLengthOfHourInRealSeconds(lua_State* L);
 };
 }

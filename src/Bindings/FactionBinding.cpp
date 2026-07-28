@@ -8,6 +8,7 @@
 #include "Bindings/FactionLeaderBinding.h"
 #include "Bindings/FactionRelationsBinding.h"
 #include "Bindings/FactionUniqueSquadManagerBinding.h"
+#include "Bindings/FactionWarMgrBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataContainerBinding.h"
 #include "Bindings/OwnershipsBinding.h"
@@ -41,7 +42,15 @@ static int Faction_get_characteristicsData(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    lua_pushlightuserdata(L, (void*)&instance->characteristicsData);
+    lua_pushlightuserdata(L, &instance->characteristicsData);
+    return 1;
+}
+
+static int Faction_get_fundamentalNPCType(lua_State* L)
+{
+    Faction* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Faction is nil");
+    lua_pushinteger(L, (lua_Integer)instance->fundamentalNPCType);
     return 1;
 }
 
@@ -57,14 +66,6 @@ static int Faction_get_allowSlavesWeapons(lua_State* L)
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
     lua_pushboolean(L, instance->allowSlavesWeapons ? 1 : 0);
-    return 1;
-}
-
-static int Faction_get_fundamentalNPCType(lua_State* L)
-{
-    Faction* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Faction is nil");
-    lua_pushinteger(L, (lua_Integer)instance->fundamentalNPCType);
     return 1;
 }
 
@@ -115,8 +116,7 @@ static int Faction_get_warMgr(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    lua_pushlightuserdata(L, (void*)instance->warMgr);
-    return 1;
+    return pushObject<FactionWarMgr>(L, instance->warMgr, FactionWarMgrBinding::getMetatableName());
 }
 
 static int Faction_get_tradeCulture(lua_State* L)
@@ -284,8 +284,15 @@ static int Faction_set_characteristicsData(lua_State* L)
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
     Faction::CharacteristicsData* val = (Faction::CharacteristicsData*)lua_touserdata(L, 2);
-    if (!val) return luaL_error(L, "Expected CharacteristicsData lightuserdata");
-    instance->characteristicsData = *val;
+    if (val) instance->characteristicsData = *val;
+    return 0;
+}
+
+static int Faction_set_fundamentalNPCType(lua_State* L)
+{
+    Faction* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Faction is nil");
+    instance->fundamentalNPCType = (CharacterTypeEnum)luaL_checkinteger(L, 2);
     return 0;
 }
 
@@ -304,14 +311,6 @@ static int Faction_set_allowSlavesWeapons(lua_State* L)
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
     instance->allowSlavesWeapons = lua_toboolean(L, 2) != 0;
-    return 0;
-}
-
-static int Faction_set_fundamentalNPCType(lua_State* L)
-{
-    Faction* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Faction is nil");
-    instance->fundamentalNPCType = (CharacterTypeEnum)luaL_checkinteger(L, 2);
     return 0;
 }
 
@@ -335,9 +334,7 @@ static int Faction_set_factionLeader(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    FactionLeader* val = checkObject<FactionLeader>(L, 2, FactionLeaderBinding::getMetatableName());
-    if (!val) return luaL_error(L, "Expected FactionLeader object");
-    instance->factionLeader = *val;
+    instance->factionLeader = *checkObject<FactionLeader>(L, 2, FactionLeaderBinding::getMetatableName());
     return 0;
 }
 
@@ -369,7 +366,7 @@ static int Faction_set_warMgr(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    instance->warMgr = (FactionWarMgr*)lua_touserdata(L, 2);
+    instance->warMgr = lua_isnoneornil(L, 2) ? nullptr : checkObject<FactionWarMgr>(L, 2, FactionWarMgrBinding::getMetatableName());
     return 0;
 }
 
@@ -377,9 +374,7 @@ static int Faction_set_tradeCulture(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    TradeCulture* tc = checkObject<TradeCulture>(L, 2, TradeCultureBinding::getMetatableName());
-    if (!tc) return luaL_error(L, "Expected TradeCulture object");
-    instance->tradeCulture = *tc;
+    instance->tradeCulture = *checkObject<TradeCulture>(L, 2, TradeCultureBinding::getMetatableName());
     return 0;
 }
 
@@ -392,6 +387,7 @@ static int Faction_set_raceSelector(lua_State* L)
     instance->raceSelector = *val;
     return 0;
 }
+
 
 static int Faction_set_name(lua_State* L)
 {
@@ -1133,8 +1129,8 @@ int FactionBinding::getAllActiveSquads(lua_State* L)
     if (!instance) return luaL_error(L, "Faction is nil");
 
     const lektor<Platoon*>* result = instance->getAllActiveSquads();
-    if (!result) { lua_pushnil(L); return 1; }
-    return pushObject<lektor<Platoon*>>(L, const_cast<lektor<Platoon*>*>(result), LektorPtrBinding<Platoon*>::metaName);
+    lua_pushlightuserdata(L, (void*)result);
+    return 1;
 }
 
 int FactionBinding::getRoadPreference(lua_State* L)
@@ -1345,8 +1341,6 @@ int FactionBinding::tostring(lua_State* L)
 
 void FactionBinding::registerBinding(lua_State* L)
 {
-    LektorValueBinding<Faction::BuildingSwaps>::registerBinding(L, "lektor<BuildingSwaps>", BuildingSwapsBinding::getMetatableName());
-
     static const luaL_Reg meta[] = {
         { "__gc",       FactionBinding::gc },
         { "__tostring", FactionBinding::tostring },
@@ -1367,7 +1361,6 @@ void FactionBinding::registerBinding(lua_State* L)
         { "createNewEmptyActivePlatoon", FactionBinding::createNewEmptyActivePlatoon },
         { "createPlatoonUnloaded", FactionBinding::createPlatoonUnloaded },
         { "createPlatoonAuto", FactionBinding::createPlatoonAuto },
-        { "createPlatoonsAuto", FactionBinding::createPlatoonsAuto },
         { "createReplacementPlatoonForPlayerWhenSavegameIsCorrupt", FactionBinding::createReplacementPlatoonForPlayerWhenSavegameIsCorrupt },
         { "restorePlatoon", FactionBinding::restorePlatoon },
         { "resetSquadPositions", FactionBinding::resetSquadPositions },
@@ -1407,7 +1400,6 @@ void FactionBinding::registerBinding(lua_State* L)
         { "getName", FactionBinding::getName },
         { "getNumPlatoons", FactionBinding::getNumPlatoons },
         { "getSquadThatOwns", FactionBinding::getSquadThatOwns },
-        { "getAllSquadsThatOwn", FactionBinding::getAllSquadsThatOwn },
         { "getAllActiveSquads", FactionBinding::getAllActiveSquads },
         { "getRoadPreference", FactionBinding::getRoadPreference },
         { "isAntiSlavery", FactionBinding::isAntiSlavery },
@@ -1441,138 +1433,77 @@ void FactionBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FactionBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, Faction_get__antiSlavery);
-    lua_setfield(L, -2, "_antiSlavery");
-    lua_pushcfunction(L, Faction_get_characteristicsData);
-    lua_setfield(L, -2, "characteristicsData");
-    lua_pushcfunction(L, Faction_get_ranks);
-    lua_setfield(L, -2, "ranks");
-    lua_pushcfunction(L, Faction_get_allowSlavesWeapons);
-    lua_setfield(L, -2, "allowSlavesWeapons");
-    lua_pushcfunction(L, Faction_get_fundamentalNPCType);
-    lua_setfield(L, -2, "fundamentalNPCType");
-    lua_pushcfunction(L, Faction_get_myLawEnforcementFaction);
-    lua_setfield(L, -2, "myLawEnforcementFaction");
-    lua_pushcfunction(L, Faction_get_isALawEnforcementFaction);
-    lua_setfield(L, -2, "isALawEnforcementFaction");
-    lua_pushcfunction(L, Faction_get_factionLeader);
-    lua_setfield(L, -2, "factionLeader");
-    lua_pushcfunction(L, Faction_get_diplomatMgr);
-    lua_setfield(L, -2, "diplomatMgr");
-    lua_pushcfunction(L, Faction_get_relations);
-    lua_setfield(L, -2, "relations");
-    lua_pushcfunction(L, Faction_get_factionOwnerships);
-    lua_setfield(L, -2, "factionOwnerships");
-    lua_pushcfunction(L, Faction_get_warMgr);
-    lua_setfield(L, -2, "warMgr");
-    lua_pushcfunction(L, Faction_get_tradeCulture);
-    lua_setfield(L, -2, "tradeCulture");
-    lua_pushcfunction(L, Faction_get_raceSelector);
-    lua_setfield(L, -2, "raceSelector");
-    lua_pushcfunction(L, Faction_get_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, Faction_get_notARealFaction);
-    lua_setfield(L, -2, "notARealFaction");
-    lua_pushcfunction(L, Faction_get_roadPreference);
-    lua_setfield(L, -2, "roadPreference");
-    lua_pushcfunction(L, Faction_get_platoonKillList);
-    lua_setfield(L, -2, "platoonKillList");
-    lua_pushcfunction(L, Faction_get_platoonRemoveList);
-    lua_setfield(L, -2, "platoonRemoveList");
-    lua_pushcfunction(L, Faction_get_activePlatoons);
-    lua_setfield(L, -2, "activePlatoons");
-    lua_pushcfunction(L, Faction_get_unloadedPlatoons);
-    lua_setfield(L, -2, "unloadedPlatoons");
-    lua_pushcfunction(L, Faction_get_periodicUpdateCounter_active);
-    lua_setfield(L, -2, "periodicUpdateCounter_active");
-    lua_pushcfunction(L, Faction_get_periodicUpdateCounter_unloaded);
-    lua_setfield(L, -2, "periodicUpdateCounter_unloaded");
-    lua_pushcfunction(L, Faction_get_data);
-    lua_setfield(L, -2, "data");
-    lua_pushcfunction(L, Faction_get_isAI);
-    lua_setfield(L, -2, "isAI");
-    lua_pushcfunction(L, Faction_get_isPlayer);
-    lua_setfield(L, -2, "isPlayer");
-    lua_pushcfunction(L, Faction_get_spawnTimeStamp);
-    lua_setfield(L, -2, "spawnTimeStamp");
-    lua_pushcfunction(L, Faction_get_diplomatTimeStamp);
-    lua_setfield(L, -2, "diplomatTimeStamp");
-    lua_pushcfunction(L, Faction_get_platoonIDs);
-    lua_setfield(L, -2, "platoonIDs");
-    lua_pushcfunction(L, Faction_get_p_TIME);
-    lua_setfield(L, -2, "p_TIME");
-    lua_pushcfunction(L, Faction_get_platoonPeriodicUpdateIndex);
-    lua_setfield(L, -2, "platoonPeriodicUpdateIndex");
-    lua_pushcfunction(L, Faction_get_buildingSwaps);
-    lua_setfield(L, -2, "buildingSwaps");
+    registerGetter(L, "_antiSlavery", Faction_get__antiSlavery);
+    registerGetter(L, "characteristicsData", Faction_get_characteristicsData);
+    registerGetter(L, "ranks", Faction_get_ranks);
+    registerGetter(L, "allowSlavesWeapons", Faction_get_allowSlavesWeapons);
+    registerGetter(L,"fundamentalNPCType", Faction_get_fundamentalNPCType);
+    registerGetter(L, "myLawEnforcementFaction", Faction_get_myLawEnforcementFaction);
+    registerGetter(L, "isALawEnforcementFaction", Faction_get_isALawEnforcementFaction);
+    registerGetter(L, "factionLeader", Faction_get_factionLeader);
+    registerGetter(L, "diplomatMgr", Faction_get_diplomatMgr);
+    registerGetter(L, "relations", Faction_get_relations);
+    registerGetter(L, "factionOwnerships", Faction_get_factionOwnerships);
+    registerGetter(L, "warMgr", Faction_get_warMgr);
+    registerGetter(L, "tradeCulture", Faction_get_tradeCulture);
+    registerGetter(L, "raceSelector", Faction_get_raceSelector);
+    registerGetter(L, "name", Faction_get_name);
+    registerGetter(L, "notARealFaction", Faction_get_notARealFaction);
+    registerGetter(L, "roadPreference", Faction_get_roadPreference);
+    registerGetter(L, "platoonKillList", Faction_get_platoonKillList);
+    registerGetter(L, "platoonRemoveList", Faction_get_platoonRemoveList);
+    registerGetter(L, "activePlatoons", Faction_get_activePlatoons);
+    registerGetter(L, "unloadedPlatoons", Faction_get_unloadedPlatoons);
+    registerGetter(L, "periodicUpdateCounter_active", Faction_get_periodicUpdateCounter_active);
+    registerGetter(L, "periodicUpdateCounter_unloaded", Faction_get_periodicUpdateCounter_unloaded);
+    registerGetter(L, "data", Faction_get_data);
+    registerGetter(L, "isAI", Faction_get_isAI);
+    registerGetter(L, "isPlayer", Faction_get_isPlayer);
+    registerGetter(L, "spawnTimeStamp", Faction_get_spawnTimeStamp);
+    registerGetter(L, "diplomatTimeStamp", Faction_get_diplomatTimeStamp);
+    registerGetter(L, "platoonIDs", Faction_get_platoonIDs);
+    registerGetter(L, "p_TIME", Faction_get_p_TIME);
+    registerGetter(L, "platoonPeriodicUpdateIndex", Faction_get_platoonPeriodicUpdateIndex);
+    registerGetter(L, "buildingSwaps", Faction_get_buildingSwaps);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, Faction_set__antiSlavery);
-    lua_setfield(L, -2, "_antiSlavery");
-    lua_pushcfunction(L, Faction_set_characteristicsData);
-    lua_setfield(L, -2, "characteristicsData");
-    lua_pushcfunction(L, Faction_set_ranks);
-    lua_setfield(L, -2, "ranks");
-    lua_pushcfunction(L, Faction_set_allowSlavesWeapons);
-    lua_setfield(L, -2, "allowSlavesWeapons");
-    lua_pushcfunction(L, Faction_set_fundamentalNPCType);
-    lua_setfield(L, -2, "fundamentalNPCType");
-    lua_pushcfunction(L, Faction_set_myLawEnforcementFaction);
-    lua_setfield(L, -2, "myLawEnforcementFaction");
-    lua_pushcfunction(L, Faction_set_isALawEnforcementFaction);
-    lua_setfield(L, -2, "isALawEnforcementFaction");
-    lua_pushcfunction(L, Faction_set_factionLeader);
-    lua_setfield(L, -2, "factionLeader");
-    lua_pushcfunction(L, Faction_set_diplomatMgr);
-    lua_setfield(L, -2, "diplomatMgr");
-    lua_pushcfunction(L, Faction_set_relations);
-    lua_setfield(L, -2, "relations");
-    lua_pushcfunction(L, Faction_set_factionOwnerships);
-    lua_setfield(L, -2, "factionOwnerships");
-    lua_pushcfunction(L, Faction_set_warMgr);
-    lua_setfield(L, -2, "warMgr");
-    lua_pushcfunction(L, Faction_set_tradeCulture);
-    lua_setfield(L, -2, "tradeCulture");
-    lua_pushcfunction(L, Faction_set_raceSelector);
-    lua_setfield(L, -2, "raceSelector");
-    lua_pushcfunction(L, Faction_set_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, Faction_set_notARealFaction);
-    lua_setfield(L, -2, "notARealFaction");
-    lua_pushcfunction(L, Faction_set_roadPreference);
-    lua_setfield(L, -2, "roadPreference");
-    lua_pushcfunction(L, Faction_set_platoonKillList);
-    lua_setfield(L, -2, "platoonKillList");
-    lua_pushcfunction(L, Faction_set_platoonRemoveList);
-    lua_setfield(L, -2, "platoonRemoveList");
-    lua_pushcfunction(L, Faction_set_activePlatoons);
-    lua_setfield(L, -2, "activePlatoons");
-    lua_pushcfunction(L, Faction_set_unloadedPlatoons);
-    lua_setfield(L, -2, "unloadedPlatoons");
-    lua_pushcfunction(L, Faction_set_periodicUpdateCounter_active);
-    lua_setfield(L, -2, "periodicUpdateCounter_active");
-    lua_pushcfunction(L, Faction_set_periodicUpdateCounter_unloaded);
-    lua_setfield(L, -2, "periodicUpdateCounter_unloaded");
-    lua_pushcfunction(L, Faction_set_data);
-    lua_setfield(L, -2, "data");
-    lua_pushcfunction(L, Faction_set_isAI);
-    lua_setfield(L, -2, "isAI");
-    lua_pushcfunction(L, Faction_set_isPlayer);
-    lua_setfield(L, -2, "isPlayer");
-    lua_pushcfunction(L, Faction_set_spawnTimeStamp);
-    lua_setfield(L, -2, "spawnTimeStamp");
-    lua_pushcfunction(L, Faction_set_diplomatTimeStamp);
-    lua_setfield(L, -2, "diplomatTimeStamp");
-    lua_pushcfunction(L, Faction_set_platoonIDs);
-    lua_setfield(L, -2, "platoonIDs");
-    lua_pushcfunction(L, Faction_set_p_TIME);
-    lua_setfield(L, -2, "p_TIME");
-    lua_pushcfunction(L, Faction_set_platoonPeriodicUpdateIndex);
-    lua_setfield(L, -2, "platoonPeriodicUpdateIndex");
-    lua_pushcfunction(L, Faction_set_buildingSwaps);
-    lua_setfield(L, -2, "buildingSwaps");
+    registerSetter(L, "_antiSlavery", Faction_set__antiSlavery);
+    registerSetter(L, "characteristicsData", Faction_set_characteristicsData);
+    registerSetter(L, "ranks", Faction_set_ranks);
+    registerSetter(L, "allowSlavesWeapons", Faction_set_allowSlavesWeapons);
+    registerSetter(L,"fundamentalNPCType", Faction_set_fundamentalNPCType);
+    registerSetter(L, "myLawEnforcementFaction", Faction_set_myLawEnforcementFaction);
+    registerSetter(L, "isALawEnforcementFaction", Faction_set_isALawEnforcementFaction);
+    registerSetter(L, "factionLeader", Faction_set_factionLeader);
+    registerSetter(L, "diplomatMgr", Faction_set_diplomatMgr);
+    registerSetter(L, "relations", Faction_set_relations);
+    registerSetter(L, "factionOwnerships", Faction_set_factionOwnerships);
+    registerSetter(L, "warMgr", Faction_set_warMgr);
+    registerSetter(L, "tradeCulture", Faction_set_tradeCulture);
+    registerSetter(L, "raceSelector", Faction_set_raceSelector);
+    registerSetter(L, "name", Faction_set_name);
+    registerSetter(L, "notARealFaction", Faction_set_notARealFaction);
+    registerSetter(L, "roadPreference", Faction_set_roadPreference);
+    registerSetter(L, "platoonKillList", Faction_set_platoonKillList);
+    registerSetter(L, "platoonRemoveList", Faction_set_platoonRemoveList);
+    registerSetter(L, "activePlatoons", Faction_set_activePlatoons);
+    registerSetter(L, "unloadedPlatoons", Faction_set_unloadedPlatoons);
+    registerSetter(L, "periodicUpdateCounter_active", Faction_set_periodicUpdateCounter_active);
+    registerSetter(L, "periodicUpdateCounter_unloaded", Faction_set_periodicUpdateCounter_unloaded);
+    registerSetter(L, "data", Faction_set_data);
+    registerSetter(L, "isAI", Faction_set_isAI);
+    registerSetter(L, "isPlayer", Faction_set_isPlayer);
+    registerSetter(L, "spawnTimeStamp", Faction_set_spawnTimeStamp);
+    registerSetter(L, "diplomatTimeStamp", Faction_set_diplomatTimeStamp);
+    registerSetter(L, "platoonIDs", Faction_set_platoonIDs);
+    registerSetter(L, "p_TIME", Faction_set_p_TIME);
+    registerSetter(L, "platoonPeriodicUpdateIndex", Faction_set_platoonPeriodicUpdateIndex);
+    registerSetter(L, "buildingSwaps", Faction_set_buildingSwaps);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to Ogre::GeneralAllocatedObject
+    // setMetatableParent(L, FactionBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

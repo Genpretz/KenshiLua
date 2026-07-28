@@ -50,7 +50,8 @@ void RobotLimbItemBinding::registerBinding(lua_State* L)
     lua_pop(L, 1);
 
     // RobotLimbItem inherits from Item
-    setMetatableParent(L, RobotLimbItemBinding::getMetatableName(), ItemBinding::getMetatableName());
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, RobotLimbItemBinding::getMetatableName(), ItemBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

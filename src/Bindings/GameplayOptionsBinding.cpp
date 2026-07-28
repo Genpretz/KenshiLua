@@ -1,7 +1,8 @@
 #include "pch.h"
-#include <kenshi/GameplayOptions.h>
+#include "kenshi\saveinfo.h"
 #include "GameplayOptionsBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {
@@ -217,11 +218,25 @@ int GameplayOptionsBinding::getStarvationTimeInHours(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 25: void save(...) - unsupported arg type
-  line 26: void load(...) - unsupported arg type
-*/
+int GameplayOptionsBinding::save(lua_State* L)
+{
+    GameplayOptions* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameplayOptions is nil");
+
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->save(data);
+    return 0;
+}
+
+int GameplayOptionsBinding::load(lua_State* L)
+{
+    GameplayOptions* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameplayOptions is nil");
+
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->load(data);
+    return 0;
+}
 
 int GameplayOptionsBinding::gc(lua_State* L)
 {
@@ -247,6 +262,8 @@ void GameplayOptionsBinding::registerBinding(lua_State* L)
         { "_CONSTRUCTOR", GameplayOptionsBinding::_CONSTRUCTOR },
         { "reset", GameplayOptionsBinding::reset },
         { "getStarvationTimeInHours", GameplayOptionsBinding::getStarvationTimeInHours },
+        { "save", GameplayOptionsBinding::save },
+        { "load", GameplayOptionsBinding::load },
         { 0, 0 }
     };
 
@@ -261,53 +278,31 @@ void GameplayOptionsBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, GameplayOptionsBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, GameplayOptions_get_deathFrequency);
-    lua_setfield(L, -2, "deathFrequency");
-    lua_pushcfunction(L, GameplayOptions_get_easyProspecting);
-    lua_setfield(L, -2, "easyProspecting");
-    lua_pushcfunction(L, GameplayOptions_get_globalDamageMultiplier);
-    lua_setfield(L, -2, "globalDamageMultiplier");
-    lua_pushcfunction(L, GameplayOptions_get_buildingSpeed);
-    lua_setfield(L, -2, "buildingSpeed");
-    lua_pushcfunction(L, GameplayOptions_get_numNestsMult);
-    lua_setfield(L, -2, "numNestsMult");
-    lua_pushcfunction(L, GameplayOptions_get_researchSpeed);
-    lua_setfield(L, -2, "researchSpeed");
-    lua_pushcfunction(L, GameplayOptions_get_productionSpeed);
-    lua_setfield(L, -2, "productionSpeed");
-    lua_pushcfunction(L, GameplayOptions_get_hungerTime);
-    lua_setfield(L, -2, "hungerTime");
-    lua_pushcfunction(L, GameplayOptions_get_banditsLootPlayer);
-    lua_setfield(L, -2, "banditsLootPlayer");
-    lua_pushcfunction(L, GameplayOptions_get_animalsEat);
-    lua_setfield(L, -2, "animalsEat");
-    lua_pushcfunction(L, GameplayOptions_get_difficultHealing);
-    lua_setfield(L, -2, "difficultHealing");
+    registerGetter(L, "deathFrequency", GameplayOptions_get_deathFrequency);
+    registerGetter(L, "easyProspecting", GameplayOptions_get_easyProspecting);
+    registerGetter(L, "globalDamageMultiplier", GameplayOptions_get_globalDamageMultiplier);
+    registerGetter(L, "buildingSpeed", GameplayOptions_get_buildingSpeed);
+    registerGetter(L, "numNestsMult", GameplayOptions_get_numNestsMult);
+    registerGetter(L, "researchSpeed", GameplayOptions_get_researchSpeed);
+    registerGetter(L, "productionSpeed", GameplayOptions_get_productionSpeed);
+    registerGetter(L, "hungerTime", GameplayOptions_get_hungerTime);
+    registerGetter(L, "banditsLootPlayer", GameplayOptions_get_banditsLootPlayer);
+    registerGetter(L, "animalsEat", GameplayOptions_get_animalsEat);
+    registerGetter(L, "difficultHealing", GameplayOptions_get_difficultHealing);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, GameplayOptions_set_deathFrequency);
-    lua_setfield(L, -2, "deathFrequency");
-    lua_pushcfunction(L, GameplayOptions_set_easyProspecting);
-    lua_setfield(L, -2, "easyProspecting");
-    lua_pushcfunction(L, GameplayOptions_set_globalDamageMultiplier);
-    lua_setfield(L, -2, "globalDamageMultiplier");
-    lua_pushcfunction(L, GameplayOptions_set_buildingSpeed);
-    lua_setfield(L, -2, "buildingSpeed");
-    lua_pushcfunction(L, GameplayOptions_set_numNestsMult);
-    lua_setfield(L, -2, "numNestsMult");
-    lua_pushcfunction(L, GameplayOptions_set_researchSpeed);
-    lua_setfield(L, -2, "researchSpeed");
-    lua_pushcfunction(L, GameplayOptions_set_productionSpeed);
-    lua_setfield(L, -2, "productionSpeed");
-    lua_pushcfunction(L, GameplayOptions_set_hungerTime);
-    lua_setfield(L, -2, "hungerTime");
-    lua_pushcfunction(L, GameplayOptions_set_banditsLootPlayer);
-    lua_setfield(L, -2, "banditsLootPlayer");
-    lua_pushcfunction(L, GameplayOptions_set_animalsEat);
-    lua_setfield(L, -2, "animalsEat");
-    lua_pushcfunction(L, GameplayOptions_set_difficultHealing);
-    lua_setfield(L, -2, "difficultHealing");
+    registerSetter(L, "deathFrequency", GameplayOptions_set_deathFrequency);
+    registerSetter(L, "easyProspecting", GameplayOptions_set_easyProspecting);
+    registerSetter(L, "globalDamageMultiplier", GameplayOptions_set_globalDamageMultiplier);
+    registerSetter(L, "buildingSpeed", GameplayOptions_set_buildingSpeed);
+    registerSetter(L, "numNestsMult", GameplayOptions_set_numNestsMult);
+    registerSetter(L, "researchSpeed", GameplayOptions_set_researchSpeed);
+    registerSetter(L, "productionSpeed", GameplayOptions_set_productionSpeed);
+    registerSetter(L, "hungerTime", GameplayOptions_set_hungerTime);
+    registerSetter(L, "banditsLootPlayer", GameplayOptions_set_banditsLootPlayer);
+    registerSetter(L, "animalsEat", GameplayOptions_set_animalsEat);
+    registerSetter(L, "difficultHealing", GameplayOptions_set_difficultHealing);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -399,6 +399,7 @@ namespace KenshiLua
             handlers.clear();
         }
         m_handlers.clear();
+        m_L = NULL;
     }
 
     std::vector<EventSystem::RegisteredCallbackInfo> EventSystem::getRegisteredCallbacks() const

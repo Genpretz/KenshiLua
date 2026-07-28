@@ -19,5 +19,7 @@ public:
     static int _CONSTRUCTOR(lua_State* L);
     static int reset(lua_State* L);
     static int getStarvationTimeInHours(lua_State* L);
+    static int save(lua_State* L);
+    static int load(lua_State* L);
 };
 }

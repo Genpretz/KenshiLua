@@ -108,7 +108,7 @@ void DialogChoiceListBinding::registerBinding(lua_State* L)
     registerSetter(L, "conversationChoices", DialogChoiceList_set_conversationChoices);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    LektorPtrBinding<DialogLineData*>::registerBinding(L, "lektor<DialogLineData*>", DialogLineDataBinding::getMetatableName());
+    //LektorPtrBinding<DialogLineData*>::registerBinding(L, "lektor<DialogLineData*>", DialogLineDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

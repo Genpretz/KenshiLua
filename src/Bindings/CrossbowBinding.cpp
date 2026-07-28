@@ -264,7 +264,8 @@ void CrossbowBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Weapon
-    setMetatableParent(L, CrossbowBinding::getMetatableName(), WeaponBinding::getMetatableName());
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, CrossbowBinding::getMetatableName(), WeaponBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

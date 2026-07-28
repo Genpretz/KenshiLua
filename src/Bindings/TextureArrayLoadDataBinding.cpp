@@ -98,8 +98,8 @@ void TextureArrayLoadDataBinding::registerBinding(lua_State* L)
     lua_newtable(L); // Create __setters table
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to TextureLoadData
-    setMetatableParent(L, TextureArrayLoadDataBinding::getMetatableName(), TextureLoadDataBinding::getMetatableName());
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, TextureArrayLoadDataBinding::getMetatableName(), TextureLoadDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

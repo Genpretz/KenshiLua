@@ -1295,9 +1295,9 @@ void DialogLineDataBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     FitnessSelectorBinding<CampaignTriggerData*>::registerBinding(L, "FitnessSelector<CampaignTriggerData*>", CampaignTriggerDataBinding::getMetatableName(), nullptr, nullptr);
-    LektorValueReadOnlyBinding<GameDataValuePair>::registerBinding(L, "lektor<GameDataValuePair>", GameDataValuePairBinding::getMetatableName());
-    LektorPtrBinding<DialogLineData::DialogCondition*>::registerBinding(L, "lektor<DialogCondition*>", DialogConditionBinding::getMetatableName());
-    LektorPtrBinding<DialogLineData::DialogAction*>::registerBinding(L, "lektor<DialogAction*>", DialogActionBinding::getMetatableName());
+    //LektorValueReadOnlyBinding<GameDataValuePair>::registerBinding(L, "lektor<GameDataValuePair>", GameDataValuePairBinding::getMetatableName());
+    //LektorPtrBinding<DialogLineData::DialogCondition*>::registerBinding(L, "lektor<DialogCondition*>", DialogConditionBinding::getMetatableName());
+    //LektorPtrBinding<DialogLineData::DialogAction*>::registerBinding(L, "lektor<DialogAction*>", DialogActionBinding::getMetatableName());
     FactionRelationEffectsMapBinding::registerBinding(L, "KenshiLua.FactionRelationEffectsMap", GameDataBinding::getMetatableName(), nullptr);
 
 
