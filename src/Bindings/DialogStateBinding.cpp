@@ -1,70 +1,76 @@
 #include "pch.h"
-#include "kenshi\Dialogue.h"
+#include "kenshi/Dialogue.h"
 #include "DialogStateBinding.h"
 #include "Lua/BindingHelpers.h"
+
+typedef Dialogue::RepetitionCounter::DialogState DialogState;
 
 namespace KenshiLua
 {
 
-static Dialogue::RepetitionCounter::DialogState* getB(lua_State* L, int idx)
+static DialogState* getInstance(lua_State* L, int idx)
 {
-    return checkObject<Dialogue::RepetitionCounter::DialogState>(L, idx, DialogStateBinding::getMetatableName());
+    return checkObject<DialogState>(L, idx, DialogStateBinding::getMetatableName());
 }
 
 // --- Getters for DialogState ---
 static int DialogState_get_count(lua_State* L)
 {
-    Dialogue::RepetitionCounter::DialogState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogState is nil");
-    lua_pushinteger(L, b->count);
+    DialogState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogState is nil");
+    lua_pushinteger(L, instance->count);
     return 1;
 }
 
 static int DialogState_get_lastTimeStamp(lua_State* L)
 {
-    Dialogue::RepetitionCounter::DialogState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogState is nil");
-    lua_pushnumber(L, b->lastTimeStamp);
+    DialogState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogState is nil");
+    lua_pushnumber(L, instance->lastTimeStamp);
     return 1;
 }
 
 static int DialogState_get_resetTime(lua_State* L)
 {
-    Dialogue::RepetitionCounter::DialogState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogState is nil");
-    lua_pushnumber(L, b->resetTime);
+    DialogState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogState is nil");
+    lua_pushnumber(L, instance->resetTime);
     return 1;
 }
 
 // --- Setters for DialogState ---
 static int DialogState_set_count(lua_State* L)
 {
-    Dialogue::RepetitionCounter::DialogState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogState is nil");
-    b->count = (int)luaL_checkinteger(L, 2);
+    DialogState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogState is nil");
+    instance->count = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int DialogState_set_lastTimeStamp(lua_State* L)
 {
-    Dialogue::RepetitionCounter::DialogState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogState is nil");
-    b->lastTimeStamp = (float)luaL_checknumber(L, 2);
+    DialogState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogState is nil");
+    instance->lastTimeStamp = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int DialogState_set_resetTime(lua_State* L)
 {
-    Dialogue::RepetitionCounter::DialogState* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogState is nil");
-    b->resetTime = (float)luaL_checknumber(L, 2);
+    DialogState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogState is nil");
+    instance->resetTime = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 290: DialogState* _CONSTRUCTOR(...) - unsupported return type
-*/
+int DialogStateBinding::_CONSTRUCTOR(lua_State* L)
+{
+    DialogState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogState is nil");
+
+    DialogState* result = instance->_CONSTRUCTOR();
+    return pushObject<DialogState>(L, result, DialogStateBinding::getMetatableName());
+}
 
 int DialogStateBinding::gc(lua_State* L)
 {
@@ -87,6 +93,7 @@ void DialogStateBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", DialogStateBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 
@@ -101,21 +108,15 @@ void DialogStateBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DialogStateBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DialogState_get_count);
-    lua_setfield(L, -2, "count");
-    lua_pushcfunction(L, DialogState_get_lastTimeStamp);
-    lua_setfield(L, -2, "lastTimeStamp");
-    lua_pushcfunction(L, DialogState_get_resetTime);
-    lua_setfield(L, -2, "resetTime");
+    registerGetter(L, "count", DialogState_get_count);
+    registerGetter(L, "lastTimeStamp", DialogState_get_lastTimeStamp);
+    registerGetter(L, "resetTime", DialogState_get_resetTime);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DialogState_set_count);
-    lua_setfield(L, -2, "count");
-    lua_pushcfunction(L, DialogState_set_lastTimeStamp);
-    lua_setfield(L, -2, "lastTimeStamp");
-    lua_pushcfunction(L, DialogState_set_resetTime);
-    lua_setfield(L, -2, "resetTime");
+    registerSetter(L, "count", DialogState_set_count);
+    registerSetter(L, "lastTimeStamp", DialogState_set_lastTimeStamp);
+    registerSetter(L, "resetTime", DialogState_set_resetTime);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

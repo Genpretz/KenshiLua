@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "kenshi\Dialogue.h"
+#include "kenshi\dialogue.h"
 #include "GameDataValuePairBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
@@ -7,7 +7,7 @@
 namespace KenshiLua
 {
 
-static GameDataValuePair* getB(lua_State* L, int idx)
+static GameDataValuePair* getInstance(lua_State* L, int idx)
 {
     return checkObject<GameDataValuePair>(L, idx, GameDataValuePairBinding::getMetatableName());
 }
@@ -15,32 +15,33 @@ static GameDataValuePair* getB(lua_State* L, int idx)
 // --- Getters for GameDataValuePair ---
 static int GameDataValuePair_get_data(lua_State* L)
 {
-    GameDataValuePair* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataValuePair is nil");
-    return pushObject<GameData>(L, b->data, GameDataBinding::getMetatableName());
+    GameDataValuePair* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataValuePair is nil");
+    return pushObject<GameData>(L, instance->data, GameDataBinding::getMetatableName());
 }
 
 static int GameDataValuePair_get_val0(lua_State* L)
 {
-    GameDataValuePair* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataValuePair is nil");
-    lua_pushinteger(L, b->val0);
+    GameDataValuePair* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataValuePair is nil");
+    lua_pushinteger(L, instance->val0);
     return 1;
 }
 
 // --- Setters for GameDataValuePair ---
 static int GameDataValuePair_set_data(lua_State* L)
 {
-    GameDataValuePair* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataValuePair is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for data");
+    GameDataValuePair* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataValuePair is nil");
+    instance->data = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int GameDataValuePair_set_val0(lua_State* L)
 {
-    GameDataValuePair* b = getB(L, 1);
-    if (!b) return luaL_error(L, "GameDataValuePair is nil");
-    b->val0 = (int)luaL_checkinteger(L, 2);
+    GameDataValuePair* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataValuePair is nil");
+    instance->val0 = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
@@ -49,6 +50,22 @@ Skipped methods needing manual binding:
   line 142: GameDataValuePair* _CONSTRUCTOR(...) - overloaded method
   line 144: GameDataValuePair* _CONSTRUCTOR(...) - overloaded method
 */
+
+int GameDataValuePairBinding::_CONSTRUCTOR(lua_State* L)
+{
+    GameDataValuePair* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataValuePair is nil");
+
+    if (lua_gettop(L) >= 3) {
+        GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+        int v = (int)luaL_checkinteger(L, 3);
+        GameDataValuePair* result = instance->_CONSTRUCTOR(d, v);
+        return pushObject<GameDataValuePair>(L, result, GameDataValuePairBinding::getMetatableName());
+    } else {
+        GameDataValuePair* result = instance->_CONSTRUCTOR();
+        return pushObject<GameDataValuePair>(L, result, GameDataValuePairBinding::getMetatableName());
+    }
+}
 
 int GameDataValuePairBinding::gc(lua_State* L)
 {
@@ -71,6 +88,7 @@ void GameDataValuePairBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", GameDataValuePairBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 
@@ -85,17 +103,13 @@ void GameDataValuePairBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, GameDataValuePairBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, GameDataValuePair_get_data);
-    lua_setfield(L, -2, "data");
-    lua_pushcfunction(L, GameDataValuePair_get_val0);
-    lua_setfield(L, -2, "val0");
+    registerGetter(L, "data", GameDataValuePair_get_data);
+    registerGetter(L, "val0", GameDataValuePair_get_val0);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, GameDataValuePair_set_data);
-    lua_setfield(L, -2, "data");
-    lua_pushcfunction(L, GameDataValuePair_set_val0);
-    lua_setfield(L, -2, "val0");
+    registerSetter(L, "data", GameDataValuePair_set_data);
+    registerSetter(L, "val0", GameDataValuePair_set_val0);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

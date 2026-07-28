@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "kenshi\Dialogue.h"
-#include "DialogActionBinding.h"
+#include "kenshi/Dialogue.h"
+#include "Bindings/DialogActionBinding.h"
 #include "Lua/BindingHelpers.h"
 
 typedef DialogLineData::DialogAction DialogAction;
@@ -8,46 +8,44 @@ typedef DialogLineData::DialogAction DialogAction;
 namespace KenshiLua
 {
 
-static DialogAction* getB(lua_State* L, int idx)
+static DialogAction* getInstance(lua_State* L, int idx)
 {
     return checkObject<DialogAction>(L, idx, DialogActionBinding::getMetatableName());
 }
 
 // --- Getters for DialogAction ---
-static int DialogAction_get_key(lua_State* L)
+static int DialogAction_get_value(lua_State* L)
 {
-    DialogAction* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogAction is nil");
-    lua_pushinteger(L, (lua_Integer)b->key);
+    DialogAction* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogAction is nil");
+    lua_pushinteger(L, instance->value);
     return 1;
 }
 
-static int DialogAction_get_value(lua_State* L)
+static int DialogAction_get_key(lua_State* L)
 {
-    DialogAction* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogAction is nil");
-    lua_pushinteger(L, b->value);
+    DialogAction* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogAction is nil");
+    lua_pushinteger(L, (lua_Integer)instance->key);
     return 1;
 }
 
 // --- Setters for DialogAction ---
-static int DialogAction_set_key(lua_State* L)
-{
-    DialogAction* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogAction is nil");
-    b->key = (DialogActionEnum)luaL_checkinteger(L, 2);
-    return 0;
-}
-
 static int DialogAction_set_value(lua_State* L)
 {
-    DialogAction* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogAction is nil");
-    b->value = (int)luaL_checkinteger(L, 2);
+    DialogAction* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogAction is nil");
+    instance->value = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
-
+static int DialogAction_set_key(lua_State* L)
+{
+    DialogAction* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogAction is nil");
+    instance->key = (DialogActionEnum)luaL_checkinteger(L, 2);
+    return 0;
+}
 
 int DialogActionBinding::gc(lua_State* L)
 {
@@ -84,17 +82,13 @@ void DialogActionBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DialogActionBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DialogAction_get_key);
-    lua_setfield(L, -2, "key");
-    lua_pushcfunction(L, DialogAction_get_value);
-    lua_setfield(L, -2, "value");
+    registerGetter(L, "value", DialogAction_get_value);
+    registerGetter(L, "key", DialogAction_get_key);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DialogAction_set_key);
-    lua_setfield(L, -2, "key");
-    lua_pushcfunction(L, DialogAction_set_value);
-    lua_setfield(L, -2, "value");
+    registerSetter(L, "value", DialogAction_set_value);
+    registerSetter(L, "key", DialogAction_set_key);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

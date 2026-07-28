@@ -1,64 +1,65 @@
 #include "pch.h"
-#include "kenshi\Dialogue.h"
+#include <kenshi\Dialogue.h>
 #include "DialogChoiceListBinding.h"
 #include "DialogLineDataBinding.h"
-#include "GameDataBinding.h"
-#include "Bindings/Util/LektorBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/DialogLineDataBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+
 
 namespace KenshiLua
 {
 
-static DialogChoiceList* getB(lua_State* L, int idx)
+static DialogChoiceList* getInstance(lua_State* L, int idx)
 {
     return checkObject<DialogChoiceList>(L, idx, DialogChoiceListBinding::getMetatableName());
 }
 
-// --- Getters for DialogChoiceList ---
 static int DialogChoiceList_get_conversationChoices(lua_State* L)
 {
-    DialogChoiceList* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogChoiceList is nil");
-    return pushObject<lektor<DialogLineData*>>(L, &b->conversationChoices, LektorPtrBinding<DialogLineData*>::metaName);
+    DialogChoiceList* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogChoiceList is nil");
+    return pushObject<lektor<DialogLineData*>>(L, &instance->conversationChoices, LektorPtrBinding<DialogLineData*>::metaName);
 }
 
 // --- Setters for DialogChoiceList ---
 static int DialogChoiceList_set_conversationChoices(lua_State* L)
 {
-    DialogChoiceList* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogChoiceList is nil");
+    DialogChoiceList* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogChoiceList is nil");
     auto* val = checkObject<lektor<DialogLineData*>>(L, 2, LektorPtrBinding<DialogLineData*>::metaName);
     if (!val) return luaL_error(L, "Expected lektor<DialogLineData*>");
-    b->conversationChoices = *val;
+    instance->conversationChoices = *val;
     return 0;
 }
 
-// --- Methods for DialogChoiceList ---
 int DialogChoiceListBinding::_CONSTRUCTOR(lua_State* L)
 {
-    DialogChoiceList* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogChoiceList is nil");
+    DialogChoiceList* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogChoiceList is nil");
 
-    DialogChoiceList* result = b->_CONSTRUCTOR();
+    DialogChoiceList* result = instance->_CONSTRUCTOR();
     return pushObject<DialogChoiceList>(L, result, DialogChoiceListBinding::getMetatableName());
 }
 
 int DialogChoiceListBinding::_DESTRUCTOR(lua_State* L)
 {
-    DialogChoiceList* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogChoiceList is nil");
+    DialogChoiceList* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogChoiceList is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 int DialogChoiceListBinding::add(lua_State* L)
 {
-    DialogChoiceList* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogChoiceList is nil");
-    GameData* conv = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    DialogChoiceList* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogChoiceList is nil");
+
+    GameData* conversation = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     DialogLineData* parent = checkObject<DialogLineData>(L, 3, DialogLineDataBinding::getMetatableName());
-    b->add(conv, parent);
+    instance->add(conversation, parent);
     return 0;
 }
 
@@ -100,13 +101,11 @@ void DialogChoiceListBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DialogChoiceListBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DialogChoiceList_get_conversationChoices);
-    lua_setfield(L, -2, "conversationChoices");
+    registerGetter(L, "conversationChoices", DialogChoiceList_get_conversationChoices);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DialogChoiceList_set_conversationChoices);
-    lua_setfield(L, -2, "conversationChoices");
+    registerSetter(L, "conversationChoices", DialogChoiceList_set_conversationChoices);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     LektorPtrBinding<DialogLineData*>::registerBinding(L, "lektor<DialogLineData*>", DialogLineDataBinding::getMetatableName());

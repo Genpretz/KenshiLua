@@ -1,12 +1,16 @@
 #include "pch.h"
-#include "kenshi\Dialogue.h"
+#include "kenshi/Dialogue.h"
 #include "RepetitionCounterBinding.h"
+#include "DialogStateBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Util/StdMapBinding.h"
 
 typedef Dialogue::RepetitionCounter RepetitionCounter;
 
 namespace KenshiLua
 {
+
+typedef StdMapBinding<EventTriggerEnum, Dialogue::RepetitionCounter::DialogState> RepetitionStatesMapBinding;
 
 static RepetitionCounter* getB(lua_State* L, int idx)
 {
@@ -18,8 +22,7 @@ static int RepetitionCounter_get_states(lua_State* L)
 {
     RepetitionCounter* b = getB(L, 1);
     if (!b) return luaL_error(L, "RepetitionCounter is nil");
-    // TODO: Unsupported type for states (std::map<EventTriggerEnum, Dialogue::RepetitionCounter::DialogState, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, Dialogue::RepetitionCounter::DialogState>, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'states' (type: std::map<EventTriggerEnum, Dialogue::RepetitionCounter::DialogState, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, Dialogue::RepetitionCounter::DialogState>, Ogre::GeneralAllocPolicy > >)");
+    return pushObject<RepetitionStatesMapBinding::MapType>(L, &b->states, RepetitionStatesMapBinding::metaName);
 }
 
 // --- Setters for RepetitionCounter ---
@@ -27,7 +30,10 @@ static int RepetitionCounter_set_states(lua_State* L)
 {
     RepetitionCounter* b = getB(L, 1);
     if (!b) return luaL_error(L, "RepetitionCounter is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for states");
+    auto* val = RepetitionStatesMapBinding::get(L, 2);
+    if (!val) return luaL_error(L, "Expected RepetitionStates map object");
+    b->states = *val;
+    return 0;
 }
 
 int RepetitionCounterBinding::setup(lua_State* L)
@@ -72,6 +78,15 @@ int RepetitionCounterBinding::getCount(lua_State* L)
     return 1;
 }
 
+int RepetitionCounterBinding::_CONSTRUCTOR(lua_State* L)
+{
+    RepetitionCounter* b = getB(L, 1);
+    if (!b) return luaL_error(L, "RepetitionCounter is nil");
+
+    RepetitionCounter* result = b->_CONSTRUCTOR();
+    return pushObject<RepetitionCounter>(L, result, RepetitionCounterBinding::getMetatableName());
+}
+
 int RepetitionCounterBinding::_DESTRUCTOR(lua_State* L)
 {
     RepetitionCounter* b = getB(L, 1);
@@ -80,11 +95,6 @@ int RepetitionCounterBinding::_DESTRUCTOR(lua_State* L)
     b->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 303: RepetitionCounter* _CONSTRUCTOR(...) - unsupported return type
-*/
 
 int RepetitionCounterBinding::gc(lua_State* L)
 {
@@ -111,6 +121,7 @@ void RepetitionCounterBinding::registerBinding(lua_State* L)
         { "count", RepetitionCounterBinding::count },
         { "getTimeSinceLastTrigger", RepetitionCounterBinding::getTimeSinceLastTrigger },
         { "getCount", RepetitionCounterBinding::getCount },
+        { "_CONSTRUCTOR", RepetitionCounterBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", RepetitionCounterBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -134,6 +145,8 @@ void RepetitionCounterBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, RepetitionCounter_set_states);
     lua_setfield(L, -2, "states");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    RepetitionStatesMapBinding::registerBinding(L, "KenshiLua.RepetitionStatesMap", nullptr, DialogStateBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

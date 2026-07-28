@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "kenshi\Dialogue.h"
+#include "kenshi\dialogue.h"
 #include "DialogueSpeechBubbleBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
 
-static DialogueSpeechBubble* getB(lua_State* L, int idx)
+static DialogueSpeechBubble* getInstance(lua_State* L, int idx)
 {
     return checkObject<DialogueSpeechBubble>(L, idx, DialogueSpeechBubbleBinding::getMetatableName());
 }
@@ -14,154 +14,209 @@ static DialogueSpeechBubble* getB(lua_State* L, int idx)
 // --- Getters for DialogueSpeechBubble ---
 static int DialogueSpeechBubble_get_stayOnScreen(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    lua_pushboolean(L, b->stayOnScreen ? 1 : 0);
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    lua_pushboolean(L, instance->stayOnScreen ? 1 : 0);
     return 1;
 }
 
 static int DialogueSpeechBubble_get_shout(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    lua_pushboolean(L, b->shout ? 1 : 0);
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    lua_pushboolean(L, instance->shout ? 1 : 0);
     return 1;
 }
 
 static int DialogueSpeechBubble_get_marginW(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    lua_pushinteger(L, b->marginW);
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    lua_pushinteger(L, instance->marginW);
     return 1;
 }
 
 static int DialogueSpeechBubble_get_marginH(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    lua_pushinteger(L, b->marginH);
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    lua_pushinteger(L, instance->marginH);
     return 1;
 }
 
 static int DialogueSpeechBubble_get_textBox(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    lua_pushinteger(L, (lua_Integer)b->textBox);
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    lua_pushlightuserdata(L, (void*)instance->textBox);
     return 1;
 }
 
+// --- Setters for DialogueSpeechBubble ---
 static int DialogueSpeechBubble_get_baseSize(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    // TODO: Unsupported type for baseSize (MyGUI::types::TSize<int>)
-    return luaL_error(L, "Unsupported property 'baseSize' (type: MyGUI::types::TSize<int>)");
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    lua_newtable(L);
+    lua_pushinteger(L, instance->baseSize.width);
+    lua_setfield(L, -2, "width");
+    lua_pushinteger(L, instance->baseSize.height);
+    lua_setfield(L, -2, "height");
+    return 1;
 }
 
-// --- Setters for DialogueSpeechBubble ---
 static int DialogueSpeechBubble_set_stayOnScreen(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    b->stayOnScreen = lua_toboolean(L, 2) != 0;
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    instance->stayOnScreen = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int DialogueSpeechBubble_set_shout(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    b->shout = lua_toboolean(L, 2) != 0;
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    instance->shout = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int DialogueSpeechBubble_set_marginW(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    b->marginW = (int)luaL_checkinteger(L, 2);
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    instance->marginW = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int DialogueSpeechBubble_set_marginH(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    b->marginH = (int)luaL_checkinteger(L, 2);
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    instance->marginH = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int DialogueSpeechBubble_set_textBox(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for textBox");
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    instance->textBox = (MyGUI::EditBox*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int DialogueSpeechBubble_set_baseSize(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for baseSize");
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+    if (!lua_istable(L, 2)) return luaL_error(L, "Argument 2 to set baseSize must be a table {width, height}");
+    lua_getfield(L, 2, "width");
+    int w = (int)luaL_optinteger(L, -1, instance->baseSize.width);
+    lua_pop(L, 1);
+    lua_getfield(L, 2, "height");
+    int h = (int)luaL_optinteger(L, -1, instance->baseSize.height);
+    lua_pop(L, 1);
+    instance->baseSize.width = w;
+    instance->baseSize.height = h;
+    return 0;
+}
+
+int DialogueSpeechBubbleBinding::_CONSTRUCTOR(lua_State* L)
+{
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+
+    bool shout = lua_toboolean(L, 2) != 0;
+    bool importnt = lua_toboolean(L, 3) != 0;
+    DialogueSpeechBubble* result = instance->_CONSTRUCTOR(shout, importnt);
+    return pushObject<DialogueSpeechBubble>(L, result, DialogueSpeechBubbleBinding::getMetatableName());
 }
 
 int DialogueSpeechBubbleBinding::_DESTRUCTOR(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 int DialogueSpeechBubbleBinding::setText(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
 
-    std::string text = luaL_checkstring(L, 2);
-    b->setText(text);
+    const std::string text = luaL_checkstring(L, 2);
+    instance->setText(text);
     return 0;
 }
 
 int DialogueSpeechBubbleBinding::setAlpha(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
 
     float value = (float)luaL_checknumber(L, 2);
-    b->setAlpha(value);
+    instance->setAlpha(value);
+    return 0;
+}
+
+int DialogueSpeechBubbleBinding::setPosition(lua_State* L)
+{
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+
+    if (lua_gettop(L) >= 3 && lua_isnumber(L, 2) && lua_isnumber(L, 3))
+    {
+        int x = (int)luaL_checkinteger(L, 2);
+        int y = (int)luaL_checkinteger(L, 3);
+        instance->setPosition(x, y);
+    }
+    else
+    {
+        Ogre::Vector3 pos;
+        readVector3(L, 2, pos);
+        instance->setPosition(pos);
+    }
     return 0;
 }
 
 int DialogueSpeechBubbleBinding::reset(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
 
-    b->reset();
+    instance->reset();
     return 0;
 }
 
 int DialogueSpeechBubbleBinding::getAlpha(lua_State* L)
 {
-    DialogueSpeechBubble* b = getB(L, 1);
-    if (!b) return luaL_error(L, "DialogueSpeechBubble is nil");
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
 
-    float result = b->getAlpha();
+    float result = instance->getAlpha();
     lua_pushnumber(L, result);
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 102: DialogueSpeechBubble* _CONSTRUCTOR(...) - unsupported return type
-  line 107: void setPosition(...) - overloaded method
-  line 108: void setPosition(...) - overloaded method
-  line 111: MyGUI::types::TRect<int> getRect(...) - unsupported return type
-*/
+int DialogueSpeechBubbleBinding::getRect(lua_State* L)
+{
+    DialogueSpeechBubble* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
+
+    MyGUI::types::TRect<int> r = instance->getRect();
+    lua_newtable(L);
+    lua_pushinteger(L, r.left);
+    lua_setfield(L, -2, "left");
+    lua_pushinteger(L, r.top);
+    lua_setfield(L, -2, "top");
+    lua_pushinteger(L, r.width());
+    lua_setfield(L, -2, "width");
+    lua_pushinteger(L, r.height());
+    lua_setfield(L, -2, "height");
+    return 1;
+}
 
 int DialogueSpeechBubbleBinding::gc(lua_State* L)
 {
@@ -184,11 +239,14 @@ void DialogueSpeechBubbleBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", DialogueSpeechBubbleBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", DialogueSpeechBubbleBinding::_DESTRUCTOR },
         { "setText", DialogueSpeechBubbleBinding::setText },
         { "setAlpha", DialogueSpeechBubbleBinding::setAlpha },
+        { "setPosition", DialogueSpeechBubbleBinding::setPosition },
         { "reset", DialogueSpeechBubbleBinding::reset },
         { "getAlpha", DialogueSpeechBubbleBinding::getAlpha },
+        { "getRect", DialogueSpeechBubbleBinding::getRect },
         { 0, 0 }
     };
 
@@ -203,33 +261,21 @@ void DialogueSpeechBubbleBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, DialogueSpeechBubbleBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, DialogueSpeechBubble_get_stayOnScreen);
-    lua_setfield(L, -2, "stayOnScreen");
-    lua_pushcfunction(L, DialogueSpeechBubble_get_shout);
-    lua_setfield(L, -2, "shout");
-    lua_pushcfunction(L, DialogueSpeechBubble_get_marginW);
-    lua_setfield(L, -2, "marginW");
-    lua_pushcfunction(L, DialogueSpeechBubble_get_marginH);
-    lua_setfield(L, -2, "marginH");
-    lua_pushcfunction(L, DialogueSpeechBubble_get_textBox);
-    lua_setfield(L, -2, "textBox");
-    lua_pushcfunction(L, DialogueSpeechBubble_get_baseSize);
-    lua_setfield(L, -2, "baseSize");
+    registerGetter(L, "stayOnScreen", DialogueSpeechBubble_get_stayOnScreen);
+    registerGetter(L, "shout", DialogueSpeechBubble_get_shout);
+    registerGetter(L, "marginW", DialogueSpeechBubble_get_marginW);
+    registerGetter(L, "marginH", DialogueSpeechBubble_get_marginH);
+    registerGetter(L, "textBox", DialogueSpeechBubble_get_textBox);
+    registerGetter(L, "baseSize", DialogueSpeechBubble_get_baseSize);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, DialogueSpeechBubble_set_stayOnScreen);
-    lua_setfield(L, -2, "stayOnScreen");
-    lua_pushcfunction(L, DialogueSpeechBubble_set_shout);
-    lua_setfield(L, -2, "shout");
-    lua_pushcfunction(L, DialogueSpeechBubble_set_marginW);
-    lua_setfield(L, -2, "marginW");
-    lua_pushcfunction(L, DialogueSpeechBubble_set_marginH);
-    lua_setfield(L, -2, "marginH");
-    lua_pushcfunction(L, DialogueSpeechBubble_set_textBox);
-    lua_setfield(L, -2, "textBox");
-    lua_pushcfunction(L, DialogueSpeechBubble_set_baseSize);
-    lua_setfield(L, -2, "baseSize");
+    registerSetter(L, "stayOnScreen", DialogueSpeechBubble_set_stayOnScreen);
+    registerSetter(L, "shout", DialogueSpeechBubble_set_shout);
+    registerSetter(L, "marginW", DialogueSpeechBubble_set_marginW);
+    registerSetter(L, "marginH", DialogueSpeechBubble_set_marginH);
+    registerSetter(L, "textBox", DialogueSpeechBubble_set_textBox);
+    registerSetter(L, "baseSize", DialogueSpeechBubble_set_baseSize);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

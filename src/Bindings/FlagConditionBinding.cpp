@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "kenshi\Dialogue.h"
+#include "kenshi/Dialogue.h"
 #include "FlagConditionBinding.h"
 #include "Lua/BindingHelpers.h"
 
@@ -8,7 +8,7 @@ typedef DialogLineData::FlagCondition FlagCondition;
 namespace KenshiLua
 {
 
-static FlagCondition* getB(lua_State* L, int idx)
+static FlagCondition* getInstance(lua_State* L, int idx)
 {
     return checkObject<FlagCondition>(L, idx, FlagConditionBinding::getMetatableName());
 }
@@ -16,50 +16,50 @@ static FlagCondition* getB(lua_State* L, int idx)
 // --- Getters for FlagCondition ---
 static int FlagCondition_get_key(lua_State* L)
 {
-    FlagCondition* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FlagCondition is nil");
-    lua_pushinteger(L, (lua_Integer)b->key);
+    FlagCondition* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FlagCondition is nil");
+    lua_pushinteger(L, (lua_Integer)instance->key);
     return 1;
 }
 
 static int FlagCondition_get_want(lua_State* L)
 {
-    FlagCondition* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FlagCondition is nil");
-    lua_pushboolean(L, b->want ? 1 : 0);
+    FlagCondition* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FlagCondition is nil");
+    lua_pushboolean(L, instance->want ? 1 : 0);
     return 1;
 }
 
 static int FlagCondition_get_flags(lua_State* L)
 {
-    FlagCondition* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FlagCondition is nil");
-    lua_pushinteger(L, b->flags);
+    FlagCondition* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FlagCondition is nil");
+    lua_pushinteger(L, instance->flags);
     return 1;
 }
 
 // --- Setters for FlagCondition ---
 static int FlagCondition_set_key(lua_State* L)
 {
-    FlagCondition* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FlagCondition is nil");
-    b->key = (DialogConditionEnum)luaL_checkinteger(L, 2);
+    FlagCondition* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FlagCondition is nil");
+    instance->key = (DialogConditionEnum)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int FlagCondition_set_want(lua_State* L)
 {
-    FlagCondition* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FlagCondition is nil");
-    b->want = lua_toboolean(L, 2) != 0;
+    FlagCondition* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FlagCondition is nil");
+    instance->want = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 static int FlagCondition_set_flags(lua_State* L)
 {
-    FlagCondition* b = getB(L, 1);
-    if (!b) return luaL_error(L, "FlagCondition is nil");
-    b->flags = (unsigned int)luaL_checkinteger(L, 2);
+    FlagCondition* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FlagCondition is nil");
+    instance->flags = (unsigned int)luaL_checkinteger(L, 2);
     return 0;
 }
 
@@ -100,21 +100,15 @@ void FlagConditionBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FlagConditionBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FlagCondition_get_key);
-    lua_setfield(L, -2, "key");
-    lua_pushcfunction(L, FlagCondition_get_want);
-    lua_setfield(L, -2, "want");
-    lua_pushcfunction(L, FlagCondition_get_flags);
-    lua_setfield(L, -2, "flags");
+    registerGetter(L, "key", FlagCondition_get_key);
+    registerGetter(L, "want", FlagCondition_get_want);
+    registerGetter(L, "flags", FlagCondition_get_flags);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FlagCondition_set_key);
-    lua_setfield(L, -2, "key");
-    lua_pushcfunction(L, FlagCondition_set_want);
-    lua_setfield(L, -2, "want");
-    lua_pushcfunction(L, FlagCondition_set_flags);
-    lua_setfield(L, -2, "flags");
+    registerSetter(L, "key", FlagCondition_set_key);
+    registerSetter(L, "want", FlagCondition_set_want);
+    registerSetter(L, "flags", FlagCondition_set_flags);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

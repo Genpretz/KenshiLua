@@ -1,14 +1,13 @@
 #include "pch.h"
-#include "kenshi\Dialogue.h"
+#include "kenshi\dialogue.h"
 #include "CampaignTriggerDataBinding.h"
-#include "GameDataBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 
 namespace KenshiLua
 {
 
-static CampaignTriggerData* getB(lua_State* L, int idx)
+static CampaignTriggerData* getInstance(lua_State* L, int idx)
 {
     return checkObject<CampaignTriggerData>(L, idx, CampaignTriggerDataBinding::getMetatableName());
 }
@@ -16,64 +15,65 @@ static CampaignTriggerData* getB(lua_State* L, int idx)
 // --- Getters for CampaignTriggerData ---
 static int CampaignTriggerData_get_what(lua_State* L)
 {
-    CampaignTriggerData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "CampaignTriggerData is nil");
-    return pushObject<GameData>(L, b->what, GameDataBinding::getMetatableName());
+    CampaignTriggerData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignTriggerData is nil");
+    return pushObject<GameData>(L, instance->what, GameDataBinding::getMetatableName());
 }
 
 static int CampaignTriggerData_get_minTime(lua_State* L)
 {
-    CampaignTriggerData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "CampaignTriggerData is nil");
-    lua_pushinteger(L, b->minTime);
+    CampaignTriggerData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignTriggerData is nil");
+    lua_pushinteger(L, instance->minTime);
     return 1;
 }
 
 static int CampaignTriggerData_get_maxTime(lua_State* L)
 {
-    CampaignTriggerData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "CampaignTriggerData is nil");
-    lua_pushinteger(L, b->maxTime);
+    CampaignTriggerData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignTriggerData is nil");
+    lua_pushinteger(L, instance->maxTime);
     return 1;
 }
 
 static int CampaignTriggerData_get_chance(lua_State* L)
 {
-    CampaignTriggerData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "CampaignTriggerData is nil");
-    lua_pushnumber(L, b->chance);
+    CampaignTriggerData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignTriggerData is nil");
+    lua_pushnumber(L, instance->chance);
     return 1;
 }
 
 // --- Setters for CampaignTriggerData ---
 static int CampaignTriggerData_set_what(lua_State* L)
 {
-    CampaignTriggerData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "CampaignTriggerData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for what");
+    CampaignTriggerData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignTriggerData is nil");
+    instance->what = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int CampaignTriggerData_set_minTime(lua_State* L)
 {
-    CampaignTriggerData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "CampaignTriggerData is nil");
-    b->minTime = (int)luaL_checkinteger(L, 2);
+    CampaignTriggerData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignTriggerData is nil");
+    instance->minTime = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int CampaignTriggerData_set_maxTime(lua_State* L)
 {
-    CampaignTriggerData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "CampaignTriggerData is nil");
-    b->maxTime = (int)luaL_checkinteger(L, 2);
+    CampaignTriggerData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignTriggerData is nil");
+    instance->maxTime = (int)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int CampaignTriggerData_set_chance(lua_State* L)
 {
-    CampaignTriggerData* b = getB(L, 1);
-    if (!b) return luaL_error(L, "CampaignTriggerData is nil");
-    b->chance = (float)luaL_checknumber(L, 2);
+    CampaignTriggerData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignTriggerData is nil");
+    instance->chance = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
@@ -114,25 +114,17 @@ void CampaignTriggerDataBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, CampaignTriggerDataBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, CampaignTriggerData_get_what);
-    lua_setfield(L, -2, "what");
-    lua_pushcfunction(L, CampaignTriggerData_get_minTime);
-    lua_setfield(L, -2, "minTime");
-    lua_pushcfunction(L, CampaignTriggerData_get_maxTime);
-    lua_setfield(L, -2, "maxTime");
-    lua_pushcfunction(L, CampaignTriggerData_get_chance);
-    lua_setfield(L, -2, "chance");
+    registerGetter(L, "what", CampaignTriggerData_get_what);
+    registerGetter(L, "minTime", CampaignTriggerData_get_minTime);
+    registerGetter(L, "maxTime", CampaignTriggerData_get_maxTime);
+    registerGetter(L, "chance", CampaignTriggerData_get_chance);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, CampaignTriggerData_set_what);
-    lua_setfield(L, -2, "what");
-    lua_pushcfunction(L, CampaignTriggerData_set_minTime);
-    lua_setfield(L, -2, "minTime");
-    lua_pushcfunction(L, CampaignTriggerData_set_maxTime);
-    lua_setfield(L, -2, "maxTime");
-    lua_pushcfunction(L, CampaignTriggerData_set_chance);
-    lua_setfield(L, -2, "chance");
+    registerSetter(L, "what", CampaignTriggerData_set_what);
+    registerSetter(L, "minTime", CampaignTriggerData_set_minTime);
+    registerSetter(L, "maxTime", CampaignTriggerData_set_maxTime);
+    registerSetter(L, "chance", CampaignTriggerData_set_chance);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
