@@ -73,14 +73,15 @@ end
    - Pressing `Ctrl` + `Shift` + `L` in-game will open KenshiLua's Main GUI. From here you can access the Script Editor and load, edit, save, and run scripts using the buttons on the Script Editor's toolbar as well as access other features.
 <img width="2560" height="1600" alt="kenshi Screenshot 2026 07 13 - 14 33 49 79" src="https://github.com/user-attachments/assets/1dd44684-220b-4db2-ba56-7e9fba7f7d91" />
 
-## Building from Scratch
+## Building from Scratch (UNFINISHED)
 
 1. Build KenshiLib and LuaJit against v100 Platform Toolset or Windows 7.1 SDK
-2. Link against both KenshiLib and LuaJit in the KenshiLua project.
-3. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi and KenshiLib).
-4. Using the FCS, create a new mod named `KenshiLua`.
-5. Copy the repository's `mygui` directory to the KenshiLua mod directory, `./Kenshi/mods/KenshiLua`
-6. Place the newly built `KenshiLua.dll` and `lua51.dll` binaryies `RE_Kenshi.json`, `fcs.def` into the same `KenshiLua` mod directory.
+2. Link the project against both KenshiLib and LuaJit in the KenshiLua project.
+3. KenshiLib v0.3.0 requires some changes in order for KenshiLua to compile properly. Mostly related to missing #pragma once, #includes, or redefinition errors caused by duplicate versions of the same class in KenshiLib's header files. Exact instructions will be available in the future.
+4. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi and KenshiLib).
+5. Using the FCS, create a new mod named `KenshiLua`.
+6. Copy the repository's `mygui` directory to the KenshiLua mod directory, `./Kenshi/mods/KenshiLua`
+7. Place the newly built `KenshiLua.dll` and `lua51.dll` binaryies `RE_Kenshi.json`, `fcs.def` into the same `KenshiLua` mod directory.
 
 #### Notes on Toolchain Constraints
 * The game and KenshiLib are built against MSVC2010-era assumptions, including C++ ABI layout and runtime library behavior. KenshiLua and all ofther dependencies must match these constraints to ensure stable integration.
