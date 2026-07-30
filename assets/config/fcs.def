@@ -1,7 +1,11 @@
 enum itemType { LUA_SCRIPT = 322 }
 
+[FCS_LAYOUT]
+Lua: LUA_SCRIPT
+
 [LUA_SCRIPT]
 file: 	"Lua script|*.lua" "run the following .lua script when the dialogue line occurs."
+description: ""	multiline "description of the .lua script"
 
 [DIALOGUE,DIALOGUE_LINE,WORD_SWAPS]
 run lua script: LUA_SCRIPT "Attach a Lua script to this piece of dialogue."
