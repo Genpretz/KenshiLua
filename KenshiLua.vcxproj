@@ -1,4 +1,4 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -957,6 +957,7 @@ copy /Y "$(ProjectDir)extern\luajit\lib\lua51.dll" "$(OutDir)..\"</Command>
     <ClInclude Include="src\Gui\KenshiLua_ScriptManager.h" />
     <ClInclude Include="src\Gui\KenshiLua_Settings.h" />
     <ClInclude Include="src\Hooks.h" />
+    <ClInclude Include="src\FileWatcher.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\Lua\BindingHelpers.h" />
     <ClInclude Include="src\Lua\LuaBindings.h" />
@@ -1312,6 +1313,7 @@ copy /Y "$(ProjectDir)extern\luajit\lib\lua51.dll" "$(OutDir)..\"</Command>
     <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\FileWatcher.cpp" />
     <ClCompile Include="src\Plugin.cpp" />
     <ClCompile Include="src\ScriptLoader.cpp" />
   </ItemGroup>

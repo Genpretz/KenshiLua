@@ -24,9 +24,11 @@ namespace KenshiLua
 
         int getLogLevel() const;
         bool isStartMinimized() const;
+        bool isHotReloadEnabled() const;
 
         void setLogLevel(int level);
         void setStartMinimized(bool minimized);
+        void setHotReloadEnabled(bool enabled);
         void setToggleGuiKey(OIS::KeyCode key);
         void setToggleGuiCtrl(bool ctrl);
         void setToggleGuiShift(bool shift);
@@ -46,6 +48,7 @@ namespace KenshiLua
         bool m_debugLoggingEnabled;
         int m_logLevel;
         bool m_startMinimized;
+        bool m_enableHotReload;
 
         OIS::KeyCode m_toggleGuiKey;
         bool m_toggleGuiCtrl;

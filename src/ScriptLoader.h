@@ -40,6 +40,9 @@ public:
     // Discards script-introduced globals and re-runs every script.
     void reloadAll(lua_State* L);
 
+    // Reloads a single script file in its sandboxed environment.
+    bool reloadSingleScript(lua_State* L, const std::string& absolutePath);
+
     // Resets the script loader state so scripts can be re-discovered and loaded again.
     void reset();
 
@@ -59,6 +62,7 @@ public:
 
     void addStoppedScript(const std::string& path) { m_stoppedScripts.insert(path); }
     void removeStoppedScript(const std::string& path) { m_stoppedScripts.erase(path); }
+    void clearStoppedScripts() { m_stoppedScripts.clear(); }
     bool isScriptStopped(const std::string& path) const { return m_stoppedScripts.find(path) != m_stoppedScripts.end(); }
 
     // Walks ou->activeMods, discovers all *.lua files.
@@ -69,6 +73,7 @@ private:
     ScriptLoader& operator=(const ScriptLoader&);
 
     bool runScript(lua_State* L, LoadedScript& s);
+    void updateScriptStatus(const std::string& absolutePath, bool loaded, const std::string& error = "");
 
     std::vector<LoadedScript>  m_scripts;
     std::vector<std::string>   m_activeModNames;

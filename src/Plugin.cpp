@@ -15,6 +15,8 @@
 #include "Benchmark.h"
 #include <mygui/MyGUI.h>
 
+#include "FileWatcher.h"
+
 namespace KenshiLua
 {
 
@@ -81,6 +83,7 @@ void Plugin::shutdown()
 
     MyGuiBinding::shutdown();
     ScriptLoader::get().reset();
+    FileWatcher::get().reset();
 
     if (g_luaState) {
         EventSystem::get().clear();

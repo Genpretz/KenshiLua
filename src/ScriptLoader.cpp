@@ -10,6 +10,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/system/error_code.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include <algorithm>
 #include <cstring>
@@ -22,17 +24,14 @@ namespace KenshiLua
 
 namespace fs = boost::filesystem;
 
+static void normalizePathSlashes(std::string& path)
+{
+    boost::algorithm::replace_all(path, "\\", "/");
+}
+
 static bool endsWithCaseInsensitive(const std::string& s, const std::string& suffix)
 {
-    if (s.size() < suffix.size()) return false;
-    for (size_t i = 0; i < suffix.size(); ++i) {
-        char a = s[s.size() - suffix.size() + i];
-        char b = suffix[i];
-        if (a >= 'A' && a <= 'Z') a = (char)(a + ('a' - 'A'));
-        if (b >= 'A' && b <= 'Z') b = (char)(b + ('a' - 'A'));
-        if (a != b) return false;
-    }
-    return true;
+    return boost::algorithm::iends_with(s, suffix);
 }
 
 static std::string makeChunkName(const std::string& modName, const std::string& relPath)
@@ -48,11 +47,22 @@ static void createSandboxEnv(lua_State* L)
 {
     lua_newtable(L);
     lua_newtable(L);
-    lua_pushglobaltable(L);
+    lua_pushvalue(L, LUA_GLOBALSINDEX);
     lua_setfield(L, -2, "__index");
     lua_setmetatable(L, -2);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "_ENV");
+}
+
+void ScriptLoader::updateScriptStatus(const std::string& absolutePath, bool loaded, const std::string& error)
+{
+    for (size_t i = 0; i < m_scripts.size(); ++i) {
+        if (m_scripts[i].absolutePath == absolutePath) {
+            m_scripts[i].loaded = loaded;
+            m_scripts[i].lastError = error;
+            break;
+        }
+    }
 }
 
 ScriptLoader::ScriptLoader() : m_loaded(false) {}
@@ -124,9 +134,7 @@ void ScriptLoader::discover()
             } else {
                 s.relativePath = s.absolutePath;
             }
-            for (size_t j = 0; j < s.relativePath.size(); ++j) {
-                if (s.relativePath[j] == '\\') s.relativePath[j] = '/';
-            }
+            normalizePathSlashes(s.relativePath);
             s.chunkName = makeChunkName(s.modName, s.relativePath);
 
             // Restore previous running state if it existed
@@ -161,13 +169,7 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
         std::string errStr = "could not open " + absolutePath;
         logToFileError("ScriptLoader: " + errStr);
         if (outError) *outError = errStr;
-        for (size_t i = 0; i < m_scripts.size(); ++i) {
-            if (m_scripts[i].absolutePath == absolutePath) {
-                m_scripts[i].loaded = false;
-                m_scripts[i].lastError = errStr;
-                break;
-            }
-        }
+        updateScriptStatus(absolutePath, false, errStr);
         return false;
     }
     std::streamsize sz = f.tellg();
@@ -180,13 +182,7 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
             logToFileError("ScriptLoader: " + errStr);
             if (outError) *outError = errStr;
             lua_settop(L, top);
-            for (size_t i = 0; i < m_scripts.size(); ++i) {
-                if (m_scripts[i].absolutePath == absolutePath) {
-                    m_scripts[i].loaded = false;
-                    m_scripts[i].lastError = errStr;
-                    break;
-                }
-            }
+            updateScriptStatus(absolutePath, false, errStr);
             return false;
         }
     }
@@ -198,13 +194,7 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
         logToFileError("ScriptLoader: load failed: " + chunkName + " : " + errStr);
         if (outError) *outError = errStr;
         lua_settop(L, top);
-        for (size_t i = 0; i < m_scripts.size(); ++i) {
-            if (m_scripts[i].absolutePath == absolutePath) {
-                m_scripts[i].loaded = false;
-                m_scripts[i].lastError = errStr;
-                break;
-            }
-        }
+        updateScriptStatus(absolutePath, false, errStr);
         return false;
     }
 
@@ -222,24 +212,12 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
         logToFileError("ScriptLoader: runtime error in " + chunkName + " : " + pcallErr);
         if (outError) *outError = pcallErr;
         lua_settop(L, top);
-        for (size_t i = 0; i < m_scripts.size(); ++i) {
-            if (m_scripts[i].absolutePath == absolutePath) {
-                m_scripts[i].loaded = false;
-                m_scripts[i].lastError = pcallErr;
-                break;
-            }
-        }
+        updateScriptStatus(absolutePath, false, pcallErr);
         return false;
     }
 
     lua_settop(L, top);
-    for (size_t i = 0; i < m_scripts.size(); ++i) {
-        if (m_scripts[i].absolutePath == absolutePath) {
-            m_scripts[i].loaded = true;
-            m_scripts[i].lastError.clear();
-            break;
-        }
-    }
+    updateScriptStatus(absolutePath, true);
     return true;
 }
 
@@ -293,6 +271,33 @@ void ScriptLoader::reloadAll(lua_State* L)
     m_loaded = true;
 }
 
+bool ScriptLoader::reloadSingleScript(lua_State* L, const std::string& absolutePath)
+{
+    if (!L) return false;
+
+    for (size_t i = 0; i < m_scripts.size(); ++i) {
+        if (m_scripts[i].absolutePath == absolutePath) {
+            if (isScriptStopped(absolutePath)) {
+                logToFile("ScriptLoader: skipping hot reload of stopped script: " + m_scripts[i].chunkName);
+                return false;
+            }
+            logToFile("ScriptLoader: Hot-reloading script: " + m_scripts[i].chunkName);
+            return runScript(L, m_scripts[i]);
+        }
+    }
+
+    // New script file discovered
+    discover();
+    for (size_t i = 0; i < m_scripts.size(); ++i) {
+        if (m_scripts[i].absolutePath == absolutePath) {
+            logToFile("ScriptLoader: Hot-reloading newly discovered script: " + m_scripts[i].chunkName);
+            return runScript(L, m_scripts[i]);
+        }
+    }
+
+    return false;
+}
+
 void ScriptLoader::reset()
 {
     m_scripts.clear();
@@ -313,10 +318,7 @@ std::string ScriptLoader::resolveScriptPath(const std::string& filename)
     if (!::ou) return "";
 
     std::string normFilename = filename;
-    for (size_t i = 0; i < normFilename.size(); ++i)
-    {
-        if (normFilename[i] == '\\') normFilename[i] = '/';
-    }
+    normalizePathSlashes(normFilename);
 
     if (normFilename.size() >= 2 && normFilename[0] == '.' && normFilename[1] == '/')
     {
@@ -383,10 +385,7 @@ std::string ScriptLoader::resolveScriptPath(const std::string& filename)
 
                 std::string p = rit->path().string();
                 std::string normP = p;
-                for (size_t j = 0; j < normP.size(); ++j)
-                {
-                    if (normP[j] == '\\') normP[j] = '/';
-                }
+                normalizePathSlashes(normP);
 
                 std::string matchSuffix = "/" + suffix;
                 if (normP.size() >= matchSuffix.size() && normP.compare(normP.size() - matchSuffix.size(), matchSuffix.size(), matchSuffix) == 0)

@@ -141,6 +141,7 @@ Config::Config()
     , m_debugLoggingEnabled(false)
     , m_logLevel(LogLevel_Log)
     , m_startMinimized(true)
+    , m_enableHotReload(false)
     , m_toggleGuiKey(OIS::KC_L)
     , m_toggleGuiCtrl(true)
     , m_toggleGuiShift(true)
@@ -232,6 +233,8 @@ void Config::load(void* hModule)
             }
         } else if (key == "start_minimized") {
             m_startMinimized = (val == "true" || val == "1");
+        } else if (key == "enable_hot_reload" || key == "hot_reload") {
+            m_enableHotReload = (val == "true" || val == "1");
         } else if (key == "gui_toggle_key" || key == "toggle_gui_key") {
             OIS::KeyCode keycode = parseKeyCode(val);
             if (keycode != OIS::KC_UNASSIGNED) {
@@ -288,6 +291,11 @@ bool Config::isStartMinimized() const
     return m_startMinimized;
 }
 
+bool Config::isHotReloadEnabled() const
+{
+    return m_enableHotReload;
+}
+
 void Config::setLogLevel(int level)
 {
     m_logLevel = level;
@@ -297,6 +305,11 @@ void Config::setLogLevel(int level)
 void Config::setStartMinimized(bool minimized)
 {
     m_startMinimized = minimized;
+}
+
+void Config::setHotReloadEnabled(bool enabled)
+{
+    m_enableHotReload = enabled;
 }
 
 void Config::setToggleGuiKey(OIS::KeyCode key)
@@ -387,7 +400,10 @@ void Config::save()
     file << "toggle_gui_alt=" << (m_toggleGuiAlt ? "true" : "false") << "\n\n";
 
     file << "# Start minimized (if true, toggled using keybind. if false, visible on start)\n";
-    file << "start_minimized=" << (m_startMinimized ? "true" : "false") << "\n";
+    file << "start_minimized=" << (m_startMinimized ? "true" : "false") << "\n\n";
+
+    file << "# Automatic file-watcher hot reload system (default false)\n";
+    file << "enable_hot_reload=" << (m_enableHotReload ? "true" : "false") << "\n";
 
     file.close();
     logToFile("Config: Saved configuration to " + m_configPath);
