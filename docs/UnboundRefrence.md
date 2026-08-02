@@ -8,53 +8,28 @@ This document registers all C++ SDK classes and complex types that are currently
 
 | Raw C++ Type | Occurrence Count |
 | :--- | :--- |
-| `AABB2D` | 8 |
-| `AABB2D*` | 2 |
-| `AIOptions*` | 1 |
-| `AbstractMovementBase*` | 1 |
-| `ActivePlatoon*` | 1 |
-| `AlarmManager*` | 2 |
-| `AnimalInventoryLayout*` | 1 |
-| `AnimationClass*` | 3 |
+| `AABB2D` | 6 |
 | `AppearanceAnimal*` | 1 |
 | `AppearanceBase*` | 1 |
 | `AppearanceHuman*` | 1 |
-| `AreaBiomeGroup*` | 3 |
-| `Armour*` | 1 |
 | `Array2d<Item>` | 1 |
-| `AttachedEffect*` | 1 |
-| `AttachedEntity*` | 2 |
-| `AttackSlotManager*` | 1 |
-| `AudioSystemGlobal*` | 1 |
-| `BasePopulationManager*` | 1 |
+| `BOOL` | 2 |
 | `BuildModeWindow*` | 1 |
-| `Building*` | 4 |
+| `Building*` | 6 |
 | `BuildingCategory*` | 2 |
 | `BuildingGroup*` | 2 |
-| `BuildingItemGroup*` | 1 |
-| `CPerfTimer` | 1 |
 | `CameraClass*` | 1 |
-| `CharMovement*` | 2 |
-| `Character*` | 3 |
-| `CharacterAnimal*` | 1 |
+| `Character*` | 2 |
 | `CharacterEditWindow*` | 1 |
-| `CharacterHuman*` | 1 |
-| `CharacterMemory*` | 1 |
 | `CharacterStatsWindow*` | 1 |
 | `CharacterStatsWindow::Stat*` | 2 |
 | `CharacterTradingWindow*` | 1 |
 | `CombatClass*` | 1 |
-| `CombatMovementController` | 2 |
-| `CombatMovementController*` | 2 |
 | `CombatTechniqueData*` | 1 |
-| `ConstantTracerT*` | 1 |
 | `ConstructionState*` | 2 |
 | `ConsumptionItem*` | 2 |
-| `ContainerItem*` | 1 |
 | `CraftingBuilding*` | 1 |
 | `CraftingItem*` | 1 |
-| `Crossbow*` | 1 |
-| `Damages*` | 3 |
 | `DataObjectContainer*` | 2 |
 | `DataPanelLine*` | 8 |
 | `DataPanelLine_Research*` | 2 |
@@ -62,67 +37,43 @@ This document registers all C++ SDK classes and complex types that are currently
 | `DataPanelLine_TextEditable*` | 2 |
 | `DatapanelGUI*` | 4 |
 | `DelayedSpawnMsg*` | 2 |
-| `DialogLineData*` | 10 |
-| `DialogState*` | 1 |
-| `DialogueSpeechBubble*` | 2 |
-| `DoorLock*` | 1 |
 | `DoorStuff*` | 1 |
 | `FactionListWindow*` | 1 |
 | `FactionsScreen*` | 1 |
-| `FactoryCallbackInterface*` | 2 |
 | `FarmBatch*` | 1 |
 | `FarmBuilding*` | 1 |
-| `FlockingTools` | 1 |
 | `Footprint*` | 2 |
 | `FootprintNode*` | 2 |
-| `Formation*` | 2 |
-| `FormationMover` | 2 |
-| `FormationMover*` | 1 |
 | `FurnaceBuilding*` | 1 |
-| `GameData*` | 13 |
-| `GameDataContainer*` | 2 |
-| `GameDataCopyStandalone*` | 3 |
+| `GameData*` | 6 |
 | `GameDataHeader` | 4 |
 | `GameDataHeader*` | 3 |
-| `GameDataManager*` | 1 |
 | `GameDataReference*` | 3 |
-| `GameDataValuePair*` | 2 |
-| `GameSaveState` | 28 |
-| `GameSaveState*` | 4 |
-| `GatewayBuilding*` | 5 |
+| `GameSaveState` | 32 |
+| `GameSaveState*` | 3 |
+| `GatewayBuilding*` | 1 |
 | `GeneratorBuilding*` | 1 |
 | `GenericInventoryLayout*` | 2 |
-| `GroupSense*` | 1 |
-| `GunClass*` | 1 |
-| `HandleList*` | 1 |
-| `HasRoomCache*` | 1 |
 | `HavokCharacter*` | 1 |
-| `HitMaterialType` | 7 |
+| `HitMaterialType` | 9 |
 | `InstanceID*` | 3 |
 | `InventoryGUI*` | 8 |
 | `InventoryIcon*` | 2 |
-| `InventoryItemBase*` | 1 |
-| `InventoryLayout*` | 4 |
 | `InventorySection*` | 2 |
 | `InventorySectionGUI*` | 1 |
 | `InventoryTradeData*` | 3 |
+| `Item*` | 5 |
 | `ItemListWindow*` | 1 |
 | `LightBuilding*` | 1 |
-| `Limiter*` | 1 |
+| `LightEnt*` | 1 |
 | `LoadingWindow*` | 1 |
-| `LockedArmour*` | 1 |
 | `ManagementScreen*` | 1 |
 | `MapMarkerCharacter*` | 1 |
 | `MapMarkerTown*` | 1 |
-| `MedianFilter` | 2 |
-| `MedianFilter*` | 1 |
-| `MedianFilter2DVector*` | 1 |
+| `Mask` | 3 |
 | `MeshDataLookup*` | 1 |
 | `MeshLoadData*` | 2 |
-| `MessageRoller*` | 1 |
 | `ModInfo*` | 2 |
-| `MotionFilter*` | 1 |
-| `MovementMode` | 1 |
 | `MyGUI::Button*` | 3 |
 | `MyGUI::ComboBox*` | 2 |
 | `MyGUI::EditBox*` | 8 |
@@ -134,52 +85,42 @@ This document registers all C++ SDK classes and complex types that are currently
 | `MyGUI::Window*` | 3 |
 | `MyGUI::types::TCoord<int>` | 2 |
 | `MyGUI::types::TPoint<int>` | 5 |
-| `MyGUI::types::TRect<int>` | 1 |
-| `MyGUI::types::TSize<int>` | 5 |
-| `NavMesh*` | 1 |
-| `Nest*` | 3 |
-| `NestBatcher*` | 1 |
-| `NodeList*` | 1 |
+| `MyGUI::types::TSize<int>` | 4 |
+| `NavInstance*` | 2 |
+| `NavMeshGenerator*` | 1 |
+| `NavMeshGenerator::Task*` | 1 |
+| `NavMeshSector*` | 2 |
+| `NavMeshSeeds&` | 1 |
 | `NpcListWindow*` | 1 |
+| `NxActor*` | 2 |
+| `NxBox*` | 2 |
 | `NxControllerAction` | 10 |
-| `NxShape*` | 1 |
-| `NxUserControllerHitReport*` | 1 |
+| `NxJoint*` | 2 |
+| `NxMat33*` | 3 |
+| `NxVec3` | 7 |
+| `NxVec3*` | 5 |
 | `ObjectInstance*` | 2 |
 | `Ogre::Aabb` | 3 |
-| `Ogre::Camera*` | 1 |
-| `Ogre::ColourValue` | 1 |
-| `Ogre::Entity*` | 9 |
+| `Ogre::Entity*` | 5 |
 | `Ogre::FastArray<ArtifactItemData>` | 1 |
-| `Ogre::FastArray<AttachedEffect*>` | 2 |
-| `Ogre::FastArray<Harpoon*>` | 1 |
-| `Ogre::FastArray<Wound*>` | 1 |
 | `Ogre::FastArray<std::pair<Building*, Ogre::Entity*> >` | 1 |
-| `Ogre::Log*` | 1 |
 | `Ogre::MovableObject*` | 2 |
-| `Ogre::OldSkeletonInstance*` | 1 |
 | `Ogre::PlaneBoundedVolume` | 1 |
-| `Ogre::SceneNode*` | 6 |
+| `Ogre::Ray` | 1 |
+| `Ogre::SceneNode*` | 1 |
 | `Ogre::SharedPtr<Ogre::Material>` | 6 |
 | `Ogre::SharedPtr<Ogre::Mesh>` | 1 |
 | `Ogre::SharedPtr<Ogre::Texture>` | 5 |
-| `Ogre::Vector2` | 2 |
-| `Ogre::Vector2*` | 1 |
-| `Ogre::Vector3*` | 1 |
 | `Ogre::Vector4` | 3 |
-| `Ogre::vector<Dialogue::DT_MSG>::type` | 1 |
 | `Ogre::vector<InventorySection::SectionItem>::type` | 1 |
-| `Ogre::vector<std::string>::type` | 2 |
 | `OpenSaveFileDialog*` | 1 |
 | `OptionsWindow*` | 1 |
 | `OrderCellView*` | 1 |
 | `OrdersItemBox*` | 1 |
 | `OrdersPanel*` | 1 |
-| `Ownerships*` | 1 |
 | `PermajobType` | 2 |
-| `PhysicalEntity*` | 3 |
-| `PhysicsHullT*` | 2 |
-| `PhysicsInterface*` | 1 |
-| `Platoon*` | 1 |
+| `PhysicalEntity*` | 4 |
+| `Platoon*` | 2 |
 | `PortraitData*` | 2 |
 | `PortraitImage*` | 1 |
 | `PortraitMainCellView*` | 1 |
@@ -188,56 +129,43 @@ This document registers all C++ SDK classes and complex types that are currently
 | `PortraitSquadItemBox*` | 1 |
 | `ProductionBuilding*` | 1 |
 | `ProspectingWindow*` | 1 |
-| `RaceData*` | 3 |
-| `RaceGroupData*` | 1 |
-| `RaceLimiter*` | 2 |
+| `RaceLimiter*` | 1 |
 | `RainCollectorBuilding*` | 1 |
-| `RenderTimeBackthread*` | 1 |
-| `RendererT*` | 1 |
-| `RepetitionCounter*` | 1 |
 | `ResearchBuilding*` | 1 |
 | `ResourceLinePanel*` | 1 |
 | `ResourceLoadRequestMesh*` | 1 |
 | `ResourceLoadRequestTexture*` | 1 |
 | `ResourceLoader*` | 1 |
-| `RoadFollower*` | 2 |
 | `RootObject*` | 3 |
-| `RootObjectFactory*` | 1 |
-| `RootObjectFactory::CreatelistItem*` | 1 |
+| `RootObjectContainer*` | 2 |
+| `RotatingEnt*` | 1 |
 | `SaveFileSystem*` | 1 |
 | `SaveManager*` | 1 |
-| `ScreenLabel*` | 3 |
-| `SeenSomeone*` | 2 |
-| `SelectionBox*` | 1 |
+| `ScreenLabel*` | 2 |
+| `ScytheActor*` | 2 |
+| `ScytheRagdollPhysicsT*` | 1 |
 | `SenseItr*` | 1 |
-| `SensoryData*` | 2 |
 | `ShopTrader*` | 1 |
 | `ShopTraderInventory*` | 1 |
-| `SimpleTimeStamper*` | 1 |
-| `SpecificItemLoadFirst*` | 1 |
-| `SpeedGroup*` | 1 |
-| `Spot*` | 1 |
-| `SpottingPeopleMgr*` | 1 |
+| `SimplePhysXEntity*` | 2 |
+| `SkeletonData*` | 1 |
 | `SquadCellView*` | 1 |
 | `SquadItemBox*` | 1 |
 | `SquadListWindow*` | 1 |
 | `Stat*` | 3 |
 | `StatGroup*` | 3 |
+| `StateBroadcastData*` | 1 |
 | `StateType` | 1 |
+| `StaticEnt*` | 1 |
 | `StorageBuilding*` | 1 |
-| `StringPair` | 5 |
 | `StringPair*` | 4 |
-| `Sword*` | 1 |
 | `SysMessage*` | 2 |
-| `T&` | 1 |
+| `T*&` | 1 |
 | `TagsClass<BuildingDesignation>` | 1 |
 | `TagsClass<SenseType>` | 1 |
 | `TaskData*` | 1 |
-| `TaskStateData` | 4 |
-| `TaskStateData*` | 3 |
+| `TaskStateData*` | 2 |
 | `TextureArrayLoadData*` | 1 |
-| `ThreadWannabe*` | 1 |
-| `TimeOfDay` | 8 |
 | `TimeOfDay*` | 2 |
 | `TitleScreen*` | 1 |
 | `ToolTip*` | 1 |
@@ -247,14 +175,11 @@ This document registers all C++ SDK classes and complex types that are currently
 | `TortureBuilding*` | 1 |
 | `Town*` | 1 |
 | `TownAlarmState` | 3 |
-| `TownBase*` | 6 |
-| `TownBuildingsManager` | 3 |
-| `TownBuildingsManager*` | 2 |
 | `TownListWindow*` | 1 |
-| `TownPositionCacher` | 2 |
-| `TownPositionCacher*` | 1 |
 | `TownType` | 1 |
 | `TransformWindow*` | 1 |
+| `TripleInt` | 4 |
+| `TripleInt*` | 3 |
 | `TurretBuilding*` | 1 |
 | `TutorialGUILine*` | 1 |
 | `TutorialSubItem*` | 2 |
@@ -262,94 +187,75 @@ This document registers all C++ SDK classes and complex types that are currently
 | `VisibleObjectInfo*` | 2 |
 | `WallBuilding*` | 1 |
 | `WallSectionLinkType` | 1 |
-| `Weapon*` | 1 |
+| `WeatherRegion*` | 1 |
 | `WhoSeesMe*` | 2 |
 | `WindGeneratorBuilding*` | 1 |
-| `WorldEventStateQuery*` | 2 |
-| `WorldEventStateQueryList*` | 1 |
+| `WorldEventStateQuery*` | 1 |
 | `YesNoMaybe*` | 4 |
-| `ZoneMap*` | 5 |
+| `ZoneMap*` | 4 |
 | `ZoneMapOverlay*` | 1 |
-| `ZoneSpacialGrid::Result` | 1 |
-| `boost::function<void` | 2 |
+| `boost::function<Ogre::SharedPtr<Ogre::Material>` | 1 |
+| `boost::function<void` | 3 |
 | `boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >` | 2 |
-| `boost::unordered::unordered_map<Ogre::IdString, lektor<lektor<int> >, boost::hash<Ogre::IdString>, std::equal_to<Ogre::IdString>, Ogre::STLAllocator<std::pair<Ogre::IdString const, lektor<lektor<int> > >, Ogre::GeneralAllocPolicy > >` | 1 |
-| `boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >` | 2 |
-| `boost::unordered::unordered_map<std::string, AttachedEntity*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachedEntity*>, Ogre::GeneralAllocPolicy > >` | 1 |
-| `boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >` | 1 |
 | `boost::unordered::unordered_map<std::string, Ogre::InstanceManager*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::InstanceManager*>, Ogre::GeneralAllocPolicy > >` | 1 |
 | `const StringPair&` | 1 |
-| `const T&` | 2 |
-| `const boost::unordered::unordered_map<std::string, AttachmentData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachmentData*>, Ogre::GeneralAllocPolicy > >*` | 1 |
+| `const T*` | 1 |
+| `const T1&` | 1 |
 | `const char*` | 2 |
-| `const hand&` | 20 |
-| `function*` | 2 |
-| `hand` | 16 |
+| `const float&` | 2 |
+| `const hand&` | 30 |
+| `const hkSimdFloat32` | 5 |
+| `const hkVector4f&` | 2 |
+| `const hkVector4fComparison` | 13 |
+| `float&` | 3 |
+| `hand` | 10 |
 | `hand*` | 6 |
-| `iVector2` | 8 |
+| `hkArrayBase<T1>&` | 1 |
+| `hkBool` | 5 |
+| `hkBool*` | 2 |
+| `hkResult` | 1 |
+| `hkSimdFloat32` | 6 |
+| `hkVector4f*` | 3 |
+| `hkaiVolume*` | 1 |
+| `iVector2` | 5 |
 | `iVector2*` | 2 |
-| `lektor<Building*>*` | 4 |
 | `lektor<FarmBuilding*>` | 1 |
 | `lektor<FarmBuilding::Plant>` | 1 |
 | `lektor<FarmBuilding::PlantSource*>` | 1 |
 | `lektor<GameData*>` | 1 |
-| `lektor<ModInfo*>` | 1 |
+| `lektor<InventorySection*>&` | 1 |
 | `lektor<StorageBuilding::ConsumptionItem*>` | 1 |
 | `lektor<StorageBuilding::ConsumptionItem>` | 1 |
 | `lektor<hand>` | 3 |
 | `lektor<hand>&` | 1 |
-| `lektor<int>` | 1 |
+| `lektor<int>` | 2 |
 | `lektor<std::pair<std::string, bool> >` | 1 |
-| `lektor<std::string >` | 3 |
 | `ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>::type` | 1 |
 | `ogre_unordered_map<CropType, float>::type` | 1 |
 | `ogre_unordered_map<Faction*, bool>::type` | 2 |
 | `ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type` | 1 |
 | `ogre_unordered_map<GameData*, WorldStateEnum>::type` | 3 |
-| `ogre_unordered_map<GameData*, float>::type` | 3 |
-| `ogre_unordered_map<StatsEnumerated, float>::type` | 1 |
+| `ogre_unordered_map<GameData*, float>::type` | 2 |
 | `ogre_unordered_map<WorldEventStateQuery*, bool>::type` | 1 |
 | `ogre_unordered_map<ZoneMap*, bool>::type` | 1 |
 | `ogre_unordered_map<hand, InventorySection*>::type` | 1 |
-| `ogre_unordered_map<int, GameData*>::type` | 1 |
-| `ogre_unordered_set<AttachedEntity*>::type` | 1 |
-| `ogre_unordered_set<GameData*>::type` | 3 |
-| `ogre_unordered_set<Ogre::MovableObject*>::type` | 1 |
-| `ogre_unordered_set<TownBuildingsManager*>::type` | 1 |
-| `ogre_unordered_set<WeatherAffecting>::type` | 1 |
 | `ogre_unordered_set<ZoneMap*>::type` | 1 |
-| `ogre_unordered_set<hand>::type` | 1 |
-| `operator` | 4 |
-| `physHit` | 4 |
+| `operator` | 5 |
 | `physHit*` | 3 |
+| `rendHit` | 1 |
 | `std::deque<CraftingItem, std::allocator<CraftingItem> >` | 1 |
-| `std::deque<NestBatcher*, Ogre::STLAllocator<NestBatcher*, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::deque<RootObject*, Ogre::STLAllocator<RootObject*, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::deque<RootObjectFactory::CreatelistItem*, std::allocator<RootObjectFactory::CreatelistItem*> >` | 1 |
-| `std::deque<float, std::allocator<float> >` | 2 |
-| `std::list<GameWorld::SysMessage, Ogre::STLAllocator<GameWorld::SysMessage, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > >` | 2 |
-| `std::map<EventTriggerEnum, DialogChoiceList*, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, DialogChoiceList*>, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::map<EventTriggerEnum, Dialogue::RepetitionCounter::DialogState, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, Dialogue::RepetitionCounter::DialogState>, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::map<EventTriggerEnum, float, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, float>, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::map<EventTriggerEnum, hand, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, hand>, Ogre::GeneralAllocPolicy > >` | 1 |
 | `std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >` | 1 |
 | `std::map<hand, SensoryData::SpottingPeopleMgr::Spot, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, SensoryData::SpottingPeopleMgr::Spot>, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::map<int, Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, Command*>, Ogre::GeneralAllocPolicy > >` | 2 |
-| `std::map<std::string, Command, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, Command>, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::map<std::string, ModInfo, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, ModInfo>, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::set<Command*, std::less<Command*>, Ogre::STLAllocator<Command*, Ogre::GeneralAllocPolicy > >` | 1 |
 | `std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::set<GameData*, std::less<GameData*>, Ogre::STLAllocator<GameData*, Ogre::GeneralAllocPolicy > >` | 1 |
 | `std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >` | 2 |
-| `std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >` | 1 |
 | `std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >` | 3 |
 | `swordStateEnum` | 1 |
-| `tagPOINT` | 1 |
-| `unsigned __int64` | 3 |
-| `unsigned int` | 2 |
-| `void*` | 1 |
+| `unsigned __int64` | 2 |
+| `unsigned int` | 11 |
+| `unsigned short` | 1 |
+| `void operator` | 3 |
+| `void*` | 4 |
+| `void*operator` | 2 |
 
 ## Unsupported Properties Detail
 
@@ -357,115 +263,25 @@ Below are properties in the bindings files that were implemented as read-only be
 
 | File | Type | Property Name |
 | :--- | :--- | :--- |
-| AppearanceBaseBinding.cpp | `AnimationClass*` | animation |
-| CharMovementBinding.cpp | `AnimationClass*` | animation |
-| TownBaseBinding.cpp | `AreaBiomeGroup*` | biome |
 | InventorySectionBinding.cpp | `Array2d<Item>` | content |
-| GameWorldBinding.cpp | `AudioSystemGlobal*` | audioThread |
-| TownBaseBinding.cpp | `BasePopulationManager*` | population |
-| InventoryItemBaseBinding.cpp | `BuildingItemGroup*` | itemGroup |
-| SimpleTimeStamperBinding.cpp | `CPerfTimer` | timer |
-| DialogueBinding.cpp | `CharMovement*` | movement |
-| ActivePlatoonBinding.cpp | `CharacterMemory*` | _myMemory |
-| CharMovementBinding.cpp | `CombatMovementController` | combatMover |
-| FlockingToolsBinding.cpp | `CombatMovementController*` | combatMover |
-| CharMovementBinding.cpp | `ConstantTracerT*` | tracer |
-| DialogueBinding.cpp | `DialogLineData*` | playerInterruptionDialog |
-| DialogueBinding.cpp | `DialogLineData*` | currentConversation |
-| DialogueBinding.cpp | `DialogLineData*` | currentLine |
-| DialogueBinding.cpp | `DialogueSpeechBubble*` | speechBubblePanel |
-| LockedArmourBinding.cpp | `DoorLock*` | lock |
-| CreatelistItemBinding.cpp | `FactoryCallbackInterface*` | callbackObject |
-| CharMovementBinding.cpp | `FlockingTools` | flockingTools |
-| CharMovementBinding.cpp | `Formation*` | formation |
-| CharMovementBinding.cpp | `Formation*` | enemyFormation |
-| CharMovementBinding.cpp | `FormationMover` | combatMover2 |
-| DataObjectContainerBinding.cpp | `GameDataContainer*` | objectDatas |
-| AppearanceBaseBinding.cpp | `GameDataCopyStandalone*` | appearanceData |
 | ModInfoBinding.cpp | `GameDataHeader` | header |
-| CreatelistItemBinding.cpp | `GameSaveState*` | saveState |
-| ActivePlatoonBinding.cpp | `GroupSense*` | _groupSense |
-| CrossbowBinding.cpp | `GunClass*` | gunClass |
-| ActivePlatoonBinding.cpp | `HandleList*` | characterHandles |
-| CharMovementBinding.cpp | `HavokCharacter*` | havokCharacter |
-| MedianFilter2DVectorBinding.cpp | `MedianFilter` | filters |
-| GameWorldBinding.cpp | `MessageRoller*` | messageRoller |
-| CharMovementBinding.cpp | `MovementMode` | movementMode |
-| DialogueSpeechBubbleBinding.cpp | `MyGUI::types::TSize<int>` | baseSize |
-| GameWorldBinding.cpp | `NavMesh*` | navmesh |
-| TownBaseBinding.cpp | `NestBatcher*` | nestBatcher |
-| GameWorldBinding.cpp | `NodeList*` | nodeList |
-| physHitBinding.cpp | `NxShape*` | shape |
-| CameraClassBinding.cpp | `Ogre::Camera*` | camera |
-| RaceDataBinding.cpp | `Ogre::ColourValue` | bloodColour |
-| AppearanceBaseBinding.cpp | `Ogre::Entity*` | body |
-| AppearanceBaseBinding.cpp | `Ogre::Entity*` | bodyLoader |
-| CameraClassBinding.cpp | `Ogre::Entity*` | rotationMarker |
-| TownBaseBinding.cpp | `Ogre::Entity*` | entityMarker |
 | TownBaseBinding.cpp | `Ogre::FastArray<ArtifactItemData>` | artifacts |
-| AppearanceBaseBinding.cpp | `Ogre::FastArray<AttachedEffect*>` | attachedEffects |
-| AppearanceBaseBinding.cpp | `Ogre::FastArray<AttachedEffect*>` | attachedEffectsToRemove |
-| AppearanceBaseBinding.cpp | `Ogre::FastArray<Harpoon*>` | attachedHarpoons |
-| AppearanceBaseBinding.cpp | `Ogre::FastArray<Wound*>` | woundsList |
 | TownBuildingsManagerBinding.cpp | `Ogre::FastArray<std::pair<Building*, Ogre::Entity*> >` | signs |
-| GameWorldBinding.cpp | `Ogre::Log*` | ogreLogger |
 | SelectionBoxBinding.cpp | `Ogre::PlaneBoundedVolume` | volume |
-| CameraClassBinding.cpp | `Ogre::SceneNode*` | center |
-| CameraClassBinding.cpp | `Ogre::SceneNode*` | node |
-| AppearanceBaseBinding.cpp | `Ogre::SharedPtr<Ogre::Material>` | bodyMaterial |
 | FarmBuildingBinding.cpp | `Ogre::SharedPtr<Ogre::Material>` | material |
 | FarmBatchBinding.cpp | `Ogre::SharedPtr<Ogre::Mesh>` | geometry |
-| SelectionBoxBinding.cpp | `Ogre::Vector2` | startPos |
-| MeshDataLookupBinding.cpp | `Ogre::Vector2*` | uvs |
-| MeshDataLookupBinding.cpp | `Ogre::Vector3*` | verts |
-| AppearanceBaseBinding.cpp | `Ogre::Vector4` | waterline |
-| DialogueBinding.cpp | `Ogre::vector<Dialogue::DT_MSG>::type` | threadMessages |
 | InventorySectionBinding.cpp | `Ogre::vector<InventorySection::SectionItem>::type` | items |
-| DialogueBinding.cpp | `Ogre::vector<std::string>::type` | replyIds |
-| DialogueBinding.cpp | `Ogre::vector<std::string>::type` | responses |
 | TaskDataBinding.cpp | `PermajobType` | permaJob |
-| CharMovementBinding.cpp | `PhysicsHullT*` | clickHull |
-| TownBaseBinding.cpp | `PhysicsHullT*` | clickHull |
-| GameWorldBinding.cpp | `PhysicsInterface*` | physics |
-| RaceDataBinding.cpp | `RaceGroupData*` | raceGroup |
-| GameWorldBinding.cpp | `RenderTimeBackthread*` | _AINonRenderThread |
-| GameWorldBinding.cpp | `RendererT*` | render |
-| AbstractMovementBaseBinding.cpp | `RoadFollower*` | roadFollower |
-| TownBaseBinding.cpp | `ScreenLabel*` | entityLabel |
 | TaskStateDataBinding.cpp | `StateType` | key |
 | SeenSomeoneBinding.cpp | `TagsClass<SenseType>` | type |
-| TaskDataBinding.cpp | `TaskStateData` | results |
-| TaskDataBinding.cpp | `TaskStateData` | requirements |
-| TaskDataBinding.cpp | `TaskStateData*` | subTask |
-| CharacterAnimalBinding.cpp | `TimeOfDay` | itemInMouthTimeStamp |
-| SeenSomeoneBinding.cpp | `TimeOfDay` | lastSeenTime |
-| TownBaseBinding.cpp | `TimeOfDay` | timeOfDeath |
-| TownPositionCacherBinding.cpp | `TimeOfDay` | lastUpdateStamp |
 | TownBaseBinding.cpp | `TownAlarmState` | alarmState |
-| OwnershipsBinding.cpp | `TownBase*` | _homeTown |
-| OwnershipsBinding.cpp | `TownBase*` | occupiedTown |
-| TownBuildingsManagerBinding.cpp | `TownBase*` | town |
-| TownBaseBinding.cpp | `TownBuildingsManager` | buildingsManager |
-| TownBaseBinding.cpp | `TownPositionCacher` | positionCacher |
 | WallBuildingBinding.cpp | `WallSectionLinkType` | wallSectionLinkType |
-| ActivePlatoonBinding.cpp | `ZoneMap*` | lastActiveZone |
-| SenseItrBinding.cpp | `boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >` | it |
 | SenseItrBinding.cpp | `boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >` | _end |
-| MeshDataLookupBinding.cpp | `boost::unordered::unordered_map<Ogre::IdString, lektor<lektor<int> >, boost::hash<Ogre::IdString>, std::equal_to<Ogre::IdString>, Ogre::STLAllocator<std::pair<Ogre::IdString const, lektor<lektor<int> > >, Ogre::GeneralAllocPolicy > >` | boneAssignments |
-| GameDataContainerBinding.cpp | `boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >` | gamedataCatName |
-| GameDataContainerBinding.cpp | `boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >` | gamedataCatSID |
-| AppearanceBaseBinding.cpp | `boost::unordered::unordered_map<std::string, AttachedEntity*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachedEntity*>, Ogre::GeneralAllocPolicy > >` | attachedObjects |
-| GameDataContainerBinding.cpp | `boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >` | gamedataSID |
+| SenseItrBinding.cpp | `boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >` | it |
 | TownBuildingsManagerBinding.cpp | `boost::unordered::unordered_map<std::string, Ogre::InstanceManager*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::InstanceManager*>, Ogre::GeneralAllocPolicy > >` | instancesManagers |
-| AppearanceBaseBinding.cpp | `const boost::unordered::unordered_map<std::string, AttachmentData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachmentData*>, Ogre::GeneralAllocPolicy > >*` | slots |
-| TaskDataBinding.cpp | `function*` | scoreFunction |
-| TaskDataBinding.cpp | `function*` | _findTarget |
-| FlockingToolsBinding.cpp | `hand` | getOutOfTheWayOfCharacter |
-| VisibleObjectInfoBinding.cpp | `hand` | handle |
 | LightBuildingBinding.cpp | `hand` | mountedBuilding |
 | TurretBuildingBinding.cpp | `hand` | mountedBuilding |
 | WallBuildingBinding.cpp | `hand` | shareBuildStateOfAnother |
-| InventoryItemBaseBinding.cpp | `iVector2` | inventoryPos |
 | FarmBatchBinding.cpp | `lektor<FarmBuilding*>` | farms |
 | FarmBuildingBinding.cpp | `lektor<FarmBuilding::Plant>` | plants |
 | FarmBatchBinding.cpp | `lektor<FarmBuilding::PlantSource*>` | plantSource |
@@ -476,66 +292,29 @@ Below are properties in the bindings files that were implemented as read-only be
 | WallBuildingBinding.cpp | `lektor<hand>` | othersSharingMyBuildState |
 | FarmBatchBinding.cpp | `lektor<int>` | plantGroups |
 | OptionsHolderBinding.cpp | `lektor<std::pair<std::string, bool> >` | compositors |
-| GameDataHeaderBinding.cpp | `lektor<std::string >` | dependencies |
-| GameDataHeaderBinding.cpp | `lektor<std::string >` | references |
-| ObjectInstanceBinding.cpp | `lektor<std::string >` | stateIDs |
 | TownBuildingsManagerBinding.cpp | `ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>::type` | buildingEntities |
 | FarmBuildingBinding.cpp | `ogre_unordered_map<CropType, float>::type` | cropMultipliers |
 | WorldEventStateQueryBinding.cpp | `ogre_unordered_map<Faction*, bool>::type` | isAllyOf |
 | WorldEventStateQueryBinding.cpp | `ogre_unordered_map<Faction*, bool>::type` | isEnemyOf |
 | RaceLimiterBinding.cpp | `ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type` | limits |
+| WorldEventStateQueryBinding.cpp | `ogre_unordered_map<GameData*, WorldStateEnum>::type` | towns |
 | WorldEventStateQueryBinding.cpp | `ogre_unordered_map<GameData*, WorldStateEnum>::type` | uniqueNPCsAre |
 | WorldEventStateQueryBinding.cpp | `ogre_unordered_map<GameData*, WorldStateEnum>::type` | uniqueNPCsAreNot |
-| WorldEventStateQueryBinding.cpp | `ogre_unordered_map<GameData*, WorldStateEnum>::type` | towns |
-| ArmourBinding.cpp | `ogre_unordered_map<GameData*, float>::type` | bodypartCoverage |
 | CombatTechniqueDataBinding.cpp | `ogre_unordered_map<GameData*, float>::type` | events |
 | CraftingBuildingBinding.cpp | `ogre_unordered_map<GameData*, float>::type` | partialItems |
-| RaceDataBinding.cpp | `ogre_unordered_map<StatsEnumerated, float>::type` | statMods |
 | WorldEventStateQueryListBinding.cpp | `ogre_unordered_map<WorldEventStateQuery*, bool>::type` | statesList |
 | TownBaseBinding.cpp | `ogre_unordered_map<ZoneMap*, bool>::type` | populatedZones |
 | ShopTraderInventoryBinding.cpp | `ogre_unordered_map<hand, InventorySection*>::type` | inventories |
-| GameDataContainerBinding.cpp | `ogre_unordered_map<int, GameData*>::type` | gamedataID |
-| GameWorldBinding.cpp | `ogre_unordered_set<AttachedEntity*>::type` | destroyListAE |
-| ContainerItemBinding.cpp | `ogre_unordered_set<GameData*>::type` | racesExclude |
-| GameDataContainerBinding.cpp | `ogre_unordered_set<GameData*>::type` | mainList |
-| RaceDataBinding.cpp | `ogre_unordered_set<GameData*>::type` | specialFoods |
-| GameWorldBinding.cpp | `ogre_unordered_set<Ogre::MovableObject*>::type` | destroyListOE |
-| GameWorldBinding.cpp | `ogre_unordered_set<TownBuildingsManager*>::type` | destroyListTBM |
-| RaceDataBinding.cpp | `ogre_unordered_set<WeatherAffecting>::type` | weatherImmunities |
 | TownBaseBinding.cpp | `ogre_unordered_set<ZoneMap*>::type` | myZoneCoverage |
-| SpeedGroupBinding.cpp | `ogre_unordered_set<hand>::type` | members |
 | CraftingBuildingBinding.cpp | `std::deque<CraftingItem, std::allocator<CraftingItem> >` | crafting |
-| GameWorldBinding.cpp | `std::deque<NestBatcher*, Ogre::STLAllocator<NestBatcher*, Ogre::GeneralAllocPolicy > >` | nestBatcherKillList |
-| GameWorldBinding.cpp | `std::deque<RootObject*, Ogre::STLAllocator<RootObject*, Ogre::GeneralAllocPolicy > >` | killListPhase2 |
-| RootObjectFactoryBinding.cpp | `std::deque<RootObjectFactory::CreatelistItem*, std::allocator<RootObjectFactory::CreatelistItem*> >` | todoList |
-| MedianFilterBinding.cpp | `std::deque<float, std::allocator<float> >` | mHistoryBufferX |
-| MotionFilterBinding.cpp | `std::deque<float, std::allocator<float> >` | mHistoryBufferX |
-| GameWorldBinding.cpp | `std::list<GameWorld::SysMessage, Ogre::STLAllocator<GameWorld::SysMessage, Ogre::GeneralAllocPolicy > >` | sysMessageList |
-| DialogueBinding.cpp | `std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > >` | locked |
-| DialogueBinding.cpp | `std::map<DialogLineData*, bool, std::less<DialogLineData*>, Ogre::STLAllocator<std::pair<DialogLineData*const, bool>, Ogre::GeneralAllocPolicy > >` | _hasChanceLines |
-| DialogueBinding.cpp | `std::map<EventTriggerEnum, DialogChoiceList*, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, DialogChoiceList*>, Ogre::GeneralAllocPolicy > >` | conversationsMain |
-| RepetitionCounterBinding.cpp | `std::map<EventTriggerEnum, Dialogue::RepetitionCounter::DialogState, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, Dialogue::RepetitionCounter::DialogState>, Ogre::GeneralAllocPolicy > >` | states |
-| DialogueBinding.cpp | `std::map<EventTriggerEnum, float, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, float>, Ogre::GeneralAllocPolicy > >` | eventRepeatTimers |
-| DialogueBinding.cpp | `std::map<EventTriggerEnum, hand, std::less<EventTriggerEnum>, Ogre::STLAllocator<std::pair<EventTriggerEnum const, hand>, Ogre::GeneralAllocPolicy > >` | eventDeliveredStates |
 | HasRoomCacheBinding.cpp | `std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >` | itemStates |
 | SpottingPeopleMgrBinding.cpp | `std::map<hand, SensoryData::SpottingPeopleMgr::Spot, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, SensoryData::SpottingPeopleMgr::Spot>, Ogre::GeneralAllocPolicy > >` | spottedPeople |
-| InputHandlerBinding.cpp | `std::map<int, Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, Command*>, Ogre::GeneralAllocPolicy > >` | map |
-| InputHandlerBinding.cpp | `std::map<int, Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, Command*>, Ogre::GeneralAllocPolicy > >` | editMap |
-| InputHandlerBinding.cpp | `std::map<std::string, Command, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, Command>, Ogre::GeneralAllocPolicy > >` | commands |
-| GameWorldBinding.cpp | `std::map<std::string, ModInfo, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, ModInfo>, Ogre::GeneralAllocPolicy > >` | availableModsByName |
-| InputHandlerBinding.cpp | `std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >` | keyNameMap |
-| InputHandlerBinding.cpp | `std::set<Command*, std::less<Command*>, Ogre::STLAllocator<Command*, Ogre::GeneralAllocPolicy > >` | events |
 | TownBaseBinding.cpp | `std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >` | factionsResidentHere |
-| DialogueBinding.cpp | `std::set<GameData*, std::less<GameData*>, Ogre::STLAllocator<GameData*, Ogre::GeneralAllocPolicy > >` | pacakgesIHave |
 | LimiterBinding.cpp | `std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >` | racesExclude |
 | LimiterBinding.cpp | `std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >` | racesInclude |
-| ArmourBinding.cpp | `std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >` | weatherProtections |
 | OwnershipsBinding.cpp | `std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >` | slaves |
 | TownBaseBinding.cpp | `std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >` | occupiers |
 | UseableStuffBinding.cpp | `std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >` | currentOperators |
-| CameraClassBinding.cpp | `tagPOINT` | lastMousePos |
-| MeshDataLookupBinding.cpp | `unsigned __int64` | vertCount |
-| SysMessageBinding.cpp | `void*` | data |
 
 ## Skipped Methods Detail
 
@@ -543,77 +322,54 @@ Below are methods that were skipped during binding generation:
 
 | File | Method Name | Type / Return Type | Reason / Issue |
 | :--- | :--- | :--- | :--- |
-| AABB2DBinding.cpp | _CONSTRUCTOR | `AABB2D*` | overloaded method |
-| AABB2DBinding.cpp | _CONSTRUCTOR | `AABB2D*` | overloaded method |
-| AABB2DBinding.cpp | intersects | `bool` | overloaded method |
-| AABB2DBinding.cpp | intersects | `bool` | overloaded method |
-| AABB2DBinding.cpp | intersects | `bool` | overloaded method |
-| AABB2DBinding.cpp | intersects2 | `Ogre::Vector2` | unsupported return type |
-| AIOptionsBinding.cpp | _CONSTRUCTOR | `AIOptions*` | unsupported return type |
-| AIOptionsBinding.cpp | load | `void` | unsupported arg type |
-| AIOptionsBinding.cpp | save | `void` | unsupported arg type |
-| AbstractMovementBaseBinding.cpp | _CONSTRUCTOR | `AbstractMovementBase*` | unsupported return type |
-| AbstractMovementBaseBinding.cpp | _NV_onControllerHit | `NxControllerAction` | unsupported return type |
-| AbstractMovementBaseBinding.cpp | _NV_onShapeHit | `NxControllerAction` | unsupported return type |
-| AbstractMovementBaseBinding.cpp | _NV_setPatrolInput | `void` | unsupported arg type |
-| AbstractMovementBaseBinding.cpp | extractRoadFollower | `RoadFollower*` | unsupported return type |
-| AbstractMovementBaseBinding.cpp | onControllerHit | `NxControllerAction` | unsupported return type |
-| AbstractMovementBaseBinding.cpp | onShapeHit | `NxControllerAction` | unsupported return type |
-| AbstractMovementBaseBinding.cpp | setCurrentRoadFollower | `void` | unsupported arg type |
-| AbstractMovementBaseBinding.cpp | setPatrolInput | `void` | unsupported arg type |
-| ActivePlatoonBinding.cpp | _CONSTRUCTOR | `ActivePlatoon*` | unsupported return type |
-| AnimalInventoryLayoutBinding.cpp | _CONSTRUCTOR | `AnimalInventoryLayout*` | unsupported return type |
+| AbstractMovementBaseBinding.cpp | _NV_onControllerHit | `NxControllerAction` | protected access |
+| AbstractMovementBaseBinding.cpp | _NV_onShapeHit | `NxControllerAction` | protected access |
+| AbstractMovementBaseBinding.cpp | onControllerHit | `NxControllerAction` | protected access |
+| AbstractMovementBaseBinding.cpp | onShapeHit | `NxControllerAction` | protected access |
+| ActivePlatoonBinding.cpp | _NV_loadFromDisk | `bool` | unsupported arg type |
+| ActivePlatoonBinding.cpp | _NV_loadInstance | `void` | non-string reference arg |
+| ActivePlatoonBinding.cpp | getCharactersInArea | `void` | unsupported arg type |
+| ActivePlatoonBinding.cpp | loadFromDisk | `bool` | unsupported arg type |
+| ActivePlatoonBinding.cpp | loadInstance | `void` | non-string reference arg |
 | AnimalInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unsupported arg type |
 | AnimalInventoryLayoutBinding.cpp | setupSections | `void` | unsupported arg type |
-| AppearanceAnimalBinding.cpp | _CONSTRUCTOR | `AppearanceAnimal*` | unsupported return type |
-| AppearanceBaseBinding.cpp | _CONSTRUCTOR | `AppearanceBase*` | unsupported return type |
+| AppearanceAnimalBinding.cpp | _CONSTRUCTOR | `AppearanceAnimal*` | unsupported arg type |
+| AppearanceBaseBinding.cpp | _CONSTRUCTOR | `AppearanceBase*` | unsupported arg type |
 | AppearanceBaseBinding.cpp | _NV_setupCharacterEntityTexture | `void` | unsupported arg type |
 | AppearanceBaseBinding.cpp | addWound | `void` | unsupported arg type |
 | AppearanceBaseBinding.cpp | affectsPortrait | `bool` | unsupported arg type |
-| AppearanceBaseBinding.cpp | attachEffect | `AttachedEffect*` | unsupported return type |
 | AppearanceBaseBinding.cpp | attachEntity | `void` | unsupported arg type |
 | AppearanceBaseBinding.cpp | attachHarpoon | `bool` | unsupported arg type |
 | AppearanceBaseBinding.cpp | attachItem | `bool` | overloaded method |
 | AppearanceBaseBinding.cpp | attachItem | `bool` | overloaded method |
-| AppearanceBaseBinding.cpp | attachItem_Hair | `bool` | unsupported arg type |
 | AppearanceBaseBinding.cpp | buildBody | `void` | unsupported arg type |
-| AppearanceBaseBinding.cpp | createAttachedObject | `AttachedEntity*` | unsupported return type |
 | AppearanceBaseBinding.cpp | createEntity | `void` | unsupported arg type |
 | AppearanceBaseBinding.cpp | createEntityCallback | `void` | unsupported arg type |
 | AppearanceBaseBinding.cpp | createPhysicsAttachment | `void` | unsupported arg type |
 | AppearanceBaseBinding.cpp | detachHarpoon | `bool` | unsupported arg type |
 | AppearanceBaseBinding.cpp | detachItem | `bool` | overloaded method |
 | AppearanceBaseBinding.cpp | detachItem | `bool` | overloaded method |
-| AppearanceBaseBinding.cpp | getAnimationSystem | `AnimationClass*` | unsupported return type |
-| AppearanceBaseBinding.cpp | getAppearanceData | `GameDataCopyStandalone*` | unsupported return type |
-| AppearanceBaseBinding.cpp | getAttachedEntity | `AttachedEntity*` | unsupported return type |
-| AppearanceBaseBinding.cpp | getBody | `Ogre::Entity*` | unsupported return type |
 | AppearanceBaseBinding.cpp | getLights | `void` | unsupported arg type |
-| AppearanceBaseBinding.cpp | getSceneNode | `Ogre::SceneNode*` | unsupported return type |
-| AppearanceBaseBinding.cpp | getSkeleton | `Ogre::OldSkeletonInstance*` | unsupported return type |
 | AppearanceBaseBinding.cpp | getSlotPosition | `bool` | unsupported arg type |
 | AppearanceBaseBinding.cpp | removeEffect | `void` | unsupported arg type |
 | AppearanceBaseBinding.cpp | removeWound | `void` | unsupported arg type |
-| AppearanceBaseBinding.cpp | serialise | `void` | unsupported arg type |
-| AppearanceBaseBinding.cpp | setAppearanceData | `void` | unsupported arg type |
 | AppearanceBaseBinding.cpp | setupCharacterEntityTexture | `void` | unsupported arg type |
 | AppearanceBaseBinding.cpp | setupHairMaterial | `void` | unsupported arg type |
 | AppearanceBaseBinding.cpp | setupItemMaterial | `void` | unsupported arg type |
-| AppearanceHumanBinding.cpp | _CONSTRUCTOR | `AppearanceHuman*` | unsupported return type |
+| AppearanceHumanBinding.cpp | _CONSTRUCTOR | `AppearanceHuman*` | unsupported arg type |
 | AppearanceHumanBinding.cpp | _NV_setupCharacterEntityTexture | `void` | unsupported arg type |
 | AppearanceHumanBinding.cpp | setupCharacterEntityTexture | `void` | unsupported arg type |
-| ArmourBinding.cpp | _CONSTRUCTOR | `Armour*` | unsupported arg type |
 | ArmourBinding.cpp | _NV_getTooltipData1 | `void` | unsupported arg type |
 | ArmourBinding.cpp | _NV_getTooltipData2 | `void` | unsupported arg type |
+| ArmourBinding.cpp | getArmourCraftingMaterialConsumptionRate | `float` | static method |
 | ArmourBinding.cpp | getTooltipData1 | `void` | unsupported arg type |
 | ArmourBinding.cpp | getTooltipData2 | `void` | unsupported arg type |
-| AttackSlotManagerBinding.cpp | _CONSTRUCTOR | `AttackSlotManager*` | unsupported arg type |
-| AttackSlotManagerBinding.cpp | addToSlotH | `bool` | unsupported arg type |
-| AttackSlotManagerBinding.cpp | freeSlotH | `void` | unsupported arg type |
+| Array2dBinding.cpp | operator | `const T*` | operator |
+| Array2dBinding.cpp | operator | `T*&` | operator |
+| AttackSlotManagerBinding.cpp | addToSlotH | `bool` | non-string reference arg |
+| AttackSlotManagerBinding.cpp | freeSlotH | `void` | non-string reference arg |
 | BackpackInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unsupported arg type |
 | BackpackInventoryLayoutBinding.cpp | setupSections | `void` | unsupported arg type |
-| BountyManagerBinding.cpp | getGUIData | `StringPair` | unsupported return type (requires StringPair binding) |
-| BountyManagerBinding.cpp | getGUIDataForAppend | `void` | unsupported arg type (requires StringPair binding) |
 | BoxBinding.cpp | buttonClick | `void` | unsupported arg type |
 | BuildInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unsupported arg type |
 | BuildInventoryLayoutBinding.cpp | setInputItem | `void` | unsupported arg type |
@@ -674,21 +430,17 @@ Below are methods that were skipped during binding generation:
 | BuildingContainerInventoryLayoutBinding.cpp | setupSections | `void` | unsupported arg type |
 | BuildingGroupBinding.cpp | _CONSTRUCTOR | `BuildingGroup*` | overloaded method |
 | BuildingGroupBinding.cpp | _CONSTRUCTOR | `BuildingGroup*` | overloaded method |
+| CPerfTimerBinding.cpp | IsRunning | `BOOL` | unsupported return type |
+| CPerfTimerBinding.cpp | IsSupported | `BOOL` | unsupported return type |
+| CPerfTimerBinding.cpp | Start | `void` | unsupported arg type |
 | CameraClassBinding.cpp | _CONSTRUCTOR | `CameraClass*` | unsupported arg type |
-| CameraClassBinding.cpp | focusCameraOnObject | `void` | unsupported arg type |
-| CameraClassBinding.cpp | followObject | `void` | unsupported arg type |
-| CameraClassBinding.cpp | getCameraNode | `Ogre::SceneNode*` | unsupported return type |
-| CameraClassBinding.cpp | getCenterNode | `Ogre::SceneNode*` | unsupported return type |
+| CameraClassBinding.cpp | followObject | `void` | non-string reference arg |
 | CameraClassBinding.cpp | getFollowObject | `const hand&` | reference return type |
 | CameraClassBinding.cpp | intersectScreenEdge | `int` | non-string reference arg |
 | CameraClassBinding.cpp | isVisible | `bool` | overloaded method |
 | CameraClassBinding.cpp | isVisible | `bool` | overloaded method |
-| CameraClassBinding.cpp | load | `void` | unsupported arg type |
 | CameraClassBinding.cpp | restrictPosition | `void` | unsupported arg type |
-| CameraClassBinding.cpp | save | `void` | unsupported arg type |
-| CharMovementBinding.cpp | _CONSTRUCTOR | `CharMovement*` | unsupported return type |
 | CharMovementBinding.cpp | _NV_create | `void` | unsupported arg type |
-| CharMovementBinding.cpp | _NV_getHandle | `hand` | unsupported return type |
 | CharMovementBinding.cpp | _NV_onControllerHit | `NxControllerAction` | unsupported return type |
 | CharMovementBinding.cpp | _NV_onShapeHit | `NxControllerAction` | unsupported return type |
 | CharMovementBinding.cpp | _NV_setDestination | `void` | overloaded method |
@@ -696,12 +448,10 @@ Below are methods that were skipped during binding generation:
 | CharMovementBinding.cpp | _NV_setDestination | `void` | overloaded method |
 | CharMovementBinding.cpp | _NV_setDestination | `void` | overloaded method |
 | CharMovementBinding.cpp | _NV_setPatrolInput | `void` | unsupported arg type |
-| CharMovementBinding.cpp | combatMovementOffensive | `void` | unsupported arg type |
+| CharMovementBinding.cpp | combatMovementOffensive | `void` | non-string reference arg |
 | CharMovementBinding.cpp | create | `void` | unsupported arg type |
-| CharMovementBinding.cpp | formationUpdateCallback | `void` | unsupported arg type |
+| CharMovementBinding.cpp | formationUpdateCallback | `void` | non-string reference arg |
 | CharMovementBinding.cpp | getAABB | `Ogre::Aabb` | unsupported return type |
-| CharMovementBinding.cpp | getHandle | `hand` | unsupported return type |
-| CharMovementBinding.cpp | getLastGroundTraceResultMT | `physHit` | unsupported return type |
 | CharMovementBinding.cpp | isStandingOnSomething | `const hand&` | reference return type |
 | CharMovementBinding.cpp | onControllerHit | `NxControllerAction` | unsupported return type |
 | CharMovementBinding.cpp | onShapeHit | `NxControllerAction` | unsupported return type |
@@ -709,23 +459,26 @@ Below are methods that were skipped during binding generation:
 | CharMovementBinding.cpp | setDestination | `void` | overloaded method |
 | CharMovementBinding.cpp | setDestination | `void` | overloaded method |
 | CharMovementBinding.cpp | setDestination | `void` | overloaded method |
-| CharMovementBinding.cpp | setLookatTarget | `void` | unsupported arg type |
+| CharMovementBinding.cpp | setLookatTarget | `void` | non-string reference arg |
 | CharMovementBinding.cpp | setMovementMode | `void` | unsupported arg type |
 | CharMovementBinding.cpp | setPatrolInput | `void` | unsupported arg type |
-| CharacterAnimalBinding.cpp | _CONSTRUCTOR | `CharacterAnimal*` | unsupported arg type |
-| CharacterAnimalBinding.cpp | _NV_canGoIndoors | `bool` | unsupported arg type |
-| CharacterAnimalBinding.cpp | _NV_createInventoryLayout | `InventoryLayout*` | unsupported return type |
-| CharacterAnimalBinding.cpp | _NV_drawWeapon | `bool` | unsupported arg type |
-| CharacterAnimalBinding.cpp | _NV_dropItem | `void` | unsupported arg type |
-| CharacterAnimalBinding.cpp | _NV_giveBirth | `bool` | unsupported arg type |
-| CharacterAnimalBinding.cpp | _NV_setupInventorySections | `bool` | unsupported arg type |
-| CharacterAnimalBinding.cpp | canGoIndoors | `bool` | unsupported arg type |
-| CharacterAnimalBinding.cpp | createInventoryLayout | `InventoryLayout*` | unsupported return type |
-| CharacterAnimalBinding.cpp | drawWeapon | `bool` | unsupported arg type |
-| CharacterAnimalBinding.cpp | dropItem | `void` | unsupported arg type |
-| CharacterAnimalBinding.cpp | giveBirth | `bool` | unsupported arg type |
-| CharacterAnimalBinding.cpp | pickupItemInMouth | `bool` | unsupported arg type |
-| CharacterAnimalBinding.cpp | setupInventorySections | `bool` | unsupported arg type |
+| CharStatsBinding.cpp | _chooseAttacks | `void` | unsupported arg type |
+| CharStatsBinding.cpp | _convertBluntMultiplierToWeaponWeight | `float` | static method |
+| CharStatsBinding.cpp | _convertWeaponWeightToBluntMultiplier | `float` | static method |
+| CharStatsBinding.cpp | formatWholeStatStringWithBonuses | `std::string` | overloaded method |
+| CharStatsBinding.cpp | formatWholeStatStringWithBonuses | `std::string` | overloaded method |
+| CharStatsBinding.cpp | getAthleticsTooltip | `void` | unsupported arg type |
+| CharStatsBinding.cpp | getMeleeAttackRef | `float&` | reference return type |
+| CharStatsBinding.cpp | getStatName | `std::string` | static method |
+| CharStatsBinding.cpp | getStatPenaltiesForGUI | `bool` | unsupported arg type |
+| CharStatsBinding.cpp | getStatRef | `float&` | reference return type |
+| CharStatsBinding.cpp | getStealthTooltip | `void` | unsupported arg type |
+| CharStatsBinding.cpp | printExertionHungerMultTooltip | `void` | unsupported arg type |
+| CharStatsBinding.cpp | printRunSpeedStatMax | `void` | non-string reference arg |
+| CharStatsBinding.cpp | printStealthStats | `void` | non-string reference arg |
+| CharStatsBinding.cpp | setupCombatTechniques | `void` | static method |
+| CharStatsBinding.cpp | xpMelee | `void` | non-string reference arg |
+| CharStatsBinding.cpp | xpTraining | `void` | non-string reference arg |
 | CharacterEditWindowBinding.cpp | _CONSTRUCTOR | `CharacterEditWindow*` | unsupported arg type |
 | CharacterEditWindowBinding.cpp | changeAppearanceData | `void` | non-string reference arg |
 | CharacterEditWindowBinding.cpp | changeCategory | `void` | unsupported arg type |
@@ -753,15 +506,8 @@ Below are methods that were skipped during binding generation:
 | CharacterEditWindowBinding.cpp | updateAppearanceSlider | `void` | unsupported arg type |
 | CharacterEditWindowBinding.cpp | updateAppearanceSliderPose | `void` | unsupported arg type |
 | CharacterEditWindowBinding.cpp | updateAppearanceSliderVector | `void` | unsupported arg type |
-| CharacterHumanBinding.cpp | _CONSTRUCTOR | `CharacterHuman*` | overloaded constructor / factory |
-| CharacterHumanBinding.cpp | _NV_giveBirth | `bool` | unsupported arg type |
-| CharacterHumanBinding.cpp | _NV_loadFromSerialise | `void` | unsupported arg type |
-| CharacterHumanBinding.cpp | _NV_serialise | `GameSaveState` | unsupported return type |
-| CharacterHumanBinding.cpp | _NV_setupInventorySections | `bool` | unsupported arg type |
-| CharacterHumanBinding.cpp | giveBirth | `bool` | unsupported arg type |
-| CharacterHumanBinding.cpp | loadFromSerialise | `void` | unsupported arg type |
-| CharacterHumanBinding.cpp | serialise | `GameSaveState` | unsupported return type |
-| CharacterHumanBinding.cpp | setupInventorySections | `bool` | unsupported arg type |
+| CharacterHumanBinding.cpp | _NV_serialise | `GameSaveState` | unsupported arg type |
+| CharacterHumanBinding.cpp | serialise | `GameSaveState` | unsupported arg type |
 | CharacterInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unsupported arg type |
 | CharacterInventoryLayoutBinding.cpp | setupSections | `void` | unsupported arg type |
 | CharacterStatsWindowBinding.cpp | BuildStats | `void` | static method |
@@ -778,50 +524,19 @@ Below are methods that were skipped during binding generation:
 | CharacterTradingWindowBinding.cpp | confirmButton | `void` | unsupported arg type |
 | CharacterTradingWindowBinding.cpp | notifyMouseWheel | `void` | unsupported arg type |
 | CombatClassBinding.cpp | _CONSTRUCTOR | `CombatClass*` | unsupported arg type |
-| CombatClassBinding.cpp | _NV_gotMoreImportantThingsToDoThanFightingYou | `bool` | unsupported arg type |
-| CombatClassBinding.cpp | _NV_hasFocusedTarget | `hand` | unsupported return type |
-| CombatClassBinding.cpp | _NV_informOfFreeAttackSlot | `void` | unsupported arg type |
-| CombatClassBinding.cpp | _NV_initCombatMode | `bool` | unsupported arg type |
-| CombatClassBinding.cpp | _blockHit | `void` | unsupported arg type |
-| CombatClassBinding.cpp | _getAttackTarget | `hand` | unsupported return type |
-| CombatClassBinding.cpp | _getHit | `void` | unsupported arg type |
-| CombatClassBinding.cpp | _iHitYouAreYouHit | `HitMaterialType` | unsupported arg type |
-| CombatClassBinding.cpp | addAttackerH | `bool` | unsupported arg type |
-| CombatClassBinding.cpp | addEffect | `void` | static method |
+| CombatClassBinding.cpp | _NV_initCombatMode | `bool` | non-string reference arg |
+| CombatClassBinding.cpp | _blockHit | `void` | non-string reference arg |
+| CombatClassBinding.cpp | _getHit | `void` | non-string reference arg |
+| CombatClassBinding.cpp | _iHitYouAreYouHit | `HitMaterialType` | non-string reference arg |
 | CombatClassBinding.cpp | assessIncomingAttacks | `void` | unsupported arg type |
 | CombatClassBinding.cpp | calculateCurrentTechniqueSection | `void` | non-string reference arg |
-| CombatClassBinding.cpp | destroy | `void` | static method |
-| CombatClassBinding.cpp | getAttackAimAdjustmentThreshold | `float` | unsupported arg type |
 | CombatClassBinding.cpp | getAttackers | `lektor<hand>&` | reference return type |
 | CombatClassBinding.cpp | getBiggestThreat | `Character*` | unsupported arg type |
-| CombatClassBinding.cpp | getCombatEffect | `GameData*` | static method |
-| CombatClassBinding.cpp | gotMoreImportantThingsToDoThanFightingYou | `bool` | unsupported arg type |
-| CombatClassBinding.cpp | hasFocusedTarget | `hand` | unsupported return type |
-| CombatClassBinding.cpp | informOfFreeAttackSlot | `void` | unsupported arg type |
-| CombatClassBinding.cpp | initCombatMode | `bool` | unsupported arg type |
-| CombatClassBinding.cpp | isAttacking | `float` | unsupported arg type |
-| CombatClassBinding.cpp | isFightingAnAllyOfMine | `bool` | unsupported arg type |
-| CombatClassBinding.cpp | isInAttackZone | `bool` | unsupported arg type |
-| CombatClassBinding.cpp | isInAttackerListH | `bool` | unsupported arg type |
-| CombatClassBinding.cpp | lookatTarget | `void` | unsupported arg type |
-| CombatClassBinding.cpp | removeAttackerH | `bool` | unsupported arg type |
-| CombatClassBinding.cpp | setAttackTarget | `void` | unsupported arg type |
-| CombatClassBinding.cpp | setAttackTargetHandle | `void` | unsupported arg type |
-| CombatClassBinding.cpp | setup | `void` | static method |
-| CombatClassBinding.cpp | shiftEffects | `void` | static method |
-| CombatClassBinding.cpp | updateEffects | `void` | static method |
-| CombatClassBinding.cpp | whoAttacksYouOrMe | `swordStateEnum` | unsupported arg type |
-| CombatClassBinding.cpp | youDoKnowImAttackingYouRight | `void` | unsupported arg type |
-| CombatMovementControllerBinding.cpp | _CONSTRUCTOR | `CombatMovementController*` | unsupported return type |
-| CombatMovementControllerBinding.cpp | addACharacterObstruction | `void` | unsupported arg type |
-| CombatMovementControllerBinding.cpp | chasingModeCheck | `bool` | unsupported arg type |
+| CombatClassBinding.cpp | initCombatMode | `bool` | non-string reference arg |
+| CombatClassBinding.cpp | whoAttacksYouOrMe | `swordStateEnum` | non-string reference arg |
+| CombatClassBinding.cpp | youDoKnowImAttackingYouRight | `void` | non-string reference arg |
 | CombatMovementControllerBinding.cpp | combatMovementAnimationUpdate | `void` | unsupported arg type |
-| CombatMovementControllerBinding.cpp | combatMovementOffensive | `void` | unsupported arg type |
-| CombatMovementControllerBinding.cpp | combatMovementUpdate | `void` | unsupported arg type |
-| CombatMovementControllerBinding.cpp | combatMovementUpdate_crippleMode | `void` | unsupported arg type |
-| CombatMovementControllerBinding.cpp | create | `void` | unsupported arg type |
-| CombatMovementControllerBinding.cpp | getGUIData | `void` | unsupported arg type |
-| CombatMovementControllerBinding.cpp | setupCombatMovementVariables | `void` | unsupported arg type |
+| CombatMovementControllerBinding.cpp | combatMovementOffensive | `void` | non-string reference arg |
 | CombatTechniqueDataBinding.cpp | _CONSTRUCTOR | `CombatTechniqueData*` | unsupported arg type |
 | ConstructionStateBinding.cpp | _CONSTRUCTOR | `ConstructionState*` | overloaded method |
 | ConstructionStateBinding.cpp | _CONSTRUCTOR | `ConstructionState*` | overloaded method |
@@ -830,31 +545,6 @@ Below are methods that were skipped during binding generation:
 | ConstructionStateBinding.cpp | getNeededMats | `void` | unsupported arg type |
 | ConsumptionItemBinding.cpp | _CONSTRUCTOR | `ConsumptionItem*` | overloaded method |
 | ConsumptionItemBinding.cpp | _CONSTRUCTOR | `ConsumptionItem*` | overloaded method |
-| ContainerItemBinding.cpp | _CONSTRUCTOR | `ContainerItem*` | unsupported arg type |
-| ContainerItemBinding.cpp | _NV__loadFromSerialise | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | _NV__serialise | `GameData*` | unsupported arg type |
-| ContainerItemBinding.cpp | _NV_canEquip | `bool` | unsupported arg type |
-| ContainerItemBinding.cpp | _NV_createInventoryLayout | `InventoryLayout*` | unsupported return type |
-| ContainerItemBinding.cpp | _NV_dropItem | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | _NV_equipItem | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | _NV_getTooltipData1 | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | _NV_getTooltipData2 | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | _NV_loadFromSerialise | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | _NV_serialise | `GameSaveState` | unsupported return type |
-| ContainerItemBinding.cpp | _NV_setProperOwner | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | _NV_unequipItem | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | _loadFromSerialise | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | _serialise | `GameData*` | unsupported arg type |
-| ContainerItemBinding.cpp | canEquip | `bool` | unsupported arg type |
-| ContainerItemBinding.cpp | createInventoryLayout | `InventoryLayout*` | unsupported return type |
-| ContainerItemBinding.cpp | dropItem | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | equipItem | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | getTooltipData1 | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | getTooltipData2 | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | loadFromSerialise | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | serialise | `GameSaveState` | unsupported return type |
-| ContainerItemBinding.cpp | setProperOwner | `void` | unsupported arg type |
-| ContainerItemBinding.cpp | unequipItem | `void` | unsupported arg type |
 | ContextMenuGUIBinding.cpp | optionSelected | `void` | unsupported arg type |
 | ContextMenuGUIBinding.cpp | show | `void` | unsupported arg type |
 | CraftingBuildingBinding.cpp | _CONSTRUCTOR | `CraftingBuilding*` | unsupported arg type |
@@ -887,22 +577,16 @@ Below are methods that were skipped during binding generation:
 | CraftingBuildingBinding.cpp | tryOperate | `bool` | unsupported arg type |
 | CraftingInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unsupported arg type |
 | CraftingInventoryLayoutBinding.cpp | setupSections | `void` | unsupported arg type |
-| CreatelistItemBinding.cpp | _CONSTRUCTOR | `RootObjectFactory::CreatelistItem*` | unsupported return type |
-| CrossbowBinding.cpp | _CONSTRUCTOR | `Crossbow*` | unsupported arg type |
 | CrossbowBinding.cpp | _NV_createItemEntityCallback_Equipping | `void` | unsupported arg type |
 | CrossbowBinding.cpp | _NV_getTooltipData1 | `void` | unsupported arg type |
 | CrossbowBinding.cpp | _NV_getTooltipData2 | `void` | unsupported arg type |
 | CrossbowBinding.cpp | createItemEntityCallback_Equipping | `void` | unsupported arg type |
 | CrossbowBinding.cpp | getTooltipData1 | `void` | unsupported arg type |
 | CrossbowBinding.cpp | getTooltipData2 | `void` | unsupported arg type |
-| DamagesBinding.cpp | _CONSTRUCTOR | `Damages*` | overloaded method |
-| DamagesBinding.cpp | _CONSTRUCTOR | `Damages*` | overloaded method |
-| DamagesBinding.cpp | _CONSTRUCTOR | `Damages*` | overloaded method |
 | DataObjectContainerBinding.cpp | _CONSTRUCTOR | `DataObjectContainer*` | overloaded method |
 | DataObjectContainerBinding.cpp | _CONSTRUCTOR | `DataObjectContainer*` | overloaded method |
 | DataObjectContainerBinding.cpp | _NV_loadFromDisk | `bool` | unsupported arg type |
 | DataObjectContainerBinding.cpp | loadFromDisk | `bool` | unsupported arg type |
-| DataObjectContainerBinding.cpp | setupDataFile | `void` | unsupported arg type |
 | DataPanelLineBinding.cpp | _CONSTRUCTOR | `DataPanelLine*` | overloaded method |
 | DataPanelLineBinding.cpp | _CONSTRUCTOR | `DataPanelLine*` | overloaded method |
 | DataPanelLineBinding.cpp | _CONSTRUCTOR | `DataPanelLine*` | overloaded method |
@@ -971,70 +655,6 @@ Below are methods that were skipped during binding generation:
 | DatapanelGUIBinding.cpp | tabButton | `void` | unsupported arg type |
 | DelayedSpawnMsgBinding.cpp | _CONSTRUCTOR | `DelayedSpawnMsg*` | overloaded method |
 | DelayedSpawnMsgBinding.cpp | _CONSTRUCTOR | `DelayedSpawnMsg*` | overloaded method |
-| DialogDataManagerBinding.cpp | _createData | `DialogLineData*` | static method |
-| DialogDataManagerBinding.cpp | getData | `DialogLineData*` | static method |
-| DialogDataManagerBinding.cpp | initialise | `void` | static method |
-| DialogDataManagerBinding.cpp | load | `void` | static method |
-| DialogDataManagerBinding.cpp | newGameReset | `void` | static method |
-| DialogDataManagerBinding.cpp | save | `void` | static method |
-| DialogLineDataBinding.cpp | _CONSTRUCTOR | `DialogLineData*` | unsupported return type |
-| DialogLineDataBinding.cpp | _initialiseAList | `void` | overloaded method |
-| DialogLineDataBinding.cpp | _initialiseAList | `void` | overloaded method |
-| DialogLineDataBinding.cpp | checkConditions | `bool` | unsupported arg type |
-| DialogLineDataBinding.cpp | checkTags | `bool` | unsupported arg type |
-| DialogLineDataBinding.cpp | chooseAChild | `DialogLineData*` | unsupported return type |
-| DialogLineDataBinding.cpp | getChildByStringID | `DialogLineData*` | unsupported return type |
-| DialogLineDataBinding.cpp | getParent | `DialogLineData*` | unsupported return type |
-| DialogLineDataBinding.cpp | getPlayerReplies | `void` | unsupported arg type |
-| DialogLineDataBinding.cpp | getScore | `int` | unsupported arg type |
-| DialogLineDataBinding.cpp | getScorePlusChildrenIfEmpty | `int` | unsupported arg type |
-| DialogLineDataBinding.cpp | getText | `std::string` | overloaded method |
-| DialogLineDataBinding.cpp | getText | `void` | overloaded method |
-| DialogLineDataBinding.cpp | isForSpecificCharacter | `bool` | unsupported arg type |
-| DialogLineDataBinding.cpp | setParent | `void` | unsupported arg type |
-| DialogStateBinding.cpp | _CONSTRUCTOR | `DialogState*` | unsupported return type |
-| DialogueBinding.cpp | _checkCondition | `bool` | unsupported arg type |
-| DialogueBinding.cpp | _chooseDialog | `DialogLineData*` | unsupported return type |
-| DialogueBinding.cpp | _doActions | `void` | unsupported arg type |
-| DialogueBinding.cpp | _insertWordSwapsRecurse | `void` | non-string reference arg |
-| DialogueBinding.cpp | _wordSwapCharacterName | `void` | non-string reference arg |
-| DialogueBinding.cpp | addConversation | `void` | unsupported arg type |
-| DialogueBinding.cpp | addDialoguePackage | `void` | unsupported arg type |
-| DialogueBinding.cpp | changeConversationTarget | `void` | unsupported arg type |
-| DialogueBinding.cpp | create | `void` | unsupported arg type |
-| DialogueBinding.cpp | dontLetTargetBeMe | `void` | unsupported arg type |
-| DialogueBinding.cpp | getGUIData | `void` | unsupported arg type |
-| DialogueBinding.cpp | getWordSwap | `std::string` | unsupported arg type |
-| DialogueBinding.cpp | hasThisChanceLine | `bool` | unsupported arg type |
-| DialogueBinding.cpp | insertWordSwaps | `void` | non-string reference arg |
-| DialogueBinding.cpp | isAtTownOf | `bool` | unsupported arg type |
-| DialogueBinding.cpp | isCurrentConversationRunning | `bool` | unsupported arg type |
-| DialogueBinding.cpp | isLastLine | `bool` | unsupported arg type |
-| DialogueBinding.cpp | isLocked | `bool` | unsupported arg type |
-| DialogueBinding.cpp | load | `void` | unsupported arg type |
-| DialogueBinding.cpp | makeAnnouncement | `bool` | unsupported arg type |
-| DialogueBinding.cpp | notifyUnderAttack | `void` | unsupported arg type |
-| DialogueBinding.cpp | replyClicked | `void` | overloaded method |
-| DialogueBinding.cpp | replyClicked | `void` | overloaded method |
-| DialogueBinding.cpp | resolveOverlappedSpeechBubbles | `void` | static method |
-| DialogueBinding.cpp | runCustomDialog | `bool` | unsupported arg type |
-| DialogueBinding.cpp | save | `void` | unsupported arg type |
-| DialogueBinding.cpp | say | `void` | overloaded method |
-| DialogueBinding.cpp | say | `void` | overloaded method |
-| DialogueBinding.cpp | sayLine | `bool` | unsupported arg type |
-| DialogueBinding.cpp | scoreCustomDialog | `int` | unsupported arg type |
-| DialogueBinding.cpp | sendEvent | `bool` | unsupported arg type |
-| DialogueBinding.cpp | sendEventOverride | `bool` | unsupported arg type |
-| DialogueBinding.cpp | setLineLocked | `void` | unsupported arg type |
-| DialogueBinding.cpp | setSpeaker | `void` | unsupported arg type |
-| DialogueBinding.cpp | startConversation | `bool` | unsupported arg type |
-| DialogueBinding.cpp | startPlayerConversation | `bool` | unsupported arg type |
-| DialogueBinding.cpp | targetInTalkingRange | `bool` | unsupported arg type |
-| DialogueBinding.cpp | triggerNextLine | `void` | unsupported arg type |
-| DialogueSpeechBubbleBinding.cpp | _CONSTRUCTOR | `DialogueSpeechBubble*` | unsupported return type |
-| DialogueSpeechBubbleBinding.cpp | getRect | `MyGUI::types::TRect<int>` | unsupported return type |
-| DialogueSpeechBubbleBinding.cpp | setPosition | `void` | overloaded method |
-| DialogueSpeechBubbleBinding.cpp | setPosition | `void` | overloaded method |
 | DialogueWindowBinding.cpp | setResponses | `void` | unsupported arg type |
 | DialogueWindowBinding.cpp | show | `void` | overloaded method |
 | DialogueWindowBinding.cpp | show | `void` | overloaded method |
@@ -1051,6 +671,8 @@ Below are methods that were skipped during binding generation:
 | DoorStuffBinding.cpp | lockButton | `void` | unsupported arg type |
 | DoorStuffBinding.cpp | openButton | `void` | unsupported arg type |
 | DoorStuffBinding.cpp | setHandle | `void` | unsupported arg type |
+| EntDataBinding.cpp | createEntity1Callback | `void` | unsupported arg type |
+| EntDataBinding.cpp | createEntity2Callback | `void` | unsupported arg type |
 | FactionListWindowBinding.cpp | _CONSTRUCTOR | `FactionListWindow*` | unsupported arg type |
 | FactionRelationsLineBinding.cpp | attachToWidget | `void` | unsupported arg type |
 | FactionUniqueSquadManagerBinding.cpp | endOfUniqueSquad | `void` | unsupported arg type |
@@ -1060,8 +682,6 @@ Below are methods that were skipped during binding generation:
 | FactionsScreenBinding.cpp | notifyEditTextChange | `void` | unsupported arg type |
 | FactionsScreenBinding.cpp | notifyMouseWheel | `void` | unsupported arg type |
 | FactionsScreenBinding.cpp | setFocus | `void` | unsupported arg type |
-| FactoryCallbackInterfaceBinding.cpp | _CONSTRUCTOR | `FactoryCallbackInterface*` | unsupported return type |
-| FactoryCallbackInterfaceBinding.cpp | factoryObjectCreatedCallback | `void` | unsupported arg type |
 | FarmBatchBinding.cpp | _CONSTRUCTOR | `FarmBatch*` | unsupported arg type |
 | FarmBatchBinding.cpp | meshLoaded | `void` | unsupported arg type |
 | FarmBuildingBinding.cpp | _CONSTRUCTOR | `FarmBuilding*` | unsupported arg type |
@@ -1093,18 +713,16 @@ Below are methods that were skipped during binding generation:
 | FarmBuildingBinding.cpp | serialise | `GameSaveState` | unsupported return type |
 | FarmBuildingBinding.cpp | updatePlantInstance | `void` | non-string reference arg |
 | FarmBuildingBinding.cpp | upgrade | `void` | unsupported arg type |
-| FlockingToolsBinding.cpp | calculateCurrentRepulsionVector | `Ogre::Vector3` | unsupported arg type |
-| FlockingToolsBinding.cpp | clampRepulsionVectorTo90Degrees | `void` | static method |
-| FlockingToolsBinding.cpp | create | `void` | unsupported arg type |
-| FlockingToolsBinding.cpp | getDistanceToClosestCharacter | `float` | unsupported arg type |
-| FlockingToolsBinding.cpp | getOutOfTheWay | `void` | unsupported arg type |
-| FlockingToolsBinding.cpp | getRepulsionMagnitude | `float` | static method |
-| FlockingToolsBinding.cpp | getRepulsionVector | `Ogre::Vector3` | static method |
-| FlockingToolsBinding.cpp | getSensoryData | `SensoryData*` | unsupported return type |
 | FogEditorBinding.cpp | addFog | `void` | unsupported arg type |
 | FogEditorBinding.cpp | closeWindow | `void` | unsupported arg type |
 | FogEditorBinding.cpp | removeFog | `void` | unsupported arg type |
 | FogEditorBinding.cpp | selectFog | `void` | unsupported arg type |
+| FoliageSystemBinding.cpp | addGrassLayerToCoverageMap | `int` | unsupported arg type |
+| FoliageSystemBinding.cpp | clearStaticData | `void` | static method |
+| FoliageSystemBinding.cpp | finalMakeEnt | `bool` | unsupported arg type |
+| FoliageSystemBinding.cpp | getNavmeshCarvers | `int` | unsupported arg type |
+| FoliageSystemBinding.cpp | loadEnts | `void` | unsupported arg type |
+| FoliageSystemBinding.cpp | setupWind | `void` | unsupported arg type |
 | FootprintBinding.cpp | _CONSTRUCTOR | `Footprint*` | overloaded method |
 | FootprintBinding.cpp | _CONSTRUCTOR | `Footprint*` | overloaded method |
 | FootprintBinding.cpp | _NV_collisionTestOK | `bool` | unsupported arg type |
@@ -1176,9 +794,6 @@ Below are methods that were skipped during binding generation:
 | ForgottenGUIBinding.cpp | toggleInventoryWindowPermanent | `void` | non-string reference arg |
 | ForgottenGUIBinding.cpp | toggleStatsWindow | `void` | non-string reference arg |
 | ForgottenGUIBinding.cpp | widgetHasMouse | `bool` | unsupported arg type |
-| FormationMoverBinding.cpp | _CONSTRUCTOR | `FormationMover*` | unsupported return type |
-| FormationMoverBinding.cpp | getSpeeds | `void` | non-string reference arg |
-| FormationMoverBinding.cpp | setFormationMode | `void` | unsupported arg type |
 | FurnaceBuildingBinding.cpp | _CONSTRUCTOR | `FurnaceBuilding*` | unsupported arg type |
 | FurnaceBuildingBinding.cpp | _NV_canHaveSomeOfThese | `bool` | unsupported arg type |
 | FurnaceBuildingBinding.cpp | _NV_getGUIData | `void` | unsupported arg type |
@@ -1198,12 +813,9 @@ Below are methods that were skipped during binding generation:
 | FurnaceBuildingBinding.cpp | operate | `void` | unsupported arg type |
 | FurnaceInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unsupported arg type |
 | FurnaceInventoryLayoutBinding.cpp | setupSections | `void` | unsupported arg type |
-| GameDataContainerBinding.cpp | _CONSTRUCTOR | `GameDataContainer*` | unsupported return type |
 | GameDataContainerBinding.cpp | _addToKillList | `void` | static method |
 | GameDataContainerBinding.cpp | addNewData | `void` | overloaded method |
 | GameDataContainerBinding.cpp | addNewData | `void` | overloaded method |
-| GameDataContainerBinding.cpp | checkForDuplicates | `void` | unsupported arg type |
-| GameDataContainerBinding.cpp | destroyData | `void` | unsupported arg type |
 | GameDataContainerBinding.cpp | destroyHomelessData | `void` | static method |
 | GameDataContainerBinding.cpp | findAllDataThatReferencesThis | `void` | unsupported arg type |
 | GameDataContainerBinding.cpp | flushKillList | `void` | static method |
@@ -1213,71 +825,25 @@ Below are methods that were skipped during binding generation:
 | GameDataContainerBinding.cpp | getDataOfType | `void` | unsupported arg type |
 | GameDataContainerBinding.cpp | load | `bool` | unsupported arg type |
 | GameDataContainerBinding.cpp | loadGameDataReturn | `bool` | unsupported arg type |
-| GameDataContainerBinding.cpp | removeData | `void` | unsupported arg type |
-| GameDataContainerBinding.cpp | removeDuplicatesOf | `void` | unsupported arg type |
-| GameDataContainerBinding.cpp | renameData | `void` | unsupported arg type |
 | GameDataContainerBinding.cpp | save | `bool` | unsupported arg type |
-| GameDataCopyStandaloneBinding.cpp | _CONSTRUCTOR | `GameDataCopyStandalone*` | unsupported return type |
 | GameDataEditorWindowBinding.cpp | show | `void` | overloaded method |
 | GameDataEditorWindowBinding.cpp | show | `void` | overloaded method |
 | GameDataHeaderBinding.cpp | _CONSTRUCTOR | `GameDataHeader*` | overloaded method |
 | GameDataHeaderBinding.cpp | _CONSTRUCTOR | `GameDataHeader*` | overloaded method |
 | GameDataHeaderBinding.cpp | _CONSTRUCTOR | `GameDataHeader*` | overloaded method |
-| GameDataManagerBinding.cpp | _CONSTRUCTOR | `GameDataManager*` | unsupported return type |
 | GameDataManagerBinding.cpp | getBuildings | `void` | unsupported arg type |
-| GameDataManagerBinding.cpp | updateData | `void` | unsupported arg type |
-| GameDataManagerBinding.cpp | updateDatasOfType | `void` | unsupported arg type |
 | GameDataReferenceBinding.cpp | _CONSTRUCTOR | `GameDataReference*` | overloaded method |
 | GameDataReferenceBinding.cpp | _CONSTRUCTOR | `GameDataReference*` | overloaded method |
 | GameDataReferenceBinding.cpp | _CONSTRUCTOR | `GameDataReference*` | overloaded method |
-| GameDataReferenceBinding.cpp | getPtr | `GameData*` | unsupported arg type |
-| GameDataValuePairBinding.cpp | _CONSTRUCTOR | `GameDataValuePair*` | overloaded method |
-| GameDataValuePairBinding.cpp | _CONSTRUCTOR | `GameDataValuePair*` | overloaded method |
 | GameSaveStateBinding.cpp | _CONSTRUCTOR | `GameSaveState*` | overloaded method |
 | GameSaveStateBinding.cpp | _CONSTRUCTOR | `GameSaveState*` | overloaded method |
 | GameSaveStateBinding.cpp | _CONSTRUCTOR | `GameSaveState*` | overloaded method |
 | GameSaveStateBinding.cpp | bool | `operator` | unsupported return type (exposed as isValid) |
-| GameWorldBinding.cpp | AINonRenderThread | `ThreadWannabe*` | unsupported return type |
-| GameWorldBinding.cpp | addPortraitUpdate | `void` | unsupported arg type |
-| GameWorldBinding.cpp | addToDeathParade | `void` | unsupported arg type |
-| GameWorldBinding.cpp | addToUpdateListMain | `void` | unsupported arg type |
-| GameWorldBinding.cpp | buildingIntersectionTestCapsule | `bool` | unsupported arg type |
-| GameWorldBinding.cpp | destroy | `void` | overloaded method |
-| GameWorldBinding.cpp | destroy | `void` | overloaded method |
-| GameWorldBinding.cpp | destroy | `void` | overloaded method |
-| GameWorldBinding.cpp | destroy | `void` | overloaded method |
-| GameWorldBinding.cpp | destroy | `bool` | overloaded method |
-| GameWorldBinding.cpp | destroy | `void` | overloaded method |
-| GameWorldBinding.cpp | dynamicDestroyBuilding | `void` | unsupported arg type |
-| GameWorldBinding.cpp | getCharactersWithinSphere | `void` | unsupported arg type |
-| GameWorldBinding.cpp | getCollisionGroupType | `void` | unsupported arg type |
-| GameWorldBinding.cpp | getFromDeathParade | `Character*` | unsupported arg type |
-| GameWorldBinding.cpp | getIsInKillList | `bool` | unsupported arg type |
-| GameWorldBinding.cpp | getModsListFromConfig | `lektor<ModInfo*>` | unsupported return type |
-| GameWorldBinding.cpp | getObjectsWithinBox | `void` | unsupported arg type |
-| GameWorldBinding.cpp | getObjectsWithinSphere | `void` | unsupported arg type |
-| GameWorldBinding.cpp | getTimeFromStamp | `TimeOfDay` | overloaded method |
-| GameWorldBinding.cpp | getTimeFromStamp | `float` | overloaded method |
-| GameWorldBinding.cpp | getTimeStamp_inGameHours | `TimeOfDay` | unsupported return type |
-| GameWorldBinding.cpp | initialiseNewGameWorld | `void` | unsupported arg type |
-| GameWorldBinding.cpp | justLoadFactionRelations | `void` | unsupported arg type |
-| GameWorldBinding.cpp | logDebug | `void` | overloaded method |
-| GameWorldBinding.cpp | logDebug | `void` | overloaded method |
-| GameWorldBinding.cpp | playNotification | `void` | pointer arg |
-| GameWorldBinding.cpp | populateMapArea_nonPermanent | `void` | unsupported arg type |
-| GameWorldBinding.cpp | removeFromDeathParade | `bool` | unsupported arg type |
-| GameWorldBinding.cpp | removeFromDeathParadeByPlatoon | `void` | unsupported arg type |
-| GameWorldBinding.cpp | removeFromUpdateListMain | `void` | unsupported arg type |
-| GameWorldBinding.cpp | removePortaitUpdate | `void` | unsupported arg type |
-| GameWorldBinding.cpp | start | `bool` | unsupported arg type |
-| GameWorldBinding.cpp | sysMessage | `void` | non-string reference arg |
-| GameWorldBinding.cpp | sysMessageUrgent | `void` | non-string reference arg |
-| GameWorldBinding.cpp | sysMessage_noDuplicates | `void` | non-string reference arg |
-| GameplayOptionsBinding.cpp | load | `void` | unsupported arg type |
-| GameplayOptionsBinding.cpp | save | `void` | unsupported arg type |
 | GatewayBuildingBinding.cpp | _CONSTRUCTOR | `GatewayBuilding*` | unsupported arg type |
 | GatewayBuildingBinding.cpp | _NV_setHandle | `void` | unsupported arg type |
 | GatewayBuildingBinding.cpp | setHandle | `void` | unsupported arg type |
+| GearBinding.cpp | _NV_setInventoryWeAreIn | `void` | non-string reference arg |
+| GearBinding.cpp | setInventoryWeAreIn | `void` | non-string reference arg |
 | GeneratorBuildingBinding.cpp | _CONSTRUCTOR | `GeneratorBuilding*` | unsupported arg type |
 | GeneratorBuildingBinding.cpp | _NV_getGUIState | `void` | unsupported arg type |
 | GeneratorBuildingBinding.cpp | _NV_getInputValue | `float` | unsupported arg type |
@@ -1294,16 +860,34 @@ Below are methods that were skipped during binding generation:
 | HandBinding.cpp | _CONSTRUCTOR | `hand*` | overloaded method |
 | HandBinding.cpp | _NV_operator_equal | `bool` | overloaded method |
 | HandBinding.cpp | _NV_operator_equal | `bool` | overloaded method |
-| HandBinding.cpp | _NV_operator_notequal | `bool` | unsupported arg type |
+| HandBinding.cpp | _NV_operator_notequal | `bool` | non-string reference arg |
 | HandBinding.cpp | bool | `operator` | unsupported return type |
 | HandBinding.cpp | squadMatch | `bool` | unsupported arg type |
-| HasRoomCacheBinding.cpp | _CONSTRUCTOR | `HasRoomCache*` | unsupported return type |
-| HasRoomCacheBinding.cpp | hasRoomFor | `bool` | unsupported arg type |
-| HasRoomCacheBinding.cpp | knowsAbout | `bool` | unsupported arg type |
-| HasRoomCacheBinding.cpp | remember | `void` | unsupported arg type |
+| HavokCharacterBinding.cpp | _CONSTRUCTOR | `HavokCharacter*` | non-string reference arg |
+| HavokCharacterBinding.cpp | _getFace | `void` | unsupported arg type |
+| HavokCharacterBinding.cpp | calculateAvoidanceVector | `int` | unsupported arg type |
+| HavokCharacterBinding.cpp | calculateFuturePosition | `int` | overloaded method |
+| HavokCharacterBinding.cpp | calculateFuturePosition | `Ogre::Vector3` | overloaded method |
+| HavokCharacterBinding.cpp | calculatePathVector | `int` | unsupported arg type |
+| HavokCharacterBinding.cpp | delete | `void operator` | static method |
+| HavokCharacterBinding.cpp | edgeCollision | `int` | unsupported arg type |
+| HavokCharacterBinding.cpp | getCollidedCharacter | `const hand&` | reference return type |
+| HavokCharacterBinding.cpp | moveCollide | `int` | unsupported arg type |
+| HavokCharacterBinding.cpp | new | `void*operator` | static method |
+| HavokCharacterBinding.cpp | setHandle | `void` | non-string reference arg |
+| HavokCharacterBinding.cpp | setPath | `void` | unsupported arg type |
+| HavokCharacterBinding.cpp | updateEdgeCache | `bool` | unsupported arg type |
+| HavokCharacterBinding.cpp | updateVelocity | `void` | unsupported arg type |
 | ImportGameMenuBinding.cpp | importPress | `void` | unsupported arg type |
 | ImportGameMenuBinding.cpp | toggleAdvancedOptions | `void` | unsupported arg type |
+| InputHandlerBinding.cpp | addCommand | `void` | overloaded method |
+| InputHandlerBinding.cpp | addCommand | `void` | overloaded method |
 | InputHandlerBinding.cpp | addKey | `void` | non-string reference arg |
+| InputHandlerBinding.cpp | getBoundKeys | `lektor<int>` | unsupported return type |
+| InputHandlerBinding.cpp | isBound | `bool` | overloaded method |
+| InputHandlerBinding.cpp | isBound | `bool` | overloaded method |
+| InputHandlerBinding.cpp | unbind | `void` | overloaded method |
+| InputHandlerBinding.cpp | unbind | `void` | overloaded method |
 | InstanceIDBinding.cpp | _CONSTRUCTOR | `InstanceID*` | overloaded method |
 | InstanceIDBinding.cpp | _CONSTRUCTOR | `InstanceID*` | overloaded method |
 | InstanceIDBinding.cpp | _CONSTRUCTOR | `InstanceID*` | overloaded method |
@@ -1326,6 +910,28 @@ Below are methods that were skipped during binding generation:
 | InteriorModeButtonWindowBinding.cpp | saveButtonPressed2 | `void` | unsupported arg type |
 | InteriorModeButtonWindowBinding.cpp | toggleVisButtonPressed | `void` | unsupported arg type |
 | InteriorModeButtonWindowBinding.cpp | wasTheInteriorLoadedFromASave | `bool` | static method |
+| InventoryBinding.cpp | fillFromVendorList | `void` | overloaded method |
+| InventoryBinding.cpp | fillFromVendorList | `void` | overloaded method |
+| InventoryBinding.cpp | getAllItemsOfType | `void` | unsupported arg type |
+| InventoryBinding.cpp | getAllItemsWithFunction | `void` | unsupported arg type |
+| InventoryBinding.cpp | getAllSections | `lektor<InventorySection*>&` | reference return type |
+| InventoryBinding.cpp | getAllSectionsOfType | `void` | unsupported arg type |
+| InventoryBinding.cpp | getAllStolenItems | `void` | unsupported arg type |
+| InventoryBinding.cpp | getBestItemWithLowestCharges | `Item*` | overloaded method |
+| InventoryBinding.cpp | getBestItemWithLowestCharges | `Item*` | overloaded method |
+| InventoryBinding.cpp | getEquippedArmour | `void` | unsupported arg type |
+| InventoryBinding.cpp | getEquippedWeapons | `void` | unsupported arg type |
+| InventoryBinding.cpp | getExcessLoot | `bool` | non-string reference arg |
+| InventoryBinding.cpp | getHandle | `const hand&` | reference return type |
+| InventoryBinding.cpp | getNumItems | `int` | overloaded method |
+| InventoryBinding.cpp | getNumItems | `int` | overloaded method |
+| InventoryBinding.cpp | getResourceItems | `void` | unsupported arg type |
+| InventoryBinding.cpp | hasItem | `bool` | overloaded method |
+| InventoryBinding.cpp | hasItem | `bool` | overloaded method |
+| InventoryBinding.cpp | loadFrom | `void` | overloaded method |
+| InventoryBinding.cpp | loadFrom | `void` | overloaded method |
+| InventoryBinding.cpp | takeItem_EntireStack | `bool` | overloaded method |
+| InventoryBinding.cpp | takeItem_EntireStack | `Item*` | overloaded method |
 | InventoryGUIBinding.cpp | _NV_autoChangeSelectedObject | `void` | non-string reference arg |
 | InventoryGUIBinding.cpp | addTradePartner | `void` | static method |
 | InventoryGUIBinding.cpp | autoArrangeButton | `void` | unsupported arg type |
@@ -1362,48 +968,36 @@ Below are methods that were skipped during binding generation:
 | InventoryIconBinding.cpp | getItemSize | `MyGUI::types::TSize<int>` | static method |
 | InventoryIconBinding.cpp | getSize | `MyGUI::types::TSize<int>` | unsupported return type |
 | InventoryIconBinding.cpp | setPosition | `void` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | _CONSTRUCTOR | `InventoryItemBase*` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | _NV_getGUIData | `void` | unsupported arg type |
 | InventoryItemBaseBinding.cpp | _NV_getProperOwner | `const hand&` | reference return type |
 | InventoryItemBaseBinding.cpp | _NV_getTooltipData1 | `void` | unsupported arg type |
 | InventoryItemBaseBinding.cpp | _NV_getTooltipData2 | `void` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | _NV_isSameAs | `bool` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | _NV_setProperOwner | `void` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | _loadFromSerialise | `void` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | _serialise | `GameData*` | unsupported arg type |
+| InventoryItemBaseBinding.cpp | _NV_setProperOwner | `void` | non-string reference arg |
 | InventoryItemBaseBinding.cpp | activate | `void` | overloaded method |
 | InventoryItemBaseBinding.cpp | activate | `void` | overloaded method |
 | InventoryItemBaseBinding.cpp | addQuantity | `void` | non-string reference arg |
-| InventoryItemBaseBinding.cpp | canStackWith | `bool` | unsupported arg type |
 | InventoryItemBaseBinding.cpp | getBuyBackGUIInfo | `void` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | getGUIData | `void` | unsupported arg type |
 | InventoryItemBaseBinding.cpp | getProperOwner | `const hand&` | reference return type |
 | InventoryItemBaseBinding.cpp | getStolenItemGUIInfo | `void` | unsupported arg type |
 | InventoryItemBaseBinding.cpp | getTooltipData1 | `void` | unsupported arg type |
 | InventoryItemBaseBinding.cpp | getTooltipData2 | `void` | unsupported arg type |
 | InventoryItemBaseBinding.cpp | getTooltipTradeValue | `void` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | isSameAs | `bool` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | isStackable | `int` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | loadFromSerialise | `void` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | loadFromSerialiseInInventory | `void` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | serialise | `GameSaveState` | unsupported return type |
-| InventoryItemBaseBinding.cpp | serialiseInInventory | `GameData*` | unsupported arg type |
-| InventoryItemBaseBinding.cpp | setProperOwner | `void` | unsupported arg type |
+| InventoryItemBaseBinding.cpp | serialise | `GameSaveState` | unsupported arg type |
+| InventoryItemBaseBinding.cpp | setProperOwner | `void` | non-string reference arg |
 | InventoryLayoutBinding.cpp | notifyCellSizeChanged | `void` | static method |
 | InventoryLayoutBinding.cpp | resizeSection | `MyGUI::types::TSize<int>` | unsupported return type |
 | InventoryLayoutBinding.cpp | resizeSectionWidget | `MyGUI::types::TSize<int>` | unsupported return type |
 | InventoryLayoutBinding.cpp | setupSections | `void` | unsupported arg type |
-| InventorySectionBinding.cpp | addVeryLimitedSlot | `void` | unsupported arg type |
-| InventorySectionBinding.cpp | findNearestPlaceForItem | `bool` | unsupported arg type |
+| InventorySectionBinding.cpp | findNearestPlaceForItem | `bool` | non-string reference arg |
 | InventorySectionBinding.cpp | getAllItemsOfName | `void` | unsupported arg type |
 | InventorySectionBinding.cpp | getAllItemsOfType | `void` | overloaded method |
 | InventorySectionBinding.cpp | getAllItemsOfType | `void` | overloaded method |
 | InventorySectionBinding.cpp | getItemsInFootprint | `int` | overloaded method |
 | InventorySectionBinding.cpp | getItemsInFootprint | `int` | overloaded method |
-| InventorySectionBinding.cpp | getValidInventoryPosition | `bool` | unsupported arg type |
-| InventorySectionBinding.cpp | numItemsInFootprint | `int` | unsupported arg type |
-| InventorySectionBinding.cpp | setupContainerData | `void` | unsupported arg type |
-| InventorySectionBinding.cpp | setupEquipCallbacks | `void` | unsupported arg type |
+| InventorySectionBinding.cpp | getValidInventoryPosition | `bool` | non-string reference arg |
+| InventorySectionBinding.cpp | hasItem | `bool` | overloaded method |
+| InventorySectionBinding.cpp | hasItem | `bool` | overloaded method |
+| InventorySectionBinding.cpp | isLimitedSlotCompatible | `bool` | overloaded method |
+| InventorySectionBinding.cpp | isLimitedSlotCompatible | `bool` | overloaded method |
 | InventorySectionGUIBinding.cpp | _CONSTRUCTOR | `InventorySectionGUI*` | unsupported arg type |
 | InventorySectionGUIBinding.cpp | getBestPositionSlot | `bool` | unsupported arg type |
 | InventorySectionGUIBinding.cpp | getItemAbsolutePosition | `MyGUI::types::TPoint<int>` | unsupported return type |
@@ -1411,6 +1005,29 @@ Below are methods that were skipped during binding generation:
 | InventoryTradeDataBinding.cpp | _CONSTRUCTOR | `InventoryTradeData*` | overloaded method |
 | InventoryTradeDataBinding.cpp | _CONSTRUCTOR | `InventoryTradeData*` | overloaded method |
 | InventoryTradeDataBinding.cpp | _CONSTRUCTOR | `InventoryTradeData*` | overloaded method |
+| ItemBinding.cpp | _NV_activate | `void` | overloaded method |
+| ItemBinding.cpp | _NV_activate | `void` | overloaded method |
+| ItemBinding.cpp | _NV_createItemEntityCallback_Equipping | `void` | unsupported arg type |
+| ItemBinding.cpp | _NV_itemEntityCreated | `void` | unsupported arg type |
+| ItemBinding.cpp | _NV_notifyTheftFrom | `void` | overloaded method |
+| ItemBinding.cpp | _NV_notifyTheftFrom | `void` | overloaded method |
+| ItemBinding.cpp | _NV_serialise | `GameSaveState` | unsupported arg type |
+| ItemBinding.cpp | _NV_setInventoryWeAreIn | `void` | non-string reference arg |
+| ItemBinding.cpp | activate | `void` | overloaded method |
+| ItemBinding.cpp | activate | `void` | overloaded method |
+| ItemBinding.cpp | createItemEntityCallback | `void` | unsupported arg type |
+| ItemBinding.cpp | createItemEntityCallback_Equipping | `void` | unsupported arg type |
+| ItemBinding.cpp | findProperOwner | `const hand&` | static method |
+| ItemBinding.cpp | findProperOwner | `const hand&` | static method |
+| ItemBinding.cpp | getInventoryWeAreIn | `const hand&` | reference return type |
+| ItemBinding.cpp | isFood | `bool` | static method |
+| ItemBinding.cpp | itemEntityCreated | `void` | unsupported arg type |
+| ItemBinding.cpp | notifyTheftFrom | `void` | overloaded method |
+| ItemBinding.cpp | notifyTheftFrom | `void` | overloaded method |
+| ItemBinding.cpp | serialise | `GameSaveState` | unsupported arg type |
+| ItemBinding.cpp | setInventoryWeAreIn | `void` | non-string reference arg |
+| ItemBinding.cpp | setPersistant | `void` | overloaded method |
+| ItemBinding.cpp | setPersistant | `void` | overloaded method |
 | ItemListWindowBinding.cpp | _CONSTRUCTOR | `ItemListWindow*` | unsupported arg type |
 | LevelEditorBinding.cpp | activeModChanged | `void` | unsupported arg type |
 | LevelEditorBinding.cpp | buildingsButton | `void` | unsupported arg type |
@@ -1440,12 +1057,11 @@ Below are methods that were skipped during binding generation:
 | LightBuildingBinding.cpp | loadFromSerialise | `void` | unsupported arg type |
 | LightBuildingBinding.cpp | serialise | `GameSaveState` | unsupported return type |
 | LightBuildingBinding.cpp | setMountedBuilding | `void` | unsupported arg type |
+| LightEntBinding.cpp | _CONSTRUCTOR | `LightEnt*` | unsupported arg type |
 | LimbsInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unsupported arg type |
 | LimbsInventoryLayoutBinding.cpp | setupSections | `void` | unsupported arg type |
-| LimiterBinding.cpp | _CONSTRUCTOR | `Limiter*` | unsupported return type |
-| LimiterBinding.cpp | _NV_canEquip | `bool` | unsupported arg type |
-| LimiterBinding.cpp | canEquip | `bool` | unsupported arg type |
 | ListScrollBarBinding.cpp | isType | `bool` | unsupported arg type |
+| ListenerBinding.cpp | weatherUpdated | `void` | unsupported arg type |
 | LoadSaveWindowBinding.cpp | close | `void` | unsupported arg type |
 | LoadSaveWindowBinding.cpp | createInfo | `void` | unsupported arg type |
 | LoadSaveWindowBinding.cpp | keyPressed | `void` | unsupported arg type |
@@ -1454,18 +1070,10 @@ Below are methods that were skipped during binding generation:
 | LoadSaveWindowBinding.cpp | toggleCheck | `void` | unsupported arg type |
 | LoadSaveWindowBinding.cpp | updateInfo | `void` | unsupported arg type |
 | LoadingWindowBinding.cpp | getInstance | `LoadingWindow*` | static method |
-| LockedArmourBinding.cpp | _CONSTRUCTOR | `LockedArmour*` | unsupported arg type |
-| LockedArmourBinding.cpp | _NV__loadFromSerialise | `void` | unsupported arg type |
-| LockedArmourBinding.cpp | _NV__serialise | `GameData*` | unsupported arg type |
 | LockedArmourBinding.cpp | _NV_getTooltipData1 | `void` | unsupported arg type |
 | LockedArmourBinding.cpp | _NV_getTooltipData2 | `void` | unsupported arg type |
-| LockedArmourBinding.cpp | _loadFromSerialise | `void` | unsupported arg type |
-| LockedArmourBinding.cpp | _serialise | `GameData*` | unsupported arg type |
 | LockedArmourBinding.cpp | getTooltipData1 | `void` | unsupported arg type |
 | LockedArmourBinding.cpp | getTooltipData2 | `void` | unsupported arg type |
-| MainthreadStateReaderTBinding.cpp | getBackData | `const T&` | reference return type |
-| MainthreadStateReaderTBinding.cpp | getMainData | `T&` | overloaded method |
-| MainthreadStateReaderTBinding.cpp | getMainData | `const T&` | overloaded method |
 | ManagementScreenBinding.cpp | addButtonPress | `void` | unsupported arg type |
 | ManagementScreenBinding.cpp | addMessage | `void` | unsupported arg type |
 | ManagementScreenBinding.cpp | closeEverythingButton | `void` | unsupported arg type |
@@ -1492,10 +1100,8 @@ Below are methods that were skipped during binding generation:
 | MapScreenBinding.cpp | worldToMapCoords | `MyGUI::types::TPoint<int>` | unsupported return type |
 | MapScreenBinding.cpp | zoomInButton | `void` | unsupported arg type |
 | MapScreenBinding.cpp | zoomOutButton | `void` | unsupported arg type |
-| MedianFilter2DVectorBinding.cpp | _CONSTRUCTOR | `MedianFilter2DVector*` | unsupported return type |
-| MedianFilterBinding.cpp | _CONSTRUCTOR | `MedianFilter*` | unsupported return type |
 | MedianFilterBinding.cpp | apply | `void` | non-string reference arg |
-| MeshDataLookupBinding.cpp | _CONSTRUCTOR | `MeshDataLookup*` | unsupported return type |
+| MeshDataLookupBinding.cpp | _CONSTRUCTOR | `MeshDataLookup*` | unsupported arg type |
 | MeshDataLookupBinding.cpp | init | `void` | unsupported arg type |
 | MeshLoadDataBinding.cpp | _CONSTRUCTOR | `MeshLoadData*` | overloaded method |
 | MeshLoadDataBinding.cpp | _CONSTRUCTOR | `MeshLoadData*` | overloaded method |
@@ -1507,8 +1113,95 @@ Below are methods that were skipped during binding generation:
 | ModInfoBinding.cpp | _CONSTRUCTOR | `ModInfo*` | overloaded method |
 | ModInfoBinding.cpp | getLocale | `bool` | non-string reference arg |
 | MotionFilterBinding.cpp | Apply | `void` | non-string reference arg |
-| MotionFilterBinding.cpp | _CONSTRUCTOR | `MotionFilter*` | unsupported return type |
 | MultiSliderBinding.cpp | isType | `bool` | unsupported arg type |
+| NavMeshBinding.cpp | areEdgesConnected | `int` | unsupported arg type |
+| NavMeshBinding.cpp | cancelMessage | `void` | unsupported arg type |
+| NavMeshBinding.cpp | changeDoorState | `void` | unsupported arg type |
+| NavMeshBinding.cpp | checkCollision | `int` | unsupported arg type |
+| NavMeshBinding.cpp | checkLineOfSight | `int` | overloaded method |
+| NavMeshBinding.cpp | checkLineOfSight | `int` | overloaded method |
+| NavMeshBinding.cpp | countInteriors | `int` | non-string reference arg |
+| NavMeshBinding.cpp | createEdgePath | `int` | unsupported arg type |
+| NavMeshBinding.cpp | createInstance | `void` | unsupported arg type |
+| NavMeshBinding.cpp | createZone | `int` | unsupported arg type |
+| NavMeshBinding.cpp | createZoneInstance | `bool` | unsupported arg type |
+| NavMeshBinding.cpp | deleteInstance | `void` | unsupported arg type |
+| NavMeshBinding.cpp | deleteMesh | `void` | overloaded method |
+| NavMeshBinding.cpp | deleteMesh | `void` | overloaded method |
+| NavMeshBinding.cpp | directPath | `bool` | unsupported arg type |
+| NavMeshBinding.cpp | fillEdgeCache | `int` | unsupported arg type |
+| NavMeshBinding.cpp | findEdges | `int` | unsupported arg type |
+| NavMeshBinding.cpp | findPath | `bool` | unsupported arg type |
+| NavMeshBinding.cpp | generate | `void` | overloaded method |
+| NavMeshBinding.cpp | generate | `void` | overloaded method |
+| NavMeshBinding.cpp | generate | `void` | overloaded method |
+| NavMeshBinding.cpp | getClearance | `int` | non-string reference arg |
+| NavMeshBinding.cpp | getClosestBoundary | `int` | unsupported arg type |
+| NavMeshBinding.cpp | getClosestPoint | `int` | overloaded method |
+| NavMeshBinding.cpp | getClosestPoint | `int` | overloaded method |
+| NavMeshBinding.cpp | getClosestPoint | `int` | overloaded method |
+| NavMeshBinding.cpp | getEdgesAroundPoint | `int` | unsupported arg type |
+| NavMeshBinding.cpp | getFaceKey | `unsigned int` | overloaded method |
+| NavMeshBinding.cpp | getFaceKey | `unsigned int` | overloaded method |
+| NavMeshBinding.cpp | getFilename | `std::string` | static method |
+| NavMeshBinding.cpp | getGateCode | `int` | overloaded method |
+| NavMeshBinding.cpp | getGateCode | `int` | overloaded method |
+| NavMeshBinding.cpp | getHandle | `const hand&` | reference return type |
+| NavMeshBinding.cpp | getInterior | `NavInstance*` | non-string reference arg |
+| NavMeshBinding.cpp | getSector | `NavMeshSector*` | overloaded method |
+| NavMeshBinding.cpp | getSector | `NavMeshSector*` | overloaded method |
+| NavMeshBinding.cpp | getSectors | `int` | unsupported arg type |
+| NavMeshBinding.cpp | getSeedData | `NavMeshSeeds&` | reference return type |
+| NavMeshBinding.cpp | getUID | `unsigned int` | static method |
+| NavMeshBinding.cpp | getUID | `unsigned int` | static method |
+| NavMeshBinding.cpp | hashBuilding | `unsigned int` | static method |
+| NavMeshBinding.cpp | hashInterior | `unsigned int` | static method |
+| NavMeshBinding.cpp | hashZone | `unsigned int` | static method |
+| NavMeshBinding.cpp | isCharacterStuck | `bool` | unsupported arg type |
+| NavMeshBinding.cpp | isLoaded | `bool` | overloaded method |
+| NavMeshBinding.cpp | isLoaded | `bool` | overloaded method |
+| NavMeshBinding.cpp | isWater | `int` | unsupported arg type |
+| NavMeshBinding.cpp | pathExists | `bool` | overloaded method |
+| NavMeshBinding.cpp | pathExists | `int` | overloaded method |
+| NavMeshBinding.cpp | postMessage | `void` | unsupported arg type |
+| NavMeshBinding.cpp | projectToNavMesh | `int` | unsupported arg type |
+| NavMeshBinding.cpp | removeSector | `bool` | unsupported arg type |
+| NavMeshBinding.cpp | resolvePoint | `unsigned int` | unsupported arg type |
+| NavMeshBinding.cpp | saveZone | `int` | unsupported arg type |
+| NavMeshBinding.cpp | shiftEdgePath | `void` | unsupported arg type |
+| NavMeshBinding.cpp | shiftWorld | `void` | unsupported arg type |
+| NavMeshBinding.cpp | validateStreamingData | `bool` | unsupported arg type |
+| NavMeshGeneratorBinding.cpp | _CONSTRUCTOR | `NavMeshGenerator*` | unsupported arg type |
+| NavMeshGeneratorBinding.cpp | addFoliageCarvers | `int` | static method |
+| NavMeshGeneratorBinding.cpp | addGeometry | `int` | static method |
+| NavMeshGeneratorBinding.cpp | addGeometry | `int` | static method |
+| NavMeshGeneratorBinding.cpp | addGeometry | `int` | static method |
+| NavMeshGeneratorBinding.cpp | addJob | `void` | overloaded method |
+| NavMeshGeneratorBinding.cpp | addJob | `void` | overloaded method |
+| NavMeshGeneratorBinding.cpp | addJob | `void` | overloaded method |
+| NavMeshGeneratorBinding.cpp | addJob | `void` | overloaded method |
+| NavMeshGeneratorBinding.cpp | addStitchJob | `void` | unsupported arg type |
+| NavMeshGeneratorBinding.cpp | addWaterPlane | `bool` | static method |
+| NavMeshGeneratorBinding.cpp | createHeightmapMesh | `bool` | static method |
+| NavMeshGeneratorBinding.cpp | createVolume | `hkaiVolume*` | static method |
+| NavMeshGeneratorBinding.cpp | generateBuildingMesh | `int` | static method |
+| NavMeshGeneratorBinding.cpp | generateInteriorMesh | `int` | static method |
+| NavMeshGeneratorBinding.cpp | getCollisionShapes | `int` | static method |
+| NavMeshGeneratorBinding.cpp | getCompletedTask | `NavInstance*` | non-string reference arg |
+| NavMeshGeneratorBinding.cpp | getDoorPainters | `void` | static method |
+| NavMeshGeneratorBinding.cpp | getInteriorCavers | `void` | static method |
+| NavMeshGeneratorBinding.cpp | getSeedPointsFromAdjacentZone | `int` | non-string reference arg |
+| NavMeshGeneratorBinding.cpp | getVolumePoints | `int` | static method |
+| NavMeshGeneratorBinding.cpp | lockZone | `bool` | non-string reference arg |
+| NavMeshGeneratorBinding.cpp | newTask | `NavMeshGenerator::Task*` | unsupported arg type |
+| NavMeshGeneratorBinding.cpp | setup | `void` | overloaded method |
+| NavMeshGeneratorBinding.cpp | setup | `void` | static method |
+| NavMeshGeneratorBinding.cpp | shiftEdge | `int` | unsupported arg type |
+| NavMeshGeneratorBinding.cpp | shiftHole | `int` | unsupported arg type |
+| NavMeshGeneratorBinding.cpp | stitch | `int` | unsupported arg type |
+| NavMeshGeneratorBinding.cpp | stitchUnloadedZone | `int` | unsupported arg type |
+| NavMeshGeneratorBinding.cpp | stitchWithInteriors | `int` | unsupported arg type |
+| NavMeshGeneratorBinding.cpp | unlockZone | `void` | non-string reference arg |
 | NewGameOptionsWindowBinding.cpp | setOptions | `void` | non-string reference arg |
 | NewGameWindowBinding.cpp | close | `void` | unsupported arg type |
 | NewGameWindowBinding.cpp | newGameStart | `void` | unsupported arg type |
@@ -1517,9 +1210,36 @@ Below are methods that were skipped during binding generation:
 | NewGameWindowBinding.cpp | showWindow | `void` | unsupported arg type |
 | NewGameWindowBinding.cpp | toggleAdvancedOptions | `void` | unsupported arg type |
 | NpcListWindowBinding.cpp | _CONSTRUCTOR | `NpcListWindow*` | unsupported arg type |
-| NxUserControllerHitReportBinding.cpp | _CONSTRUCTOR | `NxUserControllerHitReport*` | unsupported return type |
+| NxBoxBinding.cpp | _CONSTRUCTOR | `NxBox*` | overloaded method |
+| NxBoxBinding.cpp | _CONSTRUCTOR | `NxBox*` | overloaded method |
+| NxMat33Binding.cpp | _CONSTRUCTOR | `NxMat33*` | overloaded method |
+| NxMat33Binding.cpp | _CONSTRUCTOR | `NxMat33*` | overloaded method |
+| NxMat33Binding.cpp | _CONSTRUCTOR | `NxMat33*` | overloaded method |
+| NxMat33Binding.cpp | fromQuat | `void` | unsupported arg type |
+| NxMat33Binding.cpp | getColumn | `NxVec3` | overloaded method |
+| NxMat33Binding.cpp | getColumn | `void` | overloaded method |
+| NxMat33Binding.cpp | getRow | `NxVec3` | unsupported return type |
+| NxMat33Binding.cpp | multiply | `void` | overloaded method |
+| NxMat33Binding.cpp | multiply | `void` | overloaded method |
+| NxMat33Binding.cpp | operator | `const float&` | operator |
+| NxMat33Binding.cpp | setColumn | `void` | unsupported arg type |
+| NxMat33Binding.cpp | toQuat | `void` | unsupported arg type |
 | NxUserControllerHitReportBinding.cpp | onControllerHit | `NxControllerAction` | unsupported return type |
 | NxUserControllerHitReportBinding.cpp | onShapeHit | `NxControllerAction` | unsupported return type |
+| NxUserTriggerReportBinding.cpp | onTrigger | `void` | unsupported arg type |
+| NxVec3Binding.cpp | _CONSTRUCTOR | `NxVec3*` | overloaded method |
+| NxVec3Binding.cpp | _CONSTRUCTOR | `NxVec3*` | overloaded method |
+| NxVec3Binding.cpp | _CONSTRUCTOR | `NxVec3*` | overloaded method |
+| NxVec3Binding.cpp | _CONSTRUCTOR | `NxVec3*` | overloaded method |
+| NxVec3Binding.cpp | _CONSTRUCTOR | `NxVec3*` | overloaded method |
+| NxVec3Binding.cpp | add | `void` | unsupported arg type |
+| NxVec3Binding.cpp | cross | `void` | unsupported arg type |
+| NxVec3Binding.cpp | dot | `float` | unsupported arg type |
+| NxVec3Binding.cpp | equals | `bool` | unsupported arg type |
+| NxVec3Binding.cpp | multiplyAdd | `void` | unsupported arg type |
+| NxVec3Binding.cpp | set | `void` | overloaded method |
+| NxVec3Binding.cpp | set | `void` | overloaded method |
+| NxVec3Binding.cpp | subtract | `void` | unsupported arg type |
 | ObjectInstanceBinding.cpp | _CONSTRUCTOR | `ObjectInstance*` | overloaded method |
 | ObjectInstanceBinding.cpp | _CONSTRUCTOR | `ObjectInstance*` | overloaded method |
 | ObjectInstanceBinding.cpp | updateInstancedObjectAttachedDatas | `void` | unsupported arg type |
@@ -1558,26 +1278,51 @@ Below are methods that were skipped during binding generation:
 | OrdersPanelBinding.cpp | tauntButtonCallback | `void` | unsupported arg type |
 | OrdersPanelBinding.cpp | toggleRanged | `void` | unsupported arg type |
 | OrdersPanelBinding.cpp | toggleStealth | `void` | unsupported arg type |
-| OwnershipsBinding.cpp | _CONSTRUCTOR | `Ownerships*` | unsupported arg type |
-| OwnershipsBinding.cpp | addOwnedObject | `void` | unsupported arg type |
-| OwnershipsBinding.cpp | canIUseThisBuilding | `bool` | unsupported arg type |
-| OwnershipsBinding.cpp | copyFrom | `void` | unsupported arg type |
-| OwnershipsBinding.cpp | declareOccupiedTown | `void` | unsupported arg type |
+| OwnershipsBinding.cpp | addOwnedObject | `void` | non-string reference arg |
 | OwnershipsBinding.cpp | getBuildingsWithFunction | `void` | unsupported arg type |
 | OwnershipsBinding.cpp | getHomeFurnitureOfType | `void` | unsupported arg type |
 | OwnershipsBinding.cpp | getOwnedBuildingPtrs | `void` | unsupported arg type |
 | OwnershipsBinding.cpp | getOwnedBuildingsH | `void` | unsupported arg type |
 | OwnershipsBinding.cpp | getOwnedPtrs | `int` | unsupported arg type |
-| OwnershipsBinding.cpp | isMyTown | `bool` | unsupported arg type |
-| OwnershipsBinding.cpp | isOwned | `bool` | unsupported arg type |
-| OwnershipsBinding.cpp | load | `void` | unsupported arg type |
-| OwnershipsBinding.cpp | removeOwnedObject | `void` | unsupported arg type |
-| OwnershipsBinding.cpp | serialise | `void` | unsupported arg type |
-| OwnershipsBinding.cpp | setHandle | `void` | unsupported arg type |
-| OwnershipsBinding.cpp | setHomeBuilding | `void` | unsupported arg type |
-| OwnershipsBinding.cpp | setHomeTown | `void` | unsupported arg type |
+| OwnershipsBinding.cpp | isOwned | `bool` | non-string reference arg |
+| OwnershipsBinding.cpp | removeOwnedObject | `void` | non-string reference arg |
+| OwnershipsBinding.cpp | setHomeBuilding | `void` | non-string reference arg |
 | ParticlePoolBinding.cpp | addParticle | `bool` | unsupported arg type |
-| PlatoonBinding.cpp | _CONSTRUCTOR | `Platoon*` | protected constructor |
+| PhysicalEntityBinding.cpp | _CONSTRUCTOR | `PhysicalEntity*` | unsupported arg type |
+| PhysicsActualBinding.cpp | _destroy | `void` | unsupported arg type |
+| PhysicsActualBinding.cpp | convertXMLToBin | `void` | non-string reference arg |
+| PhysicsActualBinding.cpp | getActorCollisionGroup | `unsigned short` | static method |
+| PhysicsActualBinding.cpp | loadPhysXFile | `NxActor*` | unsupported arg type |
+| PhysicsActualBinding.cpp | loadPhysXFileAsATrigger | `NxActor*` | unsupported arg type |
+| PhysicsActualBinding.cpp | scaleCollection | `void` | non-string reference arg |
+| PhysicsActualBinding.cpp | scytheInsert | `bool` | unsupported arg type |
+| PhysicsActualBinding.cpp | setActorCollisionGroup | `void` | static method |
+| PhysicsActualBinding.cpp | setActorMaterial | `void` | static method |
+| PhysicsClassBinding.cpp | createJoint | `NxJoint*` | unsupported arg type |
+| PhysicsClassBinding.cpp | createJoint1 | `NxJoint*` | unsupported arg type |
+| PhysicsClassBinding.cpp | createNewActor | `ScytheActor*` | unsupported arg type |
+| PhysicsClassBinding.cpp | createNewActor1 | `ScytheActor*` | unsupported arg type |
+| PhysicsClassBinding.cpp | createSkeletalModel | `SkeletonData*` | unsupported arg type |
+| PhysicsClassBinding.cpp | insert | `bool` | overloaded method |
+| PhysicsClassBinding.cpp | insert | `bool` | overloaded method |
+| PhysicsClassBinding.cpp | insert | `bool` | overloaded method |
+| PhysicsCollectionBinding.cpp | handleChanged | `void` | non-string reference arg |
+| PhysicsInterfaceBinding.cpp | addConstantTracerMT | `void` | unsupported arg type |
+| PhysicsInterfaceBinding.cpp | addImpulse | `void` | unsupported arg type |
+| PhysicsInterfaceBinding.cpp | addNewObject | `void` | unsupported arg type |
+| PhysicsInterfaceBinding.cpp | changeGroup | `void` | unsupported arg type |
+| PhysicsInterfaceBinding.cpp | createSimplePhysicsEntityMT | `SimplePhysXEntity*` | overloaded method |
+| PhysicsInterfaceBinding.cpp | createSimplePhysicsEntityMT | `SimplePhysXEntity*` | overloaded method |
+| PhysicsInterfaceBinding.cpp | destroy | `void` | unsupported arg type |
+| PhysicsInterfaceBinding.cpp | destroyActor | `void` | unsupported arg type |
+| PhysicsInterfaceBinding.cpp | loadScytheRagdollFileMT | `ScytheRagdollPhysicsT*` | unsupported arg type |
+| PhysicsInterfaceBinding.cpp | loadTerrain | `void` | unsupported arg type |
+| PhysicsInterfaceBinding.cpp | removeConstantTracerMT | `void` | unsupported arg type |
+| PhysicsInterfaceBinding.cpp | scytheCreateAttachmentData | `void` | unsupported arg type |
+| PlatoonBinding.cpp | _NV_serialise | `GameSaveState` | unsupported arg type |
+| PlatoonBinding.cpp | getSquadLeader_theRealOne | `const hand&` | reference return type |
+| PlatoonBinding.cpp | serialise | `GameSaveState` | unsupported arg type |
+| PlatoonBinding.cpp | setRoamingMapArea | `void` | unsupported arg type |
 | PortraitDataBinding.cpp | _CONSTRUCTOR | `PortraitData*` | non-string reference arg |
 | PortraitDataBinding.cpp | getHandle | `const hand&` | reference return type |
 | PortraitImageBinding.cpp | _CONSTRUCTOR | `PortraitImage*` | unsupported arg type |
@@ -1636,18 +1381,8 @@ Below are methods that were skipped during binding generation:
 | ProspectingWindowBinding.cpp | getSingleton | `ProspectingWindow*` | static method |
 | ProspectingWindowBinding.cpp | resourceSelected | `void` | unsupported arg type |
 | ProspectingWindowBinding.cpp | worldToMapCoords | `MyGUI::types::TPoint<int>` | unsupported return type |
-| RaceDataBinding.cpp | _CONSTRUCTOR | `RaceData*` | unsupported arg type |
-| RaceDataBinding.cpp | canEat | `bool` | overloaded method |
-| RaceDataBinding.cpp | canEat | `bool` | overloaded method |
-| RaceDataBinding.cpp | getRaceData | `RaceData*` | static method |
-| RaceDataBinding.cpp | getRaceData | `RaceData*` | static method |
-| RaceDataBinding.cpp | isRelatedRace | `bool` | overloaded method |
-| RaceDataBinding.cpp | isRelatedRace | `bool` | overloaded method |
-| RaceDataBinding.cpp | isSpecificRace | `bool` | unsupported arg type |
-| RaceLimiterBinding.cpp | _CONSTRUCTOR | `RaceLimiter*` | unsupported return type |
 | RaceLimiterBinding.cpp | _NV_canEquip | `bool` | overloaded method |
 | RaceLimiterBinding.cpp | _NV_canEquip | `bool` | overloaded method |
-| RaceLimiterBinding.cpp | addLimit | `void` | unsupported arg type |
 | RaceLimiterBinding.cpp | canEquip | `bool` | overloaded method |
 | RaceLimiterBinding.cpp | canEquip | `bool` | overloaded method |
 | RaceLimiterBinding.cpp | getSingleton | `RaceLimiter*` | static method |
@@ -1659,7 +1394,6 @@ Below are methods that were skipped during binding generation:
 | ReorderableListBinding.cpp | notifyRequestDrop | `void` | non-string reference arg |
 | ReorderableListBinding.cpp | notifyStartDrop | `void` | non-string reference arg |
 | ReorderableListBinding.cpp | setData | `void` | unsupported arg type |
-| RepetitionCounterBinding.cpp | _CONSTRUCTOR | `RepetitionCounter*` | unsupported return type |
 | ResearchBuildingBinding.cpp | _CONSTRUCTOR | `ResearchBuilding*` | unsupported arg type |
 | ResearchBuildingBinding.cpp | _NV_getGUIData | `void` | unsupported arg type |
 | ResearchBuildingBinding.cpp | _NV_operate | `void` | unsupported arg type |
@@ -1694,7 +1428,42 @@ Below are methods that were skipped during binding generation:
 | ResourceLoaderBinding.cpp | releaseSceneNode | `void` | unsupported arg type |
 | ResourceLoaderBinding.cpp | removeRequest | `void` | unsupported arg type |
 | ResourceLoaderBinding.cpp | setupResourceMesh | `unsigned __int64` | unsupported return type |
-| RootObjectFactoryBinding.cpp | _CONSTRUCTOR | `RootObjectFactory*` | unsupported return type |
+| RootObjectBaseBinding.cpp | _NV_setHandle | `void` | non-string reference arg |
+| RootObjectBaseBinding.cpp | getHandle | `const hand&` | reference return type |
+| RootObjectBaseBinding.cpp | serialise | `GameSaveState` | unsupported arg type |
+| RootObjectBaseBinding.cpp | setHandle | `void` | non-string reference arg |
+| RootObjectBinding.cpp | _NV_getGUIDataCategories | `void` | unsupported arg type |
+| RootObjectBinding.cpp | _NV_getOrders | `void` | unsupported arg type |
+| RootObjectBinding.cpp | _NV_hitByMeleeAttack | `HitMaterialType` | non-string reference arg |
+| RootObjectBinding.cpp | _NV_isIndoors | `const hand&` | reference return type |
+| RootObjectBinding.cpp | _NV_notifyIndoors | `void` | non-string reference arg |
+| RootObjectBinding.cpp | _NV_setIsInsideBuilding | `void` | non-string reference arg |
+| RootObjectBinding.cpp | getGUIDataCategories | `void` | unsupported arg type |
+| RootObjectBinding.cpp | getOrders | `void` | unsupported arg type |
+| RootObjectBinding.cpp | hitByMeleeAttack | `HitMaterialType` | non-string reference arg |
+| RootObjectBinding.cpp | isIndoors | `const hand&` | reference return type |
+| RootObjectBinding.cpp | notifyIndoors | `void` | non-string reference arg |
+| RootObjectBinding.cpp | setIsInsideBuilding | `void` | non-string reference arg |
+| RootObjectContainerBinding.cpp | _CONSTRUCTOR | `RootObjectContainer*` | overloaded method |
+| RootObjectContainerBinding.cpp | _CONSTRUCTOR | `RootObjectContainer*` | overloaded method |
+| RootObjectContainerBinding.cpp | _NV_getSelectedObjects | `void` | unsupported arg type |
+| RootObjectContainerBinding.cpp | _NV_loadInstance | `void` | non-string reference arg |
+| RootObjectContainerBinding.cpp | getSelectedObjects | `void` | unsupported arg type |
+| RootObjectContainerBinding.cpp | loadInstance | `void` | non-string reference arg |
+| RootObjectContainerBinding.cpp | serialiseThings | `void` | overloaded method |
+| RootObjectContainerBinding.cpp | serialiseThings | `void` | overloaded method |
+| RootObjectFactoryBinding.cpp | _chooseClothingItemFromList | `GameData*` | static method |
+| RootObjectFactoryBinding.cpp | chooseMyClothing | `void` | static method |
+| RootObjectFactoryBinding.cpp | createBuilding | `Building*` | unsupported arg type |
+| RootObjectFactoryBinding.cpp | createItem | `Item*` | overloaded method |
+| RootObjectFactoryBinding.cpp | createItem | `Item*` | overloaded method |
+| RootObjectFactoryBinding.cpp | createRandomSquad | `Platoon*` | unsupported arg type |
+| RootObjectFactoryBinding.cpp | createRandomUnloadedCharacter | `GameSaveState` | unsupported arg type |
+| RootObjectFactoryBinding.cpp | createRandomUnloadedSquad | `Platoon*` | unsupported arg type |
+| RootObjectFactoryBinding.cpp | getValsFromDataInList | `TripleInt` | unsupported return type |
+| RotatingEntBinding.cpp | _CONSTRUCTOR | `RotatingEnt*` | unsupported arg type |
+| RotatingEntBinding.cpp | _NV_weatherUpdated | `void` | unsupported arg type |
+| RotatingEntBinding.cpp | weatherUpdated | `void` | unsupported arg type |
 | SaveFileSystemBinding.cpp | getSingleton | `SaveFileSystem*` | static method |
 | SaveManagerBinding.cpp | checkVersion | `bool` | unsupported arg type |
 | SaveManagerBinding.cpp | getSingleton | `SaveManager*` | static method |
@@ -1709,16 +1478,15 @@ Below are methods that were skipped during binding generation:
 | ScreenLabelBinding.cpp | _NV_setTracking | `void` | non-string reference arg |
 | ScreenLabelBinding.cpp | setColor | `void` | unsupported arg type |
 | ScreenLabelBinding.cpp | setTracking | `void` | non-string reference arg |
-| SeenSomeoneBinding.cpp | _CONSTRUCTOR | `SeenSomeone*` | unsupported return type |
-| SelectionBoxBinding.cpp | _CONSTRUCTOR | `SelectionBox*` | unsupported return type |
 | SelectionBoxBinding.cpp | contains | `bool` | overloaded method |
 | SelectionBoxBinding.cpp | contains | `bool` | overloaded method |
 | SelectionBoxBinding.cpp | contains | `bool` | overloaded method |
-| SelectionBoxBinding.cpp | start | `void` | unsupported arg type |
-| SelectionBoxBinding.cpp | update | `void` | unsupported arg type |
-| SenseItrBinding.cpp | _CONSTRUCTOR | `SenseItr*` | unsupported return type |
-| SenseItrBinding.cpp | getData | `SeenSomeone*` | unsupported return type |
-| SensoryDataBinding.cpp | _CONSTRUCTOR | `SensoryData*` | constructor |
+| SenseItrBinding.cpp | _CONSTRUCTOR | `SenseItr*` | unsupported arg type |
+| SensoryDataBinding.cpp | _shareSensesCheck | `bool` | unsupported arg type |
+| SensoryDataBinding.cpp | getStateBroadcastOf | `StateBroadcastData*` | non-string reference arg |
+| SensoryDataBinding.cpp | notifyCriminalThreat | `void` | non-string reference arg |
+| SensoryDataBinding.cpp | reassessAll | `void` | unsupported arg type |
+| SensoryDataBinding.cpp | setupMyProgressBar | `void` | non-string reference arg |
 | ShopTraderBinding.cpp | _CONSTRUCTOR | `ShopTrader*` | unsupported arg type |
 | ShopTraderBinding.cpp | _NV_getGUIData | `void` | unsupported arg type |
 | ShopTraderBinding.cpp | _NV_isIndoors | `const hand&` | reference return type |
@@ -1741,21 +1509,13 @@ Below are methods that were skipped during binding generation:
 | ShopTraderInventoryBinding.cpp | _sectionRemoveItemCallback | `void` | unsupported arg type |
 | ShopTraderInventoryBinding.cpp | _sectionUpdateItemCallback | `void` | unsupported arg type |
 | ShopTraderInventoryBinding.cpp | dropItem | `void` | unsupported arg type |
-| SimpleTimeStamperBinding.cpp | _CONSTRUCTOR | `SimpleTimeStamper*` | unsupported return type |
 | SliderBinding.cpp | isType | `bool` | unsupported arg type |
-| SpecificItemLoadFirstBinding.cpp | _CONSTRUCTOR | `SpecificItemLoadFirst*` | unsupported return type |
-| SpecificItemLoadFirstBinding.cpp | _NV_shouldSkip | `bool` | unsupported arg type |
-| SpecificItemLoadFirstBinding.cpp | shouldSkip | `bool` | unsupported arg type |
-| SpeedGroupBinding.cpp | _CONSTRUCTOR | `SpeedGroup*` | unsupported return type |
-| SpeedGroupBinding.cpp | erase | `void` | unsupported arg type |
-| SpeedGroupBinding.cpp | getSpeed | `float` | unsupported arg type |
-| SpeedGroupBinding.cpp | insert | `void` | unsupported arg type |
-| SpotBinding.cpp | _CONSTRUCTOR | `Spot*` | unsupported return type |
-| SpottingPeopleMgrBinding.cpp | _CONSTRUCTOR | `SpottingPeopleMgr*` | unsupported return type |
-| SpottingPeopleMgrBinding.cpp | cantSeeAnymore | `void` | unsupported arg type |
-| SpottingPeopleMgrBinding.cpp | getTime | `float` | unsupported arg type |
-| SpottingPeopleMgrBinding.cpp | has | `bool` | unsupported arg type |
-| SpottingPeopleMgrBinding.cpp | spot | `void` | unsupported arg type |
+| SpeedGroupBinding.cpp | erase | `void` | non-string reference arg |
+| SpeedGroupBinding.cpp | insert | `void` | non-string reference arg |
+| SpottingPeopleMgrBinding.cpp | cantSeeAnymore | `void` | non-string reference arg |
+| SpottingPeopleMgrBinding.cpp | getTime | `float` | non-string reference arg |
+| SpottingPeopleMgrBinding.cpp | has | `bool` | non-string reference arg |
+| SpottingPeopleMgrBinding.cpp | spot | `void` | non-string reference arg |
 | SquadCellViewBinding.cpp | _CONSTRUCTOR | `SquadCellView*` | unsupported arg type |
 | SquadCellViewBinding.cpp | getCellDimension | `void` | static method |
 | SquadCellViewBinding.cpp | onNameChanged | `void` | unsupported arg type |
@@ -1774,6 +1534,7 @@ Below are methods that were skipped during binding generation:
 | StatGroupBinding.cpp | _CONSTRUCTOR | `StatGroup*` | overloaded method |
 | StatGroupBinding.cpp | _CONSTRUCTOR | `StatGroup*` | overloaded method |
 | StatGroupBinding.cpp | _CONSTRUCTOR | `StatGroup*` | overloaded method |
+| StaticEntBinding.cpp | _CONSTRUCTOR | `StaticEnt*` | unsupported arg type |
 | StorageBuildingBinding.cpp | _CONSTRUCTOR | `StorageBuilding*` | unsupported arg type |
 | StorageBuildingBinding.cpp | _NV_canHaveSomeOfThese | `bool` | unsupported arg type |
 | StorageBuildingBinding.cpp | _NV_getItemsWeWantRidOf | `void` | unsupported arg type |
@@ -1789,14 +1550,18 @@ Below are methods that were skipped during binding generation:
 | StringPairBinding.cpp | _CONSTRUCTOR | `StringPair*` | overloaded method |
 | StringPairBinding.cpp | _CONSTRUCTOR | `StringPair*` | overloaded method |
 | StringPairBinding.cpp | _NV_operator_assign | `const StringPair&` | reference return type |
-| SwordBinding.cpp | _CONSTRUCTOR | `Sword*` | unsupported arg type |
 | SwordBinding.cpp | _NV_getTooltipData1 | `void` | unsupported arg type |
 | SwordBinding.cpp | _NV_getTooltipData2 | `void` | unsupported arg type |
 | SwordBinding.cpp | getTooltipData1 | `void` | unsupported arg type |
 | SwordBinding.cpp | getTooltipData2 | `void` | unsupported arg type |
-| SwordBinding.cpp | setupStats | `void` | unsupported arg type |
 | SysMessageBinding.cpp | _CONSTRUCTOR | `SysMessage*` | overloaded method |
 | SysMessageBinding.cpp | _CONSTRUCTOR | `SysMessage*` | overloaded method |
+| TagsClassBinding.cpp | _NV_getTag | `bool` | unsupported arg type |
+| TagsClassBinding.cpp | _NV_setTag | `void` | unsupported arg type |
+| TagsClassBinding.cpp | clearTag | `void` | unsupported arg type |
+| TagsClassBinding.cpp | getTag | `bool` | unsupported arg type |
+| TagsClassBinding.cpp | has | `bool` | unsupported arg type |
+| TagsClassBinding.cpp | setTag | `void` | unsupported arg type |
 | TaskDataBinding.cpp | _CONSTRUCTOR | `TaskData*` | unsupported arg type |
 | TaskDataBinding.cpp | _isRequirementsComplete | `bool` | unsupported arg type |
 | TaskDataBinding.cpp | _targetsRemaining | `bool` | unsupported arg type |
@@ -1813,17 +1578,22 @@ Below are methods that were skipped during binding generation:
 | TaskDataBinding.cpp | setTargetingFunction | `void` | unsupported arg type |
 | TaskStateDataBinding.cpp | _CONSTRUCTOR | `TaskStateData*` | overloaded method |
 | TaskStateDataBinding.cpp | _CONSTRUCTOR | `TaskStateData*` | overloaded method |
-| TaskerBinding.cpp | _NV_endAction | `void` | unsupported arg type |
-| TaskerBinding.cpp | _NV_startAction | `void` | unsupported arg type |
-| TaskerBinding.cpp | _NV_taskSaysItsFinished | `bool` | unsupported arg type |
 | TaskerBinding.cpp | _targetsRemaining | `bool` | unsupported arg type |
-| TaskerBinding.cpp | endAction | `void` | unsupported arg type |
 | TaskerBinding.cpp | findTarget | `float` | unsupported arg type |
+| TaskerBinding.cpp | getNextSubTarget | `hand` | unsupported arg type |
+| TaskerBinding.cpp | getRequirementComplaint | `std::string` | unsupported arg type |
+| TaskerBinding.cpp | isRequirementsComplete | `bool` | unsupported arg type |
+| TaskerBinding.cpp | isResultsComplete | `bool` | unsupported arg type |
+| TaskerBinding.cpp | isResultsComplete_ignoreSubtasker | `bool` | unsupported arg type |
 | TaskerBinding.cpp | isSubTaskerComplete | `bool` | unsupported arg type |
 | TaskerBinding.cpp | isSubTaskerTargetFinishedWith | `bool` | unsupported arg type |
-| TaskerBinding.cpp | runAction | `void` | unsupported arg type |
-| TaskerBinding.cpp | startAction | `void` | unsupported arg type |
-| TaskerBinding.cpp | taskSaysItsFinished | `bool` | unsupported arg type |
+| TaskerBinding.cpp | score | `float` | unsupported arg type |
+| TerrainBinding.cpp | __cdecl | `boost::function<Ogre::SharedPtr<Ogre::Material>` | overloaded method |
+| TerrainBinding.cpp | __cdecl | `boost::function<void` | overloaded method |
+| TerrainBinding.cpp | _notifyCurrentCamera | `void` | unsupported arg type |
+| TerrainBinding.cpp | _updateRenderQueue | `void` | unsupported arg type |
+| TerrainBinding.cpp | frameStarted | `bool` | unsupported arg type |
+| TerrainBinding.cpp | visitRenderables | `void` | unsupported arg type |
 | TextureArrayLoadDataBinding.cpp | _CONSTRUCTOR | `TextureArrayLoadData*` | unsupported arg type |
 | TextureArrayLoadDataBinding.cpp | _NV_getTexture | `Ogre::SharedPtr<Ogre::Texture>` | unsupported return type |
 | TextureArrayLoadDataBinding.cpp | getTexture | `Ogre::SharedPtr<Ogre::Texture>` | unsupported return type |
@@ -1895,116 +1665,49 @@ Below are methods that were skipped during binding generation:
 | ToolTipStaticBinding.cpp | mouseMoved | `void` | unsupported arg type |
 | ToolTipStaticBinding.cpp | setPosition | `void` | unsupported arg type |
 | TortureBuildingBinding.cpp | _CONSTRUCTOR | `TortureBuilding*` | unsupported arg type |
-| TownBaseBinding.cpp | _CONSTRUCTOR | `TownBase*` | unsupported return type |
-| TownBaseBinding.cpp | _NV__nestUpThisSpot | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_activate | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_addGate | `void` | unsupported arg type |
+| TownBaseBinding.cpp | _NV_addGate | `void` | non-string reference arg |
 | TownBaseBinding.cpp | _NV_findAllBuildings | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_findAllBuildingsOfType | `lektor<Building*>*` | unsupported return type |
-| TownBaseBinding.cpp | _NV_findAllBuildingsWithFunction | `lektor<Building*>*` | unsupported return type |
-| TownBaseBinding.cpp | _NV_getAlarmMgr | `AlarmManager*` | unsupported return type |
 | TownBaseBinding.cpp | _NV_getAlarmState | `TownAlarmState` | unsupported return type |
-| TownBaseBinding.cpp | _NV_getBiome | `AreaBiomeGroup*` | unsupported return type |
-| TownBaseBinding.cpp | _NV_getCurrentTownLocation | `TownBase*` | unsupported return type |
-| TownBaseBinding.cpp | _NV_getGUIData | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_getNearestGate | `GatewayBuilding*` | unsupported return type |
-| TownBaseBinding.cpp | _NV_hasResidentHQ | `bool` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_isIllegal | `bool` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_loadFromSerialise | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_loadState | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_nestUpThisSpot | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_saveState | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_serialise | `GameSaveState` | unsupported return type |
+| TownBaseBinding.cpp | _NV_serialise | `GameSaveState` | unsupported arg type |
 | TownBaseBinding.cpp | _NV_setAlarmState | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_setFaction | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_setHandle | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_setup | `void` | unsupported arg type |
-| TownBaseBinding.cpp | _nestUpThisSpot | `void` | unsupported arg type |
-| TownBaseBinding.cpp | activate | `void` | unsupported arg type |
+| TownBaseBinding.cpp | _NV_setHandle | `void` | non-string reference arg |
 | TownBaseBinding.cpp | addArtifactItem | `void` | unsupported arg type |
-| TownBaseBinding.cpp | addGate | `void` | unsupported arg type |
-| TownBaseBinding.cpp | addOccupier | `void` | unsupported arg type |
+| TownBaseBinding.cpp | addGate | `void` | non-string reference arg |
+| TownBaseBinding.cpp | addOccupier | `void` | non-string reference arg |
 | TownBaseBinding.cpp | clearDelayedItemLoadingMessages | `void` | static method |
 | TownBaseBinding.cpp | delayedSpawningChecks | `int` | static method |
 | TownBaseBinding.cpp | findAllBuildings | `void` | unsupported arg type |
-| TownBaseBinding.cpp | findAllBuildingsOfType | `lektor<Building*>*` | unsupported return type |
-| TownBaseBinding.cpp | findAllBuildingsWithFunction | `lektor<Building*>*` | unsupported return type |
-| TownBaseBinding.cpp | getAlarmMgr | `AlarmManager*` | unsupported return type |
 | TownBaseBinding.cpp | getAlarmState | `TownAlarmState` | unsupported return type |
-| TownBaseBinding.cpp | getBiome | `AreaBiomeGroup*` | unsupported return type |
-| TownBaseBinding.cpp | getBuildingFloorVisibility | `int` | unsupported arg type |
-| TownBaseBinding.cpp | getBuildingsManager | `TownBuildingsManager*` | unsupported return type |
-| TownBaseBinding.cpp | getCurrentTownLocation | `TownBase*` | unsupported return type |
-| TownBaseBinding.cpp | getGUIData | `void` | unsupported arg type |
-| TownBaseBinding.cpp | getNearestGate | `GatewayBuilding*` | unsupported return type |
-| TownBaseBinding.cpp | hasResidentHQ | `bool` | unsupported arg type |
-| TownBaseBinding.cpp | isIllegal | `bool` | unsupported arg type |
-| TownBaseBinding.cpp | isNest | `Nest*` | unsupported return type |
-| TownBaseBinding.cpp | loadFromSerialise | `void` | unsupported arg type |
-| TownBaseBinding.cpp | loadState | `void` | unsupported arg type |
-| TownBaseBinding.cpp | nestUpThisSpot | `void` | unsupported arg type |
-| TownBaseBinding.cpp | removeOccupier | `void` | unsupported arg type |
-| TownBaseBinding.cpp | saveState | `void` | unsupported arg type |
-| TownBaseBinding.cpp | serialise | `GameSaveState` | unsupported return type |
+| TownBaseBinding.cpp | removeOccupier | `void` | non-string reference arg |
+| TownBaseBinding.cpp | serialise | `GameSaveState` | unsupported arg type |
 | TownBaseBinding.cpp | setAlarmState | `void` | unsupported arg type |
-| TownBaseBinding.cpp | setBuildingsFloorVisibility | `void` | unsupported arg type |
-| TownBaseBinding.cpp | setFaction | `void` | unsupported arg type |
-| TownBaseBinding.cpp | setHandle | `void` | unsupported arg type |
-| TownBaseBinding.cpp | setZonePopulated | `void` | unsupported arg type |
-| TownBaseBinding.cpp | setup | `void` | unsupported arg type |
+| TownBaseBinding.cpp | setHandle | `void` | non-string reference arg |
 | TownBaseBinding.cpp | spawnDebris | `void` | unsupported arg type |
-| TownBinding.cpp | _NV_addGate | `void` | unsupported arg type |
-| TownBinding.cpp | _NV_getGUIData | `void` | unsupported arg type |
-| TownBinding.cpp | _NV_getNearestGate | `GatewayBuilding*` | unsupported return type |
-| TownBinding.cpp | _NV_hasResidentHQ | `bool` | unsupported arg type |
-| TownBinding.cpp | _NV_isNest | `Nest*` | unsupported return type |
-| TownBinding.cpp | _NV_loadFromSerialise | `void` | unsupported arg type |
-| TownBinding.cpp | _NV_loadState | `void` | unsupported arg type |
-| TownBinding.cpp | _NV_loadStateEditor | `void` | unsupported arg type |
-| TownBinding.cpp | _NV_saveState | `void` | unsupported arg type |
-| TownBinding.cpp | _NV_saveStateEditor | `void` | unsupported arg type |
-| TownBinding.cpp | _NV_serialise | `GameSaveState` | unsupported return type |
-| TownBinding.cpp | _NV_setHandle | `void` | unsupported arg type |
-| TownBinding.cpp | _initialiseResidentData | `void` | unsupported arg type |
-| TownBinding.cpp | addGate | `void` | unsupported arg type |
-| TownBinding.cpp | addNest | `void` | unsupported arg type |
-| TownBinding.cpp | drainBattery | `bool` | unsupported arg type |
+| TownBinding.cpp | _NV_addGate | `void` | non-string reference arg |
+| TownBinding.cpp | _NV_serialise | `GameSaveState` | unsupported arg type |
+| TownBinding.cpp | _NV_setHandle | `void` | non-string reference arg |
+| TownBinding.cpp | addGate | `void` | non-string reference arg |
+| TownBinding.cpp | chooseBuildingForResident | `Building*` | unsupported arg type |
+| TownBinding.cpp | chooseResidents | `void` | unsupported arg type |
+| TownBinding.cpp | drainBattery | `bool` | non-string reference arg |
 | TownBinding.cpp | facilitesWeHaveHere | `TagsClass<BuildingDesignation>` | unsupported return type |
-| TownBinding.cpp | getFactionTradeCultureMult | `float` | unsupported arg type |
-| TownBinding.cpp | getGUIData | `void` | unsupported arg type |
-| TownBinding.cpp | getLocalTradePriceMult | `float` | unsupported arg type |
-| TownBinding.cpp | getNearestGate | `GatewayBuilding*` | unsupported return type |
 | TownBinding.cpp | getPlayerTownTypeEnum | `TownType` | unsupported return type |
-| TownBinding.cpp | hasResidentHQ | `bool` | unsupported arg type |
-| TownBinding.cpp | isNest | `Nest*` | unsupported return type |
-| TownBinding.cpp | loadFromSerialise | `void` | unsupported arg type |
-| TownBinding.cpp | loadState | `void` | unsupported arg type |
-| TownBinding.cpp | loadStateEditor | `void` | unsupported arg type |
-| TownBinding.cpp | removeNest | `bool` | unsupported arg type |
-| TownBinding.cpp | saveState | `void` | unsupported arg type |
-| TownBinding.cpp | saveStateEditor | `void` | unsupported arg type |
-| TownBinding.cpp | serialise | `GameSaveState` | unsupported return type |
-| TownBinding.cpp | setHandle | `void` | unsupported arg type |
-| TownBuildingsManagerBinding.cpp | _CONSTRUCTOR | `TownBuildingsManager*` | unsupported return type |
-| TownBuildingsManagerBinding.cpp | _NV_factoryObjectCreatedCallback | `void` | unsupported arg type |
-| TownBuildingsManagerBinding.cpp | addEntity | `Ogre::MovableObject*` | unsupported return type |
+| TownBinding.cpp | powerBuilding | `bool` | non-string reference arg |
+| TownBinding.cpp | serialise | `GameSaveState` | unsupported arg type |
+| TownBinding.cpp | setHandle | `void` | non-string reference arg |
+| TownBuildingsManagerBinding.cpp | addEntity | `Ogre::MovableObject*` | unsupported arg type |
 | TownBuildingsManagerBinding.cpp | addInteriorShell | `void` | unsupported arg type |
-| TownBuildingsManagerBinding.cpp | factoryObjectCreatedCallback | `void` | unsupported arg type |
 | TownBuildingsManagerBinding.cpp | getFloorVisible | `int` | overloaded method |
 | TownBuildingsManagerBinding.cpp | getFloorVisible | `bool` | overloaded method |
 | TownBuildingsManagerBinding.cpp | isEntity | `bool` | static method |
 | TownBuildingsManagerBinding.cpp | isInstanced | `bool` | static method |
 | TownBuildingsManagerBinding.cpp | makeEntity | `bool` | unsupported arg type |
 | TownBuildingsManagerBinding.cpp | makeInstance | `bool` | unsupported arg type |
-| TownBuildingsManagerBinding.cpp | moveBuildingsTo | `void` | unsupported arg type |
-| TownBuildingsManagerBinding.cpp | removeBuilding | `void` | unsupported arg type |
 | TownBuildingsManagerBinding.cpp | removeEntity | `bool` | static method |
 | TownBuildingsManagerBinding.cpp | removeEntity | `void` | overloaded method |
 | TownBuildingsManagerBinding.cpp | removeInteriorShell | `void` | unsupported arg type |
-| TownBuildingsManagerBinding.cpp | setFloorVisible | `void` | unsupported arg type |
 | TownBuildingsManagerBinding.cpp | switchInstancing | `bool` | unsupported arg type |
 | TownListWindowBinding.cpp | _CONSTRUCTOR | `TownListWindow*` | unsupported arg type |
-| TownPositionCacherBinding.cpp | _CONSTRUCTOR | `TownPositionCacher*` | unsupported return type |
 | TradeCultureBinding.cpp | getTradePriceMultiplier | `float` | unsupported arg type |
 | TradeCultureBinding.cpp | hasTradePriceMultiplier | `bool` | unsupported arg type |
 | TradeCultureBinding.cpp | isItemIllegal | `bool` | unsupported arg type |
@@ -2018,6 +1721,11 @@ Below are methods that were skipped during binding generation:
 | TransformWindowBinding.cpp | getSingleton | `TransformWindow*` | static method |
 | TransformWindowBinding.cpp | hide | `void` | unsupported arg type |
 | TransformWindowBinding.cpp | show | `void` | unsupported arg type |
+| TriggerCallbackBinding.cpp | _NV_onTrigger | `void` | unsupported arg type |
+| TriggerCallbackBinding.cpp | onTrigger | `void` | unsupported arg type |
+| TripleIntBinding.cpp | _CONSTRUCTOR | `TripleInt*` | overloaded method |
+| TripleIntBinding.cpp | _CONSTRUCTOR | `TripleInt*` | overloaded method |
+| TripleIntBinding.cpp | _CONSTRUCTOR | `TripleInt*` | overloaded method |
 | TurretBuildingBinding.cpp | _CONSTRUCTOR | `TurretBuilding*` | unsupported arg type |
 | TurretBuildingBinding.cpp | _NV_getGUIData | `void` | unsupported arg type |
 | TurretBuildingBinding.cpp | _NV_getGUIState | `void` | unsupported arg type |
@@ -2095,6 +1803,86 @@ Below are methods that were skipped during binding generation:
 | UseableStuffBinding.cpp | togglePowerButton | `void` | unsupported arg type |
 | UseableStuffBinding.cpp | tryOperate | `bool` | unsupported arg type |
 | UseableStuffBinding.cpp | unequipItem | `void` | unsupported arg type |
+| UtilityTBinding.cpp | OBBCollision | `bool` | static method |
+| UtilityTBinding.cpp | _trace_TEST | `void` | static method |
+| UtilityTBinding.cpp | boxTrace | `void` | static method |
+| UtilityTBinding.cpp | cascadeSetStatic | `void` | static method |
+| UtilityTBinding.cpp | ceilingTrace | `bool` | static method |
+| UtilityTBinding.cpp | colorToGUIString | `std::string` | static method |
+| UtilityTBinding.cpp | compareStringsCaseInsenstive | `bool` | static method |
+| UtilityTBinding.cpp | debugBox | `void` | unsupported arg type |
+| UtilityTBinding.cpp | fileExists | `bool` | unsupported arg type |
+| UtilityTBinding.cpp | getApproxTerrainHeightFromRenderer | `float` | static method |
+| UtilityTBinding.cpp | getBuildingGroundFloorHeight | `float` | static method |
+| UtilityTBinding.cpp | getDebugMaterial | `Ogre::SharedPtr<Ogre::Material>` | unsupported return type |
+| UtilityTBinding.cpp | getDirsInDir | `void` | unsupported arg type |
+| UtilityTBinding.cpp | getFileExtensionFromString | `std::string` | static method |
+| UtilityTBinding.cpp | getFilesInDir | `bool` | unsupported arg type |
+| UtilityTBinding.cpp | getFilesInGameDir | `bool` | unsupported arg type |
+| UtilityTBinding.cpp | getFloorHeight | `float` | static method |
+| UtilityTBinding.cpp | getFloorHeight | `float` | static method |
+| UtilityTBinding.cpp | getFloorNumber | `int` | static method |
+| UtilityTBinding.cpp | getFloorNumber | `int` | static method |
+| UtilityTBinding.cpp | getFullPath | `std::string` | static method |
+| UtilityTBinding.cpp | getMouseRay | `Ogre::Ray` | static method |
+| UtilityTBinding.cpp | getNextPow2 | `int` | static method |
+| UtilityTBinding.cpp | getPositionInWater | `bool` | static method |
+| UtilityTBinding.cpp | getRelativePath | `bool` | static method |
+| UtilityTBinding.cpp | getResourceFilePath | `bool` | static method |
+| UtilityTBinding.cpp | getSubMapSector | `iVector2` | static method |
+| UtilityTBinding.cpp | getSubMapSectorBounds | `Ogre::Vector4` | static method |
+| UtilityTBinding.cpp | getTerrainHeight | `float` | static method |
+| UtilityTBinding.cpp | getTerrainHeightFast | `float` | static method |
+| UtilityTBinding.cpp | getTerrainHeightFromRenderer | `float` | static method |
+| UtilityTBinding.cpp | getTerrainWithWaterHeight | `float` | static method |
+| UtilityTBinding.cpp | getTerrainWithWaterHeightFromRenderer | `float` | static method |
+| UtilityTBinding.cpp | isIndoors | `Building*` | static method |
+| UtilityTBinding.cpp | isIndoorsFast | `bool` | static method |
+| UtilityTBinding.cpp | isIndoors_forWaypoint | `Building*` | static method |
+| UtilityTBinding.cpp | makeSureFolderExists | `void` | static method |
+| UtilityTBinding.cpp | makeSureGameFolderExists | `void` | static method |
+| UtilityTBinding.cpp | mouseTrace | `void` | static method |
+| UtilityTBinding.cpp | mouseTraceAll | `void` | static method |
+| UtilityTBinding.cpp | nlerp | `float` | static method |
+| UtilityTBinding.cpp | ogreTrace | `rendHit` | unsupported return type |
+| UtilityTBinding.cpp | placeArrow | `void` | unsupported arg type |
+| UtilityTBinding.cpp | placeArrowBT | `void` | unsupported arg type |
+| UtilityTBinding.cpp | placeArrowTo | `void` | unsupported arg type |
+| UtilityTBinding.cpp | placeAxis | `void` | overloaded method |
+| UtilityTBinding.cpp | placeAxis | `void` | overloaded method |
+| UtilityTBinding.cpp | placeBox | `void` | unsupported arg type |
+| UtilityTBinding.cpp | placeMarker | `void` | overloaded method |
+| UtilityTBinding.cpp | placeMarker | `void` | overloaded method |
+| UtilityTBinding.cpp | placeOrientedMarker | `Ogre::Entity*` | unsupported arg type |
+| UtilityTBinding.cpp | placeSphere | `void` | unsupported arg type |
+| UtilityTBinding.cpp | pointInPlane | `bool` | static method |
+| UtilityTBinding.cpp | positionIsInFrontOfMe | `bool` | static method |
+| UtilityTBinding.cpp | quatSetDirection | `void` | static method |
+| UtilityTBinding.cpp | random | `float` | static method |
+| UtilityTBinding.cpp | random | `float` | static method |
+| UtilityTBinding.cpp | randomBool | `bool` | static method |
+| UtilityTBinding.cpp | randomInt | `int` | static method |
+| UtilityTBinding.cpp | rayTrace | `void` | static method |
+| UtilityTBinding.cpp | readFile | `bool` | non-string reference arg |
+| UtilityTBinding.cpp | removeArrow | `void` | unsupported arg type |
+| UtilityTBinding.cpp | removeFileExtensionFromString | `std::string` | static method |
+| UtilityTBinding.cpp | removeFilenameFromPath | `std::string` | static method |
+| UtilityTBinding.cpp | removeInvalidFileNameChars | `void` | static method |
+| UtilityTBinding.cpp | removePathFromString | `std::string` | static method |
+| UtilityTBinding.cpp | round | `int` | static method |
+| UtilityTBinding.cpp | roundToNearest | `void` | non-string reference arg |
+| UtilityTBinding.cpp | seed | `void` | static method |
+| UtilityTBinding.cpp | seed | `void` | static method |
+| UtilityTBinding.cpp | setCurrentDir | `void` | unsupported arg type |
+| UtilityTBinding.cpp | sphereTrace | `void` | static method |
+| UtilityTBinding.cpp | trace | `void` | static method |
+| UtilityTBinding.cpp | traceAll | `void` | static method |
+| UtilityTBinding.cpp | traceFloorHeight | `void` | static method |
+| UtilityTBinding.cpp | traceNoActors | `void` | static method |
+| UtilityTBinding.cpp | tracePosOnly | `Ogre::Vector3` | static method |
+| UtilityTBinding.cpp | worldToScreenPX | `bool` | non-string reference arg |
+| UtilityTBinding.cpp | worldToScreenRel | `bool` | non-string reference arg |
+| UtilityTBinding.cpp | worldToScreenWithRadius | `bool` | non-string reference arg |
 | VisibleObjectInfoBinding.cpp | _CONSTRUCTOR | `VisibleObjectInfo*` | overloaded method |
 | VisibleObjectInfoBinding.cpp | _CONSTRUCTOR | `VisibleObjectInfo*` | overloaded method |
 | WallBuildingBinding.cpp | _CONSTRUCTOR | `WallBuilding*` | unsupported arg type |
@@ -2110,8 +1898,8 @@ Below are methods that were skipped during binding generation:
 | WallBuildingBinding.cpp | letsShare | `bool` | unsupported arg type |
 | WallBuildingBinding.cpp | runLinkingCheck | `void` | unsupported arg type |
 | WallBuildingBinding.cpp | upgrade | `void` | unsupported arg type |
-| WeaponBinding.cpp | _CONSTRUCTOR | `Weapon*` | unsupported arg type |
 | WeaponBinding.cpp | getTooltipData1 | `void` | unsupported arg type |
+| WeatherRegionBinding.cpp | _CONSTRUCTOR | `WeatherRegion*` | unsupported arg type |
 | WhoSeesMeBinding.cpp | _CONSTRUCTOR | `WhoSeesMe*` | overloaded method |
 | WhoSeesMeBinding.cpp | _CONSTRUCTOR | `WhoSeesMe*` | overloaded method |
 | WindGeneratorBuildingBinding.cpp | _CONSTRUCTOR | `WindGeneratorBuilding*` | unsupported arg type |
@@ -2119,11 +1907,8 @@ Below are methods that were skipped during binding generation:
 | WindGeneratorBuildingBinding.cpp | _NV_getGUIState | `void` | unsupported arg type |
 | WindGeneratorBuildingBinding.cpp | getGUIPower | `void` | unsupported arg type |
 | WindGeneratorBuildingBinding.cpp | getGUIState | `void` | unsupported arg type |
-| WorldEventStateQueryBinding.cpp | _CONSTRUCTOR | `WorldEventStateQuery*` | unsupported return type |
 | WorldEventStateQueryBinding.cpp | checkAllStatesInObject | `bool` | static method |
 | WorldEventStateQueryBinding.cpp | getFromData | `WorldEventStateQuery*` | static method |
-| WorldEventStateQueryListBinding.cpp | _CONSTRUCTOR | `WorldEventStateQueryList*` | unsupported return type |
-| WorldEventStateQueryListBinding.cpp | setupFrom | `bool` | unsupported arg type |
 | YesNoMaybeBinding.cpp | _CONSTRUCTOR | `YesNoMaybe*` | overloaded method |
 | YesNoMaybeBinding.cpp | _CONSTRUCTOR | `YesNoMaybe*` | overloaded method |
 | YesNoMaybeBinding.cpp | _CONSTRUCTOR | `YesNoMaybe*` | overloaded method |
@@ -2134,37 +1919,29 @@ Below are methods that were skipped during binding generation:
 | ZoneManagerBinding.cpp | _NV_getZoneBoundsT | `AABB2D` | overloaded method |
 | ZoneManagerBinding.cpp | activateZoneMap | `bool` | overloaded method |
 | ZoneManagerBinding.cpp | activateZoneMap | `bool` | overloaded method |
-| ZoneManagerBinding.cpp | addGroundEffect | `void` | unsupported arg type |
-| ZoneManagerBinding.cpp | checkForRepopulateTown | `bool` | unsupported arg type |
-| ZoneManagerBinding.cpp | deactivateZoneMap | `void` | unsupported arg type |
 | ZoneManagerBinding.cpp | findAllBuildings | `void` | unsupported arg type |
-| ZoneManagerBinding.cpp | findAnyShop | `Building*` | unsupported arg type |
 | ZoneManagerBinding.cpp | findBuilding | `void` | overloaded method |
 | ZoneManagerBinding.cpp | findBuilding | `Building*` | overloaded method |
 | ZoneManagerBinding.cpp | findOverlappingActiveZones | `void` | unsupported arg type |
-| ZoneManagerBinding.cpp | findShop | `Building*` | unsupported arg type |
 | ZoneManagerBinding.cpp | getAllActiveIslandNumbers | `void` | unsupported arg type |
 | ZoneManagerBinding.cpp | getAllActiveZones | `void` | unsupported arg type |
 | ZoneManagerBinding.cpp | getAllActiveZonesT | `void` | unsupported arg type |
 | ZoneManagerBinding.cpp | getBuildingsThatLinkTo | `void` | unsupported arg type |
-| ZoneManagerBinding.cpp | getCurrentMapSector | `iVector2` | unsupported return type |
-| ZoneManagerBinding.cpp | getGroundEffect | `bool` | unsupported arg type |
+| ZoneManagerBinding.cpp | getGroundEffect | `bool` | non-string reference arg |
 | ZoneManagerBinding.cpp | getGroundSound | `const char*` | static method |
 | ZoneManagerBinding.cpp | getGroundSound | `const char*` | overloaded method |
 | ZoneManagerBinding.cpp | getIsland | `void` | unsupported arg type |
 | ZoneManagerBinding.cpp | getMapSector | `iVector2` | overloaded method |
 | ZoneManagerBinding.cpp | getMapSector | `iVector2` | overloaded method |
-| ZoneManagerBinding.cpp | getOverlay | `ZoneMapOverlay*` | unsupported arg type |
+| ZoneManagerBinding.cpp | getOverlay | `ZoneMapOverlay*` | non-string reference arg |
 | ZoneManagerBinding.cpp | getResource | `float` | unsupported arg type |
 | ZoneManagerBinding.cpp | getResourceBase | `float` | unsupported arg type |
-| ZoneManagerBinding.cpp | getSubMapSector | `iVector2` | unsupported return type |
 | ZoneManagerBinding.cpp | getZoneBoundsT | `AABB2D` | overloaded method |
 | ZoneManagerBinding.cpp | getZoneBoundsT | `AABB2D` | overloaded method |
 | ZoneManagerBinding.cpp | getZoneMap | `ZoneMap*` | overloaded method |
 | ZoneManagerBinding.cpp | getZoneMap | `ZoneMap*` | overloaded method |
 | ZoneManagerBinding.cpp | getZoneMap | `ZoneMap*` | overloaded method |
-| ZoneManagerBinding.cpp | getZoneMapFromBuildingHandle | `ZoneMap*` | unsupported arg type |
-| ZoneManagerBinding.cpp | getZoneMapFromResolutionCoord | `iVector2` | unsupported return type |
+| ZoneManagerBinding.cpp | getZoneMapFromBuildingHandle | `ZoneMap*` | non-string reference arg |
 | ZoneManagerBinding.cpp | getZoneMapSectorBounds | `Ogre::Vector4` | unsupported return type |
 | ZoneManagerBinding.cpp | getZonesTouchingTown | `void` | unsupported arg type |
 | ZoneManagerBinding.cpp | levelEditorGetAllSelectedObjects | `void` | unsupported arg type |
@@ -2181,19 +1958,159 @@ Below are methods that were skipped during binding generation:
 | ZoneMapBinding.cpp | getBoundsMinusUnloadedEdges | `Ogre::Vector4` | unsupported return type |
 | ZoneMapBinding.cpp | getMaterialValues | `void` | static method |
 | ZoneMapBinding.cpp | getTerrainMaterial_DX11 | `Ogre::SharedPtr<Ogre::Material>` | static method |
-| ZoneMapBinding.cpp | init | `void` | unsupported arg type |
-| ZoneMapBinding.cpp | isANeighbour | `bool` | unsupported arg type |
+| ZoneMapBinding.cpp | init | `void` | non-string reference arg |
 | ZoneMapBinding.cpp | isActivationType | `bool` | unsupported arg type |
-| ZoneMapBinding.cpp | isInIsland | `bool` | unsupported arg type |
 | ZoneMapBinding.cpp | materialCallback | `Ogre::SharedPtr<Ogre::Material>` | static method |
-| ZoneSpacialGridBinding.cpp | add | `unsigned int` | unsupported arg type |
-| ZoneSpacialGridBinding.cpp | addZone | `void` | unsupported arg type |
-| ZoneSpacialGridBinding.cpp | getCellKey | `unsigned int` | unsupported arg type |
 | ZoneSpacialGridBinding.cpp | getObjects | `int` | overloaded method |
 | ZoneSpacialGridBinding.cpp | getObjects | `int` | overloaded method |
-| ZoneSpacialGridBinding.cpp | remove | `bool` | unsupported arg type |
-| ZoneSpacialGridBinding.cpp | removeZone | `void` | unsupported arg type |
-| ZoneSpacialGridBinding.cpp | update | `ZoneSpacialGrid::Result` | unsupported arg type |
+| hkArrayBaseBinding.cpp | _clearAndDeallocate | `void` | unsupported arg type |
+| hkArrayBaseBinding.cpp | _pushBack | `void` | unsupported arg type |
+| hkArrayBaseBinding.cpp | _reserve | `hkResult` | unsupported return type |
+| hkArrayBaseBinding.cpp | _spliceInto | `void` | unsupported arg type |
+| hkArrayBaseBinding.cpp | back | `const T1&` | reference return type |
+| hkArrayBaseBinding.cpp | copy | `void` | static method |
+| hkArrayBaseBinding.cpp | copyFromArray | `hkArrayBase<T1>&` | reference return type |
+| hkArrayBaseBinding.cpp | isEmpty | `hkBool` | unsupported return type |
+| hkArrayBinding.cpp | pushBack | `void` | unsupported arg type |
+| hkArrayBinding.cpp | spliceInto | `void` | unsupported arg type |
+| hkBoolBinding.cpp | _CONSTRUCTOR | `hkBool*` | overloaded method |
+| hkBoolBinding.cpp | _CONSTRUCTOR | `hkBool*` | overloaded method |
+| hkBoolBinding.cpp | bool | `operator` | unsupported return type |
+| hkMemoryAllocatorBinding.cpp | _NV_blockAllocBatch | `void` | unsupported arg type |
+| hkMemoryAllocatorBinding.cpp | _NV_blockFreeBatch | `void` | unsupported arg type |
+| hkMemoryAllocatorBinding.cpp | _NV_bufAlloc | `void*` | non-string reference arg |
+| hkMemoryAllocatorBinding.cpp | _NV_bufFree | `void` | unsupported arg type |
+| hkMemoryAllocatorBinding.cpp | _NV_bufRealloc | `void*` | unsupported arg type |
+| hkMemoryAllocatorBinding.cpp | blockAllocBatch | `void` | unsupported arg type |
+| hkMemoryAllocatorBinding.cpp | blockFree | `void` | unsupported arg type |
+| hkMemoryAllocatorBinding.cpp | blockFreeBatch | `void` | unsupported arg type |
+| hkMemoryAllocatorBinding.cpp | bufAlloc | `void*` | non-string reference arg |
+| hkMemoryAllocatorBinding.cpp | bufFree | `void` | unsupported arg type |
+| hkMemoryAllocatorBinding.cpp | bufRealloc | `void*` | unsupported arg type |
+| hkMemoryAllocatorBinding.cpp | delete | `void operator` | static method |
+| hkMemoryAllocatorBinding.cpp | getAllocatedSize | `int` | unsupported arg type |
+| hkMemoryAllocatorBinding.cpp | getMemoryStatistics | `void` | non-string reference arg |
+| hkVector4fBinding.cpp | _CONSTRUCTOR | `hkVector4f*` | overloaded method |
+| hkVector4fBinding.cpp | _CONSTRUCTOR | `hkVector4f*` | overloaded method |
+| hkVector4fBinding.cpp | _CONSTRUCTOR | `hkVector4f*` | overloaded method |
+| hkVector4fBinding.cpp | _setRotatedDir | `void` | overloaded method |
+| hkVector4fBinding.cpp | _setRotatedDir | `void` | overloaded method |
+| hkVector4fBinding.cpp | _setRotatedInverseDir | `void` | overloaded method |
+| hkVector4fBinding.cpp | _setRotatedInverseDir | `void` | overloaded method |
+| hkVector4fBinding.cpp | _setTransformedInversePos | `void` | overloaded method |
+| hkVector4fBinding.cpp | _setTransformedInversePos | `void` | overloaded method |
+| hkVector4fBinding.cpp | _setTransformedInversePos | `void` | overloaded method |
+| hkVector4fBinding.cpp | _setTransformedPos | `void` | overloaded method |
+| hkVector4fBinding.cpp | _setTransformedPos | `void` | overloaded method |
+| hkVector4fBinding.cpp | _setTransformedPos | `void` | overloaded method |
+| hkVector4fBinding.cpp | add | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | addMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | addMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | addMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | delete | `void operator` | static method |
+| hkVector4fBinding.cpp | distanceTo | `const hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | distanceTo3 | `hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | distanceToSquared | `const hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | distanceToSquared3 | `hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | div | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | dot3 | `hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | dot4xyz1 | `const hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | equal | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | equalZero | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | equals3 | `unsigned int` | unsupported arg type |
+| hkVector4fBinding.cpp | getComponent | `const hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | getConstant | `const hkVector4f&` | static method |
+| hkVector4fBinding.cpp | getW | `const hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | getZero | `const hkVector4f&` | static method |
+| hkVector4fBinding.cpp | greater | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | greaterEqual | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | greaterEqualZero | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | greaterZero | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | isOk3 | `hkBool` | unsupported return type |
+| hkVector4fBinding.cpp | isOk4 | `hkBool` | unsupported return type |
+| hkVector4fBinding.cpp | length3 | `hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | lengthSquared3 | `hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | less | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | lessEqual | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | lessEqualZero | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | lessZero | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | mul | `void` | overloaded method |
+| hkVector4fBinding.cpp | mul | `void` | overloaded method |
+| hkVector4fBinding.cpp | new | `void*operator` | static method |
+| hkVector4fBinding.cpp | normalizeWithLength3 | `hkSimdFloat32` | unsupported return type |
+| hkVector4fBinding.cpp | notEqual | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | notEqualZero | `const hkVector4fComparison` | unsupported return type |
+| hkVector4fBinding.cpp | operator | `const float&` | operator |
+| hkVector4fBinding.cpp | operator | `float&` | operator |
+| hkVector4fBinding.cpp | set | `void` | overloaded method |
+| hkVector4fBinding.cpp | set | `void` | overloaded method |
+| hkVector4fBinding.cpp | setAbs | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setAdd | `void` | overloaded method |
+| hkVector4fBinding.cpp | setAdd | `void` | overloaded method |
+| hkVector4fBinding.cpp | setAddMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | setAddMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | setAll | `void` | overloaded method |
+| hkVector4fBinding.cpp | setAll | `void` | overloaded method |
+| hkVector4fBinding.cpp | setClamped | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setClampedToMaxLength | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setClampedZeroOne | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setComponent | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setCross | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setDiv | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setFlipSign | `void` | overloaded method |
+| hkVector4fBinding.cpp | setFlipSign | `void` | overloaded method |
+| hkVector4fBinding.cpp | setFlipSign | `void` | overloaded method |
+| hkVector4fBinding.cpp | setInterpolate | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setMax | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setMin | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | setMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | setMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | setNeg3 | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setPlaneConstant | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setReciprocal | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setRotatedDir | `void` | overloaded method |
+| hkVector4fBinding.cpp | setRotatedDir | `void` | overloaded method |
+| hkVector4fBinding.cpp | setRotatedInverseDir | `void` | overloaded method |
+| hkVector4fBinding.cpp | setRotatedInverseDir | `void` | overloaded method |
+| hkVector4fBinding.cpp | setSelect | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setSqrt | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setSqrtInverse | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setSub | `void` | overloaded method |
+| hkVector4fBinding.cpp | setSub | `void` | overloaded method |
+| hkVector4fBinding.cpp | setSubMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | setSubMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | setTransformedInversePos | `void` | overloaded method |
+| hkVector4fBinding.cpp | setTransformedInversePos | `void` | overloaded method |
+| hkVector4fBinding.cpp | setTransformedInversePos | `void` | overloaded method |
+| hkVector4fBinding.cpp | setTransformedPos | `void` | overloaded method |
+| hkVector4fBinding.cpp | setTransformedPos | `void` | overloaded method |
+| hkVector4fBinding.cpp | setTransformedPos | `void` | overloaded method |
+| hkVector4fBinding.cpp | setW | `void` | overloaded method |
+| hkVector4fBinding.cpp | setW | `void` | overloaded method |
+| hkVector4fBinding.cpp | setXYZ | `void` | overloaded method |
+| hkVector4fBinding.cpp | setXYZ | `void` | overloaded method |
+| hkVector4fBinding.cpp | setXYZ_0 | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | setXYZ_W | `void` | overloaded method |
+| hkVector4fBinding.cpp | setXYZ_W | `void` | overloaded method |
+| hkVector4fBinding.cpp | sub | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | subMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | subMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | subMul | `void` | overloaded method |
+| hkVector4fBinding.cpp | zeroIfFalse | `void` | unsupported arg type |
+| hkVector4fBinding.cpp | zeroIfTrue | `void` | unsupported arg type |
+| hkVector4fComparisonBinding.cpp | anyIsSet | `unsigned int` | overloaded method |
+| hkVector4fComparisonBinding.cpp | anyIsSet | `unsigned int` | overloaded method |
+| hkVector4fComparisonBinding.cpp | convert | `const hkVector4fComparison` | static method |
+| hkVector4fComparisonBinding.cpp | getMask | `Mask` | overloaded method |
+| hkVector4fComparisonBinding.cpp | getMask | `Mask` | overloaded method |
+| hkVector4fComparisonBinding.cpp | getMaskForComponent | `Mask` | static method |
+| hkVector4fComparisonBinding.cpp | setAnd | `void` | unsupported arg type |
+| hkVector4fComparisonBinding.cpp | setAndNot | `void` | unsupported arg type |
+| hkVector4fComparisonBinding.cpp | setNot | `void` | unsupported arg type |
+| hkVector4fComparisonBinding.cpp | setOr | `void` | unsupported arg type |
+| hkVector4fComparisonBinding.cpp | setSelect | `void` | unsupported arg type |
+| hkVector4fComparisonBinding.cpp | setXor | `void` | unsupported arg type |
 | iVector2Binding.cpp | _CONSTRUCTOR | `iVector2*` | overloaded method |
 | iVector2Binding.cpp | _CONSTRUCTOR | `iVector2*` | overloaded method |
 | physHitBinding.cpp | _CONSTRUCTOR | `physHit*` | overloaded method |

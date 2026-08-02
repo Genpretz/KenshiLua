@@ -21,7 +21,7 @@ unregisterHandler(handlerId)
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
-## 1. Notification Callbacks (65)
+## 1. Notification Callbacks (83)
 
 | Event Name | Source Engine Hook | Lua Signature | Dispatcher Function |
 | :--- | :--- | :--- | :--- |
@@ -90,8 +90,26 @@ unregisterHandler(handlerId)
 | `onCharacterRemoveJob` | `Character::removeJob hook` | `function(character, taskType)` | `CallCharacterRemoveJobCallbacks` |
 | `onPlayerAddJobSelectedCharacters` | `PlayerInterface::addJobSelectedCharacters hook` | `function(player, taskType, subject, shift, add, location)` | `CallPlayerInterfaceAddJobSelectedCharactersCallbacks` |
 | `onPlayerAddOrderSelectedCharacters` | `PlayerInterface::addOrderSelectedCharacters hook` | `function(player, destinationIndoors, taskType, subject, shift, addDontClear, location)` | `CallPlayerInterfaceAddOrderSelectedCharactersCallbacks` |
+| `onCharacterKnockedOut` | `MedicalSystem::knockout hook` | `function(character, skill)` | `CallMedicalSystemKnockoutCallbacks` |
+| `onActivePlatoonCreated` | `Faction::createNewEmptyActivePlatoon hook` | `function(faction, platoon)` | `CallFactionActivePlatoonCreatedCallbacks` |
+| `onPlatoonDestroyed` | `Faction::destroyPlatoon hook` | `function(faction, platoon)` | `CallFactionPlatoonDestroyedCallbacks` |
+| `onFactionEncountered` | `PlayerInterface::encounterFaction hook` | `function(player, faction)` | `CallPlayerEncounterFactionCallbacks` |
+| `onSlaveOwnerChanged` | `Character::changeSlaveOwner hook` | `function(slave, newOwnerHandle)` | `CallCharacterSlaveOwnerChangedCallbacks` |
+| `onChainedModeChanged` | `Character::setChainedMode hook` | `function(character, on, ownerHandle)` | `CallCharacterChainedModeChangedCallbacks` |
+| `onCharacterIndoorsChanged` | `Character::notifyIndoors hook` | `function(character, indoorsHandle)` | `CallCharacterIndoorsChangedCallbacks` |
+| `onBuildingLoaded` | `Building::onBuildingLoaded hook` | `function(building)` | `CallBuildingLoadedCallbacks` |
+| `onBuildingBrokenChanged` | `Building::setBroken hook` | `function(building, broken)` | `CallBuildingBrokenChangedCallbacks` |
+| `onPlayerSerialise` | `PlayerInterface::serialise hook` | `function(player, gameData)` | `CallPlayerInterfaceSerialiseCallbacks` |
+| `onPlayerLoadFromSerialise` | `PlayerInterface::loadFromSerialise hook` | `function(player, gameData)` | `CallPlayerInterfaceLoadFromSerialiseCallbacks` |
+| `onCharacterSerialise` | `Character::_NV_serialise hook` | `function(character, container, refList)` | `CallCharacterSerialiseCallbacks` |
+| `onCharacterLoadFromSerialise` | `Character::_NV_loadFromSerialise hook` | `function(character, saveState)` | `CallCharacterLoadFromSerialiseCallbacks` |
+| `onCharacterLoadFromSerialisePostCreationStage` | `Character::_NV_loadFromSerialisePostCreationStage hook` | `function(character, saveState)` | `CallCharacterLoadFromSerialisePostCreationStageCallbacks` |
+| `onBuildingSerialise` | `Building::_NV_serialise hook` | `function(building, container, refList)` | `CallBuildingSerialiseCallbacks` |
+| `onBuildingLoadFromSerialise` | `Building::_NV_loadFromSerialise hook` | `function(building, saveState)` | `CallBuildingLoadFromSerialiseCallbacks` |
+| `onPlatoonLoadFromSerialise` | `Platoon::_NV_loadFromSerialise hook` | `function(platoon, saveState)` | `CallPlatoonLoadFromSerialiseCallbacks` |
+| `onTownLoadFromSerialise` | `Town::_NV_loadFromSerialise hook` | `function(town, saveState)` | `CallTownLoadFromSerialiseCallbacks` |
 
-## 2. Override Callbacks (20)
+## 2. Override Callbacks (24)
 
 | Event Name | Source Engine Hook | Lua Signature & Expected Return | Dispatcher Function |
 | :--- | :--- | :--- | :--- |
@@ -115,6 +133,10 @@ unregisterHandler(handlerId)
 | `onBuildingCalculateSaleValue` | `Building::calculateSaleValue hook` | `function(building, defaultVal) -> integer` | `CallBuildingCalculateSaleValueCallbacks` |
 | `onCharMovementIsRunning` | `CharMovement::isRunning hook` | `function(charMovement, defaultVal) -> boolean` | `CallCharMovementIsRunningCallbacks` |
 | `onCharMovementIsRunningAway` | `CharMovement::isRunningAway hook` | `function(charMovement, from, defaultVal) -> boolean` | `CallCharMovementIsRunningAwayCallbacks` |
+| `onCharacterWakeUp` | `MedicalSystem::canGetUpWakeUp hook` | `function(character) -> boolean` | `CallMedicalSystemCanGetUpWakeUpCallbacks` |
+| `onInventoryAddItem` | `Inventory::addItem hook` | `function(inventory, item, quantity, dropOnFail, destroyOnFail) -> boolean` | `CallInventoryAddItemCallbacks` |
+| `onInventoryRemoveItem` | `Inventory::removeItemDontDestroy_returnsItem hook` | `function(inventory, item, howmany, returnCopyIfSomeLeft) -> Item` | `CallInventoryRemoveItemCallbacks` |
+| `onItemBought` | `Inventory::buyItem hook` | `function(buyerInventory, item, sendingTo) -> Item` | `CallInventoryBuyItemCallbacks` |
 
 ## Detailed Callback Documentation
 
@@ -131,6 +153,13 @@ unregisterHandler(handlerId)
 - **Engine Hook**: `CharStats::clearHoldLocation hook`
 - **C++ Dispatcher**: `void CallCharStatsClearHoldLocationCallbacks(CharStats* stats)`
 - **Lua Signature**: `function(charStats)`
+
+### `onActivePlatoonCreated`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Faction::createNewEmptyActivePlatoon hook`
+- **C++ Dispatcher**: `void CallFactionActivePlatoonCreatedCallbacks(Faction* faction, Platoon* platoon)`
+- **Lua Signature**: `function(faction, platoon)`
 
 ### `onBaseLayoutInitialise`
 
@@ -153,6 +182,13 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallBuildingAddInternalBuildingCallbacks(Building* building, Building* b)`
 - **Lua Signature**: `function(building, internalBuilding)`
 
+### `onBuildingBrokenChanged`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Building::setBroken hook`
+- **C++ Dispatcher**: `void CallBuildingBrokenChangedCallbacks(Building* building, bool broken)`
+- **Lua Signature**: `function(building, broken)`
+
 ### `onBuildingCalculateSaleValue`
 
 - **Category**: Override / Interceptor
@@ -174,6 +210,27 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `bool CallBuildingIsPublicCallbacks(const Building* b, bool defaultVal)`
 - **Lua Signature**: `function(building, defaultVal) -> boolean`
 
+### `onBuildingLoadFromSerialise`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Building::_NV_loadFromSerialise hook`
+- **C++ Dispatcher**: `void CallBuildingLoadFromSerialiseCallbacks(Building* building, GameSaveState* state)`
+- **Lua Signature**: `function(building, saveState)`
+
+### `onBuildingLoaded`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Building::onBuildingLoaded hook`
+- **C++ Dispatcher**: `void CallBuildingLoadedCallbacks(Building* building)`
+- **Lua Signature**: `function(building)`
+
+### `onBuildingSerialise`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Building::_NV_serialise hook`
+- **C++ Dispatcher**: `void CallBuildingSerialiseCallbacks(Building* building, GameDataContainer* container, GameData* refList)`
+- **Lua Signature**: `function(building, container, refList)`
+
 ### `onBuildingSetResidentSquad`
 
 - **Category**: Notification / Observer
@@ -187,6 +244,13 @@ unregisterHandler(handlerId)
 - **Engine Hook**: `Ownerships::canIUseThisBuilding hook`
 - **C++ Dispatcher**: `bool CallOwnershipsCanIUseThisBuildingCallbacks(Ownerships* ownerships, Building* b, Character* me, bool defaultVal)`
 - **Lua Signature**: `function(ownerships, building, character, defaultVal) -> boolean`
+
+### `onChainedModeChanged`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Character::setChainedMode hook`
+- **C++ Dispatcher**: `void CallCharacterChainedModeChangedCallbacks(Character* character, bool on, const hand& owner)`
+- **Lua Signature**: `function(character, on, ownerHandle)`
 
 ### `onCharMovementIsRunning`
 
@@ -286,12 +350,40 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallCharacterHitByMeleeCallbacks(Character* character, Character* attacker, Damages* damage, int cutDir, CombatTechniqueData* attack, int comboID)`
 - **Lua Signature**: `function(character, attacker, damage, cutDir, attack, comboID)`
 
+### `onCharacterIndoorsChanged`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Character::notifyIndoors hook`
+- **C++ Dispatcher**: `void CallCharacterIndoorsChangedCallbacks(Character* character, const hand& indoors)`
+- **Lua Signature**: `function(character, indoorsHandle)`
+
 ### `onCharacterInit`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `Character::_NV_init hook`
 - **C++ Dispatcher**: `void CallCharacterInitCallbacks(Character* character)`
 - **Lua Signature**: `function(character)`
+
+### `onCharacterKnockedOut`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `MedicalSystem::knockout hook`
+- **C++ Dispatcher**: `void CallMedicalSystemKnockoutCallbacks(MedicalSystem* med, float skill)`
+- **Lua Signature**: `function(character, skill)`
+
+### `onCharacterLoadFromSerialise`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Character::_NV_loadFromSerialise hook`
+- **C++ Dispatcher**: `void CallCharacterLoadFromSerialiseCallbacks(Character* character, GameSaveState* state)`
+- **Lua Signature**: `function(character, saveState)`
+
+### `onCharacterLoadFromSerialisePostCreationStage`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Character::_NV_loadFromSerialisePostCreationStage hook`
+- **C++ Dispatcher**: `void CallCharacterLoadFromSerialisePostCreationStageCallbacks(Character* character, GameSaveState* state)`
+- **Lua Signature**: `function(character, saveState)`
 
 ### `onCharacterLootCheck`
 
@@ -329,6 +421,13 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallCharacterSelectCallbacks(Character* character)`
 - **Lua Signature**: `function(character)`
 
+### `onCharacterSerialise`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Character::_NV_serialise hook`
+- **C++ Dispatcher**: `void CallCharacterSerialiseCallbacks(Character* character, GameDataContainer* container, GameData* refList)`
+- **Lua Signature**: `function(character, container, refList)`
+
 ### `onCharacterStandingOrderChanged`
 
 - **Category**: Notification / Observer
@@ -356,6 +455,13 @@ unregisterHandler(handlerId)
 - **Engine Hook**: `Character::_NV_unselect hook`
 - **C++ Dispatcher**: `void CallCharacterUnselectCallbacks(Character* character)`
 - **Lua Signature**: `function(character)`
+
+### `onCharacterWakeUp`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `MedicalSystem::canGetUpWakeUp hook`
+- **C++ Dispatcher**: `bool CallMedicalSystemCanGetUpWakeUpCallbacks(MedicalSystem* med)`
+- **Lua Signature**: `function(character) -> boolean`
 
 ### `onCharsUpdate`
 
@@ -455,6 +561,13 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `GameData* CallFactionChooseARaceCallbacks(Faction* faction, GameData* character, GameData* squadTemplate, GameData* defaultVal)`
 - **Lua Signature**: `function(faction, character, squadTemplate, defaultVal) -> GameData`
 
+### `onFactionEncountered`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `PlayerInterface::encounterFaction hook`
+- **C++ Dispatcher**: `void CallPlayerEncounterFactionCallbacks(PlayerInterface* player, Faction* faction)`
+- **Lua Signature**: `function(player, faction)`
+
 ### `onFactionGetBuildingReplacement`
 
 - **Category**: Override / Interceptor
@@ -483,6 +596,13 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `float CallCharStatsGetStatCallbacks(const CharStats* stats, int what, bool unmodified, float defaultVal)`
 - **Lua Signature**: `function(stats, statType, unmodified, defaultVal) -> number`
 
+### `onInventoryAddItem`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `Inventory::addItem hook`
+- **C++ Dispatcher**: `bool CallInventoryAddItemCallbacks(Inventory* inv, Item* item, int quantity, bool dropOnFail, bool destroyOnFail)`
+- **Lua Signature**: `function(inventory, item, quantity, dropOnFail, destroyOnFail) -> boolean`
+
 ### `onInventoryAddTradePartner`
 
 - **Category**: Notification / Observer
@@ -503,6 +623,20 @@ unregisterHandler(handlerId)
 - **Engine Hook**: `Inventory::getSectionOfType hook`
 - **C++ Dispatcher**: `InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type)`
 - **Lua Signature**: `function(inventory, type) -> InventorySection`
+
+### `onInventoryRemoveItem`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `Inventory::removeItemDontDestroy_returnsItem hook`
+- **C++ Dispatcher**: `Item* CallInventoryRemoveItemCallbacks(Inventory* inv, Item* item, int howmany, bool returnCopyIfSomeLeft)`
+- **Lua Signature**: `function(inventory, item, howmany, returnCopyIfSomeLeft) -> Item`
+
+### `onItemBought`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `Inventory::buyItem hook`
+- **C++ Dispatcher**: `Item* CallInventoryBuyItemCallbacks(Inventory* inv, Item* item, RootObject* sender)`
+- **Lua Signature**: `function(buyerInventory, item, sendingTo) -> Item`
 
 ### `onItemGetValueSingle`
 
@@ -540,6 +674,13 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallManagementScreenAddMessageCallbacks(ManagementScreen* screen, const std::string& owner, const std::string& message, int logColor)`
 - **Lua Signature**: `function(managementScreen, owner, message, logColor)`
 
+### `onPlatoonDestroyed`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Faction::destroyPlatoon hook`
+- **C++ Dispatcher**: `void CallFactionPlatoonDestroyedCallbacks(Faction* faction, Platoon* platoon)`
+- **Lua Signature**: `function(faction, platoon)`
+
 ### `onPlatoonIBuyIllegalGoods`
 
 - **Category**: Override / Interceptor
@@ -553,6 +694,13 @@ unregisterHandler(handlerId)
 - **Engine Hook**: `Platoon::iBuyStolenGoods hook`
 - **C++ Dispatcher**: `bool CallPlatoonIBuyStolenGoodsCallbacks(Platoon* platoon, Item* what, bool defaultVal)`
 - **Lua Signature**: `function(platoon, item, defaultVal) -> boolean`
+
+### `onPlatoonLoadFromSerialise`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Platoon::_NV_loadFromSerialise hook`
+- **C++ Dispatcher**: `void CallPlatoonLoadFromSerialiseCallbacks(Platoon* platoon, GameSaveState* state)`
+- **Lua Signature**: `function(platoon, saveState)`
 
 ### `onPlatoonMemberAdded`
 
@@ -603,6 +751,13 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallPlayerCreateSquadCallbacks(PlayerInterface* player, ActivePlatoon* newSquad)`
 - **Lua Signature**: `function(player, newSquad)`
 
+### `onPlayerLoadFromSerialise`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `PlayerInterface::loadFromSerialise hook`
+- **C++ Dispatcher**: `void CallPlayerInterfaceLoadFromSerialiseCallbacks(PlayerInterface* player, GameData* data)`
+- **Lua Signature**: `function(player, gameData)`
+
 ### `onPlayerOrderGiven`
 
 - **Category**: Notification / Observer
@@ -624,12 +779,26 @@ unregisterHandler(handlerId)
 - **C++ Dispatcher**: `void CallPlayerSelectCallbacks(PlayerInterface* player, RootObject* obj, bool modifier)`
 - **Lua Signature**: `function(selectedObject, modifierKeyActive)`
 
+### `onPlayerSerialise`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `PlayerInterface::serialise hook`
+- **C++ Dispatcher**: `void CallPlayerInterfaceSerialiseCallbacks(PlayerInterface* player, GameData* data)`
+- **Lua Signature**: `function(player, gameData)`
+
 ### `onPlayerStealCheck`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `Character::_NV_ImStealingDoYouNotice hook`
 - **C++ Dispatcher**: `void CallCharacterStealNoticeCallbacks(Character* character, RootObject* stealFrom, Item* item, bool noticed)`
 - **Lua Signature**: `function(thief, victim, item, noticed)`
+
+### `onSlaveOwnerChanged`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Character::changeSlaveOwner hook`
+- **C++ Dispatcher**: `void CallCharacterSlaveOwnerChangedCallbacks(Character* slave, const hand& newOwner)`
+- **Lua Signature**: `function(slave, newOwnerHandle)`
 
 ### `onSmugglingTradeCheck`
 
@@ -651,6 +820,13 @@ unregisterHandler(handlerId)
 - **Engine Hook**: `TitleScreen::loadGame hook`
 - **C++ Dispatcher**: `void CallTitleScreenLoadGameCallbacks(TitleScreen* titleScreen, MyGUI::Widget* sender)`
 - **Lua Signature**: `function(titleScreen, widget)`
+
+### `onTownLoadFromSerialise`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `Town::_NV_loadFromSerialise hook`
+- **C++ Dispatcher**: `void CallTownLoadFromSerialiseCallbacks(Town* town, GameSaveState* state)`
+- **Lua Signature**: `function(town, saveState)`
 
 ### `setHoldLocation`
 
