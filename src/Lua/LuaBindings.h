@@ -26,5 +26,8 @@ int luaKenshiLogWarn(lua_State* L);
 int luaKenshiLogError(lua_State* L);
 int luaKenshiError(lua_State* L);
 int luaKenshiVersion(lua_State* L);
+int luaKenshiProfileStart(lua_State* L);
+int luaKenshiProfileStop(lua_State* L);
+int luaKenshiProfileDump(lua_State* L);
 
 } // namespace KenshiLua
