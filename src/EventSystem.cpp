@@ -12,15 +12,7 @@
 namespace KenshiLua
 {
 
-    // ---------------------------------------------------------------------------
-    // Singleton storage
-    // ---------------------------------------------------------------------------
-
     static EventSystem* g_eventSystem = NULL;
-
-    // ---------------------------------------------------------------------------
-    // Lifecycle
-    // ---------------------------------------------------------------------------
 
     EventSystem::EventSystem()
         : m_L(NULL)
@@ -35,8 +27,6 @@ namespace KenshiLua
             clear();
     }
 
-    // Non-copyable stubs - bodies required even for private declarations in
-    // MSVC 2010 when the linker sees a copy attempt anywhere.
     EventSystem::EventSystem(const EventSystem&)
         : m_L(NULL)
         , m_nextHandlerId(1)
@@ -48,10 +38,6 @@ namespace KenshiLua
         return *this;
     }
 
-    // ---------------------------------------------------------------------------
-    // Singleton accessor
-    // ---------------------------------------------------------------------------
-
     EventSystem& EventSystem::get()
     {
         if (!g_eventSystem)
@@ -61,10 +47,6 @@ namespace KenshiLua
         }
         return *g_eventSystem;
     }
-
-    // ---------------------------------------------------------------------------
-    // initialize
-    // ---------------------------------------------------------------------------
 
     bool EventSystem::initialize(lua_State* L)
     {
@@ -78,10 +60,6 @@ namespace KenshiLua
 
         return true;
     }
-
-    // ---------------------------------------------------------------------------
-    // registerHandler
-    // ---------------------------------------------------------------------------
 
     int EventSystem::registerHandler(const char* eventName, int luaRef)
     {
@@ -107,10 +85,6 @@ namespace KenshiLua
 
         return info.id;
     }
-
-    // ---------------------------------------------------------------------------
-    // unregisterHandler
-    // ---------------------------------------------------------------------------
 
     void EventSystem::unregisterHandler(int handlerId)
     {
@@ -361,11 +335,6 @@ namespace KenshiLua
         return result;
     }
 
-
-    // ---------------------------------------------------------------------------
-    // executeHandler
-    // ---------------------------------------------------------------------------
-
     bool EventSystem::executeHandler(const char* eventName, int nargs)
     {
         std::string pcallErr;
@@ -381,10 +350,6 @@ namespace KenshiLua
             return false;
         }
     }
-
-    // ---------------------------------------------------------------------------
-    // clear
-    // ---------------------------------------------------------------------------
 
     void EventSystem::clear()
     {
@@ -419,10 +384,6 @@ namespace KenshiLua
         }
         return result;
     }
-
-    // ---------------------------------------------------------------------------
-    // Lua globals
-    // ---------------------------------------------------------------------------
 
     int luaRegisterHandler(lua_State* L)
     {

@@ -32,6 +32,8 @@
 #include <kenshi/Enums.h>
 #include <kenshi/Inventory.h>
 #include <kenshi/RootObjectFactory.h>
+#include <kenshi/Town.h>
+#include <kenshi/GameSaveState.h>
 
 #include <cstddef>
 
@@ -366,6 +368,45 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_getFencingSuccessChance,
     KenshiLib::GetRealAddress(&Character::getFencingSuccessChance),
     Character_getFencingSuccessChance_hook, Character_getFencingSuccessChance_orig)
 
+static void (*Character_changeSlaveOwner_orig)(Character*, const hand&) = NULL;
+
+static void Character_changeSlaveOwner_hook(Character* thisptr, const hand& newOwner)
+{
+    Character_changeSlaveOwner_orig(thisptr, newOwner);
+    CallCharacterSlaveOwnerChangedCallbacks(thisptr, newOwner);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Character_changeSlaveOwner,
+    "Character::changeSlaveOwner",
+    KenshiLib::GetRealAddress(&Character::changeSlaveOwner),
+    Character_changeSlaveOwner_hook, Character_changeSlaveOwner_orig)
+
+static void (*Character_setChainedMode_orig)(Character*, bool, const hand&) = NULL;
+
+static void Character_setChainedMode_hook(Character* thisptr, bool on, const hand& owner)
+{
+    Character_setChainedMode_orig(thisptr, on, owner);
+    CallCharacterChainedModeChangedCallbacks(thisptr, on, owner);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Character_setChainedMode,
+    "Character::setChainedMode",
+    KenshiLib::GetRealAddress(&Character::setChainedMode),
+    Character_setChainedMode_hook, Character_setChainedMode_orig)
+
+static void (*Character_NV_notifyIndoors_orig)(Character*, const hand&) = NULL;
+
+static void Character_NV_notifyIndoors_hook(Character* thisptr, const hand& in)
+{
+    Character_NV_notifyIndoors_orig(thisptr, in);
+    CallCharacterIndoorsChangedCallbacks(thisptr, in);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Character_NV_notifyIndoors,
+    "Character::_NV_notifyIndoors",
+    KenshiLib::GetRealAddress(&Character::_NV_notifyIndoors),
+    Character_NV_notifyIndoors_hook, Character_NV_notifyIndoors_orig)
+
 
 // ---------------------------------------------------------------------------
 // Hooks for CharStats.h
@@ -528,6 +569,33 @@ DEFINE_HOOK_INSTALLER(InstallHook_CharStats_getStat,
     CharStats_getStat_hook, CharStats_getStat_orig)
 
 
+static void (*CharStats_xpStat_eventBased_orig)(CharStats*, StatsEnumerated, float) = NULL;
+
+static void CharStats_xpStat_eventBased_hook(CharStats* thisptr, StatsEnumerated st, float amount)
+{
+    CharStats_xpStat_eventBased_orig(thisptr, st, amount);
+    CallCharStatsXpStatEventBasedCallbacks(thisptr, static_cast<int>(st), amount);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_CharStats_xpStat_eventBased,
+    "CharStats::xpStat_eventBased",
+    KenshiLib::GetRealAddress(&CharStats::xpStat_eventBased),
+    CharStats_xpStat_eventBased_hook, CharStats_xpStat_eventBased_orig)
+
+static void (*CharStats_xpDodgeEvent_orig)(CharStats*, float, bool) = NULL;
+
+static void CharStats_xpDodgeEvent_hook(CharStats* thisptr, float enemySkill, bool successful)
+{
+    CharStats_xpDodgeEvent_orig(thisptr, enemySkill, successful);
+    CallCharStatsXpDodgeEventCallbacks(thisptr, enemySkill, successful);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_CharStats_xpDodgeEvent,
+    "CharStats::xpDodgeEvent",
+    KenshiLib::GetRealAddress(&CharStats::xpDodgeEvent),
+    CharStats_xpDodgeEvent_hook, CharStats_xpDodgeEvent_orig)
+
+
 // ---------------------------------------------------------------------------
 // Hooks for PlayerInterface.h
 // ---------------------------------------------------------------------------
@@ -558,27 +626,84 @@ DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_SelectObject,
     KenshiLib::GetRealAddress(&PlayerInterface::selectObject),
     PlayerInterface_selectObject_hook, PlayerInterface_selectObject_orig)
 
-static void (*PlayerInterface_newPlayerTaskSelectedCharacters_orig)(PlayerInterface*, TaskType, RootObject*, bool, bool, const Ogre::Vector3&) = NULL;
+static void (*PlayerInterface_newPlayerTaskSelectedCharacters_orig)(PlayerInterface*, TaskType, const hand&, Building*, const Ogre::Vector3&, bool) = NULL;
 
-static void PlayerInterface_newPlayerTaskSelectedCharacters_hook(PlayerInterface* thisptr, TaskType task, RootObject* subject, bool shift, bool addDontClear, const Ogre::Vector3& location)
+static void PlayerInterface_newPlayerTaskSelectedCharacters_hook(PlayerInterface* thisptr, TaskType t, const hand& targetH, Building* destinationIndoors, const Ogre::Vector3& clickpos, bool addDontClear)
 {
-    PlayerInterface_newPlayerTaskSelectedCharacters_orig(thisptr, task, subject, shift, addDontClear, location);
-
-    hand targetH;
-    Building* destinationBuilding = NULL;
-    if (subject)
-    {
-        targetH = subject->getHandle();
-        destinationBuilding = dynamic_cast<Building*>(subject);
-    }
-
-    CallPlayerOrderGivenCallbacks(thisptr, static_cast<int>(task), targetH, destinationBuilding, location, addDontClear);
+    PlayerInterface_newPlayerTaskSelectedCharacters_orig(thisptr, t, targetH, destinationIndoors, clickpos, addDontClear);
+    CallPlayerOrderGivenCallbacks(thisptr, static_cast<int>(t), targetH, destinationIndoors, clickpos, addDontClear);
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_NewPlayerTaskSelectedCharacters,
     "PlayerInterface::newPlayerTaskSelectedCharacters",
-    KenshiLib::GetRealAddress(&PlayerInterface::addOrderSelectedCharacters),
+    KenshiLib::GetRealAddress(&PlayerInterface::newPlayerTaskSelectedCharacters),
     PlayerInterface_newPlayerTaskSelectedCharacters_hook, PlayerInterface_newPlayerTaskSelectedCharacters_orig)
+
+static void (*PlayerInterface_addJobSelectedCharacters_orig)(PlayerInterface*, TaskType, RootObject*, bool, bool, const Ogre::Vector3&) = NULL;
+
+static void PlayerInterface_addJobSelectedCharacters_hook(PlayerInterface* thisptr, TaskType task, RootObject* subject, bool shift, bool add, const Ogre::Vector3& location)
+{
+    PlayerInterface_addJobSelectedCharacters_orig(thisptr, task, subject, shift, add, location);
+    CallPlayerInterfaceAddJobSelectedCharactersCallbacks(thisptr, static_cast<int>(task), subject, shift, add, location);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_addJobSelectedCharacters,
+    "PlayerInterface::addJobSelectedCharacters",
+    KenshiLib::GetRealAddress(&PlayerInterface::addJobSelectedCharacters),
+    PlayerInterface_addJobSelectedCharacters_hook, PlayerInterface_addJobSelectedCharacters_orig)
+
+static void (*PlayerInterface_addOrderSelectedCharacters_orig)(PlayerInterface*, Building*, TaskType, RootObject*, bool, bool, const Ogre::Vector3&) = NULL;
+
+static void PlayerInterface_addOrderSelectedCharacters_hook(PlayerInterface* thisptr, Building* destinationIndoors, TaskType task, RootObject* subject, bool shift, bool addDontClear, const Ogre::Vector3& location)
+{
+    PlayerInterface_addOrderSelectedCharacters_orig(thisptr, destinationIndoors, task, subject, shift, addDontClear, location);
+    CallPlayerInterfaceAddOrderSelectedCharactersCallbacks(thisptr, destinationIndoors, static_cast<int>(task), subject, shift, addDontClear, location);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_addOrderSelectedCharacters,
+    "PlayerInterface::addOrderSelectedCharacters",
+    KenshiLib::GetRealAddress(&PlayerInterface::addOrderSelectedCharacters),
+    PlayerInterface_addOrderSelectedCharacters_hook, PlayerInterface_addOrderSelectedCharacters_orig)
+
+static void (*PlayerInterface_activateCharacterEditMode_orig)(PlayerInterface*, Character*) = NULL;
+
+static void PlayerInterface_activateCharacterEditMode_hook(PlayerInterface* thisptr, Character* character)
+{
+    PlayerInterface_activateCharacterEditMode_orig(thisptr, character);
+    CallPlayerActivateCharacterEditModeCallbacks(thisptr, character);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_activateCharacterEditMode,
+    "PlayerInterface::activateCharacterEditMode",
+    KenshiLib::GetRealAddress(&PlayerInterface::activateCharacterEditMode),
+    PlayerInterface_activateCharacterEditMode_hook, PlayerInterface_activateCharacterEditMode_orig)
+
+static ActivePlatoon* (*PlayerInterface_createSquad_orig)(PlayerInterface*) = NULL;
+
+static ActivePlatoon* PlayerInterface_createSquad_hook(PlayerInterface* thisptr)
+{
+    ActivePlatoon* newSquad = PlayerInterface_createSquad_orig(thisptr);
+    CallPlayerCreateSquadCallbacks(thisptr, newSquad);
+    return newSquad;
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_createSquad,
+    "PlayerInterface::createSquad",
+    KenshiLib::GetRealAddress(&PlayerInterface::createSquad),
+    PlayerInterface_createSquad_hook, PlayerInterface_createSquad_orig)
+
+static void (*PlayerInterface_encounterFaction_orig)(PlayerInterface*, Faction*) = NULL;
+
+static void PlayerInterface_encounterFaction_hook(PlayerInterface* thisptr, Faction* faction)
+{
+    PlayerInterface_encounterFaction_orig(thisptr, faction);
+    CallPlayerEncounterFactionCallbacks(thisptr, faction);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_encounterFaction,
+    "PlayerInterface::encounterFaction",
+    KenshiLib::GetRealAddress(&PlayerInterface::encounterFaction),
+    PlayerInterface_encounterFaction_hook, PlayerInterface_encounterFaction_orig)
 
 
 // ---------------------------------------------------------------------------
@@ -714,6 +839,48 @@ DEFINE_HOOK_INSTALLER(InstallHook_InventoryItemBase_getValueSingle,
     KenshiLib::GetRealAddress(&InventoryItemBase::_NV_getValueSingle),
     InventoryItemBase_getValueSingle_hook, InventoryItemBase_getValueSingle_orig)
 
+static bool (*Inventory_NV_addItem_orig)(Inventory*, Item*, int, bool, bool) = NULL;
+
+static bool Inventory_NV_addItem_hook(Inventory* thisptr, Item* item, int quantity, bool dropOnFail, bool destroyOnFail)
+{
+    if (!CallInventoryAddItemCallbacks(thisptr, item, quantity, dropOnFail, destroyOnFail))
+        return false;
+    return Inventory_NV_addItem_orig(thisptr, item, quantity, dropOnFail, destroyOnFail);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_NV_addItem,
+    "Inventory::_NV_addItem",
+    KenshiLib::GetRealAddress(static_cast<bool (Inventory::*)(Item*, int, bool, bool)>(&Inventory::_NV_addItem)),
+    Inventory_NV_addItem_hook, Inventory_NV_addItem_orig)
+
+static Item* (*Inventory_NV_removeItemDontDestroy_returnsItem_orig)(Inventory*, Item*, int, bool) = NULL;
+
+static Item* Inventory_NV_removeItemDontDestroy_returnsItem_hook(Inventory* thisptr, Item* it, int howmany, bool returnCopyIfSomeLeft)
+{
+    Item* current = Inventory_NV_removeItemDontDestroy_returnsItem_orig(thisptr, it, howmany, returnCopyIfSomeLeft);
+    Item* overrideItem = CallInventoryRemoveItemCallbacks(thisptr, it, howmany, returnCopyIfSomeLeft);
+    return overrideItem ? overrideItem : current;
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_NV_removeItemDontDestroy_returnsItem,
+    "Inventory::_NV_removeItemDontDestroy_returnsItem",
+    KenshiLib::GetRealAddress(static_cast<Item* (Inventory::*)(Item*, int, bool)>(&Inventory::_NV_removeItemDontDestroy_returnsItem)),
+    Inventory_NV_removeItemDontDestroy_returnsItem_hook, Inventory_NV_removeItemDontDestroy_returnsItem_orig)
+
+static Item* (*Inventory_buyItem_orig)(Inventory*, Item*, RootObject*) = NULL;
+
+static Item* Inventory_buyItem_hook(Inventory* thisptr, Item* itemToBuy, RootObject* sendingTo)
+{
+    Item* current = Inventory_buyItem_orig(thisptr, itemToBuy, sendingTo);
+    Item* overrideItem = CallInventoryBuyItemCallbacks(thisptr, itemToBuy, sendingTo);
+    return overrideItem ? overrideItem : current;
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_buyItem,
+    "Inventory::buyItem",
+    KenshiLib::GetRealAddress(&Inventory::buyItem),
+    Inventory_buyItem_hook, Inventory_buyItem_orig)
+
 
 // ---------------------------------------------------------------------------
 // Hooks for BountyManager.h
@@ -781,6 +948,33 @@ DEFINE_HOOK_INSTALLER(InstallHook_Faction_getBuildingReplacement,
     KenshiLib::GetRealAddress(&Faction::getBuildingReplacement),
     Faction_getBuildingReplacement_hook, Faction_getBuildingReplacement_orig)
 
+static Platoon* (*Faction_createNewEmptyActivePlatoon_orig)(Faction*, GameData*, bool, const Ogre::Vector3&) = NULL;
+
+static Platoon* Faction_createNewEmptyActivePlatoon_hook(Faction* thisptr, GameData* squadTemplate, bool permanent, const Ogre::Vector3& p)
+{
+    Platoon* platoon = Faction_createNewEmptyActivePlatoon_orig(thisptr, squadTemplate, permanent, p);
+    CallFactionActivePlatoonCreatedCallbacks(thisptr, platoon);
+    return platoon;
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Faction_createNewEmptyActivePlatoon,
+    "Faction::createNewEmptyActivePlatoon",
+    KenshiLib::GetRealAddress(&Faction::createNewEmptyActivePlatoon),
+    Faction_createNewEmptyActivePlatoon_hook, Faction_createNewEmptyActivePlatoon_orig)
+
+static void (*Faction_destroyPlatoon_orig)(Faction*, Platoon*) = NULL;
+
+static void Faction_destroyPlatoon_hook(Faction* thisptr, Platoon* platoon)
+{
+    Faction_destroyPlatoon_orig(thisptr, platoon);
+    CallFactionPlatoonDestroyedCallbacks(thisptr, platoon);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Faction_destroyPlatoon,
+    "Faction::destroyPlatoon",
+    KenshiLib::GetRealAddress(&Faction::destroyPlatoon),
+    Faction_destroyPlatoon_hook, Faction_destroyPlatoon_orig)
+
 
 // ---------------------------------------------------------------------------
 // Hooks for MedicalSystem.h
@@ -798,6 +992,32 @@ DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_Amputate,
     "MedicalSystem::amputate",
     KenshiLib::GetRealAddress(&MedicalSystem::amputate),
     MedicalSystem_amputate_hook, MedicalSystem_amputate_orig)
+
+static void (*MedicalSystem_knockout_orig)(MedicalSystem*, float) = NULL;
+
+static void MedicalSystem_knockout_hook(MedicalSystem* thisptr, float skill)
+{
+    MedicalSystem_knockout_orig(thisptr, skill);
+    CallMedicalSystemKnockoutCallbacks(thisptr, skill);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_knockout,
+    "MedicalSystem::knockout",
+    KenshiLib::GetRealAddress(&MedicalSystem::knockout),
+    MedicalSystem_knockout_hook, MedicalSystem_knockout_orig)
+
+static bool (*MedicalSystem_canGetUpWakeUp_orig)(MedicalSystem*) = NULL;
+
+static bool MedicalSystem_canGetUpWakeUp_hook(MedicalSystem* thisptr)
+{
+    bool current = MedicalSystem_canGetUpWakeUp_orig(thisptr);
+    return CallMedicalSystemCanGetUpWakeUpCallbacks(thisptr) ? current : false;
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_canGetUpWakeUp,
+    "MedicalSystem::canGetUpWakeUp",
+    KenshiLib::GetRealAddress(&MedicalSystem::canGetUpWakeUp),
+    MedicalSystem_canGetUpWakeUp_hook, MedicalSystem_canGetUpWakeUp_orig)
 
 
 // ---------------------------------------------------------------------------
@@ -1043,6 +1263,33 @@ DEFINE_HOOK_INSTALLER(InstallHook_Building_calculateSaleValue,
     KenshiLib::GetRealAddress(&Building::calculateSaleValue),
     Building_calculateSaleValue_hook, Building_calculateSaleValue_orig)
 
+static void (*Building_NV_onBuildingLoaded_orig)(Building*) = NULL;
+
+static void Building_NV_onBuildingLoaded_hook(Building* thisptr)
+{
+    Building_NV_onBuildingLoaded_orig(thisptr);
+    CallBuildingLoadedCallbacks(thisptr);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Building_NV_onBuildingLoaded,
+    "Building::_NV_onBuildingLoaded",
+    KenshiLib::GetRealAddress(&Building::_NV_onBuildingLoaded),
+    Building_NV_onBuildingLoaded_hook, Building_NV_onBuildingLoaded_orig)
+
+static void (*Building_NV_setBroken_orig)(Building*, bool) = NULL;
+
+static void Building_NV_setBroken_hook(Building* thisptr, bool broken)
+{
+    Building_NV_setBroken_orig(thisptr, broken);
+    CallBuildingBrokenChangedCallbacks(thisptr, broken);
+}
+
+DEFINE_HOOK_INSTALLER(InstallHook_Building_NV_setBroken,
+    "Building::_NV_setBroken",
+    KenshiLib::GetRealAddress(&Building::_NV_setBroken),
+    Building_NV_setBroken_hook, Building_NV_setBroken_orig)
+
+
 // ---------------------------------------
 // Hooks for CharMovement.h
 // ---------------------------------------
@@ -1073,58 +1320,7 @@ DEFINE_HOOK_INSTALLER(InstallHook_CharMovement_isRunningAway,
     KenshiLib::GetRealAddress(&CharMovement::isRunningAway),
     CharMovement_isRunningAway_hook, CharMovement_isRunningAway_orig)
 
-static void (*CharStats_xpStat_eventBased_orig)(CharStats*, StatsEnumerated, float) = NULL;
 
-static void CharStats_xpStat_eventBased_hook(CharStats* thisptr, StatsEnumerated st, float amount)
-{
-    CharStats_xpStat_eventBased_orig(thisptr, st, amount);
-    CallCharStatsXpStatEventBasedCallbacks(thisptr, static_cast<int>(st), amount);
-}
-
-DEFINE_HOOK_INSTALLER(InstallHook_CharStats_xpStat_eventBased,
-    "CharStats::xpStat_eventBased",
-    KenshiLib::GetRealAddress(&CharStats::xpStat_eventBased),
-    CharStats_xpStat_eventBased_hook, CharStats_xpStat_eventBased_orig)
-
-static void (*CharStats_xpDodgeEvent_orig)(CharStats*, float, bool) = NULL;
-
-static void CharStats_xpDodgeEvent_hook(CharStats* thisptr, float enemySkill, bool successful)
-{
-    CharStats_xpDodgeEvent_orig(thisptr, enemySkill, successful);
-    CallCharStatsXpDodgeEventCallbacks(thisptr, enemySkill, successful);
-}
-
-DEFINE_HOOK_INSTALLER(InstallHook_CharStats_xpDodgeEvent,
-    "CharStats::xpDodgeEvent",
-    KenshiLib::GetRealAddress(&CharStats::xpDodgeEvent),
-    CharStats_xpDodgeEvent_hook, CharStats_xpDodgeEvent_orig)
-
-static void (*PlayerInterface_activateCharacterEditMode_orig)(PlayerInterface*, Character*) = NULL;
-
-static void PlayerInterface_activateCharacterEditMode_hook(PlayerInterface* thisptr, Character* character)
-{
-    PlayerInterface_activateCharacterEditMode_orig(thisptr, character);
-    CallPlayerActivateCharacterEditModeCallbacks(thisptr, character);
-}
-
-DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_activateCharacterEditMode,
-    "PlayerInterface::activateCharacterEditMode",
-    KenshiLib::GetRealAddress(&PlayerInterface::activateCharacterEditMode),
-    PlayerInterface_activateCharacterEditMode_hook, PlayerInterface_activateCharacterEditMode_orig)
-
-static ActivePlatoon* (*PlayerInterface_createSquad_orig)(PlayerInterface*) = NULL;
-
-static ActivePlatoon* PlayerInterface_createSquad_hook(PlayerInterface* thisptr)
-{
-    ActivePlatoon* newSquad = PlayerInterface_createSquad_orig(thisptr);
-    CallPlayerCreateSquadCallbacks(thisptr, newSquad);
-    return newSquad;
-}
-
-DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_createSquad,
-    "PlayerInterface::createSquad",
-    KenshiLib::GetRealAddress(&PlayerInterface::createSquad),
-    PlayerInterface_createSquad_hook, PlayerInterface_createSquad_orig)
 
 static void (*Building_setResidentSquad_orig)(Building*, Platoon*) = NULL;
 
@@ -1269,31 +1465,117 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_removeJob,
     KenshiLib::GetRealAddress(&Character::removeJob),
     Character_removeJob_hook, Character_removeJob_orig)
 
-static void (*PlayerInterface_addJobSelectedCharacters_orig)(PlayerInterface*, TaskType, RootObject*, bool, bool, const Ogre::Vector3&) = NULL;
+// ---------------------------------------------------------------------------
+// Serialization Hooks
+// ---------------------------------------------------------------------------
 
-static void PlayerInterface_addJobSelectedCharacters_hook(PlayerInterface* thisptr, TaskType task, RootObject* subject, bool shift, bool add, const Ogre::Vector3& location)
+// PlayerInterface
+static void (*PlayerInterface_serialise_orig)(PlayerInterface*, GameData*) = NULL;
+static void PlayerInterface_serialise_hook(PlayerInterface* thisptr, GameData* data)
 {
-    PlayerInterface_addJobSelectedCharacters_orig(thisptr, task, subject, shift, add, location);
-    CallPlayerInterfaceAddJobSelectedCharactersCallbacks(thisptr, static_cast<int>(task), subject, shift, add, location);
+    PlayerInterface_serialise_orig(thisptr, data);
+    CallPlayerInterfaceSerialiseCallbacks(thisptr, data);
 }
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_serialise,
+    "PlayerInterface::serialise",
+    KenshiLib::GetRealAddress(&PlayerInterface::serialise),
+    PlayerInterface_serialise_hook, PlayerInterface_serialise_orig)
 
-DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_addJobSelectedCharacters,
-    "PlayerInterface::addJobSelectedCharacters",
-    KenshiLib::GetRealAddress(&PlayerInterface::addJobSelectedCharacters),
-    PlayerInterface_addJobSelectedCharacters_hook, PlayerInterface_addJobSelectedCharacters_orig)
-
-static void (*PlayerInterface_addOrderSelectedCharacters_orig)(PlayerInterface*, Building*, TaskType, RootObject*, bool, bool, const Ogre::Vector3&) = NULL;
-
-static void PlayerInterface_addOrderSelectedCharacters_hook(PlayerInterface* thisptr, Building* destinationIndoors, TaskType task, RootObject* subject, bool shift, bool addDontClear, const Ogre::Vector3& location)
+static void (*PlayerInterface_loadFromSerialise_orig)(PlayerInterface*, GameData*) = NULL;
+static void PlayerInterface_loadFromSerialise_hook(PlayerInterface* thisptr, GameData* data)
 {
-    PlayerInterface_addOrderSelectedCharacters_orig(thisptr, destinationIndoors, task, subject, shift, addDontClear, location);
-    CallPlayerInterfaceAddOrderSelectedCharactersCallbacks(thisptr, destinationIndoors, static_cast<int>(task), subject, shift, addDontClear, location);
+    PlayerInterface_loadFromSerialise_orig(thisptr, data);
+    CallPlayerInterfaceLoadFromSerialiseCallbacks(thisptr, data);
 }
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_loadFromSerialise,
+    "PlayerInterface::loadFromSerialise",
+    KenshiLib::GetRealAddress(&PlayerInterface::loadFromSerialise),
+    PlayerInterface_loadFromSerialise_hook, PlayerInterface_loadFromSerialise_orig)
 
-DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_addOrderSelectedCharacters,
-    "PlayerInterface::addOrderSelectedCharacters",
-    KenshiLib::GetRealAddress(&PlayerInterface::addOrderSelectedCharacters),
-    PlayerInterface_addOrderSelectedCharacters_hook, PlayerInterface_addOrderSelectedCharacters_orig)
+// Character
+static GameSaveState (*Character_NV_serialise_orig)(Character*, GameDataContainer*, GameData*, PosRotPair*) = NULL;
+static GameSaveState Character_NV_serialise_hook(Character* thisptr, GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)
+{
+    GameSaveState res = Character_NV_serialise_orig(thisptr, container, refList, offsetPosToSubtract);
+    CallCharacterSerialiseCallbacks(thisptr, container, refList);
+    return res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Character_NV_serialise,
+    "Character::_NV_serialise",
+    KenshiLib::GetRealAddress(&Character::_NV_serialise),
+    Character_NV_serialise_hook, Character_NV_serialise_orig)
+
+static void (*Character_NV_loadFromSerialise_orig)(Character*, GameSaveState*) = NULL;
+static void Character_NV_loadFromSerialise_hook(Character* thisptr, GameSaveState* state)
+{
+    Character_NV_loadFromSerialise_orig(thisptr, state);
+    CallCharacterLoadFromSerialiseCallbacks(thisptr, state);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Character_NV_loadFromSerialise,
+    "Character::_NV_loadFromSerialise",
+    KenshiLib::GetRealAddress(&Character::_NV_loadFromSerialise),
+    Character_NV_loadFromSerialise_hook, Character_NV_loadFromSerialise_orig)
+
+static void (*Character_NV_loadFromSerialisePostCreationStage_orig)(Character*, GameSaveState*) = NULL;
+static void Character_NV_loadFromSerialisePostCreationStage_hook(Character* thisptr, GameSaveState* gd)
+{
+    Character_NV_loadFromSerialisePostCreationStage_orig(thisptr, gd);
+    CallCharacterLoadFromSerialisePostCreationStageCallbacks(thisptr, gd);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Character_NV_loadFromSerialisePostCreationStage,
+    "Character::_NV_loadFromSerialisePostCreationStage",
+    KenshiLib::GetRealAddress(&Character::_NV_loadFromSerialisePostCreationStage),
+    Character_NV_loadFromSerialisePostCreationStage_hook, Character_NV_loadFromSerialisePostCreationStage_orig)
+
+// Building
+static GameSaveState (*Building_NV_serialise_orig)(Building*, GameDataContainer*, GameData*, PosRotPair*) = NULL;
+static GameSaveState Building_NV_serialise_hook(Building* thisptr, GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)
+{
+    GameSaveState res = Building_NV_serialise_orig(thisptr, container, refList, offsetPosToSubtract);
+    CallBuildingSerialiseCallbacks(thisptr, container, refList);
+    return res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Building_NV_serialise,
+    "Building::_NV_serialise",
+    KenshiLib::GetRealAddress(&Building::_NV_serialise),
+    Building_NV_serialise_hook, Building_NV_serialise_orig)
+
+static void (*Building_NV_loadFromSerialise_orig)(Building*, GameSaveState*) = NULL;
+static void Building_NV_loadFromSerialise_hook(Building* thisptr, GameSaveState* savestate)
+{
+    Building_NV_loadFromSerialise_orig(thisptr, savestate);
+    CallBuildingLoadFromSerialiseCallbacks(thisptr, savestate);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Building_NV_loadFromSerialise,
+    "Building::_NV_loadFromSerialise",
+    KenshiLib::GetRealAddress(&Building::_NV_loadFromSerialise),
+    Building_NV_loadFromSerialise_hook, Building_NV_loadFromSerialise_orig)
+
+// Platoon
+static void (*Platoon_NV_loadFromSerialise_orig)(Platoon*, GameSaveState*) = NULL;
+static void Platoon_NV_loadFromSerialise_hook(Platoon* thisptr, GameSaveState* state)
+{
+    Platoon_NV_loadFromSerialise_orig(thisptr, state);
+    CallPlatoonLoadFromSerialiseCallbacks(thisptr, state);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Platoon_NV_loadFromSerialise,
+    "Platoon::_NV_loadFromSerialise",
+    KenshiLib::GetRealAddress(&Platoon::_NV_loadFromSerialise),
+    Platoon_NV_loadFromSerialise_hook, Platoon_NV_loadFromSerialise_orig)
+
+// Town
+static void (*Town_NV_loadFromSerialise_orig)(Town*, GameSaveState*) = NULL;
+static void Town_NV_loadFromSerialise_hook(Town* thisptr, GameSaveState* state)
+{
+    Town_NV_loadFromSerialise_orig(thisptr, state);
+    CallTownLoadFromSerialiseCallbacks(thisptr, state);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Town_NV_loadFromSerialise,
+    "Town::_NV_loadFromSerialise",
+    KenshiLib::GetRealAddress(&Town::_NV_loadFromSerialise),
+    Town_NV_loadFromSerialise_hook, Town_NV_loadFromSerialise_orig)
+
+
 
 
 
@@ -1338,6 +1620,9 @@ namespace KenshiLua
         { "onCharacterInit",                    InstallHook_Character_NV_init },
         { "onCharacterLootCheck",               InstallHook_Character_isItOkForMeToLoot },
         { "onGetFencingChance",                 InstallHook_Character_getFencingSuccessChance },
+        { "onSlaveOwnerChanged",                InstallHook_Character_changeSlaveOwner },
+        { "onChainedModeChanged",                InstallHook_Character_setChainedMode },
+        { "onCharacterIndoorsChanged",          InstallHook_Character_NV_notifyIndoors },
 
         // CharStats.h
         { "setHoldLocation",                    InstallHook_CharStats_SetHoldLocation },
@@ -1357,6 +1642,11 @@ namespace KenshiLua
         { "onPlayerRecruit",                    InstallHook_PlayerInterface_Recruit },
         { "onPlayerSelectObject",               InstallHook_PlayerInterface_SelectObject },
         { "onPlayerOrderGiven",                 InstallHook_PlayerInterface_NewPlayerTaskSelectedCharacters },
+        { "onPlayerActivateCharacterEditMode",  InstallHook_PlayerInterface_activateCharacterEditMode },
+        { "onPlayerCreateSquad",                InstallHook_PlayerInterface_createSquad },
+        { "onPlayerAddJobSelectedCharacters",   InstallHook_PlayerInterface_addJobSelectedCharacters },
+        { "onPlayerAddOrderSelectedCharacters", InstallHook_PlayerInterface_addOrderSelectedCharacters },
+        { "onFactionEncountered",               InstallHook_PlayerInterface_encounterFaction },
 
         // Platoon.h
         { "onPlatoonMemberAdded",               InstallHook_ActivePlatoon_AddActiveObject },
@@ -1373,6 +1663,9 @@ namespace KenshiLua
         { "onInventoryGetSectionOfType",        InstallHook_Inventory_getSectionOfType },
         { "onInventoryGetBestFoodItem",         InstallHook_Inventory_getBestFoodItem },
         { "onItemGetValueSingle",               InstallHook_InventoryItemBase_getValueSingle },
+        { "onInventoryAddItem",                 InstallHook_Inventory_NV_addItem },
+        { "onInventoryRemoveItem",              InstallHook_Inventory_NV_removeItemDontDestroy_returnsItem },
+        { "onItemBought",                       InstallHook_Inventory_buyItem },
 
         // BountyManager.h
         { "onCrimeWitnessed",                   InstallHook_BountyManager_NotifyCrimeWitnessed },
@@ -1383,9 +1676,13 @@ namespace KenshiLua
         // Faction.h
         { "onFactionChooseRace",                InstallHook_Faction_chooseARace },
         { "onFactionGetBuildingReplacement",    InstallHook_Faction_getBuildingReplacement },
+        { "onActivePlatoonCreated",             InstallHook_Faction_createNewEmptyActivePlatoon },
+        { "onPlatoonDestroyed",                 InstallHook_Faction_destroyPlatoon },
 
         // MedicalSystem.h
         { "onLimbAmputated",                    InstallHook_MedicalSystem_Amputate },
+        { "onCharacterKnockedOut",              InstallHook_MedicalSystem_knockout },
+        { "onCharacterWakeUp",                  InstallHook_MedicalSystem_canGetUpWakeUp },
 
         // gui/DialogueWindow.h
         { "onDialogueWindowShow",               InstallHook_DialogueWindow_Show },
@@ -1411,6 +1708,8 @@ namespace KenshiLua
         { "onBuildingIsPublic",                 InstallHook_Building_isPublic },
         { "onBuildingIsForSale",                InstallHook_Building_isForSale },
         { "onBuildingCalculateSaleValue",       InstallHook_Building_calculateSaleValue },
+        { "onBuildingLoaded",                   InstallHook_Building_NV_onBuildingLoaded },
+        { "onBuildingBrokenChanged",            InstallHook_Building_NV_setBroken },
 
         // CharMovement.h
         { "onCharMovementIsRunning",            InstallHook_CharMovement_isRunning },
@@ -1419,8 +1718,7 @@ namespace KenshiLua
         // Additional High-Demand Engine Hooks
         { "onCharStatsXpStatEvent",             InstallHook_CharStats_xpStat_eventBased },
         { "onCharStatsXpDodgeEvent",            InstallHook_CharStats_xpDodgeEvent },
-        { "onPlayerActivateCharacterEditMode",  InstallHook_PlayerInterface_activateCharacterEditMode },
-        { "onPlayerCreateSquad",                InstallHook_PlayerInterface_createSquad },
+
         { "onBuildingSetResidentSquad",         InstallHook_Building_setResidentSquad },
 
         // Building & GUI Hooks
@@ -1436,8 +1734,19 @@ namespace KenshiLua
         { "onCharacterAddJob",                  InstallHook_Character_addJob },
         { "onCharacterAddOrder",                InstallHook_Character_addOrder },
         { "onCharacterRemoveJob",               InstallHook_Character_removeJob },
-        { "onPlayerAddJobSelectedCharacters",   InstallHook_PlayerInterface_addJobSelectedCharacters },
-        { "onPlayerAddOrderSelectedCharacters", InstallHook_PlayerInterface_addOrderSelectedCharacters },
+
+        // Serialization Hooks
+        { "onPlayerSerialise",                          InstallHook_PlayerInterface_serialise },
+        { "onPlayerLoadFromSerialise",                  InstallHook_PlayerInterface_loadFromSerialise },
+        { "onCharacterSerialise",                       InstallHook_Character_NV_serialise },
+        { "onCharacterLoadFromSerialise",               InstallHook_Character_NV_loadFromSerialise },
+        { "onCharacterLoadFromSerialisePostCreationStage", InstallHook_Character_NV_loadFromSerialisePostCreationStage },
+        { "onBuildingSerialise",                        InstallHook_Building_NV_serialise },
+        { "onBuildingLoadFromSerialise",                InstallHook_Building_NV_loadFromSerialise },
+        { "onPlatoonLoadFromSerialise",                 InstallHook_Platoon_NV_loadFromSerialise },
+        { "onTownLoadFromSerialise",                    InstallHook_Town_NV_loadFromSerialise },
+
+
     };
 
     static const size_t g_eventHookRegistryCount = sizeof(g_eventHookRegistry) / sizeof(g_eventHookRegistry[0]);

@@ -36,6 +36,10 @@
 #include "Bindings/MyGuiBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/LektorBinding.h"
+#include "Bindings/MedicalSystemBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/TownBinding.h"
 
 // KenshiLib headers
 #include <kenshi/CharMovement.h>
@@ -79,10 +83,11 @@ namespace KenshiLua
     static inline const char* CombatTechniqueDataMetatable()    { return CombatTechniqueDataBinding::getMetatableName(); }
     static inline const char* TaskerMetatable()                 { return TaskerBinding::getMetatableName(); }
     static inline const char* BuildingMetatable()               { return BuildingBinding::getMetatableName(); }
-    static inline const char* HandMetatable()                   { return handBinding::getMetatableName(); }
+    static inline const char* HandMetatable()                   { return HandBinding::getMetatableName(); }
     static inline const char* GameDataMetatable()               { return GameDataBinding::getMetatableName(); }
     static inline const char* RaceDataMetatable()               { return RaceDataBinding::getMetatableName(); }
     static inline const char* InventorySectionMetatable()       { return InventorySectionBinding::getMetatableName(); }
+    static inline const char* MedicalSystemMetatable()          { return MedicalSystemBinding::getMetatableName(); }
     static inline const char* CharMovementMetatable()          { return CharMovementBinding::getMetatableName(); }
     static inline const char* CombatClassMetatable()           { return CombatClassBinding::getMetatableName(); }
     static inline const char* GameWorldMetatable()             { return GameWorldBinding::getMetatableName(); }
@@ -123,6 +128,7 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, YesNoMaybe val)          { lua_pushinteger(L, static_cast<int>(val.key)); }
     static inline void pushArg(lua_State* L, GameData* val)           { pushObject<GameData>(L, val, GameDataMetatable()); }
     static inline void pushArg(lua_State* L, RaceData* val)           { pushObject<RaceData>(L, val, RaceDataMetatable()); }
+    static inline void pushArg(lua_State* L, MedicalSystem* val)      { pushObject<MedicalSystem>(L, val, MedicalSystemMetatable()); }
     static inline const char* InventoryGUIMetatable()           { return InventoryGUIBinding::getMetatableName(); }
     static inline const char* BuildModeWindowMetatable()        { return BuildModeWindowBinding::getMetatableName(); }
     static inline const char* SquadManagementScreenMetatable()  { return SquadManagementScreenBinding::getMetatableName(); }
@@ -277,7 +283,7 @@ void CallCharacterGetPickedUpCallbacks(Character* byWhom)
 
 void CallCharsUpdateCallbacks()
 {
-    KenshiLua::EventSystem::get().callHandlers("onCharsUpdate", NULL);
+    KenshiLua::EventSystem::get().callHandlers("onCharacterUpdate", NULL);
 }
 
 void CallKeyDownCallbacks(int keyCode)
@@ -752,3 +758,137 @@ void CallPlayerInterfaceAddOrderSelectedCharactersCallbacks(PlayerInterface* pla
     ArgPusher7<PlayerInterface*, Building*, int, RootObject*, bool, bool, const Ogre::Vector3&> pusher(player, destinationIndoors, task, subject, shift, addDontClear, location);
     KenshiLua::EventSystem::get().callHandlers("onPlayerAddOrderSelectedCharacters", &pusher);
 }
+
+void CallMedicalSystemKnockoutCallbacks(MedicalSystem* med, float skill)
+{
+    ArgPusher2<MedicalSystem*, float> pusher(med, skill);
+    KenshiLua::EventSystem::get().callHandlers("onCharacterKnockedOut", &pusher);
+}
+
+bool CallMedicalSystemCanGetUpWakeUpCallbacks(MedicalSystem* med)
+{
+    ArgPusher1<MedicalSystem*> pusher(med);
+    return KenshiLua::EventSystem::get().callHandlersBool("onCharacterWakeUp", &pusher, true);
+}
+
+bool CallInventoryAddItemCallbacks(Inventory* inv, Item* item, int quantity, bool dropOnFail, bool destroyOnFail)
+{
+    ArgPusher5<Inventory*, Item*, int, bool, bool> pusher(inv, item, quantity, dropOnFail, destroyOnFail);
+    return KenshiLua::EventSystem::get().callHandlersBool("onInventoryAddItem", &pusher, true);
+}
+
+Item* CallInventoryRemoveItemCallbacks(Inventory* inv, Item* item, int howmany, bool returnCopyIfSomeLeft)
+{
+    ArgPusher4<Inventory*, Item*, int, bool> pusher(inv, item, howmany, returnCopyIfSomeLeft);
+    return static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onInventoryRemoveItem", KenshiLua::ItemMetatable(), &pusher));
+}
+
+Item* CallInventoryBuyItemCallbacks(Inventory* inv, Item* item, RootObject* sender)
+{
+    ArgPusher3<Inventory*, Item*, RootObject*> pusher(inv, item, sender);
+    return static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onItemBought", KenshiLua::ItemMetatable(), &pusher));
+}
+
+void CallFactionActivePlatoonCreatedCallbacks(Faction* faction, Platoon* platoon)
+{
+    ArgPusher2<Faction*, Platoon*> pusher(faction, platoon);
+    KenshiLua::EventSystem::get().callHandlers("onActivePlatoonCreated", &pusher);
+}
+
+void CallFactionPlatoonDestroyedCallbacks(Faction* faction, Platoon* platoon)
+{
+    ArgPusher2<Faction*, Platoon*> pusher(faction, platoon);
+    KenshiLua::EventSystem::get().callHandlers("onPlatoonDestroyed", &pusher);
+}
+
+void CallPlayerEncounterFactionCallbacks(PlayerInterface* player, Faction* faction)
+{
+    ArgPusher2<PlayerInterface*, Faction*> pusher(player, faction);
+    KenshiLua::EventSystem::get().callHandlers("onFactionEncountered", &pusher);
+}
+
+void CallCharacterSlaveOwnerChangedCallbacks(Character* slave, const hand& newOwner)
+{
+    ArgPusher2<Character*, const hand&> pusher(slave, newOwner);
+    KenshiLua::EventSystem::get().callHandlers("onSlaveOwnerChanged", &pusher);
+}
+
+void CallCharacterChainedModeChangedCallbacks(Character* character, bool on, const hand& owner)
+{
+    ArgPusher3<Character*, bool, const hand&> pusher(character, on, owner);
+    KenshiLua::EventSystem::get().callHandlers("onChainedModeChanged", &pusher);
+}
+
+void CallCharacterIndoorsChangedCallbacks(Character* character, const hand& indoors)
+{
+    ArgPusher2<Character*, const hand&> pusher(character, indoors);
+    KenshiLua::EventSystem::get().callHandlers("onCharacterIndoorsChanged", &pusher);
+}
+
+void CallBuildingLoadedCallbacks(Building* building)
+{
+    ArgPusher1<Building*> pusher(building);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingLoaded", &pusher);
+}
+
+void CallBuildingBrokenChangedCallbacks(Building* building, bool broken)
+{
+    ArgPusher2<Building*, bool> pusher(building, broken);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingBrokenChanged", &pusher);
+}
+
+void CallPlayerInterfaceSerialiseCallbacks(PlayerInterface* player, GameData* data)
+{
+    ArgPusher2<PlayerInterface*, GameData*> pusher(player, data);
+    KenshiLua::EventSystem::get().callHandlers("onPlayerSerialise", &pusher);
+}
+
+void CallPlayerInterfaceLoadFromSerialiseCallbacks(PlayerInterface* player, GameData* data)
+{
+    ArgPusher2<PlayerInterface*, GameData*> pusher(player, data);
+    KenshiLua::EventSystem::get().callHandlers("onPlayerLoadFromSerialise", &pusher);
+}
+
+void CallCharacterSerialiseCallbacks(Character* character, GameDataContainer* container, GameData* refList)
+{
+    ArgPusher3<Character*, GameDataContainer*, GameData*> pusher(character, container, refList);
+    KenshiLua::EventSystem::get().callHandlers("onCharacterSerialise", &pusher);
+}
+
+void CallCharacterLoadFromSerialiseCallbacks(Character* character, GameSaveState* state)
+{
+    ArgPusher2<Character*, GameSaveState*> pusher(character, state);
+    KenshiLua::EventSystem::get().callHandlers("onCharacterLoadFromSerialise", &pusher);
+}
+
+void CallCharacterLoadFromSerialisePostCreationStageCallbacks(Character* character, GameSaveState* state)
+{
+    ArgPusher2<Character*, GameSaveState*> pusher(character, state);
+    KenshiLua::EventSystem::get().callHandlers("onCharacterLoadFromSerialisePostCreationStage", &pusher);
+}
+
+void CallBuildingSerialiseCallbacks(Building* building, GameDataContainer* container, GameData* refList)
+{
+    ArgPusher3<Building*, GameDataContainer*, GameData*> pusher(building, container, refList);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingSerialise", &pusher);
+}
+
+void CallBuildingLoadFromSerialiseCallbacks(Building* building, GameSaveState* state)
+{
+    ArgPusher2<Building*, GameSaveState*> pusher(building, state);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingLoadFromSerialise", &pusher);
+}
+
+void CallPlatoonLoadFromSerialiseCallbacks(Platoon* platoon, GameSaveState* state)
+{
+    ArgPusher2<Platoon*, GameSaveState*> pusher(platoon, state);
+    KenshiLua::EventSystem::get().callHandlers("onPlatoonLoadFromSerialise", &pusher);
+}
+
+void CallTownLoadFromSerialiseCallbacks(Town* town, GameSaveState* state)
+{
+    ArgPusher2<Town*, GameSaveState*> pusher(town, state);
+    KenshiLua::EventSystem::get().callHandlers("onTownLoadFromSerialise", &pusher);
+}

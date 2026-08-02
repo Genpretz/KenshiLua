@@ -34,6 +34,10 @@ class BuildModeWindow;
 class SquadManagementScreen;
 class ManagementScreen;
 class TitleScreen;
+class MedicalSystem;
+class GameDataContainer;
+class GameSaveState;
+class Town;
 namespace MyGUI { class Widget; }
 template <typename T> class lektor;
 namespace Ogre {
@@ -550,4 +554,116 @@ void CallPlayerInterfaceAddJobSelectedCharactersCallbacks(PlayerInterface* playe
 // Lua signature:  function(player, destinationIndoors, taskType, subject, shift, addDontClear, location)
 void CallPlayerInterfaceAddOrderSelectedCharactersCallbacks(PlayerInterface* player, Building* destinationIndoors, int task, RootObject* subject, bool shift, bool addDontClear, const Ogre::Vector3& location);
 
+// Fired by MedicalSystem::knockout hook
+// Lua event name: "onCharacterKnockedOut"
+// Lua signature:  function(character, skill)
+void CallMedicalSystemKnockoutCallbacks(MedicalSystem* med, float skill);
 
+// Fired by MedicalSystem::canGetUpWakeUp hook
+// Lua event name: "onCharacterWakeUp"
+// Lua signature:  function(character) -> boolean
+bool CallMedicalSystemCanGetUpWakeUpCallbacks(MedicalSystem* med);
+
+// Fired by Inventory::addItem hook
+// Lua event name: "onInventoryAddItem"
+// Lua signature:  function(inventory, item, quantity, dropOnFail, destroyOnFail) -> boolean
+bool CallInventoryAddItemCallbacks(Inventory* inv, Item* item, int quantity, bool dropOnFail, bool destroyOnFail);
+
+// Fired by Inventory::removeItemDontDestroy_returnsItem hook
+// Lua event name: "onInventoryRemoveItem"
+// Lua signature:  function(inventory, item, howmany, returnCopyIfSomeLeft) -> Item
+Item* CallInventoryRemoveItemCallbacks(Inventory* inv, Item* item, int howmany, bool returnCopyIfSomeLeft);
+
+// Fired by Inventory::buyItem hook
+// Lua event name: "onItemBought"
+// Lua signature:  function(buyerInventory, item, sendingTo) -> Item
+Item* CallInventoryBuyItemCallbacks(Inventory* inv, Item* item, RootObject* sender);
+
+// Fired by Faction::createNewEmptyActivePlatoon hook
+// Lua event name: "onActivePlatoonCreated"
+// Lua signature:  function(faction, platoon)
+void CallFactionActivePlatoonCreatedCallbacks(Faction* faction, Platoon* platoon);
+
+// Fired by Faction::destroyPlatoon hook
+// Lua event name: "onPlatoonDestroyed"
+// Lua signature:  function(faction, platoon)
+void CallFactionPlatoonDestroyedCallbacks(Faction* faction, Platoon* platoon);
+
+// Fired by PlayerInterface::encounterFaction hook
+// Lua event name: "onFactionEncountered"
+// Lua signature:  function(player, faction)
+void CallPlayerEncounterFactionCallbacks(PlayerInterface* player, Faction* faction);
+
+// Fired by Character::changeSlaveOwner hook
+// Lua event name: "onSlaveOwnerChanged"
+// Lua signature:  function(slave, newOwnerHandle)
+void CallCharacterSlaveOwnerChangedCallbacks(Character* slave, const hand& newOwner);
+
+// Fired by Character::setChainedMode hook
+// Lua event name: "onChainedModeChanged"
+// Lua signature:  function(character, on, ownerHandle)
+void CallCharacterChainedModeChangedCallbacks(Character* character, bool on, const hand& owner);
+
+// Fired by Character::notifyIndoors hook
+// Lua event name: "onCharacterIndoorsChanged"
+// Lua signature:  function(character, indoorsHandle)
+void CallCharacterIndoorsChangedCallbacks(Character* character, const hand& indoors);
+
+// Fired by Building::onBuildingLoaded hook
+// Lua event name: "onBuildingLoaded"
+// Lua signature:  function(building)
+void CallBuildingLoadedCallbacks(Building* building);
+
+// Fired by Building::setBroken hook
+// Lua event name: "onBuildingBrokenChanged"
+// Lua signature:  function(building, broken)
+void CallBuildingBrokenChangedCallbacks(Building* building, bool broken);
+
+// -----------------------------------------------------------
+// Callbacks for Serialization
+// -----------------------------------------------------------
+
+// Fired by PlayerInterface::serialise hook.
+// Lua event name: "onPlayerSerialise"
+// Lua signature:  function(player, gameData)
+void CallPlayerInterfaceSerialiseCallbacks(PlayerInterface* player, GameData* data);
+
+// Fired by PlayerInterface::loadFromSerialise hook.
+// Lua event name: "onPlayerLoadFromSerialise"
+// Lua signature:  function(player, gameData)
+void CallPlayerInterfaceLoadFromSerialiseCallbacks(PlayerInterface* player, GameData* data);
+
+// Fired by Character::_NV_serialise hook.
+// Lua event name: "onCharacterSerialise"
+// Lua signature:  function(character, container, refList)
+void CallCharacterSerialiseCallbacks(Character* character, GameDataContainer* container, GameData* refList);
+
+// Fired by Character::_NV_loadFromSerialise hook.
+// Lua event name: "onCharacterLoadFromSerialise"
+// Lua signature:  function(character, saveState)
+void CallCharacterLoadFromSerialiseCallbacks(Character* character, GameSaveState* state);
+
+// Fired by Character::_NV_loadFromSerialisePostCreationStage hook.
+// Lua event name: "onCharacterLoadFromSerialisePostCreationStage"
+// Lua signature:  function(character, saveState)
+void CallCharacterLoadFromSerialisePostCreationStageCallbacks(Character* character, GameSaveState* state);
+
+// Fired by Building::_NV_serialise hook.
+// Lua event name: "onBuildingSerialise"
+// Lua signature:  function(building, container, refList)
+void CallBuildingSerialiseCallbacks(Building* building, GameDataContainer* container, GameData* refList);
+
+// Fired by Building::_NV_loadFromSerialise hook.
+// Lua event name: "onBuildingLoadFromSerialise"
+// Lua signature:  function(building, saveState)
+void CallBuildingLoadFromSerialiseCallbacks(Building* building, GameSaveState* state);
+
+// Fired by Platoon::_NV_loadFromSerialise hook.
+// Lua event name: "onPlatoonLoadFromSerialise"
+// Lua signature:  function(platoon, saveState)
+void CallPlatoonLoadFromSerialiseCallbacks(Platoon* platoon, GameSaveState* state);
+
+// Fired by Town::_NV_loadFromSerialise hook.
+// Lua event name: "onTownLoadFromSerialise"
+// Lua signature:  function(town, saveState)
+void CallTownLoadFromSerialiseCallbacks(Town* town, GameSaveState* state);
