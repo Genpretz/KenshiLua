@@ -192,7 +192,7 @@ int luaKenshiError(lua_State* L)
     return lua_error(L);
 }
 
-int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.6"); return 1; }
+int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.7"); return 1; }
 
 static std::map<std::string, int> g_profileSamples;
 static int g_profileTotalSamples = 0;
