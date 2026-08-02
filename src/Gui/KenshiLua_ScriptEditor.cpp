@@ -3,6 +3,7 @@
 #include "Gui/GuiManager.h"
 #include "Logger.h"
 #include "Config.h"
+#include "ScriptLoader.h"
 #include "Lua/LuaState.h"
 #include <fstream>
 #include <sstream>
@@ -128,14 +129,14 @@ namespace KenshiLua
 		}
 	}
 
-	void KenshiLua_ScriptEditor::updateInputGutter()
+	void KenshiLua_ScriptEditor::updateGutter(MyGUI::EditBox* editBox, MyGUI::EditBox* gutterEditBox)
 	{
-		if (!mScriptEditor_InputBoxEditBox || !mScriptEditor_InputGutterEditBox)
+		if (!editBox || !gutterEditBox)
 		{
 			return;
 		}
 
-		std::string text = mScriptEditor_InputBoxEditBox->getCaption().asUTF8();
+		std::string text = editBox->getCaption().asUTF8();
 		size_t lineCount = 1;
 		for (size_t i = 0; i < text.size(); ++i)
 		{
@@ -149,33 +150,18 @@ namespace KenshiLua
 		}
 
 		std::string resultStr = ss.str();
-		mScriptEditor_InputGutterEditBox->setCaption(MyGUI::UString(resultStr));
-		mScriptEditor_InputGutterEditBox->setVScrollPosition(mScriptEditor_InputBoxEditBox->getVScrollPosition());
+		gutterEditBox->setCaption(MyGUI::UString(resultStr));
+		gutterEditBox->setVScrollPosition(editBox->getVScrollPosition());
+	}
+
+	void KenshiLua_ScriptEditor::updateInputGutter()
+	{
+		updateGutter(mScriptEditor_InputBoxEditBox, mScriptEditor_InputGutterEditBox);
 	}
 
 	void KenshiLua_ScriptEditor::updateOutputGutter()
 	{
-		if (!mScriptEditor_OutputBoxEditBox || !mScriptEditor_OutputGutterEditBox)
-		{
-			return;
-		}
-
-		std::string text = mScriptEditor_OutputBoxEditBox->getCaption().asUTF8();
-		size_t lineCount = 1;
-		for (size_t i = 0; i < text.size(); ++i)
-		{
-			if (text[i] == '\n') ++lineCount;
-		}
-
-		std::ostringstream ss;
-		for (size_t i = 1; i <= lineCount; ++i)
-		{
-			ss << i << "\n";
-		}
-
-		std::string resultStr = ss.str();
-		mScriptEditor_OutputGutterEditBox->setCaption(MyGUI::UString(resultStr));
-		mScriptEditor_OutputGutterEditBox->setVScrollPosition(mScriptEditor_OutputBoxEditBox->getVScrollPosition());
+		updateGutter(mScriptEditor_OutputBoxEditBox, mScriptEditor_OutputGutterEditBox);
 	}
 
 	void KenshiLua_ScriptEditor::onInputTextChanged(MyGUI::EditBox*)
@@ -225,24 +211,7 @@ namespace KenshiLua
 
 	void KenshiLua_ScriptEditor::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 	{
-		if (name == "close")
-		{
-			setVisible(false);
-			MyGUI::InputManager::getInstance().resetKeyFocusWidget();
-		}
-		else if (name == "minimize")
-		{
-			mEdgeHideEnabled = !mEdgeHideEnabled;
-			MyGUI::ControllerManager::getInstance().removeItem(sender);
-			if (mEdgeHideEnabled)
-			{
-				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
-				if (item)
-				{
-					MyGUI::ControllerManager::getInstance().addItem(sender, item);
-				}
-			}
-		}
+		GuiHelpers::handleWindowButton(sender, name, mEdgeHideEnabled, mKenshiLua_ScriptEditorWindow);
 	}
 
 	void KenshiLua_ScriptEditor::onRunClicked(MyGUI::Widget*)
@@ -259,6 +228,11 @@ namespace KenshiLua
 		}
 
 		const std::string label = m_currentFilePath.empty() ? "<editor>" : m_currentFilePath;
+
+		if (!m_currentFilePath.empty())
+		{
+			ScriptLoader::get().removeStoppedScript(m_currentFilePath);
+		}
 
 		appendOutput("=== Running: " + label + " ===\n");
 		
@@ -277,11 +251,7 @@ namespace KenshiLua
 					chunkName = "@" + m_currentFilePath;
 			}
 
-			lua_pushcfunction(L, LuaState::genericTraceback);
-			int tracebackIdx = lua_gettop(L);
-
-			if (luaL_loadbuffer(L, code.c_str(), code.size(), chunkName.c_str()) != LUA_OK ||
-				lua_pcall(L, 0, LUA_MULTRET, tracebackIdx) != LUA_OK)
+			if (luaL_loadbuffer(L, code.c_str(), code.size(), chunkName.c_str()) != LUA_OK)
 			{
 				const char* err = lua_tostring(L, -1);
 				std::string e = err ? err : "(error)";
@@ -290,19 +260,31 @@ namespace KenshiLua
 			}
 			else
 			{
-				int nres = lua_gettop(L) - tracebackIdx;
-				if (nres > 0)
+				int preTop = lua_gettop(L) - 1;
+				std::string pcallErr;
+				if (!LuaState::pcallWithTraceback(L, 0, LUA_MULTRET, &pcallErr))
 				{
-					for (int i = 1; i <= nres; ++i)
+					appendOutput("ERROR: " + pcallErr + "\n");
+					logToFileError("Lua error: " + pcallErr);
+				}
+				else
+				{
+					int nres = lua_gettop(L) - preTop;
+					if (nres > 0)
 					{
-						const char* res = lua_tostring(L, -i);
-						if (res)
+						for (int i = 1; i <= nres; ++i)
 						{
-							appendOutput(std::string(res) + "\n");
+							size_t len = 0;
+							const char* res = luaL_tolstring(L, preTop + i, &len);
+							if (res)
+							{
+								appendOutput(std::string(res, len) + "\n");
+							}
+							lua_pop(L, 1);
 						}
 					}
+					appendOutput("=== Done ===\n\n");
 				}
-				appendOutput("=== Done ===\n\n");
 			}
 			lua_settop(L, top);
 		}
@@ -314,7 +296,13 @@ namespace KenshiLua
 
 	void KenshiLua_ScriptEditor::onStopClicked(MyGUI::Widget*)
 	{
-		appendOutput("=== Stopping Scripts (Restarting Lua Runtime) ===\n");
+		if (!m_currentFilePath.empty())
+		{
+			ScriptLoader::get().addStoppedScript(m_currentFilePath);
+			logToFile("ScriptEditor: Stopping script: " + m_currentFilePath);
+		}
+
+		appendOutput("=== Stopping Script / Restarting Lua Runtime ===\n");
 		logToFile("ScriptEditor: Restarting KenshiLua runtime to unload scripts...");
 
 		void* hModule = Plugin::get().getDllModule();

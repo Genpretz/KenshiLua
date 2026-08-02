@@ -34,6 +34,7 @@ namespace KenshiLua
 		void onInputTextChanged(MyGUI::EditBox* sender);
 		void onFrameStart(float frameTime);
 
+		void updateGutter(MyGUI::EditBox* editBox, MyGUI::EditBox* gutterEditBox);
 		void updateInputGutter();
 		void updateOutputGutter();
 

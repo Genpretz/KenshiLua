@@ -60,6 +60,9 @@ namespace KenshiLua
 		if (mStartMinimized_TickBoxButton)
 			mStartMinimized_TickBoxButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_Settings::onStartMinimizedClicked);
 
+		if (mHotReload_TickBoxButton)
+			mHotReload_TickBoxButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_Settings::onHotReloadClicked);
+
 
 
 		if (mLogLevel_ComboBoxComboBox)
@@ -115,6 +118,11 @@ namespace KenshiLua
 				{
 					mStartMinimized_TickBoxButton->setStateSelected(conf.isStartMinimized());
 				}
+
+				if (mHotReload_TickBoxButton)
+				{
+					mHotReload_TickBoxButton->setStateSelected(conf.isHotReloadEnabled());
+				}
 			}
 			else
 			{
@@ -139,23 +147,7 @@ namespace KenshiLua
 
 	void KenshiLua_Settings::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 	{
-		if (name == "close")
-		{
-			setVisible(false);
-		}
-		else if (name == "minimize")
-		{
-			mEdgeHideEnabled = !mEdgeHideEnabled;
-			MyGUI::ControllerManager::getInstance().removeItem(sender);
-			if (mEdgeHideEnabled)
-			{
-				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
-				if (item)
-				{
-					MyGUI::ControllerManager::getInstance().addItem(sender, item);
-				}
-			}
-		}
+		GuiHelpers::handleWindowButton(sender, name, mEdgeHideEnabled, mKenshiLua_SettingsRootWindow);
 	}
 
 	void KenshiLua_Settings::onSaveClicked(MyGUI::Widget* sender)
@@ -178,7 +170,10 @@ namespace KenshiLua
 			conf.setStartMinimized(mStartMinimized_TickBoxButton->getStateSelected());
 		}
 
-
+		if (mHotReload_TickBoxButton)
+		{
+			conf.setHotReloadEnabled(mHotReload_TickBoxButton->getStateSelected());
+		}
 
 		conf.save();
 		setVisible(false);
@@ -206,6 +201,10 @@ namespace KenshiLua
 			mStartMinimized_TickBoxButton->setStateSelected(true);
 		}
 
+		if (mHotReload_TickBoxButton)
+		{
+			mHotReload_TickBoxButton->setStateSelected(false);
+		}
 	}
 
 	void KenshiLua_Settings::onKeyBindClicked(MyGUI::Widget* sender)
@@ -273,6 +272,15 @@ namespace KenshiLua
 	}
 
 	void KenshiLua_Settings::onStartMinimizedClicked(MyGUI::Widget* sender)
+	{
+		MyGUI::Button* btn = sender->castType<MyGUI::Button>(false);
+		if (btn)
+		{
+			btn->setStateSelected(!btn->getStateSelected());
+		}
+	}
+
+	void KenshiLua_Settings::onHotReloadClicked(MyGUI::Widget* sender)
 	{
 		MyGUI::Button* btn = sender->castType<MyGUI::Button>(false);
 		if (btn)

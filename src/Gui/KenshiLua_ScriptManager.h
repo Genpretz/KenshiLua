@@ -41,6 +41,7 @@ namespace KenshiLua
 		void onListSelectChanged(MyGUI::MultiListBox* sender, size_t index);
 		void onRunSelectedClicked(MyGUI::Widget* sender);
 		void onStopSelectedClicked(MyGUI::Widget* sender);
+		void onStopAllClicked(MyGUI::Widget* sender);
 
 		std::vector<ScriptInfo> m_scripts;
 		std::vector<size_t> m_filteredIndices; // indices of m_scripts matching filter
@@ -60,6 +61,8 @@ namespace KenshiLua
 		MyGUI::Button* mScriptManager_StartButtonButton;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_ScriptManager, mScriptManager_StopButtonButton, "ScriptManager_StopButton");
 		MyGUI::Button* mScriptManager_StopButtonButton;
+		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_ScriptManager, mScriptManager_StopAllButtonButton, "ScriptManager_StopAllButton");
+		MyGUI::Button* mScriptManager_StopAllButtonButton;
 	//%LE Widget_Declaration list end
 	};
 

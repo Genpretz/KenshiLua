@@ -11,6 +11,7 @@
 #include "Logger.h"
 
 
+#include "FileWatcher.h"
 #include <Windows.h>
 #include <commdlg.h>
 #include <kenshi/InputHandler.h>
@@ -192,6 +193,30 @@ namespace KenshiLua
 			return out;
 		}
 
+		void handleWindowButton(MyGUI::Window* sender, const std::string& name,
+			bool& edgeHideEnabled, MyGUI::Window* rootWindow)
+		{
+			if (name == "close")
+			{
+				if (rootWindow)
+					rootWindow->setVisible(false);
+				MyGUI::InputManager::getInstance().resetKeyFocusWidget();
+			}
+			else if (name == "minimize")
+			{
+				edgeHideEnabled = !edgeHideEnabled;
+				MyGUI::ControllerManager::getInstance().removeItem(sender);
+				if (edgeHideEnabled)
+				{
+					MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
+					if (item)
+					{
+						MyGUI::ControllerManager::getInstance().addItem(sender, item);
+					}
+				}
+			}
+		}
+
     } // namespace GuiHelpers
 
 	// ---------------------------------------------------------------------------
@@ -321,6 +346,8 @@ namespace KenshiLua
 			{
 				setVisible(true);
 			}
+
+			gui->eventFrameStart += MyGUI::newDelegate(this, &GuiManager::onFrameStart);
 		}
 		catch (const std::exception& e)
 		{
@@ -332,8 +359,22 @@ namespace KenshiLua
 		}
 	}
 
+	void GuiManager::onFrameStart(float)
+	{
+		if (m_luaState && m_luaState->isValid())
+		{
+			FileWatcher::get().update(m_luaState->getState());
+		}
+	}
+
 	void GuiManager::shutdown()
 	{
+		MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
+		if (gui)
+		{
+			gui->eventFrameStart -= MyGUI::newDelegate(this, &GuiManager::onFrameStart);
+		}
+
 		m_initialized = false;
 		delete m_hub; m_hub = nullptr;
 		delete m_editor; m_editor = nullptr;

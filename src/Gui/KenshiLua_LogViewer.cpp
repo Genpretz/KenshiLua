@@ -121,23 +121,7 @@ namespace KenshiLua
 
 	void KenshiLua_LogViewer::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 	{
-		if (name == "close")
-		{
-			setVisible(false);
-		}
-		else if (name == "minimize")
-		{
-			mEdgeHideEnabled = !mEdgeHideEnabled;
-			MyGUI::ControllerManager::getInstance().removeItem(sender);
-			if (mEdgeHideEnabled)
-			{
-				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
-				if (item)
-				{
-					MyGUI::ControllerManager::getInstance().addItem(sender, item);
-				}
-			}
-		}
+		GuiHelpers::handleWindowButton(sender, name, mEdgeHideEnabled, mKenshiLua_LogViewerRootWindow);
 	}
 
 } // KenshiLua

@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Window" skin="WindowCX2_Dark" position="655 205 535 456" name="Root">
+        <Property key="Caption" value="KenshiLua"/>
+        <Property key="TextAlign" value="Center"/>
+        <Property key="Movable" value="true"/>
+        <Widget type="TabControl" skin="TabControl2_Dark" position="0 5 525 426" align="Stretch" name="KenshiLua_TabControl">
+            <Property key="ButtonAutoWidth" value="true"/>
+            <UserString key="tab" value="3"/>
+            <Widget type="TabItem" skin="" position="2 22 521 402" name="KenshiLua_ScriptManager">
+                <Property key="Caption" value="Script Manager"/>
+                <Widget type="EditBox" skin="EditBox_Dark" position="110 10 325 35" align="HStretch Top"/>
+                <Widget type="TextBox" skin="TextBox_Dark" position="15 10 85 35" align="Left Top">
+                    <Property key="Caption" value="Filter:"/>
+                    <Property key="TextAlign" value="Center"/>
+                </Widget>
+                <Widget type="MultiListBox" skin="MultiListBox_Dark" position="5 55 510 300" align="Stretch">
+                    <Widget type="MultiListItem" skin="" position="0 0 226 276">
+                        <Property key="Caption" value="Filename"/>
+                        <Property key="ItemResizingPolicy" value="Fill"/>
+                    </Widget>
+                    <Widget type="MultiListItem" skin="" position="226 0 227 276">
+                        <Property key="Caption" value="Location"/>
+                        <Property key="ItemResizingPolicy" value="Fill"/>
+                    </Widget>
+                    <Widget type="MultiListItem" skin="" position="453 0 53 276">
+                        <Property key="Caption" value="  Active  "/>
+                        <Property key="ItemResizingPolicy" value="Auto"/>
+                    </Widget>
+                </Widget>
+                <Widget type="Button" skin="Button_Dark" position="345 365 80 30" align="Right Bottom">
+                    <Property key="Caption" value="Start"/>
+                </Widget>
+                <Widget type="Button" skin="Button_Dark" position="440 365 70 30" align="Right Bottom">
+                    <Property key="Caption" value="Stop"/>
+                </Widget>
+            </Widget>
+            <Widget type="TabItem" skin="" position="2 22 521 402">
+                <Property key="Caption" value="Console"/>
+                <Widget type="Button" skin="Button_Dark" position="415 355 95 40" align="Right Bottom">
+                    <Property key="Caption" value="Run"/>
+                </Widget>
+                <Widget type="EditBox" skin="EditBox_Dark" position="45 355 360 40" align="HStretch Bottom"/>
+                <Widget type="TextBox" skin="TextBox_Dark" position="5 360 35 30" align="Left Bottom">
+                    <Property key="Caption" value="&gt;"/>
+                    <Property key="TextAlign" value="Center"/>
+                </Widget>
+                <Widget type="EditBox" skin="EditBox_Dark" position="5 5 510 340" align="Stretch">
+                    <Property key="MultiLine" value="true"/>
+                    <Property key="Static" value="true"/>
+                    <Property key="ReadOnly" value="true"/>
+                </Widget>
+            </Widget>
+            <Widget type="TabItem" skin="" position="2 22 521 402" name="ScriptEditor">
+                <Property key="Caption" value="Script Editor"/>
+                <Widget type="EditBox" skin="EditBox_Dark" position="5 35 515 365" align="Stretch">
+                    <Property key="MultiLine" value="true"/>
+                </Widget>
+                <Widget type="EditBox" skin="EditBox_Dark" position="5 405 505 215"/>
+                <Widget type="Button" skin="Button_Dark" position="5 5 70 25">
+                    <Property key="Caption" value="Open"/>
+                </Widget>
+                <Widget type="Button" skin="Button_Dark" position="80 5 70 25">
+                    <Property key="Caption" value="Save"/>
+                </Widget>
+                <Widget type="Button" skin="Button_Dark" position="155 5 70 25">
+                    <Property key="Caption" value="Save As"/>
+                </Widget>
+                <Widget type="Button" skin="Button_Dark" position="445 5 70 25">
+                    <Property key="Caption" value="Clear"/>
+                </Widget>
+                <Widget type="Button" skin="Button_Dark" position="365 5 75 25">
+                    <Property key="Caption" value="Run"/>
+                </Widget>
+            </Widget>
+            <Widget type="TabItem" skin="" position="2 22 521 402">
+                <Property key="Caption" value="Logs"/>
+                <Widget type="EditBox" skin="EditBox_Dark" position="95 5 330 35" align="HStretch Top"/>
+                <Widget type="TextBox" skin="TextBox_Dark" position="15 5 70 35" align="Left Top">
+                    <Property key="Caption" value="Filter:"/>
+                    <Property key="TextAlign" value="Center"/>
+                </Widget>
+                <Widget type="EditBox" skin="EditBox_Dark" position="5 45 510 315" align="Stretch"/>
+                <Widget type="Button" skin="Button_Dark" position="400 365 110 30" align="Right Bottom">
+                    <Property key="Caption" value="Save a Copy"/>
+                </Widget>
+            </Widget>
+            <Widget type="TabItem" skin="" position="2 22 521 402">
+                <Property key="Caption" value="Settings"/>
+            </Widget>
+        </Widget>
+    </Widget>
+    <Widget type="Widget" skin="Panel3Skin_Dark" position="655 660 535 215" name="KenshiLua_ScriptEditor_Output">
+        <Property key="Visible" value="false"/>
+        <Widget type="Widget" skin="Panel1Skin_Dark" position="5 0 525 210">
+            <Widget type="EditBox" skin="EditBox_Dark" position="5 5 515 200" align="Stretch" name="ScriptEditor_Ouput">
+                <Property key="Static" value="true"/>
+                <Property key="ReadOnly" value="true"/>
+                <Property key="MultiLine" value="true"/>
+            </Widget>
+        </Widget>
+    </Widget>
+    <CodeGeneratorSettings/>
+</MyGUI>

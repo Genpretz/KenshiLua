@@ -16,11 +16,14 @@
             <Property key="Caption" value="0 scripts"/>
             <Property key="TextAlign" value="Left VCenter"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1" position_real="0.74356 0.903955 0.114754 0.0753296" align="Right Bottom" name="ScriptManager_StartButton">
+        <Widget type="Button" skin="Kenshi_Button1" position_real="0.60 0.903955 0.114754 0.0753296" align="Right Bottom" name="ScriptManager_StartButton">
             <Property key="Caption" value="Start"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1" position_real="0.860656 0.903955 0.108899 0.0753296" align="Right Bottom" name="ScriptManager_StopButton">
+        <Widget type="Button" skin="Kenshi_Button1" position_real="0.72 0.903955 0.108899 0.0753296" align="Right Bottom" name="ScriptManager_StopButton">
             <Property key="Caption" value="Stop"/>
+        </Widget>
+        <Widget type="Button" skin="Kenshi_Button1" position_real="0.84 0.903955 0.14 0.0753296" align="Right Bottom" name="ScriptManager_StopAllButton">
+            <Property key="Caption" value="Stop All"/>
         </Widget>
     </Widget>
     <CodeGeneratorSettings/>

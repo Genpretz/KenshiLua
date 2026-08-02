@@ -85,24 +85,7 @@ namespace KenshiLua
 
 	void KenshiLua_Console::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 	{
-		if (name == "close")
-		{
-			setVisible(false);
-			MyGUI::InputManager::getInstance().resetKeyFocusWidget();
-		}
-		else if (name == "minimize")
-		{
-			mEdgeHideEnabled = !mEdgeHideEnabled;
-			MyGUI::ControllerManager::getInstance().removeItem(sender);
-			if (mEdgeHideEnabled)
-			{
-				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
-				if (item)
-				{
-					MyGUI::ControllerManager::getInstance().addItem(sender, item);
-				}
-			}
-		}
+		GuiHelpers::handleWindowButton(sender, name, mEdgeHideEnabled, mKenshiLua_ConsoleRootWindow);
 	}
 
 	void KenshiLua_Console::onRunClicked(MyGUI::Widget* sender)
@@ -123,21 +106,18 @@ namespace KenshiLua
 			lua_State* L = g_luaState->getState();
 			int top = lua_gettop(L);
 
-			// Push traceback handler for both paths
-			lua_pushcfunction(L, LuaState::genericTraceback);
-			int tracebackIdx = lua_gettop(L);
-
 			// 1. Try running as "return [statement]" first
 			std::string evalCode = "return " + code;
 			if (luaL_loadbuffer(L, evalCode.c_str(), evalCode.size(), "<console>") == LUA_OK)
 			{
-				if (lua_pcall(L, 0, LUA_MULTRET, tracebackIdx) == LUA_OK)
+				int preTop = lua_gettop(L) - 1;
+				if (LuaState::pcallWithTraceback(L, 0, LUA_MULTRET, NULL))
 				{
-					int nres = lua_gettop(L) - tracebackIdx;
+					int nres = lua_gettop(L) - preTop;
 					for (int i = 1; i <= nres; ++i)
 					{
 						size_t len = 0;
-						const char* res = luaL_tolstring(L, tracebackIdx + i, &len);
+						const char* res = luaL_tolstring(L, preTop + i, &len);
 						if (res)
 						{
 							appendOutput(std::string(res, len) + "\n");
@@ -151,11 +131,8 @@ namespace KenshiLua
 
 			// 2. If eval failed, fallback to normal block execution
 			lua_settop(L, top);
-			lua_pushcfunction(L, LuaState::genericTraceback);
-			tracebackIdx = lua_gettop(L);
 
-			if (luaL_loadbuffer(L, code.c_str(), code.size(), "<console>") != LUA_OK ||
-				lua_pcall(L, 0, LUA_MULTRET, tracebackIdx) != LUA_OK)
+			if (luaL_loadbuffer(L, code.c_str(), code.size(), "<console>") != LUA_OK)
 			{
 				const char* err = lua_tostring(L, -1);
 				std::string e = err ? err : "(error)";
@@ -164,16 +141,26 @@ namespace KenshiLua
 			}
 			else
 			{
-				int nres = lua_gettop(L) - tracebackIdx;
-				for (int i = 1; i <= nres; ++i)
+				int preTop = lua_gettop(L) - 1;
+				std::string pcallErr;
+				if (!LuaState::pcallWithTraceback(L, 0, LUA_MULTRET, &pcallErr))
 				{
-					size_t len = 0;
-					const char* res = luaL_tolstring(L, tracebackIdx + i, &len);
-					if (res)
+					appendOutput("ERROR: " + pcallErr + "\n");
+					logToFileError("Lua console error: " + pcallErr);
+				}
+				else
+				{
+					int nres = lua_gettop(L) - preTop;
+					for (int i = 1; i <= nres; ++i)
 					{
-						appendOutput(std::string(res, len) + "\n");
+						size_t len = 0;
+						const char* res = luaL_tolstring(L, preTop + i, &len);
+						if (res)
+						{
+							appendOutput(std::string(res, len) + "\n");
+						}
+						lua_pop(L, 1);
 					}
-					lua_pop(L, 1);
 				}
 			}
 			lua_settop(L, top);

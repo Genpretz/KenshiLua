@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
     <Widget type="Window" skin="Kenshi_WindowCXM" position_real="0.101563 0 0.189453 0.196875" align="Default" layer="Window" name="Root">
         <Property key="Caption" value="SETTINGS"/>
@@ -20,18 +20,18 @@
             <Property key="TextAlign" value="Center"/>
         </Widget>
         <Widget type="Widget" skin="Kenshi_OrdersTextboxSkin" position_real="0.0208768 0.0111111 0.951983 0.796296" align="Stretch">
-            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0307018 0.111628 0.473684 0.139535" align="Left Top">
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0307018 0.05 0.473684 0.14" align="Left Top">
                 <Property key="Caption" value="Keyboard Shortcut:"/>
                 <Property key="TextAlign" value="Right VCenter"/>
             </Widget>
-            <Widget type="Button" skin="Kenshi_Button1" position_real="0.574561 0.0930233 0.383772 0.181395" align="Right Top" name="KeyBind_Button">
+            <Widget type="Button" skin="Kenshi_Button1" position_real="0.574561 0.05 0.383772 0.18" align="Right Top" name="KeyBind_Button">
                 <Property key="Caption" value="Ctrl + Shift + L"/>
             </Widget>
-            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0328947 0.372093 0.460526 0.144186" align="Left Top">
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0328947 0.28 0.460526 0.14" align="Left Top">
                 <Property key="Caption" value="Log Level:"/>
                 <Property key="TextAlign" value="Right VCenter"/>
             </Widget>
-            <Widget type="ComboBox" skin="Kenshi_ComboBox" position_real="0.570175 0.372093 0.383772 0.181395" align="Right Top" name="LogLevel_ComboBox">
+            <Widget type="ComboBox" skin="Kenshi_ComboBox" position_real="0.570175 0.28 0.383772 0.18" align="Right Top" name="LogLevel_ComboBox">
                 <Property key="ComboModeDrop" value="true"/>
                 <Property key="FlowDirection" value="TopToBottom"/>
                 <Property key="AddItem" value="Default"/>
@@ -39,12 +39,19 @@
                 <Property key="AddItem" value="Error"/>
                 <Property key="AddItem" value="Debug"/>
             </Widget>
-            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0328947 0.651163 0.471491 0.148837" align="Left Top">
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0328947 0.52 0.471491 0.14" align="Left Top">
                 <Property key="Caption" value="Start Minimized:"/>
                 <Property key="TextAlign" value="Right VCenter"/>
             </Widget>
-            <Widget type="Button" skin="Kenshi_TickBoxSkin" position_real="0.855263 0.674419 0.0921053 0.181395" align="Right Top" name="StartMinimized_TickBox">
+            <Widget type="Button" skin="Kenshi_TickBoxSkin" position_real="0.855263 0.52 0.0921053 0.18" align="Right Top" name="StartMinimized_TickBox">
                 <Property key="StateSelected" value="true"/>
+            </Widget>
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position_real="0.0328947 0.75 0.471491 0.14" align="Left Top">
+                <Property key="Caption" value="Enable Hot Reload:"/>
+                <Property key="TextAlign" value="Right VCenter"/>
+            </Widget>
+            <Widget type="Button" skin="Kenshi_TickBoxSkin" position_real="0.855263 0.75 0.0921053 0.18" align="Right Top" name="HotReload_TickBox">
+                <Property key="StateSelected" value="false"/>
             </Widget>
         </Widget>
     </Widget>

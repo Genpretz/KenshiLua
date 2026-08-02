@@ -51,6 +51,11 @@ namespace KenshiLua
             const std::string& currentPath = "");
 
 		std::string EscapeMyGuiColourTags(const std::string& text);
+
+		// Shared close/minimize handler for all KenshiLua windows.
+		// Panels delegate their onWindowButtonPressed to this helper.
+		void handleWindowButton(MyGUI::Window* sender, const std::string& name,
+			bool& edgeHideEnabled, MyGUI::Window* rootWindow);
     } // namespace GuiHelpers
 
     class LuaState;
@@ -91,6 +96,7 @@ namespace KenshiLua
         GuiManager& operator=(const GuiManager&);
 
         void initFrameHandler(float frameTime);
+        void onFrameStart(float frameTime);
 
         LuaState*           m_luaState;
         LuaState*           m_pendingLuaState;

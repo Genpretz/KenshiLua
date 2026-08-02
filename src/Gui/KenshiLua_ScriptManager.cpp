@@ -44,6 +44,9 @@ namespace KenshiLua
 		if (mScriptManager_StopButtonButton)
 			mScriptManager_StopButtonButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_ScriptManager::onStopSelectedClicked);
 
+		if (mScriptManager_StopAllButtonButton)
+			mScriptManager_StopAllButtonButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_ScriptManager::onStopAllClicked);
+
 		if (mScriptManager_FilterEditEditBox)
 			mScriptManager_FilterEditEditBox->eventEditTextChange += MyGUI::newDelegate(this, &KenshiLua_ScriptManager::onFilterChanged);
 
@@ -262,25 +265,30 @@ namespace KenshiLua
 		}
 	}
 
+	void KenshiLua_ScriptManager::onStopAllClicked(MyGUI::Widget*)
+	{
+		logToFile("ScriptManager: Stopping all scripts...");
+		for (size_t i = 0; i < m_scripts.size(); ++i)
+		{
+			ScriptLoader::get().addStoppedScript(m_scripts[i].absolutePath);
+		}
+
+		logToFile("ScriptManager: Restarting KenshiLua runtime to unload all scripts...");
+		void* hModule = Plugin::get().getDllModule();
+		Plugin::get().shutdown();
+		Plugin::get().initialize(hModule);
+		Plugin::get().start();
+
+		auto mgr = GuiManager::get().getScriptManager();
+		if (mgr)
+		{
+			mgr->setVisible(true);
+		}
+	}
+
 	void KenshiLua_ScriptManager::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 	{
-		if (name == "close")
-		{
-			setVisible(false);
-		}
-		else if (name == "minimize")
-		{
-			mEdgeHideEnabled = !mEdgeHideEnabled;
-			MyGUI::ControllerManager::getInstance().removeItem(sender);
-			if (mEdgeHideEnabled)
-			{
-				MyGUI::ControllerItem* item = MyGUI::ControllerManager::getInstance().createItem("ControllerEdgeHide");
-				if (item)
-				{
-					MyGUI::ControllerManager::getInstance().addItem(sender, item);
-				}
-			}
-		}
+		GuiHelpers::handleWindowButton(sender, name, mEdgeHideEnabled, mKenshiLua_ScriptManagerRootWindow);
 	}
 
 } // KenshiLua
