@@ -185,14 +185,14 @@ static int InventoryItemBase_get_properOwner(lua_State* L)
 {
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
-    return handBinding::push(L, instance->properOwner);
+    return HandBinding::push(L, instance->properOwner);
 }
 
 static int InventoryItemBase_get__whosInventoryWeAreIn(lua_State* L)
 {
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
-    return handBinding::push(L, instance->_whosInventoryWeAreIn);
+    return HandBinding::push(L, instance->_whosInventoryWeAreIn);
 }
 
 static int InventoryItemBase_get__isResearchArtifact(lua_State* L)
@@ -376,7 +376,7 @@ static int InventoryItemBase_set_properOwner(lua_State* L)
 {
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
-    instance->properOwner = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->properOwner = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -384,7 +384,7 @@ static int InventoryItemBase_set__whosInventoryWeAreIn(lua_State* L)
 {
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
-    instance->_whosInventoryWeAreIn = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->_whosInventoryWeAreIn = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -757,7 +757,7 @@ int InventoryItemBaseBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
 
     GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 3, handBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 3, HandBinding::getMetatableName());
     GameData* manufacturerData = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
     GameData* materialData = checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
     InventoryItemBase* result = instance->_CONSTRUCTOR(dat, _handle, manufacturerData, materialData);

@@ -18,13 +18,18 @@ public:
 
     static int reset(lua_State* L);
     static int update(lua_State* L);
+    static int focusCameraOnObject(lua_State* L);
     static int updateOptionSettings(lua_State* L);
+    static int save(lua_State* L);
+    static int load(lua_State* L);
     static int teleport(lua_State* L);
     static int stopFollowing(lua_State* L);
     static int manuallySetOrientationAndZoom(lua_State* L);
     static int getFacingDirection(lua_State* L);
     static int getCenter(lua_State* L);
     static int getCameraPos(lua_State* L);
+    static int getCenterNode(lua_State* L);
+    static int getCameraNode(lua_State* L);
     static int isInitialised(lua_State* L);
     static int isFreeCameraMode(lua_State* L);
     static int setFreeCameraMode(lua_State* L);

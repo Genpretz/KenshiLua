@@ -53,7 +53,7 @@ static int CraftingBuilding_get_whosCrafting(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-    return handBinding::push(L, instance->whosCrafting);
+    return HandBinding::push(L, instance->whosCrafting);
 }
 
 static int CraftingBuilding_get_itemCrafted(lua_State* L)
@@ -142,7 +142,7 @@ static int CraftingBuilding_set_whosCrafting(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* val = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->whosCrafting = *val;
     return 0;
 }

@@ -1,9 +1,10 @@
 #include "pch.h"
-#include "kenshi\GameData.h"
+#include "KENSHI\GameData.h"
 #include "GameDataReferenceBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/Util/TripleIntBinding.h"
 
 namespace KenshiLua
 {
@@ -14,6 +15,13 @@ static GameDataReference* getInstance(lua_State* L, int idx)
 }
 
 // --- Getters for GameDataReference ---
+static int GameDataReference_get_values(lua_State* L)
+{
+    GameDataReference* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataReference is nil");
+    return pushObject<TripleInt>(L, &instance->values, TripleIntBinding::getMetatableName());
+}
+
 static int GameDataReference_get_sid(lua_State* L)
 {
     GameDataReference* instance = getInstance(L, 1);
@@ -30,6 +38,14 @@ static int GameDataReference_get_ptr(lua_State* L)
 }
 
 // --- Setters for GameDataReference ---
+static int GameDataReference_set_values(lua_State* L)
+{
+    GameDataReference* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataReference is nil");
+    instance->values = *checkObject<TripleInt>(L, 2, TripleIntBinding::getMetatableName());
+    return 0;
+}
+
 static int GameDataReference_set_sid(lua_State* L)
 {
     GameDataReference* instance = getInstance(L, 1);
@@ -73,11 +89,6 @@ Skipped methods needing manual binding:
   line 203: GameDataReference& operator=(...) - operator
 */
 
-/*
-Skipped properties needing manual binding:
-  line 197: values (TripleInt) - unsupported type
-*/
-
 int GameDataReferenceBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -115,11 +126,13 @@ void GameDataReferenceBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, GameDataReferenceBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
+    registerGetter(L, "values", GameDataReference_get_values);
     registerGetter(L, "sid", GameDataReference_get_sid);
     registerGetter(L, "ptr", GameDataReference_get_ptr);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "values", GameDataReference_set_values);
     registerSetter(L, "sid", GameDataReference_set_sid);
     registerSetter(L, "ptr", GameDataReference_set_ptr);
     lua_setfield(L, -2, "__setters"); // Bind to metatable

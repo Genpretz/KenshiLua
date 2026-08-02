@@ -23,6 +23,8 @@ public:
     static int _NV_update(lua_State* L);
     static int periodicUpdate(lua_State* L);
     static int _NV_periodicUpdate(lua_State* L);
+    static int setAppearanceData(lua_State* L);
+    static int getAppearanceData(lua_State* L);
     static int activate(lua_State* L);
     static int _NV_activate(lua_State* L);
     static int deactivate(lua_State* L);
@@ -31,6 +33,8 @@ public:
     static int setGender(lua_State* L);
     static int _NV_setGender(lua_State* L);
     static int getRace(lua_State* L);
+    static int attachEffect(lua_State* L);
+    static int getAttachedEntity(lua_State* L);
     static int detachAllHarpoonsT(lua_State* L);
     static int _detachAllHarpoons(lua_State* L);
     static int updateWetness(lua_State* L);
@@ -39,6 +43,10 @@ public:
     static int hasSlot(lua_State* L);
     static int getNormalisedCharacterHeight(lua_State* L);
     static int getCharacterHeight(lua_State* L);
+    static int getAnimationSystem(lua_State* L);
+    static int getSceneNode(lua_State* L);
+    static int getSkeleton(lua_State* L);
+    static int getBody(lua_State* L);
     static int getBodyRadius(lua_State* L);
     static int failedToLoad(lua_State* L);
     static int getBonePosition(lua_State* L);
@@ -47,12 +55,14 @@ public:
     static int getRandomVertex(lua_State* L);
     static int notifyDirty(lua_State* L);
     static int reload(lua_State* L);
+    static int serialise(lua_State* L);
     static int updateAppearance(lua_State* L);
     static int _NV_updateAppearance(lua_State* L);
     static int updatePortrait(lua_State* L);
     static int updateMovementScale(lua_State* L);
     static int switchLights(lua_State* L);
     static int hasLights(lua_State* L);
+    static int attachItem_Hair(lua_State* L);
     static int shaveHead(lua_State* L);
     static int isShaved(lua_State* L);
     static int setFlayed(lua_State* L);
@@ -69,6 +79,7 @@ public:
     static int createBody(lua_State* L);
     static int buildAttachments(lua_State* L);
     static int setHairTexture(lua_State* L);
+    static int createAttachedObject(lua_State* L);
     static int updateOverlap(lua_State* L);
     static int updateCharaterTexture(lua_State* L);
     static int getCharacterHeightSpeedMultiplier(lua_State* L);

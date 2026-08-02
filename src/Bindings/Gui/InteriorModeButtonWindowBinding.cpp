@@ -42,7 +42,7 @@ static int InteriorModeButtonWindow_get_currentBuilding(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    return handBinding::push(L, instance->currentBuilding);
+    return HandBinding::push(L, instance->currentBuilding);
 }
 
 static int InteriorModeButtonWindow_get_currentInterior(lua_State* L)
@@ -194,7 +194,7 @@ static int InteriorModeButtonWindow_set_currentBuilding(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    instance->currentBuilding = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->currentBuilding = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

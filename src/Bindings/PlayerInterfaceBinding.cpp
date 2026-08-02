@@ -99,7 +99,7 @@ static int PlayerInterface_get_selectedCharacter(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return handBinding::push(L, instance->selectedCharacter);
+    return HandBinding::push(L, instance->selectedCharacter);
 }
 
 static int PlayerInterface_get_aiOptions(lua_State* L) { PlayerInterface* instance = getInstance(L, 1); if (!instance) return luaL_error(L, "PlayerInterface is nil"); return pushObject<PlayerInterface::AIOptions>(L, &instance->aiOptions, AIOptionsBinding::getMetatableName()); }
@@ -163,7 +163,7 @@ static int PlayerInterface_get_selectedObject(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return handBinding::push(L, instance->selectedObject);
+    return HandBinding::push(L, instance->selectedObject);
 }
 
 static int PlayerInterface_get_onlyAnimalsSelected(lua_State* L)
@@ -186,7 +186,7 @@ static int PlayerInterface_get_trackedCharacterHandle(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return handBinding::push(L, instance->trackedCharacterHandle);
+    return HandBinding::push(L, instance->trackedCharacterHandle);
 }
 
 static int PlayerInterface_get_trackedCharacterFloor(lua_State* L)
@@ -222,7 +222,7 @@ static int PlayerInterface_get_deadPlayerSquad(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return handBinding::push(L, instance->deadPlayerSquad);
+    return HandBinding::push(L, instance->deadPlayerSquad);
 }
 
 static int PlayerInterface_get_placementObject(lua_State* L)
@@ -318,11 +318,20 @@ static int PlayerInterface_set_selectedCharacter(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    instance->selectedCharacter = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->selectedCharacter = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
-static int PlayerInterface_set_aiOptions(lua_State* L) { return 0; }
+static int PlayerInterface_set_aiOptions(lua_State* L)
+{
+    PlayerInterface* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PlayerInterface is nil");
+    PlayerInterface::AIOptions* val = checkObject<PlayerInterface::AIOptions>(L, 2, AIOptionsBinding::getMetatableName());
+    if (val) instance->aiOptions = *val;
+    return 0;
+}
+
+
 
 static int PlayerInterface_set_interiorsVisibleHash(lua_State* L)
 {
@@ -384,7 +393,7 @@ static int PlayerInterface_set_selectedObject(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    instance->selectedObject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->selectedObject = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -408,7 +417,7 @@ static int PlayerInterface_set_trackedCharacterHandle(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    instance->trackedCharacterHandle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->trackedCharacterHandle = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -448,7 +457,7 @@ static int PlayerInterface_set_deadPlayerSquad(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    instance->deadPlayerSquad = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->deadPlayerSquad = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -1339,34 +1348,10 @@ int PlayerInterfaceBinding::_isPlayerCharacter(lua_State* L)
 }
 
 /*
-Skipped methods needing manual binding:
-  line 94: bool recruit(...) - overloaded method
-  line 95: bool recruit(...) - overloaded method
-  line 98: const hand& getDeadSquadHandle(...) - reference return type
-  line 132: void updatePlayerSelection(...) - non-string reference arg
-  line 135: void getAllSelectedObjects(...) - unsupported arg type
-  line 138: void newPlayerTaskSelectedCharacters(...) - non-string reference arg
-  line 139: bool getPlayerTaskProbability(...) - non-string reference arg
-  line 156: void getAllPlayerCharacters(...) - overloaded method
-  line 157: const lektor<Character*>& getAllPlayerCharacters(...) - overloaded method
-  line 194: void updateFloorVisibility(...) - unsupported arg type
-  line 200: void playerControl(...) - non-string reference arg
-*/
-
-/*
 LIGHTUSERDATA DEPENDENCIES:
   - PlayerInterface_get_technology: Research* (unbound pointer)
   - PlayerInterface_get_moveMarker: MoveMarker* (unbound pointer)
   - PlayerInterface_get_placementObject: PlacementObject* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 209: zonesVisibilities (ogre_unordered_map<ZoneMap*, unsigned char>::type) - unsupported type
-  line 210: townsActive (ogre_unordered_set<TownBase*>::type) - unsupported type
-  line 211: interiorsVisible (ogre_unordered_set<hand>::type) - unsupported type
-  line 219: selectedCharacters (ogre_unordered_set<hand>::type) - unsupported type
-  line 228: playerCharacters (lektor<Character*>) - unsupported type
 */
 
 int PlayerInterfaceBinding::gc(lua_State* L)
@@ -1381,45 +1366,39 @@ int PlayerInterfaceBinding::tostring(lua_State* L)
     return 1;
 }
 
-
-
 static int PlayerInterface_get_interiorsVisible(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return pushObject<ogre_unordered_set<hand>::type>(L, &instance->interiorsVisible, OgreUnorderedSetBinding<hand>::getMetatableName());
+    return pushObject<ogre_unordered_set<hand>::type>(L, &instance->interiorsVisible, "KenshiLua.InteriorsVisibleSet");
 }
-
 
 static int PlayerInterface_get_playerCharacters(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return pushObject<lektor<Character*>>(L, &instance->playerCharacters, "lektor<Character*>");
+    return pushObject<lektor<Character*>>(L, &instance->playerCharacters, LektorPtrBinding<Character*>::getMetatableName());
 }
-
 
 static int PlayerInterface_get_selectedCharacters(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return pushObject<ogre_unordered_set<hand>::type>(L, &instance->selectedCharacters, OgreUnorderedSetBinding<hand>::getMetatableName());
+    return pushObject<ogre_unordered_set<hand>::type>(L, &instance->selectedCharacters, "KenshiLua.SelectedCharactersSet");
 }
-
 
 static int PlayerInterface_get_townsActive(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return pushObject<ogre_unordered_set<TownBase*>::type>(L, &instance->townsActive, "ogre_unordered_set<TownBase*>");
+    return pushObject<ogre_unordered_set<TownBase*>::type>(L, &instance->townsActive, "KenshiLua.TownsActiveSet");
 }
-
 
 static int PlayerInterface_get_zonesVisibilities(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return pushObject<ogre_unordered_map<ZoneMap*, unsigned char>::type>(L, &instance->zonesVisibilities, "ogre_unordered_map<ZoneMap*, unsigned char>");
+    return pushObject<ogre_unordered_map<ZoneMap*, unsigned char>::type>(L, &instance->zonesVisibilities, "KenshiLua.ZonesVisibilitiesMap");
 }
 
 
@@ -1427,7 +1406,8 @@ static int PlayerInterface_set_interiorsVisible(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    instance->interiorsVisible = *checkObject<ogre_unordered_set<hand>::type>(L, 2, OgreUnorderedSetBinding<hand>::getMetatableName());
+    auto* val = checkObject<ogre_unordered_set<hand>::type>(L, 2, "KenshiLua.InteriorsVisibleSet");
+    if (val) instance->interiorsVisible = *val;
     return 0;
 }
 
@@ -1455,7 +1435,7 @@ static int PlayerInterface_set_playerCharacters(lua_State* L)
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
     lektor<Character*>* src = LektorPtrBinding<Character*>::get(L, 2);
-    instance->playerCharacters = *src;
+    if (src) instance->playerCharacters = *src;
     return 0;
 }
 
@@ -1464,7 +1444,8 @@ static int PlayerInterface_set_selectedCharacters(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    instance->selectedCharacters = *checkObject<ogre_unordered_set<hand>::type>(L, 2, OgreUnorderedSetBinding<hand>::getMetatableName());
+    auto* val = checkObject<ogre_unordered_set<hand>::type>(L, 2, "KenshiLua.SelectedCharactersSet");
+    if (val) instance->selectedCharacters = *val;
     return 0;
 }
 
@@ -1482,7 +1463,8 @@ static int PlayerInterface_set_townsActive(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    instance->townsActive = *checkObject<ogre_unordered_set<TownBase*>::type>(L, 2, "ogre_unordered_set<TownBase*>");
+    auto* val = checkObject<ogre_unordered_set<TownBase*>::type>(L, 2, "KenshiLua.TownsActiveSet");
+    if (val) instance->townsActive = *val;
     return 0;
 }
 
@@ -1491,7 +1473,8 @@ static int PlayerInterface_set_zonesVisibilities(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    instance->zonesVisibilities = *checkObject<ogre_unordered_map<ZoneMap*, unsigned char>::type>(L, 2, "ogre_unordered_map<ZoneMap*, unsigned char>");
+    auto* val = checkObject<ogre_unordered_map<ZoneMap*, unsigned char>::type>(L, 2, "KenshiLua.ZonesVisibilitiesMap");
+    if (val) instance->zonesVisibilities = *val;
     return 0;
 }
 
@@ -1528,7 +1511,7 @@ int PlayerInterfaceBinding::getDeadSquadHandle(lua_State* L)
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
     const hand& res = instance->getDeadSquadHandle();
-    return pushObject<hand>(L, new hand(res), handBinding::getMetatableName());
+    return pushObject<hand>(L, new hand(res), HandBinding::getMetatableName());
 }
 
 
@@ -1551,7 +1534,7 @@ int PlayerInterfaceBinding::newPlayerTaskSelectedCharacters(lua_State* L)
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
     TaskType t = (TaskType)luaL_checkinteger(L, 2);
-    hand* targetH = checkObject<hand>(L, 3, handBinding::getMetatableName());
+    hand* targetH = checkObject<hand>(L, 3, HandBinding::getMetatableName());
     Building* destinationIndoors = nullptr;
     if (!lua_isnil(L, 4)) {
         destinationIndoors = checkObject<Building>(L, 4, BuildingBinding::getMetatableName());
@@ -1606,8 +1589,8 @@ int PlayerInterfaceBinding::updatePlayerSelection(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    hand* oldHandle = checkObject<hand>(L, 2, handBinding::getMetatableName());
-    hand* newHandle = checkObject<hand>(L, 3, handBinding::getMetatableName());
+    hand* oldHandle = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    hand* newHandle = checkObject<hand>(L, 3, HandBinding::getMetatableName());
     instance->updatePlayerSelection(*oldHandle, *newHandle);
     return 0;
 }
@@ -1758,10 +1741,11 @@ void PlayerInterfaceBinding::registerBinding(lua_State* L)
     registerGetter(L, "mLeftDown", PlayerInterface_get_mLeftDown);
     registerGetter(L, "mRightUp", PlayerInterface_get_mRightUp);
     registerGetter(L, "mRightDown", PlayerInterface_get_mRightDown);
-        registerGetter(L, "playerCharacters", PlayerInterface_get_playerCharacters);
-        registerGetter(L, "selectedCharacters", PlayerInterface_get_selectedCharacters);
-        registerGetter(L, "townsActive", PlayerInterface_get_townsActive);
-        registerGetter(L, "zonesVisibilities", PlayerInterface_get_zonesVisibilities);
+    registerGetter(L, "playerCharacters", PlayerInterface_get_playerCharacters);
+    registerGetter(L, "selectedCharacters", PlayerInterface_get_selectedCharacters);
+    registerGetter(L, "townsActive", PlayerInterface_get_townsActive);
+    registerGetter(L, "zonesVisibilities", PlayerInterface_get_zonesVisibilities);
+    registerGetter(L, "interiorsVisible", PlayerInterface_get_interiorsVisible);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -1793,18 +1777,21 @@ void PlayerInterfaceBinding::registerBinding(lua_State* L)
     registerSetter(L, "mLeftDown", PlayerInterface_set_mLeftDown);
     registerSetter(L, "mRightUp", PlayerInterface_set_mRightUp);
     registerSetter(L, "mRightDown", PlayerInterface_set_mRightDown);
-        registerSetter(L, "moveMarker", PlayerInterface_set_moveMarker);
-        registerSetter(L, "placementObject", PlayerInterface_set_placementObject);
-        registerSetter(L, "playerCharacters", PlayerInterface_set_playerCharacters);
-        registerSetter(L, "selectedCharacters", PlayerInterface_set_selectedCharacters);
-        registerSetter(L, "technology", PlayerInterface_set_technology);
-        registerSetter(L, "townsActive", PlayerInterface_set_townsActive);
-        registerSetter(L, "zonesVisibilities", PlayerInterface_set_zonesVisibilities);
+    registerSetter(L, "moveMarker", PlayerInterface_set_moveMarker);
+    registerSetter(L, "placementObject", PlayerInterface_set_placementObject);
+    registerSetter(L, "playerCharacters", PlayerInterface_set_playerCharacters);
+    registerSetter(L, "selectedCharacters", PlayerInterface_set_selectedCharacters);
+    registerSetter(L, "technology", PlayerInterface_set_technology);
+    registerSetter(L, "townsActive", PlayerInterface_set_townsActive);
+    registerSetter(L, "zonesVisibilities", PlayerInterface_set_zonesVisibilities);
+    registerSetter(L, "interiorsVisible", PlayerInterface_set_interiorsVisible);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to FactoryCallbackInterface
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, PlayerInterfaceBinding::getMetatableName(), FactoryCallbackInterfaceBinding::getMetatableName());
+    OgreUnorderedSetBinding<hand>::registerBinding(L, "KenshiLua.InteriorsVisibleSet", HandBinding::getMetatableName());
+    OgreUnorderedSetBinding<hand>::registerBinding(L, "KenshiLua.SelectedCharactersSet", HandBinding::getMetatableName());
+    OgreUnorderedSetBinding<TownBase*>::registerBinding(L, "KenshiLua.TownsActiveSet", TownBaseBinding::getMetatableName());
+    OgreUnorderedMapBinding<ZoneMap*, unsigned char>::registerBinding(L, "KenshiLua.ZonesVisibilitiesMap", ZoneMapBinding::getMetatableName(), nullptr);
+    LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

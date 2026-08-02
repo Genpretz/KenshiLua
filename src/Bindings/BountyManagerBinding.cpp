@@ -1,38 +1,22 @@
 #include "pch.h"
-#include "kenshi\BountyManager.h"
+#include "KENSHI\BountyManager.h"
 #include "BountyManagerBinding.h"
-#include "CharacterBinding.h"
-#include "FactionBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
 #include "Bindings/BountyBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
-#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
 #include "Bindings/Util/TimeOfDayBinding.h"
-#include "Bindings/GameDataBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
 
-template <>
-struct LuaCodec<Bounty>
-{
-    static void push(lua_State* L, const Bounty& val, const char* meta)
-    {
-        pushObject<Bounty>(L, const_cast<Bounty*>(&val), meta);
-    }
-
-    static Bounty read(lua_State* L, int idx, const char* meta)
-    {
-        Bounty* b = checkObject<Bounty>(L, idx, meta);
-        return b ? *b : Bounty();
-    }
-};
-
 typedef OgreUnorderedMapBinding<Faction*, Bounty> BountiesMapBinding;
 
-static BountyManager* getB(lua_State* L, int idx)
+static BountyManager* getInstance(lua_State* L, int idx)
 {
     return checkObject<BountyManager>(L, idx, BountyManagerBinding::getMetatableName());
 }
@@ -40,428 +24,436 @@ static BountyManager* getB(lua_State* L, int idx)
 // --- Getters for BountyManager ---
 static int BountyManager_get_bounties(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    return pushObject<ogre_unordered_map<Faction*, Bounty>::type>(L, &b->bounties, "KenshiLua.BountiesMap");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance ) return luaL_error(L, "BountyManager is nil");
+    return pushObject<ogre_unordered_map<Faction*, Bounty>::type>(L, &instance->bounties, "KenshiLua.BountiesMap");
 }
 
 static int BountyManager_get_me(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    return pushObject<Character>(L, b->me, CharacterBinding::getMetatableName());
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    return pushObject<Character>(L, instance->me, CharacterBinding::getMetatableName());
 }
 
 static int BountyManager_get__hasAccessPass(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    return pushObject<Faction>(L, b->_hasAccessPass, FactionBinding::getMetatableName());
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    return pushObject<Faction>(L, instance->_hasAccessPass, FactionBinding::getMetatableName());
 }
 
 static int BountyManager_get_accessPassExpirationTime(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    return pushObject<TimeOfDay>(L, &b->accessPassExpirationTime, TimeOfDayBinding::getMetatableName());
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    return pushObject<TimeOfDay>(L, &instance->accessPassExpirationTime, TimeOfDayBinding::getMetatableName());
 }
 
 static int BountyManager_get_committingCrime(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    lua_pushinteger(L, (int)b->committingCrime);
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance ) return luaL_error(L, "BountyManager is nil");
+    lua_pushinteger(L, (int)instance->committingCrime);
     return 1;
 }
 
 static int BountyManager_get_crimeAgainstFaction(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    return pushObject<Faction>(L, b->crimeAgainstFaction, FactionBinding::getMetatableName());
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    return pushObject<Faction>(L, instance->crimeAgainstFaction, FactionBinding::getMetatableName());
 }
 
 static int BountyManager_get_usingTrainingEquipmentOf(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    return pushObject<Faction>(L, b->usingTrainingEquipmentOf, FactionBinding::getMetatableName());
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    return pushObject<Faction>(L, instance->usingTrainingEquipmentOf, FactionBinding::getMetatableName());
 }
 
 static int BountyManager_get_crimeAgainst(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    return handBinding::push(L, b->crimeAgainst);
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    return HandBinding::push(L, instance->crimeAgainst);
 }
 
 static int BountyManager_get_crimeExpiry(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    lua_pushnumber(L, b->crimeExpiry);
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    lua_pushnumber(L, instance->crimeExpiry);
     return 1;
 }
 
 static int BountyManager_get_prisonSentenceBeganTime(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    return pushObject<TimeOfDay>(L, &b->prisonSentenceBeganTime, TimeOfDayBinding::getMetatableName());
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    return pushObject<TimeOfDay>(L, &instance->prisonSentenceBeganTime, TimeOfDayBinding::getMetatableName());
 }
 
 static int BountyManager_get_prisonSentenceToServe(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    lua_pushnumber(L, b->prisonSentenceToServe);
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    lua_pushnumber(L, instance->prisonSentenceToServe);
     return 1;
 }
 
 static int BountyManager_get__hadABountyAssignedForCurrentCrime(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    lua_pushboolean(L, b->_hadABountyAssignedForCurrentCrime ? 1 : 0);
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    lua_pushboolean(L, instance->_hadABountyAssignedForCurrentCrime ? 1 : 0);
     return 1;
 }
 
 // --- Setters for BountyManager ---
 static int BountyManager_set_bounties(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance ) return luaL_error(L, "BountyManager is nil");
     auto* val = BountiesMapBinding::get(L, 2);
     if (!val) return luaL_error(L, "Expected BountiesMap object");
-    b->bounties = *val;
+    instance->bounties = *val;
     return 0;
 }
 
 static int BountyManager_set_me(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    b->me = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    instance->me = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
     return 0;
 }
 
 static int BountyManager_set__hasAccessPass(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    b->_hasAccessPass = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    instance->_hasAccessPass = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     return 0;
 }
 
 static int BountyManager_set_accessPassExpirationTime(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    TimeOfDay* val = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
-    if (!val) return luaL_error(L, "Expected TimeOfDay object");
-    b->accessPassExpirationTime = *val;
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    instance->accessPassExpirationTime = *checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
     return 0;
 }
 
 static int BountyManager_set_committingCrime(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    b->committingCrime = (CrimeEnum)luaL_checkinteger(L, 2);
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance ) return luaL_error(L, "BountyManager is nil");
+    instance->committingCrime = (CrimeEnum)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int BountyManager_set_crimeAgainstFaction(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    b->crimeAgainstFaction = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    instance->crimeAgainstFaction = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     return 0;
 }
 
 static int BountyManager_set_usingTrainingEquipmentOf(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    b->usingTrainingEquipmentOf = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    instance->usingTrainingEquipmentOf = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     return 0;
 }
 
 static int BountyManager_set_crimeAgainst(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
-    if (!val) return luaL_error(L, "Expected hand object");
-    b->crimeAgainst = *val;
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    instance->crimeAgainst = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
 static int BountyManager_set_crimeExpiry(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    b->crimeExpiry = (float)luaL_checknumber(L, 2);
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    instance->crimeExpiry = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int BountyManager_set_prisonSentenceBeganTime(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    TimeOfDay* val = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
-    if (!val) return luaL_error(L, "Expected TimeOfDay object");
-    b->prisonSentenceBeganTime = *val;
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    instance->prisonSentenceBeganTime = *checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
     return 0;
 }
 
 static int BountyManager_set_prisonSentenceToServe(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    b->prisonSentenceToServe = (float)luaL_checknumber(L, 2);
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    instance->prisonSentenceToServe = (float)luaL_checknumber(L, 2);
     return 0;
 }
 
 static int BountyManager_set__hadABountyAssignedForCurrentCrime(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    b->_hadABountyAssignedForCurrentCrime = lua_toboolean(L, 2) != 0;
-    return 0;
-}
-
-int BountyManagerBinding::_getHighestBountyFaction(lua_State* L)
-{
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-
-    Faction* result = b->_getHighestBountyFaction();
-    return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
-}
-
-int BountyManagerBinding::getBountyRecognitionThreshold(lua_State* L)
-{
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-
-    int result = b->getBountyRecognitionThreshold();
-    lua_pushinteger(L, result);
-    return 1;
-}
-
-int BountyManagerBinding::getTotalBounty(lua_State* L)
-{
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-
-    int result = b->getTotalBounty();
-    lua_pushinteger(L, result);
-    return 1;
-}
-
-int BountyManagerBinding::update(lua_State* L)
-{
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-
-    float frameTime = (float)luaL_checknumber(L, 2);
-    b->update(frameTime);
-    return 0;
-}
-
-int BountyManagerBinding::getBountyExpiryStringForGUI(lua_State* L)
-{
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-
-    std::string result = b->getBountyExpiryStringForGUI();
-    lua_pushstring(L, result.c_str());
-    return 1;
-}
-
-int BountyManagerBinding::notifyPossibleCrimeWitnessed(lua_State* L)
-{
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-
-    float time = (float)luaL_checknumber(L, 2);
-    b->notifyPossibleCrimeWitnessed(time);
-    return 0;
-}
-
-int BountyManagerBinding::isCommittingCrime(lua_State* L)
-{
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-
-    bool result = b->isCommittingCrime();
-    lua_pushboolean(L, result ? 1 : 0);
-    return 1;
-}
-
-int BountyManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-
-    b->_DESTRUCTOR();
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+    instance->_hadABountyAssignedForCurrentCrime = lua_toboolean(L, 2) != 0;
     return 0;
 }
 
 int BountyManagerBinding::_getBountyFaction(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    Faction* result = b->_getBountyFaction(f);
+    Faction* result = instance->_getBountyFaction(f);
+    return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
+}
+
+int BountyManagerBinding::_getHighestBountyFaction(lua_State* L)
+{
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
+    Faction* result = instance->_getHighestBountyFaction();
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
 }
 
 int BountyManagerBinding::_CONSTRUCTOR(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    BountyManager* result = b->_CONSTRUCTOR(c);
+    BountyManager* result = instance->_CONSTRUCTOR(c);
     return pushObject<BountyManager>(L, result, BountyManagerBinding::getMetatableName());
 }
 
 int BountyManagerBinding::getPercievedBounty(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Character* whosLooking = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    int result = b->getPercievedBounty(whosLooking);
+    int result = instance->getPercievedBounty(whosLooking);
     lua_pushinteger(L, result);
     return 1;
 }
 
 int BountyManagerBinding::getActualBounty(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Faction* whosLooking = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    int result = b->getActualBounty(whosLooking);
+    int result = instance->getActualBounty(whosLooking);
     lua_pushinteger(L, result);
     return 1;
 }
 
 int BountyManagerBinding::notifyPlayerClaimBounty(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Faction* whosLooking = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    b->notifyPlayerClaimBounty(whosLooking);
+    instance->notifyPlayerClaimBounty(whosLooking);
     return 0;
 }
 
 int BountyManagerBinding::bountyAlreadyBeenClaimedByPlayer(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Faction* whosLooking = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    bool result = b->bountyAlreadyBeenClaimedByPlayer(whosLooking);
+    bool result = instance->bountyAlreadyBeenClaimedByPlayer(whosLooking);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BountyManagerBinding::assignBountyForCrimes(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Faction* enforcer = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    b->assignBountyForCrimes(enforcer);
+    instance->assignBountyForCrimes(enforcer);
     return 0;
 }
 
 int BountyManagerBinding::unfairAddToBounty(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Faction* enforcer = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     int amount = (int)luaL_checkinteger(L, 3);
-    b->unfairAddToBounty(enforcer, amount);
+    instance->unfairAddToBounty(enforcer, amount);
     return 0;
+}
+
+int BountyManagerBinding::getBountyRecognitionThreshold(lua_State* L)
+{
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
+    int result = instance->getBountyRecognitionThreshold();
+    lua_pushinteger(L, result);
+    return 1;
 }
 
 int BountyManagerBinding::clearBounty(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Faction* enforcer = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    b->clearBounty(enforcer);
+    instance->clearBounty(enforcer);
     return 0;
+}
+
+int BountyManagerBinding::getTotalBounty(lua_State* L)
+{
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
+    int result = instance->getTotalBounty();
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int BountyManagerBinding::update(lua_State* L)
+{
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
+    float frameTime = (float)luaL_checknumber(L, 2);
+    instance->update(frameTime);
+    return 0;
+}
+
+int BountyManagerBinding::getBountyExpiryStringForGUI(lua_State* L)
+{
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
+    std::string result = instance->getBountyExpiryStringForGUI();
+    lua_pushstring(L, result.c_str());
+    return 1;
 }
 
 int BountyManagerBinding::load(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    b->load(state);
+    instance->load(state);
     return 0;
 }
 
 int BountyManagerBinding::save(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    b->save(state);
+    instance->save(state);
     return 0;
 }
 
-int BountyManagerBinding::setCrime(lua_State* L)
+int BountyManagerBinding::notifyPossibleCrimeWitnessed(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    CrimeEnum crime = (CrimeEnum)luaL_checkinteger(L, 2);
-    Faction* against = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
-    hand* agnst = checkObject<hand>(L, 4, handBinding::getMetatableName());
-    bool result = b->setCrime(crime, against, *agnst);
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
+    float time = (float)luaL_checknumber(L, 2);
+    instance->notifyPossibleCrimeWitnessed(time);
+    return 0;
+}
+
+int BountyManagerBinding::isCommittingCrime(lua_State* L)
+{
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
+    bool result = instance->isCommittingCrime();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
-int BountyManagerBinding::notifyCrimeWitnessed(lua_State* L)
-{
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
-    Faction* against = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    hand* againstWho = checkObject<hand>(L, 3, handBinding::getMetatableName());
-    int expirytime = (int)luaL_checkinteger(L, 4);
-    CrimeEnum what = (CrimeEnum)luaL_checkinteger(L, 5);
-    b->notifyCrimeWitnessed(against, *againstWho, expirytime, what);
-    return 0;
-}
-
 int BountyManagerBinding::notifyStartPrisonSentence(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Faction* law = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    b->notifyStartPrisonSentence(law);
+    instance->notifyStartPrisonSentence(law);
     return 0;
 }
 
 int BountyManagerBinding::hasAccessPass(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Faction* forFac = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    bool result = b->hasAccessPass(forFac);
+    bool result = instance->hasAccessPass(forFac);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int BountyManagerBinding::giveAccessPass(lua_State* L)
 {
-    BountyManager* b = getB(L, 1);
-    if (!b) return luaL_error(L, "BountyManager is nil");
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
     Faction* who = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     float minutes = (float)luaL_checknumber(L, 3);
-    b->giveAccessPass(who, minutes);
+    instance->giveAccessPass(who, minutes);
+    return 0;
+}
+
+int BountyManagerBinding::_DESTRUCTOR(lua_State* L)
+{
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BountyManager is nil");
+
+    instance->_DESTRUCTOR();
+    return 0;
+}
+
+int BountyManagerBinding::setCrime(lua_State* L)
+{
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance ) return luaL_error(L, "BountyManager is nil");
+    CrimeEnum crime = (CrimeEnum)luaL_checkinteger(L, 2);
+    Faction* against = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
+    hand* agnst = checkObject<hand>(L, 4, HandBinding::getMetatableName());
+    bool result = instance->setCrime(crime, against, *agnst);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int BountyManagerBinding::notifyCrimeWitnessed(lua_State* L)
+{
+    BountyManager* instance = getInstance(L, 1);
+    if (!instance ) return luaL_error(L, "BountyManager is nil");
+    Faction* against = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    hand* againstWho = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    int expirytime = (int)luaL_checkinteger(L, 4);
+    CrimeEnum what = (CrimeEnum)luaL_checkinteger(L, 5);
+    instance->notifyCrimeWitnessed(against, *againstWho, expirytime, what);
     return 0;
 }
 
@@ -505,11 +497,11 @@ int BountyManagerBinding::getBountyExpirationTime(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 35: StringPair getGUIData(...) - unsupported return type (requires StringPair binding)
-  line 36: void getGUIDataForAppend(...) - unsupported arg type (requires StringPair binding)
-*/
+
+// Skipped methods needing manual binding:
+// line 35: StringPair getGUIData(...) - unsupported arg type
+// line 36: void getGUIDataForAppend(...) - unsupported arg type
+
 
 int BountyManagerBinding::gc(lua_State* L)
 {
@@ -574,62 +566,36 @@ void BountyManagerBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, BountyManagerBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, BountyManager_get_bounties);
-    lua_setfield(L, -2, "bounties");
-    lua_pushcfunction(L, BountyManager_get_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, BountyManager_get__hasAccessPass);
-    lua_setfield(L, -2, "_hasAccessPass");
-    lua_pushcfunction(L, BountyManager_get_accessPassExpirationTime);
-    lua_setfield(L, -2, "accessPassExpirationTime");
-    lua_pushcfunction(L, BountyManager_get_committingCrime);
-    lua_setfield(L, -2, "committingCrime");
-    lua_pushcfunction(L, BountyManager_get_crimeAgainstFaction);
-    lua_setfield(L, -2, "crimeAgainstFaction");
-    lua_pushcfunction(L, BountyManager_get_usingTrainingEquipmentOf);
-    lua_setfield(L, -2, "usingTrainingEquipmentOf");
-    lua_pushcfunction(L, BountyManager_get_crimeAgainst);
-    lua_setfield(L, -2, "crimeAgainst");
-    lua_pushcfunction(L, BountyManager_get_crimeExpiry);
-    lua_setfield(L, -2, "crimeExpiry");
-    lua_pushcfunction(L, BountyManager_get_prisonSentenceBeganTime);
-    lua_setfield(L, -2, "prisonSentenceBeganTime");
-    lua_pushcfunction(L, BountyManager_get_prisonSentenceToServe);
-    lua_setfield(L, -2, "prisonSentenceToServe");
-    lua_pushcfunction(L, BountyManager_get__hadABountyAssignedForCurrentCrime);
-    lua_setfield(L, -2, "_hadABountyAssignedForCurrentCrime");
+    registerGetter(L, "bounties", BountyManager_get_bounties);
+    registerGetter(L, "me", BountyManager_get_me);
+    registerGetter(L, "_hasAccessPass", BountyManager_get__hasAccessPass);
+    registerGetter(L, "accessPassExpirationTime", BountyManager_get_accessPassExpirationTime);
+    registerGetter(L, "committingCrime", BountyManager_get_committingCrime);
+    registerGetter(L, "crimeAgainstFaction", BountyManager_get_crimeAgainstFaction);
+    registerGetter(L, "usingTrainingEquipmentOf", BountyManager_get_usingTrainingEquipmentOf);
+    registerGetter(L, "crimeAgainst", BountyManager_get_crimeAgainst);
+    registerGetter(L, "crimeExpiry", BountyManager_get_crimeExpiry);
+    registerGetter(L, "prisonSentenceBeganTime", BountyManager_get_prisonSentenceBeganTime);
+    registerGetter(L, "prisonSentenceToServe", BountyManager_get_prisonSentenceToServe);
+    registerGetter(L, "_hadABountyAssignedForCurrentCrime", BountyManager_get__hadABountyAssignedForCurrentCrime);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, BountyManager_set_bounties);
-    lua_setfield(L, -2, "bounties");
-    lua_pushcfunction(L, BountyManager_set_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, BountyManager_set__hasAccessPass);
-    lua_setfield(L, -2, "_hasAccessPass");
-    lua_pushcfunction(L, BountyManager_set_accessPassExpirationTime);
-    lua_setfield(L, -2, "accessPassExpirationTime");
-    lua_pushcfunction(L, BountyManager_set_committingCrime);
-    lua_setfield(L, -2, "committingCrime");
-    lua_pushcfunction(L, BountyManager_set_crimeAgainstFaction);
-    lua_setfield(L, -2, "crimeAgainstFaction");
-    lua_pushcfunction(L, BountyManager_set_usingTrainingEquipmentOf);
-    lua_setfield(L, -2, "usingTrainingEquipmentOf");
-    lua_pushcfunction(L, BountyManager_set_crimeAgainst);
-    lua_setfield(L, -2, "crimeAgainst");
-    lua_pushcfunction(L, BountyManager_set_crimeExpiry);
-    lua_setfield(L, -2, "crimeExpiry");
-    lua_pushcfunction(L, BountyManager_set_prisonSentenceBeganTime);
-    lua_setfield(L, -2, "prisonSentenceBeganTime");
-    lua_pushcfunction(L, BountyManager_set_prisonSentenceToServe);
-    lua_setfield(L, -2, "prisonSentenceToServe");
-    lua_pushcfunction(L, BountyManager_set__hadABountyAssignedForCurrentCrime);
-    lua_setfield(L, -2, "_hadABountyAssignedForCurrentCrime");
+    registerSetter(L, "bounties", BountyManager_set_bounties);
+    registerSetter(L, "me", BountyManager_set_me);
+    registerSetter(L, "_hasAccessPass", BountyManager_set__hasAccessPass);
+    registerSetter(L, "accessPassExpirationTime", BountyManager_set_accessPassExpirationTime);
+    registerSetter(L, "committingCrime", BountyManager_set_committingCrime);
+    registerSetter(L, "crimeAgainstFaction", BountyManager_set_crimeAgainstFaction);
+    registerSetter(L, "usingTrainingEquipmentOf", BountyManager_set_usingTrainingEquipmentOf);
+    registerSetter(L, "crimeAgainst", BountyManager_set_crimeAgainst);
+    registerSetter(L, "crimeExpiry", BountyManager_set_crimeExpiry);
+    registerSetter(L, "prisonSentenceBeganTime", BountyManager_set_prisonSentenceBeganTime);
+    registerSetter(L, "prisonSentenceToServe", BountyManager_set_prisonSentenceToServe);
+    registerSetter(L, "_hadABountyAssignedForCurrentCrime", BountyManager_set__hadABountyAssignedForCurrentCrime);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    BountiesMapBinding::registerBinding(L, "KenshiLua.BountiesMap", FactionBinding::getMetatableName(), BountyBinding::getMetatableName());
-
     lua_pop(L, 1); // Pop the metatable off the stack
-}   
+}
 
 } // namespace KenshiLua

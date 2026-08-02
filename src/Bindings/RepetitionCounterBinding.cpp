@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "kenshi/Dialogue.h"
+#include "KENSHI\Dialogue.h"
 #include "RepetitionCounterBinding.h"
-#include "DialogStateBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Util/StdMapBinding.h"
+#include "Bindings/DialogStateBinding.h"
 
 typedef Dialogue::RepetitionCounter RepetitionCounter;
 
@@ -12,7 +12,7 @@ namespace KenshiLua
 
 typedef StdMapBinding<EventTriggerEnum, Dialogue::RepetitionCounter::DialogState> RepetitionStatesMapBinding;
 
-static RepetitionCounter* getB(lua_State* L, int idx)
+static RepetitionCounter* getInstance(lua_State* L, int idx)
 {
     return checkObject<RepetitionCounter>(L, idx, RepetitionCounterBinding::getMetatableName());
 }
@@ -20,79 +20,80 @@ static RepetitionCounter* getB(lua_State* L, int idx)
 // --- Getters for RepetitionCounter ---
 static int RepetitionCounter_get_states(lua_State* L)
 {
-    RepetitionCounter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RepetitionCounter is nil");
-    return pushObject<RepetitionStatesMapBinding::MapType>(L, &b->states, RepetitionStatesMapBinding::metaName);
+    RepetitionCounter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RepetitionCounter is nil");
+    return pushObject<RepetitionStatesMapBinding::MapType>(L, &instance->states, RepetitionStatesMapBinding::metaName);
 }
 
 // --- Setters for RepetitionCounter ---
 static int RepetitionCounter_set_states(lua_State* L)
 {
-    RepetitionCounter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RepetitionCounter is nil");
+    RepetitionCounter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RepetitionCounter is nil");
     auto* val = RepetitionStatesMapBinding::get(L, 2);
     if (!val) return luaL_error(L, "Expected RepetitionStates map object");
-    b->states = *val;
+    instance->states = *val;
     return 0;
 }
 
+// --- Methods ---
 int RepetitionCounterBinding::setup(lua_State* L)
 {
-    RepetitionCounter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RepetitionCounter is nil");
+    RepetitionCounter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RepetitionCounter is nil");
 
-    b->setup();
+    instance->setup();
     return 0;
 }
 
 int RepetitionCounterBinding::count(lua_State* L)
 {
-    RepetitionCounter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RepetitionCounter is nil");
+    RepetitionCounter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RepetitionCounter is nil");
 
     EventTriggerEnum ev = (EventTriggerEnum)luaL_checkinteger(L, 2);
-    bool result = b->count(ev);
+    bool result = instance->count(ev);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
 int RepetitionCounterBinding::getTimeSinceLastTrigger(lua_State* L)
 {
-    RepetitionCounter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RepetitionCounter is nil");
+    RepetitionCounter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RepetitionCounter is nil");
 
     EventTriggerEnum ev = (EventTriggerEnum)luaL_checkinteger(L, 2);
-    double result = b->getTimeSinceLastTrigger(ev);
+    double result = instance->getTimeSinceLastTrigger(ev);
     lua_pushnumber(L, result);
     return 1;
 }
 
 int RepetitionCounterBinding::getCount(lua_State* L)
 {
-    RepetitionCounter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RepetitionCounter is nil");
+    RepetitionCounter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RepetitionCounter is nil");
 
     EventTriggerEnum ev = (EventTriggerEnum)luaL_checkinteger(L, 2);
-    int result = b->getCount(ev);
+    int result = instance->getCount(ev);
     lua_pushinteger(L, result);
     return 1;
 }
 
 int RepetitionCounterBinding::_CONSTRUCTOR(lua_State* L)
 {
-    RepetitionCounter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RepetitionCounter is nil");
+    RepetitionCounter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RepetitionCounter is nil");
 
-    RepetitionCounter* result = b->_CONSTRUCTOR();
+    RepetitionCounter* result = instance->_CONSTRUCTOR();
     return pushObject<RepetitionCounter>(L, result, RepetitionCounterBinding::getMetatableName());
 }
 
 int RepetitionCounterBinding::_DESTRUCTOR(lua_State* L)
 {
-    RepetitionCounter* b = getB(L, 1);
-    if (!b) return luaL_error(L, "RepetitionCounter is nil");
+    RepetitionCounter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RepetitionCounter is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -137,13 +138,9 @@ void RepetitionCounterBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, RepetitionCounterBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, RepetitionCounter_get_states);
-    lua_setfield(L, -2, "states");
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, RepetitionCounter_set_states);
-    lua_setfield(L, -2, "states");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     RepetitionStatesMapBinding::registerBinding(L, "KenshiLua.RepetitionStatesMap", nullptr, DialogStateBinding::getMetatableName());

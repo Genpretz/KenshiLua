@@ -80,7 +80,7 @@ static int Platoon_get_isSeparatedSquad(lua_State* L)
 {
     Platoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Platoon is nil");
-    return handBinding::push(L, instance->isSeparatedSquad);
+    return HandBinding::push(L, instance->isSeparatedSquad);
 }
 
 static int Platoon_get_canRefresh(lua_State* L)
@@ -205,7 +205,7 @@ static int Platoon_get_squadleader(lua_State* L)
 {
     Platoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Platoon is nil");
-    return handBinding::push(L, instance->squadleader);
+    return HandBinding::push(L, instance->squadleader);
 }
 
 static int Platoon_get_ownerships(lua_State* L)
@@ -322,7 +322,7 @@ static int Platoon_set_isSeparatedSquad(lua_State* L)
 {
     Platoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Platoon is nil");
-    instance->isSeparatedSquad = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->isSeparatedSquad = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -426,7 +426,7 @@ static int Platoon_set_squadleader(lua_State* L)
 {
     Platoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Platoon is nil");
-    instance->squadleader = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->squadleader = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -518,7 +518,7 @@ int PlatoonBinding::chooseNewHome(lua_State* L)
     if (!instance) return luaL_error(L, "Platoon is nil");
 
     hand result = instance->chooseNewHome();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int PlatoonBinding::isUnconcious(lua_State* L)
@@ -1268,7 +1268,7 @@ static int Platoon_chooseNewHome(lua_State* L)
     Platoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Platoon is nil");
     hand result = instance->chooseNewHome();
-    handBinding::push(L, result);
+    HandBinding::push(L, result);
     return 1;
 }
 
@@ -1344,7 +1344,7 @@ static int Platoon_getSquadLeader_theRealOne(lua_State* L)
     Platoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Platoon is nil");
     const hand& result = instance->getSquadLeader_theRealOne();
-    handBinding::push(L, result);
+    HandBinding::push(L, result);
     return 1;
 }
 

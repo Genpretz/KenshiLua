@@ -1034,7 +1034,7 @@ int InventoryBinding::getExcessLoot(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    hand* me = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* me = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     lektor<Item*>* out = LektorPtrBinding<Item*>::get(L, 3);
     bool justAsking = lua_toboolean(L, 4) != 0;
     bool result = instance->getExcessLoot(*me, *out, justAsking);
@@ -1048,7 +1048,7 @@ int InventoryBinding::getHandle(lua_State* L)
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
     const hand& result = instance->getHandle();
-    handBinding::push(L, result);
+    HandBinding::push(L, result);
     return 1;
 }
 

@@ -102,7 +102,7 @@ static int CharMovement_get_building(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharMovement is nil");
-    return handBinding::push(L, instance->building);
+    return HandBinding::push(L, instance->building);
 }
 
 static int CharMovement_get_initCheck(lua_State* L)
@@ -277,7 +277,7 @@ static int CharMovement_set_building(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharMovement is nil");
-    instance->building = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->building = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -513,7 +513,7 @@ int CharMovementBinding::getHandle(lua_State* L)
     if (!instance) return luaL_error(L, "CharMovement is nil");
 
     hand result = instance->getHandle();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int CharMovementBinding::_NV_getHandle(lua_State* L)
@@ -522,7 +522,7 @@ int CharMovementBinding::_NV_getHandle(lua_State* L)
     if (!instance) return luaL_error(L, "CharMovement is nil");
 
     hand result = instance->_NV_getHandle();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int CharMovementBinding::handleChanged(lua_State* L)
@@ -1143,7 +1143,7 @@ int CharMovementBinding::setLookatTarget(lua_State* L)
     CharMovement* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharMovement is nil");
 
-    hand* lookatCharacter = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* lookatCharacter = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->setLookatTarget(*lookatCharacter);
     return 0;
 }

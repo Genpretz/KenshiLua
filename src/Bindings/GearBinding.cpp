@@ -105,7 +105,7 @@ int GearBinding::_CONSTRUCTOR(lua_State* L)
     GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameData* companyData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     GameData* materialData = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 5, handBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 5, HandBinding::getMetatableName());
     int _level = (int)luaL_checkinteger(L, 6);
     Faction* uniform = checkObject<Faction>(L, 7, FactionBinding::getMetatableName());
     Gear* result = instance->_CONSTRUCTOR(baseData, companyData, materialData, _handle, _level, uniform);
@@ -275,7 +275,7 @@ int GearBinding::_NV_setInventoryWeAreIn(lua_State* L)
 {
     Item* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Item is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->_NV_setInventoryWeAreIn(*h);
     return 0;
 }
@@ -285,7 +285,7 @@ int GearBinding::setInventoryWeAreIn(lua_State* L)
 {
     Item* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Item is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->setInventoryWeAreIn(*h);
     return 0;
 }

@@ -360,7 +360,7 @@ int TownBaseBinding::setup(lua_State* L)
     GameData* _town = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Ogre::Vector3 _pos;
     readVector3(L, 3, _pos);
-    hand h = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand h = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     instance->setup(_town, _pos, h);
     return 0;
 }
@@ -373,7 +373,7 @@ int TownBaseBinding::_NV_setup(lua_State* L)
     GameData* _town = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Ogre::Vector3 _pos;
     readVector3(L, 3, _pos);
-    hand h = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand h = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     instance->_NV_setup(_town, _pos, h);
     return 0;
 }

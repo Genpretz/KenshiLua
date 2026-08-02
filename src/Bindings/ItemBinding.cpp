@@ -57,7 +57,7 @@ static int Item_get_persistant(lua_State* L)
 {
     Item* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Item is nil");
-    return handBinding::push(L, instance->persistant);
+    return HandBinding::push(L, instance->persistant);
 }
 
 static int Item_get_visible(lua_State* L)
@@ -145,7 +145,7 @@ static int Item_set_persistant(lua_State* L)
 {
     Item* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Item is nil");
-    instance->persistant = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->persistant = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -771,7 +771,7 @@ int ItemBinding::_CONSTRUCTOR(lua_State* L)
     GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameData* companyData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     GameData* _materialData = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 5, handBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 5, HandBinding::getMetatableName());
     Item* result = instance->_CONSTRUCTOR(baseData, companyData, _materialData, _handle);
     return pushObject<Item>(L, result, ItemBinding::getMetatableName());
 }
@@ -967,9 +967,9 @@ int ItemBinding::_NV_notifyTheftFrom(lua_State* L)
 {
     Item* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Item is nil");
-    if (testObject<hand>(L, 2, handBinding::getMetatableName()) != nullptr)
+    if (testObject<hand>(L, 2, HandBinding::getMetatableName()) != nullptr)
     {
-        hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+        hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
         instance->_NV_notifyTheftFrom(*h);
         return 0;
     }
@@ -998,7 +998,7 @@ int ItemBinding::_NV_setInventoryWeAreIn(lua_State* L)
 {
     Item* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Item is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->_NV_setInventoryWeAreIn(*h);
     return 0;
 }
@@ -1041,17 +1041,17 @@ int ItemBinding::createItemEntityCallback_Equipping(lua_State* L)
 
 int ItemBinding::findProperOwner(lua_State* L)
 {
-    if (testObject<hand>(L, 1, handBinding::getMetatableName()) != nullptr)
+    if (testObject<hand>(L, 1, HandBinding::getMetatableName()) != nullptr)
     {
-        hand* h = checkObject<hand>(L, 1, handBinding::getMetatableName());
+        hand* h = checkObject<hand>(L, 1, HandBinding::getMetatableName());
         hand res = Item::findProperOwner(*h);
-        return pushObject<hand>(L, new hand(res), handBinding::getMetatableName());
+        return pushObject<hand>(L, new hand(res), HandBinding::getMetatableName());
     }
     else
     {
         RootObject* obj = checkObject<RootObject>(L, 1, RootObjectBinding::getMetatableName());
         hand res = Item::findProperOwner(obj);
-        return pushObject<hand>(L, new hand(res), handBinding::getMetatableName());
+        return pushObject<hand>(L, new hand(res), HandBinding::getMetatableName());
     }
 }
 
@@ -1061,7 +1061,7 @@ int ItemBinding::getInventoryWeAreIn(lua_State* L)
     Item* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Item is nil");
     const hand& result = instance->getInventoryWeAreIn();
-    handBinding::push(L, result);
+    HandBinding::push(L, result);
     return 1;
 }
 
@@ -1089,9 +1089,9 @@ int ItemBinding::notifyTheftFrom(lua_State* L)
 {
     Item* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Item is nil");
-    if (testObject<hand>(L, 2, handBinding::getMetatableName()) != nullptr)
+    if (testObject<hand>(L, 2, HandBinding::getMetatableName()) != nullptr)
     {
-        hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+        hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
         instance->notifyTheftFrom(*h);
         return 0;
     }
@@ -1120,7 +1120,7 @@ int ItemBinding::setInventoryWeAreIn(lua_State* L)
 {
     Item* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Item is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->setInventoryWeAreIn(*h);
     return 0;
 }
@@ -1130,9 +1130,9 @@ int ItemBinding::setPersistant(lua_State* L)
 {
     Item* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Item is nil");
-    if (testObject<hand>(L, 2, handBinding::getMetatableName()) != nullptr)
+    if (testObject<hand>(L, 2, HandBinding::getMetatableName()) != nullptr)
     {
-        hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+        hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
         instance->setPersistant(*h);
     }
     else

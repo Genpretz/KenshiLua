@@ -6,6 +6,7 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GearBinding.h"
 #include "Bindings/EnumBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -492,7 +493,7 @@ int ArmourBinding::_CONSTRUCTOR(lua_State* L)
 
     GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameData* _materialData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     Faction* _uniformFlag = checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
     int _level = (int)luaL_checkinteger(L, 6);
     Armour* result = instance->_CONSTRUCTOR(baseData, _materialData, _handle, _uniformFlag, _level);
@@ -515,14 +516,6 @@ Skipped methods needing manual binding:
   line 170: void getTooltipData2(...) - unsupported arg type
   line 171: void _NV_getTooltipData2(...) - unsupported arg type
   line 176: float getArmourCraftingMaterialConsumptionRate(...) - static method
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 183: armourClassEnum (ArmourClass) - unsupported type
-  line 184: stigma (CharacterTypeEnum) - unsupported type
-  line 199: weatherProtections (std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 207: bodypartCoverage (ogre_unordered_map<GameData*, float>::type) - unsupported type
 */
 
 int ArmourBinding::gc(lua_State* L)
@@ -552,8 +545,7 @@ static int Armour_get_bodypartCoverage(lua_State* L)
 {
     Armour* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Armour is nil");
-    // TODO: Unsupported type for bodypartCoverage (ogre_unordered_map<GameData*, float>::type)
-    return luaL_error(L, "Unsupported property 'bodypartCoverage' (type: ogre_unordered_map<GameData*, float>::type)");
+    return pushObject<ogre_unordered_map<GameData*, float>::type>(L, &instance->bodypartCoverage, OgreUnorderedMapBinding<GameData*, float>::getMetatableName());
 }
 
 
@@ -570,8 +562,14 @@ static int Armour_get_weatherProtections(lua_State* L)
 {
     Armour* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Armour is nil");
-    // TODO: Unsupported type for weatherProtections (std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'weatherProtections' (type: std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy > >)");
+    lua_newtable(L);
+    int i = 1;
+    for (std::set<WeatherAffecting, std::less<WeatherAffecting>, Ogre::STLAllocator<WeatherAffecting, Ogre::GeneralAllocPolicy>>::const_iterator it = instance->weatherProtections.begin(); it != instance->weatherProtections.end(); ++it)
+    {
+        lua_pushinteger(L, (lua_Integer)*it);
+        lua_rawseti(L, -2, i++);
+    }
+    return 1;
 }
 
 
@@ -588,7 +586,10 @@ static int Armour_set_bodypartCoverage(lua_State* L)
 {
     Armour* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Armour is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bodypartCoverage");
+    ogre_unordered_map<GameData*, float>::type* val = OgreUnorderedMapBinding<GameData*, float>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'bodypartCoverage' must be ogre_unordered_map<GameData*, float>");
+    instance->bodypartCoverage = *val;
+    return 0;
 }
 
 
@@ -605,7 +606,17 @@ static int Armour_set_weatherProtections(lua_State* L)
 {
     Armour* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Armour is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for weatherProtections");
+    if (!lua_istable(L, 2)) return luaL_error(L, "Argument 2 to set 'weatherProtections' must be a table of WeatherAffecting enums");
+    instance->weatherProtections.clear();
+    int len = (int)lua_objlen(L, 2);
+    for (int i = 1; i <= len; ++i)
+    {
+        lua_rawgeti(L, 2, i);
+        WeatherAffecting wa = (WeatherAffecting)luaL_checkinteger(L, -1);
+        lua_pop(L, 1);
+        instance->weatherProtections.insert(wa);
+    }
+    return 0;
 }
 
 
@@ -716,6 +727,8 @@ void ArmourBinding::registerBinding(lua_State* L)
     // Wire up inheritance to Gear
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()
     // setMetatableParent(L, ArmourBinding::getMetatableName(), GearBinding::getMetatableName());
+
+    OgreUnorderedMapBinding<GameData*, float>::registerBinding(L, "KenshiLua.GameDataFloatMap", GameDataBinding::getMetatableName(), nullptr);
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

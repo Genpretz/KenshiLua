@@ -33,7 +33,7 @@ int LockedArmourBinding::_CONSTRUCTOR(lua_State* L)
 
     GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameData* _materialData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     Faction* _uniformFlag = checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
     int _level = (int)luaL_checkinteger(L, 6);
     LockedArmour* result = instance->_CONSTRUCTOR(baseData, _materialData, _handle, _uniformFlag, _level);

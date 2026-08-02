@@ -17,7 +17,7 @@ static int PortraitMainCellView_get_characterHandle(lua_State* L)
 {
     PortraitMainCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitMainCellView is nil");
-    return handBinding::push(L, instance->characterHandle);
+    return HandBinding::push(L, instance->characterHandle);
 }
 
 static int PortraitMainCellView_get_name(lua_State* L)
@@ -81,7 +81,7 @@ static int PortraitMainCellView_set_characterHandle(lua_State* L)
 {
     PortraitMainCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitMainCellView is nil");
-    instance->characterHandle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->characterHandle = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

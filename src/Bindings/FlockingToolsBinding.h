@@ -18,7 +18,12 @@ public:
 
     static int _CONSTRUCTOR(lua_State* L);
     static int create(lua_State* L);
+    static int getDistanceToClosestCharacter(lua_State* L);
+    static int getOutOfTheWay(lua_State* L);
     static int setCurrentPosition(lua_State* L);
+    static int getRepulsionMagnitude(lua_State* L);
+    static int getRepulsionVector(lua_State* L);
+    static int clampRepulsionVectorTo90Degrees(lua_State* L);
     static int calculateCurrentRepulsionVector(lua_State* L);
     static int getSensoryData(lua_State* L);
 };

@@ -303,7 +303,7 @@ int RootObjectFactoryBinding::createItem(lua_State* L)
     else if (nargs == 6)
     {
         GameData* gd = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-        hand* handle = checkObject<hand>(L, 3, handBinding::getMetatableName());
+        hand* handle = checkObject<hand>(L, 3, HandBinding::getMetatableName());
         GameData* weaponMesh = lua_isnil(L, 4) ? NULL : checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
         GameData* matData = lua_isnil(L, 5) ? NULL : checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
         int levelOverride = (int)luaL_checkinteger(L, 6);
@@ -333,7 +333,7 @@ int RootObjectFactoryBinding::createRandomSquad(lua_State* L)
     AreaBiomeGroup* maparea = (AreaBiomeGroup*)lua_touserdata(L, 9);
     Platoon* _activePlatoon = lua_isnil(L, 10) ? NULL : checkObject<Platoon>(L, 10, PlatoonBinding::getMetatableName());
     bool permanentsquad = lua_toboolean(L, 11) != 0;
-    hand* AItarget = checkObject<hand>(L, 12, handBinding::getMetatableName());
+    hand* AItarget = checkObject<hand>(L, 12, HandBinding::getMetatableName());
     TownBase* targetTown = lua_isnil(L, 13) ? NULL : checkObject<TownBase>(L, 13, TownBaseBinding::getMetatableName());
     float sizeMultiplier = (float)luaL_checknumber(L, 14);
     SquadType squadType = (SquadType)luaL_checkinteger(L, 15);
@@ -377,7 +377,7 @@ int RootObjectFactoryBinding::createRandomUnloadedSquad(lua_State* L)
     RootObjectContainer* owner = lua_isnil(L, 8) ? NULL : checkObject<RootObjectContainer>(L, 8, "KenshiLua.RootObjectContainer");
     AreaBiomeGroup* maparea = (AreaBiomeGroup*)lua_touserdata(L, 9);
     bool permanentsquad = lua_toboolean(L, 10) != 0;
-    hand* AItarget = checkObject<hand>(L, 11, handBinding::getMetatableName());
+    hand* AItarget = checkObject<hand>(L, 11, HandBinding::getMetatableName());
     TownBase* targetTown = lua_isnil(L, 12) ? NULL : checkObject<TownBase>(L, 12, TownBaseBinding::getMetatableName());
     SquadType squadType = (SquadType)luaL_checkinteger(L, 13);
 

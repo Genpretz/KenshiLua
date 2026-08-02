@@ -30,7 +30,7 @@ static int Ownerships_get__homeBuilding(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    return handBinding::push(L, instance->_homeBuilding);
+    return HandBinding::push(L, instance->_homeBuilding);
 }
 
 static int Ownerships_get_faction(lua_State* L)
@@ -75,7 +75,7 @@ static int Ownerships_set__homeBuilding(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    instance->_homeBuilding = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->_homeBuilding = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -422,8 +422,8 @@ void OwnershipsBinding::registerBinding(lua_State* L)
     registerGetter(L, "me", Ownerships_get_me);
     registerGetter(L, "occupiedTown", Ownerships_get_occupiedTown);
     registerGetter(L, "money", Ownerships_get_money);
-        registerGetter(L, "slaves", Ownerships_get_slaves);
-        registerGetter(L, "stuff", Ownerships_get_stuff);
+    registerGetter(L, "slaves", Ownerships_get_slaves);
+    registerGetter(L, "stuff", Ownerships_get_stuff);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -433,8 +433,8 @@ void OwnershipsBinding::registerBinding(lua_State* L)
     registerSetter(L, "me", Ownerships_set_me);
     registerSetter(L, "occupiedTown", Ownerships_set_occupiedTown);
     registerSetter(L, "money", Ownerships_set_money);
-        registerSetter(L, "slaves", Ownerships_set_slaves);
-        registerSetter(L, "stuff", Ownerships_set_stuff);
+    registerSetter(L, "slaves", Ownerships_set_slaves);
+    registerSetter(L, "stuff", Ownerships_set_stuff);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

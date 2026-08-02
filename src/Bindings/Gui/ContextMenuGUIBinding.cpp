@@ -17,7 +17,7 @@ static int ContextMenuGUI_get_contextMenuTarget(lua_State* L)
 {
     ContextMenuGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContextMenuGUI is nil");
-    return handBinding::push(L, instance->contextMenuTarget);
+    return HandBinding::push(L, instance->contextMenuTarget);
 }
 
 static int ContextMenuGUI_get_name(lua_State* L)
@@ -49,7 +49,7 @@ static int ContextMenuGUI_set_contextMenuTarget(lua_State* L)
 {
     ContextMenuGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContextMenuGUI is nil");
-    instance->contextMenuTarget = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->contextMenuTarget = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

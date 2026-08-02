@@ -414,7 +414,7 @@ int NavMeshBinding::unloadBuilding(lua_State* L)
     NavMesh* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "NavMesh is nil");
 
-    hand h = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand h = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->unloadBuilding(h);
     return 0;
 }

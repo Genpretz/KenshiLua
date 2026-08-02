@@ -60,7 +60,7 @@ public:
     static int showPlayerAMessage_withLog(lua_State* L);
     static int showPlayerAMessage(lua_State* L);
     static int showPlayerAMessageD(lua_State* L);
-    //static int playNotification(lua_State* L);
+    static int playNotification(lua_State* L);
     static int mainLoop_GPUSensitiveStuff(lua_State* L);
     static int _NV_mainLoop_GPUSensitiveStuff(lua_State* L);
     static int clearPortaitsUpdate(lua_State* L);
@@ -80,8 +80,14 @@ public:
     static int loadAllPlatoons(lua_State* L);
     static int reCalculateFortificationInsideOutsideStateForAllCharacters(lua_State* L);
     static int getTimeStamp(lua_State* L);
+    static int getTimeFromStamp(lua_State* L);
     static int getTimeFromStamp_inGameHours(lua_State* L);
     static int getTimeStamp_inGameHours(lua_State* L);
     static int getLengthOfHourInRealSeconds(lua_State* L);
+    static int logDebug(lua_State* L);
+    static int dynamicDestroyBuilding(lua_State* L);
+    static int getFromDeathParade(lua_State* L);
+    static int addPortraitUpdate(lua_State* L);
+    static int removePortaitUpdate(lua_State* L);
 };
 }

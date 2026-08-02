@@ -93,7 +93,7 @@ static int Dialogue_get_conversationTarget(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    return handBinding::push(L, instance->conversationTarget);
+    return HandBinding::push(L, instance->conversationTarget);
 }
 
 static int Dialogue_get_stats(lua_State* L)
@@ -136,21 +136,21 @@ static int Dialogue_get_interjector1(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    return handBinding::push(L, instance->interjector1);
+    return HandBinding::push(L, instance->interjector1);
 }
 
 static int Dialogue_get_interjector2(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    return handBinding::push(L, instance->interjector2);
+    return HandBinding::push(L, instance->interjector2);
 }
 
 static int Dialogue_get_interjector3(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    return handBinding::push(L, instance->interjector3);
+    return HandBinding::push(L, instance->interjector3);
 }
 
 static int Dialogue_get_speechBubblePanel(lua_State* L)
@@ -188,14 +188,14 @@ static int Dialogue_get_conversationMaster(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    return handBinding::push(L, instance->conversationMaster);
+    return HandBinding::push(L, instance->conversationMaster);
 }
 
 static int Dialogue_get_waitingForReplyFrom(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    return handBinding::push(L, instance->waitingForReplyFrom);
+    return HandBinding::push(L, instance->waitingForReplyFrom);
 }
 
 static int Dialogue_get_pacakgesIHave(lua_State* L)
@@ -476,7 +476,7 @@ static int Dialogue_set_conversationTarget(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    instance->conversationTarget = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->conversationTarget = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -524,7 +524,7 @@ static int Dialogue_set_interjector1(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    instance->interjector1 = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->interjector1 = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -532,7 +532,7 @@ static int Dialogue_set_interjector2(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    instance->interjector2 = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->interjector2 = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -540,7 +540,7 @@ static int Dialogue_set_interjector3(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    instance->interjector3 = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->interjector3 = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -580,7 +580,7 @@ static int Dialogue_set_conversationMaster(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    instance->conversationMaster = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->conversationMaster = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -588,7 +588,7 @@ static int Dialogue_set_waitingForReplyFrom(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    instance->waitingForReplyFrom = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->waitingForReplyFrom = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -662,7 +662,7 @@ int DialogueBinding::getHandle(lua_State* L)
     if (!instance) return luaL_error(L, "Dialogue is nil");
 
     hand result = instance->getHandle();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int DialogueBinding::getCharacter(lua_State* L)
@@ -848,7 +848,7 @@ int DialogueBinding::getConversationTarget(lua_State* L)
     if (!instance) return luaL_error(L, "Dialogue is nil");
 
     hand result = instance->getConversationTarget();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int DialogueBinding::changeConversationTarget(lua_State* L)
@@ -1480,7 +1480,7 @@ void DialogueBinding::registerBinding(lua_State* L)
 
     DialogLineDataBoolMapBinding::registerBinding(L, "KenshiLua.DialogLineDataBoolMap", DialogLineDataBinding::getMetatableName(), nullptr);
     EventRepeatTimersMapBinding::registerBinding(L, "KenshiLua.EventRepeatTimersMap", nullptr, nullptr);
-    EventDeliveredStatesMapBinding::registerBinding(L, "KenshiLua.EventDeliveredStatesMap", nullptr, handBinding::getMetatableName());
+    EventDeliveredStatesMapBinding::registerBinding(L, "KenshiLua.EventDeliveredStatesMap", nullptr, HandBinding::getMetatableName());
     ConversationsMainMapBinding::registerBinding(L, "KenshiLua.ConversationsMainMap", nullptr, DialogChoiceListBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack

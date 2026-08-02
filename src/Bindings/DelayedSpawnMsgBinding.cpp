@@ -22,7 +22,7 @@ static int DelayedSpawnMsg_get_parentTown(lua_State* L)
 {
     DelayedSpawnMsg* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DelayedSpawnMsg is nil");
-    return handBinding::push(L, instance->parentTown);
+    return HandBinding::push(L, instance->parentTown);
 }
 
 static int DelayedSpawnMsg_get_item(lua_State* L)
@@ -51,7 +51,7 @@ static int DelayedSpawnMsg_get_insideBuilding(lua_State* L)
 {
     DelayedSpawnMsg* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DelayedSpawnMsg is nil");
-    return handBinding::push(L, instance->insideBuilding);
+    return HandBinding::push(L, instance->insideBuilding);
 }
 
 // --- Setters for DelayedSpawnMsg ---
@@ -59,7 +59,7 @@ static int DelayedSpawnMsg_set_parentTown(lua_State* L)
 {
     DelayedSpawnMsg* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DelayedSpawnMsg is nil");
-    instance->parentTown = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->parentTown = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -91,7 +91,7 @@ static int DelayedSpawnMsg_set_insideBuilding(lua_State* L)
 {
     DelayedSpawnMsg* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DelayedSpawnMsg is nil");
-    instance->insideBuilding = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->insideBuilding = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

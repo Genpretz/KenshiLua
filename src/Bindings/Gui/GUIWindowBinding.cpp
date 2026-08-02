@@ -24,7 +24,7 @@ static int GUIWindow_get_selectedObject(lua_State* L)
 {
     GUIWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GUIWindow is nil");
-    return handBinding::push(L, instance->selectedObject);
+    return HandBinding::push(L, instance->selectedObject);
 }
 
 // --- Setters for GUIWindow ---
@@ -32,7 +32,7 @@ static int GUIWindow_set_selectedObject(lua_State* L)
 {
     GUIWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GUIWindow is nil");
-    instance->selectedObject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->selectedObject = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -249,7 +249,7 @@ int GUIWindowBinding::autoChangeSelectedObject(lua_State* L)
     GUIWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GUIWindow is nil");
 
-    hand* obj = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!obj) return luaL_error(L, "Argument 2 to autoChangeSelectedObject must be hand");
     instance->autoChangeSelectedObject(*obj);
     return 0;
@@ -260,7 +260,7 @@ int GUIWindowBinding::_NV_autoChangeSelectedObject(lua_State* L)
     GUIWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GUIWindow is nil");
 
-    hand* obj = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!obj) return luaL_error(L, "Argument 2 to _NV_autoChangeSelectedObject must be hand");
     instance->_NV_autoChangeSelectedObject(*obj);
     return 0;

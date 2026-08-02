@@ -19,7 +19,7 @@ static int MapMarkerTown_get_handle(lua_State* L)
 {
     MapMarkerTown* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapMarkerTown is nil");
-    return handBinding::push(L, instance->handle);
+    return HandBinding::push(L, instance->handle);
 }
 
 static int MapMarkerTown_get_zoomLayer(lua_State* L)
@@ -59,7 +59,7 @@ static int MapMarkerTown_set_handle(lua_State* L)
 {
     MapMarkerTown* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapMarkerTown is nil");
-    instance->handle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->handle = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

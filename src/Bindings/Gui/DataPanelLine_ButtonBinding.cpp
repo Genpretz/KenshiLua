@@ -18,7 +18,7 @@ static int DataPanelLine_Button_get_userData(lua_State* L)
 {
     DataPanelLine_Button* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
-    return handBinding::push(L, instance->userData);
+    return HandBinding::push(L, instance->userData);
 }
 
 static int DataPanelLine_Button_get_button(lua_State* L)
@@ -58,7 +58,7 @@ static int DataPanelLine_Button_set_userData(lua_State* L)
 {
     DataPanelLine_Button* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
-    instance->userData = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->userData = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -106,7 +106,7 @@ int DataPanelLine_ButtonBinding::getUserData(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
 
     hand result = instance->getUserData();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int DataPanelLine_ButtonBinding::_NV_getUserData(lua_State* L)
@@ -115,7 +115,7 @@ int DataPanelLine_ButtonBinding::_NV_getUserData(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
 
     hand result = instance->_NV_getUserData();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int DataPanelLine_ButtonBinding::createMe(lua_State* L)

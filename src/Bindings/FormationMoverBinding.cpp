@@ -3,6 +3,7 @@
 #include "FormationMoverBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -40,7 +41,7 @@ static int FormationMover_get_movementTarget(lua_State* L)
 {
     FormationMover* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FormationMover is nil");
-    return handBinding::push(L, instance->movementTarget);
+    return HandBinding::push(L, instance->movementTarget);
 }
 
 static int FormationMover_get_currentFormationID(lua_State* L)
@@ -80,7 +81,7 @@ static int FormationMover_set_movementTarget(lua_State* L)
 {
     FormationMover* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FormationMover is nil");
-    instance->movementTarget = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->movementTarget = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -128,11 +129,31 @@ int FormationMoverBinding::stopFormationMode(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 358: void getSpeeds(...) - non-string reference arg
-  line 359: void setFormationMode(...) - non-string reference arg
-*/
+int FormationMoverBinding::getSpeeds(lua_State* L)
+{
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+
+    Ogre::Vector3 motion;
+    readVector3(L, 2, motion);
+    float frameTime = (float)luaL_checknumber(L, 3);
+    float speed = 0.0f;
+    float strafeSpeed = 0.0f;
+    instance->getSpeeds(speed, strafeSpeed, motion, frameTime);
+    lua_pushnumber(L, speed);
+    lua_pushnumber(L, strafeSpeed);
+    return 2;
+}
+
+int FormationMoverBinding::setFormationMode(lua_State* L)
+{
+    FormationMover* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FormationMover is nil");
+
+    hand* target = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->setFormationMode(*target);
+    return 0;
+}
 
 int FormationMoverBinding::gc(lua_State* L)
 {
@@ -158,6 +179,8 @@ void FormationMoverBinding::registerBinding(lua_State* L)
         { "_CONSTRUCTOR", FormationMoverBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", FormationMoverBinding::_DESTRUCTOR },
         { "update", FormationMoverBinding::update },
+        { "getSpeeds", FormationMoverBinding::getSpeeds },
+        { "setFormationMode", FormationMoverBinding::setFormationMode },
         { "stopFormationMode", FormationMoverBinding::stopFormationMode },
         { 0, 0 }
     };

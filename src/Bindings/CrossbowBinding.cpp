@@ -29,7 +29,7 @@ int CrossbowBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "Crossbow is nil");
 
     GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 3, handBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 3, HandBinding::getMetatableName());
     int _overalllevel = (int)luaL_checkinteger(L, 4);
     Crossbow* result = instance->_CONSTRUCTOR(baseData, _handle, _overalllevel);
     return pushObject<Crossbow>(L, result, CrossbowBinding::getMetatableName());

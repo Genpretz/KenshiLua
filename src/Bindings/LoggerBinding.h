@@ -16,5 +16,10 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int init(lua_State* L);
+    static int close(lua_State* L);
+    static int logMessage(lua_State* L);
+    static int logMessageDebug(lua_State* L);
+    static int logHeader(lua_State* L);
 };
 }

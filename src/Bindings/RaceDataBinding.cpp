@@ -4,6 +4,8 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/ItemBinding.h"
+#include "Bindings/EnumBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -465,27 +467,68 @@ int RaceDataBinding::isImmune(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 20: RaceData* getRaceData(...) - static method
-  line 21: RaceData* getRaceData(...) - static method
-  line 25: bool isRelatedRace(...) - overloaded method
-  line 26: bool isRelatedRace(...) - overloaded method
-  line 29: bool canEat(...) - overloaded method
-  line 30: bool canEat(...) - overloaded method
-*/
+int RaceDataBinding::getRaceData(lua_State* L)
+{
+    if (lua_isstring(L, 1))
+    {
+        std::string stringID = luaL_checkstring(L, 1);
+        RaceData* result = RaceData::getRaceData(stringID);
+        return pushObject<RaceData>(L, result, RaceDataBinding::getMetatableName());
+    }
+    else
+    {
+        GameData* data = checkObject<GameData>(L, 1, GameDataBinding::getMetatableName());
+        RaceData* result = RaceData::getRaceData(data);
+        return pushObject<RaceData>(L, result, RaceDataBinding::getMetatableName());
+    }
+}
+
+int RaceDataBinding::isRelatedRace(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+
+    if (testObject<RaceData>(L, 2, RaceDataBinding::getMetatableName()) != nullptr)
+    {
+        RaceData* data = checkObject<RaceData>(L, 2, RaceDataBinding::getMetatableName());
+        bool result = instance->isRelatedRace(data);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+    else
+    {
+        GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+        bool result = instance->isRelatedRace(d);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+}
+
+int RaceDataBinding::canEat(lua_State* L)
+{
+    RaceData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RaceData is nil");
+
+    bool isAnimal = lua_toboolean(L, 3) != 0;
+    if (testObject<Item>(L, 2, ItemBinding::getMetatableName()) != nullptr)
+    {
+        Item* food = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+        bool result = instance->canEat(food, isAnimal);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+    else
+    {
+        GameData* food = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+        bool result = instance->canEat(food, isAnimal);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - RaceData_get_raceGroup: RaceGroupData* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 18: specialFoods (ogre_unordered_set<GameData*>::type) - unsupported type
-  line 55: bloodColour (Ogre::ColourValue) - unsupported type
-  line 57: statMods (ogre_unordered_map<StatsEnumerated, float>::type) - unsupported type
-  line 58: weatherImmunities (ogre_unordered_set<WeatherAffecting>::type) - unsupported type
 */
 
 int RaceDataBinding::gc(lua_State* L)
@@ -506,43 +549,39 @@ static int RaceData_get_bloodColour(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    // TODO: Unsupported type for bloodColour (Ogre::ColourValue)
-    return luaL_error(L, "Unsupported property 'bloodColour' (type: Ogre::ColourValue)");
+    pushColourValue(L, instance->bloodColour);
+    return 1;
 }
-
 
 static int RaceData_get_specialFoods(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    // TODO: Unsupported type for specialFoods (ogre_unordered_set<GameData*>::type)
-    return luaL_error(L, "Unsupported property 'specialFoods' (type: ogre_unordered_set<GameData*>::type)");
+    return pushObject<ogre_unordered_set<GameData*>::type>(L, &instance->specialFoods, OgreUnorderedSetBinding<GameData*>::getMetatableName());
 }
-
 
 static int RaceData_get_statMods(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    // TODO: Unsupported type for statMods (ogre_unordered_map<StatsEnumerated, float>::type)
-    return luaL_error(L, "Unsupported property 'statMods' (type: ogre_unordered_map<StatsEnumerated, float>::type)");
+    return pushObject<ogre_unordered_map<StatsEnumerated, float>::type>(L, &instance->statMods, OgreUnorderedMapBinding<StatsEnumerated, float>::getMetatableName());
 }
-
 
 static int RaceData_get_weatherImmunities(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    // TODO: Unsupported type for weatherImmunities (ogre_unordered_set<WeatherAffecting>::type)
-    return luaL_error(L, "Unsupported property 'weatherImmunities' (type: ogre_unordered_set<WeatherAffecting>::type)");
+    return pushObject<ogre_unordered_set<WeatherAffecting>::type>(L, &instance->weatherImmunities, OgreUnorderedSetBinding<WeatherAffecting>::getMetatableName());
 }
-
 
 static int RaceData_set_bloodColour(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for bloodColour");
+    if (!readColourValue(L, 2, instance->bloodColour)) {
+        return luaL_error(L, "Argument 2 to set 'bloodColour' must be a table {r, g, b, a}");
+    }
+    return 0;
 }
 
 
@@ -550,7 +589,8 @@ static int RaceData_set_raceGroup(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for raceGroup");
+    instance->raceGroup = (RaceGroupData*)lua_touserdata(L, 2);
+    return 0;
 }
 
 
@@ -558,7 +598,10 @@ static int RaceData_set_specialFoods(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for specialFoods");
+    auto* val = OgreUnorderedSetBinding<GameData*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'specialFoods' must be ogre_unordered_set<GameData*>");
+    instance->specialFoods = *val;
+    return 0;
 }
 
 
@@ -566,7 +609,10 @@ static int RaceData_set_statMods(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for statMods");
+    auto* val = OgreUnorderedMapBinding<StatsEnumerated, float>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'statMods' must be ogre_unordered_map<StatsEnumerated, float>");
+    instance->statMods = *val;
+    return 0;
 }
 
 
@@ -574,7 +620,10 @@ static int RaceData_set_weatherImmunities(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for weatherImmunities");
+    auto* val = OgreUnorderedSetBinding<WeatherAffecting>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'weatherImmunities' must be ogre_unordered_set<WeatherAffecting>");
+    instance->weatherImmunities = *val;
+    return 0;
 }
 
 
@@ -588,9 +637,12 @@ void RaceDataBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", RaceDataBinding::_CONSTRUCTOR },
+        { "getRaceData", RaceDataBinding::getRaceData },
+        { "isRelatedRace", RaceDataBinding::isRelatedRace },
         { "isSpecificRace", RaceDataBinding::isSpecificRace },
         { "getStatMod", RaceDataBinding::getStatMod },
         { "isImmune", RaceDataBinding::isImmune },
+        { "canEat", RaceDataBinding::canEat },
         { 0, 0 }
     };
 
@@ -631,10 +683,10 @@ void RaceDataBinding::registerBinding(lua_State* L)
     registerGetter(L, "firstAidSkill", RaceData_get_firstAidSkill);
     registerGetter(L, "canGoIndoors", RaceData_get_canGoIndoors);
     registerGetter(L, "raceGroup", RaceData_get_raceGroup);
-        registerGetter(L, "bloodColour", RaceData_get_bloodColour);
-        registerGetter(L, "specialFoods", RaceData_get_specialFoods);
-        registerGetter(L, "statMods", RaceData_get_statMods);
-        registerGetter(L, "weatherImmunities", RaceData_get_weatherImmunities);
+    registerGetter(L, "bloodColour", RaceData_get_bloodColour);
+    registerGetter(L, "specialFoods", RaceData_get_specialFoods);
+    registerGetter(L, "statMods", RaceData_get_statMods);
+    registerGetter(L, "weatherImmunities", RaceData_get_weatherImmunities);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -663,12 +715,16 @@ void RaceDataBinding::registerBinding(lua_State* L)
     registerSetter(L, "extraAttackSlots", RaceData_set_extraAttackSlots);
     registerSetter(L, "firstAidSkill", RaceData_set_firstAidSkill);
     registerSetter(L, "canGoIndoors", RaceData_set_canGoIndoors);
-        registerSetter(L, "bloodColour", RaceData_set_bloodColour);
-        registerSetter(L, "raceGroup", RaceData_set_raceGroup);
-        registerSetter(L, "specialFoods", RaceData_set_specialFoods);
-        registerSetter(L, "statMods", RaceData_set_statMods);
-        registerSetter(L, "weatherImmunities", RaceData_set_weatherImmunities);
+    registerSetter(L, "bloodColour", RaceData_set_bloodColour);
+    registerSetter(L, "raceGroup", RaceData_set_raceGroup);
+    registerSetter(L, "specialFoods", RaceData_set_specialFoods);
+    registerSetter(L, "statMods", RaceData_set_statMods);
+    registerSetter(L, "weatherImmunities", RaceData_set_weatherImmunities);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "KenshiLua.GameDataSet", GameDataBinding::getMetatableName());
+    OgreUnorderedMapBinding<StatsEnumerated, float>::registerBinding(L, "KenshiLua.StatsEnumeratedFloatMap", nullptr, nullptr);
+    OgreUnorderedSetBinding<WeatherAffecting>::registerBinding(L, "KenshiLua.WeatherAffectingSet", nullptr);
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

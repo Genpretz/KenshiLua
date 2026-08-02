@@ -1,20 +1,25 @@
 #include "pch.h"
-#include "kenshi\gameworld.h"
+#include "KENSHI\GameWorld.h"
 #include "GameWorldBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/FactionManagerBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataManagerBinding.h"
+#include "Bindings/NavMeshBinding.h"
+#include "Bindings/PhysicsInterfaceBinding.h"
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/PlayerInterfaceBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/RootObjectFactoryBinding.h"
 #include "Bindings/SimpleTimeStamperBinding.h"
+#include "Bindings/ThreadWannabeBinding.h"
 #include "Bindings/Util/TimeOfDayBinding.h"
 #include "Bindings/TownBuildingsManagerBinding.h"
 #include "Bindings/ZoneManagerBinding.h"
 #include "Bindings/ZoneMapBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -53,8 +58,7 @@ static int GameWorld_get_physics(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    lua_pushlightuserdata(L, (void*)instance->physics);
-    return 1;
+    return pushObject<PhysicsInterface>(L, instance->physics, PhysicsInterfaceBinding::getMetatableName());
 }
 
 static int GameWorld_get_gamedata(lua_State* L)
@@ -96,8 +100,7 @@ static int GameWorld_get_navmesh(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    lua_pushlightuserdata(L, (void*)instance->navmesh);
-    return 1;
+    return pushObject<NavMesh>(L, instance->navmesh, NavMeshBinding::getMetatableName());
 }
 
 static int GameWorld_get_nodeList(lua_State* L)
@@ -112,7 +115,7 @@ static int GameWorld_get_guiDisplayObject(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    return handBinding::push(L, instance->guiDisplayObject);
+    return HandBinding::push(L, instance->guiDisplayObject);
 }
 
 static int GameWorld_get_messageRoller(lua_State* L)
@@ -241,6 +244,14 @@ static int GameWorld_set_initialized(lua_State* L)
     return 0;
 }
 
+static int GameWorld_set_physics(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    instance->physics = lua_isnoneornil(L, 2) ? nullptr : checkObject<PhysicsInterface>(L, 2, PhysicsInterfaceBinding::getMetatableName());
+    return 0;
+}
+
 static int GameWorld_set_gamedata(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
@@ -281,11 +292,19 @@ static int GameWorld_set_factionMgr(lua_State* L)
     return 0;
 }
 
+static int GameWorld_set_navmesh(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    instance->navmesh = lua_isnoneornil(L, 2) ? nullptr : checkObject<NavMesh>(L, 2, NavMeshBinding::getMetatableName());
+    return 0;
+}
+
 static int GameWorld_set_guiDisplayObject(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    instance->guiDisplayObject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->guiDisplayObject = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -826,15 +845,15 @@ int GameWorldBinding::showPlayerAMessageD(lua_State* L)
     return 0;
 }
 
-// int GameWorldBinding::playNotification(lua_State* L)
-// {
-//     GameWorld* instance = getInstance(L, 1);
-//     if (!instance) return luaL_error(L, "GameWorld is nil");
+int GameWorldBinding::playNotification(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
 
-//     const char* sound = (char)luaL_checkinteger(L, 2);
-//     instance->playNotification(sound);
-//     return 0;
-// }
+    const char* sound = luaL_checkstring(L, 2);
+    instance->playNotification(sound);
+    return 0;
+}
 
 int GameWorldBinding::mainLoop_GPUSensitiveStuff(lua_State* L)
 {
@@ -952,8 +971,7 @@ int GameWorldBinding::AINonRenderThread(lua_State* L)
     if (!instance) return luaL_error(L, "GameWorld is nil");
 
     ThreadWannabe* result = instance->AINonRenderThread();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ThreadWannabe>(L, result, ThreadWannabeBinding::getMetatableName());
 }
 
 int GameWorldBinding::processAttachmentsKillList(lua_State* L)
@@ -1042,70 +1060,140 @@ int GameWorldBinding::getLengthOfHourInRealSeconds(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 71: bool start(...) - unsupported arg type
-  line 82: void logDebug(...) - overloaded method
-  line 83: void logDebug(...) - overloaded method
-  line 84: void destroy(...) - overloaded method
-  line 85: void destroy(...) - overloaded method
-  line 86: void destroy(...) - overloaded method
-  line 87: void destroy(...) - overloaded method
-  line 88: bool destroy(...) - overloaded method
-  line 89: void destroy(...) - overloaded method
-  line 92: void dynamicDestroyBuilding(...) - non-string reference arg
-  line 115: lektor<ModInfo*> getModsListFromConfig(...) - unsupported return type
-  line 116: const lektor<ModInfo*>& getAllModsList(...) - reference return type
-  line 118: const std::string& getModLeveldataFolder(...) - reference return type
-  line 119: void getObjectsWithinSphere(...) - unsupported arg type
-  line 120: void getCharactersWithinSphere(...) - unsupported arg type
-  line 121: void getObjectsWithinBox(...) - unsupported arg type
-  line 140: const ogre_unordered_set<Character*>::type& getCharacterUpdateList(...) - reference return type
-  line 144: Character* getFromDeathParade(...) - non-string reference arg
-  line 192: void sysMessage(...) - non-string reference arg
-  line 193: void sysMessageUrgent(...) - non-string reference arg
-  line 194: void sysMessage_noDuplicates(...) - non-string reference arg
-  line 198: void addPortraitUpdate(...) - non-string reference arg
-  line 199: void removePortaitUpdate(...) - non-string reference arg
-  line 202: void getCollisionGroupType(...) - unsupported arg type
-  line 235: TimeOfDay getTimeFromStamp(...) - overloaded method
-  line 236: float getTimeFromStamp(...) - overloaded method
-*/
+int GameWorldBinding::logDebug(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    std::string line = luaL_checkstring(L, 2);
+    if (lua_gettop(L) >= 3)
+    {
+        std::string logname = luaL_checkstring(L, 3);
+        instance->logDebug(line, logname);
+    }
+    else
+    {
+        instance->logDebug(line);
+    }
+    return 0;
+}
+
+int GameWorldBinding::getTimeFromStamp(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    if (lua_isnumber(L, 2))
+    {
+        double stamp = (double)luaL_checknumber(L, 2);
+        float result = instance->getTimeFromStamp(stamp);
+        lua_pushnumber(L, result);
+        return 1;
+    }
+    else
+    {
+        TimeOfDay* stamp = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
+        TimeOfDay result = instance->getTimeFromStamp(*stamp);
+        return pushObject<TimeOfDay>(L, &result, TimeOfDayBinding::getMetatableName());
+    }
+}
+
+int GameWorldBinding::dynamicDestroyBuilding(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->dynamicDestroyBuilding(*h);
+    return 0;
+}
+
+int GameWorldBinding::getFromDeathParade(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    Character* result = instance->getFromDeathParade(*h);
+    return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
+}
+
+int GameWorldBinding::addPortraitUpdate(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->addPortraitUpdate(*h);
+    return 0;
+}
+
+int GameWorldBinding::removePortaitUpdate(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->removePortaitUpdate(*h);
+    return 0;
+}
+
+static int GameWorld_get_charactersWithLights(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<ogre_unordered_set<Character*>::type>(L, &instance->charactersWithLights, "KenshiLua.CharactersWithLightsSet");
+}
+
+static int GameWorld_set_charactersWithLights(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = checkObject<ogre_unordered_set<Character*>::type>(L, 2, "KenshiLua.CharactersWithLightsSet");
+    if (val) instance->charactersWithLights = *val;
+    return 0;
+}
+
+static int GameWorld_get_deathParade(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<ogre_unordered_map<hand, Character*>::type>(L, &instance->deathParade, "KenshiLua.DeathParadeMap");
+}
+
+static int GameWorld_set_deathParade(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = checkObject<ogre_unordered_map<hand, Character*>::type>(L, 2, "KenshiLua.DeathParadeMap");
+    if (val) instance->deathParade = *val;
+    return 0;
+}
+
+static int GameWorld_get_charUpdateListMain(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<ogre_unordered_set<Character*>::type>(L, &instance->charUpdateListMain, "KenshiLua.CharUpdateListMainSet");
+}
+
+static int GameWorld_set_charUpdateListMain(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = checkObject<ogre_unordered_set<Character*>::type>(L, 2, "KenshiLua.CharUpdateListMainSet");
+    if (val) instance->charUpdateListMain = *val;
+    return 0;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - GameWorld_get_render: RendererT* (unbound pointer)
-  - GameWorld_get_physics: PhysicsInterface* (unbound pointer)
-  - GameWorld_get_navmesh: NavMesh* (unbound pointer)
   - GameWorld_get_nodeList: NodeList* (unbound pointer)
   - GameWorld_get_messageRoller: MessageRoller* (unbound pointer)
   - GameWorld_get_ogreLogger: Ogre::Log* (unbound pointer)
   - GameWorld_get__AINonRenderThread: RenderTimeBackthread* (unbound pointer)
   - GameWorld_get_audioThread: AudioSystemGlobal* (unbound pointer)
-  - GameWorldBinding::AINonRenderThread: ThreadWannabe* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 108: baseMods (lektor<ModInfo>) - unsupported type
-  line 109: baseModsNames (lektor<std::string >) - unsupported type
-  line 110: activeMods (lektor<ModInfo*>) - unsupported type
-  line 111: availableModsByName (std::map<std::string, ModInfo, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, ModInfo>, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 112: availabelModsOrderedList (lektor<ModInfo*>) - unsupported type
-  line 153: charactersWithLights (ogre_unordered_set<Character*>::type) - unsupported type
-  line 200: sysMessageList (std::list<GameWorld::SysMessage, Ogre::STLAllocator<GameWorld::SysMessage, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 203: updatePortraitsMap (ogre_unordered_map<hand, float>::type) - unsupported type
-  line 204: dynamicDestroyBuildingsList (lektor<hand>) - unsupported type
-  line 205: destroyListAE (ogre_unordered_set<AttachedEntity*>::type) - unsupported type
-  line 206: destroyListOE (ogre_unordered_set<Ogre::MovableObject*>::type) - unsupported type
-  line 207: destroyListTBM (ogre_unordered_set<TownBuildingsManager*>::type) - unsupported type
-  line 210: deathParade (ogre_unordered_map<hand, Character*>::type) - unsupported type
-  line 215: charUpdateListMain (ogre_unordered_set<Character*>::type) - unsupported type
-  line 226: nestBatcherKillList (std::deque<NestBatcher*, Ogre::STLAllocator<NestBatcher*, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 227: killListPhase0 (ogre_unordered_set<RootObject*>::type) - unsupported type
-  line 228: killListPhase1 (ogre_unordered_map<RootObject*, float>::type) - unsupported type
-  line 229: killListPhase2 (std::deque<RootObject*, Ogre::STLAllocator<RootObject*, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 230: mainUpdateListRemovalQueue (lektor<Character*>) - unsupported type
 */
 
 int GameWorldBinding::gc(lua_State* L)
@@ -1143,6 +1231,12 @@ void GameWorldBinding::registerBinding(lua_State* L)
         { "errorD", GameWorldBinding::errorD },
         { "logToSave", GameWorldBinding::logToSave },
         { "log", GameWorldBinding::log },
+        { "logDebug", GameWorldBinding::logDebug },
+        { "dynamicDestroyBuilding", GameWorldBinding::dynamicDestroyBuilding },
+        { "getFromDeathParade", GameWorldBinding::getFromDeathParade },
+        { "addPortraitUpdate", GameWorldBinding::addPortraitUpdate },
+        { "removePortaitUpdate", GameWorldBinding::removePortaitUpdate },
+        { "getTimeFromStamp", GameWorldBinding::getTimeFromStamp },
         { "getIsInKillList", GameWorldBinding::getIsInKillList },
         { "flushKillList", GameWorldBinding::flushKillList },
         { "allThreadQueuesAreClear", GameWorldBinding::allThreadQueuesAreClear },
@@ -1173,7 +1267,7 @@ void GameWorldBinding::registerBinding(lua_State* L)
         { "showPlayerAMessage_withLog", GameWorldBinding::showPlayerAMessage_withLog },
         { "showPlayerAMessage", GameWorldBinding::showPlayerAMessage },
         { "showPlayerAMessageD", GameWorldBinding::showPlayerAMessageD },
-        //{ "playNotification", GameWorldBinding::playNotification },
+        { "playNotification", GameWorldBinding::playNotification },
         { "mainLoop_GPUSensitiveStuff", GameWorldBinding::mainLoop_GPUSensitiveStuff },
         { "_NV_mainLoop_GPUSensitiveStuff", GameWorldBinding::_NV_mainLoop_GPUSensitiveStuff },
         { "clearPortaitsUpdate", GameWorldBinding::clearPortaitsUpdate },
@@ -1236,16 +1330,21 @@ void GameWorldBinding::registerBinding(lua_State* L)
     registerGetter(L, "paused", GameWorld_get_paused);
     registerGetter(L, "gameResetting", GameWorld_get_gameResetting);
     registerGetter(L, "audioThread", GameWorld_get_audioThread);
+    registerGetter(L, "charactersWithLights", GameWorld_get_charactersWithLights);
+    registerGetter(L, "deathParade", GameWorld_get_deathParade);
+    registerGetter(L, "charUpdateListMain", GameWorld_get_charUpdateListMain);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "tempSpawnsDisableTimer", GameWorld_set_tempSpawnsDisableTimer);
     registerSetter(L, "initialized", GameWorld_set_initialized);
+    registerSetter(L, "physics", GameWorld_set_physics);
     registerSetter(L, "gamedata", GameWorld_set_gamedata);
     registerSetter(L, "leveldata", GameWorld_set_leveldata);
     registerSetter(L, "savedata", GameWorld_set_savedata);
     registerSetter(L, "theFactory", GameWorld_set_theFactory);
     registerSetter(L, "factionMgr", GameWorld_set_factionMgr);
+    registerSetter(L, "navmesh", GameWorld_set_navmesh);
     registerSetter(L, "guiDisplayObject", GameWorld_set_guiDisplayObject);
     registerSetter(L, "steamEnabled", GameWorld_set_steamEnabled);
     registerSetter(L, "player", GameWorld_set_player);
@@ -1257,9 +1356,16 @@ void GameWorldBinding::registerBinding(lua_State* L)
     registerSetter(L, "debugFlag", GameWorld_set_debugFlag);
     registerSetter(L, "paused", GameWorld_set_paused);
     registerSetter(L, "gameResetting", GameWorld_set_gameResetting);
+    registerSetter(L, "charactersWithLights", GameWorld_set_charactersWithLights);
+    registerSetter(L, "deathParade", GameWorld_set_deathParade);
+    registerSetter(L, "charUpdateListMain", GameWorld_set_charUpdateListMain);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to Ogre::GeneralAllocatedObject
+    OgreUnorderedSetBinding<Character*>::registerBinding(L, "KenshiLua.CharactersWithLightsSet", CharacterBinding::getMetatableName());
+    OgreUnorderedMapBinding<hand, Character*>::registerBinding(L, "KenshiLua.DeathParadeMap", HandBinding::getMetatableName(), CharacterBinding::getMetatableName());
+    OgreUnorderedSetBinding<Character*>::registerBinding(L, "KenshiLua.CharUpdateListMainSet", CharacterBinding::getMetatableName());
+
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
     // setMetatableParent(L, GameWorldBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -21,7 +21,7 @@ static int OrdersPanel_get_ordersCharacter(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    return handBinding::push(L, instance->ordersCharacter);
+    return HandBinding::push(L, instance->ordersCharacter);
 }
 
 static int OrdersPanel_get_ordersItemBox(lua_State* L)
@@ -156,7 +156,7 @@ static int OrdersPanel_set_ordersCharacter(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    instance->ordersCharacter = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->ordersCharacter = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

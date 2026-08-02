@@ -45,12 +45,6 @@ static int GameDataValuePair_set_val0(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 142: GameDataValuePair* _CONSTRUCTOR(...) - overloaded method
-  line 144: GameDataValuePair* _CONSTRUCTOR(...) - overloaded method
-*/
-
 int GameDataValuePairBinding::_CONSTRUCTOR(lua_State* L)
 {
     GameDataValuePair* instance = getInstance(L, 1);

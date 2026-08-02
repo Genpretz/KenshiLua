@@ -903,7 +903,7 @@ int DatapanelGUIBinding::getObject(lua_State* L)
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
     hand result = instance->getObject();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int DatapanelGUIBinding::_NV_getObject(lua_State* L)
@@ -912,7 +912,7 @@ int DatapanelGUIBinding::_NV_getObject(lua_State* L)
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
     hand result = instance->_NV_getObject();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int DatapanelGUIBinding::setLineSpacing(lua_State* L)

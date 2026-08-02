@@ -53,7 +53,7 @@ static int RootObject_get_isInsideBuilding(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    return handBinding::push(L, instance->isInsideBuilding);
+    return HandBinding::push(L, instance->isInsideBuilding);
 }
 
 static int RootObject_get_isInsideTownWalls(lua_State* L)
@@ -109,7 +109,7 @@ static int RootObject_set_isInsideBuilding(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    instance->isInsideBuilding = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->isInsideBuilding = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -160,7 +160,7 @@ int RootObjectBinding::_CONSTRUCTOR(lua_State* L)
 
     GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Faction* ownr = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
-    hand _h = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand _h = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     RootObject* result = instance->_CONSTRUCTOR(d, ownr, _h);
     return pushObject<RootObject>(L, result, RootObjectBinding::getMetatableName());
 }
@@ -1089,7 +1089,7 @@ int RootObjectBinding::_NV_isIndoors(lua_State* L)
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
     const hand& result = instance->_NV_isIndoors();
-    handBinding::push(L, result);
+    HandBinding::push(L, result);
     return 1;
 }
 
@@ -1098,7 +1098,7 @@ int RootObjectBinding::_NV_notifyIndoors(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    hand* in = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* in = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->_NV_notifyIndoors(*in);
     return 0;
 }
@@ -1108,7 +1108,7 @@ int RootObjectBinding::_NV_setIsInsideBuilding(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->_NV_setIsInsideBuilding(*h);
     return 0;
 }
@@ -1182,7 +1182,7 @@ int RootObjectBinding::isIndoors(lua_State* L)
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
     const hand& result = instance->isIndoors();
-    handBinding::push(L, result);
+    HandBinding::push(L, result);
     return 1;
 }
 
@@ -1191,7 +1191,7 @@ int RootObjectBinding::notifyIndoors(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    hand* in = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* in = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->notifyIndoors(*in);
     return 0;
 }
@@ -1201,7 +1201,7 @@ int RootObjectBinding::setIsInsideBuilding(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->setIsInsideBuilding(*h);
     return 0;
 }

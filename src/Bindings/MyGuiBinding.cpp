@@ -238,19 +238,52 @@ public:
 private:
     void onMouseButtonClick(MyGUI::Widget* sender)
     {
-        if (!m_L) return;
-        CallbackKey key = { sender, OnClick };
-        auto it = m_callbacks.find(key);
-        if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
+        try
+        {
+            std::string name = sender ? sender->getName() : "null";
+            logToFile("[MyGUI Event] onMouseButtonClick triggered for sender: " + name);
+            if (!m_L)
+            {
+                logToFileWarn("[MyGUI Event] m_L is null in onMouseButtonClick");
+                return;
+            }
+            CallbackKey key = { sender, OnClick };
+            auto it = m_callbacks.find(key);
+            if (it == m_callbacks.end())
+            {
+                logToFileWarn("[MyGUI Event] No callback found in m_callbacks for sender: " + name);
+                return;
+            }
+            if (it->second == LUA_NOREF)
+            {
+                logToFileWarn("[MyGUI Event] Callback ref is LUA_NOREF for sender: " + name);
+                return;
+            }
 
-        int top = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
+            int top = lua_gettop(m_L);
+            lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
+            if (!lua_isfunction(m_L, -1))
+            {
+                logToFileError("[MyGUI Event] Registry ref is not a function for sender: " + name);
+                lua_settop(m_L, top);
+                return;
+            }
 
-        std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
-            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top);
+            pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
+
+            std::string pcallErr;
+            if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
+                logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
+            lua_settop(m_L, top);
+        }
+        catch (const std::exception& e)
+        {
+            logToFileError(std::string("[MyGUI Event Exception] Exception in onMouseButtonClick: ") + e.what());
+        }
+        catch (...)
+        {
+            logToFileError("[MyGUI Event Exception] Unknown exception in onMouseButtonClick");
+        }
     }
 
     void onEditTextChange(MyGUI::EditBox* sender)
@@ -504,12 +537,9 @@ private:
         pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
         lua_pushinteger(m_L, index);
 
-        if (lua_pcall(m_L, 2, 0, 0) != LUA_OK)
-        {
-            const char* err = lua_tostring(m_L, -1);
-            logToFileError(std::string("MyGUI Event Error: ") + (err ? err : "unknown"));
-            lua_pop(m_L, 1);
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
         lua_settop(m_L, top_stack);
     }
 
@@ -2076,7 +2106,10 @@ static int widget_index(lua_State* L)
     luaL_getmetatable(L, MyGuiBinding::getMetatableName());
     lua_getfield(L, -1, key);
     if (!lua_isnil(L, -1))
+    {
+        lua_remove(L, -2);
         return 1;
+    }
     lua_pop(L, 2);
 
     lua_pushnil(L);

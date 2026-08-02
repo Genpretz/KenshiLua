@@ -90,7 +90,7 @@ static int physHit_get_hitObject(lua_State* L)
 {
     physHit* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "physHit is nil");
-    return handBinding::push(L, instance->hitObject);
+    return HandBinding::push(L, instance->hitObject);
 }
 
 static int physHit_get__group(lua_State* L)
@@ -177,7 +177,7 @@ static int physHit_set_hitObject(lua_State* L)
 {
     physHit* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "physHit is nil");
-    instance->hitObject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->hitObject = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

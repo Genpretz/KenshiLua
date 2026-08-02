@@ -49,7 +49,7 @@ static int PortraitData_get_characterHandle(lua_State* L)
 {
     PortraitData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitData is nil");
-    return handBinding::push(L, instance->characterHandle);
+    return HandBinding::push(L, instance->characterHandle);
 }
 
 static int PortraitData_get_updateRequested(lua_State* L)
@@ -97,7 +97,7 @@ static int PortraitData_set_characterHandle(lua_State* L)
 {
     PortraitData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitData is nil");
-    instance->characterHandle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->characterHandle = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

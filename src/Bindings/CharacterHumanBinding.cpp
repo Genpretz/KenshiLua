@@ -65,7 +65,7 @@ int CharacterHumanBinding::_CONSTRUCTOR(lua_State* L)
 
     GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Faction* f = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     CharacterHuman* result = instance->_CONSTRUCTOR(d, f, _handle);
     return pushObject<CharacterHuman>(L, result, CharacterHumanBinding::getMetatableName());
 }

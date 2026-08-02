@@ -57,7 +57,7 @@ static int ScreenLabel_get_trackingHandle(lua_State* L)
 {
     ScreenLabel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ScreenLabel is nil");
-    return handBinding::push(L, instance->trackingHandle);
+    return HandBinding::push(L, instance->trackingHandle);
 }
 
 static int ScreenLabel_get_trackingOffset(lua_State* L)
@@ -113,7 +113,7 @@ static int ScreenLabel_set_trackingHandle(lua_State* L)
 {
     ScreenLabel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ScreenLabel is nil");
-    instance->trackingHandle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->trackingHandle = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

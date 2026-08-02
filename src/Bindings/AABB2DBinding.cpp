@@ -78,6 +78,25 @@ static int AABB2D_set_y2(lua_State* L)
     return 0;
 }
 
+int AABB2DBinding::_CONSTRUCTOR(lua_State* L)
+{
+    AABB2D* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AABB2D is nil");
+
+    if (lua_gettop(L) >= 2)
+    {
+        Ogre::Vector4 a;
+        readQuaternion(L, 2, a);
+        AABB2D* result = instance->_CONSTRUCTOR(a);
+        return pushObject<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+    }
+    else
+    {
+        AABB2D* result = instance->_CONSTRUCTOR();
+        return pushObject<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+    }
+}
+
 int AABB2DBinding::setNull(lua_State* L)
 {
     AABB2D* instance = getInstance(L, 1);
@@ -129,6 +148,39 @@ int AABB2DBinding::sizeY(lua_State* L)
     return 1;
 }
 
+int AABB2DBinding::intersects(lua_State* L)
+{
+    AABB2D* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AABB2D is nil");
+
+    if (testObject<AABB2D>(L, 2, AABB2DBinding::getMetatableName()) != nullptr)
+    {
+        AABB2D* b = checkObject<AABB2D>(L, 2, AABB2DBinding::getMetatableName());
+        bool result = instance->intersects(*b);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+
+    Ogre::Vector3 v1;
+    readVector3(L, 2, v1);
+
+    if (lua_isnumber(L, 3))
+    {
+        float radius = (float)lua_tonumber(L, 3);
+        bool result = instance->intersects(v1, radius);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+    else
+    {
+        Ogre::Vector3 v2;
+        readVector3(L, 3, v2);
+        bool result = instance->intersects(v1, v2);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+}
+
 int AABB2DBinding::intersects2(lua_State* L)
 {
     AABB2D* instance = getInstance(L, 1);
@@ -142,15 +194,6 @@ int AABB2DBinding::intersects2(lua_State* L)
     pushVector2(L, result);
     return 1;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 18: AABB2D* _CONSTRUCTOR(...) - overloaded method
-  line 23: AABB2D* _CONSTRUCTOR(...) - overloaded method
-  line 43: bool intersects(...) - overloaded method
-  line 44: bool intersects(...) - overloaded method
-  line 45: bool intersects(...) - overloaded method
-*/
 
 int AABB2DBinding::gc(lua_State* L)
 {
@@ -173,11 +216,13 @@ void AABB2DBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", AABB2DBinding::_CONSTRUCTOR },
         { "setNull", AABB2DBinding::setNull },
         { "pointWithin", AABB2DBinding::pointWithin },
         { "inflate", AABB2DBinding::inflate },
         { "sizeX", AABB2DBinding::sizeX },
         { "sizeY", AABB2DBinding::sizeY },
+        { "intersects", AABB2DBinding::intersects },
         { "intersects2", AABB2DBinding::intersects2 },
         { 0, 0 }
     };

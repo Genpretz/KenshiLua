@@ -53,7 +53,7 @@ static int CharBody_get_target(lua_State* L)
 {
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
-    return handBinding::push(L, instance->target);
+    return HandBinding::push(L, instance->target);
 }
 
 static int CharBody_get_gotItem(lua_State* L)
@@ -156,7 +156,7 @@ static int CharBody_set_target(lua_State* L)
 {
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
-    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* val = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->target = *val;
     return 0;
 }
@@ -519,7 +519,7 @@ static int CharBody_getHandle(lua_State* L)
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
     hand result = instance->getHandle();
-    handBinding::push(L, result);
+    HandBinding::push(L, result);
     return 1;
 }
 
@@ -528,7 +528,7 @@ static int CharBody_getCurrentSubject(lua_State* L)
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
     hand result = instance->getCurrentSubject();
-    handBinding::push(L, result);
+    HandBinding::push(L, result);
     return 1;
 }
 
@@ -596,7 +596,7 @@ int CharBodyBinding::notifyPathImpossible(lua_State* L)
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
 
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->notifyPathImpossible(*h);
     return 0;
 }
@@ -606,7 +606,7 @@ int CharBodyBinding::_NV_notifyPathImpossible(lua_State* L)
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
 
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->_NV_notifyPathImpossible(*h);
     return 0;
 }

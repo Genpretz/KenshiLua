@@ -12,7 +12,7 @@
 #include "Bindings/RootObjectBinding.h"
 #include "InventoryBinding.h"
 #include "RootObjectBinding.h"
-#include "kenshi/Inventory.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -427,27 +427,30 @@ int ContainerItemBinding::_CONSTRUCTOR(lua_State* L)
 
     GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameData* mat = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     ContainerItem* result = instance->_CONSTRUCTOR(dat, mat, _handle);
     return pushObject<ContainerItem>(L, result, ContainerItemBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 287: void getTooltipData1(...) - unsupported arg type
-  line 288: void _NV_getTooltipData1(...) - unsupported arg type
-  line 289: void getTooltipData2(...) - unsupported arg type
-  line 290: void _NV_getTooltipData2(...) - unsupported arg type
-  line 295: GameSaveState serialise(...) - unsupported arg type
-  line 296: GameSaveState _NV_serialise(...) - unsupported arg type
-  line 299: void setProperOwner(...) - non-string reference arg
-  line 300: void _NV_setProperOwner(...) - non-string reference arg
-*/
+int ContainerItemBinding::setProperOwner(lua_State* L)
+{
+    ContainerItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ContainerItem is nil");
 
-/*
-Skipped properties needing manual binding:
-  line 307: racesExclude (ogre_unordered_set<GameData*>::type) - unsupported type
-*/
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->setProperOwner(*h);
+    return 0;
+}
+
+int ContainerItemBinding::_NV_setProperOwner(lua_State* L)
+{
+    ContainerItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ContainerItem is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->_NV_setProperOwner(*h);
+    return 0;
+}
 
 int ContainerItemBinding::gc(lua_State* L)
 {
@@ -467,8 +470,7 @@ static int ContainerItem_get_racesExclude(lua_State* L)
 {
     ContainerItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContainerItem is nil");
-    // TODO: Unsupported type for racesExclude (ogre_unordered_set<GameData*>::type)
-    return luaL_error(L, "Unsupported property 'racesExclude' (type: ogre_unordered_set<GameData*>::type)");
+    return pushObject<ogre_unordered_set<GameData*>::type>(L, &instance->racesExclude, OgreUnorderedSetBinding<GameData*>::getMetatableName());
 }
 
 
@@ -476,7 +478,10 @@ static int ContainerItem_set_racesExclude(lua_State* L)
 {
     ContainerItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContainerItem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for racesExclude");
+    auto* val = OgreUnorderedSetBinding<GameData*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'racesExclude' must be ogre_unordered_set<GameData*>");
+    instance->racesExclude = *val;
+    return 0;
 }
 
 
@@ -517,6 +522,8 @@ void ContainerItemBinding::registerBinding(lua_State* L)
         { "_NV__loadFromSerialise", ContainerItemBinding::_NV__loadFromSerialise },
         { "loadFromSerialise", ContainerItemBinding::loadFromSerialise },
         { "_NV_loadFromSerialise", ContainerItemBinding::_NV_loadFromSerialise },
+        { "setProperOwner", ContainerItemBinding::setProperOwner },
+        { "_NV_setProperOwner", ContainerItemBinding::_NV_setProperOwner },
         { "_CONSTRUCTOR", ContainerItemBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
@@ -554,8 +561,7 @@ void ContainerItemBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Item
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, ContainerItemBinding::getMetatableName(), ItemBinding::getMetatableName());
+    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "KenshiLua.GameDataSet", GameDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -324,7 +324,7 @@ int DataPanelLineBinding::getUserData(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine is nil");
 
     hand result = instance->getUserData();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int DataPanelLineBinding::_NV_getUserData(lua_State* L)
@@ -333,7 +333,7 @@ int DataPanelLineBinding::_NV_getUserData(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine is nil");
 
     hand result = instance->_NV_getUserData();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int DataPanelLineBinding::getNumWidgets(lua_State* L)

@@ -1,14 +1,14 @@
 #include "pch.h"
-#include "kenshi\GameData.h"
+#include "KENSHI\GameData.h"
 #include "ObjectInstanceBinding.h"
 #include "Lua/BindingHelpers.h"
-
-typedef GameData::ObjectInstance ObjectInstance;
 
 namespace KenshiLua
 {
 
-static ObjectInstance* getB(lua_State* L, int idx)
+typedef GameData::ObjectInstance ObjectInstance;
+
+static ObjectInstance* getInstance(lua_State* L, int idx)
 {
     return checkObject<ObjectInstance>(L, idx, ObjectInstanceBinding::getMetatableName());
 }
@@ -16,106 +16,91 @@ static ObjectInstance* getB(lua_State* L, int idx)
 // --- Getters for ObjectInstance ---
 static int ObjectInstance_get_pos(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    pushVector3(L, b->pos);
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+    pushVector3(L, instance->pos);
     return 1;
 }
 
 static int ObjectInstance_get_rot(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    pushQuaternion(L, b->rot);
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+    pushQuaternion(L, instance->rot);
     return 1;
 }
 
 static int ObjectInstance_get_refID(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    lua_pushstring(L, b->refID.c_str());
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+    lua_pushstring(L, instance->refID.c_str());
     return 1;
 }
 
 static int ObjectInstance_get_created(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    lua_pushinteger(L, b->created);
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+    lua_pushinteger(L, instance->created);
     return 1;
 }
 
 static int ObjectInstance_get_modified(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    lua_pushinteger(L, b->modified);
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+    lua_pushinteger(L, instance->modified);
     return 1;
-}
-
-static int ObjectInstance_get_stateIDs(lua_State* L)
-{
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    // TODO: Unsupported type for stateIDs (lektor<std::string >)
-    return luaL_error(L, "Unsupported property 'stateIDs' (type: lektor<std::string >)");
 }
 
 // --- Setters for ObjectInstance ---
 static int ObjectInstance_set_pos(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    readVector3(L, 2, b->pos);
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+    readVector3(L, 2, instance->pos);
     return 0;
 }
 
 static int ObjectInstance_set_rot(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    readQuaternion(L, 2, b->rot);
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+    readQuaternion(L, 2, instance->rot);
     return 0;
 }
 
 static int ObjectInstance_set_refID(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    b->refID = luaL_checkstring(L, 2);
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+    instance->refID = luaL_checkstring(L, 2);
     return 0;
 }
 
 static int ObjectInstance_set_created(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    b->created = (short)luaL_checkinteger(L, 2);
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+    instance->created = (short)luaL_checkinteger(L, 2);
     return 0;
 }
 
 static int ObjectInstance_set_modified(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    b->modified = (short)luaL_checkinteger(L, 2);
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+    instance->modified = (short)luaL_checkinteger(L, 2);
     return 0;
-}
-
-static int ObjectInstance_set_stateIDs(lua_State* L)
-{
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for stateIDs");
 }
 
 int ObjectInstanceBinding::_DESTRUCTOR(lua_State* L)
 {
-    ObjectInstance* b = getB(L, 1);
-    if (!b) return luaL_error(L, "ObjectInstance is nil");
+    ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -125,6 +110,11 @@ Skipped methods needing manual binding:
   line 142: ObjectInstance* _CONSTRUCTOR(...) - overloaded method
   line 149: const GameData::ObjectInstance& operator=(...) - operator
   line 150: void updateInstancedObjectAttachedDatas(...) - unsupported arg type
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 148: stateIDs (lektor<std::string >) - unsupported type
 */
 
 int ObjectInstanceBinding::gc(lua_State* L)
@@ -163,33 +153,19 @@ void ObjectInstanceBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ObjectInstanceBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ObjectInstance_get_pos);
-    lua_setfield(L, -2, "pos");
-    lua_pushcfunction(L, ObjectInstance_get_rot);
-    lua_setfield(L, -2, "rot");
-    lua_pushcfunction(L, ObjectInstance_get_refID);
-    lua_setfield(L, -2, "refID");
-    lua_pushcfunction(L, ObjectInstance_get_created);
-    lua_setfield(L, -2, "created");
-    lua_pushcfunction(L, ObjectInstance_get_modified);
-    lua_setfield(L, -2, "modified");
-    lua_pushcfunction(L, ObjectInstance_get_stateIDs);
-    lua_setfield(L, -2, "stateIDs");
+    registerGetter(L, "pos", ObjectInstance_get_pos);
+    registerGetter(L, "rot", ObjectInstance_get_rot);
+    registerGetter(L, "refID", ObjectInstance_get_refID);
+    registerGetter(L, "created", ObjectInstance_get_created);
+    registerGetter(L, "modified", ObjectInstance_get_modified);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ObjectInstance_set_pos);
-    lua_setfield(L, -2, "pos");
-    lua_pushcfunction(L, ObjectInstance_set_rot);
-    lua_setfield(L, -2, "rot");
-    lua_pushcfunction(L, ObjectInstance_set_refID);
-    lua_setfield(L, -2, "refID");
-    lua_pushcfunction(L, ObjectInstance_set_created);
-    lua_setfield(L, -2, "created");
-    lua_pushcfunction(L, ObjectInstance_set_modified);
-    lua_setfield(L, -2, "modified");
-    lua_pushcfunction(L, ObjectInstance_set_stateIDs);
-    lua_setfield(L, -2, "stateIDs");
+    registerSetter(L, "pos", ObjectInstance_set_pos);
+    registerSetter(L, "rot", ObjectInstance_set_rot);
+    registerSetter(L, "refID", ObjectInstance_set_refID);
+    registerSetter(L, "created", ObjectInstance_set_created);
+    registerSetter(L, "modified", ObjectInstance_set_modified);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

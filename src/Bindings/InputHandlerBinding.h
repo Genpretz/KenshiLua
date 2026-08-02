@@ -37,5 +37,6 @@ public:
     static int getBoundKeys(lua_State* L);
     static int isBound(lua_State* L);
     static int unbind(lua_State* L);
+    static int getBoundCommand(lua_State* L);
 };
 }

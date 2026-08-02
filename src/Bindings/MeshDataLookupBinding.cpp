@@ -1,91 +1,75 @@
 #include "pch.h"
-#include "kenshi\Appearance.h"
+#include "KENSHI\Appearance.h"
 #include "MeshDataLookupBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
 
-static MeshDataLookup* getB(lua_State* L, int idx)
+static MeshDataLookup* getInstance(lua_State* L, int idx)
 {
     return checkObject<MeshDataLookup>(L, idx, MeshDataLookupBinding::getMetatableName());
 }
 
 // --- Getters for MeshDataLookup ---
-static int MeshDataLookup_get_boneAssignments(lua_State* L)
-{
-    MeshDataLookup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MeshDataLookup is nil");
-    // TODO: Unsupported type for boneAssignments (boost::unordered::unordered_map<Ogre::IdString, lektor<lektor<int> >, boost::hash<Ogre::IdString>, std::equal_to<Ogre::IdString>, Ogre::STLAllocator<std::pair<Ogre::IdString const, lektor<lektor<int> > >, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'boneAssignments' (type: boost::unordered::unordered_map<Ogre::IdString, lektor<lektor<int> >, boost::hash<Ogre::IdString>, std::equal_to<Ogre::IdString>, Ogre::STLAllocator<std::pair<Ogre::IdString const, lektor<lektor<int> > >, Ogre::GeneralAllocPolicy > >)");
-}
-
-static int MeshDataLookup_get_vertCount(lua_State* L)
-{
-    MeshDataLookup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MeshDataLookup is nil");
-    // TODO: Unsupported type for vertCount (unsigned __int64)
-    return luaL_error(L, "Unsupported property 'vertCount' (type: unsigned __int64)");
-}
-
 static int MeshDataLookup_get_verts(lua_State* L)
 {
-    MeshDataLookup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MeshDataLookup is nil");
-    // TODO: Unsupported type for verts (Ogre::Vector3*)
-    return luaL_error(L, "Unsupported property 'verts' (type: Ogre::Vector3*)");
+    MeshDataLookup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MeshDataLookup is nil");
+    lua_pushlightuserdata(L, (void*)instance->verts);
+    return 1;
 }
 
 static int MeshDataLookup_get_uvs(lua_State* L)
 {
-    MeshDataLookup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MeshDataLookup is nil");
-    // TODO: Unsupported type for uvs (Ogre::Vector2*)
-    return luaL_error(L, "Unsupported property 'uvs' (type: Ogre::Vector2*)");
+    MeshDataLookup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MeshDataLookup is nil");
+    lua_pushlightuserdata(L, (void*)instance->uvs);
+    return 1;
 }
 
 // --- Setters for MeshDataLookup ---
-static int MeshDataLookup_set_boneAssignments(lua_State* L)
-{
-    MeshDataLookup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MeshDataLookup is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for boneAssignments");
-}
-
-static int MeshDataLookup_set_vertCount(lua_State* L)
-{
-    MeshDataLookup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MeshDataLookup is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for vertCount");
-}
-
 static int MeshDataLookup_set_verts(lua_State* L)
 {
-    MeshDataLookup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MeshDataLookup is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for verts");
+    MeshDataLookup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MeshDataLookup is nil");
+    instance->verts = (Ogre::Vector3*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int MeshDataLookup_set_uvs(lua_State* L)
 {
-    MeshDataLookup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MeshDataLookup is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for uvs");
+    MeshDataLookup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MeshDataLookup is nil");
+    instance->uvs = (Ogre::Vector2*)lua_touserdata(L, 2);
+    return 0;
 }
 
 int MeshDataLookupBinding::_DESTRUCTOR(lua_State* L)
 {
-    MeshDataLookup* b = getB(L, 1);
-    if (!b) return luaL_error(L, "MeshDataLookup is nil");
+    MeshDataLookup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MeshDataLookup is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 40: MeshDataLookup* _CONSTRUCTOR(...) - unsupported return type
+  line 40: MeshDataLookup* _CONSTRUCTOR(...) - unsupported arg type
   line 47: void init(...) - unsupported arg type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - MeshDataLookup_get_verts: Ogre::Vector3* (unbound pointer)
+  - MeshDataLookup_get_uvs: Ogre::Vector2* (unbound pointer)
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 43: boneAssignments (boost::unordered::unordered_map<Ogre::IdString, lektor<lektor<int> >, boost::hash<Ogre::IdString>, std::equal_to<Ogre::IdString>, Ogre::STLAllocator<std::pair<Ogre::IdString const, lektor<lektor<int> > >, Ogre::GeneralAllocPolicy > >) - unsupported type
+  line 44: vertCount (unsigned __int64) - unsupported type
 */
 
 int MeshDataLookupBinding::gc(lua_State* L)
@@ -124,26 +108,17 @@ void MeshDataLookupBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, MeshDataLookupBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, MeshDataLookup_get_boneAssignments);
-    lua_setfield(L, -2, "boneAssignments");
-    lua_pushcfunction(L, MeshDataLookup_get_vertCount);
-    lua_setfield(L, -2, "vertCount");
-    lua_pushcfunction(L, MeshDataLookup_get_verts);
-    lua_setfield(L, -2, "verts");
-    lua_pushcfunction(L, MeshDataLookup_get_uvs);
-    lua_setfield(L, -2, "uvs");
+    registerGetter(L, "verts", MeshDataLookup_get_verts);
+    registerGetter(L, "uvs", MeshDataLookup_get_uvs);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, MeshDataLookup_set_boneAssignments);
-    lua_setfield(L, -2, "boneAssignments");
-    lua_pushcfunction(L, MeshDataLookup_set_vertCount);
-    lua_setfield(L, -2, "vertCount");
-    lua_pushcfunction(L, MeshDataLookup_set_verts);
-    lua_setfield(L, -2, "verts");
-    lua_pushcfunction(L, MeshDataLookup_set_uvs);
-    lua_setfield(L, -2, "uvs");
+    registerSetter(L, "verts", MeshDataLookup_set_verts);
+    registerSetter(L, "uvs", MeshDataLookup_set_uvs);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, MeshDataLookupBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

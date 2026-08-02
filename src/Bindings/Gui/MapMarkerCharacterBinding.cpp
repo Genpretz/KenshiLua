@@ -19,7 +19,7 @@ static int MapMarkerCharacter_get_handle(lua_State* L)
 {
     MapMarkerCharacter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapMarkerCharacter is nil");
-    return handBinding::push(L, instance->handle);
+    return HandBinding::push(L, instance->handle);
 }
 
 static int MapMarkerCharacter_get_image(lua_State* L)
@@ -35,7 +35,7 @@ static int MapMarkerCharacter_set_handle(lua_State* L)
 {
     MapMarkerCharacter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapMarkerCharacter is nil");
-    instance->handle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->handle = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

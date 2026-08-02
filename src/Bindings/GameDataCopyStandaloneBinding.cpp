@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "kenshi\GameData.h"
+#include "KENSHI\GameData.h"
 #include "GameDataCopyStandaloneBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
@@ -74,7 +74,7 @@ void GameDataCopyStandaloneBinding::registerBinding(lua_State* L)
     lua_newtable(L); // Create __setters table
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to GameData
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
     // setMetatableParent(L, GameDataCopyStandaloneBinding::getMetatableName(), GameDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack

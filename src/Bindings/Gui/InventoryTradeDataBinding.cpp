@@ -49,7 +49,7 @@ static int InventoryTradeData_get_owner(lua_State* L)
 {
     InventoryTradeData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryTradeData is nil");
-    return handBinding::push(L, instance->owner);
+    return HandBinding::push(L, instance->owner);
 }
 
 // --- Setters for InventoryTradeData ---
@@ -89,7 +89,7 @@ static int InventoryTradeData_set_owner(lua_State* L)
 {
     InventoryTradeData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryTradeData is nil");
-    instance->owner = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->owner = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

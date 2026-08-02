@@ -298,7 +298,7 @@ static int DialogLineData_get_uniqueOwner(lua_State* L)
 {
     DialogLineData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogLineData is nil");
-    return handBinding::push(L, instance->uniqueOwner);
+    return HandBinding::push(L, instance->uniqueOwner);
 }
 
 static int DialogLineData_get_dialogRepeatMinTimeInHours(lua_State* L)
@@ -729,7 +729,7 @@ static int DialogLineData_set_uniqueOwner(lua_State* L)
 {
     DialogLineData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogLineData is nil");
-    instance->uniqueOwner = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->uniqueOwner = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

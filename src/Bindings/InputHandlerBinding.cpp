@@ -693,6 +693,84 @@ static int InputHandler_set_mWheel(lua_State* L)
     return 0;
 }
 
+static int InputHandler_set_keyboard(lua_State* L)
+{
+    InputHandler* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InputHandler is nil");
+    instance->keyboard = (OIS::Keyboard*)lua_touserdata(L, 2);
+    return 0;
+}
+
+static int InputHandler_get_commands(lua_State* L)
+{
+    InputHandler* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InputHandler is nil");
+    lua_pushlightuserdata(L, (void*)&instance->commands);
+    return 1;
+}
+
+static int InputHandler_set_commands(lua_State* L)
+{
+    return luaL_error(L, "Property 'commands' is read-only");
+}
+
+static int InputHandler_get_map(lua_State* L)
+{
+    InputHandler* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InputHandler is nil");
+    lua_pushlightuserdata(L, (void*)&instance->map);
+    return 1;
+}
+
+static int InputHandler_set_map(lua_State* L)
+{
+    return luaL_error(L, "Property 'map' is read-only");
+}
+
+static int InputHandler_get_editMap(lua_State* L)
+{
+    InputHandler* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InputHandler is nil");
+    lua_pushlightuserdata(L, (void*)&instance->editMap);
+    return 1;
+}
+
+static int InputHandler_set_editMap(lua_State* L)
+{
+    return luaL_error(L, "Property 'editMap' is read-only");
+}
+
+static int InputHandler_get_events(lua_State* L)
+{
+    InputHandler* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InputHandler is nil");
+    lua_pushlightuserdata(L, (void*)&instance->events);
+    return 1;
+}
+
+static int InputHandler_set_events(lua_State* L)
+{
+    return luaL_error(L, "Property 'events' is read-only");
+}
+
+static int InputHandler_get_keyNameMap(lua_State* L)
+{
+    InputHandler* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InputHandler is nil");
+    lua_newtable(L);
+    for (auto it = instance->keyNameMap.begin(); it != instance->keyNameMap.end(); ++it)
+    {
+        lua_pushinteger(L, it->second);
+        lua_setfield(L, -2, it->first.c_str());
+    }
+    return 1;
+}
+
+static int InputHandler_set_keyNameMap(lua_State* L)
+{
+    return luaL_error(L, "Property 'keyNameMap' is read-only");
+}
+
 int InputHandlerBinding::getKeyUTF8(lua_State* L)
 {
     InputHandler* instance = getInstance(L, 1);
@@ -906,97 +984,10 @@ int InputHandlerBinding::tostring(lua_State* L)
 
 
 
-static int InputHandler_get_commands(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    // TODO: Unsupported type for commands (std::map<std::string, InputHandler::Command, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, InputHandler::Command>, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'commands' (type: std::map<std::string, InputHandler::Command, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, InputHandler::Command>, Ogre::GeneralAllocPolicy > >)");
-}
 
 
-static int InputHandler_get_editMap(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    // TODO: Unsupported type for editMap (std::map<int, InputHandler::Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, InputHandler::Command*>, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'editMap' (type: std::map<int, InputHandler::Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, InputHandler::Command*>, Ogre::GeneralAllocPolicy > >)");
-}
 
 
-static int InputHandler_get_events(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    // TODO: Unsupported type for events (std::set<InputHandler::Command*, std::less<InputHandler::Command*>, Ogre::STLAllocator<InputHandler::Command*, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'events' (type: std::set<InputHandler::Command*, std::less<InputHandler::Command*>, Ogre::STLAllocator<InputHandler::Command*, Ogre::GeneralAllocPolicy > >)");
-}
-
-
-static int InputHandler_get_keyNameMap(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    // TODO: Unsupported type for keyNameMap (std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'keyNameMap' (type: std::map<std::string, int, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy > >)");
-}
-
-
-static int InputHandler_get_map(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    // TODO: Unsupported type for map (std::map<int, InputHandler::Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, InputHandler::Command*>, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'map' (type: std::map<int, InputHandler::Command*, std::less<int>, Ogre::STLAllocator<std::pair<int const, InputHandler::Command*>, Ogre::GeneralAllocPolicy > >)");
-}
-
-
-static int InputHandler_set_commands(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for commands");
-}
-
-
-static int InputHandler_set_editMap(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for editMap");
-}
-
-
-static int InputHandler_set_events(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for events");
-}
-
-
-static int InputHandler_set_keyNameMap(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for keyNameMap");
-}
-
-
-static int InputHandler_set_keyboard(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for keyboard");
-}
-
-
-static int InputHandler_set_map(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for map");
-}
 
 
 int InputHandlerBinding::addCommand(lua_State* L)
@@ -1068,6 +1059,26 @@ int InputHandlerBinding::unbind(lua_State* L)
     return 0;
 }
 
+int InputHandlerBinding::getBoundCommand(lua_State* L)
+{
+    InputHandler* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InputHandler is nil");
+
+    int key = (int)luaL_checkinteger(L, 2);
+    InputHandler::GameMode mode = (InputHandler::GameMode)luaL_checkinteger(L, 3);
+    const std::string& cmd = instance->getBoundCommand(key, mode);
+    lua_pushstring(L, cmd.c_str());
+    return 1;
+}
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - InputHandler_get_keyboard: OIS::Keyboard* (unbound pointer)
+  - InputHandler_get_commands: std::map<std::string, Command> (complex struct map)
+  - InputHandler_get_map: std::map<int, Command*> (pointer map)
+  - InputHandler_get_editMap: std::map<int, Command*> (pointer map)
+  - InputHandler_get_events: std::set<Command*> (pointer set)
+*/
 
 void InputHandlerBinding::registerBinding(lua_State* L)
 {
@@ -1095,10 +1106,11 @@ void InputHandlerBinding::registerBinding(lua_State* L)
         { "saveConfig", InputHandlerBinding::saveConfig },
         { "keyString", InputHandlerBinding::keyString },
         { "_DESTRUCTOR", InputHandlerBinding::_DESTRUCTOR },
-                { "addCommand", InputHandlerBinding::addCommand },
+        { "addCommand", InputHandlerBinding::addCommand },
         { "unbind", InputHandlerBinding::unbind },
         { "isBound", InputHandlerBinding::isBound },
         { "getBoundKeys", InputHandlerBinding::getBoundKeys },
+        { "getBoundCommand", InputHandlerBinding::getBoundCommand },
         { 0, 0 }
     };
 

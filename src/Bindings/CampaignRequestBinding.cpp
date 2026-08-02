@@ -35,14 +35,14 @@ static int CampaignRequest_get_target(lua_State* L)
 {
     CampaignRequest* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CampaignRequest is nil");
-    return handBinding::push(L, instance->target);
+    return HandBinding::push(L, instance->target);
 }
 
 static int CampaignRequest_get_homeBase(lua_State* L)
 {
     CampaignRequest* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CampaignRequest is nil");
-    return handBinding::push(L, instance->homeBase);
+    return HandBinding::push(L, instance->homeBase);
 }
 
 static int CampaignRequest_get_enemy(lua_State* L)
@@ -73,7 +73,7 @@ static int CampaignRequest_set_target(lua_State* L)
 {
     CampaignRequest* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CampaignRequest is nil");
-    instance->target = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->target = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -81,7 +81,7 @@ static int CampaignRequest_set_homeBase(lua_State* L)
 {
     CampaignRequest* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CampaignRequest is nil");
-    instance->homeBase = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->homeBase = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

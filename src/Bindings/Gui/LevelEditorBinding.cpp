@@ -54,7 +54,7 @@ static int LevelEditor_get_selectedObject(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    return handBinding::push(L, instance->selectedObject);
+    return HandBinding::push(L, instance->selectedObject);
 }
 
 static int LevelEditor_get_selectedFeature(lua_State* L)
@@ -228,7 +228,7 @@ static int LevelEditor_set_selectedObject(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    instance->selectedObject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->selectedObject = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

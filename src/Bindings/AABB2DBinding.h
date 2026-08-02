@@ -16,11 +16,13 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int setNull(lua_State* L);
     static int pointWithin(lua_State* L);
     static int inflate(lua_State* L);
     static int sizeX(lua_State* L);
     static int sizeY(lua_State* L);
+    static int intersects(lua_State* L);
     static int intersects2(lua_State* L);
 };
 }

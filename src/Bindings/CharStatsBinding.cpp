@@ -850,7 +850,7 @@ static int CharStats_get_weapon(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharStats is nil");
-    return handBinding::push(L, instance->weapon);
+    return HandBinding::push(L, instance->weapon);
 }
 
 static int CharStats_get_weaponWeight(lua_State* L)
@@ -1674,7 +1674,7 @@ static int CharStats_set_weapon(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharStats is nil");
-    instance->weapon = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->weapon = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

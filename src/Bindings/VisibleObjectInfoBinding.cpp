@@ -16,7 +16,7 @@ static int VisibleObjectInfo_get_handle(lua_State* L)
 {
     VisibleObjectInfo* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "VisibleObjectInfo is nil");
-    return handBinding::push(L, instance->handle);
+    return HandBinding::push(L, instance->handle);
 }
 
 static int VisibleObjectInfo_get_range(lua_State* L)
@@ -40,7 +40,7 @@ static int VisibleObjectInfo_set_handle(lua_State* L)
 {
     VisibleObjectInfo* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "VisibleObjectInfo is nil");
-    instance->handle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->handle = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

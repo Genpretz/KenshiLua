@@ -226,7 +226,7 @@ static int Character_get_isUsingTurret(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->isUsingTurret);
+    return HandBinding::push(L, instance->isUsingTurret);
 }
 
 static int Character_get_isCurrentlyGettingUp(lua_State* L)
@@ -280,7 +280,7 @@ static int Character_get_lastGuyWhoDefeatedMe(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->lastGuyWhoDefeatedMe);
+    return HandBinding::push(L, instance->lastGuyWhoDefeatedMe);
 }
 
 static int Character_get_myRace(lua_State* L)
@@ -309,7 +309,7 @@ static int Character_get_inWhat(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->inWhat);
+    return HandBinding::push(L, instance->inWhat);
 }
 
 static int Character_get_isChained(lua_State* L)
@@ -324,7 +324,7 @@ static int Character_get_slaveOwner(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->slaveOwner);
+    return HandBinding::push(L, instance->slaveOwner);
 }
 
 static int Character_get_isCarryingSomething(lua_State* L)
@@ -355,7 +355,7 @@ static int Character_get_carryingObject(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->carryingObject);
+    return HandBinding::push(L, instance->carryingObject);
 }
 
 static int Character_get_messages(lua_State* L)
@@ -370,7 +370,7 @@ static int Character_get_messageSubject(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->messageSubject);
+    return HandBinding::push(L, instance->messageSubject);
 }
 
 static int Character_get_ragdollNavmeshPosition(lua_State* L)
@@ -425,7 +425,7 @@ static int Character_get__destinationInsideBuilding(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->_destinationInsideBuilding);
+    return HandBinding::push(L, instance->_destinationInsideBuilding);
 }
 
 static int Character_get__destinationInsideWalls(lua_State* L)
@@ -738,7 +738,7 @@ static int Character_set_isUsingTurret(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->isUsingTurret = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->isUsingTurret = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -786,7 +786,7 @@ static int Character_set_lastGuyWhoDefeatedMe(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->lastGuyWhoDefeatedMe = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->lastGuyWhoDefeatedMe = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -810,7 +810,7 @@ static int Character_set_inWhat(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->inWhat = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->inWhat = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -826,7 +826,7 @@ static int Character_set_slaveOwner(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->slaveOwner = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->slaveOwner = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -858,7 +858,7 @@ static int Character_set_carryingObject(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->carryingObject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->carryingObject = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -874,7 +874,7 @@ static int Character_set_messageSubject(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->messageSubject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->messageSubject = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -922,7 +922,7 @@ static int Character_set__destinationInsideBuilding(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->_destinationInsideBuilding = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->_destinationInsideBuilding = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -3151,7 +3151,7 @@ int CharacterBinding::destinationIndoors(lua_State* L)
 
     RootObject* r = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
     hand result = instance->destinationIndoors(r);
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int CharacterBinding::destinationInsideWalls(lua_State* L)
@@ -3941,7 +3941,7 @@ int CharacterBinding::getAttackTarget(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     hand result = instance->getAttackTarget();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int CharacterBinding::isInCombatMode(lua_State* L)
@@ -4054,7 +4054,7 @@ int CharacterBinding::getIDForMemoryTagging(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     hand result = instance->getIDForMemoryTagging();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int CharacterBinding::getMovement(lua_State* L)
@@ -4434,7 +4434,7 @@ int CharacterBinding::getMySlaveOwner(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     hand result = instance->getMySlaveOwner();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int CharacterBinding::isSlave(lua_State* L)
@@ -4576,7 +4576,7 @@ int CharacterBinding::getCarryingObject(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     hand result = instance->getCarryingObject();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int CharacterBinding::chooseCarryObjectLeftOrRight(lua_State* L)
@@ -5184,7 +5184,7 @@ static int Character_get_whoSeesMeSneaking(lua_State* L)
     typedef ogre_unordered_map<hand, Character::WhoSeesMe>::type MapType;
     for (MapType::const_iterator it = instance->whoSeesMeSneaking.begin(); it != instance->whoSeesMeSneaking.end(); ++it)
     {
-        handBinding::push(L, it->first);
+        HandBinding::push(L, it->first);
         pushObject<Character::WhoSeesMe>(L, const_cast<Character::WhoSeesMe*>(&it->second), WhoSeesMeBinding::getMetatableName());
         lua_settable(L, -3);
     }
@@ -5424,7 +5424,7 @@ int CharacterBinding::setHandle(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!h) return luaL_error(L, "Argument 1 must be a hand object");
     instance->setHandle(*h);
     return 0;
@@ -5434,7 +5434,7 @@ int CharacterBinding::_NV_setHandle(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!h) return luaL_error(L, "Argument 1 must be a hand object");
     instance->_NV_setHandle(*h);
     return 0;
@@ -5444,35 +5444,35 @@ int CharacterBinding::isIndoors(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->isIndoors());
+    return HandBinding::push(L, instance->isIndoors());
 }
 
 int CharacterBinding::_NV_isIndoors(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->_NV_isIndoors());
+    return HandBinding::push(L, instance->_NV_isIndoors());
 }
 
 int CharacterBinding::isStandingOnBuilding(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->isStandingOnBuilding());
+    return HandBinding::push(L, instance->isStandingOnBuilding());
 }
 
 int CharacterBinding::_NV_isStandingOnBuilding(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    return handBinding::push(L, instance->_NV_isStandingOnBuilding());
+    return HandBinding::push(L, instance->_NV_isStandingOnBuilding());
 }
 
 int CharacterBinding::notifyIndoors(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    hand* in = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* in = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!in) return luaL_error(L, "Argument 1 must be a hand object");
     instance->notifyIndoors(*in);
     return 0;
@@ -5482,7 +5482,7 @@ int CharacterBinding::_NV_notifyIndoors(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    hand* in = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* in = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!in) return luaL_error(L, "Argument 1 must be a hand object");
     instance->_NV_notifyIndoors(*in);
     return 0;
@@ -5492,7 +5492,7 @@ int CharacterBinding::setDestinationIndoors(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!h) return luaL_error(L, "Argument 1 must be a hand object");
     instance->setDestinationIndoors(*h);
     return 0;
@@ -5528,7 +5528,7 @@ int CharacterBinding::changeSlaveOwner(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    hand* newOwner = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* newOwner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (newOwner) {
         instance->changeSlaveOwner(*newOwner);
     }
@@ -5606,7 +5606,7 @@ int CharacterBinding::getAllAttackers(lua_State* L)
     instance->getAllAttackers(out);
     lua_newtable(L);
     for (uint32_t i = 0; i < out.count; ++i) {
-        handBinding::push(L, out.stuff[i]);
+        HandBinding::push(L, out.stuff[i]);
         lua_rawseti(L, -2, i + 1);
     }
     if (out.stuff) {
@@ -5673,7 +5673,7 @@ int CharacterBinding::breakFollowOrderLoop(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    hand* start = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* start = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (start) {
         lua_pushboolean(L, instance->breakFollowOrderLoop(*start) ? 1 : 0);
     } else {
@@ -5688,7 +5688,7 @@ int CharacterBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
     GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Faction* own = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
-    hand* _handle = checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand* _handle = checkObject<hand>(L, 4, HandBinding::getMetatableName());
     if (!_handle) return luaL_error(L, "Argument 3 must be a hand object");
     Character* result = instance->_CONSTRUCTOR(dat, own, *_handle);
     return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
@@ -5700,7 +5700,7 @@ int CharacterBinding::formationUpdateCallback(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
     Ogre::Vector3 pos;
     readVector3(L, 2, pos);
-    hand* target = checkObject<hand>(L, 3, handBinding::getMetatableName());
+    hand* target = checkObject<hand>(L, 3, HandBinding::getMetatableName());
     if (!target) return luaL_error(L, "Argument 2 must be a hand object");
     Ogre::Vector3 heading;
     readVector3(L, 4, heading);
@@ -5808,7 +5808,7 @@ int CharacterBinding::getSquadMissionTarget(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
     hand result;
     instance->getSquadMissionTarget(result);
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int CharacterBinding::setChainedMode(lua_State* L)
@@ -5816,7 +5816,7 @@ int CharacterBinding::setChainedMode(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
     bool on = lua_toboolean(L, 2) != 0;
-    hand* owner = checkObject<hand>(L, 3, handBinding::getMetatableName());
+    hand* owner = checkObject<hand>(L, 3, HandBinding::getMetatableName());
     if (!owner) return luaL_error(L, "Argument 2 must be a hand object");
     instance->setChainedMode(on, *owner);
     return 0;

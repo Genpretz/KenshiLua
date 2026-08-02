@@ -68,7 +68,7 @@ static int RootObjectBase_get_handle(lua_State* L)
 {
     RootObjectBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObjectBase is nil");
-    return handBinding::push(L, instance->handle);
+    return HandBinding::push(L, instance->handle);
 }
 
 // --- Setters for RootObjectBase ---
@@ -116,7 +116,7 @@ static int RootObjectBase_set_handle(lua_State* L)
 {
     RootObjectBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObjectBase is nil");
-    instance->handle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->handle = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -127,7 +127,7 @@ int RootObjectBaseBinding::_CONSTRUCTOR(lua_State* L)
 
     GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Faction* ownr = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
-    hand h = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand h = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     RootObjectBase* result = instance->_CONSTRUCTOR(d, ownr, h);
     return pushObject<RootObjectBase>(L, result, RootObjectBaseBinding::getMetatableName());
 }
@@ -539,7 +539,7 @@ int RootObjectBaseBinding::_NV_setHandle(lua_State* L)
 {
     RootObjectBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObjectBase is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->_NV_setHandle(*h);
     return 0;
 }
@@ -550,7 +550,7 @@ int RootObjectBaseBinding::getHandle(lua_State* L)
     RootObjectBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObjectBase is nil");
     const hand& result = instance->getHandle();
-    handBinding::push(L, result);
+    HandBinding::push(L, result);
     return 1;
 }
 
@@ -572,7 +572,7 @@ int RootObjectBaseBinding::setHandle(lua_State* L)
 {
     RootObjectBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObjectBase is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->setHandle(*h);
     return 0;
 }

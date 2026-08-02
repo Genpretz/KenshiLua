@@ -5,6 +5,7 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/CombatMovementControllerBinding.h"
 #include "Bindings/SensoryDataBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -19,7 +20,7 @@ static int FlockingTools_get_getOutOfTheWayOfCharacter(lua_State* L)
 {
     FlockingTools* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FlockingTools is nil");
-    return handBinding::push(L, instance->getOutOfTheWayOfCharacter);
+    return HandBinding::push(L, instance->getOutOfTheWayOfCharacter);
 }
 
 static int FlockingTools_get_currentPosition(lua_State* L)
@@ -49,7 +50,7 @@ static int FlockingTools_set_getOutOfTheWayOfCharacter(lua_State* L)
 {
     FlockingTools* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FlockingTools is nil");
-    instance->getOutOfTheWayOfCharacter = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->getOutOfTheWayOfCharacter = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -134,14 +135,63 @@ int FlockingToolsBinding::getSensoryData(lua_State* L)
     return pushObject<SensoryData>(L, result, SensoryDataBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 242: float getDistanceToClosestCharacter(...) - non-string reference arg
-  line 243: void getOutOfTheWay(...) - non-string reference arg
-  line 245: float getRepulsionMagnitude(...) - static method
-  line 246: Ogre::Vector3 getRepulsionVector(...) - static method
-  line 247: void clampRepulsionVectorTo90Degrees(...) - static method
-*/
+int FlockingToolsBinding::getDistanceToClosestCharacter(lua_State* L)
+{
+    FlockingTools* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FlockingTools is nil");
+
+    bool enemies = lua_toboolean(L, 2) != 0;
+    bool allies = lua_toboolean(L, 3) != 0;
+    hand* skip = checkObject<hand>(L, 4, HandBinding::getMetatableName());
+    float result = instance->getDistanceToClosestCharacter(enemies, allies, *skip);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int FlockingToolsBinding::getOutOfTheWay(lua_State* L)
+{
+    FlockingTools* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FlockingTools is nil");
+
+    hand* caller = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->getOutOfTheWay(*caller);
+    return 0;
+}
+
+int FlockingToolsBinding::getRepulsionMagnitude(lua_State* L)
+{
+    Ogre::Vector3 mypos, repulsionPoint;
+    readVector3(L, 1, mypos);
+    readVector3(L, 2, repulsionPoint);
+    float MAX_DISTANCE = (float)luaL_checknumber(L, 3);
+    float distance = (float)luaL_checknumber(L, 4);
+    float result = FlockingTools::getRepulsionMagnitude(mypos, repulsionPoint, MAX_DISTANCE, distance);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int FlockingToolsBinding::getRepulsionVector(lua_State* L)
+{
+    Ogre::Vector3 mypos, repulsionPoint;
+    readVector3(L, 1, mypos);
+    readVector3(L, 2, repulsionPoint);
+    float MAX_DISTANCE = (float)luaL_checknumber(L, 3);
+    float distance = (float)luaL_checknumber(L, 4);
+    Ogre::Vector3 result = FlockingTools::getRepulsionVector(mypos, repulsionPoint, MAX_DISTANCE, distance);
+    pushVector3(L, result);
+    return 1;
+}
+
+int FlockingToolsBinding::clampRepulsionVectorTo90Degrees(lua_State* L)
+{
+    Ogre::Vector3 repulsionVector, desiredDirection;
+    readVector3(L, 1, repulsionVector);
+    readVector3(L, 2, desiredDirection);
+    bool alwaysStrafe = lua_toboolean(L, 3) != 0;
+    FlockingTools::clampRepulsionVectorTo90Degrees(repulsionVector, desiredDirection, alwaysStrafe);
+    pushVector3(L, repulsionVector);
+    return 1;
+}
 
 int FlockingToolsBinding::gc(lua_State* L)
 {
@@ -166,7 +216,12 @@ void FlockingToolsBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", FlockingToolsBinding::_CONSTRUCTOR },
         { "create", FlockingToolsBinding::create },
+        { "getDistanceToClosestCharacter", FlockingToolsBinding::getDistanceToClosestCharacter },
+        { "getOutOfTheWay", FlockingToolsBinding::getOutOfTheWay },
         { "setCurrentPosition", FlockingToolsBinding::setCurrentPosition },
+        { "getRepulsionMagnitude", FlockingToolsBinding::getRepulsionMagnitude },
+        { "getRepulsionVector", FlockingToolsBinding::getRepulsionVector },
+        { "clampRepulsionVectorTo90Degrees", FlockingToolsBinding::clampRepulsionVectorTo90Degrees },
         { "calculateCurrentRepulsionVector", FlockingToolsBinding::calculateCurrentRepulsionVector },
         { "getSensoryData", FlockingToolsBinding::getSensoryData },
         { 0, 0 }

@@ -18,7 +18,7 @@ static int PortraitSquadCellView_get_characterHandle(lua_State* L)
 {
     PortraitSquadCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitSquadCellView is nil");
-    return handBinding::push(L, instance->characterHandle);
+    return HandBinding::push(L, instance->characterHandle);
 }
 
 static int PortraitSquadCellView_get_name(lua_State* L)
@@ -58,7 +58,7 @@ static int PortraitSquadCellView_set_characterHandle(lua_State* L)
 {
     PortraitSquadCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitSquadCellView is nil");
-    instance->characterHandle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->characterHandle = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

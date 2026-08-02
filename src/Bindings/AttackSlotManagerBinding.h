@@ -16,6 +16,7 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int hasFreeAttackSlot(lua_State* L);
     static int freeAllSlotsH(lua_State* L);
     static int periodicUpdate(lua_State* L);

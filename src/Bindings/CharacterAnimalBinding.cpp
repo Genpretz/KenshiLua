@@ -690,7 +690,7 @@ int CharacterAnimalBinding::_CONSTRUCTOR(lua_State* L)
 
     GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Faction* f = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     float _age = (float)luaL_checknumber(L, 5);
     CharacterAnimal* result = instance->_CONSTRUCTOR(d, f, _handle, _age);
     return pushObject<CharacterAnimal>(L, result, CharacterAnimalBinding::getMetatableName());

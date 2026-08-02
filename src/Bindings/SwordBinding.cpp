@@ -103,7 +103,7 @@ int SwordBinding::_CONSTRUCTOR(lua_State* L)
     GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameData* companyData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     GameData* materialData = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 5, handBinding::getMetatableName());
+    hand _handle = *checkObject<hand>(L, 5, HandBinding::getMetatableName());
     int _level = (int)luaL_checkinteger(L, 6);
     Sword* result = instance->_CONSTRUCTOR(baseData, companyData, materialData, _handle, _level);
     return pushObject<Sword>(L, result, SwordBinding::getMetatableName());

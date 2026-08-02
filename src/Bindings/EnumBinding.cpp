@@ -8,6 +8,7 @@
 #include "kenshi/CharMovement.h"
 #include "kenshi/Dialogue.h"
 #include "kenshi/Enums.h"
+#include "kenshi/Gear.h"
 #include "kenshi/MedicalSystem.h"
 #include "kenshi/Platoon.h"
 #include "kenshi/SaveManager.h"
@@ -2822,7 +2823,7 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     setEnum(L, "SCIENCES", CharacterStatsWindow::StatGroup::SCIENCES);
     setEnum(L, "TRADES", CharacterStatsWindow::StatGroup::TRADES);
     setEnum(L, "RANGED", CharacterStatsWindow::StatGroup::RANGED);
-    lua_setglobal(L, "Group");
+    lua_setglobal(L, "StatGroup");
     }
 
     // ------------------------------------------
@@ -2861,7 +2862,7 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
     setEnum(L, "PROGRESS", DataPanelLine::DPL_PROGRESS);
     setEnum(L, "CUSTOM", DataPanelLine::DPL_CUSTOM);
     // global
-    lua_setglobal(L, "LineType");
+    lua_setglobal(L, "DataPanelsLineType");
     }
 
     // ------------------------------------------
@@ -3245,6 +3246,17 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         lua_setglobal(L, "MovementMode");
     }
 
+    void registerArmourClass(lua_State* L)
+    {
+        lua_newtable(L);
+        setEnum(L, "GEAR_CLOTH", ArmourClass::GEAR_CLOTH);
+        setEnum(L, "GEAR_LIGHT", ArmourClass::GEAR_LIGHT);
+        setEnum(L, "GEAR_MEDIUM", ArmourClass::GEAR_MEDIUM);
+        setEnum(L, "GEAR_HEAVY", ArmourClass::GEAR_HEAVY);
+        setEnum(L, "GEAR_MAX", ArmourClass::GEAR_MAX);
+        lua_setglobal(L, "ArmourClass");
+    }
+
     void registerEnumBindings(lua_State* L)
     {
         registerMeshDataLookup(L);
@@ -3321,5 +3333,6 @@ setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
         registerTutorialGUIHighlightItem(L);
         registerTutorialGUIState(L);
         registerUpdatePriority(L);
+        registerArmourClass(L);
     }
 } // namespace KenshiLua

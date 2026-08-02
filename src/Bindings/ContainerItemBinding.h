@@ -44,6 +44,8 @@ public:
     static int _NV__loadFromSerialise(lua_State* L);
     static int loadFromSerialise(lua_State* L);
     static int _NV_loadFromSerialise(lua_State* L);
+    static int setProperOwner(lua_State* L);
+    static int _NV_setProperOwner(lua_State* L);
     static int _CONSTRUCTOR(lua_State* L);
 };
 }

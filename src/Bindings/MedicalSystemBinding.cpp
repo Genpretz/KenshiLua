@@ -1304,6 +1304,15 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
         { "getWeatherStatPenaltyMult", MedicalSystemBinding::getWeatherStatPenaltyMult },
         { "getWeatherStatPenalty", MedicalSystemBinding::getWeatherStatPenalty },
         { "calculateBleedRateForFX", MedicalSystemBinding::calculateBleedRateForFX },
+        { "_setHealth", MedicalSystemBinding::_setHealth },
+        { "getLimbState", MedicalSystemBinding::getLimbState },
+        { "getPart", MedicalSystemBinding::getPart },
+        { "addArmour", MedicalSystemBinding::addArmour },
+        { "removeArmour", MedicalSystemBinding::removeArmour },
+        { "wearingUniformOf", MedicalSystemBinding::wearingUniformOf },
+        { "applyFirstAid", MedicalSystemBinding::applyFirstAid },
+        { "applyDoctoring", MedicalSystemBinding::applyDoctoring },
+        { "applyRigging", MedicalSystemBinding::applyRigging },
         { 0, 0 }
     };
 
@@ -1318,177 +1327,93 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, MedicalSystemBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, MedicalSystem_get_status);
-    lua_setfield(L, -2, "status");
-    lua_pushcfunction(L, MedicalSystem_get_armourList);
-    lua_setfield(L, -2, "armourList");
-    lua_pushcfunction(L, MedicalSystem_get_hunger);
-    lua_setfield(L, -2, "hunger");
-    lua_pushcfunction(L, MedicalSystem_get_fed);
-    lua_setfield(L, -2, "fed");
-    lua_pushcfunction(L, MedicalSystem_get_lastPeriodicUpdate);
-    lua_setfield(L, -2, "lastPeriodicUpdate");
-    lua_pushcfunction(L, MedicalSystem_get_blood);
-    lua_setfield(L, -2, "blood");
-    lua_pushcfunction(L, MedicalSystem_get_extraBloodLossFromBodyparts);
-    lua_setfield(L, -2, "extraBloodLossFromBodyparts");
-    lua_pushcfunction(L, MedicalSystem_get_currentBleedRate);
-    lua_setfield(L, -2, "currentBleedRate");
-    lua_pushcfunction(L, MedicalSystem_get_leftLeg);
-    lua_setfield(L, -2, "leftLeg");
-    lua_pushcfunction(L, MedicalSystem_get_rightLeg);
-    lua_setfield(L, -2, "rightLeg");
-    lua_pushcfunction(L, MedicalSystem_get_leftArm);
-    lua_setfield(L, -2, "leftArm");
-    lua_pushcfunction(L, MedicalSystem_get_rightArm);
-    lua_setfield(L, -2, "rightArm");
-    lua_pushcfunction(L, MedicalSystem_get_knockoutTimer);
-    lua_setfield(L, -2, "knockoutTimer");
-    lua_pushcfunction(L, MedicalSystem_get_worstDamage);
-    lua_setfield(L, -2, "worstDamage");
-    lua_pushcfunction(L, MedicalSystem_get_needsFirstAidScoreTotal_robot);
-    lua_setfield(L, -2, "needsFirstAidScoreTotal_robot");
-    lua_pushcfunction(L, MedicalSystem_get_needsFirstAidScoreTotal_fleshy);
-    lua_setfield(L, -2, "needsFirstAidScoreTotal_fleshy");
-    lua_pushcfunction(L, MedicalSystem_get_restedState);
-    lua_setfield(L, -2, "restedState");
-    lua_pushcfunction(L, MedicalSystem_get_stealthHinderance);
-    lua_setfield(L, -2, "stealthHinderance");
-    lua_pushcfunction(L, MedicalSystem_get_partBestArm);
-    lua_setfield(L, -2, "partBestArm");
-    lua_pushcfunction(L, MedicalSystem_get_partHead);
-    lua_setfield(L, -2, "partHead");
-    lua_pushcfunction(L, MedicalSystem_get_partWorstTorso);
-    lua_setfield(L, -2, "partWorstTorso");
-    lua_pushcfunction(L, MedicalSystem_get_dazedOrAlert);
-    lua_setfield(L, -2, "dazedOrAlert");
-    lua_pushcfunction(L, MedicalSystem_get_robotLimbs);
-    lua_setfield(L, -2, "robotLimbs");
-    lua_pushcfunction(L, MedicalSystem_get_bloodynessChanged);
-    lua_setfield(L, -2, "bloodynessChanged");
-    lua_pushcfunction(L, MedicalSystem_get_bloodynessCleanedUp);
-    lua_setfield(L, -2, "bloodynessCleanedUp");
-    lua_pushcfunction(L, MedicalSystem_get_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, MedicalSystem_get_weatherGUIfeedback);
-    lua_setfield(L, -2, "weatherGUIfeedback");
-    lua_pushcfunction(L, MedicalSystem_get_currentWeatherAffect);
-    lua_setfield(L, -2, "currentWeatherAffect");
-    lua_pushcfunction(L, MedicalSystem_get_currentWeatherAffectStrength);
-    lua_setfield(L, -2, "currentWeatherAffectStrength");
-    lua_pushcfunction(L, MedicalSystem_get_lastHungerKO);
-    lua_setfield(L, -2, "lastHungerKO");
-    lua_pushcfunction(L, MedicalSystem_get_nextKOTime);
-    lua_setfield(L, -2, "nextKOTime");
-    lua_pushcfunction(L, MedicalSystem_get__eatenDeathDelay);
-    lua_setfield(L, -2, "_eatenDeathDelay");
-    lua_pushcfunction(L, MedicalSystem_get_crippled);
-    lua_setfield(L, -2, "crippled");
-    lua_pushcfunction(L, MedicalSystem_get_unconcious);
-    lua_setfield(L, -2, "unconcious");
-    lua_pushcfunction(L, MedicalSystem_get_sub50KO);
-    lua_setfield(L, -2, "sub50KO");
-    lua_pushcfunction(L, MedicalSystem_get_bloodlossTrauma);
-    lua_setfield(L, -2, "bloodlossTrauma");
-    lua_pushcfunction(L, MedicalSystem_get_dead);
-    lua_setfield(L, -2, "dead");
-    lua_pushcfunction(L, MedicalSystem_get_rightArmOk);
-    lua_setfield(L, -2, "rightArmOk");
-    lua_pushcfunction(L, MedicalSystem_get_leftArmOk);
-    lua_setfield(L, -2, "leftArmOk");
-    lua_pushcfunction(L, MedicalSystem_get_lastBloodPosition);
-    lua_setfield(L, -2, "lastBloodPosition");
-    lua_pushcfunction(L, MedicalSystem_get_anatomy);
-    lua_setfield(L, -2, "anatomy");
-    lua_pushcfunction(L, MedicalSystem_get_stats);
-    lua_setfield(L, -2, "stats");
+    registerGetter(L, "status", MedicalSystem_get_status);
+    registerGetter(L, "armourList", MedicalSystem_get_armourList);
+    registerGetter(L, "hunger", MedicalSystem_get_hunger);
+    registerGetter(L, "fed", MedicalSystem_get_fed);
+    registerGetter(L, "lastPeriodicUpdate", MedicalSystem_get_lastPeriodicUpdate);
+    registerGetter(L, "blood", MedicalSystem_get_blood);
+    registerGetter(L, "extraBloodLossFromBodyparts", MedicalSystem_get_extraBloodLossFromBodyparts);
+    registerGetter(L, "currentBleedRate", MedicalSystem_get_currentBleedRate);
+    registerGetter(L, "leftLeg", MedicalSystem_get_leftLeg);
+    registerGetter(L, "rightLeg", MedicalSystem_get_rightLeg);
+    registerGetter(L, "leftArm", MedicalSystem_get_leftArm);
+    registerGetter(L, "rightArm", MedicalSystem_get_rightArm);
+    registerGetter(L, "knockoutTimer", MedicalSystem_get_knockoutTimer);
+    registerGetter(L, "worstDamage", MedicalSystem_get_worstDamage);
+    registerGetter(L, "needsFirstAidScoreTotal_robot", MedicalSystem_get_needsFirstAidScoreTotal_robot);
+    registerGetter(L, "needsFirstAidScoreTotal_fleshy", MedicalSystem_get_needsFirstAidScoreTotal_fleshy);
+    registerGetter(L, "restedState", MedicalSystem_get_restedState);
+    registerGetter(L, "stealthHinderance", MedicalSystem_get_stealthHinderance);
+    registerGetter(L, "partBestArm", MedicalSystem_get_partBestArm);
+    registerGetter(L, "partHead", MedicalSystem_get_partHead);
+    registerGetter(L, "partWorstTorso", MedicalSystem_get_partWorstTorso);
+    registerGetter(L, "dazedOrAlert", MedicalSystem_get_dazedOrAlert);
+    registerGetter(L, "robotLimbs", MedicalSystem_get_robotLimbs);
+    registerGetter(L, "bloodynessChanged", MedicalSystem_get_bloodynessChanged);
+    registerGetter(L, "bloodynessCleanedUp", MedicalSystem_get_bloodynessCleanedUp);
+    registerGetter(L, "me", MedicalSystem_get_me);
+    registerGetter(L, "weatherGUIfeedback", MedicalSystem_get_weatherGUIfeedback);
+    registerGetter(L, "currentWeatherAffect", MedicalSystem_get_currentWeatherAffect);
+    registerGetter(L, "currentWeatherAffectStrength", MedicalSystem_get_currentWeatherAffectStrength);
+    registerGetter(L, "lastHungerKO", MedicalSystem_get_lastHungerKO);
+    registerGetter(L, "nextKOTime", MedicalSystem_get_nextKOTime);
+    registerGetter(L, "_eatenDeathDelay", MedicalSystem_get__eatenDeathDelay);
+    registerGetter(L, "crippled", MedicalSystem_get_crippled);
+    registerGetter(L, "unconcious", MedicalSystem_get_unconcious);
+    registerGetter(L, "sub50KO", MedicalSystem_get_sub50KO);
+    registerGetter(L, "bloodlossTrauma", MedicalSystem_get_bloodlossTrauma);
+    registerGetter(L, "dead", MedicalSystem_get_dead);
+    registerGetter(L, "rightArmOk", MedicalSystem_get_rightArmOk);
+    registerGetter(L, "leftArmOk", MedicalSystem_get_leftArmOk);
+    registerGetter(L, "lastBloodPosition", MedicalSystem_get_lastBloodPosition);
+    registerGetter(L, "anatomy", MedicalSystem_get_anatomy);
+    registerGetter(L, "stats", MedicalSystem_get_stats);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, MedicalSystem_set_status);
-    lua_setfield(L, -2, "status");
-    lua_pushcfunction(L, MedicalSystem_set_armourList);
-    lua_setfield(L, -2, "armourList");
-    lua_pushcfunction(L, MedicalSystem_set_hunger);
-    lua_setfield(L, -2, "hunger");
-    lua_pushcfunction(L, MedicalSystem_set_fed);
-    lua_setfield(L, -2, "fed");
-    lua_pushcfunction(L, MedicalSystem_set_lastPeriodicUpdate);
-    lua_setfield(L, -2, "lastPeriodicUpdate");
-    lua_pushcfunction(L, MedicalSystem_set_blood);
-    lua_setfield(L, -2, "blood");
-    lua_pushcfunction(L, MedicalSystem_set_extraBloodLossFromBodyparts);
-    lua_setfield(L, -2, "extraBloodLossFromBodyparts");
-    lua_pushcfunction(L, MedicalSystem_set_currentBleedRate);
-    lua_setfield(L, -2, "currentBleedRate");
-    lua_pushcfunction(L, MedicalSystem_set_leftLeg);
-    lua_setfield(L, -2, "leftLeg");
-    lua_pushcfunction(L, MedicalSystem_set_rightLeg);
-    lua_setfield(L, -2, "rightLeg");
-    lua_pushcfunction(L, MedicalSystem_set_leftArm);
-    lua_setfield(L, -2, "leftArm");
-    lua_pushcfunction(L, MedicalSystem_set_rightArm);
-    lua_setfield(L, -2, "rightArm");
-    lua_pushcfunction(L, MedicalSystem_set_knockoutTimer);
-    lua_setfield(L, -2, "knockoutTimer");
-    lua_pushcfunction(L, MedicalSystem_set_worstDamage);
-    lua_setfield(L, -2, "worstDamage");
-    lua_pushcfunction(L, MedicalSystem_set_needsFirstAidScoreTotal_robot);
-    lua_setfield(L, -2, "needsFirstAidScoreTotal_robot");
-    lua_pushcfunction(L, MedicalSystem_set_needsFirstAidScoreTotal_fleshy);
-    lua_setfield(L, -2, "needsFirstAidScoreTotal_fleshy");
-    lua_pushcfunction(L, MedicalSystem_set_restedState);
-    lua_setfield(L, -2, "restedState");
-    lua_pushcfunction(L, MedicalSystem_set_stealthHinderance);
-    lua_setfield(L, -2, "stealthHinderance");
-    lua_pushcfunction(L, MedicalSystem_set_partBestArm);
-    lua_setfield(L, -2, "partBestArm");
-    lua_pushcfunction(L, MedicalSystem_set_partHead);
-    lua_setfield(L, -2, "partHead");
-    lua_pushcfunction(L, MedicalSystem_set_partWorstTorso);
-    lua_setfield(L, -2, "partWorstTorso");
-    lua_pushcfunction(L, MedicalSystem_set_dazedOrAlert);
-    lua_setfield(L, -2, "dazedOrAlert");
-    lua_pushcfunction(L, MedicalSystem_set_robotLimbs);
-    lua_setfield(L, -2, "robotLimbs");
-    lua_pushcfunction(L, MedicalSystem_set_bloodynessChanged);
-    lua_setfield(L, -2, "bloodynessChanged");
-    lua_pushcfunction(L, MedicalSystem_set_bloodynessCleanedUp);
-    lua_setfield(L, -2, "bloodynessCleanedUp");
-    lua_pushcfunction(L, MedicalSystem_set_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, MedicalSystem_set_weatherGUIfeedback);
-    lua_setfield(L, -2, "weatherGUIfeedback");
-    lua_pushcfunction(L, MedicalSystem_set_currentWeatherAffect);
-    lua_setfield(L, -2, "currentWeatherAffect");
-    lua_pushcfunction(L, MedicalSystem_set_currentWeatherAffectStrength);
-    lua_setfield(L, -2, "currentWeatherAffectStrength");
-    lua_pushcfunction(L, MedicalSystem_set_lastHungerKO);
-    lua_setfield(L, -2, "lastHungerKO");
-    lua_pushcfunction(L, MedicalSystem_set_nextKOTime);
-    lua_setfield(L, -2, "nextKOTime");
-    lua_pushcfunction(L, MedicalSystem_set__eatenDeathDelay);
-    lua_setfield(L, -2, "_eatenDeathDelay");
-    lua_pushcfunction(L, MedicalSystem_set_crippled);
-    lua_setfield(L, -2, "crippled");
-    lua_pushcfunction(L, MedicalSystem_set_unconcious);
-    lua_setfield(L, -2, "unconcious");
-    lua_pushcfunction(L, MedicalSystem_set_sub50KO);
-    lua_setfield(L, -2, "sub50KO");
-    lua_pushcfunction(L, MedicalSystem_set_bloodlossTrauma);
-    lua_setfield(L, -2, "bloodlossTrauma");
-    lua_pushcfunction(L, MedicalSystem_set_dead);
-    lua_setfield(L, -2, "dead");
-    lua_pushcfunction(L, MedicalSystem_set_rightArmOk);
-    lua_setfield(L, -2, "rightArmOk");
-    lua_pushcfunction(L, MedicalSystem_set_leftArmOk);
-    lua_setfield(L, -2, "leftArmOk");
-    lua_pushcfunction(L, MedicalSystem_set_lastBloodPosition);
-    lua_setfield(L, -2, "lastBloodPosition");
-    lua_pushcfunction(L, MedicalSystem_set_anatomy);
-    lua_setfield(L, -2, "anatomy");
-    lua_pushcfunction(L, MedicalSystem_set_stats);
-    lua_setfield(L, -2, "stats");
+    registerSetter(L, "status", MedicalSystem_set_status);
+    registerSetter(L, "armourList", MedicalSystem_set_armourList);
+    registerSetter(L, "hunger", MedicalSystem_set_hunger);
+    registerSetter(L, "fed", MedicalSystem_set_fed);
+    registerSetter(L, "lastPeriodicUpdate", MedicalSystem_set_lastPeriodicUpdate);
+    registerSetter(L, "blood", MedicalSystem_set_blood);
+    registerSetter(L, "extraBloodLossFromBodyparts", MedicalSystem_set_extraBloodLossFromBodyparts);
+    registerSetter(L, "currentBleedRate", MedicalSystem_set_currentBleedRate);
+    registerSetter(L, "leftLeg", MedicalSystem_set_leftLeg);
+    registerSetter(L, "rightLeg", MedicalSystem_set_rightLeg);
+    registerSetter(L, "leftArm", MedicalSystem_set_leftArm);
+    registerSetter(L, "rightArm", MedicalSystem_set_rightArm);
+    registerSetter(L, "knockoutTimer", MedicalSystem_set_knockoutTimer);
+    registerSetter(L, "worstDamage", MedicalSystem_set_worstDamage);
+    registerSetter(L, "needsFirstAidScoreTotal_robot", MedicalSystem_set_needsFirstAidScoreTotal_robot);
+    registerSetter(L, "needsFirstAidScoreTotal_fleshy", MedicalSystem_set_needsFirstAidScoreTotal_fleshy);
+    registerSetter(L, "restedState", MedicalSystem_set_restedState);
+    registerSetter(L, "stealthHinderance", MedicalSystem_set_stealthHinderance);
+    registerSetter(L, "partBestArm", MedicalSystem_set_partBestArm);
+    registerSetter(L, "partHead", MedicalSystem_set_partHead);
+    registerSetter(L, "partWorstTorso", MedicalSystem_set_partWorstTorso);
+    registerSetter(L, "dazedOrAlert", MedicalSystem_set_dazedOrAlert);
+    registerSetter(L, "robotLimbs", MedicalSystem_set_robotLimbs);
+    registerSetter(L, "bloodynessChanged", MedicalSystem_set_bloodynessChanged);
+    registerSetter(L, "bloodynessCleanedUp", MedicalSystem_set_bloodynessCleanedUp);
+    registerSetter(L, "me", MedicalSystem_set_me);
+    registerSetter(L, "weatherGUIfeedback", MedicalSystem_set_weatherGUIfeedback);
+    registerSetter(L, "currentWeatherAffect", MedicalSystem_set_currentWeatherAffect);
+    registerSetter(L, "currentWeatherAffectStrength", MedicalSystem_set_currentWeatherAffectStrength);
+    registerSetter(L, "lastHungerKO", MedicalSystem_set_lastHungerKO);
+    registerSetter(L, "nextKOTime", MedicalSystem_set_nextKOTime);
+    registerSetter(L, "_eatenDeathDelay", MedicalSystem_set__eatenDeathDelay);
+    registerSetter(L, "crippled", MedicalSystem_set_crippled);
+    registerSetter(L, "unconcious", MedicalSystem_set_unconcious);
+    registerSetter(L, "sub50KO", MedicalSystem_set_sub50KO);
+    registerSetter(L, "bloodlossTrauma", MedicalSystem_set_bloodlossTrauma);
+    registerSetter(L, "dead", MedicalSystem_set_dead);
+    registerSetter(L, "rightArmOk", MedicalSystem_set_rightArmOk);
+    registerSetter(L, "leftArmOk", MedicalSystem_set_leftArmOk);
+    registerSetter(L, "lastBloodPosition", MedicalSystem_set_lastBloodPosition);
+    registerSetter(L, "anatomy", MedicalSystem_set_anatomy);
+    registerSetter(L, "stats", MedicalSystem_set_stats);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
     lua_pop(L, 1); // Pop the metatable off the stack
 
@@ -1500,6 +1425,126 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
     );
     LektorPtrBinding<Armour*>::registerBinding(L, "lektor<Armour*>", ArmourBinding::getMetatableName());
     LektorPtrBinding<MedicalSystem::HealthPartStatus*>::registerBinding(L, "lektor<HealthPartStatus*>", HealthPartStatusBinding::getMetatableName());
+}
+
+// --- Static Methods ---
+
+int MedicalSystemBinding::_setHealth(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+
+    std::string bodypart = luaL_checkstring(L, 2);
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->_setHealth(bodypart, amount);
+    return 0;
+}
+
+int MedicalSystemBinding::getLimbState(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+
+    RobotLimbs::Limb limb = (RobotLimbs::Limb)luaL_checkinteger(L, 2);
+    LimbState result = instance->getLimbState(limb);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int MedicalSystemBinding::getPart(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+
+    MedicalSystem::HealthPartStatus* part = nullptr;
+    if (lua_isinteger(L, 2) || lua_isnumber(L, 2))
+    {
+        int arg = (int)luaL_checkinteger(L, 2);
+        if (lua_gettop(L) >= 3)
+        {
+            MedicalSystem::HealthPartStatus::PartType ptype = (MedicalSystem::HealthPartStatus::PartType)arg;
+            LeftRight side = (LeftRight)luaL_checkinteger(L, 3);
+            part = instance->getPart(ptype, side);
+        }
+        else
+        {
+            RobotLimbs::Limb limb = (RobotLimbs::Limb)arg;
+            part = instance->getPart(limb);
+        }
+    }
+    return pushObject<MedicalSystem::HealthPartStatus>(L, part, HealthPartStatusBinding::getMetatableName());
+}
+
+int MedicalSystemBinding::addArmour(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+
+    Armour* item = checkObject<Armour>(L, 2, ArmourBinding::getMetatableName());
+    instance->addArmour(item);
+    return 0;
+}
+
+int MedicalSystemBinding::removeArmour(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    instance->removeArmour(item);
+    return 0;
+}
+
+int MedicalSystemBinding::wearingUniformOf(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+
+    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    bool result = instance->wearingUniformOf(f);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int MedicalSystemBinding::applyFirstAid(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+
+    float skill = (float)luaL_checknumber(L, 2);
+    Item* equipment = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    float frameTIME = (float)luaL_checknumber(L, 4);
+    Character* who = checkObject<Character>(L, 5, CharacterBinding::getMetatableName());
+    bool result = instance->applyFirstAid(skill, equipment, frameTIME, who);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int MedicalSystemBinding::applyDoctoring(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+
+    float skill = (float)luaL_checknumber(L, 2);
+    Item* equipment = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    float frameTIME = (float)luaL_checknumber(L, 4);
+    Character* who = checkObject<Character>(L, 5, CharacterBinding::getMetatableName());
+    bool result = instance->applyDoctoring(skill, equipment, frameTIME, who);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int MedicalSystemBinding::applyRigging(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+
+    float skill = (float)luaL_checknumber(L, 2);
+    Item* equipment = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    float frameTIME = (float)luaL_checknumber(L, 4);
+    bool result = instance->applyRigging(skill, equipment, frameTIME);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
 }
 
 } // namespace KenshiLua

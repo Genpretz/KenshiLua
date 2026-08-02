@@ -113,42 +113,42 @@ static int ForgottenGUI_get_tradeA(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    return handBinding::push(L, instance->tradeA);
+    return HandBinding::push(L, instance->tradeA);
 }
 
 static int ForgottenGUI_get_tradeB(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    return handBinding::push(L, instance->tradeB);
+    return HandBinding::push(L, instance->tradeB);
 }
 
 static int ForgottenGUI_get_inventoryWindowBuilding(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    return handBinding::push(L, instance->inventoryWindowBuilding);
+    return HandBinding::push(L, instance->inventoryWindowBuilding);
 }
 
 static int ForgottenGUI_get_inventoryWindowCharacter(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    return handBinding::push(L, instance->inventoryWindowCharacter);
+    return HandBinding::push(L, instance->inventoryWindowCharacter);
 }
 
 static int ForgottenGUI_get_inventoryWindowTrader(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    return handBinding::push(L, instance->inventoryWindowTrader);
+    return HandBinding::push(L, instance->inventoryWindowTrader);
 }
 
 static int ForgottenGUI_get_inventoryWindowNPC(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    return handBinding::push(L, instance->inventoryWindowNPC);
+    return HandBinding::push(L, instance->inventoryWindowNPC);
 }
 
 static int ForgottenGUI_get_characterEditor(lua_State* L)
@@ -170,14 +170,14 @@ static int ForgottenGUI_get_selectedObject(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    return handBinding::push(L, instance->selectedObject);
+    return HandBinding::push(L, instance->selectedObject);
 }
 
 static int ForgottenGUI_get_selectedPlayerCharacter(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    return handBinding::push(L, instance->selectedPlayerCharacter);
+    return HandBinding::push(L, instance->selectedPlayerCharacter);
 }
 
 static int ForgottenGUI_get_cursorPanel(lua_State* L)
@@ -199,14 +199,14 @@ static int ForgottenGUI_get_cursorActionPlayer(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    return handBinding::push(L, instance->cursorActionPlayer);
+    return HandBinding::push(L, instance->cursorActionPlayer);
 }
 
 static int ForgottenGUI_get_cursorActionTarget(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    return handBinding::push(L, instance->cursorActionTarget);
+    return HandBinding::push(L, instance->cursorActionTarget);
 }
 
 static int ForgottenGUI_get_visible(lua_State* L)
@@ -302,7 +302,7 @@ static int ForgottenGUI_set_tradeA(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    instance->tradeA = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->tradeA = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -310,7 +310,7 @@ static int ForgottenGUI_set_tradeB(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    instance->tradeB = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->tradeB = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -318,7 +318,7 @@ static int ForgottenGUI_set_inventoryWindowBuilding(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    instance->inventoryWindowBuilding = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->inventoryWindowBuilding = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -326,7 +326,7 @@ static int ForgottenGUI_set_inventoryWindowCharacter(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    instance->inventoryWindowCharacter = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->inventoryWindowCharacter = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -334,7 +334,7 @@ static int ForgottenGUI_set_inventoryWindowTrader(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    instance->inventoryWindowTrader = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->inventoryWindowTrader = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -342,7 +342,7 @@ static int ForgottenGUI_set_inventoryWindowNPC(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    instance->inventoryWindowNPC = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->inventoryWindowNPC = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -363,7 +363,7 @@ static int ForgottenGUI_set_selectedObject(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    instance->selectedObject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->selectedObject = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -371,7 +371,7 @@ static int ForgottenGUI_set_selectedPlayerCharacter(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    instance->selectedPlayerCharacter = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->selectedPlayerCharacter = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -395,7 +395,7 @@ static int ForgottenGUI_set_cursorActionPlayer(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    instance->cursorActionPlayer = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->cursorActionPlayer = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -403,7 +403,7 @@ static int ForgottenGUI_set_cursorActionTarget(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    instance->cursorActionTarget = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->cursorActionTarget = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

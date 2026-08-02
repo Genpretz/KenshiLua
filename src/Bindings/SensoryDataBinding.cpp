@@ -142,7 +142,7 @@ static int SensoryData_get_spottedGuyIndexForProgressBar(lua_State* L)
 {
     SensoryData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SensoryData is nil");
-    return handBinding::push(L, instance->spottedGuyIndexForProgressBar);
+    return HandBinding::push(L, instance->spottedGuyIndexForProgressBar);
 }
 
 static int SensoryData_get_amSharingThisFrame(lua_State* L)
@@ -274,7 +274,7 @@ static int SensoryData_set_spottedGuyIndexForProgressBar(lua_State* L)
 {
     SensoryData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SensoryData is nil");
-    instance->spottedGuyIndexForProgressBar = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->spottedGuyIndexForProgressBar = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -1015,7 +1015,7 @@ static int SensoryData_getStateBroadcastOf(lua_State* L)
 {
     SensoryData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SensoryData is nil");
-    hand* who = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* who = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     StateBroadcastData* res = instance->getStateBroadcastOf(*who);
     if (res) lua_pushlightuserdata(L, res);
     else lua_pushnil(L);
@@ -1136,7 +1136,7 @@ static int SensoryData_notifyCriminalThreat(lua_State* L)
 {
     SensoryData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SensoryData is nil");
-    hand* h = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->notifyCriminalThreat(*h);
     return 0;
 }
@@ -1228,7 +1228,7 @@ static int SensoryData_setupMyProgressBar(lua_State* L)
 {
     SensoryData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SensoryData is nil");
-    hand* who = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* who = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->setupMyProgressBar(*who);
     return 0;
 }

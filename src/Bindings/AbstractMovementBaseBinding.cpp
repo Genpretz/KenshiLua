@@ -305,7 +305,7 @@ int AbstractMovementBaseBinding::getHandle(lua_State* L)
     if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
 
     hand result = instance->getHandle();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int AbstractMovementBaseBinding::_NV_getHandle(lua_State* L)
@@ -314,7 +314,7 @@ int AbstractMovementBaseBinding::_NV_getHandle(lua_State* L)
     if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
 
     hand result = instance->_NV_getHandle();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int AbstractMovementBaseBinding::_setPositionAndTeleport(lua_State* L)

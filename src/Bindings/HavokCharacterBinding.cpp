@@ -114,14 +114,14 @@ static int HavokCharacter_get_handle(lua_State* L)
 {
     HavokCharacter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HavokCharacter is nil");
-    return handBinding::push(L, instance->handle);
+    return HandBinding::push(L, instance->handle);
 }
 
 static int HavokCharacter_get_collided(lua_State* L)
 {
     HavokCharacter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HavokCharacter is nil");
-    return handBinding::push(L, instance->collided);
+    return HandBinding::push(L, instance->collided);
 }
 
 static int HavokCharacter_get_sensoryData(lua_State* L)
@@ -240,7 +240,7 @@ static int HavokCharacter_set_handle(lua_State* L)
 {
     HavokCharacter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HavokCharacter is nil");
-    instance->handle = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->handle = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -248,7 +248,7 @@ static int HavokCharacter_set_collided(lua_State* L)
 {
     HavokCharacter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HavokCharacter is nil");
-    instance->collided = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->collided = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

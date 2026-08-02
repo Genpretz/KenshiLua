@@ -67,5 +67,14 @@ public:
     static int getWeatherStatPenaltyMult(lua_State* L);
     static int getWeatherStatPenalty(lua_State* L);
     static int calculateBleedRateForFX(lua_State* L);
+    static int _setHealth(lua_State* L);
+    static int getLimbState(lua_State* L);
+    static int getPart(lua_State* L);
+    static int addArmour(lua_State* L);
+    static int removeArmour(lua_State* L);
+    static int wearingUniformOf(lua_State* L);
+    static int applyFirstAid(lua_State* L);
+    static int applyDoctoring(lua_State* L);
+    static int applyRigging(lua_State* L);
 };
 }

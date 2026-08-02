@@ -87,7 +87,7 @@ static int Building_get_residentSquad(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    return handBinding::push(L, instance->residentSquad);
+    return HandBinding::push(L, instance->residentSquad);
 }
 
 static int Building_get_residentSquadTemplate(lua_State* L)
@@ -227,7 +227,7 @@ static int Building_get__town(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    return handBinding::push(L, instance->_town);
+    return HandBinding::push(L, instance->_town);
 }
 
 // todo: implement a proper binding for Interior, instead of just returning a lightuserdata
@@ -464,7 +464,7 @@ static int Building_set_residentSquad(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    instance->residentSquad = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->residentSquad = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -608,7 +608,7 @@ static int Building_set__town(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    instance->_town = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->_town = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -2572,7 +2572,7 @@ int BuildingBinding::getTownHandle(lua_State* L)
     if (!instance) return luaL_error(L, "Building is nil");
 
     hand result = instance->getTownHandle();
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int BuildingBinding::getTown(lua_State* L)

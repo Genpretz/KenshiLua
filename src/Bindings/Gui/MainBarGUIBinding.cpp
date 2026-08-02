@@ -225,7 +225,7 @@ static int MainBarGUI_get_portraitContextMenuTarget(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return handBinding::push(L, instance->portraitContextMenuTarget);
+    return HandBinding::push(L, instance->portraitContextMenuTarget);
 }
 
 static int MainBarGUI_get_portraitContextMenuTimer(lua_State* L)
@@ -374,7 +374,7 @@ static int MainBarGUI_set_portraitContextMenuTarget(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    instance->portraitContextMenuTarget = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->portraitContextMenuTarget = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -708,7 +708,7 @@ int MainBarGUIBinding::autoChangeSelectedObject(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    hand* obj = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!obj) return luaL_error(L, "Argument 2 to autoChangeSelectedObject must be hand");
     instance->autoChangeSelectedObject(*obj);
     return 0;
@@ -719,7 +719,7 @@ int MainBarGUIBinding::_NV_autoChangeSelectedObject(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    hand* obj = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!obj) return luaL_error(L, "Argument 2 to _NV_autoChangeSelectedObject must be hand");
     instance->_NV_autoChangeSelectedObject(*obj);
     return 0;
@@ -730,9 +730,9 @@ int MainBarGUIBinding::getPortrait(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    if (testObject<hand>(L, 2, handBinding::getMetatableName()) != nullptr)
+    if (testObject<hand>(L, 2, HandBinding::getMetatableName()) != nullptr)
     {
-        hand* character = checkObject<hand>(L, 2, handBinding::getMetatableName());
+        hand* character = checkObject<hand>(L, 2, HandBinding::getMetatableName());
         PortraitData* res = instance->getPortrait(*character);
         if (res) lua_pushlightuserdata(L, (void*)res); else lua_pushnil(L);
         return 1;
@@ -768,7 +768,7 @@ int MainBarGUIBinding::updatePortrait(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    hand* character = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* character = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!character) return luaL_error(L, "Argument 2 to updatePortrait must be hand");
     instance->updatePortrait(*character);
     return 0;
@@ -859,7 +859,7 @@ int MainBarGUIBinding::ordersPanelFill(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    hand* c = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* c = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!c) return luaL_error(L, "Argument 2 to ordersPanelFill must be hand");
     instance->ordersPanelFill(*c);
     return 0;
@@ -870,16 +870,7 @@ int MainBarGUIBinding::getBuildingInventoryPosition(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    const MyGUI::types::TPoint<int>& pos = instance->getBuildingInventoryPosition();
-    lua_newtable(L);
-    lua_pushinteger(L, pos.left);
-    lua_setfield(L, -2, "left");
-    lua_pushinteger(L, pos.top);
-    lua_setfield(L, -2, "top");
-    lua_pushinteger(L, pos.left);
-    lua_setfield(L, -2, "x");
-    lua_pushinteger(L, pos.top);
-    lua_setfield(L, -2, "y");
+    pushPoint(L, instance->getBuildingInventoryPosition());
     return 1;
 }
 

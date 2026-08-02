@@ -458,7 +458,7 @@ int TownBinding::setup(lua_State* L)
     GameData* _town = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Ogre::Vector3 _pos;
     readVector3(L, 3, _pos);
-    hand h = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand h = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     instance->setup(_town, _pos, h);
     return 0;
 }
@@ -471,7 +471,7 @@ int TownBinding::_NV_setup(lua_State* L)
     GameData* _town = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Ogre::Vector3 _pos;
     readVector3(L, 3, _pos);
-    hand h = *checkObject<hand>(L, 4, handBinding::getMetatableName());
+    hand h = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
     instance->_NV_setup(_town, _pos, h);
     return 0;
 }
@@ -1422,7 +1422,7 @@ static int Town_get_powerInList(lua_State* L)
     if (!instance) return luaL_error(L, "Town is nil");
     lua_newtable(L);
     for (size_t i = 0; i < instance->powerInList.size(); ++i) {
-        handBinding::push(L, instance->powerInList[i]);
+        HandBinding::push(L, instance->powerInList[i]);
         lua_rawseti(L, -2, (int)(i + 1));
     }
     return 1;
@@ -1531,7 +1531,7 @@ static int Town_set_powerInList(lua_State* L)
     instance->powerInList.clear();
     lua_pushnil(L);
     while (lua_next(L, 2) != 0) {
-        hand* h = checkObject<hand>(L, -1, handBinding::getMetatableName());
+        hand* h = checkObject<hand>(L, -1, HandBinding::getMetatableName());
         instance->powerInList.push_back(*h);
         lua_pop(L, 1);
     }

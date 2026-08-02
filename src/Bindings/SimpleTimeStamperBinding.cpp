@@ -1,12 +1,13 @@
 #include "pch.h"
-#include "kenshi\GameWorld.h"
+#include "KENSHI\GameWorld.h"
 #include "SimpleTimeStamperBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Util/CPerfTimerBinding.h"
 
 namespace KenshiLua
 {
 
-static SimpleTimeStamper* getB(lua_State* L, int idx)
+static SimpleTimeStamper* getInstance(lua_State* L, int idx)
 {
     return checkObject<SimpleTimeStamper>(L, idx, SimpleTimeStamperBinding::getMetatableName());
 }
@@ -14,54 +15,58 @@ static SimpleTimeStamper* getB(lua_State* L, int idx)
 // --- Getters for SimpleTimeStamper ---
 static int SimpleTimeStamper_get_timer(lua_State* L)
 {
-    SimpleTimeStamper* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SimpleTimeStamper is nil");
-    // TODO: Unsupported type for timer (CPerfTimer)
-    return luaL_error(L, "Unsupported property 'timer' (type: CPerfTimer)");
+    SimpleTimeStamper* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SimpleTimeStamper is nil");
+    return pushObject<CPerfTimer>(L, &instance->timer, CPerfTimerBinding::getMetatableName());
 }
 
 // --- Setters for SimpleTimeStamper ---
 static int SimpleTimeStamper_set_timer(lua_State* L)
 {
-    SimpleTimeStamper* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SimpleTimeStamper is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for timer");
+    SimpleTimeStamper* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SimpleTimeStamper is nil");
+    instance->timer = *checkObject<CPerfTimer>(L, 2, CPerfTimerBinding::getMetatableName());
+    return 0;
+}
+
+int SimpleTimeStamperBinding::_CONSTRUCTOR(lua_State* L)
+{
+    SimpleTimeStamper* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SimpleTimeStamper is nil");
+
+    SimpleTimeStamper* result = instance->_CONSTRUCTOR();
+    return pushObject<SimpleTimeStamper>(L, result, SimpleTimeStamperBinding::getMetatableName());
 }
 
 int SimpleTimeStamperBinding::getTime(lua_State* L)
 {
-    SimpleTimeStamper* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SimpleTimeStamper is nil");
+    SimpleTimeStamper* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SimpleTimeStamper is nil");
 
     double _lastStamp = (double)luaL_checknumber(L, 2);
-    double result = b->getTime(_lastStamp);
+    double result = instance->getTime(_lastStamp);
     lua_pushnumber(L, result);
     return 1;
 }
 
 int SimpleTimeStamperBinding::stampTime(lua_State* L)
 {
-    SimpleTimeStamper* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SimpleTimeStamper is nil");
+    SimpleTimeStamper* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SimpleTimeStamper is nil");
 
-    double result = b->stampTime();
+    double result = instance->stampTime();
     lua_pushnumber(L, result);
     return 1;
 }
 
 int SimpleTimeStamperBinding::_DESTRUCTOR(lua_State* L)
 {
-    SimpleTimeStamper* b = getB(L, 1);
-    if (!b) return luaL_error(L, "SimpleTimeStamper is nil");
+    SimpleTimeStamper* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SimpleTimeStamper is nil");
 
-    b->_DESTRUCTOR();
+    instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 48: SimpleTimeStamper* _CONSTRUCTOR(...) - unsupported return type
-*/
 
 int SimpleTimeStamperBinding::gc(lua_State* L)
 {
@@ -84,6 +89,7 @@ void SimpleTimeStamperBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", SimpleTimeStamperBinding::_CONSTRUCTOR },
         { "getTime", SimpleTimeStamperBinding::getTime },
         { "stampTime", SimpleTimeStamperBinding::stampTime },
         { "_DESTRUCTOR", SimpleTimeStamperBinding::_DESTRUCTOR },
@@ -101,13 +107,11 @@ void SimpleTimeStamperBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, SimpleTimeStamperBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, SimpleTimeStamper_get_timer);
-    lua_setfield(L, -2, "timer");
+    registerGetter(L, "timer", SimpleTimeStamper_get_timer);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, SimpleTimeStamper_set_timer);
-    lua_setfield(L, -2, "timer");
+    registerSetter(L, "timer", SimpleTimeStamper_set_timer);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

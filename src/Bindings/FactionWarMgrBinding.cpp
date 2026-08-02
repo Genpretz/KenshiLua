@@ -424,7 +424,7 @@ int FactionWarMgrBinding::getAITarget(lua_State* L)
 
     Platoon* who = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
     hand result = instance->getAITarget(who);
-    return handBinding::push(L, result);
+    return HandBinding::push(L, result);
 }
 
 int FactionWarMgrBinding::getMyUnloadedAI(lua_State* L)

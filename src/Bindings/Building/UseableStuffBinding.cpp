@@ -20,14 +20,14 @@ static int UseableStuff_get_shopOwner(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    return handBinding::push(L, instance->shopOwner);
+    return HandBinding::push(L, instance->shopOwner);
 }
 
 static int UseableStuff_get_callbackOwner(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    return handBinding::push(L, instance->callbackOwner);
+    return HandBinding::push(L, instance->callbackOwner);
 }
 
 static int UseableStuff_get_hasProgressBarWhenUsed(lua_State* L)
@@ -226,7 +226,7 @@ static int UseableStuff_set_shopOwner(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* val = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->shopOwner = *val;
     return 0;
 }
@@ -235,7 +235,7 @@ static int UseableStuff_set_callbackOwner(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    hand* val = checkObject<hand>(L, 2, handBinding::getMetatableName());
+    hand* val = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->callbackOwner = *val;
     return 0;
 }

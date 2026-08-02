@@ -265,14 +265,14 @@ static int CombatMovementController_get_lookAtCharacter(lua_State* L)
 {
     CombatMovementController* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatMovementController is nil");
-    return handBinding::push(L, instance->lookAtCharacter);
+    return HandBinding::push(L, instance->lookAtCharacter);
 }
 
 static int CombatMovementController_get_combatTarget(lua_State* L)
 {
     CombatMovementController* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatMovementController is nil");
-    return handBinding::push(L, instance->combatTarget);
+    return HandBinding::push(L, instance->combatTarget);
 }
 
 // --- Setters for CombatMovementController ---
@@ -528,7 +528,7 @@ static int CombatMovementController_set_lookAtCharacter(lua_State* L)
 {
     CombatMovementController* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatMovementController is nil");
-    instance->lookAtCharacter = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->lookAtCharacter = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -536,7 +536,7 @@ static int CombatMovementController_set_combatTarget(lua_State* L)
 {
     CombatMovementController* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatMovementController is nil");
-    instance->combatTarget = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->combatTarget = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 

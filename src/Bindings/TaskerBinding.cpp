@@ -30,7 +30,7 @@ static int Tasker_get_subject(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    return handBinding::push(L, instance->subject);
+    return HandBinding::push(L, instance->subject);
 }
 
 static int Tasker_get_weight(lua_State* L)
@@ -45,7 +45,7 @@ static int Tasker_get_currentSubTarget(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    return handBinding::push(L, instance->currentSubTarget);
+    return HandBinding::push(L, instance->currentSubTarget);
 }
 
 static int Tasker_get_location(lua_State* L)
@@ -92,7 +92,7 @@ static int Tasker_set_subject(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    instance->subject = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->subject = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -108,7 +108,7 @@ static int Tasker_set_currentSubTarget(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    instance->currentSubTarget = *checkObject<hand>(L, 2, handBinding::getMetatableName());
+    instance->currentSubTarget = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     return 0;
 }
 
@@ -423,7 +423,7 @@ int TaskerBinding::getNextSubTarget(lua_State* L)
     if (!instance) return luaL_error(L, "Tasker is nil");
     AI* ai = (AI*)lua_touserdata(L, 2);
     hand res = instance->getNextSubTarget(ai);
-    return pushObject<hand>(L, new hand(res), handBinding::getMetatableName());
+    return pushObject<hand>(L, new hand(res), HandBinding::getMetatableName());
 }
 
 
