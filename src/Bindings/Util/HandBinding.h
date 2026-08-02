@@ -10,7 +10,7 @@ std::size_t hash_value(const hand& h);
 
 namespace KenshiLua
 {
-class handBinding
+class HandBinding
 {
 public:
     static const char* getMetatableName() { return "KenshiLua.hand"; }

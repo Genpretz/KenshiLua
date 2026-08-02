@@ -111,7 +111,7 @@ namespace KenshiLua
         {
             SetType* s = get(L, 1);
             if (!s) { lua_pushnil(L); return 1; }
-            lua_newtable(L);
+            lua_createtable(L, 0, (int)s->size());
             for (typename SetType::const_iterator it = s->begin(); it != s->end(); ++it)
             {
                 LuaCodec<K>::push(L, *it, elemMetaName);
@@ -119,6 +119,31 @@ namespace KenshiLua
                 lua_settable(L, -3);
             }
             return 1;
+        }
+
+        // Stateful iterator: upvalue 1 = skip count
+        static int iterNext(lua_State* L)
+        {
+            SetType* s = get(L, 1);
+            if (!s) return 0;
+            int skip = (int)lua_tointeger(L, lua_upvalueindex(1));
+            typename SetType::const_iterator it = s->begin();
+            for (int n = 0; n < skip && it != s->end(); ++n, ++it) {}
+            if (it == s->end()) return 0;
+            lua_pushinteger(L, skip + 1);
+            lua_replace(L, lua_upvalueindex(1));
+            LuaCodec<K>::push(L, *it, elemMetaName);
+            lua_pushboolean(L, 1);
+            return 2;
+        }
+
+        static int pairs(lua_State* L)
+        {
+            lua_pushinteger(L, 0);
+            lua_pushcclosure(L, iterNext, 1);
+            lua_pushvalue(L, 1);
+            lua_pushnil(L);
+            return 3;
         }
 
         static int push(lua_State* L, SetType* ptr)
@@ -136,6 +161,7 @@ namespace KenshiLua
                 { "__index",    index },
                 { "__newindex", newindex },
                 { "__len",      len },
+                { "__pairs",    pairs },
                 { 0, 0 }
             };
             static const luaL_Reg methods[] = {
@@ -275,7 +301,7 @@ namespace KenshiLua
         {
             MapType* m = get(L, 1);
             if (!m) { lua_pushnil(L); return 1; }
-            lua_newtable(L);
+            lua_createtable(L, 0, (int)m->size());
             for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
             {
                 LuaCodec<K>::push(L, it->first, keyMetaName);
@@ -290,6 +316,34 @@ namespace KenshiLua
                 lua_settable(L, -3);
             }
             return 1;
+        }
+
+        // Stateful iterator: upvalue 1 = skip count
+        static int iterNext(lua_State* L)
+        {
+            MapType* m = get(L, 1);
+            if (!m) return 0;
+            int skip = (int)lua_tointeger(L, lua_upvalueindex(1));
+            typename MapType::const_iterator it = m->begin();
+            for (int n = 0; n < skip && it != m->end(); ++n, ++it) {}
+            if (it == m->end()) return 0;
+            lua_pushinteger(L, skip + 1);
+            lua_replace(L, lua_upvalueindex(1));
+            LuaCodec<K>::push(L, it->first, keyMetaName);
+            if (valMetaName)
+                pushObject<V>(L, const_cast<V*>(&it->second), valMetaName);
+            else
+                LuaCodec<V>::push(L, it->second, nullptr);
+            return 2;
+        }
+
+        static int pairs(lua_State* L)
+        {
+            lua_pushinteger(L, 0);
+            lua_pushcclosure(L, iterNext, 1);
+            lua_pushvalue(L, 1);
+            lua_pushnil(L);
+            return 3;
         }
 
         static int push(lua_State* L, MapType* ptr)
@@ -308,6 +362,7 @@ namespace KenshiLua
                 { "__index",    index },
                 { "__newindex", newindex },
                 { "__len",      len },
+                { "__pairs",    pairs },
                 { 0, 0 }
             };
             static const luaL_Reg methods[] = {

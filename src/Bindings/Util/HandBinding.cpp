@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "kenshi\util\hand.h"
-#include "handBinding.h"
+#include "HandBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/Building/BuildingBinding.h"
@@ -28,7 +28,7 @@ namespace KenshiLua
 
 static hand* getInstance(lua_State* L, int idx)
 {
-    return checkObject<hand>(L, idx, handBinding::getMetatableName());
+    return checkObject<hand>(L, idx, HandBinding::getMetatableName());
 }
 
 // --- Getters for hand ---
@@ -113,7 +113,7 @@ static int hand_set_serial(lua_State* L)
     return 0;
 }
 
-int handBinding::toString(lua_State* L)
+int HandBinding::toString(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -123,7 +123,7 @@ int handBinding::toString(lua_State* L)
     return 1;
 }
 
-int handBinding::fromString(lua_State* L)
+int HandBinding::fromString(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -133,7 +133,7 @@ int handBinding::fromString(lua_State* L)
     return 0;
 }
 
-int handBinding::getCharacter(lua_State* L)
+int HandBinding::getCharacter(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -142,7 +142,7 @@ int handBinding::getCharacter(lua_State* L)
     return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
 }
 
-int handBinding::getPlatoon(lua_State* L)
+int HandBinding::getPlatoon(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -151,7 +151,7 @@ int handBinding::getPlatoon(lua_State* L)
     return pushObject<Platoon>(L, result, PlatoonBinding::getMetatableName());
 }
 
-int handBinding::getActivePlatoon(lua_State* L)
+int HandBinding::getActivePlatoon(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -160,7 +160,7 @@ int handBinding::getActivePlatoon(lua_State* L)
     return pushObject<ActivePlatoon>(L, result, ActivePlatoonBinding::getMetatableName());
 }
 
-int handBinding::getBuilding(lua_State* L)
+int HandBinding::getBuilding(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -169,7 +169,7 @@ int handBinding::getBuilding(lua_State* L)
     return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
 }
 
-int handBinding::getItem(lua_State* L)
+int HandBinding::getItem(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -178,7 +178,7 @@ int handBinding::getItem(lua_State* L)
     return pushObject<Item>(L, result, ItemBinding::getMetatableName());
 }
 
-int handBinding::getRootObject(lua_State* L)
+int HandBinding::getRootObject(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -187,7 +187,7 @@ int handBinding::getRootObject(lua_State* L)
     return pushObject<RootObject>(L, result, RootObjectBinding::getMetatableName());
 }
 
-int handBinding::getRootObjectBase(lua_State* L)
+int HandBinding::getRootObjectBase(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -196,7 +196,7 @@ int handBinding::getRootObjectBase(lua_State* L)
     return pushObject<RootObjectBase>(L, result, RootObjectBaseBinding::getMetatableName());
 }
 
-int handBinding::getTown(lua_State* L)
+int HandBinding::getTown(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -205,7 +205,7 @@ int handBinding::getTown(lua_State* L)
     return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
 }
 
-int handBinding::debugWhatHappenedToMe(lua_State* L)
+int HandBinding::debugWhatHappenedToMe(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -215,7 +215,7 @@ int handBinding::debugWhatHappenedToMe(lua_State* L)
     return 1;
 }
 
-int handBinding::setNull(lua_State* L)
+int HandBinding::setNull(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -224,7 +224,7 @@ int handBinding::setNull(lua_State* L)
     return 0;
 }
 
-int handBinding::isNull(lua_State* L)
+int HandBinding::isNull(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -234,7 +234,7 @@ int handBinding::isNull(lua_State* L)
     return 1;
 }
 
-int handBinding::isValid(lua_State* L)
+int HandBinding::isValid(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -244,7 +244,7 @@ int handBinding::isValid(lua_State* L)
     return 1;
 }
 
-int handBinding::canCastToRootObject(lua_State* L)
+int HandBinding::canCastToRootObject(lua_State* L)
 {
     hand* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
@@ -278,13 +278,13 @@ Skipped methods needing manual binding:
   line 66: bool squadMatch(...) - unsupported arg type
 */
 
-int handBinding::push(lua_State* L, const hand& h)
+int HandBinding::push(lua_State* L, const hand& h)
 {
     hand* heapHand = new hand(h);
-    return pushObject<hand>(L, heapHand, handBinding::getMetatableName());
+    return pushObject<hand>(L, heapHand, HandBinding::getMetatableName());
 }
 
-int handBinding::gc(lua_State* L)
+int HandBinding::gc(lua_State* L)
 {
     void** ud = (void**)lua_touserdata(L, 1);
     if (ud && *ud) {
@@ -294,49 +294,49 @@ int handBinding::gc(lua_State* L)
     return 0;
 }
 
-int handBinding::tostring(lua_State* L)
+int HandBinding::tostring(lua_State* L)
 {
     lua_pushstring(L, "KenshiLua.hand object");
     return 1;
 }
 
-void handBinding::registerBinding(lua_State* L)
+void HandBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
-        { "__gc",       handBinding::gc },
-        { "__tostring", handBinding::tostring },
+        { "__gc",       HandBinding::gc },
+        { "__tostring", HandBinding::tostring },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
-        { "toString", handBinding::toString },
-        { "fromString", handBinding::fromString },
-        { "getCharacter", handBinding::getCharacter },
-        { "getPlatoon", handBinding::getPlatoon },
-        { "getActivePlatoon", handBinding::getActivePlatoon },
-        { "getBuilding", handBinding::getBuilding },
-        { "getItem", handBinding::getItem },
-        { "getRootObject", handBinding::getRootObject },
-        { "getRootObjectBase", handBinding::getRootObjectBase },
-        { "getTown", handBinding::getTown },
-        { "debugWhatHappenedToMe", handBinding::debugWhatHappenedToMe },
-        { "setNull", handBinding::setNull },
-        { "isNull", handBinding::isNull },
-        { "isValid", handBinding::isValid },
-        { "canCastToRootObject", handBinding::canCastToRootObject },
+        { "toString", HandBinding::toString },
+        { "fromString", HandBinding::fromString },
+        { "getCharacter", HandBinding::getCharacter },
+        { "getPlatoon", HandBinding::getPlatoon },
+        { "getActivePlatoon", HandBinding::getActivePlatoon },
+        { "getBuilding", HandBinding::getBuilding },
+        { "getItem", HandBinding::getItem },
+        { "getRootObject", HandBinding::getRootObject },
+        { "getRootObjectBase", HandBinding::getRootObjectBase },
+        { "getTown", HandBinding::getTown },
+        { "debugWhatHappenedToMe", HandBinding::debugWhatHappenedToMe },
+        { "setNull", HandBinding::setNull },
+        { "isNull", HandBinding::isNull },
+        { "isValid", HandBinding::isValid },
+        { "canCastToRootObject", HandBinding::canCastToRootObject },
         { 0, 0 }
     };
 
     registerClass(
         L, 
-        handBinding::getMetatableName(), 
+        HandBinding::getMetatableName(), 
         meta, 
         methods, 
         genericPropertyIndex, 
         genericPropertyNewIndex
     );
 
-    luaL_getmetatable(L, handBinding::getMetatableName());
+    luaL_getmetatable(L, HandBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
     registerGetter(L, "type", hand_get_type);
     registerGetter(L, "container", hand_get_container);

@@ -155,6 +155,50 @@ namespace KenshiLua
             return len(L);
         }
 
+        static int toTable(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) { lua_pushnil(L); return 1; }
+            lua_createtable(L, (int)lek->count, 0);
+            for (uint32_t i = 0; i < lek->count; ++i)
+            {
+                pushObject<typename std::remove_pointer<T>::type>(L, lek->stuff[i], elemMetaName);
+                lua_rawseti(L, -2, (int)(i + 1));
+            }
+            return 1;
+        }
+
+        static int pop(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return luaL_error(L, "lektor is nil");
+            if (lek->count == 0) return luaL_error(L, "lektor:pop container is empty");
+            T val = lektor_pop_back_val(*lek);
+            return pushObject<typename std::remove_pointer<T>::type>(L, val, elemMetaName);
+        }
+
+        // Stateless iterator for __pairs/__ipairs: control = integer index (0-based previous)
+        static int iterNext(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return 0;
+            uint32_t i = (uint32_t)lua_tointeger(L, 2) + 1; // advance to next (1-based)
+            if (i > lek->count) return 0;
+            lua_pushinteger(L, (lua_Integer)i);
+            pushObject<typename std::remove_pointer<T>::type>(L, lek->stuff[i - 1], elemMetaName);
+            return 2;
+        }
+
+        static int pairs(lua_State* L)
+        {
+            lua_pushcfunction(L, iterNext);
+            lua_pushvalue(L, 1);
+            lua_pushinteger(L, 0);
+            return 3;
+        }
+
+        static int ipairs(lua_State* L) { return pairs(L); }
+
         static void registerBinding(lua_State* L, const char* name, const char* elemName)
         {
             metaName = name;
@@ -165,13 +209,17 @@ namespace KenshiLua
                 { "__len",      len },
                 { "__index",    index },
                 { "__newindex", newindex },
+                { "__pairs",    pairs },
+                { "__ipairs",   ipairs },
                 { 0, 0 }
             };
             static const luaL_Reg methods[] = {
                 { "push",      push },
+                { "pop",       pop },
                 { "removeAt",  removeAt },
                 { "clear",     clear },
                 { "size",      size },
+                { "toTable",   toTable },
                 { 0, 0 }
             };
             registerClass(L, metaName, meta, methods, index, newindex);
@@ -285,6 +333,61 @@ namespace KenshiLua
             return len(L);
         }
 
+        static int toTable(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) { lua_pushnil(L); return 1; }
+            lua_createtable(L, (int)lek->count, 0);
+            for (uint32_t i = 0; i < lek->count; ++i)
+            {
+                if (elemMetaName)
+                    pushObject<T>(L, &lek->stuff[i], elemMetaName);
+                else
+                    LuaCodec<T>::push(L, lek->stuff[i], nullptr);
+                lua_rawseti(L, -2, (int)(i + 1));
+            }
+            return 1;
+        }
+
+        static int pop(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return luaL_error(L, "lektor is nil");
+            if (lek->count == 0) return luaL_error(L, "lektor:pop container is empty");
+            T val = lektor_pop_back_val(*lek);
+            if (elemMetaName)
+                return pushObject<T>(L, &val, elemMetaName);
+            else
+            {
+                LuaCodec<T>::push(L, val, nullptr);
+                return 1;
+            }
+        }
+
+        static int iterNext(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return 0;
+            uint32_t i = (uint32_t)lua_tointeger(L, 2) + 1;
+            if (i > lek->count) return 0;
+            lua_pushinteger(L, (lua_Integer)i);
+            if (elemMetaName)
+                pushObject<T>(L, &lek->stuff[i - 1], elemMetaName);
+            else
+                LuaCodec<T>::push(L, lek->stuff[i - 1], nullptr);
+            return 2;
+        }
+
+        static int pairs(lua_State* L)
+        {
+            lua_pushcfunction(L, iterNext);
+            lua_pushvalue(L, 1);
+            lua_pushinteger(L, 0);
+            return 3;
+        }
+
+        static int ipairs(lua_State* L) { return pairs(L); }
+
         static void registerBinding(lua_State* L, const char* name, const char* elemName)
         {
             metaName = name;
@@ -295,13 +398,17 @@ namespace KenshiLua
                 { "__len",      len },
                 { "__index",    index },
                 { "__newindex", newindex },
+                { "__pairs",    pairs },
+                { "__ipairs",   ipairs },
                 { 0, 0 }
             };
             static const luaL_Reg methods[] = {
                 { "push",      push },
+                { "pop",       pop },
                 { "removeAt",  removeAt },
                 { "clear",     clear },
                 { "size",      size },
+                { "toTable",   toTable },
                 { 0, 0 }
             };
             registerClass(L, metaName, meta, methods, index, newindex);
@@ -363,6 +470,46 @@ namespace KenshiLua
             return len(L);
         }
 
+        static int toTable(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) { lua_pushnil(L); return 1; }
+            lua_createtable(L, (int)lek->count, 0);
+            for (uint32_t i = 0; i < lek->count; ++i)
+            {
+                if (elemMetaName)
+                    pushObject<T>(L, &lek->stuff[i], elemMetaName);
+                else
+                    LuaCodec<T>::push(L, lek->stuff[i], nullptr);
+                lua_rawseti(L, -2, (int)(i + 1));
+            }
+            return 1;
+        }
+
+        static int iterNext(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return 0;
+            uint32_t i = (uint32_t)lua_tointeger(L, 2) + 1;
+            if (i > lek->count) return 0;
+            lua_pushinteger(L, (lua_Integer)i);
+            if (elemMetaName)
+                pushObject<T>(L, &lek->stuff[i - 1], elemMetaName);
+            else
+                LuaCodec<T>::push(L, lek->stuff[i - 1], nullptr);
+            return 2;
+        }
+
+        static int pairs(lua_State* L)
+        {
+            lua_pushcfunction(L, iterNext);
+            lua_pushvalue(L, 1);
+            lua_pushinteger(L, 0);
+            return 3;
+        }
+
+        static int ipairs(lua_State* L) { return pairs(L); }
+
         static void registerBinding(lua_State* L, const char* name, const char* elemName)
         {
             metaName = name;
@@ -373,10 +520,13 @@ namespace KenshiLua
                 { "__len",      len },
                 { "__index",    index },
                 { "__newindex", newindex },
+                { "__pairs",    pairs },
+                { "__ipairs",   ipairs },
                 { 0, 0 }
             };
             static const luaL_Reg methods[] = {
                 { "size",      size },
+                { "toTable",   toTable },
                 { 0, 0 }
             };
             registerClass(L, metaName, meta, methods, index, newindex);
@@ -488,6 +638,50 @@ namespace KenshiLua
             return len(L);
         }
 
+        static int toTable(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) { lua_pushnil(L); return 1; }
+            lua_createtable(L, (int)lek->count, 0);
+            for (uint32_t i = 0; i < lek->count; ++i)
+            {
+                lua_pushstring(L, lek->stuff[i].c_str());
+                lua_rawseti(L, -2, (int)(i + 1));
+            }
+            return 1;
+        }
+
+        static int pop(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return luaL_error(L, "lektor is nil");
+            if (lek->count == 0) return luaL_error(L, "lektor:pop container is empty");
+            std::string val = lektor_pop_back_val(*lek);
+            lua_pushstring(L, val.c_str());
+            return 1;
+        }
+
+        static int iterNext(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return 0;
+            uint32_t i = (uint32_t)lua_tointeger(L, 2) + 1;
+            if (i > lek->count) return 0;
+            lua_pushinteger(L, (lua_Integer)i);
+            lua_pushstring(L, lek->stuff[i - 1].c_str());
+            return 2;
+        }
+
+        static int pairs(lua_State* L)
+        {
+            lua_pushcfunction(L, iterNext);
+            lua_pushvalue(L, 1);
+            lua_pushinteger(L, 0);
+            return 3;
+        }
+
+        static int ipairs(lua_State* L) { return pairs(L); }
+
         static void registerBinding(lua_State* L, const char* name)
         {
             metaName = name;
@@ -497,13 +691,17 @@ namespace KenshiLua
                 { "__len",      len },
                 { "__index",    index },
                 { "__newindex", newindex },
+                { "__pairs",    pairs },
+                { "__ipairs",   ipairs },
                 { 0, 0 }
             };
             static const luaL_Reg methods[] = {
                 { "push",      push },
+                { "pop",       pop },
                 { "removeAt",  removeAt },
                 { "clear",     clear },
                 { "size",      size },
+                { "toTable",   toTable },
                 { 0, 0 }
             };
             registerClass(L, metaName, meta, methods, index, newindex);
@@ -617,6 +815,50 @@ namespace KenshiLua
             return len(L);
         }
 
+        static int toTable(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) { lua_pushnil(L); return 1; }
+            lua_createtable(L, (int)lek->count, 0);
+            for (uint32_t i = 0; i < lek->count; ++i)
+            {
+                lua_pushinteger(L, lek->stuff[i]);
+                lua_rawseti(L, -2, (int)(i + 1));
+            }
+            return 1;
+        }
+
+        static int pop(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return luaL_error(L, "lektor is nil");
+            if (lek->count == 0) return luaL_error(L, "lektor:pop container is empty");
+            int val = lektor_pop_back_val(*lek);
+            lua_pushinteger(L, val);
+            return 1;
+        }
+
+        static int iterNext(lua_State* L)
+        {
+            lektor<T>* lek = get(L, 1);
+            if (!lek) return 0;
+            uint32_t i = (uint32_t)lua_tointeger(L, 2) + 1;
+            if (i > lek->count) return 0;
+            lua_pushinteger(L, (lua_Integer)i);
+            lua_pushinteger(L, lek->stuff[i - 1]);
+            return 2;
+        }
+
+        static int pairs(lua_State* L)
+        {
+            lua_pushcfunction(L, iterNext);
+            lua_pushvalue(L, 1);
+            lua_pushinteger(L, 0);
+            return 3;
+        }
+
+        static int ipairs(lua_State* L) { return pairs(L); }
+
         static void registerBinding(lua_State* L, const char* name)
         {
             metaName = name;
@@ -626,13 +868,17 @@ namespace KenshiLua
                 { "__len",      len },
                 { "__index",    index },
                 { "__newindex", newindex },
+                { "__pairs",    pairs },
+                { "__ipairs",   ipairs },
                 { 0, 0 }
             };
             static const luaL_Reg methods[] = {
                 { "push",      pushVal },
+                { "pop",       pop },
                 { "removeAt",  removeAt },
                 { "clear",     clear },
                 { "size",      size },
+                { "toTable",   toTable },
                 { 0, 0 }
             };
             registerClass(L, metaName, meta, methods, index, newindex);

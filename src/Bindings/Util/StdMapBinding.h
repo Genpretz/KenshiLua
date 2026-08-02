@@ -130,7 +130,7 @@ namespace KenshiLua
         {
             MapType* m = get(L, 1);
             if (!m) { lua_pushnil(L); return 1; }
-            lua_newtable(L);
+            lua_createtable(L, 0, (int)m->size());
             for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
             {
                 LuaCodec<K>::push(L, it->first, keyMetaName);
@@ -147,6 +147,36 @@ namespace KenshiLua
             return 1;
         }
 
+        // Stateful iterator: upvalue 1 = skip count (how many to skip from begin)
+        static int iterNext(lua_State* L)
+        {
+            MapType* m = get(L, 1);
+            if (!m) return 0;
+            int skip = (int)lua_tointeger(L, lua_upvalueindex(1));
+            typename MapType::const_iterator it = m->begin();
+            for (int s = 0; s < skip && it != m->end(); ++s, ++it) {}
+            if (it == m->end()) return 0;
+            // Update skip count for next call
+            lua_pushinteger(L, skip + 1);
+            lua_replace(L, lua_upvalueindex(1));
+            // Push key, value
+            LuaCodec<K>::push(L, it->first, keyMetaName);
+            if (valMetaName)
+                pushObject<V>(L, const_cast<V*>(&it->second), valMetaName);
+            else
+                LuaCodec<V>::push(L, it->second, nullptr);
+            return 2;
+        }
+
+        static int pairs(lua_State* L)
+        {
+            lua_pushinteger(L, 0); // initial skip = 0
+            lua_pushcclosure(L, iterNext, 1);
+            lua_pushvalue(L, 1);
+            lua_pushnil(L);
+            return 3;
+        }
+
         static void registerBinding(lua_State* L, const char* name, const char* keyName = nullptr, const char* valName = nullptr)
         {
             metaName = name;
@@ -158,6 +188,7 @@ namespace KenshiLua
                 { "__index",    index },
                 { "__newindex", newindex },
                 { "__len",      len },
+                { "__pairs",    pairs },
                 { 0, 0 }
             };
             static const luaL_Reg methods[] = {

@@ -173,6 +173,18 @@ namespace KenshiLua
         lua_pushnumber(L, v.y); lua_setfield(L, -2, "y");
     }
 
+    // Build a Point/Coord-like Lua table {left=,top=,x=,y=} from any object
+    // exposing .left/.top (MyGUI::types::TPoint fits).
+    template <class PT>
+    inline void pushPoint(lua_State* L, const PT& pt)
+    {
+        lua_createtable(L, 0, 4);
+        lua_pushinteger(L, pt.left); lua_setfield(L, -2, "left");
+        lua_pushinteger(L, pt.top);  lua_setfield(L, -2, "top");
+        lua_pushinteger(L, pt.left); lua_setfield(L, -2, "x");
+        lua_pushinteger(L, pt.top);  lua_setfield(L, -2, "y");
+    }
+
     // Read a {x,y} table at idx. Missing fields default to 0. Returns true
     // if any of the two fields was actually present.
     template <class V2>
@@ -365,8 +377,14 @@ namespace KenshiLua
     }
 
     // Generic __newindex rejecter.
-    inline int rejectNewIndex(lua_State* L)
+    inline int rejectNewIndex(lua_State* L, const char* propertyName = NULL)
     {
+        if (propertyName) {
+            return luaL_error(L, "Property '%s' is read-only", propertyName);
+        }
+        if (lua_isstring(L, 2)) {
+            return luaL_error(L, "Property '%s' is read-only", lua_tostring(L, 2));
+        }
         return luaL_error(L, "object is read-only from Lua");
     }
 
