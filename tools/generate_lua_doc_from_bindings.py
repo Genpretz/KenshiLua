@@ -326,15 +326,35 @@ def parse_enum_file(filepath: pathlib.Path):
 
 def generate_markdown(data_by_class, enums):
     lines = ["# Lua Bindings Reference", "", "## Table of Contents"]
-    for cls in sorted(data_by_class.keys()):
-        lines.append(f"- [{cls}](#{cls.lower()})")
+    # Normalize MyGui to MyGUI
+    cleaned_data = {}
+    for cls, val in data_by_class.items():
+        if cls in ("MyGui", "MyGUI"):
+            cleaned_data["MyGUI"] = val
+        else:
+            cleaned_data[cls] = val
+    if "MyGUI" not in cleaned_data:
+        cleaned_data["MyGUI"] = ([], [], "")
+
+    all_classes = sorted(cleaned_data.keys())
+    for cls in all_classes:
+        if cls == "MyGUI":
+            lines.append("- [MyGUI](MyGUI_Bindings.md)")
+        else:
+            lines.append(f"- [{cls}](#{cls.lower()})")
     if enums:
         lines.append("- [Enums](#enums)")
     lines.append("")
-    for cls, (fields, methods, header) in sorted(data_by_class.items()):
-        lines.append(f"## {cls}")
-        lines.append(f"**Header:** `{header}`")
-        lines.append("")
+    for cls in all_classes:
+        if cls == "MyGUI":
+            lines.append("## MyGUI")
+            lines.append("For full widget creation, layout loading, property access, and event handling reference, see the dedicated [MyGUI Bindings Documentation](MyGUI_Bindings.md).")
+            lines.append("")
+        else:
+            fields, methods, header = cleaned_data[cls]
+            lines.append(f"## {cls}")
+            lines.append(f"**Header:** `{header}`")
+            lines.append("")
         if fields:
             lines.append("### Fields")
             lines.append("| Lua Name | C++ Member | Type | R/W | Example |")

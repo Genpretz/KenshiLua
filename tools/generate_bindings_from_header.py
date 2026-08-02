@@ -699,7 +699,7 @@ def generate_cpp(info, header_path, extra_enums, known_bindings, known_headers=N
         base_names = [b.strip().split()[-1] for b in info.bases.split(",")]
         primary_base = base_names[0] # Grab the first inherited class
         
-        out.append(f"    // Wire up inheritance to {primary_base}")
+        out.append(f"    // Inheritance wired in RegisterBindings.cpp::registerInheritance()")
         out.append(f"    // setMetatableParent(L, {info.name}Binding::getMetatableName(), {primary_base}Binding::getMetatableName());")
         out.append("")
 
