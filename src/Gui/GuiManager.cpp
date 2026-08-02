@@ -124,12 +124,21 @@ namespace KenshiLua
             return eb;
         }
 
+        static ULONGLONG s_lastFileDialogClosedTime = 0;
+        static const ULONGLONG FILE_DIALOG_DEBOUNCE_MS = 350;
+
         std::string openFileDialog(
             const std::string& title,
             const char* filter,
             const std::string& defaultExt,
             const std::string& currentPath)
         {
+            ULONGLONG now = GetTickCount64();
+            if (now - s_lastFileDialogClosedTime < FILE_DIALOG_DEBOUNCE_MS)
+            {
+                return "";
+            }
+
             char filename[MAX_PATH] = "";
             if (!currentPath.empty())
             {
@@ -145,7 +154,10 @@ namespace KenshiLua
             ofn.lpstrDefExt = defaultExt.c_str();
             ofn.lpstrTitle = title.c_str();
 
-            return GetOpenFileNameA(&ofn) ? std::string(filename) : "";
+            BOOL result = GetOpenFileNameA(&ofn);
+            s_lastFileDialogClosedTime = GetTickCount64();
+
+            return result ? std::string(filename) : "";
         }
 
         std::string saveFileDialog(
@@ -155,6 +167,12 @@ namespace KenshiLua
             const std::string& defaultFilename,
             const std::string& currentPath)
         {
+            ULONGLONG now = GetTickCount64();
+            if (now - s_lastFileDialogClosedTime < FILE_DIALOG_DEBOUNCE_MS)
+            {
+                return "";
+            }
+
             char filename[MAX_PATH] = "";
             if (!defaultFilename.empty())
             {
@@ -174,7 +192,10 @@ namespace KenshiLua
             ofn.lpstrDefExt = defaultExt.c_str();
             ofn.lpstrTitle = title.c_str();
 
-            return GetSaveFileNameA(&ofn) ? std::string(filename) : "";
+            BOOL result = GetSaveFileNameA(&ofn);
+            s_lastFileDialogClosedTime = GetTickCount64();
+
+            return result ? std::string(filename) : "";
         }
 
 		std::string EscapeMyGuiColourTags(const std::string& text)
