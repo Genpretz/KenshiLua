@@ -70,12 +70,12 @@ namespace KenshiLua
     {
         static void push(lua_State* L, const hand& val, const char* meta)
         {
-            handBinding::push(L, val);
+            HandBinding::push(L, val);
         }
 
         static hand read(lua_State* L, int idx, const char* meta)
         {
-            hand* h = checkObject<hand>(L, idx, "KenshiLua.hand");
+            hand* h = checkObject<hand>(L, idx, HandBinding::getMetatableName());
             return h ? *h : hand();
         }
     };

@@ -60,6 +60,12 @@ bool LuaState::initialize()
 
     luaL_openlibs(m_L);
 
+    luaL_dostring(m_L,
+        "local ok, tn = pcall(require, 'table.new') "
+        "if ok then table.new = tn end "
+        "local ok2, tc = pcall(require, 'table.clear') "
+        "if ok2 then table.clear = tc end");
+
     return true;
 }
 
@@ -87,24 +93,8 @@ int LuaState::panicHandler(lua_State* L)
 
 int LuaState::genericTraceback(lua_State* L)
 {
-    lua_Debug ar;
-    if (!lua_getstack(L, 1, &ar)) {
-        return 1;
-    }
-    if (!lua_getinfo(L, "Snl", &ar)) {
-        return 1;
-    }
-
-    lua_pushstring(L, "\nstack traceback:\n");
-    if (ar.currentline > 0) {
-        char buf[256];
-        _snprintf(buf, sizeof(buf), "\t%s:%d: ", ar.short_src, ar.currentline);
-        lua_pushstring(L, buf);
-    } else {
-        lua_pushstring(L, "\tunknown: ");
-    }
-    lua_concat(L, 3);
-
+    const char* msg = lua_tostring(L, 1);
+    luaL_traceback(L, L, msg, 1);
     return 1;
 }
 

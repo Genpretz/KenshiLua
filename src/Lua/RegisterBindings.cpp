@@ -486,34 +486,42 @@ void LuaBindings::registerAll(lua_State* L)
     registerEnumBindings(L);
 
     // Register templates centrally before classes are bound
-    LektorValueBinding<ModInfo>::registerBinding(L, "lektor<ModInfo>", ModInfoBinding::getMetatableName());
+    LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
     LektorPtrBinding<ModInfo*>::registerBinding(L, "lektor<ModInfo*>", ModInfoBinding::getMetatableName());
-    LektorStringBinding<std::string>::registerBinding(L, "lektor<string>");
-    LektorValueBinding<hand>::registerBinding(L, "lektor<hand>", handBinding::getMetatableName());
     LektorPtrBinding<GameData::ObjectInstance*>::registerBinding(L, "lektor<GameData::ObjectInstance*>", ObjectInstanceBinding::getMetatableName());
     LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", GameDataBinding::getMetatableName());
-    LektorValueReadOnlyBinding<GameDataValuePair>::registerBinding(L, "lektor<GameDataValuePair>", GameDataValuePairBinding::getMetatableName());
     LektorPtrBinding<DialogLineData::DialogCondition*>::registerBinding(L, "lektor<DialogCondition*>", DialogConditionBinding::getMetatableName());
     LektorPtrBinding<DialogLineData::DialogAction*>::registerBinding(L, "lektor<DialogAction*>", DialogActionBinding::getMetatableName());
     LektorPtrBinding<DialogLineData*>::registerBinding(L, "lektor<DialogLineData*>", DialogLineDataBinding::getMetatableName());
-    LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
     LektorPtrBinding<CombatTechniqueData*>::registerBinding(L, "lektor<CombatTechniqueData*>", CombatTechniqueDataBinding::getMetatableName());
     LektorPtrBinding<Item*>::registerBinding(L, "lektor<Item*>", ItemBinding::getMetatableName());
     LektorPtrBinding<InventorySection*>::registerBinding(L, "lektor<InventorySection*>", InventorySectionBinding::getMetatableName());
-    LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", GameDataBinding::getMetatableName());
     LektorPtrBinding<RootObject*>::registerBinding(L, "lektor<RootObject*>", RootObjectBinding::getMetatableName());
+
+    LektorValueBinding<ModInfo>::registerBinding(L, "lektor<ModInfo>", ModInfoBinding::getMetatableName());
+    LektorValueBinding<hand>::registerBinding(L, "lektor<hand>", HandBinding::getMetatableName());
+
+    LektorValueReadOnlyBinding<GameDataValuePair>::registerBinding(L, "lektor<GameDataValuePair>", GameDataValuePairBinding::getMetatableName());
+
+    LektorStringBinding<std::string>::registerBinding(L, "lektor<string>");
     
-    OgreUnorderedMapBinding<GameData*, float>::registerBinding(L, "ogre_unordered_map<GameData*, float>", GameDataBinding::getMetatableName(), nullptr);
-    OgreUnorderedSetBinding<hand>::registerBinding(L, "ogre_unordered_set<hand>", handBinding::getMetatableName());
+    OgreUnorderedSetBinding<hand>::registerBinding(L, "KenshiLua.InteriorsVisibleSet", HandBinding::getMetatableName());
+    OgreUnorderedSetBinding<hand>::registerBinding(L, "KenshiLua.SelectedCharactersSet", HandBinding::getMetatableName());
+    OgreUnorderedSetBinding<TownBase*>::registerBinding(L, "KenshiLua.TownsActiveSet", TownBaseBinding::getMetatableName());
+    OgreUnorderedSetBinding<hand>::registerBinding(L, "ogre_unordered_set<hand>", HandBinding::getMetatableName());
     OgreUnorderedSetBinding<GameData*>::registerBinding(L, "ogre_unordered_set<GameData*>", GameDataBinding::getMetatableName());
     OgreUnorderedSetBinding<TownBase*>::registerBinding(L, "ogre_unordered_set<TownBase*>", TownBaseBinding::getMetatableName());
-    OgreUnorderedMapBinding<ZoneMap*, unsigned char>::registerBinding(L, "ogre_unordered_map<ZoneMap*, unsigned char>", ZoneMapBinding::getMetatableName(), nullptr);
     OgreUnorderedSetBinding<Character*>::registerBinding(L, "ogre_unordered_set<Character*>", CharacterBinding::getMetatableName());
     OgreUnorderedSetBinding<RootObject*>::registerBinding(L, "ogre_unordered_set<RootObject*>", RootObjectBinding::getMetatableName());
+
     OgreUnorderedMapBinding<RootObject*, float>::registerBinding(L, "ogre_unordered_map<RootObject*, float>", RootObjectBinding::getMetatableName(), nullptr);
-    OgreUnorderedMapBinding<hand, float>::registerBinding(L, "ogre_unordered_map<hand, float>", handBinding::getMetatableName(), nullptr);
-    OgreUnorderedMapBinding<hand, Character*>::registerBinding(L, "ogre_unordered_map<hand, Character*>", handBinding::getMetatableName(), CharacterBinding::getMetatableName());
-    
+    OgreUnorderedMapBinding<hand, float>::registerBinding(L, "ogre_unordered_map<hand, float>", HandBinding::getMetatableName(), nullptr);
+    OgreUnorderedMapBinding<hand, Character*>::registerBinding(L, "ogre_unordered_map<hand, Character*>", HandBinding::getMetatableName(), CharacterBinding::getMetatableName());
+    OgreUnorderedMapBinding<ZoneMap*, unsigned char>::registerBinding(L, "KenshiLua.ZonesVisibilitiesMap", ZoneMapBinding::getMetatableName(), nullptr);
+    OgreUnorderedMapBinding<GameData*, float>::registerBinding(L, "ogre_unordered_map<GameData*, float>", GameDataBinding::getMetatableName(), nullptr);
+    OgreUnorderedMapBinding<ZoneMap*, unsigned char>::registerBinding(L, "ogre_unordered_map<ZoneMap*, unsigned char>", ZoneMapBinding::getMetatableName(), nullptr);
+
+
     StdMapBinding<float, CombatTechniqueData*>::registerBinding(L, "OgreMap<float, CombatTechniqueData*>", nullptr, CombatTechniqueDataBinding::getMetatableName());
     StdMapBinding<CombatTechniqueData*, float>::registerBinding(L, "OgreMap<CombatTechniqueData*, float>", CombatTechniqueDataBinding::getMetatableName(), nullptr);
     StdMapBinding<float, GameData*>::registerBinding(L, "OgreMap<float, GameData*>", nullptr, GameDataBinding::getMetatableName());
@@ -794,7 +802,7 @@ void LuaBindings::registerAll(lua_State* L)
     TownPositionCacherBinding::registerBinding(L);
     TradeCultureBinding::registerBinding(L);
     UniqueSpawnDataBinding::registerBinding(L);
-    handBinding::registerBinding(L);
+    HandBinding::registerBinding(L);
     StringPairBinding::registerBinding(L);
     TimeOfDayBinding::registerBinding(L);
     YesNoMaybeBinding::registerBinding(L);
