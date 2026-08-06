@@ -1310,16 +1310,35 @@ int TownBinding::_initialiseResidentData(lua_State* L)
     return 0;
 }
 
+int TownBinding::addGate(lua_State* L)
+{
+    Town* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Town is nil");
+
+    hand* g = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!g) return luaL_error(L, "Expected hand");
+    instance->addGate(*g);
+    return 0;
+}
+
+int TownBinding::_NV_addGate(lua_State* L)
+{
+    Town* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Town is nil");
+
+    hand* g = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!g) return luaL_error(L, "Expected hand");
+    instance->_NV_addGate(*g);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 367: void chooseResidents(...) - unsupported arg type
-  line 369: Building* chooseBuildingForResident(...) - unsupported arg type
   line 372: void setHandle(...) - non-string reference arg
   line 373: void _NV_setHandle(...) - non-string reference arg
   line 390: GameSaveState serialise(...) - unsupported arg type
   line 391: GameSaveState _NV_serialise(...) - unsupported arg type
-  line 413: void addGate(...) - non-string reference arg
-  line 414: void _NV_addGate(...) - non-string reference arg
   line 452: TownType getPlayerTownTypeEnum(...) - unsupported return type
   line 453: TagsClass<BuildingDesignation> facilitesWeHaveHere(...) - unsupported return type
   line 455: bool powerBuilding(...) - non-string reference arg
@@ -1682,6 +1701,8 @@ void TownBinding::registerBinding(lua_State* L)
         { "_initialiseResidentData", TownBinding::_initialiseResidentData },
                 { "chooseResidents", TownBinding::chooseResidents },
         { "chooseBuildingForResident", TownBinding::chooseBuildingForResident },
+        { "addGate", TownBinding::addGate },
+        { "_NV_addGate", TownBinding::_NV_addGate },
         { 0, 0 }
     };
 

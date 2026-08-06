@@ -141,5 +141,9 @@ public:
     static int updatePowerGrid(lua_State* L);
     static int withinBordersRange(lua_State* L);
     static int withinDiscoveryRange(lua_State* L);
+    static int addGate(lua_State* L);
+    static int _NV_addGate(lua_State* L);
+    static int addOccupier(lua_State* L);
+    static int removeOccupier(lua_State* L);
 };
 }

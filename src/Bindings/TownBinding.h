@@ -111,5 +111,7 @@ public:
     static int _initialiseResidentData(lua_State* L);
     static int chooseBuildingForResident(lua_State* L);
     static int chooseResidents(lua_State* L);
+    static int addGate(lua_State* L);
+    static int _NV_addGate(lua_State* L);
 };
 }

@@ -264,5 +264,12 @@ public:
     static int onBuildingLoaded(lua_State* L);
     static int _NV_onBuildingLoaded(lua_State* L);
     static int updateBadNodes(lua_State* L);
+    static int isIndoors(lua_State* L);
+    static int _NV_isIndoors(lua_State* L);
+    static int isIndoors_notDestroyed(lua_State* L);
+    static int _NV_isIndoors_notDestroyed(lua_State* L);
+    static int getMountedBuilding(lua_State* L);
+    static int _NV_getMountedBuilding(lua_State* L);
+    static int removeAnInternalBuilding(lua_State* L);
 };
 }

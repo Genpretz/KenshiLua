@@ -7,6 +7,7 @@ class CraftingItem {};
 #include "Bindings/ItemBinding.h"
 #include "Bindings/Building/ProductionBuildingBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -102,8 +103,8 @@ static int CraftingBuilding_get_partialItems(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-    // TODO: Unsupported type for partialItems (ogre_unordered_map<GameData*, float>::type)
-    return luaL_error(L, "Unsupported property 'partialItems' (type: ogre_unordered_map<GameData*, float>::type)");
+    return pushObject<ogre_unordered_map<GameData*, float>::type>(
+        L, &instance->partialItems, OgreUnorderedMapBinding<GameData*, float>::getMetatableName());
 }
 
 // --- Setters for CraftingBuilding ---
@@ -188,7 +189,10 @@ static int CraftingBuilding_set_partialItems(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for partialItems");
+    ogre_unordered_map<GameData*, float>::type* val = OgreUnorderedMapBinding<GameData*, float>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected ogre_unordered_map<GameData*, float>");
+    instance->partialItems = *val;
+    return 0;
 }
 
 int CraftingBuildingBinding::_DESTRUCTOR(lua_State* L)

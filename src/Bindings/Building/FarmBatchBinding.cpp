@@ -2,6 +2,8 @@
 #include <kenshi/Building/FarmBuilding.h>
 #include "FarmBatchBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Building/FarmBuildingBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -27,9 +29,7 @@ static int FarmBatch_get_plantGroups(lua_State* L)
 {
     FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    // TODO: Unsupported type for plantGroups (lektor<int>)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<lektor<int>>(L, &instance->plantGroups, "lektor<int>");
 }
 
 static int FarmBatch_get_geometry(lua_State* L)
@@ -69,9 +69,7 @@ static int FarmBatch_get_farms(lua_State* L)
 {
     FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    // TODO: Unsupported type for farms (lektor<FarmBuilding*>)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<lektor<FarmBuilding*>>(L, &instance->farms, LektorPtrBinding<FarmBuilding*>::metaName);
 }
 
 // --- Setters for FarmBatch ---
@@ -86,7 +84,10 @@ static int FarmBatch_set_plantGroups(lua_State* L)
 {
     FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for plantGroups");
+    lektor<int>* val = LektorIntBinding<int>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<int>");
+    instance->plantGroups = *val;
+    return 0;
 }
 
 static int FarmBatch_set_geometry(lua_State* L)
@@ -124,7 +125,10 @@ static int FarmBatch_set_farms(lua_State* L)
 {
     FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for farms");
+    lektor<FarmBuilding*>* val = LektorPtrBinding<FarmBuilding*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<FarmBuilding*>");
+    instance->farms = *val;
+    return 0;
 }
 
 int FarmBatchBinding::load(lua_State* L)

@@ -18,6 +18,10 @@ public:
 
     static int reset(lua_State* L);
     static int getAllIllegalItems(lua_State* L);
+    static int isItemIllegal(lua_State* L);
+    static int getTradePriceMultiplier(lua_State* L);
+    static int hasTradePriceMultiplier(lua_State* L);
+    static int getForbiddenItemsList(lua_State* L);
     static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };

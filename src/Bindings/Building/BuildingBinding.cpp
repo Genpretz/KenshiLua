@@ -25,6 +25,9 @@
 #include "Bindings/Building/UseableStuffBinding.h"
 #include "Bindings/Building/WallBuildingBinding.h"
 #include "Bindings/ZoneMapBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -3184,11 +3187,77 @@ int BuildingBinding::updateBadNodes(lua_State* L)
     return 0;
 }
 
+int BuildingBinding::isIndoors(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return HandBinding::push(L, instance->isIndoors());
+}
+
+int BuildingBinding::_NV_isIndoors(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return HandBinding::push(L, instance->_NV_isIndoors());
+}
+
+int BuildingBinding::isIndoors_notDestroyed(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return HandBinding::push(L, instance->isIndoors_notDestroyed());
+}
+
+int BuildingBinding::_NV_isIndoors_notDestroyed(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return HandBinding::push(L, instance->_NV_isIndoors_notDestroyed());
+}
+
+int BuildingBinding::getMountedBuilding(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return HandBinding::push(L, instance->getMountedBuilding());
+}
+
+int BuildingBinding::_NV_getMountedBuilding(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return HandBinding::push(L, instance->_NV_getMountedBuilding());
+}
+
+int BuildingBinding::removeAnInternalBuilding(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    hand* b = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!b) return luaL_error(L, "Expected hand");
+    instance->removeAnInternalBuilding(*b);
+    return 0;
+}
+
+static int Building_get_doors(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    return pushObject<lektor<Building*>>(L, &instance->doors, LektorPtrBinding<Building*>::metaName);
+}
+
+static int Building_set_doors(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    lektor<Building*>* val = LektorPtrBinding<Building*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<Building*>");
+    instance->doors = *val;
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 210: void removeAnInternalBuilding(...) - non-string reference arg
-  line 212: void addAnInternalItem(...) - unsupported arg type
-  line 213: void removeAnInternalItem(...) - unsupported arg type
   line 215: int getMountedBuildings(...) - unsupported arg type
   line 217: void setHandle(...) - non-string reference arg
   line 218: void _NV_setHandle(...) - non-string reference arg
@@ -3204,12 +3273,6 @@ Skipped methods needing manual binding:
   line 369: Ogre::Aabb _NV_getAABB(...) - overloaded method
   line 370: void setAABB(...) - unsupported arg type
   line 383: unsigned __int64 getAudioObject(...) - unsupported return type
-  line 387: const hand& isIndoors(...) - reference return type
-  line 388: const hand& _NV_isIndoors(...) - reference return type
-  line 389: const hand& isIndoors_notDestroyed(...) - reference return type
-  line 390: const hand& _NV_isIndoors_notDestroyed(...) - reference return type
-  line 391: const hand& getMountedBuilding(...) - reference return type
-  line 392: const hand& _NV_getMountedBuilding(...) - reference return type
   line 393: int getLights(...) - unsupported arg type
   line 457: Ogre::SharedPtr<Ogre::Material> getBuildingPartMaterial(...) - static method
   line 458: void setBuildingPartMaterial(...) - static method
@@ -3232,7 +3295,6 @@ Skipped methods needing manual binding:
 
 /*
 Skipped properties needing manual binding:
-  line 314: doors (lektor<Building*>) - unsupported type
   line 418: audioObject (unsigned __int64) - unsupported type
   line 430: effects (lektor<std::pair<PhysicalEntity*, Effect*> >) - unsupported type
   line 465: AABB (Ogre::Aabb) - unsupported type
@@ -3511,6 +3573,13 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "onBuildingLoaded", BuildingBinding::onBuildingLoaded },
         { "_NV_onBuildingLoaded", BuildingBinding::_NV_onBuildingLoaded },
         { "updateBadNodes", BuildingBinding::updateBadNodes },
+        { "isIndoors", BuildingBinding::isIndoors },
+        { "_NV_isIndoors", BuildingBinding::_NV_isIndoors },
+        { "isIndoors_notDestroyed", BuildingBinding::isIndoors_notDestroyed },
+        { "_NV_isIndoors_notDestroyed", BuildingBinding::_NV_isIndoors_notDestroyed },
+        { "getMountedBuilding", BuildingBinding::getMountedBuilding },
+        { "_NV_getMountedBuilding", BuildingBinding::_NV_getMountedBuilding },
+        { "removeAnInternalBuilding", BuildingBinding::removeAnInternalBuilding },
         { 0, 0 }
     };
 
@@ -3525,6 +3594,8 @@ void BuildingBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, BuildingBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
+    lua_pushcfunction(L, Building_get_doors);
+    lua_setfield(L, -2, "doors");
     lua_pushcfunction(L, Building_get_isFoliage);
     lua_setfield(L, -2, "isFoliage");
     lua_pushcfunction(L, Building_get_hasTerrainInside);
@@ -3654,6 +3725,8 @@ void BuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "updateNavmesh");
     lua_pushcfunction(L, Building_set_visible);
     lua_setfield(L, -2, "visible");
+    lua_pushcfunction(L, Building_set_doors);
+    lua_setfield(L, -2, "doors");
     lua_pushcfunction(L, Building_set_interiorVisibility);
     lua_setfield(L, -2, "interiorVisibility");
     lua_pushcfunction(L, Building_set_justBeenUpgradedFlag);

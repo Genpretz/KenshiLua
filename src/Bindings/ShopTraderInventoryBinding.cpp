@@ -5,6 +5,8 @@
 #include "InventorySectionBinding.h"
 #include "ItemBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -19,9 +21,8 @@ static int ShopTraderInventory_get_inventories(lua_State* L)
 {
     ShopTraderInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
-    // TODO: Unsupported type for inventories (ogre_unordered_map<hand, InventorySection*>::type)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<ogre_unordered_map<hand, InventorySection*>::type>(
+        L, &instance->inventories, OgreUnorderedMapBinding<hand, InventorySection*>::getMetatableName());
 }
 
 static int ShopTraderInventory_get_section(lua_State* L)
@@ -37,7 +38,11 @@ static int ShopTraderInventory_set_inventories(lua_State* L)
 {
     ShopTraderInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for inventories");
+    ogre_unordered_map<hand, InventorySection*>::type* val = 
+        OgreUnorderedMapBinding<hand, InventorySection*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected ogre_unordered_map<hand, InventorySection*>");
+    instance->inventories = *val;
+    return 0;
 }
 
 static int ShopTraderInventory_set_section(lua_State* L)

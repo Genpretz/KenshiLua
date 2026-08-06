@@ -6,6 +6,7 @@
 #include "Bindings/InventoryBinding.h"
 #include "Bindings/ItemBinding.h"
 #include "Bindings/RootObjectBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "GameDataBinding.h"
 #include "InventoryBinding.h"
 #include "ItemBinding.h"
@@ -688,7 +689,6 @@ Skipped methods needing manual binding:
 Skipped properties needing manual binding:
   line 94: items (Ogre::vector<InventorySection::SectionItem>::type) - unsupported type
   line 95: content (Array2d<Item>) - unsupported type
-  line 98: veryLimitedSlot (lektor<GameData*>) - unsupported type
 */
 
 int InventorySectionBinding::gc(lua_State* L)
@@ -727,8 +727,7 @@ static int InventorySection_get_veryLimitedSlot(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    // TODO: Unsupported type for veryLimitedSlot (lektor<GameData*>)
-    return luaL_error(L, "Unsupported property 'veryLimitedSlot' (type: lektor<GameData*>)");
+    return pushObject<lektor<GameData*>>(L, &instance->veryLimitedSlot, LektorPtrBinding<GameData*>::metaName);
 }
 
 
@@ -752,7 +751,10 @@ static int InventorySection_set_veryLimitedSlot(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for veryLimitedSlot");
+    lektor<GameData*>* val = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<GameData*>");
+    instance->veryLimitedSlot = *val;
+    return 0;
 }
 
 

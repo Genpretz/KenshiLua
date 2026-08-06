@@ -3,6 +3,8 @@
 #include "WorldEventStateQueryListBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/WorldEventStateQueryBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -63,11 +65,6 @@ int WorldEventStateQueryListBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
-/*
-Skipped properties needing manual binding:
-  line 49: statesList (ogre_unordered_map<WorldEventStateQuery*, bool>::type) - unsupported type
-*/
-
 int WorldEventStateQueryListBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -80,22 +77,23 @@ int WorldEventStateQueryListBinding::tostring(lua_State* L)
     return 1;
 }
 
-
-
 static int WorldEventStateQueryList_get_statesList(lua_State* L)
 {
     WorldEventStateQueryList* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WorldEventStateQueryList is nil");
-    // TODO: Unsupported type for statesList (ogre_unordered_map<WorldEventStateQuery*, bool>::type)
-    return luaL_error(L, "Unsupported property 'statesList' (type: ogre_unordered_map<WorldEventStateQuery*, bool>::type)");
+    return pushObject<ogre_unordered_map<WorldEventStateQuery*, bool>::type>(
+        L, &instance->statesList, OgreUnorderedMapBinding<WorldEventStateQuery*, bool>::getMetatableName());
 }
-
 
 static int WorldEventStateQueryList_set_statesList(lua_State* L)
 {
     WorldEventStateQueryList* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WorldEventStateQueryList is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for statesList");
+    ogre_unordered_map<WorldEventStateQuery*, bool>::type* val = 
+        OgreUnorderedMapBinding<WorldEventStateQuery*, bool>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected ogre_unordered_map<WorldEventStateQuery*, bool>");
+    instance->statesList = *val;
+    return 0;
 }
 
 

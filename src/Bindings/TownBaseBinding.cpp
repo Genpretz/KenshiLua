@@ -23,6 +23,7 @@
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Util/StdSetBinding.h"
 
 namespace KenshiLua
 {
@@ -1555,6 +1556,50 @@ int TownBaseBinding::distributeArtifacts(lua_State* L)
     return 0;
 }
 
+int TownBaseBinding::addGate(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+
+    hand* g = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!g) return luaL_error(L, "Expected hand");
+    instance->addGate(*g);
+    return 0;
+}
+
+int TownBaseBinding::_NV_addGate(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+
+    hand* g = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!g) return luaL_error(L, "Expected hand");
+    instance->_NV_addGate(*g);
+    return 0;
+}
+
+int TownBaseBinding::addOccupier(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+
+    hand* o = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!o) return luaL_error(L, "Expected hand");
+    instance->addOccupier(*o);
+    return 0;
+}
+
+int TownBaseBinding::removeOccupier(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+
+    hand* o = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!o) return luaL_error(L, "Expected hand");
+    instance->removeOccupier(*o);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 124: TownAlarmState getAlarmState(...) - unsupported return type
@@ -1567,16 +1612,12 @@ Skipped methods needing manual binding:
   line 146: GameSaveState _NV_serialise(...) - unsupported arg type
   line 180: void findAllBuildings(...) - unsupported arg type
   line 181: void _NV_findAllBuildings(...) - unsupported arg type
-  line 213: void addGate(...) - non-string reference arg
-  line 214: void _NV_addGate(...) - non-string reference arg
   line 235: const std::string& getUnexploredName(...) - reference return type
   line 236: const std::string& _NV_getUnexploredName(...) - reference return type
   line 245: void addArtifactItem(...) - unsupported arg type
   line 256: int delayedSpawningChecks(...) - static method
   line 257: const ogre_unordered_set<ZoneMap*>::type& getZonesCoverage(...) - reference return type
   line 258: void clearDelayedItemLoadingMessages(...) - static method
-  line 269: void addOccupier(...) - non-string reference arg
-  line 270: void removeOccupier(...) - non-string reference arg
   line 274: void spawnDebris(...) - unsupported arg type
 */
 
@@ -1601,11 +1642,7 @@ LIGHTUSERDATA DEPENDENCIES:
 /*
 Skipped properties needing manual binding:
   line 259: townType (TownType) - unsupported type
-  line 261: factionsResidentHere (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 268: occupiers (std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 287: alarmState (TownAlarmState) - unsupported type
-  line 289: myZoneCoverage (ogre_unordered_set<ZoneMap*>::type) - unsupported type
-  line 290: populatedZones (ogre_unordered_map<ZoneMap*, bool>::type) - unsupported type
   line 291: artifacts (Ogre::FastArray<ArtifactItemData>) - unsupported type
   line 311: residentsSpawned (lektor<ResidentData>) - unsupported type
   line 312: residentsSpawned_BarsOrSomething (lektor<ResidentData>) - unsupported type
@@ -1836,8 +1873,8 @@ static int TownBase_get_factionsResidentHere(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    // TODO: Unsupported type for factionsResidentHere (std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'factionsResidentHere' (type: std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >)");
+    return pushObject<std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy>>>(
+        L, &instance->factionsResidentHere, "std::set<Faction*>");
 }
 
 
@@ -1845,8 +1882,8 @@ static int TownBase_get_myZoneCoverage(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    // TODO: Unsupported type for myZoneCoverage (ogre_unordered_set<ZoneMap*>::type)
-    return luaL_error(L, "Unsupported property 'myZoneCoverage' (type: ogre_unordered_set<ZoneMap*>::type)");
+    return pushObject<ogre_unordered_set<ZoneMap*>::type>(
+        L, &instance->myZoneCoverage, OgreUnorderedSetBinding<ZoneMap*>::metaName);
 }
 
 
@@ -1854,8 +1891,8 @@ static int TownBase_get_occupiers(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    // TODO: Unsupported type for occupiers (std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'occupiers' (type: std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)");
+    return pushObject<std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>>(
+        L, &instance->occupiers, "std::set<hand>");
 }
 
 
@@ -1863,8 +1900,8 @@ static int TownBase_get_populatedZones(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    // TODO: Unsupported type for populatedZones (ogre_unordered_map<ZoneMap*, bool>::type)
-    return luaL_error(L, "Unsupported property 'populatedZones' (type: ogre_unordered_map<ZoneMap*, bool>::type)");
+    return pushObject<ogre_unordered_map<ZoneMap*, bool>::type>(
+        L, &instance->populatedZones, OgreUnorderedMapBinding<ZoneMap*, bool>::metaName);
 }
 
 
@@ -1951,7 +1988,11 @@ static int TownBase_set_factionsResidentHere(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for factionsResidentHere");
+    std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy>>* val = 
+        StdSetBinding<Faction*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected std::set<Faction*>");
+    instance->factionsResidentHere = *val;
+    return 0;
 }
 
 
@@ -1959,7 +2000,10 @@ static int TownBase_set_myZoneCoverage(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for myZoneCoverage");
+    ogre_unordered_set<ZoneMap*>::type* val = OgreUnorderedSetBinding<ZoneMap*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected ogre_unordered_set<ZoneMap*>");
+    instance->myZoneCoverage = *val;
+    return 0;
 }
 
 
@@ -1975,7 +2019,11 @@ static int TownBase_set_occupiers(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for occupiers");
+    std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>* val = 
+        StdSetBinding<hand>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected std::set<hand>");
+    instance->occupiers = *val;
+    return 0;
 }
 
 
@@ -1983,7 +2031,10 @@ static int TownBase_set_populatedZones(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for populatedZones");
+    ogre_unordered_map<ZoneMap*, bool>::type* val = OgreUnorderedMapBinding<ZoneMap*, bool>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected ogre_unordered_map<ZoneMap*, bool>");
+    instance->populatedZones = *val;
+    return 0;
 }
 
 
@@ -2077,6 +2128,10 @@ void TownBaseBinding::registerBinding(lua_State* L)
         { "_NV_setFaction", TownBaseBinding::_NV_setFaction },
         { "isPublic", TownBaseBinding::isPublic },
         { "_NV_isPublic", TownBaseBinding::_NV_isPublic },
+        { "addGate", TownBaseBinding::addGate },
+        { "_NV_addGate", TownBaseBinding::_NV_addGate },
+        { "addOccupier", TownBaseBinding::addOccupier },
+        { "removeOccupier", TownBaseBinding::removeOccupier },
         { "getRadius", TownBaseBinding::getRadius },
         { "_NV_getRadius", TownBaseBinding::_NV_getRadius },
         { "getGUIData", TownBaseBinding::getGUIData },

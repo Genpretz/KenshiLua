@@ -6,6 +6,8 @@
 #include "BuildingBinding.h"
 #include "UseableStuffBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -29,18 +31,14 @@ static int WallBuilding_get_shareBuildStateOfAnother(lua_State* L)
 {
     WallBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WallBuilding is nil");
-    // TODO: Unsupported type for shareBuildStateOfAnother (hand)
-    lua_pushnil(L);
-    return 1;
+    return HandBinding::push(L, instance->shareBuildStateOfAnother);
 }
 
 static int WallBuilding_get_othersSharingMyBuildState(lua_State* L)
 {
     WallBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WallBuilding is nil");
-    // TODO: Unsupported type for othersSharingMyBuildState (lektor<hand>)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<lektor<hand>>(L, &instance->othersSharingMyBuildState, LektorValueBinding<hand>::metaName);
 }
 
 // --- Setters for WallBuilding ---
@@ -55,14 +53,20 @@ static int WallBuilding_set_shareBuildStateOfAnother(lua_State* L)
 {
     WallBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WallBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for shareBuildStateOfAnother");
+    hand* val = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Expected hand");
+    instance->shareBuildStateOfAnother = *val;
+    return 0;
 }
 
 static int WallBuilding_set_othersSharingMyBuildState(lua_State* L)
 {
     WallBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WallBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for othersSharingMyBuildState");
+    lektor<hand>* val = LektorValueBinding<hand>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<hand>");
+    instance->othersSharingMyBuildState = *val;
+    return 0;
 }
 
 // --- Methods for WallBuilding ---

@@ -3,9 +3,12 @@
 #include "HasRoomCacheBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/Util/StdMapBinding.h"
 
 namespace KenshiLua
 {
+
+typedef StdMapBinding<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData* const, bool>>> GameDataBoolStdMapBinding;
 
 static HasRoomCache* getInstance(lua_State* L, int idx)
 {
@@ -74,11 +77,6 @@ int HasRoomCacheBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
-/*
-Skipped properties needing manual binding:
-  line 156: itemStates (std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >) - unsupported type
-*/
-
 int HasRoomCacheBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -91,22 +89,21 @@ int HasRoomCacheBinding::tostring(lua_State* L)
     return 1;
 }
 
-
-
 static int HasRoomCache_get_itemStates(lua_State* L)
 {
     HasRoomCache* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HasRoomCache is nil");
-    // TODO: Unsupported type for itemStates (std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >)
-    return luaL_error(L, "Unsupported property 'itemStates' (type: std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >)");
+    return pushObject<GameDataBoolStdMapBinding::MapType>(L, &instance->itemStates, GameDataBoolStdMapBinding::metaName);
 }
-
 
 static int HasRoomCache_set_itemStates(lua_State* L)
 {
     HasRoomCache* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HasRoomCache is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for itemStates");
+    GameDataBoolStdMapBinding::MapType* val = GameDataBoolStdMapBinding::get(L, 2);
+    if (!val) return luaL_error(L, "Expected std::map<GameData*, bool>");
+    instance->itemStates = *val;
+    return 0;
 }
 
 

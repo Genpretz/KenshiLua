@@ -585,14 +585,31 @@ int CameraClassBinding::updateAudio(lua_State* L)
     return 0;
 }
 
+int CameraClassBinding::followObject(lua_State* L)
+{
+    CameraClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CameraClass is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Expected hand");
+    instance->followObject(*h);
+    return 0;
+}
+
+int CameraClassBinding::getFollowObject(lua_State* L)
+{
+    CameraClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CameraClass is nil");
+
+    return HandBinding::push(L, instance->getFollowObject());
+}
+
 /*
 Skipped methods needing manual binding:
   line 16: CameraClass* _CONSTRUCTOR(...) - unsupported arg type
   line 23: bool isVisible(...) - overloaded method
   line 24: bool isVisible(...) - overloaded method
   line 25: int intersectScreenEdge(...) - non-string reference arg
-  line 27: void followObject(...) - non-string reference arg
-  line 29: const hand& getFollowObject(...) - reference return type
   line 37: void restrictPosition(...) - unsupported arg type
 */
 
@@ -657,6 +674,8 @@ void CameraClassBinding::registerBinding(lua_State* L)
         { "rotate", CameraClassBinding::rotate },
         { "rotationUpdate", CameraClassBinding::rotationUpdate },
         { "updateAudio", CameraClassBinding::updateAudio },
+        { "followObject", CameraClassBinding::followObject },
+        { "getFollowObject", CameraClassBinding::getFollowObject },
         { 0, 0 }
     };
 

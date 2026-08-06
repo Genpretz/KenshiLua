@@ -311,12 +311,14 @@ static int CombatTechniqueData_set_maxTargetHits(lua_State* L)
     return 0;
 }
 
-// TODO: Unsupported type for events (ogre_unordered_map<GameData*, float>::type)
 static int CombatTechniqueData_set_events(lua_State* L)
 {
     CombatTechniqueData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatTechniqueData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for events");
+    ogre_unordered_map<GameData*, float>::type* val = OgreUnorderedMapBinding<GameData*, float>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected ogre_unordered_map<GameData*, float>");
+    instance->events = *val;
+    return 0;
 }
 
 static int CombatTechniqueData_set_skillTypes(lua_State* L)

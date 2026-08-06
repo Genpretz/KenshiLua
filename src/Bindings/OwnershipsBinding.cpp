@@ -9,6 +9,8 @@
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/StdSetBinding.h"
 
 namespace KenshiLua
 {
@@ -320,11 +322,6 @@ Skipped methods needing manual binding:
   line 66: void getBuildingsWithFunction(...) - unsupported arg type
 */
 
-/*
-Skipped properties needing manual binding:
-  line 54: slaves (std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 71: stuff (lektor<hand>) - unsupported type
-*/
 
 int OwnershipsBinding::gc(lua_State* L)
 {
@@ -344,8 +341,8 @@ static int Ownerships_get_slaves(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    // TODO: Unsupported type for slaves (std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'slaves' (type: std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)");
+    return pushObject<std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>>(
+        L, &instance->slaves, "std::set<hand>");
 }
 
 
@@ -353,8 +350,8 @@ static int Ownerships_get_stuff(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    // TODO: Unsupported type for stuff (lektor<hand>)
-    return luaL_error(L, "Unsupported property 'stuff' (type: lektor<hand>)");
+    return pushObject<lektor<hand>>(
+        L, &instance->stuff, LektorValueBinding<hand>::metaName);
 }
 
 
@@ -362,7 +359,11 @@ static int Ownerships_set_slaves(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for slaves");
+    std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>* src = 
+        StdSetBinding<hand>::get(L, 2);
+    if (!src) return luaL_error(L, "Expected std::set<hand>");
+    instance->slaves = *src;
+    return 0;
 }
 
 
@@ -370,7 +371,10 @@ static int Ownerships_set_stuff(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for stuff");
+    lektor<hand>* src = LektorValueBinding<hand>::get(L, 2);
+    if (!src) return luaL_error(L, "Expected lektor<hand>");
+    instance->stuff = *src;
+    return 0;
 }
 
 

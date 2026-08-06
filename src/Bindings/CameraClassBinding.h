@@ -41,5 +41,7 @@ public:
     static int rotate(lua_State* L);
     static int rotationUpdate(lua_State* L);
     static int updateAudio(lua_State* L);
+    static int followObject(lua_State* L);
+    static int getFollowObject(lua_State* L);
 };
 }

@@ -1370,7 +1370,7 @@ static int PlayerInterface_get_interiorsVisible(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return pushObject<ogre_unordered_set<hand>::type>(L, &instance->interiorsVisible, "KenshiLua.InteriorsVisibleSet");
+    return pushObject<ogre_unordered_set<hand>::type>(L, &instance->interiorsVisible, "ogre_unordered_set<hand>");
 }
 
 static int PlayerInterface_get_playerCharacters(lua_State* L)
@@ -1384,21 +1384,21 @@ static int PlayerInterface_get_selectedCharacters(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return pushObject<ogre_unordered_set<hand>::type>(L, &instance->selectedCharacters, "KenshiLua.SelectedCharactersSet");
+    return pushObject<ogre_unordered_set<hand>::type>(L, &instance->selectedCharacters, "ogre_unordered_set<hand>");
 }
 
 static int PlayerInterface_get_townsActive(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return pushObject<ogre_unordered_set<TownBase*>::type>(L, &instance->townsActive, "KenshiLua.TownsActiveSet");
+    return pushObject<ogre_unordered_set<TownBase*>::type>(L, &instance->townsActive, "ogre_unordered_set<TownBase*>");
 }
 
 static int PlayerInterface_get_zonesVisibilities(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    return pushObject<ogre_unordered_map<ZoneMap*, unsigned char>::type>(L, &instance->zonesVisibilities, "KenshiLua.ZonesVisibilitiesMap");
+    return pushObject<ogre_unordered_map<ZoneMap*, unsigned char>::type>(L, &instance->zonesVisibilities, "ogre_unordered_map<ZoneMap*, unsigned char>");
 }
 
 
@@ -1406,7 +1406,7 @@ static int PlayerInterface_set_interiorsVisible(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    auto* val = checkObject<ogre_unordered_set<hand>::type>(L, 2, "KenshiLua.InteriorsVisibleSet");
+    auto* val = checkObject<ogre_unordered_set<hand>::type>(L, 2, "ogre_unordered_set<hand>");
     if (val) instance->interiorsVisible = *val;
     return 0;
 }
@@ -1444,7 +1444,7 @@ static int PlayerInterface_set_selectedCharacters(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    auto* val = checkObject<ogre_unordered_set<hand>::type>(L, 2, "KenshiLua.SelectedCharactersSet");
+    auto* val = checkObject<ogre_unordered_set<hand>::type>(L, 2, "ogre_unordered_set<hand>");
     if (val) instance->selectedCharacters = *val;
     return 0;
 }
@@ -1463,7 +1463,7 @@ static int PlayerInterface_set_townsActive(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    auto* val = checkObject<ogre_unordered_set<TownBase*>::type>(L, 2, "KenshiLua.TownsActiveSet");
+    auto* val = checkObject<ogre_unordered_set<TownBase*>::type>(L, 2, "ogre_unordered_set<TownBase*>");
     if (val) instance->townsActive = *val;
     return 0;
 }
@@ -1473,7 +1473,7 @@ static int PlayerInterface_set_zonesVisibilities(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    auto* val = checkObject<ogre_unordered_map<ZoneMap*, unsigned char>::type>(L, 2, "KenshiLua.ZonesVisibilitiesMap");
+    auto* val = checkObject<ogre_unordered_map<ZoneMap*, unsigned char>::type>(L, 2, "ogre_unordered_map<ZoneMap*, unsigned char>");
     if (val) instance->zonesVisibilities = *val;
     return 0;
 }
@@ -1786,12 +1786,6 @@ void PlayerInterfaceBinding::registerBinding(lua_State* L)
     registerSetter(L, "zonesVisibilities", PlayerInterface_set_zonesVisibilities);
     registerSetter(L, "interiorsVisible", PlayerInterface_set_interiorsVisible);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
-
-    OgreUnorderedSetBinding<hand>::registerBinding(L, "KenshiLua.InteriorsVisibleSet", HandBinding::getMetatableName());
-    OgreUnorderedSetBinding<hand>::registerBinding(L, "KenshiLua.SelectedCharactersSet", HandBinding::getMetatableName());
-    OgreUnorderedSetBinding<TownBase*>::registerBinding(L, "KenshiLua.TownsActiveSet", TownBaseBinding::getMetatableName());
-    OgreUnorderedMapBinding<ZoneMap*, unsigned char>::registerBinding(L, "KenshiLua.ZonesVisibilitiesMap", ZoneMapBinding::getMetatableName(), nullptr);
-    LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
