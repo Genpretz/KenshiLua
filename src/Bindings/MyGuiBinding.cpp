@@ -16,8 +16,26 @@ namespace KenshiLua
 
 static std::unordered_set<MyGUI::Widget*> g_luaCreatedWidgets;
 static std::vector<MyGUI::Widget*> g_luaCreatedRootWidgets;
+static std::map<MyGUI::Widget*, std::string> g_luaCreatedWidgetSources;
 
-static void trackLuaCreatedWidget(MyGUI::Widget* widget, MyGUI::Widget* parent)
+static std::string getCallerSource(lua_State* L)
+{
+    if (!L) return "";
+    lua_Debug ar;
+    if (lua_getstack(L, 1, &ar))
+    {
+        if (lua_getinfo(L, "S", &ar))
+        {
+            if (ar.source)
+            {
+                return ar.source;
+            }
+        }
+    }
+    return "";
+}
+
+static void trackLuaCreatedWidget(lua_State* L, MyGUI::Widget* widget, MyGUI::Widget* parent)
 {
     if (!widget) return;
     g_luaCreatedWidgets.insert(widget);
@@ -26,6 +44,11 @@ static void trackLuaCreatedWidget(MyGUI::Widget* widget, MyGUI::Widget* parent)
         if (std::find(g_luaCreatedRootWidgets.begin(), g_luaCreatedRootWidgets.end(), widget) == g_luaCreatedRootWidgets.end())
         {
             g_luaCreatedRootWidgets.push_back(widget);
+            std::string src = getCallerSource(L);
+            if (!src.empty())
+            {
+                g_luaCreatedWidgetSources[widget] = src;
+            }
         }
     }
 }
@@ -39,7 +62,9 @@ static void untrackLuaCreatedWidget(MyGUI::Widget* widget)
         g_luaCreatedRootWidgets.erase(it);
     }
     g_luaCreatedWidgets.erase(widget);
+    g_luaCreatedWidgetSources.erase(widget);
 }
+
 
 class LuaWidgetCallbackManager
 {
@@ -1851,7 +1876,7 @@ static int helper_createWidgetType(lua_State* L, const char* type)
 
     if (widget)
     {
-        trackLuaCreatedWidget(widget, parent);
+        trackLuaCreatedWidget(L, widget, parent);
         if (isReal)
         {
             widget->setRealCoord(fx, fy, fw, fh);
@@ -2176,7 +2201,7 @@ static int lua_createWidget(lua_State* L)
 
     if (widget)
     {
-        trackLuaCreatedWidget(widget, parent);
+        trackLuaCreatedWidget(L, widget, parent);
         return pushObject<MyGUI::Widget>(L, widget, MyGuiBinding::getMetatableName());
     }
     lua_pushnil(L);
@@ -2206,7 +2231,7 @@ static int lua_loadLayout(lua_State* L)
     lua_newtable(L);
     for (size_t i = 0; i < widgets.size(); ++i)
     {
-        trackLuaCreatedWidget(widgets[i], parent);
+        trackLuaCreatedWidget(L, widgets[i], parent);
         pushObject<MyGUI::Widget>(L, widgets[i], MyGuiBinding::getMetatableName());
         lua_rawseti(L, -2, (int)(i + 1));
     }
@@ -2427,6 +2452,35 @@ void MyGuiBinding::registerBinding(lua_State* L)
     lua_pop(L, 1);
 }
 
+void MyGuiBinding::destroyWidgetsBySource(const std::string& source)
+{
+    if (source.empty()) return;
+
+    MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
+    if (!gui) return;
+
+    for (int i = (int)g_luaCreatedRootWidgets.size() - 1; i >= 0; --i)
+    {
+        MyGUI::Widget* w = g_luaCreatedRootWidgets[i];
+        auto srcIt = g_luaCreatedWidgetSources.find(w);
+        std::string wSource = (srcIt != g_luaCreatedWidgetSources.end()) ? srcIt->second : "";
+
+        if (sourceMatches(wSource, source))
+        {
+            try
+            {
+                LuaWidgetCallbackManager::get().clearCallbacksForWidget(w);
+                gui->destroyWidget(w);
+            }
+            catch (...)
+            {
+                // ignore if already destroyed by game/MyGUI
+            }
+            untrackLuaCreatedWidget(w);
+        }
+    }
+}
+
 void MyGuiBinding::shutdown()
 {
     MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
@@ -2448,8 +2502,10 @@ void MyGuiBinding::shutdown()
     }
     g_luaCreatedRootWidgets.clear();
     g_luaCreatedWidgets.clear();
+    g_luaCreatedWidgetSources.clear();
 
     LuaWidgetCallbackManager::get().clearAll();
 }
+
 
 } // namespace KenshiLua

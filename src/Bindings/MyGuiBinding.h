@@ -14,6 +14,7 @@ public:
     static const char* getMetatableName() { return "KenshiLua.MyGUI.Widget"; }
     static void registerBinding(lua_State* L);
     static void shutdown();
+    static void destroyWidgetsBySource(const std::string& source);
 };
 
 } // namespace KenshiLua
