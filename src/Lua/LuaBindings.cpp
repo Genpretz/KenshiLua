@@ -23,6 +23,18 @@ extern "C" {
 
 namespace KenshiLua
 {
+    
+int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.8"); return 1; }
+
+static int lua_toggleGui(lua_State* L)
+{
+    GuiManager::get().toggle();
+    return 0;
+}
+
+// ---------------------------------------------------------------------------
+// Script Reloading Helpers
+// ---------------------------------------------------------------------------
 
 static int lua_enableHotReload(lua_State* L)
 {
@@ -64,84 +76,9 @@ static int lua_reloadMods(lua_State* L)
     return 1;
 }
 
-static int lua_toggleGui(lua_State* L)
-{
-    GuiManager::get().toggle();
-    return 0;
-}
-
-void installKenshiLuaTable(lua_State* L)
-{
-    // KenshiLua.* namespace for management helpers.
-    lua_getglobal(L, "KenshiLua");
-    if (!lua_istable(L, -1)) {
-        lua_pop(L, 1);
-        lua_newtable(L);
-    }
-
-    lua_pushcfunction(L, lua_reloadMods);
-    lua_setfield(L, -2, "reloadMods");
-
-    lua_pushcfunction(L, lua_reloadScript);
-    lua_setfield(L, -2, "reloadScript");
-
-    lua_pushcfunction(L, lua_enableHotReload);
-    lua_setfield(L, -2, "enableHotReload");
-
-    lua_pushcfunction(L, lua_disableHotReload);
-    lua_setfield(L, -2, "disableHotReload");
-
-    lua_pushcfunction(L, lua_isHotReloadEnabled);
-    lua_setfield(L, -2, "isHotReloadEnabled");
-
-    lua_pushcfunction(L, lua_toggleGui);
-    lua_setfield(L, -2, "toggleGui");
-
-    // Aliases for the existing global event-handler functions.
-    lua_pushcfunction(L, luaRegisterHandler);
-    lua_setfield(L, -2, "registerHandler");
-
-    lua_pushcfunction(L, luaUnregisterHandler);
-    lua_setfield(L, -2, "unregisterHandler");
-
-    // Version check helper.
-    lua_pushcfunction(L, luaKenshiVersion);
-    lua_setfield(L, -2, "version");
-
-    lua_pushcfunction(L, luaKenshiRunBenchmark);
-    lua_setfield(L, -2, "runBenchmark");
-
-    lua_pushcfunction(L, luaCheckLuaScriptReferences);
-    lua_setfield(L, -2, "checkLuaScriptReferences");
-
-    lua_pushcfunction(L, luaKenshiLog);
-    lua_setfield(L, -2, "log");
-
-    lua_pushcfunction(L, luaKenshiLogDebug);
-    lua_setfield(L, -2, "logDebug");
-
-    lua_pushcfunction(L, luaKenshiLogWarn);
-    lua_setfield(L, -2, "warn");
-    lua_pushcfunction(L, luaKenshiLogWarn);
-    lua_setfield(L, -2, "logWarn");
-
-    lua_pushcfunction(L, luaKenshiLogError);
-    lua_setfield(L, -2, "logError");
-
-    lua_pushcfunction(L, luaKenshiError);
-    lua_setfield(L, -2, "error");
-
-    lua_pushcfunction(L, luaKenshiProfileStart);
-    lua_setfield(L, -2, "profileStart");
-
-    lua_pushcfunction(L, luaKenshiProfileStop);
-    lua_setfield(L, -2, "profileStop");
-
-    lua_pushcfunction(L, luaKenshiProfileDump);
-    lua_setfield(L, -2, "profileDump");
-
-    lua_setglobal(L, "KenshiLua");
-}
+// ---------------------------------------------------------------------------
+// Logging Helpers
+// ---------------------------------------------------------------------------
 
 static std::string formatLuaArgs(lua_State* L)
 {
@@ -173,26 +110,28 @@ int luaKenshiLogDebug(lua_State* L)
 
 int luaKenshiLogWarn(lua_State* L)
 {
-    logToFile(LogLevel_Warn, formatLuaArgs(L));
+    logToFileWarn(formatLuaArgs(L));
     return 0;
 }
 
 int luaKenshiLogError(lua_State* L)
 {
-    logToFile(LogLevel_Error, formatLuaArgs(L));
+    logToFileError(formatLuaArgs(L));
     return 0;
 }
 
 int luaKenshiError(lua_State* L)
 {
     std::string msg = "Lua Error: " + formatLuaArgs(L);
-    logToFile(LogLevel_Error, msg);
+    logToFileError(msg);
     lua_settop(L, 0);
     lua_pushlstring(L, msg.c_str(), msg.size());
     return lua_error(L);
 }
 
-int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.7"); return 1; }
+// ---------------------------------------------------------------------------
+// LuaJIT Profiler Helpers
+// ---------------------------------------------------------------------------
 
 static std::map<std::string, int> g_profileSamples;
 static int g_profileTotalSamples = 0;
@@ -264,6 +203,84 @@ int luaKenshiProfileStop(lua_State* L)
     logToFile(report);
     lua_pushlstring(L, report.c_str(), report.size());
     return 1;
+}
+
+// ---------------------------------------------------------------------------
+// Global Table Registration
+// ---------------------------------------------------------------------------
+
+void installKenshiLuaTable(lua_State* L)
+{
+    // KenshiLua.* namespace for management helpers.
+    lua_getglobal(L, "KenshiLua");
+    if (!lua_istable(L, -1)) {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
+
+    lua_pushcfunction(L, lua_reloadMods);
+    lua_setfield(L, -2, "reloadMods");
+
+    lua_pushcfunction(L, lua_reloadScript);
+    lua_setfield(L, -2, "reloadScript");
+
+    lua_pushcfunction(L, lua_enableHotReload);
+    lua_setfield(L, -2, "enableHotReload");
+
+    lua_pushcfunction(L, lua_disableHotReload);
+    lua_setfield(L, -2, "disableHotReload");
+
+    lua_pushcfunction(L, lua_isHotReloadEnabled);
+    lua_setfield(L, -2, "isHotReloadEnabled");
+
+    lua_pushcfunction(L, lua_toggleGui);
+    lua_setfield(L, -2, "toggleGui");
+
+    // Aliases for the existing global event-handler functions.
+    lua_pushcfunction(L, luaRegisterHandler);
+    lua_setfield(L, -2, "registerHandler");
+
+    lua_pushcfunction(L, luaUnregisterHandler);
+    lua_setfield(L, -2, "unregisterHandler");
+
+    // Version check helper.
+    lua_pushcfunction(L, luaKenshiVersion);
+    lua_setfield(L, -2, "version");
+
+    lua_pushcfunction(L, luaKenshiRunBenchmark);
+    lua_setfield(L, -2, "runBenchmark");
+
+    lua_pushcfunction(L, luaCheckLuaScriptReferences);
+    lua_setfield(L, -2, "checkLuaScriptReferences");
+
+    // Logging helpers
+    lua_pushcfunction(L, luaKenshiLog);
+    lua_setfield(L, -2, "log");
+
+    lua_pushcfunction(L, luaKenshiLogDebug);
+    lua_setfield(L, -2, "logDebug");
+
+    lua_pushcfunction(L, luaKenshiLogWarn);
+    lua_setfield(L, -2, "logWarn");
+
+    lua_pushcfunction(L, luaKenshiLogError);
+    lua_setfield(L, -2, "logError");
+
+    // Lua 5.1 Style Error function
+    lua_pushcfunction(L, luaKenshiError);
+    lua_setfield(L, -2, "error");
+
+    // LuaJIT profiling helpers
+    lua_pushcfunction(L, luaKenshiProfileStart);
+    lua_setfield(L, -2, "profileStart");
+
+    lua_pushcfunction(L, luaKenshiProfileStop);
+    lua_setfield(L, -2, "profileStop");
+
+    lua_pushcfunction(L, luaKenshiProfileDump);
+    lua_setfield(L, -2, "profileDump");
+
+    lua_setglobal(L, "KenshiLua");
 }
 
 } // namespace KenshiLua

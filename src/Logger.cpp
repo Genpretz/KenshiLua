@@ -53,11 +53,7 @@ void Logger::log(LogLevel level, const std::string& message)
         now.time_since_epoch()) % 1000;
 
     std::tm tm;
-#ifdef _WIN32
     localtime_s(&tm, &time);
-#else
-    localtime_r(&time, &tm);
-#endif
 
     char tsBuf[32];
     std::strftime(tsBuf, sizeof(tsBuf), "%Y-%m-%d %H:%M:%S", &tm);
@@ -148,18 +144,7 @@ static std::string getLogFilepath()
         dllPath = ".";
     }
 
-    auto now = boost::chrono::system_clock::now();
-    auto time = boost::chrono::system_clock::to_time_t(now);
-    std::tm tm;
-#ifdef _WIN32
-    localtime_s(&tm, &time);
-#else
-    localtime_r(&time, &tm);
-#endif
-
-    char buf[64];
-    std::strftime(buf, sizeof(buf), "%Y-%m-%d", &tm);
-    return dllPath + "\\KenshiLua_" + buf + ".log";
+    return dllPath + "\\KenshiLua.log";
 }
 
 void initLogger()
@@ -190,9 +175,7 @@ void logToFileError(const std::string& message)
 
 void logToFileDebug(const std::string& message)
 {
-    if (Config::get().isDebugLoggingEnabled()) {
-        Logger::get().log(LogLevel_Debug, message);
-    }
+    Logger::get().log(LogLevel_Debug, message);
 }
 
 void logBenchmark(const std::string& message, const std::string& logFilename)
@@ -216,11 +199,8 @@ void logBenchmark(const std::string& message, const std::string& logFilename)
         auto now = boost::chrono::system_clock::now();
         auto time = boost::chrono::system_clock::to_time_t(now);
         std::tm tm;
-#ifdef _WIN32
         localtime_s(&tm, &time);
-#else
-        localtime_r(&time, &tm);
-#endif
+
         char tsBuf[32];
         std::strftime(tsBuf, sizeof(tsBuf), "%Y-%m-%d %H:%M:%S", &tm);
 
