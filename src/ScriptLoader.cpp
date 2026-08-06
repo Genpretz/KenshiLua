@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ScriptLoader.h"
 #include "Logger.h"
+#include "EventSystem.h"
+#include "Bindings/MyGuiBinding.h"
 
 #include <kenshi/Globals.h>
 #include <kenshi/GameWorld.h>
@@ -223,6 +225,10 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
 
 bool ScriptLoader::runScript(lua_State* L, LoadedScript& s)
 {
+    // Clean up any previously registered event handlers and MyGUI widgets from this script
+    EventSystem::get().unregisterHandlersBySource(s.chunkName);
+    MyGuiBinding::destroyWidgetsBySource(s.chunkName);
+
     bool res = runScriptSandboxed(L, s.absolutePath, s.chunkName, &s.lastError);
     s.loaded = res;
     if (res) {

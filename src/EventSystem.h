@@ -49,10 +49,13 @@ namespace KenshiLua
         bool initialize(lua_State* L);
 
         // Pin a Lua function ref under eventName and return a handler ID.
-        int registerHandler(const char* eventName, int luaRef);
+        int registerHandler(const char* eventName, int luaRef, const char* source = "");
 
         // Remove a previously registered handler by its ID (no-op if not found).
         void unregisterHandler(int handlerId);
+
+        // Remove all registered handlers originating from a specific script source chunk name.
+        void unregisterHandlersBySource(const std::string& source);
 
         // Fire all handlers registered under eventName.
         // If pusher is non-NULL, pusher->push(L) is called before each pcall
@@ -90,6 +93,7 @@ namespace KenshiLua
         {
             int id;
             int luaRef;
+            std::string source;
         };
 
         lua_State* m_L;

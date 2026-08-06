@@ -8,8 +8,7 @@
 #include <boost/type_traits/is_enum.hpp>
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_same.hpp>
-
-
+#include <boost/algorithm/string.hpp>
 
 extern "C" {
 #include <lua.h>
@@ -19,6 +18,40 @@ extern "C" {
 namespace KenshiLua
 {
     void logToFileWarn(const std::string& message);
+
+    inline std::string normalizeSourceString(std::string s)
+    {
+        if (s.empty()) return "";
+        if (s[0] == '@') s.erase(0, 1);
+        boost::algorithm::replace_all(s, "\\", "/");
+        boost::algorithm::to_lower(s);
+        return s;
+    }
+
+    inline bool sourceMatches(const std::string& handlerSource, const std::string& targetSource)
+    {
+        std::string normHandler = normalizeSourceString(handlerSource);
+        std::string normTarget = normalizeSourceString(targetSource);
+
+        if (normHandler.empty() || normTarget.empty()) return false;
+        if (normHandler == normTarget) return true;
+
+        if (boost::algorithm::contains(normHandler, normTarget) || boost::algorithm::contains(normTarget, normHandler))
+            return true;
+
+
+        size_t slashIdx1 = normHandler.find('/');
+        size_t slashIdx2 = normTarget.find('/');
+        if (slashIdx1 != std::string::npos && slashIdx2 != std::string::npos)
+        {
+            std::string mod1 = normHandler.substr(0, slashIdx1);
+            std::string mod2 = normTarget.substr(0, slashIdx2);
+            if (!mod1.empty() && mod1 == mod2)
+                return true;
+        }
+
+        return false;
+    }
 
 
     template <class T>

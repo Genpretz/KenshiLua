@@ -61,11 +61,12 @@ namespace KenshiLua
         return true;
     }
 
-    int EventSystem::registerHandler(const char* eventName, int luaRef)
+    int EventSystem::registerHandler(const char* eventName, int luaRef, const char* source)
     {
         HandlerInfo info;
         info.id = m_nextHandlerId++;
         info.luaRef = luaRef;
+        info.source = source ? source : "";
 
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {
@@ -95,8 +96,34 @@ namespace KenshiLua
             {
                 if (handlers[j].id == handlerId)
                 {
+                    if (handlers[j].luaRef != LUA_REFNIL && m_L)
+                        luaL_unref(m_L, LUA_REGISTRYINDEX, handlers[j].luaRef);
                     handlers.erase(handlers.begin() + j);
                     return;
+                }
+            }
+        }
+    }
+
+    void EventSystem::unregisterHandlersBySource(const std::string& source)
+    {
+        if (source.empty())
+            return;
+
+        for (size_t i = 0; i < m_handlers.size(); ++i)
+        {
+            std::vector<HandlerInfo>& handlers = m_handlers[i].second;
+            for (auto it = handlers.begin(); it != handlers.end(); )
+            {
+                if (sourceMatches(it->source, source))
+                {
+                    if (it->luaRef != LUA_REFNIL && m_L)
+                        luaL_unref(m_L, LUA_REGISTRYINDEX, it->luaRef);
+                    it = handlers.erase(it);
+                }
+                else
+                {
+                    ++it;
                 }
             }
         }
@@ -392,10 +419,24 @@ namespace KenshiLua
         if (!lua_isfunction(L, 2))
             return luaL_error(L, "registerHandler: second argument must be a function");
 
+        // Determine the source of the caller
+        std::string source = "";
+        lua_Debug ar;
+        if (lua_getstack(L, 1, &ar))
+        {
+            if (lua_getinfo(L, "S", &ar))
+            {
+                if (ar.source)
+                {
+                    source = ar.source;
+                }
+            }
+        }
+
         lua_pushvalue(L, 2);
         int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-        int handlerId = EventSystem::get().registerHandler(eventName, ref);
+        int handlerId = EventSystem::get().registerHandler(eventName, ref, source.c_str());
         lua_pushinteger(L, handlerId);
         return 1;
     }
