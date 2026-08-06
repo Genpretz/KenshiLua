@@ -120,6 +120,21 @@ namespace KenshiLua
         return pushObject<T>(L, ptr, BindingT::getMetatableName());
     }
 
+    // Generic __eq metamethod for testing equality of the wrapped C++ pointers
+    inline int genericEq(lua_State* L)
+    {
+        if (lua_isuserdata(L, 1) && lua_isuserdata(L, 2)) {
+            void* ptr1 = lua_touserdata(L, 1);
+            void* ptr2 = lua_touserdata(L, 2);
+            if (ptr1 && ptr2) {
+                lua_pushboolean(L, *((void**)ptr1) == *((void**)ptr2) ? 1 : 0);
+                return 1;
+            }
+        }
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
     inline void registerClass(lua_State* L,
         const char* metatableName,
         const luaL_Reg* metamethods,
@@ -135,6 +150,10 @@ namespace KenshiLua
 
         lua_pushstring(L, metatableName);
         lua_setfield(L, -2, "__name");
+
+        // Provide a default __eq metamethod for pointer equality
+        lua_pushcfunction(L, genericEq);
+        lua_setfield(L, -2, "__eq");
 
         if (indexFunc) {
             // Caller supplies a C __index that handles both method dispatch and
