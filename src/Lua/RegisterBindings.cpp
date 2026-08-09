@@ -59,6 +59,8 @@
 #include "Bindings/CharStatsBinding.h"
 #include "Bindings/CharacterAnimalBinding.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/Character_CarryMsgBinding.h"
+#include "Bindings/Character_RagdollMsgBinding.h"
 #include "Bindings/CharacterHumanBinding.h"
 #include "Bindings/CharacterInventoryLayoutBinding.h"
 #include "Bindings/CombatClassBinding.h"
@@ -305,6 +307,48 @@
 #include "Bindings/Util/StdMapBinding.h"
 #include "Bindings/Util/StdSetBinding.h"
 #include "Bindings/FitnessSelectorBinding.h"
+#include "Bindings/AkSoundPositionBinding.h"
+#include "Bindings/AkVectorBinding.h"
+#include "Bindings/CombatClass_AttackSlotManager_SlotDataBinding.h"
+#include "Bindings/CombatClass_EffectDataBinding.h"
+#include "Bindings/EdgeCacheBinding.h"
+#include "Bindings/EdgeCache_EdgeBinding.h"
+#include "Bindings/EdgePathNodeBinding.h"
+#include "Bindings/FactionsScreen_FactionRelationsLine_LessSortBinding.h"
+#include "Bindings/Faction_CharacteristicsDataBinding.h"
+#include "Bindings/FarmBuilding_PlantBinding.h"
+#include "Bindings/FarmBuilding_PlantSourceBinding.h"
+#include "Bindings/FarmBuilding_SubPlantBinding.h"
+#include "Bindings/GameDataEditorWindow_DataItemBinding.h"
+#include "Bindings/hkContainerHeapAllocatorBinding.h"
+#include "Bindings/hkContainerHeapAllocator_AllocatorBinding.h"
+#include "Bindings/hkMemoryAllocator_ExtendedInterfaceBinding.h"
+#include "Bindings/hkMemoryAllocator_MemoryStatisticsBinding.h"
+#include "Bindings/hkResultBinding.h"
+#include "Bindings/InputHandler_CommandBinding.h"
+#include "Bindings/InventoryGUI_FenceCallbackDataBinding.h"
+#include "Bindings/ManagementScreen_TechItemViewDataBinding.h"
+#include "Bindings/MapScreen_MapRoadBinding.h"
+#include "Bindings/MessageQueue_NodeBinding.h"
+#include "Bindings/NavInstanceBinding.h"
+#include "Bindings/NavMeshGenerator_TaskBinding.h"
+#include "Bindings/NavMeshGenerator_TaskQueueBinding.h"
+#include "Bindings/NavMesh_BuildingInfoBinding.h"
+#include "Bindings/NavMesh_NavMeshMessageBinding.h"
+#include "Bindings/Nx9Real_SBinding.h"
+#include "Bindings/ParticlePool_ParticleDataBinding.h"
+#include "Bindings/SaveFileSystem_FileMessageBinding.h"
+#include "Bindings/SaveInfoBinding.h"
+#include "Bindings/Terrain_BloodQueueBinding.h"
+#include "Bindings/Terrain_BoxBinding.h"
+#include "Bindings/Terrain_HitBinding.h"
+#include "Bindings/Terrain_InfoBinding.h"
+#include "Bindings/TownBase_ResidentDataBinding.h"
+#include "Bindings/TownBuildingsManager_BuildingInfoBinding.h"
+#include "Bindings/Town_NestSpotBinding.h"
+#include "Bindings/TraitBoolBinding.h"
+#include "Bindings/ZoneManager_BiomeGroundEffectsBinding.h"
+#include "Bindings/ZoneSpacialGrid_ZoneCellBinding.h"
 
 namespace KenshiLua
 {
@@ -608,6 +652,8 @@ void LuaBindings::registerAll(lua_State* L)
     CharStatsBinding::registerBinding(L);
     CharacterAnimalBinding::registerBinding(L);
     CharacterBinding::registerBinding(L);
+    Character_CarryMsgBinding::registerBinding(L);
+    Character_RagdollMsgBinding::registerBinding(L);
     CharacterHumanBinding::registerBinding(L);
     CharacterInventoryLayoutBinding::registerBinding(L);
     CombatClassBinding::registerBinding(L);
