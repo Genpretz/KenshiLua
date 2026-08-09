@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "KENSHI\Appearance.h"
+#include "kenshi\Appearance.h"
 #include "AppearanceBaseBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"

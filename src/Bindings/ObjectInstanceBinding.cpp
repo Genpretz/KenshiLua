@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "KENSHI\GameData.h"
+#include "kenshi\GameData.h"
 #include "ObjectInstanceBinding.h"
 #include "Lua/BindingHelpers.h"
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "KENSHI\GameWorld.h"
+#include "kenshi\GameWorld.h"
 #include "SimpleTimeStamperBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Util/CPerfTimerBinding.h"

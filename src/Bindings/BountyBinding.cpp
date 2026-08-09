@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "KENSHI\Bounty.h"
+#include "kenshi\Bounty.h"
 #include "BountyBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Util/TimeOfDayBinding.h"

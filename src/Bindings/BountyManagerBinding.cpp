@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "KENSHI\BountyManager.h"
+#include "kenshi\BountyManager.h"
 #include "BountyManagerBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"

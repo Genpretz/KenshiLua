@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "KENSHI\CameraClass.h"
+#include "kenshi\CameraClass.h"
 #include "CameraClassBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"

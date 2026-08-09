@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "KENSHI\Damages.h"
+#include "kenshi\Damages.h"
 #include "DamagesBinding.h"
 #include "Lua/BindingHelpers.h"
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "KENSHI\Dialogue.h"
+#include "kenshi\Dialogue.h"
 #include "CampaignTriggerDataBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "KENSHI\Appearance.h"
+#include "kenshi\Appearance.h"
 #include "MeshDataLookupBinding.h"
 #include "Lua/BindingHelpers.h"
 
