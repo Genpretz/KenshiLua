@@ -66,6 +66,7 @@ end
 
 #### Dialogue Scripting Bridge
    - Using FCS Extended ([Github](https://github.com/BFrizzleFoShizzle/FCS_extended) | [Nexus](https://www.nexusmods.com/kenshi/mods/1825)) with KenshiLua enabled, you'll find a new `run lua script` option available for DIALOGUE, DIALOGUE_LINE, or WORD_SWAP. When the given dialogue plays, the script runs.
+   - See [DialogueScriptingBridge.md](docs/DialogueScriptingBridge.md) for complete details on FCS setup, mod folder structure, injected Lua globals (`currentDialogue`, `currentDialogueLine`), and diagnostics.
 <img width="2558" height="1548" alt="Screenshot 2026-07-13 140858" src="https://github.com/user-attachments/assets/c899339c-05f3-4aa2-aa28-cb6bd3eca7c5" />
      *The example shown in this image, available in the repository, uses the players Dexterity and Thieving stats to give the player an advatage in a game of dice. The script runs whenever the given dialogue option is chosen by the player.
 
