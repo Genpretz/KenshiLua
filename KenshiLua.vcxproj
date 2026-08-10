@@ -146,7 +146,17 @@ copy /Y "$(ProjectDir)assets\config\fcs.def" "$(OutDir)..\"
 copy /Y "$(ProjectDir)assets\config\config.ini" "$(OutDir)"
 copy /Y "$(ProjectDir)assets\config\RE_Kenshi.json" "$(OutDir)..\"
 copy /Y "$(ProjectDir)assets\KenshiLua.mod" "$(OutDir)..\"
-copy /Y "$(ProjectDir)extern\luajit\lib\lua51.dll" "$(OutDir)..\"</Command>
+copy /Y "$(ProjectDir)extern\luajit\lib\lua51.dll" "$(OutDir)..\"
+if not exist "$(OutDir)..\docs" mkdir "$(OutDir)..\docs"
+copy /Y "$(ProjectDir)docs\BindingsReference.md" "$(OutDir)..\docs\"
+copy /Y "$(ProjectDir)docs\UnboundRefrence.md" "$(OutDir)..\docs\"
+copy /Y "$(ProjectDir)docs\CallbacksReference.md" "$(OutDir)..\docs\"
+copy /Y "$(ProjectDir)docs\EnumsReference.md" "$(OutDir)..\docs\"
+copy /Y "$(ProjectDir)docs\MyGUI_Bindings.md" "$(OutDir)..\docs\"
+copy /Y "$(ProjectDir)assets\media\kenshilua.png" "$(OutDir)..\KenshiLua.png"
+copy /Y "$(ProjectDir)LICENSE" "$(OutDir)..\"
+copy /Y "$(ProjectDir)README.md" "$(OutDir)..\"
+xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
     <ItemGroup>
@@ -1010,7 +1020,7 @@ copy /Y "$(ProjectDir)extern\luajit\lib\lua51.dll" "$(OutDir)..\"</Command>
     <ClInclude Include="src\Bindings\TraitBoolBinding.h" />
     <ClInclude Include="src\Bindings\ZoneManager_BiomeGroundEffectsBinding.h" />
     <ClInclude Include="src\Bindings\ZoneSpacialGrid_ZoneCellBinding.h" />
-  </ItemGroup>
+    </ItemGroup>
     <ItemGroup>
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Bindings\AABB2DBinding.cpp" />
@@ -1404,7 +1414,7 @@ copy /Y "$(ProjectDir)extern\luajit\lib\lua51.dll" "$(OutDir)..\"</Command>
     <ClCompile Include="src\Bindings\TraitBoolBinding.cpp" />
     <ClCompile Include="src\Bindings\ZoneManager_BiomeGroundEffectsBinding.cpp" />
     <ClCompile Include="src\Bindings\ZoneSpacialGrid_ZoneCellBinding.cpp" />
-  </ItemGroup>
+    </ItemGroup>
   <ItemGroup>
     <None Include="extern\kenshilib\Include\ogre\Animation\OgreBone.inl" />
     <None Include="extern\kenshilib\Include\ogre\Math\Array\NEON\Single\OgreArrayAabb.inl" />
