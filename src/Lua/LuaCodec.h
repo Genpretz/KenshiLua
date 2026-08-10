@@ -23,7 +23,9 @@ namespace KenshiLua
         static void push(lua_State* L, const T& val, const char* meta)
         {
             if (meta) {
-                pushObject<T>(L, const_cast<T*>(&val), meta);
+                pushValue<T>(L, val, meta);
+            } else {
+                lua_pushnil(L);
             }
         }
 

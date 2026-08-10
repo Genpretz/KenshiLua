@@ -20,9 +20,10 @@ public:
     LuaState();
     ~LuaState();
 
+private:
     LuaState(const LuaState&);
     LuaState& operator=(const LuaState&);
-
+public:
     lua_State* getState() { return m_L; }
 
     bool initialize();

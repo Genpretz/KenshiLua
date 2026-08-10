@@ -170,6 +170,24 @@ namespace KenshiLua
             // Set __gc to automatically delete heap-allocated memory
             lua_pushcfunction(L, ownedObjectGc<T>);
             lua_setfield(L, -2, "__gc");
+
+            // Copy __getters from base metatable so genericPropertyIndex works
+            luaL_getmetatable(L, baseMetatableName);
+            if (lua_istable(L, -1)) {
+                lua_getfield(L, -1, "__getters");
+                if (lua_istable(L, -1)) {
+                    lua_setfield(L, -4, "__getters"); // set on _Owned MT
+                } else {
+                    lua_pop(L, 1);
+                }
+                lua_getfield(L, -1, "__setters");
+                if (lua_istable(L, -1)) {
+                    lua_setfield(L, -4, "__setters"); // set on _Owned MT
+                } else {
+                    lua_pop(L, 1);
+                }
+            }
+            lua_pop(L, 1); // pop base metatable
         }
 
         void** ud = (void**)lua_newuserdata(L, sizeof(void*));

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Lua/LuaState.h"
+#include "Lua/BindingHelpers.h"
 #include <cstdlib>
 
 extern "C" {
@@ -32,16 +33,6 @@ LuaState::LuaState()
 LuaState::~LuaState()
 {
     close();
-}
-
-LuaState::LuaState(const LuaState&)
-    : m_L(0)
-{
-}
-
-LuaState& LuaState::operator=(const LuaState&)
-{
-    return *this;
 }
 
 bool LuaState::initialize()
@@ -88,6 +79,7 @@ int LuaState::panicHandler(lua_State* L)
             msg.append(s, len);
         }
     }
+    logToFileWarn(msg);
     return LUA_ERRERR;
 }
 
