@@ -563,7 +563,7 @@ int InventoryGUIBinding::getSlotWithMouse(lua_State* L)
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
 
     iVector2 result = instance->getSlotWithMouse();
-    return pushObject<iVector2>(L, &result, iVector2Binding::getMetatableName());
+    return pushValue<iVector2>(L, result, iVector2Binding::getMetatableName());
 }
 
 /*

@@ -5717,8 +5717,7 @@ int CharacterBinding::serialise(lua_State* L)
     GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
     GameSaveState result = instance->serialise(container, refList, offset);
-    GameSaveState* heapResult = new GameSaveState(result);
-    return pushObject<GameSaveState>(L, heapResult, GameSaveStateBinding::getMetatableName());
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
 }
 
 int CharacterBinding::_NV_serialise(lua_State* L)
@@ -5729,8 +5728,7 @@ int CharacterBinding::_NV_serialise(lua_State* L)
     GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
     GameSaveState result = instance->_NV_serialise(container, refList, offset);
-    GameSaveState* heapResult = new GameSaveState(result);
-    return pushObject<GameSaveState>(L, heapResult, GameSaveStateBinding::getMetatableName());
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
 }
 
 int CharacterBinding::hasItemsFrom(lua_State* L)

@@ -350,7 +350,7 @@ int ZoneManagerBinding::getCurrentMapSector(lua_State* L)
     if (!instance) return luaL_error(L, "ZoneManager is nil");
 
     iVector2 result = instance->getCurrentMapSector();
-    return pushObject<iVector2>(L, &result, iVector2Binding::getMetatableName());
+    return pushValue<iVector2>(L, result, iVector2Binding::getMetatableName());
 }
 
 int ZoneManagerBinding::getCurrentZoneMap(lua_State* L)
@@ -370,7 +370,7 @@ int ZoneManagerBinding::getSubMapSector(lua_State* L)
     float X = (float)luaL_checknumber(L, 2);
     float Z = (float)luaL_checknumber(L, 3);
     iVector2 result = instance->getSubMapSector(X, Z);
-    return pushObject<iVector2>(L, &result, iVector2Binding::getMetatableName());
+    return pushValue<iVector2>(L, result, iVector2Binding::getMetatableName());
 }
 
 int ZoneManagerBinding::getZoneMapFromResolutionCoord(lua_State* L)
@@ -381,7 +381,7 @@ int ZoneManagerBinding::getZoneMapFromResolutionCoord(lua_State* L)
     float X = (float)luaL_checknumber(L, 2);
     float Z = (float)luaL_checknumber(L, 3);
     iVector2 result = instance->getZoneMapFromResolutionCoord(X, Z);
-    return pushObject<iVector2>(L, &result, iVector2Binding::getMetatableName());
+    return pushValue<iVector2>(L, result, iVector2Binding::getMetatableName());
 }
 
 int ZoneManagerBinding::playerActivate(lua_State* L)

@@ -131,6 +131,61 @@ namespace KenshiLua
         return 1;
     }
 
+    template <class T>
+    inline int ownedObjectGc(lua_State* L)
+    {
+        void** ud = (void**)lua_touserdata(L, 1);
+        if (ud && *ud) {
+            T* ptr = static_cast<T*>(*ud);
+            ptr->~T();
+            ::operator delete((void*)ptr);
+            *ud = nullptr;
+        }
+        return 0;
+    }
+
+    template <class T>
+    inline int pushObjectOwned(lua_State* L, T* ptr, const char* baseMetatableName)
+    {
+        if (!ptr) {
+            lua_pushnil(L);
+            return 1;
+        }
+
+        std::string ownedMetaName = std::string(baseMetatableName) + "_Owned";
+        luaL_getmetatable(L, ownedMetaName.c_str());
+        if (lua_isnil(L, -1)) {
+            lua_pop(L, 1);
+            luaL_newmetatable(L, ownedMetaName.c_str());
+
+            // Set __name to baseMetatableName so testObject<T> matches seamlessly
+            lua_pushstring(L, "__name");
+            lua_pushstring(L, baseMetatableName);
+            lua_rawset(L, -3);
+
+            // Set __index to point to base metatable for method/getter inheritance
+            luaL_getmetatable(L, baseMetatableName);
+            lua_setfield(L, -2, "__index");
+
+            // Set __gc to automatically delete heap-allocated memory
+            lua_pushcfunction(L, ownedObjectGc<T>);
+            lua_setfield(L, -2, "__gc");
+        }
+
+        void** ud = (void**)lua_newuserdata(L, sizeof(void*));
+        *ud = (void*)ptr;
+        lua_setmetatable(L, -2);
+        return 1;
+    }
+
+    template <class T>
+    inline int pushValue(lua_State* L, const T& val, const char* metatableName)
+    {
+        void* mem = ::operator new(sizeof(T));
+        T* ptr = ::new(mem) T(val);
+        return pushObjectOwned<T>(L, ptr, metatableName);
+    }
+
 
 
     inline void registerGetter(lua_State* L, const char* name, lua_CFunction getter)

@@ -1226,8 +1226,7 @@ static int Platoon__NV_serialise(lua_State* L)
     GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     PosRotPair* offsetPosToSubtract = (PosRotPair*)lua_touserdata(L, 4);
     GameSaveState res = instance->_NV_serialise(container, refList, offsetPosToSubtract);
-    GameSaveState* copy = new GameSaveState(res);
-    return pushObject<GameSaveState>(L, copy, GameSaveStateBinding::getMetatableName());
+    return pushValue<GameSaveState>(L, res, GameSaveStateBinding::getMetatableName());
 }
 
 
@@ -1451,8 +1450,7 @@ static int Platoon_serialise(lua_State* L)
     GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     PosRotPair* offsetPosToSubtract = (PosRotPair*)lua_touserdata(L, 4);
     GameSaveState res = instance->serialise(container, refList, offsetPosToSubtract);
-    GameSaveState* copy = new GameSaveState(res);
-    return pushObject<GameSaveState>(L, copy, GameSaveStateBinding::getMetatableName());
+    return pushValue<GameSaveState>(L, res, GameSaveStateBinding::getMetatableName());
 }
 
 

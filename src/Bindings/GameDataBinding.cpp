@@ -668,7 +668,7 @@ int GameDataBinding::getValueFromList(lua_State* L)
     const std::string list = luaL_checkstring(L, 2);
     int index = (int)luaL_checkinteger(L, 3);
     const TripleInt& result = instance->getValueFromList(list, index);
-    return pushObject<TripleInt>(L, const_cast<TripleInt*>(&result), TripleIntBinding::getMetatableName());
+    return pushValue<TripleInt>(L, result, TripleIntBinding::getMetatableName());
 }
 
 static int GameData_get_activeValues(lua_State* L)

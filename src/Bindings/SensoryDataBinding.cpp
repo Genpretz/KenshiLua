@@ -362,7 +362,7 @@ int SensoryDataBinding::getIterator(lua_State* L)
     unsigned int tagsAny = (unsigned int)luaL_checkinteger(L, 2);
     unsigned int tagsNOT = (unsigned int)luaL_checkinteger(L, 3);
     SenseItr result = instance->getIterator(tagsAny, tagsNOT);
-    return pushObject<SenseItr>(L, &result, SenseItrBinding::getMetatableName());
+    return pushValue<SenseItr>(L, result, SenseItrBinding::getMetatableName());
 }
 
 int SensoryDataBinding::getNearestEnemyDistanceSq(lua_State* L)
@@ -984,8 +984,7 @@ static int SensoryData_getIterator(lua_State* L)
     unsigned int tagsAny = (unsigned int)luaL_checkinteger(L, 2);
     unsigned int tagsNOT = (unsigned int)luaL_checkinteger(L, 3);
     SenseItr res = instance->getIterator(tagsAny, tagsNOT);
-    SenseItr* copy = new SenseItr(res);
-    return pushObject<SenseItr>(L, copy, SenseItrBinding::getMetatableName());
+    return pushValue<SenseItr>(L, res, SenseItrBinding::getMetatableName());
 }
 
 

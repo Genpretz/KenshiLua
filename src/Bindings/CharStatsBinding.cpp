@@ -2387,7 +2387,7 @@ int CharStatsBinding::getTotalAttackDamageFor(lua_State* L)
 
     Character* target = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
     Damages result = instance->getTotalAttackDamageFor(target);
-    return pushObject<Damages>(L, &result, DamagesBinding::getMetatableName());
+    return pushValue<Damages>(L, result, DamagesBinding::getMetatableName());
 }
 
 int CharStatsBinding::getEquippedWeaponSkill(lua_State* L)
@@ -2515,7 +2515,7 @@ int CharStatsBinding::stealthXPMultForGUI(lua_State* L)
     if (!instance) return luaL_error(L, "CharStats is nil");
 
     StringPair result = instance->stealthXPMultForGUI();
-    return pushObject<StringPair>(L, &result, StringPairBinding::getMetatableName());
+    return pushValue<StringPair>(L, result, StringPairBinding::getMetatableName());
 }
 
 int CharStatsBinding::xpMassCombat(lua_State* L)
@@ -2931,9 +2931,7 @@ static int CharStats_getTotalAttackDamageFor(lua_State* L)
         target = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
     }
     Damages result = instance->getTotalAttackDamageFor(target);
-    void* mem = ::operator new(sizeof(Damages));
-    Damages* heapD = ::new(mem) Damages(result);
-    return pushObject<Damages>(L, heapD, DamagesBinding::getMetatableName());
+    return pushValue<Damages>(L, result, DamagesBinding::getMetatableName());
 }
 
 

@@ -545,7 +545,7 @@ int ItemBinding::getTimeout(lua_State* L)
     if (!instance) return luaL_error(L, "Item is nil");
 
     TimeOfDay result = instance->getTimeout();
-    return pushObject<TimeOfDay>(L, &result, TimeOfDayBinding::getMetatableName());
+    return pushValue<TimeOfDay>(L, result, TimeOfDayBinding::getMetatableName());
 }
 
 int ItemBinding::_NV_getTimeout(lua_State* L)
@@ -554,7 +554,7 @@ int ItemBinding::_NV_getTimeout(lua_State* L)
     if (!instance) return luaL_error(L, "Item is nil");
 
     TimeOfDay result = instance->_NV_getTimeout();
-    return pushObject<TimeOfDay>(L, &result, TimeOfDayBinding::getMetatableName());
+    return pushValue<TimeOfDay>(L, result, TimeOfDayBinding::getMetatableName());
 }
 
 int ItemBinding::_serialise(lua_State* L)
@@ -990,7 +990,7 @@ int ItemBinding::_NV_serialise(lua_State* L)
     GameData* r = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
     GameSaveState res = instance->_NV_serialise(c, r, offset);
-    return pushObject<GameSaveState>(L, new GameSaveState(res), GameSaveStateBinding::getMetatableName());
+    return pushValue<GameSaveState>(L, res, GameSaveStateBinding::getMetatableName());
 }
 
 
@@ -1112,7 +1112,7 @@ int ItemBinding::serialise(lua_State* L)
     GameData* r = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
     GameSaveState res = instance->serialise(c, r, offset);
-    return pushObject<GameSaveState>(L, new GameSaveState(res), GameSaveStateBinding::getMetatableName());
+    return pushValue<GameSaveState>(L, res, GameSaveStateBinding::getMetatableName());
 }
 
 

@@ -268,8 +268,7 @@ int GameSaveStateBinding::getInstanceID(lua_State* L)
     if (!instance) return luaL_error(L, "GameSaveState is nil");
 
     InstanceID result = instance->getInstanceID();
-    InstanceID* p = new InstanceID(result);
-    return pushObject<InstanceID>(L, p, InstanceIDBinding::getMetatableName());
+    return pushValue<InstanceID>(L, result, InstanceIDBinding::getMetatableName());
 }
 
 // Commented out as this method is not exported by kenshilib:
