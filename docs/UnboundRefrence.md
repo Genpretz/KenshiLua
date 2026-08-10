@@ -15,7 +15,7 @@ This document registers all C++ SDK classes and complex types that are currently
 | `Array2d<Item>` | 1 |
 | `BOOL` | 2 |
 | `BuildModeWindow*` | 1 |
-| `Building*` | 6 |
+| `Building*` | 4 |
 | `BuildingCategory*` | 2 |
 | `BuildingGroup*` | 2 |
 | `CameraClass*` | 1 |
@@ -45,11 +45,11 @@ This document registers all C++ SDK classes and complex types that are currently
 | `Footprint*` | 2 |
 | `FootprintNode*` | 2 |
 | `FurnaceBuilding*` | 1 |
-| `GameData*` | 6 |
+| `GameData*` | 5 |
 | `GameDataHeader` | 4 |
 | `GameDataHeader*` | 3 |
 | `GameDataReference*` | 3 |
-| `GameSaveState` | 32 |
+| `GameSaveState` | 31 |
 | `GameSaveState*` | 3 |
 | `GatewayBuilding*` | 1 |
 | `GeneratorBuilding*` | 1 |
@@ -62,7 +62,7 @@ This document registers all C++ SDK classes and complex types that are currently
 | `InventorySection*` | 2 |
 | `InventorySectionGUI*` | 1 |
 | `InventoryTradeData*` | 3 |
-| `Item*` | 5 |
+| `Item*` | 3 |
 | `ItemListWindow*` | 1 |
 | `LightBuilding*` | 1 |
 | `LightEnt*` | 1 |
@@ -120,7 +120,6 @@ This document registers all C++ SDK classes and complex types that are currently
 | `OrdersPanel*` | 1 |
 | `PermajobType` | 2 |
 | `PhysicalEntity*` | 4 |
-| `Platoon*` | 2 |
 | `PortraitData*` | 2 |
 | `PortraitImage*` | 1 |
 | `PortraitMainCellView*` | 1 |
@@ -178,7 +177,6 @@ This document registers all C++ SDK classes and complex types that are currently
 | `TownListWindow*` | 1 |
 | `TownType` | 1 |
 | `TransformWindow*` | 1 |
-| `TripleInt` | 4 |
 | `TripleInt*` | 3 |
 | `TurretBuilding*` | 1 |
 | `TutorialGUILine*` | 1 |
@@ -203,12 +201,12 @@ This document registers all C++ SDK classes and complex types that are currently
 | `const T1&` | 1 |
 | `const char*` | 2 |
 | `const float&` | 2 |
-| `const hand&` | 30 |
+| `const hand&` | 23 |
 | `const hkSimdFloat32` | 5 |
 | `const hkVector4f&` | 2 |
 | `const hkVector4fComparison` | 13 |
 | `float&` | 3 |
-| `hand` | 10 |
+| `hand` | 9 |
 | `hand*` | 6 |
 | `hkArrayBase<T1>&` | 1 |
 | `hkBool` | 5 |
@@ -219,36 +217,24 @@ This document registers all C++ SDK classes and complex types that are currently
 | `hkaiVolume*` | 1 |
 | `iVector2` | 5 |
 | `iVector2*` | 2 |
-| `lektor<FarmBuilding*>` | 1 |
 | `lektor<FarmBuilding::Plant>` | 1 |
 | `lektor<FarmBuilding::PlantSource*>` | 1 |
-| `lektor<GameData*>` | 1 |
 | `lektor<InventorySection*>&` | 1 |
 | `lektor<StorageBuilding::ConsumptionItem*>` | 1 |
 | `lektor<StorageBuilding::ConsumptionItem>` | 1 |
-| `lektor<hand>` | 3 |
 | `lektor<hand>&` | 1 |
-| `lektor<int>` | 2 |
+| `lektor<int>` | 1 |
 | `lektor<std::pair<std::string, bool> >` | 1 |
 | `ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>::type` | 1 |
 | `ogre_unordered_map<CropType, float>::type` | 1 |
-| `ogre_unordered_map<Faction*, bool>::type` | 2 |
 | `ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type` | 1 |
-| `ogre_unordered_map<GameData*, WorldStateEnum>::type` | 3 |
-| `ogre_unordered_map<GameData*, float>::type` | 2 |
-| `ogre_unordered_map<WorldEventStateQuery*, bool>::type` | 1 |
-| `ogre_unordered_map<ZoneMap*, bool>::type` | 1 |
-| `ogre_unordered_map<hand, InventorySection*>::type` | 1 |
-| `ogre_unordered_set<ZoneMap*>::type` | 1 |
 | `operator` | 5 |
 | `physHit*` | 3 |
 | `rendHit` | 1 |
 | `std::deque<CraftingItem, std::allocator<CraftingItem> >` | 1 |
-| `std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >` | 1 |
 | `std::map<hand, SensoryData::SpottingPeopleMgr::Spot, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, SensoryData::SpottingPeopleMgr::Spot>, Ogre::GeneralAllocPolicy > >` | 1 |
-| `std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >` | 1 |
 | `std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >` | 2 |
-| `std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >` | 3 |
+| `std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >` | 1 |
 | `swordStateEnum` | 1 |
 | `unsigned __int64` | 2 |
 | `unsigned int` | 11 |
@@ -281,39 +267,18 @@ Below are properties in the bindings files that were implemented as read-only be
 | TownBuildingsManagerBinding.cpp | `boost::unordered::unordered_map<std::string, Ogre::InstanceManager*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::InstanceManager*>, Ogre::GeneralAllocPolicy > >` | instancesManagers |
 | LightBuildingBinding.cpp | `hand` | mountedBuilding |
 | TurretBuildingBinding.cpp | `hand` | mountedBuilding |
-| WallBuildingBinding.cpp | `hand` | shareBuildStateOfAnother |
-| FarmBatchBinding.cpp | `lektor<FarmBuilding*>` | farms |
 | FarmBuildingBinding.cpp | `lektor<FarmBuilding::Plant>` | plants |
 | FarmBatchBinding.cpp | `lektor<FarmBuilding::PlantSource*>` | plantSource |
-| InventorySectionBinding.cpp | `lektor<GameData*>` | veryLimitedSlot |
 | StorageBuildingBinding.cpp | `lektor<StorageBuilding::ConsumptionItem*>` | manyLimitItems |
 | ProductionBuildingBinding.cpp | `lektor<StorageBuilding::ConsumptionItem>` | consumptionItems |
-| OwnershipsBinding.cpp | `lektor<hand>` | stuff |
-| WallBuildingBinding.cpp | `lektor<hand>` | othersSharingMyBuildState |
-| FarmBatchBinding.cpp | `lektor<int>` | plantGroups |
 | OptionsHolderBinding.cpp | `lektor<std::pair<std::string, bool> >` | compositors |
 | TownBuildingsManagerBinding.cpp | `ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>::type` | buildingEntities |
 | FarmBuildingBinding.cpp | `ogre_unordered_map<CropType, float>::type` | cropMultipliers |
-| WorldEventStateQueryBinding.cpp | `ogre_unordered_map<Faction*, bool>::type` | isAllyOf |
-| WorldEventStateQueryBinding.cpp | `ogre_unordered_map<Faction*, bool>::type` | isEnemyOf |
 | RaceLimiterBinding.cpp | `ogre_unordered_map<GameData*, RaceLimiter::Limiter>::type` | limits |
-| WorldEventStateQueryBinding.cpp | `ogre_unordered_map<GameData*, WorldStateEnum>::type` | towns |
-| WorldEventStateQueryBinding.cpp | `ogre_unordered_map<GameData*, WorldStateEnum>::type` | uniqueNPCsAre |
-| WorldEventStateQueryBinding.cpp | `ogre_unordered_map<GameData*, WorldStateEnum>::type` | uniqueNPCsAreNot |
-| CombatTechniqueDataBinding.cpp | `ogre_unordered_map<GameData*, float>::type` | events |
-| CraftingBuildingBinding.cpp | `ogre_unordered_map<GameData*, float>::type` | partialItems |
-| WorldEventStateQueryListBinding.cpp | `ogre_unordered_map<WorldEventStateQuery*, bool>::type` | statesList |
-| TownBaseBinding.cpp | `ogre_unordered_map<ZoneMap*, bool>::type` | populatedZones |
-| ShopTraderInventoryBinding.cpp | `ogre_unordered_map<hand, InventorySection*>::type` | inventories |
-| TownBaseBinding.cpp | `ogre_unordered_set<ZoneMap*>::type` | myZoneCoverage |
 | CraftingBuildingBinding.cpp | `std::deque<CraftingItem, std::allocator<CraftingItem> >` | crafting |
-| HasRoomCacheBinding.cpp | `std::map<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData*const, bool> > >` | itemStates |
 | SpottingPeopleMgrBinding.cpp | `std::map<hand, SensoryData::SpottingPeopleMgr::Spot, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, SensoryData::SpottingPeopleMgr::Spot>, Ogre::GeneralAllocPolicy > >` | spottedPeople |
-| TownBaseBinding.cpp | `std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy > >` | factionsResidentHere |
 | LimiterBinding.cpp | `std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >` | racesExclude |
 | LimiterBinding.cpp | `std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >` | racesInclude |
-| OwnershipsBinding.cpp | `std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >` | slaves |
-| TownBaseBinding.cpp | `std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >` | occupiers |
 | UseableStuffBinding.cpp | `std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >` | currentOperators |
 
 ## Skipped Methods Detail
@@ -388,13 +353,9 @@ Below are methods that were skipped during binding generation:
 | BuildModeWindowBinding.cpp | undo | `void` | unsupported arg type |
 | BuildingBinding.cpp | _CONSTRUCTOR | `Building*` | non-string reference arg |
 | BuildingBinding.cpp | _NV_getAABB | `Ogre::Aabb` | overloaded method |
-| BuildingBinding.cpp | _NV_getMountedBuilding | `const hand&` | reference return type |
-| BuildingBinding.cpp | _NV_isIndoors | `const hand&` | reference return type |
-| BuildingBinding.cpp | _NV_isIndoors_notDestroyed | `const hand&` | reference return type |
 | BuildingBinding.cpp | _NV_serialise | `GameSaveState` | unsupported arg type |
 | BuildingBinding.cpp | _NV_setHandle | `void` | non-string reference arg |
 | BuildingBinding.cpp | _NV_setPartVisible | `void` | unsupported arg type |
-| BuildingBinding.cpp | addAnInternalItem | `void` | unsupported arg type |
 | BuildingBinding.cpp | buildingContainsEntity | `bool` | static method |
 | BuildingBinding.cpp | findAllFurnitureWithFunction | `void` | unsupported arg type |
 | BuildingBinding.cpp | findPhysicalEntity | `PhysicalEntity*` | unsupported arg type |
@@ -404,18 +365,13 @@ Below are methods that were skipped during binding generation:
 | BuildingBinding.cpp | getBuildingPartMaterial | `Ogre::SharedPtr<Ogre::Material>` | static method |
 | BuildingBinding.cpp | getEntityMaterialName | `std::string` | static method |
 | BuildingBinding.cpp | getLights | `int` | unsupported arg type |
-| BuildingBinding.cpp | getMountedBuilding | `const hand&` | reference return type |
 | BuildingBinding.cpp | getMountedBuildings | `int` | unsupported arg type |
 | BuildingBinding.cpp | getPartMaterial | `Ogre::SharedPtr<Ogre::Material>` | unsupported return type |
-| BuildingBinding.cpp | isIndoors | `const hand&` | reference return type |
-| BuildingBinding.cpp | isIndoors_notDestroyed | `const hand&` | reference return type |
 | BuildingBinding.cpp | loadEntity | `Ogre::MovableObject*` | unsupported arg type |
 | BuildingBinding.cpp | loadEntityCallback | `void` | unsupported arg type |
 | BuildingBinding.cpp | loadInstances | `void` | unsupported arg type |
 | BuildingBinding.cpp | loadPartEntity | `PhysicalEntity*` | unsupported arg type |
 | BuildingBinding.cpp | loadParts | `void` | unsupported arg type |
-| BuildingBinding.cpp | removeAnInternalBuilding | `void` | non-string reference arg |
-| BuildingBinding.cpp | removeAnInternalItem | `void` | unsupported arg type |
 | BuildingBinding.cpp | restoreMaterialToPhysical | `void` | unsupported arg type |
 | BuildingBinding.cpp | selectParts | `void` | static method |
 | BuildingBinding.cpp | serialise | `GameSaveState` | unsupported arg type |
@@ -434,8 +390,6 @@ Below are methods that were skipped during binding generation:
 | CPerfTimerBinding.cpp | IsSupported | `BOOL` | unsupported return type |
 | CPerfTimerBinding.cpp | Start | `void` | unsupported arg type |
 | CameraClassBinding.cpp | _CONSTRUCTOR | `CameraClass*` | unsupported arg type |
-| CameraClassBinding.cpp | followObject | `void` | non-string reference arg |
-| CameraClassBinding.cpp | getFollowObject | `const hand&` | reference return type |
 | CameraClassBinding.cpp | intersectScreenEdge | `int` | non-string reference arg |
 | CameraClassBinding.cpp | isVisible | `bool` | overloaded method |
 | CameraClassBinding.cpp | isVisible | `bool` | overloaded method |
@@ -1452,15 +1406,6 @@ Below are methods that were skipped during binding generation:
 | RootObjectContainerBinding.cpp | loadInstance | `void` | non-string reference arg |
 | RootObjectContainerBinding.cpp | serialiseThings | `void` | overloaded method |
 | RootObjectContainerBinding.cpp | serialiseThings | `void` | overloaded method |
-| RootObjectFactoryBinding.cpp | _chooseClothingItemFromList | `GameData*` | static method |
-| RootObjectFactoryBinding.cpp | chooseMyClothing | `void` | static method |
-| RootObjectFactoryBinding.cpp | createBuilding | `Building*` | unsupported arg type |
-| RootObjectFactoryBinding.cpp | createItem | `Item*` | overloaded method |
-| RootObjectFactoryBinding.cpp | createItem | `Item*` | overloaded method |
-| RootObjectFactoryBinding.cpp | createRandomSquad | `Platoon*` | unsupported arg type |
-| RootObjectFactoryBinding.cpp | createRandomUnloadedCharacter | `GameSaveState` | unsupported arg type |
-| RootObjectFactoryBinding.cpp | createRandomUnloadedSquad | `Platoon*` | unsupported arg type |
-| RootObjectFactoryBinding.cpp | getValsFromDataInList | `TripleInt` | unsupported return type |
 | RotatingEntBinding.cpp | _CONSTRUCTOR | `RotatingEnt*` | unsupported arg type |
 | RotatingEntBinding.cpp | _NV_weatherUpdated | `void` | unsupported arg type |
 | RotatingEntBinding.cpp | weatherUpdated | `void` | unsupported arg type |
@@ -1665,29 +1610,22 @@ Below are methods that were skipped during binding generation:
 | ToolTipStaticBinding.cpp | mouseMoved | `void` | unsupported arg type |
 | ToolTipStaticBinding.cpp | setPosition | `void` | unsupported arg type |
 | TortureBuildingBinding.cpp | _CONSTRUCTOR | `TortureBuilding*` | unsupported arg type |
-| TownBaseBinding.cpp | _NV_addGate | `void` | non-string reference arg |
 | TownBaseBinding.cpp | _NV_findAllBuildings | `void` | unsupported arg type |
 | TownBaseBinding.cpp | _NV_getAlarmState | `TownAlarmState` | unsupported return type |
 | TownBaseBinding.cpp | _NV_serialise | `GameSaveState` | unsupported arg type |
 | TownBaseBinding.cpp | _NV_setAlarmState | `void` | unsupported arg type |
 | TownBaseBinding.cpp | _NV_setHandle | `void` | non-string reference arg |
 | TownBaseBinding.cpp | addArtifactItem | `void` | unsupported arg type |
-| TownBaseBinding.cpp | addGate | `void` | non-string reference arg |
-| TownBaseBinding.cpp | addOccupier | `void` | non-string reference arg |
 | TownBaseBinding.cpp | clearDelayedItemLoadingMessages | `void` | static method |
 | TownBaseBinding.cpp | delayedSpawningChecks | `int` | static method |
 | TownBaseBinding.cpp | findAllBuildings | `void` | unsupported arg type |
 | TownBaseBinding.cpp | getAlarmState | `TownAlarmState` | unsupported return type |
-| TownBaseBinding.cpp | removeOccupier | `void` | non-string reference arg |
 | TownBaseBinding.cpp | serialise | `GameSaveState` | unsupported arg type |
 | TownBaseBinding.cpp | setAlarmState | `void` | unsupported arg type |
 | TownBaseBinding.cpp | setHandle | `void` | non-string reference arg |
 | TownBaseBinding.cpp | spawnDebris | `void` | unsupported arg type |
-| TownBinding.cpp | _NV_addGate | `void` | non-string reference arg |
 | TownBinding.cpp | _NV_serialise | `GameSaveState` | unsupported arg type |
 | TownBinding.cpp | _NV_setHandle | `void` | non-string reference arg |
-| TownBinding.cpp | addGate | `void` | non-string reference arg |
-| TownBinding.cpp | chooseBuildingForResident | `Building*` | unsupported arg type |
 | TownBinding.cpp | chooseResidents | `void` | unsupported arg type |
 | TownBinding.cpp | drainBattery | `bool` | non-string reference arg |
 | TownBinding.cpp | facilitesWeHaveHere | `TagsClass<BuildingDesignation>` | unsupported return type |
@@ -1708,10 +1646,6 @@ Below are methods that were skipped during binding generation:
 | TownBuildingsManagerBinding.cpp | removeInteriorShell | `void` | unsupported arg type |
 | TownBuildingsManagerBinding.cpp | switchInstancing | `bool` | unsupported arg type |
 | TownListWindowBinding.cpp | _CONSTRUCTOR | `TownListWindow*` | unsupported arg type |
-| TradeCultureBinding.cpp | getTradePriceMultiplier | `float` | unsupported arg type |
-| TradeCultureBinding.cpp | hasTradePriceMultiplier | `bool` | unsupported arg type |
-| TradeCultureBinding.cpp | isItemIllegal | `bool` | unsupported arg type |
-| TradeCultureBinding.cpp | setupTradeCulture | `void` | unsupported arg type |
 | TradeResultBinding.cpp | ShowMessage | `void` | static method |
 | TraderInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unsupported arg type |
 | TraderInventoryLayoutBinding.cpp | notifyMouseWheel | `void` | unsupported arg type |
