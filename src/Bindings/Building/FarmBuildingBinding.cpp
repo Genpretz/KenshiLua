@@ -1,7 +1,6 @@
 #include "pch.h"
-#include <kenshi/Building/FarmBuilding.h>
-#include "FarmBuildingBinding.h"
-#include "ProductionBuildingBinding.h"
+#include "Bindings/Building/FarmBuildingBinding.h"
+#include "Bindings/Building/ProductionBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua

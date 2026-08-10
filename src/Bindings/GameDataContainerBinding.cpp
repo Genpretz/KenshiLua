@@ -3,6 +3,9 @@
 #include "GameDataContainerBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Util/BoostUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -45,6 +48,29 @@ static int GameDataContainer_get_readOnly(lua_State* L)
     return 1;
 }
 
+typedef boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<const std::string, GameData*>, Ogre::GeneralAllocPolicy> > GameDataSIDMap;
+
+static int GameDataContainer_get_gamedataID(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+    return pushObject<ogre_unordered_map<int, GameData*>::type>(L, &instance->gamedataID, "KenshiLua.GameDataIDMap");
+}
+
+static int GameDataContainer_get_gamedataSID(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+    return pushObject<GameDataSIDMap>(L, &instance->gamedataSID, "KenshiLua.GameDataSIDMap");
+}
+
+static int GameDataContainer_get_mainList(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+    return pushObject<ogre_unordered_set<GameData*>::type>(L, &instance->mainList, "KenshiLua.GameDataMainListSet");
+}
+
 // --- Setters for GameDataContainer ---
 static int GameDataContainer_set_currentID(lua_State* L)
 {
@@ -75,6 +101,33 @@ static int GameDataContainer_set_readOnly(lua_State* L)
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
     instance->readOnly = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int GameDataContainer_set_gamedataID(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+    auto* val = checkObject<ogre_unordered_map<int, GameData*>::type>(L, 2, "KenshiLua.GameDataIDMap");
+    if (val) instance->gamedataID = *val;
+    return 0;
+}
+
+static int GameDataContainer_set_gamedataSID(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+    auto* val = checkObject<GameDataSIDMap>(L, 2, "KenshiLua.GameDataSIDMap");
+    if (val) instance->gamedataSID = *val;
+    return 0;
+}
+
+static int GameDataContainer_set_mainList(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+    auto* val = checkObject<ogre_unordered_set<GameData*>::type>(L, 2, "KenshiLua.GameDataMainListSet");
+    if (val) instance->mainList = *val;
     return 0;
 }
 
@@ -254,31 +307,158 @@ int GameDataContainerBinding::checkForDuplicates(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 19: void addNewData(...) - overloaded method
-  line 20: void addNewData(...) - overloaded method
-  line 27: GameData* getData(...) - overloaded method
-  line 28: GameData* getData(...) - overloaded method
-  line 29: GameData* getData(...) - overloaded method
-  line 31: void getDataOfType(...) - unsupported arg type
-  line 32: const ogre_unordered_map<int, GameData*>::type& _getAllData(...) - reference return type
-  line 38: bool loadGameDataReturn(...) - unsupported arg type
-  line 39: bool load(...) - unsupported arg type
-  line 40: bool save(...) - unsupported arg type
-  line 46: void flushKillList(...) - static method
-  line 47: void destroyHomelessData(...) - static method
-  line 52: void findAllDataThatReferencesThis(...) - unsupported arg type
-  line 56: void _addToKillList(...) - static method
-*/
+int GameDataContainerBinding::addNewData(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+
+    if (GameData* dat = testObject<GameData>(L, 2, GameDataBinding::getMetatableName()))
+    {
+        std::string forceID = lua_isstring(L, 3) ? lua_tostring(L, 3) : "";
+        instance->addNewData(dat, forceID);
+        return 0;
+    }
+    else if (lektor<GameData*>* list = LektorPtrBinding<GameData*>::get(L, 2))
+    {
+        instance->addNewData(*list);
+        return 0;
+    }
+    return luaL_error(L, "Argument 2 to addNewData must be GameData or lektor<GameData*>");
+}
+
+int GameDataContainerBinding::getData(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+
+    if (lua_isnumber(L, 2))
+    {
+        int id = (int)lua_tointeger(L, 2);
+        GameData* res = instance->getData(id);
+        return pushObject<GameData>(L, res, GameDataBinding::getMetatableName());
+    }
+    else if (lua_isstring(L, 2))
+    {
+        std::string sid = lua_tostring(L, 2);
+        if (lua_isnumber(L, 3))
+        {
+            itemType category = (itemType)lua_tointeger(L, 3);
+            GameData* res = instance->getData(sid, category);
+            return pushObject<GameData>(L, res, GameDataBinding::getMetatableName());
+        }
+        GameData* res = instance->getData(sid);
+        return pushObject<GameData>(L, res, GameDataBinding::getMetatableName());
+    }
+    return luaL_error(L, "Argument 2 to getData must be string SID or integer ID");
+}
+
+int GameDataContainerBinding::getDataOfType(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+
+    lektor<GameData*>* list = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!list) return luaL_error(L, "Argument 2 to getDataOfType must be lektor<GameData*>");
+
+    itemType type = (itemType)luaL_checkinteger(L, 3);
+    instance->getDataOfType(*list, type);
+    return 0;
+}
+
+int GameDataContainerBinding::_getAllData(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+
+    const ogre_unordered_map<int, GameData*>::type& data = instance->_getAllData();
+    return pushObject<ogre_unordered_map<int, GameData*>::type>(L, (ogre_unordered_map<int, GameData*>::type*)&data, "KenshiLua.GameDataIDMap");
+}
+
+int GameDataContainerBinding::loadGameDataReturn(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+
+    std::string file = luaL_checkstring(L, 2);
+    bool isActive = lua_toboolean(L, 3) != 0;
+    bool readOnly = lua_toboolean(L, 4) != 0;
+    Serialisable* moreData = lua_isuserdata(L, 5) ? (Serialisable*)lua_touserdata(L, 5) : nullptr;
+    bool res = instance->loadGameDataReturn(file, isActive, readOnly, moreData);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int GameDataContainerBinding::load(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+
+    std::string filename = luaL_checkstring(L, 2);
+    std::string modName = luaL_checkstring(L, 3);
+    int modIndex = (int)luaL_checkinteger(L, 4);
+    Serialisable* moreData = lua_isuserdata(L, 5) ? (Serialisable*)lua_touserdata(L, 5) : nullptr;
+    bool keepDeletedInstances = lua_isboolean(L, 6) ? (lua_toboolean(L, 6) != 0) : false;
+    bool res = instance->load(filename, modName, modIndex, moreData, keepDeletedInstances);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int GameDataContainerBinding::save(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+
+    std::string filename = luaL_checkstring(L, 2);
+    Serialisable* moreData = lua_isuserdata(L, 3) ? (Serialisable*)lua_touserdata(L, 3) : nullptr;
+    bool res = instance->save(filename, moreData);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int GameDataContainerBinding::flushKillList(lua_State* L)
+{
+    GameDataContainer::flushKillList();
+    return 0;
+}
+
+int GameDataContainerBinding::destroyHomelessData(lua_State* L)
+{
+    GameData* dat = checkObject<GameData>(L, 1, GameDataBinding::getMetatableName());
+    GameDataContainer::destroyHomelessData(dat);
+    return 0;
+}
+
+int GameDataContainerBinding::findAllDataThatReferencesThis(lua_State* L)
+{
+    GameDataContainer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataContainer is nil");
+
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to findAllDataThatReferencesThis must be lektor<GameData*>");
+
+    GameData* what = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    itemType ofType = (itemType)luaL_checkinteger(L, 4);
+    std::string listname = luaL_checkstring(L, 5);
+    instance->findAllDataThatReferencesThis(*out, what, ofType, listname);
+    return 0;
+}
+
+int GameDataContainerBinding::_addToKillList(lua_State* L)
+{
+    GameData* d = checkObject<GameData>(L, 1, GameDataBinding::getMetatableName());
+    GameDataContainer::_addToKillList(d);
+    return 0;
+}
 
 /*
-Skipped properties needing manual binding:
-  line 57: gamedataCatName (boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 58: gamedataID (ogre_unordered_map<int, GameData*>::type) - unsupported type
-  line 59: gamedataCatSID (boost::unordered::unordered_map<int, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >, boost::hash<int>, std::equal_to<int>, Ogre::STLAllocator<std::pair<int const, boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 60: gamedataSID (boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, GameData*>, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 61: mainList (ogre_unordered_set<GameData*>::type) - unsupported type
+LIGHTUSERDATA DEPENDENCIES:
+  - GameDataContainerBinding::loadGameDataReturn: Serialisable* parameter (unbound pointer)
+  - GameDataContainerBinding::load: Serialisable* parameter (unbound pointer)
+  - GameDataContainerBinding::save: Serialisable* parameter (unbound pointer)
+
+SKIPPED PROPERTIES / CONTAINERS NEEDING MANUAL BINDING OR UNBOUND TYPES:
+  - gamedataCatName (nested map boost::unordered_map<int, boost::unordered_map<std::string, GameData*>>) - unsupported nested container
+  - gamedataCatSID (nested map boost::unordered_map<int, boost::unordered_map<std::string, GameData*>>) - unsupported nested container
 */
 
 int GameDataContainerBinding::gc(lua_State* L)
@@ -320,6 +500,17 @@ void GameDataContainerBinding::registerBinding(lua_State* L)
         { "clearAllReferencePtrs", GameDataContainerBinding::clearAllReferencePtrs },
         { "setName", GameDataContainerBinding::setName },
         { "checkForDuplicates", GameDataContainerBinding::checkForDuplicates },
+        { "addNewData", GameDataContainerBinding::addNewData },
+        { "getData", GameDataContainerBinding::getData },
+        { "getDataOfType", GameDataContainerBinding::getDataOfType },
+        { "_getAllData", GameDataContainerBinding::_getAllData },
+        { "loadGameDataReturn", GameDataContainerBinding::loadGameDataReturn },
+        { "load", GameDataContainerBinding::load },
+        { "save", GameDataContainerBinding::save },
+        { "flushKillList", GameDataContainerBinding::flushKillList },
+        { "destroyHomelessData", GameDataContainerBinding::destroyHomelessData },
+        { "findAllDataThatReferencesThis", GameDataContainerBinding::findAllDataThatReferencesThis },
+        { "_addToKillList", GameDataContainerBinding::_addToKillList },
         { 0, 0 }
     };
 
@@ -338,6 +529,9 @@ void GameDataContainerBinding::registerBinding(lua_State* L)
     registerGetter(L, "name", GameDataContainer_get_name);
     registerGetter(L, "isBaseDatafile", GameDataContainer_get_isBaseDatafile);
     registerGetter(L, "readOnly", GameDataContainer_get_readOnly);
+    registerGetter(L, "gamedataID", GameDataContainer_get_gamedataID);
+    registerGetter(L, "gamedataSID", GameDataContainer_get_gamedataSID);
+    registerGetter(L, "mainList", GameDataContainer_get_mainList);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -345,7 +539,15 @@ void GameDataContainerBinding::registerBinding(lua_State* L)
     registerSetter(L, "name", GameDataContainer_set_name);
     registerSetter(L, "isBaseDatafile", GameDataContainer_set_isBaseDatafile);
     registerSetter(L, "readOnly", GameDataContainer_set_readOnly);
+    registerSetter(L, "gamedataID", GameDataContainer_set_gamedataID);
+    registerSetter(L, "gamedataSID", GameDataContainer_set_gamedataSID);
+    registerSetter(L, "mainList", GameDataContainer_set_mainList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    OgreUnorderedMapBinding<int, GameData*>::registerBinding(L, "KenshiLua.GameDataIDMap", nullptr, GameDataBinding::getMetatableName());
+    BoostUnorderedMapBinding<std::string, GameData*, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<const std::string, GameData*>, Ogre::GeneralAllocPolicy>>::registerBinding(L, "KenshiLua.GameDataSIDMap", nullptr, GameDataBinding::getMetatableName());
+    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "KenshiLua.GameDataMainListSet", GameDataBinding::getMetatableName());
+    LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", GameDataBinding::getMetatableName());
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
     // setMetatableParent(L, GameDataContainerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());

@@ -1,4 +1,5 @@
 #pragma once
+#include "kenshi/Building/FarmBuilding.h"
 
 extern "C" {
 #include <lua.h>

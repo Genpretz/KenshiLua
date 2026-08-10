@@ -1,24 +1,21 @@
 #include "pch.h"
-#include <kenshi/Building/FarmBuilding.h>
-#include "FarmBatchBinding.h"
-#include "Lua/BindingHelpers.h"
+#include "Bindings/Building/FarmBatchBinding.h"
 #include "Bindings/Building/FarmBuildingBinding.h"
 #include "Bindings/Util/LektorBinding.h"
+#include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
 
-typedef FarmBuilding::FarmBatch FarmBatch;
-
-static FarmBatch* getInstance(lua_State* L, int idx)
+static FarmBuilding::FarmBatch* getInstance(lua_State* L, int idx)
 {
-    return checkObject<FarmBatch>(L, idx, FarmBatchBinding::getMetatableName());
+    return checkObject<FarmBuilding::FarmBatch>(L, idx, FarmBatchBinding::getMetatableName());
 }
 
 // --- Getters for FarmBatch ---
 static int FarmBatch_get_plantSource(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     // TODO: Unsupported type for plantSource (lektor<FarmBuilding::PlantSource*>)
     lua_pushnil(L);
@@ -27,14 +24,14 @@ static int FarmBatch_get_plantSource(lua_State* L)
 
 static int FarmBatch_get_plantGroups(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     return pushObject<lektor<int>>(L, &instance->plantGroups, "lektor<int>");
 }
 
 static int FarmBatch_get_geometry(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     // TODO: Unsupported type for geometry (Ogre::SharedPtr<Ogre::Mesh>)
     lua_pushnil(L);
@@ -43,7 +40,7 @@ static int FarmBatch_get_geometry(lua_State* L)
 
 static int FarmBatch_get_height(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     lua_pushnumber(L, instance->height);
     return 1;
@@ -51,7 +48,7 @@ static int FarmBatch_get_height(lua_State* L)
 
 static int FarmBatch_get_size(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     lua_pushinteger(L, instance->size);
     return 1;
@@ -59,7 +56,7 @@ static int FarmBatch_get_size(lua_State* L)
 
 static int FarmBatch_get_meshesLoaded(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     lua_pushinteger(L, instance->meshesLoaded);
     return 1;
@@ -67,7 +64,7 @@ static int FarmBatch_get_meshesLoaded(lua_State* L)
 
 static int FarmBatch_get_farms(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     return pushObject<lektor<FarmBuilding*>>(L, &instance->farms, LektorPtrBinding<FarmBuilding*>::metaName);
 }
@@ -75,14 +72,14 @@ static int FarmBatch_get_farms(lua_State* L)
 // --- Setters for FarmBatch ---
 static int FarmBatch_set_plantSource(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     return luaL_error(L, "Read-only or unsupported setter type for plantSource");
 }
 
 static int FarmBatch_set_plantGroups(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     lektor<int>* val = LektorIntBinding<int>::get(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<int>");
@@ -92,14 +89,14 @@ static int FarmBatch_set_plantGroups(lua_State* L)
 
 static int FarmBatch_set_geometry(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     return luaL_error(L, "Read-only or unsupported setter type for geometry");
 }
 
 static int FarmBatch_set_height(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     instance->height = (float)luaL_checknumber(L, 2);
     return 0;
@@ -107,7 +104,7 @@ static int FarmBatch_set_height(lua_State* L)
 
 static int FarmBatch_set_size(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     instance->size = (int)luaL_checkinteger(L, 2);
     return 0;
@@ -115,7 +112,7 @@ static int FarmBatch_set_size(lua_State* L)
 
 static int FarmBatch_set_meshesLoaded(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     instance->meshesLoaded = (int)luaL_checkinteger(L, 2);
     return 0;
@@ -123,7 +120,7 @@ static int FarmBatch_set_meshesLoaded(lua_State* L)
 
 static int FarmBatch_set_farms(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
     lektor<FarmBuilding*>* val = LektorPtrBinding<FarmBuilding*>::get(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<FarmBuilding*>");
@@ -133,7 +130,7 @@ static int FarmBatch_set_farms(lua_State* L)
 
 int FarmBatchBinding::load(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
 
     instance->load();
@@ -142,7 +139,7 @@ int FarmBatchBinding::load(lua_State* L)
 
 int FarmBatchBinding::createGeometry(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
 
     instance->createGeometry();
@@ -152,7 +149,7 @@ int FarmBatchBinding::createGeometry(lua_State* L)
 // --- Methods for FarmBatch
 int FarmBatchBinding::_DESTRUCTOR(lua_State* L)
 {
-    FarmBatch* instance = getInstance(L, 1);
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
 
     instance->_DESTRUCTOR();
