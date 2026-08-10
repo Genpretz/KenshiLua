@@ -2862,6 +2862,17 @@ namespace KenshiLua
         lua_setglobal(L, "SaveFileSystemState");
     }
 
+    void registerSaveFileSystemMessageType(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "MSG_COPY", SaveFileSystem::MSG_COPY);
+        setEnum(L, "MSG_COPY_REPLACE", SaveFileSystem::MSG_COPY_REPLACE);
+        setEnum(L, "MSG_DELETE", SaveFileSystem::MSG_DELETE);
+
+        lua_setglobal(L, "SaveFileSystemMessageType");
+    }
+
     // ------------------------------------------
     // SaveManager.h
     // ------------------------------------------
@@ -3502,6 +3513,7 @@ namespace KenshiLua
         registerRagdollPart(L);
         registerRobotLimbs(L);
         registerSaveFileSystemState(L);
+        registerSaveFileSystemMessageType(L);
         registerSaveManagerFlags(L);
         registerSaveManagerSignals(L);
         registerScreenLabelLabelSize(L);
