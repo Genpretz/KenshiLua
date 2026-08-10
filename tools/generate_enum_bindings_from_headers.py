@@ -133,16 +133,19 @@ def main():
 
     base = Path(file_path).stem
 
-    out_cpp = base + "EnumBinding.cpp"
-    out_h   = base + "EnumBinding.h"
+    out_dir = Path("tools/generated/enum")
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    out_cpp = out_dir / (base + "EnumBinding.cpp")
+    out_h   = out_dir / (base + "EnumBinding.h")
 
     cpp = generate_cpp(file_path, enums)
     header = generate_header(file_path, enums)
 
-    Path(out_cpp).write_text(cpp)
-    Path(out_h).write_text(header)
+    out_cpp.write_text(cpp)
+    out_h.write_text(header)
 
-    print(f"Generated {len(enums)} enum bindings")
+    print(f"Generated {len(enums)} enum bindings in {out_dir}")
 
 
 if __name__ == "__main__":

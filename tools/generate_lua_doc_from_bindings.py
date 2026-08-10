@@ -357,21 +357,27 @@ def generate_markdown(data_by_class, enums):
             lines.append("")
         if fields:
             lines.append("### Fields")
-            lines.append("| Lua Name | C++ Member | Type | R/W | Example |")
-            lines.append("|---|---|---|---|---|")
+            # lines.append("| Lua Name | C++ Member | Type | R/W | Example |")
+            lines.append("| Lua Name | Type | R/W | Example |")
+            # lines.append("|---|---|---|---|---|")
+            lines.append("|---|---|---|---|")
             for f in fields:
                 example = f"obj.{f['lua_name']}" if f['rw'] == 'R' else f"obj.{f['lua_name']} = <value>"
-                lines.append(f"| {f['lua_name']} | {f['member']} | {f['type']} | {f['rw']} | `{example}` |")
+                # lines.append(f"| {f['lua_name']} | {f['member']} | {f['type']} | {f['rw']} | `{example}` |")
+                lines.append(f"| {f['lua_name']} | {f['type']} | {f['rw']} | `{example}` |")
             lines.append("")
         if methods:
             lines.append("### Methods")
-            lines.append("| Lua Name | C++ Method | Arguments | Return Type | Example |")
-            lines.append("|---|---|---|---|---|")
+            # lines.append("| Lua Name | C++ Method | Arguments | Return Type | Example |")
+            lines.append("| Lua Name | Arguments | Return Type | Example |")
+            # lines.append("|---|---|---|---|---|")
+            lines.append("|---|---|---|---|")
             for m in methods:
                 args_str = ", ".join([f"{a['name']}: {a['type']}" for a in m['args']])
                 example_args = ", ".join([a['name'] for a in m['args']])
                 example = f"obj:{m['lua_name']}({example_args})"
-                lines.append(f"| {m['lua_name']} | {m['c_method']} | `{args_str}` | `{m['ret_type']}` | `{example}` |")
+                # lines.append(f"| {m['lua_name']} | {m['c_method']} | `{args_str}` | `{m['ret_type']}` | `{example}` |")
+                lines.append(f"| {m['lua_name']} | `{args_str}` | `{m['ret_type']}` | `{example}` |")
             lines.append("")
     if enums:
         lines.append("## Enums")

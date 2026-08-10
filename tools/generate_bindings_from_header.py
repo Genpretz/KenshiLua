@@ -28,6 +28,7 @@ class Member:
     type: str
     name: str
     line: int
+    array_size: str = ""
 
 
 @dataclass
@@ -130,6 +131,10 @@ def find_matching_brace(text, open_index):
 
 
 def parse_classes(header_text):
+    header_enums = set()
+    for enum_match in re.finditer(r"\benum(?:\s+class|\s+struct)?\s+([A-Za-z_]\w*)", header_text):
+        header_enums.add(enum_match.group(1))
+
     classes = []
     class_re = re.compile(r"\bclass\s+([A-Za-z_]\w*)\s*(?:\:\s*([^{]+))?\{", re.MULTILINE)
     for match in class_re.finditer(header_text):
@@ -139,7 +144,7 @@ def parse_classes(header_text):
         if end == -1:
             continue
 
-        info = ClassInfo(name=name, bases=(match.group(2) or "").strip())
+        info = ClassInfo(name=name, bases=(match.group(2) or "").strip(), enums=set(header_enums))
         parse_class_body(info, header_text[match.end():end], header_text[:match.end()].count("\n") + 1)
         classes.append(info)
 
@@ -201,11 +206,12 @@ def parse_member(code, line_no):
         return None
     if code.startswith("static "):
         return None
-    b = re.match(r"(.+?)\s+([A-Za-z_]\w*)(?:\[[^\]]+\])?$", code)
+    b = re.match(r"(.+?)\s+([A-Za-z_]\w*)(?:\s*\[\s*([^\]]+)\s*\])?$", code)
     if not b:
         return None
     type_text = normalize_type(b.group(1))
-    return Member(type_text, b.group(2), line_no)
+    array_size = (b.group(3) or "").strip()
+    return Member(type_text, b.group(2), line_no, array_size=array_size)
 
 
 def parse_method(code, line_no):
@@ -348,7 +354,7 @@ def method_supported(method, info, extra_enums, known_bindings, overload_counts)
             continue 
         if read_expression(arg.type, 0, info, extra_enums, known_bindings) is None:
             return False, "unsupported arg type"
-        if is_reference(arg.type) and not (is_string_type(arg.type) and is_const(arg.type)):
+        if is_reference(arg.type) and not ((is_string_type(arg.type) or is_scalar_type(arg.type) or is_enum_type(arg.type, info, extra_enums)) and is_const(arg.type)):
             return False, "non-string reference arg"
     return True, ""
 
@@ -742,6 +748,26 @@ def discover_known_bindings():
     return known, headers
 
 
+def discover_known_enums():
+    enums = set()
+    enum_cpp = Path("src/Bindings/EnumBinding.cpp")
+    if not enum_cpp.is_file():
+        script_dir = Path(__file__).resolve().parent.parent
+        enum_cpp = script_dir / "src" / "Bindings" / "EnumBinding.cpp"
+    
+    if enum_cpp.is_file():
+        content = enum_cpp.read_text(encoding="utf-8", errors="ignore")
+        matches = re.findall(r'setEnum\s*\(\s*L\s*,\s*"[^"]+"\s*,\s*([A-Za-z0-9_:]+)::[A-Za-z0-9_]+\s*\)', content)
+        for m in matches:
+            m = m.strip()
+            if m:
+                enums.add(m)
+                if "::" in m:
+                    unqualified = m.split("::")[-1]
+                    enums.add(unqualified)
+    return enums
+
+
 def parse_known_bindings(values):
     result = {}
     for value in values:
@@ -780,7 +806,12 @@ def main():
     known_bindings, known_headers = discover_known_bindings()
     discovered_count = len(known_bindings)
     known_bindings.update(parse_known_bindings(args.bind_map))
-    print(f"Discovered {discovered_count} existing bindings in project.")
+    
+    discovered_enums = discover_known_enums()
+    extra_enums = parse_extra_enums(args.enums)
+    extra_enums.update(discovered_enums)
+    print(f"Discovered {discovered_count} existing bindings and {len(discovered_enums)} registered enum types in project.")
+
     if args.classes:
         for c in args.classes.split(","):
             c = c.strip()
@@ -790,8 +821,6 @@ def main():
     for c, b in known_bindings.items():
         if c not in known_headers:
             known_headers[c] = f"Bindings/{b}.h"
-            
-    extra_enums = parse_extra_enums(args.enums)
  
     for info in classes:
         header = generate_header(info, extra_enums, known_bindings)
