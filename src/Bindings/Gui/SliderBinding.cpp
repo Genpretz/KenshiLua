@@ -2,6 +2,7 @@
 #include "kenshi\gui\MyGUI_Slider.h"
 #include "SliderBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGuiBinding.h"
 
 namespace KenshiLua
 {
@@ -26,24 +27,21 @@ static int Slider_get_mScrollbar(lua_State* L)
 {
     Slider* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Slider is nil");
-    lua_pushlightuserdata(L, (void*)instance->mScrollbar);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mScrollbar, MyGuiBinding::getMetatableName());
 }
 
 static int Slider_get_mSliderName(lua_State* L)
 {
     Slider* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Slider is nil");
-    lua_pushlightuserdata(L, (void*)instance->mSliderName);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mSliderName, MyGuiBinding::getMetatableName());
 }
 
 static int Slider_get_mSliderValue(lua_State* L)
 {
     Slider* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Slider is nil");
-    lua_pushlightuserdata(L, (void*)instance->mSliderValue);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mSliderValue, MyGuiBinding::getMetatableName());
 }
 
 static int Slider_get_mLoValue(lua_State* L)

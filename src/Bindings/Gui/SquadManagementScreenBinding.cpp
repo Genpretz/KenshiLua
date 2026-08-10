@@ -22,24 +22,21 @@ static int SquadManagementScreen_get_mainWidget(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->mainWidget);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mainWidget, MyGuiBinding::getMetatableName());
 }
 
 static int SquadManagementScreen_get_btnAddSquad(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->btnAddSquad);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->btnAddSquad, MyGuiBinding::getMetatableName());
 }
 
 static int SquadManagementScreen_get_txtFactionSize(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->txtFactionSize);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->txtFactionSize, MyGuiBinding::getMetatableName());
 }
 
 static int SquadManagementScreen_get_factionSize(lua_State* L)
@@ -54,16 +51,14 @@ static int SquadManagementScreen_get_panelSquads(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->panelSquads);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->panelSquads, MyGuiBinding::getMetatableName());
 }
 
 static int SquadManagementScreen_get_panelDismiss(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->panelDismiss);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->panelDismiss, MyGuiBinding::getMetatableName());
 }
 
 static int SquadManagementScreen_get_dismissChar(lua_State* L)

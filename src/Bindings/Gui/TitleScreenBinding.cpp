@@ -2,6 +2,7 @@
 #include "kenshi\gui\TitleScreen.h"
 #include "TitleScreenBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGuiBinding.h"
 #include "Bindings/Gui/GUIWindowBinding.h"
 #include "Bindings/Gui/NewGameWindowBinding.h"
 
@@ -25,16 +26,14 @@ static int TitleScreen_get_creditsPanel(lua_State* L)
 {
     TitleScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TitleScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->creditsPanel);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->creditsPanel, MyGuiBinding::getMetatableName());
 }
 
 static int TitleScreen_get_creditsText(lua_State* L)
 {
     TitleScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TitleScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->creditsText);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->creditsText, MyGuiBinding::getMetatableName());
 }
 
 static int TitleScreen_get_creditsLoaded(lua_State* L)

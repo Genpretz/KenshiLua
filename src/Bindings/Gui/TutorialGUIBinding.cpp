@@ -2,6 +2,7 @@
 #include "kenshi\gui\TutorialGUI.h"
 #include "TutorialGUIBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGuiBinding.h"
 #include "Bindings/Gui/GUIWindowBinding.h"
 #include "Bindings/Gui/TutorialItemBinding.h"
 
@@ -26,16 +27,14 @@ static int TutorialGUI_get_highlightItemWidget(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->highlightItemWidget);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->highlightItemWidget, MyGuiBinding::getMetatableName());
 }
 
 static int TutorialGUI_get_highlightPanel(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->highlightPanel);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->highlightPanel, MyGuiBinding::getMetatableName());
 }
 
 static int TutorialGUI_get_highlightDirection(lua_State* L)
@@ -58,56 +57,49 @@ static int TutorialGUI_get_window(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->window);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->window, MyGuiBinding::getMetatableName());
 }
 
 static int TutorialGUI_get_windowPrevButton(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->windowPrevButton);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->windowPrevButton, MyGuiBinding::getMetatableName());
 }
 
 static int TutorialGUI_get_windowNextButton(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->windowNextButton);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->windowNextButton, MyGuiBinding::getMetatableName());
 }
 
 static int TutorialGUI_get_windowText(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->windowText);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->windowText, MyGuiBinding::getMetatableName());
 }
 
 static int TutorialGUI_get_dismissButton(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->dismissButton);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->dismissButton, MyGuiBinding::getMetatableName());
 }
 
 static int TutorialGUI_get_pagingText(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->pagingText);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->pagingText, MyGuiBinding::getMetatableName());
 }
 
 static int TutorialGUI_get_tooltipsPanel(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->tooltipsPanel);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->tooltipsPanel, MyGuiBinding::getMetatableName());
 }
 
 static int TutorialGUI_get_currentTutorialItem(lua_State* L)

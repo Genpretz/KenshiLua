@@ -2,6 +2,7 @@
 #include "kenshi\gui\Tooltip.h"
 #include "ToolTipLineBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGuiBinding.h"
 
 namespace KenshiLua
 {
@@ -17,24 +18,21 @@ static int ToolTipLine_get_content(lua_State* L)
 {
     ToolTipLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipLine is nil");
-    lua_pushlightuserdata(L, (void*)instance->content);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->content, MyGuiBinding::getMetatableName());
 }
 
 static int ToolTipLine_get_leftBox(lua_State* L)
 {
     ToolTipLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipLine is nil");
-    lua_pushlightuserdata(L, (void*)instance->leftBox);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->leftBox, MyGuiBinding::getMetatableName());
 }
 
 static int ToolTipLine_get_rightBox(lua_State* L)
 {
     ToolTipLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipLine is nil");
-    lua_pushlightuserdata(L, (void*)instance->rightBox);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->rightBox, MyGuiBinding::getMetatableName());
 }
 
 static int ToolTipLine_get_width(lua_State* L)
