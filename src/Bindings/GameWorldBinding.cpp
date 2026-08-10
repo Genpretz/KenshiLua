@@ -6,6 +6,7 @@
 #include "Bindings/FactionManagerBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataManagerBinding.h"
+#include "Bindings/ModInfoBinding.h"
 #include "Bindings/NavMeshBinding.h"
 #include "Bindings/PhysicsInterfaceBinding.h"
 #include "Bindings/PlatoonBinding.h"
@@ -13,13 +14,16 @@
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/RootObjectFactoryBinding.h"
 #include "Bindings/SimpleTimeStamperBinding.h"
+#include "Bindings/SysMessageBinding.h"
 #include "Bindings/ThreadWannabeBinding.h"
 #include "Bindings/Util/TimeOfDayBinding.h"
 #include "Bindings/TownBuildingsManagerBinding.h"
 #include "Bindings/ZoneManagerBinding.h"
 #include "Bindings/ZoneMapBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Util/StdMapBinding.h"
 
 namespace KenshiLua
 {
@@ -1047,7 +1051,7 @@ int GameWorldBinding::getTimeStamp_inGameHours(lua_State* L)
     if (!instance) return luaL_error(L, "GameWorld is nil");
 
     TimeOfDay result = instance->getTimeStamp_inGameHours();
-    return pushObject<TimeOfDay>(L, &result, TimeOfDayBinding::getMetatableName());
+    return pushValue<TimeOfDay>(L, result, TimeOfDayBinding::getMetatableName());
 }
 
 int GameWorldBinding::getLengthOfHourInRealSeconds(lua_State* L)
@@ -1094,7 +1098,7 @@ int GameWorldBinding::getTimeFromStamp(lua_State* L)
     {
         TimeOfDay* stamp = checkObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
         TimeOfDay result = instance->getTimeFromStamp(*stamp);
-        return pushObject<TimeOfDay>(L, &result, TimeOfDayBinding::getMetatableName());
+        return pushValue<TimeOfDay>(L, result, TimeOfDayBinding::getMetatableName());
     }
 }
 
@@ -1135,6 +1139,387 @@ int GameWorldBinding::removePortaitUpdate(lua_State* L)
 
     hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->removePortaitUpdate(*h);
+    return 0;
+}
+
+int GameWorldBinding::start(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    RendererT* rend = (RendererT*)lua_touserdata(L, 2);
+    bool result = instance->start(rend);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int GameWorldBinding::destroy(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    if (lua_isnoneornil(L, 2))
+        return luaL_error(L, "Argument 2 to destroy cannot be nil");
+
+    if (RootObject* obj = testObject<RootObject>(L, 2, RootObjectBinding::getMetatableName()))
+    {
+        bool justUnloaded = lua_isboolean(L, 3) ? (lua_toboolean(L, 3) != 0) : false;
+        const char* debugInfo = lua_isstring(L, 4) ? lua_tostring(L, 4) : nullptr;
+        bool res = instance->destroy(obj, justUnloaded, debugInfo);
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+    else if (TownBuildingsManager* b = testObject<TownBuildingsManager>(L, 2, TownBuildingsManagerBinding::getMetatableName()))
+    {
+        instance->destroy(b);
+        return 0;
+    }
+    else if (GameData* d = testObject<GameData>(L, 2, GameDataBinding::getMetatableName()))
+    {
+        instance->destroy(d);
+        return 0;
+    }
+    else if (lua_isuserdata(L, 2))
+    {
+        void* ptr = lua_touserdata(L, 2);
+        instance->destroy((Ogre::MovableObject*)ptr);
+        return 0;
+    }
+
+    return luaL_error(L, "Argument 2 to destroy must be RootObject, TownBuildingsManager, GameData, or lightuserdata pointer");
+}
+
+int GameWorldBinding::getModsListFromConfig(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    static lektor<ModInfo*> list;
+    list = instance->getModsListFromConfig();
+    return pushObject<lektor<ModInfo*>>(L, &list, "lektor<ModInfo*>");
+}
+
+int GameWorldBinding::getAllModsList(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    const lektor<ModInfo*>& mods = instance->getAllModsList();
+    return pushObject<lektor<ModInfo*>>(L, (lektor<ModInfo*>*)&mods, "lektor<ModInfo*>");
+}
+
+int GameWorldBinding::getModLeveldataFolder(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    const std::string modName = luaL_checkstring(L, 2);
+    const std::string& res = instance->getModLeveldataFolder(modName);
+    lua_pushstring(L, res.c_str());
+    return 1;
+}
+
+int GameWorldBinding::getObjectsWithinSphere(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    lektor<RootObject*>* results = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!results) return luaL_error(L, "Argument 2 to getObjectsWithinSphere must be lektor<RootObject*>");
+
+    Ogre::Vector3 spherePos;
+    readVector3(L, 3, spherePos);
+    float radius = (float)luaL_checknumber(L, 4);
+    itemType type = (itemType)luaL_checkinteger(L, 5);
+    int maxNumber = (int)luaL_checkinteger(L, 6);
+    RootObject* skip = lua_isnoneornil(L, 7) ? nullptr : checkObject<RootObject>(L, 7, RootObjectBinding::getMetatableName());
+
+    instance->getObjectsWithinSphere(*results, spherePos, radius, type, maxNumber, skip);
+    return 0;
+}
+
+int GameWorldBinding::getCharactersWithinSphere(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    lektor<RootObject*>* results = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!results) return luaL_error(L, "Argument 2 to getCharactersWithinSphere must be lektor<RootObject*>");
+
+    Ogre::Vector3 spherePos;
+    readVector3(L, 3, spherePos);
+    float farRadius = (float)luaL_checknumber(L, 4);
+    float nearRadius = (float)luaL_checknumber(L, 5);
+    float always = (float)luaL_checknumber(L, 6);
+    int maxFar = (int)luaL_checkinteger(L, 7);
+    int maxNear = (int)luaL_checkinteger(L, 8);
+    RootObject* skip = lua_isnoneornil(L, 9) ? nullptr : checkObject<RootObject>(L, 9, RootObjectBinding::getMetatableName());
+
+    instance->getCharactersWithinSphere(*results, spherePos, farRadius, nearRadius, always, maxFar, maxNear, skip);
+    return 0;
+}
+
+int GameWorldBinding::getObjectsWithinBox(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    lektor<RootObject*>* results = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!results) return luaL_error(L, "Argument 2 to getObjectsWithinBox must be lektor<RootObject*>");
+
+    Ogre::Vector3 pos;
+    readVector3(L, 3, pos);
+    Ogre::Vector3 size;
+    readVector3(L, 4, size);
+    Ogre::Quaternion rot;
+    readQuaternion(L, 5, rot);
+    itemType type = (itemType)luaL_checkinteger(L, 6);
+    int maxNumber = (int)luaL_checkinteger(L, 7);
+    RootObject* skip = lua_isnoneornil(L, 8) ? nullptr : checkObject<RootObject>(L, 8, RootObjectBinding::getMetatableName());
+
+    instance->getObjectsWithinBox(*results, pos, size, rot, type, maxNumber, skip);
+    return 0;
+}
+
+int GameWorldBinding::getCharacterUpdateList(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    const ogre_unordered_set<Character*>::type& list = instance->getCharacterUpdateList();
+    return pushObject<ogre_unordered_set<Character*>::type>(L, (ogre_unordered_set<Character*>::type*)&list, "KenshiLua.CharUpdateListMainSet");
+}
+
+int GameWorldBinding::sysMessage(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    GameWorld::SysMessage* m = checkObject<GameWorld::SysMessage>(L, 2, SysMessageBinding::getMetatableName());
+    instance->sysMessage(*m);
+    return 0;
+}
+
+int GameWorldBinding::sysMessageUrgent(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    GameWorld::SysMessage* m = checkObject<GameWorld::SysMessage>(L, 2, SysMessageBinding::getMetatableName());
+    instance->sysMessageUrgent(*m);
+    return 0;
+}
+
+int GameWorldBinding::sysMessage_noDuplicates(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    GameWorld::SysMessage* m = checkObject<GameWorld::SysMessage>(L, 2, SysMessageBinding::getMetatableName());
+    instance->sysMessage_noDuplicates(*m);
+    return 0;
+}
+
+int GameWorldBinding::getCollisionGroupType(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+
+    itemType type = (itemType)luaL_checkinteger(L, 2);
+    NxShapesType shapeType = NX_ALL_SHAPES;
+    unsigned int group = 0;
+    instance->getCollisionGroupType(type, shapeType, group);
+    lua_pushinteger(L, (lua_Integer)shapeType);
+    lua_pushinteger(L, (lua_Integer)group);
+    return 2;
+}
+
+typedef StdMapBinding<std::string, ModInfo> AvailableModsMapBinding;
+
+static int GameWorld_get_baseMods(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<lektor<ModInfo>>(L, &instance->baseMods, "lektor<ModInfo>");
+}
+
+static int GameWorld_set_baseMods(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = LektorValueReadOnlyBinding<ModInfo>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set baseMods must be lektor<ModInfo>");
+    instance->baseMods = *val;
+    return 0;
+}
+
+static int GameWorld_get_baseModsNames(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<lektor<std::string>>(L, &instance->baseModsNames, "lektor<std::string>");
+}
+
+static int GameWorld_set_baseModsNames(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = LektorStringBinding<std::string>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set baseModsNames must be lektor<std::string>");
+    instance->baseModsNames = *val;
+    return 0;
+}
+
+static int GameWorld_get_activeMods(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<lektor<ModInfo*>>(L, &instance->activeMods, "lektor<ModInfo*>");
+}
+
+static int GameWorld_set_activeMods(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = LektorPtrBinding<ModInfo*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set activeMods must be lektor<ModInfo*>");
+    instance->activeMods = *val;
+    return 0;
+}
+
+static int GameWorld_get_availableModsByName(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<AvailableModsMapBinding::MapType>(L, &instance->availableModsByName, "KenshiLua.AvailableModsMap");
+}
+
+static int GameWorld_set_availableModsByName(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = AvailableModsMapBinding::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set availableModsByName must be AvailableModsMap");
+    instance->availableModsByName = *val;
+    return 0;
+}
+
+static int GameWorld_get_availabelModsOrderedList(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<lektor<ModInfo*>>(L, &instance->availabelModsOrderedList, "lektor<ModInfo*>");
+}
+
+static int GameWorld_set_availabelModsOrderedList(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = LektorPtrBinding<ModInfo*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set availabelModsOrderedList must be lektor<ModInfo*>");
+    instance->availabelModsOrderedList = *val;
+    return 0;
+}
+
+static int GameWorld_get_updatePortraitsMap(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<ogre_unordered_map<hand, float>::type>(L, &instance->updatePortraitsMap, "KenshiLua.UpdatePortraitsMap");
+}
+
+static int GameWorld_set_updatePortraitsMap(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = checkObject<ogre_unordered_map<hand, float>::type>(L, 2, "KenshiLua.UpdatePortraitsMap");
+    if (!val) return luaL_error(L, "Argument 2 to set updatePortraitsMap must be UpdatePortraitsMap");
+    instance->updatePortraitsMap = *val;
+    return 0;
+}
+
+static int GameWorld_get_dynamicDestroyBuildingsList(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<lektor<hand>>(L, &instance->dynamicDestroyBuildingsList, "lektor<hand>");
+}
+
+static int GameWorld_set_dynamicDestroyBuildingsList(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = checkObject<lektor<hand>>(L, 2, "lektor<hand>");
+    if (!val) return luaL_error(L, "Argument 2 to set dynamicDestroyBuildingsList must be lektor<hand>");
+    instance->dynamicDestroyBuildingsList = *val;
+    return 0;
+}
+
+static int GameWorld_get_destroyListTBM(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<ogre_unordered_set<TownBuildingsManager*>::type>(L, &instance->destroyListTBM, "KenshiLua.DestroyListTBMSet");
+}
+
+static int GameWorld_set_destroyListTBM(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = checkObject<ogre_unordered_set<TownBuildingsManager*>::type>(L, 2, "KenshiLua.DestroyListTBMSet");
+    if (!val) return luaL_error(L, "Argument 2 to set destroyListTBM must be DestroyListTBMSet");
+    instance->destroyListTBM = *val;
+    return 0;
+}
+
+static int GameWorld_get_killListPhase0(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<ogre_unordered_set<RootObject*>::type>(L, &instance->killListPhase0, "KenshiLua.KillListPhase0Set");
+}
+
+static int GameWorld_set_killListPhase0(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = checkObject<ogre_unordered_set<RootObject*>::type>(L, 2, "KenshiLua.KillListPhase0Set");
+    if (!val) return luaL_error(L, "Argument 2 to set killListPhase0 must be KillListPhase0Set");
+    instance->killListPhase0 = *val;
+    return 0;
+}
+
+static int GameWorld_get_killListPhase1(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<ogre_unordered_map<RootObject*, float>::type>(L, &instance->killListPhase1, "KenshiLua.KillListPhase1Map");
+}
+
+static int GameWorld_set_killListPhase1(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = checkObject<ogre_unordered_map<RootObject*, float>::type>(L, 2, "KenshiLua.KillListPhase1Map");
+    if (!val) return luaL_error(L, "Argument 2 to set killListPhase1 must be KillListPhase1Map");
+    instance->killListPhase1 = *val;
+    return 0;
+}
+
+static int GameWorld_get_mainUpdateListRemovalQueue(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<lektor<Character*>>(L, &instance->mainUpdateListRemovalQueue, "lektor<Character*>");
+}
+
+static int GameWorld_set_mainUpdateListRemovalQueue(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    auto* val = LektorPtrBinding<Character*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set mainUpdateListRemovalQueue must be lektor<Character*>");
+    instance->mainUpdateListRemovalQueue = *val;
     return 0;
 }
 
@@ -1188,12 +1573,21 @@ static int GameWorld_set_charUpdateListMain(lua_State* L)
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - GameWorld_get_render: RendererT* (unbound pointer)
-  - GameWorld_get_nodeList: NodeList* (unbound pointer)
-  - GameWorld_get_messageRoller: MessageRoller* (unbound pointer)
-  - GameWorld_get_ogreLogger: Ogre::Log* (unbound pointer)
-  - GameWorld_get__AINonRenderThread: RenderTimeBackthread* (unbound pointer)
-  - GameWorld_get_audioThread: AudioSystemGlobal* (unbound pointer)
+  - GameWorld_get_render: RendererT* (unbound pointer type RendererT)
+  - GameWorld_get_nodeList: NodeList* (unbound pointer type NodeList)
+  - GameWorld_get_messageRoller: MessageRoller* (unbound pointer type MessageRoller)
+  - GameWorld_get_ogreLogger: Ogre::Log* (unbound pointer type Ogre::Log)
+  - GameWorld_get__AINonRenderThread: RenderTimeBackthread* (unbound pointer type RenderTimeBackthread)
+  - GameWorld_get_audioThread: AudioSystemGlobal* (unbound pointer type AudioSystemGlobal)
+  - GameWorldBinding::start: RendererT* parameter (unbound pointer type RendererT, lightuserdata parameter)
+  - GameWorldBinding::destroy: MovableObject*, AttachedEntity*, NestBatcher* overloads (unbound pointer types, lightuserdata fallbacks)
+
+SKIPPED PROPERTIES / CONTAINERS NEEDING MANUAL BINDING OR UNBOUND TYPES:
+  - sysMessageList (std::list<GameWorld::SysMessage>) - unsupported container type std::list
+  - destroyListAE (ogre_unordered_set<AttachedEntity*>::type) - unbound element type AttachedEntity*
+  - destroyListOE (ogre_unordered_set<Ogre::MovableObject*>::type) - unbound element type Ogre::MovableObject*
+  - nestBatcherKillList (std::deque<NestBatcher*>) - unsupported container type std::deque and unbound type NestBatcher*
+  - killListPhase2 (std::deque<RootObject*>) - unsupported container type std::deque
 */
 
 int GameWorldBinding::gc(lua_State* L)
@@ -1219,6 +1613,8 @@ void GameWorldBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "justLoadFactionRelations", GameWorldBinding::justLoadFactionRelations },
         { "startUpThreads", GameWorldBinding::startUpThreads },
+        { "start", GameWorldBinding::start },
+        { "destroy", GameWorldBinding::destroy },
         { "_CONSTRUCTOR", GameWorldBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", GameWorldBinding::_DESTRUCTOR },
         { "resetGame", GameWorldBinding::resetGame },
@@ -1236,6 +1632,17 @@ void GameWorldBinding::registerBinding(lua_State* L)
         { "getFromDeathParade", GameWorldBinding::getFromDeathParade },
         { "addPortraitUpdate", GameWorldBinding::addPortraitUpdate },
         { "removePortaitUpdate", GameWorldBinding::removePortaitUpdate },
+        { "getModsListFromConfig", GameWorldBinding::getModsListFromConfig },
+        { "getAllModsList", GameWorldBinding::getAllModsList },
+        { "getModLeveldataFolder", GameWorldBinding::getModLeveldataFolder },
+        { "getObjectsWithinSphere", GameWorldBinding::getObjectsWithinSphere },
+        { "getCharactersWithinSphere", GameWorldBinding::getCharactersWithinSphere },
+        { "getObjectsWithinBox", GameWorldBinding::getObjectsWithinBox },
+        { "getCharacterUpdateList", GameWorldBinding::getCharacterUpdateList },
+        { "sysMessage", GameWorldBinding::sysMessage },
+        { "sysMessageUrgent", GameWorldBinding::sysMessageUrgent },
+        { "sysMessage_noDuplicates", GameWorldBinding::sysMessage_noDuplicates },
+        { "getCollisionGroupType", GameWorldBinding::getCollisionGroupType },
         { "getTimeFromStamp", GameWorldBinding::getTimeFromStamp },
         { "getIsInKillList", GameWorldBinding::getIsInKillList },
         { "flushKillList", GameWorldBinding::flushKillList },
@@ -1319,6 +1726,11 @@ void GameWorldBinding::registerBinding(lua_State* L)
     registerGetter(L, "messageRoller", GameWorld_get_messageRoller);
     registerGetter(L, "ogreLogger", GameWorld_get_ogreLogger);
     registerGetter(L, "steamEnabled", GameWorld_get_steamEnabled);
+    registerGetter(L, "baseMods", GameWorld_get_baseMods);
+    registerGetter(L, "baseModsNames", GameWorld_get_baseModsNames);
+    registerGetter(L, "activeMods", GameWorld_get_activeMods);
+    registerGetter(L, "availableModsByName", GameWorld_get_availableModsByName);
+    registerGetter(L, "availabelModsOrderedList", GameWorld_get_availabelModsOrderedList);
     registerGetter(L, "player", GameWorld_get_player);
     registerGetter(L, "frameSpeedMult", GameWorld_get_frameSpeedMult);
     registerGetter(L, "deathParadeWasMeddledWith", GameWorld_get_deathParadeWasMeddledWith);
@@ -1331,8 +1743,14 @@ void GameWorldBinding::registerBinding(lua_State* L)
     registerGetter(L, "gameResetting", GameWorld_get_gameResetting);
     registerGetter(L, "audioThread", GameWorld_get_audioThread);
     registerGetter(L, "charactersWithLights", GameWorld_get_charactersWithLights);
+    registerGetter(L, "updatePortraitsMap", GameWorld_get_updatePortraitsMap);
+    registerGetter(L, "dynamicDestroyBuildingsList", GameWorld_get_dynamicDestroyBuildingsList);
+    registerGetter(L, "destroyListTBM", GameWorld_get_destroyListTBM);
     registerGetter(L, "deathParade", GameWorld_get_deathParade);
     registerGetter(L, "charUpdateListMain", GameWorld_get_charUpdateListMain);
+    registerGetter(L, "killListPhase0", GameWorld_get_killListPhase0);
+    registerGetter(L, "killListPhase1", GameWorld_get_killListPhase1);
+    registerGetter(L, "mainUpdateListRemovalQueue", GameWorld_get_mainUpdateListRemovalQueue);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -1347,6 +1765,11 @@ void GameWorldBinding::registerBinding(lua_State* L)
     registerSetter(L, "navmesh", GameWorld_set_navmesh);
     registerSetter(L, "guiDisplayObject", GameWorld_set_guiDisplayObject);
     registerSetter(L, "steamEnabled", GameWorld_set_steamEnabled);
+    registerSetter(L, "baseMods", GameWorld_set_baseMods);
+    registerSetter(L, "baseModsNames", GameWorld_set_baseModsNames);
+    registerSetter(L, "activeMods", GameWorld_set_activeMods);
+    registerSetter(L, "availableModsByName", GameWorld_set_availableModsByName);
+    registerSetter(L, "availabelModsOrderedList", GameWorld_set_availabelModsOrderedList);
     registerSetter(L, "player", GameWorld_set_player);
     registerSetter(L, "frameSpeedMult", GameWorld_set_frameSpeedMult);
     registerSetter(L, "deathParadeWasMeddledWith", GameWorld_set_deathParadeWasMeddledWith);
@@ -1357,13 +1780,29 @@ void GameWorldBinding::registerBinding(lua_State* L)
     registerSetter(L, "paused", GameWorld_set_paused);
     registerSetter(L, "gameResetting", GameWorld_set_gameResetting);
     registerSetter(L, "charactersWithLights", GameWorld_set_charactersWithLights);
+    registerSetter(L, "updatePortraitsMap", GameWorld_set_updatePortraitsMap);
+    registerSetter(L, "dynamicDestroyBuildingsList", GameWorld_set_dynamicDestroyBuildingsList);
+    registerSetter(L, "destroyListTBM", GameWorld_set_destroyListTBM);
     registerSetter(L, "deathParade", GameWorld_set_deathParade);
     registerSetter(L, "charUpdateListMain", GameWorld_set_charUpdateListMain);
+    registerSetter(L, "killListPhase0", GameWorld_set_killListPhase0);
+    registerSetter(L, "killListPhase1", GameWorld_set_killListPhase1);
+    registerSetter(L, "mainUpdateListRemovalQueue", GameWorld_set_mainUpdateListRemovalQueue);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
+    LektorValueReadOnlyBinding<ModInfo>::registerBinding(L, "lektor<ModInfo>", ModInfoBinding::getMetatableName());
+    LektorStringBinding<std::string>::registerBinding(L, "lektor<std::string>");
+    LektorPtrBinding<ModInfo*>::registerBinding(L, "lektor<ModInfo*>", ModInfoBinding::getMetatableName());
+    AvailableModsMapBinding::registerBinding(L, "KenshiLua.AvailableModsMap", nullptr, ModInfoBinding::getMetatableName());
     OgreUnorderedSetBinding<Character*>::registerBinding(L, "KenshiLua.CharactersWithLightsSet", CharacterBinding::getMetatableName());
+    OgreUnorderedMapBinding<hand, float>::registerBinding(L, "KenshiLua.UpdatePortraitsMap", HandBinding::getMetatableName(), nullptr);
+    LektorValueReadOnlyBinding<hand>::registerBinding(L, "lektor<hand>", HandBinding::getMetatableName());
+    OgreUnorderedSetBinding<TownBuildingsManager*>::registerBinding(L, "KenshiLua.DestroyListTBMSet", TownBuildingsManagerBinding::getMetatableName());
     OgreUnorderedMapBinding<hand, Character*>::registerBinding(L, "KenshiLua.DeathParadeMap", HandBinding::getMetatableName(), CharacterBinding::getMetatableName());
     OgreUnorderedSetBinding<Character*>::registerBinding(L, "KenshiLua.CharUpdateListMainSet", CharacterBinding::getMetatableName());
+    OgreUnorderedSetBinding<RootObject*>::registerBinding(L, "KenshiLua.KillListPhase0Set", RootObjectBinding::getMetatableName());
+    OgreUnorderedMapBinding<RootObject*, float>::registerBinding(L, "KenshiLua.KillListPhase1Map", RootObjectBinding::getMetatableName(), nullptr);
+    LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
 
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()
     // setMetatableParent(L, GameWorldBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());

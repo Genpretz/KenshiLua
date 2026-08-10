@@ -34,5 +34,7 @@ public:
     static int createRandomUnloadedCharacter(lua_State* L);
     static int createRandomUnloadedSquad(lua_State* L);
     static int getValsFromDataInList(lua_State* L);
+    static int chooseMyClothing(lua_State* L);
+    static int _chooseClothingItemFromList(lua_State* L);
 };
 }

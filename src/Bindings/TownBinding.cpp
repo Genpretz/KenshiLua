@@ -1332,14 +1332,43 @@ int TownBinding::_NV_addGate(lua_State* L)
     return 0;
 }
 
+int TownBinding::setHandle(lua_State* L)
+{
+    Town* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Town is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Expected hand");
+    instance->setHandle(*h);
+    return 0;
+}
+
+int TownBinding::_NV_setHandle(lua_State* L)
+{
+    Town* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Town is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Expected hand");
+    instance->_NV_setHandle(*h);
+    return 0;
+}
+
+int TownBinding::getPlayerTownTypeEnum(lua_State* L)
+{
+    Town* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Town is nil");
+
+    TownType result = instance->getPlayerTownTypeEnum();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 367: void chooseResidents(...) - unsupported arg type
-  line 372: void setHandle(...) - non-string reference arg
-  line 373: void _NV_setHandle(...) - non-string reference arg
   line 390: GameSaveState serialise(...) - unsupported arg type
   line 391: GameSaveState _NV_serialise(...) - unsupported arg type
-  line 452: TownType getPlayerTownTypeEnum(...) - unsupported return type
   line 453: TagsClass<BuildingDesignation> facilitesWeHaveHere(...) - unsupported return type
   line 455: bool powerBuilding(...) - non-string reference arg
   line 456: bool drainBattery(...) - non-string reference arg
@@ -1357,12 +1386,8 @@ LIGHTUSERDATA DEPENDENCIES:
 
 /*
 Skipped properties needing manual binding:
-  line 457: gates (ogre_unordered_set<hand>::type) - unsupported type
   line 459: powerInList (Ogre::FastArray<hand>) - unsupported type
-  line 460: powerOutList (ogre_unordered_set<hand>::type) - unsupported type
-  line 461: batteryList (ogre_unordered_set<hand>::type) - unsupported type
   line 471: _facilitesWeHaveHere (TagsClass<BuildingDesignation>) - unsupported type
-  line 474: tradeGoodsMults (ogre_unordered_map<GameData*, float>::type) - unsupported type
   line 488: nestSpots (lektor<Town::NestSpot>) - unsupported type
 */
 
@@ -1703,6 +1728,9 @@ void TownBinding::registerBinding(lua_State* L)
         { "chooseBuildingForResident", TownBinding::chooseBuildingForResident },
         { "addGate", TownBinding::addGate },
         { "_NV_addGate", TownBinding::_NV_addGate },
+        { "setHandle", TownBinding::setHandle },
+        { "_NV_setHandle", TownBinding::_NV_setHandle },
+        { "getPlayerTownTypeEnum", TownBinding::getPlayerTownTypeEnum },
         { 0, 0 }
     };
 

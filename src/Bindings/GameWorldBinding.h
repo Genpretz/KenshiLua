@@ -89,5 +89,18 @@ public:
     static int getFromDeathParade(lua_State* L);
     static int addPortraitUpdate(lua_State* L);
     static int removePortaitUpdate(lua_State* L);
+    static int start(lua_State* L);
+    static int destroy(lua_State* L);
+    static int getModsListFromConfig(lua_State* L);
+    static int getAllModsList(lua_State* L);
+    static int getModLeveldataFolder(lua_State* L);
+    static int getObjectsWithinSphere(lua_State* L);
+    static int getCharactersWithinSphere(lua_State* L);
+    static int getObjectsWithinBox(lua_State* L);
+    static int getCharacterUpdateList(lua_State* L);
+    static int sysMessage(lua_State* L);
+    static int sysMessageUrgent(lua_State* L);
+    static int sysMessage_noDuplicates(lua_State* L);
+    static int getCollisionGroupType(lua_State* L);
 };
 }

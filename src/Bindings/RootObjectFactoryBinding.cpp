@@ -212,26 +212,8 @@ int RootObjectFactoryBinding::_DESTRUCTOR(lua_State* L)
 }
 
 /*
-Skipped methods needing manual binding:
-  line 37: Building* createBuilding(...) - unsupported arg type
-  line 39: Item* createItem(...) - overloaded method
-  line 40: Item* createItem(...) - overloaded method
-  line 44: TripleInt getValsFromDataInList(...) - unsupported return type
-  line 47: GameSaveState createRandomUnloadedCharacter(...) - unsupported arg type
-  line 48: Platoon* createRandomSquad(...) - unsupported arg type
-  line 49: Platoon* createRandomUnloadedSquad(...) - unsupported arg type
-  line 52: void chooseMyClothing(...) - static method
-  line 53: GameData* _chooseClothingItemFromList(...) - static method
-*/
-
-/*
 LIGHTUSERDATA DEPENDENCIES:
   - RootObjectFactoryBinding::createLocationNode: LocationNode* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 72: todoList (std::deque<RootObjectFactory::CreatelistItem*, std::allocator<RootObjectFactory::CreatelistItem*> >) - unsupported type
 */
 
 int RootObjectFactoryBinding::gc(lua_State* L)
@@ -246,18 +228,42 @@ int RootObjectFactoryBinding::tostring(lua_State* L)
     return 1;
 }
 
+static int RootObjectFactory_get_todoList(lua_State* L)
+{
+    RootObjectFactory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RootObjectFactory is nil");
 
+    lua_newtable(L);
+    int index = 1;
+    for (std::deque<RootObjectFactory::CreatelistItem*>::const_iterator it = instance->todoList.begin(); it != instance->todoList.end(); ++it)
+    {
+        pushObject<RootObjectFactory::CreatelistItem>(L, *it, CreatelistItemBinding::getMetatableName());
+        lua_rawseti(L, -2, index++);
+    }
+    return 1;
+}
 
+static int RootObjectFactory_set_todoList(lua_State* L)
+{
+    RootObjectFactory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RootObjectFactory is nil");
 
+    if (!lua_istable(L, 2)) return luaL_error(L, "Argument 2 to set 'todoList' must be a table of CreatelistItem");
 
-
-static int RootObjectFactory_get_todoList(lua_State* L) { return 0; }
-
-
-
-
-
-static int RootObjectFactory_set_todoList(lua_State* L) { return 0; }
+    instance->todoList.clear();
+    int len = (int)lua_objlen(L, 2);
+    for (int i = 1; i <= len; ++i)
+    {
+        lua_rawgeti(L, 2, i);
+        RootObjectFactory::CreatelistItem* item = checkObject<RootObjectFactory::CreatelistItem>(L, -1, CreatelistItemBinding::getMetatableName());
+        lua_pop(L, 1);
+        if (item)
+        {
+            instance->todoList.push_back(item);
+        }
+    }
+    return 0;
+}
 
 
 int RootObjectFactoryBinding::createBuilding(lua_State* L)
@@ -357,8 +363,7 @@ int RootObjectFactoryBinding::createRandomUnloadedCharacter(lua_State* L)
     Ownerships* owns = lua_isnil(L, 6) ? NULL : checkObject<Ownerships>(L, 6, OwnershipsBinding::getMetatableName());
 
     GameSaveState result = instance->createRandomUnloadedCharacter(faction, platoon, position, characterTemplate, owns);
-    GameSaveState* heapResult = new GameSaveState(result);
-    return pushObject<GameSaveState>(L, heapResult, GameSaveStateBinding::getMetatableName());
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
 }
 
 
@@ -396,36 +401,60 @@ int RootObjectFactoryBinding::getValsFromDataInList(lua_State* L)
     std::string listName = luaL_checkstring(L, 4);
 
     TripleInt result = instance->getValsFromDataInList(dataList, itemInList, listName);
-    lua_newtable(L);
-    lua_pushinteger(L, result.value[0]);
-    lua_rawseti(L, -2, 1);
-    lua_pushinteger(L, result.value[1]);
-    lua_rawseti(L, -2, 2);
-    lua_pushinteger(L, result.value[2]);
-    lua_rawseti(L, -2, 3);
+    pushTripleInt(L, result);
     return 1;
 }
 
 
-static int lua_RootObjectFactory_chooseClothingItemFromList(lua_State* L)
+int RootObjectFactoryBinding::_chooseClothingItemFromList(lua_State* L)
 {
-    GameData* dataList = checkObject<GameData>(L, 1, GameDataBinding::getMetatableName());
-    std::string listName = luaL_checkstring(L, 2);
-    AttachSlot slot = (AttachSlot)luaL_checkinteger(L, 3);
-    RaceData* race = checkObject<RaceData>(L, 4, RaceDataBinding::getMetatableName());
+    int offset = 1;
+    if (lua_isuserdata(L, 1))
+    {
+        luaL_getmetatable(L, RootObjectFactoryBinding::getMetatableName());
+        if (lua_istable(L, -1))
+        {
+            if (lua_getmetatable(L, 1))
+            {
+                if (lua_rawequal(L, -1, -2)) offset = 2;
+                lua_pop(L, 1);
+            }
+        }
+        lua_pop(L, 1);
+    }
+
+    GameData* dataList = checkObject<GameData>(L, offset, GameDataBinding::getMetatableName());
+    std::string listName = luaL_checkstring(L, offset + 1);
+    AttachSlot slot = (AttachSlot)luaL_checkinteger(L, offset + 2);
+    RaceData* race = checkObject<RaceData>(L, offset + 3, RaceDataBinding::getMetatableName());
 
     GameData* result = RootObjectFactory::_chooseClothingItemFromList(dataList, listName, slot, race);
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
 
-static int lua_RootObjectFactory_chooseMyClothing(lua_State* L)
+int RootObjectFactoryBinding::chooseMyClothing(lua_State* L)
 {
-    lektor<GameData*>* gear = checkObject<lektor<GameData*>>(L, 1, LektorPtrBinding<GameData*>::metaName);
-    GameData* dataList = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    std::string listName = luaL_checkstring(L, 3);
-    RaceData* race = checkObject<RaceData>(L, 4, RaceDataBinding::getMetatableName());
-    bool noShoes = lua_toboolean(L, 5) != 0;
+    int offset = 1;
+    if (lua_isuserdata(L, 1))
+    {
+        luaL_getmetatable(L, RootObjectFactoryBinding::getMetatableName());
+        if (lua_istable(L, -1))
+        {
+            if (lua_getmetatable(L, 1))
+            {
+                if (lua_rawequal(L, -1, -2)) offset = 2;
+                lua_pop(L, 1);
+            }
+        }
+        lua_pop(L, 1);
+    }
+
+    lektor<GameData*>* gear = checkObject<lektor<GameData*>>(L, offset, LektorPtrBinding<GameData*>::metaName);
+    GameData* dataList = checkObject<GameData>(L, offset + 1, GameDataBinding::getMetatableName());
+    std::string listName = luaL_checkstring(L, offset + 2);
+    RaceData* race = checkObject<RaceData>(L, offset + 3, RaceDataBinding::getMetatableName());
+    bool noShoes = lua_toboolean(L, offset + 4) != 0;
 
     RootObjectFactory::chooseMyClothing(*gear, dataList, listName, race, noShoes);
     return 0;
@@ -453,12 +482,14 @@ void RootObjectFactoryBinding::registerBinding(lua_State* L)
         { "process", RootObjectFactoryBinding::process },
         { "_CONSTRUCTOR", RootObjectFactoryBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", RootObjectFactoryBinding::_DESTRUCTOR },
-                { "createBuilding", RootObjectFactoryBinding::createBuilding },
+        { "createBuilding", RootObjectFactoryBinding::createBuilding },
         { "createItem", RootObjectFactoryBinding::createItem },
         { "getValsFromDataInList", RootObjectFactoryBinding::getValsFromDataInList },
         { "createRandomUnloadedCharacter", RootObjectFactoryBinding::createRandomUnloadedCharacter },
         { "createRandomSquad", RootObjectFactoryBinding::createRandomSquad },
         { "createRandomUnloadedSquad", RootObjectFactoryBinding::createRandomUnloadedSquad },
+        { "chooseMyClothing", RootObjectFactoryBinding::chooseMyClothing },
+        { "_chooseClothingItemFromList", RootObjectFactoryBinding::_chooseClothingItemFromList },
         { 0, 0 }
     };
 
@@ -474,14 +505,14 @@ void RootObjectFactoryBinding::registerBinding(lua_State* L)
     luaL_getmetatable(L, RootObjectFactoryBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
     
-        registerGetter(L, "mutex", RootObjectFactory_get_mutex);
-        registerGetter(L, "todoList", RootObjectFactory_get_todoList);
+    registerGetter(L, "mutex", RootObjectFactory_get_mutex);
+    registerGetter(L, "todoList", RootObjectFactory_get_todoList);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
     
-        registerSetter(L, "mutex", RootObjectFactory_set_mutex);
-        registerSetter(L, "todoList", RootObjectFactory_set_todoList);
+    registerSetter(L, "mutex", RootObjectFactory_set_mutex);
+    registerSetter(L, "todoList", RootObjectFactory_set_todoList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

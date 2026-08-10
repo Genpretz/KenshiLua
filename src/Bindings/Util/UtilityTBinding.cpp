@@ -1,10 +1,13 @@
 #include "pch.h"
+#include <ogre/OgreColourValue.h>
 #include "kenshi\util\UtilityT.h"
 #include "UtilityTBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/ZoneMapBinding.h"
 #include "Bindings/Util/iVector2Binding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Bindings/physHitBinding.h"
 
 namespace KenshiLua
@@ -262,90 +265,449 @@ int UtilityTBinding::copyFilesInFolder(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 53: Ogre::Ray getMouseRay(...) - static method
-  line 54: void mouseTrace(...) - static method
-  line 55: void rayTrace(...) - static method
-  line 56: bool ceilingTrace(...) - static method
-  line 57: void traceNoActors(...) - static method
-  line 58: void trace(...) - static method
-  line 59: void traceFloorHeight(...) - static method
-  line 60: void _trace_TEST(...) - static method
-  line 61: Ogre::Vector3 tracePosOnly(...) - static method
-  line 62: void sphereTrace(...) - static method
-  line 63: void boxTrace(...) - static method
-  line 64: void mouseTraceAll(...) - static method
-  line 65: void traceAll(...) - static method
-  line 66: float getTerrainHeight(...) - static method
-  line 67: float getTerrainWithWaterHeight(...) - static method
-  line 68: float getTerrainWithWaterHeightFromRenderer(...) - static method
-  line 69: bool getPositionInWater(...) - static method
-  line 70: float getFloorHeight(...) - static method
-  line 71: float getFloorHeight(...) - static method
-  line 72: float getBuildingGroundFloorHeight(...) - static method
-  line 73: Building* isIndoors(...) - static method
-  line 74: bool isIndoorsFast(...) - static method
-  line 75: Building* isIndoors_forWaypoint(...) - static method
-  line 76: void cascadeSetStatic(...) - static method
-  line 78: int getFloorNumber(...) - static method
-  line 79: int getFloorNumber(...) - static method
-  line 81: float getTerrainHeightFast(...) - static method
-  line 83: float random(...) - static method
-  line 84: float random(...) - static method
-  line 85: bool randomBool(...) - static method
-  line 86: int randomInt(...) - static method
-  line 87: void seed(...) - static method
-  line 88: void seed(...) - static method
-  line 89: int round(...) - static method
-  line 90: float nlerp(...) - static method
-  line 91: int getNextPow2(...) - static method
-  line 92: void quatSetDirection(...) - static method
-  line 93: iVector2 getSubMapSector(...) - static method
-  line 94: Ogre::Vector4 getSubMapSectorBounds(...) - static method
-  line 95: bool getResourceFilePath(...) - static method
-  line 96: std::string removePathFromString(...) - static method
-  line 97: std::string removeFilenameFromPath(...) - static method
-  line 98: std::string removeFileExtensionFromString(...) - static method
-  line 99: std::string getFileExtensionFromString(...) - static method
-  line 100: void removeInvalidFileNameChars(...) - static method
-  line 101: bool compareStringsCaseInsenstive(...) - static method
-  line 106: float getTerrainHeightFromRenderer(...) - static method
-  line 107: float getApproxTerrainHeightFromRenderer(...) - static method
-  line 108: bool worldToScreenRel(...) - non-string reference arg
-  line 109: bool worldToScreenPX(...) - non-string reference arg
-  line 110: bool worldToScreenWithRadius(...) - non-string reference arg
-  line 111: Ogre::Entity* placeOrientedMarker(...) - unsupported arg type
-  line 112: void placeMarker(...) - overloaded method
-  line 113: void placeMarker(...) - overloaded method
-  line 114: void debugBox(...) - unsupported arg type
-  line 115: void placeBox(...) - unsupported arg type
-  line 117: void placeArrow(...) - unsupported arg type
-  line 119: void placeArrowTo(...) - unsupported arg type
-  line 120: void placeArrowBT(...) - unsupported arg type
-  line 121: void removeArrow(...) - unsupported arg type
-  line 122: void placeSphere(...) - unsupported arg type
-  line 123: void placeAxis(...) - overloaded method
-  line 124: void placeAxis(...) - overloaded method
-  line 125: rendHit ogreTrace(...) - unsupported return type
-  line 126: Ogre::SharedPtr<Ogre::Material> getDebugMaterial(...) - unsupported return type
-  line 130: bool fileExists(...) - unsupported arg type
-  line 134: bool readFile(...) - non-string reference arg
-  line 137: void makeSureGameFolderExists(...) - static method
-  line 138: void makeSureFolderExists(...) - static method
-  line 139: std::string getFullPath(...) - static method
-  line 140: bool getRelativePath(...) - static method
-  line 141: bool getFilesInDir(...) - unsupported arg type
-  line 142: bool getFilesInGameDir(...) - unsupported arg type
-  line 143: void getDirsInDir(...) - unsupported arg type
-  line 144: std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t> > getCurrentDir(...) - unsupported return type
-  line 145: void setCurrentDir(...) - unsupported arg type
-  line 152: bool positionIsInFrontOfMe(...) - static method
-  line 153: bool pointInPlane(...) - static method
-  line 154: bool OBBCollision(...) - static method
-  line 155: std::string colorToGUIString(...) - static method
-  line 157: void roundToNearest(...) - non-string reference arg
-*/
+int UtilityTBinding::getTerrainHeight(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    float x = (float)luaL_checknumber(L, 1 + offset);
+    float z = (float)luaL_checknumber(L, 2 + offset);
+    float res = UtilityT::getTerrainHeight(x, z);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+int UtilityTBinding::getTerrainWithWaterHeight(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    float x = (float)luaL_checknumber(L, 1 + offset);
+    float z = (float)luaL_checknumber(L, 2 + offset);
+    float res = UtilityT::getTerrainWithWaterHeight(x, z);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+int UtilityTBinding::getTerrainWithWaterHeightFromRenderer(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    Ogre::Vector3 pos;
+    readVector3(L, 1 + offset, pos);
+    float res = UtilityT::getTerrainWithWaterHeightFromRenderer(pos);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+int UtilityTBinding::getPositionInWater(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    float x = (float)luaL_checknumber(L, 1 + offset);
+    float z = (float)luaL_checknumber(L, 2 + offset);
+    bool res = UtilityT::getPositionInWater(x, z);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int UtilityTBinding::getFloorHeight(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    Ogre::Vector3 origin;
+    readVector3(L, 1 + offset, origin);
+    if (lua_isnumber(L, 2 + offset))
+    {
+        int floorNum = (int)lua_tointeger(L, 2 + offset);
+        bool withTerrain = lua_toboolean(L, 3 + offset) != 0;
+        bool furniture = lua_toboolean(L, 4 + offset) != 0;
+        float res = UtilityT::getFloorHeight(origin, floorNum, withTerrain, furniture);
+        lua_pushnumber(L, res);
+        return 1;
+    }
+    bool withTerrain = lua_toboolean(L, 2 + offset) != 0;
+    bool furniture = lua_toboolean(L, 3 + offset) != 0;
+    float res = UtilityT::getFloorHeight(origin, withTerrain, furniture);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+int UtilityTBinding::getBuildingGroundFloorHeight(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    Ogre::Vector3 origin;
+    readVector3(L, 1 + offset, origin);
+    bool withTerrain = lua_toboolean(L, 2 + offset) != 0;
+    float res = UtilityT::getBuildingGroundFloorHeight(origin, withTerrain);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+int UtilityTBinding::isIndoors(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    Ogre::Vector3 point;
+    readVector3(L, 1 + offset, point);
+    Building* res = UtilityT::isIndoors(point);
+    return pushObject<Building>(L, res, BuildingBinding::getMetatableName());
+}
+
+int UtilityTBinding::isIndoorsFast(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    Ogre::Vector3 point;
+    readVector3(L, 1 + offset, point);
+    bool res = UtilityT::isIndoorsFast(point);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int UtilityTBinding::isIndoors_forWaypoint(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    Ogre::Vector3 point;
+    readVector3(L, 1 + offset, point);
+    Building* res = UtilityT::isIndoors_forWaypoint(point);
+    return pushObject<Building>(L, res, BuildingBinding::getMetatableName());
+}
+
+int UtilityTBinding::getFloorNumber(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    if (lua_isnumber(L, 1 + offset))
+    {
+        int collisionGroup = (int)lua_tointeger(L, 1 + offset);
+        int res = UtilityT::getFloorNumber(collisionGroup);
+        lua_pushinteger(L, res);
+        return 1;
+    }
+    Ogre::Vector3 position;
+    readVector3(L, 1 + offset, position);
+    hand* hitBuilding = lua_isnoneornil(L, 2 + offset) ? nullptr : checkObject<hand>(L, 2 + offset, HandBinding::getMetatableName());
+    int res = UtilityT::getFloorNumber(position, hitBuilding);
+    lua_pushinteger(L, res);
+    return 1;
+}
+
+int UtilityTBinding::getTerrainHeightFast(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    float x = (float)luaL_checknumber(L, 1 + offset);
+    float z = (float)luaL_checknumber(L, 2 + offset);
+    ZoneMap* map = checkObject<ZoneMap>(L, 3 + offset, ZoneMapBinding::getMetatableName());
+    float res = UtilityT::getTerrainHeightFast(x, z, map);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+int UtilityTBinding::random(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    if (lua_gettop(L) >= 2 + offset)
+    {
+        float lo = (float)luaL_checknumber(L, 1 + offset);
+        float hi = (float)luaL_checknumber(L, 2 + offset);
+        float res = UtilityT::random(lo, hi);
+        lua_pushnumber(L, res);
+        return 1;
+    }
+    float res = UtilityT::random();
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+int UtilityTBinding::randomBool(lua_State* L)
+{
+    bool res = UtilityT::randomBool();
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int UtilityTBinding::randomInt(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    int lo = (int)luaL_checkinteger(L, 1 + offset);
+    int hi = (int)luaL_checkinteger(L, 2 + offset);
+    int res = UtilityT::randomInt(lo, hi);
+    lua_pushinteger(L, res);
+    return 1;
+}
+
+int UtilityTBinding::seed(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    if (lua_gettop(L) >= 1 + offset && lua_isnumber(L, 1 + offset))
+    {
+        unsigned int s = (unsigned int)lua_tointeger(L, 1 + offset);
+        UtilityT::seed(s);
+        return 0;
+    }
+    UtilityT::seed();
+    return 0;
+}
+
+int UtilityTBinding::round(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    float value = (float)luaL_checknumber(L, 1 + offset);
+    int res = UtilityT::round(value);
+    lua_pushinteger(L, res);
+    return 1;
+}
+
+int UtilityTBinding::nlerp(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    float a = (float)luaL_checknumber(L, 1 + offset);
+    float b = (float)luaL_checknumber(L, 2 + offset);
+    float t = (float)luaL_checknumber(L, 3 + offset);
+    float res = UtilityT::nlerp(a, b, t);
+    lua_pushnumber(L, res);
+    return 1;
+}
+
+int UtilityTBinding::getNextPow2(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    int value = (int)luaL_checkinteger(L, 1 + offset);
+    int res = UtilityT::getNextPow2(value);
+    lua_pushinteger(L, res);
+    return 1;
+}
+
+int UtilityTBinding::quatSetDirection(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    Ogre::Quaternion q;
+    readQuaternion(L, 1 + offset, q);
+    Ogre::Vector3 targetDir;
+    readVector3(L, 2 + offset, targetDir);
+    Ogre::Vector3 facing;
+    readVector3(L, 3 + offset, facing);
+    UtilityT::quatSetDirection(q, targetDir, facing);
+    pushQuaternion(L, q);
+    return 1;
+}
+
+int UtilityTBinding::getSubMapSector(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    float X = (float)luaL_checknumber(L, 1 + offset);
+    float Z = (float)luaL_checknumber(L, 2 + offset);
+    iVector2 res = UtilityT::getSubMapSector(X, Z);
+    return pushValue<iVector2>(L, res, iVector2Binding::getMetatableName());
+}
+
+int UtilityTBinding::getSubMapSectorBounds(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    iVector2 sector = *checkObject<iVector2>(L, 1 + offset, iVector2Binding::getMetatableName());
+    Ogre::Vector4 res = UtilityT::getSubMapSectorBounds(sector);
+    lua_createtable(L, 0, 4);
+    lua_pushnumber(L, res.x); lua_setfield(L, -2, "x");
+    lua_pushnumber(L, res.y); lua_setfield(L, -2, "y");
+    lua_pushnumber(L, res.z); lua_setfield(L, -2, "z");
+    lua_pushnumber(L, res.w); lua_setfield(L, -2, "w");
+    return 1;
+}
+
+int UtilityTBinding::getResourceFilePath(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    std::string filename = luaL_checkstring(L, 1 + offset);
+    std::string filepath;
+    bool res = UtilityT::getResourceFilePath(filename, filepath);
+    if (res)
+    {
+        lua_pushstring(L, filepath.c_str());
+        return 1;
+    }
+    lua_pushnil(L);
+    return 1;
+}
+
+int UtilityTBinding::removePathFromString(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    std::string s = luaL_checkstring(L, 1 + offset);
+    std::string res = UtilityT::removePathFromString(s);
+    lua_pushstring(L, res.c_str());
+    return 1;
+}
+
+int UtilityTBinding::removeFilenameFromPath(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    std::string s = luaL_checkstring(L, 1 + offset);
+    std::string res = UtilityT::removeFilenameFromPath(s);
+    lua_pushstring(L, res.c_str());
+    return 1;
+}
+
+int UtilityTBinding::removeFileExtensionFromString(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    std::string s = luaL_checkstring(L, 1 + offset);
+    std::string res = UtilityT::removeFileExtensionFromString(s);
+    lua_pushstring(L, res.c_str());
+    return 1;
+}
+
+int UtilityTBinding::getFileExtensionFromString(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    std::string s = luaL_checkstring(L, 1 + offset);
+    std::string res = UtilityT::getFileExtensionFromString(s);
+    lua_pushstring(L, res.c_str());
+    return 1;
+}
+
+int UtilityTBinding::removeInvalidFileNameChars(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    std::string str = luaL_checkstring(L, 1 + offset);
+    UtilityT::removeInvalidFileNameChars(str);
+    lua_pushstring(L, str.c_str());
+    return 1;
+}
+
+int UtilityTBinding::compareStringsCaseInsenstive(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    std::string a = luaL_checkstring(L, 1 + offset);
+    std::string b = luaL_checkstring(L, 2 + offset);
+    bool res = UtilityT::compareStringsCaseInsenstive(a, b);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int UtilityTBinding::makeSureGameFolderExists(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    std::string relativefolder = luaL_checkstring(L, 1 + offset);
+    UtilityT::makeSureGameFolderExists(relativefolder);
+    return 0;
+}
+
+int UtilityTBinding::makeSureFolderExists(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    std::string folder = luaL_checkstring(L, 1 + offset);
+    UtilityT::makeSureFolderExists(folder);
+    return 0;
+}
+
+int UtilityTBinding::getFullPath(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    std::string dir = luaL_checkstring(L, 1 + offset);
+    std::string res = UtilityT::getFullPath(dir);
+    lua_pushstring(L, res.c_str());
+    return 1;
+}
+
+int UtilityTBinding::positionIsInFrontOfMe(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    Ogre::Vector3 facingDir;
+    readVector3(L, 1 + offset, facingDir);
+    Ogre::Vector3 targetDir;
+    readVector3(L, 2 + offset, targetDir);
+    bool res = UtilityT::positionIsInFrontOfMe(facingDir, targetDir);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int UtilityTBinding::pointInPlane(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    Ogre::Vector3 norm, planepos, point;
+    readVector3(L, 1 + offset, norm);
+    readVector3(L, 2 + offset, planepos);
+    readVector3(L, 3 + offset, point);
+    bool res = UtilityT::pointInPlane(norm, planepos, point);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int UtilityTBinding::colorToGUIString(lua_State* L)
+{
+    int offset = lua_isuserdata(L, 1) ? 1 : 0;
+    float r = (float)luaL_checknumber(L, 1 + offset);
+    float g = (float)luaL_checknumber(L, 2 + offset);
+    float b = (float)luaL_checknumber(L, 3 + offset);
+    float a = lua_isnumber(L, 4 + offset) ? (float)lua_tonumber(L, 4 + offset) : 1.0f;
+    Ogre::ColourValue col(r, g, b, a);
+    std::string res = UtilityT::colorToGUIString(col);
+    lua_pushstring(L, res.c_str());
+    return 1;
+}
+
+int UtilityTBinding::getFilesInDir(lua_State* L)
+{
+    UtilityT* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UtilityT is nil");
+
+    lektor<std::string>* out = LektorStringBinding<std::string>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getFilesInDir must be lektor<std::string>");
+
+    std::string dir = luaL_checkstring(L, 3);
+    std::string type = luaL_checkstring(L, 4);
+    bool res = instance->getFilesInDir(*out, dir, type);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int UtilityTBinding::getFilesInGameDir(lua_State* L)
+{
+    UtilityT* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UtilityT is nil");
+
+    lektor<std::string>* out = LektorStringBinding<std::string>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getFilesInGameDir must be lektor<std::string>");
+
+    std::string dir = luaL_checkstring(L, 3);
+    std::string type = luaL_checkstring(L, 4);
+    bool res = instance->getFilesInGameDir(*out, dir, type);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int UtilityTBinding::getDirsInDir(lua_State* L)
+{
+    UtilityT* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UtilityT is nil");
+
+    lektor<std::string>* out = LektorStringBinding<std::string>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getDirsInDir must be lektor<std::string>");
+
+    std::string dir = luaL_checkstring(L, 3);
+    instance->getDirsInDir(*out, dir);
+    return 0;
+}
+
+int UtilityTBinding::readFile(lua_State* L)
+{
+    UtilityT* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UtilityT is nil");
+
+    std::string path = luaL_checkstring(L, 2);
+    std::string content;
+    bool res = instance->readFile(path, content);
+    if (res)
+    {
+        lua_pushstring(L, content.c_str());
+        return 1;
+    }
+    lua_pushnil(L);
+    return 1;
+}
+
+int UtilityTBinding::roundToNearest(lua_State* L)
+{
+    UtilityT* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UtilityT is nil");
+
+    float input = (float)luaL_checknumber(L, 2);
+    int roundTo = (int)luaL_checkinteger(L, 3);
+    instance->roundToNearest(input, roundTo);
+    lua_pushnumber(L, input);
+    return 1;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -401,6 +763,45 @@ void UtilityTBinding::registerBinding(lua_State* L)
         { "moveFile", UtilityTBinding::moveFile },
         { "copyFile", UtilityTBinding::copyFile },
         { "copyFilesInFolder", UtilityTBinding::copyFilesInFolder },
+        { "getTerrainHeight", UtilityTBinding::getTerrainHeight },
+        { "getTerrainWithWaterHeight", UtilityTBinding::getTerrainWithWaterHeight },
+        { "getTerrainWithWaterHeightFromRenderer", UtilityTBinding::getTerrainWithWaterHeightFromRenderer },
+        { "getPositionInWater", UtilityTBinding::getPositionInWater },
+        { "getFloorHeight", UtilityTBinding::getFloorHeight },
+        { "getBuildingGroundFloorHeight", UtilityTBinding::getBuildingGroundFloorHeight },
+        { "isIndoors", UtilityTBinding::isIndoors },
+        { "isIndoorsFast", UtilityTBinding::isIndoorsFast },
+        { "isIndoors_forWaypoint", UtilityTBinding::isIndoors_forWaypoint },
+        { "getFloorNumber", UtilityTBinding::getFloorNumber },
+        { "getTerrainHeightFast", UtilityTBinding::getTerrainHeightFast },
+        { "random", UtilityTBinding::random },
+        { "randomBool", UtilityTBinding::randomBool },
+        { "randomInt", UtilityTBinding::randomInt },
+        { "seed", UtilityTBinding::seed },
+        { "round", UtilityTBinding::round },
+        { "nlerp", UtilityTBinding::nlerp },
+        { "getNextPow2", UtilityTBinding::getNextPow2 },
+        { "quatSetDirection", UtilityTBinding::quatSetDirection },
+        { "getSubMapSector", UtilityTBinding::getSubMapSector },
+        { "getSubMapSectorBounds", UtilityTBinding::getSubMapSectorBounds },
+        { "getResourceFilePath", UtilityTBinding::getResourceFilePath },
+        { "removePathFromString", UtilityTBinding::removePathFromString },
+        { "removeFilenameFromPath", UtilityTBinding::removeFilenameFromPath },
+        { "removeFileExtensionFromString", UtilityTBinding::removeFileExtensionFromString },
+        { "getFileExtensionFromString", UtilityTBinding::getFileExtensionFromString },
+        { "removeInvalidFileNameChars", UtilityTBinding::removeInvalidFileNameChars },
+        { "compareStringsCaseInsenstive", UtilityTBinding::compareStringsCaseInsenstive },
+        { "makeSureGameFolderExists", UtilityTBinding::makeSureGameFolderExists },
+        { "makeSureFolderExists", UtilityTBinding::makeSureFolderExists },
+        { "getFullPath", UtilityTBinding::getFullPath },
+        { "positionIsInFrontOfMe", UtilityTBinding::positionIsInFrontOfMe },
+        { "pointInPlane", UtilityTBinding::pointInPlane },
+        { "colorToGUIString", UtilityTBinding::colorToGUIString },
+        { "getFilesInDir", UtilityTBinding::getFilesInDir },
+        { "getFilesInGameDir", UtilityTBinding::getFilesInGameDir },
+        { "getDirsInDir", UtilityTBinding::getDirsInDir },
+        { "readFile", UtilityTBinding::readFile },
+        { "roundToNearest", UtilityTBinding::roundToNearest },
         { 0, 0 }
     };
 

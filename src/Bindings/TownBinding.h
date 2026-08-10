@@ -113,5 +113,8 @@ public:
     static int chooseResidents(lua_State* L);
     static int addGate(lua_State* L);
     static int _NV_addGate(lua_State* L);
+    static int setHandle(lua_State* L);
+    static int _NV_setHandle(lua_State* L);
+    static int getPlayerTownTypeEnum(lua_State* L);
 };
 }

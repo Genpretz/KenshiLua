@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "kenshi\WorldEventStateQuery.h"
 #include "WorldEventStateQueryBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
