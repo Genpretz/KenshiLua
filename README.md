@@ -74,19 +74,42 @@ end
    - Pressing `Ctrl` + `Shift` + `L` in-game will open KenshiLua's Main GUI. From here you can access the Script Editor and load, edit, save, and run scripts using the buttons on the Script Editor's toolbar as well as access other features.
 <img width="2560" height="1600" alt="kenshi Screenshot 2026 07 13 - 14 33 49 79" src="https://github.com/user-attachments/assets/1dd44684-220b-4db2-ba56-7e9fba7f7d91" />
 
-## Building from Scratch (UNFINISHED)
+## Building KenshiLua
 
-1. Build KenshiLib and LuaJit against v100 Platform Toolset or Windows 7.1 SDK
-2. Link the project against both KenshiLib and LuaJit in the KenshiLua project.
-3. KenshiLib v0.3.0 requires some changes in order for KenshiLua to compile properly. Mostly related to missing #pragma once, #includes, or redefinition errors caused by duplicate versions of the same class in KenshiLib's header files. Exact instructions will be available in the future.
-4. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi and KenshiLib).
-5. Using the FCS, create a new mod named `KenshiLua`.
-6. Copy the repository's `mygui` directory to the KenshiLua mod directory, `./Kenshi/mods/KenshiLua`
-7. Place the newly built `KenshiLua.dll` and `lua51.dll` binaryies `RE_Kenshi.json`, `fcs.def` into the same `KenshiLua` mod directory.
+> [!WARNING]
+> This section is **WIP** and is **not** intended for casual users. The process is complex and requires a solid understanding of the C++ build process and toolchain used by Kenshi and KenshiLib.
+
+1. Clone the KenshiLua repository using the --recursive flag to ensure all dependencies are also cloned:
+   `git clone --recursive https://github.com/Genpretz/KenshiLua.git`
+2. Several changes need to be made to KenshiLib v0.3.0's headers for KenshiLua to be able to compile.
+
+   * Add `#pragma once` to the top of every header file that doesn't already have it. These include:
+      - CharMovement.h
+      - DataPanelLine.h
+      - FarmBuilding.h
+   * MainBarGUI.h
+      - Forward declare class `MainBarGUI` before `class MainTabPortraitPlatoon : public Ogre::GeneralAllocatedObject`.
+   * ManagementScreen.h
+      - Add `#include <mygui/common/itembox/BaseItemBox.h>`
+      - Add `template<typename T> class ReorderableListItem;` before `class ReorderableList : public wraps::BaseItemBox<ReorderableListItem<T2> >, public Ogre::GeneralAllocatedObject`.
+      - Remove the `override` from `virtual ~ReorderableList() override;` in `class ReorderableList`.
+   * OrdersPanel.h
+      - Forward declare `class OrderData;` before `class OrderCellView : public wraps::BaseCellView<OrderData*>, public Ogre::GeneralAllocatedObject`
+   * Globals.h
+      - Remove the lines declaring `namespace FoliageSystem` and `class EntData`.
+   * NavMesh.h
+      - Remove `MessageQueue<T>::` prefix from the members within `class MessageQueue` and the nested struct `Node`.
+   * Platoon.h
+      - Remove the definition for `enum BuildingDesignation` and instead add `#include "Building/Building.h"` to the list of includes.
+   * PlayerInterface.h
+      - Add the following include, `#include "kenshi/gui/ContextMenu.h"` and remove the definition for `class ContextMenu`.
+
+3. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi and KenshiLib and are not functional).
+4. `KenshiLua.vcxproj` includes a post-build event that will copy the built `KenshiLua.dll` along with all the other files and directories required for KenshiLua to run to `$(ProjectDir)bin/KenshiLua/`
 
 #### Notes on Toolchain Constraints
 * The game and KenshiLib are built against MSVC2010-era assumptions, including C++ ABI layout and runtime library behavior. KenshiLua and all ofther dependencies must match these constraints to ensure stable integration.
-* LuaJIT doesn't have any public binaries compiled using MSVC2010. One is included in the repository, but if you choose not to use it, then compiling LuaJIT from source for MSVC2010 is required.
+* There are no official LuaJIT release binaries built for MSVC2010. Therefore, a compatible version is included in the repository. If you wish to compile LuaJIT from source, ensure you build for MSVC2010.
 
 ---
 
