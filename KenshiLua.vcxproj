@@ -821,7 +821,7 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClInclude Include="src\Bindings\Gui\TutorialItemBinding.h" />
     <ClInclude Include="src\Bindings\Gui\TutorialpediaGUIBinding.h" />
     <ClInclude Include="src\Bindings\Gui\TutorialSubItemBinding.h" />
-    <ClInclude Include="src\Bindings\HasRoomCacheBinding.h" />
+    <ClInclude Include="src\Bindings\Inventory_HasRoomCacheBinding.h" />
     <ClInclude Include="src\Bindings\HavokCharacterBinding.h" />
     <ClInclude Include="src\Bindings\HealthPartStatusBinding.h" />
     <ClInclude Include="src\Bindings\hkArrayBaseBinding.h" />
@@ -1230,7 +1230,7 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClCompile Include="src\Bindings\Gui\TutorialItemBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\TutorialpediaGUIBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\TutorialSubItemBinding.cpp" />
-    <ClCompile Include="src\Bindings\HasRoomCacheBinding.cpp" />
+    <ClCompile Include="src\Bindings\Inventory_HasRoomCacheBinding.cpp" />
     <ClCompile Include="src\Bindings\HavokCharacterBinding.cpp" />
     <ClCompile Include="src\Bindings\HealthPartStatusBinding.cpp" />
     <ClCompile Include="src\Bindings\hkBoolBinding.cpp" />

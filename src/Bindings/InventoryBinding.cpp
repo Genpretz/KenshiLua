@@ -12,7 +12,7 @@
 #include "Bindings/ItemBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/WeaponBinding.h"
-#include "Bindings/HasRoomCacheBinding.h"
+#include "Bindings/Inventory_HasRoomCacheBinding.h"
 #include "Bindings/Util/BoostUnorderedBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/LektorBinding.h"
@@ -38,8 +38,7 @@ static int Inventory_get_hasRoomCache(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    lua_pushlightuserdata(L, (void*)instance->hasRoomCache);
-    return 1;
+    return pushObject<Inventory::HasRoomCache>(L, instance->hasRoomCache, Inventory_HasRoomCacheBinding::getMetatableName());
 }
 
 static int Inventory_get_callbackObject(lua_State* L)
@@ -879,11 +878,7 @@ static int Inventory_set_hasRoomCache(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    Inventory::HasRoomCache* cache = nullptr;
-    if (!lua_isnil(L, 2)) {
-        cache = checkObject<Inventory::HasRoomCache>(L, 2, HasRoomCacheBinding::getMetatableName());
-    }
-    instance->hasRoomCache = cache;
+    instance->hasRoomCache = lua_isnoneornil(L, 2) ? nullptr : checkObject<Inventory::HasRoomCache>(L, 2, Inventory_HasRoomCacheBinding::getMetatableName());
     return 0;
 }
 

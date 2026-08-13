@@ -220,7 +220,7 @@
 #include "Bindings/Gui/TutorialItemBinding.h"
 #include "Bindings/Gui/TutorialSubItemBinding.h"
 #include "Bindings/Gui/TutorialpediaGUIBinding.h"
-#include "Bindings/HasRoomCacheBinding.h"
+#include "Bindings/Inventory_HasRoomCacheBinding.h"
 #include "Bindings/HavokCharacterBinding.h"
 #include "Bindings/HealthPartStatusBinding.h"
 #include "Bindings/ImpactPointBinding.h"
@@ -765,7 +765,7 @@ void LuaBindings::registerAll(lua_State* L)
     GenericInventoryLayoutBinding::registerBinding(L);
     GlobalConstantsBinding::registerBinding(L);
     HandBinding::registerBinding(L);
-    HasRoomCacheBinding::registerBinding(L);
+    Inventory_HasRoomCacheBinding::registerBinding(L);
     HavokCharacterBinding::registerBinding(L);
     HealthPartStatusBinding::registerBinding(L);
     ImpactPointBinding::registerBinding(L);

@@ -10,10 +10,10 @@ namespace KenshiLua
 {
     typedef Inventory::HasRoomCache HasRoomCache;
 
-class HasRoomCacheBinding
+class Inventory_HasRoomCacheBinding
 {
 public:
-    static const char* getMetatableName() { return "KenshiLua.HasRoomCache"; }
+    static const char* getMetatableName() { return "KenshiLua.Inventory_HasRoomCache"; }
     static void registerBinding(lua_State* L);
 
     static int gc(lua_State* L);
