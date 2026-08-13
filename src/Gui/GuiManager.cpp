@@ -276,6 +276,7 @@ namespace KenshiLua
 		, m_pendingLuaState(nullptr)
 		, m_initialized(false)
 		, m_visible(false)
+		, m_activeOutputTarget(nullptr)
 		, m_hub(nullptr)
 		, m_editor(nullptr)
 		, m_console(nullptr)
@@ -444,10 +445,16 @@ namespace KenshiLua
 	{
 		logToFile(text);
 
-		if (m_editor && m_editor->getVisible())
-			m_editor->appendOutput(text);
-		if (m_console && m_console->getVisible())
-			m_console->appendOutput(text);
+		if (m_activeOutputTarget == m_editor)
+		{
+			if (m_editor && m_editor->getVisible())
+				m_editor->appendOutput(text);
+		}
+		else
+		{
+			if (m_console && m_console->getVisible())
+				m_console->appendOutput(text);
+		}
 	}
 
 	void GuiManager::clearOutput()

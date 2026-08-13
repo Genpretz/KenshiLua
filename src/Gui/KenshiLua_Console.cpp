@@ -97,6 +97,8 @@ namespace KenshiLua
 		if (code.empty())
 			return;
 
+		GuiManager::get().setActiveOutputTarget(this);
+
 		// Echo command to console output
 		appendOutput("> " + code + "\n");
 		mConsole_InputBoxEditBox->setCaption("");
@@ -125,6 +127,7 @@ namespace KenshiLua
 						lua_pop(L, 1); // pop result of luaL_tolstring
 					}
 					lua_settop(L, top);
+					GuiManager::get().setActiveOutputTarget(nullptr);
 					return;
 				}
 			}
@@ -169,6 +172,8 @@ namespace KenshiLua
 		{
 			appendOutput("ERROR: LuaState not initialized\n");
 		}
+
+		GuiManager::get().setActiveOutputTarget(nullptr);
 	}
 
 } // KenshiLua

@@ -79,6 +79,9 @@ namespace KenshiLua
         bool isInitialized() const;
         void checkKeyboardShortcut(OIS::KeyCode key, InputHandler* thisptr);
 
+        void* getActiveOutputTarget() const { return m_activeOutputTarget; }
+        void setActiveOutputTarget(void* target) { m_activeOutputTarget = target; }
+
         void appendOutput(const std::string& text);
         void clearOutput();
 
@@ -102,6 +105,7 @@ namespace KenshiLua
         LuaState*           m_pendingLuaState;
         bool                m_initialized;
         bool                m_visible;
+        void*               m_activeOutputTarget;
 
         KenshiLua_Hub*           m_hub;
         KenshiLua_ScriptEditor*  m_editor;

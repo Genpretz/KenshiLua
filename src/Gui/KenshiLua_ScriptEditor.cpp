@@ -195,7 +195,6 @@ namespace KenshiLua
 		if (!mScriptEditor_OutputBoxEditBox)
 			return;
 
-		// mScriptEditor_OutputBoxEditBox->addText(MyGUI::UString(text));
 		mScriptEditor_OutputBoxEditBox->addText(MyGUI::UString(GuiHelpers::EscapeMyGuiColourTags(text)));
 		size_t length = mScriptEditor_OutputBoxEditBox->getTextLength();
 		mScriptEditor_OutputBoxEditBox->setTextCursor(length);
@@ -226,6 +225,8 @@ namespace KenshiLua
 			appendOutput("(editor is empty)\n");
 			return;
 		}
+
+		GuiManager::get().setActiveOutputTarget(this);
 
 		const std::string label = m_currentFilePath.empty() ? "<editor>" : m_currentFilePath;
 
@@ -292,6 +293,8 @@ namespace KenshiLua
 		{
 			appendOutput("ERROR: LuaState not initialized\n");
 		}
+
+		GuiManager::get().setActiveOutputTarget(nullptr);
 	}
 
 	void KenshiLua_ScriptEditor::onStopClicked(MyGUI::Widget*)
