@@ -728,7 +728,7 @@ void ArmourBinding::registerBinding(lua_State* L)
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()
     // setMetatableParent(L, ArmourBinding::getMetatableName(), GearBinding::getMetatableName());
 
-    OgreUnorderedMapBinding<GameData*, float>::registerBinding(L, "KenshiLua.GameDataFloatMap", GameDataBinding::getMetatableName(), nullptr);
+    OgreUnorderedMapBinding<GameData*, float>::registerBinding(L, "ogre_unordered_map<GameData*, float>", GameDataBinding::getMetatableName(), nullptr);
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

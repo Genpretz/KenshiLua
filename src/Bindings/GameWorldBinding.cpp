@@ -24,9 +24,13 @@
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Bindings/Util/StdMapBinding.h"
+#include "Bindings/Util/StdDequeBinding.h"
 
 namespace KenshiLua
 {
+typedef StdDequePtrBinding<RootObject*, Ogre::STLAllocator<RootObject*, Ogre::GeneralAllocPolicy>> KillListPhase2DequeBinding;
+typedef StdDequePtrBinding<NestBatcher*, Ogre::STLAllocator<NestBatcher*, Ogre::GeneralAllocPolicy>> NestBatcherKillListDequeBinding;
+
 
 static GameWorld* getInstance(lua_State* L, int idx)
 {
@@ -1287,7 +1291,7 @@ int GameWorldBinding::getCharacterUpdateList(lua_State* L)
     if (!instance) return luaL_error(L, "GameWorld is nil");
 
     const ogre_unordered_set<Character*>::type& list = instance->getCharacterUpdateList();
-    return pushObject<ogre_unordered_set<Character*>::type>(L, (ogre_unordered_set<Character*>::type*)&list, "KenshiLua.CharUpdateListMainSet");
+    return pushObject<ogre_unordered_set<Character*>::type>(L, (ogre_unordered_set<Character*>::type*)&list, "ogre_unordered_set<Character*>");
 }
 
 int GameWorldBinding::sysMessage(lua_State* L)
@@ -1391,7 +1395,7 @@ static int GameWorld_get_availableModsByName(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    return pushObject<AvailableModsMapBinding::MapType>(L, &instance->availableModsByName, "KenshiLua.AvailableModsMap");
+    return pushObject<AvailableModsMapBinding::MapType>(L, &instance->availableModsByName, "std::map<std::string, ModInfo>");
 }
 
 static int GameWorld_set_availableModsByName(lua_State* L)
@@ -1399,7 +1403,7 @@ static int GameWorld_set_availableModsByName(lua_State* L)
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
     auto* val = AvailableModsMapBinding::get(L, 2);
-    if (!val) return luaL_error(L, "Argument 2 to set availableModsByName must be AvailableModsMap");
+    if (!val) return luaL_error(L, "Argument 2 to set availableModsByName must be std::map<std::string, ModInfo>");
     instance->availableModsByName = *val;
     return 0;
 }
@@ -1425,15 +1429,15 @@ static int GameWorld_get_updatePortraitsMap(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    return pushObject<ogre_unordered_map<hand, float>::type>(L, &instance->updatePortraitsMap, "KenshiLua.UpdatePortraitsMap");
+    return pushObject<ogre_unordered_map<hand, float>::type>(L, &instance->updatePortraitsMap, "ogre_unordered_map<hand, float>");
 }
 
 static int GameWorld_set_updatePortraitsMap(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = checkObject<ogre_unordered_map<hand, float>::type>(L, 2, "KenshiLua.UpdatePortraitsMap");
-    if (!val) return luaL_error(L, "Argument 2 to set updatePortraitsMap must be UpdatePortraitsMap");
+    auto* val = checkObject<ogre_unordered_map<hand, float>::type>(L, 2, "ogre_unordered_map<hand, float>");
+    if (!val) return luaL_error(L, "Argument 2 to set updatePortraitsMap must be ogre_unordered_map<hand, float>");
     instance->updatePortraitsMap = *val;
     return 0;
 }
@@ -1459,15 +1463,15 @@ static int GameWorld_get_destroyListTBM(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    return pushObject<ogre_unordered_set<TownBuildingsManager*>::type>(L, &instance->destroyListTBM, "KenshiLua.DestroyListTBMSet");
+    return pushObject<ogre_unordered_set<TownBuildingsManager*>::type>(L, &instance->destroyListTBM, "ogre_unordered_set<TownBuildingsManager*>");
 }
 
 static int GameWorld_set_destroyListTBM(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = checkObject<ogre_unordered_set<TownBuildingsManager*>::type>(L, 2, "KenshiLua.DestroyListTBMSet");
-    if (!val) return luaL_error(L, "Argument 2 to set destroyListTBM must be DestroyListTBMSet");
+    auto* val = checkObject<ogre_unordered_set<TownBuildingsManager*>::type>(L, 2, "ogre_unordered_set<TownBuildingsManager*>");
+    if (!val) return luaL_error(L, "Argument 2 to set destroyListTBM must be ogre_unordered_set<TownBuildingsManager*>");
     instance->destroyListTBM = *val;
     return 0;
 }
@@ -1476,15 +1480,15 @@ static int GameWorld_get_killListPhase0(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    return pushObject<ogre_unordered_set<RootObject*>::type>(L, &instance->killListPhase0, "KenshiLua.KillListPhase0Set");
+    return pushObject<ogre_unordered_set<RootObject*>::type>(L, &instance->killListPhase0, "ogre_unordered_set<RootObject*>");
 }
 
 static int GameWorld_set_killListPhase0(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = checkObject<ogre_unordered_set<RootObject*>::type>(L, 2, "KenshiLua.KillListPhase0Set");
-    if (!val) return luaL_error(L, "Argument 2 to set killListPhase0 must be KillListPhase0Set");
+    auto* val = checkObject<ogre_unordered_set<RootObject*>::type>(L, 2, "ogre_unordered_set<RootObject*>");
+    if (!val) return luaL_error(L, "Argument 2 to set killListPhase0 must be ogre_unordered_set<RootObject*>");
     instance->killListPhase0 = *val;
     return 0;
 }
@@ -1493,18 +1497,63 @@ static int GameWorld_get_killListPhase1(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    return pushObject<ogre_unordered_map<RootObject*, float>::type>(L, &instance->killListPhase1, "KenshiLua.KillListPhase1Map");
+    return pushObject<ogre_unordered_map<RootObject*, float>::type>(L, &instance->killListPhase1, "ogre_unordered_map<RootObject*, float>");
 }
 
 static int GameWorld_set_killListPhase1(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = checkObject<ogre_unordered_map<RootObject*, float>::type>(L, 2, "KenshiLua.KillListPhase1Map");
-    if (!val) return luaL_error(L, "Argument 2 to set killListPhase1 must be KillListPhase1Map");
+    auto* val = checkObject<ogre_unordered_map<RootObject*, float>::type>(L, 2, "ogre_unordered_map<RootObject*, float>");
+    if (!val) return luaL_error(L, "Argument 2 to set killListPhase1 must be ogre_unordered_map<RootObject*, float>");
     instance->killListPhase1 = *val;
     return 0;
 }
+
+static int GameWorld_get_killListPhase2(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<KillListPhase2DequeBinding::DequeType>(L, &instance->killListPhase2, "std::deque<RootObject*>");
+}
+
+static int GameWorld_set_killListPhase2(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->killListPhase2.clear();
+        return 0;
+    }
+    auto* src = KillListPhase2DequeBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set killListPhase2 must be std::deque<RootObject*>");
+    instance->killListPhase2 = *src;
+    return 0;
+}
+
+static int GameWorld_get_nestBatcherKillList(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    return pushObject<NestBatcherKillListDequeBinding::DequeType>(L, &instance->nestBatcherKillList, "std::deque<NestBatcher*>");
+}
+
+static int GameWorld_set_nestBatcherKillList(lua_State* L)
+{
+    GameWorld* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameWorld is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->nestBatcherKillList.clear();
+        return 0;
+    }
+    auto* src = NestBatcherKillListDequeBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set nestBatcherKillList must be std::deque<NestBatcher*>");
+    instance->nestBatcherKillList = *src;
+    return 0;
+}
+
 
 static int GameWorld_get_mainUpdateListRemovalQueue(lua_State* L)
 {
@@ -1527,14 +1576,14 @@ static int GameWorld_get_charactersWithLights(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    return pushObject<ogre_unordered_set<Character*>::type>(L, &instance->charactersWithLights, "KenshiLua.CharactersWithLightsSet");
+    return pushObject<ogre_unordered_set<Character*>::type>(L, &instance->charactersWithLights, "ogre_unordered_set<Character*>");
 }
 
 static int GameWorld_set_charactersWithLights(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = checkObject<ogre_unordered_set<Character*>::type>(L, 2, "KenshiLua.CharactersWithLightsSet");
+    auto* val = checkObject<ogre_unordered_set<Character*>::type>(L, 2, "ogre_unordered_set<Character*>");
     if (val) instance->charactersWithLights = *val;
     return 0;
 }
@@ -1543,14 +1592,14 @@ static int GameWorld_get_deathParade(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    return pushObject<ogre_unordered_map<hand, Character*>::type>(L, &instance->deathParade, "KenshiLua.DeathParadeMap");
+    return pushObject<ogre_unordered_map<hand, Character*>::type>(L, &instance->deathParade, "ogre_unordered_map<hand, Character*>");
 }
 
 static int GameWorld_set_deathParade(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = checkObject<ogre_unordered_map<hand, Character*>::type>(L, 2, "KenshiLua.DeathParadeMap");
+    auto* val = checkObject<ogre_unordered_map<hand, Character*>::type>(L, 2, "ogre_unordered_map<hand, Character*>");
     if (val) instance->deathParade = *val;
     return 0;
 }
@@ -1559,14 +1608,14 @@ static int GameWorld_get_charUpdateListMain(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    return pushObject<ogre_unordered_set<Character*>::type>(L, &instance->charUpdateListMain, "KenshiLua.CharUpdateListMainSet");
+    return pushObject<ogre_unordered_set<Character*>::type>(L, &instance->charUpdateListMain, "ogre_unordered_set<Character*>");
 }
 
 static int GameWorld_set_charUpdateListMain(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = checkObject<ogre_unordered_set<Character*>::type>(L, 2, "KenshiLua.CharUpdateListMainSet");
+    auto* val = checkObject<ogre_unordered_set<Character*>::type>(L, 2, "ogre_unordered_set<Character*>");
     if (val) instance->charUpdateListMain = *val;
     return 0;
 }
@@ -1586,8 +1635,6 @@ SKIPPED PROPERTIES / CONTAINERS NEEDING MANUAL BINDING OR UNBOUND TYPES:
   - sysMessageList (std::list<GameWorld::SysMessage>) - unsupported container type std::list
   - destroyListAE (ogre_unordered_set<AttachedEntity*>::type) - unbound element type AttachedEntity*
   - destroyListOE (ogre_unordered_set<Ogre::MovableObject*>::type) - unbound element type Ogre::MovableObject*
-  - nestBatcherKillList (std::deque<NestBatcher*>) - unsupported container type std::deque and unbound type NestBatcher*
-  - killListPhase2 (std::deque<RootObject*>) - unsupported container type std::deque
 */
 
 int GameWorldBinding::gc(lua_State* L)
@@ -1750,6 +1797,8 @@ void GameWorldBinding::registerBinding(lua_State* L)
     registerGetter(L, "charUpdateListMain", GameWorld_get_charUpdateListMain);
     registerGetter(L, "killListPhase0", GameWorld_get_killListPhase0);
     registerGetter(L, "killListPhase1", GameWorld_get_killListPhase1);
+    registerGetter(L, "killListPhase2", GameWorld_get_killListPhase2);
+    registerGetter(L, "nestBatcherKillList", GameWorld_get_nestBatcherKillList);
     registerGetter(L, "mainUpdateListRemovalQueue", GameWorld_get_mainUpdateListRemovalQueue);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
@@ -1787,21 +1836,25 @@ void GameWorldBinding::registerBinding(lua_State* L)
     registerSetter(L, "charUpdateListMain", GameWorld_set_charUpdateListMain);
     registerSetter(L, "killListPhase0", GameWorld_set_killListPhase0);
     registerSetter(L, "killListPhase1", GameWorld_set_killListPhase1);
+    registerSetter(L, "killListPhase2", GameWorld_set_killListPhase2);
+    registerSetter(L, "nestBatcherKillList", GameWorld_set_nestBatcherKillList);
     registerSetter(L, "mainUpdateListRemovalQueue", GameWorld_set_mainUpdateListRemovalQueue);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     LektorValueReadOnlyBinding<ModInfo>::registerBinding(L, "lektor<ModInfo>", ModInfoBinding::getMetatableName());
     LektorStringBinding<std::string>::registerBinding(L, "lektor<std::string>");
     LektorPtrBinding<ModInfo*>::registerBinding(L, "lektor<ModInfo*>", ModInfoBinding::getMetatableName());
-    AvailableModsMapBinding::registerBinding(L, "KenshiLua.AvailableModsMap", nullptr, ModInfoBinding::getMetatableName());
-    OgreUnorderedSetBinding<Character*>::registerBinding(L, "KenshiLua.CharactersWithLightsSet", CharacterBinding::getMetatableName());
-    OgreUnorderedMapBinding<hand, float>::registerBinding(L, "KenshiLua.UpdatePortraitsMap", HandBinding::getMetatableName(), nullptr);
+    AvailableModsMapBinding::registerBinding(L, "std::map<std::string, ModInfo>", nullptr, ModInfoBinding::getMetatableName());
+    OgreUnorderedSetBinding<Character*>::registerBinding(L, "ogre_unordered_set<Character*>", CharacterBinding::getMetatableName());
+    OgreUnorderedMapBinding<hand, float>::registerBinding(L, "ogre_unordered_map<hand, float>", HandBinding::getMetatableName(), nullptr);
     LektorValueReadOnlyBinding<hand>::registerBinding(L, "lektor<hand>", HandBinding::getMetatableName());
-    OgreUnorderedSetBinding<TownBuildingsManager*>::registerBinding(L, "KenshiLua.DestroyListTBMSet", TownBuildingsManagerBinding::getMetatableName());
-    OgreUnorderedMapBinding<hand, Character*>::registerBinding(L, "KenshiLua.DeathParadeMap", HandBinding::getMetatableName(), CharacterBinding::getMetatableName());
-    OgreUnorderedSetBinding<Character*>::registerBinding(L, "KenshiLua.CharUpdateListMainSet", CharacterBinding::getMetatableName());
-    OgreUnorderedSetBinding<RootObject*>::registerBinding(L, "KenshiLua.KillListPhase0Set", RootObjectBinding::getMetatableName());
-    OgreUnorderedMapBinding<RootObject*, float>::registerBinding(L, "KenshiLua.KillListPhase1Map", RootObjectBinding::getMetatableName(), nullptr);
+    OgreUnorderedSetBinding<TownBuildingsManager*>::registerBinding(L, "ogre_unordered_set<TownBuildingsManager*>", TownBuildingsManagerBinding::getMetatableName());
+    OgreUnorderedMapBinding<hand, Character*>::registerBinding(L, "ogre_unordered_map<hand, Character*>", HandBinding::getMetatableName(), CharacterBinding::getMetatableName());
+    OgreUnorderedSetBinding<Character*>::registerBinding(L, "ogre_unordered_set<Character*>", CharacterBinding::getMetatableName());
+    OgreUnorderedSetBinding<RootObject*>::registerBinding(L, "ogre_unordered_set<RootObject*>", RootObjectBinding::getMetatableName());
+    OgreUnorderedMapBinding<RootObject*, float>::registerBinding(L, "ogre_unordered_map<RootObject*, float>", RootObjectBinding::getMetatableName(), nullptr);
+    KillListPhase2DequeBinding::registerBinding(L, "std::deque<RootObject*>", RootObjectBinding::getMetatableName());
+    NestBatcherKillListDequeBinding::registerBinding(L, "std::deque<NestBatcher*>", nullptr);
     LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
 
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

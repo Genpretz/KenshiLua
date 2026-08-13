@@ -4,9 +4,15 @@ class CraftingItem {};
 #include "CraftingInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildInventoryLayoutBinding.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
+#include "Bindings/Gui/InventorySectionGUIBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/Util/StdMapBinding.h"
 
 namespace KenshiLua
 {
+
+typedef std::map<std::string, InventorySectionGUI*, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, InventorySectionGUI*>, Ogre::GeneralAllocPolicy > > SectionsMap;
 
 static CraftingInventoryLayout* getInstance(lua_State* L, int idx)
 {
@@ -18,7 +24,11 @@ static int CraftingInventoryLayout_get_queueBtn(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    lua_pushlightuserdata(L, (void*)instance->queueBtn);
+    if (instance->queueBtn) {
+        lua_pushlightuserdata(L, (void*)instance->queueBtn);
+    } else {
+        lua_pushnil(L);
+    }
     return 1;
 }
 
@@ -26,7 +36,11 @@ static int CraftingInventoryLayout_get_craftingName(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    lua_pushlightuserdata(L, (void*)instance->craftingName);
+    if (instance->craftingName) {
+        lua_pushlightuserdata(L, (void*)instance->craftingName);
+    } else {
+        lua_pushnil(L);
+    }
     return 1;
 }
 
@@ -43,14 +57,16 @@ static int CraftingInventoryLayout_set_queueBtn(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for queueBtn");
+    instance->queueBtn = (MyGUI::Button*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int CraftingInventoryLayout_set_craftingName(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for craftingName");
+    instance->craftingName = (MyGUI::TextBox*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int CraftingInventoryLayout_set_outputType(lua_State* L)
@@ -71,6 +87,44 @@ int CraftingInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
     int outs = (int)luaL_checkinteger(L, 4);
     CraftingInventoryLayout* result = instance->_CONSTRUCTOR(title, ins, outs);
     return pushObject<CraftingInventoryLayout>(L, result, CraftingInventoryLayoutBinding::getMetatableName());
+}
+
+int CraftingInventoryLayoutBinding::setupSections(lua_State* L)
+{
+    CraftingInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
+
+    InventoryGUI* inventoryGUI = testObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    if (!inventoryGUI) inventoryGUI = (InventoryGUI*)lua_touserdata(L, 2);
+
+    SectionsMap* sections = testObject<SectionsMap>(L, 3, "std::map<std::string, InventorySectionGUI*>");
+    if (!sections) sections = (SectionsMap*)lua_touserdata(L, 3);
+    if (!sections) return luaL_error(L, "Argument 3 to setupSections must be a valid std::map<std::string, InventorySectionGUI*> or lightuserdata");
+
+    Inventory* inventory = testObject<Inventory>(L, 4, InventoryBinding::getMetatableName());
+    if (!inventory) inventory = (Inventory*)lua_touserdata(L, 4);
+
+    instance->setupSections(inventoryGUI, *sections, inventory);
+    return 0;
+}
+
+int CraftingInventoryLayoutBinding::_NV_setupSections(lua_State* L)
+{
+    CraftingInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
+
+    InventoryGUI* inventoryGUI = testObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    if (!inventoryGUI) inventoryGUI = (InventoryGUI*)lua_touserdata(L, 2);
+
+    SectionsMap* sections = testObject<SectionsMap>(L, 3, "std::map<std::string, InventorySectionGUI*>");
+    if (!sections) sections = (SectionsMap*)lua_touserdata(L, 3);
+    if (!sections) return luaL_error(L, "Argument 3 to _NV_setupSections must be a valid std::map<std::string, InventorySectionGUI*> or lightuserdata");
+
+    Inventory* inventory = testObject<Inventory>(L, 4, InventoryBinding::getMetatableName());
+    if (!inventory) inventory = (Inventory*)lua_touserdata(L, 4);
+
+    instance->setupSections(inventoryGUI, *sections, inventory);
+    return 0;
 }
 
 int CraftingInventoryLayoutBinding::refresh(lua_State* L)
@@ -108,7 +162,11 @@ int CraftingInventoryLayoutBinding::getQueueButton(lua_State* L)
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
 
     MyGUI::Button* result = instance->getQueueButton();
-    lua_pushlightuserdata(L, (void*)result);
+    if (result) {
+        lua_pushlightuserdata(L, (void*)result);
+    } else {
+        lua_pushnil(L);
+    }
     return 1;
 }
 
@@ -122,14 +180,14 @@ int CraftingInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 }
 
 /*
-Skipped methods needing manual binding:
-  line 29: void setupSections(...) - unsupported arg type
-  line 30: void _NV_setupSections(...) - unsupported arg type
+LIGHTUSERDATA DEPENDENCIES:
+  - CraftingInventoryLayout_get_queueBtn / CraftingInventoryLayout_set_queueBtn: MyGUI::Button* (unbound pointer)
+  - CraftingInventoryLayout_get_craftingName / CraftingInventoryLayout_set_craftingName: MyGUI::TextBox* (unbound pointer)
+  - CraftingInventoryLayoutBinding::getQueueButton: MyGUI::Button* (unbound pointer)
 */
 
 int CraftingInventoryLayoutBinding::gc(lua_State* L)
 {
-    // Implementation depends on ownership model
     return 0;
 }
 
@@ -149,6 +207,8 @@ void CraftingInventoryLayoutBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", CraftingInventoryLayoutBinding::_CONSTRUCTOR },
+        { "setupSections", CraftingInventoryLayoutBinding::setupSections },
+        { "_NV_setupSections", CraftingInventoryLayoutBinding::_NV_setupSections },
         { "refresh", CraftingInventoryLayoutBinding::refresh },
         { "setOutputType", CraftingInventoryLayoutBinding::setOutputType },
         { "setCraftingName", CraftingInventoryLayoutBinding::setCraftingName },
@@ -185,11 +245,8 @@ void CraftingInventoryLayoutBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "outputType");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to BuildInventoryLayout
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, CraftingInventoryLayoutBinding::getMetatableName(), BuildInventoryLayoutBinding::getMetatableName());
-
     lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua
+

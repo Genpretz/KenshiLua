@@ -1478,10 +1478,10 @@ void DialogueBinding::registerBinding(lua_State* L)
     registerSetter(L, "responses", Dialogue_set_responses);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    DialogLineDataBoolMapBinding::registerBinding(L, "KenshiLua.DialogLineDataBoolMap", DialogLineDataBinding::getMetatableName(), nullptr);
-    EventRepeatTimersMapBinding::registerBinding(L, "KenshiLua.EventRepeatTimersMap", nullptr, nullptr);
-    EventDeliveredStatesMapBinding::registerBinding(L, "KenshiLua.EventDeliveredStatesMap", nullptr, HandBinding::getMetatableName());
-    ConversationsMainMapBinding::registerBinding(L, "KenshiLua.ConversationsMainMap", nullptr, DialogChoiceListBinding::getMetatableName());
+    DialogLineDataBoolMapBinding::registerBinding(L, "boost_unordered_map<DialogLineData*, bool>", DialogLineDataBinding::getMetatableName(), nullptr);
+    EventRepeatTimersMapBinding::registerBinding(L, "boost_unordered_map<std::string, float>", nullptr, nullptr);
+    EventDeliveredStatesMapBinding::registerBinding(L, "boost_unordered_map<std::string, hand>", nullptr, HandBinding::getMetatableName());
+    ConversationsMainMapBinding::registerBinding(L, "boost_unordered_map<std::string, DialogChoiceList>", nullptr, DialogChoiceListBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -71,7 +71,7 @@ static int FactionRelations_get__factionRelations(lua_State* L)
     return pushObject<ogre_unordered_map<Faction*, FactionRelations::RelationData>::type>(
         L, 
         &instance->_factionRelations, 
-        "KenshiLua.FactionRelationDataMap"
+        "ogre_unordered_map<Faction*, FactionRelationData>"
     );
 }
 
@@ -125,7 +125,7 @@ static int FactionRelations_set__factionRelations(lua_State* L)
     FactionRelations* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionRelations is nil");
     auto* val = OgreUnorderedMapBinding<Faction*, FactionRelations::RelationData>::get(L, 2);
-    if (!val) return luaL_error(L, "Expected FactionRelationDataMap object");
+    if (!val) return luaL_error(L, "Argument 2 to set _factionRelations must be ogre_unordered_map<Faction*, FactionRelationData>");
     instance->_factionRelations = *val;
     return 0;
 }
@@ -652,13 +652,13 @@ void FactionRelationsBinding::registerBinding(lua_State* L)
 
     OgreUnorderedMapBinding<Faction*, float>::registerBinding(
         L, 
-        "KenshiLua.FactionFloatMap", 
+        "ogre_unordered_map<Faction*, float>", 
         FactionBinding::getMetatableName(), 
         nullptr
     );
     OgreUnorderedMapBinding<Faction*, FactionRelations::RelationData>::registerBinding(
         L, 
-        "KenshiLua.FactionRelationDataMap", 
+        "ogre_unordered_map<Faction*, FactionRelationData>", 
         FactionBinding::getMetatableName(), 
         RelationDataBinding::getMetatableName()
     );

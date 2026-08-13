@@ -48,7 +48,7 @@ static int MedicalSystem_get_status(lua_State* L)
 {
     MedicalSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MedicalSystem is nil");
-    return pushObject<ogre_unordered_map<GameData*, MedicalSystem::HealthPartStatus>::type>(L, &instance->status, HealthStatusMapBinding::getMetatableName());
+    return pushObject<ogre_unordered_map<GameData*, MedicalSystem::HealthPartStatus>::type>(L, &instance->status, "ogre_unordered_map<GameData*, HealthPartStatus>");
 }
 
 static int MedicalSystem_get_armourList(lua_State* L)
@@ -1419,7 +1419,7 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
 
     HealthStatusMapBinding::registerBinding(
         L, 
-        "KenshiLua.HealthStatusMap", 
+        "ogre_unordered_map<GameData*, HealthPartStatus>", 
         GameDataBinding::getMetatableName(), 
         HealthPartStatusBinding::getMetatableName()
     );

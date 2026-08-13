@@ -97,7 +97,7 @@ static int TradeCulture_set_tradeGoodsMults(lua_State* L)
     TradeCulture* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TradeCulture is nil");
     StdMapBinding<GameData*, float>::MapType* val = StdMapBinding<GameData*, float>::get(L, 2);
-    if (!val) return luaL_error(L, "Expected OgreMap<GameData*, float>");
+    if (!val) return luaL_error(L, "Expected std::map<GameData*, float>");
     instance->tradeGoodsMults = *val;
     return 0;
 }

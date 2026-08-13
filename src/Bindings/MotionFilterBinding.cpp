@@ -2,9 +2,12 @@
 #include "kenshi\CharMovement.h"
 #include "MotionFilterBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Util/StdDequeBinding.h"
 
 namespace KenshiLua
 {
+typedef StdDequePrimitiveBinding<float> FloatDequeBinding;
+
 
 static MotionFilter* getInstance(lua_State* L, int idx)
 {
@@ -20,12 +23,34 @@ static int MotionFilter_get_mWeightModifier(lua_State* L)
     return 1;
 }
 
+static int MotionFilter_get_mHistoryBufferX(lua_State* L)
+{
+    MotionFilter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MotionFilter is nil");
+    return pushObject<FloatDequeBinding::DequeType>(L, &instance->mHistoryBufferX, "std::deque<float>");
+}
+
 // --- Setters for MotionFilter ---
 static int MotionFilter_set_mWeightModifier(lua_State* L)
 {
     MotionFilter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MotionFilter is nil");
     instance->mWeightModifier = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int MotionFilter_set_mHistoryBufferX(lua_State* L)
+{
+    MotionFilter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MotionFilter is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->mHistoryBufferX.clear();
+        return 0;
+    }
+    auto* src = FloatDequeBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set mHistoryBufferX must be std::deque<float>");
+    instance->mHistoryBufferX = *src;
     return 0;
 }
 
@@ -67,11 +92,6 @@ Skipped methods needing manual binding:
   line 268: void Apply(...) - non-string reference arg
 */
 
-/*
-Skipped properties needing manual binding:
-  line 274: mHistoryBufferX (std::deque<float, std::allocator<float> >) - unsupported type
-*/
-
 int MotionFilterBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -111,11 +131,15 @@ void MotionFilterBinding::registerBinding(lua_State* L)
     luaL_getmetatable(L, MotionFilterBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
     registerGetter(L, "mWeightModifier", MotionFilter_get_mWeightModifier);
+    registerGetter(L, "mHistoryBufferX", MotionFilter_get_mHistoryBufferX);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "mWeightModifier", MotionFilter_set_mWeightModifier);
+    registerSetter(L, "mHistoryBufferX", MotionFilter_set_mHistoryBufferX);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    FloatDequeBinding::registerBinding(L, "std::deque<float>", nullptr);
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

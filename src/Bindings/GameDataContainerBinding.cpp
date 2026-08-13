@@ -54,21 +54,21 @@ static int GameDataContainer_get_gamedataID(lua_State* L)
 {
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
-    return pushObject<ogre_unordered_map<int, GameData*>::type>(L, &instance->gamedataID, "KenshiLua.GameDataIDMap");
+    return pushObject<ogre_unordered_map<int, GameData*>::type>(L, &instance->gamedataID, "ogre_unordered_map<int, GameData*>");
 }
 
 static int GameDataContainer_get_gamedataSID(lua_State* L)
 {
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
-    return pushObject<GameDataSIDMap>(L, &instance->gamedataSID, "KenshiLua.GameDataSIDMap");
+    return pushObject<GameDataSIDMap>(L, &instance->gamedataSID, "boost_unordered_map<std::string, GameData*>");
 }
 
 static int GameDataContainer_get_mainList(lua_State* L)
 {
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
-    return pushObject<ogre_unordered_set<GameData*>::type>(L, &instance->mainList, "KenshiLua.GameDataMainListSet");
+    return pushObject<ogre_unordered_set<GameData*>::type>(L, &instance->mainList, "ogre_unordered_set<GameData*>");
 }
 
 // --- Setters for GameDataContainer ---
@@ -108,7 +108,7 @@ static int GameDataContainer_set_gamedataID(lua_State* L)
 {
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
-    auto* val = checkObject<ogre_unordered_map<int, GameData*>::type>(L, 2, "KenshiLua.GameDataIDMap");
+    auto* val = checkObject<ogre_unordered_map<int, GameData*>::type>(L, 2, "ogre_unordered_map<int, GameData*>");
     if (val) instance->gamedataID = *val;
     return 0;
 }
@@ -117,7 +117,7 @@ static int GameDataContainer_set_gamedataSID(lua_State* L)
 {
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
-    auto* val = checkObject<GameDataSIDMap>(L, 2, "KenshiLua.GameDataSIDMap");
+    auto* val = checkObject<GameDataSIDMap>(L, 2, "boost_unordered_map<std::string, GameData*>");
     if (val) instance->gamedataSID = *val;
     return 0;
 }
@@ -126,7 +126,7 @@ static int GameDataContainer_set_mainList(lua_State* L)
 {
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
-    auto* val = checkObject<ogre_unordered_set<GameData*>::type>(L, 2, "KenshiLua.GameDataMainListSet");
+    auto* val = checkObject<ogre_unordered_set<GameData*>::type>(L, 2, "ogre_unordered_set<GameData*>");
     if (val) instance->mainList = *val;
     return 0;
 }
@@ -371,7 +371,7 @@ int GameDataContainerBinding::_getAllData(lua_State* L)
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
 
     const ogre_unordered_map<int, GameData*>::type& data = instance->_getAllData();
-    return pushObject<ogre_unordered_map<int, GameData*>::type>(L, (ogre_unordered_map<int, GameData*>::type*)&data, "KenshiLua.GameDataIDMap");
+    return pushObject<ogre_unordered_map<int, GameData*>::type>(L, (ogre_unordered_map<int, GameData*>::type*)&data, "ogre_unordered_map<int, GameData*>");
 }
 
 int GameDataContainerBinding::loadGameDataReturn(lua_State* L)
@@ -544,9 +544,9 @@ void GameDataContainerBinding::registerBinding(lua_State* L)
     registerSetter(L, "mainList", GameDataContainer_set_mainList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    OgreUnorderedMapBinding<int, GameData*>::registerBinding(L, "KenshiLua.GameDataIDMap", nullptr, GameDataBinding::getMetatableName());
-    BoostUnorderedMapBinding<std::string, GameData*, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<const std::string, GameData*>, Ogre::GeneralAllocPolicy>>::registerBinding(L, "KenshiLua.GameDataSIDMap", nullptr, GameDataBinding::getMetatableName());
-    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "KenshiLua.GameDataMainListSet", GameDataBinding::getMetatableName());
+    OgreUnorderedMapBinding<int, GameData*>::registerBinding(L, "ogre_unordered_map<int, GameData*>", nullptr, GameDataBinding::getMetatableName());
+    BoostUnorderedMapBinding<std::string, GameData*, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<const std::string, GameData*>, Ogre::GeneralAllocPolicy>>::registerBinding(L, "boost_unordered_map<std::string, GameData*>", nullptr, GameDataBinding::getMetatableName());
+    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "ogre_unordered_set<GameData*>", GameDataBinding::getMetatableName());
     LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", GameDataBinding::getMetatableName());
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

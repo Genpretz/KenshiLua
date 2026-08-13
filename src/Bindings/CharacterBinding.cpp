@@ -4,6 +4,7 @@
 #include "CharacterBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/ActivePlatoonBinding.h"
+#include "Bindings/AkSoundPositionBinding.h"
 #include "Bindings/AppearanceBaseBinding.h"
 #include "Bindings/BountyManagerBinding.h"
 #include "Bindings/Building/BuildingBinding.h"
@@ -46,10 +47,13 @@
 #include "Bindings/AttachedArrowManagerBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
-
+#include "Bindings/Character_RagdollMsgBinding.h"
+#include "Bindings/Util/StdDequeBinding.h"
 
 namespace KenshiLua
 {
+typedef StdDequeValueBinding<Character::RagdollMsg> CharacterRagdollMsgDequeBinding;
+
 
 static Character* getInstance(lua_State* L, int idx)
 {
@@ -5151,15 +5155,65 @@ int CharacterBinding::_NV_reCalculateNaturalWeapon(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  None. All methods from the skipped list have been successfully bound.
+  None. All member functions from Character.h are bound.
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - Character_get_nameTag / Character_set_nameTag: CharacterNameTag* (unbound pointer)
+  - Character_get_ai / Character_set_ai: AI* (unbound pointer)
+  - Character_get_audioObject / Character_set_audioObject: SoundEmitter* (unbound pointer)
+  - Character_get_audioEmitter / Character_set_audioEmitter: SoundEmitter* (unbound pointer)
+  - Character_get_animation / Character_set_animation: AnimationClass* (unbound pointer)
+  - Character_get_naturalWeapon / Character_set_naturalWeapon: Weapon* (unbound pointer)
+  - Character_get_currentStumblePainAnimation / Character_set_currentStumblePainAnimation: AnimationClass* (unbound pointer)
+  - Character_get_stateBroadcast / Character_set_stateBroadcast: SoundEmitter* (unbound pointer)
+  - Character_get_rangedCombat / Character_set_rangedCombat: RangedCombatClass* (unbound pointer)
 */
 
 /*
 Skipped properties needing manual binding:
-  line 717: ragdollMessages (std::deque<Character::RagdollMsg, std::allocator<Character::RagdollMsg> >) - unsupported type
-  line 753: audioData (AkSoundPosition) - unsupported type
-  line 760: particleEffects (lektor<Effect*>) - unsupported type
+  line 760: particleEffects (lektor<Effect*>) - unbound pointer container
 */
+
+static int Character_get_ragdollMessages(lua_State* L)
+{
+    Character* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Character is nil");
+    return pushObject<CharacterRagdollMsgDequeBinding::DequeType>(L, &instance->ragdollMessages, "std::deque<Character::RagdollMsg>");
+}
+
+static int Character_set_ragdollMessages(lua_State* L)
+{
+    Character* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Character is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->ragdollMessages.clear();
+        return 0;
+    }
+    auto* src = CharacterRagdollMsgDequeBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set ragdollMessages must be std::deque<Character::RagdollMsg>");
+    instance->ragdollMessages = *src;
+    return 0;
+}
+
+
+static int Character_get_audioData(lua_State* L)
+{
+    Character* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Character is nil");
+    return pushObject<AkSoundPosition>(L, &instance->audioData, AkSoundPositionBinding::getMetatableName());
+}
+
+static int Character_set_audioData(lua_State* L)
+{
+    Character* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Character is nil");
+    AkSoundPosition* val = checkObject<AkSoundPosition>(L, 2, AkSoundPositionBinding::getMetatableName());
+    instance->audioData = *val;
+    return 0;
+}
 
 static int Character_get_disguiseGUIFeedbacks(lua_State* L)
 {
@@ -5301,8 +5355,7 @@ static int Character_set_audioEmitter(lua_State* L)
     return 0;
 }
 
-
-// --- Method Functions
+// --- Methods for Character ---
 int CharacterBinding::rememberCharacter(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
@@ -6452,6 +6505,10 @@ void CharacterBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "inDoorsSetCooldown");
     lua_pushcfunction(L, Character_get_naturalWeapon);
     lua_setfield(L, -2, "naturalWeapon");
+    lua_pushcfunction(L, Character_get_audioData);
+    lua_setfield(L, -2, "audioData");
+    lua_pushcfunction(L, Character_get_ragdollMessages);
+    lua_setfield(L, -2, "ragdollMessages");
     lua_pushcfunction(L, Character_get_disguiseGUIFeedbacks);
     lua_setfield(L, -2, "disguiseGUIFeedbacks");
     lua_pushcfunction(L, Character_get_whoSeesMeSneaking);
@@ -6599,10 +6656,14 @@ void CharacterBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "nameTag");
     lua_pushcfunction(L, Character_set_ai);
     lua_setfield(L, -2, "ai");
+    lua_pushcfunction(L, Character_set_audioData);
+    lua_setfield(L, -2, "audioData");
     lua_pushcfunction(L, Character_set_audioObject);
     lua_setfield(L, -2, "audioObject");
     lua_pushcfunction(L, Character_set_audioEmitter);
     lua_setfield(L, -2, "audioEmitter");
+    lua_pushcfunction(L, Character_set_ragdollMessages);
+    lua_setfield(L, -2, "ragdollMessages");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to RootObject
@@ -6610,6 +6671,8 @@ void CharacterBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, CharacterBinding::getMetatableName(), RootObjectBinding::getMetatableName());
 
     //LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
+
+    CharacterRagdollMsgDequeBinding::registerBinding(L, "std::deque<Character::RagdollMsg>", Character_RagdollMsgBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -32,6 +32,7 @@
 #include "RootObjectBinding.h"
 #include "TownBaseBinding.h"
 #include "Util/LektorBinding.h"
+#include "Util/StdDequeBinding.h"
 #include <kenshi/Building/Building.h>
 #include <kenshi/Enums.h>
 #include <kenshi/Faction.h>
@@ -45,6 +46,8 @@
 
 namespace KenshiLua
 {
+typedef StdDequePtrBinding<RootObjectFactory::CreatelistItem*> CreatelistItemDequeBinding;
+
 static int RootObjectFactory_get_mutex(lua_State* L) { return 0; }
 static int RootObjectFactory_set_mutex(lua_State* L) { return 0; }
 
@@ -232,36 +235,21 @@ static int RootObjectFactory_get_todoList(lua_State* L)
 {
     RootObjectFactory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObjectFactory is nil");
-
-    lua_newtable(L);
-    int index = 1;
-    for (std::deque<RootObjectFactory::CreatelistItem*>::const_iterator it = instance->todoList.begin(); it != instance->todoList.end(); ++it)
-    {
-        pushObject<RootObjectFactory::CreatelistItem>(L, *it, CreatelistItemBinding::getMetatableName());
-        lua_rawseti(L, -2, index++);
-    }
-    return 1;
+    return pushObject<CreatelistItemDequeBinding::DequeType>(L, &instance->todoList, "std::deque<CreatelistItem*>");
 }
 
 static int RootObjectFactory_set_todoList(lua_State* L)
 {
     RootObjectFactory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObjectFactory is nil");
-
-    if (!lua_istable(L, 2)) return luaL_error(L, "Argument 2 to set 'todoList' must be a table of CreatelistItem");
-
-    instance->todoList.clear();
-    int len = (int)lua_objlen(L, 2);
-    for (int i = 1; i <= len; ++i)
+    if (lua_isnoneornil(L, 2))
     {
-        lua_rawgeti(L, 2, i);
-        RootObjectFactory::CreatelistItem* item = checkObject<RootObjectFactory::CreatelistItem>(L, -1, CreatelistItemBinding::getMetatableName());
-        lua_pop(L, 1);
-        if (item)
-        {
-            instance->todoList.push_back(item);
-        }
+        instance->todoList.clear();
+        return 0;
     }
+    auto* src = CreatelistItemDequeBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set todoList must be std::deque<CreatelistItem*>");
+    instance->todoList = *src;
     return 0;
 }
 
@@ -514,6 +502,8 @@ void RootObjectFactoryBinding::registerBinding(lua_State* L)
     registerSetter(L, "mutex", RootObjectFactory_set_mutex);
     registerSetter(L, "todoList", RootObjectFactory_set_todoList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    CreatelistItemDequeBinding::registerBinding(L, "std::deque<CreatelistItem*>", CreatelistItemBinding::getMetatableName());
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
     // setMetatableParent(L, RootObjectFactoryBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());

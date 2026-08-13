@@ -1,4 +1,5 @@
 #include "pch.h"
+class CraftingItem {};
 #include "Lua/LuaBindings.h"
 #include "Bindings/AABB2DBinding.h"
 #include "Bindings/AIOptionsBinding.h"
@@ -24,6 +25,7 @@
 #include "Bindings/Building/ConstructionStateBinding.h"
 #include "Bindings/Building/ConsumptionItemBinding.h"
 #include "Bindings/Building/CraftingBuildingBinding.h"
+#include <kenshi/Building/CraftingBuilding.h>
 #include "Bindings/Building/CraftingInventoryLayoutBinding.h"
 #include "Bindings/Building/DoorStuffBinding.h"
 #include "Bindings/Building/FarmBatchBinding.h"
@@ -351,6 +353,7 @@
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Bindings/Util/OgreVectorBinding.h"
+#include "Bindings/Util/StdDequeBinding.h"
 #include "Bindings/Util/StdMapBinding.h"
 #include "Bindings/Util/StdSetBinding.h"
 #include "Bindings/Util/StringPairBinding.h"
@@ -510,6 +513,7 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, TownBuildingsManagerBinding::getMetatableName(),             FactoryCallbackInterfaceBinding::getMetatableName());
     setMetatableParent(L, TownListWindowBinding::getMetatableName(),                   NpcListWindowBinding::getMetatableName());
     setMetatableParent(L, TraderInventoryLayoutBinding::getMetatableName(),            InventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, TriggerCallbackBinding::getMetatableName(),                  NxUserTriggerReportBinding::getMetatableName());
     setMetatableParent(L, TurretBuildingBinding::getMetatableName(),                   UseableStuffBinding::getMetatableName());
     setMetatableParent(L, TutorialGUIBinding::getMetatableName(),                      GUIWindowBinding::getMetatableName());
     setMetatableParent(L, TutorialGUILineBinding::getMetatableName(),                  wraps::BaseLayoutBinding::getMetatableName());
@@ -561,7 +565,6 @@ static void registerInheritance(lua_State* L)
     // setMetatableParent(L, ToolTipBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, TransformWindowBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, TreeDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
-    // setMetatableParent(L, TriggerCallbackBinding::getMetatableName(), NxUserTriggerReportBinding::getMetatableName());
     // setMetatableParent(L, TutorialItemBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, TutorialSubItemBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, WeatherRegionBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
@@ -571,7 +574,6 @@ static void registerInheritance(lua_State* L)
 void LuaBindings::registerAll(lua_State* L)
 {
     installKenshiLuaTable(L);
-    registerGlobals(L);
 
     // Register Enums
     registerEnumBindings(L);
@@ -615,18 +617,25 @@ void LuaBindings::registerAll(lua_State* L)
     OgreUnorderedMapBinding<GameData*, WorldStateEnum>::registerBinding(L, "ogre_unordered_map<GameData*, WorldStateEnum>", GameDataBinding::getMetatableName(), nullptr);
     OgreUnorderedMapBinding<WorldEventStateQuery*, bool>::registerBinding(L, "ogre_unordered_map<WorldEventStateQuery*, bool>", WorldEventStateQueryBinding::getMetatableName(), nullptr);
 
-    StdMapBinding<float, CombatTechniqueData*>::registerBinding(L, "OgreMap<float, CombatTechniqueData*>", nullptr, CombatTechniqueDataBinding::getMetatableName());
-    StdMapBinding<CombatTechniqueData*, float>::registerBinding(L, "OgreMap<CombatTechniqueData*, float>", CombatTechniqueDataBinding::getMetatableName(), nullptr);
-    StdMapBinding<float, GameData*>::registerBinding(L, "OgreMap<float, GameData*>", nullptr, GameDataBinding::getMetatableName());
-    StdMapBinding<GameData*, float>::registerBinding(L, "OgreMap<GameData*, float>", GameDataBinding::getMetatableName(), nullptr);
+    StdMapBinding<float, CombatTechniqueData*>::registerBinding(L, "std::map<float, CombatTechniqueData*>", nullptr, CombatTechniqueDataBinding::getMetatableName());
+    StdMapBinding<CombatTechniqueData*, float>::registerBinding(L, "std::map<CombatTechniqueData*, float>", CombatTechniqueDataBinding::getMetatableName(), nullptr);
+    StdMapBinding<float, GameData*>::registerBinding(L, "std::map<float, GameData*>", nullptr, GameDataBinding::getMetatableName());
+    StdMapBinding<GameData*, float>::registerBinding(L, "std::map<GameData*, float>", GameDataBinding::getMetatableName(), nullptr);
     StdMapBinding<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData* const, bool>>>::registerBinding(L, "std::map<GameData*, bool>", GameDataBinding::getMetatableName(), nullptr);
 
     StdSetBinding<hand>::registerBinding(L, "std::set<hand>", HandBinding::getMetatableName());
     StdSetBinding<Faction*>::registerBinding(L, "std::set<Faction*>", FactionBinding::getMetatableName());
     StdSetBinding<GameData*>::registerBinding(L, "std::set<GameData*>", GameDataBinding::getMetatableName());
     
-    FitnessSelectorBinding<CombatTechniqueData*>::registerBinding(L, "FitnessSelector<CombatTechniqueData*>", CombatTechniqueDataBinding::getMetatableName(), "OgreMap<float, CombatTechniqueData*>", "OgreMap<CombatTechniqueData*, float>");
-    FitnessSelectorBinding<GameData*>::registerBinding(L, "FitnessSelector<GameData*>", GameDataBinding::getMetatableName(), "OgreMap<float, GameData*>", "OgreMap<GameData*, float>");
+    FitnessSelectorBinding<CombatTechniqueData*>::registerBinding(L, "FitnessSelector<CombatTechniqueData*>", CombatTechniqueDataBinding::getMetatableName(), "std::map<float, CombatTechniqueData*>", "std::map<CombatTechniqueData*, float>");
+    FitnessSelectorBinding<GameData*>::registerBinding(L, "FitnessSelector<GameData*>", GameDataBinding::getMetatableName(), "std::map<float, GameData*>", "std::map<GameData*, float>");
+
+    StdDequePtrBinding<RootObject*, Ogre::STLAllocator<RootObject*, Ogre::GeneralAllocPolicy>>::registerBinding(L, "std::deque<RootObject*>", RootObjectBinding::getMetatableName());
+    StdDequePtrBinding<NestBatcher*, Ogre::STLAllocator<NestBatcher*, Ogre::GeneralAllocPolicy>>::registerBinding(L, "std::deque<NestBatcher*>", nullptr);
+    StdDequePtrBinding<RootObjectFactory::CreatelistItem*>::registerBinding(L, "std::deque<CreatelistItem*>", CreatelistItemBinding::getMetatableName());
+    StdDequeValueBinding<CraftingItem>::registerBinding(L, "std::deque<CraftingItem>", nullptr);
+    StdDequeValueBinding<Character::RagdollMsg>::registerBinding(L, "std::deque<Character::RagdollMsg>", Character_RagdollMsgBinding::getMetatableName());
+    StdDequePrimitiveBinding<float>::registerBinding(L, "std::deque<float>", nullptr);
 
     // Register Classes
     AABB2DBinding::registerBinding(L);
@@ -656,6 +665,7 @@ void LuaBindings::registerAll(lua_State* L)
     BuildingGroupBinding::registerBinding(L);
     BuildingPlacementGroundTypeBinding::registerBinding(L);
     BuildingSwapsBinding::registerBinding(L);
+    CPerfTimerBinding::registerBinding(L);
     CPerfTimerTBinding::registerBinding(L);
     CameraClassBinding::registerBinding(L);
     CampaignRequestBinding::registerBinding(L);
@@ -787,7 +797,7 @@ void LuaBindings::registerAll(lua_State* L)
     ItemBinding::registerBinding(L);
     ItemDataBinding::registerBinding(L);
     ItemListWindowBinding::registerBinding(L);
-    KenshiLua::GamedataSelectionListBinding::registerBinding(L);
+    GamedataSelectionListBinding::registerBinding(L);
     LevelEditorBinding::registerBinding(L);
     LightBuildingBinding::registerBinding(L);
     LightEntBinding::registerBinding(L);
@@ -996,5 +1006,6 @@ void LuaBindings::registerAll(lua_State* L)
     wraps::BaseLayoutBinding::registerBinding(L);
 
     registerInheritance(L);
+    registerGlobals(L);
 }
 } // namespace KenshiLua

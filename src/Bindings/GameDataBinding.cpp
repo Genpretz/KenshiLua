@@ -916,14 +916,14 @@ void GameDataBinding::registerBinding(lua_State* L)
     registerSetter(L, "quatdata", GameData_set_quatdata);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    OgreVectorValueBinding<GameDataReference>::registerBinding(L, "KenshiLua.OgreVectorGameDataReference", GameDataReferenceBinding::getMetatableName());
+    OgreVectorValueBinding<GameDataReference>::registerBinding(L, "ogre_vector<GameDataReference>", GameDataReferenceBinding::getMetatableName());
 
-    BoostUnorderedMapBinding<std::string, bool>::registerBinding(L, "KenshiLua.StringBoolMap");
-    BoostUnorderedMapBinding<std::string, std::string>::registerBinding(L, "KenshiLua.StringStringMap");
-    BoostUnorderedMapBinding<std::string, int>::registerBinding(L, "KenshiLua.StringIntMap");
-    BoostUnorderedMapBinding<std::string, float>::registerBinding(L, "KenshiLua.StringFloatMap");
-    BoostUnorderedMapBinding<std::string, Ogre::Vector3>::registerBinding(L, "KenshiLua.StringVector3Map");
-    BoostUnorderedMapBinding<std::string, Ogre::Quaternion>::registerBinding(L, "KenshiLua.StringQuaternionMap");
+    BoostUnorderedMapBinding<std::string, bool>::registerBinding(L, "boost_unordered_map<std::string, bool>");
+    BoostUnorderedMapBinding<std::string, std::string>::registerBinding(L, "boost_unordered_map<std::string, std::string>");
+    BoostUnorderedMapBinding<std::string, int>::registerBinding(L, "boost_unordered_map<std::string, int>");
+    BoostUnorderedMapBinding<std::string, float>::registerBinding(L, "boost_unordered_map<std::string, float>");
+    BoostUnorderedMapBinding<std::string, Ogre::Vector3>::registerBinding(L, "boost_unordered_map<std::string, Vector3>");
+    BoostUnorderedMapBinding<std::string, Ogre::Quaternion>::registerBinding(L, "boost_unordered_map<std::string, Quaternion>");
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

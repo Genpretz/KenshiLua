@@ -399,7 +399,7 @@ static int CombatClass_get_stateMap(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    return pushObject<SwordStateMapBinding::MapType>(L, &instance->stateMap, "KenshiLua.SwordStateMap");
+    return pushObject<SwordStateMapBinding::MapType>(L, &instance->stateMap, "ogre_unordered_map<swordStateEnum, CombatState*>");
 }
 
 // --- Setters for CombatClass ---
@@ -1724,6 +1724,8 @@ void CombatClassBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, CombatClassBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    SwordStateMapBinding::registerBinding(L, "ogre_unordered_map<swordStateEnum, CombatState*>", nullptr, nullptr);
 
     // Register global table for static methods
     lua_newtable(L);

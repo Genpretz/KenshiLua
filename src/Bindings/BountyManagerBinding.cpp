@@ -26,7 +26,7 @@ static int BountyManager_get_bounties(lua_State* L)
 {
     BountyManager* instance = getInstance(L, 1);
     if (!instance ) return luaL_error(L, "BountyManager is nil");
-    return pushObject<ogre_unordered_map<Faction*, Bounty>::type>(L, &instance->bounties, "KenshiLua.BountiesMap");
+    return pushObject<ogre_unordered_map<Faction*, Bounty>::type>(L, &instance->bounties, "ogre_unordered_map<Faction*, Bounty>");
 }
 
 static int BountyManager_get_me(lua_State* L)
@@ -116,7 +116,7 @@ static int BountyManager_set_bounties(lua_State* L)
     BountyManager* instance = getInstance(L, 1);
     if (!instance ) return luaL_error(L, "BountyManager is nil");
     auto* val = BountiesMapBinding::get(L, 2);
-    if (!val) return luaL_error(L, "Expected BountiesMap object");
+    if (!val) return luaL_error(L, "Argument 2 to set 'bounties' must be ogre_unordered_map<Faction*, Bounty>");
     instance->bounties = *val;
     return 0;
 }
@@ -596,6 +596,8 @@ void BountyManagerBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    BountiesMapBinding::registerBinding(L, "ogre_unordered_map<Faction*, Bounty>", FactionBinding::getMetatableName(), BountyBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

@@ -372,7 +372,7 @@ static int DialogLineData_get_factionRelationEffects(lua_State* L)
 {
     DialogLineData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogLineData is nil");
-    return pushObject<ogre_unordered_map<GameData*, int>::type>(L, &instance->factionRelationEffects, FactionRelationEffectsMapBinding::metaName);
+    return pushObject<ogre_unordered_map<GameData*, int>::type>(L, &instance->factionRelationEffects, "ogre_unordered_map<GameData*, int>");
 }
 
 static int DialogLineData_get_playerInterruptionDialog(lua_State* L)
@@ -816,7 +816,7 @@ static int DialogLineData_set_factionRelationEffects(lua_State* L)
     DialogLineData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogLineData is nil");
     ogre_unordered_map<GameData*, int>::type* val = FactionRelationEffectsMapBinding::get(L, 2);
-    if (!val) return luaL_error(L, "Expected FactionRelationEffects map object");
+    if (!val) return luaL_error(L, "Argument 2 to set 'factionRelationEffects' must be ogre_unordered_map<GameData*, int>");
     instance->factionRelationEffects = *val;
     return 0;
 }
@@ -1298,7 +1298,7 @@ void DialogLineDataBinding::registerBinding(lua_State* L)
     //LektorValueReadOnlyBinding<GameDataValuePair>::registerBinding(L, "lektor<GameDataValuePair>", GameDataValuePairBinding::getMetatableName());
     //LektorPtrBinding<DialogLineData::DialogCondition*>::registerBinding(L, "lektor<DialogCondition*>", DialogConditionBinding::getMetatableName());
     //LektorPtrBinding<DialogLineData::DialogAction*>::registerBinding(L, "lektor<DialogAction*>", DialogActionBinding::getMetatableName());
-    FactionRelationEffectsMapBinding::registerBinding(L, "KenshiLua.FactionRelationEffectsMap", GameDataBinding::getMetatableName(), nullptr);
+    FactionRelationEffectsMapBinding::registerBinding(L, "ogre_unordered_map<GameData*, int>", GameDataBinding::getMetatableName(), nullptr);
 
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -1,7 +1,25 @@
 #include "pch.h"
+class Layout {};
+class AreaBiomeGroup {};
+class PosRotPair {};
+class StaticBoxEntity {};
 #include "Bindings/Building/FarmBuildingBinding.h"
 #include "Bindings/Building/ProductionBuildingBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/Building/FarmBatchBinding.h"
+#include "Bindings/FarmBuilding_PlantBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/FactionBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Lua/BindingHelpers.h"
+#include <kenshi/GameSaveState.h>
 
 namespace KenshiLua
 {
@@ -16,17 +34,19 @@ static int FarmBuilding_get_cropMultipliers(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    // TODO: Unsupported type for cropMultipliers (ogre_unordered_map<CropType, float>::type)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<ogre_unordered_map<CropType, float>::type>(
+        L, &instance->cropMultipliers, OgreUnorderedMapBinding<CropType, float>::getMetatableName());
 }
 
 static int FarmBuilding_get_material(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    // TODO: Unsupported type for material (Ogre::SharedPtr<Ogre::Material>)
-    lua_pushnil(L);
+    if (instance->material.get()) {
+        lua_pushlightuserdata(L, (void*)instance->material.get());
+    } else {
+        lua_pushnil(L);
+    }
     return 1;
 }
 
@@ -34,7 +54,11 @@ static int FarmBuilding_get_plantEntity(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    lua_pushlightuserdata(L, (void*)instance->plantEntity);
+    if (instance->plantEntity) {
+        lua_pushlightuserdata(L, (void*)instance->plantEntity);
+    } else {
+        lua_pushnil(L);
+    }
     return 1;
 }
 
@@ -42,16 +66,18 @@ static int FarmBuilding_get_plants(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    // TODO: Unsupported type for plants (lektor<FarmBuilding::Plant>)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<lektor<FarmBuilding::Plant>>(L, &instance->plants, LektorValueBinding<FarmBuilding::Plant>::metaName);
 }
 
 static int FarmBuilding_get_clickHull(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    lua_pushlightuserdata(L, (void*)instance->clickHull);
+    if (instance->clickHull) {
+        lua_pushlightuserdata(L, (void*)instance->clickHull);
+    } else {
+        lua_pushnil(L);
+    }
     return 1;
 }
 
@@ -59,8 +85,7 @@ static int FarmBuilding_get_batch(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    lua_pushlightuserdata(L, (void*)instance->batch);
-    return 1;
+    return pushObject<FarmBuilding::FarmBatch>(L, instance->batch, FarmBatchBinding::getMetatableName());
 }
 
 static int FarmBuilding_get_lastUpdated(lua_State* L)
@@ -220,42 +245,51 @@ static int FarmBuilding_set_cropMultipliers(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for cropMultipliers");
+    ogre_unordered_map<CropType, float>::type* val = OgreUnorderedMapBinding<CropType, float>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'cropMultipliers' must be ogre_unordered_map<CropType, float>");
+    instance->cropMultipliers = *val;
+    return 0;
 }
 
 static int FarmBuilding_set_material(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for material");
+    return luaL_error(L, "Property '%s' is read-only or does not exist", lua_tostring(L, 2));
 }
 
 static int FarmBuilding_set_plantEntity(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for plantEntity");
+    instance->plantEntity = (Ogre::Entity*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int FarmBuilding_set_plants(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for plants");
+    lektor<FarmBuilding::Plant>* val = LektorValueBinding<FarmBuilding::Plant>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'plants' must be lektor<FarmBuilding::Plant>");
+    instance->plants = *val;
+    return 0;
 }
 
 static int FarmBuilding_set_clickHull(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for clickHull");
+    instance->clickHull = (StaticBoxEntity*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int FarmBuilding_set_batch(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for batch");
+    instance->batch = lua_isnoneornil(L, 2) ? nullptr : checkObject<FarmBuilding::FarmBatch>(L, 2, FarmBatchBinding::getMetatableName());
+    return 0;
 }
 
 static int FarmBuilding_set_lastUpdated(lua_State* L)
@@ -411,6 +445,23 @@ static int FarmBuilding_set_isHydroponic(lua_State* L)
 }
 
 // --- Methods for FarmBuilding
+int FarmBuildingBinding::_CONSTRUCTOR(lua_State* L)
+{
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    Ogre::Vector3 position;
+    readVector3(L, 3, position);
+    Ogre::Quaternion orientation;
+    readQuaternion(L, 4, orientation);
+    Faction* _participant = checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
+    hand* town = checkObject<hand>(L, 6, HandBinding::getMetatableName());
+    hand* _handle = checkObject<hand>(L, 7, HandBinding::getMetatableName());
+    Layout* __isfurnitureOf = (Layout*)lua_touserdata(L, 8);
+    Building* _indoors = lua_isnoneornil(L, 9) ? nullptr : checkObject<Building>(L, 9, BuildingBinding::getMetatableName());
+
+    FarmBuilding* result = new FarmBuilding(data, position, orientation, _participant, *town, *_handle, __isfurnitureOf, _indoors);
+    return pushObject<FarmBuilding>(L, result, FarmBuildingBinding::getMetatableName());
+}
+
 int FarmBuildingBinding::_DESTRUCTOR(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
@@ -516,6 +567,28 @@ int FarmBuildingBinding::_NV_needsUpdate(lua_State* L)
     return 1;
 }
 
+int FarmBuildingBinding::operate(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->operate(who, amount);
+    return 0;
+}
+
+int FarmBuildingBinding::_NV_operate(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->_NV_operate(who, amount);
+    return 0;
+}
+
 int FarmBuildingBinding::isAnyInputsEmpty(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
@@ -594,6 +667,94 @@ int FarmBuildingBinding::_NV_setupMiningResourceLevel(lua_State* L)
     return 0;
 }
 
+int FarmBuildingBinding::getGUIData(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIData(datapanel, category);
+    return 0;
+}
+
+int FarmBuildingBinding::_NV_getGUIData(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIData(datapanel, category);
+    return 0;
+}
+
+int FarmBuildingBinding::getGUIEfficiency(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIEfficiency(datapanel, category);
+    return 0;
+}
+
+int FarmBuildingBinding::_NV_getGUIEfficiency(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIEfficiency(datapanel, category);
+    return 0;
+}
+
+int FarmBuildingBinding::getGUIWorkers(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIWorkers(datapanel, category);
+    return 0;
+}
+
+int FarmBuildingBinding::_NV_getGUIWorkers(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIWorkers(datapanel, category);
+    return 0;
+}
+
+int FarmBuildingBinding::getGUIState(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIState(datapanel, category);
+    return 0;
+}
+
+int FarmBuildingBinding::_NV_getGUIState(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIState(datapanel, category);
+    return 0;
+}
+
 int FarmBuildingBinding::destroyAPlant(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
@@ -626,6 +787,68 @@ int FarmBuildingBinding::_updateInputs(lua_State* L)
     return 1;
 }
 
+int FarmBuildingBinding::upgrade(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->upgrade(line);
+    return 0;
+}
+
+int FarmBuildingBinding::_NV_upgrade(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_upgrade(line);
+    return 0;
+}
+
+int FarmBuildingBinding::downgrade(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->downgrade(line);
+    return 0;
+}
+
+int FarmBuildingBinding::_NV_downgrade(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_downgrade(line);
+    return 0;
+}
+
+int FarmBuildingBinding::getGUIFertility(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIFertility(datapanel, category);
+    return 0;
+}
+
+int FarmBuildingBinding::_NV_getGUIFertility(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIFertility(datapanel, category);
+    return 0;
+}
+
 int FarmBuildingBinding::isCropsEdible(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
@@ -643,6 +866,82 @@ int FarmBuildingBinding::eat(lua_State* L)
 
     float rate = (float)luaL_checknumber(L, 2);
     instance->eat(rate);
+    return 0;
+}
+
+int FarmBuildingBinding::getYieldChancePerCrop(lua_State* L)
+{
+    if (lua_gettop(L) >= 4) {
+        GameData* farmData = checkObject<GameData>(L, 1, GameDataBinding::getMetatableName());
+        AreaBiomeGroup* biome = (AreaBiomeGroup*)lua_touserdata(L, 2);
+        float skillMult = (float)luaL_checknumber(L, 3);
+        float resourceMult = (float)luaL_checknumber(L, 4);
+        float result = FarmBuilding::getYieldChancePerCrop(farmData, biome, skillMult, resourceMult);
+        lua_pushnumber(L, result);
+        return 1;
+    }
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+    float skillMult = (float)luaL_checknumber(L, 2);
+    float result = instance->getYieldChancePerCrop(skillMult);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int FarmBuildingBinding::getCropMult(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    CropType typ = (CropType)luaL_checkinteger(L, 2);
+    float result = instance->getCropMult(typ);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int FarmBuildingBinding::serialise(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offsetPosToSubtract = (PosRotPair*)lua_touserdata(L, 4);
+
+    GameSaveState result = instance->serialise(container, refList, offsetPosToSubtract);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int FarmBuildingBinding::_NV_serialise(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offsetPosToSubtract = (PosRotPair*)lua_touserdata(L, 4);
+
+    GameSaveState result = instance->_NV_serialise(container, refList, offsetPosToSubtract);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int FarmBuildingBinding::loadFromSerialise(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    GameSaveState* stateList = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->loadFromSerialise(stateList);
+    return 0;
+}
+
+int FarmBuildingBinding::_NV_loadFromSerialise(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    GameSaveState* stateList = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->_NV_loadFromSerialise(stateList);
     return 0;
 }
 
@@ -690,6 +989,15 @@ int FarmBuildingBinding::_NV_dontNeedWorkRightNow(lua_State* L)
     return 1;
 }
 
+int FarmBuildingBinding::getFertilityMultiplier(lua_State* L)
+{
+    float resourceLevel = (float)luaL_checknumber(L, 1);
+    GameData* farmData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    float result = FarmBuilding::getFertilityMultiplier(resourceLevel, farmData);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
 int FarmBuildingBinding::setupMaterial(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
@@ -708,6 +1016,46 @@ int FarmBuildingBinding::updateMaterial(lua_State* L)
     return 0;
 }
 
+int FarmBuildingBinding::updatePlantInstance(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    FarmBuilding::Plant* p = checkObject<FarmBuilding::Plant>(L, 2, FarmBuilding_PlantBinding::getMetatableName());
+    instance->updatePlantInstance(*p);
+    return 0;
+}
+
+int FarmBuildingBinding::createPlants(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    FarmBuilding::FarmBatch* batch = checkObject<FarmBuilding::FarmBatch>(L, 2, FarmBatchBinding::getMetatableName());
+    instance->createPlants(batch);
+    return 0;
+}
+
+int FarmBuildingBinding::createClickHull(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    FarmBuilding::FarmBatch* batch = checkObject<FarmBuilding::FarmBatch>(L, 2, FarmBatchBinding::getMetatableName());
+    instance->createClickHull(batch);
+    return 0;
+}
+
+int FarmBuildingBinding::createEntity(lua_State* L)
+{
+    FarmBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBuilding is nil");
+
+    FarmBuilding::FarmBatch* batch = checkObject<FarmBuilding::FarmBatch>(L, 2, FarmBatchBinding::getMetatableName());
+    instance->createEntity(batch);
+    return 0;
+}
+
 int FarmBuildingBinding::resetFarm(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
@@ -718,41 +1066,16 @@ int FarmBuildingBinding::resetFarm(lua_State* L)
 }
 
 /*
-Skipped methods needing manual binding:
-  line 21: FarmBuilding* _CONSTRUCTOR(...) - unsupported arg type
-  line 34: void operate(...) - unsupported arg type
-  line 35: void _NV_operate(...) - unsupported arg type
-  line 44: void getGUIData(...) - unsupported arg type
-  line 45: void _NV_getGUIData(...) - unsupported arg type
-  line 46: void getGUIEfficiency(...) - unsupported arg type
-  line 47: void _NV_getGUIEfficiency(...) - unsupported arg type
-  line 48: void getGUIWorkers(...) - unsupported arg type
-  line 49: void _NV_getGUIWorkers(...) - unsupported arg type
-  line 50: void getGUIState(...) - unsupported arg type
-  line 51: void _NV_getGUIState(...) - unsupported arg type
-  line 55: void upgrade(...) - unsupported arg type
-  line 56: void _NV_upgrade(...) - unsupported arg type
-  line 57: void downgrade(...) - unsupported arg type
-  line 58: void _NV_downgrade(...) - unsupported arg type
-  line 59: void getGUIFertility(...) - unsupported arg type
-  line 60: void _NV_getGUIFertility(...) - unsupported arg type
-  line 63: float getYieldChancePerCrop(...) - static method
-  line 64: float getYieldChancePerCrop(...) - overloaded method
-  line 65: float getCropMult(...) - unsupported arg type
-  line 67: GameSaveState serialise(...) - unsupported return type
-  line 68: GameSaveState _NV_serialise(...) - unsupported return type
-  line 69: void loadFromSerialise(...) - unsupported arg type
-  line 70: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 75: float getFertilityMultiplier(...) - static method
-  line 149: void updatePlantInstance(...) - non-string reference arg
-  line 150: void createPlants(...) - pointer arg
-  line 151: void createClickHull(...) - pointer arg
-  line 152: void createEntity(...) - pointer arg
+LIGHTUSERDATA DEPENDENCIES:
+  - FarmBuildingBinding::_CONSTRUCTOR: Layout* __isfurnitureOf (unbound pointer)
+  - FarmBuilding_get_material / FarmBuilding_set_material: Ogre::SharedPtr<Ogre::Material> (unbound smart-pointer type)
+  - FarmBuilding_get_plantEntity / FarmBuilding_set_plantEntity: Ogre::Entity* (unbound pointer)
+  - FarmBuilding_get_clickHull / FarmBuilding_set_clickHull: StaticBoxEntity* (unbound pointer)
+  - FarmBuildingBinding::getYieldChancePerCrop: AreaBiomeGroup* biome (unbound pointer)
 */
 
 int FarmBuildingBinding::gc(lua_State* L)
 {
-    // Implementation depends on ownership model
     return 0;
 }
 
@@ -764,6 +1087,8 @@ int FarmBuildingBinding::tostring(lua_State* L)
 
 void FarmBuildingBinding::registerBinding(lua_State* L)
 {
+    OgreUnorderedMapBinding<CropType, float>::registerBinding(L, "ogre_unordered_map<CropType, float>", nullptr, nullptr);
+
     static const luaL_Reg meta[] = {
         { "__gc",       FarmBuildingBinding::gc },
         { "__tostring", FarmBuildingBinding::tostring },
@@ -771,6 +1096,7 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", FarmBuildingBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", FarmBuildingBinding::_DESTRUCTOR },
         { "createPhysical", FarmBuildingBinding::createPhysical },
         { "_NV_createPhysical", FarmBuildingBinding::_NV_createPhysical },
@@ -782,6 +1108,8 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
         { "_NV_update", FarmBuildingBinding::_NV_update },
         { "needsUpdate", FarmBuildingBinding::needsUpdate },
         { "_NV_needsUpdate", FarmBuildingBinding::_NV_needsUpdate },
+        { "operate", FarmBuildingBinding::operate },
+        { "_NV_operate", FarmBuildingBinding::_NV_operate },
         { "isAnyInputsEmpty", FarmBuildingBinding::isAnyInputsEmpty },
         { "_NV_isAnyInputsEmpty", FarmBuildingBinding::_NV_isAnyInputsEmpty },
         { "isProductionFull", FarmBuildingBinding::isProductionFull },
@@ -790,17 +1118,42 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
         { "_NV_howMuchPowerDoYouWantForSortingFunction", FarmBuildingBinding::_NV_howMuchPowerDoYouWantForSortingFunction },
         { "setupMiningResourceLevel", FarmBuildingBinding::setupMiningResourceLevel },
         { "_NV_setupMiningResourceLevel", FarmBuildingBinding::_NV_setupMiningResourceLevel },
+        { "getGUIData", FarmBuildingBinding::getGUIData },
+        { "_NV_getGUIData", FarmBuildingBinding::_NV_getGUIData },
+        { "getGUIEfficiency", FarmBuildingBinding::getGUIEfficiency },
+        { "_NV_getGUIEfficiency", FarmBuildingBinding::_NV_getGUIEfficiency },
+        { "getGUIWorkers", FarmBuildingBinding::getGUIWorkers },
+        { "_NV_getGUIWorkers", FarmBuildingBinding::_NV_getGUIWorkers },
+        { "getGUIState", FarmBuildingBinding::getGUIState },
+        { "_NV_getGUIState", FarmBuildingBinding::_NV_getGUIState },
         { "destroyAPlant", FarmBuildingBinding::destroyAPlant },
         { "timeSkip", FarmBuildingBinding::timeSkip },
         { "_updateInputs", FarmBuildingBinding::_updateInputs },
+        { "upgrade", FarmBuildingBinding::upgrade },
+        { "_NV_upgrade", FarmBuildingBinding::_NV_upgrade },
+        { "downgrade", FarmBuildingBinding::downgrade },
+        { "_NV_downgrade", FarmBuildingBinding::_NV_downgrade },
+        { "getGUIFertility", FarmBuildingBinding::getGUIFertility },
+        { "_NV_getGUIFertility", FarmBuildingBinding::_NV_getGUIFertility },
         { "isCropsEdible", FarmBuildingBinding::isCropsEdible },
         { "eat", FarmBuildingBinding::eat },
+        { "getYieldChancePerCrop", FarmBuildingBinding::getYieldChancePerCrop },
+        { "getCropMult", FarmBuildingBinding::getCropMult },
+        { "serialise", FarmBuildingBinding::serialise },
+        { "_NV_serialise", FarmBuildingBinding::_NV_serialise },
+        { "loadFromSerialise", FarmBuildingBinding::loadFromSerialise },
+        { "_NV_loadFromSerialise", FarmBuildingBinding::_NV_loadFromSerialise },
         { "getDirectionMarker", FarmBuildingBinding::getDirectionMarker },
         { "_NV_getDirectionMarker", FarmBuildingBinding::_NV_getDirectionMarker },
         { "dontNeedWorkRightNow", FarmBuildingBinding::dontNeedWorkRightNow },
         { "_NV_dontNeedWorkRightNow", FarmBuildingBinding::_NV_dontNeedWorkRightNow },
+        { "getFertilityMultiplier", FarmBuildingBinding::getFertilityMultiplier },
         { "setupMaterial", FarmBuildingBinding::setupMaterial },
         { "updateMaterial", FarmBuildingBinding::updateMaterial },
+        { "updatePlantInstance", FarmBuildingBinding::updatePlantInstance },
+        { "createPlants", FarmBuildingBinding::createPlants },
+        { "createClickHull", FarmBuildingBinding::createClickHull },
+        { "createEntity", FarmBuildingBinding::createEntity },
         { "resetFarm", FarmBuildingBinding::resetFarm },
         { 0, 0 }
     };
@@ -920,10 +1273,6 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
     lua_pushcfunction(L, FarmBuilding_set_isHydroponic);
     lua_setfield(L, -2, "isHydroponic");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
-
-    // Wire up inheritance to ProductionBuilding
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, FarmBuildingBinding::getMetatableName(), ProductionBuildingBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

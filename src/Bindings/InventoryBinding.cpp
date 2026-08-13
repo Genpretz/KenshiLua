@@ -782,44 +782,7 @@ int InventoryBinding::_NV__removeFromList(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 128: const hand& getHandle(...) - reference return type
-  line 131: void loadFrom(...) - overloaded method
-  line 132: void loadFrom(...) - overloaded method
-  line 134: void fillFromVendorList(...) - overloaded method
-  line 135: void fillFromVendorList(...) - overloaded method
-  line 142: void getAllSectionsOfType(...) - unsupported arg type
-  line 143: lektor<InventorySection*>& getAllSections(...) - reference return type
-  line 144: bool getExcessLoot(...) - non-string reference arg
-  line 145: void getResourceItems(...) - unsupported arg type
-  line 146: int getNumItems(...) - overloaded method
-  line 147: int getNumItems(...) - overloaded method
-  line 179: bool hasItem(...) - overloaded method
-  line 180: bool hasItem(...) - overloaded method
-  line 184: void getAllStolenItems(...) - unsupported arg type
-  line 186: void getAllItemsOfType(...) - unsupported arg type
-  line 187: void getEquippedWeapons(...) - unsupported arg type
-  line 190: void getEquippedArmour(...) - unsupported arg type
-  line 193: bool takeItem_EntireStack(...) - overloaded method
-  line 194: Item* takeItem_EntireStack(...) - overloaded method
-  line 196: void getAllItemsWithFunction(...) - unsupported arg type
-  line 198: Item* getBestItemWithLowestCharges(...) - overloaded method
-  line 199: Item* getBestItemWithLowestCharges(...) - overloaded method
-  line 227: const lektor<Item*>& getAllItems(...) - reference return type
-*/
 
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - Inventory_get_hasRoomCache: Inventory::HasRoomCache* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 232: _allItems (lektor<Item*>) - unsupported type
-  line 233: sections (boost::unordered::unordered_map<std::string, InventorySection*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, InventorySection*>, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 234: sectionsInSearchOrder (lektor<InventorySection*>) - unsupported type
-*/
 
 int InventoryBinding::gc(lua_State* L)
 {
@@ -847,14 +810,7 @@ static int Inventory_get_sections(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    lua_newtable(L);
-    typedef BoostUnorderedMapBinding<std::string, InventorySection*>::MapType SectionsMap;
-    for (SectionsMap::const_iterator it = instance->sections.begin(); it != instance->sections.end(); ++it)
-    {
-        pushObject<InventorySection>(L, it->second, InventorySectionBinding::getMetatableName());
-        lua_setfield(L, -2, it->first.c_str());
-    }
-    return 1;
+    return BoostUnorderedMapBinding<std::string, InventorySection*>::push(L, &instance->sections);
 }
 
 
@@ -870,7 +826,10 @@ static int Inventory_set__allItems(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for _allItems");
+    lektor<Item*>* list = LektorPtrBinding<Item*>::get(L, 2);
+    if (!list) return luaL_error(L, "Argument 2 to set '_allItems' must be lektor<Item*>");
+    instance->_allItems = *list;
+    return 0;
 }
 
 
@@ -887,7 +846,11 @@ static int Inventory_set_sections(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for sections");
+    typedef BoostUnorderedMapBinding<std::string, InventorySection*>::MapType SectionsMap;
+    SectionsMap* val = BoostUnorderedMapBinding<std::string, InventorySection*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'sections' must be boost::unordered_map<string, InventorySection*>");
+    instance->sections = *val;
+    return 0;
 }
 
 
@@ -895,7 +858,10 @@ static int Inventory_set_sectionsInSearchOrder(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for sectionsInSearchOrder");
+    lektor<InventorySection*>* list = LektorPtrBinding<InventorySection*>::get(L, 2);
+    if (!list) return luaL_error(L, "Argument 2 to set 'sectionsInSearchOrder' must be lektor<InventorySection*>");
+    instance->sectionsInSearchOrder = *list;
+    return 0;
 }
 
 
@@ -1215,7 +1181,7 @@ void InventoryBinding::registerBinding(lua_State* L)
         { "_NV__addToList", InventoryBinding::_NV__addToList },
         { "_removeFromList", InventoryBinding::_removeFromList },
         { "_NV__removeFromList", InventoryBinding::_NV__removeFromList },
-                { "getHandle", InventoryBinding::getHandle },
+        { "getHandle", InventoryBinding::getHandle },
         { "loadFrom", InventoryBinding::loadFrom },
         { "fillFromVendorList", InventoryBinding::fillFromVendorList },
         { "getAllSectionsOfType", InventoryBinding::getAllSectionsOfType },
@@ -1269,6 +1235,8 @@ void InventoryBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, InventoryBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    BoostUnorderedMapBinding<std::string, InventorySection*>::registerBinding(L, "boost_unordered_map<std::string, InventorySection*>", nullptr, InventorySectionBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

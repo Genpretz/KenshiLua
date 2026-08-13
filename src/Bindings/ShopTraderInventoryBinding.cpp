@@ -25,7 +25,7 @@ static int ShopTraderInventory_get_inventories(lua_State* L)
     ShopTraderInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
     return pushObject<ogre_unordered_map<hand, InventorySection*>::type>(
-        L, &instance->inventories, OgreUnorderedMapBinding<hand, InventorySection*>::getMetatableName());
+        L, &instance->inventories, "ogre_unordered_map<hand, InventorySection*>");
 }
 
 static int ShopTraderInventory_get_section(lua_State* L)
@@ -139,8 +139,8 @@ int ShopTraderInventoryBinding::_CONSTRUCTOR(lua_State* L)
     ShopTraderInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
     RootObject* owner = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
-    Ogre::vector<InventorySection*>::type* inventoriesList = checkObject<Ogre::vector<InventorySection*>::type>(L, 3, "KenshiLua.OgreVectorInventorySectionPtr");
-    if (!inventoriesList) return luaL_error(L, "Argument 3 to _CONSTRUCTOR must be OgreVectorInventorySectionPtr");
+    Ogre::vector<InventorySection*>::type* inventoriesList = checkObject<Ogre::vector<InventorySection*>::type>(L, 3, "ogre_vector<InventorySection*>");
+    if (!inventoriesList) return luaL_error(L, "Argument 3 to _CONSTRUCTOR must be ogre_vector<InventorySection*>");
     ShopTraderInventory* result = instance->_CONSTRUCTOR(owner, *inventoriesList);
     return pushObject<ShopTraderInventory>(L, result, ShopTraderInventoryBinding::getMetatableName());
 }
@@ -281,9 +281,9 @@ int ShopTraderInventoryBinding::tostring(lua_State* L)
 void ShopTraderInventoryBinding::registerBinding(lua_State* L)
 {
     OgreUnorderedMapBinding<hand, InventorySection*>::registerBinding(
-        L, "KenshiLua.HandInventorySectionMap", HandBinding::getMetatableName(), InventorySectionBinding::getMetatableName());
+        L, "ogre_unordered_map<hand, InventorySection*>", HandBinding::getMetatableName(), InventorySectionBinding::getMetatableName());
     OgreVectorValueBinding<InventorySection*>::registerBinding(
-        L, "KenshiLua.OgreVectorInventorySectionPtr", InventorySectionBinding::getMetatableName());
+        L, "ogre_vector<InventorySection*>", InventorySectionBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       ShopTraderInventoryBinding::gc },
