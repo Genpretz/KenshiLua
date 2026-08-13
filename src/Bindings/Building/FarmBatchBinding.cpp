@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Bindings/Building/FarmBatchBinding.h"
 #include "Bindings/Building/FarmBuildingBinding.h"
+#include "Bindings/FarmBuilding_PlantSourceBinding.h"
+#include "Bindings/GameDataBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 #include "Lua/BindingHelpers.h"
 
@@ -17,9 +19,7 @@ static int FarmBatch_get_plantSource(lua_State* L)
 {
     FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    // TODO: Unsupported type for plantSource (lektor<FarmBuilding::PlantSource*>)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<lektor<FarmBuilding::PlantSource*>>(L, &instance->plantSource, LektorPtrBinding<FarmBuilding::PlantSource*>::metaName);
 }
 
 static int FarmBatch_get_plantGroups(lua_State* L)
@@ -33,8 +33,11 @@ static int FarmBatch_get_geometry(lua_State* L)
 {
     FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    // TODO: Unsupported type for geometry (Ogre::SharedPtr<Ogre::Mesh>)
-    lua_pushnil(L);
+    if (instance->geometry.get()) {
+        lua_pushlightuserdata(L, (void*)instance->geometry.get());
+    } else {
+        lua_pushnil(L);
+    }
     return 1;
 }
 
@@ -74,7 +77,10 @@ static int FarmBatch_set_plantSource(lua_State* L)
 {
     FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for plantSource");
+    lektor<FarmBuilding::PlantSource*>* val = LektorPtrBinding<FarmBuilding::PlantSource*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'plantSource' must be lektor<FarmBuilding::PlantSource*>");
+    instance->plantSource = *val;
+    return 0;
 }
 
 static int FarmBatch_set_plantGroups(lua_State* L)
@@ -91,7 +97,7 @@ static int FarmBatch_set_geometry(lua_State* L)
 {
     FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for geometry");
+    return luaL_error(L, "Property '%s' is read-only or does not exist", lua_tostring(L, 2));
 }
 
 static int FarmBatch_set_height(lua_State* L)
@@ -128,12 +134,32 @@ static int FarmBatch_set_farms(lua_State* L)
     return 0;
 }
 
+int FarmBatchBinding::_CONSTRUCTOR(lua_State* L)
+{
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    FarmBuilding::FarmBatch* result = new FarmBuilding::FarmBatch(data);
+    return pushObject<FarmBuilding::FarmBatch>(L, result, FarmBatchBinding::getMetatableName());
+}
+
 int FarmBatchBinding::load(lua_State* L)
 {
     FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
 
     instance->load();
+    return 0;
+}
+
+int FarmBatchBinding::meshLoaded(lua_State* L)
+{
+    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FarmBatch is nil");
+
+    Ogre::SharedPtr<Ogre::Resource>* res = (Ogre::SharedPtr<Ogre::Resource>*)lua_touserdata(L, 2);
+    void* entityData = lua_touserdata(L, 3);
+    if (res) {
+        instance->meshLoaded(*res, entityData);
+    }
     return 0;
 }
 
@@ -157,14 +183,13 @@ int FarmBatchBinding::_DESTRUCTOR(lua_State* L)
 }
 
 /*
-Skipped methods needing manual binding:
-  line 102: FarmBatch* _CONSTRUCTOR(...) - unsupported arg type
-  line 104: void meshLoaded(...) - unsupported arg type
+LIGHTUSERDATA DEPENDENCIES:
+  - FarmBatch_get_geometry / FarmBatch_set_geometry: Ogre::SharedPtr<Ogre::Mesh> (unbound pointer/smart-pointer type)
+  - FarmBatchBinding::meshLoaded: Ogre::SharedPtr<Ogre::Resource> and void* entityData (unbound Ogre resource / raw pointer)
 */
 
 int FarmBatchBinding::gc(lua_State* L)
 {
-    // Implementation depends on ownership model
     return 0;
 }
 
@@ -183,7 +208,9 @@ void FarmBatchBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", FarmBatchBinding::_CONSTRUCTOR },
         { "load", FarmBatchBinding::load },
+        { "meshLoaded", FarmBatchBinding::meshLoaded },
         { "createGeometry", FarmBatchBinding::createGeometry },
         { "_DESTRUCTOR", FarmBatchBinding::_DESTRUCTOR },
         { 0, 0 }
@@ -236,4 +263,4 @@ void FarmBatchBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 }
 
-} // namespace KenshiLua
+} // namespace KenshiLua

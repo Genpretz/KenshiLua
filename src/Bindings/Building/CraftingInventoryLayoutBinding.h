@@ -17,6 +17,8 @@ public:
     static int tostring(lua_State* L);
 
     static int _CONSTRUCTOR(lua_State* L);
+    static int setupSections(lua_State* L);
+    static int _NV_setupSections(lua_State* L);
     static int refresh(lua_State* L);
     static int setOutputType(lua_State* L);
     static int setCraftingName(lua_State* L);

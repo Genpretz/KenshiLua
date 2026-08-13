@@ -3,6 +3,8 @@
 #include "ConstructionStateBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/Building/BuildMaterialBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -52,6 +54,13 @@ static int ConstructionState_get_msgDismantleAmount(lua_State* L)
     if (!instance) return luaL_error(L, "ConstructionState is nil");
     lua_pushnumber(L, instance->msgDismantleAmount);
     return 1;
+}
+
+static int ConstructionState_get_mats(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    return pushObject<lektor<Building::ConstructionState::BuildMaterial*>>(L, &instance->mats, "KenshiLua.Lektor_BuildMaterial");
 }
 
 static int ConstructionState_get_totalMats(lua_State* L)
@@ -127,6 +136,16 @@ static int ConstructionState_set_msgDismantleAmount(lua_State* L)
     return 0;
 }
 
+static int ConstructionState_set_mats(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+    auto* val = LektorPtrBinding<Building::ConstructionState::BuildMaterial*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set mats must be lektor<BuildMaterial*>");
+    instance->mats = *val;
+    return 0;
+}
+
 static int ConstructionState_set_totalMats(lua_State* L)
 {
     ConstructionState* instance = getInstance(L, 1);
@@ -157,6 +176,24 @@ static int ConstructionState_set_pathThreshold(lua_State* L)
     if (!instance) return luaL_error(L, "ConstructionState is nil");
     instance->pathThreshold = (float)luaL_checknumber(L, 2);
     return 0;
+}
+
+int ConstructionStateBinding::_CONSTRUCTOR(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+
+    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2))
+    {
+        ConstructionState* other = checkObject<ConstructionState>(L, 2, ConstructionStateBinding::getMetatableName());
+        ConstructionState* result = instance->_CONSTRUCTOR(*other);
+        return pushObject<ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
+    }
+    else
+    {
+        ConstructionState* result = instance->_CONSTRUCTOR();
+        return pushObject<ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
+    }
 }
 
 int ConstructionStateBinding::_DESTRUCTOR(lua_State* L)
@@ -235,8 +272,7 @@ int ConstructionStateBinding::getMaterial(lua_State* L)
 
     const GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     ConstructionState::BuildMaterial* result = instance->getMaterial(d);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ConstructionState::BuildMaterial>(L, result, BuildMaterialBinding::getMetatableName());
 }
 
 int ConstructionStateBinding::setup(lua_State* L)
@@ -269,6 +305,30 @@ int ConstructionStateBinding::getTotalMatsPresent(lua_State* L)
     return 1;
 }
 
+int ConstructionStateBinding::getNeededMats(lua_State* L)
+{
+    ConstructionState* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ConstructionState is nil");
+
+    if (lua_isnoneornil(L, 2))
+    {
+        lektor<Building::ConstructionState::BuildMaterial*> out;
+        instance->getNeededMats(out);
+        lua_newtable(L);
+        for (uint32_t i = 0; i < out.count; ++i)
+        {
+            pushObject<Building::ConstructionState::BuildMaterial>(L, out[i], BuildMaterialBinding::getMetatableName());
+            lua_rawseti(L, -2, (int)i + 1);
+        }
+        return 1;
+    }
+
+    auto* out = LektorPtrBinding<Building::ConstructionState::BuildMaterial*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getNeededMats must be lektor<BuildMaterial*>");
+    instance->getNeededMats(*out);
+    return 0;
+}
+
 int ConstructionStateBinding::needsMat(lua_State* L)
 {
     ConstructionState* instance = getInstance(L, 1);
@@ -290,19 +350,21 @@ int ConstructionStateBinding::needMats(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 102: ConstructionState* _CONSTRUCTOR(...) - overloaded method
-  line 104: ConstructionState* _CONSTRUCTOR(...) - overloaded method
-  line 131: void getNeededMats(...) - unsupported arg type
-  line 134: float getBuildingSpeedMultiplier(...) - static method
-  line 135: float getBuildingTimeInHours(...) - static method
-*/
+int ConstructionStateBinding::getBuildingSpeedMultiplier(lua_State* L)
+{
+    GameData* data = checkObject<GameData>(L, 1, GameDataBinding::getMetatableName());
+    float result = ConstructionState::getBuildingSpeedMultiplier(data);
+    lua_pushnumber(L, result);
+    return 1;
+}
 
-/*
-Skipped properties needing manual binding:
-  line 136: mats (lektor<ConstructionState::BuildMaterial*>) - unsupported type
-*/
+int ConstructionStateBinding::getBuildingTimeInHours(lua_State* L)
+{
+    GameData* data = checkObject<GameData>(L, 1, GameDataBinding::getMetatableName());
+    float result = ConstructionState::getBuildingTimeInHours(data);
+    lua_pushnumber(L, result);
+    return 1;
+}
 
 int ConstructionStateBinding::gc(lua_State* L)
 {
@@ -318,6 +380,8 @@ int ConstructionStateBinding::tostring(lua_State* L)
 
 void ConstructionStateBinding::registerBinding(lua_State* L)
 {
+    LektorPtrBinding<Building::ConstructionState::BuildMaterial*>::registerBinding(L, "KenshiLua.Lektor_BuildMaterial", BuildMaterialBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       ConstructionStateBinding::gc },
         { "__tostring", ConstructionStateBinding::tostring },
@@ -325,6 +389,7 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", ConstructionStateBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", ConstructionStateBinding::_DESTRUCTOR },
         { "addMaterials", ConstructionStateBinding::addMaterials },
         { "materialsEmpty", ConstructionStateBinding::materialsEmpty },
@@ -336,8 +401,11 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
         { "setup", ConstructionStateBinding::setup },
         { "getTotalMats", ConstructionStateBinding::getTotalMats },
         { "getTotalMatsPresent", ConstructionStateBinding::getTotalMatsPresent },
+        { "getNeededMats", ConstructionStateBinding::getNeededMats },
         { "needsMat", ConstructionStateBinding::needsMat },
         { "needMats", ConstructionStateBinding::needMats },
+        { "getBuildingSpeedMultiplier", ConstructionStateBinding::getBuildingSpeedMultiplier },
+        { "getBuildingTimeInHours", ConstructionStateBinding::getBuildingTimeInHours },
         { 0, 0 }
     };
 
@@ -362,6 +430,8 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "constructionProgress");
     lua_pushcfunction(L, ConstructionState_get_msgDismantleAmount);
     lua_setfield(L, -2, "msgDismantleAmount");
+    lua_pushcfunction(L, ConstructionState_get_mats);
+    lua_setfield(L, -2, "mats");
     lua_pushcfunction(L, ConstructionState_get_totalMats);
     lua_setfield(L, -2, "totalMats");
     lua_pushcfunction(L, ConstructionState_get_buildTimeMult);
@@ -383,6 +453,8 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "constructionProgress");
     lua_pushcfunction(L, ConstructionState_set_msgDismantleAmount);
     lua_setfield(L, -2, "msgDismantleAmount");
+    lua_pushcfunction(L, ConstructionState_set_mats);
+    lua_setfield(L, -2, "mats");
     lua_pushcfunction(L, ConstructionState_set_totalMats);
     lua_setfield(L, -2, "totalMats");
     lua_pushcfunction(L, ConstructionState_set_buildTimeMult);

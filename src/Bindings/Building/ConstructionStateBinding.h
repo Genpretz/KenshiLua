@@ -16,6 +16,7 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int addMaterials(lua_State* L);
     static int materialsEmpty(lua_State* L);
@@ -27,7 +28,10 @@ public:
     static int setup(lua_State* L);
     static int getTotalMats(lua_State* L);
     static int getTotalMatsPresent(lua_State* L);
+    static int getNeededMats(lua_State* L);
     static int needsMat(lua_State* L);
     static int needMats(lua_State* L);
+    static int getBuildingSpeedMultiplier(lua_State* L);
+    static int getBuildingTimeInHours(lua_State* L);
 };
 }
