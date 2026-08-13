@@ -70,5 +70,9 @@ public:
     static int _NV_setPatrolInput(lua_State* L);
     static int setDesiredSpeed(lua_State* L);
     static int setDesiredSpeedOrders(lua_State* L);
+    static int onShapeHit(lua_State* L);
+    static int _NV_onShapeHit(lua_State* L);
+    static int onControllerHit(lua_State* L);
+    static int _NV_onControllerHit(lua_State* L);
 };
 }

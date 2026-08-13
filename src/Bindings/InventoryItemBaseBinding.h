@@ -53,5 +53,19 @@ public:
     static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
     static int merchantPriceMod(lua_State* L);
+    static int activate(lua_State* L);
+    static int getStolenItemGUIInfo(lua_State* L);
+    static int getBuyBackGUIInfo(lua_State* L);
+    static int serialise(lua_State* L);
+    static int getTooltipData1(lua_State* L);
+    static int _NV_getTooltipData1(lua_State* L);
+    static int getTooltipData2(lua_State* L);
+    static int _NV_getTooltipData2(lua_State* L);
+    static int addQuantity(lua_State* L);
+    static int getProperOwner(lua_State* L);
+    static int _NV_getProperOwner(lua_State* L);
+    static int setProperOwner(lua_State* L);
+    static int _NV_setProperOwner(lua_State* L);
+    static int getTooltipTradeValue(lua_State* L);
 };
 }

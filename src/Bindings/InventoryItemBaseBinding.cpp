@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "kenshi\Item.h"
+#include "kenshi\GameSaveState.h"
 #include "InventoryItemBaseBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
@@ -13,6 +14,8 @@
 #include "Bindings/Util/YesNoMaybeBinding.h"
 #include "Bindings/Util/iVector2Binding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
+#include "Bindings/Util/OgreVectorBinding.h"
 #include "InventoryBinding.h"
 #include "kenshi/Inventory.h"
 
@@ -783,28 +786,160 @@ int InventoryItemBaseBinding::merchantPriceMod(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 19: void activate(...) - overloaded method
-  line 20: void activate(...) - overloaded method
-  line 24: void getStolenItemGUIInfo(...) - unsupported arg type
-  line 25: void getBuyBackGUIInfo(...) - unsupported arg type
-  line 33: GameSaveState serialise(...) - unsupported arg type
-  line 37: void getTooltipData1(...) - unsupported arg type
-  line 38: void _NV_getTooltipData1(...) - unsupported arg type
-  line 39: void getTooltipData2(...) - unsupported arg type
-  line 40: void _NV_getTooltipData2(...) - unsupported arg type
-  line 57: void addQuantity(...) - non-string reference arg
-  line 58: const hand& getProperOwner(...) - reference return type
-  line 59: const hand& _NV_getProperOwner(...) - reference return type
-  line 60: void setProperOwner(...) - non-string reference arg
-  line 61: void _NV_setProperOwner(...) - non-string reference arg
-  line 91: void getTooltipTradeValue(...) - unsupported arg type
-*/
+int InventoryItemBaseBinding::activate(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    if (lua_gettop(L) >= 7)
+    {
+        bool _a1 = lua_toboolean(L, 2) != 0;
+        Ogre::Vector3 _a2;
+        readVector3(L, 3, _a2);
+        Ogre::Quaternion _a3;
+        readQuaternion(L, 4, _a3);
+        bool _a4 = lua_toboolean(L, 5) != 0;
+        YesNoMaybe _a5 = (YesNoMaybe)(int)luaL_checkinteger(L, 6);
+        bool _a6 = lua_toboolean(L, 7) != 0;
+        instance->activate(_a1, _a2, _a3, _a4, _a5, _a6);
+        return 0;
+    }
+    bool _a1 = lua_toboolean(L, 2) != 0;
+    YesNoMaybe _a2 = (YesNoMaybe)(int)luaL_checkinteger(L, 3);
+    instance->activate(_a1, _a2);
+    return 0;
+}
+
+int InventoryItemBaseBinding::getStolenItemGUIInfo(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getStolenItemGUIInfo must be OgreVectorStringPair");
+    instance->getStolenItemGUIInfo(*lines);
+    return 0;
+}
+
+int InventoryItemBaseBinding::getBuyBackGUIInfo(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getBuyBackGUIInfo must be OgreVectorStringPair");
+    instance->getBuyBackGUIInfo(*lines);
+    return 0;
+}
+
+int InventoryItemBaseBinding::serialise(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offsetPosToSubtract = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->serialise(container, refList, offsetPosToSubtract);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int InventoryItemBaseBinding::getTooltipData1(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData1 must be OgreVectorStringPair");
+    instance->getTooltipData1(*lines);
+    return 0;
+}
+
+int InventoryItemBaseBinding::_NV_getTooltipData1(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData1 must be OgreVectorStringPair");
+    instance->_NV_getTooltipData1(*lines);
+    return 0;
+}
+
+int InventoryItemBaseBinding::getTooltipData2(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData2 must be OgreVectorStringPair");
+    instance->getTooltipData2(*lines);
+    return 0;
+}
+
+int InventoryItemBaseBinding::_NV_getTooltipData2(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData2 must be OgreVectorStringPair");
+    instance->_NV_getTooltipData2(*lines);
+    return 0;
+}
+
+int InventoryItemBaseBinding::addQuantity(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    int amount = (int)luaL_checkinteger(L, 2);
+    Item* addedItem = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    InventorySection* section = checkObject<InventorySection>(L, 4, InventorySectionBinding::getMetatableName());
+    instance->addQuantity(amount, addedItem, section);
+    lua_pushinteger(L, amount);
+    return 1;
+}
+
+int InventoryItemBaseBinding::getProperOwner(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    return HandBinding::push(L, instance->getProperOwner());
+}
+
+int InventoryItemBaseBinding::_NV_getProperOwner(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    return HandBinding::push(L, instance->_NV_getProperOwner());
+}
+
+int InventoryItemBaseBinding::setProperOwner(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to setProperOwner must be hand");
+    instance->setProperOwner(*h);
+    return 0;
+}
+
+int InventoryItemBaseBinding::_NV_setProperOwner(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to _NV_setProperOwner must be hand");
+    instance->_NV_setProperOwner(*h);
+    return 0;
+}
+
+int InventoryItemBaseBinding::getTooltipTradeValue(lua_State* L)
+{
+    InventoryItemBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipTradeValue must be OgreVectorStringPair");
+    instance->getTooltipTradeValue(*lines);
+    return 0;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - InventoryItemBase_get_itemGroup: BuildingItemGroup* (unbound pointer)
+  - InventoryItemBase_set_itemGroup: BuildingItemGroup* (unbound pointer)
   - InventoryItemBaseBinding::getItemSound: const char* (unbound pointer)
 */
 
@@ -820,18 +955,18 @@ int InventoryItemBaseBinding::tostring(lua_State* L)
     return 1;
 }
 
-
-
 static int InventoryItemBase_set_itemGroup(lua_State* L)
 {
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for itemGroup");
+    instance->itemGroup = (BuildingItemGroup*)lua_touserdata(L, 2);
+    return 0;
 }
-
 
 void InventoryItemBaseBinding::registerBinding(lua_State* L)
 {
+    OgreVectorValueBinding<StringPair>::registerBinding(L, "KenshiLua.OgreVectorStringPair", StringPairBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       InventoryItemBaseBinding::gc },
         { "__tostring", InventoryItemBaseBinding::tostring },
@@ -876,6 +1011,20 @@ void InventoryItemBaseBinding::registerBinding(lua_State* L)
         { "_CONSTRUCTOR", InventoryItemBaseBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", InventoryItemBaseBinding::_DESTRUCTOR },
         { "merchantPriceMod", InventoryItemBaseBinding::merchantPriceMod },
+        { "activate", InventoryItemBaseBinding::activate },
+        { "getStolenItemGUIInfo", InventoryItemBaseBinding::getStolenItemGUIInfo },
+        { "getBuyBackGUIInfo", InventoryItemBaseBinding::getBuyBackGUIInfo },
+        { "serialise", InventoryItemBaseBinding::serialise },
+        { "getTooltipData1", InventoryItemBaseBinding::getTooltipData1 },
+        { "_NV_getTooltipData1", InventoryItemBaseBinding::_NV_getTooltipData1 },
+        { "getTooltipData2", InventoryItemBaseBinding::getTooltipData2 },
+        { "_NV_getTooltipData2", InventoryItemBaseBinding::_NV_getTooltipData2 },
+        { "addQuantity", InventoryItemBaseBinding::addQuantity },
+        { "getProperOwner", InventoryItemBaseBinding::getProperOwner },
+        { "_NV_getProperOwner", InventoryItemBaseBinding::_NV_getProperOwner },
+        { "setProperOwner", InventoryItemBaseBinding::setProperOwner },
+        { "_NV_setProperOwner", InventoryItemBaseBinding::_NV_setProperOwner },
+        { "getTooltipTradeValue", InventoryItemBaseBinding::getTooltipTradeValue },
         { 0, 0 }
     };
 

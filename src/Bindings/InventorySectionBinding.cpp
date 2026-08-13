@@ -669,20 +669,8 @@ int InventorySectionBinding::resize(lua_State* L)
 }
 
 /*
-Skipped methods needing manual binding:
-  line 46: bool hasItem(...) - overloaded method
-  line 47: bool hasItem(...) - overloaded method
-  line 51: void getAllItemsOfType(...) - overloaded method
-  line 52: void getAllItemsOfType(...) - overloaded method
-  line 53: void getAllItemsOfName(...) - unsupported arg type
-  line 59: bool getValidInventoryPosition(...) - non-string reference arg
-  line 60: bool findNearestPlaceForItem(...) - non-string reference arg
-  line 61: int getItemsInFootprint(...) - overloaded method
-  line 62: int getItemsInFootprint(...) - overloaded method
-  line 74: const lektor<GameData*>& getVeryLimitedSlot(...) - reference return type
-  line 75: bool isLimitedSlotCompatible(...) - overloaded method
-  line 76: bool isLimitedSlotCompatible(...) - overloaded method
-  line 85: const Ogre::vector<InventorySection::SectionItem>::type& getItems(...) - reference return type
+Skipped methods/members needing manual RVA offset binding if required:
+  - const Ogre::vector<InventorySection::SectionItem>::type& getItems(...) - reference return type
 */
 
 /*
@@ -821,6 +809,75 @@ int InventorySectionBinding::isLimitedSlotCompatible(lua_State* L)
     );
 }
 
+int InventorySectionBinding::getAllItemsOfType(lua_State* L)
+{
+    InventorySection* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventorySection is nil");
+    lektor<Item*>* list = LektorPtrBinding<Item*>::get(L, 2);
+    if (!list) return luaL_error(L, "Argument 2 to getAllItemsOfType must be lektor<Item*>");
+
+    if (Item* item = testObject<Item>(L, 3, ItemBinding::getMetatableName()))
+    {
+        instance->getAllItemsOfType(*list, item);
+        return 0;
+    }
+    if (lua_isnumber(L, 3))
+    {
+        itemType type = (itemType)luaL_checkinteger(L, 3);
+        instance->getAllItemsOfType(*list, type);
+        return 0;
+    }
+    return luaL_error(L, "Argument 3 to getAllItemsOfType must be Item or itemType (enum)");
+}
+
+int InventorySectionBinding::getAllItemsOfName(lua_State* L)
+{
+    InventorySection* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventorySection is nil");
+    lektor<Item*>* list = LektorPtrBinding<Item*>::get(L, 2);
+    if (!list) return luaL_error(L, "Argument 2 to getAllItemsOfName must be lektor<Item*>");
+    const std::string itemName = luaL_checkstring(L, 3);
+    instance->getAllItemsOfName(*list, itemName);
+    return 0;
+}
+
+int InventorySectionBinding::findNearestPlaceForItem(lua_State* L)
+{
+    InventorySection* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventorySection is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    if (!item) return luaL_error(L, "Argument 2 to findNearestPlaceForItem must be Item");
+    int x = 0, y = 0;
+    bool result = instance->findNearestPlaceForItem(item, x, y);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushinteger(L, x);
+    lua_pushinteger(L, y);
+    return 3;
+}
+
+int InventorySectionBinding::getItemsInFootprint(lua_State* L)
+{
+    InventorySection* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventorySection is nil");
+    lektor<Item*>* out = LektorPtrBinding<Item*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getItemsInFootprint must be lektor<Item*>");
+
+    if (Item* item = testObject<Item>(L, 3, ItemBinding::getMetatableName()))
+    {
+        int x = (int)luaL_checkinteger(L, 4);
+        int y = (int)luaL_checkinteger(L, 5);
+        int result = instance->getItemsInFootprint(*out, item, x, y);
+        lua_pushinteger(L, result);
+        return 1;
+    }
+    int itemWidth = (int)luaL_checkinteger(L, 3);
+    int itemHeight = (int)luaL_checkinteger(L, 4);
+    int x = (int)luaL_checkinteger(L, 5);
+    int y = (int)luaL_checkinteger(L, 6);
+    int result = instance->getItemsInFootprint(*out, itemWidth, itemHeight, x, y);
+    lua_pushinteger(L, result);
+    return 1;
+}
 
 void InventorySectionBinding::registerBinding(lua_State* L)
 {
@@ -869,10 +926,14 @@ void InventorySectionBinding::registerBinding(lua_State* L)
         { "setupEquipCallbacks", InventorySectionBinding::setupEquipCallbacks },
         { "numItemsInFootprint", InventorySectionBinding::numItemsInFootprint },
         { "resize", InventorySectionBinding::resize },
-                { "hasItem", InventorySectionBinding::hasItem_Item },
+        { "hasItem", InventorySectionBinding::hasItem_Item },
         { "hasItem", InventorySectionBinding::hasItem_GameData },
         { "isLimitedSlotCompatible", InventorySectionBinding::isLimitedSlotCompatible },
         { "getValidInventoryPosition", InventorySectionBinding::getValidInventoryPosition },
+        { "getAllItemsOfType", InventorySectionBinding::getAllItemsOfType },
+        { "getAllItemsOfName", InventorySectionBinding::getAllItemsOfName },
+        { "findNearestPlaceForItem", InventorySectionBinding::findNearestPlaceForItem },
+        { "getItemsInFootprint", InventorySectionBinding::getItemsInFootprint },
         { 0, 0 }
     };
 

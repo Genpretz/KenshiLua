@@ -58,5 +58,9 @@ public:
     static int hasItem_GameData(lua_State* L);
     static int hasItem_Item(lua_State* L);
     static int isLimitedSlotCompatible(lua_State* L);
+    static int getAllItemsOfType(lua_State* L);
+    static int getAllItemsOfName(lua_State* L);
+    static int findNearestPlaceForItem(lua_State* L);
+    static int getItemsInFootprint(lua_State* L);
 };
 }

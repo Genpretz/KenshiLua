@@ -884,21 +884,70 @@ int AbstractMovementBaseBinding::setDesiredSpeedOrders(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 222: NxControllerAction onShapeHit(...) - protected access
-  line 223: NxControllerAction _NV_onShapeHit(...) - protected access
-  line 224: NxControllerAction onControllerHit(...) - protected access
-  line 225: NxControllerAction _NV_onControllerHit(...) - protected access
-*/
+int AbstractMovementBaseBinding::onShapeHit(lua_State* L)
+{
+    AbstractMovementBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
+    NxControllerShapeHit* hit = (NxControllerShapeHit*)lua_touserdata(L, 2);
+    if (!hit) return luaL_error(L, "Argument 2 to onShapeHit must be NxControllerShapeHit lightuserdata");
+    NxControllerAction result = instance->onShapeHit(*hit);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int AbstractMovementBaseBinding::_NV_onShapeHit(lua_State* L)
+{
+    AbstractMovementBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
+    NxControllerShapeHit* hit = (NxControllerShapeHit*)lua_touserdata(L, 2);
+    if (!hit) return luaL_error(L, "Argument 2 to _NV_onShapeHit must be NxControllerShapeHit lightuserdata");
+    NxControllerAction result = instance->_NV_onShapeHit(*hit);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int AbstractMovementBaseBinding::onControllerHit(lua_State* L)
+{
+    AbstractMovementBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
+    NxControllersHit* hit = (NxControllersHit*)lua_touserdata(L, 2);
+    if (!hit) return luaL_error(L, "Argument 2 to onControllerHit must be NxControllersHit lightuserdata");
+    NxControllerAction result = instance->onControllerHit(*hit);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int AbstractMovementBaseBinding::_NV_onControllerHit(lua_State* L)
+{
+    AbstractMovementBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
+    NxControllersHit* hit = (NxControllersHit*)lua_touserdata(L, 2);
+    if (!hit) return luaL_error(L, "Argument 2 to _NV_onControllerHit must be NxControllersHit lightuserdata");
+    NxControllerAction result = instance->_NV_onControllerHit(*hit);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+static int AbstractMovementBase_set_roadFollower(lua_State* L)
+{
+    AbstractMovementBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
+    instance->roadFollower = (RoadFollower*)lua_touserdata(L, 2);
+    return 0;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - AbstractMovementBase_get_roadFollower: RoadFollower* (unbound pointer)
+  - AbstractMovementBase_set_roadFollower: RoadFollower* (unbound pointer)
   - AbstractMovementBaseBinding::extractRoadFollower: RoadFollower* (unbound pointer)
   - AbstractMovementBaseBinding::setCurrentRoadFollower: RoadFollower* (unbound pointer)
   - AbstractMovementBaseBinding::setPatrolInput: PatrolInfo* (unbound pointer reference)
   - AbstractMovementBaseBinding::_NV_setPatrolInput: PatrolInfo* (unbound pointer reference)
+  - AbstractMovementBaseBinding::onShapeHit: const NxControllerShapeHit& (unbound pointer reference)
+  - AbstractMovementBaseBinding::_NV_onShapeHit: const NxControllerShapeHit& (unbound pointer reference)
+  - AbstractMovementBaseBinding::onControllerHit: const NxControllersHit& (unbound pointer reference)
+  - AbstractMovementBaseBinding::_NV_onControllerHit: const NxControllersHit& (unbound pointer reference)
 */
 
 int AbstractMovementBaseBinding::gc(lua_State* L)
@@ -976,6 +1025,10 @@ void AbstractMovementBaseBinding::registerBinding(lua_State* L)
         { "_NV_setPatrolInput", AbstractMovementBaseBinding::_NV_setPatrolInput },
         { "setDesiredSpeed", AbstractMovementBaseBinding::setDesiredSpeed },
         { "setDesiredSpeedOrders", AbstractMovementBaseBinding::setDesiredSpeedOrders },
+        { "onShapeHit", AbstractMovementBaseBinding::onShapeHit },
+        { "_NV_onShapeHit", AbstractMovementBaseBinding::_NV_onShapeHit },
+        { "onControllerHit", AbstractMovementBaseBinding::onControllerHit },
+        { "_NV_onControllerHit", AbstractMovementBaseBinding::_NV_onControllerHit },
         { 0, 0 }
     };
 
@@ -1023,6 +1076,7 @@ void AbstractMovementBaseBinding::registerBinding(lua_State* L)
     registerSetter(L, "direction", AbstractMovementBase_set_direction);
     registerSetter(L, "destination", AbstractMovementBase_set_destination);
     registerSetter(L, "pathDestination", AbstractMovementBase_set_pathDestination);
+    registerSetter(L, "roadFollower", AbstractMovementBase_set_roadFollower);
     registerSetter(L, "roadWeight", AbstractMovementBase_set_roadWeight);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
