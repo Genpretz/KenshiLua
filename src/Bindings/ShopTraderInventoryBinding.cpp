@@ -4,9 +4,12 @@
 #include "InventoryBinding.h"
 #include "InventorySectionBinding.h"
 #include "ItemBinding.h"
+#include "RootObjectBinding.h"
+#include "ShopTraderInventorySectionBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreVectorBinding.h"
 
 namespace KenshiLua
 {
@@ -29,8 +32,7 @@ static int ShopTraderInventory_get_section(lua_State* L)
 {
     ShopTraderInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
-    lua_pushlightuserdata(L, (void*)instance->section);
-    return 1;
+    return pushObject<ShopTraderInventorySection>(L, instance->section, ShopTraderInventorySectionBinding::getMetatableName());
 }
 
 // --- Setters for ShopTraderInventory ---
@@ -40,7 +42,7 @@ static int ShopTraderInventory_set_inventories(lua_State* L)
     if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
     ogre_unordered_map<hand, InventorySection*>::type* val = 
         OgreUnorderedMapBinding<hand, InventorySection*>::get(L, 2);
-    if (!val) return luaL_error(L, "Expected ogre_unordered_map<hand, InventorySection*>");
+    if (!val) return luaL_error(L, "Argument 2 to set 'inventories' must be ogre_unordered_map<hand, InventorySection*>");
     instance->inventories = *val;
     return 0;
 }
@@ -49,7 +51,8 @@ static int ShopTraderInventory_set_section(lua_State* L)
 {
     ShopTraderInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for section");
+    instance->section = lua_isnoneornil(L, 2) ? nullptr : checkObject<ShopTraderInventorySection>(L, 2, ShopTraderInventorySectionBinding::getMetatableName());
+    return 0;
 }
 
 int ShopTraderInventoryBinding::_DESTRUCTOR(lua_State* L)
@@ -131,21 +134,136 @@ int ShopTraderInventoryBinding::_NV_initialiseNewSection(lua_State* L)
     return pushObject<InventorySection>(L, result, InventorySectionBinding::getMetatableName());
 }
 
+int ShopTraderInventoryBinding::_CONSTRUCTOR(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    RootObject* owner = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    Ogre::vector<InventorySection*>::type* inventoriesList = checkObject<Ogre::vector<InventorySection*>::type>(L, 3, "KenshiLua.OgreVectorInventorySectionPtr");
+    if (!inventoriesList) return luaL_error(L, "Argument 3 to _CONSTRUCTOR must be OgreVectorInventorySectionPtr");
+    ShopTraderInventory* result = instance->_CONSTRUCTOR(owner, *inventoriesList);
+    return pushObject<ShopTraderInventory>(L, result, ShopTraderInventoryBinding::getMetatableName());
+}
+
+int ShopTraderInventoryBinding::dropItem(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    instance->dropItem(item);
+    return 0;
+}
+
+int ShopTraderInventoryBinding::_NV_dropItem(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    instance->_NV_dropItem(item);
+    return 0;
+}
+
+int ShopTraderInventoryBinding::_addItem(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    int quantity = (int)luaL_checkinteger(L, 3);
+    bool result = instance->_addItem(item, quantity);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ShopTraderInventoryBinding::_NV__addItem(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    int quantity = (int)luaL_checkinteger(L, 3);
+    bool result = instance->_NV__addItem(item, quantity);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ShopTraderInventoryBinding::_addItemToInventories(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    bool result = instance->_addItemToInventories(item);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ShopTraderInventoryBinding::_removeItemFromInventories(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    int quantity = (int)luaL_checkinteger(L, 3);
+    instance->_removeItemFromInventories(item, quantity);
+    return 0;
+}
+
+int ShopTraderInventoryBinding::_sectionAddItemCallback(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    instance->_sectionAddItemCallback(item);
+    return 0;
+}
+
+int ShopTraderInventoryBinding::_NV__sectionAddItemCallback(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    instance->_NV__sectionAddItemCallback(item);
+    return 0;
+}
+
+int ShopTraderInventoryBinding::_sectionUpdateItemCallback(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    int prevQuantity = (int)luaL_checkinteger(L, 3);
+    instance->_sectionUpdateItemCallback(item, prevQuantity);
+    return 0;
+}
+
+int ShopTraderInventoryBinding::_NV__sectionUpdateItemCallback(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    int prevQuantity = (int)luaL_checkinteger(L, 3);
+    instance->_NV__sectionUpdateItemCallback(item, prevQuantity);
+    return 0;
+}
+
+int ShopTraderInventoryBinding::_sectionRemoveItemCallback(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    instance->_sectionRemoveItemCallback(item);
+    return 0;
+}
+
+int ShopTraderInventoryBinding::_NV__sectionRemoveItemCallback(lua_State* L)
+{
+    ShopTraderInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    instance->_NV__sectionRemoveItemCallback(item);
+    return 0;
+}
+
 /*
-Skipped methods needing manual binding:
-  line 28: ShopTraderInventory* _CONSTRUCTOR(...) - unsupported arg type
-  line 33: void dropItem(...) - unsupported arg type
-  line 34: void _NV_dropItem(...) - unsupported arg type
-  line 39: bool _addItem(...) - unsupported arg type
-  line 40: bool _NV__addItem(...) - unsupported arg type
-  line 41: bool _addItemToInventories(...) - unsupported arg type
-  line 42: void _removeItemFromInventories(...) - unsupported arg type
-  line 43: void _sectionAddItemCallback(...) - unsupported arg type
-  line 44: void _NV__sectionAddItemCallback(...) - unsupported arg type
-  line 45: void _sectionUpdateItemCallback(...) - unsupported arg type
-  line 46: void _NV__sectionUpdateItemCallback(...) - unsupported arg type
-  line 47: void _sectionRemoveItemCallback(...) - unsupported arg type
-  line 48: void _NV__sectionRemoveItemCallback(...) - unsupported arg type
+Skipped methods/members needing manual RVA offset binding if required:
+  - static bool Updating (RVA = 0x2132458, unexported static symbol)
 */
 
 int ShopTraderInventoryBinding::gc(lua_State* L)
@@ -162,6 +280,11 @@ int ShopTraderInventoryBinding::tostring(lua_State* L)
 
 void ShopTraderInventoryBinding::registerBinding(lua_State* L)
 {
+    OgreUnorderedMapBinding<hand, InventorySection*>::registerBinding(
+        L, "KenshiLua.HandInventorySectionMap", HandBinding::getMetatableName(), InventorySectionBinding::getMetatableName());
+    OgreVectorValueBinding<InventorySection*>::registerBinding(
+        L, "KenshiLua.OgreVectorInventorySectionPtr", InventorySectionBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       ShopTraderInventoryBinding::gc },
         { "__tostring", ShopTraderInventoryBinding::tostring },
@@ -169,13 +292,26 @@ void ShopTraderInventoryBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", ShopTraderInventoryBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", ShopTraderInventoryBinding::_DESTRUCTOR },
         { "updateInventory", ShopTraderInventoryBinding::updateInventory },
         { "_NV_updateInventory", ShopTraderInventoryBinding::_NV_updateInventory },
+        { "dropItem", ShopTraderInventoryBinding::dropItem },
+        { "_NV_dropItem", ShopTraderInventoryBinding::_NV_dropItem },
         { "refreshGui", ShopTraderInventoryBinding::refreshGui },
         { "_NV_refreshGui", ShopTraderInventoryBinding::_NV_refreshGui },
         { "initialiseNewSection", ShopTraderInventoryBinding::initialiseNewSection },
         { "_NV_initialiseNewSection", ShopTraderInventoryBinding::_NV_initialiseNewSection },
+        { "_addItem", ShopTraderInventoryBinding::_addItem },
+        { "_NV__addItem", ShopTraderInventoryBinding::_NV__addItem },
+        { "_addItemToInventories", ShopTraderInventoryBinding::_addItemToInventories },
+        { "_removeItemFromInventories", ShopTraderInventoryBinding::_removeItemFromInventories },
+        { "_sectionAddItemCallback", ShopTraderInventoryBinding::_sectionAddItemCallback },
+        { "_NV__sectionAddItemCallback", ShopTraderInventoryBinding::_NV__sectionAddItemCallback },
+        { "_sectionUpdateItemCallback", ShopTraderInventoryBinding::_sectionUpdateItemCallback },
+        { "_NV__sectionUpdateItemCallback", ShopTraderInventoryBinding::_NV__sectionUpdateItemCallback },
+        { "_sectionRemoveItemCallback", ShopTraderInventoryBinding::_sectionRemoveItemCallback },
+        { "_NV__sectionRemoveItemCallback", ShopTraderInventoryBinding::_NV__sectionRemoveItemCallback },
         { 0, 0 }
     };
 

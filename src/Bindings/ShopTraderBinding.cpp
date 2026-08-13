@@ -1,11 +1,17 @@
 #include "pch.h"
 #include "kenshi\ShopTrader.h"
+#include "kenshi\GameSaveState.h"
 #include "ShopTraderBinding.h"
 #include "CharacterBinding.h"
 #include "InventoryBinding.h"
 #include "ItemBinding.h"
 #include "TownBaseBinding.h"
 #include "RootObjectBinding.h"
+#include "GameDataContainerBinding.h"
+#include "GameDataBinding.h"
+#include "GameSaveStateBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -36,14 +42,16 @@ static int ShopTrader_set_trader(lua_State* L)
 {
     ShopTrader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTrader is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for trader");
+    instance->trader = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    return 0;
 }
 
 static int ShopTrader_set_inventory(lua_State* L)
 {
     ShopTrader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTrader is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for inventory");
+    instance->inventory = lua_isnoneornil(L, 2) ? nullptr : checkObject<Inventory>(L, 2, InventoryBinding::getMetatableName());
+    return 0;
 }
 
 int ShopTraderBinding::_DESTRUCTOR(lua_State* L)
@@ -349,18 +357,88 @@ int ShopTraderBinding::_NV_unequipItem(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 12: ShopTrader* _CONSTRUCTOR(...) - unsupported arg type
-  line 15: void getGUIData(...) - unsupported arg type
-  line 16: void _NV_getGUIData(...) - unsupported arg type
-  line 31: const hand& isIndoors(...) - reference return type
-  line 32: const hand& _NV_isIndoors(...) - reference return type
-  line 39: GameSaveState serialise(...) - unsupported return type
-  line 40: GameSaveState _NV_serialise(...) - unsupported return type
-  line 41: void loadFromSerialise(...) - unsupported arg type
-  line 42: void _NV_loadFromSerialise(...) - unsupported arg type
-*/
+int ShopTraderBinding::_CONSTRUCTOR(lua_State* L)
+{
+    ShopTrader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTrader is nil");
+    Character* trader = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    ShopTrader* result = instance->_CONSTRUCTOR(trader);
+    return pushObject<ShopTrader>(L, result, ShopTraderBinding::getMetatableName());
+}
+
+int ShopTraderBinding::getGUIData(lua_State* L)
+{
+    ShopTrader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTrader is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIData(datapanel, category);
+    return 0;
+}
+
+int ShopTraderBinding::_NV_getGUIData(lua_State* L)
+{
+    ShopTrader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTrader is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIData(datapanel, category);
+    return 0;
+}
+
+int ShopTraderBinding::isIndoors(lua_State* L)
+{
+    ShopTrader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTrader is nil");
+    return HandBinding::push(L, instance->isIndoors());
+}
+
+int ShopTraderBinding::_NV_isIndoors(lua_State* L)
+{
+    ShopTrader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTrader is nil");
+    return HandBinding::push(L, instance->_NV_isIndoors());
+}
+
+int ShopTraderBinding::serialise(lua_State* L)
+{
+    ShopTrader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTrader is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offsetPosToSubtract = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->serialise(container, refList, offsetPosToSubtract);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int ShopTraderBinding::_NV_serialise(lua_State* L)
+{
+    ShopTrader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTrader is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offsetPosToSubtract = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->_NV_serialise(container, refList, offsetPosToSubtract);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int ShopTraderBinding::loadFromSerialise(lua_State* L)
+{
+    ShopTrader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTrader is nil");
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->loadFromSerialise(state);
+    return 0;
+}
+
+int ShopTraderBinding::_NV_loadFromSerialise(lua_State* L)
+{
+    ShopTrader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ShopTrader is nil");
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->_NV_loadFromSerialise(state);
+    return 0;
+}
 
 int ShopTraderBinding::gc(lua_State* L)
 {
@@ -383,7 +461,10 @@ void ShopTraderBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", ShopTraderBinding::_CONSTRUCTOR },
         { "_DESTRUCTOR", ShopTraderBinding::_DESTRUCTOR },
+        { "getGUIData", ShopTraderBinding::getGUIData },
+        { "_NV_getGUIData", ShopTraderBinding::_NV_getGUIData },
         { "getInventory", ShopTraderBinding::getInventory },
         { "_NV_getInventory", ShopTraderBinding::_NV_getInventory },
         { "takeMoney", ShopTraderBinding::takeMoney },
@@ -394,12 +475,18 @@ void ShopTraderBinding::registerBinding(lua_State* L)
         { "_NV_getOrientation", ShopTraderBinding::_NV_getOrientation },
         { "getPosition", ShopTraderBinding::getPosition },
         { "_NV_getPosition", ShopTraderBinding::_NV_getPosition },
+        { "isIndoors", ShopTraderBinding::isIndoors },
+        { "_NV_isIndoors", ShopTraderBinding::_NV_isIndoors },
         { "getFloor", ShopTraderBinding::getFloor },
         { "_NV_getFloor", ShopTraderBinding::_NV_getFloor },
         { "getCurrentTownLocation", ShopTraderBinding::getCurrentTownLocation },
         { "_NV_getCurrentTownLocation", ShopTraderBinding::_NV_getCurrentTownLocation },
         { "getDataType", ShopTraderBinding::getDataType },
         { "_NV_getDataType", ShopTraderBinding::_NV_getDataType },
+        { "serialise", ShopTraderBinding::serialise },
+        { "_NV_serialise", ShopTraderBinding::_NV_serialise },
+        { "loadFromSerialise", ShopTraderBinding::loadFromSerialise },
+        { "_NV_loadFromSerialise", ShopTraderBinding::_NV_loadFromSerialise },
         { "getTrader", ShopTraderBinding::getTrader },
         { "isPhysical", ShopTraderBinding::isPhysical },
         { "_NV_isPhysical", ShopTraderBinding::_NV_isPhysical },

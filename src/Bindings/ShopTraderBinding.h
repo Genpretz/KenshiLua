@@ -16,7 +16,10 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
+    static int getGUIData(lua_State* L);
+    static int _NV_getGUIData(lua_State* L);
     static int getInventory(lua_State* L);
     static int _NV_getInventory(lua_State* L);
     static int takeMoney(lua_State* L);
@@ -27,12 +30,18 @@ public:
     static int _NV_getOrientation(lua_State* L);
     static int getPosition(lua_State* L);
     static int _NV_getPosition(lua_State* L);
+    static int isIndoors(lua_State* L);
+    static int _NV_isIndoors(lua_State* L);
     static int getFloor(lua_State* L);
     static int _NV_getFloor(lua_State* L);
     static int getCurrentTownLocation(lua_State* L);
     static int _NV_getCurrentTownLocation(lua_State* L);
     static int getDataType(lua_State* L);
     static int _NV_getDataType(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
+    static int loadFromSerialise(lua_State* L);
+    static int _NV_loadFromSerialise(lua_State* L);
     static int getTrader(lua_State* L);
     static int isPhysical(lua_State* L);
     static int _NV_isPhysical(lua_State* L);
@@ -49,3 +58,4 @@ public:
     static int _NV_unequipItem(lua_State* L);
 };
 }
+
