@@ -1857,6 +1857,16 @@ void GameWorldBinding::registerBinding(lua_State* L)
     NestBatcherKillListDequeBinding::registerBinding(L, "std::deque<NestBatcher*>", nullptr);
     LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
 
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - GameWorld_get_render / GameWorld_set_render: (unbound pointer)
+  - GameWorld_get_nodeList / GameWorld_set_nodeList: DataObjectContainer* (unbound pointer)
+  - GameWorld_get_messageRoller / GameWorld_set_messageRoller: DatapanelGUI* (unbound pointer)
+  - GameWorld_get_ogreLogger / GameWorld_set_ogreLogger: Ogre::Log* (unbound pointer)
+  - GameWorld_get__AINonRenderThread / GameWorld_set__AINonRenderThread: ThreadClass* (unbound pointer)
+  - GameWorld_get_audioThread / GameWorld_set_audioThread: ThreadClass* (unbound pointer)
+*/
+
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()
     // setMetatableParent(L, GameWorldBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 

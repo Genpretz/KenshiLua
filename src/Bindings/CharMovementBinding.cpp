@@ -385,6 +385,70 @@ static int CharMovement_set_character(lua_State* L)
     return 0;
 }
 
+static int CharMovement_set_formation(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+    instance->formation = lua_isnoneornil(L, 2) ? nullptr : (Formation*)lua_touserdata(L, 2);
+    return 0;
+}
+
+static int CharMovement_set_enemyFormation(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+    instance->enemyFormation = lua_isnoneornil(L, 2) ? nullptr : (Formation*)lua_touserdata(L, 2);
+    return 0;
+}
+
+static int CharMovement_set_havokCharacter(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+    instance->havokCharacter = lua_isnoneornil(L, 2) ? nullptr : (HavokCharacter*)lua_touserdata(L, 2);
+    return 0;
+}
+
+static int CharMovement_set_tracer(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+    instance->tracer = lua_isnoneornil(L, 2) ? nullptr : (ConstantTracerT*)lua_touserdata(L, 2);
+    return 0;
+}
+
+static int CharMovement_set_animation(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+    instance->animation = lua_isnoneornil(L, 2) ? nullptr : (AnimationClass*)lua_touserdata(L, 2);
+    return 0;
+}
+
+static int CharMovement_set_clickHull(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+    instance->clickHull = lua_isnoneornil(L, 2) ? nullptr : (PhysicsHullT*)lua_touserdata(L, 2);
+    return 0;
+}
+
+static int CharMovement_get_movementMode(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+    lua_pushinteger(L, (lua_Integer)instance->movementMode);
+    return 1;
+}
+
+static int CharMovement_set_movementMode(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+    instance->movementMode = (MovementMode)luaL_checkinteger(L, 2);
+    return 0;
+}
+
 int CharMovementBinding::_CONSTRUCTOR(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
@@ -976,7 +1040,7 @@ int CharMovementBinding::getLastGroundTraceResultMT(lua_State* L)
     if (!instance) return luaL_error(L, "CharMovement is nil");
 
     physHit result = instance->getLastGroundTraceResultMT();
-    return pushObject<physHit>(L, &result, physHitBinding::getMetatableName());
+    return pushValue<physHit>(L, result, physHitBinding::getMetatableName());
 }
 
 int CharMovementBinding::getCharacter(lua_State* L)
@@ -1017,26 +1081,49 @@ int CharMovementBinding::getCombatMoveSpeedMult(lua_State* L)
     return 1;
 }
 
+int CharMovementBinding::setMovementMode(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+
+    MovementMode mode = (MovementMode)luaL_checkinteger(L, 2);
+    instance->setMovementMode(mode);
+    return 0;
+}
+
+int CharMovementBinding::isStandingOnSomething(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+
+    const hand& h = instance->isStandingOnSomething();
+    return HandBinding::push(L, h);
+}
+
+int CharMovementBinding::combatMovementOffensive(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+
+    hand* target = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    float minDistance = (float)luaL_checknumber(L, 3);
+    float maxDistance = (float)luaL_checknumber(L, 4);
+    float circle = (float)luaL_checknumber(L, 5);
+    bool power = lua_toboolean(L, 6) != 0;
+    float speedLimit = (float)luaL_checknumber(L, 7);
+
+    instance->combatMovementOffensive(*target, minDistance, maxDistance, circle, power, speedLimit);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 390: void create(...) - unsupported arg type
   line 391: void _NV_create(...) - unsupported arg type
   line 407: void formationUpdateCallback(...) - non-string reference arg
-  line 434: const hand& isStandingOnSomething(...) - reference return type
-  line 435: void setDestination(...) - overloaded method
-  line 436: void _NV_setDestination(...) - overloaded method
-  line 437: void setDestination(...) - overloaded method
-  line 438: void _NV_setDestination(...) - overloaded method
-  line 439: void setDestination(...) - overloaded method
-  line 440: void _NV_setDestination(...) - overloaded method
-  line 441: void setDestination(...) - overloaded method
-  line 442: void _NV_setDestination(...) - overloaded method
   line 448: void setPatrolInput(...) - unsupported arg type
   line 449: void _NV_setPatrolInput(...) - unsupported arg type
-  line 451: void combatMovementOffensive(...) - non-string reference arg
-  line 453: void setLookatTarget(...) - non-string reference arg
   line 457: Ogre::Aabb getAABB(...) - unsupported return type
-  line 469: void setMovementMode(...) - unsupported arg type
   line 473: NxControllerAction onShapeHit(...) - unsupported return type
   line 474: NxControllerAction _NV_onShapeHit(...) - unsupported return type
   line 475: NxControllerAction onControllerHit(...) - unsupported return type
@@ -1045,17 +1132,12 @@ Skipped methods needing manual binding:
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - CharMovement_get_formation: Formation* (unbound pointer)
-  - CharMovement_get_enemyFormation: Formation* (unbound pointer)
-  - CharMovement_get_havokCharacter: HavokCharacter* (unbound pointer)
-  - CharMovement_get_tracer: ConstantTracerT* (unbound pointer)
-  - CharMovement_get_animation: AnimationClass* (unbound pointer)
-  - CharMovement_get_clickHull: PhysicsHullT* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 490: movementMode (MovementMode) - unsupported type
+  - CharMovement_get_formation / CharMovement_set_formation: Formation* (unbound pointer)
+  - CharMovement_get_enemyFormation / CharMovement_set_enemyFormation: Formation* (unbound pointer)
+  - CharMovement_get_havokCharacter / CharMovement_set_havokCharacter: HavokCharacter* (unbound pointer)
+  - CharMovement_get_tracer / CharMovement_set_tracer: ConstantTracerT* (unbound pointer)
+  - CharMovement_get_animation / CharMovement_set_animation: AnimationClass* (unbound pointer)
+  - CharMovement_get_clickHull / CharMovement_set_clickHull: PhysicsHullT* (unbound pointer)
 */
 
 int CharMovementBinding::gc(lua_State* L)
@@ -1069,8 +1151,6 @@ int CharMovementBinding::tostring(lua_State* L)
     lua_pushstring(L, "KenshiLua.CharMovement object");
     return 1;
 }
-
-
 
 int CharMovementBinding::_NV_setDestination(lua_State* L)
 {
@@ -1104,7 +1184,6 @@ int CharMovementBinding::_NV_setDestination(lua_State* L)
     return luaL_error(L, "Argument 2 to _NV_setDestination must be a Vector3 table, Character, Building, or RootObjectBase, got %s", luaL_typename(L, 2));
 }
 
-
 int CharMovementBinding::setDestination(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
@@ -1137,7 +1216,6 @@ int CharMovementBinding::setDestination(lua_State* L)
     return luaL_error(L, "Argument 2 to setDestination must be a Vector3 table, Character, Building, or RootObjectBase, got %s", luaL_typename(L, 2));
 }
 
-
 int CharMovementBinding::setLookatTarget(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
@@ -1147,7 +1225,6 @@ int CharMovementBinding::setLookatTarget(lua_State* L)
     instance->setLookatTarget(*lookatCharacter);
     return 0;
 }
-
 
 void CharMovementBinding::registerBinding(lua_State* L)
 {
@@ -1220,9 +1297,12 @@ void CharMovementBinding::registerBinding(lua_State* L)
         { "toGround", CharMovementBinding::toGround },
         { "updateGroundMaterial", CharMovementBinding::updateGroundMaterial },
         { "getCombatMoveSpeedMult", CharMovementBinding::getCombatMoveSpeedMult },
-                { "setDestination", CharMovementBinding::setDestination },
+        { "setDestination", CharMovementBinding::setDestination },
         { "_NV_setDestination", CharMovementBinding::_NV_setDestination },
         { "setLookatTarget", CharMovementBinding::setLookatTarget },
+        { "setMovementMode", CharMovementBinding::setMovementMode },
+        { "isStandingOnSomething", CharMovementBinding::isStandingOnSomething },
+        { "combatMovementOffensive", CharMovementBinding::combatMovementOffensive },
         { 0, 0 }
     };
 
@@ -1263,6 +1343,7 @@ void CharMovementBinding::registerBinding(lua_State* L)
     registerGetter(L, "animation", CharMovement_get_animation);
     registerGetter(L, "character", CharMovement_get_character);
     registerGetter(L, "clickHull", CharMovement_get_clickHull);
+    registerGetter(L, "movementMode", CharMovement_get_movementMode);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -1270,6 +1351,10 @@ void CharMovementBinding::registerBinding(lua_State* L)
     registerSetter(L, "combatMover", CharMovement_set_combatMover);
     registerSetter(L, "combatMover2", CharMovement_set_combatMover2);
     registerSetter(L, "flockingTools", CharMovement_set_flockingTools);
+    registerSetter(L, "formation", CharMovement_set_formation);
+    registerSetter(L, "enemyFormation", CharMovement_set_enemyFormation);
+    registerSetter(L, "havokCharacter", CharMovement_set_havokCharacter);
+    registerSetter(L, "tracer", CharMovement_set_tracer);
     registerSetter(L, "dontEverRecreateMe", CharMovement_set_dontEverRecreateMe);
     registerSetter(L, "floorGroup", CharMovement_set_floorGroup);
     registerSetter(L, "building", CharMovement_set_building);
@@ -1285,7 +1370,10 @@ void CharMovementBinding::registerBinding(lua_State* L)
     registerSetter(L, "trackingAnimRelocationVector", CharMovement_set_trackingAnimRelocationVector);
     registerSetter(L, "desiredMotion", CharMovement_set_desiredMotion);
     registerSetter(L, "moveLimit", CharMovement_set_moveLimit);
+    registerSetter(L, "animation", CharMovement_set_animation);
     registerSetter(L, "character", CharMovement_set_character);
+    registerSetter(L, "clickHull", CharMovement_set_clickHull);
+    registerSetter(L, "movementMode", CharMovement_set_movementMode);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to AbstractMovementBase

@@ -128,6 +128,14 @@ static int CharBody_get_amIdle(lua_State* L)
 }
 
 // --- Setters for CharBody ---
+static int CharBody_set_animation(lua_State* L)
+{
+    CharBody* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharBody is nil");
+    instance->animation = lua_isnoneornil(L, 2) ? nullptr : (AnimationClass*)lua_touserdata(L, 2);
+    return 0;
+}
+
 static int CharBody_set_combatClass(lua_State* L)
 {
     CharBody* instance = getInstance(L, 1);
@@ -190,6 +198,14 @@ static int CharBody_set_arbitraryCatchupDist(lua_State* L)
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
     instance->arbitraryCatchupDist = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int CharBody_set_ai(lua_State* L)
+{
+    CharBody* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharBody is nil");
+    instance->ai = lua_isnoneornil(L, 2) ? nullptr : (AI*)lua_touserdata(L, 2);
     return 0;
 }
 
@@ -514,22 +530,23 @@ int CharBodyBinding::_NV__endAction(lua_State* L)
     instance->_NV__endAction();
     return 0;
 }
+
 static int CharBody_getHandle(lua_State* L)
 {
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
+
     hand result = instance->getHandle();
-    HandBinding::push(L, result);
-    return 1;
+    return HandBinding::push(L, result);
 }
 
 static int CharBody_getCurrentSubject(lua_State* L)
 {
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
+
     hand result = instance->getCurrentSubject();
-    HandBinding::push(L, result);
-    return 1;
+    return HandBinding::push(L, result);
 }
 
 int CharBodyBinding::create(lua_State* L)
@@ -643,7 +660,6 @@ int CharBodyBinding::_patrol(lua_State* L)
 
 int CharBodyBinding::gc(lua_State* L)
 {
-    // Implementation depends on ownership model
     return 0;
 }
 
@@ -716,69 +732,48 @@ void CharBodyBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, CharBodyBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, CharBody_get_combatClass);
-    lua_setfield(L, -2, "combatClass");
-    lua_pushcfunction(L, CharBody_get_animation);
-    lua_setfield(L, -2, "animation");
-    lua_pushcfunction(L, CharBody_get_character);
-    lua_setfield(L, -2, "character");
-    lua_pushcfunction(L, CharBody_get_stats);
-    lua_setfield(L, -2, "stats");
-    lua_pushcfunction(L, CharBody_get_target);
-    lua_setfield(L, -2, "target");
-    lua_pushcfunction(L, CharBody_get_gotItem);
-    lua_setfield(L, -2, "gotItem");
-    lua_pushcfunction(L, CharBody_get_crouched);
-    lua_setfield(L, -2, "crouched");
-    lua_pushcfunction(L, CharBody_get_jogMode);
-    lua_setfield(L, -2, "jogMode");
-    lua_pushcfunction(L, CharBody_get_arbitraryCatchupDist);
-    lua_setfield(L, -2, "arbitraryCatchupDist");
-    lua_pushcfunction(L, CharBody_get_ai);
-    lua_setfield(L, -2, "ai");
-    lua_pushcfunction(L, CharBody_get_movement);
-    lua_setfield(L, -2, "movement");
-    lua_pushcfunction(L, CharBody_get_frameTIME);
-    lua_setfield(L, -2, "frameTIME");
-    lua_pushcfunction(L, CharBody_get_currentAction);
-    lua_setfield(L, -2, "currentAction");
-    lua_pushcfunction(L, CharBody_get_amIdle);
-    lua_setfield(L, -2, "amIdle");
+    registerGetter(L, "combatClass", CharBody_get_combatClass);
+    registerGetter(L, "animation", CharBody_get_animation);
+    registerGetter(L, "character", CharBody_get_character);
+    registerGetter(L, "stats", CharBody_get_stats);
+    registerGetter(L, "target", CharBody_get_target);
+    registerGetter(L, "gotItem", CharBody_get_gotItem);
+    registerGetter(L, "crouched", CharBody_get_crouched);
+    registerGetter(L, "jogMode", CharBody_get_jogMode);
+    registerGetter(L, "arbitraryCatchupDist", CharBody_get_arbitraryCatchupDist);
+    registerGetter(L, "ai", CharBody_get_ai);
+    registerGetter(L, "movement", CharBody_get_movement);
+    registerGetter(L, "frameTIME", CharBody_get_frameTIME);
+    registerGetter(L, "currentAction", CharBody_get_currentAction);
+    registerGetter(L, "amIdle", CharBody_get_amIdle);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, CharBody_set_combatClass);
-    lua_setfield(L, -2, "combatClass");
-    //lua_pushcfunction(L, CharBody_set_animation);
-    //lua_setfield(L, -2, "animation");
-    lua_pushcfunction(L, CharBody_set_character);
-    lua_setfield(L, -2, "character");
-    lua_pushcfunction(L, CharBody_set_stats);
-    lua_setfield(L, -2, "stats");
-    lua_pushcfunction(L, CharBody_set_target);
-    lua_setfield(L, -2, "target");
-    lua_pushcfunction(L, CharBody_set_gotItem);
-    lua_setfield(L, -2, "gotItem");
-    lua_pushcfunction(L, CharBody_set_crouched);
-    lua_setfield(L, -2, "crouched");
-    lua_pushcfunction(L, CharBody_set_jogMode);
-    lua_setfield(L, -2, "jogMode");
-    lua_pushcfunction(L, CharBody_set_arbitraryCatchupDist);
-    lua_setfield(L, -2, "arbitraryCatchupDist");
-    // lua_pushcfunction(L, CharBody_set_ai);
-    // lua_setfield(L, -2, "ai");
-    lua_pushcfunction(L, CharBody_set_movement);
-    lua_setfield(L, -2, "movement");
-    lua_pushcfunction(L, CharBody_set_frameTIME);
-    lua_setfield(L, -2, "frameTIME");
-    lua_pushcfunction(L, CharBody_set_currentAction);
-    lua_setfield(L, -2, "currentAction");
-    lua_pushcfunction(L, CharBody_set_amIdle);
-    lua_setfield(L, -2, "amIdle");
+    registerSetter(L, "combatClass", CharBody_set_combatClass);
+    registerSetter(L, "animation", CharBody_set_animation);
+    registerSetter(L, "character", CharBody_set_character);
+    registerSetter(L, "stats", CharBody_set_stats);
+    registerSetter(L, "target", CharBody_set_target);
+    registerSetter(L, "gotItem", CharBody_set_gotItem);
+    registerSetter(L, "crouched", CharBody_set_crouched);
+    registerSetter(L, "jogMode", CharBody_set_jogMode);
+    registerSetter(L, "arbitraryCatchupDist", CharBody_set_arbitraryCatchupDist);
+    registerSetter(L, "ai", CharBody_set_ai);
+    registerSetter(L, "movement", CharBody_set_movement);
+    registerSetter(L, "frameTIME", CharBody_set_frameTIME);
+    registerSetter(L, "currentAction", CharBody_set_currentAction);
+    registerSetter(L, "amIdle", CharBody_set_amIdle);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
     // setMetatableParent(L, CharBodyBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - CharBody_get_animation / CharBody_set_animation: AnimationClass* (unbound pointer)
+  - CharBody_get_ai / CharBody_set_ai: AI* (unbound pointer)
+  - CharBody::_patrol: PatrolInfo*, AITaskSytem* (unbound pointers)
+*/
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

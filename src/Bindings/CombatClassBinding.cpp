@@ -1727,6 +1727,13 @@ void CombatClassBinding::registerBinding(lua_State* L)
 
     SwordStateMapBinding::registerBinding(L, "ogre_unordered_map<swordStateEnum, CombatState*>", nullptr, nullptr);
 
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - CombatClass_get_ai / CombatClass_set_ai: AI* (unbound pointer)
+  - CombatClass_get_animation / CombatClass_set_animation: AnimationClass* (unbound pointer)
+  - CombatClass::getStateClass: CombatState* (unbound pointer)
+*/
+
     // Register global table for static methods
     lua_newtable(L);
     lua_pushcfunction(L, CombatClassBinding::setup);
