@@ -3,6 +3,13 @@
 #include "CPerfTimerBinding.h"
 #include "Lua/BindingHelpers.h"
 
+__int64 CPerfTimer::m_Freq = 0;
+__int64 CPerfTimer::m_Adjust = 0;
+
+const double CPerfTimer::Resolution() { return 1.0 / (double)m_Freq; }
+const double CPerfTimer::Resolutionms() { return 1000.0 / (double)m_Freq; }
+const double CPerfTimer::Resolutionus() { return 1000000.0 / (double)m_Freq; }
+
 namespace KenshiLua
 {
 
