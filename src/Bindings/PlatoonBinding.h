@@ -81,5 +81,6 @@ public:
     static int needsNewCharacters(lua_State* L);
     static int reCheckPersistenceOnUnload(lua_State* L);
     static int _NV_reCheckPersistenceOnUnload(lua_State* L);
+    static int getSquadLeader_theRealOne(lua_State* L);
 };
 }

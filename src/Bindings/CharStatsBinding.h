@@ -135,8 +135,6 @@ public:
     static int formatWholeStatStringWithBonuses(lua_State* L);
     static int getAthletics(lua_State* L);
     static int getAthleticsTooltip(lua_State* L);
-    static int getAttacks(lua_State* L);
-    static int getBlocks(lua_State* L);
     static int getDexterity(lua_State* L);
     static int getDexterityBase(lua_State* L);
     static int getMeleeAttackRef(lua_State* L);

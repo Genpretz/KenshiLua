@@ -145,5 +145,19 @@ public:
     static int _NV_addGate(lua_State* L);
     static int addOccupier(lua_State* L);
     static int removeOccupier(lua_State* L);
+    static int getAlarmState(lua_State* L);
+    static int _NV_getAlarmState(lua_State* L);
+    static int setAlarmState(lua_State* L);
+    static int _NV_setAlarmState(lua_State* L);
+    static int setHandle(lua_State* L);
+    static int _NV_setHandle(lua_State* L);
+    static int getUnexploredName(lua_State* L);
+    static int _NV_getUnexploredName(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
+    static int delayedSpawningChecks(lua_State* L);
+    static int clearDelayedItemLoadingMessages(lua_State* L);
+    static int getZonesCoverage(lua_State* L);
+    static int spawnDebris(lua_State* L);
 };
 }

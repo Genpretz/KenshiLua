@@ -589,6 +589,15 @@ static int CombatClass_set_blockingTargetH(lua_State* L)
     return 0;
 }
 
+static int CombatClass_set_targetsInAttackZone(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+    auto* val = checkObject<lektor<hand>>(L, 2, LektorValueReadOnlyBinding<hand>::metaName);
+    if (val) instance->targetsInAttackZone = *val;
+    return 0;
+}
+
 static int CombatClass_set_attackersH(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
@@ -808,6 +817,36 @@ int CombatClassBinding::_NV_isAI(lua_State* L)
     return 1;
 }
 
+int CombatClassBinding::initCombatMode(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    hand* subject = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!subject) return luaL_error(L, "Argument 2 to initCombatMode must be hand");
+    int end = (int)luaL_checkinteger(L, 3);
+    bool focusedTarget = lua_toboolean(L, 4) != 0;
+
+    bool result = instance->initCombatMode(*subject, end, focusedTarget);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int CombatClassBinding::_NV_initCombatMode(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    hand* subject = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!subject) return luaL_error(L, "Argument 2 to _NV_initCombatMode must be hand");
+    int end = (int)luaL_checkinteger(L, 3);
+    bool focusedTarget = lua_toboolean(L, 4) != 0;
+
+    bool result = instance->_NV_initCombatMode(*subject, end, focusedTarget);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 int CombatClassBinding::go(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
@@ -865,6 +904,65 @@ int CombatClassBinding::_NV_periodicUpdate(lua_State* L)
 
     float time = (float)luaL_checknumber(L, 2);
     instance->_NV_periodicUpdate(time);
+    return 0;
+}
+
+int CombatClassBinding::whoAttacksYouOrMe(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    Character* attacker = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float dist = (float)luaL_checknumber(L, 3);
+    float outDist = 0.0f;
+
+    swordStateEnum result = instance->whoAttacksYouOrMe(attacker, dist, outDist);
+    lua_pushinteger(L, (lua_Integer)result);
+    lua_pushnumber(L, outDist);
+    return 2;
+}
+
+int CombatClassBinding::_iHitYouAreYouHit(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to _iHitYouAreYouHit must be Damages");
+    Character* who = lua_isnoneornil(L, 4) ? nullptr : checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+
+    HitMaterialType result = instance->_iHitYouAreYouHit(dir, *damage, who);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int CombatClassBinding::_getHit(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to _getHit must be Damages");
+    RootObject* who = lua_isnoneornil(L, 4) ? nullptr : checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    bool stumble = lua_toboolean(L, 5) != 0;
+
+    instance->_getHit(dir, *damage, who, stumble);
+    return 0;
+}
+
+int CombatClassBinding::_blockHit(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to _blockHit must be Damages");
+    RootObject* who = lua_isnoneornil(L, 4) ? nullptr : checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+
+    instance->_blockHit(dir, *damage, who);
     return 0;
 }
 
@@ -968,6 +1066,15 @@ int CombatClassBinding::areYouFightingAndInNeedOfHelp(lua_State* L)
     return 1;
 }
 
+int CombatClassBinding::getAttackers(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    lektor<hand>& result = instance->getAttackers();
+    return pushObject<lektor<hand>>(L, &result, LektorValueReadOnlyBinding<hand>::metaName);
+}
+
 int CombatClassBinding::getNumOpponents(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
@@ -1038,6 +1145,18 @@ int CombatClassBinding::removeAttackerH(lua_State* L)
     bool result = instance->removeAttackerH(c);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
+}
+
+int CombatClassBinding::youDoKnowImAttackingYouRight(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to youDoKnowImAttackingYouRight must be hand");
+
+    instance->youDoKnowImAttackingYouRight(*h);
+    return 0;
 }
 
 int CombatClassBinding::getAttackAimAdjustmentThreshold(lua_State* L)
@@ -1333,6 +1452,18 @@ int CombatClassBinding::getNearestEnemyInAttackZone(lua_State* L)
     return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
 }
 
+int CombatClassBinding::assessIncomingAttacks(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    lektor<Character*>* outLektor = checkObject<lektor<Character*>>(L, 2, LektorPtrBinding<Character*>::metaName);
+    if (!outLektor) return luaL_error(L, "Argument 2 to assessIncomingAttacks must be lektor<Character*>");
+
+    instance->assessIncomingAttacks(*outLektor);
+    return 0;
+}
+
 int CombatClassBinding::notifyBlockNeeded(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
@@ -1340,6 +1471,20 @@ int CombatClassBinding::notifyBlockNeeded(lua_State* L)
 
     instance->notifyBlockNeeded();
     return 0;
+}
+
+int CombatClassBinding::calculateCurrentTechniqueSection(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    int section = 0;
+    float progress01 = 0.0f;
+    instance->calculateCurrentTechniqueSection(section, progress01);
+
+    lua_pushinteger(L, section);
+    lua_pushnumber(L, progress01);
+    return 2;
 }
 
 int CombatClassBinding::weaponReach(lua_State* L)
@@ -1350,6 +1495,19 @@ int CombatClassBinding::weaponReach(lua_State* L)
     float result = instance->weaponReach();
     lua_pushnumber(L, result);
     return 1;
+}
+
+int CombatClassBinding::getBiggestThreat(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    lektor<Character*>* list = checkObject<lektor<Character*>>(L, 2, LektorPtrBinding<Character*>::metaName);
+    if (!list) return luaL_error(L, "Argument 2 to getBiggestThreat must be lektor<Character*>");
+    float minThreshold = (float)luaL_checknumber(L, 3);
+
+    Character* result = instance->getBiggestThreat(*list, minThreshold);
+    return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
 }
 
 int CombatClassBinding::gotMoreImportantThingsToDoThanFightingYou(lua_State* L)
@@ -1497,35 +1655,14 @@ int CombatClassBinding::updateEffects(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 64: bool initCombatMode(...) - non-string reference arg
-  line 65: bool _NV_initCombatMode(...) - non-string reference arg
-  line 72: swordStateEnum whoAttacksYouOrMe(...) - non-string reference arg
-  line 73: HitMaterialType _iHitYouAreYouHit(...) - non-string reference arg
-  line 74: void _getHit(...) - non-string reference arg
-  line 75: void _blockHit(...) - non-string reference arg
-  line 87: lektor<hand>& getAttackers(...) - reference return type
-  line 134: void youDoKnowImAttackingYouRight(...) - non-string reference arg
-  line 149: CombatClass* _CONSTRUCTOR(...) - unsupported arg type
-  line 201: void assessIncomingAttacks(...) - unsupported arg type
-  line 212: void calculateCurrentTechniqueSection(...) - non-string reference arg
-  line 220: Character* getBiggestThreat(...) - unsupported arg type
+  line 149: CombatClass* _CONSTRUCTOR(...) - requires unbound types AI* and AnimationClass*
 */
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - CombatClass_get_ai: AI* (unbound pointer)
-  - CombatClass_get_animation: AnimationClass* (unbound pointer)
-  - CombatClassBinding::getStateClass: CombatState* (unbound pointer)
-  - CombatClassBinding::_NV_getStateClass: CombatState* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 198: targetsInAttackZone (lektor<hand>) - unsupported type
-  line 205: attackersH (lektor<hand>) - unsupported type
-  line 209: threats (lektor<Character*>) - unsupported type
-  line 210: threatsH (lektor<hand>) - unsupported type
-  line 211: notifiedThreats (lektor<hand>) - unsupported type
+  - CombatClass_get_ai / CombatClass_set_ai: AI* (unbound pointer)
+  - CombatClass_get_animation / CombatClass_set_animation: AnimationClass* (unbound pointer)
+  - CombatClass::getStateClass: CombatState* (unbound pointer)
 */
 
 int CombatClassBinding::gc(lua_State* L)
@@ -1552,12 +1689,18 @@ void CombatClassBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", CombatClassBinding::_DESTRUCTOR },
         { "isAI", CombatClassBinding::isAI },
         { "_NV_isAI", CombatClassBinding::_NV_isAI },
+        { "initCombatMode", CombatClassBinding::initCombatMode },
+        { "_NV_initCombatMode", CombatClassBinding::_NV_initCombatMode },
         { "go", CombatClassBinding::go },
         { "_NV_go", CombatClassBinding::_NV_go },
         { "getCombatState", CombatClassBinding::getCombatState },
         { "getBlockStateEnum", CombatClassBinding::getBlockStateEnum },
         { "periodicUpdate", CombatClassBinding::periodicUpdate },
         { "_NV_periodicUpdate", CombatClassBinding::_NV_periodicUpdate },
+        { "whoAttacksYouOrMe", CombatClassBinding::whoAttacksYouOrMe },
+        { "_iHitYouAreYouHit", CombatClassBinding::_iHitYouAreYouHit },
+        { "_getHit", CombatClassBinding::_getHit },
+        { "_blockHit", CombatClassBinding::_blockHit },
         { "isAttacking", CombatClassBinding::isAttacking },
         { "informOfFreeAttackSlot", CombatClassBinding::informOfFreeAttackSlot },
         { "_NV_informOfFreeAttackSlot", CombatClassBinding::_NV_informOfFreeAttackSlot },
@@ -1568,6 +1711,7 @@ void CombatClassBinding::registerBinding(lua_State* L)
         { "getCurrentTechniqueSection", CombatClassBinding::getCurrentTechniqueSection },
         { "getMeiMin", CombatClassBinding::getMeiMin },
         { "areYouFightingAndInNeedOfHelp", CombatClassBinding::areYouFightingAndInNeedOfHelp },
+        { "getAttackers", CombatClassBinding::getAttackers },
         { "getNumOpponents", CombatClassBinding::getNumOpponents },
         { "getTotalRelativeStrengthOfAttackers", CombatClassBinding::getTotalRelativeStrengthOfAttackers },
         { "_isInCombatMode", CombatClassBinding::_isInCombatMode },
@@ -1575,6 +1719,7 @@ void CombatClassBinding::registerBinding(lua_State* L)
         { "addAttackerH", CombatClassBinding::addAttackerH },
         { "isInAttackerListH", CombatClassBinding::isInAttackerListH },
         { "removeAttackerH", CombatClassBinding::removeAttackerH },
+        { "youDoKnowImAttackingYouRight", CombatClassBinding::youDoKnowImAttackingYouRight },
         { "getAttackAimAdjustmentThreshold", CombatClassBinding::getAttackAimAdjustmentThreshold },
         { "getNumWaitingAttackers", CombatClassBinding::getNumWaitingAttackers },
         { "readyToFinishCombatMode", CombatClassBinding::readyToFinishCombatMode },
@@ -1604,8 +1749,11 @@ void CombatClassBinding::registerBinding(lua_State* L)
         { "calculateTargetsInAttackZone", CombatClassBinding::calculateTargetsInAttackZone },
         { "isInAttackZone", CombatClassBinding::isInAttackZone },
         { "getNearestEnemyInAttackZone", CombatClassBinding::getNearestEnemyInAttackZone },
+        { "assessIncomingAttacks", CombatClassBinding::assessIncomingAttacks },
         { "notifyBlockNeeded", CombatClassBinding::notifyBlockNeeded },
+        { "calculateCurrentTechniqueSection", CombatClassBinding::calculateCurrentTechniqueSection },
         { "weaponReach", CombatClassBinding::weaponReach },
+        { "getBiggestThreat", CombatClassBinding::getBiggestThreat },
         { "gotMoreImportantThingsToDoThanFightingYou", CombatClassBinding::gotMoreImportantThingsToDoThanFightingYou },
         { "_NV_gotMoreImportantThingsToDoThanFightingYou", CombatClassBinding::_NV_gotMoreImportantThingsToDoThanFightingYou },
         { "setAttackTarget", CombatClassBinding::setAttackTarget },
@@ -1654,6 +1802,11 @@ void CombatClassBinding::registerBinding(lua_State* L)
     registerGetter(L, "myRadiusX", CombatClass_get_myRadiusX);
     registerGetter(L, "blockingTarget", CombatClass_get_blockingTarget);
     registerGetter(L, "blockingTargetH", CombatClass_get_blockingTargetH);
+    registerGetter(L, "targetsInAttackZone", CombatClass_get_targetsInAttackZone);
+    registerGetter(L, "attackersH", CombatClass_get_attackersH);
+    registerGetter(L, "threats", CombatClass_get_threats);
+    registerGetter(L, "threatsH", CombatClass_get_threatsH);
+    registerGetter(L, "notifiedThreats", CombatClass_get_notifiedThreats);
     registerGetter(L, "lastIncomingAttackComboSection", CombatClass_get_lastIncomingAttackComboSection);
     registerGetter(L, "calculatedTargetsInAttackZoneThisFrame", CombatClass_get_calculatedTargetsInAttackZoneThisFrame);
     registerGetter(L, "combatState", CombatClass_get_combatState);
@@ -1699,6 +1852,11 @@ void CombatClassBinding::registerBinding(lua_State* L)
     registerSetter(L, "myRadiusX", CombatClass_set_myRadiusX);
     registerSetter(L, "blockingTarget", CombatClass_set_blockingTarget);
     registerSetter(L, "blockingTargetH", CombatClass_set_blockingTargetH);
+    registerSetter(L, "targetsInAttackZone", CombatClass_set_targetsInAttackZone);
+    registerSetter(L, "attackersH", CombatClass_set_attackersH);
+    registerSetter(L, "threats", CombatClass_set_threats);
+    registerSetter(L, "threatsH", CombatClass_set_threatsH);
+    registerSetter(L, "notifiedThreats", CombatClass_set_notifiedThreats);
     registerSetter(L, "lastIncomingAttackComboSection", CombatClass_set_lastIncomingAttackComboSection);
     registerSetter(L, "calculatedTargetsInAttackZoneThisFrame", CombatClass_set_calculatedTargetsInAttackZoneThisFrame);
     registerSetter(L, "combatState", CombatClass_set_combatState);

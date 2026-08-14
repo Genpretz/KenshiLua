@@ -598,6 +598,16 @@ namespace KenshiLua
         lua_setglobal(L, "UpdatePriority");
     }
 
+    void registerNxControllerAction(lua_State* L)
+    {
+        lua_newtable(L);
+        setEnum(L, "NX_ACTION_NONE", NxControllerAction::NX_ACTION_NONE);
+        setEnum(L, "NX_ACTION_PUSH", NxControllerAction::NX_ACTION_PUSH);
+        setEnum(L, "NONE", NxControllerAction::NX_ACTION_NONE);
+        setEnum(L, "PUSH", NxControllerAction::NX_ACTION_PUSH);
+        lua_setglobal(L, "NxControllerAction");
+    }
+
     // ------------------------------------------
     // DataPanelLine.h
     // ------------------------------------------
@@ -3540,6 +3550,7 @@ namespace KenshiLua
         registerTutorialGUIState(L);
         registerUnloadedPlatoonJob(L);
         registerUpdatePriority(L);
+        registerNxControllerAction(L);
         registerUseStuffState(L);
         registerWallSectionLinkType(L);
         registerWarStateEnum(L);

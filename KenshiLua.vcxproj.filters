@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Bindings\AABB2DBinding.cpp" />
     <ClCompile Include="src\Bindings\AbstractMovementBaseBinding.cpp" />
@@ -64,7 +64,6 @@
     <ClCompile Include="src\Bindings\CombatMovementControllerBinding.cpp" />
     <ClCompile Include="src\Bindings\CombatTechniqueDataBinding.cpp" />
     <ClCompile Include="src\Bindings\ContainerItemBinding.cpp" />
-    <ClCompile Include="src\Bindings\ContextMenuBinding.cpp" />
     <ClCompile Include="src\Bindings\CreatelistItemBinding.cpp" />
     <ClCompile Include="src\Bindings\CrossbowBinding.cpp" />
     <ClCompile Include="src\Bindings\DamagesBinding.cpp" />
@@ -106,23 +105,11 @@
     <ClCompile Include="src\Bindings\GlobalConstantsBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\BackpackInventoryLayoutBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\BaseLayoutBinding.cpp" />
-    <ClCompile Include="src\Bindings\Gui\BoxBinding.cpp">
-    <Filter>Source Files\Bindings\Gui</Filter>
-    </ClCompile>
     <ClCompile Include="src\Bindings\Gui\BuildingCategoryBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\BuildingGroupBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\BuildModeWindowBinding.cpp" />
-    <ClCompile Include="src\Bindings\Gui\CharacterEditWindowBinding.cpp">
-    <Filter>Source Files\Bindings\Gui</Filter>
-    </ClCompile>
     <ClCompile Include="src\Bindings\Gui\CharacterStatsWindowBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\CharacterTradingWindowBinding.cpp" />
-    <ClCompile Include="src\Bindings\Gui\ContextMenuBinding.cpp">
-    <Filter>Source Files\Bindings\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Bindings\Gui\ContextMenuGUIBinding.cpp">
-    <Filter>Source Files\Bindings\Gui</Filter>
-    </ClCompile>
     <ClCompile Include="src\Bindings\Gui\DatapanelGUIBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\DataPanelLine_ButtonBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\DataPanelLine_CheckBoxBinding.cpp" />
@@ -144,9 +131,6 @@
     <ClCompile Include="src\Bindings\Gui\FogEditorBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\ForgottenGUIBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\GameDataEditorWindowBinding.cpp" />
-    <ClCompile Include="src\Bindings\Gui\GamedataSelectionListBinding.cpp">
-    <Filter>Source Files\Bindings\Gui</Filter>
-    </ClCompile>
     <ClCompile Include="src\Bindings\Gui\GenericFixedInventoryLayoutBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\GUIWindowBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\ImportGameMenuBinding.cpp" />
@@ -193,21 +177,6 @@
     <ClCompile Include="src\Bindings\Gui\ScreenLabelInterfaceBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\SliderBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\SplashScreenBinding.cpp" />
-    <ClCompile Include="src\Bindings\Gui\SquadCellViewBinding.cpp">
-    <Filter>Source Files\Bindings\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Bindings\Gui\SquadDataBinding.cpp">
-    <Filter>Source Files\Bindings\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Bindings\Gui\SquadItemBoxBinding.cpp">
-    <Filter>Source Files\Bindings\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Bindings\Gui\SquadListWindowBinding.cpp">
-    <Filter>Source Files\Bindings\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Bindings\Gui\SquadManagementScreenBinding.cpp">
-    <Filter>Source Files\Bindings\Gui</Filter>
-    </ClCompile>
     <ClCompile Include="src\Bindings\Gui\StatBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\StatGroupBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\TitleScreenBinding.cpp" />
@@ -284,9 +253,6 @@
     <ClCompile Include="src\Bindings\ResourceLoaderBinding.cpp" />
     <ClCompile Include="src\Bindings\ResourceLoadRequestMeshBinding.cpp" />
     <ClCompile Include="src\Bindings\ResourceLoadRequestTextureBinding.cpp" />
-    <ClCompile Include="src\Bindings\RobotLimbItemBinding.cpp">
-    <Filter>Source Files\Bindings</Filter>
-    </ClCompile>
     <ClCompile Include="src\Bindings\RobotLimbsBinding.cpp" />
     <ClCompile Include="src\Bindings\RootObjectBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\RootObjectBinding.cpp" />
@@ -368,8 +334,75 @@
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\Plugin.cpp" />
     <ClCompile Include="src\ScriptLoader.cpp" />
+    <ClCompile Include="src\Bindings\Character_CarryMsgBinding.cpp" />
+    <ClCompile Include="src\Bindings\Character_RagdollMsgBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\BoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\CharacterEditWindowBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\ContextMenuBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\ContextMenuGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\GamedataSelectionListBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\SquadCellViewBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\SquadDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\SquadItemBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\SquadListWindowBinding.cpp" />
+    <ClCompile Include="src\Bindings\Gui\SquadManagementScreenBinding.cpp" />
+    <ClCompile Include="src\Bindings\RobotLimbItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\CPerfTimerBinding.cpp" />
+    <ClCompile Include="src\FileWatcher.cpp" />
+    <ClCompile Include="src\Bindings\AkSoundPositionBinding.cpp" />
+    <ClCompile Include="src\Bindings\AkVectorBinding.cpp" />
+    <ClCompile Include="src\Bindings\CombatClass_AttackSlotManager_SlotDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\CombatClass_EffectDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\EdgeCacheBinding.cpp" />
+    <ClCompile Include="src\Bindings\EdgeCache_EdgeBinding.cpp" />
+    <ClCompile Include="src\Bindings\EdgePathNodeBinding.cpp" />
+    <ClCompile Include="src\Bindings\FactionsScreen_FactionRelationsLine_LessSortBinding.cpp" />
+    <ClCompile Include="src\Bindings\Faction_CharacteristicsDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\FarmBuilding_PlantBinding.cpp" />
+    <ClCompile Include="src\Bindings\FarmBuilding_PlantSourceBinding.cpp" />
+    <ClCompile Include="src\Bindings\FarmBuilding_SubPlantBinding.cpp" />
+    <ClCompile Include="src\Bindings\GameDataEditorWindow_DataItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkContainerHeapAllocatorBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkContainerHeapAllocator_AllocatorBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkMemoryAllocator_ExtendedInterfaceBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkMemoryAllocator_MemoryStatisticsBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkResultBinding.cpp" />
+    <ClCompile Include="src\Bindings\InputHandler_CommandBinding.cpp" />
+    <ClCompile Include="src\Bindings\InventoryGUI_FenceCallbackDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\ManagementScreen_TechItemViewDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\MapScreen_MapRoadBinding.cpp" />
+    <ClCompile Include="src\Bindings\MessageQueue_NodeBinding.cpp" />
+    <ClCompile Include="src\Bindings\NavInstanceBinding.cpp" />
+    <ClCompile Include="src\Bindings\NavMeshGenerator_TaskBinding.cpp" />
+    <ClCompile Include="src\Bindings\NavMeshGenerator_TaskQueueBinding.cpp" />
+    <ClCompile Include="src\Bindings\NavMesh_BuildingInfoBinding.cpp" />
+    <ClCompile Include="src\Bindings\NavMesh_NavMeshMessageBinding.cpp" />
+    <ClCompile Include="src\Bindings\Nx9Real_SBinding.cpp" />
+    <ClCompile Include="src\Bindings\ParticlePool_ParticleDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\SaveFileSystem_FileMessageBinding.cpp" />
+    <ClCompile Include="src\Bindings\SaveInfoBinding.cpp" />
+    <ClCompile Include="src\Bindings\Terrain_BloodQueueBinding.cpp" />
+    <ClCompile Include="src\Bindings\Terrain_BoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\Terrain_HitBinding.cpp" />
+    <ClCompile Include="src\Bindings\Terrain_InfoBinding.cpp" />
+    <ClCompile Include="src\Bindings\TownBase_ResidentDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\TownBuildingsManager_BuildingInfoBinding.cpp" />
+    <ClCompile Include="src\Bindings\Town_NestSpotBinding.cpp" />
+    <ClCompile Include="src\Bindings\TraitBoolBinding.cpp" />
+    <ClCompile Include="src\Bindings\ZoneManager_BiomeGroundEffectsBinding.cpp" />
+    <ClCompile Include="src\Bindings\ZoneSpacialGrid_ZoneCellBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\Array2dBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\BadSizeBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\BoundsViolationBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\TagsClassBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkArrayBaseBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkArrayBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkVector4fComparisonBinding.cpp" />
+    <ClCompile Include="src\Bindings\MessageChainBinding.cpp" />
+    <ClCompile Include="src\Bindings\MessageQueueBinding.cpp" />
+    <ClCompile Include="src\Bindings\MustEndWithSemiColonBinding.cpp" />
   </ItemGroup>
-    <ItemGroup>
+  <ItemGroup>
     <ClInclude Include="extern\kenshilib\Include\ogre\Animation\OgreBone.h" />
     <ClInclude Include="extern\kenshilib\Include\ogre\Animation\OgreSkeletonAnimation.h" />
     <ClInclude Include="extern\kenshilib\Include\ogre\Animation\OgreSkeletonAnimationDef.h" />
@@ -884,7 +917,6 @@
     <ClInclude Include="src\Bindings\CombatMovementControllerBinding.h" />
     <ClInclude Include="src\Bindings\CombatTechniqueDataBinding.h" />
     <ClInclude Include="src\Bindings\ContainerItemBinding.h" />
-    <ClInclude Include="src\Bindings\ContextMenuBinding.h" />
     <ClInclude Include="src\Bindings\CreatelistItemBinding.h" />
     <ClInclude Include="src\Bindings\CrossbowBinding.h" />
     <ClInclude Include="src\Bindings\DamagesBinding.h" />
@@ -1186,6 +1218,53 @@
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Plugin.h" />
     <ClInclude Include="src\ScriptLoader.h" />
+    <ClInclude Include="src\Bindings\Character_CarryMsgBinding.h" />
+    <ClInclude Include="src\Bindings\Character_RagdollMsgBinding.h" />
+    <ClInclude Include="src\FileWatcher.h" />
+    <ClInclude Include="src\Bindings\AkSoundPositionBinding.h" />
+    <ClInclude Include="src\Bindings\AkVectorBinding.h" />
+    <ClInclude Include="src\Bindings\CombatClass_AttackSlotManager_SlotDataBinding.h" />
+    <ClInclude Include="src\Bindings\CombatClass_EffectDataBinding.h" />
+    <ClInclude Include="src\Bindings\EdgeCacheBinding.h" />
+    <ClInclude Include="src\Bindings\EdgeCache_EdgeBinding.h" />
+    <ClInclude Include="src\Bindings\EdgePathNodeBinding.h" />
+    <ClInclude Include="src\Bindings\FactionsScreen_FactionRelationsLine_LessSortBinding.h" />
+    <ClInclude Include="src\Bindings\Faction_CharacteristicsDataBinding.h" />
+    <ClInclude Include="src\Bindings\FarmBuilding_PlantBinding.h" />
+    <ClInclude Include="src\Bindings\FarmBuilding_PlantSourceBinding.h" />
+    <ClInclude Include="src\Bindings\FarmBuilding_SubPlantBinding.h" />
+    <ClInclude Include="src\Bindings\GameDataEditorWindow_DataItemBinding.h" />
+    <ClInclude Include="src\Bindings\hkContainerHeapAllocatorBinding.h" />
+    <ClInclude Include="src\Bindings\hkContainerHeapAllocator_AllocatorBinding.h" />
+    <ClInclude Include="src\Bindings\hkMemoryAllocator_ExtendedInterfaceBinding.h" />
+    <ClInclude Include="src\Bindings\hkMemoryAllocator_MemoryStatisticsBinding.h" />
+    <ClInclude Include="src\Bindings\hkResultBinding.h" />
+    <ClInclude Include="src\Bindings\InputHandler_CommandBinding.h" />
+    <ClInclude Include="src\Bindings\InventoryGUI_FenceCallbackDataBinding.h" />
+    <ClInclude Include="src\Bindings\ManagementScreen_TechItemViewDataBinding.h" />
+    <ClInclude Include="src\Bindings\MapScreen_MapRoadBinding.h" />
+    <ClInclude Include="src\Bindings\MessageQueue_NodeBinding.h" />
+    <ClInclude Include="src\Bindings\NavInstanceBinding.h" />
+    <ClInclude Include="src\Bindings\NavMeshGenerator_TaskBinding.h" />
+    <ClInclude Include="src\Bindings\NavMeshGenerator_TaskQueueBinding.h" />
+    <ClInclude Include="src\Bindings\NavMesh_BuildingInfoBinding.h" />
+    <ClInclude Include="src\Bindings\NavMesh_NavMeshMessageBinding.h" />
+    <ClInclude Include="src\Bindings\Nx9Real_SBinding.h" />
+    <ClInclude Include="src\Bindings\ParticlePool_ParticleDataBinding.h" />
+    <ClInclude Include="src\Bindings\SaveFileSystem_FileMessageBinding.h" />
+    <ClInclude Include="src\Bindings\SaveInfoBinding.h" />
+    <ClInclude Include="src\Bindings\Terrain_BloodQueueBinding.h" />
+    <ClInclude Include="src\Bindings\Terrain_BoxBinding.h" />
+    <ClInclude Include="src\Bindings\Terrain_HitBinding.h" />
+    <ClInclude Include="src\Bindings\Terrain_InfoBinding.h" />
+    <ClInclude Include="src\Bindings\TownBase_ResidentDataBinding.h" />
+    <ClInclude Include="src\Bindings\TownBuildingsManager_BuildingInfoBinding.h" />
+    <ClInclude Include="src\Bindings\Town_NestSpotBinding.h" />
+    <ClInclude Include="src\Bindings\TraitBoolBinding.h" />
+    <ClInclude Include="src\Bindings\ZoneManager_BiomeGroundEffectsBinding.h" />
+    <ClInclude Include="src\Bindings\ZoneSpacialGrid_ZoneCellBinding.h" />
+    <ClInclude Include="src\Bindings\Util\StdSetBinding.h" />
+    <ClInclude Include="src\Bindings\Util\StdDequeBinding.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\kenshilib\Include\ogre\Animation\OgreBone.inl" />

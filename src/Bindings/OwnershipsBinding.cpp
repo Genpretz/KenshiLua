@@ -7,6 +7,7 @@
 #include "Bindings/FactionBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/PlatoonBinding.h"
+#include "Bindings/RootObjectBinding.h"
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/LektorBinding.h"
@@ -300,6 +301,103 @@ int OwnershipsBinding::getOccupiedTownFaction(lua_State* L)
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
 }
 
+int OwnershipsBinding::addOwnedObject(lua_State* L)
+{
+    Ownerships* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Ownerships is nil");
+    hand* what = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!what) return luaL_error(L, "Argument 2 to addOwnedObject must be a hand");
+    instance->addOwnedObject(*what);
+    return 0;
+}
+
+int OwnershipsBinding::removeOwnedObject(lua_State* L)
+{
+    Ownerships* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Ownerships is nil");
+    hand* what = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!what) return luaL_error(L, "Argument 2 to removeOwnedObject must be a hand");
+    instance->removeOwnedObject(*what);
+    return 0;
+}
+
+int OwnershipsBinding::isOwned(lua_State* L)
+{
+    Ownerships* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Ownerships is nil");
+    hand* what = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!what) return luaL_error(L, "Argument 2 to isOwned must be a hand");
+    bool result = instance->isOwned(*what);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int OwnershipsBinding::setHomeBuilding(lua_State* L)
+{
+    Ownerships* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Ownerships is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to setHomeBuilding must be a hand");
+    SquadType t = (SquadType)luaL_checkinteger(L, 3);
+    instance->setHomeBuilding(*h, t);
+    return 0;
+}
+
+int OwnershipsBinding::getOwnedBuildingsH(lua_State* L)
+{
+    Ownerships* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Ownerships is nil");
+    lektor<hand>* out = LektorValueBinding<hand>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getOwnedBuildingsH must be lektor<hand>");
+    instance->getOwnedBuildingsH(*out);
+    return 0;
+}
+
+int OwnershipsBinding::getOwnedBuildingPtrs(lua_State* L)
+{
+    Ownerships* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Ownerships is nil");
+    lektor<Building*>* out = LektorPtrBinding<Building*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getOwnedBuildingPtrs must be lektor<Building*>");
+    TownBase* town = lua_isnoneornil(L, 3) ? nullptr : checkObject<TownBase>(L, 3, TownBaseBinding::getMetatableName());
+    instance->getOwnedBuildingPtrs(*out, town);
+    return 0;
+}
+
+int OwnershipsBinding::getHomeFurnitureOfType(lua_State* L)
+{
+    Ownerships* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Ownerships is nil");
+    lektor<Building*>* out = LektorPtrBinding<Building*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getHomeFurnitureOfType must be lektor<Building*>");
+    BuildingFunction type = (BuildingFunction)luaL_checkinteger(L, 3);
+    instance->getHomeFurnitureOfType(*out, type);
+    return 0;
+}
+
+int OwnershipsBinding::getOwnedPtrs(lua_State* L)
+{
+    Ownerships* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Ownerships is nil");
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getOwnedPtrs must be lektor<RootObject*>");
+    itemType type = (itemType)luaL_checkinteger(L, 3);
+    int result = instance->getOwnedPtrs(*out, type);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int OwnershipsBinding::getBuildingsWithFunction(lua_State* L)
+{
+    Ownerships* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Ownerships is nil");
+    lektor<Building*>* out = LektorPtrBinding<Building*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getBuildingsWithFunction must be lektor<Building*>");
+    BuildingFunction bf = (BuildingFunction)luaL_checkinteger(L, 3);
+    instance->getBuildingsWithFunction(*out, bf);
+    return 0;
+}
+
 int OwnershipsBinding::_DESTRUCTOR(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
@@ -308,19 +406,6 @@ int OwnershipsBinding::_DESTRUCTOR(lua_State* L)
     instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 42: void addOwnedObject(...) - non-string reference arg
-  line 43: void removeOwnedObject(...) - non-string reference arg
-  line 44: bool isOwned(...) - non-string reference arg
-  line 60: void setHomeBuilding(...) - non-string reference arg
-  line 61: void getOwnedBuildingsH(...) - unsupported arg type
-  line 62: void getOwnedBuildingPtrs(...) - unsupported arg type
-  line 64: void getHomeFurnitureOfType(...) - unsupported arg type
-  line 65: int getOwnedPtrs(...) - unsupported arg type
-  line 66: void getBuildingsWithFunction(...) - unsupported arg type
-*/
 
 
 int OwnershipsBinding::gc(lua_State* L)
@@ -405,6 +490,15 @@ void OwnershipsBinding::registerBinding(lua_State* L)
         { "canIUseThisBuilding", OwnershipsBinding::canIUseThisBuilding },
         { "declareOccupiedTown", OwnershipsBinding::declareOccupiedTown },
         { "getOccupiedTownFaction", OwnershipsBinding::getOccupiedTownFaction },
+        { "addOwnedObject", OwnershipsBinding::addOwnedObject },
+        { "removeOwnedObject", OwnershipsBinding::removeOwnedObject },
+        { "isOwned", OwnershipsBinding::isOwned },
+        { "setHomeBuilding", OwnershipsBinding::setHomeBuilding },
+        { "getOwnedBuildingsH", OwnershipsBinding::getOwnedBuildingsH },
+        { "getOwnedBuildingPtrs", OwnershipsBinding::getOwnedBuildingPtrs },
+        { "getHomeFurnitureOfType", OwnershipsBinding::getHomeFurnitureOfType },
+        { "getOwnedPtrs", OwnershipsBinding::getOwnedPtrs },
+        { "getBuildingsWithFunction", OwnershipsBinding::getBuildingsWithFunction },
         { "_DESTRUCTOR", OwnershipsBinding::_DESTRUCTOR },
         { 0, 0 }
     };

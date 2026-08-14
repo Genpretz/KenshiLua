@@ -25,6 +25,7 @@ namespace KenshiLua
 
 typedef StdMapBinding<WeatherAffecting, float> WeatherProtectionsMapBinding;
 typedef StdMapBinding<GameData*, float> BonusRacesMapBinding;
+typedef LektorPtrBinding<CombatTechniqueData*> CombatTechniqueDataLektorBinding;
 
 static CharStats* getInstance(lua_State* L, int idx)
 {
@@ -3061,16 +3062,46 @@ int CharStatsBinding::getAthleticsTooltip(lua_State* L)
     return 0;
 }
 
-int CharStatsBinding::getAttacks(lua_State* L)
+static int CharStats_get_attacks(lua_State* L)
 {
     static lektor<CombatTechniqueData*>* pAttacks = (lektor<CombatTechniqueData*>*)( (char*)GetModuleHandleA(NULL) + 0x200EF78 );
-    return pushObject<lektor<CombatTechniqueData*>>(L, pAttacks, "lektor<CombatTechniqueData*>");
+    return pushObject<lektor<CombatTechniqueData*>>(L, pAttacks, CombatTechniqueDataLektorBinding::getMetatableName());
 }
 
-int CharStatsBinding::getBlocks(lua_State* L)
+static int CharStats_set_attacks(lua_State* L)
+{
+    static lektor<CombatTechniqueData*>* pAttacks = (lektor<CombatTechniqueData*>*)( (char*)GetModuleHandleA(NULL) + 0x200EF78 );
+    if (!pAttacks) return luaL_error(L, "attacks pointer is null");
+    if (lua_isnoneornil(L, 2))
+    {
+        pAttacks->clear();
+        return 0;
+    }
+    lektor<CombatTechniqueData*>* val = CombatTechniqueDataLektorBinding::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'attacks' must be lektor<CombatTechniqueData*>");
+    *pAttacks = *val;
+    return 0;
+}
+
+static int CharStats_get_blocks(lua_State* L)
 {
     static lektor<CombatTechniqueData*>* pBlocks = (lektor<CombatTechniqueData*>*)( (char*)GetModuleHandleA(NULL) + 0x200EF90 );
-    return pushObject<lektor<CombatTechniqueData*>>(L, pBlocks, "lektor<CombatTechniqueData*>");
+    return pushObject<lektor<CombatTechniqueData*>>(L, pBlocks, CombatTechniqueDataLektorBinding::getMetatableName());
+}
+
+static int CharStats_set_blocks(lua_State* L)
+{
+    static lektor<CombatTechniqueData*>* pBlocks = (lektor<CombatTechniqueData*>*)( (char*)GetModuleHandleA(NULL) + 0x200EF90 );
+    if (!pBlocks) return luaL_error(L, "blocks pointer is null");
+    if (lua_isnoneornil(L, 2))
+    {
+        pBlocks->clear();
+        return 0;
+    }
+    lektor<CombatTechniqueData*>* val = CombatTechniqueDataLektorBinding::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'blocks' must be lektor<CombatTechniqueData*>");
+    *pBlocks = *val;
+    return 0;
 }
 
 int CharStatsBinding::getDexterity(lua_State* L)
@@ -3519,6 +3550,8 @@ void CharStatsBinding::registerBinding(lua_State* L)
     registerGetter(L, "weaponWeight", CharStats_get_weaponWeight);
     registerGetter(L, "weatherProtections", CharStats_get__weatherProtections);
     registerGetter(L, "bonusRaces", CharStats_get_bonusRaces);
+    registerGetter(L, "attacks", CharStats_get_attacks);
+    registerGetter(L, "blocks", CharStats_get_blocks);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -3628,10 +3661,13 @@ void CharStatsBinding::registerBinding(lua_State* L)
     registerSetter(L, "weatherProtections", CharStats_set__weatherProtections);
     registerSetter(L, "bonusRaces", CharStats_set_bonusRaces);
     registerSetter(L, "pCurrentWeaponSkill", CharStats_set_pCurrentWeaponSkill);
+    registerSetter(L, "attacks", CharStats_set_attacks);
+    registerSetter(L, "blocks", CharStats_set_blocks);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     WeatherProtectionsMapBinding::registerBinding(L, "std::map<WeatherAffecting, float>", nullptr, nullptr);
     BonusRacesMapBinding::registerBinding(L, "std::map<GameData*, float>", GameDataBinding::getMetatableName(), nullptr);
+    CombatTechniqueDataLektorBinding::registerBinding(L, "lektor<CombatTechniqueData*>", CombatTechniqueDataBinding::getMetatableName());
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
     // setMetatableParent(L, CharStatsBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
@@ -3641,7 +3677,7 @@ LIGHTUSERDATA DEPENDENCIES:
   - CharStats_get_pCurrentWeaponSkill / CharStats_set_pCurrentWeaponSkill: float* (primitive pointer)
 */
 
-lua_pop(L, 1); // Pop the metatable off the stack
+    lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods and members
     lua_newtable(L);

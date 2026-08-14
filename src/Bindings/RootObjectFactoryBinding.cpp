@@ -17,20 +17,7 @@
 #include "Bindings/RootObjectContainerBinding.h"
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/Util/HandBinding.h"
-#include "Building/BuildingBinding.h"
 #include "CreatelistItemBinding.h"
-#include "FactionBinding.h"
-#include "FactoryCallbackInterfaceBinding.h"
-#include "GameDataBinding.h"
-#include "GameDataReferenceBinding.h"
-#include "GameSaveStateBinding.h"
-#include "ItemBinding.h"
-#include "OwnershipsBinding.h"
-#include "PlatoonBinding.h"
-#include "RaceDataBinding.h"
-#include "RootObjectBaseBinding.h"
-#include "RootObjectBinding.h"
-#include "TownBaseBinding.h"
 #include "Util/LektorBinding.h"
 #include "Util/StdDequeBinding.h"
 #include <kenshi/Building/Building.h>
@@ -40,7 +27,6 @@
 #include <kenshi/Item.h>
 #include <kenshi/RootObject.h>
 #include <kenshi/RootObjectBase.h>
-#include <kenshi/RootObjectFactory.h>
 #include <kenshi/Town.h>
 #include <kenshi/util/TripleInt.h>
 

@@ -9,6 +9,7 @@
 #include "Bindings/GlobalConstantsBinding.h"
 #include "Bindings/OptionsHolderBinding.h"
 #include "Bindings/Gui/ForgottenGUIBinding.h"
+#include "Logger.h"
 #include <kenshi/RootObjectFactory.h>
 #include <kenshi/GlobalConstants.h>
 #include <kenshi/OptionsHolder.h>

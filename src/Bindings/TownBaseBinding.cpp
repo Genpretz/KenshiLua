@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "kenshi\Town.h"
+#include "kenshi/GameSaveState.h"
 #include "TownBaseBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/ActivePlatoonBinding.h"
@@ -24,6 +25,7 @@
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Bindings/Util/StdSetBinding.h"
+#include "Bindings/TownBase_ResidentDataBinding.h"
 
 namespace KenshiLua
 {
@@ -909,10 +911,12 @@ int TownBaseBinding::findAllBuildingsOfType(lua_State* L)
     if (!instance) return luaL_error(L, "TownBase is nil");
 
     BuildingDesignation func = (BuildingDesignation)luaL_checkinteger(L, 2);
-    Character* me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    Character* me = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    }
     lektor<Building*>* result = instance->findAllBuildingsOfType(func, me);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
 }
 
 int TownBaseBinding::_NV_findAllBuildingsOfType(lua_State* L)
@@ -921,10 +925,12 @@ int TownBaseBinding::_NV_findAllBuildingsOfType(lua_State* L)
     if (!instance) return luaL_error(L, "TownBase is nil");
 
     BuildingDesignation func = (BuildingDesignation)luaL_checkinteger(L, 2);
-    Character* me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    Character* me = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    }
     lektor<Building*>* result = instance->_NV_findAllBuildingsOfType(func, me);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
 }
 
 int TownBaseBinding::findAllBuildingsWithFunction(lua_State* L)
@@ -933,10 +939,12 @@ int TownBaseBinding::findAllBuildingsWithFunction(lua_State* L)
     if (!instance) return luaL_error(L, "TownBase is nil");
 
     BuildingFunction func = (BuildingFunction)luaL_checkinteger(L, 2);
-    Character* me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    Character* me = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    }
     lektor<Building*>* result = instance->findAllBuildingsWithFunction(func, me);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
 }
 
 int TownBaseBinding::_NV_findAllBuildingsWithFunction(lua_State* L)
@@ -945,10 +953,12 @@ int TownBaseBinding::_NV_findAllBuildingsWithFunction(lua_State* L)
     if (!instance) return luaL_error(L, "TownBase is nil");
 
     BuildingFunction func = (BuildingFunction)luaL_checkinteger(L, 2);
-    Character* me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    Character* me = nullptr;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
+        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
+    }
     lektor<Building*>* result = instance->_NV_findAllBuildingsWithFunction(func, me);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
 }
 
 int TownBaseBinding::allBuildingsDoorsOpen(lua_State* L)
@@ -1600,25 +1610,132 @@ int TownBaseBinding::removeOccupier(lua_State* L)
     return 0;
 }
 
+int TownBaseBinding::getAlarmState(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+    TownAlarmState result = instance->getAlarmState();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int TownBaseBinding::_NV_getAlarmState(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+    TownAlarmState result = instance->_NV_getAlarmState();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int TownBaseBinding::setAlarmState(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+    TownAlarmState st = (TownAlarmState)luaL_checkinteger(L, 2);
+    instance->setAlarmState(st);
+    return 0;
+}
+
+int TownBaseBinding::_NV_setAlarmState(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+    TownAlarmState st = (TownAlarmState)luaL_checkinteger(L, 2);
+    instance->_NV_setAlarmState(st);
+    return 0;
+}
+
+int TownBaseBinding::setHandle(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to setHandle must be a hand");
+    instance->setHandle(*h);
+    return 0;
+}
+
+int TownBaseBinding::_NV_setHandle(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to _NV_setHandle must be a hand");
+    instance->_NV_setHandle(*h);
+    return 0;
+}
+
+int TownBaseBinding::serialise(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int TownBaseBinding::_NV_serialise(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->_NV_serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int TownBaseBinding::delayedSpawningChecks(lua_State* L)
+{
+    int result = TownBase::delayedSpawningChecks();
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int TownBaseBinding::clearDelayedItemLoadingMessages(lua_State* L)
+{
+    TownBase::clearDelayedItemLoadingMessages();
+    return 0;
+}
+
+int TownBaseBinding::getZonesCoverage(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+    const ogre_unordered_set<ZoneMap*>::type& result = instance->getZonesCoverage();
+    return pushObject<ogre_unordered_set<ZoneMap*>::type>(
+        L, const_cast<ogre_unordered_set<ZoneMap*>::type*>(&result), OgreUnorderedSetBinding<ZoneMap*>::metaName);
+}
+
+int TownBaseBinding::spawnDebris(lua_State* L)
+{
+    TownBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBase is nil");
+    NestBatcher* staticGeometry = (NestBatcher*)lua_touserdata(L, 2);
+    GameData* itemData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    GameData* materialData = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
+    Ogre::Vector3 centerpos;
+    readVector3(L, 5, centerpos);
+    float range = (float)luaL_checknumber(L, 6);
+    int num = (int)luaL_checkinteger(L, 7);
+    float scale = (float)luaL_checknumber(L, 8);
+    Building* keepInside = nullptr;
+    if (lua_gettop(L) >= 9 && !lua_isnil(L, 9)) {
+        keepInside = checkObject<Building>(L, 9, BuildingBinding::getMetatableName());
+    }
+    bool spawnItems = lua_toboolean(L, 10) != 0;
+    instance->spawnDebris(staticGeometry, itemData, materialData, centerpos, range, num, scale, keepInside, spawnItems);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 124: TownAlarmState getAlarmState(...) - unsupported return type
-  line 125: TownAlarmState _NV_getAlarmState(...) - unsupported return type
-  line 126: void setAlarmState(...) - unsupported arg type
-  line 127: void _NV_setAlarmState(...) - unsupported arg type
-  line 136: void setHandle(...) - non-string reference arg
-  line 137: void _NV_setHandle(...) - non-string reference arg
-  line 145: GameSaveState serialise(...) - unsupported arg type
-  line 146: GameSaveState _NV_serialise(...) - unsupported arg type
-  line 180: void findAllBuildings(...) - unsupported arg type
-  line 181: void _NV_findAllBuildings(...) - unsupported arg type
-  line 235: const std::string& getUnexploredName(...) - reference return type
-  line 236: const std::string& _NV_getUnexploredName(...) - reference return type
-  line 245: void addArtifactItem(...) - unsupported arg type
-  line 256: int delayedSpawningChecks(...) - static method
-  line 257: const ogre_unordered_set<ZoneMap*>::type& getZonesCoverage(...) - reference return type
-  line 258: void clearDelayedItemLoadingMessages(...) - static method
-  line 274: void spawnDebris(...) - unsupported arg type
+  line 180: void findAllBuildings(BuildingFinderClass* finder) - BuildingFinderClass is forward declared only
+  line 181: void _NV_findAllBuildings(BuildingFinderClass* finder) - BuildingFinderClass is forward declared only
+  line 245: void addArtifactItem(const ArtifactItemData& item) - ArtifactItemData is forward declared only
 */
 
 /*
@@ -1629,23 +1746,17 @@ LIGHTUSERDATA DEPENDENCIES:
   - TownBase_get_clickHull: PhysicsHullT* (unbound pointer)
   - TownBase_get_biome: AreaBiomeGroup* (unbound pointer)
   - TownBaseBinding::isNest: Nest* (unbound pointer)
-  - TownBaseBinding::findAllBuildingsOfType: lektor<Building*>* (unbound pointer)
-  - TownBaseBinding::_NV_findAllBuildingsOfType: lektor<Building*>* (unbound pointer)
-  - TownBaseBinding::findAllBuildingsWithFunction: lektor<Building*>* (unbound pointer)
-  - TownBaseBinding::_NV_findAllBuildingsWithFunction: lektor<Building*>* (unbound pointer)
   - TownBaseBinding::getAlarmMgr: AlarmManager* (unbound pointer)
   - TownBaseBinding::_NV_getAlarmMgr: AlarmManager* (unbound pointer)
   - TownBaseBinding::getBiome: AreaBiomeGroup* (unbound pointer)
   - TownBaseBinding::_NV_getBiome: AreaBiomeGroup* (unbound pointer)
+  - TownBaseBinding::serialise / _NV_serialise: PosRotPair* (unbound pointer)
+  - TownBaseBinding::spawnDebris: NestBatcher* (unbound pointer)
 */
 
 /*
 Skipped properties needing manual binding:
-  line 259: townType (TownType) - unsupported type
-  line 287: alarmState (TownAlarmState) - unsupported type
-  line 291: artifacts (Ogre::FastArray<ArtifactItemData>) - unsupported type
-  line 311: residentsSpawned (lektor<ResidentData>) - unsupported type
-  line 312: residentsSpawned_BarsOrSomething (lektor<ResidentData>) - unsupported type
+  line 291: artifacts (Ogre::FastArray<ArtifactItemData>) - ArtifactItemData is forward declared only
 */
 
 int TownBaseBinding::gc(lua_State* L)
@@ -1743,34 +1854,6 @@ static int ResidentData_set_priority(lua_State* L) {
 }
 
 
-static int TownBase__NV_findAllBuildingsOfType(lua_State* L)
-{
-    TownBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TownBase is nil");
-    BuildingDesignation func = (BuildingDesignation)luaL_checkinteger(L, 2);
-    Character* me = nullptr;
-    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
-        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
-    }
-    lektor<Building*>* result = instance->_NV_findAllBuildingsOfType(func, me);
-    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
-}
-
-
-static int TownBase__NV_findAllBuildingsWithFunction(lua_State* L)
-{
-    TownBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TownBase is nil");
-    BuildingFunction func = (BuildingFunction)luaL_checkinteger(L, 2);
-    Character* me = nullptr;
-    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
-        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
-    }
-    lektor<Building*>* result = instance->_NV_findAllBuildingsWithFunction(func, me);
-    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
-}
-
-
 static int TownBase__NV_getCurrentTownLocation(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
@@ -1804,34 +1887,6 @@ static int TownBase__NV_setFaction(lua_State* L)
 }
 
 
-static int TownBase_findAllBuildingsOfType(lua_State* L)
-{
-    TownBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TownBase is nil");
-    BuildingDesignation func = (BuildingDesignation)luaL_checkinteger(L, 2);
-    Character* me = nullptr;
-    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
-        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
-    }
-    lektor<Building*>* result = instance->findAllBuildingsOfType(func, me);
-    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
-}
-
-
-static int TownBase_findAllBuildingsWithFunction(lua_State* L)
-{
-    TownBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TownBase is nil");
-    BuildingFunction func = (BuildingFunction)luaL_checkinteger(L, 2);
-    Character* me = nullptr;
-    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3)) {
-        me = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
-    }
-    lektor<Building*>* result = instance->findAllBuildingsWithFunction(func, me);
-    return pushObject<lektor<Building*>>(L, result, LektorPtrBinding<Building*>::metaName);
-}
-
-
 static int TownBase_getCurrentTownLocation(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
@@ -1855,8 +1910,8 @@ static int TownBase_get_alarmState(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    // TODO: Unsupported type for alarmState (TownAlarmState)
-    return luaL_error(L, "Unsupported property 'alarmState' (type: TownAlarmState)");
+    lua_pushinteger(L, (lua_Integer)instance->alarmState);
+    return 1;
 }
 
 
@@ -1909,7 +1964,7 @@ static int TownBase_get_residentsSpawned(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return pushObject<lektor<TownBase::ResidentData>>(L, &instance->residentsSpawned, "lektor<ResidentData>");
+    return pushObject<lektor<TownBase::ResidentData>>(L, &instance->residentsSpawned, LektorValueBinding<TownBase::ResidentData>::metaName);
 }
 
 
@@ -1917,7 +1972,7 @@ static int TownBase_get_residentsSpawned_BarsOrSomething(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return pushObject<lektor<TownBase::ResidentData>>(L, &instance->residentsSpawned_BarsOrSomething, "lektor<ResidentData>");
+    return pushObject<lektor<TownBase::ResidentData>>(L, &instance->residentsSpawned_BarsOrSomething, LektorValueBinding<TownBase::ResidentData>::metaName);
 }
 
 
@@ -1948,7 +2003,8 @@ static int TownBase_set_alarmState(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for alarmState");
+    instance->alarmState = (TownAlarmState)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 
@@ -2051,6 +2107,7 @@ static int TownBase_set_residentsSpawned(lua_State* L)
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
     lektor<TownBase::ResidentData>* src = LektorValueBinding<TownBase::ResidentData>::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set 'residentsSpawned' must be lektor<ResidentData>");
     instance->residentsSpawned = *src;
     return 0;
 }
@@ -2061,6 +2118,7 @@ static int TownBase_set_residentsSpawned_BarsOrSomething(lua_State* L)
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
     lektor<TownBase::ResidentData>* src = LektorValueBinding<TownBase::ResidentData>::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set 'residentsSpawned_BarsOrSomething' must be lektor<ResidentData>");
     instance->residentsSpawned_BarsOrSomething = *src;
     return 0;
 }
@@ -2212,10 +2270,24 @@ void TownBaseBinding::registerBinding(lua_State* L)
         { "_nestUpThisSpot", TownBaseBinding::_nestUpThisSpot },
         { "_NV__nestUpThisSpot", TownBaseBinding::_NV__nestUpThisSpot },
         { "distributeArtifacts", TownBaseBinding::distributeArtifacts },
-                { "getUnexploredName", TownBase_getUnexploredName },
+        { "getUnexploredName", TownBase_getUnexploredName },
         { "_NV_getUnexploredName", TownBase__NV_getUnexploredName },
+        { "getAlarmState", TownBaseBinding::getAlarmState },
+        { "_NV_getAlarmState", TownBaseBinding::_NV_getAlarmState },
+        { "setAlarmState", TownBaseBinding::setAlarmState },
+        { "_NV_setAlarmState", TownBaseBinding::_NV_setAlarmState },
+        { "setHandle", TownBaseBinding::setHandle },
+        { "_NV_setHandle", TownBaseBinding::_NV_setHandle },
+        { "serialise", TownBaseBinding::serialise },
+        { "_NV_serialise", TownBaseBinding::_NV_serialise },
+        { "delayedSpawningChecks", TownBaseBinding::delayedSpawningChecks },
+        { "clearDelayedItemLoadingMessages", TownBaseBinding::clearDelayedItemLoadingMessages },
+        { "getZonesCoverage", TownBaseBinding::getZonesCoverage },
+        { "spawnDebris", TownBaseBinding::spawnDebris },
         { 0, 0 }
     };
+
+    LektorValueBinding<TownBase::ResidentData>::registerBinding(L, "lektor<ResidentData>", TownBase_ResidentDataBinding::getMetatableName());
 
     registerClass(
         L, 
@@ -2247,21 +2319,21 @@ void TownBaseBinding::registerBinding(lua_State* L)
     registerGetter(L, "currentFloorVisibility", TownBase_get_currentFloorVisibility);
     registerGetter(L, "buildingsManager", TownBase_get_buildingsManager);
     registerGetter(L, "defaultResident", TownBase_get_defaultResident);
-        registerGetter(L, "buildingsBad", ResidentData_get_buildingsBad);
-        registerGetter(L, "buildingsGood", ResidentData_get_buildingsGood);
-        registerGetter(L, "chance", ResidentData_get_chance);
-        registerGetter(L, "count", ResidentData_get_count);
-        registerGetter(L, "data", ResidentData_get_data);
-        registerGetter(L, "priority", ResidentData_get_priority);
-        registerGetter(L, "alarmState", TownBase_get_alarmState);
-        registerGetter(L, "artifacts", TownBase_get_artifacts);
-        registerGetter(L, "factionsResidentHere", TownBase_get_factionsResidentHere);
-        registerGetter(L, "myZoneCoverage", TownBase_get_myZoneCoverage);
-        registerGetter(L, "occupiers", TownBase_get_occupiers);
-        registerGetter(L, "populatedZones", TownBase_get_populatedZones);
-        registerGetter(L, "residentsSpawned", TownBase_get_residentsSpawned);
-        registerGetter(L, "residentsSpawned_BarsOrSomething", TownBase_get_residentsSpawned_BarsOrSomething);
-        registerGetter(L, "townType", TownBase_get_townType);
+    registerGetter(L, "buildingsBad", ResidentData_get_buildingsBad);
+    registerGetter(L, "buildingsGood", ResidentData_get_buildingsGood);
+    registerGetter(L, "chance", ResidentData_get_chance);
+    registerGetter(L, "count", ResidentData_get_count);
+    registerGetter(L, "data", ResidentData_get_data);
+    registerGetter(L, "priority", ResidentData_get_priority);
+    registerGetter(L, "alarmState", TownBase_get_alarmState);
+    registerGetter(L, "artifacts", TownBase_get_artifacts);
+    registerGetter(L, "factionsResidentHere", TownBase_get_factionsResidentHere);
+    registerGetter(L, "myZoneCoverage", TownBase_get_myZoneCoverage);
+    registerGetter(L, "occupiers", TownBase_get_occupiers);
+    registerGetter(L, "populatedZones", TownBase_get_populatedZones);
+    registerGetter(L, "residentsSpawned", TownBase_get_residentsSpawned);
+    registerGetter(L, "residentsSpawned_BarsOrSomething", TownBase_get_residentsSpawned_BarsOrSomething);
+    registerGetter(L, "townType", TownBase_get_townType);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -2279,26 +2351,26 @@ void TownBaseBinding::registerBinding(lua_State* L)
     registerSetter(L, "currentFloorVisibility", TownBase_set_currentFloorVisibility);
     registerSetter(L, "buildingsManager", TownBase_set_buildingsManager);
     registerSetter(L, "defaultResident", TownBase_set_defaultResident);
-        registerSetter(L, "buildingsBad", ResidentData_set_buildingsBad);
-        registerSetter(L, "buildingsGood", ResidentData_set_buildingsGood);
-        registerSetter(L, "chance", ResidentData_set_chance);
-        registerSetter(L, "count", ResidentData_set_count);
-        registerSetter(L, "data", ResidentData_set_data);
-        registerSetter(L, "priority", ResidentData_set_priority);
-        registerSetter(L, "alarmState", TownBase_set_alarmState);
-        registerSetter(L, "artifacts", TownBase_set_artifacts);
-        registerSetter(L, "biome", TownBase_set_biome);
-        registerSetter(L, "clickHull", TownBase_set_clickHull);
-        registerSetter(L, "entityMarker", TownBase_set_entityMarker);
-        registerSetter(L, "factionsResidentHere", TownBase_set_factionsResidentHere);
-        registerSetter(L, "myZoneCoverage", TownBase_set_myZoneCoverage);
-        registerSetter(L, "nestBatcher", TownBase_set_nestBatcher);
-        registerSetter(L, "occupiers", TownBase_set_occupiers);
-        registerSetter(L, "populatedZones", TownBase_set_populatedZones);
-        registerSetter(L, "population", TownBase_set_population);
-        registerSetter(L, "residentsSpawned", TownBase_set_residentsSpawned);
-        registerSetter(L, "residentsSpawned_BarsOrSomething", TownBase_set_residentsSpawned_BarsOrSomething);
-        registerSetter(L, "townType", TownBase_set_townType);
+    registerSetter(L, "buildingsBad", ResidentData_set_buildingsBad);
+    registerSetter(L, "buildingsGood", ResidentData_set_buildingsGood);
+    registerSetter(L, "chance", ResidentData_set_chance);
+    registerSetter(L, "count", ResidentData_set_count);
+    registerSetter(L, "data", ResidentData_set_data);
+    registerSetter(L, "priority", ResidentData_set_priority);
+    registerSetter(L, "alarmState", TownBase_set_alarmState);
+    registerSetter(L, "artifacts", TownBase_set_artifacts);
+    registerSetter(L, "biome", TownBase_set_biome);
+    registerSetter(L, "clickHull", TownBase_set_clickHull);
+    registerSetter(L, "entityMarker", TownBase_set_entityMarker);
+    registerSetter(L, "factionsResidentHere", TownBase_set_factionsResidentHere);
+    registerSetter(L, "myZoneCoverage", TownBase_set_myZoneCoverage);
+    registerSetter(L, "nestBatcher", TownBase_set_nestBatcher);
+    registerSetter(L, "occupiers", TownBase_set_occupiers);
+    registerSetter(L, "populatedZones", TownBase_set_populatedZones);
+    registerSetter(L, "population", TownBase_set_population);
+    registerSetter(L, "residentsSpawned", TownBase_set_residentsSpawned);
+    registerSetter(L, "residentsSpawned_BarsOrSomething", TownBase_set_residentsSpawned_BarsOrSomething);
+    registerSetter(L, "townType", TownBase_set_townType);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to RootObject

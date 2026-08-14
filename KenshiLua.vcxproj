@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -161,7 +161,7 @@ copy /Y "$(ProjectDir)README.md" "$(OutDir)..\"
 xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-    <ItemGroup>
+  <ItemGroup>
     <ClInclude Include="extern\kenshilib\Include\ogre\Animation\OgreBone.h" />
     <ClInclude Include="extern\kenshilib\Include\ogre\Animation\OgreSkeletonAnimation.h" />
     <ClInclude Include="extern\kenshilib\Include\ogre\Animation\OgreSkeletonAnimationDef.h" />
@@ -939,7 +939,9 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClInclude Include="src\Bindings\Util\OgreUnorderedBinding.h" />
     <ClInclude Include="src\Bindings\Util\OgreVectorBinding.h" />
     <ClInclude Include="src\Bindings\Util\rendHitBinding.h" />
+    <ClInclude Include="src\Bindings\Util\StdDequeBinding.h" />
     <ClInclude Include="src\Bindings\Util\StdMapBinding.h" />
+    <ClInclude Include="src\Bindings\Util\StdSetBinding.h" />
     <ClInclude Include="src\Bindings\Util\StringPairBinding.h" />
     <ClInclude Include="src\Bindings\Util\TagsClassBinding.h" />
     <ClInclude Include="src\Bindings\Util\TimeOfDayBinding.h" />
@@ -1022,8 +1024,8 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClInclude Include="src\Bindings\TraitBoolBinding.h" />
     <ClInclude Include="src\Bindings\ZoneManager_BiomeGroundEffectsBinding.h" />
     <ClInclude Include="src\Bindings\ZoneSpacialGrid_ZoneCellBinding.h" />
-    </ItemGroup>
-    <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Bindings\AABB2DBinding.cpp" />
     <ClCompile Include="src\Bindings\AbstractMovementBaseBinding.cpp" />
@@ -1233,9 +1235,12 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClCompile Include="src\Bindings\Inventory_HasRoomCacheBinding.cpp" />
     <ClCompile Include="src\Bindings\HavokCharacterBinding.cpp" />
     <ClCompile Include="src\Bindings\HealthPartStatusBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkArrayBaseBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkArrayBinding.cpp" />
     <ClCompile Include="src\Bindings\hkBoolBinding.cpp" />
     <ClCompile Include="src\Bindings\hkMemoryAllocatorBinding.cpp" />
     <ClCompile Include="src\Bindings\hkVector4fBinding.cpp" />
+    <ClCompile Include="src\Bindings\hkVector4fComparisonBinding.cpp" />
     <ClCompile Include="src\Bindings\ImpactPointBinding.cpp" />
     <ClCompile Include="src\Bindings\InputHandlerBinding.cpp" />
     <ClCompile Include="src\Bindings\InstanceIDBinding.cpp" />
@@ -1256,8 +1261,11 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClCompile Include="src\Bindings\MedicalSystemBinding.cpp" />
     <ClCompile Include="src\Bindings\MeshDataLookupBinding.cpp" />
     <ClCompile Include="src\Bindings\MeshLoadDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\MessageChainBinding.cpp" />
+    <ClCompile Include="src\Bindings\MessageQueueBinding.cpp" />
     <ClCompile Include="src\Bindings\ModInfoBinding.cpp" />
     <ClCompile Include="src\Bindings\MotionFilterBinding.cpp" />
+    <ClCompile Include="src\Bindings\MustEndWithSemiColonBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGuiBinding.cpp" />
     <ClCompile Include="src\Bindings\NavMeshBinding.cpp" />
     <ClCompile Include="src\Bindings\NavMeshGeneratorBinding.cpp" />
@@ -1330,11 +1338,16 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClCompile Include="src\Bindings\TreeDataBinding.cpp" />
     <ClCompile Include="src\Bindings\TriggerCallbackBinding.cpp" />
     <ClCompile Include="src\Bindings\UniqueSpawnDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\Array2dBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\BadSizeBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\BoundsViolationBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\CPerfTimerBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\CPerfTimerTBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\HandBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\iVector2Binding.cpp" />
     <ClCompile Include="src\Bindings\Util\rendHitBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\StringPairBinding.cpp" />
+    <ClCompile Include="src\Bindings\Util\TagsClassBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\TimeOfDayBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\TimerClassBinding.cpp" />
     <ClCompile Include="src\Bindings\Util\TripleIntBinding.cpp" />
@@ -1368,8 +1381,8 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClCompile Include="src\Lua\LuaState.cpp" />
     <ClCompile Include="src\Lua\RegisterBindings.cpp" />
     <ClCompile Include="src\pch.cpp">
-    <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-    <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\FileWatcher.cpp" />
     <ClCompile Include="src\Plugin.cpp" />
@@ -1416,7 +1429,7 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClCompile Include="src\Bindings\TraitBoolBinding.cpp" />
     <ClCompile Include="src\Bindings\ZoneManager_BiomeGroundEffectsBinding.cpp" />
     <ClCompile Include="src\Bindings\ZoneSpacialGrid_ZoneCellBinding.cpp" />
-    </ItemGroup>
+  </ItemGroup>
   <ItemGroup>
     <None Include="extern\kenshilib\Include\ogre\Animation\OgreBone.inl" />
     <None Include="extern\kenshilib\Include\ogre\Math\Array\NEON\Single\OgreArrayAabb.inl" />

@@ -34,6 +34,15 @@ public:
     static int canIUseThisBuilding(lua_State* L);
     static int declareOccupiedTown(lua_State* L);
     static int getOccupiedTownFaction(lua_State* L);
+    static int addOwnedObject(lua_State* L);
+    static int removeOwnedObject(lua_State* L);
+    static int isOwned(lua_State* L);
+    static int setHomeBuilding(lua_State* L);
+    static int getOwnedBuildingsH(lua_State* L);
+    static int getOwnedBuildingPtrs(lua_State* L);
+    static int getHomeFurnitureOfType(lua_State* L);
+    static int getOwnedPtrs(lua_State* L);
+    static int getBuildingsWithFunction(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };
 }

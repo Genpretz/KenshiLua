@@ -19,12 +19,18 @@ public:
     static int _DESTRUCTOR(lua_State* L);
     static int isAI(lua_State* L);
     static int _NV_isAI(lua_State* L);
+    static int initCombatMode(lua_State* L);
+    static int _NV_initCombatMode(lua_State* L);
     static int go(lua_State* L);
     static int _NV_go(lua_State* L);
     static int getCombatState(lua_State* L);
     static int getBlockStateEnum(lua_State* L);
     static int periodicUpdate(lua_State* L);
     static int _NV_periodicUpdate(lua_State* L);
+    static int whoAttacksYouOrMe(lua_State* L);
+    static int _iHitYouAreYouHit(lua_State* L);
+    static int _getHit(lua_State* L);
+    static int _blockHit(lua_State* L);
     static int isAttacking(lua_State* L);
     static int informOfFreeAttackSlot(lua_State* L);
     static int _NV_informOfFreeAttackSlot(lua_State* L);
@@ -35,6 +41,7 @@ public:
     static int getCurrentTechniqueSection(lua_State* L);
     static int getMeiMin(lua_State* L);
     static int areYouFightingAndInNeedOfHelp(lua_State* L);
+    static int getAttackers(lua_State* L);
     static int getNumOpponents(lua_State* L);
     static int getTotalRelativeStrengthOfAttackers(lua_State* L);
     static int _isInCombatMode(lua_State* L);
@@ -42,6 +49,7 @@ public:
     static int addAttackerH(lua_State* L);
     static int isInAttackerListH(lua_State* L);
     static int removeAttackerH(lua_State* L);
+    static int youDoKnowImAttackingYouRight(lua_State* L);
     static int getAttackAimAdjustmentThreshold(lua_State* L);
     static int getNumWaitingAttackers(lua_State* L);
     static int readyToFinishCombatMode(lua_State* L);
@@ -71,8 +79,11 @@ public:
     static int calculateTargetsInAttackZone(lua_State* L);
     static int isInAttackZone(lua_State* L);
     static int getNearestEnemyInAttackZone(lua_State* L);
+    static int assessIncomingAttacks(lua_State* L);
     static int notifyBlockNeeded(lua_State* L);
+    static int calculateCurrentTechniqueSection(lua_State* L);
     static int weaponReach(lua_State* L);
+    static int getBiggestThreat(lua_State* L);
     static int gotMoreImportantThingsToDoThanFightingYou(lua_State* L);
     static int _NV_gotMoreImportantThingsToDoThanFightingYou(lua_State* L);
     static int setAttackTarget(lua_State* L);

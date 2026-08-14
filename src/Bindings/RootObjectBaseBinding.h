@@ -1,4 +1,5 @@
 #pragma once
+#include "kenshi/RootObjectBase.h"
 
 extern "C" {
 #include <lua.h>

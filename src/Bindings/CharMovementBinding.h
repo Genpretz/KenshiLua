@@ -81,5 +81,8 @@ public:
     static int _NV_setDestination(lua_State* L);
     static int setDestination(lua_State* L);
     static int setLookatTarget(lua_State* L);
+    static int setMovementMode(lua_State* L);
+    static int isStandingOnSomething(lua_State* L);
+    static int combatMovementOffensive(lua_State* L);
 };
 }
