@@ -18,7 +18,6 @@ public:
 
     static int getIndexOfLastComponentSet(lua_State* L);
     static int getIndexOfFirstComponentSet(lua_State* L);
-    static int set(lua_State* L);
     static int allAreSet(lua_State* L);
 };
 }

@@ -33,16 +33,6 @@ int hkVector4fComparisonBinding::getIndexOfFirstComponentSet(lua_State* L)
     return 1;
 }
 
-int hkVector4fComparisonBinding::set(lua_State* L)
-{
-    hkVector4fComparison* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "hkVector4fComparison is nil");
-
-    Mask m = (Mask)luaL_checkinteger(L, 2);
-    instance->set(m);
-    return 0;
-}
-
 int hkVector4fComparisonBinding::allAreSet(lua_State* L)
 {
     hkVector4fComparison* instance = getInstance(L, 1);
@@ -63,6 +53,7 @@ Skipped methods needing manual binding:
   line 51: void setOr(...) - unsupported arg type
   line 52: void setNot(...) - unsupported arg type
   line 53: void setSelect(...) - unsupported arg type
+  line 54: void set(Mask m) - unexported method RVA = 0x14A450
   line 57: unsigned int anyIsSet(...) - overloaded method
   line 58: unsigned int anyIsSet(...) - overloaded method
   line 59: Mask getMask(...) - overloaded method
@@ -97,7 +88,6 @@ void hkVector4fComparisonBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "getIndexOfLastComponentSet", hkVector4fComparisonBinding::getIndexOfLastComponentSet },
         { "getIndexOfFirstComponentSet", hkVector4fComparisonBinding::getIndexOfFirstComponentSet },
-        { "set", hkVector4fComparisonBinding::set },
         { "allAreSet", hkVector4fComparisonBinding::allAreSet },
         { 0, 0 }
     };
