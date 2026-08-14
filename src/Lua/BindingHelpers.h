@@ -123,6 +123,7 @@ namespace KenshiLua
         luaL_getmetatable(L, metatableName);
         if (lua_isnil(L, -1)) {
             // Metatable missing - bail out rather than producing an opaque userdata.
+            logToFileWarn(std::string("[BindingHelpers] pushObject: metatable '") + metatableName + "' missing/unregistered in Lua!");
             lua_pop(L, 2); // pop nil metatable + the new userdata
             lua_pushnil(L);
             return 1;
