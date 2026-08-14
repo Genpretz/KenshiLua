@@ -40,6 +40,8 @@
 #include "Bindings/GameSaveStateBinding.h"
 #include "Bindings/GameDataContainerBinding.h"
 #include "Bindings/TownBinding.h"
+#include "Bindings/Gui/OrdersPanelBinding.h"
+#include "Bindings/Gui/DataPanelLine_ButtonBinding.h"
 
 // KenshiLib headers
 #include <kenshi/CharMovement.h>
@@ -88,62 +90,65 @@ namespace KenshiLua
     static inline const char* RaceDataMetatable()               { return RaceDataBinding::getMetatableName(); }
     static inline const char* InventorySectionMetatable()       { return InventorySectionBinding::getMetatableName(); }
     static inline const char* MedicalSystemMetatable()          { return MedicalSystemBinding::getMetatableName(); }
-    static inline const char* CharMovementMetatable()          { return CharMovementBinding::getMetatableName(); }
-    static inline const char* CombatClassMetatable()           { return CombatClassBinding::getMetatableName(); }
-    static inline const char* GameWorldMetatable()             { return GameWorldBinding::getMetatableName(); }
-
-    // pushArg overloads for primitive types
-    static inline void pushArg(lua_State* L, int val)                 { lua_pushinteger(L, val); }
-    static inline void pushArg(lua_State* L, float val)               { lua_pushnumber(L, val); }
-    static inline void pushArg(lua_State* L, bool val)                { lua_pushboolean(L, val ? 1 : 0); }
-    static inline void pushArg(lua_State* L, const std::string& val)  { lua_pushstring(L, val.c_str()); }
-
-    // pushArg overloads for bound classes
-    static inline void pushArg(lua_State* L, Character* val)          { pushObject<Character>(L, val, CharacterMetatable()); }
-    static inline void pushArg(lua_State* L, CharStats* val)          { pushObject<CharStats>(L, val, CharStatsMetatable()); }
-    static inline void pushArg(lua_State* L, Damages* val)            { pushObject<Damages>(L, val, DamagesMetatable()); }
-    static inline void pushArg(lua_State* L, Platoon* val)            { pushObject<Platoon>(L, val, PlatoonMetatable()); }
-    static inline void pushArg(lua_State* L, ActivePlatoon* val)      { pushObject<ActivePlatoon>(L, val, PlatoonMetatable()); }
-    static inline void pushArg(lua_State* L, Item* val)               { pushObject<Item>(L, val, ItemMetatable()); }
-    static inline void pushArg(lua_State* L, Faction* val)            { pushObject<Faction>(L, val, FactionMetatable()); }
-    static inline void pushArg(lua_State* L, PlayerInterface* val)    { pushObject<PlayerInterface>(L, val, PlayerInterfaceMetatable()); }
-    static inline void pushArg(lua_State* L, DialogueWindow* val)     { pushObject<DialogueWindow>(L, val, DialogueWindowMetatable()); }
-    static inline void pushArg(lua_State* L, Dialogue* val)           { pushObject<Dialogue>(L, val, DialogueMetatable()); }
-    static inline void pushArg(lua_State* L, DialogLineData* val)     { pushObject<DialogLineData>(L, val, DialogLineDataMetatable()); }
-
-    static inline void pushArg(lua_State* L, RootObject* val)         { pushObject<RootObject>(L, val, RootObjectMetatable()); }
-    static inline void pushArg(lua_State* L, Inventory* val)          { pushObject<Inventory>(L, val, InventoryMetatable()); }
-    static inline void pushArg(lua_State* L, CombatTechniqueData* val){ pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
-    static inline void pushArg(lua_State* L, Tasker* val)             { pushObject<Tasker>(L, val, TaskerMetatable()); }
-    static inline void pushArg(lua_State* L, CombatClass* val)        { pushObject<CombatClass>(L, val, CombatClassMetatable()); }
-    static inline void pushArg(lua_State* L, GameWorld* val)          { pushObject<GameWorld>(L, val, GameWorldMetatable()); }
-    static inline void pushArg(lua_State* L, Building* val)           { pushObject<Building>(L, val, BuildingMetatable()); }
-    static inline void pushArg(lua_State* L, const Building* val)     { pushObject<Building>(L, const_cast<Building*>(val), BuildingMetatable()); }
-    static inline void pushArg(lua_State* L, const CharStats* val)    { pushObject<CharStats>(L, const_cast<CharStats*>(val), CharStatsMetatable()); }
-    static inline void pushArg(lua_State* L, Ownerships* val)         { pushObject<Ownerships>(L, val, OwnershipsMetatable()); }
-    static inline void pushArg(lua_State* L, const InventoryItemBase* val) { pushObject<InventoryItemBase>(L, const_cast<InventoryItemBase*>(val), InventoryItemBaseMetatable()); }
-
-    static inline void pushArg(lua_State* L, const hand& val)         { pushObject<hand>(L, const_cast<hand*>(&val), HandMetatable()); }
-    static inline void pushArg(lua_State* L, const Ogre::Vector3& val){ pushVector3(L, val); }
-    static inline void pushArg(lua_State* L, YesNoMaybe val)          { lua_pushinteger(L, static_cast<int>(val.key)); }
-    static inline void pushArg(lua_State* L, GameData* val)           { pushObject<GameData>(L, val, GameDataMetatable()); }
-    static inline void pushArg(lua_State* L, RaceData* val)           { pushObject<RaceData>(L, val, RaceDataMetatable()); }
-    static inline void pushArg(lua_State* L, MedicalSystem* val)      { pushObject<MedicalSystem>(L, val, MedicalSystemMetatable()); }
+    static inline const char* CharMovementMetatable()           { return CharMovementBinding::getMetatableName(); }
+    static inline const char* CombatClassMetatable()            { return CombatClassBinding::getMetatableName(); }
+    static inline const char* GameWorldMetatable()              { return GameWorldBinding::getMetatableName(); }
     static inline const char* InventoryGUIMetatable()           { return InventoryGUIBinding::getMetatableName(); }
     static inline const char* BuildModeWindowMetatable()        { return BuildModeWindowBinding::getMetatableName(); }
     static inline const char* SquadManagementScreenMetatable()  { return SquadManagementScreenBinding::getMetatableName(); }
     static inline const char* ManagementScreenMetatable()       { return ManagementScreenBinding::getMetatableName(); }
     static inline const char* TitleScreenMetatable()            { return TitleScreenBinding::getMetatableName(); }
     static inline const char* MyGuiWidgetMetatable()            { return MyGuiBinding::getMetatableName(); }
+    static inline const char* OrdersPanelMetatable()            { return OrdersPanelBinding::getMetatableName(); }
+    static inline const char* DataPanelLineButtonMetatable()    { return DataPanelLine_ButtonBinding::getMetatableName(); }
 
-    static inline void pushArg(lua_State* L, InventoryGUI* val)         { pushObject<InventoryGUI>(L, val, InventoryGUIMetatable()); }
-    static inline void pushArg(lua_State* L, BuildModeWindow* val)      { pushObject<BuildModeWindow>(L, val, BuildModeWindowMetatable()); }
-    static inline void pushArg(lua_State* L, SquadManagementScreen* val){ pushObject<SquadManagementScreen>(L, val, SquadManagementScreenMetatable()); }
-    static inline void pushArg(lua_State* L, ManagementScreen* val)     { pushObject<ManagementScreen>(L, val, ManagementScreenMetatable()); }
-    static inline void pushArg(lua_State* L, TitleScreen* val)          { pushObject<TitleScreen>(L, val, TitleScreenMetatable()); }
-    static inline void pushArg(lua_State* L, MyGUI::Widget* val)        { pushObject<MyGUI::Widget>(L, val, MyGuiWidgetMetatable()); }
-    static inline void pushArg(lua_State* L, void* val)                { lua_pushlightuserdata(L, val); }
-    static inline void pushArg(lua_State* L, lektor<GameData*>& val)  { pushObject<lektor<GameData*>>(L, &val, LektorPtrBinding<GameData*>::metaName); }
+    // pushArg overloads for primitive types
+    static inline void pushArg(lua_State* L, int val)                       { lua_pushinteger(L, val); }
+    static inline void pushArg(lua_State* L, float val)                     { lua_pushnumber(L, val); }
+    static inline void pushArg(lua_State* L, bool val)                      { lua_pushboolean(L, val ? 1 : 0); }
+    static inline void pushArg(lua_State* L, const std::string& val)        { lua_pushstring(L, val.c_str()); }
+
+    // pushArg overloads for bound classes      
+    static inline void pushArg(lua_State* L, Character* val)                { pushObject<Character>(L, val, CharacterMetatable()); }
+    static inline void pushArg(lua_State* L, CharStats* val)                { pushObject<CharStats>(L, val, CharStatsMetatable()); }
+    static inline void pushArg(lua_State* L, Damages* val)                  { pushObject<Damages>(L, val, DamagesMetatable()); }
+    static inline void pushArg(lua_State* L, Platoon* val)                  { pushObject<Platoon>(L, val, PlatoonMetatable()); }
+    static inline void pushArg(lua_State* L, ActivePlatoon* val)            { pushObject<ActivePlatoon>(L, val, PlatoonMetatable()); }
+    static inline void pushArg(lua_State* L, Item* val)                     { pushObject<Item>(L, val, ItemMetatable()); }
+    static inline void pushArg(lua_State* L, Faction* val)                  { pushObject<Faction>(L, val, FactionMetatable()); }
+    static inline void pushArg(lua_State* L, PlayerInterface* val)          { pushObject<PlayerInterface>(L, val, PlayerInterfaceMetatable()); }
+    static inline void pushArg(lua_State* L, DialogueWindow* val)           { pushObject<DialogueWindow>(L, val, DialogueWindowMetatable()); }
+    static inline void pushArg(lua_State* L, Dialogue* val)                 { pushObject<Dialogue>(L, val, DialogueMetatable()); }
+    static inline void pushArg(lua_State* L, DialogLineData* val)           { pushObject<DialogLineData>(L, val, DialogLineDataMetatable()); }
+
+    static inline void pushArg(lua_State* L, RootObject* val)               { pushObject<RootObject>(L, val, RootObjectMetatable()); }
+    static inline void pushArg(lua_State* L, Inventory* val)                { pushObject<Inventory>(L, val, InventoryMetatable()); }
+    static inline void pushArg(lua_State* L, CombatTechniqueData* val)      { pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
+    static inline void pushArg(lua_State* L, Tasker* val)                   { pushObject<Tasker>(L, val, TaskerMetatable()); }
+    static inline void pushArg(lua_State* L, CombatClass* val)              { pushObject<CombatClass>(L, val, CombatClassMetatable()); }
+    static inline void pushArg(lua_State* L, GameWorld* val)                { pushObject<GameWorld>(L, val, GameWorldMetatable()); }
+    static inline void pushArg(lua_State* L, Building* val)                 { pushObject<Building>(L, val, BuildingMetatable()); }
+    static inline void pushArg(lua_State* L, const Building* val)           { pushObject<Building>(L, const_cast<Building*>(val), BuildingMetatable()); }
+    static inline void pushArg(lua_State* L, const CharStats* val)          { pushObject<CharStats>(L, const_cast<CharStats*>(val), CharStatsMetatable()); }
+    static inline void pushArg(lua_State* L, Ownerships* val)               { pushObject<Ownerships>(L, val, OwnershipsMetatable()); }
+    static inline void pushArg(lua_State* L, const InventoryItemBase* val)  { pushObject<InventoryItemBase>(L, const_cast<InventoryItemBase*>(val), InventoryItemBaseMetatable()); }
+
+    static inline void pushArg(lua_State* L, const hand& val)               { pushObject<hand>(L, const_cast<hand*>(&val), HandMetatable()); }
+    static inline void pushArg(lua_State* L, const Ogre::Vector3& val)      { pushVector3(L, val); }
+    static inline void pushArg(lua_State* L, YesNoMaybe val)                { lua_pushinteger(L, static_cast<int>(val.key)); }
+    static inline void pushArg(lua_State* L, GameData* val)                 { pushObject<GameData>(L, val, GameDataMetatable()); }
+    static inline void pushArg(lua_State* L, RaceData* val)                 { pushObject<RaceData>(L, val, RaceDataMetatable()); }
+    static inline void pushArg(lua_State* L, MedicalSystem* val)            { pushObject<MedicalSystem>(L, val, MedicalSystemMetatable()); }
+    static inline void pushArg(lua_State* L, InventoryGUI* val)             { pushObject<InventoryGUI>(L, val, InventoryGUIMetatable()); }
+    static inline void pushArg(lua_State* L, BuildModeWindow* val)          { pushObject<BuildModeWindow>(L, val, BuildModeWindowMetatable()); }
+    static inline void pushArg(lua_State* L, SquadManagementScreen* val)    { pushObject<SquadManagementScreen>(L, val, SquadManagementScreenMetatable()); }
+    static inline void pushArg(lua_State* L, ManagementScreen* val)         { pushObject<ManagementScreen>(L, val, ManagementScreenMetatable()); }
+    static inline void pushArg(lua_State* L, TitleScreen* val)              { pushObject<TitleScreen>(L, val, TitleScreenMetatable()); }
+    static inline void pushArg(lua_State* L, MyGUI::Widget* val)            { pushObject<MyGUI::Widget>(L, val, MyGuiWidgetMetatable()); }
+    static inline void pushArg(lua_State* L, OrdersPanel* val)              { pushObject<OrdersPanel>(L, val, OrdersPanelMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine_Button* val)     { pushObject<DataPanelLine_Button>(L, val, DataPanelLineButtonMetatable()); }
+    static inline void pushArg(lua_State* L, void* val)                     { lua_pushlightuserdata(L, val); }
+    static inline void pushArg(lua_State* L, lektor<GameData*>& val)        { pushObject<lektor<GameData*>>(L, &val, LektorPtrBinding<GameData*>::metaName); }
 }
 
 namespace {
@@ -891,4 +896,94 @@ void CallTownLoadFromSerialiseCallbacks(Town* town, GameSaveState* state)
 {
     ArgPusher2<Town*, GameSaveState*> pusher(town, state);
     KenshiLua::EventSystem::get().callHandlers("onTownLoadFromSerialise", &pusher);
-}
+}
+
+void CallBuildingBuyMeCallbackCallbacks(Building* building, int result)
+{
+    ArgPusher2<Building*, int> pusher(building, result);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingBuyMeCallback", &pusher);
+}
+
+void CallDataPanelLineButtonPressCallbacks(DataPanelLine_Button* button, MyGUI::Widget* sender)
+{
+    ArgPusher2<DataPanelLine_Button*, MyGUI::Widget*> pusher(button, sender);
+    KenshiLua::EventSystem::get().callHandlers("onDataPanelLineButtonPress", &pusher);
+}
+
+void CallInventoryGUIFencingConfirmationCallbacks(InventoryGUI* gui, int b)
+{
+    ArgPusher2<InventoryGUI*, int> pusher(gui, b);
+    KenshiLua::EventSystem::get().callHandlers("onInventoryGUIFencingConfirmation", &pusher);
+}
+
+void CallOrdersPanelBlockModeButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
+    KenshiLua::EventSystem::get().callHandlers("onOrdersPanelBlockModeButton", &pusher);
+}
+
+void CallOrdersPanelHoldButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
+    KenshiLua::EventSystem::get().callHandlers("onOrdersPanelHoldButton", &pusher);
+}
+
+void CallOrdersPanelPassiveButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
+    KenshiLua::EventSystem::get().callHandlers("onOrdersPanelPassiveButton", &pusher);
+}
+
+void CallOrdersPanelChaseButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
+    KenshiLua::EventSystem::get().callHandlers("onOrdersPanelChaseButton", &pusher);
+}
+
+void CallOrdersPanelTauntButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
+    KenshiLua::EventSystem::get().callHandlers("onOrdersPanelTauntButton", &pusher);
+}
+
+void CallOrdersPanelMedicButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
+    KenshiLua::EventSystem::get().callHandlers("onOrdersPanelMedicButton", &pusher);
+}
+
+void CallOrdersPanelLiftButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
+    KenshiLua::EventSystem::get().callHandlers("onOrdersPanelLiftButton", &pusher);
+}
+
+void CallOrdersPanelProspectingButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
+    KenshiLua::EventSystem::get().callHandlers("onOrdersPanelProspectingButton", &pusher);
+}
+
+void CallInventorySectionAddItemCallbacks(Inventory* inventory, Item* item)
+{
+    ArgPusher2<Inventory*, Item*> pusher(inventory, item);
+    KenshiLua::EventSystem::get().callHandlers("onInventorySectionAddItem", &pusher);
+}
+
+void CallInventorySectionRemoveItemCallbacks(Inventory* inventory, Item* item)
+{
+    ArgPusher2<Inventory*, Item*> pusher(inventory, item);
+    KenshiLua::EventSystem::get().callHandlers("onInventorySectionRemoveItem", &pusher);
+}
+
+void CallInventorySectionUpdateItemCallbacks(Inventory* inventory, Item* item, int prevQuantity)
+{
+    ArgPusher3<Inventory*, Item*, int> pusher(inventory, item, prevQuantity);
+    KenshiLua::EventSystem::get().callHandlers("onInventorySectionUpdateItem", &pusher);
+}
+
+void CallInventoryDropItemCallbacks(Inventory* inventory, Item* item)
+{
+    ArgPusher2<Inventory*, Item*> pusher(inventory, item);
+    KenshiLua::EventSystem::get().callHandlers("onInventoryDropItem", &pusher);
+}

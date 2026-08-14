@@ -38,6 +38,8 @@ class MedicalSystem;
 class GameDataContainer;
 class GameSaveState;
 class Town;
+class OrdersPanel;
+class DataPanelLine_Button;
 namespace MyGUI { class Widget; }
 template <typename T> class lektor;
 namespace Ogre {
@@ -667,3 +669,78 @@ void CallPlatoonLoadFromSerialiseCallbacks(Platoon* platoon, GameSaveState* stat
 // Lua event name: "onTownLoadFromSerialise"
 // Lua signature:  function(town, saveState)
 void CallTownLoadFromSerialiseCallbacks(Town* town, GameSaveState* state);
+
+// Fired by Building::_NV_buyMeCallback hook.
+// Lua event name: "onBuildingBuyMeCallback"
+// Lua signature:  function(building, result)
+void CallBuildingBuyMeCallbackCallbacks(Building* building, int result);
+
+// Fired by DataPanelLine_Button::pressCallback hook.
+// Lua event name: "onDataPanelLineButtonPress"
+// Lua signature:  function(button, sender)
+void CallDataPanelLineButtonPressCallbacks(DataPanelLine_Button* button, MyGUI::Widget* sender);
+
+// Fired by InventoryGUI::fencingConfirmationCallback hook.
+// Lua event name: "onInventoryGUIFencingConfirmation"
+// Lua signature:  function(gui, b)
+void CallInventoryGUIFencingConfirmationCallbacks(InventoryGUI* gui, int b);
+
+// Fired by OrdersPanel::blockmodeButton hook.
+// Lua event name: "onOrdersPanelBlockModeButton"
+// Lua signature:  function(panel, sender)
+void CallOrdersPanelBlockModeButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
+
+// Fired by OrdersPanel::holdButtonCallback hook.
+// Lua event name: "onOrdersPanelHoldButton"
+// Lua signature:  function(panel, sender)
+void CallOrdersPanelHoldButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
+
+// Fired by OrdersPanel::passiveButtonCallback hook.
+// Lua event name: "onOrdersPanelPassiveButton"
+// Lua signature:  function(panel, sender)
+void CallOrdersPanelPassiveButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
+
+// Fired by OrdersPanel::chaseButtonCallback hook.
+// Lua event name: "onOrdersPanelChaseButton"
+// Lua signature:  function(panel, sender)
+void CallOrdersPanelChaseButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
+
+// Fired by OrdersPanel::tauntButtonCallback hook.
+// Lua event name: "onOrdersPanelTauntButton"
+// Lua signature:  function(panel, sender)
+void CallOrdersPanelTauntButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
+
+// Fired by OrdersPanel::medicButton hook.
+// Lua event name: "onOrdersPanelMedicButton"
+// Lua signature:  function(panel, sender)
+void CallOrdersPanelMedicButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
+
+// Fired by OrdersPanel::liftButton hook.
+// Lua event name: "onOrdersPanelLiftButton"
+// Lua signature:  function(panel, sender)
+void CallOrdersPanelLiftButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
+
+// Fired by OrdersPanel::prospectingButton hook.
+// Lua event name: "onOrdersPanelProspectingButton"
+// Lua signature:  function(panel, sender)
+void CallOrdersPanelProspectingButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
+
+// Fired by Inventory::_NV__sectionAddItemCallback hook.
+// Lua event name: "onInventorySectionAddItem"
+// Lua signature:  function(inventory, item)
+void CallInventorySectionAddItemCallbacks(Inventory* inventory, Item* item);
+
+// Fired by Inventory::_NV__sectionRemoveItemCallback hook.
+// Lua event name: "onInventorySectionRemoveItem"
+// Lua signature:  function(inventory, item)
+void CallInventorySectionRemoveItemCallbacks(Inventory* inventory, Item* item);
+
+// Fired by Inventory::_NV__sectionUpdateItemCallback hook.
+// Lua event name: "onInventorySectionUpdateItem"
+// Lua signature:  function(inventory, item, prevQuantity)
+void CallInventorySectionUpdateItemCallbacks(Inventory* inventory, Item* item, int prevQuantity);
+
+// Fired by Inventory::_NV_dropItem hook.
+// Lua event name: "onInventoryDropItem"
+// Lua signature:  function(inventory, item)
+void CallInventoryDropItemCallbacks(Inventory* inventory, Item* item);

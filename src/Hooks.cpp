@@ -34,6 +34,8 @@
 #include <kenshi/RootObjectFactory.h>
 #include <kenshi/Town.h>
 #include <kenshi/GameSaveState.h>
+#include <kenshi/gui/DataPanelLine.h>
+#include <kenshi/gui/OrdersPanel.h>
 
 #include <cstddef>
 
@@ -1575,6 +1577,176 @@ DEFINE_HOOK_INSTALLER(InstallHook_Town_NV_loadFromSerialise,
     KenshiLib::GetRealAddress(&Town::_NV_loadFromSerialise),
     Town_NV_loadFromSerialise_hook, Town_NV_loadFromSerialise_orig)
 
+// Building buyMeCallback
+static void (*Building_NV_buyMeCallback_orig)(Building*, int) = NULL;
+static void Building_NV_buyMeCallback_hook(Building* thisptr, int result)
+{
+    Building_NV_buyMeCallback_orig(thisptr, result);
+    CallBuildingBuyMeCallbackCallbacks(thisptr, result);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Building_NV_buyMeCallback,
+    "Building::_NV_buyMeCallback",
+    KenshiLib::GetRealAddress(&Building::_NV_buyMeCallback),
+    Building_NV_buyMeCallback_hook, Building_NV_buyMeCallback_orig)
+
+// DataPanelLine_Button pressCallback
+static void (*DataPanelLine_Button_pressCallback_orig)(DataPanelLine_Button*, MyGUI::Widget*) = NULL;
+static void DataPanelLine_Button_pressCallback_hook(DataPanelLine_Button* thisptr, MyGUI::Widget* sender)
+{
+    DataPanelLine_Button_pressCallback_orig(thisptr, sender);
+    CallDataPanelLineButtonPressCallbacks(thisptr, sender);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_DataPanelLine_Button_pressCallback,
+    "DataPanelLine_Button::pressCallback",
+    KenshiLib::GetRealAddress(&DataPanelLine_Button::pressCallback),
+    DataPanelLine_Button_pressCallback_hook, DataPanelLine_Button_pressCallback_orig)
+
+// InventoryGUI fencingConfirmationCallback
+static void (*InventoryGUI_fencingConfirmationCallback_orig)(InventoryGUI*, int) = NULL;
+static void InventoryGUI_fencingConfirmationCallback_hook(InventoryGUI* thisptr, int b)
+{
+    InventoryGUI_fencingConfirmationCallback_orig(thisptr, b);
+    CallInventoryGUIFencingConfirmationCallbacks(thisptr, b);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_fencingConfirmationCallback,
+    "InventoryGUI::fencingConfirmationCallback",
+    KenshiLib::GetRealAddress(&InventoryGUI::fencingConfirmationCallback),
+    InventoryGUI_fencingConfirmationCallback_hook, InventoryGUI_fencingConfirmationCallback_orig)
+
+// OrdersPanel callbacks
+static void (*OrdersPanel_blockmodeButton_orig)(OrdersPanel*, MyGUI::Widget*) = NULL;
+static void OrdersPanel_blockmodeButton_hook(OrdersPanel* thisptr, MyGUI::Widget* sender)
+{
+    OrdersPanel_blockmodeButton_orig(thisptr, sender);
+    CallOrdersPanelBlockModeButtonCallbacks(thisptr, sender);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_OrdersPanel_blockmodeButton,
+    "OrdersPanel::blockmodeButton",
+    KenshiLib::GetRealAddress(&OrdersPanel::blockmodeButton),
+    OrdersPanel_blockmodeButton_hook, OrdersPanel_blockmodeButton_orig)
+
+static void (*OrdersPanel_holdButtonCallback_orig)(OrdersPanel*, MyGUI::Widget*) = NULL;
+static void OrdersPanel_holdButtonCallback_hook(OrdersPanel* thisptr, MyGUI::Widget* sender)
+{
+    OrdersPanel_holdButtonCallback_orig(thisptr, sender);
+    CallOrdersPanelHoldButtonCallbacks(thisptr, sender);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_OrdersPanel_holdButtonCallback,
+    "OrdersPanel::holdButtonCallback",
+    KenshiLib::GetRealAddress(&OrdersPanel::holdButtonCallback),
+    OrdersPanel_holdButtonCallback_hook, OrdersPanel_holdButtonCallback_orig)
+
+static void (*OrdersPanel_passiveButtonCallback_orig)(OrdersPanel*, MyGUI::Widget*) = NULL;
+static void OrdersPanel_passiveButtonCallback_hook(OrdersPanel* thisptr, MyGUI::Widget* sender)
+{
+    OrdersPanel_passiveButtonCallback_orig(thisptr, sender);
+    CallOrdersPanelPassiveButtonCallbacks(thisptr, sender);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_OrdersPanel_passiveButtonCallback,
+    "OrdersPanel::passiveButtonCallback",
+    KenshiLib::GetRealAddress(&OrdersPanel::passiveButtonCallback),
+    OrdersPanel_passiveButtonCallback_hook, OrdersPanel_passiveButtonCallback_orig)
+
+static void (*OrdersPanel_chaseButtonCallback_orig)(OrdersPanel*, MyGUI::Widget*) = NULL;
+static void OrdersPanel_chaseButtonCallback_hook(OrdersPanel* thisptr, MyGUI::Widget* sender)
+{
+    OrdersPanel_chaseButtonCallback_orig(thisptr, sender);
+    CallOrdersPanelChaseButtonCallbacks(thisptr, sender);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_OrdersPanel_chaseButtonCallback,
+    "OrdersPanel::chaseButtonCallback",
+    KenshiLib::GetRealAddress(&OrdersPanel::chaseButtonCallback),
+    OrdersPanel_chaseButtonCallback_hook, OrdersPanel_chaseButtonCallback_orig)
+
+static void (*OrdersPanel_tauntButtonCallback_orig)(OrdersPanel*, MyGUI::Widget*) = NULL;
+static void OrdersPanel_tauntButtonCallback_hook(OrdersPanel* thisptr, MyGUI::Widget* sender)
+{
+    OrdersPanel_tauntButtonCallback_orig(thisptr, sender);
+    CallOrdersPanelTauntButtonCallbacks(thisptr, sender);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_OrdersPanel_tauntButtonCallback,
+    "OrdersPanel::tauntButtonCallback",
+    KenshiLib::GetRealAddress(&OrdersPanel::tauntButtonCallback),
+    OrdersPanel_tauntButtonCallback_hook, OrdersPanel_tauntButtonCallback_orig)
+
+static void (*OrdersPanel_medicButton_orig)(OrdersPanel*, MyGUI::Widget*) = NULL;
+static void OrdersPanel_medicButton_hook(OrdersPanel* thisptr, MyGUI::Widget* sender)
+{
+    OrdersPanel_medicButton_orig(thisptr, sender);
+    CallOrdersPanelMedicButtonCallbacks(thisptr, sender);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_OrdersPanel_medicButton,
+    "OrdersPanel::medicButton",
+    KenshiLib::GetRealAddress(&OrdersPanel::medicButton),
+    OrdersPanel_medicButton_hook, OrdersPanel_medicButton_orig)
+
+static void (*OrdersPanel_liftButton_orig)(OrdersPanel*, MyGUI::Widget*) = NULL;
+static void OrdersPanel_liftButton_hook(OrdersPanel* thisptr, MyGUI::Widget* sender)
+{
+    OrdersPanel_liftButton_orig(thisptr, sender);
+    CallOrdersPanelLiftButtonCallbacks(thisptr, sender);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_OrdersPanel_liftButton,
+    "OrdersPanel::liftButton",
+    KenshiLib::GetRealAddress(&OrdersPanel::liftButton),
+    OrdersPanel_liftButton_hook, OrdersPanel_liftButton_orig)
+
+static void (*OrdersPanel_prospectingButton_orig)(OrdersPanel*, MyGUI::Widget*) = NULL;
+static void OrdersPanel_prospectingButton_hook(OrdersPanel* thisptr, MyGUI::Widget* sender)
+{
+    OrdersPanel_prospectingButton_orig(thisptr, sender);
+    CallOrdersPanelProspectingButtonCallbacks(thisptr, sender);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_OrdersPanel_prospectingButton,
+    "OrdersPanel::prospectingButton",
+    KenshiLib::GetRealAddress(&OrdersPanel::prospectingButton),
+    OrdersPanel_prospectingButton_hook, OrdersPanel_prospectingButton_orig)
+
+// Inventory section and item callbacks
+static void (*Inventory_NV_sectionAddItemCallback_orig)(Inventory*, Item*) = NULL;
+static void Inventory_NV_sectionAddItemCallback_hook(Inventory* thisptr, Item* item)
+{
+    Inventory_NV_sectionAddItemCallback_orig(thisptr, item);
+    CallInventorySectionAddItemCallbacks(thisptr, item);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_NV_sectionAddItemCallback,
+    "Inventory::_NV__sectionAddItemCallback",
+    KenshiLib::GetRealAddress(&Inventory::_NV__sectionAddItemCallback),
+    Inventory_NV_sectionAddItemCallback_hook, Inventory_NV_sectionAddItemCallback_orig)
+
+static void (*Inventory_NV_sectionRemoveItemCallback_orig)(Inventory*, Item*) = NULL;
+static void Inventory_NV_sectionRemoveItemCallback_hook(Inventory* thisptr, Item* item)
+{
+    Inventory_NV_sectionRemoveItemCallback_orig(thisptr, item);
+    CallInventorySectionRemoveItemCallbacks(thisptr, item);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_NV_sectionRemoveItemCallback,
+    "Inventory::_NV__sectionRemoveItemCallback",
+    KenshiLib::GetRealAddress(&Inventory::_NV__sectionRemoveItemCallback),
+    Inventory_NV_sectionRemoveItemCallback_hook, Inventory_NV_sectionRemoveItemCallback_orig)
+
+static void (*Inventory_NV_sectionUpdateItemCallback_orig)(Inventory*, Item*, int) = NULL;
+static void Inventory_NV_sectionUpdateItemCallback_hook(Inventory* thisptr, Item* item, int prevQuantity)
+{
+    Inventory_NV_sectionUpdateItemCallback_orig(thisptr, item, prevQuantity);
+    CallInventorySectionUpdateItemCallbacks(thisptr, item, prevQuantity);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_NV_sectionUpdateItemCallback,
+    "Inventory::_NV__sectionUpdateItemCallback",
+    KenshiLib::GetRealAddress(&Inventory::_NV__sectionUpdateItemCallback),
+    Inventory_NV_sectionUpdateItemCallback_hook, Inventory_NV_sectionUpdateItemCallback_orig)
+
+static void (*Inventory_NV_dropItem_orig)(Inventory*, Item*) = NULL;
+static void Inventory_NV_dropItem_hook(Inventory* thisptr, Item* item)
+{
+    Inventory_NV_dropItem_orig(thisptr, item);
+    CallInventoryDropItemCallbacks(thisptr, item);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_NV_dropItem,
+    "Inventory::_NV_dropItem",
+    KenshiLib::GetRealAddress(&Inventory::_NV_dropItem),
+    Inventory_NV_dropItem_hook, Inventory_NV_dropItem_orig)
+
 
 
 
@@ -1595,157 +1767,170 @@ namespace KenshiLua
 
     static const EventHookRegistryEntry g_eventHookRegistry[] = {
         // InputHandler.h
-        { "onKeyDown",                          InstallHook_InputHandler_KeyDown },
+        { "onKeyDown",                                      InstallHook_InputHandler_KeyDown },
 
-        // GameWorld.h
-        { "onCharsUpdate",                      InstallHook_GameWorld_CharsUpdate },
+        // GameWorld.h          
+        { "onCharsUpdate",                                  InstallHook_GameWorld_CharsUpdate },
 
-        // Character.h
-        { "onCharacterSay",                     InstallHook_Character_Say },
-        { "onCharacterSelect",                  InstallHook_Character_Select },
-        { "onCharacterUnselect",                InstallHook_Character_Unselect },
-        { "onCharacterDeath",                   InstallHook_Character_DeclareDead },
-        { "onCharacterPickupObject",            InstallHook_Character_PickupObject },
-        { "onCharacterGetPickedUp",             InstallHook_Character_GetPickedUp },
-        { "onCharacterTakeMoney",               InstallHook_Character_TakeMoney },
-        { "onCharacterEat",                     InstallHook_Character_EatItem },
-        { "onCharacterHitByMelee",              InstallHook_Character_HitByMeleeAttack },
-        { "onCharacterGettingEaten",            InstallHook_Character_GettingEaten },
-        { "onCharacterStandingOrderChanged",    InstallHook_Character_SetStandingOrder },
-        { "onCharacterFactionChanged",          InstallHook_Character_SetFaction },
-        { "onCharacterEquip",                   InstallHook_Character_EquipItem },
-        { "onCharacterUnequip",                 InstallHook_Character_UnequipItem },
-        { "onPlayerStealCheck",                 InstallHook_Character_ImStealingDoYouNotice },
-        { "onSmugglingTradeCheck",              InstallHook_Character_SmugglingTradeCheck },
-        { "onCharacterInit",                    InstallHook_Character_NV_init },
-        { "onCharacterLootCheck",               InstallHook_Character_isItOkForMeToLoot },
-        { "onGetFencingChance",                 InstallHook_Character_getFencingSuccessChance },
-        { "onSlaveOwnerChanged",                InstallHook_Character_changeSlaveOwner },
-        { "onChainedModeChanged",                InstallHook_Character_setChainedMode },
-        { "onCharacterIndoorsChanged",          InstallHook_Character_NV_notifyIndoors },
+        // Character.h          
+        { "onCharacterSay",                                 InstallHook_Character_Say },
+        { "onCharacterSelect",                              InstallHook_Character_Select },
+        { "onCharacterUnselect",                            InstallHook_Character_Unselect },
+        { "onCharacterDeath",                               InstallHook_Character_DeclareDead },
+        { "onCharacterPickupObject",                        InstallHook_Character_PickupObject },
+        { "onCharacterGetPickedUp",                         InstallHook_Character_GetPickedUp },
+        { "onCharacterTakeMoney",                           InstallHook_Character_TakeMoney },
+        { "onCharacterEat",                                 InstallHook_Character_EatItem },
+        { "onCharacterHitByMelee",                          InstallHook_Character_HitByMeleeAttack },
+        { "onCharacterGettingEaten",                        InstallHook_Character_GettingEaten },
+        { "onCharacterStandingOrderChanged",                InstallHook_Character_SetStandingOrder },
+        { "onCharacterFactionChanged",                      InstallHook_Character_SetFaction },
+        { "onCharacterEquip",                               InstallHook_Character_EquipItem },
+        { "onCharacterUnequip",                             InstallHook_Character_UnequipItem },
+        { "onPlayerStealCheck",                             InstallHook_Character_ImStealingDoYouNotice },
+        { "onSmugglingTradeCheck",                          InstallHook_Character_SmugglingTradeCheck },
+        { "onCharacterInit",                                InstallHook_Character_NV_init },
+        { "onCharacterLootCheck",                           InstallHook_Character_isItOkForMeToLoot },
+        { "onGetFencingChance",                             InstallHook_Character_getFencingSuccessChance },
+        { "onSlaveOwnerChanged",                            InstallHook_Character_changeSlaveOwner },
+        { "onChainedModeChanged",                           InstallHook_Character_setChainedMode },
+        { "onCharacterIndoorsChanged",                      InstallHook_Character_NV_notifyIndoors },
+        { "onCharacterAddGoal",                             InstallHook_Character_addGoal },
+        { "onCharacterAddJob",                              InstallHook_Character_addJob },
+        { "onCharacterAddOrder",                            InstallHook_Character_addOrder },
+        { "onCharacterRemoveJob",                           InstallHook_Character_removeJob },
+        { "onCharacterSerialise",                           InstallHook_Character_NV_serialise },
+        { "onCharacterLoadFromSerialise",                   InstallHook_Character_NV_loadFromSerialise },
+        { "onCharacterLoadFromSerialisePostCreationStage",  InstallHook_Character_NV_loadFromSerialisePostCreationStage },
 
         // CharStats.h
-        { "setHoldLocation",                    InstallHook_CharStats_SetHoldLocation },
-        { "clearHoldLocation",                  InstallHook_CharStats_ClearHoldLocation },
-        { "chooseAttack",                       InstallHook_CharStats_ChooseAttack },
-        { "xpRunning",                          InstallHook_CharStats_XpRunning },
-        { "xpFirstAid",                         InstallHook_CharStats_XpFirstAid },
-        { "xpStealth",                          InstallHook_CharStats_XpStealth },
-        { "xpToughness_GetUpEvent",             InstallHook_CharStats_XpToughness_GetUpEvent },
-        { "xpToughness_RagdollEvent",           InstallHook_CharStats_XpToughness_RagdollEvent },
-        { "xpToughness_PunchSomething",         InstallHook_CharStats_XpToughness_PunchSomething },
-        { "xpEngineering",                      InstallHook_CharStats_XpEngineering },
-        { "xpLockpicking",                      InstallHook_CharStats_XpLockpicking },
-        { "onGetStat",                          InstallHook_CharStats_getStat },
+        { "setHoldLocation",                                InstallHook_CharStats_SetHoldLocation },
+        { "clearHoldLocation",                              InstallHook_CharStats_ClearHoldLocation },
+        { "chooseAttack",                                   InstallHook_CharStats_ChooseAttack },
+        { "xpRunning",                                      InstallHook_CharStats_XpRunning },
+        { "xpFirstAid",                                     InstallHook_CharStats_XpFirstAid },
+        { "xpStealth",                                      InstallHook_CharStats_XpStealth },
+        { "xpToughness_GetUpEvent",                         InstallHook_CharStats_XpToughness_GetUpEvent },
+        { "xpToughness_RagdollEvent",                       InstallHook_CharStats_XpToughness_RagdollEvent },
+        { "xpToughness_PunchSomething",                     InstallHook_CharStats_XpToughness_PunchSomething },
+        { "xpEngineering",                                  InstallHook_CharStats_XpEngineering },
+        { "xpLockpicking",                                  InstallHook_CharStats_XpLockpicking },
+        { "onGetStat",                                      InstallHook_CharStats_getStat },
+        { "onCharStatsXpStatEvent",                         InstallHook_CharStats_xpStat_eventBased },
+        { "onCharStatsXpDodgeEvent",                        InstallHook_CharStats_xpDodgeEvent },
 
-        // PlayerInterface.h
-        { "onPlayerRecruit",                    InstallHook_PlayerInterface_Recruit },
-        { "onPlayerSelectObject",               InstallHook_PlayerInterface_SelectObject },
-        { "onPlayerOrderGiven",                 InstallHook_PlayerInterface_NewPlayerTaskSelectedCharacters },
-        { "onPlayerActivateCharacterEditMode",  InstallHook_PlayerInterface_activateCharacterEditMode },
-        { "onPlayerCreateSquad",                InstallHook_PlayerInterface_createSquad },
-        { "onPlayerAddJobSelectedCharacters",   InstallHook_PlayerInterface_addJobSelectedCharacters },
-        { "onPlayerAddOrderSelectedCharacters", InstallHook_PlayerInterface_addOrderSelectedCharacters },
-        { "onFactionEncountered",               InstallHook_PlayerInterface_encounterFaction },
+        // PlayerInterface.h            
+        { "onPlayerRecruit",                                InstallHook_PlayerInterface_Recruit },
+        { "onPlayerSelectObject",                           InstallHook_PlayerInterface_SelectObject },
+        { "onPlayerOrderGiven",                             InstallHook_PlayerInterface_NewPlayerTaskSelectedCharacters },
+        { "onPlayerActivateCharacterEditMode",              InstallHook_PlayerInterface_activateCharacterEditMode },
+        { "onPlayerCreateSquad",                            InstallHook_PlayerInterface_createSquad },
+        { "onPlayerAddJobSelectedCharacters",               InstallHook_PlayerInterface_addJobSelectedCharacters },
+        { "onPlayerAddOrderSelectedCharacters",             InstallHook_PlayerInterface_addOrderSelectedCharacters },
+        { "onFactionEncountered",                           InstallHook_PlayerInterface_encounterFaction },
+        { "onPlayerSerialise",                              InstallHook_PlayerInterface_serialise },
+        { "onPlayerLoadFromSerialise",                      InstallHook_PlayerInterface_loadFromSerialise },
 
-        // Platoon.h
-        { "onPlatoonMemberAdded",               InstallHook_ActivePlatoon_AddActiveObject },
-        { "onPlatoonMemberRemoved",             InstallHook_ActivePlatoon_RemoveObject },
-        { "onPlatoonTaskComplete",              InstallHook_Platoon_TaskIsComplete },
-        { "onPlatoonIBuyStolenGoods",           InstallHook_Platoon_iBuyStolenGoods },
-        { "onPlatoonIBuyIllegalGoods",          InstallHook_Platoon_iBuyIllegalGoods },
-        { "onBuildingUseCheck",                 InstallHook_Ownerships_canIUseThisBuilding },
+        // Platoon.h            
+        { "onPlatoonMemberAdded",                           InstallHook_ActivePlatoon_AddActiveObject },
+        { "onPlatoonMemberRemoved",                         InstallHook_ActivePlatoon_RemoveObject },
+        { "onPlatoonTaskComplete",                          InstallHook_Platoon_TaskIsComplete },
+        { "onPlatoonIBuyStolenGoods",                       InstallHook_Platoon_iBuyStolenGoods },
+        { "onPlatoonIBuyIllegalGoods",                      InstallHook_Platoon_iBuyIllegalGoods },
+        { "onPlatoonLoadFromSerialise",                     InstallHook_Platoon_NV_loadFromSerialise },
+        { "onBuildingUseCheck",                             InstallHook_Ownerships_canIUseThisBuilding },
 
-        // Item.h
-        { "onItemStolen",                       InstallHook_Item_NotifyTheftFrom },
+        // Item.h           
+        { "onItemStolen",                                   InstallHook_Item_NotifyTheftFrom },
 
-        // Inventory.h / InventoryItemBase.h
-        { "onInventoryGetSectionOfType",        InstallHook_Inventory_getSectionOfType },
-        { "onInventoryGetBestFoodItem",         InstallHook_Inventory_getBestFoodItem },
-        { "onItemGetValueSingle",               InstallHook_InventoryItemBase_getValueSingle },
-        { "onInventoryAddItem",                 InstallHook_Inventory_NV_addItem },
-        { "onInventoryRemoveItem",              InstallHook_Inventory_NV_removeItemDontDestroy_returnsItem },
-        { "onItemBought",                       InstallHook_Inventory_buyItem },
+        // Inventory.h / InventoryItemBase.h            
+        { "onInventoryGetSectionOfType",                    InstallHook_Inventory_getSectionOfType },
+        { "onInventoryGetBestFoodItem",                     InstallHook_Inventory_getBestFoodItem },
+        { "onItemGetValueSingle",                           InstallHook_InventoryItemBase_getValueSingle },
+        { "onInventoryAddItem",                             InstallHook_Inventory_NV_addItem },
+        { "onInventoryRemoveItem",                          InstallHook_Inventory_NV_removeItemDontDestroy_returnsItem },
+        { "onItemBought",                                   InstallHook_Inventory_buyItem },
+        { "onInventorySectionAddItem",                      InstallHook_Inventory_NV_sectionAddItemCallback },
+        { "onInventorySectionRemoveItem",                   InstallHook_Inventory_NV_sectionRemoveItemCallback },
+        { "onInventorySectionUpdateItem",                   InstallHook_Inventory_NV_sectionUpdateItemCallback },
+        { "onInventoryDropItem",                            InstallHook_Inventory_NV_dropItem },
 
-        // BountyManager.h
-        { "onCrimeWitnessed",                   InstallHook_BountyManager_NotifyCrimeWitnessed },
+        // BountyManager.h          
+        { "onCrimeWitnessed",                               InstallHook_BountyManager_NotifyCrimeWitnessed },
 
-        // FactionRelations.h
-        { "onFactionRelationsAffected",         InstallHook_FactionRelations_AffectRelations },
+        // FactionRelations.h           
+        { "onFactionRelationsAffected",                     InstallHook_FactionRelations_AffectRelations },
 
-        // Faction.h
-        { "onFactionChooseRace",                InstallHook_Faction_chooseARace },
-        { "onFactionGetBuildingReplacement",    InstallHook_Faction_getBuildingReplacement },
-        { "onActivePlatoonCreated",             InstallHook_Faction_createNewEmptyActivePlatoon },
-        { "onPlatoonDestroyed",                 InstallHook_Faction_destroyPlatoon },
+        // Faction.h            
+        { "onFactionChooseRace",                            InstallHook_Faction_chooseARace },
+        { "onFactionGetBuildingReplacement",                InstallHook_Faction_getBuildingReplacement },
+        { "onActivePlatoonCreated",                         InstallHook_Faction_createNewEmptyActivePlatoon },
+        { "onPlatoonDestroyed",                             InstallHook_Faction_destroyPlatoon },
 
-        // MedicalSystem.h
-        { "onLimbAmputated",                    InstallHook_MedicalSystem_Amputate },
-        { "onCharacterKnockedOut",              InstallHook_MedicalSystem_knockout },
-        { "onCharacterWakeUp",                  InstallHook_MedicalSystem_canGetUpWakeUp },
+        // MedicalSystem.h          
+        { "onLimbAmputated",                                InstallHook_MedicalSystem_Amputate },
+        { "onCharacterKnockedOut",                          InstallHook_MedicalSystem_knockout },
+        { "onCharacterWakeUp",                              InstallHook_MedicalSystem_canGetUpWakeUp },
 
-        // gui/DialogueWindow.h
-        { "onDialogueWindowShow",               InstallHook_DialogueWindow_Show },
+        // gui/DialogueWindow.h         
+        { "onDialogueWindowShow",                           InstallHook_DialogueWindow_Show },
 
-        // Dialogue.h
-        { "onDialogueDoActions",                InstallHook_Dialogue_DoActions },
-        { "onDialogueSay",                      InstallHook_Dialogue_Say },
-        { "onDialogueEndDialogue",              InstallHook_Dialogue_endDialogue },
-        { "onDialogueCheckCondition",           InstallHook_Dialogue__checkCondition },
-        { "onDialogueStartConversation",        InstallHook_Dialogue_startConversation },
-        { "onDialogueEndPlayerConversation",    InstallHook_Dialogue__endPlayerConversation },
-        { "onDialogueStartPlayerConversation",  InstallHook_Dialogue_startPlayerConversation },
-        { "onDialogueSendEvent",                InstallHook_Dialogue_sendEvent },
-        { "onDialogueStopEvent",                InstallHook_Dialogue_stopEvent },
+        // Dialogue.h           
+        { "onDialogueDoActions",                            InstallHook_Dialogue_DoActions },
+        { "onDialogueSay",                                  InstallHook_Dialogue_Say },
+        { "onDialogueEndDialogue",                          InstallHook_Dialogue_endDialogue },
+        { "onDialogueCheckCondition",                       InstallHook_Dialogue__checkCondition },
+        { "onDialogueStartConversation",                    InstallHook_Dialogue_startConversation },
+        { "onDialogueEndPlayerConversation",                InstallHook_Dialogue__endPlayerConversation },
+        { "onDialogueStartPlayerConversation",              InstallHook_Dialogue_startPlayerConversation },
+        { "onDialogueSendEvent",                            InstallHook_Dialogue_sendEvent },
+        { "onDialogueStopEvent",                            InstallHook_Dialogue_stopEvent },
 
-        // RootObjectFactory.h
-        { "onChooseMyClothing",                 InstallHook_RootObjectFactory_chooseMyClothing },
+        // RootObjectFactory.h          
+        { "onChooseMyClothing",                             InstallHook_RootObjectFactory_chooseMyClothing },
 
-        // mygui/common/baselayout/BaseLayout.h
-        { "onBaseLayoutInitialise",             InstallHook_BaseLayout_initialise },
+        // mygui/common/baselayout/BaseLayout.h         
+        { "onBaseLayoutInitialise",                         InstallHook_BaseLayout_initialise },
 
-        // Building/Building.h
-        { "onBuildingIsPublic",                 InstallHook_Building_isPublic },
-        { "onBuildingIsForSale",                InstallHook_Building_isForSale },
-        { "onBuildingCalculateSaleValue",       InstallHook_Building_calculateSaleValue },
-        { "onBuildingLoaded",                   InstallHook_Building_NV_onBuildingLoaded },
-        { "onBuildingBrokenChanged",            InstallHook_Building_NV_setBroken },
+        // Building/Building.h          
+        { "onBuildingIsPublic",                             InstallHook_Building_isPublic },
+        { "onBuildingIsForSale",                            InstallHook_Building_isForSale },
+        { "onBuildingCalculateSaleValue",                   InstallHook_Building_calculateSaleValue },
+        { "onBuildingLoaded",                               InstallHook_Building_NV_onBuildingLoaded },
+        { "onBuildingBrokenChanged",                        InstallHook_Building_NV_setBroken },
+        { "onBuildingSetResidentSquad",                     InstallHook_Building_setResidentSquad },
+        { "onBuildingAddInternalBuilding",                  InstallHook_Building_addAnInternalBuilding },
+        { "onBuildingSerialise",                            InstallHook_Building_NV_serialise },
+        { "onBuildingLoadFromSerialise",                    InstallHook_Building_NV_loadFromSerialise },
+        { "onBuildingBuyMeCallback",                        InstallHook_Building_NV_buyMeCallback },
 
-        // CharMovement.h
-        { "onCharMovementIsRunning",            InstallHook_CharMovement_isRunning },
-        { "onCharMovementIsRunningAway",        InstallHook_CharMovement_isRunningAway },
 
-        // Additional High-Demand Engine Hooks
-        { "onCharStatsXpStatEvent",             InstallHook_CharStats_xpStat_eventBased },
-        { "onCharStatsXpDodgeEvent",            InstallHook_CharStats_xpDodgeEvent },
 
-        { "onBuildingSetResidentSquad",         InstallHook_Building_setResidentSquad },
+        // CharMovement.h           
+        { "onCharMovementIsRunning",                        InstallHook_CharMovement_isRunning },
+        { "onCharMovementIsRunningAway",                    InstallHook_CharMovement_isRunningAway },
 
-        // Building & GUI Hooks
-        { "onBuildingAddInternalBuilding",      InstallHook_Building_addAnInternalBuilding },
-        { "onInventoryAddTradePartner",         InstallHook_InventoryGUI_addTradePartner },
-        { "onBuildModeConfirm",                 InstallHook_BuildModeWindow_confirm },
-        { "onSquadRemoved",                     InstallHook_SquadManagementScreen_removeSquad },
-        { "onManagementScreenMessageAdded",     InstallHook_ManagementScreen_addMessage },
-        { "onTitleScreenLoadGame",              InstallHook_TitleScreen_loadGame },
+        // InventoryGUI.h
+        { "onInventoryAddTradePartner",                     InstallHook_InventoryGUI_addTradePartner },
+        { "onInventoryGUIFencingConfirmation",              InstallHook_InventoryGUI_fencingConfirmationCallback },
 
-        // AI Tasks, Goals & Orders Hooks
-        { "onCharacterAddGoal",                 InstallHook_Character_addGoal },
-        { "onCharacterAddJob",                  InstallHook_Character_addJob },
-        { "onCharacterAddOrder",                InstallHook_Character_addOrder },
-        { "onCharacterRemoveJob",               InstallHook_Character_removeJob },
+        // OrdersPanel.h
+        { "onOrdersPanelBlockModeButton",                   InstallHook_OrdersPanel_blockmodeButton },
+        { "onOrdersPanelHoldButton",                        InstallHook_OrdersPanel_holdButtonCallback },
+        { "onOrdersPanelPassiveButton",                     InstallHook_OrdersPanel_passiveButtonCallback },
+        { "onOrdersPanelChaseButton",                       InstallHook_OrdersPanel_chaseButtonCallback },
+        { "onOrdersPanelTauntButton",                       InstallHook_OrdersPanel_tauntButtonCallback },
+        { "onOrdersPanelMedicButton",                       InstallHook_OrdersPanel_medicButton },
+        { "onOrdersPanelLiftButton",                        InstallHook_OrdersPanel_liftButton },
+        { "onOrdersPanelProspectingButton",                 InstallHook_OrdersPanel_prospectingButton },
 
-        // Serialization Hooks
-        { "onPlayerSerialise",                          InstallHook_PlayerInterface_serialise },
-        { "onPlayerLoadFromSerialise",                  InstallHook_PlayerInterface_loadFromSerialise },
-        { "onCharacterSerialise",                       InstallHook_Character_NV_serialise },
-        { "onCharacterLoadFromSerialise",               InstallHook_Character_NV_loadFromSerialise },
-        { "onCharacterLoadFromSerialisePostCreationStage", InstallHook_Character_NV_loadFromSerialisePostCreationStage },
-        { "onBuildingSerialise",                        InstallHook_Building_NV_serialise },
-        { "onBuildingLoadFromSerialise",                InstallHook_Building_NV_loadFromSerialise },
-        { "onPlatoonLoadFromSerialise",                 InstallHook_Platoon_NV_loadFromSerialise },
-        { "onTownLoadFromSerialise",                    InstallHook_Town_NV_loadFromSerialise },
-
+        // Misc
+        { "onBuildModeConfirm",                             InstallHook_BuildModeWindow_confirm },
+        { "onSquadRemoved",                                 InstallHook_SquadManagementScreen_removeSquad },
+        { "onManagementScreenMessageAdded",                 InstallHook_ManagementScreen_addMessage },
+        { "onTitleScreenLoadGame",                          InstallHook_TitleScreen_loadGame },
+        { "onTownLoadFromSerialise",                        InstallHook_Town_NV_loadFromSerialise },
+        { "onDataPanelLineButtonPress",                     InstallHook_DataPanelLine_Button_pressCallback },
 
     };
 
