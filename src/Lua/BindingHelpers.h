@@ -205,7 +205,11 @@ namespace KenshiLua
         return pushObjectOwned<T>(L, ptr, metatableName);
     }
 
-
+	inline void registerStaticMethod(lua_State* L, const char* name, lua_CFunction func)
+	{
+		lua_pushcfunction(L, func);
+		lua_setfield(L, -2, name);
+	}
 
     inline void registerGetter(lua_State* L, const char* name, lua_CFunction getter)
     {

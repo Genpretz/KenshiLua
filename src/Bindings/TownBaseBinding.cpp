@@ -2306,6 +2306,12 @@ void TownBaseBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, TownBaseBinding::getMetatableName(), RootObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "delayedSpawningChecks", TownBaseBinding::delayedSpawningChecks);
+    registerStaticMethod(L, "clearDelayedItemLoadingMessages", TownBaseBinding::clearDelayedItemLoadingMessages);
+    lua_setglobal(L, "TownBase");
 }
 
 } // namespace KenshiLua

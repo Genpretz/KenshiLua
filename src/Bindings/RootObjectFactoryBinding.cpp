@@ -509,6 +509,13 @@ void RootObjectFactoryBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, RootObjectFactoryBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register class table for static methods
+    lua_newtable(L);
+    //registerStaticMethod(L, "_chooseClothingItemFromList", RootObjectFactoryBinding::_chooseClothingItemFromList);
+    registerStaticMethod(L, "chooseClothingItemFromList", RootObjectFactoryBinding::_chooseClothingItemFromList);
+    registerStaticMethod(L, "chooseMyClothing", RootObjectFactoryBinding::chooseMyClothing);
+    lua_setglobal(L, "RootObjectFactory");
 }
 
 } // namespace KenshiLua

@@ -3642,6 +3642,18 @@ LIGHTUSERDATA DEPENDENCIES:
 */
 
 lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods and members
+    lua_newtable(L);
+    registerStaticMethod(L, "getStatName", CharStatsBinding::getStatName);
+    registerStaticMethod(L, "convertWeaponWeightToBluntMultiplier", CharStatsBinding::_convertWeaponWeightToBluntMultiplier);
+    //registerStaticMethod(L, "_convertWeaponWeightToBluntMultiplier", CharStatsBinding::_convertWeaponWeightToBluntMultiplier);
+    registerStaticMethod(L, "convertBluntMultiplierToWeaponWeight", CharStatsBinding::_convertBluntMultiplierToWeaponWeight);
+    //registerStaticMethod(L, "_convertBluntMultiplierToWeaponWeight", CharStatsBinding::_convertBluntMultiplierToWeaponWeight);
+    registerStaticMethod(L, "setupCombatTechniques", CharStatsBinding::setupCombatTechniques);
+    //registerStaticMethod(L, "getAttacks", CharStatsBinding::getAttacks);
+    //registerStaticMethod(L, "getBlocks", CharStatsBinding::getBlocks);
+    lua_setglobal(L, "CharStats");
 }
 
 } // namespace KenshiLua

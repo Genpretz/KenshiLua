@@ -1736,18 +1736,12 @@ LIGHTUSERDATA DEPENDENCIES:
 
     // Register global table for static methods
     lua_newtable(L);
-    lua_pushcfunction(L, CombatClassBinding::setup);
-    lua_setfield(L, -2, "setup");
-    lua_pushcfunction(L, CombatClassBinding::destroy);
-    lua_setfield(L, -2, "destroy");
-    lua_pushcfunction(L, CombatClassBinding::getCombatEffect);
-    lua_setfield(L, -2, "getCombatEffect");
-    lua_pushcfunction(L, CombatClassBinding::addEffect);
-    lua_setfield(L, -2, "addEffect");
-    lua_pushcfunction(L, CombatClassBinding::shiftEffects);
-    lua_setfield(L, -2, "shiftEffects");
-    lua_pushcfunction(L, CombatClassBinding::updateEffects);
-    lua_setfield(L, -2, "updateEffects");
+    registerStaticMethod(L,"setup", CombatClassBinding::setup);
+    registerStaticMethod(L, "destroy", CombatClassBinding::destroy);
+    registerStaticMethod(L, "getCombatEffect", CombatClassBinding::getCombatEffect);
+    registerStaticMethod(L, "addEffect", CombatClassBinding::addEffect);
+    registerStaticMethod(L, "shiftEffects", CombatClassBinding::shiftEffects);
+    registerStaticMethod(L, "updateEffects", CombatClassBinding::updateEffects);
     lua_setglobal(L, "CombatClass");
 }
 
