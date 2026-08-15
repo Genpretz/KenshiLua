@@ -1,6 +1,6 @@
 #pragma once
-#include "pch.h"
 
+#include "kenshi/gui/InventoryGUI.h"
 namespace KenshiLua
 {
 class InventoryGUI_FenceCallbackDataBinding

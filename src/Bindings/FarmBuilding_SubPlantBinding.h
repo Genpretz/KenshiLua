@@ -1,6 +1,6 @@
 #pragma once
-#include "pch.h"
 
+#include "kenshi/Building/FarmBuilding.h"
 namespace KenshiLua
 {
 class FarmBuilding_SubPlantBinding

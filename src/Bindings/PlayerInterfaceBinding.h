@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/PlayerInterface.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

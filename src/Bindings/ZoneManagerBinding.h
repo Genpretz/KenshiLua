@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/ZoneManager.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -69,5 +71,8 @@ public:
     static int loadPhase1(lua_State* L);
     static int loadPhase2(lua_State* L);
     static int loadPhase3(lua_State* L);
+    static int getMapSector(lua_State* L);
+    static int getZoneBoundsT(lua_State* L);
+    static int _NV_getZoneBoundsT(lua_State* L);
 };
 }

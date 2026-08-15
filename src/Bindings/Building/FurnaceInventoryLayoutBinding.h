@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/Building/FurnaceBuilding.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

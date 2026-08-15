@@ -1,6 +1,6 @@
 #pragma once
-#include "pch.h"
 
+#include "kenshi/gui/ManagementScreen.h"
 namespace KenshiLua
 {
 class ManagementScreen_TechItemViewDataBinding

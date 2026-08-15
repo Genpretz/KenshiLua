@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/PhysicsCollection.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

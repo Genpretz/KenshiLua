@@ -23,5 +23,9 @@ public:
     static int _DESTRUCTOR(lua_State* L);
     static int resetSeenFlags(lua_State* L);
     static int update(lua_State* L);
+    static int spot(lua_State* L);
+    static int getTime(lua_State* L);
+    static int cantSeeAnymore(lua_State* L);
+    static int has(lua_State* L);
 };
 }

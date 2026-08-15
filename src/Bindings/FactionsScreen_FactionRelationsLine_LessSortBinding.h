@@ -1,6 +1,6 @@
 #pragma once
-#include "pch.h"
 
+#include "kenshi/gui/FactionsScreen.h"
 namespace KenshiLua
 {
 class FactionsScreen_FactionRelationsLine_LessSortBinding

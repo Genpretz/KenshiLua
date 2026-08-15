@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/CharStats.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

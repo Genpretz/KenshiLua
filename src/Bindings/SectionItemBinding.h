@@ -1,5 +1,6 @@
 #pragma once
-#include <kenshi/Inventory.h>
+
+#include "kenshi/Inventory.h"
 
 extern "C" {
 #include <lua.h>

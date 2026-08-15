@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/Item.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

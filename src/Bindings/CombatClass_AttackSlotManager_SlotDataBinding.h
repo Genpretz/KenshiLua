@@ -1,6 +1,6 @@
 #pragma once
-#include "pch.h"
 
+#include "kenshi/CombatClass.h"
 namespace KenshiLua
 {
 class CombatClass_AttackSlotManager_SlotDataBinding

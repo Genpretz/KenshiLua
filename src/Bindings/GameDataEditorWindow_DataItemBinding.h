@@ -1,6 +1,6 @@
 #pragma once
-#include "pch.h"
 
+#include "kenshi/gui/GameDataEditorWindow.h"
 namespace KenshiLua
 {
 class GameDataEditorWindow_DataItemBinding

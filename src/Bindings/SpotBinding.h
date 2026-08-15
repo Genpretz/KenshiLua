@@ -1,5 +1,6 @@
 #pragma once
-#include <kenshi/SensoryData.h>
+
+#include "kenshi/SensoryData.h"
 
 extern "C" {
 #include <lua.h>

@@ -1,6 +1,6 @@
 #pragma once
-#include "pch.h"
 
+#include "kenshi/gui/MapScreen.h"
 namespace KenshiLua
 {
 class MapScreen_MapRoadBinding

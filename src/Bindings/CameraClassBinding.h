@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/CameraClass.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/HavokCharacter.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -41,5 +43,8 @@ public:
     static int updateNextEdge(lua_State* L);
     static int resolveProblems(lua_State* L);
     static int atGoal(lua_State* L);
+    static int getCollidedCharacter(lua_State* L);
+    static int setHandle(lua_State* L);
+    static int calculateFuturePosition(lua_State* L);
 };
 }

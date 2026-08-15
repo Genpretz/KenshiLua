@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/util/iVector2.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/util/StringPair.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

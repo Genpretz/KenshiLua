@@ -1,7 +1,6 @@
 #pragma once
-#include "pch.h"
-#include "kenshi/SaveInfo.h"
 
+#include "kenshi/SaveInfo.h"
 namespace KenshiLua
 {
 class SaveInfoBinding

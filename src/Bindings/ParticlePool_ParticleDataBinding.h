@@ -1,7 +1,6 @@
 #pragma once
-#include "pch.h"
 
-
+#include "kenshi/ZoneManager.h"
 namespace KenshiLua
 {
 class ParticlePool_ParticleDataBinding

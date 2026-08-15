@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 #include "kenshi/InputHandler.h"
 
 namespace KenshiLua

@@ -37,7 +37,7 @@ namespace KenshiLua
 
         static int getSize(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "hkArrayBase is nil");
             lua_pushinteger(L, instance->getSize());
             return 1;
@@ -45,7 +45,7 @@ namespace KenshiLua
 
         static int getCapacity(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "hkArrayBase is nil");
             lua_pushinteger(L, instance->getCapacity());
             return 1;
@@ -53,7 +53,7 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "hkArrayBase is nil");
             instance->clear();
             return 0;
@@ -61,7 +61,7 @@ namespace KenshiLua
 
         static int isEmpty(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "hkArrayBase is nil");
             lua_pushboolean(L, instance->isEmpty() ? 1 : 0);
             return 1;
@@ -70,7 +70,7 @@ namespace KenshiLua
         // --- Getters ---
         static int get_m_data(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "hkArrayBase is nil");
             lua_pushlightuserdata(L, (void*)instance->m_data);
             return 1;
@@ -78,7 +78,7 @@ namespace KenshiLua
 
         static int get_m_size(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "hkArrayBase is nil");
             lua_pushinteger(L, instance->m_size);
             return 1;
@@ -86,7 +86,7 @@ namespace KenshiLua
 
         static int get_m_capacityAndFlags(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "hkArrayBase is nil");
             lua_pushinteger(L, instance->m_capacityAndFlags);
             return 1;
@@ -95,7 +95,7 @@ namespace KenshiLua
         // --- Setters ---
         static int set_m_size(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "hkArrayBase is nil");
             instance->m_size = (int)luaL_checkinteger(L, 2);
             return 0;
@@ -103,7 +103,7 @@ namespace KenshiLua
 
         static int set_m_capacityAndFlags(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "hkArrayBase is nil");
             instance->m_capacityAndFlags = (int)luaL_checkinteger(L, 2);
             return 0;
@@ -112,7 +112,7 @@ namespace KenshiLua
         // --- Index & Len ---
         static int index(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) { lua_pushnil(L); return 1; }
 
             if (lua_isstring(L, 2))
@@ -148,7 +148,7 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             lua_pushinteger(L, arr ? arr->getSize() : 0);
             return 1;
         }

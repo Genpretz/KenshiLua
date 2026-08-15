@@ -17,7 +17,15 @@ extern "C" {
 
 namespace KenshiLua
 {
+    // =========================================================================
+    // Forward Declarations & Logging
+    // =========================================================================
+
     void logToFileWarn(const std::string& message);
+
+    // =========================================================================
+    // Source & Path Utilities
+    // =========================================================================
 
     inline std::string normalizeSourceString(std::string s)
     {
@@ -39,7 +47,6 @@ namespace KenshiLua
         if (boost::algorithm::contains(normHandler, normTarget) || boost::algorithm::contains(normTarget, normHandler))
             return true;
 
-
         size_t slashIdx1 = normHandler.find('/');
         size_t slashIdx2 = normTarget.find('/');
         if (slashIdx1 != std::string::npos && slashIdx2 != std::string::npos)
@@ -53,6 +60,9 @@ namespace KenshiLua
         return false;
     }
 
+    // =========================================================================
+    // Userdata & Object Lifetime Management
+    // =========================================================================
 
     template <class T>
     inline T* testObject(lua_State* L, int idx, const char* metatableName)
@@ -110,7 +120,7 @@ namespace KenshiLua
     }
 
     // Allocates a new userdata wrapping `ptr` and assigns the named metatable.
-    // If ptr is null, pushes nil instead.  Always returns 1 (one Lua value pushed).
+    // If ptr is null, pushes nil instead. Always returns 1 (one Lua value pushed).
     template <class T>
     inline int pushObject(lua_State* L, T* ptr, const char* metatableName)
     {
@@ -130,6 +140,14 @@ namespace KenshiLua
         }
         lua_setmetatable(L, -2);
         return 1;
+    }
+
+    // Same as pushObject<T> but uses BindingT::getMetatableName() so call sites
+    // can be terse: pushObjectT<Character, CharacterBinding>(L, c);
+    template <class T, class BindingT>
+    inline int pushObjectT(lua_State* L, T* ptr)
+    {
+        return pushObject<T>(L, ptr, BindingT::getMetatableName());
     }
 
     template <class T>
@@ -205,31 +223,9 @@ namespace KenshiLua
         return pushObjectOwned<T>(L, ptr, metatableName);
     }
 
-	inline void registerStaticMethod(lua_State* L, const char* name, lua_CFunction func)
-	{
-		lua_pushcfunction(L, func);
-		lua_setfield(L, -2, name);
-	}
-
-    inline void registerGetter(lua_State* L, const char* name, lua_CFunction getter)
-    {
-        lua_pushcfunction(L, getter);
-        lua_setfield(L, -2, name);
-    }
-
-    inline void registerSetter(lua_State* L, const char* name, lua_CFunction setter)
-    {
-        lua_pushcfunction(L, setter);
-        lua_setfield(L, -2, name);
-    }
-
-    // Same as pushObject<T> but uses BindingT::getMetatableName() so call sites
-    // can be terse:  pushObjectT<Character, CharacterBinding>(L, c);
-    template <class T, class BindingT>
-    inline int pushObjectT(lua_State* L, T* ptr)
-    {
-        return pushObject<T>(L, ptr, BindingT::getMetatableName());
-    }
+    // =========================================================================
+    // Generic Metamethods & Universal Property Dispatchers
+    // =========================================================================
 
     // Generic __eq metamethod for testing equality of the wrapped C++ pointers
     inline int genericEq(lua_State* L)
@@ -244,257 +240,6 @@ namespace KenshiLua
         }
         lua_pushboolean(L, 0);
         return 1;
-    }
-
-    inline void registerClass(lua_State* L,
-        const char* metatableName,
-        const luaL_Reg* metamethods,
-        const luaL_Reg* methods,
-        lua_CFunction indexFunc = NULL,
-        lua_CFunction newindexFunc = NULL)
-    {
-        if (!luaL_newmetatable(L, metatableName)) {
-            // Already registered? Bail. Pop the existing metatable and return.
-            lua_pop(L, 1);
-            return;
-        }
-
-        lua_pushstring(L, metatableName);
-        lua_setfield(L, -2, "__name");
-
-        // Provide a default __eq metamethod for pointer equality
-        lua_pushcfunction(L, genericEq);
-        lua_setfield(L, -2, "__eq");
-
-        if (indexFunc) {
-            // Caller supplies a C __index that handles both method dispatch and
-            // raw field access.
-            lua_pushcfunction(L, indexFunc);
-            lua_setfield(L, -2, "__index");
-        }
-        else {
-            // Standard idiom: __index = metatable (method-table class).
-            lua_pushvalue(L, -1);
-            lua_setfield(L, -2, "__index");
-        }
-
-        if (newindexFunc) {
-            lua_pushcfunction(L, newindexFunc);
-            lua_setfield(L, -2, "__newindex");
-        }
-
-        if (metamethods) {
-            luaL_setfuncs(L, metamethods, 0);
-        }
-        if (methods) {
-            luaL_setfuncs(L, methods, 0);
-        }
-
-        lua_pop(L, 1);
-    }
-
-    // Build a Vector2-like Lua table {x=,y=} from any object
-    // exposing .x/.y (Ogre::Vector2 fits).
-    template <class V2>
-    inline void pushVector2(lua_State* L, const V2& v)
-    {
-        lua_createtable(L, 0, 2);
-        lua_pushnumber(L, v.x); lua_setfield(L, -2, "x");
-        lua_pushnumber(L, v.y); lua_setfield(L, -2, "y");
-    }
-
-    // Build a Point/Coord-like Lua table {left=,top=,x=,y=} from any object
-    // exposing .left/.top (MyGUI::types::TPoint fits).
-    template <class PT>
-    inline void pushPoint(lua_State* L, const PT& pt)
-    {
-        lua_createtable(L, 0, 4);
-        lua_pushinteger(L, pt.left); lua_setfield(L, -2, "left");
-        lua_pushinteger(L, pt.top);  lua_setfield(L, -2, "top");
-        lua_pushinteger(L, pt.left); lua_setfield(L, -2, "x");
-        lua_pushinteger(L, pt.top);  lua_setfield(L, -2, "y");
-    }
-
-    // Read a {x,y} table at idx. Missing fields default to 0. Returns true
-    // if any of the two fields was actually present.
-    template <class V2>
-    inline bool readVector2(lua_State* L, int idx, V2& out)
-    {
-        if (!lua_istable(L, idx)) return false;
-        out.x = 0.0f; out.y = 0.0f;
-        bool any = false;
-        lua_getfield(L, idx, "x");
-        if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
-        else {
-            lua_pop(L, 1);
-            lua_rawgeti(L, idx, 1);
-            if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
-        }
-        lua_pop(L, 1);
-
-        lua_getfield(L, idx, "y");
-        if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
-        else {
-            lua_pop(L, 1);
-            lua_rawgeti(L, idx, 2);
-            if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
-        }
-        lua_pop(L, 1);
-        return any;
-    }
-
-    // Build a Vector3-like Lua table {x=,y=,z=} from any object
-    // exposing .x/.y/.z (Ogre::Vector3 fits).
-    template <class V3>
-    inline void pushVector3(lua_State* L, const V3& v)
-    {
-        lua_createtable(L, 0, 3);
-        lua_pushnumber(L, v.x); lua_setfield(L, -2, "x");
-        lua_pushnumber(L, v.y); lua_setfield(L, -2, "y");
-        lua_pushnumber(L, v.z); lua_setfield(L, -2, "z");
-    }
-
-    // Read a {x,y,z} table at idx. Missing fields default to 0. Returns true
-    // if any of the three fields was actually present.
-    template <class V3>
-    inline bool readVector3(lua_State* L, int idx, V3& out)
-    {
-        if (!lua_istable(L, idx)) return false;
-        out.x = 0.0f; out.y = 0.0f; out.z = 0.0f;
-        bool any = false;
-        lua_getfield(L, idx, "x");
-        if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
-        else {
-            lua_pop(L, 1);
-            lua_rawgeti(L, idx, 1);
-            if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
-        }
-        lua_pop(L, 1);
-
-        lua_getfield(L, idx, "y");
-        if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
-        else {
-            lua_pop(L, 1);
-            lua_rawgeti(L, idx, 2);
-            if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
-        }
-        lua_pop(L, 1);
-
-        lua_getfield(L, idx, "z");
-        if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
-        else {
-            lua_pop(L, 1);
-            lua_rawgeti(L, idx, 3);
-            if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
-        }
-        lua_pop(L, 1);
-        return any;
-    }
-
-    // Build a Quaternion-like Lua table {w=,x=,y=,z=} from any object
-    // exposing .w/.x/.y/.z (Ogre::Quaternion fits).
-    template <class Q4>
-    inline void pushQuaternion(lua_State* L, const Q4& q)
-    {
-        lua_createtable(L, 0, 4);
-        lua_pushnumber(L, q.w); lua_setfield(L, -2, "w");
-        lua_pushnumber(L, q.x); lua_setfield(L, -2, "x");
-        lua_pushnumber(L, q.y); lua_setfield(L, -2, "y");
-        lua_pushnumber(L, q.z); lua_setfield(L, -2, "z");
-    }
-
-    // Read a {w,x,y,z} table at idx. Missing fields default to 0. Returns true
-    // if any of the four fields was actually present.
-    template <class Q4>
-    inline bool readQuaternion(lua_State* L, int idx, Q4& out)
-    {
-        if (!lua_istable(L, idx)) return false;
-        out.w = 1.0f; out.x = 0.0f; out.y = 0.0f; out.z = 0.0f;
-        bool any = false;
-        lua_getfield(L, idx, "w");
-        if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; }
-        else {
-            lua_pop(L, 1);
-            lua_rawgeti(L, idx, 1);
-            if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; }
-        }
-        lua_pop(L, 1);
-
-        lua_getfield(L, idx, "x");
-        if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
-        else {
-            lua_pop(L, 1);
-            lua_rawgeti(L, idx, 2);
-            if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
-        }
-        lua_pop(L, 1);
-
-        lua_getfield(L, idx, "y");
-        if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
-        else {
-            lua_pop(L, 1);
-            lua_rawgeti(L, idx, 3);
-            if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
-        }
-        lua_pop(L, 1);
-
-        lua_getfield(L, idx, "z");
-        if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
-        else {
-            lua_pop(L, 1);
-            lua_rawgeti(L, idx, 4);
-            if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
-        }
-        lua_pop(L, 1);
-        return any;
-    }
-
-    // Build a TripleInt-like Lua table {val1, val2, val3} from any object
-    // exposing .value[3].
-    template <class TI>
-    inline void pushTripleInt(lua_State* L, const TI& t)
-    {
-        lua_createtable(L, 3, 0);
-        lua_pushinteger(L, t.value[0]); lua_rawseti(L, -2, 1);
-        lua_pushinteger(L, t.value[1]); lua_rawseti(L, -2, 2);
-        lua_pushinteger(L, t.value[2]); lua_rawseti(L, -2, 3);
-    }
-
-    // Read a TripleInt-like Lua table {val1, val2, val3} at idx.
-    template <class TI>
-    inline bool readTripleInt(lua_State* L, int idx, TI& out)
-    {
-        if (!lua_istable(L, idx)) return false;
-        lua_rawgeti(L, idx, 1); out.value[0] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
-        lua_rawgeti(L, idx, 2); out.value[1] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
-        lua_rawgeti(L, idx, 3); out.value[2] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
-        return true;
-    }
-
-    // Build a ColourValue-like Lua table {r=,g=,b=,a=} from any object
-    // exposing .r/.g/.b/.a.
-    template <class CV>
-    inline void pushColourValue(lua_State* L, const CV& c)
-    {
-        lua_createtable(L, 0, 4);
-        lua_pushnumber(L, c.r); lua_setfield(L, -2, "r");
-        lua_pushnumber(L, c.g); lua_setfield(L, -2, "g");
-        lua_pushnumber(L, c.b); lua_setfield(L, -2, "b");
-        lua_pushnumber(L, c.a); lua_setfield(L, -2, "a");
-    }
-
-    // Read a ColourValue-like Lua table at idx.
-    template <class CV>
-    inline bool readColourValue(lua_State* L, int idx, CV& out)
-    {
-        if (!lua_istable(L, idx)) return false;
-        out.r = 0.0f; out.g = 0.0f; out.b = 0.0f; out.a = 1.0f;
-        bool any = false;
-        lua_getfield(L, idx, "r"); if (!lua_isnil(L, -1)) { out.r = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-        lua_getfield(L, idx, "g"); if (!lua_isnil(L, -1)) { out.g = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-        lua_getfield(L, idx, "b"); if (!lua_isnil(L, -1)) { out.b = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-        lua_getfield(L, idx, "a"); if (!lua_isnil(L, -1)) { out.a = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
-        return any;
     }
 
     // Generic __tostring that produces "Type:%p".
@@ -523,17 +268,6 @@ namespace KenshiLua
     {
         return 0;
     }
-
-    template<typename T>
-    inline void setEnum(lua_State* L, const char* name, T value)
-    {
-        lua_pushinteger(L, static_cast<lua_Integer>(value));
-        lua_setfield(L, -2, name);
-    }
-
-    // -----------------------------------------------------------------------------
-    // Universal Property Dispatchers
-    // -----------------------------------------------------------------------------
 
     // Intercepts obj.property and routes it to the correct getter in __getters, 
     // or returns the method if it exists in the metatable.
@@ -597,6 +331,82 @@ namespace KenshiLua
         return luaL_error(L, "Property '%s' is read-only or does not exist", lua_tostring(L, 2));
     }
 
+    // =========================================================================
+    // Registration & Metatable Inheritance Helpers
+    // =========================================================================
+
+    inline void registerStaticMethod(lua_State* L, const char* name, lua_CFunction func)
+    {
+        lua_pushcfunction(L, func);
+        lua_setfield(L, -2, name);
+    }
+
+    inline void registerGetter(lua_State* L, const char* name, lua_CFunction getter)
+    {
+        lua_pushcfunction(L, getter);
+        lua_setfield(L, -2, name);
+    }
+
+    inline void registerSetter(lua_State* L, const char* name, lua_CFunction setter)
+    {
+        lua_pushcfunction(L, setter);
+        lua_setfield(L, -2, name);
+    }
+
+    template<typename T>
+    inline void setEnum(lua_State* L, const char* name, T value)
+    {
+        lua_pushinteger(L, static_cast<lua_Integer>(value));
+        lua_setfield(L, -2, name);
+    }
+
+    inline void registerClass(lua_State* L,
+        const char* metatableName,
+        const luaL_Reg* metamethods,
+        const luaL_Reg* methods,
+        lua_CFunction indexFunc = NULL,
+        lua_CFunction newindexFunc = NULL)
+    {
+        if (!luaL_newmetatable(L, metatableName)) {
+            // Already registered? Bail. Pop the existing metatable and return.
+            lua_pop(L, 1);
+            return;
+        }
+
+        lua_pushstring(L, metatableName);
+        lua_setfield(L, -2, "__name");
+
+        // Provide a default __eq metamethod for pointer equality
+        lua_pushcfunction(L, genericEq);
+        lua_setfield(L, -2, "__eq");
+
+        if (indexFunc) {
+            // Caller supplies a C __index that handles both method dispatch and
+            // raw field access.
+            lua_pushcfunction(L, indexFunc);
+            lua_setfield(L, -2, "__index");
+        }
+        else {
+            // Standard idiom: __index = metatable (method-table class).
+            lua_pushvalue(L, -1);
+            lua_setfield(L, -2, "__index");
+        }
+
+        if (newindexFunc) {
+            lua_pushcfunction(L, newindexFunc);
+            lua_setfield(L, -2, "__newindex");
+        }
+
+        if (metamethods) {
+            luaL_setfuncs(L, metamethods, 0);
+        }
+        if (methods) {
+            luaL_setfuncs(L, methods, 0);
+        }
+
+        lua_pop(L, 1);
+    }
+
     // Establishes metatable inheritance for methods, getters, and setters between two class metatables.
     inline void setMetatableParent(lua_State* L, const char* childMeta, const char* parentMeta)
     {
@@ -651,6 +461,217 @@ namespace KenshiLua
             lua_pop(L, 1); // pop parentMT
         }
         lua_pop(L, 1); // pop childMT
+    }
+
+    // =========================================================================
+    // Struct & Math Marshaling Helpers (Lua Tables <-> C++ Objects)
+    // =========================================================================
+
+    // -------------------------------------------------------------------------
+    // 2D Coordinates & Geometry (Vector2 / Point)
+    // -------------------------------------------------------------------------
+
+    // Build a Vector2-like Lua table {x=,y=} from any object exposing .x/.y (e.g. Ogre::Vector2).
+    template <class V2>
+    inline void pushVector2(lua_State* L, const V2& v)
+    {
+        lua_createtable(L, 0, 2);
+        lua_pushnumber(L, v.x); lua_setfield(L, -2, "x");
+        lua_pushnumber(L, v.y); lua_setfield(L, -2, "y");
+    }
+
+    // Read a {x,y} table at idx. Missing fields default to 0. Returns true if any field was present.
+    template <class V2>
+    inline bool readVector2(lua_State* L, int idx, V2& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        out.x = 0.0f; out.y = 0.0f;
+        bool any = false;
+        lua_getfield(L, idx, "x");
+        if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 1);
+            if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "y");
+        if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 2);
+            if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+        return any;
+    }
+
+    // Build a Point/Coord-like Lua table {left=,top=,x=,y=} from any object exposing .left/.top (e.g. MyGUI::types::TPoint).
+    template <class PT>
+    inline void pushPoint(lua_State* L, const PT& pt)
+    {
+        lua_createtable(L, 0, 4);
+        lua_pushinteger(L, pt.left); lua_setfield(L, -2, "left");
+        lua_pushinteger(L, pt.top);  lua_setfield(L, -2, "top");
+        lua_pushinteger(L, pt.left); lua_setfield(L, -2, "x");
+        lua_pushinteger(L, pt.top);  lua_setfield(L, -2, "y");
+    }
+
+    // -------------------------------------------------------------------------
+    // 3D & 4D Vectors / Rotations (Vector3 / Quaternion)
+    // -------------------------------------------------------------------------
+
+    // Build a Vector3-like Lua table {x=,y=,z=} from any object exposing .x/.y/.z (e.g. Ogre::Vector3).
+    template <class V3>
+    inline void pushVector3(lua_State* L, const V3& v)
+    {
+        lua_createtable(L, 0, 3);
+        lua_pushnumber(L, v.x); lua_setfield(L, -2, "x");
+        lua_pushnumber(L, v.y); lua_setfield(L, -2, "y");
+        lua_pushnumber(L, v.z); lua_setfield(L, -2, "z");
+    }
+
+    // Read a {x,y,z} table at idx. Missing fields default to 0. Returns true if any field was present.
+    template <class V3>
+    inline bool readVector3(lua_State* L, int idx, V3& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        out.x = 0.0f; out.y = 0.0f; out.z = 0.0f;
+        bool any = false;
+        lua_getfield(L, idx, "x");
+        if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 1);
+            if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "y");
+        if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 2);
+            if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "z");
+        if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 3);
+            if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+        return any;
+    }
+
+    // Build a Quaternion-like Lua table {w=,x=,y=,z=} from any object exposing .w/.x/.y/.z (e.g. Ogre::Quaternion).
+    template <class Q4>
+    inline void pushQuaternion(lua_State* L, const Q4& q)
+    {
+        lua_createtable(L, 0, 4);
+        lua_pushnumber(L, q.w); lua_setfield(L, -2, "w");
+        lua_pushnumber(L, q.x); lua_setfield(L, -2, "x");
+        lua_pushnumber(L, q.y); lua_setfield(L, -2, "y");
+        lua_pushnumber(L, q.z); lua_setfield(L, -2, "z");
+    }
+
+    // Read a {w,x,y,z} table at idx. Missing fields default to 0 (w defaults to 1.0). Returns true if any field was present.
+    template <class Q4>
+    inline bool readQuaternion(lua_State* L, int idx, Q4& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        out.w = 1.0f; out.x = 0.0f; out.y = 0.0f; out.z = 0.0f;
+        bool any = false;
+        lua_getfield(L, idx, "w");
+        if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 1);
+            if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "x");
+        if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 2);
+            if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "y");
+        if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 3);
+            if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "z");
+        if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 4);
+            if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+        return any;
+    }
+
+    // -------------------------------------------------------------------------
+    // Colors & Integer Tuples (ColourValue / TripleInt)
+    // -------------------------------------------------------------------------
+
+    // Build a ColourValue-like Lua table {r=,g=,b=,a=} from any object exposing .r/.g/.b/.a.
+    template <class CV>
+    inline void pushColourValue(lua_State* L, const CV& c)
+    {
+        lua_createtable(L, 0, 4);
+        lua_pushnumber(L, c.r); lua_setfield(L, -2, "r");
+        lua_pushnumber(L, c.g); lua_setfield(L, -2, "g");
+        lua_pushnumber(L, c.b); lua_setfield(L, -2, "b");
+        lua_pushnumber(L, c.a); lua_setfield(L, -2, "a");
+    }
+
+    // Read a ColourValue-like Lua table at idx. Missing fields default to 0 (a defaults to 1.0).
+    template <class CV>
+    inline bool readColourValue(lua_State* L, int idx, CV& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        out.r = 0.0f; out.g = 0.0f; out.b = 0.0f; out.a = 1.0f;
+        bool any = false;
+        lua_getfield(L, idx, "r"); if (!lua_isnil(L, -1)) { out.r = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "g"); if (!lua_isnil(L, -1)) { out.g = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "b"); if (!lua_isnil(L, -1)) { out.b = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        lua_getfield(L, idx, "a"); if (!lua_isnil(L, -1)) { out.a = (float)lua_tonumber(L, -1); any = true; } lua_pop(L, 1);
+        return any;
+    }
+
+    // Build a TripleInt-like Lua table {val1, val2, val3} from any object exposing .value[3].
+    template <class TI>
+    inline void pushTripleInt(lua_State* L, const TI& t)
+    {
+        lua_createtable(L, 3, 0);
+        lua_pushinteger(L, t.value[0]); lua_rawseti(L, -2, 1);
+        lua_pushinteger(L, t.value[1]); lua_rawseti(L, -2, 2);
+        lua_pushinteger(L, t.value[2]); lua_rawseti(L, -2, 3);
+    }
+
+    // Read a TripleInt-like Lua table {val1, val2, val3} at idx.
+    template <class TI>
+    inline bool readTripleInt(lua_State* L, int idx, TI& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        lua_rawgeti(L, idx, 1); out.value[0] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, idx, 2); out.value[1] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, idx, 3); out.value[2] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
+        return true;
     }
 
 } // namespace KenshiLua
