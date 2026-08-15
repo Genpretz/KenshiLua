@@ -49,10 +49,36 @@ int ZoneManagerInterfaceTBinding::_CONSTRUCTOR(lua_State* L)
     return pushObject<ZoneManagerInterfaceT>(L, result, ZoneManagerInterfaceTBinding::getMetatableName());
 }
 
+int ZoneManagerInterfaceTBinding::getZoneBoundsT(lua_State* L)
+{
+    ZoneManagerInterfaceT* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManagerInterfaceT is nil");
+
+    if (lua_istable(L, 2))
+    {
+        Ogre::Vector3 pos;
+        readVector3(L, 2, pos);
+        AABB2D result = instance->getZoneBoundsT(pos);
+        return pushValue<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+    }
+    else if (lua_isuserdata(L, 2))
+    {
+        iVector2* coord = (iVector2*)luaL_testudata(L, 2, iVector2Binding::getMetatableName());
+        if (coord)
+        {
+            AABB2D result = instance->getZoneBoundsT(*coord);
+            return pushValue<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+        }
+        Ogre::Vector3 pos;
+        readVector3(L, 2, pos);
+        AABB2D result = instance->getZoneBoundsT(pos);
+        return pushValue<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+    }
+    return luaL_error(L, "Argument 2 to getZoneBoundsT must be Vector3 or iVector2");
+}
+
 /*
 Skipped methods needing manual binding:
-  line 55: AABB2D getZoneBoundsT(...) - overloaded method
-  line 56: AABB2D getZoneBoundsT(...) - overloaded method
   line 57: void getAllActiveZonesT(...) - unsupported arg type
 */
 
@@ -79,6 +105,7 @@ void ZoneManagerInterfaceTBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "isZoneLoadedT", ZoneManagerInterfaceTBinding::isZoneLoadedT },
         { "isZoneBeingLoadedT", ZoneManagerInterfaceTBinding::isZoneBeingLoadedT },
+        { "getZoneBoundsT", ZoneManagerInterfaceTBinding::getZoneBoundsT },
         { "_CONSTRUCTOR", ZoneManagerInterfaceTBinding::_CONSTRUCTOR },
         { 0, 0 }
     };

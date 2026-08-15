@@ -16,8 +16,7 @@ struct LuaCodec<FactionRelations::RelationData>
 {
     static void push(lua_State* L, const FactionRelations::RelationData& val, const char* meta)
     {
-        FactionRelations::RelationData* copy = new FactionRelations::RelationData(val);
-        pushObject<FactionRelations::RelationData>(L, copy, meta);
+        pushValue<FactionRelations::RelationData>(L, val, meta ? meta : RelationDataBinding::getMetatableName());
     }
 
     static FactionRelations::RelationData read(lua_State* L, int idx, const char* meta)

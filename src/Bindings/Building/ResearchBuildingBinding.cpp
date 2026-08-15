@@ -1,6 +1,7 @@
 #include "pch.h"
 #include <kenshi/Building/ResearchBuilding.h>
 #include "ResearchBuildingBinding.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/UseableStuffBinding.h"
 
@@ -125,8 +126,7 @@ int ResearchBuildingBinding::createInventoryLayout(lua_State* L)
     if (!instance) return luaL_error(L, "ResearchBuilding is nil");
 
     InventoryLayout* result = instance->createInventoryLayout();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
 }
 
 int ResearchBuildingBinding::_NV_createInventoryLayout(lua_State* L)
@@ -135,8 +135,7 @@ int ResearchBuildingBinding::_NV_createInventoryLayout(lua_State* L)
     if (!instance) return luaL_error(L, "ResearchBuilding is nil");
 
     InventoryLayout* result = instance->_NV_createInventoryLayout();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
 }
 
 /*

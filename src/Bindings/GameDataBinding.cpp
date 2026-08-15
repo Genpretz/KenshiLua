@@ -443,7 +443,7 @@ int GameDataBinding::getReferenceList(lua_State* L)
 
     const std::string listname = luaL_checkstring(L, 2);
     const Ogre::vector<GameDataReference>::type* result = instance->getReferenceList(listname);
-    return pushObject<Ogre::vector<GameDataReference>::type>(L, const_cast<Ogre::vector<GameDataReference>::type*>(result), "KenshiLua.OgreVectorGameDataReference");
+    return pushObject<Ogre::vector<GameDataReference>::type>(L, const_cast<Ogre::vector<GameDataReference>::type*>(result), "ogre_vector<GameDataReference>");
 }
 
 int GameDataBinding::getReferenceListIfExists(lua_State* L)
@@ -453,7 +453,7 @@ int GameDataBinding::getReferenceListIfExists(lua_State* L)
 
     const std::string listname = luaL_checkstring(L, 2);
     const Ogre::vector<GameDataReference>::type* result = instance->getReferenceListIfExists(listname);
-    return pushObject<Ogre::vector<GameDataReference>::type>(L, const_cast<Ogre::vector<GameDataReference>::type*>(result), "KenshiLua.OgreVectorGameDataReference");
+    return pushObject<Ogre::vector<GameDataReference>::type>(L, const_cast<Ogre::vector<GameDataReference>::type*>(result), "ogre_vector<GameDataReference>");
 }
 
 int GameDataBinding::_getReferenceList_nonConst(lua_State* L)
@@ -463,7 +463,7 @@ int GameDataBinding::_getReferenceList_nonConst(lua_State* L)
 
     const std::string listname = luaL_checkstring(L, 2);
     Ogre::vector<GameDataReference>::type* result = instance->_getReferenceList_nonConst(listname);
-    return pushObject<Ogre::vector<GameDataReference>::type>(L, result, "KenshiLua.OgreVectorGameDataReference");
+    return pushObject<Ogre::vector<GameDataReference>::type>(L, result, "ogre_vector<GameDataReference>");
 }
 
 int GameDataBinding::getFromListAsData(lua_State* L)

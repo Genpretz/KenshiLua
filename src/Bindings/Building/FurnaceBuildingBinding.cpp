@@ -2,6 +2,7 @@
 #include <kenshi/Building/FurnaceBuilding.h>
 #include "FurnaceBuildingBinding.h"
 #include "ProductionBuildingBinding.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -37,8 +38,7 @@ int FurnaceBuildingBinding::createInventoryLayout(lua_State* L)
     if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
 
     InventoryLayout* result = instance->createInventoryLayout();
-    if (result) lua_pushlightuserdata(L, (void*)result); else lua_pushnil(L);
-    return 1;
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
 }
 
 int FurnaceBuildingBinding::_NV_createInventoryLayout(lua_State* L)
@@ -47,8 +47,7 @@ int FurnaceBuildingBinding::_NV_createInventoryLayout(lua_State* L)
     if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
 
     InventoryLayout* result = instance->_NV_createInventoryLayout();
-    if (result) lua_pushlightuserdata(L, (void*)result); else lua_pushnil(L);
-    return 1;
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
 }
 
 int FurnaceBuildingBinding::setupFromData(lua_State* L)

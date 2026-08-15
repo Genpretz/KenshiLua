@@ -4,6 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/SensoryDataBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -527,38 +528,34 @@ int HavokCharacterBinding::atGoal(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 53: void*operator new(...) - static method
-  line 54: void operator delete(...) - static method
-  line 76: HavokCharacter* _CONSTRUCTOR(...) - non-string reference arg
-  line 79: void setHandle(...) - non-string reference arg
-  line 92: const hand& getCollidedCharacter(...) - reference return type
-  line 96: int calculateFuturePosition(...) - overloaded method
-  line 97: Ogre::Vector3 calculateFuturePosition(...) - overloaded method
-  line 102: void updateVelocity(...) - unsupported arg type
-  line 103: void _getFace(...) - unsupported arg type
-  line 105: void setPath(...) - unsupported arg type
-  line 106: int calculatePathVector(...) - unsupported arg type
-  line 107: int calculateAvoidanceVector(...) - unsupported arg type
-  line 110: bool updateEdgeCache(...) - unsupported arg type
-  line 111: int moveCollide(...) - unsupported arg type
-  line 112: int edgeCollision(...) - unsupported arg type
-*/
+int HavokCharacterBinding::getCollidedCharacter(lua_State* L)
+{
+    HavokCharacter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HavokCharacter is nil");
 
-/*
-Skipped properties needing manual binding:
-  line 115: currentPath (hkArray<EdgePathNode, hkContainerHeapAllocator>) - unsupported type
-  line 119: position (hkVector4f) - unsupported type
-  line 120: velocity (hkVector4f) - unsupported type
-  line 121: goal (hkVector4f) - unsupported type
-  line 122: waypointDirection (hkVector4f) - unsupported type
-  line 123: directionMoved (hkVector4f) - unsupported type
-  line 135: boundaryPos (hkVector4f) - unsupported type
-  line 136: boundary (hkArray<EdgePathNode, hkContainerHeapAllocator>) - unsupported type
-  line 138: cachedEdge (EdgePathNode) - unsupported type
-  line 139: edgeCache (EdgeCache) - unsupported type
-*/
+    return HandBinding::push(L, instance->getCollidedCharacter());
+}
+
+int HavokCharacterBinding::setHandle(lua_State* L)
+{
+    HavokCharacter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HavokCharacter is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (h) instance->setHandle(*h);
+    return 0;
+}
+
+int HavokCharacterBinding::calculateFuturePosition(lua_State* L)
+{
+    HavokCharacter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "HavokCharacter is nil");
+
+    float distance = (float)luaL_checknumber(L, 2);
+    Ogre::Vector3 result = instance->calculateFuturePosition(distance);
+    pushVector3(L, result);
+    return 1;
+}
 
 int HavokCharacterBinding::gc(lua_State* L)
 {
@@ -606,6 +603,9 @@ void HavokCharacterBinding::registerBinding(lua_State* L)
         { "updateNextEdge", HavokCharacterBinding::updateNextEdge },
         { "resolveProblems", HavokCharacterBinding::resolveProblems },
         { "atGoal", HavokCharacterBinding::atGoal },
+        { "getCollidedCharacter", HavokCharacterBinding::getCollidedCharacter },
+        { "setHandle", HavokCharacterBinding::setHandle },
+        { "calculateFuturePosition", HavokCharacterBinding::calculateFuturePosition },
         { 0, 0 }
     };
 

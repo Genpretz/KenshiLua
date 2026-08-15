@@ -3,6 +3,7 @@
 #include "LimiterBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RaceDataBinding.h"
+#include "Bindings/Util/StdSetBinding.h"
 
 namespace KenshiLua
 {
@@ -56,12 +57,6 @@ int LimiterBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
-/*
-Skipped properties needing manual binding:
-  line 229: racesExclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 230: racesInclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >) - unsupported type
-*/
-
 int LimiterBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -74,41 +69,39 @@ int LimiterBinding::tostring(lua_State* L)
     return 1;
 }
 
-
-
 static int Limiter_get_racesExclude(lua_State* L)
 {
     Limiter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Limiter is nil");
-    // TODO: Unsupported type for racesExclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'racesExclude' (type: std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)");
+    return pushObject<std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy>>>(L, &instance->racesExclude, "std::set<RaceData*>");
 }
-
 
 static int Limiter_get_racesInclude(lua_State* L)
 {
     Limiter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Limiter is nil");
-    // TODO: Unsupported type for racesInclude (std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'racesInclude' (type: std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy > >)");
+    return pushObject<std::set<RaceData*, std::less<RaceData*>, Ogre::STLAllocator<RaceData*, Ogre::GeneralAllocPolicy>>>(L, &instance->racesInclude, "std::set<RaceData*>");
 }
-
 
 static int Limiter_set_racesExclude(lua_State* L)
 {
     Limiter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Limiter is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for racesExclude");
+    auto* val = StdSetBinding<RaceData*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'racesExclude' must be std::set<RaceData*>");
+    instance->racesExclude = *val;
+    return 0;
 }
-
 
 static int Limiter_set_racesInclude(lua_State* L)
 {
     Limiter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Limiter is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for racesInclude");
+    auto* val = StdSetBinding<RaceData*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'racesInclude' must be std::set<RaceData*>");
+    instance->racesInclude = *val;
+    return 0;
 }
-
 
 void LimiterBinding::registerBinding(lua_State* L)
 {
@@ -147,6 +140,8 @@ void LimiterBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    StdSetBinding<RaceData*>::registerBinding(L, "std::set<RaceData*>", RaceDataBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

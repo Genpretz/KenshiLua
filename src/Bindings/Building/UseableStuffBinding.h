@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/Building/UseableStuff.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -92,5 +94,11 @@ public:
     static int _NV_getOutputBasedRotationSpeedMult(lua_State* L);
     static int getGUIPowerEfficiencyToolTipString(lua_State* L);
     static int _NV_getGUIPowerEfficiencyToolTipString(lua_State* L);
+    static int getOccupant(lua_State* L);
+    static int getAnimation(lua_State* L);
+    static int getAnimationKO(lua_State* L);
+    static int getAnimationDazed(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
 };
 }

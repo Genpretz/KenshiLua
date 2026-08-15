@@ -154,7 +154,7 @@ int DamagesBinding::_CONSTRUCTOR(lua_State* L)
     {
         ::new ((void*)obj) Damages();
     }
-    return pushObject<Damages>(L, obj, DamagesBinding::getMetatableName());
+    return pushObjectOwned<Damages>(L, obj, DamagesBinding::getMetatableName());
 }
 
 int DamagesBinding::_DESTRUCTOR(lua_State* L)

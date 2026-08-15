@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/CombatClass.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -17,6 +19,7 @@ public:
     static int tostring(lua_State* L);
 
     static int _DESTRUCTOR(lua_State* L);
+    static int _CONSTRUCTOR(lua_State* L);
     static int isAI(lua_State* L);
     static int _NV_isAI(lua_State* L);
     static int initCombatMode(lua_State* L);

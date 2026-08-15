@@ -4,6 +4,7 @@
 #include <kenshi/Building/WallBuilding.h>
 #include "WallBuildingBinding.h"
 #include "BuildingBinding.h"
+#include "ConstructionStateBinding.h"
 #include "UseableStuffBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Util/HandBinding.h"
@@ -337,8 +338,7 @@ int WallBuildingBinding::getBuildState(lua_State* L)
     if (!instance) return luaL_error(L, "WallBuilding is nil");
 
     Building::ConstructionState* result = instance->getBuildState();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
 }
 
 int WallBuildingBinding::_NV_getBuildState(lua_State* L)
@@ -347,8 +347,7 @@ int WallBuildingBinding::_NV_getBuildState(lua_State* L)
     if (!instance) return luaL_error(L, "WallBuilding is nil");
 
     Building::ConstructionState* result = instance->_NV_getBuildState();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
 }
 
 int WallBuildingBinding::isALittleWallPartLikeACornerOrSomething(lua_State* L)

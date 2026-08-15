@@ -181,14 +181,16 @@ static int DoorStuff_set_parent(lua_State* L)
 {
     DoorStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DoorStuff is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for parent");
+    instance->parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    return 0;
 }
 
 static int DoorStuff_set_doorLock(lua_State* L)
 {
     DoorStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DoorStuff is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for doorLock");
+    instance->doorLock = lua_isnoneornil(L, 2) ? nullptr : (DoorLock*)lua_touserdata(L, 2);
+    return 0;
 }
 
 static int DoorStuff_set_gateCode(lua_State* L)

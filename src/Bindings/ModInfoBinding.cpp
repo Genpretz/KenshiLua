@@ -2,6 +2,7 @@
 #include <kenshi/ModInfo.h>
 #include "ModInfoBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/GameDataHeaderBinding.h"
 
 namespace KenshiLua
 {
@@ -64,9 +65,7 @@ static int ModInfo_get_header(lua_State* L)
 {
     ModInfo* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ModInfo is nil");
-    // TODO: Unsupported type for header (GameDataHeader)
-    lua_pushnil(L);
-    return 1;
+    return pushObject<GameDataHeader>(L, &instance->header, GameDataHeaderBinding::getMetatableName());
 }
 
 // --- Setters for ModInfo ---
@@ -122,7 +121,10 @@ static int ModInfo_set_header(lua_State* L)
 {
     ModInfo* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ModInfo is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for header");
+    GameDataHeader* val = checkObject<GameDataHeader>(L, 2, GameDataHeaderBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Argument 2 to set 'header' must be GameDataHeader");
+    instance->header = *val;
+    return 0;
 }
 
 // --- Methods for ModInfo

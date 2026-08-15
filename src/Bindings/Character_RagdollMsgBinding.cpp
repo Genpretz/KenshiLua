@@ -50,7 +50,7 @@ int Character_RagdollMsgBinding::_CONSTRUCTOR(lua_State* L)
     
     auto* obj = (Character::RagdollMsg*)::operator new(sizeof(Character::RagdollMsg));
     ::new ((void*)obj) Character::RagdollMsg(on, part);
-    return pushObject<Character::RagdollMsg>(L, obj, getMetatableName());
+    return pushObjectOwned<Character::RagdollMsg>(L, obj, getMetatableName());
 }
 
 int Character_RagdollMsgBinding::_DESTRUCTOR(lua_State* L)

@@ -33,9 +33,25 @@ namespace KenshiLua
             return 1;
         }
 
+        static int empty(lua_State* L)
+        {
+            QueueType* instance = getInstance(L, 1);
+            if (!instance) return luaL_error(L, "MessageQueue is nil");
+            lua_pushboolean(L, (instance->s == 0 || instance->root == nullptr) ? 1 : 0);
+            return 1;
+        }
+
+        static int size(lua_State* L)
+        {
+            QueueType* instance = getInstance(L, 1);
+            if (!instance) return luaL_error(L, "MessageQueue is nil");
+            lua_pushinteger(L, instance->s);
+            return 1;
+        }
+
         static int get_s(lua_State* L)
         {
-            QueueType* instance = get(L, 1);
+            QueueType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "MessageQueue is nil");
             lua_pushinteger(L, instance->s);
             return 1;
@@ -43,7 +59,7 @@ namespace KenshiLua
 
         static int get_root(lua_State* L)
         {
-            QueueType* instance = get(L, 1);
+            QueueType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "MessageQueue is nil");
             lua_pushlightuserdata(L, (void*)instance->root);
             return 1;
@@ -51,7 +67,7 @@ namespace KenshiLua
 
         static int get_split(lua_State* L)
         {
-            QueueType* instance = get(L, 1);
+            QueueType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "MessageQueue is nil");
             lua_pushlightuserdata(L, (void*)instance->split);
             return 1;
@@ -59,7 +75,7 @@ namespace KenshiLua
 
         static int get_back(lua_State* L)
         {
-            QueueType* instance = get(L, 1);
+            QueueType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "MessageQueue is nil");
             lua_pushlightuserdata(L, (void*)instance->back);
             return 1;
@@ -67,9 +83,33 @@ namespace KenshiLua
 
         static int set_s(lua_State* L)
         {
-            QueueType* instance = get(L, 1);
+            QueueType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "MessageQueue is nil");
             instance->s = (int)luaL_checkinteger(L, 2);
+            return 0;
+        }
+
+        static int set_root(lua_State* L)
+        {
+            QueueType* instance = getInstance(L, 1);
+            if (!instance) return luaL_error(L, "MessageQueue is nil");
+            instance->root = (typename QueueType::Node*)lua_touserdata(L, 2);
+            return 0;
+        }
+
+        static int set_split(lua_State* L)
+        {
+            QueueType* instance = getInstance(L, 1);
+            if (!instance) return luaL_error(L, "MessageQueue is nil");
+            instance->split = (typename QueueType::Node*)lua_touserdata(L, 2);
+            return 0;
+        }
+
+        static int set_back(lua_State* L)
+        {
+            QueueType* instance = getInstance(L, 1);
+            if (!instance) return luaL_error(L, "MessageQueue is nil");
+            instance->back = (typename QueueType::Node*)lua_touserdata(L, 2);
             return 0;
         }
 
@@ -84,6 +124,8 @@ namespace KenshiLua
             };
 
             static const luaL_Reg methods[] = {
+                { "empty", empty },
+                { "size",  size },
                 { 0, 0 }
             };
 
@@ -99,6 +141,9 @@ namespace KenshiLua
 
             lua_newtable(L);
             registerSetter(L, "s", set_s);
+            registerSetter(L, "root", set_root);
+            registerSetter(L, "split", set_split);
+            registerSetter(L, "back", set_back);
             lua_setfield(L, -2, "__setters");
 
             lua_pop(L, 1);

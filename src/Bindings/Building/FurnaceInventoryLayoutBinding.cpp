@@ -24,8 +24,7 @@ int FurnaceInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
     int ins = (int)luaL_checkinteger(L, 3);
     int outs = (int)luaL_checkinteger(L, 4);
     FurnaceInventoryLayout* result = instance->_CONSTRUCTOR(title, ins, outs);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<FurnaceInventoryLayout>(L, result, FurnaceInventoryLayoutBinding::getMetatableName());
 }
 
 int FurnaceInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)

@@ -47,6 +47,16 @@ T lektor_pop_back_val(lektor<T>& lek)
     return val;
 }
 
+template<typename T>
+void lektor_remove_at(lektor<T>& lek, uint32_t index)
+{
+    assert_release(index < lek.count && "lektor_remove_at: index out of bounds");
+    for (uint32_t j = index + 1; j < lek.count; ++j)
+        lek.stuff[j - 1] = lek.stuff[j];
+    --lek.count;
+    lek.stuff[lek.count].~T();
+}
+
 namespace KenshiLua
 {
     // One binding per element type T (T = pointer type, e.g. Character*)
@@ -264,7 +274,13 @@ namespace KenshiLua
             {
                 uint32_t i = (uint32_t)lua_tointeger(L, 2);
                 if (i < 1 || i > lek->count) { lua_pushnil(L); return 1; }
-                return pushObject<T>(L, &lek->stuff[i - 1], elemMetaName);
+                if (elemMetaName)
+                    return pushObject<T>(L, &lek->stuff[i - 1], elemMetaName);
+                else
+                {
+                    LuaCodec<T>::push(L, lek->stuff[i - 1], nullptr);
+                    return 1;
+                }
             }
 
             luaL_getmetatable(L, metaName);
@@ -281,17 +297,26 @@ namespace KenshiLua
                 return luaL_error(L, "lektor: only numeric indices are writable");
 
             uint32_t i = (uint32_t)lua_tointeger(L, 2);
-            T* val = checkObject<T>(L, 3, elemMetaName);
-            if (!val) return luaL_error(L, "lektor: expected valid object for assignment");
+            T val;
+            if (elemMetaName)
+            {
+                T* pVal = checkObject<T>(L, 3, elemMetaName);
+                if (!pVal) return luaL_error(L, "lektor: expected valid object for assignment");
+                val = *pVal;
+            }
+            else
+            {
+                val = LuaCodec<T>::read(L, 3, nullptr);
+            }
 
             if (i >= 1 && i <= lek->count)
             {
-                lek->stuff[i - 1] = *val;
+                lek->stuff[i - 1] = val;
                 return 0;
             }
             if (i == lek->count + 1)
             {
-                lektor_push_back(*lek, *val);
+                lektor_push_back(*lek, val);
                 return 0;
             }
             return luaL_error(L, "lektor: index %u out of range (size=%u, can append at %u)",
@@ -302,9 +327,18 @@ namespace KenshiLua
         {
             lektor<T>* lek = get(L, 1);
             if (!lek) return luaL_error(L, "lektor is nil");
-            T* val = checkObject<T>(L, 2, elemMetaName);
-            if (!val) return luaL_error(L, "lektor:push expected valid object");
-            lektor_push_back(*lek, *val);
+            T val;
+            if (elemMetaName)
+            {
+                T* pVal = checkObject<T>(L, 2, elemMetaName);
+                if (!pVal) return luaL_error(L, "lektor:push expected valid object");
+                val = *pVal;
+            }
+            else
+            {
+                val = LuaCodec<T>::read(L, 2, nullptr);
+            }
+            lektor_push_back(*lek, val);
             return 0;
         }
 
@@ -313,11 +347,9 @@ namespace KenshiLua
             lektor<T>* lek = get(L, 1);
             if (!lek) return luaL_error(L, "lektor is nil");
             uint32_t i = (uint32_t)luaL_checkinteger(L, 2);
-            if (i < 1 || i > lek->count) return luaL_error(L, "lektor:removeAt index out of range");
-
-            for (uint32_t j = i; j < lek->count; ++j)
-                lek->stuff[j - 1] = lek->stuff[j];
-            --lek->count;
+            if (i < 1 || i > lek->count)
+                return luaL_error(L, "lektor:removeAt index %u out of range (size=%u)", i, lek->count);
+            lektor_remove_at(*lek, i - 1);
             return 0;
         }
 
@@ -356,7 +388,7 @@ namespace KenshiLua
             if (lek->count == 0) return luaL_error(L, "lektor:pop container is empty");
             T val = lektor_pop_back_val(*lek);
             if (elemMetaName)
-                return pushObject<T>(L, &val, elemMetaName);
+                return pushValue<T>(L, val, elemMetaName);
             else
             {
                 LuaCodec<T>::push(L, val, nullptr);
@@ -452,7 +484,13 @@ namespace KenshiLua
             {
                 uint32_t i = (uint32_t)lua_tointeger(L, 2);
                 if (i < 1 || i > lek->count) { lua_pushnil(L); return 1; }
-                return pushObject<T>(L, &lek->stuff[i - 1], elemMetaName);
+                if (elemMetaName)
+                    return pushObject<T>(L, &lek->stuff[i - 1], elemMetaName);
+                else
+                {
+                    LuaCodec<T>::push(L, lek->stuff[i - 1], nullptr);
+                    return 1;
+                }
             }
 
             luaL_getmetatable(L, metaName);

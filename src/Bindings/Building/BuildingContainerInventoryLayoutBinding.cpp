@@ -3,9 +3,17 @@
 #include "BuildingContainerInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/GenericInventoryLayoutBinding.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
+#include "Bindings/Gui/InventorySectionGUIBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/MyGuiBinding.h"
+#include "Bindings/Util/StdMapBinding.h"
+#include <MyGUI.h>
 
 namespace KenshiLua
 {
+
+typedef std::map<std::string, InventorySectionGUI*, std::less<std::string>, Ogre::STLAllocator<std::pair<std::string const, InventorySectionGUI*>, Ogre::GeneralAllocPolicy>> SectionsMap;
 
 static BuildingContainerInventoryLayout* getInstance(lua_State* L, int idx)
 {
@@ -17,8 +25,7 @@ static int BuildingContainerInventoryLayout_get_capacityText(lua_State* L)
 {
     BuildingContainerInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
-    lua_pushlightuserdata(L, (void*)instance->capacityText);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, instance->capacityText, MyGuiBinding::getMetatableName());
 }
 
 // --- Setters for BuildingContainerInventoryLayout ---
@@ -26,7 +33,8 @@ static int BuildingContainerInventoryLayout_set_capacityText(lua_State* L)
 {
     BuildingContainerInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for capacityText");
+    instance->capacityText = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::EditBox*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    return 0;
 }
 
 int BuildingContainerInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
@@ -49,6 +57,25 @@ int BuildingContainerInventoryLayoutBinding::setCapacity(lua_State* L)
     return 0;
 }
 
+int BuildingContainerInventoryLayoutBinding::setupSections(lua_State* L)
+{
+    BuildingContainerInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
+
+    InventoryGUI* inventoryGUI = testObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    if (!inventoryGUI) inventoryGUI = (InventoryGUI*)lua_touserdata(L, 2);
+
+    SectionsMap* sections = testObject<SectionsMap>(L, 3, "std::map<std::string, InventorySectionGUI*>");
+    if (!sections) sections = (SectionsMap*)lua_touserdata(L, 3);
+    if (!sections) return luaL_error(L, "Argument 3 to setupSections must be a valid std::map<std::string, InventorySectionGUI*> or lightuserdata");
+
+    Inventory* inventory = testObject<Inventory>(L, 4, InventoryBinding::getMetatableName());
+    if (!inventory) inventory = (Inventory*)lua_touserdata(L, 4);
+
+    instance->setupSections(inventoryGUI, *sections, inventory);
+    return 0;
+}
+
 int BuildingContainerInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
     BuildingContainerInventoryLayout* instance = getInstance(L, 1);
@@ -57,12 +84,6 @@ int BuildingContainerInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
     instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 16: void setupSections(...) - unsupported arg type
-  line 17: void _NV_setupSections(...) - unsupported arg type
-*/
 
 int BuildingContainerInventoryLayoutBinding::gc(lua_State* L)
 {
@@ -87,6 +108,7 @@ void BuildingContainerInventoryLayoutBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", BuildingContainerInventoryLayoutBinding::_CONSTRUCTOR },
         { "setCapacity", BuildingContainerInventoryLayoutBinding::setCapacity },
+        { "setupSections", BuildingContainerInventoryLayoutBinding::setupSections },
         { "_DESTRUCTOR", BuildingContainerInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -116,6 +138,8 @@ void BuildingContainerInventoryLayoutBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, BuildingContainerInventoryLayoutBinding::getMetatableName(), GenericInventoryLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    StdMapBinding<std::string, InventorySectionGUI*>::registerBinding(L, "std::map<std::string, InventorySectionGUI*>", nullptr, InventorySectionGUIBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

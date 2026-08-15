@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\physicscollection.h"
 #include "PhysicsCollectionBinding.h"
+#include "Bindings/RotatingEntBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 
@@ -30,8 +31,7 @@ int PhysicsCollectionBinding::findRotatingEnt(lua_State* L)
 
     GameData* part = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     PhysicsCollection::RotatingEnt* result = instance->findRotatingEnt(part);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<PhysicsCollection::RotatingEnt>(L, result, RotatingEntBinding::getMetatableName());
 }
 
 int PhysicsCollectionBinding::getWindRotationPower(lua_State* L)
@@ -50,8 +50,7 @@ int PhysicsCollectionBinding::getWindMillPart(lua_State* L)
     if (!instance) return luaL_error(L, "PhysicsCollection is nil");
 
     PhysicsCollection::RotatingEnt* result = instance->getWindMillPart();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<PhysicsCollection::RotatingEnt>(L, result, RotatingEntBinding::getMetatableName());
 }
 
 int PhysicsCollectionBinding::isLoaded(lua_State* L)

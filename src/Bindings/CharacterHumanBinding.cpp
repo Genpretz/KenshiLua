@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "kenshi\CharacterHuman.h"
+#include <kenshi/GameSaveState.h>
 #include "CharacterHumanBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/ActivePlatoonBinding.h"
@@ -486,10 +487,31 @@ int CharacterHumanBinding::_NV_reCalculateNaturalWeapon(lua_State* L)
     return 0;
 }
 
+int CharacterHumanBinding::serialise(lua_State* L)
+{
+    CharacterHuman* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterHuman is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int CharacterHumanBinding::_NV_serialise(lua_State* L)
+{
+    CharacterHuman* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterHuman is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->_NV_serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
 /*
-Skipped methods needing manual binding:
-  line 30: GameSaveState serialise(...) - unsupported arg type
-  line 31: GameSaveState _NV_serialise(...) - unsupported arg type
+LIGHTUSERDATA DEPENDENCIES:
+  - CharacterHumanBinding::serialise / _NV_serialise: PosRotPair* (unbound pointer)
 */
 
 int CharacterHumanBinding::gc(lua_State* L)
@@ -555,6 +577,8 @@ void CharacterHumanBinding::registerBinding(lua_State* L)
         { "_NV_postRagdollCallback", CharacterHumanBinding::_NV_postRagdollCallback },
         { "reCalculateNaturalWeapon", CharacterHumanBinding::reCalculateNaturalWeapon },
         { "_NV_reCalculateNaturalWeapon", CharacterHumanBinding::_NV_reCalculateNaturalWeapon },
+        { "serialise", CharacterHumanBinding::serialise },
+        { "_NV_serialise", CharacterHumanBinding::_NV_serialise },
         { 0, 0 }
     };
 

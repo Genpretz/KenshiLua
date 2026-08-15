@@ -103,7 +103,7 @@ int CombatClass_EffectDataBinding::_CONSTRUCTOR(lua_State* L)
     ::new ((void*)obj) CombatClass::EffectData();
     if (lua_gettop(L) >= 4)
         readVector3(L, 4, obj->pos);
-    return pushObject<CombatClass::EffectData>(L, obj, getMetatableName());
+    return pushObjectOwned<CombatClass::EffectData>(L, obj, getMetatableName());
 }
 
 int CombatClass_EffectDataBinding::_DESTRUCTOR(lua_State* L)

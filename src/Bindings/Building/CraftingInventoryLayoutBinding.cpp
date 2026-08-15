@@ -7,7 +7,9 @@ class CraftingItem {};
 #include "Bindings/Gui/InventoryGUIBinding.h"
 #include "Bindings/Gui/InventorySectionGUIBinding.h"
 #include "Bindings/InventoryBinding.h"
+#include "Bindings/MyGuiBinding.h"
 #include "Bindings/Util/StdMapBinding.h"
+#include <MyGUI.h>
 
 namespace KenshiLua
 {
@@ -24,24 +26,14 @@ static int CraftingInventoryLayout_get_queueBtn(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    if (instance->queueBtn) {
-        lua_pushlightuserdata(L, (void*)instance->queueBtn);
-    } else {
-        lua_pushnil(L);
-    }
-    return 1;
+    return pushObject<MyGUI::Widget>(L, instance->queueBtn, MyGuiBinding::getMetatableName());
 }
 
 static int CraftingInventoryLayout_get_craftingName(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    if (instance->craftingName) {
-        lua_pushlightuserdata(L, (void*)instance->craftingName);
-    } else {
-        lua_pushnil(L);
-    }
-    return 1;
+    return pushObject<MyGUI::Widget>(L, instance->craftingName, MyGuiBinding::getMetatableName());
 }
 
 static int CraftingInventoryLayout_get_outputType(lua_State* L)
@@ -57,7 +49,7 @@ static int CraftingInventoryLayout_set_queueBtn(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    instance->queueBtn = (MyGUI::Button*)lua_touserdata(L, 2);
+    instance->queueBtn = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::Button*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
     return 0;
 }
 
@@ -65,7 +57,7 @@ static int CraftingInventoryLayout_set_craftingName(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    instance->craftingName = (MyGUI::TextBox*)lua_touserdata(L, 2);
+    instance->craftingName = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::TextBox*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
     return 0;
 }
 
@@ -162,12 +154,7 @@ int CraftingInventoryLayoutBinding::getQueueButton(lua_State* L)
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
 
     MyGUI::Button* result = instance->getQueueButton();
-    if (result) {
-        lua_pushlightuserdata(L, (void*)result);
-    } else {
-        lua_pushnil(L);
-    }
-    return 1;
+    return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
 }
 
 int CraftingInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)

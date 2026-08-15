@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/Town.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -116,5 +118,7 @@ public:
     static int setHandle(lua_State* L);
     static int _NV_setHandle(lua_State* L);
     static int getPlayerTownTypeEnum(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
 };
 }

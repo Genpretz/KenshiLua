@@ -134,7 +134,8 @@ namespace KenshiLua
             lua_replace(L, lua_upvalueindex(1));
 
             LuaCodec<T>::push(L, *it, elemMetaName);
-            return 1;
+            lua_pushboolean(L, 1);
+            return 2;
         }
 
         static int pairs(lua_State* L)
@@ -157,7 +158,6 @@ namespace KenshiLua
                 { "__newindex", newindex },
                 { "__len",      len },
                 { "__pairs",    pairs },
-                { "__ipairs",   pairs },
                 { 0, 0 }
             };
             static const luaL_Reg methods[] = {

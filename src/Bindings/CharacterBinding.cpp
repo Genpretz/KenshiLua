@@ -48,6 +48,7 @@
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Bindings/Character_RagdollMsgBinding.h"
+#include "Bindings/Character_CarryMsgBinding.h"
 #include "Bindings/Util/StdDequeBinding.h"
 
 namespace KenshiLua
@@ -405,8 +406,7 @@ static int Character_get_msgCarryMode(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    lua_pushlightuserdata(L, (void*)instance->msgCarryMode);
-    return 1;
+    return pushObject<Character::CarryMsg>(L, instance->msgCarryMode, Character_CarryMsgBinding::getMetatableName());
 }
 
 static int Character_get_squadMemberID(lua_State* L)
@@ -5311,7 +5311,7 @@ static int Character_set_msgCarryMode(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->msgCarryMode = (Character::CarryMsg*)lua_touserdata(L, 2);
+    instance->msgCarryMode = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character::CarryMsg>(L, 2, Character_CarryMsgBinding::getMetatableName());
     return 0;
 }
 
@@ -5319,7 +5319,7 @@ static int Character_set_animation(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->animation = (AnimationClass*)lua_touserdata(L, 2);
+    instance->animation = lua_isnoneornil(L, 2) ? nullptr : (AnimationClass*)lua_touserdata(L, 2);
     return 0;
 }
 
@@ -5327,7 +5327,7 @@ static int Character_set_nameTag(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->nameTag = (CharacterNameTag*)lua_touserdata(L, 2);
+    instance->nameTag = lua_isnoneornil(L, 2) ? nullptr : (CharacterNameTag*)lua_touserdata(L, 2);
     return 0;
 }
 

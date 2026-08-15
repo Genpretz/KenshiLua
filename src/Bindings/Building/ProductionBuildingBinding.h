@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/Building/ProductionBuilding.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -62,5 +64,7 @@ public:
     static int _NV_updateInputs(lua_State* L);
     static int updateOutput(lua_State* L);
     static int _NV_updateOutput(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
 };
 }

@@ -4,6 +4,8 @@
 #include <kenshi/Building/UseableStuff.h>
 #include "GenericInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGuiBinding.h"
+#include <MyGUI.h>
 
 namespace KenshiLua
 {
@@ -18,8 +20,7 @@ static int GenericInventoryLayout_get_arrangeButton(lua_State* L)
 {
     GenericInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GenericInventoryLayout is nil");
-    lua_pushlightuserdata(L, (void*)instance->arrangeButton);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, instance->arrangeButton, MyGuiBinding::getMetatableName());
 }
 
 // --- Setters for GenericInventoryLayout ---
@@ -27,7 +28,8 @@ static int GenericInventoryLayout_set_arrangeButton(lua_State* L)
 {
     GenericInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GenericInventoryLayout is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for arrangeButton");
+    instance->arrangeButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    return 0;
 }
 
 int GenericInventoryLayoutBinding::setSize(lua_State* L)
@@ -56,6 +58,21 @@ int GenericInventoryLayoutBinding::_NV_setSize(lua_State* L)
     return 0;
 }
 
+int GenericInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
+{
+    GenericInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GenericInventoryLayout is nil");
+
+    if (lua_gettop(L) >= 2 && lua_isstring(L, 2))
+    {
+        const char* layoutName = luaL_checkstring(L, 2);
+        GenericInventoryLayout* result = instance->_CONSTRUCTOR(layoutName);
+        return pushObject<GenericInventoryLayout>(L, result, GenericInventoryLayoutBinding::getMetatableName());
+    }
+    GenericInventoryLayout* result = instance->_CONSTRUCTOR();
+    return pushObject<GenericInventoryLayout>(L, result, GenericInventoryLayoutBinding::getMetatableName());
+}
+
 int GenericInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
 {
     GenericInventoryLayout* instance = getInstance(L, 1);
@@ -64,12 +81,6 @@ int GenericInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
     instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 11: GenericInventoryLayout* _CONSTRUCTOR(...) - overloaded method
-  line 13: GenericInventoryLayout* _CONSTRUCTOR(...) - overloaded method
-*/
 
 int GenericInventoryLayoutBinding::gc(lua_State* L)
 {
@@ -92,6 +103,7 @@ void GenericInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "_CONSTRUCTOR", GenericInventoryLayoutBinding::_CONSTRUCTOR },
         { "setSize", GenericInventoryLayoutBinding::setSize },
         { "_NV_setSize", GenericInventoryLayoutBinding::_NV_setSize },
         { "_DESTRUCTOR", GenericInventoryLayoutBinding::_DESTRUCTOR },

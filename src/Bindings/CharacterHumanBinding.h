@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/CharacterHuman.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -58,5 +60,7 @@ public:
     static int _NV_postRagdollCallback(lua_State* L);
     static int reCalculateNaturalWeapon(lua_State* L);
     static int _NV_reCalculateNaturalWeapon(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
 };
 }

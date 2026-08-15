@@ -2,6 +2,7 @@
 #include <kenshi/Building/LightBuilding.h>
 #include "LightBuildingBinding.h"
 #include "UseableStuffBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -17,9 +18,7 @@ static int LightBuilding_get_mountedBuilding(lua_State* L)
 {
     LightBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LightBuilding is nil");
-    // TODO: Unsupported type for mountedBuilding (hand)
-    lua_pushnil(L);
-    return 1;
+    return HandBinding::push(L, instance->mountedBuilding);
 }
 
 // --- Setters for LightBuilding ---
@@ -27,7 +26,10 @@ static int LightBuilding_set_mountedBuilding(lua_State* L)
 {
     LightBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LightBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for mountedBuilding");
+    hand* val = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!val) return luaL_error(L, "LightBuilding::set_mountedBuilding: expected hand for argument 2");
+    instance->mountedBuilding = *val;
+    return 0;
 }
 
 // --- Methods for LightBuilding

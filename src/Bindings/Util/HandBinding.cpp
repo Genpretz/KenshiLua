@@ -1,16 +1,18 @@
 #include "pch.h"
-#include "kenshi\util\hand.h"
-#include "HandBinding.h"
-#include "Lua/BindingHelpers.h"
+
+#include "Bindings/Util/HandBinding.h"
+
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/ItemBinding.h"
 #include "Bindings/PlatoonBinding.h"
-#include "Bindings/RootObjectBinding.h"
 #include "Bindings/RootObjectBaseBinding.h"
+#include "Bindings/RootObjectBinding.h"
 #include "Bindings/TownBaseBinding.h"
+
+#include "Lua/BindingHelpers.h"
 
 std::size_t hash_value(const hand& h)
 {
@@ -26,7 +28,7 @@ std::size_t hash_value(const hand& h)
 namespace KenshiLua
 {
 
-static hand* getInstance(lua_State* L, int idx)
+static hand* get(lua_State* L, int idx)
 {
     return checkObject<hand>(L, idx, HandBinding::getMetatableName());
 }
@@ -34,7 +36,7 @@ static hand* getInstance(lua_State* L, int idx)
 // --- Getters for hand ---
 static int hand_get_type(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
     lua_pushinteger(L, (lua_Integer)instance->type);
     return 1;
@@ -42,7 +44,7 @@ static int hand_get_type(lua_State* L)
 
 static int hand_get_container(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
     lua_pushinteger(L, instance->container);
     return 1;
@@ -50,7 +52,7 @@ static int hand_get_container(lua_State* L)
 
 static int hand_get_containerSerial(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
     lua_pushinteger(L, instance->containerSerial);
     return 1;
@@ -58,7 +60,7 @@ static int hand_get_containerSerial(lua_State* L)
 
 static int hand_get_index(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
     lua_pushinteger(L, instance->index);
     return 1;
@@ -66,7 +68,7 @@ static int hand_get_index(lua_State* L)
 
 static int hand_get_serial(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
     lua_pushinteger(L, instance->serial);
     return 1;
@@ -75,7 +77,7 @@ static int hand_get_serial(lua_State* L)
 // --- Setters for hand ---
 static int hand_set_type(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
     instance->type = (itemType)luaL_checkinteger(L, 2);
     return 0;
@@ -83,7 +85,7 @@ static int hand_set_type(lua_State* L)
 
 static int hand_set_container(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
     instance->container = (unsigned int)luaL_checkinteger(L, 2);
     return 0;
@@ -91,7 +93,7 @@ static int hand_set_container(lua_State* L)
 
 static int hand_set_containerSerial(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
     instance->containerSerial = (unsigned int)luaL_checkinteger(L, 2);
     return 0;
@@ -99,7 +101,7 @@ static int hand_set_containerSerial(lua_State* L)
 
 static int hand_set_index(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
     instance->index = (unsigned int)luaL_checkinteger(L, 2);
     return 0;
@@ -107,7 +109,7 @@ static int hand_set_index(lua_State* L)
 
 static int hand_set_serial(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
     instance->serial = (unsigned int)luaL_checkinteger(L, 2);
     return 0;
@@ -115,7 +117,7 @@ static int hand_set_serial(lua_State* L)
 
 int HandBinding::toString(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     std::string result = instance->toString();
@@ -125,7 +127,7 @@ int HandBinding::toString(lua_State* L)
 
 int HandBinding::fromString(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     const std::string str = luaL_checkstring(L, 2);
@@ -135,7 +137,7 @@ int HandBinding::fromString(lua_State* L)
 
 int HandBinding::getCharacter(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     Character* result = instance->getCharacter();
@@ -144,7 +146,7 @@ int HandBinding::getCharacter(lua_State* L)
 
 int HandBinding::getPlatoon(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     Platoon* result = instance->getPlatoon();
@@ -153,7 +155,7 @@ int HandBinding::getPlatoon(lua_State* L)
 
 int HandBinding::getActivePlatoon(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     ActivePlatoon* result = instance->getActivePlatoon();
@@ -162,7 +164,7 @@ int HandBinding::getActivePlatoon(lua_State* L)
 
 int HandBinding::getBuilding(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     Building* result = instance->getBuilding();
@@ -171,7 +173,7 @@ int HandBinding::getBuilding(lua_State* L)
 
 int HandBinding::getItem(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     Item* result = instance->getItem();
@@ -180,7 +182,7 @@ int HandBinding::getItem(lua_State* L)
 
 int HandBinding::getRootObject(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     RootObject* result = instance->getRootObject();
@@ -189,7 +191,7 @@ int HandBinding::getRootObject(lua_State* L)
 
 int HandBinding::getRootObjectBase(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     RootObjectBase* result = instance->getRootObjectBase();
@@ -198,7 +200,7 @@ int HandBinding::getRootObjectBase(lua_State* L)
 
 int HandBinding::getTown(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     TownBase* result = instance->getTown();
@@ -207,7 +209,7 @@ int HandBinding::getTown(lua_State* L)
 
 int HandBinding::debugWhatHappenedToMe(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     std::string result = instance->debugWhatHappenedToMe();
@@ -217,7 +219,7 @@ int HandBinding::debugWhatHappenedToMe(lua_State* L)
 
 int HandBinding::setNull(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     instance->setNull();
@@ -226,7 +228,7 @@ int HandBinding::setNull(lua_State* L)
 
 int HandBinding::isNull(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     bool result = instance->isNull();
@@ -236,7 +238,7 @@ int HandBinding::isNull(lua_State* L)
 
 int HandBinding::isValid(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     bool result = instance->isValid();
@@ -246,7 +248,7 @@ int HandBinding::isValid(lua_State* L)
 
 int HandBinding::canCastToRootObject(lua_State* L)
 {
-    hand* instance = getInstance(L, 1);
+    hand* instance = get(L, 1);
     if (!instance) return luaL_error(L, "hand is nil");
 
     bool result = instance->canCastToRootObject();

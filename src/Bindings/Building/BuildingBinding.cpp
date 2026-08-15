@@ -1,33 +1,33 @@
 #include "pch.h"
-#include "kenshi\Building\Building.h"
-#include "BuildingBinding.h"
-#include "Lua/BindingHelpers.h"
+
+#include "Bindings/Building/BuildingBinding.h"
+
 #include "Bindings/ActivePlatoonBinding.h"
-#include "Bindings/CharacterBinding.h"
 #include "Bindings/Building/ConstructionStateBinding.h"
-#include "Bindings/Gui/DataPanelLineBinding.h"
-#include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Building/DoorStuffBinding.h"
+#include "Bindings/Building/GatewayBuildingBinding.h"
+#include "Bindings/Building/ProductionBuildingBinding.h"
+#include "Bindings/Building/StorageBuildingBinding.h"
+#include "Bindings/Building/UseableStuffBinding.h"
+#include "Bindings/Building/WallBuildingBinding.h"
+#include "Bindings/CharacterBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataContainerBinding.h"
 #include "Bindings/GameSaveStateBinding.h"
-#include "Bindings/Building/GatewayBuildingBinding.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/InstanceIDBinding.h"
 #include "Bindings/InventoryBinding.h"
 #include "Bindings/PlatoonBinding.h"
-#include "Bindings/Building/ProductionBuildingBinding.h"
-#include "Bindings/RootObjectBinding.h"
-#include "Bindings/Building/StorageBuildingBinding.h"
-#include "Bindings/TownBinding.h"
 #include "Bindings/TownBaseBinding.h"
+#include "Bindings/TownBinding.h"
 #include "Bindings/TownBuildingsManagerBinding.h"
-#include "Bindings/Building/UseableStuffBinding.h"
-#include "Bindings/Building/WallBuildingBinding.h"
-#include "Bindings/ZoneMapBinding.h"
-#include "Bindings/ItemBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/LektorBinding.h"
+#include "Bindings/ZoneMapBinding.h"
+
+#include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
@@ -3304,6 +3304,102 @@ Skipped properties needing manual binding:
   line 490: activeEffects (lektor<std::pair<char, float> >) - unsupported type
 */
 
+int BuildingBinding::serialise(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int BuildingBinding::_NV_serialise(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->_NV_serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int BuildingBinding::setHandle(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (h) instance->setHandle(*h);
+    return 0;
+}
+
+int BuildingBinding::_NV_setHandle(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (h) instance->_NV_setHandle(*h);
+    return 0;
+}
+
+int BuildingBinding::getLayoutInstanceID(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    const std::string& result = instance->getLayoutInstanceID();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+int BuildingBinding::_NV_getLayoutInstanceID(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    const std::string& result = instance->_NV_getLayoutInstanceID();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+int BuildingBinding::getEntityMaterialName(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    Ogre::MovableObject* obj = (Ogre::MovableObject*)lua_touserdata(L, idx);
+    std::string result = Building::getEntityMaterialName(obj);
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+int BuildingBinding::buildingContainsEntity(lua_State* L)
+{
+    int idx = (lua_isuserdata(L, 1) && !lua_isnone(L, 2)) ? 2 : 1;
+    Ogre::MovableObject* obj = (Ogre::MovableObject*)lua_touserdata(L, idx);
+    PhysicsCollection* list = (PhysicsCollection*)lua_touserdata(L, idx + 1);
+    bool result = Building::buildingContainsEntity(obj, list);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int BuildingBinding::selectParts(lua_State* L)
+{
+    int idx = (lua_isuserdata(L, 1) && !lua_isnone(L, 2)) ? 2 : 1;
+    const Ogre::vector<GameDataReference>::type* partList = (const Ogre::vector<GameDataReference>::type*)lua_touserdata(L, idx);
+    lektor<GameData*>* parts = checkObject<lektor<GameData*>>(L, idx + 1, "lektor<GameData*>");
+    if (parts)
+    {
+        Building::selectParts(partList, *parts);
+    }
+    return 0;
+}
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - BuildingBinding::serialise / _NV_serialise: PosRotPair* (unbound pointer)
+  - BuildingBinding::buildingContainsEntity: Ogre::Entity* (unbound pointer)
+  - BuildingBinding::selectParts: Ogre::Entity* (unbound pointer)
+*/
+
 int BuildingBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -3546,13 +3642,10 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "_NV_setupFromData", BuildingBinding::_NV_setupFromData },
         { "setupAudio", BuildingBinding::setupAudio },
         { "switchLights", BuildingBinding::switchLights },
-        { "_NV_switchLights", BuildingBinding::_NV_switchLights },
-        { "switchEffects", BuildingBinding::switchEffects },
-        { "_NV_switchEffects", BuildingBinding::_NV_switchEffects },
-        { "hasAnyGoodPositionMarkersLeft", BuildingBinding::hasAnyGoodPositionMarkersLeft },
-        { "notifyBadPositionMarker", BuildingBinding::notifyBadPositionMarker },
-        { "getPositionMarker", BuildingBinding::getPositionMarker },
-        { "_NV_getPositionMarker", BuildingBinding::_NV_getPositionMarker },
+        { "isBroken", BuildingBinding::isBroken },
+        { "_NV_isBroken", BuildingBinding::_NV_isBroken },
+        { "getMouseCursor", BuildingBinding::getMouseCursor },
+        { "_NV_getMouseCursor", BuildingBinding::_NV_getMouseCursor },
         { "getDirectionMarker", BuildingBinding::getDirectionMarker },
         { "_NV_getDirectionMarker", BuildingBinding::_NV_getDirectionMarker },
         { "getDirectionMarkerQuat", BuildingBinding::getDirectionMarkerQuat },
@@ -3580,6 +3673,13 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "getMountedBuilding", BuildingBinding::getMountedBuilding },
         { "_NV_getMountedBuilding", BuildingBinding::_NV_getMountedBuilding },
         { "removeAnInternalBuilding", BuildingBinding::removeAnInternalBuilding },
+        { "serialise", BuildingBinding::serialise },
+        { "_NV_serialise", BuildingBinding::_NV_serialise },
+        { "setHandle", BuildingBinding::setHandle },
+        { "_NV_setHandle", BuildingBinding::_NV_setHandle },
+        { "getLayoutInstanceID", BuildingBinding::getLayoutInstanceID },
+        { "_NV_getLayoutInstanceID", BuildingBinding::_NV_getLayoutInstanceID },
+        { "getEntityMaterialName", BuildingBinding::getEntityMaterialName },
         { 0, 0 }
     };
 
@@ -3784,6 +3884,13 @@ void BuildingBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, BuildingBinding::getMetatableName(), RootObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getEntityMaterialName", BuildingBinding::getEntityMaterialName);
+    registerStaticMethod(L, "buildingContainsEntity", BuildingBinding::buildingContainsEntity);
+    registerStaticMethod(L, "selectParts", BuildingBinding::selectParts);
+    lua_setglobal(L, "Building");
 }
 
 } // namespace KenshiLua

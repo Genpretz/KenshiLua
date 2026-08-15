@@ -28,19 +28,20 @@ static int GameDataGroup_get_g2(lua_State* L)
     return pushObject<GameData>(L, instance->g2, GameDataBinding::getMetatableName());
 }
 
-// --- Setters for GameDataGroup ---
 static int GameDataGroup_set_g1(lua_State* L)
 {
     GameDataGroup* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataGroup is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for g1");
+    instance->g1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int GameDataGroup_set_g2(lua_State* L)
 {
     GameDataGroup* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataGroup is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for g2");
+    instance->g2 = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 int GameDataGroupBinding::_CONSTRUCTOR(lua_State* L)
@@ -49,8 +50,7 @@ int GameDataGroupBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "GameDataGroup is nil");
 
     GameDataGroup* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<GameDataGroup>(L, result, GameDataGroupBinding::getMetatableName());
 }
 
 int GameDataGroupBinding::gc(lua_State* L)

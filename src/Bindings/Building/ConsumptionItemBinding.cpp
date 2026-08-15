@@ -82,14 +82,16 @@ static int ConsumptionItem_set_item(lua_State* L)
 {
     ConsumptionItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ConsumptionItem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for item");
+    instance->item = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int ConsumptionItem_set_inventorySection(lua_State* L)
 {
     ConsumptionItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ConsumptionItem is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for inventorySection");
+    instance->inventorySection = lua_isnoneornil(L, 2) ? nullptr : checkObject<InventorySection>(L, 2, InventorySectionBinding::getMetatableName());
+    return 0;
 }
 
 int ConsumptionItemBinding::isFull(lua_State* L)

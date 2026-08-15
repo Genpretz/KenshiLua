@@ -2020,7 +2020,8 @@ static int TownBase_set_biome(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for biome");
+    instance->biome = (AreaBiomeGroup*)lua_touserdata(L, 2);
+    return 0;
 }
 
 
@@ -2028,7 +2029,8 @@ static int TownBase_set_clickHull(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for clickHull");
+    instance->clickHull = (PhysicsHullT*)lua_touserdata(L, 2);
+    return 0;
 }
 
 
@@ -2036,7 +2038,8 @@ static int TownBase_set_entityMarker(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for entityMarker");
+    instance->entityMarker = (Ogre::Entity*)lua_touserdata(L, 2);
+    return 0;
 }
 
 
@@ -2067,7 +2070,8 @@ static int TownBase_set_nestBatcher(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for nestBatcher");
+    instance->nestBatcher = (NestBatcher*)lua_touserdata(L, 2);
+    return 0;
 }
 
 
@@ -2098,7 +2102,8 @@ static int TownBase_set_population(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for population");
+    instance->population = (BasePopulationManager*)lua_touserdata(L, 2);
+    return 0;
 }
 
 
@@ -2378,6 +2383,12 @@ void TownBaseBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, TownBaseBinding::getMetatableName(), RootObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    OgreUnorderedSetBinding<ZoneMap*>::registerBinding(L, "ogre_unordered_set<ZoneMap*>");
+    OgreUnorderedMapBinding<ZoneMap*, bool>::registerBinding(L, "ogre_unordered_map<ZoneMap*, bool>");
+    StdSetBinding<hand>::registerBinding(L, "std::set<hand>");
+    StdSetBinding<Faction*>::registerBinding(L, "std::set<Faction*>", FactionBinding::getMetatableName());
+    LektorValueBinding<TownBase::ResidentData>::registerBinding(L, "lektor<ResidentData>", TownBase_ResidentDataBinding::getMetatableName());
 
     // Register global class table for static methods
     lua_newtable(L);

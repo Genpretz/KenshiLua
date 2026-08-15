@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/Building/TurretBuilding.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -45,5 +47,9 @@ public:
     static int _teleport(lua_State* L);
     static int clearTownBuildingsManagerPtr(lua_State* L);
     static int _NV_clearTownBuildingsManagerPtr(lua_State* L);
+    static int getMountedBuilding(lua_State* L);
+    static int _NV_getMountedBuilding(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
 };
 }

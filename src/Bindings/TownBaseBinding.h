@@ -1,5 +1,6 @@
 #pragma once
-#include <kenshi/Town.h>
+
+#include "kenshi/Town.h"
 
 extern "C" {
 #include <lua.h>

@@ -778,6 +778,83 @@ Skipped properties needing manual binding:
   line 443: groundEffects (ogre_unordered_map<int, ZoneManager::BiomeGroundEffects>::type) - unsupported type
 */
 
+int ZoneManagerBinding::getMapSector(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    if (lua_gettop(L) >= 3 || lua_isnumber(L, 2))
+    {
+        float x = (float)luaL_checknumber(L, 2);
+        float z = (float)luaL_checknumber(L, 3);
+        iVector2 result = instance->getMapSector(x, z);
+        return pushValue<iVector2>(L, result, iVector2Binding::getMetatableName());
+    }
+    else
+    {
+        Ogre::Vector3 v;
+        readVector3(L, 2, v);
+        iVector2 result = instance->getMapSector(v);
+        return pushValue<iVector2>(L, result, iVector2Binding::getMetatableName());
+    }
+}
+
+int ZoneManagerBinding::getZoneBoundsT(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    if (lua_istable(L, 2))
+    {
+        Ogre::Vector3 pos;
+        readVector3(L, 2, pos);
+        AABB2D result = instance->getZoneBoundsT(pos);
+        return pushValue<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+    }
+    else if (lua_isuserdata(L, 2))
+    {
+        iVector2* coord = (iVector2*)luaL_testudata(L, 2, iVector2Binding::getMetatableName());
+        if (coord)
+        {
+            AABB2D result = instance->getZoneBoundsT(*coord);
+            return pushValue<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+        }
+        Ogre::Vector3 pos;
+        readVector3(L, 2, pos);
+        AABB2D result = instance->getZoneBoundsT(pos);
+        return pushValue<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+    }
+    return luaL_error(L, "Argument 2 to getZoneBoundsT must be Vector3 or iVector2");
+}
+
+int ZoneManagerBinding::_NV_getZoneBoundsT(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    if (lua_istable(L, 2))
+    {
+        Ogre::Vector3 pos;
+        readVector3(L, 2, pos);
+        AABB2D result = instance->_NV_getZoneBoundsT(pos);
+        return pushValue<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+    }
+    else if (lua_isuserdata(L, 2))
+    {
+        iVector2* coord = (iVector2*)luaL_testudata(L, 2, iVector2Binding::getMetatableName());
+        if (coord)
+        {
+            AABB2D result = instance->_NV_getZoneBoundsT(*coord);
+            return pushValue<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+        }
+        Ogre::Vector3 pos;
+        readVector3(L, 2, pos);
+        AABB2D result = instance->_NV_getZoneBoundsT(pos);
+        return pushValue<AABB2D>(L, result, AABB2DBinding::getMetatableName());
+    }
+    return luaL_error(L, "Argument 2 to _NV_getZoneBoundsT must be Vector3 or iVector2");
+}
+
 int ZoneManagerBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -852,6 +929,9 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
         { "loadPhase1", ZoneManagerBinding::loadPhase1 },
         { "loadPhase2", ZoneManagerBinding::loadPhase2 },
         { "loadPhase3", ZoneManagerBinding::loadPhase3 },
+        { "getMapSector", ZoneManagerBinding::getMapSector },
+        { "getZoneBoundsT", ZoneManagerBinding::getZoneBoundsT },
+        { "_NV_getZoneBoundsT", ZoneManagerBinding::_NV_getZoneBoundsT },
         { 0, 0 }
     };
 

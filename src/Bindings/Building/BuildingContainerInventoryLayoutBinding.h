@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/Building/StorageBuilding.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -18,6 +20,7 @@ public:
 
     static int _CONSTRUCTOR(lua_State* L);
     static int setCapacity(lua_State* L);
+    static int setupSections(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };
 }

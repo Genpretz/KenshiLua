@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/Building/Building.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -271,5 +273,14 @@ public:
     static int getMountedBuilding(lua_State* L);
     static int _NV_getMountedBuilding(lua_State* L);
     static int removeAnInternalBuilding(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
+    static int setHandle(lua_State* L);
+    static int _NV_setHandle(lua_State* L);
+    static int getLayoutInstanceID(lua_State* L);
+    static int _NV_getLayoutInstanceID(lua_State* L);
+    static int getEntityMaterialName(lua_State* L);
+    static int buildingContainsEntity(lua_State* L);
+    static int selectParts(lua_State* L);
 };
 }

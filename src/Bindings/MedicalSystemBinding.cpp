@@ -27,7 +27,7 @@ struct LuaCodec<MedicalSystem::HealthPartStatus>
 {
     static int push(lua_State* L, const MedicalSystem::HealthPartStatus& val, const char* metaName)
     {
-        return pushObject<MedicalSystem::HealthPartStatus>(L, const_cast<MedicalSystem::HealthPartStatus*>(&val), metaName ? metaName : HealthPartStatusBinding::getMetatableName());
+        return pushValue<MedicalSystem::HealthPartStatus>(L, val, metaName ? metaName : HealthPartStatusBinding::getMetatableName());
     }
     static MedicalSystem::HealthPartStatus read(lua_State* L, int idx, const char* metaName)
     {

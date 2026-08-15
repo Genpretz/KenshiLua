@@ -70,7 +70,7 @@ int Character_CarryMsgBinding::_CONSTRUCTOR(lua_State* L)
         obj->rag = lua_toboolean(L, 2) != 0;
     if (lua_gettop(L) >= 3)
         obj->hull = lua_toboolean(L, 3) != 0;
-    return pushObject<Character::CarryMsg>(L, obj, getMetatableName());
+    return pushObjectOwned<Character::CarryMsg>(L, obj, getMetatableName());
 }
 
 int Character_CarryMsgBinding::_DESTRUCTOR(lua_State* L)

@@ -958,6 +958,11 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
     CraftingItemDequeBinding::registerBinding(L, "std::deque<CraftingItem>", nullptr);
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "playerManufacturerData", CraftingBuildingBinding::playerManufacturerData);
+    lua_setglobal(L, "CraftingBuilding");
 }
 
 } // namespace KenshiLua

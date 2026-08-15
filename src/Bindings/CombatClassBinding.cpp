@@ -1614,11 +1614,12 @@ int CombatClassBinding::destroy(lua_State* L)
 
 int CombatClassBinding::getCombatEffect(lua_State* L)
 {
-    Character* attacker = checkObject<Character>(L, 1, CharacterBinding::getMetatableName());
-    Character* victim = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
-    if (!damage) return luaL_error(L, "Expected Damages");
-    HitMaterialType hitType = (HitMaterialType)luaL_checkinteger(L, 4);
+    int idx = (lua_isuserdata(L, 1) || lua_istable(L, 1)) ? 2 : 1;
+    Character* attacker = checkObject<Character>(L, idx, CharacterBinding::getMetatableName());
+    Character* victim = checkObject<Character>(L, idx + 1, CharacterBinding::getMetatableName());
+    Damages* damage = checkObject<Damages>(L, idx + 2, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "CombatClass::getCombatEffect: expected Damages for argument %d", idx + 2);
+    HitMaterialType hitType = (HitMaterialType)luaL_checkinteger(L, idx + 3);
 
     GameData* res = CombatClass::getCombatEffect(attacker, victim, *damage, hitType);
     return pushObject<GameData>(L, res, GameDataBinding::getMetatableName());
@@ -1626,14 +1627,15 @@ int CombatClassBinding::getCombatEffect(lua_State* L)
 
 int CombatClassBinding::addEffect(lua_State* L)
 {
-    GameData* effectData = checkObject<GameData>(L, 1, GameDataBinding::getMetatableName());
-    hand* character = checkObject<hand>(L, 2, HandBinding::getMetatableName());
-    if (!character) return luaL_error(L, "Expected hand");
-    const char* boneName = luaL_checkstring(L, 3);
+    int idx = (lua_isuserdata(L, 1) || lua_istable(L, 1)) ? 2 : 1;
+    GameData* effectData = checkObject<GameData>(L, idx, GameDataBinding::getMetatableName());
+    hand* character = checkObject<hand>(L, idx + 1, HandBinding::getMetatableName());
+    if (!character) return luaL_error(L, "CombatClass::addEffect: expected hand for argument %d", idx + 1);
+    const char* boneName = luaL_checkstring(L, idx + 2);
     Ogre::Vector3 pos;
-    readVector3(L, 4, pos);
+    readVector3(L, idx + 3, pos);
     Ogre::Quaternion rot;
-    readQuaternion(L, 5, rot);
+    readQuaternion(L, idx + 4, rot);
 
     CombatClass::addEffect(effectData, *character, boneName, pos, rot);
     return 0;
@@ -1641,8 +1643,9 @@ int CombatClassBinding::addEffect(lua_State* L)
 
 int CombatClassBinding::shiftEffects(lua_State* L)
 {
+    int idx = (lua_isuserdata(L, 1) || lua_istable(L, 1)) ? 2 : 1;
     Ogre::Vector3 shift;
-    readVector3(L, 1, shift);
+    readVector3(L, idx, shift);
     CombatClass::shiftEffects(shift);
     return 0;
 }
@@ -1653,16 +1656,28 @@ int CombatClassBinding::updateEffects(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 149: CombatClass* _CONSTRUCTOR(...) - requires unbound types AI* and AnimationClass*
-*/
+int CombatClassBinding::_CONSTRUCTOR(lua_State* L)
+{
+    CombatClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass is nil");
+
+    CharMovement* _movement = checkObject<CharMovement>(L, 2, CharMovementBinding::getMetatableName());
+    AI* _ai = (AI*)lua_touserdata(L, 3);
+    AnimationClass* _animation = (AnimationClass*)lua_touserdata(L, 4);
+    Character* _me = checkObject<Character>(L, 5, CharacterBinding::getMetatableName());
+    CharStats* _stats = checkObject<CharStats>(L, 6, CharStatsBinding::getMetatableName());
+    MedicalSystem* _medical = checkObject<MedicalSystem>(L, 7, MedicalSystemBinding::getMetatableName());
+
+    CombatClass* result = instance->_CONSTRUCTOR(_movement, _ai, _animation, _me, _stats, _medical);
+    return pushObject<CombatClass>(L, result, CombatClassBinding::getMetatableName());
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - CombatClass_get_ai / CombatClass_set_ai: AI* (unbound pointer)
   - CombatClass_get_animation / CombatClass_set_animation: AnimationClass* (unbound pointer)
   - CombatClass::getStateClass: CombatState* (unbound pointer)
+  - CombatClassBinding::_CONSTRUCTOR: AI*, AnimationClass* (unbound pointers)
 */
 
 int CombatClassBinding::gc(lua_State* L)
@@ -1687,6 +1702,7 @@ void CombatClassBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_DESTRUCTOR", CombatClassBinding::_DESTRUCTOR },
+        { "_CONSTRUCTOR", CombatClassBinding::_CONSTRUCTOR },
         { "isAI", CombatClassBinding::isAI },
         { "_NV_isAI", CombatClassBinding::_NV_isAI },
         { "initCombatMode", CombatClassBinding::initCombatMode },
@@ -1763,6 +1779,12 @@ void CombatClassBinding::registerBinding(lua_State* L)
         { "_NV_packPtrsToHandles", CombatClassBinding::_NV_packPtrsToHandles },
         { "unpackHandlesToPtrs", CombatClassBinding::unpackHandlesToPtrs },
         { "_NV_unpackHandlesToPtrs", CombatClassBinding::_NV_unpackHandlesToPtrs },
+        { "setup", CombatClassBinding::setup },
+        { "destroy", CombatClassBinding::destroy },
+        { "getCombatEffect", CombatClassBinding::getCombatEffect },
+        { "addEffect", CombatClassBinding::addEffect },
+        { "shiftEffects", CombatClassBinding::shiftEffects },
+        { "updateEffects", CombatClassBinding::updateEffects },
         { 0, 0 }
     };
 
@@ -1884,6 +1906,8 @@ void CombatClassBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     SwordStateMapBinding::registerBinding(L, "ogre_unordered_map<swordStateEnum, CombatState*>", nullptr, nullptr);
+    LektorValueReadOnlyBinding<hand>::registerBinding(L, "lektor<hand>", HandBinding::getMetatableName());
+    LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
 
 /*
 LIGHTUSERDATA DEPENDENCIES:

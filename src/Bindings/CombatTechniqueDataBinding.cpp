@@ -363,8 +363,7 @@ int CombatTechniqueDataBinding::impactPoint(lua_State* L)
 
     int i = (int)luaL_checkinteger(L, 2);
     CombatTechniqueData::ImpactPoint* result = instance->impactPoint(i);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<CombatTechniqueData::ImpactPoint>(L, result, ImpactPointBinding::getMetatableName());
 }
 
 /*

@@ -814,7 +814,7 @@ int InventoryItemBaseBinding::getStolenItemGUIInfo(lua_State* L)
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
     auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
-    if (!lines) return luaL_error(L, "Argument 2 to getStolenItemGUIInfo must be OgreVectorStringPair");
+    if (!lines) return luaL_error(L, "Argument 2 to getStolenItemGUIInfo must be ogre_vector<StringPair>");
     instance->getStolenItemGUIInfo(*lines);
     return 0;
 }
@@ -824,7 +824,7 @@ int InventoryItemBaseBinding::getBuyBackGUIInfo(lua_State* L)
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
     auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
-    if (!lines) return luaL_error(L, "Argument 2 to getBuyBackGUIInfo must be OgreVectorStringPair");
+    if (!lines) return luaL_error(L, "Argument 2 to getBuyBackGUIInfo must be ogre_vector<StringPair>");
     instance->getBuyBackGUIInfo(*lines);
     return 0;
 }
@@ -845,7 +845,7 @@ int InventoryItemBaseBinding::getTooltipData1(lua_State* L)
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
     auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
-    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData1 must be OgreVectorStringPair");
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData1 must be ogre_vector<StringPair>");
     instance->getTooltipData1(*lines);
     return 0;
 }
@@ -855,7 +855,7 @@ int InventoryItemBaseBinding::_NV_getTooltipData1(lua_State* L)
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
     auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
-    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData1 must be OgreVectorStringPair");
+    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData1 must be ogre_vector<StringPair>");
     instance->_NV_getTooltipData1(*lines);
     return 0;
 }
@@ -865,7 +865,7 @@ int InventoryItemBaseBinding::getTooltipData2(lua_State* L)
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
     auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
-    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData2 must be OgreVectorStringPair");
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData2 must be ogre_vector<StringPair>");
     instance->getTooltipData2(*lines);
     return 0;
 }
@@ -875,7 +875,7 @@ int InventoryItemBaseBinding::_NV_getTooltipData2(lua_State* L)
     InventoryItemBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryItemBase is nil");
     auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
-    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData2 must be OgreVectorStringPair");
+    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData2 must be ogre_vector<StringPair>");
     instance->_NV_getTooltipData2(*lines);
     return 0;
 }

@@ -10,7 +10,6 @@
 #include "Bindings/Util/LektorBinding.h"
 #include "Lua/BindingHelpers.h"
 
-
 namespace KenshiLua
 {
 
@@ -120,8 +119,7 @@ namespace KenshiLua
         if (!instance) return luaL_error(L, "RootObjectContainer is nil");
 
         lektor<RootObject*>* result = instance->getThings();
-        lua_pushlightuserdata(L, (void*)result);
-        return 1;
+        return pushObject<lektor<RootObject*>>(L, result, LektorPtrBinding<RootObject*>::metaName);
     }
 
     int RootObjectContainerBinding::loadToReality(lua_State* L)
@@ -160,31 +158,8 @@ namespace KenshiLua
         return 0;
     }
 
-    /*
-    Skipped methods needing manual binding:
-      line 183: RootObjectContainer* _CONSTRUCTOR(...) - overloaded method
-      line 185: RootObjectContainer* _CONSTRUCTOR(...) - overloaded method
-      line 197: void getSelectedObjects(...) - unsupported arg type
-      line 198: void _NV_getSelectedObjects(...) - unsupported arg type
-      line 200: void serialiseThings(...) - overloaded method
-      line 201: void serialiseThings(...) - overloaded method
-      line 225: void loadInstance(...) - non-string reference arg
-      line 226: void _NV_loadInstance(...) - non-string reference arg
-    */
-
-    /*
-    LIGHTUSERDATA DEPENDENCIES:
-      - RootObjectContainerBinding::getThings: lektor<RootObject*>* (unbound pointer)
-    */
-
-    /*
-    Skipped properties needing manual binding:
-      line 222: things (lektor<RootObject*>) - unsupported type
-    */
-
     int RootObjectContainerBinding::gc(lua_State* L)
     {
-        // Implementation depends on ownership model
         return 0;
     }
 
@@ -194,8 +169,6 @@ namespace KenshiLua
         return 1;
     }
 
-
-
     static int RootObjectContainer_get_things(lua_State* L)
     {
         RootObjectContainer* instance = getInstance(L, 1);
@@ -203,14 +176,15 @@ namespace KenshiLua
         return pushObject<lektor<RootObject*>>(L, &instance->things, LektorPtrBinding<RootObject*>::metaName);
     }
 
-
     static int RootObjectContainer_set_things(lua_State* L)
     {
         RootObjectContainer* instance = getInstance(L, 1);
         if (!instance) return luaL_error(L, "RootObjectContainer is nil");
-        return luaL_error(L, "Read-only or unsupported setter type for things");
+        auto* val = LektorPtrBinding<RootObject*>::get(L, 2);
+        if (!val) return luaL_error(L, "Argument 2 to set 'things' must be lektor<RootObject*>");
+        instance->things = *val;
+        return 0;
     }
-
 
     int RootObjectContainerBinding::_CONSTRUCTOR(lua_State* L)
     {
@@ -231,7 +205,6 @@ namespace KenshiLua
         }
     }
 
-
     int RootObjectContainerBinding::_NV_getSelectedObjects(lua_State* L)
     {
         RootObjectContainer* instance = getInstance(L, 1);
@@ -246,7 +219,6 @@ namespace KenshiLua
         instance->_NV_getSelectedObjects(*out, type, selectedOnly);
         return 0;
     }
-
 
     int RootObjectContainerBinding::_NV_loadInstance(lua_State* L)
     {
@@ -267,7 +239,6 @@ namespace KenshiLua
         return 0;
     }
 
-
     int RootObjectContainerBinding::getSelectedObjects(lua_State* L)
     {
         RootObjectContainer* instance = getInstance(L, 1);
@@ -282,7 +253,6 @@ namespace KenshiLua
         instance->getSelectedObjects(*out, type, selectedOnly);
         return 0;
     }
-
 
     int RootObjectContainerBinding::loadInstance(lua_State* L)
     {
@@ -302,7 +272,6 @@ namespace KenshiLua
         instance->loadInstance(*state, skipSaveState, pos, rot, callback, positionMoved);
         return 0;
     }
-
 
     int RootObjectContainerBinding::serialiseThings(lua_State* L)
     {
@@ -331,7 +300,6 @@ namespace KenshiLua
             return 0;
         }
     }
-
 
     void RootObjectContainerBinding::registerBinding(lua_State* L)
     {
@@ -381,9 +349,7 @@ namespace KenshiLua
         registerSetter(L, "things", RootObjectContainer_set_things);
         lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-        // Wire up inheritance to DataObjectContainer
-        // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-        // setMetatableParent(L, RootObjectContainerBinding::getMetatableName(), DataObjectContainerBinding::getMetatableName());
+        LektorPtrBinding<RootObject*>::registerBinding(L, "lektor<RootObject*>", RootObjectBinding::getMetatableName());
 
         lua_pop(L, 1); // Pop the metatable off the stack
     }

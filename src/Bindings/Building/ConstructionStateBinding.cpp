@@ -60,7 +60,7 @@ static int ConstructionState_get_mats(lua_State* L)
 {
     ConstructionState* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ConstructionState is nil");
-    return pushObject<lektor<Building::ConstructionState::BuildMaterial*>>(L, &instance->mats, "KenshiLua.Lektor_BuildMaterial");
+    return pushObject<lektor<Building::ConstructionState::BuildMaterial*>>(L, &instance->mats, "lektor<Building::ConstructionState::BuildMaterial*>");
 }
 
 static int ConstructionState_get_totalMats(lua_State* L)
@@ -352,7 +352,8 @@ int ConstructionStateBinding::needMats(lua_State* L)
 
 int ConstructionStateBinding::getBuildingSpeedMultiplier(lua_State* L)
 {
-    GameData* data = checkObject<GameData>(L, 1, GameDataBinding::getMetatableName());
+    int idx = (lua_isuserdata(L, 1) || lua_istable(L, 1)) ? 2 : 1;
+    GameData* data = checkObject<GameData>(L, idx, GameDataBinding::getMetatableName());
     float result = ConstructionState::getBuildingSpeedMultiplier(data);
     lua_pushnumber(L, result);
     return 1;
@@ -360,7 +361,8 @@ int ConstructionStateBinding::getBuildingSpeedMultiplier(lua_State* L)
 
 int ConstructionStateBinding::getBuildingTimeInHours(lua_State* L)
 {
-    GameData* data = checkObject<GameData>(L, 1, GameDataBinding::getMetatableName());
+    int idx = (lua_isuserdata(L, 1) || lua_istable(L, 1)) ? 2 : 1;
+    GameData* data = checkObject<GameData>(L, idx, GameDataBinding::getMetatableName());
     float result = ConstructionState::getBuildingTimeInHours(data);
     lua_pushnumber(L, result);
     return 1;
@@ -380,7 +382,7 @@ int ConstructionStateBinding::tostring(lua_State* L)
 
 void ConstructionStateBinding::registerBinding(lua_State* L)
 {
-    LektorPtrBinding<Building::ConstructionState::BuildMaterial*>::registerBinding(L, "KenshiLua.Lektor_BuildMaterial", BuildMaterialBinding::getMetatableName());
+    LektorPtrBinding<Building::ConstructionState::BuildMaterial*>::registerBinding(L, "lektor<Building::ConstructionState::BuildMaterial*>", BuildMaterialBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       ConstructionStateBinding::gc },
@@ -393,6 +395,8 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
         { "_DESTRUCTOR", ConstructionStateBinding::_DESTRUCTOR },
         { "addMaterials", ConstructionStateBinding::addMaterials },
         { "materialsEmpty", ConstructionStateBinding::materialsEmpty },
+        { "getBuildingSpeedMultiplier", ConstructionStateBinding::getBuildingSpeedMultiplier },
+        { "getBuildingTimeInHours", ConstructionStateBinding::getBuildingTimeInHours },
         { "isOverThreshold", ConstructionStateBinding::isOverThreshold },
         { "getHealthBarProgress", ConstructionStateBinding::getHealthBarProgress },
         { "getConstructionMaterialProgress", ConstructionStateBinding::getConstructionMaterialProgress },

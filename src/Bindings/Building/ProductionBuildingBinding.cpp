@@ -1,9 +1,16 @@
 #include "pch.h"
 #include <kenshi/Building/ProductionBuilding.h>
+#include <kenshi/GameSaveState.h>
 #include "ProductionBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/InventorySectionBinding.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
 #include "Bindings/Building/StorageBuildingBinding.h"
+#include "Bindings/Building/ConsumptionItemBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -41,8 +48,7 @@ static int ProductionBuilding_get_consumptionItems(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    // TODO: Unsupported type for consumptionItems (lektor<StorageBuilding::ConsumptionItem>)
-    return luaL_error(L, "Unsupported property 'consumptionItems' (type: lektor<StorageBuilding::ConsumptionItem>)");
+    return pushObject<lektor<StorageBuilding::ConsumptionItem>>(L, &instance->consumptionItems, "lektor<StorageBuilding::ConsumptionItem>");
 }
 
 // --- Setters for ProductionBuilding ---
@@ -66,14 +72,18 @@ static int ProductionBuilding_set_outSection(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for outSection");
+    instance->outSection = lua_isnoneornil(L, 2) ? nullptr : checkObject<InventorySection>(L, 2, InventorySectionBinding::getMetatableName());
+    return 0;
 }
 
 static int ProductionBuilding_set_consumptionItems(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for consumptionItems");
+    auto* val = LektorValueBinding<StorageBuilding::ConsumptionItem>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'consumptionItems' must be lektor<Building::ConsumptionItem>");
+    instance->consumptionItems = *val;
+    return 0;
 }
 
 int ProductionBuildingBinding::_DESTRUCTOR(lua_State* L)
@@ -109,8 +119,7 @@ int ProductionBuildingBinding::createInventoryLayout(lua_State* L)
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
     InventoryLayout* result = instance->createInventoryLayout();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
 }
 
 int ProductionBuildingBinding::_NV_createInventoryLayout(lua_State* L)
@@ -119,8 +128,7 @@ int ProductionBuildingBinding::_NV_createInventoryLayout(lua_State* L)
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
 
     InventoryLayout* result = instance->_NV_createInventoryLayout();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
 }
 
 int ProductionBuildingBinding::update(lua_State* L)
@@ -560,6 +568,33 @@ Skipped methods needing manual binding:
   line 148: void _NV_getGUIState(...) - unsupported arg type
 */
 
+int ProductionBuildingBinding::serialise(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int ProductionBuildingBinding::_NV_serialise(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->_NV_serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - ProductionBuildingBinding::serialise / _NV_serialise: PosRotPair* (unbound pointer)
+*/
+
 int ProductionBuildingBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -627,6 +662,8 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateInputs", ProductionBuildingBinding::_NV_updateInputs },
         { "updateOutput", ProductionBuildingBinding::updateOutput },
         { "_NV_updateOutput", ProductionBuildingBinding::_NV_updateOutput },
+        { "serialise", ProductionBuildingBinding::serialise },
+        { "_NV_serialise", ProductionBuildingBinding::_NV_serialise },
         { 0, 0 }
     };
 
@@ -667,6 +704,8 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, ProductionBuildingBinding::getMetatableName(), StorageBuildingBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorValueBinding<StorageBuilding::ConsumptionItem>::registerBinding(L, "lektor<Building::ConsumptionItem>", ConsumptionItemBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

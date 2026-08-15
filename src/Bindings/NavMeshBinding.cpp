@@ -4,6 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/ZoneMapBinding.h"
+#include "Bindings/NavMeshGeneratorBinding.h"
 #include "Bindings/Util/iVector2Binding.h"
 
 namespace KenshiLua
@@ -107,8 +108,7 @@ static int NavMesh_get_generator(lua_State* L)
 {
     NavMesh* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "NavMesh is nil");
-    lua_pushlightuserdata(L, (void*)instance->generator);
-    return 1;
+    return pushObject<NavMeshGenerator>(L, instance->generator, NavMeshGeneratorBinding::getMetatableName());
 }
 
 // --- Setters for NavMesh ---

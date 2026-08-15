@@ -3,9 +3,17 @@
 #include "ResearchBuildingInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/GenericInventoryLayoutBinding.h"
+#include "Bindings/Gui/InventoryGUIBinding.h"
+#include "Bindings/Gui/InventorySectionGUIBinding.h"
+#include "Bindings/InventoryBinding.h"
+#include "Bindings/MyGuiBinding.h"
+#include "Bindings/Util/StdMapBinding.h"
+#include <MyGUI.h>
 
 namespace KenshiLua
 {
+
+typedef std::map<std::string, InventorySectionGUI*, std::less<std::string>, Ogre::STLAllocator<std::pair<std::string const, InventorySectionGUI*>, Ogre::GeneralAllocPolicy>> SectionsMap;
 
 static ResearchBuildingInventoryLayout* getInstance(lua_State* L, int idx)
 {
@@ -17,8 +25,7 @@ static int ResearchBuildingInventoryLayout_get_researchButton(lua_State* L)
 {
     ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
-    lua_pushlightuserdata(L, (void*)instance->researchButton);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, instance->researchButton, MyGuiBinding::getMetatableName());
 }
 
 // --- Setters for ResearchBuildingInventoryLayout ---
@@ -26,7 +33,8 @@ static int ResearchBuildingInventoryLayout_set_researchButton(lua_State* L)
 {
     ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for researchButton");
+    instance->researchButton = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::Button*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    return 0;
 }
 
 int ResearchBuildingInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
@@ -35,8 +43,7 @@ int ResearchBuildingInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
 
     ResearchBuildingInventoryLayout* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ResearchBuildingInventoryLayout>(L, result, ResearchBuildingInventoryLayoutBinding::getMetatableName());
 }
 
 int ResearchBuildingInventoryLayoutBinding::getResearchButton(lua_State* L)
@@ -45,8 +52,26 @@ int ResearchBuildingInventoryLayoutBinding::getResearchButton(lua_State* L)
     if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
 
     MyGUI::Widget* result = instance->getResearchButton();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
+}
+
+int ResearchBuildingInventoryLayoutBinding::setupSections(lua_State* L)
+{
+    ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
+
+    InventoryGUI* inventoryGUI = testObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    if (!inventoryGUI) inventoryGUI = (InventoryGUI*)lua_touserdata(L, 2);
+
+    SectionsMap* sections = testObject<SectionsMap>(L, 3, "std::map<std::string, InventorySectionGUI*>");
+    if (!sections) sections = (SectionsMap*)lua_touserdata(L, 3);
+    if (!sections) return luaL_error(L, "Argument 3 to setupSections must be a valid std::map<std::string, InventorySectionGUI*> or lightuserdata");
+
+    Inventory* inventory = testObject<Inventory>(L, 4, InventoryBinding::getMetatableName());
+    if (!inventory) inventory = (Inventory*)lua_touserdata(L, 4);
+
+    instance->setupSections(inventoryGUI, *sections, inventory);
+    return 0;
 }
 
 int ResearchBuildingInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
@@ -57,12 +82,6 @@ int ResearchBuildingInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
     instance->_DESTRUCTOR();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 14: void setupSections(...) - unsupported arg type
-  line 15: void _NV_setupSections(...) - unsupported arg type
-*/
 
 int ResearchBuildingInventoryLayoutBinding::gc(lua_State* L)
 {
@@ -87,6 +106,7 @@ void ResearchBuildingInventoryLayoutBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", ResearchBuildingInventoryLayoutBinding::_CONSTRUCTOR },
         { "getResearchButton", ResearchBuildingInventoryLayoutBinding::getResearchButton },
+        { "setupSections", ResearchBuildingInventoryLayoutBinding::setupSections },
         { "_DESTRUCTOR", ResearchBuildingInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
@@ -116,6 +136,8 @@ void ResearchBuildingInventoryLayoutBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, ResearchBuildingInventoryLayoutBinding::getMetatableName(), GenericInventoryLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    StdMapBinding<std::string, InventorySectionGUI*>::registerBinding(L, "std::map<std::string, InventorySectionGUI*>", nullptr, InventorySectionGUIBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

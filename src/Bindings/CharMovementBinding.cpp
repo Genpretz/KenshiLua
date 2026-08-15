@@ -10,6 +10,7 @@
 #include "Bindings/FormationMoverBinding.h"
 #include "Bindings/RootObjectBaseBinding.h"
 #include "Bindings/physHitBinding.h"
+#include "Bindings/HavokCharacterBinding.h"
 #include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
@@ -70,8 +71,7 @@ static int CharMovement_get_havokCharacter(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharMovement is nil");
-    lua_pushlightuserdata(L, (void*)instance->havokCharacter);
-    return 1;
+    return pushObject<HavokCharacter>(L, instance->havokCharacter, HavokCharacterBinding::getMetatableName());
 }
 
 static int CharMovement_get_tracer(lua_State* L)
@@ -405,7 +405,7 @@ static int CharMovement_set_havokCharacter(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharMovement is nil");
-    instance->havokCharacter = lua_isnoneornil(L, 2) ? nullptr : (HavokCharacter*)lua_touserdata(L, 2);
+    instance->havokCharacter = lua_isnoneornil(L, 2) ? nullptr : checkObject<HavokCharacter>(L, 2, HavokCharacterBinding::getMetatableName());
     return 0;
 }
 

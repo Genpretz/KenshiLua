@@ -2968,8 +2968,24 @@ static int CharStats_set_pCurrentWeaponSkill(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharStats is nil");
-    float val = (float)luaL_checknumber(L, 2);
-    instance->pCurrentWeaponSkill = &val;
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->pCurrentWeaponSkill = nullptr;
+    }
+    else if (lua_islightuserdata(L, 2))
+    {
+        instance->pCurrentWeaponSkill = (float*)lua_touserdata(L, 2);
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        if (!instance->pCurrentWeaponSkill)
+            return luaL_error(L, "CharStats::pCurrentWeaponSkill is null");
+        *instance->pCurrentWeaponSkill = (float)lua_tonumber(L, 2);
+    }
+    else
+    {
+        return luaL_error(L, "Argument 2 to set pCurrentWeaponSkill must be number, lightuserdata, or nil");
+    }
     return 0;
 }
 

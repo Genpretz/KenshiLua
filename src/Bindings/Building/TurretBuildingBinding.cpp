@@ -1,7 +1,12 @@
 #include "pch.h"
 #include <kenshi/Building/TurretBuilding.h>
+#include <kenshi/GameSaveState.h>
 #include "TurretBuildingBinding.h"
 #include "UseableStuffBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -65,9 +70,7 @@ static int TurretBuilding_get_mountedBuilding(lua_State* L)
 {
     TurretBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TurretBuilding is nil");
-    // TODO: Unsupported type for mountedBuilding (hand)
-    lua_pushnil(L);
-    return 1;
+    return HandBinding::push(L, instance->mountedBuilding);
 }
 
 static int TurretBuilding_get_hingePart(lua_State* L)
@@ -154,7 +157,10 @@ static int TurretBuilding_set_mountedBuilding(lua_State* L)
 {
     TurretBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TurretBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for mountedBuilding");
+    hand* val = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!val) return luaL_error(L, "TurretBuilding::set_mountedBuilding: expected hand for argument 2");
+    instance->mountedBuilding = *val;
+    return 0;
 }
 
 static int TurretBuilding_set_hingePart(lua_State* L)
@@ -467,28 +473,49 @@ int TurretBuildingBinding::_NV_clearTownBuildingsManagerPtr(lua_State* L)
     return 0;
 }
 
+int TurretBuildingBinding::getMountedBuilding(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+
+    const hand& result = instance->getMountedBuilding();
+    return HandBinding::push(L, result);
+}
+
+int TurretBuildingBinding::_NV_getMountedBuilding(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+
+    const hand& result = instance->_NV_getMountedBuilding();
+    return HandBinding::push(L, result);
+}
+
+int TurretBuildingBinding::serialise(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int TurretBuildingBinding::_NV_serialise(lua_State* L)
+{
+    TurretBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TurretBuilding is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->_NV_serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
 /*
-Skipped methods needing manual binding:
-  line 13: TurretBuilding* _CONSTRUCTOR(...) - unsupported arg type
-  line 24: void operate(...) - unsupported arg type
-  line 25: void _NV_operate(...) - unsupported arg type
-  line 29: void getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-  line 30: void _NV_getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-  line 34: void setMountedBuilding(...) - unsupported arg type
-  line 35: const hand& getMountedBuilding(...) - reference return type
-  line 36: const hand& _NV_getMountedBuilding(...) - reference return type
-  line 47: void addToBuildingsMananger(...) - unsupported arg type
-  line 48: void removeFromBuildingsMananger(...) - unsupported arg type
-  line 49: void getGUIState(...) - unsupported arg type
-  line 50: void _NV_getGUIState(...) - unsupported arg type
-  line 51: void getGUIData(...) - unsupported arg type
-  line 52: void _NV_getGUIData(...) - unsupported arg type
-  line 53: GameSaveState serialise(...) - unsupported return type
-  line 54: GameSaveState _NV_serialise(...) - unsupported return type
-  line 55: void loadFromSerialise(...) - unsupported arg type
-  line 56: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 67: void setPartVisible(...) - unsupported arg type
-  line 68: void _NV_setPartVisible(...) - unsupported arg type
+LIGHTUSERDATA DEPENDENCIES:
+  - TurretBuildingBinding::serialise / _NV_serialise: PosRotPair* (unbound pointer)
 */
 
 int TurretBuildingBinding::gc(lua_State* L)
@@ -541,6 +568,10 @@ void TurretBuildingBinding::registerBinding(lua_State* L)
         { "_teleport", TurretBuildingBinding::_teleport },
         { "clearTownBuildingsManagerPtr", TurretBuildingBinding::clearTownBuildingsManagerPtr },
         { "_NV_clearTownBuildingsManagerPtr", TurretBuildingBinding::_NV_clearTownBuildingsManagerPtr },
+        { "getMountedBuilding", TurretBuildingBinding::getMountedBuilding },
+        { "_NV_getMountedBuilding", TurretBuildingBinding::_NV_getMountedBuilding },
+        { "serialise", TurretBuildingBinding::serialise },
+        { "_NV_serialise", TurretBuildingBinding::_NV_serialise },
         { 0, 0 }
     };
 

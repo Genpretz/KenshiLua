@@ -53,7 +53,7 @@ int CombatClass_AttackSlotManager_SlotDataBinding::_CONSTRUCTOR(lua_State* L)
     ::new ((void*)obj) CombatClass::AttackSlotManager::SlotData();
     if (lua_gettop(L) >= 2)
         obj->time = (float)luaL_checknumber(L, 2);
-    return pushObject<CombatClass::AttackSlotManager::SlotData>(L, obj, getMetatableName());
+    return pushObjectOwned<CombatClass::AttackSlotManager::SlotData>(L, obj, getMetatableName());
 }
 
 int CombatClass_AttackSlotManager_SlotDataBinding::_DESTRUCTOR(lua_State* L)

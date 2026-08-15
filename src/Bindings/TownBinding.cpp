@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "kenshi\Town.h"
+#include <kenshi/GameSaveState.h>
 #include "TownBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
@@ -1364,11 +1365,31 @@ int TownBinding::getPlayerTownTypeEnum(lua_State* L)
     return 1;
 }
 
+int TownBinding::serialise(lua_State* L)
+{
+    Town* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Town is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int TownBinding::_NV_serialise(lua_State* L)
+{
+    Town* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Town is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->_NV_serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
   line 367: void chooseResidents(...) - unsupported arg type
-  line 390: GameSaveState serialise(...) - unsupported arg type
-  line 391: GameSaveState _NV_serialise(...) - unsupported arg type
   line 453: TagsClass<BuildingDesignation> facilitesWeHaveHere(...) - unsupported return type
   line 455: bool powerBuilding(...) - non-string reference arg
   line 456: bool drainBattery(...) - non-string reference arg
@@ -1382,6 +1403,7 @@ LIGHTUSERDATA DEPENDENCIES:
   - TownBinding::_NV_getAlarmMgr: AlarmManager* (unbound pointer)
   - TownBinding::isNest: Nest* (unbound pointer)
   - TownBinding::_NV_isNest: Nest* (unbound pointer)
+  - TownBinding::serialise / _NV_serialise: PosRotPair* (unbound pointer)
 */
 
 /*
@@ -1731,6 +1753,8 @@ void TownBinding::registerBinding(lua_State* L)
         { "setHandle", TownBinding::setHandle },
         { "_NV_setHandle", TownBinding::_NV_setHandle },
         { "getPlayerTownTypeEnum", TownBinding::getPlayerTownTypeEnum },
+        { "serialise", TownBinding::serialise },
+        { "_NV_serialise", TownBinding::_NV_serialise },
         { 0, 0 }
     };
 

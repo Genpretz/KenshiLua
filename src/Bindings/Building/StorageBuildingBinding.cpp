@@ -3,7 +3,9 @@
 #include "StorageBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
+#include "ConsumptionItemBinding.h"
 #include "Bindings/Building/UseableStuffBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -34,16 +36,14 @@ static int StorageBuilding_get_productionItem(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    lua_pushlightuserdata(L, (void*)instance->productionItem);
-    return 1;
+    return pushObject<StorageBuilding::ConsumptionItem>(L, instance->productionItem, ConsumptionItemBinding::getMetatableName());
 }
 
 static int StorageBuilding_get_manyLimitItems(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    // TODO: Unsupported type for manyLimitItems (lektor<StorageBuilding::ConsumptionItem*>)
-    return luaL_error(L, "Unsupported property 'manyLimitItems' (type: lektor<StorageBuilding::ConsumptionItem*>)");
+    return pushObject<lektor<StorageBuilding::ConsumptionItem*>>(L, &instance->manyLimitItems, LektorPtrBinding<StorageBuilding::ConsumptionItem*>::metaName);
 }
 
 // --- Setters for StorageBuilding ---
@@ -67,14 +67,18 @@ static int StorageBuilding_set_productionItem(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for productionItem");
+    instance->productionItem = lua_isnoneornil(L, 2) ? nullptr : checkObject<StorageBuilding::ConsumptionItem>(L, 2, ConsumptionItemBinding::getMetatableName());
+    return 0;
 }
 
 static int StorageBuilding_set_manyLimitItems(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for manyLimitItems");
+    auto* val = LektorPtrBinding<StorageBuilding::ConsumptionItem*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'manyLimitItems' must be lektor<StorageBuilding::ConsumptionItem*>");
+    instance->manyLimitItems = *val;
+    return 0;
 }
 
 int StorageBuildingBinding::_DESTRUCTOR(lua_State* L)
@@ -462,6 +466,8 @@ void StorageBuildingBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, StorageBuildingBinding::getMetatableName(), UseableStuffBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorPtrBinding<StorageBuilding::ConsumptionItem*>::registerBinding(L, "lektor<StorageBuilding::ConsumptionItem*>", ConsumptionItemBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

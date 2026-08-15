@@ -827,7 +827,7 @@ namespace KenshiLua
     // Enums.h
     // ------------------------------------------
 
-    void registersItemType(lua_State* L)
+    void registerItemType(lua_State* L)
     {
         lua_newtable(L);
 
@@ -3562,6 +3562,6 @@ namespace KenshiLua
         registerZoneActivationType(L);
         registerZoneManagerResult(L);
         registerZoneMessage(L);
-        registersItemType(L);
+        registerItemType(L);
     }
 } // namespace KenshiLua

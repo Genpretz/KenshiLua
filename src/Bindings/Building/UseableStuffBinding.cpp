@@ -1,11 +1,16 @@
 #include "pch.h"
 #include <kenshi/Building/UseableStuff.h>
-#include "UseableStuffBinding.h"
+#include <kenshi/GameSaveState.h>
+#include "Bindings/Building/UseableStuffBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/Gui/InventoryLayoutBinding.h"
 #include "Bindings/InventoryBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/StdSetBinding.h"
 
 namespace KenshiLua
 {
@@ -50,8 +55,7 @@ static int UseableStuff_get_occupantSelection(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    lua_pushboolean(L, instance->occupantSelection ? 1 : 0);
-    return 1;
+    return HandBinding::push(L, instance->occupantSelection);
 }
 
 static int UseableStuff_get_needsOperating(lua_State* L)
@@ -66,7 +70,7 @@ static int UseableStuff_get_numOperatorsMax(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    lua_pushinteger(L, instance->numOperatorsMax);
+    lua_pushinteger(L, (lua_Integer)instance->numOperatorsMax);
     return 1;
 }
 
@@ -146,8 +150,10 @@ static int UseableStuff_get_currentOperators(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    // TODO: Unsupported type for currentOperators (std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)
-    return luaL_error(L, "Unsupported property 'currentOperators' (type: std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy > >)");
+    return pushObject<StdSetBinding<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>::SetType>(
+        L, &instance->currentOperators,
+        StdSetBinding<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>::metaName
+    );
 }
 
 static int UseableStuff_get_usesStat(lua_State* L)
@@ -356,7 +362,10 @@ static int UseableStuff_set_currentOperators(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for currentOperators");
+    auto* val = StdSetBinding<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'currentOperators' must be std::set<hand>");
+    instance->currentOperators = *val;
+    return 0;
 }
 
 static int UseableStuff_set_usesStat(lua_State* L)
@@ -371,28 +380,32 @@ static int UseableStuff_set_functionalityData(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for functionalityData");
+    instance->functionalityData = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int UseableStuff_set_animation(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for animation");
+    instance->animation = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int UseableStuff_set_animationKO(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for animationKO");
+    instance->animationKO = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int UseableStuff_set_animationDazed(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for animationDazed");
+    instance->animationDazed = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
 }
 
 static int UseableStuff_set_maxUseRange(lua_State* L)
@@ -465,8 +478,7 @@ int UseableStuffBinding::createInventoryLayout(lua_State* L)
     if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     InventoryLayout* result = instance->createInventoryLayout();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
 }
 
 int UseableStuffBinding::_NV_createInventoryLayout(lua_State* L)
@@ -475,8 +487,7 @@ int UseableStuffBinding::_NV_createInventoryLayout(lua_State* L)
     if (!instance) return luaL_error(L, "UseableStuff is nil");
 
     InventoryLayout* result = instance->_NV_createInventoryLayout();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
 }
 
 int UseableStuffBinding::takeMoney(lua_State* L)
@@ -1216,7 +1227,6 @@ Skipped methods needing manual binding:
   line 84: HitMaterialType _NV_hitByMeleeAttack(...) - unsupported arg type
   line 95: const std::string& getAnimation(...) - reference return type
   line 96: const std::string& getAnimationKO(...) - reference return type
-  line 97: const std::string& getAnimationDazed(...) - reference return type
   line 102: bool isFreeSlot(...) - unsupported arg type
   line 103: bool _NV_isFreeSlot(...) - unsupported arg type
   line 104: bool tryOperate(...) - unsupported arg type
@@ -1224,12 +1234,72 @@ Skipped methods needing manual binding:
   line 106: bool couldIOperate(...) - unsupported arg type
   line 107: bool _NV_couldIOperate(...) - unsupported arg type
   line 108: void stopOperating(...) - unsupported arg type
-  line 109: const hand& getOccupant(...) - reference return type
-  line 110: void occupantHandleChangedEvent(...) - unsupported arg type
-  line 115: void togglePowerButton(...) - unsupported arg type
-  line 116: void _NV_togglePowerButton(...) - unsupported arg type
-  line 117: void toggleBattButton(...) - unsupported arg type
-  line 118: void _NV_toggleBattButton(...) - unsupported arg type
+*/
+
+int UseableStuffBinding::getOccupant(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    const hand& result = instance->getOccupant();
+    return HandBinding::push(L, result);
+}
+
+int UseableStuffBinding::getAnimation(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    const std::string& result = instance->getAnimation();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+int UseableStuffBinding::getAnimationKO(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    const std::string& result = instance->getAnimationKO();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+int UseableStuffBinding::getAnimationDazed(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    const std::string& result = instance->getAnimationDazed();
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
+int UseableStuffBinding::serialise(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int UseableStuffBinding::_NV_serialise(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+    GameSaveState result = instance->_NV_serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - UseableStuffBinding::serialise / _NV_serialise: PosRotPair* (unbound pointer)
 */
 
 int UseableStuffBinding::gc(lua_State* L)
@@ -1329,6 +1399,12 @@ void UseableStuffBinding::registerBinding(lua_State* L)
         { "_NV_getOutputBasedRotationSpeedMult", UseableStuffBinding::_NV_getOutputBasedRotationSpeedMult },
         { "getGUIPowerEfficiencyToolTipString", UseableStuffBinding::getGUIPowerEfficiencyToolTipString },
         { "_NV_getGUIPowerEfficiencyToolTipString", UseableStuffBinding::_NV_getGUIPowerEfficiencyToolTipString },
+        { "getOccupant", UseableStuffBinding::getOccupant },
+        { "getAnimation", UseableStuffBinding::getAnimation },
+        { "getAnimationKO", UseableStuffBinding::getAnimationKO },
+        { "getAnimationDazed", UseableStuffBinding::getAnimationDazed },
+        { "serialise", UseableStuffBinding::serialise },
+        { "_NV_serialise", UseableStuffBinding::_NV_serialise },
         { 0, 0 }
     };
 
@@ -1457,6 +1533,12 @@ void UseableStuffBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, UseableStuffBinding::getMetatableName(), BuildingBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    StdSetBinding<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>::registerBinding(
+        L, 
+        "std::set<hand>", 
+        HandBinding::getMetatableName()
+    );
 }
 
 } // namespace KenshiLua

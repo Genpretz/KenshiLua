@@ -19,6 +19,7 @@
 #include "Bindings/TradeCultureBinding.h"
 #include "Bindings/FitnessSelectorBinding.h"
 #include "Bindings/BuildingSwapsBinding.h"
+#include "Bindings/Faction_CharacteristicsDataBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
@@ -42,8 +43,7 @@ static int Faction_get_characteristicsData(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    lua_pushlightuserdata(L, &instance->characteristicsData);
-    return 1;
+    return pushObject<Faction::CharacteristicsData>(L, &instance->characteristicsData, Faction_CharacteristicsDataBinding::getMetatableName());
 }
 
 static int Faction_get_fundamentalNPCType(lua_State* L)
@@ -283,8 +283,9 @@ static int Faction_set_characteristicsData(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    Faction::CharacteristicsData* val = (Faction::CharacteristicsData*)lua_touserdata(L, 2);
-    if (val) instance->characteristicsData = *val;
+    Faction::CharacteristicsData* val = checkObject<Faction::CharacteristicsData>(L, 2, Faction_CharacteristicsDataBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Faction::set_characteristicsData: expected Faction_CharacteristicsData for argument 2");
+    instance->characteristicsData = *val;
     return 0;
 }
 

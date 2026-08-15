@@ -6,6 +6,8 @@
 #include "Bindings/FactoryCallbackInterfaceBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/TownBaseBinding.h"
+#include "Bindings/TownBuildingsManager_BuildingInfoBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
@@ -198,8 +200,10 @@ static int TownBuildingsManager_get_buildingEntities(lua_State* L)
 {
     TownBuildingsManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBuildingsManager is nil");
-    // TODO: Unsupported type for buildingEntities (ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>::type)
-    return luaL_error(L, "Unsupported property 'buildingEntities' (type: ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>::type)");
+    return pushObject<OgreUnorderedMapBinding<Building*, TownBuildingsManager::BuildingInfo>::MapType>(
+        L, &instance->buildingEntities,
+        OgreUnorderedMapBinding<Building*, TownBuildingsManager::BuildingInfo>::metaName
+    );
 }
 
 
@@ -225,7 +229,10 @@ static int TownBuildingsManager_set_buildingEntities(lua_State* L)
 {
     TownBuildingsManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBuildingsManager is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for buildingEntities");
+    auto* val = OgreUnorderedMapBinding<Building*, TownBuildingsManager::BuildingInfo>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set 'buildingEntities' must be ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>");
+    instance->buildingEntities = *val;
+    return 0;
 }
 
 
@@ -297,6 +304,13 @@ void TownBuildingsManagerBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, TownBuildingsManagerBinding::getMetatableName(), FactoryCallbackInterfaceBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    OgreUnorderedMapBinding<Building*, TownBuildingsManager::BuildingInfo>::registerBinding(
+        L, 
+        "ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>", 
+        BuildingBinding::getMetatableName(), 
+        TownBuildingsManager_BuildingInfoBinding::getMetatableName()
+    );
 }
 
 } // namespace KenshiLua

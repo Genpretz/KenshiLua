@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\physicsactual.h"
 #include "PhysicsActualBinding.h"
+#include "Bindings/TriggerCallbackBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -48,8 +49,7 @@ static int PhysicsActual_get_myTriggerCallback(lua_State* L)
 {
     PhysicsActual* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PhysicsActual is nil");
-    lua_pushlightuserdata(L, &instance->myTriggerCallback);
-    return 1;
+    return pushObject<PhysicsActual::TriggerCallback>(L, &instance->myTriggerCallback, TriggerCallbackBinding::getMetatableName());
 }
 
 static int PhysicsActual_get_HW(lua_State* L)
@@ -97,8 +97,9 @@ static int PhysicsActual_set_myTriggerCallback(lua_State* L)
 {
     PhysicsActual* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PhysicsActual is nil");
-    PhysicsActual::TriggerCallback* val = (PhysicsActual::TriggerCallback*)lua_touserdata(L, 2);
-    if (val) instance->myTriggerCallback = *val;
+    PhysicsActual::TriggerCallback* val = checkObject<PhysicsActual::TriggerCallback>(L, 2, TriggerCallbackBinding::getMetatableName());
+    if (!val) return luaL_error(L, "PhysicsActual::set_myTriggerCallback: expected TriggerCallback for argument 2");
+    instance->myTriggerCallback = *val;
     return 0;
 }
 
