@@ -130,6 +130,28 @@ int luaKenshiError(lua_State* L)
 }
 
 // ---------------------------------------------------------------------------
+// print() override
+// ---------------------------------------------------------------------------
+
+int luaKenshiPrint(lua_State* L)
+{
+    int n = lua_gettop(L);
+    std::string msg;
+    for (int i = 1; i <= n; i++) {
+        if (i > 1) msg += "\t";
+        size_t len = 0;
+        const char* s = luaL_tolstring(L, i, &len);
+        if (s) {
+            msg.append(s, len);
+        }
+        lua_pop(L, 1);
+    }
+    msg += "\n";
+    GuiManager::get().appendOutput(msg);
+    return 0;
+}
+
+// ---------------------------------------------------------------------------
 // LuaJIT Profiler Helpers
 // ---------------------------------------------------------------------------
 
@@ -281,6 +303,12 @@ void installKenshiLuaTable(lua_State* L)
     lua_setfield(L, -2, "profileDump");
 
     lua_setglobal(L, "KenshiLua");
+
+    // Override Lua's built-in print() to route output through the logger and GUI console/editor.
+    // Note: print is not part of the KenshiLua table and does not require calling KenshiLua.print().
+    // Should probably be moved elsewhere at some point, but this is not urgent.
+    lua_pushcfunction(L, luaKenshiPrint);
+    lua_setglobal(L, "print");
 }
 
 } // namespace KenshiLua

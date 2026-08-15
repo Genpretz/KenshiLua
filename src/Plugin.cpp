@@ -50,9 +50,6 @@ bool Plugin::initialize(void* hModule)
 
     Config::get().load(m_dllModule);
     logToFilef("Config loaded");
-    // logToFilef("Config loaded: enable_benchmark=%s, debug_logging=%s",
-    //     Config::get().isBenchmarkEnabled() ? "true" : "false",
-    //     Config::get().isDebugLoggingEnabled() ? "true" : "false");
 
     g_luaState = new LuaState();
     if (!g_luaState->initialize()) {
@@ -121,6 +118,7 @@ void Plugin::start()
     {
         GuiManager::get().requestInitialize(g_luaState);
     }
+
 
     // Discover *.lua files under each active mod's ./scripts/init/ folder and execute.
     ScriptLoader::get().loadAll(g_luaState->getState());

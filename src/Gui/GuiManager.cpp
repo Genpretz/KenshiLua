@@ -246,24 +246,6 @@ namespace KenshiLua
 
 	static GuiManager* s_instance = 0;
 
-	static int lua_customPrint(lua_State* L)
-	{
-		int n = lua_gettop(L);
-		std::string msg;
-		for (int i = 1; i <= n; i++) {
-			if (i > 1) msg += "\t";
-			size_t len = 0;
-			const char* s = luaL_tolstring(L, i, &len);
-			if (s) {
-				msg.append(s, len);
-			}
-			lua_pop(L, 1);
-		}
-		msg += "\n";
-		GuiManager::get().appendOutput(msg);
-		return 0;
-	}
-
 	GuiManager& GuiManager::get()
 	{
 		static GuiManager inst;
@@ -315,12 +297,6 @@ namespace KenshiLua
 	void GuiManager::updateLuaState(LuaState* luaState)
 	{
 		m_luaState = luaState;
-		if (m_luaState)
-		{
-			lua_State* L = m_luaState->getState();
-			lua_pushcfunction(L, lua_customPrint);
-			lua_setglobal(L, "print");
-		}
 	}
 
 	void GuiManager::initFrameHandler(float)
@@ -340,13 +316,6 @@ namespace KenshiLua
 			MyGUI::newDelegate(this, &GuiManager::initFrameHandler);
 
 		m_luaState = m_pendingLuaState;
-
-		if (m_luaState)
-		{
-			lua_State* L = m_luaState->getState();
-			lua_pushcfunction(L, lua_customPrint);
-			lua_setglobal(L, "print");
-		}
 
 		MyGUI::ResourceManager* res = MyGUI::ResourceManager::getInstancePtr();
 		if (!res->load("Kenshi_ScriptEditor_EditBox.xml"))
