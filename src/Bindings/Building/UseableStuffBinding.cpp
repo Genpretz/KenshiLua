@@ -445,15 +445,6 @@ static int UseableStuff_set_doorLock(lua_State* L)
     return luaL_error(L, "Read-only or unsupported setter type for doorLock");
 }
 
-int UseableStuffBinding::_DESTRUCTOR(lua_State* L)
-{
-    UseableStuff* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "UseableStuff is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int UseableStuffBinding::getUseableStuff(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
@@ -1196,7 +1187,6 @@ int UseableStuffBinding::_NV_getGUIPowerEfficiencyToolTipString(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 30: UseableStuff* _CONSTRUCTOR(...) - unsupported arg type
   line 39: void equipItem(...) - unsupported arg type
   line 40: void _NV_equipItem(...) - unsupported arg type
   line 41: void unequipItem(...) - unsupported arg type
@@ -1323,7 +1313,6 @@ void UseableStuffBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", UseableStuffBinding::_DESTRUCTOR },
         { "getUseableStuff", UseableStuffBinding::getUseableStuff },
         { "_NV_getUseableStuff", UseableStuffBinding::_NV_getUseableStuff },
         { "createInventoryLayout", UseableStuffBinding::createInventoryLayout },

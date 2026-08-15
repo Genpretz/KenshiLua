@@ -187,19 +187,9 @@ int PortraitDataBinding::getFrontOverlayImageName(lua_State* L)
     return 1;
 }
 
-int PortraitDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    PortraitData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PortraitData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 30: const hand& getHandle(...) - reference return type
-  line 49: PortraitData* _CONSTRUCTOR(...) - non-string reference arg
 */
 
 int PortraitDataBinding::gc(lua_State* L)
@@ -231,7 +221,6 @@ void PortraitDataBinding::registerBinding(lua_State* L)
         { "getBackgroundImageName", PortraitDataBinding::getBackgroundImageName },
         { "getBackOverlayImageName", PortraitDataBinding::getBackOverlayImageName },
         { "getFrontOverlayImageName", PortraitDataBinding::getFrontOverlayImageName },
-        { "_DESTRUCTOR", PortraitDataBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

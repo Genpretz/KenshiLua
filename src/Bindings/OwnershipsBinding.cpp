@@ -114,17 +114,6 @@ static int Ownerships_set_money(lua_State* L)
     return 0;
 }
 
-int OwnershipsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Ownerships* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Ownerships is nil");
-
-    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    Platoon* p = checkObject<Platoon>(L, 3, PlatoonBinding::getMetatableName());
-    Ownerships* result = instance->_CONSTRUCTOR(f, p);
-    return pushObject<Ownerships>(L, result, OwnershipsBinding::getMetatableName());
-}
-
 int OwnershipsBinding::setHandle(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
@@ -398,16 +387,6 @@ int OwnershipsBinding::getBuildingsWithFunction(lua_State* L)
     return 0;
 }
 
-int OwnershipsBinding::_DESTRUCTOR(lua_State* L)
-{
-    Ownerships* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Ownerships is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-
 int OwnershipsBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -472,7 +451,6 @@ void OwnershipsBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", OwnershipsBinding::_CONSTRUCTOR },
         { "setHandle", OwnershipsBinding::setHandle },
         { "takeMoney", OwnershipsBinding::takeMoney },
         { "_NV_takeMoney", OwnershipsBinding::_NV_takeMoney },
@@ -499,7 +477,6 @@ void OwnershipsBinding::registerBinding(lua_State* L)
         { "getHomeFurnitureOfType", OwnershipsBinding::getHomeFurnitureOfType },
         { "getOwnedPtrs", OwnershipsBinding::getOwnedPtrs },
         { "getBuildingsWithFunction", OwnershipsBinding::getBuildingsWithFunction },
-        { "_DESTRUCTOR", OwnershipsBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

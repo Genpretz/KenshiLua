@@ -156,39 +156,6 @@ static int S_set__33(lua_State* L)
     return 0;
 }
 
-int Nx9Real_SBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (Nx9Real::S*)::operator new(sizeof(Nx9Real::S));
-    ::new ((void*)obj) Nx9Real::S();
-    if (lua_gettop(L) >= 1)
-        obj->_11 = (float)luaL_checknumber(L, 1);
-    if (lua_gettop(L) >= 2)
-        obj->_12 = (float)luaL_checknumber(L, 2);
-    if (lua_gettop(L) >= 3)
-        obj->_13 = (float)luaL_checknumber(L, 3);
-    if (lua_gettop(L) >= 4)
-        obj->_21 = (float)luaL_checknumber(L, 4);
-    if (lua_gettop(L) >= 5)
-        obj->_22 = (float)luaL_checknumber(L, 5);
-    if (lua_gettop(L) >= 6)
-        obj->_23 = (float)luaL_checknumber(L, 6);
-    if (lua_gettop(L) >= 7)
-        obj->_31 = (float)luaL_checknumber(L, 7);
-    if (lua_gettop(L) >= 8)
-        obj->_32 = (float)luaL_checknumber(L, 8);
-    if (lua_gettop(L) >= 9)
-        obj->_33 = (float)luaL_checknumber(L, 9);
-    return pushObject<Nx9Real::S>(L, obj, getMetatableName());
-}
-
-int Nx9Real_SBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "Nx9Real::S is nil");
-    inst->~S();
-    return 0;
-}
-
 int Nx9Real_SBinding::gc(lua_State* L)
 {
     return 0;
@@ -217,8 +184,6 @@ void Nx9Real_SBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

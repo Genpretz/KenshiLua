@@ -77,15 +77,6 @@ static int Bounty_set_bountyAssignmentStartedTime(lua_State* L)
     return 0;
 }
 
-int BountyBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Bounty* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Bounty is nil");
-
-    Bounty* result = instance->_CONSTRUCTOR();
-    return pushObject<Bounty>(L, result, BountyBinding::getMetatableName());
-}
-
 int BountyBinding::addCrime(lua_State* L)
 {
     Bounty* instance = getInstance(L, 1);
@@ -127,7 +118,6 @@ void BountyBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", BountyBinding::_CONSTRUCTOR },
         { "addCrime", BountyBinding::addCrime },
         { "hasCrime", BountyBinding::hasCrime },
         { 0, 0 }

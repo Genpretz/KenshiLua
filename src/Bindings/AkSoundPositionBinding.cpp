@@ -45,21 +45,6 @@ static int AkSoundPosition_set_Orientation(lua_State* L)
     return 0;
 }
 
-int AkSoundPositionBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (AkSoundPosition*)::operator new(sizeof(AkSoundPosition));
-    ::new ((void*)obj) AkSoundPosition();
-    return pushObject<AkSoundPosition>(L, obj, getMetatableName());
-}
-
-int AkSoundPositionBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "AkSoundPosition is nil");
-    inst->~AkSoundPosition();
-    return 0;
-}
-
 int AkSoundPositionBinding::gc(lua_State* L)
 {
     return 0;
@@ -88,8 +73,6 @@ void AkSoundPositionBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

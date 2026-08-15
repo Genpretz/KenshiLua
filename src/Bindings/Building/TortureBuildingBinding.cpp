@@ -68,19 +68,6 @@ int TortureBuildingBinding::_NV_update(lua_State* L)
     return 0;
 }
 
-int TortureBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    TortureBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TortureBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 11: TortureBuilding* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int TortureBuildingBinding::gc(lua_State* L)
 {
@@ -107,7 +94,6 @@ void TortureBuildingBinding::registerBinding(lua_State* L)
         { "_NV_getFunctionStuff", TortureBuildingBinding::_NV_getFunctionStuff },
         { "update", TortureBuildingBinding::update },
         { "_NV_update", TortureBuildingBinding::_NV_update },
-        { "_DESTRUCTOR", TortureBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

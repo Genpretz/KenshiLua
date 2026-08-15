@@ -544,25 +544,6 @@ static int Faction_set_buildingSwaps(lua_State* L)
     return 0;
 }
 
-int FactionBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Faction* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Faction is nil");
-
-    const std::string _name = luaL_checkstring(L, 2);
-    Faction* result = instance->_CONSTRUCTOR(_name);
-    return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
-}
-
-int FactionBinding::_DESTRUCTOR(lua_State* L)
-{
-    Faction* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Faction is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FactionBinding::getProsperityMultiplier(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
@@ -1349,8 +1330,6 @@ void FactionBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FactionBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", FactionBinding::_DESTRUCTOR },
         { "getProsperityMultiplier", FactionBinding::getProsperityMultiplier },
         { "clearAndDestroy", FactionBinding::clearAndDestroy },
         { "setup", FactionBinding::setup },

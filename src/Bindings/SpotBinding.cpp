@@ -61,15 +61,6 @@ static int Spot_set_stillSeen(lua_State* L)
     return 0;
 }
 
-int SpotBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Spot* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Spot is nil");
-
-    Spot* result = instance->_CONSTRUCTOR();
-    return pushObject<Spot>(L, result, SpotBinding::getMetatableName());
-}
-
 int SpotBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -91,7 +82,6 @@ void SpotBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", SpotBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

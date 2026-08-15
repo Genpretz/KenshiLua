@@ -34,24 +34,6 @@ static int DialogChoiceList_set_conversationChoices(lua_State* L)
     return 0;
 }
 
-int DialogChoiceListBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DialogChoiceList* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogChoiceList is nil");
-
-    DialogChoiceList* result = instance->_CONSTRUCTOR();
-    return pushObject<DialogChoiceList>(L, result, DialogChoiceListBinding::getMetatableName());
-}
-
-int DialogChoiceListBinding::_DESTRUCTOR(lua_State* L)
-{
-    DialogChoiceList* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogChoiceList is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DialogChoiceListBinding::add(lua_State* L)
 {
     DialogChoiceList* instance = getInstance(L, 1);
@@ -84,8 +66,6 @@ void DialogChoiceListBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", DialogChoiceListBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", DialogChoiceListBinding::_DESTRUCTOR },
         { "add", DialogChoiceListBinding::add },
         { 0, 0 }
     };

@@ -788,15 +788,6 @@ static int CombatClass_set_stateMap(lua_State* L)
     return 0;
 }
 
-int CombatClassBinding::_DESTRUCTOR(lua_State* L)
-{
-    CombatClass* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CombatClass is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int CombatClassBinding::isAI(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
@@ -1656,28 +1647,11 @@ int CombatClassBinding::updateEffects(lua_State* L)
     return 0;
 }
 
-int CombatClassBinding::_CONSTRUCTOR(lua_State* L)
-{
-    CombatClass* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CombatClass is nil");
-
-    CharMovement* _movement = checkObject<CharMovement>(L, 2, CharMovementBinding::getMetatableName());
-    AI* _ai = (AI*)lua_touserdata(L, 3);
-    AnimationClass* _animation = (AnimationClass*)lua_touserdata(L, 4);
-    Character* _me = checkObject<Character>(L, 5, CharacterBinding::getMetatableName());
-    CharStats* _stats = checkObject<CharStats>(L, 6, CharStatsBinding::getMetatableName());
-    MedicalSystem* _medical = checkObject<MedicalSystem>(L, 7, MedicalSystemBinding::getMetatableName());
-
-    CombatClass* result = instance->_CONSTRUCTOR(_movement, _ai, _animation, _me, _stats, _medical);
-    return pushObject<CombatClass>(L, result, CombatClassBinding::getMetatableName());
-}
-
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - CombatClass_get_ai / CombatClass_set_ai: AI* (unbound pointer)
   - CombatClass_get_animation / CombatClass_set_animation: AnimationClass* (unbound pointer)
   - CombatClass::getStateClass: CombatState* (unbound pointer)
-  - CombatClassBinding::_CONSTRUCTOR: AI*, AnimationClass* (unbound pointers)
 */
 
 int CombatClassBinding::gc(lua_State* L)
@@ -1701,8 +1675,6 @@ void CombatClassBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", CombatClassBinding::_DESTRUCTOR },
-        { "_CONSTRUCTOR", CombatClassBinding::_CONSTRUCTOR },
         { "isAI", CombatClassBinding::isAI },
         { "_NV_isAI", CombatClassBinding::_NV_isAI },
         { "initCombatMode", CombatClassBinding::initCombatMode },

@@ -75,18 +75,8 @@ int InventoryIconBinding::getWidget(lua_State* L)
     return 1;
 }
 
-int InventoryIconBinding::_DESTRUCTOR(lua_State* L)
-{
-    InventoryIcon* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventoryIcon is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 23: InventoryIcon* _CONSTRUCTOR(...) - unsupported arg type
   line 24: void setPosition(...) - unsupported arg type
   line 25: MyGUI::types::TSize<int> getSize(...) - unsupported return type
   line 28: void createIconImage(...) - static method
@@ -125,7 +115,6 @@ void InventoryIconBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "update", InventoryIconBinding::update },
         { "getWidget", InventoryIconBinding::getWidget },
-        { "_DESTRUCTOR", InventoryIconBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

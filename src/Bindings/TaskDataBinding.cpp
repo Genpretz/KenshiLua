@@ -700,7 +700,6 @@ int TaskDataBinding::setDialogueDeliveryTag(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 227: TaskData* _CONSTRUCTOR(...) - unsupported arg type
   line 228: void addResult(...) - unsupported arg type
   line 229: void addRequirement(...) - unsupported arg type
   line 254: void setPermaJob(...) - unsupported arg type

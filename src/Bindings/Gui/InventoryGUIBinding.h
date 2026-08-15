@@ -38,8 +38,6 @@ public:
     static int _NV_getCallbackObject(lua_State* L);
     static int getSelectedItem(lua_State* L);
     static int stealingGUIInfoUpdate(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int pickupItemToMouse(lua_State* L);
     static int getMouseItem(lua_State* L);
     static int takeCertainAmountFrom(lua_State* L);

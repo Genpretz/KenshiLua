@@ -23,15 +23,6 @@ static int ResourceLoadRequestMesh_get_entity(lua_State* L)
 }
 
 // --- Setters for ResourceLoadRequestMesh ---
-int ResourceLoadRequestMeshBinding::_DESTRUCTOR(lua_State* L)
-{
-    ResourceLoadRequestMesh* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ResourceLoadRequestMesh is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ResourceLoadRequestMeshBinding::finish(lua_State* L)
 {
     ResourceLoadRequestMesh* instance = getInstance(L, 1);
@@ -44,7 +35,6 @@ int ResourceLoadRequestMeshBinding::finish(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 60: boost::function<void __cdecl(...) - unsupported return type
-  line 65: ResourceLoadRequestMesh* _CONSTRUCTOR(...) - unsupported arg type
 */
 
 /*
@@ -74,7 +64,6 @@ void ResourceLoadRequestMeshBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ResourceLoadRequestMeshBinding::_DESTRUCTOR },
         { "finish", ResourceLoadRequestMeshBinding::finish },
         { 0, 0 }
     };

@@ -14,27 +14,6 @@ static ProductionInventoryLayout* getInstance(lua_State* L, int idx)
 
 // --- Getters for ProductionInventoryLayout ---
 // --- Setters for ProductionInventoryLayout ---
-int ProductionInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ProductionInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ProductionInventoryLayout is nil");
-
-    std::string title = luaL_checkstring(L, 2);
-    int ins = (int)luaL_checkinteger(L, 3);
-    int outs = (int)luaL_checkinteger(L, 4);
-    ProductionInventoryLayout* result = instance->_CONSTRUCTOR(title, ins, outs);
-    return pushObject<ProductionInventoryLayout>(L, result, ProductionInventoryLayoutBinding::getMetatableName());
-}
-
-int ProductionInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    ProductionInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ProductionInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ProductionInventoryLayoutBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -56,8 +35,6 @@ void ProductionInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ProductionInventoryLayoutBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ProductionInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

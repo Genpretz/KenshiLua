@@ -167,15 +167,6 @@ int RelationDataBinding::load(lua_State* L)
     return 0;
 }
 
-int RelationDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    FactionRelations::RelationData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RelationData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int RelationDataBinding::gc(lua_State* L)
 {
     return 0;
@@ -198,7 +189,6 @@ void RelationDataBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "save", RelationDataBinding::save },
         { "load", RelationDataBinding::load },
-        { "_DESTRUCTOR", RelationDataBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

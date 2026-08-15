@@ -46,21 +46,6 @@ static int Edge_set_b(lua_State* L)
     return 0;
 }
 
-int EdgeCache_EdgeBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (EdgeCache::Edge*)::operator new(sizeof(EdgeCache::Edge));
-    ::new ((void*)obj) EdgeCache::Edge();
-    return pushObject<EdgeCache::Edge>(L, obj, getMetatableName());
-}
-
-int EdgeCache_EdgeBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "EdgeCache::Edge is nil");
-    inst->~Edge();
-    return 0;
-}
-
 int EdgeCache_EdgeBinding::gc(lua_State* L)
 {
     return 0;
@@ -89,8 +74,6 @@ void EdgeCache_EdgeBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -264,15 +264,6 @@ static int BuildModeWindow_set_statsDataPanel(lua_State* L)
     return 0;
 }
 
-int BuildModeWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    BuildModeWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int BuildModeWindowBinding::setMessage(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
@@ -388,7 +379,6 @@ int BuildModeWindowBinding::compareBuildMaterials(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 52: BuildModeWindow* _CONSTRUCTOR(...) - unsupported arg type
   line 62: void categorySelected(...) - unsupported arg type
   line 63: void buildingSelected(...) - unsupported arg type
   line 65: void confirm(...) - unsupported arg type
@@ -426,7 +416,6 @@ void BuildModeWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", BuildModeWindowBinding::_DESTRUCTOR },
         { "setMessage", BuildModeWindowBinding::setMessage },
         { "getBuildingListWidget", BuildModeWindowBinding::getBuildingListWidget },
         { "setVisible", BuildModeWindowBinding::setVisible },

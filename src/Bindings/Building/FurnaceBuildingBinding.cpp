@@ -98,15 +98,6 @@ int FurnaceBuildingBinding::_NV_getDefaultTask(lua_State* L)
     return 1;
 }
 
-int FurnaceBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    FurnaceBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FurnaceBuildingBinding::updateInputs(lua_State* L)
 {
     FurnaceBuilding* instance = getInstance(L, 1);
@@ -160,7 +151,6 @@ Skipped methods needing manual binding:
   line 40: bool canHaveSomeOfThese(...) - unsupported arg type
   line 41: bool _NV_canHaveSomeOfThese(...) - unsupported arg type
   line 42: void incinerate(...) - unsupported arg type
-  line 45: FurnaceBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 48: void operate(...) - unsupported arg type
   line 49: void _NV_operate(...) - unsupported arg type
   line 54: bool limitInputsOutputRate(...) - non-string reference arg
@@ -196,7 +186,6 @@ void FurnaceBuildingBinding::registerBinding(lua_State* L)
         { "getInputValueTotal", FurnaceBuildingBinding::getInputValueTotal },
         { "getDefaultTask", FurnaceBuildingBinding::getDefaultTask },
         { "_NV_getDefaultTask", FurnaceBuildingBinding::_NV_getDefaultTask },
-        { "_DESTRUCTOR", FurnaceBuildingBinding::_DESTRUCTOR },
         { "updateInputs", FurnaceBuildingBinding::updateInputs },
         { "_NV_updateInputs", FurnaceBuildingBinding::_NV_updateInputs },
         { "updateOutput", FurnaceBuildingBinding::updateOutput },

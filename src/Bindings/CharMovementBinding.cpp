@@ -449,24 +449,6 @@ static int CharMovement_set_movementMode(lua_State* L)
     return 0;
 }
 
-int CharMovementBinding::_CONSTRUCTOR(lua_State* L)
-{
-    CharMovement* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharMovement is nil");
-
-    CharMovement* result = instance->_CONSTRUCTOR();
-    return pushObject<CharMovement>(L, result, CharMovementBinding::getMetatableName());
-}
-
-int CharMovementBinding::_DESTRUCTOR(lua_State* L)
-{
-    CharMovement* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharMovement is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int CharMovementBinding::_setPositionAndTeleport(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
@@ -1235,8 +1217,6 @@ void CharMovementBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", CharMovementBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", CharMovementBinding::_DESTRUCTOR },
         { "_setPositionAndTeleport", CharMovementBinding::_setPositionAndTeleport },
         { "_NV__setPositionAndTeleport", CharMovementBinding::_NV__setPositionAndTeleport },
         { "_setPositionDirectionAndTeleport", CharMovementBinding::_setPositionDirectionAndTeleport },

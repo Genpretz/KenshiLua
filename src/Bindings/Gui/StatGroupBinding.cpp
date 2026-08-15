@@ -47,21 +47,6 @@ static int StatGroup_set_name(lua_State* L)
     return 0;
 }
 
-int StatGroupBinding::_DESTRUCTOR(lua_State* L)
-{
-    StatGroup* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "StatGroup is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 51: StatGroup* _CONSTRUCTOR(...) - overloaded method
-  line 53: StatGroup* _CONSTRUCTOR(...) - overloaded method
-  line 55: StatGroup* _CONSTRUCTOR(...) - overloaded method
-*/
 
 int StatGroupBinding::gc(lua_State* L)
 {
@@ -84,7 +69,6 @@ void StatGroupBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", StatGroupBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

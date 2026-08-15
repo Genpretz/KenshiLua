@@ -1,7 +1,7 @@
 #include "pch.h"
 #include <ogre/OgreColourValue.h>
 #include "kenshi\util\UtilityT.h"
-#include "UtilityTBinding.h"
+#include "Bindings/Util/UtilityTBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/ZoneMapBinding.h"
@@ -28,16 +28,6 @@ static int UtilityT_get_marker(lua_State* L)
 }
 
 // --- Setters for UtilityT ---
-int UtilityTBinding::_CONSTRUCTOR(lua_State* L)
-{
-    UtilityT* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "UtilityT is nil");
-
-    UtilityT* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
 int UtilityTBinding::perlinNoise_2D(lua_State* L)
 {
     UtilityT* instance = getInstance(L, 1);
@@ -712,7 +702,6 @@ int UtilityTBinding::roundToNearest(lua_State* L)
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - UtilityT_get_marker: Ogre::Entity* (unbound pointer)
-  - UtilityTBinding::_CONSTRUCTOR: UtilityT* (unbound pointer)
 */
 
 /*
@@ -742,7 +731,6 @@ void UtilityTBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", UtilityTBinding::_CONSTRUCTOR },
         { "perlinNoise_2D", UtilityTBinding::perlinNoise_2D },
         { "getTerrainHeightFastWithNormal", UtilityTBinding::getTerrainHeightFastWithNormal },
         { "getTerrainSlopeFast", UtilityTBinding::getTerrainSlopeFast },

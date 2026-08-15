@@ -29,16 +29,6 @@ int BackThreadMessagesToMainTBinding::tostring(lua_State* L)
     return 1;
 }
 
-int BackThreadMessagesToMainTBinding::_CONSTRUCTOR(lua_State* L)
-{
-    return 0;
-}
-
-int BackThreadMessagesToMainTBinding::_DESTRUCTOR(lua_State* L)
-{
-    return 0;
-}
-
 int BackThreadMessagesToMainTBinding::flush(lua_State* L)
 {
     BackThreadMessagesToMainT* instance = getInstance(L, 1);
@@ -62,8 +52,6 @@ void BackThreadMessagesToMainTBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", BackThreadMessagesToMainTBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", BackThreadMessagesToMainTBinding::_DESTRUCTOR },
         { "flush", BackThreadMessagesToMainTBinding::flush },
         { "_NV_flush", BackThreadMessagesToMainTBinding::_NV_flush },
         { 0, 0 }

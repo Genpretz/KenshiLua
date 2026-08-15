@@ -18,11 +18,9 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _DESTRUCTOR(lua_State* L);
     static int clearAll(lua_State* L);
     static int updateStart(lua_State* L);
     static int addArrow(lua_State* L);
     static int updateEnd(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
 };
 }

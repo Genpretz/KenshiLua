@@ -30,7 +30,6 @@ public:
     static int stitchExterior(lua_State* L);
     static int revertSettings(lua_State* L);
     static int unlockTask(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int hasJob(lua_State* L);
     static int update(lua_State* L);
 };

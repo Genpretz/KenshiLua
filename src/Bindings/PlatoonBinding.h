@@ -18,8 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int setCharacterCount(lua_State* L);
     static int chooseNewHome(lua_State* L);
     static int isUnconcious(lua_State* L);

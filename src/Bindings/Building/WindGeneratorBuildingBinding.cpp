@@ -74,18 +74,8 @@ int WindGeneratorBuildingBinding::_NV_isAnyInputsEmpty(lua_State* L)
     return 1;
 }
 
-int WindGeneratorBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    WindGeneratorBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 32: WindGeneratorBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 35: void getGUIState(...) - unsupported arg type
   line 36: void _NV_getGUIState(...) - unsupported arg type
   line 37: void getGUIPower(...) - unsupported arg type
@@ -119,7 +109,6 @@ void WindGeneratorBuildingBinding::registerBinding(lua_State* L)
         { "_NV_getSoundIntensity", WindGeneratorBuildingBinding::_NV_getSoundIntensity },
         { "isAnyInputsEmpty", WindGeneratorBuildingBinding::isAnyInputsEmpty },
         { "_NV_isAnyInputsEmpty", WindGeneratorBuildingBinding::_NV_isAnyInputsEmpty },
-        { "_DESTRUCTOR", WindGeneratorBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -14,15 +14,6 @@ static ToolTipStatic* getInstance(lua_State* L, int idx)
 
 // --- Getters for ToolTipStatic ---
 // --- Setters for ToolTipStatic ---
-int ToolTipStaticBinding::_DESTRUCTOR(lua_State* L)
-{
-    ToolTipStatic* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ToolTipStatic is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ToolTipStaticBinding::update(lua_State* L)
 {
     ToolTipStatic* instance = getInstance(L, 1);
@@ -63,7 +54,6 @@ int ToolTipStaticBinding::_NV_setVisible(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 117: ToolTipStatic* _CONSTRUCTOR(...) - unsupported arg type
   line 122: void clear(...) - unsupported arg type
   line 123: void _NV_clear(...) - unsupported arg type
   line 124: void _setup(...) - unsupported arg type
@@ -94,7 +84,6 @@ void ToolTipStaticBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ToolTipStaticBinding::_DESTRUCTOR },
         { "update", ToolTipStaticBinding::update },
         { "_NV_update", ToolTipStaticBinding::_NV_update },
         { "setVisible", ToolTipStaticBinding::setVisible },

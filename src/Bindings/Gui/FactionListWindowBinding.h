@@ -20,6 +20,5 @@ public:
 
     static int itemSelected(lua_State* L);
     static int _NV_itemSelected(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

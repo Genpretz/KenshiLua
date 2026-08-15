@@ -478,30 +478,6 @@ static int Platoon_set_traderInventoryRefreshTime(lua_State* L)
     return 0;
 }
 
-int PlatoonBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Platoon* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Platoon is nil");
-
-    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    GameData* _squadTemplate = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
-    GameData* platoonState = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
-    Ogre::Vector3 p;
-    readVector3(L, 5, p);
-    bool _persistent = lua_toboolean(L, 6) != 0;
-    Platoon* result = instance->_CONSTRUCTOR(f, _squadTemplate, platoonState, p, _persistent);
-    return pushObject<Platoon>(L, result, PlatoonBinding::getMetatableName());
-}
-
-int PlatoonBinding::_DESTRUCTOR(lua_State* L)
-{
-    Platoon* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Platoon is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int PlatoonBinding::setCharacterCount(lua_State* L)
 {
     Platoon* instance = getInstance(L, 1);
@@ -1558,8 +1534,6 @@ void PlatoonBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", PlatoonBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", PlatoonBinding::_DESTRUCTOR },
         { "setCharacterCount", PlatoonBinding::setCharacterCount },
         { "chooseNewHome", PlatoonBinding::chooseNewHome },
         { "isUnconcious", PlatoonBinding::isUnconcious },

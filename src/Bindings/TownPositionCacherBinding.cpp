@@ -61,15 +61,6 @@ static int TownPositionCacher_set_pos(lua_State* L)
     return 0;
 }
 
-int TownPositionCacherBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TownPositionCacher* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TownPositionCacher is nil");
-
-    TownPositionCacher* result = instance->_CONSTRUCTOR();
-    return pushObject<TownPositionCacher>(L, result, TownPositionCacherBinding::getMetatableName());
-}
-
 int TownPositionCacherBinding::stampUpdate(lua_State* L)
 {
     TownPositionCacher* instance = getInstance(L, 1);
@@ -110,7 +101,6 @@ void TownPositionCacherBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TownPositionCacherBinding::_CONSTRUCTOR },
         { "stampUpdate", TownPositionCacherBinding::stampUpdate },
         { "needsUpdate", TownPositionCacherBinding::needsUpdate },
         { 0, 0 }

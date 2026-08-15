@@ -20,7 +20,6 @@ public:
 
     static int _recalculateIsIntact(lua_State* L);
     static int isAnyoneCaptured(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int getGroupSense(lua_State* L);
     static int getMemory(lua_State* L);
     static int removeObject(lua_State* L);
@@ -57,7 +56,6 @@ public:
     static int putTheSpecialCharactersInNewSquads_captured(lua_State* L);
     static int checkForCharactersBeingCarried(lua_State* L);
     static int restoreSquad(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
     static int unloadCheck(lua_State* L);
     static int setupCheck(lua_State* L);
     static int destroyCharacters(lua_State* L);

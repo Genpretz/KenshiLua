@@ -78,15 +78,6 @@ static int DataObjectContainer_set_selfType(lua_State* L)
     return 0;
 }
 
-int DataObjectContainerBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataObjectContainer* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataObjectContainer is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DataObjectContainerBinding::getType(lua_State* L)
 {
     DataObjectContainer* instance = getInstance(L, 1);
@@ -119,8 +110,6 @@ int DataObjectContainerBinding::destroyObjectDatas(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 155: DataObjectContainer* _CONSTRUCTOR(...) - overloaded method
-  line 157: DataObjectContainer* _CONSTRUCTOR(...) - overloaded method
   line 167: bool loadFromDisk(...) - unsupported arg type
   line 168: bool _NV_loadFromDisk(...) - unsupported arg type
 */
@@ -146,7 +135,6 @@ void DataObjectContainerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", DataObjectContainerBinding::_DESTRUCTOR },
         { "getType", DataObjectContainerBinding::getType },
         { "setupDataFile", DataObjectContainerBinding::setupDataFile },
         { "destroyObjectDatas", DataObjectContainerBinding::destroyObjectDatas },

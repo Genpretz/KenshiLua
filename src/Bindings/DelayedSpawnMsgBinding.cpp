@@ -95,11 +95,6 @@ static int DelayedSpawnMsg_set_insideBuilding(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 320: DelayedSpawnMsg* _CONSTRUCTOR(...) - overloaded method
-  line 322: DelayedSpawnMsg* _CONSTRUCTOR(...) - overloaded method
-*/
 
 int DelayedSpawnMsgBinding::gc(lua_State* L)
 {

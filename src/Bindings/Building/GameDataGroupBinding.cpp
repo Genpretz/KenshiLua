@@ -44,15 +44,6 @@ static int GameDataGroup_set_g2(lua_State* L)
     return 0;
 }
 
-int GameDataGroupBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameDataGroup* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameDataGroup is nil");
-
-    GameDataGroup* result = instance->_CONSTRUCTOR();
-    return pushObject<GameDataGroup>(L, result, GameDataGroupBinding::getMetatableName());
-}
-
 int GameDataGroupBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -74,7 +65,6 @@ void GameDataGroupBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GameDataGroupBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

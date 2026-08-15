@@ -59,24 +59,6 @@ int Inventory_HasRoomCacheBinding::remember(lua_State* L)
     return 0;
 }
 
-int Inventory_HasRoomCacheBinding::_CONSTRUCTOR(lua_State* L)
-{
-    HasRoomCache* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "HasRoomCache is nil");
-
-    HasRoomCache* result = instance->_CONSTRUCTOR();
-    return pushObject<HasRoomCache>(L, result, Inventory_HasRoomCacheBinding::getMetatableName());
-}
-
-int Inventory_HasRoomCacheBinding::_DESTRUCTOR(lua_State* L)
-{
-    HasRoomCache* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "HasRoomCache is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int Inventory_HasRoomCacheBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -120,8 +102,6 @@ void Inventory_HasRoomCacheBinding::registerBinding(lua_State* L)
         { "knowsAbout", Inventory_HasRoomCacheBinding::knowsAbout },
         { "hasRoomFor", Inventory_HasRoomCacheBinding::hasRoomFor },
         { "remember", Inventory_HasRoomCacheBinding::remember },
-        { "_CONSTRUCTOR", Inventory_HasRoomCacheBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", Inventory_HasRoomCacheBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

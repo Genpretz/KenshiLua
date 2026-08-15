@@ -24,8 +24,6 @@ public:
     static int _NV_clear(lua_State* L);
     static int isVisible(lua_State* L);
     static int _NV_isVisible(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int setup(lua_State* L);
     static int updateCurrentItem(lua_State* L);
 };

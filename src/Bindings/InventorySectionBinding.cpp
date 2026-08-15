@@ -260,32 +260,6 @@ static int InventorySection_set_enabled(lua_State* L)
     return 0;
 }
 
-int InventorySectionBinding::_CONSTRUCTOR(lua_State* L)
-{
-    InventorySection* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventorySection is nil");
-
-    const std::string _name = luaL_checkstring(L, 2);
-    int _w = (int)luaL_checkinteger(L, 3);
-    int _h = (int)luaL_checkinteger(L, 4);
-    AttachSlot slot = (AttachSlot)luaL_checkinteger(L, 5);
-    Inventory* inv = checkObject<Inventory>(L, 6, InventoryBinding::getMetatableName());
-    bool _containerSlot = lua_toboolean(L, 7) != 0;
-    bool _equipSlot = lua_toboolean(L, 8) != 0;
-    bool enabled = lua_toboolean(L, 9) != 0;
-    InventorySection* result = instance->_CONSTRUCTOR(_name, _w, _h, slot, inv, _containerSlot, _equipSlot, enabled);
-    return pushObject<InventorySection>(L, result, InventorySectionBinding::getMetatableName());
-}
-
-int InventorySectionBinding::_DESTRUCTOR(lua_State* L)
-{
-    InventorySection* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventorySection is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int InventorySectionBinding::hasRoomForItem(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
@@ -888,8 +862,6 @@ void InventorySectionBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", InventorySectionBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", InventorySectionBinding::_DESTRUCTOR },
         { "hasRoomForItem", InventorySectionBinding::hasRoomForItem },
         { "_NV_hasRoomForItem", InventorySectionBinding::_NV_hasRoomForItem },
         { "notifyModified", InventorySectionBinding::notifyModified },

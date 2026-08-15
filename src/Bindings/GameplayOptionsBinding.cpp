@@ -190,15 +190,6 @@ static int GameplayOptions_set_difficultHealing(lua_State* L)
     return 0;
 }
 
-int GameplayOptionsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameplayOptions* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameplayOptions is nil");
-
-    GameplayOptions* result = instance->_CONSTRUCTOR();
-    return pushObject<GameplayOptions>(L, result, GameplayOptionsBinding::getMetatableName());
-}
-
 int GameplayOptionsBinding::reset(lua_State* L)
 {
     GameplayOptions* instance = getInstance(L, 1);
@@ -259,7 +250,6 @@ void GameplayOptionsBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GameplayOptionsBinding::_CONSTRUCTOR },
         { "reset", GameplayOptionsBinding::reset },
         { "getStarvationTimeInHours", GameplayOptionsBinding::getStarvationTimeInHours },
         { "save", GameplayOptionsBinding::save },

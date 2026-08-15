@@ -62,8 +62,6 @@ static int VisibleObjectInfo_set_isEnemy(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 85: VisibleObjectInfo* _CONSTRUCTOR(...) - overloaded method
-  line 88: VisibleObjectInfo* _CONSTRUCTOR(...) - overloaded method
   line 93: VisibleObjectInfo& operator=(...) - operator
 */
 

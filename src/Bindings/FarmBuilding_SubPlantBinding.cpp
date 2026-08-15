@@ -91,21 +91,6 @@ static int SubPlant_set_index(lua_State* L)
     return 0;
 }
 
-int FarmBuilding_SubPlantBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (FarmBuilding::SubPlant*)::operator new(sizeof(FarmBuilding::SubPlant));
-    ::new ((void*)obj) FarmBuilding::SubPlant();
-    return pushObject<FarmBuilding::SubPlant>(L, obj, getMetatableName());
-}
-
-int FarmBuilding_SubPlantBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "FarmBuilding::SubPlant is nil");
-    inst->~SubPlant();
-    return 0;
-}
-
 int FarmBuilding_SubPlantBinding::gc(lua_State* L)
 {
     return 0;
@@ -134,8 +119,6 @@ void FarmBuilding_SubPlantBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

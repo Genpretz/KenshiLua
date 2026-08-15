@@ -63,19 +63,6 @@ int DataPanelLine_TextBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_TextBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Text* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Text is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 203: DataPanelLine_Text* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 /*
 Skipped properties needing manual binding:
@@ -105,7 +92,6 @@ void DataPanelLine_TextBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "createMe", DataPanelLine_TextBinding::createMe },
         { "_NV_createMe", DataPanelLine_TextBinding::_NV_createMe },
-        { "_DESTRUCTOR", DataPanelLine_TextBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

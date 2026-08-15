@@ -30,25 +30,6 @@ static int SquadData_set_platoon(lua_State* L)
     return 0;
 }
 
-int SquadDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    SquadData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SquadData is nil");
-
-    ActivePlatoon* platoon = checkObject<ActivePlatoon>(L, 2, ActivePlatoonBinding::getMetatableName());
-    SquadData* result = instance->_CONSTRUCTOR(platoon);
-    return pushObject<SquadData>(L, result, SquadDataBinding::getMetatableName());
-}
-
-int SquadDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    SquadData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SquadData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int SquadDataBinding::setName(lua_State* L)
 {
     SquadData* instance = getInstance(L, 1);
@@ -85,8 +66,6 @@ void SquadDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", SquadDataBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", SquadDataBinding::_DESTRUCTOR },
         { "setName", SquadDataBinding::setName },
         { 0, 0 }
     };

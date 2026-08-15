@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int collisionUpdate(lua_State* L);
     static int chasingModeCheck(lua_State* L);
     static int create(lua_State* L);
@@ -33,6 +32,5 @@ public:
     static int setForcedWP(lua_State* L);
     static int getGUIData(lua_State* L);
     static int disable(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

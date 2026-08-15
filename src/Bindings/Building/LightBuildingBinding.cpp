@@ -117,18 +117,8 @@ int LightBuildingBinding::_NV_getPositionMarker(lua_State* L)
     return 1;
 }
 
-int LightBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    LightBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "LightBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 11: LightBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 12: GameSaveState serialise(...) - unsupported return type
   line 13: GameSaveState _NV_serialise(...) - unsupported return type
   line 14: void loadFromSerialise(...) - unsupported arg type
@@ -167,7 +157,6 @@ void LightBuildingBinding::registerBinding(lua_State* L)
         { "_NV_needPowerRightNow", LightBuildingBinding::_NV_needPowerRightNow },
         { "getPositionMarker", LightBuildingBinding::getPositionMarker },
         { "_NV_getPositionMarker", LightBuildingBinding::_NV_getPositionMarker },
-        { "_DESTRUCTOR", LightBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

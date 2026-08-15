@@ -26,6 +26,5 @@ public:
     static int getBackgroundImageName(lua_State* L);
     static int getBackOverlayImageName(lua_State* L);
     static int getFrontOverlayImageName(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

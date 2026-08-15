@@ -97,23 +97,6 @@ static int EffectData_set_rot(lua_State* L)
     return 0;
 }
 
-int CombatClass_EffectDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (CombatClass::EffectData*)::operator new(sizeof(CombatClass::EffectData));
-    ::new ((void*)obj) CombatClass::EffectData();
-    if (lua_gettop(L) >= 4)
-        readVector3(L, 4, obj->pos);
-    return pushObjectOwned<CombatClass::EffectData>(L, obj, getMetatableName());
-}
-
-int CombatClass_EffectDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "CombatClass::EffectData is nil");
-    inst->~EffectData();
-    return 0;
-}
-
 int CombatClass_EffectDataBinding::gc(lua_State* L)
 {
     return 0;
@@ -142,8 +125,6 @@ void CombatClass_EffectDataBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

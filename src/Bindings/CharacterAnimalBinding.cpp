@@ -683,28 +683,6 @@ int CharacterAnimalBinding::eatItemInMouth(lua_State* L)
     return 0;
 }
 
-int CharacterAnimalBinding::_CONSTRUCTOR(lua_State* L)
-{
-    CharacterAnimal* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharacterAnimal is nil");
-
-    GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    Faction* f = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
-    float _age = (float)luaL_checknumber(L, 5);
-    CharacterAnimal* result = instance->_CONSTRUCTOR(d, f, _handle, _age);
-    return pushObject<CharacterAnimal>(L, result, CharacterAnimalBinding::getMetatableName());
-}
-
-int CharacterAnimalBinding::_DESTRUCTOR(lua_State* L)
-{
-    CharacterAnimal* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharacterAnimal is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int CharacterAnimalBinding::init(lua_State* L)
 {
     CharacterAnimal* instance = getInstance(L, 1);
@@ -810,8 +788,6 @@ void CharacterAnimalBinding::registerBinding(lua_State* L)
         { "dropItemInMouth", CharacterAnimalBinding::dropItemInMouth },
         { "getItemInMouth", CharacterAnimalBinding::getItemInMouth },
         { "eatItemInMouth", CharacterAnimalBinding::eatItemInMouth },
-        { "_CONSTRUCTOR", CharacterAnimalBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", CharacterAnimalBinding::_DESTRUCTOR },
         { "init", CharacterAnimalBinding::init },
         { "_NV_init", CharacterAnimalBinding::_NV_init },
         { "dropItem", CharacterAnimalBinding::dropItem },

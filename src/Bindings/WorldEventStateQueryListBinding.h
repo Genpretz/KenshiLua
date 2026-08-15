@@ -21,7 +21,5 @@ public:
     static int setupFrom(lua_State* L);
     static int reset(lua_State* L);
     static int isTrue(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

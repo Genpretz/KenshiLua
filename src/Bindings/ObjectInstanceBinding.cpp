@@ -95,19 +95,8 @@ static int ObjectInstance_set_modified(lua_State* L)
     return 0;
 }
 
-int ObjectInstanceBinding::_DESTRUCTOR(lua_State* L)
-{
-    ObjectInstance* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ObjectInstance is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 140: ObjectInstance* _CONSTRUCTOR(...) - overloaded method
-  line 142: ObjectInstance* _CONSTRUCTOR(...) - overloaded method
   line 149: const GameData::ObjectInstance& operator=(...) - operator
   line 150: void updateInstancedObjectAttachedDatas(...) - unsupported arg type
 */
@@ -138,7 +127,6 @@ void ObjectInstanceBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ObjectInstanceBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

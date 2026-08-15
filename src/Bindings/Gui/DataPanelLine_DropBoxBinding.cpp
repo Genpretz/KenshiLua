@@ -173,30 +173,6 @@ int DataPanelLine_DropBoxBinding::_NV_refresh(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_DropBoxBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DataPanelLine_DropBox* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_DropBox is nil");
-
-    const std::string text = luaL_checkstring(L, 2);
-    int category = (int)luaL_checkinteger(L, 3);
-    int valInt = (int)luaL_checkinteger(L, 4);
-    int* valuePtr = &valInt;
-    float width = (float)luaL_checknumber(L, 5);
-    bool hasGobox = lua_toboolean(L, 6) != 0;
-    DataPanelLine_DropBox* result = instance->_CONSTRUCTOR(text, category, valuePtr, width, hasGobox);
-    return pushObject<DataPanelLine_DropBox>(L, result, DataPanelLine_DropBoxBinding::getMetatableName());
-}
-
-int DataPanelLine_DropBoxBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_DropBox* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_DropBox is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 332: void updateValuePtr(...) - unsupported arg type
@@ -236,8 +212,6 @@ void DataPanelLine_DropBoxBinding::registerBinding(lua_State* L)
         { "_NV_createMe", DataPanelLine_DropBoxBinding::_NV_createMe },
         { "refresh", DataPanelLine_DropBoxBinding::refresh },
         { "_NV_refresh", DataPanelLine_DropBoxBinding::_NV_refresh },
-        { "_CONSTRUCTOR", DataPanelLine_DropBoxBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", DataPanelLine_DropBoxBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

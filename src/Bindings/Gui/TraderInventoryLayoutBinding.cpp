@@ -24,25 +24,6 @@ static int TraderInventoryLayout_get_scrollBackpack(lua_State* L)
 }
 
 // --- Setters for TraderInventoryLayout ---
-int TraderInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TraderInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TraderInventoryLayout is nil");
-
-    TraderInventoryLayout* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int TraderInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    TraderInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TraderInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 12: void setupSections(...) - unsupported arg type
@@ -54,7 +35,6 @@ Skipped methods needing manual binding:
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - TraderInventoryLayout_get_scrollBackpack: MyGUI::ScrollView* (unbound pointer)
-  - TraderInventoryLayoutBinding::_CONSTRUCTOR: TraderInventoryLayout* (unbound pointer)
 */
 
 int TraderInventoryLayoutBinding::gc(lua_State* L)
@@ -78,8 +58,6 @@ void TraderInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TraderInventoryLayoutBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TraderInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

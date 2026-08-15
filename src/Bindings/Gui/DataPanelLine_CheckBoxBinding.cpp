@@ -97,19 +97,6 @@ int DataPanelLine_CheckBoxBinding::getCheckBox(lua_State* L)
     return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGuiBinding::getMetatableName());
 }
 
-int DataPanelLine_CheckBoxBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DataPanelLine_CheckBox* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_CheckBox is nil");
-
-    const std::string key = luaL_checkstring(L, 2);
-    int cat = (int)luaL_checkinteger(L, 3);
-    bool bVal = lua_toboolean(L, 4) != 0;
-    bool* _val = &bVal;
-    DataPanelLine_CheckBox* result = instance->_CONSTRUCTOR(key, cat, _val);
-    return pushObject<DataPanelLine_CheckBox>(L, result, DataPanelLine_CheckBoxBinding::getMetatableName());
-}
-
 int DataPanelLine_CheckBoxBinding::createMe(lua_State* L)
 {
     DataPanelLine_CheckBox* instance = getInstance(L, 1);
@@ -131,15 +118,6 @@ int DataPanelLine_CheckBoxBinding::_NV_createMe(lua_State* L)
     float topReal = (float)luaL_checknumber(L, 3);
     bool lastLine = lua_toboolean(L, 4) != 0;
     instance->_NV_createMe(parent, topReal, lastLine);
-    return 0;
-}
-
-int DataPanelLine_CheckBoxBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_CheckBox* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_CheckBox is nil");
-
-    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -177,10 +155,8 @@ void DataPanelLine_CheckBoxBinding::registerBinding(lua_State* L)
         { "setValuePtr", DataPanelLine_CheckBoxBinding::setValuePtr },
         { "getTextBox", DataPanelLine_CheckBoxBinding::getTextBox },
         { "getCheckBox", DataPanelLine_CheckBoxBinding::getCheckBox },
-        { "_CONSTRUCTOR", DataPanelLine_CheckBoxBinding::_CONSTRUCTOR },
         { "createMe", DataPanelLine_CheckBoxBinding::createMe },
         { "_NV_createMe", DataPanelLine_CheckBoxBinding::_NV_createMe },
-        { "_DESTRUCTOR", DataPanelLine_CheckBoxBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -66,16 +66,6 @@ static int FactionLeader_set_biomeTerritory(lua_State* L)
     return 0;
 }
 
-int FactionLeaderBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FactionLeader* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionLeader is nil");
-
-    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    FactionLeader* result = instance->_CONSTRUCTOR(f);
-    return pushObject<FactionLeader>(L, result, FactionLeaderBinding::getMetatableName());
-}
-
 int FactionLeaderBinding::setNewLeader(lua_State* L)
 {
     FactionLeader* instance = getInstance(L, 1);
@@ -109,15 +99,6 @@ int FactionLeaderBinding::getGUIData(lua_State* L)
     return 0;
 }
 
-int FactionLeaderBinding::_DESTRUCTOR(lua_State* L)
-{
-    FactionLeader* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionLeader is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FactionLeaderBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -139,11 +120,9 @@ void FactionLeaderBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FactionLeaderBinding::_CONSTRUCTOR },
         { "setNewLeader", FactionLeaderBinding::setNewLeader },
         { "getEnemyMissionTargetList", FactionLeaderBinding::getEnemyMissionTargetList },
         { "getGUIData", FactionLeaderBinding::getGUIData },
-        { "_DESTRUCTOR", FactionLeaderBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

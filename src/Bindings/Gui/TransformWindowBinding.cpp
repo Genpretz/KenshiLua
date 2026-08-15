@@ -289,24 +289,6 @@ static int TransformWindow_set_lastMouse(lua_State* L)
     return 0;
 }
 
-int TransformWindowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TransformWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TransformWindow is nil");
-
-    TransformWindow* result = instance->_CONSTRUCTOR();
-    return pushObject<TransformWindow>(L, result, TransformWindowBinding::getMetatableName());
-}
-
-int TransformWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    TransformWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TransformWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TransformWindowBinding::setCaption(lua_State* L)
 {
     TransformWindow* instance = getInstance(L, 1);
@@ -548,8 +530,6 @@ void TransformWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TransformWindowBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TransformWindowBinding::_DESTRUCTOR },
         { "setCaption", TransformWindowBinding::setCaption },
         { "updateState", TransformWindowBinding::updateState },
         { "close", TransformWindowBinding::close },

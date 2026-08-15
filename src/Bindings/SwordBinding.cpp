@@ -95,20 +95,6 @@ static int Sword_set_modIndoors(lua_State* L)
     return 0;
 }
 
-int SwordBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Sword* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Sword is nil");
-
-    GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    GameData* companyData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
-    GameData* materialData = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 5, HandBinding::getMetatableName());
-    int _level = (int)luaL_checkinteger(L, 6);
-    Sword* result = instance->_CONSTRUCTOR(baseData, companyData, materialData, _handle, _level);
-    return pushObject<Sword>(L, result, SwordBinding::getMetatableName());
-}
-
 int SwordBinding::getClassType(lua_State* L)
 {
     Sword* instance = getInstance(L, 1);
@@ -180,15 +166,6 @@ int SwordBinding::_NV_getSkillModIndoors(lua_State* L)
     return 1;
 }
 
-int SwordBinding::_DESTRUCTOR(lua_State* L)
-{
-    Sword* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Sword is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 92: void getTooltipData1(...) - unsupported arg type
@@ -218,7 +195,6 @@ void SwordBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", SwordBinding::_CONSTRUCTOR },
         { "getClassType", SwordBinding::getClassType },
         { "_NV_getClassType", SwordBinding::_NV_getClassType },
         { "isSword", SwordBinding::isSword },
@@ -226,7 +202,6 @@ void SwordBinding::registerBinding(lua_State* L)
         { "setupStats", SwordBinding::setupStats },
         { "getSkillModIndoors", SwordBinding::getSkillModIndoors },
         { "_NV_getSkillModIndoors", SwordBinding::_NV_getSkillModIndoors },
-        { "_DESTRUCTOR", SwordBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

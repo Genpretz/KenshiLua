@@ -63,23 +63,6 @@ static int NestSpot_set_building(lua_State* L)
     return 0;
 }
 
-int Town_NestSpotBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (Town::NestSpot*)::operator new(sizeof(Town::NestSpot));
-    ::new ((void*)obj) Town::NestSpot();
-    if (lua_gettop(L) >= 1)
-        readVector3(L, 1, obj->pos);
-    return pushObject<Town::NestSpot>(L, obj, getMetatableName());
-}
-
-int Town_NestSpotBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "Town::NestSpot is nil");
-    inst->~NestSpot();
-    return 0;
-}
-
 int Town_NestSpotBinding::gc(lua_State* L)
 {
     return 0;
@@ -108,8 +91,6 @@ void Town_NestSpotBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -22,7 +22,5 @@ public:
     static int update(lua_State* L);
     static int cancel(lua_State* L);
     static int isActive(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

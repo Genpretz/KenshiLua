@@ -137,15 +137,6 @@ static int FactionsScreen_set_updateTimer(lua_State* L)
     return 0;
 }
 
-int FactionsScreenBinding::_DESTRUCTOR(lua_State* L)
-{
-    FactionsScreen* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionsScreen is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FactionsScreenBinding::getVisible(lua_State* L)
 {
     FactionsScreen* instance = getInstance(L, 1);
@@ -194,7 +185,6 @@ int FactionsScreenBinding::updateInfo(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 40: FactionsScreen* _CONSTRUCTOR(...) - unsupported arg type
   line 48: void notifyEditTextChange(...) - unsupported arg type
   line 49: void setFocus(...) - unsupported arg type
   line 50: void loseFocus(...) - unsupported arg type
@@ -225,7 +215,6 @@ void FactionsScreenBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", FactionsScreenBinding::_DESTRUCTOR },
         { "getVisible", FactionsScreenBinding::getVisible },
         { "clear", FactionsScreenBinding::clear },
         { "update", FactionsScreenBinding::update },

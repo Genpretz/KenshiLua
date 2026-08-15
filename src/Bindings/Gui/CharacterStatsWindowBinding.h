@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _DESTRUCTOR(lua_State* L);
     static int clear(lua_State* L);
     static int _NV_clear(lua_State* L);
     static int create(lua_State* L);

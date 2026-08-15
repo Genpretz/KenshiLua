@@ -104,8 +104,6 @@ static int SysMessage_set_number(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 185: SysMessage* _CONSTRUCTOR(...) - overloaded method
-  line 187: SysMessage* _CONSTRUCTOR(...) - overloaded method
   line 189: bool operator==(...) - operator
 */
 

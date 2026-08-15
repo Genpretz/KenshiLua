@@ -15,15 +15,6 @@ static GameDataManager* getInstance(lua_State* L, int idx)
 
 // --- Getters for GameDataManager ---
 // --- Setters for GameDataManager ---
-int GameDataManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameDataManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameDataManager is nil");
-
-    GameDataManager* result = instance->_CONSTRUCTOR();
-    return pushObject<GameDataManager>(L, result, GameDataManagerBinding::getMetatableName());
-}
-
 int GameDataManagerBinding::reloadGameData(lua_State* L)
 {
     GameDataManager* instance = getInstance(L, 1);
@@ -80,15 +71,6 @@ int GameDataManagerBinding::updateData(lua_State* L)
     return 0;
 }
 
-int GameDataManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    GameDataManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameDataManager is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 80: void getBuildings(...) - unsupported arg type
@@ -115,13 +97,11 @@ void GameDataManagerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GameDataManagerBinding::_CONSTRUCTOR },
         { "reloadGameData", GameDataManagerBinding::reloadGameData },
         { "postProcessingTheDatas", GameDataManagerBinding::postProcessingTheDatas },
         { "getMapSector", GameDataManagerBinding::getMapSector },
         { "updateDatasOfType", GameDataManagerBinding::updateDatasOfType },
         { "updateData", GameDataManagerBinding::updateData },
-        { "_DESTRUCTOR", GameDataManagerBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

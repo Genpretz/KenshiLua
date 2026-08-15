@@ -86,15 +86,6 @@ static int ProductionBuilding_set_consumptionItems(lua_State* L)
     return 0;
 }
 
-int ProductionBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    ProductionBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ProductionBuildingBinding::getProductionBuilding(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
@@ -537,7 +528,6 @@ int ProductionBuildingBinding::_NV_updateOutput(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 72: ProductionBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 83: void operate(...) - unsupported arg type
   line 84: void _NV_operate(...) - unsupported arg type
   line 85: void getGUIData(...) - unsupported arg type
@@ -616,7 +606,6 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ProductionBuildingBinding::_DESTRUCTOR },
         { "getProductionBuilding", ProductionBuildingBinding::getProductionBuilding },
         { "_NV_getProductionBuilding", ProductionBuildingBinding::_NV_getProductionBuilding },
         { "createInventoryLayout", ProductionBuildingBinding::createInventoryLayout },

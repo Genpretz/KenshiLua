@@ -124,19 +124,6 @@ static int PhysicalEntity_set_isEmissive(lua_State* L)
     return 0;
 }
 
-int PhysicalEntityBinding::_DESTRUCTOR(lua_State* L)
-{
-    PhysicalEntity* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PhysicalEntity is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 31: PhysicalEntity* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -165,7 +152,6 @@ void PhysicalEntityBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", PhysicalEntityBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

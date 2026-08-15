@@ -269,15 +269,6 @@ static int HavokCharacter_set_resolveFlag(lua_State* L)
     return 0;
 }
 
-int HavokCharacterBinding::_DESTRUCTOR(lua_State* L)
-{
-    HavokCharacter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "HavokCharacter is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int HavokCharacterBinding::setPosition(lua_State* L)
 {
     HavokCharacter* instance = getInstance(L, 1);
@@ -578,7 +569,6 @@ void HavokCharacterBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", HavokCharacterBinding::_DESTRUCTOR },
         { "setPosition", HavokCharacterBinding::setPosition },
         { "getPosition", HavokCharacterBinding::getPosition },
         { "setVelocity", HavokCharacterBinding::setVelocity },

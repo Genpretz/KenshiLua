@@ -86,15 +86,6 @@ static int MedianFilter_set_mHistoryBufferX(lua_State* L)
     return 0;
 }
 
-int MedianFilterBinding::_CONSTRUCTOR(lua_State* L)
-{
-    MedianFilter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MedianFilter is nil");
-
-    MedianFilter* result = instance->_CONSTRUCTOR();
-    return pushObject<MedianFilter>(L, result, MedianFilterBinding::getMetatableName());
-}
-
 int MedianFilterBinding::setup(lua_State* L)
 {
     MedianFilter* instance = getInstance(L, 1);
@@ -126,15 +117,6 @@ int MedianFilterBinding::applySilent(lua_State* L)
     return 0;
 }
 
-int MedianFilterBinding::_DESTRUCTOR(lua_State* L)
-{
-    MedianFilter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MedianFilter is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 91: void apply(...) - non-string reference arg
@@ -161,11 +143,9 @@ void MedianFilterBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", MedianFilterBinding::_CONSTRUCTOR },
         { "setup", MedianFilterBinding::setup },
         { "reset", MedianFilterBinding::reset },
         { "applySilent", MedianFilterBinding::applySilent },
-        { "_DESTRUCTOR", MedianFilterBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

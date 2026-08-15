@@ -166,21 +166,6 @@ static int BiomeGroundEffects_set_probabilities(lua_State* L)
     return luaL_error(L, "Expected table of numbers or index and number value");
 }
 
-int ZoneManager_BiomeGroundEffectsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (ZoneManager::BiomeGroundEffects*)::operator new(sizeof(ZoneManager::BiomeGroundEffects));
-    ::new ((void*)obj) ZoneManager::BiomeGroundEffects();
-    return pushObject<ZoneManager::BiomeGroundEffects>(L, obj, getMetatableName());
-}
-
-int ZoneManager_BiomeGroundEffectsBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "ZoneManager::BiomeGroundEffects is nil");
-    inst->~BiomeGroundEffects();
-    return 0;
-}
-
 int ZoneManager_BiomeGroundEffectsBinding::gc(lua_State* L)
 {
     return 0;
@@ -209,8 +194,6 @@ void ZoneManager_BiomeGroundEffectsBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

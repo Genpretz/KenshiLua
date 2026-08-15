@@ -54,15 +54,6 @@ static int CharacterTradingWindow_get_selectedCountText(lua_State* L)
 }
 
 // --- Setters for CharacterTradingWindow ---
-int CharacterTradingWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    CharacterTradingWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharacterTradingWindow is nil");
-
-    instance->~CharacterTradingWindow();
-    return 0;
-}
-
 int CharacterTradingWindowBinding::show(lua_State* L)
 {
     CharacterTradingWindow* instance = getInstance(L, 1);
@@ -147,7 +138,6 @@ int CharacterTradingWindowBinding::updateSelected(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 16: CharacterTradingWindow* _CONSTRUCTOR(...) - unsupported arg type
   line 29: void confirmButton(...) - unsupported arg type
   line 30: void cancelButton(...) - unsupported arg type
   line 31: void notifyMouseWheel(...) - unsupported arg type
@@ -179,7 +169,6 @@ void CharacterTradingWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", CharacterTradingWindowBinding::_DESTRUCTOR },
         { "show", CharacterTradingWindowBinding::show },
         // { "_NV_show", CharacterTradingWindowBinding::_NV_show },
         { "isVisible", CharacterTradingWindowBinding::isVisible },

@@ -71,31 +71,6 @@ static int GamedataSelectionList_set_lastItem(lua_State* L)
     return 0;
 }
 
-int GamedataSelectionListBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GamedataSelectionList* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GamedataSelectionList is nil");
-
-    LevelEditor* ed = checkObject<LevelEditor>(L, 2, LevelEditorBinding::getMetatableName());
-    itemType type = (itemType)luaL_checkinteger(L, 3);
-    float top = (float)luaL_checknumber(L, 4);
-    float left = (float)luaL_checknumber(L, 5);
-    float w = (float)luaL_checknumber(L, 6);
-    float h = (float)luaL_checknumber(L, 7);
-
-    GamedataSelectionList* result = instance->_CONSTRUCTOR(ed, type, top, left, w, h);
-    return pushObject<GamedataSelectionList>(L, result, GamedataSelectionListBinding::getMetatableName());
-}
-
-int GamedataSelectionListBinding::_DESTRUCTOR(lua_State* L)
-{
-    GamedataSelectionList* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GamedataSelectionList is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int GamedataSelectionListBinding::deselectItem(lua_State* L)
 {
     GamedataSelectionList* instance = getInstance(L, 1);
@@ -189,8 +164,6 @@ void GamedataSelectionListBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GamedataSelectionListBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", GamedataSelectionListBinding::_DESTRUCTOR },
         { "deselectItem", GamedataSelectionListBinding::deselectItem },
         { "selectItem", GamedataSelectionListBinding::selectItem },
         { "getSelectedItem", GamedataSelectionListBinding::getSelectedItem },

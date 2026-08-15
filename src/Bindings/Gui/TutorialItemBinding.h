@@ -18,8 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int getId(lua_State* L);
     static int isLastSubItem(lua_State* L);
     static int isSkippable(lua_State* L);

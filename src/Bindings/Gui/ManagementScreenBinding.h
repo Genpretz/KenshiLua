@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _DESTRUCTOR(lua_State* L);
     static int update(lua_State* L);
     static int clear(lua_State* L);
     static int getVisible(lua_State* L);
@@ -39,7 +38,6 @@ public:
     static int refreshMessages(lua_State* L);
     static int refreshAI(lua_State* L);
     static int showDebugMarker(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
     static int updateResearchListRate(lua_State* L);
     static int refreshResearchListDescription(lua_State* L);
     static int setCraftingBench(lua_State* L);

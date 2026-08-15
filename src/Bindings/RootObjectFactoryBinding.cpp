@@ -182,24 +182,6 @@ int RootObjectFactoryBinding::process(lua_State* L)
     return pushObject<RootObjectBase>(L, result, RootObjectBaseBinding::getMetatableName());
 }
 
-int RootObjectFactoryBinding::_CONSTRUCTOR(lua_State* L)
-{
-    RootObjectFactory* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RootObjectFactory is nil");
-
-    RootObjectFactory* result = instance->_CONSTRUCTOR();
-    return pushObject<RootObjectFactory>(L, result, RootObjectFactoryBinding::getMetatableName());
-}
-
-int RootObjectFactoryBinding::_DESTRUCTOR(lua_State* L)
-{
-    RootObjectFactory* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RootObjectFactory is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - RootObjectFactoryBinding::createLocationNode: LocationNode* (unbound pointer)
@@ -454,8 +436,6 @@ void RootObjectFactoryBinding::registerBinding(lua_State* L)
         { "mainThreadUpdate", RootObjectFactoryBinding::mainThreadUpdate },
         { "populateBuilding", RootObjectFactoryBinding::populateBuilding },
         { "process", RootObjectFactoryBinding::process },
-        { "_CONSTRUCTOR", RootObjectFactoryBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", RootObjectFactoryBinding::_DESTRUCTOR },
         { "createBuilding", RootObjectFactoryBinding::createBuilding },
         { "createItem", RootObjectFactoryBinding::createItem },
         { "getValsFromDataInList", RootObjectFactoryBinding::getValsFromDataInList },

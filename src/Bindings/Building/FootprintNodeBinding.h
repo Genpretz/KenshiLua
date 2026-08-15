@@ -21,6 +21,5 @@ public:
     static int updateBox(lua_State* L);
     static int _NV_updateBox(lua_State* L);
     static int setEnabled(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

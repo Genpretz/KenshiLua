@@ -416,24 +416,6 @@ int GameWorldBinding::startUpThreads(lua_State* L)
     return 1;
 }
 
-int GameWorldBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameWorld* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameWorld is nil");
-
-    GameWorld* result = instance->_CONSTRUCTOR();
-    return pushObject<GameWorld>(L, result, GameWorldBinding::getMetatableName());
-}
-
-int GameWorldBinding::_DESTRUCTOR(lua_State* L)
-{
-    GameWorld* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameWorld is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int GameWorldBinding::resetGame(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
@@ -1662,8 +1644,6 @@ void GameWorldBinding::registerBinding(lua_State* L)
         { "startUpThreads", GameWorldBinding::startUpThreads },
         { "start", GameWorldBinding::start },
         { "destroy", GameWorldBinding::destroy },
-        { "_CONSTRUCTOR", GameWorldBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", GameWorldBinding::_DESTRUCTOR },
         { "resetGame", GameWorldBinding::resetGame },
         { "_clearAndDestroyGameWorldStuff", GameWorldBinding::_clearAndDestroyGameWorldStuff },
         { "initialisation", GameWorldBinding::initialisation },

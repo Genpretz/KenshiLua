@@ -328,25 +328,6 @@ static int LevelEditor_set_itemListWindow(lua_State* L)
     return 0;
 }
 
-int LevelEditorBinding::_CONSTRUCTOR(lua_State* L)
-{
-    LevelEditor* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "LevelEditor is nil");
-
-    LevelEditor* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int LevelEditorBinding::_DESTRUCTOR(lua_State* L)
-{
-    LevelEditor* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "LevelEditor is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int LevelEditorBinding::close(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
@@ -743,7 +724,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - LevelEditor_get_factionTxt: MyGUI::TextBox* (unbound pointer)
   - LevelEditor_get_altitudeTxt: MyGUI::TextBox* (unbound pointer)
   - LevelEditor_get_activeModTxt: MyGUI::ComboBox* (unbound pointer)
-  - LevelEditorBinding::_CONSTRUCTOR: LevelEditor* (unbound pointer)
 */
 
 /*
@@ -772,8 +752,6 @@ void LevelEditorBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", LevelEditorBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", LevelEditorBinding::_DESTRUCTOR },
         { "close", LevelEditorBinding::close },
         { "update", LevelEditorBinding::update },
         { "updateGizmo", LevelEditorBinding::updateGizmo },

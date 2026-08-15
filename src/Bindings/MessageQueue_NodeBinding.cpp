@@ -44,21 +44,6 @@ static int Node_set_next(lua_State* L)
     return 0;
 }
 
-int MessageQueue_NodeBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (MessageQueue_Node*)::operator new(sizeof(MessageQueue_Node));
-    ::new ((void*)obj) MessageQueue_Node();
-    return pushObject<MessageQueue_Node>(L, obj, getMetatableName());
-}
-
-int MessageQueue_NodeBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "MessageQueue::Node is nil");
-    inst->~Node();
-    return 0;
-}
-
 int MessageQueue_NodeBinding::gc(lua_State* L)
 {
     return 0;
@@ -87,8 +72,6 @@ void MessageQueue_NodeBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

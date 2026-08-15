@@ -63,15 +63,6 @@ static int DialogState_set_resetTime(lua_State* L)
     return 0;
 }
 
-int DialogStateBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DialogState* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogState is nil");
-
-    DialogState* result = instance->_CONSTRUCTOR();
-    return pushObject<DialogState>(L, result, DialogStateBinding::getMetatableName());
-}
-
 int DialogStateBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -93,7 +84,6 @@ void DialogStateBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", DialogStateBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

@@ -71,15 +71,6 @@ static int MapMarkerTown_set_zoomLayer(lua_State* L)
     return 0;
 }
 
-int MapMarkerTownBinding::_DESTRUCTOR(lua_State* L)
-{
-    MapMarkerTown* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MapMarkerTown is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int MapMarkerTownBinding::setVisible(lua_State* L)
 {
     MapMarkerTown* instance = getInstance(L, 1);
@@ -102,7 +93,6 @@ int MapMarkerTownBinding::getVisible(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 22: MapMarkerTown* _CONSTRUCTOR(...) - unsupported arg type
   line 31: void update(...) - unsupported arg type
 */
 
@@ -139,7 +129,6 @@ void MapMarkerTownBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", MapMarkerTownBinding::_DESTRUCTOR },
         { "setVisible", MapMarkerTownBinding::setVisible },
         { "getVisible", MapMarkerTownBinding::getVisible },
         { 0, 0 }

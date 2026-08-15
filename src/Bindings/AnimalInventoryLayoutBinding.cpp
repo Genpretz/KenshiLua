@@ -16,24 +16,6 @@ static AnimalInventoryLayout* getInstance(lua_State* L, int idx)
 
 // --- Getters for AnimalInventoryLayout ---
 // --- Setters for AnimalInventoryLayout ---
-int AnimalInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    AnimalInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AnimalInventoryLayout is nil");
-
-    AnimalInventoryLayout* result = instance->_CONSTRUCTOR();
-    return pushObject<AnimalInventoryLayout>(L, result, AnimalInventoryLayoutBinding::getMetatableName());
-}
-
-int AnimalInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    AnimalInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AnimalInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 16: void setupSections(...) - unsupported arg type
@@ -61,8 +43,6 @@ void AnimalInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", AnimalInventoryLayoutBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", AnimalInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

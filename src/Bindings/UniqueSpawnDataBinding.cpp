@@ -82,17 +82,6 @@ static int UniqueSpawnData_set_existingSquadsList(lua_State* L)
     return 0;
 }
 
-int UniqueSpawnDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    UniqueSpawnData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "UniqueSpawnData is nil");
-
-    GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    int num = (int)luaL_checkinteger(L, 3);
-    UniqueSpawnData* result = instance->_CONSTRUCTOR(d, num);
-    return pushObject<UniqueSpawnData>(L, result, UniqueSpawnDataBinding::getMetatableName());
-}
-
 int UniqueSpawnDataBinding::currentNumber(lua_State* L)
 {
     UniqueSpawnData* instance = getInstance(L, 1);
@@ -101,15 +90,6 @@ int UniqueSpawnDataBinding::currentNumber(lua_State* L)
     int result = instance->currentNumber();
     lua_pushinteger(L, result);
     return 1;
-}
-
-int UniqueSpawnDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    UniqueSpawnData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "UniqueSpawnData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
 }
 
 int UniqueSpawnDataBinding::gc(lua_State* L)
@@ -133,9 +113,7 @@ void UniqueSpawnDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", UniqueSpawnDataBinding::_CONSTRUCTOR },
         { "currentNumber", UniqueSpawnDataBinding::currentNumber },
-        { "_DESTRUCTOR", UniqueSpawnDataBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -270,24 +270,6 @@ static int AbstractMovementBase_set_speedGroup(lua_State* L)
     return 0;
 }
 
-int AbstractMovementBaseBinding::_CONSTRUCTOR(lua_State* L)
-{
-    AbstractMovementBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
-
-    AbstractMovementBase* result = instance->_CONSTRUCTOR();
-    return pushObject<AbstractMovementBase>(L, result, AbstractMovementBaseBinding::getMetatableName());
-}
-
-int AbstractMovementBaseBinding::_DESTRUCTOR(lua_State* L)
-{
-    AbstractMovementBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int AbstractMovementBaseBinding::create(lua_State* L)
 {
     AbstractMovementBase* instance = getInstance(L, 1);
@@ -971,8 +953,6 @@ void AbstractMovementBaseBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", AbstractMovementBaseBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", AbstractMovementBaseBinding::_DESTRUCTOR },
         { "create", AbstractMovementBaseBinding::create },
         { "getHandle", AbstractMovementBaseBinding::getHandle },
         { "_NV_getHandle", AbstractMovementBaseBinding::_NV_getHandle },

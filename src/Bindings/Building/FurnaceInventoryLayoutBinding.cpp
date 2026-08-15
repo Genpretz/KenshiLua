@@ -15,27 +15,6 @@ static FurnaceInventoryLayout* getInstance(lua_State* L, int idx)
 // --- Getters for FurnaceInventoryLayout ---
 // --- Setters for FurnaceInventoryLayout ---
 // --- Methods for FurnaceInventoryLayout ---
-int FurnaceInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FurnaceInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FurnaceInventoryLayout is nil");
-
-    std::string title = luaL_checkstring(L, 2);
-    int ins = (int)luaL_checkinteger(L, 3);
-    int outs = (int)luaL_checkinteger(L, 4);
-    FurnaceInventoryLayout* result = instance->_CONSTRUCTOR(title, ins, outs);
-    return pushObject<FurnaceInventoryLayout>(L, result, FurnaceInventoryLayoutBinding::getMetatableName());
-}
-
-int FurnaceInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    FurnaceInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FurnaceInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 13: void setupSections(...) - unsupported arg type
@@ -63,8 +42,6 @@ void FurnaceInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FurnaceInventoryLayoutBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", FurnaceInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

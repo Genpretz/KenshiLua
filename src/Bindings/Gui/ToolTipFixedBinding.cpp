@@ -38,15 +38,6 @@ static int ToolTipFixed_set_minHeight(lua_State* L)
     return 0;
 }
 
-int ToolTipFixedBinding::_DESTRUCTOR(lua_State* L)
-{
-    ToolTipFixed* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ToolTipFixed is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ToolTipFixedBinding::update(lua_State* L)
 {
     ToolTipFixed* instance = getInstance(L, 1);
@@ -87,7 +78,6 @@ int ToolTipFixedBinding::_NV_setVisible(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 90: ToolTipFixed* _CONSTRUCTOR(...) - unsupported arg type
   line 93: void clear(...) - unsupported arg type
   line 94: void _NV_clear(...) - unsupported arg type
   line 97: void setBottomPosition(...) - unsupported arg type
@@ -124,7 +114,6 @@ void ToolTipFixedBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ToolTipFixedBinding::_DESTRUCTOR },
         { "update", ToolTipFixedBinding::update },
         { "_NV_update", ToolTipFixedBinding::_NV_update },
         { "setVisible", ToolTipFixedBinding::setVisible },

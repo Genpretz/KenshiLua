@@ -55,15 +55,6 @@ static int ShopTraderInventory_set_section(lua_State* L)
     return 0;
 }
 
-int ShopTraderInventoryBinding::_DESTRUCTOR(lua_State* L)
-{
-    ShopTraderInventory* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ShopTraderInventoryBinding::updateInventory(lua_State* L)
 {
     ShopTraderInventory* instance = getInstance(L, 1);
@@ -132,17 +123,6 @@ int ShopTraderInventoryBinding::_NV_initialiseNewSection(lua_State* L)
     int _a8 = (int)luaL_checkinteger(L, 9);
     InventorySection* result = instance->_NV_initialiseNewSection(name, w, h, _a4, equipCallbacks, _a6, _a7, _a8);
     return pushObject<InventorySection>(L, result, InventorySectionBinding::getMetatableName());
-}
-
-int ShopTraderInventoryBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ShopTraderInventory* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
-    RootObject* owner = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
-    Ogre::vector<InventorySection*>::type* inventoriesList = checkObject<Ogre::vector<InventorySection*>::type>(L, 3, "ogre_vector<InventorySection*>");
-    if (!inventoriesList) return luaL_error(L, "Argument 3 to _CONSTRUCTOR must be ogre_vector<InventorySection*>");
-    ShopTraderInventory* result = instance->_CONSTRUCTOR(owner, *inventoriesList);
-    return pushObject<ShopTraderInventory>(L, result, ShopTraderInventoryBinding::getMetatableName());
 }
 
 int ShopTraderInventoryBinding::dropItem(lua_State* L)
@@ -292,8 +272,6 @@ void ShopTraderInventoryBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ShopTraderInventoryBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ShopTraderInventoryBinding::_DESTRUCTOR },
         { "updateInventory", ShopTraderInventoryBinding::updateInventory },
         { "_NV_updateInventory", ShopTraderInventoryBinding::_NV_updateInventory },
         { "dropItem", ShopTraderInventoryBinding::dropItem },

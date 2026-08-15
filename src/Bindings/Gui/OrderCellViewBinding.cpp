@@ -45,15 +45,6 @@ static int OrderCellView_set_data(lua_State* L)
     return 0;
 }
 
-int OrderCellViewBinding::_DESTRUCTOR(lua_State* L)
-{
-    OrderCellView* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "OrderCellView is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int OrderCellViewBinding::getWidget(lua_State* L)
 {
     OrderCellView* instance = getInstance(L, 1);
@@ -75,7 +66,6 @@ int OrderCellViewBinding::resize(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 23: OrderCellView* _CONSTRUCTOR(...) - unsupported arg type
   line 26: void update(...) - unsupported arg type
   line 27: void getCellDimension(...) - static method
   line 31: void onRemove(...) - unsupported arg type
@@ -109,7 +99,6 @@ void OrderCellViewBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", OrderCellViewBinding::_DESTRUCTOR },
         { "getWidget", OrderCellViewBinding::getWidget },
         { "resize", OrderCellViewBinding::resize },
         { 0, 0 }

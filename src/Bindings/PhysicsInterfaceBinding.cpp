@@ -54,25 +54,6 @@ static int PhysicsInterface_set_queuesClearMuto(lua_State* L)
     return luaL_error(L, "Property 'queuesClearMuto' is read-only");
 }
 
-int PhysicsInterfaceBinding::_CONSTRUCTOR(lua_State* L)
-{
-    PhysicsInterface* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PhysicsInterface is nil");
-
-    PhysicsInterface* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int PhysicsInterfaceBinding::_DESTRUCTOR(lua_State* L)
-{
-    PhysicsInterface* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PhysicsInterface is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int PhysicsInterfaceBinding::getBackthread(lua_State* L)
 {
     PhysicsInterface* instance = getInstance(L, 1);
@@ -211,7 +192,6 @@ Skipped methods needing manual binding:
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - PhysicsInterface_get_nWorld: NxScene* (unbound pointer)
-  - PhysicsInterfaceBinding::_CONSTRUCTOR: PhysicsInterface* (unbound pointer)
   - PhysicsInterfaceBinding::getBackthread: PhysicsActual* (unbound pointer)
   - PhysicsInterfaceBinding::createTriggerHull: PhysicsHullT* (unbound pointer)
   - PhysicsInterfaceBinding::createStaticCapsule: SimplePhysXEntity* (unbound pointer)
@@ -254,8 +234,6 @@ void PhysicsInterfaceBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", PhysicsInterfaceBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", PhysicsInterfaceBinding::_DESTRUCTOR },
         { "getBackthread", PhysicsInterfaceBinding::getBackthread },
         { "updateUT", PhysicsInterfaceBinding::updateUT },
         { "backThreadUpdate", PhysicsInterfaceBinding::backThreadUpdate },

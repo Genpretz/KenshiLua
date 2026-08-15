@@ -15,15 +15,6 @@ static TextureArrayLoadData* getInstance(lua_State* L, int idx)
 
 // --- Getters for TextureArrayLoadData ---
 // --- Setters for TextureArrayLoadData ---
-int TextureArrayLoadDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    TextureArrayLoadData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TextureArrayLoadData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TextureArrayLoadDataBinding::loadImage(lua_State* L)
 {
     TextureArrayLoadData* instance = getInstance(L, 1);
@@ -44,7 +35,6 @@ int TextureArrayLoadDataBinding::_NV_loadImage(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 123: TextureArrayLoadData* _CONSTRUCTOR(...) - unsupported arg type
   line 128: Ogre::SharedPtr<Ogre::Texture> getTexture(...) - unsupported return type
   line 129: Ogre::SharedPtr<Ogre::Texture> _NV_getTexture(...) - unsupported return type
 */
@@ -76,7 +66,6 @@ void TextureArrayLoadDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", TextureArrayLoadDataBinding::_DESTRUCTOR },
         { "loadImage", TextureArrayLoadDataBinding::loadImage },
         { "_NV_loadImage", TextureArrayLoadDataBinding::_NV_loadImage },
         { 0, 0 }

@@ -18,8 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int createNewData(lua_State* L);
     static int getDataByName(lua_State* L);
     static int renameData(lua_State* L);

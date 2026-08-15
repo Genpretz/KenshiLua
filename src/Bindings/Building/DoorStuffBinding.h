@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _DESTRUCTOR(lua_State* L);
     static int setupPhysicalUT(lua_State* L);
     static int getFaction(lua_State* L);
     static int _NV_getFaction(lua_State* L);

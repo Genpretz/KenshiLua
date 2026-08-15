@@ -230,8 +230,6 @@ int TimeOfDayBinding::getTotalTimeString(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 9: TimeOfDay* _CONSTRUCTOR(...) - overloaded method
-  line 11: TimeOfDay* _CONSTRUCTOR(...) - overloaded method
   line 17: bool operator>(...) - operator
   line 18: bool operator>=(...) - operator
   line 19: bool operator<(...) - operator

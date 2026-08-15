@@ -123,18 +123,8 @@ int DataPanelLine_TextEditableBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_TextEditableBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_TextEditable* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 223: DataPanelLine_TextEditable* _CONSTRUCTOR(...) - unsupported arg type
   line 226: void textChanged(...) - unsupported arg type
 */
 
@@ -168,7 +158,6 @@ void DataPanelLine_TextEditableBinding::registerBinding(lua_State* L)
         { "getNameBox", DataPanelLine_TextEditableBinding::getNameBox },
         { "createMe", DataPanelLine_TextEditableBinding::createMe },
         { "_NV_createMe", DataPanelLine_TextEditableBinding::_NV_createMe },
-        { "_DESTRUCTOR", DataPanelLine_TextEditableBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

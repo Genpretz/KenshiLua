@@ -99,24 +99,6 @@ int RaceLimiterBinding::_NV_canEquip(lua_State* L)
     return luaL_error(L, "Argument 3 to _NV_canEquip must be RootObject or RaceData");
 }
 
-int RaceLimiterBinding::_CONSTRUCTOR(lua_State* L)
-{
-    RaceLimiter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RaceLimiter is nil");
-
-    RaceLimiter* result = instance->_CONSTRUCTOR();
-    return pushObject<RaceLimiter>(L, result, RaceLimiterBinding::getMetatableName());
-}
-
-int RaceLimiterBinding::_DESTRUCTOR(lua_State* L)
-{
-    RaceLimiter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RaceLimiter is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int RaceLimiterBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -142,8 +124,6 @@ void RaceLimiterBinding::registerBinding(lua_State* L)
         { "getSingleton", RaceLimiterBinding::getSingleton },
         { "canEquip", RaceLimiterBinding::canEquip },
         { "_NV_canEquip", RaceLimiterBinding::_NV_canEquip },
-        { "_CONSTRUCTOR", RaceLimiterBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", RaceLimiterBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

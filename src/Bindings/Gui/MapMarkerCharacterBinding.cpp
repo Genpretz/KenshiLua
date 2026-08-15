@@ -39,15 +39,6 @@ static int MapMarkerCharacter_set_handle(lua_State* L)
     return 0;
 }
 
-int MapMarkerCharacterBinding::_DESTRUCTOR(lua_State* L)
-{
-    MapMarkerCharacter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MapMarkerCharacter is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int MapMarkerCharacterBinding::setVisible(lua_State* L)
 {
     MapMarkerCharacter* instance = getInstance(L, 1);
@@ -70,7 +61,6 @@ int MapMarkerCharacterBinding::getVisible(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 42: MapMarkerCharacter* _CONSTRUCTOR(...) - unsupported arg type
   line 47: void update(...) - unsupported arg type
 */
 
@@ -100,7 +90,6 @@ void MapMarkerCharacterBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", MapMarkerCharacterBinding::_DESTRUCTOR },
         { "setVisible", MapMarkerCharacterBinding::setVisible },
         { "getVisible", MapMarkerCharacterBinding::getVisible },
         { 0, 0 }

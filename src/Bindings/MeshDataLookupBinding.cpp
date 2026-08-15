@@ -45,18 +45,8 @@ static int MeshDataLookup_set_uvs(lua_State* L)
     return 0;
 }
 
-int MeshDataLookupBinding::_DESTRUCTOR(lua_State* L)
-{
-    MeshDataLookup* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MeshDataLookup is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 40: MeshDataLookup* _CONSTRUCTOR(...) - unsupported arg type
   line 47: void init(...) - unsupported arg type
 */
 
@@ -93,7 +83,6 @@ void MeshDataLookupBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", MeshDataLookupBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -105,9 +105,6 @@ int InventoryTradeDataBinding::isValid(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 104: InventoryTradeData* _CONSTRUCTOR(...) - overloaded method
-  line 106: InventoryTradeData* _CONSTRUCTOR(...) - overloaded method
-  line 108: InventoryTradeData* _CONSTRUCTOR(...) - overloaded method
   line 115: InventoryGUI::InventoryTradeData& operator=(...) - operator
 */
 

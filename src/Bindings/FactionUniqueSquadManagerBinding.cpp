@@ -78,24 +78,6 @@ static int FactionUniqueSquadManager_set_homeTown(lua_State* L)
     return 0;
 }
 
-int FactionUniqueSquadManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FactionUniqueSquadManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionUniqueSquadManager is nil");
-
-    FactionUniqueSquadManager* result = instance->_CONSTRUCTOR();
-    return pushObject<FactionUniqueSquadManager>(L, result, FactionUniqueSquadManagerBinding::getMetatableName());
-}
-
-int FactionUniqueSquadManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    FactionUniqueSquadManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionUniqueSquadManager is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FactionUniqueSquadManagerBinding::clearAndReset(lua_State* L)
 {
     FactionUniqueSquadManager* instance = getInstance(L, 1);
@@ -222,8 +204,6 @@ void FactionUniqueSquadManagerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FactionUniqueSquadManagerBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", FactionUniqueSquadManagerBinding::_DESTRUCTOR },
         { "clearAndReset", FactionUniqueSquadManagerBinding::clearAndReset },
         { "initialiseNew", FactionUniqueSquadManagerBinding::initialiseNew },
         { "chooseRandomSquadToSpawn", FactionUniqueSquadManagerBinding::chooseRandomSquadToSpawn },

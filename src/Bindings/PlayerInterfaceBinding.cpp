@@ -501,24 +501,6 @@ static int PlayerInterface_set_mRightDown(lua_State* L)
     return 0;
 }
 
-int PlayerInterfaceBinding::_CONSTRUCTOR(lua_State* L)
-{
-    PlayerInterface* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PlayerInterface is nil");
-
-    PlayerInterface* result = instance->_CONSTRUCTOR();
-    return pushObject<PlayerInterface>(L, result, PlayerInterfaceBinding::getMetatableName());
-}
-
-int PlayerInterfaceBinding::_DESTRUCTOR(lua_State* L)
-{
-    PlayerInterface* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PlayerInterface is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int PlayerInterfaceBinding::getCamera(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
@@ -1605,8 +1587,6 @@ void PlayerInterfaceBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", PlayerInterfaceBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", PlayerInterfaceBinding::_DESTRUCTOR },
         { "getCamera", PlayerInterfaceBinding::getCamera },
         { "playerSetup", PlayerInterfaceBinding::playerSetup },
         { "clearAndReset", PlayerInterfaceBinding::clearAndReset },

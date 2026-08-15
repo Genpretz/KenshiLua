@@ -142,11 +142,6 @@ int NxVec3Binding::magnitudeSquared(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 280: NxVec3* _CONSTRUCTOR(...) - overloaded method
-  line 282: NxVec3* _CONSTRUCTOR(...) - overloaded method
-  line 285: NxVec3* _CONSTRUCTOR(...) - overloaded method
-  line 287: NxVec3* _CONSTRUCTOR(...) - overloaded method
-  line 289: NxVec3* _CONSTRUCTOR(...) - overloaded method
   line 291: const NxVec3& operator=(...) - operator
   line 297: float& operator[](...) - operator
   line 299: bool operator==(...) - operator

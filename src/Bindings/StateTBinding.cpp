@@ -46,15 +46,6 @@ static int StateT_set__zoneIsLoaded(lua_State* L)
     return 0;
 }
 
-int StateTBinding::_CONSTRUCTOR(lua_State* L)
-{
-    StateT* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "StateT is nil");
-
-    StateT* result = instance->_CONSTRUCTOR();
-    return pushObject<StateT>(L, result, StateTBinding::getMetatableName());
-}
-
 int StateTBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -76,7 +67,6 @@ void StateTBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", StateTBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

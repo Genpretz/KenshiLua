@@ -71,17 +71,6 @@ static int ThreadWannabe_set_haltEverythingMutex(lua_State* L)
     return luaL_error(L, "Property 'haltEverythingMutex' is read-only");
 }
 
-int ThreadWannabeBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ThreadWannabe* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ThreadWannabe is nil");
-
-    const std::string threadname = luaL_checkstring(L, 2);
-    ThreadWannabe* result = instance->_CONSTRUCTOR(threadname);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
 int ThreadWannabeBinding::backThreadUpdate(lua_State* L)
 {
     ThreadWannabe* instance = getInstance(L, 1);
@@ -152,19 +141,6 @@ int ThreadWannabeBinding::_NV_forceLoopMT(lua_State* L)
     return 0;
 }
 
-int ThreadWannabeBinding::_DESTRUCTOR(lua_State* L)
-{
-    ThreadWannabe* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ThreadWannabe is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - ThreadWannabeBinding::_CONSTRUCTOR: ThreadWannabe* (unbound pointer)
-*/
 
 /*
 Skipped properties needing manual binding:
@@ -192,7 +168,6 @@ void ThreadWannabeBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ThreadWannabeBinding::_CONSTRUCTOR },
         { "backThreadUpdate", ThreadWannabeBinding::backThreadUpdate },
         { "isPaused", ThreadWannabeBinding::isPaused },
         { "setPaused", ThreadWannabeBinding::setPaused },
@@ -200,7 +175,6 @@ void ThreadWannabeBinding::registerBinding(lua_State* L)
         { "_NV_threadProc", ThreadWannabeBinding::_NV_threadProc },
         { "forceLoopMT", ThreadWannabeBinding::forceLoopMT },
         { "_NV_forceLoopMT", ThreadWannabeBinding::_NV_forceLoopMT },
-        { "_DESTRUCTOR", ThreadWannabeBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

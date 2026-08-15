@@ -110,24 +110,6 @@ static int TutorialItem_set_subItemIndex(lua_State* L)
     return 0;
 }
 
-int TutorialItemBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TutorialItem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TutorialItem is nil");
-
-    TutorialItem* result = instance->_CONSTRUCTOR();
-    return pushObject<TutorialItem>(L, result, TutorialItemBinding::getMetatableName());
-}
-
-int TutorialItemBinding::_DESTRUCTOR(lua_State* L)
-{
-    TutorialItem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TutorialItem is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TutorialItemBinding::getId(lua_State* L)
 {
     TutorialItem* instance = getInstance(L, 1);
@@ -392,8 +374,6 @@ void TutorialItemBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TutorialItemBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TutorialItemBinding::_DESTRUCTOR },
         { "getId", TutorialItemBinding::getId },
         { "isLastSubItem", TutorialItemBinding::isLastSubItem },
         { "isSkippable", TutorialItemBinding::isSkippable },

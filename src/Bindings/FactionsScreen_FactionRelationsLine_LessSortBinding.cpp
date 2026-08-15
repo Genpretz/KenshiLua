@@ -11,21 +11,6 @@ static FactionsScreen::FactionRelationsLine::LessSort* getInstance(lua_State* L,
     return checkObject<FactionsScreen::FactionRelationsLine::LessSort>(L, idx, FactionsScreen_FactionRelationsLine_LessSortBinding::getMetatableName());
 }
 
-int FactionsScreen_FactionRelationsLine_LessSortBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (FactionsScreen::FactionRelationsLine::LessSort*)::operator new(sizeof(FactionsScreen::FactionRelationsLine::LessSort));
-    ::new ((void*)obj) FactionsScreen::FactionRelationsLine::LessSort();
-    return pushObject<FactionsScreen::FactionRelationsLine::LessSort>(L, obj, getMetatableName());
-}
-
-int FactionsScreen_FactionRelationsLine_LessSortBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "FactionsScreen::FactionRelationsLine::LessSort is nil");
-    inst->~LessSort();
-    return 0;
-}
-
 int FactionsScreen_FactionRelationsLine_LessSortBinding::gc(lua_State* L)
 {
     return 0;
@@ -54,8 +39,6 @@ void FactionsScreen_FactionRelationsLine_LessSortBinding::registerBinding(lua_St
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

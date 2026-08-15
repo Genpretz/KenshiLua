@@ -167,16 +167,6 @@ static int NavMesh_set_changeMutex(lua_State* L)
     return luaL_error(L, "Property 'changeMutex' is read-only");
 }
 
-int NavMeshBinding::_CONSTRUCTOR(lua_State* L)
-{
-    NavMesh* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NavMesh is nil");
-
-    NavMesh* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
 int NavMeshBinding::initialise(lua_State* L)
 {
     NavMesh* instance = getInstance(L, 1);
@@ -419,15 +409,6 @@ int NavMeshBinding::unloadBuilding(lua_State* L)
     return 0;
 }
 
-int NavMeshBinding::_DESTRUCTOR(lua_State* L)
-{
-    NavMesh* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NavMesh is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 75: void generate(...) - overloaded method
@@ -495,7 +476,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - NavMesh_get_worldShift: hkVector4f* (unbound pointer)
   - NavMesh_get_edgeFilter: hkaiAstarEdgeFilter* (unbound pointer)
   - NavMesh_get_generator: NavMeshGenerator* (unbound pointer)
-  - NavMeshBinding::_CONSTRUCTOR: NavMesh* (unbound pointer)
   - NavMeshBinding::loadZone: NavMeshSector* (unbound pointer)
 */
 
@@ -534,7 +514,6 @@ void NavMeshBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", NavMeshBinding::_CONSTRUCTOR },
         { "initialise", NavMeshBinding::initialise },
         { "shutdown", NavMeshBinding::shutdown },
         { "create", NavMeshBinding::create },
@@ -559,7 +538,6 @@ void NavMeshBinding::registerBinding(lua_State* L)
         { "loadZone", NavMeshBinding::loadZone },
         { "unloadZone", NavMeshBinding::unloadZone },
         { "unloadBuilding", NavMeshBinding::unloadBuilding },
-        { "_DESTRUCTOR", NavMeshBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -39,7 +39,8 @@ static int BloodQueue_get_texture(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "Terrain::BloodQueue is nil");
-    lua_pushlightuserdata(L, (void*)&inst->texture);
+    lua_pushlightuserdata(L, (void*)&inst->texture);
+
     return 1;
 }
 
@@ -72,29 +73,9 @@ static int BloodQueue_set_texture(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "Terrain::BloodQueue is nil");
-    // Ogre::SharedPtr<Ogre::Texture> is unbound - read-only
+    // Ogre::SharedPtr<Ogre::Texture> is unbound - read-only
+
     return luaL_error(L, "texture is read-only (Ogre::SharedPtr<Ogre::Texture> is unbound)");
-    return 0;
-}
-
-int Terrain_BloodQueueBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (Terrain::BloodQueue*)::operator new(sizeof(Terrain::BloodQueue));
-    ::new ((void*)obj) Terrain::BloodQueue();
-    if (lua_gettop(L) >= 1)
-        obj->patch = (unsigned int)luaL_checkinteger(L, 1);
-    if (lua_gettop(L) >= 2)
-        obj->sector = (int)luaL_checkinteger(L, 2);
-    if (lua_gettop(L) >= 3)
-        obj->depth = (int)luaL_checkinteger(L, 3);
-    return pushObject<Terrain::BloodQueue>(L, obj, getMetatableName());
-}
-
-int Terrain_BloodQueueBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "Terrain::BloodQueue is nil");
-    inst->~BloodQueue();
     return 0;
 }
 
@@ -126,8 +107,6 @@ void Terrain_BloodQueueBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

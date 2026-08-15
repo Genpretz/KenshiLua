@@ -119,29 +119,6 @@ static int FoliageSystem_set_zoneMap(lua_State* L)
     return 0;
 }
 
-int FoliageSystemBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FoliageSystem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FoliageSystem is nil");
-
-    ZoneMap* _map = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
-    bool firstTimeLoad = lua_toboolean(L, 3) != 0;
-    bool buildOverlay = lua_toboolean(L, 4) != 0;
-    bool reloadData = lua_toboolean(L, 5) != 0;
-    FoliageSystem* result = instance->_CONSTRUCTOR(_map, firstTimeLoad, buildOverlay, reloadData);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int FoliageSystemBinding::_DESTRUCTOR(lua_State* L)
-{
-    FoliageSystem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FoliageSystem is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FoliageSystemBinding::update(lua_State* L)
 {
     FoliageSystem* instance = getInstance(L, 1);
@@ -238,7 +215,6 @@ Skipped methods needing manual binding:
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - FoliageSystem_get_coverageMap: RealWorldEditableImage* (unbound pointer)
-  - FoliageSystemBinding::_CONSTRUCTOR: FoliageSystem* (unbound pointer)
 */
 
 /*
@@ -273,8 +249,6 @@ void FoliageSystemBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FoliageSystemBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", FoliageSystemBinding::_DESTRUCTOR },
         { "update", FoliageSystemBinding::update },
         { "getCollisionHash", FoliageSystemBinding::getCollisionHash },
         { "setupGrass", FoliageSystemBinding::setupGrass },

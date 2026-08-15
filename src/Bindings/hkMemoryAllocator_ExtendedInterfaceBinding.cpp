@@ -10,19 +10,6 @@ static hkMemoryAllocator::ExtendedInterface* getInstance(lua_State* L, int idx)
     return checkObject<hkMemoryAllocator::ExtendedInterface>(L, idx, hkMemoryAllocator_ExtendedInterfaceBinding::getMetatableName());
 }
 
-int hkMemoryAllocator_ExtendedInterfaceBinding::_CONSTRUCTOR(lua_State* L)
-{
-    return luaL_error(L, "hkMemoryAllocator::ExtendedInterface is abstract and cannot be instantiated");
-}
-
-int hkMemoryAllocator_ExtendedInterfaceBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "hkMemoryAllocator::ExtendedInterface is nil");
-    inst->~ExtendedInterface();
-    return 0;
-}
-
 int hkMemoryAllocator_ExtendedInterfaceBinding::gc(lua_State* L)
 {
     return 0;
@@ -51,8 +38,6 @@ void hkMemoryAllocator_ExtendedInterfaceBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

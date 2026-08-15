@@ -193,26 +193,6 @@ int ThreadClassBinding::waitForRunningStop_Blocking(lua_State* L)
     return 1;
 }
 
-int ThreadClassBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ThreadClass* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ThreadClass is nil");
-
-    const std::string _name = luaL_checkstring(L, 2);
-    ThreadClass* result = instance->_CONSTRUCTOR(_name);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int ThreadClassBinding::_DESTRUCTOR(lua_State* L)
-{
-    ThreadClass* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ThreadClass is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ThreadClassBinding::setup(lua_State* L)
 {
     ThreadClass* instance = getInstance(L, 1);
@@ -280,7 +260,6 @@ int ThreadClassBinding::threadProc(lua_State* L)
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - ThreadClass_get_threadHandle: void* (unbound pointer)
-  - ThreadClassBinding::_CONSTRUCTOR: ThreadClass* (unbound pointer)
 */
 
 int ThreadClassBinding::gc(lua_State* L)
@@ -309,8 +288,6 @@ void ThreadClassBinding::registerBinding(lua_State* L)
         { "startRunning", ThreadClassBinding::startRunning },
         { "isRunning", ThreadClassBinding::isRunning },
         { "waitForRunningStop_Blocking", ThreadClassBinding::waitForRunningStop_Blocking },
-        { "_CONSTRUCTOR", ThreadClassBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ThreadClassBinding::_DESTRUCTOR },
         { "setup", ThreadClassBinding::setup },
         { "beginThread", ThreadClassBinding::beginThread },
         { "setThreadName", ThreadClassBinding::setThreadName },

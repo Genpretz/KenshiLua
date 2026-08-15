@@ -52,19 +52,6 @@ int TutorialGUILineBinding::updateHighlight(lua_State* L)
     return 1;
 }
 
-int TutorialGUILineBinding::_DESTRUCTOR(lua_State* L)
-{
-    TutorialGUILine* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TutorialGUILine is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 98: TutorialGUILine* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int TutorialGUILineBinding::gc(lua_State* L)
 {
@@ -88,7 +75,6 @@ void TutorialGUILineBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "updateHighlight", TutorialGUILineBinding::updateHighlight },
-        { "_DESTRUCTOR", TutorialGUILineBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

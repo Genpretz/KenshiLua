@@ -296,25 +296,6 @@ static int TownBase_set_defaultResident(lua_State* L)
     return 0;
 }
 
-int TownBaseBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TownBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TownBase is nil");
-
-    GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    TownBase* result = instance->_CONSTRUCTOR(d);
-    return pushObject<TownBase>(L, result, TownBaseBinding::getMetatableName());
-}
-
-int TownBaseBinding::_DESTRUCTOR(lua_State* L)
-{
-    TownBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TownBase is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TownBaseBinding::activate(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
@@ -2148,8 +2129,6 @@ void TownBaseBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TownBaseBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TownBaseBinding::_DESTRUCTOR },
         { "activate", TownBaseBinding::activate },
         { "_NV_activate", TownBaseBinding::_NV_activate },
         { "isActive", TownBaseBinding::isActive },

@@ -12,21 +12,6 @@ static TraitBool* getInstance(lua_State* L, int idx)
     return checkObject<TraitBool>(L, idx, TraitBoolBinding::getMetatableName());
 }
 
-int TraitBoolBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (TraitBool*)::operator new(sizeof(TraitBool));
-    ::new ((void*)obj) TraitBool();
-    return pushObject<TraitBool>(L, obj, getMetatableName());
-}
-
-int TraitBoolBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "TraitBool is nil");
-    inst->~TraitBool();
-    return 0;
-}
-
 int TraitBoolBinding::gc(lua_State* L)
 {
     return 0;
@@ -55,8 +40,6 @@ void TraitBoolBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

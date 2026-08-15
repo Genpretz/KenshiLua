@@ -31,20 +31,9 @@ static int BuildingGroup_set_name(lua_State* L)
     return 0;
 }
 
-int BuildingGroupBinding::_DESTRUCTOR(lua_State* L)
-{
-    BuildingGroup* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "BuildingGroup is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 20: bool operator<(...) - operator
-  line 22: BuildingGroup* _CONSTRUCTOR(...) - overloaded method
-  line 24: BuildingGroup* _CONSTRUCTOR(...) - overloaded method
   line 27: BuildModeWindow::BuildingGroup& operator=(...) - operator
 */
 
@@ -74,7 +63,6 @@ void BuildingGroupBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", BuildingGroupBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

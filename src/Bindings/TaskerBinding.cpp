@@ -144,24 +144,6 @@ static int Tasker_set_taskData(lua_State* L)
     return 0;
 }
 
-int TaskerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Tasker* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Tasker is nil");
-
-    Tasker* result = instance->_CONSTRUCTOR();
-    return pushObject<Tasker>(L, result, TaskerBinding::getMetatableName());
-}
-
-int TaskerBinding::_DESTRUCTOR(lua_State* L)
-{
-    Tasker* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Tasker is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TaskerBinding::checkTimeOfDay(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
@@ -493,8 +475,6 @@ void TaskerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TaskerBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TaskerBinding::_DESTRUCTOR },
         { "checkTimeOfDay", TaskerBinding::checkTimeOfDay },
         { "getFrameTime", TaskerBinding::getFrameTime },
         { "key", TaskerBinding::key },

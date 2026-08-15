@@ -45,11 +45,6 @@ static int TaskStateData_set_progressionOnly(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 201: TaskStateData* _CONSTRUCTOR(...) - overloaded method
-  line 203: TaskStateData* _CONSTRUCTOR(...) - overloaded method
-*/
 
 /*
 Skipped properties needing manual binding:

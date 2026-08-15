@@ -47,23 +47,6 @@ static int SlotData_set_time(lua_State* L)
     return 0;
 }
 
-int CombatClass_AttackSlotManager_SlotDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (CombatClass::AttackSlotManager::SlotData*)::operator new(sizeof(CombatClass::AttackSlotManager::SlotData));
-    ::new ((void*)obj) CombatClass::AttackSlotManager::SlotData();
-    if (lua_gettop(L) >= 2)
-        obj->time = (float)luaL_checknumber(L, 2);
-    return pushObjectOwned<CombatClass::AttackSlotManager::SlotData>(L, obj, getMetatableName());
-}
-
-int CombatClass_AttackSlotManager_SlotDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "CombatClass::AttackSlotManager::SlotData is nil");
-    inst->~SlotData();
-    return 0;
-}
-
 int CombatClass_AttackSlotManager_SlotDataBinding::gc(lua_State* L)
 {
     return 0;
@@ -92,8 +75,6 @@ void CombatClass_AttackSlotManager_SlotDataBinding::registerBinding(lua_State* L
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

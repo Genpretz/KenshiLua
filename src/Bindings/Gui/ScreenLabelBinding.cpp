@@ -213,15 +213,6 @@ int ScreenLabelBinding::_NV_update(lua_State* L)
     return 0;
 }
 
-int ScreenLabelBinding::_DESTRUCTOR(lua_State* L)
-{
-    ScreenLabel* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ScreenLabel is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ScreenLabelBinding::destroy(lua_State* L)
 {
     ScreenLabel* instance = getInstance(L, 1);
@@ -237,7 +228,6 @@ Skipped methods needing manual binding:
   line 50: void _NV_setTracking(...) - non-string reference arg
   line 55: void setColor(...) - unsupported arg type
   line 56: void _NV_setColor(...) - unsupported arg type
-  line 63: ScreenLabel* _CONSTRUCTOR(...) - unsupported arg type
 */
 
 /*
@@ -279,7 +269,6 @@ void ScreenLabelBinding::registerBinding(lua_State* L)
         { "_NV_setPosition", ScreenLabelBinding::_NV_setPosition },
         { "update", ScreenLabelBinding::update },
         { "_NV_update", ScreenLabelBinding::_NV_update },
-        { "_DESTRUCTOR", ScreenLabelBinding::_DESTRUCTOR },
         { "destroy", ScreenLabelBinding::destroy },
         { 0, 0 }
     };

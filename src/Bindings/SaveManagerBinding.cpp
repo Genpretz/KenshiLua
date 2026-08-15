@@ -340,25 +340,6 @@ int SaveManagerBinding::initialisePaths(lua_State* L)
     return 0;
 }
 
-int SaveManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    SaveManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SaveManager is nil");
-
-    SaveManager* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int SaveManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    SaveManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SaveManager is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int SaveManagerBinding::saveGame(lua_State* L)
 {
     SaveManager* instance = getInstance(L, 1);
@@ -468,8 +449,6 @@ void SaveManagerBinding::registerBinding(lua_State* L)
         { "versionCode", SaveManagerBinding::versionCode },
         { "updateAutoSave", SaveManagerBinding::updateAutoSave },
         { "initialisePaths", SaveManagerBinding::initialisePaths },
-        { "_CONSTRUCTOR", SaveManagerBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", SaveManagerBinding::_DESTRUCTOR },
         { "saveGame", SaveManagerBinding::saveGame },
         { "loadGame", SaveManagerBinding::loadGame },
         { "importGame", SaveManagerBinding::importGame },

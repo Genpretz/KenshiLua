@@ -81,7 +81,6 @@ public:
     static int getContentHeight(lua_State* L);
     static int getNumLines(lua_State* L);
     static int getLineByNum(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int createLine(lua_State* L);
     static int getNextVerticalPos(lua_State* L);
     static int dataExists(lua_State* L);

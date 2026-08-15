@@ -20,8 +20,6 @@ public:
 
     static int getWordSwap(lua_State* L);
     static int setupWordSwaps(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int getGUIData(lua_State* L);
     static int create(lua_State* L);
     static int getHandle(lua_State* L);

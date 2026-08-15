@@ -94,15 +94,6 @@ static int ToolTip_set_lineSpacing(lua_State* L)
     return 0;
 }
 
-int ToolTipBinding::_DESTRUCTOR(lua_State* L)
-{
-    ToolTip* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ToolTip is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ToolTipBinding::update(lua_State* L)
 {
     ToolTip* instance = getInstance(L, 1);
@@ -191,7 +182,6 @@ int ToolTipBinding::clearLines(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 38: ToolTip* _CONSTRUCTOR(...) - unsupported arg type
   line 41: void setup(...) - overloaded method
   line 42: void setup(...) - overloaded method
   line 43: void setup(...) - overloaded method
@@ -247,7 +237,6 @@ void ToolTipBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ToolTipBinding::_DESTRUCTOR },
         { "update", ToolTipBinding::update },
         { "_NV_update", ToolTipBinding::_NV_update },
         { "hide", ToolTipBinding::hide },

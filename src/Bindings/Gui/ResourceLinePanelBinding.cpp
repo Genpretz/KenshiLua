@@ -24,11 +24,6 @@ static int ResourceLinePanel_get_button(lua_State* L)
 }
 
 // --- Setters for ResourceLinePanel ---
-int ResourceLinePanelBinding::_DESTRUCTOR(lua_State* L)
-{
-    return 0;
-}
-
 int ResourceLinePanelBinding::getWidget(lua_State* L)
 {
     ResourceLinePanel* instance = getInstance(L, 1);
@@ -38,10 +33,6 @@ int ResourceLinePanelBinding::getWidget(lua_State* L)
     return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 21: ResourceLinePanel* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -70,7 +61,6 @@ void ResourceLinePanelBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ResourceLinePanelBinding::_DESTRUCTOR },
         { "getWidget", ResourceLinePanelBinding::getWidget },
         { 0, 0 }
     };

@@ -29,15 +29,6 @@ static int SimpleTimeStamper_set_timer(lua_State* L)
     return 0;
 }
 
-int SimpleTimeStamperBinding::_CONSTRUCTOR(lua_State* L)
-{
-    SimpleTimeStamper* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SimpleTimeStamper is nil");
-
-    SimpleTimeStamper* result = instance->_CONSTRUCTOR();
-    return pushObject<SimpleTimeStamper>(L, result, SimpleTimeStamperBinding::getMetatableName());
-}
-
 int SimpleTimeStamperBinding::getTime(lua_State* L)
 {
     SimpleTimeStamper* instance = getInstance(L, 1);
@@ -57,15 +48,6 @@ int SimpleTimeStamperBinding::stampTime(lua_State* L)
     double result = instance->stampTime();
     lua_pushnumber(L, result);
     return 1;
-}
-
-int SimpleTimeStamperBinding::_DESTRUCTOR(lua_State* L)
-{
-    SimpleTimeStamper* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SimpleTimeStamper is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
 }
 
 int SimpleTimeStamperBinding::gc(lua_State* L)
@@ -89,10 +71,8 @@ void SimpleTimeStamperBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", SimpleTimeStamperBinding::_CONSTRUCTOR },
         { "getTime", SimpleTimeStamperBinding::getTime },
         { "stampTime", SimpleTimeStamperBinding::stampTime },
-        { "_DESTRUCTOR", SimpleTimeStamperBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

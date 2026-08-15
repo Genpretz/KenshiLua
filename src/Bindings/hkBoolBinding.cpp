@@ -31,8 +31,6 @@ static int hkBool_set_m_bool(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 140: hkBool* _CONSTRUCTOR(...) - overloaded method
-  line 142: hkBool* _CONSTRUCTOR(...) - overloaded method
   line 143: operator bool(...) - unsupported return type
   line 144: hkBool operator==(...) - operator
   line 145: hkBool operator!=(...) - operator

@@ -99,24 +99,6 @@ int SpottingPeopleMgrBinding::has(lua_State* L)
     return 1;
 }
 
-int SpottingPeopleMgrBinding::_CONSTRUCTOR(lua_State* L)
-{
-    SpottingPeopleMgr* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SpottingPeopleMgr is nil");
-
-    SpottingPeopleMgr* result = instance->_CONSTRUCTOR();
-    return pushObject<SpottingPeopleMgr>(L, result, SpottingPeopleMgrBinding::getMetatableName());
-}
-
-int SpottingPeopleMgrBinding::_DESTRUCTOR(lua_State* L)
-{
-    SpottingPeopleMgr* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SpottingPeopleMgr is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int SpottingPeopleMgrBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -144,8 +126,6 @@ void SpottingPeopleMgrBinding::registerBinding(lua_State* L)
         { "getTime", SpottingPeopleMgrBinding::getTime },
         { "cantSeeAnymore", SpottingPeopleMgrBinding::cantSeeAnymore },
         { "has", SpottingPeopleMgrBinding::has },
-        { "_CONSTRUCTOR", SpottingPeopleMgrBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", SpottingPeopleMgrBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

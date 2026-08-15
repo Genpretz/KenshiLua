@@ -23,8 +23,6 @@ public:
     static int startRunning(lua_State* L);
     static int isRunning(lua_State* L);
     static int waitForRunningStop_Blocking(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int setup(lua_State* L);
     static int beginThread(lua_State* L);
     static int setThreadName(lua_State* L);

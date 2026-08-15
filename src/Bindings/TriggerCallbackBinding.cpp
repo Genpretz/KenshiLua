@@ -24,35 +24,12 @@ int TriggerCallbackBinding::updateFrameEndMT(lua_State* L)
     return 0;
 }
 
-int TriggerCallbackBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TriggerCallback* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TriggerCallback is nil");
-
-    TriggerCallback* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int TriggerCallbackBinding::_DESTRUCTOR(lua_State* L)
-{
-    TriggerCallback* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TriggerCallback is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 252: void onTrigger(...) - unsupported arg type
   line 253: void _NV_onTrigger(...) - unsupported arg type
 */
 
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - TriggerCallbackBinding::_CONSTRUCTOR: TriggerCallback* (unbound pointer)
-*/
 
 /*
 Skipped properties needing manual binding:
@@ -81,8 +58,6 @@ void TriggerCallbackBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "updateFrameEndMT", TriggerCallbackBinding::updateFrameEndMT },
-        { "_CONSTRUCTOR", TriggerCallbackBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TriggerCallbackBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

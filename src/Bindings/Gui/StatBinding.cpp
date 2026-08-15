@@ -95,20 +95,8 @@ static int Stat_set_active(lua_State* L)
     return 0;
 }
 
-int StatBinding::_DESTRUCTOR(lua_State* L)
-{
-    Stat* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Stat is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 20: Stat* _CONSTRUCTOR(...) - overloaded method
-  line 22: Stat* _CONSTRUCTOR(...) - overloaded method
-  line 24: Stat* _CONSTRUCTOR(...) - overloaded method
   line 32: CharacterStatsWindow::Stat& operator=(...) - operator
 */
 
@@ -133,7 +121,6 @@ void StatBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", StatBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -81,15 +81,6 @@ static int StorageBuilding_set_manyLimitItems(lua_State* L)
     return 0;
 }
 
-int StorageBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    StorageBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "StorageBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int StorageBuildingBinding::getFunctionStuff(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
@@ -364,7 +355,6 @@ int StorageBuildingBinding::_NV_updateInventoryWindow(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 48: StorageBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 59: void getItemsWeWantRidOf(...) - unsupported arg type
   line 60: void _NV_getItemsWeWantRidOf(...) - unsupported arg type
   line 66: bool canHaveSomeOfThese(...) - unsupported arg type
@@ -397,7 +387,6 @@ void StorageBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", StorageBuildingBinding::_DESTRUCTOR },
         { "getFunctionStuff", StorageBuildingBinding::getFunctionStuff },
         { "_NV_getFunctionStuff", StorageBuildingBinding::_NV_getFunctionStuff },
         { "getUseableStuff", StorageBuildingBinding::getUseableStuff },

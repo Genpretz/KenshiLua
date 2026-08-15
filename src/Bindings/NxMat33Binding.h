@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _DESTRUCTOR(lua_State* L);
     static int setRowMajor(lua_State* L);
     static int getRowMajor(lua_State* L);
     static int getColumnMajor(lua_State* L);

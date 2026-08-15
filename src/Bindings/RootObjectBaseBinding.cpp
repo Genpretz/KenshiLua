@@ -116,27 +116,6 @@ static int RootObjectBase_set_handle(lua_State* L)
     return 0;
 }
 
-int RootObjectBaseBinding::_CONSTRUCTOR(lua_State* L)
-{
-    RootObjectBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RootObjectBase is nil");
-
-    GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    Faction* ownr = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
-    hand h = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
-    RootObjectBase* result = instance->_CONSTRUCTOR(d, ownr, h);
-    return pushObject<RootObjectBase>(L, result, RootObjectBaseBinding::getMetatableName());
-}
-
-int RootObjectBaseBinding::_DESTRUCTOR(lua_State* L)
-{
-    RootObjectBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RootObjectBase is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int RootObjectBaseBinding::isValid(lua_State* L)
 {
     RootObjectBase* instance = getInstance(L, 1);
@@ -582,8 +561,6 @@ void RootObjectBaseBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", RootObjectBaseBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", RootObjectBaseBinding::_DESTRUCTOR },
         { "isValid", RootObjectBaseBinding::isValid },
         { "getName", RootObjectBaseBinding::getName },
         { "_NV_getName", RootObjectBaseBinding::_NV_getName },

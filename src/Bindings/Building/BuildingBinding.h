@@ -132,7 +132,6 @@ public:
     static int _NV_getSoundIntensity(lua_State* L);
     static int loadUnloadCheck(lua_State* L);
     static int _NV_loadUnloadCheck(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int _saveBuildingState(lua_State* L);
     static int _NV__saveBuildingState(lua_State* L);
     static int _loadBuildingState(lua_State* L);

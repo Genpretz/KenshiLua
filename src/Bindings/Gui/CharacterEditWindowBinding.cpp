@@ -518,15 +518,6 @@ static int CharacterEditWindow_set_requestUpdateLiveObject(lua_State* L)
     return 0;
 }
 
-int CharacterEditWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    CharacterEditWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int CharacterEditWindowBinding::update(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
@@ -700,7 +691,6 @@ int CharacterEditWindowBinding::exportMeshes(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 38: CharacterEditWindow* _CONSTRUCTOR(...) - unsupported arg type
   line 44: void nameChanged(...) - unsupported arg type
   line 45: void prevRace(...) - unsupported arg type
   line 46: void nextRace(...) - unsupported arg type
@@ -769,7 +759,6 @@ void CharacterEditWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", CharacterEditWindowBinding::_DESTRUCTOR },
         { "update", CharacterEditWindowBinding::update },
         { "loadData", CharacterEditWindowBinding::loadData },
         { "initCharacters", CharacterEditWindowBinding::initCharacters },

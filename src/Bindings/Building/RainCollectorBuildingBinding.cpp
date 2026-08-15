@@ -45,18 +45,8 @@ int RainCollectorBuildingBinding::getRainAmount(lua_State* L)
     return 1;
 }
 
-int RainCollectorBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    RainCollectorBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 11: RainCollectorBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 14: void getGUIState(...) - unsupported arg type
   line 15: void _NV_getGUIState(...) - unsupported arg type
   line 16: void getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
@@ -87,7 +77,6 @@ void RainCollectorBuildingBinding::registerBinding(lua_State* L)
         { "calculateEfficiencyMult", RainCollectorBuildingBinding::calculateEfficiencyMult },
         { "_NV_calculateEfficiencyMult", RainCollectorBuildingBinding::_NV_calculateEfficiencyMult },
         { "getRainAmount", RainCollectorBuildingBinding::getRainAmount },
-        { "_DESTRUCTOR", RainCollectorBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -149,25 +149,6 @@ static int ProspectingWindow_set_lastName(lua_State* L)
     return 0;
 }
 
-int ProspectingWindowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ProspectingWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ProspectingWindow is nil");
-
-    ProspectingWindow* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int ProspectingWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    ProspectingWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ProspectingWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ProspectingWindowBinding::showT(lua_State* L)
 {
     ProspectingWindow* instance = getInstance(L, 1);
@@ -307,8 +288,6 @@ void ProspectingWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ProspectingWindowBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ProspectingWindowBinding::_DESTRUCTOR },
         { "showT", ProspectingWindowBinding::showT },
         { "_show", ProspectingWindowBinding::_show },
         { "hide", ProspectingWindowBinding::hide },

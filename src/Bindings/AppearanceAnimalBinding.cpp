@@ -16,15 +16,6 @@ static AppearanceAnimal* getInstance(lua_State* L, int idx)
 
 // --- Getters for AppearanceAnimal ---
 // --- Setters for AppearanceAnimal ---
-int AppearanceAnimalBinding::_DESTRUCTOR(lua_State* L)
-{
-    AppearanceAnimal* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AppearanceAnimal is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int AppearanceAnimalBinding::createBody(lua_State* L)
 {
     AppearanceAnimal* instance = getInstance(L, 1);
@@ -61,10 +52,6 @@ int AppearanceAnimalBinding::_NV_updateCharaterTexture(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 252: AppearanceAnimal* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int AppearanceAnimalBinding::gc(lua_State* L)
 {
@@ -87,7 +74,6 @@ void AppearanceAnimalBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", AppearanceAnimalBinding::_DESTRUCTOR },
         { "createBody", AppearanceAnimalBinding::createBody },
         { "_NV_createBody", AppearanceAnimalBinding::_NV_createBody },
         { "updateCharaterTexture", AppearanceAnimalBinding::updateCharaterTexture },

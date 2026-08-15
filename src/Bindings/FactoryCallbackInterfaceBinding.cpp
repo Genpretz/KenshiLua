@@ -24,15 +24,6 @@ int FactoryCallbackInterfaceBinding::factoryObjectCreatedCallback(lua_State* L)
     return 0;
 }
 
-int FactoryCallbackInterfaceBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FactoryCallbackInterface* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactoryCallbackInterface is nil");
-
-    FactoryCallbackInterface* result = instance->_CONSTRUCTOR();
-    return pushObject<FactoryCallbackInterface>(L, result, FactoryCallbackInterfaceBinding::getMetatableName());
-}
-
 int FactoryCallbackInterfaceBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -55,7 +46,6 @@ void FactoryCallbackInterfaceBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "factoryObjectCreatedCallback", FactoryCallbackInterfaceBinding::factoryObjectCreatedCallback },
-        { "_CONSTRUCTOR", FactoryCallbackInterfaceBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

@@ -26,7 +26,5 @@ public:
     static int removeIsland(lua_State* L);
     static int projectToTerrain(lua_State* L);
     static int getSeedPoints(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

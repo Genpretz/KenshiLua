@@ -23,18 +23,6 @@ static int Crossbow_get_gunClass(lua_State* L)
 }
 
 // --- Setters for Crossbow ---
-int CrossbowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Crossbow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Crossbow is nil");
-
-    GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 3, HandBinding::getMetatableName());
-    int _overalllevel = (int)luaL_checkinteger(L, 4);
-    Crossbow* result = instance->_CONSTRUCTOR(baseData, _handle, _overalllevel);
-    return pushObject<Crossbow>(L, result, CrossbowBinding::getMetatableName());
-}
-
 int CrossbowBinding::isCrossbow(lua_State* L)
 {
     Crossbow* instance = getInstance(L, 1);
@@ -171,15 +159,6 @@ int CrossbowBinding::_NV_setVisible(lua_State* L)
     return 0;
 }
 
-int CrossbowBinding::_DESTRUCTOR(lua_State* L)
-{
-    Crossbow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Crossbow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 130: void getTooltipData1(...) - unsupported arg type
@@ -226,7 +205,6 @@ void CrossbowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", CrossbowBinding::_CONSTRUCTOR },
         { "isCrossbow", CrossbowBinding::isCrossbow },
         { "_NV_isCrossbow", CrossbowBinding::_NV_isCrossbow },
         { "getClassType", CrossbowBinding::getClassType },
@@ -241,7 +219,6 @@ void CrossbowBinding::registerBinding(lua_State* L)
         { "_NV_destroyItemEntityCallback_Equipping", CrossbowBinding::_NV_destroyItemEntityCallback_Equipping },
         { "setVisible", CrossbowBinding::setVisible },
         { "_NV_setVisible", CrossbowBinding::_NV_setVisible },
-        { "_DESTRUCTOR", CrossbowBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -214,25 +214,6 @@ static int InteriorModeButtonWindow_set_currentExterior(lua_State* L)
     return 0;
 }
 
-int InteriorModeButtonWindowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    InteriorModeButtonWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-
-    InteriorModeButtonWindow* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int InteriorModeButtonWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    InteriorModeButtonWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int InteriorModeButtonWindowBinding::toggleInteriorMode(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
@@ -396,7 +377,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - InteriorModeButtonWindow_get_deleteBut2: MyGUI::Button* (unbound pointer)
   - InteriorModeButtonWindow_get_listbox2: MyGUI::ListBox* (unbound pointer)
   - InteriorModeButtonWindow_get_namebox2: MyGUI::EditBox* (unbound pointer)
-  - InteriorModeButtonWindowBinding::_CONSTRUCTOR: InteriorModeButtonWindow* (unbound pointer)
 */
 
 /*
@@ -425,8 +405,6 @@ void InteriorModeButtonWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", InteriorModeButtonWindowBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", InteriorModeButtonWindowBinding::_DESTRUCTOR },
         { "toggleInteriorMode", InteriorModeButtonWindowBinding::toggleInteriorMode },
         { "setVisible", InteriorModeButtonWindowBinding::setVisible },
         { "wantExteriorsInvisible", InteriorModeButtonWindowBinding::wantExteriorsInvisible },

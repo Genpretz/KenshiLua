@@ -108,17 +108,6 @@ static int AttackSlotManager_set_attackSlotH(lua_State* L)
     return 0;
 }
 
-int AttackSlotManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    AttackSlotManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AttackSlotManager is nil");
-
-    Character* _me = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    CombatClass* c = checkObject<CombatClass>(L, 3, CombatClassBinding::getMetatableName());
-    AttackSlotManager* result = instance->_CONSTRUCTOR(_me, c);
-    return pushObject<AttackSlotManager>(L, result, AttackSlotManagerBinding::getMetatableName());
-}
-
 int AttackSlotManagerBinding::hasFreeAttackSlot(lua_State* L)
 {
     AttackSlotManager* instance = getInstance(L, 1);
@@ -177,15 +166,6 @@ int AttackSlotManagerBinding::getMaxPossibleAttackSlots(lua_State* L)
     return 1;
 }
 
-int AttackSlotManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    AttackSlotManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AttackSlotManager is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 104: void freeSlotH(...) - non-string reference arg
@@ -213,14 +193,12 @@ void AttackSlotManagerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", AttackSlotManagerBinding::_CONSTRUCTOR },
         { "hasFreeAttackSlot", AttackSlotManagerBinding::hasFreeAttackSlot },
         { "freeAllSlotsH", AttackSlotManagerBinding::freeAllSlotsH },
         { "periodicUpdate", AttackSlotManagerBinding::periodicUpdate },
         { "update", AttackSlotManagerBinding::update },
         { "getNumAttackSlots", AttackSlotManagerBinding::getNumAttackSlots },
         { "getMaxPossibleAttackSlots", AttackSlotManagerBinding::getMaxPossibleAttackSlots },
-        { "_DESTRUCTOR", AttackSlotManagerBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

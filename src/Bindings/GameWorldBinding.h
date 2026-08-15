@@ -20,8 +20,6 @@ public:
 
     static int justLoadFactionRelations(lua_State* L);
     static int startUpThreads(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int resetGame(lua_State* L);
     static int _clearAndDestroyGameWorldStuff(lua_State* L);
     static int initialisation(lua_State* L);

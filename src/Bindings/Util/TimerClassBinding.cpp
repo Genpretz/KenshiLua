@@ -13,20 +13,6 @@ static TimerClass* getInstance(lua_State* L, int idx)
 
 // --- Getters for TimerClass ---
 // --- Setters for TimerClass ---
-int TimerClassBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TimerClass* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TimerClass is nil");
-
-    TimerClass* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - TimerClassBinding::_CONSTRUCTOR: TimerClass* (unbound pointer)
-*/
 
 /*
 Skipped properties needing manual binding:
@@ -56,7 +42,6 @@ void TimerClassBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TimerClassBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "Bindings/TownBase_ResidentDataBinding.h"
-#include "Lua/BindingHelpers.h"
-#include "Bindings/GameDataBinding.h"
+#include "Lua/BindingHelpers.h"
+
+#include "Bindings/GameDataBinding.h"
+
 #include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
@@ -109,27 +111,6 @@ static int ResidentData_set_priority(lua_State* L)
     return 0;
 }
 
-int TownBase_ResidentDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (TownBase::ResidentData*)::operator new(sizeof(TownBase::ResidentData));
-    ::new ((void*)obj) TownBase::ResidentData();
-    if (lua_gettop(L) >= 4)
-        obj->count = (int)luaL_checkinteger(L, 4);
-    if (lua_gettop(L) >= 5)
-        obj->chance = (int)luaL_checkinteger(L, 5);
-    if (lua_gettop(L) >= 6)
-        obj->priority = (int)luaL_checkinteger(L, 6);
-    return pushObject<TownBase::ResidentData>(L, obj, getMetatableName());
-}
-
-int TownBase_ResidentDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "TownBase::ResidentData is nil");
-    inst->~ResidentData();
-    return 0;
-}
-
 int TownBase_ResidentDataBinding::gc(lua_State* L)
 {
     return 0;
@@ -158,8 +139,6 @@ void TownBase_ResidentDataBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

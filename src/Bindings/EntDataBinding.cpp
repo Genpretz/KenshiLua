@@ -559,28 +559,6 @@ static int EntData_set_referenceCount(lua_State* L)
     return 0;
 }
 
-int EntDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    EntData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "EntData is nil");
-
-    GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    bool rld = lua_toboolean(L, 3) != 0;
-    GameData* layer = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
-    EntData* result = instance->_CONSTRUCTOR(dat, rld, layer);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int EntDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    EntData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "EntData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int EntDataBinding::createEntity1(lua_State* L)
 {
     EntData* instance = getInstance(L, 1);
@@ -633,7 +611,6 @@ Skipped methods needing manual binding:
 LIGHTUSERDATA DEPENDENCIES:
   - EntData_get_entity1: Ogre::Entity* (unbound pointer)
   - EntData_get_entity2: Ogre::Entity* (unbound pointer)
-  - EntDataBinding::_CONSTRUCTOR: EntData* (unbound pointer)
   - EntDataBinding::createEntity1: Ogre::Entity* (unbound pointer)
   - EntDataBinding::createEntity2: Ogre::Entity* (unbound pointer)
   - EntDataBinding::selectBiomeEntity: Ogre::Entity* (unbound pointer)
@@ -667,8 +644,6 @@ void EntDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", EntDataBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", EntDataBinding::_DESTRUCTOR },
         { "createEntity1", EntDataBinding::createEntity1 },
         { "createEntity2", EntDataBinding::createEntity2 },
         { "selectBiomeEntity", EntDataBinding::selectBiomeEntity },

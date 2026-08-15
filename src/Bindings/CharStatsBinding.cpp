@@ -1698,15 +1698,6 @@ int CharStatsBinding::getWeatherProtection(lua_State* L)
     return 1;
 }
 
-int CharStatsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    CharStats* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharStats is nil");
-
-    CharStats* result = instance->_CONSTRUCTOR();
-    return pushObject<CharStats>(L, result, CharStatsBinding::getMetatableName());
-}
-
 int CharStatsBinding::unarmedEncumbrancePenalty(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
@@ -2867,15 +2858,6 @@ int CharStatsBinding::_NV_setEquippedWeaponSkill(lua_State* L)
     return 0;
 }
 
-int CharStatsBinding::_DESTRUCTOR(lua_State* L)
-{
-    CharStats* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharStats is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int CharStatsBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -3309,7 +3291,6 @@ void CharStatsBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "getWeatherProtection", CharStatsBinding::getWeatherProtection },
-        { "_CONSTRUCTOR", CharStatsBinding::_CONSTRUCTOR },
         { "unarmedEncumbrancePenalty", CharStatsBinding::unarmedEncumbrancePenalty },
         { "skillBonusUnarmed_forGUI", CharStatsBinding::skillBonusUnarmed_forGUI },
         { "skillBonusAttack_melee", CharStatsBinding::skillBonusAttack_melee },
@@ -3420,7 +3401,6 @@ void CharStatsBinding::registerBinding(lua_State* L)
         { "_NV__recalculateStats", CharStatsBinding::_NV__recalculateStats },
         { "setEquippedWeaponSkill", CharStatsBinding::setEquippedWeaponSkill },
         { "_NV_setEquippedWeaponSkill", CharStatsBinding::_NV_setEquippedWeaponSkill },
-        { "_DESTRUCTOR", CharStatsBinding::_DESTRUCTOR },
         { "getStrength", CharStatsBinding::getStrength },
         { "getStrengthRaw", CharStatsBinding::getStrengthBase },
         { "getDexterity", CharStatsBinding::getDexterity },

@@ -31,8 +31,6 @@ public:
     static int versionCode(lua_State* L);
     static int updateAutoSave(lua_State* L);
     static int initialisePaths(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int saveGame(lua_State* L);
     static int loadGame(lua_State* L);
     static int importGame(lua_State* L);

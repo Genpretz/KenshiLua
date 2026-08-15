@@ -240,15 +240,6 @@ static int RotatingEnt_set_windSpeedRotationDanger(lua_State* L)
     return 0;
 }
 
-int RotatingEntBinding::_DESTRUCTOR(lua_State* L)
-{
-    RotatingEnt* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RotatingEnt is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int RotatingEntBinding::update(lua_State* L)
 {
     RotatingEnt* instance = getInstance(L, 1);
@@ -327,7 +318,6 @@ int RotatingEntBinding::getRotationPower(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 137: RotatingEnt* _CONSTRUCTOR(...) - unsupported arg type
   line 147: void weatherUpdated(...) - unsupported arg type
   line 148: void _NV_weatherUpdated(...) - unsupported arg type
 */
@@ -359,7 +349,6 @@ void RotatingEntBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", RotatingEntBinding::_DESTRUCTOR },
         { "update", RotatingEntBinding::update },
         { "_NV_update", RotatingEntBinding::_NV_update },
         { "updateAim", RotatingEntBinding::updateAim },

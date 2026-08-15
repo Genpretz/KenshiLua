@@ -101,20 +101,6 @@ int TutorialSubItemBinding::_NV_end(lua_State* L)
     return 0;
 }
 
-int TutorialSubItemBinding::_DESTRUCTOR(lua_State* L)
-{
-    TutorialSubItem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TutorialSubItem is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 14: TutorialSubItem* _CONSTRUCTOR(...) - overloaded method
-  line 16: TutorialSubItem* _CONSTRUCTOR(...) - overloaded method
-*/
 
 int TutorialSubItemBinding::gc(lua_State* L)
 {
@@ -143,7 +129,6 @@ void TutorialSubItemBinding::registerBinding(lua_State* L)
         { "_NV_run", TutorialSubItemBinding::_NV_run },
         { "end", TutorialSubItemBinding::end },
         { "_NV_end", TutorialSubItemBinding::_NV_end },
-        { "_DESTRUCTOR", TutorialSubItemBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

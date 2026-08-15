@@ -1002,15 +1002,6 @@ int DatapanelGUIBinding::getLineByNum(lua_State* L)
     return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
 }
 
-int DatapanelGUIBinding::_DESTRUCTOR(lua_State* L)
-{
-    DatapanelGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DatapanelGUIBinding::createLine(lua_State* L)
 {
     DatapanelGUI* instance = getInstance(L, 1);
@@ -1077,8 +1068,6 @@ Skipped methods needing manual binding:
   line 106: void setMouseOverCallback(...) - unsupported arg type
   line 107: void _NV_setMouseOverCallback(...) - unsupported arg type
   line 113: void tabButton(...) - unsupported arg type
-  line 121: DatapanelGUI* _CONSTRUCTOR(...) - overloaded method
-  line 123: DatapanelGUI* _CONSTRUCTOR(...) - overloaded method
   line 131: void closeButtonCallback(...) - unsupported arg type
   line 132: void mouseOverCallback(...) - unsupported arg type
   line 133: void notifyMouseWheel(...) - unsupported arg type
@@ -1177,7 +1166,6 @@ void DatapanelGUIBinding::registerBinding(lua_State* L)
         { "getContentHeight", DatapanelGUIBinding::getContentHeight },
         { "getNumLines", DatapanelGUIBinding::getNumLines },
         { "getLineByNum", DatapanelGUIBinding::getLineByNum },
-        { "_DESTRUCTOR", DatapanelGUIBinding::_DESTRUCTOR },
         { "createLine", DatapanelGUIBinding::createLine },
         { "getNextVerticalPos", DatapanelGUIBinding::getNextVerticalPos },
         { "dataExists", DatapanelGUIBinding::dataExists },

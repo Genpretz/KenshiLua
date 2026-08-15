@@ -200,15 +200,6 @@ static int OrdersPanel_set_speedImageNamesIdx(lua_State* L)
     return 0;
 }
 
-int OrdersPanelBinding::_DESTRUCTOR(lua_State* L)
-{
-    OrdersPanel* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "OrdersPanel is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int OrdersPanelBinding::update(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
@@ -309,7 +300,6 @@ int OrdersPanelBinding::setSpeedImage(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 83: OrdersPanel* _CONSTRUCTOR(...) - unsupported arg type
   line 92: void notifyStartDropOrder(...) - non-string reference arg
   line 93: void notifyRequestDropOrder(...) - non-string reference arg
   line 95: void toggleStealth(...) - unsupported arg type
@@ -368,7 +358,6 @@ void OrdersPanelBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", OrdersPanelBinding::_DESTRUCTOR },
         { "update", OrdersPanelBinding::update },
         { "clear", OrdersPanelBinding::clear },
         { "command", OrdersPanelBinding::command },

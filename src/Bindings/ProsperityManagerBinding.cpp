@@ -47,15 +47,6 @@ static int ProsperityManager_set_maxProsperity(lua_State* L)
     return 0;
 }
 
-int ProsperityManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ProsperityManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ProsperityManager is nil");
-
-    ProsperityManager* result = instance->_CONSTRUCTOR();
-    return pushObject<ProsperityManager>(L, result, ProsperityManagerBinding::getMetatableName());
-}
-
 int ProsperityManagerBinding::setup(lua_State* L)
 {
     ProsperityManager* instance = getInstance(L, 1);
@@ -158,7 +149,6 @@ void ProsperityManagerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ProsperityManagerBinding::_CONSTRUCTOR },
         { "setup", ProsperityManagerBinding::setup },
         { "load", ProsperityManagerBinding::load },
         { "save", ProsperityManagerBinding::save },

@@ -134,27 +134,6 @@ static int Command_set_masks(lua_State* L)
     return 0;
 }
 
-int InputHandler_CommandBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (InputHandler::Command*)::operator new(sizeof(InputHandler::Command));
-    ::new ((void*)obj) InputHandler::Command();
-    if (lua_gettop(L) >= 2)
-        obj->isKey = lua_toboolean(L, 2) != 0;
-    if (lua_gettop(L) >= 3)
-        obj->code = (int)luaL_checkinteger(L, 3);
-    if (lua_gettop(L) >= 6)
-        obj->bound = (int)luaL_checkinteger(L, 6);
-    return pushObject<InputHandler::Command>(L, obj, getMetatableName());
-}
-
-int InputHandler_CommandBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "InputHandler::Command is nil");
-    inst->~Command();
-    return 0;
-}
-
 int InputHandler_CommandBinding::gc(lua_State* L)
 {
     return 0;
@@ -183,8 +162,6 @@ void InputHandler_CommandBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

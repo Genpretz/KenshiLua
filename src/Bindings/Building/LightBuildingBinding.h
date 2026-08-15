@@ -26,6 +26,5 @@ public:
     static int _NV_needPowerRightNow(lua_State* L);
     static int getPositionMarker(lua_State* L);
     static int _NV_getPositionMarker(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

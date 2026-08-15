@@ -38,26 +38,6 @@ static int LoadSaveWindow_set_infoPanel(lua_State* L)
     return 0;
 }
 
-int LoadSaveWindowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    LoadSaveWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
-
-    const std::string layout = luaL_checkstring(L, 2);
-    LoadSaveWindow* result = instance->_CONSTRUCTOR(layout);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int LoadSaveWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    LoadSaveWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int LoadSaveWindowBinding::select(lua_State* L)
 {
     LoadSaveWindow* instance = getInstance(L, 1);
@@ -146,7 +126,6 @@ Skipped methods needing manual binding:
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - LoadSaveWindow_get_list: MyGUI::MultiListBox* (unbound pointer)
-  - LoadSaveWindowBinding::_CONSTRUCTOR: LoadSaveWindow* (unbound pointer)
   - LoadSaveWindowBinding::getWidget: MyGUI::Widget* (unbound pointer)
 */
 
@@ -178,8 +157,6 @@ void LoadSaveWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", LoadSaveWindowBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", LoadSaveWindowBinding::_DESTRUCTOR },
         { "select", LoadSaveWindowBinding::select },
         { "_NV_select", LoadSaveWindowBinding::_NV_select },
         { "getWidget", LoadSaveWindowBinding::getWidget },

@@ -54,18 +54,8 @@ int GeneratorBuildingBinding::_NV_getFuelConsumptionRate(lua_State* L)
     return 1;
 }
 
-int GeneratorBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    GeneratorBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GeneratorBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 11: GeneratorBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 14: void getGUIState(...) - unsupported arg type
   line 15: void _NV_getGUIState(...) - unsupported arg type
   line 16: float getInputValue(...) - unsupported arg type
@@ -97,7 +87,6 @@ void GeneratorBuildingBinding::registerBinding(lua_State* L)
         { "_NV_getPowerOutput", GeneratorBuildingBinding::_NV_getPowerOutput },
         { "getFuelConsumptionRate", GeneratorBuildingBinding::getFuelConsumptionRate },
         { "_NV_getFuelConsumptionRate", GeneratorBuildingBinding::_NV_getFuelConsumptionRate },
-        { "_DESTRUCTOR", GeneratorBuildingBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

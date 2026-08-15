@@ -44,25 +44,6 @@ static int CharacteristicsData_set_fleeRatio_relativeEnemy(lua_State* L)
     return 0;
 }
 
-int Faction_CharacteristicsDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (Faction::CharacteristicsData*)::operator new(sizeof(Faction::CharacteristicsData));
-    ::new ((void*)obj) Faction::CharacteristicsData();
-    if (lua_gettop(L) >= 1)
-        obj->fleeRatio_squadSize = (float)luaL_checknumber(L, 1);
-    if (lua_gettop(L) >= 2)
-        obj->fleeRatio_relativeEnemy = (float)luaL_checknumber(L, 2);
-    return pushObject<Faction::CharacteristicsData>(L, obj, getMetatableName());
-}
-
-int Faction_CharacteristicsDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "Faction::CharacteristicsData is nil");
-    inst->~CharacteristicsData();
-    return 0;
-}
-
 int Faction_CharacteristicsDataBinding::gc(lua_State* L)
 {
     return 0;
@@ -91,8 +72,6 @@ void Faction_CharacteristicsDataBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

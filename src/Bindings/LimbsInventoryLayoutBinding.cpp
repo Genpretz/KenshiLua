@@ -32,25 +32,6 @@ static int LimbsInventoryLayout_set_character(lua_State* L)
     return 0;
 }
 
-int LimbsInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    LimbsInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "LimbsInventoryLayout is nil");
-
-    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    LimbsInventoryLayout* result = instance->_CONSTRUCTOR(c);
-    return pushObject<LimbsInventoryLayout>(L, result, LimbsInventoryLayoutBinding::getMetatableName());
-}
-
-int LimbsInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    LimbsInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "LimbsInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 36: void setupSections(...) - unsupported arg type
@@ -78,8 +59,6 @@ void LimbsInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", LimbsInventoryLayoutBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", LimbsInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

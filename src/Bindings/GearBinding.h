@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int isGear(lua_State* L);
     static int _NV_isGear(lua_State* L);
     static int getLevel01(lua_State* L);
@@ -32,7 +31,6 @@ public:
     static int _loadFromSerialise(lua_State* L);
     static int _NV__loadFromSerialise(lua_State* L);
     static int isPlayerCrafted(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int _NV_setInventoryWeAreIn(lua_State* L);
     static int setInventoryWeAreIn(lua_State* L);
 };

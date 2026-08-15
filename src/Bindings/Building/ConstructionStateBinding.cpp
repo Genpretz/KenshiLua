@@ -178,33 +178,6 @@ static int ConstructionState_set_pathThreshold(lua_State* L)
     return 0;
 }
 
-int ConstructionStateBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ConstructionState* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ConstructionState is nil");
-
-    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2))
-    {
-        ConstructionState* other = checkObject<ConstructionState>(L, 2, ConstructionStateBinding::getMetatableName());
-        ConstructionState* result = instance->_CONSTRUCTOR(*other);
-        return pushObject<ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
-    }
-    else
-    {
-        ConstructionState* result = instance->_CONSTRUCTOR();
-        return pushObject<ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
-    }
-}
-
-int ConstructionStateBinding::_DESTRUCTOR(lua_State* L)
-{
-    ConstructionState* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ConstructionState is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ConstructionStateBinding::addMaterials(lua_State* L)
 {
     ConstructionState* instance = getInstance(L, 1);
@@ -391,8 +364,6 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ConstructionStateBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ConstructionStateBinding::_DESTRUCTOR },
         { "addMaterials", ConstructionStateBinding::addMaterials },
         { "materialsEmpty", ConstructionStateBinding::materialsEmpty },
         { "getBuildingSpeedMultiplier", ConstructionStateBinding::getBuildingSpeedMultiplier },

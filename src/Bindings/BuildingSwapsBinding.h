@@ -20,7 +20,5 @@ public:
 
     static int hasReplacement(lua_State* L);
     static int getReplacement(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
 };
 }

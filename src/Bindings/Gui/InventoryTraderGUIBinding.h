@@ -18,8 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int getInventory(lua_State* L);
     static int _NV_getInventory(lua_State* L);
     static int getCallbackCharacter(lua_State* L);

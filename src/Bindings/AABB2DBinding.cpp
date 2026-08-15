@@ -78,25 +78,6 @@ static int AABB2D_set_y2(lua_State* L)
     return 0;
 }
 
-int AABB2DBinding::_CONSTRUCTOR(lua_State* L)
-{
-    AABB2D* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AABB2D is nil");
-
-    if (lua_gettop(L) >= 2)
-    {
-        Ogre::Vector4 a;
-        readQuaternion(L, 2, a);
-        AABB2D* result = instance->_CONSTRUCTOR(a);
-        return pushObject<AABB2D>(L, result, AABB2DBinding::getMetatableName());
-    }
-    else
-    {
-        AABB2D* result = instance->_CONSTRUCTOR();
-        return pushObject<AABB2D>(L, result, AABB2DBinding::getMetatableName());
-    }
-}
-
 int AABB2DBinding::setNull(lua_State* L)
 {
     AABB2D* instance = getInstance(L, 1);
@@ -216,7 +197,6 @@ void AABB2DBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", AABB2DBinding::_CONSTRUCTOR },
         { "setNull", AABB2DBinding::setNull },
         { "pointWithin", AABB2DBinding::pointWithin },
         { "inflate", AABB2DBinding::inflate },

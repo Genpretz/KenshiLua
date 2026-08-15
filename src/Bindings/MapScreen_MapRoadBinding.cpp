@@ -28,21 +28,6 @@ static int MapRoad_set_widget(lua_State* L)
     return 0;
 }
 
-int MapScreen_MapRoadBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (MapScreen::MapRoad*)::operator new(sizeof(MapScreen::MapRoad));
-    ::new ((void*)obj) MapScreen::MapRoad();
-    return pushObject<MapScreen::MapRoad>(L, obj, getMetatableName());
-}
-
-int MapScreen_MapRoadBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "MapScreen::MapRoad is nil");
-    inst->~MapRoad();
-    return 0;
-}
-
 int MapScreen_MapRoadBinding::gc(lua_State* L)
 {
     return 0;
@@ -71,8 +56,6 @@ void MapScreen_MapRoadBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

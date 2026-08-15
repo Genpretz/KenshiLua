@@ -28,8 +28,6 @@ public:
     static int getSingleton(lua_State* L);
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int saveLocationChanged(lua_State* L);
     static int changeFontSize(lua_State* L);
     static int changeVolume(lua_State* L);

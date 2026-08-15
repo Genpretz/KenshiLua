@@ -34,28 +34,6 @@ int ShopTraderInventorySectionBinding::_NV_autoArrange(lua_State* L)
     return 0;
 }
 
-int ShopTraderInventorySectionBinding::_DESTRUCTOR(lua_State* L)
-{
-    ShopTraderInventorySection* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ShopTraderInventorySection is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-int ShopTraderInventorySectionBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ShopTraderInventorySection* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ShopTraderInventorySection is nil");
-    std::string name = luaL_checkstring(L, 2);
-    int w = (int)luaL_checkinteger(L, 3);
-    int h = (int)luaL_checkinteger(L, 4);
-    Inventory* inventory = checkObject<Inventory>(L, 5, InventoryBinding::getMetatableName());
-
-    ShopTraderInventorySection* result = instance->_CONSTRUCTOR(name, w, h, inventory);
-    return pushObject<ShopTraderInventorySection>(L, result, ShopTraderInventorySectionBinding::getMetatableName());
-}
-
 int ShopTraderInventorySectionBinding::addItem(lua_State* L)
 {
     ShopTraderInventorySection* instance = getInstance(L, 1);
@@ -101,10 +79,8 @@ void ShopTraderInventorySectionBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "autoArrange", ShopTraderInventorySectionBinding::autoArrange },
         { "_NV_autoArrange", ShopTraderInventorySectionBinding::_NV_autoArrange },
-        { "_DESTRUCTOR", ShopTraderInventorySectionBinding::_DESTRUCTOR },
         { "addItem", ShopTraderInventorySectionBinding::addItem },
         { "_NV_addItem", ShopTraderInventorySectionBinding::_NV_addItem },
-        { "_CONSTRUCTOR", ShopTraderInventorySectionBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

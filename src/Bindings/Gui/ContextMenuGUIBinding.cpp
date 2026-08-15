@@ -61,25 +61,6 @@ static int ContextMenuGUI_set_name(lua_State* L)
     return 0;
 }
 
-int ContextMenuGUIBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ContextMenuGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ContextMenuGUI is nil");
-
-    ContextMenuGUI* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int ContextMenuGUIBinding::_DESTRUCTOR(lua_State* L)
-{
-    ContextMenuGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ContextMenuGUI is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ContextMenuGUIBinding::getMainWidget(lua_State* L)
 {
     ContextMenuGUI* instance = getInstance(L, 1);
@@ -144,8 +125,6 @@ void ContextMenuGUIBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ContextMenuGUIBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ContextMenuGUIBinding::_DESTRUCTOR },
         { "getMainWidget", ContextMenuGUIBinding::getMainWidget },
         { "getVisible", ContextMenuGUIBinding::getVisible },
         { "setVisible", ContextMenuGUIBinding::setVisible },

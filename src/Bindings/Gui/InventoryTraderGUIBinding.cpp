@@ -51,28 +51,6 @@ static int InventoryTraderGUI_set_sectionHeight(lua_State* L)
     return 0;
 }
 
-int InventoryTraderGUIBinding::_CONSTRUCTOR(lua_State* L)
-{
-    InventoryTraderGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventoryTraderGUI is nil");
-
-    Inventory* inv = checkObject<Inventory>(L, 2, InventoryBinding::getMetatableName());
-    InventoryLayout* layout = checkObject<InventoryLayout>(L, 3, InventoryLayoutBinding::getMetatableName());
-    RootObject* callback = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
-    InventoryTraderGUI* result = instance->_CONSTRUCTOR(inv, layout, callback);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int InventoryTraderGUIBinding::_DESTRUCTOR(lua_State* L)
-{
-    InventoryTraderGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventoryTraderGUI is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int InventoryTraderGUIBinding::getInventory(lua_State* L)
 {
     InventoryTraderGUI* instance = getInstance(L, 1);
@@ -168,8 +146,6 @@ void InventoryTraderGUIBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", InventoryTraderGUIBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", InventoryTraderGUIBinding::_DESTRUCTOR },
         { "getInventory", InventoryTraderGUIBinding::getInventory },
         { "_NV_getInventory", InventoryTraderGUIBinding::_NV_getInventory },
         { "getCallbackCharacter", InventoryTraderGUIBinding::getCallbackCharacter },

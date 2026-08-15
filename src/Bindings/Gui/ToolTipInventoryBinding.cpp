@@ -29,24 +29,6 @@ static int ToolTipInventory_set_compareTooltip(lua_State* L)
     return 0;
 }
 
-int ToolTipInventoryBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ToolTipInventory* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
-
-    ToolTipInventory* result = instance->_CONSTRUCTOR();
-    return pushObject<ToolTipInventory>(L, result, ToolTipInventoryBinding::getMetatableName());
-}
-
-int ToolTipInventoryBinding::_DESTRUCTOR(lua_State* L)
-{
-    ToolTipInventory* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ToolTipInventoryBinding::update(lua_State* L)
 {
     ToolTipInventory* instance = getInstance(L, 1);
@@ -103,8 +85,6 @@ void ToolTipInventoryBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ToolTipInventoryBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ToolTipInventoryBinding::_DESTRUCTOR },
         { "update", ToolTipInventoryBinding::update },
         { "_NV_update", ToolTipInventoryBinding::_NV_update },
         { 0, 0 }

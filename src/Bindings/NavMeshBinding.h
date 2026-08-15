@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int initialise(lua_State* L);
     static int shutdown(lua_State* L);
     static int create(lua_State* L);
@@ -43,6 +42,5 @@ public:
     static int loadZone(lua_State* L);
     static int unloadZone(lua_State* L);
     static int unloadBuilding(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

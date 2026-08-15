@@ -39,24 +39,6 @@ int LimiterBinding::_NV_canEquip(lua_State* L)
     return 1;
 }
 
-int LimiterBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Limiter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Limiter is nil");
-
-    Limiter* result = instance->_CONSTRUCTOR();
-    return pushObject<Limiter>(L, result, LimiterBinding::getMetatableName());
-}
-
-int LimiterBinding::_DESTRUCTOR(lua_State* L)
-{
-    Limiter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Limiter is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int LimiterBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -114,8 +96,6 @@ void LimiterBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "canEquip", LimiterBinding::canEquip },
         { "_NV_canEquip", LimiterBinding::_NV_canEquip },
-        { "_CONSTRUCTOR", LimiterBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", LimiterBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

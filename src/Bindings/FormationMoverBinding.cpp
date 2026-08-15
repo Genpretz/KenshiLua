@@ -93,24 +93,6 @@ static int FormationMover_set_currentFormationID(lua_State* L)
     return 0;
 }
 
-int FormationMoverBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FormationMover* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FormationMover is nil");
-
-    FormationMover* result = instance->_CONSTRUCTOR();
-    return pushObject<FormationMover>(L, result, FormationMoverBinding::getMetatableName());
-}
-
-int FormationMoverBinding::_DESTRUCTOR(lua_State* L)
-{
-    FormationMover* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FormationMover is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FormationMoverBinding::update(lua_State* L)
 {
     FormationMover* instance = getInstance(L, 1);
@@ -176,8 +158,6 @@ void FormationMoverBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FormationMoverBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", FormationMoverBinding::_DESTRUCTOR },
         { "update", FormationMoverBinding::update },
         { "getSpeeds", FormationMoverBinding::getSpeeds },
         { "setFormationMode", FormationMoverBinding::setFormationMode },

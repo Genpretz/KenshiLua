@@ -351,34 +351,7 @@ def generate_struct_cpp(header_rel_path: str, info: StructInfo) -> str:
             out.append('    return 0;\n')
             out.append('}\n\n')
 
-    # Constructor
-    out.append(f'int {info.binding_class_name}::_CONSTRUCTOR(lua_State* L)\n{{\n')
-    out.append(f'    auto* obj = ({info.cpp_full_name}*)::operator new(sizeof({info.cpp_full_name}));\n')
-    out.append(f'    ::new ((void*)obj) {info.cpp_full_name}();\n')
-
-    if info.members:
-        for idx, m in enumerate(info.members, start=1):
-            if m.array_size:
-                continue
-            if m.type in SCALAR_TYPES:
-                read_fmt = SCALAR_TYPES[m.type][1]
-                out.append(f'    if (lua_gettop(L) >= {idx})\n')
-                out.append(f'        obj->{m.name} = {read_fmt.format(idx=idx)};\n')
-            elif m.type in ("Ogre::Vector3", "Vector3"):
-                out.append(f'    if (lua_gettop(L) >= {idx})\n')
-                out.append(f'        obj->{m.name} = readVector3(L, {idx});\n')
-
-    out.append(f'    return pushObject<{info.cpp_full_name}>(L, obj, getMetatableName());\n')
-    out.append('}\n\n')
-
     # Destructor & GC
-    out.append(f'int {info.binding_class_name}::_DESTRUCTOR(lua_State* L)\n{{\n')
-    out.append(f'    auto* inst = getInstance(L, 1);\n')
-    out.append(f'    if (!inst) return luaL_error(L, "{info.cpp_full_name} is nil");\n')
-    out.append(f'    inst->~{info.name}();\n')
-    out.append('    return 0;\n')
-    out.append('}\n\n')
-
     out.append(f'int {info.binding_class_name}::gc(lua_State* L)\n{{\n    return 0;\n}}\n\n')
 
     out.append(f'int {info.binding_class_name}::tostring(lua_State* L)\n{{\n')
@@ -406,8 +379,6 @@ def generate_struct_cpp(header_rel_path: str, info: StructInfo) -> str:
     out.append('        { 0, 0 }\n')
     out.append('    };\n')
     out.append('    static const luaL_Reg methods[] = {\n')
-    out.append('        { "_CONSTRUCTOR", _CONSTRUCTOR },\n')
-    out.append('        { "_DESTRUCTOR",  _DESTRUCTOR },\n')
     out.append('        { 0, 0 }\n')
     out.append('    };\n\n')
 
@@ -442,8 +413,6 @@ def generate_struct_header(header_rel_path: str, info: StructInfo) -> str:
     out.append(f'class {info.binding_class_name}\n{{\npublic:\n')
     out.append(f'    static const char* getMetatableName() {{ return "{info.metatable_name}"; }}\n')
     out.append('    static void registerBinding(lua_State* L);\n\n')
-    out.append('    static int _CONSTRUCTOR(lua_State* L);\n')
-    out.append('    static int _DESTRUCTOR(lua_State* L);\n')
     out.append('    static int gc(lua_State* L);\n')
     out.append('    static int tostring(lua_State* L);\n')
     out.append('    static int operator_eq(lua_State* L);\n')

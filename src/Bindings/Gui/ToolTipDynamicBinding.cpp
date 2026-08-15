@@ -14,24 +14,6 @@ static ToolTipDynamic* getInstance(lua_State* L, int idx)
 
 // --- Getters for ToolTipDynamic ---
 // --- Setters for ToolTipDynamic ---
-int ToolTipDynamicBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ToolTipDynamic* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ToolTipDynamic is nil");
-
-    ToolTipDynamic* result = instance->_CONSTRUCTOR();
-    return pushObject<ToolTipDynamic>(L, result, ToolTipDynamicBinding::getMetatableName());
-}
-
-int ToolTipDynamicBinding::_DESTRUCTOR(lua_State* L)
-{
-    ToolTipDynamic* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ToolTipDynamic is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ToolTipDynamicBinding::setVisible(lua_State* L)
 {
     ToolTipDynamic* instance = getInstance(L, 1);
@@ -79,8 +61,6 @@ void ToolTipDynamicBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ToolTipDynamicBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ToolTipDynamicBinding::_DESTRUCTOR },
         { "setVisible", ToolTipDynamicBinding::setVisible },
         { "_NV_setVisible", ToolTipDynamicBinding::_NV_setVisible },
         { 0, 0 }

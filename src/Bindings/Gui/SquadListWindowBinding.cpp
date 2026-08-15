@@ -46,19 +46,6 @@ int SquadListWindowBinding::_NV_itemSelected(lua_State* L)
     return 0;
 }
 
-int SquadListWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    SquadListWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SquadListWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 122: SquadListWindow* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int SquadListWindowBinding::gc(lua_State* L)
 {
@@ -84,7 +71,6 @@ void SquadListWindowBinding::registerBinding(lua_State* L)
         { "refresh", SquadListWindowBinding::refresh },
         { "itemSelected", SquadListWindowBinding::itemSelected },
         { "_NV_itemSelected", SquadListWindowBinding::_NV_itemSelected },
-        { "_DESTRUCTOR", SquadListWindowBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

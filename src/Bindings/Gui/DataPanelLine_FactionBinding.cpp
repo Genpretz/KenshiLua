@@ -71,20 +71,6 @@ static int DataPanelLine_Faction_set_v2(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_FactionBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Faction* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
-
-    const std::string a = luaL_checkstring(L, 2);
-    const std::string b = luaL_checkstring(L, 3);
-    int cat = (int)luaL_checkinteger(L, 4);
-    float vv1 = (float)luaL_checknumber(L, 5);
-    float vv2 = (float)luaL_checknumber(L, 6);
-    DataPanelLine_Faction* result = instance->_CONSTRUCTOR(a, b, cat, vv1, vv2);
-    return pushObject<DataPanelLine_Faction>(L, result, DataPanelLine_FactionBinding::getMetatableName());
-}
-
 int DataPanelLine_FactionBinding::createMe(lua_State* L)
 {
     DataPanelLine_Faction* instance = getInstance(L, 1);
@@ -109,15 +95,6 @@ int DataPanelLine_FactionBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_FactionBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Faction* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DataPanelLine_FactionBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -139,10 +116,8 @@ void DataPanelLine_FactionBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", DataPanelLine_FactionBinding::_CONSTRUCTOR },
         { "createMe", DataPanelLine_FactionBinding::createMe },
         { "_NV_createMe", DataPanelLine_FactionBinding::_NV_createMe },
-        { "_DESTRUCTOR", DataPanelLine_FactionBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

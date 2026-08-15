@@ -112,24 +112,6 @@ static int ContextMenu_set_delayedDestroyFlag(lua_State* L)
 }
 
 // --- Methods for ContextMenu ---
-int ContextMenuBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ContextMenu* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ContextMenu is nil");
-
-    ContextMenu* result = instance->_CONSTRUCTOR();
-    return pushObject<ContextMenu>(L, result, ContextMenuBinding::getMetatableName());
-}
-
-int ContextMenuBinding::_DESTRUCTOR(lua_State* L)
-{
-    ContextMenu* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ContextMenu is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ContextMenuBinding::showContextMenu(lua_State* L)
 {
     ContextMenu* instance = getInstance(L, 1);
@@ -189,8 +171,6 @@ void ContextMenuBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ContextMenuBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ContextMenuBinding::_DESTRUCTOR },
         { "showContextMenu", ContextMenuBinding::showContextMenu },
         { "isVisible", ContextMenuBinding::isVisible },
         { "update", ContextMenuBinding::update },

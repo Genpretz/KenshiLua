@@ -13,15 +13,6 @@ static hkMemoryAllocator* getInstance(lua_State* L, int idx)
 
 // --- Getters for hkMemoryAllocator ---
 // --- Setters for hkMemoryAllocator ---
-int hkMemoryAllocatorBinding::_DESTRUCTOR(lua_State* L)
-{
-    hkMemoryAllocator* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "hkMemoryAllocator is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int hkMemoryAllocatorBinding::blockAlloc(lua_State* L)
 {
     hkMemoryAllocator* instance = getInstance(L, 1);
@@ -70,16 +61,6 @@ int hkMemoryAllocatorBinding::_NV_getExtendedInterface(lua_State* L)
     return 1;
 }
 
-int hkMemoryAllocatorBinding::_CONSTRUCTOR(lua_State* L)
-{
-    hkMemoryAllocator* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "hkMemoryAllocator is nil");
-
-    hkMemoryAllocator* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
 /*
 Skipped methods needing manual binding:
   line 426: void operator delete(...) - static method
@@ -103,7 +84,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - hkMemoryAllocatorBinding::blockAlloc: void* (unbound pointer)
   - hkMemoryAllocatorBinding::getExtendedInterface: hkMemoryAllocator::ExtendedInterface* (unbound pointer)
   - hkMemoryAllocatorBinding::_NV_getExtendedInterface: hkMemoryAllocator::ExtendedInterface* (unbound pointer)
-  - hkMemoryAllocatorBinding::_CONSTRUCTOR: hkMemoryAllocator* (unbound pointer)
 */
 
 int hkMemoryAllocatorBinding::gc(lua_State* L)
@@ -127,13 +107,11 @@ void hkMemoryAllocatorBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", hkMemoryAllocatorBinding::_DESTRUCTOR },
         { "blockAlloc", hkMemoryAllocatorBinding::blockAlloc },
         { "resetPeakMemoryStatistics", hkMemoryAllocatorBinding::resetPeakMemoryStatistics },
         { "_NV_resetPeakMemoryStatistics", hkMemoryAllocatorBinding::_NV_resetPeakMemoryStatistics },
         { "getExtendedInterface", hkMemoryAllocatorBinding::getExtendedInterface },
         { "_NV_getExtendedInterface", hkMemoryAllocatorBinding::_NV_getExtendedInterface },
-        { "_CONSTRUCTOR", hkMemoryAllocatorBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

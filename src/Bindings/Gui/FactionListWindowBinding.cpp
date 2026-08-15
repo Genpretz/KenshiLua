@@ -37,19 +37,6 @@ int FactionListWindowBinding::_NV_itemSelected(lua_State* L)
     return 0;
 }
 
-int FactionListWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    FactionListWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionListWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 108: FactionListWindow* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int FactionListWindowBinding::gc(lua_State* L)
 {
@@ -74,7 +61,6 @@ void FactionListWindowBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "itemSelected", FactionListWindowBinding::itemSelected },
         { "_NV_itemSelected", FactionListWindowBinding::_NV_itemSelected },
-        { "_DESTRUCTOR", FactionListWindowBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

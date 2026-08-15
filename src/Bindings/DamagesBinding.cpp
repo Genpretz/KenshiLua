@@ -129,43 +129,6 @@ int DamagesBinding::total(lua_State* L)
     return 1;
 }
 
-int DamagesBinding::_CONSTRUCTOR(lua_State* L)
-{
-    int numArgs = lua_gettop(L);
-    Damages* obj = (Damages*)::operator new(sizeof(Damages));
-    if (numArgs >= 5)
-    {
-        float cut = (float)luaL_checknumber(L, 1);
-        float blunt = (float)luaL_checknumber(L, 2);
-        float pierce = (float)luaL_checknumber(L, 3);
-        float bleed = (float)luaL_checknumber(L, 4);
-        float armour = (float)luaL_checknumber(L, 5);
-        ::new ((void*)obj) Damages(cut, blunt, pierce, bleed, armour);
-    }
-    else if (numArgs >= 1 && testObject<Damages>(L, 1, DamagesBinding::getMetatableName()) != nullptr)
-    {
-        Damages* other = getInstance(L, 1);
-        if (other)
-            ::new ((void*)obj) Damages(*other);
-        else
-            ::new ((void*)obj) Damages();
-    }
-    else
-    {
-        ::new ((void*)obj) Damages();
-    }
-    return pushObjectOwned<Damages>(L, obj, DamagesBinding::getMetatableName());
-}
-
-int DamagesBinding::_DESTRUCTOR(lua_State* L)
-{
-    Damages* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Damages is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DamagesBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -187,10 +150,8 @@ void DamagesBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", DamagesBinding::_CONSTRUCTOR },
         { "multiply", DamagesBinding::multiply },
         { "total", DamagesBinding::total },
-        { "_DESTRUCTOR", DamagesBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

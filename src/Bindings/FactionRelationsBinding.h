@@ -18,13 +18,11 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int setupPhase2(lua_State* L);
     static int isEnemyByDefault(lua_State* L);
     static int reset(lua_State* L);
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 
     static int setupPhase1(lua_State* L);
     static int save(lua_State* L);

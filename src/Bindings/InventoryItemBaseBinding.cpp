@@ -754,28 +754,6 @@ int InventoryItemBaseBinding::isStolen(lua_State* L)
     return 1;
 }
 
-int InventoryItemBaseBinding::_CONSTRUCTOR(lua_State* L)
-{
-    InventoryItemBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
-
-    GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 3, HandBinding::getMetatableName());
-    GameData* manufacturerData = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
-    GameData* materialData = checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
-    InventoryItemBase* result = instance->_CONSTRUCTOR(dat, _handle, manufacturerData, materialData);
-    return pushObject<InventoryItemBase>(L, result, InventoryItemBaseBinding::getMetatableName());
-}
-
-int InventoryItemBaseBinding::_DESTRUCTOR(lua_State* L)
-{
-    InventoryItemBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventoryItemBase is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int InventoryItemBaseBinding::merchantPriceMod(lua_State* L)
 {
     InventoryItemBase* instance = getInstance(L, 1);
@@ -1008,8 +986,6 @@ void InventoryItemBaseBinding::registerBinding(lua_State* L)
         { "_NV_getLevel", InventoryItemBaseBinding::_NV_getLevel },
         { "getItemSound", InventoryItemBaseBinding::getItemSound },
         { "isStolen", InventoryItemBaseBinding::isStolen },
-        { "_CONSTRUCTOR", InventoryItemBaseBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", InventoryItemBaseBinding::_DESTRUCTOR },
         { "merchantPriceMod", InventoryItemBaseBinding::merchantPriceMod },
         { "activate", InventoryItemBaseBinding::activate },
         { "getStolenItemGUIInfo", InventoryItemBaseBinding::getStolenItemGUIInfo },

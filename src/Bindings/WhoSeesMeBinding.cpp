@@ -62,11 +62,6 @@ static int WhoSeesMe_set_progressOfMaybe(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 322: WhoSeesMe* _CONSTRUCTOR(...) - overloaded method
-  line 324: WhoSeesMe* _CONSTRUCTOR(...) - overloaded method
-*/
 
 int WhoSeesMeBinding::gc(lua_State* L)
 {

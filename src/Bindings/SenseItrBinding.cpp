@@ -87,7 +87,6 @@ int SenseItrBinding::increment(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 71: void operator++(...) - operator
-  line 74: SenseItr* _CONSTRUCTOR(...) - unsupported arg type
 */
 
 /*

@@ -71,25 +71,6 @@ static int TreeData_set_building(lua_State* L)
     return 0;
 }
 
-int TreeDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TreeData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TreeData is nil");
-
-    TreeData* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int TreeDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    TreeData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TreeData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 107: FoliageSystem::TreeData& operator=(...) - operator
@@ -98,7 +79,6 @@ Skipped methods needing manual binding:
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - TreeData_get_target: Forests::TreeLoader3D* (unbound pointer)
-  - TreeDataBinding::_CONSTRUCTOR: TreeData* (unbound pointer)
 */
 
 /*
@@ -128,8 +108,6 @@ void TreeDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TreeDataBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TreeDataBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

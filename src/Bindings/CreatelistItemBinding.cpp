@@ -176,27 +176,6 @@ static int CreatelistItem_set_age(lua_State* L)
     return 0;
 }
 
-int CreatelistItemBinding::_CONSTRUCTOR(lua_State* L)
-{
-    CreatelistItem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CreatelistItem is nil");
-
-    GameData* _data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    Ogre::Vector3 _position;
-    readVector3(L, 3, _position);
-    bool _isFromActiveLevelMod = lua_toboolean(L, 4) != 0;
-    Faction* _owner = checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
-    Ogre::Quaternion _rotation;
-    readQuaternion(L, 6, _rotation);
-    FactoryCallbackInterface* _callbackObject = checkObject<FactoryCallbackInterface>(L, 7, FactoryCallbackInterfaceBinding::getMetatableName());
-    GameSaveState* _saveStateDataSource = checkObject<GameSaveState>(L, 8, GameSaveStateBinding::getMetatableName());
-    RootObjectContainer* certainContainer = checkObject<RootObjectContainer>(L, 9, RootObjectContainerBinding::getMetatableName());
-    Building* home = checkObject<Building>(L, 10, BuildingBinding::getMetatableName());
-    float _age = (float)luaL_checknumber(L, 11);
-    CreatelistItem* result = instance->_CONSTRUCTOR(_data, _position, _isFromActiveLevelMod, _owner, _rotation, _callbackObject, _saveStateDataSource, certainContainer, home, _age);
-    return pushObject<CreatelistItem>(L, result, CreatelistItemBinding::getMetatableName());
-}
-
 int CreatelistItemBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -218,7 +197,6 @@ void CreatelistItemBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", CreatelistItemBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

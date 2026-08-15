@@ -411,15 +411,6 @@ static int AppearanceBase_set_characterHeight_0to1(lua_State* L)
     return 0;
 }
 
-int AppearanceBaseBinding::_DESTRUCTOR(lua_State* L)
-{
-    AppearanceBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AppearanceBase is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int AppearanceBaseBinding::updateAnimationTransforms(lua_State* L)
 {
     AppearanceBase* instance = getInstance(L, 1);
@@ -1086,7 +1077,6 @@ int AppearanceBaseBinding::getCharacterHeightSpeedMultiplier(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 72: AppearanceBase* _CONSTRUCTOR(...) - unsupported arg type
   line 91: const std::string& chooseBodyMesh(...) - reference return type
   line 92: void addWound(...) - unsupported arg type
   line 93: void removeWound(...) - unsupported arg type
@@ -1160,7 +1150,6 @@ void AppearanceBaseBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", AppearanceBaseBinding::_DESTRUCTOR },
         { "updateAnimationTransforms", AppearanceBaseBinding::updateAnimationTransforms },
         { "forceUpdateAnimationTransforms", AppearanceBaseBinding::forceUpdateAnimationTransforms },
         { "update", AppearanceBaseBinding::update },

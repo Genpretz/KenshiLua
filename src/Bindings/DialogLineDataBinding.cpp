@@ -875,25 +875,6 @@ int DialogLineDataBinding::hasSpecificCharacterRequirement(lua_State* L)
     return 1;
 }
 
-int DialogLineDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DialogLineData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogLineData is nil");
-
-    GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    DialogLineData* result = instance->_CONSTRUCTOR(dat);
-    return pushObject<DialogLineData>(L, result, DialogLineDataBinding::getMetatableName());
-}
-
-int DialogLineDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    DialogLineData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogLineData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DialogLineDataBinding::setupChildren(lua_State* L)
 {
     DialogLineData* instance = getInstance(L, 1);
@@ -1158,8 +1139,6 @@ void DialogLineDataBinding::registerBinding(lua_State* L)
         { "getParent", DialogLineDataBinding::getParent },
         { "isForSpecificCharacter", DialogLineDataBinding::isForSpecificCharacter },
         { "hasSpecificCharacterRequirement", DialogLineDataBinding::hasSpecificCharacterRequirement },
-        { "_CONSTRUCTOR", DialogLineDataBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", DialogLineDataBinding::_DESTRUCTOR },
         { "setupChildren", DialogLineDataBinding::setupChildren },
         { "checkRepeatLimits", DialogLineDataBinding::checkRepeatLimits },
         { "checkTags", DialogLineDataBinding::checkTags },

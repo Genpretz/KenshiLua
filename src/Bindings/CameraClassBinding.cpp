@@ -606,7 +606,6 @@ int CameraClassBinding::getFollowObject(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 16: CameraClass* _CONSTRUCTOR(...) - unsupported arg type
   line 23: bool isVisible(...) - overloaded method
   line 24: bool isVisible(...) - overloaded method
   line 25: int intersectScreenEdge(...) - non-string reference arg

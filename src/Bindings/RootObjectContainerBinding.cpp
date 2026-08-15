@@ -20,16 +20,7 @@ namespace KenshiLua
 
     // --- Getters for RootObjectContainer ---
     // --- Setters for RootObjectContainer ---
-    int RootObjectContainerBinding::_DESTRUCTOR(lua_State* L)
-    {
-        RootObjectContainer* instance = getInstance(L, 1);
-        if (!instance) return luaL_error(L, "RootObjectContainer is nil");
-
-        instance->_DESTRUCTOR();
-        return 0;
-    }
-
-    int RootObjectContainerBinding::addActiveObject(lua_State* L)
+int RootObjectContainerBinding::addActiveObject(lua_State* L)
     {
         RootObjectContainer* instance = getInstance(L, 1);
         if (!instance) return luaL_error(L, "RootObjectContainer is nil");
@@ -186,26 +177,7 @@ namespace KenshiLua
         return 0;
     }
 
-    int RootObjectContainerBinding::_CONSTRUCTOR(lua_State* L)
-    {
-        RootObjectContainer* instance = getInstance(L, 1);
-        if (!instance) return luaL_error(L, "RootObjectContainer is nil");
-
-        if (lua_isnumber(L, 2))
-        {
-            DataObjectContainer::GroupType type = (DataObjectContainer::GroupType)luaL_checkinteger(L, 2);
-            RootObjectContainer* result = instance->_CONSTRUCTOR(type);
-            return pushObject<RootObjectContainer>(L, result, RootObjectContainerBinding::getMetatableName());
-        }
-        else
-        {
-            DataObjectContainer* from = checkObject<DataObjectContainer>(L, 2, DataObjectContainerBinding::getMetatableName());
-            RootObjectContainer* result = instance->_CONSTRUCTOR(from);
-            return pushObject<RootObjectContainer>(L, result, RootObjectContainerBinding::getMetatableName());
-        }
-    }
-
-    int RootObjectContainerBinding::_NV_getSelectedObjects(lua_State* L)
+int RootObjectContainerBinding::_NV_getSelectedObjects(lua_State* L)
     {
         RootObjectContainer* instance = getInstance(L, 1);
         if (!instance) return luaL_error(L, "RootObjectContainer is nil");
@@ -310,7 +282,6 @@ namespace KenshiLua
         };
 
         static const luaL_Reg methods[] = {
-            { "_DESTRUCTOR", RootObjectContainerBinding::_DESTRUCTOR },
             { "addActiveObject", RootObjectContainerBinding::addActiveObject },
             { "_NV_addActiveObject", RootObjectContainerBinding::_NV_addActiveObject },
             { "removeObject", RootObjectContainerBinding::removeObject },
@@ -324,7 +295,6 @@ namespace KenshiLua
             { "_NV_loadToReality", RootObjectContainerBinding::_NV_loadToReality },
             { "getSelectedObjects", RootObjectContainerBinding::getSelectedObjects },
             { "_NV_getSelectedObjects", RootObjectContainerBinding::_NV_getSelectedObjects },
-            { "_CONSTRUCTOR", RootObjectContainerBinding::_CONSTRUCTOR },
             { "serialiseThings", RootObjectContainerBinding::serialiseThings },
             { "loadInstance", RootObjectContainerBinding::loadInstance },
             { "_NV_loadInstance", RootObjectContainerBinding::_NV_loadInstance },

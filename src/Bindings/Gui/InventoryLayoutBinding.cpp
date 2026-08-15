@@ -58,25 +58,6 @@ static int InventoryLayout_set_dataPanelInfos(lua_State* L)
     return 0;
 }
 
-int InventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    InventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventoryLayout is nil");
-
-    const std::string file = luaL_checkstring(L, 2);
-    InventoryLayout* result = instance->_CONSTRUCTOR(file);
-    return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
-}
-
-int InventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    InventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int InventoryLayoutBinding::getWindow(lua_State* L)
 {
     InventoryLayout* instance = getInstance(L, 1);
@@ -184,8 +165,6 @@ void InventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", InventoryLayoutBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", InventoryLayoutBinding::_DESTRUCTOR },
         { "getWindow", InventoryLayoutBinding::getWindow },
         { "getWidget", InventoryLayoutBinding::getWidget },
         { "getDatapanel", InventoryLayoutBinding::getDatapanel },

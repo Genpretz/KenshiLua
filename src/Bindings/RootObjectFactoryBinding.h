@@ -28,8 +28,6 @@ public:
     static int mainThreadUpdate(lua_State* L);
     static int populateBuilding(lua_State* L);
     static int process(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int createBuilding(lua_State* L);
     static int createItem(lua_State* L);
     static int createRandomSquad(lua_State* L);

@@ -84,9 +84,6 @@ int hkVector4fBinding::normalize3(lua_State* L)
 Skipped methods needing manual binding:
   line 153: void*operator new(...) - static method
   line 155: void operator delete(...) - static method
-  line 164: hkVector4f* _CONSTRUCTOR(...) - overloaded method
-  line 167: hkVector4f* _CONSTRUCTOR(...) - overloaded method
-  line 169: hkVector4f* _CONSTRUCTOR(...) - overloaded method
   line 171: void operator=(...) - operator
   line 172: void set(...) - overloaded method
   line 173: void set(...) - overloaded method

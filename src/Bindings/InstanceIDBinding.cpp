@@ -156,22 +156,10 @@ int InstanceIDBinding::getBaseIndex(lua_State* L)
     return 1;
 }
 
-int InstanceIDBinding::_DESTRUCTOR(lua_State* L)
-{
-    InstanceID* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InstanceID is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 13: int getModIndex(...) - overloaded method
   line 14: short getModIndex(...) - static method
-  line 16: InstanceID* _CONSTRUCTOR(...) - overloaded method
-  line 18: InstanceID* _CONSTRUCTOR(...) - overloaded method
-  line 20: InstanceID* _CONSTRUCTOR(...) - overloaded method
   line 29: bool operator==(...) - operator
   line 33: InstanceID& operator=(...) - operator
 */
@@ -205,7 +193,6 @@ void InstanceIDBinding::registerBinding(lua_State* L)
         { "notifySaved", InstanceIDBinding::notifySaved },
         { "empty", InstanceIDBinding::empty },
         { "getBaseIndex", InstanceIDBinding::getBaseIndex },
-        { "_DESTRUCTOR", InstanceIDBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

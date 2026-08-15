@@ -67,8 +67,6 @@ int iVector2Binding::getAsString(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 9: iVector2* _CONSTRUCTOR(...) - overloaded method
-  line 11: iVector2* _CONSTRUCTOR(...) - overloaded method
   line 14: bool operator==(...) - operator
   line 15: bool operator!=(...) - operator
   line 17: bool operator<(...) - operator

@@ -64,8 +64,6 @@ public:
     static int dropItemInMouth(lua_State* L);
     static int getItemInMouth(lua_State* L);
     static int eatItemInMouth(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int init(lua_State* L);
     static int _NV_init(lua_State* L);
     static int dropItem(lua_State* L);

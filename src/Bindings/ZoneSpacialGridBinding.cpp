@@ -68,24 +68,6 @@ static int ZoneSpacialGrid_set_cellSize(lua_State* L)
 
 static int ZoneSpacialGrid_set_mutex(lua_State* L) { return 0; }
 
-int ZoneSpacialGridBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ZoneSpacialGrid* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneSpacialGrid is nil");
-
-    ZoneSpacialGrid* result = instance->_CONSTRUCTOR();
-    return pushObject<ZoneSpacialGrid>(L, result, ZoneSpacialGridBinding::getMetatableName());
-}
-
-int ZoneSpacialGridBinding::_DESTRUCTOR(lua_State* L)
-{
-    ZoneSpacialGrid* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneSpacialGrid is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ZoneSpacialGridBinding::add(lua_State* L)
 {
     ZoneSpacialGrid* instance = getInstance(L, 1);
@@ -219,8 +201,6 @@ void ZoneSpacialGridBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ZoneSpacialGridBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ZoneSpacialGridBinding::_DESTRUCTOR },
         { "add", ZoneSpacialGridBinding::add },
         { "remove", ZoneSpacialGridBinding::remove },
         { "update", ZoneSpacialGridBinding::update },

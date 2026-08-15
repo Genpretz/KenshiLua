@@ -31,15 +31,6 @@ static int PortraitSquadItemBox_get_squadView(lua_State* L)
 }
 
 // --- Setters for PortraitSquadItemBox ---
-int PortraitSquadItemBoxBinding::_DESTRUCTOR(lua_State* L)
-{
-    PortraitSquadItemBox* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PortraitSquadItemBox is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int PortraitSquadItemBoxBinding::getItemCount(lua_State* L)
 {
     PortraitSquadItemBox* instance = getInstance(L, 1);
@@ -59,10 +50,6 @@ int PortraitSquadItemBoxBinding::update(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 102: PortraitSquadItemBox* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -91,7 +78,6 @@ void PortraitSquadItemBoxBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", PortraitSquadItemBoxBinding::_DESTRUCTOR },
         { "getItemCount", PortraitSquadItemBoxBinding::getItemCount },
         { "update", PortraitSquadItemBoxBinding::update },
         { 0, 0 }

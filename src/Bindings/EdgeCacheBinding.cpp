@@ -61,25 +61,6 @@ static int EdgeCache_set_hasDoor(lua_State* L)
     return 0;
 }
 
-int EdgeCacheBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (EdgeCache*)::operator new(sizeof(EdgeCache));
-    ::new ((void*)obj) EdgeCache();
-    if (lua_gettop(L) >= 4)
-        obj->radius = (float)luaL_checknumber(L, 4);
-    if (lua_gettop(L) >= 5)
-        obj->hasDoor = lua_toboolean(L, 5) != 0;
-    return pushObject<EdgeCache>(L, obj, getMetatableName());
-}
-
-int EdgeCacheBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "EdgeCache is nil");
-    inst->~EdgeCache();
-    return 0;
-}
-
 int EdgeCacheBinding::gc(lua_State* L)
 {
     return 0;
@@ -108,8 +89,6 @@ void EdgeCacheBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

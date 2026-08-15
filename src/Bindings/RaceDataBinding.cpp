@@ -424,16 +424,6 @@ static int RaceData_set_canGoIndoors(lua_State* L)
     return 0;
 }
 
-int RaceDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    RaceData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RaceData is nil");
-
-    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    RaceData* result = instance->_CONSTRUCTOR(data);
-    return pushObject<RaceData>(L, result, RaceDataBinding::getMetatableName());
-}
-
 int RaceDataBinding::isSpecificRace(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
@@ -636,7 +626,6 @@ void RaceDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", RaceDataBinding::_CONSTRUCTOR },
         { "getRaceData", RaceDataBinding::getRaceData },
         { "isRelatedRace", RaceDataBinding::isRelatedRace },
         { "isSpecificRace", RaceDataBinding::isSpecificRace },

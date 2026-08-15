@@ -213,24 +213,6 @@ int PortraitManagerBinding::getSquadFlashing(lua_State* L)
     return 1;
 }
 
-int PortraitManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    PortraitManager* instance = get_instance(L, 1);
-    if (!instance) return luaL_error(L, "PortraitManager is nil");
-
-    PortraitManager* result = instance->_CONSTRUCTOR();
-    return pushObject<PortraitManager>(L, result, PortraitManagerBinding::getMetatableName());
-}
-
-int PortraitManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    PortraitManager* instance = get_instance(L, 1);
-    if (!instance) return luaL_error(L, "PortraitManager is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int PortraitManagerBinding::getInstance(lua_State* L)
 {
     PortraitManager* result = PortraitManager::getInstance();
@@ -342,8 +324,6 @@ void PortraitManagerBinding::registerBinding(lua_State* L)
         { "updatePortraitImage", PortraitManagerBinding::updatePortraitImage },
         { "setImageWidget", PortraitManagerBinding::setImageWidget },
         { "getInstance", PortraitManagerBinding::getInstance },
-        { "_CONSTRUCTOR", PortraitManagerBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", PortraitManagerBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

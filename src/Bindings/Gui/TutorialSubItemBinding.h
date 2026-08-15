@@ -24,6 +24,5 @@ public:
     static int _NV_run(lua_State* L);
     static int end(lua_State* L);
     static int _NV_end(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

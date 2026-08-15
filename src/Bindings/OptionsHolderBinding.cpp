@@ -1006,16 +1006,6 @@ static int OptionsHolder_set_censorship(lua_State* L)
 }
 
 // --- Methods for OptionsHolder
-int OptionsHolderBinding::_CONSTRUCTOR(lua_State* L)
-{
-    OptionsHolder* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "OptionsHolder is nil");
-
-    OptionsHolder* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
 int OptionsHolderBinding::enabledCivilians(lua_State* L)
 {
     OptionsHolder* instance = getInstance(L, 1);
@@ -1056,15 +1046,6 @@ int OptionsHolderBinding::loadCompositorSettings(lua_State* L)
     return 0;
 }
 
-int OptionsHolderBinding::_DESTRUCTOR(lua_State* L)
-{
-    OptionsHolder* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "OptionsHolder is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int OptionsHolderBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -1086,12 +1067,10 @@ void OptionsHolderBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", OptionsHolderBinding::_CONSTRUCTOR },
         { "enabledCivilians", OptionsHolderBinding::enabledCivilians },
         { "characterMultithreadingEnabled", OptionsHolderBinding::characterMultithreadingEnabled },
         { "compositiorEnabled", OptionsHolderBinding::compositiorEnabled },
         { "loadCompositorSettings", OptionsHolderBinding::loadCompositorSettings },
-        { "_DESTRUCTOR", OptionsHolderBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

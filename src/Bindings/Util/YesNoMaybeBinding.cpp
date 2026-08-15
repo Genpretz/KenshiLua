@@ -41,10 +41,6 @@ int YesNoMaybeBinding::toInt(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 15: YesNoMaybe* _CONSTRUCTOR(...) - overloaded method
-  line 17: YesNoMaybe* _CONSTRUCTOR(...) - overloaded method
-  line 19: YesNoMaybe* _CONSTRUCTOR(...) - overloaded method
-  line 21: YesNoMaybe* _CONSTRUCTOR(...) - overloaded method
   line 23: operator bool(...) - unsupported return type
   line 24: operator YesNoMaybe::ynm(...) - unsupported return type
   line 26: bool operator==(...) - operator

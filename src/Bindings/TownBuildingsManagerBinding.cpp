@@ -50,25 +50,6 @@ static int TownBuildingsManager_set_town(lua_State* L)
     return 0;
 }
 
-int TownBuildingsManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TownBuildingsManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TownBuildingsManager is nil");
-
-    TownBase* town = checkObject<TownBase>(L, 2, TownBaseBinding::getMetatableName());
-    TownBuildingsManager* result = instance->_CONSTRUCTOR(town);
-    return pushObject<TownBuildingsManager>(L, result, TownBuildingsManagerBinding::getMetatableName());
-}
-
-int TownBuildingsManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    TownBuildingsManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TownBuildingsManager is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TownBuildingsManagerBinding::clear(lua_State* L)
 {
     TownBuildingsManager* instance = getInstance(L, 1);
@@ -261,8 +242,6 @@ void TownBuildingsManagerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TownBuildingsManagerBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TownBuildingsManagerBinding::_DESTRUCTOR },
         { "clear", TownBuildingsManagerBinding::clear },
         { "moveBuildingsTo", TownBuildingsManagerBinding::moveBuildingsTo },
         { "removeBuilding", TownBuildingsManagerBinding::removeBuilding },

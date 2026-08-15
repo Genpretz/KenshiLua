@@ -78,15 +78,6 @@ static int FlockingTools_set_combatMover(lua_State* L)
     return 0;
 }
 
-int FlockingToolsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FlockingTools* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FlockingTools is nil");
-
-    FlockingTools* result = instance->_CONSTRUCTOR();
-    return pushObject<FlockingTools>(L, result, FlockingToolsBinding::getMetatableName());
-}
-
 int FlockingToolsBinding::create(lua_State* L)
 {
     FlockingTools* instance = getInstance(L, 1);
@@ -214,7 +205,6 @@ void FlockingToolsBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FlockingToolsBinding::_CONSTRUCTOR },
         { "create", FlockingToolsBinding::create },
         { "getDistanceToClosestCharacter", FlockingToolsBinding::getDistanceToClosestCharacter },
         { "getOutOfTheWay", FlockingToolsBinding::getOutOfTheWay },

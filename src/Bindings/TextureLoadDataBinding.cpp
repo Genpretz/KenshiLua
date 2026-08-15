@@ -94,27 +94,6 @@ static int TextureLoadData_set_success(lua_State* L)
     return 0;
 }
 
-int TextureLoadDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TextureLoadData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TextureLoadData is nil");
-
-    std::string name = luaL_checkstring(L, 2);
-    std::string group = luaL_checkstring(L, 3);
-    TextureLoadData* result = instance->_CONSTRUCTOR(name, group);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int TextureLoadDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    TextureLoadData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TextureLoadData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TextureLoadDataBinding::loadImage(lua_State* L)
 {
     TextureLoadData* instance = getInstance(L, 1);
@@ -165,8 +144,6 @@ void TextureLoadDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TextureLoadDataBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TextureLoadDataBinding::_DESTRUCTOR },
         { "loadImage", TextureLoadDataBinding::loadImage },
         { "_NV_loadImage", TextureLoadDataBinding::_NV_loadImage },
         { 0, 0 }

@@ -1853,15 +1853,6 @@ int BuildingBinding::_NV_loadUnloadCheck(lua_State* L)
     return 0;
 }
 
-int BuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    Building* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Building is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int BuildingBinding::_saveBuildingState(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -3263,7 +3254,6 @@ Skipped methods needing manual binding:
   line 218: void _NV_setHandle(...) - non-string reference arg
   line 261: const std::string& getLayoutInstanceID(...) - reference return type
   line 262: const std::string& _NV_getLayoutInstanceID(...) - reference return type
-  line 269: Building* _CONSTRUCTOR(...) - non-string reference arg
   line 306: void findAllFurnitureWithFunction(...) - unsupported arg type
   line 344: GameSaveState serialise(...) - unsupported arg type
   line 345: GameSaveState _NV_serialise(...) - unsupported arg type
@@ -3535,7 +3525,6 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "_NV_getSoundIntensity", BuildingBinding::_NV_getSoundIntensity },
         { "loadUnloadCheck", BuildingBinding::loadUnloadCheck },
         { "_NV_loadUnloadCheck", BuildingBinding::_NV_loadUnloadCheck },
-        { "_DESTRUCTOR", BuildingBinding::_DESTRUCTOR },
         { "_saveBuildingState", BuildingBinding::_saveBuildingState },
         { "_NV__saveBuildingState", BuildingBinding::_NV__saveBuildingState },
         { "_loadBuildingState", BuildingBinding::_loadBuildingState },

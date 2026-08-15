@@ -246,9 +246,6 @@ int physHitBinding::group(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 39: physHit* _CONSTRUCTOR(...) - overloaded method
-  line 41: physHit* _CONSTRUCTOR(...) - overloaded method
-  line 43: physHit* _CONSTRUCTOR(...) - overloaded method
   line 44: physHit& operator=(...) - operator
   line 47: operator bool(...) - unsupported return type
 */

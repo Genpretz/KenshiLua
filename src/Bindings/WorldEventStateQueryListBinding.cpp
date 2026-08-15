@@ -47,24 +47,6 @@ int WorldEventStateQueryListBinding::isTrue(lua_State* L)
     return 1;
 }
 
-int WorldEventStateQueryListBinding::_CONSTRUCTOR(lua_State* L)
-{
-    WorldEventStateQueryList* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "WorldEventStateQueryList is nil");
-
-    WorldEventStateQueryList* result = instance->_CONSTRUCTOR();
-    return pushObject<WorldEventStateQueryList>(L, result, WorldEventStateQueryListBinding::getMetatableName());
-}
-
-int WorldEventStateQueryListBinding::_DESTRUCTOR(lua_State* L)
-{
-    WorldEventStateQueryList* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "WorldEventStateQueryList is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int WorldEventStateQueryListBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -109,8 +91,6 @@ void WorldEventStateQueryListBinding::registerBinding(lua_State* L)
         { "setupFrom", WorldEventStateQueryListBinding::setupFrom },
         { "reset", WorldEventStateQueryListBinding::reset },
         { "isTrue", WorldEventStateQueryListBinding::isTrue },
-        { "_CONSTRUCTOR", WorldEventStateQueryListBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", WorldEventStateQueryListBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

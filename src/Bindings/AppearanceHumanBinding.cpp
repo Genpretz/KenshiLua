@@ -144,15 +144,6 @@ static int AppearanceHuman_set_hiddenPartsEnabled(lua_State* L)
     return 0;
 }
 
-int AppearanceHumanBinding::_DESTRUCTOR(lua_State* L)
-{
-    AppearanceHuman* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AppearanceHuman is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int AppearanceHumanBinding::setGender(lua_State* L)
 {
     AppearanceHuman* instance = getInstance(L, 1);
@@ -375,7 +366,6 @@ int AppearanceHumanBinding::setPosture(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 204: AppearanceHuman* _CONSTRUCTOR(...) - unsupported arg type
   line 235: void setupCharacterEntityTexture(...) - unsupported arg type
   line 236: void _NV_setupCharacterEntityTexture(...) - unsupported arg type
 */
@@ -401,7 +391,6 @@ void AppearanceHumanBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", AppearanceHumanBinding::_DESTRUCTOR },
         { "setGender", AppearanceHumanBinding::setGender },
         { "_NV_setGender", AppearanceHumanBinding::_NV_setGender },
         { "periodicUpdate", AppearanceHumanBinding::periodicUpdate },

@@ -131,24 +131,6 @@ static int GameDataContainer_set_mainList(lua_State* L)
     return 0;
 }
 
-int GameDataContainerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameDataContainer* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameDataContainer is nil");
-
-    GameDataContainer* result = instance->_CONSTRUCTOR();
-    return pushObject<GameDataContainer>(L, result, GameDataContainerBinding::getMetatableName());
-}
-
-int GameDataContainerBinding::_DESTRUCTOR(lua_State* L)
-{
-    GameDataContainer* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameDataContainer is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int GameDataContainerBinding::createNewData(lua_State* L)
 {
     GameDataContainer* instance = getInstance(L, 1);
@@ -482,8 +464,6 @@ void GameDataContainerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GameDataContainerBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", GameDataContainerBinding::_DESTRUCTOR },
         { "createNewData", GameDataContainerBinding::createNewData },
         { "getDataByName", GameDataContainerBinding::getDataByName },
         { "renameData", GameDataContainerBinding::renameData },

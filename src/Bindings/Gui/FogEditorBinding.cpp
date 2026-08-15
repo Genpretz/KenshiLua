@@ -191,16 +191,6 @@ static int FogEditor_set_editRot(lua_State* L)
     return 0;
 }
 
-int FogEditorBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FogEditor* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FogEditor is nil");
-
-    FogEditor* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
 int FogEditorBinding::show(lua_State* L)
 {
     FogEditor* instance = getInstance(L, 1);
@@ -279,15 +269,6 @@ int FogEditorBinding::selectNextEdge(lua_State* L)
     return 0;
 }
 
-int FogEditorBinding::_DESTRUCTOR(lua_State* L)
-{
-    FogEditor* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FogEditor is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 26: void closeWindow(...) - unsupported arg type
@@ -317,7 +298,6 @@ void FogEditorBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FogEditorBinding::_CONSTRUCTOR },
         { "show", FogEditorBinding::show },
         { "close", FogEditorBinding::close },
         { "isActive", FogEditorBinding::isActive },
@@ -326,7 +306,6 @@ void FogEditorBinding::registerBinding(lua_State* L)
         { "updateFogName", FogEditorBinding::updateFogName },
         { "updateFogValues", FogEditorBinding::updateFogValues },
         { "selectNextEdge", FogEditorBinding::selectNextEdge },
-        { "_DESTRUCTOR", FogEditorBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

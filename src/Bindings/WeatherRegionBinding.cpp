@@ -182,15 +182,6 @@ static int WeatherRegion_set_instanceUpdated(lua_State* L)
     return 0;
 }
 
-int WeatherRegionBinding::_DESTRUCTOR(lua_State* L)
-{
-    WeatherRegion* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "WeatherRegion is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int WeatherRegionBinding::reset(lua_State* L)
 {
     WeatherRegion* instance = getInstance(L, 1);
@@ -329,10 +320,6 @@ int WeatherRegionBinding::load(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 68: WeatherRegion* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -371,7 +358,6 @@ void WeatherRegionBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", WeatherRegionBinding::_DESTRUCTOR },
         { "reset", WeatherRegionBinding::reset },
         { "getWeatherInstance", WeatherRegionBinding::getWeatherInstance },
         { "setCurrentSeason", WeatherRegionBinding::setCurrentSeason },

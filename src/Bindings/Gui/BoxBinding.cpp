@@ -38,24 +38,6 @@ static int Box_set_modal(lua_State* L)
     return 0;
 }
 
-int BoxBinding::_CONSTRUCTOR(lua_State* L)
-{
-    MessageBoxManager::Box* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Box is nil");
-
-    MessageBoxManager::Box* result = instance->_CONSTRUCTOR();
-    return pushObject<MessageBoxManager::Box>(L, result, BoxBinding::getMetatableName());
-}
-
-int BoxBinding::_DESTRUCTOR(lua_State* L)
-{
-    MessageBoxManager::Box* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Box is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 22: void buttonClick(...) - unsupported arg type
@@ -92,8 +74,6 @@ void BoxBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", BoxBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", BoxBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

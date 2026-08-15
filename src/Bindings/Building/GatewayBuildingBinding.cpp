@@ -16,15 +16,6 @@ static GatewayBuilding* getInstance(lua_State* L, int idx)
 // --- Getters for GatewayBuilding ---
 // --- Setters for GatewayBuilding ---
 // --- Methods for GatewayBuilding ---
-int GatewayBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    GatewayBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GatewayBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int GatewayBuildingBinding::reAnnounceGateToPathfinder(lua_State* L)
 {
     GatewayBuilding* instance = getInstance(L, 1);
@@ -184,7 +175,6 @@ int GatewayBuildingBinding::separatesAreas(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 13: GatewayBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 17: void setHandle(...) - unsupported arg type
   line 18: void _NV_setHandle(...) - unsupported arg type
 */
@@ -210,7 +200,6 @@ void GatewayBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", GatewayBuildingBinding::_DESTRUCTOR },
         { "reAnnounceGateToPathfinder", GatewayBuildingBinding::reAnnounceGateToPathfinder },
         { "postCreationPathfinderSetupStuff", GatewayBuildingBinding::postCreationPathfinderSetupStuff },
         { "_NV_postCreationPathfinderSetupStuff", GatewayBuildingBinding::_NV_postCreationPathfinderSetupStuff },

@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int lastSeenInSeconds(lua_State* L);
     static int getPosition(lua_State* L);
     static int getFaction(lua_State* L);

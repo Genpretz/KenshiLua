@@ -54,15 +54,6 @@ static int ShopTrader_set_inventory(lua_State* L)
     return 0;
 }
 
-int ShopTraderBinding::_DESTRUCTOR(lua_State* L)
-{
-    ShopTrader* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ShopTrader is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ShopTraderBinding::getInventory(lua_State* L)
 {
     ShopTrader* instance = getInstance(L, 1);
@@ -357,15 +348,6 @@ int ShopTraderBinding::_NV_unequipItem(lua_State* L)
     return 0;
 }
 
-int ShopTraderBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ShopTrader* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ShopTrader is nil");
-    Character* trader = lua_isnoneornil(L, 2) ? nullptr : checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    ShopTrader* result = instance->_CONSTRUCTOR(trader);
-    return pushObject<ShopTrader>(L, result, ShopTraderBinding::getMetatableName());
-}
-
 int ShopTraderBinding::getGUIData(lua_State* L)
 {
     ShopTrader* instance = getInstance(L, 1);
@@ -461,8 +443,6 @@ void ShopTraderBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ShopTraderBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ShopTraderBinding::_DESTRUCTOR },
         { "getGUIData", ShopTraderBinding::getGUIData },
         { "_NV_getGUIData", ShopTraderBinding::_NV_getGUIData },
         { "getInventory", ShopTraderBinding::getInventory },

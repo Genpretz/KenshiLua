@@ -23,15 +23,6 @@ static int InventorySectionGUI_get_widget(lua_State* L)
 }
 
 // --- Setters for InventorySectionGUI ---
-int InventorySectionGUIBinding::_DESTRUCTOR(lua_State* L)
-{
-    InventorySectionGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventorySectionGUI is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int InventorySectionGUIBinding::hasMouse(lua_State* L)
 {
     InventorySectionGUI* instance = getInstance(L, 1);
@@ -83,7 +74,6 @@ int InventorySectionGUIBinding::update(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 46: InventorySectionGUI* _CONSTRUCTOR(...) - unsupported arg type
   line 50: MyGUI::types::TPoint<int> getItemAbsolutePosition(...) - unsupported return type
   line 52: MyGUI::types::TPoint<int> getPositionSlot(...) - unsupported return type
   line 53: bool getBestPositionSlot(...) - unsupported arg type
@@ -121,7 +111,6 @@ void InventorySectionGUIBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", InventorySectionGUIBinding::_DESTRUCTOR },
         { "hasMouse", InventorySectionGUIBinding::hasMouse },
         { "getWidget", InventorySectionGUIBinding::getWidget },
         { "setEnabled", InventorySectionGUIBinding::setEnabled },

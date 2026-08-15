@@ -14,24 +14,6 @@ static GameDataCopyStandalone* getInstance(lua_State* L, int idx)
 
 // --- Getters for GameDataCopyStandalone ---
 // --- Setters for GameDataCopyStandalone ---
-int GameDataCopyStandaloneBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameDataCopyStandalone* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameDataCopyStandalone is nil");
-
-    GameDataCopyStandalone* result = instance->_CONSTRUCTOR();
-    return pushObject<GameDataCopyStandalone>(L, result, GameDataCopyStandaloneBinding::getMetatableName());
-}
-
-int GameDataCopyStandaloneBinding::_DESTRUCTOR(lua_State* L)
-{
-    GameDataCopyStandalone* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameDataCopyStandalone is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int GameDataCopyStandaloneBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -53,8 +35,6 @@ void GameDataCopyStandaloneBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GameDataCopyStandaloneBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", GameDataCopyStandaloneBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

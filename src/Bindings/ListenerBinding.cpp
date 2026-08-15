@@ -15,25 +15,11 @@ static Listener* getInstance(lua_State* L, int idx)
 
 // --- Getters for Listener ---
 // --- Setters for Listener ---
-int ListenerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Listener* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Listener is nil");
-
-    Listener* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
 /*
 Skipped methods needing manual binding:
   line 59: void weatherUpdated(...) - unsupported arg type
 */
 
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - ListenerBinding::_CONSTRUCTOR: Listener* (unbound pointer)
-*/
 
 int ListenerBinding::gc(lua_State* L)
 {
@@ -56,7 +42,6 @@ void ListenerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ListenerBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

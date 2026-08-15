@@ -192,7 +192,7 @@ def parse_class_body(info, body, start_line):
 
         if "(" in code and ")" in code:
             method = parse_method(code, line_no)
-            if method and method.name not in (info.name, "~" + info.name):
+            if method and method.name not in (info.name, "~" + info.name, "_CONSTRUCTOR", "_DESTRUCTOR"):
                 info.methods.append(method)
             continue
 
@@ -437,9 +437,25 @@ def generated_method_names(info, extra_enums, known_bindings):
     return names
 
 
-def generate_header(info, extra_enums, known_bindings):
+def normalize_kenshi_header_path(header_path):
+    h_str = str(header_path).replace("\\", "/")
+    for prefix in ["extern/KenshiLib/Include/", "extern/kenshilib/Include/", "extern/KenshiLib/include/", "extern/kenshilib/include/"]:
+        if h_str.startswith(prefix):
+            h_str = h_str[len(prefix):]
+            break
+    idx = h_str.lower().find("kenshi/")
+    if idx != -1:
+        h_str = "kenshi/" + h_str[idx + len("kenshi/"):]
+    elif not h_str.lower().startswith("kenshi/"):
+        h_str = "kenshi/" + h_str
+    return h_str
+
+
+def generate_header(info, header_path, extra_enums, known_bindings):
     out = []
     out.append("#pragma once")
+    h_str = normalize_kenshi_header_path(header_path)
+    out.append(f'#include "{h_str}"')
     out.append("")
     out.append('extern "C" {')
     out.append("#include <lua.h>")
@@ -490,7 +506,7 @@ def generate_property_getters(info, members, extra_enums, known_bindings):
         else:
             out.append(f"    {stmt}")
             out.append("    return 1;")
-        out.append("}\n")
+        out.append("}")
     return "\n".join(out)
 
 def generate_property_setters(info, members, extra_enums, known_bindings):
@@ -535,14 +551,7 @@ def generate_cpp(info, header_path, extra_enums, known_bindings, known_headers=N
     # 1. Standard Includes
     out.append('#include "pch.h"')
     
-    # Strip common include folder prefixes
-    h_str = str(header_path).replace("\\", "/")
-    for prefix in ["extern/KenshiLib/Include/", "extern/kenshilib/Include/", "extern/KenshiLib/include/", "extern/kenshilib/include/"]:
-        if h_str.startswith(prefix):
-            h_str = h_str[len(prefix):]
-            break
-    # Normalize slashes to match project convention
-    h_str = h_str.replace("/", "\\")
+    h_str = normalize_kenshi_header_path(header_path)
     out.append(f'#include "{h_str}"')
     out.append(f'#include "{info.name}Binding.h"')
     out.append('#include "Lua/BindingHelpers.h"')
@@ -823,7 +832,7 @@ def main():
             known_headers[c] = f"Bindings/{b}.h"
  
     for info in classes:
-        header = generate_header(info, extra_enums, known_bindings)
+        header = generate_header(info, header_path, extra_enums, known_bindings)
         cpp = generate_cpp(info, header_path, extra_enums, known_bindings, known_headers)
         if args.write_dir:
             out_dir = Path(args.write_dir)

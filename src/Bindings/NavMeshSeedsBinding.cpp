@@ -102,29 +102,9 @@ int NavMeshSeedsBinding::getSeedPoints(lua_State* L)
     return 1;
 }
 
-int NavMeshSeedsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    NavMeshSeeds* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NavMeshSeeds is nil");
-
-    NavMeshSeeds* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int NavMeshSeedsBinding::_DESTRUCTOR(lua_State* L)
-{
-    NavMeshSeeds* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NavMeshSeeds is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - NavMeshSeedsBinding::getSeedPoints: const lektor<Ogre::Vector3>* (unbound pointer)
-  - NavMeshSeedsBinding::_CONSTRUCTOR: NavMeshSeeds* (unbound pointer)
 */
 
 /*
@@ -161,8 +141,6 @@ void NavMeshSeedsBinding::registerBinding(lua_State* L)
         { "removeIsland", NavMeshSeedsBinding::removeIsland },
         { "projectToTerrain", NavMeshSeedsBinding::projectToTerrain },
         { "getSeedPoints", NavMeshSeedsBinding::getSeedPoints },
-        { "_CONSTRUCTOR", NavMeshSeedsBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", NavMeshSeedsBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

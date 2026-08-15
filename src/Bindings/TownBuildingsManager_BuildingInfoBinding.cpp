@@ -28,23 +28,6 @@ static int BuildingInfo_set_visibleFloor(lua_State* L)
     return 0;
 }
 
-int TownBuildingsManager_BuildingInfoBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (TownBuildingsManager::BuildingInfo*)::operator new(sizeof(TownBuildingsManager::BuildingInfo));
-    ::new ((void*)obj) TownBuildingsManager::BuildingInfo();
-    if (lua_gettop(L) >= 1)
-        obj->visibleFloor = (unsigned char)luaL_checkinteger(L, 1);
-    return pushObject<TownBuildingsManager::BuildingInfo>(L, obj, getMetatableName());
-}
-
-int TownBuildingsManager_BuildingInfoBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "TownBuildingsManager::BuildingInfo is nil");
-    inst->~BuildingInfo();
-    return 0;
-}
-
 int TownBuildingsManager_BuildingInfoBinding::gc(lua_State* L)
 {
     return 0;
@@ -73,8 +56,6 @@ void TownBuildingsManager_BuildingInfoBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

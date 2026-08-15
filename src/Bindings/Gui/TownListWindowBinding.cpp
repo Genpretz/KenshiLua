@@ -39,19 +39,6 @@ int TownListWindowBinding::_NV_formatItem(lua_State* L)
     return 1;
 }
 
-int TownListWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    TownListWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TownListWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 151: TownListWindow* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int TownListWindowBinding::gc(lua_State* L)
 {
@@ -76,7 +63,6 @@ void TownListWindowBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "formatItem", TownListWindowBinding::formatItem },
         { "_NV_formatItem", TownListWindowBinding::_NV_formatItem },
-        { "_DESTRUCTOR", TownListWindowBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

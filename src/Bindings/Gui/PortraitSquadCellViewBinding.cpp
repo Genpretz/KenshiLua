@@ -70,15 +70,6 @@ static int PortraitSquadCellView_set_name(lua_State* L)
     return 0;
 }
 
-int PortraitSquadCellViewBinding::_DESTRUCTOR(lua_State* L)
-{
-    PortraitSquadCellView* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PortraitSquadCellView is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int PortraitSquadCellViewBinding::resize(lua_State* L)
 {
     PortraitSquadCellView* instance = getInstance(L, 1);
@@ -100,7 +91,6 @@ int PortraitSquadCellViewBinding::setName(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 78: PortraitSquadCellView* _CONSTRUCTOR(...) - unsupported arg type
   line 81: void update(...) - unsupported arg type
   line 82: void getCellDimension(...) - static method
 */
@@ -133,7 +123,6 @@ void PortraitSquadCellViewBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", PortraitSquadCellViewBinding::_DESTRUCTOR },
         { "resize", PortraitSquadCellViewBinding::resize },
         { "setName", PortraitSquadCellViewBinding::setName },
         { 0, 0 }

@@ -225,24 +225,6 @@ int OptionsWindowBinding::_NV_update(lua_State* L)
     return 0;
 }
 
-int OptionsWindowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    OptionsWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "OptionsWindow is nil");
-
-    OptionsWindow* result = instance->_CONSTRUCTOR();
-    return pushObject<OptionsWindow>(L, result, OptionsWindowBinding::getMetatableName());
-}
-
-int OptionsWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    OptionsWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "OptionsWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int OptionsWindowBinding::saveLocationChanged(lua_State* L)
 {
     OptionsWindow* instance = getInstance(L, 1);
@@ -433,8 +415,6 @@ void OptionsWindowBinding::registerBinding(lua_State* L)
         { "setKey", OptionsWindowBinding::setKey },
         { "update", OptionsWindowBinding::update },
         { "_NV_update", OptionsWindowBinding::_NV_update },
-        { "_CONSTRUCTOR", OptionsWindowBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", OptionsWindowBinding::_DESTRUCTOR },
         { "saveLocationChanged", OptionsWindowBinding::saveLocationChanged },
         { "changeFontSize", OptionsWindowBinding::changeFontSize },
         { "changeVolume", OptionsWindowBinding::changeVolume },

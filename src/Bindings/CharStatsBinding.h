@@ -19,7 +19,6 @@ public:
     static int tostring(lua_State* L);
 
     static int getWeatherProtection(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
     static int unarmedEncumbrancePenalty(lua_State* L);
     static int skillBonusUnarmed_forGUI(lua_State* L);
     static int skillBonusAttack_melee(lua_State* L);
@@ -130,7 +129,6 @@ public:
     static int _NV__recalculateStats(lua_State* L);
     static int setEquippedWeaponSkill(lua_State* L);
     static int _NV_setEquippedWeaponSkill(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int _chooseAttacks(lua_State* L);
     static int _convertBluntMultiplierToWeaponWeight(lua_State* L);
     static int _convertWeaponWeightToBluntMultiplier(lua_State* L);

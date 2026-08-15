@@ -70,25 +70,6 @@ static int NewGameWindow_set_newGameOptions(lua_State* L)
     return 0;
 }
 
-int NewGameWindowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    NewGameWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NewGameWindow is nil");
-
-    NewGameWindow* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int NewGameWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    NewGameWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NewGameWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int NewGameWindowBinding::setVisible(lua_State* L)
 {
     NewGameWindow* instance = getInstance(L, 1);
@@ -211,7 +192,6 @@ Skipped methods needing manual binding:
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - NewGameWindow_get_startNameTextBox: MyGUI::TextBox* (unbound pointer)
-  - NewGameWindowBinding::_CONSTRUCTOR: NewGameWindow* (unbound pointer)
 */
 
 /*
@@ -240,8 +220,6 @@ void NewGameWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", NewGameWindowBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", NewGameWindowBinding::_DESTRUCTOR },
         { "setVisible", NewGameWindowBinding::setVisible },
         { "getVisible", NewGameWindowBinding::getVisible },
         { "setRealPosition", NewGameWindowBinding::setRealPosition },

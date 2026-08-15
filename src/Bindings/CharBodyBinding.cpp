@@ -241,24 +241,6 @@ static int CharBody_set_amIdle(lua_State* L)
     return 0;
 }
 
-int CharBodyBinding::_CONSTRUCTOR(lua_State* L)
-{
-    CharBody* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharBody is nil");
-
-    CharBody* result = instance->_CONSTRUCTOR();
-    return pushObject<CharBody>(L, result, CharBodyBinding::getMetatableName());
-}
-
-int CharBodyBinding::_DESTRUCTOR(lua_State* L)
-{
-    CharBody* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharBody is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int CharBodyBinding::update(lua_State* L)
 {
     CharBody* instance = getInstance(L, 1);
@@ -678,8 +660,6 @@ void CharBodyBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", CharBodyBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", CharBodyBinding::_DESTRUCTOR },
         { "update", CharBodyBinding::update },
         { "_NV_update", CharBodyBinding::_NV_update },
         { "periodicUpdate", CharBodyBinding::periodicUpdate },

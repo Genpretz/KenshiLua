@@ -93,15 +93,6 @@ static int PortraitMainCellView_set_name(lua_State* L)
     return 0;
 }
 
-int PortraitMainCellViewBinding::_DESTRUCTOR(lua_State* L)
-{
-    PortraitMainCellView* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PortraitMainCellView is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int PortraitMainCellViewBinding::resize(lua_State* L)
 {
     PortraitMainCellView* instance = getInstance(L, 1);
@@ -124,7 +115,6 @@ int PortraitMainCellViewBinding::setName(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 83: PortraitMainCellView* _CONSTRUCTOR(...) - unsupported arg type
   line 86: void update(...) - unsupported arg type
   line 87: void getCellDimension(...) - static method
 */
@@ -160,7 +150,6 @@ void PortraitMainCellViewBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", PortraitMainCellViewBinding::_DESTRUCTOR },
         { "resize", PortraitMainCellViewBinding::resize },
         { "setName", PortraitMainCellViewBinding::setName },
         { 0, 0 }

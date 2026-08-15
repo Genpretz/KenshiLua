@@ -14,15 +14,6 @@ static GenericFixedInventoryLayout* getInstance(lua_State* L, int idx)
 
 // --- Getters for GenericFixedInventoryLayout ---
 // --- Setters for GenericFixedInventoryLayout ---
-int GenericFixedInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GenericFixedInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GenericFixedInventoryLayout is nil");
-
-    GenericFixedInventoryLayout* result = instance->_CONSTRUCTOR();
-    return pushObject<GenericFixedInventoryLayout>(L, result, GenericFixedInventoryLayoutBinding::getMetatableName());
-}
-
 int GenericFixedInventoryLayoutBinding::setSize(lua_State* L)
 {
     GenericFixedInventoryLayout* instance = getInstance(L, 1);
@@ -42,15 +33,6 @@ int GenericFixedInventoryLayoutBinding::_NV_setSize(lua_State* L)
     int slotsW = (int)luaL_checkinteger(L, 2);
     int slotsH = (int)luaL_checkinteger(L, 3);
     instance->_NV_setSize(slotsW, slotsH);
-    return 0;
-}
-
-int GenericFixedInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    GenericFixedInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GenericFixedInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -75,10 +57,8 @@ void GenericFixedInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GenericFixedInventoryLayoutBinding::_CONSTRUCTOR },
         { "setSize", GenericFixedInventoryLayoutBinding::setSize },
         { "_NV_setSize", GenericFixedInventoryLayoutBinding::_NV_setSize },
-        { "_DESTRUCTOR", GenericFixedInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -25,7 +25,6 @@ public:
     static int getInputValueTotal(lua_State* L);
     static int getDefaultTask(lua_State* L);
     static int _NV_getDefaultTask(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int updateInputs(lua_State* L);
     static int _NV_updateInputs(lua_State* L);
     static int updateOutput(lua_State* L);

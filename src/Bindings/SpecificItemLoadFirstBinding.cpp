@@ -78,19 +78,6 @@ static int SpecificItemLoadFirst_set_desiredSpecificProperty(lua_State* L)
     return 0;
 }
 
-int SpecificItemLoadFirstBinding::_CONSTRUCTOR(lua_State* L)
-{
-    SpecificItemLoadFirst* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
-
-    itemType BaseItemType = (itemType)luaL_checkinteger(L, 2);
-    itemType _stateEnum = (itemType)luaL_checkinteger(L, 3);
-    const std::string _specificProperty = luaL_checkstring(L, 4);
-    bool _desiredSpecificProperty = lua_toboolean(L, 5) != 0;
-    SpecificItemLoadFirst* result = instance->_CONSTRUCTOR(BaseItemType, _stateEnum, _specificProperty, _desiredSpecificProperty);
-    return pushObject<SpecificItemLoadFirst>(L, result, SpecificItemLoadFirstBinding::getMetatableName());
-}
-
 int SpecificItemLoadFirstBinding::shouldSkip(lua_State* L)
 {
     SpecificItemLoadFirst* instance = getInstance(L, 1);
@@ -122,15 +109,6 @@ int SpecificItemLoadFirstBinding::flip(lua_State* L)
     return 0;
 }
 
-int SpecificItemLoadFirstBinding::_DESTRUCTOR(lua_State* L)
-{
-    SpecificItemLoadFirst* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SpecificItemLoadFirst is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int SpecificItemLoadFirstBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -152,11 +130,9 @@ void SpecificItemLoadFirstBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", SpecificItemLoadFirstBinding::_CONSTRUCTOR },
         { "shouldSkip", SpecificItemLoadFirstBinding::shouldSkip },
         { "_NV_shouldSkip", SpecificItemLoadFirstBinding::_NV_shouldSkip },
         { "flip", SpecificItemLoadFirstBinding::flip },
-        { "_DESTRUCTOR", SpecificItemLoadFirstBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -124,21 +124,6 @@ static int NavMeshMessage_set_next(lua_State* L)
     return 0;
 }
 
-int NavMesh_NavMeshMessageBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (NavMesh::NavMeshMessage*)::operator new(sizeof(NavMesh::NavMeshMessage));
-    ::new ((void*)obj) NavMesh::NavMeshMessage();
-    return pushObject<NavMesh::NavMeshMessage>(L, obj, getMetatableName());
-}
-
-int NavMesh_NavMeshMessageBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "NavMesh::NavMeshMessage is nil");
-    inst->~NavMeshMessage();
-    return 0;
-}
-
 int NavMesh_NavMeshMessageBinding::gc(lua_State* L)
 {
     return 0;
@@ -167,8 +152,6 @@ void NavMesh_NavMeshMessageBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

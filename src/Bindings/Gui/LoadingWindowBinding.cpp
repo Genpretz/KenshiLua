@@ -117,24 +117,6 @@ int LoadingWindowBinding::hide(lua_State* L)
     return 0;
 }
 
-int LoadingWindowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    LoadingWindow* instance = get_instance(L, 1);
-    if (!instance) return luaL_error(L, "LoadingWindow is nil");
-
-    LoadingWindow* result = instance->_CONSTRUCTOR();
-    return pushObject<LoadingWindow>(L, result, LoadingWindowBinding::getMetatableName());
-}
-
-int LoadingWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    LoadingWindow* instance = get_instance(L, 1);
-    if (!instance) return luaL_error(L, "LoadingWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int LoadingWindowBinding::frameEntered(lua_State* L)
 {
     LoadingWindow* instance = get_instance(L, 1);
@@ -208,8 +190,6 @@ void LoadingWindowBinding::registerBinding(lua_State* L)
         { "getVisible", LoadingWindowBinding::getVisible },
         { "show", LoadingWindowBinding::show },
         { "hide", LoadingWindowBinding::hide },
-        { "_CONSTRUCTOR", LoadingWindowBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", LoadingWindowBinding::_DESTRUCTOR },
         { "frameEntered", LoadingWindowBinding::frameEntered },
         { "setRandomBackground", LoadingWindowBinding::setRandomBackground },
         { "setRandomTip", LoadingWindowBinding::setRandomTip },

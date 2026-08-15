@@ -80,23 +80,6 @@ static int BuildingInfo_set_name(lua_State* L)
     return 0;
 }
 
-int NavMesh_BuildingInfoBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (NavMesh::BuildingInfo*)::operator new(sizeof(NavMesh::BuildingInfo));
-    ::new ((void*)obj) NavMesh::BuildingInfo();
-    if (lua_gettop(L) >= 2)
-        obj->hash = (unsigned int)luaL_checkinteger(L, 2);
-    return pushObject<NavMesh::BuildingInfo>(L, obj, getMetatableName());
-}
-
-int NavMesh_BuildingInfoBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "NavMesh::BuildingInfo is nil");
-    inst->~BuildingInfo();
-    return 0;
-}
-
 int NavMesh_BuildingInfoBinding::gc(lua_State* L)
 {
     return 0;
@@ -125,8 +108,6 @@ void NavMesh_BuildingInfoBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

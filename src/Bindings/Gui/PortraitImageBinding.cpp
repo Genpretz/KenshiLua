@@ -61,18 +61,8 @@ static int PortraitImage_set_textureName(lua_State* L)
     return 0;
 }
 
-int PortraitImageBinding::_DESTRUCTOR(lua_State* L)
-{
-    PortraitImage* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PortraitImage is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 20: PortraitImage* _CONSTRUCTOR(...) - unsupported arg type
   line 21: void updateImageWidget(...) - unsupported arg type
 */
 
@@ -103,7 +93,6 @@ void PortraitImageBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", PortraitImageBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

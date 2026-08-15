@@ -375,25 +375,6 @@ static int Town_set_townRangeMultiplier(lua_State* L)
     return 0;
 }
 
-int TownBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Town* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Town is nil");
-
-    GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    Town* result = instance->_CONSTRUCTOR(d);
-    return pushObject<Town>(L, result, TownBinding::getMetatableName());
-}
-
-int TownBinding::_DESTRUCTOR(lua_State* L)
-{
-    Town* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Town is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TownBinding::initialiseResidentData(lua_State* L)
 {
     Town* instance = getInstance(L, 1);
@@ -1653,8 +1634,6 @@ void TownBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TownBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TownBinding::_DESTRUCTOR },
         { "initialiseResidentData", TownBinding::initialiseResidentData },
         { "getGameData", TownBinding::getGameData },
         { "_NV_getGameData", TownBinding::_NV_getGameData },

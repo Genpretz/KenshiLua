@@ -61,21 +61,6 @@ static int DataItem_set_label(lua_State* L)
     return 0;
 }
 
-int GameDataEditorWindow_DataItemBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (GameDataEditorWindow::DataItem*)::operator new(sizeof(GameDataEditorWindow::DataItem));
-    ::new ((void*)obj) GameDataEditorWindow::DataItem();
-    return pushObject<GameDataEditorWindow::DataItem>(L, obj, getMetatableName());
-}
-
-int GameDataEditorWindow_DataItemBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "GameDataEditorWindow::DataItem is nil");
-    inst->~DataItem();
-    return 0;
-}
-
 int GameDataEditorWindow_DataItemBinding::gc(lua_State* L)
 {
     return 0;
@@ -104,8 +89,6 @@ void GameDataEditorWindow_DataItemBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

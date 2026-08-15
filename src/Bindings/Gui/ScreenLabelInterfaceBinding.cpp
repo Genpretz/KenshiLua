@@ -61,25 +61,6 @@ static int ScreenLabelInterface_set_needUpdate(lua_State* L)
     return 0;
 }
 
-int ScreenLabelInterfaceBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ScreenLabelInterface* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ScreenLabelInterface is nil");
-
-    ScreenLabelInterface* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int ScreenLabelInterfaceBinding::_DESTRUCTOR(lua_State* L)
-{
-    ScreenLabelInterface* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ScreenLabelInterface is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ScreenLabelInterfaceBinding::update(lua_State* L)
 {
     ScreenLabelInterface* instance = getInstance(L, 1);
@@ -131,10 +112,6 @@ int ScreenLabelInterfaceBinding::_NV_setPosition(lua_State* L)
     return 0;
 }
 
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - ScreenLabelInterfaceBinding::_CONSTRUCTOR: ScreenLabelInterface* (unbound pointer)
-*/
 
 int ScreenLabelInterfaceBinding::gc(lua_State* L)
 {
@@ -157,8 +134,6 @@ void ScreenLabelInterfaceBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ScreenLabelInterfaceBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ScreenLabelInterfaceBinding::_DESTRUCTOR },
         { "update", ScreenLabelInterfaceBinding::update },
         { "setVisible", ScreenLabelInterfaceBinding::setVisible },
         { "_NV_setVisible", ScreenLabelInterfaceBinding::_NV_setVisible },

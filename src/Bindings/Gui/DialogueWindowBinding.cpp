@@ -342,24 +342,6 @@ int DialogueWindowBinding::changePortrait(lua_State* L)
     return 0;
 }
 
-int DialogueWindowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-
-    DialogueWindow* result = instance->_CONSTRUCTOR();
-    return pushObject<DialogueWindow>(L, result, DialogueWindowBinding::getMetatableName());
-}
-
-int DialogueWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    DialogueWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DialogueWindowBinding::show(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
@@ -451,8 +433,6 @@ void DialogueWindowBinding::registerBinding(lua_State* L)
         { "setResponses", DialogueWindowBinding::setResponses },
         { "clearResponses", DialogueWindowBinding::clearResponses },
         { "changePortrait", DialogueWindowBinding::changePortrait },
-        { "_CONSTRUCTOR", DialogueWindowBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", DialogueWindowBinding::_DESTRUCTOR },
         { "updatePanelsPosition", DialogueWindowBinding::updatePanelsPosition },
         { 0, 0 }
     };

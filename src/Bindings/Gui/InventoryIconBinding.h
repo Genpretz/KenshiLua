@@ -20,6 +20,5 @@ public:
 
     static int update(lua_State* L);
     static int getWidget(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

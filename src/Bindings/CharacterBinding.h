@@ -21,7 +21,6 @@ public:
     static int isImmuneToOffscreenMode(lua_State* L);
     static int init(lua_State* L);
     static int _NV_init(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int isOnARoof(lua_State* L);
     static int _NV_isOnARoof(lua_State* L);
     static int isOnAWall(lua_State* L);
@@ -442,7 +441,6 @@ public:
     static int setDestinationIndoors(lua_State* L);
     static int setHandle(lua_State* L);
     static int teleport(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
     static int formationUpdateCallback(lua_State* L);
     static int serialise(lua_State* L);
     static int _NV_serialise(lua_State* L);

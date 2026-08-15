@@ -445,32 +445,6 @@ static int FarmBuilding_set_isHydroponic(lua_State* L)
 }
 
 // --- Methods for FarmBuilding
-int FarmBuildingBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    Ogre::Vector3 position;
-    readVector3(L, 3, position);
-    Ogre::Quaternion orientation;
-    readQuaternion(L, 4, orientation);
-    Faction* _participant = checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
-    hand* town = checkObject<hand>(L, 6, HandBinding::getMetatableName());
-    hand* _handle = checkObject<hand>(L, 7, HandBinding::getMetatableName());
-    Layout* __isfurnitureOf = (Layout*)lua_touserdata(L, 8);
-    Building* _indoors = lua_isnoneornil(L, 9) ? nullptr : checkObject<Building>(L, 9, BuildingBinding::getMetatableName());
-
-    FarmBuilding* result = new FarmBuilding(data, position, orientation, _participant, *town, *_handle, __isfurnitureOf, _indoors);
-    return pushObject<FarmBuilding>(L, result, FarmBuildingBinding::getMetatableName());
-}
-
-int FarmBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    FarmBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FarmBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FarmBuildingBinding::createPhysical(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
@@ -1067,7 +1041,6 @@ int FarmBuildingBinding::resetFarm(lua_State* L)
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - FarmBuildingBinding::_CONSTRUCTOR: Layout* __isfurnitureOf (unbound pointer)
   - FarmBuilding_get_material / FarmBuilding_set_material: Ogre::SharedPtr<Ogre::Material> (unbound smart-pointer type)
   - FarmBuilding_get_plantEntity / FarmBuilding_set_plantEntity: Ogre::Entity* (unbound pointer)
   - FarmBuilding_get_clickHull / FarmBuilding_set_clickHull: StaticBoxEntity* (unbound pointer)
@@ -1096,8 +1069,6 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FarmBuildingBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", FarmBuildingBinding::_DESTRUCTOR },
         { "createPhysical", FarmBuildingBinding::createPhysical },
         { "_NV_createPhysical", FarmBuildingBinding::_NV_createPhysical },
         { "destroyPhysical", FarmBuildingBinding::destroyPhysical },

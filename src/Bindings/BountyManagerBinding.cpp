@@ -228,16 +228,6 @@ int BountyManagerBinding::_getHighestBountyFaction(lua_State* L)
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
 }
 
-int BountyManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    BountyManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "BountyManager is nil");
-
-    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    BountyManager* result = instance->_CONSTRUCTOR(c);
-    return pushObject<BountyManager>(L, result, BountyManagerBinding::getMetatableName());
-}
-
 int BountyManagerBinding::getPercievedBounty(lua_State* L)
 {
     BountyManager* instance = getInstance(L, 1);
@@ -424,15 +414,6 @@ int BountyManagerBinding::giveAccessPass(lua_State* L)
     return 0;
 }
 
-int BountyManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    BountyManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "BountyManager is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int BountyManagerBinding::setCrime(lua_State* L)
 {
     BountyManager* instance = getInstance(L, 1);
@@ -531,9 +512,7 @@ void BountyManagerBinding::registerBinding(lua_State* L)
         { "getBountyExpiryStringForGUI", BountyManagerBinding::getBountyExpiryStringForGUI },
         { "notifyPossibleCrimeWitnessed", BountyManagerBinding::notifyPossibleCrimeWitnessed },
         { "isCommittingCrime", BountyManagerBinding::isCommittingCrime },
-        { "_DESTRUCTOR", BountyManagerBinding::_DESTRUCTOR },
         { "_getBountyFaction", BountyManagerBinding::_getBountyFaction },
-        { "_CONSTRUCTOR", BountyManagerBinding::_CONSTRUCTOR },
         { "getPercievedBounty", BountyManagerBinding::getPercievedBounty },
         { "getActualBounty", BountyManagerBinding::getActualBounty },
         { "notifyPlayerClaimBounty", BountyManagerBinding::notifyPlayerClaimBounty },

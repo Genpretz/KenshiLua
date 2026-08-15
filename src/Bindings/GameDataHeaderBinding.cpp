@@ -112,28 +112,6 @@ static int GameDataHeader_set_references(lua_State* L)
     return 0;
 }
 
-int GameDataHeaderBinding::_CONSTRUCTOR(lua_State* L)
-{
-    if (lua_gettop(L) >= 3 && lua_isstring(L, 2) && lua_isstring(L, 3))
-    {
-        const std::string name = luaL_checkstring(L, 2);
-        const std::string filename = luaL_checkstring(L, 3);
-        GameDataHeader* result = new GameDataHeader(name, filename);
-        return pushObject<GameDataHeader>(L, result, GameDataHeaderBinding::getMetatableName());
-    }
-    GameDataHeader* result = new GameDataHeader();
-    return pushObject<GameDataHeader>(L, result, GameDataHeaderBinding::getMetatableName());
-}
-
-int GameDataHeaderBinding::_DESTRUCTOR(lua_State* L)
-{
-    GameDataHeader* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameDataHeader is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int GameDataHeaderBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -155,8 +133,6 @@ void GameDataHeaderBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GameDataHeaderBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", GameDataHeaderBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

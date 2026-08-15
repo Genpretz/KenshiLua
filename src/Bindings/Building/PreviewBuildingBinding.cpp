@@ -531,26 +531,6 @@ static int PreviewBuilding_set_positionHitGroup(lua_State* L)
     return 0;
 }
 
-int PreviewBuildingBinding::_CONSTRUCTOR(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-
-    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    Building* _furnitureParent = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
-    PreviewBuilding* result = instance->_CONSTRUCTOR(data, _furnitureParent);
-    return pushObject<PreviewBuilding>(L, result, PreviewBuildingBinding::getMetatableName());
-}
-
-int PreviewBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    PreviewBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int PreviewBuildingBinding::type(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
@@ -1411,8 +1391,6 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", PreviewBuildingBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", PreviewBuildingBinding::_DESTRUCTOR },
         { "type", PreviewBuildingBinding::type },
         { "_NV_type", PreviewBuildingBinding::_NV_type },
         { "checkProspectingIsNotZero", PreviewBuildingBinding::checkProspectingIsNotZero },

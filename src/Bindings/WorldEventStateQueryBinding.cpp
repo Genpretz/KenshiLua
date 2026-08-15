@@ -31,15 +31,6 @@ static int WorldEventStateQuery_set_playerInvolvement(lua_State* L)
     return 0;
 }
 
-int WorldEventStateQueryBinding::_CONSTRUCTOR(lua_State* L)
-{
-    WorldEventStateQuery* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "WorldEventStateQuery is nil");
-
-    WorldEventStateQuery* result = instance->_CONSTRUCTOR();
-    return pushObject<WorldEventStateQuery>(L, result, WorldEventStateQueryBinding::getMetatableName());
-}
-
 int WorldEventStateQueryBinding::isTrue(lua_State* L)
 {
     WorldEventStateQuery* instance = getInstance(L, 1);
@@ -179,7 +170,6 @@ void WorldEventStateQueryBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", WorldEventStateQueryBinding::_CONSTRUCTOR },
         { "isTrue", WorldEventStateQueryBinding::isTrue },
         { 0, 0 }
     };

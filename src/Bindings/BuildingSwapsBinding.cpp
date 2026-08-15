@@ -76,34 +76,6 @@ int BuildingSwapsBinding::getReplacement(lua_State* L)
         GameDataBinding::getMetatableName());
 }
 
-int BuildingSwapsBinding::_DESTRUCTOR(lua_State* L)
-{
-    BuildingSwaps* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-int BuildingSwapsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Faction::BuildingSwaps* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
-
-    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2))
-    {
-        GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-        if (!data) return luaL_error(L, "Expected GameData object for constructor");
-        Faction::BuildingSwaps* result = instance->_CONSTRUCTOR(data);
-        return pushObject<Faction::BuildingSwaps>(L, result, BuildingSwapsBinding::getMetatableName());
-    }
-    else
-    {
-        Faction::BuildingSwaps* result = instance->_CONSTRUCTOR();
-        return pushObject<Faction::BuildingSwaps>(L, result, BuildingSwapsBinding::getMetatableName());
-    }
-}
-
 /*
 Skipped methods needing manual binding:
   line 47: Faction::BuildingSwaps& operator=(...) - operator
@@ -132,7 +104,6 @@ void BuildingSwapsBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "hasReplacement", BuildingSwapsBinding::hasReplacement },
         { "getReplacement", BuildingSwapsBinding::getReplacement },
-        { "_DESTRUCTOR", BuildingSwapsBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

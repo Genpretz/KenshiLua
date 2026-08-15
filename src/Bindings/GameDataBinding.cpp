@@ -197,24 +197,6 @@ static int GameData_set_createdIndex(lua_State* L)
     return 0;
 }
 
-int GameDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    GameData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-int GameDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameData is nil");
-
-    GameData* result = instance->_CONSTRUCTOR();
-    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
-}
-
 int GameDataBinding::isValid(lua_State* L)
 {
     GameData* instance = getInstance(L, 1);
@@ -820,8 +802,6 @@ void GameDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", GameDataBinding::_DESTRUCTOR },
-        { "_CONSTRUCTOR", GameDataBinding::_CONSTRUCTOR },
         { "isValid", GameDataBinding::isValid },
         { "getSourceContainer", GameDataBinding::getSourceContainer },
         { "destroy", GameDataBinding::destroy },

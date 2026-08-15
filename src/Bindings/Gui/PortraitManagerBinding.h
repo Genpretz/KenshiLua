@@ -34,7 +34,5 @@ public:
     static int updatePortraitImage(lua_State* L);
     static int setImageWidget(lua_State* L);
     static int getInstance(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

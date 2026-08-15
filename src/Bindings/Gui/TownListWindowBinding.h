@@ -20,6 +20,5 @@ public:
 
     static int formatItem(lua_State* L);
     static int _NV_formatItem(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

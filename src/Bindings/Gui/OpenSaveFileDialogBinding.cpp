@@ -126,15 +126,6 @@ static int OpenSaveFileDialog_set_folderMode(lua_State* L)
     return 0;
 }
 
-int OpenSaveFileDialogBinding::_DESTRUCTOR(lua_State* L)
-{
-    OpenSaveFileDialog* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int OpenSaveFileDialogBinding::setVisible(lua_State* L)
 {
     OpenSaveFileDialog* instance = getInstance(L, 1);
@@ -208,7 +199,6 @@ int OpenSaveFileDialogBinding::update(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 14: OpenSaveFileDialog* _CONSTRUCTOR(...) - unsupported arg type
   line 21: const std::string& getCurrentFolder(...) - reference return type
   line 23: const std::string& getFileName(...) - reference return type
   line 24: void setRecentFolders(...) - unsupported arg type
@@ -244,7 +234,6 @@ void OpenSaveFileDialogBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", OpenSaveFileDialogBinding::_DESTRUCTOR },
         { "setVisible", OpenSaveFileDialogBinding::setVisible },
         { "getVisible", OpenSaveFileDialogBinding::getVisible },
         { "setDialogInfo", OpenSaveFileDialogBinding::setDialogInfo },

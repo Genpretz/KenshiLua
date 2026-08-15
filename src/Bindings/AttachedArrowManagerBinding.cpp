@@ -29,15 +29,6 @@ static int AttachedArrowManager_set_index(lua_State* L)
     return 0;
 }
 
-int AttachedArrowManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    Character::AttachedArrowManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AttachedArrowManager is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int AttachedArrowManagerBinding::clearAll(lua_State* L)
 {
     Character::AttachedArrowManager* instance = getInstance(L, 1);
@@ -79,15 +70,6 @@ int AttachedArrowManagerBinding::updateEnd(lua_State* L)
     return 0;
 }
 
-int AttachedArrowManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Character::AttachedArrowManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AttachedArrowManager is nil");
-
-    Character::AttachedArrowManager* result = instance->_CONSTRUCTOR();
-    return pushObject<Character::AttachedArrowManager>(L, result, AttachedArrowManagerBinding::getMetatableName());
-}
-
 /*
 Skipped properties needing manual binding:
   line 339: ents (lektor<Ogre::Entity*>) - unsupported type
@@ -114,12 +96,10 @@ void AttachedArrowManagerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", AttachedArrowManagerBinding::_DESTRUCTOR },
         { "clearAll", AttachedArrowManagerBinding::clearAll },
         { "updateStart", AttachedArrowManagerBinding::updateStart },
         { "addArrow", AttachedArrowManagerBinding::addArrow },
         { "updateEnd", AttachedArrowManagerBinding::updateEnd },
-        { "_CONSTRUCTOR", AttachedArrowManagerBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

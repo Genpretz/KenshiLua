@@ -40,15 +40,6 @@ int ZoneManagerInterfaceTBinding::isZoneBeingLoadedT(lua_State* L)
     return 1;
 }
 
-int ZoneManagerInterfaceTBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ZoneManagerInterfaceT* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneManagerInterfaceT is nil");
-
-    ZoneManagerInterfaceT* result = instance->_CONSTRUCTOR();
-    return pushObject<ZoneManagerInterfaceT>(L, result, ZoneManagerInterfaceTBinding::getMetatableName());
-}
-
 int ZoneManagerInterfaceTBinding::getZoneBoundsT(lua_State* L)
 {
     ZoneManagerInterfaceT* instance = getInstance(L, 1);
@@ -106,7 +97,6 @@ void ZoneManagerInterfaceTBinding::registerBinding(lua_State* L)
         { "isZoneLoadedT", ZoneManagerInterfaceTBinding::isZoneLoadedT },
         { "isZoneBeingLoadedT", ZoneManagerInterfaceTBinding::isZoneBeingLoadedT },
         { "getZoneBoundsT", ZoneManagerInterfaceTBinding::getZoneBoundsT },
-        { "_CONSTRUCTOR", ZoneManagerInterfaceTBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

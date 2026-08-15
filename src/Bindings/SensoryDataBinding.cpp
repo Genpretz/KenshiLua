@@ -286,25 +286,6 @@ static int SensoryData_set_amSharingThisFrame(lua_State* L)
     return 0;
 }
 
-int SensoryDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    SensoryData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SensoryData is nil");
-
-    Character* _me = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    SensoryData* result = instance->_CONSTRUCTOR(_me);
-    return pushObject<SensoryData>(L, result, SensoryDataBinding::getMetatableName());
-}
-
-int SensoryDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    SensoryData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SensoryData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int SensoryDataBinding::periodicUpdate(lua_State* L)
 {
     SensoryData* instance = getInstance(L, 1);
@@ -1242,8 +1223,6 @@ void SensoryDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", SensoryDataBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", SensoryDataBinding::_DESTRUCTOR },
         { "periodicUpdate", SensoryDataBinding::periodicUpdate },
         { "periodicUpdate_KOed", SensoryDataBinding::periodicUpdate_KOed },
         { "getVisionRange", SensoryDataBinding::getVisionRange },

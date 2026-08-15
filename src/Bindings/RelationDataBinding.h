@@ -20,6 +20,5 @@ public:
 
     static int save(lua_State* L);
     static int load(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

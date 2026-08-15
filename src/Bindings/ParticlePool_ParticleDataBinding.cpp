@@ -61,21 +61,6 @@ static int ParticleData_set_node(lua_State* L)
     return 0;
 }
 
-int ParticlePool_ParticleDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (ParticlePool::ParticleData*)::operator new(sizeof(ParticlePool::ParticleData));
-    ::new ((void*)obj) ParticlePool::ParticleData();
-    return pushObject<ParticlePool::ParticleData>(L, obj, getMetatableName());
-}
-
-int ParticlePool_ParticleDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "ParticlePool::ParticleData is nil");
-    inst->~ParticleData();
-    return 0;
-}
-
 int ParticlePool_ParticleDataBinding::gc(lua_State* L)
 {
     return 0;
@@ -104,8 +89,6 @@ void ParticlePool_ParticleDataBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

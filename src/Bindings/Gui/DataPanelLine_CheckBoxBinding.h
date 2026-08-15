@@ -24,9 +24,7 @@ public:
     static int setValuePtr(lua_State* L);
     static int getTextBox(lua_State* L);
     static int getCheckBox(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
     static int createMe(lua_State* L);
     static int _NV_createMe(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

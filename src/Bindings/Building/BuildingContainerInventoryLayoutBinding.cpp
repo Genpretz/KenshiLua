@@ -37,15 +37,6 @@ static int BuildingContainerInventoryLayout_set_capacityText(lua_State* L)
     return 0;
 }
 
-int BuildingContainerInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    BuildingContainerInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
-
-    BuildingContainerInventoryLayout* result = instance->_CONSTRUCTOR();
-    return pushObject<BuildingContainerInventoryLayout>(L, result, BuildingContainerInventoryLayoutBinding::getMetatableName());
-}
-
 int BuildingContainerInventoryLayoutBinding::setCapacity(lua_State* L)
 {
     BuildingContainerInventoryLayout* instance = getInstance(L, 1);
@@ -76,15 +67,6 @@ int BuildingContainerInventoryLayoutBinding::setupSections(lua_State* L)
     return 0;
 }
 
-int BuildingContainerInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    BuildingContainerInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int BuildingContainerInventoryLayoutBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -106,10 +88,8 @@ void BuildingContainerInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", BuildingContainerInventoryLayoutBinding::_CONSTRUCTOR },
         { "setCapacity", BuildingContainerInventoryLayoutBinding::setCapacity },
         { "setupSections", BuildingContainerInventoryLayoutBinding::setupSections },
-        { "_DESTRUCTOR", BuildingContainerInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -763,28 +763,6 @@ int ItemBinding::persistantOwnerExists(lua_State* L)
     return 1;
 }
 
-int ItemBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Item* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Item is nil");
-
-    GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    GameData* companyData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
-    GameData* _materialData = checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 5, HandBinding::getMetatableName());
-    Item* result = instance->_CONSTRUCTOR(baseData, companyData, _materialData, _handle);
-    return pushObject<Item>(L, result, ItemBinding::getMetatableName());
-}
-
-int ItemBinding::_DESTRUCTOR(lua_State* L)
-{
-    Item* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Item is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ItemBinding::createPhysical(lua_State* L)
 {
     Item* instance = getInstance(L, 1);
@@ -1211,8 +1189,6 @@ void ItemBinding::registerBinding(lua_State* L)
         { "_NV_destroyItemEntityCallback_Equipping", ItemBinding::_NV_destroyItemEntityCallback_Equipping },
         { "isPersistant", ItemBinding::isPersistant },
         { "persistantOwnerExists", ItemBinding::persistantOwnerExists },
-        { "_CONSTRUCTOR", ItemBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ItemBinding::_DESTRUCTOR },
         { "createPhysical", ItemBinding::createPhysical },
         { "_NV_createPhysical", ItemBinding::_NV_createPhysical },
         { "destroyPhysical", ItemBinding::destroyPhysical },

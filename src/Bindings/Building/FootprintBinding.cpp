@@ -169,15 +169,6 @@ static int Footprint_set_parent(lua_State* L)
     return 0;
 }
 
-int FootprintBinding::_DESTRUCTOR(lua_State* L)
-{
-    Footprint* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Footprint is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FootprintBinding::getSpace(lua_State* L)
 {
     Footprint* instance = getInstance(L, 1);
@@ -339,8 +330,6 @@ int FootprintBinding::getGroundHeight(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 519: Footprint* _CONSTRUCTOR(...) - overloaded method
-  line 521: Footprint* _CONSTRUCTOR(...) - overloaded method
   line 524: const Ogre::Aabb getWorldAABB(...) - unsupported return type
   line 525: const Ogre::Aabb _NV_getWorldAABB(...) - unsupported return type
   line 526: const Ogre::Aabb getLocalAABB(...) - unsupported return type
@@ -378,7 +367,6 @@ void FootprintBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", FootprintBinding::_DESTRUCTOR },
         { "getSpace", FootprintBinding::getSpace },
         { "getMarker", FootprintBinding::getMarker },
         { "setValid", FootprintBinding::setValid },

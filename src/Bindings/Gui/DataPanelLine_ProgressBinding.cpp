@@ -66,18 +66,6 @@ int DataPanelLine_ProgressBinding::setProgress(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_ProgressBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Progress* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
-
-    const std::string key = luaL_checkstring(L, 2);
-    int category = (int)luaL_checkinteger(L, 3);
-    bool showKey = lua_toboolean(L, 4) != 0;
-    DataPanelLine_Progress* result = instance->_CONSTRUCTOR(key, category, showKey);
-    return pushObject<DataPanelLine_Progress>(L, result, DataPanelLine_ProgressBinding::getMetatableName());
-}
-
 int DataPanelLine_ProgressBinding::createMe(lua_State* L)
 {
     DataPanelLine_Progress* instance = getInstance(L, 1);
@@ -99,15 +87,6 @@ int DataPanelLine_ProgressBinding::_NV_createMe(lua_State* L)
     float top = (float)luaL_checknumber(L, 3);
     bool lastLine = lua_toboolean(L, 4) != 0;
     instance->_NV_createMe(parent, top, lastLine);
-    return 0;
-}
-
-int DataPanelLine_ProgressBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Progress* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
-
-    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -133,10 +112,8 @@ void DataPanelLine_ProgressBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "setProgress", DataPanelLine_ProgressBinding::setProgress },
-        { "_CONSTRUCTOR", DataPanelLine_ProgressBinding::_CONSTRUCTOR },
         { "createMe", DataPanelLine_ProgressBinding::createMe },
         { "_NV_createMe", DataPanelLine_ProgressBinding::_NV_createMe },
-        { "_DESTRUCTOR", DataPanelLine_ProgressBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

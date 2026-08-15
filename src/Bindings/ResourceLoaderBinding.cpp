@@ -105,25 +105,6 @@ int ResourceLoaderBinding::isLoading(lua_State* L)
     return 1;
 }
 
-int ResourceLoaderBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ResourceLoader* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ResourceLoader is nil");
-
-    ResourceLoader* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int ResourceLoaderBinding::_DESTRUCTOR(lua_State* L)
-{
-    ResourceLoader* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ResourceLoader is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ResourceLoaderBinding::init(lua_State* L)
 {
     ResourceLoader* instance = getInstance(L, 1);
@@ -216,8 +197,6 @@ void ResourceLoaderBinding::registerBinding(lua_State* L)
         { "updateMT", ResourceLoaderBinding::updateMT },
         { "updateBT", ResourceLoaderBinding::updateBT },
         { "isLoading", ResourceLoaderBinding::isLoading },
-        { "_CONSTRUCTOR", ResourceLoaderBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ResourceLoaderBinding::_DESTRUCTOR },
         { "init", ResourceLoaderBinding::init },
         { "threadProc", ResourceLoaderBinding::threadProc },
         { "_NV_threadProc", ResourceLoaderBinding::_NV_threadProc },

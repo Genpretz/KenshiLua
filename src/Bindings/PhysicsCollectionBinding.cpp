@@ -15,15 +15,6 @@ static PhysicsCollection* getInstance(lua_State* L, int idx)
 
 // --- Getters for PhysicsCollection ---
 // --- Setters for PhysicsCollection ---
-int PhysicsCollectionBinding::_DESTRUCTOR(lua_State* L)
-{
-    PhysicsCollection* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PhysicsCollection is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int PhysicsCollectionBinding::findRotatingEnt(lua_State* L)
 {
     PhysicsCollection* instance = getInstance(L, 1);
@@ -96,16 +87,6 @@ int PhysicsCollectionBinding::updateAimingType(lua_State* L)
     return 1;
 }
 
-int PhysicsCollectionBinding::_CONSTRUCTOR(lua_State* L)
-{
-    PhysicsCollection* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PhysicsCollection is nil");
-
-    PhysicsCollection* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
 /*
 Skipped methods needing manual binding:
   line 187: void handleChanged(...) - non-string reference arg
@@ -115,7 +96,6 @@ Skipped methods needing manual binding:
 LIGHTUSERDATA DEPENDENCIES:
   - PhysicsCollectionBinding::findRotatingEnt: PhysicsCollection::RotatingEnt* (unbound pointer)
   - PhysicsCollectionBinding::getWindMillPart: PhysicsCollection::RotatingEnt* (unbound pointer)
-  - PhysicsCollectionBinding::_CONSTRUCTOR: PhysicsCollection* (unbound pointer)
 */
 
 /*
@@ -146,7 +126,6 @@ void PhysicsCollectionBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", PhysicsCollectionBinding::_DESTRUCTOR },
         { "findRotatingEnt", PhysicsCollectionBinding::findRotatingEnt },
         { "getWindRotationPower", PhysicsCollectionBinding::getWindRotationPower },
         { "getWindMillPart", PhysicsCollectionBinding::getWindMillPart },
@@ -154,7 +133,6 @@ void PhysicsCollectionBinding::registerBinding(lua_State* L)
         { "setVisible", PhysicsCollectionBinding::setVisible },
         { "update", PhysicsCollectionBinding::update },
         { "updateAimingType", PhysicsCollectionBinding::updateAimingType },
-        { "_CONSTRUCTOR", PhysicsCollectionBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

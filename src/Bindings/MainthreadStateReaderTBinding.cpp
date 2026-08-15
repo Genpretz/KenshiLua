@@ -29,16 +29,6 @@ int MainthreadStateReaderTBinding::tostring(lua_State* L)
     return 1;
 }
 
-int MainthreadStateReaderTBinding::_CONSTRUCTOR(lua_State* L)
-{
-    return 0;
-}
-
-int MainthreadStateReaderTBinding::_DESTRUCTOR(lua_State* L)
-{
-    return 0;
-}
-
 int MainthreadStateReaderTBinding::updateBackDataCheck(lua_State* L)
 {
     MainthreadStateReaderT* instance = getInstance(L, 1);
@@ -72,8 +62,6 @@ void MainthreadStateReaderTBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", MainthreadStateReaderTBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", MainthreadStateReaderTBinding::_DESTRUCTOR },
         { "updateBackDataCheck", MainthreadStateReaderTBinding::updateBackDataCheck },
         { "_NV_updateBackDataCheck", MainthreadStateReaderTBinding::_NV_updateBackDataCheck },
         { "getMainData", MainthreadStateReaderTBinding::getMainData },

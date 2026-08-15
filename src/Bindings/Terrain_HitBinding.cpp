@@ -76,29 +76,6 @@ static int Hit_set_normal(lua_State* L)
     return 0;
 }
 
-int Terrain_HitBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (Terrain::Hit*)::operator new(sizeof(Terrain::Hit));
-    ::new ((void*)obj) Terrain::Hit();
-    if (lua_gettop(L) >= 1)
-        obj->hit = lua_toboolean(L, 1) != 0;
-    if (lua_gettop(L) >= 2)
-        obj->level = (unsigned char)luaL_checkinteger(L, 2);
-    if (lua_gettop(L) >= 3)
-        readVector3(L, 3, obj->point);
-    if (lua_gettop(L) >= 4)
-        readVector3(L, 4, obj->normal);
-    return pushObject<Terrain::Hit>(L, obj, getMetatableName());
-}
-
-int Terrain_HitBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "Terrain::Hit is nil");
-    inst->~Hit();
-    return 0;
-}
-
 int Terrain_HitBinding::gc(lua_State* L)
 {
     return 0;
@@ -127,8 +104,6 @@ void Terrain_HitBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

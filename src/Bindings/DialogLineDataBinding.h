@@ -21,8 +21,6 @@ public:
     static int getParent(lua_State* L);
     static int isForSpecificCharacter(lua_State* L);
     static int hasSpecificCharacterRequirement(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int setupChildren(lua_State* L);
     static int checkRepeatLimits(lua_State* L);
     static int checkTags(lua_State* L);

@@ -134,15 +134,6 @@ static int ContainerItem_set_inventory(lua_State* L)
     return 0;
 }
 
-int ContainerItemBinding::_DESTRUCTOR(lua_State* L)
-{
-    ContainerItem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ContainerItem is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ContainerItemBinding::getClassType(lua_State* L)
 {
     ContainerItem* instance = getInstance(L, 1);
@@ -420,18 +411,6 @@ int ContainerItemBinding::_NV_loadFromSerialise(lua_State* L)
     return 0;
 }
 
-int ContainerItemBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ContainerItem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ContainerItem is nil");
-
-    GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    GameData* mat = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
-    ContainerItem* result = instance->_CONSTRUCTOR(dat, mat, _handle);
-    return pushObject<ContainerItem>(L, result, ContainerItemBinding::getMetatableName());
-}
-
 int ContainerItemBinding::setProperOwner(lua_State* L)
 {
     ContainerItem* instance = getInstance(L, 1);
@@ -494,7 +473,6 @@ void ContainerItemBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ContainerItemBinding::_DESTRUCTOR },
         { "getClassType", ContainerItemBinding::getClassType },
         { "_NV_getClassType", ContainerItemBinding::_NV_getClassType },
         { "canEquip", ContainerItemBinding::canEquip },
@@ -524,7 +502,6 @@ void ContainerItemBinding::registerBinding(lua_State* L)
         { "_NV_loadFromSerialise", ContainerItemBinding::_NV_loadFromSerialise },
         { "setProperOwner", ContainerItemBinding::setProperOwner },
         { "_NV_setProperOwner", ContainerItemBinding::_NV_setProperOwner },
-        { "_CONSTRUCTOR", ContainerItemBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

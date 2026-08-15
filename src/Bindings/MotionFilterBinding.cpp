@@ -54,18 +54,6 @@ static int MotionFilter_set_mHistoryBufferX(lua_State* L)
     return 0;
 }
 
-int MotionFilterBinding::_CONSTRUCTOR(lua_State* L)
-{
-    MotionFilter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MotionFilter is nil");
-
-    int length = (int)luaL_checkinteger(L, 2);
-    float weight_modifier = (float)luaL_checknumber(L, 3);
-    float fill = (float)luaL_checknumber(L, 4);
-    MotionFilter* result = instance->_CONSTRUCTOR(length, weight_modifier, fill);
-    return pushObject<MotionFilter>(L, result, MotionFilterBinding::getMetatableName());
-}
-
 int MotionFilterBinding::SetHistoryBufferLength(lua_State* L)
 {
     MotionFilter* instance = getInstance(L, 1);
@@ -76,15 +64,6 @@ int MotionFilterBinding::SetHistoryBufferLength(lua_State* L)
     bool result = instance->SetHistoryBufferLength(length, fill);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
-}
-
-int MotionFilterBinding::_DESTRUCTOR(lua_State* L)
-{
-    MotionFilter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MotionFilter is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
 }
 
 /*
@@ -113,9 +92,7 @@ void MotionFilterBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", MotionFilterBinding::_CONSTRUCTOR },
         { "SetHistoryBufferLength", MotionFilterBinding::SetHistoryBufferLength },
-        { "_DESTRUCTOR", MotionFilterBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

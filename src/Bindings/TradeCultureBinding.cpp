@@ -163,24 +163,6 @@ int TradeCultureBinding::getForbiddenItemsList(lua_State* L)
     return pushObject<lektor<GameData*>>(L, (lektor<GameData*>*)&instance->getForbiddenItemsList(), LektorPtrBinding<GameData*>::metaName);
 }
 
-int TradeCultureBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TradeCulture* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TradeCulture is nil");
-
-    TradeCulture* result = instance->_CONSTRUCTOR();
-    return pushObject<TradeCulture>(L, result, TradeCultureBinding::getMetatableName());
-}
-
-int TradeCultureBinding::_DESTRUCTOR(lua_State* L)
-{
-    TradeCulture* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TradeCulture is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TradeCultureBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -208,8 +190,6 @@ void TradeCultureBinding::registerBinding(lua_State* L)
         { "getTradePriceMultiplier", TradeCultureBinding::getTradePriceMultiplier },
         { "hasTradePriceMultiplier", TradeCultureBinding::hasTradePriceMultiplier },
         { "getForbiddenItemsList", TradeCultureBinding::getForbiddenItemsList },
-        { "_CONSTRUCTOR", TradeCultureBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TradeCultureBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -128,19 +128,8 @@ static int ModInfo_set_header(lua_State* L)
 }
 
 // --- Methods for ModInfo
-int ModInfoBinding::_DESTRUCTOR(lua_State* L)
-{
-    ModInfo* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ModInfo is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 11: ModInfo* _CONSTRUCTOR(...) - overloaded method
-  line 13: ModInfo* _CONSTRUCTOR(...) - overloaded method
   line 21: bool getLocale(...) - non-string reference arg
   line 24: ModInfo& operator=(...) - operator
 */
@@ -166,7 +155,6 @@ void ModInfoBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ModInfoBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

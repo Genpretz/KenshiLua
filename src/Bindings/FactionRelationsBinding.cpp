@@ -137,15 +137,6 @@ static int FactionRelations_set_defaultFactionRelation(lua_State* L)
     return 0;
 }
 
-int FactionRelationsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FactionRelations* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionRelations is nil");
-
-    FactionRelations* result = instance->_CONSTRUCTOR();
-    return pushObject<FactionRelations>(L, result, FactionRelationsBinding::getMetatableName());
-}
-
 int FactionRelationsBinding::setupPhase2(lua_State* L)
 {
     FactionRelations* instance = getInstance(L, 1);
@@ -189,15 +180,6 @@ int FactionRelationsBinding::_NV_update(lua_State* L)
     if (!instance) return luaL_error(L, "FactionRelations is nil");
 
     instance->_NV_update();
-    return 0;
-}
-
-int FactionRelationsBinding::_DESTRUCTOR(lua_State* L)
-{
-    FactionRelations* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionRelations is nil");
-
-    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -568,13 +550,11 @@ void FactionRelationsBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FactionRelationsBinding::_CONSTRUCTOR },
         { "setupPhase2", FactionRelationsBinding::setupPhase2 },
         { "isEnemyByDefault", FactionRelationsBinding::isEnemyByDefault },
         { "reset", FactionRelationsBinding::reset },
         { "update", FactionRelationsBinding::update },
         { "_NV_update", FactionRelationsBinding::_NV_update },
-        { "_DESTRUCTOR", FactionRelationsBinding::_DESTRUCTOR },
         { "setupPhase1", FactionRelationsBinding::setupPhase1 },
         { "save", FactionRelationsBinding::save },
         { "_NV_save", FactionRelationsBinding::_NV_save },

@@ -62,23 +62,6 @@ static int FenceCallbackData_set_point(lua_State* L)
     return 0;
 }
 
-int InventoryGUI_FenceCallbackDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (InventoryGUI::FenceCallbackData*)::operator new(sizeof(InventoryGUI::FenceCallbackData));
-    ::new ((void*)obj) InventoryGUI::FenceCallbackData();
-    if (lua_gettop(L) >= 1)
-        obj->mode = (int)luaL_checkinteger(L, 1);
-    return pushObject<InventoryGUI::FenceCallbackData>(L, obj, getMetatableName());
-}
-
-int InventoryGUI_FenceCallbackDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "InventoryGUI::FenceCallbackData is nil");
-    inst->~FenceCallbackData();
-    return 0;
-}
-
 int InventoryGUI_FenceCallbackDataBinding::gc(lua_State* L)
 {
     return 0;
@@ -107,8 +90,6 @@ void InventoryGUI_FenceCallbackDataBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

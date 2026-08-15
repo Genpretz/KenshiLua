@@ -24,6 +24,5 @@ public:
     static int _NV_getSoundIntensity(lua_State* L);
     static int isAnyInputsEmpty(lua_State* L);
     static int _NV_isAnyInputsEmpty(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

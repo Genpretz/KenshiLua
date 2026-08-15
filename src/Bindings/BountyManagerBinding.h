@@ -25,9 +25,7 @@ public:
     static int getBountyExpiryStringForGUI(lua_State* L);
     static int notifyPossibleCrimeWitnessed(lua_State* L);
     static int isCommittingCrime(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int _getBountyFaction(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
     static int getPercievedBounty(lua_State* L);
     static int getActualBounty(lua_State* L);
     static int notifyPlayerClaimBounty(lua_State* L);

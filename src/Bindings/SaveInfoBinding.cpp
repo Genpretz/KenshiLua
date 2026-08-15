@@ -181,27 +181,6 @@ static int SaveInfo_set_advanced(lua_State* L)
     return 0;
 }
 
-int SaveInfoBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (SaveInfo*)::operator new(sizeof(SaveInfo));
-    ::new ((void*)obj) SaveInfo();
-    if (lua_gettop(L) >= 6)
-        obj->money = (int)luaL_checkinteger(L, 6);
-    if (lua_gettop(L) >= 7)
-        obj->size = (int)luaL_checkinteger(L, 7);
-    if (lua_gettop(L) >= 8)
-        obj->days = (int)luaL_checkinteger(L, 8);
-    return pushObject<SaveInfo>(L, obj, getMetatableName());
-}
-
-int SaveInfoBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "SaveInfo is nil");
-    inst->~SaveInfo();
-    return 0;
-}
-
 int SaveInfoBinding::gc(lua_State* L)
 {
     return 0;
@@ -230,8 +209,6 @@ void SaveInfoBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -540,15 +540,6 @@ static int CombatMovementController_set_combatTarget(lua_State* L)
     return 0;
 }
 
-int CombatMovementControllerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    CombatMovementController* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CombatMovementController is nil");
-
-    CombatMovementController* result = instance->_CONSTRUCTOR();
-    return pushObject<CombatMovementController>(L, result, CombatMovementControllerBinding::getMetatableName());
-}
-
 int CombatMovementControllerBinding::collisionUpdate(lua_State* L)
 {
     CombatMovementController* instance = getInstance(L, 1);
@@ -729,15 +720,6 @@ int CombatMovementControllerBinding::disable(lua_State* L)
     return 0;
 }
 
-int CombatMovementControllerBinding::_DESTRUCTOR(lua_State* L)
-{
-    CombatMovementController* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CombatMovementController is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 310: void combatMovementOffensive(...) - non-string reference arg
@@ -770,7 +752,6 @@ void CombatMovementControllerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", CombatMovementControllerBinding::_CONSTRUCTOR },
         { "collisionUpdate", CombatMovementControllerBinding::collisionUpdate },
         { "chasingModeCheck", CombatMovementControllerBinding::chasingModeCheck },
         { "create", CombatMovementControllerBinding::create },
@@ -785,7 +766,6 @@ void CombatMovementControllerBinding::registerBinding(lua_State* L)
         { "setForcedWP", CombatMovementControllerBinding::setForcedWP },
         { "getGUIData", CombatMovementControllerBinding::getGUIData },
         { "disable", CombatMovementControllerBinding::disable },
-        { "_DESTRUCTOR", CombatMovementControllerBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

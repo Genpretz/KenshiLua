@@ -1078,15 +1078,6 @@ int CharacterBinding::_NV_init(lua_State* L)
     return 0;
 }
 
-int CharacterBinding::_DESTRUCTOR(lua_State* L)
-{
-    Character* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Character is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int CharacterBinding::isOnARoof(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
@@ -5735,18 +5726,6 @@ int CharacterBinding::breakFollowOrderLoop(lua_State* L)
     return 1;
 }
 
-int CharacterBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Character* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Character is nil");
-    GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    Faction* own = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
-    hand* _handle = checkObject<hand>(L, 4, HandBinding::getMetatableName());
-    if (!_handle) return luaL_error(L, "Argument 3 must be a hand object");
-    Character* result = instance->_CONSTRUCTOR(dat, own, *_handle);
-    return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
-}
-
 int CharacterBinding::formationUpdateCallback(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
@@ -5923,7 +5902,6 @@ void CharacterBinding::registerBinding(lua_State* L)
         { "isImmuneToOffscreenMode", CharacterBinding::isImmuneToOffscreenMode },
         { "init", CharacterBinding::init },
         { "_NV_init", CharacterBinding::_NV_init },
-        { "_DESTRUCTOR", CharacterBinding::_DESTRUCTOR },
         { "isOnARoof", CharacterBinding::isOnARoof },
         { "_NV_isOnARoof", CharacterBinding::_NV_isOnARoof },
         { "isOnAWall", CharacterBinding::isOnAWall },
@@ -6344,7 +6322,6 @@ void CharacterBinding::registerBinding(lua_State* L)
         { "hitByMeleeAttack", CharacterBinding::hitByMeleeAttack },
         { "convertCutDirection", CharacterBinding::convertCutDirection },
         { "breakFollowOrderLoop", CharacterBinding::breakFollowOrderLoop },
-        { "_CONSTRUCTOR", CharacterBinding::_CONSTRUCTOR },
         { "formationUpdateCallback", CharacterBinding::formationUpdateCallback },
         { "serialise", CharacterBinding::serialise },
         { "_NV_serialise", CharacterBinding::_NV_serialise },

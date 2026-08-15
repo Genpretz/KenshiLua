@@ -37,15 +37,6 @@ static int ResearchBuildingInventoryLayout_set_researchButton(lua_State* L)
     return 0;
 }
 
-int ResearchBuildingInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
-
-    ResearchBuildingInventoryLayout* result = instance->_CONSTRUCTOR();
-    return pushObject<ResearchBuildingInventoryLayout>(L, result, ResearchBuildingInventoryLayoutBinding::getMetatableName());
-}
-
 int ResearchBuildingInventoryLayoutBinding::getResearchButton(lua_State* L)
 {
     ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
@@ -74,15 +65,6 @@ int ResearchBuildingInventoryLayoutBinding::setupSections(lua_State* L)
     return 0;
 }
 
-int ResearchBuildingInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ResearchBuildingInventoryLayoutBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -104,10 +86,8 @@ void ResearchBuildingInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ResearchBuildingInventoryLayoutBinding::_CONSTRUCTOR },
         { "getResearchButton", ResearchBuildingInventoryLayoutBinding::getResearchButton },
         { "setupSections", ResearchBuildingInventoryLayoutBinding::setupSections },
-        { "_DESTRUCTOR", ResearchBuildingInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

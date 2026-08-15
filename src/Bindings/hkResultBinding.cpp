@@ -26,21 +26,6 @@ static int hkResult_set_m_enum(lua_State* L)
     return 0;
 }
 
-int hkResultBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (hkResult*)::operator new(sizeof(hkResult));
-    memset(obj, 0, sizeof(hkResult));
-    return pushObject<hkResult>(L, obj, getMetatableName());
-}
-
-int hkResultBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "hkResult is nil");
-    inst->~hkResult();
-    return 0;
-}
-
 int hkResultBinding::gc(lua_State* L)
 {
     return 0;
@@ -69,8 +54,6 @@ void hkResultBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

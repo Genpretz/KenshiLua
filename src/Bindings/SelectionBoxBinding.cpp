@@ -94,24 +94,6 @@ int SelectionBoxBinding::isActive(lua_State* L)
     return 1;
 }
 
-int SelectionBoxBinding::_CONSTRUCTOR(lua_State* L)
-{
-    SelectionBox* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SelectionBox is nil");
-
-    SelectionBox* result = instance->_CONSTRUCTOR();
-    return pushObject<SelectionBox>(L, result, SelectionBoxBinding::getMetatableName());
-}
-
-int SelectionBoxBinding::_DESTRUCTOR(lua_State* L)
-{
-    SelectionBox* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SelectionBox is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 46: bool contains(...) - overloaded method
@@ -181,8 +163,6 @@ void SelectionBoxBinding::registerBinding(lua_State* L)
         { "update", SelectionBoxBinding::update },
         { "cancel", SelectionBoxBinding::cancel },
         { "isActive", SelectionBoxBinding::isActive },
-        { "_CONSTRUCTOR", SelectionBoxBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", SelectionBoxBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

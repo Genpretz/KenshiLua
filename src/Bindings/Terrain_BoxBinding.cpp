@@ -108,33 +108,6 @@ static int Box_set_cy(lua_State* L)
     return 0;
 }
 
-int Terrain_BoxBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (Terrain::Box*)::operator new(sizeof(Terrain::Box));
-    ::new ((void*)obj) Terrain::Box();
-    if (lua_gettop(L) >= 1)
-        obj->top = (int)luaL_checkinteger(L, 1);
-    if (lua_gettop(L) >= 2)
-        obj->left = (int)luaL_checkinteger(L, 2);
-    if (lua_gettop(L) >= 3)
-        obj->right = (int)luaL_checkinteger(L, 3);
-    if (lua_gettop(L) >= 4)
-        obj->bottom = (int)luaL_checkinteger(L, 4);
-    if (lua_gettop(L) >= 5)
-        obj->cx = (int)luaL_checkinteger(L, 5);
-    if (lua_gettop(L) >= 6)
-        obj->cy = (int)luaL_checkinteger(L, 6);
-    return pushObject<Terrain::Box>(L, obj, getMetatableName());
-}
-
-int Terrain_BoxBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "Terrain::Box is nil");
-    inst->~Box();
-    return 0;
-}
-
 int Terrain_BoxBinding::gc(lua_State* L)
 {
     return 0;
@@ -163,8 +136,6 @@ void Terrain_BoxBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

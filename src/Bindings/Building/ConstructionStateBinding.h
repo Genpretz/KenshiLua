@@ -18,8 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int addMaterials(lua_State* L);
     static int materialsEmpty(lua_State* L);
     static int isOverThreshold(lua_State* L);

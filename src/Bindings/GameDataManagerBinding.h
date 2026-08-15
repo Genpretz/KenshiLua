@@ -18,12 +18,10 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int reloadGameData(lua_State* L);
     static int postProcessingTheDatas(lua_State* L);
     static int getMapSector(lua_State* L);
     static int updateDatasOfType(lua_State* L);
     static int updateData(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

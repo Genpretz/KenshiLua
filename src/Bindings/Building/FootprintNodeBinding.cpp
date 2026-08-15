@@ -77,19 +77,8 @@ int FootprintNodeBinding::setEnabled(lua_State* L)
     return 0;
 }
 
-int FootprintNodeBinding::_DESTRUCTOR(lua_State* L)
-{
-    FootprintNode* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FootprintNode is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 567: FootprintNode* _CONSTRUCTOR(...) - overloaded method
-  line 569: FootprintNode* _CONSTRUCTOR(...) - overloaded method
   line 570: const Ogre::Aabb getWorldAABB(...) - unsupported return type
   line 571: const Ogre::Aabb _NV_getWorldAABB(...) - unsupported return type
   line 572: const Ogre::Aabb getLocalAABB(...) - unsupported return type
@@ -129,7 +118,6 @@ void FootprintNodeBinding::registerBinding(lua_State* L)
         { "updateBox", FootprintNodeBinding::updateBox },
         { "_NV_updateBox", FootprintNodeBinding::_NV_updateBox },
         { "setEnabled", FootprintNodeBinding::setEnabled },
-        { "_DESTRUCTOR", FootprintNodeBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

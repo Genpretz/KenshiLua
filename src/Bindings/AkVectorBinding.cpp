@@ -60,27 +60,6 @@ static int AkVector_set_Z(lua_State* L)
     return 0;
 }
 
-int AkVectorBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (AkVector*)::operator new(sizeof(AkVector));
-    ::new ((void*)obj) AkVector();
-    if (lua_gettop(L) >= 1)
-        obj->X = (float)luaL_checknumber(L, 1);
-    if (lua_gettop(L) >= 2)
-        obj->Y = (float)luaL_checknumber(L, 2);
-    if (lua_gettop(L) >= 3)
-        obj->Z = (float)luaL_checknumber(L, 3);
-    return pushObject<AkVector>(L, obj, getMetatableName());
-}
-
-int AkVectorBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "AkVector is nil");
-    inst->~AkVector();
-    return 0;
-}
-
 int AkVectorBinding::gc(lua_State* L)
 {
     return 0;
@@ -109,8 +88,6 @@ void AkVectorBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

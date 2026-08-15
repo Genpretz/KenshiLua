@@ -82,19 +82,6 @@ int StaticEntBinding::_NV_isRotatingEnt(lua_State* L)
     return 1;
 }
 
-int StaticEntBinding::_DESTRUCTOR(lua_State* L)
-{
-    StaticEnt* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "StaticEnt is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 118: StaticEnt* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int StaticEntBinding::gc(lua_State* L)
 {
@@ -123,7 +110,6 @@ void StaticEntBinding::registerBinding(lua_State* L)
         { "_NV_updateAim", StaticEntBinding::_NV_updateAim },
         { "isRotatingEnt", StaticEntBinding::isRotatingEnt },
         { "_NV_isRotatingEnt", StaticEntBinding::_NV_isRotatingEnt },
-        { "_DESTRUCTOR", StaticEntBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -47,25 +47,6 @@ static int NewGameOptionsWindow_set_tooltip(lua_State* L)
     return 0;
 }
 
-int NewGameOptionsWindowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    NewGameOptionsWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NewGameOptionsWindow is nil");
-
-    NewGameOptionsWindow* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int NewGameOptionsWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    NewGameOptionsWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NewGameOptionsWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int NewGameOptionsWindowBinding::setVisible(lua_State* L)
 {
     NewGameOptionsWindow* instance = getInstance(L, 1);
@@ -111,10 +92,6 @@ Skipped methods needing manual binding:
   line 22: void setOptions(...) - non-string reference arg
 */
 
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - NewGameOptionsWindowBinding::_CONSTRUCTOR: NewGameOptionsWindow* (unbound pointer)
-*/
 
 int NewGameOptionsWindowBinding::gc(lua_State* L)
 {
@@ -137,8 +114,6 @@ void NewGameOptionsWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", NewGameOptionsWindowBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", NewGameOptionsWindowBinding::_DESTRUCTOR },
         { "setVisible", NewGameOptionsWindowBinding::setVisible },
         { "getVisible", NewGameOptionsWindowBinding::getVisible },
         { "setPosition", NewGameOptionsWindowBinding::setPosition },

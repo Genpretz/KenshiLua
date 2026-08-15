@@ -259,15 +259,6 @@ int NavMeshGeneratorBinding::unlockTask(lua_State* L)
     return 0;
 }
 
-int NavMeshGeneratorBinding::_DESTRUCTOR(lua_State* L)
-{
-    NavMeshGenerator* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NavMeshGenerator is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int NavMeshGeneratorBinding::hasJob(lua_State* L)
 {
     NavMeshGenerator* instance = getInstance(L, 1);
@@ -302,7 +293,6 @@ Skipped methods needing manual binding:
   line 120: int getSeedPointsFromAdjacentZone(...) - non-string reference arg
   line 121: NavInstance* getCompletedTask(...) - non-string reference arg
   line 123: NavMeshGenerator::Task* newTask(...) - unsupported arg type
-  line 128: NavMeshGenerator* _CONSTRUCTOR(...) - unsupported arg type
   line 137: void addJob(...) - overloaded method
   line 138: void addJob(...) - overloaded method
   line 139: void addJob(...) - overloaded method
@@ -369,7 +359,6 @@ void NavMeshGeneratorBinding::registerBinding(lua_State* L)
         { "stitchExterior", NavMeshGeneratorBinding::stitchExterior },
         { "revertSettings", NavMeshGeneratorBinding::revertSettings },
         { "unlockTask", NavMeshGeneratorBinding::unlockTask },
-        { "_DESTRUCTOR", NavMeshGeneratorBinding::_DESTRUCTOR },
         { "hasJob", NavMeshGeneratorBinding::hasJob },
         { "update", NavMeshGeneratorBinding::update },
         { 0, 0 }

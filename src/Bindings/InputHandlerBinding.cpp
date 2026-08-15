@@ -833,15 +833,6 @@ int InputHandlerBinding::clearMessages(lua_State* L)
     return 0;
 }
 
-int InputHandlerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-
-    InputHandler* result = instance->_CONSTRUCTOR();
-    return pushObject<InputHandler>(L, result, InputHandlerBinding::getMetatableName());
-}
-
 int InputHandlerBinding::initialise(lua_State* L)
 {
     InputHandler* instance = getInstance(L, 1);
@@ -931,15 +922,6 @@ int InputHandlerBinding::keyString(lua_State* L)
     std::string result = instance->keyString(key, translated);
     lua_pushstring(L, result.c_str());
     return 1;
-}
-
-int InputHandlerBinding::_DESTRUCTOR(lua_State* L)
-{
-    InputHandler* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InputHandler is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
 }
 
 /*
@@ -1095,7 +1077,6 @@ void InputHandlerBinding::registerBinding(lua_State* L)
         { "keyDownEvent", InputHandlerBinding::keyDownEvent },
         { "keyUpEvent", InputHandlerBinding::keyUpEvent },
         { "clearMessages", InputHandlerBinding::clearMessages },
-        { "_CONSTRUCTOR", InputHandlerBinding::_CONSTRUCTOR },
         { "initialise", InputHandlerBinding::initialise },
         { "bind", InputHandlerBinding::bind },
         { "unbindAll", InputHandlerBinding::unbindAll },
@@ -1105,7 +1086,6 @@ void InputHandlerBinding::registerBinding(lua_State* L)
         { "loadConfig", InputHandlerBinding::loadConfig },
         { "saveConfig", InputHandlerBinding::saveConfig },
         { "keyString", InputHandlerBinding::keyString },
-        { "_DESTRUCTOR", InputHandlerBinding::_DESTRUCTOR },
         { "addCommand", InputHandlerBinding::addCommand },
         { "unbind", InputHandlerBinding::unbind },
         { "isBound", InputHandlerBinding::isBound },

@@ -85,25 +85,6 @@ static int SplashScreen_set_delay(lua_State* L)
     return 0;
 }
 
-int SplashScreenBinding::_CONSTRUCTOR(lua_State* L)
-{
-    SplashScreen* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SplashScreen is nil");
-
-    SplashScreen* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int SplashScreenBinding::_DESTRUCTOR(lua_State* L)
-{
-    SplashScreen* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SplashScreen is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int SplashScreenBinding::update(lua_State* L)
 {
     SplashScreen* instance = getInstance(L, 1);
@@ -156,7 +137,6 @@ int SplashScreenBinding::addLogo(lua_State* L)
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - SplashScreen_get_mainPanel: MyGUI::Widget* (unbound pointer)
-  - SplashScreenBinding::_CONSTRUCTOR: SplashScreen* (unbound pointer)
 */
 
 /*
@@ -185,8 +165,6 @@ void SplashScreenBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", SplashScreenBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", SplashScreenBinding::_DESTRUCTOR },
         { "update", SplashScreenBinding::update },
         { "getState", SplashScreenBinding::getState },
         { "getEnded", SplashScreenBinding::getEnded },

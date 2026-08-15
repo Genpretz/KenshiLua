@@ -18,11 +18,9 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int enabledCivilians(lua_State* L);
     static int characterMultithreadingEnabled(lua_State* L);
     static int compositiorEnabled(lua_State* L);
     static int loadCompositorSettings(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

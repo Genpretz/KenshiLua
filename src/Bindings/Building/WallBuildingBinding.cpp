@@ -71,15 +71,6 @@ static int WallBuilding_set_othersSharingMyBuildState(lua_State* L)
 }
 
 // --- Methods for WallBuilding ---
-int WallBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    WallBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "WallBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int WallBuildingBinding::getUseableStuff(lua_State* L)
 {
     WallBuilding* instance = getInstance(L, 1);
@@ -372,7 +363,6 @@ int WallBuildingBinding::isAShortWallPart(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 24: WallBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 39: void upgrade(...) - unsupported arg type
   line 40: void _NV_upgrade(...) - unsupported arg type
   line 41: void getGUIUpgrade(...) - unsupported arg type
@@ -408,7 +398,6 @@ void WallBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", WallBuildingBinding::_DESTRUCTOR },
         { "getUseableStuff", WallBuildingBinding::getUseableStuff },
         { "_NV_getUseableStuff", WallBuildingBinding::_NV_getUseableStuff },
         { "getReachRange", WallBuildingBinding::getReachRange },

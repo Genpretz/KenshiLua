@@ -197,22 +197,6 @@ int DataPanelLine_SliderEditableBinding::setPrecision(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_SliderEditableBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DataPanelLine_SliderEditable* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
-
-    const std::string text = luaL_checkstring(L, 2);
-    int category = (int)luaL_checkinteger(L, 3);
-    bool showName = lua_toboolean(L, 4) != 0;
-    float min = (float)luaL_checknumber(L, 5);
-    float max = (float)luaL_checknumber(L, 6);
-    float tempVal = (float)luaL_checknumber(L, 7);
-    float* value = &tempVal;
-    DataPanelLine_SliderEditable* result = instance->_CONSTRUCTOR(text, category, showName, min, max, value);
-    return pushObject<DataPanelLine_SliderEditable>(L, result, DataPanelLine_SliderEditableBinding::getMetatableName());
-}
-
 int DataPanelLine_SliderEditableBinding::createMe(lua_State* L)
 {
     DataPanelLine_SliderEditable* instance = getInstance(L, 1);
@@ -234,15 +218,6 @@ int DataPanelLine_SliderEditableBinding::_NV_createMe(lua_State* L)
     float top = (float)luaL_checknumber(L, 3);
     bool lastLine = lua_toboolean(L, 4) != 0;
     instance->_NV_createMe(parent, top, lastLine);
-    return 0;
-}
-
-int DataPanelLine_SliderEditableBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_SliderEditable* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
-
-    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -282,10 +257,8 @@ void DataPanelLine_SliderEditableBinding::registerBinding(lua_State* L)
         { "refresh", DataPanelLine_SliderEditableBinding::refresh },
         { "_NV_refresh", DataPanelLine_SliderEditableBinding::_NV_refresh },
         { "setPrecision", DataPanelLine_SliderEditableBinding::setPrecision },
-        { "_CONSTRUCTOR", DataPanelLine_SliderEditableBinding::_CONSTRUCTOR },
         { "createMe", DataPanelLine_SliderEditableBinding::createMe },
         { "_NV_createMe", DataPanelLine_SliderEditableBinding::_NV_createMe },
-        { "_DESTRUCTOR", DataPanelLine_SliderEditableBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

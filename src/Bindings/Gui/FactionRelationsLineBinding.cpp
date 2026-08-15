@@ -72,31 +72,12 @@ static int FactionRelationsLine_set_value(lua_State* L)
     return 0;
 }
 
-int FactionRelationsLineBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FactionRelationsLine* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionRelationsLine is nil");
-
-    Faction* faction = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    FactionRelationsLine* result = instance->_CONSTRUCTOR(faction);
-    return pushObject<FactionRelationsLine>(L, result, FactionRelationsLineBinding::getMetatableName());
-}
-
 int FactionRelationsLineBinding::update(lua_State* L)
 {
     FactionRelationsLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionRelationsLine is nil");
 
     instance->update();
-    return 0;
-}
-
-int FactionRelationsLineBinding::_DESTRUCTOR(lua_State* L)
-{
-    FactionRelationsLine* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionRelationsLine is nil");
-
-    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -126,9 +107,7 @@ void FactionRelationsLineBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FactionRelationsLineBinding::_CONSTRUCTOR },
         { "update", FactionRelationsLineBinding::update },
-        { "_DESTRUCTOR", FactionRelationsLineBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

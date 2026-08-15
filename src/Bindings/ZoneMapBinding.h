@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int isInIsland(lua_State* L);
     static int initialise(lua_State* L);
     static int threadedUpdate(lua_State* L);
@@ -46,6 +45,5 @@ public:
     static int _dactivateMT(lua_State* L);
     static int generateNavMeshes(lua_State* L);
     static int updateBuildingUsageNodes(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

@@ -60,25 +60,6 @@ static int Plant_set_parts(lua_State* L)
     return 0;
 }
 
-int FarmBuilding_PlantBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (FarmBuilding::Plant*)::operator new(sizeof(FarmBuilding::Plant));
-    ::new ((void*)obj) FarmBuilding::Plant();
-    if (lua_gettop(L) >= 1)
-        obj->age = (float)luaL_checknumber(L, 1);
-    if (lua_gettop(L) >= 2)
-        readVector3(L, 2, obj->position);
-    return pushObject<FarmBuilding::Plant>(L, obj, getMetatableName());
-}
-
-int FarmBuilding_PlantBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "FarmBuilding::Plant is nil");
-    inst->~Plant();
-    return 0;
-}
-
 int FarmBuilding_PlantBinding::gc(lua_State* L)
 {
     return 0;
@@ -107,8 +88,6 @@ void FarmBuilding_PlantBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

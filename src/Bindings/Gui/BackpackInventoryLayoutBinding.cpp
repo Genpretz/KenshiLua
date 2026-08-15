@@ -16,25 +16,6 @@ static BackpackInventoryLayout* getInstance(lua_State* L, int idx)
 
 // --- Getters for BackpackInventoryLayout ---
 // --- Setters for BackpackInventoryLayout ---
-int BackpackInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    BackpackInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "BackpackInventoryLayout is nil");
-
-    bool standAlone = lua_toboolean(L, 2) != 0;
-    BackpackInventoryLayout* result = instance->_CONSTRUCTOR(standAlone);
-    return pushObject<BackpackInventoryLayout>(L, result, BackpackInventoryLayoutBinding::getMetatableName());
-}
-
-int BackpackInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    BackpackInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "BackpackInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 283: void setupSections(...) - unsupported arg type
@@ -62,8 +43,6 @@ void BackpackInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", BackpackInventoryLayoutBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", BackpackInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

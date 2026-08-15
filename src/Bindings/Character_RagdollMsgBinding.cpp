@@ -43,24 +43,6 @@ static int RagdollMsg_set_part(lua_State* L)
     return 0;
 }
 
-int Character_RagdollMsgBinding::_CONSTRUCTOR(lua_State* L)
-{
-    bool on = lua_toboolean(L, 1) != 0;
-    RagdollPart::Enum part = (RagdollPart::Enum)luaL_checkinteger(L, 2);
-    
-    auto* obj = (Character::RagdollMsg*)::operator new(sizeof(Character::RagdollMsg));
-    ::new ((void*)obj) Character::RagdollMsg(on, part);
-    return pushObjectOwned<Character::RagdollMsg>(L, obj, getMetatableName());
-}
-
-int Character_RagdollMsgBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "Character::RagdollMsg is nil");
-    inst->~RagdollMsg();
-    return 0;
-}
-
 int Character_RagdollMsgBinding::gc(lua_State* L)
 {
     return 0;
@@ -89,8 +71,6 @@ void Character_RagdollMsgBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

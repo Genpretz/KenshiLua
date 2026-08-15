@@ -32,25 +32,6 @@ static int ProgressBarWidget_get_label(lua_State* L)
 }
 
 // --- Setters for ProgressBarWidget ---
-int ProgressBarWidgetBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ProgressBarWidget* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ProgressBarWidget is nil");
-
-    ProgressBarWidget* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int ProgressBarWidgetBinding::_DESTRUCTOR(lua_State* L)
-{
-    ProgressBarWidget* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ProgressBarWidget is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ProgressBarWidgetBinding::setVisible(lua_State* L)
 {
     ProgressBarWidget* instance = getInstance(L, 1);
@@ -96,7 +77,6 @@ int ProgressBarWidgetBinding::setCaption(lua_State* L)
 LIGHTUSERDATA DEPENDENCIES:
   - ProgressBarWidget_get_bar: MyGUI::ProgressBar* (unbound pointer)
   - ProgressBarWidget_get_label: MyGUI::TextBox* (unbound pointer)
-  - ProgressBarWidgetBinding::_CONSTRUCTOR: ProgressBarWidget* (unbound pointer)
 */
 
 int ProgressBarWidgetBinding::gc(lua_State* L)
@@ -120,8 +100,6 @@ void ProgressBarWidgetBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ProgressBarWidgetBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ProgressBarWidgetBinding::_DESTRUCTOR },
         { "setVisible", ProgressBarWidgetBinding::setVisible },
         { "setProgress", ProgressBarWidgetBinding::setProgress },
         { "setPosition", ProgressBarWidgetBinding::setPosition },

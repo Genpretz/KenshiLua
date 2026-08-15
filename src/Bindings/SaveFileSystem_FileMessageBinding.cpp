@@ -15,7 +15,8 @@ static int FileMessage_get_mode(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "SaveFileSystem::FileMessage is nil");
-    lua_pushinteger(L, (lua_Integer)inst->mode);
+    lua_pushinteger(L, (lua_Integer)inst->mode);
+
     return 1;
 }
 
@@ -23,7 +24,8 @@ static int FileMessage_get_source(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "SaveFileSystem::FileMessage is nil");
-    lua_pushstring(L, inst->source.c_str());
+    lua_pushstring(L, inst->source.c_str());
+
     return 1;
 }
 
@@ -31,7 +33,8 @@ static int FileMessage_get_dest(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "SaveFileSystem::FileMessage is nil");
-    lua_pushstring(L, inst->dest.c_str());
+    lua_pushstring(L, inst->dest.c_str());
+
     return 1;
 }
 
@@ -57,21 +60,6 @@ static int FileMessage_set_dest(lua_State* L)
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "SaveFileSystem::FileMessage is nil");
     inst->dest = luaL_checkstring(L, 2);
-    return 0;
-}
-
-int SaveFileSystem_FileMessageBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (SaveFileSystem::FileMessage*)::operator new(sizeof(SaveFileSystem::FileMessage));
-    ::new ((void*)obj) SaveFileSystem::FileMessage();
-    return pushObject<SaveFileSystem::FileMessage>(L, obj, getMetatableName());
-}
-
-int SaveFileSystem_FileMessageBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "SaveFileSystem::FileMessage is nil");
-    inst->~FileMessage();
     return 0;
 }
 
@@ -103,8 +91,6 @@ void SaveFileSystem_FileMessageBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

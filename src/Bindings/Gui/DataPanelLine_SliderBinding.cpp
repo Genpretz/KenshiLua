@@ -79,21 +79,6 @@ static int DataPanelLine_Slider_set_max(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_SliderBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Slider* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Slider is nil");
-
-    const std::string key = luaL_checkstring(L, 2);
-    const std::string text = luaL_checkstring(L, 3);
-    float min = (float)luaL_checknumber(L, 4);
-    float max = (float)luaL_checknumber(L, 5);
-    int category = (int)luaL_checkinteger(L, 6);
-    float scale = (float)luaL_checknumber(L, 7);
-    DataPanelLine_Slider* result = instance->_CONSTRUCTOR(key, text, min, max, category, scale);
-    return pushObject<DataPanelLine_Slider>(L, result, DataPanelLine_SliderBinding::getMetatableName());
-}
-
 int DataPanelLine_SliderBinding::setValue(lua_State* L)
 {
     DataPanelLine_Slider* instance = getInstance(L, 1);
@@ -156,15 +141,6 @@ int DataPanelLine_SliderBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_SliderBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Slider* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Slider is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 252: void sliderValueChanged(...) - unsupported arg type
@@ -193,14 +169,12 @@ void DataPanelLine_SliderBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", DataPanelLine_SliderBinding::_CONSTRUCTOR },
         { "setValue", DataPanelLine_SliderBinding::setValue },
         { "getValue", DataPanelLine_SliderBinding::getValue },
         { "refresh", DataPanelLine_SliderBinding::refresh },
         { "_NV_refresh", DataPanelLine_SliderBinding::_NV_refresh },
         { "createMe", DataPanelLine_SliderBinding::createMe },
         { "_NV_createMe", DataPanelLine_SliderBinding::_NV_createMe },
-        { "_DESTRUCTOR", DataPanelLine_SliderBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

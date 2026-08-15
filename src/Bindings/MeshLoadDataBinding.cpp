@@ -62,20 +62,6 @@ static int MeshLoadData_set_renderQueue(lua_State* L)
     return 0;
 }
 
-int MeshLoadDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    MeshLoadData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MeshLoadData is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 43: MeshLoadData* _CONSTRUCTOR(...) - overloaded method
-  line 45: MeshLoadData* _CONSTRUCTOR(...) - overloaded method
-*/
 
 /*
 Skipped properties needing manual binding:
@@ -103,7 +89,6 @@ void MeshLoadDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", MeshLoadDataBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

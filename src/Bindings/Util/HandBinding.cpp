@@ -258,12 +258,6 @@ int HandBinding::canCastToRootObject(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 22: hand* _CONSTRUCTOR(...) - overloaded method
-  line 24: hand* _CONSTRUCTOR(...) - overloaded method
-  line 26: hand* _CONSTRUCTOR(...) - overloaded method
-  line 28: hand* _CONSTRUCTOR(...) - overloaded method
-  line 30: hand* _CONSTRUCTOR(...) - overloaded method
-  line 32: hand* _CONSTRUCTOR(...) - overloaded method
   line 40: bool operator==(...) - operator
   line 41: bool _NV_operator_equal(...) - overloaded method
   line 42: bool operator==(...) - operator

@@ -47,18 +47,6 @@ static int DataPanelLine_KeyConfig_set_command(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_KeyConfigBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DataPanelLine_KeyConfig* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
-
-    const std::string cmd = luaL_checkstring(L, 2);
-    const std::string text = luaL_checkstring(L, 3);
-    int cat = (int)luaL_checkinteger(L, 4);
-    DataPanelLine_KeyConfig* result = instance->_CONSTRUCTOR(cmd, text, cat);
-    return pushObject<DataPanelLine_KeyConfig>(L, result, DataPanelLine_KeyConfigBinding::getMetatableName());
-}
-
 int DataPanelLine_KeyConfigBinding::oldKey(lua_State* L)
 {
     DataPanelLine_KeyConfig* instance = getInstance(L, 1);
@@ -140,15 +128,6 @@ int DataPanelLine_KeyConfigBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_KeyConfigBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_KeyConfig* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 359: const std::string& getCommand(...) - reference return type
@@ -176,7 +155,6 @@ void DataPanelLine_KeyConfigBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", DataPanelLine_KeyConfigBinding::_CONSTRUCTOR },
         { "oldKey", DataPanelLine_KeyConfigBinding::oldKey },
         { "setKey", DataPanelLine_KeyConfigBinding::setKey },
         { "eraseKey", DataPanelLine_KeyConfigBinding::eraseKey },
@@ -185,7 +163,6 @@ void DataPanelLine_KeyConfigBinding::registerBinding(lua_State* L)
         { "cancel", DataPanelLine_KeyConfigBinding::cancel },
         { "createMe", DataPanelLine_KeyConfigBinding::createMe },
         { "_NV_createMe", DataPanelLine_KeyConfigBinding::_NV_createMe },
-        { "_DESTRUCTOR", DataPanelLine_KeyConfigBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

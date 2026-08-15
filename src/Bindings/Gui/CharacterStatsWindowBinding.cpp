@@ -144,15 +144,6 @@ static int CharacterStatsWindow_set_autoUpdateMode(lua_State* L)
     return 0;
 }
 
-int CharacterStatsWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    CharacterStatsWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int CharacterStatsWindowBinding::clear(lua_State* L)
 {
     CharacterStatsWindow* instance = getInstance(L, 1);
@@ -306,7 +297,6 @@ int CharacterStatsWindowBinding::getStatsPanel(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 68: CharacterStatsWindow* _CONSTRUCTOR(...) - unsupported arg type
   line 81: void autoChangeSelectedObject(...) - unsupported arg type
   line 82: void _NV_autoChangeSelectedObject(...) - unsupported arg type
   line 88: void closeWindow(...) - unsupported arg type
@@ -338,7 +328,6 @@ void CharacterStatsWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", CharacterStatsWindowBinding::_DESTRUCTOR },
         { "clear", CharacterStatsWindowBinding::clear },
         { "_NV_clear", CharacterStatsWindowBinding::_NV_clear },
         { "create", CharacterStatsWindowBinding::create },

@@ -33,6 +33,5 @@ public:
     // Commented out as this method is not exported by kenshilib:
     // static int getAllStates(lua_State* L);
     static int isValid(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

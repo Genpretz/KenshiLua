@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _DESTRUCTOR(lua_State* L);
     static int getSpace(lua_State* L);
     static int getMarker(lua_State* L);
     static int setValid(lua_State* L);

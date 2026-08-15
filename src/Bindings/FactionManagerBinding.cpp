@@ -70,15 +70,6 @@ static int FactionManager_set_toAddList(lua_State* L)
     return 0;
 }
 
-int FactionManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FactionManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionManager is nil");
-
-    FactionManager* result = instance->_CONSTRUCTOR();
-    return pushObject<FactionManager>(L, result, FactionManagerBinding::getMetatableName());
-}
-
 int FactionManagerBinding::saveGameState(lua_State* L)
 {
     FactionManager* instance = getInstance(L, 1);
@@ -257,15 +248,6 @@ int FactionManagerBinding::getAllFactions(lua_State* L)
     return 1;
 }
 
-int FactionManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    FactionManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionManager is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - FactionManagerBinding::getAllFactions: const lektor<Faction*>* (unbound pointer)
@@ -292,7 +274,6 @@ void FactionManagerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FactionManagerBinding::_CONSTRUCTOR },
         { "saveGameState", FactionManagerBinding::saveGameState },
         { "savePlayerGameState", FactionManagerBinding::savePlayerGameState },
         { "clearAndDestroy", FactionManagerBinding::clearAndDestroy },
@@ -310,7 +291,6 @@ void FactionManagerBinding::registerBinding(lua_State* L)
         { "updateThreaded", FactionManagerBinding::updateThreaded },
         { "_showDebugPlatoonMarkers", FactionManagerBinding::_showDebugPlatoonMarkers },
         { "getAllFactions", FactionManagerBinding::getAllFactions },
-        { "_DESTRUCTOR", FactionManagerBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

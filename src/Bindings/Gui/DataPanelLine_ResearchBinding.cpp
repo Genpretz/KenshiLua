@@ -103,21 +103,6 @@ static int DataPanelLine_Research_set_barSkin(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_ResearchBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Research* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
-
-    const std::string a = luaL_checkstring(L, 2);
-    const std::string b = luaL_checkstring(L, 3);
-    int cat = (int)luaL_checkinteger(L, 4);
-    float vv1 = (float)luaL_checknumber(L, 5);
-    const std::string _barColor = luaL_checkstring(L, 6);
-    bool _Xbut = lua_toboolean(L, 7) != 0;
-    DataPanelLine_Research* result = instance->_CONSTRUCTOR(a, b, cat, vv1, _barColor, _Xbut);
-    return pushObject<DataPanelLine_Research>(L, result, DataPanelLine_ResearchBinding::getMetatableName());
-}
-
 int DataPanelLine_ResearchBinding::createMe(lua_State* L)
 {
     DataPanelLine_Research* instance = getInstance(L, 1);
@@ -139,15 +124,6 @@ int DataPanelLine_ResearchBinding::_NV_createMe(lua_State* L)
     float top = (float)luaL_checknumber(L, 3);
     bool lastLine = lua_toboolean(L, 4) != 0;
     instance->_NV_createMe(parent, top, lastLine);
-    return 0;
-}
-
-int DataPanelLine_ResearchBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Research* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
-
-    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -180,10 +156,8 @@ void DataPanelLine_ResearchBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", DataPanelLine_ResearchBinding::_CONSTRUCTOR },
         { "createMe", DataPanelLine_ResearchBinding::createMe },
         { "_NV_createMe", DataPanelLine_ResearchBinding::_NV_createMe },
-        { "_DESTRUCTOR", DataPanelLine_ResearchBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

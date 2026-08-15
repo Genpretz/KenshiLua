@@ -24,7 +24,5 @@ public:
     static int getTradePriceMultiplier(lua_State* L);
     static int hasTradePriceMultiplier(lua_State* L);
     static int getForbiddenItemsList(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _DESTRUCTOR(lua_State* L);
     static int setPosition(lua_State* L);
     static int getPosition(lua_State* L);
     static int setVelocity(lua_State* L);

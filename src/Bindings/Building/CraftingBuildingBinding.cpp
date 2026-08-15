@@ -217,32 +217,6 @@ static int CraftingBuilding_set_partialItems(lua_State* L)
     return 0;
 }
 
-int CraftingBuildingBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameData* _data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    Ogre::Vector3 position;
-    readVector3(L, 3, position);
-    Ogre::Quaternion orientation;
-    readQuaternion(L, 4, orientation);
-    Faction* _participant = checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
-    hand* town = checkObject<hand>(L, 6, HandBinding::getMetatableName());
-    hand* _handle = checkObject<hand>(L, 7, HandBinding::getMetatableName());
-    Layout* __isfurnitureOf = (Layout*)lua_touserdata(L, 8);
-    Building* _indoors = lua_isnoneornil(L, 9) ? nullptr : checkObject<Building>(L, 9, BuildingBinding::getMetatableName());
-
-    CraftingBuilding* result = new CraftingBuilding(_data, position, orientation, _participant, *town, *_handle, __isfurnitureOf, _indoors);
-    return pushObject<CraftingBuilding>(L, result, CraftingBuildingBinding::getMetatableName());
-}
-
-int CraftingBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    CraftingBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int CraftingBuildingBinding::createInventoryLayout(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
@@ -811,7 +785,6 @@ int CraftingBuildingBinding::_NV_setProductionItem(lua_State* L)
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - CraftingBuildingBinding::_CONSTRUCTOR: Layout* __isfurnitureOf (unbound pointer)
   - CraftingBuildingBinding::getCraft / CraftingBuildingBinding::_addCraft: CraftingItem* (opaque struct without metatable)
   - CraftingBuildingBinding::newCraftingButton / CraftingBuildingBinding::_NV_newCraftingButton: MyGUI::Widget* (unbound pointer)
 */
@@ -836,8 +809,6 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", CraftingBuildingBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", CraftingBuildingBinding::_DESTRUCTOR },
         { "createInventoryLayout", CraftingBuildingBinding::createInventoryLayout },
         { "_NV_createInventoryLayout", CraftingBuildingBinding::_NV_createInventoryLayout },
         { "update", CraftingBuildingBinding::update },

@@ -60,27 +60,6 @@ static int CarryMsg_set_hull(lua_State* L)
     return 0;
 }
 
-int Character_CarryMsgBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (Character::CarryMsg*)::operator new(sizeof(Character::CarryMsg));
-    ::new ((void*)obj) Character::CarryMsg();
-    if (lua_gettop(L) >= 1)
-        obj->on = lua_toboolean(L, 1) != 0;
-    if (lua_gettop(L) >= 2)
-        obj->rag = lua_toboolean(L, 2) != 0;
-    if (lua_gettop(L) >= 3)
-        obj->hull = lua_toboolean(L, 3) != 0;
-    return pushObjectOwned<Character::CarryMsg>(L, obj, getMetatableName());
-}
-
-int Character_CarryMsgBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "Character::CarryMsg is nil");
-    inst->~CarryMsg();
-    return 0;
-}
-
 int Character_CarryMsgBinding::gc(lua_State* L)
 {
     return 0;
@@ -109,8 +88,6 @@ void Character_CarryMsgBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

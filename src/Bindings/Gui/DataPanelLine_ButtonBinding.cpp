@@ -86,20 +86,6 @@ static int DataPanelLine_Button_set_buttonSkin(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_ButtonBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Button* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
-
-    const std::string a = luaL_checkstring(L, 2);
-    const std::string b = luaL_checkstring(L, 3);
-    int cat = (int)luaL_checkinteger(L, 4);
-    float w = (float)luaL_checknumber(L, 5);
-    const std::string skin = luaL_checkstring(L, 6);
-    DataPanelLine_Button* result = instance->_CONSTRUCTOR(a, b, cat, w, skin);
-    return pushObject<DataPanelLine_Button>(L, result, DataPanelLine_ButtonBinding::getMetatableName());
-}
-
 int DataPanelLine_ButtonBinding::getUserData(lua_State* L)
 {
     DataPanelLine_Button* instance = getInstance(L, 1);
@@ -142,15 +128,6 @@ int DataPanelLine_ButtonBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
-int DataPanelLine_ButtonBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine_Button* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 140: void pressCallback(...) - unsupported arg type
@@ -181,12 +158,10 @@ void DataPanelLine_ButtonBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", DataPanelLine_ButtonBinding::_CONSTRUCTOR },
         { "getUserData", DataPanelLine_ButtonBinding::getUserData },
         { "_NV_getUserData", DataPanelLine_ButtonBinding::_NV_getUserData },
         { "createMe", DataPanelLine_ButtonBinding::createMe },
         { "_NV_createMe", DataPanelLine_ButtonBinding::_NV_createMe },
-        { "_DESTRUCTOR", DataPanelLine_ButtonBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

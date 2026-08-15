@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int setHandle(lua_State* L);
     static int takeMoney(lua_State* L);
     static int _NV_takeMoney(lua_State* L);
@@ -45,6 +44,5 @@ public:
     static int getHomeFurnitureOfType(lua_State* L);
     static int getOwnedPtrs(lua_State* L);
     static int getBuildingsWithFunction(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

@@ -29,21 +29,6 @@ static int TechItemViewData_set_item(lua_State* L)
     return 0;
 }
 
-int ManagementScreen_TechItemViewDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (ManagementScreen::TechItemViewData*)::operator new(sizeof(ManagementScreen::TechItemViewData));
-    ::new ((void*)obj) ManagementScreen::TechItemViewData();
-    return pushObject<ManagementScreen::TechItemViewData>(L, obj, getMetatableName());
-}
-
-int ManagementScreen_TechItemViewDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "ManagementScreen::TechItemViewData is nil");
-    inst->~TechItemViewData();
-    return 0;
-}
-
 int ManagementScreen_TechItemViewDataBinding::gc(lua_State* L)
 {
     return 0;
@@ -72,8 +57,6 @@ void ManagementScreen_TechItemViewDataBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

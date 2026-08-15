@@ -20,8 +20,6 @@ public:
 
     static int setPosition(lua_State* L);
     static int getRect(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int setText(lua_State* L);
     static int setAlpha(lua_State* L);
     static int reset(lua_State* L);

@@ -114,11 +114,6 @@ int ConsumptionItemBinding::isEmpty(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 35: ConsumptionItem* _CONSTRUCTOR(...) - overloaded method
-  line 37: ConsumptionItem* _CONSTRUCTOR(...) - overloaded method
-*/
 
 int ConsumptionItemBinding::gc(lua_State* L)
 {

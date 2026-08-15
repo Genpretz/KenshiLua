@@ -58,30 +58,6 @@ int GenericInventoryLayoutBinding::_NV_setSize(lua_State* L)
     return 0;
 }
 
-int GenericInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GenericInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GenericInventoryLayout is nil");
-
-    if (lua_gettop(L) >= 2 && lua_isstring(L, 2))
-    {
-        const char* layoutName = luaL_checkstring(L, 2);
-        GenericInventoryLayout* result = instance->_CONSTRUCTOR(layoutName);
-        return pushObject<GenericInventoryLayout>(L, result, GenericInventoryLayoutBinding::getMetatableName());
-    }
-    GenericInventoryLayout* result = instance->_CONSTRUCTOR();
-    return pushObject<GenericInventoryLayout>(L, result, GenericInventoryLayoutBinding::getMetatableName());
-}
-
-int GenericInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    GenericInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GenericInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int GenericInventoryLayoutBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -103,10 +79,8 @@ void GenericInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GenericInventoryLayoutBinding::_CONSTRUCTOR },
         { "setSize", GenericInventoryLayoutBinding::setSize },
         { "_NV_setSize", GenericInventoryLayoutBinding::_NV_setSize },
-        { "_DESTRUCTOR", GenericInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -132,24 +132,6 @@ static int MainTabPortraitPlatoon_set_mainbar(lua_State* L)
     return 0;
 }
 
-int MainTabPortraitPlatoonBinding::_CONSTRUCTOR(lua_State* L)
-{
-    MainTabPortraitPlatoon* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
-
-    if (lua_gettop(L) >= 3)
-    {
-        ActivePlatoon* platoon = checkObject<ActivePlatoon>(L, 2, ActivePlatoonBinding::getMetatableName());
-        MainBarGUI* mainbar = checkObject<MainBarGUI>(L, 3, MainBarGUIBinding::getMetatableName());
-        instance->_CONSTRUCTOR(platoon, mainbar);
-    }
-    else
-    {
-        instance->_CONSTRUCTOR();
-    }
-    return 0;
-}
-
 int MainTabPortraitPlatoonBinding::addTab(lua_State* L)
 {
     MainTabPortraitPlatoon* instance = getInstance(L, 1);
@@ -191,18 +173,6 @@ int MainTabPortraitPlatoonBinding::update(lua_State* L)
     return 0;
 }
 
-int MainTabPortraitPlatoonBinding::_DESTRUCTOR(lua_State* L)
-{
-    MainTabPortraitPlatoon* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -230,12 +200,10 @@ void MainTabPortraitPlatoonBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", MainTabPortraitPlatoonBinding::_CONSTRUCTOR },
         { "addTab", MainTabPortraitPlatoonBinding::addTab },
         { "detach", MainTabPortraitPlatoonBinding::detach },
         { "setFlash", MainTabPortraitPlatoonBinding::setFlash },
         { "update", MainTabPortraitPlatoonBinding::update },
-        { "_DESTRUCTOR", MainTabPortraitPlatoonBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

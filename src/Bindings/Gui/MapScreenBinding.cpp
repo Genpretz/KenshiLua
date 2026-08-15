@@ -362,25 +362,6 @@ static int MapScreen_set_worldSize(lua_State* L)
     return 0;
 }
 
-int MapScreenBinding::_CONSTRUCTOR(lua_State* L)
-{
-    MapScreen* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MapScreen is nil");
-
-    ManagementScreen* screen = checkObject<ManagementScreen>(L, 2, ManagementScreenBinding::getMetatableName());
-    MapScreen* result = instance->_CONSTRUCTOR(screen);
-    return pushObject<MapScreen>(L, result, MapScreenBinding::getMetatableName());
-}
-
-int MapScreenBinding::_DESTRUCTOR(lua_State* L)
-{
-    MapScreen* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MapScreen is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int MapScreenBinding::clear(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
@@ -673,8 +654,6 @@ void MapScreenBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", MapScreenBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", MapScreenBinding::_DESTRUCTOR },
         { "clear", MapScreenBinding::clear },
         { "getVisible", MapScreenBinding::getVisible },
         { "centerCamera", MapScreenBinding::centerCamera },

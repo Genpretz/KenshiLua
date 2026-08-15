@@ -18,8 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int isHuman(lua_State* L);
     static int _NV_isHuman(lua_State* L);
     static int drawWeapon(lua_State* L);

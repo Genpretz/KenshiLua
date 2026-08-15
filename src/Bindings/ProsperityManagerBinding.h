@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int setup(lua_State* L);
     static int load(lua_State* L);
     static int save(lua_State* L);

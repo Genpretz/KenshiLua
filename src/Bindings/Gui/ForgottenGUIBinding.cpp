@@ -510,24 +510,6 @@ static int ForgottenGUI_set_created(lua_State* L)
     return 0;
 }
 
-int ForgottenGUIBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ForgottenGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-
-    ForgottenGUI* result = instance->_CONSTRUCTOR();
-    return pushObject<ForgottenGUI>(L, result, ForgottenGUIBinding::getMetatableName());
-}
-
-int ForgottenGUIBinding::_DESTRUCTOR(lua_State* L)
-{
-    ForgottenGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ForgottenGUIBinding::clearGUI(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
@@ -1358,8 +1340,6 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ForgottenGUIBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ForgottenGUIBinding::_DESTRUCTOR },
         { "clearGUI", ForgottenGUIBinding::clearGUI },
         { "shutDown", ForgottenGUIBinding::shutDown },
         { "restart", ForgottenGUIBinding::restart },

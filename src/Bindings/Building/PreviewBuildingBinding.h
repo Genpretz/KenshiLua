@@ -18,8 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int type(lua_State* L);
     static int _NV_type(lua_State* L);
     static int checkProspectingIsNotZero(lua_State* L);

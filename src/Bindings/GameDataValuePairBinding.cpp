@@ -45,22 +45,6 @@ static int GameDataValuePair_set_val0(lua_State* L)
     return 0;
 }
 
-int GameDataValuePairBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameDataValuePair* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameDataValuePair is nil");
-
-    if (lua_gettop(L) >= 3) {
-        GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-        int v = (int)luaL_checkinteger(L, 3);
-        GameDataValuePair* result = instance->_CONSTRUCTOR(d, v);
-        return pushObject<GameDataValuePair>(L, result, GameDataValuePairBinding::getMetatableName());
-    } else {
-        GameDataValuePair* result = instance->_CONSTRUCTOR();
-        return pushObject<GameDataValuePair>(L, result, GameDataValuePairBinding::getMetatableName());
-    }
-}
-
 int GameDataValuePairBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -82,7 +66,6 @@ void GameDataValuePairBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GameDataValuePairBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

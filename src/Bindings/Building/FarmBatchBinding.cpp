@@ -134,13 +134,6 @@ static int FarmBatch_set_farms(lua_State* L)
     return 0;
 }
 
-int FarmBatchBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    FarmBuilding::FarmBatch* result = new FarmBuilding::FarmBatch(data);
-    return pushObject<FarmBuilding::FarmBatch>(L, result, FarmBatchBinding::getMetatableName());
-}
-
 int FarmBatchBinding::load(lua_State* L)
 {
     FarmBuilding::FarmBatch* instance = getInstance(L, 1);
@@ -173,15 +166,6 @@ int FarmBatchBinding::createGeometry(lua_State* L)
 }
 
 // --- Methods for FarmBatch
-int FarmBatchBinding::_DESTRUCTOR(lua_State* L)
-{
-    FarmBuilding::FarmBatch* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FarmBatch is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - FarmBatch_get_geometry / FarmBatch_set_geometry: Ogre::SharedPtr<Ogre::Mesh> (unbound pointer/smart-pointer type)
@@ -208,11 +192,9 @@ void FarmBatchBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FarmBatchBinding::_CONSTRUCTOR },
         { "load", FarmBatchBinding::load },
         { "meshLoaded", FarmBatchBinding::meshLoaded },
         { "createGeometry", FarmBatchBinding::createGeometry },
-        { "_DESTRUCTOR", FarmBatchBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 
@@ -263,4 +245,4 @@ void FarmBatchBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 }
 
-} // namespace KenshiLua
+} // namespace KenshiLua

@@ -190,15 +190,6 @@ static int AIOptions_set_shootFirst(lua_State* L)
     return 0;
 }
 
-int AIOptionsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    AIOptions* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AIOptions is nil");
-
-    AIOptions* result = instance->_CONSTRUCTOR();
-    return pushObject<AIOptions>(L, result, AIOptionsBinding::getMetatableName());
-}
-
 int AIOptionsBinding::load(lua_State* L)
 {
     AIOptions* instance = getInstance(L, 1);
@@ -240,7 +231,6 @@ void AIOptionsBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", AIOptionsBinding::_CONSTRUCTOR },
         { "load", AIOptionsBinding::load },
         { "save", AIOptionsBinding::save },
         { 0, 0 }

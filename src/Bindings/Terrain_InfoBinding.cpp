@@ -15,7 +15,8 @@ static int Info_get_memory(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "Terrain::Info is nil");
-    lua_pushnumber(L, (lua_Number)inst->memory);
+    lua_pushnumber(L, (lua_Number)inst->memory);
+
     return 1;
 }
 
@@ -23,7 +24,8 @@ static int Info_get_patches(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "Terrain::Info is nil");
-    lua_pushnumber(L, (lua_Number)inst->patches);
+    lua_pushnumber(L, (lua_Number)inst->patches);
+
     return 1;
 }
 
@@ -31,7 +33,8 @@ static int Info_get_visible(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "Terrain::Info is nil");
-    lua_pushnumber(L, (lua_Number)inst->visible);
+    lua_pushnumber(L, (lua_Number)inst->visible);
+
     return 1;
 }
 
@@ -39,7 +42,8 @@ static int Info_get_triangles(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "Terrain::Info is nil");
-    lua_pushnumber(L, (lua_Number)inst->triangles);
+    lua_pushnumber(L, (lua_Number)inst->triangles);
+
     return 1;
 }
 
@@ -47,7 +51,8 @@ static int Info_get_ogre(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "Terrain::Info is nil");
-    lua_pushnumber(L, (lua_Number)inst->ogre);
+    lua_pushnumber(L, (lua_Number)inst->ogre);
+
     return 1;
 }
 
@@ -55,7 +60,8 @@ static int Info_get_unbuilt(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "Terrain::Info is nil");
-    lua_pushnumber(L, (lua_Number)inst->unbuilt);
+    lua_pushnumber(L, (lua_Number)inst->unbuilt);
+
     return 1;
 }
 
@@ -108,21 +114,6 @@ static int Info_set_unbuilt(lua_State* L)
     return 0;
 }
 
-int Terrain_InfoBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (Terrain::Info*)::operator new(sizeof(Terrain::Info));
-    ::new ((void*)obj) Terrain::Info();
-    return pushObject<Terrain::Info>(L, obj, getMetatableName());
-}
-
-int Terrain_InfoBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "Terrain::Info is nil");
-    inst->~Info();
-    return 0;
-}
-
 int Terrain_InfoBinding::gc(lua_State* L)
 {
     return 0;
@@ -151,8 +142,6 @@ void Terrain_InfoBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

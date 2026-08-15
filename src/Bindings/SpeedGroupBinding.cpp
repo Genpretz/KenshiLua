@@ -78,15 +78,6 @@ static int SpeedGroup_set_last(lua_State* L)
     return 0;
 }
 
-int SpeedGroupBinding::_CONSTRUCTOR(lua_State* L)
-{
-    SpeedGroup* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SpeedGroup is nil");
-
-    SpeedGroup* result = instance->_CONSTRUCTOR();
-    return pushObject<SpeedGroup>(L, result, SpeedGroupBinding::getMetatableName());
-}
-
 int SpeedGroupBinding::getSpeed(lua_State* L)
 {
     SpeedGroup* instance = getInstance(L, 1);
@@ -96,15 +87,6 @@ int SpeedGroupBinding::getSpeed(lua_State* L)
     float result = instance->getSpeed(who);
     lua_pushnumber(L, result);
     return 1;
-}
-
-int SpeedGroupBinding::_DESTRUCTOR(lua_State* L)
-{
-    SpeedGroup* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SpeedGroup is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
 }
 
 /*
@@ -139,9 +121,7 @@ void SpeedGroupBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", SpeedGroupBinding::_CONSTRUCTOR },
         { "getSpeed", SpeedGroupBinding::getSpeed },
-        { "_DESTRUCTOR", SpeedGroupBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

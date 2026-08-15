@@ -156,21 +156,6 @@ static int Task_set_next(lua_State* L)
     return 0;
 }
 
-int NavMeshGenerator_TaskBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (NavMeshGenerator::Task*)::operator new(sizeof(NavMeshGenerator::Task));
-    ::new ((void*)obj) NavMeshGenerator::Task();
-    return pushObject<NavMeshGenerator::Task>(L, obj, getMetatableName());
-}
-
-int NavMeshGenerator_TaskBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "NavMeshGenerator::Task is nil");
-    inst->~Task();
-    return 0;
-}
-
 int NavMeshGenerator_TaskBinding::gc(lua_State* L)
 {
     return 0;
@@ -199,8 +184,6 @@ void NavMeshGenerator_TaskBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -175,15 +175,6 @@ static int DataPanelLine_set_classType(lua_State* L)
     return 0;
 }
 
-int DataPanelLineBinding::_DESTRUCTOR(lua_State* L)
-{
-    DataPanelLine* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DataPanelLine is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DataPanelLineBinding::setVisible(lua_State* L)
 {
     DataPanelLine* instance = getInstance(L, 1);
@@ -359,9 +350,6 @@ int DataPanelLineBinding::getWidget(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 35: DataPanelLine* _CONSTRUCTOR(...) - overloaded method
-  line 37: DataPanelLine* _CONSTRUCTOR(...) - overloaded method
-  line 39: DataPanelLine* _CONSTRUCTOR(...) - overloaded method
   line 48: void updateValuePtr(...) - unsupported arg type
   line 49: void _NV_updateValuePtr(...) - unsupported arg type
   line 51: void setToolTip(...) - overloaded method
@@ -401,7 +389,6 @@ void DataPanelLineBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", DataPanelLineBinding::_DESTRUCTOR },
         { "setVisible", DataPanelLineBinding::setVisible },
         { "_NV_setVisible", DataPanelLineBinding::_NV_setVisible },
         { "setEnabled", DataPanelLineBinding::setEnabled },

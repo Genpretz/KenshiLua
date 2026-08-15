@@ -36,24 +36,6 @@ static int GUIWindow_set_selectedObject(lua_State* L)
     return 0;
 }
 
-int GUIWindowBinding::_CONSTRUCTOR(lua_State* L)
-{
-    GUIWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GUIWindow is nil");
-
-    GUIWindow* result = instance->_CONSTRUCTOR();
-    return pushObject<GUIWindow>(L, result, GUIWindowBinding::getMetatableName());
-}
-
-int GUIWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    GUIWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GUIWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int GUIWindowBinding::clear(lua_State* L)
 {
     GUIWindow* instance = getInstance(L, 1);
@@ -318,8 +300,6 @@ void GUIWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", GUIWindowBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", GUIWindowBinding::_DESTRUCTOR },
         { "clear", GUIWindowBinding::clear },
         { "_NV_clear", GUIWindowBinding::_NV_clear },
         { "show", GUIWindowBinding::show },

@@ -291,20 +291,8 @@ int GameSaveStateBinding::isValid(lua_State* L)
     return 1;
 }
 
-int GameSaveStateBinding::_DESTRUCTOR(lua_State* L)
-{
-    GameSaveState* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameSaveState is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 15: GameSaveState* _CONSTRUCTOR(...) - overloaded method
-  line 17: GameSaveState* _CONSTRUCTOR(...) - overloaded method
-  line 19: GameSaveState* _CONSTRUCTOR(...) - overloaded method
   line 37: operator bool(...) - unsupported return type (exposed as isValid)
 */
 
@@ -348,7 +336,6 @@ void GameSaveStateBinding::registerBinding(lua_State* L)
         // Commented out as this method is not exported by kenshilib:
         // { "getAllStates", GameSaveStateBinding::getAllStates },
         { "isValid", GameSaveStateBinding::isValid },
-        { "_DESTRUCTOR", GameSaveStateBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

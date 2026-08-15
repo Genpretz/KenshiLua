@@ -319,15 +319,6 @@ static int DoorStuff_set__isBroken(lua_State* L)
 }
 
 // --- Methods for DoorStuff
-int DoorStuffBinding::_DESTRUCTOR(lua_State* L)
-{
-    DoorStuff* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DoorStuff is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DoorStuffBinding::setupPhysicalUT(lua_State* L)
 {
     DoorStuff* instance = getInstance(L, 1);
@@ -866,7 +857,6 @@ int DoorStuffBinding::_NV_doorParentBuilding(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 32: DoorStuff* _CONSTRUCTOR(...) - unsupported arg type
   line 39: void getGUIData(...) - unsupported arg type
   line 40: void _NV_getGUIData(...) - unsupported arg type
   line 53: void setHandle(...) - unsupported arg type
@@ -906,7 +896,6 @@ void DoorStuffBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", DoorStuffBinding::_DESTRUCTOR },
         { "setupPhysicalUT", DoorStuffBinding::setupPhysicalUT },
         { "getFaction", DoorStuffBinding::getFaction },
         { "_NV_getFaction", DoorStuffBinding::_NV_getFaction },

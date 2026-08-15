@@ -121,26 +121,6 @@ static int DialogueSpeechBubble_set_baseSize(lua_State* L)
     return 0;
 }
 
-int DialogueSpeechBubbleBinding::_CONSTRUCTOR(lua_State* L)
-{
-    DialogueSpeechBubble* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
-
-    bool shout = lua_toboolean(L, 2) != 0;
-    bool importnt = lua_toboolean(L, 3) != 0;
-    DialogueSpeechBubble* result = instance->_CONSTRUCTOR(shout, importnt);
-    return pushObject<DialogueSpeechBubble>(L, result, DialogueSpeechBubbleBinding::getMetatableName());
-}
-
-int DialogueSpeechBubbleBinding::_DESTRUCTOR(lua_State* L)
-{
-    DialogueSpeechBubble* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DialogueSpeechBubbleBinding::setText(lua_State* L)
 {
     DialogueSpeechBubble* instance = getInstance(L, 1);
@@ -239,8 +219,6 @@ void DialogueSpeechBubbleBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", DialogueSpeechBubbleBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", DialogueSpeechBubbleBinding::_DESTRUCTOR },
         { "setText", DialogueSpeechBubbleBinding::setText },
         { "setAlpha", DialogueSpeechBubbleBinding::setAlpha },
         { "setPosition", DialogueSpeechBubbleBinding::setPosition },

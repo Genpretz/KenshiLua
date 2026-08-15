@@ -147,24 +147,6 @@ int TutorialpediaGUIBinding::_NV_isVisible(lua_State* L)
     return 1;
 }
 
-int TutorialpediaGUIBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TutorialpediaGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
-
-    TutorialpediaGUI* result = instance->_CONSTRUCTOR();
-    return pushObject<TutorialpediaGUI>(L, result, TutorialpediaGUIBinding::getMetatableName());
-}
-
-int TutorialpediaGUIBinding::_DESTRUCTOR(lua_State* L)
-{
-    TutorialpediaGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TutorialpediaGUIBinding::setup(lua_State* L)
 {
     TutorialpediaGUI* instance = getInstance(L, 1);
@@ -219,8 +201,6 @@ void TutorialpediaGUIBinding::registerBinding(lua_State* L)
         { "_NV_clear", TutorialpediaGUIBinding::_NV_clear },
         { "isVisible", TutorialpediaGUIBinding::isVisible },
         { "_NV_isVisible", TutorialpediaGUIBinding::_NV_isVisible },
-        { "_CONSTRUCTOR", TutorialpediaGUIBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TutorialpediaGUIBinding::_DESTRUCTOR },
         { "setup", TutorialpediaGUIBinding::setup },
         { "updateCurrentItem", TutorialpediaGUIBinding::updateCurrentItem },
         { 0, 0 }

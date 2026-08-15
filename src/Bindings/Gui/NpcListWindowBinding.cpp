@@ -17,15 +17,6 @@ static NpcListWindow* getInstance(lua_State* L, int idx)
 
 // --- Getters for NpcListWindow ---
 // --- Setters for NpcListWindow ---
-int NpcListWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    NpcListWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NpcListWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int NpcListWindowBinding::itemSelected(lua_State* L)
 {
     NpcListWindow* instance = getInstance(L, 1);
@@ -46,10 +37,6 @@ int NpcListWindowBinding::_NV_itemSelected(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 137: NpcListWindow* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int NpcListWindowBinding::gc(lua_State* L)
 {
@@ -72,7 +59,6 @@ void NpcListWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", NpcListWindowBinding::_DESTRUCTOR },
         { "itemSelected", NpcListWindowBinding::itemSelected },
         { "_NV_itemSelected", NpcListWindowBinding::_NV_itemSelected },
         { 0, 0 }

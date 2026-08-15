@@ -337,15 +337,6 @@ static int ManagementScreen_set_toolTip(lua_State* L)
     return 0;
 }
 
-int ManagementScreenBinding::_DESTRUCTOR(lua_State* L)
-{
-    ManagementScreen* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ManagementScreen is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ManagementScreenBinding::update(lua_State* L)
 {
     ManagementScreen* instance = getInstance(L, 1);
@@ -542,15 +533,6 @@ int ManagementScreenBinding::showDebugMarker(lua_State* L)
     return 0;
 }
 
-int ManagementScreenBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ManagementScreen* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ManagementScreen is nil");
-
-    ManagementScreen* result = instance->_CONSTRUCTOR();
-    return pushObject<ManagementScreen>(L, result, ManagementScreenBinding::getMetatableName());
-}
-
 int ManagementScreenBinding::updateResearchListRate(lua_State* L)
 {
     ManagementScreen* instance = getInstance(L, 1);
@@ -671,7 +653,6 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ManagementScreenBinding::_DESTRUCTOR },
         { "update", ManagementScreenBinding::update },
         { "clear", ManagementScreenBinding::clear },
         { "getVisible", ManagementScreenBinding::getVisible },
@@ -696,7 +677,6 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
         { "printResearch", ManagementScreenBinding::printResearch },
         { "addMessage", ManagementScreenBinding::addMessage },
         { "getSingleton", ManagementScreenBinding::getSingleton },
-        { "_CONSTRUCTOR", ManagementScreenBinding::_CONSTRUCTOR },
         { "updateResearchListRate", ManagementScreenBinding::updateResearchListRate },
         { "refreshResearchListDescription", ManagementScreenBinding::refreshResearchListDescription },
         { 0, 0 }

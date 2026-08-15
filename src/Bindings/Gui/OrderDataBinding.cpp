@@ -77,15 +77,6 @@ static int OrderData_set_enabled(lua_State* L)
     return 0;
 }
 
-int OrderDataBinding::_CONSTRUCTOR(lua_State* L)
-{
-    OrderData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "OrderData is nil");
-
-    OrderData* result = instance->_CONSTRUCTOR();
-    return pushObject<OrderData>(L, result, OrderDataBinding::getMetatableName());
-}
-
 int OrderDataBinding::set(lua_State* L)
 {
     OrderData* instance = getInstance(L, 1);
@@ -104,15 +95,6 @@ int OrderDataBinding::updateText(lua_State* L)
     if (!instance) return luaL_error(L, "OrderData is nil");
 
     instance->updateText();
-    return 0;
-}
-
-int OrderDataBinding::_DESTRUCTOR(lua_State* L)
-{
-    OrderData* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "OrderData is nil");
-
-    instance->_DESTRUCTOR();
     return 0;
 }
 
@@ -142,10 +124,8 @@ void OrderDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", OrderDataBinding::_CONSTRUCTOR },
         { "set", OrderDataBinding::set },
         { "updateText", OrderDataBinding::updateText },
-        { "_DESTRUCTOR", OrderDataBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -30,24 +30,6 @@ static int ImportGameMenu_set_newGameOptions(lua_State* L)
     return 0;
 }
 
-int ImportGameMenuBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ImportGameMenu* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ImportGameMenu is nil");
-
-    ImportGameMenu* result = instance->_CONSTRUCTOR();
-    return pushObject<ImportGameMenu>(L, result, ImportGameMenuBinding::getMetatableName());
-}
-
-int ImportGameMenuBinding::_DESTRUCTOR(lua_State* L)
-{
-    ImportGameMenu* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ImportGameMenu is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ImportGameMenuBinding::select(lua_State* L)
 {
     ImportGameMenu* instance = getInstance(L, 1);
@@ -95,8 +77,6 @@ void ImportGameMenuBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ImportGameMenuBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ImportGameMenuBinding::_DESTRUCTOR },
         { "select", ImportGameMenuBinding::select },
         { "_NV_select", ImportGameMenuBinding::_NV_select },
         { 0, 0 }

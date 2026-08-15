@@ -15,15 +15,6 @@ static ResearchBuilding* getInstance(lua_State* L, int idx)
 
 // --- Getters for ResearchBuilding ---
 // --- Setters for ResearchBuilding ---
-int ResearchBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    ResearchBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ResearchBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ResearchBuildingBinding::dontNeedWorkRightNow(lua_State* L)
 {
     ResearchBuilding* instance = getInstance(L, 1);
@@ -140,7 +131,6 @@ int ResearchBuildingBinding::_NV_createInventoryLayout(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 31: ResearchBuilding* _CONSTRUCTOR(...) - unsupported arg type
   line 40: void operate(...) - unsupported arg type
   line 41: void _NV_operate(...) - unsupported arg type
   line 44: void getGUIData(...) - unsupported arg type
@@ -169,7 +159,6 @@ void ResearchBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ResearchBuildingBinding::_DESTRUCTOR },
         { "dontNeedWorkRightNow", ResearchBuildingBinding::dontNeedWorkRightNow },
         { "_NV_dontNeedWorkRightNow", ResearchBuildingBinding::_NV_dontNeedWorkRightNow },
         { "getDefaultTask", ResearchBuildingBinding::getDefaultTask },

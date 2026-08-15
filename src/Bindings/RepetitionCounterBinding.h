@@ -22,7 +22,5 @@ public:
     static int count(lua_State* L);
     static int getTimeSinceLastTrigger(lua_State* L);
     static int getCount(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

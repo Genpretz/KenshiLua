@@ -113,25 +113,6 @@ static int RobotLimbs_set_items(lua_State* L)
     return 0;
 }
 
-int RobotLimbsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    RobotLimbs* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RobotLimbs is nil");
-
-    Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
-    RobotLimbs* result = instance->_CONSTRUCTOR(c);
-    return pushObject<RobotLimbs>(L, result, RobotLimbsBinding::getMetatableName());
-}
-
-int RobotLimbsBinding::_DESTRUCTOR(lua_State* L)
-{
-    RobotLimbs* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RobotLimbs is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int RobotLimbsBinding::load(lua_State* L)
 {
     RobotLimbs* instance = getInstance(L, 1);
@@ -245,8 +226,6 @@ void RobotLimbsBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", RobotLimbsBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", RobotLimbsBinding::_DESTRUCTOR },
         { "load", RobotLimbsBinding::load },
         { "save", RobotLimbsBinding::save },
         { "getLimb", RobotLimbsBinding::getLimb },

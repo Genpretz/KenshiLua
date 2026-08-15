@@ -101,16 +101,6 @@ static int CampaignRequest_set_numAttempts(lua_State* L)
     return 0;
 }
 
-int CampaignRequestBinding::_CONSTRUCTOR(lua_State* L)
-{
-    CampaignRequest* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CampaignRequest is nil");
-
-    CampaignRequest* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
 int CampaignRequestBinding::tryToChangeTarget(lua_State* L)
 {
     CampaignRequest* instance = getInstance(L, 1);
@@ -142,7 +132,6 @@ void CampaignRequestBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", CampaignRequestBinding::_CONSTRUCTOR },
         { "tryToChangeTarget", CampaignRequestBinding::tryToChangeTarget },
         { 0, 0 }
     };

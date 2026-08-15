@@ -13,19 +13,8 @@ static NxBox* getInstance(lua_State* L, int idx)
 
 // --- Getters for NxBox ---
 // --- Setters for NxBox ---
-int NxBoxBinding::_DESTRUCTOR(lua_State* L)
-{
-    NxBox* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NxBox is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 482: NxBox* _CONSTRUCTOR(...) - overloaded method
-  line 484: NxBox* _CONSTRUCTOR(...) - overloaded method
   line 496: NxBox& operator=(...) - operator
 */
 
@@ -57,7 +46,6 @@ void NxBoxBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", NxBoxBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

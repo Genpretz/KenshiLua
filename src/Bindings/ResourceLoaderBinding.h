@@ -21,8 +21,6 @@ public:
     static int updateMT(lua_State* L);
     static int updateBT(lua_State* L);
     static int isLoading(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int init(lua_State* L);
     static int threadProc(lua_State* L);
     static int _NV_threadProc(lua_State* L);

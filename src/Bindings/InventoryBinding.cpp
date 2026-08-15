@@ -88,25 +88,6 @@ static int Inventory_set_totalWeight(lua_State* L)
     return 0;
 }
 
-int InventoryBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Inventory* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Inventory is nil");
-
-    RootObject* _owner = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
-    Inventory* result = instance->_CONSTRUCTOR(_owner);
-    return pushObject<Inventory>(L, result, InventoryBinding::getMetatableName());
-}
-
-int InventoryBinding::_DESTRUCTOR(lua_State* L)
-{
-    Inventory* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Inventory is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int InventoryBinding::clearAll(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
@@ -1116,8 +1097,6 @@ void InventoryBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", InventoryBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", InventoryBinding::_DESTRUCTOR },
         { "clearAll", InventoryBinding::clearAll },
         { "serialise", InventoryBinding::serialise },
         { "notifyModified", InventoryBinding::notifyModified },

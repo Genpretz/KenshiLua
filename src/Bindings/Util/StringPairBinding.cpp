@@ -61,21 +61,8 @@ static int StringPair_set_val1(lua_State* L)
     return 0;
 }
 
-int StringPairBinding::_DESTRUCTOR(lua_State* L)
-{
-    StringPair* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "StringPair is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 12: StringPair* _CONSTRUCTOR(...) - overloaded method
-  line 14: StringPair* _CONSTRUCTOR(...) - overloaded method
-  line 16: StringPair* _CONSTRUCTOR(...) - overloaded method
-  line 18: StringPair* _CONSTRUCTOR(...) - overloaded method
   line 24: const StringPair& operator=(...) - operator
   line 25: const StringPair& _NV_operator_assign(...) - reference return type
 */
@@ -101,7 +88,6 @@ void StringPairBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", StringPairBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

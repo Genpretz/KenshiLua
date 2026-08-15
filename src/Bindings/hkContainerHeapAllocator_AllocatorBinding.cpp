@@ -10,21 +10,6 @@ static hkContainerHeapAllocator::Allocator* getInstance(lua_State* L, int idx)
     return checkObject<hkContainerHeapAllocator::Allocator>(L, idx, hkContainerHeapAllocator_AllocatorBinding::getMetatableName());
 }
 
-int hkContainerHeapAllocator_AllocatorBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (hkContainerHeapAllocator::Allocator*)::operator new(sizeof(hkContainerHeapAllocator::Allocator));
-    ::new ((void*)obj) hkContainerHeapAllocator::Allocator();
-    return pushObject<hkContainerHeapAllocator::Allocator>(L, obj, getMetatableName());
-}
-
-int hkContainerHeapAllocator_AllocatorBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "hkContainerHeapAllocator::Allocator is nil");
-    inst->~Allocator();
-    return 0;
-}
-
 int hkContainerHeapAllocator_AllocatorBinding::gc(lua_State* L)
 {
     return 0;
@@ -53,8 +38,6 @@ void hkContainerHeapAllocator_AllocatorBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

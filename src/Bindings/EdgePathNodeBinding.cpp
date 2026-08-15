@@ -126,31 +126,6 @@ static int EdgePathNode_set_maxPoint(lua_State* L)
     return 0;
 }
 
-int EdgePathNodeBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (EdgePathNode*)::operator new(sizeof(EdgePathNode));
-    memset(obj, 0, sizeof(EdgePathNode));
-    if (lua_gettop(L) >= 3)
-        obj->face = (unsigned int)luaL_checkinteger(L, 3);
-    if (lua_gettop(L) >= 4)
-        obj->edge = (unsigned int)luaL_checkinteger(L, 4);
-    if (lua_gettop(L) >= 5)
-        obj->leftClearance = (float)luaL_checknumber(L, 5);
-    if (lua_gettop(L) >= 6)
-        obj->rightClearance = (float)luaL_checknumber(L, 6);
-    if (lua_gettop(L) >= 7)
-        obj->maxPoint = (float)luaL_checknumber(L, 7);
-    return pushObject<EdgePathNode>(L, obj, getMetatableName());
-}
-
-int EdgePathNodeBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "EdgePathNode is nil");
-    inst->~EdgePathNode();
-    return 0;
-}
-
 int EdgePathNodeBinding::gc(lua_State* L)
 {
     return 0;
@@ -179,8 +154,6 @@ void EdgePathNodeBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -194,15 +194,6 @@ static int TurretBuilding_set_rotating(lua_State* L)
 }
 
 // --- Methods for TurretBuilding ---
-int TurretBuildingBinding::_DESTRUCTOR(lua_State* L)
-{
-    TurretBuilding* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TurretBuilding is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TurretBuildingBinding::getDefaultTask(lua_State* L)
 {
     TurretBuilding* instance = getInstance(L, 1);
@@ -539,7 +530,6 @@ void TurretBuildingBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", TurretBuildingBinding::_DESTRUCTOR },
         { "getDefaultTask", TurretBuildingBinding::getDefaultTask },
         { "_NV_getDefaultTask", TurretBuildingBinding::_NV_getDefaultTask },
         { "setup", TurretBuildingBinding::setup },

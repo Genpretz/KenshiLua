@@ -72,20 +72,8 @@ int GameDataReferenceBinding::getPtr(lua_State* L)
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
-int GameDataReferenceBinding::_DESTRUCTOR(lua_State* L)
-{
-    GameDataReference* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "GameDataReference is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 192: GameDataReference* _CONSTRUCTOR(...) - overloaded method
-  line 194: GameDataReference* _CONSTRUCTOR(...) - overloaded method
-  line 196: GameDataReference* _CONSTRUCTOR(...) - overloaded method
   line 203: GameDataReference& operator=(...) - operator
 */
 
@@ -111,7 +99,6 @@ void GameDataReferenceBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "getPtr", GameDataReferenceBinding::getPtr },
-        { "_DESTRUCTOR", GameDataReferenceBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

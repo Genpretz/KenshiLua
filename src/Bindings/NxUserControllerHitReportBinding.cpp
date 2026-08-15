@@ -13,24 +13,6 @@ static NxUserControllerHitReport* getInstance(lua_State* L, int idx)
 
 // --- Getters for NxUserControllerHitReport ---
 // --- Setters for NxUserControllerHitReport ---
-int NxUserControllerHitReportBinding::_DESTRUCTOR(lua_State* L)
-{
-    NxUserControllerHitReport* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NxUserControllerHitReport is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-int NxUserControllerHitReportBinding::_CONSTRUCTOR(lua_State* L)
-{
-    NxUserControllerHitReport* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NxUserControllerHitReport is nil");
-
-    NxUserControllerHitReport* result = instance->_CONSTRUCTOR();
-    return pushObject<NxUserControllerHitReport>(L, result, NxUserControllerHitReportBinding::getMetatableName());
-}
-
 /*
 Skipped methods needing manual binding:
   line 123: NxControllerAction onShapeHit(...) - unsupported return type
@@ -58,8 +40,6 @@ void NxUserControllerHitReportBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", NxUserControllerHitReportBinding::_DESTRUCTOR },
-        { "_CONSTRUCTOR", NxUserControllerHitReportBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

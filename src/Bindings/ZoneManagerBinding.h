@@ -18,8 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int isZoneLoadedT(lua_State* L);
     static int _NV_isZoneLoadedT(lua_State* L);
     static int isZoneBeingLoadedT(lua_State* L);

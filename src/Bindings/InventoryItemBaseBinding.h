@@ -52,8 +52,6 @@ public:
     static int _NV_getLevel(lua_State* L);
     static int getItemSound(lua_State* L);
     static int isStolen(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int merchantPriceMod(lua_State* L);
     static int activate(lua_State* L);
     static int getStolenItemGUIInfo(lua_State* L);

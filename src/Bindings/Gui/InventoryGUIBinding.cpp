@@ -347,27 +347,6 @@ int InventoryGUIBinding::stealingGUIInfoUpdate(lua_State* L)
     return 0;
 }
 
-int InventoryGUIBinding::_CONSTRUCTOR(lua_State* L)
-{
-    InventoryGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventoryGUI is nil");
-
-    Inventory* inv = checkObject<Inventory>(L, 2, InventoryBinding::getMetatableName());
-    InventoryLayout* layout = checkObject<InventoryLayout>(L, 3, InventoryLayoutBinding::getMetatableName());
-    RootObject* callback = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
-    InventoryGUI* result = instance->_CONSTRUCTOR(inv, layout, callback);
-    return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
-}
-
-int InventoryGUIBinding::_DESTRUCTOR(lua_State* L)
-{
-    InventoryGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "InventoryGUI is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int InventoryGUIBinding::pickupItemToMouse(lua_State* L)
 {
     InventoryGUI* instance = getInstance(L, 1);
@@ -729,8 +708,6 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
         { "_NV_getCallbackObject", InventoryGUIBinding::_NV_getCallbackObject },
         { "getSelectedItem", InventoryGUIBinding::getSelectedItem },
         { "stealingGUIInfoUpdate", InventoryGUIBinding::stealingGUIInfoUpdate },
-        { "_CONSTRUCTOR", InventoryGUIBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", InventoryGUIBinding::_DESTRUCTOR },
         { "pickupItemToMouse", InventoryGUIBinding::pickupItemToMouse },
         { "getMouseItem", InventoryGUIBinding::getMouseItem },
         { "takeCertainAmountFrom", InventoryGUIBinding::takeCertainAmountFrom },

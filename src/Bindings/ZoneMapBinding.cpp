@@ -155,15 +155,6 @@ static int ZoneMap_set_neighbors(lua_State* L) { return 0; }
 
 static int ZoneMap_set_neighborsDiagonal(lua_State* L) { return 0; }
 
-int ZoneMapBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ZoneMap* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneMap is nil");
-
-    ZoneMap* result = instance->_CONSTRUCTOR();
-    return pushObject<ZoneMap>(L, result, ZoneMapBinding::getMetatableName());
-}
-
 int ZoneMapBinding::isInIsland(lua_State* L)
 {
     ZoneMap* instance = getInstance(L, 1);
@@ -444,15 +435,6 @@ int ZoneMapBinding::updateBuildingUsageNodes(lua_State* L)
     return 0;
 }
 
-int ZoneMapBinding::_DESTRUCTOR(lua_State* L)
-{
-    ZoneMap* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneMap is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 206: void init(...) - non-string reference arg
@@ -514,7 +496,6 @@ void ZoneMapBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ZoneMapBinding::_CONSTRUCTOR },
         { "isInIsland", ZoneMapBinding::isInIsland },
         { "initialise", ZoneMapBinding::initialise },
         { "threadedUpdate", ZoneMapBinding::threadedUpdate },
@@ -542,7 +523,6 @@ void ZoneMapBinding::registerBinding(lua_State* L)
         { "_dactivateMT", ZoneMapBinding::_dactivateMT },
         { "generateNavMeshes", ZoneMapBinding::generateNavMeshes },
         { "updateBuildingUsageNodes", ZoneMapBinding::updateBuildingUsageNodes },
-        { "_DESTRUCTOR", ZoneMapBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

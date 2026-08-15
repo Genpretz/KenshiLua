@@ -55,21 +55,6 @@ static int ZoneCell_set_cells(lua_State* L)
     return 0;
 }
 
-int ZoneSpacialGrid_ZoneCellBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (ZoneSpacialGrid::ZoneCell*)::operator new(sizeof(ZoneSpacialGrid::ZoneCell));
-    ::new ((void*)obj) ZoneSpacialGrid::ZoneCell();
-    return pushObject<ZoneSpacialGrid::ZoneCell>(L, obj, getMetatableName());
-}
-
-int ZoneSpacialGrid_ZoneCellBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "ZoneSpacialGrid::ZoneCell is nil");
-    inst->~ZoneCell();
-    return 0;
-}
-
 int ZoneSpacialGrid_ZoneCellBinding::gc(lua_State* L)
 {
     return 0;
@@ -98,8 +83,6 @@ void ZoneSpacialGrid_ZoneCellBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

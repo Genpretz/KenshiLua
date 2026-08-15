@@ -14,15 +14,6 @@ static SquadItemBox* getInstance(lua_State* L, int idx)
 
 // --- Getters for SquadItemBox ---
 // --- Setters for SquadItemBox ---
-int SquadItemBoxBinding::_DESTRUCTOR(lua_State* L)
-{
-    SquadItemBox* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SquadItemBox is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int SquadItemBoxBinding::setCellSize(lua_State* L)
 {
     SquadItemBox* instance = getInstance(L, 1);
@@ -44,10 +35,6 @@ int SquadItemBoxBinding::getItemCount(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 141: SquadItemBox* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int SquadItemBoxBinding::gc(lua_State* L)
 {
@@ -70,7 +57,6 @@ void SquadItemBoxBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", SquadItemBoxBinding::_DESTRUCTOR },
         { "setCellSize", SquadItemBoxBinding::setCellSize },
         { "getItemCount", SquadItemBoxBinding::getItemCount },
         { 0, 0 }

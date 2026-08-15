@@ -294,15 +294,6 @@ int ActivePlatoonBinding::isAnyoneCaptured(lua_State* L)
     return 1;
 }
 
-int ActivePlatoonBinding::_DESTRUCTOR(lua_State* L)
-{
-    ActivePlatoon* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ActivePlatoon is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ActivePlatoonBinding::getGroupSense(lua_State* L)
 {
     ActivePlatoon* instance = getInstance(L, 1);
@@ -662,22 +653,6 @@ int ActivePlatoonBinding::restoreSquad(lua_State* L)
 
     instance->restoreSquad();
     return 0;
-}
-
-int ActivePlatoonBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ActivePlatoon* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ActivePlatoon is nil");
-
-    Platoon* my = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
-    DataObjectContainer* doc = checkObject<DataObjectContainer>(L, 3, DataObjectContainerBinding::getMetatableName());
-    Faction* f = checkObject<Faction>(L, 4, FactionBinding::getMetatableName());
-    GameData* d = checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
-    Tasker* _currentGoal = checkObject<Tasker>(L, 6, TaskerBinding::getMetatableName());
-    Ogre::Vector3 _posOffset;
-    readVector3(L, 7, _posOffset);
-    ActivePlatoon* result = instance->_CONSTRUCTOR(my, doc, f, d, _currentGoal, _posOffset);
-    return pushObject<ActivePlatoon>(L, result, ActivePlatoonBinding::getMetatableName());
 }
 
 int ActivePlatoonBinding::unloadCheck(lua_State* L)
@@ -1096,7 +1071,6 @@ void ActivePlatoonBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "_recalculateIsIntact", ActivePlatoonBinding::_recalculateIsIntact },
         { "isAnyoneCaptured", ActivePlatoonBinding::isAnyoneCaptured },
-        { "_DESTRUCTOR", ActivePlatoonBinding::_DESTRUCTOR },
         { "getGroupSense", ActivePlatoonBinding::getGroupSense },
         { "getMemory", ActivePlatoonBinding::getMemory },
         { "removeObject", ActivePlatoonBinding::removeObject },
@@ -1133,7 +1107,6 @@ void ActivePlatoonBinding::registerBinding(lua_State* L)
         { "putTheSpecialCharactersInNewSquads_captured", ActivePlatoonBinding::putTheSpecialCharactersInNewSquads_captured },
         { "checkForCharactersBeingCarried", ActivePlatoonBinding::checkForCharactersBeingCarried },
         { "restoreSquad", ActivePlatoonBinding::restoreSquad },
-        { "_CONSTRUCTOR", ActivePlatoonBinding::_CONSTRUCTOR },
         { "unloadCheck", ActivePlatoonBinding::unloadCheck },
         { "setupCheck", ActivePlatoonBinding::setupCheck },
         { "destroyCharacters", ActivePlatoonBinding::destroyCharacters },

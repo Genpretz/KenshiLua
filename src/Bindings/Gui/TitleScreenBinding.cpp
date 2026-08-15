@@ -93,24 +93,6 @@ static int TitleScreen_set_creditsText(lua_State* L)
     return 0;
 }
 
-int TitleScreenBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TitleScreen* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TitleScreen is nil");
-
-    TitleScreen* result = instance->_CONSTRUCTOR();
-    return pushObject<TitleScreen>(L, result, TitleScreenBinding::getMetatableName());
-}
-
-int TitleScreenBinding::_DESTRUCTOR(lua_State* L)
-{
-    TitleScreen* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TitleScreen is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TitleScreenBinding::clear(lua_State* L)
 {
     TitleScreen* instance = getInstance(L, 1);
@@ -225,8 +207,6 @@ void TitleScreenBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TitleScreenBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TitleScreenBinding::_DESTRUCTOR },
         { "clear", TitleScreenBinding::clear },
         { "_NV_clear", TitleScreenBinding::_NV_clear },
         { "show", TitleScreenBinding::show },

@@ -79,24 +79,6 @@ int RepetitionCounterBinding::getCount(lua_State* L)
     return 1;
 }
 
-int RepetitionCounterBinding::_CONSTRUCTOR(lua_State* L)
-{
-    RepetitionCounter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RepetitionCounter is nil");
-
-    RepetitionCounter* result = instance->_CONSTRUCTOR();
-    return pushObject<RepetitionCounter>(L, result, RepetitionCounterBinding::getMetatableName());
-}
-
-int RepetitionCounterBinding::_DESTRUCTOR(lua_State* L)
-{
-    RepetitionCounter* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RepetitionCounter is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int RepetitionCounterBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -122,8 +104,6 @@ void RepetitionCounterBinding::registerBinding(lua_State* L)
         { "count", RepetitionCounterBinding::count },
         { "getTimeSinceLastTrigger", RepetitionCounterBinding::getTimeSinceLastTrigger },
         { "getCount", RepetitionCounterBinding::getCount },
-        { "_CONSTRUCTOR", RepetitionCounterBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", RepetitionCounterBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -13,34 +13,11 @@ static NxUserTriggerReport* getInstance(lua_State* L, int idx)
 
 // --- Getters for NxUserTriggerReport ---
 // --- Setters for NxUserTriggerReport ---
-int NxUserTriggerReportBinding::_DESTRUCTOR(lua_State* L)
-{
-    NxUserTriggerReport* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NxUserTriggerReport is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-int NxUserTriggerReportBinding::_CONSTRUCTOR(lua_State* L)
-{
-    NxUserTriggerReport* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NxUserTriggerReport is nil");
-
-    NxUserTriggerReport* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
 /*
 Skipped methods needing manual binding:
   line 53: void onTrigger(...) - unsupported arg type
 */
 
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - NxUserTriggerReportBinding::_CONSTRUCTOR: NxUserTriggerReport* (unbound pointer)
-*/
 
 int NxUserTriggerReportBinding::gc(lua_State* L)
 {
@@ -63,8 +40,6 @@ void NxUserTriggerReportBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", NxUserTriggerReportBinding::_DESTRUCTOR },
-        { "_CONSTRUCTOR", NxUserTriggerReportBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

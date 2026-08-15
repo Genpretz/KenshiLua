@@ -26,7 +26,6 @@ public:
     static int _NV_setPosition(lua_State* L);
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int destroy(lua_State* L);
 };
 }

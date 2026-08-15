@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
     static int backThreadUpdate(lua_State* L);
     static int isPaused(lua_State* L);
     static int setPaused(lua_State* L);
@@ -26,6 +25,5 @@ public:
     static int _NV_threadProc(lua_State* L);
     static int forceLoopMT(lua_State* L);
     static int _NV_forceLoopMT(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

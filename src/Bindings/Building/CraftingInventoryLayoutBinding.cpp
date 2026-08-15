@@ -69,18 +69,6 @@ static int CraftingInventoryLayout_set_outputType(lua_State* L)
     return 0;
 }
 
-int CraftingInventoryLayoutBinding::_CONSTRUCTOR(lua_State* L)
-{
-    CraftingInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-
-    std::string title = luaL_checkstring(L, 2);
-    int ins = (int)luaL_checkinteger(L, 3);
-    int outs = (int)luaL_checkinteger(L, 4);
-    CraftingInventoryLayout* result = instance->_CONSTRUCTOR(title, ins, outs);
-    return pushObject<CraftingInventoryLayout>(L, result, CraftingInventoryLayoutBinding::getMetatableName());
-}
-
 int CraftingInventoryLayoutBinding::setupSections(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
@@ -157,15 +145,6 @@ int CraftingInventoryLayoutBinding::getQueueButton(lua_State* L)
     return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
 }
 
-int CraftingInventoryLayoutBinding::_DESTRUCTOR(lua_State* L)
-{
-    CraftingInventoryLayout* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - CraftingInventoryLayout_get_queueBtn / CraftingInventoryLayout_set_queueBtn: MyGUI::Button* (unbound pointer)
@@ -193,14 +172,12 @@ void CraftingInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", CraftingInventoryLayoutBinding::_CONSTRUCTOR },
         { "setupSections", CraftingInventoryLayoutBinding::setupSections },
         { "_NV_setupSections", CraftingInventoryLayoutBinding::_NV_setupSections },
         { "refresh", CraftingInventoryLayoutBinding::refresh },
         { "setOutputType", CraftingInventoryLayoutBinding::setOutputType },
         { "setCraftingName", CraftingInventoryLayoutBinding::setCraftingName },
         { "getQueueButton", CraftingInventoryLayoutBinding::getQueueButton },
-        { "_DESTRUCTOR", CraftingInventoryLayoutBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -128,25 +128,6 @@ static int PhysicsActual_set_scytheClass(lua_State* L)
     return 0;
 }
 
-int PhysicsActualBinding::_CONSTRUCTOR(lua_State* L)
-{
-    PhysicsActual* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PhysicsActual is nil");
-
-    PhysicsActual* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-int PhysicsActualBinding::_DESTRUCTOR(lua_State* L)
-{
-    PhysicsActual* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "PhysicsActual is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int PhysicsActualBinding::updateUT(lua_State* L)
 {
     PhysicsActual* instance = getInstance(L, 1);
@@ -304,7 +285,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - PhysicsActual_get_materialHuman: NxMaterial* (unbound pointer)
   - PhysicsActual_get_controllerMgr: NxControllerManager* (unbound pointer)
   - PhysicsActual_get_physicsSDK: NxPhysicsSDK* (unbound pointer)
-  - PhysicsActualBinding::_CONSTRUCTOR: PhysicsActual* (unbound pointer)
   - PhysicsActualBinding::_createTriggerHull: NxActor* (unbound pointer)
   - PhysicsActualBinding::_createStaticCapsule: NxActor* (unbound pointer)
   - PhysicsActualBinding::_createStaticBox: NxActor* (unbound pointer)
@@ -331,8 +311,6 @@ void PhysicsActualBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", PhysicsActualBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", PhysicsActualBinding::_DESTRUCTOR },
         { "updateUT", PhysicsActualBinding::updateUT },
         { "_NV_updateUT", PhysicsActualBinding::_NV_updateUT },
         { "backThreadUpdate", PhysicsActualBinding::backThreadUpdate },

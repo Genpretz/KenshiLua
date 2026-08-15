@@ -13,15 +13,6 @@ static NxMat33* getInstance(lua_State* L, int idx)
 
 // --- Getters for NxMat33 ---
 // --- Setters for NxMat33 ---
-int NxMat33Binding::_DESTRUCTOR(lua_State* L)
-{
-    NxMat33* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "NxMat33 is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int NxMat33Binding::setRowMajor(lua_State* L)
 {
     NxMat33* instance = getInstance(L, 1);
@@ -112,9 +103,6 @@ int NxMat33Binding::id(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 379: NxMat33* _CONSTRUCTOR(...) - overloaded method
-  line 381: NxMat33* _CONSTRUCTOR(...) - overloaded method
-  line 385: NxMat33* _CONSTRUCTOR(...) - overloaded method
   line 388: const NxMat33& operator=(...) - operator
   line 422: void setColumn(...) - unsupported arg type
   line 423: NxVec3 getRow(...) - unsupported return type
@@ -155,7 +143,6 @@ void NxMat33Binding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", NxMat33Binding::_DESTRUCTOR },
         { "setRowMajor", NxMat33Binding::setRowMajor },
         { "getRowMajor", NxMat33Binding::getRowMajor },
         { "getColumnMajor", NxMat33Binding::getColumnMajor },

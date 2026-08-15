@@ -56,15 +56,6 @@ static int LightEnt_set_range(lua_State* L)
     return 0;
 }
 
-int LightEntBinding::_DESTRUCTOR(lua_State* L)
-{
-    LightEnt* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "LightEnt is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int LightEntBinding::setEnergyLevel(lua_State* L)
 {
     LightEnt* instance = getInstance(L, 1);
@@ -85,10 +76,6 @@ int LightEntBinding::setFloor(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 172: LightEnt* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -116,7 +103,6 @@ void LightEntBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", LightEntBinding::_DESTRUCTOR },
         { "setEnergyLevel", LightEntBinding::setEnergyLevel },
         { "setFloor", LightEntBinding::setFloor },
         { 0, 0 }

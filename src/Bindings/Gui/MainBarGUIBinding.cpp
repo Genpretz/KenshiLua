@@ -449,24 +449,6 @@ static int MainBarGUI_set_toolTip(lua_State* L)
     return 0;
 }
 
-int MainBarGUIBinding::_CONSTRUCTOR(lua_State* L)
-{
-    MainBarGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MainBarGUI is nil");
-
-    MainBarGUI* result = instance->_CONSTRUCTOR();
-    return pushObject<MainBarGUI>(L, result, MainBarGUIBinding::getMetatableName());
-}
-
-int MainBarGUIBinding::_DESTRUCTOR(lua_State* L)
-{
-    MainBarGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "MainBarGUI is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int MainBarGUIBinding::clear(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
@@ -1041,8 +1023,6 @@ void MainBarGUIBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", MainBarGUIBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", MainBarGUIBinding::_DESTRUCTOR },
         { "clear", MainBarGUIBinding::clear },
         { "_NV_clear", MainBarGUIBinding::_NV_clear },
         { "show", MainBarGUIBinding::show },

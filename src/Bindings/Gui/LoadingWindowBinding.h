@@ -23,8 +23,6 @@ public:
     static int getVisible(lua_State* L);
     static int show(lua_State* L);
     static int hide(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int frameEntered(lua_State* L);
     static int setRandomBackground(lua_State* L);
     static int setRandomTip(lua_State* L);

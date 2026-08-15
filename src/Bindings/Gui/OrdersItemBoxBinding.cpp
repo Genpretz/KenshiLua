@@ -13,19 +13,6 @@ static OrdersItemBox* getInstance(lua_State* L, int idx)
 
 // --- Getters for OrdersItemBox ---
 // --- Setters for OrdersItemBox ---
-int OrdersItemBoxBinding::_DESTRUCTOR(lua_State* L)
-{
-    OrdersItemBox* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "OrdersItemBox is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
-/*
-Skipped methods needing manual binding:
-  line 67: OrdersItemBox* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int OrdersItemBoxBinding::gc(lua_State* L)
 {
@@ -48,7 +35,6 @@ void OrdersItemBoxBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", OrdersItemBoxBinding::_DESTRUCTOR },
         { 0, 0 }
     };
 

@@ -45,20 +45,6 @@ static int rendHit_set_hit(lua_State* L)
     return 0;
 }
 
-int rendHitBinding::_CONSTRUCTOR(lua_State* L)
-{
-    rendHit* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "rendHit is nil");
-
-    rendHit* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
-}
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - rendHitBinding::_CONSTRUCTOR: rendHit* (unbound pointer)
-*/
 
 int rendHitBinding::gc(lua_State* L)
 {
@@ -81,7 +67,6 @@ void rendHitBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", rendHitBinding::_CONSTRUCTOR },
         { 0, 0 }
     };
 

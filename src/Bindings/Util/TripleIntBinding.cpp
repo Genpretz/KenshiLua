@@ -37,9 +37,6 @@ static int TripleInt_set_value(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 9: TripleInt* _CONSTRUCTOR(...) - overloaded method
-  line 11: TripleInt* _CONSTRUCTOR(...) - overloaded method
-  line 13: TripleInt* _CONSTRUCTOR(...) - overloaded method
   line 14: const TripleInt& operator=(...) - operator
   line 15: int operator[](...) - operator
   line 16: int& operator[](...) - operator

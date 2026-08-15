@@ -19,8 +19,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int modified(lua_State* L);
     static int knowsAbout(lua_State* L);
     static int hasRoomFor(lua_State* L);

@@ -59,27 +59,6 @@ static int CharacterHuman_set_weaponInHandsSheathLocation(lua_State* L)
     return 0;
 }
 
-int CharacterHumanBinding::_CONSTRUCTOR(lua_State* L)
-{
-    CharacterHuman* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharacterHuman is nil");
-
-    GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    Faction* f = checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
-    CharacterHuman* result = instance->_CONSTRUCTOR(d, f, _handle);
-    return pushObject<CharacterHuman>(L, result, CharacterHumanBinding::getMetatableName());
-}
-
-int CharacterHumanBinding::_DESTRUCTOR(lua_State* L)
-{
-    CharacterHuman* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "CharacterHuman is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int CharacterHumanBinding::isHuman(lua_State* L)
 {
     CharacterHuman* instance = getInstance(L, 1);
@@ -535,8 +514,6 @@ void CharacterHumanBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", CharacterHumanBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", CharacterHumanBinding::_DESTRUCTOR },
         { "isHuman", CharacterHumanBinding::isHuman },
         { "_NV_isHuman", CharacterHumanBinding::_NV_isHuman },
         { "drawWeapon", CharacterHumanBinding::drawWeapon },

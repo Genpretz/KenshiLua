@@ -21,6 +21,5 @@ public:
     static int calculateEfficiencyMult(lua_State* L);
     static int _NV_calculateEfficiencyMult(lua_State* L);
     static int getRainAmount(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
 };
 }

@@ -18,7 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _DESTRUCTOR(lua_State* L);
     static int getClassType(lua_State* L);
     static int _NV_getClassType(lua_State* L);
     static int canEquip(lua_State* L);
@@ -48,6 +47,5 @@ public:
     static int _NV_loadFromSerialise(lua_State* L);
     static int setProperOwner(lua_State* L);
     static int _NV_setProperOwner(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
 };
 }

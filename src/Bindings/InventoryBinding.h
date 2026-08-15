@@ -18,8 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int _CONSTRUCTOR(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int clearAll(lua_State* L);
     static int serialise(lua_State* L);
     static int notifyModified(lua_State* L);

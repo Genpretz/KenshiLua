@@ -106,21 +106,6 @@ static int MemoryStatistics_set_m_largestBlock(lua_State* L)
     return 0;
 }
 
-int hkMemoryAllocator_MemoryStatisticsBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (hkMemoryAllocator::MemoryStatistics*)::operator new(sizeof(hkMemoryAllocator::MemoryStatistics));
-    ::new ((void*)obj) hkMemoryAllocator::MemoryStatistics();
-    return pushObject<hkMemoryAllocator::MemoryStatistics>(L, obj, getMetatableName());
-}
-
-int hkMemoryAllocator_MemoryStatisticsBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "hkMemoryAllocator::MemoryStatistics is nil");
-    inst->~MemoryStatistics();
-    return 0;
-}
-
 int hkMemoryAllocator_MemoryStatisticsBinding::gc(lua_State* L)
 {
     return 0;
@@ -149,8 +134,6 @@ void hkMemoryAllocator_MemoryStatisticsBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

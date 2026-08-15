@@ -213,25 +213,6 @@ static int FactionWarMgr_set_forces(lua_State* L)
     return 0;
 }
 
-int FactionWarMgrBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FactionWarMgr* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-
-    Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
-    FactionWarMgr* result = instance->_CONSTRUCTOR(f);
-    return pushObject<FactionWarMgr>(L, result, FactionWarMgrBinding::getMetatableName());
-}
-
-int FactionWarMgrBinding::_DESTRUCTOR(lua_State* L)
-{
-    FactionWarMgr* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FactionWarMgrBinding::reset(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
@@ -546,8 +527,6 @@ void FactionWarMgrBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FactionWarMgrBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", FactionWarMgrBinding::_DESTRUCTOR },
         { "reset", FactionWarMgrBinding::reset },
         { "save", FactionWarMgrBinding::save },
         { "load", FactionWarMgrBinding::load },

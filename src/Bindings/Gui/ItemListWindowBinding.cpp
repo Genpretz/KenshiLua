@@ -17,15 +17,6 @@ static ItemListWindow* getInstance(lua_State* L, int idx)
 
 // --- Getters for ItemListWindow ---
 // --- Setters for ItemListWindow ---
-int ItemListWindowBinding::_DESTRUCTOR(lua_State* L)
-{
-    ItemListWindow* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ItemListWindow is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ItemListWindowBinding::itemSelected(lua_State* L)
 {
     ItemListWindow* instance = getInstance(L, 1);
@@ -46,10 +37,6 @@ int ItemListWindowBinding::_NV_itemSelected(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 165: ItemListWindow* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int ItemListWindowBinding::gc(lua_State* L)
 {
@@ -72,7 +59,6 @@ void ItemListWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ItemListWindowBinding::_DESTRUCTOR },
         { "itemSelected", ItemListWindowBinding::itemSelected },
         { "_NV_itemSelected", ItemListWindowBinding::_NV_itemSelected },
         { 0, 0 }

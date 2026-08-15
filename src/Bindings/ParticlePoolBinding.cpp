@@ -71,26 +71,6 @@ static int ParticlePool_set_maxTTL(lua_State* L)
     return 0;
 }
 
-int ParticlePoolBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ParticlePool* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ParticlePool is nil");
-
-    int limit = (int)luaL_checkinteger(L, 2);
-    float ttl = (float)luaL_checknumber(L, 3);
-    ParticlePool* result = instance->_CONSTRUCTOR(limit, ttl);
-    return pushObject<ParticlePool>(L, result, ParticlePoolBinding::getMetatableName());
-}
-
-int ParticlePoolBinding::_DESTRUCTOR(lua_State* L)
-{
-    ParticlePool* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ParticlePool is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ParticlePoolBinding::init(lua_State* L)
 {
     ParticlePool* instance = getInstance(L, 1);
@@ -170,8 +150,6 @@ void ParticlePoolBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ParticlePoolBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ParticlePoolBinding::_DESTRUCTOR },
         { "init", ParticlePoolBinding::init },
         { "destroy", ParticlePoolBinding::destroy },
         { "getSize", ParticlePoolBinding::getSize },

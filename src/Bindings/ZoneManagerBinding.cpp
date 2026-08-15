@@ -186,24 +186,6 @@ static int ZoneManager_set_groundEffectsPool(lua_State* L)
     return 0;
 }
 
-int ZoneManagerBinding::_CONSTRUCTOR(lua_State* L)
-{
-    ZoneManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneManager is nil");
-
-    ZoneManager* result = instance->_CONSTRUCTOR();
-    return pushObject<ZoneManager>(L, result, ZoneManagerBinding::getMetatableName());
-}
-
-int ZoneManagerBinding::_DESTRUCTOR(lua_State* L)
-{
-    ZoneManager* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ZoneManager is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ZoneManagerBinding::isZoneLoadedT(lua_State* L)
 {
     ZoneManager* instance = getInstance(L, 1);
@@ -876,8 +858,6 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", ZoneManagerBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ZoneManagerBinding::_DESTRUCTOR },
         { "isZoneLoadedT", ZoneManagerBinding::isZoneLoadedT },
         { "_NV_isZoneLoadedT", ZoneManagerBinding::_NV_isZoneLoadedT },
         { "isZoneBeingLoadedT", ZoneManagerBinding::isZoneBeingLoadedT },

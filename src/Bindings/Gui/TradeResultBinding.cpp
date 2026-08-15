@@ -31,16 +31,6 @@ static int TradeResult_set_value(lua_State* L)
     return 0;
 }
 
-int TradeResultBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TradeResult* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TradeResult is nil");
-
-    TradeResult::Enum value = (TradeResult::Enum)luaL_checkinteger(L, 2);
-    TradeResult* result = instance->_CONSTRUCTOR(value);
-    return pushObject<TradeResult>(L, result, TradeResultBinding::getMetatableName());
-}
-
 int TradeResultBinding::showMessage(lua_State* L)
 {
     TradeResult* instance = getInstance(L, 1);
@@ -92,7 +82,6 @@ void TradeResultBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TradeResultBinding::_CONSTRUCTOR },
         { "showMessage", TradeResultBinding::showMessage },
         { "ShowMessage", TradeResultBinding::ShowMessage },
         { 0, 0 }

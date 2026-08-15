@@ -486,29 +486,6 @@ int ArmourBinding::getWeatherProtection_simple(lua_State* L)
     return 1;
 }
 
-int ArmourBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Armour* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Armour is nil");
-
-    GameData* baseData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    GameData* _materialData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
-    hand _handle = *checkObject<hand>(L, 4, HandBinding::getMetatableName());
-    Faction* _uniformFlag = checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
-    int _level = (int)luaL_checkinteger(L, 6);
-    Armour* result = instance->_CONSTRUCTOR(baseData, _materialData, _handle, _uniformFlag, _level);
-    return pushObject<Armour>(L, result, ArmourBinding::getMetatableName());
-}
-
-int ArmourBinding::_DESTRUCTOR(lua_State* L)
-{
-    Armour* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Armour is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
   line 168: void getTooltipData1(...) - unsupported arg type
@@ -652,8 +629,6 @@ void ArmourBinding::registerBinding(lua_State* L)
         { "getCraftTime", ArmourBinding::getCraftTime },
         { "_NV_getCraftTime", ArmourBinding::_NV_getCraftTime },
         { "getWeatherProtection_simple", ArmourBinding::getWeatherProtection_simple },
-        { "_CONSTRUCTOR", ArmourBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", ArmourBinding::_DESTRUCTOR },
                 { "getArmourCraftingMaterialConsumptionRate", ArmourBinding::getArmourCraftingMaterialConsumptionRate },
         { 0, 0 }
     };

@@ -366,10 +366,6 @@ int CombatTechniqueDataBinding::impactPoint(lua_State* L)
     return pushObject<CombatTechniqueData::ImpactPoint>(L, result, ImpactPointBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 15: CombatTechniqueData* _CONSTRUCTOR(...) - unsupported arg type
-*/
 
 int CombatTechniqueDataBinding::gc(lua_State* L)
 {

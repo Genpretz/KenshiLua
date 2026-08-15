@@ -61,15 +61,6 @@ static int SquadCellView_set_squad(lua_State* L)
     instance->squad = lua_isnoneornil(L, 2) ? nullptr : checkObject<SquadManagementScreen::SquadData>(L, 2, SquadDataBinding::getMetatableName());
     return 0;
 }
-int SquadCellViewBinding::_DESTRUCTOR(lua_State* L)
-{
-    SquadCellView* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "SquadCellView is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int SquadCellViewBinding::updateSquadSize(lua_State* L)
 {
     SquadCellView* instance = getInstance(L, 1);
@@ -81,7 +72,6 @@ int SquadCellViewBinding::updateSquadSize(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 118: SquadCellView* _CONSTRUCTOR(...) - unsupported arg type
   line 121: void update(...) - unsupported arg type
   line 123: void getCellDimension(...) - static method
   line 126: void onNameChanged(...) - unsupported arg type
@@ -109,7 +99,6 @@ void SquadCellViewBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", SquadCellViewBinding::_DESTRUCTOR },
         { "updateSquadSize", SquadCellViewBinding::updateSquadSize },
         { 0, 0 }
     };

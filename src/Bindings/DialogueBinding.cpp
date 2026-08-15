@@ -615,24 +615,6 @@ int DialogueBinding::setupWordSwaps(lua_State* L)
     return 0;
 }
 
-int DialogueBinding::_CONSTRUCTOR(lua_State* L)
-{
-    Dialogue* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Dialogue is nil");
-
-    Dialogue* result = instance->_CONSTRUCTOR();
-    return pushObject<Dialogue>(L, result, DialogueBinding::getMetatableName());
-}
-
-int DialogueBinding::_DESTRUCTOR(lua_State* L)
-{
-    Dialogue* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Dialogue is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int DialogueBinding::getGUIData(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
@@ -1331,8 +1313,6 @@ void DialogueBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "getWordSwap", DialogueBinding::getWordSwap },
         { "setupWordSwaps", DialogueBinding::setupWordSwaps },
-        { "_CONSTRUCTOR", DialogueBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", DialogueBinding::_DESTRUCTOR },
         { "getGUIData", DialogueBinding::getGUIData },
         { "create", DialogueBinding::create },
         { "getHandle", DialogueBinding::getHandle },

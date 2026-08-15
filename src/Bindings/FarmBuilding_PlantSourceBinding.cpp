@@ -209,41 +209,6 @@ static int PlantSource_set_group(lua_State* L)
     return 0;
 }
 
-int FarmBuilding_PlantSourceBinding::_CONSTRUCTOR(lua_State* L)
-{
-    auto* obj = (FarmBuilding::PlantSource*)::operator new(sizeof(FarmBuilding::PlantSource));
-    ::new ((void*)obj) FarmBuilding::PlantSource();
-    if (lua_gettop(L) >= 3)
-        obj->scaleStart = (float)luaL_checknumber(L, 3);
-    if (lua_gettop(L) >= 4)
-        obj->scaleEnd = (float)luaL_checknumber(L, 4);
-    if (lua_gettop(L) >= 5)
-        obj->scaleVariance = (float)luaL_checknumber(L, 5);
-    if (lua_gettop(L) >= 6)
-        obj->offsetStart = (float)luaL_checknumber(L, 6);
-    if (lua_gettop(L) >= 7)
-        obj->offsetEnd = (float)luaL_checknumber(L, 7);
-    if (lua_gettop(L) >= 8)
-        obj->delay = (float)luaL_checknumber(L, 8);
-    if (lua_gettop(L) >= 9)
-        obj->delayScale = (float)luaL_checknumber(L, 9);
-    if (lua_gettop(L) >= 10)
-        obj->isStatic = lua_toboolean(L, 10) != 0;
-    if (lua_gettop(L) >= 11)
-        obj->count = (int)luaL_checkinteger(L, 11);
-    if (lua_gettop(L) >= 12)
-        obj->group = (int)luaL_checkinteger(L, 12);
-    return pushObject<FarmBuilding::PlantSource>(L, obj, getMetatableName());
-}
-
-int FarmBuilding_PlantSourceBinding::_DESTRUCTOR(lua_State* L)
-{
-    auto* inst = getInstance(L, 1);
-    if (!inst) return luaL_error(L, "FarmBuilding::PlantSource is nil");
-    inst->~PlantSource();
-    return 0;
-}
-
 int FarmBuilding_PlantSourceBinding::gc(lua_State* L)
 {
     return 0;
@@ -272,8 +237,6 @@ void FarmBuilding_PlantSourceBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", _CONSTRUCTOR },
-        { "_DESTRUCTOR",  _DESTRUCTOR },
         { 0, 0 }
     };
 

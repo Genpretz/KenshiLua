@@ -178,24 +178,6 @@ static int TutorialGUI_set_enabled(lua_State* L)
     return 0;
 }
 
-int TutorialGUIBinding::_CONSTRUCTOR(lua_State* L)
-{
-    TutorialGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TutorialGUI is nil");
-
-    TutorialGUI* result = instance->_CONSTRUCTOR();
-    return pushObject<TutorialGUI>(L, result, TutorialGUIBinding::getMetatableName());
-}
-
-int TutorialGUIBinding::_DESTRUCTOR(lua_State* L)
-{
-    TutorialGUI* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "TutorialGUI is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int TutorialGUIBinding::clear(lua_State* L)
 {
     TutorialGUI* instance = getInstance(L, 1);
@@ -412,8 +394,6 @@ void TutorialGUIBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", TutorialGUIBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", TutorialGUIBinding::_DESTRUCTOR },
         { "clear", TutorialGUIBinding::clear },
         { "_NV_clear", TutorialGUIBinding::_NV_clear },
         { "startHighlight", TutorialGUIBinding::startHighlight },

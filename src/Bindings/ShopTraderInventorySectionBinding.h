@@ -20,9 +20,7 @@ public:
 
     static int autoArrange(lua_State* L);
     static int _NV_autoArrange(lua_State* L);
-    static int _DESTRUCTOR(lua_State* L);
     static int addItem(lua_State* L);
     static int _NV_addItem(lua_State* L);
-    static int _CONSTRUCTOR(lua_State* L);
 };
 }

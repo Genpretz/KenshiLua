@@ -62,24 +62,6 @@ static int FloatingProgressBar_set_bar(lua_State* L)
     return 0;
 }
 
-int FloatingProgressBarBinding::_CONSTRUCTOR(lua_State* L)
-{
-    FloatingProgressBar* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FloatingProgressBar is nil");
-
-    FloatingProgressBar* result = instance->_CONSTRUCTOR();
-    return pushObject<FloatingProgressBar>(L, result, FloatingProgressBarBinding::getMetatableName());
-}
-
-int FloatingProgressBarBinding::_DESTRUCTOR(lua_State* L)
-{
-    FloatingProgressBar* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "FloatingProgressBar is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int FloatingProgressBarBinding::setProgress(lua_State* L)
 {
     FloatingProgressBar* instance = getInstance(L, 1);
@@ -139,8 +121,6 @@ void FloatingProgressBarBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_CONSTRUCTOR", FloatingProgressBarBinding::_CONSTRUCTOR },
-        { "_DESTRUCTOR", FloatingProgressBarBinding::_DESTRUCTOR },
         { "setProgress", FloatingProgressBarBinding::setProgress },
         { "setCaption", FloatingProgressBarBinding::setCaption },
         { "update", FloatingProgressBarBinding::update },

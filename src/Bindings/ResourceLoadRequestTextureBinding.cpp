@@ -22,15 +22,6 @@ static int ResourceLoadRequestTexture_get_textureUnitState(lua_State* L)
 }
 
 // --- Setters for ResourceLoadRequestTexture ---
-int ResourceLoadRequestTextureBinding::_DESTRUCTOR(lua_State* L)
-{
-    ResourceLoadRequestTexture* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "ResourceLoadRequestTexture is nil");
-
-    instance->_DESTRUCTOR();
-    return 0;
-}
-
 int ResourceLoadRequestTextureBinding::isMaterialValid(lua_State* L)
 {
     ResourceLoadRequestTexture* instance = getInstance(L, 1);
@@ -43,7 +34,6 @@ int ResourceLoadRequestTextureBinding::isMaterialValid(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 79: ResourceLoadRequestTexture* _CONSTRUCTOR(...) - unsupported arg type
   line 83: void setTexture(...) - unsupported arg type
 */
 
@@ -73,7 +63,6 @@ void ResourceLoadRequestTextureBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "_DESTRUCTOR", ResourceLoadRequestTextureBinding::_DESTRUCTOR },
         { "isMaterialValid", ResourceLoadRequestTextureBinding::isMaterialValid },
         { 0, 0 }
     };
