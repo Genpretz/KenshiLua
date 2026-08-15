@@ -402,3 +402,7 @@ FodyWeavers.xsd
 .vscode/launch.json
 .vscode/settings.json
 .vscode/tasks.json
+extern/KenshiLib
+issues/**
+tools/generated/**
+.agents/**
