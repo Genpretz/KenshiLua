@@ -42,13 +42,14 @@
 #include "Bindings/TownBinding.h"
 #include "Bindings/Gui/OrdersPanelBinding.h"
 #include "Bindings/Gui/DataPanelLine_ButtonBinding.h"
+#include "Bindings/InputHandlerBinding.h"
+#include "Bindings/Gui/BaseLayoutBinding.h"
 
 // KenshiLib headers
 #include <kenshi/CharMovement.h>
 #include <kenshi/CombatClass.h>
 #include <kenshi/GameWorld.h>
-
-// KenshiLib headers
+#include <kenshi/InputHandler.h>
 #include <kenshi/Character.h>
 #include <kenshi/Platoon.h>
 #include <kenshi/Item.h>
@@ -58,6 +59,7 @@
 #include <kenshi/gui/DialogueWindow.h>
 #include <kenshi/Dialogue.h>
 #include <kenshi/util/lektor.h>
+#include <mygui/common/baselayout/BaseLayout.h>
 
 #include <lua.hpp>
 
@@ -101,6 +103,8 @@ namespace KenshiLua
     static inline const char* MyGuiWidgetMetatable()            { return MyGuiBinding::getMetatableName(); }
     static inline const char* OrdersPanelMetatable()            { return OrdersPanelBinding::getMetatableName(); }
     static inline const char* DataPanelLineButtonMetatable()    { return DataPanelLine_ButtonBinding::getMetatableName(); }
+    static inline const char* InputHandlerMetatable()           { return InputHandlerBinding::getMetatableName(); }
+    static inline const char* BaseLayoutMetatable()             { return wraps::BaseLayoutBinding::getMetatableName(); }
 
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, int val)                       { lua_pushinteger(L, val); }
@@ -147,6 +151,8 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, MyGUI::Widget* val)            { pushObject<MyGUI::Widget>(L, val, MyGuiWidgetMetatable()); }
     static inline void pushArg(lua_State* L, OrdersPanel* val)              { pushObject<OrdersPanel>(L, val, OrdersPanelMetatable()); }
     static inline void pushArg(lua_State* L, DataPanelLine_Button* val)     { pushObject<DataPanelLine_Button>(L, val, DataPanelLineButtonMetatable()); }
+    static inline void pushArg(lua_State* L, InputHandler* val)             { pushObject<InputHandler>(L, val, InputHandlerMetatable()); }
+    static inline void pushArg(lua_State* L, wraps::BaseLayout* val)        { pushObject<wraps::BaseLayout>(L, val, BaseLayoutMetatable()); }
     static inline void pushArg(lua_State* L, void* val)                     { lua_pushlightuserdata(L, val); }
     static inline void pushArg(lua_State* L, lektor<GameData*>& val)        { pushObject<lektor<GameData*>>(L, &val, LektorPtrBinding<GameData*>::metaName); }
 }
@@ -286,14 +292,15 @@ void CallCharacterGetPickedUpCallbacks(Character* character, Character* byWhom)
     KenshiLua::EventSystem::get().callHandlers("onCharacterGetPickedUp", &pusher);
 }
 
-void CallCharsUpdateCallbacks()
+void CallCharsUpdateCallbacks(GameWorld* thisptr)
 {
-    KenshiLua::EventSystem::get().callHandlers("onCharsUpdate", NULL);
+    ArgPusher1<GameWorld*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("onCharsUpdate", &pusher);
 }
 
-void CallKeyDownCallbacks(int keyCode)
+void CallKeyDownCallbacks(InputHandler* thisptr, int keyCode)
 {
-    ArgPusher1<int> pusher(keyCode);
+    ArgPusher2<InputHandler*, int> pusher(thisptr, keyCode);
     KenshiLua::EventSystem::get().callHandlers("onKeyDown", &pusher);
 }
 
@@ -557,9 +564,9 @@ void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, 
     KenshiLua::EventSystem::get().callHandlers("onChooseMyClothing", &pusher);
 }
 
-void CallBaseLayoutInitialiseCallbacks(const std::string& layout)
+void CallBaseLayoutInitialiseCallbacks(wraps::BaseLayout* thisptr, const std::string& layout)
 {
-    ArgPusher1<const std::string&> pusher(layout);
+    ArgPusher2<wraps::BaseLayout*, const std::string&> pusher(thisptr, layout);
     KenshiLua::EventSystem::get().callHandlers("onBaseLayoutInitialise", &pusher);
 }
 

@@ -40,6 +40,9 @@ class GameSaveState;
 class Town;
 class OrdersPanel;
 class DataPanelLine_Button;
+class InputHandler;
+class GameWorld;
+namespace wraps { class BaseLayout; }
 namespace MyGUI { class Widget; }
 template <typename T> class lektor;
 namespace Ogre {
@@ -63,9 +66,9 @@ namespace Ogre {
 
 // Fired by InputHandler::keyDownEvent hook.
 // Lua event name: "onKeyDown"
-// Lua signature:  function(keyCode)
+// Lua signature:  function(inputHandler, keyCode)
 // keyCode is the raw OIS::KeyCode cast to int.
-void CallKeyDownCallbacks(int keyCode);
+void CallKeyDownCallbacks(InputHandler* thisptr, int keyCode);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in GameWorld.h
@@ -73,8 +76,8 @@ void CallKeyDownCallbacks(int keyCode);
 
 // Fired by GameWorld::charsUpdate hook.
 // Lua event name: "onCharsUpdate"
-// Lua signature:  function()
-void CallCharsUpdateCallbacks();
+// Lua signature:  function(gameWorld)
+void CallCharsUpdateCallbacks(GameWorld* thisptr);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in Character.h
@@ -435,8 +438,8 @@ void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, 
 
 // Fired by wraps::BaseLayout::initialise hook
 // Lua event name: "onBaseLayoutInitialise"
-// Lua signature:  function(layoutName)
-void CallBaseLayoutInitialiseCallbacks(const std::string& layout);
+// Lua signature:  function(baseLayout, layoutName)
+void CallBaseLayoutInitialiseCallbacks(wraps::BaseLayout* thisptr, const std::string& layout);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in Building/Building.h

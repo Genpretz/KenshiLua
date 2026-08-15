@@ -42,7 +42,7 @@ local function toggle_prone()
     end
 end
 
-local function on_key_down(key_code)
+local function on_key_down(input_handler, key_code)
     logDebug("[Go Prone] Key pressed: " .. tostring(key_code))
     if key_code == KC_V then
         logDebug("[Go Prone] V key detected, toggling prone")

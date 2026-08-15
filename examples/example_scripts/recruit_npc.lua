@@ -51,7 +51,7 @@ local function recruitSelectedNPC()
 end
 
 -- Key listener callback
-local function onKeyDown(keyCode)
+local function onKeyDown(inputHandler, keyCode)
     if keyCode == KC_K then
         recruitSelectedNPC()
     end

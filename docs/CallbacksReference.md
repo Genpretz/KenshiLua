@@ -25,8 +25,8 @@ unregisterHandler(handlerId)
 
 | Event Name | Source Engine Hook | Lua Signature | Dispatcher Function |
 | :--- | :--- | :--- | :--- |
-| `onKeyDown` | `InputHandler::keyDownEvent hook` | `function(keyCode)` | `CallKeyDownCallbacks` |
-| `onCharsUpdate` | `GameWorld::charsUpdate hook` | `function()` | `CallCharsUpdateCallbacks` |
+| `onKeyDown` | `InputHandler::keyDownEvent hook` | `function(inputHandler, keyCode)` | `CallKeyDownCallbacks` |
+| `onCharsUpdate` | `GameWorld::charsUpdate hook` | `function(gameWorld)` | `CallCharsUpdateCallbacks` |
 | `onCharacterDeath` | `Character::declareDead hook` | `function(character)` | `CallCharacterDeclareDeadCallbacks` |
 | `onCharacterSelect` | `Character::_NV_select hook` | `function(character)` | `CallCharacterSelectCallbacks` |
 | `onCharacterUnselect` | `Character::_NV_unselect hook` | `function(character)` | `CallCharacterUnselectCallbacks` |
@@ -165,8 +165,8 @@ unregisterHandler(handlerId)
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `wraps::BaseLayout::initialise hook`
-- **C++ Dispatcher**: `void CallBaseLayoutInitialiseCallbacks(const std::string& layout)`
-- **Lua Signature**: `function(layoutName)`
+- **C++ Dispatcher**: `void CallBaseLayoutInitialiseCallbacks(wraps::BaseLayout* thisptr, const std::string& layout)`
+- **Lua Signature**: `function(baseLayout, layoutName)`
 
 ### `onBuildModeConfirm`
 

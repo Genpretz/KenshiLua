@@ -92,7 +92,7 @@ static void InputHandler_keyDownEvent_hook(InputHandler* thisptr, OIS::KeyCode k
 
     KenshiLua::GuiManager::get().checkKeyboardShortcut(key, thisptr);
 
-    CallKeyDownCallbacks(static_cast<int>(key));
+    CallKeyDownCallbacks(thisptr, static_cast<int>(key));
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_InputHandler_KeyDown,
@@ -110,7 +110,7 @@ static void (*GameWorld_charsUpdate_orig)(GameWorld* thisptr) = NULL;
 static void GameWorld_charsUpdate_hook(GameWorld* thisptr)
 {
     GameWorld_charsUpdate_orig(thisptr);
-    CallCharsUpdateCallbacks();
+    CallCharsUpdateCallbacks(thisptr);
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_GameWorld_CharsUpdate,
@@ -1205,7 +1205,7 @@ static void (*BaseLayout_initialise_orig)(wraps::BaseLayout*, const std::string&
 static void BaseLayout_initialise_hook(wraps::BaseLayout* thisptr, const std::string& layout, MyGUI::Widget* parent, bool throwException, bool createChildren)
 {
     BaseLayout_initialise_orig(thisptr, layout, parent, throwException, createChildren);
-    CallBaseLayoutInitialiseCallbacks(layout);
+    CallBaseLayoutInitialiseCallbacks(thisptr, layout);
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_BaseLayout_initialise,
