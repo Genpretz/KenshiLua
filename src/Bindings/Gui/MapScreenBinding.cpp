@@ -6,9 +6,17 @@
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/RootObjectBaseBinding.h"
 #include "Bindings/Gui/ToolTipBinding.h"
+#include "Bindings/Gui/MapMarkerTownBinding.h"
+#include "Bindings/Gui/MapMarkerCharacterBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
+
+typedef OgreUnorderedMapBinding<hand, MapScreen::MapMarkerTown*> MapMarkersTownsMapBinding;
+typedef OgreUnorderedMapBinding<hand, MapScreen::MapMarkerCharacter*> MapMarkersCharactersMapBinding;
+typedef OgreUnorderedSetBinding<hand> SquadsListSetBinding;
 
 static MapScreen* getInstance(lua_State* L, int idx)
 {
@@ -187,7 +195,55 @@ static int MapScreen_get_worldSize(lua_State* L)
     return 1;
 }
 
+static int MapScreen_get_mapMarkersTowns(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    return pushObject<MapMarkersTownsMapBinding::MapType>(L, &instance->mapMarkersTowns, MapMarkersTownsMapBinding::getMetatableName());
+}
+
+static int MapScreen_get_mapMarkersCharacters(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    return pushObject<MapMarkersCharactersMapBinding::MapType>(L, &instance->mapMarkersCharacters, MapMarkersCharactersMapBinding::getMetatableName());
+}
+
+static int MapScreen_get_squadsList(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    return pushObject<SquadsListSetBinding::SetType>(L, &instance->squadsList, SquadsListSetBinding::getMetatableName());
+}
+
 // --- Setters for MapScreen ---
+static int MapScreen_set_mapMarkersTowns(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    auto* val = checkObject<MapMarkersTownsMapBinding::MapType>(L, 2, MapMarkersTownsMapBinding::getMetatableName());
+    if (val) instance->mapMarkersTowns = *val;
+    return 0;
+}
+
+static int MapScreen_set_mapMarkersCharacters(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    auto* val = checkObject<MapMarkersCharactersMapBinding::MapType>(L, 2, MapMarkersCharactersMapBinding::getMetatableName());
+    if (val) instance->mapMarkersCharacters = *val;
+    return 0;
+}
+
+static int MapScreen_set_squadsList(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    auto* val = checkObject<SquadsListSetBinding::SetType>(L, 2, SquadsListSetBinding::getMetatableName());
+    if (val) instance->squadsList = *val;
+    return 0;
+}
+
 static int MapScreen_set_updateTimer(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
@@ -313,8 +369,7 @@ int MapScreenBinding::_CONSTRUCTOR(lua_State* L)
 
     ManagementScreen* screen = checkObject<ManagementScreen>(L, 2, ManagementScreenBinding::getMetatableName());
     MapScreen* result = instance->_CONSTRUCTOR(screen);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<MapScreen>(L, result, MapScreenBinding::getMetatableName());
 }
 
 int MapScreenBinding::_DESTRUCTOR(lua_State* L)
@@ -508,11 +563,63 @@ int MapScreenBinding::updateRoads(lua_State* L)
     return 0;
 }
 
+int MapScreenBinding::updatePlayerTownMapMarker(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+
+    hand* town = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!town) return luaL_error(L, "Argument 2 to updatePlayerTownMapMarker must be hand");
+    instance->updatePlayerTownMapMarker(*town);
+    return 0;
+}
+
+int MapScreenBinding::worldToMapCoords(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+
+    Ogre::Vector3 pos;
+    readVector3(L, 2, pos);
+    MyGUI::types::TPoint<int> pt = instance->worldToMapCoords(pos);
+    pushPoint(L, pt);
+    return 1;
+}
+
+int MapScreenBinding::mapCoordsToWorld(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+
+    MyGUI::types::TPoint<int> pt;
+    if (lua_istable(L, 2)) {
+        lua_getfield(L, 2, "left");
+        if (lua_isnil(L, -1)) {
+            lua_pop(L, 1);
+            lua_getfield(L, 2, "x");
+        }
+        pt.left = (int)lua_tointeger(L, -1);
+        lua_pop(L, 1);
+
+        lua_getfield(L, 2, "top");
+        if (lua_isnil(L, -1)) {
+            lua_pop(L, 1);
+            lua_getfield(L, 2, "y");
+        }
+        pt.top = (int)lua_tointeger(L, -1);
+        lua_pop(L, 1);
+    } else {
+        pt.left = (int)luaL_checkinteger(L, 2);
+        pt.top = (int)luaL_checkinteger(L, 3);
+    }
+
+    Ogre::Vector3 result = instance->mapCoordsToWorld(pt);
+    pushVector3(L, result);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 69: void updatePlayerTownMapMarker(...) - non-string reference arg
-  line 76: MyGUI::types::TPoint<int> worldToMapCoords(...) - unsupported return type
-  line 77: Ogre::Vector3 mapCoordsToWorld(...) - unsupported arg type
   line 78: void mapMouseWheel(...) - unsupported arg type
   line 79: void mapMousePressed(...) - unsupported arg type
   line 80: void mapMouseReleased(...) - unsupported arg type
@@ -531,16 +638,12 @@ LIGHTUSERDATA DEPENDENCIES:
   - MapScreen_get_cameraMarkerSkin: MyGUI::RotatingSkin* (unbound pointer)
   - MapScreen_get_mapOverlaysContainer: MyGUI::Widget* (unbound pointer)
   - MapScreen_get_mapMarkerMovement: MyGUI::ImageBox* (unbound pointer)
-  - MapScreenBinding::_CONSTRUCTOR: MapScreen* (unbound pointer)
 */
 
 /*
 Skipped properties needing manual binding:
   line 98: zoomCenterOffset (Ogre::Vector4) - unsupported type
-  line 102: mapMarkersTowns (ogre_unordered_map<hand, MapScreen::MapMarkerTown*>::type) - unsupported type
   line 103: mapMarkersTownsNew (Ogre::FastArray<hand>) - unsupported type
-  line 104: mapMarkersCharacters (ogre_unordered_map<hand, MapScreen::MapMarkerCharacter*>::type) - unsupported type
-  line 108: squadsList (ogre_unordered_set<hand>::type) - unsupported type
   line 112: worldBounds (Ogre::Vector4) - unsupported type
   line 125: roads (lektor<MapScreen::MapRoad*>) - unsupported type
 */
@@ -559,6 +662,10 @@ int MapScreenBinding::tostring(lua_State* L)
 
 void MapScreenBinding::registerBinding(lua_State* L)
 {
+    MapMarkersTownsMapBinding::registerBinding(L, "ogre_unordered_map<hand, MapMarkerTown*>", HandBinding::getMetatableName(), MapMarkerTownBinding::getMetatableName());
+    MapMarkersCharactersMapBinding::registerBinding(L, "ogre_unordered_map<hand, MapMarkerCharacter*>", HandBinding::getMetatableName(), MapMarkerCharacterBinding::getMetatableName());
+    SquadsListSetBinding::registerBinding(L, "ogre_unordered_set<hand>", HandBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       MapScreenBinding::gc },
         { "__tostring", MapScreenBinding::tostring },
@@ -587,6 +694,9 @@ void MapScreenBinding::registerBinding(lua_State* L)
         { "getMouseWorldPosition", MapScreenBinding::getMouseWorldPosition },
         { "setupRoads", MapScreenBinding::setupRoads },
         { "updateRoads", MapScreenBinding::updateRoads },
+        { "updatePlayerTownMapMarker", MapScreenBinding::updatePlayerTownMapMarker },
+        { "worldToMapCoords", MapScreenBinding::worldToMapCoords },
+        { "mapCoordsToWorld", MapScreenBinding::mapCoordsToWorld },
         { 0, 0 }
     };
 
@@ -615,9 +725,12 @@ void MapScreenBinding::registerBinding(lua_State* L)
     registerGetter(L, "zoomLevelCurrent", MapScreen_get_zoomLevelCurrent);
     registerGetter(L, "mapOverlaysContainer", MapScreen_get_mapOverlaysContainer);
     registerGetter(L, "zoomLevels", MapScreen_get_zoomLevels);
+    registerGetter(L, "mapMarkersTowns", MapScreen_get_mapMarkersTowns);
+    registerGetter(L, "mapMarkersCharacters", MapScreen_get_mapMarkersCharacters);
     registerGetter(L, "mapMarkerMovement", MapScreen_get_mapMarkerMovement);
     registerGetter(L, "mapMarkerMovementPosition", MapScreen_get_mapMarkerMovementPosition);
     registerGetter(L, "mapMarkerMovementFadeOutDelay", MapScreen_get_mapMarkerMovementFadeOutDelay);
+    registerGetter(L, "squadsList", MapScreen_get_squadsList);
     registerGetter(L, "mapDragging", MapScreen_get_mapDragging);
     registerGetter(L, "mapMouseLastPosition", MapScreen_get_mapMouseLastPosition);
     registerGetter(L, "mapOffsetView", MapScreen_get_mapOffsetView);
@@ -633,8 +746,11 @@ void MapScreenBinding::registerBinding(lua_State* L)
     registerSetter(L, "zoomValueCurrent", MapScreen_set_zoomValueCurrent);
     registerSetter(L, "zoomLevelCurrent", MapScreen_set_zoomLevelCurrent);
     registerSetter(L, "zoomLevels", MapScreen_set_zoomLevels);
+    registerSetter(L, "mapMarkersTowns", MapScreen_set_mapMarkersTowns);
+    registerSetter(L, "mapMarkersCharacters", MapScreen_set_mapMarkersCharacters);
     registerSetter(L, "mapMarkerMovementPosition", MapScreen_set_mapMarkerMovementPosition);
     registerSetter(L, "mapMarkerMovementFadeOutDelay", MapScreen_set_mapMarkerMovementFadeOutDelay);
+    registerSetter(L, "squadsList", MapScreen_set_squadsList);
     registerSetter(L, "mapDragging", MapScreen_set_mapDragging);
     registerSetter(L, "mapMouseLastPosition", MapScreen_set_mapMouseLastPosition);
     registerSetter(L, "mapOffsetView", MapScreen_set_mapOffsetView);

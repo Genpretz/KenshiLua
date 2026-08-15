@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/TitleScreen.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -26,5 +28,6 @@ public:
     static int _NV_update(lua_State* L);
     static int closeTheOtherBits(lua_State* L);
     static int setCreditsVisible(lua_State* L);
+    static int getSingleton(lua_State* L);
 };
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/MyGUI_MultiSlider.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

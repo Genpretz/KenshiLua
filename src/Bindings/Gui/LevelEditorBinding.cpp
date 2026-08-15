@@ -6,6 +6,13 @@
 #include "Bindings/Gui/DataPanelLineBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Gui/FogEditorBinding.h"
+#include "Bindings/Gui/InteriorModeButtonWindowBinding.h"
+#include "Bindings/Gui/TownListWindowBinding.h"
+#include "Bindings/Gui/FactionListWindowBinding.h"
+#include "Bindings/Gui/SquadListWindowBinding.h"
+#include "Bindings/Gui/NpcListWindowBinding.h"
+#include "Bindings/Gui/ItemListWindowBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/RootObjectBinding.h"
 
@@ -38,8 +45,7 @@ static int LevelEditor_get_interiorModeWindow(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->interiorModeWindow);
-    return 1;
+    return pushObject<InteriorModeButtonWindow>(L, instance->interiorModeWindow, InteriorModeButtonWindowBinding::getMetatableName());
 }
 
 static int LevelEditor_get_selectedLocked(lua_State* L)
@@ -124,48 +130,42 @@ static int LevelEditor_get_townListWindow(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->townListWindow);
-    return 1;
+    return pushObject<LevelEditor::TownListWindow>(L, instance->townListWindow, TownListWindowBinding::getMetatableName());
 }
 
 static int LevelEditor_get_factionListWindow(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->factionListWindow);
-    return 1;
+    return pushObject<LevelEditor::FactionListWindow>(L, instance->factionListWindow, FactionListWindowBinding::getMetatableName());
 }
 
 static int LevelEditor_get_squadListWindow(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->squadListWindow);
-    return 1;
+    return pushObject<LevelEditor::SquadListWindow>(L, instance->squadListWindow, SquadListWindowBinding::getMetatableName());
 }
 
 static int LevelEditor_get_npcListWindow(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->npcListWindow);
-    return 1;
+    return pushObject<LevelEditor::NpcListWindow>(L, instance->npcListWindow, NpcListWindowBinding::getMetatableName());
 }
 
 static int LevelEditor_get_featureListWindow(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->featureListWindow);
-    return 1;
+    return pushObject<LevelEditor::NpcListWindow>(L, instance->featureListWindow, NpcListWindowBinding::getMetatableName());
 }
 
 static int LevelEditor_get_itemListWindow(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->itemListWindow);
-    return 1;
+    return pushObject<LevelEditor::ItemListWindow>(L, instance->itemListWindow, ItemListWindowBinding::getMetatableName());
 }
 
 static int LevelEditor_get_navmeshWindow(lua_State* L)
@@ -269,6 +269,62 @@ static int LevelEditor_set_navmeshWindow(lua_State* L)
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
     instance->navmeshWindow = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int LevelEditor_set_interiorModeWindow(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+    instance->interiorModeWindow = lua_isnoneornil(L, 2) ? nullptr : checkObject<InteriorModeButtonWindow>(L, 2, InteriorModeButtonWindowBinding::getMetatableName());
+    return 0;
+}
+
+static int LevelEditor_set_townListWindow(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+    instance->townListWindow = lua_isnoneornil(L, 2) ? nullptr : checkObject<LevelEditor::TownListWindow>(L, 2, TownListWindowBinding::getMetatableName());
+    return 0;
+}
+
+static int LevelEditor_set_factionListWindow(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+    instance->factionListWindow = lua_isnoneornil(L, 2) ? nullptr : checkObject<LevelEditor::FactionListWindow>(L, 2, FactionListWindowBinding::getMetatableName());
+    return 0;
+}
+
+static int LevelEditor_set_squadListWindow(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+    instance->squadListWindow = lua_isnoneornil(L, 2) ? nullptr : checkObject<LevelEditor::SquadListWindow>(L, 2, SquadListWindowBinding::getMetatableName());
+    return 0;
+}
+
+static int LevelEditor_set_npcListWindow(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+    instance->npcListWindow = lua_isnoneornil(L, 2) ? nullptr : checkObject<LevelEditor::NpcListWindow>(L, 2, NpcListWindowBinding::getMetatableName());
+    return 0;
+}
+
+static int LevelEditor_set_featureListWindow(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+    instance->featureListWindow = lua_isnoneornil(L, 2) ? nullptr : checkObject<LevelEditor::NpcListWindow>(L, 2, NpcListWindowBinding::getMetatableName());
+    return 0;
+}
+
+static int LevelEditor_set_itemListWindow(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+    instance->itemListWindow = lua_isnoneornil(L, 2) ? nullptr : checkObject<LevelEditor::ItemListWindow>(L, 2, ItemListWindowBinding::getMetatableName());
     return 0;
 }
 
@@ -640,6 +696,17 @@ int LevelEditorBinding::updateSeedEditor(lua_State* L)
     return 0;
 }
 
+int LevelEditorBinding::deleteObject(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to deleteObject must be hand");
+    instance->deleteObject(*h);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 34: RootObject* hitFurnitureOrItemGroup(...) - unsupported arg type
@@ -649,7 +716,6 @@ Skipped methods needing manual binding:
   line 46: void regenerate(...) - unsupported arg type
   line 53: void closeNavmeshWindow(...) - unsupported arg type
   line 54: void fixBuildings(...) - unsupported arg type
-  line 58: void deleteObject(...) - non-string reference arg
   line 185: void factionButton(...) - unsupported arg type
   line 186: void npcButton(...) - unsupported arg type
   line 187: void townButton(...) - unsupported arg type
@@ -669,17 +735,10 @@ Skipped methods needing manual binding:
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - LevelEditor_get_panel: LevelEditorPanel* (unbound pointer)
-  - LevelEditor_get_interiorModeWindow: InteriorModeButtonWindow* (unbound pointer)
   - LevelEditor_get_selectedFeature: MapFeature* (unbound pointer)
   - LevelEditor_get_roadMarker: Ogre::SceneNode* (unbound pointer)
   - LevelEditor_get_roadMakerMO: Ogre::ManualObject* (unbound pointer)
   - LevelEditor_get_foliageEraser: FoliageEraser* (unbound pointer)
-  - LevelEditor_get_townListWindow: LevelEditor::TownListWindow* (unbound pointer)
-  - LevelEditor_get_factionListWindow: LevelEditor::FactionListWindow* (unbound pointer)
-  - LevelEditor_get_squadListWindow: LevelEditor::SquadListWindow* (unbound pointer)
-  - LevelEditor_get_npcListWindow: LevelEditor::NpcListWindow* (unbound pointer)
-  - LevelEditor_get_featureListWindow: LevelEditor::NpcListWindow* (unbound pointer)
-  - LevelEditor_get_itemListWindow: LevelEditor::ItemListWindow* (unbound pointer)
   - LevelEditor_get_editMapTitleWindow: MyGUI::Window* (unbound pointer)
   - LevelEditor_get_factionTxt: MyGUI::TextBox* (unbound pointer)
   - LevelEditor_get_altitudeTxt: MyGUI::TextBox* (unbound pointer)
@@ -750,6 +809,7 @@ void LevelEditorBinding::registerBinding(lua_State* L)
         { "destroyRoadMaker", LevelEditorBinding::destroyRoadMaker },
         { "updateFoliageRemoval", LevelEditorBinding::updateFoliageRemoval },
         { "updateSeedEditor", LevelEditorBinding::updateSeedEditor },
+        { "deleteObject", LevelEditorBinding::deleteObject },
         { 0, 0 }
     };
 
@@ -792,17 +852,21 @@ void LevelEditorBinding::registerBinding(lua_State* L)
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "levelEditModeOn", LevelEditor_set_levelEditModeOn);
+    registerSetter(L, "interiorModeWindow", LevelEditor_set_interiorModeWindow);
     registerSetter(L, "selectedLocked", LevelEditor_set_selectedLocked);
     registerSetter(L, "selectedObject", LevelEditor_set_selectedObject);
     registerSetter(L, "seedMode", LevelEditor_set_seedMode);
     registerSetter(L, "roadMode", LevelEditor_set_roadMode);
     registerSetter(L, "roadIndex", LevelEditor_set_roadIndex);
     registerSetter(L, "fogEditor", LevelEditor_set_fogEditor);
+    registerSetter(L, "townListWindow", LevelEditor_set_townListWindow);
+    registerSetter(L, "factionListWindow", LevelEditor_set_factionListWindow);
+    registerSetter(L, "squadListWindow", LevelEditor_set_squadListWindow);
+    registerSetter(L, "npcListWindow", LevelEditor_set_npcListWindow);
+    registerSetter(L, "featureListWindow", LevelEditor_set_featureListWindow);
+    registerSetter(L, "itemListWindow", LevelEditor_set_itemListWindow);
     registerSetter(L, "navmeshWindow", LevelEditor_set_navmeshWindow);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
-
-    // Wire up inheritance to Ogre::GeneralAllocatedObject
-    // setMetatableParent(L, LevelEditorBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/MapScreen.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -37,5 +39,8 @@ public:
     static int getMouseWorldPosition(lua_State* L);
     static int setupRoads(lua_State* L);
     static int updateRoads(lua_State* L);
+    static int updatePlayerTownMapMarker(lua_State* L);
+    static int worldToMapCoords(lua_State* L);
+    static int mapCoordsToWorld(lua_State* L);
 };
 }

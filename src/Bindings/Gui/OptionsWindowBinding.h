@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/OptionsWindow.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -16,11 +18,14 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int show(lua_State* L);
     static int _NV_show(lua_State* L);
     static int hide(lua_State* L);
     static int toggle(lua_State* L);
     static int isVisible(lua_State* L);
     static int waitingForKey(lua_State* L);
+    static int setKey(lua_State* L);
+    static int getSingleton(lua_State* L);
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
     static int _CONSTRUCTOR(lua_State* L);

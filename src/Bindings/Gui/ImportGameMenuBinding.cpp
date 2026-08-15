@@ -2,6 +2,7 @@
 #include "kenshi\gui\LoadSaveWindow.h"
 #include "ImportGameMenuBinding.h"
 #include "LoadSaveWindowBinding.h"
+#include "NewGameOptionsWindowBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -17,19 +18,25 @@ static int ImportGameMenu_get_newGameOptions(lua_State* L)
 {
     ImportGameMenu* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ImportGameMenu is nil");
-    lua_pushlightuserdata(L, (void*)instance->newGameOptions);
-    return 1;
+    return pushObject<NewGameOptionsWindow>(L, instance->newGameOptions, NewGameOptionsWindowBinding::getMetatableName());
 }
 
 // --- Setters for ImportGameMenu ---
+static int ImportGameMenu_set_newGameOptions(lua_State* L)
+{
+    ImportGameMenu* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ImportGameMenu is nil");
+    instance->newGameOptions = lua_isnoneornil(L, 2) ? nullptr : checkObject<NewGameOptionsWindow>(L, 2, NewGameOptionsWindowBinding::getMetatableName());
+    return 0;
+}
+
 int ImportGameMenuBinding::_CONSTRUCTOR(lua_State* L)
 {
     ImportGameMenu* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ImportGameMenu is nil");
 
     ImportGameMenu* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ImportGameMenu>(L, result, ImportGameMenuBinding::getMetatableName());
 }
 
 int ImportGameMenuBinding::_DESTRUCTOR(lua_State* L)
@@ -65,12 +72,6 @@ int ImportGameMenuBinding::_NV_select(lua_State* L)
 Skipped methods needing manual binding:
   line 53: void importPress(...) - unsupported arg type
   line 54: void toggleAdvancedOptions(...) - unsupported arg type
-*/
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - ImportGameMenu_get_newGameOptions: NewGameOptionsWindow* (unbound pointer)
-  - ImportGameMenuBinding::_CONSTRUCTOR: ImportGameMenu* (unbound pointer)
 */
 
 int ImportGameMenuBinding::gc(lua_State* L)
@@ -116,11 +117,8 @@ void ImportGameMenuBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "newGameOptions", ImportGameMenu_set_newGameOptions);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
-
-    // Wire up inheritance to LoadSaveWindow
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, ImportGameMenuBinding::getMetatableName(), LoadSaveWindowBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

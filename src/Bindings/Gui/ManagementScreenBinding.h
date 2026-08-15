@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/ManagementScreen.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -40,5 +42,9 @@ public:
     static int _CONSTRUCTOR(lua_State* L);
     static int updateResearchListRate(lua_State* L);
     static int refreshResearchListDescription(lua_State* L);
+    static int setCraftingBench(lua_State* L);
+    static int printResearch(lua_State* L);
+    static int addMessage(lua_State* L);
+    static int getSingleton(lua_State* L);
 };
 }

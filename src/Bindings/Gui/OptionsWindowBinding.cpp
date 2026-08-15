@@ -7,6 +7,7 @@
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Gui/GUIWindowBinding.h"
 #include "Bindings/Gui/ToolTipBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -17,6 +18,13 @@ static OptionsWindow* getInstance(lua_State* L, int idx)
 }
 
 // --- Getters for OptionsWindow ---
+static int OptionsWindow_get_resolutions(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+    return pushObject<lektor<std::string>>(L, &instance->resolutions, LektorStringBinding<std::string>::metaName);
+}
+
 static int OptionsWindow_get_invertX(lua_State* L)
 {
     OptionsWindow* instance = getInstance(L, 1);
@@ -352,23 +360,47 @@ int OptionsWindowBinding::updateResolutions(lua_State* L)
     return 0;
 }
 
+int OptionsWindowBinding::show(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    if (lua_gettop(L) >= 2)
+    {
+        bool value = lua_toboolean(L, 2) != 0;
+        instance->show(value);
+    }
+    else
+    {
+        instance->show();
+    }
+    return 0;
+}
+
+int OptionsWindowBinding::setKey(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    OIS::KeyCode code = (OIS::KeyCode)luaL_checkinteger(L, 2);
+    instance->setKey(code);
+    return 0;
+}
+
+int OptionsWindowBinding::getSingleton(lua_State* L)
+{
+    OptionsWindow* result = OptionsWindow::getSingleton();
+    return pushObject<OptionsWindow>(L, result, OptionsWindowBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
-  line 19: OptionsWindow* getSingleton(...) - static method
-  line 20: void show(...) - overloaded method
-  line 22: void show(...) - overloaded method
-  line 27: void setKey(...) - non-string reference arg
   line 47: void closeButton(...) - unsupported arg type
 */
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - OptionsWindow_get_tabs: MyGUI::TabControl* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 50: resolutions (lektor<std::string >) - unsupported type
 */
 
 int OptionsWindowBinding::gc(lua_State* L)
@@ -392,11 +424,13 @@ void OptionsWindowBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "show", OptionsWindowBinding::show },
         { "_NV_show", OptionsWindowBinding::_NV_show },
         { "hide", OptionsWindowBinding::hide },
         { "toggle", OptionsWindowBinding::toggle },
         { "isVisible", OptionsWindowBinding::isVisible },
         { "waitingForKey", OptionsWindowBinding::waitingForKey },
+        { "setKey", OptionsWindowBinding::setKey },
         { "update", OptionsWindowBinding::update },
         { "_NV_update", OptionsWindowBinding::_NV_update },
         { "_CONSTRUCTOR", OptionsWindowBinding::_CONSTRUCTOR },
@@ -413,6 +447,7 @@ void OptionsWindowBinding::registerBinding(lua_State* L)
         { "saveOptions", OptionsWindowBinding::saveOptions },
         { "create", OptionsWindowBinding::create },
         { "updateResolutions", OptionsWindowBinding::updateResolutions },
+        { "getSingleton", OptionsWindowBinding::getSingleton },
         { 0, 0 }
     };
 
@@ -427,6 +462,7 @@ void OptionsWindowBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, OptionsWindowBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
+    registerGetter(L, "resolutions", OptionsWindow_get_resolutions);
     registerGetter(L, "invertX", OptionsWindow_get_invertX);
     registerGetter(L, "invertY", OptionsWindow_get_invertY);
     registerGetter(L, "resolutionIndex", OptionsWindow_get_resolutionIndex);
@@ -449,11 +485,12 @@ void OptionsWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "previewFontSize", OptionsWindow_set_previewFontSize);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to GUIWindow
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, OptionsWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
-
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getSingleton", OptionsWindowBinding::getSingleton);
+    lua_setglobal(L, "OptionsWindow");
 }
 
 } // namespace KenshiLua

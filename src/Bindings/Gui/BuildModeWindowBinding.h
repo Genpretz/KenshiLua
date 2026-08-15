@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/BuildModeWindow.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -28,5 +30,6 @@ public:
     static int showBuildingStats(lua_State* L);
     static int update(lua_State* L);
     static int changeCurrentIndex(lua_State* L);
+    static int compareBuildMaterials(lua_State* L);
 };
 }

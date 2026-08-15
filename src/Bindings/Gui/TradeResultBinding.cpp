@@ -50,12 +50,25 @@ int TradeResultBinding::showMessage(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 94: bool operator==(...) - operator
-  line 95: bool operator!=(...) - operator
-  line 97: void ShowMessage(...) - static method
-*/
+int TradeResultBinding::ShowMessage(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    TradeResult::Enum val = (TradeResult::Enum)luaL_checkinteger(L, idx);
+    TradeResult::ShowMessage(val);
+    return 0;
+}
+
+int TradeResultBinding::eq(lua_State* L)
+{
+    TradeResult* a = checkObject<TradeResult>(L, 1, TradeResultBinding::getMetatableName());
+    TradeResult* b = checkObject<TradeResult>(L, 2, TradeResultBinding::getMetatableName());
+    if (!a || !b) {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+    lua_pushboolean(L, (*a == *b) ? 1 : 0);
+    return 1;
+}
 
 int TradeResultBinding::gc(lua_State* L)
 {
@@ -74,12 +87,14 @@ void TradeResultBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       TradeResultBinding::gc },
         { "__tostring", TradeResultBinding::tostring },
+        { "__eq",       TradeResultBinding::eq },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
         { "_CONSTRUCTOR", TradeResultBinding::_CONSTRUCTOR },
         { "showMessage", TradeResultBinding::showMessage },
+        { "ShowMessage", TradeResultBinding::ShowMessage },
         { 0, 0 }
     };
 
@@ -102,6 +117,11 @@ void TradeResultBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "ShowMessage", TradeResultBinding::ShowMessage);
+    lua_setglobal(L, "TradeResult");
 }
 
 } // namespace KenshiLua

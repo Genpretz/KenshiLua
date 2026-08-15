@@ -15,9 +15,13 @@
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/TownBinding.h"
 #include "Bindings/Util/iVector2Binding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/StdMapBinding.h"
 
 namespace KenshiLua
 {
+
+typedef StdMapBinding<std::string, InventorySectionGUI*> InventorySectionsMapBinding;
 
 static InventoryGUI* getInstance(lua_State* L, int idx)
 {
@@ -131,6 +135,22 @@ static int InventoryGUI_set_visible(lua_State* L)
     InventoryGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
     instance->visible = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int InventoryGUI_get_inventorySections(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    return pushObject<InventorySectionsMapBinding::MapType>(L, &instance->inventorySections, InventorySectionsMapBinding::getMetatableName());
+}
+
+static int InventoryGUI_set_inventorySections(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    auto* val = checkObject<InventorySectionsMapBinding::MapType>(L, 2, InventorySectionsMapBinding::getMetatableName());
+    if (val) instance->inventorySections = *val;
     return 0;
 }
 
@@ -566,15 +586,85 @@ int InventoryGUIBinding::getSlotWithMouse(lua_State* L)
     return pushValue<iVector2>(L, result, iVector2Binding::getMetatableName());
 }
 
+int InventoryGUIBinding::setTradingTown(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    hand* town = checkObject<hand>(L, idx, HandBinding::getMetatableName());
+    if (!town) return luaL_error(L, "Argument to setTradingTown must be hand");
+    InventoryGUI::setTradingTown(*town);
+    return 0;
+}
+
+int InventoryGUIBinding::getTradingTown(lua_State* L)
+{
+    Town* result = InventoryGUI::getTradingTown();
+    return pushObject<Town>(L, result, TownBinding::getMetatableName());
+}
+
+int InventoryGUIBinding::clearTradePartners(lua_State* L)
+{
+    InventoryGUI::clearTradePartners();
+    return 0;
+}
+
+int InventoryGUIBinding::getNPCTrader(lua_State* L)
+{
+    Character* result = InventoryGUI::getNPCTrader();
+    return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
+}
+
+int InventoryGUIBinding::isTradingForMoney_static(lua_State* L)
+{
+    RootObject* result = InventoryGUI::isTradingForMoney_static();
+    return pushObject<RootObject>(L, result, RootObjectBinding::getMetatableName());
+}
+
+int InventoryGUIBinding::isTradingAndStealing_static(lua_State* L)
+{
+    RootObject* result = InventoryGUI::isTradingAndStealing_static();
+    return pushObject<RootObject>(L, result, RootObjectBinding::getMetatableName());
+}
+
+int InventoryGUIBinding::getTraderPriceMultiplier(lua_State* L)
+{
+    float result = InventoryGUI::getTraderPriceMultiplier();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int InventoryGUIBinding::canDropMouseItemWithoutPaying(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    InventoryGUI* cameFrom = checkObject<InventoryGUI>(L, idx, InventoryGUIBinding::getMetatableName());
+    bool result = InventoryGUI::canDropMouseItemWithoutPaying(cameFrom);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryGUIBinding::removeTradePartner(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    InventoryGUI* tradewith = checkObject<InventoryGUI>(L, idx, InventoryGUIBinding::getMetatableName());
+    InventoryGUI::removeTradePartner(tradewith);
+    return 0;
+}
+
+int InventoryGUIBinding::addTradePartner(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    InventoryGUI* tradewith = checkObject<InventoryGUI>(L, idx, InventoryGUIBinding::getMetatableName());
+    bool payment = lua_toboolean(L, idx + 1) != 0;
+    bool canDrop = lua_toboolean(L, idx + 2) != 0;
+    bool isPlayer = lua_toboolean(L, idx + 3) != 0;
+    hand* who = checkObject<hand>(L, idx + 4, HandBinding::getMetatableName());
+    if (!who) return luaL_error(L, "Argument who to addTradePartner must be hand");
+    InventoryGUI::addTradePartner(tradewith, payment, canDrop, isPlayer, *who);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 118: bool lockedItemCheck(...) - static method
-  line 119: void setTradingTown(...) - static method
-  line 120: Town* getTradingTown(...) - static method
-  line 121: void addTradePartner(...) - static method
-  line 122: void removeTradePartner(...) - static method
-  line 123: void clearTradePartners(...) - static method
-  line 124: bool canDropMouseItemWithoutPaying(...) - static method
   line 125: void autoChangeSelectedObject(...) - non-string reference arg
   line 126: void _NV_autoChangeSelectedObject(...) - non-string reference arg
   line 135: void refreshSection(...) - overloaded method
@@ -585,10 +675,6 @@ Skipped methods needing manual binding:
   line 143: void windowButtonPressed(...) - unsupported arg type
   line 153: MyGUI::types::TCoord<int> getWindowCoord(...) - unsupported return type
   line 156: void getTrader1Trader2(...) - non-string reference arg
-  line 157: Character* getNPCTrader(...) - static method
-  line 158: RootObject* isTradingForMoney_static(...) - static method
-  line 159: RootObject* isTradingAndStealing_static(...) - static method
-  line 160: float getTraderPriceMultiplier(...) - static method
   line 169: bool placeItemFromMouse(...) - unsupported arg type
   line 193: bool fencingConfirmation(...) - unsupported arg type
   line 201: InventorySection* getSection(...) - overloaded method
@@ -598,11 +684,6 @@ Skipped methods needing manual binding:
   line 208: void onWindowFocus(...) - unsupported arg type
   line 209: void windowMoved(...) - unsupported arg type
   line 210: InventoryIcon* makeIconForItem(...) - static method
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 218: inventorySections (std::map<std::string, InventorySectionGUI*, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, InventorySectionGUI*>, Ogre::GeneralAllocPolicy > >) - unsupported type
 */
 
 int InventoryGUIBinding::gc(lua_State* L)
@@ -619,6 +700,8 @@ int InventoryGUIBinding::tostring(lua_State* L)
 
 void InventoryGUIBinding::registerBinding(lua_State* L)
 {
+    InventorySectionsMapBinding::registerBinding(L, "std::map<std::string, InventorySectionGUI*>", nullptr, InventorySectionGUIBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       InventoryGUIBinding::gc },
         { "__tostring", InventoryGUIBinding::tostring },
@@ -668,6 +751,16 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
         { "hasMouse", InventoryGUIBinding::hasMouse },
         { "getSectionWithMouseLocal", InventoryGUIBinding::getSectionWithMouseLocal },
         { "getSlotWithMouse", InventoryGUIBinding::getSlotWithMouse },
+        { "setTradingTown", InventoryGUIBinding::setTradingTown },
+        { "getTradingTown", InventoryGUIBinding::getTradingTown },
+        { "clearTradePartners", InventoryGUIBinding::clearTradePartners },
+        { "getNPCTrader", InventoryGUIBinding::getNPCTrader },
+        { "isTradingForMoney_static", InventoryGUIBinding::isTradingForMoney_static },
+        { "isTradingAndStealing_static", InventoryGUIBinding::isTradingAndStealing_static },
+        { "getTraderPriceMultiplier", InventoryGUIBinding::getTraderPriceMultiplier },
+        { "canDropMouseItemWithoutPaying", InventoryGUIBinding::canDropMouseItemWithoutPaying },
+        { "removeTradePartner", InventoryGUIBinding::removeTradePartner },
+        { "addTradePartner", InventoryGUIBinding::addTradePartner },
         { 0, 0 }
     };
 
@@ -689,6 +782,7 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
     registerGetter(L, "callbackObject", InventoryGUI_get_callbackObject);
     registerGetter(L, "needItemsUpdate", InventoryGUI_get_needItemsUpdate);
     registerGetter(L, "visible", InventoryGUI_get_visible);
+    registerGetter(L, "inventorySections", InventoryGUI_get_inventorySections);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -699,7 +793,20 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
     registerSetter(L, "callbackObject", InventoryGUI_set_callbackObject);
     registerSetter(L, "needItemsUpdate", InventoryGUI_set_needItemsUpdate);
     registerSetter(L, "visible", InventoryGUI_set_visible);
+    registerSetter(L, "inventorySections", InventoryGUI_set_inventorySections);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up static methods on global table
+    registerStaticMethod(L, "setTradingTown", InventoryGUIBinding::setTradingTown);
+    registerStaticMethod(L, "getTradingTown", InventoryGUIBinding::getTradingTown);
+    registerStaticMethod(L, "clearTradePartners", InventoryGUIBinding::clearTradePartners);
+    registerStaticMethod(L, "getNPCTrader", InventoryGUIBinding::getNPCTrader);
+    registerStaticMethod(L, "isTradingForMoney_static", InventoryGUIBinding::isTradingForMoney_static);
+    registerStaticMethod(L, "isTradingAndStealing_static", InventoryGUIBinding::isTradingAndStealing_static);
+    registerStaticMethod(L, "getTraderPriceMultiplier", InventoryGUIBinding::getTraderPriceMultiplier);
+    registerStaticMethod(L, "canDropMouseItemWithoutPaying", InventoryGUIBinding::canDropMouseItemWithoutPaying);
+    registerStaticMethod(L, "removeTradePartner", InventoryGUIBinding::removeTradePartner);
+    registerStaticMethod(L, "addTradePartner", InventoryGUIBinding::addTradePartner);
 
     // Wire up inheritance to GUIWindow
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

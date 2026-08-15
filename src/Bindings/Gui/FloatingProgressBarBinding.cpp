@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\gui\ScreenLabel.h"
 #include "FloatingProgressBarBinding.h"
+#include "ProgressBarWidgetBinding.h"
 #include "ScreenLabelInterfaceBinding.h"
 #include "Lua/BindingHelpers.h"
 
@@ -33,8 +34,7 @@ static int FloatingProgressBar_get_bar(lua_State* L)
 {
     FloatingProgressBar* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FloatingProgressBar is nil");
-    lua_pushlightuserdata(L, (void*)instance->bar);
-    return 1;
+    return pushObject<FloatingProgressBar::ProgressBarWidget>(L, instance->bar, ProgressBarWidgetBinding::getMetatableName());
 }
 
 // --- Setters for FloatingProgressBar ---
@@ -51,6 +51,14 @@ static int FloatingProgressBar_set_progress(lua_State* L)
     FloatingProgressBar* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FloatingProgressBar is nil");
     instance->progress = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int FloatingProgressBar_set_bar(lua_State* L)
+{
+    FloatingProgressBar* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FloatingProgressBar is nil");
+    instance->bar = lua_isnoneornil(L, 2) ? nullptr : checkObject<FloatingProgressBar::ProgressBarWidget>(L, 2, ProgressBarWidgetBinding::getMetatableName());
     return 0;
 }
 
@@ -110,11 +118,6 @@ int FloatingProgressBarBinding::_NV_update(lua_State* L)
     return 0;
 }
 
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - FloatingProgressBar_get_bar: FloatingProgressBar::ProgressBarWidget* (unbound pointer)
-*/
-
 int FloatingProgressBarBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -164,6 +167,7 @@ void FloatingProgressBarBinding::registerBinding(lua_State* L)
     lua_newtable(L); // Create __setters table
     registerSetter(L, "caption", FloatingProgressBar_set_caption);
     registerSetter(L, "progress", FloatingProgressBar_set_progress);
+    registerSetter(L, "bar", FloatingProgressBar_set_bar);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ScreenLabelInterface

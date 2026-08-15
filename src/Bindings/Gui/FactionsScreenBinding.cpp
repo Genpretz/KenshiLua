@@ -4,9 +4,13 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/FactionBinding.h"
+#include "Bindings/Gui/FactionRelationsLineBinding.h"
+#include "Bindings/Util/StdMapBinding.h"
 
 namespace KenshiLua
 {
+
+typedef StdMapBinding<Faction*, FactionsScreen::FactionRelationsLine*> FactionLinesMapBinding;
 
 static FactionsScreen* getInstance(lua_State* L, int idx)
 {
@@ -68,6 +72,13 @@ static int FactionsScreen_get_infoPanel(lua_State* L)
     return pushObject<DatapanelGUI>(L, instance->infoPanel, DatapanelGUIBinding::getMetatableName());
 }
 
+static int FactionsScreen_get_lines(lua_State* L)
+{
+    FactionsScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionsScreen is nil");
+    return pushObject<FactionLinesMapBinding::MapType>(L, &instance->lines, FactionLinesMapBinding::getMetatableName());
+}
+
 static int FactionsScreen_get_updateTimer(lua_State* L)
 {
     FactionsScreen* instance = getInstance(L, 1);
@@ -106,6 +117,15 @@ static int FactionsScreen_set_infoPanel(lua_State* L)
     FactionsScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionsScreen is nil");
     instance->infoPanel = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int FactionsScreen_set_lines(lua_State* L)
+{
+    FactionsScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionsScreen is nil");
+    auto* val = checkObject<FactionLinesMapBinding::MapType>(L, 2, FactionLinesMapBinding::getMetatableName());
+    if (val) instance->lines = *val;
     return 0;
 }
 
@@ -182,11 +202,6 @@ Skipped methods needing manual binding:
   line 52: void notifyMouseWheel(...) - unsupported arg type
 */
 
-/*
-Skipped properties needing manual binding:
-  line 55: lines (std::map<Faction*, FactionsScreen::FactionRelationsLine*, std::less<Faction*>, Ogre::STLAllocator<std::pair<Faction*const, FactionsScreen::FactionRelationsLine*>, Ogre::GeneralAllocPolicy > >) - unsupported type
-*/
-
 int FactionsScreenBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -201,6 +216,8 @@ int FactionsScreenBinding::tostring(lua_State* L)
 
 void FactionsScreenBinding::registerBinding(lua_State* L)
 {
+    FactionLinesMapBinding::registerBinding(L, "std::map<Faction*, FactionRelationsLine*>", FactionBinding::getMetatableName(), FactionRelationsLineBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       FactionsScreenBinding::gc },
         { "__tostring", FactionsScreenBinding::tostring },
@@ -235,6 +252,7 @@ void FactionsScreenBinding::registerBinding(lua_State* L)
     registerGetter(L, "scrollListItemWidth", FactionsScreen_get_scrollListItemWidth);
     registerGetter(L, "nameText", FactionsScreen_get_nameText);
     registerGetter(L, "infoPanel", FactionsScreen_get_infoPanel);
+    registerGetter(L, "lines", FactionsScreen_get_lines);
     registerGetter(L, "updateTimer", FactionsScreen_get_updateTimer);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
@@ -243,6 +261,7 @@ void FactionsScreenBinding::registerBinding(lua_State* L)
     registerSetter(L, "scrollListItemTop", FactionsScreen_set_scrollListItemTop);
     registerSetter(L, "scrollListItemWidth", FactionsScreen_set_scrollListItemWidth);
     registerSetter(L, "infoPanel", FactionsScreen_set_infoPanel);
+    registerSetter(L, "lines", FactionsScreen_set_lines);
     registerSetter(L, "updateTimer", FactionsScreen_set_updateTimer);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/ProspectingWindow.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -26,5 +28,7 @@ public:
     static int updateMap(lua_State* L);
     static int refresh(lua_State* L);
     static int clear(lua_State* L);
+    static int worldToMapCoords(lua_State* L);
+    static int getSingleton(lua_State* L);
 };
 }

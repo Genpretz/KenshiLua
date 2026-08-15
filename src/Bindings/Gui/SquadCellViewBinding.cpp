@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "kenshi\gui\SquadManagementScreen.h"
 #include "SquadCellViewBinding.h"
+#include "PortraitSquadItemBoxBinding.h"
+#include "SquadDataBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -17,8 +19,7 @@ static int SquadCellView_get_portraitsBox(lua_State* L)
 {
     SquadCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->portraitsBox);
-    return 1;
+    return pushObject<SquadManagementScreen::PortraitSquadItemBox>(L, instance->portraitsBox, PortraitSquadItemBoxBinding::getMetatableName());
 }
 
 static int SquadCellView_get_txtName(lua_State* L)
@@ -41,11 +42,25 @@ static int SquadCellView_get_squad(lua_State* L)
 {
     SquadCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->squad);
-    return 1;
+    return pushObject<SquadManagementScreen::SquadData>(L, instance->squad, SquadDataBinding::getMetatableName());
 }
 
 // --- Setters for SquadCellView ---
+static int SquadCellView_set_portraitsBox(lua_State* L)
+{
+    SquadCellView* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadCellView is nil");
+    instance->portraitsBox = lua_isnoneornil(L, 2) ? nullptr : checkObject<SquadManagementScreen::PortraitSquadItemBox>(L, 2, PortraitSquadItemBoxBinding::getMetatableName());
+    return 0;
+}
+
+static int SquadCellView_set_squad(lua_State* L)
+{
+    SquadCellView* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadCellView is nil");
+    instance->squad = lua_isnoneornil(L, 2) ? nullptr : checkObject<SquadManagementScreen::SquadData>(L, 2, SquadDataBinding::getMetatableName());
+    return 0;
+}
 int SquadCellViewBinding::_DESTRUCTOR(lua_State* L)
 {
     SquadCellView* instance = getInstance(L, 1);
@@ -71,14 +86,6 @@ Skipped methods needing manual binding:
   line 123: void getCellDimension(...) - static method
   line 126: void onNameChanged(...) - unsupported arg type
   line 127: void onRemove(...) - unsupported arg type
-*/
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - SquadCellView_get_portraitsBox: SquadManagementScreen::PortraitSquadItemBox* (unbound pointer)
-  - SquadCellView_get_txtName: MyGUI::EditBox* (unbound pointer)
-  - SquadCellView_get_txtSquadSize: MyGUI::TextBox* (unbound pointer)
-  - SquadCellView_get_squad: SquadManagementScreen::SquadData* (unbound pointer)
 */
 
 int SquadCellViewBinding::gc(lua_State* L)
@@ -125,10 +132,9 @@ void SquadCellViewBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "portraitsBox", SquadCellView_set_portraitsBox);
+    registerSetter(L, "squad", SquadCellView_set_squad);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
-
-    // Wire up inheritance to wraps::BaseCellView<SquadManagementScreen::SquadData*>
-    // setMetatableParent(L, SquadCellViewBinding::getMetatableName(), wraps::BaseCellView<SquadManagementScreen::SquadData*>Binding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

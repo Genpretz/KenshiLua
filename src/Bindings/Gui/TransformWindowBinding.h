@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/TransformWindow.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -36,5 +38,6 @@ public:
     static int changeValue(lua_State* L);
     static int reset(lua_State* L);
     static int revert(lua_State* L);
+    static int getSingleton(lua_State* L);
 };
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/TutorialGUI.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/NewGameWindow.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

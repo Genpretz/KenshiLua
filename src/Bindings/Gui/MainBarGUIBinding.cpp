@@ -12,9 +12,16 @@
 #include "Bindings/Gui/ToolTipBinding.h"
 #include "Bindings/Gui/ToolTipFixedBinding.h"
 #include "Bindings/MyGuiBinding.h"
+#include "Bindings/Gui/PortraitDataBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/BoostUnorderedBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
+
+typedef BoostUnorderedMapBinding<std::string, DatapanelGUI*> MainBarDatapanelsMapBinding;
+typedef OgreUnorderedMapBinding<hand, PortraitData*> MainBarPortraitsMapBinding;
 
 static MainBarGUI* getInstance(lua_State* L, int idx)
 {
@@ -273,7 +280,39 @@ static int MainBarGUI_get_loadingPanel(lua_State* L)
     return pushObject<MyGUI::Widget>(L, instance->loadingPanel, MyGuiBinding::getMetatableName());
 }
 
+static int MainBarGUI_get_datapanels(lua_State* L)
+{
+    MainBarGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainBarGUI is nil");
+    return pushObject<MainBarDatapanelsMapBinding::MapType>(L, &instance->datapanels, MainBarDatapanelsMapBinding::getMetatableName());
+}
+
+static int MainBarGUI_get_portraits(lua_State* L)
+{
+    MainBarGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainBarGUI is nil");
+    return pushObject<MainBarPortraitsMapBinding::MapType>(L, &instance->portraits, MainBarPortraitsMapBinding::getMetatableName());
+}
+
 // --- Setters for MainBarGUI ---
+static int MainBarGUI_set_datapanels(lua_State* L)
+{
+    MainBarGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainBarGUI is nil");
+    auto* val = checkObject<MainBarDatapanelsMapBinding::MapType>(L, 2, MainBarDatapanelsMapBinding::getMetatableName());
+    if (val) instance->datapanels = *val;
+    return 0;
+}
+
+static int MainBarGUI_set_portraits(lua_State* L)
+{
+    MainBarGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainBarGUI is nil");
+    auto* val = checkObject<MainBarPortraitsMapBinding::MapType>(L, 2, MainBarPortraitsMapBinding::getMetatableName());
+    if (val) instance->portraits = *val;
+    return 0;
+}
+
 static int MainBarGUI_set_closeManagerWindowMsg(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
@@ -992,6 +1031,9 @@ int MainBarGUIBinding::tostring(lua_State* L)
 
 void MainBarGUIBinding::registerBinding(lua_State* L)
 {
+    MainBarDatapanelsMapBinding::registerBinding(L, "boost::unordered_map<std::string, DatapanelGUI*>", nullptr, DatapanelGUIBinding::getMetatableName());
+    MainBarPortraitsMapBinding::registerBinding(L, "ogre_unordered_map<hand, PortraitData*>", HandBinding::getMetatableName(), PortraitDataBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       MainBarGUIBinding::gc },
         { "__tostring", MainBarGUIBinding::tostring },
@@ -1068,6 +1110,7 @@ void MainBarGUIBinding::registerBinding(lua_State* L)
     registerGetter(L, "closeManagerWindowMsg", MainBarGUI_get_closeManagerWindowMsg);
     registerGetter(L, "isLevelEditMode", MainBarGUI_get_isLevelEditMode);
     registerGetter(L, "isInteriorLevelEditMode", MainBarGUI_get_isInteriorLevelEditMode);
+    registerGetter(L, "datapanels", MainBarGUI_get_datapanels);
     registerGetter(L, "bountyPanel", MainBarGUI_get_bountyPanel);
     registerGetter(L, "bountyDatapanel", MainBarGUI_get_bountyDatapanel);
     registerGetter(L, "townPanel", MainBarGUI_get_townPanel);
@@ -1095,6 +1138,7 @@ void MainBarGUIBinding::registerBinding(lua_State* L)
     registerGetter(L, "portraitContextMenuTarget", MainBarGUI_get_portraitContextMenuTarget);
     registerGetter(L, "portraitContextMenuTimer", MainBarGUI_get_portraitContextMenuTimer);
     registerGetter(L, "portraitSelectedContextIndex", MainBarGUI_get_portraitSelectedContextIndex);
+    registerGetter(L, "portraits", MainBarGUI_get_portraits);
     registerGetter(L, "portraitsUpdating", MainBarGUI_get_portraitsUpdating);
     registerGetter(L, "toolTip", MainBarGUI_get_toolTip);
     registerGetter(L, "pausePanel", MainBarGUI_get_pausePanel);
@@ -1105,6 +1149,7 @@ void MainBarGUIBinding::registerBinding(lua_State* L)
     registerSetter(L, "closeManagerWindowMsg", MainBarGUI_set_closeManagerWindowMsg);
     registerSetter(L, "isLevelEditMode", MainBarGUI_set_isLevelEditMode);
     registerSetter(L, "isInteriorLevelEditMode", MainBarGUI_set_isInteriorLevelEditMode);
+    registerSetter(L, "datapanels", MainBarGUI_set_datapanels);
     registerSetter(L, "bountyDatapanel", MainBarGUI_set_bountyDatapanel);
     registerSetter(L, "ordersDataPanel", MainBarGUI_set_ordersDataPanel);
     registerSetter(L, "extendedInfoPanelDuration", MainBarGUI_set_extendedInfoPanelDuration);
@@ -1117,6 +1162,7 @@ void MainBarGUIBinding::registerBinding(lua_State* L)
     registerSetter(L, "portraitContextMenuTarget", MainBarGUI_set_portraitContextMenuTarget);
     registerSetter(L, "portraitContextMenuTimer", MainBarGUI_set_portraitContextMenuTimer);
     registerSetter(L, "portraitSelectedContextIndex", MainBarGUI_set_portraitSelectedContextIndex);
+    registerSetter(L, "portraits", MainBarGUI_set_portraits);
     registerSetter(L, "portraitsUpdating", MainBarGUI_set_portraitsUpdating);
     registerSetter(L, "toolTip", MainBarGUI_set_toolTip);
     lua_setfield(L, -2, "__setters"); // Bind to metatable

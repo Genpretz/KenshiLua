@@ -6,6 +6,7 @@
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/Gui/BuildingGroupBinding.h"
+#include "Bindings/Gui/BuildingCategoryBinding.h"
 
 namespace KenshiLua
 {
@@ -44,8 +45,7 @@ static int BuildModeWindow_get_currentBuildingCategory(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->currentBuildingCategory);
-    return 1;
+    return pushObject<BuildModeWindow::BuildingCategory>(L, instance->currentBuildingCategory, BuildingCategoryBinding::getMetatableName());
 }
 
 static int BuildModeWindow_get_currentBuildingGroup(lua_State* L)
@@ -206,6 +206,14 @@ static int BuildModeWindow_get_floorText(lua_State* L)
 }
 
 // --- Setters for BuildModeWindow ---
+static int BuildModeWindow_set_currentBuildingCategory(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->currentBuildingCategory = lua_isnoneornil(L, 2) ? nullptr : checkObject<BuildModeWindow::BuildingCategory>(L, 2, BuildingCategoryBinding::getMetatableName());
+    return 0;
+}
+
 static int BuildModeWindow_set_levelEditorMode(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
@@ -368,6 +376,16 @@ int BuildModeWindowBinding::changeCurrentIndex(lua_State* L)
     return 0;
 }
 
+int BuildModeWindowBinding::compareBuildMaterials(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    GameData* b1 = checkObject<GameData>(L, idx, GameDataBinding::getMetatableName());
+    GameData* b2 = checkObject<GameData>(L, idx + 1, GameDataBinding::getMetatableName());
+    bool result = BuildModeWindow::compareBuildMaterials(b1, b2);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 52: BuildModeWindow* _CONSTRUCTOR(...) - unsupported arg type
@@ -378,7 +396,6 @@ Skipped methods needing manual binding:
   line 67: void close(...) - unsupported arg type
   line 68: void buildingTypePrev(...) - unsupported arg type
   line 69: void buildingTypeNext(...) - unsupported arg type
-  line 72: bool compareBuildMaterials(...) - static method
   line 74: void changeFloorButtonUp(...) - unsupported arg type
   line 75: void changeFloorButtonDown(...) - unsupported arg type
 */
@@ -421,6 +438,7 @@ void BuildModeWindowBinding::registerBinding(lua_State* L)
         { "showBuildingStats", BuildModeWindowBinding::showBuildingStats },
         { "update", BuildModeWindowBinding::update },
         { "changeCurrentIndex", BuildModeWindowBinding::changeCurrentIndex },
+        { "compareBuildMaterials", BuildModeWindowBinding::compareBuildMaterials },
         { 0, 0 }
     };
 
@@ -463,6 +481,7 @@ void BuildModeWindowBinding::registerBinding(lua_State* L)
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "levelEditorMode", BuildModeWindow_set_levelEditorMode);
+    registerSetter(L, "currentBuildingCategory", BuildModeWindow_set_currentBuildingCategory);
     registerSetter(L, "currentBuildingGroup", BuildModeWindow_set_currentBuildingGroup);
     registerSetter(L, "currentBuildingInfo", BuildModeWindow_set_currentBuildingInfo);
     registerSetter(L, "currentBuildingIndex", BuildModeWindow_set_currentBuildingIndex);
@@ -470,11 +489,12 @@ void BuildModeWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "statsDataPanel", BuildModeWindow_set_statsDataPanel);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to wraps::BaseLayout
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, BuildModeWindowBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
-
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "compareBuildMaterials", BuildModeWindowBinding::compareBuildMaterials);
+    lua_setglobal(L, "BuildModeWindow");
 }
 
 } // namespace KenshiLua

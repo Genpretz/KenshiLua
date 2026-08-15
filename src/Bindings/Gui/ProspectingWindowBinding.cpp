@@ -246,12 +246,28 @@ int ProspectingWindowBinding::clear(lua_State* L)
     return 0;
 }
 
+int ProspectingWindowBinding::worldToMapCoords(lua_State* L)
+{
+    ProspectingWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProspectingWindow is nil");
+
+    Ogre::Vector3 pos;
+    readVector3(L, 2, pos);
+    MyGUI::types::TPoint<int> result = instance->worldToMapCoords(pos);
+    pushPoint(L, result);
+    return 1;
+}
+
+int ProspectingWindowBinding::getSingleton(lua_State* L)
+{
+    ProspectingWindow* result = ProspectingWindow::getSingleton();
+    return pushObject<ProspectingWindow>(L, result, ProspectingWindowBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
-  line 34: ProspectingWindow* getSingleton(...) - static method
   line 39: void closeButton(...) - unsupported arg type
   line 41: void resourceSelected(...) - unsupported arg type
-  line 42: MyGUI::types::TPoint<int> worldToMapCoords(...) - unsupported return type
 */
 
 /*
@@ -263,7 +279,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - ProspectingWindow_get_cameraMarker: MyGUI::ImageBox* (unbound pointer)
   - ProspectingWindow_get_cameraMarkerSkin: MyGUI::RotatingSkin* (unbound pointer)
   - ProspectingWindow_get_resourceImage: RealWorldEditableImage* (unbound pointer)
-  - ProspectingWindowBinding::_CONSTRUCTOR: ProspectingWindow* (unbound pointer)
 */
 
 /*
@@ -302,6 +317,8 @@ void ProspectingWindowBinding::registerBinding(lua_State* L)
         { "updateMap", ProspectingWindowBinding::updateMap },
         { "refresh", ProspectingWindowBinding::refresh },
         { "clear", ProspectingWindowBinding::clear },
+        { "worldToMapCoords", ProspectingWindowBinding::worldToMapCoords },
+        { "getSingleton", ProspectingWindowBinding::getSingleton },
         { 0, 0 }
     };
 
@@ -338,11 +355,12 @@ void ProspectingWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "lastName", ProspectingWindow_set_lastName);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to wraps::BaseLayout
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, ProspectingWindowBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
-
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getSingleton", ProspectingWindowBinding::getSingleton);
+    lua_setglobal(L, "ProspectingWindow");
 }
 
 } // namespace KenshiLua

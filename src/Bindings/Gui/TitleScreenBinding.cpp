@@ -77,14 +77,29 @@ static int TitleScreen_set_creditsPosition(lua_State* L)
     return 0;
 }
 
+static int TitleScreen_set_creditsPanel(lua_State* L)
+{
+    TitleScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TitleScreen is nil");
+    instance->creditsPanel = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::Widget*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    return 0;
+}
+
+static int TitleScreen_set_creditsText(lua_State* L)
+{
+    TitleScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TitleScreen is nil");
+    instance->creditsText = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::TextBox*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    return 0;
+}
+
 int TitleScreenBinding::_CONSTRUCTOR(lua_State* L)
 {
     TitleScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TitleScreen is nil");
 
     TitleScreen* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<TitleScreen>(L, result, TitleScreenBinding::getMetatableName());
 }
 
 int TitleScreenBinding::_DESTRUCTOR(lua_State* L)
@@ -172,9 +187,14 @@ int TitleScreenBinding::setCreditsVisible(lua_State* L)
     return 0;
 }
 
+int TitleScreenBinding::getSingleton(lua_State* L)
+{
+    TitleScreen* result = TitleScreen::getSingleton();
+    return pushObject<TitleScreen>(L, result, TitleScreenBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
-  line 19: TitleScreen* getSingleton(...) - static method
   line 32: void loadGame(...) - unsupported arg type
   line 33: void importGame(...) - unsupported arg type
   line 34: void showOptions(...) - unsupported arg type
@@ -182,13 +202,6 @@ Skipped methods needing manual binding:
   line 36: void exitGame(...) - unsupported arg type
   line 38: void continueGame(...) - unsupported arg type
   line 39: void hover(...) - unsupported arg type
-*/
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - TitleScreen_get_creditsPanel: MyGUI::Widget* (unbound pointer)
-  - TitleScreen_get_creditsText: MyGUI::TextBox* (unbound pointer)
-  - TitleScreenBinding::_CONSTRUCTOR: TitleScreen* (unbound pointer)
 */
 
 int TitleScreenBinding::gc(lua_State* L)
@@ -222,6 +235,7 @@ void TitleScreenBinding::registerBinding(lua_State* L)
         { "_NV_update", TitleScreenBinding::_NV_update },
         { "closeTheOtherBits", TitleScreenBinding::closeTheOtherBits },
         { "setCreditsVisible", TitleScreenBinding::setCreditsVisible },
+        { "getSingleton", TitleScreenBinding::getSingleton },
         { 0, 0 }
     };
 
@@ -245,15 +259,18 @@ void TitleScreenBinding::registerBinding(lua_State* L)
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "newGameWindow", TitleScreen_set_newGameWindow);
+    registerSetter(L, "creditsPanel", TitleScreen_set_creditsPanel);
+    registerSetter(L, "creditsText", TitleScreen_set_creditsText);
     registerSetter(L, "creditsLoaded", TitleScreen_set_creditsLoaded);
     registerSetter(L, "creditsPosition", TitleScreen_set_creditsPosition);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to GUIWindow
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, TitleScreenBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
-
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getSingleton", TitleScreenBinding::getSingleton);
+    lua_setglobal(L, "TitleScreen");
 }
 
 } // namespace KenshiLua

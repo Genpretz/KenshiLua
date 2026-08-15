@@ -5,9 +5,13 @@
 #include "Bindings/MyGuiBinding.h"
 #include "Bindings/Gui/GUIWindowBinding.h"
 #include "Bindings/Gui/TutorialItemBinding.h"
+#include "Bindings/Gui/TutorialGUILineBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
+
+typedef OgreUnorderedMapBinding<TutorialItem*, TutorialGUI::TutorialGUILine*> ActiveTutorialsMapBinding;
 
 static TutorialGUI* getInstance(lua_State* L, int idx)
 {
@@ -353,10 +357,36 @@ Skipped methods needing manual binding:
   line 173: void tooltipClose(...) - unsupported arg type
 */
 
+static int TutorialGUI_get_activeTutorials(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+    return pushObject<ActiveTutorialsMapBinding::MapType>(L, &instance->activeTutorials, ActiveTutorialsMapBinding::getMetatableName());
+}
+
+static int TutorialGUI_set_activeTutorials(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+    auto* val = checkObject<ActiveTutorialsMapBinding::MapType>(L, 2, ActiveTutorialsMapBinding::getMetatableName());
+    if (val) instance->activeTutorials = *val;
+    return 0;
+}
+
+/*
+Skipped methods needing manual binding:
+  line 164: void addTutorialsToList(...) - unsupported arg type
+  line 168: void windowButtonEvent(...) - unsupported arg type
+  line 169: void windowPrevEvent(...) - unsupported arg type
+  line 170: void windowNextEvent(...) - unsupported arg type
+  line 171: void dismissButtonEvent(...) - unsupported arg type
+  line 172: void tooltipOpen(...) - unsupported arg type
+  line 173: void tooltipClose(...) - unsupported arg type
+*/
+
 /*
 Skipped properties needing manual binding:
   line 190: activeTutorialsList (Ogre::vector<TutorialGUI::TutorialGUILine*>::type) - unsupported type
-  line 191: activeTutorials (ogre_unordered_map<TutorialItem*, TutorialGUI::TutorialGUILine*>::type) - unsupported type
 */
 
 int TutorialGUIBinding::gc(lua_State* L)
@@ -373,6 +403,8 @@ int TutorialGUIBinding::tostring(lua_State* L)
 
 void TutorialGUIBinding::registerBinding(lua_State* L)
 {
+    ActiveTutorialsMapBinding::registerBinding(L, "ogre_unordered_map<TutorialItem*, TutorialGUILine*>", TutorialItemBinding::getMetatableName(), TutorialGUILineBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       TutorialGUIBinding::gc },
         { "__tostring", TutorialGUIBinding::tostring },
@@ -425,6 +457,7 @@ void TutorialGUIBinding::registerBinding(lua_State* L)
     registerGetter(L, "pagingText", TutorialGUI_get_pagingText);
     registerGetter(L, "tooltipsPanel", TutorialGUI_get_tooltipsPanel);
     registerGetter(L, "currentTutorialItem", TutorialGUI_get_currentTutorialItem);
+    registerGetter(L, "activeTutorials", TutorialGUI_get_activeTutorials);
     registerGetter(L, "flashNewItem", TutorialGUI_get_flashNewItem);
     registerGetter(L, "enabled", TutorialGUI_get_enabled);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
@@ -434,6 +467,7 @@ void TutorialGUIBinding::registerBinding(lua_State* L)
     registerSetter(L, "highlightDirection", TutorialGUI_set_highlightDirection);
     registerSetter(L, "highlightAlpha", TutorialGUI_set_highlightAlpha);
     registerSetter(L, "currentTutorialItem", TutorialGUI_set_currentTutorialItem);
+    registerSetter(L, "activeTutorials", TutorialGUI_set_activeTutorials);
     registerSetter(L, "flashNewItem", TutorialGUI_set_flashNewItem);
     registerSetter(L, "enabled", TutorialGUI_set_enabled);
     lua_setfield(L, -2, "__setters"); // Bind to metatable

@@ -485,11 +485,40 @@ int TransformWindowBinding::revert(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 19: TransformWindow* getSingleton(...) - static method
   line 24: void show(...) - unsupported arg type
   line 42: void confirmValue(...) - unsupported arg type
   line 45: void hide(...) - unsupported arg type
 */
+
+static int TransformWindow_set_node(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->node = (Ogre::SceneNode*)lua_touserdata(L, 2);
+    return 0;
+}
+
+static int TransformWindow_set_parentNode(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->parentNode = (Ogre::SceneNode*)lua_touserdata(L, 2);
+    return 0;
+}
+
+static int TransformWindow_set_gizmo(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+    instance->gizmo = (Gizmo*)lua_touserdata(L, 2);
+    return 0;
+}
+
+int TransformWindowBinding::getSingleton(lua_State* L)
+{
+    TransformWindow* result = TransformWindow::getSingleton();
+    return pushObject<TransformWindow>(L, result, TransformWindowBinding::getMetatableName());
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -539,6 +568,7 @@ void TransformWindowBinding::registerBinding(lua_State* L)
         { "changeValue", TransformWindowBinding::changeValue },
         { "reset", TransformWindowBinding::reset },
         { "revert", TransformWindowBinding::revert },
+        { "getSingleton", TransformWindowBinding::getSingleton },
         { 0, 0 }
     };
 
@@ -582,6 +612,9 @@ void TransformWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "modeButton", TransformWindow_set_modeButton);
     registerSetter(L, "axisButton", TransformWindow_set_axisButton);
     registerSetter(L, "revertButton", TransformWindow_set_revertButton);
+    registerSetter(L, "node", TransformWindow_set_node);
+    registerSetter(L, "parentNode", TransformWindow_set_parentNode);
+    registerSetter(L, "gizmo", TransformWindow_set_gizmo);
     registerSetter(L, "mode", TransformWindow_set_mode);
     registerSetter(L, "coordinateSystem", TransformWindow_set_coordinateSystem);
     registerSetter(L, "hasScale", TransformWindow_set_hasScale);
@@ -593,10 +626,12 @@ void TransformWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "lastMouse", TransformWindow_set_lastMouse);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to Ogre::GeneralAllocatedObject
-    // setMetatableParent(L, TransformWindowBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
-
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getSingleton", TransformWindowBinding::getSingleton);
+    lua_setglobal(L, "TransformWindow");
 }
 
 } // namespace KenshiLua

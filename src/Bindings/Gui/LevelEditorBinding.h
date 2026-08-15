@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/LevelEditor.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -53,5 +55,6 @@ public:
     static int destroyRoadMaker(lua_State* L);
     static int updateFoliageRemoval(lua_State* L);
     static int updateSeedEditor(lua_State* L);
+    static int deleteObject(lua_State* L);
 };
 }

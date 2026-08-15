@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/LoadingWindow.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -26,5 +28,6 @@ public:
     static int frameEntered(lua_State* L);
     static int setRandomBackground(lua_State* L);
     static int setRandomTip(lua_State* L);
+    static int getInstance(lua_State* L);
 };
 }

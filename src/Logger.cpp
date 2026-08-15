@@ -84,6 +84,7 @@ void Logger::log(LogLevel level, const std::string& message)
             m_ring[m_ringStart] = formatted;
             m_ringStart = (m_ringStart + 1) % m_ring.size();
         }
+        ++m_sequenceNumber;
     }
 
     if (m_initialized && m_file.is_open()) {
@@ -112,6 +113,12 @@ void Logger::snapshot(std::vector<std::string>& out, size_t maxLines) const
         size_t idx = (m_ringStart + firstIdx + i) % m_ring.size();
         out.push_back(m_ring[idx]);
     }
+}
+
+size_t Logger::getSequenceNumber() const
+{
+    boost::lock_guard<boost::mutex> lk(m_ringMutex);
+    return m_sequenceNumber;
 }
 
 void Logger::shutdown()

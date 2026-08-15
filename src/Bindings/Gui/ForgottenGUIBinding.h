@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/ForgottenGUI.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -71,5 +73,20 @@ public:
     static int createFloatingImageAbs(lua_State* L);
     static int createFloatingProgressBar(lua_State* L);
     static int createScreenLabelD(lua_State* L);
+    static int showCharacterStatsWindow(lua_State* L);
+    static int closeCharacterStatsWindow(lua_State* L);
+    static int toggleStatsWindow(lua_State* L);
+    static int toggleCharacterStatsWindowPermanent(lua_State* L);
+    static int showInventory(lua_State* L);
+    static int showTraderInventory(lua_State* L);
+    static int showInventoryBuilding(lua_State* L);
+    static int showInventoryNPC(lua_State* L);
+    static int closeInventory(lua_State* L);
+    static int getInventoryWindow(lua_State* L);
+    static int hasInventoryWindowOpen(lua_State* L);
+    static int toggleInventoryWindowPermanent(lua_State* L);
+    static int getSelectedObject(lua_State* L);
+    static int getSelectedPlayerCharacter(lua_State* L);
+    static int showTradeWindow(lua_State* L);
 };
 }

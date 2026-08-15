@@ -29,12 +29,14 @@ namespace KenshiLua
         void log(LogLevel level, const std::string& message);
         void snapshot(std::vector<std::string>& out, size_t maxLines = 0) const;
         void shutdown();
+        size_t getSequenceNumber() const;
 
     private:
         Logger()
             : m_initialized(false)
             , m_ringStart(0)
             , m_ringSize(0)
+            , m_sequenceNumber(0)
         {
         }
 
@@ -48,6 +50,7 @@ namespace KenshiLua
         boost::array<std::string, 512> m_ring;
         size_t                      m_ringStart;
         size_t                      m_ringSize;
+        size_t                      m_sequenceNumber;
     };
 
     // ---------------------------------------------------------------------------

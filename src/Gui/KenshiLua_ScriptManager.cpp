@@ -31,7 +31,7 @@ namespace KenshiLua
 		{
 			mScriptManager_ScriptListMultiList->addColumn("Filename", 250);
 			mScriptManager_ScriptListMultiList->addColumn("Mod", 250);
-			mScriptManager_ScriptListMultiList->addColumn("  Active  ", 90);
+			mScriptManager_ScriptListMultiList->addColumn("    Active    ", 90);
 			mScriptManager_ScriptListMultiList->setColumnResizingPolicyAt(0, MyGUI::ResizingPolicy::Fill);
 			mScriptManager_ScriptListMultiList->setColumnResizingPolicyAt(1, MyGUI::ResizingPolicy::Fill);
 			mScriptManager_ScriptListMultiList->setColumnResizingPolicyAt(2, MyGUI::ResizingPolicy::Auto);

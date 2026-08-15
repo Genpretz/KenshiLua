@@ -12,6 +12,7 @@ namespace KenshiLua
 {
 	KenshiLua_LogViewer::KenshiLua_LogViewer(MyGUI::Widget* _parent)
 		: mEdgeHideEnabled(false)
+		, m_lastLogVersion(0)
 	{
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_LogViewerRootWindow = mMainWidget->castType<MyGUI::Window>(false);
@@ -31,11 +32,22 @@ namespace KenshiLua
 		if (mLogViewer_OutputBoxEditBox)
 			mLogViewer_OutputBoxEditBox->setMaxTextLength(MyGUI::ITEM_NONE);
 
+		MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
+		if (gui)
+		{
+			gui->eventFrameStart += MyGUI::newDelegate(this, &KenshiLua_LogViewer::onFrameStart);
+		}
+
 		setVisible(false);
 	}
 
 	KenshiLua_LogViewer::~KenshiLua_LogViewer()
 	{
+		MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
+		if (gui)
+		{
+			gui->eventFrameStart -= MyGUI::newDelegate(this, &KenshiLua_LogViewer::onFrameStart);
+		}
 	}
 
 	void KenshiLua_LogViewer::setVisible(bool visible)
@@ -86,6 +98,8 @@ namespace KenshiLua
 		// Scroll to bottom
 		size_t length = mLogViewer_OutputBoxEditBox->getTextLength();
 		mLogViewer_OutputBoxEditBox->setTextCursor(length);
+
+		m_lastLogVersion = Logger::get().getSequenceNumber();
 	}
 
 	void KenshiLua_LogViewer::onClearClicked(MyGUI::Widget* sender)
@@ -117,6 +131,17 @@ namespace KenshiLua
 	void KenshiLua_LogViewer::onFilterChanged(MyGUI::EditBox* sender)
 	{
 		refreshLog();
+	}
+
+	void KenshiLua_LogViewer::onFrameStart(float frameTime)
+	{
+		if (!getVisible())
+			return;
+
+		if (Logger::get().getSequenceNumber() != m_lastLogVersion)
+		{
+			refreshLog();
+		}
 	}
 
 	void KenshiLua_LogViewer::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)

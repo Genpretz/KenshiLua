@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/InventoryGUI.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -58,5 +60,15 @@ public:
     static int hasMouse(lua_State* L);
     static int getSectionWithMouseLocal(lua_State* L);
     static int getSlotWithMouse(lua_State* L);
+    static int setTradingTown(lua_State* L);
+    static int getTradingTown(lua_State* L);
+    static int clearTradePartners(lua_State* L);
+    static int getNPCTrader(lua_State* L);
+    static int isTradingForMoney_static(lua_State* L);
+    static int isTradingAndStealing_static(lua_State* L);
+    static int getTraderPriceMultiplier(lua_State* L);
+    static int canDropMouseItemWithoutPaying(lua_State* L);
+    static int removeTradePartner(lua_State* L);
+    static int addTradePartner(lua_State* L);
 };
 }

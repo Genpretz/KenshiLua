@@ -24,8 +24,10 @@ namespace KenshiLua
 		void onSaveLogClicked(MyGUI::Widget* sender);
 		void onFilterChanged(MyGUI::EditBox* sender);
 		void onWindowButtonPressed(MyGUI::Window* sender, const std::string& name);
+		void onFrameStart(float frameTime);
 
 		bool mEdgeHideEnabled;
+		size_t m_lastLogVersion;
 	//%LE Widget_Declaration list start
 		MyGUI::Window* mKenshiLua_LogViewerRootWindow;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_LogViewer, mLogViewer_FilterLabelTextBox, "LogViewer_FilterLabel");

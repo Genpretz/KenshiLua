@@ -54,6 +54,15 @@ static int GamedataSelectionList_get_lastItem(lua_State* L)
 }
 
 // --- Setters for GamedataSelectionList ---
+static int GamedataSelectionList_set_items(lua_State* L)
+{
+    GamedataSelectionList* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GamedataSelectionList is nil");
+    auto* val = checkObject<lektor<GameData*>>(L, 2, LektorPtrBinding<GameData*>::getMetatableName());
+    if (val) instance->items = *val;
+    return 0;
+}
+
 static int GamedataSelectionList_set_lastItem(lua_State* L)
 {
     GamedataSelectionList* instance = getInstance(L, 1);
@@ -204,6 +213,7 @@ void GamedataSelectionListBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__getters");
 
     lua_newtable(L);
+    registerSetter(L, "items", GamedataSelectionList_set_items);
     registerSetter(L, "lastItem", GamedataSelectionList_set_lastItem);
     lua_setfield(L, -2, "__setters");
 

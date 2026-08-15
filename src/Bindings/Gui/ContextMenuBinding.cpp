@@ -1,6 +1,7 @@
 #include "pch.h"
 #include <kenshi/PlayerInterface.h>
 #include "Bindings/Gui/ContextMenuBinding.h"
+#include "Bindings/Gui/ContextMenuGUIBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/Util/LektorBinding.h"
@@ -41,24 +42,14 @@ static int ContextMenu_get_menuGUI(lua_State* L)
 {
     ContextMenu* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContextMenu is nil");
-    if (instance->menuGUI) {
-        lua_pushlightuserdata(L, (void*)instance->menuGUI);
-    } else {
-        lua_pushnil(L);
-    }
-    return 1;
+    return pushObject<ContextMenuGUI>(L, instance->menuGUI, ContextMenuGUIBinding::getMetatableName());
 }
 
 static int ContextMenu_get_menuGUI2(lua_State* L)
 {
     ContextMenu* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContextMenu is nil");
-    if (instance->menuGUI2) {
-        lua_pushlightuserdata(L, (void*)instance->menuGUI2);
-    } else {
-        lua_pushnil(L);
-    }
-    return 1;
+    return pushObject<ContextMenuGUI>(L, instance->menuGUI2, ContextMenuGUIBinding::getMetatableName());
 }
 
 static int ContextMenu_get_delayedDestroyFlag(lua_State* L)
@@ -100,7 +91,7 @@ static int ContextMenu_set_menuGUI(lua_State* L)
 {
     ContextMenu* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContextMenu is nil");
-    instance->menuGUI = (ContextMenuGUI*)lua_touserdata(L, 2);
+    instance->menuGUI = lua_isnoneornil(L, 2) ? nullptr : checkObject<ContextMenuGUI>(L, 2, ContextMenuGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -108,7 +99,7 @@ static int ContextMenu_set_menuGUI2(lua_State* L)
 {
     ContextMenu* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContextMenu is nil");
-    instance->menuGUI2 = (ContextMenuGUI*)lua_touserdata(L, 2);
+    instance->menuGUI2 = lua_isnoneornil(L, 2) ? nullptr : checkObject<ContextMenuGUI>(L, 2, ContextMenuGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -177,12 +168,6 @@ int ContextMenuBinding::_destroyMenuGUICheck(lua_State* L)
     instance->_destroyMenuGUICheck();
     return 0;
 }
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - ContextMenu_get_menuGUI / ContextMenu_set_menuGUI: ContextMenuGUI* (unbound pointer)
-  - ContextMenu_get_menuGUI2 / ContextMenu_set_menuGUI2: ContextMenuGUI* (unbound pointer)
-*/
 
 int ContextMenuBinding::gc(lua_State* L)
 {

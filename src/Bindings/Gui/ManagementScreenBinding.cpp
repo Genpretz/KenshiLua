@@ -5,10 +5,13 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Gui/FactionsScreenBinding.h"
+#include "Bindings/Gui/MapScreenBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/PlatoonBinding.h"
 #include "Bindings/Gui/SquadManagementScreenBinding.h"
 #include "Bindings/Gui/ToolTipBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -30,8 +33,14 @@ static int ManagementScreen_get_mapScreen(lua_State* L)
 {
     ManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->mapScreen);
-    return 1;
+    return pushObject<MapScreen>(L, instance->mapScreen, MapScreenBinding::getMetatableName());
+}
+
+static int ManagementScreen_get_currentCategoryList(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    return pushObject<lektor<GameData*>>(L, &instance->currentCategoryList, LektorPtrBinding<GameData*>::metaName);
 }
 
 static int ManagementScreen_get_factionScreen(lua_State* L)
@@ -539,8 +548,7 @@ int ManagementScreenBinding::_CONSTRUCTOR(lua_State* L)
     if (!instance) return luaL_error(L, "ManagementScreen is nil");
 
     ManagementScreen* result = instance->_CONSTRUCTOR();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<ManagementScreen>(L, result, ManagementScreenBinding::getMetatableName());
 }
 
 int ManagementScreenBinding::updateResearchListRate(lua_State* L)
@@ -561,14 +569,60 @@ int ManagementScreenBinding::refreshResearchListDescription(lua_State* L)
     return 0;
 }
 
+int ManagementScreenBinding::setCraftingBench(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to setCraftingBench must be hand");
+    instance->setCraftingBench(*h);
+    return 0;
+}
+
+int ManagementScreenBinding::printResearch(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    DatapanelGUI* panel = checkObject<DatapanelGUI>(L, idx, DatapanelGUIBinding::getMetatableName());
+    GameData* d = checkObject<GameData>(L, idx + 1, GameDataBinding::getMetatableName());
+    const std::string listname = luaL_checkstring(L, idx + 2);
+    const std::string displayname = luaL_checkstring(L, idx + 3);
+    int cat = (int)luaL_checkinteger(L, idx + 4);
+
+    ManagementScreen::printResearch(panel, d, listname, displayname, cat);
+    return 0;
+}
+
+int ManagementScreenBinding::addMessage(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+
+    const std::string owner = luaL_checkstring(L, 2);
+    const std::string message = luaL_checkstring(L, 3);
+    MessageLogColor isPlayer = (MessageLogColor)luaL_checkinteger(L, 4);
+    instance->addMessage(owner, message, isPlayer);
+    return 0;
+}
+
+int ManagementScreenBinding::getSingleton(lua_State* L)
+{
+    ManagementScreen* result = ManagementScreen::getSingleton();
+    return pushObject<ManagementScreen>(L, result, ManagementScreenBinding::getMetatableName());
+}
+
+static int ManagementScreen_set_mapScreen(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    instance->mapScreen = lua_isnoneornil(L, 2) ? nullptr : checkObject<MapScreen>(L, 2, MapScreenBinding::getMetatableName());
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 62: ManagementScreen* getSingleton(...) - static method
   line 69: void closeEverythingButton(...) - unsupported arg type
   line 70: void tabCallback(...) - unsupported arg type
-  line 85: void addMessage(...) - unsupported arg type
-  line 89: void setCraftingBench(...) - non-string reference arg
-  line 91: void printResearch(...) - static method
   line 99: void researchTypeSelect(...) - unsupported arg type
   line 100: void addButtonPress(...) - unsupported arg type
   line 101: void removeButtonPress(...) - unsupported arg type
@@ -580,7 +634,6 @@ Skipped methods needing manual binding:
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - ManagementScreen_get_mapScreen: MapScreen* (unbound pointer)
   - ManagementScreen_get_researchCategoriesListBox: MyGUI::ListBox* (unbound pointer)
   - ManagementScreen_get_researchBenchMessage: MyGUI::EditBox* (unbound pointer)
   - ManagementScreen_get_todoList: ReorderableList<std::deque<ResearchItem, Ogre::STLAllocator<ResearchItem, Ogre::GeneralAllocPolicy > >, ManagementScreen::TechItemViewData>* (unbound pointer)
@@ -590,12 +643,10 @@ LIGHTUSERDATA DEPENDENCIES:
   - ManagementScreen_get_tabs: MyGUI::TabControl* (unbound pointer)
   - ManagementScreenBinding::getTab: MyGUI::TabItem* (unbound pointer)
   - ManagementScreenBinding::getWidget: MyGUI::Widget* (unbound pointer)
-  - ManagementScreenBinding::_CONSTRUCTOR: ManagementScreen* (unbound pointer)
 */
 
 /*
 Skipped properties needing manual binding:
-  line 114: currentCategoryList (lektor<GameData*>) - unsupported type
   line 139: messagesStream (std::basic_ostringstream<char, std::char_traits<char>, std::allocator<char> >) - unsupported type
 */
 
@@ -641,6 +692,10 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
         { "refreshMessages", ManagementScreenBinding::refreshMessages },
         { "refreshAI", ManagementScreenBinding::refreshAI },
         { "showDebugMarker", ManagementScreenBinding::showDebugMarker },
+        { "setCraftingBench", ManagementScreenBinding::setCraftingBench },
+        { "printResearch", ManagementScreenBinding::printResearch },
+        { "addMessage", ManagementScreenBinding::addMessage },
+        { "getSingleton", ManagementScreenBinding::getSingleton },
         { "_CONSTRUCTOR", ManagementScreenBinding::_CONSTRUCTOR },
         { "updateResearchListRate", ManagementScreenBinding::updateResearchListRate },
         { "refreshResearchListDescription", ManagementScreenBinding::refreshResearchListDescription },
@@ -660,6 +715,7 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
     lua_newtable(L); // Create __getters table
     registerGetter(L, "squadScreen", ManagementScreen_get_squadScreen);
     registerGetter(L, "mapScreen", ManagementScreen_get_mapScreen);
+    registerGetter(L, "currentCategoryList", ManagementScreen_get_currentCategoryList);
     registerGetter(L, "factionScreen", ManagementScreen_get_factionScreen);
     registerGetter(L, "researchCategoriesListBox", ManagementScreen_get_researchCategoriesListBox);
     registerGetter(L, "availableList", ManagementScreen_get_availableList);
@@ -686,6 +742,7 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "squadScreen", ManagementScreen_set_squadScreen);
+    registerSetter(L, "mapScreen", ManagementScreen_set_mapScreen);
     registerSetter(L, "factionScreen", ManagementScreen_set_factionScreen);
     registerSetter(L, "availableList", ManagementScreen_set_availableList);
     registerSetter(L, "info", ManagementScreen_set_info);
@@ -703,11 +760,13 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
     registerSetter(L, "toolTip", ManagementScreen_set_toolTip);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to wraps::BaseLayout
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, ManagementScreenBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
-
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getSingleton", ManagementScreenBinding::getSingleton);
+    registerStaticMethod(L, "printResearch", ManagementScreenBinding::printResearch);
+    lua_setglobal(L, "ManagementScreen");
 }
 
 } // namespace KenshiLua

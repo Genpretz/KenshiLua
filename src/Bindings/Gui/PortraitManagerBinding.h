@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/PortraitManager.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -27,6 +29,11 @@ public:
     static int getCharacterInCombat(lua_State* L);
     static int getCharacterDown(lua_State* L);
     static int getSquadFlashing(lua_State* L);
+    static int getPortrait(lua_State* L);
+    static int updatePortrait(lua_State* L);
+    static int updatePortraitImage(lua_State* L);
+    static int setImageWidget(lua_State* L);
+    static int getInstance(lua_State* L);
     static int _CONSTRUCTOR(lua_State* L);
     static int _DESTRUCTOR(lua_State* L);
 };

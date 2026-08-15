@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kenshi/gui/GameDataEditorWindow.h"
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

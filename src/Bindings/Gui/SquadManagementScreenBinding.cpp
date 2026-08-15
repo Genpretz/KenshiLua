@@ -4,13 +4,18 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/MyGuiBinding.h"
 #include "Bindings/Gui/SquadDataBinding.h"
+#include "Bindings/Gui/SquadItemBoxBinding.h"
+#include "Bindings/Gui/PortraitSquadItemBoxBinding.h"
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/Gui/ManagementScreenBinding.h"
+#include "Bindings/Util/StdMapBinding.h"
 
 namespace KenshiLua
 {
+
+typedef StdMapBinding<ActivePlatoon*, SquadManagementScreen::SquadData*> SquadsMapBinding;
 
 static SquadManagementScreen* getInstance(lua_State* L, int idx)
 {
@@ -51,14 +56,14 @@ static int SquadManagementScreen_get_panelSquads(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->panelSquads, MyGuiBinding::getMetatableName());
+    return pushObject<SquadManagementScreen::SquadItemBox>(L, instance->panelSquads, SquadItemBoxBinding::getMetatableName());
 }
 
 static int SquadManagementScreen_get_panelDismiss(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->panelDismiss, MyGuiBinding::getMetatableName());
+    return pushObject<SquadManagementScreen::PortraitSquadItemBox>(L, instance->panelDismiss, PortraitSquadItemBoxBinding::getMetatableName());
 }
 
 static int SquadManagementScreen_get_dismissChar(lua_State* L)
@@ -73,6 +78,13 @@ static int SquadManagementScreen_get_faction(lua_State* L)
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
     return pushObject<Faction>(L, instance->faction, FactionBinding::getMetatableName());
+}
+
+static int SquadManagementScreen_get_squads(lua_State* L)
+{
+    SquadManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
+    return pushObject<SquadsMapBinding::MapType>(L, &instance->squads, SquadsMapBinding::getMetatableName());
 }
 
 // --- Setters for SquadManagementScreen ---
@@ -97,6 +109,31 @@ static int SquadManagementScreen_set_faction(lua_State* L)
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
     instance->faction = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    return 0;
+}
+
+static int SquadManagementScreen_set_panelSquads(lua_State* L)
+{
+    SquadManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
+    instance->panelSquads = lua_isnoneornil(L, 2) ? nullptr : checkObject<SquadManagementScreen::SquadItemBox>(L, 2, SquadItemBoxBinding::getMetatableName());
+    return 0;
+}
+
+static int SquadManagementScreen_set_panelDismiss(lua_State* L)
+{
+    SquadManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
+    instance->panelDismiss = lua_isnoneornil(L, 2) ? nullptr : checkObject<SquadManagementScreen::PortraitSquadItemBox>(L, 2, PortraitSquadItemBoxBinding::getMetatableName());
+    return 0;
+}
+
+static int SquadManagementScreen_set_squads(lua_State* L)
+{
+    SquadManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
+    auto* val = checkObject<SquadsMapBinding::MapType>(L, 2, SquadsMapBinding::getMetatableName());
+    if (val) instance->squads = *val;
     return 0;
 }
 
@@ -211,8 +248,7 @@ int SquadManagementScreenBinding::getSquad(lua_State* L)
 
     ActivePlatoon* platoon = checkObject<ActivePlatoon>(L, 2, ActivePlatoonBinding::getMetatableName());
     SquadManagementScreen::SquadData* result = instance->getSquad(platoon);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<SquadManagementScreen::SquadData>(L, result, SquadDataBinding::getMetatableName());
 }
 
 int SquadManagementScreenBinding::dismissCharacter(lua_State* L)
@@ -234,23 +270,6 @@ Skipped methods needing manual binding:
   line 167: void onAddSquad(...) - unsupported arg type
 */
 
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - SquadManagementScreen_get_mainWidget: MyGUI::Widget* (unbound pointer)
-  - SquadManagementScreen_get_btnAddSquad: MyGUI::Button* (unbound pointer)
-  - SquadManagementScreen_get_txtFactionSize: MyGUI::TextBox* (unbound pointer)
-  - SquadManagementScreen_get_panelSquads: SquadManagementScreen::SquadItemBox* (unbound pointer)
-  - SquadManagementScreen_get_panelDismiss: SquadManagementScreen::PortraitSquadItemBox* (unbound pointer)
-  - SquadManagementScreenBinding::getSquad: SquadManagementScreen::SquadData* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 94: SquadData (class) - unsupported type
-  line 95: SquadCellView (class) - unsupported type
-  line 179: squads (std::map<ActivePlatoon*, SquadManagementScreen::SquadData*, std::less<ActivePlatoon*>, Ogre::STLAllocator<std::pair<ActivePlatoon*const, SquadManagementScreen::SquadData*>, Ogre::GeneralAllocPolicy > >) - unsupported type
-*/
-
 int SquadManagementScreenBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -265,6 +284,8 @@ int SquadManagementScreenBinding::tostring(lua_State* L)
 
 void SquadManagementScreenBinding::registerBinding(lua_State* L)
 {
+    SquadsMapBinding::registerBinding(L, "std::map<ActivePlatoon*, SquadData*>", ActivePlatoonBinding::getMetatableName(), SquadDataBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       SquadManagementScreenBinding::gc },
         { "__tostring", SquadManagementScreenBinding::tostring },
@@ -305,12 +326,16 @@ void SquadManagementScreenBinding::registerBinding(lua_State* L)
     registerGetter(L, "panelDismiss", SquadManagementScreen_get_panelDismiss);
     registerGetter(L, "dismissChar", SquadManagementScreen_get_dismissChar);
     registerGetter(L, "faction", SquadManagementScreen_get_faction);
+    registerGetter(L, "squads", SquadManagementScreen_get_squads);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "factionSize", SquadManagementScreen_set_factionSize);
+    registerSetter(L, "panelSquads", SquadManagementScreen_set_panelSquads);
+    registerSetter(L, "panelDismiss", SquadManagementScreen_set_panelDismiss);
     registerSetter(L, "dismissChar", SquadManagementScreen_set_dismissChar);
     registerSetter(L, "faction", SquadManagementScreen_set_faction);
+    registerSetter(L, "squads", SquadManagementScreen_set_squads);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

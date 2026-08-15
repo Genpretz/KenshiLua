@@ -16,9 +16,16 @@
 #include "Bindings/TownBinding.h"
 #include "Bindings/Gui/TutorialGUIBinding.h"
 #include "Bindings/Gui/TutorialpediaGUIBinding.h"
+#include "Bindings/Gui/ScreenLabelInterfaceBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua
 {
+
+typedef OgreUnorderedMapBinding<hand, InventoryGUI*> ForgottenInventoryWindowsOpenMapBinding;
+typedef OgreUnorderedSetBinding<hand> ForgottenInventoryWindowsPermanentSetBinding;
 
 static ForgottenGUI* getInstance(lua_State* L, int idx)
 {
@@ -225,7 +232,60 @@ static int ForgottenGUI_get_created(lua_State* L)
     return 1;
 }
 
+static int ForgottenGUI_get_inventoryWindowsOpen(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return pushObject<ForgottenInventoryWindowsOpenMapBinding::MapType>(L, &instance->inventoryWindowsOpen, ForgottenInventoryWindowsOpenMapBinding::getMetatableName());
+}
+
+static int ForgottenGUI_get_inventoryWindowsPermanent(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return pushObject<ForgottenInventoryWindowsPermanentSetBinding::SetType>(L, &instance->inventoryWindowsPermanent, ForgottenInventoryWindowsPermanentSetBinding::getMetatableName());
+}
+
+static int ForgottenGUI_get_guiWindows(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return pushObject<lektor<GUIWindow*>>(L, &instance->guiWindows, LektorPtrBinding<GUIWindow*>::metaName);
+}
+
+static int ForgottenGUI_get_guiDatapanels(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return pushObject<lektor<DatapanelGUI*>>(L, &instance->guiDatapanels, LektorPtrBinding<DatapanelGUI*>::metaName);
+}
+
+static int ForgottenGUI_get_guiScreenLabels(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    return pushObject<lektor<ScreenLabelInterface*>>(L, &instance->guiScreenLabels, LektorPtrBinding<ScreenLabelInterface*>::metaName);
+}
+
 // --- Setters for ForgottenGUI ---
+static int ForgottenGUI_set_inventoryWindowsOpen(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    auto* val = checkObject<ForgottenInventoryWindowsOpenMapBinding::MapType>(L, 2, ForgottenInventoryWindowsOpenMapBinding::getMetatableName());
+    if (val) instance->inventoryWindowsOpen = *val;
+    return 0;
+}
+
+static int ForgottenGUI_set_inventoryWindowsPermanent(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    auto* val = checkObject<ForgottenInventoryWindowsPermanentSetBinding::SetType>(L, 2, ForgottenInventoryWindowsPermanentSetBinding::getMetatableName());
+    if (val) instance->inventoryWindowsPermanent = *val;
+    return 0;
+}
+
 static int ForgottenGUI_set_hasMouse(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
@@ -357,6 +417,33 @@ static int ForgottenGUI_set_characterEditor(lua_State* L)
 static int ForgottenGUI_set_guiScreenLabelsMutex(lua_State* L)
 {
     return luaL_error(L, "guiScreenLabelsMutex is read-only");
+}
+
+static int ForgottenGUI_set_guiWindows(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    auto* val = checkObject<lektor<GUIWindow*>>(L, 2, LektorPtrBinding<GUIWindow*>::metaName);
+    if (val) instance->guiWindows = *val;
+    return 0;
+}
+
+static int ForgottenGUI_set_guiDatapanels(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    auto* val = checkObject<lektor<DatapanelGUI*>>(L, 2, LektorPtrBinding<DatapanelGUI*>::metaName);
+    if (val) instance->guiDatapanels = *val;
+    return 0;
+}
+
+static int ForgottenGUI_set_guiScreenLabels(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    auto* val = checkObject<lektor<ScreenLabelInterface*>>(L, 2, LektorPtrBinding<ScreenLabelInterface*>::metaName);
+    if (val) instance->guiScreenLabels = *val;
+    return 0;
 }
 
 static int ForgottenGUI_set_selectedObject(lua_State* L)
@@ -987,6 +1074,171 @@ int ForgottenGUIBinding::createScreenLabelD(lua_State* L)
     return 1;
 }
 
+int ForgottenGUIBinding::showCharacterStatsWindow(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to showCharacterStatsWindow must be hand");
+    instance->showCharacterStatsWindow(*owner);
+    return 0;
+}
+
+int ForgottenGUIBinding::closeCharacterStatsWindow(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to closeCharacterStatsWindow must be hand");
+    instance->closeCharacterStatsWindow(*owner);
+    return 0;
+}
+
+int ForgottenGUIBinding::toggleStatsWindow(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to toggleStatsWindow must be hand");
+    instance->toggleStatsWindow(*owner);
+    return 0;
+}
+
+int ForgottenGUIBinding::toggleCharacterStatsWindowPermanent(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to toggleCharacterStatsWindowPermanent must be hand");
+    instance->toggleCharacterStatsWindowPermanent(*owner);
+    return 0;
+}
+
+int ForgottenGUIBinding::showInventory(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to showInventory must be hand");
+    bool autoPosition = lua_toboolean(L, 3) != 0;
+    float x = (float)luaL_optnumber(L, 4, 0.0f);
+    float y = (float)luaL_optnumber(L, 5, 0.0f);
+    InventoryGUI* result = instance->showInventory(*owner, autoPosition, x, y);
+    return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
+}
+
+int ForgottenGUIBinding::showTraderInventory(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to showTraderInventory must be hand");
+    InventoryGUI* result = instance->showTraderInventory(*owner);
+    return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
+}
+
+int ForgottenGUIBinding::showInventoryBuilding(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to showInventoryBuilding must be hand");
+    InventoryGUI* result = instance->showInventoryBuilding(*owner);
+    return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
+}
+
+int ForgottenGUIBinding::showInventoryNPC(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to showInventoryNPC must be hand");
+    InventoryGUI* result = instance->showInventoryNPC(*owner);
+    return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
+}
+
+int ForgottenGUIBinding::closeInventory(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to closeInventory must be hand");
+    instance->closeInventory(*owner);
+    return 0;
+}
+
+int ForgottenGUIBinding::getInventoryWindow(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* who = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!who) return luaL_error(L, "Argument 2 to getInventoryWindow must be hand");
+    InventoryGUI* result = instance->getInventoryWindow(*who);
+    return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
+}
+
+int ForgottenGUIBinding::hasInventoryWindowOpen(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!obj) return luaL_error(L, "Argument 2 to hasInventoryWindowOpen must be hand");
+    bool result = instance->hasInventoryWindowOpen(*obj);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ForgottenGUIBinding::toggleInventoryWindowPermanent(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to toggleInventoryWindowPermanent must be hand");
+    instance->toggleInventoryWindowPermanent(*owner);
+    return 0;
+}
+
+int ForgottenGUIBinding::getSelectedObject(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    return HandBinding::push(L, instance->getSelectedObject());
+}
+
+int ForgottenGUIBinding::getSelectedPlayerCharacter(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    return HandBinding::push(L, instance->getSelectedPlayerCharacter());
+}
+
+int ForgottenGUIBinding::showTradeWindow(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* a = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    hand* b = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    if (!a || !b) return luaL_error(L, "Arguments 2 and 3 to showTradeWindow must be hand");
+    TradeWindowType type = (TradeWindowType)luaL_checkinteger(L, 4);
+    instance->showTradeWindow(*a, *b, type);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 54: void changeFontSize(...) - static method
@@ -1096,6 +1348,9 @@ int ForgottenGUIBinding::tostring(lua_State* L)
 
 void ForgottenGUIBinding::registerBinding(lua_State* L)
 {
+    ForgottenInventoryWindowsOpenMapBinding::registerBinding(L, "ogre_unordered_map<hand, InventoryGUI*>", HandBinding::getMetatableName(), InventoryGUIBinding::getMetatableName());
+    ForgottenInventoryWindowsPermanentSetBinding::registerBinding(L, "ogre_unordered_set<hand>", HandBinding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       ForgottenGUIBinding::gc },
         { "__tostring", ForgottenGUIBinding::tostring },
@@ -1158,6 +1413,21 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
         { "createFloatingImageAbs", ForgottenGUIBinding::createFloatingImageAbs },
         { "createFloatingProgressBar", ForgottenGUIBinding::createFloatingProgressBar },
         { "createScreenLabelD", ForgottenGUIBinding::createScreenLabelD },
+        { "showCharacterStatsWindow", ForgottenGUIBinding::showCharacterStatsWindow },
+        { "closeCharacterStatsWindow", ForgottenGUIBinding::closeCharacterStatsWindow },
+        { "toggleStatsWindow", ForgottenGUIBinding::toggleStatsWindow },
+        { "toggleCharacterStatsWindowPermanent", ForgottenGUIBinding::toggleCharacterStatsWindowPermanent },
+        { "showInventory", ForgottenGUIBinding::showInventory },
+        { "showTraderInventory", ForgottenGUIBinding::showTraderInventory },
+        { "showInventoryBuilding", ForgottenGUIBinding::showInventoryBuilding },
+        { "showInventoryNPC", ForgottenGUIBinding::showInventoryNPC },
+        { "closeInventory", ForgottenGUIBinding::closeInventory },
+        { "getInventoryWindow", ForgottenGUIBinding::getInventoryWindow },
+        { "hasInventoryWindowOpen", ForgottenGUIBinding::hasInventoryWindowOpen },
+        { "toggleInventoryWindowPermanent", ForgottenGUIBinding::toggleInventoryWindowPermanent },
+        { "getSelectedObject", ForgottenGUIBinding::getSelectedObject },
+        { "getSelectedPlayerCharacter", ForgottenGUIBinding::getSelectedPlayerCharacter },
+        { "showTradeWindow", ForgottenGUIBinding::showTradeWindow },
         { 0, 0 }
     };
 
@@ -1185,10 +1455,15 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
     registerGetter(L, "_closeTradeWindowMsg", ForgottenGUI_get__closeTradeWindowMsg);
     registerGetter(L, "tradeA", ForgottenGUI_get_tradeA);
     registerGetter(L, "tradeB", ForgottenGUI_get_tradeB);
+    registerGetter(L, "inventoryWindowsOpen", ForgottenGUI_get_inventoryWindowsOpen);
     registerGetter(L, "inventoryWindowBuilding", ForgottenGUI_get_inventoryWindowBuilding);
     registerGetter(L, "inventoryWindowCharacter", ForgottenGUI_get_inventoryWindowCharacter);
     registerGetter(L, "inventoryWindowTrader", ForgottenGUI_get_inventoryWindowTrader);
     registerGetter(L, "inventoryWindowNPC", ForgottenGUI_get_inventoryWindowNPC);
+    registerGetter(L, "inventoryWindowsPermanent", ForgottenGUI_get_inventoryWindowsPermanent);
+    registerGetter(L, "guiWindows", ForgottenGUI_get_guiWindows);
+    registerGetter(L, "guiDatapanels", ForgottenGUI_get_guiDatapanels);
+    registerGetter(L, "guiScreenLabels", ForgottenGUI_get_guiScreenLabels);
     registerGetter(L, "characterEditor", ForgottenGUI_get_characterEditor);
     registerGetter(L, "guiScreenLabelsMutex", ForgottenGUI_get_guiScreenLabelsMutex);
     registerGetter(L, "selectedObject", ForgottenGUI_get_selectedObject);
@@ -1213,10 +1488,15 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
     registerSetter(L, "_closeTradeWindowMsg", ForgottenGUI_set__closeTradeWindowMsg);
     registerSetter(L, "tradeA", ForgottenGUI_set_tradeA);
     registerSetter(L, "tradeB", ForgottenGUI_set_tradeB);
+    registerSetter(L, "inventoryWindowsOpen", ForgottenGUI_set_inventoryWindowsOpen);
     registerSetter(L, "inventoryWindowBuilding", ForgottenGUI_set_inventoryWindowBuilding);
     registerSetter(L, "inventoryWindowCharacter", ForgottenGUI_set_inventoryWindowCharacter);
     registerSetter(L, "inventoryWindowTrader", ForgottenGUI_set_inventoryWindowTrader);
     registerSetter(L, "inventoryWindowNPC", ForgottenGUI_set_inventoryWindowNPC);
+    registerSetter(L, "inventoryWindowsPermanent", ForgottenGUI_set_inventoryWindowsPermanent);
+    registerSetter(L, "guiWindows", ForgottenGUI_set_guiWindows);
+    registerSetter(L, "guiDatapanels", ForgottenGUI_set_guiDatapanels);
+    registerSetter(L, "guiScreenLabels", ForgottenGUI_set_guiScreenLabels);
     registerSetter(L, "characterEditor", ForgottenGUI_set_characterEditor);
     registerSetter(L, "guiScreenLabelsMutex", ForgottenGUI_set_guiScreenLabelsMutex);
     registerSetter(L, "selectedObject", ForgottenGUI_set_selectedObject);

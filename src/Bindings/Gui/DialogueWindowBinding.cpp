@@ -360,6 +360,45 @@ int DialogueWindowBinding::_DESTRUCTOR(lua_State* L)
     return 0;
 }
 
+int DialogueWindowBinding::show(lua_State* L)
+{
+    DialogueWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueWindow is nil");
+
+    if (lua_isboolean(L, 2))
+    {
+        bool on = lua_toboolean(L, 2) != 0;
+        instance->show(on);
+    }
+    else
+    {
+        Dialogue* _dialogue = checkObject<Dialogue>(L, 2, DialogueBinding::getMetatableName());
+        instance->show(_dialogue);
+    }
+    return 0;
+}
+
+int DialogueWindowBinding::setResponses(lua_State* L)
+{
+    DialogueWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueWindow is nil");
+
+    luaL_checktype(L, 2, LUA_TTABLE);
+    Ogre::vector<std::string>::type responses;
+    int len = (int)lua_objlen(L, 2);
+    for (int i = 1; i <= len; ++i)
+    {
+        lua_rawgeti(L, 2, i);
+        if (lua_isstring(L, -1))
+        {
+            responses.push_back(lua_tostring(L, -1));
+        }
+        lua_pop(L, 1);
+    }
+    instance->setResponses(responses);
+    return 0;
+}
+
 int DialogueWindowBinding::updatePanelsPosition(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
@@ -368,13 +407,6 @@ int DialogueWindowBinding::updatePanelsPosition(lua_State* L)
     instance->updatePanelsPosition();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 16: void show(...) - overloaded method
-  line 18: void show(...) - overloaded method
-  line 27: void setResponses(...) - unsupported arg type
-*/
 
 /*
 Skipped properties needing manual binding:
@@ -406,6 +438,7 @@ void DialogueWindowBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "getVisible", DialogueWindowBinding::getVisible },
         { "setVisible", DialogueWindowBinding::setVisible },
+        { "show", DialogueWindowBinding::show },
         { "_NV_show", DialogueWindowBinding::_NV_show },
         { "hide", DialogueWindowBinding::hide },
         { "isVisible", DialogueWindowBinding::isVisible },
@@ -415,6 +448,7 @@ void DialogueWindowBinding::registerBinding(lua_State* L)
         { "getTop", DialogueWindowBinding::getTop },
         { "activateResponse", DialogueWindowBinding::activateResponse },
         { "setNPCText", DialogueWindowBinding::setNPCText },
+        { "setResponses", DialogueWindowBinding::setResponses },
         { "clearResponses", DialogueWindowBinding::clearResponses },
         { "changePortrait", DialogueWindowBinding::changePortrait },
         { "_CONSTRUCTOR", DialogueWindowBinding::_CONSTRUCTOR },
