@@ -103,13 +103,13 @@ void CallCharacterSayCallbacks(Character* character, const std::string& message)
 
 // Fired by Character::pickupObject hook.
 // Lua event name: "onCharacterPickupObject"
-// Lua signature:  function(character)
-void CallCharacterPickupObjectCallbacks(Character* character);
+// Lua signature:  function(character, who)
+void CallCharacterPickupObjectCallbacks(Character* character, Character* who);
 
 // Fired by Character::getPickedUp hook.
 // Lua event name: "onCharacterGetPickedUp"
-// Lua signature:  function(character)
-void CallCharacterGetPickedUpCallbacks(Character* byWhom);
+// Lua signature:  function(character, byWhom)
+void CallCharacterGetPickedUpCallbacks(Character* character, Character* byWhom);
 
 // Fired by Character::_NV_takeMoney hook.
 // Lua event name: "onCharacterTakeMoney"
@@ -123,13 +123,13 @@ void CallCharacterEatCallbacks(Character* character, Item* food, Inventory* from
 
 // Fired by Character::_NV_hitByMeleeAttack hook.
 // Lua event name: "onCharacterHitByMelee"
-// Lua signature:  function(character, attacker, damage, cutDir, attack, comboID)
-void CallCharacterHitByMeleeCallbacks(Character* character, Character* attacker, Damages* damage, int cutDir, CombatTechniqueData* attack, int comboID);
+// Lua signature:  function(character, cutDir, damage, attacker, attack, comboID)
+void CallCharacterHitByMeleeCallbacks(Character* character, int cutDir, Damages* damage, Character* attacker, CombatTechniqueData* attack, int comboID);
 
 // Fired by Character::_NV_gettingEaten hook.
 // Lua event name: "onCharacterGettingEaten"
-// Lua signature:  function(character, eater, amount)
-void CallCharacterGettingEatenCallbacks(Character* character, Character* eater, float amount);
+// Lua signature:  function(character, amount, eater)
+void CallCharacterGettingEatenCallbacks(Character* character, float amount, Character* eater);
 
 // Fired by Character::_NV_setStandingOrder hook.
 // Lua event name: "onCharacterStandingOrderChanged"
@@ -143,23 +143,23 @@ void CallCharacterFactionChangedCallbacks(Character* character, Faction* faction
 
 // Fired by Character::_NV_equipItem hook.
 // Lua event name: "onCharacterEquip"
-// Lua signature:  function(character, item, slotName)
+// Lua signature:  function(character, sectionName, item)
 void CallCharacterEquipCallbacks(Character* character, const std::string& sectionName, Item* item);
 
 // Fired by Character::_NV_unequipItem hook.
 // Lua event name: "onCharacterUnequip"
-// Lua signature:  function(character, item, slotName)
+// Lua signature:  function(character, sectionName, item)
 void CallCharacterUnequipCallbacks(Character* character, const std::string& sectionName, Item* item);
 
 // Fired by Character::_NV_ImStealingDoYouNotice hook.
 // Lua event name: "onPlayerStealCheck"
-// Lua signature:  function(thief, victim, item, noticed)
-void CallCharacterStealNoticeCallbacks(Character* character, RootObject* stealFrom, Item* item, bool noticed);
+// Lua signature:  function(character, stealFrom, item)
+void CallCharacterStealNoticeCallbacks(Character* character, RootObject* stealFrom, Item* item);
 
 // Fired by Character::_NV_smugglingTradeCheck hook.
 // Lua event name: "onSmugglingTradeCheck"
-// Lua signature:  function(contrabandist, examiner, item, result)
-void CallCharacterSmugglingCheckCallbacks(Character* character, Item* item, Character* who, int result);
+// Lua signature:  function(character, item, who)
+void CallCharacterSmugglingCheckCallbacks(Character* character, Item* item, Character* who);
 
 // Fired by Character::_NV_init hook
 // Lua event name: "onCharacterInit"
@@ -192,8 +192,8 @@ void CallCharStatsClearHoldLocationCallbacks(CharStats* stats);
 
 // Fired by CharStats::chooseAttack hook.
 // Lua event name: "chooseAttack"
-// Lua signature:  function(charStats, range, weaponReach, lastAttack, opponentIsStationary, chosenAttack)
-void CallCharStatsChooseAttackCallbacks(CharStats* stats, float range, float weaponReach, CombatTechniqueData* lastAttack, bool opponentIsStationary, CombatTechniqueData* chosenAttack);
+// Lua signature:  function(charStats, range, weaponReach, lastAttack, opponentIsStationary, defaultAttack) -> CombatTechniqueData
+CombatTechniqueData* CallCharStatsChooseAttackCallbacks(CharStats* stats, float range, float weaponReach, CombatTechniqueData* lastAttack, bool opponentIsStationary, CombatTechniqueData* defaultVal);
 
 // Fired by CharStats::xpRunning hook.
 // Lua event name: "xpRunning"
@@ -327,8 +327,8 @@ int CallInventoryItemBaseGetValueSingleCallbacks(const InventoryItemBase* item, 
 
 // Fired by BountyManager::notifyCrimeWitnessed hook.
 // Lua event name: "onCrimeWitnessed"
-// Lua signature:  function(character, faction, againstWho, expiryTime, crimeType)
-void CallCrimeWitnessedCallbacks(Character* character, Faction* against, const hand& againstWho, int expiryTime, int crimeType);
+// Lua signature:  function(bountyManager, faction, againstWho, expiryTime, crimeType)
+void CallCrimeWitnessedCallbacks(BountyManager* bountyMgr, Faction* against, const hand& againstWho, int expiryTime, int crimeType);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in FactionRelations.h
@@ -336,8 +336,8 @@ void CallCrimeWitnessedCallbacks(Character* character, Faction* against, const h
 
 // Fired by FactionRelations::affectRelations hook.
 // Lua event name: "onFactionRelationsAffected"
-// Lua signature:  function(faction, otherFaction, eventType, multiplier)
-void CallFactionRelationsAffectedCallbacks(Faction* faction, Faction* other, int eventType, float multiplier);
+// Lua signature:  function(factionRelations, otherFaction, eventType, multiplier)
+void CallFactionRelationsAffectedCallbacks(FactionRelations* factionRelations, Faction* other, int eventType, float multiplier);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in Faction.h
@@ -359,8 +359,8 @@ GameData* CallFactionGetBuildingReplacementCallbacks(Faction* faction, GameData*
 
 // Fired by MedicalSystem::amputate hook.
 // Lua event name: "onLimbAmputated"
-// Lua signature:  function(character, limb, createSeveredItem, forceVector)
-void CallLimbAmputatedCallbacks(Character* character, int limb, bool createSeveredItem, const Ogre::Vector3& force);
+// Lua signature:  function(medicalSystem, limb, createSeveredItem, forceVector)
+void CallLimbAmputatedCallbacks(MedicalSystem* med, int limb, bool createSeveredItem, const Ogre::Vector3& force);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in gui/DialogueWindow.h
@@ -558,13 +558,13 @@ void CallPlayerInterfaceAddOrderSelectedCharactersCallbacks(PlayerInterface* pla
 
 // Fired by MedicalSystem::knockout hook
 // Lua event name: "onCharacterKnockedOut"
-// Lua signature:  function(character, skill)
+// Lua signature:  function(medicalSystem, skill)
 void CallMedicalSystemKnockoutCallbacks(MedicalSystem* med, float skill);
 
 // Fired by MedicalSystem::canGetUpWakeUp hook
 // Lua event name: "onCharacterWakeUp"
-// Lua signature:  function(character) -> boolean
-bool CallMedicalSystemCanGetUpWakeUpCallbacks(MedicalSystem* med);
+// Lua signature:  function(medicalSystem) -> boolean
+bool CallMedicalSystemCanGetUpWakeUpCallbacks(MedicalSystem* med, bool defaultVal = true);
 
 // Fired by Inventory::addItem hook
 // Lua event name: "onInventoryAddItem"

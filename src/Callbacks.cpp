@@ -274,21 +274,21 @@ void CallCharacterSayCallbacks(Character* character, const std::string& message)
     KenshiLua::EventSystem::get().callHandlers("onCharacterSay", &pusher);
 }
 
-void CallCharacterPickupObjectCallbacks(Character* character)
+void CallCharacterPickupObjectCallbacks(Character* character, Character* who)
 {
-    ArgPusher1<Character*> pusher(character);
+    ArgPusher2<Character*, Character*> pusher(character, who);
     KenshiLua::EventSystem::get().callHandlers("onCharacterPickupObject", &pusher);
 }
 
-void CallCharacterGetPickedUpCallbacks(Character* byWhom)
+void CallCharacterGetPickedUpCallbacks(Character* character, Character* byWhom)
 {
-    ArgPusher1<Character*> pusher(byWhom);
+    ArgPusher2<Character*, Character*> pusher(character, byWhom);
     KenshiLua::EventSystem::get().callHandlers("onCharacterGetPickedUp", &pusher);
 }
 
 void CallCharsUpdateCallbacks()
 {
-    KenshiLua::EventSystem::get().callHandlers("onCharacterUpdate", NULL);
+    KenshiLua::EventSystem::get().callHandlers("onCharsUpdate", NULL);
 }
 
 void CallKeyDownCallbacks(int keyCode)
@@ -309,10 +309,12 @@ void CallCharStatsClearHoldLocationCallbacks(CharStats* stats)
     KenshiLua::EventSystem::get().callHandlers("clearHoldLocation", &pusher);
 }
 
-void CallCharStatsChooseAttackCallbacks(CharStats* stats, float range, float weaponReach, CombatTechniqueData* lastAttack, bool opponentIsStationary, CombatTechniqueData* chosenAttack)
+CombatTechniqueData* CallCharStatsChooseAttackCallbacks(CharStats* stats, float range, float weaponReach, CombatTechniqueData* lastAttack, bool opponentIsStationary, CombatTechniqueData* defaultVal)
 {
-    ArgPusher6<CharStats*, float, float, CombatTechniqueData*, bool, CombatTechniqueData*> pusher(stats, range, weaponReach, lastAttack, opponentIsStationary, chosenAttack);
-    KenshiLua::EventSystem::get().callHandlers("chooseAttack", &pusher);
+    ArgPusher6<CharStats*, float, float, CombatTechniqueData*, bool, CombatTechniqueData*> pusher(stats, range, weaponReach, lastAttack, opponentIsStationary, defaultVal);
+    CombatTechniqueData* overrideVal = static_cast<CombatTechniqueData*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "chooseAttack", "KenshiLua.CombatTechniqueData", &pusher));
+    return overrideVal ? overrideVal : defaultVal;
 }
 
 void CallCharStatsXpRunningCallbacks(CharStats* stats, float time, float speed)
@@ -375,15 +377,15 @@ void CallCharacterEatCallbacks(Character* character, Item* food, Inventory* from
     KenshiLua::EventSystem::get().callHandlers("onCharacterEat", &pusher);
 }
 
-void CallCharacterHitByMeleeCallbacks(Character* character, Character* attacker, Damages* damage, int cutDir, CombatTechniqueData* attack, int comboID)
+void CallCharacterHitByMeleeCallbacks(Character* character, int cutDir, Damages* damage, Character* attacker, CombatTechniqueData* attack, int comboID)
 {
-    ArgPusher6<Character*, Character*, Damages*, int, CombatTechniqueData*, int> pusher(character, attacker, damage, cutDir, attack, comboID);
+    ArgPusher6<Character*, int, Damages*, Character*, CombatTechniqueData*, int> pusher(character, cutDir, damage, attacker, attack, comboID);
     KenshiLua::EventSystem::get().callHandlers("onCharacterHitByMelee", &pusher);
 }
 
-void CallCharacterGettingEatenCallbacks(Character* character, Character* eater, float amount)
+void CallCharacterGettingEatenCallbacks(Character* character, float amount, Character* eater)
 {
-    ArgPusher3<Character*, Character*, float> pusher(character, eater, amount);
+    ArgPusher3<Character*, float, Character*> pusher(character, amount, eater);
     KenshiLua::EventSystem::get().callHandlers("onCharacterGettingEaten", &pusher);
 }
 
@@ -411,15 +413,15 @@ void CallCharacterUnequipCallbacks(Character* character, const std::string& sect
     KenshiLua::EventSystem::get().callHandlers("onCharacterUnequip", &pusher);
 }
 
-void CallCharacterStealNoticeCallbacks(Character* character, RootObject* stealFrom, Item* item, bool noticed)
+void CallCharacterStealNoticeCallbacks(Character* character, RootObject* stealFrom, Item* item)
 {
-    ArgPusher4<Character*, RootObject*, Item*, bool> pusher(character, stealFrom, item, noticed);
+    ArgPusher3<Character*, RootObject*, Item*> pusher(character, stealFrom, item);
     KenshiLua::EventSystem::get().callHandlers("onPlayerStealCheck", &pusher);
 }
 
-void CallCharacterSmugglingCheckCallbacks(Character* character, Item* item, Character* who, int result)
+void CallCharacterSmugglingCheckCallbacks(Character* character, Item* item, Character* who)
 {
-    ArgPusher4<Character*, Item*, Character*, int> pusher(character, item, who, result);
+    ArgPusher3<Character*, Item*, Character*> pusher(character, item, who);
     KenshiLua::EventSystem::get().callHandlers("onSmugglingTradeCheck", &pusher);
 }
 
@@ -465,21 +467,21 @@ void CallItemStolenCallbacks(Item* item, RootObject* obj)
     KenshiLua::EventSystem::get().callHandlers("onItemStolen", &pusher);
 }
 
-void CallCrimeWitnessedCallbacks(Character* character, Faction* against, const hand& againstWho, int expiryTime, int crimeType)
+void CallCrimeWitnessedCallbacks(BountyManager* bountyMgr, Faction* against, const hand& againstWho, int expiryTime, int crimeType)
 {
-    ArgPusher5<Character*, Faction*, const hand&, int, int> pusher(character, against, againstWho, expiryTime, crimeType);
+    ArgPusher5<BountyManager*, Faction*, const hand&, int, int> pusher(bountyMgr, against, againstWho, expiryTime, crimeType);
     KenshiLua::EventSystem::get().callHandlers("onCrimeWitnessed", &pusher);
 }
 
-void CallFactionRelationsAffectedCallbacks(Faction* faction, Faction* other, int eventType, float multiplier)
+void CallFactionRelationsAffectedCallbacks(FactionRelations* factionRelations, Faction* other, int eventType, float multiplier)
 {
-    ArgPusher4<Faction*, Faction*, int, float> pusher(faction, other, eventType, multiplier);
+    ArgPusher4<FactionRelations*, Faction*, int, float> pusher(factionRelations, other, eventType, multiplier);
     KenshiLua::EventSystem::get().callHandlers("onFactionRelationsAffected", &pusher);
 }
 
-void CallLimbAmputatedCallbacks(Character* character, int limb, bool createSeveredItem, const Ogre::Vector3& force)
+void CallLimbAmputatedCallbacks(MedicalSystem* med, int limb, bool createSeveredItem, const Ogre::Vector3& force)
 {
-    ArgPusher4<Character*, int, bool, const Ogre::Vector3&> pusher(character, limb, createSeveredItem, force);
+    ArgPusher4<MedicalSystem*, int, bool, const Ogre::Vector3&> pusher(med, limb, createSeveredItem, force);
     KenshiLua::EventSystem::get().callHandlers("onLimbAmputated", &pusher);
 }
 
@@ -770,10 +772,10 @@ void CallMedicalSystemKnockoutCallbacks(MedicalSystem* med, float skill)
     KenshiLua::EventSystem::get().callHandlers("onCharacterKnockedOut", &pusher);
 }
 
-bool CallMedicalSystemCanGetUpWakeUpCallbacks(MedicalSystem* med)
+bool CallMedicalSystemCanGetUpWakeUpCallbacks(MedicalSystem* med, bool defaultVal)
 {
     ArgPusher1<MedicalSystem*> pusher(med);
-    return KenshiLua::EventSystem::get().callHandlersBool("onCharacterWakeUp", &pusher, true);
+    return KenshiLua::EventSystem::get().callHandlersBool("onCharacterWakeUp", &pusher, defaultVal);
 }
 
 bool CallInventoryAddItemCallbacks(Inventory* inv, Item* item, int quantity, bool dropOnFail, bool destroyOnFail)

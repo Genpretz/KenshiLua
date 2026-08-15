@@ -180,7 +180,7 @@ static void (*Character_pickupObject_orig)(Character* thisptr, Character* charac
 static void Character_pickupObject_hook(Character* thisptr, Character* character)
 {
     Character_pickupObject_orig(thisptr, character);
-    CallCharacterPickupObjectCallbacks(character);
+    CallCharacterPickupObjectCallbacks(thisptr, character);
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_Character_PickupObject,
@@ -193,7 +193,7 @@ static void (*Character_getPickedUp_orig)(Character* thisptr, Character* byWhom)
 static void Character_getPickedUp_hook(Character* thisptr, Character* byWhom)
 {
     Character_getPickedUp_orig(thisptr, byWhom);
-    CallCharacterGetPickedUpCallbacks(byWhom);
+    CallCharacterGetPickedUpCallbacks(thisptr, byWhom);
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_Character_GetPickedUp,
@@ -201,12 +201,13 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_GetPickedUp,
     KenshiLib::GetRealAddress(&Character::getPickedUp),
     Character_getPickedUp_hook, Character_getPickedUp_orig)
 
-static void (*Character_takeMoney_orig)(Character*, int) = NULL;
+static bool (*Character_takeMoney_orig)(Character*, int) = NULL;
 
-static void Character_takeMoney_hook(Character* thisptr, int amount)
+static bool Character_takeMoney_hook(Character* thisptr, int amount)
 {
-    Character_takeMoney_orig(thisptr, amount);
+    bool res = Character_takeMoney_orig(thisptr, amount);
     CallCharacterTakeMoneyCallbacks(thisptr, amount);
+    return res;
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_Character_TakeMoney,
@@ -214,12 +215,13 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_TakeMoney,
     KenshiLib::GetRealAddress(&Character::_NV_takeMoney),
     Character_takeMoney_hook, Character_takeMoney_orig)
 
-static void (*Character_eatItem_orig)(Character*, Item*, Inventory*) = NULL;
+static bool (*Character_eatItem_orig)(Character*, Item*, Inventory*) = NULL;
 
-static void Character_eatItem_hook(Character* thisptr, Item* food, Inventory* from)
+static bool Character_eatItem_hook(Character* thisptr, Item* food, Inventory* from)
 {
-    Character_eatItem_orig(thisptr, food, from);
+    bool res = Character_eatItem_orig(thisptr, food, from);
     CallCharacterEatCallbacks(thisptr, food, from);
+    return res;
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_Character_EatItem,
@@ -227,12 +229,13 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_EatItem,
     KenshiLib::GetRealAddress(&Character::eatItem),
     Character_eatItem_hook, Character_eatItem_orig)
 
-static void (*Character_hitByMeleeAttack_orig)(Character*, Character*, Damages*, int, CombatTechniqueData*, int) = NULL;
+static HitMaterialType (*Character_hitByMeleeAttack_orig)(Character*, CutDirection, Damages&, Character*, CombatTechniqueData*, int) = NULL;
 
-static void Character_hitByMeleeAttack_hook(Character* thisptr, Character* attacker, Damages* damage, int cutDir, CombatTechniqueData* attack, int comboID)
+static HitMaterialType Character_hitByMeleeAttack_hook(Character* thisptr, CutDirection dir, Damages& damage, Character* who, CombatTechniqueData* attack, int comboID)
 {
-    Character_hitByMeleeAttack_orig(thisptr, attacker, damage, cutDir, attack, comboID);
-    CallCharacterHitByMeleeCallbacks(thisptr, attacker, damage, cutDir, attack, comboID);
+    HitMaterialType res = Character_hitByMeleeAttack_orig(thisptr, dir, damage, who, attack, comboID);
+    CallCharacterHitByMeleeCallbacks(thisptr, static_cast<int>(dir), &damage, who, attack, comboID);
+    return res;
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_Character_HitByMeleeAttack,
@@ -240,12 +243,13 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_HitByMeleeAttack,
     KenshiLib::GetRealAddress(&Character::_NV_hitByMeleeAttack),
     Character_hitByMeleeAttack_hook, Character_hitByMeleeAttack_orig)
 
-static void (*Character_gettingEaten_orig)(Character*, Character*, float) = NULL;
+static bool (*Character_gettingEaten_orig)(Character*, float, Character*) = NULL;
 
-static void Character_gettingEaten_hook(Character* thisptr, Character* eater, float amount)
+static bool Character_gettingEaten_hook(Character* thisptr, float amount, Character* eater)
 {
-    Character_gettingEaten_orig(thisptr, eater, amount);
-    CallCharacterGettingEatenCallbacks(thisptr, eater, amount);
+    bool res = Character_gettingEaten_orig(thisptr, amount, eater);
+    CallCharacterGettingEatenCallbacks(thisptr, amount, eater);
+    return res;
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_Character_GettingEaten,
@@ -305,12 +309,13 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_UnequipItem,
     KenshiLib::GetRealAddress(&Character::_NV_unequipItem),
     Character_unequipItem_hook, Character_unequipItem_orig)
 
-static void (*Character_ImStealingDoYouNotice_orig)(Character*, RootObject*, Item*, bool) = NULL;
+static bool (*Character_ImStealingDoYouNotice_orig)(Character*, RootObject*, Item*) = NULL;
 
-static void Character_ImStealingDoYouNotice_hook(Character* thisptr, RootObject* stealFrom, Item* item, bool noticed)
+static bool Character_ImStealingDoYouNotice_hook(Character* thisptr, RootObject* stealFrom, Item* item)
 {
-    Character_ImStealingDoYouNotice_orig(thisptr, stealFrom, item, noticed);
-    CallCharacterStealNoticeCallbacks(thisptr, stealFrom, item, noticed);
+    bool noticed = Character_ImStealingDoYouNotice_orig(thisptr, stealFrom, item);
+    CallCharacterStealNoticeCallbacks(thisptr, stealFrom, item);
+    return noticed;
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_Character_ImStealingDoYouNotice,
@@ -318,12 +323,13 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_ImStealingDoYouNotice,
     KenshiLib::GetRealAddress(&Character::_NV_ImStealingDoYouNotice),
     Character_ImStealingDoYouNotice_hook, Character_ImStealingDoYouNotice_orig)
 
-static void (*Character_smugglingTradeCheck_orig)(Character*, Item*, Character*, int) = NULL;
+static YesNoMaybe (*Character_smugglingTradeCheck_orig)(Character*, Item*, Character*) = NULL;
 
-static void Character_smugglingTradeCheck_hook(Character* thisptr, Item* item, Character* who, int result)
+static YesNoMaybe Character_smugglingTradeCheck_hook(Character* thisptr, Item* item, Character* who)
 {
-    Character_smugglingTradeCheck_orig(thisptr, item, who, result);
-    CallCharacterSmugglingCheckCallbacks(thisptr, item, who, result);
+    YesNoMaybe res = Character_smugglingTradeCheck_orig(thisptr, item, who);
+    CallCharacterSmugglingCheckCallbacks(thisptr, item, who);
+    return res;
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_Character_SmugglingTradeCheck,
@@ -440,12 +446,13 @@ DEFINE_HOOK_INSTALLER(InstallHook_CharStats_ClearHoldLocation,
     KenshiLib::GetRealAddress(&CharStats::clearHoldLocation),
     CharStats_ClearHoldLocation_hook, CharStats_ClearHoldLocation_orig)
 
-static void (*CharStats_ChooseAttack_orig)(CharStats*, float, float, CombatTechniqueData*, bool, CombatTechniqueData*) = NULL;
+static CombatTechniqueData* (*CharStats_ChooseAttack_orig)(CharStats*, float, float, CombatTechniqueData*, bool) = NULL;
 
-static void CharStats_ChooseAttack_hook(CharStats* thisptr, float range, float weaponReach, CombatTechniqueData* lastAttack, bool opponentIsStationary, CombatTechniqueData* chosenAttack)
+static CombatTechniqueData* CharStats_ChooseAttack_hook(CharStats* thisptr, float range, float weaponReach, CombatTechniqueData* lastAttack, bool opponentIsStationary)
 {
-    CharStats_ChooseAttack_orig(thisptr, range, weaponReach, lastAttack, opponentIsStationary, chosenAttack);
-    CallCharStatsChooseAttackCallbacks(thisptr, range, weaponReach, lastAttack, opponentIsStationary, chosenAttack);
+    CombatTechniqueData* current = CharStats_ChooseAttack_orig(thisptr, range, weaponReach, lastAttack, opponentIsStationary);
+    CombatTechniqueData* overrideAttack = CallCharStatsChooseAttackCallbacks(thisptr, range, weaponReach, lastAttack, opponentIsStationary, current);
+    return overrideAttack ? overrideAttack : current;
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_CharStats_ChooseAttack,
@@ -602,12 +609,13 @@ DEFINE_HOOK_INSTALLER(InstallHook_CharStats_xpDodgeEvent,
 // Hooks for PlayerInterface.h
 // ---------------------------------------------------------------------------
 
-static void (*PlayerInterface_recruit_orig)(PlayerInterface*, Character*, bool) = NULL;
+static bool (*PlayerInterface_recruit_orig)(PlayerInterface*, Character*, bool) = NULL;
 
-static void PlayerInterface_recruit_hook(PlayerInterface* thisptr, Character* character, bool editor)
+static bool PlayerInterface_recruit_hook(PlayerInterface* thisptr, Character* character, bool editor)
 {
-    PlayerInterface_recruit_orig(thisptr, character, editor);
+    bool res = PlayerInterface_recruit_orig(thisptr, character, editor);
     CallPlayerRecruitCallbacks(thisptr, character, editor);
+    return res;
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_Recruit,
@@ -712,12 +720,13 @@ DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_encounterFaction,
 // Hooks for Platoon.h
 // ---------------------------------------------------------------------------
 
-static void (*ActivePlatoon_addActiveObject_orig)(ActivePlatoon*, RootObject*) = NULL;
+static bool (*ActivePlatoon_addActiveObject_orig)(ActivePlatoon*, RootObject*) = NULL;
 
-static void ActivePlatoon_addActiveObject_hook(ActivePlatoon* thisptr, RootObject* c)
+static bool ActivePlatoon_addActiveObject_hook(ActivePlatoon* thisptr, RootObject* c)
 {
-    ActivePlatoon_addActiveObject_orig(thisptr, c);
+    bool res = ActivePlatoon_addActiveObject_orig(thisptr, c);
     CallPlatoonMemberAddedCallbacks(thisptr, c);
+    return res;
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_ActivePlatoon_AddActiveObject,
@@ -725,12 +734,13 @@ DEFINE_HOOK_INSTALLER(InstallHook_ActivePlatoon_AddActiveObject,
     KenshiLib::GetRealAddress(&ActivePlatoon::_NV_addActiveObject),
     ActivePlatoon_addActiveObject_hook, ActivePlatoon_addActiveObject_orig)
 
-static void (*ActivePlatoon_removeObject_orig)(ActivePlatoon*, RootObject*) = NULL;
+static bool (*ActivePlatoon_removeObject_orig)(ActivePlatoon*, RootObject*) = NULL;
 
-static void ActivePlatoon_removeObject_hook(ActivePlatoon* thisptr, RootObject* c)
+static bool ActivePlatoon_removeObject_hook(ActivePlatoon* thisptr, RootObject* c)
 {
-    ActivePlatoon_removeObject_orig(thisptr, c);
+    bool res = ActivePlatoon_removeObject_orig(thisptr, c);
     CallPlatoonMemberRemovedCallbacks(thisptr, c);
+    return res;
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_ActivePlatoon_RemoveObject,
@@ -888,12 +898,12 @@ DEFINE_HOOK_INSTALLER(InstallHook_Inventory_buyItem,
 // Hooks for BountyManager.h
 // ---------------------------------------------------------------------------
 
-static void (*BountyManager_notifyCrimeWitnessed_orig)(Character*, Faction*, const hand&, int, int) = NULL;
+static void (*BountyManager_notifyCrimeWitnessed_orig)(BountyManager*, Faction*, const hand&, int, CrimeEnum) = NULL;
 
-static void BountyManager_notifyCrimeWitnessed_hook(Character* character, Faction* against, const hand& againstWho, int expiryTime, int crimeType)
+static void BountyManager_notifyCrimeWitnessed_hook(BountyManager* thisptr, Faction* against, const hand& againstWho, int expiryTime, CrimeEnum crimeType)
 {
-    BountyManager_notifyCrimeWitnessed_orig(character, against, againstWho, expiryTime, crimeType);
-    CallCrimeWitnessedCallbacks(character, against, againstWho, expiryTime, crimeType);
+    BountyManager_notifyCrimeWitnessed_orig(thisptr, against, againstWho, expiryTime, crimeType);
+    CallCrimeWitnessedCallbacks(thisptr, against, againstWho, expiryTime, static_cast<int>(crimeType));
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_BountyManager_NotifyCrimeWitnessed,
@@ -906,17 +916,17 @@ DEFINE_HOOK_INSTALLER(InstallHook_BountyManager_NotifyCrimeWitnessed,
 // Hooks for FactionRelations.h
 // ---------------------------------------------------------------------------
 
-static void (*FactionRelations_affectRelations_orig)(Faction*, Faction*, int, float) = NULL;
+static void (*FactionRelations_affectRelations_orig)(FactionRelations*, Faction*, FactionRelations::FactionEvent, float) = NULL;
 
-static void FactionRelations_affectRelations_hook(Faction* faction, Faction* other, int eventType, float multiplier)
+static void FactionRelations_affectRelations_hook(FactionRelations* thisptr, Faction* other, FactionRelations::FactionEvent eventType, float multiplier)
 {
-    FactionRelations_affectRelations_orig(faction, other, eventType, multiplier);
-    CallFactionRelationsAffectedCallbacks(faction, other, eventType, multiplier);
+    FactionRelations_affectRelations_orig(thisptr, other, eventType, multiplier);
+    CallFactionRelationsAffectedCallbacks(thisptr, other, static_cast<int>(eventType), multiplier);
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_FactionRelations_AffectRelations,
     "FactionRelations::affectRelations",
-    KenshiLib::GetRealAddress(static_cast<void (FactionRelations::*)(Faction*, FactionRelations::FactionEvent, float)>(&FactionRelations::affectRelations)),
+    KenshiLib::GetRealAddress(static_cast<void (FactionRelations::*)(Faction*, FactionRelations::FactionEvent, float)>(&FactionRelations::_NV_affectRelations)),
     FactionRelations_affectRelations_hook, FactionRelations_affectRelations_orig)
 
 
@@ -982,12 +992,12 @@ DEFINE_HOOK_INSTALLER(InstallHook_Faction_destroyPlatoon,
 // Hooks for MedicalSystem.h
 // ---------------------------------------------------------------------------
 
-static void (*MedicalSystem_amputate_orig)(Character*, int, bool, const Ogre::Vector3&) = NULL;
+static void (*MedicalSystem_amputate_orig)(MedicalSystem*, RobotLimbs::Limb, bool, const Ogre::Vector3&) = NULL;
 
-static void MedicalSystem_amputate_hook(Character* character, int limb, bool createSeveredItem, const Ogre::Vector3& force)
+static void MedicalSystem_amputate_hook(MedicalSystem* thisptr, RobotLimbs::Limb limb, bool createSeveredItem, const Ogre::Vector3& force)
 {
-    MedicalSystem_amputate_orig(character, limb, createSeveredItem, force);
-    CallLimbAmputatedCallbacks(character, limb, createSeveredItem, force);
+    MedicalSystem_amputate_orig(thisptr, limb, createSeveredItem, force);
+    CallLimbAmputatedCallbacks(thisptr, static_cast<int>(limb), createSeveredItem, force);
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_Amputate,
@@ -1013,7 +1023,7 @@ static bool (*MedicalSystem_canGetUpWakeUp_orig)(MedicalSystem*) = NULL;
 static bool MedicalSystem_canGetUpWakeUp_hook(MedicalSystem* thisptr)
 {
     bool current = MedicalSystem_canGetUpWakeUp_orig(thisptr);
-    return CallMedicalSystemCanGetUpWakeUpCallbacks(thisptr) ? current : false;
+    return CallMedicalSystemCanGetUpWakeUpCallbacks(thisptr, current);
 }
 
 DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_canGetUpWakeUp,
