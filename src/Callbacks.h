@@ -42,11 +42,21 @@ class OrdersPanel;
 class DataPanelLine_Button;
 class InputHandler;
 class GameWorld;
+class Gear;
+class Sword;
+class Crossbow;
+class Armour;
+class LockedArmour;
+class Weapon;
+class Bounty;
+class DataObjectContainer;
+class Layout;
 namespace wraps { class BaseLayout; }
 namespace MyGUI { class Widget; }
 template <typename T> class lektor;
 namespace Ogre {
     class Vector3;
+    class Quaternion;
 }
 
 // ---------------------------------------------------------------------------
@@ -747,3 +757,83 @@ void CallInventorySectionUpdateItemCallbacks(Inventory* inventory, Item* item, i
 // Lua event name: "onInventoryDropItem"
 // Lua signature:  function(inventory, item)
 void CallInventoryDropItemCallbacks(Inventory* inventory, Item* item);
+
+// -----------------------------------------------------------
+// Constructor Interceptor Callbacks
+// -----------------------------------------------------------
+
+// Fired by Character::_CONSTRUCTOR hook.
+// Lua event name: "onCharacterConstructed"
+// Lua signature:  function(character, dat, own, handle, defaultVal) -> Character
+Character* CallCharacterConstructedCallbacks(Character* thisptr, GameData* dat, Faction* own, const hand& _handle, Character* defaultVal);
+
+// Fired by Item::_CONSTRUCTOR hook.
+// Lua event name: "onItemConstructed"
+// Lua signature:  function(item, baseData, companyData, materialData, handle, defaultVal) -> Item
+Item* CallItemConstructedCallbacks(Item* thisptr, GameData* baseData, GameData* companyData, GameData* _materialData, hand _handle, Item* defaultVal);
+
+// Fired by Gear::_CONSTRUCTOR hook.
+// Lua event name: "onGearConstructed"
+// Lua signature:  function(gear, baseData, companyData, materialData, handle, level, uniform, defaultVal) -> Gear
+Gear* CallGearConstructedCallbacks(Gear* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, hand _handle, int _level, Faction* uniform, Gear* defaultVal);
+
+// Fired by Sword::_CONSTRUCTOR hook.
+// Lua event name: "onSwordConstructed"
+// Lua signature:  function(sword, baseData, companyData, materialData, handle, level, defaultVal) -> Sword
+Sword* CallSwordConstructedCallbacks(Sword* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, hand _handle, int _level, Sword* defaultVal);
+
+// Fired by Crossbow::_CONSTRUCTOR hook.
+// Lua event name: "onCrossbowConstructed"
+// Lua signature:  function(crossbow, baseData, handle, overallLevel, defaultVal) -> Crossbow
+Crossbow* CallCrossbowConstructedCallbacks(Crossbow* thisptr, GameData* baseData, hand _handle, int _overalllevel, Crossbow* defaultVal);
+
+// Fired by Armour::_CONSTRUCTOR hook.
+// Lua event name: "onArmourConstructed"
+// Lua signature:  function(armour, baseData, materialData, handle, uniformFlag, level, defaultVal) -> Armour
+Armour* CallArmourConstructedCallbacks(Armour* thisptr, GameData* baseData, GameData* _materialData, hand _handle, Faction* _uniformFlag, int _level, Armour* defaultVal);
+
+// Fired by LockedArmour::_CONSTRUCTOR hook.
+// Lua event name: "onLockedArmourConstructed"
+// Lua signature:  function(lockedArmour, baseData, materialData, handle, uniformFlag, level, defaultVal) -> LockedArmour
+LockedArmour* CallLockedArmourConstructedCallbacks(LockedArmour* thisptr, GameData* baseData, GameData* _materialData, hand _handle, Faction* _uniformFlag, int _level, LockedArmour* defaultVal);
+
+// Fired by Weapon::_CONSTRUCTOR hook.
+// Lua event name: "onWeaponConstructed"
+// Lua signature:  function(weapon, baseData, companyData, materialData, handle, level, defaultVal) -> Weapon
+Weapon* CallWeaponConstructedCallbacks(Weapon* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, hand _handle, int _level, Weapon* defaultVal);
+
+// Fired by Building::_CONSTRUCTOR hook.
+// Lua event name: "onBuildingConstructed"
+// Lua signature:  function(building, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> Building
+Building* CallBuildingConstructedCallbacks(Building* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, Building* defaultVal);
+
+// Fired by Platoon::_CONSTRUCTOR hook.
+// Lua event name: "onPlatoonConstructed"
+// Lua signature:  function(platoon, faction, squadTemplate, platoonState, position, persistent, defaultVal) -> Platoon
+Platoon* CallPlatoonConstructedCallbacks(Platoon* thisptr, Faction* f, GameData* _squadTemplate, GameData* platoonState, const Ogre::Vector3& p, bool _persistent, Platoon* defaultVal);
+
+// Fired by ActivePlatoon::_CONSTRUCTOR hook.
+// Lua event name: "onActivePlatoonConstructed"
+// Lua signature:  function(activePlatoon, platoon, doc, faction, gameData, currentGoal, posOffset, defaultVal) -> ActivePlatoon
+ActivePlatoon* CallActivePlatoonConstructedCallbacks(ActivePlatoon* thisptr, Platoon* my, DataObjectContainer* doc, Faction* f, GameData* d, Tasker* _currentGoal, const Ogre::Vector3& _posOffset, ActivePlatoon* defaultVal);
+
+// Fired by Faction::_CONSTRUCTOR hook.
+// Lua event name: "onFactionConstructed"
+// Lua signature:  function(faction, name, defaultVal) -> Faction
+Faction* CallFactionConstructedCallbacks(Faction* thisptr, const std::string& _name, Faction* defaultVal);
+
+// Fired by Bounty::_CONSTRUCTOR hook.
+// Lua event name: "onBountyConstructed"
+// Lua signature:  function(bounty, defaultVal) -> Bounty
+Bounty* CallBountyConstructedCallbacks(Bounty* thisptr, Bounty* defaultVal);
+
+// Fired by Damages::_CONSTRUCTOR hook.
+// Lua event name: "onDamagesConstructed"
+// Lua signature:  function(damages, cut, blunt, pierce, bleed, armour, defaultVal) -> Damages
+Damages* CallDamagesConstructedCallbacks(Damages* thisptr, float _cut, float _blunt, float _pierce, float bleed, float armour, Damages* defaultVal);
+
+// Fired by Inventory::_CONSTRUCTOR hook.
+// Lua event name: "onInventoryConstructed"
+// Lua signature:  function(inventory, owner, defaultVal) -> Inventory
+Inventory* CallInventoryConstructedCallbacks(Inventory* thisptr, RootObject* _owner, Inventory* defaultVal);
+

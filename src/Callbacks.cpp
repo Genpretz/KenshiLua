@@ -44,6 +44,15 @@
 #include "Bindings/Gui/DataPanelLine_ButtonBinding.h"
 #include "Bindings/InputHandlerBinding.h"
 #include "Bindings/Gui/BaseLayoutBinding.h"
+#include "Bindings/ActivePlatoonBinding.h"
+#include "Bindings/ArmourBinding.h"
+#include "Bindings/BountyBinding.h"
+#include "Bindings/CrossbowBinding.h"
+#include "Bindings/GearBinding.h"
+#include "Bindings/LockedArmourBinding.h"
+#include "Bindings/SwordBinding.h"
+#include "Bindings/WeaponBinding.h"
+#include "Bindings/DataObjectContainerBinding.h"
 
 // KenshiLib headers
 #include <kenshi/CharMovement.h>
@@ -56,6 +65,8 @@
 #include <kenshi/PlayerInterface.h>
 #include <kenshi/Faction.h>
 #include <kenshi/Damages.h>
+#include <kenshi/Gear.h>
+#include <kenshi/Bounty.h>
 #include <kenshi/gui/DialogueWindow.h>
 #include <kenshi/Dialogue.h>
 #include <kenshi/util/lektor.h>
@@ -105,6 +116,15 @@ namespace KenshiLua
     static inline const char* DataPanelLineButtonMetatable()    { return DataPanelLine_ButtonBinding::getMetatableName(); }
     static inline const char* InputHandlerMetatable()           { return InputHandlerBinding::getMetatableName(); }
     static inline const char* BaseLayoutMetatable()             { return wraps::BaseLayoutBinding::getMetatableName(); }
+    static inline const char* ActivePlatoonMetatable()          { return ActivePlatoonBinding::getMetatableName(); }
+    static inline const char* ArmourMetatable()                 { return ArmourBinding::getMetatableName(); }
+    static inline const char* BountyMetatable()                 { return BountyBinding::getMetatableName(); }
+    static inline const char* CrossbowMetatable()               { return CrossbowBinding::getMetatableName(); }
+    static inline const char* GearMetatable()                   { return GearBinding::getMetatableName(); }
+    static inline const char* LockedArmourMetatable()           { return LockedArmourBinding::getMetatableName(); }
+    static inline const char* SwordMetatable()                  { return SwordBinding::getMetatableName(); }
+    static inline const char* WeaponMetatable()                 { return WeaponBinding::getMetatableName(); }
+    static inline const char* DataObjectContainerMetatable()    { return DataObjectContainerBinding::getMetatableName(); }
 
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, int val)                       { lua_pushinteger(L, val); }
@@ -117,14 +137,13 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, CharStats* val)                { pushObject<CharStats>(L, val, CharStatsMetatable()); }
     static inline void pushArg(lua_State* L, Damages* val)                  { pushObject<Damages>(L, val, DamagesMetatable()); }
     static inline void pushArg(lua_State* L, Platoon* val)                  { pushObject<Platoon>(L, val, PlatoonMetatable()); }
-    static inline void pushArg(lua_State* L, ActivePlatoon* val)            { pushObject<ActivePlatoon>(L, val, PlatoonMetatable()); }
+    static inline void pushArg(lua_State* L, ActivePlatoon* val)            { pushObject<ActivePlatoon>(L, val, ActivePlatoonMetatable()); }
     static inline void pushArg(lua_State* L, Item* val)                     { pushObject<Item>(L, val, ItemMetatable()); }
     static inline void pushArg(lua_State* L, Faction* val)                  { pushObject<Faction>(L, val, FactionMetatable()); }
     static inline void pushArg(lua_State* L, PlayerInterface* val)          { pushObject<PlayerInterface>(L, val, PlayerInterfaceMetatable()); }
     static inline void pushArg(lua_State* L, DialogueWindow* val)           { pushObject<DialogueWindow>(L, val, DialogueWindowMetatable()); }
     static inline void pushArg(lua_State* L, Dialogue* val)                 { pushObject<Dialogue>(L, val, DialogueMetatable()); }
     static inline void pushArg(lua_State* L, DialogLineData* val)           { pushObject<DialogLineData>(L, val, DialogLineDataMetatable()); }
-
     static inline void pushArg(lua_State* L, RootObject* val)               { pushObject<RootObject>(L, val, RootObjectMetatable()); }
     static inline void pushArg(lua_State* L, Inventory* val)                { pushObject<Inventory>(L, val, InventoryMetatable()); }
     static inline void pushArg(lua_State* L, CombatTechniqueData* val)      { pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
@@ -136,9 +155,9 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, const CharStats* val)          { pushObject<CharStats>(L, const_cast<CharStats*>(val), CharStatsMetatable()); }
     static inline void pushArg(lua_State* L, Ownerships* val)               { pushObject<Ownerships>(L, val, OwnershipsMetatable()); }
     static inline void pushArg(lua_State* L, const InventoryItemBase* val)  { pushObject<InventoryItemBase>(L, const_cast<InventoryItemBase*>(val), InventoryItemBaseMetatable()); }
-
     static inline void pushArg(lua_State* L, const hand& val)               { pushObject<hand>(L, const_cast<hand*>(&val), HandMetatable()); }
     static inline void pushArg(lua_State* L, const Ogre::Vector3& val)      { pushVector3(L, val); }
+    static inline void pushArg(lua_State* L, const Ogre::Quaternion& val)   { pushQuaternion(L, val); }
     static inline void pushArg(lua_State* L, YesNoMaybe val)                { lua_pushinteger(L, static_cast<int>(val.key)); }
     static inline void pushArg(lua_State* L, GameData* val)                 { pushObject<GameData>(L, val, GameDataMetatable()); }
     static inline void pushArg(lua_State* L, RaceData* val)                 { pushObject<RaceData>(L, val, RaceDataMetatable()); }
@@ -155,6 +174,22 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, wraps::BaseLayout* val)        { pushObject<wraps::BaseLayout>(L, val, BaseLayoutMetatable()); }
     static inline void pushArg(lua_State* L, void* val)                     { lua_pushlightuserdata(L, val); }
     static inline void pushArg(lua_State* L, lektor<GameData*>& val)        { pushObject<lektor<GameData*>>(L, &val, LektorPtrBinding<GameData*>::metaName); }
+    static inline void pushArg(lua_State* L, Armour* val)                   { pushObject<Armour>(L, val, ArmourMetatable()); }
+    static inline void pushArg(lua_State* L, Bounty* val)                   { pushObject<Bounty>(L, val, BountyMetatable()); }
+    static inline void pushArg(lua_State* L, Crossbow* val)                 { pushObject<Crossbow>(L, val, CrossbowMetatable()); }
+    static inline void pushArg(lua_State* L, Gear* val)                     { pushObject<Gear>(L, val, GearMetatable()); }
+    static inline void pushArg(lua_State* L, LockedArmour* val)             { pushObject<LockedArmour>(L, val, LockedArmourMetatable()); }
+    static inline void pushArg(lua_State* L, Sword* val)                    { pushObject<Sword>(L, val, SwordMetatable()); }
+    static inline void pushArg(lua_State* L, Weapon* val)                   { pushObject<Weapon>(L, val, WeaponMetatable()); }
+    static inline void pushArg(lua_State* L, DataObjectContainer* val)      { pushObject<DataObjectContainer>(L, val, DataObjectContainerMetatable()); }
+    static inline void pushArg(lua_State* L, Layout* val)                   { lua_pushlightuserdata(L, val); }
+
+    // pullArg — reads a (possibly Lua-edited) value back off the stack.
+    // No pointer/object overloads on purpose; see IParamsFilter comment.
+    static inline void pullArg(lua_State* L, int idx, int& out)         { if (lua_isnumber(L, idx))  out = (int)lua_tointeger(L, idx); }
+    static inline void pullArg(lua_State* L, int idx, float& out)       { if (lua_isnumber(L, idx))  out = (float)lua_tonumber(L, idx); }
+    static inline void pullArg(lua_State* L, int idx, bool& out)        { if (lua_isboolean(L, idx)) out = lua_toboolean(L, idx) != 0; }
+    static inline void pullArg(lua_State* L, int idx, std::string& out) { if (lua_isstring(L, idx))  out = lua_tostring(L, idx); }
 }
 
 namespace {
@@ -247,6 +282,60 @@ namespace {
             KenshiLua::pushArg(L, a6);
             KenshiLua::pushArg(L, a7);
             return 7;
+        }
+    };
+
+    template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
+    struct ArgPusher8 : public KenshiLua::IArgPusher {
+        T1 a1; T2 a2; T3 a3; T4 a4; T5 a5; T6 a6; T7 a7; T8 a8;
+        ArgPusher8(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5, T6 _6, T7 _7, T8 _8) : a1(_1), a2(_2), a3(_3), a4(_4), a5(_5), a6(_6), a7(_7), a8(_8) {}
+        int push(lua_State* L) const {
+            KenshiLua::pushArg(L, a1);
+            KenshiLua::pushArg(L, a2);
+            KenshiLua::pushArg(L, a3);
+            KenshiLua::pushArg(L, a4);
+            KenshiLua::pushArg(L, a5);
+            KenshiLua::pushArg(L, a6);
+            KenshiLua::pushArg(L, a7);
+            KenshiLua::pushArg(L, a8);
+            return 8;
+        }
+    };
+
+    template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9>
+    struct ArgPusher9 : public KenshiLua::IArgPusher {
+        T1 a1; T2 a2; T3 a3; T4 a4; T5 a5; T6 a6; T7 a7; T8 a8; T9 a9;
+        ArgPusher9(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5, T6 _6, T7 _7, T8 _8, T9 _9) : a1(_1), a2(_2), a3(_3), a4(_4), a5(_5), a6(_6), a7(_7), a8(_8), a9(_9) {}
+        int push(lua_State* L) const {
+            KenshiLua::pushArg(L, a1);
+            KenshiLua::pushArg(L, a2);
+            KenshiLua::pushArg(L, a3);
+            KenshiLua::pushArg(L, a4);
+            KenshiLua::pushArg(L, a5);
+            KenshiLua::pushArg(L, a6);
+            KenshiLua::pushArg(L, a7);
+            KenshiLua::pushArg(L, a8);
+            KenshiLua::pushArg(L, a9);
+            return 9;
+        }
+    };
+
+    template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9, typename T10>
+    struct ArgPusher10 : public KenshiLua::IArgPusher {
+        T1 a1; T2 a2; T3 a3; T4 a4; T5 a5; T6 a6; T7 a7; T8 a8; T9 a9; T10 a10;
+        ArgPusher10(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5, T6 _6, T7 _7, T8 _8, T9 _9, T10 _10) : a1(_1), a2(_2), a3(_3), a4(_4), a5(_5), a6(_6), a7(_7), a8(_8), a9(_9), a10(_10) {}
+        int push(lua_State* L) const {
+            KenshiLua::pushArg(L, a1);
+            KenshiLua::pushArg(L, a2);
+            KenshiLua::pushArg(L, a3);
+            KenshiLua::pushArg(L, a4);
+            KenshiLua::pushArg(L, a5);
+            KenshiLua::pushArg(L, a6);
+            KenshiLua::pushArg(L, a7);
+            KenshiLua::pushArg(L, a8);
+            KenshiLua::pushArg(L, a9);
+            KenshiLua::pushArg(L, a10);
+            return 10;
         }
     };
 
@@ -995,4 +1084,124 @@ void CallInventoryDropItemCallbacks(Inventory* inventory, Item* item)
 {
     ArgPusher2<Inventory*, Item*> pusher(inventory, item);
     KenshiLua::EventSystem::get().callHandlers("onInventoryDropItem", &pusher);
+}
+
+Character* CallCharacterConstructedCallbacks(Character* thisptr, GameData* dat, Faction* own, const hand& _handle, Character* defaultVal)
+{
+    ArgPusher5<Character*, GameData*, Faction*, const hand&, Character*> pusher(thisptr, dat, own, _handle, defaultVal);
+    Character* overrideObj = static_cast<Character*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onCharacterConstructed", KenshiLua::CharacterMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Item* CallItemConstructedCallbacks(Item* thisptr, GameData* baseData, GameData* companyData, GameData* _materialData, hand _handle, Item* defaultVal)
+{
+    ArgPusher6<Item*, GameData*, GameData*, GameData*, const hand&, Item*> pusher(thisptr, baseData, companyData, _materialData, _handle, defaultVal);
+    Item* overrideObj = static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onItemConstructed", KenshiLua::ItemMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Gear* CallGearConstructedCallbacks(Gear* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, hand _handle, int _level, Faction* uniform, Gear* defaultVal)
+{
+    ArgPusher8<Gear*, GameData*, GameData*, GameData*, const hand&, int, Faction*, Gear*> pusher(thisptr, baseData, companyData, materialData, _handle, _level, uniform, defaultVal);
+    Gear* overrideObj = static_cast<Gear*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onGearConstructed", KenshiLua::GearMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Sword* CallSwordConstructedCallbacks(Sword* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, hand _handle, int _level, Sword* defaultVal)
+{
+    ArgPusher7<Sword*, GameData*, GameData*, GameData*, const hand&, int, Sword*> pusher(thisptr, baseData, companyData, materialData, _handle, _level, defaultVal);
+    Sword* overrideObj = static_cast<Sword*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onSwordConstructed", KenshiLua::SwordMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Crossbow* CallCrossbowConstructedCallbacks(Crossbow* thisptr, GameData* baseData, hand _handle, int _overalllevel, Crossbow* defaultVal)
+{
+    ArgPusher5<Crossbow*, GameData*, const hand&, int, Crossbow*> pusher(thisptr, baseData, _handle, _overalllevel, defaultVal);
+    Crossbow* overrideObj = static_cast<Crossbow*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onCrossbowConstructed", KenshiLua::CrossbowMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Armour* CallArmourConstructedCallbacks(Armour* thisptr, GameData* baseData, GameData* _materialData, hand _handle, Faction* _uniformFlag, int _level, Armour* defaultVal)
+{
+    ArgPusher7<Armour*, GameData*, GameData*, const hand&, Faction*, int, Armour*> pusher(thisptr, baseData, _materialData, _handle, _uniformFlag, _level, defaultVal);
+    Armour* overrideObj = static_cast<Armour*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onArmourConstructed", KenshiLua::ArmourMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+LockedArmour* CallLockedArmourConstructedCallbacks(LockedArmour* thisptr, GameData* baseData, GameData* _materialData, hand _handle, Faction* _uniformFlag, int _level, LockedArmour* defaultVal)
+{
+    ArgPusher7<LockedArmour*, GameData*, GameData*, const hand&, Faction*, int, LockedArmour*> pusher(thisptr, baseData, _materialData, _handle, _uniformFlag, _level, defaultVal);
+    LockedArmour* overrideObj = static_cast<LockedArmour*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onLockedArmourConstructed", KenshiLua::LockedArmourMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Weapon* CallWeaponConstructedCallbacks(Weapon* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, hand _handle, int _level, Weapon* defaultVal)
+{
+    ArgPusher7<Weapon*, GameData*, GameData*, GameData*, const hand&, int, Weapon*> pusher(thisptr, baseData, companyData, materialData, _handle, _level, defaultVal);
+    Weapon* overrideObj = static_cast<Weapon*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onWeaponConstructed", KenshiLua::WeaponMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Building* CallBuildingConstructedCallbacks(Building* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, Building* defaultVal)
+{
+    ArgPusher10<Building*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, Building*> pusher(thisptr, data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    Building* overrideObj = static_cast<Building*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onBuildingConstructed", KenshiLua::BuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Platoon* CallPlatoonConstructedCallbacks(Platoon* thisptr, Faction* f, GameData* _squadTemplate, GameData* platoonState, const Ogre::Vector3& p, bool _persistent, Platoon* defaultVal)
+{
+    ArgPusher7<Platoon*, Faction*, GameData*, GameData*, const Ogre::Vector3&, bool, Platoon*> pusher(thisptr, f, _squadTemplate, platoonState, p, _persistent, defaultVal);
+    Platoon* overrideObj = static_cast<Platoon*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onPlatoonConstructed", KenshiLua::PlatoonMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+ActivePlatoon* CallActivePlatoonConstructedCallbacks(ActivePlatoon* thisptr, Platoon* my, DataObjectContainer* doc, Faction* f, GameData* d, Tasker* _currentGoal, const Ogre::Vector3& _posOffset, ActivePlatoon* defaultVal)
+{
+    ArgPusher8<ActivePlatoon*, Platoon*, DataObjectContainer*, Faction*, GameData*, Tasker*, const Ogre::Vector3&, ActivePlatoon*> pusher(thisptr, my, doc, f, d, _currentGoal, _posOffset, defaultVal);
+    ActivePlatoon* overrideObj = static_cast<ActivePlatoon*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onActivePlatoonConstructed", KenshiLua::ActivePlatoonMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Faction* CallFactionConstructedCallbacks(Faction* thisptr, const std::string& _name, Faction* defaultVal)
+{
+    ArgPusher3<Faction*, const std::string&, Faction*> pusher(thisptr, _name, defaultVal);
+    Faction* overrideObj = static_cast<Faction*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onFactionConstructed", KenshiLua::FactionMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Bounty* CallBountyConstructedCallbacks(Bounty* thisptr, Bounty* defaultVal)
+{
+    ArgPusher2<Bounty*, Bounty*> pusher(thisptr, defaultVal);
+    Bounty* overrideObj = static_cast<Bounty*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onBountyConstructed", KenshiLua::BountyMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Damages* CallDamagesConstructedCallbacks(Damages* thisptr, float _cut, float _blunt, float _pierce, float bleed, float armour, Damages* defaultVal)
+{
+    ArgPusher7<Damages*, float, float, float, float, float, Damages*> pusher(thisptr, _cut, _blunt, _pierce, bleed, armour, defaultVal);
+    Damages* overrideObj = static_cast<Damages*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onDamagesConstructed", KenshiLua::DamagesMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Inventory* CallInventoryConstructedCallbacks(Inventory* thisptr, RootObject* _owner, Inventory* defaultVal)
+{
+    ArgPusher3<Inventory*, RootObject*, Inventory*> pusher(thisptr, _owner, defaultVal);
+    Inventory* overrideObj = static_cast<Inventory*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onInventoryConstructed", KenshiLua::InventoryMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
 }

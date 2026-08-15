@@ -36,6 +36,8 @@
 #include <kenshi/GameSaveState.h>
 #include <kenshi/gui/DataPanelLine.h>
 #include <kenshi/gui/OrdersPanel.h>
+#include <kenshi/Gear.h>
+#include <kenshi/Bounty.h>
 
 #include <cstddef>
 
@@ -1757,6 +1759,190 @@ DEFINE_HOOK_INSTALLER(InstallHook_Inventory_NV_dropItem,
     KenshiLib::GetRealAddress(&Inventory::_NV_dropItem),
     Inventory_NV_dropItem_hook, Inventory_NV_dropItem_orig)
 
+// -----------------------------------------------------------
+// Constructor Hooks
+// -----------------------------------------------------------
+
+static Character* (*Character_CONSTRUCTOR_orig)(Character*, GameData*, Faction*, const hand&) = NULL;
+static Character* Character_CONSTRUCTOR_hook(Character* thisptr, GameData* dat, Faction* own, const hand& _handle)
+{
+    Character* res = Character_CONSTRUCTOR_orig(thisptr, dat, own, _handle);
+    Character* overrideRes = CallCharacterConstructedCallbacks(thisptr, dat, own, _handle, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Character_CONSTRUCTOR,
+    "Character::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Character::_CONSTRUCTOR),
+    Character_CONSTRUCTOR_hook, Character_CONSTRUCTOR_orig)
+
+static Item* (*Item_CONSTRUCTOR_orig)(Item*, GameData*, GameData*, GameData*, hand) = NULL;
+static Item* Item_CONSTRUCTOR_hook(Item* thisptr, GameData* baseData, GameData* companyData, GameData* _materialData, hand _handle)
+{
+    Item* res = Item_CONSTRUCTOR_orig(thisptr, baseData, companyData, _materialData, _handle);
+    Item* overrideRes = CallItemConstructedCallbacks(thisptr, baseData, companyData, _materialData, _handle, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Item_CONSTRUCTOR,
+    "Item::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Item::_CONSTRUCTOR),
+    Item_CONSTRUCTOR_hook, Item_CONSTRUCTOR_orig)
+
+static Gear* (*Gear_CONSTRUCTOR_orig)(Gear*, GameData*, GameData*, GameData*, hand, int, Faction*) = NULL;
+static Gear* Gear_CONSTRUCTOR_hook(Gear* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, hand _handle, int _level, Faction* uniform)
+{
+    Gear* res = Gear_CONSTRUCTOR_orig(thisptr, baseData, companyData, materialData, _handle, _level, uniform);
+    Gear* overrideRes = CallGearConstructedCallbacks(thisptr, baseData, companyData, materialData, _handle, _level, uniform, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Gear_CONSTRUCTOR,
+    "Gear::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Gear::_CONSTRUCTOR),
+    Gear_CONSTRUCTOR_hook, Gear_CONSTRUCTOR_orig)
+
+static Sword* (*Sword_CONSTRUCTOR_orig)(Sword*, GameData*, GameData*, GameData*, hand, int) = NULL;
+static Sword* Sword_CONSTRUCTOR_hook(Sword* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, hand _handle, int _level)
+{
+    Sword* res = Sword_CONSTRUCTOR_orig(thisptr, baseData, companyData, materialData, _handle, _level);
+    Sword* overrideRes = CallSwordConstructedCallbacks(thisptr, baseData, companyData, materialData, _handle, _level, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Sword_CONSTRUCTOR,
+    "Sword::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Sword::_CONSTRUCTOR),
+    Sword_CONSTRUCTOR_hook, Sword_CONSTRUCTOR_orig)
+
+static Crossbow* (*Crossbow_CONSTRUCTOR_orig)(Crossbow*, GameData*, hand, int) = NULL;
+static Crossbow* Crossbow_CONSTRUCTOR_hook(Crossbow* thisptr, GameData* baseData, hand _handle, int _overalllevel)
+{
+    Crossbow* res = Crossbow_CONSTRUCTOR_orig(thisptr, baseData, _handle, _overalllevel);
+    Crossbow* overrideRes = CallCrossbowConstructedCallbacks(thisptr, baseData, _handle, _overalllevel, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Crossbow_CONSTRUCTOR,
+    "Crossbow::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Crossbow::_CONSTRUCTOR),
+    Crossbow_CONSTRUCTOR_hook, Crossbow_CONSTRUCTOR_orig)
+
+static Armour* (*Armour_CONSTRUCTOR_orig)(Armour*, GameData*, GameData*, hand, Faction*, int) = NULL;
+static Armour* Armour_CONSTRUCTOR_hook(Armour* thisptr, GameData* baseData, GameData* _materialData, hand _handle, Faction* _uniformFlag, int _level)
+{
+    Armour* res = Armour_CONSTRUCTOR_orig(thisptr, baseData, _materialData, _handle, _uniformFlag, _level);
+    Armour* overrideRes = CallArmourConstructedCallbacks(thisptr, baseData, _materialData, _handle, _uniformFlag, _level, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Armour_CONSTRUCTOR,
+    "Armour::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Armour::_CONSTRUCTOR),
+    Armour_CONSTRUCTOR_hook, Armour_CONSTRUCTOR_orig)
+
+static LockedArmour* (*LockedArmour_CONSTRUCTOR_orig)(LockedArmour*, GameData*, GameData*, hand, Faction*, int) = NULL;
+static LockedArmour* LockedArmour_CONSTRUCTOR_hook(LockedArmour* thisptr, GameData* baseData, GameData* _materialData, hand _handle, Faction* _uniformFlag, int _level)
+{
+    LockedArmour* res = LockedArmour_CONSTRUCTOR_orig(thisptr, baseData, _materialData, _handle, _uniformFlag, _level);
+    LockedArmour* overrideRes = CallLockedArmourConstructedCallbacks(thisptr, baseData, _materialData, _handle, _uniformFlag, _level, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_LockedArmour_CONSTRUCTOR,
+    "LockedArmour::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&LockedArmour::_CONSTRUCTOR),
+    LockedArmour_CONSTRUCTOR_hook, LockedArmour_CONSTRUCTOR_orig)
+
+static Weapon* (*Weapon_CONSTRUCTOR_orig)(Weapon*, GameData*, GameData*, GameData*, hand, int) = NULL;
+static Weapon* Weapon_CONSTRUCTOR_hook(Weapon* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, hand _handle, int _level)
+{
+    Weapon* res = Weapon_CONSTRUCTOR_orig(thisptr, baseData, companyData, materialData, _handle, _level);
+    Weapon* overrideRes = CallWeaponConstructedCallbacks(thisptr, baseData, companyData, materialData, _handle, _level, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Weapon_CONSTRUCTOR,
+    "Weapon::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Weapon::_CONSTRUCTOR),
+    Weapon_CONSTRUCTOR_hook, Weapon_CONSTRUCTOR_orig)
+
+static Building* (*Building_CONSTRUCTOR_orig)(Building*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*) = NULL;
+static Building* Building_CONSTRUCTOR_hook(Building* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors)
+{
+    Building* res = Building_CONSTRUCTOR_orig(thisptr, data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors);
+    Building* overrideRes = CallBuildingConstructedCallbacks(thisptr, data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Building_CONSTRUCTOR,
+    "Building::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Building::_CONSTRUCTOR),
+    Building_CONSTRUCTOR_hook, Building_CONSTRUCTOR_orig)
+
+static Platoon* (*Platoon_CONSTRUCTOR_orig)(Platoon*, Faction*, GameData*, GameData*, const Ogre::Vector3&, bool) = NULL;
+static Platoon* Platoon_CONSTRUCTOR_hook(Platoon* thisptr, Faction* f, GameData* _squadTemplate, GameData* platoonState, const Ogre::Vector3& p, bool _persistent)
+{
+    Platoon* res = Platoon_CONSTRUCTOR_orig(thisptr, f, _squadTemplate, platoonState, p, _persistent);
+    Platoon* overrideRes = CallPlatoonConstructedCallbacks(thisptr, f, _squadTemplate, platoonState, p, _persistent, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Platoon_CONSTRUCTOR,
+    "Platoon::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Platoon::_CONSTRUCTOR),
+    Platoon_CONSTRUCTOR_hook, Platoon_CONSTRUCTOR_orig)
+
+static ActivePlatoon* (*ActivePlatoon_CONSTRUCTOR_orig)(ActivePlatoon*, Platoon*, DataObjectContainer*, Faction*, GameData*, Tasker*, const Ogre::Vector3&) = NULL;
+static ActivePlatoon* ActivePlatoon_CONSTRUCTOR_hook(ActivePlatoon* thisptr, Platoon* my, DataObjectContainer* doc, Faction* f, GameData* d, Tasker* _currentGoal, const Ogre::Vector3& _posOffset)
+{
+    ActivePlatoon* res = ActivePlatoon_CONSTRUCTOR_orig(thisptr, my, doc, f, d, _currentGoal, _posOffset);
+    ActivePlatoon* overrideRes = CallActivePlatoonConstructedCallbacks(thisptr, my, doc, f, d, _currentGoal, _posOffset, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_ActivePlatoon_CONSTRUCTOR,
+    "ActivePlatoon::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&ActivePlatoon::_CONSTRUCTOR),
+    ActivePlatoon_CONSTRUCTOR_hook, ActivePlatoon_CONSTRUCTOR_orig)
+
+static Faction* (*Faction_CONSTRUCTOR_orig)(Faction*, const std::string&) = NULL;
+static Faction* Faction_CONSTRUCTOR_hook(Faction* thisptr, const std::string& _name)
+{
+    Faction* res = Faction_CONSTRUCTOR_orig(thisptr, _name);
+    Faction* overrideRes = CallFactionConstructedCallbacks(thisptr, _name, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Faction_CONSTRUCTOR,
+    "Faction::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Faction::_CONSTRUCTOR),
+    Faction_CONSTRUCTOR_hook, Faction_CONSTRUCTOR_orig)
+
+static Bounty* (*Bounty_CONSTRUCTOR_orig)(Bounty*) = NULL;
+static Bounty* Bounty_CONSTRUCTOR_hook(Bounty* thisptr)
+{
+    Bounty* res = Bounty_CONSTRUCTOR_orig(thisptr);
+    Bounty* overrideRes = CallBountyConstructedCallbacks(thisptr, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Bounty_CONSTRUCTOR,
+    "Bounty::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Bounty::_CONSTRUCTOR),
+    Bounty_CONSTRUCTOR_hook, Bounty_CONSTRUCTOR_orig)
+
+static Damages* (*Damages_CONSTRUCTOR_orig)(Damages*, float, float, float, float, float) = NULL;
+static Damages* Damages_CONSTRUCTOR_hook(Damages* thisptr, float _cut, float _blunt, float _pierce, float bleed, float armour)
+{
+    Damages* res = Damages_CONSTRUCTOR_orig(thisptr, _cut, _blunt, _pierce, bleed, armour);
+    Damages* overrideRes = CallDamagesConstructedCallbacks(thisptr, _cut, _blunt, _pierce, bleed, armour, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Damages_CONSTRUCTOR,
+    "Damages::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(static_cast<Damages* (Damages::*)(float, float, float, float, float)>(&Damages::_CONSTRUCTOR)),
+    Damages_CONSTRUCTOR_hook, Damages_CONSTRUCTOR_orig)
+
+static Inventory* (*Inventory_CONSTRUCTOR_orig)(Inventory*, RootObject*) = NULL;
+static Inventory* Inventory_CONSTRUCTOR_hook(Inventory* thisptr, RootObject* _owner)
+{
+    Inventory* res = Inventory_CONSTRUCTOR_orig(thisptr, _owner);
+    Inventory* overrideRes = CallInventoryConstructedCallbacks(thisptr, _owner, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Inventory_CONSTRUCTOR,
+    "Inventory::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Inventory::_CONSTRUCTOR),
+    Inventory_CONSTRUCTOR_hook, Inventory_CONSTRUCTOR_orig)
+
 
 
 
@@ -1941,6 +2127,23 @@ namespace KenshiLua
         { "onTitleScreenLoadGame",                          InstallHook_TitleScreen_loadGame },
         { "onTownLoadFromSerialise",                        InstallHook_Town_NV_loadFromSerialise },
         { "onDataPanelLineButtonPress",                     InstallHook_DataPanelLine_Button_pressCallback },
+
+        // Constructor Hooks
+        { "onCharacterConstructed",                         InstallHook_Character_CONSTRUCTOR },
+        { "onItemConstructed",                              InstallHook_Item_CONSTRUCTOR },
+        { "onGearConstructed",                              InstallHook_Gear_CONSTRUCTOR },
+        { "onSwordConstructed",                             InstallHook_Sword_CONSTRUCTOR },
+        { "onCrossbowConstructed",                          InstallHook_Crossbow_CONSTRUCTOR },
+        { "onArmourConstructed",                            InstallHook_Armour_CONSTRUCTOR },
+        { "onLockedArmourConstructed",                      InstallHook_LockedArmour_CONSTRUCTOR },
+        { "onWeaponConstructed",                            InstallHook_Weapon_CONSTRUCTOR },
+        { "onBuildingConstructed",                          InstallHook_Building_CONSTRUCTOR },
+        { "onPlatoonConstructed",                           InstallHook_Platoon_CONSTRUCTOR },
+        { "onActivePlatoonConstructed",                     InstallHook_ActivePlatoon_CONSTRUCTOR },
+        { "onFactionConstructed",                           InstallHook_Faction_CONSTRUCTOR },
+        { "onBountyConstructed",                            InstallHook_Bounty_CONSTRUCTOR },
+        { "onDamagesConstructed",                           InstallHook_Damages_CONSTRUCTOR },
+        { "onInventoryConstructed",                         InstallHook_Inventory_CONSTRUCTOR },
 
     };
 
