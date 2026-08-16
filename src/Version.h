@@ -2,8 +2,8 @@
 
 #define KENSHILUA_VERSION_MAJOR 0
 #define KENSHILUA_VERSION_MINOR 2
-#define KENSHILUA_VERSION_PATCH 8
-#define KENSHILUA_VERSION_SUFFIX "" // e.g. "-alpha", "-beta", "-prerelease", or ""
+#define KENSHILUA_VERSION_PATCH 9
+#define KENSHILUA_VERSION_SUFFIX "-alpha" // e.g. "-alpha", "-beta", "-prerelease", or ""
 
 #define KENSHILUA_STR_HELPER(x) #x
 #define KENSHILUA_STR(x) KENSHILUA_STR_HELPER(x)
