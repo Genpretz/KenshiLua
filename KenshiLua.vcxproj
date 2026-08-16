@@ -982,6 +982,7 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Plugin.h" />
     <ClInclude Include="src\ScriptLoader.h" />
+    <ClInclude Include="src\Version.h" />
     <ClInclude Include="src\Bindings\AkSoundPositionBinding.h" />
     <ClInclude Include="src\Bindings\AkVectorBinding.h" />
     <ClInclude Include="src\Bindings\CombatClass_AttackSlotManager_SlotDataBinding.h" />

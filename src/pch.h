@@ -3,6 +3,7 @@
 #define PCH_H
 
 #include "framework.h"
+#include "Version.h"
 #include <string>
 #include <vector>
 #include <map>

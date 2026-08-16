@@ -24,7 +24,7 @@ extern "C" {
 namespace KenshiLua
 {
     
-int luaKenshiVersion(lua_State* L) { lua_pushstring(L, "KenshiLua 0.2.8"); return 1; }
+int luaKenshiVersion(lua_State* L) { lua_pushstring(L, KENSHILUA_VERSION_FULL); return 1; }
 
 static int lua_toggleGui(lua_State* L)
 {

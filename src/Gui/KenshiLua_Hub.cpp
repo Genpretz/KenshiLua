@@ -16,6 +16,9 @@ namespace KenshiLua
 		initialiseByAttributes(this, _parent);
 		mKenshiLua_HubRootWindow = mMainWidget->castType<MyGUI::Window>(false);
 
+		if (mHubVersionLabelTextBox)
+			mHubVersionLabelTextBox->setCaption(KENSHILUA_VERSION_FULL);
+
 		if (mHubBtn_ScriptEditorButton)
 			mHubBtn_ScriptEditorButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_Hub::onBtnScriptEditor);
 		if (mHubBtn_ConsoleButton)

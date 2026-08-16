@@ -1218,6 +1218,7 @@
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Plugin.h" />
     <ClInclude Include="src\ScriptLoader.h" />
+    <ClInclude Include="src\Version.h" />
     <ClInclude Include="src\Bindings\Character_CarryMsgBinding.h" />
     <ClInclude Include="src\Bindings\Character_RagdollMsgBinding.h" />
     <ClInclude Include="src\FileWatcher.h" />
