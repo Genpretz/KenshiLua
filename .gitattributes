@@ -1,2 +1,11 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Enforce UTF-8 encoding without BOM on text formats
+*.layout text working-tree-encoding=UTF-8
+*.xml    text working-tree-encoding=UTF-8
+*.lua    text working-tree-encoding=UTF-8
+*.cpp    text working-tree-encoding=UTF-8
+*.h      text working-tree-encoding=UTF-8
+*.md     text working-tree-encoding=UTF-8
+*.ini    text working-tree-encoding=UTF-8

@@ -409,3 +409,4 @@ tools/generated/**
 docs/ChangeLogs/**
 docs/in_progress/**
 tools/command.txt
+.editorconfig
