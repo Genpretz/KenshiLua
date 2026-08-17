@@ -244,6 +244,26 @@ public:
         }
     }
 
+    void clearCallbacksForWidgetRecursive(MyGUI::Widget* widget)
+    {
+        if (!widget) return;
+        size_t count = widget->getChildCount();
+        for (size_t i = 0; i < count; ++i)
+        {
+            clearCallbacksForWidgetRecursive(widget->getChildAt(i));
+        }
+        MyGUI::Window* window = widget->castType<MyGUI::Window>(false);
+        if (window)
+        {
+            MyGUI::Widget* client = window->getClientWidget();
+            if (client && client != widget)
+            {
+                clearCallbacksForWidgetRecursive(client);
+            }
+        }
+        clearCallbacksForWidget(widget);
+    }
+
     void clearAll()
     {
         if (m_L)
@@ -263,52 +283,19 @@ public:
 private:
     void onMouseButtonClick(MyGUI::Widget* sender)
     {
-        try
-        {
-            std::string name = sender ? sender->getName() : "null";
-            logToFile("[MyGUI Event] onMouseButtonClick triggered for sender: " + name);
-            if (!m_L)
-            {
-                logToFileWarn("[MyGUI Event] m_L is null in onMouseButtonClick");
-                return;
-            }
-            CallbackKey key = { sender, OnClick };
-            auto it = m_callbacks.find(key);
-            if (it == m_callbacks.end())
-            {
-                logToFileWarn("[MyGUI Event] No callback found in m_callbacks for sender: " + name);
-                return;
-            }
-            if (it->second == LUA_NOREF)
-            {
-                logToFileWarn("[MyGUI Event] Callback ref is LUA_NOREF for sender: " + name);
-                return;
-            }
+        if (!m_L) return;
+        CallbackKey key = { sender, OnClick };
+        auto it = m_callbacks.find(key);
+        if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-            int top = lua_gettop(m_L);
-            lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-            if (!lua_isfunction(m_L, -1))
-            {
-                logToFileError("[MyGUI Event] Registry ref is not a function for sender: " + name);
-                lua_settop(m_L, top);
-                return;
-            }
+        int top = lua_gettop(m_L);
+        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
 
-            pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-
-            std::string pcallErr;
-            if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
-                logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-            lua_settop(m_L, top);
-        }
-        catch (const std::exception& e)
-        {
-            logToFileError(std::string("[MyGUI Event Exception] Exception in onMouseButtonClick: ") + e.what());
-        }
-        catch (...)
-        {
-            logToFileError("[MyGUI Event Exception] Unknown exception in onMouseButtonClick");
-        }
+        std::string pcallErr;
+        if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
+            logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
+        lua_settop(m_L, top);
     }
 
     void onEditTextChange(MyGUI::EditBox* sender)
@@ -586,6 +573,27 @@ private:
     }
 };
 
+static void cleanupWidgetRecursive(MyGUI::Widget* widget)
+{
+    if (!widget) return;
+    size_t count = widget->getChildCount();
+    for (size_t i = 0; i < count; ++i)
+    {
+        cleanupWidgetRecursive(widget->getChildAt(i));
+    }
+    MyGUI::Window* window = widget->castType<MyGUI::Window>(false);
+    if (window)
+    {
+        MyGUI::Widget* client = window->getClientWidget();
+        if (client && client != widget)
+        {
+            cleanupWidgetRecursive(client);
+        }
+    }
+    LuaWidgetCallbackManager::get().clearCallbacksForWidget(widget);
+    untrackLuaCreatedWidget(widget);
+}
+
 static MyGUI::Widget* getWidget(lua_State* L, int idx)
 {
     return checkObject<MyGUI::Widget>(L, idx, MyGuiBinding::getMetatableName());
@@ -712,8 +720,7 @@ static int widget_destroy(lua_State* L)
     MyGUI::Widget* w = getWidget(L, 1);
     if (w)
     {
-        untrackLuaCreatedWidget(w);
-        LuaWidgetCallbackManager::get().clearCallbacksForWidget(w);
+        cleanupWidgetRecursive(w);
         MyGUI::Gui::getInstance().destroyWidget(w);
     }
     return 0;
@@ -1719,11 +1726,10 @@ static int widget_destroySmooth(lua_State* L)
     MyGUI::Widget* w = getWidget(L, 1);
     if (w)
     {
-        untrackLuaCreatedWidget(w);
         MyGUI::Window* win = w->castType<MyGUI::Window>(false);
         if (win)
         {
-            LuaWidgetCallbackManager::get().clearCallbacksForWidget(w);
+            cleanupWidgetRecursive(w);
             win->destroySmooth();
         }
     }
@@ -1912,8 +1918,7 @@ static int lua_unloadLayout(lua_State* L)
             if (w)
             {
                 widgets.push_back(w);
-                untrackLuaCreatedWidget(w);
-                LuaWidgetCallbackManager::get().clearCallbacksForWidget(w);
+                cleanupWidgetRecursive(w);
             }
             lua_pop(L, 1);
         }
@@ -2459,24 +2464,29 @@ void MyGuiBinding::destroyWidgetsBySource(const std::string& source)
     MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
     if (!gui) return;
 
-    for (int i = (int)g_luaCreatedRootWidgets.size() - 1; i >= 0; --i)
+    std::vector<MyGUI::Widget*> toDestroy;
+    for (size_t i = 0; i < g_luaCreatedRootWidgets.size(); ++i)
     {
         MyGUI::Widget* w = g_luaCreatedRootWidgets[i];
         auto srcIt = g_luaCreatedWidgetSources.find(w);
         std::string wSource = (srcIt != g_luaCreatedWidgetSources.end()) ? srcIt->second : "";
-
         if (sourceMatches(wSource, source))
         {
-            try
-            {
-                LuaWidgetCallbackManager::get().clearCallbacksForWidget(w);
-                gui->destroyWidget(w);
-            }
-            catch (...)
-            {
-                // ignore if already destroyed by game/MyGUI
-            }
-            untrackLuaCreatedWidget(w);
+            toDestroy.push_back(w);
+        }
+    }
+
+    for (size_t i = 0; i < toDestroy.size(); ++i)
+    {
+        MyGUI::Widget* w = toDestroy[i];
+        try
+        {
+            cleanupWidgetRecursive(w);
+            gui->destroyWidget(w);
+        }
+        catch (...)
+        {
+            // ignore if already destroyed by game/MyGUI
         }
     }
 }
@@ -2486,12 +2496,13 @@ void MyGuiBinding::shutdown()
     MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
     if (gui)
     {
-        for (auto it = g_luaCreatedRootWidgets.rbegin(); it != g_luaCreatedRootWidgets.rend(); ++it)
+        std::vector<MyGUI::Widget*> toDestroy = g_luaCreatedRootWidgets;
+        for (std::vector<MyGUI::Widget*>::reverse_iterator it = toDestroy.rbegin(); it != toDestroy.rend(); ++it)
         {
             MyGUI::Widget* w = *it;
             try
             {
-                LuaWidgetCallbackManager::get().clearCallbacksForWidget(w);
+                cleanupWidgetRecursive(w);
                 gui->destroyWidget(w);
             }
             catch (...)
