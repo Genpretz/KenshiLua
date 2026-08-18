@@ -69,8 +69,8 @@ static int TaskStateData_get_key(lua_State* L)
 {
     TaskStateData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TaskStateData is nil");
-    // TODO: Unsupported type for key (StateType)
-    return luaL_error(L, "Unsupported property 'key' (type: StateType)");
+    lua_pushinteger(L, (lua_Integer)instance->key);
+    return 1;
 }
 
 
@@ -78,7 +78,8 @@ static int TaskStateData_set_key(lua_State* L)
 {
     TaskStateData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TaskStateData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for key");
+    instance->key = (StateType)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 

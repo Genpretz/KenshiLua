@@ -23,8 +23,7 @@ static int WallBuilding_get_wallSectionLinkType(lua_State* L)
 {
     WallBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WallBuilding is nil");
-    // TODO: Unsupported type for wallSectionLinkType (WallSectionLinkType)
-    lua_pushnil(L);
+    lua_pushinteger(L, (lua_Integer)instance->wallSectionLinkType);
     return 1;
 }
 
@@ -47,7 +46,8 @@ static int WallBuilding_set_wallSectionLinkType(lua_State* L)
 {
     WallBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WallBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for wallSectionLinkType");
+    instance->wallSectionLinkType = (WallSectionLinkType)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 static int WallBuilding_set_shareBuildStateOfAnother(lua_State* L)

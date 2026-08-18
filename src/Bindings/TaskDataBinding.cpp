@@ -698,12 +698,34 @@ int TaskDataBinding::setDialogueDeliveryTag(lua_State* L)
     return 0;
 }
 
+int TaskDataBinding::setPermaJob(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    PermajobType on = (PermajobType)luaL_checkinteger(L, 2);
+    bool fixedTarget = lua_toboolean(L, 3) != 0;
+    TaskType t = (TaskType)luaL_checkinteger(L, 4);
+    TaskType secondary = (TaskType)luaL_checkinteger(L, 5);
+
+    instance->setPermaJob(on, fixedTarget, t, secondary);
+    return 0;
+}
+
+int TaskDataBinding::getPermaJobType(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    PermajobType result = instance->getPermaJobType();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 228: void addResult(...) - unsupported arg type
   line 229: void addRequirement(...) - unsupported arg type
-  line 254: void setPermaJob(...) - unsupported arg type
-  line 255: PermajobType getPermaJobType(...) - unsupported return type
   line 278: bool isResultsComplete(...) - unsupported arg type
   line 279: bool isResultsComplete_ignoreSubtasker(...) - unsupported arg type
   line 280: void getRequirementComplaint(...) - non-string reference arg
@@ -719,11 +741,6 @@ Skipped methods needing manual binding:
 LIGHTUSERDATA DEPENDENCIES:
   - TaskData_get_scoreFunction: function* (unbound pointer)
   - TaskData_get__findTarget: function* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 237: permaJob (PermajobType) - unsupported type
 */
 
 int TaskDataBinding::gc(lua_State* L)
@@ -744,8 +761,8 @@ static int TaskData_get_permaJob(lua_State* L)
 {
     TaskData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TaskData is nil");
-    // TODO: Unsupported type for permaJob (PermajobType)
-    return luaL_error(L, "Unsupported property 'permaJob' (type: PermajobType)");
+    lua_pushinteger(L, (lua_Integer)instance->permaJob);
+    return 1;
 }
 
 
@@ -761,7 +778,8 @@ static int TaskData_set_permaJob(lua_State* L)
 {
     TaskData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TaskData is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for permaJob");
+    instance->permaJob = (PermajobType)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 
@@ -798,6 +816,8 @@ void TaskDataBinding::registerBinding(lua_State* L)
         { "getPermaJobAssociation_secondary", TaskDataBinding::getPermaJobAssociation_secondary },
         { "isTargetFinder", TaskDataBinding::isTargetFinder },
         { "setDialogueDeliveryTag", TaskDataBinding::setDialogueDeliveryTag },
+        { "setPermaJob", TaskDataBinding::setPermaJob },
+        { "getPermaJobType", TaskDataBinding::getPermaJobType },
         { 0, 0 }
     };
 
@@ -813,6 +833,7 @@ void TaskDataBinding::registerBinding(lua_State* L)
     luaL_getmetatable(L, TaskDataBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
     registerGetter(L, "infrequentGoalChecks", TaskData_get_infrequentGoalChecks);
+    registerGetter(L, "permaJob", TaskData_get_permaJob);
     registerGetter(L, "permaJob_FixedTarget", TaskData_get_permaJob_FixedTarget);
     registerGetter(L, "permaJob_Associated", TaskData_get_permaJob_Associated);
     registerGetter(L, "permaJob_Associated_Secondary", TaskData_get_permaJob_Associated_Secondary);
@@ -851,6 +872,7 @@ void TaskDataBinding::registerBinding(lua_State* L)
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "infrequentGoalChecks", TaskData_set_infrequentGoalChecks);
+    registerSetter(L, "permaJob", TaskData_set_permaJob);
     registerSetter(L, "permaJob_FixedTarget", TaskData_set_permaJob_FixedTarget);
     registerSetter(L, "permaJob_Associated", TaskData_set_permaJob_Associated);
     registerSetter(L, "permaJob_Associated_Secondary", TaskData_set_permaJob_Associated_Secondary);

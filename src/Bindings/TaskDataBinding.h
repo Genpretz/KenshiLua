@@ -34,5 +34,7 @@ public:
     static int getPermaJobAssociation_secondary(lua_State* L);
     static int isTargetFinder(lua_State* L);
     static int setDialogueDeliveryTag(lua_State* L);
+    static int setPermaJob(lua_State* L);
+    static int getPermaJobType(lua_State* L);
 };
 }

@@ -193,8 +193,8 @@ static int SeenSomeone_get_type(lua_State* L)
 {
     SeenSomeone* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SeenSomeone is nil");
-    // TODO: Unsupported type for type (TagsClass<SenseType>)
-    return luaL_error(L, "Unsupported property 'type' (type: TagsClass<SenseType>)");
+    lua_pushinteger(L, (lua_Integer)instance->type.flags);
+    return 1;
 }
 
 
@@ -202,7 +202,8 @@ static int SeenSomeone_set_type(lua_State* L)
 {
     SeenSomeone* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SeenSomeone is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for type");
+    instance->type.flags = (unsigned int)luaL_checkinteger(L, 2);
+    return 0;
 }
 
 
