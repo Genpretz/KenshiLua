@@ -42,5 +42,10 @@ public:
     static int loadZone(lua_State* L);
     static int unloadZone(lua_State* L);
     static int unloadBuilding(lua_State* L);
+    static int getUID(lua_State* L);
+    static int hashBuilding(lua_State* L);
+    static int hashInterior(lua_State* L);
+    static int hashZone(lua_State* L);
+    static int getFilename(lua_State* L);
 };
 }

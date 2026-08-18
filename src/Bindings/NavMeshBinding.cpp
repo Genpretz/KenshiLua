@@ -6,6 +6,7 @@
 #include "Bindings/ZoneMapBinding.h"
 #include "Bindings/NavMeshGeneratorBinding.h"
 #include "Bindings/Util/iVector2Binding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -409,6 +410,66 @@ int NavMeshBinding::unloadBuilding(lua_State* L)
     return 0;
 }
 
+int NavMeshBinding::getUID(lua_State* L)
+{
+    int idx = (lua_isuserdata(L, 1) && !testObject<hand>(L, 1, HandBinding::getMetatableName()) && !testObject<iVector2>(L, 1, iVector2Binding::getMetatableName())) ? 2 : 1;
+
+    if (testObject<hand>(L, idx, HandBinding::getMetatableName()))
+    {
+        hand* h = checkObject<hand>(L, idx, HandBinding::getMetatableName());
+        unsigned int result = NavMesh::getUID(*h);
+        lua_pushinteger(L, result);
+        return 1;
+    }
+    else if (testObject<iVector2>(L, idx, iVector2Binding::getMetatableName()))
+    {
+        iVector2* zone = checkObject<iVector2>(L, idx, iVector2Binding::getMetatableName());
+        unsigned int result = NavMesh::getUID(*zone);
+        lua_pushinteger(L, result);
+        return 1;
+    }
+
+    return luaL_error(L, "Invalid arguments for NavMesh.getUID (expected hand or iVector2)");
+}
+
+int NavMeshBinding::hashBuilding(lua_State* L)
+{
+    int idx = (lua_gettop(L) >= 2 && testObject<NavMesh>(L, 1, NavMeshBinding::getMetatableName())) ? 2 : 1;
+    Building* b = checkObject<Building>(L, idx, BuildingBinding::getMetatableName());
+    unsigned int result = NavMesh::hashBuilding(b);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshBinding::hashInterior(lua_State* L)
+{
+    int idx = (lua_gettop(L) >= 2 && testObject<NavMesh>(L, 1, NavMeshBinding::getMetatableName())) ? 2 : 1;
+    Building* b = checkObject<Building>(L, idx, BuildingBinding::getMetatableName());
+    unsigned int result = NavMesh::hashInterior(b);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshBinding::hashZone(lua_State* L)
+{
+    int idx = (lua_gettop(L) >= 2 && testObject<NavMesh>(L, 1, NavMeshBinding::getMetatableName())) ? 2 : 1;
+    ZoneMap* z = checkObject<ZoneMap>(L, idx, ZoneMapBinding::getMetatableName());
+    unsigned int result = NavMesh::hashZone(z);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshBinding::getFilename(lua_State* L)
+{
+    int idx = (lua_gettop(L) >= 4 && testObject<NavMesh>(L, 1, NavMeshBinding::getMetatableName())) ? 2 : 1;
+    ZoneMap* zone = checkObject<ZoneMap>(L, idx, ZoneMapBinding::getMetatableName());
+    NavMesh::FileMode source = (NavMesh::FileMode)luaL_checkinteger(L, idx + 1);
+    bool write = lua_toboolean(L, idx + 2) != 0;
+    std::string result = NavMesh::getFilename(zone, source, write);
+    lua_pushstring(L, result.c_str());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 75: void generate(...) - overloaded method
@@ -439,7 +500,6 @@ Skipped methods needing manual binding:
   line 107: void postMessage(...) - unsupported arg type
   line 108: void cancelMessage(...) - unsupported arg type
   line 114: NavMeshSeeds& getSeedData(...) - reference return type
-  line 178: std::string getFilename(...) - static method
   line 180: int saveZone(...) - unsupported arg type
   line 181: bool createZoneInstance(...) - unsupported arg type
   line 182: void deleteMesh(...) - overloaded method
@@ -453,11 +513,6 @@ Skipped methods needing manual binding:
   line 193: void createInstance(...) - unsupported arg type
   line 194: void deleteInstance(...) - unsupported arg type
   line 195: int countInteriors(...) - non-string reference arg
-  line 196: unsigned int getUID(...) - static method
-  line 197: unsigned int getUID(...) - static method
-  line 198: unsigned int hashBuilding(...) - static method
-  line 199: unsigned int hashInterior(...) - static method
-  line 200: unsigned int hashZone(...) - static method
   line 201: void shiftWorld(...) - unsupported arg type
   line 203: void changeDoorState(...) - unsupported arg type
   line 204: bool validateStreamingData(...) - unsupported arg type
@@ -538,6 +593,11 @@ void NavMeshBinding::registerBinding(lua_State* L)
         { "loadZone", NavMeshBinding::loadZone },
         { "unloadZone", NavMeshBinding::unloadZone },
         { "unloadBuilding", NavMeshBinding::unloadBuilding },
+        { "getUID", NavMeshBinding::getUID },
+        { "hashBuilding", NavMeshBinding::hashBuilding },
+        { "hashInterior", NavMeshBinding::hashInterior },
+        { "hashZone", NavMeshBinding::hashZone },
+        { "getFilename", NavMeshBinding::getFilename },
         { 0, 0 }
     };
 
@@ -581,6 +641,15 @@ void NavMeshBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, NavMeshBinding::getMetatableName(), ThreadClassBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getUID", NavMeshBinding::getUID);
+    registerStaticMethod(L, "hashBuilding", NavMeshBinding::hashBuilding);
+    registerStaticMethod(L, "hashInterior", NavMeshBinding::hashInterior);
+    registerStaticMethod(L, "hashZone", NavMeshBinding::hashZone);
+    registerStaticMethod(L, "getFilename", NavMeshBinding::getFilename);
+    lua_setglobal(L, "NavMesh");
 }
 
 } // namespace KenshiLua
