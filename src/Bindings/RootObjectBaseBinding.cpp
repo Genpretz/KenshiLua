@@ -484,10 +484,6 @@ int RootObjectBaseBinding::_NV_setFaction(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 63: const hand& getHandle(...) - reference return type
-  line 64: void setHandle(...) - non-string reference arg
-  line 65: void _NV_setHandle(...) - non-string reference arg
-  line 66: GameSaveState serialise(...) - unsupported arg type
 */
 
 /*
@@ -598,7 +594,7 @@ void RootObjectBaseBinding::registerBinding(lua_State* L)
         { "_NV_getOwnerships", RootObjectBaseBinding::_NV_getOwnerships },
         { "setFaction", RootObjectBaseBinding::setFaction },
         { "_NV_setFaction", RootObjectBaseBinding::_NV_setFaction },
-                { "getHandle", RootObjectBaseBinding::getHandle },
+        { "getHandle", RootObjectBaseBinding::getHandle },
         { "setHandle", RootObjectBaseBinding::setHandle },
         { "_NV_setHandle", RootObjectBaseBinding::_NV_setHandle },
         { "serialise", RootObjectBaseBinding::serialise },

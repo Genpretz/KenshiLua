@@ -3250,13 +3250,9 @@ static int Building_set_doors(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 215: int getMountedBuildings(...) - unsupported arg type
-  line 217: void setHandle(...) - non-string reference arg
-  line 218: void _NV_setHandle(...) - non-string reference arg
   line 261: const std::string& getLayoutInstanceID(...) - reference return type
   line 262: const std::string& _NV_getLayoutInstanceID(...) - reference return type
   line 306: void findAllFurnitureWithFunction(...) - unsupported arg type
-  line 344: GameSaveState serialise(...) - unsupported arg type
-  line 345: GameSaveState _NV_serialise(...) - unsupported arg type
   line 366: const Ogre::Aabb& getAABB(...) - overloaded method
   line 367: const Ogre::Aabb& _NV_getAABB(...) - overloaded method
   line 368: Ogre::Aabb getAABB(...) - overloaded method
@@ -3269,7 +3265,6 @@ Skipped methods needing manual binding:
   line 459: void restoreMaterialToPhysical(...) - unsupported arg type
   line 463: void updateWorldAABB(...) - unsupported arg type
   line 469: Ogre::SharedPtr<Ogre::Material> getPartMaterial(...) - unsupported return type
-  line 470: void selectParts(...) - static method
   line 471: void loadParts(...) - unsupported arg type
   line 472: PhysicalEntity* loadPartEntity(...) - unsupported arg type
   line 473: Ogre::MovableObject* loadEntity(...) - unsupported arg type
@@ -3277,8 +3272,6 @@ Skipped methods needing manual binding:
   line 475: void loadInstances(...) - unsupported arg type
   line 477: PhysicalEntity* findPhysicalEntity(...) - unsupported arg type
   line 478: PhysicalEntity* findPhysicalEntityInCollection(...) - static method
-  line 479: bool buildingContainsEntity(...) - static method
-  line 480: std::string getEntityMaterialName(...) - static method
   line 483: void setPartVisible(...) - unsupported arg type
   line 484: void _NV_setPartVisible(...) - unsupported arg type
 */

@@ -534,8 +534,6 @@ Skipped methods needing manual binding:
   line 86: void _NV_getGUIData(...) - unsupported arg type
   line 87: void getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
   line 88: void _NV_getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-  line 89: GameSaveState serialise(...) - unsupported return type
-  line 90: GameSaveState _NV_serialise(...) - unsupported return type
   line 91: void loadFromSerialise(...) - unsupported arg type
   line 92: void _NV_loadFromSerialise(...) - unsupported arg type
   line 105: float getInputValue(...) - unsupported arg type

@@ -492,7 +492,6 @@ Skipped methods needing manual binding:
   line 169: void _NV_getTooltipData1(...) - unsupported arg type
   line 170: void getTooltipData2(...) - unsupported arg type
   line 171: void _NV_getTooltipData2(...) - unsupported arg type
-  line 176: float getArmourCraftingMaterialConsumptionRate(...) - static method
 */
 
 int ArmourBinding::gc(lua_State* L)

@@ -821,29 +821,7 @@ int ItemBinding::_NV_loadUnloadCheck(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 112: bool isFood(...) - static method
-  line 119: void activate(...) - overloaded method
-  line 120: void _NV_activate(...) - overloaded method
-  line 121: void activate(...) - overloaded method
-  line 122: void _NV_activate(...) - overloaded method
-  line 159: GameSaveState serialise(...) - unsupported arg type
-  line 160: GameSaveState _NV_serialise(...) - unsupported arg type
-  line 174: void createItemEntityCallback_Equipping(...) - unsupported arg type
-  line 175: void _NV_createItemEntityCallback_Equipping(...) - unsupported arg type
-  line 178: void notifyTheftFrom(...) - overloaded method
-  line 179: void _NV_notifyTheftFrom(...) - overloaded method
-  line 180: void notifyTheftFrom(...) - overloaded method
-  line 181: void _NV_notifyTheftFrom(...) - overloaded method
-  line 182: const hand& findProperOwner(...) - static method
-  line 183: const hand& findProperOwner(...) - static method
-  line 184: void setInventoryWeAreIn(...) - non-string reference arg
-  line 185: void _NV_setInventoryWeAreIn(...) - non-string reference arg
-  line 186: const hand& getInventoryWeAreIn(...) - reference return type
-  line 188: void setPersistant(...) - overloaded method
-  line 189: void setPersistant(...) - overloaded method
   line 202: void createItemEntityCallback(...) - unsupported arg type
-  line 203: void itemEntityCreated(...) - unsupported arg type
-  line 204: void _NV_itemEntityCreated(...) - unsupported arg type
 */
 
 /*

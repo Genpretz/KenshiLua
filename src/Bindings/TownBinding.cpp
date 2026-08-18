@@ -1370,7 +1370,6 @@ int TownBinding::_NV_serialise(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 367: void chooseResidents(...) - unsupported arg type
   line 453: TagsClass<BuildingDesignation> facilitesWeHaveHere(...) - unsupported return type
   line 455: bool powerBuilding(...) - non-string reference arg
   line 456: bool drainBattery(...) - non-string reference arg

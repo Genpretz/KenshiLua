@@ -966,18 +966,6 @@ Skipped methods needing manual binding:
   line 33: const std::string& _NV_getLayoutInstanceID(...) - reference return type
   line 47: const Ogre::Aabb& getAABB(...) - reference return type
   line 48: const Ogre::Aabb& _NV_getAABB(...) - reference return type
-  line 71: void getGUIDataCategories(...) - unsupported arg type
-  line 72: void _NV_getGUIDataCategories(...) - unsupported arg type
-  line 75: void getOrders(...) - unsupported arg type
-  line 76: void _NV_getOrders(...) - unsupported arg type
-  line 103: void notifyIndoors(...) - non-string reference arg
-  line 104: void _NV_notifyIndoors(...) - non-string reference arg
-  line 107: const hand& isIndoors(...) - reference return type
-  line 108: const hand& _NV_isIndoors(...) - reference return type
-  line 113: HitMaterialType hitByMeleeAttack(...) - non-string reference arg
-  line 114: HitMaterialType _NV_hitByMeleeAttack(...) - non-string reference arg
-  line 119: void setIsInsideBuilding(...) - non-string reference arg
-  line 120: void _NV_setIsInsideBuilding(...) - non-string reference arg
 */
 
 /*

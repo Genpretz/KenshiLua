@@ -229,8 +229,6 @@ int GearBinding::isPlayerCrafted(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 26: void setInventoryWeAreIn(...) - non-string reference arg
-  line 27: void _NV_setInventoryWeAreIn(...) - non-string reference arg
 */
 
 int GearBinding::gc(lua_State* L)

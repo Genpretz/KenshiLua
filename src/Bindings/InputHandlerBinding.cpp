@@ -926,14 +926,7 @@ int InputHandlerBinding::keyString(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 66: void addCommand(...) - overloaded method
-  line 67: void addCommand(...) - overloaded method
   line 68: void addKey(...) - non-string reference arg
-  line 70: void unbind(...) - overloaded method
-  line 71: void unbind(...) - overloaded method
-  line 73: bool isBound(...) - overloaded method
-  line 74: bool isBound(...) - overloaded method
-  line 81: lektor<int> getBoundKeys(...) - unsupported return type
   line 82: const std::string& getBoundCommand(...) - reference return type
 */
 

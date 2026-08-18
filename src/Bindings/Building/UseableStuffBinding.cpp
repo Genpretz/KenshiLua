@@ -1209,8 +1209,6 @@ Skipped methods needing manual binding:
   line 76: void _NV_getGUIWorkers(...) - unsupported arg type
   line 77: void getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
   line 78: void _NV_getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-  line 79: GameSaveState serialise(...) - unsupported return type
-  line 80: GameSaveState _NV_serialise(...) - unsupported return type
   line 81: void loadFromSerialise(...) - unsupported arg type
   line 82: void _NV_loadFromSerialise(...) - unsupported arg type
   line 83: HitMaterialType hitByMeleeAttack(...) - unsupported arg type

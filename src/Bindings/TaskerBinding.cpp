@@ -350,12 +350,6 @@ int TaskerBinding::_NV_taskSaysItsFinished(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 326: const std::string& getDescription(...) - reference return type
-  line 328: float score(...) - unsupported arg type
-  line 329: bool isResultsComplete(...) - unsupported arg type
-  line 330: bool isResultsComplete_ignoreSubtasker(...) - unsupported arg type
-  line 332: bool isRequirementsComplete(...) - unsupported arg type
-  line 333: std::string getRequirementComplaint(...) - unsupported arg type
-  line 337: hand getNextSubTarget(...) - unsupported arg type
   line 341: bool isSubTaskerTargetFinishedWith(...) - unsupported arg type
   line 358: float findTarget(...) - unsupported arg type
   line 359: bool _targetsRemaining(...) - unsupported arg type
