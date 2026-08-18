@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\SaveManager.h"
 #include "SaveManagerBinding.h"
+#include "SaveInfoBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -401,18 +402,87 @@ int SaveManagerBinding::importOldPlayerBuildings(lua_State* L)
     return 1;
 }
 
+int SaveManagerBinding::getSingleton(lua_State* L)
+{
+    SaveManager* result = SaveManager::getSingleton();
+    return pushObject(L, result, SaveManagerBinding::getMetatableName());
+}
+
+int SaveManagerBinding::load(lua_State* L)
+{
+    SaveManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SaveManager is nil");
+
+    if (lua_isstring(L, 2))
+    {
+        std::string name = luaL_checkstring(L, 2);
+        instance->load(name);
+        return 0;
+    }
+    else
+    {
+        SaveInfo* s = checkObject<SaveInfo>(L, 2, SaveInfoBinding::getMetatableName());
+        bool resetPos = lua_toboolean(L, 3) != 0;
+        instance->load(*s, resetPos);
+        return 0;
+    }
+}
+
+int SaveManagerBinding::import(lua_State* L)
+{
+    SaveManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SaveManager is nil");
+
+    SaveInfo* s = checkObject<SaveInfo>(L, 2, SaveInfoBinding::getMetatableName());
+    int flags = (int)luaL_checkinteger(L, 3);
+    instance->import(*s, flags);
+    return 0;
+}
+
+int SaveManagerBinding::loadInfo(lua_State* L)
+{
+    SaveManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SaveManager is nil");
+
+    SaveInfo* info = checkObject<SaveInfo>(L, 2, SaveInfoBinding::getMetatableName());
+    bool result = instance->loadInfo(*info);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int SaveManagerBinding::checkVersion(lua_State* L)
+{
+    SaveManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SaveManager is nil");
+
+    SaveInfo* info = checkObject<SaveInfo>(L, 2, SaveInfoBinding::getMetatableName());
+    bool result = instance->checkVersion(*info);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int SaveManagerBinding::getCurrentGame(lua_State* L)
+{
+    SaveManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SaveManager is nil");
+
+    lua_pushstring(L, instance->getCurrentGame().c_str());
+    return 1;
+}
+
+int SaveManagerBinding::getSavePath(lua_State* L)
+{
+    SaveManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SaveManager is nil");
+
+    lua_pushstring(L, instance->getSavePath().c_str());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 26: SaveManager* getSingleton(...) - static method
-  line 34: void load(...) - overloaded method
-  line 35: void load(...) - overloaded method
-  line 36: void import(...) - unsupported arg type
   line 39: int scanGames(...) - overloaded method
   line 40: int scanGames(...) - overloaded method
-  line 41: bool loadInfo(...) - unsupported arg type
-  line 42: bool checkVersion(...) - unsupported arg type
-  line 44: const std::string& getCurrentGame(...) - reference return type
-  line 47: const std::string& getSavePath(...) - reference return type
 */
 
 int SaveManagerBinding::gc(lua_State* L)
@@ -454,6 +524,13 @@ void SaveManagerBinding::registerBinding(lua_State* L)
         { "importGame", SaveManagerBinding::importGame },
         { "importPlayerBuildings", SaveManagerBinding::importPlayerBuildings },
         { "importOldPlayerBuildings", SaveManagerBinding::importOldPlayerBuildings },
+        { "getSingleton", SaveManagerBinding::getSingleton },
+        { "load", SaveManagerBinding::load },
+        { "import", SaveManagerBinding::import },
+        { "loadInfo", SaveManagerBinding::loadInfo },
+        { "checkVersion", SaveManagerBinding::checkVersion },
+        { "getCurrentGame", SaveManagerBinding::getCurrentGame },
+        { "getSavePath", SaveManagerBinding::getSavePath },
         { 0, 0 }
     };
 
@@ -527,6 +604,11 @@ void SaveManagerBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, SaveManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getSingleton", SaveManagerBinding::getSingleton);
+    lua_setglobal(L, "SaveManager");
 }
 
 } // namespace KenshiLua

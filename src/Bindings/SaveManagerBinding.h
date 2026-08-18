@@ -36,5 +36,12 @@ public:
     static int importGame(lua_State* L);
     static int importPlayerBuildings(lua_State* L);
     static int importOldPlayerBuildings(lua_State* L);
+    static int getSingleton(lua_State* L);
+    static int load(lua_State* L);
+    static int import(lua_State* L);
+    static int loadInfo(lua_State* L);
+    static int checkVersion(lua_State* L);
+    static int getCurrentGame(lua_State* L);
+    static int getSavePath(lua_State* L);
 };
 }

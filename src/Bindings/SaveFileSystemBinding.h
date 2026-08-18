@@ -37,5 +37,7 @@ public:
     static int threadProc(lua_State* L);
     static int _NV_threadProc(lua_State* L);
     static int addMessage(lua_State* L);
+    static int getSingleton(lua_State* L);
+    static int getActiveSave(lua_State* L);
 };
 }

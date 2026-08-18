@@ -323,11 +323,20 @@ int SaveFileSystemBinding::addMessage(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 20: SaveFileSystem* getSingleton(...) - static method
-  line 40: const std::string& getActiveSave(...) - reference return type
-*/
+int SaveFileSystemBinding::getSingleton(lua_State* L)
+{
+    SaveFileSystem* result = SaveFileSystem::getSingleton();
+    return pushObject(L, result, SaveFileSystemBinding::getMetatableName());
+}
+
+int SaveFileSystemBinding::getActiveSave(lua_State* L)
+{
+    SaveFileSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SaveFileSystem is nil");
+
+    lua_pushstring(L, instance->getActiveSave().c_str());
+    return 1;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -379,6 +388,8 @@ void SaveFileSystemBinding::registerBinding(lua_State* L)
         { "threadProc", SaveFileSystemBinding::threadProc },
         { "_NV_threadProc", SaveFileSystemBinding::_NV_threadProc },
         { "addMessage", SaveFileSystemBinding::addMessage },
+        { "getSingleton", SaveFileSystemBinding::getSingleton },
+        { "getActiveSave", SaveFileSystemBinding::getActiveSave },
         { 0, 0 }
     };
 
@@ -432,6 +443,11 @@ void SaveFileSystemBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, SaveFileSystemBinding::getMetatableName(), ThreadClassBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getSingleton", SaveFileSystemBinding::getSingleton);
+    lua_setglobal(L, "SaveFileSystem");
 }
 
 } // namespace KenshiLua
