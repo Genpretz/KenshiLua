@@ -624,6 +624,62 @@ namespace KenshiLua
         return any;
     }
 
+    // Build a Vector4-like Lua table {x=,y=,z=,w=} from any object exposing .x/.y/.z/.w (e.g. Ogre::Vector4).
+    template <class V4>
+    inline void pushVector4(lua_State* L, const V4& v)
+    {
+        lua_createtable(L, 0, 4);
+        lua_pushnumber(L, v.x); lua_setfield(L, -2, "x");
+        lua_pushnumber(L, v.y); lua_setfield(L, -2, "y");
+        lua_pushnumber(L, v.z); lua_setfield(L, -2, "z");
+        lua_pushnumber(L, v.w); lua_setfield(L, -2, "w");
+    }
+
+    // Read a {x,y,z,w} table at idx. Missing fields default to 0. Returns true if any field was present.
+    template <class V4>
+    inline bool readVector4(lua_State* L, int idx, V4& out)
+    {
+        if (!lua_istable(L, idx)) return false;
+        out.x = 0.0f; out.y = 0.0f; out.z = 0.0f; out.w = 0.0f;
+        bool any = false;
+        lua_getfield(L, idx, "x");
+        if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 1);
+            if (!lua_isnil(L, -1)) { out.x = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "y");
+        if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 2);
+            if (!lua_isnil(L, -1)) { out.y = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "z");
+        if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 3);
+            if (!lua_isnil(L, -1)) { out.z = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, idx, "w");
+        if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; }
+        else {
+            lua_pop(L, 1);
+            lua_rawgeti(L, idx, 4);
+            if (!lua_isnil(L, -1)) { out.w = (float)lua_tonumber(L, -1); any = true; }
+        }
+        lua_pop(L, 1);
+        return any;
+    }
+
     // -------------------------------------------------------------------------
     // Colors & Integer Tuples (ColourValue / TripleInt)
     // -------------------------------------------------------------------------
