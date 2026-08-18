@@ -641,13 +641,56 @@ int InventoryGUIBinding::addTradePartner(lua_State* L)
     return 0;
 }
 
+int InventoryGUIBinding::lockedItemCheck(lua_State* L)
+{
+    int idx = (lua_gettop(L) >= 2 && testObject<InventoryGUI>(L, 1, InventoryGUIBinding::getMetatableName())) ? 2 : 1;
+    LockedArmour* item = checkObject<LockedArmour>(L, idx, LockedArmourBinding::getMetatableName());
+    bool result = InventoryGUI::lockedItemCheck(item);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryGUIBinding::refreshSection(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    if (lua_gettop(L) >= 2 && testObject<InventorySection>(L, 2, InventorySectionBinding::getMetatableName()))
+    {
+        InventorySection* section = checkObject<InventorySection>(L, 2, InventorySectionBinding::getMetatableName());
+        instance->refreshSection(section);
+        return 0;
+    }
+    else
+    {
+        instance->refreshSection();
+        return 0;
+    }
+}
+
+int InventoryGUIBinding::getSection(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    if (lua_isstring(L, 2))
+    {
+        std::string sectionName = luaL_checkstring(L, 2);
+        InventorySection* result = instance->getSection(sectionName);
+        return pushObject<InventorySection>(L, result, InventorySectionBinding::getMetatableName());
+    }
+    else
+    {
+        InventorySectionGUI* sect = checkObject<InventorySectionGUI>(L, 2, InventorySectionGUIBinding::getMetatableName());
+        InventorySection* result = instance->getSection(sect);
+        return pushObject<InventorySection>(L, result, InventorySectionBinding::getMetatableName());
+    }
+}
+
 /*
 Skipped methods needing manual binding:
-  line 118: bool lockedItemCheck(...) - static method
   line 125: void autoChangeSelectedObject(...) - non-string reference arg
   line 126: void _NV_autoChangeSelectedObject(...) - non-string reference arg
-  line 135: void refreshSection(...) - overloaded method
-  line 137: void refreshSection(...) - overloaded method
   line 138: void autoArrangeButton(...) - unsupported arg type
   line 139: void openBackpackButton(...) - unsupported arg type
   line 140: void openLimbsInterface(...) - unsupported arg type
@@ -656,8 +699,6 @@ Skipped methods needing manual binding:
   line 156: void getTrader1Trader2(...) - non-string reference arg
   line 169: bool placeItemFromMouse(...) - unsupported arg type
   line 193: bool fencingConfirmation(...) - unsupported arg type
-  line 201: InventorySection* getSection(...) - overloaded method
-  line 202: InventorySection* getSection(...) - overloaded method
   line 206: void sectionMouseButtonPressed(...) - unsupported arg type
   line 207: void sectionMouseButtonReleased(...) - unsupported arg type
   line 208: void onWindowFocus(...) - unsupported arg type
@@ -738,6 +779,9 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
         { "canDropMouseItemWithoutPaying", InventoryGUIBinding::canDropMouseItemWithoutPaying },
         { "removeTradePartner", InventoryGUIBinding::removeTradePartner },
         { "addTradePartner", InventoryGUIBinding::addTradePartner },
+        { "lockedItemCheck", InventoryGUIBinding::lockedItemCheck },
+        { "refreshSection", InventoryGUIBinding::refreshSection },
+        { "getSection", InventoryGUIBinding::getSection },
         { 0, 0 }
     };
 
@@ -773,7 +817,14 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
     registerSetter(L, "inventorySections", InventoryGUI_set_inventorySections);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up static methods on global table
+    // Wire up inheritance to GUIWindow
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, InventoryGUIBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
     registerStaticMethod(L, "setTradingTown", InventoryGUIBinding::setTradingTown);
     registerStaticMethod(L, "getTradingTown", InventoryGUIBinding::getTradingTown);
     registerStaticMethod(L, "clearTradePartners", InventoryGUIBinding::clearTradePartners);
@@ -784,12 +835,8 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
     registerStaticMethod(L, "canDropMouseItemWithoutPaying", InventoryGUIBinding::canDropMouseItemWithoutPaying);
     registerStaticMethod(L, "removeTradePartner", InventoryGUIBinding::removeTradePartner);
     registerStaticMethod(L, "addTradePartner", InventoryGUIBinding::addTradePartner);
-
-    // Wire up inheritance to GUIWindow
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, InventoryGUIBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
-
-    lua_pop(L, 1); // Pop the metatable off the stack
+    registerStaticMethod(L, "lockedItemCheck", InventoryGUIBinding::lockedItemCheck);
+    lua_setglobal(L, "InventoryGUI");
 }
 
 } // namespace KenshiLua

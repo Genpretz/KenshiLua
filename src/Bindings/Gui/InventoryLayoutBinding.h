@@ -25,5 +25,6 @@ public:
     static int setupDataPanelInfos(lua_State* L);
     static int createSectionGUI(lua_State* L);
     static int setSectionGUIDisabled(lua_State* L);
+    static int notifyCellSizeChanged(lua_State* L);
 };
 }

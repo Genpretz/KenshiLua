@@ -1221,44 +1221,99 @@ int ForgottenGUIBinding::showTradeWindow(lua_State* L)
     return 0;
 }
 
+int ForgottenGUIBinding::changeFontSize(lua_State* L)
+{
+    ForgottenGUI::changeFontSize();
+    return 0;
+}
+
+int ForgottenGUIBinding::destroy(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    if (testObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName()))
+    {
+        DatapanelGUI* dp = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+        instance->destroy(dp);
+        return 0;
+    }
+    else if (testObject<GUIWindow>(L, 2, GUIWindowBinding::getMetatableName()))
+    {
+        GUIWindow* win = checkObject<GUIWindow>(L, 2, GUIWindowBinding::getMetatableName());
+        instance->destroy(win);
+        return 0;
+    }
+    else if (testObject<ScreenLabelInterface>(L, 2, ScreenLabelInterfaceBinding::getMetatableName()))
+    {
+        ScreenLabelInterface* label = checkObject<ScreenLabelInterface>(L, 2, ScreenLabelInterfaceBinding::getMetatableName());
+        instance->destroy(label);
+        return 0;
+    }
+
+    return luaL_error(L, "Invalid argument for ForgottenGUI:destroy");
+}
+
+int ForgottenGUIBinding::changeMouseCursor(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    CursorType cursor = (CursorType)luaL_checkinteger(L, 2);
+    if (lua_gettop(L) >= 4)
+    {
+        hand* player = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+        hand* target = checkObject<hand>(L, 4, HandBinding::getMetatableName());
+        if (!player || !target) return luaL_error(L, "Arguments 3 and 4 to changeMouseCursor must be hand");
+        instance->changeMouseCursor(cursor, *player, *target);
+        return 0;
+    }
+    else
+    {
+        instance->changeMouseCursor(cursor);
+        return 0;
+    }
+}
+
+int ForgottenGUIBinding::createInventoryWindow(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to createInventoryWindow must be hand");
+
+    if (lua_gettop(L) >= 5)
+    {
+        Inventory* inventory = checkObject<Inventory>(L, 3, InventoryBinding::getMetatableName());
+        InventoryLayout* layout = checkObject<InventoryLayout>(L, 4, InventoryLayoutBinding::getMetatableName());
+        RootObject* trader = lua_isnoneornil(L, 5) ? nullptr : checkObject<RootObject>(L, 5, RootObjectBinding::getMetatableName());
+        InventoryGUI* result = instance->createInventoryWindow(*owner, inventory, layout, trader);
+        return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
+    }
+    else
+    {
+        InventoryLayout* layout = checkObject<InventoryLayout>(L, 3, InventoryLayoutBinding::getMetatableName());
+        InventoryGUI* result = instance->createInventoryWindow(*owner, layout);
+        return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
+    }
+}
+
 /*
 Skipped methods needing manual binding:
-  line 54: void changeFontSize(...) - static method
-  line 65: void destroy(...) - overloaded method
-  line 66: void destroy(...) - overloaded method
-  line 67: void destroy(...) - overloaded method
   line 68: DatapanelGUI* createDatapanel(...) - overloaded method
   line 69: DatapanelGUI* createDatapanel(...) - overloaded method
   line 70: MyGUI::Window* messageBox(...) - unsupported arg type
   line 82: void showCharacterEditor(...) - unsupported arg type
-  line 85: void showCharacterStatsWindow(...) - non-string reference arg
-  line 86: void closeCharacterStatsWindow(...) - non-string reference arg
-  line 89: void toggleStatsWindow(...) - non-string reference arg
-  line 90: void toggleCharacterStatsWindowPermanent(...) - non-string reference arg
-  line 96: void showTradeWindow(...) - non-string reference arg
-  line 98: InventoryGUI* showInventory(...) - non-string reference arg
-  line 99: InventoryGUI* showTraderInventory(...) - non-string reference arg
-  line 100: InventoryGUI* showInventoryBuilding(...) - non-string reference arg
-  line 101: InventoryGUI* showInventoryNPC(...) - non-string reference arg
-  line 102: void closeInventory(...) - non-string reference arg
-  line 106: InventoryGUI* getInventoryWindow(...) - non-string reference arg
   line 107: InventoryGUI* toggleInventory(...) - non-string reference arg
-  line 110: bool hasInventoryWindowOpen(...) - non-string reference arg
-  line 112: void toggleInventoryWindowPermanent(...) - non-string reference arg
-  line 114: const hand& getSelectedObject(...) - reference return type
-  line 115: const hand& getSelectedPlayerCharacter(...) - reference return type
   line 118: void addScreenLabel(...) - unsupported arg type
   line 121: void destroyWidget(...) - unsupported arg type
   line 122: void destroyWidgets(...) - overloaded method
   line 123: void destroyWidgets(...) - overloaded method
   line 124: bool widgetHasMouse(...) - unsupported arg type
   line 132: void setup(...) - unsupported arg type
-  line 133: void changeMouseCursor(...) - overloaded method
-  line 134: void changeMouseCursor(...) - overloaded method
   line 141: void _showTradeWindow(...) - unsupported arg type
   line 142: void setInventoryPosition(...) - non-string reference arg
-  line 143: InventoryGUI* createInventoryWindow(...) - overloaded method
-  line 144: InventoryGUI* createInventoryWindow(...) - overloaded method
   line 145: void inventoriesSelectedObjectUpdate(...) - non-string reference arg
   line 174: void keepWindownOnScreen(...) - unsupported arg type
   line 175: const std::string& getDataLineColor(...) - reference return type
@@ -1408,6 +1463,10 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
         { "getSelectedObject", ForgottenGUIBinding::getSelectedObject },
         { "getSelectedPlayerCharacter", ForgottenGUIBinding::getSelectedPlayerCharacter },
         { "showTradeWindow", ForgottenGUIBinding::showTradeWindow },
+        { "changeFontSize", ForgottenGUIBinding::changeFontSize },
+        { "destroy", ForgottenGUIBinding::destroy },
+        { "changeMouseCursor", ForgottenGUIBinding::changeMouseCursor },
+        { "createInventoryWindow", ForgottenGUIBinding::createInventoryWindow },
         { 0, 0 }
     };
 
@@ -1493,6 +1552,11 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, ForgottenGUIBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "changeFontSize", ForgottenGUIBinding::changeFontSize);
+    lua_setglobal(L, "ForgottenGUI");
 }
 
 } // namespace KenshiLua

@@ -85,5 +85,7 @@ public:
     static int getNextVerticalPos(lua_State* L);
     static int dataExists(lua_State* L);
     static int clearCategoryTabs(lua_State* L);
+    static int setLine(lua_State* L);
+    static int setLineResearch(lua_State* L);
 };
 }

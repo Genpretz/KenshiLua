@@ -1046,18 +1046,113 @@ int DatapanelGUIBinding::clearCategoryTabs(lua_State* L)
     return 0;
 }
 
+int DatapanelGUIBinding::setLine(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+
+    int top = lua_gettop(L);
+    if (top == 5)
+    {
+        // setLine(s1, s2, barValue, category)
+        std::string s1 = luaL_checkstring(L, 2);
+        std::string s2 = luaL_checkstring(L, 3);
+        float barValue = (float)luaL_checknumber(L, 4);
+        int category = (int)luaL_checkinteger(L, 5);
+        DataPanelLine* result = instance->setLine(s1, s2, barValue, category);
+        return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
+    }
+    else if (top == 6)
+    {
+        std::string s1 = luaL_checkstring(L, 2);
+        std::string s2 = luaL_checkstring(L, 3);
+        if (lua_isstring(L, 4) && lua_isstring(L, 5))
+        {
+            // setLine(s1, s2, skinA, skinB, category)
+            std::string skinA = luaL_checkstring(L, 4);
+            std::string skinB = luaL_checkstring(L, 5);
+            int category = (int)luaL_checkinteger(L, 6);
+            DataPanelLine* result = instance->setLine(s1, s2, skinA, skinB, category);
+            return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
+        }
+        else
+        {
+            // setLine(s1, s2, category, last, keyVisible)
+            int category = (int)luaL_checkinteger(L, 4);
+            bool last = lua_toboolean(L, 5) != 0;
+            bool keyVisible = lua_toboolean(L, 6) != 0;
+            DataPanelLine* result = instance->setLine(s1, s2, category, last, keyVisible);
+            return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
+        }
+    }
+    else if (top >= 7)
+    {
+        std::string keyValue = luaL_checkstring(L, 2);
+        std::string s1 = luaL_checkstring(L, 3);
+        std::string s2 = luaL_checkstring(L, 4);
+        if (lua_isstring(L, 5) && lua_isstring(L, 6))
+        {
+            // setLine(keyValue, s1, s2, skinA, skinB, category)
+            std::string skinA = luaL_checkstring(L, 5);
+            std::string skinB = luaL_checkstring(L, 6);
+            int category = (int)luaL_checkinteger(L, 7);
+            DataPanelLine* result = instance->setLine(keyValue, s1, s2, skinA, skinB, category);
+            return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
+        }
+        else
+        {
+            // setLine(keyValue, s1, s2, category, last, keyVisible)
+            int category = (int)luaL_checkinteger(L, 5);
+            bool last = lua_toboolean(L, 6) != 0;
+            bool keyVisible = lua_toboolean(L, 7) != 0;
+            DataPanelLine* result = instance->setLine(keyValue, s1, s2, category, last, keyVisible);
+            return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
+        }
+    }
+
+    return luaL_error(L, "Invalid arguments for DatapanelGUI:setLine");
+}
+
+int DatapanelGUIBinding::setLineResearch(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+
+    int top = lua_gettop(L);
+    if (top == 7)
+    {
+        // setLineResearch(s1, s2, category, v1, barColor, XButton)
+        std::string s1 = luaL_checkstring(L, 2);
+        std::string s2 = luaL_checkstring(L, 3);
+        int category = (int)luaL_checkinteger(L, 4);
+        float v1 = (float)luaL_checknumber(L, 5);
+        std::string barColor = luaL_checkstring(L, 6);
+        bool XButton = lua_toboolean(L, 7) != 0;
+        DataPanelLine_Research* result = instance->setLineResearch(s1, s2, category, v1, barColor, XButton);
+        return pushObject<DataPanelLine_Research>(L, result, DataPanelLine_ResearchBinding::getMetatableName());
+    }
+    else if (top >= 8)
+    {
+        // setLineResearch(key, s1, s2, category, v1, barColor, Xbutton)
+        std::string key = luaL_checkstring(L, 2);
+        std::string s1 = luaL_checkstring(L, 3);
+        std::string s2 = luaL_checkstring(L, 4);
+        int category = (int)luaL_checkinteger(L, 5);
+        float v1 = (float)luaL_checknumber(L, 6);
+        std::string barColor = luaL_checkstring(L, 7);
+        bool Xbutton = lua_toboolean(L, 8) != 0;
+        DataPanelLine_Research* result = instance->setLineResearch(key, s1, s2, category, v1, barColor, Xbutton);
+        return pushObject<DataPanelLine_Research>(L, result, DataPanelLine_ResearchBinding::getMetatableName());
+    }
+
+    return luaL_error(L, "Invalid arguments for DatapanelGUI:setLineResearch");
+}
+
 /*
 Skipped methods needing manual binding:
   line 57: void setTabEnabled(...) - non-string reference arg
   line 58: void _NV_setTabEnabled(...) - non-string reference arg
   line 62: void setCloseCallback(...) - unsupported arg type
-  line 69: DataPanelLine* setLine(...) - overloaded method
-  line 70: DataPanelLine* setLine(...) - overloaded method
-  line 71: DataPanelLine* setLine(...) - overloaded method
-  line 72: DataPanelLine* setLine(...) - overloaded method
-  line 73: DataPanelLine* setLine(...) - overloaded method
-  line 76: DataPanelLine_Research* setLineResearch(...) - overloaded method
-  line 77: DataPanelLine_Research* setLineResearch(...) - overloaded method
   line 82: DataPanelLine_Text* setLineText(...) - unsupported arg type
   line 83: DataPanelLine_TextEditable* setLineTextEditable(...) - unsupported arg type
   line 90: void setLines(...) - unsupported arg type
@@ -1170,6 +1265,8 @@ void DatapanelGUIBinding::registerBinding(lua_State* L)
         { "getNextVerticalPos", DatapanelGUIBinding::getNextVerticalPos },
         { "dataExists", DatapanelGUIBinding::dataExists },
         { "clearCategoryTabs", DatapanelGUIBinding::clearCategoryTabs },
+        { "setLine", DatapanelGUIBinding::setLine },
+        { "setLineResearch", DatapanelGUIBinding::setLineResearch },
         { 0, 0 }
     };
 

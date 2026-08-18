@@ -13,11 +13,25 @@ static MessageBoxManager* getInstance(lua_State* L, int idx)
 
 // --- Getters for MessageBoxManager ---
 // --- Setters for MessageBoxManager ---
+int MessageBoxManagerBinding::hideMessageBox(lua_State* L)
+{
+    int idx = (lua_gettop(L) >= 2 && testObject<MessageBoxManager>(L, 1, MessageBoxManagerBinding::getMetatableName())) ? 2 : 1;
+    bool enter = lua_toboolean(L, idx) != 0;
+    bool result = MessageBoxManager::hideMessageBox(enter);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int MessageBoxManagerBinding::hasModalMessage(lua_State* L)
+{
+    bool result = MessageBoxManager::hasModalMessage();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 30: MyGUI::Window* createMessageBox(...) - static method
-  line 31: bool hideMessageBox(...) - static method
-  line 32: bool hasModalMessage(...) - static method
   line 33: void removeMessageBox(...) - static method
 */
 
@@ -42,6 +56,8 @@ void MessageBoxManagerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "hideMessageBox", MessageBoxManagerBinding::hideMessageBox },
+        { "hasModalMessage", MessageBoxManagerBinding::hasModalMessage },
         { 0, 0 }
     };
 
@@ -65,6 +81,12 @@ void MessageBoxManagerBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, MessageBoxManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "hideMessageBox", MessageBoxManagerBinding::hideMessageBox);
+    registerStaticMethod(L, "hasModalMessage", MessageBoxManagerBinding::hasModalMessage);
+    lua_setglobal(L, "MessageBoxManager");
 }
 
 } // namespace KenshiLua

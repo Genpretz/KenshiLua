@@ -68,5 +68,8 @@ public:
     static int canDropMouseItemWithoutPaying(lua_State* L);
     static int removeTradePartner(lua_State* L);
     static int addTradePartner(lua_State* L);
+    static int lockedItemCheck(lua_State* L);
+    static int refreshSection(lua_State* L);
+    static int getSection(lua_State* L);
 };
 }

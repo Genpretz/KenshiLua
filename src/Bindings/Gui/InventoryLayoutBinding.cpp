@@ -129,10 +129,15 @@ int InventoryLayoutBinding::setSectionGUIDisabled(lua_State* L)
     return 0;
 }
 
+int InventoryLayoutBinding::notifyCellSizeChanged(lua_State* L)
+{
+    InventoryLayout::notifyCellSizeChanged();
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 239: void setupSections(...) - unsupported arg type
-  line 246: void notifyCellSizeChanged(...) - static method
   line 251: MyGUI::types::TSize<int> resizeSection(...) - unsupported return type
   line 252: MyGUI::types::TSize<int> resizeSectionWidget(...) - unsupported return type
 */
@@ -172,6 +177,7 @@ void InventoryLayoutBinding::registerBinding(lua_State* L)
         { "setupDataPanelInfos", InventoryLayoutBinding::setupDataPanelInfos },
         { "createSectionGUI", InventoryLayoutBinding::createSectionGUI },
         { "setSectionGUIDisabled", InventoryLayoutBinding::setSectionGUIDisabled },
+        { "notifyCellSizeChanged", InventoryLayoutBinding::notifyCellSizeChanged },
         { 0, 0 }
     };
 
@@ -201,6 +207,11 @@ void InventoryLayoutBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, InventoryLayoutBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "notifyCellSizeChanged", InventoryLayoutBinding::notifyCellSizeChanged);
+    lua_setglobal(L, "InventoryLayout");
 }
 
 } // namespace KenshiLua

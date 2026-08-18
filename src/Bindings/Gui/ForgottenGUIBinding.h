@@ -86,5 +86,9 @@ public:
     static int getSelectedObject(lua_State* L);
     static int getSelectedPlayerCharacter(lua_State* L);
     static int showTradeWindow(lua_State* L);
+    static int changeFontSize(lua_State* L);
+    static int destroy(lua_State* L);
+    static int changeMouseCursor(lua_State* L);
+    static int createInventoryWindow(lua_State* L);
 };
 }
