@@ -227,6 +227,14 @@ static int AppearanceBase_get_characterHeight_0to1(lua_State* L)
     return 1;
 }
 
+static int AppearanceBase_get_waterline(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+    pushVector4(L, instance->waterline);
+    return 1;
+}
+
 // --- Setters for AppearanceBase ---
 static int AppearanceBase_set_msgClearHarpoons(lua_State* L)
 {
@@ -408,6 +416,14 @@ static int AppearanceBase_set_characterHeight_0to1(lua_State* L)
     AppearanceBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AppearanceBase is nil");
     instance->characterHeight_0to1 = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int AppearanceBase_set_waterline(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+    readVector4(L, 2, instance->waterline);
     return 0;
 }
 
@@ -1126,7 +1142,6 @@ Skipped properties needing manual binding:
   line 67: attachedEffectsToRemove (Ogre::FastArray<AttachedEffect*>) - unsupported type
   line 68: woundsList (Ogre::FastArray<Wound*>) - unsupported type
   line 172: bodyMaterial (Ogre::SharedPtr<Ogre::Material>) - unsupported type
-  line 184: waterline (Ogre::Vector4) - unsupported type
 */
 
 int AppearanceBaseBinding::gc(lua_State* L)
@@ -1252,6 +1267,7 @@ void AppearanceBaseBinding::registerBinding(lua_State* L)
     registerGetter(L, "hairStyle", AppearanceBase_get_hairStyle);
     registerGetter(L, "shaved", AppearanceBase_get_shaved);
     registerGetter(L, "waterLineFadeTimer", AppearanceBase_get_waterLineFadeTimer);
+    registerGetter(L, "waterline", AppearanceBase_get_waterline);
     registerGetter(L, "barefoot", AppearanceBase_get_barefoot);
     registerGetter(L, "hideAttachments", AppearanceBase_get_hideAttachments);
     registerGetter(L, "characterHeight", AppearanceBase_get_characterHeight);
@@ -1278,6 +1294,7 @@ void AppearanceBaseBinding::registerBinding(lua_State* L)
     registerSetter(L, "hairStyle", AppearanceBase_set_hairStyle);
     registerSetter(L, "shaved", AppearanceBase_set_shaved);
     registerSetter(L, "waterLineFadeTimer", AppearanceBase_set_waterLineFadeTimer);
+    registerSetter(L, "waterline", AppearanceBase_set_waterline);
     registerSetter(L, "barefoot", AppearanceBase_set_barefoot);
     registerSetter(L, "hideAttachments", AppearanceBase_set_hideAttachments);
     registerSetter(L, "characterHeight", AppearanceBase_set_characterHeight);

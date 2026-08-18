@@ -195,6 +195,22 @@ static int MapScreen_get_worldSize(lua_State* L)
     return 1;
 }
 
+static int MapScreen_get_zoomCenterOffset(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    pushVector4(L, instance->zoomCenterOffset);
+    return 1;
+}
+
+static int MapScreen_get_worldBounds(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    pushVector4(L, instance->worldBounds);
+    return 1;
+}
+
 static int MapScreen_get_mapMarkersTowns(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
@@ -359,6 +375,22 @@ static int MapScreen_set_worldSize(lua_State* L)
     MapScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapScreen is nil");
     readVector2(L, 2, instance->worldSize);
+    return 0;
+}
+
+static int MapScreen_set_zoomCenterOffset(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    readVector4(L, 2, instance->zoomCenterOffset);
+    return 0;
+}
+
+static int MapScreen_set_worldBounds(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    readVector4(L, 2, instance->worldBounds);
     return 0;
 }
 
@@ -623,9 +655,7 @@ LIGHTUSERDATA DEPENDENCIES:
 
 /*
 Skipped properties needing manual binding:
-  line 98: zoomCenterOffset (Ogre::Vector4) - unsupported type
   line 103: mapMarkersTownsNew (Ogre::FastArray<hand>) - unsupported type
-  line 112: worldBounds (Ogre::Vector4) - unsupported type
   line 125: roads (lektor<MapScreen::MapRoad*>) - unsupported type
 */
 
@@ -714,6 +744,8 @@ void MapScreenBinding::registerBinding(lua_State* L)
     registerGetter(L, "mapMouseLastPosition", MapScreen_get_mapMouseLastPosition);
     registerGetter(L, "mapOffsetView", MapScreen_get_mapOffsetView);
     registerGetter(L, "worldSize", MapScreen_get_worldSize);
+    registerGetter(L, "zoomCenterOffset", MapScreen_get_zoomCenterOffset);
+    registerGetter(L, "worldBounds", MapScreen_get_worldBounds);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -734,6 +766,8 @@ void MapScreenBinding::registerBinding(lua_State* L)
     registerSetter(L, "mapMouseLastPosition", MapScreen_set_mapMouseLastPosition);
     registerSetter(L, "mapOffsetView", MapScreen_set_mapOffsetView);
     registerSetter(L, "worldSize", MapScreen_set_worldSize);
+    registerSetter(L, "zoomCenterOffset", MapScreen_set_zoomCenterOffset);
+    registerSetter(L, "worldBounds", MapScreen_set_worldBounds);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -72,5 +72,6 @@ public:
     static int getMapSector(lua_State* L);
     static int getZoneBoundsT(lua_State* L);
     static int _NV_getZoneBoundsT(lua_State* L);
+    static int getZoneMapSectorBounds(lua_State* L);
 };
 }

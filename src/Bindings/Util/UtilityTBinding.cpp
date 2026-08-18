@@ -487,11 +487,7 @@ int UtilityTBinding::getSubMapSectorBounds(lua_State* L)
     int offset = lua_isuserdata(L, 1) ? 1 : 0;
     iVector2 sector = *checkObject<iVector2>(L, 1 + offset, iVector2Binding::getMetatableName());
     Ogre::Vector4 res = UtilityT::getSubMapSectorBounds(sector);
-    lua_createtable(L, 0, 4);
-    lua_pushnumber(L, res.x); lua_setfield(L, -2, "x");
-    lua_pushnumber(L, res.y); lua_setfield(L, -2, "y");
-    lua_pushnumber(L, res.z); lua_setfield(L, -2, "z");
-    lua_pushnumber(L, res.w); lua_setfield(L, -2, "w");
+    pushVector4(L, res);
     return 1;
 }
 

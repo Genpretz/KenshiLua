@@ -45,5 +45,7 @@ public:
     static int _dactivateMT(lua_State* L);
     static int generateNavMeshes(lua_State* L);
     static int updateBuildingUsageNodes(lua_State* L);
+    static int getBounds(lua_State* L);
+    static int getBoundsMinusUnloadedEdges(lua_State* L);
 };
 }

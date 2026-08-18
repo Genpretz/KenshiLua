@@ -100,7 +100,23 @@ static int ZoneMap_get_neighbors(lua_State* L) { return 0; }
 
 static int ZoneMap_get_neighborsDiagonal(lua_State* L) { return 0; }
 
+static int ZoneMap_get_AABB(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+    pushVector4(L, instance->AABB);
+    return 1;
+}
+
 // --- Setters for ZoneMap ---
+static int ZoneMap_set_AABB(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+    readVector4(L, 2, instance->AABB);
+    return 0;
+}
+
 static int ZoneMap_set_coordinates(lua_State* L)
 {
     ZoneMap* instance = getInstance(L, 1);
@@ -435,13 +451,30 @@ int ZoneMapBinding::updateBuildingUsageNodes(lua_State* L)
     return 0;
 }
 
+int ZoneMapBinding::getBounds(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    pushVector4(L, instance->getBounds());
+    return 1;
+}
+
+int ZoneMapBinding::getBoundsMinusUnloadedEdges(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    float borderThickness = (float)luaL_checknumber(L, 2);
+    pushVector4(L, instance->getBoundsMinusUnloadedEdges(borderThickness));
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 206: void init(...) - non-string reference arg
   line 207: void getActiveZoneIsland(...) - unsupported arg type
-  line 220: const Ogre::Vector4& getBounds(...) - reference return type
   line 221: const Ogre::Aabb& getBoundingBox(...) - reference return type
-  line 222: Ogre::Vector4 getBoundsMinusUnloadedEdges(...) - unsupported return type
   line 225: const Ogre::Vector3& getCenterPos(...) - reference return type
   line 229: bool isActivationType(...) - unsupported arg type
   line 235: void getActiveNeighbours4(...) - unsupported arg type
@@ -471,7 +504,6 @@ Skipped properties needing manual binding:
   line 252: zoneIncomingMessagesT (BackThreadMessagesToMainT<ZONE_MESSAGE>) - unsupported type
   line 266: stateT (MainthreadStateReaderT<ZoneMap::StateT>) - unsupported type
   line 270: bounds (Ogre::Aabb) - unsupported type
-  line 271: AABB (Ogre::Vector4) - unsupported type
   line 273: biomes (lektor<GameData*>) - unsupported type
 */
 
@@ -523,6 +555,8 @@ void ZoneMapBinding::registerBinding(lua_State* L)
         { "_dactivateMT", ZoneMapBinding::_dactivateMT },
         { "generateNavMeshes", ZoneMapBinding::generateNavMeshes },
         { "updateBuildingUsageNodes", ZoneMapBinding::updateBuildingUsageNodes },
+        { "getBounds", ZoneMapBinding::getBounds },
+        { "getBoundsMinusUnloadedEdges", ZoneMapBinding::getBoundsMinusUnloadedEdges },
         { 0, 0 }
     };
 
@@ -550,6 +584,7 @@ void ZoneMapBinding::registerBinding(lua_State* L)
     registerGetter(L, "loadCount", ZoneMap_get_loadCount);
     registerGetter(L, "neighbors", ZoneMap_get_neighbors);
     registerGetter(L, "neighborsDiagonal", ZoneMap_get_neighborsDiagonal);
+    registerGetter(L, "AABB", ZoneMap_get_AABB);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -562,6 +597,7 @@ void ZoneMapBinding::registerBinding(lua_State* L)
     registerSetter(L, "loadCount", ZoneMap_set_loadCount);
     registerSetter(L, "neighbors", ZoneMap_set_neighbors);
     registerSetter(L, "neighborsDiagonal", ZoneMap_set_neighborsDiagonal);
+    registerSetter(L, "AABB", ZoneMap_set_AABB);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

@@ -86,6 +86,14 @@ static int EntData_get_uniformScale(lua_State* L)
     return 1;
 }
 
+static int EntData_get_scales(lua_State* L)
+{
+    EntData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "EntData is nil");
+    pushVector4(L, instance->scales);
+    return 1;
+}
+
 static int EntData_get_accurateTrace(lua_State* L)
 {
     EntData* instance = getInstance(L, 1);
@@ -367,6 +375,14 @@ static int EntData_set_uniformScale(lua_State* L)
     return 0;
 }
 
+static int EntData_set_scales(lua_State* L)
+{
+    EntData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "EntData is nil");
+    readVector4(L, 2, instance->scales);
+    return 0;
+}
+
 static int EntData_set_accurateTrace(lua_State* L)
 {
     EntData* instance = getInstance(L, 1);
@@ -618,7 +634,6 @@ LIGHTUSERDATA DEPENDENCIES:
 
 /*
 Skipped properties needing manual binding:
-  line 54: scales (Ogre::Vector4) - unsupported type
   line 74: extraEntities (ogre_unordered_map<GameData*, Ogre::Entity*>::type) - unsupported type
   line 77: subEnts (lektor<FoliageSystem::EntData*>) - unsupported type
 */
@@ -671,6 +686,7 @@ void EntDataBinding::registerBinding(lua_State* L)
     registerGetter(L, "slopeAlign", EntData_get_slopeAlign);
     registerGetter(L, "floating", EntData_get_floating);
     registerGetter(L, "uniformScale", EntData_get_uniformScale);
+    registerGetter(L, "scales", EntData_get_scales);
     registerGetter(L, "accurateTrace", EntData_get_accurateTrace);
     registerGetter(L, "upright", EntData_get_upright);
     registerGetter(L, "minV", EntData_get_minV);
@@ -709,6 +725,7 @@ void EntDataBinding::registerBinding(lua_State* L)
     registerSetter(L, "slopeAlign", EntData_set_slopeAlign);
     registerSetter(L, "floating", EntData_set_floating);
     registerSetter(L, "uniformScale", EntData_set_uniformScale);
+    registerSetter(L, "scales", EntData_set_scales);
     registerSetter(L, "accurateTrace", EntData_set_accurateTrace);
     registerSetter(L, "upright", EntData_set_upright);
     registerSetter(L, "minV", EntData_set_minV);

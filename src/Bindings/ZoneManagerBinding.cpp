@@ -708,10 +708,6 @@ int ZoneManagerBinding::loadPhase3(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 329: AABB2D getZoneBoundsT(...) - overloaded method
-  line 330: AABB2D _NV_getZoneBoundsT(...) - overloaded method
-  line 331: AABB2D getZoneBoundsT(...) - overloaded method
-  line 332: AABB2D _NV_getZoneBoundsT(...) - overloaded method
   line 333: void getAllActiveZonesT(...) - unsupported arg type
   line 334: void _NV_getAllActiveZonesT(...) - unsupported arg type
   line 335: void getAllActiveIslandNumbers(...) - unsupported arg type
@@ -722,9 +718,6 @@ Skipped methods needing manual binding:
   line 343: void findAllBuildings(...) - unsupported arg type
   line 344: void findOverlappingActiveZones(...) - unsupported arg type
   line 351: void levelEditorGetAllSelectedObjects(...) - unsupported arg type
-  line 355: iVector2 getMapSector(...) - overloaded method
-  line 356: iVector2 getMapSector(...) - overloaded method
-  line 357: Ogre::Vector4 getZoneMapSectorBounds(...) - unsupported return type
   line 359: ZoneMap* getZoneMap(...) - overloaded method
   line 360: ZoneMap* getZoneMap(...) - overloaded method
   line 361: ZoneMap* getZoneMap(...) - overloaded method
@@ -837,6 +830,19 @@ int ZoneManagerBinding::_NV_getZoneBoundsT(lua_State* L)
     return luaL_error(L, "Argument 2 to _NV_getZoneBoundsT must be Vector3 or iVector2");
 }
 
+int ZoneManagerBinding::getZoneMapSectorBounds(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    iVector2* sector = checkObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
+    if (!sector) return luaL_error(L, "Argument 2 to getZoneMapSectorBounds must be iVector2");
+
+    Ogre::Vector4 result = instance->getZoneMapSectorBounds(*sector);
+    pushVector4(L, result);
+    return 1;
+}
+
 int ZoneManagerBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -912,6 +918,7 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
         { "getMapSector", ZoneManagerBinding::getMapSector },
         { "getZoneBoundsT", ZoneManagerBinding::getZoneBoundsT },
         { "_NV_getZoneBoundsT", ZoneManagerBinding::_NV_getZoneBoundsT },
+        { "getZoneMapSectorBounds", ZoneManagerBinding::getZoneMapSectorBounds },
         { 0, 0 }
     };
 
