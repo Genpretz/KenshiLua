@@ -140,6 +140,27 @@ int TownBuildingsManagerBinding::_NV_factoryObjectCreatedCallback(lua_State* L)
     return 0;
 }
 
+int TownBuildingsManagerBinding::getFloorVisible(lua_State* L)
+{
+    TownBuildingsManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TownBuildingsManager is nil");
+
+    Building* building = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    if (lua_gettop(L) >= 3)
+    {
+        int floor = (int)luaL_checkinteger(L, 3);
+        bool result = instance->getFloorVisible(building, floor);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+    else
+    {
+        int result = instance->getFloorVisible(building);
+        lua_pushinteger(L, result);
+        return 1;
+    }
+}
+
 /*
 Skipped methods needing manual binding:
   line 73: Ogre::MovableObject* addEntity(...) - unsupported arg type
@@ -148,8 +169,6 @@ Skipped methods needing manual binding:
   line 77: bool switchInstancing(...) - unsupported arg type
   line 78: void addInteriorShell(...) - unsupported arg type
   line 79: void removeInteriorShell(...) - unsupported arg type
-  line 81: int getFloorVisible(...) - overloaded method
-  line 82: bool getFloorVisible(...) - overloaded method
   line 88: bool isInstanced(...) - static method
   line 89: bool isEntity(...) - static method
   line 90: bool makeInstance(...) - unsupported arg type
@@ -251,6 +270,7 @@ void TownBuildingsManagerBinding::registerBinding(lua_State* L)
         { "setSignsVisible", TownBuildingsManagerBinding::setSignsVisible },
         { "factoryObjectCreatedCallback", TownBuildingsManagerBinding::factoryObjectCreatedCallback },
         { "_NV_factoryObjectCreatedCallback", TownBuildingsManagerBinding::_NV_factoryObjectCreatedCallback },
+        { "getFloorVisible", TownBuildingsManagerBinding::getFloorVisible },
         { 0, 0 }
     };
 

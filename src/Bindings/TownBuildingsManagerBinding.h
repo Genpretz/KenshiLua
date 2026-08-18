@@ -27,5 +27,6 @@ public:
     static int setSignsVisible(lua_State* L);
     static int factoryObjectCreatedCallback(lua_State* L);
     static int _NV_factoryObjectCreatedCallback(lua_State* L);
+    static int getFloorVisible(lua_State* L);
 };
 }

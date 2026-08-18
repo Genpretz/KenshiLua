@@ -6,7 +6,7 @@
 namespace KenshiLua
 {
 
-static ResourceLoader* getInstance(lua_State* L, int idx)
+static ResourceLoader* getResourceLoaderInstance(lua_State* L, int idx)
 {
     return checkObject<ResourceLoader>(L, idx, ResourceLoaderBinding::getMetatableName());
 }
@@ -14,7 +14,7 @@ static ResourceLoader* getInstance(lua_State* L, int idx)
 // --- Getters for ResourceLoader ---
 static int ResourceLoader_get_running(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     lua_pushboolean(L, instance->running ? 1 : 0);
     return 1;
@@ -22,7 +22,7 @@ static int ResourceLoader_get_running(lua_State* L)
 
 static int ResourceLoader_get_sceneManager(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     lua_pushlightuserdata(L, (void*)instance->sceneManager);
     return 1;
@@ -30,7 +30,7 @@ static int ResourceLoader_get_sceneManager(lua_State* L)
 
 static int ResourceLoader_get_loadingMeshQueueMutex(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     lua_pushlightuserdata(L, (void*)&instance->loadingMeshQueueMutex);
     return 1;
@@ -38,7 +38,7 @@ static int ResourceLoader_get_loadingMeshQueueMutex(lua_State* L)
 
 static int ResourceLoader_get_texturesLoadingMutex(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     lua_pushlightuserdata(L, (void*)&instance->texturesLoadingMutex);
     return 1;
@@ -46,7 +46,7 @@ static int ResourceLoader_get_texturesLoadingMutex(lua_State* L)
 
 static int ResourceLoader_get_texturesLoadedMutex(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     lua_pushlightuserdata(L, (void*)&instance->texturesLoadedMutex);
     return 1;
@@ -55,7 +55,7 @@ static int ResourceLoader_get_texturesLoadedMutex(lua_State* L)
 // --- Setters for ResourceLoader ---
 static int ResourceLoader_set_running(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     instance->running = lua_toboolean(L, 2) != 0;
     return 0;
@@ -78,7 +78,7 @@ static int ResourceLoader_set_texturesLoadedMutex(lua_State* L)
 
 int ResourceLoaderBinding::updateMT(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     instance->updateMT();
@@ -87,7 +87,7 @@ int ResourceLoaderBinding::updateMT(lua_State* L)
 
 int ResourceLoaderBinding::updateBT(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     bool result = instance->updateBT();
@@ -97,7 +97,7 @@ int ResourceLoaderBinding::updateBT(lua_State* L)
 
 int ResourceLoaderBinding::isLoading(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     bool result = instance->isLoading();
@@ -107,7 +107,7 @@ int ResourceLoaderBinding::isLoading(lua_State* L)
 
 int ResourceLoaderBinding::init(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     instance->init();
@@ -116,7 +116,7 @@ int ResourceLoaderBinding::init(lua_State* L)
 
 int ResourceLoaderBinding::threadProc(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     unsigned long result = instance->threadProc();
@@ -126,7 +126,7 @@ int ResourceLoaderBinding::threadProc(lua_State* L)
 
 int ResourceLoaderBinding::_NV_threadProc(lua_State* L)
 {
-    ResourceLoader* instance = getInstance(L, 1);
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     unsigned long result = instance->_NV_threadProc();
@@ -134,15 +134,24 @@ int ResourceLoaderBinding::_NV_threadProc(lua_State* L)
     return 1;
 }
 
+int ResourceLoaderBinding::getInstance(lua_State* L)
+{
+    ResourceLoader* result = ResourceLoader::getInstance();
+    return pushObject(L, result, ResourceLoaderBinding::getMetatableName());
+}
+
+int ResourceLoaderBinding::destroy(lua_State* L)
+{
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResourceLoader is nil");
+
+    instance->destroy();
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 97: boost::function<void __cdecl(...) - static method
-  line 98: ResourceLoader* getInstance(...) - static method
-  line 99: void destroy(...) - overloaded method
-  line 100: void destroy(...) - overloaded method
-  line 101: void destroy(...) - overloaded method
-  line 102: void destroy(...) - overloaded method
-  line 103: void destroy(...) - overloaded method
   line 104: Ogre::Entity* loadModelEntity(...) - unsupported arg type
   line 105: Ogre::Entity* loadModelEntityDetached(...) - unsupported arg type
   line 106: void loadTextureUnitArray(...) - unsupported arg type
@@ -200,6 +209,8 @@ void ResourceLoaderBinding::registerBinding(lua_State* L)
         { "init", ResourceLoaderBinding::init },
         { "threadProc", ResourceLoaderBinding::threadProc },
         { "_NV_threadProc", ResourceLoaderBinding::_NV_threadProc },
+        { "getInstance", ResourceLoaderBinding::getInstance },
+        { "destroy", ResourceLoaderBinding::destroy },
         { 0, 0 }
     };
 
@@ -241,6 +252,11 @@ void ResourceLoaderBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, ResourceLoaderBinding::getMetatableName(), Ogre::ResourceBackgroundQueue::ListenerBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getInstance", ResourceLoaderBinding::getInstance);
+    lua_setglobal(L, "ResourceLoader");
 }
 
 } // namespace KenshiLua

@@ -26,5 +26,6 @@ public:
     static int notifySaved(lua_State* L);
     static int empty(lua_State* L);
     static int getBaseIndex(lua_State* L);
+    static int getModIndex(lua_State* L);
 };
 }

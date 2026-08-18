@@ -94,11 +94,38 @@ int SelectionBoxBinding::isActive(lua_State* L)
     return 1;
 }
 
+int SelectionBoxBinding::contains(lua_State* L)
+{
+    SelectionBox* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SelectionBox is nil");
+
+    if (lua_istable(L, 2) && lua_istable(L, 3))
+    {
+        Ogre::Vector3 a;
+        Ogre::Vector3 b;
+        readVector3(L, 2, a);
+        readVector3(L, 3, b);
+        float radius = (float)luaL_optnumber(L, 4, 0.0);
+        bool result = instance->contains(a, b, radius);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+    else if (lua_istable(L, 2))
+    {
+        Ogre::Vector3 point;
+        readVector3(L, 2, point);
+        float r = (float)luaL_optnumber(L, 3, 0.0);
+        bool result = instance->contains(point, r);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+
+    return luaL_error(L, "Invalid arguments for SelectionBox:contains");
+}
+
 /*
 Skipped methods needing manual binding:
-  line 46: bool contains(...) - overloaded method
-  line 47: bool contains(...) - overloaded method
-  line 48: bool contains(...) - overloaded method
+  line 47: bool contains(...) - unsupported arg type
 */
 
 /*
@@ -163,6 +190,7 @@ void SelectionBoxBinding::registerBinding(lua_State* L)
         { "update", SelectionBoxBinding::update },
         { "cancel", SelectionBoxBinding::cancel },
         { "isActive", SelectionBoxBinding::isActive },
+        { "contains", SelectionBoxBinding::contains },
         { 0, 0 }
     };
 

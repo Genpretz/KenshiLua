@@ -24,5 +24,7 @@ public:
     static int init(lua_State* L);
     static int threadProc(lua_State* L);
     static int _NV_threadProc(lua_State* L);
+    static int getInstance(lua_State* L);
+    static int destroy(lua_State* L);
 };
 }

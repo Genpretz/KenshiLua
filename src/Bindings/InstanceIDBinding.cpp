@@ -156,10 +156,39 @@ int InstanceIDBinding::getBaseIndex(lua_State* L)
     return 1;
 }
 
+int InstanceIDBinding::getModIndex(lua_State* L)
+{
+    if (lua_isstring(L, 1))
+    {
+        std::string s = luaL_checkstring(L, 1);
+        short result = InstanceID::getModIndex(s);
+        lua_pushinteger(L, result);
+        return 1;
+    }
+
+    if (lua_isuserdata(L, 1))
+    {
+        if (lua_isstring(L, 2))
+        {
+            std::string s = luaL_checkstring(L, 2);
+            short result = InstanceID::getModIndex(s);
+            lua_pushinteger(L, result);
+            return 1;
+        }
+
+        InstanceID* instance = getInstance(L, 1);
+        if (!instance) return luaL_error(L, "InstanceID is nil");
+
+        int result = instance->getModIndex();
+        lua_pushinteger(L, result);
+        return 1;
+    }
+
+    return luaL_error(L, "Invalid arguments for getModIndex");
+}
+
 /*
 Skipped methods needing manual binding:
-  line 13: int getModIndex(...) - overloaded method
-  line 14: short getModIndex(...) - static method
   line 29: bool operator==(...) - operator
   line 33: InstanceID& operator=(...) - operator
 */
@@ -193,6 +222,7 @@ void InstanceIDBinding::registerBinding(lua_State* L)
         { "notifySaved", InstanceIDBinding::notifySaved },
         { "empty", InstanceIDBinding::empty },
         { "getBaseIndex", InstanceIDBinding::getBaseIndex },
+        { "getModIndex", InstanceIDBinding::getModIndex },
         { 0, 0 }
     };
 
@@ -229,6 +259,11 @@ void InstanceIDBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getModIndex", InstanceIDBinding::getModIndex);
+    lua_setglobal(L, "InstanceID");
 }
 
 } // namespace KenshiLua
