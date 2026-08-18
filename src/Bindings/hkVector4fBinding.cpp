@@ -80,42 +80,247 @@ int hkVector4fBinding::normalize3(lua_State* L)
     return 0;
 }
 
+int hkVector4fBinding::getZero(lua_State* L)
+{
+    const hkVector4f& result = hkVector4f::getZero();
+    return pushObject(L, const_cast<hkVector4f*>(&result), hkVector4fBinding::getMetatableName());
+}
+
+int hkVector4fBinding::set(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    float a = (float)luaL_checknumber(L, 2);
+    float b = (float)luaL_checknumber(L, 3);
+    float c = (float)luaL_checknumber(L, 4);
+    float d = (float)luaL_checknumber(L, 5);
+    instance->set(a, b, c, d);
+    return 0;
+}
+
+int hkVector4fBinding::setAll(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    float a = (float)luaL_checknumber(L, 2);
+    instance->setAll(a);
+    return 0;
+}
+
+int hkVector4fBinding::add(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    instance->add(*a);
+    return 0;
+}
+
+int hkVector4fBinding::sub(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    instance->sub(*a);
+    return 0;
+}
+
+int hkVector4fBinding::mul(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    instance->mul(*a);
+    return 0;
+}
+
+int hkVector4fBinding::div(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    instance->div(*a);
+    return 0;
+}
+
+int hkVector4fBinding::setAdd(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* v0 = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hkVector4f* v1 = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    instance->setAdd(*v0, *v1);
+    return 0;
+}
+
+int hkVector4fBinding::setSub(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* v0 = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hkVector4f* v1 = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    instance->setSub(*v0, *v1);
+    return 0;
+}
+
+int hkVector4fBinding::setMul(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* v0 = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hkVector4f* v1 = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    instance->setMul(*v0, *v1);
+    return 0;
+}
+
+int hkVector4fBinding::setDiv(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* v0 = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hkVector4f* v1 = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    instance->setDiv(*v0, *v1);
+    return 0;
+}
+
+int hkVector4fBinding::addMul(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* x = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hkVector4f* y = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    instance->addMul(*x, *y);
+    return 0;
+}
+
+int hkVector4fBinding::setAddMul(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hkVector4f* x = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    hkVector4f* y = checkObject<hkVector4f>(L, 4, hkVector4fBinding::getMetatableName());
+    instance->setAddMul(*a, *x, *y);
+    return 0;
+}
+
+int hkVector4fBinding::subMul(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* x = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hkVector4f* y = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    instance->subMul(*x, *y);
+    return 0;
+}
+
+int hkVector4fBinding::setSubMul(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hkVector4f* x = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    hkVector4f* y = checkObject<hkVector4f>(L, 4, hkVector4fBinding::getMetatableName());
+    instance->setSubMul(*a, *x, *y);
+    return 0;
+}
+
+int hkVector4fBinding::setCross(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* v0 = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hkVector4f* v1 = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    instance->setCross(*v0, *v1);
+    return 0;
+}
+
+int hkVector4fBinding::setXYZ_W(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* xyz = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hkVector4f* w = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    instance->setXYZ_W(*xyz, *w);
+    return 0;
+}
+
+int hkVector4fBinding::setW(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* w = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    instance->setW(*w);
+    return 0;
+}
+
+int hkVector4fBinding::setXYZ(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    if (lua_isnumber(L, 2))
+    {
+        float v = (float)luaL_checknumber(L, 2);
+        instance->setXYZ(v);
+        return 0;
+    }
+    else
+    {
+        hkVector4f* xyz = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+        instance->setXYZ(*xyz);
+        return 0;
+    }
+}
+
+int hkVector4fBinding::setXYZ_0(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* xyz = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    instance->setXYZ_0(*xyz);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 153: void*operator new(...) - static method
   line 155: void operator delete(...) - static method
   line 171: void operator=(...) - operator
-  line 172: void set(...) - overloaded method
-  line 173: void set(...) - overloaded method
-  line 174: void setAll(...) - overloaded method
-  line 175: void setAll(...) - overloaded method
-  line 178: void add(...) - unsupported arg type
-  line 179: void sub(...) - unsupported arg type
-  line 180: void mul(...) - overloaded method
-  line 181: void mul(...) - overloaded method
-  line 182: void div(...) - unsupported arg type
-  line 183: void setAdd(...) - overloaded method
-  line 184: void setAdd(...) - overloaded method
-  line 185: void setSub(...) - overloaded method
-  line 186: void setSub(...) - overloaded method
-  line 187: void setMul(...) - overloaded method
-  line 188: void setMul(...) - overloaded method
-  line 189: void setMul(...) - overloaded method
-  line 190: void setDiv(...) - unsupported arg type
+  line 173: void set(...) - unsupported arg type
+  line 175: void setAll(...) - unsupported arg type
+  line 180: void mul(...) - unsupported arg type
+  line 183: void setAdd(...) - unsupported arg type
+  line 185: void setSub(...) - unsupported arg type
+  line 187: void setMul(...) - unsupported arg type
+  line 188: void setMul(...) - unsupported arg type
   line 191: void setReciprocal(...) - unsupported arg type
   line 192: void setSqrt(...) - unsupported arg type
   line 193: void setSqrtInverse(...) - unsupported arg type
-  line 194: void addMul(...) - overloaded method
-  line 195: void addMul(...) - overloaded method
-  line 196: void addMul(...) - overloaded method
-  line 197: void setAddMul(...) - overloaded method
-  line 198: void setAddMul(...) - overloaded method
-  line 199: void subMul(...) - overloaded method
-  line 200: void subMul(...) - overloaded method
-  line 201: void subMul(...) - overloaded method
-  line 202: void setSubMul(...) - overloaded method
-  line 203: void setSubMul(...) - overloaded method
-  line 204: void setCross(...) - unsupported arg type
+  line 194: void addMul(...) - unsupported arg type
+  line 195: void addMul(...) - unsupported arg type
+  line 197: void setAddMul(...) - unsupported arg type
+  line 199: void subMul(...) - unsupported arg type
+  line 200: void subMul(...) - unsupported arg type
+  line 202: void setSubMul(...) - unsupported arg type
   line 205: void setInterpolate(...) - unsupported arg type
   line 206: const hkVector4fComparison less(...) - unsupported return type
   line 207: const hkVector4fComparison lessEqual(...) - unsupported return type
@@ -165,10 +370,8 @@ Skipped methods needing manual binding:
   line 254: const hkSimdFloat32 dot4xyz1(...) - unsupported return type
   line 255: const hkSimdFloat32 distanceTo(...) - unsupported return type
   line 256: const hkSimdFloat32 distanceToSquared(...) - unsupported return type
-  line 257: void setXYZ_W(...) - overloaded method
-  line 258: void setXYZ_W(...) - overloaded method
-  line 259: void setW(...) - overloaded method
-  line 260: void setW(...) - overloaded method
+  line 257: void setXYZ_W(...) - unsupported arg type
+  line 259: void setW(...) - unsupported arg type
   line 262: void setXYZ(...) - overloaded method
   line 263: void setXYZ(...) - overloaded method
   line 264: void setXYZ_0(...) - unsupported arg type
@@ -178,7 +381,7 @@ Skipped methods needing manual binding:
   line 274: const hkSimdFloat32 getW(...) - unsupported return type
   line 277: void setComponent(...) - unsupported arg type
   line 281: const hkVector4f& getZero(...) - static method
-  line 282: const hkVector4f& getConstant(...) - static method
+  line 282: const hkVector4f& getConstant(...) - unsupported return type
   line 293: hkSimdFloat32 dot3(...) - unsupported return type
   line 318: void setNeg3(...) - unsupported arg type
   line 328: hkSimdFloat32 normalizeWithLength3(...) - unsupported return type
@@ -224,6 +427,26 @@ void hkVector4fBinding::registerBinding(lua_State* L)
         { "getInt16W", hkVector4fBinding::getInt16W },
         { "setZero4", hkVector4fBinding::setZero4 },
         { "normalize3", hkVector4fBinding::normalize3 },
+        { "getZero", hkVector4fBinding::getZero },
+        { "set", hkVector4fBinding::set },
+        { "setAll", hkVector4fBinding::setAll },
+        { "add", hkVector4fBinding::add },
+        { "sub", hkVector4fBinding::sub },
+        { "mul", hkVector4fBinding::mul },
+        { "div", hkVector4fBinding::div },
+        { "setAdd", hkVector4fBinding::setAdd },
+        { "setSub", hkVector4fBinding::setSub },
+        { "setMul", hkVector4fBinding::setMul },
+        { "setDiv", hkVector4fBinding::setDiv },
+        { "addMul", hkVector4fBinding::addMul },
+        { "setAddMul", hkVector4fBinding::setAddMul },
+        { "subMul", hkVector4fBinding::subMul },
+        { "setSubMul", hkVector4fBinding::setSubMul },
+        { "setCross", hkVector4fBinding::setCross },
+        { "setXYZ_W", hkVector4fBinding::setXYZ_W },
+        { "setW", hkVector4fBinding::setW },
+        { "setXYZ", hkVector4fBinding::setXYZ },
+        { "setXYZ_0", hkVector4fBinding::setXYZ_0 },
         { 0, 0 }
     };
 
@@ -244,6 +467,11 @@ void hkVector4fBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getZero", hkVector4fBinding::getZero);
+    lua_setglobal(L, "hkVector4f");
 }
 
 } // namespace KenshiLua
