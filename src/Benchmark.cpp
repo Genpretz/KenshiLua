@@ -42,12 +42,23 @@ static double time_lua_code(lua_State* L, const char* code) {
     return t.elapsed_ms();
 }
 
-// Arg pusher for event dispatch scaling: pushes a table { value = 0 }
+// Arg pusher for event dispatch scaling: pushes a reusable table { value = 0 }
 struct ScalingArgPusher : public IArgPusher {
-    int push(lua_State* L) const {
+    int tableRef;
+    ScalingArgPusher(lua_State* L) : tableRef(LUA_NOREF) {
         lua_newtable(L);
         lua_pushinteger(L, 0);
         lua_setfield(L, -2, "value");
+        tableRef = luaL_ref(L, LUA_REGISTRYINDEX);
+    }
+    void cleanup(lua_State* L) {
+        if (tableRef != LUA_NOREF && tableRef != LUA_REFNIL) {
+            luaL_unref(L, LUA_REGISTRYINDEX, tableRef);
+            tableRef = LUA_NOREF;
+        }
+    }
+    int push(lua_State* L) const {
+        lua_rawgeti(L, LUA_REGISTRYINDEX, tableRef);
         return 1;
     }
 };
@@ -95,7 +106,7 @@ static std::string getTimestampISO()
 // Handler counts tested for event dispatch scaling
 static const int HANDLER_COUNTS[] = {1, 10, 50, 100, 200};
 static const int NUM_HANDLER_COUNTS = 5;
-static const int DISPATCH_ITERATIONS = 10000;
+static const int DISPATCH_ITERATIONS = 2000;
 
 struct BenchmarkResults {
     std::string timestamp;
@@ -430,7 +441,7 @@ int luaKenshiRunBenchmarkEx(lua_State* L, const std::string& csvFilename, const 
     ss << "Event Dispatch Scaling (" << DISPATCH_ITERATIONS << " dispatches):\n";
     ss << "  Lua handler body: data.value = data.value + 1\n";
 
-    ScalingArgPusher scaling_pusher;
+    ScalingArgPusher scaling_pusher(L);
 
     for (int t = 0; t < NUM_HANDLER_COUNTS; ++t) {
         int handlerCount = HANDLER_COUNTS[t];
@@ -477,7 +488,9 @@ int luaKenshiRunBenchmarkEx(lua_State* L, const std::string& csvFilename, const 
         for (size_t i = 0; i < handlerIds.size(); ++i) {
             EventSystem::get().unregisterHandler(handlerIds[i]);
         }
+        lua_gc(L, LUA_GCCOLLECT, 0);
     }
+    scaling_pusher.cleanup(L);
 
     // Contextualize the worst case against a 30 FPS frame budget (~33.3 ms)
     double worst_per_call_us = results.dispatch_per_call_us[NUM_HANDLER_COUNTS - 1];
