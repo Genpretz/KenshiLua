@@ -109,6 +109,21 @@ def generate_markdown(sections):
     total_values = sum(len(e['entries']) for s in sections for e in s['enums'])
     md.append(f"Total Enum Registration Functions: **{total_enums}** ({total_values} bound values/aliases) across **{len(sections)}** SDK header files.")
     md.append("")
+    md.append("## Lua Usage & Syntax")
+    md.append("")
+    md.append("Enums in KenshiLua are exposed as global tables. You can access individual enum values using standard table dot syntax:")
+    md.append("")
+    md.append("```lua")
+    md.append("-- Accessing enum constants:")
+    md.append("local prone = ProneState.PS_NORMAL")
+    md.append("-- Using a convenience alias:")
+    md.append("local prone = ProneState.NORMAL")
+    md.append("")
+    md.append("-- Passing to a method or setting a property:")
+    md.append("character.proneState = ProneState.NORMAL")
+    md.append("character:setProneState(ProneState.PS_NORMAL)")
+    md.append("```")
+    md.append("")
     md.append("## Table of Contents")
     md.append("")
     for sec in sections:
@@ -131,8 +146,11 @@ def generate_markdown(sections):
             globals_str = ", ".join([f"`{g}`" for g in enum_info["globals"]]) if enum_info["globals"] else f"`{enum_info['func_name']}`"
             md.append(f"### Global: {globals_str}")
             md.append("")
-            md.append(f"C++ Binding Function: `{enum_info['func_name']}(lua_State* L)`")
-            md.append("")
+
+            def format_lua_syntax(key):
+                if enum_info["globals"]:
+                    return "<br>".join([f"`{g}.{key}`" for g in enum_info["globals"]])
+                return f"`{key}`"
 
             originals = [e for e in enum_info["entries"] if e["category"] == "Original"]
             aliases = [e for e in enum_info["entries"] if e["category"] == "Alias"]
@@ -141,19 +159,19 @@ def generate_markdown(sections):
                 if aliases:
                     md.append("**Original Enumerators:**")
                     md.append("")
-                md.append("| Lua Key / Name | C++ Value / Enumerator |")
+                md.append("| Lua Syntax | C++ Value / Enumerator |")
                 md.append("| :--- | :--- |")
                 for entry in originals:
-                    md.append(f"| `{entry['key']}` | `{entry['val']}` |")
+                    md.append(f"| {format_lua_syntax(entry['key'])} | `{entry['val']}` |")
                 md.append("")
 
             if aliases:
                 md.append("**Aliases:**")
                 md.append("")
-                md.append("| Lua Key / Name | C++ Value / Enumerator |")
+                md.append("| Lua Syntax | C++ Value / Enumerator |")
                 md.append("| :--- | :--- |")
                 for entry in aliases:
-                    md.append(f"| `{entry['key']}` | `{entry['val']}` |")
+                    md.append(f"| {format_lua_syntax(entry['key'])} | `{entry['val']}` |")
                 md.append("")
 
         md.append("---")

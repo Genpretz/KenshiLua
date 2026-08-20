@@ -136,7 +136,7 @@ def parse_classes(header_text):
         header_enums.add(enum_match.group(1))
 
     classes = []
-    class_re = re.compile(r"\bclass\s+([A-Za-z_]\w*)\s*(?:\:\s*([^{]+))?\{", re.MULTILINE)
+    class_re = re.compile(r"\bclass\s+(?:(?:KLIB_EXPORT|KENSHI_API)\s+)?([A-Za-z_]\w*)\s*(?:\:\s*([^{]+))?\{", re.MULTILINE)
     for match in class_re.finditer(header_text):
         name = match.group(1)
 
@@ -261,7 +261,7 @@ def is_reference(type_text):
 
 
 def is_struct_type(type_text):
-    return base_type(type_text) in ("Ogre::Vector2", "Vector2", "Ogre::Vector3", "Vector3", "Ogre::Quaternion", "Quaternion")
+    return base_type(type_text) in ("Ogre::Vector2", "Vector2", "Ogre::Vector3", "Vector3", "Ogre::Vector4", "Vector4", "Ogre::Quaternion", "Quaternion")
 
 
 def is_enum_type(type_text, info, extra_enums):
@@ -296,6 +296,12 @@ def push_statement(type_text, expr, info, extra_enums, known_bindings, allow_ref
     if t == "hand":
         return "return handBinding::push(L, %s);" % expr
         
+    fast_array_match = re.match(r"^(?:const\s+)?Ogre::FastArray<(.+)>(?:\s*&)?$", normalize_type(type_text))
+    if fast_array_match:
+        elem_type = normalize_type(fast_array_match.group(1))
+        clean_arr_type = f"Ogre::FastArray<{elem_type}>"
+        return f'return pushObject<{clean_arr_type}>(L, const_cast<{clean_arr_type}*>(&({expr})), "{clean_arr_type}");'
+
     binding = binding_for_type(type_text, known_bindings)
     if binding:
         addr = "" if is_pointer(type_text) else "&"
@@ -308,6 +314,8 @@ def push_statement(type_text, expr, info, extra_enums, known_bindings, allow_ref
         return "pushVector2(L, %s);" % expr
     if t in ("Ogre::Vector3", "Vector3"):
         return "pushVector3(L, %s);" % expr
+    if t in ("Ogre::Vector4", "Vector4"):
+        return "pushVector4(L, %s);" % expr
     if t in ("Ogre::Quaternion", "Quaternion"):
         return "pushQuaternion(L, %s);" % expr
         
@@ -378,6 +386,8 @@ def generate_method_stub(info, method, extra_enums, known_bindings):
                 struct_name = "Vector2"
             elif "Vector3" in t:
                 struct_name = "Vector3"
+            elif "Vector4" in t:
+                struct_name = "Vector4"
             else:
                 struct_name = "Quaternion"
             out.append(f"    {t} {local_name};")
@@ -484,6 +494,8 @@ def is_property_supported(member, info, extra_enums, known_bindings):
     return stmt is not None
 
 def is_setter_supported(member, info, extra_enums, known_bindings):
+    if re.match(r"^(?:const\s+)?Ogre::FastArray<(.+)>(?:\s*&)?$", normalize_type(member.type)):
+        return True
     if is_struct_type(member.type):
         return True
     if binding_for_type(member.type, known_bindings):
@@ -519,12 +531,30 @@ def generate_property_setters(info, members, extra_enums, known_bindings):
             out.append(f"    {info.name}* instance = getInstance(L, 1);")
             out.append(f"    if (!instance) return luaL_error(L, \"{info.name} is nil\");")
             
+            fast_array_match = re.match(r"^(?:const\s+)?Ogre::FastArray<(.+)>(?:\s*&)?$", normalize_type(member.type))
+            if fast_array_match:
+                elem_type = normalize_type(fast_array_match.group(1))
+                clean_arr_type = f"Ogre::FastArray<{elem_type}>"
+                out.append("    if (lua_isnoneornil(L, 2))")
+                out.append("    {")
+                out.append(f"        instance->{member.name}.clear();")
+                out.append("        return 0;")
+                out.append("    }")
+                out.append(f'    auto* src = checkObject<{clean_arr_type}>(L, 2, "{clean_arr_type}");')
+                out.append(f'    if (!src) return luaL_error(L, "Argument 2 to set {member.name} must be {clean_arr_type}");')
+                out.append(f"    instance->{member.name} = *src;")
+                out.append("    return 0;")
+                out.append("}\n")
+                continue
+
             if is_struct_type(member.type):
                 t = base_type(member.type)
                 if "Vector2" in t:
                     struct_name = "Vector2"
                 elif "Vector3" in t:
                     struct_name = "Vector3"
+                elif "Vector4" in t:
+                    struct_name = "Vector4"
                 else:
                     struct_name = "Quaternion"
                 out.append(f"    read{struct_name}(L, 2, instance->{member.name});")
@@ -584,6 +614,19 @@ def generate_cpp(info, header_path, extra_enums, known_bindings, known_headers=N
         if has_hand:
             referenced_types.add("hand")
             
+        has_fast_array = False
+        for member in info.members:
+            if "FastArray" in member.type:
+                has_fast_array = True
+        for method in info.methods:
+            if "FastArray" in method.return_type:
+                has_fast_array = True
+            for arg in method.args:
+                if "FastArray" in arg.type:
+                    has_fast_array = True
+        if has_fast_array:
+            out.append('#include "Bindings/Util/OgreFastArrayBinding.h"')
+
         for t in sorted(referenced_types):
             if t in known_headers and t != info.name:
                 out.append(f'#include "{known_headers[t]}"')
@@ -707,6 +750,25 @@ def generate_cpp(info, header_path, extra_enums, known_bindings, known_headers=N
             out.append(f'    registerSetter(L, "{member.name}", {info.name}_set_{member.name});')
     out.append("    lua_setfield(L, -2, \"__setters\"); // Bind to metatable")
     out.append("")
+
+    fast_arrays = set()
+    for member in supported_members:
+        m = re.match(r"^(?:const\s+)?Ogre::FastArray<(.+)>(?:\s*&)?$", normalize_type(member.type))
+        if m:
+            fast_arrays.add(normalize_type(m.group(1)))
+    for elem_type in sorted(fast_arrays):
+        clean_arr_type = f"Ogre::FastArray<{elem_type}>"
+        if is_pointer(elem_type):
+            raw_elem = base_type(elem_type)
+            binding = binding_for_type(raw_elem, known_bindings)
+            meta = f"{binding}::getMetatableName()" if binding else "nullptr"
+            out.append(f'    OgreFastArrayPtrBinding<{elem_type}>::registerBinding(L, "{clean_arr_type}", {meta});')
+        elif is_scalar_type(elem_type) or is_string_type(elem_type) or elem_type == "hand":
+            out.append(f'    OgreFastArrayPrimitiveBinding<{elem_type}>::registerBinding(L, "{clean_arr_type}");')
+        else:
+            out.append(f'    OgreFastArrayValueBinding<{elem_type}>::registerBinding(L, "{clean_arr_type}");')
+    if fast_arrays:
+        out.append("")
     
     # NEW: Automatically wire up inheritance if a base class exists!
     if info.bases:

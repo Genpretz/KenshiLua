@@ -113,7 +113,7 @@ def strip_all_comments(text: str) -> str:
     return "\n".join(lines)
 
 
-def parse_structs(header_text: str) -> list[StructInfo]:
+def parse_structs(header_text: str, include_classes: bool = False) -> list[StructInfo]:
     clean_text = strip_all_comments(header_text)
 
     enums = set()
@@ -122,7 +122,7 @@ def parse_structs(header_text: str) -> list[StructInfo]:
 
     structs = []
 
-    # Find all struct blocks (both top-level and nested)
+    # Find all struct/class blocks (both top-level and nested)
     pattern = re.compile(r"\b(class|struct)\s+([A-Za-z_]\w*)\s*(?::[^{]+)?\{", re.MULTILINE)
     
     # We maintain scope stacks to detect outer class / struct
@@ -136,7 +136,7 @@ def parse_structs(header_text: str) -> list[StructInfo]:
 
             kind = match.group(1)
             name = match.group(2)
-            is_struct = (kind == "struct")
+            should_include = (kind == "struct") or (include_classes and bool(current_scope))
 
             brace_open = match.end() - 1
             brace_close = find_matching_brace(text_segment, brace_open)
@@ -147,7 +147,7 @@ def parse_structs(header_text: str) -> list[StructInfo]:
             body = text_segment[match.end():brace_close]
             segment_lines = text_segment[:match.end()].count("\n") + line_offset
 
-            if is_struct:
+            if should_include:
                 info = StructInfo(name=name, outer_scope=current_scope, enums=set(enums))
                 parse_struct_body(info, body, segment_lines)
                 structs.append(info)
@@ -426,6 +426,7 @@ def main():
     parser = argparse.ArgumentParser(description="Generate Lua binding files for top-level and nested structs in C++ headers.")
     parser.add_argument("header_file", help="Path to header file")
     parser.add_argument("--write-dir", default="tools/generated/struct", help="Output directory for generated struct bindings")
+    parser.add_argument("--include-classes", action="store_true", help="Include nested classes with struct-like layout")
     args = parser.parse_args()
 
     header_path = Path(args.header_file)
@@ -434,7 +435,7 @@ def main():
         sys.exit(1)
 
     text = header_path.read_text(errors="ignore")
-    structs = parse_structs(text)
+    structs = parse_structs(text, include_classes=args.include_classes)
 
     if not structs:
         print(f"No struct definitions found in {header_path.name}")

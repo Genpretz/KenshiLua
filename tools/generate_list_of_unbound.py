@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import re
+import glob
 
 def main():
     # Paths are relative to the script's grandparent directory (project root)
@@ -8,6 +9,64 @@ def main():
     project_root = os.path.dirname(script_dir)
     bindings_dir = os.path.join(project_root, "src", "Bindings")
     output_file = os.path.join(project_root, "docs", "UnboundRefrence.md")
+    enum_file = os.path.join(bindings_dir, "EnumBinding.cpp")
+
+    # 1. Discover all registered enums
+    bound_enums = set()
+    if os.path.exists(enum_file):
+        with open(enum_file, 'r', encoding='utf-8', errors='ignore') as f:
+            enum_content = f.read()
+            for m in re.finditer(r'void\s+register(\w+)\s*\(lua_State\*', enum_content):
+                bound_enums.add(m.group(1).lower())
+            for m in re.finditer(r'setEnum\s*\(\s*L\s*,\s*"[^"]+"\s*,\s*([^:,\s\)]+)::', enum_content):
+                bound_enums.add(m.group(1).lower())
+            for m in re.finditer(r'setEnum\s*\(\s*L\s*,\s*"[^"]+"\s*,\s*\((\w+)\)', enum_content):
+                bound_enums.add(m.group(1).lower())
+
+    # 2. Discover all bound classes / metatables
+    bound_classes = set()
+    for root, dirs, files in os.walk(bindings_dir):
+        for file in files:
+            if file.endswith('.h') or file.endswith('.cpp'):
+                p = os.path.join(root, file)
+                with open(p, 'r', encoding='utf-8', errors='ignore') as f:
+                    c = f.read()
+                    for m in re.finditer(r'class\s+(\w+Binding)', c):
+                        name = m.group(1)[:-7] if m.group(1).endswith('Binding') else m.group(1)
+                        bound_classes.add(name.lower())
+                    for m in re.finditer(r'struct\s+(\w+Binding)', c):
+                        name = m.group(1)[:-7] if m.group(1).endswith('Binding') else m.group(1)
+                        bound_classes.add(name.lower())
+                    for m in re.finditer(r'getMetatableName\(\)\s*\{\s*return\s*"([^"]+)";', c):
+                        raw_meta = m.group(1).replace('KenshiLua.', '')
+                        bound_classes.add(raw_meta.lower())
+                        bound_classes.add(raw_meta.split('::')[-1].lower())
+
+    # 3. Standard / primitive types to ignore
+    ignored_primitives = {
+        'void', 'bool', 'int', 'float', 'double', 'char', 'short', 'long', 'unsigned',
+        'unsigned int', 'unsigned short', 'unsigned __int64', 'unsigned char', 'unsigned long',
+        'std::string', 'ogre::vector2', 'vector2', 'ogre::vector3', 'vector3', 'ogre::vector4', 'vector4',
+        'ogre::quaternion', 'quaternion', 'size_t',
+        'int32_t', 'uint32_t', 'int64_t', 'uint64_t', 'char*', 'const char*', 'float&',
+        'const float&', 'void*', 'operator', 'void operator', 'void*operator'
+    }
+
+    def is_type_already_bound(t):
+        clean = t.replace('*', '').replace('&', '').strip()
+        if clean.startswith('const '):
+            clean = clean[6:].strip()
+        lower_clean = clean.lower()
+        if lower_clean in ignored_primitives or clean.lower() in ignored_primitives:
+            return True
+        if lower_clean in bound_enums or lower_clean in bound_classes:
+            return True
+        simple = lower_clean.split('::')[-1]
+        if simple in bound_enums or simple in bound_classes:
+            return True
+        if lower_clean == 'lektor<int>':
+            return True
+        return False
 
     unsupported_types = set()
     unsupported_properties = {}
@@ -17,31 +76,39 @@ def main():
     prop_re = re.compile(r'//\s*TODO:\s*Unsupported type for\s+(\w+)\s+\(([^)]+)\)')
 
     # Regex 2: line <num>: <type> <method>(...) - <reason>
-    # e.g., "line 123: int foo(bar) - reason"
     method_re = re.compile(r'^\s*line\s+\d+:\s+([^-(\s]+(?:\s+\w+)?[\*&]?)\s+(\w+)\(.*?\)\s+-\s+(.*)$')
-
-    # Standard types to filter out when checking for unsupported types in skipped methods
-    ignored_types_re = re.compile(r'^(void|bool|int|float|double|char|short|long|unsigned|std::string|Ogre::Vector3|Ogre::Quaternion)$')
 
     # Recursively find and process all .cpp files
     for root, dirs, files in os.walk(bindings_dir):
         for file in files:
             if file.endswith('.cpp'):
                 file_path = os.path.join(root, file)
-                rel_path = file
+                rel_path = os.path.relpath(file_path, bindings_dir).replace('\\', '/')
                 
                 try:
                     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                        for line in f:
+                        file_content = f.read()
+                        lines = file_content.splitlines()
+
+                        # Collect all implemented methods and static methods
+                        defined_methods = set()
+                        for m in re.finditer(r'int\s+\w+Binding::(\w+)\s*\(lua_State\*', file_content):
+                            defined_methods.add(m.group(1))
+                        for m in re.finditer(r'registerStaticMethod\s*\(\s*L\s*,\s*"(\w+)"\s*,\s*\w+Binding::(\w+)\s*\)', file_content):
+                            defined_methods.add(m.group(1))
+                            defined_methods.add(m.group(2))
+
+                        for line in lines:
                             # 1. Search for unsupported properties
                             prop_match = prop_re.search(line)
                             if prop_match:
                                 prop = prop_match.group(1)
                                 t = prop_match.group(2).strip()
-                                unsupported_types.add(t)
-                                if t not in unsupported_properties:
-                                    unsupported_properties[t] = []
-                                unsupported_properties[t].append(f"{rel_path} (Property: {prop})")
+                                if not is_type_already_bound(t):
+                                    unsupported_types.add(t)
+                                    if t not in unsupported_properties:
+                                        unsupported_properties[t] = []
+                                    unsupported_properties[t].append(f"{rel_path} (Property: {prop})")
                             
                             # 2. Search for skipped methods in comment blocks
                             method_match = method_re.match(line)
@@ -50,16 +117,17 @@ def main():
                                 method = method_match.group(2).strip()
                                 reason = method_match.group(3).strip()
                                 
-                                # Filter out standard types
-                                if not ignored_types_re.match(t):
-                                    unsupported_types.add(t)
-                                
-                                skipped_methods.append({
-                                    'File': rel_path,
-                                    'Type': t,
-                                    'Method': method,
-                                    'Reason': reason
-                                })
+                                # Skip methods already implemented in code
+                                if method not in defined_methods:
+                                    if not is_type_already_bound(t):
+                                        unsupported_types.add(t)
+                                    
+                                    skipped_methods.append({
+                                        'File': rel_path,
+                                        'Type': t,
+                                        'Method': method,
+                                        'Reason': reason
+                                    })
                 except Exception as e:
                     print(f"Error reading {file_path}: {e}")
 
