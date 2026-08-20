@@ -11,10 +11,18 @@ class CraftingItem {};
 #include "Bindings/AppearanceAnimalBinding.h"
 #include "Bindings/AppearanceBaseBinding.h"
 #include "Bindings/AppearanceHumanBinding.h"
+#include "Bindings/AppearanceManagerBinding.h"
+#include "Bindings/AppearanceManager_AppearanceDataBinding.h"
+#include "Bindings/AppearanceManager_DataCategoryBinding.h"
+#include "Bindings/AppearanceManager_DataRangeBinding.h"
+#include "Bindings/AppearanceManager_DataRangePoseBinding.h"
+#include "Bindings/AppearanceManager_DataRangeVectorBinding.h"
+#include "Bindings/AppearanceManager_GenderBinding.h"
 #include "Bindings/ArmourBinding.h"
 #include "Bindings/AttachedArrowManagerBinding.h"
 #include "Bindings/AttackSlotManagerBinding.h"
 #include "Bindings/BackThreadMessagesToMainTBinding.h"
+#include "Bindings/BinaryVersionBinding.h"
 #include "Bindings/BountyBinding.h"
 #include "Bindings/BountyManagerBinding.h"
 #include "Bindings/Building/BuildInventoryLayoutBinding.h"
@@ -250,7 +258,7 @@ class CraftingItem {};
 #include "Bindings/MeshDataLookupBinding.h"
 #include "Bindings/MeshLoadDataBinding.h"
 #include "Bindings/MessageChainBinding.h"
-#include "Bindings/MessageQueueBinding.h"
+#include "Bindings/MessageForBBinding.h"
 #include "Bindings/MessageQueue_NodeBinding.h"
 #include "Bindings/ModInfoBinding.h"
 #include "Bindings/MotionFilterBinding.h"
@@ -351,6 +359,7 @@ class CraftingItem {};
 #include "Bindings/Util/CPerfTimerTBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Bindings/Util/OgreVectorBinding.h"
 #include "Bindings/Util/StdDequeBinding.h"
@@ -649,11 +658,19 @@ void LuaBindings::registerAll(lua_State* L)
     AppearanceAnimalBinding::registerBinding(L);
     AppearanceBaseBinding::registerBinding(L);
     AppearanceHumanBinding::registerBinding(L);
+    AppearanceManagerBinding::registerBinding(L);
+    AppearanceManager_AppearanceDataBinding::registerBinding(L);
+    AppearanceManager_DataCategoryBinding::registerBinding(L);
+    AppearanceManager_DataRangeBinding::registerBinding(L);
+    AppearanceManager_DataRangePoseBinding::registerBinding(L);
+    AppearanceManager_DataRangeVectorBinding::registerBinding(L);
+    AppearanceManager_GenderBinding::registerBinding(L);
     ArmourBinding::registerBinding(L);
     AttachedArrowManagerBinding::registerBinding(L);
     AttackSlotManagerBinding::registerBinding(L);
     BackThreadMessagesToMainTBinding::registerBinding(L);
     BackpackInventoryLayoutBinding::registerBinding(L);
+    BinaryVersionBinding::registerBinding(L);
     BountyBinding::registerBinding(L);
     BountyManagerBinding::registerBinding(L);
     BoxBinding::registerBinding(L);
@@ -825,6 +842,7 @@ void LuaBindings::registerAll(lua_State* L)
     MeshDataLookupBinding::registerBinding(L);
     MeshLoadDataBinding::registerBinding(L);
     MessageBoxManagerBinding::registerBinding(L);
+    MessageForBBinding::registerBinding(L);
     MessageQueue_NodeBinding::registerBinding(L);
     ModInfoBinding::registerBinding(L);
     MotionFilterBinding::registerBinding(L);

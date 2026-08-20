@@ -10,10 +10,18 @@
     <ClCompile Include="src\Bindings\AppearanceAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\AppearanceBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\AppearanceHumanBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_AppearanceDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_DataCategoryBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_DataRangeBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_DataRangePoseBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_DataRangeVectorBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_GenderBinding.cpp" />
     <ClCompile Include="src\Bindings\ArmourBinding.cpp" />
     <ClCompile Include="src\Bindings\AttachedArrowManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\AttackSlotManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\BackThreadMessagesToMainTBinding.cpp" />
+    <ClCompile Include="src\Bindings\BinaryVersionBinding.cpp" />
     <ClCompile Include="src\Bindings\BountyBinding.cpp" />
     <ClCompile Include="src\Bindings\BountyManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\BuildingBinding.cpp" />
@@ -399,6 +407,7 @@
     <ClCompile Include="src\Bindings\hkArrayBinding.cpp" />
     <ClCompile Include="src\Bindings\hkVector4fComparisonBinding.cpp" />
     <ClCompile Include="src\Bindings\MessageChainBinding.cpp" />
+    <ClCompile Include="src\Bindings\MessageForBBinding.cpp" />
     <ClCompile Include="src\Bindings\MessageQueueBinding.cpp" />
     <ClCompile Include="src\Bindings\MustEndWithSemiColonBinding.cpp" />
   </ItemGroup>
@@ -863,10 +872,18 @@
     <ClInclude Include="src\Bindings\AppearanceAnimalBinding.h" />
     <ClInclude Include="src\Bindings\AppearanceBaseBinding.h" />
     <ClInclude Include="src\Bindings\AppearanceHumanBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManagerBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_AppearanceDataBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_DataCategoryBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_DataRangeBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_DataRangePoseBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_DataRangeVectorBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_GenderBinding.h" />
     <ClInclude Include="src\Bindings\ArmourBinding.h" />
     <ClInclude Include="src\Bindings\AttachedArrowManagerBinding.h" />
     <ClInclude Include="src\Bindings\AttackSlotManagerBinding.h" />
     <ClInclude Include="src\Bindings\BackThreadMessagesToMainTBinding.h" />
+    <ClInclude Include="src\Bindings\BinaryVersionBinding.h" />
     <ClInclude Include="src\Bindings\BountyBinding.h" />
     <ClInclude Include="src\Bindings\BountyManagerBinding.h" />
     <ClInclude Include="src\Bindings\Building\BuildingBinding.h" />
@@ -1090,6 +1107,7 @@
     <ClInclude Include="src\Bindings\MeshDataLookupBinding.h" />
     <ClInclude Include="src\Bindings\MeshLoadDataBinding.h" />
     <ClInclude Include="src\Bindings\MessageChainBinding.h" />
+    <ClInclude Include="src\Bindings\MessageForBBinding.h" />
     <ClInclude Include="src\Bindings\MessageQueueBinding.h" />
     <ClInclude Include="src\Bindings\ModInfoBinding.h" />
     <ClInclude Include="src\Bindings\MotionFilterBinding.h" />
@@ -1175,6 +1193,7 @@
     <ClInclude Include="src\Bindings\Util\HandBinding.h" />
     <ClInclude Include="src\Bindings\Util\iVector2Binding.h" />
     <ClInclude Include="src\Bindings\Util\LektorBinding.h" />
+    <ClInclude Include="src\Bindings\Util\OgreFastArrayBinding.h" />
     <ClInclude Include="src\Bindings\Util\OgreUnorderedBinding.h" />
     <ClInclude Include="src\Bindings\Util\OgreVectorBinding.h" />
     <ClInclude Include="src\Bindings\Util\rendHitBinding.h" />

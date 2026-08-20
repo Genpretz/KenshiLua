@@ -86,6 +86,10 @@ int LuaState::panicHandler(lua_State* L)
 int LuaState::genericTraceback(lua_State* L)
 {
     const char* msg = lua_tostring(L, 1);
+    if (!msg && !lua_isnoneornil(L, 1)) {
+        luaL_tolstring(L, 1, NULL);
+        msg = lua_tostring(L, -1);
+    }
     luaL_traceback(L, L, msg, 1);
     return 1;
 }
@@ -94,20 +98,57 @@ bool LuaState::pcallWithTraceback(lua_State* L, int nargs, int nresults, std::st
 {
     // Insert traceback handler below the function + args already on the stack.
     int funcIndex = lua_gettop(L) - nargs;
+    if (funcIndex < 1) {
+        funcIndex = 1;
+    }
     lua_pushcfunction(L, genericTraceback);
     lua_insert(L, funcIndex);
 
     int status = lua_pcall(L, nargs, nresults, funcIndex);
-    lua_remove(L, funcIndex); // remove traceback handler
 
     if (status != LUA_OK) {
         if (outError) {
-            const char* err = lua_tostring(L, -1);
-            *outError = err ? err : "unknown Lua error";
+            if (lua_gettop(L) > 0 && !lua_isnil(L, -1)) {
+                size_t len = 0;
+                const char* err = lua_tolstring(L, -1, &len);
+                if (!err) {
+                    err = luaL_tolstring(L, -1, &len);
+                    if (err) {
+                        *outError = std::string(err, len);
+                        lua_pop(L, 1); // pop luaL_tolstring result
+                    }
+                } else {
+                    *outError = std::string(err, len);
+                }
+            }
+            if (outError->empty()) {
+                switch (status) {
+                case LUA_ERRRUN:
+                    *outError = "Lua runtime error";
+                    break;
+                case LUA_ERRSYNTAX:
+                    *outError = "Lua syntax error";
+                    break;
+                case LUA_ERRMEM:
+                    *outError = "Lua memory allocation error (out of memory in GC space)";
+                    break;
+                case LUA_ERRERR:
+                    *outError = "Lua error in error handling";
+                    break;
+                default:
+                    *outError = "Lua error (status " + std::to_string((long long)status) + ")";
+                    break;
+                }
+            }
         }
-        lua_pop(L, 1); // pop error message
+        lua_remove(L, funcIndex); // remove traceback handler
+        if (lua_gettop(L) > 0) {
+            lua_pop(L, 1); // pop error message
+        }
         return false;
     }
+
+    lua_remove(L, funcIndex); // remove traceback handler
     return true;
 }
 

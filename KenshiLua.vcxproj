@@ -154,7 +154,6 @@ copy /Y "$(ProjectDir)docs\CallbacksReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\EnumsReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\MyGUI_Bindings.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\DialogueScriptingBridge.md" "$(OutDir)..\docs\"
-copy /Y "$(ProjectDir)assets\media\kenshilua.png" "$(OutDir)..\KenshiLua.png"
 xcopy /Y /S /I "$(ProjectDir)assets\media\*" "$(OutDir)..\assets\media\"
 copy /Y "$(ProjectDir)LICENSE" "$(OutDir)..\"
 copy /Y "$(ProjectDir)README.md" "$(OutDir)..\"
@@ -622,10 +621,18 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClInclude Include="src\Bindings\AppearanceAnimalBinding.h" />
     <ClInclude Include="src\Bindings\AppearanceBaseBinding.h" />
     <ClInclude Include="src\Bindings\AppearanceHumanBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManagerBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_AppearanceDataBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_DataCategoryBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_DataRangeBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_DataRangePoseBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_DataRangeVectorBinding.h" />
+    <ClInclude Include="src\Bindings\AppearanceManager_GenderBinding.h" />
     <ClInclude Include="src\Bindings\ArmourBinding.h" />
     <ClInclude Include="src\Bindings\AttachedArrowManagerBinding.h" />
     <ClInclude Include="src\Bindings\AttackSlotManagerBinding.h" />
     <ClInclude Include="src\Bindings\BackThreadMessagesToMainTBinding.h" />
+    <ClInclude Include="src\Bindings\BinaryVersionBinding.h" />
     <ClInclude Include="src\Bindings\BountyBinding.h" />
     <ClInclude Include="src\Bindings\BountyManagerBinding.h" />
     <ClInclude Include="src\Bindings\Building\BuildingBinding.h" />
@@ -851,6 +858,7 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClInclude Include="src\Bindings\MeshDataLookupBinding.h" />
     <ClInclude Include="src\Bindings\MeshLoadDataBinding.h" />
     <ClInclude Include="src\Bindings\MessageChainBinding.h" />
+    <ClInclude Include="src\Bindings\MessageForBBinding.h" />
     <ClInclude Include="src\Bindings\MessageQueueBinding.h" />
     <ClInclude Include="src\Bindings\ModInfoBinding.h" />
     <ClInclude Include="src\Bindings\MotionFilterBinding.h" />
@@ -936,6 +944,7 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClInclude Include="src\Bindings\Util\HandBinding.h" />
     <ClInclude Include="src\Bindings\Util\iVector2Binding.h" />
     <ClInclude Include="src\Bindings\Util\LektorBinding.h" />
+    <ClInclude Include="src\Bindings\Util\OgreFastArrayBinding.h" />
     <ClInclude Include="src\Bindings\Util\OgreUnorderedBinding.h" />
     <ClInclude Include="src\Bindings\Util\OgreVectorBinding.h" />
     <ClInclude Include="src\Bindings\Util\rendHitBinding.h" />
@@ -1036,10 +1045,18 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClCompile Include="src\Bindings\AppearanceAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\AppearanceBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\AppearanceHumanBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_AppearanceDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_DataCategoryBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_DataRangeBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_DataRangePoseBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_DataRangeVectorBinding.cpp" />
+    <ClCompile Include="src\Bindings\AppearanceManager_GenderBinding.cpp" />
     <ClCompile Include="src\Bindings\ArmourBinding.cpp" />
     <ClCompile Include="src\Bindings\AttachedArrowManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\AttackSlotManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\BackThreadMessagesToMainTBinding.cpp" />
+    <ClCompile Include="src\Bindings\BinaryVersionBinding.cpp" />
     <ClCompile Include="src\Bindings\BountyBinding.cpp" />
     <ClCompile Include="src\Bindings\BountyManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\BuildingBinding.cpp" />
@@ -1263,6 +1280,7 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClCompile Include="src\Bindings\MeshDataLookupBinding.cpp" />
     <ClCompile Include="src\Bindings\MeshLoadDataBinding.cpp" />
     <ClCompile Include="src\Bindings\MessageChainBinding.cpp" />
+    <ClCompile Include="src\Bindings\MessageForBBinding.cpp" />
     <ClCompile Include="src\Bindings\MessageQueueBinding.cpp" />
     <ClCompile Include="src\Bindings\ModInfoBinding.cpp" />
     <ClCompile Include="src\Bindings\MotionFilterBinding.cpp" />
