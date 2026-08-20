@@ -21,6 +21,7 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
+    static int eq(lua_State* L);
 
     static int toString(lua_State* L);
     static int fromString(lua_State* L);
@@ -37,5 +38,6 @@ public:
     static int isNull(lua_State* L);
     static int isValid(lua_State* L);
     static int canCastToRootObject(lua_State* L);
+    static int squadMatch(lua_State* L);
 };
 }

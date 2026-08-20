@@ -39,11 +39,39 @@ int YesNoMaybeBinding::toInt(lua_State* L)
     return 1;
 }
 
+int YesNoMaybeBinding::isValid(lua_State* L)
+{
+    YesNoMaybe* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "YesNoMaybe is nil");
+
+    bool result = instance->operator bool();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int YesNoMaybeBinding::eq(lua_State* L)
+{
+    YesNoMaybe* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "YesNoMaybe is nil");
+
+    if (YesNoMaybe* b = testObject<YesNoMaybe>(L, 2, YesNoMaybeBinding::getMetatableName()))
+    {
+        lua_pushboolean(L, (*a == *b) ? 1 : 0);
+        return 1;
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        YesNoMaybe::ynm val = (YesNoMaybe::ynm)luaL_checkinteger(L, 2);
+        lua_pushboolean(L, (*a == val) ? 1 : 0);
+        return 1;
+    }
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 23: operator bool(...) - unsupported return type
   line 24: operator YesNoMaybe::ynm(...) - unsupported return type
-  line 26: bool operator==(...) - operator
   line 28: bool operator!=(...) - operator
   line 29: bool operator!=(...) - operator
   line 30: bool operator!=(...) - operator
@@ -66,11 +94,13 @@ void YesNoMaybeBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       YesNoMaybeBinding::gc },
         { "__tostring", YesNoMaybeBinding::tostring },
+        { "__eq",       YesNoMaybeBinding::eq },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
         { "toInt", YesNoMaybeBinding::toInt },
+        { "isValid", YesNoMaybeBinding::isValid },
         { 0, 0 }
     };
 

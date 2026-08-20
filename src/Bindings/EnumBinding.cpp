@@ -33,6 +33,7 @@
 #include "kenshi/Tasker.h"
 #include "kenshi/WorldEventStateQuery.h"
 #include "kenshi/ZoneManager.h"
+#include "kenshi/gui/CharacterEditWindow.h"
 #include "kenshi/gui/CharacterStatsWindow.h"
 #include "kenshi/gui/DataPanelLine.h"
 #include "kenshi/gui/ForgottenGUI.h"
@@ -42,6 +43,8 @@
 #include "kenshi/gui/SquadManagementScreen.h"
 #include "kenshi/gui/ToolTip.h"
 #include "kenshi/gui/TutorialGUI.h"
+#include "kenshi/CharStats.h"
+#include "kenshi/Kenshi.h"
 #include "kenshi/Logger.h"
 #include "kenshi/util/YesNoMaybe.h"
 
@@ -676,6 +679,31 @@ namespace KenshiLua
         lua_pushvalue(L, -1);
         lua_setglobal(L, "TalkerEnum"); // original
         lua_setglobal(L, "Talker"); // alias for convenience
+    }
+
+    void registerDialogueDT_MSG(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "DT_NONE", Dialogue::DT_MSG::DT_NONE);
+        setEnum(L, "DT_END_DIALOG", Dialogue::DT_MSG::DT_END_DIALOG);
+        setEnum(L, "DT_OPENWINDOW", Dialogue::DT_MSG::DT_OPENWINDOW);
+        setEnum(L, "DT_CLOSEWINDOW", Dialogue::DT_MSG::DT_CLOSEWINDOW);
+        setEnum(L, "DT_CLEAR_RESPONSES", Dialogue::DT_MSG::DT_CLEAR_RESPONSES);
+        setEnum(L, "DT_SET_RESPONSES", Dialogue::DT_MSG::DT_SET_RESPONSES);
+        setEnum(L, "DT_SET_NPC_REPLY", Dialogue::DT_MSG::DT_SET_NPC_REPLY);
+
+        setEnum(L, "NONE", Dialogue::DT_MSG::DT_NONE);
+        setEnum(L, "END_DIALOG", Dialogue::DT_MSG::DT_END_DIALOG);
+        setEnum(L, "OPENWINDOW", Dialogue::DT_MSG::DT_OPENWINDOW);
+        setEnum(L, "CLOSEWINDOW", Dialogue::DT_MSG::DT_CLOSEWINDOW);
+        setEnum(L, "CLEAR_RESPONSES", Dialogue::DT_MSG::DT_CLEAR_RESPONSES);
+        setEnum(L, "SET_RESPONSES", Dialogue::DT_MSG::DT_SET_RESPONSES);
+        setEnum(L, "SET_NPC_REPLY", Dialogue::DT_MSG::DT_SET_NPC_REPLY);
+
+        lua_pushvalue(L, -1);
+        lua_setglobal(L, "Dialogue_DT_MSG");
+        lua_setglobal(L, "DT_MSG");
     }
 
     // void registerTalkerEnum(lua_State* L)
@@ -1692,6 +1720,38 @@ namespace KenshiLua
         setEnum(L, "RANGED", MessageForB::StandingOrder::M_SET_ORDER_RANGED);
 
         lua_setglobal(L, "MessageB_StandingOrder");
+    }
+
+    void registerCharStatsGUIStatsDisplayMode(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "GUI_STATS_NORMAL", CharStats::GUIStatsDisplayMode::GUI_STATS_NORMAL);
+        setEnum(L, "GUI_STATS_MARTIALARTIST", CharStats::GUIStatsDisplayMode::GUI_STATS_MARTIALARTIST);
+
+        setEnum(L, "NORMAL", CharStats::GUIStatsDisplayMode::GUI_STATS_NORMAL);
+        setEnum(L, "MARTIALARTIST", CharStats::GUIStatsDisplayMode::GUI_STATS_MARTIALARTIST);
+
+        lua_pushvalue(L, -1);
+        lua_setglobal(L, "CharStats_GUIStatsDisplayMode");
+        lua_setglobal(L, "GUIStatsDisplayMode");
+    }
+
+    void registerCharStatsDeadTimeState(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "ATTACK_HIT", CharStats::DeadTimeState::ATTACK_HIT);
+        setEnum(L, "ATTACK_WAS_BLOCKED", CharStats::DeadTimeState::ATTACK_WAS_BLOCKED);
+        setEnum(L, "BLOCKED_IT", CharStats::DeadTimeState::BLOCKED_IT);
+        setEnum(L, "ATTACK_SLOT_OPEN", CharStats::DeadTimeState::ATTACK_SLOT_OPEN);
+        setEnum(L, "WAS_HIT", CharStats::DeadTimeState::WAS_HIT);
+        setEnum(L, "ATTACK_INTERRUPTED", CharStats::DeadTimeState::ATTACK_INTERRUPTED);
+        setEnum(L, "ATTACK_MISSED", CharStats::DeadTimeState::ATTACK_MISSED);
+
+        lua_pushvalue(L, -1);
+        lua_setglobal(L, "CharStats_DeadTimeState");
+        lua_setglobal(L, "DeadTimeState");
     }
 
     void registerStatsEnumerated(lua_State* L)
@@ -3451,6 +3511,44 @@ namespace KenshiLua
     }
 
     // ------------------------------------------
+    // gui/CharacterEditWindow.h
+    // ------------------------------------------
+
+    void registerCharacterEditMode(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "EDIT_NEWGAME", CharacterEditMode::EDIT_NEWGAME);
+        setEnum(L, "EDIT_MIDGAME", CharacterEditMode::EDIT_MIDGAME);
+        setEnum(L, "EDIT_DEBUG", CharacterEditMode::EDIT_DEBUG);
+
+        setEnum(L, "NEWGAME", CharacterEditMode::EDIT_NEWGAME);
+        setEnum(L, "MIDGAME", CharacterEditMode::EDIT_MIDGAME);
+        setEnum(L, "DEBUG", CharacterEditMode::EDIT_DEBUG);
+
+        lua_pushvalue(L, -1);
+        lua_setglobal(L, "CharacterEditWindow_CharacterEditMode");
+        lua_setglobal(L, "CharacterEditMode");
+    }
+
+    // ------------------------------------------
+    // Kenshi.h
+    // ------------------------------------------
+
+    void registerBinaryVersionKenshiPlatform(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "GOG", KenshiLib::BinaryVersion::KenshiPlatform::GOG);
+        setEnum(L, "STEAM", KenshiLib::BinaryVersion::KenshiPlatform::STEAM);
+        setEnum(L, "UNKNOWN", KenshiLib::BinaryVersion::KenshiPlatform::UNKNOWN);
+
+        lua_pushvalue(L, -1);
+        lua_setglobal(L, "BinaryVersion_KenshiPlatform");
+        lua_setglobal(L, "KenshiPlatform");
+    }
+
+    // ------------------------------------------
     // Registration Entry Point
     // ------------------------------------------
 
@@ -3462,17 +3560,21 @@ namespace KenshiLua
         registerArmourType(L);
         registerAttachSlot(L);
         registerAttackDirection(L);
+        registerBinaryVersionKenshiPlatform(L);
         registerBuildingClassType(L);
         registerBuildingDesignation(L);
         registerBuildingFunction(L);
         registerBuildingPlacementGroundType(L);
         registerBuildingRotation(L);
         registerCharMessage(L);
+        registerCharacterEditMode(L);
         registerCharacterMessage(L);
         registerCharacterPerceptionTagsLongTerm(L);
         registerCharacterPerceptionTagsShortTerm(L);
         registerCharacterStatsWindowGroup(L);
         registerCharacterTypeEnum(L);
+        registerCharStatsDeadTimeState(L);
+        registerCharStatsGUIStatsDisplayMode(L);
         registerCollapseStage(L);
         registerComparisonEnum(L);
         registerCrimeEnum(L);
@@ -3483,6 +3585,7 @@ namespace KenshiLua
         registerDataPanelLineLineType(L);
         registerDialogConditionEnum(L);
         registerDialogueAction(L);
+        registerDialogueDT_MSG(L);
         registerDisguiseGUIFeedback(L);
         registerDoorState(L);
         registerDoorStateInitial(L);

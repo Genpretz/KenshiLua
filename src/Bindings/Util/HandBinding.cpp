@@ -256,22 +256,38 @@ int HandBinding::canCastToRootObject(lua_State* L)
     return 1;
 }
 
+int HandBinding::squadMatch(lua_State* L)
+{
+    hand* instance = get(L, 1);
+    if (!instance) return luaL_error(L, "hand is nil");
+
+    hand* other = get(L, 2);
+    if (!other) return luaL_error(L, "Argument 2 to squadMatch must be a hand");
+
+    bool result = instance->squadMatch(*other);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int HandBinding::eq(lua_State* L)
+{
+    hand* a = get(L, 1);
+    hand* b = get(L, 2);
+    if (!a || !b) {
+        lua_pushboolean(L, a == b ? 1 : 0);
+        return 1;
+    }
+    lua_pushboolean(L, (*a == *b) ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 40: bool operator==(...) - operator
-  line 41: bool _NV_operator_equal(...) - overloaded method
-  line 42: bool operator==(...) - operator
-  line 43: bool operator==(...) - operator
-  line 44: bool _NV_operator_equal(...) - overloaded method
-  line 45: bool operator!=(...) - operator
-  line 46: bool operator!=(...) - operator
-  line 47: bool _NV_operator_notequal(...) - non-string reference arg
   line 48: operator bool(...) - unsupported return type
   line 58: bool operator<(...) - operator
   line 59: hand& operator=(...) - operator
   line 60: const hand& operator=(...) - operator
   line 61: const hand& operator=(...) - operator
-  line 66: bool squadMatch(...) - unsupported arg type
 */
 
 int HandBinding::push(lua_State* L, const hand& h)
@@ -301,6 +317,7 @@ void HandBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       HandBinding::gc },
         { "__tostring", HandBinding::tostring },
+        { "__eq",       HandBinding::eq },
         { 0, 0 }
     };
 
@@ -320,6 +337,7 @@ void HandBinding::registerBinding(lua_State* L)
         { "isNull", HandBinding::isNull },
         { "isValid", HandBinding::isValid },
         { "canCastToRootObject", HandBinding::canCastToRootObject },
+        { "squadMatch", HandBinding::squadMatch },
         { 0, 0 }
     };
 

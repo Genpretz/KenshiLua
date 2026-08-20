@@ -17,7 +17,9 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
+    static int eq(lua_State* L);
 
     static int toInt(lua_State* L);
+    static int isValid(lua_State* L);
 };
 }
