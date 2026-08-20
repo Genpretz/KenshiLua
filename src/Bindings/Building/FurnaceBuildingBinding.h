@@ -29,5 +29,7 @@ public:
     static int _NV_updateInputs(lua_State* L);
     static int updateOutput(lua_State* L);
     static int _NV_updateOutput(lua_State* L);
+    static int limitInputsOutputRate(lua_State* L);
+    static int _NV_limitInputsOutputRate(lua_State* L);
 };
 }

@@ -138,6 +138,30 @@ int FurnaceBuildingBinding::_NV_updateOutput(lua_State* L)
     return 0;
 }
 
+int FurnaceBuildingBinding::limitInputsOutputRate(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+
+    float rate = (float)luaL_checknumber(L, 2);
+    bool result = instance->limitInputsOutputRate(rate);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushnumber(L, rate);
+    return 2;
+}
+
+int FurnaceBuildingBinding::_NV_limitInputsOutputRate(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+
+    float rate = (float)luaL_checknumber(L, 2);
+    bool result = instance->_NV_limitInputsOutputRate(rate);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushnumber(L, rate);
+    return 2;
+}
+
 /*
 Skipped methods needing manual binding:
   line 29: void getGUIData(...) - unsupported arg type
@@ -153,8 +177,6 @@ Skipped methods needing manual binding:
   line 42: void incinerate(...) - unsupported arg type
   line 48: void operate(...) - unsupported arg type
   line 49: void _NV_operate(...) - unsupported arg type
-  line 54: bool limitInputsOutputRate(...) - non-string reference arg
-  line 55: bool _NV_limitInputsOutputRate(...) - non-string reference arg
   line 56: float getIronAmountInItem(...) - unsupported arg type
 */
 
@@ -190,6 +212,8 @@ void FurnaceBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateInputs", FurnaceBuildingBinding::_NV_updateInputs },
         { "updateOutput", FurnaceBuildingBinding::updateOutput },
         { "_NV_updateOutput", FurnaceBuildingBinding::_NV_updateOutput },
+        { "limitInputsOutputRate", FurnaceBuildingBinding::limitInputsOutputRate },
+        { "_NV_limitInputsOutputRate", FurnaceBuildingBinding::_NV_limitInputsOutputRate },
         { 0, 0 }
     };
 

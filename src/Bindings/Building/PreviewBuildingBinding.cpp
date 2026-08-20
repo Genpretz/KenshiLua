@@ -7,6 +7,7 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/TownBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Bindings/physHitBinding.h"
 
 namespace KenshiLua
@@ -1342,23 +1343,68 @@ int PreviewBuildingBinding::validateUsageNodes(lua_State* L)
 {
     PreviewBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PreviewBuilding is nil");
-
     instance->validateUsageNodes();
     return 0;
 }
 
+int PreviewBuildingBinding::getPlacementResultMaterialName(lua_State* L)
+{
+    int idx = (testObject<PreviewBuilding>(L, 1, PreviewBuildingBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    PreviewBuilding::PlacementResult res = (PreviewBuilding::PlacementResult)luaL_checkinteger(L, idx);
+    const std::string& str = PreviewBuilding::getPlacementResultMaterialName(res);
+    lua_pushlstring(L, str.c_str(), str.size());
+    return 1;
+}
+
+int PreviewBuildingBinding::getOrientation(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    pushQuaternion(L, instance->getOrientation());
+    return 1;
+}
+
+int PreviewBuildingBinding::getCentreOffset(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    pushVector3(L, instance->getCentreOffset());
+    return 1;
+}
+
+int PreviewBuildingBinding::isNoCollideWithThisBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    PreviewBuilding* what = checkObject<PreviewBuilding>(L, 2, PreviewBuildingBinding::getMetatableName());
+    if (!what) return luaL_error(L, "Argument 2 to isNoCollideWithThisBuilding must be a PreviewBuilding");
+
+    bool result = instance->isNoCollideWithThisBuilding(what);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isNoCollideWithThisBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    PreviewBuilding* what = checkObject<PreviewBuilding>(L, 2, PreviewBuildingBinding::getMetatableName());
+    if (!what) return luaL_error(L, "Argument 2 to _NV_isNoCollideWithThisBuilding must be a PreviewBuilding");
+
+    bool result = instance->_NV_isNoCollideWithThisBuilding(what);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 601: const std::string& getPlacementResultMaterialName(...) - static method
   line 626: void buildingPlacementUpdate(...) - non-string reference arg
   line 627: void _NV_buildingPlacementUpdate(...) - non-string reference arg
-  line 660: const Ogre::Quaternion& getOrientation(...) - reference return type
-  line 663: const Ogre::Vector3& getCentreOffset(...) - reference return type
   line 678: const Ogre::Aabb& getWorldAABB(...) - reference return type
-  line 679: bool isNoCollideWithThisBuilding(...) - overloaded method
-  line 680: bool _NV_isNoCollideWithThisBuilding(...) - overloaded method
-  line 681: bool isNoCollideWithThisBuilding(...) - overloaded method
-  line 682: bool _NV_isNoCollideWithThisBuilding(...) - overloaded method
 */
 
 /*
@@ -1472,6 +1518,11 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
         { "_NV_getTerrainHeightAtCenter", PreviewBuildingBinding::_NV_getTerrainHeightAtCenter },
         { "recalculateWorldAABB", PreviewBuildingBinding::recalculateWorldAABB },
         { "validateUsageNodes", PreviewBuildingBinding::validateUsageNodes },
+        { "getPlacementResultMaterialName", PreviewBuildingBinding::getPlacementResultMaterialName },
+        { "getOrientation", PreviewBuildingBinding::getOrientation },
+        { "getCentreOffset", PreviewBuildingBinding::getCentreOffset },
+        { "isNoCollideWithThisBuilding", PreviewBuildingBinding::isNoCollideWithThisBuilding },
+        { "_NV_isNoCollideWithThisBuilding", PreviewBuildingBinding::_NV_isNoCollideWithThisBuilding },
         { 0, 0 }
     };
 
@@ -1621,10 +1672,17 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "positionHitGroup");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to Ogre::GeneralAllocatedObject
-    // setMetatableParent(L, PreviewBuildingBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
-
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_getglobal(L, "PreviewBuilding");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
+    registerStaticMethod(L, "getPlacementResultMaterialName", PreviewBuildingBinding::getPlacementResultMaterialName);
+    lua_setglobal(L, "PreviewBuilding");
 }
 
 } // namespace KenshiLua

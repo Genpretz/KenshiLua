@@ -1263,7 +1263,7 @@ void RootObjectBinding::registerBinding(lua_State* L)
         { "_NV_notifyEffect", RootObjectBinding::_NV_notifyEffect },
         { "loadUnloadCheck", RootObjectBinding::loadUnloadCheck },
         { "_NV_loadUnloadCheck", RootObjectBinding::_NV_loadUnloadCheck },
-                { "isIndoors", RootObjectBinding::isIndoors },
+        { "isIndoors", RootObjectBinding::isIndoors },
         { "_NV_isIndoors", RootObjectBinding::_NV_isIndoors },
         { "setIsInsideBuilding", RootObjectBinding::setIsInsideBuilding },
         { "_NV_setIsInsideBuilding", RootObjectBinding::_NV_setIsInsideBuilding },

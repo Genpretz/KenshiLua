@@ -6,6 +6,9 @@
 #include "BuildingBinding.h"
 #include "ConstructionStateBinding.h"
 #include "UseableStuffBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/CombatTechniqueDataBinding.h"
+#include "Bindings/DamagesBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/LektorBinding.h"
@@ -361,6 +364,40 @@ int WallBuildingBinding::isAShortWallPart(lua_State* L)
     return 1;
 }
 
+int WallBuildingBinding::hitByMeleeAttack(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to hitByMeleeAttack must be Damages");
+    Character* who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    CombatTechniqueData* attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    int comboID = (int)luaL_checkinteger(L, 6);
+
+    HitMaterialType result = instance->hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int WallBuildingBinding::_NV_hitByMeleeAttack(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to _NV_hitByMeleeAttack must be Damages");
+    Character* who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    CombatTechniqueData* attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    int comboID = (int)luaL_checkinteger(L, 6);
+
+    HitMaterialType result = instance->_NV_hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 39: void upgrade(...) - unsupported arg type
@@ -371,8 +408,6 @@ Skipped methods needing manual binding:
   line 44: void _NV_getGUIDestroyButton(...) - unsupported arg type
   line 47: void dismantleButton_all(...) - unsupported arg type
   line 48: void _NV_dismantleButton_all(...) - unsupported arg type
-  line 59: HitMaterialType hitByMeleeAttack(...) - unsupported arg type
-  line 60: HitMaterialType _NV_hitByMeleeAttack(...) - unsupported arg type
   line 63: void runLinkingCheck(...) - unsupported arg type
   line 67: bool letsShare(...) - unsupported arg type
 */
@@ -428,6 +463,8 @@ void WallBuildingBinding::registerBinding(lua_State* L)
         { "_NV_getBuildState", WallBuildingBinding::_NV_getBuildState },
         { "isALittleWallPartLikeACornerOrSomething", WallBuildingBinding::isALittleWallPartLikeACornerOrSomething },
         { "isAShortWallPart", WallBuildingBinding::isAShortWallPart },
+        { "hitByMeleeAttack", WallBuildingBinding::hitByMeleeAttack },
+        { "_NV_hitByMeleeAttack", WallBuildingBinding::_NV_hitByMeleeAttack },
         { 0, 0 }
     };
 

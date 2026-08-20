@@ -48,5 +48,7 @@ public:
     static int _NV_getBuildState(lua_State* L);
     static int isALittleWallPartLikeACornerOrSomething(lua_State* L);
     static int isAShortWallPart(lua_State* L);
+    static int hitByMeleeAttack(lua_State* L);
+    static int _NV_hitByMeleeAttack(lua_State* L);
 };
 }

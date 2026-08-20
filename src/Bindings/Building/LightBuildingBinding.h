@@ -26,5 +26,12 @@ public:
     static int _NV_needPowerRightNow(lua_State* L);
     static int getPositionMarker(lua_State* L);
     static int _NV_getPositionMarker(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
+    static int loadFromSerialise(lua_State* L);
+    static int _NV_loadFromSerialise(lua_State* L);
+    static int getMountedBuilding(lua_State* L);
+    static int _NV_getMountedBuilding(lua_State* L);
+    static int setMountedBuilding(lua_State* L);
 };
 }

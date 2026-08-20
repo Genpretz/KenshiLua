@@ -99,5 +99,7 @@ public:
     static int getAnimationDazed(lua_State* L);
     static int serialise(lua_State* L);
     static int _NV_serialise(lua_State* L);
+    static int hitByMeleeAttack(lua_State* L);
+    static int _NV_hitByMeleeAttack(lua_State* L);
 };
 }

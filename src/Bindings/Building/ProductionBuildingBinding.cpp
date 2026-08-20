@@ -526,6 +526,30 @@ int ProductionBuildingBinding::_NV_updateOutput(lua_State* L)
     return 0;
 }
 
+int ProductionBuildingBinding::limitInputsOutputRate(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+
+    float rate = (float)luaL_checknumber(L, 2);
+    bool result = instance->limitInputsOutputRate(rate);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushnumber(L, rate);
+    return 2;
+}
+
+int ProductionBuildingBinding::_NV_limitInputsOutputRate(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+
+    float rate = (float)luaL_checknumber(L, 2);
+    bool result = instance->_NV_limitInputsOutputRate(rate);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushnumber(L, rate);
+    return 2;
+}
+
 /*
 Skipped methods needing manual binding:
   line 83: void operate(...) - unsupported arg type
@@ -548,8 +572,6 @@ Skipped methods needing manual binding:
   line 126: void _NV_getItemsWeWantRidOf(...) - unsupported arg type
   line 132: void setProductionItem(...) - unsupported arg type
   line 133: void _NV_setProductionItem(...) - unsupported arg type
-  line 143: bool limitInputsOutputRate(...) - non-string reference arg
-  line 144: bool _NV_limitInputsOutputRate(...) - non-string reference arg
   line 145: void getGUIFertility(...) - unsupported arg type
   line 146: void _NV_getGUIFertility(...) - unsupported arg type
   line 147: void getGUIState(...) - unsupported arg type
@@ -651,6 +673,8 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateOutput", ProductionBuildingBinding::_NV_updateOutput },
         { "serialise", ProductionBuildingBinding::serialise },
         { "_NV_serialise", ProductionBuildingBinding::_NV_serialise },
+        { "limitInputsOutputRate", ProductionBuildingBinding::limitInputsOutputRate },
+        { "_NV_limitInputsOutputRate", ProductionBuildingBinding::_NV_limitInputsOutputRate },
         { 0, 0 }
     };
 

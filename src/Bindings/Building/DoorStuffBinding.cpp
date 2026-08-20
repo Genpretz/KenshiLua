@@ -5,6 +5,9 @@
 #include "DoorStuffBinding.h"
 #include "BuildingBinding.h"
 #include "GatewayBuildingBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/CombatTechniqueDataBinding.h"
+#include "Bindings/DamagesBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -855,18 +858,82 @@ int DoorStuffBinding::_NV_doorParentBuilding(lua_State* L)
     return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
 }
 
+int DoorStuffBinding::hitByMeleeAttack(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to hitByMeleeAttack must be Damages");
+    Character* who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    CombatTechniqueData* attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    int comboID = (int)luaL_checkinteger(L, 6);
+
+    HitMaterialType result = instance->hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int DoorStuffBinding::_NV_hitByMeleeAttack(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to _NV_hitByMeleeAttack must be Damages");
+    Character* who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    CombatTechniqueData* attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    int comboID = (int)luaL_checkinteger(L, 6);
+
+    HitMaterialType result = instance->_NV_hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int DoorStuffBinding::getActorClosedPosition(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+
+    pushVector3(L, instance->getActorClosedPosition());
+    return 1;
+}
+
+int DoorStuffBinding::getDoorPosition(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+
+    pushVector3(L, instance->getDoorPosition());
+    return 1;
+}
+
+int DoorStuffBinding::getDoorPosOutside(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+
+    pushVector3(L, instance->getDoorPosOutside());
+    return 1;
+}
+
+int DoorStuffBinding::getDoorPosInside(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+
+    pushVector3(L, instance->getDoorPosInside());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 39: void getGUIData(...) - unsupported arg type
   line 40: void _NV_getGUIData(...) - unsupported arg type
   line 53: void setHandle(...) - unsupported arg type
   line 54: void _NV_setHandle(...) - unsupported arg type
-  line 65: HitMaterialType hitByMeleeAttack(...) - unsupported arg type
-  line 66: HitMaterialType _NV_hitByMeleeAttack(...) - unsupported arg type
-  line 67: const Ogre::Vector3& getActorClosedPosition(...) - reference return type
-  line 109: const Ogre::Vector3& getDoorPosition(...) - reference return type
-  line 110: const Ogre::Vector3& getDoorPosOutside(...) - reference return type
-  line 112: const Ogre::Vector3& getDoorPosInside(...) - reference return type
   line 115: void openButton(...) - unsupported arg type
   line 116: void lockButton(...) - unsupported arg type
   line 117: void _serialise(...) - unsupported arg type
@@ -951,6 +1018,12 @@ void DoorStuffBinding::registerBinding(lua_State* L)
         { "_NV_doorStuff", DoorStuffBinding::_NV_doorStuff },
         { "doorParentBuilding", DoorStuffBinding::doorParentBuilding },
         { "_NV_doorParentBuilding", DoorStuffBinding::_NV_doorParentBuilding },
+        { "hitByMeleeAttack", DoorStuffBinding::hitByMeleeAttack },
+        { "_NV_hitByMeleeAttack", DoorStuffBinding::_NV_hitByMeleeAttack },
+        { "getActorClosedPosition", DoorStuffBinding::getActorClosedPosition },
+        { "getDoorPosition", DoorStuffBinding::getDoorPosition },
+        { "getDoorPosOutside", DoorStuffBinding::getDoorPosOutside },
+        { "getDoorPosInside", DoorStuffBinding::getDoorPosInside },
         { 0, 0 }
     };
 

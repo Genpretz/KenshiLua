@@ -3,6 +3,10 @@
 #include "LightBuildingBinding.h"
 #include "UseableStuffBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/GameDataContainerBinding.h"
+#include "Bindings/GameSaveStateBinding.h"
+#include "Bindings/Building/BuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -27,7 +31,7 @@ static int LightBuilding_set_mountedBuilding(lua_State* L)
     LightBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LightBuilding is nil");
     hand* val = checkObject<hand>(L, 2, HandBinding::getMetatableName());
-    if (!val) return luaL_error(L, "LightBuilding::set_mountedBuilding: expected hand for argument 2");
+    if (!val) return luaL_error(L, "Argument 2 to set_mountedBuilding must be a hand");
     instance->mountedBuilding = *val;
     return 0;
 }
@@ -117,16 +121,85 @@ int LightBuildingBinding::_NV_getPositionMarker(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 12: GameSaveState serialise(...) - unsupported return type
-  line 13: GameSaveState _NV_serialise(...) - unsupported return type
-  line 14: void loadFromSerialise(...) - unsupported arg type
-  line 15: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 22: const hand& getMountedBuilding(...) - reference return type
-  line 23: const hand& _NV_getMountedBuilding(...) - reference return type
-  line 24: void setMountedBuilding(...) - unsupported arg type
-*/
+int LightBuildingBinding::serialise(lua_State* L)
+{
+    LightBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LightBuilding is nil");
+
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+
+    GameSaveState result = instance->serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int LightBuildingBinding::_NV_serialise(lua_State* L)
+{
+    LightBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LightBuilding is nil");
+
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+
+    GameSaveState result = instance->_NV_serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int LightBuildingBinding::loadFromSerialise(lua_State* L)
+{
+    LightBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LightBuilding is nil");
+
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    if (!state) return luaL_error(L, "Argument 2 to loadFromSerialise must be a GameSaveState");
+
+    instance->loadFromSerialise(state);
+    return 0;
+}
+
+int LightBuildingBinding::_NV_loadFromSerialise(lua_State* L)
+{
+    LightBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LightBuilding is nil");
+
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    if (!state) return luaL_error(L, "Argument 2 to _NV_loadFromSerialise must be a GameSaveState");
+
+    instance->_NV_loadFromSerialise(state);
+    return 0;
+}
+
+int LightBuildingBinding::getMountedBuilding(lua_State* L)
+{
+    LightBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LightBuilding is nil");
+
+    hand result = instance->getMountedBuilding();
+    return pushValue<hand>(L, result, HandBinding::getMetatableName());
+}
+
+int LightBuildingBinding::_NV_getMountedBuilding(lua_State* L)
+{
+    LightBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LightBuilding is nil");
+
+    hand result = instance->_NV_getMountedBuilding();
+    return pushValue<hand>(L, result, HandBinding::getMetatableName());
+}
+
+int LightBuildingBinding::setMountedBuilding(lua_State* L)
+{
+    LightBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LightBuilding is nil");
+
+    Building* b = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    if (!b) return luaL_error(L, "Argument 2 to setMountedBuilding must be a Building");
+
+    instance->setMountedBuilding(b);
+    return 0;
+}
 
 int LightBuildingBinding::gc(lua_State* L)
 {
@@ -157,6 +230,13 @@ void LightBuildingBinding::registerBinding(lua_State* L)
         { "_NV_needPowerRightNow", LightBuildingBinding::_NV_needPowerRightNow },
         { "getPositionMarker", LightBuildingBinding::getPositionMarker },
         { "_NV_getPositionMarker", LightBuildingBinding::_NV_getPositionMarker },
+        { "serialise", LightBuildingBinding::serialise },
+        { "_NV_serialise", LightBuildingBinding::_NV_serialise },
+        { "loadFromSerialise", LightBuildingBinding::loadFromSerialise },
+        { "_NV_loadFromSerialise", LightBuildingBinding::_NV_loadFromSerialise },
+        { "getMountedBuilding", LightBuildingBinding::getMountedBuilding },
+        { "_NV_getMountedBuilding", LightBuildingBinding::_NV_getMountedBuilding },
+        { "setMountedBuilding", LightBuildingBinding::setMountedBuilding },
         { 0, 0 }
     };
 

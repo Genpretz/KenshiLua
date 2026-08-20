@@ -1098,13 +1098,50 @@ int PlatoonBinding::_NV_reCheckPersistenceOnUnload(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 136: GameSaveState serialise(...) - unsupported arg type
-  line 137: GameSaveState _NV_serialise(...) - unsupported arg type
-  line 164: void setRoamingMapArea(...) - unsupported arg type
-  line 176: const hand& getSquadLeader_theRealOne(...) - reference return type
-*/
+int PlatoonBinding::serialise(lua_State* L)
+{
+    Platoon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Platoon is nil");
+
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+
+    GameSaveState result = instance->serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int PlatoonBinding::_NV_serialise(lua_State* L)
+{
+    Platoon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Platoon is nil");
+
+    GameDataContainer* container = checkObject<GameDataContainer>(L, 2, GameDataContainerBinding::getMetatableName());
+    GameData* refList = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
+
+    GameSaveState result = instance->_NV_serialise(container, refList, offset);
+    return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int PlatoonBinding::setRoamingMapArea(lua_State* L)
+{
+    Platoon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Platoon is nil");
+
+    AreaBiomeGroup* a = (AreaBiomeGroup*)lua_touserdata(L, 2);
+    instance->setRoamingMapArea(a);
+    return 0;
+}
+
+int PlatoonBinding::getSquadLeader_theRealOne(lua_State* L)
+{
+    Platoon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Platoon is nil");
+
+    hand result = instance->getSquadLeader_theRealOne();
+    return pushValue<hand>(L, result, HandBinding::getMetatableName());
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -1597,10 +1634,10 @@ void PlatoonBinding::registerBinding(lua_State* L)
         { "needsNewCharacters", PlatoonBinding::needsNewCharacters },
         { "reCheckPersistenceOnUnload", PlatoonBinding::reCheckPersistenceOnUnload },
         { "_NV_reCheckPersistenceOnUnload", PlatoonBinding::_NV_reCheckPersistenceOnUnload },
-                { "serialise", Platoon_serialise },
-        { "_NV_serialise", Platoon__NV_serialise },
-        { "setRoamingMapArea", Platoon_setRoamingMapArea },
-        { "getSquadLeader_theRealOne", Platoon_getSquadLeader_theRealOne },
+        { "serialise", PlatoonBinding::serialise },
+        { "_NV_serialise", PlatoonBinding::_NV_serialise },
+        { "setRoamingMapArea", PlatoonBinding::setRoamingMapArea },
+        { "getSquadLeader_theRealOne", PlatoonBinding::getSquadLeader_theRealOne },
         { 0, 0 }
     };
 

@@ -99,5 +99,10 @@ public:
     static int _NV_getTerrainHeightAtCenter(lua_State* L);
     static int recalculateWorldAABB(lua_State* L);
     static int validateUsageNodes(lua_State* L);
+    static int getPlacementResultMaterialName(lua_State* L);
+    static int getOrientation(lua_State* L);
+    static int getCentreOffset(lua_State* L);
+    static int isNoCollideWithThisBuilding(lua_State* L);
+    static int _NV_isNoCollideWithThisBuilding(lua_State* L);
 };
 }

@@ -82,5 +82,8 @@ public:
     static int reCheckPersistenceOnUnload(lua_State* L);
     static int _NV_reCheckPersistenceOnUnload(lua_State* L);
     static int getSquadLeader_theRealOne(lua_State* L);
+    static int serialise(lua_State* L);
+    static int _NV_serialise(lua_State* L);
+    static int setRoamingMapArea(lua_State* L);
 };
 }

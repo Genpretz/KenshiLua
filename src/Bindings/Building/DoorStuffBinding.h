@@ -73,5 +73,11 @@ public:
     static int _NV_doorStuff(lua_State* L);
     static int doorParentBuilding(lua_State* L);
     static int _NV_doorParentBuilding(lua_State* L);
+    static int hitByMeleeAttack(lua_State* L);
+    static int _NV_hitByMeleeAttack(lua_State* L);
+    static int getActorClosedPosition(lua_State* L);
+    static int getDoorPosition(lua_State* L);
+    static int getDoorPosOutside(lua_State* L);
+    static int getDoorPosInside(lua_State* L);
 };
 }

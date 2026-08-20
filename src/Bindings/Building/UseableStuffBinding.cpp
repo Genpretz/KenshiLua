@@ -9,6 +9,9 @@
 #include "Bindings/GameSaveStateBinding.h"
 #include "Bindings/Gui/InventoryLayoutBinding.h"
 #include "Bindings/InventoryBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/CombatTechniqueDataBinding.h"
+#include "Bindings/DamagesBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/StdSetBinding.h"
 
@@ -1185,6 +1188,40 @@ int UseableStuffBinding::_NV_getGUIPowerEfficiencyToolTipString(lua_State* L)
     return 1;
 }
 
+int UseableStuffBinding::hitByMeleeAttack(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to hitByMeleeAttack must be Damages");
+    Character* who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    CombatTechniqueData* attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    int comboID = (int)luaL_checkinteger(L, 6);
+
+    HitMaterialType result = instance->hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int UseableStuffBinding::_NV_hitByMeleeAttack(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to _NV_hitByMeleeAttack must be Damages");
+    Character* who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    CombatTechniqueData* attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    int comboID = (int)luaL_checkinteger(L, 6);
+
+    HitMaterialType result = instance->_NV_hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 39: void equipItem(...) - unsupported arg type
@@ -1211,8 +1248,6 @@ Skipped methods needing manual binding:
   line 78: void _NV_getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
   line 81: void loadFromSerialise(...) - unsupported arg type
   line 82: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 83: HitMaterialType hitByMeleeAttack(...) - unsupported arg type
-  line 84: HitMaterialType _NV_hitByMeleeAttack(...) - unsupported arg type
   line 95: const std::string& getAnimation(...) - reference return type
   line 96: const std::string& getAnimationKO(...) - reference return type
   line 102: bool isFreeSlot(...) - unsupported arg type
@@ -1392,6 +1427,8 @@ void UseableStuffBinding::registerBinding(lua_State* L)
         { "getAnimationDazed", UseableStuffBinding::getAnimationDazed },
         { "serialise", UseableStuffBinding::serialise },
         { "_NV_serialise", UseableStuffBinding::_NV_serialise },
+        { "hitByMeleeAttack", UseableStuffBinding::hitByMeleeAttack },
+        { "_NV_hitByMeleeAttack", UseableStuffBinding::_NV_hitByMeleeAttack },
         { 0, 0 }
     };
 
