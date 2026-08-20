@@ -341,6 +341,17 @@ int InteriorModeButtonWindowBinding::recheckOutsideFurniture(lua_State* L)
     return 0;
 }
 
+int InteriorModeButtonWindowBinding::wasTheInteriorLoadedFromASave(lua_State* L)
+{
+    int idx = (testObject<InteriorModeButtonWindow>(L, 1, InteriorModeButtonWindowBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    BuildingInterior* interior = (BuildingInterior*)lua_touserdata(L, idx);
+    if (!interior) return luaL_error(L, "Argument %d to wasTheInteriorLoadedFromASave must be a BuildingInterior pointer", idx);
+
+    bool result = InteriorModeButtonWindow::wasTheInteriorLoadedFromASave(interior);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 50: void closeWindow(...) - unsupported arg type
@@ -359,7 +370,6 @@ Skipped methods needing manual binding:
   line 65: void deleteButtonPressed2(...) - unsupported arg type
   line 66: void listItemSelected2(...) - unsupported arg type
   line 67: void notifyEditTextChange2(...) - unsupported arg type
-  line 71: bool wasTheInteriorLoadedFromASave(...) - static method
 */
 
 /*
@@ -418,6 +428,7 @@ void InteriorModeButtonWindowBinding::registerBinding(lua_State* L)
         { "setInteriorLayout", InteriorModeButtonWindowBinding::setInteriorLayout },
         { "setExteriorLayout", InteriorModeButtonWindowBinding::setExteriorLayout },
         { "recheckOutsideFurniture", InteriorModeButtonWindowBinding::recheckOutsideFurniture },
+        { "wasTheInteriorLoadedFromASave", InteriorModeButtonWindowBinding::wasTheInteriorLoadedFromASave },
         { 0, 0 }
     };
 
@@ -467,6 +478,16 @@ void InteriorModeButtonWindowBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, InteriorModeButtonWindowBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_getglobal(L, "InteriorModeButtonWindow");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
+    registerStaticMethod(L, "wasTheInteriorLoadedFromASave", InteriorModeButtonWindowBinding::wasTheInteriorLoadedFromASave);
+    lua_setglobal(L, "InteriorModeButtonWindow");
 }
 
 } // namespace KenshiLua

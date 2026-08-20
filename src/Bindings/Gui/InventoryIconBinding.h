@@ -20,5 +20,10 @@ public:
 
     static int update(lua_State* L);
     static int getWidget(lua_State* L);
+    static int setPosition(lua_State* L);
+    static int getSize(lua_State* L);
+    static int createIconImage(lua_State* L);
+    static int getItemSize(lua_State* L);
+    static int getItemPosition(lua_State* L);
 };
 }

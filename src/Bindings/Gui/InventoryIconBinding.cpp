@@ -75,14 +75,66 @@ int InventoryIconBinding::getWidget(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 24: void setPosition(...) - unsupported arg type
-  line 25: MyGUI::types::TSize<int> getSize(...) - unsupported return type
-  line 28: void createIconImage(...) - static method
-  line 29: MyGUI::types::TSize<int> getItemSize(...) - static method
-  line 30: MyGUI::types::TPoint<int> getItemPosition(...) - static method
-*/
+int InventoryIconBinding::setPosition(lua_State* L)
+{
+    InventoryIcon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryIcon is nil");
+
+    int left = (int)luaL_checkinteger(L, 2);
+    int top = (int)luaL_checkinteger(L, 3);
+    instance->setPosition(MyGUI::types::TPoint<int>(left, top));
+    return 0;
+}
+
+int InventoryIconBinding::getSize(lua_State* L)
+{
+    InventoryIcon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryIcon is nil");
+
+    MyGUI::types::TSize<int> sz = instance->getSize();
+    lua_pushinteger(L, sz.width);
+    lua_pushinteger(L, sz.height);
+    return 2;
+}
+
+int InventoryIconBinding::createIconImage(lua_State* L)
+{
+    int idx = (testObject<InventoryIcon>(L, 1, InventoryIconBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    Item* item = checkObject<Item>(L, idx, ItemBinding::getMetatableName());
+    if (!item) return luaL_error(L, "Argument %d to createIconImage must be an Item", idx);
+
+    std::string name;
+    iVector2 size;
+    InventoryIcon::createIconImage(item, name, size);
+
+    lua_pushlstring(L, name.c_str(), name.size());
+    pushValue<iVector2>(L, size, iVector2Binding::getMetatableName());
+    return 2;
+}
+
+int InventoryIconBinding::getItemSize(lua_State* L)
+{
+    int idx = (testObject<InventoryIcon>(L, 1, InventoryIconBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    GameData* itemData = checkObject<GameData>(L, idx, GameDataBinding::getMetatableName());
+    if (!itemData) return luaL_error(L, "Argument %d to getItemSize must be a GameData", idx);
+
+    MyGUI::types::TSize<int> sz = InventoryIcon::getItemSize(itemData);
+    lua_pushinteger(L, sz.width);
+    lua_pushinteger(L, sz.height);
+    return 2;
+}
+
+int InventoryIconBinding::getItemPosition(lua_State* L)
+{
+    int idx = (testObject<InventoryIcon>(L, 1, InventoryIconBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    int x = (int)luaL_checkinteger(L, idx);
+    int y = (int)luaL_checkinteger(L, idx + 1);
+
+    MyGUI::types::TPoint<int> pt = InventoryIcon::getItemPosition(x, y);
+    lua_pushinteger(L, pt.left);
+    lua_pushinteger(L, pt.top);
+    return 2;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -115,6 +167,11 @@ void InventoryIconBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "update", InventoryIconBinding::update },
         { "getWidget", InventoryIconBinding::getWidget },
+        { "setPosition", InventoryIconBinding::setPosition },
+        { "getSize", InventoryIconBinding::getSize },
+        { "createIconImage", InventoryIconBinding::createIconImage },
+        { "getItemSize", InventoryIconBinding::getItemSize },
+        { "getItemPosition", InventoryIconBinding::getItemPosition },
         { 0, 0 }
     };
 
@@ -144,6 +201,18 @@ void InventoryIconBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, InventoryIconBinding::getMetatableName(), wraps::BaseLayoutBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_getglobal(L, "InventoryIcon");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
+    registerStaticMethod(L, "createIconImage", InventoryIconBinding::createIconImage);
+    registerStaticMethod(L, "getItemSize", InventoryIconBinding::getItemSize);
+    registerStaticMethod(L, "getItemPosition", InventoryIconBinding::getItemPosition);
+    lua_setglobal(L, "InventoryIcon");
 }
 
 } // namespace KenshiLua

@@ -117,15 +117,25 @@ public:
         m_L = L;
     }
 
+    lua_State* getLuaState() const
+    {
+        if (g_luaState && g_luaState->isValid())
+        {
+            return g_luaState->getState();
+        }
+        return m_L;
+    }
+
     void registerCallback(MyGUI::Widget* widget, EventType type, int luaRef)
     {
         CallbackKey key = { widget, type };
         auto it = m_callbacks.find(key);
         if (it != m_callbacks.end())
         {
-            if (m_L && it->second != LUA_NOREF)
+            lua_State* L = getLuaState();
+            if (L && it->second != LUA_NOREF)
             {
-                luaL_unref(m_L, LUA_REGISTRYINDEX, it->second);
+                luaL_unref(L, LUA_REGISTRYINDEX, it->second);
             }
             it->second = luaRef;
         }
@@ -229,15 +239,16 @@ public:
 
     void clearCallbacksForWidget(MyGUI::Widget* widget)
     {
+        lua_State* L = getLuaState();
         for (int type = 0; type < EventType_Count; ++type)
         {
             CallbackKey key = { widget, (EventType)type };
             auto it = m_callbacks.find(key);
             if (it != m_callbacks.end())
             {
-                if (m_L && it->second != LUA_NOREF)
+                if (L && it->second != LUA_NOREF)
                 {
-                    luaL_unref(m_L, LUA_REGISTRYINDEX, it->second);
+                    luaL_unref(L, LUA_REGISTRYINDEX, it->second);
                 }
                 m_callbacks.erase(it);
             }
@@ -266,13 +277,14 @@ public:
 
     void clearAll()
     {
-        if (m_L)
+        lua_State* L = getLuaState();
+        if (L)
         {
             for (std::map<CallbackKey, int>::iterator it = m_callbacks.begin(); it != m_callbacks.end(); ++it)
             {
                 if (it->second != LUA_NOREF)
                 {
-                    luaL_unref(m_L, LUA_REGISTRYINDEX, it->second);
+                    luaL_unref(L, LUA_REGISTRYINDEX, it->second);
                 }
             }
         }
@@ -283,293 +295,309 @@ public:
 private:
     void onMouseButtonClick(MyGUI::Widget* sender)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnClick };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
+        int top = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 1, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top);
+        lua_settop(L, top);
     }
 
     void onEditTextChange(MyGUI::EditBox* sender)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnTextChanged };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top = m_L ? lua_gettop(m_L) : 0;
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
+        int top = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 1, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top);
+        lua_settop(L, top);
     }
 
     void onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnWindowButtonPressed };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushstring(m_L, name.c_str());
+        int top = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushstring(L, name.c_str());
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 2, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top);
+        lua_settop(L, top);
     }
 
     void onMouseButtonPressed(MyGUI::Widget* sender, int left, int top, MyGUI::MouseButton id)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnMouseButtonPressed };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushinteger(m_L, left);
-        lua_pushinteger(m_L, top);
-        lua_pushinteger(m_L, id.getValue());
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushinteger(L, left);
+        lua_pushinteger(L, top);
+        lua_pushinteger(L, id.getValue());
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 4, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 4, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onMouseButtonReleased(MyGUI::Widget* sender, int left, int top, MyGUI::MouseButton id)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnMouseButtonReleased };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushinteger(m_L, left);
-        lua_pushinteger(m_L, top);
-        lua_pushinteger(m_L, id.getValue());
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushinteger(L, left);
+        lua_pushinteger(L, top);
+        lua_pushinteger(L, id.getValue());
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 4, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 4, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onMouseSetFocus(MyGUI::Widget* sender, MyGUI::Widget* old)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnMouseSetFocus };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        pushObject<MyGUI::Widget>(m_L, old, MyGuiBinding::getMetatableName());
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        pushObject<MyGUI::Widget>(L, old, MyGuiBinding::getMetatableName());
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 2, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onMouseLostFocus(MyGUI::Widget* sender, MyGUI::Widget* new_)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnMouseLostFocus };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        pushObject<MyGUI::Widget>(m_L, new_, MyGuiBinding::getMetatableName());
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        pushObject<MyGUI::Widget>(L, new_, MyGuiBinding::getMetatableName());
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 2, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onMouseMove(MyGUI::Widget* sender, int left, int top)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnMouseMove };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushinteger(m_L, left);
-        lua_pushinteger(m_L, top);
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushinteger(L, left);
+        lua_pushinteger(L, top);
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 3, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 3, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onMouseWheel(MyGUI::Widget* sender, int rel)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnMouseWheel };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushinteger(m_L, rel);
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushinteger(L, rel);
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 2, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onKeyButtonPressed(MyGUI::Widget* sender, MyGUI::KeyCode key, MyGUI::Char ch)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey callbackKey = { sender, OnKeyButtonPressed };
         auto it = m_callbacks.find(callbackKey);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushinteger(m_L, key.getValue());
-        lua_pushinteger(m_L, ch);
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushinteger(L, key.getValue());
+        lua_pushinteger(L, ch);
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 3, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 3, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onKeyButtonReleased(MyGUI::Widget* sender, MyGUI::KeyCode key)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey callbackKey = { sender, OnKeyButtonReleased };
         auto it = m_callbacks.find(callbackKey);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushinteger(m_L, key.getValue());
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushinteger(L, key.getValue());
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 2, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onComboAccept(MyGUI::ComboBox* sender, size_t index)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnComboAccept };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushinteger(m_L, index);
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushinteger(L, index);
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 2, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onComboChangePosition(MyGUI::ComboBox* sender, size_t index)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnComboChangePosition };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushinteger(m_L, index);
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushinteger(L, index);
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 2, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onListSelectAccept(MyGUI::ListBox* sender, size_t index)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnListSelectAccept };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushinteger(m_L, index);
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushinteger(L, index);
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 2, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onListChangePosition(MyGUI::ListBox* sender, size_t index)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnListChangePosition };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
-        lua_pushinteger(m_L, index);
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
+        lua_pushinteger(L, index);
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 2, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 2, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 
     void onWindowChangeCoord(MyGUI::Window* sender)
     {
-        if (!m_L) return;
+        lua_State* L = getLuaState();
+        if (!L) return;
         CallbackKey key = { sender, OnWindowChangeCoord };
         auto it = m_callbacks.find(key);
         if (it == m_callbacks.end() || it->second == LUA_NOREF) return;
 
-        int top_stack = lua_gettop(m_L);
-        lua_rawgeti(m_L, LUA_REGISTRYINDEX, it->second);
-        pushObject<MyGUI::Widget>(m_L, sender, MyGuiBinding::getMetatableName());
+        int top_stack = lua_gettop(L);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, it->second);
+        pushObject<MyGUI::Widget>(L, sender, MyGuiBinding::getMetatableName());
 
         std::string pcallErr;
-        if (!LuaState::pcallWithTraceback(m_L, 1, 0, &pcallErr))
+        if (!LuaState::pcallWithTraceback(L, 1, 0, &pcallErr))
             logToFileError(std::string("MyGUI Event Error: ") + pcallErr);
-        lua_settop(m_L, top_stack);
+        lua_settop(L, top_stack);
     }
 };
 
@@ -650,7 +678,15 @@ static int widget_setCaption(lua_State* L)
     if (w)
     {
         MyGUI::TextBox* tb = w->castType<MyGUI::TextBox>(false);
-        if (tb) tb->setCaption(caption);
+        if (tb)
+        {
+            tb->setCaption(caption);
+        }
+        else
+        {
+            MyGUI::Window* win = w->castType<MyGUI::Window>(false);
+            if (win) win->setCaption(caption);
+        }
     }
     return 0;
 }
@@ -664,6 +700,12 @@ static int widget_getCaption(lua_State* L)
         if (tb)
         {
             lua_pushstring(L, tb->getCaption().asUTF8().c_str());
+            return 1;
+        }
+        MyGUI::Window* win = w->castType<MyGUI::Window>(false);
+        if (win)
+        {
+            lua_pushstring(L, win->getCaption().asUTF8().c_str());
             return 1;
         }
     }
@@ -867,6 +909,7 @@ static int widget_registerCallback(lua_State* L)
 
     if (w)
     {
+        LuaWidgetCallbackManager::get().setLuaState(L);
         LuaWidgetCallbackManager::get().registerCallback(w, type, luaRef);
     }
     else if (luaRef != LUA_NOREF)

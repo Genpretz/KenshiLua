@@ -5,6 +5,7 @@
 #include <kenshi/gui/CharacterStatsWindow.h>
 #include "CharacterStatsWindowBinding.h"
 #include "GUIWindowBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -295,16 +296,99 @@ int CharacterStatsWindowBinding::getStatsPanel(lua_State* L)
     return pushObject<DatapanelGUI>(L, result, DatapanelGUIBinding::getMetatableName());
 }
 
+int CharacterStatsWindowBinding::autoChangeSelectedObject(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!obj) return luaL_error(L, "Argument 2 to autoChangeSelectedObject must be a hand");
+    instance->autoChangeSelectedObject(*obj);
+    return 0;
+}
+
+int CharacterStatsWindowBinding::_NV_autoChangeSelectedObject(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!obj) return luaL_error(L, "Argument 2 to _NV_autoChangeSelectedObject must be a hand");
+    instance->_NV_autoChangeSelectedObject(*obj);
+    return 0;
+}
+
+int CharacterStatsWindowBinding::BuildStats(lua_State* L)
+{
+    CharacterStatsWindow::BuildStats();
+    return 0;
+}
+
+int CharacterStatsWindowBinding::addStat(lua_State* L)
+{
+    int idx = (testObject<CharacterStatsWindow>(L, 1, CharacterStatsWindowBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    StatsEnumerated type = (StatsEnumerated)luaL_checkinteger(L, idx);
+    std::string id = luaL_checkstring(L, idx + 1);
+    std::string name = luaL_checkstring(L, idx + 2);
+    bool active = lua_toboolean(L, idx + 3) != 0;
+    std::string description = luaL_checkstring(L, idx + 4);
+
+    CharacterStatsWindow::addStat(type, id, name, active, description);
+    return 0;
+}
+
+int CharacterStatsWindowBinding::getStat(lua_State* L)
+{
+    int idx = (testObject<CharacterStatsWindow>(L, 1, CharacterStatsWindowBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    StatsEnumerated type = (StatsEnumerated)luaL_checkinteger(L, idx);
+
+    CharacterStatsWindow::Stat* result = CharacterStatsWindow::getStat(type);
+    if (!result) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_newtable(L);
+    lua_pushinteger(L, static_cast<lua_Integer>(result->type));
+    lua_setfield(L, -2, "type");
+    lua_pushlstring(L, result->id.c_str(), result->id.size());
+    lua_setfield(L, -2, "id");
+    lua_pushlstring(L, result->name.c_str(), result->name.size());
+    lua_setfield(L, -2, "name");
+    lua_pushlstring(L, result->description.c_str(), result->description.size());
+    lua_setfield(L, -2, "description");
+    lua_pushboolean(L, result->active ? 1 : 0);
+    lua_setfield(L, -2, "active");
+    return 1;
+}
+
+int CharacterStatsWindowBinding::getStatById(lua_State* L)
+{
+    int idx = (testObject<CharacterStatsWindow>(L, 1, CharacterStatsWindowBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    std::string id = luaL_checkstring(L, idx);
+
+    CharacterStatsWindow::Stat* result = CharacterStatsWindow::getStatById(id);
+    if (!result) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_newtable(L);
+    lua_pushinteger(L, static_cast<lua_Integer>(result->type));
+    lua_setfield(L, -2, "type");
+    lua_pushlstring(L, result->id.c_str(), result->id.size());
+    lua_setfield(L, -2, "id");
+    lua_pushlstring(L, result->name.c_str(), result->name.size());
+    lua_setfield(L, -2, "name");
+    lua_pushlstring(L, result->description.c_str(), result->description.size());
+    lua_setfield(L, -2, "description");
+    lua_pushboolean(L, result->active ? 1 : 0);
+    lua_setfield(L, -2, "active");
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 81: void autoChangeSelectedObject(...) - unsupported arg type
-  line 82: void _NV_autoChangeSelectedObject(...) - unsupported arg type
   line 88: void closeWindow(...) - unsupported arg type
   line 89: void statMouseOver(...) - unsupported arg type
-  line 104: void addStat(...) - static method
-  line 105: CharacterStatsWindow::Stat* getStat(...) - static method
-  line 106: CharacterStatsWindow::Stat* getStatById(...) - static method
-  line 107: void BuildStats(...) - static method
 */
 
 int CharacterStatsWindowBinding::gc(lua_State* L)
@@ -344,6 +428,12 @@ void CharacterStatsWindowBinding::registerBinding(lua_State* L)
         { "clearDesctiption", CharacterStatsWindowBinding::clearDesctiption },
         { "sumStats", CharacterStatsWindowBinding::sumStats },
         { "getStatsPanel", CharacterStatsWindowBinding::getStatsPanel },
+        { "autoChangeSelectedObject", CharacterStatsWindowBinding::autoChangeSelectedObject },
+        { "_NV_autoChangeSelectedObject", CharacterStatsWindowBinding::_NV_autoChangeSelectedObject },
+        { "BuildStats", CharacterStatsWindowBinding::BuildStats },
+        { "addStat", CharacterStatsWindowBinding::addStat },
+        { "getStat", CharacterStatsWindowBinding::getStat },
+        { "getStatById", CharacterStatsWindowBinding::getStatById },
         { 0, 0 }
     };
 
@@ -385,6 +475,19 @@ void CharacterStatsWindowBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, CharacterStatsWindowBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_getglobal(L, "CharacterStatsWindow");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
+    registerStaticMethod(L, "BuildStats", CharacterStatsWindowBinding::BuildStats);
+    registerStaticMethod(L, "addStat", CharacterStatsWindowBinding::addStat);
+    registerStaticMethod(L, "getStat", CharacterStatsWindowBinding::getStat);
+    registerStaticMethod(L, "getStatById", CharacterStatsWindowBinding::getStatById);
+    lua_setglobal(L, "CharacterStatsWindow");
 }
 
 } // namespace KenshiLua

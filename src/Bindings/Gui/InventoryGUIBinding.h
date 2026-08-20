@@ -71,5 +71,6 @@ public:
     static int lockedItemCheck(lua_State* L);
     static int refreshSection(lua_State* L);
     static int getSection(lua_State* L);
+    static int makeIconForItem(lua_State* L);
 };
 }

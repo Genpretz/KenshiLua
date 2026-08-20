@@ -34,5 +34,11 @@ public:
     static int clearDesctiption(lua_State* L);
     static int sumStats(lua_State* L);
     static int getStatsPanel(lua_State* L);
+    static int autoChangeSelectedObject(lua_State* L);
+    static int _NV_autoChangeSelectedObject(lua_State* L);
+    static int BuildStats(lua_State* L);
+    static int addStat(lua_State* L);
+    static int getStat(lua_State* L);
+    static int getStatById(lua_State* L);
 };
 }

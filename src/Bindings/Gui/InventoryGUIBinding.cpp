@@ -687,6 +687,18 @@ int InventoryGUIBinding::getSection(lua_State* L)
     }
 }
 
+int InventoryGUIBinding::makeIconForItem(lua_State* L)
+{
+    int idx = (testObject<InventoryGUI>(L, 1, InventoryGUIBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    Item* item = checkObject<Item>(L, idx, ItemBinding::getMetatableName());
+    if (!item) return luaL_error(L, "Argument %d to makeIconForItem must be an Item", idx);
+    int x = (int)luaL_checkinteger(L, idx + 1);
+    int y = (int)luaL_checkinteger(L, idx + 2);
+
+    InventoryIcon* result = InventoryGUI::makeIconForItem(item, x, y);
+    return pushObject<InventoryIcon>(L, result, InventoryIconBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
   line 125: void autoChangeSelectedObject(...) - non-string reference arg
@@ -703,7 +715,6 @@ Skipped methods needing manual binding:
   line 207: void sectionMouseButtonReleased(...) - unsupported arg type
   line 208: void onWindowFocus(...) - unsupported arg type
   line 209: void windowMoved(...) - unsupported arg type
-  line 210: InventoryIcon* makeIconForItem(...) - static method
 */
 
 int InventoryGUIBinding::gc(lua_State* L)
@@ -782,6 +793,7 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
         { "lockedItemCheck", InventoryGUIBinding::lockedItemCheck },
         { "refreshSection", InventoryGUIBinding::refreshSection },
         { "getSection", InventoryGUIBinding::getSection },
+        { "makeIconForItem", InventoryGUIBinding::makeIconForItem },
         { 0, 0 }
     };
 
@@ -824,7 +836,12 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_newtable(L);
+    lua_getglobal(L, "InventoryGUI");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
     registerStaticMethod(L, "setTradingTown", InventoryGUIBinding::setTradingTown);
     registerStaticMethod(L, "getTradingTown", InventoryGUIBinding::getTradingTown);
     registerStaticMethod(L, "clearTradePartners", InventoryGUIBinding::clearTradePartners);
@@ -836,6 +853,7 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
     registerStaticMethod(L, "removeTradePartner", InventoryGUIBinding::removeTradePartner);
     registerStaticMethod(L, "addTradePartner", InventoryGUIBinding::addTradePartner);
     registerStaticMethod(L, "lockedItemCheck", InventoryGUIBinding::lockedItemCheck);
+    registerStaticMethod(L, "makeIconForItem", InventoryGUIBinding::makeIconForItem);
     lua_setglobal(L, "InventoryGUI");
 }
 

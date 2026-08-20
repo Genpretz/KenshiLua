@@ -31,5 +31,6 @@ public:
     static int setInteriorLayout(lua_State* L);
     static int setExteriorLayout(lua_State* L);
     static int recheckOutsideFurniture(lua_State* L);
+    static int wasTheInteriorLoadedFromASave(lua_State* L);
 };
 }
