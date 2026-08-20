@@ -6,9 +6,13 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataCopyStandaloneBinding.h"
 #include "Bindings/ItemBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 
 namespace KenshiLua
 {
+typedef OgreFastArrayPtrBinding<Harpoon*> HarpoonFastArrayBinding;
+typedef OgreFastArrayPtrBinding<AttachedEffect*> AttachedEffectFastArrayBinding;
+typedef OgreFastArrayPtrBinding<Wound*> WoundFastArrayBinding;
 
 static AppearanceBase* getInstance(lua_State* L, int idx)
 {
@@ -235,7 +239,95 @@ static int AppearanceBase_get_waterline(lua_State* L)
     return 1;
 }
 
+static int AppearanceBase_get_attachedHarpoons(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+    return pushObject<HarpoonFastArrayBinding::ArrayType>(L, &instance->attachedHarpoons, "Ogre::FastArray<Harpoon*>");
+}
+
+static int AppearanceBase_get_attachedEffects(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+    return pushObject<AttachedEffectFastArrayBinding::ArrayType>(L, &instance->attachedEffects, "Ogre::FastArray<AttachedEffect*>");
+}
+
+static int AppearanceBase_get_attachedEffectsToRemove(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+    return pushObject<AttachedEffectFastArrayBinding::ArrayType>(L, &instance->attachedEffectsToRemove, "Ogre::FastArray<AttachedEffect*>");
+}
+
+static int AppearanceBase_get_woundsList(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+    return pushObject<WoundFastArrayBinding::ArrayType>(L, &instance->woundsList, "Ogre::FastArray<Wound*>");
+}
+
 // --- Setters for AppearanceBase ---
+static int AppearanceBase_set_attachedHarpoons(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->attachedHarpoons.clear();
+        return 0;
+    }
+    auto* src = HarpoonFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set attachedHarpoons must be Ogre::FastArray<Harpoon*>");
+    instance->attachedHarpoons = *src;
+    return 0;
+}
+
+static int AppearanceBase_set_attachedEffects(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->attachedEffects.clear();
+        return 0;
+    }
+    auto* src = AttachedEffectFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set attachedEffects must be Ogre::FastArray<AttachedEffect*>");
+    instance->attachedEffects = *src;
+    return 0;
+}
+
+static int AppearanceBase_set_attachedEffectsToRemove(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->attachedEffectsToRemove.clear();
+        return 0;
+    }
+    auto* src = AttachedEffectFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set attachedEffectsToRemove must be Ogre::FastArray<AttachedEffect*>");
+    instance->attachedEffectsToRemove = *src;
+    return 0;
+}
+
+static int AppearanceBase_set_woundsList(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->woundsList.clear();
+        return 0;
+    }
+    auto* src = WoundFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set woundsList must be Ogre::FastArray<Wound*>");
+    instance->woundsList = *src;
+    return 0;
+}
+
 static int AppearanceBase_set_msgClearHarpoons(lua_State* L)
 {
     AppearanceBase* instance = getInstance(L, 1);
@@ -1091,20 +1183,90 @@ int AppearanceBaseBinding::getCharacterHeightSpeedMultiplier(lua_State* L)
     return 1;
 }
 
+int AppearanceBaseBinding::attachItem(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    if (!item) return luaL_error(L, "Argument 2 to attachItem must be an Item");
+
+    if (lua_isstring(L, 4))
+    {
+        std::string mesh = luaL_checkstring(L, 3);
+        std::string slot = luaL_checkstring(L, 4);
+        bool result = instance->attachItem(item, mesh, slot);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+    else
+    {
+        std::string slot = lua_isstring(L, 3) ? lua_tostring(L, 3) : "";
+        bool result = instance->attachItem(item, slot);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+}
+
+int AppearanceBaseBinding::detachItem(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+
+    if (Item* item = testObject<Item>(L, 2, ItemBinding::getMetatableName()))
+    {
+        bool result = instance->detachItem(item);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+    else if (lua_isstring(L, 2))
+    {
+        std::string slot = lua_tostring(L, 2);
+        bool result = instance->detachItem(slot);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+    return luaL_error(L, "Argument 2 to detachItem must be an Item or slot string");
+}
+
+int AppearanceBaseBinding::getVertexPosition(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+
+    int index = (int)luaL_checkinteger(L, 2);
+    pushVector3(L, instance->getVertexPosition(index));
+    return 1;
+}
+
+int AppearanceBaseBinding::getRandomVertexPosition(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+
+    std::string boneName = luaL_checkstring(L, 2);
+    MeshDataLookup::Dir direction = (MeshDataLookup::Dir)luaL_checkinteger(L, 3);
+    pushVector3(L, instance->getRandomVertexPosition(boneName, direction));
+    return 1;
+}
+
+int AppearanceBaseBinding::chooseBodyMesh(lua_State* L)
+{
+    AppearanceBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceBase is nil");
+
+    const std::string& result = instance->chooseBodyMesh();
+    lua_pushlstring(L, result.c_str(), result.size());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 91: const std::string& chooseBodyMesh(...) - reference return type
   line 92: void addWound(...) - unsupported arg type
   line 93: void removeWound(...) - unsupported arg type
-  line 94: bool attachItem(...) - overloaded method
-  line 95: bool attachItem(...) - overloaded method
   line 96: bool attachHarpoon(...) - unsupported arg type
-  line 99: bool detachItem(...) - overloaded method
-  line 100: bool detachItem(...) - overloaded method
   line 101: bool detachHarpoon(...) - unsupported arg type
   line 104: void removeEffect(...) - unsupported arg type
-  line 119: const Ogre::Vector3& getVertexPosition(...) - reference return type
-  line 122: const Ogre::Vector3& getRandomVertexPosition(...) - reference return type
   line 132: void getLights(...) - unsupported arg type
   line 148: void buildBody(...) - unsupported arg type
   line 150: void createEntity(...) - unsupported arg type
@@ -1132,15 +1294,14 @@ LIGHTUSERDATA DEPENDENCIES:
   - AppearanceBaseBinding::getSkeleton: Ogre::OldSkeletonInstance* (unbound pointer)
   - AppearanceBaseBinding::getBody: Ogre::Entity* (unbound pointer)
   - AppearanceBaseBinding::createAttachedObject: AttachedEntity* (unbound pointer)
+  - HarpoonFastArrayBinding: Harpoon* (unbound pointer element)
+  - AttachedEffectFastArrayBinding: AttachedEffect* (unbound pointer element)
+  - WoundFastArrayBinding: Wound* (unbound pointer element)
 */
 
 /*
 Skipped properties needing manual binding:
   line 63: attachedObjects (boost::unordered::unordered_map<std::string, AttachedEntity*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachedEntity*>, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 64: attachedHarpoons (Ogre::FastArray<Harpoon*>) - unsupported type
-  line 66: attachedEffects (Ogre::FastArray<AttachedEffect*>) - unsupported type
-  line 67: attachedEffectsToRemove (Ogre::FastArray<AttachedEffect*>) - unsupported type
-  line 68: woundsList (Ogre::FastArray<Wound*>) - unsupported type
   line 172: bodyMaterial (Ogre::SharedPtr<Ogre::Material>) - unsupported type
 */
 
@@ -1231,6 +1392,11 @@ void AppearanceBaseBinding::registerBinding(lua_State* L)
         { "updateOverlap", AppearanceBaseBinding::updateOverlap },
         { "updateCharaterTexture", AppearanceBaseBinding::updateCharaterTexture },
         { "getCharacterHeightSpeedMultiplier", AppearanceBaseBinding::getCharacterHeightSpeedMultiplier },
+        { "attachItem", AppearanceBaseBinding::attachItem },
+        { "detachItem", AppearanceBaseBinding::detachItem },
+        { "getVertexPosition", AppearanceBaseBinding::getVertexPosition },
+        { "getRandomVertexPosition", AppearanceBaseBinding::getRandomVertexPosition },
+        { "chooseBodyMesh", AppearanceBaseBinding::chooseBodyMesh },
         { 0, 0 }
     };
 
@@ -1273,6 +1439,10 @@ void AppearanceBaseBinding::registerBinding(lua_State* L)
     registerGetter(L, "characterHeight", AppearanceBase_get_characterHeight);
     registerGetter(L, "characterHeightSpeedMultiplier", AppearanceBase_get_characterHeightSpeedMultiplier);
     registerGetter(L, "characterHeight_0to1", AppearanceBase_get_characterHeight_0to1);
+    registerGetter(L, "attachedHarpoons", AppearanceBase_get_attachedHarpoons);
+    registerGetter(L, "attachedEffects", AppearanceBase_get_attachedEffects);
+    registerGetter(L, "attachedEffectsToRemove", AppearanceBase_get_attachedEffectsToRemove);
+    registerGetter(L, "woundsList", AppearanceBase_get_woundsList);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -1300,7 +1470,15 @@ void AppearanceBaseBinding::registerBinding(lua_State* L)
     registerSetter(L, "characterHeight", AppearanceBase_set_characterHeight);
     registerSetter(L, "characterHeightSpeedMultiplier", AppearanceBase_set_characterHeightSpeedMultiplier);
     registerSetter(L, "characterHeight_0to1", AppearanceBase_set_characterHeight_0to1);
+    registerSetter(L, "attachedHarpoons", AppearanceBase_set_attachedHarpoons);
+    registerSetter(L, "attachedEffects", AppearanceBase_set_attachedEffects);
+    registerSetter(L, "attachedEffectsToRemove", AppearanceBase_set_attachedEffectsToRemove);
+    registerSetter(L, "woundsList", AppearanceBase_set_woundsList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    HarpoonFastArrayBinding::registerBinding(L, "Ogre::FastArray<Harpoon*>", nullptr);
+    AttachedEffectFastArrayBinding::registerBinding(L, "Ogre::FastArray<AttachedEffect*>", nullptr);
+    WoundFastArrayBinding::registerBinding(L, "Ogre::FastArray<Wound*>", nullptr);
 
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()
     // setMetatableParent(L, AppearanceBaseBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());

@@ -3,9 +3,13 @@
 #include "TutorialItemBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/TutorialSubItemBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 
 namespace KenshiLua
 {
+typedef OgreFastArrayPtrBinding<TutorialSubItem*> TutorialSubItemFastArrayBinding;
+typedef OgreFastArrayPrimitiveBinding<std::string> StringFastArrayBinding;
+typedef OgreFastArrayPtrBinding<TutorialItem*> TutorialItemFastArrayBinding;
 
 static TutorialItem* getInstance(lua_State* L, int idx)
 {
@@ -61,6 +65,27 @@ static int TutorialItem_get_subItemIndex(lua_State* L)
     return 1;
 }
 
+static int TutorialItem_get_subItems(lua_State* L)
+{
+    TutorialItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialItem is nil");
+    return pushObject<TutorialSubItemFastArrayBinding::ArrayType>(L, &instance->subItems, "Ogre::FastArray<TutorialSubItem*>");
+}
+
+static int TutorialItem_get_requiredTutorialsStr(lua_State* L)
+{
+    TutorialItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialItem is nil");
+    return pushObject<StringFastArrayBinding::ArrayType>(L, &instance->requiredTutorialsStr, "Ogre::FastArray<std::string>");
+}
+
+static int TutorialItem_get_requiredTutorials(lua_State* L)
+{
+    TutorialItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialItem is nil");
+    return pushObject<TutorialItemFastArrayBinding::ArrayType>(L, &instance->requiredTutorials, "Ogre::FastArray<TutorialItem*>");
+}
+
 // --- Setters for TutorialItem ---
 static int TutorialItem_set_id(lua_State* L)
 {
@@ -107,6 +132,51 @@ static int TutorialItem_set_subItemIndex(lua_State* L)
     TutorialItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialItem is nil");
     instance->subItemIndex = (unsigned char)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int TutorialItem_set_subItems(lua_State* L)
+{
+    TutorialItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialItem is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->subItems.clear();
+        return 0;
+    }
+    auto* src = TutorialSubItemFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set subItems must be Ogre::FastArray<TutorialSubItem*>");
+    instance->subItems = *src;
+    return 0;
+}
+
+static int TutorialItem_set_requiredTutorialsStr(lua_State* L)
+{
+    TutorialItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialItem is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->requiredTutorialsStr.clear();
+        return 0;
+    }
+    auto* src = StringFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set requiredTutorialsStr must be Ogre::FastArray<std::string>");
+    instance->requiredTutorialsStr = *src;
+    return 0;
+}
+
+static int TutorialItem_set_requiredTutorials(lua_State* L)
+{
+    TutorialItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialItem is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->requiredTutorials.clear();
+        return 0;
+    }
+    auto* src = TutorialItemFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set requiredTutorials must be Ogre::FastArray<TutorialItem*>");
+    instance->requiredTutorials = *src;
     return 0;
 }
 
@@ -346,13 +416,6 @@ Skipped methods needing manual binding:
   line 49: const std::string& getTitle(...) - reference return type
 */
 
-/*
-Skipped properties needing manual binding:
-  line 79: subItems (Ogre::FastArray<TutorialSubItem*>) - unsupported type
-  line 80: requiredTutorialsStr (Ogre::FastArray<std::string >) - unsupported type
-  line 81: requiredTutorials (Ogre::FastArray<TutorialItem*>) - unsupported type
-*/
-
 int TutorialItemBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -418,6 +481,9 @@ void TutorialItemBinding::registerBinding(lua_State* L)
     registerGetter(L, "title", TutorialItem_get_title);
     registerGetter(L, "state", TutorialItem_get_state);
     registerGetter(L, "subItemIndex", TutorialItem_get_subItemIndex);
+    registerGetter(L, "subItems", TutorialItem_get_subItems);
+    registerGetter(L, "requiredTutorialsStr", TutorialItem_get_requiredTutorialsStr);
+    registerGetter(L, "requiredTutorials", TutorialItem_get_requiredTutorials);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -427,7 +493,14 @@ void TutorialItemBinding::registerBinding(lua_State* L)
     registerSetter(L, "title", TutorialItem_set_title);
     registerSetter(L, "state", TutorialItem_set_state);
     registerSetter(L, "subItemIndex", TutorialItem_set_subItemIndex);
+    registerSetter(L, "subItems", TutorialItem_set_subItems);
+    registerSetter(L, "requiredTutorialsStr", TutorialItem_set_requiredTutorialsStr);
+    registerSetter(L, "requiredTutorials", TutorialItem_set_requiredTutorials);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    TutorialSubItemFastArrayBinding::registerBinding(L, "Ogre::FastArray<TutorialSubItem*>", TutorialSubItemBinding::getMetatableName());
+    StringFastArrayBinding::registerBinding(L, "Ogre::FastArray<std::string>");
+    TutorialItemFastArrayBinding::registerBinding(L, "Ogre::FastArray<TutorialItem*>", TutorialItemBinding::getMetatableName());
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
     // setMetatableParent(L, TutorialItemBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());

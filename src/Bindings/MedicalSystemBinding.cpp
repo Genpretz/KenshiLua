@@ -18,6 +18,7 @@
 #include "Bindings/Util/TimeOfDayBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 
 namespace KenshiLua
 {
@@ -37,6 +38,7 @@ struct LuaCodec<MedicalSystem::HealthPartStatus>
 };
 
 typedef OgreUnorderedMapBinding<GameData*, MedicalSystem::HealthPartStatus> HealthStatusMapBinding;
+typedef OgreFastArrayPtrBinding<Wound*> WoundFastArrayBinding;
 
 static MedicalSystem* getInstance(lua_State* L, int idx)
 {
@@ -367,7 +369,29 @@ static int MedicalSystem_get_stats(lua_State* L)
     return pushObject<CharStats>(L, instance->stats, CharStatsBinding::getMetatableName());
 }
 
+static int MedicalSystem_get_wounds(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    return pushObject<WoundFastArrayBinding::ArrayType>(L, &instance->wounds, "Ogre::FastArray<Wound*>");
+}
+
 // --- Setters for MedicalSystem ---
+static int MedicalSystem_set_wounds(lua_State* L)
+{
+    MedicalSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedicalSystem is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->wounds.clear();
+        return 0;
+    }
+    auto* src = WoundFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set wounds must be Ogre::FastArray<Wound*>");
+    instance->wounds = *src;
+    return 0;
+}
+
 static int MedicalSystem_set_status(lua_State* L)
 {
     MedicalSystem* instance = getInstance(L, 1);
@@ -1369,6 +1393,7 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
     registerGetter(L, "lastBloodPosition", MedicalSystem_get_lastBloodPosition);
     registerGetter(L, "anatomy", MedicalSystem_get_anatomy);
     registerGetter(L, "stats", MedicalSystem_get_stats);
+    registerGetter(L, "wounds", MedicalSystem_get_wounds);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -1414,6 +1439,7 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
     registerSetter(L, "lastBloodPosition", MedicalSystem_set_lastBloodPosition);
     registerSetter(L, "anatomy", MedicalSystem_set_anatomy);
     registerSetter(L, "stats", MedicalSystem_set_stats);
+    registerSetter(L, "wounds", MedicalSystem_set_wounds);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
     lua_pop(L, 1); // Pop the metatable off the stack
 
@@ -1425,6 +1451,7 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
     );
     LektorPtrBinding<Armour*>::registerBinding(L, "lektor<Armour*>", ArmourBinding::getMetatableName());
     LektorPtrBinding<MedicalSystem::HealthPartStatus*>::registerBinding(L, "lektor<HealthPartStatus*>", HealthPartStatusBinding::getMetatableName());
+    WoundFastArrayBinding::registerBinding(L, "Ogre::FastArray<Wound*>", nullptr);
 }
 
 // --- Static Methods ---

@@ -5,9 +5,11 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/DialogueBinding.h"
 #include "Bindings/Gui/GUIWindowBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 
 namespace KenshiLua
 {
+typedef OgreFastArrayPtrBinding<MyGUI::EditBox*> EditBoxFastArrayBinding;
 
 static DialogueWindow* getInstance(lua_State* L, int idx)
 {
@@ -149,7 +151,29 @@ static int DialogueWindow_get_conversationPCPortrait(lua_State* L)
     return 1;
 }
 
+static int DialogueWindow_get_replyTexts(lua_State* L)
+{
+    DialogueWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueWindow is nil");
+    return pushObject<EditBoxFastArrayBinding::ArrayType>(L, &instance->replyTexts, "Ogre::FastArray<MyGUI::EditBox*>");
+}
+
 // --- Setters for DialogueWindow ---
+static int DialogueWindow_set_replyTexts(lua_State* L)
+{
+    DialogueWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DialogueWindow is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->replyTexts.clear();
+        return 0;
+    }
+    auto* src = EditBoxFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set replyTexts must be Ogre::FastArray<MyGUI::EditBox*>");
+    instance->replyTexts = *src;
+    return 0;
+}
+
 static int DialogueWindow_set_dialogue(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
@@ -391,10 +415,14 @@ int DialogueWindowBinding::updatePanelsPosition(lua_State* L)
 }
 
 /*
+LIGHTUSERDATA DEPENDENCIES:
+  - EditBoxFastArrayBinding: MyGUI::EditBox* (unbound pointer element)
+*/
+
+/*
 Skipped properties needing manual binding:
   line 53: conversationTextColor (MyGUI::Colour) - unsupported type
   line 54: conversationTextSelectedColor (MyGUI::Colour) - unsupported type
-  line 55: replyTexts (Ogre::FastArray<MyGUI::EditBox*>) - unsupported type
 */
 
 int DialogueWindowBinding::gc(lua_State* L)
@@ -465,6 +493,7 @@ void DialogueWindowBinding::registerBinding(lua_State* L)
     registerGetter(L, "conversationPCSpeechPanel", DialogueWindow_get_conversationPCSpeechPanel);
     registerGetter(L, "conversationNPCPortrait", DialogueWindow_get_conversationNPCPortrait);
     registerGetter(L, "conversationPCPortrait", DialogueWindow_get_conversationPCPortrait);
+    registerGetter(L, "replyTexts", DialogueWindow_get_replyTexts);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -476,7 +505,10 @@ void DialogueWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "conversationPCPanelHeightDiffSpeechPanel", DialogueWindow_set_conversationPCPanelHeightDiffSpeechPanel);
     registerSetter(L, "conversationNPCPanelHeightDiffSpeechPanel", DialogueWindow_set_conversationNPCPanelHeightDiffSpeechPanel);
     registerSetter(L, "conversationPC", DialogueWindow_set_conversationPC);
+    registerSetter(L, "replyTexts", DialogueWindow_set_replyTexts);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    EditBoxFastArrayBinding::registerBinding(L, "Ogre::FastArray<MyGUI::EditBox*>", nullptr);
 
     // Wire up inheritance to GUIWindow
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

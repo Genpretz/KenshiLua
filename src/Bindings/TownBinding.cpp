@@ -16,9 +16,12 @@
 #include "Bindings/Building/UseableStuffBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 
 namespace KenshiLua
 {
+
+typedef OgreFastArrayPrimitiveBinding<hand> HandFastArrayBinding;
 
 static Town* getInstance(lua_State* L, int idx)
 {
@@ -1388,7 +1391,6 @@ LIGHTUSERDATA DEPENDENCIES:
 
 /*
 Skipped properties needing manual binding:
-  line 459: powerInList (Ogre::FastArray<hand>) - unsupported type
   line 471: _facilitesWeHaveHere (TagsClass<BuildingDesignation>) - unsupported type
   line 488: nestSpots (lektor<Town::NestSpot>) - unsupported type
 */
@@ -1466,12 +1468,7 @@ static int Town_get_powerInList(lua_State* L)
 {
     Town* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Town is nil");
-    lua_newtable(L);
-    for (size_t i = 0; i < instance->powerInList.size(); ++i) {
-        HandBinding::push(L, instance->powerInList[i]);
-        lua_rawseti(L, -2, (int)(i + 1));
-    }
-    return 1;
+    return pushObject<HandFastArrayBinding::ArrayType>(L, &instance->powerInList, "Ogre::FastArray<hand>");
 }
 
 
@@ -1573,14 +1570,14 @@ static int Town_set_powerInList(lua_State* L)
 {
     Town* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Town is nil");
-    if (!lua_istable(L, 2)) return luaL_error(L, "Expected table for powerInList");
-    instance->powerInList.clear();
-    lua_pushnil(L);
-    while (lua_next(L, 2) != 0) {
-        hand* h = checkObject<hand>(L, -1, HandBinding::getMetatableName());
-        instance->powerInList.push_back(*h);
-        lua_pop(L, 1);
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->powerInList.clear();
+        return 0;
     }
+    auto* src = HandFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set powerInList must be Ogre::FastArray<hand>");
+    instance->powerInList = *src;
     return 0;
 }
 
@@ -1811,6 +1808,8 @@ void TownBinding::registerBinding(lua_State* L)
     registerSetter(L, "powerOutList", Town_set_powerOutList);
     registerSetter(L, "tradeGoodsMults", Town_set_tradeGoodsMults);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    HandFastArrayBinding::registerBinding(L, "Ogre::FastArray<hand>");
 
     // Wire up inheritance to TownBase
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

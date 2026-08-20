@@ -2,10 +2,12 @@
 #include <kenshi/gui/CharacterTradingWindow.h>
 #include "CharacterTradingWindowBinding.h"
 #include "GUIWindowBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
+typedef OgreFastArrayPtrBinding<CharacterTradingBox*> CharacterTradingBoxFastArrayBinding;
 
 static CharacterTradingWindow* getInstance(lua_State* L, int idx)
 {
@@ -53,7 +55,28 @@ static int CharacterTradingWindow_get_selectedCountText(lua_State* L)
     return 1;
 }
 
+static int CharacterTradingWindow_get_tradingBoxes(lua_State* L)
+{
+    CharacterTradingWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterTradingWindow is nil");
+    return pushObject<CharacterTradingBoxFastArrayBinding::ArrayType>(L, &instance->tradingBoxes, "Ogre::FastArray<CharacterTradingBox*>");
+}
+
 // --- Setters for CharacterTradingWindow ---
+static int CharacterTradingWindow_set_tradingBoxes(lua_State* L)
+{
+    CharacterTradingWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterTradingWindow is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->tradingBoxes.clear();
+        return 0;
+    }
+    auto* src = CharacterTradingBoxFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set tradingBoxes must be Ogre::FastArray<CharacterTradingBox*>");
+    instance->tradingBoxes = *src;
+    return 0;
+}
 int CharacterTradingWindowBinding::show(lua_State* L)
 {
     CharacterTradingWindow* instance = getInstance(L, 1);
@@ -144,8 +167,8 @@ Skipped methods needing manual binding:
 */
 
 /*
-Skipped properties needing manual binding:
-  line 33: tradingBoxes (Ogre::FastArray<CharacterTradingBox*>) - unsupported type
+LIGHTUSERDATA DEPENDENCIES:
+  - CharacterTradingBoxFastArrayBinding: CharacterTradingBox* (unbound pointer element)
 */
 
 int CharacterTradingWindowBinding::gc(lua_State* L)
@@ -197,10 +220,14 @@ void CharacterTradingWindowBinding::registerBinding(lua_State* L)
     registerGetter(L, "confirmBtn", CharacterTradingWindow_get_confirmBtn);
     registerGetter(L, "currentTotalText", CharacterTradingWindow_get_currentTotalText);
     registerGetter(L, "selectedCountText", CharacterTradingWindow_get_selectedCountText);
+    registerGetter(L, "tradingBoxes", CharacterTradingWindow_get_tradingBoxes);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "tradingBoxes", CharacterTradingWindow_set_tradingBoxes);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    CharacterTradingBoxFastArrayBinding::registerBinding(L, "Ogre::FastArray<CharacterTradingBox*>", nullptr);
 
     // Wire up inheritance to GUIWindow
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

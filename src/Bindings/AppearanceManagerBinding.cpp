@@ -6,10 +6,13 @@
 #include "Bindings/FactionBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataCopyStandaloneBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
+typedef OgreFastArrayPtrBinding<GameData*> GameDataFastArrayBinding;
+typedef OgreFastArrayPtrBinding<AnimationData*> AnimationDataFastArrayBinding;
 
 static AppearanceManager* getInstanceSelf(lua_State* L, int idx)
 {
@@ -319,10 +322,68 @@ int AppearanceManagerBinding::getNormalMap_Starving(lua_State* L)
     return 1;
 }
 
+int AppearanceManagerBinding::getCharacterIdleAnimations(lua_State* L)
+{
+    auto* inst = getInstanceSelf(L, 1);
+    if (!inst) return luaL_error(L, "AppearanceManager is nil");
+    const Ogre::FastArray<AnimationData*>& result = inst->getCharacterIdleAnimations();
+    return pushObject<AnimationDataFastArrayBinding::ArrayType>(L, const_cast<Ogre::FastArray<AnimationData*>*>(&result), "Ogre::FastArray<AnimationData*>");
+}
+
+// --- Getters for AppearanceManager ---
+static int AppearanceManager_get_races(lua_State* L)
+{
+    auto* inst = getInstanceSelf(L, 1);
+    if (!inst) return luaL_error(L, "AppearanceManager is nil");
+    return pushObject<GameDataFastArrayBinding::ArrayType>(L, &inst->races, "Ogre::FastArray<GameData*>");
+}
+
+static int AppearanceManager_get_characterIdleAnimations(lua_State* L)
+{
+    auto* inst = getInstanceSelf(L, 1);
+    if (!inst) return luaL_error(L, "AppearanceManager is nil");
+    return pushObject<AnimationDataFastArrayBinding::ArrayType>(L, &inst->characterIdleAnimations, "Ogre::FastArray<AnimationData*>");
+}
+
+// --- Setters for AppearanceManager ---
+static int AppearanceManager_set_races(lua_State* L)
+{
+    auto* inst = getInstanceSelf(L, 1);
+    if (!inst) return luaL_error(L, "AppearanceManager is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        inst->races.clear();
+        return 0;
+    }
+    auto* src = GameDataFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set races must be Ogre::FastArray<GameData*>");
+    inst->races = *src;
+    return 0;
+}
+
+static int AppearanceManager_set_characterIdleAnimations(lua_State* L)
+{
+    auto* inst = getInstanceSelf(L, 1);
+    if (!inst) return luaL_error(L, "AppearanceManager is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        inst->characterIdleAnimations.clear();
+        return 0;
+    }
+    auto* src = AnimationDataFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set characterIdleAnimations must be Ogre::FastArray<AnimationData*>");
+    inst->characterIdleAnimations = *src;
+    return 0;
+}
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - AnimationDataFastArrayBinding: AnimationData* (unbound pointer element)
+*/
+
 /*
 Skipped methods needing manual binding:
   line 171: getEditorData(boost::unordered::unordered_map<RaceGroupData*, Ogre::FastArray<GameData*>...>&, ...) - complex boost container signature
-  line 179: getCharacterIdleAnimations() const - returns const Ogre::FastArray<AnimationData*>&
 */
 
 int AppearanceManagerBinding::gc(lua_State* L)
@@ -373,10 +434,25 @@ void AppearanceManagerBinding::registerBinding(lua_State* L)
         { "getNormalMap_Plain",             AppearanceManagerBinding::getNormalMap_Plain },
         { "getNormalMap_Muscle",            AppearanceManagerBinding::getNormalMap_Muscle },
         { "getNormalMap_Starving",          AppearanceManagerBinding::getNormalMap_Starving },
+        { "getCharacterIdleAnimations",     AppearanceManagerBinding::getCharacterIdleAnimations },
         { 0, 0 }
     };
 
     registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, AppearanceManagerBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    registerGetter(L, "races", AppearanceManager_get_races);
+    registerGetter(L, "characterIdleAnimations", AppearanceManager_get_characterIdleAnimations);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L); // Create __setters table
+    registerSetter(L, "races", AppearanceManager_set_races);
+    registerSetter(L, "characterIdleAnimations", AppearanceManager_set_characterIdleAnimations);
+    lua_setfield(L, -2, "__setters");
+
+    GameDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<GameData*>", GameDataBinding::getMetatableName());
+    AnimationDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<AnimationData*>", nullptr);
 
     lua_pop(L, 1); // Pop metatable
 

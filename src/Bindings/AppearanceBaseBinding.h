@@ -84,5 +84,10 @@ public:
     static int updateOverlap(lua_State* L);
     static int updateCharaterTexture(lua_State* L);
     static int getCharacterHeightSpeedMultiplier(lua_State* L);
+    static int attachItem(lua_State* L);
+    static int detachItem(lua_State* L);
+    static int getVertexPosition(lua_State* L);
+    static int getRandomVertexPosition(lua_State* L);
+    static int chooseBodyMesh(lua_State* L);
 };
 }

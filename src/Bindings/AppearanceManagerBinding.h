@@ -46,5 +46,6 @@ public:
     static int getNormalMap_Plain(lua_State* L);
     static int getNormalMap_Muscle(lua_State* L);
     static int getNormalMap_Starving(lua_State* L);
+    static int getCharacterIdleAnimations(lua_State* L);
 };
 } // namespace KenshiLua

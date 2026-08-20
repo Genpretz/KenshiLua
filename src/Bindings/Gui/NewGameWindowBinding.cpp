@@ -5,9 +5,12 @@
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Gui/GUIWindowBinding.h"
 #include "Bindings/Gui/NewGameOptionsWindowBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 
 namespace KenshiLua
 {
+typedef OgreFastArrayPtrBinding<GameData*> GameDataFastArrayBinding;
 
 static NewGameWindow* getInstance(lua_State* L, int idx)
 {
@@ -45,7 +48,29 @@ static int NewGameWindow_get_newGameOptions(lua_State* L)
     return pushObject<NewGameOptionsWindow>(L, instance->newGameOptions, NewGameOptionsWindowBinding::getMetatableName());
 }
 
+static int NewGameWindow_get_startsData(lua_State* L)
+{
+    NewGameWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NewGameWindow is nil");
+    return pushObject<GameDataFastArrayBinding::ArrayType>(L, &instance->startsData, "Ogre::FastArray<GameData*>");
+}
+
 // --- Setters for NewGameWindow ---
+static int NewGameWindow_set_startsData(lua_State* L)
+{
+    NewGameWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NewGameWindow is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->startsData.clear();
+        return 0;
+    }
+    auto* src = GameDataFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set startsData must be Ogre::FastArray<GameData*>");
+    instance->startsData = *src;
+    return 0;
+}
+
 static int NewGameWindow_set_currentStart(lua_State* L)
 {
     NewGameWindow* instance = getInstance(L, 1);
@@ -194,11 +219,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - NewGameWindow_get_startNameTextBox: MyGUI::TextBox* (unbound pointer)
 */
 
-/*
-Skipped properties needing manual binding:
-  line 40: startsData (Ogre::FastArray<GameData*>) - unsupported type
-*/
-
 int NewGameWindowBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -249,13 +269,17 @@ void NewGameWindowBinding::registerBinding(lua_State* L)
     registerGetter(L, "startInfo", NewGameWindow_get_startInfo);
     registerGetter(L, "startNameTextBox", NewGameWindow_get_startNameTextBox);
     registerGetter(L, "newGameOptions", NewGameWindow_get_newGameOptions);
+    registerGetter(L, "startsData", NewGameWindow_get_startsData);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "currentStart", NewGameWindow_set_currentStart);
     registerSetter(L, "startInfo", NewGameWindow_set_startInfo);
     registerSetter(L, "newGameOptions", NewGameWindow_set_newGameOptions);
+    registerSetter(L, "startsData", NewGameWindow_set_startsData);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    GameDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<GameData*>", GameDataBinding::getMetatableName());
 
     // Wire up inheritance to GUIWindow
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

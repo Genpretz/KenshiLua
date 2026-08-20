@@ -16,12 +16,15 @@
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/BoostUnorderedBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 
 namespace KenshiLua
 {
 
 typedef BoostUnorderedMapBinding<std::string, DatapanelGUI*> MainBarDatapanelsMapBinding;
 typedef OgreUnorderedMapBinding<hand, PortraitData*> MainBarPortraitsMapBinding;
+typedef OgreFastArrayPtrBinding<MyGUI::Button*> SpeedButtonsFastArrayBinding;
+typedef OgreFastArrayValueBinding<MainTabPortraitPlatoon> TabPortraitsFastArrayBinding;
 
 static MainBarGUI* getInstance(lua_State* L, int idx)
 {
@@ -294,7 +297,51 @@ static int MainBarGUI_get_portraits(lua_State* L)
     return pushObject<MainBarPortraitsMapBinding::MapType>(L, &instance->portraits, MainBarPortraitsMapBinding::getMetatableName());
 }
 
+static int MainBarGUI_get_speedButtons(lua_State* L)
+{
+    MainBarGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainBarGUI is nil");
+    return pushObject<SpeedButtonsFastArrayBinding::ArrayType>(L, &instance->speedButtons, "Ogre::FastArray<MyGUI::Button*>");
+}
+
+static int MainBarGUI_get_tabPortraits(lua_State* L)
+{
+    MainBarGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainBarGUI is nil");
+    return pushObject<TabPortraitsFastArrayBinding::ArrayType>(L, &instance->tabPortraits, "Ogre::FastArray<MainTabPortraitPlatoon>");
+}
+
 // --- Setters for MainBarGUI ---
+static int MainBarGUI_set_speedButtons(lua_State* L)
+{
+    MainBarGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainBarGUI is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->speedButtons.clear();
+        return 0;
+    }
+    auto* src = SpeedButtonsFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set speedButtons must be Ogre::FastArray<MyGUI::Button*>");
+    instance->speedButtons = *src;
+    return 0;
+}
+
+static int MainBarGUI_set_tabPortraits(lua_State* L)
+{
+    MainBarGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MainBarGUI is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->tabPortraits.clear();
+        return 0;
+    }
+    auto* src = TabPortraitsFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set tabPortraits must be Ogre::FastArray<MainTabPortraitPlatoon>");
+    instance->tabPortraits = *src;
+    return 0;
+}
+
 static int MainBarGUI_set_datapanels(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
@@ -988,10 +1035,8 @@ LIGHTUSERDATA DEPENDENCIES:
 /*
 Skipped properties needing manual binding:
   line 120: datapanels (boost::unordered::unordered_map<std::string, DatapanelGUI*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, DatapanelGUI*>, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 128: speedButtons (Ogre::FastArray<MyGUI::Button*>) - unsupported type
   line 137: extendedInfoPanelShow (MyGUI::types::TPoint<int>) - unsupported type
   line 138: extendedInfoPanelHide (MyGUI::types::TPoint<int>) - unsupported type
-  line 150: tabPortraits (Ogre::FastArray<MainTabPortraitPlatoon>) - unsupported type
   line 152: portraits (ogre_unordered_map<hand, PortraitData*>::type) - unsupported type
   line 153: portraitsIndices (boost::unordered::unordered_map<PortraitData*, std::pair<PortraitMainItemBox*, unsigned char>, boost::hash<PortraitData*>, std::equal_to<PortraitData*>, Ogre::STLAllocator<std::pair<PortraitData*const, std::pair<PortraitMainItemBox*, unsigned char> >, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 156: toolTipBasePosition (MyGUI::types::TPoint<int>) - unsupported type
@@ -1015,6 +1060,8 @@ void MainBarGUIBinding::registerBinding(lua_State* L)
 {
     MainBarDatapanelsMapBinding::registerBinding(L, "boost::unordered_map<std::string, DatapanelGUI*>", nullptr, DatapanelGUIBinding::getMetatableName());
     MainBarPortraitsMapBinding::registerBinding(L, "ogre_unordered_map<hand, PortraitData*>", HandBinding::getMetatableName(), PortraitDataBinding::getMetatableName());
+    SpeedButtonsFastArrayBinding::registerBinding(L, "Ogre::FastArray<MyGUI::Button*>", nullptr);
+    TabPortraitsFastArrayBinding::registerBinding(L, "Ogre::FastArray<MainTabPortraitPlatoon>", MainTabPortraitPlatoonBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       MainBarGUIBinding::gc },
@@ -1123,6 +1170,8 @@ void MainBarGUIBinding::registerBinding(lua_State* L)
     registerGetter(L, "toolTip", MainBarGUI_get_toolTip);
     registerGetter(L, "pausePanel", MainBarGUI_get_pausePanel);
     registerGetter(L, "loadingPanel", MainBarGUI_get_loadingPanel);
+    registerGetter(L, "speedButtons", MainBarGUI_get_speedButtons);
+    registerGetter(L, "tabPortraits", MainBarGUI_get_tabPortraits);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -1145,6 +1194,8 @@ void MainBarGUIBinding::registerBinding(lua_State* L)
     registerSetter(L, "portraits", MainBarGUI_set_portraits);
     registerSetter(L, "portraitsUpdating", MainBarGUI_set_portraitsUpdating);
     registerSetter(L, "toolTip", MainBarGUI_set_toolTip);
+    registerSetter(L, "speedButtons", MainBarGUI_set_speedButtons);
+    registerSetter(L, "tabPortraits", MainBarGUI_set_tabPortraits);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to GUIWindow

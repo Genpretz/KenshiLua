@@ -8,9 +8,14 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/GameDataCopyStandaloneBinding.h"
 #include "Bindings/Gui/OpenSaveFileDialogBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 
 namespace KenshiLua
 {
+typedef OgreFastArrayPtrBinding<AnimationData*> AnimationDataFastArrayBinding;
+typedef OgreFastArrayPtrBinding<Character*> CharacterFastArrayBinding;
+typedef OgreFastArrayPtrBinding<RaceGroupData*> RaceGroupDataFastArrayBinding;
+typedef OgreFastArrayValueBinding<Ogre::Vector3> Vector3FastArrayBinding;
 
 static CharacterEditWindow* getInstance(lua_State* L, int idx)
 {
@@ -389,7 +394,95 @@ static int CharacterEditWindow_get_requestUpdateLiveObject(lua_State* L)
     return 1;
 }
 
+static int CharacterEditWindow_get_idleAnimations(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    return pushObject<AnimationDataFastArrayBinding::ArrayType>(L, &instance->idleAnimations, "Ogre::FastArray<AnimationData*>");
+}
+
+static int CharacterEditWindow_get_characters(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    return pushObject<CharacterFastArrayBinding::ArrayType>(L, &instance->characters, "Ogre::FastArray<Character*>");
+}
+
+static int CharacterEditWindow_get_racesGroups(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    return pushObject<RaceGroupDataFastArrayBinding::ArrayType>(L, &instance->racesGroups, "Ogre::FastArray<RaceGroupData*>");
+}
+
+static int CharacterEditWindow_get_initialPositions(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    return pushObject<Vector3FastArrayBinding::ArrayType>(L, &instance->initialPositions, "Ogre::FastArray<Ogre::Vector3>");
+}
+
 // --- Setters for CharacterEditWindow ---
+static int CharacterEditWindow_set_idleAnimations(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->idleAnimations.clear();
+        return 0;
+    }
+    auto* src = AnimationDataFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set idleAnimations must be Ogre::FastArray<AnimationData*>");
+    instance->idleAnimations = *src;
+    return 0;
+}
+
+static int CharacterEditWindow_set_characters(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->characters.clear();
+        return 0;
+    }
+    auto* src = CharacterFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set characters must be Ogre::FastArray<Character*>");
+    instance->characters = *src;
+    return 0;
+}
+
+static int CharacterEditWindow_set_racesGroups(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->racesGroups.clear();
+        return 0;
+    }
+    auto* src = RaceGroupDataFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set racesGroups must be Ogre::FastArray<RaceGroupData*>");
+    instance->racesGroups = *src;
+    return 0;
+}
+
+static int CharacterEditWindow_set_initialPositions(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->initialPositions.clear();
+        return 0;
+    }
+    auto* src = Vector3FastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set initialPositions must be Ogre::FastArray<Ogre::Vector3>");
+    instance->initialPositions = *src;
+    return 0;
+}
+
 static int CharacterEditWindow_set_statsDataPanel(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
@@ -722,20 +815,22 @@ Skipped methods needing manual binding:
 */
 
 /*
+LIGHTUSERDATA DEPENDENCIES:
+  - AnimationDataFastArrayBinding: AnimationData* (unbound pointer element)
+  - RaceGroupDataFastArrayBinding: RaceGroupData* (unbound pointer element)
+*/
+
+/*
 Skipped properties needing manual binding:
   line 98: buttonsCategories (ogre_unordered_map<AppearanceManager::DataCategory::Enum, MyGUI::Button*>::type) - unsupported type
   line 107: sliderSize (MyGUI::types::TSize<int>) - unsupported type
   line 108: multiSliderSize (MyGUI::types::TSize<int>) - unsupported type
   line 109: listScrollBarSize (MyGUI::types::TSize<int>) - unsupported type
-  line 130: idleAnimations (Ogre::FastArray<AnimationData*>) - unsupported type
-  line 131: characters (Ogre::FastArray<Character*>) - unsupported type
   line 134: charactersAppearanceByRace (boost::unordered::unordered_map<Character*, boost::unordered::unordered_map<std::pair<GameData*, enum AppearanceManager::Gender::Enum>, GameDataCopyStandalone*, boost::hash<std::pair<GameData*, enum AppearanceManager::Gender::Enum> >, std::equal_to<std::pair<GameData*, enum AppearanceManager::Gender::Enum> >, Ogre::STLAllocator<std::pair<std::pair<GameData*, enum AppearanceManager::Gender::Enum> const, GameDataCopyStandalone*>, Ogre::GeneralAllocPolicy > >, boost::hash<Character*>, std::equal_to<Character*>, Ogre::STLAllocator<std::pair<Character*const, boost::unordered::unordered_map<std::pair<GameData*, enum AppearanceManager::Gender::Enum>, GameDataCopyStandalone*, boost::hash<std::pair<GameData*, enum AppearanceManager::Gender::Enum> >, std::equal_to<std::pair<GameData*, enum AppearanceManager::Gender::Enum> >, Ogre::STLAllocator<std::pair<std::pair<GameData*, enum AppearanceManager::Gender::Enum> const, GameDataCopyStandalone*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 137: races (boost::unordered::unordered_map<RaceGroupData*, Ogre::FastArray<GameData*>, boost::hash<RaceGroupData*>, std::equal_to<RaceGroupData*>, Ogre::STLAllocator<std::pair<RaceGroupData*const, Ogre::FastArray<GameData*> >, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 138: racesGroups (Ogre::FastArray<RaceGroupData*>) - unsupported type
   line 139: raceAppearanceData (boost::unordered::unordered_map<GameData*, ogre_unordered_map<AppearanceManager::Gender::Enum, AppearanceManager::AppearanceData>::type, boost::hash<GameData*>, std::equal_to<GameData*>, Ogre::STLAllocator<std::pair<GameData*const, ogre_unordered_map<AppearanceManager::Gender::Enum, AppearanceManager::AppearanceData>::type >, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 140: poses (boost::unordered::unordered_map<std::string, Ogre::Pose*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::Pose*>, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 141: posesCharactersValues (boost::unordered::unordered_map<Character*, boost::unordered::unordered_map<std::string, float, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, float>, Ogre::GeneralAllocPolicy > >, boost::hash<Character*>, std::equal_to<Character*>, Ogre::STLAllocator<std::pair<Character*const, boost::unordered::unordered_map<std::string, float, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, float>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 143: initialPositions (Ogre::FastArray<Ogre::Vector3>) - unsupported type
 */
 
 int CharacterEditWindowBinding::gc(lua_State* L)
@@ -838,6 +933,10 @@ void CharacterEditWindowBinding::registerBinding(lua_State* L)
     registerGetter(L, "workspace", CharacterEditWindow_get_workspace);
     registerGetter(L, "platform", CharacterEditWindow_get_platform);
     registerGetter(L, "requestUpdateLiveObject", CharacterEditWindow_get_requestUpdateLiveObject);
+    registerGetter(L, "idleAnimations", CharacterEditWindow_get_idleAnimations);
+    registerGetter(L, "characters", CharacterEditWindow_get_characters);
+    registerGetter(L, "racesGroups", CharacterEditWindow_get_racesGroups);
+    registerGetter(L, "initialPositions", CharacterEditWindow_get_initialPositions);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -857,7 +956,16 @@ void CharacterEditWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "currentCharacterIdx", CharacterEditWindow_set_currentCharacterIdx);
     registerSetter(L, "showNamesOption", CharacterEditWindow_set_showNamesOption);
     registerSetter(L, "requestUpdateLiveObject", CharacterEditWindow_set_requestUpdateLiveObject);
+    registerSetter(L, "idleAnimations", CharacterEditWindow_set_idleAnimations);
+    registerSetter(L, "characters", CharacterEditWindow_set_characters);
+    registerSetter(L, "racesGroups", CharacterEditWindow_set_racesGroups);
+    registerSetter(L, "initialPositions", CharacterEditWindow_set_initialPositions);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    AnimationDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<AnimationData*>", nullptr);
+    CharacterFastArrayBinding::registerBinding(L, "Ogre::FastArray<Character*>", CharacterBinding::getMetatableName());
+    RaceGroupDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<RaceGroupData*>", nullptr);
+    Vector3FastArrayBinding::registerBinding(L, "Ogre::FastArray<Ogre::Vector3>");
 
     // Wire up inheritance to wraps::BaseLayout
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

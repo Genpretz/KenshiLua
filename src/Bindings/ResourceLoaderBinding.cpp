@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "kenshi\ResourceLoader.h"
 #include "ResourceLoaderBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
+typedef OgreFastArrayPtrBinding<ResourceLoader::TextureLoadData*> TextureLoadDataFastArrayBinding;
 
 static ResourceLoader* getResourceLoaderInstance(lua_State* L, int idx)
 {
@@ -52,6 +54,20 @@ static int ResourceLoader_get_texturesLoadedMutex(lua_State* L)
     return 1;
 }
 
+static int ResourceLoader_get_texturesLoading(lua_State* L)
+{
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResourceLoader is nil");
+    return pushObject<TextureLoadDataFastArrayBinding::ArrayType>(L, &instance->texturesLoading, "Ogre::FastArray<TextureLoadData*>");
+}
+
+static int ResourceLoader_get_texturesLoaded(lua_State* L)
+{
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResourceLoader is nil");
+    return pushObject<TextureLoadDataFastArrayBinding::ArrayType>(L, &instance->texturesLoaded, "Ogre::FastArray<TextureLoadData*>");
+}
+
 // --- Setters for ResourceLoader ---
 static int ResourceLoader_set_running(lua_State* L)
 {
@@ -74,6 +90,36 @@ static int ResourceLoader_set_texturesLoadingMutex(lua_State* L)
 static int ResourceLoader_set_texturesLoadedMutex(lua_State* L)
 {
     return luaL_error(L, "Read-only or unsupported setter type for texturesLoadedMutex");
+}
+
+static int ResourceLoader_set_texturesLoading(lua_State* L)
+{
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResourceLoader is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->texturesLoading.clear();
+        return 0;
+    }
+    auto* src = TextureLoadDataFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set texturesLoading must be Ogre::FastArray<TextureLoadData*>");
+    instance->texturesLoading = *src;
+    return 0;
+}
+
+static int ResourceLoader_set_texturesLoaded(lua_State* L)
+{
+    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResourceLoader is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->texturesLoaded.clear();
+        return 0;
+    }
+    auto* src = TextureLoadDataFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set texturesLoaded must be Ogre::FastArray<TextureLoadData*>");
+    instance->texturesLoaded = *src;
+    return 0;
 }
 
 int ResourceLoaderBinding::updateMT(lua_State* L)
@@ -169,6 +215,11 @@ Skipped methods needing manual binding:
 */
 
 /*
+LIGHTUSERDATA DEPENDENCIES:
+  - TextureLoadDataFastArrayBinding: TextureLoadData* (unbound pointer element)
+*/
+
+/*
 Skipped properties needing manual binding:
   line 148: activeMeshLoaders (ogre_unordered_map<unsigned __int64, ResourceLoadRequestMesh*>::type) - unsupported type
   line 149: abortedMeshLoaders (ogre_unordered_map<unsigned __int64, ResourceLoadRequestMesh*>::type) - unsupported type
@@ -176,8 +227,6 @@ Skipped properties needing manual binding:
   line 151: loadingMeshQueue (std::list<ResourceLoadRequestMesh*, Ogre::STLAllocator<ResourceLoadRequestMesh*, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 153: activeTextureLoaders (boost::unordered::unordered_map<TextureLoadData*, Ogre::FastArray<ResourceLoadRequestTexture*>, boost::hash<TextureLoadData*>, std::equal_to<TextureLoadData*>, Ogre::STLAllocator<std::pair<TextureLoadData*const, Ogre::FastArray<ResourceLoadRequestTexture*> >, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 154: texturesToLoad (ogre_unordered_set<TextureLoadData*>::type) - unsupported type
-  line 157: texturesLoading (Ogre::FastArray<TextureLoadData*>) - unsupported type
-  line 158: texturesLoaded (Ogre::FastArray<TextureLoadData*>) - unsupported type
   line 159: manualTexturesLoaded (boost::unordered::unordered_map<Ogre::SharedPtr<Ogre::Texture>, float, boost::hash<Ogre::SharedPtr<Ogre::Texture> >, std::equal_to<Ogre::SharedPtr<Ogre::Texture> >, Ogre::STLAllocator<std::pair<Ogre::SharedPtr<Ogre::Texture> const, float>, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 160: textureUnitsLoading (ogre_unordered_set<Ogre::TextureUnitState*>::type) - unsupported type
 */
@@ -235,6 +284,10 @@ void ResourceLoaderBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "texturesLoadingMutex");
     lua_pushcfunction(L, ResourceLoader_get_texturesLoadedMutex);
     lua_setfield(L, -2, "texturesLoadedMutex");
+    lua_pushcfunction(L, ResourceLoader_get_texturesLoading);
+    lua_setfield(L, -2, "texturesLoading");
+    lua_pushcfunction(L, ResourceLoader_get_texturesLoaded);
+    lua_setfield(L, -2, "texturesLoaded");
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -246,7 +299,13 @@ void ResourceLoaderBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "texturesLoadingMutex");
     lua_pushcfunction(L, ResourceLoader_set_texturesLoadedMutex);
     lua_setfield(L, -2, "texturesLoadedMutex");
+    lua_pushcfunction(L, ResourceLoader_set_texturesLoading);
+    lua_setfield(L, -2, "texturesLoading");
+    lua_pushcfunction(L, ResourceLoader_set_texturesLoaded);
+    lua_setfield(L, -2, "texturesLoaded");
     lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    TextureLoadDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<TextureLoadData*>", nullptr);
 
     // Wire up inheritance to Ogre::ResourceBackgroundQueue::Listener
     // setMetatableParent(L, ResourceLoaderBinding::getMetatableName(), Ogre::ResourceBackgroundQueue::ListenerBinding::getMetatableName());

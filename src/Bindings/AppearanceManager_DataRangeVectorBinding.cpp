@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "Bindings/AppearanceManager_DataRangeVectorBinding.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
 {
+typedef OgreFastArrayValueBinding<Ogre::Vector3> Vector3FastArrayBinding;
 
 static AppearanceManager::DataRangeVector* getInstance(lua_State* L, int idx)
 {
@@ -159,10 +161,27 @@ static int DataRangeVector_set_random_variation(lua_State* L)
     return 0;
 }
 
-/*
-Skipped properties needing manual binding:
-  line 68: values (Ogre::FastArray<Ogre::Vector3>) - accessed via addValue/getValue/getValueIndex/size
-*/
+static int DataRangeVector_get_values(lua_State* L)
+{
+    auto* inst = getInstance(L, 1);
+    if (!inst) return luaL_error(L, "AppearanceManager::DataRangeVector is nil");
+    return pushObject<Vector3FastArrayBinding::ArrayType>(L, &inst->values, "Ogre::FastArray<Ogre::Vector3>");
+}
+
+static int DataRangeVector_set_values(lua_State* L)
+{
+    auto* inst = getInstance(L, 1);
+    if (!inst) return luaL_error(L, "AppearanceManager::DataRangeVector is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        inst->values.clear();
+        return 0;
+    }
+    auto* src = Vector3FastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set values must be Ogre::FastArray<Ogre::Vector3>");
+    inst->values = *src;
+    return 0;
+}
 
 int AppearanceManager_DataRangeVectorBinding::gc(lua_State* L)
 {
@@ -210,6 +229,7 @@ void AppearanceManager_DataRangeVectorBinding::registerBinding(lua_State* L)
     registerGetter(L, "mid", DataRangeVector_get_mid);
     registerGetter(L, "random_group", DataRangeVector_get_random_group);
     registerGetter(L, "random_variation", DataRangeVector_get_random_variation);
+    registerGetter(L, "values", DataRangeVector_get_values);
     lua_setfield(L, -2, "__getters");
 
     lua_newtable(L); // __setters
@@ -219,7 +239,10 @@ void AppearanceManager_DataRangeVectorBinding::registerBinding(lua_State* L)
     registerSetter(L, "mid", DataRangeVector_set_mid);
     registerSetter(L, "random_group", DataRangeVector_set_random_group);
     registerSetter(L, "random_variation", DataRangeVector_set_random_variation);
+    registerSetter(L, "values", DataRangeVector_set_values);
     lua_setfield(L, -2, "__setters");
+
+    Vector3FastArrayBinding::registerBinding(L, "Ogre::FastArray<Ogre::Vector3>");
 
     lua_pop(L, 1);
 }

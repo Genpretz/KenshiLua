@@ -10,6 +10,7 @@
 #include "Bindings/Gui/MapMarkerCharacterBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/Util/OgreFastArrayBinding.h"
 
 namespace KenshiLua
 {
@@ -17,6 +18,7 @@ namespace KenshiLua
 typedef OgreUnorderedMapBinding<hand, MapScreen::MapMarkerTown*> MapMarkersTownsMapBinding;
 typedef OgreUnorderedMapBinding<hand, MapScreen::MapMarkerCharacter*> MapMarkersCharactersMapBinding;
 typedef OgreUnorderedSetBinding<hand> SquadsListSetBinding;
+typedef OgreFastArrayPrimitiveBinding<hand> HandFastArrayBinding;
 
 static MapScreen* getInstance(lua_State* L, int idx)
 {
@@ -232,7 +234,29 @@ static int MapScreen_get_squadsList(lua_State* L)
     return pushObject<SquadsListSetBinding::SetType>(L, &instance->squadsList, SquadsListSetBinding::getMetatableName());
 }
 
+static int MapScreen_get_mapMarkersTownsNew(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    return pushObject<HandFastArrayBinding::ArrayType>(L, &instance->mapMarkersTownsNew, "Ogre::FastArray<hand>");
+}
+
 // --- Setters for MapScreen ---
+static int MapScreen_set_mapMarkersTownsNew(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->mapMarkersTownsNew.clear();
+        return 0;
+    }
+    auto* src = HandFastArrayBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set mapMarkersTownsNew must be Ogre::FastArray<hand>");
+    instance->mapMarkersTownsNew = *src;
+    return 0;
+}
+
 static int MapScreen_set_mapMarkersTowns(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
@@ -655,7 +679,6 @@ LIGHTUSERDATA DEPENDENCIES:
 
 /*
 Skipped properties needing manual binding:
-  line 103: mapMarkersTownsNew (Ogre::FastArray<hand>) - unsupported type
   line 125: roads (lektor<MapScreen::MapRoad*>) - unsupported type
 */
 
@@ -676,6 +699,7 @@ void MapScreenBinding::registerBinding(lua_State* L)
     MapMarkersTownsMapBinding::registerBinding(L, "ogre_unordered_map<hand, MapMarkerTown*>", HandBinding::getMetatableName(), MapMarkerTownBinding::getMetatableName());
     MapMarkersCharactersMapBinding::registerBinding(L, "ogre_unordered_map<hand, MapMarkerCharacter*>", HandBinding::getMetatableName(), MapMarkerCharacterBinding::getMetatableName());
     SquadsListSetBinding::registerBinding(L, "ogre_unordered_set<hand>", HandBinding::getMetatableName());
+    HandFastArrayBinding::registerBinding(L, "Ogre::FastArray<hand>");
 
     static const luaL_Reg meta[] = {
         { "__gc",       MapScreenBinding::gc },
@@ -746,6 +770,7 @@ void MapScreenBinding::registerBinding(lua_State* L)
     registerGetter(L, "worldSize", MapScreen_get_worldSize);
     registerGetter(L, "zoomCenterOffset", MapScreen_get_zoomCenterOffset);
     registerGetter(L, "worldBounds", MapScreen_get_worldBounds);
+    registerGetter(L, "mapMarkersTownsNew", MapScreen_get_mapMarkersTownsNew);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -768,6 +793,7 @@ void MapScreenBinding::registerBinding(lua_State* L)
     registerSetter(L, "worldSize", MapScreen_set_worldSize);
     registerSetter(L, "zoomCenterOffset", MapScreen_set_zoomCenterOffset);
     registerSetter(L, "worldBounds", MapScreen_set_worldBounds);
+    registerSetter(L, "mapMarkersTownsNew", MapScreen_set_mapMarkersTownsNew);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
