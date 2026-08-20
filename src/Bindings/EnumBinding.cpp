@@ -59,7 +59,7 @@ namespace KenshiLua
 
     void registerMeshDataLookup(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "FRONT", MeshDataLookup::Dir::FRONT);
         setEnum(L, "BACK", MeshDataLookup::Dir::BACK);
@@ -74,7 +74,7 @@ namespace KenshiLua
 
     void registerAppearanceManagerDataCategory(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 5);
 
         setEnum(L, "None", AppearanceManager::DataCategory::None);
         setEnum(L, "Face", AppearanceManager::DataCategory::Face);
@@ -82,14 +82,12 @@ namespace KenshiLua
         setEnum(L, "Hair", AppearanceManager::DataCategory::Hair);
         setEnum(L, "Personality", AppearanceManager::DataCategory::Personality);
        
-        lua_pushvalue(L, -1); // duplicate the table
-        lua_setglobal(L, "AppearanceManager_DataCategory"); // original
-        lua_setglobal(L, "AppearanceDataCategory"); // alias for convenience
+        lua_setglobal(L, "AppearanceManager_DataCategory");
     }
 
     void registerAppearanceManagerGender(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 2);
 
         setEnum(L, "MALE", AppearanceManager::Gender::MALE);
         setEnum(L, "FEMALE", AppearanceManager::Gender::FEMALE);
@@ -105,7 +103,7 @@ namespace KenshiLua
 
     void registerCrimeEnum(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 36);
     // original
         setEnum(L, "CRIME_NONE", CrimeEnum::CRIME_NONE);
         setEnum(L, "CRIME_ENSLAVING", CrimeEnum::CRIME_ENSLAVING);
@@ -156,7 +154,7 @@ namespace KenshiLua
 
         void registerBuildingDesignation(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 24);
 
     // original
         setEnum(L, "BD_NONE", BuildingDesignation::BD_NONE);
@@ -190,7 +188,7 @@ namespace KenshiLua
 
     void registerBuildingClassType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 28);
     // original
         setEnum(L, "BCTYPE_FLUFF", BuildingClassType::BCTYPE_FLUFF);
         setEnum(L, "BCTYPE_DOOR", BuildingClassType::BCTYPE_DOOR);
@@ -227,7 +225,7 @@ namespace KenshiLua
 
     void registerBuildingPlacementGroundType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "ANY", BuildingPlacementGroundType::Enum::ANY);
         setEnum(L, "LAND", BuildingPlacementGroundType::Enum::LAND);
@@ -238,7 +236,7 @@ namespace KenshiLua
 
     void registerPreviewBuildingPlacementResult(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
     // original
         setEnum(L, "PLACEMENT_VALID", PreviewBuilding::PlacementResult::PLACEMENT_VALID);
         setEnum(L, "PLACEMENT_OUTSIDE", PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE);
@@ -253,7 +251,7 @@ namespace KenshiLua
 
     void registerPreviewBuildingClassType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 4);
     // original
         setEnum(L, "PREVIEW_NORMAL", PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL);
         setEnum(L, "PREVIEW_WALL", PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL);
@@ -270,7 +268,7 @@ namespace KenshiLua
 
     void registerDoorState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 8);
     // original
         setEnum(L, "DOORSTATE_CLOSED", DOORSTATE_CLOSED);
         setEnum(L, "DOORSTATE_OPEN", DOORSTATE_OPEN);
@@ -287,7 +285,7 @@ namespace KenshiLua
 
     void registerDoorStateInitial(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 4);
 
         setEnum(L, "CLOSED", DoorStuff::CLOSED);
         setEnum(L, "OPEN", DoorStuff::OPEN);
@@ -303,7 +301,7 @@ namespace KenshiLua
 
     void registerCropType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 8);
     // original
         setEnum(L, "CROP_NULL", CROP_NULL);
         setEnum(L, "CROP_GREEN", CROP_GREEN);
@@ -324,7 +322,7 @@ namespace KenshiLua
 
     void registerProductionState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 8);
     // original
         setEnum(L, "PRODUCTION_STARVED", ProductionBuilding::PRODUCTION_STARVED);
         setEnum(L, "PRODUCTION_FULL", ProductionBuilding::PRODUCTION_FULL);
@@ -345,7 +343,7 @@ namespace KenshiLua
 
     void registerWallSectionLinkType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 10);
     // original    
         setEnum(L, "WALLTYPE_NORMAL", WALLTYPE_NORMAL);
         setEnum(L, "WALLTYPE_CONNECTOR", WALLTYPE_CONNECTOR);
@@ -368,7 +366,7 @@ namespace KenshiLua
 
     void registerProneState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 10);
     // original
         setEnum(L, "PS_NORMAL", ProneState::PS_NORMAL);
         setEnum(L, "PS_STAYING_LOW", ProneState::PS_STAYING_LOW);
@@ -387,7 +385,7 @@ namespace KenshiLua
 
     void registerWaterState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 8);
     // original
         setEnum(L, "NO_WATER", WaterState::Enum::NO_WATER);
         setEnum(L, "VERY_SHALLOW_WATER", WaterState::Enum::VERY_SHALLOW_WATER);
@@ -404,7 +402,7 @@ namespace KenshiLua
 
     void registerRagdollPart(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 11);
 
         setEnum(L, "NONE", RagdollPart::Enum::NONE);
         setEnum(L, "WHOLE", RagdollPart::Enum::WHOLE);
@@ -423,7 +421,7 @@ namespace KenshiLua
 
     void registerCharacterPerceptionTagsShortTerm(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 16);
     // orignal
         setEnum(L, "ST_NONE", CharacterPerceptionTags_ShortTerm::ST_NONE);
         setEnum(L, "ST_INTRUDER", CharacterPerceptionTags_ShortTerm::ST_INTRUDER);
@@ -448,7 +446,7 @@ namespace KenshiLua
 
         void registerCharacterPerceptionTagsLongTerm(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 24);
 
     // original
         setEnum(L, "LT_NONE", CharacterPerceptionTags_LongTerm::LT_NONE);
@@ -482,7 +480,7 @@ namespace KenshiLua
 
     void registerSoundRange(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
     // original
         setEnum(L, "SOUNDRANGE_SHORT", SoundRange::SOUNDRANGE_SHORT);
         setEnum(L, "SOUNDRANGE_LONG", SoundRange::SOUNDRANGE_LONG);
@@ -497,7 +495,7 @@ namespace KenshiLua
 
     void registerSquadMemberType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 10);
     // original
         setEnum(L, "SQUAD_1", SquadMemberType::SQUAD_1);
         setEnum(L, "SQUAD_2", SquadMemberType::SQUAD_2);
@@ -516,7 +514,7 @@ namespace KenshiLua
 
     void registerCharacterMessage(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 1);
 
         setEnum(L, "ATTACKING_MELEE", ATTACKING_MELEE);
 
@@ -525,7 +523,7 @@ namespace KenshiLua
 
     void registerUseStuffState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "IN_NOTHING", UseStuffState::IN_NOTHING);
         setEnum(L, "IN_BED", UseStuffState::IN_BED);
@@ -536,7 +534,7 @@ namespace KenshiLua
 
     void registerDisguiseGUIFeedback(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
     // orignal
         setEnum(L, "DGF_SAME_FACTION", Character::DGF_SAME_FACTION);
         setEnum(L, "DGF_MY_SLAVE", Character::DGF_MY_SLAVE);
@@ -551,7 +549,7 @@ namespace KenshiLua
 
     void registerCharMessage(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
     // original
         setEnum(L, "CHARMESSAGE_NONE", Character::CHARMESSAGE_NONE);
         setEnum(L, "CHARMESSAGE_CARRY", Character::CHARMESSAGE_CARRY);
@@ -570,7 +568,7 @@ namespace KenshiLua
 
     void registerCharacterStatsWindowGroup(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 8);
         setEnum(L, "NONE", CharacterStatsWindow::StatGroup::NONE);
         setEnum(L, "WEAPONS", CharacterStatsWindow::StatGroup::WEAPONS);
         setEnum(L, "COMBAT", CharacterStatsWindow::StatGroup::COMBAT);
@@ -588,7 +586,7 @@ namespace KenshiLua
 
     void registerUpdatePriority(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
     // orignal
         setEnum(L, "LOW_PRIORITY", UpdatePriority::LOW_PRIORITY);
         setEnum(L, "MED_PRIORITY", UpdatePriority::MED_PRIORITY);
@@ -603,11 +601,12 @@ namespace KenshiLua
 
     void registerNxControllerAction(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 4);
         setEnum(L, "NX_ACTION_NONE", NxControllerAction::NX_ACTION_NONE);
         setEnum(L, "NX_ACTION_PUSH", NxControllerAction::NX_ACTION_PUSH);
         setEnum(L, "NONE", NxControllerAction::NX_ACTION_NONE);
         setEnum(L, "PUSH", NxControllerAction::NX_ACTION_PUSH);
+    // global    
         lua_setglobal(L, "NxControllerAction");
     }
 
@@ -617,7 +616,7 @@ namespace KenshiLua
 
     void registerDataPanelLineLineType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 26);
     // original
         setEnum(L, "DPL_BASE", DataPanelLine::DPL_BASE);
         setEnum(L, "DPL_MEDICAL", DataPanelLine::DPL_MEDICAL);
@@ -656,7 +655,7 @@ namespace KenshiLua
 
     void registerTalker(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 16);
     // original
         setEnum(L, "T_ME", T_ME);
         setEnum(L, "T_TARGET", T_TARGET);
@@ -679,31 +678,6 @@ namespace KenshiLua
         lua_pushvalue(L, -1);
         lua_setglobal(L, "TalkerEnum"); // original
         lua_setglobal(L, "Talker"); // alias for convenience
-    }
-
-    void registerDialogueDT_MSG(lua_State* L)
-    {
-        lua_newtable(L);
-
-        setEnum(L, "DT_NONE", Dialogue::DT_MSG::DT_NONE);
-        setEnum(L, "DT_END_DIALOG", Dialogue::DT_MSG::DT_END_DIALOG);
-        setEnum(L, "DT_OPENWINDOW", Dialogue::DT_MSG::DT_OPENWINDOW);
-        setEnum(L, "DT_CLOSEWINDOW", Dialogue::DT_MSG::DT_CLOSEWINDOW);
-        setEnum(L, "DT_CLEAR_RESPONSES", Dialogue::DT_MSG::DT_CLEAR_RESPONSES);
-        setEnum(L, "DT_SET_RESPONSES", Dialogue::DT_MSG::DT_SET_RESPONSES);
-        setEnum(L, "DT_SET_NPC_REPLY", Dialogue::DT_MSG::DT_SET_NPC_REPLY);
-
-        setEnum(L, "NONE", Dialogue::DT_MSG::DT_NONE);
-        setEnum(L, "END_DIALOG", Dialogue::DT_MSG::DT_END_DIALOG);
-        setEnum(L, "OPENWINDOW", Dialogue::DT_MSG::DT_OPENWINDOW);
-        setEnum(L, "CLOSEWINDOW", Dialogue::DT_MSG::DT_CLOSEWINDOW);
-        setEnum(L, "CLEAR_RESPONSES", Dialogue::DT_MSG::DT_CLEAR_RESPONSES);
-        setEnum(L, "SET_RESPONSES", Dialogue::DT_MSG::DT_SET_RESPONSES);
-        setEnum(L, "SET_NPC_REPLY", Dialogue::DT_MSG::DT_SET_NPC_REPLY);
-
-        lua_pushvalue(L, -1);
-        lua_setglobal(L, "Dialogue_DT_MSG");
-        lua_setglobal(L, "DT_MSG");
     }
 
     // void registerTalkerEnum(lua_State* L)
@@ -736,10 +710,34 @@ namespace KenshiLua
     //     lua_setglobal(L, "Talker"); // alias for convenience
     // }
 
+    void registerDialogueDT_MSG(lua_State* L)
+    {
+        lua_newtable(L);
+
+        setEnum(L, "DT_NONE", Dialogue::DT_MSG::DT_NONE);
+        setEnum(L, "DT_END_DIALOG", Dialogue::DT_MSG::DT_END_DIALOG);
+        setEnum(L, "DT_OPENWINDOW", Dialogue::DT_MSG::DT_OPENWINDOW);
+        setEnum(L, "DT_CLOSEWINDOW", Dialogue::DT_MSG::DT_CLOSEWINDOW);
+        setEnum(L, "DT_CLEAR_RESPONSES", Dialogue::DT_MSG::DT_CLEAR_RESPONSES);
+        setEnum(L, "DT_SET_RESPONSES", Dialogue::DT_MSG::DT_SET_RESPONSES);
+        setEnum(L, "DT_SET_NPC_REPLY", Dialogue::DT_MSG::DT_SET_NPC_REPLY);
+
+        setEnum(L, "NONE", Dialogue::DT_MSG::DT_NONE);
+        setEnum(L, "END_DIALOG", Dialogue::DT_MSG::DT_END_DIALOG);
+        setEnum(L, "OPENWINDOW", Dialogue::DT_MSG::DT_OPENWINDOW);
+        setEnum(L, "CLOSEWINDOW", Dialogue::DT_MSG::DT_CLOSEWINDOW);
+        setEnum(L, "CLEAR_RESPONSES", Dialogue::DT_MSG::DT_CLEAR_RESPONSES);
+        setEnum(L, "SET_RESPONSES", Dialogue::DT_MSG::DT_SET_RESPONSES);
+        setEnum(L, "SET_NPC_REPLY", Dialogue::DT_MSG::DT_SET_NPC_REPLY);
+
+        lua_pushvalue(L, -1);
+        lua_setglobal(L, "Dialogue_DT_MSG");
+        lua_setglobal(L, "DT_MSG");
+    }
 
     void registerDialogueAction(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 104);
 
     // original
         setEnum(L, "DA_NONE", DA_NONE);
@@ -857,7 +855,7 @@ namespace KenshiLua
 
     void registerItemType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 115);
 
         setEnum(L, "BUILDING", itemType::BUILDING);
         setEnum(L, "CHARACTER", itemType::CHARACTER);
@@ -980,7 +978,7 @@ namespace KenshiLua
 
         void registerBuildingFunction(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 62);
 
     // original
         setEnum(L, "BF_ANY", BuildingFunction::BF_ANY);
@@ -1052,7 +1050,7 @@ namespace KenshiLua
 
         void registerCutDirection(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 20);
 
     // original
         setEnum(L, "CUT_DEFAULT", CutDirection::CUT_DEFAULT);
@@ -1082,7 +1080,7 @@ namespace KenshiLua
 
     void registerCutOrigination(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 4);
 
         setEnum(L, "FRONT", CutOrigination::FRONT);
         setEnum(L, "REAR", CutOrigination::REAR);
@@ -1094,7 +1092,7 @@ namespace KenshiLua
 
     void registerHitMaterialType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 14);
     // original
         setEnum(L, "HIT_MISSED", HitMaterialType::HIT_MISSED);
         setEnum(L, "HIT_METAL", HitMaterialType::HIT_METAL);
@@ -1117,7 +1115,7 @@ namespace KenshiLua
 
     void registerWeatherAffecting(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 12);
     // orignal
         setEnum(L, "WA_NONE", WeatherAffecting::WA_NONE);
         setEnum(L, "WA_DUSTSTORM", WeatherAffecting::WA_DUSTSTORM);
@@ -1138,7 +1136,7 @@ namespace KenshiLua
 
         void registerAttachSlot(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 38);
 
     // original
         setEnum(L, "ATTACH_WEAPON", AttachSlot::ATTACH_WEAPON);
@@ -1186,7 +1184,7 @@ namespace KenshiLua
 
     void registerItemFunction(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 36);
     // orignal
         setEnum(L, "ITEM_NO_FUNCTION", ItemFunction::ITEM_NO_FUNCTION);
         setEnum(L, "ITEM_FIRSTAID", ItemFunction::ITEM_FIRSTAID);
@@ -1231,7 +1229,7 @@ namespace KenshiLua
 
     void registerArmourType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 4);
 
         setEnum(L, "CLOTH", ArmourType::CLOTH);
         setEnum(L, "LEATHER", ArmourType::LEATHER);
@@ -1243,7 +1241,7 @@ namespace KenshiLua
 
     void registerCharacterTypeEnum(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 22);
     // original
         setEnum(L, "OT_NONE", CharacterTypeEnum::OT_NONE);
         setEnum(L, "OT_LAW_ENFORCEMENT", CharacterTypeEnum::OT_LAW_ENFORCEMENT);
@@ -1281,7 +1279,7 @@ namespace KenshiLua
 
     void registerSlaveStateEnum(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 4);
 
         setEnum(L, "NOT_SLAVE", SlaveStateEnum::NOT_SLAVE);
         setEnum(L, "IS_SLAVE", SlaveStateEnum::IS_SLAVE);
@@ -1295,7 +1293,7 @@ namespace KenshiLua
 
     void registerTaskType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 291);
 
         setEnum(L, "NULL_TASK", TaskType::NULL_TASK);
         setEnum(L, "MOVE_ON_FREE_WILL", TaskType::MOVE_ON_FREE_WILL);
@@ -1594,7 +1592,7 @@ namespace KenshiLua
 
         void registerWeaponCategory(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 45);
 
     // original
         setEnum(L, "SKILL_KATANAS", WeaponCategory::SKILL_KATANAS);
@@ -1649,7 +1647,7 @@ namespace KenshiLua
 
     void registerLeftRight(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 8);
     // original
         setEnum(L, "SIDE_NEITHER", LeftRight::SIDE_NEITHER);
         setEnum(L, "SIDE_LEFT", LeftRight::SIDE_LEFT);
@@ -1666,7 +1664,7 @@ namespace KenshiLua
 
     void registerMessageType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 4);
     // original
         setEnum(L, "M_UNSELECT_ALL", MessageForB::MessageType::M_UNSELECT_ALL);
         setEnum(L, "M_GIVE_TASK", MessageForB::MessageType::M_GIVE_TASK);
@@ -1679,7 +1677,7 @@ namespace KenshiLua
 
     void registerStandingOrder(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 36);
     // original
         setEnum(L, "M_SET_ORDER_RUN", MessageForB::StandingOrder::M_SET_ORDER_RUN);
         setEnum(L, "M_SET_ORDER_JOG", MessageForB::StandingOrder::M_SET_ORDER_JOG);
@@ -1724,7 +1722,7 @@ namespace KenshiLua
 
     void registerCharStatsGUIStatsDisplayMode(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 4);
 
         setEnum(L, "GUI_STATS_NORMAL", CharStats::GUIStatsDisplayMode::GUI_STATS_NORMAL);
         setEnum(L, "GUI_STATS_MARTIALARTIST", CharStats::GUIStatsDisplayMode::GUI_STATS_MARTIALARTIST);
@@ -1739,7 +1737,7 @@ namespace KenshiLua
 
     void registerCharStatsDeadTimeState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 7);
 
         setEnum(L, "ATTACK_HIT", CharStats::DeadTimeState::ATTACK_HIT);
         setEnum(L, "ATTACK_WAS_BLOCKED", CharStats::DeadTimeState::ATTACK_WAS_BLOCKED);
@@ -1756,7 +1754,7 @@ namespace KenshiLua
 
     void registerStatsEnumerated(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 132);
     // orignal
         setEnum(L, "STAT_NONE", StatsEnumerated::STAT_NONE);
         setEnum(L, "STAT_STRENGTH", StatsEnumerated::STAT_STRENGTH);
@@ -1899,7 +1897,7 @@ namespace KenshiLua
 
         void registerEventTriggerEnum(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 148);
 
     // original
         setEnum(L, "EV_NONE", EventTriggerEnum::EV_NONE);
@@ -2059,7 +2057,7 @@ namespace KenshiLua
 
         void registerDialogConditionEnum(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 160);
 
     // original
         setEnum(L, "DC_NONE", DialogConditionEnum::DC_NONE);
@@ -2231,7 +2229,7 @@ namespace KenshiLua
 
     void registerComparisonEnum(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
     // original c++
         setEnum(L, "CE_EQUALS", ComparisonEnum::CE_EQUALS);
         setEnum(L, "CE_LESS_THAN", ComparisonEnum::CE_LESS_THAN);
@@ -2248,7 +2246,7 @@ namespace KenshiLua
 
     void registerGroundType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 18);
 
         setEnum(L, "GROUND_SAND", GroundType::GROUND_SAND);
         setEnum(L, "GROUND_GRASS", GroundType::GROUND_GRASS);
@@ -2294,7 +2292,7 @@ namespace KenshiLua
 
     void registerSquadType(lua_State* L)
     {
-        lua_createtable(L, 0, 3);
+        lua_createtable(L, 0, 6);
     // original
         setEnum(L, "SQ_UNKNOWN", SquadType::SQ_UNKNOWN);
         setEnum(L, "SQ_RESIDENT", SquadType::SQ_RESIDENT);
@@ -2359,7 +2357,7 @@ namespace KenshiLua
 
     void registerCursorType(lua_State* L)
     {
-        lua_createtable(L, 0, 16);
+        lua_createtable(L, 0, 52);
     // original
         setEnum(L, "DEFAULT_CURSOR", CursorType::DEFAULT_CURSOR);
         setEnum(L, "MEDIC_CURSOR", CursorType::MEDIC_CURSOR);
@@ -2441,7 +2439,7 @@ namespace KenshiLua
 
     void registerFactionEvent(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 13);
 
         setEnum(L, "ATTACKED_US_DEFENSIVELY", FactionRelations::ATTACKED_US_DEFENSIVELY);
         setEnum(L, "ATTACKED_US_AGGRESSIVELY", FactionRelations::ATTACKED_US_AGGRESSIVELY);
@@ -2466,7 +2464,7 @@ namespace KenshiLua
 
     void registerUnloadedPlatoonJob(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 14);
 
         setEnum(L, "UPJOB_NONE", UPJOB_NONE);
         setEnum(L, "UPJOB_PATROL_TOWN", UPJOB_PATROL_TOWN);
@@ -2493,7 +2491,7 @@ namespace KenshiLua
 
     void registerForgottenGUITradeWindowType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 8);
     // original
         setEnum(L, "TW_OFF", TradeWindowType::TW_OFF);
         setEnum(L, "TW_MONEY_TRADING", TradeWindowType::TW_MONEY_TRADING);
@@ -2514,7 +2512,7 @@ namespace KenshiLua
 
     void registerGameDataDataType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
 
         setEnum(L, "NONE", GameData::NONE);
         setEnum(L, "INT", GameData::INT);
@@ -2532,7 +2530,7 @@ namespace KenshiLua
 
     void registerNxShapesType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
 
         setEnum(L, "NX_STATIC_SHAPES", NX_STATIC_SHAPES);
         setEnum(L, "NX_DYNAMIC_SHAPES", NX_DYNAMIC_SHAPES);
@@ -2547,7 +2545,7 @@ namespace KenshiLua
 
     void registerSysMessageEnum(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 17);
 
         setEnum(L, "SYS_NONE", GameWorld::SYS_NONE);
         setEnum(L, "SYS_RESIDENT_CHANGE", GameWorld::SYS_RESIDENT_CHANGE);
@@ -2576,7 +2574,7 @@ namespace KenshiLua
 
     void registerInventoryGUITradeResult(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 18);
 
         setEnum(L, "OK", InventoryGUI::TradeResult::OK);
         setEnum(L, "OUT_OF_RANGE", InventoryGUI::TradeResult::OUT_OF_RANGE);
@@ -2608,7 +2606,7 @@ namespace KenshiLua
 
     void registerHavokCharacterState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 4);
 
         setEnum(L, "IDLE", HavokCharacter::IDLE);
         setEnum(L, "GOAL_REACHED", HavokCharacter::GOAL_REACHED);
@@ -2620,7 +2618,7 @@ namespace KenshiLua
 
     void registerHavokPathState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 7);
 
         setEnum(L, "NONE", HavokCharacter::NONE);
         setEnum(L, "COMPLETE", HavokCharacter::COMPLETE);
@@ -2669,7 +2667,7 @@ namespace KenshiLua
 
     void registerInputHandlerGameMode(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 2);
 
         setEnum(L, "GLOBAL", InputHandler::GLOBAL);
         setEnum(L, "EDITOR", InputHandler::EDITOR);
@@ -2683,7 +2681,7 @@ namespace KenshiLua
 
     void registerLoggerSeverity(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 9);
 
         setEnum(L, "LOG_INFO", Logger::Info);
         setEnum(L, "LOG_WARNING", Logger::Warning);
@@ -2705,7 +2703,7 @@ namespace KenshiLua
 
     void registerManagementScreenMessageLogColor(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
     // original
         setEnum(L, "ML_NORMAL", MessageLogColor::ML_NORMAL);
         setEnum(L, "ML_PLAYER", MessageLogColor::ML_PLAYER);
@@ -2804,7 +2802,7 @@ namespace KenshiLua
 
     void registerNavMeshState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 5);
 
         setEnum(L, "MISSING", NavMesh::MISSING);
         setEnum(L, "ORIGINAL", NavMesh::ORIGINAL);
@@ -2817,7 +2815,7 @@ namespace KenshiLua
 
     void registerNavMeshFileMode(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "AUTO", NavMesh::AUTO);
         setEnum(L, "BASE", NavMesh::BASE);
@@ -2832,7 +2830,7 @@ namespace KenshiLua
 
     void registerNxShapeFlag(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 8);
 
         setEnum(L, "NX_TRIGGER_ON_ENTER", NX_TRIGGER_ON_ENTER);
         setEnum(L, "NX_TRIGGER_ON_LEAVE", NX_TRIGGER_ON_LEAVE);
@@ -2848,7 +2846,7 @@ namespace KenshiLua
 
     void registerNXU_FileType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "FT_BINARY", NXU::FT_BINARY);
         setEnum(L, "FT_XML", NXU::FT_XML);
@@ -2863,7 +2861,7 @@ namespace KenshiLua
 
     void registerBuildingRotation(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 7);
 
         setEnum(L, "ROTATION_NONE", ROTATION_NONE);
         setEnum(L, "ROTATION_CONSTANT", ROTATION_CONSTANT);
@@ -2882,7 +2880,7 @@ namespace KenshiLua
 
     void registerPlatoonCreationMessage(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
+        lua_createtable(L, 0, 10);
     // original C++ enums
         setEnum(L, "CM_NO_MESSAGE", PlatoonCreationMessage::CM_NO_MESSAGE);
         setEnum(L, "CM_REFRESH", PlatoonCreationMessage::CM_REFRESH);
@@ -2905,7 +2903,7 @@ namespace KenshiLua
 
     void registerGroupType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
 
         setEnum(L, "TYPE_UNKNOWN", DataObjectContainer::TYPE_UNKNOWN);
         setEnum(L, "TYPE_PLATOON", DataObjectContainer::TYPE_PLATOON);
@@ -2923,7 +2921,7 @@ namespace KenshiLua
 
     void registerSaveFileSystemState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "NORMAL", SaveFileSystem::NORMAL);
         setEnum(L, "SAVING", SaveFileSystem::SAVING);
@@ -2934,7 +2932,7 @@ namespace KenshiLua
 
     void registerSaveFileSystemMessageType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "MSG_COPY", SaveFileSystem::MSG_COPY);
         setEnum(L, "MSG_COPY_REPLACE", SaveFileSystem::MSG_COPY_REPLACE);
@@ -2979,7 +2977,7 @@ namespace KenshiLua
 
     void registerScreenLabelRisingSpeed(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 8);
     // original
         setEnum(L, "RS_STOPPED", ScreenLabel::RS_STOPPED);
         setEnum(L, "RS_SLOW", ScreenLabel::RS_SLOW);
@@ -2995,7 +2993,7 @@ namespace KenshiLua
 
     void registerScreenLabelLabelSize(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
     // original
         setEnum(L, "LS_SMALL", ScreenLabel::LS_SMALL);
         setEnum(L, "LS_MEDIUM", ScreenLabel::LS_MEDIUM);
@@ -3014,7 +3012,7 @@ namespace KenshiLua
 
     void registerSenseType(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
+        lua_createtable(L, 0, 32);
 
         setEnum(L, "SENSE_ALLY", SENSE_ALLY);
         setEnum(L, "SENSE_NEUTRAL", SENSE_NEUTRAL);
@@ -3059,7 +3057,7 @@ namespace KenshiLua
 
     void registerSquadManagementScreenState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 9);
         setEnum(L, "NORMAL", PortraitData::NORMAL);
         setEnum(L, "SELECTED", PortraitData::SELECTED);
         setEnum(L, "HURT", PortraitData::HURT);
@@ -3078,7 +3076,7 @@ namespace KenshiLua
 
     void registerTaskertaskPriority(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 12);
     // original
         setEnum(L, "TP_JUST_ACTION", taskPriority::TP_JUST_ACTION);
         setEnum(L, "TP_FLUFF", taskPriority::TP_FLUFF);
@@ -3099,7 +3097,7 @@ namespace KenshiLua
 
     void registerTaskerStateType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 163);
         setEnum(L, "NONE_RESULT", StateType::NONE_RESULT);
         setEnum(L, "AT_LOCATION", StateType::AT_LOCATION);
         setEnum(L, "BUILDING_COMPLETE", StateType::BUILDING_COMPLETE);
@@ -3268,7 +3266,7 @@ namespace KenshiLua
 
     void registerTaskerPermajobType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
         setEnum(L, "NOT_A_PERMAJOB", PermajobType::NOT_A_PERMAJOB);
         setEnum(L, "PERMAJOB_NORMAL", PermajobType::PERMAJOB_NORMAL);
         setEnum(L, "PERMAJOB_HIGHCOMBAT", PermajobType::PERMAJOB_HIGHCOMBAT);
@@ -3281,7 +3279,7 @@ namespace KenshiLua
 
     void registerToolTipType(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 5);
         setEnum(L, "TEXT", ToolTip::TEXT);
         setEnum(L, "MULTILINE", ToolTip::MULTILINE);
         setEnum(L, "GAMEDATA", ToolTip::GAMEDATA);
@@ -3314,7 +3312,7 @@ namespace KenshiLua
 
     void registerTownType(lua_State* L)
     {
-        lua_createtable(L, 0, 11);
+        lua_createtable(L, 0, 22);
     //original
         setEnum(L, "TOWN_NEST", TownType::TOWN_NEST);
         setEnum(L, "TOWN_OUTPOST", TownType::TOWN_OUTPOST);
@@ -3349,16 +3347,17 @@ namespace KenshiLua
 
     void registerTutorialGUIState(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
         setEnum(L, "INACTIVE", TutorialItem::INACTIVE);
         setEnum(L, "ACTIVE", TutorialItem::ACTIVE);
         setEnum(L, "ENDED", TutorialItem::ENDED);
+
         lua_setglobal(L, "TutorialItemState");
     }
 
     void registerTutorialGUIHighlightItem(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 35);
         setEnum(L, "NONE", TutorialGUI::NONE);
         setEnum(L, "PORTRAITS", TutorialGUI::PORTRAITS);
         setEnum(L, "PANEL_STATS", TutorialGUI::PANEL_STATS);
@@ -3394,12 +3393,13 @@ namespace KenshiLua
         setEnum(L, "MAPSCREEN_CRAFT_TAB_ITEMS", TutorialGUI::MAPSCREEN_CRAFT_TAB_ITEMS);
         setEnum(L, "BUILDING_INVENTORY_INPUT", TutorialGUI::BUILDING_INVENTORY_INPUT);
         setEnum(L, "BUILD_MODE_PANEL_BUILDINGS", TutorialGUI::BUILD_MODE_PANEL_BUILDINGS);
+
         lua_setglobal(L, "HighlightItem");
     }
 
     void registerMovementMode(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
     // original
         setEnum(L, "MOVE_NORMAL", MovementMode::MOVE_NORMAL);
         setEnum(L, "MOVE_COMBAT", MovementMode::MOVE_COMBAT);
@@ -3414,7 +3414,7 @@ namespace KenshiLua
 
     void registerArmourClass(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 10);
     // original
         setEnum(L, "GEAR_CLOTH", ArmourClass::GEAR_CLOTH);
         setEnum(L, "GEAR_LIGHT", ArmourClass::GEAR_LIGHT);
@@ -3436,15 +3436,13 @@ namespace KenshiLua
 
     void registerYesNoMaybe(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "NO", YesNoMaybe::NO);
         setEnum(L, "YES", YesNoMaybe::YES);
         setEnum(L, "MAYBE", YesNoMaybe::MAYBE);
 
-        lua_pushvalue(L, -1);
         lua_setglobal(L, "YesNoMaybe");
-        lua_setglobal(L, "ynm");
     }
 
     // ------------------------------------------
@@ -3453,7 +3451,7 @@ namespace KenshiLua
 
     void registerWorldStateEnum(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "DEAD", DEAD);
         setEnum(L, "ALIVE", ALIVE);
@@ -3464,7 +3462,7 @@ namespace KenshiLua
 
     void registerWarStateEnum(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "PEACE", WorldEventStateQuery::PEACE);
         setEnum(L, "WAR", WorldEventStateQuery::WAR);
@@ -3479,18 +3477,22 @@ namespace KenshiLua
 
     void registerZoneActivationType(lua_State* L)
     {
-        lua_newtable(L);
-
+        lua_createtable(L, 0, 3);
+    // original
         setEnum(L, "ACTIVATION_CAMERA", ACTIVATION_CAMERA);
         setEnum(L, "ACTIVATION_PLAYER_CHARACTER", ACTIVATION_PLAYER_CHARACTER);
         setEnum(L, "ACTIVATION_TOWN", ACTIVATION_TOWN);
+    // aliases
+        setEnum(L, "CAMERA", ACTIVATION_CAMERA);
+        setEnum(L, "PLAYER_CHARACTER", ACTIVATION_PLAYER_CHARACTER);
+        setEnum(L, "TOWN", ACTIVATION_TOWN);
 
         lua_setglobal(L, "ZoneActivationType");
     }
 
     void registerZoneManagerResult(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 4);
 
         setEnum(L, "UNCHANGED", ZoneSpacialGrid::UNCHANGED);
         setEnum(L, "CHANGED_CELL", ZoneSpacialGrid::CHANGED_CELL);
@@ -3502,7 +3504,7 @@ namespace KenshiLua
 
     void registerZoneMessage(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 2);
 
         setEnum(L, "BEING_LOADED_FALSE", ZoneMap::BEING_LOADED_FALSE);
         setEnum(L, "BEING_LOADED_TRUE", ZoneMap::BEING_LOADED_TRUE);
@@ -3516,7 +3518,7 @@ namespace KenshiLua
 
     void registerCharacterEditMode(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 6);
 
         setEnum(L, "EDIT_NEWGAME", CharacterEditMode::EDIT_NEWGAME);
         setEnum(L, "EDIT_MIDGAME", CharacterEditMode::EDIT_MIDGAME);
@@ -3537,7 +3539,7 @@ namespace KenshiLua
 
     void registerBinaryVersionKenshiPlatform(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "GOG", KenshiLib::BinaryVersion::KenshiPlatform::GOG);
         setEnum(L, "STEAM", KenshiLib::BinaryVersion::KenshiPlatform::STEAM);
