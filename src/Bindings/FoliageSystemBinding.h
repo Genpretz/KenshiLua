@@ -25,5 +25,6 @@ public:
     static int spawn(lua_State* L);
     static int randomInt(lua_State* L);
     static int random(lua_State* L);
+    static int clearStaticData(lua_State* L);
 };
 }

@@ -19,5 +19,7 @@ public:
     static int tostring(lua_State* L);
 
     static int isTrue(lua_State* L);
+    static int checkAllStatesInObject(lua_State* L);
+    static int getFromData(lua_State* L);
 };
 }

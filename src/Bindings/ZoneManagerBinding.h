@@ -73,5 +73,19 @@ public:
     static int getZoneBoundsT(lua_State* L);
     static int _NV_getZoneBoundsT(lua_State* L);
     static int getZoneMapSectorBounds(lua_State* L);
+    static int getZoneMap(lua_State* L);
+    static int getZoneMapFromBuildingHandle(lua_State* L);
+    static int getGroundSound(lua_State* L);
+    static int activateZoneMap(lua_State* L);
+    static int findBuilding(lua_State* L);
+    static int getAllActiveZones(lua_State* L);
+    static int getAllActiveIslandNumbers(lua_State* L);
+    static int getZonesTouchingTown(lua_State* L);
+    static int findOverlappingActiveZones(lua_State* L);
+    static int getBuildingsThatLinkTo(lua_State* L);
+    static int findAllBuildings(lua_State* L);
+    static int getResource(lua_State* L);
+    static int getResourceBase(lua_State* L);
+    static int getGroundEffect(lua_State* L);
 };
 }

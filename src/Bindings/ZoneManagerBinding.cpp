@@ -14,6 +14,7 @@
 #include "Bindings/ZoneMapBinding.h"
 #include "Bindings/ZoneSpacialGridBinding.h"
 #include "Bindings/Util/iVector2Binding.h"
+#include "Bindings/Util/HandBinding.h"
 #include <kenshi/ZoneManager.h>
 
 namespace KenshiLua
@@ -706,32 +707,251 @@ int ZoneManagerBinding::loadPhase3(lua_State* L)
     return 0;
 }
 
+int ZoneManagerBinding::getGroundSound(lua_State* L)
+{
+    if (ZoneManager* instance = testObject<ZoneManager>(L, 1, ZoneManagerBinding::getMetatableName()))
+    {
+        if (lua_isnumber(L, 2))
+        {
+            GroundType type = (GroundType)luaL_checkinteger(L, 2);
+            bool barefoot = lua_toboolean(L, 3) != 0;
+            const char* result = ZoneManager::getGroundSound(type, barefoot);
+            lua_pushstring(L, result ? result : "");
+            return 1;
+        }
+        else
+        {
+            Ogre::Vector3 pos;
+            readVector3(L, 2, pos);
+            const char* result = instance->getGroundSound(pos);
+            lua_pushstring(L, result ? result : "");
+            return 1;
+        }
+    }
+    else
+    {
+        GroundType type = (GroundType)luaL_checkinteger(L, 1);
+        bool barefoot = lua_toboolean(L, 2) != 0;
+        const char* result = ZoneManager::getGroundSound(type, barefoot);
+        lua_pushstring(L, result ? result : "");
+        return 1;
+    }
+}
+
+int ZoneManagerBinding::activateZoneMap(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    if (ZoneMap* map = testObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName()))
+    {
+        iVector2* center = checkObject<iVector2>(L, 3, iVector2Binding::getMetatableName());
+        if (!center) return luaL_error(L, "Argument 3 to activateZoneMap must be an iVector2");
+        int range = (int)luaL_checkinteger(L, 4);
+        ZoneActivationType type = (ZoneActivationType)luaL_checkinteger(L, 5);
+        float deactivationTimer = (float)luaL_checknumber(L, 6);
+        bool result = instance->activateZoneMap(map, *center, range, type, deactivationTimer);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+    else
+    {
+        iVector2* co = checkObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
+        if (!co) return luaL_error(L, "Argument 2 to activateZoneMap must be ZoneMap or iVector2");
+        int range = (int)luaL_checkinteger(L, 3);
+        ZoneActivationType playerActivated = (ZoneActivationType)luaL_checkinteger(L, 4);
+        bool backThread = lua_toboolean(L, 5) != 0;
+        bool result = instance->activateZoneMap(*co, range, playerActivated, backThread);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+}
+
+int ZoneManagerBinding::findBuilding(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    TownBase* t = checkObject<TownBase>(L, 2, TownBaseBinding::getMetatableName());
+    Faction* f = lua_isnoneornil(L, 3) ? nullptr : checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
+    bool forSaleOnly = lua_toboolean(L, 4) != 0;
+    BuildingFunction fun = (BuildingFunction)luaL_checkinteger(L, 5);
+    Ownerships* own = lua_isnoneornil(L, 6) ? nullptr : checkObject<Ownerships>(L, 6, OwnershipsBinding::getMetatableName());
+
+    Building* result = instance->findBuilding(t, f, forSaleOnly, fun, own);
+    return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
+}
+
+int ZoneManagerBinding::getAllActiveZones(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    lektor<ZoneMap*> out;
+    instance->getAllActiveZones(out);
+    lua_newtable(L);
+    for (size_t i = 0; i < out.size(); ++i)
+    {
+        pushObject<ZoneMap>(L, out[i], ZoneMapBinding::getMetatableName());
+        lua_rawseti(L, -2, (int)(i + 1));
+    }
+    return 1;
+}
+
+int ZoneManagerBinding::getAllActiveIslandNumbers(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    ogre_unordered_set<int>::type out;
+    instance->getAllActiveIslandNumbers(out);
+    lua_newtable(L);
+    int idx = 1;
+    for (ogre_unordered_set<int>::type::const_iterator it = out.begin(); it != out.end(); ++it)
+    {
+        lua_pushinteger(L, *it);
+        lua_rawseti(L, -2, idx++);
+    }
+    return 1;
+}
+
+int ZoneManagerBinding::getZonesTouchingTown(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    Town* town = checkObject<Town>(L, 2, TownBinding::getMetatableName());
+    if (!town) return luaL_error(L, "Argument 2 to getZonesTouchingTown must be a Town");
+
+    lektor<ZoneMap*> out;
+    instance->getZonesTouchingTown(out, town);
+    lua_newtable(L);
+    for (size_t i = 0; i < out.size(); ++i)
+    {
+        pushObject<ZoneMap>(L, out[i], ZoneMapBinding::getMetatableName());
+        lua_rawseti(L, -2, (int)(i + 1));
+    }
+    return 1;
+}
+
+int ZoneManagerBinding::findOverlappingActiveZones(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    Ogre::Vector3 pos;
+    readVector3(L, 2, pos);
+    float radius = (float)luaL_checknumber(L, 3);
+
+    lektor<ZoneMap*> out;
+    instance->findOverlappingActiveZones(out, pos, radius);
+    lua_newtable(L);
+    for (size_t i = 0; i < out.size(); ++i)
+    {
+        pushObject<ZoneMap>(L, out[i], ZoneMapBinding::getMetatableName());
+        lua_rawseti(L, -2, (int)(i + 1));
+    }
+    return 1;
+}
+
+int ZoneManagerBinding::getBuildingsThatLinkTo(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    GameData* buildingType = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    if (!buildingType) return luaL_error(L, "Argument 2 to getBuildingsThatLinkTo must be a GameData");
+
+    lektor<Building*> out;
+    instance->getBuildingsThatLinkTo(out, buildingType);
+    lua_newtable(L);
+    for (size_t i = 0; i < out.size(); ++i)
+    {
+        pushObject<Building>(L, out[i], BuildingBinding::getMetatableName());
+        lua_rawseti(L, -2, (int)(i + 1));
+    }
+    return 1;
+}
+
+int ZoneManagerBinding::findAllBuildings(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    TownBase* t = checkObject<TownBase>(L, 2, TownBaseBinding::getMetatableName());
+    Faction* f = lua_isnoneornil(L, 3) ? nullptr : checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
+    bool forSaleOnly = lua_toboolean(L, 4) != 0;
+    unsigned int fun = (unsigned int)luaL_checkinteger(L, 5);
+    Ownerships* ownership = lua_isnoneornil(L, 6) ? nullptr : checkObject<Ownerships>(L, 6, OwnershipsBinding::getMetatableName());
+
+    lektor<Building*> out;
+    instance->findAllBuildings(out, t, f, forSaleOnly, fun, ownership);
+    lua_newtable(L);
+    for (size_t i = 0; i < out.size(); ++i)
+    {
+        pushObject<Building>(L, out[i], BuildingBinding::getMetatableName());
+        lua_rawseti(L, -2, (int)(i + 1));
+    }
+    return 1;
+}
+
+int ZoneManagerBinding::getResource(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    MiningResource resource = (MiningResource)luaL_checkinteger(L, 2);
+    AreaBiomeGroup* biome = (AreaBiomeGroup*)lua_touserdata(L, 3);
+    Ogre::Vector3 pos;
+    readVector3(L, 4, pos);
+
+    float result = instance->getResource(resource, biome, pos);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int ZoneManagerBinding::getResourceBase(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    MiningResource resource = (MiningResource)luaL_checkinteger(L, 2);
+    AreaBiomeGroup* biome = (AreaBiomeGroup*)lua_touserdata(L, 3);
+    Ogre::Vector3 pos;
+    readVector3(L, 4, pos);
+
+    float result = instance->getResourceBase(resource, biome, pos);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int ZoneManagerBinding::getGroundEffect(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    Ogre::Vector3 pos;
+    readVector3(L, 2, pos);
+
+    GameData* effectData = nullptr;
+    float minSpeed = 0.0f;
+    float probability = 0.0f;
+
+    bool result = instance->getGroundEffect(pos, effectData, minSpeed, probability);
+    lua_pushboolean(L, result ? 1 : 0);
+    pushObject<GameData>(L, effectData, GameDataBinding::getMetatableName());
+    lua_pushnumber(L, minSpeed);
+    lua_pushnumber(L, probability);
+    return 4;
+}
+
 /*
 Skipped methods needing manual binding:
   line 333: void getAllActiveZonesT(...) - unsupported arg type
   line 334: void _NV_getAllActiveZonesT(...) - unsupported arg type
-  line 335: void getAllActiveIslandNumbers(...) - unsupported arg type
-  line 336: void getAllActiveZones(...) - unsupported arg type
-  line 340: void findBuilding(...) - overloaded method
-  line 341: Building* findBuilding(...) - overloaded method
-  line 342: void getBuildingsThatLinkTo(...) - unsupported arg type
-  line 343: void findAllBuildings(...) - unsupported arg type
-  line 344: void findOverlappingActiveZones(...) - unsupported arg type
   line 351: void levelEditorGetAllSelectedObjects(...) - unsupported arg type
-  line 359: ZoneMap* getZoneMap(...) - overloaded method
-  line 360: ZoneMap* getZoneMap(...) - overloaded method
-  line 361: ZoneMap* getZoneMap(...) - overloaded method
-  line 362: ZoneMap* getZoneMapFromBuildingHandle(...) - non-string reference arg
-  line 364: bool activateZoneMap(...) - overloaded method
-  line 365: bool activateZoneMap(...) - overloaded method
-  line 367: void getZonesTouchingTown(...) - unsupported arg type
   line 368: const lektor<MapFeatureList*>& getLoadedFeatureLists(...) - reference return type
   line 369: ZoneMapOverlay* getOverlay(...) - non-string reference arg
-  line 375: const char* getGroundSound(...) - static method
-  line 376: const char* getGroundSound(...) - overloaded method
-  line 377: bool getGroundEffect(...) - non-string reference arg
-  line 388: float getResource(...) - unsupported arg type
-  line 389: float getResourceBase(...) - unsupported arg type
   line 400: void getIsland(...) - unsupported arg type
 */
 
@@ -843,6 +1063,46 @@ int ZoneManagerBinding::getZoneMapSectorBounds(lua_State* L)
     return 1;
 }
 
+int ZoneManagerBinding::getZoneMap(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    ZoneMap* result = nullptr;
+    Ogre::Vector3 v;
+    if (lua_gettop(L) >= 3 && lua_isnumber(L, 2) && lua_isnumber(L, 3))
+    {
+        int x = (int)luaL_checkinteger(L, 2);
+        int y = (int)luaL_checkinteger(L, 3);
+        result = instance->getZoneMap(x, y);
+    }
+    else if (iVector2* iv = testObject<iVector2>(L, 2, iVector2Binding::getMetatableName()))
+    {
+        result = instance->getZoneMap(*iv);
+    }
+    else if (readVector3(L, 2, v))
+    {
+        result = instance->getZoneMap(v);
+    }
+    else
+    {
+        return luaL_error(L, "getZoneMap expected (int, int), (iVector2), or (Vector3)");
+    }
+    return pushObject<ZoneMap>(L, result, ZoneMapBinding::getMetatableName());
+}
+
+int ZoneManagerBinding::getZoneMapFromBuildingHandle(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to getZoneMapFromBuildingHandle must be a hand");
+
+    ZoneMap* result = instance->getZoneMapFromBuildingHandle(*h);
+    return pushObject<ZoneMap>(L, result, ZoneMapBinding::getMetatableName());
+}
+
 int ZoneManagerBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -919,6 +1179,20 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
         { "getZoneBoundsT", ZoneManagerBinding::getZoneBoundsT },
         { "_NV_getZoneBoundsT", ZoneManagerBinding::_NV_getZoneBoundsT },
         { "getZoneMapSectorBounds", ZoneManagerBinding::getZoneMapSectorBounds },
+        { "getZoneMap", ZoneManagerBinding::getZoneMap },
+        { "getZoneMapFromBuildingHandle", ZoneManagerBinding::getZoneMapFromBuildingHandle },
+        { "getGroundSound", ZoneManagerBinding::getGroundSound },
+        { "activateZoneMap", ZoneManagerBinding::activateZoneMap },
+        { "findBuilding", ZoneManagerBinding::findBuilding },
+        { "getAllActiveZones", ZoneManagerBinding::getAllActiveZones },
+        { "getAllActiveIslandNumbers", ZoneManagerBinding::getAllActiveIslandNumbers },
+        { "getZonesTouchingTown", ZoneManagerBinding::getZonesTouchingTown },
+        { "findOverlappingActiveZones", ZoneManagerBinding::findOverlappingActiveZones },
+        { "getBuildingsThatLinkTo", ZoneManagerBinding::getBuildingsThatLinkTo },
+        { "findAllBuildings", ZoneManagerBinding::findAllBuildings },
+        { "getResource", ZoneManagerBinding::getResource },
+        { "getResourceBase", ZoneManagerBinding::getResourceBase },
+        { "getGroundEffect", ZoneManagerBinding::getGroundEffect },
         { 0, 0 }
     };
 
@@ -966,6 +1240,16 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, ZoneManagerBinding::getMetatableName(), ZoneManagerInterfaceTBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_getglobal(L, "ZoneManager");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
+    registerStaticMethod(L, "getGroundSound", ZoneManagerBinding::getGroundSound);
+    lua_setglobal(L, "ZoneManager");
 }
 
 } // namespace KenshiLua

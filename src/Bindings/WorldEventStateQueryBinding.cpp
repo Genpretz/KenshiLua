@@ -41,11 +41,27 @@ int WorldEventStateQueryBinding::isTrue(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 36: WorldEventStateQuery* getFromData(...) - static method
-  line 37: bool checkAllStatesInObject(...) - static method
-*/
+int WorldEventStateQueryBinding::checkAllStatesInObject(lua_State* L)
+{
+    int idx = (testObject<WorldEventStateQuery>(L, 1, WorldEventStateQueryBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    GameData* what = checkObject<GameData>(L, idx, GameDataBinding::getMetatableName());
+    if (!what) return luaL_error(L, "Argument %d to checkAllStatesInObject must be a GameData", idx);
+    std::string listname = luaL_checkstring(L, idx + 1);
+
+    bool result = WorldEventStateQuery::checkAllStatesInObject(what, listname);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WorldEventStateQueryBinding::getFromData(lua_State* L)
+{
+    int idx = (testObject<WorldEventStateQuery>(L, 1, WorldEventStateQueryBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    GameData* d = checkObject<GameData>(L, idx, GameDataBinding::getMetatableName());
+    if (!d) return luaL_error(L, "Argument %d to getFromData must be a GameData", idx);
+
+    WorldEventStateQuery* result = WorldEventStateQuery::getFromData(d);
+    return pushObject<WorldEventStateQuery>(L, result, WorldEventStateQueryBinding::getMetatableName());
+}
 
 int WorldEventStateQueryBinding::gc(lua_State* L)
 {
@@ -171,6 +187,8 @@ void WorldEventStateQueryBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "isTrue", WorldEventStateQueryBinding::isTrue },
+        { "checkAllStatesInObject", WorldEventStateQueryBinding::checkAllStatesInObject },
+        { "getFromData", WorldEventStateQueryBinding::getFromData },
         { 0, 0 }
     };
 
@@ -203,6 +221,17 @@ void WorldEventStateQueryBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_getglobal(L, "WorldEventStateQuery");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
+    registerStaticMethod(L, "checkAllStatesInObject", WorldEventStateQueryBinding::checkAllStatesInObject);
+    registerStaticMethod(L, "getFromData", WorldEventStateQueryBinding::getFromData);
+    lua_setglobal(L, "WorldEventStateQuery");
 }
 
 } // namespace KenshiLua

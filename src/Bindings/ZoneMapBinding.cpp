@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\ZoneManager.h"
 #include "ZoneMapBinding.h"
+#include "ZoneManagerBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/Util/iVector2Binding.h"
@@ -470,15 +471,91 @@ int ZoneMapBinding::getBoundsMinusUnloadedEdges(lua_State* L)
     return 1;
 }
 
+int ZoneMapBinding::getActiveZoneIsland(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    lektor<ZoneMap*> out;
+    instance->getActiveZoneIsland(out);
+    lua_newtable(L);
+    for (size_t i = 0; i < out.size(); ++i)
+    {
+        pushObject<ZoneMap>(L, out[i], ZoneMapBinding::getMetatableName());
+        lua_rawseti(L, -2, (int)(i + 1));
+    }
+    return 1;
+}
+
+int ZoneMapBinding::getActiveNeighbours4(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    ogre_unordered_set<ZoneMap*>::type out;
+    instance->getActiveNeighbours4(out);
+    lua_newtable(L);
+    int idx = 1;
+    for (ogre_unordered_set<ZoneMap*>::type::const_iterator it = out.begin(); it != out.end(); ++it)
+    {
+        pushObject<ZoneMap>(L, *it, ZoneMapBinding::getMetatableName());
+        lua_rawseti(L, -2, idx++);
+    }
+    return 1;
+}
+
+int ZoneMapBinding::getActiveNeighbours8(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    ogre_unordered_set<ZoneMap*>::type out;
+    instance->getActiveNeighbours8(out);
+    lua_newtable(L);
+    int idx = 1;
+    for (ogre_unordered_set<ZoneMap*>::type::const_iterator it = out.begin(); it != out.end(); ++it)
+    {
+        pushObject<ZoneMap>(L, *it, ZoneMapBinding::getMetatableName());
+        lua_rawseti(L, -2, idx++);
+    }
+    return 1;
+}
+
+int ZoneMapBinding::isActivationType(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    ZoneActivationType type = (ZoneActivationType)luaL_checkinteger(L, 2);
+    bool result = instance->isActivationType(type);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ZoneMapBinding::init(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    iVector2* loc = checkObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
+    if (!loc) return luaL_error(L, "Argument 2 to init must be an iVector2");
+
+    instance->init(*loc);
+    return 0;
+}
+
+int ZoneMapBinding::getCenterPos(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    pushVector3(L, instance->getCenterPos());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 206: void init(...) - non-string reference arg
-  line 207: void getActiveZoneIsland(...) - unsupported arg type
   line 221: const Ogre::Aabb& getBoundingBox(...) - reference return type
-  line 225: const Ogre::Vector3& getCenterPos(...) - reference return type
-  line 229: bool isActivationType(...) - unsupported arg type
-  line 235: void getActiveNeighbours4(...) - unsupported arg type
-  line 236: void getActiveNeighbours8(...) - unsupported arg type
   line 239: void getMaterialValues(...) - static method
   line 240: Ogre::SharedPtr<Ogre::Material> getTerrainMaterial_DX11(...) - static method
   line 241: std::string getBiomeTextureArrayData(...) - static method
@@ -557,6 +634,12 @@ void ZoneMapBinding::registerBinding(lua_State* L)
         { "updateBuildingUsageNodes", ZoneMapBinding::updateBuildingUsageNodes },
         { "getBounds", ZoneMapBinding::getBounds },
         { "getBoundsMinusUnloadedEdges", ZoneMapBinding::getBoundsMinusUnloadedEdges },
+        { "getActiveZoneIsland", ZoneMapBinding::getActiveZoneIsland },
+        { "getActiveNeighbours4", ZoneMapBinding::getActiveNeighbours4 },
+        { "getActiveNeighbours8", ZoneMapBinding::getActiveNeighbours8 },
+        { "isActivationType", ZoneMapBinding::isActivationType },
+        { "init", ZoneMapBinding::init },
+        { "getCenterPos", ZoneMapBinding::getCenterPos },
         { 0, 0 }
     };
 

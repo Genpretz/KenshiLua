@@ -47,5 +47,11 @@ public:
     static int updateBuildingUsageNodes(lua_State* L);
     static int getBounds(lua_State* L);
     static int getBoundsMinusUnloadedEdges(lua_State* L);
+    static int getActiveZoneIsland(lua_State* L);
+    static int getActiveNeighbours4(lua_State* L);
+    static int getActiveNeighbours8(lua_State* L);
+    static int isActivationType(lua_State* L);
+    static int init(lua_State* L);
+    static int getCenterPos(lua_State* L);
 };
 }

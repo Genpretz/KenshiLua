@@ -202,10 +202,15 @@ int FoliageSystemBinding::random(lua_State* L)
     return 1;
 }
 
+int FoliageSystemBinding::clearStaticData(lua_State* L)
+{
+    FoliageSystem::clearStaticData();
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 91: int getNavmeshCarvers(...) - unsupported arg type
-  line 92: void clearStaticData(...) - static method
   line 112: void loadEnts(...) - unsupported arg type
   line 114: bool finalMakeEnt(...) - unsupported arg type
   line 115: void setupWind(...) - unsupported arg type
@@ -256,6 +261,7 @@ void FoliageSystemBinding::registerBinding(lua_State* L)
         { "spawn", FoliageSystemBinding::spawn },
         { "randomInt", FoliageSystemBinding::randomInt },
         { "random", FoliageSystemBinding::random },
+        { "clearStaticData", FoliageSystemBinding::clearStaticData },
         { 0, 0 }
     };
 
@@ -292,6 +298,16 @@ void FoliageSystemBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, FoliageSystemBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    lua_getglobal(L, "FoliageSystem");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        lua_newtable(L);
+    }
+    registerStaticMethod(L, "clearStaticData", FoliageSystemBinding::clearStaticData);
+    lua_setglobal(L, "FoliageSystem");
 }
 
 } // namespace KenshiLua
