@@ -237,9 +237,9 @@ namespace KenshiLua
 
 		appendOutput("=== Running: " + label + " ===\n");
 		
-		if (g_luaState)
+		lua_State* L = LuaState::getActiveState();
+		if (L)
 		{
-			lua_State* L = g_luaState->getState();
 			int top = lua_gettop(L);
 			
 			std::string chunkName = "<editor>";

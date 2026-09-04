@@ -20,6 +20,9 @@
 // Include LuaJIT headers
 #include <lua.hpp>
 
+// Include SDK compatibility shims for incomplete engine types
+#include "SDKCompat.h"
+
 // Include KenshiLib headers
 #include <core/Functions.h>
 #include <kenshi/Building/Building.h>
@@ -40,19 +43,6 @@
 #include <kenshi/RootObject.h>
 #include <kenshi/Town.h>
 #include <kenshi/util/hand.h>
-
-// Include Lua bindings
-#include "CharacterBinding.h"
-#include "CharStatsBinding.h"
-#include "GameDataBinding.h"
-#include "FactionBinding.h"
-#include "PlatoonBinding.h"
-#include "TownBinding.h"
-#include "WorldEventStateQueryBinding.h"
-
-// Include Lua helpers and codec
-#include "Lua/BindingHelpers.h"
-#include "Lua/LuaCodec.h"
 
 // Lua 5.1/LuaJIT compatibility macros and helpers
 #if LUA_VERSION_NUM < 502

@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include "EventSystem.h"
 #include "Bindings/MyGuiBinding.h"
+#include "Util/PathUtils.h"
 
 #include <kenshi/Globals.h>
 #include <kenshi/GameWorld.h>
@@ -12,8 +13,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/system/error_code.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/replace.hpp>
 
 #include <algorithm>
 #include <cstring>
@@ -25,16 +24,6 @@ namespace KenshiLua
 {
 
 namespace fs = boost::filesystem;
-
-static void normalizePathSlashes(std::string& path)
-{
-    boost::algorithm::replace_all(path, "\\", "/");
-}
-
-static bool endsWithCaseInsensitive(const std::string& s, const std::string& suffix)
-{
-    return boost::algorithm::iends_with(s, suffix);
-}
 
 static std::string makeChunkName(const std::string& modName, const std::string& relPath)
 {
@@ -227,7 +216,7 @@ bool ScriptLoader::runScript(lua_State* L, LoadedScript& s)
 {
     // Clean up any previously registered event handlers and MyGUI widgets from this script
     EventSystem::get().unregisterHandlersBySource(s.chunkName);
-    MyGuiBinding::destroyWidgetsBySource(s.chunkName);
+    MyGUIBinding::destroyWidgetsBySource(s.chunkName);
 
     bool res = runScriptSandboxed(L, s.absolutePath, s.chunkName, &s.lastError);
     s.loaded = res;

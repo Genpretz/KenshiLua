@@ -103,9 +103,9 @@ namespace KenshiLua
 		appendOutput("> " + code + "\n");
 		mConsole_InputBoxEditBox->setCaption("");
 
-		if (g_luaState)
+		lua_State* L = LuaState::getActiveState();
+		if (L)
 		{
-			lua_State* L = g_luaState->getState();
 			int top = lua_gettop(L);
 
 			// 1. Try running as "return [statement]" first

@@ -4,6 +4,7 @@
 #include "Lua/LuaBindings.h"
 #include "Logger.h"
 #include "EventSystem.h"
+#include "Util/PathUtils.h"
 #include <windows.h>
 #include <sstream>
 #include <iomanip>
@@ -66,28 +67,6 @@ struct ScalingArgPusher : public IArgPusher {
 // ---------------------------------------------------------------------------
 // CSV output helpers
 // ---------------------------------------------------------------------------
-
-// Get the directory where KenshiLua.dll lives
-static std::string getDllDirectory()
-{
-    char modulePath[MAX_PATH] = {0};
-    HMODULE hMod = NULL;
-    // Get the HMODULE of the DLL containing this function
-    GetModuleHandleExA(
-        GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-        (LPCSTR)&getDllDirectory,
-        &hMod);
-    if (hMod) {
-        GetModuleFileNameA(hMod, modulePath, MAX_PATH);
-    }
-    std::string dllPath(modulePath);
-    size_t pos = dllPath.find_last_of("\\/");
-    if (pos != std::string::npos)
-        dllPath = dllPath.substr(0, pos);
-    else
-        dllPath = ".";
-    return dllPath;
-}
 
 static std::string getTimestampISO()
 {

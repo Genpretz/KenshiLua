@@ -219,11 +219,12 @@ namespace KenshiLua
 		}
 
 		ScriptInfo& script = m_scripts[m_selectedIndex];
-		if (g_luaState)
+		lua_State* L = LuaState::getActiveState();
+		if (L)
 		{
 			std::string err;
 			ScriptLoader::get().removeStoppedScript(script.absolutePath);
-			bool success = ScriptLoader::get().runScriptSandboxed(g_luaState->getState(), script.absolutePath, script.chunkName, &err);
+			bool success = ScriptLoader::get().runScriptSandboxed(L, script.absolutePath, script.chunkName, &err);
 			if (success)
 			{
 				script.isRunning = true;

@@ -1,5 +1,4 @@
-#ifndef _KENSHI_LUA__HUB_H_
-#define _KENSHI_LUA__HUB_H_
+#pragma once
 
 #include "mygui/common/baselayout/BaseLayout.h"
 
@@ -46,5 +45,3 @@ namespace KenshiLua
 	};
 
 } // namespace KenshiLua
-
-#endif // _KENSHI_LUA__HUB_H_

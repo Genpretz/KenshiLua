@@ -3,24 +3,11 @@
 #include "ScriptLoader.h"
 #include "Config.h"
 #include "Logger.h"
+#include "Util/PathUtils.h"
 #include <Windows.h>
 
 namespace KenshiLua
 {
-
-static uint64_t getFileLastWriteTime(const std::string& path)
-{
-    WIN32_FILE_ATTRIBUTE_DATA data;
-    std::wstring wpath(path.begin(), path.end());
-    if (GetFileAttributesExW(wpath.c_str(), GetFileExInfoStandard, &data))
-    {
-        ULARGE_INTEGER uli;
-        uli.LowPart = data.ftLastWriteTime.dwLowDateTime;
-        uli.HighPart = data.ftLastWriteTime.dwHighDateTime;
-        return uli.QuadPart;
-    }
-    return 0;
-}
 
 FileWatcher& FileWatcher::get()
 {

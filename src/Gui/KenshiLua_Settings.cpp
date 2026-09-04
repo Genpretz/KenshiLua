@@ -3,34 +3,12 @@
 #include "Gui/GuiManager.h"
 #include "Logger.h"
 #include "Config.h"
+#include "Util/KeyCodes.h"
 #include <kenshi/Globals.h>
 #include <kenshi/InputHandler.h>
 
 namespace KenshiLua
 {
-	static std::string formatKeybind(bool ctrl, bool shift, bool alt, OIS::KeyCode key)
-	{
-		std::string str;
-		if (ctrl) str += "Ctrl + ";
-		if (shift) str += "Shift + ";
-		if (alt) str += "Alt + ";
-
-		if (::key)
-		{
-			std::string keyName = ::key->keyString(static_cast<int>(key), false);
-			if (keyName.rfind("KC_", 0) == 0)
-			{
-				keyName = keyName.substr(3);
-			}
-			str += keyName;
-		}
-		else
-		{
-			str += "L";
-		}
-		return str;
-	}
-
 	KenshiLua_Settings::KenshiLua_Settings(MyGUI::Widget* _parent)
 		: m_tempToggleCtrl(true)
 		, m_tempToggleShift(true)
