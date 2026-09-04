@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Logger.h"
 #include "Config.h"
+#include "Util/PathUtils.h"
 
 #include <string>
 #include <ctime>
@@ -60,8 +61,13 @@ void Logger::log(LogLevel level, const std::string& message)
     char msBuf[8];
     _snprintf(msBuf, sizeof(msBuf), ".%03lld", (long long)ms.count());
 
+    size_t end = message.size();
+    while (end > 0 && (message[end - 1] == '\n' || message[end - 1] == '\r')) {
+        --end;
+    }
+
     std::string formatted;
-    formatted.reserve(message.size() + 80);
+    formatted.reserve(end + 80);
     formatted += tsBuf;
     formatted += msBuf;
     formatted += " ";
@@ -73,7 +79,7 @@ void Logger::log(LogLevel level, const std::string& message)
     case LogLevel_Debug: formatted += "[DEBUG] "; break;
     }
 
-    formatted += message;
+    formatted.append(message.data(), end);
 
     {
         boost::lock_guard<boost::mutex> lk(m_ringMutex);
@@ -138,20 +144,7 @@ void setLoggerDllModule(void* hModule)
 
 static std::string getLogFilepath()
 {
-    char modulePath[MAX_PATH] = {0};
-    if (s_dllModule) {
-        GetModuleFileNameA((HMODULE)s_dllModule, modulePath, MAX_PATH);
-    }
-
-    std::string dllPath(modulePath);
-    size_t pos = dllPath.find_last_of("\\/");
-    if (pos != std::string::npos) {
-        dllPath = dllPath.substr(0, pos);
-    } else {
-        dllPath = ".";
-    }
-
-    return dllPath + "\\KenshiLua.log";
+    return getDllDirectory(s_dllModule) + "\\KenshiLua.log";
 }
 
 void initLogger()
@@ -187,20 +180,7 @@ void logToFileDebug(const std::string& message)
 
 void logBenchmark(const std::string& message, const std::string& logFilename)
 {
-    char modulePath[MAX_PATH] = {0};
-    if (s_dllModule) {
-        GetModuleFileNameA((HMODULE)s_dllModule, modulePath, MAX_PATH);
-    }
-
-    std::string dllPath(modulePath);
-    size_t pos = dllPath.find_last_of("\\/");
-    if (pos != std::string::npos) {
-        dllPath = dllPath.substr(0, pos);
-    } else {
-        dllPath = ".";
-    }
-
-    std::string benchmarkPath = dllPath + "\\" + logFilename;
+    std::string benchmarkPath = getDllDirectory(s_dllModule) + "\\" + logFilename;
     std::ofstream file(benchmarkPath, std::ios::app);
     if (file.is_open()) {
         auto now = boost::chrono::system_clock::now();
@@ -211,7 +191,12 @@ void logBenchmark(const std::string& message, const std::string& logFilename)
         char tsBuf[32];
         std::strftime(tsBuf, sizeof(tsBuf), "%Y-%m-%d %H:%M:%S", &tm);
 
-        file << "[" << tsBuf << "] " << message << std::endl;
+        size_t end = message.size();
+        while (end > 0 && (message[end - 1] == '\n' || message[end - 1] == '\r')) {
+            --end;
+        }
+
+        file << "[" << tsBuf << "] " << message.substr(0, end) << std::endl;
         file.close();
     }
 }
