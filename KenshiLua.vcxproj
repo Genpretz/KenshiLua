@@ -157,7 +157,8 @@ copy /Y "$(ProjectDir)docs\DialogueScriptingBridge.md" "$(OutDir)..\docs\"
 xcopy /Y /S /I "$(ProjectDir)assets\media\*" "$(OutDir)..\assets\media\"
 copy /Y "$(ProjectDir)LICENSE" "$(OutDir)..\"
 copy /Y "$(ProjectDir)README.md" "$(OutDir)..\"
-xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
+xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"
+xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -863,7 +864,38 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClInclude Include="src\Bindings\ModInfoBinding.h" />
     <ClInclude Include="src\Bindings\MotionFilterBinding.h" />
     <ClInclude Include="src\Bindings\MustEndWithSemiColonBinding.h" />
-    <ClInclude Include="src\Bindings\MyGuiBinding.h" />
+        <ClInclude Include="src\Bindings\MyGUI\ButtonBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\CanvasBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\ClipboardManagerBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\ComboBoxBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\DDContainerBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\EditBoxBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\GuiBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\ImageBoxBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\InputManagerBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\ItemBoxBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\LayoutManagerBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\ListBoxBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\MenuBarBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\MenuControlBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\MenuItemBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\MultiListBoxBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\MyGUIBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\MyGuiCallbacks.h" />
+    <ClInclude Include="src\Bindings\MyGUI\MyGuiTypes.h" />
+    <ClInclude Include="src\Bindings\MyGUI\PointerManagerBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\PopupMenuBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\ProgressBarBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\RenderManagerBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\ScrollBarBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\ScrollViewBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\SkinManagerBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\TabControlBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\TabItemBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\TextBoxBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\TypesBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\WidgetBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\WindowBinding.h" />
     <ClInclude Include="src\Bindings\NavMeshBinding.h" />
     <ClInclude Include="src\Bindings\NavMeshGeneratorBinding.h" />
     <ClInclude Include="src\Bindings\NavMeshSeedsBinding.h" />
@@ -1301,7 +1333,38 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClCompile Include="src\Bindings\ModInfoBinding.cpp" />
     <ClCompile Include="src\Bindings\MotionFilterBinding.cpp" />
     <ClCompile Include="src\Bindings\MustEndWithSemiColonBinding.cpp" />
-    <ClCompile Include="src\Bindings\MyGuiBinding.cpp" />
+        <ClCompile Include="src\Bindings\MyGUI\ButtonBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\CanvasBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\ClipboardManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\ComboBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\DDContainerBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\EditBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\GuiBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\ImageBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\InputManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\ItemBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\LayoutManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\ListBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\MenuBarBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\MenuControlBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\MenuItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\MultiListBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\MyGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\MyGuiCallbacks.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\MyGuiTypes.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\PointerManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\PopupMenuBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\ProgressBarBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\RenderManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\ScrollBarBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\ScrollViewBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\SkinManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\TabControlBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\TabItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\TextBoxBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\TypesBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\WidgetBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\WindowBinding.cpp" />
     <ClCompile Include="src\Bindings\NavMeshBinding.cpp" />
     <ClCompile Include="src\Bindings\NavMeshGeneratorBinding.cpp" />
     <ClCompile Include="src\Bindings\NavMeshSeedsBinding.cpp" />

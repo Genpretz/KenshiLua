@@ -10,7 +10,7 @@
 #include "Lua/LuaBindings.h"
 #include "Lua/LuaState.h"
 #include "ScriptLoader.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "DialogueScriptBridge.h"
 #include "Benchmark.h"
 #include <mygui/MyGUI.h>
@@ -78,7 +78,7 @@ void Plugin::shutdown()
 
     logToFile("Shutting down KenshiLua...");
 
-    MyGuiBinding::shutdown();
+    MyGUIBinding::shutdown();
     ScriptLoader::get().reset();
     FileWatcher::get().reset();
 

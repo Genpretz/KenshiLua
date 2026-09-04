@@ -2,7 +2,7 @@
 #include "ScriptLoader.h"
 #include "Logger.h"
 #include "EventSystem.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Util/PathUtils.h"
 
 #include <kenshi/Globals.h>
