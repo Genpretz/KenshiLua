@@ -1,11 +1,11 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Bindings/Gui/InventoryLayoutBinding.h"
 
 #include <kenshi/Building/ProductionBuilding.h>
 #include "BuildInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/ItemBinding.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Gui/InventoryGUIBinding.h"
 #include "Bindings/InventoryBinding.h"
 #include "Bindings/Gui/InventorySectionGUIBinding.h"
@@ -27,91 +27,91 @@ static int BuildInventoryLayout_get_input1NameText(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::TextBox>(L, instance->input1NameText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::TextBox>(L, instance->input1NameText, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_input2NameText(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::TextBox>(L, instance->input2NameText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::TextBox>(L, instance->input2NameText, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_input1StatusText(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::TextBox>(L, instance->input1StatusText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::TextBox>(L, instance->input1StatusText, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_input2StatusText(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::TextBox>(L, instance->input2StatusText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::TextBox>(L, instance->input2StatusText, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_input1ItemIcon(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::ImageBox>(L, instance->input1ItemIcon, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::ImageBox>(L, instance->input1ItemIcon, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_input2ItemIcon(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::ImageBox>(L, instance->input2ItemIcon, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::ImageBox>(L, instance->input2ItemIcon, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_outputNameText(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::TextBox>(L, instance->outputNameText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::TextBox>(L, instance->outputNameText, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_outputItemIcon(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::ImageBox>(L, instance->outputItemIcon, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::ImageBox>(L, instance->outputItemIcon, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_input1Panel(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::Widget>(L, instance->input1Panel, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->input1Panel, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_input2Panel(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::Widget>(L, instance->input2Panel, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->input2Panel, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_input1Progress(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::ProgressBar>(L, instance->input1Progress, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::ProgressBar>(L, instance->input1Progress, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_input2Progress(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::ProgressBar>(L, instance->input2Progress, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::ProgressBar>(L, instance->input2Progress, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_outputProgress(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    return pushObject<MyGUI::ProgressBar>(L, instance->outputProgress, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::ProgressBar>(L, instance->outputProgress, MyGUIBinding::getMetatableName());
 }
 
 static int BuildInventoryLayout_get_inputs(lua_State* L)
@@ -156,7 +156,7 @@ static int BuildInventoryLayout_set_input1NameText(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->input1NameText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, MyGuiBinding::getMetatableName());
+    instance->input1NameText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -164,7 +164,7 @@ static int BuildInventoryLayout_set_input2NameText(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->input2NameText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, MyGuiBinding::getMetatableName());
+    instance->input2NameText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -172,7 +172,7 @@ static int BuildInventoryLayout_set_input1StatusText(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->input1StatusText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, MyGuiBinding::getMetatableName());
+    instance->input1StatusText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -180,7 +180,7 @@ static int BuildInventoryLayout_set_input2StatusText(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->input2StatusText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, MyGuiBinding::getMetatableName());
+    instance->input2StatusText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -188,7 +188,7 @@ static int BuildInventoryLayout_set_input1ItemIcon(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->input1ItemIcon = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ImageBox>(L, 2, MyGuiBinding::getMetatableName());
+    instance->input1ItemIcon = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ImageBox>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -196,7 +196,7 @@ static int BuildInventoryLayout_set_input2ItemIcon(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->input2ItemIcon = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ImageBox>(L, 2, MyGuiBinding::getMetatableName());
+    instance->input2ItemIcon = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ImageBox>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -204,7 +204,7 @@ static int BuildInventoryLayout_set_outputNameText(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->outputNameText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, MyGuiBinding::getMetatableName());
+    instance->outputNameText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -212,7 +212,7 @@ static int BuildInventoryLayout_set_outputItemIcon(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->outputItemIcon = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ImageBox>(L, 2, MyGuiBinding::getMetatableName());
+    instance->outputItemIcon = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ImageBox>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -220,7 +220,7 @@ static int BuildInventoryLayout_set_input1Panel(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->input1Panel = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    instance->input1Panel = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -228,7 +228,7 @@ static int BuildInventoryLayout_set_input2Panel(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->input2Panel = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    instance->input2Panel = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -236,7 +236,7 @@ static int BuildInventoryLayout_set_input1Progress(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->input1Progress = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ProgressBar>(L, 2, MyGuiBinding::getMetatableName());
+    instance->input1Progress = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ProgressBar>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -244,7 +244,7 @@ static int BuildInventoryLayout_set_input2Progress(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->input2Progress = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ProgressBar>(L, 2, MyGuiBinding::getMetatableName());
+    instance->input2Progress = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ProgressBar>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -252,7 +252,7 @@ static int BuildInventoryLayout_set_outputProgress(lua_State* L)
 {
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
-    instance->outputProgress = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ProgressBar>(L, 2, MyGuiBinding::getMetatableName());
+    instance->outputProgress = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ProgressBar>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -457,81 +457,45 @@ void BuildInventoryLayoutBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, BuildInventoryLayoutBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, BuildInventoryLayout_get_input1NameText);
-    lua_setfield(L, -2, "input1NameText");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input2NameText);
-    lua_setfield(L, -2, "input2NameText");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input1StatusText);
-    lua_setfield(L, -2, "input1StatusText");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input2StatusText);
-    lua_setfield(L, -2, "input2StatusText");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input1ItemIcon);
-    lua_setfield(L, -2, "input1ItemIcon");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input2ItemIcon);
-    lua_setfield(L, -2, "input2ItemIcon");
-    lua_pushcfunction(L, BuildInventoryLayout_get_outputNameText);
-    lua_setfield(L, -2, "outputNameText");
-    lua_pushcfunction(L, BuildInventoryLayout_get_outputItemIcon);
-    lua_setfield(L, -2, "outputItemIcon");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input1Panel);
-    lua_setfield(L, -2, "input1Panel");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input2Panel);
-    lua_setfield(L, -2, "input2Panel");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input1Progress);
-    lua_setfield(L, -2, "input1Progress");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input2Progress);
-    lua_setfield(L, -2, "input2Progress");
-    lua_pushcfunction(L, BuildInventoryLayout_get_outputProgress);
-    lua_setfield(L, -2, "outputProgress");
-    lua_pushcfunction(L, BuildInventoryLayout_get_inputs);
-    lua_setfield(L, -2, "inputs");
-    lua_pushcfunction(L, BuildInventoryLayout_get_outputs);
-    lua_setfield(L, -2, "outputs");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input1Item);
-    lua_setfield(L, -2, "input1Item");
-    lua_pushcfunction(L, BuildInventoryLayout_get_input2Item);
-    lua_setfield(L, -2, "input2Item");
-    lua_pushcfunction(L, BuildInventoryLayout_get_outputItem);
-    lua_setfield(L, -2, "outputItem");
+    registerGetter(L, "input1NameText", BuildInventoryLayout_get_input1NameText);
+    registerGetter(L, "input2NameText", BuildInventoryLayout_get_input2NameText);
+    registerGetter(L, "input1StatusText", BuildInventoryLayout_get_input1StatusText);
+    registerGetter(L, "input2StatusText", BuildInventoryLayout_get_input2StatusText);
+    registerGetter(L, "input1ItemIcon", BuildInventoryLayout_get_input1ItemIcon);
+    registerGetter(L, "input2ItemIcon", BuildInventoryLayout_get_input2ItemIcon);
+    registerGetter(L, "outputNameText", BuildInventoryLayout_get_outputNameText);
+    registerGetter(L, "outputItemIcon", BuildInventoryLayout_get_outputItemIcon);
+    registerGetter(L, "input1Panel", BuildInventoryLayout_get_input1Panel);
+    registerGetter(L, "input2Panel", BuildInventoryLayout_get_input2Panel);
+    registerGetter(L, "input1Progress", BuildInventoryLayout_get_input1Progress);
+    registerGetter(L, "input2Progress", BuildInventoryLayout_get_input2Progress);
+    registerGetter(L, "outputProgress", BuildInventoryLayout_get_outputProgress);
+    registerGetter(L, "inputs", BuildInventoryLayout_get_inputs);
+    registerGetter(L, "outputs", BuildInventoryLayout_get_outputs);
+    registerGetter(L, "input1Item", BuildInventoryLayout_get_input1Item);
+    registerGetter(L, "input2Item", BuildInventoryLayout_get_input2Item);
+    registerGetter(L, "outputItem", BuildInventoryLayout_get_outputItem);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, BuildInventoryLayout_set_input1NameText);
-    lua_setfield(L, -2, "input1NameText");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input2NameText);
-    lua_setfield(L, -2, "input2NameText");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input1StatusText);
-    lua_setfield(L, -2, "input1StatusText");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input2StatusText);
-    lua_setfield(L, -2, "input2StatusText");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input1ItemIcon);
-    lua_setfield(L, -2, "input1ItemIcon");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input2ItemIcon);
-    lua_setfield(L, -2, "input2ItemIcon");
-    lua_pushcfunction(L, BuildInventoryLayout_set_outputNameText);
-    lua_setfield(L, -2, "outputNameText");
-    lua_pushcfunction(L, BuildInventoryLayout_set_outputItemIcon);
-    lua_setfield(L, -2, "outputItemIcon");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input1Panel);
-    lua_setfield(L, -2, "input1Panel");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input2Panel);
-    lua_setfield(L, -2, "input2Panel");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input1Progress);
-    lua_setfield(L, -2, "input1Progress");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input2Progress);
-    lua_setfield(L, -2, "input2Progress");
-    lua_pushcfunction(L, BuildInventoryLayout_set_outputProgress);
-    lua_setfield(L, -2, "outputProgress");
-    lua_pushcfunction(L, BuildInventoryLayout_set_inputs);
-    lua_setfield(L, -2, "inputs");
-    lua_pushcfunction(L, BuildInventoryLayout_set_outputs);
-    lua_setfield(L, -2, "outputs");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input1Item);
-    lua_setfield(L, -2, "input1Item");
-    lua_pushcfunction(L, BuildInventoryLayout_set_input2Item);
-    lua_setfield(L, -2, "input2Item");
-    lua_pushcfunction(L, BuildInventoryLayout_set_outputItem);
-    lua_setfield(L, -2, "outputItem");
+    registerSetter(L, "input1NameText", BuildInventoryLayout_set_input1NameText);
+    registerSetter(L, "input2NameText", BuildInventoryLayout_set_input2NameText);
+    registerSetter(L, "input1StatusText", BuildInventoryLayout_set_input1StatusText);
+    registerSetter(L, "input2StatusText", BuildInventoryLayout_set_input2StatusText);
+    registerSetter(L, "input1ItemIcon", BuildInventoryLayout_set_input1ItemIcon);
+    registerSetter(L, "input2ItemIcon", BuildInventoryLayout_set_input2ItemIcon);
+    registerSetter(L, "outputNameText", BuildInventoryLayout_set_outputNameText);
+    registerSetter(L, "outputItemIcon", BuildInventoryLayout_set_outputItemIcon);
+    registerSetter(L, "input1Panel", BuildInventoryLayout_set_input1Panel);
+    registerSetter(L, "input2Panel", BuildInventoryLayout_set_input2Panel);
+    registerSetter(L, "input1Progress", BuildInventoryLayout_set_input1Progress);
+    registerSetter(L, "input2Progress", BuildInventoryLayout_set_input2Progress);
+    registerSetter(L, "outputProgress", BuildInventoryLayout_set_outputProgress);
+    registerSetter(L, "inputs", BuildInventoryLayout_set_inputs);
+    registerSetter(L, "outputs", BuildInventoryLayout_set_outputs);
+    registerSetter(L, "input1Item", BuildInventoryLayout_set_input1Item);
+    registerSetter(L, "input2Item", BuildInventoryLayout_set_input2Item);
+    registerSetter(L, "outputItem", BuildInventoryLayout_set_outputItem);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

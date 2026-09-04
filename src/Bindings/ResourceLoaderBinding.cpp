@@ -274,35 +274,22 @@ void ResourceLoaderBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ResourceLoaderBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ResourceLoader_get_running);
-    lua_setfield(L, -2, "running");
-    lua_pushcfunction(L, ResourceLoader_get_sceneManager);
-    lua_setfield(L, -2, "sceneManager");
-    lua_pushcfunction(L, ResourceLoader_get_loadingMeshQueueMutex);
-    lua_setfield(L, -2, "loadingMeshQueueMutex");
-    lua_pushcfunction(L, ResourceLoader_get_texturesLoadingMutex);
-    lua_setfield(L, -2, "texturesLoadingMutex");
-    lua_pushcfunction(L, ResourceLoader_get_texturesLoadedMutex);
-    lua_setfield(L, -2, "texturesLoadedMutex");
-    lua_pushcfunction(L, ResourceLoader_get_texturesLoading);
-    lua_setfield(L, -2, "texturesLoading");
-    lua_pushcfunction(L, ResourceLoader_get_texturesLoaded);
-    lua_setfield(L, -2, "texturesLoaded");
+    registerGetter(L, "running", ResourceLoader_get_running);
+    registerGetter(L, "sceneManager", ResourceLoader_get_sceneManager);
+    registerGetter(L, "loadingMeshQueueMutex", ResourceLoader_get_loadingMeshQueueMutex);
+    registerGetter(L, "texturesLoadingMutex", ResourceLoader_get_texturesLoadingMutex);
+    registerGetter(L, "texturesLoadedMutex", ResourceLoader_get_texturesLoadedMutex);
+    registerGetter(L, "texturesLoading", ResourceLoader_get_texturesLoading);
+    registerGetter(L, "texturesLoaded", ResourceLoader_get_texturesLoaded);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ResourceLoader_set_running);
-    lua_setfield(L, -2, "running");
-    lua_pushcfunction(L, ResourceLoader_set_loadingMeshQueueMutex);
-    lua_setfield(L, -2, "loadingMeshQueueMutex");
-    lua_pushcfunction(L, ResourceLoader_set_texturesLoadingMutex);
-    lua_setfield(L, -2, "texturesLoadingMutex");
-    lua_pushcfunction(L, ResourceLoader_set_texturesLoadedMutex);
-    lua_setfield(L, -2, "texturesLoadedMutex");
-    lua_pushcfunction(L, ResourceLoader_set_texturesLoading);
-    lua_setfield(L, -2, "texturesLoading");
-    lua_pushcfunction(L, ResourceLoader_set_texturesLoaded);
-    lua_setfield(L, -2, "texturesLoaded");
+    registerSetter(L, "running", ResourceLoader_set_running);
+    registerSetter(L, "loadingMeshQueueMutex", ResourceLoader_set_loadingMeshQueueMutex);
+    registerSetter(L, "texturesLoadingMutex", ResourceLoader_set_texturesLoadingMutex);
+    registerSetter(L, "texturesLoadedMutex", ResourceLoader_set_texturesLoadedMutex);
+    registerSetter(L, "texturesLoading", ResourceLoader_set_texturesLoading);
+    registerSetter(L, "texturesLoaded", ResourceLoader_set_texturesLoaded);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     TextureLoadDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<TextureLoadData*>", nullptr);

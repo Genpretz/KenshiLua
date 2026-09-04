@@ -249,25 +249,17 @@ void RobotLimbsBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, RobotLimbsBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, RobotLimbs_get_character);
-    lua_setfield(L, -2, "character");
-    lua_pushcfunction(L, RobotLimbs_get_inventory);
-    lua_setfield(L, -2, "inventory");
-    lua_pushcfunction(L, RobotLimbs_get_states);
-    lua_setfield(L, -2, "states");
-    lua_pushcfunction(L, RobotLimbs_get_items);
-    lua_setfield(L, -2, "items");
+    registerGetter(L, "character", RobotLimbs_get_character);
+    registerGetter(L, "inventory", RobotLimbs_get_inventory);
+    registerGetter(L, "states", RobotLimbs_get_states);
+    registerGetter(L, "items", RobotLimbs_get_items);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, RobotLimbs_set_character);
-    lua_setfield(L, -2, "character");
-    lua_pushcfunction(L, RobotLimbs_set_inventory);
-    lua_setfield(L, -2, "inventory");
-    lua_pushcfunction(L, RobotLimbs_set_states);
-    lua_setfield(L, -2, "states");
-    lua_pushcfunction(L, RobotLimbs_set_items);
-    lua_setfield(L, -2, "items");
+    registerSetter(L, "character", RobotLimbs_set_character);
+    registerSetter(L, "inventory", RobotLimbs_set_inventory);
+    registerSetter(L, "states", RobotLimbs_set_states);
+    registerSetter(L, "items", RobotLimbs_set_items);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

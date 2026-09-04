@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include <kenshi/gui/ContextMenu.h>
 #include "ContextMenuGUIBinding.h"
 #include "BaseLayoutBinding.h"

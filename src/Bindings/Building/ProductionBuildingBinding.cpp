@@ -689,25 +689,17 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ProductionBuildingBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ProductionBuilding_get_productionState);
-    lua_setfield(L, -2, "productionState");
-    lua_pushcfunction(L, ProductionBuilding_get__resourceMiningLevel);
-    lua_setfield(L, -2, "_resourceMiningLevel");
-    lua_pushcfunction(L, ProductionBuilding_get_outSection);
-    lua_setfield(L, -2, "outSection");
-    lua_pushcfunction(L, ProductionBuilding_get_consumptionItems);
-    lua_setfield(L, -2, "consumptionItems");
+    registerGetter(L, "productionState", ProductionBuilding_get_productionState);
+    registerGetter(L, "_resourceMiningLevel", ProductionBuilding_get__resourceMiningLevel);
+    registerGetter(L, "outSection", ProductionBuilding_get_outSection);
+    registerGetter(L, "consumptionItems", ProductionBuilding_get_consumptionItems);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ProductionBuilding_set_productionState);
-    lua_setfield(L, -2, "productionState");
-    lua_pushcfunction(L, ProductionBuilding_set__resourceMiningLevel);
-    lua_setfield(L, -2, "_resourceMiningLevel");
-    lua_pushcfunction(L, ProductionBuilding_set_outSection);
-    lua_setfield(L, -2, "outSection");
-    lua_pushcfunction(L, ProductionBuilding_set_consumptionItems);
-    lua_setfield(L, -2, "consumptionItems");
+    registerSetter(L, "productionState", ProductionBuilding_set_productionState);
+    registerSetter(L, "_resourceMiningLevel", ProductionBuilding_set__resourceMiningLevel);
+    registerSetter(L, "outSection", ProductionBuilding_set_outSection);
+    registerSetter(L, "consumptionItems", ProductionBuilding_set_consumptionItems);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to StorageBuilding

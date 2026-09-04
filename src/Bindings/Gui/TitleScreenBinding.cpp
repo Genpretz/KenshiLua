@@ -1,8 +1,8 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\TitleScreen.h"
 #include "TitleScreenBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Gui/GUIWindowBinding.h"
 #include "Bindings/Gui/NewGameWindowBinding.h"
 
@@ -26,14 +26,14 @@ static int TitleScreen_get_creditsPanel(lua_State* L)
 {
     TitleScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TitleScreen is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->creditsPanel, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->creditsPanel, MyGUIBinding::getMetatableName());
 }
 
 static int TitleScreen_get_creditsText(lua_State* L)
 {
     TitleScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TitleScreen is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->creditsText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->creditsText, MyGUIBinding::getMetatableName());
 }
 
 static int TitleScreen_get_creditsLoaded(lua_State* L)
@@ -81,7 +81,7 @@ static int TitleScreen_set_creditsPanel(lua_State* L)
 {
     TitleScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TitleScreen is nil");
-    instance->creditsPanel = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::Widget*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    instance->creditsPanel = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::Widget*)checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -89,7 +89,7 @@ static int TitleScreen_set_creditsText(lua_State* L)
 {
     TitleScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TitleScreen is nil");
-    instance->creditsText = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::TextBox*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    instance->creditsText = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::TextBox*)checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 

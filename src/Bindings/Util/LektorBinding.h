@@ -1,8 +1,8 @@
-// LektorBinding.h
 #pragma once
 #include <kenshi/util/lektor.h>
 #include <kenshi/ModInfo.h>
 #include "Bindings/ModInfoBinding.h"
+#include "Lua/LuaCodec.h"
 #include <string.h>
 
 #include <release_assert.h>

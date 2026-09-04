@@ -1,9 +1,9 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\ProspectingWindow.h"
 #include "ResourceLinePanelBinding.h"
 #include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -20,7 +20,7 @@ static int ResourceLinePanel_get_button(lua_State* L)
 {
     ResourceLinePanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLinePanel is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->button, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->button, MyGUIBinding::getMetatableName());
 }
 
 // --- Setters for ResourceLinePanel ---
@@ -30,7 +30,7 @@ int ResourceLinePanelBinding::getWidget(lua_State* L)
     if (!instance) return luaL_error(L, "ResourceLinePanel is nil");
 
     MyGUI::Widget* result = ((wraps::BaseLayout*)instance)->mMainWidget;
-    return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, result, MyGUIBinding::getMetatableName());
 }
 
 

@@ -479,7 +479,7 @@ int ZoneMapBinding::getActiveZoneIsland(lua_State* L)
     lektor<ZoneMap*> out;
     instance->getActiveZoneIsland(out);
     lua_newtable(L);
-    for (size_t i = 0; i < out.size(); ++i)
+    for (uint32_t i = 0; i < out.size(); ++i)
     {
         pushObject<ZoneMap>(L, out[i], ZoneMapBinding::getMetatableName());
         lua_rawseti(L, -2, (int)(i + 1));

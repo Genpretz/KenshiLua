@@ -395,49 +395,29 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ConstructionStateBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ConstructionState_get_isComplete);
-    lua_setfield(L, -2, "isComplete");
-    lua_pushcfunction(L, ConstructionState_get_isPaused);
-    lua_setfield(L, -2, "isPaused");
-    lua_pushcfunction(L, ConstructionState_get_isDismantled);
-    lua_setfield(L, -2, "isDismantled");
-    lua_pushcfunction(L, ConstructionState_get_constructionProgress);
-    lua_setfield(L, -2, "constructionProgress");
-    lua_pushcfunction(L, ConstructionState_get_msgDismantleAmount);
-    lua_setfield(L, -2, "msgDismantleAmount");
-    lua_pushcfunction(L, ConstructionState_get_mats);
-    lua_setfield(L, -2, "mats");
-    lua_pushcfunction(L, ConstructionState_get_totalMats);
-    lua_setfield(L, -2, "totalMats");
-    lua_pushcfunction(L, ConstructionState_get_buildTimeMult);
-    lua_setfield(L, -2, "buildTimeMult");
-    lua_pushcfunction(L, ConstructionState_get_buildersThisFrame);
-    lua_setfield(L, -2, "buildersThisFrame");
-    lua_pushcfunction(L, ConstructionState_get_pathThreshold);
-    lua_setfield(L, -2, "pathThreshold");
+    registerGetter(L, "isComplete", ConstructionState_get_isComplete);
+    registerGetter(L, "isPaused", ConstructionState_get_isPaused);
+    registerGetter(L, "isDismantled", ConstructionState_get_isDismantled);
+    registerGetter(L, "constructionProgress", ConstructionState_get_constructionProgress);
+    registerGetter(L, "msgDismantleAmount", ConstructionState_get_msgDismantleAmount);
+    registerGetter(L, "mats", ConstructionState_get_mats);
+    registerGetter(L, "totalMats", ConstructionState_get_totalMats);
+    registerGetter(L, "buildTimeMult", ConstructionState_get_buildTimeMult);
+    registerGetter(L, "buildersThisFrame", ConstructionState_get_buildersThisFrame);
+    registerGetter(L, "pathThreshold", ConstructionState_get_pathThreshold);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ConstructionState_set_isComplete);
-    lua_setfield(L, -2, "isComplete");
-    lua_pushcfunction(L, ConstructionState_set_isPaused);
-    lua_setfield(L, -2, "isPaused");
-    lua_pushcfunction(L, ConstructionState_set_isDismantled);
-    lua_setfield(L, -2, "isDismantled");
-    lua_pushcfunction(L, ConstructionState_set_constructionProgress);
-    lua_setfield(L, -2, "constructionProgress");
-    lua_pushcfunction(L, ConstructionState_set_msgDismantleAmount);
-    lua_setfield(L, -2, "msgDismantleAmount");
-    lua_pushcfunction(L, ConstructionState_set_mats);
-    lua_setfield(L, -2, "mats");
-    lua_pushcfunction(L, ConstructionState_set_totalMats);
-    lua_setfield(L, -2, "totalMats");
-    lua_pushcfunction(L, ConstructionState_set_buildTimeMult);
-    lua_setfield(L, -2, "buildTimeMult");
-    lua_pushcfunction(L, ConstructionState_set_buildersThisFrame);
-    lua_setfield(L, -2, "buildersThisFrame");
-    lua_pushcfunction(L, ConstructionState_set_pathThreshold);
-    lua_setfield(L, -2, "pathThreshold");
+    registerSetter(L, "isComplete", ConstructionState_set_isComplete);
+    registerSetter(L, "isPaused", ConstructionState_set_isPaused);
+    registerSetter(L, "isDismantled", ConstructionState_set_isDismantled);
+    registerSetter(L, "constructionProgress", ConstructionState_set_constructionProgress);
+    registerSetter(L, "msgDismantleAmount", ConstructionState_set_msgDismantleAmount);
+    registerSetter(L, "mats", ConstructionState_set_mats);
+    registerSetter(L, "totalMats", ConstructionState_set_totalMats);
+    registerSetter(L, "buildTimeMult", ConstructionState_set_buildTimeMult);
+    registerSetter(L, "buildersThisFrame", ConstructionState_set_buildersThisFrame);
+    registerSetter(L, "pathThreshold", ConstructionState_set_pathThreshold);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

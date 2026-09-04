@@ -1,4 +1,7 @@
 #include "pch.h"
+#include "FactionBinding.h"
+#include "PlatoonBinding.h"
+#include "Lua/BindingHelpers.h"
 #include <kenshi\CharBody.h>
 #include "Bindings/CharBodyBinding.h"
 #include "Bindings/CombatClassBinding.h"

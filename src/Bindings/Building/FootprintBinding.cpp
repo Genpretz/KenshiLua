@@ -396,47 +396,28 @@ void FootprintBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FootprintBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, Footprint_get_wantsAboveGround);
-    lua_setfield(L, -2, "wantsAboveGround");
-    lua_pushcfunction(L, Footprint_get_lower);
-    lua_setfield(L, -2, "lower");
-    lua_pushcfunction(L, Footprint_get_space);
-    lua_setfield(L, -2, "space");
-    lua_pushcfunction(L, Footprint_get_scale);
-    lua_setfield(L, -2, "scale");
-    lua_pushcfunction(L, Footprint_get_ent);
-    lua_setfield(L, -2, "ent");
-    lua_pushcfunction(L, Footprint_get_pos);
-    lua_setfield(L, -2, "pos");
-    lua_pushcfunction(L, Footprint_get_rot);
-    lua_setfield(L, -2, "rot");
-    lua_pushcfunction(L, Footprint_get_groundType);
-    lua_setfield(L, -2, "groundType");
-    lua_pushcfunction(L, Footprint_get_valid);
-    lua_setfield(L, -2, "valid");
-    lua_pushcfunction(L, Footprint_get_parent);
-    lua_setfield(L, -2, "parent");
+    registerGetter(L, "wantsAboveGround", Footprint_get_wantsAboveGround);
+    registerGetter(L, "lower", Footprint_get_lower);
+    registerGetter(L, "space", Footprint_get_space);
+    registerGetter(L, "scale", Footprint_get_scale);
+    registerGetter(L, "ent", Footprint_get_ent);
+    registerGetter(L, "pos", Footprint_get_pos);
+    registerGetter(L, "rot", Footprint_get_rot);
+    registerGetter(L, "groundType", Footprint_get_groundType);
+    registerGetter(L, "valid", Footprint_get_valid);
+    registerGetter(L, "parent", Footprint_get_parent);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, Footprint_set_wantsAboveGround);
-    lua_setfield(L, -2, "wantsAboveGround");
-    lua_pushcfunction(L, Footprint_set_lower);
-    lua_setfield(L, -2, "lower");
-    lua_pushcfunction(L, Footprint_set_space);
-    lua_setfield(L, -2, "space");
-    lua_pushcfunction(L, Footprint_set_scale);
-    lua_setfield(L, -2, "scale");
-    lua_pushcfunction(L, Footprint_set_pos);
-    lua_setfield(L, -2, "pos");
-    lua_pushcfunction(L, Footprint_set_rot);
-    lua_setfield(L, -2, "rot");
-    lua_pushcfunction(L, Footprint_set_groundType);
-    lua_setfield(L, -2, "groundType");
-    lua_pushcfunction(L, Footprint_set_valid);
-    lua_setfield(L, -2, "valid");
-    lua_pushcfunction(L, Footprint_set_parent);
-    lua_setfield(L, -2, "parent");
+    registerSetter(L, "wantsAboveGround", Footprint_set_wantsAboveGround);
+    registerSetter(L, "lower", Footprint_set_lower);
+    registerSetter(L, "space", Footprint_set_space);
+    registerSetter(L, "scale", Footprint_set_scale);
+    registerSetter(L, "pos", Footprint_set_pos);
+    registerSetter(L, "rot", Footprint_set_rot);
+    registerSetter(L, "groundType", Footprint_set_groundType);
+    registerSetter(L, "valid", Footprint_set_valid);
+    registerSetter(L, "parent", Footprint_set_parent);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

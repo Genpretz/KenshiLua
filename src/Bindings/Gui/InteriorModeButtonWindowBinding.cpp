@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\gui\InteriorModeButtonWindow.h"
 #include "InteriorModeButtonWindowBinding.h"
 #include "BaseLayoutBinding.h"

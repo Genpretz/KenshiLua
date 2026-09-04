@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\CharMovement.h"
 #include "AbstractMovementBaseBinding.h"
 #include "Lua/BindingHelpers.h"

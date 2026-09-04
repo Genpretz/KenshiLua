@@ -103,21 +103,15 @@ void MeshLoadDataBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, MeshLoadDataBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, MeshLoadData_get_skeletonName);
-    lua_setfield(L, -2, "skeletonName");
-    lua_pushcfunction(L, MeshLoadData_get_materialName);
-    lua_setfield(L, -2, "materialName");
-    lua_pushcfunction(L, MeshLoadData_get_renderQueue);
-    lua_setfield(L, -2, "renderQueue");
+    registerGetter(L, "skeletonName", MeshLoadData_get_skeletonName);
+    registerGetter(L, "materialName", MeshLoadData_get_materialName);
+    registerGetter(L, "renderQueue", MeshLoadData_get_renderQueue);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, MeshLoadData_set_skeletonName);
-    lua_setfield(L, -2, "skeletonName");
-    lua_pushcfunction(L, MeshLoadData_set_materialName);
-    lua_setfield(L, -2, "materialName");
-    lua_pushcfunction(L, MeshLoadData_set_renderQueue);
-    lua_setfield(L, -2, "renderQueue");
+    registerSetter(L, "skeletonName", MeshLoadData_set_skeletonName);
+    registerSetter(L, "materialName", MeshLoadData_set_materialName);
+    registerSetter(L, "renderQueue", MeshLoadData_set_renderQueue);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

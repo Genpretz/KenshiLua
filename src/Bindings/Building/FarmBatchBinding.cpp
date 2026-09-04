@@ -1,7 +1,8 @@
 #include "pch.h"
+
 #include "Bindings/Building/FarmBatchBinding.h"
 #include "Bindings/Building/FarmBuildingBinding.h"
-#include "Bindings/FarmBuilding_PlantSourceBinding.h"
+#include "Bindings/Building/FarmBuilding_PlantSourceBinding.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -209,37 +210,23 @@ void FarmBatchBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FarmBatchBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FarmBatch_get_plantSource);
-    lua_setfield(L, -2, "plantSource");
-    lua_pushcfunction(L, FarmBatch_get_plantGroups);
-    lua_setfield(L, -2, "plantGroups");
-    lua_pushcfunction(L, FarmBatch_get_geometry);
-    lua_setfield(L, -2, "geometry");
-    lua_pushcfunction(L, FarmBatch_get_height);
-    lua_setfield(L, -2, "height");
-    lua_pushcfunction(L, FarmBatch_get_size);
-    lua_setfield(L, -2, "size");
-    lua_pushcfunction(L, FarmBatch_get_meshesLoaded);
-    lua_setfield(L, -2, "meshesLoaded");
-    lua_pushcfunction(L, FarmBatch_get_farms);
-    lua_setfield(L, -2, "farms");
+    registerGetter(L, "plantSource", FarmBatch_get_plantSource);
+    registerGetter(L, "plantGroups", FarmBatch_get_plantGroups);
+    registerGetter(L, "geometry", FarmBatch_get_geometry);
+    registerGetter(L, "height", FarmBatch_get_height);
+    registerGetter(L, "size", FarmBatch_get_size);
+    registerGetter(L, "meshesLoaded", FarmBatch_get_meshesLoaded);
+    registerGetter(L, "farms", FarmBatch_get_farms);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FarmBatch_set_plantSource);
-    lua_setfield(L, -2, "plantSource");
-    lua_pushcfunction(L, FarmBatch_set_plantGroups);
-    lua_setfield(L, -2, "plantGroups");
-    lua_pushcfunction(L, FarmBatch_set_geometry);
-    lua_setfield(L, -2, "geometry");
-    lua_pushcfunction(L, FarmBatch_set_height);
-    lua_setfield(L, -2, "height");
-    lua_pushcfunction(L, FarmBatch_set_size);
-    lua_setfield(L, -2, "size");
-    lua_pushcfunction(L, FarmBatch_set_meshesLoaded);
-    lua_setfield(L, -2, "meshesLoaded");
-    lua_pushcfunction(L, FarmBatch_set_farms);
-    lua_setfield(L, -2, "farms");
+    registerSetter(L, "plantSource", FarmBatch_set_plantSource);
+    registerSetter(L, "plantGroups", FarmBatch_set_plantGroups);
+    registerSetter(L, "geometry", FarmBatch_set_geometry);
+    registerSetter(L, "height", FarmBatch_set_height);
+    registerSetter(L, "size", FarmBatch_set_size);
+    registerSetter(L, "meshesLoaded", FarmBatch_set_meshesLoaded);
+    registerSetter(L, "farms", FarmBatch_set_farms);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

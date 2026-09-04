@@ -429,25 +429,17 @@ void StorageBuildingBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, StorageBuildingBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, StorageBuilding_get_specialItemTypesOnly);
-    lua_setfield(L, -2, "specialItemTypesOnly");
-    lua_pushcfunction(L, StorageBuilding_get_endOfTheLine);
-    lua_setfield(L, -2, "endOfTheLine");
-    lua_pushcfunction(L, StorageBuilding_get_productionItem);
-    lua_setfield(L, -2, "productionItem");
-    lua_pushcfunction(L, StorageBuilding_get_manyLimitItems);
-    lua_setfield(L, -2, "manyLimitItems");
+    registerGetter(L, "specialItemTypesOnly", StorageBuilding_get_specialItemTypesOnly);
+    registerGetter(L, "endOfTheLine", StorageBuilding_get_endOfTheLine);
+    registerGetter(L, "productionItem", StorageBuilding_get_productionItem);
+    registerGetter(L, "manyLimitItems", StorageBuilding_get_manyLimitItems);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, StorageBuilding_set_specialItemTypesOnly);
-    lua_setfield(L, -2, "specialItemTypesOnly");
-    lua_pushcfunction(L, StorageBuilding_set_endOfTheLine);
-    lua_setfield(L, -2, "endOfTheLine");
-    lua_pushcfunction(L, StorageBuilding_set_productionItem);
-    lua_setfield(L, -2, "productionItem");
-    lua_pushcfunction(L, StorageBuilding_set_manyLimitItems);
-    lua_setfield(L, -2, "manyLimitItems");
+    registerSetter(L, "specialItemTypesOnly", StorageBuilding_set_specialItemTypesOnly);
+    registerSetter(L, "endOfTheLine", StorageBuilding_set_endOfTheLine);
+    registerSetter(L, "productionItem", StorageBuilding_set_productionItem);
+    registerSetter(L, "manyLimitItems", StorageBuilding_set_manyLimitItems);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to UseableStuff

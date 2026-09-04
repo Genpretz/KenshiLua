@@ -119,21 +119,15 @@ void BuildMaterialBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, BuildMaterialBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, BuildMaterial_get_mat);
-    lua_setfield(L, -2, "mat");
-    lua_pushcfunction(L, BuildMaterial_get_buildMatsTotal);
-    lua_setfield(L, -2, "buildMatsTotal");
-    lua_pushcfunction(L, BuildMaterial_get_amountOfMaterials);
-    lua_setfield(L, -2, "amountOfMaterials");
+    registerGetter(L, "mat", BuildMaterial_get_mat);
+    registerGetter(L, "buildMatsTotal", BuildMaterial_get_buildMatsTotal);
+    registerGetter(L, "amountOfMaterials", BuildMaterial_get_amountOfMaterials);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, BuildMaterial_set_mat);
-    lua_setfield(L, -2, "mat");
-    lua_pushcfunction(L, BuildMaterial_set_buildMatsTotal);
-    lua_setfield(L, -2, "buildMatsTotal");
-    lua_pushcfunction(L, BuildMaterial_set_amountOfMaterials);
-    lua_setfield(L, -2, "amountOfMaterials");
+    registerSetter(L, "mat", BuildMaterial_set_mat);
+    registerSetter(L, "buildMatsTotal", BuildMaterial_set_buildMatsTotal);
+    registerSetter(L, "amountOfMaterials", BuildMaterial_set_amountOfMaterials);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

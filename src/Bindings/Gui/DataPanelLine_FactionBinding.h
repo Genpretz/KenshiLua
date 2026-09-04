@@ -1,4 +1,5 @@
 #pragma once
+#include "Bindings/FactionBinding.h"
 
 #include "kenshi/gui/DataPanelLine.h"
 

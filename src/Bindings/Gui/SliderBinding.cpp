@@ -1,8 +1,8 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\MyGUI_Slider.h"
 #include "SliderBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -27,21 +27,21 @@ static int Slider_get_mScrollbar(lua_State* L)
 {
     Slider* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Slider is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mScrollbar, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mScrollbar, MyGUIBinding::getMetatableName());
 }
 
 static int Slider_get_mSliderName(lua_State* L)
 {
     Slider* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Slider is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mSliderName, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mSliderName, MyGUIBinding::getMetatableName());
 }
 
 static int Slider_get_mSliderValue(lua_State* L)
 {
     Slider* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Slider is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mSliderValue, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mSliderValue, MyGUIBinding::getMetatableName());
 }
 
 static int Slider_get_mLoValue(lua_State* L)

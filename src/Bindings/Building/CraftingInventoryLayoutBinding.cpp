@@ -1,5 +1,4 @@
-#include "pch.h"
-class CraftingItem {};
+﻿#include "pch.h"
 #include <kenshi/Building/CraftingBuilding.h>
 #include "CraftingInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -7,7 +6,7 @@ class CraftingItem {};
 #include "Bindings/Gui/InventoryGUIBinding.h"
 #include "Bindings/Gui/InventorySectionGUIBinding.h"
 #include "Bindings/InventoryBinding.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Util/StdMapBinding.h"
 #include <MyGUI.h>
 
@@ -26,14 +25,14 @@ static int CraftingInventoryLayout_get_queueBtn(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    return pushObject<MyGUI::Widget>(L, instance->queueBtn, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->queueBtn, MyGUIBinding::getMetatableName());
 }
 
 static int CraftingInventoryLayout_get_craftingName(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    return pushObject<MyGUI::Widget>(L, instance->craftingName, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->craftingName, MyGUIBinding::getMetatableName());
 }
 
 static int CraftingInventoryLayout_get_outputType(lua_State* L)
@@ -49,7 +48,7 @@ static int CraftingInventoryLayout_set_queueBtn(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    instance->queueBtn = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::Button*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    instance->queueBtn = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::Button*)checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -57,7 +56,7 @@ static int CraftingInventoryLayout_set_craftingName(lua_State* L)
 {
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
-    instance->craftingName = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::TextBox*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    instance->craftingName = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::TextBox*)checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -142,7 +141,7 @@ int CraftingInventoryLayoutBinding::getQueueButton(lua_State* L)
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
 
     MyGUI::Button* result = instance->getQueueButton();
-    return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, result, MyGUIBinding::getMetatableName());
 }
 
 /*
@@ -192,21 +191,15 @@ void CraftingInventoryLayoutBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, CraftingInventoryLayoutBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, CraftingInventoryLayout_get_queueBtn);
-    lua_setfield(L, -2, "queueBtn");
-    lua_pushcfunction(L, CraftingInventoryLayout_get_craftingName);
-    lua_setfield(L, -2, "craftingName");
-    lua_pushcfunction(L, CraftingInventoryLayout_get_outputType);
-    lua_setfield(L, -2, "outputType");
+    registerGetter(L, "queueBtn", CraftingInventoryLayout_get_queueBtn);
+    registerGetter(L, "craftingName", CraftingInventoryLayout_get_craftingName);
+    registerGetter(L, "outputType", CraftingInventoryLayout_get_outputType);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, CraftingInventoryLayout_set_queueBtn);
-    lua_setfield(L, -2, "queueBtn");
-    lua_pushcfunction(L, CraftingInventoryLayout_set_craftingName);
-    lua_setfield(L, -2, "craftingName");
-    lua_pushcfunction(L, CraftingInventoryLayout_set_outputType);
-    lua_setfield(L, -2, "outputType");
+    registerSetter(L, "queueBtn", CraftingInventoryLayout_set_queueBtn);
+    registerSetter(L, "craftingName", CraftingInventoryLayout_set_craftingName);
+    registerSetter(L, "outputType", CraftingInventoryLayout_set_outputType);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

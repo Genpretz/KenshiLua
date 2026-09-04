@@ -78,8 +78,7 @@ void ResourceLoadRequestTextureBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ResourceLoadRequestTextureBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ResourceLoadRequestTexture_get_textureUnitState);
-    lua_setfield(L, -2, "textureUnitState");
+    registerGetter(L, "textureUnitState", ResourceLoadRequestTexture_get_textureUnitState);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table

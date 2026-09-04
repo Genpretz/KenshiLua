@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include <kenshi/Building/StorageBuilding.h>
 #include "BuildingContainerInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -6,7 +6,7 @@
 #include "Bindings/Gui/InventoryGUIBinding.h"
 #include "Bindings/Gui/InventorySectionGUIBinding.h"
 #include "Bindings/InventoryBinding.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Util/StdMapBinding.h"
 #include <MyGUI.h>
 
@@ -25,7 +25,7 @@ static int BuildingContainerInventoryLayout_get_capacityText(lua_State* L)
 {
     BuildingContainerInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
-    return pushObject<MyGUI::Widget>(L, instance->capacityText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->capacityText, MyGUIBinding::getMetatableName());
 }
 
 // --- Setters for BuildingContainerInventoryLayout ---
@@ -33,7 +33,7 @@ static int BuildingContainerInventoryLayout_set_capacityText(lua_State* L)
 {
     BuildingContainerInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildingContainerInventoryLayout is nil");
-    instance->capacityText = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::EditBox*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    instance->capacityText = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::EditBox*)checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -104,13 +104,11 @@ void BuildingContainerInventoryLayoutBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, BuildingContainerInventoryLayoutBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, BuildingContainerInventoryLayout_get_capacityText);
-    lua_setfield(L, -2, "capacityText");
+    registerGetter(L, "capacityText", BuildingContainerInventoryLayout_get_capacityText);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, BuildingContainerInventoryLayout_set_capacityText);
-    lua_setfield(L, -2, "capacityText");
+    registerSetter(L, "capacityText", BuildingContainerInventoryLayout_set_capacityText);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to GenericInventoryLayout

@@ -565,53 +565,31 @@ void FactionWarMgrBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FactionWarMgrBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FactionWarMgr_get_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, FactionWarMgr_get_lastID);
-    lua_setfield(L, -2, "lastID");
-    lua_pushcfunction(L, FactionWarMgr_get_nextUpdateTime);
-    lua_setfield(L, -2, "nextUpdateTime");
-    lua_pushcfunction(L, FactionWarMgr_get_myTowns);
-    lua_setfield(L, -2, "myTowns");
-    lua_pushcfunction(L, FactionWarMgr_get_hiredForces);
-    lua_setfield(L, -2, "hiredForces");
-    lua_pushcfunction(L, FactionWarMgr_get_activeCampaigns);
-    lua_setfield(L, -2, "activeCampaigns");
-    lua_pushcfunction(L, FactionWarMgr_get_biomeTerritories);
-    lua_setfield(L, -2, "biomeTerritories");
-    lua_pushcfunction(L, FactionWarMgr_get_biomeNoGoZones);
-    lua_setfield(L, -2, "biomeNoGoZones");
-    lua_pushcfunction(L, FactionWarMgr_get_campaignRequests);
-    lua_setfield(L, -2, "campaignRequests");
-    lua_pushcfunction(L, FactionWarMgr_get_possibleCampaigns);
-    lua_setfield(L, -2, "possibleCampaigns");
-    lua_pushcfunction(L, FactionWarMgr_get_forces);
-    lua_setfield(L, -2, "forces");
+    registerGetter(L, "me", FactionWarMgr_get_me);
+    registerGetter(L, "lastID", FactionWarMgr_get_lastID);
+    registerGetter(L, "nextUpdateTime", FactionWarMgr_get_nextUpdateTime);
+    registerGetter(L, "myTowns", FactionWarMgr_get_myTowns);
+    registerGetter(L, "hiredForces", FactionWarMgr_get_hiredForces);
+    registerGetter(L, "activeCampaigns", FactionWarMgr_get_activeCampaigns);
+    registerGetter(L, "biomeTerritories", FactionWarMgr_get_biomeTerritories);
+    registerGetter(L, "biomeNoGoZones", FactionWarMgr_get_biomeNoGoZones);
+    registerGetter(L, "campaignRequests", FactionWarMgr_get_campaignRequests);
+    registerGetter(L, "possibleCampaigns", FactionWarMgr_get_possibleCampaigns);
+    registerGetter(L, "forces", FactionWarMgr_get_forces);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FactionWarMgr_set_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, FactionWarMgr_set_lastID);
-    lua_setfield(L, -2, "lastID");
-    lua_pushcfunction(L, FactionWarMgr_set_nextUpdateTime);
-    lua_setfield(L, -2, "nextUpdateTime");
-    lua_pushcfunction(L, FactionWarMgr_set_myTowns);
-    lua_setfield(L, -2, "myTowns");
-    lua_pushcfunction(L, FactionWarMgr_set_hiredForces);
-    lua_setfield(L, -2, "hiredForces");
-    lua_pushcfunction(L, FactionWarMgr_set_activeCampaigns);
-    lua_setfield(L, -2, "activeCampaigns");
-    lua_pushcfunction(L, FactionWarMgr_set_biomeTerritories);
-    lua_setfield(L, -2, "biomeTerritories");
-    lua_pushcfunction(L, FactionWarMgr_set_biomeNoGoZones);
-    lua_setfield(L, -2, "biomeNoGoZones");
-    lua_pushcfunction(L, FactionWarMgr_set_campaignRequests);
-    lua_setfield(L, -2, "campaignRequests");
-    lua_pushcfunction(L, FactionWarMgr_set_possibleCampaigns);
-    lua_setfield(L, -2, "possibleCampaigns");
-    lua_pushcfunction(L, FactionWarMgr_set_forces);
-    lua_setfield(L, -2, "forces");
+    registerSetter(L, "me", FactionWarMgr_set_me);
+    registerSetter(L, "lastID", FactionWarMgr_set_lastID);
+    registerSetter(L, "nextUpdateTime", FactionWarMgr_set_nextUpdateTime);
+    registerSetter(L, "myTowns", FactionWarMgr_set_myTowns);
+    registerSetter(L, "hiredForces", FactionWarMgr_set_hiredForces);
+    registerSetter(L, "activeCampaigns", FactionWarMgr_set_activeCampaigns);
+    registerSetter(L, "biomeTerritories", FactionWarMgr_set_biomeTerritories);
+    registerSetter(L, "biomeNoGoZones", FactionWarMgr_set_biomeNoGoZones);
+    registerSetter(L, "campaignRequests", FactionWarMgr_set_campaignRequests);
+    registerSetter(L, "possibleCampaigns", FactionWarMgr_set_possibleCampaigns);
+    registerSetter(L, "forces", FactionWarMgr_set_forces);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -79,8 +79,7 @@ void ResourceLoadRequestMeshBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ResourceLoadRequestMeshBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ResourceLoadRequestMesh_get_entity);
-    lua_setfield(L, -2, "entity");
+    registerGetter(L, "entity", ResourceLoadRequestMesh_get_entity);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table

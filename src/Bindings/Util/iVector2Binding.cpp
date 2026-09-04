@@ -110,17 +110,13 @@ void iVector2Binding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, iVector2Binding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, iVector2_get_x);
-    lua_setfield(L, -2, "x");
-    lua_pushcfunction(L, iVector2_get_y);
-    lua_setfield(L, -2, "y");
+    registerGetter(L, "x", iVector2_get_x);
+    registerGetter(L, "y", iVector2_get_y);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, iVector2_set_x);
-    lua_setfield(L, -2, "x");
-    lua_pushcfunction(L, iVector2_set_y);
-    lua_setfield(L, -2, "y");
+    registerSetter(L, "x", iVector2_set_x);
+    registerSetter(L, "y", iVector2_set_y);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

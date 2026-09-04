@@ -73,13 +73,11 @@ void LimbsInventoryLayoutBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, LimbsInventoryLayoutBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, LimbsInventoryLayout_get_character);
-    lua_setfield(L, -2, "character");
+    registerGetter(L, "character", LimbsInventoryLayout_get_character);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, LimbsInventoryLayout_set_character);
-    lua_setfield(L, -2, "character");
+    registerSetter(L, "character", LimbsInventoryLayout_set_character);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to InventoryLayout

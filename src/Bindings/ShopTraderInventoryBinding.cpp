@@ -304,17 +304,13 @@ void ShopTraderInventoryBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ShopTraderInventoryBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ShopTraderInventory_get_inventories);
-    lua_setfield(L, -2, "inventories");
-    lua_pushcfunction(L, ShopTraderInventory_get_section);
-    lua_setfield(L, -2, "section");
+    registerGetter(L, "inventories", ShopTraderInventory_get_inventories);
+    registerGetter(L, "section", ShopTraderInventory_get_section);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ShopTraderInventory_set_inventories);
-    lua_setfield(L, -2, "inventories");
-    lua_pushcfunction(L, ShopTraderInventory_set_section);
-    lua_setfield(L, -2, "section");
+    registerSetter(L, "inventories", ShopTraderInventory_set_inventories);
+    registerSetter(L, "section", ShopTraderInventory_set_section);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Inventory

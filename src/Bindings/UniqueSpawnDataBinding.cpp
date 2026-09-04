@@ -128,25 +128,17 @@ void UniqueSpawnDataBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, UniqueSpawnDataBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, UniqueSpawnData_get_squadTemplate);
-    lua_setfield(L, -2, "squadTemplate");
-    lua_pushcfunction(L, UniqueSpawnData_get_desiredNumberToHave);
-    lua_setfield(L, -2, "desiredNumberToHave");
-    lua_pushcfunction(L, UniqueSpawnData_get_respawnTimer);
-    lua_setfield(L, -2, "respawnTimer");
-    lua_pushcfunction(L, UniqueSpawnData_get_existingSquadsList);
-    lua_setfield(L, -2, "existingSquadsList");
+    registerGetter(L, "squadTemplate", UniqueSpawnData_get_squadTemplate);
+    registerGetter(L, "desiredNumberToHave", UniqueSpawnData_get_desiredNumberToHave);
+    registerGetter(L, "respawnTimer", UniqueSpawnData_get_respawnTimer);
+    registerGetter(L, "existingSquadsList", UniqueSpawnData_get_existingSquadsList);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, UniqueSpawnData_set_squadTemplate);
-    lua_setfield(L, -2, "squadTemplate");
-    lua_pushcfunction(L, UniqueSpawnData_set_desiredNumberToHave);
-    lua_setfield(L, -2, "desiredNumberToHave");
-    lua_pushcfunction(L, UniqueSpawnData_set_respawnTimer);
-    lua_setfield(L, -2, "respawnTimer");
-    lua_pushcfunction(L, UniqueSpawnData_set_existingSquadsList);
-    lua_setfield(L, -2, "existingSquadsList");
+    registerSetter(L, "squadTemplate", UniqueSpawnData_set_squadTemplate);
+    registerSetter(L, "desiredNumberToHave", UniqueSpawnData_set_desiredNumberToHave);
+    registerSetter(L, "respawnTimer", UniqueSpawnData_set_respawnTimer);
+    registerSetter(L, "existingSquadsList", UniqueSpawnData_set_existingSquadsList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

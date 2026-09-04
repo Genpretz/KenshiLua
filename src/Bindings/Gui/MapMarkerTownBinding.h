@@ -1,4 +1,5 @@
 #pragma once
+#include "Bindings/TownBinding.h"
 
 #include "kenshi/gui/MapScreen.h"
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "Bindings/PlatoonBinding.h"
 
 #include "kenshi/gui/MainBarGUI.h"
 

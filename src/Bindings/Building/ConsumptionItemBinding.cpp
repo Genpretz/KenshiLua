@@ -152,29 +152,19 @@ void ConsumptionItemBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ConsumptionItemBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ConsumptionItem_get_amount);
-    lua_setfield(L, -2, "amount");
-    lua_pushcfunction(L, ConsumptionItem_get_rate);
-    lua_setfield(L, -2, "rate");
-    lua_pushcfunction(L, ConsumptionItem_get_maxCapacity);
-    lua_setfield(L, -2, "maxCapacity");
-    lua_pushcfunction(L, ConsumptionItem_get_item);
-    lua_setfield(L, -2, "item");
-    lua_pushcfunction(L, ConsumptionItem_get_inventorySection);
-    lua_setfield(L, -2, "inventorySection");
+    registerGetter(L, "amount", ConsumptionItem_get_amount);
+    registerGetter(L, "rate", ConsumptionItem_get_rate);
+    registerGetter(L, "maxCapacity", ConsumptionItem_get_maxCapacity);
+    registerGetter(L, "item", ConsumptionItem_get_item);
+    registerGetter(L, "inventorySection", ConsumptionItem_get_inventorySection);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ConsumptionItem_set_amount);
-    lua_setfield(L, -2, "amount");
-    lua_pushcfunction(L, ConsumptionItem_set_rate);
-    lua_setfield(L, -2, "rate");
-    lua_pushcfunction(L, ConsumptionItem_set_maxCapacity);
-    lua_setfield(L, -2, "maxCapacity");
-    lua_pushcfunction(L, ConsumptionItem_set_item);
-    lua_setfield(L, -2, "item");
-    lua_pushcfunction(L, ConsumptionItem_set_inventorySection);
-    lua_setfield(L, -2, "inventorySection");
+    registerSetter(L, "amount", ConsumptionItem_set_amount);
+    registerSetter(L, "rate", ConsumptionItem_set_rate);
+    registerSetter(L, "maxCapacity", ConsumptionItem_set_maxCapacity);
+    registerSetter(L, "item", ConsumptionItem_set_item);
+    registerSetter(L, "inventorySection", ConsumptionItem_set_inventorySection);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

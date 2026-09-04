@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include <kenshi/Building/ResearchBuilding.h>
 #include "ResearchBuildingInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -6,7 +6,7 @@
 #include "Bindings/Gui/InventoryGUIBinding.h"
 #include "Bindings/Gui/InventorySectionGUIBinding.h"
 #include "Bindings/InventoryBinding.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Util/StdMapBinding.h"
 #include <MyGUI.h>
 
@@ -25,7 +25,7 @@ static int ResearchBuildingInventoryLayout_get_researchButton(lua_State* L)
 {
     ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
-    return pushObject<MyGUI::Widget>(L, instance->researchButton, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->researchButton, MyGUIBinding::getMetatableName());
 }
 
 // --- Setters for ResearchBuildingInventoryLayout ---
@@ -33,7 +33,7 @@ static int ResearchBuildingInventoryLayout_set_researchButton(lua_State* L)
 {
     ResearchBuildingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
-    instance->researchButton = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::Button*)checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    instance->researchButton = lua_isnoneornil(L, 2) ? nullptr : (MyGUI::Button*)checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -43,7 +43,7 @@ int ResearchBuildingInventoryLayoutBinding::getResearchButton(lua_State* L)
     if (!instance) return luaL_error(L, "ResearchBuildingInventoryLayout is nil");
 
     MyGUI::Widget* result = instance->getResearchButton();
-    return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, result, MyGUIBinding::getMetatableName());
 }
 
 int ResearchBuildingInventoryLayoutBinding::setupSections(lua_State* L)
@@ -102,13 +102,11 @@ void ResearchBuildingInventoryLayoutBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ResearchBuildingInventoryLayoutBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ResearchBuildingInventoryLayout_get_researchButton);
-    lua_setfield(L, -2, "researchButton");
+    registerGetter(L, "researchButton", ResearchBuildingInventoryLayout_get_researchButton);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ResearchBuildingInventoryLayout_set_researchButton);
-    lua_setfield(L, -2, "researchButton");
+    registerSetter(L, "researchButton", ResearchBuildingInventoryLayout_set_researchButton);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to GenericInventoryLayout

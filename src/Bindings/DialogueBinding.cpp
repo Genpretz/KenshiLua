@@ -1,4 +1,5 @@
 #include "pch.h"
+
 #include "kenshi/Dialogue.h"
 #include "DialogueBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -13,6 +14,7 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/RepetitionCounterBinding.h"
 #include "Bindings/Util/StdMapBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

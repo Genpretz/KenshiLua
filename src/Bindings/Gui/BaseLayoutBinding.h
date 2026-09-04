@@ -5,7 +5,7 @@ extern "C" {
 #include <lauxlib.h>
 }
 
-namespace wraps
+namespace KenshiLua
 {
 class BaseLayoutBinding
 {

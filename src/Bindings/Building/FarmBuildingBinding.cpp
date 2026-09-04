@@ -1,13 +1,10 @@
 #include "pch.h"
-class Layout {};
-class AreaBiomeGroup {};
-class PosRotPair {};
-class StaticBoxEntity {};
+
 #include "Bindings/Building/FarmBuildingBinding.h"
 #include "Bindings/Building/ProductionBuildingBinding.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/Building/FarmBatchBinding.h"
-#include "Bindings/FarmBuilding_PlantBinding.h"
+#include "Bindings/Building/FarmBuilding_PlantBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/GameDataBinding.h"
@@ -1140,109 +1137,59 @@ void FarmBuildingBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FarmBuildingBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FarmBuilding_get_cropMultipliers);
-    lua_setfield(L, -2, "cropMultipliers");
-    lua_pushcfunction(L, FarmBuilding_get_material);
-    lua_setfield(L, -2, "material");
-    lua_pushcfunction(L, FarmBuilding_get_plantEntity);
-    lua_setfield(L, -2, "plantEntity");
-    lua_pushcfunction(L, FarmBuilding_get_plants);
-    lua_setfield(L, -2, "plants");
-    lua_pushcfunction(L, FarmBuilding_get_clickHull);
-    lua_setfield(L, -2, "clickHull");
-    lua_pushcfunction(L, FarmBuilding_get_batch);
-    lua_setfield(L, -2, "batch");
-    lua_pushcfunction(L, FarmBuilding_get_lastUpdated);
-    lua_setfield(L, -2, "lastUpdated");
-    lua_pushcfunction(L, FarmBuilding_get_eatingTime);
-    lua_setfield(L, -2, "eatingTime");
-    lua_pushcfunction(L, FarmBuilding_get_grown);
-    lua_setfield(L, -2, "grown");
-    lua_pushcfunction(L, FarmBuilding_get_died);
-    lua_setfield(L, -2, "died");
-    lua_pushcfunction(L, FarmBuilding_get_cleared);
-    lua_setfield(L, -2, "cleared");
-    lua_pushcfunction(L, FarmBuilding_get_growStart);
-    lua_setfield(L, -2, "growStart");
-    lua_pushcfunction(L, FarmBuilding_get_harvested);
-    lua_setfield(L, -2, "harvested");
-    lua_pushcfunction(L, FarmBuilding_get_itemsPerPlant);
-    lua_setfield(L, -2, "itemsPerPlant");
-    lua_pushcfunction(L, FarmBuilding_get_clearRate);
-    lua_setfield(L, -2, "clearRate");
-    lua_pushcfunction(L, FarmBuilding_get_consumptionRate);
-    lua_setfield(L, -2, "consumptionRate");
-    lua_pushcfunction(L, FarmBuilding_get_harvestRate);
-    lua_setfield(L, -2, "harvestRate");
-    lua_pushcfunction(L, FarmBuilding_get_growthTime);
-    lua_setfield(L, -2, "growthTime");
-    lua_pushcfunction(L, FarmBuilding_get_harvestTime);
-    lua_setfield(L, -2, "harvestTime");
-    lua_pushcfunction(L, FarmBuilding_get_deathTime);
-    lua_setfield(L, -2, "deathTime");
-    lua_pushcfunction(L, FarmBuilding_get_droughtTime);
-    lua_setfield(L, -2, "droughtTime");
-    lua_pushcfunction(L, FarmBuilding_get_deathThreshold);
-    lua_setfield(L, -2, "deathThreshold");
-    lua_pushcfunction(L, FarmBuilding_get_droughtMultiplier);
-    lua_setfield(L, -2, "droughtMultiplier");
-    lua_pushcfunction(L, FarmBuilding_get_fertilityMultiplier);
-    lua_setfield(L, -2, "fertilityMultiplier");
-    lua_pushcfunction(L, FarmBuilding_get_isHydroponic);
-    lua_setfield(L, -2, "isHydroponic");
+    registerGetter(L, "cropMultipliers", FarmBuilding_get_cropMultipliers);
+    registerGetter(L, "material", FarmBuilding_get_material);
+    registerGetter(L, "plantEntity", FarmBuilding_get_plantEntity);
+    registerGetter(L, "plants", FarmBuilding_get_plants);
+    registerGetter(L, "clickHull", FarmBuilding_get_clickHull);
+    registerGetter(L, "batch", FarmBuilding_get_batch);
+    registerGetter(L, "lastUpdated", FarmBuilding_get_lastUpdated);
+    registerGetter(L, "eatingTime", FarmBuilding_get_eatingTime);
+    registerGetter(L, "grown", FarmBuilding_get_grown);
+    registerGetter(L, "died", FarmBuilding_get_died);
+    registerGetter(L, "cleared", FarmBuilding_get_cleared);
+    registerGetter(L, "growStart", FarmBuilding_get_growStart);
+    registerGetter(L, "harvested", FarmBuilding_get_harvested);
+    registerGetter(L, "itemsPerPlant", FarmBuilding_get_itemsPerPlant);
+    registerGetter(L, "clearRate", FarmBuilding_get_clearRate);
+    registerGetter(L, "consumptionRate", FarmBuilding_get_consumptionRate);
+    registerGetter(L, "harvestRate", FarmBuilding_get_harvestRate);
+    registerGetter(L, "growthTime", FarmBuilding_get_growthTime);
+    registerGetter(L, "harvestTime", FarmBuilding_get_harvestTime);
+    registerGetter(L, "deathTime", FarmBuilding_get_deathTime);
+    registerGetter(L, "droughtTime", FarmBuilding_get_droughtTime);
+    registerGetter(L, "deathThreshold", FarmBuilding_get_deathThreshold);
+    registerGetter(L, "droughtMultiplier", FarmBuilding_get_droughtMultiplier);
+    registerGetter(L, "fertilityMultiplier", FarmBuilding_get_fertilityMultiplier);
+    registerGetter(L, "isHydroponic", FarmBuilding_get_isHydroponic);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FarmBuilding_set_cropMultipliers);
-    lua_setfield(L, -2, "cropMultipliers");
-    lua_pushcfunction(L, FarmBuilding_set_material);
-    lua_setfield(L, -2, "material");
-    lua_pushcfunction(L, FarmBuilding_set_plantEntity);
-    lua_setfield(L, -2, "plantEntity");
-    lua_pushcfunction(L, FarmBuilding_set_plants);
-    lua_setfield(L, -2, "plants");
-    lua_pushcfunction(L, FarmBuilding_set_clickHull);
-    lua_setfield(L, -2, "clickHull");
-    lua_pushcfunction(L, FarmBuilding_set_batch);
-    lua_setfield(L, -2, "batch");
-    lua_pushcfunction(L, FarmBuilding_set_lastUpdated);
-    lua_setfield(L, -2, "lastUpdated");
-    lua_pushcfunction(L, FarmBuilding_set_eatingTime);
-    lua_setfield(L, -2, "eatingTime");
-    lua_pushcfunction(L, FarmBuilding_set_grown);
-    lua_setfield(L, -2, "grown");
-    lua_pushcfunction(L, FarmBuilding_set_died);
-    lua_setfield(L, -2, "died");
-    lua_pushcfunction(L, FarmBuilding_set_cleared);
-    lua_setfield(L, -2, "cleared");
-    lua_pushcfunction(L, FarmBuilding_set_growStart);
-    lua_setfield(L, -2, "growStart");
-    lua_pushcfunction(L, FarmBuilding_set_harvested);
-    lua_setfield(L, -2, "harvested");
-    lua_pushcfunction(L, FarmBuilding_set_itemsPerPlant);
-    lua_setfield(L, -2, "itemsPerPlant");
-    lua_pushcfunction(L, FarmBuilding_set_clearRate);
-    lua_setfield(L, -2, "clearRate");
-    lua_pushcfunction(L, FarmBuilding_set_consumptionRate);
-    lua_setfield(L, -2, "consumptionRate");
-    lua_pushcfunction(L, FarmBuilding_set_harvestRate);
-    lua_setfield(L, -2, "harvestRate");
-    lua_pushcfunction(L, FarmBuilding_set_growthTime);
-    lua_setfield(L, -2, "growthTime");
-    lua_pushcfunction(L, FarmBuilding_set_harvestTime);
-    lua_setfield(L, -2, "harvestTime");
-    lua_pushcfunction(L, FarmBuilding_set_deathTime);
-    lua_setfield(L, -2, "deathTime");
-    lua_pushcfunction(L, FarmBuilding_set_droughtTime);
-    lua_setfield(L, -2, "droughtTime");
-    lua_pushcfunction(L, FarmBuilding_set_deathThreshold);
-    lua_setfield(L, -2, "deathThreshold");
-    lua_pushcfunction(L, FarmBuilding_set_droughtMultiplier);
-    lua_setfield(L, -2, "droughtMultiplier");
-    lua_pushcfunction(L, FarmBuilding_set_fertilityMultiplier);
-    lua_setfield(L, -2, "fertilityMultiplier");
-    lua_pushcfunction(L, FarmBuilding_set_isHydroponic);
-    lua_setfield(L, -2, "isHydroponic");
+    registerSetter(L, "cropMultipliers", FarmBuilding_set_cropMultipliers);
+    registerSetter(L, "material", FarmBuilding_set_material);
+    registerSetter(L, "plantEntity", FarmBuilding_set_plantEntity);
+    registerSetter(L, "plants", FarmBuilding_set_plants);
+    registerSetter(L, "clickHull", FarmBuilding_set_clickHull);
+    registerSetter(L, "batch", FarmBuilding_set_batch);
+    registerSetter(L, "lastUpdated", FarmBuilding_set_lastUpdated);
+    registerSetter(L, "eatingTime", FarmBuilding_set_eatingTime);
+    registerSetter(L, "grown", FarmBuilding_set_grown);
+    registerSetter(L, "died", FarmBuilding_set_died);
+    registerSetter(L, "cleared", FarmBuilding_set_cleared);
+    registerSetter(L, "growStart", FarmBuilding_set_growStart);
+    registerSetter(L, "harvested", FarmBuilding_set_harvested);
+    registerSetter(L, "itemsPerPlant", FarmBuilding_set_itemsPerPlant);
+    registerSetter(L, "clearRate", FarmBuilding_set_clearRate);
+    registerSetter(L, "consumptionRate", FarmBuilding_set_consumptionRate);
+    registerSetter(L, "harvestRate", FarmBuilding_set_harvestRate);
+    registerSetter(L, "growthTime", FarmBuilding_set_growthTime);
+    registerSetter(L, "harvestTime", FarmBuilding_set_harvestTime);
+    registerSetter(L, "deathTime", FarmBuilding_set_deathTime);
+    registerSetter(L, "droughtTime", FarmBuilding_set_droughtTime);
+    registerSetter(L, "deathThreshold", FarmBuilding_set_deathThreshold);
+    registerSetter(L, "droughtMultiplier", FarmBuilding_set_droughtMultiplier);
+    registerSetter(L, "fertilityMultiplier", FarmBuilding_set_fertilityMultiplier);
+    registerSetter(L, "isHydroponic", FarmBuilding_set_isHydroponic);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

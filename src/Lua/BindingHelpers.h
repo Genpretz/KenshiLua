@@ -7,6 +7,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_enum.hpp>
 #include <boost/type_traits/is_integral.hpp>
+#include <boost/type_traits/is_floating_point.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -22,6 +23,7 @@ namespace KenshiLua
     // =========================================================================
 
     void logToFileWarn(const std::string& message);
+    void logToFileError(const std::string& message);
 
     // =========================================================================
     // Source & Path Utilities
@@ -729,5 +731,7 @@ namespace KenshiLua
         lua_rawgeti(L, idx, 3); out.value[2] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
         return true;
     }
+
+    // =========================================================================
 
 } // namespace KenshiLua

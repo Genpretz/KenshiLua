@@ -203,41 +203,25 @@ void RelationDataBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, RelationDataBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, RelationData_get_alliance);
-    lua_setfield(L, -2, "alliance");
-    lua_pushcfunction(L, RelationData_get_peaceTreaty);
-    lua_setfield(L, -2, "peaceTreaty");
-    lua_pushcfunction(L, RelationData_get_war);
-    lua_setfield(L, -2, "war");
-    lua_pushcfunction(L, RelationData_get_coexists);
-    lua_setfield(L, -2, "coexists");
-    lua_pushcfunction(L, RelationData_get_relation);
-    lua_setfield(L, -2, "relation");
-    lua_pushcfunction(L, RelationData_get_trustPositives);
-    lua_setfield(L, -2, "trustPositives");
-    lua_pushcfunction(L, RelationData_get_trustNegatives);
-    lua_setfield(L, -2, "trustNegatives");
-    lua_pushcfunction(L, RelationData_get_percievedStrength);
-    lua_setfield(L, -2, "percievedStrength");
+    registerGetter(L, "alliance", RelationData_get_alliance);
+    registerGetter(L, "peaceTreaty", RelationData_get_peaceTreaty);
+    registerGetter(L, "war", RelationData_get_war);
+    registerGetter(L, "coexists", RelationData_get_coexists);
+    registerGetter(L, "relation", RelationData_get_relation);
+    registerGetter(L, "trustPositives", RelationData_get_trustPositives);
+    registerGetter(L, "trustNegatives", RelationData_get_trustNegatives);
+    registerGetter(L, "percievedStrength", RelationData_get_percievedStrength);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, RelationData_set_alliance);
-    lua_setfield(L, -2, "alliance");
-    lua_pushcfunction(L, RelationData_set_peaceTreaty);
-    lua_setfield(L, -2, "peaceTreaty");
-    lua_pushcfunction(L, RelationData_set_war);
-    lua_setfield(L, -2, "war");
-    lua_pushcfunction(L, RelationData_set_coexists);
-    lua_setfield(L, -2, "coexists");
-    lua_pushcfunction(L, RelationData_set_relation);
-    lua_setfield(L, -2, "relation");
-    lua_pushcfunction(L, RelationData_set_trustPositives);
-    lua_setfield(L, -2, "trustPositives");
-    lua_pushcfunction(L, RelationData_set_trustNegatives);
-    lua_setfield(L, -2, "trustNegatives");
-    lua_pushcfunction(L, RelationData_set_percievedStrength);
-    lua_setfield(L, -2, "percievedStrength");
+    registerSetter(L, "alliance", RelationData_set_alliance);
+    registerSetter(L, "peaceTreaty", RelationData_set_peaceTreaty);
+    registerSetter(L, "war", RelationData_set_war);
+    registerSetter(L, "coexists", RelationData_set_coexists);
+    registerSetter(L, "relation", RelationData_set_relation);
+    registerSetter(L, "trustPositives", RelationData_set_trustPositives);
+    registerSetter(L, "trustNegatives", RelationData_set_trustNegatives);
+    registerSetter(L, "percievedStrength", RelationData_set_percievedStrength);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -1,8 +1,8 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_CheckBoxBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 
@@ -85,7 +85,7 @@ int DataPanelLine_CheckBoxBinding::getTextBox(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_CheckBox is nil");
 
     MyGUI::EditBox* result = instance->getTextBox();
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGUIBinding::getMetatableName());
 }
 
 int DataPanelLine_CheckBoxBinding::getCheckBox(lua_State* L)
@@ -94,7 +94,7 @@ int DataPanelLine_CheckBoxBinding::getCheckBox(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_CheckBox is nil");
 
     MyGUI::Button* result = instance->getCheckBox();
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGUIBinding::getMetatableName());
 }
 
 int DataPanelLine_CheckBoxBinding::createMe(lua_State* L)

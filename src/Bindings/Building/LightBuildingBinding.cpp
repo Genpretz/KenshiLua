@@ -251,13 +251,11 @@ void LightBuildingBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, LightBuildingBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, LightBuilding_get_mountedBuilding);
-    lua_setfield(L, -2, "mountedBuilding");
+    registerGetter(L, "mountedBuilding", LightBuilding_get_mountedBuilding);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, LightBuilding_set_mountedBuilding);
-    lua_setfield(L, -2, "mountedBuilding");
+    registerSetter(L, "mountedBuilding", LightBuilding_set_mountedBuilding);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to UseableStuff

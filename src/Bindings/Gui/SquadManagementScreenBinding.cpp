@@ -1,8 +1,8 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\SquadManagementScreen.h"
 #include "SquadManagementScreenBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Gui/SquadDataBinding.h"
 #include "Bindings/Gui/SquadItemBoxBinding.h"
 #include "Bindings/Gui/PortraitSquadItemBoxBinding.h"
@@ -27,21 +27,21 @@ static int SquadManagementScreen_get_mainWidget(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mainWidget, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->mainWidget, MyGUIBinding::getMetatableName());
 }
 
 static int SquadManagementScreen_get_btnAddSquad(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->btnAddSquad, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->btnAddSquad, MyGUIBinding::getMetatableName());
 }
 
 static int SquadManagementScreen_get_txtFactionSize(lua_State* L)
 {
     SquadManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->txtFactionSize, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->txtFactionSize, MyGUIBinding::getMetatableName());
 }
 
 static int SquadManagementScreen_get_factionSize(lua_State* L)

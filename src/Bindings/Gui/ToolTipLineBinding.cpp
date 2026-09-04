@@ -1,8 +1,8 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\Tooltip.h"
 #include "ToolTipLineBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -18,21 +18,21 @@ static int ToolTipLine_get_content(lua_State* L)
 {
     ToolTipLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipLine is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->content, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->content, MyGUIBinding::getMetatableName());
 }
 
 static int ToolTipLine_get_leftBox(lua_State* L)
 {
     ToolTipLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipLine is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->leftBox, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->leftBox, MyGUIBinding::getMetatableName());
 }
 
 static int ToolTipLine_get_rightBox(lua_State* L)
 {
     ToolTipLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipLine is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->rightBox, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->rightBox, MyGUIBinding::getMetatableName());
 }
 
 static int ToolTipLine_get_width(lua_State* L)

@@ -255,37 +255,23 @@ void OpenSaveFileDialogBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, OpenSaveFileDialogBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, OpenSaveFileDialog_get_filesList);
-    lua_setfield(L, -2, "filesList");
-    lua_pushcfunction(L, OpenSaveFileDialog_get_fileNameTxt);
-    lua_setfield(L, -2, "fileNameTxt");
-    lua_pushcfunction(L, OpenSaveFileDialog_get_currentFolderList);
-    lua_setfield(L, -2, "currentFolderList");
-    lua_pushcfunction(L, OpenSaveFileDialog_get_openSaveButton);
-    lua_setfield(L, -2, "openSaveButton");
-    lua_pushcfunction(L, OpenSaveFileDialog_get_currentFolder);
-    lua_setfield(L, -2, "currentFolder");
-    lua_pushcfunction(L, OpenSaveFileDialog_get_fileName);
-    lua_setfield(L, -2, "fileName");
-    lua_pushcfunction(L, OpenSaveFileDialog_get_fileMask);
-    lua_setfield(L, -2, "fileMask");
-    lua_pushcfunction(L, OpenSaveFileDialog_get_currentSelected);
-    lua_setfield(L, -2, "currentSelected");
-    lua_pushcfunction(L, OpenSaveFileDialog_get_folderMode);
-    lua_setfield(L, -2, "folderMode");
+    registerGetter(L, "filesList", OpenSaveFileDialog_get_filesList);
+    registerGetter(L, "fileNameTxt", OpenSaveFileDialog_get_fileNameTxt);
+    registerGetter(L, "currentFolderList", OpenSaveFileDialog_get_currentFolderList);
+    registerGetter(L, "openSaveButton", OpenSaveFileDialog_get_openSaveButton);
+    registerGetter(L, "currentFolder", OpenSaveFileDialog_get_currentFolder);
+    registerGetter(L, "fileName", OpenSaveFileDialog_get_fileName);
+    registerGetter(L, "fileMask", OpenSaveFileDialog_get_fileMask);
+    registerGetter(L, "currentSelected", OpenSaveFileDialog_get_currentSelected);
+    registerGetter(L, "folderMode", OpenSaveFileDialog_get_folderMode);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, OpenSaveFileDialog_set_currentFolder);
-    lua_setfield(L, -2, "currentFolder");
-    lua_pushcfunction(L, OpenSaveFileDialog_set_fileName);
-    lua_setfield(L, -2, "fileName");
-    lua_pushcfunction(L, OpenSaveFileDialog_set_fileMask);
-    lua_setfield(L, -2, "fileMask");
-    lua_pushcfunction(L, OpenSaveFileDialog_set_currentSelected);
-    lua_setfield(L, -2, "currentSelected");
-    lua_pushcfunction(L, OpenSaveFileDialog_set_folderMode);
-    lua_setfield(L, -2, "folderMode");
+    registerSetter(L, "currentFolder", OpenSaveFileDialog_set_currentFolder);
+    registerSetter(L, "fileName", OpenSaveFileDialog_set_fileName);
+    registerSetter(L, "fileMask", OpenSaveFileDialog_set_fileMask);
+    registerSetter(L, "currentSelected", OpenSaveFileDialog_set_currentSelected);
+    registerSetter(L, "folderMode", OpenSaveFileDialog_set_folderMode);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout

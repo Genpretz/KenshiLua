@@ -114,13 +114,11 @@ void AttachedArrowManagerBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, AttachedArrowManagerBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, AttachedArrowManager_get_index);
-    lua_setfield(L, -2, "index");
+    registerGetter(L, "index", AttachedArrowManager_get_index);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, AttachedArrowManager_set_index);
-    lua_setfield(L, -2, "index");
+    registerSetter(L, "index", AttachedArrowManager_set_index);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

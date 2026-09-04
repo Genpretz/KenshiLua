@@ -1,7 +1,9 @@
 #include "pch.h"
+
 #include "kenshi\SensoryData.h"
 #include "VisibleObjectInfoBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

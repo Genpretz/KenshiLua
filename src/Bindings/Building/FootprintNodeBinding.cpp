@@ -132,17 +132,13 @@ void FootprintNodeBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FootprintNodeBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FootprintNode_get_nodeId);
-    lua_setfield(L, -2, "nodeId");
-    lua_pushcfunction(L, FootprintNode_get_enabled);
-    lua_setfield(L, -2, "enabled");
+    registerGetter(L, "nodeId", FootprintNode_get_nodeId);
+    registerGetter(L, "enabled", FootprintNode_get_enabled);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FootprintNode_set_nodeId);
-    lua_setfield(L, -2, "nodeId");
-    lua_pushcfunction(L, FootprintNode_set_enabled);
-    lua_setfield(L, -2, "enabled");
+    registerSetter(L, "nodeId", FootprintNode_set_nodeId);
+    registerSetter(L, "enabled", FootprintNode_set_enabled);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to PreviewBuilding::Footprint

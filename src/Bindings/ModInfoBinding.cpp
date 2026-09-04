@@ -169,37 +169,23 @@ void ModInfoBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ModInfoBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ModInfo_get_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, ModInfo_get_file);
-    lua_setfield(L, -2, "file");
-    lua_pushcfunction(L, ModInfo_get_path);
-    lua_setfield(L, -2, "path");
-    lua_pushcfunction(L, ModInfo_get_isWorkshop);
-    lua_setfield(L, -2, "isWorkshop");
-    lua_pushcfunction(L, ModInfo_get_isBaseMod);
-    lua_setfield(L, -2, "isBaseMod");
-    lua_pushcfunction(L, ModInfo_get_leveldataFolder);
-    lua_setfield(L, -2, "leveldataFolder");
-    lua_pushcfunction(L, ModInfo_get_header);
-    lua_setfield(L, -2, "header");
+    registerGetter(L, "name", ModInfo_get_name);
+    registerGetter(L, "file", ModInfo_get_file);
+    registerGetter(L, "path", ModInfo_get_path);
+    registerGetter(L, "isWorkshop", ModInfo_get_isWorkshop);
+    registerGetter(L, "isBaseMod", ModInfo_get_isBaseMod);
+    registerGetter(L, "leveldataFolder", ModInfo_get_leveldataFolder);
+    registerGetter(L, "header", ModInfo_get_header);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ModInfo_set_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, ModInfo_set_file);
-    lua_setfield(L, -2, "file");
-    lua_pushcfunction(L, ModInfo_set_path);
-    lua_setfield(L, -2, "path");
-    lua_pushcfunction(L, ModInfo_set_isWorkshop);
-    lua_setfield(L, -2, "isWorkshop");
-    lua_pushcfunction(L, ModInfo_set_isBaseMod);
-    lua_setfield(L, -2, "isBaseMod");
-    lua_pushcfunction(L, ModInfo_set_leveldataFolder);
-    lua_setfield(L, -2, "leveldataFolder");
-    lua_pushcfunction(L, ModInfo_set_header);
-    lua_setfield(L, -2, "header");
+    registerSetter(L, "name", ModInfo_set_name);
+    registerSetter(L, "file", ModInfo_set_file);
+    registerSetter(L, "path", ModInfo_set_path);
+    registerSetter(L, "isWorkshop", ModInfo_set_isWorkshop);
+    registerSetter(L, "isBaseMod", ModInfo_set_isBaseMod);
+    registerSetter(L, "leveldataFolder", ModInfo_set_leveldataFolder);
+    registerSetter(L, "header", ModInfo_set_header);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

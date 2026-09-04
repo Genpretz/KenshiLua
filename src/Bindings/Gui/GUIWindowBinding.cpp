@@ -1,8 +1,10 @@
-#include "pch.h"
+﻿#include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\gui\GUIWindow.h"
 #include "GUIWindowBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -17,7 +19,7 @@ static int GUIWindow_get_win(lua_State* L)
 {
     GUIWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GUIWindow is nil");
-    return pushObject<MyGUI::Widget>(L, instance->win, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->win, MyGUIBinding::getMetatableName());
 }
 
 static int GUIWindow_get_selectedObject(lua_State* L)
@@ -254,7 +256,7 @@ int GUIWindowBinding::getWidget(lua_State* L)
     if (!instance) return luaL_error(L, "GUIWindow is nil");
 
     MyGUI::Widget* result = instance->getWidget();
-    return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, result, MyGUIBinding::getMetatableName());
 }
 
 int GUIWindowBinding::resize(lua_State* L)

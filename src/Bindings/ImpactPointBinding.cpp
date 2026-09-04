@@ -140,29 +140,19 @@ void ImpactPointBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ImpactPointBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ImpactPoint_get_direction);
-    lua_setfield(L, -2, "direction");
-    lua_pushcfunction(L, ImpactPoint_get_power);
-    lua_setfield(L, -2, "power");
-    lua_pushcfunction(L, ImpactPoint_get_impactAnimationFrame);
-    lua_setfield(L, -2, "impactAnimationFrame");
-    lua_pushcfunction(L, ImpactPoint_get_motionStopsAnimationFrame);
-    lua_setfield(L, -2, "motionStopsAnimationFrame");
-    lua_pushcfunction(L, ImpactPoint_get_limb);
-    lua_setfield(L, -2, "limb");
+    registerGetter(L, "direction", ImpactPoint_get_direction);
+    registerGetter(L, "power", ImpactPoint_get_power);
+    registerGetter(L, "impactAnimationFrame", ImpactPoint_get_impactAnimationFrame);
+    registerGetter(L, "motionStopsAnimationFrame", ImpactPoint_get_motionStopsAnimationFrame);
+    registerGetter(L, "limb", ImpactPoint_get_limb);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ImpactPoint_set_direction);
-    lua_setfield(L, -2, "direction");
-    lua_pushcfunction(L, ImpactPoint_set_power);
-    lua_setfield(L, -2, "power");
-    lua_pushcfunction(L, ImpactPoint_set_impactAnimationFrame);
-    lua_setfield(L, -2, "impactAnimationFrame");
-    lua_pushcfunction(L, ImpactPoint_set_motionStopsAnimationFrame);
-    lua_setfield(L, -2, "motionStopsAnimationFrame");
-    lua_pushcfunction(L, ImpactPoint_set_limb);
-    lua_setfield(L, -2, "limb");
+    registerSetter(L, "direction", ImpactPoint_set_direction);
+    registerSetter(L, "power", ImpactPoint_set_power);
+    registerSetter(L, "impactAnimationFrame", ImpactPoint_set_impactAnimationFrame);
+    registerSetter(L, "motionStopsAnimationFrame", ImpactPoint_set_motionStopsAnimationFrame);
+    registerSetter(L, "limb", ImpactPoint_set_limb);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

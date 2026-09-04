@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\Item.h"
 #include "ContainerItemBinding.h"
 #include "Lua/BindingHelpers.h"

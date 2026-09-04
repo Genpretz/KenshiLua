@@ -996,6 +996,7 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClInclude Include="src\Hooks\Hooks_Internal.h" />
     <ClInclude Include="src\FileWatcher.h" />
     <ClInclude Include="src\Logger.h" />
+    <ClInclude Include="src\SDKCompat.h" />
     <ClInclude Include="src\Lua\BindingHelpers.h" />
     <ClInclude Include="src\Lua\LuaBindings.h" />
     <ClInclude Include="src\Lua\LuaCodec.h" />
@@ -1083,6 +1084,9 @@ xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"</Command>
     <ClCompile Include="src\Bindings\Building\DoorStuffBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FarmBatchBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FarmBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FarmBuilding_SubPlantBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FarmBuilding_PlantSourceBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FarmBuilding_PlantBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FootprintBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FootprintNodeBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FurnaceBuildingBinding.cpp" />

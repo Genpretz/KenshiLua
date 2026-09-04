@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\gui\ScreenLabel.h"
 #include "ScreenLabelBinding.h"
 #include "ScreenLabelInterfaceBinding.h"

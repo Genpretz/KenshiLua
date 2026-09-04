@@ -404,39 +404,24 @@ void SaveFileSystemBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, SaveFileSystemBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, SaveFileSystem_get_currentSave);
-    lua_setfield(L, -2, "currentSave");
-    lua_pushcfunction(L, SaveFileSystem_get_currentFolder);
-    lua_setfield(L, -2, "currentFolder");
-    lua_pushcfunction(L, SaveFileSystem_get_tempFolder);
-    lua_setfield(L, -2, "tempFolder");
-    lua_pushcfunction(L, SaveFileSystem_get_currentPathIndex);
-    lua_setfield(L, -2, "currentPathIndex");
-    lua_pushcfunction(L, SaveFileSystem_get_currentMutex);
-    lua_setfield(L, -2, "currentMutex");
-    lua_pushcfunction(L, SaveFileSystem_get_savingIcon);
-    lua_setfield(L, -2, "savingIcon");
-    lua_pushcfunction(L, SaveFileSystem_get_state);
-    lua_setfield(L, -2, "state");
-    lua_pushcfunction(L, SaveFileSystem_get_failedToCopyError);
-    lua_setfield(L, -2, "failedToCopyError");
+    registerGetter(L, "currentSave", SaveFileSystem_get_currentSave);
+    registerGetter(L, "currentFolder", SaveFileSystem_get_currentFolder);
+    registerGetter(L, "tempFolder", SaveFileSystem_get_tempFolder);
+    registerGetter(L, "currentPathIndex", SaveFileSystem_get_currentPathIndex);
+    registerGetter(L, "currentMutex", SaveFileSystem_get_currentMutex);
+    registerGetter(L, "savingIcon", SaveFileSystem_get_savingIcon);
+    registerGetter(L, "state", SaveFileSystem_get_state);
+    registerGetter(L, "failedToCopyError", SaveFileSystem_get_failedToCopyError);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, SaveFileSystem_set_currentSave);
-    lua_setfield(L, -2, "currentSave");
-    lua_pushcfunction(L, SaveFileSystem_set_currentFolder);
-    lua_setfield(L, -2, "currentFolder");
-    lua_pushcfunction(L, SaveFileSystem_set_tempFolder);
-    lua_setfield(L, -2, "tempFolder");
-    lua_pushcfunction(L, SaveFileSystem_set_currentPathIndex);
-    lua_setfield(L, -2, "currentPathIndex");
-    lua_pushcfunction(L, SaveFileSystem_set_currentMutex);
-    lua_setfield(L, -2, "currentMutex");
-    lua_pushcfunction(L, SaveFileSystem_set_state);
-    lua_setfield(L, -2, "state");
-    lua_pushcfunction(L, SaveFileSystem_set_failedToCopyError);
-    lua_setfield(L, -2, "failedToCopyError");
+    registerSetter(L, "currentSave", SaveFileSystem_set_currentSave);
+    registerSetter(L, "currentFolder", SaveFileSystem_set_currentFolder);
+    registerSetter(L, "tempFolder", SaveFileSystem_set_tempFolder);
+    registerSetter(L, "currentPathIndex", SaveFileSystem_set_currentPathIndex);
+    registerSetter(L, "currentMutex", SaveFileSystem_set_currentMutex);
+    registerSetter(L, "state", SaveFileSystem_set_state);
+    registerSetter(L, "failedToCopyError", SaveFileSystem_set_failedToCopyError);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // TODO: ThreadClassBinding does not exist yet - create binding or remove if unnecessary

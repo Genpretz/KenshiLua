@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\gui\SquadManagementScreen.h"
 #include "PortraitDataBinding.h"
 #include "Lua/BindingHelpers.h"

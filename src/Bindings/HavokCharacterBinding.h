@@ -1,4 +1,5 @@
 #pragma once
+#include "CharacterBinding.h"
 
 #include "kenshi/HavokCharacter.h"
 

@@ -1,6 +1,5 @@
 #include "pch.h"
-class CraftingItem {};
-class Layout {};
+
 #include <kenshi/Building/CraftingBuilding.h>
 #include "CraftingBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -877,53 +876,31 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, CraftingBuildingBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, CraftingBuilding_get_maxCraftLevel);
-    lua_setfield(L, -2, "maxCraftLevel");
-    lua_pushcfunction(L, CraftingBuilding_get_crafting);
-    lua_setfield(L, -2, "crafting");
-    lua_pushcfunction(L, CraftingBuilding_get_specialCraftItemType);
-    lua_setfield(L, -2, "specialCraftItemType");
-    lua_pushcfunction(L, CraftingBuilding_get_repeat);
-    lua_setfield(L, -2, "repeat");
-    lua_pushcfunction(L, CraftingBuilding_get_whosCrafting);
-    lua_setfield(L, -2, "whosCrafting");
-    lua_pushcfunction(L, CraftingBuilding_get_itemCrafted);
-    lua_setfield(L, -2, "itemCrafted");
-    lua_pushcfunction(L, CraftingBuilding_get_failiureNotified);
-    lua_setfield(L, -2, "failiureNotified");
-    lua_pushcfunction(L, CraftingBuilding_get_biggestCraftableItem);
-    lua_setfield(L, -2, "biggestCraftableItem");
-    lua_pushcfunction(L, CraftingBuilding_get_outItem);
-    lua_setfield(L, -2, "outItem");
-    lua_pushcfunction(L, CraftingBuilding_get_inItems);
-    lua_setfield(L, -2, "inItems");
-    lua_pushcfunction(L, CraftingBuilding_get_partialItems);
-    lua_setfield(L, -2, "partialItems");
+    registerGetter(L, "maxCraftLevel", CraftingBuilding_get_maxCraftLevel);
+    registerGetter(L, "crafting", CraftingBuilding_get_crafting);
+    registerGetter(L, "specialCraftItemType", CraftingBuilding_get_specialCraftItemType);
+    registerGetter(L, "repeat", CraftingBuilding_get_repeat);
+    registerGetter(L, "whosCrafting", CraftingBuilding_get_whosCrafting);
+    registerGetter(L, "itemCrafted", CraftingBuilding_get_itemCrafted);
+    registerGetter(L, "failiureNotified", CraftingBuilding_get_failiureNotified);
+    registerGetter(L, "biggestCraftableItem", CraftingBuilding_get_biggestCraftableItem);
+    registerGetter(L, "outItem", CraftingBuilding_get_outItem);
+    registerGetter(L, "inItems", CraftingBuilding_get_inItems);
+    registerGetter(L, "partialItems", CraftingBuilding_get_partialItems);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, CraftingBuilding_set_maxCraftLevel);
-    lua_setfield(L, -2, "maxCraftLevel");
-    lua_pushcfunction(L, CraftingBuilding_set_crafting);
-    lua_setfield(L, -2, "crafting");
-    lua_pushcfunction(L, CraftingBuilding_set_specialCraftItemType);
-    lua_setfield(L, -2, "specialCraftItemType");
-    lua_pushcfunction(L, CraftingBuilding_set_repeat);
-    lua_setfield(L, -2, "repeat");
-    lua_pushcfunction(L, CraftingBuilding_set_whosCrafting);
-    lua_setfield(L, -2, "whosCrafting");
-    lua_pushcfunction(L, CraftingBuilding_set_itemCrafted);
-    lua_setfield(L, -2, "itemCrafted");
-    lua_pushcfunction(L, CraftingBuilding_set_failiureNotified);
-    lua_setfield(L, -2, "failiureNotified");
-    lua_pushcfunction(L, CraftingBuilding_set_biggestCraftableItem);
-    lua_setfield(L, -2, "biggestCraftableItem");
-    lua_pushcfunction(L, CraftingBuilding_set_outItem);
-    lua_setfield(L, -2, "outItem");
-    lua_pushcfunction(L, CraftingBuilding_set_inItems);
-    lua_setfield(L, -2, "inItems");
-    lua_pushcfunction(L, CraftingBuilding_set_partialItems);
-    lua_setfield(L, -2, "partialItems");
+    registerSetter(L, "maxCraftLevel", CraftingBuilding_set_maxCraftLevel);
+    registerSetter(L, "crafting", CraftingBuilding_set_crafting);
+    registerSetter(L, "specialCraftItemType", CraftingBuilding_set_specialCraftItemType);
+    registerSetter(L, "repeat", CraftingBuilding_set_repeat);
+    registerSetter(L, "whosCrafting", CraftingBuilding_set_whosCrafting);
+    registerSetter(L, "itemCrafted", CraftingBuilding_set_itemCrafted);
+    registerSetter(L, "failiureNotified", CraftingBuilding_set_failiureNotified);
+    registerSetter(L, "biggestCraftableItem", CraftingBuilding_set_biggestCraftableItem);
+    registerSetter(L, "outItem", CraftingBuilding_set_outItem);
+    registerSetter(L, "inItems", CraftingBuilding_set_inItems);
+    registerSetter(L, "partialItems", CraftingBuilding_set_partialItems);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     CraftingItemDequeBinding::registerBinding(L, "std::deque<CraftingItem>", nullptr);

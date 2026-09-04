@@ -1,5 +1,4 @@
 #include "pch.h"
-class CraftingItem {};
 #include <kenshi/Building/CraftingBuilding.h>
 #include "GameDataGroupBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -79,17 +78,13 @@ void GameDataGroupBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, GameDataGroupBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, GameDataGroup_get_g1);
-    lua_setfield(L, -2, "g1");
-    lua_pushcfunction(L, GameDataGroup_get_g2);
-    lua_setfield(L, -2, "g2");
+    registerGetter(L, "g1", GameDataGroup_get_g1);
+    registerGetter(L, "g2", GameDataGroup_get_g2);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, GameDataGroup_set_g1);
-    lua_setfield(L, -2, "g1");
-    lua_pushcfunction(L, GameDataGroup_set_g2);
-    lua_setfield(L, -2, "g2");
+    registerSetter(L, "g1", GameDataGroup_set_g1);
+    registerSetter(L, "g2", GameDataGroup_set_g2);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

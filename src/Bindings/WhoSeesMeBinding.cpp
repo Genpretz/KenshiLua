@@ -98,21 +98,15 @@ void WhoSeesMeBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, WhoSeesMeBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, WhoSeesMe_get_lastUpdated);
-    lua_setfield(L, -2, "lastUpdated");
-    lua_pushcfunction(L, WhoSeesMe_get_seeState);
-    lua_setfield(L, -2, "seeState");
-    lua_pushcfunction(L, WhoSeesMe_get_progressOfMaybe);
-    lua_setfield(L, -2, "progressOfMaybe");
+    registerGetter(L, "lastUpdated", WhoSeesMe_get_lastUpdated);
+    registerGetter(L, "seeState", WhoSeesMe_get_seeState);
+    registerGetter(L, "progressOfMaybe", WhoSeesMe_get_progressOfMaybe);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, WhoSeesMe_set_lastUpdated);
-    lua_setfield(L, -2, "lastUpdated");
-    lua_pushcfunction(L, WhoSeesMe_set_seeState);
-    lua_setfield(L, -2, "seeState");
-    lua_pushcfunction(L, WhoSeesMe_set_progressOfMaybe);
-    lua_setfield(L, -2, "progressOfMaybe");
+    registerSetter(L, "lastUpdated", WhoSeesMe_set_lastUpdated);
+    registerSetter(L, "seeState", WhoSeesMe_set_seeState);
+    registerSetter(L, "progressOfMaybe", WhoSeesMe_set_progressOfMaybe);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -102,21 +102,15 @@ void StringPairBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, StringPairBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, StringPair_get_s1);
-    lua_setfield(L, -2, "s1");
-    lua_pushcfunction(L, StringPair_get_s2);
-    lua_setfield(L, -2, "s2");
-    lua_pushcfunction(L, StringPair_get_val1);
-    lua_setfield(L, -2, "val1");
+    registerGetter(L, "s1", StringPair_get_s1);
+    registerGetter(L, "s2", StringPair_get_s2);
+    registerGetter(L, "val1", StringPair_get_val1);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, StringPair_set_s1);
-    lua_setfield(L, -2, "s1");
-    lua_pushcfunction(L, StringPair_set_s2);
-    lua_setfield(L, -2, "s2");
-    lua_pushcfunction(L, StringPair_set_val1);
-    lua_setfield(L, -2, "val1");
+    registerSetter(L, "s1", StringPair_set_s1);
+    registerSetter(L, "s2", StringPair_set_s2);
+    registerSetter(L, "val1", StringPair_set_val1);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

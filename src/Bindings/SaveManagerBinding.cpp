@@ -545,59 +545,34 @@ void SaveManagerBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, SaveManagerBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, SaveManager_get_currentGame);
-    lua_setfield(L, -2, "currentGame");
-    lua_pushcfunction(L, SaveManager_get_saveVersion);
-    lua_setfield(L, -2, "saveVersion");
-    lua_pushcfunction(L, SaveManager_get_localSavePath);
-    lua_setfield(L, -2, "localSavePath");
-    lua_pushcfunction(L, SaveManager_get_userSavePath);
-    lua_setfield(L, -2, "userSavePath");
-    lua_pushcfunction(L, SaveManager_get_signal);
-    lua_setfield(L, -2, "signal");
-    lua_pushcfunction(L, SaveManager_get_flags);
-    lua_setfield(L, -2, "flags");
-    lua_pushcfunction(L, SaveManager_get_delay);
-    lua_setfield(L, -2, "delay");
-    lua_pushcfunction(L, SaveManager_get_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, SaveManager_get_location);
-    lua_setfield(L, -2, "location");
-    lua_pushcfunction(L, SaveManager_get_loadMenu);
-    lua_setfield(L, -2, "loadMenu");
-    lua_pushcfunction(L, SaveManager_get_saveMenu);
-    lua_setfield(L, -2, "saveMenu");
-    lua_pushcfunction(L, SaveManager_get_importMenu);
-    lua_setfield(L, -2, "importMenu");
-    lua_pushcfunction(L, SaveManager_get_autoSaveTimer);
-    lua_setfield(L, -2, "autoSaveTimer");
-    lua_pushcfunction(L, SaveManager_get_pauseAutoSaveTimer);
-    lua_setfield(L, -2, "pauseAutoSaveTimer");
+    registerGetter(L, "currentGame", SaveManager_get_currentGame);
+    registerGetter(L, "saveVersion", SaveManager_get_saveVersion);
+    registerGetter(L, "localSavePath", SaveManager_get_localSavePath);
+    registerGetter(L, "userSavePath", SaveManager_get_userSavePath);
+    registerGetter(L, "signal", SaveManager_get_signal);
+    registerGetter(L, "flags", SaveManager_get_flags);
+    registerGetter(L, "delay", SaveManager_get_delay);
+    registerGetter(L, "name", SaveManager_get_name);
+    registerGetter(L, "location", SaveManager_get_location);
+    registerGetter(L, "loadMenu", SaveManager_get_loadMenu);
+    registerGetter(L, "saveMenu", SaveManager_get_saveMenu);
+    registerGetter(L, "importMenu", SaveManager_get_importMenu);
+    registerGetter(L, "autoSaveTimer", SaveManager_get_autoSaveTimer);
+    registerGetter(L, "pauseAutoSaveTimer", SaveManager_get_pauseAutoSaveTimer);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, SaveManager_set_currentGame);
-    lua_setfield(L, -2, "currentGame");
-    lua_pushcfunction(L, SaveManager_set_saveVersion);
-    lua_setfield(L, -2, "saveVersion");
-    lua_pushcfunction(L, SaveManager_set_localSavePath);
-    lua_setfield(L, -2, "localSavePath");
-    lua_pushcfunction(L, SaveManager_set_userSavePath);
-    lua_setfield(L, -2, "userSavePath");
-    lua_pushcfunction(L, SaveManager_set_signal);
-    lua_setfield(L, -2, "signal");
-    lua_pushcfunction(L, SaveManager_set_flags);
-    lua_setfield(L, -2, "flags");
-    lua_pushcfunction(L, SaveManager_set_delay);
-    lua_setfield(L, -2, "delay");
-    lua_pushcfunction(L, SaveManager_set_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, SaveManager_set_location);
-    lua_setfield(L, -2, "location");
-    lua_pushcfunction(L, SaveManager_set_autoSaveTimer);
-    lua_setfield(L, -2, "autoSaveTimer");
-    lua_pushcfunction(L, SaveManager_set_pauseAutoSaveTimer);
-    lua_setfield(L, -2, "pauseAutoSaveTimer");
+    registerSetter(L, "currentGame", SaveManager_set_currentGame);
+    registerSetter(L, "saveVersion", SaveManager_set_saveVersion);
+    registerSetter(L, "localSavePath", SaveManager_set_localSavePath);
+    registerSetter(L, "userSavePath", SaveManager_set_userSavePath);
+    registerSetter(L, "signal", SaveManager_set_signal);
+    registerSetter(L, "flags", SaveManager_set_flags);
+    registerSetter(L, "delay", SaveManager_set_delay);
+    registerSetter(L, "name", SaveManager_set_name);
+    registerSetter(L, "location", SaveManager_set_location);
+    registerSetter(L, "autoSaveTimer", SaveManager_set_autoSaveTimer);
+    registerSetter(L, "pauseAutoSaveTimer", SaveManager_set_pauseAutoSaveTimer);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject

@@ -1,8 +1,10 @@
 #pragma once
+#include "Bindings/GameDataBinding.h"
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
 #include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"
+#include "Lua/LuaCodec.h"
 
 namespace KenshiLua
 {

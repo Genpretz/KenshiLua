@@ -160,29 +160,19 @@ void TextureLoadDataBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TextureLoadDataBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TextureLoadData_get_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, TextureLoadData_get_group);
-    lua_setfield(L, -2, "group");
-    lua_pushcfunction(L, TextureLoadData_get_loaded);
-    lua_setfield(L, -2, "loaded");
-    lua_pushcfunction(L, TextureLoadData_get_queued);
-    lua_setfield(L, -2, "queued");
-    lua_pushcfunction(L, TextureLoadData_get_success);
-    lua_setfield(L, -2, "success");
+    registerGetter(L, "name", TextureLoadData_get_name);
+    registerGetter(L, "group", TextureLoadData_get_group);
+    registerGetter(L, "loaded", TextureLoadData_get_loaded);
+    registerGetter(L, "queued", TextureLoadData_get_queued);
+    registerGetter(L, "success", TextureLoadData_get_success);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TextureLoadData_set_name);
-    lua_setfield(L, -2, "name");
-    lua_pushcfunction(L, TextureLoadData_set_group);
-    lua_setfield(L, -2, "group");
-    lua_pushcfunction(L, TextureLoadData_set_loaded);
-    lua_setfield(L, -2, "loaded");
-    lua_pushcfunction(L, TextureLoadData_set_queued);
-    lua_setfield(L, -2, "queued");
-    lua_pushcfunction(L, TextureLoadData_set_success);
-    lua_setfield(L, -2, "success");
+    registerSetter(L, "name", TextureLoadData_set_name);
+    registerSetter(L, "group", TextureLoadData_set_group);
+    registerSetter(L, "loaded", TextureLoadData_set_loaded);
+    registerSetter(L, "queued", TextureLoadData_set_queued);
+    registerSetter(L, "success", TextureLoadData_set_success);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

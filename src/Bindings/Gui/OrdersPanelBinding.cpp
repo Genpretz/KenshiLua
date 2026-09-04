@@ -1,8 +1,10 @@
-#include "pch.h"
+﻿#include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\gui\OrdersPanel.h"
 #include "OrdersPanelBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/Gui/MainBarGUIBinding.h"
 #include "Bindings/Gui/OrderDataBinding.h"

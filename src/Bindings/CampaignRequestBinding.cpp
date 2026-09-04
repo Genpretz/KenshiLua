@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi/FactionWarMgr.h"
 #include "CampaignRequestBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -147,31 +149,20 @@ void CampaignRequestBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, CampaignRequestBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, CampaignRequest_get_timeToStart);
-    lua_setfield(L, -2, "timeToStart");
-    lua_pushcfunction(L, CampaignRequest_get_data);
-    lua_setfield(L, -2, "data");
-    lua_pushcfunction(L, CampaignRequest_get_target);
-    lua_setfield(L, -2, "target");
-    lua_pushcfunction(L, CampaignRequest_get_homeBase);
-    lua_setfield(L, -2, "homeBase");
-    lua_pushcfunction(L, CampaignRequest_get_enemy);
-    lua_setfield(L, -2, "enemy");
-    lua_pushcfunction(L, CampaignRequest_get_numAttempts);
-    lua_setfield(L, -2, "numAttempts");
+    registerGetter(L, "timeToStart", CampaignRequest_get_timeToStart);
+    registerGetter(L, "data", CampaignRequest_get_data);
+    registerGetter(L, "target", CampaignRequest_get_target);
+    registerGetter(L, "homeBase", CampaignRequest_get_homeBase);
+    registerGetter(L, "enemy", CampaignRequest_get_enemy);
+    registerGetter(L, "numAttempts", CampaignRequest_get_numAttempts);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, CampaignRequest_set_timeToStart);
-    lua_setfield(L, -2, "timeToStart");
-    lua_pushcfunction(L, CampaignRequest_set_target);
-    lua_setfield(L, -2, "target");
-    lua_pushcfunction(L, CampaignRequest_set_homeBase);
-    lua_setfield(L, -2, "homeBase");
-    lua_pushcfunction(L, CampaignRequest_set_enemy);
-    lua_setfield(L, -2, "enemy");
-    lua_pushcfunction(L, CampaignRequest_set_numAttempts);
-    lua_setfield(L, -2, "numAttempts");
+    registerSetter(L, "timeToStart", CampaignRequest_set_timeToStart);
+    registerSetter(L, "target", CampaignRequest_set_target);
+    registerSetter(L, "homeBase", CampaignRequest_set_homeBase);
+    registerSetter(L, "enemy", CampaignRequest_set_enemy);
+    registerSetter(L, "numAttempts", CampaignRequest_set_numAttempts);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

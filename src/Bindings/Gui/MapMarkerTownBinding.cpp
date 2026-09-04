@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\gui\MapScreen.h"
 #include "MapMarkerTownBinding.h"
 #include "Lua/BindingHelpers.h"

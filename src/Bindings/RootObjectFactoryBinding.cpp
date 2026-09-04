@@ -34,10 +34,6 @@ namespace KenshiLua
 {
 typedef StdDequePtrBinding<RootObjectFactory::CreatelistItem*> CreatelistItemDequeBinding;
 
-static int RootObjectFactory_get_mutex(lua_State* L) { return 0; }
-static int RootObjectFactory_set_mutex(lua_State* L) { return 0; }
-
-
 static RootObjectFactory* getInstance(lua_State* L, int idx)
 {
     return checkObject<RootObjectFactory>(L, idx, RootObjectFactoryBinding::getMetatableName());
@@ -45,9 +41,31 @@ static RootObjectFactory* getInstance(lua_State* L, int idx)
 
 // --- Getters for RootObjectFactory ---
 
+static int RootObjectFactory_get_todoList(lua_State* L)
+{
+    RootObjectFactory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RootObjectFactory is nil");
+    return pushObject<CreatelistItemDequeBinding::DequeType>(L, &instance->todoList, "std::deque<CreatelistItem*>");
+}
 
 // --- Setters for RootObjectFactory ---
 
+static int RootObjectFactory_set_todoList(lua_State* L)
+{
+    RootObjectFactory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RootObjectFactory is nil");
+    if (lua_isnoneornil(L, 2))
+    {
+        instance->todoList.clear();
+        return 0;
+    }
+    auto* src = CreatelistItemDequeBinding::get(L, 2);
+    if (!src) return luaL_error(L, "Argument 2 to set todoList must be std::deque<CreatelistItem*>");
+    instance->todoList = *src;
+    return 0;
+}
+
+// --- Methods for RootObjectFactory ---
 
 int RootObjectFactoryBinding::create(lua_State* L)
 {
@@ -58,15 +76,15 @@ int RootObjectFactoryBinding::create(lua_State* L)
     Ogre::Vector3 position;
     readVector3(L, 3, position);
     bool isFromActiveLevelMod = lua_toboolean(L, 4) != 0;
-    Faction* owner = checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
+    Faction* owner = lua_isnoneornil(L, 5) ? nullptr : checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
     Ogre::Quaternion rotation;
     readQuaternion(L, 6, rotation);
-    FactoryCallbackInterface* callbackObject = checkObject<FactoryCallbackInterface>(L, 7, FactoryCallbackInterfaceBinding::getMetatableName());
-    RootObjectContainer* certainContainer = checkObject<RootObjectContainer>(L, 8, RootObjectContainerBinding::getMetatableName());
-    GameSaveState* state = checkObject<GameSaveState>(L, 9, GameSaveStateBinding::getMetatableName());
+    FactoryCallbackInterface* callbackObject = lua_isnoneornil(L, 7) ? nullptr : checkObject<FactoryCallbackInterface>(L, 7, FactoryCallbackInterfaceBinding::getMetatableName());
+    RootObjectContainer* certainContainer = lua_isnoneornil(L, 8) ? nullptr : checkObject<RootObjectContainer>(L, 8, RootObjectContainerBinding::getMetatableName());
+    GameSaveState* state = lua_isnoneornil(L, 9) ? nullptr : checkObject<GameSaveState>(L, 9, GameSaveStateBinding::getMetatableName());
     bool invisible = lua_toboolean(L, 10) != 0;
-    Building* homeBuilding = checkObject<Building>(L, 11, BuildingBinding::getMetatableName());
-    float age = (float)luaL_checknumber(L, 12);
+    Building* homeBuilding = lua_isnoneornil(L, 11) ? nullptr : checkObject<Building>(L, 11, BuildingBinding::getMetatableName());
+    float age = (float)luaL_optnumber(L, 12, 0.0);
     RootObjectBase* result = instance->create(data, position, isFromActiveLevelMod, owner, rotation, callbackObject, certainContainer, state, invisible, homeBuilding, age);
     return pushObject<RootObjectBase>(L, result, RootObjectBaseBinding::getMetatableName());
 }
@@ -80,11 +98,11 @@ int RootObjectFactoryBinding::createLocationNode(lua_State* L)
     GameData* data = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     Ogre::Vector3 position;
     readVector3(L, 4, position);
-    Building* building = checkObject<Building>(L, 5, BuildingBinding::getMetatableName());
-    Faction* owner = checkObject<Faction>(L, 6, FactionBinding::getMetatableName());
+    Building* building = lua_isnoneornil(L, 5) ? nullptr : checkObject<Building>(L, 5, BuildingBinding::getMetatableName());
+    Faction* owner = lua_isnoneornil(L, 6) ? nullptr : checkObject<Faction>(L, 6, FactionBinding::getMetatableName());
     Ogre::Quaternion rotation;
     readQuaternion(L, 7, rotation);
-    GameSaveState* saveState = checkObject<GameSaveState>(L, 8, GameSaveStateBinding::getMetatableName());
+    GameSaveState* saveState = lua_isnoneornil(L, 8) ? nullptr : checkObject<GameSaveState>(L, 8, GameSaveStateBinding::getMetatableName());
     const std::string nodeId = luaL_checkstring(L, 9);
     LocationNode* result = instance->createLocationNode(addToNodeListAutomatically, data, position, building, owner, rotation, saveState, nodeId);
     lua_pushlightuserdata(L, (void*)result);
@@ -144,11 +162,14 @@ int RootObjectFactoryBinding::createRandomCharacter(lua_State* L)
 
     Faction* faction = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     Ogre::Vector3 position;
-    readVector3(L, 3, position);
-    RootObjectContainer* owner = checkObject<RootObjectContainer>(L, 4, RootObjectContainerBinding::getMetatableName());
-    GameData* characterTemplate = checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
-    Building* home = checkObject<Building>(L, 6, BuildingBinding::getMetatableName());
-    float age = (float)luaL_checknumber(L, 7);
+    if (!readVector3(L, 3, position))
+    {
+        return luaL_error(L, "Argument 2 (position) must be a Vector3 table {x, y, z}");
+    }
+    RootObjectContainer* owner = lua_isnoneornil(L, 4) ? nullptr : checkObject<RootObjectContainer>(L, 4, RootObjectContainerBinding::getMetatableName());
+    GameData* characterTemplate = lua_isnoneornil(L, 5) ? nullptr : checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
+    Building* home = lua_isnoneornil(L, 6) ? nullptr : checkObject<Building>(L, 6, BuildingBinding::getMetatableName());
+    float age = (float)luaL_optnumber(L, 7, 0.0);
     RootObject* result = instance->createRandomCharacter(faction, position, owner, characterTemplate, home, age);
     return pushObject<RootObject>(L, result, RootObjectBinding::getMetatableName());
 }
@@ -177,50 +198,10 @@ int RootObjectFactoryBinding::process(lua_State* L)
     RootObjectFactory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObjectFactory is nil");
 
-    RootObjectFactory::CreatelistItem* o = (RootObjectFactory::CreatelistItem*)lua_touserdata(L, 2);
+    RootObjectFactory::CreatelistItem* o = checkObject<RootObjectFactory::CreatelistItem>(L, 2, CreatelistItemBinding::getMetatableName());
     RootObjectBase* result = instance->process(o);
     return pushObject<RootObjectBase>(L, result, RootObjectBaseBinding::getMetatableName());
 }
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - RootObjectFactoryBinding::createLocationNode: LocationNode* (unbound pointer)
-*/
-
-int RootObjectFactoryBinding::gc(lua_State* L)
-{
-    // Implementation depends on ownership model
-    return 0;
-}
-
-int RootObjectFactoryBinding::tostring(lua_State* L)
-{
-    lua_pushstring(L, "KenshiLua.RootObjectFactory object");
-    return 1;
-}
-
-static int RootObjectFactory_get_todoList(lua_State* L)
-{
-    RootObjectFactory* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RootObjectFactory is nil");
-    return pushObject<CreatelistItemDequeBinding::DequeType>(L, &instance->todoList, "std::deque<CreatelistItem*>");
-}
-
-static int RootObjectFactory_set_todoList(lua_State* L)
-{
-    RootObjectFactory* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "RootObjectFactory is nil");
-    if (lua_isnoneornil(L, 2))
-    {
-        instance->todoList.clear();
-        return 0;
-    }
-    auto* src = CreatelistItemDequeBinding::get(L, 2);
-    if (!src) return luaL_error(L, "Argument 2 to set todoList must be std::deque<CreatelistItem*>");
-    instance->todoList = *src;
-    return 0;
-}
-
 
 int RootObjectFactoryBinding::createBuilding(lua_State* L)
 {
@@ -229,26 +210,31 @@ int RootObjectFactoryBinding::createBuilding(lua_State* L)
 
     GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Ogre::Vector3 position;
-    readVector3(L, 3, position);
-    TownBase* t = checkObject<TownBase>(L, 4, TownBaseBinding::getMetatableName());
-    Faction* owner = checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
+    if (!readVector3(L, 3, position))
+    {
+        return luaL_error(L, "Argument 2 (position) must be a Vector3 table {x, y, z}");
+    }
+    TownBase* t = lua_isnoneornil(L, 4) ? nullptr : checkObject<TownBase>(L, 4, TownBaseBinding::getMetatableName());
+    Faction* owner = lua_isnoneornil(L, 5) ? nullptr : checkObject<Faction>(L, 5, FactionBinding::getMetatableName());
     Ogre::Quaternion rotation;
-    readQuaternion(L, 6, rotation);
-    FactoryCallbackInterface* callbackObject = lua_isnil(L, 7) ? NULL : checkObject<FactoryCallbackInterface>(L, 7, FactoryCallbackInterfaceBinding::getMetatableName());
-    Layout* furnitureOf = (Layout*)lua_touserdata(L, 8);
-    Building* isDoorOf = lua_isnil(L, 9) ? NULL : checkObject<Building>(L, 9, BuildingBinding::getMetatableName());
-    GameSaveState* saveState = lua_isnil(L, 10) ? NULL : checkObject<GameSaveState>(L, 10, GameSaveStateBinding::getMetatableName());
-    Building* isIndoorsOf = lua_isnil(L, 11) ? NULL : checkObject<Building>(L, 11, BuildingBinding::getMetatableName());
+    if (!readQuaternion(L, 6, rotation))
+    {
+        rotation = Ogre::Quaternion::IDENTITY;
+    }
+    FactoryCallbackInterface* callbackObject = lua_isnoneornil(L, 7) ? nullptr : checkObject<FactoryCallbackInterface>(L, 7, FactoryCallbackInterfaceBinding::getMetatableName());
+    Layout* furnitureOf = lua_isnoneornil(L, 8) ? nullptr : (Layout*)lua_touserdata(L, 8);
+    Building* isDoorOf = lua_isnoneornil(L, 9) ? nullptr : checkObject<Building>(L, 9, BuildingBinding::getMetatableName());
+    GameSaveState* saveState = lua_isnoneornil(L, 10) ? nullptr : checkObject<GameSaveState>(L, 10, GameSaveStateBinding::getMetatableName());
+    Building* isIndoorsOf = lua_isnoneornil(L, 11) ? nullptr : checkObject<Building>(L, 11, BuildingBinding::getMetatableName());
     bool invisible = lua_toboolean(L, 12) != 0;
     bool completed = lua_toboolean(L, 13) != 0;
     bool isFoliage = lua_toboolean(L, 14) != 0;
-    int floorNumber = (int)luaL_checkinteger(L, 15);
+    int floorNumber = (int)luaL_optinteger(L, 15, -1);
     bool isOutsideFurniture = lua_toboolean(L, 16) != 0;
 
     Building* result = instance->createBuilding(data, position, t, owner, rotation, callbackObject, furnitureOf, isDoorOf, saveState, isIndoorsOf, invisible, completed, isFoliage, floorNumber, isOutsideFurniture);
     return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
 }
-
 
 int RootObjectFactoryBinding::createItem(lua_State* L)
 {
@@ -266,10 +252,10 @@ int RootObjectFactoryBinding::createItem(lua_State* L)
     {
         GameData* gd = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
         hand* handle = checkObject<hand>(L, 3, HandBinding::getMetatableName());
-        GameData* weaponMesh = lua_isnil(L, 4) ? NULL : checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
-        GameData* matData = lua_isnil(L, 5) ? NULL : checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
+        GameData* weaponMesh = lua_isnoneornil(L, 4) ? nullptr : checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
+        GameData* matData = lua_isnoneornil(L, 5) ? nullptr : checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
         int levelOverride = (int)luaL_checkinteger(L, 6);
-        Faction* flagUniform = lua_isnil(L, 7) ? NULL : checkObject<Faction>(L, 7, FactionBinding::getMetatableName());
+        Faction* flagUniform = lua_isnoneornil(L, 7) ? nullptr : checkObject<Faction>(L, 7, FactionBinding::getMetatableName());
 
         Item* result = instance->createItem(gd, *handle, weaponMesh, matData, levelOverride, flagUniform);
         return pushObject<Item>(L, result, ItemBinding::getMetatableName());
@@ -277,7 +263,6 @@ int RootObjectFactoryBinding::createItem(lua_State* L)
 
     return luaL_error(L, "Incorrect number of arguments for RootObjectFactory:createItem (expected 1 or 6)");
 }
-
 
 int RootObjectFactoryBinding::createRandomSquad(lua_State* L)
 {
@@ -287,16 +272,16 @@ int RootObjectFactoryBinding::createRandomSquad(lua_State* L)
     Faction* faction = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     Ogre::Vector3 position;
     readVector3(L, 3, position);
-    TownBase* homeTown = lua_isnil(L, 4) ? NULL : checkObject<TownBase>(L, 4, TownBaseBinding::getMetatableName());
+    TownBase* homeTown = lua_isnoneornil(L, 4) ? nullptr : checkObject<TownBase>(L, 4, TownBaseBinding::getMetatableName());
     int maxnum = (int)luaL_checkinteger(L, 5);
-    Building* home = lua_isnil(L, 6) ? NULL : checkObject<Building>(L, 6, BuildingBinding::getMetatableName());
+    Building* home = lua_isnoneornil(L, 6) ? nullptr : checkObject<Building>(L, 6, BuildingBinding::getMetatableName());
     GameData* squad = checkObject<GameData>(L, 7, GameDataBinding::getMetatableName());
-    RootObjectContainer* ownr = lua_isnil(L, 8) ? NULL : checkObject<RootObjectContainer>(L, 8, "KenshiLua.RootObjectContainer");
+    RootObjectContainer* ownr = lua_isnoneornil(L, 8) ? nullptr : checkObject<RootObjectContainer>(L, 8, RootObjectContainerBinding::getMetatableName());
     AreaBiomeGroup* maparea = (AreaBiomeGroup*)lua_touserdata(L, 9);
-    Platoon* _activePlatoon = lua_isnil(L, 10) ? NULL : checkObject<Platoon>(L, 10, PlatoonBinding::getMetatableName());
+    Platoon* _activePlatoon = lua_isnoneornil(L, 10) ? nullptr : checkObject<Platoon>(L, 10, PlatoonBinding::getMetatableName());
     bool permanentsquad = lua_toboolean(L, 11) != 0;
     hand* AItarget = checkObject<hand>(L, 12, HandBinding::getMetatableName());
-    TownBase* targetTown = lua_isnil(L, 13) ? NULL : checkObject<TownBase>(L, 13, TownBaseBinding::getMetatableName());
+    TownBase* targetTown = lua_isnoneornil(L, 13) ? nullptr : checkObject<TownBase>(L, 13, TownBaseBinding::getMetatableName());
     float sizeMultiplier = (float)luaL_checknumber(L, 14);
     SquadType squadType = (SquadType)luaL_checkinteger(L, 15);
     bool isJustARefresh = lua_toboolean(L, 16) != 0;
@@ -305,23 +290,21 @@ int RootObjectFactoryBinding::createRandomSquad(lua_State* L)
     return pushObject<Platoon>(L, result, PlatoonBinding::getMetatableName());
 }
 
-
 int RootObjectFactoryBinding::createRandomUnloadedCharacter(lua_State* L)
 {
     RootObjectFactory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObjectFactory is nil");
 
-    Faction* faction = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
+    Faction* faction = lua_isnoneornil(L, 2) ? nullptr : checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     UnloadedPlatoon* platoon = (UnloadedPlatoon*)lua_touserdata(L, 3);
     Ogre::Vector3 position;
     readVector3(L, 4, position);
     GameData* characterTemplate = checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
-    Ownerships* owns = lua_isnil(L, 6) ? NULL : checkObject<Ownerships>(L, 6, OwnershipsBinding::getMetatableName());
+    Ownerships* owns = lua_isnoneornil(L, 6) ? nullptr : checkObject<Ownerships>(L, 6, OwnershipsBinding::getMetatableName());
 
     GameSaveState result = instance->createRandomUnloadedCharacter(faction, platoon, position, characterTemplate, owns);
     return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
 }
-
 
 int RootObjectFactoryBinding::createRandomUnloadedSquad(lua_State* L)
 {
@@ -331,21 +314,20 @@ int RootObjectFactoryBinding::createRandomUnloadedSquad(lua_State* L)
     Faction* faction = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     Ogre::Vector3 position;
     readVector3(L, 3, position);
-    TownBase* homeTown = lua_isnil(L, 4) ? NULL : checkObject<TownBase>(L, 4, TownBaseBinding::getMetatableName());
+    TownBase* homeTown = lua_isnoneornil(L, 4) ? nullptr : checkObject<TownBase>(L, 4, TownBaseBinding::getMetatableName());
     int maxnum = (int)luaL_checkinteger(L, 5);
-    Building* home = lua_isnil(L, 6) ? NULL : checkObject<Building>(L, 6, BuildingBinding::getMetatableName());
+    Building* home = lua_isnoneornil(L, 6) ? nullptr : checkObject<Building>(L, 6, BuildingBinding::getMetatableName());
     GameData* squad = checkObject<GameData>(L, 7, GameDataBinding::getMetatableName());
-    RootObjectContainer* owner = lua_isnil(L, 8) ? NULL : checkObject<RootObjectContainer>(L, 8, "KenshiLua.RootObjectContainer");
+    RootObjectContainer* owner = lua_isnoneornil(L, 8) ? nullptr : checkObject<RootObjectContainer>(L, 8, RootObjectContainerBinding::getMetatableName());
     AreaBiomeGroup* maparea = (AreaBiomeGroup*)lua_touserdata(L, 9);
     bool permanentsquad = lua_toboolean(L, 10) != 0;
     hand* AItarget = checkObject<hand>(L, 11, HandBinding::getMetatableName());
-    TownBase* targetTown = lua_isnil(L, 12) ? NULL : checkObject<TownBase>(L, 12, TownBaseBinding::getMetatableName());
+    TownBase* targetTown = lua_isnoneornil(L, 12) ? nullptr : checkObject<TownBase>(L, 12, TownBaseBinding::getMetatableName());
     SquadType squadType = (SquadType)luaL_checkinteger(L, 13);
 
     Platoon* result = instance->createRandomUnloadedSquad(faction, position, homeTown, maxnum, home, squad, owner, maparea, permanentsquad, *AItarget, targetTown, squadType);
     return pushObject<Platoon>(L, result, PlatoonBinding::getMetatableName());
 }
-
 
 int RootObjectFactoryBinding::getValsFromDataInList(lua_State* L)
 {
@@ -360,7 +342,6 @@ int RootObjectFactoryBinding::getValsFromDataInList(lua_State* L)
     pushTripleInt(L, result);
     return 1;
 }
-
 
 int RootObjectFactoryBinding::_chooseClothingItemFromList(lua_State* L)
 {
@@ -387,7 +368,6 @@ int RootObjectFactoryBinding::_chooseClothingItemFromList(lua_State* L)
     GameData* result = RootObjectFactory::_chooseClothingItemFromList(dataList, listName, slot, race);
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
-
 
 int RootObjectFactoryBinding::chooseMyClothing(lua_State* L)
 {
@@ -416,6 +396,25 @@ int RootObjectFactoryBinding::chooseMyClothing(lua_State* L)
     return 0;
 }
 
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - RootObjectFactoryBinding::createLocationNode: LocationNode* (unbound pointer)
+
+SKIPPED MEMBERS:
+  - boost::shared_mutex todoMutex (non-copyable synchronization primitive)
+*/
+
+int RootObjectFactoryBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int RootObjectFactoryBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.RootObjectFactory object");
+    return 1;
+}
 
 void RootObjectFactoryBinding::registerBinding(lua_State* L)
 {
@@ -459,13 +458,11 @@ void RootObjectFactoryBinding::registerBinding(lua_State* L)
     luaL_getmetatable(L, RootObjectFactoryBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
     
-    registerGetter(L, "mutex", RootObjectFactory_get_mutex);
     registerGetter(L, "todoList", RootObjectFactory_get_todoList);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
     
-    registerSetter(L, "mutex", RootObjectFactory_set_mutex);
     registerSetter(L, "todoList", RootObjectFactory_set_todoList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 

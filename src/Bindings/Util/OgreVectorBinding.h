@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/LuaCodec.h"
 #include <vector>
 #include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"

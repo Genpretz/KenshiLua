@@ -204,29 +204,19 @@ void TradeCultureBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TradeCultureBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TradeCulture_get_forbiddenItems);
-    lua_setfield(L, -2, "forbiddenItems");
-    lua_pushcfunction(L, TradeCulture_get_illegalBuildings);
-    lua_setfield(L, -2, "illegalBuildings");
-    lua_pushcfunction(L, TradeCulture_get_happyBuildings);
-    lua_setfield(L, -2, "happyBuildings");
-    lua_pushcfunction(L, TradeCulture_get_illegalItems);
-    lua_setfield(L, -2, "illegalItems");
-    lua_pushcfunction(L, TradeCulture_get_tradeGoodsMults);
-    lua_setfield(L, -2, "tradeGoodsMults");
+    registerGetter(L, "forbiddenItems", TradeCulture_get_forbiddenItems);
+    registerGetter(L, "illegalBuildings", TradeCulture_get_illegalBuildings);
+    registerGetter(L, "happyBuildings", TradeCulture_get_happyBuildings);
+    registerGetter(L, "illegalItems", TradeCulture_get_illegalItems);
+    registerGetter(L, "tradeGoodsMults", TradeCulture_get_tradeGoodsMults);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TradeCulture_set_forbiddenItems);
-    lua_setfield(L, -2, "forbiddenItems");
-    lua_pushcfunction(L, TradeCulture_set_illegalBuildings);
-    lua_setfield(L, -2, "illegalBuildings");
-    lua_pushcfunction(L, TradeCulture_set_happyBuildings);
-    lua_setfield(L, -2, "happyBuildings");
-    lua_pushcfunction(L, TradeCulture_set_illegalItems);
-    lua_setfield(L, -2, "illegalItems");
-    lua_pushcfunction(L, TradeCulture_set_tradeGoodsMults);
-    lua_setfield(L, -2, "tradeGoodsMults");
+    registerSetter(L, "forbiddenItems", TradeCulture_set_forbiddenItems);
+    registerSetter(L, "illegalBuildings", TradeCulture_set_illegalBuildings);
+    registerSetter(L, "happyBuildings", TradeCulture_set_happyBuildings);
+    registerSetter(L, "illegalItems", TradeCulture_set_illegalItems);
+    registerSetter(L, "tradeGoodsMults", TradeCulture_set_tradeGoodsMults);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

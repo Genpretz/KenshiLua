@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\MainBarGUI.h"
 #include "MainBarGUIBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -11,7 +11,7 @@
 #include "Bindings/RootObjectContainerBinding.h"
 #include "Bindings/Gui/ToolTipBinding.h"
 #include "Bindings/Gui/ToolTipFixedBinding.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Gui/PortraitDataBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/BoostUnorderedBinding.h"
@@ -60,7 +60,7 @@ static int MainBarGUI_get_bountyPanel(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, instance->bountyPanel, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->bountyPanel, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_bountyDatapanel(lua_State* L)
@@ -82,56 +82,56 @@ static int MainBarGUI_get_portraitsTabPanel(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->portraitsTabPanel, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->portraitsTabPanel, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_floorDownButton(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->floorDownButton, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->floorDownButton, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_floorUpButton(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->floorUpButton, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->floorUpButton, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_floorText(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->floorText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->floorText, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_dayText(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->dayText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->dayText, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_moneyLabel(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->moneyLabel, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->moneyLabel, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_moneyText(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->moneyText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->moneyText, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_timeText(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->timeText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->timeText, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_medicalPanel(lua_State* L)
@@ -153,14 +153,14 @@ static int MainBarGUI_get_extendInfoPanelButton(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->extendInfoPanelButton, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->extendInfoPanelButton, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_extendedInfoPanel(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, instance->extendedInfoPanel, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->extendedInfoPanel, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_extendedInfoPanelDuration(lua_State* L)
@@ -191,14 +191,14 @@ static int MainBarGUI_get_biomePanel(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, instance->biomePanel, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->biomePanel, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_biomePanelText(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->biomePanelText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->biomePanelText, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_biomePanelVisibleTimer(lua_State* L)
@@ -273,14 +273,14 @@ static int MainBarGUI_get_pausePanel(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, instance->pausePanel, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->pausePanel, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_loadingPanel(lua_State* L)
 {
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
-    return pushObject<MyGUI::Widget>(L, instance->loadingPanel, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, instance->loadingPanel, MyGUIBinding::getMetatableName());
 }
 
 static int MainBarGUI_get_datapanels(lua_State* L)
@@ -663,7 +663,7 @@ int MainBarGUIBinding::getPausePanel(lua_State* L)
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
     MyGUI::Widget* result = instance->getPausePanel();
-    return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, result, MyGUIBinding::getMetatableName());
 }
 
 int MainBarGUIBinding::getLoadingPanel(lua_State* L)
@@ -672,7 +672,7 @@ int MainBarGUIBinding::getLoadingPanel(lua_State* L)
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
     MyGUI::Widget* result = instance->getLoadingPanel();
-    return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, result, MyGUIBinding::getMetatableName());
 }
 
 int MainBarGUIBinding::getMedicalPanel(lua_State* L)
@@ -768,7 +768,7 @@ int MainBarGUIBinding::_getWidget(lua_State* L)
 
     const std::string name = luaL_checkstring(L, 2);
     MyGUI::Widget* result = instance->_getWidget(name);
-    return pushObject<MyGUI::Widget>(L, result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, result, MyGUIBinding::getMetatableName());
 }
 
 int MainBarGUIBinding::autoChangeSelectedObject(lua_State* L)
@@ -847,7 +847,7 @@ int MainBarGUIBinding::closeMapWindow(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->closeMapWindow(_sender);
     return 0;
 }
@@ -857,7 +857,7 @@ int MainBarGUIBinding::toggleMapWindow(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->toggleMapWindow(_sender);
     return 0;
 }
@@ -867,7 +867,7 @@ int MainBarGUIBinding::toggleFactionWindow(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->toggleFactionWindow(_sender);
     return 0;
 }
@@ -877,7 +877,7 @@ int MainBarGUIBinding::toggleTechWindow(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->toggleTechWindow(_sender);
     return 0;
 }
@@ -887,7 +887,7 @@ int MainBarGUIBinding::toggleCraftWindow(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->toggleCraftWindow(_sender);
     return 0;
 }
@@ -897,7 +897,7 @@ int MainBarGUIBinding::toggleSquadWindow(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->toggleSquadWindow(_sender);
     return 0;
 }
@@ -907,7 +907,7 @@ int MainBarGUIBinding::changeFloorButtonUp(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->changeFloorButtonUp(_sender);
     return 0;
 }
@@ -917,7 +917,7 @@ int MainBarGUIBinding::changeFloorButtonDown(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->changeFloorButtonDown(_sender);
     return 0;
 }
@@ -966,7 +966,7 @@ int MainBarGUIBinding::extendInfoPanel(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     int _a2 = (int)luaL_checkinteger(L, 3);
     int _a3 = (int)luaL_checkinteger(L, 4);
     MyGUI::MouseButton _id((MyGUI::MouseButton::Enum)luaL_checkinteger(L, 5));
@@ -980,7 +980,7 @@ int MainBarGUIBinding::toggleInventory(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->toggleInventory(_sender);
     return 0;
 }
@@ -990,7 +990,7 @@ int MainBarGUIBinding::toggleStatsWindow(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->toggleStatsWindow(_sender);
     return 0;
 }
@@ -1000,7 +1000,7 @@ int MainBarGUIBinding::toggleHelpWindow(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->toggleHelpWindow(_a1);
     return 0;
 }
@@ -1010,7 +1010,7 @@ int MainBarGUIBinding::changeSpeed(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->changeSpeed(_sender);
     return 0;
 }
@@ -1020,7 +1020,7 @@ int MainBarGUIBinding::buildButton(lua_State* L)
     MainBarGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainBarGUI is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->buildButton(_sender);
     return 0;
 }

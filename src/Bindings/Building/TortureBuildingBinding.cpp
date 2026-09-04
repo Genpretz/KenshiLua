@@ -108,13 +108,11 @@ void TortureBuildingBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TortureBuildingBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TortureBuilding_get_timer);
-    lua_setfield(L, -2, "timer");
+    registerGetter(L, "timer", TortureBuilding_get_timer);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TortureBuilding_set_timer);
-    lua_setfield(L, -2, "timer");
+    registerSetter(L, "timer", TortureBuilding_set_timer);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ProductionBuilding

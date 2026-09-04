@@ -1,8 +1,11 @@
 #include "pch.h"
+
 #include "kenshi\gui\MapScreen.h"
 #include "MapMarkerCharacterBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RootObjectBaseBinding.h"
+#include "Bindings/Util/HandBinding.h"
+#include "Bindings/CharacterBinding.h"
 
 namespace KenshiLua
 {

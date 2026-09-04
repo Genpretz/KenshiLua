@@ -1,7 +1,9 @@
 #pragma once
+#include "Bindings/GameDataBinding.h"
 #include <map>
 #include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"
+#include "Lua/LuaCodec.h"
 
 namespace KenshiLua
 {

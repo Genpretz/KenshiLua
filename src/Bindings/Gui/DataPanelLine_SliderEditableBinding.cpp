@@ -1,8 +1,8 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_SliderEditableBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Gui/DataPanelLineBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 
@@ -147,7 +147,7 @@ int DataPanelLine_SliderEditableBinding::getSlider(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
 
     MyGUI::ScrollBar* result = instance->getSlider();
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGUIBinding::getMetatableName());
 }
 
 int DataPanelLine_SliderEditableBinding::getEditBox(lua_State* L)
@@ -156,7 +156,7 @@ int DataPanelLine_SliderEditableBinding::getEditBox(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
 
     MyGUI::EditBox* result = instance->getEditBox();
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)result, MyGUIBinding::getMetatableName());
 }
 
 int DataPanelLine_SliderEditableBinding::setValue(lua_State* L)

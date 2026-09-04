@@ -479,21 +479,15 @@ void WallBuildingBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, WallBuildingBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, WallBuilding_get_wallSectionLinkType);
-    lua_setfield(L, -2, "wallSectionLinkType");
-    lua_pushcfunction(L, WallBuilding_get_shareBuildStateOfAnother);
-    lua_setfield(L, -2, "shareBuildStateOfAnother");
-    lua_pushcfunction(L, WallBuilding_get_othersSharingMyBuildState);
-    lua_setfield(L, -2, "othersSharingMyBuildState");
+    registerGetter(L, "wallSectionLinkType", WallBuilding_get_wallSectionLinkType);
+    registerGetter(L, "shareBuildStateOfAnother", WallBuilding_get_shareBuildStateOfAnother);
+    registerGetter(L, "othersSharingMyBuildState", WallBuilding_get_othersSharingMyBuildState);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, WallBuilding_set_wallSectionLinkType);
-    lua_setfield(L, -2, "wallSectionLinkType");
-    lua_pushcfunction(L, WallBuilding_set_shareBuildStateOfAnother);
-    lua_setfield(L, -2, "shareBuildStateOfAnother");
-    lua_pushcfunction(L, WallBuilding_set_othersSharingMyBuildState);
-    lua_setfield(L, -2, "othersSharingMyBuildState");
+    registerSetter(L, "wallSectionLinkType", WallBuilding_set_wallSectionLinkType);
+    registerSetter(L, "shareBuildStateOfAnother", WallBuilding_set_shareBuildStateOfAnother);
+    registerSetter(L, "othersSharingMyBuildState", WallBuilding_set_othersSharingMyBuildState);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to Building

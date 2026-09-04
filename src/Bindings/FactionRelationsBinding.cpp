@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaCodec.h"
 #include <kenshi/FactionRelations.h>
 #include "FactionRelationsBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -600,33 +601,21 @@ void FactionRelationsBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FactionRelationsBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FactionRelations_get_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, FactionRelations_get_playerRank);
-    lua_setfield(L, -2, "playerRank");
-    lua_pushcfunction(L, FactionRelations_get_globalReputationTrust);
-    lua_setfield(L, -2, "globalReputationTrust");
-    lua_pushcfunction(L, FactionRelations_get_globalReputationForBadassery);
-    lua_setfield(L, -2, "globalReputationForBadassery");
-    lua_pushcfunction(L, FactionRelations_get__factionRelations);
-    lua_setfield(L, -2, "_factionRelations");
-    lua_pushcfunction(L, FactionRelations_get_defaultFactionRelation);
-    lua_setfield(L, -2, "defaultFactionRelation");
+    registerGetter(L, "me", FactionRelations_get_me);
+    registerGetter(L, "playerRank", FactionRelations_get_playerRank);
+    registerGetter(L, "globalReputationTrust", FactionRelations_get_globalReputationTrust);
+    registerGetter(L, "globalReputationForBadassery", FactionRelations_get_globalReputationForBadassery);
+    registerGetter(L, "_factionRelations", FactionRelations_get__factionRelations);
+    registerGetter(L, "defaultFactionRelation", FactionRelations_get_defaultFactionRelation);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FactionRelations_set_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, FactionRelations_set_playerRank);
-    lua_setfield(L, -2, "playerRank");
-    lua_pushcfunction(L, FactionRelations_set_globalReputationTrust);
-    lua_setfield(L, -2, "globalReputationTrust");
-    lua_pushcfunction(L, FactionRelations_set_globalReputationForBadassery);
-    lua_setfield(L, -2, "globalReputationForBadassery");
-    lua_pushcfunction(L, FactionRelations_set__factionRelations);
-    lua_setfield(L, -2, "_factionRelations");
-    lua_pushcfunction(L, FactionRelations_set_defaultFactionRelation);
-    lua_setfield(L, -2, "defaultFactionRelation");
+    registerSetter(L, "me", FactionRelations_set_me);
+    registerSetter(L, "playerRank", FactionRelations_set_playerRank);
+    registerSetter(L, "globalReputationTrust", FactionRelations_set_globalReputationTrust);
+    registerSetter(L, "globalReputationForBadassery", FactionRelations_set_globalReputationForBadassery);
+    registerSetter(L, "_factionRelations", FactionRelations_set__factionRelations);
+    registerSetter(L, "defaultFactionRelation", FactionRelations_set_defaultFactionRelation);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     OgreUnorderedMapBinding<Faction*, float>::registerBinding(

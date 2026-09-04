@@ -2,6 +2,7 @@
 #include <set>
 #include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"
+#include "Lua/LuaCodec.h"
 
 namespace KenshiLua
 {

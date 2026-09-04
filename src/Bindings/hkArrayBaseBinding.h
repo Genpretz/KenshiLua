@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/LuaCodec.h"
 
 extern "C" {
 #include <lua.h>

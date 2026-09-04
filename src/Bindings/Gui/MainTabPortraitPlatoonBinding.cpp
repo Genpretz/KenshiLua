@@ -1,10 +1,10 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\MainBarGUI.h"
 #include "MainTabPortraitPlatoonBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/ActivePlatoonBinding.h"
 #include "Bindings/Gui/MainBarGUIBinding.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -34,7 +34,7 @@ static int MainTabPortraitPlatoon_get_tab(lua_State* L)
 {
     MainTabPortraitPlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->tab, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->tab, MyGUIBinding::getMetatableName());
 }
 
 static int MainTabPortraitPlatoon_get_tabIndex(lua_State* L)
@@ -49,7 +49,7 @@ static int MainTabPortraitPlatoon_get_flashImage(lua_State* L)
 {
     MainTabPortraitPlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->flashImage, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->flashImage, MyGUIBinding::getMetatableName());
 }
 
 static int MainTabPortraitPlatoon_get_flashing(lua_State* L)
@@ -137,7 +137,7 @@ int MainTabPortraitPlatoonBinding::addTab(lua_State* L)
     MainTabPortraitPlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MainTabPortraitPlatoon is nil");
 
-    MyGUI::Widget* tabControl = checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* tabControl = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     if (!tabControl) return luaL_error(L, "Argument 2 to addTab must be MyGUI::Widget");
     bool visible = lua_toboolean(L, 3) != 0;
 

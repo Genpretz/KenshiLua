@@ -3,12 +3,12 @@
 #include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 
-namespace wraps
+namespace KenshiLua
 {
 
 static wraps::BaseLayout* getInstance(lua_State* L, int idx)
 {
-    return KenshiLua::checkObject<wraps::BaseLayout>(L, idx, BaseLayoutBinding::getMetatableName());
+    return checkObject<wraps::BaseLayout>(L, idx, BaseLayoutBinding::getMetatableName());
 }
 
 // --- Getters for BaseLayout ---
@@ -85,33 +85,28 @@ void BaseLayoutBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
 
-    KenshiLua::registerClass(
+    registerClass(
         L, 
         BaseLayoutBinding::getMetatableName(), 
         meta, 
         methods, 
-        KenshiLua::genericPropertyIndex, 
-        KenshiLua::genericPropertyNewIndex
+        genericPropertyIndex, 
+        genericPropertyNewIndex
     );
 
     luaL_getmetatable(L, BaseLayoutBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, BaseLayout_get_mMainWidget);
-    lua_setfield(L, -2, "mMainWidget");
-    lua_pushcfunction(L, BaseLayout_get_mPrefix);
-    lua_setfield(L, -2, "mPrefix");
-    lua_pushcfunction(L, BaseLayout_get_mLayoutName);
-    lua_setfield(L, -2, "mLayoutName");
+    registerGetter(L, "mMainWidget", BaseLayout_get_mMainWidget);
+    registerGetter(L, "mPrefix", BaseLayout_get_mPrefix);
+    registerGetter(L, "mLayoutName", BaseLayout_get_mLayoutName);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, BaseLayout_set_mPrefix);
-    lua_setfield(L, -2, "mPrefix");
-    lua_pushcfunction(L, BaseLayout_set_mLayoutName);
-    lua_setfield(L, -2, "mLayoutName");
+    registerSetter(L, "mPrefix", BaseLayout_set_mPrefix);
+    registerSetter(L, "mLayoutName", BaseLayout_set_mLayoutName);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
 
-} // namespace wraps
+} // namespace KenshiLua

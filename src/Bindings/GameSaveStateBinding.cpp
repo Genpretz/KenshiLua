@@ -350,41 +350,25 @@ void GameSaveStateBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, GameSaveStateBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, GameSaveState_get_baseData);
-    lua_setfield(L, -2, "baseData");
-    lua_pushcfunction(L, GameSaveState_get_dataSource);
-    lua_setfield(L, -2, "dataSource");
-    lua_pushcfunction(L, GameSaveState_get_firstTime);
-    lua_setfield(L, -2, "firstTime");
-    lua_pushcfunction(L, GameSaveState_get_instance);
-    lua_setfield(L, -2, "instance");
-    lua_pushcfunction(L, GameSaveState_get_pos);
-    lua_setfield(L, -2, "pos");
-    lua_pushcfunction(L, GameSaveState_get_rot);
-    lua_setfield(L, -2, "rot");
-    lua_pushcfunction(L, GameSaveState_get_instanceID);
-    lua_setfield(L, -2, "instanceID");
-    lua_pushcfunction(L, GameSaveState_get_states);
-    lua_setfield(L, -2, "states");
+    registerGetter(L, "baseData", GameSaveState_get_baseData);
+    registerGetter(L, "dataSource", GameSaveState_get_dataSource);
+    registerGetter(L, "firstTime", GameSaveState_get_firstTime);
+    registerGetter(L, "instance", GameSaveState_get_instance);
+    registerGetter(L, "pos", GameSaveState_get_pos);
+    registerGetter(L, "rot", GameSaveState_get_rot);
+    registerGetter(L, "instanceID", GameSaveState_get_instanceID);
+    registerGetter(L, "states", GameSaveState_get_states);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, GameSaveState_set_baseData);
-    lua_setfield(L, -2, "baseData");
-    lua_pushcfunction(L, GameSaveState_set_dataSource);
-    lua_setfield(L, -2, "dataSource");
-    lua_pushcfunction(L, GameSaveState_set_firstTime);
-    lua_setfield(L, -2, "firstTime");
-    lua_pushcfunction(L, GameSaveState_set_instance);
-    lua_setfield(L, -2, "instance");
-    lua_pushcfunction(L, GameSaveState_set_pos);
-    lua_setfield(L, -2, "pos");
-    lua_pushcfunction(L, GameSaveState_set_rot);
-    lua_setfield(L, -2, "rot");
-    lua_pushcfunction(L, GameSaveState_set_instanceID);
-    lua_setfield(L, -2, "instanceID");
-    lua_pushcfunction(L, GameSaveState_set_states);
-    lua_setfield(L, -2, "states");
+    registerSetter(L, "baseData", GameSaveState_set_baseData);
+    registerSetter(L, "dataSource", GameSaveState_set_dataSource);
+    registerSetter(L, "firstTime", GameSaveState_set_firstTime);
+    registerSetter(L, "instance", GameSaveState_set_instance);
+    registerSetter(L, "pos", GameSaveState_set_pos);
+    registerSetter(L, "rot", GameSaveState_set_rot);
+    registerSetter(L, "instanceID", GameSaveState_set_instanceID);
+    registerSetter(L, "states", GameSaveState_set_states);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     StatesMapBinding::registerBinding(L, "ogre_unordered_map<itemType, GameData*>", nullptr, GameDataBinding::getMetatableName());

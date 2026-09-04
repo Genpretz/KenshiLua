@@ -1,9 +1,11 @@
 #include "pch.h"
+
 #include "kenshi\CharMovement.h"
 #include "physHitBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/RootObjectBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

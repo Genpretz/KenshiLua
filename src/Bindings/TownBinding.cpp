@@ -1,7 +1,8 @@
 #include "pch.h"
+
 #include "kenshi\Town.h"
 #include <kenshi/GameSaveState.h>
-#include "TownBinding.h"
+#include "Bindings/TownBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/BuildingBinding.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
@@ -17,6 +18,7 @@
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
 #include "Bindings/Util/OgreFastArrayBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {

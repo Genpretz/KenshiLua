@@ -495,17 +495,13 @@ void ShopTraderBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ShopTraderBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ShopTrader_get_trader);
-    lua_setfield(L, -2, "trader");
-    lua_pushcfunction(L, ShopTrader_get_inventory);
-    lua_setfield(L, -2, "inventory");
+    registerGetter(L, "trader", ShopTrader_get_trader);
+    registerGetter(L, "inventory", ShopTrader_get_inventory);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ShopTrader_set_trader);
-    lua_setfield(L, -2, "trader");
-    lua_pushcfunction(L, ShopTrader_set_inventory);
-    lua_setfield(L, -2, "inventory");
+    registerSetter(L, "trader", ShopTrader_set_trader);
+    registerSetter(L, "inventory", ShopTrader_set_inventory);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to RootObject

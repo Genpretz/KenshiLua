@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaCodec.h"
 #include "kenshi\MedicalSystem.h"
 #include "MedicalSystemBinding.h"
 #include "Lua/BindingHelpers.h"

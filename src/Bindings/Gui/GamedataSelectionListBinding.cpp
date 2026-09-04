@@ -1,11 +1,11 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\LevelEditor.h"
 #include "GamedataSelectionListBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/Gui/LevelEditorBinding.h"
 #include "Bindings/Util/LektorBinding.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -21,14 +21,14 @@ static int GamedataSelectionList_get_win(lua_State* L)
 {
     GamedataSelectionList* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GamedataSelectionList is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->win, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->win, MyGUIBinding::getMetatableName());
 }
 
 static int GamedataSelectionList_get_list(lua_State* L)
 {
     GamedataSelectionList* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GamedataSelectionList is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->list, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->list, MyGUIBinding::getMetatableName());
 }
 
 static int GamedataSelectionList_get_items(lua_State* L)
@@ -137,7 +137,7 @@ int GamedataSelectionListBinding::listItemSelected(lua_State* L)
     GamedataSelectionList* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GamedataSelectionList is nil");
 
-    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* _sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     unsigned __int64 _index = (unsigned __int64)luaL_checkinteger(L, 3);
     instance->listItemSelected((MyGUI::ListBox*)_sender, _index);
     return 0;
@@ -148,7 +148,7 @@ int GamedataSelectionListBinding::changeFilter(lua_State* L)
     GamedataSelectionList* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GamedataSelectionList is nil");
 
-    MyGUI::Widget* e = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGuiBinding::getMetatableName());
+    MyGUI::Widget* e = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
     instance->changeFilter((MyGUI::EditBox*)e);
     return 0;
 }

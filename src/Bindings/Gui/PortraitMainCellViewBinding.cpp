@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\gui\PortraitManager.h"
 #include "PortraitMainCellViewBinding.h"
 #include "Lua/BindingHelpers.h"

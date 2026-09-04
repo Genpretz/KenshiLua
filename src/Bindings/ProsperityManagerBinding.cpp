@@ -171,17 +171,13 @@ void ProsperityManagerBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, ProsperityManagerBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, ProsperityManager_get_actualProsperity);
-    lua_setfield(L, -2, "actualProsperity");
-    lua_pushcfunction(L, ProsperityManager_get_maxProsperity);
-    lua_setfield(L, -2, "maxProsperity");
+    registerGetter(L, "actualProsperity", ProsperityManager_get_actualProsperity);
+    registerGetter(L, "maxProsperity", ProsperityManager_get_maxProsperity);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, ProsperityManager_set_actualProsperity);
-    lua_setfield(L, -2, "actualProsperity");
-    lua_pushcfunction(L, ProsperityManager_set_maxProsperity);
-    lua_setfield(L, -2, "maxProsperity");
+    registerSetter(L, "actualProsperity", ProsperityManager_set_actualProsperity);
+    registerSetter(L, "maxProsperity", ProsperityManager_set_maxProsperity);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

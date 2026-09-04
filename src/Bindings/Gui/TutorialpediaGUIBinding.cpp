@@ -1,8 +1,8 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "kenshi\gui\TutorialGUI.h"
 #include "TutorialpediaGUIBinding.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Gui/GUIWindowBinding.h"
 #include "Bindings/Gui/TutorialItemBinding.h"
 
@@ -34,42 +34,42 @@ static int TutorialpediaGUI_get_tutorialsList(lua_State* L)
 {
     TutorialpediaGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->tutorialsList, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->tutorialsList, MyGUIBinding::getMetatableName());
 }
 
 static int TutorialpediaGUI_get_descriptionText(lua_State* L)
 {
     TutorialpediaGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->descriptionText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->descriptionText, MyGUIBinding::getMetatableName());
 }
 
 static int TutorialpediaGUI_get_activateButton(lua_State* L)
 {
     TutorialpediaGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->activateButton, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->activateButton, MyGUIBinding::getMetatableName());
 }
 
 static int TutorialpediaGUI_get_prevButton(lua_State* L)
 {
     TutorialpediaGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->prevButton, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->prevButton, MyGUIBinding::getMetatableName());
 }
 
 static int TutorialpediaGUI_get_nextButton(lua_State* L)
 {
     TutorialpediaGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->nextButton, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->nextButton, MyGUIBinding::getMetatableName());
 }
 
 static int TutorialpediaGUI_get_pagingText(lua_State* L)
 {
     TutorialpediaGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->pagingText, MyGuiBinding::getMetatableName());
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->pagingText, MyGUIBinding::getMetatableName());
 }
 
 // --- Setters for TutorialpediaGUI ---

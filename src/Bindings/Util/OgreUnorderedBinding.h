@@ -6,6 +6,7 @@
 #include <kenshi/util/OgreUnordered.h>
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Lua/LuaCodec.h"
 
 namespace KenshiLua
 {

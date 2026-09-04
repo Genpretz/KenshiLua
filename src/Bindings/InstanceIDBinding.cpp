@@ -237,25 +237,17 @@ void InstanceIDBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, InstanceIDBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, InstanceID_get_uid);
-    lua_setfield(L, -2, "uid");
-    lua_pushcfunction(L, InstanceID_get_baseIndex);
-    lua_setfield(L, -2, "baseIndex");
-    lua_pushcfunction(L, InstanceID_get_modIndex);
-    lua_setfield(L, -2, "modIndex");
-    lua_pushcfunction(L, InstanceID_get_modified);
-    lua_setfield(L, -2, "modified");
+    registerGetter(L, "uid", InstanceID_get_uid);
+    registerGetter(L, "baseIndex", InstanceID_get_baseIndex);
+    registerGetter(L, "modIndex", InstanceID_get_modIndex);
+    registerGetter(L, "modified", InstanceID_get_modified);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, InstanceID_set_uid);
-    lua_setfield(L, -2, "uid");
-    lua_pushcfunction(L, InstanceID_set_baseIndex);
-    lua_setfield(L, -2, "baseIndex");
-    lua_pushcfunction(L, InstanceID_set_modIndex);
-    lua_setfield(L, -2, "modIndex");
-    lua_pushcfunction(L, InstanceID_set_modified);
-    lua_setfield(L, -2, "modified");
+    registerSetter(L, "uid", InstanceID_set_uid);
+    registerSetter(L, "baseIndex", InstanceID_set_baseIndex);
+    registerSetter(L, "modIndex", InstanceID_set_modIndex);
+    registerSetter(L, "modified", InstanceID_set_modified);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

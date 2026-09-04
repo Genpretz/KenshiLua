@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_ButtonBinding.h"
 #include "Lua/BindingHelpers.h"

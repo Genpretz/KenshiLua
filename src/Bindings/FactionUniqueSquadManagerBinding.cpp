@@ -227,25 +227,17 @@ void FactionUniqueSquadManagerBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FactionUniqueSquadManagerBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FactionUniqueSquadManager_get_prosperityMgr);
-    lua_setfield(L, -2, "prosperityMgr");
-    lua_pushcfunction(L, FactionUniqueSquadManager_get_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, FactionUniqueSquadManager_get_squadListData);
-    lua_setfield(L, -2, "squadListData");
-    lua_pushcfunction(L, FactionUniqueSquadManager_get_homeTown);
-    lua_setfield(L, -2, "homeTown");
+    registerGetter(L, "prosperityMgr", FactionUniqueSquadManager_get_prosperityMgr);
+    registerGetter(L, "me", FactionUniqueSquadManager_get_me);
+    registerGetter(L, "squadListData", FactionUniqueSquadManager_get_squadListData);
+    registerGetter(L, "homeTown", FactionUniqueSquadManager_get_homeTown);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FactionUniqueSquadManager_set_prosperityMgr);
-    lua_setfield(L, -2, "prosperityMgr");
-    lua_pushcfunction(L, FactionUniqueSquadManager_set_me);
-    lua_setfield(L, -2, "me");
-    lua_pushcfunction(L, FactionUniqueSquadManager_set_squadListData);
-    lua_setfield(L, -2, "squadListData");
-    lua_pushcfunction(L, FactionUniqueSquadManager_set_homeTown);
-    lua_setfield(L, -2, "homeTown");
+    registerSetter(L, "prosperityMgr", FactionUniqueSquadManager_set_prosperityMgr);
+    registerSetter(L, "me", FactionUniqueSquadManager_set_me);
+    registerSetter(L, "squadListData", FactionUniqueSquadManager_set_squadListData);
+    registerSetter(L, "homeTown", FactionUniqueSquadManager_set_homeTown);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

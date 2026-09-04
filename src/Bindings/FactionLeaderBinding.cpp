@@ -137,21 +137,15 @@ void FactionLeaderBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FactionLeaderBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FactionLeader_get_faction);
-    lua_setfield(L, -2, "faction");
-    lua_pushcfunction(L, FactionLeader_get_worstEnemy);
-    lua_setfield(L, -2, "worstEnemy");
-    lua_pushcfunction(L, FactionLeader_get_biomeTerritory);
-    lua_setfield(L, -2, "biomeTerritory");
+    registerGetter(L, "faction", FactionLeader_get_faction);
+    registerGetter(L, "worstEnemy", FactionLeader_get_worstEnemy);
+    registerGetter(L, "biomeTerritory", FactionLeader_get_biomeTerritory);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FactionLeader_set_faction);
-    lua_setfield(L, -2, "faction");
-    lua_pushcfunction(L, FactionLeader_set_worstEnemy);
-    lua_setfield(L, -2, "worstEnemy");
-    lua_pushcfunction(L, FactionLeader_set_biomeTerritory);
-    lua_setfield(L, -2, "biomeTerritory");
+    registerSetter(L, "faction", FactionLeader_set_faction);
+    registerSetter(L, "worstEnemy", FactionLeader_set_worstEnemy);
+    registerSetter(L, "biomeTerritory", FactionLeader_set_biomeTerritory);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

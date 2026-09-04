@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/LuaCodec.h"
 #include "kenshi/FitnessSelector.h"
 #include "Lua/BindingHelpers.h"
 

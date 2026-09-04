@@ -576,53 +576,31 @@ void TurretBuildingBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, TurretBuildingBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, TurretBuilding_get_gunClass);
-    lua_setfield(L, -2, "gunClass");
-    lua_pushcfunction(L, TurretBuilding_get_aimDistInDegrees);
-    lua_setfield(L, -2, "aimDistInDegrees");
-    lua_pushcfunction(L, TurretBuilding_get_currentAimDir);
-    lua_setfield(L, -2, "currentAimDir");
-    lua_pushcfunction(L, TurretBuilding_get_rootAimDir);
-    lua_setfield(L, -2, "rootAimDir");
-    lua_pushcfunction(L, TurretBuilding_get_currentAimSpeed);
-    lua_setfield(L, -2, "currentAimSpeed");
-    lua_pushcfunction(L, TurretBuilding_get_currentAimTarget);
-    lua_setfield(L, -2, "currentAimTarget");
-    lua_pushcfunction(L, TurretBuilding_get_mountedBuilding);
-    lua_setfield(L, -2, "mountedBuilding");
-    lua_pushcfunction(L, TurretBuilding_get_hingePart);
-    lua_setfield(L, -2, "hingePart");
-    lua_pushcfunction(L, TurretBuilding_get_gunPart);
-    lua_setfield(L, -2, "gunPart");
-    lua_pushcfunction(L, TurretBuilding_get_aimTargetPos);
-    lua_setfield(L, -2, "aimTargetPos");
-    lua_pushcfunction(L, TurretBuilding_get_rotating);
-    lua_setfield(L, -2, "rotating");
+    registerGetter(L, "gunClass", TurretBuilding_get_gunClass);
+    registerGetter(L, "aimDistInDegrees", TurretBuilding_get_aimDistInDegrees);
+    registerGetter(L, "currentAimDir", TurretBuilding_get_currentAimDir);
+    registerGetter(L, "rootAimDir", TurretBuilding_get_rootAimDir);
+    registerGetter(L, "currentAimSpeed", TurretBuilding_get_currentAimSpeed);
+    registerGetter(L, "currentAimTarget", TurretBuilding_get_currentAimTarget);
+    registerGetter(L, "mountedBuilding", TurretBuilding_get_mountedBuilding);
+    registerGetter(L, "hingePart", TurretBuilding_get_hingePart);
+    registerGetter(L, "gunPart", TurretBuilding_get_gunPart);
+    registerGetter(L, "aimTargetPos", TurretBuilding_get_aimTargetPos);
+    registerGetter(L, "rotating", TurretBuilding_get_rotating);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, TurretBuilding_set_gunClass);
-    lua_setfield(L, -2, "gunClass");
-    lua_pushcfunction(L, TurretBuilding_set_aimDistInDegrees);
-    lua_setfield(L, -2, "aimDistInDegrees");
-    lua_pushcfunction(L, TurretBuilding_set_currentAimDir);
-    lua_setfield(L, -2, "currentAimDir");
-    lua_pushcfunction(L, TurretBuilding_set_rootAimDir);
-    lua_setfield(L, -2, "rootAimDir");
-    lua_pushcfunction(L, TurretBuilding_set_currentAimSpeed);
-    lua_setfield(L, -2, "currentAimSpeed");
-    lua_pushcfunction(L, TurretBuilding_set_currentAimTarget);
-    lua_setfield(L, -2, "currentAimTarget");
-    lua_pushcfunction(L, TurretBuilding_set_mountedBuilding);
-    lua_setfield(L, -2, "mountedBuilding");
-    lua_pushcfunction(L, TurretBuilding_set_hingePart);
-    lua_setfield(L, -2, "hingePart");
-    lua_pushcfunction(L, TurretBuilding_set_gunPart);
-    lua_setfield(L, -2, "gunPart");
-    lua_pushcfunction(L, TurretBuilding_set_aimTargetPos);
-    lua_setfield(L, -2, "aimTargetPos");
-    lua_pushcfunction(L, TurretBuilding_set_rotating);
-    lua_setfield(L, -2, "rotating");
+    registerSetter(L, "gunClass", TurretBuilding_set_gunClass);
+    registerSetter(L, "aimDistInDegrees", TurretBuilding_set_aimDistInDegrees);
+    registerSetter(L, "currentAimDir", TurretBuilding_set_currentAimDir);
+    registerSetter(L, "rootAimDir", TurretBuilding_set_rootAimDir);
+    registerSetter(L, "currentAimSpeed", TurretBuilding_set_currentAimSpeed);
+    registerSetter(L, "currentAimTarget", TurretBuilding_set_currentAimTarget);
+    registerSetter(L, "mountedBuilding", TurretBuilding_set_mountedBuilding);
+    registerSetter(L, "hingePart", TurretBuilding_set_hingePart);
+    registerSetter(L, "gunPart", TurretBuilding_set_gunPart);
+    registerSetter(L, "aimTargetPos", TurretBuilding_set_aimTargetPos);
+    registerSetter(L, "rotating", TurretBuilding_set_rotating);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to UseableStuff

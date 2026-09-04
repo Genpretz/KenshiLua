@@ -1,4 +1,5 @@
 #pragma once
+#include "PlatoonBinding.h"
 
 #include "kenshi/Platoon.h"
 

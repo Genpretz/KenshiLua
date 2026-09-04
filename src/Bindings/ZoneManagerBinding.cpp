@@ -790,7 +790,7 @@ int ZoneManagerBinding::getAllActiveZones(lua_State* L)
     lektor<ZoneMap*> out;
     instance->getAllActiveZones(out);
     lua_newtable(L);
-    for (size_t i = 0; i < out.size(); ++i)
+    for (uint32_t i = 0; i < out.size(); ++i)
     {
         pushObject<ZoneMap>(L, out[i], ZoneMapBinding::getMetatableName());
         lua_rawseti(L, -2, (int)(i + 1));
@@ -826,7 +826,7 @@ int ZoneManagerBinding::getZonesTouchingTown(lua_State* L)
     lektor<ZoneMap*> out;
     instance->getZonesTouchingTown(out, town);
     lua_newtable(L);
-    for (size_t i = 0; i < out.size(); ++i)
+    for (uint32_t i = 0; i < out.size(); ++i)
     {
         pushObject<ZoneMap>(L, out[i], ZoneMapBinding::getMetatableName());
         lua_rawseti(L, -2, (int)(i + 1));
@@ -846,7 +846,7 @@ int ZoneManagerBinding::findOverlappingActiveZones(lua_State* L)
     lektor<ZoneMap*> out;
     instance->findOverlappingActiveZones(out, pos, radius);
     lua_newtable(L);
-    for (size_t i = 0; i < out.size(); ++i)
+    for (uint32_t i = 0; i < out.size(); ++i)
     {
         pushObject<ZoneMap>(L, out[i], ZoneMapBinding::getMetatableName());
         lua_rawseti(L, -2, (int)(i + 1));
@@ -865,7 +865,7 @@ int ZoneManagerBinding::getBuildingsThatLinkTo(lua_State* L)
     lektor<Building*> out;
     instance->getBuildingsThatLinkTo(out, buildingType);
     lua_newtable(L);
-    for (size_t i = 0; i < out.size(); ++i)
+    for (uint32_t i = 0; i < out.size(); ++i)
     {
         pushObject<Building>(L, out[i], BuildingBinding::getMetatableName());
         lua_rawseti(L, -2, (int)(i + 1));
@@ -887,7 +887,7 @@ int ZoneManagerBinding::findAllBuildings(lua_State* L)
     lektor<Building*> out;
     instance->findAllBuildings(out, t, f, forSaleOnly, fun, ownership);
     lua_newtable(L);
-    for (size_t i = 0; i < out.size(); ++i)
+    for (uint32_t i = 0; i < out.size(); ++i)
     {
         pushObject<Building>(L, out[i], BuildingBinding::getMetatableName());
         lua_rawseti(L, -2, (int)(i + 1));

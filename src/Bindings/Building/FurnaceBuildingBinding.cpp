@@ -228,13 +228,11 @@ void FurnaceBuildingBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, FurnaceBuildingBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    lua_pushcfunction(L, FurnaceBuilding_get_active);
-    lua_setfield(L, -2, "active");
+    registerGetter(L, "active", FurnaceBuilding_get_active);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    lua_pushcfunction(L, FurnaceBuilding_set_active);
-    lua_setfield(L, -2, "active");
+    registerSetter(L, "active", FurnaceBuilding_set_active);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ProductionBuilding

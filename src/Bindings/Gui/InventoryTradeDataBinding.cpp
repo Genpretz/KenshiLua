@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Bindings/Util/HandBinding.h"
+
 #include "kenshi\gui\InventoryGUI.h"
 #include "InventoryTradeDataBinding.h"
 #include "Lua/BindingHelpers.h"
