@@ -111,5 +111,4 @@ The Settings window provides configuration options for customization and debuggi
 
 ## 4. Known Issues
 
-> [!WARNING]
-> **Output Buffer Conflict**: If the Log Viewer (or Console) and the Script Editor are open simultaneously, the output from the Script Editor may occasionally bleed into or appear in the Log Viewer/Console output window.
+> None

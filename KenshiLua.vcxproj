@@ -54,14 +54,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\kenshilib;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(ProjectDir)extern\kenshilib\Libraries\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
     <SourcePath>$(SolutionDir)src;$(SourcePath)</SourcePath>
     <TargetName>KenshiLua</TargetName>
     <OutDir>$(SolutionDir)bin\KenshiLua\plugin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -101,7 +101,7 @@
       <PreprocessorDefinitions>_DEBUG;KENSHILUA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm200 /FC %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <PreprocessorDefinitions>NDEBUG;KENSHILUA_EXPORTS;_USRDLL;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\Bindings;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -145,14 +145,14 @@
 copy /Y "$(ProjectDir)assets\config\fcs.def" "$(OutDir)..\"
 copy /Y "$(ProjectDir)assets\config\config.ini" "$(OutDir)"
 copy /Y "$(ProjectDir)assets\config\RE_Kenshi.json" "$(OutDir)..\"
-copy /Y "$(ProjectDir)assets\KenshiLua.mod" "$(OutDir)..\"
+python "$(ProjectDir)tools\sync_version.py" --input "$(ProjectDir)assets\KenshiLua.mod" --output "$(OutDir)..\KenshiLua.mod"
 copy /Y "$(ProjectDir)extern\luajit\lib\lua51.dll" "$(OutDir)..\"
 if not exist "$(OutDir)..\docs" mkdir "$(OutDir)..\docs"
 copy /Y "$(ProjectDir)docs\BindingsReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\UnboundRefrence.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\CallbacksReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\EnumsReference.md" "$(OutDir)..\docs\"
-copy /Y "$(ProjectDir)docs\MyGUI_Bindings.md" "$(OutDir)..\docs\"
+copy /Y "$(ProjectDir)docs\MyGUIReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\DialogueScriptingBridge.md" "$(OutDir)..\docs\"
 xcopy /Y /S /I "$(ProjectDir)assets\media\*" "$(OutDir)..\assets\media\"
 copy /Y "$(ProjectDir)LICENSE" "$(OutDir)..\"
@@ -648,6 +648,9 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\Building\DoorStuffBinding.h" />
     <ClInclude Include="src\Bindings\Building\FarmBatchBinding.h" />
     <ClInclude Include="src\Bindings\Building\FarmBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FarmBuilding_PlantBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FarmBuilding_PlantSourceBinding.h" />
+    <ClInclude Include="src\Bindings\Building\FarmBuilding_SubPlantBinding.h" />
     <ClInclude Include="src\Bindings\Building\FootprintBinding.h" />
     <ClInclude Include="src\Bindings\Building\FootprintNodeBinding.h" />
     <ClInclude Include="src\Bindings\Building\FurnaceBuildingBinding.h" />
@@ -864,7 +867,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\ModInfoBinding.h" />
     <ClInclude Include="src\Bindings\MotionFilterBinding.h" />
     <ClInclude Include="src\Bindings\MustEndWithSemiColonBinding.h" />
-        <ClInclude Include="src\Bindings\MyGUI\ButtonBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\ButtonBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\CanvasBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\ClipboardManagerBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\ComboBoxBinding.h" />
@@ -884,8 +887,8 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\MyGUI\MyGuiCallbacks.h" />
     <ClInclude Include="src\Bindings\MyGUI\MyGuiTypes.h" />
     <ClInclude Include="src\Bindings\MyGUI\PointerManagerBinding.h" />
-    <ClInclude Include="src\Bindings\MyGUI\PopupMenuBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\ProgressBarBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\PopupMenuBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\RenderManagerBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\ScrollBarBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\ScrollViewBinding.h" />
@@ -1003,6 +1006,9 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Callbacks.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\DialogueScriptBridge.h" />
+    <ClInclude Include="src\EventSystem.h" />
+    <ClInclude Include="src\framework.h" />
+    <ClInclude Include="src\Gui\Gui.h" />
     <ClInclude Include="src\Gui\GuiHelpers.h" />
     <ClInclude Include="src\Gui\GuiManager.h" />
     <ClInclude Include="src\Gui\KenshiLua_Console.h" />
@@ -1011,31 +1017,22 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Gui\KenshiLua_ScriptEditor.h" />
     <ClInclude Include="src\Gui\KenshiLua_ScriptManager.h" />
     <ClInclude Include="src\Gui\KenshiLua_Settings.h" />
-    <ClInclude Include="src\Util\KeyCodes.h" />
-    <ClInclude Include="src\Util\PathUtils.h" />
-    <ClInclude Include="src\Lua\LuaProfiler.h" />
-    <ClInclude Include="src\EventSystem.h" />
-    <ClInclude Include="src\framework.h" />
-    <ClInclude Include="src\Gui\Gui.h" />
-    <ClInclude Include="src\Gui\GuiManager.h" />
-    <ClInclude Include="src\Gui\KenshiLua_Console.h" />
-    <ClInclude Include="src\Gui\KenshiLua_Hub.h" />
-    <ClInclude Include="src\Gui\KenshiLua_LogViewer.h" />
-    <ClInclude Include="src\Gui\KenshiLua_ScriptEditor.h" />
-    <ClInclude Include="src\Gui\KenshiLua_ScriptManager.h" />
-    <ClInclude Include="src\Gui\KenshiLua_Settings.h" />
-        <ClInclude Include="src\Hooks\Hooks_Common.h" />
+    <ClInclude Include="src\Hooks\Hooks.h" />
+    <ClInclude Include="src\Hooks\Hooks_Common.h" />
     <ClInclude Include="src\Hooks\Hooks_Internal.h" />
     <ClInclude Include="src\FileWatcher.h" />
     <ClInclude Include="src\Logger.h" />
-    <ClInclude Include="src\SDKCompat.h" />
     <ClInclude Include="src\Lua\BindingHelpers.h" />
     <ClInclude Include="src\Lua\LuaBindings.h" />
     <ClInclude Include="src\Lua\LuaCodec.h" />
+    <ClInclude Include="src\Lua\LuaProfiler.h" />
     <ClInclude Include="src\Lua\LuaState.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Plugin.h" />
     <ClInclude Include="src\ScriptLoader.h" />
+    <ClInclude Include="src\SDKCompat.h" />
+    <ClInclude Include="src\Util\KeyCodes.h" />
+    <ClInclude Include="src\Util\PathUtils.h" />
     <ClInclude Include="src\Version.h" />
     <ClInclude Include="src\Bindings\AkSoundPositionBinding.h" />
     <ClInclude Include="src\Bindings\AkVectorBinding.h" />
@@ -1046,9 +1043,6 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\EdgePathNodeBinding.h" />
     <ClInclude Include="src\Bindings\FactionsScreen_FactionRelationsLine_LessSortBinding.h" />
     <ClInclude Include="src\Bindings\Faction_CharacteristicsDataBinding.h" />
-    <ClInclude Include="src\Bindings\FarmBuilding_PlantBinding.h" />
-    <ClInclude Include="src\Bindings\FarmBuilding_PlantSourceBinding.h" />
-    <ClInclude Include="src\Bindings\FarmBuilding_SubPlantBinding.h" />
     <ClInclude Include="src\Bindings\GameDataEditorWindow_DataItemBinding.h" />
     <ClInclude Include="src\Bindings\hkContainerHeapAllocatorBinding.h" />
     <ClInclude Include="src\Bindings\hkContainerHeapAllocator_AllocatorBinding.h" />
@@ -1116,9 +1110,9 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Bindings\Building\DoorStuffBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FarmBatchBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FarmBuildingBinding.cpp" />
-    <ClCompile Include="src\Bindings\Building\FarmBuilding_SubPlantBinding.cpp" />
-    <ClCompile Include="src\Bindings\Building\FarmBuilding_PlantSourceBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FarmBuilding_PlantBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FarmBuilding_PlantSourceBinding.cpp" />
+    <ClCompile Include="src\Bindings\Building\FarmBuilding_SubPlantBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FootprintBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FootprintNodeBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\FurnaceBuildingBinding.cpp" />
@@ -1333,7 +1327,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Bindings\ModInfoBinding.cpp" />
     <ClCompile Include="src\Bindings\MotionFilterBinding.cpp" />
     <ClCompile Include="src\Bindings\MustEndWithSemiColonBinding.cpp" />
-        <ClCompile Include="src\Bindings\MyGUI\ButtonBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\ButtonBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\CanvasBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\ClipboardManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\ComboBoxBinding.cpp" />
@@ -1353,8 +1347,8 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Bindings\MyGUI\MyGuiCallbacks.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\MyGuiTypes.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\PointerManagerBinding.cpp" />
-    <ClCompile Include="src\Bindings\MyGUI\PopupMenuBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\ProgressBarBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\PopupMenuBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\RenderManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\ScrollBarBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\ScrollViewBinding.cpp" />
@@ -1464,6 +1458,8 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Callbacks.cpp" />
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\DialogueScriptBridge.cpp" />
+    <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\EventSystem.cpp" />
     <ClCompile Include="src\Gui\GuiHelpers.cpp" />
     <ClCompile Include="src\Gui\GuiManager.cpp" />
     <ClCompile Include="src\Gui\KenshiLua_Console.cpp" />
@@ -1472,19 +1468,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Gui\KenshiLua_ScriptEditor.cpp" />
     <ClCompile Include="src\Gui\KenshiLua_ScriptManager.cpp" />
     <ClCompile Include="src\Gui\KenshiLua_Settings.cpp" />
-    <ClCompile Include="src\Util\KeyCodes.cpp" />
-    <ClCompile Include="src\Util\PathUtils.cpp" />
-    <ClCompile Include="src\Lua\LuaProfiler.cpp" />
-    <ClCompile Include="src\dllmain.cpp" />
-    <ClCompile Include="src\EventSystem.cpp" />
-    <ClCompile Include="src\Gui\GuiManager.cpp" />
-    <ClCompile Include="src\Gui\KenshiLua_Console.cpp" />
-    <ClCompile Include="src\Gui\KenshiLua_Hub.cpp" />
-    <ClCompile Include="src\Gui\KenshiLua_LogViewer.cpp" />
-    <ClCompile Include="src\Gui\KenshiLua_ScriptEditor.cpp" />
-    <ClCompile Include="src\Gui\KenshiLua_ScriptManager.cpp" />
-    <ClCompile Include="src\Gui\KenshiLua_Settings.cpp" />
-        <ClCompile Include="src\Hooks\Hooks_Bounty.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_Bounty.cpp" />
     <ClCompile Include="src\Hooks\Hooks_BountyManager.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Building.cpp" />
     <ClCompile Include="src\Hooks\Hooks_CharMovement.cpp" />
@@ -1508,6 +1492,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Hooks\Hooks_Town.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\Lua\LuaBindings.cpp" />
+    <ClCompile Include="src\Lua\LuaProfiler.cpp" />
     <ClCompile Include="src\Lua\LuaState.cpp" />
     <ClCompile Include="src\Lua\RegisterBindings.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -1517,6 +1502,8 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\FileWatcher.cpp" />
     <ClCompile Include="src\Plugin.cpp" />
     <ClCompile Include="src\ScriptLoader.cpp" />
+    <ClCompile Include="src\Util\KeyCodes.cpp" />
+    <ClCompile Include="src\Util\PathUtils.cpp" />
     <ClCompile Include="src\Bindings\AkSoundPositionBinding.cpp" />
     <ClCompile Include="src\Bindings\AkVectorBinding.cpp" />
     <ClCompile Include="src\Bindings\CombatClass_AttackSlotManager_SlotDataBinding.cpp" />
@@ -1526,9 +1513,6 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Bindings\EdgePathNodeBinding.cpp" />
     <ClCompile Include="src\Bindings\FactionsScreen_FactionRelationsLine_LessSortBinding.cpp" />
     <ClCompile Include="src\Bindings\Faction_CharacteristicsDataBinding.cpp" />
-    <ClCompile Include="src\Bindings\FarmBuilding_PlantBinding.cpp" />
-    <ClCompile Include="src\Bindings\FarmBuilding_PlantSourceBinding.cpp" />
-    <ClCompile Include="src\Bindings\FarmBuilding_SubPlantBinding.cpp" />
     <ClCompile Include="src\Bindings\GameDataEditorWindow_DataItemBinding.cpp" />
     <ClCompile Include="src\Bindings\hkContainerHeapAllocatorBinding.cpp" />
     <ClCompile Include="src\Bindings\hkContainerHeapAllocator_AllocatorBinding.cpp" />

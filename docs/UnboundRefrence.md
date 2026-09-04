@@ -10,15 +10,6 @@ This document registers all C++ SDK classes and complex types that are currently
 | :--- | :--- |
 | `Array2d<Item>` | 1 |
 | `Mask` | 3 |
-| `MyGUI::Button*` | 3 |
-| `MyGUI::ComboBox*` | 2 |
-| `MyGUI::EditBox*` | 8 |
-| `MyGUI::ImageBox*` | 3 |
-| `MyGUI::ListBox*` | 1 |
-| `MyGUI::ProgressBar*` | 2 |
-| `MyGUI::ScrollBar*` | 1 |
-| `MyGUI::TextBox*` | 2 |
-| `MyGUI::Window*` | 3 |
 | `MyGUI::types::TCoord<int>` | 2 |
 | `MyGUI::types::TPoint<int>` | 2 |
 | `MyGUI::types::TSize<int>` | 2 |

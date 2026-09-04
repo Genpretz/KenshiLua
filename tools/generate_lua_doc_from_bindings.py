@@ -867,20 +867,19 @@ def generate_markdown(data_by_class, enums):
         "",
         "### Method Invocations",
         "- **Instance Methods**: Called on userdata instances using colon syntax: `instance:methodName(args)`.",
-        "- **Static Class Methods**: Support dual invocation (both static table calls `ClassName.methodName(args)` and instance calls `instance:methodName(args)`).",
+        "- **Static Methods**: Functions that can be invoked statically via class table `ClassName.methodName(args)` or on an instance `instance:methodName(args)`.",
         "- **Overloaded Methods**: Methods supporting multiple argument counts or polymorphic parameter types are documented with explicit overload indexes (e.g. `[1]`, `[2]`), indicating each signature's parameter types and return type.",
+        "- **MyGUI User Interface**: For MyGUI widgets, dialogs, layouts, properties, and event callbacks, see the dedicated [MyGUI Reference](MyGUIReference.md).",
         "",
-        "## Table of Contents"
+        "## Table of Contents",
+        "- [MyGUI UI Reference](MyGUIReference.md)"
     ]
     
     cleaned_data = {}
     for cls, val in data_by_class.items():
         if cls in ("MyGui", "MyGUI"):
-            cleaned_data["MyGUI"] = val
-        else:
-            cleaned_data[cls] = val
-    if "MyGUI" not in cleaned_data:
-        cleaned_data["MyGUI"] = ([], [], "", "MyGUI", None, None)
+            continue
+        cleaned_data[cls] = val
 
     # Separate top-level classes and nested classes
     top_level = []
@@ -895,10 +894,7 @@ def generate_markdown(data_by_class, enums):
     # Generate TOC
     for parent in sorted(top_level, key=lambda c: cleaned_data[c][3].lower()):
         p_fields, p_methods, p_header, p_disp, p_parent, p_meta = cleaned_data[parent]
-        if parent == "MyGUI":
-            lines.append("- [`MyGUI`](MyGUI_Bindings.md)")
-        else:
-            lines.append(f"- [`{p_disp}`](#{make_anchor(p_disp)})")
+        lines.append(f"- [`{p_disp}`](#{make_anchor(p_disp)})")
         
         if parent in nested_by_parent:
             for child in sorted(nested_by_parent[parent], key=lambda c: cleaned_data[c][3].lower()):
@@ -916,12 +912,6 @@ def generate_markdown(data_by_class, enums):
             items_to_render.extend(sorted(nested_by_parent[parent], key=lambda c: cleaned_data[c][3].lower()))
 
         for item in items_to_render:
-            if item == "MyGUI":
-                lines.append("## MyGUI")
-                lines.append("For full widget creation, layout loading, property access, and event handling reference, see the dedicated [MyGUI Bindings Documentation](MyGUI_Bindings.md).")
-                lines.append("")
-                continue
-
             fields, methods, header, display_name, parent_class, metatable = cleaned_data[item]
             lines.append(f"## {display_name}")
             lines.append(f"**Header:** `{header}`")
@@ -944,38 +934,60 @@ def generate_markdown(data_by_class, enums):
                 lines.append("")
 
             if methods:
-                lines.append("### Methods")
-                lines.append("| Lua Name | Scope | Arguments | Return Type | Example |")
-                lines.append("|---|---|---|---|---|")
-                for m in methods:
-                    is_static = m.get('is_static', False)
-                    scope = "Static / Instance" if is_static else "Instance"
-                    overloads = m.get('overloads', [])
-                    if len(overloads) > 1:
-                        for idx, ov in enumerate(overloads, 1):
-                            name_display = f"{m['lua_name']} [{idx}]"
-                            args_str = ", ".join([f"{a['name']}: {a['type']}" for a in ov['args']])
-                            example_args = ", ".join([a['name'] for a in ov['args']])
-                            if is_static:
-                                example = f"`{display_name}.{m['lua_name']}({example_args})`<br>`obj:{m['lua_name']}({example_args})`"
-                            else:
+                instance_methods = [m for m in methods if not m.get('is_static', False)]
+                static_methods = [m for m in methods if m.get('is_static', False)]
+
+                if instance_methods:
+                    lines.append("### Methods")
+                    lines.append("| Lua Name | Arguments | Return Type | Example |")
+                    lines.append("|---|---|---|---|")
+                    for m in instance_methods:
+                        overloads = m.get('overloads', [])
+                        if len(overloads) > 1:
+                            for idx, ov in enumerate(overloads, 1):
+                                name_display = f"{m['lua_name']} [{idx}]"
+                                args_str = ", ".join([f"{a['name']}: {a['type']}" for a in ov['args']])
+                                example_args = ", ".join([a['name'] for a in ov['args']])
                                 example = f"`obj:{m['lua_name']}({example_args})`"
-                            mname = escape_table_cell(name_display)
-                            margs = escape_table_cell(args_str)
-                            mret = escape_table_cell(ov['ret_type'])
-                            lines.append(f"| {mname} | {scope} | `{margs}` | `{mret}` | {example} |")
-                    else:
-                        args_str = ", ".join([f"{a['name']}: {a['type']}" for a in m['args']])
-                        example_args = ", ".join([a['name'] for a in m['args']])
-                        if is_static:
-                            example = f"`{display_name}.{m['lua_name']}({example_args})`<br>`obj:{m['lua_name']}({example_args})`"
+                                mname = escape_table_cell(name_display)
+                                margs = escape_table_cell(args_str)
+                                mret = escape_table_cell(ov['ret_type'])
+                                lines.append(f"| {mname} | `{margs}` | `{mret}` | {example} |")
                         else:
+                            args_str = ", ".join([f"{a['name']}: {a['type']}" for a in m['args']])
+                            example_args = ", ".join([a['name'] for a in m['args']])
                             example = f"`obj:{m['lua_name']}({example_args})`"
-                        mname = escape_table_cell(m['lua_name'])
-                        margs = escape_table_cell(args_str)
-                        mret = escape_table_cell(m['ret_type'])
-                        lines.append(f"| {mname} | {scope} | `{margs}` | `{mret}` | {example} |")
-                lines.append("")
+                            mname = escape_table_cell(m['lua_name'])
+                            margs = escape_table_cell(args_str)
+                            mret = escape_table_cell(m['ret_type'])
+                            lines.append(f"| {mname} | `{margs}` | `{mret}` | {example} |")
+                    lines.append("")
+
+                if static_methods:
+                    lines.append("### Static Methods")
+                    lines.append("| Lua Name | Arguments | Return Type | Example |")
+                    lines.append("|---|---|---|---|")
+                    for m in static_methods:
+                        overloads = m.get('overloads', [])
+                        if len(overloads) > 1:
+                            for idx, ov in enumerate(overloads, 1):
+                                name_display = f"{m['lua_name']} [{idx}]"
+                                args_str = ", ".join([f"{a['name']}: {a['type']}" for a in ov['args']])
+                                example_args = ", ".join([a['name'] for a in ov['args']])
+                                example = f"`{display_name}.{m['lua_name']}({example_args})`<br>`obj:{m['lua_name']}({example_args})`"
+                                mname = escape_table_cell(name_display)
+                                margs = escape_table_cell(args_str)
+                                mret = escape_table_cell(ov['ret_type'])
+                                lines.append(f"| {mname} | `{margs}` | `{mret}` | {example} |")
+                        else:
+                            args_str = ", ".join([f"{a['name']}: {a['type']}" for a in m['args']])
+                            example_args = ", ".join([a['name'] for a in m['args']])
+                            example = f"`{display_name}.{m['lua_name']}({example_args})`<br>`obj:{m['lua_name']}({example_args})`"
+                            mname = escape_table_cell(m['lua_name'])
+                            margs = escape_table_cell(args_str)
+                            mret = escape_table_cell(m['ret_type'])
+                            lines.append(f"| {mname} | `{margs}` | `{mret}` | {example} |")
+                    lines.append("")
 
     if enums:
         lines.append("## Enums")
@@ -993,16 +1005,17 @@ def generate_markdown(data_by_class, enums):
 def main():
     data_by_class = {}
     for path in BINDINGS_DIR.rglob('*.cpp'):
-        if path.name.endswith('EnumBinding.cpp'):
+        if 'MyGUI' in path.parts or path.name.endswith('EnumBinding.cpp'):
             continue
         parsed_classes = parse_binding_file(path)
         for cls, fields, methods, header, display_name, parent_class, metatable in parsed_classes:
             data_by_class[cls] = (fields, methods, header, display_name, parent_class, metatable)
     enums = {}
     for path in BINDINGS_DIR.rglob('*.cpp'):
-        if path.name.endswith('EnumBinding.cpp'):
-            file_enums = parse_enum_file(path)
-            enums.update(file_enums)
+        if 'MyGUI' in path.parts or path.name.endswith('EnumBinding.cpp'):
+            if path.name.endswith('EnumBinding.cpp') and 'MyGUI' not in path.parts:
+                file_enums = parse_enum_file(path)
+                enums.update(file_enums)
     md = generate_markdown(data_by_class, enums)
     out_path = DOCS_DIR / "BindingsReference.md"
     out_path.write_text(md, encoding='utf-8')
