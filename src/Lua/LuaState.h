@@ -20,6 +20,12 @@ public:
     LuaState();
     ~LuaState();
 
+    /// Returns the active LuaState wrapper instance, or nullptr if uninitialized.
+    static LuaState* getActive();
+
+    /// Returns the active lua_State* pointer, or nullptr if uninitialized.
+    static lua_State* getActiveState();
+
 private:
     LuaState(const LuaState&);
     LuaState& operator=(const LuaState&);

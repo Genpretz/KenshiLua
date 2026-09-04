@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Lua/LuaState.h"
 #include "Lua/BindingHelpers.h"
+#include "Util/PathUtils.h"
+
 #include <cstdlib>
 
 extern "C" {
@@ -12,6 +14,16 @@ extern "C" {
 namespace KenshiLua
 {
 LuaState* g_luaState = 0;
+
+LuaState* LuaState::getActive()
+{
+    return g_luaState;
+}
+
+lua_State* LuaState::getActiveState()
+{
+    return (g_luaState && g_luaState->isValid()) ? g_luaState->getState() : nullptr;
+}
 
 static void* defaultAlloc(void* ud, void* ptr, size_t osize, size_t nsize)
 {
@@ -57,6 +69,14 @@ bool LuaState::initialize()
         "local ok2, tc = pcall(require, 'table.clear') "
         "if ok2 then table.clear = tc end");
 
+    std::string dllDir = getDllDirectory();
+    normalizePathSlashes(dllDir);
+    std::string pathScript =
+        "local p = package.path\n"
+        "package.path = p .. ';./KenshiLua/lib/?.lua;./KenshiLua/lib/?/init.lua;./lib/?.lua;./lib/?/init.lua;"
+        + dllDir + "/../lib/?.lua;" + dllDir + "/../lib/?/init.lua'\n";
+    luaL_dostring(m_L, pathScript.c_str());
+
     return true;
 }
 
@@ -71,15 +91,32 @@ void LuaState::close()
 int LuaState::panicHandler(lua_State* L)
 {
     std::string msg = "PANIC: unprotected error in Lua";
-    if (lua_gettop(L) > 0 && lua_isstring(L, -1)) {
+    if (lua_gettop(L) > 0) {
         size_t len = 0;
         const char* s = lua_tolstring(L, -1, &len);
-        if (s && len > 0) {
+        if (!s) {
+            s = luaL_tolstring(L, -1, &len);
+            if (s && len > 0) {
+                msg += ": ";
+                msg.append(s, len);
+                lua_pop(L, 1); // pop luaL_tolstring result
+            }
+        } else if (len > 0) {
             msg += ": ";
             msg.append(s, len);
         }
     }
-    logToFileWarn(msg);
+
+    // Capture full Lua stack traceback
+    luaL_traceback(L, L, msg.c_str(), 0);
+    const char* fullTrace = lua_tostring(L, -1);
+    if (fullTrace) {
+        logToFileError(fullTrace);
+    } else {
+        logToFileError(msg);
+    }
+    lua_pop(L, 1); // pop traceback string
+
     return LUA_ERRERR;
 }
 
