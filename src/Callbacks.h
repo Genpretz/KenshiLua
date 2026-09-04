@@ -3,7 +3,7 @@
 #include <string>
 
 // Forward declaration — avoids pulling in the full headers in every
-// TU that only needs to call these dispatchers.
+// translation unit that only needs to call these dispatchers.
 class Character;
 class CharStats;
 class CombatTechniqueData;
@@ -17,6 +17,7 @@ class Damages;
 class Platoon;
 class Tasker;
 class Building;
+class UseableStuff;
 class PlayerInterface;
 class hand;
 class BountyManager;
@@ -51,6 +52,32 @@ class Weapon;
 class Bounty;
 class DataObjectContainer;
 class Layout;
+class DoorStuff;
+class ProductionBuilding;
+class CraftingBuilding;
+class FarmBuilding;
+class TurretBuilding;
+class FurnaceBuilding;
+class ResearchBuilding;
+class PreviewBuilding;
+class WallBuilding;
+class CharacterHuman;
+class CharacterAnimal;
+class CharBody;
+class TownBase;
+class FactionLeader;
+class FactionRelations;
+class FactionUniqueSquadManager;
+class ProsperityManager;
+class StorageBuilding;
+class LightBuilding;
+class GeneratorBuilding;
+class WindGeneratorBuilding;
+class GatewayBuilding;
+class TortureBuilding;
+class RainCollectorBuilding;
+class DataPanelLine;
+class rendHit;
 namespace wraps { class BaseLayout; }
 namespace MyGUI { class Widget; }
 template <typename T> class lektor;
@@ -619,11 +646,6 @@ void CallCharacterSlaveOwnerChangedCallbacks(Character* slave, const hand& newOw
 // Lua signature:  function(character, on, ownerHandle)
 void CallCharacterChainedModeChangedCallbacks(Character* character, bool on, const hand& owner);
 
-// Fired by Character::notifyIndoors hook
-// Lua event name: "onCharacterIndoorsChanged"
-// Lua signature:  function(character, indoorsHandle)
-void CallCharacterIndoorsChangedCallbacks(Character* character, const hand& indoors);
-
 // Fired by Building::onBuildingLoaded hook
 // Lua event name: "onBuildingLoaded"
 // Lua signature:  function(building)
@@ -836,4 +858,467 @@ Damages* CallDamagesConstructedCallbacks(Damages* thisptr, float _cut, float _bl
 // Lua event name: "onInventoryConstructed"
 // Lua signature:  function(inventory, owner, defaultVal) -> Inventory
 Inventory* CallInventoryConstructedCallbacks(Inventory* thisptr, RootObject* _owner, Inventory* defaultVal);
+
+// Fired by DoorStuff::_CONSTRUCTOR hook.
+// Lua event name: "onDoorStuffConstructed"
+// Lua signature:  function(doorStuff, dat, position, orientation, participant, town, handle, isFurnitureOf, indoors, parent, defaultVal) -> DoorStuff
+DoorStuff* CallDoorStuffConstructedCallbacks(DoorStuff* thisptr, GameData* dat, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, Building* par, DoorStuff* defaultVal);
+
+// Fired by ProductionBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onProductionBuildingConstructed"
+// Lua signature:  function(productionBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> ProductionBuilding
+ProductionBuilding* CallProductionBuildingConstructedCallbacks(ProductionBuilding* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, ProductionBuilding* defaultVal);
+
+// Fired by CraftingBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onCraftingBuildingConstructed"
+// Lua signature:  function(craftingBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> CraftingBuilding
+CraftingBuilding* CallCraftingBuildingConstructedCallbacks(CraftingBuilding* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, CraftingBuilding* defaultVal);
+
+// Fired by FarmBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onFarmBuildingConstructed"
+// Lua signature:  function(farmBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> FarmBuilding
+FarmBuilding* CallFarmBuildingConstructedCallbacks(FarmBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, FarmBuilding* defaultVal);
+
+// Fired by TurretBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onTurretBuildingConstructed"
+// Lua signature:  function(turretBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> TurretBuilding
+TurretBuilding* CallTurretBuildingConstructedCallbacks(TurretBuilding* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, TurretBuilding* defaultVal);
+
+// Fired by FurnaceBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onFurnaceBuildingConstructed"
+// Lua signature:  function(furnaceBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> FurnaceBuilding
+FurnaceBuilding* CallFurnaceBuildingConstructedCallbacks(FurnaceBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, FurnaceBuilding* defaultVal);
+
+// Fired by ResearchBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onResearchBuildingConstructed"
+// Lua signature:  function(researchBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> ResearchBuilding
+ResearchBuilding* CallResearchBuildingConstructedCallbacks(ResearchBuilding* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, ResearchBuilding* defaultVal);
+
+// Fired by WallBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onWallBuildingConstructed"
+// Lua signature:  function(wallBuilding, dat, position, orientation, participant, furnitureOf, town, handle, defaultVal) -> WallBuilding
+WallBuilding* CallWallBuildingConstructedCallbacks(WallBuilding* thisptr, GameData* dat, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, Layout* furnitureOf, const hand& town, const hand& _handle, WallBuilding* defaultVal);
+
+// Fired by PreviewBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onPreviewBuildingConstructed"
+// Lua signature:  function(previewBuilding, data, furnitureParent, defaultVal) -> PreviewBuilding
+PreviewBuilding* CallPreviewBuildingConstructedCallbacks(PreviewBuilding* thisptr, GameData* data, Building* _furnitureParent, PreviewBuilding* defaultVal);
+
+// Fired by UseableStuff::_CONSTRUCTOR hook.
+// Lua event name: "onUseableStuffConstructed"
+// Lua signature:  function(useableStuff, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> UseableStuff
+UseableStuff* CallUseableStuffConstructedCallbacks(UseableStuff* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, UseableStuff* defaultVal);
+
+// Fired by StorageBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onStorageBuildingConstructed"
+// Lua signature:  function(storageBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> StorageBuilding
+StorageBuilding* CallStorageBuildingConstructedCallbacks(StorageBuilding* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, StorageBuilding* defaultVal);
+
+// Fired by LightBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onLightBuildingConstructed"
+// Lua signature:  function(lightBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> LightBuilding
+LightBuilding* CallLightBuildingConstructedCallbacks(LightBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, LightBuilding* defaultVal);
+
+// Fired by GeneratorBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onGeneratorBuildingConstructed"
+// Lua signature:  function(generatorBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> GeneratorBuilding
+GeneratorBuilding* CallGeneratorBuildingConstructedCallbacks(GeneratorBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, GeneratorBuilding* defaultVal);
+
+// Fired by WindGeneratorBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onWindGeneratorBuildingConstructed"
+// Lua signature:  function(windGeneratorBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> WindGeneratorBuilding
+WindGeneratorBuilding* CallWindGeneratorBuildingConstructedCallbacks(WindGeneratorBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, WindGeneratorBuilding* defaultVal);
+
+// Fired by GatewayBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onGatewayBuildingConstructed"
+// Lua signature:  function(gatewayBuilding, dat, position, orientation, participant, town, handle, defaultVal) -> GatewayBuilding
+GatewayBuilding* CallGatewayBuildingConstructedCallbacks(GatewayBuilding* thisptr, GameData* dat, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, GatewayBuilding* defaultVal);
+
+// Fired by TortureBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onTortureBuildingConstructed"
+// Lua signature:  function(tortureBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> TortureBuilding
+TortureBuilding* CallTortureBuildingConstructedCallbacks(TortureBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* participant, const hand& town, const hand& handle, Layout* isfurnitureOf, Building* indoors, TortureBuilding* defaultVal);
+
+// Fired by RainCollectorBuilding::_CONSTRUCTOR hook.
+// Lua event name: "onRainCollectorBuildingConstructed"
+// Lua signature:  function(rainCollectorBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal) -> RainCollectorBuilding
+RainCollectorBuilding* CallRainCollectorBuildingConstructedCallbacks(RainCollectorBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* participant, const hand& town, const hand& handle, Layout* isfurnitureOf, Building* indoors, RainCollectorBuilding* defaultVal);
+
+// Fired by CharacterHuman::_CONSTRUCTOR hook.
+// Lua event name: "onCharacterHumanConstructed"
+// Lua signature:  function(characterHuman, data, faction, handle, defaultVal) -> CharacterHuman
+CharacterHuman* CallCharacterHumanConstructedCallbacks(CharacterHuman* thisptr, GameData* d, Faction* f, const hand& _handle, CharacterHuman* defaultVal);
+
+// Fired by CharacterAnimal::_CONSTRUCTOR hook.
+// Lua event name: "onCharacterAnimalConstructed"
+// Lua signature:  function(characterAnimal, data, faction, handle, defaultVal) -> CharacterAnimal
+CharacterAnimal* CallCharacterAnimalConstructedCallbacks(CharacterAnimal* thisptr, GameData* d, Faction* f, const hand& _handle, CharacterAnimal* defaultVal);
+
+// Fired by CharStats::_CONSTRUCTOR hook.
+// Lua event name: "onCharStatsConstructed"
+// Lua signature:  function(charStats, defaultVal) -> CharStats
+CharStats* CallCharStatsConstructedCallbacks(CharStats* thisptr, CharStats* defaultVal);
+
+// Fired by CharBody::_CONSTRUCTOR hook.
+// Lua event name: "onCharBodyConstructed"
+// Lua signature:  function(charBody, defaultVal) -> CharBody
+CharBody* CallCharBodyConstructedCallbacks(CharBody* thisptr, CharBody* defaultVal);
+
+// Fired by CharMovement::_CONSTRUCTOR hook.
+// Lua event name: "onCharMovementConstructed"
+// Lua signature:  function(charMovement, defaultVal) -> CharMovement
+CharMovement* CallCharMovementConstructedCallbacks(CharMovement* thisptr, CharMovement* defaultVal);
+
+// Fired by CombatClass::_CONSTRUCTOR hook.
+// Lua event name: "onCombatClassConstructed"
+// Lua signature:  function(combatClass, movement, ai, anim, character, stats, medical, defaultVal) -> CombatClass
+CombatClass* CallCombatClassConstructedCallbacks(CombatClass* thisptr, CharMovement* m, void* a, void* an, Character* character, CharStats* st, MedicalSystem* _med, CombatClass* defaultVal);
+
+// Fired by Town::_CONSTRUCTOR hook.
+// Lua event name: "onTownConstructed"
+// Lua signature:  function(town, data, defaultVal) -> Town
+Town* CallTownConstructedCallbacks(Town* thisptr, GameData* d, Town* defaultVal);
+
+// Fired by TownBase::_CONSTRUCTOR hook.
+// Lua event name: "onTownBaseConstructed"
+// Lua signature:  function(townBase, data, defaultVal) -> TownBase
+TownBase* CallTownBaseConstructedCallbacks(TownBase* thisptr, GameData* d, TownBase* defaultVal);
+
+// Fired by FactionLeader::_CONSTRUCTOR hook.
+// Lua event name: "onFactionLeaderConstructed"
+// Lua signature:  function(factionLeader, faction, defaultVal) -> FactionLeader
+FactionLeader* CallFactionLeaderConstructedCallbacks(FactionLeader* thisptr, Faction* f, FactionLeader* defaultVal);
+
+// Fired by FactionRelations::_CONSTRUCTOR hook.
+// Lua event name: "onFactionRelationsConstructed"
+// Lua signature:  function(factionRelations, defaultVal) -> FactionRelations
+FactionRelations* CallFactionRelationsConstructedCallbacks(FactionRelations* thisptr, FactionRelations* defaultVal);
+
+// Fired by FactionUniqueSquadManager::_CONSTRUCTOR hook.
+// Lua event name: "onFactionUniqueSquadManagerConstructed"
+// Lua signature:  function(factionUniqueSquadManager, defaultVal) -> FactionUniqueSquadManager
+FactionUniqueSquadManager* CallFactionUniqueSquadManagerConstructedCallbacks(FactionUniqueSquadManager* thisptr, FactionUniqueSquadManager* defaultVal);
+
+// Fired by ProsperityManager::_CONSTRUCTOR hook.
+// Lua event name: "onProsperityManagerConstructed"
+// Lua signature:  function(prosperityManager, defaultVal) -> ProsperityManager
+ProsperityManager* CallProsperityManagerConstructedCallbacks(ProsperityManager* thisptr, ProsperityManager* defaultVal);
+
+// Fired by InventoryItemBase::_CONSTRUCTOR hook.
+// Lua event name: "onInventoryItemBaseConstructed"
+// Lua signature:  function(inventoryItemBase, baseData, companyData, materialData, handle, defaultVal) -> InventoryItemBase
+InventoryItemBase* CallInventoryItemBaseConstructedCallbacks(InventoryItemBase* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, const hand& _handle, InventoryItemBase* defaultVal);
+
+// Fired by MedicalSystem::_CONSTRUCTOR hook.
+// Lua event name: "onMedicalSystemConstructed"
+// Lua signature:  function(medicalSystem, character, defaultVal) -> MedicalSystem
+MedicalSystem* CallMedicalSystemConstructedCallbacks(MedicalSystem* thisptr, Character* c, MedicalSystem* defaultVal);
+
+// Fired by CombatTechniqueData::_CONSTRUCTOR hook.
+// Lua event name: "onCombatTechniqueDataConstructed"
+// Lua signature:  function(combatTechniqueData, data, defaultVal) -> CombatTechniqueData
+CombatTechniqueData* CallCombatTechniqueDataConstructedCallbacks(CombatTechniqueData* thisptr, GameData* data, CombatTechniqueData* defaultVal);
+
+// Fired by Dialogue::_CONSTRUCTOR hook.
+// Lua event name: "onDialogueConstructed"
+// Lua signature:  function(dialogue, defaultVal) -> Dialogue
+Dialogue* CallDialogueConstructedCallbacks(Dialogue* thisptr, Dialogue* defaultVal);
+
+// Fired by DialogLineData::_CONSTRUCTOR hook.
+// Lua event name: "onDialogLineDataConstructed"
+// Lua signature:  function(dialogLineData, data, defaultVal) -> DialogLineData
+DialogLineData* CallDialogLineDataConstructedCallbacks(DialogLineData* thisptr, GameData* dat, DialogLineData* defaultVal);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/UseableStuff.h
+// -----------------------------------------------------------
+
+// Fired by UseableStuff::_NV_tryOperate hook.
+// Lua event name: "onUseableStuffTryOperate"
+// Lua signature:  function(useableStuff, userHandle, success)
+void CallUseableStuffTryOperateCallbacks(UseableStuff* thisptr, const hand& h, bool success);
+
+// Fired by UseableStuff::stopOperating hook.
+// Lua event name: "onUseableStuffStopOperating"
+// Lua signature:  function(useableStuff, userHandle)
+void CallUseableStuffStopOperatingCallbacks(UseableStuff* thisptr, const hand& h);
+
+// Fired by UseableStuff::occupantHandleChangedEvent hook.
+// Lua event name: "onUseableStuffOccupantChanged"
+// Lua signature:  function(useableStuff, newOccupantHandle)
+void CallUseableStuffOccupantChangedCallbacks(UseableStuff* thisptr, const hand& h);
+
+// Fired by UseableStuff::_NV_switchPowerOn hook.
+// Lua event name: "onUseableStuffPowerSwitched"
+// Lua signature:  function(useableStuff, on)
+void CallUseableStuffPowerSwitchedCallbacks(UseableStuff* thisptr, bool on);
+
+// Fired by UseableStuff::_NV_givePower hook.
+// Lua event name: "onUseableStuffGivePower"
+// Lua signature:  function(useableStuff, amount)
+void CallUseableStuffGivePowerCallbacks(UseableStuff* thisptr, float amount);
+
+// Fired by UseableStuff::_NV_getCostToUse hook.
+// Lua event name: "onUseableStuffGetCostToUse"
+// Lua signature:  function(useableStuff, who, defaultVal) -> integer
+int CallUseableStuffGetCostToUseCallbacks(UseableStuff* thisptr, Character* who, int defaultVal);
+
+// Fired by UseableStuff::_NV_couldIOperate hook.
+// Lua event name: "onUseableStuffCouldIOperate"
+// Lua signature:  function(useableStuff, userHandle, defaultVal) -> boolean
+bool CallUseableStuffCouldIOperateCallbacks(const UseableStuff* thisptr, const hand& h, bool defaultVal);
+
+// Fired by UseableStuff::_NV_dontNeedWorkRightNow hook.
+// Lua event name: "onUseableStuffDontNeedWork"
+// Lua signature:  function(useableStuff, defaultVal) -> boolean
+bool CallUseableStuffDontNeedWorkCallbacks(const UseableStuff* thisptr, bool defaultVal);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/Building.h (Additional)
+// -----------------------------------------------------------
+
+// Fired by Building::_NV_notifyConstructionComplete hook.
+// Lua event name: "onBuildingNotifyConstructionComplete"
+// Lua signature:  function(building)
+void CallBuildingNotifyConstructionCompleteCallbacks(Building* thisptr);
+
+// Fired by Building::_NV_addConstructionProgress hook.
+// Lua event name: "onBuildingAddConstructionProgress"
+// Lua signature:  function(building, amount)
+void CallBuildingAddConstructionProgressCallbacks(Building* thisptr, float amount);
+
+// Fired by Building::_NV_setConstructionProgress hook.
+// Lua event name: "onBuildingSetConstructionProgress"
+// Lua signature:  function(building, amount)
+void CallBuildingSetConstructionProgressCallbacks(Building* thisptr, float amount);
+
+// Fired by Building::_NV_addDismantleProgress hook.
+// Lua event name: "onBuildingAddDismantleProgress"
+// Lua signature:  function(building, amount, defaultVal) -> boolean
+bool CallBuildingAddDismantleProgressCallbacks(Building* thisptr, float amount, bool defaultVal);
+
+// Fired by Building::_NV_notifyConstructionDismantling hook.
+// Lua event name: "onBuildingNotifyConstructionDismantling"
+// Lua signature:  function(building)
+void CallBuildingNotifyConstructionDismantlingCallbacks(Building* thisptr);
+
+// Fired by Building::_NV_upgrade hook.
+// Lua event name: "onBuildingUpgrade"
+// Lua signature:  function(building, line)
+void CallBuildingUpgradeCallbacks(Building* thisptr, DataPanelLine* line);
+
+// Fired by Building::_NV_canUpgrade hook.
+// Lua event name: "onBuildingCanUpgrade"
+// Lua signature:  function(building, defaultVal) -> GameData
+GameData* CallBuildingCanUpgradeCallbacks(Building* thisptr, GameData* defaultVal);
+
+// Fired by Building::destroyDoors hook.
+// Lua event name: "onBuildingDestroyDoors"
+// Lua signature:  function(building)
+void CallBuildingDestroyDoorsCallbacks(Building* thisptr);
+
+// Fired by Building::_NV_setFaction hook.
+// Lua event name: "onBuildingSetFaction"
+// Lua signature:  function(building, faction, activePlatoon)
+void CallBuildingSetFactionCallbacks(Building* thisptr, Faction* p, ActivePlatoon* a);
+
+// Fired by Building::setFloorVisibility hook.
+// Lua event name: "onBuildingSetFloorVisibility"
+// Lua signature:  function(building, floor, isVisible)
+void CallBuildingSetFloorVisibilityCallbacks(Building* thisptr, int floor, bool vis);
+
+// Fired by Building::_NV_switchLights hook.
+// Lua event name: "onBuildingSwitchLights"
+// Lua signature:  function(building, on)
+void CallBuildingSwitchLightsCallbacks(Building* thisptr, bool on);
+
+// Fired by Building::_NV_switchEffects hook.
+// Lua event name: "onBuildingSwitchEffects"
+// Lua signature:  function(building, on)
+void CallBuildingSwitchEffectsCallbacks(Building* thisptr, bool on);
+
+// Fired by Building::_NV_notifyEffect hook.
+// Lua event name: "onBuildingNotifyEffect"
+// Lua signature:  function(building, effectType, weatherType, strength)
+void CallBuildingNotifyEffectCallbacks(Building* thisptr, int type, int what, float strength);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/WallBuilding.h
+// -----------------------------------------------------------
+
+// Fired by WallBuilding::_NV_hitByMeleeAttack hook.
+// Lua event name: "onWallBuildingHitByMeleeAttack"
+// Lua signature:  function(wallBuilding, cutDir, damage, attacker, attack, comboID)
+void CallWallBuildingHitByMeleeAttackCallbacks(WallBuilding* thisptr, int cutDir, Damages* damage, Character* who, CombatTechniqueData* attack, int comboID);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/DoorStuff.h
+// -----------------------------------------------------------
+
+// Fired by DoorStuff::openDoor hook.
+// Lua event name: "onDoorStuffOpenDoor"
+// Lua signature:  function(doorStuff, defaultVal) -> boolean
+bool CallDoorStuffOpenDoorCallbacks(DoorStuff* thisptr, bool defaultVal);
+
+// Fired by DoorStuff::closeDoor hook.
+// Lua event name: "onDoorStuffCloseDoor"
+// Lua signature:  function(doorStuff, defaultVal) -> boolean
+bool CallDoorStuffCloseDoorCallbacks(DoorStuff* thisptr, bool defaultVal);
+
+// Fired by DoorStuff::lockDoor hook.
+// Lua event name: "onDoorStuffLockDoor"
+// Lua signature:  function(doorStuff)
+void CallDoorStuffLockDoorCallbacks(DoorStuff* thisptr);
+
+// Fired by DoorStuff::unlockDoor hook.
+// Lua event name: "onDoorStuffUnlockDoor"
+// Lua signature:  function(doorStuff)
+void CallDoorStuffUnlockDoorCallbacks(DoorStuff* thisptr);
+
+// Fired by DoorStuff::setDoorState hook.
+// Lua event name: "onDoorStuffSetDoorState"
+// Lua signature:  function(doorStuff, doorState)
+void CallDoorStuffSetDoorStateCallbacks(DoorStuff* thisptr, int doorState);
+
+// Fired by DoorStuff::_NV_hitByMeleeAttack hook.
+// Lua event name: "onDoorStuffHitByMeleeAttack"
+// Lua signature:  function(doorStuff, cutDir, damage, attacker, attack, comboID)
+void CallDoorStuffHitByMeleeAttackCallbacks(DoorStuff* thisptr, int cutDir, Damages* damage, Character* who, CombatTechniqueData* attack, int comboID);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/ProductionBuilding.h
+// -----------------------------------------------------------
+
+// Fired by ProductionBuilding::_NV_operate hook.
+// Lua event name: "onProductionBuildingOperate"
+// Lua signature:  function(productionBuilding, worker, amount)
+void CallProductionBuildingOperateCallbacks(ProductionBuilding* thisptr, Character* who, float amount);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/CraftingBuilding.h
+// -----------------------------------------------------------
+
+// Fired by CraftingBuilding::_NV_operate hook.
+// Lua event name: "onCraftingBuildingOperate"
+// Lua signature:  function(craftingBuilding, worker, amount)
+void CallCraftingBuildingOperateCallbacks(CraftingBuilding* thisptr, Character* worker, float amount);
+
+// Fired by CraftingBuilding::_NV_newCraftingButton hook.
+// Lua event name: "onCraftingBuildingNewCraftingButton"
+// Lua signature:  function(craftingBuilding, sender)
+void CallCraftingBuildingNewCraftingButtonCallbacks(CraftingBuilding* thisptr, MyGUI::Widget* sender);
+
+// Fired by CraftingBuilding::addFinishedCraftItem hook.
+// Lua event name: "onCraftingBuildingAddFinishedCraftItem"
+// Lua signature:  function(craftingBuilding, item)
+void CallCraftingBuildingAddFinishedCraftItemCallbacks(CraftingBuilding* thisptr, Item* what);
+
+// Fired by CraftingBuilding::notifyCraftFailiure hook.
+// Lua event name: "onCraftingBuildingNotifyCraftFailure"
+// Lua signature:  function(craftingBuilding)
+void CallCraftingBuildingNotifyCraftFailureCallbacks(CraftingBuilding* thisptr);
+
+// Fired by CraftingBuilding::destroyProductionItem hook.
+// Lua event name: "onCraftingBuildingDestroyProductionItem"
+// Lua signature:  function(craftingBuilding)
+void CallCraftingBuildingDestroyProductionItemCallbacks(CraftingBuilding* thisptr);
+
+// Fired by CraftingBuilding::_removeCraft hook.
+// Lua event name: "onCraftingBuildingRemoveCraft"
+// Lua signature:  function(craftingBuilding, index)
+void CallCraftingBuildingRemoveCraftCallbacks(CraftingBuilding* thisptr, int index);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/FurnaceBuilding.h
+// -----------------------------------------------------------
+
+// Fired by FurnaceBuilding::_NV_operate hook.
+// Lua event name: "onFurnaceBuildingOperate"
+// Lua signature:  function(furnaceBuilding, worker, amount)
+void CallFurnaceBuildingOperateCallbacks(FurnaceBuilding* thisptr, Character* worker, float amount);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/ResearchBuilding.h
+// -----------------------------------------------------------
+
+// Fired by ResearchBuilding::_NV_operate hook.
+// Lua event name: "onResearchBuildingOperate"
+// Lua signature:  function(researchBuilding, worker, amount)
+void CallResearchBuildingOperateCallbacks(ResearchBuilding* thisptr, Character* worker, float amount);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/FarmBuilding.h
+// -----------------------------------------------------------
+
+// Fired by FarmBuilding::_NV_operate hook.
+// Lua event name: "onFarmBuildingOperate"
+// Lua signature:  function(farmBuilding, worker, amount)
+void CallFarmBuildingOperateCallbacks(FarmBuilding* thisptr, Character* who, float amount);
+
+// Fired by FarmBuilding::destroyAPlant hook.
+// Lua event name: "onFarmBuildingDestroyAPlant"
+// Lua signature:  function(farmBuilding, defaultVal) -> boolean
+bool CallFarmBuildingDestroyAPlantCallbacks(FarmBuilding* thisptr, bool defaultVal);
+
+// Fired by FarmBuilding::eat hook.
+// Lua event name: "onFarmBuildingEat"
+// Lua signature:  function(farmBuilding, rate)
+void CallFarmBuildingEatCallbacks(FarmBuilding* thisptr, float rate);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/TurretBuilding.h
+// -----------------------------------------------------------
+
+// Fired by TurretBuilding::_NV_operate hook.
+// Lua event name: "onTurretBuildingOperate"
+// Lua signature:  function(turretBuilding, gunner, amount)
+void CallTurretBuildingOperateCallbacks(TurretBuilding* thisptr, Character* gunner, float amount);
+
+// Fired by TurretBuilding::aimAt hook.
+// Lua event name: "onTurretBuildingAimAt"
+// Lua signature:  function(turretBuilding, targetPos)
+void CallTurretBuildingAimAtCallbacks(TurretBuilding* thisptr, const Ogre::Vector3& targetPos);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/UseableStuff.h (Additional)
+// -----------------------------------------------------------
+
+// Fired by UseableStuff::_NV_hitByMeleeAttack hook.
+// Lua event name: "onUseableStuffHitByMeleeAttack"
+// Lua signature:  function(useableStuff, cutDir, damage, attacker, attack, comboID)
+void CallUseableStuffHitByMeleeAttackCallbacks(UseableStuff* thisptr, int cutDir, Damages* damage, Character* who, CombatTechniqueData* attack, int comboID);
+
+// Fired by UseableStuff::takePowerFrom hook.
+// Lua event name: "onUseableStuffTakePowerFrom"
+// Lua signature:  function(useableStuff, amount, frameTime, defaultVal) -> number
+float CallUseableStuffTakePowerFromCallbacks(UseableStuff* thisptr, float amount, float frameTime, float defaultVal);
+
+// Fired by UseableStuff::_NV_togglePowerButton hook.
+// Lua event name: "onUseableStuffTogglePowerButton"
+// Lua signature:  function(useableStuff, line)
+void CallUseableStuffTogglePowerButtonCallbacks(UseableStuff* thisptr, DataPanelLine* line);
+
+// Fired by UseableStuff::_NV_toggleBattButton hook.
+// Lua event name: "onUseableStuffToggleBattButton"
+// Lua signature:  function(useableStuff, line)
+void CallUseableStuffToggleBattButtonCallbacks(UseableStuff* thisptr, DataPanelLine* line);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in PreviewBuilding
+// -----------------------------------------------------------
+
+// Fired by PreviewBuilding::_NV_placeFinalPreviewBuilding hook.
+// Lua event name: "onPreviewBuildingPlaceFinalPreviewBuilding"
+// Lua signature:  function(previewBuilding)
+void CallPreviewBuildingPlaceFinalPreviewBuildingCallbacks(PreviewBuilding* thisptr);
+
+// Fired by PreviewBuilding::_NV_placementVerification hook.
+// Lua event name: "onPreviewBuildingPlacementVerification"
+// Lua signature:  function(previewBuilding, defaultVal) -> boolean
+bool CallPreviewBuildingPlacementVerificationCallbacks(PreviewBuilding* thisptr, bool defaultVal);
+
+// Fired by PreviewBuilding::_NV_placePreview hook.
+// Lua event name: "onPreviewBuildingPlacePreview"
+// Lua signature:  function(previewBuilding, position, rotation, floorNumber)
+void CallPreviewBuildingPlacePreviewCallbacks(PreviewBuilding* thisptr, const Ogre::Vector3& position, const Ogre::Quaternion& rotation, int floorNumber);
 

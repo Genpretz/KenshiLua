@@ -2,7 +2,7 @@
 
 #include "EventSystem.h"
 #include "Logger.h"
-#include "Hooks.h"
+#include "Hooks/Hooks_Common.h"
 
 #include <lua.hpp>
 #include "Lua/BindingHelpers.h"

@@ -4,7 +4,7 @@
 #include "EventSystem.h"
 #include "Gui/GuiManager.h"
 #include "Gui/KenshiLua_ScriptManager.h"
-#include "Hooks.h"
+#include "Hooks/Hooks_Common.h"
 #include "Logger.h"
 #include "Config.h"
 #include "Lua/LuaBindings.h"

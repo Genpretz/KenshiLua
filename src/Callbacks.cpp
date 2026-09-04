@@ -6,6 +6,7 @@
 
 // KenshiLib x Lua Bindings
 #include "Bindings/Building/BuildingBinding.h"
+#include "Bindings/Building/UseableStuffBinding.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/CharStatsBinding.h"
 #include "Bindings/CombatTechniqueDataBinding.h"
@@ -33,7 +34,7 @@
 #include "Bindings/Gui/SquadManagementScreenBinding.h"
 #include "Bindings/Gui/ManagementScreenBinding.h"
 #include "Bindings/Gui/TitleScreenBinding.h"
-#include "Bindings/MyGuiBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/MedicalSystemBinding.h"
@@ -53,11 +54,61 @@
 #include "Bindings/SwordBinding.h"
 #include "Bindings/WeaponBinding.h"
 #include "Bindings/DataObjectContainerBinding.h"
+#include "Bindings/Building/DoorStuffBinding.h"
+#include "Bindings/Building/ProductionBuildingBinding.h"
+#include "Bindings/Building/CraftingBuildingBinding.h"
+#include "Bindings/Building/FarmBuildingBinding.h"
+#include "Bindings/Building/TurretBuildingBinding.h"
+#include "Bindings/Building/FurnaceBuildingBinding.h"
+#include "Bindings/Building/ResearchBuildingBinding.h"
+#include "Bindings/Building/PreviewBuildingBinding.h"
+#include "Bindings/Building/WallBuildingBinding.h"
+#include "Bindings/Building/StorageBuildingBinding.h"
+#include "Bindings/Building/LightBuildingBinding.h"
+#include "Bindings/Building/GeneratorBuildingBinding.h"
+#include "Bindings/Building/WindGeneratorBuildingBinding.h"
+#include "Bindings/Building/GatewayBuildingBinding.h"
+#include "Bindings/Building/TortureBuildingBinding.h"
+#include "Bindings/Building/RainCollectorBuildingBinding.h"
+#include "Bindings/CharacterHumanBinding.h"
+#include "Bindings/CharacterAnimalBinding.h"
+#include "Bindings/CharBodyBinding.h"
+#include "Bindings/TownBaseBinding.h"
+#include "Bindings/FactionLeaderBinding.h"
+#include "Bindings/FactionRelationsBinding.h"
+#include "Bindings/FactionUniqueSquadManagerBinding.h"
+#include "Bindings/ProsperityManagerBinding.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/Util/rendHitBinding.h"
 
 // KenshiLib headers
 #include <kenshi/CharMovement.h>
 #include <kenshi/CombatClass.h>
 #include <kenshi/GameWorld.h>
+#include <kenshi/Building/Building.h>
+#include <kenshi/Building/DoorStuff.h>
+#include <kenshi/Building/ProductionBuilding.h>
+#include <kenshi/Building/CraftingBuilding.h>
+#include <kenshi/Building/FarmBuilding.h>
+#include <kenshi/Building/TurretBuilding.h>
+#include <kenshi/Building/FurnaceBuilding.h>
+#include <kenshi/Building/ResearchBuilding.h>
+#include <kenshi/Building/UseableStuff.h>
+#include <kenshi/Building/WallBuilding.h>
+#include <kenshi/Building/StorageBuilding.h>
+#include <kenshi/Building/LightBuilding.h>
+#include <kenshi/Building/GeneratorBuilding.h>
+#include <kenshi/Building/GatewayBuilding.h>
+#include <kenshi/Building/TortureBuilding.h>
+#include <kenshi/Building/RainCollectorBuilding.h>
+#include <kenshi/CharacterHuman.h>
+#include <kenshi/CharacterAnimal.h>
+#include <kenshi/CharBody.h>
+#include <kenshi/CharStats.h>
+#include <kenshi/FactionLeader.h>
+#include <kenshi/FactionRelations.h>
+#include <kenshi/FactionUniqueSquadManager.h>
+#include <kenshi/util/UtilityT.h>
 #include <kenshi/InputHandler.h>
 #include <kenshi/Character.h>
 #include <kenshi/Platoon.h>
@@ -98,6 +149,7 @@ namespace KenshiLua
     static inline const char* CombatTechniqueDataMetatable()    { return CombatTechniqueDataBinding::getMetatableName(); }
     static inline const char* TaskerMetatable()                 { return TaskerBinding::getMetatableName(); }
     static inline const char* BuildingMetatable()               { return BuildingBinding::getMetatableName(); }
+    static inline const char* UseableStuffMetatable()           { return UseableStuffBinding::getMetatableName(); }
     static inline const char* HandMetatable()                   { return HandBinding::getMetatableName(); }
     static inline const char* GameDataMetatable()               { return GameDataBinding::getMetatableName(); }
     static inline const char* RaceDataMetatable()               { return RaceDataBinding::getMetatableName(); }
@@ -111,11 +163,11 @@ namespace KenshiLua
     static inline const char* SquadManagementScreenMetatable()  { return SquadManagementScreenBinding::getMetatableName(); }
     static inline const char* ManagementScreenMetatable()       { return ManagementScreenBinding::getMetatableName(); }
     static inline const char* TitleScreenMetatable()            { return TitleScreenBinding::getMetatableName(); }
-    static inline const char* MyGuiWidgetMetatable()            { return MyGuiBinding::getMetatableName(); }
+    static inline const char* MyGuiWidgetMetatable()            { return MyGUIBinding::getMetatableName(); }
     static inline const char* OrdersPanelMetatable()            { return OrdersPanelBinding::getMetatableName(); }
     static inline const char* DataPanelLineButtonMetatable()    { return DataPanelLine_ButtonBinding::getMetatableName(); }
     static inline const char* InputHandlerMetatable()           { return InputHandlerBinding::getMetatableName(); }
-    static inline const char* BaseLayoutMetatable()             { return wraps::BaseLayoutBinding::getMetatableName(); }
+    static inline const char* BaseLayoutMetatable()             { return BaseLayoutBinding::getMetatableName(); }
     static inline const char* ActivePlatoonMetatable()          { return ActivePlatoonBinding::getMetatableName(); }
     static inline const char* ArmourMetatable()                 { return ArmourBinding::getMetatableName(); }
     static inline const char* BountyMetatable()                 { return BountyBinding::getMetatableName(); }
@@ -125,6 +177,33 @@ namespace KenshiLua
     static inline const char* SwordMetatable()                  { return SwordBinding::getMetatableName(); }
     static inline const char* WeaponMetatable()                 { return WeaponBinding::getMetatableName(); }
     static inline const char* DataObjectContainerMetatable()    { return DataObjectContainerBinding::getMetatableName(); }
+    static inline const char* DoorStuffMetatable()              { return DoorStuffBinding::getMetatableName(); }
+    static inline const char* ProductionBuildingMetatable()      { return ProductionBuildingBinding::getMetatableName(); }
+    static inline const char* CraftingBuildingMetatable()        { return CraftingBuildingBinding::getMetatableName(); }
+    static inline const char* FarmBuildingMetatable()            { return FarmBuildingBinding::getMetatableName(); }
+    static inline const char* TurretBuildingMetatable()          { return TurretBuildingBinding::getMetatableName(); }
+    static inline const char* FurnaceBuildingMetatable()         { return FurnaceBuildingBinding::getMetatableName(); }
+    static inline const char* ResearchBuildingMetatable()        { return ResearchBuildingBinding::getMetatableName(); }
+    static inline const char* PreviewBuildingMetatable()         { return PreviewBuildingBinding::getMetatableName(); }
+    static inline const char* WallBuildingMetatable()            { return WallBuildingBinding::getMetatableName(); }
+    static inline const char* DataPanelLineMetatable()           { return DataPanelLineBinding::getMetatableName(); }
+    static inline const char* RendHitMetatable()                 { return rendHitBinding::getMetatableName(); }
+    static inline const char* TownMetatable()                   { return TownBinding::getMetatableName(); }
+    static inline const char* TownBaseMetatable()               { return TownBaseBinding::getMetatableName(); }
+    static inline const char* StorageBuildingMetatable()        { return StorageBuildingBinding::getMetatableName(); }
+    static inline const char* LightBuildingMetatable()          { return LightBuildingBinding::getMetatableName(); }
+    static inline const char* GeneratorBuildingMetatable()      { return GeneratorBuildingBinding::getMetatableName(); }
+    static inline const char* WindGeneratorBuildingMetatable()  { return WindGeneratorBuildingBinding::getMetatableName(); }
+    static inline const char* GatewayBuildingMetatable()        { return GatewayBuildingBinding::getMetatableName(); }
+    static inline const char* TortureBuildingMetatable()        { return TortureBuildingBinding::getMetatableName(); }
+    static inline const char* RainCollectorBuildingMetatable()  { return RainCollectorBuildingBinding::getMetatableName(); }
+    static inline const char* CharacterHumanMetatable()         { return CharacterHumanBinding::getMetatableName(); }
+    static inline const char* CharacterAnimalMetatable()        { return CharacterAnimalBinding::getMetatableName(); }
+    static inline const char* CharBodyMetatable()               { return CharBodyBinding::getMetatableName(); }
+    static inline const char* FactionLeaderMetatable()          { return FactionLeaderBinding::getMetatableName(); }
+    static inline const char* FactionRelationsMetatable()       { return FactionRelationsBinding::getMetatableName(); }
+    static inline const char* FactionUniqueSquadManagerMetatable() { return FactionUniqueSquadManagerBinding::getMetatableName(); }
+    static inline const char* ProsperityManagerMetatable()      { return ProsperityManagerBinding::getMetatableName(); }
 
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, int val)                       { lua_pushinteger(L, val); }
@@ -152,6 +231,8 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, GameWorld* val)                { pushObject<GameWorld>(L, val, GameWorldMetatable()); }
     static inline void pushArg(lua_State* L, Building* val)                 { pushObject<Building>(L, val, BuildingMetatable()); }
     static inline void pushArg(lua_State* L, const Building* val)           { pushObject<Building>(L, const_cast<Building*>(val), BuildingMetatable()); }
+    static inline void pushArg(lua_State* L, UseableStuff* val)             { pushObject<UseableStuff>(L, val, UseableStuffMetatable()); }
+    static inline void pushArg(lua_State* L, const UseableStuff* val)       { pushObject<UseableStuff>(L, const_cast<UseableStuff*>(val), UseableStuffMetatable()); }
     static inline void pushArg(lua_State* L, const CharStats* val)          { pushObject<CharStats>(L, const_cast<CharStats*>(val), CharStatsMetatable()); }
     static inline void pushArg(lua_State* L, Ownerships* val)               { pushObject<Ownerships>(L, val, OwnershipsMetatable()); }
     static inline void pushArg(lua_State* L, const InventoryItemBase* val)  { pushObject<InventoryItemBase>(L, const_cast<InventoryItemBase*>(val), InventoryItemBaseMetatable()); }
@@ -183,6 +264,34 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, Weapon* val)                   { pushObject<Weapon>(L, val, WeaponMetatable()); }
     static inline void pushArg(lua_State* L, DataObjectContainer* val)      { pushObject<DataObjectContainer>(L, val, DataObjectContainerMetatable()); }
     static inline void pushArg(lua_State* L, Layout* val)                   { lua_pushlightuserdata(L, val); }
+    static inline void pushArg(lua_State* L, DoorStuff* val)                { pushObject<DoorStuff>(L, val, DoorStuffMetatable()); }
+    static inline void pushArg(lua_State* L, ProductionBuilding* val)        { pushObject<ProductionBuilding>(L, val, ProductionBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, CraftingBuilding* val)          { pushObject<CraftingBuilding>(L, val, CraftingBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, FarmBuilding* val)              { pushObject<FarmBuilding>(L, val, FarmBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, TurretBuilding* val)            { pushObject<TurretBuilding>(L, val, TurretBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, FurnaceBuilding* val)           { pushObject<FurnaceBuilding>(L, val, FurnaceBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, ResearchBuilding* val)          { pushObject<ResearchBuilding>(L, val, ResearchBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, PreviewBuilding* val)           { pushObject<PreviewBuilding>(L, val, PreviewBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, WallBuilding* val)              { pushObject<WallBuilding>(L, val, WallBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine* val)             { pushObject<DataPanelLine>(L, val, DataPanelLineMetatable()); }
+    static inline void pushArg(lua_State* L, rendHit* val)                  { pushObject<rendHit>(L, val, RendHitMetatable()); }
+    static inline void pushArg(lua_State* L, const rendHit& val)            { pushObject<rendHit>(L, const_cast<rendHit*>(&val), RendHitMetatable()); }
+    static inline void pushArg(lua_State* L, Town* val)                     { pushObject<Town>(L, val, TownMetatable()); }
+    static inline void pushArg(lua_State* L, TownBase* val)                 { pushObject<TownBase>(L, val, TownBaseMetatable()); }
+    static inline void pushArg(lua_State* L, StorageBuilding* val)          { pushObject<StorageBuilding>(L, val, StorageBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, LightBuilding* val)            { pushObject<LightBuilding>(L, val, LightBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, GeneratorBuilding* val)        { pushObject<GeneratorBuilding>(L, val, GeneratorBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, WindGeneratorBuilding* val)    { pushObject<WindGeneratorBuilding>(L, val, WindGeneratorBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, GatewayBuilding* val)          { pushObject<GatewayBuilding>(L, val, GatewayBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, TortureBuilding* val)          { pushObject<TortureBuilding>(L, val, TortureBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, RainCollectorBuilding* val)    { pushObject<RainCollectorBuilding>(L, val, RainCollectorBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, CharacterHuman* val)           { pushObject<CharacterHuman>(L, val, CharacterHumanMetatable()); }
+    static inline void pushArg(lua_State* L, CharacterAnimal* val)          { pushObject<CharacterAnimal>(L, val, CharacterAnimalMetatable()); }
+    static inline void pushArg(lua_State* L, CharBody* val)                 { pushObject<CharBody>(L, val, CharBodyMetatable()); }
+    static inline void pushArg(lua_State* L, FactionLeader* val)            { pushObject<FactionLeader>(L, val, FactionLeaderMetatable()); }
+    static inline void pushArg(lua_State* L, FactionRelations* val)         { pushObject<FactionRelations>(L, val, FactionRelationsMetatable()); }
+    static inline void pushArg(lua_State* L, FactionUniqueSquadManager* val){ pushObject<FactionUniqueSquadManager>(L, val, FactionUniqueSquadManagerMetatable()); }
+    static inline void pushArg(lua_State* L, ProsperityManager* val)        { pushObject<ProsperityManager>(L, val, ProsperityManagerMetatable()); }
 
     // pullArg — reads a (possibly Lua-edited) value back off the stack.
     // No pointer/object overloads on purpose; see IParamsFilter comment.
@@ -336,6 +445,26 @@ namespace {
             KenshiLua::pushArg(L, a9);
             KenshiLua::pushArg(L, a10);
             return 10;
+        }
+    };
+
+    template <typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9, typename T10, typename T11>
+    struct ArgPusher11 : public KenshiLua::IArgPusher {
+        T1 a1; T2 a2; T3 a3; T4 a4; T5 a5; T6 a6; T7 a7; T8 a8; T9 a9; T10 a10; T11 a11;
+        ArgPusher11(T1 _1, T2 _2, T3 _3, T4 _4, T5 _5, T6 _6, T7 _7, T8 _8, T9 _9, T10 _10, T11 _11) : a1(_1), a2(_2), a3(_3), a4(_4), a5(_5), a6(_6), a7(_7), a8(_8), a9(_9), a10(_10), a11(_11) {}
+        int push(lua_State* L) const {
+            KenshiLua::pushArg(L, a1);
+            KenshiLua::pushArg(L, a2);
+            KenshiLua::pushArg(L, a3);
+            KenshiLua::pushArg(L, a4);
+            KenshiLua::pushArg(L, a5);
+            KenshiLua::pushArg(L, a6);
+            KenshiLua::pushArg(L, a7);
+            KenshiLua::pushArg(L, a8);
+            KenshiLua::pushArg(L, a9);
+            KenshiLua::pushArg(L, a10);
+            KenshiLua::pushArg(L, a11);
+            return 11;
         }
     };
 
@@ -924,12 +1053,6 @@ void CallCharacterChainedModeChangedCallbacks(Character* character, bool on, con
     KenshiLua::EventSystem::get().callHandlers("onChainedModeChanged", &pusher);
 }
 
-void CallCharacterIndoorsChangedCallbacks(Character* character, const hand& indoors)
-{
-    ArgPusher2<Character*, const hand&> pusher(character, indoors);
-    KenshiLua::EventSystem::get().callHandlers("onCharacterIndoorsChanged", &pusher);
-}
-
 void CallBuildingLoadedCallbacks(Building* building)
 {
     ArgPusher1<Building*> pusher(building);
@@ -1205,3 +1328,616 @@ Inventory* CallInventoryConstructedCallbacks(Inventory* thisptr, RootObject* _ow
         "onInventoryConstructed", KenshiLua::InventoryMetatable(), &pusher));
     return overrideObj ? overrideObj : defaultVal;
 }
+
+DoorStuff* CallDoorStuffConstructedCallbacks(DoorStuff* thisptr, GameData* dat, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, Building* par, DoorStuff* defaultVal)
+{
+    ArgPusher11<DoorStuff*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, Building*, DoorStuff*> pusher(thisptr, dat, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, par, defaultVal);
+    DoorStuff* overrideObj = static_cast<DoorStuff*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onDoorStuffConstructed", KenshiLua::DoorStuffMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+ProductionBuilding* CallProductionBuildingConstructedCallbacks(ProductionBuilding* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, ProductionBuilding* defaultVal)
+{
+    ArgPusher10<ProductionBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, ProductionBuilding*> pusher(thisptr, _data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    ProductionBuilding* overrideObj = static_cast<ProductionBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onProductionBuildingConstructed", KenshiLua::ProductionBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+CraftingBuilding* CallCraftingBuildingConstructedCallbacks(CraftingBuilding* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, CraftingBuilding* defaultVal)
+{
+    ArgPusher10<CraftingBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, CraftingBuilding*> pusher(thisptr, _data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    CraftingBuilding* overrideObj = static_cast<CraftingBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onCraftingBuildingConstructed", KenshiLua::CraftingBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+FarmBuilding* CallFarmBuildingConstructedCallbacks(FarmBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, FarmBuilding* defaultVal)
+{
+    ArgPusher10<FarmBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, FarmBuilding*> pusher(thisptr, data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    FarmBuilding* overrideObj = static_cast<FarmBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onFarmBuildingConstructed", KenshiLua::FarmBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+TurretBuilding* CallTurretBuildingConstructedCallbacks(TurretBuilding* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, TurretBuilding* defaultVal)
+{
+    ArgPusher10<TurretBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, TurretBuilding*> pusher(thisptr, _data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    TurretBuilding* overrideObj = static_cast<TurretBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onTurretBuildingConstructed", KenshiLua::TurretBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+FurnaceBuilding* CallFurnaceBuildingConstructedCallbacks(FurnaceBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, FurnaceBuilding* defaultVal)
+{
+    ArgPusher10<FurnaceBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, FurnaceBuilding*> pusher(thisptr, data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    FurnaceBuilding* overrideObj = static_cast<FurnaceBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onFurnaceBuildingConstructed", KenshiLua::FurnaceBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+ResearchBuilding* CallResearchBuildingConstructedCallbacks(ResearchBuilding* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, ResearchBuilding* defaultVal)
+{
+    ArgPusher10<ResearchBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, ResearchBuilding*> pusher(thisptr, _data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    ResearchBuilding* overrideObj = static_cast<ResearchBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onResearchBuildingConstructed", KenshiLua::ResearchBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+WallBuilding* CallWallBuildingConstructedCallbacks(WallBuilding* thisptr, GameData* dat, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, Layout* furnitureOf, const hand& town, const hand& _handle, WallBuilding* defaultVal)
+{
+    ArgPusher9<WallBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, Layout*, const hand&, const hand&, WallBuilding*> pusher(thisptr, dat, position, orientation, _participant, furnitureOf, town, _handle, defaultVal);
+    WallBuilding* overrideObj = static_cast<WallBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onWallBuildingConstructed", KenshiLua::WallBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+PreviewBuilding* CallPreviewBuildingConstructedCallbacks(PreviewBuilding* thisptr, GameData* data, Building* _furnitureParent, PreviewBuilding* defaultVal)
+{
+    ArgPusher4<PreviewBuilding*, GameData*, Building*, PreviewBuilding*> pusher(thisptr, data, _furnitureParent, defaultVal);
+    PreviewBuilding* overrideObj = static_cast<PreviewBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onPreviewBuildingConstructed", KenshiLua::PreviewBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+UseableStuff* CallUseableStuffConstructedCallbacks(UseableStuff* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, UseableStuff* defaultVal)
+{
+    ArgPusher10<UseableStuff*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, UseableStuff*> pusher(thisptr, _data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    UseableStuff* overrideObj = static_cast<UseableStuff*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onUseableStuffConstructed", KenshiLua::UseableStuffMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+StorageBuilding* CallStorageBuildingConstructedCallbacks(StorageBuilding* thisptr, GameData* _data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, StorageBuilding* defaultVal)
+{
+    ArgPusher10<StorageBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, StorageBuilding*> pusher(thisptr, _data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    StorageBuilding* overrideObj = static_cast<StorageBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onStorageBuildingConstructed", KenshiLua::StorageBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+LightBuilding* CallLightBuildingConstructedCallbacks(LightBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, LightBuilding* defaultVal)
+{
+    ArgPusher10<LightBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, LightBuilding*> pusher(thisptr, data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    LightBuilding* overrideObj = static_cast<LightBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onLightBuildingConstructed", KenshiLua::LightBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+GeneratorBuilding* CallGeneratorBuildingConstructedCallbacks(GeneratorBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, GeneratorBuilding* defaultVal)
+{
+    ArgPusher10<GeneratorBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, GeneratorBuilding*> pusher(thisptr, data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    GeneratorBuilding* overrideObj = static_cast<GeneratorBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onGeneratorBuildingConstructed", KenshiLua::GeneratorBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+WindGeneratorBuilding* CallWindGeneratorBuildingConstructedCallbacks(WindGeneratorBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, Layout* __isfurnitureOf, Building* _indoors, WindGeneratorBuilding* defaultVal)
+{
+    ArgPusher10<WindGeneratorBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, WindGeneratorBuilding*> pusher(thisptr, data, position, orientation, _participant, town, _handle, __isfurnitureOf, _indoors, defaultVal);
+    WindGeneratorBuilding* overrideObj = static_cast<WindGeneratorBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onWindGeneratorBuildingConstructed", KenshiLua::WindGeneratorBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+GatewayBuilding* CallGatewayBuildingConstructedCallbacks(GatewayBuilding* thisptr, GameData* dat, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* _participant, const hand& town, const hand& _handle, GatewayBuilding* defaultVal)
+{
+    ArgPusher8<GatewayBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, GatewayBuilding*> pusher(thisptr, dat, position, orientation, _participant, town, _handle, defaultVal);
+    GatewayBuilding* overrideObj = static_cast<GatewayBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onGatewayBuildingConstructed", KenshiLua::GatewayBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+TortureBuilding* CallTortureBuildingConstructedCallbacks(TortureBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* participant, const hand& town, const hand& handle, Layout* isfurnitureOf, Building* indoors, TortureBuilding* defaultVal)
+{
+    ArgPusher10<TortureBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, TortureBuilding*> pusher(thisptr, data, position, orientation, participant, town, handle, isfurnitureOf, indoors, defaultVal);
+    TortureBuilding* overrideObj = static_cast<TortureBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onTortureBuildingConstructed", KenshiLua::TortureBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+RainCollectorBuilding* CallRainCollectorBuildingConstructedCallbacks(RainCollectorBuilding* thisptr, GameData* data, const Ogre::Vector3& position, const Ogre::Quaternion& orientation, Faction* participant, const hand& town, const hand& handle, Layout* isfurnitureOf, Building* indoors, RainCollectorBuilding* defaultVal)
+{
+    ArgPusher10<RainCollectorBuilding*, GameData*, const Ogre::Vector3&, const Ogre::Quaternion&, Faction*, const hand&, const hand&, Layout*, Building*, RainCollectorBuilding*> pusher(thisptr, data, position, orientation, participant, town, handle, isfurnitureOf, indoors, defaultVal);
+    RainCollectorBuilding* overrideObj = static_cast<RainCollectorBuilding*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onRainCollectorBuildingConstructed", KenshiLua::RainCollectorBuildingMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+CharacterHuman* CallCharacterHumanConstructedCallbacks(CharacterHuman* thisptr, GameData* d, Faction* f, const hand& _handle, CharacterHuman* defaultVal)
+{
+    ArgPusher5<CharacterHuman*, GameData*, Faction*, const hand&, CharacterHuman*> pusher(thisptr, d, f, _handle, defaultVal);
+    CharacterHuman* overrideObj = static_cast<CharacterHuman*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onCharacterHumanConstructed", KenshiLua::CharacterHumanMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+CharacterAnimal* CallCharacterAnimalConstructedCallbacks(CharacterAnimal* thisptr, GameData* d, Faction* f, const hand& _handle, CharacterAnimal* defaultVal)
+{
+    ArgPusher5<CharacterAnimal*, GameData*, Faction*, const hand&, CharacterAnimal*> pusher(thisptr, d, f, _handle, defaultVal);
+    CharacterAnimal* overrideObj = static_cast<CharacterAnimal*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onCharacterAnimalConstructed", KenshiLua::CharacterAnimalMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+CharStats* CallCharStatsConstructedCallbacks(CharStats* thisptr, CharStats* defaultVal)
+{
+    ArgPusher2<CharStats*, CharStats*> pusher(thisptr, defaultVal);
+    CharStats* overrideObj = static_cast<CharStats*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onCharStatsConstructed", KenshiLua::CharStatsMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+CharBody* CallCharBodyConstructedCallbacks(CharBody* thisptr, CharBody* defaultVal)
+{
+    ArgPusher2<CharBody*, CharBody*> pusher(thisptr, defaultVal);
+    CharBody* overrideObj = static_cast<CharBody*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onCharBodyConstructed", KenshiLua::CharBodyMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+CharMovement* CallCharMovementConstructedCallbacks(CharMovement* thisptr, CharMovement* defaultVal)
+{
+    ArgPusher2<CharMovement*, CharMovement*> pusher(thisptr, defaultVal);
+    CharMovement* overrideObj = static_cast<CharMovement*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onCharMovementConstructed", KenshiLua::CharMovementMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+CombatClass* CallCombatClassConstructedCallbacks(CombatClass* thisptr, CharMovement* m, void* a, void* an, Character* character, CharStats* st, MedicalSystem* _med, CombatClass* defaultVal)
+{
+    ArgPusher8<CombatClass*, CharMovement*, void*, void*, Character*, CharStats*, MedicalSystem*, CombatClass*> pusher(thisptr, m, a, an, character, st, _med, defaultVal);
+    CombatClass* overrideObj = static_cast<CombatClass*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onCombatClassConstructed", KenshiLua::CombatClassMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Town* CallTownConstructedCallbacks(Town* thisptr, GameData* d, Town* defaultVal)
+{
+    ArgPusher3<Town*, GameData*, Town*> pusher(thisptr, d, defaultVal);
+    Town* overrideObj = static_cast<Town*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onTownConstructed", KenshiLua::TownMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+TownBase* CallTownBaseConstructedCallbacks(TownBase* thisptr, GameData* d, TownBase* defaultVal)
+{
+    ArgPusher3<TownBase*, GameData*, TownBase*> pusher(thisptr, d, defaultVal);
+    TownBase* overrideObj = static_cast<TownBase*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onTownBaseConstructed", KenshiLua::TownBaseMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+FactionLeader* CallFactionLeaderConstructedCallbacks(FactionLeader* thisptr, Faction* f, FactionLeader* defaultVal)
+{
+    ArgPusher3<FactionLeader*, Faction*, FactionLeader*> pusher(thisptr, f, defaultVal);
+    FactionLeader* overrideObj = static_cast<FactionLeader*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onFactionLeaderConstructed", KenshiLua::FactionLeaderMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+FactionRelations* CallFactionRelationsConstructedCallbacks(FactionRelations* thisptr, FactionRelations* defaultVal)
+{
+    ArgPusher2<FactionRelations*, FactionRelations*> pusher(thisptr, defaultVal);
+    FactionRelations* overrideObj = static_cast<FactionRelations*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onFactionRelationsConstructed", KenshiLua::FactionRelationsMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+FactionUniqueSquadManager* CallFactionUniqueSquadManagerConstructedCallbacks(FactionUniqueSquadManager* thisptr, FactionUniqueSquadManager* defaultVal)
+{
+    ArgPusher2<FactionUniqueSquadManager*, FactionUniqueSquadManager*> pusher(thisptr, defaultVal);
+    FactionUniqueSquadManager* overrideObj = static_cast<FactionUniqueSquadManager*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onFactionUniqueSquadManagerConstructed", KenshiLua::FactionUniqueSquadManagerMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+ProsperityManager* CallProsperityManagerConstructedCallbacks(ProsperityManager* thisptr, ProsperityManager* defaultVal)
+{
+    ArgPusher2<ProsperityManager*, ProsperityManager*> pusher(thisptr, defaultVal);
+    ProsperityManager* overrideObj = static_cast<ProsperityManager*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onProsperityManagerConstructed", KenshiLua::ProsperityManagerMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+InventoryItemBase* CallInventoryItemBaseConstructedCallbacks(InventoryItemBase* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, const hand& _handle, InventoryItemBase* defaultVal)
+{
+    ArgPusher6<InventoryItemBase*, GameData*, GameData*, GameData*, const hand&, InventoryItemBase*> pusher(thisptr, baseData, companyData, materialData, _handle, defaultVal);
+    InventoryItemBase* overrideObj = static_cast<InventoryItemBase*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onInventoryItemBaseConstructed", KenshiLua::InventoryItemBaseMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+MedicalSystem* CallMedicalSystemConstructedCallbacks(MedicalSystem* thisptr, Character* c, MedicalSystem* defaultVal)
+{
+    ArgPusher3<MedicalSystem*, Character*, MedicalSystem*> pusher(thisptr, c, defaultVal);
+    MedicalSystem* overrideObj = static_cast<MedicalSystem*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onMedicalSystemConstructed", KenshiLua::MedicalSystemMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+CombatTechniqueData* CallCombatTechniqueDataConstructedCallbacks(CombatTechniqueData* thisptr, GameData* data, CombatTechniqueData* defaultVal)
+{
+    ArgPusher3<CombatTechniqueData*, GameData*, CombatTechniqueData*> pusher(thisptr, data, defaultVal);
+    CombatTechniqueData* overrideObj = static_cast<CombatTechniqueData*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onCombatTechniqueDataConstructed", KenshiLua::CombatTechniqueDataMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Dialogue* CallDialogueConstructedCallbacks(Dialogue* thisptr, Dialogue* defaultVal)
+{
+    ArgPusher2<Dialogue*, Dialogue*> pusher(thisptr, defaultVal);
+    Dialogue* overrideObj = static_cast<Dialogue*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onDialogueConstructed", KenshiLua::DialogueMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+DialogLineData* CallDialogLineDataConstructedCallbacks(DialogLineData* thisptr, GameData* dat, DialogLineData* defaultVal)
+{
+    ArgPusher3<DialogLineData*, GameData*, DialogLineData*> pusher(thisptr, dat, defaultVal);
+    DialogLineData* overrideObj = static_cast<DialogLineData*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onDialogLineDataConstructed", KenshiLua::DialogLineDataMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+void CallUseableStuffTryOperateCallbacks(UseableStuff* thisptr, const hand& h, bool success)
+{
+    ArgPusher3<UseableStuff*, const hand&, bool> pusher(thisptr, h, success);
+    KenshiLua::EventSystem::get().callHandlers("onUseableStuffTryOperate", &pusher);
+}
+
+void CallUseableStuffStopOperatingCallbacks(UseableStuff* thisptr, const hand& h)
+{
+    ArgPusher2<UseableStuff*, const hand&> pusher(thisptr, h);
+    KenshiLua::EventSystem::get().callHandlers("onUseableStuffStopOperating", &pusher);
+}
+
+void CallUseableStuffOccupantChangedCallbacks(UseableStuff* thisptr, const hand& h)
+{
+    ArgPusher2<UseableStuff*, const hand&> pusher(thisptr, h);
+    KenshiLua::EventSystem::get().callHandlers("onUseableStuffOccupantChanged", &pusher);
+}
+
+void CallUseableStuffPowerSwitchedCallbacks(UseableStuff* thisptr, bool on)
+{
+    ArgPusher2<UseableStuff*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("onUseableStuffPowerSwitched", &pusher);
+}
+
+void CallUseableStuffGivePowerCallbacks(UseableStuff* thisptr, float amount)
+{
+    ArgPusher2<UseableStuff*, float> pusher(thisptr, amount);
+    KenshiLua::EventSystem::get().callHandlers("onUseableStuffGivePower", &pusher);
+}
+
+int CallUseableStuffGetCostToUseCallbacks(UseableStuff* thisptr, Character* who, int defaultVal)
+{
+    ArgPusher2<UseableStuff*, Character*> pusher(thisptr, who);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("onUseableStuffGetCostToUse", &pusher, defaultVal);
+}
+
+bool CallUseableStuffCouldIOperateCallbacks(const UseableStuff* thisptr, const hand& h, bool defaultVal)
+{
+    ArgPusher2<const UseableStuff*, const hand&> pusher(thisptr, h);
+    return KenshiLua::EventSystem::get().callHandlersBool("onUseableStuffCouldIOperate", &pusher, defaultVal);
+}
+
+bool CallUseableStuffDontNeedWorkCallbacks(const UseableStuff* thisptr, bool defaultVal)
+{
+    ArgPusher1<const UseableStuff*> pusher(thisptr);
+    return KenshiLua::EventSystem::get().callHandlersBool("onUseableStuffDontNeedWork", &pusher, defaultVal);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/Building.h (Additional)
+// -----------------------------------------------------------
+
+void CallBuildingNotifyConstructionCompleteCallbacks(Building* thisptr)
+{
+    ArgPusher1<Building*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingNotifyConstructionComplete", &pusher);
+}
+
+void CallBuildingAddConstructionProgressCallbacks(Building* thisptr, float amount)
+{
+    ArgPusher2<Building*, float> pusher(thisptr, amount);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingAddConstructionProgress", &pusher);
+}
+
+void CallBuildingSetConstructionProgressCallbacks(Building* thisptr, float amount)
+{
+    ArgPusher2<Building*, float> pusher(thisptr, amount);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingSetConstructionProgress", &pusher);
+}
+
+bool CallBuildingAddDismantleProgressCallbacks(Building* thisptr, float amount, bool defaultVal)
+{
+    ArgPusher2<Building*, float> pusher(thisptr, amount);
+    return KenshiLua::EventSystem::get().callHandlersBool("onBuildingAddDismantleProgress", &pusher, defaultVal);
+}
+
+void CallBuildingNotifyConstructionDismantlingCallbacks(Building* thisptr)
+{
+    ArgPusher1<Building*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingNotifyConstructionDismantling", &pusher);
+}
+
+void CallBuildingUpgradeCallbacks(Building* thisptr, DataPanelLine* line)
+{
+    ArgPusher2<Building*, DataPanelLine*> pusher(thisptr, line);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingUpgrade", &pusher);
+}
+
+GameData* CallBuildingCanUpgradeCallbacks(Building* thisptr, GameData* defaultVal)
+{
+    ArgPusher1<Building*> pusher(thisptr);
+    GameData* overrideObj = static_cast<GameData*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "onBuildingCanUpgrade", KenshiLua::GameDataMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+void CallBuildingDestroyDoorsCallbacks(Building* thisptr)
+{
+    ArgPusher1<Building*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingDestroyDoors", &pusher);
+}
+
+void CallBuildingSetFactionCallbacks(Building* thisptr, Faction* p, ActivePlatoon* a)
+{
+    ArgPusher3<Building*, Faction*, ActivePlatoon*> pusher(thisptr, p, a);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingSetFaction", &pusher);
+}
+
+void CallBuildingSetFloorVisibilityCallbacks(Building* thisptr, int floor, bool vis)
+{
+    ArgPusher3<Building*, int, bool> pusher(thisptr, floor, vis);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingSetFloorVisibility", &pusher);
+}
+
+void CallBuildingSwitchLightsCallbacks(Building* thisptr, bool on)
+{
+    ArgPusher2<Building*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingSwitchLights", &pusher);
+}
+
+void CallBuildingSwitchEffectsCallbacks(Building* thisptr, bool on)
+{
+    ArgPusher2<Building*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingSwitchEffects", &pusher);
+}
+
+void CallBuildingNotifyEffectCallbacks(Building* thisptr, int type, int what, float strength)
+{
+    ArgPusher4<Building*, int, int, float> pusher(thisptr, type, what, strength);
+    KenshiLua::EventSystem::get().callHandlers("onBuildingNotifyEffect", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/WallBuilding.h
+// -----------------------------------------------------------
+
+void CallWallBuildingHitByMeleeAttackCallbacks(WallBuilding* thisptr, int cutDir, Damages* damage, Character* who, CombatTechniqueData* attack, int comboID)
+{
+    ArgPusher6<WallBuilding*, int, Damages*, Character*, CombatTechniqueData*, int> pusher(thisptr, cutDir, damage, who, attack, comboID);
+    KenshiLua::EventSystem::get().callHandlers("onWallBuildingHitByMeleeAttack", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/DoorStuff.h
+// -----------------------------------------------------------
+
+bool CallDoorStuffOpenDoorCallbacks(DoorStuff* thisptr, bool defaultVal)
+{
+    ArgPusher1<DoorStuff*> pusher(thisptr);
+    return KenshiLua::EventSystem::get().callHandlersBool("onDoorStuffOpenDoor", &pusher, defaultVal);
+}
+
+bool CallDoorStuffCloseDoorCallbacks(DoorStuff* thisptr, bool defaultVal)
+{
+    ArgPusher1<DoorStuff*> pusher(thisptr);
+    return KenshiLua::EventSystem::get().callHandlersBool("onDoorStuffCloseDoor", &pusher, defaultVal);
+}
+
+void CallDoorStuffLockDoorCallbacks(DoorStuff* thisptr)
+{
+    ArgPusher1<DoorStuff*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("onDoorStuffLockDoor", &pusher);
+}
+
+void CallDoorStuffUnlockDoorCallbacks(DoorStuff* thisptr)
+{
+    ArgPusher1<DoorStuff*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("onDoorStuffUnlockDoor", &pusher);
+}
+
+void CallDoorStuffSetDoorStateCallbacks(DoorStuff* thisptr, int doorState)
+{
+    ArgPusher2<DoorStuff*, int> pusher(thisptr, doorState);
+    KenshiLua::EventSystem::get().callHandlers("onDoorStuffSetDoorState", &pusher);
+}
+
+void CallDoorStuffHitByMeleeAttackCallbacks(DoorStuff* thisptr, int cutDir, Damages* damage, Character* who, CombatTechniqueData* attack, int comboID)
+{
+    ArgPusher6<DoorStuff*, int, Damages*, Character*, CombatTechniqueData*, int> pusher(thisptr, cutDir, damage, who, attack, comboID);
+    KenshiLua::EventSystem::get().callHandlers("onDoorStuffHitByMeleeAttack", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/ProductionBuilding.h
+// -----------------------------------------------------------
+
+void CallProductionBuildingOperateCallbacks(ProductionBuilding* thisptr, Character* who, float amount)
+{
+    ArgPusher3<ProductionBuilding*, Character*, float> pusher(thisptr, who, amount);
+    KenshiLua::EventSystem::get().callHandlers("onProductionBuildingOperate", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/CraftingBuilding.h
+// -----------------------------------------------------------
+
+void CallCraftingBuildingOperateCallbacks(CraftingBuilding* thisptr, Character* worker, float amount)
+{
+    ArgPusher3<CraftingBuilding*, Character*, float> pusher(thisptr, worker, amount);
+    KenshiLua::EventSystem::get().callHandlers("onCraftingBuildingOperate", &pusher);
+}
+
+void CallCraftingBuildingNewCraftingButtonCallbacks(CraftingBuilding* thisptr, MyGUI::Widget* sender)
+{
+    ArgPusher2<CraftingBuilding*, MyGUI::Widget*> pusher(thisptr, sender);
+    KenshiLua::EventSystem::get().callHandlers("onCraftingBuildingNewCraftingButton", &pusher);
+}
+
+void CallCraftingBuildingAddFinishedCraftItemCallbacks(CraftingBuilding* thisptr, Item* what)
+{
+    ArgPusher2<CraftingBuilding*, Item*> pusher(thisptr, what);
+    KenshiLua::EventSystem::get().callHandlers("onCraftingBuildingAddFinishedCraftItem", &pusher);
+}
+
+void CallCraftingBuildingNotifyCraftFailureCallbacks(CraftingBuilding* thisptr)
+{
+    ArgPusher1<CraftingBuilding*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("onCraftingBuildingNotifyCraftFailure", &pusher);
+}
+
+void CallCraftingBuildingDestroyProductionItemCallbacks(CraftingBuilding* thisptr)
+{
+    ArgPusher1<CraftingBuilding*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("onCraftingBuildingDestroyProductionItem", &pusher);
+}
+
+void CallCraftingBuildingRemoveCraftCallbacks(CraftingBuilding* thisptr, int index)
+{
+    ArgPusher2<CraftingBuilding*, int> pusher(thisptr, index);
+    KenshiLua::EventSystem::get().callHandlers("onCraftingBuildingRemoveCraft", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/FurnaceBuilding.h
+// -----------------------------------------------------------
+
+void CallFurnaceBuildingOperateCallbacks(FurnaceBuilding* thisptr, Character* worker, float amount)
+{
+    ArgPusher3<FurnaceBuilding*, Character*, float> pusher(thisptr, worker, amount);
+    KenshiLua::EventSystem::get().callHandlers("onFurnaceBuildingOperate", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/ResearchBuilding.h
+// -----------------------------------------------------------
+
+void CallResearchBuildingOperateCallbacks(ResearchBuilding* thisptr, Character* worker, float amount)
+{
+    ArgPusher3<ResearchBuilding*, Character*, float> pusher(thisptr, worker, amount);
+    KenshiLua::EventSystem::get().callHandlers("onResearchBuildingOperate", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/FarmBuilding.h
+// -----------------------------------------------------------
+
+void CallFarmBuildingOperateCallbacks(FarmBuilding* thisptr, Character* who, float amount)
+{
+    ArgPusher3<FarmBuilding*, Character*, float> pusher(thisptr, who, amount);
+    KenshiLua::EventSystem::get().callHandlers("onFarmBuildingOperate", &pusher);
+}
+
+bool CallFarmBuildingDestroyAPlantCallbacks(FarmBuilding* thisptr, bool defaultVal)
+{
+    ArgPusher1<FarmBuilding*> pusher(thisptr);
+    return KenshiLua::EventSystem::get().callHandlersBool("onFarmBuildingDestroyAPlant", &pusher, defaultVal);
+}
+
+void CallFarmBuildingEatCallbacks(FarmBuilding* thisptr, float rate)
+{
+    ArgPusher2<FarmBuilding*, float> pusher(thisptr, rate);
+    KenshiLua::EventSystem::get().callHandlers("onFarmBuildingEat", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/TurretBuilding.h
+// -----------------------------------------------------------
+
+void CallTurretBuildingOperateCallbacks(TurretBuilding* thisptr, Character* gunner, float amount)
+{
+    ArgPusher3<TurretBuilding*, Character*, float> pusher(thisptr, gunner, amount);
+    KenshiLua::EventSystem::get().callHandlers("onTurretBuildingOperate", &pusher);
+}
+
+void CallTurretBuildingAimAtCallbacks(TurretBuilding* thisptr, const Ogre::Vector3& targetPos)
+{
+    ArgPusher2<TurretBuilding*, const Ogre::Vector3&> pusher(thisptr, targetPos);
+    KenshiLua::EventSystem::get().callHandlers("onTurretBuildingAimAt", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in Building/UseableStuff.h (Additional)
+// -----------------------------------------------------------
+
+void CallUseableStuffHitByMeleeAttackCallbacks(UseableStuff* thisptr, int cutDir, Damages* damage, Character* who, CombatTechniqueData* attack, int comboID)
+{
+    ArgPusher6<UseableStuff*, int, Damages*, Character*, CombatTechniqueData*, int> pusher(thisptr, cutDir, damage, who, attack, comboID);
+    KenshiLua::EventSystem::get().callHandlers("onUseableStuffHitByMeleeAttack", &pusher);
+}
+
+float CallUseableStuffTakePowerFromCallbacks(UseableStuff* thisptr, float amount, float frameTime, float defaultVal)
+{
+    ArgPusher3<UseableStuff*, float, float> pusher(thisptr, amount, frameTime);
+    return (float)KenshiLua::EventSystem::get().callHandlersNumber("onUseableStuffTakePowerFrom", &pusher, defaultVal);
+}
+
+void CallUseableStuffTogglePowerButtonCallbacks(UseableStuff* thisptr, DataPanelLine* line)
+{
+    ArgPusher2<UseableStuff*, DataPanelLine*> pusher(thisptr, line);
+    KenshiLua::EventSystem::get().callHandlers("onUseableStuffTogglePowerButton", &pusher);
+}
+
+void CallUseableStuffToggleBattButtonCallbacks(UseableStuff* thisptr, DataPanelLine* line)
+{
+    ArgPusher2<UseableStuff*, DataPanelLine*> pusher(thisptr, line);
+    KenshiLua::EventSystem::get().callHandlers("onUseableStuffToggleBattButton", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in PreviewBuilding
+// -----------------------------------------------------------
+
+void CallPreviewBuildingPlaceFinalPreviewBuildingCallbacks(PreviewBuilding* thisptr)
+{
+    ArgPusher1<PreviewBuilding*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("onPreviewBuildingPlaceFinalPreviewBuilding", &pusher);
+}
+
+bool CallPreviewBuildingPlacementVerificationCallbacks(PreviewBuilding* thisptr, bool defaultVal)
+{
+    ArgPusher1<PreviewBuilding*> pusher(thisptr);
+    return KenshiLua::EventSystem::get().callHandlersBool("onPreviewBuildingPlacementVerification", &pusher, defaultVal);
+}
+
+void CallPreviewBuildingPlacePreviewCallbacks(PreviewBuilding* thisptr, const Ogre::Vector3& position, const Ogre::Quaternion& rotation, int floorNumber)
+{
+    ArgPusher4<PreviewBuilding*, const Ogre::Vector3&, const Ogre::Quaternion&, int> pusher(thisptr, position, rotation, floorNumber);
+    KenshiLua::EventSystem::get().callHandlers("onPreviewBuildingPlacePreview", &pusher);
+}
+
