@@ -231,7 +231,7 @@
 #include "Bindings/Gui/TutorialpediaGUIBinding.h"
 #include "Bindings/Inventory_HasRoomCacheBinding.h"
 #include "Bindings/HavokCharacterBinding.h"
-#include "Bindings/HealthPartStatusBinding.h"
+#include "Bindings/MedicalSystem_HealthPartStatusBinding.h"
 #include "Bindings/ImpactPointBinding.h"
 #include "Bindings/InputHandlerBinding.h"
 #include "Bindings/InputHandler_CommandBinding.h"
@@ -799,7 +799,7 @@ void LuaBindings::registerAll(lua_State* L)
     HandBinding::registerBinding(L);
     Inventory_HasRoomCacheBinding::registerBinding(L);
     HavokCharacterBinding::registerBinding(L);
-    HealthPartStatusBinding::registerBinding(L);
+    MedicalSystem_HealthPartStatusBinding::registerBinding(L);
     ImpactPointBinding::registerBinding(L);
     ImportGameMenuBinding::registerBinding(L);
     InputHandlerBinding::registerBinding(L);

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "kenshi\MedicalSystem.h"
-#include "HealthPartStatusBinding.h"
+#include "MedicalSystem_HealthPartStatusBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/DamagesBinding.h"
@@ -15,18 +15,18 @@ typedef MedicalSystem::HealthPartStatus HealthPartStatus;
 
 static HealthPartStatus* getInstance(lua_State* L, int idx)
 {
-    return checkObject<HealthPartStatus>(L, idx, HealthPartStatusBinding::getMetatableName());
+    return checkObject<HealthPartStatus>(L, idx, MedicalSystem_HealthPartStatusBinding::getMetatableName());
 }
 
 // --- Getters for HealthPartStatus ---
-static int HealthPartStatus_get_data(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_data(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
     return pushObject<GameData>(L, instance->data, GameDataBinding::getMetatableName());
 }
 
-static int HealthPartStatus_get_whatAmI(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_whatAmI(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -34,21 +34,21 @@ static int HealthPartStatus_get_whatAmI(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_medical(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_medical(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
     return pushObject<MedicalSystem>(L, instance->medical, MedicalSystemBinding::getMetatableName());
 }
 
-static int HealthPartStatus_get_me(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_me(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
     return pushObject<Character>(L, instance->me, CharacterBinding::getMetatableName());
 }
 
-static int HealthPartStatus_get_side(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_side(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -56,14 +56,14 @@ static int HealthPartStatus_get_side(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_robotLimb(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_robotLimb(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
     return pushObject<RobotLimbItem>(L, instance->robotLimb, RobotLimbItemBinding::getMetatableName());
 }
 
-static int HealthPartStatus_get_selfHealing(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_selfHealing(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -71,7 +71,7 @@ static int HealthPartStatus_get_selfHealing(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_collapses(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_collapses(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -79,7 +79,7 @@ static int HealthPartStatus_get_collapses(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_fatal(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_fatal(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -87,7 +87,7 @@ static int HealthPartStatus_get_fatal(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_KOMult(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_KOMult(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -95,7 +95,7 @@ static int HealthPartStatus_get_KOMult(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_hitChance(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_hitChance(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -103,7 +103,7 @@ static int HealthPartStatus_get_hitChance(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_hitChanceMult(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_hitChanceMult(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -111,7 +111,7 @@ static int HealthPartStatus_get_hitChanceMult(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_flesh(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_flesh(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -119,7 +119,7 @@ static int HealthPartStatus_get_flesh(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_fleshStun(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_fleshStun(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -127,7 +127,7 @@ static int HealthPartStatus_get_fleshStun(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_bandaging(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_bandaging(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -135,7 +135,7 @@ static int HealthPartStatus_get_bandaging(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_juryRigging(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_juryRigging(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -143,7 +143,7 @@ static int HealthPartStatus_get_juryRigging(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_wearDamage(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_wearDamage(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -151,7 +151,7 @@ static int HealthPartStatus_get_wearDamage(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get__maxHealth(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get__maxHealth(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -159,7 +159,7 @@ static int HealthPartStatus_get__maxHealth(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_age(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_age(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -167,7 +167,7 @@ static int HealthPartStatus_get_age(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_HPMult(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_HPMult(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -175,7 +175,7 @@ static int HealthPartStatus_get_HPMult(lua_State* L)
     return 1;
 }
 
-static int HealthPartStatus_get_derivedFleshHealthPercent(lua_State* L)
+static int MedicalSystem_HealthPartStatus_get_derivedFleshHealthPercent(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -184,7 +184,7 @@ static int HealthPartStatus_get_derivedFleshHealthPercent(lua_State* L)
 }
 
 // --- Setters for HealthPartStatus ---
-static int HealthPartStatus_set_data(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_data(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -192,7 +192,7 @@ static int HealthPartStatus_set_data(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_whatAmI(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_whatAmI(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -200,7 +200,7 @@ static int HealthPartStatus_set_whatAmI(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_medical(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_medical(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -208,7 +208,7 @@ static int HealthPartStatus_set_medical(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_me(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_me(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -216,7 +216,7 @@ static int HealthPartStatus_set_me(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_side(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_side(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -224,7 +224,7 @@ static int HealthPartStatus_set_side(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_robotLimb(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_robotLimb(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -232,7 +232,7 @@ static int HealthPartStatus_set_robotLimb(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_selfHealing(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_selfHealing(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -240,7 +240,7 @@ static int HealthPartStatus_set_selfHealing(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_collapses(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_collapses(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -248,7 +248,7 @@ static int HealthPartStatus_set_collapses(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_fatal(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_fatal(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -256,7 +256,7 @@ static int HealthPartStatus_set_fatal(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_KOMult(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_KOMult(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -264,7 +264,7 @@ static int HealthPartStatus_set_KOMult(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_hitChance(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_hitChance(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -272,7 +272,7 @@ static int HealthPartStatus_set_hitChance(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_hitChanceMult(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_hitChanceMult(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -280,7 +280,7 @@ static int HealthPartStatus_set_hitChanceMult(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_flesh(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_flesh(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -288,7 +288,7 @@ static int HealthPartStatus_set_flesh(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_fleshStun(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_fleshStun(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -296,7 +296,7 @@ static int HealthPartStatus_set_fleshStun(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_bandaging(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_bandaging(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -304,7 +304,7 @@ static int HealthPartStatus_set_bandaging(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_juryRigging(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_juryRigging(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -312,7 +312,7 @@ static int HealthPartStatus_set_juryRigging(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_wearDamage(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_wearDamage(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -320,7 +320,7 @@ static int HealthPartStatus_set_wearDamage(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set__maxHealth(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set__maxHealth(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -328,7 +328,7 @@ static int HealthPartStatus_set__maxHealth(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_age(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_age(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -336,7 +336,7 @@ static int HealthPartStatus_set_age(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_HPMult(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_HPMult(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -344,7 +344,7 @@ static int HealthPartStatus_set_HPMult(lua_State* L)
     return 0;
 }
 
-static int HealthPartStatus_set_derivedFleshHealthPercent(lua_State* L)
+static int MedicalSystem_HealthPartStatus_set_derivedFleshHealthPercent(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -352,7 +352,7 @@ static int HealthPartStatus_set_derivedFleshHealthPercent(lua_State* L)
     return 0;
 }
 
-int HealthPartStatusBinding::serialise(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::serialise(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -363,7 +363,7 @@ int HealthPartStatusBinding::serialise(lua_State* L)
     return 0;
 }
 
-int HealthPartStatusBinding::load(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::load(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -374,7 +374,7 @@ int HealthPartStatusBinding::load(lua_State* L)
     return 0;
 }
 
-int HealthPartStatusBinding::isRobotic(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::isRobotic(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -384,7 +384,7 @@ int HealthPartStatusBinding::isRobotic(lua_State* L)
     return 1;
 }
 
-int HealthPartStatusBinding::getData(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::getData(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -393,7 +393,7 @@ int HealthPartStatusBinding::getData(lua_State* L)
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
-int HealthPartStatusBinding::getRobotLimbEnum(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::getRobotLimbEnum(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -403,7 +403,7 @@ int HealthPartStatusBinding::getRobotLimbEnum(lua_State* L)
     return 1;
 }
 
-int HealthPartStatusBinding::setup(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::setup(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -419,7 +419,7 @@ int HealthPartStatusBinding::setup(lua_State* L)
     return 0;
 }
 
-int HealthPartStatusBinding::update(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::update(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -435,7 +435,7 @@ int HealthPartStatusBinding::update(lua_State* L)
     return 1;
 }
 
-int HealthPartStatusBinding::updateDerivedHealths(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::updateDerivedHealths(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -444,7 +444,7 @@ int HealthPartStatusBinding::updateDerivedHealths(lua_State* L)
     return 0;
 }
 
-int HealthPartStatusBinding::getWorstDamage(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::getWorstDamage(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -455,7 +455,7 @@ int HealthPartStatusBinding::getWorstDamage(lua_State* L)
     return 1;
 }
 
-int HealthPartStatusBinding::setRobotLimbItem(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::setRobotLimbItem(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -466,7 +466,7 @@ int HealthPartStatusBinding::setRobotLimbItem(lua_State* L)
     return 0;
 }
 
-int HealthPartStatusBinding::getExtraBleedingAmount(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::getExtraBleedingAmount(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -476,7 +476,7 @@ int HealthPartStatusBinding::getExtraBleedingAmount(lua_State* L)
     return 1;
 }
 
-int HealthPartStatusBinding::isDead(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::isDead(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -486,7 +486,7 @@ int HealthPartStatusBinding::isDead(lua_State* L)
     return 1;
 }
 
-int HealthPartStatusBinding::getBloodynessMult(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::getBloodynessMult(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -496,7 +496,7 @@ int HealthPartStatusBinding::getBloodynessMult(lua_State* L)
     return 1;
 }
 
-int HealthPartStatusBinding::maxHealth(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::maxHealth(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -506,7 +506,7 @@ int HealthPartStatusBinding::maxHealth(lua_State* L)
     return 1;
 }
 
-int HealthPartStatusBinding::healthAsPercent(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::healthAsPercent(lua_State* L)
 {
     HealthPartStatus* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HealthPartStatus is nil");
@@ -517,104 +517,106 @@ int HealthPartStatusBinding::healthAsPercent(lua_State* L)
     return 1;
 }
 
-int HealthPartStatusBinding::gc(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::gc(lua_State* L)
 {
-    // Implementation depends on ownership model
+    // HealthPartStatus instances are owned by MedicalSystem, do not call destructor here
     return 0;
 }
 
-int HealthPartStatusBinding::tostring(lua_State* L)
+int MedicalSystem_HealthPartStatusBinding::tostring(lua_State* L)
 {
-    lua_pushstring(L, "KenshiLua.HealthPartStatus object");
+    lua_pushstring(L, "KenshiLua.MedicalSystem_HealthPartStatus object");
     return 1;
 }
 
-void HealthPartStatusBinding::registerBinding(lua_State* L)
+void MedicalSystem_HealthPartStatusBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
-        { "__gc",       HealthPartStatusBinding::gc },
-        { "__tostring", HealthPartStatusBinding::tostring },
+        { "__gc",       MedicalSystem_HealthPartStatusBinding::gc },
+        { "__tostring", MedicalSystem_HealthPartStatusBinding::tostring },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
-        { "serialise", HealthPartStatusBinding::serialise },
-        { "load", HealthPartStatusBinding::load },
-        { "isRobotic", HealthPartStatusBinding::isRobotic },
-        { "getData", HealthPartStatusBinding::getData },
-        { "getRobotLimbEnum", HealthPartStatusBinding::getRobotLimbEnum },
-        { "setup", HealthPartStatusBinding::setup },
-        { "update", HealthPartStatusBinding::update },
-        { "updateDerivedHealths", HealthPartStatusBinding::updateDerivedHealths },
-        { "getWorstDamage", HealthPartStatusBinding::getWorstDamage },
-        { "setRobotLimbItem", HealthPartStatusBinding::setRobotLimbItem },
-        { "getExtraBleedingAmount", HealthPartStatusBinding::getExtraBleedingAmount },
-        { "isDead", HealthPartStatusBinding::isDead },
-        { "getBloodynessMult", HealthPartStatusBinding::getBloodynessMult },
-        { "maxHealth", HealthPartStatusBinding::maxHealth },
-        { "healthAsPercent", HealthPartStatusBinding::healthAsPercent },
+        { "serialise", MedicalSystem_HealthPartStatusBinding::serialise },
+        { "load", MedicalSystem_HealthPartStatusBinding::load },
+        { "isRobotic", MedicalSystem_HealthPartStatusBinding::isRobotic },
+        { "getData", MedicalSystem_HealthPartStatusBinding::getData },
+        { "getRobotLimbEnum", MedicalSystem_HealthPartStatusBinding::getRobotLimbEnum },
+        { "setup", MedicalSystem_HealthPartStatusBinding::setup },
+        { "update", MedicalSystem_HealthPartStatusBinding::update },
+        { "updateDerivedHealths", MedicalSystem_HealthPartStatusBinding::updateDerivedHealths },
+        { "getWorstDamage", MedicalSystem_HealthPartStatusBinding::getWorstDamage },
+        { "setRobotLimbItem", MedicalSystem_HealthPartStatusBinding::setRobotLimbItem },
+        { "getExtraBleedingAmount", MedicalSystem_HealthPartStatusBinding::getExtraBleedingAmount },
+        { "isDead", MedicalSystem_HealthPartStatusBinding::isDead },
+        { "getBloodynessMult", MedicalSystem_HealthPartStatusBinding::getBloodynessMult },
+        { "maxHealth", MedicalSystem_HealthPartStatusBinding::maxHealth },
+        { "healthAsPercent", MedicalSystem_HealthPartStatusBinding::healthAsPercent },
         { 0, 0 }
     };
 
     registerClass(
         L, 
-        HealthPartStatusBinding::getMetatableName(), 
+        MedicalSystem_HealthPartStatusBinding::getMetatableName(), 
         meta, 
         methods, 
         genericPropertyIndex, 
         genericPropertyNewIndex
     );
 
-    luaL_getmetatable(L, HealthPartStatusBinding::getMetatableName());
+    luaL_getmetatable(L, MedicalSystem_HealthPartStatusBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
-    registerGetter(L, "data", HealthPartStatus_get_data);
-    registerGetter(L, "whatAmI", HealthPartStatus_get_whatAmI);
-    registerGetter(L, "medical", HealthPartStatus_get_medical);
-    registerGetter(L, "me", HealthPartStatus_get_me);
-    registerGetter(L, "side", HealthPartStatus_get_side);
-    registerGetter(L, "robotLimb", HealthPartStatus_get_robotLimb);
-    registerGetter(L, "selfHealing", HealthPartStatus_get_selfHealing);
-    registerGetter(L, "collapses", HealthPartStatus_get_collapses);
-    registerGetter(L, "fatal", HealthPartStatus_get_fatal);
-    registerGetter(L, "KOMult", HealthPartStatus_get_KOMult);
-    registerGetter(L, "hitChance", HealthPartStatus_get_hitChance);
-    registerGetter(L, "hitChanceMult", HealthPartStatus_get_hitChanceMult);
-    registerGetter(L, "flesh", HealthPartStatus_get_flesh);
-    registerGetter(L, "fleshStun", HealthPartStatus_get_fleshStun);
-    registerGetter(L, "bandaging", HealthPartStatus_get_bandaging);
-    registerGetter(L, "juryRigging", HealthPartStatus_get_juryRigging);
-    registerGetter(L, "wearDamage", HealthPartStatus_get_wearDamage);
-    registerGetter(L, "_maxHealth", HealthPartStatus_get__maxHealth);
-    registerGetter(L, "age", HealthPartStatus_get_age);
-    registerGetter(L, "HPMult", HealthPartStatus_get_HPMult);
-    registerGetter(L, "derivedFleshHealthPercent", HealthPartStatus_get_derivedFleshHealthPercent);
+    registerGetter(L, "data", MedicalSystem_HealthPartStatus_get_data);
+    registerGetter(L, "whatAmI", MedicalSystem_HealthPartStatus_get_whatAmI);
+    registerGetter(L, "medical", MedicalSystem_HealthPartStatus_get_medical);
+    registerGetter(L, "me", MedicalSystem_HealthPartStatus_get_me);
+    registerGetter(L, "side", MedicalSystem_HealthPartStatus_get_side);
+    registerGetter(L, "robotLimb", MedicalSystem_HealthPartStatus_get_robotLimb);
+    registerGetter(L, "selfHealing", MedicalSystem_HealthPartStatus_get_selfHealing);
+    registerGetter(L, "collapses", MedicalSystem_HealthPartStatus_get_collapses);
+    registerGetter(L, "fatal", MedicalSystem_HealthPartStatus_get_fatal);
+    registerGetter(L, "KOMult", MedicalSystem_HealthPartStatus_get_KOMult);
+    registerGetter(L, "hitChance", MedicalSystem_HealthPartStatus_get_hitChance);
+    registerGetter(L, "hitChanceMult", MedicalSystem_HealthPartStatus_get_hitChanceMult);
+    registerGetter(L, "flesh", MedicalSystem_HealthPartStatus_get_flesh);
+    registerGetter(L, "fleshStun", MedicalSystem_HealthPartStatus_get_fleshStun);
+    registerGetter(L, "bandaging", MedicalSystem_HealthPartStatus_get_bandaging);
+    registerGetter(L, "juryRigging", MedicalSystem_HealthPartStatus_get_juryRigging);
+    registerGetter(L, "wearDamage", MedicalSystem_HealthPartStatus_get_wearDamage);
+    registerGetter(L, "_maxHealth", MedicalSystem_HealthPartStatus_get__maxHealth);
+    registerGetter(L, "age", MedicalSystem_HealthPartStatus_get_age);
+    registerGetter(L, "HPMult", MedicalSystem_HealthPartStatus_get_HPMult);
+    registerGetter(L, "derivedFleshHealthPercent", MedicalSystem_HealthPartStatus_get_derivedFleshHealthPercent);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
-    registerSetter(L, "data", HealthPartStatus_set_data);
-    registerSetter(L, "whatAmI", HealthPartStatus_set_whatAmI);
-    registerSetter(L, "medical", HealthPartStatus_set_medical);
-    registerSetter(L, "me", HealthPartStatus_set_me);
-    registerSetter(L, "side", HealthPartStatus_set_side);
-    registerSetter(L, "robotLimb", HealthPartStatus_set_robotLimb);
-    registerSetter(L, "selfHealing", HealthPartStatus_set_selfHealing);
-    registerSetter(L, "collapses", HealthPartStatus_set_collapses);
-    registerSetter(L, "fatal", HealthPartStatus_set_fatal);
-    registerSetter(L, "KOMult", HealthPartStatus_set_KOMult);
-    registerSetter(L, "hitChance", HealthPartStatus_set_hitChance);
-    registerSetter(L, "hitChanceMult", HealthPartStatus_set_hitChanceMult);
-    registerSetter(L, "flesh", HealthPartStatus_set_flesh);
-    registerSetter(L, "fleshStun", HealthPartStatus_set_fleshStun);
-    registerSetter(L, "bandaging", HealthPartStatus_set_bandaging);
-    registerSetter(L, "juryRigging", HealthPartStatus_set_juryRigging);
-    registerSetter(L, "wearDamage", HealthPartStatus_set_wearDamage);
-    registerSetter(L, "_maxHealth", HealthPartStatus_set__maxHealth);
-    registerSetter(L, "age", HealthPartStatus_set_age);
-    registerSetter(L, "HPMult", HealthPartStatus_set_HPMult);
-    registerSetter(L, "derivedFleshHealthPercent", HealthPartStatus_set_derivedFleshHealthPercent);
+    registerSetter(L, "data", MedicalSystem_HealthPartStatus_set_data);
+    registerSetter(L, "whatAmI", MedicalSystem_HealthPartStatus_set_whatAmI);
+    registerSetter(L, "medical", MedicalSystem_HealthPartStatus_set_medical);
+    registerSetter(L, "me", MedicalSystem_HealthPartStatus_set_me);
+    registerSetter(L, "side", MedicalSystem_HealthPartStatus_set_side);
+    registerSetter(L, "robotLimb", MedicalSystem_HealthPartStatus_set_robotLimb);
+    registerSetter(L, "selfHealing", MedicalSystem_HealthPartStatus_set_selfHealing);
+    registerSetter(L, "collapses", MedicalSystem_HealthPartStatus_set_collapses);
+    registerSetter(L, "fatal", MedicalSystem_HealthPartStatus_set_fatal);
+    registerSetter(L, "KOMult", MedicalSystem_HealthPartStatus_set_KOMult);
+    registerSetter(L, "hitChance", MedicalSystem_HealthPartStatus_set_hitChance);
+    registerSetter(L, "hitChanceMult", MedicalSystem_HealthPartStatus_set_hitChanceMult);
+    registerSetter(L, "flesh", MedicalSystem_HealthPartStatus_set_flesh);
+    registerSetter(L, "fleshStun", MedicalSystem_HealthPartStatus_set_fleshStun);
+    registerSetter(L, "bandaging", MedicalSystem_HealthPartStatus_set_bandaging);
+    registerSetter(L, "juryRigging", MedicalSystem_HealthPartStatus_set_juryRigging);
+    registerSetter(L, "wearDamage", MedicalSystem_HealthPartStatus_set_wearDamage);
+    registerSetter(L, "_maxHealth", MedicalSystem_HealthPartStatus_set__maxHealth);
+    registerSetter(L, "age", MedicalSystem_HealthPartStatus_set_age);
+    registerSetter(L, "HPMult", MedicalSystem_HealthPartStatus_set_HPMult);
+    registerSetter(L, "derivedFleshHealthPercent", MedicalSystem_HealthPartStatus_set_derivedFleshHealthPercent);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }
 
 } // namespace KenshiLua
+
+

@@ -207,7 +207,7 @@
     <ClCompile Include="src\Bindings\Gui\TutorialpediaGUIBinding.cpp" />
     <ClCompile Include="src\Bindings\Gui\TutorialSubItemBinding.cpp" />
     <ClCompile Include="src\Bindings\HavokCharacterBinding.cpp" />
-    <ClCompile Include="src\Bindings\HealthPartStatusBinding.cpp" />
+    <ClCompile Include="src\Bindings\MedicalSystem_HealthPartStatusBinding.cpp" />
     <ClCompile Include="src\Bindings\hkBoolBinding.cpp" />
     <ClCompile Include="src\Bindings\hkMemoryAllocatorBinding.cpp" />
     <ClCompile Include="src\Bindings\hkVector4fBinding.cpp" />
@@ -1137,7 +1137,7 @@
     <ClInclude Include="src\Bindings\Gui\TutorialpediaGUIBinding.h" />
     <ClInclude Include="src\Bindings\Gui\TutorialSubItemBinding.h" />
     <ClInclude Include="src\Bindings\HavokCharacterBinding.h" />
-    <ClInclude Include="src\Bindings\HealthPartStatusBinding.h" />
+    <ClInclude Include="src\Bindings\MedicalSystem_HealthPartStatusBinding.h" />
     <ClInclude Include="src\Bindings\hkArrayBaseBinding.h" />
     <ClInclude Include="src\Bindings\hkArrayBinding.h" />
     <ClInclude Include="src\Bindings\hkBoolBinding.h" />

@@ -11,7 +11,7 @@
 #include "Bindings/Gui/DatapanelGUIBinding.h"
 #include "Bindings/FactionBinding.h"
 #include "Bindings/GameDataBinding.h"
-#include "Bindings/HealthPartStatusBinding.h"
+#include "Bindings/MedicalSystem_HealthPartStatusBinding.h"
 #include "Bindings/ItemBinding.h"
 #include "Bindings/RobotLimbsBinding.h"
 #include "Bindings/RootObjectBinding.h"
@@ -23,20 +23,6 @@
 
 namespace KenshiLua
 {
-
-template <>
-struct LuaCodec<MedicalSystem::HealthPartStatus>
-{
-    static int push(lua_State* L, const MedicalSystem::HealthPartStatus& val, const char* metaName)
-    {
-        return pushValue<MedicalSystem::HealthPartStatus>(L, val, metaName ? metaName : HealthPartStatusBinding::getMetatableName());
-    }
-    static MedicalSystem::HealthPartStatus read(lua_State* L, int idx, const char* metaName)
-    {
-        MedicalSystem::HealthPartStatus* obj = checkObject<MedicalSystem::HealthPartStatus>(L, idx, metaName ? metaName : HealthPartStatusBinding::getMetatableName());
-        return obj ? *obj : MedicalSystem::HealthPartStatus();
-    }
-};
 
 typedef OgreUnorderedMapBinding<GameData*, MedicalSystem::HealthPartStatus> HealthStatusMapBinding;
 typedef OgreFastArrayPtrBinding<Wound*> WoundFastArrayBinding;

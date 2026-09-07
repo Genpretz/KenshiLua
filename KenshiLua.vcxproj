@@ -834,7 +834,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\Gui\TutorialSubItemBinding.h" />
     <ClInclude Include="src\Bindings\Inventory_HasRoomCacheBinding.h" />
     <ClInclude Include="src\Bindings\HavokCharacterBinding.h" />
-    <ClInclude Include="src\Bindings\HealthPartStatusBinding.h" />
+    <ClInclude Include="src\Bindings\MedicalSystem_HealthPartStatusBinding.h" />
     <ClInclude Include="src\Bindings\hkArrayBaseBinding.h" />
     <ClInclude Include="src\Bindings\hkArrayBinding.h" />
     <ClInclude Include="src\Bindings\hkBoolBinding.h" />
@@ -1294,7 +1294,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Bindings\Gui\TutorialSubItemBinding.cpp" />
     <ClCompile Include="src\Bindings\Inventory_HasRoomCacheBinding.cpp" />
     <ClCompile Include="src\Bindings\HavokCharacterBinding.cpp" />
-    <ClCompile Include="src\Bindings\HealthPartStatusBinding.cpp" />
+    <ClCompile Include="src\Bindings\MedicalSystem_HealthPartStatusBinding.cpp" />
     <ClCompile Include="src\Bindings\hkArrayBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\hkArrayBinding.cpp" />
     <ClCompile Include="src\Bindings\hkBoolBinding.cpp" />
