@@ -173,47 +173,67 @@ namespace KenshiLua
             return 1;
         }
 
-        std::string ownedMetaName = std::string(baseMetatableName) + "_Owned";
-        luaL_getmetatable(L, ownedMetaName.c_str());
-        if (lua_isnil(L, -1)) {
-            lua_pop(L, 1);
-            luaL_newmetatable(L, ownedMetaName.c_str());
-
-            // Set __name to baseMetatableName so testObject<T> matches seamlessly
-            lua_pushstring(L, "__name");
-            lua_pushstring(L, baseMetatableName);
-            lua_rawset(L, -3);
-
-            // Set __index to point to base metatable for method/getter inheritance
-            luaL_getmetatable(L, baseMetatableName);
-            lua_setfield(L, -2, "__index");
-
-            // Set __gc to automatically delete heap-allocated memory
-            lua_pushcfunction(L, ownedObjectGc<T>);
-            lua_setfield(L, -2, "__gc");
-
-            // Copy __getters from base metatable so genericPropertyIndex works
-            luaL_getmetatable(L, baseMetatableName);
-            if (lua_istable(L, -1)) {
-                lua_getfield(L, -1, "__getters");
-                if (lua_istable(L, -1)) {
-                    lua_setfield(L, -4, "__getters"); // set on _Owned MT
-                } else {
-                    lua_pop(L, 1);
-                }
-                lua_getfield(L, -1, "__setters");
-                if (lua_istable(L, -1)) {
-                    lua_setfield(L, -4, "__setters"); // set on _Owned MT
-                } else {
-                    lua_pop(L, 1);
-                }
-            }
-            lua_pop(L, 1); // pop base metatable
+        if (!baseMetatableName || !*baseMetatableName) {
+            logToFileWarn("[BindingHelpers] pushObjectOwned: baseMetatableName is null or empty!");
+            lua_pushnil(L);
+            return 1;
         }
 
+        // 1. Allocate the userdata on the Lua stack.
         void** ud = (void**)lua_newuserdata(L, sizeof(void*));
         *ud = (void*)ptr;
-        lua_setmetatable(L, -2);
+        int udIdx = lua_gettop(L);
+
+        // 2. Retrieve or create the '_Owned' metatable for this type.
+        std::string ownedMetaName = std::string(baseMetatableName) + "_Owned";
+        luaL_getmetatable(L, ownedMetaName.c_str());
+
+        if (lua_isnil(L, -1)) {
+            // Metatable doesn't exist yet: pop nil and create it
+            lua_pop(L, 1);
+            luaL_newmetatable(L, ownedMetaName.c_str());
+            int ownedMTIdx = lua_gettop(L);
+
+            // Copy all keys and metamethods from base metatable
+            luaL_getmetatable(L, baseMetatableName);
+            if (lua_istable(L, -1)) {
+                int baseMTIdx = lua_gettop(L);
+
+                // Iterate through all key-value pairs of base metatable
+                lua_pushnil(L); // initial key
+                while (lua_next(L, baseMTIdx) != 0) {
+                    // key is at -2, val is at -1
+                    if (lua_type(L, -2) == LUA_TSTRING && strcmp(lua_tostring(L, -2), "__gc") == 0) {
+                        lua_pop(L, 1); // skip base __gc, keep key for lua_next
+                    } else {
+                        lua_pushvalue(L, -2); // copy key -> stack top
+                        lua_insert(L, -2);    // move copied key before val
+                        lua_rawset(L, ownedMTIdx); // ownedMT[copied_key] = val, pops copied key & val
+                    }
+                }
+
+                // If base metatable itself has a metatable (inheritance), replicate it
+                if (lua_getmetatable(L, baseMTIdx)) {
+                    lua_setmetatable(L, ownedMTIdx);
+                }
+
+                lua_pop(L, 1); // pop base metatable
+            } else {
+                logToFileWarn(std::string("[BindingHelpers] pushObjectOwned: base metatable '") + baseMetatableName + "' not found!");
+                lua_pop(L, 1); // pop non-table base metatable
+            }
+
+            // Ensure __name is set to baseMetatableName so testObject<T> matches
+            lua_pushstring(L, baseMetatableName);
+            lua_setfield(L, ownedMTIdx, "__name");
+
+            // Set __gc to automatically invoke C++ destructor and operator delete
+            lua_pushcfunction(L, ownedObjectGc<T>);
+            lua_setfield(L, ownedMTIdx, "__gc");
+        }
+
+        // Set owned metatable on userdata
+        lua_setmetatable(L, udIdx);
         return 1;
     }
 
