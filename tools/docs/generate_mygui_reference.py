@@ -1,4 +1,4 @@
-# generate_mygui_doc_from_bindings.py
+# generate_mygui_reference.py
 
 """Generate a dedicated markdown reference for MyGUI Lua bindings.
 
@@ -18,7 +18,7 @@ import os
 import re
 import pathlib
 
-PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[1]
+PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 MYGUI_DIR = PROJECT_ROOT / "src" / "Bindings" / "MyGUI"
 DOCS_DIR = PROJECT_ROOT / "docs"
 DOCS_DIR.mkdir(parents=True, exist_ok=True)

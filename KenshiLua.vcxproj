@@ -145,7 +145,7 @@
 copy /Y "$(ProjectDir)assets\config\fcs.def" "$(OutDir)..\"
 copy /Y "$(ProjectDir)assets\config\config.ini" "$(OutDir)"
 copy /Y "$(ProjectDir)assets\config\RE_Kenshi.json" "$(OutDir)..\"
-python "$(ProjectDir)tools\sync_version.py" --input "$(ProjectDir)assets\KenshiLua.mod" --output "$(OutDir)..\KenshiLua.mod"
+python "$(ProjectDir)tools\release\sync_version.py" --input "$(ProjectDir)assets\KenshiLua.mod" --output "$(OutDir)..\KenshiLua.mod"
 copy /Y "$(ProjectDir)extern\luajit\lib\lua51.dll" "$(OutDir)..\"
 if not exist "$(OutDir)..\docs" mkdir "$(OutDir)..\docs"
 copy /Y "$(ProjectDir)docs\BindingsReference.md" "$(OutDir)..\docs\"

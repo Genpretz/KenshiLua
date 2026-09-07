@@ -1,4 +1,4 @@
-# generate_lua_doc_from_bindings.py
+# generate_bindings_reference.py
 
 """Generate a markdown reference of all Lua bindings.
 
@@ -14,7 +14,7 @@ import os
 import re
 import pathlib
 
-PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[1]
+PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 BINDINGS_DIR = PROJECT_ROOT / "src" / "Bindings"
 HEADERS_DIR = PROJECT_ROOT / "extern" / "KenshiLib" / "Include" / "kenshi"
 DOCS_DIR = PROJECT_ROOT / "docs"

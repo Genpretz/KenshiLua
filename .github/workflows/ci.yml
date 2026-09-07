@@ -21,4 +21,4 @@ jobs:
 
       - name: Validate Version Consistency
         run: |
-          python tools/sync_version.py --check
+          python tools/release/sync_version.py --check

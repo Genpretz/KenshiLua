@@ -1,3 +1,10 @@
+# generate_class.py
+#
+# Generates docs/CallbacksReference.md by scanning src/Callbacks.h and src/Hooks/Hooks_Registry.cpp.
+#
+# Usage:
+#    python "tools\bindings\generate_class.py" "example.h" --write-dir "tools\generated"
+
 import argparse
 import re
 from dataclasses import dataclass, field
@@ -793,7 +800,7 @@ def discover_known_bindings():
     headers = {}
     bindings_dir = Path("src/Bindings")
     if not bindings_dir.is_dir():
-        script_dir = Path(__file__).resolve().parent.parent
+        script_dir = Path(__file__).resolve().parents[2]
         bindings_dir = script_dir / "src" / "Bindings"
     
     if bindings_dir.is_dir():
@@ -823,7 +830,7 @@ def discover_known_enums():
     enums = set()
     enum_cpp = Path("src/Bindings/EnumBinding.cpp")
     if not enum_cpp.is_file():
-        script_dir = Path(__file__).resolve().parent.parent
+        script_dir = Path(__file__).resolve().parents[2]
         enum_cpp = script_dir / "src" / "Bindings" / "EnumBinding.cpp"
     
     if enum_cpp.is_file():
@@ -849,6 +856,16 @@ def parse_known_bindings(values):
     return result
 
 
+def parse_known_classes(values):
+    classes = set()
+    for value in values:
+        for item in value.split(","):
+            item = item.strip()
+            if item:
+                classes.add(item)
+    return classes
+
+
 def parse_extra_enums(values):
     enums = set()
     for value in values:
@@ -860,12 +877,16 @@ def parse_extra_enums(values):
 
 
 def main():
+    default_known_bindings, known_headers = discover_known_bindings()
+    default_bind_map = [f"{type_name}={binding}" for type_name, binding in sorted(default_known_bindings.items())]
+    default_classes = [",".join(sorted(default_known_bindings))]
+
     parser = argparse.ArgumentParser(description="Generate KenshiLua binding scaffolds from KenshiLib-style headers.")
     parser.add_argument("header", help="Header file to parse")
-    parser.add_argument("--write-dir", help="Write .h/.cpp files to this directory")
-    parser.add_argument("--bind-map", "--known-binding", action="append", default=[], dest="bind_map", help="Map pointer type to binding class, e.g. Character=CharacterBinding")
-    parser.add_argument("--classes", "--known-classes", dest="classes", help="Comma-separated list of known classes, automatically mapped to %%classname%%Binding")
-    parser.add_argument("--enums", "--enum", action="append", default=[], dest="enums", help="Additional enum type name(s), comma-separated")
+    parser.add_argument("--write-dir", default="./tools/generated/", help="Write .h/.cpp files to this directory")
+    parser.add_argument("--bind-map", "--known-binding", action="append", default=default_bind_map, dest="bind_map", help="Map pointer type to binding class, e.g. Character=CharacterBinding. Existing bindings are included by default.")
+    parser.add_argument("--classes", "--known-classes", action="append", default=default_classes, dest="classes", help="Comma-separated list of known classes, automatically mapped to %%classname%%Binding. Existing bindings are included by default.")
+    parser.add_argument("--enums", "--enum", action="append", default=["WorldStateEnum,WarStateEnum,ProneState,WaterState,RagdollPart,CharacterPerceptionTags_ShortTerm,CharacterPerceptionTags_LongTerm,SoundRange,SquadMemberType,CharacterMessage,TalkerEnum,DialogueAction,ItemType,BuildingFunction,SharacterTypeEnum,SlaveStateEnum,WeaponCategory,LeftRight,MessageType,StandingOrder,StatsEnumerated,DialogConditionEnum,ComparisonEnum,EffectType,SquadType,MoveSpeed,swordStateEnum,MiningResource,MapZoomLevel,BuildingDesignation,BuildingClassType,BuildingPlacementGroundType,PreviewBuildingPlacementResult,PreviewBuildingClassType,GroundType,ArmourType,CutDirection,CutOrigination,HitMaterialType,TaskType,WeatherAffecting,AttachSlot,EventTriggerEnum,ItemFunction,MiningResource,CursorType,itemType,DoorState,AppearanceManager::DataCategory,AppearanceManager::Gender,ArmourClass,AttackDirection::Enum,BuildingPlacementGroundType::Enum,Character,CharacterEditMode,CharacterPerceptionTagsLongTerm,CharacterPerceptionTagsShortTerm,CharacterStatsWindow::StatGroup,CharacterTypeEnum,CharStats::DeadTimeState,CharStats::GUIStatsDisplayMode,CollapseStage,CrimeEnum,DataCategory,DataObjectContainer,DataPanelLine,DeadTimeState,Dialogue::DT_MSG,Dir,DoorStuff,DT_MSG,EffectType::Enum,Enum,FactionRelations,Flags,GameData,GameWorld,Gender,GUIStatsDisplayMode,HavokCharacter,HealthPartStatus,InputHandler,InventoryGUI::TradeResult,KenshiLib::BinaryVersion::KenshiPlatform,KenshiPlatform,Limb,LimbState,Logger,MedicalSystem::CollapseStage,MedicalSystem::HealthPartStatus,MedicalSystem::HealthPartStatus::PartType,MeshDataLookup::Dir,MessageForB::MessageType,MessageForB::StandingOrder,MessageLogColor,MovementMode,NavMesh,NxControllerAction,NXU,PartType,PermajobType,PlacementResult,PlatoonCreationMessage,PortraitData,PreviewBuilding::PlacementResult,PreviewBuilding::PreviewBuildingClassType,ProductionBuilding,RagdollPart::Enum,RobotLimbs::Limb,SaveFileSystem,SaveManager::Flags,SaveManager::Signal,ScreenLabel,Signal,StateType,StatGroup,taskPriority,ToolTip,TownAlarmState,TownType,TradeResult,TradeWindowType,TutorialGUI,TutorialItem,UpdatePriority,UseStuffState,WaterState::Enum,WorldEventStateQuery,YesNoMaybe,ZoneMap,ZoneSpacialGrid"], dest="enums", help="Additional enum type name(s), comma-separated")
     args = parser.parse_args()
 
     header_path = Path(args.header)
@@ -874,7 +895,7 @@ def main():
     text = re.compile(r"//.*").sub("", text)
 
     classes = parse_classes(text)
-    known_bindings, known_headers = discover_known_bindings()
+    known_bindings = default_known_bindings.copy()
     discovered_count = len(known_bindings)
     known_bindings.update(parse_known_bindings(args.bind_map))
     
@@ -883,11 +904,8 @@ def main():
     extra_enums.update(discovered_enums)
     print(f"Discovered {discovered_count} existing bindings and {len(discovered_enums)} registered enum types in project.")
 
-    if args.classes:
-        for c in args.classes.split(","):
-            c = c.strip()
-            if c:
-                known_bindings[c] = c + "Binding"
+    for c in parse_known_classes(args.classes):
+        known_bindings.setdefault(c, c + "Binding")
                 
     for c, b in known_bindings.items():
         if c not in known_headers:

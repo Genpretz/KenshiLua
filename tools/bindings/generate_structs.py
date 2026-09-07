@@ -1,4 +1,4 @@
-# generate_struct_bindings_from_headers.py
+# generate_structs.py
 #
 # Parses top-level and nested C++ structs from header files and generates Lua binding files
 # (.h and .cpp) into ./tools/generated/struct/

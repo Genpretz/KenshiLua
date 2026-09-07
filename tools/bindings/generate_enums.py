@@ -1,4 +1,4 @@
-# generate_enum_bindings_from_headers.py
+# generate_enums.py
 
 # This script takes a header as an argument and outputs a $(HeaderFilename)EnumBinding.cpp and $(HeaderFilename)EnumBinding.h
 # with bindings for any enums found within the header file.
@@ -123,7 +123,7 @@ def generate_header(filename, enums):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python generate_enum_bindings_from_headers.py <header.h>")
+        print("Usage: python tools/bindings/generate_enums.py <header.h>")
         return
 
     file_path = sys.argv[1]

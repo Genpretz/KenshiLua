@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-sync_version.py
+tools/release/sync_version.py
 
 Synchronizes and validates the version string between src/Version.h (single source of truth)
 and Kenshi FCS .mod binary files (such as assets/KenshiLua.mod).
@@ -10,13 +10,13 @@ Both the binary mod header integer (e.g. 31 for v0.3.1) and the description stri
 
 Usage:
     # Check if assets/KenshiLua.mod matches src/Version.h (returns exit code 1 on mismatch)
-    python tools/sync_version.py --check
+    python tools/release/sync_version.py --check
 
     # Update assets/KenshiLua.mod in-place from src/Version.h
-    python tools/sync_version.py --update
+    python tools/release/sync_version.py --update
 
     # Read assets/KenshiLua.mod and output updated copy to build directory
-    python tools/sync_version.py --input assets/KenshiLua.mod --output bin/KenshiLua/KenshiLua.mod
+    python tools/release/sync_version.py --input assets/KenshiLua.mod --output bin/KenshiLua/KenshiLua.mod
 """
 
 import argparse
@@ -26,7 +26,7 @@ import re
 import struct
 import sys
 
-PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[1]
+PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 DEFAULT_VERSION_H = PROJECT_ROOT / "src" / "Version.h"
 DEFAULT_MOD_FILE = PROJECT_ROOT / "assets" / "KenshiLua.mod"
 
