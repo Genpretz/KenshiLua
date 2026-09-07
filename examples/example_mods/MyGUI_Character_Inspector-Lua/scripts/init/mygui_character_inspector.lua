@@ -42,9 +42,9 @@ end
 local function getOrCreateWindow()
     if CharInspectorWindow then return CharInspectorWindow end
 
-    -- Create the main inspector Window (increased size to 450x320 to fit all elements and prevent button text clipping)
-    -- The 8th parameter is the layer name ("Window").
-    CharInspectorWindow = MyGUI.createWidget("Window", "Kenshi_WindowCX", 150, 150, 450, 320, "CharInspectorWindow", "Window")
+    -- Create the main inspector Window using standard MyGUI parameters:
+    -- (type, skin, x, y, width, height, align, layer, name)
+    CharInspectorWindow = MyGUI.createWidget("Window", "Kenshi_WindowCX", 150, 150, 450, 320, 0, "Window", "CharInspectorWindow")
     if not CharInspectorWindow then
         log("[CharInspector] Failed to create inspector window")
         return nil
@@ -56,7 +56,12 @@ local function getOrCreateWindow()
     CharInspectorWindow:registerCallback("WindowButtonPressed", function(window, buttonName)
         if buttonName == "close" then
             window:setVisible(false)
-            MyGUI.resetKeyFocus()
+            local im = MyGUI.InputManager and MyGUI.InputManager.getInstance and MyGUI.InputManager.getInstance()
+            if im and im.resetKeyFocusWidget then
+                im:resetKeyFocusWidget()
+            elseif MyGUI.resetKeyFocus then
+                MyGUI.resetKeyFocus()
+            end
         end
     end)
 
@@ -65,7 +70,8 @@ local function getOrCreateWindow()
 
     -- Helper to create labels using Kenshi_TextboxPaintedText template from kenshi_templates.xml
     local function createLabel(x, y, w, h, name, parent)
-        local lbl = MyGUI.createWidget("TextBox", "Kenshi_TextboxPaintedText", x, y, w, h, name, parent)
+        local p = parent or client
+        local lbl = p:createWidget("TextBox", "Kenshi_TextboxPaintedText", x, y, w, h, 0, name)
         if lbl then
             lbl:setProperty("TextAlign", "Left VCenter")
         end
@@ -82,7 +88,7 @@ local function getOrCreateWindow()
 
     -- 3. Action Buttons (height 40 to fit skin proportion, widths 190 to avoid text clipping)
     -- Heal Button
-    local btnHeal = MyGUI.createWidget("Button", "Kenshi_Button1", 20, 200, 190, 40, "BtnHeal", client)
+    local btnHeal = client:createWidget("Button", "Kenshi_Button1", 20, 200, 190, 40, 0, "BtnHeal")
     if btnHeal then
         btnHeal:setCaption("Heal Completely")
         btnHeal:registerCallback("MouseButtonClick", function(widget)
@@ -94,7 +100,7 @@ local function getOrCreateWindow()
     end
 
     -- Buff Button (Sets Strength to 100)
-    local btnBuff = MyGUI.createWidget("Button", "Kenshi_Button1", 230, 200, 190, 40, "BtnBuff", client)
+    local btnBuff = client:createWidget("Button", "Kenshi_Button1", 230, 200, 190, 40, 0, "BtnBuff")
     if btnBuff then
         btnBuff:setCaption("Set Strength 100")
         btnBuff:registerCallback("MouseButtonClick", function(widget)
@@ -124,6 +130,7 @@ local function onSelect(character)
     if w then
         updateStatsLabels()
         w:setVisible(true)
+        w:upLayerItem()
     end
 end
 
