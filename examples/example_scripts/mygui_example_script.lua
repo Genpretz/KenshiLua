@@ -3,14 +3,16 @@
 
 -- 1. Create a Main Window using relative position_real coordinates (0.0 to 1.0)
 -- Coordinates (0.30, 0.20, 0.30, 0.45) scale responsively across all screen resolutions (e.g. 1920x1080, 2560x1600)
--- MyGUI.createWindow(skin, x, y, width, height, name, parentOrLayer)
+-- Create root window using skin-first MyGUI parameters (skin, x, y, width, height, name, layer)
 local mainWindow = MyGUI.createWindow("Kenshi_WindowCX", 0.30, 0.20, 0.30, 0.45, "ExampleWindow", "Window")
 mainWindow:setCaption("MyGUI Example Window")
 mainWindow:setMovable(true)
+mainWindow:upLayerItem() -- Bring to front of Window layer
 
 -- 2. Create a Button inside the Window (relative to mainWindow)
 -- Positioned at x=5%, y=10%, width=45%, height=8% of the parent window
-local myButton = MyGUI.createButton("Kenshi_Button1", 0.05, 0.10, 0.45, 0.08, "ExampleButton", mainWindow)
+-- Using mainWindow:createWidgetReal(type, skin, x, y, width, height, align, name)
+local myButton = mainWindow:createWidgetReal("Button", "Kenshi_Button1", 0.05, 0.10, 0.45, 0.08, 0, "ExampleButton")
 myButton:setCaption("Click Me!")
 
 -- Register a click callback
@@ -23,11 +25,11 @@ end)
 
 -- 3. Create an EditBox (Text Input)
 -- Positioned at x=5%, y=22%, width=55%, height=8% of parent window
-local editBox = MyGUI.createEditBox("Kenshi_EditBox", 0.05, 0.22, 0.55, 0.08, "ExampleEditBox", mainWindow)
+local editBox = mainWindow:createWidgetReal("EditBox", "Kenshi_EditBox", 0.05, 0.22, 0.55, 0.08, 0, "ExampleEditBox")
 editBox:setCaption("Type something here...")
 editBox:setEditMultiLine(false)
 
--- Register text change callback
+-- Register text change callback ("EditTextChange" or "change")
 editBox:registerCallback("change", function(widget)
     -- We can read what the user typed:
     local currentText = widget:getCaption()
@@ -36,14 +38,14 @@ end)
 
 -- 4. Create a ListBox
 -- Positioned at x=5%, y=34%, width=55%, height=38% of parent window
-local listBox = MyGUI.createListBox("Kenshi_ListBox", 0.05, 0.34, 0.55, 0.38, "ExampleListBox", mainWindow)
+local listBox = mainWindow:createWidgetReal("ListBox", "Kenshi_ListBox", 0.05, 0.34, 0.55, 0.38, 0, "ExampleListBox")
 listBox:addItem("First Item")
 listBox:addItem("Second Item")
 listBox:addItem("Third Item")
 
--- Register selection callback
-listBox:registerCallback("change", function(widget)
-    local index = widget:getIndexSelected()
+-- Register selection callback:
+-- Use "ListChangePosition" for selection changes or "ListSelectAccept" for double-click/Enter
+listBox:registerCallback("ListChangePosition", function(widget, index)
     if index ~= -1 then -- -1 means no selection
         local selectedName = widget:getItemNameAt(index)
         print("Selected item index " .. index .. ": " .. selectedName)
@@ -53,7 +55,7 @@ end)
 
 -- 5. Creating a generic TextBox (Label)
 -- Positioned at x=5%, y=76%, width=60%, height=6% of parent window
-local label = MyGUI.createTextBox("Kenshi_TextboxPaintedText", 0.05, 0.76, 0.60, 0.06, "ExampleLabel", mainWindow)
+local label = mainWindow:createWidgetReal("TextBox", "Kenshi_TextboxPaintedText", 0.05, 0.76, 0.60, 0.06, 0, "ExampleLabel")
 label:setCaption("This is a simple text label.")
 -- We can set its text alignment or color using properties
 label:setProperty("TextAlign", "Left VCenter")
@@ -71,7 +73,7 @@ mainWindow:registerCallback("windowButtonPressed", function(window, buttonName)
 end)
 
 -- We can also create an explicit close button inside the window body (x=68%, y=85%, width=27%, height=8%):
-local closeBtn = MyGUI.createButton("Kenshi_Button1", 0.68, 0.85, 0.27, 0.08, "CloseButton", mainWindow)
+local closeBtn = mainWindow:createWidgetReal("Button", "Kenshi_Button1", 0.68, 0.85, 0.27, 0.08, 0, "CloseButton")
 closeBtn:setCaption("Close")
 closeBtn:registerCallback("click", function(widget)
     mainWindow:destroySmooth()

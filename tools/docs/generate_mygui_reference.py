@@ -76,7 +76,7 @@ def extract_args_from_body(body: str, is_static: bool = False):
         read_type = m.group(6)
         idx = int(m.group(7))
         
-        if idx >= base_idx:
+        if idx >= base_idx and idx not in indices:
             if check_obj_type:
                 t = check_obj_type.strip().replace("MyGUI::", "")
             elif read_type:
@@ -294,6 +294,98 @@ KNOWN_PROPERTIES = {
     ],
 }
 
+GLOBAL_SIGNATURE_OVERRIDES = {
+    "createWidget": ([{"name": "type", "type": "string"}, {"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "align", "type": "Align"}, {"name": "layer", "type": "string"}, {"name": "name", "type": "string"}], "Widget"),
+    "createWidgetReal": ([{"name": "type", "type": "string"}, {"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "align", "type": "Align"}, {"name": "layer", "type": "string"}, {"name": "name", "type": "string"}], "Widget"),
+    "createButton": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "Button"),
+    "createButtonReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "Button"),
+    "createWindow": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "layer", "type": "string"}], "Window"),
+    "createWindowReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "layer", "type": "string"}], "Window"),
+    "createTextBox": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "TextBox"),
+    "createTextBoxReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "TextBox"),
+    "createEditBox": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "EditBox"),
+    "createEditBoxReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "EditBox"),
+    "createListBox": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ListBox"),
+    "createListBoxReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ListBox"),
+    "createComboBox": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ComboBox"),
+    "createComboBoxReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ComboBox"),
+    "createTabControl": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "TabControl"),
+    "createTabControlReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "TabControl"),
+    "createMultiListBox": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "MultiListBox"),
+    "createMultiListBoxReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "MultiListBox"),
+    "createScrollBar": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ScrollBar"),
+    "createScrollBarReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ScrollBar"),
+    "createScrollView": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ScrollView"),
+    "createScrollViewReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ScrollView"),
+    "createProgressBar": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ProgressBar"),
+    "createProgressBarReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ProgressBar"),
+    "createImageBox": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ImageBox"),
+    "createImageBoxReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ImageBox"),
+    "createItemBox": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ItemBox"),
+    "createItemBoxReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "ItemBox"),
+    "createDDContainer": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "DDContainer"),
+    "createDDContainerReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "DDContainer"),
+    "createCanvas": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "Canvas"),
+    "createCanvasReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "Canvas"),
+    "createMenuBar": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "MenuBar"),
+    "createMenuBarReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "MenuBar"),
+    "createPopupMenu": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "PopupMenu"),
+    "createPopupMenuReal": ([{"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "name", "type": "string"}, {"name": "parentOrLayer", "type": "string|Widget"}], "PopupMenu"),
+    "findWidget": ([{"name": "name", "type": "string"}], "Widget"),
+    "findWidgetT": ([{"name": "name", "type": "string"}], "Widget"),
+    "destroyWidget": ([{"name": "widget", "type": "Widget"}], "void"),
+    "destroyWidgets": ([{"name": "prefix", "type": "string"}], "void"),
+    "hidePointer": ([], "void"),
+    "showPointer": ([], "void"),
+    "isPointerVisible": ([], "boolean"),
+    "setPointer": ([{"name": "pointerName", "type": "string"}], "void"),
+    "clearPointer": ([], "void"),
+    "getMousePosition": ([], "integer, integer"),
+    "loadLayout": ([{"name": "filename", "type": "string"}, {"name": "prefix", "type": "string"}], "table"),
+    "unloadLayout": ([{"name": "layoutWidgets", "type": "table"}], "void"),
+    "getViewSize": ([], "integer, integer"),
+    "getViewWidth": ([], "integer"),
+    "getViewHeight": ([], "integer"),
+    "setClipboardText": ([{"name": "text", "type": "string"}, {"name": "type", "type": "string"}], "void"),
+    "getClipboardText": ([{"name": "type", "type": "string"}], "string"),
+    "isSkinExist": ([{"name": "skinName", "type": "string"}], "boolean"),
+    "getDefaultSkin": ([{"name": "widgetType", "type": "string"}], "string"),
+    "setDefaultSkin": ([{"name": "widgetType", "type": "string"}, {"name": "skinName", "type": "string"}], "void"),
+    "upLayerItem": ([{"name": "widget", "type": "Widget"}], "void"),
+    "bringToFront": ([{"name": "widget", "type": "Widget"}], "void"),
+}
+
+CLASS_METHOD_OVERRIDES = {
+    "SkinManager.isExist": ([{"name": "skinName", "type": "string"}], "boolean"),
+    "SkinManager.getDefaultSkin": ([], "string"),
+    "SkinManager.setDefaultSkin": ([{"name": "skinName", "type": "string"}], "void"),
+    "LayoutManager.loadLayout": ([{"name": "filename", "type": "string"}, {"name": "prefix", "type": "string"}, {"name": "parent", "type": "Widget"}], "table"),
+    "LayoutManager.unloadLayout": ([{"name": "layoutWidgets", "type": "table"}], "void"),
+    "PointerManager.setPointer": ([{"name": "name", "type": "string"}], "void"),
+    "PointerManager.setVisible": ([{"name": "visible", "type": "boolean"}], "void"),
+    "PointerManager.isVisible": ([], "boolean"),
+    "PointerManager.getVisible": ([], "boolean"),
+    "PointerManager.getDefaultPointer": ([], "string"),
+    "PointerManager.setDefaultPointer": ([{"name": "name", "type": "string"}], "void"),
+    "PointerManager.getLayerName": ([], "string"),
+    "PointerManager.setLayerName": ([{"name": "name", "type": "string"}], "void"),
+    "ClipboardManager.setClipboardText": ([{"name": "text", "type": "string"}, {"name": "type", "type": "string"}], "void"),
+    "ClipboardManager.getClipboardText": ([{"name": "type", "type": "string"}], "string"),
+    "ClipboardManager.clearClipboard": ([{"name": "type", "type": "string"}], "void"),
+    "InputManager.setKeyFocusWidget": ([{"name": "widget", "type": "Widget"}], "void"),
+    "InputManager.setMouseFocusWidget": ([{"name": "widget", "type": "Widget"}], "void"),
+    "InputManager.addWidgetModal": ([{"name": "widget", "type": "Widget"}], "void"),
+    "InputManager.removeWidgetModal": ([{"name": "widget", "type": "Widget"}], "void"),
+    "InputManager.isModalAny": ([], "boolean"),
+    "Widget.setProperty": ([{"name": "key", "type": "string"}, {"name": "value", "type": "string"}], "void"),
+    "Widget.destroy": ([], "void"),
+    "Widget.registerCallback": ([{"name": "eventName", "type": "string"}, {"name": "handler", "type": "function"}], "void"),
+    "Widget.upLayerItem": ([], "void"),
+    "Widget.bringToFront": ([], "void"),
+    "Widget.createWidget": ([{"name": "type", "type": "string"}, {"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "align", "type": "Align"}, {"name": "name", "type": "string"}], "Widget"),
+    "Widget.createWidgetReal": ([{"name": "type", "type": "string"}, {"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "align", "type": "Align"}, {"name": "name", "type": "string"}], "Widget"),
+}
+
 def parse_global_methods(mygui_cpp_path: pathlib.Path):
     content = mygui_cpp_path.read_text(encoding='utf-8', errors='ignore')
     m = re.search(r"static const luaL_Reg globalMethods\[\]\s*=\s*\{(.*?)\};", content, re.DOTALL)
@@ -305,9 +397,12 @@ def parse_global_methods(mygui_cpp_path: pathlib.Path):
                 mat = re.match(r"\{\s*\"([^\"]+)\"\s*,\s*([\w:]+)\s*\}", line.rstrip(','))
                 if mat:
                     l_name, func = mat.group(1), mat.group(2)
-                    b = find_function_body(content, func)
-                    args = extract_args_from_body(b, is_static=True)
-                    ret = extract_return_type_from_body(b)
+                    if l_name in GLOBAL_SIGNATURE_OVERRIDES:
+                        args, ret = GLOBAL_SIGNATURE_OVERRIDES[l_name]
+                    else:
+                        b = find_function_body(content, func)
+                        args = extract_args_from_body(b, is_static=True)
+                        ret = extract_return_type_from_body(b)
                     methods.append((l_name, args, ret))
     return methods
 
@@ -355,15 +450,19 @@ def parse_mygui_class_file(cpp_path: pathlib.Path):
                 if mat:
                     l_name, func = mat.group(1), mat.group(2)
                     func_short = func.split('::')[-1]
-                    b = find_function_body(content, func)
-                    if not b:
-                        b = find_function_body(content, stem + "::" + func_short)
-                    if not b:
-                        b = find_function_body(content, func_short)
-                        
+                    override_key = f"{class_name}.{l_name}"
                     is_stat = l_name in ("getInstance", "new", "parse")
-                    args = extract_args_from_body(b, is_static=is_stat)
-                    ret = extract_return_type_from_body(b)
+                    if override_key in CLASS_METHOD_OVERRIDES:
+                        args, ret = CLASS_METHOD_OVERRIDES[override_key]
+                    else:
+                        b = find_function_body(content, func)
+                        if not b:
+                            b = find_function_body(content, stem + "::" + func_short)
+                        if not b:
+                            b = find_function_body(content, func_short)
+                            
+                        args = extract_args_from_body(b, is_static=is_stat)
+                        ret = extract_return_type_from_body(b)
                     
                     if is_stat:
                         static_methods.append({
@@ -782,7 +881,10 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
     lines.append("")
     lines.append("### Usage Example")
     lines.append("```lua")
-    lines.append("local btn = MyGUI.createButton(\"Click Me\", { left = 100, top = 100, width = 120, height = 30 })")
+    lines.append("local win = MyGUI.createWindow(\"Kenshi_WindowCX\", 100, 100, 300, 200, \"ExampleWindow\", \"Window\")")
+    lines.append("win:upLayerItem()")
+    lines.append("local btn = win:createWidget(\"Button\", \"Kenshi_Button1\", 20, 20, 120, 30, 0, \"MyButton\")")
+    lines.append("btn:setCaption(\"Click Me\")")
     lines.append("btn:registerCallback(\"OnClick\", function(sender)")
     lines.append("    print(\"Button clicked:\", sender.caption)")
     lines.append("end)")

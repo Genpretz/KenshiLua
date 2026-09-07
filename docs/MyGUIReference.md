@@ -70,62 +70,64 @@ These helper functions are available directly on the global `MyGUI` table.
 ### Functions
 | Function | Parameters | Return Type | Description / Example |
 |---|---|---|---|
-| `createButton` | `text: string` | `Widget` | `MyGUI.createButton(text)` |
-| `createButtonReal` | `text: string` | `Widget` | `MyGUI.createButtonReal(text)` |
-| `createWindow` | `caption: string` | `Widget` | `MyGUI.createWindow(caption)` |
-| `createWindowReal` | `caption: string` | `Widget` | `MyGUI.createWindowReal(caption)` |
-| `createTextBox` | `text: string` | `Widget` | `MyGUI.createTextBox(text)` |
-| `createTextBoxReal` | `text: string` | `Widget` | `MyGUI.createTextBoxReal(text)` |
-| `createEditBox` | `text: string` | `Widget` | `MyGUI.createEditBox(text)` |
-| `createEditBoxReal` | `text: string` | `Widget` | `MyGUI.createEditBoxReal(text)` |
-| `createListBox` | `` | `Widget` | `MyGUI.createListBox()` |
-| `createListBoxReal` | `` | `Widget` | `MyGUI.createListBoxReal()` |
-| `createComboBox` | `` | `Widget` | `MyGUI.createComboBox()` |
-| `createComboBoxReal` | `` | `Widget` | `MyGUI.createComboBoxReal()` |
-| `createTabControl` | `` | `Widget` | `MyGUI.createTabControl()` |
-| `createTabControlReal` | `` | `Widget` | `MyGUI.createTabControlReal()` |
-| `createMultiListBox` | `` | `Widget` | `MyGUI.createMultiListBox()` |
-| `createMultiListBoxReal` | `` | `Widget` | `MyGUI.createMultiListBoxReal()` |
-| `createScrollBar` | `` | `Widget` | `MyGUI.createScrollBar()` |
-| `createScrollBarReal` | `` | `Widget` | `MyGUI.createScrollBarReal()` |
-| `createScrollView` | `` | `Widget` | `MyGUI.createScrollView()` |
-| `createScrollViewReal` | `` | `Widget` | `MyGUI.createScrollViewReal()` |
-| `createProgressBar` | `` | `Widget` | `MyGUI.createProgressBar()` |
-| `createProgressBarReal` | `` | `Widget` | `MyGUI.createProgressBarReal()` |
-| `createImageBox` | `` | `Widget` | `MyGUI.createImageBox()` |
-| `createImageBoxReal` | `` | `Widget` | `MyGUI.createImageBoxReal()` |
-| `createItemBox` | `` | `Widget` | `MyGUI.createItemBox()` |
-| `createItemBoxReal` | `` | `Widget` | `MyGUI.createItemBoxReal()` |
-| `createDDContainer` | `` | `Widget` | `MyGUI.createDDContainer()` |
-| `createDDContainerReal` | `` | `Widget` | `MyGUI.createDDContainerReal()` |
-| `createCanvas` | `` | `Widget` | `MyGUI.createCanvas()` |
-| `createCanvasReal` | `` | `Widget` | `MyGUI.createCanvasReal()` |
-| `createMenuBar` | `` | `Widget` | `MyGUI.createMenuBar()` |
-| `createMenuBarReal` | `` | `Widget` | `MyGUI.createMenuBarReal()` |
-| `createPopupMenu` | `` | `Widget` | `MyGUI.createPopupMenu()` |
-| `createPopupMenuReal` | `` | `Widget` | `MyGUI.createPopupMenuReal()` |
-| `createWidget` | `` | `void` | `MyGUI.createWidget()` |
-| `createWidgetReal` | `` | `void` | `MyGUI.createWidgetReal()` |
-| `findWidget` | `` | `void` | `MyGUI.findWidget()` |
-| `findWidgetT` | `` | `void` | `MyGUI.findWidgetT()` |
-| `destroyWidget` | `` | `void` | `MyGUI.destroyWidget()` |
-| `destroyWidgets` | `` | `void` | `MyGUI.destroyWidgets()` |
+| `createButton` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `Button` | `MyGUI.createButton(skin, left, top, width, height, name, parentOrLayer)` |
+| `createButtonReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `Button` | `MyGUI.createButtonReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createWindow` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, layer: string` | `Window` | `MyGUI.createWindow(skin, left, top, width, height, name, layer)` |
+| `createWindowReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, layer: string` | `Window` | `MyGUI.createWindowReal(skin, left, top, width, height, name, layer)` |
+| `createTextBox` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `TextBox` | `MyGUI.createTextBox(skin, left, top, width, height, name, parentOrLayer)` |
+| `createTextBoxReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `TextBox` | `MyGUI.createTextBoxReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createEditBox` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `EditBox` | `MyGUI.createEditBox(skin, left, top, width, height, name, parentOrLayer)` |
+| `createEditBoxReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `EditBox` | `MyGUI.createEditBoxReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createListBox` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `ListBox` | `MyGUI.createListBox(skin, left, top, width, height, name, parentOrLayer)` |
+| `createListBoxReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `ListBox` | `MyGUI.createListBoxReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createComboBox` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `ComboBox` | `MyGUI.createComboBox(skin, left, top, width, height, name, parentOrLayer)` |
+| `createComboBoxReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `ComboBox` | `MyGUI.createComboBoxReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createTabControl` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `TabControl` | `MyGUI.createTabControl(skin, left, top, width, height, name, parentOrLayer)` |
+| `createTabControlReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `TabControl` | `MyGUI.createTabControlReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createMultiListBox` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `MultiListBox` | `MyGUI.createMultiListBox(skin, left, top, width, height, name, parentOrLayer)` |
+| `createMultiListBoxReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `MultiListBox` | `MyGUI.createMultiListBoxReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createScrollBar` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `ScrollBar` | `MyGUI.createScrollBar(skin, left, top, width, height, name, parentOrLayer)` |
+| `createScrollBarReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `ScrollBar` | `MyGUI.createScrollBarReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createScrollView` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `ScrollView` | `MyGUI.createScrollView(skin, left, top, width, height, name, parentOrLayer)` |
+| `createScrollViewReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `ScrollView` | `MyGUI.createScrollViewReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createProgressBar` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `ProgressBar` | `MyGUI.createProgressBar(skin, left, top, width, height, name, parentOrLayer)` |
+| `createProgressBarReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `ProgressBar` | `MyGUI.createProgressBarReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createImageBox` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `ImageBox` | `MyGUI.createImageBox(skin, left, top, width, height, name, parentOrLayer)` |
+| `createImageBoxReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `ImageBox` | `MyGUI.createImageBoxReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createItemBox` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `ItemBox` | `MyGUI.createItemBox(skin, left, top, width, height, name, parentOrLayer)` |
+| `createItemBoxReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `ItemBox` | `MyGUI.createItemBoxReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createDDContainer` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `DDContainer` | `MyGUI.createDDContainer(skin, left, top, width, height, name, parentOrLayer)` |
+| `createDDContainerReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `DDContainer` | `MyGUI.createDDContainerReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createCanvas` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `Canvas` | `MyGUI.createCanvas(skin, left, top, width, height, name, parentOrLayer)` |
+| `createCanvasReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `Canvas` | `MyGUI.createCanvasReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createMenuBar` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `MenuBar` | `MyGUI.createMenuBar(skin, left, top, width, height, name, parentOrLayer)` |
+| `createMenuBarReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `MenuBar` | `MyGUI.createMenuBarReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createPopupMenu` | `skin: string, left: integer, top: integer, width: integer, height: integer, name: string, parentOrLayer: string\|Widget` | `PopupMenu` | `MyGUI.createPopupMenu(skin, left, top, width, height, name, parentOrLayer)` |
+| `createPopupMenuReal` | `skin: string, left: number, top: number, width: number, height: number, name: string, parentOrLayer: string\|Widget` | `PopupMenu` | `MyGUI.createPopupMenuReal(skin, left, top, width, height, name, parentOrLayer)` |
+| `createWidget` | `type: string, skin: string, left: integer, top: integer, width: integer, height: integer, align: Align, layer: string, name: string` | `Widget` | `MyGUI.createWidget(type, skin, left, top, width, height, align, layer, name)` |
+| `createWidgetReal` | `type: string, skin: string, left: number, top: number, width: number, height: number, align: Align, layer: string, name: string` | `Widget` | `MyGUI.createWidgetReal(type, skin, left, top, width, height, align, layer, name)` |
+| `findWidget` | `name: string` | `Widget` | `MyGUI.findWidget(name)` |
+| `findWidgetT` | `name: string` | `Widget` | `MyGUI.findWidgetT(name)` |
+| `destroyWidget` | `widget: Widget` | `void` | `MyGUI.destroyWidget(widget)` |
+| `destroyWidgets` | `prefix: string` | `void` | `MyGUI.destroyWidgets(prefix)` |
 | `hidePointer` | `` | `void` | `MyGUI.hidePointer()` |
 | `showPointer` | `` | `void` | `MyGUI.showPointer()` |
-| `isPointerVisible` | `` | `void` | `MyGUI.isPointerVisible()` |
-| `setPointer` | `` | `void` | `MyGUI.setPointer()` |
+| `isPointerVisible` | `` | `boolean` | `MyGUI.isPointerVisible()` |
+| `setPointer` | `pointerName: string` | `void` | `MyGUI.setPointer(pointerName)` |
 | `clearPointer` | `` | `void` | `MyGUI.clearPointer()` |
-| `getMousePosition` | `` | `void` | `MyGUI.getMousePosition()` |
-| `loadLayout` | `` | `void` | `MyGUI.loadLayout()` |
-| `unloadLayout` | `` | `void` | `MyGUI.unloadLayout()` |
-| `getViewSize` | `` | `void` | `MyGUI.getViewSize()` |
-| `getViewWidth` | `` | `void` | `MyGUI.getViewWidth()` |
-| `getViewHeight` | `` | `void` | `MyGUI.getViewHeight()` |
-| `setClipboardText` | `` | `void` | `MyGUI.setClipboardText()` |
-| `getClipboardText` | `` | `void` | `MyGUI.getClipboardText()` |
-| `isSkinExist` | `` | `void` | `MyGUI.isSkinExist()` |
-| `getDefaultSkin` | `` | `void` | `MyGUI.getDefaultSkin()` |
-| `setDefaultSkin` | `` | `void` | `MyGUI.setDefaultSkin()` |
+| `getMousePosition` | `` | `integer, integer` | `MyGUI.getMousePosition()` |
+| `loadLayout` | `filename: string, prefix: string` | `table` | `MyGUI.loadLayout(filename, prefix)` |
+| `unloadLayout` | `layoutWidgets: table` | `void` | `MyGUI.unloadLayout(layoutWidgets)` |
+| `getViewSize` | `` | `integer, integer` | `MyGUI.getViewSize()` |
+| `getViewWidth` | `` | `integer` | `MyGUI.getViewWidth()` |
+| `getViewHeight` | `` | `integer` | `MyGUI.getViewHeight()` |
+| `setClipboardText` | `text: string, type: string` | `void` | `MyGUI.setClipboardText(text, type)` |
+| `getClipboardText` | `type: string` | `string` | `MyGUI.getClipboardText(type)` |
+| `isSkinExist` | `skinName: string` | `boolean` | `MyGUI.isSkinExist(skinName)` |
+| `getDefaultSkin` | `widgetType: string` | `string` | `MyGUI.getDefaultSkin(widgetType)` |
+| `setDefaultSkin` | `widgetType: string, skinName: string` | `void` | `MyGUI.setDefaultSkin(widgetType, skinName)` |
+| `upLayerItem` | `widget: Widget` | `void` | `MyGUI.upLayerItem(widget)` |
+| `bringToFront` | `widget: Widget` | `void` | `MyGUI.bringToFront(widget)` |
 
 ## Core Types
 
@@ -321,11 +323,11 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 #### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| `setPosition` | `pt: IntPoint, y: integer` | `void` | `w:setPosition(pt, y)` |
+| `setPosition` | `x: integer, y: integer` | `void` | `w:setPosition(x, y)` |
 | `getPosition` | `` | `integer, integer` | `w:getPosition()` |
-| `setSize` | `sz: IntSize, height: integer` | `void` | `w:setSize(sz, height)` |
+| `setSize` | `width: integer, height: integer` | `void` | `w:setSize(width, height)` |
 | `getSize` | `` | `integer, integer` | `w:getSize()` |
-| `setCoord` | `c: IntCoord, top: integer, width: integer, height: integer` | `void` | `w:setCoord(c, top, width, height)` |
+| `setCoord` | `left: integer, top: integer, width: integer, height: integer` | `void` | `w:setCoord(left, top, width, height)` |
 | `getCoord` | `` | `integer, integer, integer, integer` | `w:getCoord()` |
 | `setRealPosition` | `left: number, top: number` | `void` | `w:setRealPosition(left, top)` |
 | `getRealPosition` | `` | `integer, integer` | `w:getRealPosition()` |
@@ -367,8 +369,8 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 | `getUserString` | `key: string` | `string` | `w:getUserString(key)` |
 | `isUserString` | `key: string` | `boolean` | `w:isUserString(key)` |
 | `clearUserString` | `key: string` | `void` | `w:clearUserString(key)` |
-| `createWidget` | `type: string, skin: string, left: integer, top: integer, width: integer, height: integer, align: integer, name: string` | `Widget` | `w:createWidget(type, skin, left, top, width, height, align, name)` |
-| `createWidgetReal` | `type: string, skin: string, left: number, top: number, width: number, height: number, align: integer, name: string` | `Widget` | `w:createWidgetReal(type, skin, left, top, width, height, align, name)` |
+| `createWidget` | `type: string, skin: string, left: integer, top: integer, width: integer, height: integer, align: Align, name: string` | `Widget` | `w:createWidget(type, skin, left, top, width, height, align, name)` |
+| `createWidgetReal` | `type: string, skin: string, left: number, top: number, width: number, height: number, align: Align, name: string` | `Widget` | `w:createWidgetReal(type, skin, left, top, width, height, align, name)` |
 | `getParent` | `` | `integer, integer` | `w:getParent()` |
 | `getRootWidget` | `` | `Widget` | `w:getRootWidget()` |
 | `isRootWidget` | `` | `Widget` | `w:isRootWidget()` |
@@ -384,9 +386,11 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 | `getAbsolutePosition` | `` | `integer, integer` | `w:getAbsolutePosition()` |
 | `getAbsoluteRect` | `` | `integer, integer, integer, integer` | `w:getAbsoluteRect()` |
 | `changeWidgetSkin` | `skin: string` | `void` | `w:changeWidgetSkin(skin)` |
-| `setProperty` | `` | `string` | `w:setProperty()` |
+| `setProperty` | `key: string, value: string` | `void` | `w:setProperty(key, value)` |
 | `destroy` | `` | `void` | `w:destroy()` |
-| `registerCallback` | `` | `void` | `w:registerCallback()` |
+| `registerCallback` | `eventName: string, handler: function` | `void` | `w:registerCallback(eventName, handler)` |
+| `upLayerItem` | `` | `void` | `w:upLayerItem()` |
+| `bringToFront` | `` | `void` | `w:bringToFront()` |
 
 ## Widget Classes
 
@@ -418,7 +422,7 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 #### Specific Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| `createTexture` | `mode: integer, h: integer, mode: integer` | `void` | `obj:createTexture(mode, h, mode)` |
+| `createTexture` | `w: integer, h: integer, mode: integer` | `void` | `obj:createTexture(w, h, mode)` |
 | `destroyTexture` | `` | `void` | `obj:destroyTexture()` |
 | `updateTexture` | `` | `void` | `obj:updateTexture()` |
 | `isTextureCreated` | `` | `boolean` | `obj:isTextureCreated()` |
@@ -550,8 +554,8 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | `setImageTexture` | `tex: string` | `void` | `obj:setImageTexture(tex)` |
-| `setImageCoord` | `c: IntCoord, t: integer, w: integer, h: integer` | `void` | `obj:setImageCoord(c, t, w, h)` |
-| `setImageTile` | `sz: IntSize, h: integer` | `void` | `obj:setImageTile(sz, h)` |
+| `setImageCoord` | `l: integer, t: integer, w: integer, h: integer` | `void` | `obj:setImageCoord(l, t, w, h)` |
+| `setImageTile` | `w: integer, h: integer` | `void` | `obj:setImageTile(w, h)` |
 | `setImageIndex` | `idx: integer` | `void` | `obj:setImageIndex(idx)` |
 | `getImageIndex` | `` | `integer` | `obj:getImageIndex()` |
 | `getItemCount` | `` | `integer` | `obj:getItemCount()` |
@@ -813,9 +817,9 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 | `isVisibleVScroll` | `` | `boolean` | `obj:isVisibleVScroll()` |
 | `setCanvasAlign` | `a: integer` | `void` | `obj:setCanvasAlign(a)` |
 | `getCanvasAlign` | `` | `integer` | `obj:getCanvasAlign()` |
-| `setCanvasSize` | `sz: IntSize, h: integer` | `void` | `obj:setCanvasSize(sz, h)` |
+| `setCanvasSize` | `w: integer, h: integer` | `void` | `obj:setCanvasSize(w, h)` |
 | `getCanvasSize` | `` | `integer, integer` | `obj:getCanvasSize()` |
-| `setViewOffset` | `pt: IntPoint, y: integer` | `void` | `obj:setViewOffset(pt, y)` |
+| `setViewOffset` | `x: integer, y: integer` | `void` | `obj:setViewOffset(x, y)` |
 | `getViewOffset` | `` | `integer, integer` | `obj:getViewOffset()` |
 | `getViewCoord` | `` | `integer, integer, integer, integer` | `obj:getViewCoord()` |
 
@@ -917,9 +921,9 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 | `getSnap` | `` | `boolean` | `obj:getSnap()` |
 | `setMovable` | `m: boolean` | `void` | `obj:setMovable(m)` |
 | `getMovable` | `` | `boolean` | `obj:getMovable()` |
-| `setMinSize` | `sz: IntSize, h: integer` | `void` | `obj:setMinSize(sz, h)` |
+| `setMinSize` | `w: integer, h: integer` | `void` | `obj:setMinSize(w, h)` |
 | `getMinSize` | `` | `integer, integer` | `obj:getMinSize()` |
-| `setMaxSize` | `sz: IntSize, h: integer` | `void` | `obj:setMaxSize(sz, h)` |
+| `setMaxSize` | `w: integer, h: integer` | `void` | `obj:setMaxSize(w, h)` |
 | `getMaxSize` | `` | `integer, integer` | `obj:getMaxSize()` |
 | `getActionScale` | `` | `IntCoord` | `obj:getActionScale()` |
 | `getCaptionWidget` | `` | `Widget` | `obj:getCaptionWidget()` |
@@ -990,13 +994,13 @@ Managers provide global control over input, cursor pointer, skins, layout templa
 | `isFocusMouse` | `` | `boolean` | `mgr:isFocusMouse()` |
 | `isFocusKey` | `` | `boolean` | `mgr:isFocusKey()` |
 | `isCaptureMouse` | `` | `boolean` | `mgr:isCaptureMouse()` |
-| `setKeyFocusWidget` | `` | `void` | `mgr:setKeyFocusWidget()` |
+| `setKeyFocusWidget` | `widget: Widget` | `void` | `mgr:setKeyFocusWidget(widget)` |
 | `resetKeyFocusWidget` | `` | `void` | `mgr:resetKeyFocusWidget()` |
 | `getMouseFocusWidget` | `` | `Widget` | `mgr:getMouseFocusWidget()` |
 | `getKeyFocusWidget` | `` | `Widget` | `mgr:getKeyFocusWidget()` |
 | `getMousePosition` | `` | `integer, integer` | `mgr:getMousePosition()` |
-| `addWidgetModal` | `` | `void` | `mgr:addWidgetModal()` |
-| `removeWidgetModal` | `` | `void` | `mgr:removeWidgetModal()` |
+| `addWidgetModal` | `widget: Widget` | `void` | `mgr:addWidgetModal(widget)` |
+| `removeWidgetModal` | `widget: Widget` | `void` | `mgr:removeWidgetModal(widget)` |
 | `isModalAny` | `` | `boolean` | `mgr:isModalAny()` |
 | `resetMouseCaptureWidget` | `` | `void` | `mgr:resetMouseCaptureWidget()` |
 
@@ -1012,8 +1016,8 @@ Managers provide global control over input, cursor pointer, skins, layout templa
 #### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| `loadLayout` | `` | `void` | `mgr:loadLayout()` |
-| `unloadLayout` | `` | `void` | `mgr:unloadLayout()` |
+| `loadLayout` | `filename: string, prefix: string, parent: Widget` | `table` | `mgr:loadLayout(filename, prefix, parent)` |
+| `unloadLayout` | `layoutWidgets: table` | `void` | `mgr:unloadLayout(layoutWidgets)` |
 
 ### PointerManager
 **Metatable:** `KenshiLua.MyGUI.PointerManager`  
@@ -1027,15 +1031,15 @@ Managers provide global control over input, cursor pointer, skins, layout templa
 #### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| `setPointer` | `` | `void` | `mgr:setPointer()` |
+| `setPointer` | `name: string` | `void` | `mgr:setPointer(name)` |
 | `clearPointer` | `` | `void` | `mgr:clearPointer()` |
 | `getVisible` | `` | `boolean` | `mgr:getVisible()` |
-| `setVisible` | `` | `void` | `mgr:setVisible()` |
-| `isVisible` | `` | `void` | `mgr:isVisible()` |
+| `setVisible` | `visible: boolean` | `void` | `mgr:setVisible(visible)` |
+| `isVisible` | `` | `boolean` | `mgr:isVisible()` |
 | `getDefaultPointer` | `` | `string` | `mgr:getDefaultPointer()` |
-| `setDefaultPointer` | `` | `void` | `mgr:setDefaultPointer()` |
+| `setDefaultPointer` | `name: string` | `void` | `mgr:setDefaultPointer(name)` |
 | `getLayerName` | `` | `string` | `mgr:getLayerName()` |
-| `setLayerName` | `` | `void` | `mgr:setLayerName()` |
+| `setLayerName` | `name: string` | `void` | `mgr:setLayerName(name)` |
 
 ### RenderManager
 **Metatable:** `KenshiLua.MyGUI.RenderManager`  
@@ -1065,9 +1069,9 @@ Managers provide global control over input, cursor pointer, skins, layout templa
 #### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| `isExist` | `` | `boolean` | `mgr:isExist()` |
+| `isExist` | `skinName: string` | `boolean` | `mgr:isExist(skinName)` |
 | `getDefaultSkin` | `` | `string` | `mgr:getDefaultSkin()` |
-| `setDefaultSkin` | `` | `void` | `mgr:setDefaultSkin()` |
+| `setDefaultSkin` | `skinName: string` | `void` | `mgr:setDefaultSkin(skinName)` |
 
 ## Event Callbacks Reference
 
@@ -1075,7 +1079,10 @@ Event callbacks are attached to widgets using `widget:registerCallback(eventType
 
 ### Usage Example
 ```lua
-local btn = MyGUI.createButton("Click Me", { left = 100, top = 100, width = 120, height = 30 })
+local win = MyGUI.createWindow("Kenshi_WindowCX", 100, 100, 300, 200, "ExampleWindow", "Window")
+win:upLayerItem()
+local btn = win:createWidget("Button", "Kenshi_Button1", 20, 20, 120, 30, 0, "MyButton")
+btn:setCaption("Click Me")
 btn:registerCallback("OnClick", function(sender)
     print("Button clicked:", sender.caption)
 end)
