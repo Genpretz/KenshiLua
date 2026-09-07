@@ -71,6 +71,11 @@ void IntPointBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, IntPoint_index, IntPoint_newindex);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "new", IntPoint_new);
+    lua_setglobal(L, "IntPoint");
 }
 
 // ============================================================================
@@ -139,6 +144,11 @@ void IntSizeBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, IntSize_index, IntSize_newindex);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "new", IntSize_new);
+    lua_setglobal(L, "IntSize");
 }
 
 // ============================================================================
@@ -237,6 +247,11 @@ void IntCoordBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, IntCoord_index, IntCoord_newindex);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "new", IntCoord_new);
+    lua_setglobal(L, "IntCoord");
 }
 
 // ============================================================================
@@ -297,6 +312,11 @@ void IntRectBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, IntRect_index, IntRect_newindex);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "new", IntRect_new);
+    lua_setglobal(L, "IntRect");
 }
 
 // ============================================================================
@@ -349,6 +369,11 @@ void FloatPointBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, FloatPoint_index, FloatPoint_newindex);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "new", FloatPoint_new);
+    lua_setglobal(L, "FloatPoint");
 }
 
 // ============================================================================
@@ -401,6 +426,11 @@ void FloatSizeBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, FloatSize_index, FloatSize_newindex);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "new", FloatSize_new);
+    lua_setglobal(L, "FloatSize");
 }
 
 // ============================================================================
@@ -459,6 +489,11 @@ void FloatCoordBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, FloatCoord_index, FloatCoord_newindex);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "new", FloatCoord_new);
+    lua_setglobal(L, "FloatCoord");
 }
 
 // ============================================================================
@@ -519,6 +554,11 @@ void FloatRectBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, FloatRect_index, FloatRect_newindex);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "new", FloatRect_new);
+    lua_setglobal(L, "FloatRect");
 }
 
 // ============================================================================
@@ -568,7 +608,56 @@ static int Colour_new(lua_State* L)
 static int Colour_parse(lua_State* L)
 {
     const char* str = luaL_checkstring(L, 1);
-    MyGUI::Colour col = MyGUI::Colour::parse(str);
+    while (*str == ' ' || *str == '\t') ++str;
+
+    MyGUI::Colour col(0.0f, 0.0f, 0.0f, 1.0f);
+
+    if (*str == '#')
+    {
+        ++str;
+        size_t len = strlen(str);
+        if (len == 6)
+        {
+            unsigned long hex = strtoul(str, nullptr, 16);
+            col.red = ((hex >> 16) & 0xFF) / 255.0f;
+            col.green = ((hex >> 8) & 0xFF) / 255.0f;
+            col.blue = (hex & 0xFF) / 255.0f;
+            col.alpha = 1.0f;
+        }
+        else if (len == 8)
+        {
+            unsigned long hex = strtoul(str, nullptr, 16);
+            col.red = ((hex >> 24) & 0xFF) / 255.0f;
+            col.green = ((hex >> 16) & 0xFF) / 255.0f;
+            col.blue = ((hex >> 8) & 0xFF) / 255.0f;
+            col.alpha = (hex & 0xFF) / 255.0f;
+        }
+    }
+    else
+    {
+        col = MyGUI::Colour::parse(str);
+        if (col.red == 0.0f && col.green == 0.0f && col.blue == 0.0f && col.alpha == 0.0f)
+        {
+            size_t len = strlen(str);
+            if (len == 6)
+            {
+                unsigned long hex = strtoul(str, nullptr, 16);
+                col.red = ((hex >> 16) & 0xFF) / 255.0f;
+                col.green = ((hex >> 8) & 0xFF) / 255.0f;
+                col.blue = (hex & 0xFF) / 255.0f;
+                col.alpha = 1.0f;
+            }
+            else if (len == 8)
+            {
+                unsigned long hex = strtoul(str, nullptr, 16);
+                col.red = ((hex >> 24) & 0xFF) / 255.0f;
+                col.green = ((hex >> 16) & 0xFF) / 255.0f;
+                col.blue = ((hex >> 8) & 0xFF) / 255.0f;
+                col.alpha = (hex & 0xFF) / 255.0f;
+            }
+        }
+    }
+
     return pushValue<MyGUI::Colour>(L, col, ColourBinding::getMetatableName());
 }
 
@@ -585,6 +674,12 @@ void ColourBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, Colour_index, Colour_newindex);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "new", Colour_new);
+    registerStaticMethod(L, "parse", Colour_parse);
+    lua_setglobal(L, "Colour");
 }
 
 } // namespace KenshiLua

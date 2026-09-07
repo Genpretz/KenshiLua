@@ -62,8 +62,15 @@ static int global_createWidgetReal(lua_State* L)
 
 static int global_createButton(lua_State* L)
 {
-    const char* text = luaL_checkstring(L, 1);
-    auto p = MyGUIBindings::parseWidgetParams(L, 2, "Button");
+    int startIdx = 1;
+    const char* text = nullptr;
+    if (lua_type(L, 1) == LUA_TSTRING && lua_type(L, 2) == LUA_TSTRING)
+    {
+        text = lua_tostring(L, 1);
+        startIdx = 2;
+    }
+    auto p = MyGUIBindings::parseWidgetParams(L, startIdx, "Button");
+    MyGUIBindings::validateWidgetSkin("Button", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -81,7 +88,7 @@ static int global_createButton(lua_State* L)
     }
     if (w)
     {
-        w->setProperty("Caption", text);
+        if (text) w->setProperty("Caption", text);
         MyGUIBindings::trackLuaCreatedWidget(L, w, p.parent);
         return MyGUIBindings::pushWidget(L, w);
     }
@@ -91,8 +98,15 @@ static int global_createButton(lua_State* L)
 
 static int global_createButtonReal(lua_State* L)
 {
-    const char* text = luaL_checkstring(L, 1);
-    auto p = MyGUIBindings::parseWidgetParams(L, 2, "Button", true);
+    int startIdx = 1;
+    const char* text = nullptr;
+    if (lua_type(L, 1) == LUA_TSTRING && lua_type(L, 2) == LUA_TSTRING)
+    {
+        text = lua_tostring(L, 1);
+        startIdx = 2;
+    }
+    auto p = MyGUIBindings::parseWidgetParams(L, startIdx, "Button", true);
+    MyGUIBindings::validateWidgetSkin("Button", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -103,7 +117,7 @@ static int global_createButtonReal(lua_State* L)
 
     if (w)
     {
-        w->setProperty("Caption", text);
+        if (text) w->setProperty("Caption", text);
         MyGUIBindings::trackLuaCreatedWidget(L, w, p.parent);
         return MyGUIBindings::pushWidget(L, w);
     }
@@ -113,8 +127,15 @@ static int global_createButtonReal(lua_State* L)
 
 static int global_createWindow(lua_State* L)
 {
-    const char* caption = luaL_checkstring(L, 1);
-    auto p = MyGUIBindings::parseWidgetParams(L, 2, "WindowCS");
+    int startIdx = 1;
+    const char* caption = nullptr;
+    if (lua_type(L, 1) == LUA_TSTRING && lua_type(L, 2) == LUA_TSTRING)
+    {
+        caption = lua_tostring(L, 1);
+        startIdx = 2;
+    }
+    auto p = MyGUIBindings::parseWidgetParams(L, startIdx, "WindowCS");
+    MyGUIBindings::validateWidgetSkin("Window", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -132,7 +153,7 @@ static int global_createWindow(lua_State* L)
     }
     if (w)
     {
-        w->setProperty("Caption", caption);
+        if (caption) w->setProperty("Caption", caption);
         MyGUIBindings::trackLuaCreatedWidget(L, w, p.parent);
         return MyGUIBindings::pushWidget(L, w);
     }
@@ -142,8 +163,15 @@ static int global_createWindow(lua_State* L)
 
 static int global_createWindowReal(lua_State* L)
 {
-    const char* caption = luaL_checkstring(L, 1);
-    auto p = MyGUIBindings::parseWidgetParams(L, 2, "WindowCS", true);
+    int startIdx = 1;
+    const char* caption = nullptr;
+    if (lua_type(L, 1) == LUA_TSTRING && lua_type(L, 2) == LUA_TSTRING)
+    {
+        caption = lua_tostring(L, 1);
+        startIdx = 2;
+    }
+    auto p = MyGUIBindings::parseWidgetParams(L, startIdx, "WindowCS", true);
+    MyGUIBindings::validateWidgetSkin("Window", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -154,7 +182,7 @@ static int global_createWindowReal(lua_State* L)
 
     if (w)
     {
-        w->setProperty("Caption", caption);
+        if (caption) w->setProperty("Caption", caption);
         MyGUIBindings::trackLuaCreatedWidget(L, w, p.parent);
         return MyGUIBindings::pushWidget(L, w);
     }
@@ -164,8 +192,15 @@ static int global_createWindowReal(lua_State* L)
 
 static int global_createTextBox(lua_State* L)
 {
-    const char* text = luaL_checkstring(L, 1);
-    auto p = MyGUIBindings::parseWidgetParams(L, 2, "TextBox");
+    int startIdx = 1;
+    const char* text = nullptr;
+    if (lua_type(L, 1) == LUA_TSTRING && lua_type(L, 2) == LUA_TSTRING)
+    {
+        text = lua_tostring(L, 1);
+        startIdx = 2;
+    }
+    auto p = MyGUIBindings::parseWidgetParams(L, startIdx, "TextBox");
+    MyGUIBindings::validateWidgetSkin("TextBox", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -183,7 +218,7 @@ static int global_createTextBox(lua_State* L)
     }
     if (w)
     {
-        w->setProperty("Caption", text);
+        if (text) w->setProperty("Caption", text);
         MyGUIBindings::trackLuaCreatedWidget(L, w, p.parent);
         return MyGUIBindings::pushWidget(L, w);
     }
@@ -193,8 +228,15 @@ static int global_createTextBox(lua_State* L)
 
 static int global_createTextBoxReal(lua_State* L)
 {
-    const char* text = luaL_checkstring(L, 1);
-    auto p = MyGUIBindings::parseWidgetParams(L, 2, "TextBox", true);
+    int startIdx = 1;
+    const char* text = nullptr;
+    if (lua_type(L, 1) == LUA_TSTRING && lua_type(L, 2) == LUA_TSTRING)
+    {
+        text = lua_tostring(L, 1);
+        startIdx = 2;
+    }
+    auto p = MyGUIBindings::parseWidgetParams(L, startIdx, "TextBox", true);
+    MyGUIBindings::validateWidgetSkin("TextBox", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -205,7 +247,7 @@ static int global_createTextBoxReal(lua_State* L)
 
     if (w)
     {
-        w->setProperty("Caption", text);
+        if (text) w->setProperty("Caption", text);
         MyGUIBindings::trackLuaCreatedWidget(L, w, p.parent);
         return MyGUIBindings::pushWidget(L, w);
     }
@@ -215,8 +257,15 @@ static int global_createTextBoxReal(lua_State* L)
 
 static int global_createEditBox(lua_State* L)
 {
-    const char* text = luaL_checkstring(L, 1);
-    auto p = MyGUIBindings::parseWidgetParams(L, 2, "EditBox");
+    int startIdx = 1;
+    const char* text = nullptr;
+    if (lua_type(L, 1) == LUA_TSTRING && lua_type(L, 2) == LUA_TSTRING)
+    {
+        text = lua_tostring(L, 1);
+        startIdx = 2;
+    }
+    auto p = MyGUIBindings::parseWidgetParams(L, startIdx, "EditBox");
+    MyGUIBindings::validateWidgetSkin("EditBox", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -234,7 +283,7 @@ static int global_createEditBox(lua_State* L)
     }
     if (w)
     {
-        w->setProperty("Caption", text);
+        if (text) w->setProperty("Caption", text);
         MyGUIBindings::trackLuaCreatedWidget(L, w, p.parent);
         return MyGUIBindings::pushWidget(L, w);
     }
@@ -244,8 +293,15 @@ static int global_createEditBox(lua_State* L)
 
 static int global_createEditBoxReal(lua_State* L)
 {
-    const char* text = luaL_checkstring(L, 1);
-    auto p = MyGUIBindings::parseWidgetParams(L, 2, "EditBox", true);
+    int startIdx = 1;
+    const char* text = nullptr;
+    if (lua_type(L, 1) == LUA_TSTRING && lua_type(L, 2) == LUA_TSTRING)
+    {
+        text = lua_tostring(L, 1);
+        startIdx = 2;
+    }
+    auto p = MyGUIBindings::parseWidgetParams(L, startIdx, "EditBox", true);
+    MyGUIBindings::validateWidgetSkin("EditBox", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -256,7 +312,7 @@ static int global_createEditBoxReal(lua_State* L)
 
     if (w)
     {
-        w->setProperty("Caption", text);
+        if (text) w->setProperty("Caption", text);
         MyGUIBindings::trackLuaCreatedWidget(L, w, p.parent);
         return MyGUIBindings::pushWidget(L, w);
     }
@@ -267,6 +323,7 @@ static int global_createEditBoxReal(lua_State* L)
 static int global_createListBox(lua_State* L)
 {
     auto p = MyGUIBindings::parseWidgetParams(L, 1, "ListBox");
+    MyGUIBindings::validateWidgetSkin("ListBox", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -294,6 +351,7 @@ static int global_createListBox(lua_State* L)
 static int global_createListBoxReal(lua_State* L)
 {
     auto p = MyGUIBindings::parseWidgetParams(L, 1, "ListBox", true);
+    MyGUIBindings::validateWidgetSkin("ListBox", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -314,6 +372,7 @@ static int global_createListBoxReal(lua_State* L)
 static int global_createComboBox(lua_State* L)
 {
     auto p = MyGUIBindings::parseWidgetParams(L, 1, "ComboBox");
+    MyGUIBindings::validateWidgetSkin("ComboBox", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -341,6 +400,7 @@ static int global_createComboBox(lua_State* L)
 static int global_createComboBoxReal(lua_State* L)
 {
     auto p = MyGUIBindings::parseWidgetParams(L, 1, "ComboBox", true);
+    MyGUIBindings::validateWidgetSkin("ComboBox", p.skin);
     if (!MyGUI::Gui::getInstancePtr()) return luaL_error(L, "MyGUI is not initialized");
 
     MyGUI::Widget* w = nullptr;
@@ -970,54 +1030,73 @@ static int global_setDefaultSkin(lua_State* L)
     return SkinManagerBinding::setDefaultSkin(L);
 }
 
+static int global_upLayerItem(lua_State* L)
+{
+    return WidgetBinding::upLayerItem(L);
+}
+
 // ============================================================================
 // Registration Entry Point
 // ============================================================================
 
 void MyGUIBinding::registerBinding(lua_State* L)
 {
+    int initialTop = lua_gettop(L);
+
+#define CHECK_BINDING_STACK(L, name) \
+    do { \
+        int curTop = lua_gettop(L); \
+        if (curTop != initialTop) { \
+            KenshiLua::logToFileError(std::string("[MyGUIBinding] ") + (name) + \
+                " changed Lua stack from " + std::to_string((long long)initialTop) + " to " + std::to_string((long long)curTop)); \
+            lua_settop(L, initialTop); \
+        } \
+    } while (false)
+
     // 1. Register value types
-    IntPointBinding::registerBinding(L);
-    IntSizeBinding::registerBinding(L);
-    IntCoordBinding::registerBinding(L);
-    IntRectBinding::registerBinding(L);
-    FloatPointBinding::registerBinding(L);
-    FloatSizeBinding::registerBinding(L);
-    FloatCoordBinding::registerBinding(L);
-    FloatRectBinding::registerBinding(L);
-    ColourBinding::registerBinding(L);
+    IntPointBinding::registerBinding(L);       CHECK_BINDING_STACK(L, "IntPointBinding");
+    IntSizeBinding::registerBinding(L);        CHECK_BINDING_STACK(L, "IntSizeBinding");
+    IntCoordBinding::registerBinding(L);       CHECK_BINDING_STACK(L, "IntCoordBinding");
+    IntRectBinding::registerBinding(L);        CHECK_BINDING_STACK(L, "IntRectBinding");
+    FloatPointBinding::registerBinding(L);     CHECK_BINDING_STACK(L, "FloatPointBinding");
+    FloatSizeBinding::registerBinding(L);      CHECK_BINDING_STACK(L, "FloatSizeBinding");
+    FloatCoordBinding::registerBinding(L);     CHECK_BINDING_STACK(L, "FloatCoordBinding");
+    FloatRectBinding::registerBinding(L);      CHECK_BINDING_STACK(L, "FloatRectBinding");
+    ColourBinding::registerBinding(L);         CHECK_BINDING_STACK(L, "ColourBinding");
 
     // 2. Register widget hierarchy (base to derived)
-    WidgetBinding::registerBinding(L);
-    ButtonBinding::registerBinding(L);
-    TextBoxBinding::registerBinding(L);
-    EditBoxBinding::registerBinding(L);
-    WindowBinding::registerBinding(L);
-    ListBoxBinding::registerBinding(L);
-    ComboBoxBinding::registerBinding(L);
-    TabControlBinding::registerBinding(L);
-    TabItemBinding::registerBinding(L);
-    MultiListBoxBinding::registerBinding(L);
-    ScrollBarBinding::registerBinding(L);
-    ScrollViewBinding::registerBinding(L);
-    ProgressBarBinding::registerBinding(L);
-    ImageBoxBinding::registerBinding(L);
-    DDContainerBinding::registerBinding(L);
-    ItemBoxBinding::registerBinding(L);
-    CanvasBinding::registerBinding(L);
-    MenuControlBinding::registerBinding(L);
-    MenuBarBinding::registerBinding(L);
-    PopupMenuBinding::registerBinding(L);
-    MenuItemBinding::registerBinding(L);
+    WidgetBinding::registerBinding(L);         CHECK_BINDING_STACK(L, "WidgetBinding");
+    ButtonBinding::registerBinding(L);         CHECK_BINDING_STACK(L, "ButtonBinding");
+    TextBoxBinding::registerBinding(L);        CHECK_BINDING_STACK(L, "TextBoxBinding");
+    EditBoxBinding::registerBinding(L);        CHECK_BINDING_STACK(L, "EditBoxBinding");
+    WindowBinding::registerBinding(L);         CHECK_BINDING_STACK(L, "WindowBinding");
+    ListBoxBinding::registerBinding(L);        CHECK_BINDING_STACK(L, "ListBoxBinding");
+    ComboBoxBinding::registerBinding(L);       CHECK_BINDING_STACK(L, "ComboBoxBinding");
+    TabControlBinding::registerBinding(L);     CHECK_BINDING_STACK(L, "TabControlBinding");
+    TabItemBinding::registerBinding(L);        CHECK_BINDING_STACK(L, "TabItemBinding");
+    MultiListBoxBinding::registerBinding(L);   CHECK_BINDING_STACK(L, "MultiListBoxBinding");
+    ScrollBarBinding::registerBinding(L);      CHECK_BINDING_STACK(L, "ScrollBarBinding");
+    ScrollViewBinding::registerBinding(L);     CHECK_BINDING_STACK(L, "ScrollViewBinding");
+    ProgressBarBinding::registerBinding(L);    CHECK_BINDING_STACK(L, "ProgressBarBinding");
+    ImageBoxBinding::registerBinding(L);       CHECK_BINDING_STACK(L, "ImageBoxBinding");
+    DDContainerBinding::registerBinding(L);    CHECK_BINDING_STACK(L, "DDContainerBinding");
+    ItemBoxBinding::registerBinding(L);        CHECK_BINDING_STACK(L, "ItemBoxBinding");
+    CanvasBinding::registerBinding(L);         CHECK_BINDING_STACK(L, "CanvasBinding");
+    MenuControlBinding::registerBinding(L);    CHECK_BINDING_STACK(L, "MenuControlBinding");
+    MenuBarBinding::registerBinding(L);        CHECK_BINDING_STACK(L, "MenuBarBinding");
+    PopupMenuBinding::registerBinding(L);      CHECK_BINDING_STACK(L, "PopupMenuBinding");
+    MenuItemBinding::registerBinding(L);       CHECK_BINDING_STACK(L, "MenuItemBinding");
 
     // 3. Register managers
-    GuiBinding::registerBinding(L);
-    InputManagerBinding::registerBinding(L);
-    PointerManagerBinding::registerBinding(L);
-    ClipboardManagerBinding::registerBinding(L);
-    LayoutManagerBinding::registerBinding(L);
-    RenderManagerBinding::registerBinding(L);
-    SkinManagerBinding::registerBinding(L);
+    GuiBinding::registerBinding(L);            CHECK_BINDING_STACK(L, "GuiBinding");
+    InputManagerBinding::registerBinding(L);   CHECK_BINDING_STACK(L, "InputManagerBinding");
+    PointerManagerBinding::registerBinding(L); CHECK_BINDING_STACK(L, "PointerManagerBinding");
+    ClipboardManagerBinding::registerBinding(L); CHECK_BINDING_STACK(L, "ClipboardManagerBinding");
+    LayoutManagerBinding::registerBinding(L);  CHECK_BINDING_STACK(L, "LayoutManagerBinding");
+    RenderManagerBinding::registerBinding(L);  CHECK_BINDING_STACK(L, "RenderManagerBinding");
+    SkinManagerBinding::registerBinding(L);    CHECK_BINDING_STACK(L, "SkinManagerBinding");
+
+#undef CHECK_BINDING_STACK
 
     // Initialize callback manager
     MyGUIBindings::LuaWidgetCallbackManager::get().setLuaState(L);
@@ -1083,9 +1162,31 @@ void MyGUIBinding::registerBinding(lua_State* L)
         { "isSkinExist",            global_isSkinExist },
         { "getDefaultSkin",         global_getDefaultSkin },
         { "setDefaultSkin",         global_setDefaultSkin },
+        { "upLayerItem",            global_upLayerItem },
+        { "bringToFront",           global_upLayerItem },
         { 0, 0 }
     };
     luaL_register(L, NULL, globalMethods);
+
+    // Expose manager singleton tables under MyGUI (e.g. MyGUI.Gui.getInstance())
+    lua_getglobal(L, "Gui");              lua_setfield(L, -2, "Gui");
+    lua_getglobal(L, "InputManager");     lua_setfield(L, -2, "InputManager");
+    lua_getglobal(L, "PointerManager");   lua_setfield(L, -2, "PointerManager");
+    lua_getglobal(L, "ClipboardManager"); lua_setfield(L, -2, "ClipboardManager");
+    lua_getglobal(L, "LayoutManager");    lua_setfield(L, -2, "LayoutManager");
+    lua_getglobal(L, "RenderManager");    lua_setfield(L, -2, "RenderManager");
+    lua_getglobal(L, "SkinManager");      lua_setfield(L, -2, "SkinManager");
+
+    // Expose value type constructors under MyGUI (e.g. MyGUI.IntPoint.new(x, y))
+    lua_getglobal(L, "IntPoint");         lua_setfield(L, -2, "IntPoint");
+    lua_getglobal(L, "IntSize");          lua_setfield(L, -2, "IntSize");
+    lua_getglobal(L, "IntCoord");         lua_setfield(L, -2, "IntCoord");
+    lua_getglobal(L, "IntRect");          lua_setfield(L, -2, "IntRect");
+    lua_getglobal(L, "FloatPoint");       lua_setfield(L, -2, "FloatPoint");
+    lua_getglobal(L, "FloatSize");        lua_setfield(L, -2, "FloatSize");
+    lua_getglobal(L, "FloatCoord");       lua_setfield(L, -2, "FloatCoord");
+    lua_getglobal(L, "FloatRect");        lua_setfield(L, -2, "FloatRect");
+    lua_getglobal(L, "Colour");           lua_setfield(L, -2, "Colour");
 
     // Register Align enum table
     lua_newtable(L);

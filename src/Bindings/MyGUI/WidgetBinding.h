@@ -84,6 +84,7 @@ public:
     static int setProperty(lua_State* L);
     static int destroy(lua_State* L);
     static int registerCallback(lua_State* L);
+    static int upLayerItem(lua_State* L);
 };
 
 } // namespace KenshiLua

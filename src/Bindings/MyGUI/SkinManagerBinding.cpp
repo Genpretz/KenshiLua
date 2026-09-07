@@ -31,7 +31,12 @@ int SkinManagerBinding::isExist(lua_State* L)
     MyGUI::SkinManager* sm = MyGUI::SkinManager::getInstancePtr();
     if (sm)
     {
-        lua_pushboolean(L, sm->isExist(name) ? 1 : 0);
+        bool exist = sm->isExist(name);
+        if (!exist && MyGUI::ResourceManager::getInstancePtr())
+        {
+            exist = MyGUI::ResourceManager::getInstance().isExist(name);
+        }
+        lua_pushboolean(L, exist ? 1 : 0);
         return 1;
     }
     lua_pushboolean(L, 0);
@@ -93,6 +98,11 @@ void SkinManagerBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getInstance", getInstance);
+    lua_setglobal(L, "SkinManager");
 }
 
 } // namespace KenshiLua

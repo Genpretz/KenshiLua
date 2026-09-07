@@ -532,9 +532,22 @@ int WidgetBinding::createWidget(lua_State* L)
     int top = (int)luaL_checkinteger(L, 5);
     int width = (int)luaL_checkinteger(L, 6);
     int height = (int)luaL_checkinteger(L, 7);
-    int align = (int)luaL_optinteger(L, 8, (int)MyGUI::Align::Default);
-    const char* name = luaL_optstring(L, 9, "");
+    int align = (int)MyGUI::Align::Default;
+    const char* name = "";
+    if (lua_gettop(L) >= 8)
+    {
+        if (lua_type(L, 8) == LUA_TNUMBER)
+        {
+            align = (int)lua_tointeger(L, 8);
+            name = luaL_optstring(L, 9, "");
+        }
+        else if (lua_isstring(L, 8))
+        {
+            name = lua_tostring(L, 8);
+        }
+    }
 
+    MyGUIBindings::validateWidgetSkin(type, skin);
     MyGUI::Widget* child = parent->createWidgetT(type, skin, left, top, width, height, MyGUI::Align((MyGUI::Align::Enum)align), name);
     if (child)
     {
@@ -556,9 +569,22 @@ int WidgetBinding::createWidgetReal(lua_State* L)
     float top = (float)luaL_checknumber(L, 5);
     float width = (float)luaL_checknumber(L, 6);
     float height = (float)luaL_checknumber(L, 7);
-    int align = (int)luaL_optinteger(L, 8, (int)MyGUI::Align::Default);
-    const char* name = luaL_optstring(L, 9, "");
+    int align = (int)MyGUI::Align::Default;
+    const char* name = "";
+    if (lua_gettop(L) >= 8)
+    {
+        if (lua_type(L, 8) == LUA_TNUMBER)
+        {
+            align = (int)lua_tointeger(L, 8);
+            name = luaL_optstring(L, 9, "");
+        }
+        else if (lua_isstring(L, 8))
+        {
+            name = lua_tostring(L, 8);
+        }
+    }
 
+    MyGUIBindings::validateWidgetSkin(type, skin);
     MyGUI::Widget* child = parent->createWidgetRealT(type, skin, left, top, width, height, MyGUI::Align((MyGUI::Align::Enum)align), name);
     if (child)
     {
@@ -800,6 +826,16 @@ int WidgetBinding::registerCallback(lua_State* L)
     return MyGUIBindings::widget_registerCallback(L);
 }
 
+int WidgetBinding::upLayerItem(lua_State* L)
+{
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (w && MyGUI::LayerManager::getInstancePtr())
+    {
+        MyGUI::LayerManager::getInstance().upLayerItem(w);
+    }
+    return 0;
+}
+
 static int widget_index(lua_State* L)
 {
     MyGUI::Widget* w = WidgetBinding::getWidget(L, 1);
@@ -967,6 +1003,8 @@ void WidgetBinding::registerBinding(lua_State* L)
         { "setProperty",          setProperty },
         { "destroy",              destroy },
         { "registerCallback",     registerCallback },
+        { "upLayerItem",          upLayerItem },
+        { "bringToFront",         upLayerItem },
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, widget_index, widget_newindex);

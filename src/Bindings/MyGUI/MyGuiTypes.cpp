@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Logger.h"
 #include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Bindings/MyGUI/MyGuiCallbacks.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
@@ -144,6 +145,26 @@ void shutdownMyGui()
     g_luaCreatedWidgetSources.clear();
 }
 
+void validateWidgetSkin(const std::string& type, const std::string& skin)
+{
+    if (skin.empty())
+    {
+        Logger::get().log(LogLevel_Warn, "[MyGUI] Empty skin specified for widget type '" + type + "'. MyGUI will fall back to 'Default' skin (which may be invisible in Kenshi).");
+        return;
+    }
+
+    MyGUI::SkinManager* sm = MyGUI::SkinManager::getInstancePtr();
+    MyGUI::ResourceManager* rm = MyGUI::ResourceManager::getInstancePtr();
+    bool exists = false;
+    if (sm && sm->isExist(skin)) exists = true;
+    else if (rm && rm->isExist(skin)) exists = true;
+
+    if (!exists)
+    {
+        Logger::get().log(LogLevel_Warn, "[MyGUI] Skin or template '" + skin + "' for widget type '" + type + "' was not found in SkinManager or ResourceManager! MyGUI will fall back to 'Default' skin (which may be invisible in Kenshi).");
+    }
+}
+
 int pushWidget(lua_State* L, MyGUI::Widget* widget)
 {
     if (!widget)
@@ -203,29 +224,83 @@ int pushWidget(lua_State* L, MyGUI::Widget* widget)
 WidgetCreateParams parseWidgetParams(lua_State* L, int startIdx, const std::string& defaultSkin, bool forceRelative)
 {
     WidgetCreateParams params;
-    params.skin = luaL_optstring(L, startIdx, defaultSkin.c_str());
-    params.left = (int)luaL_optinteger(L, startIdx + 1, 0);
-    params.top = (int)luaL_optinteger(L, startIdx + 2, 0);
-    params.width = (int)luaL_optinteger(L, startIdx + 3, 100);
-    params.height = (int)luaL_optinteger(L, startIdx + 4, 30);
-    params.relLeft = (float)luaL_optnumber(L, startIdx + 1, 0.0);
-    params.relTop = (float)luaL_optnumber(L, startIdx + 2, 0.0);
-    params.relWidth = (float)luaL_optnumber(L, startIdx + 3, 0.1);
-    params.relHeight = (float)luaL_optnumber(L, startIdx + 4, 0.05);
-    params.isRelative = forceRelative || (params.relLeft <= 1.0f && params.relTop <= 1.0f && params.relWidth <= 1.0f && params.relHeight <= 1.0f && (params.relWidth > 0.0f || params.relHeight > 0.0f));
+    int coordStart = startIdx;
+    if (lua_type(L, startIdx) == LUA_TNUMBER)
+    {
+        params.skin = defaultSkin;
+        coordStart = startIdx;
+    }
+    else
+    {
+        params.skin = luaL_optstring(L, startIdx, defaultSkin.c_str());
+        coordStart = startIdx + 1;
+    }
+
+    int trailIdx = coordStart + 4;
+
+    if (MyGUI::IntCoord* c = testObject<MyGUI::IntCoord>(L, coordStart, IntCoordBinding::getMetatableName()))
+    {
+        params.left = c->left;
+        params.top = c->top;
+        params.width = c->width;
+        params.height = c->height;
+        params.relLeft = (float)c->left;
+        params.relTop = (float)c->top;
+        params.relWidth = (float)c->width;
+        params.relHeight = (float)c->height;
+        params.isRelative = forceRelative;
+        trailIdx = coordStart + 1;
+    }
+    else if (lua_istable(L, coordStart))
+    {
+        MyGUI::IntCoord c = readIntCoord(L, coordStart);
+        params.left = c.left;
+        params.top = c.top;
+        params.width = c.width;
+        params.height = c.height;
+        params.relLeft = (float)c.left;
+        params.relTop = (float)c.top;
+        params.relWidth = (float)c.width;
+        params.relHeight = (float)c.height;
+        params.isRelative = forceRelative;
+        trailIdx = coordStart + 1;
+    }
+    else
+    {
+        params.left = (int)luaL_optinteger(L, coordStart, 0);
+        params.top = (int)luaL_optinteger(L, coordStart + 1, 0);
+        params.width = (int)luaL_optinteger(L, coordStart + 2, 100);
+        params.height = (int)luaL_optinteger(L, coordStart + 3, 30);
+        params.relLeft = (float)luaL_optnumber(L, coordStart, 0.0);
+        params.relTop = (float)luaL_optnumber(L, coordStart + 1, 0.0);
+        params.relWidth = (float)luaL_optnumber(L, coordStart + 2, 0.1);
+        params.relHeight = (float)luaL_optnumber(L, coordStart + 3, 0.05);
+        params.isRelative = forceRelative || (params.relLeft <= 1.0f && params.relTop <= 1.0f && params.relWidth <= 1.0f && params.relHeight <= 1.0f && (params.relWidth > 0.0f || params.relHeight > 0.0f));
+    }
+
     params.align = MyGUI::Align::Default;
     params.layer = "Window";
     params.parent = nullptr;
     params.name = "";
 
     int top = lua_gettop(L);
-    int trailIdx = startIdx + 5;
     if (top >= trailIdx)
     {
         if (lua_type(L, trailIdx) == LUA_TNUMBER)
         {
             params.align = MyGUI::Align((MyGUI::Align::Enum)(int)lua_tointeger(L, trailIdx));
-            if (top >= trailIdx + 1 && !lua_isnil(L, trailIdx + 1))
+            if (top >= trailIdx + 2)
+            {
+                if (lua_isstring(L, trailIdx + 1))
+                {
+                    params.layer = lua_tostring(L, trailIdx + 1);
+                }
+                if (lua_isstring(L, trailIdx + 2))
+                {
+                    params.name = lua_tostring(L, trailIdx + 2);
+                }
+            }
+            else if (top >= trailIdx + 1 && !lua_isnil(L, trailIdx + 1))
             {
                 if (lua_isuserdata(L, trailIdx + 1))
                 {
@@ -235,10 +310,6 @@ WidgetCreateParams parseWidgetParams(lua_State* L, int startIdx, const std::stri
                 {
                     params.layer = lua_tostring(L, trailIdx + 1);
                 }
-            }
-            if (top >= trailIdx + 2 && lua_isstring(L, trailIdx + 2))
-            {
-                params.name = lua_tostring(L, trailIdx + 2);
             }
         }
         else if (lua_isuserdata(L, trailIdx))
@@ -251,9 +322,9 @@ WidgetCreateParams parseWidgetParams(lua_State* L, int startIdx, const std::stri
         }
         else if (lua_isstring(L, trailIdx))
         {
+            params.name = lua_tostring(L, trailIdx);
             if (top >= trailIdx + 1 && !lua_isnil(L, trailIdx + 1))
             {
-                params.name = lua_tostring(L, trailIdx);
                 if (lua_isuserdata(L, trailIdx + 1))
                 {
                     params.parent = testObject<MyGUI::Widget>(L, trailIdx + 1, WidgetBinding::getMetatableName());
@@ -262,10 +333,6 @@ WidgetCreateParams parseWidgetParams(lua_State* L, int startIdx, const std::stri
                 {
                     params.layer = lua_tostring(L, trailIdx + 1);
                 }
-            }
-            else
-            {
-                params.name = lua_tostring(L, trailIdx);
             }
         }
     }

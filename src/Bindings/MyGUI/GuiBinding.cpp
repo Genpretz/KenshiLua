@@ -21,26 +21,31 @@ int GuiBinding::createWidget(lua_State* L)
 {
     int idx = lua_isuserdata(L, 1) ? 2 : 1;
     const char* type = luaL_checkstring(L, idx);
-    const char* skin = luaL_checkstring(L, idx + 1);
-    int left = (int)luaL_checkinteger(L, idx + 2);
-    int top = (int)luaL_checkinteger(L, idx + 3);
-    int width = (int)luaL_checkinteger(L, idx + 4);
-    int height = (int)luaL_checkinteger(L, idx + 5);
-    int align = (int)luaL_optinteger(L, idx + 6, (int)MyGUI::Align::Default);
-    const char* layer = luaL_optstring(L, idx + 7, "Window");
-    const char* name = luaL_optstring(L, idx + 8, "");
+    auto p = MyGUIBindings::parseWidgetParams(L, idx + 1, "Default");
+    MyGUIBindings::validateWidgetSkin(type, p.skin);
 
     if (!MyGUI::Gui::getInstancePtr())
     {
         return luaL_error(L, "MyGUI is not initialized");
     }
 
-    MyGUI::Widget* w = MyGUI::Gui::getInstance().createWidgetT(
-        type, skin, left, top, width, height, MyGUI::Align((MyGUI::Align::Enum)align), layer, name
-    );
+    MyGUI::Widget* w = nullptr;
+    if (p.parent)
+    {
+        w = p.parent->createWidgetT(
+            type, p.skin, p.left, p.top, p.width, p.height, p.align, p.name
+        );
+    }
+    else
+    {
+        w = MyGUI::Gui::getInstance().createWidgetT(
+            type, p.skin, p.left, p.top, p.width, p.height, p.align, p.layer, p.name
+        );
+    }
+
     if (w)
     {
-        MyGUIBindings::trackLuaCreatedWidget(L, w, nullptr);
+        MyGUIBindings::trackLuaCreatedWidget(L, w, p.parent);
         return MyGUIBindings::pushWidget(L, w);
     }
     lua_pushnil(L);
@@ -51,26 +56,31 @@ int GuiBinding::createWidgetReal(lua_State* L)
 {
     int idx = lua_isuserdata(L, 1) ? 2 : 1;
     const char* type = luaL_checkstring(L, idx);
-    const char* skin = luaL_checkstring(L, idx + 1);
-    float left = (float)luaL_checknumber(L, idx + 2);
-    float top = (float)luaL_checknumber(L, idx + 3);
-    float width = (float)luaL_checknumber(L, idx + 4);
-    float height = (float)luaL_checknumber(L, idx + 5);
-    int align = (int)luaL_optinteger(L, idx + 6, (int)MyGUI::Align::Default);
-    const char* layer = luaL_optstring(L, idx + 7, "Window");
-    const char* name = luaL_optstring(L, idx + 8, "");
+    auto p = MyGUIBindings::parseWidgetParams(L, idx + 1, "Default", true);
+    MyGUIBindings::validateWidgetSkin(type, p.skin);
 
     if (!MyGUI::Gui::getInstancePtr())
     {
         return luaL_error(L, "MyGUI is not initialized");
     }
 
-    MyGUI::Widget* w = MyGUI::Gui::getInstance().createWidgetRealT(
-        type, skin, left, top, width, height, MyGUI::Align((MyGUI::Align::Enum)align), layer, name
-    );
+    MyGUI::Widget* w = nullptr;
+    if (p.parent)
+    {
+        w = p.parent->createWidgetRealT(
+            type, p.skin, p.relLeft, p.relTop, p.relWidth, p.relHeight, p.align, p.name
+        );
+    }
+    else
+    {
+        w = MyGUI::Gui::getInstance().createWidgetRealT(
+            type, p.skin, p.relLeft, p.relTop, p.relWidth, p.relHeight, p.align, p.layer, p.name
+        );
+    }
+
     if (w)
     {
-        MyGUIBindings::trackLuaCreatedWidget(L, w, nullptr);
+        MyGUIBindings::trackLuaCreatedWidget(L, w, p.parent);
         return MyGUIBindings::pushWidget(L, w);
     }
     lua_pushnil(L);
@@ -195,7 +205,11 @@ void GuiBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
-    registerStaticMethod(L, "Gui", getInstance);
+
+    // Register global class table for static methods
+    lua_newtable(L);
+    registerStaticMethod(L, "getInstance", getInstance);
+    lua_setglobal(L, "Gui");
 }
 
 } // namespace KenshiLua

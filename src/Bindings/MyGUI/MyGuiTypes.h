@@ -23,6 +23,9 @@ void destroyWidgetsBySource(const std::string& source);
 void shutdownMyGui();
 void cleanupWidgetRecursive(MyGUI::Widget* widget);
 
+// Validates if a skin or template exists in SkinManager or ResourceManager, logging a warning if not found
+void validateWidgetSkin(const std::string& type, const std::string& skin);
+
 // Polymorphic widget pusher: detects RTTI type and attaches the exact derived metatable
 int pushWidget(lua_State* L, MyGUI::Widget* widget);
 
