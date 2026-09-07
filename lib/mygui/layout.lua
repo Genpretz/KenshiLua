@@ -27,6 +27,15 @@ local function mergeOptions(defaults, opts)
     return res
 end
 
+local function resolveDefaultSkin(widgetType, customSkin)
+    if customSkin and customSkin ~= "" then
+        return customSkin
+    end
+    return widgetType
+end
+
+Layout.resolveDefaultSkin = resolveDefaultSkin
+
 -- ============================================================================
 -- VBox (Vertical Stacking Box)
 -- ============================================================================
@@ -98,7 +107,8 @@ end
 function VBox:addLabel(text, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or 20
-    local label = self.parent:createWidget("TextBox", skin or "TextBox", self.curX, self.curY, w, h, self.opts.align)
+    local s = resolveDefaultSkin("TextBox", skin)
+    local label = self.parent:createWidget("TextBox", s, self.curX, self.curY, w, h, self.opts.align)
     label:setCaption(text or "")
     self.curY = self.curY + h + self.opts.spacing
     if w > self.maxWidth then self.maxWidth = w end
@@ -116,7 +126,8 @@ end
 function VBox:addButton(caption, onClick, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or self.opts.defaultHeight
-    local btn = self.parent:createWidget("Button", skin or "Button", self.curX, self.curY, w, h, self.opts.align)
+    local s = resolveDefaultSkin("Button", skin)
+    local btn = self.parent:createWidget("Button", s, self.curX, self.curY, w, h, self.opts.align)
     btn:setCaption(caption or "")
     if onClick and type(onClick) == "function" then
         btn:registerCallback("MouseButtonClick", onClick)
@@ -137,7 +148,8 @@ end
 function VBox:addEditBox(defaultText, onChange, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or self.opts.defaultHeight
-    local edit = self.parent:createWidget("EditBox", skin or "EditBox", self.curX, self.curY, w, h, self.opts.align)
+    local s = resolveDefaultSkin("EditBox", skin)
+    local edit = self.parent:createWidget("EditBox", s, self.curX, self.curY, w, h, self.opts.align)
     edit:setCaption(defaultText or "")
     if onChange and type(onChange) == "function" then
         edit:registerCallback("EditTextChange", onChange)
@@ -158,7 +170,8 @@ end
 function VBox:addComboBox(items, onSelect, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or self.opts.defaultHeight
-    local combo = self.parent:createWidget("ComboBox", skin or "ComboBox", self.curX, self.curY, w, h, self.opts.align)
+    local s = resolveDefaultSkin("ComboBox", skin)
+    local combo = self.parent:createWidget("ComboBox", s, self.curX, self.curY, w, h, self.opts.align)
     if items and type(items) == "table" then
         for _, item in ipairs(items) do
             combo:addItem(tostring(item))
@@ -178,26 +191,27 @@ end
 
 --- Creates a horizontal pair row (e.g. Label + EditBox/Value) inside the VBox.
 --- @param labelText string Label text on the left
---- @param rightItem string|userdata Text string or Widget on the right
+--- @param rightContent string|userdata Text string or Widget on the right
 --- @param labelWidth number Optional width of the label column (defaults to 70)
 --- @param totalWidth number Optional total row width
 --- @param rowHeight number Optional row height (defaults to 22)
 --- @return table { label = TextBox, right = Widget }
-function VBox:addRow(labelText, rightItem, labelWidth, totalWidth, rowHeight)
+function VBox:addRow(labelText, rightContent, labelWidth, totalWidth, rowHeight)
     local lw = labelWidth or 70
     local tw = totalWidth or self.opts.defaultWidth
     local rh = rowHeight or 22
     local rw = math.max(20, tw - lw - self.opts.spacing)
 
-    local lbl = self.parent:createWidget("TextBox", "TextBox", self.curX, self.curY, lw, rh, self.opts.align)
+    local s = resolveDefaultSkin("TextBox")
+    local lbl = self.parent:createWidget("TextBox", s, self.curX, self.curY, lw, rh, self.opts.align)
     lbl:setCaption(labelText or "")
 
     local rightWidget = nil
-    if type(rightItem) == "string" then
-        rightWidget = self.parent:createWidget("TextBox", "TextBox", self.curX + lw + self.opts.spacing, self.curY, rw, rh, self.opts.align)
-        rightWidget:setCaption(rightItem)
-    elseif rightItem then
-        rightWidget = rightItem
+    if type(rightContent) == "string" then
+        rightWidget = self.parent:createWidget("TextBox", s, self.curX + lw + self.opts.spacing, self.curY, rw, rh, self.opts.align)
+        rightWidget:setCaption(rightContent)
+    elseif rightContent then
+        rightWidget = rightContent
         rightWidget:setPosition(self.curX + lw + self.opts.spacing, self.curY)
         rightWidget:setSize(rw, rh)
     end
@@ -315,7 +329,8 @@ end
 function HBox:addLabel(text, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or 20
-    local label = self.parent:createWidget("TextBox", skin or "TextBox", self.curX, self.curY, w, h, self.opts.align)
+    local s = resolveDefaultSkin("TextBox", skin)
+    local label = self.parent:createWidget("TextBox", s, self.curX, self.curY, w, h, self.opts.align)
     label:setCaption(text or "")
     self.curX = self.curX + w + self.opts.spacing
     if h > self.maxHeight then self.maxHeight = h end
@@ -327,7 +342,8 @@ end
 function HBox:addButton(caption, onClick, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or self.opts.defaultHeight
-    local btn = self.parent:createWidget("Button", skin or "Button", self.curX, self.curY, w, h, self.opts.align)
+    local s = resolveDefaultSkin("Button", skin)
+    local btn = self.parent:createWidget("Button", s, self.curX, self.curY, w, h, self.opts.align)
     btn:setCaption(caption or "")
     if onClick and type(onClick) == "function" then
         btn:registerCallback("MouseButtonClick", onClick)
@@ -417,12 +433,13 @@ end
 --- @param labelText string Label text
 --- @param rightItem string|userdata String or Widget for second column
 function Grid:addRow(labelText, rightItem)
-    local lbl = self.parent:createWidget("TextBox", "TextBox", 0, 0, self.opts.colWidth, self.opts.rowHeight, self.opts.align)
+    local s = resolveDefaultSkin("TextBox")
+    local lbl = self.parent:createWidget("TextBox", s, 0, 0, self.opts.colWidth, self.opts.rowHeight, self.opts.align)
     lbl:setCaption(labelText or "")
     self:addWidget(lbl)
 
     if type(rightItem) == "string" then
-        local val = self.parent:createWidget("TextBox", "TextBox", 0, 0, self.opts.colWidth, self.opts.rowHeight, self.opts.align)
+        local val = self.parent:createWidget("TextBox", s, 0, 0, self.opts.colWidth, self.opts.rowHeight, self.opts.align)
         val:setCaption(rightItem)
         self:addWidget(val)
     elseif rightItem then
