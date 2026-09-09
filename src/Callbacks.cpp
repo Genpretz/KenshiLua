@@ -236,7 +236,7 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, const CharStats* val)          { pushObject<CharStats>(L, const_cast<CharStats*>(val), CharStatsMetatable()); }
     static inline void pushArg(lua_State* L, Ownerships* val)               { pushObject<Ownerships>(L, val, OwnershipsMetatable()); }
     static inline void pushArg(lua_State* L, const InventoryItemBase* val)  { pushObject<InventoryItemBase>(L, const_cast<InventoryItemBase*>(val), InventoryItemBaseMetatable()); }
-    static inline void pushArg(lua_State* L, const hand& val)               { pushObject<hand>(L, const_cast<hand*>(&val), HandMetatable()); }
+    static inline void pushArg(lua_State* L, const hand& val)               { HandBinding::push(L, val); }
     static inline void pushArg(lua_State* L, const Ogre::Vector3& val)      { pushVector3(L, val); }
     static inline void pushArg(lua_State* L, const Ogre::Quaternion& val)   { pushQuaternion(L, val); }
     static inline void pushArg(lua_State* L, YesNoMaybe val)                { lua_pushinteger(L, static_cast<int>(val.key)); }

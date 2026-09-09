@@ -2,6 +2,7 @@
 #include <kenshi/util/lektor.h>
 #include <kenshi/ModInfo.h>
 #include "Bindings/ModInfoBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Lua/LuaCodec.h"
 #include <string.h>
 
@@ -59,6 +60,18 @@ void lektor_remove_at(lektor<T>& lek, uint32_t index)
 
 namespace KenshiLua
 {
+    template <typename T>
+    inline int pushLektorValue(lua_State* L, T* value, const char* elemMetaName)
+    {
+        return pushObject<T>(L, value, elemMetaName);
+    }
+
+    template <>
+    inline int pushLektorValue<hand>(lua_State* L, hand* value, const char*)
+    {
+        return HandBinding::push(L, *value);
+    }
+
     // One binding per element type T (T = pointer type, e.g. Character*)
     template <typename T>
     struct LektorPtrBinding
@@ -275,7 +288,7 @@ namespace KenshiLua
                 uint32_t i = (uint32_t)lua_tointeger(L, 2);
                 if (i < 1 || i > lek->count) { lua_pushnil(L); return 1; }
                 if (elemMetaName)
-                    return pushObject<T>(L, &lek->stuff[i - 1], elemMetaName);
+                    return pushLektorValue<T>(L, &lek->stuff[i - 1], elemMetaName);
                 else
                 {
                     LuaCodec<T>::push(L, lek->stuff[i - 1], nullptr);
@@ -373,7 +386,7 @@ namespace KenshiLua
             for (uint32_t i = 0; i < lek->count; ++i)
             {
                 if (elemMetaName)
-                    pushObject<T>(L, &lek->stuff[i], elemMetaName);
+                    pushLektorValue<T>(L, &lek->stuff[i], elemMetaName);
                 else
                     LuaCodec<T>::push(L, lek->stuff[i], nullptr);
                 lua_rawseti(L, -2, (int)(i + 1));
@@ -404,7 +417,7 @@ namespace KenshiLua
             if (i > lek->count) return 0;
             lua_pushinteger(L, (lua_Integer)i);
             if (elemMetaName)
-                pushObject<T>(L, &lek->stuff[i - 1], elemMetaName);
+                pushLektorValue<T>(L, &lek->stuff[i - 1], elemMetaName);
             else
                 LuaCodec<T>::push(L, lek->stuff[i - 1], nullptr);
             return 2;
