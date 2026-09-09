@@ -664,7 +664,7 @@ static int GameData_set_activeValues(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
     auto* val = BoostUnorderedMapBinding<std::string, bool>::get(L, 2);
-    if (!val) return luaL_error(L, "Argument 2 to set 'activeValues' must be StringBoolMap");
+    if (!val) return luaL_error(L, "Argument 2 to set 'activeValues' must be boost::unordered::unordered_map<std::string, bool, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy> >");
     instance->activeValues = *val;
     return 0;
 }
@@ -680,7 +680,7 @@ static int GameData_set_bdata(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
     auto* val = BoostUnorderedMapBinding<std::string, bool>::get(L, 2);
-    if (!val) return luaL_error(L, "Argument 2 to set 'bdata' must be StringBoolMap");
+    if (!val) return luaL_error(L, "Argument 2 to set 'bdata' must be boost::unordered::unordered_map<std::string, bool, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<std::string const, bool>, Ogre::GeneralAllocPolicy> >");
     instance->bdata = *val;
     return 0;
 }
@@ -696,7 +696,7 @@ static int GameData_set_sdata(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
     auto* val = BoostUnorderedMapBinding<std::string, std::string>::get(L, 2);
-    if (!val) return luaL_error(L, "Argument 2 to set 'sdata' must be StringStringMap");
+    if (!val) return luaL_error(L, "Argument 2 to set 'sdata' must be boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<std::string const, std::string>, Ogre::GeneralAllocPolicy> >");
     instance->sdata = *val;
     return 0;
 }
@@ -712,7 +712,7 @@ static int GameData_set_idata(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
     auto* val = BoostUnorderedMapBinding<std::string, int>::get(L, 2);
-    if (!val) return luaL_error(L, "Argument 2 to set 'idata' must be StringIntMap");
+    if (!val) return luaL_error(L, "Argument 2 to set 'idata' must be boost::unordered::unordered_map<std::string, int, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<std::string const, int>, Ogre::GeneralAllocPolicy> >");
     instance->idata = *val;
     return 0;
 }
@@ -728,7 +728,7 @@ static int GameData_set_fdata(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
     auto* val = BoostUnorderedMapBinding<std::string, float>::get(L, 2);
-    if (!val) return luaL_error(L, "Argument 2 to set 'fdata' must be StringFloatMap");
+    if (!val) return luaL_error(L, "Argument 2 to set 'fdata' must be boost::unordered::unordered_map<std::string, float, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<std::string const, float>, Ogre::GeneralAllocPolicy> >");
     instance->fdata = *val;
     return 0;
 }
@@ -744,7 +744,7 @@ static int GameData_set_filesdata(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
     auto* val = BoostUnorderedMapBinding<std::string, std::string>::get(L, 2);
-    if (!val) return luaL_error(L, "Argument 2 to set 'filesdata' must be StringStringMap");
+    if (!val) return luaL_error(L, "Argument 2 to set 'filesdata' must be boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<std::string const, std::string>, Ogre::GeneralAllocPolicy> >");
     instance->filesdata = *val;
     return 0;
 }
@@ -760,7 +760,7 @@ static int GameData_set_vecdata(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
     auto* val = BoostUnorderedMapBinding<std::string, Ogre::Vector3>::get(L, 2);
-    if (!val) return luaL_error(L, "Argument 2 to set 'vecdata' must be StringVector3Map");
+    if (!val) return luaL_error(L, "Argument 2 to set 'vecdata' must be boost::unordered::unordered_map<std::string, Ogre::Vector3, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<std::string const, Ogre::Vector3>, Ogre::GeneralAllocPolicy> >");
     instance->vecdata = *val;
     return 0;
 }
@@ -776,7 +776,7 @@ static int GameData_set_quatdata(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
     auto* val = BoostUnorderedMapBinding<std::string, Ogre::Quaternion>::get(L, 2);
-    if (!val) return luaL_error(L, "Argument 2 to set 'quatdata' must be StringQuaternionMap");
+    if (!val) return luaL_error(L, "Argument 2 to set 'quatdata' must be boost::unordered::unordered_map<std::string, Ogre::Quaternion, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<std::string const, Ogre::Quaternion>, Ogre::GeneralAllocPolicy> >");
     instance->quatdata = *val;
     return 0;
 }

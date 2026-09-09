@@ -1461,7 +1461,7 @@ void DialogueBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     DialogLineDataBoolMapBinding::registerBinding(L, "boost_unordered_map<DialogLineData*, bool>", DialogLineDataBinding::getMetatableName(), nullptr);
-    EventRepeatTimersMapBinding::registerBinding(L, "boost_unordered_map<std::string, float>", nullptr, nullptr);
+    EventRepeatTimersMapBinding::registerBinding(L, "std::map<EventTriggerEnum, float>", nullptr, nullptr);
     EventDeliveredStatesMapBinding::registerBinding(L, "boost_unordered_map<std::string, hand>", nullptr, HandBinding::getMetatableName());
     ConversationsMainMapBinding::registerBinding(L, "boost_unordered_map<std::string, DialogChoiceList>", nullptr, DialogChoiceListBinding::getMetatableName());
 
