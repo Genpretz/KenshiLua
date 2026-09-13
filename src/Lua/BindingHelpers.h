@@ -362,6 +362,29 @@ namespace KenshiLua
         lua_setfield(L, -2, name);
     }
 
+    inline void pushGlobalTable(lua_State* L, const char* tableName)
+    {
+        lua_getglobal(L, tableName);
+        if (!lua_istable(L, -1)) {
+            lua_pop(L, 1);
+            lua_newtable(L);
+        }
+    }
+
+    inline void setNestedClassTable(lua_State* L, const char* parentClassName, const char* fieldName)
+    {
+        lua_getglobal(L, parentClassName);
+        if (!lua_istable(L, -1)) {
+            lua_pop(L, 1);
+            lua_newtable(L);
+            lua_pushvalue(L, -1);
+            lua_setglobal(L, parentClassName);
+        }
+        lua_pushvalue(L, -2);
+        lua_setfield(L, -2, fieldName);
+        lua_pop(L, 1);
+    }
+
     inline void registerClass(lua_State* L,
         const char* metatableName,
         const luaL_Reg* metamethods,

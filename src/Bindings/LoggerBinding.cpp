@@ -94,7 +94,7 @@ void LoggerBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Global Logger table for static log calls
-    lua_newtable(L);
+    pushGlobalTable(L, "Logger");
     lua_pushcfunction(L, LoggerBinding::init); lua_setfield(L, -2, "init");
     lua_pushcfunction(L, LoggerBinding::close); lua_setfield(L, -2, "close");
     lua_pushcfunction(L, LoggerBinding::logMessage); lua_setfield(L, -2, "logMessage");

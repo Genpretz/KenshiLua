@@ -51,34 +51,21 @@ def parse_enum_bindings():
         enum_tables = []
         for full_fn, fn_name, fn_body in fn_matches:
             globals_set = re.findall(r'lua_setglobal\(\s*L\s*,\s*"([^"]+)"\s*\);', fn_body)
+            nested_set = re.findall(r'setNestedClassTable\(\s*L\s*,\s*"([^"]+)"\s*,\s*"([^"]+)"\s*\);', fn_body)
+            for parent, field in nested_set:
+                globals_set.append(f"{parent}.{field}")
 
             lines_in_body = fn_body.split("\n")
-            current_category = "Original"
-
             set_enum_entries = []
-            seen_cpp_vals = set()
 
             for line in lines_in_body:
-                l = line.strip()
-                if l.startswith("//") and "alias" in l.lower():
-                    current_category = "Alias"
-                elif l.startswith("//") and "original" in l.lower():
-                    current_category = "Original"
-
                 m = re.search(r'setEnum\(\s*L\s*,\s*"([^"]+)"\s*,\s*([^)]+)\);', line)
                 if m:
                     key = m.group(1).strip()
                     val = m.group(2).strip()
-
-                    cat = current_category
-                    if val in seen_cpp_vals and cat != "Alias":
-                        cat = "Alias"
-                    seen_cpp_vals.add(val)
-
                     set_enum_entries.append({
                         "key": key,
-                        "val": val,
-                        "category": cat
+                        "val": val
                     })
 
             enum_tables.append({
@@ -107,21 +94,36 @@ def generate_markdown(sections):
     md.append("")
     total_enums = sum(len(s['enums']) for s in sections)
     total_values = sum(len(e['entries']) for s in sections for e in s['enums'])
-    md.append(f"Total Enum Registration Functions: **{total_enums}** ({total_values} bound values/aliases) across **{len(sections)}** SDK header files.")
+    md.append(f"Total Enum Registration Functions: **{total_enums}** ({total_values} bound enum values) across **{len(sections)}** SDK header files.")
     md.append("")
     md.append("## Lua Usage & Syntax")
     md.append("")
-    md.append("Enums in KenshiLua are exposed as global tables. You can access individual enum values using standard table dot syntax:")
+    md.append("All enums in KenshiLua use their exact literal C++ names and are exposed as global tables or nested class tables (e.g. `CrimeEnum.CRIME_STEALING` or `MeshDataLookup.Dir.FRONT`).")
     md.append("")
     md.append("```lua")
-    md.append("-- Accessing enum constants:")
+    md.append("-- Accessing enum constants directly:")
     md.append("local prone = ProneState.PS_NORMAL")
-    md.append("-- Using a convenience alias:")
-    md.append("local prone = ProneState.NORMAL")
+    md.append("local crime = CrimeEnum.CRIME_STEALING")
+    md.append("local dir   = MeshDataLookup.Dir.FRONT")
     md.append("")
     md.append("-- Passing to a method or setting a property:")
-    md.append("character.proneState = ProneState.NORMAL")
+    md.append("character.proneState = ProneState.PS_NORMAL")
     md.append("character:setProneState(ProneState.PS_NORMAL)")
+    md.append("```")
+    md.append("")
+    md.append("### Creating Convenient Local Aliases")
+    md.append("")
+    md.append("In Lua, you can easily create your own concise aliases at the top of your scripts for readability and convenience:")
+    md.append("")
+    md.append("```lua")
+    md.append("-- Create local aliases for cleaner code:")
+    md.append("local Crime = CrimeEnum")
+    md.append("local Prone = ProneState")
+    md.append("local Dir   = MeshDataLookup.Dir")
+    md.append("")
+    md.append("if character.crime == Crime.CRIME_STEALING then")
+    md.append("    character:setProneState(Prone.PS_NORMAL)")
+    md.append("end")
     md.append("```")
     md.append("")
     md.append("## Table of Contents")
@@ -144,7 +146,7 @@ def generate_markdown(sections):
 
         for enum_info in sec["enums"]:
             globals_str = ", ".join([f"`{g}`" for g in enum_info["globals"]]) if enum_info["globals"] else f"`{enum_info['func_name']}`"
-            md.append(f"### Global: {globals_str}")
+            md.append(f"### Table: {globals_str}")
             md.append("")
 
             def format_lua_syntax(key):
@@ -152,25 +154,10 @@ def generate_markdown(sections):
                     return "<br>".join([f"`{g}.{key}`" for g in enum_info["globals"]])
                 return f"`{key}`"
 
-            originals = [e for e in enum_info["entries"] if e["category"] == "Original"]
-            aliases = [e for e in enum_info["entries"] if e["category"] == "Alias"]
-
-            if originals:
-                if aliases:
-                    md.append("**Original Enumerators:**")
-                    md.append("")
+            if enum_info["entries"]:
                 md.append("| Lua Syntax | C++ Value / Enumerator |")
                 md.append("| :--- | :--- |")
-                for entry in originals:
-                    md.append(f"| {format_lua_syntax(entry['key'])} | `{entry['val']}` |")
-                md.append("")
-
-            if aliases:
-                md.append("**Aliases:**")
-                md.append("")
-                md.append("| Lua Syntax | C++ Value / Enumerator |")
-                md.append("| :--- | :--- |")
-                for entry in aliases:
+                for entry in enum_info["entries"]:
                     md.append(f"| {format_lua_syntax(entry['key'])} | `{entry['val']}` |")
                 md.append("")
 

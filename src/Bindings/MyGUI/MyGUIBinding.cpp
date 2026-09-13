@@ -1162,7 +1162,7 @@ void MyGUIBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "KeyCode");
 
     // Register ResizingPolicy enum table
-    lua_newtable(L);
+    pushGlobalTable(L, "MyGUI");
     lua_pushinteger(L, (int)MyGUI::ResizingPolicy::Auto);  lua_setfield(L, -2, "Auto");
     lua_pushinteger(L, (int)MyGUI::ResizingPolicy::Fixed); lua_setfield(L, -2, "Fixed");
     lua_pushinteger(L, (int)MyGUI::ResizingPolicy::Fill);  lua_setfield(L, -2, "Fill");

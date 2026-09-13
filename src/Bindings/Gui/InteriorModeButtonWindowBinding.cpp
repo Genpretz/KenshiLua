@@ -482,12 +482,7 @@ void InteriorModeButtonWindowBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_getglobal(L, "InteriorModeButtonWindow");
-    if (!lua_istable(L, -1))
-    {
-        lua_pop(L, 1);
-        lua_newtable(L);
-    }
+    pushGlobalTable(L, "InteriorModeButtonWindow");
     registerStaticMethod(L, "wasTheInteriorLoadedFromASave", InteriorModeButtonWindowBinding::wasTheInteriorLoadedFromASave);
     lua_setglobal(L, "InteriorModeButtonWindow");
 }

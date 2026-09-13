@@ -155,7 +155,7 @@ void RaceLimiterBinding::registerBinding(lua_State* L)
     );
 
     // Register global class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "RaceLimiter");
     registerStaticMethod(L, "getSingleton", RaceLimiterBinding::getSingleton);
     lua_setglobal(L, "RaceLimiter");
 }

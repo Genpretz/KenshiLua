@@ -357,7 +357,7 @@ void PortraitManagerBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "PortraitManager");
     registerStaticMethod(L, "getInstance", PortraitManagerBinding::getInstance);
     lua_setglobal(L, "PortraitManager");
 }

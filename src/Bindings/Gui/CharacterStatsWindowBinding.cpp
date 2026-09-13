@@ -477,12 +477,7 @@ void CharacterStatsWindowBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_getglobal(L, "CharacterStatsWindow");
-    if (!lua_istable(L, -1))
-    {
-        lua_pop(L, 1);
-        lua_newtable(L);
-    }
+    pushGlobalTable(L, "CharacterStatsWindow");
     registerStaticMethod(L, "BuildStats", CharacterStatsWindowBinding::BuildStats);
     registerStaticMethod(L, "addStat", CharacterStatsWindowBinding::addStat);
     registerStaticMethod(L, "getStat", CharacterStatsWindowBinding::getStat);

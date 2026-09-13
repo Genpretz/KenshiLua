@@ -130,24 +130,24 @@ namespace KenshiLua
         if (::ou) {
             pushObject<GameWorld>(L, ::ou, GameWorldBinding::getMetatableName());
             lua_setglobal(L, "ou");
-            pushObject<GameWorld>(L, ::ou, GameWorldBinding::getMetatableName());
-            lua_setglobal(L, "GameWorld");
+            // pushObject<GameWorld>(L, ::ou, GameWorldBinding::getMetatableName());
+            // lua_setglobal(L, "GameWorld");
         }
 
         // PlayerInterface
         if (::ou && ::ou->player) {
             pushObject<PlayerInterface>(L, ::ou->player, PlayerInterfaceBinding::getMetatableName());
             lua_setglobal(L, "player");
-            pushObject<PlayerInterface>(L, ::ou->player, PlayerInterfaceBinding::getMetatableName());
-            lua_setglobal(L, "PlayerInterface");
+            // pushObject<PlayerInterface>(L, ::ou->player, PlayerInterfaceBinding::getMetatableName());
+            // lua_setglobal(L, "PlayerInterface");
         }
 
         // InputHandler
         if (::key) {
             pushObject<InputHandler>(L, ::key, InputHandlerBinding::getMetatableName());
             lua_setglobal(L, "key");
-            pushObject<InputHandler>(L, ::key, InputHandlerBinding::getMetatableName());
-            lua_setglobal(L, "InputHandler");
+            // pushObject<InputHandler>(L, ::key, InputHandlerBinding::getMetatableName());
+            // lua_setglobal(L, "InputHandler");
         }
 
         // RootObjectFactory
@@ -162,24 +162,24 @@ namespace KenshiLua
         if (::con)     { 
             pushObject<GlobalConstants>(L, ::con, GlobalConstantsBinding::getMetatableName()); 
             lua_setglobal(L, "con"); 
-            pushObject<GlobalConstants>(L, ::con, GlobalConstantsBinding::getMetatableName()); 
-            lua_setglobal(L, "GlobalConstants");
+            // pushObject<GlobalConstants>(L, ::con, GlobalConstantsBinding::getMetatableName()); 
+            // lua_setglobal(L, "GlobalConstants");
         }
 
         // OptionsHolder
         if (::options) { 
             pushObject<OptionsHolder>(L, ::options, OptionsHolderBinding::getMetatableName()); 
             lua_setglobal(L, "options"); 
-            pushObject<OptionsHolder>(L, ::options, OptionsHolderBinding::getMetatableName()); 
-            lua_setglobal(L, "OptionsHolder"); 
+            // pushObject<OptionsHolder>(L, ::options, OptionsHolderBinding::getMetatableName()); 
+            // lua_setglobal(L, "OptionsHolder"); 
         }
 
         // ForgottenGUI
         if (::gui)     { 
             pushObject<ForgottenGUI>(L, ::gui, ForgottenGUIBinding::getMetatableName()); 
             lua_setglobal(L, "gui"); 
-            pushObject<ForgottenGUI>(L, ::gui, ForgottenGUIBinding::getMetatableName()); 
-            lua_setglobal(L, "ForgottenGUI");
+            // pushObject<ForgottenGUI>(L, ::gui, ForgottenGUIBinding::getMetatableName()); 
+            // lua_setglobal(L, "ForgottenGUI");
         }
     }
 
