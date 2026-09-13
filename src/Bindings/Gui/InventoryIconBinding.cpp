@@ -203,12 +203,7 @@ void InventoryIconBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_getglobal(L, "InventoryIcon");
-    if (!lua_istable(L, -1))
-    {
-        lua_pop(L, 1);
-        lua_newtable(L);
-    }
+    pushGlobalTable(L, "InventoryIcon");
     registerStaticMethod(L, "createIconImage", InventoryIconBinding::createIconImage);
     registerStaticMethod(L, "getItemSize", InventoryIconBinding::getItemSize);
     registerStaticMethod(L, "getItemPosition", InventoryIconBinding::getItemPosition);

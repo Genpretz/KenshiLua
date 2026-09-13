@@ -164,7 +164,7 @@ void BinaryVersionBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop metatable
 
     // Register global class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "BinaryVersion");
     registerStaticMethod(L, "GetKenshiVersion", BinaryVersionBinding::GetKenshiVersion);
     registerStaticMethod(L, "getKenshiVersion", BinaryVersionBinding::GetKenshiVersion);
     registerStaticMethod(L, "new", BinaryVersionBinding::create);

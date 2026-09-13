@@ -2370,7 +2370,7 @@ void TownBaseBinding::registerBinding(lua_State* L)
     LektorValueBinding<TownBase::ResidentData>::registerBinding(L, "lektor<ResidentData>", TownBase_ResidentDataBinding::getMetatableName());
 
     // Register global class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "TownBase");
     registerStaticMethod(L, "delayedSpawningChecks", TownBaseBinding::delayedSpawningChecks);
     registerStaticMethod(L, "clearDelayedItemLoadingMessages", TownBaseBinding::clearDelayedItemLoadingMessages);
     lua_setglobal(L, "TownBase");

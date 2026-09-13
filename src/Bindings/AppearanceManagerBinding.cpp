@@ -457,7 +457,7 @@ void AppearanceManagerBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop metatable
 
     // Register global class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "AppearanceManager");
     registerStaticMethod(L, "getInstance", AppearanceManagerBinding::getInstance);
     lua_setglobal(L, "AppearanceManager");
 }

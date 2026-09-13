@@ -1554,7 +1554,7 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "ForgottenGUI");
     registerStaticMethod(L, "changeFontSize", ForgottenGUIBinding::changeFontSize);
     lua_setglobal(L, "ForgottenGUI");
 }

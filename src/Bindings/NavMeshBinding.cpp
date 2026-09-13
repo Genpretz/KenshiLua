@@ -643,7 +643,7 @@ void NavMeshBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "NavMesh");
     registerStaticMethod(L, "getUID", NavMeshBinding::getUID);
     registerStaticMethod(L, "hashBuilding", NavMeshBinding::hashBuilding);
     registerStaticMethod(L, "hashInterior", NavMeshBinding::hashInterior);

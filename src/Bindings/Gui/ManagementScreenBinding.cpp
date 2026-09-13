@@ -743,7 +743,7 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "ManagementScreen");
     registerStaticMethod(L, "getSingleton", ManagementScreenBinding::getSingleton);
     registerStaticMethod(L, "printResearch", ManagementScreenBinding::printResearch);
     lua_setglobal(L, "ManagementScreen");

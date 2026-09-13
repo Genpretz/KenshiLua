@@ -836,12 +836,7 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_getglobal(L, "InventoryGUI");
-    if (!lua_istable(L, -1))
-    {
-        lua_pop(L, 1);
-        lua_newtable(L);
-    }
+    pushGlobalTable(L, "InventoryGUI");
     registerStaticMethod(L, "setTradingTown", InventoryGUIBinding::setTradingTown);
     registerStaticMethod(L, "getTradingTown", InventoryGUIBinding::getTradingTown);
     registerStaticMethod(L, "clearTradePartners", InventoryGUIBinding::clearTradePartners);

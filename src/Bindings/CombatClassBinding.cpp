@@ -1889,7 +1889,7 @@ LIGHTUSERDATA DEPENDENCIES:
 */
 
     // Register global table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "CombatClass");
     registerStaticMethod(L,"setup", CombatClassBinding::setup);
     registerStaticMethod(L, "destroy", CombatClassBinding::destroy);
     registerStaticMethod(L, "getCombatEffect", CombatClassBinding::getCombatEffect);

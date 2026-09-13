@@ -64,8 +64,8 @@ namespace KenshiLua
         setEnum(L, "FRONT", MeshDataLookup::Dir::FRONT);
         setEnum(L, "BACK", MeshDataLookup::Dir::BACK);
         setEnum(L, "NUM_DIRS", MeshDataLookup::Dir::NUM_DIRS);
-
-        lua_setglobal(L, "MeshDataLookup");
+        setNestedClassTable(L, "MeshDataLookup", "Dir");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -81,8 +81,8 @@ namespace KenshiLua
         setEnum(L, "Body", AppearanceManager::DataCategory::Body);
         setEnum(L, "Hair", AppearanceManager::DataCategory::Hair);
         setEnum(L, "Personality", AppearanceManager::DataCategory::Personality);
-       
-        lua_setglobal(L, "AppearanceManager_DataCategory");
+        setNestedClassTable(L, "AppearanceManager", "DataCategory");
+        lua_pop(L, 1);
     }
 
     void registerAppearanceManagerGender(lua_State* L)
@@ -91,10 +91,8 @@ namespace KenshiLua
 
         setEnum(L, "MALE", AppearanceManager::Gender::MALE);
         setEnum(L, "FEMALE", AppearanceManager::Gender::FEMALE);
-
-        lua_pushvalue(L, -1); // duplicate the table
-        lua_setglobal(L, "AppearanceManager_Gender"); // original
-        lua_setglobal(L, "Gender"); // alias for convenience
+        setNestedClassTable(L, "AppearanceManager", "Gender");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -103,8 +101,8 @@ namespace KenshiLua
 
     void registerCrimeEnum(lua_State* L)
     {
-        lua_createtable(L, 0, 36);
-    // original
+        lua_createtable(L, 0, 18);
+
         setEnum(L, "CRIME_NONE", CrimeEnum::CRIME_NONE);
         setEnum(L, "CRIME_ENSLAVING", CrimeEnum::CRIME_ENSLAVING);
         setEnum(L, "CRIME_LOCKPICKING", CrimeEnum::CRIME_LOCKPICKING);
@@ -123,40 +121,18 @@ namespace KenshiLua
         setEnum(L, "CRIME_KIDNAPPING", CrimeEnum::CRIME_KIDNAPPING);
         setEnum(L, "CRIME_UNIFORM_THEFT", CrimeEnum::CRIME_UNIFORM_THEFT);
         setEnum(L, "CRIME_END", CrimeEnum::CRIME_END);
-    // aliases
-        setEnum(L, "NONE", CrimeEnum::CRIME_NONE);
-        setEnum(L, "ENSLAVING", CrimeEnum::CRIME_ENSLAVING);
-        setEnum(L, "LOCKPICKING", CrimeEnum::CRIME_LOCKPICKING);
-        setEnum(L, "STEALING", CrimeEnum::CRIME_STEALING);
-        setEnum(L, "MURDER", CrimeEnum::CRIME_MURDER);
-        setEnum(L, "ASSAULT", CrimeEnum::CRIME_ASSAULT);
-        setEnum(L, "ASSAULT_VIP", CrimeEnum::CRIME_ASSAULT_VIP);
-        setEnum(L, "SLAVE_FREEING", CrimeEnum::CRIME_SLAVE_FREEING);
-        setEnum(L, "SMUGGLING", CrimeEnum::CRIME_SMUGGLING);
-        setEnum(L, "TERRORISM", CrimeEnum::CRIME_TERRORISM);
-        setEnum(L, "LOOTING", CrimeEnum::CRIME_LOOTING);
-        setEnum(L, "TRESSPASSING", CrimeEnum::CRIME_TRESSPASSING);
-        setEnum(L, "ESCAPE_PRISON", CrimeEnum::CRIME_ESCAPE_PRISON);
-        setEnum(L, "FENCING", CrimeEnum::CRIME_FENCING);
-        setEnum(L, "FARM_EATING", CrimeEnum::CRIME_FARM_EATING);
-        setEnum(L, "KIDNAPPING", CrimeEnum::CRIME_KIDNAPPING);
-        setEnum(L, "UNIFORM_THEFT", CrimeEnum::CRIME_UNIFORM_THEFT);
-        setEnum(L, "END", CrimeEnum::CRIME_END);
 
         lua_setglobal(L, "CrimeEnum");
-        lua_pushvalue(L, -1); // duplicate the table
-        lua_setglobal(L, "Crime"); // alias for convenience
     }
 
     // ------------------------------------------
     // Building.h
     // ------------------------------------------
 
-        void registerBuildingDesignation(lua_State* L)
+    void registerBuildingDesignation(lua_State* L)
     {
-        lua_createtable(L, 0, 24);
+        lua_createtable(L, 0, 12);
 
-    // original
         setEnum(L, "BD_NONE", BuildingDesignation::BD_NONE);
         setEnum(L, "BD_SHOP", BuildingDesignation::BD_SHOP);
         setEnum(L, "BD_BARRACKS", BuildingDesignation::BD_BARRACKS);
@@ -169,27 +145,14 @@ namespace KenshiLua
         setEnum(L, "BD_RESIDENTIAL", BuildingDesignation::BD_RESIDENTIAL);
         setEnum(L, "BD_SLAVE_STORAGE", BuildingDesignation::BD_SLAVE_STORAGE);
         setEnum(L, "BD_RESIDENTIAL_SMALL", BuildingDesignation::BD_RESIDENTIAL_SMALL);
-    // aliases
-        setEnum(L, "NONE", BuildingDesignation::BD_NONE);
-        setEnum(L, "SHOP", BuildingDesignation::BD_SHOP);
-        setEnum(L, "BARRACKS", BuildingDesignation::BD_BARRACKS);
-        setEnum(L, "BAR", BuildingDesignation::BD_BAR);
-        setEnum(L, "HOSPITAL", BuildingDesignation::BD_HOSPITAL);
-        setEnum(L, "ARMOURY", BuildingDesignation::BD_ARMOURY);
-        setEnum(L, "TREASURE", BuildingDesignation::BD_TREASURE);
-        setEnum(L, "PRISON", BuildingDesignation::BD_PRISON);
-        setEnum(L, "HQ", BuildingDesignation::BD_HQ);
-        setEnum(L, "RESIDENTIAL", BuildingDesignation::BD_RESIDENTIAL);
-        setEnum(L, "SLAVE_STORAGE", BuildingDesignation::BD_SLAVE_STORAGE);
-        setEnum(L, "RESIDENTIAL_SMALL", BuildingDesignation::BD_RESIDENTIAL_SMALL);
-    // global
+
         lua_setglobal(L, "BuildingDesignation");
     }
 
     void registerBuildingClassType(lua_State* L)
     {
-        lua_createtable(L, 0, 28);
-    // original
+        lua_createtable(L, 0, 14);
+
         setEnum(L, "BCTYPE_FLUFF", BuildingClassType::BCTYPE_FLUFF);
         setEnum(L, "BCTYPE_DOOR", BuildingClassType::BCTYPE_DOOR);
         setEnum(L, "BCTYPE_USABLE", BuildingClassType::BCTYPE_USABLE);
@@ -204,21 +167,6 @@ namespace KenshiLua
         setEnum(L, "BCTYPE_LIGHT", BuildingClassType::BCTYPE_LIGHT);
         setEnum(L, "BCTYPE_SHELL_WITH_INTERIOR", BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR);
         setEnum(L, "BCTYPE_FARM", BuildingClassType::BCTYPE_FARM);
-    // aliases
-        setEnum(L, "FLUFF", BuildingClassType::BCTYPE_FLUFF);
-        setEnum(L, "DOOR", BuildingClassType::BCTYPE_DOOR);
-        setEnum(L, "USABLE", BuildingClassType::BCTYPE_USABLE);
-        setEnum(L, "STORAGE", BuildingClassType::BCTYPE_STORAGE);
-        setEnum(L, "PRODUCTION", BuildingClassType::BCTYPE_PRODUCTION);
-        setEnum(L, "RESEARCH", BuildingClassType::BCTYPE_RESEARCH);
-        setEnum(L, "CRAFTING", BuildingClassType::BCTYPE_CRAFTING);
-        setEnum(L, "GATEWAY", BuildingClassType::BCTYPE_GATEWAY);
-        setEnum(L, "TURRET", BuildingClassType::BCTYPE_TURRET);
-        setEnum(L, "WALL", BuildingClassType::BCTYPE_WALL);
-        setEnum(L, "ITEM_FURNACE", BuildingClassType::BCTYPE_ITEM_FURNACE);
-        setEnum(L, "LIGHT", BuildingClassType::BCTYPE_LIGHT);
-        setEnum(L, "SHELL_WITH_INTERIOR", BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR);
-        setEnum(L, "FARM", BuildingClassType::BCTYPE_FARM);
 
         lua_setglobal(L, "BuildingClassType");
     }
@@ -230,36 +178,29 @@ namespace KenshiLua
         setEnum(L, "ANY", BuildingPlacementGroundType::Enum::ANY);
         setEnum(L, "LAND", BuildingPlacementGroundType::Enum::LAND);
         setEnum(L, "WATER", BuildingPlacementGroundType::Enum::WATER);
-
-        lua_setglobal(L, "BuildingPlacementGroundType");
+        setNestedClassTable(L, "BuildingPlacementGroundType", "Enum");
+        lua_pop(L, 1);
     }
 
     void registerPreviewBuildingPlacementResult(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // original
+        lua_createtable(L, 0, 3);
+
         setEnum(L, "PLACEMENT_VALID", PreviewBuilding::PlacementResult::PLACEMENT_VALID);
         setEnum(L, "PLACEMENT_OUTSIDE", PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE);
         setEnum(L, "PLACEMENT_INVALID", PreviewBuilding::PlacementResult::PLACEMENT_INVALID);
-    // aliases
-        setEnum(L, "VALID", PreviewBuilding::PlacementResult::PLACEMENT_VALID);
-        setEnum(L, "OUTSIDE", PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE);
-        setEnum(L, "INVALID", PreviewBuilding::PlacementResult::PLACEMENT_INVALID);
-
-        lua_setglobal(L, "PreviewBuildingPlacementResult");
+        setNestedClassTable(L, "PreviewBuilding", "PlacementResult");
+        lua_pop(L, 1);
     }
 
     void registerPreviewBuildingClassType(lua_State* L)
     {
-        lua_createtable(L, 0, 4);
-    // original
+        lua_createtable(L, 0, 2);
+
         setEnum(L, "PREVIEW_NORMAL", PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL);
         setEnum(L, "PREVIEW_WALL", PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL);
-    // aliases
-        setEnum(L, "NORMAL", PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL);
-        setEnum(L, "WALL", PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL);
-
-        lua_setglobal(L, "PreviewBuildingClassType");
+        setNestedClassTable(L, "PreviewBuilding", "PreviewBuildingClassType");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -268,17 +209,12 @@ namespace KenshiLua
 
     void registerDoorState(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
-    // original
-        setEnum(L, "DOORSTATE_CLOSED", DOORSTATE_CLOSED);
-        setEnum(L, "DOORSTATE_OPEN", DOORSTATE_OPEN);
-        setEnum(L, "DOORSTATE_OPENING", DOORSTATE_OPENING);
-        setEnum(L, "DOORSTATE_CLOSING", DOORSTATE_CLOSING);
-    // aliase
-        setEnum(L, "CLOSED", DOORSTATE_CLOSED);
-        setEnum(L, "OPEN", DOORSTATE_OPEN);
-        setEnum(L, "OPENING", DOORSTATE_OPENING);
-        setEnum(L, "CLOSING", DOORSTATE_CLOSING);
+        lua_createtable(L, 0, 4);
+
+        setEnum(L, "DOORSTATE_CLOSED", DoorState::DOORSTATE_CLOSED);
+        setEnum(L, "DOORSTATE_OPEN", DoorState::DOORSTATE_OPEN);
+        setEnum(L, "DOORSTATE_OPENING", DoorState::DOORSTATE_OPENING);
+        setEnum(L, "DOORSTATE_CLOSING", DoorState::DOORSTATE_CLOSING);
 
         lua_setglobal(L, "DoorState");
     }
@@ -287,12 +223,12 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 4);
 
-        setEnum(L, "CLOSED", DoorStuff::CLOSED);
-        setEnum(L, "OPEN", DoorStuff::OPEN);
-        setEnum(L, "LOCKED", DoorStuff::LOCKED);
-        setEnum(L, "BROKEN", DoorStuff::BROKEN);
-
-        lua_setglobal(L, "DoorStateInitial");
+        setEnum(L, "CLOSED", DoorStuff::DoorStateInitial::CLOSED);
+        setEnum(L, "OPEN", DoorStuff::DoorStateInitial::OPEN);
+        setEnum(L, "LOCKED", DoorStuff::DoorStateInitial::LOCKED);
+        setEnum(L, "BROKEN", DoorStuff::DoorStateInitial::BROKEN);
+        setNestedClassTable(L, "DoorStuff", "DoorStateInitial");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -301,17 +237,12 @@ namespace KenshiLua
 
     void registerCropType(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
-    // original
-        setEnum(L, "CROP_NULL", CROP_NULL);
-        setEnum(L, "CROP_GREEN", CROP_GREEN);
-        setEnum(L, "CROP_ARID", CROP_ARID);
-        setEnum(L, "CROP_SWAMP", CROP_SWAMP);
-    // aliases
-        setEnum(L, "NULL", CROP_NULL);
-        setEnum(L, "GREEN", CROP_GREEN);
-        setEnum(L, "ARID", CROP_ARID);
-        setEnum(L, "SWAMP", CROP_SWAMP);
+        lua_createtable(L, 0, 4);
+
+        setEnum(L, "CROP_NULL", CropType::CROP_NULL);
+        setEnum(L, "CROP_GREEN", CropType::CROP_GREEN);
+        setEnum(L, "CROP_ARID", CropType::CROP_ARID);
+        setEnum(L, "CROP_SWAMP", CropType::CROP_SWAMP);
 
         lua_setglobal(L, "CropType");
     }
@@ -322,19 +253,14 @@ namespace KenshiLua
 
     void registerProductionState(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
-    // original
-        setEnum(L, "PRODUCTION_STARVED", ProductionBuilding::PRODUCTION_STARVED);
-        setEnum(L, "PRODUCTION_FULL", ProductionBuilding::PRODUCTION_FULL);
-        setEnum(L, "PRODUCTION_NORMAL", ProductionBuilding::PRODUCTION_NORMAL);
-        setEnum(L, "PRODUCTION_IMPOSSIBLE", ProductionBuilding::PRODUCTION_IMPOSSIBLE);
-    // aliases
-        setEnum(L, "STARVED", ProductionBuilding::PRODUCTION_STARVED);
-        setEnum(L, "FULL", ProductionBuilding::PRODUCTION_FULL);
-        setEnum(L, "NORMAL", ProductionBuilding::PRODUCTION_NORMAL);
-        setEnum(L, "IMPOSSIBLE", ProductionBuilding::PRODUCTION_IMPOSSIBLE);
+        lua_createtable(L, 0, 4);
 
-        lua_setglobal(L, "ProductionState");
+        setEnum(L, "PRODUCTION_STARVED", ProductionBuilding::ProductionState::PRODUCTION_STARVED);
+        setEnum(L, "PRODUCTION_FULL", ProductionBuilding::ProductionState::PRODUCTION_FULL);
+        setEnum(L, "PRODUCTION_NORMAL", ProductionBuilding::ProductionState::PRODUCTION_NORMAL);
+        setEnum(L, "PRODUCTION_IMPOSSIBLE", ProductionBuilding::ProductionState::PRODUCTION_IMPOSSIBLE);
+        setNestedClassTable(L, "ProductionBuilding", "ProductionState");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -343,19 +269,13 @@ namespace KenshiLua
 
     void registerWallSectionLinkType(lua_State* L)
     {
-        lua_createtable(L, 0, 10);
-    // original    
-        setEnum(L, "WALLTYPE_NORMAL", WALLTYPE_NORMAL);
-        setEnum(L, "WALLTYPE_CONNECTOR", WALLTYPE_CONNECTOR);
-        setEnum(L, "WALLTYPE_LOWER_WEDGE", WALLTYPE_LOWER_WEDGE);
-        setEnum(L, "WALLTYPE_SINGLE", WALLTYPE_SINGLE);
-        setEnum(L, "WALLTYPE_SHORT", WALLTYPE_SHORT);
-    // aliases
-        setEnum(L, "NORMAL", WALLTYPE_NORMAL);
-        setEnum(L, "CONNECTOR", WALLTYPE_CONNECTOR);
-        setEnum(L, "LOWER_WEDGE", WALLTYPE_LOWER_WEDGE);
-        setEnum(L, "SINGLE", WALLTYPE_SINGLE);
-        setEnum(L, "SHORT", WALLTYPE_SHORT);
+        lua_createtable(L, 0, 5);
+
+        setEnum(L, "WALLTYPE_NORMAL", WallSectionLinkType::WALLTYPE_NORMAL);
+        setEnum(L, "WALLTYPE_CONNECTOR", WallSectionLinkType::WALLTYPE_CONNECTOR);
+        setEnum(L, "WALLTYPE_LOWER_WEDGE", WallSectionLinkType::WALLTYPE_LOWER_WEDGE);
+        setEnum(L, "WALLTYPE_SINGLE", WallSectionLinkType::WALLTYPE_SINGLE);
+        setEnum(L, "WALLTYPE_SHORT", WallSectionLinkType::WALLTYPE_SHORT);
 
         lua_setglobal(L, "WallSectionLinkType");
     }
@@ -366,36 +286,25 @@ namespace KenshiLua
 
     void registerProneState(lua_State* L)
     {
-        lua_createtable(L, 0, 10);
-    // original
+        lua_createtable(L, 0, 5);
+
         setEnum(L, "PS_NORMAL", ProneState::PS_NORMAL);
         setEnum(L, "PS_STAYING_LOW", ProneState::PS_STAYING_LOW);
         setEnum(L, "PS_CRIPPLED", ProneState::PS_CRIPPLED);
         setEnum(L, "PS_PLAYING_DEAD", ProneState::PS_PLAYING_DEAD);
         setEnum(L, "PS_KO", ProneState::PS_KO);
-    // aliases
-        setEnum(L, "NORMAL", ProneState::PS_NORMAL);
-        setEnum(L, "STAYING_LOW", ProneState::PS_STAYING_LOW);
-        setEnum(L, "CRIPPLED", ProneState::PS_CRIPPLED);
-        setEnum(L, "PLAYING_DEAD", ProneState::PS_PLAYING_DEAD);
-        setEnum(L, "KO", ProneState::PS_KO);
 
         lua_setglobal(L, "ProneState");
     }
 
     void registerWaterState(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
-    // original
+        lua_createtable(L, 0, 4);
+
         setEnum(L, "NO_WATER", WaterState::Enum::NO_WATER);
         setEnum(L, "VERY_SHALLOW_WATER", WaterState::Enum::VERY_SHALLOW_WATER);
         setEnum(L, "THIGH_DEEP_WATER", WaterState::Enum::THIGH_DEEP_WATER);
         setEnum(L, "DEEP_WATER", WaterState::Enum::DEEP_WATER);
-    // aliases
-        setEnum(L, "NONE", WaterState::Enum::NO_WATER);
-        setEnum(L, "VERY_SHALLOW", WaterState::Enum::VERY_SHALLOW_WATER);
-        setEnum(L, "THIGH_DEEP", WaterState::Enum::THIGH_DEEP_WATER);
-        setEnum(L, "DEEP", WaterState::Enum::DEEP_WATER);
 
         lua_setglobal(L, "WaterState");
     }
@@ -421,8 +330,8 @@ namespace KenshiLua
 
     void registerCharacterPerceptionTagsShortTerm(lua_State* L)
     {
-        lua_createtable(L, 0, 16);
-    // orignal
+        lua_createtable(L, 0, 8);
+
         setEnum(L, "ST_NONE", CharacterPerceptionTags_ShortTerm::ST_NONE);
         setEnum(L, "ST_INTRUDER", CharacterPerceptionTags_ShortTerm::ST_INTRUDER);
         setEnum(L, "ST_AGGRESSOR", CharacterPerceptionTags_ShortTerm::ST_AGGRESSOR);
@@ -431,24 +340,14 @@ namespace KenshiLua
         setEnum(L, "ST_PRISONER", CharacterPerceptionTags_ShortTerm::ST_PRISONER);
         setEnum(L, "ST_HAS_BEEN_LOOTED", CharacterPerceptionTags_ShortTerm::ST_HAS_BEEN_LOOTED);
         setEnum(L, "ST_CRIMINAL", CharacterPerceptionTags_ShortTerm::ST_CRIMINAL);
-    // aliases
-        setEnum(L, "NONE", CharacterPerceptionTags_ShortTerm::ST_NONE);
-        setEnum(L, "INTRUDER", CharacterPerceptionTags_ShortTerm::ST_INTRUDER);
-        setEnum(L, "AGGRESSOR", CharacterPerceptionTags_ShortTerm::ST_AGGRESSOR);
-        setEnum(L, "TEMPORARY_ALLY", CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ALLY);
-        setEnum(L, "TEMPORARY_ENEMY", CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ENEMY);
-        setEnum(L, "PRISONER", CharacterPerceptionTags_ShortTerm::ST_PRISONER);
-        setEnum(L, "HAS_BEEN_LOOTED", CharacterPerceptionTags_ShortTerm::ST_HAS_BEEN_LOOTED);
-        setEnum(L, "CRIMINAL", CharacterPerceptionTags_ShortTerm::ST_CRIMINAL);
 
         lua_setglobal(L, "CharacterPerceptionTags_ShortTerm");
     }
 
-        void registerCharacterPerceptionTagsLongTerm(lua_State* L)
+    void registerCharacterPerceptionTagsLongTerm(lua_State* L)
     {
-        lua_createtable(L, 0, 24);
+        lua_createtable(L, 0, 12);
 
-    // original
         setEnum(L, "LT_NONE", CharacterPerceptionTags_LongTerm::LT_NONE);
         setEnum(L, "LT_MY_INTRUDER", CharacterPerceptionTags_LongTerm::LT_MY_INTRUDER);
         setEnum(L, "LT_MY_LIFESAVER", CharacterPerceptionTags_LongTerm::LT_MY_LIFESAVER);
@@ -461,53 +360,30 @@ namespace KenshiLua
         setEnum(L, "LT_KILLED_MY_FRIEND", CharacterPerceptionTags_LongTerm::LT_KILLED_MY_FRIEND);
         setEnum(L, "LT_I_SCREWED_THIS_GUY", CharacterPerceptionTags_LongTerm::LT_I_SCREWED_THIS_GUY);
         setEnum(L, "LT_MAX", CharacterPerceptionTags_LongTerm::LT_MAX);
-    // aliases
-        setEnum(L, "NONE", CharacterPerceptionTags_LongTerm::LT_NONE);
-        setEnum(L, "MY_INTRUDER", CharacterPerceptionTags_LongTerm::LT_MY_INTRUDER);
-        setEnum(L, "MY_LIFESAVER", CharacterPerceptionTags_LongTerm::LT_MY_LIFESAVER);
-        setEnum(L, "FREED_ME", CharacterPerceptionTags_LongTerm::LT_FREED_ME);
-        setEnum(L, "STOLE_FROM_ME", CharacterPerceptionTags_LongTerm::LT_STOLE_FROM_ME);
-        setEnum(L, "MY_CAPTOR", CharacterPerceptionTags_LongTerm::LT_MY_CAPTOR);
-        setEnum(L, "FRIENDLY_AQUAINTANCE", CharacterPerceptionTags_LongTerm::LT_FRIENDLY_AQUAINTANCE);
-        setEnum(L, "DEFEATED_MY_SQUAD_ONCE", CharacterPerceptionTags_LongTerm::LT_DEFEATED_MY_SQUAD_ONCE);
-        setEnum(L, "SQUAD_LOST_TO_ME_ONCE", CharacterPerceptionTags_LongTerm::LT_SQUAD_LOST_TO_ME_ONCE);
-        setEnum(L, "KILLED_MY_FRIEND", CharacterPerceptionTags_LongTerm::LT_KILLED_MY_FRIEND);
-        setEnum(L, "I_SCREWED_THIS_GUY", CharacterPerceptionTags_LongTerm::LT_I_SCREWED_THIS_GUY);
-        setEnum(L, "MAX", CharacterPerceptionTags_LongTerm::LT_MAX);
-    // global
+
         lua_setglobal(L, "CharacterPerceptionTags_LongTerm");
     }
 
     void registerSoundRange(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // original
+        lua_createtable(L, 0, 3);
+
         setEnum(L, "SOUNDRANGE_SHORT", SoundRange::SOUNDRANGE_SHORT);
         setEnum(L, "SOUNDRANGE_LONG", SoundRange::SOUNDRANGE_LONG);
         setEnum(L, "SOUNDRANGE_ALWAYS", SoundRange::SOUNDRANGE_ALWAYS);
-    // aliases
-        setEnum(L, "SHORT", SoundRange::SOUNDRANGE_SHORT);
-        setEnum(L, "LONG", SoundRange::SOUNDRANGE_LONG);
-        setEnum(L, "ALWAYS", SoundRange::SOUNDRANGE_ALWAYS);
 
         lua_setglobal(L, "SoundRange");
     }
 
     void registerSquadMemberType(lua_State* L)
     {
-        lua_createtable(L, 0, 10);
-    // original
+        lua_createtable(L, 0, 5);
+
         setEnum(L, "SQUAD_1", SquadMemberType::SQUAD_1);
         setEnum(L, "SQUAD_2", SquadMemberType::SQUAD_2);
         setEnum(L, "SQUAD_LEADER", SquadMemberType::SQUAD_LEADER);
         setEnum(L, "SQUAD_SIGNALS_PLAN", SquadMemberType::SQUAD_SIGNALS_PLAN);
         setEnum(L, "SQUAD_SLAVE", SquadMemberType::SQUAD_SLAVE);
-    // aliases
-        setEnum(L, "1", SquadMemberType::SQUAD_1);
-        setEnum(L, "2", SquadMemberType::SQUAD_2);
-        setEnum(L, "LEADER", SquadMemberType::SQUAD_LEADER);
-        setEnum(L, "SIGNALS_PLAN", SquadMemberType::SQUAD_SIGNALS_PLAN);
-        setEnum(L, "SLAVE", SquadMemberType::SQUAD_SLAVE);
 
         lua_setglobal(L, "SquadMemberType");
     }
@@ -534,32 +410,24 @@ namespace KenshiLua
 
     void registerDisguiseGUIFeedback(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // orignal
-        setEnum(L, "DGF_SAME_FACTION", Character::DGF_SAME_FACTION);
-        setEnum(L, "DGF_MY_SLAVE", Character::DGF_MY_SLAVE);
-        setEnum(L, "DGF_I_HATE_YOU", Character::DGF_I_HATE_YOU);
-    // aliases
-        setEnum(L, "SAME_FACTION", Character::DGF_SAME_FACTION);
-        setEnum(L, "MY_SLAVE", Character::DGF_MY_SLAVE);
-        setEnum(L, "I_HATE_YOU", Character::DGF_I_HATE_YOU);
+        lua_createtable(L, 0, 3);
 
-        lua_setglobal(L, "DisguiseGUIFeedback");
+        setEnum(L, "DGF_SAME_FACTION", Character::DisguiseGUIFeedback::DGF_SAME_FACTION);
+        setEnum(L, "DGF_MY_SLAVE", Character::DisguiseGUIFeedback::DGF_MY_SLAVE);
+        setEnum(L, "DGF_I_HATE_YOU", Character::DisguiseGUIFeedback::DGF_I_HATE_YOU);
+        setNestedClassTable(L, "Character", "DisguiseGUIFeedback");
+        lua_pop(L, 1);
     }
 
     void registerCharMessage(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // original
-        setEnum(L, "CHARMESSAGE_NONE", Character::CHARMESSAGE_NONE);
-        setEnum(L, "CHARMESSAGE_CARRY", Character::CHARMESSAGE_CARRY);
-        setEnum(L, "CHARMESSAGE_CAGE", Character::CHARMESSAGE_CAGE);
-    // aliases
-        setEnum(L, "NONE", Character::CHARMESSAGE_NONE);
-        setEnum(L, "CARRY", Character::CHARMESSAGE_CARRY);
-        setEnum(L, "CAGE", Character::CHARMESSAGE_CAGE);
+        lua_createtable(L, 0, 3);
 
-        lua_setglobal(L, "CharMessage");
+        setEnum(L, "CHARMESSAGE_NONE", Character::CharMessage::CHARMESSAGE_NONE);
+        setEnum(L, "CHARMESSAGE_CARRY", Character::CharMessage::CHARMESSAGE_CARRY);
+        setEnum(L, "CHARMESSAGE_CAGE", Character::CharMessage::CHARMESSAGE_CAGE);
+        setNestedClassTable(L, "Character", "CharMessage");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -569,15 +437,16 @@ namespace KenshiLua
     void registerCharacterStatsWindowGroup(lua_State* L)
     {
         lua_createtable(L, 0, 8);
-        setEnum(L, "NONE", CharacterStatsWindow::StatGroup::NONE);
-        setEnum(L, "WEAPONS", CharacterStatsWindow::StatGroup::WEAPONS);
-        setEnum(L, "COMBAT", CharacterStatsWindow::StatGroup::COMBAT);
-        setEnum(L, "THIEVERY", CharacterStatsWindow::StatGroup::THIEVERY);
-        setEnum(L, "ATHLETICS", CharacterStatsWindow::StatGroup::ATHLETICS);
-        setEnum(L, "SCIENCES", CharacterStatsWindow::StatGroup::SCIENCES);
-        setEnum(L, "TRADES", CharacterStatsWindow::StatGroup::TRADES);
-        setEnum(L, "RANGED", CharacterStatsWindow::StatGroup::RANGED);
-        lua_setglobal(L, "StatGroup");
+        setEnum(L, "NONE", CharacterStatsWindow::StatGroup::Group::NONE);
+        setEnum(L, "WEAPONS", CharacterStatsWindow::StatGroup::Group::WEAPONS);
+        setEnum(L, "COMBAT", CharacterStatsWindow::StatGroup::Group::COMBAT);
+        setEnum(L, "THIEVERY", CharacterStatsWindow::StatGroup::Group::THIEVERY);
+        setEnum(L, "ATHLETICS", CharacterStatsWindow::StatGroup::Group::ATHLETICS);
+        setEnum(L, "SCIENCES", CharacterStatsWindow::StatGroup::Group::SCIENCES);
+        setEnum(L, "TRADES", CharacterStatsWindow::StatGroup::Group::TRADES);
+        setEnum(L, "RANGED", CharacterStatsWindow::StatGroup::Group::RANGED);
+        setNestedClassTable(L, "CharacterStatsWindow", "StatGroup");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -586,27 +455,22 @@ namespace KenshiLua
 
     void registerUpdatePriority(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // orignal
+        lua_createtable(L, 0, 3);
+
         setEnum(L, "LOW_PRIORITY", UpdatePriority::LOW_PRIORITY);
         setEnum(L, "MED_PRIORITY", UpdatePriority::MED_PRIORITY);
         setEnum(L, "HIGH_PRIORITY", UpdatePriority::HIGH_PRIORITY);
-    // aliases
-        setEnum(L, "LOW", UpdatePriority::LOW_PRIORITY);
-        setEnum(L, "MED", UpdatePriority::MED_PRIORITY);
-        setEnum(L, "HIGH", UpdatePriority::HIGH_PRIORITY);
 
         lua_setglobal(L, "UpdatePriority");
     }
 
     void registerNxControllerAction(lua_State* L)
     {
-        lua_createtable(L, 0, 4);
+        lua_createtable(L, 0, 2);
+
         setEnum(L, "NX_ACTION_NONE", NxControllerAction::NX_ACTION_NONE);
         setEnum(L, "NX_ACTION_PUSH", NxControllerAction::NX_ACTION_PUSH);
-        setEnum(L, "NONE", NxControllerAction::NX_ACTION_NONE);
-        setEnum(L, "PUSH", NxControllerAction::NX_ACTION_PUSH);
-    // global    
+
         lua_setglobal(L, "NxControllerAction");
     }
 
@@ -616,37 +480,23 @@ namespace KenshiLua
 
     void registerDataPanelLineLineType(lua_State* L)
     {
-        lua_createtable(L, 0, 26);
-    // original
-        setEnum(L, "DPL_BASE", DataPanelLine::DPL_BASE);
-        setEnum(L, "DPL_MEDICAL", DataPanelLine::DPL_MEDICAL);
-        setEnum(L, "DPL_FACTION", DataPanelLine::DPL_FACTION);
-        setEnum(L, "DPL_RESEARCH", DataPanelLine::DPL_RESEARCH);
-        setEnum(L, "DPL_BUTTON", DataPanelLine::DPL_BUTTON);
-        setEnum(L, "DPL_EDIT", DataPanelLine::DPL_EDIT);
-        setEnum(L, "DPL_CHECK", DataPanelLine::DPL_CHECK);
-        setEnum(L, "DPL_DROPBOX", DataPanelLine::DPL_DROPBOX);
-        setEnum(L, "DPL_TEXT", DataPanelLine::DPL_TEXT);
-        setEnum(L, "DPL_TEXT_EDIT", DataPanelLine::DPL_TEXT_EDIT);
-        setEnum(L, "DPL_SLIDER", DataPanelLine::DPL_SLIDER);
-        setEnum(L, "DPL_PROGRESS", DataPanelLine::DPL_PROGRESS);
-        setEnum(L, "DPL_CUSTOM", DataPanelLine::DPL_CUSTOM);
-    // aliases
-        setEnum(L, "BASE", DataPanelLine::DPL_BASE);
-        setEnum(L, "MEDICAL", DataPanelLine::DPL_MEDICAL);
-        setEnum(L, "FACTION", DataPanelLine::DPL_FACTION);
-        setEnum(L, "RESEARCH", DataPanelLine::DPL_RESEARCH);
-        setEnum(L, "BUTTON", DataPanelLine::DPL_BUTTON);
-        setEnum(L, "EDIT", DataPanelLine::DPL_EDIT);
-        setEnum(L, "CHECK", DataPanelLine::DPL_CHECK);
-        setEnum(L, "DROPBOX", DataPanelLine::DPL_DROPBOX);
-        setEnum(L, "TEXT", DataPanelLine::DPL_TEXT);
-        setEnum(L, "TEXT_EDIT", DataPanelLine::DPL_TEXT_EDIT);
-        setEnum(L, "SLIDER", DataPanelLine::DPL_SLIDER);
-        setEnum(L, "PROGRESS", DataPanelLine::DPL_PROGRESS);
-        setEnum(L, "CUSTOM", DataPanelLine::DPL_CUSTOM);
-    // global
-        lua_setglobal(L, "DataPanelsLineType");
+        lua_createtable(L, 0, 13);
+
+        setEnum(L, "DPL_BASE", DataPanelLine::LineType::DPL_BASE);
+        setEnum(L, "DPL_MEDICAL", DataPanelLine::LineType::DPL_MEDICAL);
+        setEnum(L, "DPL_FACTION", DataPanelLine::LineType::DPL_FACTION);
+        setEnum(L, "DPL_RESEARCH", DataPanelLine::LineType::DPL_RESEARCH);
+        setEnum(L, "DPL_BUTTON", DataPanelLine::LineType::DPL_BUTTON);
+        setEnum(L, "DPL_EDIT", DataPanelLine::LineType::DPL_EDIT);
+        setEnum(L, "DPL_CHECK", DataPanelLine::LineType::DPL_CHECK);
+        setEnum(L, "DPL_DROPBOX", DataPanelLine::LineType::DPL_DROPBOX);
+        setEnum(L, "DPL_TEXT", DataPanelLine::LineType::DPL_TEXT);
+        setEnum(L, "DPL_TEXT_EDIT", DataPanelLine::LineType::DPL_TEXT_EDIT);
+        setEnum(L, "DPL_SLIDER", DataPanelLine::LineType::DPL_SLIDER);
+        setEnum(L, "DPL_PROGRESS", DataPanelLine::LineType::DPL_PROGRESS);
+        setEnum(L, "DPL_CUSTOM", DataPanelLine::LineType::DPL_CUSTOM);
+        setNestedClassTable(L, "DataPanelLine", "LineType");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -655,64 +505,23 @@ namespace KenshiLua
 
     void registerTalker(lua_State* L)
     {
-        lua_createtable(L, 0, 16);
-    // original
-        setEnum(L, "T_ME", T_ME);
-        setEnum(L, "T_TARGET", T_TARGET);
-        setEnum(L, "T_TARGET_IF_PLAYER", T_TARGET_IF_PLAYER);
-        setEnum(L, "T_INTERJECTOR1", T_INTERJECTOR1);
-        setEnum(L, "T_INTERJECTOR2", T_INTERJECTOR2);
-        setEnum(L, "T_INTERJECTOR3", T_INTERJECTOR3);
-        setEnum(L, "T_WHOLE_SQUAD", T_WHOLE_SQUAD);
-        setEnum(L, "T_TARGET_WITH_RACE", T_TARGET_WITH_RACE);
+        lua_createtable(L, 0, 8);
 
-        setEnum(L, "ME", T_ME);
-        setEnum(L, "TARGET", T_TARGET);
-        setEnum(L, "TARGET_IF_PLAYER", T_TARGET_IF_PLAYER);
-        setEnum(L, "INTERJECTOR1", T_INTERJECTOR1);
-        setEnum(L, "INTERJECTOR2", T_INTERJECTOR2);
-        setEnum(L, "INTERJECTOR3", T_INTERJECTOR3);
-        setEnum(L, "WHOLE_SQUAD", T_WHOLE_SQUAD);
-        setEnum(L, "TARGET_WITH_RACE", T_TARGET_WITH_RACE);
+        setEnum(L, "T_ME", TalkerEnum::T_ME);
+        setEnum(L, "T_TARGET", TalkerEnum::T_TARGET);
+        setEnum(L, "T_TARGET_IF_PLAYER", TalkerEnum::T_TARGET_IF_PLAYER);
+        setEnum(L, "T_INTERJECTOR1", TalkerEnum::T_INTERJECTOR1);
+        setEnum(L, "T_INTERJECTOR2", TalkerEnum::T_INTERJECTOR2);
+        setEnum(L, "T_INTERJECTOR3", TalkerEnum::T_INTERJECTOR3);
+        setEnum(L, "T_WHOLE_SQUAD", TalkerEnum::T_WHOLE_SQUAD);
+        setEnum(L, "T_TARGET_WITH_RACE", TalkerEnum::T_TARGET_WITH_RACE);
 
-        lua_pushvalue(L, -1);
-        lua_setglobal(L, "TalkerEnum"); // original
-        lua_setglobal(L, "Talker"); // alias for convenience
+        lua_setglobal(L, "TalkerEnum");
     }
-
-    // void registerTalkerEnum(lua_State* L)
-    // {
-    //     lua_newtable(L);
-    //     setEnum(L, "T_ME", T_ME);
-    //     setEnum(L, "T_TARGET", T_TARGET);
-    //     setEnum(L, "T_TARGET_IF_PLAYER", T_TARGET_IF_PLAYER);
-    //     setEnum(L, "T_INTERJECTOR1", T_INTERJECTOR1);
-    //     setEnum(L, "T_INTERJECTOR2", T_INTERJECTOR2);
-    //     setEnum(L, "T_INTERJECTOR3", T_INTERJECTOR3);
-    //     setEnum(L, "T_WHOLE_SQUAD", T_WHOLE_SQUAD);
-    //     setEnum(L, "T_TARGET_WITH_RACE", T_TARGET_WITH_RACE);
-
-    //     lua_setglobal(L, "TalkerEnum"); // original
-    // }
-
-    // void registerTalker(lua_State* L)
-    // {
-    //     lua_newtable(L);
-    //     setEnum(L, "ME", T_ME);
-    //     setEnum(L, "TARGET", T_TARGET);
-    //     setEnum(L, "TARGET_IF_PLAYER", T_TARGET_IF_PLAYER);
-    //     setEnum(L, "INTERJECTOR1", T_INTERJECTOR1);
-    //     setEnum(L, "INTERJECTOR2", T_INTERJECTOR2);
-    //     setEnum(L, "INTERJECTOR3", T_INTERJECTOR3);
-    //     setEnum(L, "WHOLE_SQUAD", T_WHOLE_SQUAD);
-    //     setEnum(L, "TARGET_WITH_RACE", T_TARGET_WITH_RACE);
-
-    //     lua_setglobal(L, "Talker"); // alias for convenience
-    // }
 
     void registerDialogueDT_MSG(lua_State* L)
     {
-        lua_newtable(L);
+        lua_createtable(L, 0, 7);
 
         setEnum(L, "DT_NONE", Dialogue::DT_MSG::DT_NONE);
         setEnum(L, "DT_END_DIALOG", Dialogue::DT_MSG::DT_END_DIALOG);
@@ -721,132 +530,68 @@ namespace KenshiLua
         setEnum(L, "DT_CLEAR_RESPONSES", Dialogue::DT_MSG::DT_CLEAR_RESPONSES);
         setEnum(L, "DT_SET_RESPONSES", Dialogue::DT_MSG::DT_SET_RESPONSES);
         setEnum(L, "DT_SET_NPC_REPLY", Dialogue::DT_MSG::DT_SET_NPC_REPLY);
-
-        setEnum(L, "NONE", Dialogue::DT_MSG::DT_NONE);
-        setEnum(L, "END_DIALOG", Dialogue::DT_MSG::DT_END_DIALOG);
-        setEnum(L, "OPENWINDOW", Dialogue::DT_MSG::DT_OPENWINDOW);
-        setEnum(L, "CLOSEWINDOW", Dialogue::DT_MSG::DT_CLOSEWINDOW);
-        setEnum(L, "CLEAR_RESPONSES", Dialogue::DT_MSG::DT_CLEAR_RESPONSES);
-        setEnum(L, "SET_RESPONSES", Dialogue::DT_MSG::DT_SET_RESPONSES);
-        setEnum(L, "SET_NPC_REPLY", Dialogue::DT_MSG::DT_SET_NPC_REPLY);
-
-        lua_pushvalue(L, -1);
-        lua_setglobal(L, "Dialogue_DT_MSG");
-        lua_setglobal(L, "DT_MSG");
+        setNestedClassTable(L, "Dialogue", "DT_MSG");
+        lua_pop(L, 1);
     }
 
-    void registerDialogueAction(lua_State* L)
+    void registerDialogActionEnum(lua_State* L)
     {
-        lua_createtable(L, 0, 104);
+        lua_createtable(L, 0, 52);
 
-    // original
-        setEnum(L, "DA_NONE", DA_NONE);
-        setEnum(L, "DA_TRADE", DA_TRADE);
-        setEnum(L, "DA_TALK_TO_LEADER", DA_TALK_TO_LEADER);
-        setEnum(L, "DA_JOIN_SQUAD_WITH_EDIT", DA_JOIN_SQUAD_WITH_EDIT);
-        setEnum(L, "DA_AFFECT_RELATIONS", DA_AFFECT_RELATIONS);
-        setEnum(L, "DA_AFFECT_REPUTATION", DA_AFFECT_REPUTATION);
-        setEnum(L, "DA_ATTACK_CHASE_FOREVER", DA_ATTACK_CHASE_FOREVER);
-        setEnum(L, "DA_GO_HOME", DA_GO_HOME);
-        setEnum(L, "DA_TAKE_MONEY", DA_TAKE_MONEY);
-        setEnum(L, "DA_GIVE_MONEY", DA_GIVE_MONEY);
-        setEnum(L, "DA_PAY_BOUNTY", DA_PAY_BOUNTY);
-        setEnum(L, "DA_CHARACTER_EDITOR", DA_CHARACTER_EDITOR);
-        setEnum(L, "DA_FORCE_SPEECH_TIMER", DA_FORCE_SPEECH_TIMER);
-        setEnum(L, "DA_DECLARE_WAR", DA_DECLARE_WAR);
-        setEnum(L, "DA_END_WAR", DA_END_WAR);
-        setEnum(L, "DA_CLEAR_AI", DA_CLEAR_AI);
-        setEnum(L, "DA_FOLLOW_WHILE_TALKING", DA_FOLLOW_WHILE_TALKING);
-        setEnum(L, "DA_THUG_HUNTER", DA_THUG_HUNTER);
-        setEnum(L, "DA_JOIN_SQUAD_FAST", DA_JOIN_SQUAD_FAST);
-        setEnum(L, "DA_REMEMBER_CHARACTER", DA_REMEMBER_CHARACTER);
-        setEnum(L, "DA_FLAG_TEMP_ALLY", DA_FLAG_TEMP_ALLY);
-        setEnum(L, "DA_FLAG_TEMP_ENEMY", DA_FLAG_TEMP_ENEMY);
-        setEnum(L, "DA_MATES_KILL_ME", DA_MATES_KILL_ME);
-        setEnum(L, "DA_MAKE_TARGET_RUN_FASTER", DA_MAKE_TARGET_RUN_FASTER);
-        setEnum(L, "DA_GIVE_TARGET_MY_SLAVES", DA_GIVE_TARGET_MY_SLAVES);
-        setEnum(L, "DA_TAG_ESCAPED_SLAVE", DA_TAG_ESCAPED_SLAVE);
-        setEnum(L, "DA_FREE_TARGET_SLAVE", DA_FREE_TARGET_SLAVE);
-        setEnum(L, "DA_MERGE_WITH_SIMILAR_SQUADS", DA_MERGE_WITH_SIMILAR_SQUADS);
-        setEnum(L, "DA_SEPARATE_TO_MY_OWN_SQUAD", DA_SEPARATE_TO_MY_OWN_SQUAD);
-        setEnum(L, "DA_ARREST_TARGET", DA_ARREST_TARGET);
-        setEnum(L, "DA_ARREST_TARGETS_CARRIED_PERSON", DA_ARREST_TARGETS_CARRIED_PERSON);
-        setEnum(L, "DA_ATTACK_TOWN", DA_ATTACK_TOWN);
-        setEnum(L, "DA_ASSIGN_BOUNTY", DA_ASSIGN_BOUNTY);
-        setEnum(L, "DA_CRIME_ALARM", DA_CRIME_ALARM);
-        setEnum(L, "DA_RUN_AWAY", DA_RUN_AWAY);
-        setEnum(L, "DA_INCREASE_FACTION_RANK", DA_INCREASE_FACTION_RANK);
-        setEnum(L, "DA_LOCK_THIS_DIALOG", DA_LOCK_THIS_DIALOG);
-        setEnum(L, "DA_ASSAULT_PHASE", DA_ASSAULT_PHASE);
-        setEnum(L, "DA_RETREAT_PHASE", DA_RETREAT_PHASE);
-        setEnum(L, "DA_VICTORY_PHASE", DA_VICTORY_PHASE);
-        setEnum(L, "DA_ENSLAVE_TARGETS_CARRIED_PERSON", DA_ENSLAVE_TARGETS_CARRIED_PERSON);
-        setEnum(L, "DA_CLEAR_BOUNTY", DA_CLEAR_BOUNTY);
-        setEnum(L, "DA_PLAYER_SELL_PRISONERS", DA_PLAYER_SELL_PRISONERS);
-        setEnum(L, "DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE", DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
-        setEnum(L, "DA_SUMMON_MY_SQUAD", DA_SUMMON_MY_SQUAD);
-        setEnum(L, "DA_REMOVE_SLAVE_STATUS", DA_REMOVE_SLAVE_STATUS);
-        setEnum(L, "DA_OPEN_NEAREST_GATE", DA_OPEN_NEAREST_GATE);
-        setEnum(L, "DA_ATTACK_STAY_NEAR_HOME", DA_ATTACK_STAY_NEAR_HOME);
-        setEnum(L, "DA_MASSIVE_ALARM", DA_MASSIVE_ALARM);
-        setEnum(L, "DA_ATTACK_IF_NO_COEXIST", DA_ATTACK_IF_NO_COEXIST);
-        setEnum(L, "DA_KNOCKOUT", DA_KNOCKOUT);
-        setEnum(L, "DA_END", DA_END);
-    // aliases
-        setEnum(L, "NONE", DA_NONE);
-        setEnum(L, "TRADE", DA_TRADE);
-        setEnum(L, "TALK_TO_LEADER", DA_TALK_TO_LEADER);
-        setEnum(L, "JOIN_SQUAD_WITH_EDIT", DA_JOIN_SQUAD_WITH_EDIT);
-        setEnum(L, "AFFECT_RELATIONS", DA_AFFECT_RELATIONS);
-        setEnum(L, "AFFECT_REPUTATION", DA_AFFECT_REPUTATION);
-        setEnum(L, "ATTACK_CHASE_FOREVER", DA_ATTACK_CHASE_FOREVER);
-        setEnum(L, "GO_HOME", DA_GO_HOME);
-        setEnum(L, "TAKE_MONEY", DA_TAKE_MONEY);
-        setEnum(L, "GIVE_MONEY", DA_GIVE_MONEY);
-        setEnum(L, "PAY_BOUNTY", DA_PAY_BOUNTY);
-        setEnum(L, "CHARACTER_EDITOR", DA_CHARACTER_EDITOR);
-        setEnum(L, "FORCE_SPEECH_TIMER", DA_FORCE_SPEECH_TIMER);
-        setEnum(L, "DECLARE_WAR", DA_DECLARE_WAR);
-        setEnum(L, "END_WAR", DA_END_WAR);
-        setEnum(L, "CLEAR_AI", DA_CLEAR_AI);
-        setEnum(L, "FOLLOW_WHILE_TALKING", DA_FOLLOW_WHILE_TALKING);
-        setEnum(L, "THUG_HUNTER", DA_THUG_HUNTER);
-        setEnum(L, "JOIN_SQUAD_FAST", DA_JOIN_SQUAD_FAST);
-        setEnum(L, "REMEMBER_CHARACTER", DA_REMEMBER_CHARACTER);
-        setEnum(L, "FLAG_TEMP_ALLY", DA_FLAG_TEMP_ALLY);
-        setEnum(L, "FLAG_TEMP_ENEMY", DA_FLAG_TEMP_ENEMY);
-        setEnum(L, "MATES_KILL_ME", DA_MATES_KILL_ME);
-        setEnum(L, "MAKE_TARGET_RUN_FASTER", DA_MAKE_TARGET_RUN_FASTER);
-        setEnum(L, "GIVE_TARGET_MY_SLAVES", DA_GIVE_TARGET_MY_SLAVES);
-        setEnum(L, "TAG_ESCAPED_SLAVE", DA_TAG_ESCAPED_SLAVE);
-        setEnum(L, "FREE_TARGET_SLAVE", DA_FREE_TARGET_SLAVE);
-        setEnum(L, "MERGE_WITH_SIMILAR_SQUADS", DA_MERGE_WITH_SIMILAR_SQUADS);
-        setEnum(L, "SEPARATE_TO_MY_OWN_SQUAD", DA_SEPARATE_TO_MY_OWN_SQUAD);
-        setEnum(L, "ARREST_TARGET", DA_ARREST_TARGET);
-        setEnum(L, "ARREST_TARGETS_CARRIED_PERSON", DA_ARREST_TARGETS_CARRIED_PERSON);
-        setEnum(L, "ATTACK_TOWN", DA_ATTACK_TOWN);
-        setEnum(L, "ASSIGN_BOUNTY", DA_ASSIGN_BOUNTY);
-        setEnum(L, "CRIME_ALARM", DA_CRIME_ALARM);
-        setEnum(L, "RUN_AWAY", DA_RUN_AWAY);
-        setEnum(L, "INCREASE_FACTION_RANK", DA_INCREASE_FACTION_RANK);
-        setEnum(L, "LOCK_THIS_DIALOG", DA_LOCK_THIS_DIALOG);
-        setEnum(L, "ASSAULT_PHASE", DA_ASSAULT_PHASE);
-        setEnum(L, "RETREAT_PHASE", DA_RETREAT_PHASE);
-        setEnum(L, "VICTORY_PHASE", DA_VICTORY_PHASE);
-        setEnum(L, "ENSLAVE_TARGETS_CARRIED_PERSON", DA_ENSLAVE_TARGETS_CARRIED_PERSON);
-        setEnum(L, "CLEAR_BOUNTY", DA_CLEAR_BOUNTY);
-        setEnum(L, "PLAYER_SELL_PRISONERS", DA_PLAYER_SELL_PRISONERS);
-        setEnum(L, "PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE", DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
-        setEnum(L, "SUMMON_MY_SQUAD", DA_SUMMON_MY_SQUAD);
-        setEnum(L, "REMOVE_SLAVE_STATUS", DA_REMOVE_SLAVE_STATUS);
-        setEnum(L, "OPEN_NEAREST_GATE", DA_OPEN_NEAREST_GATE);
-        setEnum(L, "ATTACK_STAY_NEAR_HOME", DA_ATTACK_STAY_NEAR_HOME);
-        setEnum(L, "MASSIVE_ALARM", DA_MASSIVE_ALARM);
-        setEnum(L, "ATTACK_IF_NO_COEXIST", DA_ATTACK_IF_NO_COEXIST);
-        setEnum(L, "KNOCKOUT", DA_KNOCKOUT);
-        setEnum(L, "END", DA_END);
-    // global
-        lua_setglobal(L, "DialogueAction");
+        setEnum(L, "DA_NONE", DialogActionEnum::DA_NONE);
+        setEnum(L, "DA_TRADE", DialogActionEnum::DA_TRADE);
+        setEnum(L, "DA_TALK_TO_LEADER", DialogActionEnum::DA_TALK_TO_LEADER);
+        setEnum(L, "DA_JOIN_SQUAD_WITH_EDIT", DialogActionEnum::DA_JOIN_SQUAD_WITH_EDIT);
+        setEnum(L, "DA_AFFECT_RELATIONS", DialogActionEnum::DA_AFFECT_RELATIONS);
+        setEnum(L, "DA_AFFECT_REPUTATION", DialogActionEnum::DA_AFFECT_REPUTATION);
+        setEnum(L, "DA_ATTACK_CHASE_FOREVER", DialogActionEnum::DA_ATTACK_CHASE_FOREVER);
+        setEnum(L, "DA_GO_HOME", DialogActionEnum::DA_GO_HOME);
+        setEnum(L, "DA_TAKE_MONEY", DialogActionEnum::DA_TAKE_MONEY);
+        setEnum(L, "DA_GIVE_MONEY", DialogActionEnum::DA_GIVE_MONEY);
+        setEnum(L, "DA_PAY_BOUNTY", DialogActionEnum::DA_PAY_BOUNTY);
+        setEnum(L, "DA_CHARACTER_EDITOR", DialogActionEnum::DA_CHARACTER_EDITOR);
+        setEnum(L, "DA_FORCE_SPEECH_TIMER", DialogActionEnum::DA_FORCE_SPEECH_TIMER);
+        setEnum(L, "DA_DECLARE_WAR", DialogActionEnum::DA_DECLARE_WAR);
+        setEnum(L, "DA_END_WAR", DialogActionEnum::DA_END_WAR);
+        setEnum(L, "DA_CLEAR_AI", DialogActionEnum::DA_CLEAR_AI);
+        setEnum(L, "DA_FOLLOW_WHILE_TALKING", DialogActionEnum::DA_FOLLOW_WHILE_TALKING);
+        setEnum(L, "DA_THUG_HUNTER", DialogActionEnum::DA_THUG_HUNTER);
+        setEnum(L, "DA_JOIN_SQUAD_FAST", DialogActionEnum::DA_JOIN_SQUAD_FAST);
+        setEnum(L, "DA_REMEMBER_CHARACTER", DialogActionEnum::DA_REMEMBER_CHARACTER);
+        setEnum(L, "DA_FLAG_TEMP_ALLY", DialogActionEnum::DA_FLAG_TEMP_ALLY);
+        setEnum(L, "DA_FLAG_TEMP_ENEMY", DialogActionEnum::DA_FLAG_TEMP_ENEMY);
+        setEnum(L, "DA_MATES_KILL_ME", DialogActionEnum::DA_MATES_KILL_ME);
+        setEnum(L, "DA_MAKE_TARGET_RUN_FASTER", DialogActionEnum::DA_MAKE_TARGET_RUN_FASTER);
+        setEnum(L, "DA_GIVE_TARGET_MY_SLAVES", DialogActionEnum::DA_GIVE_TARGET_MY_SLAVES);
+        setEnum(L, "DA_TAG_ESCAPED_SLAVE", DialogActionEnum::DA_TAG_ESCAPED_SLAVE);
+        setEnum(L, "DA_FREE_TARGET_SLAVE", DialogActionEnum::DA_FREE_TARGET_SLAVE);
+        setEnum(L, "DA_MERGE_WITH_SIMILAR_SQUADS", DialogActionEnum::DA_MERGE_WITH_SIMILAR_SQUADS);
+        setEnum(L, "DA_SEPARATE_TO_MY_OWN_SQUAD", DialogActionEnum::DA_SEPARATE_TO_MY_OWN_SQUAD);
+        setEnum(L, "DA_ARREST_TARGET", DialogActionEnum::DA_ARREST_TARGET);
+        setEnum(L, "DA_ARREST_TARGETS_CARRIED_PERSON", DialogActionEnum::DA_ARREST_TARGETS_CARRIED_PERSON);
+        setEnum(L, "DA_ATTACK_TOWN", DialogActionEnum::DA_ATTACK_TOWN);
+        setEnum(L, "DA_ASSIGN_BOUNTY", DialogActionEnum::DA_ASSIGN_BOUNTY);
+        setEnum(L, "DA_CRIME_ALARM", DialogActionEnum::DA_CRIME_ALARM);
+        setEnum(L, "DA_RUN_AWAY", DialogActionEnum::DA_RUN_AWAY);
+        setEnum(L, "DA_INCREASE_FACTION_RANK", DialogActionEnum::DA_INCREASE_FACTION_RANK);
+        setEnum(L, "DA_LOCK_THIS_DIALOG", DialogActionEnum::DA_LOCK_THIS_DIALOG);
+        setEnum(L, "DA_ASSAULT_PHASE", DialogActionEnum::DA_ASSAULT_PHASE);
+        setEnum(L, "DA_RETREAT_PHASE", DialogActionEnum::DA_RETREAT_PHASE);
+        setEnum(L, "DA_VICTORY_PHASE", DialogActionEnum::DA_VICTORY_PHASE);
+        setEnum(L, "DA_ENSLAVE_TARGETS_CARRIED_PERSON", DialogActionEnum::DA_ENSLAVE_TARGETS_CARRIED_PERSON);
+        setEnum(L, "DA_CLEAR_BOUNTY", DialogActionEnum::DA_CLEAR_BOUNTY);
+        setEnum(L, "DA_PLAYER_SELL_PRISONERS", DialogActionEnum::DA_PLAYER_SELL_PRISONERS);
+        setEnum(L, "DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE", DialogActionEnum::DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
+        setEnum(L, "DA_SUMMON_MY_SQUAD", DialogActionEnum::DA_SUMMON_MY_SQUAD);
+        setEnum(L, "DA_REMOVE_SLAVE_STATUS", DialogActionEnum::DA_REMOVE_SLAVE_STATUS);
+        setEnum(L, "DA_OPEN_NEAREST_GATE", DialogActionEnum::DA_OPEN_NEAREST_GATE);
+        setEnum(L, "DA_ATTACK_STAY_NEAR_HOME", DialogActionEnum::DA_ATTACK_STAY_NEAR_HOME);
+        setEnum(L, "DA_MASSIVE_ALARM", DialogActionEnum::DA_MASSIVE_ALARM);
+        setEnum(L, "DA_ATTACK_IF_NO_COEXIST", DialogActionEnum::DA_ATTACK_IF_NO_COEXIST);
+        setEnum(L, "DA_KNOCKOUT", DialogActionEnum::DA_KNOCKOUT);
+        setEnum(L, "DA_END", DialogActionEnum::DA_END);
+
+        lua_setglobal(L, "DialogActionEnum");
     }
 
     // ------------------------------------------
@@ -970,17 +715,16 @@ namespace KenshiLua
         setEnum(L, "WORLD_EVENT_STATE", itemType::WORLD_EVENT_STATE);
         setEnum(L, "LIMB_REPLACEMENT", itemType::LIMB_REPLACEMENT);
         setEnum(L, "ANIMATION_FILE", itemType::ANIMATION_FILE);
-        setEnum(L, "___XXX___", itemType::____XXX___);
+        setEnum(L, "____XXX___", itemType::____XXX___);
         setEnum(L, "OBJECT_TYPE_MAX", itemType::OBJECT_TYPE_MAX);
 
         lua_setglobal(L, "itemType");
     }
 
-        void registerBuildingFunction(lua_State* L)
+    void registerBuildingFunction(lua_State* L)
     {
-        lua_createtable(L, 0, 62);
+        lua_createtable(L, 0, 31);
 
-    // original
         setEnum(L, "BF_ANY", BuildingFunction::BF_ANY);
         setEnum(L, "BF_MINE", BuildingFunction::BF_MINE);
         setEnum(L, "BF_RESOURCE_STORAGE", BuildingFunction::BF_RESOURCE_STORAGE);
@@ -1012,47 +756,14 @@ namespace KenshiLua
         setEnum(L, "BF_STEERING", BuildingFunction::BF_STEERING);
         setEnum(L, "BF_ENGINE", BuildingFunction::BF_ENGINE);
         setEnum(L, "BF_LIQUID_TANK", BuildingFunction::BF_LIQUID_TANK);
-    // aliases
-        setEnum(L, "ANY", BuildingFunction::BF_ANY);
-        setEnum(L, "MINE", BuildingFunction::BF_MINE);
-        setEnum(L, "RESOURCE_STORAGE", BuildingFunction::BF_RESOURCE_STORAGE);
-        setEnum(L, "RESEARCH", BuildingFunction::BF_RESEARCH);
-        setEnum(L, "REFINERY", BuildingFunction::BF_REFINERY);
-        setEnum(L, "GENERATOR", BuildingFunction::BF_GENERATOR);
-        setEnum(L, "BED", BuildingFunction::BF_BED);
-        setEnum(L, "TRAINING", BuildingFunction::BF_TRAINING);
-        setEnum(L, "CAGE", BuildingFunction::BF_CAGE);
-        setEnum(L, "SHOP", BuildingFunction::BF_SHOP);
-        setEnum(L, "CRAFTING", BuildingFunction::BF_CRAFTING);
-        setEnum(L, "CORPSE_DISPOSAL", BuildingFunction::BF_CORPSE_DISPOSAL);
-        setEnum(L, "TURRET", BuildingFunction::BF_TURRET);
-        setEnum(L, "GENERAL_STORAGE", BuildingFunction::BF_GENERAL_STORAGE);
-        setEnum(L, "ITEM_FURNACE", BuildingFunction::BF_ITEM_FURNACE);
-        setEnum(L, "LIGHT", BuildingFunction::BF_LIGHT);
-        setEnum(L, "TABLE", BuildingFunction::BF_TABLE);
-        setEnum(L, "CHAIR", BuildingFunction::BF_CHAIR);
-        setEnum(L, "FLUFF", BuildingFunction::BF_FLUFF);
-        setEnum(L, "SHELL_WITH_INTERIOR", BuildingFunction::BF_SHELL_WITH_INTERIOR);
-        setEnum(L, "WALL", BuildingFunction::BF_WALL);
-        setEnum(L, "GATE", BuildingFunction::BF_GATE);
-        setEnum(L, "DOOR", BuildingFunction::BF_DOOR);
-        setEnum(L, "BATTERY", BuildingFunction::BF_BATTERY);
-        setEnum(L, "THRONE", BuildingFunction::BF_THRONE);
-        setEnum(L, "SKELETON_BED", BuildingFunction::BF_SKELETON_BED);
-        setEnum(L, "RAIN_COLLECTOR", BuildingFunction::BF_RAIN_COLLECTOR);
-        setEnum(L, "MINE_NATURAL", BuildingFunction::BF_MINE_NATURAL);
-        setEnum(L, "STEERING", BuildingFunction::BF_STEERING);
-        setEnum(L, "ENGINE", BuildingFunction::BF_ENGINE);
-        setEnum(L, "LIQUID_TANK", BuildingFunction::BF_LIQUID_TANK);
-    // global
+
         lua_setglobal(L, "BuildingFunction");
     }
 
-        void registerCutDirection(lua_State* L)
+    void registerCutDirection(lua_State* L)
     {
-        lua_createtable(L, 0, 20);
+        lua_createtable(L, 0, 10);
 
-    // original
         setEnum(L, "CUT_DEFAULT", CutDirection::CUT_DEFAULT);
         setEnum(L, "CUT_DOWNWARD", CutDirection::CUT_DOWNWARD);
         setEnum(L, "CUT_LEFT", CutDirection::CUT_LEFT);
@@ -1063,18 +774,7 @@ namespace KenshiLua
         setEnum(L, "CUT_REAR_DOWNWARD", CutDirection::CUT_REAR_DOWNWARD);
         setEnum(L, "CUT_REAR_LEFT", CutDirection::CUT_REAR_LEFT);
         setEnum(L, "CUT_REAR_RIGHT", CutDirection::CUT_REAR_RIGHT);
-    // aliases
-        setEnum(L, "DEFAULT", CutDirection::CUT_DEFAULT);
-        setEnum(L, "DOWNWARD", CutDirection::CUT_DOWNWARD);
-        setEnum(L, "LEFT", CutDirection::CUT_LEFT);
-        setEnum(L, "RIGHT", CutDirection::CUT_RIGHT);
-        setEnum(L, "THRUST", CutDirection::CUT_THRUST);
-        setEnum(L, "UPWARDS", CutDirection::CUT_UPWARDS);
-        setEnum(L, "PIERCED", CutDirection::CUT_PIERCED);
-        setEnum(L, "REAR_DOWNWARD", CutDirection::CUT_REAR_DOWNWARD);
-        setEnum(L, "REAR_LEFT", CutDirection::CUT_REAR_LEFT);
-        setEnum(L, "REAR_RIGHT", CutDirection::CUT_REAR_RIGHT);
-    // global
+
         lua_setglobal(L, "CutDirection");
     }
 
@@ -1092,8 +792,8 @@ namespace KenshiLua
 
     void registerHitMaterialType(lua_State* L)
     {
-        lua_createtable(L, 0, 14);
-    // original
+        lua_createtable(L, 0, 7);
+
         setEnum(L, "HIT_MISSED", HitMaterialType::HIT_MISSED);
         setEnum(L, "HIT_METAL", HitMaterialType::HIT_METAL);
         setEnum(L, "HIT_FLESH", HitMaterialType::HIT_FLESH);
@@ -1101,44 +801,28 @@ namespace KenshiLua
         setEnum(L, "HIT_WOOD", HitMaterialType::HIT_WOOD);
         setEnum(L, "HIT_SWORD", HitMaterialType::HIT_SWORD);
         setEnum(L, "HIT_CHAIN", HitMaterialType::HIT_CHAIN);
-    //aliases
-        setEnum(L, "MISSED", HitMaterialType::HIT_MISSED);
-        setEnum(L, "METAL", HitMaterialType::HIT_METAL);
-        setEnum(L, "FLESH", HitMaterialType::HIT_FLESH);
-        setEnum(L, "SAND", HitMaterialType::HIT_SAND);
-        setEnum(L, "WOOD", HitMaterialType::HIT_WOOD);
-        setEnum(L, "SWORD", HitMaterialType::HIT_SWORD);
-        setEnum(L, "CHAIN", HitMaterialType::HIT_CHAIN);
-    // global
+
         lua_setglobal(L, "HitMaterialType");
     }
 
     void registerWeatherAffecting(lua_State* L)
     {
-        lua_createtable(L, 0, 12);
-    // orignal
+        lua_createtable(L, 0, 6);
+
         setEnum(L, "WA_NONE", WeatherAffecting::WA_NONE);
         setEnum(L, "WA_DUSTSTORM", WeatherAffecting::WA_DUSTSTORM);
         setEnum(L, "WA_ACID", WeatherAffecting::WA_ACID);
         setEnum(L, "WA_BURNING", WeatherAffecting::WA_BURNING);
         setEnum(L, "WA_GAS", WeatherAffecting::WA_GAS);
         setEnum(L, "WA_RAIN", WeatherAffecting::WA_RAIN);
-    // aliases
-        setEnum(L, "NONE", WeatherAffecting::WA_NONE);
-        setEnum(L, "DUSTSTORM", WeatherAffecting::WA_DUSTSTORM);
-        setEnum(L, "ACID", WeatherAffecting::WA_ACID);
-        setEnum(L, "BURNING", WeatherAffecting::WA_BURNING);
-        setEnum(L, "GAS", WeatherAffecting::WA_GAS);
-        setEnum(L, "RAIN", WeatherAffecting::WA_RAIN);
 
         lua_setglobal(L, "WeatherAffecting");
     }
 
-        void registerAttachSlot(lua_State* L)
+    void registerAttachSlot(lua_State* L)
     {
-        lua_createtable(L, 0, 38);
+        lua_createtable(L, 0, 19);
 
-    // original
         setEnum(L, "ATTACH_WEAPON", AttachSlot::ATTACH_WEAPON);
         setEnum(L, "ATTACH_BACK", AttachSlot::ATTACH_BACK);
         setEnum(L, "ATTACH_HAIR", AttachSlot::ATTACH_HAIR);
@@ -1158,34 +842,14 @@ namespace KenshiLua
         setEnum(L, "ATTACH_RIGHT_ARM", AttachSlot::ATTACH_RIGHT_ARM);
         setEnum(L, "ATTACH_LEFT_LEG", AttachSlot::ATTACH_LEFT_LEG);
         setEnum(L, "ATTACH_RIGHT_LEG", AttachSlot::ATTACH_RIGHT_LEG);
-    // aliases
-        setEnum(L, "WEAPON", AttachSlot::ATTACH_WEAPON);
-        setEnum(L, "BACK", AttachSlot::ATTACH_BACK);
-        setEnum(L, "HAIR", AttachSlot::ATTACH_HAIR);
-        setEnum(L, "HAT", AttachSlot::ATTACH_HAT);
-        setEnum(L, "EYES", AttachSlot::ATTACH_EYES);
-        setEnum(L, "BODY", AttachSlot::ATTACH_BODY);
-        setEnum(L, "LEGS", AttachSlot::ATTACH_LEGS);
-        setEnum(L, "NONE", AttachSlot::ATTACH_NONE);
-        setEnum(L, "SHIRT", AttachSlot::ATTACH_SHIRT);
-        setEnum(L, "BOOTS", AttachSlot::ATTACH_BOOTS);
-        setEnum(L, "GLOVES", AttachSlot::ATTACH_GLOVES);
-        setEnum(L, "NECK", AttachSlot::ATTACH_NECK);
-        setEnum(L, "BACKPACK", AttachSlot::ATTACH_BACKPACK);
-        setEnum(L, "BEARD", AttachSlot::ATTACH_BEARD);
-        setEnum(L, "BELT", AttachSlot::ATTACH_BELT);
-        setEnum(L, "LEFT_ARM", AttachSlot::ATTACH_LEFT_ARM);
-        setEnum(L, "RIGHT_ARM", AttachSlot::ATTACH_RIGHT_ARM);
-        setEnum(L, "LEFT_LEG", AttachSlot::ATTACH_LEFT_LEG);
-        setEnum(L, "RIGHT_LEG", AttachSlot::ATTACH_RIGHT_LEG);
-    // global
+
         lua_setglobal(L, "AttachSlot");
     }
 
     void registerItemFunction(lua_State* L)
     {
-        lua_createtable(L, 0, 36);
-    // orignal
+        lua_createtable(L, 0, 18);
+
         setEnum(L, "ITEM_NO_FUNCTION", ItemFunction::ITEM_NO_FUNCTION);
         setEnum(L, "ITEM_FIRSTAID", ItemFunction::ITEM_FIRSTAID);
         setEnum(L, "ITEM_MEDRIGGING", ItemFunction::ITEM_MEDRIGGING);
@@ -1204,25 +868,6 @@ namespace KenshiLua
         setEnum(L, "ITEM_FOOD_RESTRICTED", ItemFunction::ITEM_FOOD_RESTRICTED);
         setEnum(L, "ITEM_AMMO", ItemFunction::ITEM_AMMO);
         setEnum(L, "ITEM_SEVERED_LIMB", ItemFunction::ITEM_SEVERED_LIMB);
-    // aliases
-        setEnum(L, "FIRSTAID", ItemFunction::ITEM_FIRSTAID);
-        setEnum(L, "NO_FUNCTION", ItemFunction::ITEM_NO_FUNCTION);
-        setEnum(L, "MEDRIGGING", ItemFunction::ITEM_MEDRIGGING);
-        setEnum(L, "FOOD", ItemFunction::ITEM_FOOD);
-        setEnum(L, "CONTAINER", ItemFunction::ITEM_CONTAINER);
-        setEnum(L, "WEAPON", ItemFunction::ITEM_WEAPON);
-        setEnum(L, "CLOTHING", ItemFunction::ITEM_CLOTHING);
-        setEnum(L, "___", ItemFunction::ITEM____);
-        setEnum(L, "NARCOTIC", ItemFunction::ITEM_NARCOTIC);
-        setEnum(L, "TOOL", ItemFunction::ITEM_TOOL);
-        setEnum(L, "ANYTHING", ItemFunction::ITEM_ANYTHING);
-        setEnum(L, "BLUEPRINT", ItemFunction::ITEM_BLUEPRINT);
-        setEnum(L, "ROBOTREPAIR", ItemFunction::ITEM_ROBOTREPAIR);
-        setEnum(L, "BOOK", ItemFunction::ITEM_BOOK);
-        setEnum(L, "MONEY", ItemFunction::ITEM_MONEY);
-        setEnum(L, "FOOD_RESTRICTED", ItemFunction::ITEM_FOOD_RESTRICTED);
-        setEnum(L, "AMMO", ItemFunction::ITEM_AMMO);
-        setEnum(L, "SEVERED_LIMB", ItemFunction::ITEM_SEVERED_LIMB);
 
         lua_setglobal(L, "ItemFunction");
     }
@@ -1241,8 +886,8 @@ namespace KenshiLua
 
     void registerCharacterTypeEnum(lua_State* L)
     {
-        lua_createtable(L, 0, 22);
-    // original
+        lua_createtable(L, 0, 11);
+
         setEnum(L, "OT_NONE", CharacterTypeEnum::OT_NONE);
         setEnum(L, "OT_LAW_ENFORCEMENT", CharacterTypeEnum::OT_LAW_ENFORCEMENT);
         setEnum(L, "OT_MILITARY", CharacterTypeEnum::OT_MILITARY);
@@ -1254,27 +899,8 @@ namespace KenshiLua
         setEnum(L, "OT_BANDIT", CharacterTypeEnum::OT_BANDIT);
         setEnum(L, "OT_ADVENTURER", CharacterTypeEnum::OT_ADVENTURER);
         setEnum(L, "OT_END", CharacterTypeEnum::OT_END);
-    // aliases
-        setEnum(L, "LAW_ENFORCEMENT", CharacterTypeEnum::OT_LAW_ENFORCEMENT);
-        setEnum(L, "NONE", CharacterTypeEnum::OT_NONE);
-        setEnum(L, "MILITARY", CharacterTypeEnum::OT_MILITARY);
-        setEnum(L, "TRADER", CharacterTypeEnum::OT_TRADER);
-        setEnum(L, "CIVILIAN", CharacterTypeEnum::OT_CIVILIAN);
-        setEnum(L, "DIPLOMAT", CharacterTypeEnum::OT_DIPLOMAT);
-        setEnum(L, "SLAVE", CharacterTypeEnum::OT_SLAVE);
-        setEnum(L, "SLAVER", CharacterTypeEnum::OT_SLAVER);
-        setEnum(L, "BANDIT", CharacterTypeEnum::OT_BANDIT);
-        setEnum(L, "ADVENTURER", CharacterTypeEnum::OT_ADVENTURER);
-        setEnum(L, "END", CharacterTypeEnum::OT_END);
 
-    // Duplicate the table reference on top of the stack
-        lua_pushvalue(L, -1); // Stack: [table, table]
-
-    // Set the first global (pops the top copy)
-        lua_setglobal(L, "CharacterTypeEnum"); // Stack: [table]
-
-    // Set the second global (pops the remaining copy)
-        lua_setglobal(L, "CharacterType"); // Stack: [empty]
+        lua_setglobal(L, "CharacterTypeEnum");
     }
 
     void registerSlaveStateEnum(lua_State* L)
@@ -1286,9 +912,7 @@ namespace KenshiLua
         setEnum(L, "ESCAPING_SLAVE", SlaveStateEnum::ESCAPING_SLAVE);
         setEnum(L, "EX_SLAVE", SlaveStateEnum::EX_SLAVE);
 
-        lua_pushvalue(L, -1);
         lua_setglobal(L, "SlaveStateEnum");
-        lua_setglobal(L, "SlaveState");
     }
 
     void registerTaskType(lua_State* L)
@@ -1480,9 +1104,9 @@ namespace KenshiLua
         setEnum(L, "PROCESS_AND_STRIP_NEW_SLAVE", TaskType::PROCESS_AND_STRIP_NEW_SLAVE);
         setEnum(L, "SLAVE_WATCHING", TaskType::SLAVE_WATCHING);
         setEnum(L, "PUT_LOOT_IN_STORAGE", TaskType::PUT_LOOT_IN_STORAGE);
-        setEnum(L, "SHACKLES", TaskType::CUT_SHACKLES);
+        setEnum(L, "CUT_SHACKLES", TaskType::CUT_SHACKLES);
         setEnum(L, "BRUTE_FORCE_SHACKLES", TaskType::BRUTE_FORCE_SHACKLES);
-        setEnum(L, "SLAVE_OBEDIENCE", TaskType::_SLAVE_OBEDIENCE);
+        setEnum(L, "_SLAVE_OBEDIENCE", TaskType::_SLAVE_OBEDIENCE);
         setEnum(L, "WORK_THE_SLAVES", TaskType::WORK_THE_SLAVES);
         setEnum(L, "AUTO_LABOURING_MINES", TaskType::AUTO_LABOURING_MINES);
         setEnum(L, "AUTO_LABOURING_MINES_PRETEND", TaskType::AUTO_LABOURING_MINES_PRETEND);
@@ -1580,7 +1204,7 @@ namespace KenshiLua
         setEnum(L, "EAT_A_RANDOM_CAGE_OCCUPANT_MEASURED_RATE", TaskType::EAT_A_RANDOM_CAGE_OCCUPANT_MEASURED_RATE);
         setEnum(L, "SHOO_STRANGERS_OUT_OF_MY_BUILDING_IF_PRIVATE", TaskType::SHOO_STRANGERS_OUT_OF_MY_BUILDING_IF_PRIVATE);
         setEnum(L, "LOOT_CONTAINER", TaskType::LOOT_CONTAINER);
-        setEnum(L, "LOCK", TaskType::CUT_LOCK);
+        setEnum(L, "CUT_LOCK", TaskType::CUT_LOCK);
         setEnum(L, "BRUTE_FORCE_LOCK", TaskType::BRUTE_FORCE_LOCK);
         setEnum(L, "BASH_DOOR_HERE", TaskType::BASH_DOOR_HERE);
         setEnum(L, "PROTECT_ALLIES_STAY_IN_TOWN", TaskType::PROTECT_ALLIES_STAY_IN_TOWN);
@@ -1590,11 +1214,10 @@ namespace KenshiLua
         lua_setglobal(L, "TaskType");
     }
 
-        void registerWeaponCategory(lua_State* L)
+    void registerWeaponCategory(lua_State* L)
     {
-        lua_createtable(L, 0, 45);
+        lua_createtable(L, 0, 23);
 
-    // original
         setEnum(L, "SKILL_KATANAS", WeaponCategory::SKILL_KATANAS);
         setEnum(L, "SKILL_SABRES", WeaponCategory::SKILL_SABRES);
         setEnum(L, "SKILL_BLUNT", WeaponCategory::SKILL_BLUNT);
@@ -1618,67 +1241,36 @@ namespace KenshiLua
         setEnum(L, "ATTACK_GIRAFFE", WeaponCategory::ATTACK_GIRAFFE);
         setEnum(L, "ATTACK_NULL", WeaponCategory::ATTACK_NULL);
         setEnum(L, "NUM_SKILL_TYPES", WeaponCategory::NUM_SKILL_TYPES);
-    // aliases
-        setEnum(L, "KATANAS", WeaponCategory::SKILL_KATANAS);
-        setEnum(L, "SABRES", WeaponCategory::SKILL_SABRES);
-        setEnum(L, "BLUNT", WeaponCategory::SKILL_BLUNT);
-        setEnum(L, "HEAVY", WeaponCategory::SKILL_HEAVY);
-        setEnum(L, "HACKERS", WeaponCategory::SKILL_HACKERS);
-        setEnum(L, "UNARMED", WeaponCategory::SKILL_UNARMED);
-        setEnum(L, "BOW", WeaponCategory::SKILL_BOW);
-        setEnum(L, "TURRET", WeaponCategory::SKILL_TURRET);
-        setEnum(L, "POLEARMS", WeaponCategory::ATTACK_POLEARMS);
-        setEnum(L, "ELEPHANT", WeaponCategory::ATTACK_ELEPHANT);
-        setEnum(L, "DOG", WeaponCategory::ATTACK_DOG);
-        setEnum(L, "BULL", WeaponCategory::ATTACK_BULL);
-        setEnum(L, "ROBOTSPIDER", WeaponCategory::ATTACK_ROBOTSPIDER);
-        setEnum(L, "SPIDER", WeaponCategory::ATTACK_SPIDER);
-        setEnum(L, "CAGEBEAST", WeaponCategory::ATTACK_CAGEBEAST);
-        setEnum(L, "DUCK", WeaponCategory::ATTACK_DUCK);
-        setEnum(L, "GORILLA", WeaponCategory::ATTACK_GORILLA);
-        setEnum(L, "GAR", WeaponCategory::ATTACK_GAR);
-        setEnum(L, "FROG", WeaponCategory::ATTACK_FROG);
-        setEnum(L, "GOAT", WeaponCategory::ATTACK_GOAT);
-        setEnum(L, "GIRAFFE", WeaponCategory::ATTACK_GIRAFFE);
-        setEnum(L, "NULL", WeaponCategory::ATTACK_NULL);
-    // global
+
         lua_setglobal(L, "WeaponCategory");
     }
 
     void registerLeftRight(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
-    // original
+        lua_createtable(L, 0, 4);
+
         setEnum(L, "SIDE_NEITHER", LeftRight::SIDE_NEITHER);
         setEnum(L, "SIDE_LEFT", LeftRight::SIDE_LEFT);
         setEnum(L, "SIDE_RIGHT", LeftRight::SIDE_RIGHT);
         setEnum(L, "SIDE_BOTH", LeftRight::SIDE_BOTH);
-    // aliases
-        setEnum(L, "NEITHER", LeftRight::SIDE_NEITHER);
-        setEnum(L, "LEFT", LeftRight::SIDE_LEFT);
-        setEnum(L, "RIGHT", LeftRight::SIDE_RIGHT);
-        setEnum(L, "BOTH", LeftRight::SIDE_BOTH);
 
         lua_setglobal(L, "LeftRight");
     }
 
     void registerMessageType(lua_State* L)
     {
-        lua_createtable(L, 0, 4);
-    // original
+        lua_createtable(L, 0, 2);
+
         setEnum(L, "M_UNSELECT_ALL", MessageForB::MessageType::M_UNSELECT_ALL);
         setEnum(L, "M_GIVE_TASK", MessageForB::MessageType::M_GIVE_TASK);
-    // aliases
-        setEnum(L, "UNSELECT_ALL", MessageForB::MessageType::M_UNSELECT_ALL);
-        setEnum(L, "GIVE_TASK", MessageForB::MessageType::M_GIVE_TASK);
-
-        lua_setglobal(L, "MessageType");
+        setNestedClassTable(L, "MessageForB", "MessageType");
+        lua_pop(L, 1);
     }
 
     void registerStandingOrder(lua_State* L)
     {
-        lua_createtable(L, 0, 36);
-    // original
+        lua_createtable(L, 0, 18);
+
         setEnum(L, "M_SET_ORDER_RUN", MessageForB::StandingOrder::M_SET_ORDER_RUN);
         setEnum(L, "M_SET_ORDER_JOG", MessageForB::StandingOrder::M_SET_ORDER_JOG);
         setEnum(L, "M_SET_ORDER_WALK", MessageForB::StandingOrder::M_SET_ORDER_WALK);
@@ -1697,42 +1289,18 @@ namespace KenshiLua
         setEnum(L, "M_SET_ORDER_CHASE", MessageForB::StandingOrder::M_SET_ORDER_CHASE);
         setEnum(L, "M_SET_ORDER_GROUP_SPEED", MessageForB::StandingOrder::M_SET_ORDER_GROUP_SPEED);
         setEnum(L, "M_SET_ORDER_RANGED", MessageForB::StandingOrder::M_SET_ORDER_RANGED);
-    // aliases
-        setEnum(L, "RUN", MessageForB::StandingOrder::M_SET_ORDER_RUN);
-        setEnum(L, "JOG", MessageForB::StandingOrder::M_SET_ORDER_JOG);
-        setEnum(L, "WALK", MessageForB::StandingOrder::M_SET_ORDER_WALK);
-        setEnum(L, "STEALTH_ON", MessageForB::StandingOrder::M_SET_ORDER_STEALTH_ON);
-        setEnum(L, "STEALTH_OFF", MessageForB::StandingOrder::M_SET_ORDER_STEALTH_OFF);
-        setEnum(L, "AGG", MessageForB::StandingOrder::M_SET_ORDER_AGG);
-        setEnum(L, "DEF", MessageForB::StandingOrder::M_SET_ORDER_DEF);
-        setEnum(L, "EVADE", MessageForB::StandingOrder::M_SET_ORDER_EVADE);
-        setEnum(L, "FAR", MessageForB::StandingOrder::M_SET_ORDER_FAR);
-        setEnum(L, "NEAR", MessageForB::StandingOrder::M_SET_ORDER_NEAR);
-        setEnum(L, "TOGGLEORDERS__AFTER__THIS", MessageForB::StandingOrder::M__TOGGLEORDERS__AFTER__THIS_);
-        setEnum(L, "DEFENSIVE_COMBAT", MessageForB::StandingOrder::M_SET_ORDER_DEFENSIVE_COMBAT);
-        setEnum(L, "HOLD", MessageForB::StandingOrder::M_SET_ORDER_HOLD);
-        setEnum(L, "PASSIVE", MessageForB::StandingOrder::M_SET_ORDER_PASSIVE);
-        setEnum(L, "TAUNT", MessageForB::StandingOrder::M_SET_ORDER_TAUNT);
-        setEnum(L, "CHASE", MessageForB::StandingOrder::M_SET_ORDER_CHASE);
-        setEnum(L, "GROUP_SPEED", MessageForB::StandingOrder::M_SET_ORDER_GROUP_SPEED);
-        setEnum(L, "RANGED", MessageForB::StandingOrder::M_SET_ORDER_RANGED);
-
-        lua_setglobal(L, "MessageB_StandingOrder");
+        setNestedClassTable(L, "MessageForB", "StandingOrder");
+        lua_pop(L, 1);
     }
 
     void registerCharStatsGUIStatsDisplayMode(lua_State* L)
     {
-        lua_createtable(L, 0, 4);
+        lua_createtable(L, 0, 2);
 
         setEnum(L, "GUI_STATS_NORMAL", CharStats::GUIStatsDisplayMode::GUI_STATS_NORMAL);
         setEnum(L, "GUI_STATS_MARTIALARTIST", CharStats::GUIStatsDisplayMode::GUI_STATS_MARTIALARTIST);
-
-        setEnum(L, "NORMAL", CharStats::GUIStatsDisplayMode::GUI_STATS_NORMAL);
-        setEnum(L, "MARTIALARTIST", CharStats::GUIStatsDisplayMode::GUI_STATS_MARTIALARTIST);
-
-        lua_pushvalue(L, -1);
-        lua_setglobal(L, "CharStats_GUIStatsDisplayMode");
-        lua_setglobal(L, "GUIStatsDisplayMode");
+        setNestedClassTable(L, "CharStats", "GUIStatsDisplayMode");
+        lua_pop(L, 1);
     }
 
     void registerCharStatsDeadTimeState(lua_State* L)
@@ -1746,16 +1314,14 @@ namespace KenshiLua
         setEnum(L, "WAS_HIT", CharStats::DeadTimeState::WAS_HIT);
         setEnum(L, "ATTACK_INTERRUPTED", CharStats::DeadTimeState::ATTACK_INTERRUPTED);
         setEnum(L, "ATTACK_MISSED", CharStats::DeadTimeState::ATTACK_MISSED);
-
-        lua_pushvalue(L, -1);
-        lua_setglobal(L, "CharStats_DeadTimeState");
-        lua_setglobal(L, "DeadTimeState");
+        setNestedClassTable(L, "CharStats", "DeadTimeState");
+        lua_pop(L, 1);
     }
 
     void registerStatsEnumerated(lua_State* L)
     {
-        lua_createtable(L, 0, 132);
-    // orignal
+        lua_createtable(L, 0, 66);
+
         setEnum(L, "STAT_NONE", StatsEnumerated::STAT_NONE);
         setEnum(L, "STAT_STRENGTH", StatsEnumerated::STAT_STRENGTH);
         setEnum(L, "STAT_MELEE_ATTACK", StatsEnumerated::STAT_MELEE_ATTACK);
@@ -1813,8 +1379,8 @@ namespace KenshiLua
         setEnum(L, "_CurrentRunSpeed", StatsEnumerated::_CurrentRunSpeed);
         setEnum(L, "_AthleticsXPBonus", StatsEnumerated::_AthleticsXPBonus);
         setEnum(L, "_TurretAccuracy", StatsEnumerated::_TurretAccuracy);
-        setEnum(L, "TurretRateOfFire", StatsEnumerated::_TurretRateOfFire);
-        setEnum(L, "TurretFriendlyFireAvoidance", StatsEnumerated::_TurretFriendlyFireAvoidance);
+        setEnum(L, "_TurretRateOfFire", StatsEnumerated::_TurretRateOfFire);
+        setEnum(L, "_TurretFriendlyFireAvoidance", StatsEnumerated::_TurretFriendlyFireAvoidance);
         setEnum(L, "_BuildingRate", StatsEnumerated::_BuildingRate);
         setEnum(L, "_RepairingRate", StatsEnumerated::_RepairingRate);
         setEnum(L, "_Mining", StatsEnumerated::_Mining);
@@ -1822,91 +1388,23 @@ namespace KenshiLua
         setEnum(L, "_UsingMachinery", StatsEnumerated::_UsingMachinery);
         setEnum(L, "_encumbrance", StatsEnumerated::_encumbrance);
         setEnum(L, "_combatSpeed", StatsEnumerated::_combatSpeed);
-    //aliases
-        setEnum(L, "NONE", StatsEnumerated::STAT_NONE);
-        setEnum(L, "STRENGTH", StatsEnumerated::STAT_STRENGTH);
-        setEnum(L, "MELEE_ATTACK", StatsEnumerated::STAT_MELEE_ATTACK);
-        setEnum(L, "LABOURING", StatsEnumerated::STAT_LABOURING);
-        setEnum(L, "SCIENCE", StatsEnumerated::STAT_SCIENCE);
-        setEnum(L, "ENGINEERING", StatsEnumerated::STAT_ENGINEERING);
-        setEnum(L, "ROBOTICS", StatsEnumerated::STAT_ROBOTICS);
-        setEnum(L, "SMITHING_WEAPON", StatsEnumerated::STAT_SMITHING_WEAPON);
-        setEnum(L, "SMITHING_ARMOUR", StatsEnumerated::STAT_SMITHING_ARMOUR);
-        setEnum(L, "MEDIC", StatsEnumerated::STAT_MEDIC);
-        setEnum(L, "THIEVING", StatsEnumerated::STAT_THIEVING);
-        setEnum(L, "TURRETS", StatsEnumerated::STAT_TURRETS);
-        setEnum(L, "FARMING", StatsEnumerated::STAT_FARMING);
-        setEnum(L, "COOKING", StatsEnumerated::STAT_COOKING);
-        setEnum(L, "HIVEMEDIC", StatsEnumerated::STAT_HIVEMEDIC);
-        setEnum(L, "VET", StatsEnumerated::STAT_VET);
-        setEnum(L, "STEALTH", StatsEnumerated::STAT_STEALTH);
-        setEnum(L, "ATHLETICS", StatsEnumerated::STAT_ATHLETICS);
-        setEnum(L, "DEXTERITY", StatsEnumerated::STAT_DEXTERITY);
-        setEnum(L, "MELEE_DEFENCE", StatsEnumerated::STAT_MELEE_DEFENCE);
-        setEnum(L, "WEAPONS", StatsEnumerated::STAT_WEAPONS);
-        setEnum(L, "TOUGHNESS", StatsEnumerated::STAT_TOUGHNESS);
-        setEnum(L, "ASSASSINATION", StatsEnumerated::STAT_ASSASSINATION);
-        setEnum(L, "SWIMMING", StatsEnumerated::STAT_SWIMMING);
-        setEnum(L, "PERCEPTION", StatsEnumerated::STAT_PERCEPTION);
-        setEnum(L, "KATANAS", StatsEnumerated::STAT_KATANAS);
-        setEnum(L, "SABRES", StatsEnumerated::STAT_SABRES);
-        setEnum(L, "HACKERS", StatsEnumerated::STAT_HACKERS);
-        setEnum(L, "HEAVYWEAPONS", StatsEnumerated::STAT_HEAVYWEAPONS);
-        setEnum(L, "BLUNT", StatsEnumerated::STAT_BLUNT);
-        setEnum(L, "MARTIALARTS", StatsEnumerated::STAT_MARTIALARTS);
-        setEnum(L, "MASSCOMBAT", StatsEnumerated::STAT_MASSCOMBAT);
-        setEnum(L, "DODGE", StatsEnumerated::STAT_DODGE);
-        setEnum(L, "SURVIVAL", StatsEnumerated::STAT_SURVIVAL);
-        setEnum(L, "POLEARMS", StatsEnumerated::STAT_POLEARMS);
-        setEnum(L, "CROSSBOWS", StatsEnumerated::STAT_CROSSBOWS);
-        setEnum(L, "FRIENDLY_FIRE", StatsEnumerated::STAT_FRIENDLY_FIRE);
-        setEnum(L, "LOCKPICKING", StatsEnumerated::STAT_LOCKPICKING);
-        setEnum(L, "SMITHING_BOW", StatsEnumerated::STAT_SMITHING_BOW);
-        setEnum(L, "END", StatsEnumerated::STAT_END);
-        setEnum(L, "PrimaryWeaponDamage", StatsEnumerated::_PrimaryWeaponDamage);
-        setEnum(L, "PrimaryWeaponSpeed", StatsEnumerated::_PrimaryWeaponSpeed);
-        setEnum(L, "SecondaryWeaponDamage", StatsEnumerated::_SecondaryWeaponDamage);
-        setEnum(L, "SecondaryWeaponSpeed", StatsEnumerated::_SecondaryWeaponSpeed);
-        setEnum(L, "MaxCarryWeight", StatsEnumerated::_MaxCarryWeight);
-        setEnum(L, "StrengthXPRateWalk", StatsEnumerated::_StrengthXPRateWalk);
-        setEnum(L, "StrengthXPRateCombat", StatsEnumerated::_StrengthXPRateCombat);
-        setEnum(L, "AttackSpeedHeavyWeapons", StatsEnumerated::_AttackSpeedHeavyWeapons);
-        setEnum(L, "DamageResistance", StatsEnumerated::_DamageResistance);
-        setEnum(L, "ToughnessXPRate", StatsEnumerated::_ToughnessXPRate);
-        setEnum(L, "KnockoutTime", StatsEnumerated::_KnockoutTime);
-        setEnum(L, "ToughnessKnockoutPoint", StatsEnumerated::_ToughnessKnockoutPoint);
-        setEnum(L, "WoundDeteriorationSpeed", StatsEnumerated::_WoundDeteriorationSpeed);
-        setEnum(L, "MaxRunSpeed", StatsEnumerated::_MaxRunSpeed);
-        setEnum(L, "CurrentRunSpeed", StatsEnumerated::_CurrentRunSpeed);
-        setEnum(L, "AthleticsXPBonus", StatsEnumerated::_AthleticsXPBonus);
-        setEnum(L, "TurretAccuracy", StatsEnumerated::_TurretAccuracy);
-        setEnum(L, "TurretRateOfFire", StatsEnumerated::_TurretRateOfFire);
-        setEnum(L, "TurretFriendlyFireAvoidance", StatsEnumerated::_TurretFriendlyFireAvoidance);
-        setEnum(L, "BuildingRate", StatsEnumerated::_BuildingRate);
-        setEnum(L, "RepairingRate", StatsEnumerated::_RepairingRate);
-        setEnum(L, "Mining", StatsEnumerated::_Mining);
-        setEnum(L, "Farming", StatsEnumerated::_Farming);
-        setEnum(L, "UsingMachinery", StatsEnumerated::_UsingMachinery);
-        setEnum(L, "Encumbrance", StatsEnumerated::_encumbrance);
-        setEnum(L, "CombatSpeed", StatsEnumerated::_combatSpeed);
 
-        lua_pushvalue(L, -1);
         lua_setglobal(L, "StatsEnumerated");
-        lua_setglobal(L, "Stats");
     }
 
-        void registerEventTriggerEnum(lua_State* L)
+    void registerEventTriggerEnum(lua_State* L)
     {
-        lua_createtable(L, 0, 148);
+        lua_createtable(L, 0, 76);
 
-    // original
         setEnum(L, "EV_NONE", EventTriggerEnum::EV_NONE);
         setEnum(L, "EV_PLAYER_TALK_TO_ME", EventTriggerEnum::EV_PLAYER_TALK_TO_ME);
         setEnum(L, "EV_ANNOUNCEMENT", EventTriggerEnum::EV_ANNOUNCEMENT);
         setEnum(L, "EV_I_SEE_NEUTRAL_SQUAD", EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD);
         setEnum(L, "EV_I_SEE_RAGDOLL", EventTriggerEnum::EV_I_SEE_RAGDOLL);
         setEnum(L, "EV_______", EventTriggerEnum::EV_______);
+        setEnum(L, "EV_SOUND_THE_ALARM", EventTriggerEnum::EV_SOUND_THE_ALARM);
         setEnum(L, "EV_I_________", EventTriggerEnum::EV_I_________);
+        setEnum(L, "EV_THIEF_CAUGHT_STEALING_FROM_ME", EventTriggerEnum::EV_THIEF_CAUGHT_STEALING_FROM_ME);
         setEnum(L, "EV_SHOO_FROM_MY_BUILDING", EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING);
         setEnum(L, "EV_MARKED_FOR_DEATH", EventTriggerEnum::EV_MARKED_FOR_DEATH);
         setEnum(L, "EV_SCREAMING_TORTURE", EventTriggerEnum::EV_SCREAMING_TORTURE);
@@ -1974,92 +1472,14 @@ namespace KenshiLua
         setEnum(L, "EV_TAKEN_OVER_PLAYER_TOWN", EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN);
         setEnum(L, "EV_CROWD_TRIGGERED", EventTriggerEnum::EV_CROWD_TRIGGERED);
         setEnum(L, "EV_MAX", EventTriggerEnum::EV_MAX);
-    // aliases
-        setEnum(L, "NONE", EventTriggerEnum::EV_NONE);
-        setEnum(L, "PLAYER_TALK_TO_ME", EventTriggerEnum::EV_PLAYER_TALK_TO_ME);
-        setEnum(L, "ANNOUNCEMENT", EventTriggerEnum::EV_ANNOUNCEMENT);
-        setEnum(L, "I_SEE_NEUTRAL_SQUAD", EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD);
-        setEnum(L, "I_SEE_RAGDOLL", EventTriggerEnum::EV_I_SEE_RAGDOLL);
-        setEnum(L, "______", EventTriggerEnum::EV_______);
-        setEnum(L, "I_________", EventTriggerEnum::EV_I_________);
-        setEnum(L, "SHOO_FROM_MY_BUILDING", EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING);
-        setEnum(L, "MARKED_FOR_DEATH", EventTriggerEnum::EV_MARKED_FOR_DEATH);
-        setEnum(L, "SCREAMING_TORTURE", EventTriggerEnum::EV_SCREAMING_TORTURE);
-        setEnum(L, "BAR_TALK", EventTriggerEnum::EV_BAR_TALK);
-        setEnum(L, "UNLOCK_MY_CAGE_OR_SHACKLES", EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES);
-        setEnum(L, "UNLOCK_MY_CAGE_ATTEMPT", EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT);
-        setEnum(L, "I_DEFEATED_SQUAD", EventTriggerEnum::EV_I_DEFEATED_SQUAD);
-        setEnum(L, "LAUNCH_ATTACK", EventTriggerEnum::EV_LAUNCH_ATTACK);
-        setEnum(L, "INTRUDER_FOUND", EventTriggerEnum::EV_INTRUDER_FOUND);
-        setEnum(L, "HEALING_OTHER_START", EventTriggerEnum::EV_HEALING_OTHER_START);
-        setEnum(L, "BEING_HEALED_START", EventTriggerEnum::EV_BEING_HEALED_START);
-        setEnum(L, "HEALING_OTHER_FINISHED", EventTriggerEnum::EV_HEALING_OTHER_FINISHED);
-        setEnum(L, "BEING_HEALED_FINISHED", EventTriggerEnum::EV_BEING_HEALED_FINISHED);
-        setEnum(L, "FIRSTAID_KIT_EMPTY", EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY);
-        setEnum(L, "GET_UP_PEACE", EventTriggerEnum::EV_GET_UP_PEACE);
-        setEnum(L, "GET_UP_FIGHT", EventTriggerEnum::EV_GET_UP_FIGHT);
-        setEnum(L, "GET_UP_UNNECCESSARY_FIGHT", EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT);
-        setEnum(L, "HARRASSMENT_SHOUTS", EventTriggerEnum::EV_HARRASSMENT_SHOUTS);
-        setEnum(L, "I_SEE_ANIMAL_SQUAD", EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD);
-        setEnum(L, "SPEECH_INTERRUPTED_ATTACKED_BY_TARGET", EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET);
-        setEnum(L, "SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS", EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS);
-        setEnum(L, "CONTRACT_JOB_ENDED", EventTriggerEnum::EV_CONTRACT_JOB_ENDED);
-        setEnum(L, "BETRAYAL", EventTriggerEnum::EV_BETRAYAL);
-        setEnum(L, "LOOTING_WEAPON_ONLY", EventTriggerEnum::EV_LOOTING_WEAPON_ONLY);
-        setEnum(L, "LOOTING_EVERYTHING", EventTriggerEnum::EV_LOOTING_EVERYTHING);
-        setEnum(L, "I_SEE_UNIFORM_IMPOSTER", EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER);
-        setEnum(L, "INTRODUCING_NEW_SLAVE", EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE);
-        setEnum(L, "ESCAPING_SLAVE_SPOTTED", EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED);
-        setEnum(L, "RECAPTURED_A_SLAVE", EventTriggerEnum::EV_RECAPTURED_A_SLAVE);
-        setEnum(L, "SHOUT_AT_SLAVE_WORKER", EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER);
-        setEnum(L, "SLAVE_DELIVERY", EventTriggerEnum::EV_SLAVE_DELIVERY);
-        setEnum(L, "ESCAPED_EX_SLAVE_SPOTTED", EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED);
-        setEnum(L, "WITNESS_GENERIC_ASSAULT", EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT);
-        setEnum(L, "WITNESS_LOOTING_ALLY", EventTriggerEnum::EV_WITNESS_LOOTING_ALLY);
-        setEnum(L, "WITNESS_THIEF_OR_LOCKPICK", EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK);
-        setEnum(L, "BOUNTY_SPOTTED", EventTriggerEnum::EV_BOUNTY_SPOTTED);
-        setEnum(L, "ESCAPED_PRISONER_SPOTTED", EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED);
-        setEnum(L, "PRISONER_FREE_TO_GO", EventTriggerEnum::EV_PRISONER_FREE_TO_GO);
-        setEnum(L, "ALMOST_WOKE_UP", EventTriggerEnum::EV_ALMOST_WOKE_UP);
-        setEnum(L, "ENTER_BIOME", EventTriggerEnum::EV_ENTER_BIOME);
-        setEnum(L, "ENTER_TOWN", EventTriggerEnum::EV_ENTER_TOWN);
-        setEnum(L, "SQUAD_BROKEN", EventTriggerEnum::EV_SQUAD_BROKEN);
-        setEnum(L, "BOUGHT_ME_FROM_SLAVERY", EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY);
-        setEnum(L, "EATING_SOMETHING_SOUNDS", EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS);
-        setEnum(L, "WORSHIPING_SOMETHING", EventTriggerEnum::EV_WORSHIPING_SOMETHING);
-        setEnum(L, "SLAVE_ESCAPE_OPPORTUNITY_SAVIOR", EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR);
-        setEnum(L, "SLAVE_ESCAPE_OPPORTUNITY_ALONE", EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE);
-        setEnum(L, "ASSASSINATION_FAILED", EventTriggerEnum::EV_ASSASSINATION_FAILED);
-        setEnum(L, "EATING_MY_CROPS", EventTriggerEnum::EV_EATING_MY_CROPS);
-        setEnum(L, "KIDNAPPING_MY_ALLY", EventTriggerEnum::EV_KIDNAPPING_MY_ALLY);
-        setEnum(L, "USING_MY_TRAINING_EQUIPMENT", EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT);
-        setEnum(L, "GIVE_UP_CHASE", EventTriggerEnum::EV_GIVE_UP_CHASE);
-        setEnum(L, "ACID_FEET", EventTriggerEnum::EV_ACID_FEET);
-        setEnum(L, "ACID_RAIN", EventTriggerEnum::EV_ACID_RAIN);
-        setEnum(L, "ACID_WATER", EventTriggerEnum::EV_ACID_WATER);
-        setEnum(L, "WINDY", EventTriggerEnum::EV_WINDY);
-        setEnum(L, "POISON_GAS", EventTriggerEnum::EV_POISON_GAS);
-        setEnum(L, "I_SEE_ENEMY_PLAYER", EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER);
-        setEnum(L, "I_SEE_ALLY_PLAYER", EventTriggerEnum::EV_I_SEE_ALLY_PLAYER);
-        setEnum(L, "I_SEE_ILLEGAL_PLAYER_BUILDING", EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING);
-        setEnum(L, "BURNING", EventTriggerEnum::EV_BURNING);
-        setEnum(L, "LOST_LEG", EventTriggerEnum::EV_LOST_LEG);
-        setEnum(L, "LOST_ARM", EventTriggerEnum::EV_LOST_ARM);
-        setEnum(L, "I_SEE_PLAYER_NICE_BUILDING", EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING);
-        setEnum(L, "TAKEN_OVER_PLAYER_TOWN", EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN);
-        setEnum(L, "CROWD_TRIGGERED", EventTriggerEnum::EV_CROWD_TRIGGERED);
-        setEnum(L, "MAX", EventTriggerEnum::EV_MAX);
-    // global
-        lua_pushvalue(L, -1);
+
         lua_setglobal(L, "EventTriggerEnum");
-        lua_setglobal(L, "EventTrigger");
     }
 
-        void registerDialogConditionEnum(lua_State* L)
+    void registerDialogConditionEnum(lua_State* L)
     {
-        lua_createtable(L, 0, 160);
+        lua_createtable(L, 0, 80);
 
-    // original
         setEnum(L, "DC_NONE", DialogConditionEnum::DC_NONE);
         setEnum(L, "DC_RELATIONS", DialogConditionEnum::DC_RELATIONS);
         setEnum(L, "DC_PLAYERMONEY", DialogConditionEnum::DC_PLAYERMONEY);
@@ -2140,113 +1560,24 @@ namespace KenshiLua
         setEnum(L, "DC_HAS_AI_CONTRACT", DialogConditionEnum::DC_HAS_AI_CONTRACT);
         setEnum(L, "DC_HAS_ROBOT_LIMBS", DialogConditionEnum::DC_HAS_ROBOT_LIMBS);
         setEnum(L, "DC_END", DialogConditionEnum::DC_END);
-    // aliases
-        setEnum(L, "NONE", DialogConditionEnum::DC_NONE);
-        setEnum(L, "RELATIONS", DialogConditionEnum::DC_RELATIONS);
-        setEnum(L, "PLAYERMONEY", DialogConditionEnum::DC_PLAYERMONEY);
-        setEnum(L, "REPUTATION", DialogConditionEnum::DC_REPUTATION);
-        setEnum(L, "CARRYING_BOUNTY_ALIVE", DialogConditionEnum::DC_CARRYING_BOUNTY_ALIVE);
-        setEnum(L, "CARRYING_BOUNTY_DEAD", DialogConditionEnum::DC_CARRYING_BOUNTY_DEAD);
-        setEnum(L, "FACTION_VARIABLE", DialogConditionEnum::DC_FACTION_VARIABLE);
-        setEnum(L, "IMPRISONED_BY_TARGET", DialogConditionEnum::DC_IMPRISONED_BY_TARGET);
-        setEnum(L, "IMPRISONED_BY_OTHER", DialogConditionEnum::DC_IMPRISONED_BY_OTHER);
-        setEnum(L, "IS_A_TRADER", DialogConditionEnum::DC_IS_A_TRADER);
-        setEnum(L, "FACTION_RANK", DialogConditionEnum::DC_FACTION_RANK);
-        setEnum(L, "BUILDING_IS_CLOSED_AND_SECURED", DialogConditionEnum::DC_BUILDING_IS_CLOSED_AND_SECURED);
-        setEnum(L, "PLAYER_TECH_LEVEL", DialogConditionEnum::DC_PLAYER_TECH_LEVEL);
-        setEnum(L, "NUM_DIALOG_EVENT_REPEATS", DialogConditionEnum::DC_NUM_DIALOG_EVENT_REPEATS);
-        setEnum(L, "IS_IMPRISONED", DialogConditionEnum::DC_IS_IMPRISONED);
-        setEnum(L, "IMPRISONMENT_IS_DEATHROW", DialogConditionEnum::DC_IMPRISONMENT_IS_DEATHROW);
-        setEnum(L, "TARGET_IN_TALKING_RANGE", DialogConditionEnum::DC_TARGET_IN_TALKING_RANGE);
-        setEnum(L, "IN_MY_BUILDING", DialogConditionEnum::DC_IN_MY_BUILDING);
-        setEnum(L, "TARGET_LAST_SEEN_X_HOURS_AGO", DialogConditionEnum::DC_TARGET_LAST_SEEN_X_HOURS_AGO);
-        setEnum(L, "IS_LEADER", DialogConditionEnum::DC_IS_LEADER);
-        setEnum(L, "MET_TARGET_BEFORE", DialogConditionEnum::DC_MET_TARGET_BEFORE);
-        setEnum(L, "WEAKER_THAN_ME", DialogConditionEnum::DC_WEAKER_THAN_ME);
-        setEnum(L, "STRONGER_THAN_ME", DialogConditionEnum::DC_STRONGER_THAN_ME);
-        setEnum(L, "HAS_TAG", DialogConditionEnum::DC_HAS_TAG);
-        setEnum(L, "IS_ALLY", DialogConditionEnum::DC_IS_ALLY);
-        setEnum(L, "IS_ENEMY", DialogConditionEnum::DC_IS_ENEMY);
-        setEnum(L, "PERSONALITY_TAG", DialogConditionEnum::DC_PERSONALITY_TAG);
-        setEnum(L, "BROKEN_LEG", DialogConditionEnum::DC_BROKEN_LEG);
-        setEnum(L, "BROKEN_ARM", DialogConditionEnum::DC_BROKEN_ARM);
-        setEnum(L, "DAMAGED_HEAD", DialogConditionEnum::DC_DAMAGED_HEAD);
-        setEnum(L, "NEARLY_KO", DialogConditionEnum::DC_NEARLY_KO);
-        setEnum(L, "IN_A_NON_PLAYER_TOWN", DialogConditionEnum::DC_IN_A_NON_PLAYER_TOWN);
-        setEnum(L, "IS_RUNNING", DialogConditionEnum::DC_IS_RUNNING);
-        setEnum(L, "COPS_AROUND", DialogConditionEnum::DC_COPS_AROUND);
-        setEnum(L, "SQUAD_SIZE", DialogConditionEnum::DC_SQUAD_SIZE);
-        setEnum(L, "IS_PLAYER", DialogConditionEnum::DC_IS_PLAYER);
-        setEnum(L, "NUM_BACKPACKS", DialogConditionEnum::DC_NUM_BACKPACKS);
-        setEnum(L, "SQUAD_ONLY_ANIMALS", DialogConditionEnum::DC_SQUAD_ONLY_ANIMALS);
-        setEnum(L, "IS_OUTNUMBERED", DialogConditionEnum::DC_IS_OUTNUMBERED);
-        setEnum(L, "BOUNTY_AMOUNT_PERCEIVED", DialogConditionEnum::DC_BOUNTY_AMOUNT_PERCEIVED);
-        setEnum(L, "IS_KO", DialogConditionEnum::DC_IS_KO);
-        setEnum(L, "IS_NEARLY_KO", DialogConditionEnum::DC_IS_NEARLY_KO);
-        setEnum(L, "SQUAD_IS_DOWN", DialogConditionEnum::DC_SQUAD_IS_DOWN);
-        setEnum(L, "IS_DEAD", DialogConditionEnum::DC_IS_DEAD);
-        setEnum(L, "IS_FEMALE", DialogConditionEnum::DC_IS_FEMALE);
-        setEnum(L, "CARRYING_SOMEONE_TO_ENSLAVE", DialogConditionEnum::DC_CARRYING_SOMEONE_TO_ENSLAVE);
-        setEnum(L, "BOUNTY_AMOUNT_ACTUAL", DialogConditionEnum::DC_BOUNTY_AMOUNT_ACTUAL);
-        setEnum(L, "IM_UNARMED", DialogConditionEnum::DC_IM_UNARMED);
-        setEnum(L, "TOWN_HAS_FORTIFICATIONS_WALLS", DialogConditionEnum::DC_TOWN_HAS_FORTIFICATIONS_WALLS);
-        setEnum(L, "TARGET_IS_MY_MISSION_TARGET", DialogConditionEnum::DC_TARGET_IS_MY_MISSION_TARGET);
-        setEnum(L, "MY_MISSION_IS_FRIENDLY", DialogConditionEnum::DC_MY_MISSION_IS_FRIENDLY);
-        setEnum(L, "I_LOVE_THIS_GUY", DialogConditionEnum::DC_I_LOVE_THIS_GUY);
-        setEnum(L, "I_HATE_THIS_GUY", DialogConditionEnum::DC_I_HATE_THIS_GUY);
-        setEnum(L, "I_SHOULD_SCREW_THIS_GUY_OVER", DialogConditionEnum::DC_I_SHOULD_SCREW_THIS_GUY_OVER);
-        setEnum(L, "I_SHOULD_HELP_THIS_GUY", DialogConditionEnum::DC_I_SHOULD_HELP_THIS_GUY);
-        setEnum(L, "IN_COMBAT", DialogConditionEnum::DC_IN_COMBAT);
-        setEnum(L, "WITHIN_TOWN_WALLS", DialogConditionEnum::DC_WITHIN_TOWN_WALLS);
-        setEnum(L, "TOWN_WALLS_LOCKED_UP", DialogConditionEnum::DC_TOWN_WALLS_LOCKED_UP);
-        setEnum(L, "IS_SLAVE", DialogConditionEnum::DC_IS_SLAVE);
-        setEnum(L, "HAS_A_BASE_NEARBY", DialogConditionEnum::DC_HAS_A_BASE_NEARBY);
-        setEnum(L, "TARGET_IS_SLAVE_OF_MY_FACTION", DialogConditionEnum::DC_TARGET_IS_SLAVE_OF_MY_FACTION);
-        setEnum(L, "IS_ESCAPED_SLAVE", DialogConditionEnum::DC_IS_ESCAPED_SLAVE);
-        setEnum(L, "IS_IN_LOCKED_CAGE", DialogConditionEnum::DC_IS_IN_LOCKED_CAGE);
-        setEnum(L, "WEARING_LOCKED_SHACKLES", DialogConditionEnum::DC_WEARING_LOCKED_SHACKLES);
-        setEnum(L, "IS_SAME_RACE_AS_ME", DialogConditionEnum::DC_IS_SAME_RACE_AS_ME);
-        setEnum(L, "CAN_AFFORD_BOUNTY", DialogConditionEnum::DC_CAN_AFFORD_BOUNTY);
-        setEnum(L, "IS_SNEAKING", DialogConditionEnum::DC_IS_SNEAKING);
-        setEnum(L, "IS_INDOORS", DialogConditionEnum::DC_IS_INDOORS);
-        setEnum(L, "HAS_ILLEGAL_ITEM", DialogConditionEnum::DC_HAS_ILLEGAL_ITEM);
-        setEnum(L, "USING_MY_TRAINING_EQUIPMENT", DialogConditionEnum::DC_USING_MY_TRAINING_EQUIPMENT);
-        setEnum(L, "STARVING", DialogConditionEnum::DC_STARVING);
-        setEnum(L, "MIXED_GENDER_GROUP", DialogConditionEnum::DC_MIXED_GENDER_GROUP);
-        setEnum(L, "TOWN_LEVEL_CURRENT_LOCATION", DialogConditionEnum::DC_TOWN_LEVEL_CURRENT_LOCATION);
-        setEnum(L, "PLAYERS_BEST_TOWN_LEVEL", DialogConditionEnum::DC_PLAYERS_BEST_TOWN_LEVEL);
-        setEnum(L, "IN_A_PLAYER_TOWN", DialogConditionEnum::DC_IN_A_PLAYER_TOWN);
-        setEnum(L, "TARGET_CHARACTER_EXISTS", DialogConditionEnum::DC_TARGET_CHARACTER_EXISTS);
-        setEnum(L, "IS_RECRUITABLE", DialogConditionEnum::DC_IS_RECRUITABLE);
-        setEnum(L, "HAS_AI_CONTRACT", DialogConditionEnum::DC_HAS_AI_CONTRACT);
-        setEnum(L, "HAS_ROBOT_LIMBS", DialogConditionEnum::DC_HAS_ROBOT_LIMBS);
-        setEnum(L, "END", DialogConditionEnum::DC_END);
-    // global
-        lua_pushvalue(L, -1);
+
         lua_setglobal(L, "DialogConditionEnum");
-        lua_setglobal(L, "DialogCondition");
     }
 
     void registerComparisonEnum(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // original c++
+        lua_createtable(L, 0, 3);
+
         setEnum(L, "CE_EQUALS", ComparisonEnum::CE_EQUALS);
         setEnum(L, "CE_LESS_THAN", ComparisonEnum::CE_LESS_THAN);
         setEnum(L, "CE_MORE_THAN", ComparisonEnum::CE_MORE_THAN);
-    // aliases
-        setEnum(L, "EQUALS", ComparisonEnum::CE_EQUALS);
-        setEnum(L, "LESS_THAN", ComparisonEnum::CE_LESS_THAN);
-        setEnum(L, "MORE_THAN", ComparisonEnum::CE_MORE_THAN);
-    // global
-        lua_pushvalue(L, -1);
+
         lua_setglobal(L, "ComparisonEnum");
-        lua_setglobal(L, "Comparison");
     }
 
     void registerGroundType(lua_State* L)
     {
-        lua_createtable(L, 0, 18);
+        lua_createtable(L, 0, 9);
 
         setEnum(L, "GROUND_SAND", GroundType::GROUND_SAND);
         setEnum(L, "GROUND_GRASS", GroundType::GROUND_GRASS);
@@ -2257,17 +1588,7 @@ namespace KenshiLua
         setEnum(L, "GROUND_MUD", GroundType::GROUND_MUD);
         setEnum(L, "GROUND_SNOW", GroundType::GROUND_SNOW);
         setEnum(L, "GROUND_DIRT", GroundType::GROUND_DIRT);
-    // aliases
-        setEnum(L, "SAND", GroundType::GROUND_SAND);
-        setEnum(L, "GRASS", GroundType::GROUND_GRASS);
-        setEnum(L, "CONCRETE", GroundType::GROUND_CONCRETE);
-        setEnum(L, "WOOD", GroundType::GROUND_WOOD);
-        setEnum(L, "METAL", GroundType::GROUND_METAL);
-        setEnum(L, "WATER", GroundType::GROUND_WATER);
-        setEnum(L, "MUD", GroundType::GROUND_MUD);
-        setEnum(L, "SNOW", GroundType::GROUND_SNOW);
-        setEnum(L, "DIRT", GroundType::GROUND_DIRT);
-    // global
+
         lua_setglobal(L, "GroundType");
     }
 
@@ -2292,16 +1613,12 @@ namespace KenshiLua
 
     void registerSquadType(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // original
+        lua_createtable(L, 0, 3);
+
         setEnum(L, "SQ_UNKNOWN", SquadType::SQ_UNKNOWN);
         setEnum(L, "SQ_RESIDENT", SquadType::SQ_RESIDENT);
         setEnum(L, "SQ_ROAMING", SquadType::SQ_ROAMING);
-    // aliases
-        setEnum(L, "UNKNOWN", SquadType::SQ_UNKNOWN);
-        setEnum(L, "RESIDENT", SquadType::SQ_RESIDENT);
-        setEnum(L, "ROAMING", SquadType::SQ_ROAMING);
-    // global
+
         lua_setglobal(L, "SquadType");
     }
 
@@ -2335,9 +1652,7 @@ namespace KenshiLua
         setEnum(L, "TARGET_PATHFINDING_STARTUP", swordStateEnum::TARGET_PATHFINDING_STARTUP);
         setEnum(L, "TARGET_PATHFINDING", swordStateEnum::TARGET_PATHFINDING);
 
-        lua_pushvalue(L, -1);
         lua_setglobal(L, "swordStateEnum");
-        lua_setglobal(L, "SwordState");
     }
 
     void registerMiningResource(lua_State* L)
@@ -2357,8 +1672,8 @@ namespace KenshiLua
 
     void registerCursorType(lua_State* L)
     {
-        lua_createtable(L, 0, 52);
-    // original
+        lua_createtable(L, 0, 26);
+
         setEnum(L, "DEFAULT_CURSOR", CursorType::DEFAULT_CURSOR);
         setEnum(L, "MEDIC_CURSOR", CursorType::MEDIC_CURSOR);
         setEnum(L, "LOOT_CURSOR", CursorType::LOOT_CURSOR);
@@ -2385,51 +1700,19 @@ namespace KenshiLua
         setEnum(L, "INVALID_MOVEMENT_CURSOR", CursorType::INVALID_MOVEMENT_CURSOR);
         setEnum(L, "LOOT_CURSOR_RED", CursorType::LOOT_CURSOR_RED);
         setEnum(L, "KNOCKOUT_CURSOR", CursorType::KNOCKOUT_CURSOR);
-    // aliases
-        setEnum(L, "DEFAULT", CursorType::DEFAULT_CURSOR);
-        setEnum(L, "MEDIC", CursorType::MEDIC_CURSOR);
-        setEnum(L, "LOOT", CursorType::LOOT_CURSOR);
-        setEnum(L, "LIFT", CursorType::LIFT_CURSOR);
-        setEnum(L, "PICKUP_ITEM", CursorType::PICKUP_ITEM_CURSOR);
-        setEnum(L, "ATTACK", CursorType::ATTACK_CURSOR);
-        setEnum(L, "GUARD", CursorType::GUARD_CURSOR);
-        setEnum(L, "TALK", CursorType::TALK_CURSOR);
-        setEnum(L, "SPECIAL_TALK", CursorType::SPECIAL_TALK_CURSOR);
-        setEnum(L, "USE", CursorType::USE_CURSOR);
-        setEnum(L, "TRADER", CursorType::TRADER_CURSOR);
-        setEnum(L, "BUILD", CursorType::BUILD_CURSOR);
-        setEnum(L, "OPEN_DOOR", CursorType::OPEN_DOOR_CURSOR);
-        setEnum(L, "DOOR_ESCAPE", CursorType::DOOR_ESCAPE_CURSOR);
-        setEnum(L, "LOCKED", CursorType::LOCKED_CURSOR);
-        setEnum(L, "PICK_LOCK", CursorType::PICK_LOCK_CURSOR);
-        setEnum(L, "BUY_HOUSE", CursorType::BUY_HOUSE_CURSOR);
-        setEnum(L, "GREEN", CursorType::GREEN_CURSOR);
-        setEnum(L, "MINE", CursorType::MINE_CURSOR);
-        setEnum(L, "REPAIR", CursorType::REPAIR_CURSOR);
-        setEnum(L, "LIGHT", CursorType::LIGHT_CURSOR);
-        setEnum(L, "STEAL", CursorType::STEAL_CURSOR);
-        setEnum(L, "HAND", CursorType::HAND_CURSOR);
-        setEnum(L, "INVALID_MOVEMENT", CursorType::INVALID_MOVEMENT_CURSOR);
-        setEnum(L, "LOOT_RED", CursorType::LOOT_CURSOR_RED);
-        setEnum(L, "KNOCKOUT", CursorType::KNOCKOUT_CURSOR);
-    // global
+
         lua_setglobal(L, "CursorType");
     }
 
     void registerMapZoomLevel(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
-    //original c++ enums
+        lua_createtable(L, 0, 4);
+
         setEnum(L, "ZOOM_MIN", MapZoomLevel::ZOOM_MIN);
         setEnum(L, "ZOOM_MID", MapZoomLevel::ZOOM_MID);
         setEnum(L, "ZOOM_MAX", MapZoomLevel::ZOOM_MAX);
         setEnum(L, "ZOOM_CHARACTERS", MapZoomLevel::ZOOM_CHARACTERS);
-    //aliases
-        setEnum(L, "MIN", MapZoomLevel::ZOOM_MIN);
-        setEnum(L, "MID", MapZoomLevel::ZOOM_MID);
-        setEnum(L, "MAX", MapZoomLevel::ZOOM_MAX);
-        setEnum(L, "CHARACTERS", MapZoomLevel::ZOOM_CHARACTERS);
-    //set the global variable
+
         lua_setglobal(L, "MapZoomLevel");
     }
 
@@ -2441,21 +1724,21 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 13);
 
-        setEnum(L, "ATTACKED_US_DEFENSIVELY", FactionRelations::ATTACKED_US_DEFENSIVELY);
-        setEnum(L, "ATTACKED_US_AGGRESSIVELY", FactionRelations::ATTACKED_US_AGGRESSIVELY);
-        setEnum(L, "DEFEATED_ONE_OF_US_DEFENSIVELY", FactionRelations::DEFEATED_ONE_OF_US_DEFENSIVELY);
-        setEnum(L, "DEFEATED_ONE_OF_US_AGGRESSIVELY", FactionRelations::DEFEATED_ONE_OF_US_AGGRESSIVELY);
-        setEnum(L, "KILLED_ONE_OF_US_DIRECTLY", FactionRelations::KILLED_ONE_OF_US_DIRECTLY);
-        setEnum(L, "KILLED_ONE_OF_US_INDIRECTLY", FactionRelations::KILLED_ONE_OF_US_INDIRECTLY);
-        setEnum(L, "EXECUTED_ONE_OF_US", FactionRelations::EXECUTED_ONE_OF_US);
-        setEnum(L, "AIDED_US_IN_BATTLE", FactionRelations::AIDED_US_IN_BATTLE);
-        setEnum(L, "FIRST_AIDED_US", FactionRelations::FIRST_AIDED_US);
-        setEnum(L, "TAKEN_TO_BED", FactionRelations::TAKEN_TO_BED);
-        setEnum(L, "DEFEATED_AN_ENEMY", FactionRelations::DEFEATED_AN_ENEMY);
-        setEnum(L, "KILLED_AN_ENEMY", FactionRelations::KILLED_AN_ENEMY);
-        setEnum(L, "CAPTURED_US", FactionRelations::CAPTURED_US);
-
-        lua_setglobal(L, "FactionEvent");
+        setEnum(L, "ATTACKED_US_DEFENSIVELY", FactionRelations::FactionEvent::ATTACKED_US_DEFENSIVELY);
+        setEnum(L, "ATTACKED_US_AGGRESSIVELY", FactionRelations::FactionEvent::ATTACKED_US_AGGRESSIVELY);
+        setEnum(L, "DEFEATED_ONE_OF_US_DEFENSIVELY", FactionRelations::FactionEvent::DEFEATED_ONE_OF_US_DEFENSIVELY);
+        setEnum(L, "DEFEATED_ONE_OF_US_AGGRESSIVELY", FactionRelations::FactionEvent::DEFEATED_ONE_OF_US_AGGRESSIVELY);
+        setEnum(L, "KILLED_ONE_OF_US_DIRECTLY", FactionRelations::FactionEvent::KILLED_ONE_OF_US_DIRECTLY);
+        setEnum(L, "KILLED_ONE_OF_US_INDIRECTLY", FactionRelations::FactionEvent::KILLED_ONE_OF_US_INDIRECTLY);
+        setEnum(L, "EXECUTED_ONE_OF_US", FactionRelations::FactionEvent::EXECUTED_ONE_OF_US);
+        setEnum(L, "AIDED_US_IN_BATTLE", FactionRelations::FactionEvent::AIDED_US_IN_BATTLE);
+        setEnum(L, "FIRST_AIDED_US", FactionRelations::FactionEvent::FIRST_AIDED_US);
+        setEnum(L, "TAKEN_TO_BED", FactionRelations::FactionEvent::TAKEN_TO_BED);
+        setEnum(L, "DEFEATED_AN_ENEMY", FactionRelations::FactionEvent::DEFEATED_AN_ENEMY);
+        setEnum(L, "KILLED_AN_ENEMY", FactionRelations::FactionEvent::KILLED_AN_ENEMY);
+        setEnum(L, "CAPTURED_US", FactionRelations::FactionEvent::CAPTURED_US);
+        setNestedClassTable(L, "FactionRelations", "FactionEvent");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2464,23 +1747,15 @@ namespace KenshiLua
 
     void registerUnloadedPlatoonJob(lua_State* L)
     {
-        lua_createtable(L, 0, 14);
+        lua_createtable(L, 0, 7);
 
-        setEnum(L, "UPJOB_NONE", UPJOB_NONE);
-        setEnum(L, "UPJOB_PATROL_TOWN", UPJOB_PATROL_TOWN);
-        setEnum(L, "UPJOB_PATROL_SHORTRANGE", UPJOB_PATROL_SHORTRANGE);
-        setEnum(L, "UPJOB_PATROL_LONGRANGE", UPJOB_PATROL_LONGRANGE);
-        setEnum(L, "UPJOB_GOHOME", UPJOB_GOHOME);
-        setEnum(L, "UPJOB_TRAVEL_TARGET", UPJOB_TRAVEL_TARGET);
-        setEnum(L, "UPJOB_TRAVEL_TARGET_FAST", UPJOB_TRAVEL_TARGET_FAST);
-
-        setEnum(L, "NONE", UPJOB_NONE);
-        setEnum(L, "PATROL_TOWN", UPJOB_PATROL_TOWN);
-        setEnum(L, "PATROL_SHORTRANGE", UPJOB_PATROL_SHORTRANGE);
-        setEnum(L, "PATROL_LONGRANGE", UPJOB_PATROL_LONGRANGE);
-        setEnum(L, "GOHOME", UPJOB_GOHOME);
-        setEnum(L, "TRAVEL_TARGET", UPJOB_TRAVEL_TARGET);
-        setEnum(L, "TRAVEL_TARGET_FAST", UPJOB_TRAVEL_TARGET_FAST);
+        setEnum(L, "UPJOB_NONE", UnloadedPlatoonJob::UPJOB_NONE);
+        setEnum(L, "UPJOB_PATROL_TOWN", UnloadedPlatoonJob::UPJOB_PATROL_TOWN);
+        setEnum(L, "UPJOB_PATROL_SHORTRANGE", UnloadedPlatoonJob::UPJOB_PATROL_SHORTRANGE);
+        setEnum(L, "UPJOB_PATROL_LONGRANGE", UnloadedPlatoonJob::UPJOB_PATROL_LONGRANGE);
+        setEnum(L, "UPJOB_GOHOME", UnloadedPlatoonJob::UPJOB_GOHOME);
+        setEnum(L, "UPJOB_TRAVEL_TARGET", UnloadedPlatoonJob::UPJOB_TRAVEL_TARGET);
+        setEnum(L, "UPJOB_TRAVEL_TARGET_FAST", UnloadedPlatoonJob::UPJOB_TRAVEL_TARGET_FAST);
 
         lua_setglobal(L, "UnloadedPlatoonJob");
     }
@@ -2491,18 +1766,13 @@ namespace KenshiLua
 
     void registerForgottenGUITradeWindowType(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
-    // original
+        lua_createtable(L, 0, 4);
+
         setEnum(L, "TW_OFF", TradeWindowType::TW_OFF);
         setEnum(L, "TW_MONEY_TRADING", TradeWindowType::TW_MONEY_TRADING);
         setEnum(L, "TW_LOOTING", TradeWindowType::TW_LOOTING);
         setEnum(L, "TW_AUTO", TradeWindowType::TW_AUTO);
-    // aliases
-        setEnum(L, "OFF", TradeWindowType::TW_OFF);
-        setEnum(L, "MONEY_TRADING", TradeWindowType::TW_MONEY_TRADING);
-        setEnum(L, "LOOTING", TradeWindowType::TW_LOOTING);
-        setEnum(L, "AUTO", TradeWindowType::TW_AUTO);
-    // global
+
         lua_setglobal(L, "TradeWindowType");
     }
 
@@ -2514,14 +1784,14 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 6);
 
-        setEnum(L, "NONE", GameData::NONE);
-        setEnum(L, "INT", GameData::INT);
-        setEnum(L, "FLOAT", GameData::FLOAT);
-        setEnum(L, "BOOL", GameData::BOOL);
-        setEnum(L, "FILE", GameData::FILE);
-        setEnum(L, "STRING", GameData::STRING);
-
-        lua_setglobal(L, "GameDataDataType");
+        setEnum(L, "NONE", GameData::DataType::NONE);
+        setEnum(L, "INT", GameData::DataType::INT);
+        setEnum(L, "FLOAT", GameData::DataType::FLOAT);
+        setEnum(L, "BOOL", GameData::DataType::BOOL);
+        setEnum(L, "FILE", GameData::DataType::FILE);
+        setEnum(L, "STRING", GameData::DataType::STRING);
+        setNestedClassTable(L, "GameData", "DataType");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2530,15 +1800,11 @@ namespace KenshiLua
 
     void registerNxShapesType(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
+        lua_createtable(L, 0, 3);
 
-        setEnum(L, "NX_STATIC_SHAPES", NX_STATIC_SHAPES);
-        setEnum(L, "NX_DYNAMIC_SHAPES", NX_DYNAMIC_SHAPES);
-        setEnum(L, "NX_ALL_SHAPES", NX_ALL_SHAPES);
-
-        setEnum(L, "STATIC_SHAPES", NX_STATIC_SHAPES);
-        setEnum(L, "DYNAMIC_SHAPES", NX_DYNAMIC_SHAPES);
-        setEnum(L, "ALL_SHAPES", NX_ALL_SHAPES);
+        setEnum(L, "NX_STATIC_SHAPES", NxShapesType::NX_STATIC_SHAPES);
+        setEnum(L, "NX_DYNAMIC_SHAPES", NxShapesType::NX_DYNAMIC_SHAPES);
+        setEnum(L, "NX_ALL_SHAPES", NxShapesType::NX_ALL_SHAPES);
 
         lua_setglobal(L, "NxShapesType");
     }
@@ -2547,25 +1813,25 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 17);
 
-        setEnum(L, "SYS_NONE", GameWorld::SYS_NONE);
-        setEnum(L, "SYS_RESIDENT_CHANGE", GameWorld::SYS_RESIDENT_CHANGE);
-        setEnum(L, "SYS_SHOW_PROSPECTING_WINDOW", GameWorld::SYS_SHOW_PROSPECTING_WINDOW);
-        setEnum(L, "SYS_CREATE_PHYSICAL", GameWorld::SYS_CREATE_PHYSICAL);
-        setEnum(L, "SYS_DESTROY_PHYSICAL", GameWorld::SYS_DESTROY_PHYSICAL);
-        setEnum(L, "SYS_SET_CHAINED_MODE", GameWorld::SYS_SET_CHAINED_MODE);
-        setEnum(L, "SYS_UPDATE_ORDERS_PANEL", GameWorld::SYS_UPDATE_ORDERS_PANEL);
-        setEnum(L, "SYS_UPDATE_PORTRAIT", GameWorld::SYS_UPDATE_PORTRAIT);
-        setEnum(L, "SYS_RESEARCH_PROGRESS", GameWorld::SYS_RESEARCH_PROGRESS);
-        setEnum(L, "SYS_CLOSE_ALL_INVENTORIES", GameWorld::SYS_CLOSE_ALL_INVENTORIES);
-        setEnum(L, "SYS_CLOSE_INVENTORY", GameWorld::SYS_CLOSE_INVENTORY);
-        setEnum(L, "SYS_BUILDING_PROGRESS", GameWorld::SYS_BUILDING_PROGRESS);
-        setEnum(L, "SYS_DROP_ALL_GEAR", GameWorld::SYS_DROP_ALL_GEAR);
-        setEnum(L, "SYS_CHARACTER_PARTICLES", GameWorld::SYS_CHARACTER_PARTICLES);
-        setEnum(L, "SYS_RESTORE_SQUAD", GameWorld::SYS_RESTORE_SQUAD);
-        setEnum(L, "SYS_DESTROY_PLATOON", GameWorld::SYS_DESTROY_PLATOON);
-        setEnum(L, "SYS_BREAK_BUILDING", GameWorld::SYS_BREAK_BUILDING);
-
-        lua_setglobal(L, "SysMessageEnum");
+        setEnum(L, "SYS_NONE", GameWorld::SysMessageEnum::SYS_NONE);
+        setEnum(L, "SYS_RESIDENT_CHANGE", GameWorld::SysMessageEnum::SYS_RESIDENT_CHANGE);
+        setEnum(L, "SYS_SHOW_PROSPECTING_WINDOW", GameWorld::SysMessageEnum::SYS_SHOW_PROSPECTING_WINDOW);
+        setEnum(L, "SYS_CREATE_PHYSICAL", GameWorld::SysMessageEnum::SYS_CREATE_PHYSICAL);
+        setEnum(L, "SYS_DESTROY_PHYSICAL", GameWorld::SysMessageEnum::SYS_DESTROY_PHYSICAL);
+        setEnum(L, "SYS_SET_CHAINED_MODE", GameWorld::SysMessageEnum::SYS_SET_CHAINED_MODE);
+        setEnum(L, "SYS_UPDATE_ORDERS_PANEL", GameWorld::SysMessageEnum::SYS_UPDATE_ORDERS_PANEL);
+        setEnum(L, "SYS_UPDATE_PORTRAIT", GameWorld::SysMessageEnum::SYS_UPDATE_PORTRAIT);
+        setEnum(L, "SYS_RESEARCH_PROGRESS", GameWorld::SysMessageEnum::SYS_RESEARCH_PROGRESS);
+        setEnum(L, "SYS_CLOSE_ALL_INVENTORIES", GameWorld::SysMessageEnum::SYS_CLOSE_ALL_INVENTORIES);
+        setEnum(L, "SYS_CLOSE_INVENTORY", GameWorld::SysMessageEnum::SYS_CLOSE_INVENTORY);
+        setEnum(L, "SYS_BUILDING_PROGRESS", GameWorld::SysMessageEnum::SYS_BUILDING_PROGRESS);
+        setEnum(L, "SYS_DROP_ALL_GEAR", GameWorld::SysMessageEnum::SYS_DROP_ALL_GEAR);
+        setEnum(L, "SYS_CHARACTER_PARTICLES", GameWorld::SysMessageEnum::SYS_CHARACTER_PARTICLES);
+        setEnum(L, "SYS_RESTORE_SQUAD", GameWorld::SysMessageEnum::SYS_RESTORE_SQUAD);
+        setEnum(L, "SYS_DESTROY_PLATOON", GameWorld::SysMessageEnum::SYS_DESTROY_PLATOON);
+        setEnum(L, "SYS_BREAK_BUILDING", GameWorld::SysMessageEnum::SYS_BREAK_BUILDING);
+        setNestedClassTable(L, "GameWorld", "SysMessageEnum");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2576,28 +1842,26 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 18);
 
-        setEnum(L, "OK", InventoryGUI::TradeResult::OK);
-        setEnum(L, "OUT_OF_RANGE", InventoryGUI::TradeResult::OUT_OF_RANGE);
-        setEnum(L, "NO_ROOM", InventoryGUI::TradeResult::NO_ROOM);
-        setEnum(L, "CANT_AFFORD", InventoryGUI::TradeResult::CANT_AFFORD);
-        setEnum(L, "CANT_AFFORD_SHOPKEPPER", InventoryGUI::TradeResult::CANT_AFFORD_SHOPKEPPER);
-        setEnum(L, "CANT_WEAR_ITEM", InventoryGUI::TradeResult::CANT_WEAR_ITEM);
-        setEnum(L, "INCOMPATIBLE_ITEM", InventoryGUI::TradeResult::INCOMPATIBLE_ITEM);
-        setEnum(L, "LOCKED", InventoryGUI::TradeResult::LOCKED);
-        setEnum(L, "THIEF_DETECTED", InventoryGUI::TradeResult::THIEF_DETECTED);
-        setEnum(L, "SELLING_STOLEN_ITEM_DETECTED", InventoryGUI::TradeResult::SELLING_STOLEN_ITEM_DETECTED);
-        setEnum(L, "ERROR_ITEM_POSITION", InventoryGUI::TradeResult::ERROR_ITEM_POSITION);
-        setEnum(L, "ERROR_INVALID", InventoryGUI::TradeResult::ERROR_INVALID);
-        setEnum(L, "ERROR_THATS_MINE", InventoryGUI::TradeResult::ERROR_THATS_MINE);
-        setEnum(L, "ERROR_TARGET_CONSCIOUS", InventoryGUI::TradeResult::ERROR_TARGET_CONSCIOUS);
-        setEnum(L, "SMUGGLING_ONLY", InventoryGUI::TradeResult::SMUGGLING_ONLY);
-        setEnum(L, "ILLEGAL_GOODS", InventoryGUI::TradeResult::ILLEGAL_GOODS);
-        setEnum(L, "UNIFORMS", InventoryGUI::TradeResult::UNIFORMS);
-        setEnum(L, "CONTAINER_NOT_EMPTY", InventoryGUI::TradeResult::CONTAINER_NOT_EMPTY);
-
-        lua_pushvalue(L, -1);
-        lua_setglobal(L, "InventoryGUITradeResult");
-        lua_setglobal(L, "TradeResult");
+        setEnum(L, "OK", InventoryGUI::TradeResult::Enum::OK);
+        setEnum(L, "OUT_OF_RANGE", InventoryGUI::TradeResult::Enum::OUT_OF_RANGE);
+        setEnum(L, "NO_ROOM", InventoryGUI::TradeResult::Enum::NO_ROOM);
+        setEnum(L, "CANT_AFFORD", InventoryGUI::TradeResult::Enum::CANT_AFFORD);
+        setEnum(L, "CANT_AFFORD_SHOPKEPPER", InventoryGUI::TradeResult::Enum::CANT_AFFORD_SHOPKEPPER);
+        setEnum(L, "CANT_WEAR_ITEM", InventoryGUI::TradeResult::Enum::CANT_WEAR_ITEM);
+        setEnum(L, "INCOMPATIBLE_ITEM", InventoryGUI::TradeResult::Enum::INCOMPATIBLE_ITEM);
+        setEnum(L, "LOCKED", InventoryGUI::TradeResult::Enum::LOCKED);
+        setEnum(L, "THIEF_DETECTED", InventoryGUI::TradeResult::Enum::THIEF_DETECTED);
+        setEnum(L, "SELLING_STOLEN_ITEM_DETECTED", InventoryGUI::TradeResult::Enum::SELLING_STOLEN_ITEM_DETECTED);
+        setEnum(L, "ERROR_ITEM_POSITION", InventoryGUI::TradeResult::Enum::ERROR_ITEM_POSITION);
+        setEnum(L, "ERROR_INVALID", InventoryGUI::TradeResult::Enum::ERROR_INVALID);
+        setEnum(L, "ERROR_THATS_MINE", InventoryGUI::TradeResult::Enum::ERROR_THATS_MINE);
+        setEnum(L, "ERROR_TARGET_CONSCIOUS", InventoryGUI::TradeResult::Enum::ERROR_TARGET_CONSCIOUS);
+        setEnum(L, "SMUGGLING_ONLY", InventoryGUI::TradeResult::Enum::SMUGGLING_ONLY);
+        setEnum(L, "ILLEGAL_GOODS", InventoryGUI::TradeResult::Enum::ILLEGAL_GOODS);
+        setEnum(L, "UNIFORMS", InventoryGUI::TradeResult::Enum::UNIFORMS);
+        setEnum(L, "CONTAINER_NOT_EMPTY", InventoryGUI::TradeResult::Enum::CONTAINER_NOT_EMPTY);
+        setNestedClassTable(L, "InventoryGUI", "TradeResult");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2608,71 +1872,54 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 4);
 
-        setEnum(L, "IDLE", HavokCharacter::IDLE);
-        setEnum(L, "GOAL_REACHED", HavokCharacter::GOAL_REACHED);
-        setEnum(L, "FOLLOWING_PATH", HavokCharacter::FOLLOWING_PATH);
-        setEnum(L, "MANUAL", HavokCharacter::MANUAL);
-
-        lua_setglobal(L, "HavokCharacterState");
+        setEnum(L, "IDLE", HavokCharacter::CharacterState::IDLE);
+        setEnum(L, "GOAL_REACHED", HavokCharacter::CharacterState::GOAL_REACHED);
+        setEnum(L, "FOLLOWING_PATH", HavokCharacter::CharacterState::FOLLOWING_PATH);
+        setEnum(L, "MANUAL", HavokCharacter::CharacterState::MANUAL);
+        setNestedClassTable(L, "HavokCharacter", "CharacterState");
+        lua_pop(L, 1);
     }
 
     void registerHavokPathState(lua_State* L)
     {
         lua_createtable(L, 0, 7);
 
-        setEnum(L, "NONE", HavokCharacter::NONE);
-        setEnum(L, "COMPLETE", HavokCharacter::COMPLETE);
-        setEnum(L, "INCOMPLETE", HavokCharacter::INCOMPLETE);
-        setEnum(L, "FAILED", HavokCharacter::FAILED);
-        setEnum(L, "WAITING", HavokCharacter::WAITING);
-        setEnum(L, "UPDATING", HavokCharacter::UPDATING);
-        setEnum(L, "BROKEN", HavokCharacter::BROKEN);
-
-        lua_setglobal(L, "HavokPathState");
+        setEnum(L, "NONE", HavokCharacter::PathState::NONE);
+        setEnum(L, "COMPLETE", HavokCharacter::PathState::COMPLETE);
+        setEnum(L, "INCOMPLETE", HavokCharacter::PathState::INCOMPLETE);
+        setEnum(L, "FAILED", HavokCharacter::PathState::FAILED);
+        setEnum(L, "WAITING", HavokCharacter::PathState::WAITING);
+        setEnum(L, "UPDATING", HavokCharacter::PathState::UPDATING);
+        setEnum(L, "BROKEN", HavokCharacter::PathState::BROKEN);
+        setNestedClassTable(L, "HavokCharacter", "PathState");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
     // InputHandler.h
     // ------------------------------------------
 
-    void registerMasks(lua_State* L)
+    void registerInputHandlerMasks(lua_State* L)
     {
-        lua_createtable(L, 0, 10);
+        lua_createtable(L, 0, 5);
 
-    // original
-        setEnum(L, "SHIFT_MASK", InputHandler::SHIFT_MASK);
-        setEnum(L, "CTRL_MASK", InputHandler::CTRL_MASK);
-        setEnum(L, "ALT_MASK", InputHandler::ALT_MASK);
-        setEnum(L, "ALL_MASK", InputHandler::ALL_MASK);
-        setEnum(L, "NONE_MASK", InputHandler::NONE_MASK);
-    // aliases
-        setEnum(L, "SHIFT", InputHandler::SHIFT_MASK);
-        setEnum(L, "CTRL", InputHandler::CTRL_MASK);
-        setEnum(L, "ALT", InputHandler::ALT_MASK);
-        setEnum(L, "ALL", InputHandler::ALL_MASK);
-        setEnum(L, "NONE", InputHandler::NONE_MASK);
-    // global
-        lua_setglobal(L, "Masks");
-    }
-
-    void registerGlobalMode(lua_State* L)
-    {
-        lua_createtable(L, 0, 2);
-
-        setEnum(L, "GLOBAL", InputHandler::GLOBAL);
-        setEnum(L, "EDITOR", InputHandler::EDITOR);
-
-        lua_setglobal(L, "GlobalMode");
+        setEnum(L, "SHIFT_MASK", InputHandler::Masks::SHIFT_MASK);
+        setEnum(L, "CTRL_MASK", InputHandler::Masks::CTRL_MASK);
+        setEnum(L, "ALT_MASK", InputHandler::Masks::ALT_MASK);
+        setEnum(L, "ALL_MASK", InputHandler::Masks::ALL_MASK);
+        setEnum(L, "NONE_MASK", InputHandler::Masks::NONE_MASK);
+        setNestedClassTable(L, "InputHandler", "Masks");
+        lua_pop(L, 1);
     }
 
     void registerInputHandlerGameMode(lua_State* L)
     {
         lua_createtable(L, 0, 2);
 
-        setEnum(L, "GLOBAL", InputHandler::GLOBAL);
-        setEnum(L, "EDITOR", InputHandler::EDITOR);
-
-        lua_setglobal(L, "InputHandlerGameMode");
+        setEnum(L, "GLOBAL", InputHandler::GameMode::GLOBAL);
+        setEnum(L, "EDITOR", InputHandler::GameMode::EDITOR);
+        setNestedClassTable(L, "InputHandler", "GameMode");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2681,20 +1928,16 @@ namespace KenshiLua
 
     void registerLoggerSeverity(lua_State* L)
     {
-        lua_createtable(L, 0, 9);
+        lua_createtable(L, 0, 6);
 
-        setEnum(L, "LOG_INFO", Logger::Info);
-        setEnum(L, "LOG_WARNING", Logger::Warning);
-        setEnum(L, "LOG_ERROR", Logger::Error);
-
-        setEnum(L, "TRACE", Logger::Trace);
-        setEnum(L, "DEBUG", Logger::Debug);
-        setEnum(L, "INFO", Logger::Info);
-        setEnum(L, "WARNING", Logger::Warning);
-        setEnum(L, "ERROR", Logger::Error);
-        setEnum(L, "FATAL", Logger::Fatal);
-
-        lua_setglobal(L, "LoggerSeverity");
+        setEnum(L, "Trace", Logger::Severity::Trace);
+        setEnum(L, "Debug", Logger::Severity::Debug);
+        setEnum(L, "Info", Logger::Severity::Info);
+        setEnum(L, "Warning", Logger::Severity::Warning);
+        setEnum(L, "Error", Logger::Severity::Error);
+        setEnum(L, "Fatal", Logger::Severity::Fatal);
+        setNestedClassTable(L, "Logger", "Severity");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2703,16 +1946,12 @@ namespace KenshiLua
 
     void registerManagementScreenMessageLogColor(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // original
+        lua_createtable(L, 0, 3);
+
         setEnum(L, "ML_NORMAL", MessageLogColor::ML_NORMAL);
         setEnum(L, "ML_PLAYER", MessageLogColor::ML_PLAYER);
         setEnum(L, "ML_SYSTEM", MessageLogColor::ML_SYSTEM);
-    // aliases
-        setEnum(L, "NORMAL", MessageLogColor::ML_NORMAL);
-        setEnum(L, "PLAYER", MessageLogColor::ML_PLAYER);
-        setEnum(L, "SYSTEM", MessageLogColor::ML_SYSTEM);
-    // global
+
         lua_setglobal(L, "MessageLogColor");
     }
 
@@ -2722,17 +1961,12 @@ namespace KenshiLua
 
     void registerLimbState(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
-    // original c++
+        lua_createtable(L, 0, 4);
+
         setEnum(L, "LIMB_ORIGINAL", LimbState::LIMB_ORIGINAL);
         setEnum(L, "LIMB_STUMP", LimbState::LIMB_STUMP);
         setEnum(L, "LIMB_REPLACED", LimbState::LIMB_REPLACED);
         setEnum(L, "LIMB_CRUSHED", LimbState::LIMB_CRUSHED);
-    // aliases
-        setEnum(L, "ORIGINAL", LimbState::LIMB_ORIGINAL);
-        setEnum(L, "STUMP", LimbState::LIMB_STUMP);
-        setEnum(L, "REPLACED", LimbState::LIMB_REPLACED);
-        setEnum(L, "CRUSHED", LimbState::LIMB_CRUSHED);
 
         lua_setglobal(L, "LimbState");
     }
@@ -2746,8 +1980,8 @@ namespace KenshiLua
         setEnum(L, "LEFT_LEG", RobotLimbs::Limb::LEFT_LEG);
         setEnum(L, "RIGHT_LEG", RobotLimbs::Limb::RIGHT_LEG);
         setEnum(L, "NULL_LIMB", RobotLimbs::Limb::NULL_LIMB);
-
-        lua_setglobal(L, "RobotLimbs");
+        setNestedClassTable(L, "RobotLimbs", "Limb");
+        lua_pop(L, 1);
     }
 
     void registerAttackDirection(lua_State* L)
@@ -2766,34 +2000,25 @@ namespace KenshiLua
 
     void registerHealthPartStatus(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
-    // original c++ enums
-        setEnum(L, "PART_TORSO", MedicalSystem::HealthPartStatus::PART_TORSO);
+        lua_createtable(L, 0, 4);
+
+        setEnum(L, "PART_TORSO", MedicalSystem::HealthPartStatus::PartType::PART_TORSO);
         setEnum(L, "PART_LEG", MedicalSystem::HealthPartStatus::PartType::PART_LEG);
         setEnum(L, "PART_ARM", MedicalSystem::HealthPartStatus::PartType::PART_ARM);
         setEnum(L, "PART_HEAD", MedicalSystem::HealthPartStatus::PartType::PART_HEAD);
-    // aliases
-        setEnum(L, "TORSO", MedicalSystem::HealthPartStatus::PART_TORSO);
-        setEnum(L, "LEG", MedicalSystem::HealthPartStatus::PartType::PART_LEG);
-        setEnum(L, "ARM", MedicalSystem::HealthPartStatus::PartType::PART_ARM);
-        setEnum(L, "HEAD", MedicalSystem::HealthPartStatus::PartType::PART_HEAD);
-    // set the global variable
-        lua_setglobal(L, "HealthPartStatus");
+        setNestedClassTable(L, "MedicalSystem", "HealthPartStatus");
+        lua_pop(L, 1);
     }
 
     void registerCollapseStage(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // original c++ enums
+        lua_createtable(L, 0, 3);
+
         setEnum(L, "COLLAPSE_NONE", MedicalSystem::CollapseStage::COLLAPSE_NONE);
         setEnum(L, "COLLAPSE_BUT_NO_RAGDOLL", MedicalSystem::CollapseStage::COLLAPSE_BUT_NO_RAGDOLL);
         setEnum(L, "COLLAPSE_KO", MedicalSystem::CollapseStage::COLLAPSE_KO);
-    // aliases
-        setEnum(L, "NONE", MedicalSystem::CollapseStage::COLLAPSE_NONE);
-        setEnum(L, "BUT_NO_RAGDOLL", MedicalSystem::CollapseStage::COLLAPSE_BUT_NO_RAGDOLL);
-        setEnum(L, "KO", MedicalSystem::CollapseStage::COLLAPSE_KO);
-    //set the global variable
-        lua_setglobal(L, "CollapseStage");
+        setNestedClassTable(L, "MedicalSystem", "CollapseStage");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2804,24 +2029,24 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 5);
 
-        setEnum(L, "MISSING", NavMesh::MISSING);
-        setEnum(L, "ORIGINAL", NavMesh::ORIGINAL);
-        setEnum(L, "MODIFIED", NavMesh::MODIFIED);
-        setEnum(L, "LOADING", NavMesh::LOADING);
-        setEnum(L, "GENERATING", NavMesh::GENERATING);
-
-        lua_setglobal(L, "NavMeshState");
+        setEnum(L, "MISSING", NavMesh::State::MISSING);
+        setEnum(L, "ORIGINAL", NavMesh::State::ORIGINAL);
+        setEnum(L, "MODIFIED", NavMesh::State::MODIFIED);
+        setEnum(L, "LOADING", NavMesh::State::LOADING);
+        setEnum(L, "GENERATING", NavMesh::State::GENERATING);
+        setNestedClassTable(L, "NavMesh", "State");
+        lua_pop(L, 1);
     }
 
     void registerNavMeshFileMode(lua_State* L)
     {
         lua_createtable(L, 0, 3);
 
-        setEnum(L, "AUTO", NavMesh::AUTO);
-        setEnum(L, "BASE", NavMesh::BASE);
-        setEnum(L, "USER", NavMesh::USER);
-
-        lua_setglobal(L, "NavMeshFileMode");
+        setEnum(L, "AUTO", NavMesh::FileMode::AUTO);
+        setEnum(L, "BASE", NavMesh::FileMode::BASE);
+        setEnum(L, "USER", NavMesh::FileMode::USER);
+        setNestedClassTable(L, "NavMesh", "FileMode");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2832,14 +2057,14 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 8);
 
-        setEnum(L, "NX_TRIGGER_ON_ENTER", NX_TRIGGER_ON_ENTER);
-        setEnum(L, "NX_TRIGGER_ON_LEAVE", NX_TRIGGER_ON_LEAVE);
-        setEnum(L, "NX_TRIGGER_ON_STAY", NX_TRIGGER_ON_STAY);
-        setEnum(L, "NX_TRIGGER_ENABLE", NX_TRIGGER_ENABLE);
-        setEnum(L, "NX_SF_VISUALIZATION", NX_SF_VISUALIZATION);
-        setEnum(L, "NX_SF_DISABLE_COLLISION", NX_SF_DISABLE_COLLISION);
-        setEnum(L, "NX_SF_FEATURE_INDICES", NX_SF_FEATURE_INDICES);
-        setEnum(L, "NX_SF_DISABLE_RAYCASTING", NX_SF_DISABLE_RAYCASTING);
+        setEnum(L, "NX_TRIGGER_ON_ENTER", NxShapeFlag::NX_TRIGGER_ON_ENTER);
+        setEnum(L, "NX_TRIGGER_ON_LEAVE", NxShapeFlag::NX_TRIGGER_ON_LEAVE);
+        setEnum(L, "NX_TRIGGER_ON_STAY", NxShapeFlag::NX_TRIGGER_ON_STAY);
+        setEnum(L, "NX_TRIGGER_ENABLE", NxShapeFlag::NX_TRIGGER_ENABLE);
+        setEnum(L, "NX_SF_VISUALIZATION", NxShapeFlag::NX_SF_VISUALIZATION);
+        setEnum(L, "NX_SF_DISABLE_COLLISION", NxShapeFlag::NX_SF_DISABLE_COLLISION);
+        setEnum(L, "NX_SF_FEATURE_INDICES", NxShapeFlag::NX_SF_FEATURE_INDICES);
+        setEnum(L, "NX_SF_DISABLE_RAYCASTING", NxShapeFlag::NX_SF_DISABLE_RAYCASTING);
 
         lua_setglobal(L, "NxShapeFlag");
     }
@@ -2848,9 +2073,9 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 3);
 
-        setEnum(L, "FT_BINARY", NXU::FT_BINARY);
-        setEnum(L, "FT_XML", NXU::FT_XML);
-        setEnum(L, "FT_COLLADA", NXU::FT_COLLADA);
+        setEnum(L, "FT_BINARY", NXU::NXU_FileType::FT_BINARY);
+        setEnum(L, "FT_XML", NXU::NXU_FileType::FT_XML);
+        setEnum(L, "FT_COLLADA", NXU::NXU_FileType::FT_COLLADA);
 
         lua_setglobal(L, "NXU_FileType");
     }
@@ -2863,13 +2088,13 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 7);
 
-        setEnum(L, "ROTATION_NONE", ROTATION_NONE);
-        setEnum(L, "ROTATION_CONSTANT", ROTATION_CONSTANT);
-        setEnum(L, "ROTATION_OUTPUT_BASED", ROTATION_OUTPUT_BASED);
-        setEnum(L, "ROTATION_WIND_SPEED", ROTATION_WIND_SPEED);
-        setEnum(L, "ROTATION_FACE_WIND_DIRECTION", ROTATION_FACE_WIND_DIRECTION);
-        setEnum(L, "ROTATION_TARGET", ROTATION_TARGET);
-        setEnum(L, "ROTATION_MATCH_PARENT", ROTATION_MATCH_PARENT);
+        setEnum(L, "ROTATION_NONE", BuildingRotation::ROTATION_NONE);
+        setEnum(L, "ROTATION_CONSTANT", BuildingRotation::ROTATION_CONSTANT);
+        setEnum(L, "ROTATION_OUTPUT_BASED", BuildingRotation::ROTATION_OUTPUT_BASED);
+        setEnum(L, "ROTATION_WIND_SPEED", BuildingRotation::ROTATION_WIND_SPEED);
+        setEnum(L, "ROTATION_FACE_WIND_DIRECTION", BuildingRotation::ROTATION_FACE_WIND_DIRECTION);
+        setEnum(L, "ROTATION_TARGET", BuildingRotation::ROTATION_TARGET);
+        setEnum(L, "ROTATION_MATCH_PARENT", BuildingRotation::ROTATION_MATCH_PARENT);
 
         lua_setglobal(L, "BuildingRotation");
     }
@@ -2880,20 +2105,14 @@ namespace KenshiLua
 
     void registerPlatoonCreationMessage(lua_State* L)
     {
-        lua_createtable(L, 0, 10);
-    // original C++ enums
+        lua_createtable(L, 0, 5);
+
         setEnum(L, "CM_NO_MESSAGE", PlatoonCreationMessage::CM_NO_MESSAGE);
         setEnum(L, "CM_REFRESH", PlatoonCreationMessage::CM_REFRESH);
         setEnum(L, "CM_DECIMATE", PlatoonCreationMessage::CM_DECIMATE);
         setEnum(L, "CM_DELETE", PlatoonCreationMessage::CM_DELETE);
         setEnum(L, "CM_EMPTY", PlatoonCreationMessage::CM_EMPTY);
-    // aliases
-        setEnum(L, "NO_MESSAGE", PlatoonCreationMessage::CM_NO_MESSAGE);
-        setEnum(L, "REFRESH", PlatoonCreationMessage::CM_REFRESH);
-        setEnum(L, "DECIMATE", PlatoonCreationMessage::CM_DECIMATE);
-        setEnum(L, "DELETE", PlatoonCreationMessage::CM_DELETE);
-        setEnum(L, "EMPTY", PlatoonCreationMessage::CM_EMPTY);
-    // set the global variable
+
         lua_setglobal(L, "PlatoonCreationMessage");
     }
 
@@ -2905,14 +2124,14 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 6);
 
-        setEnum(L, "TYPE_UNKNOWN", DataObjectContainer::TYPE_UNKNOWN);
-        setEnum(L, "TYPE_PLATOON", DataObjectContainer::TYPE_PLATOON);
-        setEnum(L, "TYPE_FACTION", DataObjectContainer::TYPE_FACTION);
-        setEnum(L, "TYPE_TOWNLIST", DataObjectContainer::TYPE_TOWNLIST);
-        setEnum(L, "TYPE_ZONEMAP", DataObjectContainer::TYPE_ZONEMAP);
-        setEnum(L, "TYPE_BUILDING_INTERIOR", DataObjectContainer::TYPE_BUILDING_INTERIOR);
-
-        lua_setglobal(L, "GroupType");
+        setEnum(L, "TYPE_UNKNOWN", DataObjectContainer::GroupType::TYPE_UNKNOWN);
+        setEnum(L, "TYPE_PLATOON", DataObjectContainer::GroupType::TYPE_PLATOON);
+        setEnum(L, "TYPE_FACTION", DataObjectContainer::GroupType::TYPE_FACTION);
+        setEnum(L, "TYPE_TOWNLIST", DataObjectContainer::GroupType::TYPE_TOWNLIST);
+        setEnum(L, "TYPE_ZONEMAP", DataObjectContainer::GroupType::TYPE_ZONEMAP);
+        setEnum(L, "TYPE_BUILDING_INTERIOR", DataObjectContainer::GroupType::TYPE_BUILDING_INTERIOR);
+        setNestedClassTable(L, "DataObjectContainer", "GroupType");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2923,22 +2142,22 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 3);
 
-        setEnum(L, "NORMAL", SaveFileSystem::NORMAL);
-        setEnum(L, "SAVING", SaveFileSystem::SAVING);
-        setEnum(L, "COMPLETE", SaveFileSystem::COMPLETE);
-
-        lua_setglobal(L, "SaveFileSystemState");
+        setEnum(L, "NORMAL", SaveFileSystem::State::NORMAL);
+        setEnum(L, "SAVING", SaveFileSystem::State::SAVING);
+        setEnum(L, "COMPLETE", SaveFileSystem::State::COMPLETE);
+        setNestedClassTable(L, "SaveFileSystem", "State");
+        lua_pop(L, 1);
     }
 
     void registerSaveFileSystemMessageType(lua_State* L)
     {
         lua_createtable(L, 0, 3);
 
-        setEnum(L, "MSG_COPY", SaveFileSystem::MSG_COPY);
-        setEnum(L, "MSG_COPY_REPLACE", SaveFileSystem::MSG_COPY_REPLACE);
-        setEnum(L, "MSG_DELETE", SaveFileSystem::MSG_DELETE);
-
-        lua_setglobal(L, "SaveFileSystemMessageType");
+        setEnum(L, "MSG_COPY", SaveFileSystem::MessageType::MSG_COPY);
+        setEnum(L, "MSG_COPY_REPLACE", SaveFileSystem::MessageType::MSG_COPY_REPLACE);
+        setEnum(L, "MSG_DELETE", SaveFileSystem::MessageType::MSG_DELETE);
+        setNestedClassTable(L, "SaveFileSystem", "MessageType");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2955,8 +2174,8 @@ namespace KenshiLua
         setEnum(L, "IMPORT_RESEARCH", SaveManager::Flags::IMPORT_RESEARCH);
         setEnum(L, "IMPORT_NPC_STATES", SaveManager::Flags::IMPORT_NPC_STATES);
         setEnum(L, "IMPORT_RELATIONS", SaveManager::Flags::IMPORT_RELATIONS);
-
-        lua_setglobal(L, "SaveManagerFlags");
+        setNestedClassTable(L, "SaveManager", "Flags");
+        lua_pop(L, 1);
     }
 
     void registerSaveManagerSignals(lua_State* L)
@@ -2967,8 +2186,8 @@ namespace KenshiLua
         setEnum(L, "LOADGAME", SaveManager::Signal::LOADGAME);
         setEnum(L, "IMPORTGAME", SaveManager::Signal::IMPORTGAME);
         setEnum(L, "NEWGAME", SaveManager::Signal::NEWGAME);
-
-        lua_setglobal(L, "SaveManagerSignals");
+        setNestedClassTable(L, "SaveManager", "Signal");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2977,33 +2196,25 @@ namespace KenshiLua
 
     void registerScreenLabelRisingSpeed(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
-    // original
-        setEnum(L, "RS_STOPPED", ScreenLabel::RS_STOPPED);
-        setEnum(L, "RS_SLOW", ScreenLabel::RS_SLOW);
-        setEnum(L, "RS_NORMAL", ScreenLabel::RS_NORMAL);
-        setEnum(L, "RS_FAST", ScreenLabel::RS_FAST);
-    // aliases
-        setEnum(L, "STOPPED", ScreenLabel::RS_STOPPED);
-        setEnum(L, "SLOW", ScreenLabel::RS_SLOW);
-        setEnum(L, "NORMAL", ScreenLabel::RS_NORMAL);
-        setEnum(L, "FAST", ScreenLabel::RS_FAST);
-        lua_setglobal(L, "RisingSpeed");
+        lua_createtable(L, 0, 4);
+
+        setEnum(L, "RS_STOPPED", ScreenLabel::RisingSpeed::RS_STOPPED);
+        setEnum(L, "RS_SLOW", ScreenLabel::RisingSpeed::RS_SLOW);
+        setEnum(L, "RS_NORMAL", ScreenLabel::RisingSpeed::RS_NORMAL);
+        setEnum(L, "RS_FAST", ScreenLabel::RisingSpeed::RS_FAST);
+        setNestedClassTable(L, "ScreenLabel", "RisingSpeed");
+        lua_pop(L, 1);
     }
 
     void registerScreenLabelLabelSize(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // original
-        setEnum(L, "LS_SMALL", ScreenLabel::LS_SMALL);
-        setEnum(L, "LS_MEDIUM", ScreenLabel::LS_MEDIUM);
-        setEnum(L, "LS_LARGE", ScreenLabel::LS_LARGE);
-    // aliases
-        setEnum(L, "SMALL", ScreenLabel::LS_SMALL);
-        setEnum(L, "MEDIUM", ScreenLabel::LS_MEDIUM);
-        setEnum(L, "LARGE", ScreenLabel::LS_LARGE);
-    // global
-        lua_setglobal(L, "LabelSize");
+        lua_createtable(L, 0, 3);
+
+        setEnum(L, "LS_SMALL", ScreenLabel::LabelSize::LS_SMALL);
+        setEnum(L, "LS_MEDIUM", ScreenLabel::LabelSize::LS_MEDIUM);
+        setEnum(L, "LS_LARGE", ScreenLabel::LabelSize::LS_LARGE);
+        setNestedClassTable(L, "ScreenLabel", "LabelSize");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -3012,42 +2223,25 @@ namespace KenshiLua
 
     void registerSenseType(lua_State* L)
     {
-        lua_createtable(L, 0, 32);
+        lua_createtable(L, 0, 16);
 
-        setEnum(L, "SENSE_ALLY", SENSE_ALLY);
-        setEnum(L, "SENSE_NEUTRAL", SENSE_NEUTRAL);
-        setEnum(L, "SENSE_ENEMY", SENSE_ENEMY);
-        setEnum(L, "SENSE_KO", SENSE_KO);
-        setEnum(L, "SENSE_DEAD", SENSE_DEAD);
-        setEnum(L, "SENSE_SLAVE", SENSE_SLAVE);
-        setEnum(L, "SENSE_ESCAPED_SLAVE", SENSE_ESCAPED_SLAVE);
-        setEnum(L, "SENSE_AUTHORITY_FIGURE", SENSE_AUTHORITY_FIGURE);
-        setEnum(L, "SENSE_CANT_SEE", SENSE_CANT_SEE);
-        setEnum(L, "SENSE_IN_CAGE", SENSE_IN_CAGE);
-        setEnum(L, "SENSE_SAME_FACTION", SENSE_SAME_FACTION);
-        setEnum(L, "SENSE_ROBOTS", SENSE_ROBOTS);
-        setEnum(L, "SENSE_ENEMY_OF_MY_SLAVEMASTER", SENSE_ENEMY_OF_MY_SLAVEMASTER);
-        setEnum(L, "SENSE_PLAYER", SENSE_PLAYER);
-        setEnum(L, "SENSE_CRAWLING", SENSE_CRAWLING);
-        setEnum(L, "SENSE_CARRIED", SENSE_CARRIED);
-    // aliases
-        setEnum(L, "ALLY", SENSE_ALLY);
-        setEnum(L, "NEUTRAL", SENSE_NEUTRAL);
-        setEnum(L, "ENEMY", SENSE_ENEMY);
-        setEnum(L, "KO", SENSE_KO);
-        setEnum(L, "DEAD", SENSE_DEAD);
-        setEnum(L, "SLAVE", SENSE_SLAVE);
-        setEnum(L, "ESCAPED_SLAVE", SENSE_ESCAPED_SLAVE);
-        setEnum(L, "AUTHORITY_FIGURE", SENSE_AUTHORITY_FIGURE);
-        setEnum(L, "CANT_SEE", SENSE_CANT_SEE);
-        setEnum(L, "IN_CAGE", SENSE_IN_CAGE);
-        setEnum(L, "SAME_FACTION", SENSE_SAME_FACTION);
-        setEnum(L, "ROBOTS", SENSE_ROBOTS);
-        setEnum(L, "ENEMY_OF_MY_SLAVEMASTER", SENSE_ENEMY_OF_MY_SLAVEMASTER);
-        setEnum(L, "PLAYER", SENSE_PLAYER);
-        setEnum(L, "CRAWLING", SENSE_CRAWLING);
-        setEnum(L, "CARRIED", SENSE_CARRIED);
-    // global
+        setEnum(L, "SENSE_ALLY", SenseType::SENSE_ALLY);
+        setEnum(L, "SENSE_NEUTRAL", SenseType::SENSE_NEUTRAL);
+        setEnum(L, "SENSE_ENEMY", SenseType::SENSE_ENEMY);
+        setEnum(L, "SENSE_KO", SenseType::SENSE_KO);
+        setEnum(L, "SENSE_DEAD", SenseType::SENSE_DEAD);
+        setEnum(L, "SENSE_SLAVE", SenseType::SENSE_SLAVE);
+        setEnum(L, "SENSE_ESCAPED_SLAVE", SenseType::SENSE_ESCAPED_SLAVE);
+        setEnum(L, "SENSE_AUTHORITY_FIGURE", SenseType::SENSE_AUTHORITY_FIGURE);
+        setEnum(L, "SENSE_CANT_SEE", SenseType::SENSE_CANT_SEE);
+        setEnum(L, "SENSE_IN_CAGE", SenseType::SENSE_IN_CAGE);
+        setEnum(L, "SENSE_SAME_FACTION", SenseType::SENSE_SAME_FACTION);
+        setEnum(L, "SENSE_ROBOTS", SenseType::SENSE_ROBOTS);
+        setEnum(L, "SENSE_ENEMY_OF_MY_SLAVEMASTER", SenseType::SENSE_ENEMY_OF_MY_SLAVEMASTER);
+        setEnum(L, "SENSE_PLAYER", SenseType::SENSE_PLAYER);
+        setEnum(L, "SENSE_CRAWLING", SenseType::SENSE_CRAWLING);
+        setEnum(L, "SENSE_CARRIED", SenseType::SENSE_CARRIED);
+
         lua_setglobal(L, "SenseType");
     }
 
@@ -3058,16 +2252,17 @@ namespace KenshiLua
     void registerSquadManagementScreenState(lua_State* L)
     {
         lua_createtable(L, 0, 9);
-        setEnum(L, "NORMAL", PortraitData::NORMAL);
-        setEnum(L, "SELECTED", PortraitData::SELECTED);
-        setEnum(L, "HURT", PortraitData::HURT);
-        setEnum(L, "DOWN", PortraitData::DOWN);
-        setEnum(L, "COMBAT", PortraitData::COMBAT);
-        setEnum(L, "SLAVE", PortraitData::SLAVE);
-        setEnum(L, "PRISON", PortraitData::PRISON);
-        setEnum(L, "EATEN", PortraitData::EATEN);
-        setEnum(L, "HUNGER", PortraitData::HUNGER);
-        lua_setglobal(L, "PortraitState");
+        setEnum(L, "NORMAL", PortraitData::State::NORMAL);
+        setEnum(L, "SELECTED", PortraitData::State::SELECTED);
+        setEnum(L, "HURT", PortraitData::State::HURT);
+        setEnum(L, "DOWN", PortraitData::State::DOWN);
+        setEnum(L, "COMBAT", PortraitData::State::COMBAT);
+        setEnum(L, "SLAVE", PortraitData::State::SLAVE);
+        setEnum(L, "PRISON", PortraitData::State::PRISON);
+        setEnum(L, "EATEN", PortraitData::State::EATEN);
+        setEnum(L, "HUNGER", PortraitData::State::HUNGER);
+        setNestedClassTable(L, "PortraitData", "State");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -3076,22 +2271,15 @@ namespace KenshiLua
 
     void registerTaskertaskPriority(lua_State* L)
     {
-        lua_createtable(L, 0, 12);
-    // original
+        lua_createtable(L, 0, 6);
+
         setEnum(L, "TP_JUST_ACTION", taskPriority::TP_JUST_ACTION);
         setEnum(L, "TP_FLUFF", taskPriority::TP_FLUFF);
         setEnum(L, "TP_NON_URGENT", taskPriority::TP_NON_URGENT);
         setEnum(L, "TP_URGENT", taskPriority::TP_URGENT);
         setEnum(L, "TP_OBEDIENCE", taskPriority::TP_OBEDIENCE);
         setEnum(L, "TP_MAX_SIZE", taskPriority::TP_MAX_SIZE);
-    // aliases
-        setEnum(L, "JUST_ACTION", taskPriority::TP_JUST_ACTION);
-        setEnum(L, "FLUFF", taskPriority::TP_FLUFF);
-        setEnum(L, "NON_URGENT", taskPriority::TP_NON_URGENT);
-        setEnum(L, "URGENT", taskPriority::TP_URGENT);
-        setEnum(L, "OBEDIENCE", taskPriority::TP_OBEDIENCE);
-        setEnum(L, "MAX_SIZE", taskPriority::TP_MAX_SIZE);
-    // global
+
         lua_setglobal(L, "taskPriority");
     }
 
@@ -3280,12 +2468,13 @@ namespace KenshiLua
     void registerToolTipType(lua_State* L)
     {
         lua_createtable(L, 0, 5);
-        setEnum(L, "TEXT", ToolTip::TEXT);
-        setEnum(L, "MULTILINE", ToolTip::MULTILINE);
-        setEnum(L, "GAMEDATA", ToolTip::GAMEDATA);
-        setEnum(L, "ITEM", ToolTip::ITEM);
-        setEnum(L, "HAND", ToolTip::HAND);
-        lua_setglobal(L, "ToolTipType");
+        setEnum(L, "TEXT", ToolTip::Type::TEXT);
+        setEnum(L, "MULTILINE", ToolTip::Type::MULTILINE);
+        setEnum(L, "GAMEDATA", ToolTip::Type::GAMEDATA);
+        setEnum(L, "ITEM", ToolTip::Type::ITEM);
+        setEnum(L, "HAND", ToolTip::Type::HAND);
+        setNestedClassTable(L, "ToolTip", "Type");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -3294,26 +2483,20 @@ namespace KenshiLua
 
     void registerTownAlarmState(lua_State* L)
     {
-        lua_createtable(L, 0, 8);
+        lua_createtable(L, 0, 4);
 
-    //original
         setEnum(L, "ALARM_NONE", TownAlarmState::ALARM_NONE);
         setEnum(L, "ALARM_INTRUDER", TownAlarmState::ALARM_INTRUDER);
         setEnum(L, "ALARM_ESCAPE", TownAlarmState::ALARM_ESCAPE);
         setEnum(L, "ALARM_ATTACK", TownAlarmState::ALARM_ATTACK);
-    //aliases
-        setEnum(L, "NONE", TownAlarmState::ALARM_NONE);
-        setEnum(L, "INTRUDER", TownAlarmState::ALARM_INTRUDER);
-        setEnum(L, "ESCAPE", TownAlarmState::ALARM_ESCAPE);
-        setEnum(L, "ATTACK", TownAlarmState::ALARM_ATTACK);
-    //set the global variable
+
         lua_setglobal(L, "TownAlarmState");
     }
 
     void registerTownType(lua_State* L)
     {
-        lua_createtable(L, 0, 22);
-    //original
+        lua_createtable(L, 0, 11);
+
         setEnum(L, "TOWN_NEST", TownType::TOWN_NEST);
         setEnum(L, "TOWN_OUTPOST", TownType::TOWN_OUTPOST);
         setEnum(L, "TOWN_TOWN", TownType::TOWN_TOWN);
@@ -3325,19 +2508,7 @@ namespace KenshiLua
         setEnum(L, "TOWN_NEST_MARKER", TownType::TOWN_NEST_MARKER);
         setEnum(L, "TOWN_POI", TownType::TOWN_POI);
         setEnum(L, "TOWN_NULL", TownType::TOWN_NULL);
-    //aliases
-        setEnum(L, "NEST", TownType::TOWN_NEST);
-        setEnum(L, "OUTPOST", TownType::TOWN_OUTPOST);
-        setEnum(L, "TOWN", TownType::TOWN_TOWN);
-        setEnum(L, "VILLAGE", TownType::TOWN_VILLAGE);
-        setEnum(L, "RUINS", TownType::TOWN_RUINS);
-        setEnum(L, "SLAVE_CAMP", TownType::TOWN_SLAVE_CAMP);
-        setEnum(L, "MILITARY", TownType::TOWN_MILITARY);
-        setEnum(L, "PRISON", TownType::TOWN_PRISON);
-        setEnum(L, "NEST_MARKER", TownType::TOWN_NEST_MARKER);
-        setEnum(L, "POI", TownType::TOWN_POI);
-        setEnum(L, "NULL", TownType::TOWN_NULL);
-    //set the global variable
+
         lua_setglobal(L, "TownType");
     }
 
@@ -3348,85 +2519,76 @@ namespace KenshiLua
     void registerTutorialGUIState(lua_State* L)
     {
         lua_createtable(L, 0, 3);
-        setEnum(L, "INACTIVE", TutorialItem::INACTIVE);
-        setEnum(L, "ACTIVE", TutorialItem::ACTIVE);
-        setEnum(L, "ENDED", TutorialItem::ENDED);
-
-        lua_setglobal(L, "TutorialItemState");
+        setEnum(L, "INACTIVE", TutorialItem::State::INACTIVE);
+        setEnum(L, "ACTIVE", TutorialItem::State::ACTIVE);
+        setEnum(L, "ENDED", TutorialItem::State::ENDED);
+        setNestedClassTable(L, "TutorialItem", "State");
+        lua_pop(L, 1);
     }
 
     void registerTutorialGUIHighlightItem(lua_State* L)
     {
         lua_createtable(L, 0, 35);
-        setEnum(L, "NONE", TutorialGUI::NONE);
-        setEnum(L, "PORTRAITS", TutorialGUI::PORTRAITS);
-        setEnum(L, "PANEL_STATS", TutorialGUI::PANEL_STATS);
-        setEnum(L, "PANEL_STATS_BOTTOM", TutorialGUI::PANEL_STATS_BOTTOM);
-        setEnum(L, "PANEL_STATS_BOTTOM_POWER_BUTTON", TutorialGUI::PANEL_STATS_BOTTOM_POWER_BUTTON);
-        setEnum(L, "PANEL_STATS_BOTTOM_WORKERS", TutorialGUI::PANEL_STATS_BOTTOM_WORKERS);
-        setEnum(L, "PANEL_MEDICAL", TutorialGUI::PANEL_MEDICAL);
-        setEnum(L, "PANEL_MEDICAL_STATUS", TutorialGUI::PANEL_MEDICAL_STATUS);
-        setEnum(L, "PANEL_MEDICAL_BAR_BODY", TutorialGUI::PANEL_MEDICAL_BAR_BODY);
-        setEnum(L, "PANEL_MEDICAL_BAR_LIMBS", TutorialGUI::PANEL_MEDICAL_BAR_LIMBS);
-        setEnum(L, "PANEL_MEDICAL_BAR_BLOOD", TutorialGUI::PANEL_MEDICAL_BAR_BLOOD);
-        setEnum(L, "PANEL_MEDICAL_BAR_POWER", TutorialGUI::PANEL_MEDICAL_BAR_POWER);
-        setEnum(L, "PANEL_MEDICAL_BAR_MATERIALS", TutorialGUI::PANEL_MEDICAL_BAR_MATERIALS);
-        setEnum(L, "PANEL_MEDICAL_BAR_MATERIALS_BUILDING", TutorialGUI::PANEL_MEDICAL_BAR_MATERIALS_BUILDING);
-        setEnum(L, "PANEL_MEDICAL_BAR_CONDITION", TutorialGUI::PANEL_MEDICAL_BAR_CONDITION);
-        setEnum(L, "PANEL_MEDICAL_BAR_CONDITION_BUILDING", TutorialGUI::PANEL_MEDICAL_BAR_CONDITION_BUILDING);
-        setEnum(L, "PANEL_GAME_SPEED", TutorialGUI::PANEL_GAME_SPEED);
-        setEnum(L, "PANEL_TIME_MONEY", TutorialGUI::PANEL_TIME_MONEY);
-        setEnum(L, "BUTTON_BUILD", TutorialGUI::BUTTON_BUILD);
-        setEnum(L, "PANEL_BOUNTY", TutorialGUI::PANEL_BOUNTY);
-        setEnum(L, "PANEL_MENU_BAR", TutorialGUI::PANEL_MENU_BAR);
-        setEnum(L, "PANEL_MENU_BAR_SQUAD", TutorialGUI::PANEL_MENU_BAR_SQUAD);
-        setEnum(L, "PANEL_MENU_BAR_STATS", TutorialGUI::PANEL_MENU_BAR_STATS);
-        setEnum(L, "PANEL_MENU_BAR_TECH", TutorialGUI::PANEL_MENU_BAR_TECH);
-        setEnum(L, "PANEL_ORDERS", TutorialGUI::PANEL_ORDERS);
-        setEnum(L, "PANEL_ORDERS_COMMANDS", TutorialGUI::PANEL_ORDERS_COMMANDS);
-        setEnum(L, "PANEL_ORDERS_JOBS", TutorialGUI::PANEL_ORDERS_JOBS);
-        setEnum(L, "PANEL_ORDERS_JOB_REMOVE", TutorialGUI::PANEL_ORDERS_JOB_REMOVE);
-        setEnum(L, "PANEL_ORDERS_JOB_OBEDIENCE", TutorialGUI::PANEL_ORDERS_JOB_OBEDIENCE);
-        setEnum(L, "PANEL_ORDERS_MEDIC_BUTTON", TutorialGUI::PANEL_ORDERS_MEDIC_BUTTON);
-        setEnum(L, "PANEL_ORDERS_RESCUE_BUTTON", TutorialGUI::PANEL_ORDERS_RESCUE_BUTTON);
-        setEnum(L, "MAPSCREEN_CRAFT_TAB", TutorialGUI::MAPSCREEN_CRAFT_TAB);
-        setEnum(L, "MAPSCREEN_CRAFT_TAB_ITEMS", TutorialGUI::MAPSCREEN_CRAFT_TAB_ITEMS);
-        setEnum(L, "BUILDING_INVENTORY_INPUT", TutorialGUI::BUILDING_INVENTORY_INPUT);
-        setEnum(L, "BUILD_MODE_PANEL_BUILDINGS", TutorialGUI::BUILD_MODE_PANEL_BUILDINGS);
-
-        lua_setglobal(L, "HighlightItem");
+        setEnum(L, "NONE", TutorialGUI::HighlightItem::NONE);
+        setEnum(L, "PORTRAITS", TutorialGUI::HighlightItem::PORTRAITS);
+        setEnum(L, "PANEL_STATS", TutorialGUI::HighlightItem::PANEL_STATS);
+        setEnum(L, "PANEL_STATS_BOTTOM", TutorialGUI::HighlightItem::PANEL_STATS_BOTTOM);
+        setEnum(L, "PANEL_STATS_BOTTOM_POWER_BUTTON", TutorialGUI::HighlightItem::PANEL_STATS_BOTTOM_POWER_BUTTON);
+        setEnum(L, "PANEL_STATS_BOTTOM_WORKERS", TutorialGUI::HighlightItem::PANEL_STATS_BOTTOM_WORKERS);
+        setEnum(L, "PANEL_MEDICAL", TutorialGUI::HighlightItem::PANEL_MEDICAL);
+        setEnum(L, "PANEL_MEDICAL_STATUS", TutorialGUI::HighlightItem::PANEL_MEDICAL_STATUS);
+        setEnum(L, "PANEL_MEDICAL_BAR_BODY", TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_BODY);
+        setEnum(L, "PANEL_MEDICAL_BAR_LIMBS", TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_LIMBS);
+        setEnum(L, "PANEL_MEDICAL_BAR_BLOOD", TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_BLOOD);
+        setEnum(L, "PANEL_MEDICAL_BAR_POWER", TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_POWER);
+        setEnum(L, "PANEL_MEDICAL_BAR_MATERIALS", TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_MATERIALS);
+        setEnum(L, "PANEL_MEDICAL_BAR_MATERIALS_BUILDING", TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_MATERIALS_BUILDING);
+        setEnum(L, "PANEL_MEDICAL_BAR_CONDITION", TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_CONDITION);
+        setEnum(L, "PANEL_MEDICAL_BAR_CONDITION_BUILDING", TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_CONDITION_BUILDING);
+        setEnum(L, "PANEL_GAME_SPEED", TutorialGUI::HighlightItem::PANEL_GAME_SPEED);
+        setEnum(L, "PANEL_TIME_MONEY", TutorialGUI::HighlightItem::PANEL_TIME_MONEY);
+        setEnum(L, "BUTTON_BUILD", TutorialGUI::HighlightItem::BUTTON_BUILD);
+        setEnum(L, "PANEL_BOUNTY", TutorialGUI::HighlightItem::PANEL_BOUNTY);
+        setEnum(L, "PANEL_MENU_BAR", TutorialGUI::HighlightItem::PANEL_MENU_BAR);
+        setEnum(L, "PANEL_MENU_BAR_SQUAD", TutorialGUI::HighlightItem::PANEL_MENU_BAR_SQUAD);
+        setEnum(L, "PANEL_MENU_BAR_STATS", TutorialGUI::HighlightItem::PANEL_MENU_BAR_STATS);
+        setEnum(L, "PANEL_MENU_BAR_TECH", TutorialGUI::HighlightItem::PANEL_MENU_BAR_TECH);
+        setEnum(L, "PANEL_ORDERS", TutorialGUI::HighlightItem::PANEL_ORDERS);
+        setEnum(L, "PANEL_ORDERS_COMMANDS", TutorialGUI::HighlightItem::PANEL_ORDERS_COMMANDS);
+        setEnum(L, "PANEL_ORDERS_JOBS", TutorialGUI::HighlightItem::PANEL_ORDERS_JOBS);
+        setEnum(L, "PANEL_ORDERS_JOB_REMOVE", TutorialGUI::HighlightItem::PANEL_ORDERS_JOB_REMOVE);
+        setEnum(L, "PANEL_ORDERS_JOB_OBEDIENCE", TutorialGUI::HighlightItem::PANEL_ORDERS_JOB_OBEDIENCE);
+        setEnum(L, "PANEL_ORDERS_MEDIC_BUTTON", TutorialGUI::HighlightItem::PANEL_ORDERS_MEDIC_BUTTON);
+        setEnum(L, "PANEL_ORDERS_RESCUE_BUTTON", TutorialGUI::HighlightItem::PANEL_ORDERS_RESCUE_BUTTON);
+        setEnum(L, "MAPSCREEN_CRAFT_TAB", TutorialGUI::HighlightItem::MAPSCREEN_CRAFT_TAB);
+        setEnum(L, "MAPSCREEN_CRAFT_TAB_ITEMS", TutorialGUI::HighlightItem::MAPSCREEN_CRAFT_TAB_ITEMS);
+        setEnum(L, "BUILDING_INVENTORY_INPUT", TutorialGUI::HighlightItem::BUILDING_INVENTORY_INPUT);
+        setEnum(L, "BUILD_MODE_PANEL_BUILDINGS", TutorialGUI::HighlightItem::BUILD_MODE_PANEL_BUILDINGS);
+        setNestedClassTable(L, "TutorialGUI", "HighlightItem");
+        lua_pop(L, 1);
     }
 
     void registerMovementMode(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
-    // original
+        lua_createtable(L, 0, 3);
+
         setEnum(L, "MOVE_NORMAL", MovementMode::MOVE_NORMAL);
         setEnum(L, "MOVE_COMBAT", MovementMode::MOVE_COMBAT);
         setEnum(L, "MOVE_DIRECTION", MovementMode::MOVE_DIRECTION);
-    // aliases
-        setEnum(L, "NORMAL", MovementMode::MOVE_NORMAL);
-        setEnum(L, "COMBAT", MovementMode::MOVE_COMBAT);
-        setEnum(L, "DIRECTION", MovementMode::MOVE_DIRECTION);
-    // global
+
         lua_setglobal(L, "MovementMode");
     }
 
     void registerArmourClass(lua_State* L)
     {
-        lua_createtable(L, 0, 10);
-    // original
+        lua_createtable(L, 0, 5);
+
         setEnum(L, "GEAR_CLOTH", ArmourClass::GEAR_CLOTH);
         setEnum(L, "GEAR_LIGHT", ArmourClass::GEAR_LIGHT);
         setEnum(L, "GEAR_MEDIUM", ArmourClass::GEAR_MEDIUM);
         setEnum(L, "GEAR_HEAVY", ArmourClass::GEAR_HEAVY);
         setEnum(L, "GEAR_MAX", ArmourClass::GEAR_MAX);
-    // aliases
-        setEnum(L, "CLOTH", ArmourClass::GEAR_CLOTH);
-        setEnum(L, "LIGHT", ArmourClass::GEAR_LIGHT);
-        setEnum(L, "MEDIUM", ArmourClass::GEAR_MEDIUM);
-        setEnum(L, "HEAVY", ArmourClass::GEAR_HEAVY);
-        setEnum(L, "MAX", ArmourClass::GEAR_MAX);
+
         lua_setglobal(L, "ArmourClass");
     }
 
@@ -3453,9 +2615,9 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 3);
 
-        setEnum(L, "DEAD", DEAD);
-        setEnum(L, "ALIVE", ALIVE);
-        setEnum(L, "IMPRISONED", IMPRISONED);
+        setEnum(L, "DEAD", WorldStateEnum::DEAD);
+        setEnum(L, "ALIVE", WorldStateEnum::ALIVE);
+        setEnum(L, "IMPRISONED", WorldStateEnum::IMPRISONED);
 
         lua_setglobal(L, "WorldStateEnum");
     }
@@ -3464,11 +2626,11 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 3);
 
-        setEnum(L, "PEACE", WorldEventStateQuery::PEACE);
-        setEnum(L, "WAR", WorldEventStateQuery::WAR);
-        setEnum(L, "ALLIANCE", WorldEventStateQuery::ALLIANCE);
-
-        lua_setglobal(L, "WarStateEnum");
+        setEnum(L, "PEACE", WorldEventStateQuery::WarStateEnum::PEACE);
+        setEnum(L, "WAR", WorldEventStateQuery::WarStateEnum::WAR);
+        setEnum(L, "ALLIANCE", WorldEventStateQuery::WarStateEnum::ALLIANCE);
+        setNestedClassTable(L, "WorldEventStateQuery", "WarStateEnum");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -3478,14 +2640,10 @@ namespace KenshiLua
     void registerZoneActivationType(lua_State* L)
     {
         lua_createtable(L, 0, 3);
-    // original
-        setEnum(L, "ACTIVATION_CAMERA", ACTIVATION_CAMERA);
-        setEnum(L, "ACTIVATION_PLAYER_CHARACTER", ACTIVATION_PLAYER_CHARACTER);
-        setEnum(L, "ACTIVATION_TOWN", ACTIVATION_TOWN);
-    // aliases
-        setEnum(L, "CAMERA", ACTIVATION_CAMERA);
-        setEnum(L, "PLAYER_CHARACTER", ACTIVATION_PLAYER_CHARACTER);
-        setEnum(L, "TOWN", ACTIVATION_TOWN);
+
+        setEnum(L, "ACTIVATION_CAMERA", ZoneActivationType::ACTIVATION_CAMERA);
+        setEnum(L, "ACTIVATION_PLAYER_CHARACTER", ZoneActivationType::ACTIVATION_PLAYER_CHARACTER);
+        setEnum(L, "ACTIVATION_TOWN", ZoneActivationType::ACTIVATION_TOWN);
 
         lua_setglobal(L, "ZoneActivationType");
     }
@@ -3494,22 +2652,22 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 4);
 
-        setEnum(L, "UNCHANGED", ZoneSpacialGrid::UNCHANGED);
-        setEnum(L, "CHANGED_CELL", ZoneSpacialGrid::CHANGED_CELL);
-        setEnum(L, "CHANGED_ZONE", ZoneSpacialGrid::CHANGED_ZONE);
-        setEnum(L, "UNLOADED_ZONE", ZoneSpacialGrid::UNLOADED_ZONE);
-
-        lua_setglobal(L, "ZoneManagerResult");
+        setEnum(L, "UNCHANGED", ZoneSpacialGrid::Result::UNCHANGED);
+        setEnum(L, "CHANGED_CELL", ZoneSpacialGrid::Result::CHANGED_CELL);
+        setEnum(L, "CHANGED_ZONE", ZoneSpacialGrid::Result::CHANGED_ZONE);
+        setEnum(L, "UNLOADED_ZONE", ZoneSpacialGrid::Result::UNLOADED_ZONE);
+        setNestedClassTable(L, "ZoneSpacialGrid", "Result");
+        lua_pop(L, 1);
     }
 
     void registerZoneMessage(lua_State* L)
     {
         lua_createtable(L, 0, 2);
 
-        setEnum(L, "BEING_LOADED_FALSE", ZoneMap::BEING_LOADED_FALSE);
-        setEnum(L, "BEING_LOADED_TRUE", ZoneMap::BEING_LOADED_TRUE);
-
-        lua_setglobal(L, "ZoneMessage");
+        setEnum(L, "BEING_LOADED_FALSE", ZoneMap::ZONE_MESSAGE::BEING_LOADED_FALSE);
+        setEnum(L, "BEING_LOADED_TRUE", ZoneMap::ZONE_MESSAGE::BEING_LOADED_TRUE);
+        setNestedClassTable(L, "ZoneMap", "ZONE_MESSAGE");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -3518,18 +2676,12 @@ namespace KenshiLua
 
     void registerCharacterEditMode(lua_State* L)
     {
-        lua_createtable(L, 0, 6);
+        lua_createtable(L, 0, 3);
 
         setEnum(L, "EDIT_NEWGAME", CharacterEditMode::EDIT_NEWGAME);
         setEnum(L, "EDIT_MIDGAME", CharacterEditMode::EDIT_MIDGAME);
         setEnum(L, "EDIT_DEBUG", CharacterEditMode::EDIT_DEBUG);
 
-        setEnum(L, "NEWGAME", CharacterEditMode::EDIT_NEWGAME);
-        setEnum(L, "MIDGAME", CharacterEditMode::EDIT_MIDGAME);
-        setEnum(L, "DEBUG", CharacterEditMode::EDIT_DEBUG);
-
-        lua_pushvalue(L, -1);
-        lua_setglobal(L, "CharacterEditWindow_CharacterEditMode");
         lua_setglobal(L, "CharacterEditMode");
     }
 
@@ -3544,10 +2696,8 @@ namespace KenshiLua
         setEnum(L, "GOG", KenshiLib::BinaryVersion::KenshiPlatform::GOG);
         setEnum(L, "STEAM", KenshiLib::BinaryVersion::KenshiPlatform::STEAM);
         setEnum(L, "UNKNOWN", KenshiLib::BinaryVersion::KenshiPlatform::UNKNOWN);
-
-        lua_pushvalue(L, -1);
-        lua_setglobal(L, "BinaryVersion_KenshiPlatform");
-        lua_setglobal(L, "KenshiPlatform");
+        setNestedClassTable(L, "BinaryVersion", "KenshiPlatform");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -3586,7 +2736,7 @@ namespace KenshiLua
         registerCutOrigination(L);
         registerDataPanelLineLineType(L);
         registerDialogConditionEnum(L);
-        registerDialogueAction(L);
+        registerDialogActionEnum(L);
         registerDialogueDT_MSG(L);
         registerDisguiseGUIFeedback(L);
         registerDoorState(L);
@@ -3603,6 +2753,7 @@ namespace KenshiLua
         registerHealthPartStatus(L);
         registerHitMaterialType(L);
         registerInputHandlerGameMode(L);
+        registerInputHandlerMasks(L);
         registerInventoryGUITradeResult(L);
         registerItemFunction(L);
         registerLeftRight(L);

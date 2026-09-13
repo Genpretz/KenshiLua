@@ -143,7 +143,7 @@ void MessageForBBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop metatable
 
     // Register global class table
-    lua_newtable(L);
+    pushGlobalTable(L, "MessageForB");
     registerStaticMethod(L, "new", MessageForBBinding::create);
     lua_setglobal(L, "MessageForB");
 }

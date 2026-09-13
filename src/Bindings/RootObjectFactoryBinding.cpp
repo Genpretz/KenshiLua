@@ -474,7 +474,7 @@ void RootObjectFactoryBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "RootObjectFactory");
     //registerStaticMethod(L, "_chooseClothingItemFromList", RootObjectFactoryBinding::_chooseClothingItemFromList);
     registerStaticMethod(L, "chooseClothingItemFromList", RootObjectFactoryBinding::_chooseClothingItemFromList);
     registerStaticMethod(L, "chooseMyClothing", RootObjectFactoryBinding::chooseMyClothing);

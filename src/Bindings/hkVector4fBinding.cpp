@@ -469,7 +469,7 @@ void hkVector4fBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "hkVector4f");
     registerStaticMethod(L, "getZero", hkVector4fBinding::getZero);
     lua_setglobal(L, "hkVector4f");
 }

@@ -426,7 +426,7 @@ void ConstructionStateBinding::registerBinding(lua_State* L)
     lua_pop(L, 1); // Pop the metatable off the stack
 
     // Register global class table for static methods
-    lua_newtable(L);
+    pushGlobalTable(L, "ConstructionState");
     registerStaticMethod(L, "getBuildingSpeedMultiplier", ConstructionStateBinding::getBuildingSpeedMultiplier);
     registerStaticMethod(L, "getBuildingTimeInHours", ConstructionStateBinding::getBuildingTimeInHours);
     lua_setglobal(L, "ConstructionState");
