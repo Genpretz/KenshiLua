@@ -19,6 +19,7 @@ public:
     static int tostring(lua_State* L);
 
     static int getCharacter(lua_State* L);
+    static int getHandle(lua_State* L);
     static int update(lua_State* L);
     static int forceUpdate(lua_State* L);
     static int isSelected(lua_State* L);

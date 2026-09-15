@@ -43,6 +43,16 @@ int BackThreadMessagesToMainTBinding::_NV_flush(lua_State* L)
     return 0;
 }
 
+/*
+Skipped methods needing manual binding:
+  line 26: void _NV_flush() - stub implementation
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 22: swapMutex (Ogre::Mutex) - unsupported type
+*/
+
 void BackThreadMessagesToMainTBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {

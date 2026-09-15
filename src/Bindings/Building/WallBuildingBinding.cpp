@@ -9,6 +9,8 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/CombatTechniqueDataBinding.h"
 #include "Bindings/DamagesBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/LektorBinding.h"
@@ -398,18 +400,95 @@ int WallBuildingBinding::_NV_hitByMeleeAttack(lua_State* L)
     return 1;
 }
 
+int WallBuildingBinding::upgrade(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->upgrade(line);
+    return 0;
+}
+
+int WallBuildingBinding::_NV_upgrade(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_upgrade(line);
+    return 0;
+}
+
+int WallBuildingBinding::getGUIUpgrade(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIUpgrade(datapanel, category);
+    return 0;
+}
+
+int WallBuildingBinding::_NV_getGUIUpgrade(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIUpgrade(datapanel, category);
+    return 0;
+}
+
+int WallBuildingBinding::getGUIDestroyButton(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIDestroyButton(datapanel, category);
+    return 0;
+}
+
+int WallBuildingBinding::_NV_getGUIDestroyButton(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIDestroyButton(datapanel, category);
+    return 0;
+}
+
+int WallBuildingBinding::dismantleButton_all(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->dismantleButton_all(line);
+    return 0;
+}
+
+int WallBuildingBinding::_NV_dismantleButton_all(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_dismantleButton_all(line);
+    return 0;
+}
+
+int WallBuildingBinding::letsShare(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    WallBuilding* who = checkObject<WallBuilding>(L, 2, WallBuildingBinding::getMetatableName());
+    bool result = instance->letsShare(who);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 39: void upgrade(...) - unsupported arg type
-  line 40: void _NV_upgrade(...) - unsupported arg type
-  line 41: void getGUIUpgrade(...) - unsupported arg type
-  line 42: void _NV_getGUIUpgrade(...) - unsupported arg type
-  line 43: void getGUIDestroyButton(...) - unsupported arg type
-  line 44: void _NV_getGUIDestroyButton(...) - unsupported arg type
-  line 47: void dismantleButton_all(...) - unsupported arg type
-  line 48: void _NV_dismantleButton_all(...) - unsupported arg type
-  line 63: void runLinkingCheck(...) - unsupported arg type
-  line 67: bool letsShare(...) - unsupported arg type
+  line 63: void runLinkingCheck(...) - unsupported arg type: ZoneMapContent*
 */
 
 int WallBuildingBinding::gc(lua_State* L)
@@ -465,6 +544,15 @@ void WallBuildingBinding::registerBinding(lua_State* L)
         { "isAShortWallPart", WallBuildingBinding::isAShortWallPart },
         { "hitByMeleeAttack", WallBuildingBinding::hitByMeleeAttack },
         { "_NV_hitByMeleeAttack", WallBuildingBinding::_NV_hitByMeleeAttack },
+        { "upgrade", WallBuildingBinding::upgrade },
+        { "_NV_upgrade", WallBuildingBinding::_NV_upgrade },
+        { "getGUIUpgrade", WallBuildingBinding::getGUIUpgrade },
+        { "_NV_getGUIUpgrade", WallBuildingBinding::_NV_getGUIUpgrade },
+        { "getGUIDestroyButton", WallBuildingBinding::getGUIDestroyButton },
+        { "_NV_getGUIDestroyButton", WallBuildingBinding::_NV_getGUIDestroyButton },
+        { "dismantleButton_all", WallBuildingBinding::dismantleButton_all },
+        { "_NV_dismantleButton_all", WallBuildingBinding::_NV_dismantleButton_all },
+        { "letsShare", WallBuildingBinding::letsShare },
         { 0, 0 }
     };
 

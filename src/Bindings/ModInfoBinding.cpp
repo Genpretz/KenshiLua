@@ -128,9 +128,22 @@ static int ModInfo_set_header(lua_State* L)
 }
 
 // --- Methods for ModInfo
+int ModInfoBinding::getLocale(lua_State* L)
+{
+    ModInfo* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ModInfo is nil");
+
+    std::string localeId;
+    std::string localePath;
+    bool result = instance->getLocale(localeId, localePath);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushstring(L, localeId.c_str());
+    lua_pushstring(L, localePath.c_str());
+    return 3;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 21: bool getLocale(...) - non-string reference arg
   line 24: ModInfo& operator=(...) - operator
 */
 
@@ -155,6 +168,7 @@ void ModInfoBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "getLocale", ModInfoBinding::getLocale },
         { 0, 0 }
     };
 

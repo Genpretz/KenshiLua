@@ -20,5 +20,6 @@ public:
 
     static int getWidget(lua_State* L);
     static int resize(lua_State* L);
+    static int getCellDimension(lua_State* L);
 };
 }

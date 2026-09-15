@@ -3,6 +3,7 @@
 #include "WindGeneratorBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/GeneratorBuildingBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -74,13 +75,45 @@ int WindGeneratorBuildingBinding::_NV_isAnyInputsEmpty(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 35: void getGUIState(...) - unsupported arg type
-  line 36: void _NV_getGUIState(...) - unsupported arg type
-  line 37: void getGUIPower(...) - unsupported arg type
-  line 38: void _NV_getGUIPower(...) - unsupported arg type
-*/
+int WindGeneratorBuildingBinding::getGUIState(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIState(datapanel, category);
+    return 0;
+}
+
+int WindGeneratorBuildingBinding::_NV_getGUIState(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIState(datapanel, category);
+    return 0;
+}
+
+int WindGeneratorBuildingBinding::getGUIPower(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIPower(datapanel, category);
+    return 0;
+}
+
+int WindGeneratorBuildingBinding::_NV_getGUIPower(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIPower(datapanel, category);
+    return 0;
+}
 
 int WindGeneratorBuildingBinding::gc(lua_State* L)
 {
@@ -109,6 +142,10 @@ void WindGeneratorBuildingBinding::registerBinding(lua_State* L)
         { "_NV_getSoundIntensity", WindGeneratorBuildingBinding::_NV_getSoundIntensity },
         { "isAnyInputsEmpty", WindGeneratorBuildingBinding::isAnyInputsEmpty },
         { "_NV_isAnyInputsEmpty", WindGeneratorBuildingBinding::_NV_isAnyInputsEmpty },
+        { "getGUIState", WindGeneratorBuildingBinding::getGUIState },
+        { "_NV_getGUIState", WindGeneratorBuildingBinding::_NV_getGUIState },
+        { "getGUIPower", WindGeneratorBuildingBinding::getGUIPower },
+        { "_NV_getGUIPower", WindGeneratorBuildingBinding::_NV_getGUIPower },
         { 0, 0 }
     };
 

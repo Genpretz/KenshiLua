@@ -246,10 +246,19 @@ int physHitBinding::group(lua_State* L)
     return 1;
 }
 
+int physHitBinding::isValid(lua_State* L)
+{
+    physHit* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "physHit is nil");
+
+    bool result = instance->operator bool();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 44: physHit& operator=(...) - operator
-  line 47: operator bool(...) - unsupported return type
 */
 
 /*
@@ -283,6 +292,7 @@ void physHitBinding::registerBinding(lua_State* L)
         { "hitObjectUnsafePtr", physHitBinding::hitObjectUnsafePtr },
         { "getBuilding", physHitBinding::getBuilding },
         { "group", physHitBinding::group },
+        { "isValid", physHitBinding::isValid },
         { 0, 0 }
     };
 

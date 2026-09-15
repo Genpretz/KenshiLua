@@ -22,5 +22,9 @@ public:
     static int _NV_getPowerOutput(lua_State* L);
     static int getFuelConsumptionRate(lua_State* L);
     static int _NV_getFuelConsumptionRate(lua_State* L);
+    static int getGUIState(lua_State* L);
+    static int _NV_getGUIState(lua_State* L);
+    static int getInputValue(lua_State* L);
+    static int _NV_getInputValue(lua_State* L);
 };
 }

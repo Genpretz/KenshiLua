@@ -146,14 +146,6 @@ Skipped methods needing manual binding:
   line 297: float& operator[](...) - operator
   line 299: bool operator==(...) - operator
   line 300: bool operator!=(...) - operator
-  line 302: void set(...) - overloaded method
-  line 304: void set(...) - overloaded method
-  line 317: void add(...) - unsupported arg type
-  line 318: void subtract(...) - unsupported arg type
-  line 321: void multiplyAdd(...) - unsupported arg type
-  line 327: float dot(...) - unsupported arg type
-  line 334: void cross(...) - unsupported arg type
-  line 337: bool equals(...) - unsupported arg type
   line 339: NxVec3 operator-(...) - operator
   line 340: NxVec3 operator+(...) - operator
   line 343: NxVec3& operator+=(...) - operator
@@ -161,6 +153,201 @@ Skipped methods needing manual binding:
   line 345: NxVec3& operator*=(...) - operator
   line 347: NxVec3 operator^(...) - operator
 */
+int NxVec3Binding::dot(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+
+    NxVec3* v = getInstance(L, 2);
+    if (!v) return luaL_error(L, "Argument 2 to dot must be NxVec3");
+
+    float result = instance->dot(*v);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int NxVec3Binding::equals(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+
+    NxVec3* v = getInstance(L, 2);
+    if (!v) return luaL_error(L, "Argument 2 to equals must be NxVec3");
+
+    float epsilon = (float)luaL_optnumber(L, 3, 0.0001f);
+    bool result = instance->equals(*v, epsilon);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int NxVec3Binding::multiplyAdd(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+
+    float s = (float)luaL_checknumber(L, 2);
+    NxVec3* a = getInstance(L, 3);
+    NxVec3* b = getInstance(L, 4);
+    if (!a || !b) return luaL_error(L, "Arguments 3 and 4 to multiplyAdd must be NxVec3");
+
+    instance->multiplyAdd(s, *a, *b);
+    return 0;
+}
+
+int NxVec3Binding::add(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+
+    if (lua_gettop(L) >= 3)
+    {
+        NxVec3* a = getInstance(L, 2);
+        NxVec3* b = getInstance(L, 3);
+        if (!a || !b) return luaL_error(L, "Arguments 2 and 3 to add must be NxVec3");
+        instance->add(*a, *b);
+        return 0;
+    }
+    else
+    {
+        NxVec3* b = getInstance(L, 2);
+        if (!b) return luaL_error(L, "Argument 2 to add must be NxVec3");
+        *instance += *b;
+        return 0;
+    }
+}
+
+int NxVec3Binding::subtract(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+
+    if (lua_gettop(L) >= 3)
+    {
+        NxVec3* a = getInstance(L, 2);
+        NxVec3* b = getInstance(L, 3);
+        if (!a || !b) return luaL_error(L, "Arguments 2 and 3 to subtract must be NxVec3");
+        instance->subtract(*a, *b);
+        return 0;
+    }
+    else
+    {
+        NxVec3* b = getInstance(L, 2);
+        if (!b) return luaL_error(L, "Argument 2 to subtract must be NxVec3");
+        *instance -= *b;
+        return 0;
+    }
+}
+
+int NxVec3Binding::cross(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+
+    if (lua_gettop(L) >= 3)
+    {
+        NxVec3* left = getInstance(L, 2);
+        NxVec3* right = getInstance(L, 3);
+        if (!left || !right) return luaL_error(L, "Arguments 2 and 3 to cross must be NxVec3");
+        instance->cross(*left, *right);
+        return 0;
+    }
+    else
+    {
+        NxVec3* right = getInstance(L, 2);
+        if (!right) return luaL_error(L, "Argument 2 to cross must be NxVec3");
+        NxVec3 res = *instance ^ *right;
+        return pushValue<NxVec3>(L, res, NxVec3Binding::getMetatableName());
+    }
+}
+
+int NxVec3Binding::set(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+
+    if (lua_isuserdata(L, 2))
+    {
+        NxVec3* other = getInstance(L, 2);
+        if (!other) return luaL_error(L, "Argument 2 must be NxVec3");
+        *instance = *other;
+        return 0;
+    }
+    float x = (float)luaL_checknumber(L, 2);
+    float y = (float)luaL_checknumber(L, 3);
+    float z = (float)luaL_checknumber(L, 4);
+    instance->set(x, y, z);
+    return 0;
+}
+
+int NxVec3Binding::create(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    float x = (float)luaL_optnumber(L, idx, 0.0);
+    float y = (float)luaL_optnumber(L, idx + 1, 0.0);
+    float z = (float)luaL_optnumber(L, idx + 2, 0.0);
+    NxVec3 v(x, y, z);
+    return pushValue<NxVec3>(L, v, NxVec3Binding::getMetatableName());
+}
+
+int NxVec3Binding::lua_add(lua_State* L)
+{
+    NxVec3* a = getInstance(L, 1);
+    NxVec3* b = getInstance(L, 2);
+    if (!a || !b) return luaL_error(L, "Operands to + must be NxVec3");
+    NxVec3 res = *a + *b;
+    return pushValue<NxVec3>(L, res, NxVec3Binding::getMetatableName());
+}
+
+int NxVec3Binding::lua_sub(lua_State* L)
+{
+    NxVec3* a = getInstance(L, 1);
+    NxVec3* b = getInstance(L, 2);
+    if (!a || !b) return luaL_error(L, "Operands to - must be NxVec3");
+    NxVec3 res(a->x - b->x, a->y - b->y, a->z - b->z);
+    return pushValue<NxVec3>(L, res, NxVec3Binding::getMetatableName());
+}
+
+int NxVec3Binding::lua_unm(lua_State* L)
+{
+    NxVec3* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Operand to unary - must be NxVec3");
+    NxVec3 res = -(*a);
+    return pushValue<NxVec3>(L, res, NxVec3Binding::getMetatableName());
+}
+
+int NxVec3Binding::lua_mul(lua_State* L)
+{
+    if (lua_isnumber(L, 1))
+    {
+        float s = (float)lua_tonumber(L, 1);
+        NxVec3* v = getInstance(L, 2);
+        if (!v) return luaL_error(L, "Right operand must be NxVec3");
+        NxVec3 res(v->x * s, v->y * s, v->z * s);
+        return pushValue<NxVec3>(L, res, NxVec3Binding::getMetatableName());
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        NxVec3* v = getInstance(L, 1);
+        if (!v) return luaL_error(L, "Left operand must be NxVec3");
+        float s = (float)lua_tonumber(L, 2);
+        NxVec3 res(v->x * s, v->y * s, v->z * s);
+        return pushValue<NxVec3>(L, res, NxVec3Binding::getMetatableName());
+    }
+    return luaL_error(L, "Multiplication requires an NxVec3 and a number");
+}
+
+int NxVec3Binding::lua_eq(lua_State* L)
+{
+    NxVec3* a = testObject<NxVec3>(L, 1, NxVec3Binding::getMetatableName());
+    NxVec3* b = testObject<NxVec3>(L, 2, NxVec3Binding::getMetatableName());
+    if (!a || !b)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+    lua_pushboolean(L, (*a == *b) ? 1 : 0);
+    return 1;
+}
 
 int NxVec3Binding::gc(lua_State* L)
 {
@@ -171,6 +358,14 @@ int NxVec3Binding::gc(lua_State* L)
 int NxVec3Binding::tostring(lua_State* L)
 {
     lua_pushstring(L, "KenshiLua.NxVec3 object");
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) {
+        lua_pushstring(L, "NxVec3(nil)");
+        return 1;
+    }
+    char buf[128];
+    sprintf_s(buf, "NxVec3(%.3f, %.3f, %.3f)", instance->x, instance->y, instance->z);
+    lua_pushstring(L, buf);
     return 1;
 }
 
@@ -179,6 +374,11 @@ void NxVec3Binding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       NxVec3Binding::gc },
         { "__tostring", NxVec3Binding::tostring },
+        { "__add",      NxVec3Binding::lua_add },
+        { "__sub",      NxVec3Binding::lua_sub },
+        { "__unm",      NxVec3Binding::lua_unm },
+        { "__mul",      NxVec3Binding::lua_mul },
+        { "__eq",       NxVec3Binding::lua_eq },
         { 0, 0 }
     };
 
@@ -191,6 +391,14 @@ void NxVec3Binding::registerBinding(lua_State* L)
         { "isFinite", NxVec3Binding::isFinite },
         { "magnitude", NxVec3Binding::magnitude },
         { "magnitudeSquared", NxVec3Binding::magnitudeSquared },
+        { "dot", NxVec3Binding::dot },
+        { "equals", NxVec3Binding::equals },
+        { "multiplyAdd", NxVec3Binding::multiplyAdd },
+        { "add", NxVec3Binding::add },
+        { "subtract", NxVec3Binding::subtract },
+        { "cross", NxVec3Binding::cross },
+        { "set", NxVec3Binding::set },
+        { "create", NxVec3Binding::create },
         { 0, 0 }
     };
 
@@ -217,6 +425,11 @@ void NxVec3Binding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    pushGlobalTable(L, "NxVec3");
+    registerStaticMethod(L, "create", NxVec3Binding::create);
+    lua_setglobal(L, "NxVec3");
 }
 
 } // namespace KenshiLua

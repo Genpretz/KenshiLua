@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "kenshi\gui\MyGUI_Slider.h"
 #include "SliderBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -103,9 +103,18 @@ int SliderBinding::shutdownOverride(lua_State* L)
     return 0;
 }
 
+int SliderBinding::getTypeName(lua_State* L)
+{
+    Slider* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Slider is nil");
+
+    const std::string& res = instance->getTypeName();
+    lua_pushlstring(L, res.data(), res.size());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 16: const std::string& getTypeName(...) - reference return type
   line 19: bool isType(...) - unsupported arg type
 */
 
@@ -144,6 +153,7 @@ void SliderBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "initialiseOverride", SliderBinding::initialiseOverride },
         { "shutdownOverride", SliderBinding::shutdownOverride },
+        { "getTypeName", SliderBinding::getTypeName },
         { 0, 0 }
     };
 

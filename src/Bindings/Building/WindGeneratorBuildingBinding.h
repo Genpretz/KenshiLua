@@ -24,5 +24,9 @@ public:
     static int _NV_getSoundIntensity(lua_State* L);
     static int isAnyInputsEmpty(lua_State* L);
     static int _NV_isAnyInputsEmpty(lua_State* L);
+    static int getGUIState(lua_State* L);
+    static int _NV_getGUIState(lua_State* L);
+    static int getGUIPower(lua_State* L);
+    static int _NV_getGUIPower(lua_State* L);
 };
 }

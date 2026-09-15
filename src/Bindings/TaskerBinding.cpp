@@ -217,6 +217,16 @@ int TaskerBinding::sameAs(lua_State* L)
     return 1;
 }
 
+int TaskerBinding::getDescription(lua_State* L)
+{
+    Tasker* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Tasker is nil");
+
+    const std::string& res = instance->getDescription();
+    lua_pushlstring(L, res.data(), res.size());
+    return 1;
+}
+
 int TaskerBinding::hasActionFunc(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
@@ -349,16 +359,10 @@ int TaskerBinding::_NV_taskSaysItsFinished(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 326: const std::string& getDescription(...) - reference return type
   line 341: bool isSubTaskerTargetFinishedWith(...) - unsupported arg type
   line 358: float findTarget(...) - unsupported arg type
   line 359: bool _targetsRemaining(...) - unsupported arg type
   line 360: bool isSubTaskerComplete(...) - unsupported arg type
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 319: priority (taskPriority) - unsupported type
 */
 
 int TaskerBinding::gc(lua_State* L)
@@ -476,6 +480,7 @@ void TaskerBinding::registerBinding(lua_State* L)
         { "getLocation", TaskerBinding::getLocation },
         { "setLocation", TaskerBinding::setLocation },
         { "sameAs", TaskerBinding::sameAs },
+        { "getDescription", TaskerBinding::getDescription },
         { "hasActionFunc", TaskerBinding::hasActionFunc },
         { "isSubTasker", TaskerBinding::isSubTasker },
         { "getSubTask", TaskerBinding::getSubTask },

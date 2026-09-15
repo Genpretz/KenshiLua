@@ -19,7 +19,10 @@ public:
     static int tostring(lua_State* L);
 
     static int hasMouse(lua_State* L);
+    static int getItemAbsolutePosition(lua_State* L);
     static int getWidget(lua_State* L);
+    static int getPositionSlot(lua_State* L);
+    static int getBestPositionSlot(lua_State* L);
     static int setEnabled(lua_State* L);
     static int refreshIcons(lua_State* L);
     static int update(lua_State* L);

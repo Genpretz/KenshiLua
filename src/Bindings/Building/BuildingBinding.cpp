@@ -20,6 +20,7 @@
 #include "Bindings/InstanceIDBinding.h"
 #include "Bindings/InventoryBinding.h"
 #include "Bindings/PlatoonBinding.h"
+#include "Bindings/PhysicsCollectionBinding.h"
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/TownBinding.h"
 #include "Bindings/TownBuildingsManagerBinding.h"
@@ -292,13 +293,11 @@ static int Building_get_exteriorGround(lua_State* L)
     return 1;
 }
 
-// todo: implement a proper binding, instead of just returning a lightuserdata
 static int Building_get_physical(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    lua_pushlightuserdata(L, (void*)instance->physical);
-    return 1;
+    return pushObject<PhysicsCollection>(L, instance->physical, PhysicsCollectionBinding::getMetatableName());
 }
 
 static int Building_get_entitiesToLoad(lua_State* L)
@@ -484,6 +483,14 @@ static int Building_set_isAnInteriorObject(lua_State* L)
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
     instance->isAnInteriorObject = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int Building_set_physical(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+    instance->physical = lua_isnoneornil(L, 2) ? nullptr : checkObject<PhysicsCollection>(L, 2, PhysicsCollectionBinding::getMetatableName());
     return 0;
 }
 
@@ -3250,8 +3257,6 @@ static int Building_set_doors(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 215: int getMountedBuildings(...) - unsupported arg type
-  line 261: const std::string& getLayoutInstanceID(...) - reference return type
-  line 262: const std::string& _NV_getLayoutInstanceID(...) - reference return type
   line 306: void findAllFurnitureWithFunction(...) - unsupported arg type
   line 366: const Ogre::Aabb& getAABB(...) - overloaded method
   line 367: const Ogre::Aabb& _NV_getAABB(...) - overloaded method

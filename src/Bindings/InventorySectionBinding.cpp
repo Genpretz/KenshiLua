@@ -7,6 +7,7 @@
 #include "Bindings/ItemBinding.h"
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/Array2dBinding.h"
 #include "GameDataBinding.h"
 #include "InventoryBinding.h"
 #include "ItemBinding.h"
@@ -650,7 +651,6 @@ Skipped methods/members needing manual RVA offset binding if required:
 /*
 Skipped properties needing manual binding:
   line 94: items (Ogre::vector<InventorySection::SectionItem>::type) - unsupported type
-  line 95: content (Array2d<Item>) - unsupported type
 */
 
 int InventorySectionBinding::gc(lua_State* L)
@@ -671,8 +671,7 @@ static int InventorySection_get_content(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    // TODO: Unsupported type for content (Array2d<Item>)
-    return luaL_error(L, "Unsupported property 'content' (type: Array2d<Item>)");
+    return Array2dBinding<Item>::push(L, &instance->content);
 }
 
 
@@ -697,7 +696,10 @@ static int InventorySection_set_content(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for content");
+    Array2d<Item>* val = Array2dBinding<Item>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected Array2d<Item>");
+    instance->content = *val;
+    return 0;
 }
 
 
@@ -908,6 +910,8 @@ void InventorySectionBinding::registerBinding(lua_State* L)
         { "getItemsInFootprint", InventorySectionBinding::getItemsInFootprint },
         { 0, 0 }
     };
+
+    Array2dBinding<Item>::registerBinding(L, "KenshiLua.Array2d<Item>", ItemBinding::getMetatableName());
 
     registerClass(
         L, 

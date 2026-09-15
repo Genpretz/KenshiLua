@@ -8,6 +8,10 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/CombatTechniqueDataBinding.h"
 #include "Bindings/DamagesBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -928,19 +932,103 @@ int DoorStuffBinding::getDoorPosInside(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 39: void getGUIData(...) - unsupported arg type
-  line 40: void _NV_getGUIData(...) - unsupported arg type
-  line 53: void setHandle(...) - unsupported arg type
-  line 54: void _NV_setHandle(...) - unsupported arg type
-  line 115: void openButton(...) - unsupported arg type
-  line 116: void lockButton(...) - unsupported arg type
-  line 117: void _serialise(...) - unsupported arg type
-  line 118: void _NV__serialise(...) - unsupported arg type
-  line 119: void _loadFromSerialise(...) - unsupported arg type
-  line 120: void _NV__loadFromSerialise(...) - unsupported arg type
-*/
+int DoorStuffBinding::getGUIData(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIData(datapanel, category);
+    return 0;
+}
+
+int DoorStuffBinding::_NV_getGUIData(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIData(datapanel, category);
+    return 0;
+}
+
+int DoorStuffBinding::setHandle(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->setHandle(*h);
+    return 0;
+}
+
+int DoorStuffBinding::_NV_setHandle(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->_NV_setHandle(*h);
+    return 0;
+}
+
+int DoorStuffBinding::openButton(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->openButton(line);
+    return 0;
+}
+
+int DoorStuffBinding::lockButton(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->lockButton(line);
+    return 0;
+}
+
+int DoorStuffBinding::_serialise(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+    GameData* save = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    std::string id = luaL_checkstring(L, 3);
+    instance->_serialise(save, id);
+    return 0;
+}
+
+int DoorStuffBinding::_NV__serialise(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+    GameData* save = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    std::string id = luaL_checkstring(L, 3);
+    instance->_NV__serialise(save, id);
+    return 0;
+}
+
+int DoorStuffBinding::_loadFromSerialise(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+    GameData* save = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    std::string id = luaL_checkstring(L, 3);
+    bool firstTime = lua_toboolean(L, 4) != 0;
+    instance->_loadFromSerialise(save, id, firstTime);
+    return 0;
+}
+
+int DoorStuffBinding::_NV__loadFromSerialise(lua_State* L)
+{
+    DoorStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DoorStuff is nil");
+    GameData* save = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    std::string id = luaL_checkstring(L, 3);
+    bool firstTime = lua_toboolean(L, 4) != 0;
+    instance->_NV__loadFromSerialise(save, id, firstTime);
+    return 0;
+}
 
 int DoorStuffBinding::gc(lua_State* L)
 {
@@ -1024,6 +1112,16 @@ void DoorStuffBinding::registerBinding(lua_State* L)
         { "getDoorPosition", DoorStuffBinding::getDoorPosition },
         { "getDoorPosOutside", DoorStuffBinding::getDoorPosOutside },
         { "getDoorPosInside", DoorStuffBinding::getDoorPosInside },
+        { "getGUIData", DoorStuffBinding::getGUIData },
+        { "_NV_getGUIData", DoorStuffBinding::_NV_getGUIData },
+        { "setHandle", DoorStuffBinding::setHandle },
+        { "_NV_setHandle", DoorStuffBinding::_NV_setHandle },
+        { "openButton", DoorStuffBinding::openButton },
+        { "lockButton", DoorStuffBinding::lockButton },
+        { "_serialise", DoorStuffBinding::_serialise },
+        { "_NV__serialise", DoorStuffBinding::_NV__serialise },
+        { "_loadFromSerialise", DoorStuffBinding::_loadFromSerialise },
+        { "_NV__loadFromSerialise", DoorStuffBinding::_NV__loadFromSerialise },
         { 0, 0 }
     };
 

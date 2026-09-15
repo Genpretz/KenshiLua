@@ -747,15 +747,6 @@ int ActivePlatoonBinding::_checkForUniqueCharactersOnUnload(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 207: bool loadFromDisk(...) - unsupported arg type
-  line 208: bool _NV_loadFromDisk(...) - unsupported arg type
-  line 226: void getCharactersInArea(...) - unsupported arg type
-  line 245: const std::string& getName(...) - reference return type
-  line 268: void loadInstance(...) - non-string reference arg
-  line 269: void _NV_loadInstance(...) - non-string reference arg
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:

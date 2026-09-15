@@ -244,14 +244,8 @@ int FactionManagerBinding::getAllFactions(lua_State* L)
     if (!instance) return luaL_error(L, "FactionManager is nil");
 
     const lektor<Faction*>* result = instance->getAllFactions();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<lektor<Faction*>>(L, (const_cast<lektor<Faction*>*>(result)), LektorPtrBinding<Faction*>::metaName);
 }
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - FactionManagerBinding::getAllFactions: const lektor<Faction*>* (unbound pointer)
-*/
 
 int FactionManagerBinding::gc(lua_State* L)
 {
@@ -320,6 +314,8 @@ void FactionManagerBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, FactionManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorPtrBinding<Faction*>::registerBinding(L, "lektor<Faction*>", FactionBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

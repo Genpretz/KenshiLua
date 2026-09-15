@@ -3,6 +3,7 @@
 #include "OpenSaveFileDialogBinding.h"
 #include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 
 namespace KenshiLua
 {
@@ -19,6 +20,7 @@ static int OpenSaveFileDialog_get_filesList(lua_State* L)
     if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
     lua_pushlightuserdata(L, (void*)instance->filesList);
     return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->filesList, MyGUIBinding::getMetatableName());
 }
 
 static int OpenSaveFileDialog_get_fileNameTxt(lua_State* L)
@@ -27,6 +29,7 @@ static int OpenSaveFileDialog_get_fileNameTxt(lua_State* L)
     if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
     lua_pushlightuserdata(L, (void*)instance->fileNameTxt);
     return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->fileNameTxt, MyGUIBinding::getMetatableName());
 }
 
 static int OpenSaveFileDialog_get_currentFolderList(lua_State* L)
@@ -35,6 +38,7 @@ static int OpenSaveFileDialog_get_currentFolderList(lua_State* L)
     if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
     lua_pushlightuserdata(L, (void*)instance->currentFolderList);
     return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->currentFolderList, MyGUIBinding::getMetatableName());
 }
 
 static int OpenSaveFileDialog_get_openSaveButton(lua_State* L)
@@ -43,6 +47,7 @@ static int OpenSaveFileDialog_get_openSaveButton(lua_State* L)
     if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
     lua_pushlightuserdata(L, (void*)instance->openSaveButton);
     return 1;
+    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->openSaveButton, MyGUIBinding::getMetatableName());
 }
 
 static int OpenSaveFileDialog_get_currentFolder(lua_State* L)
@@ -197,12 +202,39 @@ int OpenSaveFileDialogBinding::update(lua_State* L)
     return 0;
 }
 
+int OpenSaveFileDialogBinding::getCurrentFolder(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    const std::string& res = instance->getCurrentFolder();
+    lua_pushlstring(L, res.data(), res.size());
+    return 1;
+}
+
+int OpenSaveFileDialogBinding::getFileName(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    const std::string& res = instance->getFileName();
+    lua_pushlstring(L, res.data(), res.size());
+    return 1;
+}
+
+int OpenSaveFileDialogBinding::getFileMask(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    const std::string& res = instance->getFileMask();
+    lua_pushlstring(L, res.data(), res.size());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 21: const std::string& getCurrentFolder(...) - reference return type
-  line 23: const std::string& getFileName(...) - reference return type
   line 24: void setRecentFolders(...) - unsupported arg type
-  line 26: const std::string& getFileMask(...) - reference return type
   line 28: void notifyDirectoryComboAccept(...) - unsupported arg type
   line 29: void notifyDirectoryComboChangePosition(...) - unsupported arg type
   line 30: void notifyListChangePosition(...) - unsupported arg type
@@ -238,8 +270,11 @@ void OpenSaveFileDialogBinding::registerBinding(lua_State* L)
         { "getVisible", OpenSaveFileDialogBinding::getVisible },
         { "setDialogInfo", OpenSaveFileDialogBinding::setDialogInfo },
         { "setCurrentFolder", OpenSaveFileDialogBinding::setCurrentFolder },
+        { "getCurrentFolder", OpenSaveFileDialogBinding::getCurrentFolder },
         { "setFileName", OpenSaveFileDialogBinding::setFileName },
+        { "getFileName", OpenSaveFileDialogBinding::getFileName },
         { "setFileMask", OpenSaveFileDialogBinding::setFileMask },
+        { "getFileMask", OpenSaveFileDialogBinding::getFileMask },
         { "update", OpenSaveFileDialogBinding::update },
         { 0, 0 }
     };

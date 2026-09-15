@@ -190,6 +190,16 @@ int TutorialItemBinding::getId(lua_State* L)
     return 1;
 }
 
+int TutorialItemBinding::getTitle(lua_State* L)
+{
+    TutorialItem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialItem is nil");
+
+    const std::string& res = instance->getTitle();
+    lua_pushlstring(L, res.data(), res.size());
+    return 1;
+}
+
 int TutorialItemBinding::isLastSubItem(lua_State* L)
 {
     TutorialItem* instance = getInstance(L, 1);
@@ -411,10 +421,6 @@ int TutorialItemBinding::_NV_end(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 49: const std::string& getTitle(...) - reference return type
-*/
 
 int TutorialItemBinding::gc(lua_State* L)
 {
@@ -438,6 +444,7 @@ void TutorialItemBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "getId", TutorialItemBinding::getId },
+        { "getTitle", TutorialItemBinding::getTitle },
         { "isLastSubItem", TutorialItemBinding::isLastSubItem },
         { "isSkippable", TutorialItemBinding::isSkippable },
         { "isActive", TutorialItemBinding::isActive },

@@ -19,6 +19,7 @@ public:
     static int tostring(lua_State* L);
 
     static int getId(lua_State* L);
+    static int getTitle(lua_State* L);
     static int isLastSubItem(lua_State* L);
     static int isSkippable(lua_State* L);
     static int isActive(lua_State* L);

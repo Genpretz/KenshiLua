@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Bindings/NavMeshGenerator_TaskBinding.h"
 #include "Bindings/ZoneMapBinding.h"
+#include "Bindings/NavInstanceBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 #include "Lua/BindingHelpers.h"
 
@@ -63,8 +64,8 @@ static int Task_get_output(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "NavMeshGenerator::Task is nil");
-    if (inst->output) lua_pushlightuserdata(L, (void*)inst->output);
-    else lua_pushnil(L);
+    if (inst->output) return pushObject<NavInstance>(L, inst->output, NavInstanceBinding::getMetatableName());
+    lua_pushnil(L);
     return 1;
 }
 
@@ -136,7 +137,7 @@ static int Task_set_output(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "NavMeshGenerator::Task is nil");
-    inst->output = (NavInstance*)lua_touserdata(L, 2);
+    inst->output = lua_isnoneornil(L, 2) ? nullptr : checkObject<NavInstance>(L, 2, NavInstanceBinding::getMetatableName());
     return 0;
 }
 
@@ -155,6 +156,12 @@ static int Task_set_next(lua_State* L)
     inst->next = lua_isnoneornil(L, 2) ? nullptr : checkObject<NavMeshGenerator::Task>(L, 2, NavMeshGenerator_TaskBinding::getMetatableName());
     return 0;
 }
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - Task_get_bounds / Task_set_bounds: Ogre::Aabb (unbound struct)
+  - Task_get_mesh / Task_set_mesh: hkaiNavMesh* (unbound pointer)
+*/
 
 int NavMeshGenerator_TaskBinding::gc(lua_State* L)
 {

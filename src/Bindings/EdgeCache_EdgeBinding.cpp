@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Bindings/EdgeCache_EdgeBinding.h"
+#include "Bindings/hkVector4fBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -15,18 +16,14 @@ static int Edge_get_a(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "EdgeCache::Edge is nil");
-    lua_pushlightuserdata(L, (void*)&inst->a);
-
-    return 1;
+    return pushObject<hkVector4f>(L, &inst->a, hkVector4fBinding::getMetatableName());
 }
 
 static int Edge_get_b(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "EdgeCache::Edge is nil");
-    lua_pushlightuserdata(L, (void*)&inst->b);
-
-    return 1;
+    return pushObject<hkVector4f>(L, &inst->b, hkVector4fBinding::getMetatableName());
 }
 
 // --- Setters for Edge ---
@@ -34,7 +31,7 @@ static int Edge_set_a(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "EdgeCache::Edge is nil");
-    inst->a = *(hkVector4f*)lua_touserdata(L, 2);
+    inst->a = *checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
     return 0;
 }
 
@@ -42,7 +39,7 @@ static int Edge_set_b(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "EdgeCache::Edge is nil");
-    inst->b = *(hkVector4f*)lua_touserdata(L, 2);
+    inst->b = *checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
     return 0;
 }
 

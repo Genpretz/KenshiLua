@@ -12,7 +12,13 @@
 #include "Bindings/CharacterBinding.h"
 #include "Bindings/CombatTechniqueDataBinding.h"
 #include "Bindings/DamagesBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/RootObjectBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
 #include "Bindings/Util/HandBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
 #include "Bindings/Util/StdSetBinding.h"
 
 namespace KenshiLua
@@ -1222,42 +1228,6 @@ int UseableStuffBinding::_NV_hitByMeleeAttack(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 39: void equipItem(...) - unsupported arg type
-  line 40: void _NV_equipItem(...) - unsupported arg type
-  line 41: void unequipItem(...) - unsupported arg type
-  line 42: void _NV_unequipItem(...) - unsupported arg type
-  line 43: void dropItem(...) - unsupported arg type
-  line 44: void _NV_dropItem(...) - unsupported arg type
-  line 51: bool canHaveSomeOfThese(...) - unsupported arg type
-  line 52: bool _NV_canHaveSomeOfThese(...) - unsupported arg type
-  line 59: void operate(...) - unsupported arg type
-  line 60: void _NV_operate(...) - unsupported arg type
-  line 67: int getCostToUse(...) - unsupported arg type
-  line 68: int _NV_getCostToUse(...) - unsupported arg type
-  line 69: void getGUIData(...) - unsupported arg type
-  line 70: void _NV_getGUIData(...) - unsupported arg type
-  line 71: void getGUIPower(...) - unsupported arg type
-  line 72: void _NV_getGUIPower(...) - unsupported arg type
-  line 73: void getGUIEfficiency(...) - unsupported arg type
-  line 74: void _NV_getGUIEfficiency(...) - unsupported arg type
-  line 75: void getGUIWorkers(...) - unsupported arg type
-  line 76: void _NV_getGUIWorkers(...) - unsupported arg type
-  line 77: void getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-  line 78: void _NV_getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-  line 81: void loadFromSerialise(...) - unsupported arg type
-  line 82: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 95: const std::string& getAnimation(...) - reference return type
-  line 96: const std::string& getAnimationKO(...) - reference return type
-  line 102: bool isFreeSlot(...) - unsupported arg type
-  line 103: bool _NV_isFreeSlot(...) - unsupported arg type
-  line 104: bool tryOperate(...) - unsupported arg type
-  line 105: bool _NV_tryOperate(...) - unsupported arg type
-  line 106: bool couldIOperate(...) - unsupported arg type
-  line 107: bool _NV_couldIOperate(...) - unsupported arg type
-  line 108: void stopOperating(...) - unsupported arg type
-*/
 
 int UseableStuffBinding::getOccupant(lua_State* L)
 {
@@ -1318,6 +1288,356 @@ int UseableStuffBinding::_NV_serialise(lua_State* L)
     PosRotPair* offset = (PosRotPair*)lua_touserdata(L, 4);
     GameSaveState result = instance->_NV_serialise(container, refList, offset);
     return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
+}
+
+int UseableStuffBinding::equipItem(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    std::string slot = luaL_checkstring(L, 2);
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    instance->equipItem(slot, item);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_equipItem(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    std::string slot = luaL_checkstring(L, 2);
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    instance->_NV_equipItem(slot, item);
+    return 0;
+}
+
+int UseableStuffBinding::unequipItem(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    std::string slot = luaL_checkstring(L, 2);
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    instance->unequipItem(slot, item);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_unequipItem(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    std::string slot = luaL_checkstring(L, 2);
+    Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
+    instance->_NV_unequipItem(slot, item);
+    return 0;
+}
+
+int UseableStuffBinding::dropItem(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    RootObject* what = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    instance->dropItem(what);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_dropItem(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    RootObject* what = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    instance->_NV_dropItem(what);
+    return 0;
+}
+
+int UseableStuffBinding::canHaveSomeOfThese(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    GameData* input = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->canHaveSomeOfThese(input);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int UseableStuffBinding::_NV_canHaveSomeOfThese(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    GameData* input = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->_NV_canHaveSomeOfThese(input);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int UseableStuffBinding::operate(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->operate(who, amount);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_operate(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->_NV_operate(who, amount);
+    return 0;
+}
+
+int UseableStuffBinding::getCostToUse(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    int result = instance->getCostToUse(who);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int UseableStuffBinding::_NV_getCostToUse(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    int result = instance->_NV_getCostToUse(who);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int UseableStuffBinding::getGUIData(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIData(datapanel, category);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_getGUIData(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIData(datapanel, category);
+    return 0;
+}
+
+int UseableStuffBinding::getGUIPower(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIPower(datapanel, category);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_getGUIPower(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIPower(datapanel, category);
+    return 0;
+}
+
+int UseableStuffBinding::getGUIEfficiency(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIEfficiency(datapanel, category);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_getGUIEfficiency(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIEfficiency(datapanel, category);
+    return 0;
+}
+
+int UseableStuffBinding::getGUIWorkers(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIWorkers(datapanel, category);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_getGUIWorkers(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIWorkers(datapanel, category);
+    return 0;
+}
+
+int UseableStuffBinding::getGUIToolTipForGroundResourceEfficiency(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getGUIToolTipForGroundResourceEfficiency must be lektor<StringPair>");
+    instance->getGUIToolTipForGroundResourceEfficiency(*out);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_getGUIToolTipForGroundResourceEfficiency(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getGUIToolTipForGroundResourceEfficiency must be lektor<StringPair>");
+    instance->_NV_getGUIToolTipForGroundResourceEfficiency(*out);
+    return 0;
+}
+
+int UseableStuffBinding::loadFromSerialise(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->loadFromSerialise(state);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_loadFromSerialise(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->_NV_loadFromSerialise(state);
+    return 0;
+}
+
+int UseableStuffBinding::isFreeSlot(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    bool result = instance->isFreeSlot(*h);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int UseableStuffBinding::_NV_isFreeSlot(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    bool result = instance->_NV_isFreeSlot(*h);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int UseableStuffBinding::tryOperate(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    bool result = instance->tryOperate(*h);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int UseableStuffBinding::_NV_tryOperate(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    bool result = instance->_NV_tryOperate(*h);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int UseableStuffBinding::couldIOperate(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    bool result = instance->couldIOperate(*h);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int UseableStuffBinding::_NV_couldIOperate(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    bool result = instance->_NV_couldIOperate(*h);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int UseableStuffBinding::stopOperating(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->stopOperating(*h);
+    return 0;
+}
+
+int UseableStuffBinding::occupantHandleChangedEvent(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->occupantHandleChangedEvent(*h);
+    return 0;
+}
+
+int UseableStuffBinding::togglePowerButton(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->togglePowerButton(line);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_togglePowerButton(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_togglePowerButton(line);
+    return 0;
+}
+
+int UseableStuffBinding::toggleBattButton(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->toggleBattButton(line);
+    return 0;
+}
+
+int UseableStuffBinding::_NV_toggleBattButton(lua_State* L)
+{
+    UseableStuff* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "UseableStuff is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_toggleBattButton(line);
+    return 0;
 }
 
 /*
@@ -1429,6 +1749,42 @@ void UseableStuffBinding::registerBinding(lua_State* L)
         { "_NV_serialise", UseableStuffBinding::_NV_serialise },
         { "hitByMeleeAttack", UseableStuffBinding::hitByMeleeAttack },
         { "_NV_hitByMeleeAttack", UseableStuffBinding::_NV_hitByMeleeAttack },
+        { "equipItem", UseableStuffBinding::equipItem },
+        { "_NV_equipItem", UseableStuffBinding::_NV_equipItem },
+        { "unequipItem", UseableStuffBinding::unequipItem },
+        { "_NV_unequipItem", UseableStuffBinding::_NV_unequipItem },
+        { "dropItem", UseableStuffBinding::dropItem },
+        { "_NV_dropItem", UseableStuffBinding::_NV_dropItem },
+        { "canHaveSomeOfThese", UseableStuffBinding::canHaveSomeOfThese },
+        { "_NV_canHaveSomeOfThese", UseableStuffBinding::_NV_canHaveSomeOfThese },
+        { "operate", UseableStuffBinding::operate },
+        { "_NV_operate", UseableStuffBinding::_NV_operate },
+        { "getCostToUse", UseableStuffBinding::getCostToUse },
+        { "_NV_getCostToUse", UseableStuffBinding::_NV_getCostToUse },
+        { "getGUIData", UseableStuffBinding::getGUIData },
+        { "_NV_getGUIData", UseableStuffBinding::_NV_getGUIData },
+        { "getGUIPower", UseableStuffBinding::getGUIPower },
+        { "_NV_getGUIPower", UseableStuffBinding::_NV_getGUIPower },
+        { "getGUIEfficiency", UseableStuffBinding::getGUIEfficiency },
+        { "_NV_getGUIEfficiency", UseableStuffBinding::_NV_getGUIEfficiency },
+        { "getGUIWorkers", UseableStuffBinding::getGUIWorkers },
+        { "_NV_getGUIWorkers", UseableStuffBinding::_NV_getGUIWorkers },
+        { "getGUIToolTipForGroundResourceEfficiency", UseableStuffBinding::getGUIToolTipForGroundResourceEfficiency },
+        { "_NV_getGUIToolTipForGroundResourceEfficiency", UseableStuffBinding::_NV_getGUIToolTipForGroundResourceEfficiency },
+        { "loadFromSerialise", UseableStuffBinding::loadFromSerialise },
+        { "_NV_loadFromSerialise", UseableStuffBinding::_NV_loadFromSerialise },
+        { "isFreeSlot", UseableStuffBinding::isFreeSlot },
+        { "_NV_isFreeSlot", UseableStuffBinding::_NV_isFreeSlot },
+        { "tryOperate", UseableStuffBinding::tryOperate },
+        { "_NV_tryOperate", UseableStuffBinding::_NV_tryOperate },
+        { "couldIOperate", UseableStuffBinding::couldIOperate },
+        { "_NV_couldIOperate", UseableStuffBinding::_NV_couldIOperate },
+        { "stopOperating", UseableStuffBinding::stopOperating },
+        { "occupantHandleChangedEvent", UseableStuffBinding::occupantHandleChangedEvent },
+        { "togglePowerButton", UseableStuffBinding::togglePowerButton },
+        { "_NV_togglePowerButton", UseableStuffBinding::_NV_togglePowerButton },
+        { "toggleBattButton", UseableStuffBinding::toggleBattButton },
+        { "_NV_toggleBattButton", UseableStuffBinding::_NV_toggleBattButton },
         { 0, 0 }
     };
 

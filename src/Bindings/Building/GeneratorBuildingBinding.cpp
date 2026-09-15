@@ -3,6 +3,8 @@
 #include "GeneratorBuildingBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/ProductionBuildingBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/ItemBinding.h"
 
 namespace KenshiLua
 {
@@ -54,13 +56,45 @@ int GeneratorBuildingBinding::_NV_getFuelConsumptionRate(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 14: void getGUIState(...) - unsupported arg type
-  line 15: void _NV_getGUIState(...) - unsupported arg type
-  line 16: float getInputValue(...) - unsupported arg type
-  line 17: float _NV_getInputValue(...) - unsupported arg type
-*/
+int GeneratorBuildingBinding::getGUIState(lua_State* L)
+{
+    GeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GeneratorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIState(datapanel, category);
+    return 0;
+}
+
+int GeneratorBuildingBinding::_NV_getGUIState(lua_State* L)
+{
+    GeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GeneratorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIState(datapanel, category);
+    return 0;
+}
+
+int GeneratorBuildingBinding::getInputValue(lua_State* L)
+{
+    GeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GeneratorBuilding is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    float result = instance->getInputValue(item);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int GeneratorBuildingBinding::_NV_getInputValue(lua_State* L)
+{
+    GeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GeneratorBuilding is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    float result = instance->_NV_getInputValue(item);
+    lua_pushnumber(L, result);
+    return 1;
+}
 
 int GeneratorBuildingBinding::gc(lua_State* L)
 {
@@ -87,6 +121,10 @@ void GeneratorBuildingBinding::registerBinding(lua_State* L)
         { "_NV_getPowerOutput", GeneratorBuildingBinding::_NV_getPowerOutput },
         { "getFuelConsumptionRate", GeneratorBuildingBinding::getFuelConsumptionRate },
         { "_NV_getFuelConsumptionRate", GeneratorBuildingBinding::_NV_getFuelConsumptionRate },
+        { "getGUIState", GeneratorBuildingBinding::getGUIState },
+        { "_NV_getGUIState", GeneratorBuildingBinding::_NV_getGUIState },
+        { "getInputValue", GeneratorBuildingBinding::getInputValue },
+        { "_NV_getInputValue", GeneratorBuildingBinding::_NV_getInputValue },
         { 0, 0 }
     };
 

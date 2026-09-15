@@ -79,5 +79,15 @@ public:
     static int getDoorPosition(lua_State* L);
     static int getDoorPosOutside(lua_State* L);
     static int getDoorPosInside(lua_State* L);
+    static int getGUIData(lua_State* L);
+    static int _NV_getGUIData(lua_State* L);
+    static int setHandle(lua_State* L);
+    static int _NV_setHandle(lua_State* L);
+    static int openButton(lua_State* L);
+    static int lockButton(lua_State* L);
+    static int _serialise(lua_State* L);
+    static int _NV__serialise(lua_State* L);
+    static int _loadFromSerialise(lua_State* L);
+    static int _NV__loadFromSerialise(lua_State* L);
 };
 }

@@ -20,6 +20,8 @@
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -967,6 +969,7 @@ int ForgottenGUIBinding::createPanel(lua_State* L)
     MyGUI::Window* result = instance->createPanel(name, top, left, width, height, layer, skin);
     lua_pushlightuserdata(L, (void*)result);
     return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int ForgottenGUIBinding::createPanelAbs(lua_State* L)
@@ -984,6 +987,7 @@ int ForgottenGUIBinding::createPanelAbs(lua_State* L)
     MyGUI::Window* result = instance->createPanelAbs(name, top, left, width, height, layer, skin);
     lua_pushlightuserdata(L, (void*)result);
     return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int ForgottenGUIBinding::createTabPanel(lua_State* L)
@@ -1001,6 +1005,7 @@ int ForgottenGUIBinding::createTabPanel(lua_State* L)
     MyGUI::TabControl* result = instance->createTabPanel(name, top, left, width, height, layer, skin);
     lua_pushlightuserdata(L, (void*)result);
     return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int ForgottenGUIBinding::createFloatingImage(lua_State* L)
@@ -1017,6 +1022,7 @@ int ForgottenGUIBinding::createFloatingImage(lua_State* L)
     MyGUI::Window* result = instance->createFloatingImage(image, top, left, width, height, layer);
     lua_pushlightuserdata(L, (void*)result);
     return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int ForgottenGUIBinding::createFloatingImageAbs(lua_State* L)
@@ -1033,6 +1039,7 @@ int ForgottenGUIBinding::createFloatingImageAbs(lua_State* L)
     MyGUI::Window* result = instance->createFloatingImageAbs(image, top, left, width, height, layer);
     lua_pushlightuserdata(L, (void*)result);
     return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int ForgottenGUIBinding::createFloatingProgressBar(lua_State* L)
@@ -1299,24 +1306,108 @@ int ForgottenGUIBinding::createInventoryWindow(lua_State* L)
     }
 }
 
+int ForgottenGUIBinding::toggleInventory(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to toggleInventory must be hand");
+    InventoryGUI* parentInv = lua_isnoneornil(L, 3) ? nullptr : checkObject<InventoryGUI>(L, 3, InventoryGUIBinding::getMetatableName());
+    bool attached = lua_toboolean(L, 4) != 0;
+
+    InventoryGUI* result = instance->toggleInventory(*owner, parentInv, attached);
+    return pushObject<InventoryGUI>(L, result, InventoryGUIBinding::getMetatableName());
+}
+
+int ForgottenGUIBinding::widgetHasMouse(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    MyGUI::Widget* w = WidgetBinding::getWidget(L, 2);
+    bool result = instance->widgetHasMouse(w);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ForgottenGUIBinding::destroyWidget(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    MyGUI::Widget* w = WidgetBinding::getWidget(L, 2);
+    instance->destroyWidget(w);
+    return 0;
+}
+
+int ForgottenGUIBinding::getDataLineColor(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    int actualVal = (int)luaL_checkinteger(L, 2);
+    int normalVal = (int)luaL_checkinteger(L, 3);
+    const std::string& result = instance->getDataLineColor(actualVal, normalVal);
+    lua_pushlstring(L, result.data(), result.size());
+    return 1;
+}
+
+int ForgottenGUIBinding::addScreenLabel(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    ScreenLabelInterface* label = checkObject<ScreenLabelInterface>(L, 2, ScreenLabelInterfaceBinding::getMetatableName());
+    instance->addScreenLabel(label);
+    return 0;
+}
+
+int ForgottenGUIBinding::keepWindownOnScreen(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    MyGUI::Widget* win = WidgetBinding::getWidget(L, 2);
+    instance->keepWindownOnScreen(win);
+    return 0;
+}
+
+int ForgottenGUIBinding::setInventoryPosition(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* owner = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!owner) return luaL_error(L, "Argument 2 to setInventoryPosition must be hand");
+    InventoryGUI* inventory = checkObject<InventoryGUI>(L, 3, InventoryGUIBinding::getMetatableName());
+
+    instance->setInventoryPosition(*owner, inventory);
+    return 0;
+}
+
+int ForgottenGUIBinding::inventoriesSelectedObjectUpdate(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!obj) return luaL_error(L, "Argument 2 to inventoriesSelectedObjectUpdate must be hand");
+
+    instance->inventoriesSelectedObjectUpdate(*obj);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 68: DatapanelGUI* createDatapanel(...) - overloaded method
   line 69: DatapanelGUI* createDatapanel(...) - overloaded method
   line 70: MyGUI::Window* messageBox(...) - unsupported arg type
   line 82: void showCharacterEditor(...) - unsupported arg type
-  line 107: InventoryGUI* toggleInventory(...) - non-string reference arg
-  line 118: void addScreenLabel(...) - unsupported arg type
-  line 121: void destroyWidget(...) - unsupported arg type
   line 122: void destroyWidgets(...) - overloaded method
   line 123: void destroyWidgets(...) - overloaded method
-  line 124: bool widgetHasMouse(...) - unsupported arg type
   line 132: void setup(...) - unsupported arg type
   line 141: void _showTradeWindow(...) - unsupported arg type
-  line 142: void setInventoryPosition(...) - non-string reference arg
-  line 145: void inventoriesSelectedObjectUpdate(...) - non-string reference arg
-  line 174: void keepWindownOnScreen(...) - unsupported arg type
-  line 175: const std::string& getDataLineColor(...) - reference return type
   line 179: MyGUI::ImageBox* createImage(...) - unsupported arg type
   line 180: MyGUI::ImageBox* createImageAbs(...) - unsupported arg type
   line 181: MyGUI::ImageBox* createRotatableImageAbs(...) - unsupported arg type
@@ -1359,14 +1450,9 @@ LIGHTUSERDATA DEPENDENCIES:
 /*
 Skipped properties needing manual binding:
   line 146: _showTradeWindowMsg (TradeWindowType) - unsupported type
-  line 150: inventoryWindowsOpen (ogre_unordered_map<hand, InventoryGUI*>::type) - unsupported type
-  line 155: inventoryWindowsPermanent (ogre_unordered_set<hand>::type) - unsupported type
   line 156: inventoryWindowsKillList (Ogre::vector<InventoryGUI*>::type) - unsupported type
   line 158: characterStatsWindows (Ogre::vector<CharacterStatsWindow*>::type) - unsupported type
   line 159: characterStatsWindowsKillList (Ogre::vector<CharacterStatsWindow*>::type) - unsupported type
-  line 160: guiWindows (lektor<GUIWindow*>) - unsupported type
-  line 161: guiDatapanels (lektor<DatapanelGUI*>) - unsupported type
-  line 163: guiScreenLabels (lektor<ScreenLabelInterface*>) - unsupported type
   line 164: guiScreenLabelsToAdd (lektor<ScreenLabelInterface*>) - unsupported type
   line 165: guiScreenLabelsToRemove (lektor<ScreenLabelInterface*>) - unsupported type
 */
@@ -1467,6 +1553,14 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
         { "destroy", ForgottenGUIBinding::destroy },
         { "changeMouseCursor", ForgottenGUIBinding::changeMouseCursor },
         { "createInventoryWindow", ForgottenGUIBinding::createInventoryWindow },
+        { "toggleInventory", ForgottenGUIBinding::toggleInventory },
+        { "widgetHasMouse", ForgottenGUIBinding::widgetHasMouse },
+        { "destroyWidget", ForgottenGUIBinding::destroyWidget },
+        { "getDataLineColor", ForgottenGUIBinding::getDataLineColor },
+        { "addScreenLabel", ForgottenGUIBinding::addScreenLabel },
+        { "keepWindownOnScreen", ForgottenGUIBinding::keepWindownOnScreen },
+        { "setInventoryPosition", ForgottenGUIBinding::setInventoryPosition },
+        { "inventoriesSelectedObjectUpdate", ForgottenGUIBinding::inventoriesSelectedObjectUpdate },
         { 0, 0 }
     };
 

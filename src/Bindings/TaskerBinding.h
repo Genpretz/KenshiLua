@@ -25,6 +25,7 @@ public:
     static int getLocation(lua_State* L);
     static int setLocation(lua_State* L);
     static int sameAs(lua_State* L);
+    static int getDescription(lua_State* L);
     static int hasActionFunc(lua_State* L);
     static int isSubTasker(lua_State* L);
     static int getSubTask(lua_State* L);

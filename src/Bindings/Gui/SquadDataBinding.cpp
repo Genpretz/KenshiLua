@@ -40,10 +40,15 @@ int SquadDataBinding::setName(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 157: const std::string& getName(...) - reference return type
-*/
+int SquadDataBinding::getName(lua_State* L)
+{
+    SquadData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadData is nil");
+
+    const std::string& res = instance->getName();
+    lua_pushlstring(L, res.data(), res.size());
+    return 1;
+}
 
 int SquadDataBinding::gc(lua_State* L)
 {
@@ -67,6 +72,7 @@ void SquadDataBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "setName", SquadDataBinding::setName },
+        { "getName", SquadDataBinding::getName },
         { 0, 0 }
     };
 

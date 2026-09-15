@@ -12,6 +12,7 @@
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/FitnessSelectorBinding.h"
 #include "Bindings/CampaignTriggerDataBinding.h"
+#include "Bindings/CampaignRequestBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
@@ -87,8 +88,7 @@ static int FactionWarMgr_get_campaignRequests(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    lua_pushlightuserdata(L, (void*)&instance->campaignRequests);
-    return 1;
+    return LektorPtrBinding<FactionWarMgr::CampaignRequest*>::push(L, &instance->campaignRequests);
 }
 
 static int FactionWarMgr_get_possibleCampaigns(lua_State* L)
@@ -186,8 +186,8 @@ static int FactionWarMgr_set_campaignRequests(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    lektor<FactionWarMgr::CampaignRequest*>* val = (lektor<FactionWarMgr::CampaignRequest*>*)lua_touserdata(L, 2);
-    if (!val) return luaL_error(L, "Expected lektor<CampaignRequest*> lightuserdata");
+    lektor<FactionWarMgr::CampaignRequest*>* val = LektorPtrBinding<FactionWarMgr::CampaignRequest*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set campaignRequests must be lektor<CampaignRequest*>");
     instance->campaignRequests = *val;
     return 0;
 }
@@ -501,9 +501,12 @@ LIGHTUSERDATA DEPENDENCIES:
   - FactionWarMgr_get_activeCampaigns / FactionWarMgr_set_activeCampaigns: lektor<CampaignInstance*> (unbound pointer type)
   - FactionWarMgr_get_biomeTerritories / FactionWarMgr_set_biomeTerritories: lektor<AreaBiomeGroup*> (unbound pointer type)
   - FactionWarMgr_get_biomeNoGoZones / FactionWarMgr_set_biomeNoGoZones: lektor<AreaBiomeGroup*> (unbound pointer type)
-  - FactionWarMgr_get_campaignRequests / FactionWarMgr_set_campaignRequests: lektor<FactionWarMgr::CampaignRequest*> (unbound pointer type)
   - FactionWarMgr_get_possibleCampaigns / FactionWarMgr_set_possibleCampaigns: lektor<CampaignData*> (unbound pointer type)
   - FactionWarMgr_get_forces / FactionWarMgr_set_forces: std::map<Platoon*, CampaignInstance*> (unbound map type)
+  - FactionWarMgrBinding::triggerCampaign: CampaignInstance* (unbound pointer)
+  - FactionWarMgrBinding::getCurrentCampaign: CampaignInstance* (unbound pointer)
+  - FactionWarMgrBinding::getActiveCampaign: CampaignInstance* (unbound pointer)
+  - FactionWarMgrBinding::_createCampaignData: CampaignData* (unbound pointer)
 */
 
 int FactionWarMgrBinding::gc(lua_State* L)
@@ -593,6 +596,8 @@ void FactionWarMgrBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorPtrBinding<FactionWarMgr::CampaignRequest*>::registerBinding(L, "lektor<FactionWarMgr::CampaignRequest*>", CampaignRequestBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

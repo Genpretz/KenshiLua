@@ -604,10 +604,29 @@ int CameraClassBinding::getFollowObject(lua_State* L)
     return HandBinding::push(L, instance->getFollowObject());
 }
 
+int CameraClassBinding::isVisible(lua_State* L)
+{
+    CameraClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CameraClass is nil");
+
+    Ogre::Vector3 pos;
+    readVector3(L, 2, pos);
+    bool result = false;
+    if (lua_gettop(L) >= 3 && !lua_isnil(L, 3))
+    {
+        float radius = (float)luaL_checknumber(L, 3);
+        result = instance->isVisible(pos, radius);
+    }
+    else
+    {
+        result = instance->isVisible(pos);
+    }
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 23: bool isVisible(...) - overloaded method
-  line 24: bool isVisible(...) - overloaded method
   line 25: int intersectScreenEdge(...) - non-string reference arg
   line 37: void restrictPosition(...) - unsupported arg type
 */
@@ -675,6 +694,7 @@ void CameraClassBinding::registerBinding(lua_State* L)
         { "updateAudio", CameraClassBinding::updateAudio },
         { "followObject", CameraClassBinding::followObject },
         { "getFollowObject", CameraClassBinding::getFollowObject },
+        { "isVisible", CameraClassBinding::isVisible },
         { 0, 0 }
     };
 

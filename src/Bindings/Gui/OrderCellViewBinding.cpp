@@ -3,6 +3,9 @@
 #include "OrderCellViewBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/OrderDataBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -64,10 +67,41 @@ int OrderCellViewBinding::resize(lua_State* L)
     return 0;
 }
 
+int OrderCellViewBinding::getCellDimension(lua_State* L)
+{
+    int idx = (lua_gettop(L) >= 3 && testObject<OrderCellView>(L, 1, OrderCellViewBinding::getMetatableName())) ? 2 : 1;
+    MyGUI::Widget* sender = WidgetBinding::getWidget(L, idx);
+    MyGUI::IntCoord coord(0, 0, 0, 0);
+    bool drop = false;
+    if (lua_gettop(L) >= idx + 2)
+    {
+        if (MyGUI::IntCoord* c = testObject<MyGUI::IntCoord>(L, idx + 1, IntCoordBinding::getMetatableName()))
+        {
+            coord = *c;
+            drop = lua_toboolean(L, idx + 2) != 0;
+            OrderCellView::getCellDimension(sender, coord, drop);
+            *c = coord;
+            return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+        }
+        else
+        {
+            coord = MyGUIBindings::readIntCoord(L, idx + 1);
+            drop = lua_toboolean(L, idx + 2) != 0;
+            OrderCellView::getCellDimension(sender, coord, drop);
+            return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+        }
+    }
+    else
+    {
+        drop = lua_toboolean(L, idx + 1) != 0;
+        OrderCellView::getCellDimension(sender, coord, drop);
+        return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+    }
+}
+
 /*
 Skipped methods needing manual binding:
   line 26: void update(...) - unsupported arg type
-  line 27: void getCellDimension(...) - static method
   line 31: void onRemove(...) - unsupported arg type
 */
 
@@ -101,6 +135,7 @@ void OrderCellViewBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "getWidget", OrderCellViewBinding::getWidget },
         { "resize", OrderCellViewBinding::resize },
+        { "getCellDimension", OrderCellViewBinding::getCellDimension },
         { 0, 0 }
     };
 
@@ -128,6 +163,11 @@ void OrderCellViewBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, OrderCellViewBinding::getMetatableName(), wraps::BaseCellView<OrderData*>Binding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    pushGlobalTable(L, "OrderCellView");
+    registerStaticMethod(L, "getCellDimension", OrderCellViewBinding::getCellDimension);
+    lua_setglobal(L, "OrderCellView");
 }
 
 } // namespace KenshiLua

@@ -50,5 +50,14 @@ public:
     static int isAShortWallPart(lua_State* L);
     static int hitByMeleeAttack(lua_State* L);
     static int _NV_hitByMeleeAttack(lua_State* L);
+    static int upgrade(lua_State* L);
+    static int _NV_upgrade(lua_State* L);
+    static int getGUIUpgrade(lua_State* L);
+    static int _NV_getGUIUpgrade(lua_State* L);
+    static int getGUIDestroyButton(lua_State* L);
+    static int _NV_getGUIDestroyButton(lua_State* L);
+    static int dismantleButton_all(lua_State* L);
+    static int _NV_dismantleButton_all(lua_State* L);
+    static int letsShare(lua_State* L);
 };
 }

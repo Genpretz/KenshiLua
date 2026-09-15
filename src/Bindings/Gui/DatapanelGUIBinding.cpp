@@ -16,6 +16,10 @@
 #include "Bindings/Gui/DataPanelLine_TextBinding.h"
 #include "Bindings/Gui/DataPanelLine_TextEditableBinding.h"
 #include "Bindings/Gui/GUIWindowBinding.h"
+#include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/ButtonBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
 
 namespace KenshiLua
 {
@@ -112,6 +116,13 @@ static int DatapanelGUI_get_tabWin(lua_State* L)
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
     lua_pushlightuserdata(L, (void*)instance->tabWin);
     return 1;
+}
+
+static int DatapanelGUI_get_tabs(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    return pushObject<lektor<MyGUI::Button*>>(L, &instance->tabs, LektorPtrBinding<MyGUI::Button*>::metaName);
 }
 
 static int DatapanelGUI_get_panelName(lua_State* L)
@@ -248,6 +259,16 @@ static int DatapanelGUI_set_automaticTarget(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
     instance->automaticTarget = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int DatapanelGUI_set_tabs(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    lektor<MyGUI::Button*>* val = LektorPtrBinding<MyGUI::Button*>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<MyGUI::Button*>");
+    instance->tabs = *val;
     return 0;
 }
 
@@ -1150,25 +1171,122 @@ int DatapanelGUIBinding::setLineResearch(lua_State* L)
     return luaL_error(L, "Invalid arguments for DatapanelGUI:setLineResearch");
 }
 
+int DatapanelGUIBinding::setTabEnabled(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    int id = (int)luaL_checkinteger(L, 2);
+    bool enabled = lua_toboolean(L, 3) != 0;
+    instance->setTabEnabled(id, enabled);
+    return 0;
+}
+
+int DatapanelGUIBinding::_NV_setTabEnabled(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    int id = (int)luaL_checkinteger(L, 2);
+    bool enabled = lua_toboolean(L, 3) != 0;
+    instance->_NV_setTabEnabled(id, enabled);
+    return 0;
+}
+
+int DatapanelGUIBinding::setLineText(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    std::string key = luaL_checkstring(L, 2);
+    std::string caption = luaL_checkstring(L, 3);
+    int category = (int)luaL_checkinteger(L, 4);
+    bool wordWrap = lua_toboolean(L, 5) != 0;
+    MyGUI::Align textAlign = lua_isstring(L, 6) ? MyGUI::Align::parse(luaL_checkstring(L, 6)) : MyGUI::Align((MyGUI::Align::Enum)(int)luaL_checkinteger(L, 6));
+    DataPanelLine_Text* result = instance->setLineText(key, caption, category, wordWrap, textAlign);
+    return pushObject<DataPanelLine_Text>(L, result, DataPanelLine_TextBinding::getMetatableName());
+}
+
+int DatapanelGUIBinding::setLineTextEditable(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    std::string key = luaL_checkstring(L, 2);
+    std::string text = luaL_checkstring(L, 3);
+    int category = (int)luaL_checkinteger(L, 4);
+    bool showKey = lua_toboolean(L, 5) != 0;
+    bool multiLine = lua_toboolean(L, 6) != 0;
+    MyGUI::Align textAlign = lua_isstring(L, 7) ? MyGUI::Align::parse(luaL_checkstring(L, 7)) : MyGUI::Align((MyGUI::Align::Enum)(int)luaL_checkinteger(L, 7));
+    float width = (float)luaL_checknumber(L, 8);
+    DataPanelLine_TextEditable* result = instance->setLineTextEditable(key, text, category, showKey, multiLine, textAlign, width);
+    return pushObject<DataPanelLine_TextEditable>(L, result, DataPanelLine_TextEditableBinding::getMetatableName());
+}
+
+int DatapanelGUIBinding::setLines(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    lektor<StringPair>* data = LektorValueBinding<StringPair>::get(L, 2);
+    if (!data) return luaL_error(L, "Argument 2 to setLines must be lektor<StringPair>");
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->setLines(*data, category);
+    return 0;
+}
+
+int DatapanelGUIBinding::autoChangeSelectedObject(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->autoChangeSelectedObject(*obj);
+    return 0;
+}
+
+int DatapanelGUIBinding::_NV_autoChangeSelectedObject(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->_NV_autoChangeSelectedObject(*obj);
+    return 0;
+}
+
+int DatapanelGUIBinding::setObject(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->setObject(*obj);
+    return 0;
+}
+
+int DatapanelGUIBinding::_NV_setObject(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->_NV_setObject(*obj);
+    return 0;
+}
+
+int DatapanelGUIBinding::getCoords(lua_State* L)
+{
+    DatapanelGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DatapanelGUI is nil");
+    float left = (float)luaL_checknumber(L, 2);
+    float top = (float)luaL_checknumber(L, 3);
+    float width = (float)luaL_checknumber(L, 4);
+    float height = (float)luaL_checknumber(L, 5);
+    MyGUI::IntCoord result = instance->getCoords(left, top, width, height);
+    return pushValue<MyGUI::IntCoord>(L, result, IntCoordBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
-  line 57: void setTabEnabled(...) - non-string reference arg
-  line 58: void _NV_setTabEnabled(...) - non-string reference arg
-  line 62: void setCloseCallback(...) - unsupported arg type
-  line 82: DataPanelLine_Text* setLineText(...) - unsupported arg type
-  line 83: DataPanelLine_TextEditable* setLineTextEditable(...) - unsupported arg type
-  line 90: void setLines(...) - unsupported arg type
-  line 98: void autoChangeSelectedObject(...) - non-string reference arg
-  line 99: void _NV_autoChangeSelectedObject(...) - non-string reference arg
-  line 102: void setObject(...) - non-string reference arg
-  line 103: void _NV_setObject(...) - non-string reference arg
-  line 106: void setMouseOverCallback(...) - unsupported arg type
-  line 107: void _NV_setMouseOverCallback(...) - unsupported arg type
-  line 113: void tabButton(...) - unsupported arg type
-  line 131: void closeButtonCallback(...) - unsupported arg type
-  line 132: void mouseOverCallback(...) - unsupported arg type
-  line 133: void notifyMouseWheel(...) - unsupported arg type
-  line 134: MyGUI::types::TCoord<int> getCoords(...) - unsupported return type
+  line 62: void setCloseCallback(...) - unsupported callback delegate type
+  line 106: void setMouseOverCallback(...) - unsupported callback delegate type
+  line 107: void _NV_setMouseOverCallback(...) - unsupported callback delegate type
+  line 113: void tabButton(...) - internal event handler
+  line 131: void closeButtonCallback(...) - internal event handler
+  line 132: void mouseOverCallback(...) - internal event handler
+  line 133: void notifyMouseWheel(...) - internal event handler
 */
 
 /*
@@ -1176,7 +1294,6 @@ Skipped properties needing manual binding:
   line 30: tabEvent (MyGUI::delegates::CMultiDelegate2<DatapanelGUI*, int>) - unsupported type
   line 135: content (std::map<int, std::map<std::string, DataPanelLine*, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, DataPanelLine*>, Ogre::GeneralAllocPolicy > >, std::less<int>, Ogre::STLAllocator<std::pair<int const, std::map<std::string, DataPanelLine*, std::less<std::string >, Ogre::STLAllocator<std::pair<std::string const, DataPanelLine*>, Ogre::GeneralAllocPolicy > > >, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 136: bottomLine (std::map<int, DataPanelLine*, std::less<int>, Ogre::STLAllocator<std::pair<int const, DataPanelLine*>, Ogre::GeneralAllocPolicy > >) - unsupported type
-  line 145: tabs (lektor<MyGUI::Button*>) - unsupported type
 */
 
 int DatapanelGUIBinding::gc(lua_State* L)
@@ -1269,6 +1386,16 @@ void DatapanelGUIBinding::registerBinding(lua_State* L)
         { "clearCategoryTabs", DatapanelGUIBinding::clearCategoryTabs },
         { "setLine", DatapanelGUIBinding::setLine },
         { "setLineResearch", DatapanelGUIBinding::setLineResearch },
+        { "setTabEnabled", DatapanelGUIBinding::setTabEnabled },
+        { "_NV_setTabEnabled", DatapanelGUIBinding::_NV_setTabEnabled },
+        { "setLineText", DatapanelGUIBinding::setLineText },
+        { "setLineTextEditable", DatapanelGUIBinding::setLineTextEditable },
+        { "setLines", DatapanelGUIBinding::setLines },
+        { "autoChangeSelectedObject", DatapanelGUIBinding::autoChangeSelectedObject },
+        { "_NV_autoChangeSelectedObject", DatapanelGUIBinding::_NV_autoChangeSelectedObject },
+        { "setObject", DatapanelGUIBinding::setObject },
+        { "_NV_setObject", DatapanelGUIBinding::_NV_setObject },
+        { "getCoords", DatapanelGUIBinding::getCoords },
         { 0, 0 }
     };
 
@@ -1294,6 +1421,7 @@ void DatapanelGUIBinding::registerBinding(lua_State* L)
     registerGetter(L, "automaticRefresh", DatapanelGUI_get_automaticRefresh);
     registerGetter(L, "automaticTarget", DatapanelGUI_get_automaticTarget);
     registerGetter(L, "tabWin", DatapanelGUI_get_tabWin);
+    registerGetter(L, "tabs", DatapanelGUI_get_tabs);
     registerGetter(L, "panelName", DatapanelGUI_get_panelName);
     registerGetter(L, "x", DatapanelGUI_get_x);
     registerGetter(L, "y", DatapanelGUI_get_y);
@@ -1314,6 +1442,7 @@ void DatapanelGUIBinding::registerBinding(lua_State* L)
     registerSetter(L, "currentCategory", DatapanelGUI_set_currentCategory);
     registerSetter(L, "automaticRefresh", DatapanelGUI_set_automaticRefresh);
     registerSetter(L, "automaticTarget", DatapanelGUI_set_automaticTarget);
+    registerSetter(L, "tabs", DatapanelGUI_set_tabs);
     registerSetter(L, "panelName", DatapanelGUI_set_panelName);
     registerSetter(L, "x", DatapanelGUI_set_x);
     registerSetter(L, "y", DatapanelGUI_set_y);
@@ -1330,6 +1459,8 @@ void DatapanelGUIBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, DatapanelGUIBinding::getMetatableName(), GUIWindowBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorPtrBinding<MyGUI::Button*>::registerBinding(L, "lektor<MyGUI::Button*>", ButtonBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

@@ -4,6 +4,9 @@
 #include "kenshi\gui\SquadManagementScreen.h"
 #include "PortraitSquadCellViewBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -91,10 +94,41 @@ int PortraitSquadCellViewBinding::setName(lua_State* L)
     return 0;
 }
 
+int PortraitSquadCellViewBinding::getCellDimension(lua_State* L)
+{
+    int idx = (lua_gettop(L) >= 3 && testObject<PortraitSquadCellView>(L, 1, PortraitSquadCellViewBinding::getMetatableName())) ? 2 : 1;
+    MyGUI::Widget* sender = WidgetBinding::getWidget(L, idx);
+    MyGUI::IntCoord coord(0, 0, 0, 0);
+    bool drop = false;
+    if (lua_gettop(L) >= idx + 2)
+    {
+        if (MyGUI::IntCoord* c = testObject<MyGUI::IntCoord>(L, idx + 1, IntCoordBinding::getMetatableName()))
+        {
+            coord = *c;
+            drop = lua_toboolean(L, idx + 2) != 0;
+            PortraitSquadCellView::getCellDimension(sender, coord, drop);
+            *c = coord;
+            return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+        }
+        else
+        {
+            coord = MyGUIBindings::readIntCoord(L, idx + 1);
+            drop = lua_toboolean(L, idx + 2) != 0;
+            PortraitSquadCellView::getCellDimension(sender, coord, drop);
+            return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+        }
+    }
+    else
+    {
+        drop = lua_toboolean(L, idx + 1) != 0;
+        PortraitSquadCellView::getCellDimension(sender, coord, drop);
+        return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+    }
+}
+
 /*
 Skipped methods needing manual binding:
   line 81: void update(...) - unsupported arg type
-  line 82: void getCellDimension(...) - static method
 */
 
 /*
@@ -127,6 +161,7 @@ void PortraitSquadCellViewBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "resize", PortraitSquadCellViewBinding::resize },
         { "setName", PortraitSquadCellViewBinding::setName },
+        { "getCellDimension", PortraitSquadCellViewBinding::getCellDimension },
         { 0, 0 }
     };
 
@@ -157,6 +192,11 @@ void PortraitSquadCellViewBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, PortraitSquadCellViewBinding::getMetatableName(), wraps::BaseCellView<PortraitData*>Binding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    pushGlobalTable(L, "PortraitSquadCellView");
+    registerStaticMethod(L, "getCellDimension", PortraitSquadCellViewBinding::getCellDimension);
+    lua_setglobal(L, "PortraitSquadCellView");
 }
 
 } // namespace KenshiLua

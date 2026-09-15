@@ -22,8 +22,11 @@ public:
     static int getVisible(lua_State* L);
     static int setDialogInfo(lua_State* L);
     static int setCurrentFolder(lua_State* L);
+    static int getCurrentFolder(lua_State* L);
     static int setFileName(lua_State* L);
+    static int getFileName(lua_State* L);
     static int setFileMask(lua_State* L);
+    static int getFileMask(lua_State* L);
     static int update(lua_State* L);
 };
 }

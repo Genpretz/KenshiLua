@@ -17,6 +17,10 @@
 #include "Bindings/Util/iVector2Binding.h"
 #include "Bindings/Util/HandBinding.h"
 #include "Bindings/Util/StdMapBinding.h"
+#include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/WindowBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -699,18 +703,108 @@ int InventoryGUIBinding::makeIconForItem(lua_State* L)
     return pushObject<InventoryIcon>(L, result, InventoryIconBinding::getMetatableName());
 }
 
+int InventoryGUIBinding::getWindowCoord(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    MyGUI::types::TCoord<int> result = instance->getWindowCoord();
+    return pushValue<MyGUI::IntCoord>(L, result, IntCoordBinding::getMetatableName());
+}
+
+int InventoryGUIBinding::autoChangeSelectedObject(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!obj) return luaL_error(L, "Argument 2 to autoChangeSelectedObject must be hand");
+    instance->autoChangeSelectedObject(*obj);
+    return 0;
+}
+
+int InventoryGUIBinding::_NV_autoChangeSelectedObject(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    hand* obj = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!obj) return luaL_error(L, "Argument 2 to _NV_autoChangeSelectedObject must be hand");
+    instance->_NV_autoChangeSelectedObject(*obj);
+    return 0;
+}
+
+int InventoryGUIBinding::placeItemFromMouse(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    std::string sectionName = luaL_checkstring(L, 2);
+    MyGUI::IntPoint mousePos = MyGUIBindings::readIntPoint(L, 3);
+    bool result = instance->placeItemFromMouse(sectionName, mousePos);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int InventoryGUIBinding::autoArrangeButton(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    MyGUI::Widget* sender = WidgetBinding::getWidget(L, 2);
+    instance->autoArrangeButton(sender);
+    return 0;
+}
+
+int InventoryGUIBinding::openBackpackButton(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    MyGUI::Widget* sender = WidgetBinding::getWidget(L, 2);
+    instance->openBackpackButton(sender);
+    return 0;
+}
+
+int InventoryGUIBinding::openLimbsInterface(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    MyGUI::Widget* sender = WidgetBinding::getWidget(L, 2);
+    instance->openLimbsInterface(sender);
+    return 0;
+}
+
+int InventoryGUIBinding::windowButtonPressed(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    MyGUI::Window* widget = WindowBinding::getWindow(L, 2);
+    std::string name = luaL_checkstring(L, 3);
+    instance->windowButtonPressed(widget, name);
+    return 0;
+}
+
+int InventoryGUIBinding::fencingConfirmation(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    RootObject* thief = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    Character* fence = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    std::string sectionName = luaL_checkstring(L, 5);
+    MyGUI::IntPoint mouse = MyGUIBindings::readIntPoint(L, 6);
+    bool result = instance->fencingConfirmation(item, thief, fence, sectionName, mouse);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 125: void autoChangeSelectedObject(...) - non-string reference arg
-  line 126: void _NV_autoChangeSelectedObject(...) - non-string reference arg
-  line 138: void autoArrangeButton(...) - unsupported arg type
-  line 139: void openBackpackButton(...) - unsupported arg type
-  line 140: void openLimbsInterface(...) - unsupported arg type
-  line 143: void windowButtonPressed(...) - unsupported arg type
-  line 153: MyGUI::types::TCoord<int> getWindowCoord(...) - unsupported return type
   line 156: void getTrader1Trader2(...) - non-string reference arg
-  line 169: bool placeItemFromMouse(...) - unsupported arg type
-  line 193: bool fencingConfirmation(...) - unsupported arg type
   line 206: void sectionMouseButtonPressed(...) - unsupported arg type
   line 207: void sectionMouseButtonReleased(...) - unsupported arg type
   line 208: void onWindowFocus(...) - unsupported arg type
@@ -794,6 +888,15 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
         { "refreshSection", InventoryGUIBinding::refreshSection },
         { "getSection", InventoryGUIBinding::getSection },
         { "makeIconForItem", InventoryGUIBinding::makeIconForItem },
+        { "getWindowCoord", InventoryGUIBinding::getWindowCoord },
+        { "autoChangeSelectedObject", InventoryGUIBinding::autoChangeSelectedObject },
+        { "_NV_autoChangeSelectedObject", InventoryGUIBinding::_NV_autoChangeSelectedObject },
+        { "placeItemFromMouse", InventoryGUIBinding::placeItemFromMouse },
+        { "autoArrangeButton", InventoryGUIBinding::autoArrangeButton },
+        { "openBackpackButton", InventoryGUIBinding::openBackpackButton },
+        { "openLimbsInterface", InventoryGUIBinding::openLimbsInterface },
+        { "windowButtonPressed", InventoryGUIBinding::windowButtonPressed },
+        { "fencingConfirmation", InventoryGUIBinding::fencingConfirmation },
         { 0, 0 }
     };
 

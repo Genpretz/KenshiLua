@@ -43,5 +43,6 @@ public:
     static int checkVersion(lua_State* L);
     static int getCurrentGame(lua_State* L);
     static int getSavePath(lua_State* L);
+    static int scanGames(lua_State* L);
 };
 }

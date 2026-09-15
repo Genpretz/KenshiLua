@@ -1161,10 +1161,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - PlatoonBinding::getRoamingMapArea: AreaBiomeGroup* (unbound pointer)
 */
 
-/*
-Skipped properties needing manual binding:
-  line 180: messageOnActivation (PlatoonCreationMessage) - unsupported type
-*/
 
 int PlatoonBinding::gc(lua_State* L)
 {

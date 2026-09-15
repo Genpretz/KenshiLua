@@ -36,5 +36,9 @@ public:
     static int updateLiveObject(lua_State* L);
     static int refreshCharacterPoses(lua_State* L);
     static int exportMeshes(lua_State* L);
+    static int getCurrentHeadName(lua_State* L);
+    static int getCurrentAttachmentName(lua_State* L);
+    static int setCurrentHeadName(lua_State* L);
+    static int setCurrentAttachmentName(lua_State* L);
 };
 }

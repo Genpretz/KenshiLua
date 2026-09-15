@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Bindings/EdgePathNodeBinding.h"
+#include "Bindings/hkVector4fBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -15,18 +16,14 @@ static int EdgePathNode_get_mLeft(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "EdgePathNode is nil");
-    lua_pushlightuserdata(L, (void*)&inst->mLeft);
-
-    return 1;
+    return pushObject<hkVector4f>(L, &inst->mLeft, hkVector4fBinding::getMetatableName());
 }
 
 static int EdgePathNode_get_mRight(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "EdgePathNode is nil");
-    lua_pushlightuserdata(L, (void*)&inst->mRight);
-
-    return 1;
+    return pushObject<hkVector4f>(L, &inst->mRight, hkVector4fBinding::getMetatableName());
 }
 
 static int EdgePathNode_get_face(lua_State* L)
@@ -74,7 +71,7 @@ static int EdgePathNode_set_mLeft(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "EdgePathNode is nil");
-    inst->mLeft = *(hkVector4f*)lua_touserdata(L, 2);
+    inst->mLeft = *checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
     return 0;
 }
 
@@ -82,7 +79,7 @@ static int EdgePathNode_set_mRight(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "EdgePathNode is nil");
-    inst->mRight = *(hkVector4f*)lua_touserdata(L, 2);
+    inst->mRight = *checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
     return 0;
 }
 

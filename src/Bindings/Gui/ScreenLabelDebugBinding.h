@@ -20,5 +20,6 @@ public:
 
     static int update(lua_State* L);
     static int _NV_update(lua_State* L);
+    static int getCaption(lua_State* L);
 };
 }

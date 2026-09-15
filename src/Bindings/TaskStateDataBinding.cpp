@@ -46,10 +46,6 @@ static int TaskStateData_set_progressionOnly(lua_State* L)
 }
 
 
-/*
-Skipped properties needing manual binding:
-  line 205: key (StateType) - unsupported type
-*/
 
 int TaskStateDataBinding::gc(lua_State* L)
 {

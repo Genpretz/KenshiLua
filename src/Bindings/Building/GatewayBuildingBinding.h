@@ -34,5 +34,7 @@ public:
     static int getGateCodeAt(lua_State* L);
     static int getOutsideGateCode(lua_State* L);
     static int separatesAreas(lua_State* L);
+    static int setHandle(lua_State* L);
+    static int _NV_setHandle(lua_State* L);
 };
 }

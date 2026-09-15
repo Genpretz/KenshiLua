@@ -19,5 +19,7 @@ public:
     static int tostring(lua_State* L);
 
     static int getSpeed(lua_State* L);
+    static int insert(lua_State* L);
+    static int erase(lua_State* L);
 };
 }

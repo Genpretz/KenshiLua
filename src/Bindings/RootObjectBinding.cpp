@@ -960,13 +960,6 @@ int RootObjectBinding::_NV_loadUnloadCheck(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 32: const std::string& getLayoutInstanceID(...) - reference return type
-  line 33: const std::string& _NV_getLayoutInstanceID(...) - reference return type
-  line 47: const Ogre::Aabb& getAABB(...) - reference return type
-  line 48: const Ogre::Aabb& _NV_getAABB(...) - reference return type
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:

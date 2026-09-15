@@ -5,6 +5,8 @@
 #include "ScreenLabelBinding.h"
 #include "ScreenLabelInterfaceBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
+#include "Bindings/MyGUI/TypesBinding.h"
 
 namespace KenshiLua
 {
@@ -78,7 +80,22 @@ static int ScreenLabel_get_destroyed(lua_State* L)
     return 1;
 }
 
+static int ScreenLabel_get_color(lua_State* L)
+{
+    ScreenLabel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ScreenLabel is nil");
+    return pushValue<MyGUI::Colour>(L, instance->color, ColourBinding::getMetatableName());
+}
+
 // --- Setters for ScreenLabel ---
+static int ScreenLabel_set_color(lua_State* L)
+{
+    ScreenLabel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ScreenLabel is nil");
+    instance->color = MyGUIBindings::readColour(L, 2);
+    return 0;
+}
+
 static int ScreenLabel_set_caption(lua_State* L)
 {
     ScreenLabel* instance = getInstance(L, 1);
@@ -224,22 +241,55 @@ int ScreenLabelBinding::destroy(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 49: void setTracking(...) - non-string reference arg
-  line 50: void _NV_setTracking(...) - non-string reference arg
-  line 55: void setColor(...) - unsupported arg type
-  line 56: void _NV_setColor(...) - unsupported arg type
-*/
+int ScreenLabelBinding::setTracking(lua_State* L)
+{
+    ScreenLabel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ScreenLabel is nil");
+
+    hand* handle = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!handle) return luaL_error(L, "Argument 2 to setTracking must be hand");
+    Ogre::Vector3 offset;
+    readVector3(L, 3, offset);
+    instance->setTracking(*handle, offset);
+    return 0;
+}
+
+int ScreenLabelBinding::_NV_setTracking(lua_State* L)
+{
+    ScreenLabel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ScreenLabel is nil");
+
+    hand* handle = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!handle) return luaL_error(L, "Argument 2 to _NV_setTracking must be hand");
+    Ogre::Vector3 offset;
+    readVector3(L, 3, offset);
+    instance->_NV_setTracking(*handle, offset);
+    return 0;
+}
+
+int ScreenLabelBinding::setColor(lua_State* L)
+{
+    ScreenLabel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ScreenLabel is nil");
+
+    MyGUI::Colour value = MyGUIBindings::readColour(L, 2);
+    instance->setColor(value);
+    return 0;
+}
+
+int ScreenLabelBinding::_NV_setColor(lua_State* L)
+{
+    ScreenLabel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ScreenLabel is nil");
+
+    MyGUI::Colour value = MyGUIBindings::readColour(L, 2);
+    instance->_NV_setColor(value);
+    return 0;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - ScreenLabel_get_textWidget: MyGUI::TextBox* (unbound pointer)
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 69: color (MyGUI::Colour) - unsupported type
 */
 
 int ScreenLabelBinding::gc(lua_State* L)
@@ -263,10 +313,14 @@ void ScreenLabelBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "setTracking", ScreenLabelBinding::setTracking },
+        { "_NV_setTracking", ScreenLabelBinding::_NV_setTracking },
         { "setCaption", ScreenLabelBinding::setCaption },
         { "_NV_setCaption", ScreenLabelBinding::_NV_setCaption },
         { "setRisingSpeed", ScreenLabelBinding::setRisingSpeed },
         { "_NV_setRisingSpeed", ScreenLabelBinding::_NV_setRisingSpeed },
+        { "setColor", ScreenLabelBinding::setColor },
+        { "_NV_setColor", ScreenLabelBinding::_NV_setColor },
         { "setPosition", ScreenLabelBinding::setPosition },
         { "_NV_setPosition", ScreenLabelBinding::_NV_setPosition },
         { "update", ScreenLabelBinding::update },
@@ -294,6 +348,7 @@ void ScreenLabelBinding::registerBinding(lua_State* L)
     registerGetter(L, "trackingHandle", ScreenLabel_get_trackingHandle);
     registerGetter(L, "trackingOffset", ScreenLabel_get_trackingOffset);
     registerGetter(L, "destroyed", ScreenLabel_get_destroyed);
+    registerGetter(L, "color", ScreenLabel_get_color);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -304,6 +359,7 @@ void ScreenLabelBinding::registerBinding(lua_State* L)
     registerSetter(L, "trackingHandle", ScreenLabel_set_trackingHandle);
     registerSetter(L, "trackingOffset", ScreenLabel_set_trackingOffset);
     registerSetter(L, "destroyed", ScreenLabel_set_destroyed);
+    registerSetter(L, "color", ScreenLabel_set_color);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to ScreenLabelInterface

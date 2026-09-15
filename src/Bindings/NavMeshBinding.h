@@ -27,6 +27,7 @@ public:
     static int getClosestExteriorPoint(lua_State* L);
     static int setDoorState(lua_State* L);
     static int isInterior(lua_State* L);
+    static int getHandle(lua_State* L);
     static int getPositionValid(lua_State* L);
     static int processCompletedCharacterMessages(lua_State* L);
     static int processDoorRequests(lua_State* L);

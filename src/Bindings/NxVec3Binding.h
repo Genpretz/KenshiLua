@@ -26,5 +26,19 @@ public:
     static int isFinite(lua_State* L);
     static int magnitude(lua_State* L);
     static int magnitudeSquared(lua_State* L);
+    static int dot(lua_State* L);
+    static int equals(lua_State* L);
+    static int multiplyAdd(lua_State* L);
+    static int add(lua_State* L);
+    static int subtract(lua_State* L);
+    static int cross(lua_State* L);
+    static int set(lua_State* L);
+    static int create(lua_State* L);
+
+    static int lua_add(lua_State* L);
+    static int lua_sub(lua_State* L);
+    static int lua_unm(lua_State* L);
+    static int lua_mul(lua_State* L);
+    static int lua_eq(lua_State* L);
 };
 }

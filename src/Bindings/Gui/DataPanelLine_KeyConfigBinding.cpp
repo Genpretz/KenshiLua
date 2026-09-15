@@ -128,9 +128,18 @@ int DataPanelLine_KeyConfigBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
+int DataPanelLine_KeyConfigBinding::getCommand(lua_State* L)
+{
+    DataPanelLine_KeyConfig* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
+
+    const std::string& result = instance->getCommand();
+    lua_pushlstring(L, result.data(), result.size());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 359: const std::string& getCommand(...) - reference return type
   line 368: void clickButton(...) - unsupported arg type
 */
 
@@ -163,6 +172,7 @@ void DataPanelLine_KeyConfigBinding::registerBinding(lua_State* L)
         { "cancel", DataPanelLine_KeyConfigBinding::cancel },
         { "createMe", DataPanelLine_KeyConfigBinding::createMe },
         { "_NV_createMe", DataPanelLine_KeyConfigBinding::_NV_createMe },
+        { "getCommand", DataPanelLine_KeyConfigBinding::getCommand },
         { 0, 0 }
     };
 

@@ -26,5 +26,9 @@ public:
     static int createSectionGUI(lua_State* L);
     static int setSectionGUIDisabled(lua_State* L);
     static int notifyCellSizeChanged(lua_State* L);
+    static int resizeSection(lua_State* L);
+    static int resizeSectionWidget(lua_State* L);
+    static int getCellSize(lua_State* L);
+    static int setCellSize(lua_State* L);
 };
 }

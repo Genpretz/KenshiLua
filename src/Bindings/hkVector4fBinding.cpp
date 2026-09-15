@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\havok.h"
 #include "hkVector4fBinding.h"
+#include "hkVector4fComparisonBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -300,51 +301,322 @@ int hkVector4fBinding::setXYZ_0(lua_State* L)
     return 0;
 }
 
+int hkVector4fBinding::equals3(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* v = getInstance(L, 2);
+    if (!v) return luaL_error(L, "Argument 2 to equals3 must be hkVector4f");
+
+    float epsilon = (float)luaL_optnumber(L, 3, 0.0001f);
+    unsigned int res = instance->equals3(*v, epsilon);
+    lua_pushboolean(L, res != 0 ? 1 : 0);
+    return 1;
+}
+
+int hkVector4fBinding::setAbs(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* v = getInstance(L, 2);
+    if (!v) return luaL_error(L, "Argument 2 to setAbs must be hkVector4f");
+
+    instance->setAbs(*v);
+    return 0;
+}
+
+int hkVector4fBinding::setMin(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    hkVector4f* b = getInstance(L, 3);
+    if (!a || !b) return luaL_error(L, "Arguments 2 and 3 to setMin must be hkVector4f");
+
+    instance->setMin(*a, *b);
+    return 0;
+}
+
+int hkVector4fBinding::setMax(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    hkVector4f* b = getInstance(L, 3);
+    if (!a || !b) return luaL_error(L, "Arguments 2 and 3 to setMax must be hkVector4f");
+
+    instance->setMax(*a, *b);
+    return 0;
+}
+
+int hkVector4fBinding::setClamped(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    hkVector4f* minVal = getInstance(L, 3);
+    hkVector4f* maxVal = getInstance(L, 4);
+    if (!a || !minVal || !maxVal) return luaL_error(L, "Arguments 2, 3, and 4 to setClamped must be hkVector4f");
+
+    instance->setClamped(*a, *minVal, *maxVal);
+    return 0;
+}
+
+int hkVector4fBinding::setClampedZeroOne(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    if (!a) return luaL_error(L, "Argument 2 to setClampedZeroOne must be hkVector4f");
+
+    instance->setClampedZeroOne(*a);
+    return 0;
+}
+
+int hkVector4fBinding::setReciprocal(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    if (!a) return luaL_error(L, "Argument 2 to setReciprocal must be hkVector4f");
+
+    instance->setReciprocal(*a);
+    return 0;
+}
+
+int hkVector4fBinding::setSqrt(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    if (!a) return luaL_error(L, "Argument 2 to setSqrt must be hkVector4f");
+
+    instance->setSqrt(*a);
+    return 0;
+}
+
+int hkVector4fBinding::setSqrtInverse(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    if (!a) return luaL_error(L, "Argument 2 to setSqrtInverse must be hkVector4f");
+
+    instance->setSqrtInverse(*a);
+    return 0;
+}
+
+int hkVector4fBinding::setSelect(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4fComparison* comp = checkObject<hkVector4fComparison>(L, 2, hkVector4fComparisonBinding::getMetatableName());
+    hkVector4f* trueVal = getInstance(L, 3);
+    hkVector4f* falseVal = getInstance(L, 4);
+    if (!comp || !trueVal || !falseVal) return luaL_error(L, "Arguments must be (hkVector4fComparison, hkVector4f, hkVector4f)");
+
+    instance->setSelect(*comp, *trueVal, *falseVal);
+    return 0;
+}
+
+int hkVector4fBinding::zeroIfFalse(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4fComparison* comp = checkObject<hkVector4fComparison>(L, 2, hkVector4fComparisonBinding::getMetatableName());
+    if (!comp) return luaL_error(L, "Argument 2 must be hkVector4fComparison");
+
+    instance->zeroIfFalse(*comp);
+    return 0;
+}
+
+int hkVector4fBinding::zeroIfTrue(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4fComparison* comp = checkObject<hkVector4fComparison>(L, 2, hkVector4fComparisonBinding::getMetatableName());
+    if (!comp) return luaL_error(L, "Argument 2 must be hkVector4fComparison");
+
+    instance->zeroIfTrue(*comp);
+    return 0;
+}
+
+int hkVector4fBinding::less(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    if (!a) return luaL_error(L, "Argument 2 must be hkVector4f");
+
+    hkVector4fComparison res = instance->less(*a);
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::lessEqual(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    if (!a) return luaL_error(L, "Argument 2 must be hkVector4f");
+
+    hkVector4fComparison res = instance->lessEqual(*a);
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::greater(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    if (!a) return luaL_error(L, "Argument 2 must be hkVector4f");
+
+    hkVector4fComparison res = instance->greater(*a);
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::greaterEqual(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    if (!a) return luaL_error(L, "Argument 2 must be hkVector4f");
+
+    hkVector4fComparison res = instance->greaterEqual(*a);
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::equal(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    if (!a) return luaL_error(L, "Argument 2 must be hkVector4f");
+
+    hkVector4fComparison res = instance->equal(*a);
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::notEqual(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* a = getInstance(L, 2);
+    if (!a) return luaL_error(L, "Argument 2 must be hkVector4f");
+
+    hkVector4fComparison res = instance->notEqual(*a);
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::lessZero(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4fComparison res = instance->lessZero();
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::lessEqualZero(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4fComparison res = instance->lessEqualZero();
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::greaterZero(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4fComparison res = instance->greaterZero();
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::greaterEqualZero(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4fComparison res = instance->greaterEqualZero();
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::equalZero(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4fComparison res = instance->equalZero();
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::notEqualZero(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4fComparison res = instance->notEqualZero();
+    return pushValue<hkVector4fComparison>(L, res, hkVector4fComparisonBinding::getMetatableName());
+}
+
+int hkVector4fBinding::isOk3(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    lua_pushboolean(L, instance->isOk3() ? 1 : 0);
+    return 1;
+}
+
+int hkVector4fBinding::isOk4(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    lua_pushboolean(L, instance->isOk4() ? 1 : 0);
+    return 1;
+}
+
+int hkVector4fBinding::create(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    float a = (float)luaL_optnumber(L, idx, 0.0);
+    float b = (float)luaL_optnumber(L, idx + 1, 0.0);
+    float c = (float)luaL_optnumber(L, idx + 2, 0.0);
+    float d = (float)luaL_optnumber(L, idx + 3, 0.0);
+    hkVector4f v(a, b, c, d);
+    return pushValue<hkVector4f>(L, v, hkVector4fBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
   line 153: void*operator new(...) - static method
   line 155: void operator delete(...) - static method
   line 171: void operator=(...) - operator
-  line 173: void set(...) - unsupported arg type
-  line 175: void setAll(...) - unsupported arg type
-  line 180: void mul(...) - unsupported arg type
-  line 183: void setAdd(...) - unsupported arg type
-  line 185: void setSub(...) - unsupported arg type
-  line 187: void setMul(...) - unsupported arg type
-  line 188: void setMul(...) - unsupported arg type
-  line 191: void setReciprocal(...) - unsupported arg type
-  line 192: void setSqrt(...) - unsupported arg type
-  line 193: void setSqrtInverse(...) - unsupported arg type
-  line 194: void addMul(...) - unsupported arg type
-  line 195: void addMul(...) - unsupported arg type
-  line 197: void setAddMul(...) - unsupported arg type
-  line 199: void subMul(...) - unsupported arg type
-  line 200: void subMul(...) - unsupported arg type
-  line 202: void setSubMul(...) - unsupported arg type
   line 205: void setInterpolate(...) - unsupported arg type
-  line 206: const hkVector4fComparison less(...) - unsupported return type
-  line 207: const hkVector4fComparison lessEqual(...) - unsupported return type
-  line 208: const hkVector4fComparison greater(...) - unsupported return type
-  line 209: const hkVector4fComparison greaterEqual(...) - unsupported return type
-  line 210: const hkVector4fComparison equal(...) - unsupported return type
-  line 211: const hkVector4fComparison notEqual(...) - unsupported return type
-  line 212: const hkVector4fComparison lessZero(...) - unsupported return type
-  line 213: const hkVector4fComparison lessEqualZero(...) - unsupported return type
-  line 214: const hkVector4fComparison greaterZero(...) - unsupported return type
-  line 215: const hkVector4fComparison greaterEqualZero(...) - unsupported return type
-  line 216: const hkVector4fComparison equalZero(...) - unsupported return type
-  line 217: const hkVector4fComparison notEqualZero(...) - unsupported return type
-  line 220: void setSelect(...) - unsupported arg type
-  line 221: void zeroIfFalse(...) - unsupported arg type
-  line 222: void zeroIfTrue(...) - unsupported arg type
   line 223: void setFlipSign(...) - overloaded method
   line 224: void setFlipSign(...) - overloaded method
   line 225: void setFlipSign(...) - overloaded method
-  line 226: void setAbs(...) - unsupported arg type
-  line 227: void setMin(...) - unsupported arg type
-  line 228: void setMax(...) - unsupported arg type
-  line 230: void setClamped(...) - unsupported arg type
-  line 231: void setClampedZeroOne(...) - unsupported arg type
   line 232: void setClampedToMaxLength(...) - unsupported arg type
   line 233: void setRotatedDir(...) - overloaded method
   line 234: void setRotatedDir(...) - overloaded method
@@ -370,28 +642,19 @@ Skipped methods needing manual binding:
   line 254: const hkSimdFloat32 dot4xyz1(...) - unsupported return type
   line 255: const hkSimdFloat32 distanceTo(...) - unsupported return type
   line 256: const hkSimdFloat32 distanceToSquared(...) - unsupported return type
-  line 257: void setXYZ_W(...) - unsupported arg type
-  line 259: void setW(...) - unsupported arg type
-  line 262: void setXYZ(...) - overloaded method
-  line 263: void setXYZ(...) - overloaded method
-  line 264: void setXYZ_0(...) - unsupported arg type
   line 271: const float& operator(...) - operator
   line 272: float& operator(...) - operator
   line 273: const hkSimdFloat32 getComponent(...) - unsupported return type
   line 274: const hkSimdFloat32 getW(...) - unsupported return type
   line 277: void setComponent(...) - unsupported arg type
-  line 281: const hkVector4f& getZero(...) - static method
   line 282: const hkVector4f& getConstant(...) - unsupported return type
   line 293: hkSimdFloat32 dot3(...) - unsupported return type
   line 318: void setNeg3(...) - unsupported arg type
   line 328: hkSimdFloat32 normalizeWithLength3(...) - unsupported return type
   line 335: hkSimdFloat32 length3(...) - unsupported return type
   line 337: hkSimdFloat32 lengthSquared3(...) - unsupported return type
-  line 354: unsigned int equals3(...) - unsupported arg type
   line 365: hkSimdFloat32 distanceTo3(...) - unsupported return type
   line 366: hkSimdFloat32 distanceToSquared3(...) - unsupported return type
-  line 373: hkBool isOk3(...) - unsupported return type
-  line 374: hkBool isOk4(...) - unsupported return type
 */
 
 /*
@@ -407,7 +670,16 @@ int hkVector4fBinding::gc(lua_State* L)
 
 int hkVector4fBinding::tostring(lua_State* L)
 {
-    lua_pushstring(L, "KenshiLua.hkVector4f object");
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) {
+        lua_pushstring(L, "hkVector4f(nil)");
+        return 1;
+    }
+    float components[4];
+    _mm_storeu_ps(components, instance->m_quad);
+    char buf[128];
+    sprintf_s(buf, "hkVector4f(%.3f, %.3f, %.3f, %.3f)", components[0], components[1], components[2], components[3]);
+    lua_pushstring(L, buf);
     return 1;
 }
 
@@ -447,6 +719,33 @@ void hkVector4fBinding::registerBinding(lua_State* L)
         { "setW", hkVector4fBinding::setW },
         { "setXYZ", hkVector4fBinding::setXYZ },
         { "setXYZ_0", hkVector4fBinding::setXYZ_0 },
+        { "equals3", hkVector4fBinding::equals3 },
+        { "setAbs", hkVector4fBinding::setAbs },
+        { "setMin", hkVector4fBinding::setMin },
+        { "setMax", hkVector4fBinding::setMax },
+        { "setClamped", hkVector4fBinding::setClamped },
+        { "setClampedZeroOne", hkVector4fBinding::setClampedZeroOne },
+        { "setReciprocal", hkVector4fBinding::setReciprocal },
+        { "setSqrt", hkVector4fBinding::setSqrt },
+        { "setSqrtInverse", hkVector4fBinding::setSqrtInverse },
+        { "setSelect", hkVector4fBinding::setSelect },
+        { "zeroIfFalse", hkVector4fBinding::zeroIfFalse },
+        { "zeroIfTrue", hkVector4fBinding::zeroIfTrue },
+        { "less", hkVector4fBinding::less },
+        { "lessEqual", hkVector4fBinding::lessEqual },
+        { "greater", hkVector4fBinding::greater },
+        { "greaterEqual", hkVector4fBinding::greaterEqual },
+        { "equal", hkVector4fBinding::equal },
+        { "notEqual", hkVector4fBinding::notEqual },
+        { "lessZero", hkVector4fBinding::lessZero },
+        { "lessEqualZero", hkVector4fBinding::lessEqualZero },
+        { "greaterZero", hkVector4fBinding::greaterZero },
+        { "greaterEqualZero", hkVector4fBinding::greaterEqualZero },
+        { "equalZero", hkVector4fBinding::equalZero },
+        { "notEqualZero", hkVector4fBinding::notEqualZero },
+        { "isOk3", hkVector4fBinding::isOk3 },
+        { "isOk4", hkVector4fBinding::isOk4 },
+        { "create", hkVector4fBinding::create },
         { 0, 0 }
     };
 
@@ -471,6 +770,7 @@ void hkVector4fBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     pushGlobalTable(L, "hkVector4f");
     registerStaticMethod(L, "getZero", hkVector4fBinding::getZero);
+    registerStaticMethod(L, "create", hkVector4fBinding::create);
     lua_setglobal(L, "hkVector4f");
 }
 

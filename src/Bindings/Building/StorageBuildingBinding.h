@@ -46,5 +46,14 @@ public:
     static int limitedByType(lua_State* L);
     static int updateInventoryWindow(lua_State* L);
     static int _NV_updateInventoryWindow(lua_State* L);
+    static int getItemsWeWantRidOf(lua_State* L);
+    static int _NV_getItemsWeWantRidOf(lua_State* L);
+    static int canHaveSomeOfThese(lua_State* L);
+    static int _NV_canHaveSomeOfThese(lua_State* L);
+    static int getResourcesNeededBecauseEmpty(lua_State* L);
+    static int _NV_getResourcesNeededBecauseEmpty(lua_State* L);
+    static int getResourcesNeededBecauseNotFull(lua_State* L);
+    static int _NV_getResourcesNeededBecauseNotFull(lua_State* L);
+    static int getConsumtionItems_inStock(lua_State* L);
 };
 }

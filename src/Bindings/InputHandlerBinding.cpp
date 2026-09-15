@@ -927,7 +927,6 @@ int InputHandlerBinding::keyString(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 68: void addKey(...) - non-string reference arg
-  line 82: const std::string& getBoundCommand(...) - reference return type
 */
 
 /*

@@ -336,9 +336,18 @@ int TerrainBinding::getBoundingRadius(lua_State* L)
     return 1;
 }
 
+int TerrainBinding::getMovableType(lua_State* L)
+{
+    Terrain* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Terrain is nil");
+
+    const std::string& res = instance->getMovableType();
+    lua_pushlstring(L, res.data(), res.size());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 21: const std::string& getMovableType(...) - reference return type
   line 22: const Ogre::AxisAlignedBox& getBoundingBox(...) - reference return type
   line 24: void _updateRenderQueue(...) - unsupported arg type
   line 25: void visitRenderables(...) - unsupported arg type
@@ -388,6 +397,7 @@ void TerrainBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "getBoundingRadius", TerrainBinding::getBoundingRadius },
+        { "getMovableType", TerrainBinding::getMovableType },
         { 0, 0 }
     };
 

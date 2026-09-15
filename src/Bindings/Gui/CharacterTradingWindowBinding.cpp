@@ -161,6 +161,7 @@ int CharacterTradingWindowBinding::updateSelected(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
+  line 28: void updateSelected(...) - non-exported/private in SDK
   line 29: void confirmButton(...) - unsupported arg type
   line 30: void cancelButton(...) - unsupported arg type
   line 31: void notifyMouseWheel(...) - unsupported arg type

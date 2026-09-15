@@ -4,6 +4,7 @@
 #include "Bindings/RotatingEntBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -87,10 +88,16 @@ int PhysicsCollectionBinding::updateAimingType(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 187: void handleChanged(...) - non-string reference arg
-*/
+int PhysicsCollectionBinding::handleChanged(lua_State* L)
+{
+    PhysicsCollection* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PhysicsCollection is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to handleChanged must be hand");
+    instance->handleChanged(*h);
+    return 0;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -131,6 +138,7 @@ void PhysicsCollectionBinding::registerBinding(lua_State* L)
         { "getWindMillPart", PhysicsCollectionBinding::getWindMillPart },
         { "isLoaded", PhysicsCollectionBinding::isLoaded },
         { "setVisible", PhysicsCollectionBinding::setVisible },
+        { "handleChanged", PhysicsCollectionBinding::handleChanged },
         { "update", PhysicsCollectionBinding::update },
         { "updateAimingType", PhysicsCollectionBinding::updateAimingType },
         { 0, 0 }

@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "kenshi\gui\MainBarGUI.h"
 #include "MainBarGUIBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -1034,10 +1034,8 @@ LIGHTUSERDATA DEPENDENCIES:
 
 /*
 Skipped properties needing manual binding:
-  line 120: datapanels (boost::unordered::unordered_map<std::string, DatapanelGUI*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, DatapanelGUI*>, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 137: extendedInfoPanelShow (MyGUI::types::TPoint<int>) - unsupported type
   line 138: extendedInfoPanelHide (MyGUI::types::TPoint<int>) - unsupported type
-  line 152: portraits (ogre_unordered_map<hand, PortraitData*>::type) - unsupported type
   line 153: portraitsIndices (boost::unordered::unordered_map<PortraitData*, std::pair<PortraitMainItemBox*, unsigned char>, boost::hash<PortraitData*>, std::equal_to<PortraitData*>, Ogre::STLAllocator<std::pair<PortraitData*const, std::pair<PortraitMainItemBox*, unsigned char> >, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 156: toolTipBasePosition (MyGUI::types::TPoint<int>) - unsupported type
   line 159: buildingInventoryPosition (MyGUI::types::TPoint<int>) - unsupported type

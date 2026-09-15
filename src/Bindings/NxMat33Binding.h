@@ -27,5 +27,13 @@ public:
     static int isFinite(lua_State* L);
     static int zero(lua_State* L);
     static int id(lua_State* L);
+    static int setColumn(lua_State* L);
+    static int getRow(lua_State* L);
+    static int getColumn(lua_State* L);
+    static int multiply(lua_State* L);
+    static int get(lua_State* L);
+    static int set(lua_State* L);
+    static int create(lua_State* L);
+    static int lua_mul(lua_State* L);
 };
 }

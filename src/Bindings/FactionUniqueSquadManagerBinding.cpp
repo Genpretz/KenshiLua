@@ -7,6 +7,8 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/ProsperityManagerBinding.h"
 #include "Bindings/TownBinding.h"
+#include "Bindings/UniqueSpawnDataBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -45,6 +47,13 @@ static int FactionUniqueSquadManager_get_homeTown(lua_State* L)
     return pushObject<Town>(L, instance->homeTown, TownBinding::getMetatableName());
 }
 
+static int FactionUniqueSquadManager_get_squads(lua_State* L)
+{
+    FactionUniqueSquadManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionUniqueSquadManager is nil");
+    return LektorPtrBinding<FactionUniqueSquadManager::UniqueSpawnData*>::push(L, &instance->squads);
+}
+
 // --- Setters for FactionUniqueSquadManager ---
 static int FactionUniqueSquadManager_set_prosperityMgr(lua_State* L)
 {
@@ -75,6 +84,16 @@ static int FactionUniqueSquadManager_set_homeTown(lua_State* L)
     FactionUniqueSquadManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionUniqueSquadManager is nil");
     instance->homeTown = lua_isnoneornil(L, 2) ? nullptr : checkObject<Town>(L, 2, TownBinding::getMetatableName());
+    return 0;
+}
+
+static int FactionUniqueSquadManager_set_squads(lua_State* L)
+{
+    FactionUniqueSquadManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionUniqueSquadManager is nil");
+    lektor<FactionUniqueSquadManager::UniqueSpawnData*>* val = LektorPtrBinding<FactionUniqueSquadManager::UniqueSpawnData*>::get(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set squads must be lektor<UniqueSpawnData*>");
+    instance->squads = *val;
     return 0;
 }
 
@@ -158,8 +177,7 @@ int FactionUniqueSquadManagerBinding::getExistingSquadsFor(lua_State* L)
 
     GameData* squad = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     FactionUniqueSquadManager::UniqueSpawnData* result = instance->getExistingSquadsFor(squad);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<FactionUniqueSquadManager::UniqueSpawnData>(L, result, UniqueSpawnDataBinding::getMetatableName());
 }
 
 int FactionUniqueSquadManagerBinding::spawnNewUniqueSquad(lua_State* L)
@@ -173,14 +191,21 @@ int FactionUniqueSquadManagerBinding::spawnNewUniqueSquad(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 45: void endOfUniqueSquad(...) - unsupported arg type
-*/
+int FactionUniqueSquadManagerBinding::endOfUniqueSquad(lua_State* L)
+{
+    FactionUniqueSquadManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionUniqueSquadManager is nil");
+
+    UniquePlatoon* who = (UniquePlatoon*)lua_touserdata(L, 2);
+    if (!who && !lua_isnil(L, 2)) return luaL_error(L, "Argument 2 to endOfUniqueSquad must be UniquePlatoon lightuserdata");
+    instance->endOfUniqueSquad(who);
+    return 0;
+}
 
 /*
-Skipped properties needing manual binding:
-  line 66: squads (lektor<FactionUniqueSquadManager::UniqueSpawnData*>) - unsupported type
+LIGHTUSERDATA DEPENDENCIES:
+  - FactionUniqueSquadManagerBinding::spawnNewUniqueSquad: UniquePlatoon* (unbound pointer)
+  - FactionUniqueSquadManagerBinding::endOfUniqueSquad: UniquePlatoon* (unbound pointer)
 */
 
 int FactionUniqueSquadManagerBinding::gc(lua_State* L)
@@ -213,6 +238,7 @@ void FactionUniqueSquadManagerBinding::registerBinding(lua_State* L)
         { "getGUIData", FactionUniqueSquadManagerBinding::getGUIData },
         { "getExistingSquadsFor", FactionUniqueSquadManagerBinding::getExistingSquadsFor },
         { "spawnNewUniqueSquad", FactionUniqueSquadManagerBinding::spawnNewUniqueSquad },
+        { "endOfUniqueSquad", FactionUniqueSquadManagerBinding::endOfUniqueSquad },
         { 0, 0 }
     };
 
@@ -231,6 +257,7 @@ void FactionUniqueSquadManagerBinding::registerBinding(lua_State* L)
     registerGetter(L, "me", FactionUniqueSquadManager_get_me);
     registerGetter(L, "squadListData", FactionUniqueSquadManager_get_squadListData);
     registerGetter(L, "homeTown", FactionUniqueSquadManager_get_homeTown);
+    registerGetter(L, "squads", FactionUniqueSquadManager_get_squads);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -238,9 +265,12 @@ void FactionUniqueSquadManagerBinding::registerBinding(lua_State* L)
     registerSetter(L, "me", FactionUniqueSquadManager_set_me);
     registerSetter(L, "squadListData", FactionUniqueSquadManager_set_squadListData);
     registerSetter(L, "homeTown", FactionUniqueSquadManager_set_homeTown);
+    registerSetter(L, "squads", FactionUniqueSquadManager_set_squads);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorPtrBinding<FactionUniqueSquadManager::UniqueSpawnData*>::registerBinding(L, "lektor<FactionUniqueSquadManager::UniqueSpawnData*>", UniqueSpawnDataBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

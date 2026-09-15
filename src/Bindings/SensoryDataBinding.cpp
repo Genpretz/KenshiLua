@@ -704,14 +704,6 @@ int SensoryDataBinding::buildingSpotterUpdate(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 126: void notifyCriminalThreat(...) - non-string reference arg
-  line 131: StateBroadcastData* getStateBroadcastOf(...) - non-string reference arg
-  line 139: bool _shareSensesCheck(...) - unsupported arg type
-  line 193: void setupMyProgressBar(...) - non-string reference arg
-  line 201: void reassessAll(...) - unsupported arg type
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:

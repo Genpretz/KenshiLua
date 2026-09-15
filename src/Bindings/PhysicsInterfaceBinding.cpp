@@ -6,6 +6,7 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/Building/PreviewBuildingBinding.h"
 #include "Bindings/RootObjectBinding.h"
+#include "Bindings/PhysicsActualBinding.h"
 
 namespace KenshiLua
 {
@@ -60,8 +61,7 @@ int PhysicsInterfaceBinding::getBackthread(lua_State* L)
     if (!instance) return luaL_error(L, "PhysicsInterface is nil");
 
     PhysicsActual* result = instance->getBackthread();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<PhysicsActual>(L, result, PhysicsActualBinding::getMetatableName());
 }
 
 int PhysicsInterfaceBinding::updateUT(lua_State* L)
@@ -192,7 +192,7 @@ Skipped methods needing manual binding:
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - PhysicsInterface_get_nWorld: NxScene* (unbound pointer)
-  - PhysicsInterfaceBinding::getBackthread: PhysicsActual* (unbound pointer)
+  - PhysicsInterface_get_queuesClearMuto: boost::mutex* (unbound pointer)
   - PhysicsInterfaceBinding::createTriggerHull: PhysicsHullT* (unbound pointer)
   - PhysicsInterfaceBinding::createStaticCapsule: SimplePhysXEntity* (unbound pointer)
   - PhysicsInterfaceBinding::loadScytheFileMT: ScythePhysicsT* (unbound pointer)

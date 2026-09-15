@@ -26,5 +26,6 @@ public:
     static int cancel(lua_State* L);
     static int createMe(lua_State* L);
     static int _NV_createMe(lua_State* L);
+    static int getCommand(lua_State* L);
 };
 }

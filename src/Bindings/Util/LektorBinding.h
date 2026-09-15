@@ -86,6 +86,11 @@ namespace KenshiLua
             return checkObject<lektor<T>>(L, idx, metaName);
         }
 
+        static int push(lua_State* L, lektor<T>* lek)
+        {
+            return pushObject<lektor<T>>(L, lek, metaName);
+        }
+
         static int gc(lua_State* L) { return noopGc(L); }
 
         static int len(lua_State* L)

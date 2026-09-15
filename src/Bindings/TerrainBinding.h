@@ -19,5 +19,6 @@ public:
     static int tostring(lua_State* L);
 
     static int getBoundingRadius(lua_State* L);
+    static int getMovableType(lua_State* L);
 };
 }

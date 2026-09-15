@@ -72,5 +72,14 @@ public:
     static int refreshSection(lua_State* L);
     static int getSection(lua_State* L);
     static int makeIconForItem(lua_State* L);
+    static int getWindowCoord(lua_State* L);
+    static int autoChangeSelectedObject(lua_State* L);
+    static int _NV_autoChangeSelectedObject(lua_State* L);
+    static int placeItemFromMouse(lua_State* L);
+    static int autoArrangeButton(lua_State* L);
+    static int openBackpackButton(lua_State* L);
+    static int openLimbsInterface(lua_State* L);
+    static int windowButtonPressed(lua_State* L);
+    static int fencingConfirmation(lua_State* L);
 };
 }

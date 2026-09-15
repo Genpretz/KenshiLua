@@ -3,6 +3,12 @@
 #include "FurnaceBuildingBinding.h"
 #include "ProductionBuildingBinding.h"
 #include "Bindings/Gui/InventoryLayoutBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Gui/DataPanelLineBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/GameDataBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -162,23 +168,144 @@ int FurnaceBuildingBinding::_NV_limitInputsOutputRate(lua_State* L)
     return 2;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 29: void getGUIData(...) - unsupported arg type
-  line 30: void _NV_getGUIData(...) - unsupported arg type
-  line 32: float getInputValue(...) - unsupported arg type
-  line 33: float _NV_getInputValue(...) - unsupported arg type
-  line 36: void getResourcesNeededBecauseNotFull(...) - unsupported arg type
-  line 37: void _NV_getResourcesNeededBecauseNotFull(...) - unsupported arg type
-  line 38: void getResourcesNeededBecauseEmpty(...) - unsupported arg type
-  line 39: void _NV_getResourcesNeededBecauseEmpty(...) - unsupported arg type
-  line 40: bool canHaveSomeOfThese(...) - unsupported arg type
-  line 41: bool _NV_canHaveSomeOfThese(...) - unsupported arg type
-  line 42: void incinerate(...) - unsupported arg type
-  line 48: void operate(...) - unsupported arg type
-  line 49: void _NV_operate(...) - unsupported arg type
-  line 56: float getIronAmountInItem(...) - unsupported arg type
-*/
+int FurnaceBuildingBinding::getGUIData(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIData(datapanel, category);
+    return 0;
+}
+
+int FurnaceBuildingBinding::_NV_getGUIData(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIData(datapanel, category);
+    return 0;
+}
+
+int FurnaceBuildingBinding::getInputValue(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    float result = instance->getInputValue(item);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int FurnaceBuildingBinding::_NV_getInputValue(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    float result = instance->_NV_getInputValue(item);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int FurnaceBuildingBinding::getResourcesNeededBecauseNotFull(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseNotFull must be lektor<GameData*>");
+    instance->getResourcesNeededBecauseNotFull(*out);
+    return 0;
+}
+
+int FurnaceBuildingBinding::_NV_getResourcesNeededBecauseNotFull(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseNotFull must be lektor<GameData*>");
+    instance->_NV_getResourcesNeededBecauseNotFull(*out);
+    return 0;
+}
+
+int FurnaceBuildingBinding::getResourcesNeededBecauseEmpty(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseEmpty must be lektor<GameData*>");
+    instance->getResourcesNeededBecauseEmpty(*out);
+    return 0;
+}
+
+int FurnaceBuildingBinding::_NV_getResourcesNeededBecauseEmpty(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseEmpty must be lektor<GameData*>");
+    instance->_NV_getResourcesNeededBecauseEmpty(*out);
+    return 0;
+}
+
+int FurnaceBuildingBinding::canHaveSomeOfThese(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    GameData* input = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->canHaveSomeOfThese(input);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int FurnaceBuildingBinding::_NV_canHaveSomeOfThese(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    GameData* input = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->_NV_canHaveSomeOfThese(input);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int FurnaceBuildingBinding::incinerate(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->incinerate(line);
+    return 0;
+}
+
+int FurnaceBuildingBinding::operate(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    Character* stats = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->operate(stats, amount);
+    return 0;
+}
+
+int FurnaceBuildingBinding::_NV_operate(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    Character* stats = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->_NV_operate(stats, amount);
+    return 0;
+}
+
+int FurnaceBuildingBinding::getIronAmountInItem(lua_State* L)
+{
+    FurnaceBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
+    GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    float result = instance->getIronAmountInItem(data);
+    lua_pushnumber(L, result);
+    return 1;
+}
 
 int FurnaceBuildingBinding::gc(lua_State* L)
 {
@@ -214,6 +341,20 @@ void FurnaceBuildingBinding::registerBinding(lua_State* L)
         { "_NV_updateOutput", FurnaceBuildingBinding::_NV_updateOutput },
         { "limitInputsOutputRate", FurnaceBuildingBinding::limitInputsOutputRate },
         { "_NV_limitInputsOutputRate", FurnaceBuildingBinding::_NV_limitInputsOutputRate },
+        { "getGUIData", FurnaceBuildingBinding::getGUIData },
+        { "_NV_getGUIData", FurnaceBuildingBinding::_NV_getGUIData },
+        { "getInputValue", FurnaceBuildingBinding::getInputValue },
+        { "_NV_getInputValue", FurnaceBuildingBinding::_NV_getInputValue },
+        { "getResourcesNeededBecauseNotFull", FurnaceBuildingBinding::getResourcesNeededBecauseNotFull },
+        { "_NV_getResourcesNeededBecauseNotFull", FurnaceBuildingBinding::_NV_getResourcesNeededBecauseNotFull },
+        { "getResourcesNeededBecauseEmpty", FurnaceBuildingBinding::getResourcesNeededBecauseEmpty },
+        { "_NV_getResourcesNeededBecauseEmpty", FurnaceBuildingBinding::_NV_getResourcesNeededBecauseEmpty },
+        { "canHaveSomeOfThese", FurnaceBuildingBinding::canHaveSomeOfThese },
+        { "_NV_canHaveSomeOfThese", FurnaceBuildingBinding::_NV_canHaveSomeOfThese },
+        { "incinerate", FurnaceBuildingBinding::incinerate },
+        { "operate", FurnaceBuildingBinding::operate },
+        { "_NV_operate", FurnaceBuildingBinding::_NV_operate },
+        { "getIronAmountInItem", FurnaceBuildingBinding::getIronAmountInItem },
         { 0, 0 }
     };
 

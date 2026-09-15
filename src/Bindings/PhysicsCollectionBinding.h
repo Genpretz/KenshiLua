@@ -23,6 +23,7 @@ public:
     static int getWindMillPart(lua_State* L);
     static int isLoaded(lua_State* L);
     static int setVisible(lua_State* L);
+    static int handleChanged(lua_State* L);
     static int update(lua_State* L);
     static int updateAimingType(lua_State* L);
 };

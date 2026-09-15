@@ -18,10 +18,14 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int setTracking(lua_State* L);
+    static int _NV_setTracking(lua_State* L);
     static int setCaption(lua_State* L);
     static int _NV_setCaption(lua_State* L);
     static int setRisingSpeed(lua_State* L);
     static int _NV_setRisingSpeed(lua_State* L);
+    static int setColor(lua_State* L);
+    static int _NV_setColor(lua_State* L);
     static int setPosition(lua_State* L);
     static int _NV_setPosition(lua_State* L);
     static int update(lua_State* L);

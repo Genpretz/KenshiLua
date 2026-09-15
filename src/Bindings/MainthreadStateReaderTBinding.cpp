@@ -53,6 +53,18 @@ int MainthreadStateReaderTBinding::getBackData(lua_State* L)
     return 0;
 }
 
+/*
+Skipped methods needing manual binding:
+  line 26: void _NV_updateBackDataCheck() - stub implementation
+  line 28: MainData* getMainData() - unhandled template data type
+  line 29: BackData* getBackData() - unhandled template data type
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 22: swapMutex (Ogre::Mutex) - unsupported type
+*/
+
 void MainthreadStateReaderTBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {

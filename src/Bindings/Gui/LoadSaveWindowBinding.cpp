@@ -4,6 +4,8 @@
 #include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "SaveInfoBinding.h"
 
 namespace KenshiLua
 {
@@ -22,6 +24,13 @@ static int LoadSaveWindow_get_list(lua_State* L)
     return 1;
 }
 
+static int LoadSaveWindow_get_games(lua_State* L)
+{
+    LoadSaveWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
+    return pushObject<lektor<SaveInfo>>(L, &instance->games, LektorValueBinding<SaveInfo>::metaName);
+}
+
 static int LoadSaveWindow_get_infoPanel(lua_State* L)
 {
     LoadSaveWindow* instance = getInstance(L, 1);
@@ -30,6 +39,16 @@ static int LoadSaveWindow_get_infoPanel(lua_State* L)
 }
 
 // --- Setters for LoadSaveWindow ---
+static int LoadSaveWindow_set_games(lua_State* L)
+{
+    LoadSaveWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
+    lektor<SaveInfo>* val = LektorValueBinding<SaveInfo>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<SaveInfo>");
+    instance->games = *val;
+    return 0;
+}
+
 static int LoadSaveWindow_set_infoPanel(lua_State* L)
 {
     LoadSaveWindow* instance = getInstance(L, 1);
@@ -131,7 +150,6 @@ LIGHTUSERDATA DEPENDENCIES:
 
 /*
 Skipped properties needing manual binding:
-  line 30: games (lektor<SaveInfo>) - unsupported type
   line 32: options (lektor<MyGUI::Button*>) - unsupported type
   line 36: savesTimesStr (std::map<MyGUI::UString, int, std::less<MyGUI::UString>, Ogre::STLAllocator<std::pair<MyGUI::UString const, int>, Ogre::GeneralAllocPolicy > >) - unsupported type
 */
@@ -179,10 +197,12 @@ void LoadSaveWindowBinding::registerBinding(lua_State* L)
     luaL_getmetatable(L, LoadSaveWindowBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
     registerGetter(L, "list", LoadSaveWindow_get_list);
+    registerGetter(L, "games", LoadSaveWindow_get_games);
     registerGetter(L, "infoPanel", LoadSaveWindow_get_infoPanel);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "games", LoadSaveWindow_set_games);
     registerSetter(L, "infoPanel", LoadSaveWindow_set_infoPanel);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 

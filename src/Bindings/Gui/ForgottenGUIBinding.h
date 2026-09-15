@@ -81,6 +81,7 @@ public:
     static int showInventoryNPC(lua_State* L);
     static int closeInventory(lua_State* L);
     static int getInventoryWindow(lua_State* L);
+    static int toggleInventory(lua_State* L);
     static int hasInventoryWindowOpen(lua_State* L);
     static int toggleInventoryWindowPermanent(lua_State* L);
     static int getSelectedObject(lua_State* L);
@@ -90,5 +91,12 @@ public:
     static int destroy(lua_State* L);
     static int changeMouseCursor(lua_State* L);
     static int createInventoryWindow(lua_State* L);
+    static int widgetHasMouse(lua_State* L);
+    static int destroyWidget(lua_State* L);
+    static int getDataLineColor(lua_State* L);
+    static int addScreenLabel(lua_State* L);
+    static int keepWindownOnScreen(lua_State* L);
+    static int setInventoryPosition(lua_State* L);
+    static int inventoriesSelectedObjectUpdate(lua_State* L);
 };
 }

@@ -120,6 +120,14 @@ int PortraitDataBinding::getCharacter(lua_State* L)
     return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
 }
 
+int PortraitDataBinding::getHandle(lua_State* L)
+{
+    PortraitData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PortraitData is nil");
+
+    return HandBinding::push(L, instance->getHandle());
+}
+
 int PortraitDataBinding::update(lua_State* L)
 {
     PortraitData* instance = getInstance(L, 1);
@@ -189,10 +197,6 @@ int PortraitDataBinding::getFrontOverlayImageName(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 30: const hand& getHandle(...) - reference return type
-*/
 
 int PortraitDataBinding::gc(lua_State* L)
 {
@@ -216,6 +220,7 @@ void PortraitDataBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "getCharacter", PortraitDataBinding::getCharacter },
+        { "getHandle", PortraitDataBinding::getHandle },
         { "update", PortraitDataBinding::update },
         { "forceUpdate", PortraitDataBinding::forceUpdate },
         { "isSelected", PortraitDataBinding::isSelected },

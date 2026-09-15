@@ -170,10 +170,6 @@ int SeenSomeoneBinding::getFaction(lua_State* L)
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
 }
 
-/*
-Skipped properties needing manual binding:
-  line 51: type (TagsClass<SenseType>) - unsupported type
-*/
 
 int SeenSomeoneBinding::gc(lua_State* L)
 {

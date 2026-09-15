@@ -353,18 +353,97 @@ int StorageBuildingBinding::_NV_updateInventoryWindow(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 59: void getItemsWeWantRidOf(...) - unsupported arg type
-  line 60: void _NV_getItemsWeWantRidOf(...) - unsupported arg type
-  line 66: bool canHaveSomeOfThese(...) - unsupported arg type
-  line 67: bool _NV_canHaveSomeOfThese(...) - unsupported arg type
-  line 68: void getResourcesNeededBecauseEmpty(...) - unsupported arg type
-  line 69: void _NV_getResourcesNeededBecauseEmpty(...) - unsupported arg type
-  line 70: void getResourcesNeededBecauseNotFull(...) - unsupported arg type
-  line 71: void _NV_getResourcesNeededBecauseNotFull(...) - unsupported arg type
-  line 84: void getConsumtionItems_inStock(...) - unsupported arg type
-*/
+int StorageBuildingBinding::getItemsWeWantRidOf(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getItemsWeWantRidOf must be lektor<GameData*>");
+    bool forceLooting = lua_toboolean(L, 3) != 0;
+    instance->getItemsWeWantRidOf(*out, forceLooting);
+    return 0;
+}
+
+int StorageBuildingBinding::_NV_getItemsWeWantRidOf(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getItemsWeWantRidOf must be lektor<GameData*>");
+    bool forceLooting = lua_toboolean(L, 3) != 0;
+    instance->_NV_getItemsWeWantRidOf(*out, forceLooting);
+    return 0;
+}
+
+int StorageBuildingBinding::canHaveSomeOfThese(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    GameData* input = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->canHaveSomeOfThese(input);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int StorageBuildingBinding::_NV_canHaveSomeOfThese(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    GameData* input = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->_NV_canHaveSomeOfThese(input);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int StorageBuildingBinding::getResourcesNeededBecauseEmpty(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseEmpty must be lektor<GameData*>");
+    instance->getResourcesNeededBecauseEmpty(*out);
+    return 0;
+}
+
+int StorageBuildingBinding::_NV_getResourcesNeededBecauseEmpty(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseEmpty must be lektor<GameData*>");
+    instance->_NV_getResourcesNeededBecauseEmpty(*out);
+    return 0;
+}
+
+int StorageBuildingBinding::getResourcesNeededBecauseNotFull(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseNotFull must be lektor<GameData*>");
+    instance->getResourcesNeededBecauseNotFull(*out);
+    return 0;
+}
+
+int StorageBuildingBinding::_NV_getResourcesNeededBecauseNotFull(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseNotFull must be lektor<GameData*>");
+    instance->_NV_getResourcesNeededBecauseNotFull(*out);
+    return 0;
+}
+
+int StorageBuildingBinding::getConsumtionItems_inStock(lua_State* L)
+{
+    StorageBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StorageBuilding is nil");
+    auto* out = LektorPtrBinding<StorageBuilding::ConsumptionItem*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getConsumtionItems_inStock must be lektor<StorageBuilding::ConsumptionItem*>");
+    instance->getConsumtionItems_inStock(*out);
+    return 0;
+}
 
 int StorageBuildingBinding::gc(lua_State* L)
 {
@@ -415,6 +494,15 @@ void StorageBuildingBinding::registerBinding(lua_State* L)
         { "limitedByType", StorageBuildingBinding::limitedByType },
         { "updateInventoryWindow", StorageBuildingBinding::updateInventoryWindow },
         { "_NV_updateInventoryWindow", StorageBuildingBinding::_NV_updateInventoryWindow },
+        { "getItemsWeWantRidOf", StorageBuildingBinding::getItemsWeWantRidOf },
+        { "_NV_getItemsWeWantRidOf", StorageBuildingBinding::_NV_getItemsWeWantRidOf },
+        { "canHaveSomeOfThese", StorageBuildingBinding::canHaveSomeOfThese },
+        { "_NV_canHaveSomeOfThese", StorageBuildingBinding::_NV_canHaveSomeOfThese },
+        { "getResourcesNeededBecauseEmpty", StorageBuildingBinding::getResourcesNeededBecauseEmpty },
+        { "_NV_getResourcesNeededBecauseEmpty", StorageBuildingBinding::_NV_getResourcesNeededBecauseEmpty },
+        { "getResourcesNeededBecauseNotFull", StorageBuildingBinding::getResourcesNeededBecauseNotFull },
+        { "_NV_getResourcesNeededBecauseNotFull", StorageBuildingBinding::_NV_getResourcesNeededBecauseNotFull },
+        { "getConsumtionItems_inStock", StorageBuildingBinding::getConsumtionItems_inStock },
         { 0, 0 }
     };
 

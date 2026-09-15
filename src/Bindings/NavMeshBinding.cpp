@@ -269,6 +269,15 @@ int NavMeshBinding::isInterior(lua_State* L)
     return 1;
 }
 
+int NavMeshBinding::getHandle(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    unsigned int key = (unsigned int)luaL_checkinteger(L, 2);
+    return HandBinding::push(L, instance->getHandle(key));
+}
+
 int NavMeshBinding::getPositionValid(lua_State* L)
 {
     NavMesh* instance = getInstance(L, 1);
@@ -482,7 +491,6 @@ Skipped methods needing manual binding:
   line 84: int getClosestPoint(...) - overloaded method
   line 87: int getGateCode(...) - overloaded method
   line 88: int getGateCode(...) - overloaded method
-  line 90: const hand& getHandle(...) - reference return type
   line 91: unsigned int getFaceKey(...) - overloaded method
   line 92: unsigned int getFaceKey(...) - overloaded method
   line 94: int getClosestBoundary(...) - unsupported arg type
@@ -578,6 +586,7 @@ void NavMeshBinding::registerBinding(lua_State* L)
         { "getClosestExteriorPoint", NavMeshBinding::getClosestExteriorPoint },
         { "setDoorState", NavMeshBinding::setDoorState },
         { "isInterior", NavMeshBinding::isInterior },
+        { "getHandle", NavMeshBinding::getHandle },
         { "getPositionValid", NavMeshBinding::getPositionValid },
         { "processCompletedCharacterMessages", NavMeshBinding::processCompletedCharacterMessages },
         { "processDoorRequests", NavMeshBinding::processDoorRequests },

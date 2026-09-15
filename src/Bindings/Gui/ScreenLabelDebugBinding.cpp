@@ -48,11 +48,15 @@ int ScreenLabelDebugBinding::_NV_update(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 88: const std::string& getCaption(...) - reference return type
-*/
+int ScreenLabelDebugBinding::getCaption(lua_State* L)
+{
+    ScreenLabelDebug* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ScreenLabelDebug is nil");
 
+    const std::string& res = instance->getCaption();
+    lua_pushlstring(L, res.data(), res.size());
+    return 1;
+}
 
 int ScreenLabelDebugBinding::gc(lua_State* L)
 {
@@ -77,6 +81,7 @@ void ScreenLabelDebugBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "update", ScreenLabelDebugBinding::update },
         { "_NV_update", ScreenLabelDebugBinding::_NV_update },
+        { "getCaption", ScreenLabelDebugBinding::getCaption },
         { 0, 0 }
     };
 

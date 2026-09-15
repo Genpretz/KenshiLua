@@ -166,11 +166,28 @@ int AttackSlotManagerBinding::getMaxPossibleAttackSlots(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 104: void freeSlotH(...) - non-string reference arg
-  line 106: bool addToSlotH(...) - non-string reference arg
-*/
+int AttackSlotManagerBinding::freeSlotH(lua_State* L)
+{
+    AttackSlotManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AttackSlotManager is nil");
+
+    hand* who = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!who) return luaL_error(L, "Argument 2 to freeSlotH must be hand");
+    instance->freeSlotH(*who);
+    return 0;
+}
+
+int AttackSlotManagerBinding::addToSlotH(lua_State* L)
+{
+    AttackSlotManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AttackSlotManager is nil");
+
+    hand* who = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!who) return luaL_error(L, "Argument 2 to addToSlotH must be hand");
+    bool result = instance->addToSlotH(*who);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
 
 int AttackSlotManagerBinding::gc(lua_State* L)
 {
@@ -194,7 +211,9 @@ void AttackSlotManagerBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "hasFreeAttackSlot", AttackSlotManagerBinding::hasFreeAttackSlot },
+        { "freeSlotH", AttackSlotManagerBinding::freeSlotH },
         { "freeAllSlotsH", AttackSlotManagerBinding::freeAllSlotsH },
+        { "addToSlotH", AttackSlotManagerBinding::addToSlotH },
         { "periodicUpdate", AttackSlotManagerBinding::periodicUpdate },
         { "update", AttackSlotManagerBinding::update },
         { "getNumAttackSlots", AttackSlotManagerBinding::getNumAttackSlots },

@@ -177,7 +177,6 @@ Skipped methods needing manual binding:
 
 /*
 Skipped properties needing manual binding:
-  line 92: buildingEntities (ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>::type) - unsupported type
   line 93: instancesManagers (boost::unordered::unordered_map<std::string, Ogre::InstanceManager*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::InstanceManager*>, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 94: signs (Ogre::FastArray<std::pair<Building*, Ogre::Entity*> >) - unsupported type
 */

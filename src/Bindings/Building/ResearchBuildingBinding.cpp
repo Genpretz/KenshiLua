@@ -2,6 +2,10 @@
 #include <kenshi/Building/ResearchBuilding.h>
 #include "ResearchBuildingBinding.h"
 #include "Bindings/Gui/InventoryLayoutBinding.h"
+#include "Bindings/Building/UseableStuffBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Building/UseableStuffBinding.h"
 
@@ -129,14 +133,55 @@ int ResearchBuildingBinding::_NV_createInventoryLayout(lua_State* L)
     return pushObject<InventoryLayout>(L, result, InventoryLayoutBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 40: void operate(...) - unsupported arg type
-  line 41: void _NV_operate(...) - unsupported arg type
-  line 44: void getGUIData(...) - unsupported arg type
-  line 45: void _NV_getGUIData(...) - unsupported arg type
-  line 50: void showResearchWindow(...) - unsupported arg type
-*/
+int ResearchBuildingBinding::operate(lua_State* L)
+{
+    ResearchBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuilding is nil");
+    Character* stats = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->operate(stats, amount);
+    return 0;
+}
+
+int ResearchBuildingBinding::_NV_operate(lua_State* L)
+{
+    ResearchBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuilding is nil");
+    Character* stats = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->_NV_operate(stats, amount);
+    return 0;
+}
+
+int ResearchBuildingBinding::getGUIData(lua_State* L)
+{
+    ResearchBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIData(datapanel, category);
+    return 0;
+}
+
+int ResearchBuildingBinding::_NV_getGUIData(lua_State* L)
+{
+    ResearchBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIData(datapanel, category);
+    return 0;
+}
+
+int ResearchBuildingBinding::showResearchWindow(lua_State* L)
+{
+    ResearchBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResearchBuilding is nil");
+    MyGUI::Widget* widget = WidgetBinding::getWidget(L, 2);
+    if (!widget) return luaL_error(L, "Argument 2 to showResearchWindow must be a Widget");
+    instance->showResearchWindow(widget);
+    return 0;
+}
 
 int ResearchBuildingBinding::gc(lua_State* L)
 {
@@ -171,6 +216,11 @@ void ResearchBuildingBinding::registerBinding(lua_State* L)
         { "_NV_getTechLevel", ResearchBuildingBinding::_NV_getTechLevel },
         { "createInventoryLayout", ResearchBuildingBinding::createInventoryLayout },
         { "_NV_createInventoryLayout", ResearchBuildingBinding::_NV_createInventoryLayout },
+        { "operate", ResearchBuildingBinding::operate },
+        { "_NV_operate", ResearchBuildingBinding::_NV_operate },
+        { "getGUIData", ResearchBuildingBinding::getGUIData },
+        { "_NV_getGUIData", ResearchBuildingBinding::_NV_getGUIData },
+        { "showResearchWindow", ResearchBuildingBinding::showResearchWindow },
         { 0, 0 }
     };
 

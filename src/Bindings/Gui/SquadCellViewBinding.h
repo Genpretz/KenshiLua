@@ -19,5 +19,6 @@ public:
     static int tostring(lua_State* L);
 
     static int updateSquadSize(lua_State* L);
+    static int getCellDimension(lua_State* L);
 };
 }

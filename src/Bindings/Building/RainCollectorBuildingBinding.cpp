@@ -2,6 +2,9 @@
 #include <kenshi/Building/RainCollectorBuilding.h>
 #include "RainCollectorBuildingBinding.h"
 #include "ProductionBuildingBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Util/LektorBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -45,13 +48,45 @@ int RainCollectorBuildingBinding::getRainAmount(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 14: void getGUIState(...) - unsupported arg type
-  line 15: void _NV_getGUIState(...) - unsupported arg type
-  line 16: void getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-  line 17: void _NV_getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-*/
+int RainCollectorBuildingBinding::getGUIState(lua_State* L)
+{
+    RainCollectorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIState(datapanel, category);
+    return 0;
+}
+
+int RainCollectorBuildingBinding::_NV_getGUIState(lua_State* L)
+{
+    RainCollectorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIState(datapanel, category);
+    return 0;
+}
+
+int RainCollectorBuildingBinding::getGUIToolTipForGroundResourceEfficiency(lua_State* L)
+{
+    RainCollectorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getGUIToolTipForGroundResourceEfficiency must be lektor<StringPair>");
+    instance->getGUIToolTipForGroundResourceEfficiency(*out);
+    return 0;
+}
+
+int RainCollectorBuildingBinding::_NV_getGUIToolTipForGroundResourceEfficiency(lua_State* L)
+{
+    RainCollectorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getGUIToolTipForGroundResourceEfficiency must be lektor<StringPair>");
+    instance->_NV_getGUIToolTipForGroundResourceEfficiency(*out);
+    return 0;
+}
 
 int RainCollectorBuildingBinding::gc(lua_State* L)
 {
@@ -77,6 +112,10 @@ void RainCollectorBuildingBinding::registerBinding(lua_State* L)
         { "calculateEfficiencyMult", RainCollectorBuildingBinding::calculateEfficiencyMult },
         { "_NV_calculateEfficiencyMult", RainCollectorBuildingBinding::_NV_calculateEfficiencyMult },
         { "getRainAmount", RainCollectorBuildingBinding::getRainAmount },
+        { "getGUIState", RainCollectorBuildingBinding::getGUIState },
+        { "_NV_getGUIState", RainCollectorBuildingBinding::_NV_getGUIState },
+        { "getGUIToolTipForGroundResourceEfficiency", RainCollectorBuildingBinding::getGUIToolTipForGroundResourceEfficiency },
+        { "_NV_getGUIToolTipForGroundResourceEfficiency", RainCollectorBuildingBinding::_NV_getGUIToolTipForGroundResourceEfficiency },
         { 0, 0 }
     };
 

@@ -1111,8 +1111,7 @@ int FactionBinding::getAllActiveSquads(lua_State* L)
     if (!instance) return luaL_error(L, "Faction is nil");
 
     const lektor<Platoon*>* result = instance->getAllActiveSquads();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    pushObject(L, result, LektorPtrBinding<Platoon*>::metaName);
 }
 
 int FactionBinding::getRoadPreference(lua_State* L)
@@ -1304,9 +1303,7 @@ int FactionBinding::getFundamentalNPCType(lua_State* L)
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - Faction_get_warMgr / Faction_set_warMgr: FactionWarMgr* (unbound pointer)
   - Faction_get_isAI / Faction_set_isAI: AIPlayer* (unbound pointer)
-  - Faction_get_characteristicsData / Faction_set_characteristicsData: Faction::CharacteristicsData (unbound struct)
 */
 
 int FactionBinding::gc(lua_State* L)
@@ -1486,6 +1483,8 @@ void FactionBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, FactionBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorPtrBinding<Platoon*>::registerBinding(L, "lektor<Platoon*>", PlatoonBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

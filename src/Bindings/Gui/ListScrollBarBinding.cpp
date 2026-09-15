@@ -83,9 +83,18 @@ int ListScrollBarBinding::shutdownOverride(lua_State* L)
     return 0;
 }
 
+int ListScrollBarBinding::getTypeName(lua_State* L)
+{
+    ListScrollBar* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ListScrollBar is nil");
+
+    const std::string& result = instance->getTypeName();
+    lua_pushlstring(L, result.data(), result.size());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 16: const std::string& getTypeName(...) - reference return type
   line 19: bool isType(...) - unsupported arg type
 */
 
@@ -126,6 +135,7 @@ void ListScrollBarBinding::registerBinding(lua_State* L)
         { "setEnabled", ListScrollBarBinding::setEnabled },
         { "initialiseOverride", ListScrollBarBinding::initialiseOverride },
         { "shutdownOverride", ListScrollBarBinding::shutdownOverride },
+        { "getTypeName", ListScrollBarBinding::getTypeName },
         { 0, 0 }
     };
 

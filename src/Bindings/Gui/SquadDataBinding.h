@@ -19,5 +19,6 @@ public:
     static int tostring(lua_State* L);
 
     static int setName(lua_State* L);
+    static int getName(lua_State* L);
 };
 }

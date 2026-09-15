@@ -782,6 +782,48 @@ int CharacterEditWindowBinding::exportMeshes(lua_State* L)
     return 0;
 }
 
+int CharacterEditWindowBinding::getCurrentHeadName(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+
+    const std::string& result = instance->getCurrentHeadName();
+    lua_pushlstring(L, result.data(), result.size());
+    return 1;
+}
+
+int CharacterEditWindowBinding::getCurrentAttachmentName(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+
+    AttachSlot slot = (AttachSlot)luaL_checkinteger(L, 2);
+    const std::string& result = instance->getCurrentAttachmentName(slot);
+    lua_pushlstring(L, result.data(), result.size());
+    return 1;
+}
+
+int CharacterEditWindowBinding::setCurrentHeadName(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 2);
+    instance->setCurrentHeadName(index);
+    return 0;
+}
+
+int CharacterEditWindowBinding::setCurrentAttachmentName(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+
+    AttachSlot slot = (AttachSlot)luaL_checkinteger(L, 2);
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->setCurrentAttachmentName(slot, index);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 44: void nameChanged(...) - unsupported arg type
@@ -807,10 +849,6 @@ Skipped methods needing manual binding:
   line 72: void updateAppearanceMultiSlider(...) - unsupported arg type
   line 73: void updateAnimationIdle(...) - unsupported arg type
   line 74: void confirmButton(...) - unsupported arg type
-  line 82: const std::string& getCurrentHeadName(...) - reference return type
-  line 83: const std::string& getCurrentAttachmentName(...) - reference return type
-  line 84: void setCurrentHeadName(...) - unsupported arg type
-  line 85: void setCurrentAttachmentName(...) - unsupported arg type
   line 86: Ogre::Entity* getCharacterEntity(...) - unsupported arg type
 */
 
@@ -872,6 +910,10 @@ void CharacterEditWindowBinding::registerBinding(lua_State* L)
         { "updateLiveObject", CharacterEditWindowBinding::updateLiveObject },
         { "refreshCharacterPoses", CharacterEditWindowBinding::refreshCharacterPoses },
         { "exportMeshes", CharacterEditWindowBinding::exportMeshes },
+        { "getCurrentHeadName", CharacterEditWindowBinding::getCurrentHeadName },
+        { "getCurrentAttachmentName", CharacterEditWindowBinding::getCurrentAttachmentName },
+        { "setCurrentHeadName", CharacterEditWindowBinding::setCurrentHeadName },
+        { "setCurrentAttachmentName", CharacterEditWindowBinding::setCurrentAttachmentName },
         { 0, 0 }
     };
 

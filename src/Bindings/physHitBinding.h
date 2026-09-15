@@ -23,5 +23,6 @@ public:
     static int hitObjectUnsafePtr(lua_State* L);
     static int getBuilding(lua_State* L);
     static int group(lua_State* L);
+    static int isValid(lua_State* L);
 };
 }

@@ -21,5 +21,9 @@ public:
     static int calculateEfficiencyMult(lua_State* L);
     static int _NV_calculateEfficiencyMult(lua_State* L);
     static int getRainAmount(lua_State* L);
+    static int getGUIState(lua_State* L);
+    static int _NV_getGUIState(lua_State* L);
+    static int getGUIToolTipForGroundResourceEfficiency(lua_State* L);
+    static int _NV_getGUIToolTipForGroundResourceEfficiency(lua_State* L);
 };
 }

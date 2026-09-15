@@ -264,16 +264,53 @@ int PhysicsActualBinding::uncookMesh(lua_State* L)
     return 1;
 }
 
+int PhysicsActualBinding::_destroy(lua_State* L)
+{
+    PhysicsActual* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PhysicsActual is nil");
+
+    NxActor* actor = (NxActor*)lua_touserdata(L, 2);
+    if (!actor) return luaL_error(L, "NxActor pointer is nil");
+    instance->_destroy(actor);
+    return 0;
+}
+
+int PhysicsActualBinding::setActorCollisionGroup(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    NxActor* actor = (NxActor*)lua_touserdata(L, idx);
+    if (!actor) return luaL_error(L, "NxActor pointer is nil");
+    unsigned short group = (unsigned short)luaL_checkinteger(L, idx + 1);
+    PhysicsActual::setActorCollisionGroup(actor, group);
+    return 0;
+}
+
+int PhysicsActualBinding::getActorCollisionGroup(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    NxActor* actor = (NxActor*)lua_touserdata(L, idx);
+    if (!actor) return luaL_error(L, "NxActor pointer is nil");
+    unsigned short group = PhysicsActual::getActorCollisionGroup(actor);
+    lua_pushinteger(L, (lua_Integer)group);
+    return 1;
+}
+
+int PhysicsActualBinding::setActorMaterial(lua_State* L)
+{
+    int idx = lua_isuserdata(L, 1) ? 2 : 1;
+    NxActor* actor = (NxActor*)lua_touserdata(L, idx);
+    if (!actor) return luaL_error(L, "NxActor pointer is nil");
+    int material = (int)luaL_checkinteger(L, idx + 1);
+    PhysicsActual::setActorMaterial(actor, material);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 231: bool scytheInsert(...) - unsupported arg type
   line 232: void convertXMLToBin(...) - non-string reference arg
   line 233: NxActor* loadPhysXFile(...) - unsupported arg type
   line 234: NxActor* loadPhysXFileAsATrigger(...) - unsupported arg type
-  line 238: void _destroy(...) - unsupported arg type
-  line 239: void setActorCollisionGroup(...) - static method
-  line 240: unsigned short getActorCollisionGroup(...) - static method
-  line 241: void setActorMaterial(...) - static method
   line 242: void scaleCollection(...) - non-string reference arg
 */
 
@@ -322,6 +359,10 @@ void PhysicsActualBinding::registerBinding(lua_State* L)
         { "_createTriggerHull", PhysicsActualBinding::_createTriggerHull },
         { "_createStaticCapsule", PhysicsActualBinding::_createStaticCapsule },
         { "_createStaticBox", PhysicsActualBinding::_createStaticBox },
+        { "_destroy", PhysicsActualBinding::_destroy },
+        { "setActorCollisionGroup", PhysicsActualBinding::setActorCollisionGroup },
+        { "getActorCollisionGroup", PhysicsActualBinding::getActorCollisionGroup },
+        { "setActorMaterial", PhysicsActualBinding::setActorMaterial },
         { "uncookMesh", PhysicsActualBinding::uncookMesh },
         { 0, 0 }
     };
@@ -360,6 +401,13 @@ void PhysicsActualBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, PhysicsActualBinding::getMetatableName(), PhysicsInterfaceBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    pushGlobalTable(L, "PhysicsActual");
+    registerStaticMethod(L, "setActorCollisionGroup", PhysicsActualBinding::setActorCollisionGroup);
+    registerStaticMethod(L, "getActorCollisionGroup", PhysicsActualBinding::getActorCollisionGroup);
+    registerStaticMethod(L, "setActorMaterial", PhysicsActualBinding::setActorMaterial);
+    lua_setglobal(L, "PhysicsActual");
 }
 
 } // namespace KenshiLua

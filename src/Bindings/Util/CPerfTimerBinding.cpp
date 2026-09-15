@@ -9,6 +9,7 @@ __int64 CPerfTimer::m_Adjust = 0;
 const double CPerfTimer::Resolution() { return 1.0 / (double)m_Freq; }
 const double CPerfTimer::Resolutionms() { return 1000.0 / (double)m_Freq; }
 const double CPerfTimer::Resolutionus() { return 1000000.0 / (double)m_Freq; }
+BOOL CPerfTimer::IsSupported() { return m_Freq > 1; }
 
 namespace KenshiLua
 {
@@ -20,6 +21,16 @@ static CPerfTimer* getInstance(lua_State* L, int idx)
 
 // --- Getters for CPerfTimer ---
 // --- Setters for CPerfTimer ---
+int CPerfTimerBinding::Start(lua_State* L)
+{
+    CPerfTimer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CPerfTimer is nil");
+
+    BOOL bReset = lua_isboolean(L, 2) ? (lua_toboolean(L, 2) ? TRUE : FALSE) : FALSE;
+    instance->Start(bReset);
+    return 0;
+}
+
 int CPerfTimerBinding::Stop(lua_State* L)
 {
     CPerfTimer* instance = getInstance(L, 1);
@@ -27,6 +38,26 @@ int CPerfTimerBinding::Stop(lua_State* L)
 
     instance->Stop();
     return 0;
+}
+
+int CPerfTimerBinding::IsRunning(lua_State* L)
+{
+    CPerfTimer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CPerfTimer is nil");
+
+    BOOL result = instance->IsRunning();
+    lua_pushboolean(L, result != FALSE);
+    return 1;
+}
+
+int CPerfTimerBinding::IsSupported(lua_State* L)
+{
+    CPerfTimer* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CPerfTimer is nil");
+
+    BOOL result = instance->IsSupported();
+    lua_pushboolean(L, result != FALSE);
+    return 1;
 }
 
 int CPerfTimerBinding::Resolution(lua_State* L)
@@ -91,9 +122,6 @@ int CPerfTimerBinding::Elapsedus(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 32: void Start(...) - unsupported arg type
-  line 35: BOOL IsRunning(...) - unsupported return type
-  line 37: BOOL IsSupported(...) - unsupported return type
   line 48: const CPerfTimer& operator=(...) - operator
   line 51: CPerfTimer operator+(...) - operator
   line 52: CPerfTimer operator-(...) - operator
@@ -134,7 +162,10 @@ void CPerfTimerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "Start", CPerfTimerBinding::Start },
         { "Stop", CPerfTimerBinding::Stop },
+        { "IsRunning", CPerfTimerBinding::IsRunning },
+        { "IsSupported", CPerfTimerBinding::IsSupported },
         { "Resolution", CPerfTimerBinding::Resolution },
         { "Resolutionms", CPerfTimerBinding::Resolutionms },
         { "Resolutionus", CPerfTimerBinding::Resolutionus },

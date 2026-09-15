@@ -3,6 +3,7 @@
 #include "SpeedGroupBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/CharacterBinding.h"
+#include "Bindings/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -89,11 +90,27 @@ int SpeedGroupBinding::getSpeed(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 68: void insert(...) - non-string reference arg
-  line 69: void erase(...) - non-string reference arg
-*/
+int SpeedGroupBinding::insert(lua_State* L)
+{
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to insert must be hand");
+    instance->insert(*h);
+    return 0;
+}
+
+int SpeedGroupBinding::erase(lua_State* L)
+{
+    SpeedGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SpeedGroup is nil");
+
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 to erase must be hand");
+    instance->erase(*h);
+    return 0;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -122,6 +139,8 @@ void SpeedGroupBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "getSpeed", SpeedGroupBinding::getSpeed },
+        { "insert", SpeedGroupBinding::insert },
+        { "erase", SpeedGroupBinding::erase },
         { 0, 0 }
     };
 

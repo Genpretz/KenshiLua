@@ -11,6 +11,10 @@
 #include "Bindings/GameDataContainerBinding.h"
 #include "Bindings/GameSaveStateBinding.h"
 #include "Bindings/Util/LektorBinding.h"
+#include "Bindings/CharacterBinding.h"
+#include "Bindings/ItemBinding.h"
+#include "Bindings/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Util/StringPairBinding.h"
 
 namespace KenshiLua
 {
@@ -550,33 +554,247 @@ int ProductionBuildingBinding::_NV_limitInputsOutputRate(lua_State* L)
     return 2;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 83: void operate(...) - unsupported arg type
-  line 84: void _NV_operate(...) - unsupported arg type
-  line 85: void getGUIData(...) - unsupported arg type
-  line 86: void _NV_getGUIData(...) - unsupported arg type
-  line 87: void getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-  line 88: void _NV_getGUIToolTipForGroundResourceEfficiency(...) - unsupported arg type
-  line 91: void loadFromSerialise(...) - unsupported arg type
-  line 92: void _NV_loadFromSerialise(...) - unsupported arg type
-  line 105: float getInputValue(...) - unsupported arg type
-  line 106: float _NV_getInputValue(...) - unsupported arg type
-  line 107: void getResourcesNeededBecauseEmpty(...) - unsupported arg type
-  line 108: void _NV_getResourcesNeededBecauseEmpty(...) - unsupported arg type
-  line 109: void getResourcesNeededBecauseNotFull(...) - unsupported arg type
-  line 110: void _NV_getResourcesNeededBecauseNotFull(...) - unsupported arg type
-  line 121: bool canHaveSomeOfThese(...) - unsupported arg type
-  line 122: bool _NV_canHaveSomeOfThese(...) - unsupported arg type
-  line 125: void getItemsWeWantRidOf(...) - unsupported arg type
-  line 126: void _NV_getItemsWeWantRidOf(...) - unsupported arg type
-  line 132: void setProductionItem(...) - unsupported arg type
-  line 133: void _NV_setProductionItem(...) - unsupported arg type
-  line 145: void getGUIFertility(...) - unsupported arg type
-  line 146: void _NV_getGUIFertility(...) - unsupported arg type
-  line 147: void getGUIState(...) - unsupported arg type
-  line 148: void _NV_getGUIState(...) - unsupported arg type
-*/
+int ProductionBuildingBinding::operate(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->operate(who, amount);
+    return 0;
+}
+
+int ProductionBuildingBinding::_NV_operate(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    float amount = (float)luaL_checknumber(L, 3);
+    instance->_NV_operate(who, amount);
+    return 0;
+}
+
+int ProductionBuildingBinding::getGUIData(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIData(datapanel, category);
+    return 0;
+}
+
+int ProductionBuildingBinding::_NV_getGUIData(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIData(datapanel, category);
+    return 0;
+}
+
+int ProductionBuildingBinding::getGUIToolTipForGroundResourceEfficiency(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 must be lektor<StringPair>");
+    instance->getGUIToolTipForGroundResourceEfficiency(*out);
+    return 0;
+}
+
+int ProductionBuildingBinding::_NV_getGUIToolTipForGroundResourceEfficiency(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 must be lektor<StringPair>");
+    instance->_NV_getGUIToolTipForGroundResourceEfficiency(*out);
+    return 0;
+}
+
+int ProductionBuildingBinding::loadFromSerialise(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->loadFromSerialise(state);
+    return 0;
+}
+
+int ProductionBuildingBinding::_NV_loadFromSerialise(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    GameSaveState* state = checkObject<GameSaveState>(L, 2, GameSaveStateBinding::getMetatableName());
+    instance->_NV_loadFromSerialise(state);
+    return 0;
+}
+
+int ProductionBuildingBinding::getInputValue(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    float result = instance->getInputValue(item);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int ProductionBuildingBinding::_NV_getInputValue(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
+    float result = instance->_NV_getInputValue(item);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int ProductionBuildingBinding::getResourcesNeededBecauseEmpty(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseEmpty must be lektor<GameData*>");
+    instance->getResourcesNeededBecauseEmpty(*out);
+    return 0;
+}
+
+int ProductionBuildingBinding::_NV_getResourcesNeededBecauseEmpty(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseEmpty must be lektor<GameData*>");
+    instance->_NV_getResourcesNeededBecauseEmpty(*out);
+    return 0;
+}
+
+int ProductionBuildingBinding::getResourcesNeededBecauseNotFull(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseNotFull must be lektor<GameData*>");
+    instance->getResourcesNeededBecauseNotFull(*out);
+    return 0;
+}
+
+int ProductionBuildingBinding::_NV_getResourcesNeededBecauseNotFull(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseNotFull must be lektor<GameData*>");
+    instance->_NV_getResourcesNeededBecauseNotFull(*out);
+    return 0;
+}
+
+int ProductionBuildingBinding::canHaveSomeOfThese(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    GameData* these = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->canHaveSomeOfThese(these);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ProductionBuildingBinding::_NV_canHaveSomeOfThese(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    GameData* these = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    bool result = instance->_NV_canHaveSomeOfThese(these);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int ProductionBuildingBinding::getItemsWeWantRidOf(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getItemsWeWantRidOf must be lektor<GameData*>");
+    bool loot = lua_toboolean(L, 3) != 0;
+    instance->getItemsWeWantRidOf(*out, loot);
+    return 0;
+}
+
+int ProductionBuildingBinding::_NV_getItemsWeWantRidOf(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getItemsWeWantRidOf must be lektor<GameData*>");
+    bool loot = lua_toboolean(L, 3) != 0;
+    instance->_NV_getItemsWeWantRidOf(*out, loot);
+    return 0;
+}
+
+int ProductionBuildingBinding::setProductionItem(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    GameData* itemData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    int stack = (int)luaL_checkinteger(L, 3);
+    float progress = (float)luaL_checknumber(L, 4);
+    instance->setProductionItem(itemData, stack, progress);
+    return 0;
+}
+
+int ProductionBuildingBinding::_NV_setProductionItem(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    GameData* itemData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    int stack = (int)luaL_checkinteger(L, 3);
+    float progress = (float)luaL_checknumber(L, 4);
+    instance->_NV_setProductionItem(itemData, stack, progress);
+    return 0;
+}
+
+int ProductionBuildingBinding::getGUIFertility(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIFertility(datapanel, category);
+    return 0;
+}
+
+int ProductionBuildingBinding::_NV_getGUIFertility(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIFertility(datapanel, category);
+    return 0;
+}
+
+int ProductionBuildingBinding::getGUIState(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIState(datapanel, category);
+    return 0;
+}
+
+int ProductionBuildingBinding::_NV_getGUIState(lua_State* L)
+{
+    ProductionBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProductionBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIState(datapanel, category);
+    return 0;
+}
 
 int ProductionBuildingBinding::serialise(lua_State* L)
 {
@@ -675,6 +893,30 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
         { "_NV_serialise", ProductionBuildingBinding::_NV_serialise },
         { "limitInputsOutputRate", ProductionBuildingBinding::limitInputsOutputRate },
         { "_NV_limitInputsOutputRate", ProductionBuildingBinding::_NV_limitInputsOutputRate },
+        { "operate", ProductionBuildingBinding::operate },
+        { "_NV_operate", ProductionBuildingBinding::_NV_operate },
+        { "getGUIData", ProductionBuildingBinding::getGUIData },
+        { "_NV_getGUIData", ProductionBuildingBinding::_NV_getGUIData },
+        { "getGUIToolTipForGroundResourceEfficiency", ProductionBuildingBinding::getGUIToolTipForGroundResourceEfficiency },
+        { "_NV_getGUIToolTipForGroundResourceEfficiency", ProductionBuildingBinding::_NV_getGUIToolTipForGroundResourceEfficiency },
+        { "loadFromSerialise", ProductionBuildingBinding::loadFromSerialise },
+        { "_NV_loadFromSerialise", ProductionBuildingBinding::_NV_loadFromSerialise },
+        { "getInputValue", ProductionBuildingBinding::getInputValue },
+        { "_NV_getInputValue", ProductionBuildingBinding::_NV_getInputValue },
+        { "getResourcesNeededBecauseEmpty", ProductionBuildingBinding::getResourcesNeededBecauseEmpty },
+        { "_NV_getResourcesNeededBecauseEmpty", ProductionBuildingBinding::_NV_getResourcesNeededBecauseEmpty },
+        { "getResourcesNeededBecauseNotFull", ProductionBuildingBinding::getResourcesNeededBecauseNotFull },
+        { "_NV_getResourcesNeededBecauseNotFull", ProductionBuildingBinding::_NV_getResourcesNeededBecauseNotFull },
+        { "canHaveSomeOfThese", ProductionBuildingBinding::canHaveSomeOfThese },
+        { "_NV_canHaveSomeOfThese", ProductionBuildingBinding::_NV_canHaveSomeOfThese },
+        { "getItemsWeWantRidOf", ProductionBuildingBinding::getItemsWeWantRidOf },
+        { "_NV_getItemsWeWantRidOf", ProductionBuildingBinding::_NV_getItemsWeWantRidOf },
+        { "setProductionItem", ProductionBuildingBinding::setProductionItem },
+        { "_NV_setProductionItem", ProductionBuildingBinding::_NV_setProductionItem },
+        { "getGUIFertility", ProductionBuildingBinding::getGUIFertility },
+        { "_NV_getGUIFertility", ProductionBuildingBinding::_NV_getGUIFertility },
+        { "getGUIState", ProductionBuildingBinding::getGUIState },
+        { "_NV_getGUIState", ProductionBuildingBinding::_NV_getGUIState },
         { 0, 0 }
     };
 

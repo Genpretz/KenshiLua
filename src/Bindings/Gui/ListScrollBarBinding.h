@@ -21,5 +21,6 @@ public:
     static int setEnabled(lua_State* L);
     static int initialiseOverride(lua_State* L);
     static int shutdownOverride(lua_State* L);
+    static int getTypeName(lua_State* L);
 };
 }

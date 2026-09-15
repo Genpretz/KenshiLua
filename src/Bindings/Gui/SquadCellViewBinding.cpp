@@ -4,6 +4,9 @@
 #include "PortraitSquadItemBoxBinding.h"
 #include "SquadDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -70,10 +73,41 @@ int SquadCellViewBinding::updateSquadSize(lua_State* L)
     return 0;
 }
 
+int SquadCellViewBinding::getCellDimension(lua_State* L)
+{
+    int idx = (lua_gettop(L) >= 3 && testObject<SquadCellView>(L, 1, SquadCellViewBinding::getMetatableName())) ? 2 : 1;
+    MyGUI::Widget* sender = WidgetBinding::getWidget(L, idx);
+    MyGUI::IntCoord coord(0, 0, 0, 0);
+    bool drop = false;
+    if (lua_gettop(L) >= idx + 2)
+    {
+        if (MyGUI::IntCoord* c = testObject<MyGUI::IntCoord>(L, idx + 1, IntCoordBinding::getMetatableName()))
+        {
+            coord = *c;
+            drop = lua_toboolean(L, idx + 2) != 0;
+            SquadCellView::getCellDimension(sender, coord, drop);
+            *c = coord;
+            return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+        }
+        else
+        {
+            coord = MyGUIBindings::readIntCoord(L, idx + 1);
+            drop = lua_toboolean(L, idx + 2) != 0;
+            SquadCellView::getCellDimension(sender, coord, drop);
+            return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+        }
+    }
+    else
+    {
+        drop = lua_toboolean(L, idx + 1) != 0;
+        SquadCellView::getCellDimension(sender, coord, drop);
+        return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+    }
+}
+
 /*
 Skipped methods needing manual binding:
   line 121: void update(...) - unsupported arg type
-  line 123: void getCellDimension(...) - static method
   line 126: void onNameChanged(...) - unsupported arg type
   line 127: void onRemove(...) - unsupported arg type
 */
@@ -100,6 +134,7 @@ void SquadCellViewBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "updateSquadSize", SquadCellViewBinding::updateSquadSize },
+        { "getCellDimension", SquadCellViewBinding::getCellDimension },
         { 0, 0 }
     };
 
@@ -126,6 +161,11 @@ void SquadCellViewBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    pushGlobalTable(L, "SquadCellView");
+    registerStaticMethod(L, "getCellDimension", SquadCellViewBinding::getCellDimension);
+    lua_setglobal(L, "SquadCellView");
 }
 
 } // namespace KenshiLua

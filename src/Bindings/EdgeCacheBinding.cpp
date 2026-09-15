@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Bindings/EdgeCacheBinding.h"
+#include "Bindings/hkVector4fBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -18,6 +19,7 @@ static int EdgeCache_get_centre(lua_State* L)
     lua_pushlightuserdata(L, (void*)&inst->centre);
 
     return 1;
+    return pushObject<hkVector4f>(L, &inst->centre, hkVector4fBinding::getMetatableName());
 }
 
 static int EdgeCache_get_radius(lua_State* L)
@@ -42,6 +44,7 @@ static int EdgeCache_set_centre(lua_State* L)
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "EdgeCache is nil");
     inst->centre = *(hkVector4f*)lua_touserdata(L, 2);
+    inst->centre = *checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
     return 0;
 }
 

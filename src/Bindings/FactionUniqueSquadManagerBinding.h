@@ -27,5 +27,6 @@ public:
     static int getGUIData(lua_State* L);
     static int getExistingSquadsFor(lua_State* L);
     static int spawnNewUniqueSquad(lua_State* L);
+    static int endOfUniqueSquad(lua_State* L);
 };
 }

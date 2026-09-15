@@ -5,6 +5,9 @@
 #include "PortraitMainCellViewBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Gui/PortraitDataBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -115,10 +118,41 @@ int PortraitMainCellViewBinding::setName(lua_State* L)
     return 0;
 }
 
+int PortraitMainCellViewBinding::getCellDimension(lua_State* L)
+{
+    int idx = (lua_gettop(L) >= 3 && testObject<PortraitMainCellView>(L, 1, PortraitMainCellViewBinding::getMetatableName())) ? 2 : 1;
+    MyGUI::Widget* sender = WidgetBinding::getWidget(L, idx);
+    MyGUI::IntCoord coord(0, 0, 0, 0);
+    bool drop = false;
+    if (lua_gettop(L) >= idx + 2)
+    {
+        if (MyGUI::IntCoord* c = testObject<MyGUI::IntCoord>(L, idx + 1, IntCoordBinding::getMetatableName()))
+        {
+            coord = *c;
+            drop = lua_toboolean(L, idx + 2) != 0;
+            PortraitMainCellView::getCellDimension(sender, coord, drop);
+            *c = coord;
+            return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+        }
+        else
+        {
+            coord = MyGUIBindings::readIntCoord(L, idx + 1);
+            drop = lua_toboolean(L, idx + 2) != 0;
+            PortraitMainCellView::getCellDimension(sender, coord, drop);
+            return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+        }
+    }
+    else
+    {
+        drop = lua_toboolean(L, idx + 1) != 0;
+        PortraitMainCellView::getCellDimension(sender, coord, drop);
+        return pushValue<MyGUI::IntCoord>(L, coord, IntCoordBinding::getMetatableName());
+    }
+}
+
 /*
 Skipped methods needing manual binding:
   line 86: void update(...) - unsupported arg type
-  line 87: void getCellDimension(...) - static method
 */
 
 /*
@@ -154,6 +188,7 @@ void PortraitMainCellViewBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "resize", PortraitMainCellViewBinding::resize },
         { "setName", PortraitMainCellViewBinding::setName },
+        { "getCellDimension", PortraitMainCellViewBinding::getCellDimension },
         { 0, 0 }
     };
 
@@ -187,6 +222,11 @@ void PortraitMainCellViewBinding::registerBinding(lua_State* L)
     // setMetatableParent(L, PortraitMainCellViewBinding::getMetatableName(), wraps::BaseCellView<PortraitData*>Binding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    pushGlobalTable(L, "PortraitMainCellView");
+    registerStaticMethod(L, "getCellDimension", PortraitMainCellViewBinding::getCellDimension);
+    lua_setglobal(L, "PortraitMainCellView");
 }
 
 } // namespace KenshiLua

@@ -30,5 +30,10 @@ public:
     static int _NV_getTechLevel(lua_State* L);
     static int createInventoryLayout(lua_State* L);
     static int _NV_createInventoryLayout(lua_State* L);
+    static int operate(lua_State* L);
+    static int _NV_operate(lua_State* L);
+    static int getGUIData(lua_State* L);
+    static int _NV_getGUIData(lua_State* L);
+    static int showResearchWindow(lua_State* L);
 };
 }

@@ -1391,11 +1391,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - TownBinding::serialise / _NV_serialise: PosRotPair* (unbound pointer)
 */
 
-/*
-Skipped properties needing manual binding:
-  line 471: _facilitesWeHaveHere (TagsClass<BuildingDesignation>) - unsupported type
-  line 488: nestSpots (lektor<Town::NestSpot>) - unsupported type
-*/
 
 int TownBinding::gc(lua_State* L)
 {

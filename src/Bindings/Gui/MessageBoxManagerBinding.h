@@ -20,5 +20,7 @@ public:
 
     static int hideMessageBox(lua_State* L);
     static int hasModalMessage(lua_State* L);
+    // static int createMessageBox(lua_State* L); // unexported in KenshiLib.lib (MASM identifier length limit)
+    static int removeMessageBox(lua_State* L);
 };
 }

@@ -123,10 +123,6 @@ int SelectionBoxBinding::contains(lua_State* L)
     return luaL_error(L, "Invalid arguments for SelectionBox:contains");
 }
 
-/*
-Skipped methods needing manual binding:
-  line 47: bool contains(...) - unsupported arg type
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:

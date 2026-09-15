@@ -77,13 +77,22 @@ int FootprintNodeBinding::setEnabled(lua_State* L)
     return 0;
 }
 
+int FootprintNodeBinding::getNodeId(lua_State* L)
+{
+    FootprintNode* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FootprintNode is nil");
+
+    const std::string& result = instance->getNodeId();
+    lua_pushlstring(L, result.data(), result.size());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 570: const Ogre::Aabb getWorldAABB(...) - unsupported return type
   line 571: const Ogre::Aabb _NV_getWorldAABB(...) - unsupported return type
   line 572: const Ogre::Aabb getLocalAABB(...) - unsupported return type
   line 573: const Ogre::Aabb _NV_getLocalAABB(...) - unsupported return type
-  line 576: const std::string& getNodeId(...) - reference return type
   line 577: bool collisionTestOK(...) - unsupported arg type
   line 578: bool _NV_collisionTestOK(...) - unsupported arg type
   line 585: PreviewBuilding::FootprintNode& operator=(...) - operator
@@ -118,6 +127,7 @@ void FootprintNodeBinding::registerBinding(lua_State* L)
         { "updateBox", FootprintNodeBinding::updateBox },
         { "_NV_updateBox", FootprintNodeBinding::_NV_updateBox },
         { "setEnabled", FootprintNodeBinding::setEnabled },
+        { "getNodeId", FootprintNodeBinding::getNodeId },
         { 0, 0 }
     };
 

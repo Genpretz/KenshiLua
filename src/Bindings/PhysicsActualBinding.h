@@ -29,6 +29,10 @@ public:
     static int _createTriggerHull(lua_State* L);
     static int _createStaticCapsule(lua_State* L);
     static int _createStaticBox(lua_State* L);
+    static int _destroy(lua_State* L);
+    static int setActorCollisionGroup(lua_State* L);
+    static int getActorCollisionGroup(lua_State* L);
+    static int setActorMaterial(lua_State* L);
     static int uncookMesh(lua_State* L);
 };
 }

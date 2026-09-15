@@ -2,6 +2,7 @@
 #include "kenshi\SaveManager.h"
 #include "SaveManagerBinding.h"
 #include "SaveInfoBinding.h"
+#include "Bindings/Util/LektorBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -479,11 +480,31 @@ int SaveManagerBinding::getSavePath(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 39: int scanGames(...) - overloaded method
-  line 40: int scanGames(...) - overloaded method
-*/
+int SaveManagerBinding::scanGames(lua_State* L)
+{
+    SaveManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SaveManager is nil");
+
+    if (lua_isstring(L, 2) && !lua_isuserdata(L, 2))
+    {
+        std::string location = luaL_checkstring(L, 2);
+        lektor<SaveInfo>* list = LektorValueBinding<SaveInfo>::get(L, 3);
+        if (!list) return luaL_error(L, "Argument 2 must be lektor<SaveInfo>");
+        bool loadDetails = lua_toboolean(L, 4) != 0;
+        int count = instance->scanGames(location, *list, loadDetails);
+        lua_pushinteger(L, count);
+        return 1;
+    }
+    else
+    {
+        lektor<SaveInfo>* list = LektorValueBinding<SaveInfo>::get(L, 2);
+        if (!list) return luaL_error(L, "Argument 1 must be lektor<SaveInfo>");
+        bool loadDetails = lua_toboolean(L, 3) != 0;
+        int count = instance->scanGames(*list, loadDetails);
+        lua_pushinteger(L, count);
+        return 1;
+    }
+}
 
 int SaveManagerBinding::gc(lua_State* L)
 {
@@ -531,6 +552,7 @@ void SaveManagerBinding::registerBinding(lua_State* L)
         { "checkVersion", SaveManagerBinding::checkVersion },
         { "getCurrentGame", SaveManagerBinding::getCurrentGame },
         { "getSavePath", SaveManagerBinding::getSavePath },
+        { "scanGames", SaveManagerBinding::scanGames },
         { 0, 0 }
     };
 

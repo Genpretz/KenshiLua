@@ -4,6 +4,9 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/InventorySectionBinding.h"
 #include "Bindings/ItemBinding.h"
+#include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -20,9 +23,18 @@ static int InventorySectionGUI_get_widget(lua_State* L)
     if (!instance) return luaL_error(L, "InventorySectionGUI is nil");
     lua_pushlightuserdata(L, (void*)instance->widget);
     return 1;
+    return MyGUIBindings::pushWidget(L, instance->widget);
 }
 
 // --- Setters for InventorySectionGUI ---
+static int InventorySectionGUI_set_widget(lua_State* L)
+{
+    InventorySectionGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventorySectionGUI is nil");
+    instance->widget = lua_isnoneornil(L, 2) ? nullptr : WidgetBinding::getWidget(L, 2);
+    return 0;
+}
+
 int InventorySectionGUIBinding::hasMouse(lua_State* L)
 {
     InventorySectionGUI* instance = getInstance(L, 1);
@@ -33,6 +45,17 @@ int InventorySectionGUIBinding::hasMouse(lua_State* L)
     return 1;
 }
 
+int InventorySectionGUIBinding::getItemAbsolutePosition(lua_State* L)
+{
+    InventorySectionGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventorySectionGUI is nil");
+
+    int x = (int)luaL_checkinteger(L, 2);
+    int y = (int)luaL_checkinteger(L, 3);
+    MyGUI::IntPoint result = instance->getItemAbsolutePosition(x, y);
+    return pushValue<MyGUI::IntPoint>(L, result, IntPointBinding::getMetatableName());
+}
+
 int InventorySectionGUIBinding::getWidget(lua_State* L)
 {
     InventorySectionGUI* instance = getInstance(L, 1);
@@ -41,6 +64,36 @@ int InventorySectionGUIBinding::getWidget(lua_State* L)
     MyGUI::Widget* result = instance->getWidget();
     lua_pushlightuserdata(L, (void*)result);
     return 1;
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int InventorySectionGUIBinding::getPositionSlot(lua_State* L)
+{
+    InventorySectionGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventorySectionGUI is nil");
+
+    MyGUI::IntPoint position = MyGUIBindings::readIntPoint(L, 2);
+    InventorySection* section = checkObject<InventorySection>(L, 3, InventorySectionBinding::getMetatableName());
+    bool round = lua_toboolean(L, 4) != 0;
+
+    MyGUI::IntPoint result = instance->getPositionSlot(position, section, round);
+    return pushValue<MyGUI::IntPoint>(L, result, IntPointBinding::getMetatableName());
+}
+
+int InventorySectionGUIBinding::getBestPositionSlot(lua_State* L)
+{
+    InventorySectionGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventorySectionGUI is nil");
+
+    MyGUI::IntPoint position = MyGUIBindings::readIntPoint(L, 2);
+    InventorySection* section = checkObject<InventorySection>(L, 3, InventorySectionBinding::getMetatableName());
+    Item* item = checkObject<Item>(L, 4, ItemBinding::getMetatableName());
+
+    MyGUI::IntPoint slot(0, 0);
+    bool result = instance->getBestPositionSlot(position, section, item, slot);
+    lua_pushboolean(L, result ? 1 : 0);
+    pushValue<MyGUI::IntPoint>(L, slot, IntPointBinding::getMetatableName());
+    return 2;
 }
 
 int InventorySectionGUIBinding::setEnabled(lua_State* L)
@@ -72,12 +125,6 @@ int InventorySectionGUIBinding::update(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 50: MyGUI::types::TPoint<int> getItemAbsolutePosition(...) - unsupported return type
-  line 52: MyGUI::types::TPoint<int> getPositionSlot(...) - unsupported return type
-  line 53: bool getBestPositionSlot(...) - unsupported arg type
-*/
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -112,7 +159,10 @@ void InventorySectionGUIBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "hasMouse", InventorySectionGUIBinding::hasMouse },
+        { "getItemAbsolutePosition", InventorySectionGUIBinding::getItemAbsolutePosition },
         { "getWidget", InventorySectionGUIBinding::getWidget },
+        { "getPositionSlot", InventorySectionGUIBinding::getPositionSlot },
+        { "getBestPositionSlot", InventorySectionGUIBinding::getBestPositionSlot },
         { "setEnabled", InventorySectionGUIBinding::setEnabled },
         { "refreshIcons", InventorySectionGUIBinding::refreshIcons },
         { "update", InventorySectionGUIBinding::update },
@@ -134,6 +184,7 @@ void InventorySectionGUIBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "widget", InventorySectionGUI_set_widget);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

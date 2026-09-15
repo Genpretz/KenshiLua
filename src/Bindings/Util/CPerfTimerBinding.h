@@ -18,7 +18,10 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int Start(lua_State* L);
     static int Stop(lua_State* L);
+    static int IsRunning(lua_State* L);
+    static int IsSupported(lua_State* L);
     static int Resolution(lua_State* L);
     static int Resolutionms(lua_State* L);
     static int Resolutionus(lua_State* L);

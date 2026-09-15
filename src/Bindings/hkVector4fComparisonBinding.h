@@ -21,5 +21,16 @@ public:
     static int getIndexOfLastComponentSet(lua_State* L);
     static int getIndexOfFirstComponentSet(lua_State* L);
     static int allAreSet(lua_State* L);
+    static int anyIsSet(lua_State* L);
+    static int getMask(lua_State* L);
+    static int getMaskForComponent(lua_State* L);
+    static int set(lua_State* L);
+    static int setAnd(lua_State* L);
+    static int setAndNot(lua_State* L);
+    static int setXor(lua_State* L);
+    static int setOr(lua_State* L);
+    static int setNot(lua_State* L);
+    static int setSelect(lua_State* L);
+    static int create(lua_State* L);
 };
 }

@@ -87,5 +87,15 @@ public:
     static int clearCategoryTabs(lua_State* L);
     static int setLine(lua_State* L);
     static int setLineResearch(lua_State* L);
+    static int setTabEnabled(lua_State* L);
+    static int _NV_setTabEnabled(lua_State* L);
+    static int setLineText(lua_State* L);
+    static int setLineTextEditable(lua_State* L);
+    static int setLines(lua_State* L);
+    static int autoChangeSelectedObject(lua_State* L);
+    static int _NV_autoChangeSelectedObject(lua_State* L);
+    static int setObject(lua_State* L);
+    static int _NV_setObject(lua_State* L);
+    static int getCoords(lua_State* L);
 };
 }

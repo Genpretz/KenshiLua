@@ -57,9 +57,18 @@ int MultiSliderBinding::shutdownOverride(lua_State* L)
     return 0;
 }
 
+int MultiSliderBinding::getTypeName(lua_State* L)
+{
+    MultiSlider* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MultiSlider is nil");
+
+    const std::string& result = instance->getTypeName();
+    lua_pushlstring(L, result.data(), result.size());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 17: const std::string& getTypeName(...) - reference return type
   line 20: bool isType(...) - unsupported arg type
 */
 
@@ -97,6 +106,7 @@ void MultiSliderBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "initialiseOverride", MultiSliderBinding::initialiseOverride },
         { "shutdownOverride", MultiSliderBinding::shutdownOverride },
+        { "getTypeName", MultiSliderBinding::getTypeName },
         { 0, 0 }
     };
 

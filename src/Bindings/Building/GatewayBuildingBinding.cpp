@@ -3,6 +3,7 @@
 #include "GatewayBuildingBinding.h"
 #include "BuildingBinding.h"
 #include "UseableStuffBinding.h"
+#include "Bindings/Util/HandBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -173,11 +174,23 @@ int GatewayBuildingBinding::separatesAreas(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 17: void setHandle(...) - unsupported arg type
-  line 18: void _NV_setHandle(...) - unsupported arg type
-*/
+int GatewayBuildingBinding::setHandle(lua_State* L)
+{
+    GatewayBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GatewayBuilding is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->setHandle(*h);
+    return 0;
+}
+
+int GatewayBuildingBinding::_NV_setHandle(lua_State* L)
+{
+    GatewayBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GatewayBuilding is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    instance->_NV_setHandle(*h);
+    return 0;
+}
 
 int GatewayBuildingBinding::gc(lua_State* L)
 {
@@ -216,6 +229,8 @@ void GatewayBuildingBinding::registerBinding(lua_State* L)
         { "getGateCodeAt", GatewayBuildingBinding::getGateCodeAt },
         { "getOutsideGateCode", GatewayBuildingBinding::getOutsideGateCode },
         { "separatesAreas", GatewayBuildingBinding::separatesAreas },
+        { "setHandle", GatewayBuildingBinding::setHandle },
+        { "_NV_setHandle", GatewayBuildingBinding::_NV_setHandle },
         { 0, 0 }
     };
 
