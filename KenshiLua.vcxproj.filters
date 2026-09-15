@@ -1276,8 +1276,6 @@
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\DialogueScriptBridge.h" />
     <ClInclude Include="src\EventSystem.h" />
-    <ClInclude Include="src\Exports.h" />
-    <ClInclude Include="include\KenshiLua.h" />
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\Gui\Gui.h" />
     <ClInclude Include="src\Gui\GuiHelpers.h" />
@@ -1406,5 +1404,6 @@
     <None Include="extern\kenshilib\Include\ogre\OgreLight.inl" />
     <None Include="extern\kenshilib\Include\ogre\OgreLodStrategyPrivate.inl" />
     <None Include="extern\kenshilib\Include\ogre\OgreMovableObject.inl" />
+    <None Include=".github\copilot-instructions.md" />
   </ItemGroup>
 </Project>
