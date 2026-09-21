@@ -166,25 +166,13 @@ int InventoryLayoutBinding::resizeSectionWidget(lua_State* L)
     return pushValue<MyGUI::IntSize>(L, result, IntSizeBinding::getMetatableName());
 }
 
-static MyGUI::types::TSize<int>* getInventoryLayoutCellSizePtr()
-{
-    static MyGUI::types::TSize<int>* ptr = (MyGUI::types::TSize<int>*)((char*)GetModuleHandleA(NULL) + 0x2125450);
-    return ptr;
-}
-
-int InventoryLayoutBinding::getCellSize(lua_State* L)
-{
-    return pushValue<MyGUI::IntSize>(L, InventoryLayout::CellSize, IntSizeBinding::getMetatableName());
-    return pushValue<MyGUI::IntSize>(L, *getInventoryLayoutCellSizePtr(), IntSizeBinding::getMetatableName());
-}
-
-int InventoryLayoutBinding::setCellSize(lua_State* L)
-{
-    int idx = (lua_gettop(L) >= 2 && testObject<InventoryLayout>(L, 1, InventoryLayoutBinding::getMetatableName())) ? 2 : 1;
-    InventoryLayout::CellSize = MyGUIBindings::readIntSize(L, idx);
-    *getInventoryLayoutCellSizePtr() = MyGUIBindings::readIntSize(L, idx);
-    return 0;
-}
+/*
+CellSize bindings intentionally disabled.
+InventoryLayout::CellSize is static storage whose address is not exposed as a
+linkable symbol. The known GOG RVA must not be used for the unverified Steam
+build. Re-enable these bindings only after a version-independent accessor or
+verified per-build address is available.
+*/
 
 /*
 Skipped methods needing manual binding:
@@ -222,8 +210,7 @@ void InventoryLayoutBinding::registerBinding(lua_State* L)
         { "notifyCellSizeChanged", InventoryLayoutBinding::notifyCellSizeChanged },
         { "resizeSection", InventoryLayoutBinding::resizeSection },
         { "resizeSectionWidget", InventoryLayoutBinding::resizeSectionWidget },
-        { "getCellSize", InventoryLayoutBinding::getCellSize },
-        { "setCellSize", InventoryLayoutBinding::setCellSize },
+        // CellSize intentionally omitted; see the note above.
         { 0, 0 }
     };
 
@@ -258,8 +245,7 @@ void InventoryLayoutBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     pushGlobalTable(L, "InventoryLayout");
     registerStaticMethod(L, "notifyCellSizeChanged", InventoryLayoutBinding::notifyCellSizeChanged);
-    registerStaticMethod(L, "getCellSize", InventoryLayoutBinding::getCellSize);
-    registerStaticMethod(L, "setCellSize", InventoryLayoutBinding::setCellSize);
+    // CellSize intentionally omitted; see the note above.
     lua_setglobal(L, "InventoryLayout");
 }
 

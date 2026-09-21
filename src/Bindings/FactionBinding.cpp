@@ -1112,6 +1112,7 @@ int FactionBinding::getAllActiveSquads(lua_State* L)
 
     const lektor<Platoon*>* result = instance->getAllActiveSquads();
     pushObject(L, result, LektorPtrBinding<Platoon*>::metaName);
+    return 1;
 }
 
 int FactionBinding::getRoadPreference(lua_State* L)

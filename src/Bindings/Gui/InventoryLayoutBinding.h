@@ -28,7 +28,7 @@ public:
     static int notifyCellSizeChanged(lua_State* L);
     static int resizeSection(lua_State* L);
     static int resizeSectionWidget(lua_State* L);
-    static int getCellSize(lua_State* L);
-    static int setCellSize(lua_State* L);
+    // CellSize is intentionally not bound: its static storage address is
+    // game-version-specific and has not been verified for the Steam build.
 };
 }
