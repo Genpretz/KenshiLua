@@ -450,7 +450,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | create | `_pos: Vector3` | `void` | `obj:create(_pos)` |
-| getHandle | `` | `void` | `obj:getHandle()` |
+| getHandle | `` | `hand` | `obj:getHandle()` |
 | _setPositionAndTeleport | `p: Vector3, floor: integer` | `void` | `obj:_setPositionAndTeleport(p, floor)` |
 | _setPositionSimple | `p: Vector3` | `void` | `obj:_setPositionSimple(p)` |
 | faceDirection | `dir: Vector3` | `void` | `obj:faceDirection(dir)` |
@@ -975,7 +975,7 @@
 | committingCrime | `integer` | RW | `obj.committingCrime = <value>` |
 | crimeAgainstFaction | `Faction` | RW | `obj.crimeAgainstFaction = <value>` |
 | usingTrainingEquipmentOf | `Faction` | RW | `obj.usingTrainingEquipmentOf = <value>` |
-| crimeAgainst | `unknown` | RW | `obj.crimeAgainst = <value>` |
+| crimeAgainst | `hand` | RW | `obj.crimeAgainst = <value>` |
 | crimeExpiry | `number` | RW | `obj.crimeExpiry = <value>` |
 | prisonSentenceBeganTime | `TimeOfDay` | RW | `obj.prisonSentenceBeganTime = <value>` |
 | prisonSentenceToServe | `number` | RW | `obj.prisonSentenceToServe = <value>` |
@@ -1024,7 +1024,7 @@
 | enforceCeiling | `boolean` | RW | `obj.enforceCeiling = <value>` |
 | designation | `integer` | RW | `obj.designation = <value>` |
 | publicDaytime | `boolean` | RW | `obj.publicDaytime = <value>` |
-| residentSquad | `unknown` | RW | `obj.residentSquad = <value>` |
+| residentSquad | `hand` | RW | `obj.residentSquad = <value>` |
 | residentSquadTemplate | `GameData` | RW | `obj.residentSquadTemplate = <value>` |
 | isAnInteriorObject | `boolean` | RW | `obj.isAnInteriorObject = <value>` |
 | instanceID | `InstanceID` | RW | `obj.instanceID = <value>` |
@@ -1042,7 +1042,7 @@
 | productionMult_baseData | `number` | RW | `obj.productionMult_baseData = <value>` |
 | hasMovingParts | `boolean` | RW | `obj.hasMovingParts = <value>` |
 | saveVersion | `integer` | RW | `obj.saveVersion = <value>` |
-| _town | `unknown` | RW | `obj._town = <value>` |
+| _town | `hand` | RW | `obj._town = <value>` |
 | myInterior | `lightuserdata` | R | `obj.myInterior` |
 | buildingsManager | `TownBuildingsManager` | RW | `obj.buildingsManager = <value>` |
 | rootNode | `lightuserdata` | R | `obj.rootNode` |
@@ -1178,7 +1178,7 @@
 | getDefaultTask | `` | `integer` | `obj:getDefaultTask()` |
 | getInventory | `` | `Inventory` | `obj:getInventory()` |
 | _changeTown | `` | `void` | `obj:_changeTown()` |
-| getTownHandle | `` | `void` | `obj:getTownHandle()` |
+| getTownHandle | `` | `hand` | `obj:getTownHandle()` |
 | getTown | `` | `TownBase` | `obj:getTown()` |
 | getRealTown | `` | `Town` | `obj:getRealTown()` |
 | createPhysical | `` | `boolean` | `obj:createPhysical()` |
@@ -1222,9 +1222,9 @@
 | getSeed | `` | `integer` | `obj:getSeed()` |
 | onBuildingLoaded | `` | `void` | `obj:onBuildingLoaded()` |
 | updateBadNodes | `` | `void` | `obj:updateBadNodes()` |
-| isIndoors | `` | `void` | `obj:isIndoors()` |
-| isIndoors_notDestroyed | `` | `void` | `obj:isIndoors_notDestroyed()` |
-| getMountedBuilding | `` | `void` | `obj:getMountedBuilding()` |
+| isIndoors | `` | `hand` | `obj:isIndoors()` |
+| isIndoors_notDestroyed | `` | `hand` | `obj:isIndoors_notDestroyed()` |
+| getMountedBuilding | `` | `hand` | `obj:getMountedBuilding()` |
 | removeAnInternalBuilding | `` | `void` | `obj:removeAnInternalBuilding()` |
 | serialise | `offset: userdata` | `void` | `obj:serialise(offset)` |
 | setHandle | `` | `void` | `obj:setHandle()` |
@@ -1439,14 +1439,14 @@
 | pitch | `number` | RW | `obj.pitch = <value>` |
 | initialised | `boolean` | RW | `obj.initialised = <value>` |
 | terrainLoaded | `boolean` | RW | `obj.terrainLoaded = <value>` |
-| objectCurrentlyFollowing | `unknown` | RW | `obj.objectCurrentlyFollowing = <value>` |
+| objectCurrentlyFollowing | `hand` | RW | `obj.objectCurrentlyFollowing = <value>` |
 | objectCurrentlyFollowingOffset | `Vector3` | RW | `obj.objectCurrentlyFollowingOffset = <value>` |
 | center | `lightuserdata` | RW | `obj.center = <value>` |
 | altitude | `number` | RW | `obj.altitude = <value>` |
 | camera | `lightuserdata` | R | `obj.camera` |
 | node | `lightuserdata` | R | `obj.node` |
 | currentMusic | `integer` | RW | `obj.currentMusic = <value>` |
-| inBuilding | `unknown` | RW | `obj.inBuilding = <value>` |
+| inBuilding | `hand` | RW | `obj.inBuilding = <value>` |
 | timeInGame | `number` | RW | `obj.timeInGame = <value>` |
 | targetPositionY | `number` | RW | `obj.targetPositionY = <value>` |
 | speedY | `number` | RW | `obj.speedY = <value>` |
@@ -1485,7 +1485,7 @@
 | rotationUpdate | `` | `void` | `obj:rotationUpdate()` |
 | updateAudio | `` | `void` | `obj:updateAudio()` |
 | followObject | `` | `void` | `obj:followObject()` |
-| getFollowObject | `` | `void` | `obj:getFollowObject()` |
+| getFollowObject | `` | `hand` | `obj:getFollowObject()` |
 | isVisible [1] | `pos: Vector3, radius: number` | `boolean` | `obj:isVisible(pos, radius)` |
 | isVisible [2] | `pos: Vector3` | `boolean` | `obj:isVisible(pos)` |
 
@@ -1529,33 +1529,33 @@
 | isOnScreen | `boolean` | RW | `obj.isOnScreen = <value>` |
 | stealthMarkerArrows | `Character::AttachedArrowManager` | R | `obj.stealthMarkerArrows` |
 | _isEngagedWithAPlayer | `boolean` | RW | `obj._isEngagedWithAPlayer = <value>` |
-| isUsingTurret | `unknown` | RW | `obj.isUsingTurret = <value>` |
+| isUsingTurret | `hand` | RW | `obj.isUsingTurret = <value>` |
 | isCurrentlyGettingUp | `boolean` | RW | `obj.isCurrentlyGettingUp = <value>` |
 | isGettingEaten | `integer` | RW | `obj.isGettingEaten = <value>` |
 | dialogue | `Dialogue` | RW | `obj.dialogue = <value>` |
 | currentStumblePainAnimation | `string` | RW | `obj.currentStumblePainAnimation = <value>` |
 | _isLiterallyUnderMeleeAttackRightNowForSure | `boolean` | RW | `obj._isLiterallyUnderMeleeAttackRightNowForSure = <value>` |
 | _myMemory | `lightuserdata` | RW | `obj._myMemory = <value>` |
-| lastGuyWhoDefeatedMe | `unknown` | RW | `obj.lastGuyWhoDefeatedMe = <value>` |
+| lastGuyWhoDefeatedMe | `hand` | RW | `obj.lastGuyWhoDefeatedMe = <value>` |
 | myRace | `RaceData` | RW | `obj.myRace = <value>` |
 | inventory | `Inventory` | RW | `obj.inventory = <value>` |
 | rangedCombat | `lightuserdata` | RW | `obj.rangedCombat = <value>` |
-| inWhat | `unknown` | RW | `obj.inWhat = <value>` |
+| inWhat | `hand` | RW | `obj.inWhat = <value>` |
 | isChained | `boolean` | RW | `obj.isChained = <value>` |
-| slaveOwner | `unknown` | RW | `obj.slaveOwner = <value>` |
+| slaveOwner | `hand` | RW | `obj.slaveOwner = <value>` |
 | isCarryingSomething | `boolean` | RW | `obj.isCarryingSomething = <value>` |
 | carringObjectLeftOrRight | `string` | RW | `obj.carringObjectLeftOrRight = <value>` |
 | isCarryingLeftSide | `boolean` | RW | `obj.isCarryingLeftSide = <value>` |
-| carryingObject | `unknown` | RW | `obj.carryingObject = <value>` |
+| carryingObject | `hand` | RW | `obj.carryingObject = <value>` |
 | messages | `integer` | RW | `obj.messages = <value>` |
-| messageSubject | `unknown` | RW | `obj.messageSubject = <value>` |
+| messageSubject | `hand` | RW | `obj.messageSubject = <value>` |
 | ragdollNavmeshPosition | `Vector3` | RW | `obj.ragdollNavmeshPosition = <value>` |
 | _isBeingCarried | `boolean` | RW | `obj._isBeingCarried = <value>` |
 | lastUsedWeaponCategory | `integer` | RW | `obj.lastUsedWeaponCategory = <value>` |
 | msgCarryMode | `Character::CarryMsg` | RW | `obj.msgCarryMode = <value>` |
 | squadMemberID | `integer` | RW | `obj.squadMemberID = <value>` |
 | diplomacyMultiplier | `number` | RW | `obj.diplomacyMultiplier = <value>` |
-| _destinationInsideBuilding | `unknown` | RW | `obj._destinationInsideBuilding = <value>` |
+| _destinationInsideBuilding | `hand` | RW | `obj._destinationInsideBuilding = <value>` |
 | _destinationInsideWalls | `integer` | RW | `obj._destinationInsideWalls = <value>` |
 | animation | `lightuserdata` | RW | `obj.animation = <value>` |
 | stats | `CharStats` | RW | `obj.stats = <value>` |
@@ -1578,7 +1578,7 @@
 | ragdollMessages | `CharacterRagdollMsgDequeBinding::DequeType` | RW | `obj.ragdollMessages = <value>` |
 | audioData | `AkSoundPosition` | RW | `obj.audioData = <value>` |
 | disguiseGUIFeedbacks | `integer` | R | `obj.disguiseGUIFeedbacks` |
-| whoSeesMeSneaking | `Character::WhoSeesMe` | R | `obj.whoSeesMeSneaking` |
+| whoSeesMeSneaking | `hand` | R | `obj.whoSeesMeSneaking` |
 | inSomething | `integer` | RW | `obj.inSomething = <value>` |
 | audioObject | `CharacterRagdollMsgDequeBinding::DequeType` | RW | `obj.audioObject = <value>` |
 | activeEffects | `integer` | R | `obj.activeEffects` |
@@ -1728,7 +1728,7 @@
 | getTotalRelativeStrengthOfAttackers | `` | `number` | `obj:getTotalRelativeStrengthOfAttackers()` |
 | canGoIndoors | `` | `boolean` | `obj:canGoIndoors()` |
 | isIndoorsRagdoll | `` | `boolean` | `obj:isIndoorsRagdoll()` |
-| destinationIndoors | `` | `void` | `obj:destinationIndoors()` |
+| destinationIndoors | `` | `hand` | `obj:destinationIndoors()` |
 | destinationInsideWalls | `` | `integer` | `obj:destinationInsideWalls()` |
 | getIntendedAggression | `` | `number` | `obj:getIntendedAggression()` |
 | getPositionBip01 | `` | `Vector3` | `obj:getPositionBip01()` |
@@ -1785,7 +1785,7 @@
 | getMedical | `` | `MedicalSystem` | `obj:getMedical()` |
 | getOwnerships | `` | `Ownerships` | `obj:getOwnerships()` |
 | getAI | `` | `lightuserdata` | `obj:getAI()` |
-| getAttackTarget | `` | `void` | `obj:getAttackTarget()` |
+| getAttackTarget | `` | `hand` | `obj:getAttackTarget()` |
 | isInCombatMode | `melee: boolean, ranged: boolean` | `boolean` | `obj:isInCombatMode(melee, ranged)` |
 | isInRangedCombatMode | `` | `boolean` | `obj:isInRangedCombatMode()` |
 | isLiterallyUnderMeleeAttackRightNowForSure | `` | `boolean` | `obj:isLiterallyUnderMeleeAttackRightNowForSure()` |
@@ -1796,7 +1796,7 @@
 | clearAllTempEnemyStatuses | `tag: integer` | `void` | `obj:clearAllTempEnemyStatuses(tag)` |
 | lastSeenInHoursAgo | `` | `number` | `obj:lastSeenInHoursAgo()` |
 | haveMetBefore | `` | `boolean` | `obj:haveMetBefore()` |
-| getIDForMemoryTagging | `` | `void` | `obj:getIDForMemoryTagging()` |
+| getIDForMemoryTagging | `` | `hand` | `obj:getIDForMemoryTagging()` |
 | getMovement | `` | `CharMovement` | `obj:getMovement()` |
 | lookatPosition | `v: Vector3, fullbodyFacing: boolean` | `void` | `obj:lookatPosition(v, fullbodyFacing)` |
 | areYouGonnaGetMe | `` | `boolean` | `obj:areYouGonnaGetMe()` |
@@ -1830,7 +1830,7 @@
 | setSlaveAIJob | `on: boolean` | `void` | `obj:setSlaveAIJob(on)` |
 | isChainedMode | `` | `boolean` | `obj:isChainedMode()` |
 | getChainedModeShackles | `` | `LockedArmour` | `obj:getChainedModeShackles()` |
-| getMySlaveOwner | `` | `void` | `obj:getMySlaveOwner()` |
+| getMySlaveOwner | `` | `hand` | `obj:getMySlaveOwner()` |
 | isSlave | `` | `integer` | `obj:isSlave()` |
 | isMySlave | `` | `boolean` | `obj:isMySlave()` |
 | isMyFactionsSlave | `` | `boolean` | `obj:isMyFactionsSlave()` |
@@ -1843,7 +1843,7 @@
 | slaveAttachToBoneMode | `bone: string` | `void` | `obj:slaveAttachToBoneMode(bone)` |
 | isDead | `` | `boolean` | `obj:isDead()` |
 | isBeingCarried | `` | `boolean` | `obj:isBeingCarried()` |
-| getCarryingObject | `` | `void` | `obj:getCarryingObject()` |
+| getCarryingObject | `` | `hand` | `obj:getCarryingObject()` |
 | chooseCarryObjectLeftOrRight | `` | `void` | `obj:chooseCarryObjectLeftOrRight()` |
 | dropCarriedObject | `ragdollHim: boolean, removeOnly: boolean` | `void` | `obj:dropCarriedObject(ragdollHim, removeOnly)` |
 | getDropped | `ragdollHim: boolean, hull: boolean` | `void` | `obj:getDropped(ragdollHim, hull)` |
@@ -1888,8 +1888,8 @@
 | rememberCharacter [1] | `who: Character, mem: CharacterPerceptionTags_ShortTerm` | `void` | `obj:rememberCharacter(who, mem)` |
 | rememberCharacter [2] | `who: Character, mem: CharacterPerceptionTags_LongTerm` | `void` | `obj:rememberCharacter(who, mem)` |
 | setHandle | `` | `void` | `obj:setHandle()` |
-| isIndoors | `` | `void` | `obj:isIndoors()` |
-| isStandingOnBuilding | `` | `void` | `obj:isStandingOnBuilding()` |
+| isIndoors | `` | `hand` | `obj:isIndoors()` |
+| isStandingOnBuilding | `` | `hand` | `obj:isStandingOnBuilding()` |
 | notifyIndoors | `` | `void` | `obj:notifyIndoors()` |
 | setDestinationIndoors | `` | `void` | `obj:setDestinationIndoors()` |
 | getAudioObject | `` | `integer` | `obj:getAudioObject()` |
@@ -1915,7 +1915,7 @@
 | debugIndicateCharacters | `` | `void` | `obj:debugIndicateCharacters()` |
 | iShotYou | `poon: userdata, onPurpose: boolean` | `boolean` | `obj:iShotYou(poon, onPurpose)` |
 | _startStumble | `dir: integer` | `void` | `obj:_startStumble(dir)` |
-| getSquadMissionTarget | `` | `void` | `obj:getSquadMissionTarget()` |
+| getSquadMissionTarget | `` | `hand` | `obj:getSquadMissionTarget()` |
 | setChainedMode | `on: boolean` | `void` | `obj:setChainedMode(on)` |
 | _ragdollMode | `on: boolean, part: integer` | `boolean` | `obj:_ragdollMode(on, part)` |
 
@@ -2239,7 +2239,7 @@
 | animation | `lightuserdata` | RW | `obj.animation = <value>` |
 | character | `Character` | RW | `obj.character = <value>` |
 | stats | `CharStats` | RW | `obj.stats = <value>` |
-| target | `unknown` | RW | `obj.target = <value>` |
+| target | `hand` | RW | `obj.target = <value>` |
 | gotItem | `boolean` | RW | `obj.gotItem = <value>` |
 | crouched | `boolean` | RW | `obj.crouched = <value>` |
 | jogMode | `boolean` | RW | `obj.jogMode = <value>` |
@@ -2279,8 +2279,8 @@
 | notifyPathImpossible | `` | `void` | `obj:notifyPathImpossible()` |
 | _move | `location: Vector3` | `void` | `obj:_move(location)` |
 | _patrol | `end: integer, pos: Vector3, area: userdata, taskSys: userdata` | `void` | `obj:_patrol(end, pos, area, taskSys)` |
-| getHandle | `` | `void` | `obj:getHandle()` |
-| getCurrentSubject | `` | `void` | `obj:getCurrentSubject()` |
+| getHandle | `` | `hand` | `obj:getHandle()` |
+| getCurrentSubject | `` | `hand` | `obj:getCurrentSubject()` |
 
 ## CharMovement
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
@@ -2299,7 +2299,7 @@
 | tracer | `lightuserdata` | RW | `obj.tracer = <value>` |
 | dontEverRecreateMe | `boolean` | RW | `obj.dontEverRecreateMe = <value>` |
 | floorGroup | `integer` | RW | `obj.floorGroup = <value>` |
-| building | `unknown` | RW | `obj.building = <value>` |
+| building | `hand` | RW | `obj.building = <value>` |
 | initCheck | `boolean` | RW | `obj.initCheck = <value>` |
 | _combatMoveSpeedMult | `number` | RW | `obj._combatMoveSpeedMult = <value>` |
 | destinationLoaded | `boolean` | RW | `obj.destinationLoaded = <value>` |
@@ -2326,7 +2326,7 @@
 | isRunning | `` | `boolean` | `obj:isRunning()` |
 | isRunningAway | `from: Vector3` | `boolean` | `obj:isRunningAway(from)` |
 | trackAnimationMovement | `on: boolean` | `void` | `obj:trackAnimationMovement(on)` |
-| getHandle | `` | `void` | `obj:getHandle()` |
+| getHandle | `` | `hand` | `obj:getHandle()` |
 | handleChanged | `` | `void` | `obj:handleChanged()` |
 | getRadius | `` | `number` | `obj:getRadius()` |
 | update | `_TIME: number` | `void` | `obj:update(_TIME)` |
@@ -2368,7 +2368,7 @@
 | setDestination | `dest: Vector3, notVertical: boolean` | `void` | `obj:setDestination(dest, notVertical)` |
 | setLookatTarget | `` | `void` | `obj:setLookatTarget()` |
 | setMovementMode | `mode: integer` | `void` | `obj:setMovementMode(mode)` |
-| isStandingOnSomething | `` | `void` | `obj:isStandingOnSomething()` |
+| isStandingOnSomething | `` | `hand` | `obj:isStandingOnSomething()` |
 | combatMovementOffensive | `minDistance: number, maxDistance: number, circle: number, power: boolean, speedLimit: number` | `void` | `obj:combatMovementOffensive(minDistance, maxDistance, circle, power, speedLimit)` |
 
 ## CharStats
@@ -2480,7 +2480,7 @@
 | currentWeaponType | `integer` | RW | `obj.currentWeaponType = <value>` |
 | pCurrentWeaponSkill | `lightuserdata` | RW | `obj.pCurrentWeaponSkill = <value>` |
 | currentWeaponLength | `number` | RW | `obj.currentWeaponLength = <value>` |
-| weapon | `unknown` | RW | `obj.weapon = <value>` |
+| weapon | `hand` | RW | `obj.weapon = <value>` |
 | weaponWeight | `number` | RW | `obj.weaponWeight = <value>` |
 | _weatherProtections | `WeatherProtectionsMapBinding::MapType` | RW | `obj._weatherProtections = <value>` |
 | bonusRaces | `BonusRacesMapBinding::MapType` | RW | `obj.bonusRaces = <value>` |
@@ -2657,7 +2657,7 @@
 | medical | `MedicalSystem` | RW | `obj.medical = <value>` |
 | myRadiusX | `number` | RW | `obj.myRadiusX = <value>` |
 | blockingTarget | `Character` | RW | `obj.blockingTarget = <value>` |
-| blockingTargetH | `unknown` | RW | `obj.blockingTargetH = <value>` |
+| blockingTargetH | `hand` | RW | `obj.blockingTargetH = <value>` |
 | targetsInAttackZone | `lektor<hand>` | RW | `obj.targetsInAttackZone = <value>` |
 | attackersH | `lektor<hand>` | RW | `obj.attackersH = <value>` |
 | threats | `lektor<Character*>` | RW | `obj.threats = <value>` |
@@ -2680,7 +2680,7 @@
 | BLOCKING_MEI_DISTANCE_MIN | `number` | RW | `obj.BLOCKING_MEI_DISTANCE_MIN = <value>` |
 | BLOCKING_MEI_DISTANCE_MAX | `number` | RW | `obj.BLOCKING_MEI_DISTANCE_MAX = <value>` |
 | currentTarget | `Character` | RW | `obj.currentTarget = <value>` |
-| currentTargetHandle | `unknown` | RW | `obj.currentTargetHandle = <value>` |
+| currentTargetHandle | `hand` | RW | `obj.currentTargetHandle = <value>` |
 | stateMap | `SwordStateMapBinding::MapType` | RW | `obj.stateMap = <value>` |
 
 ### Methods
@@ -2699,7 +2699,7 @@
 | isAttacking | `` | `number` | `obj:isAttacking()` |
 | informOfFreeAttackSlot | `` | `void` | `obj:informOfFreeAttackSlot()` |
 | isStationary | `` | `boolean` | `obj:isStationary()` |
-| _getAttackTarget | `` | `void` | `obj:_getAttackTarget()` |
+| _getAttackTarget | `` | `hand` | `obj:_getAttackTarget()` |
 | isFightingAnAllyOfMine | `` | `boolean` | `obj:isFightingAnAllyOfMine()` |
 | getCurrentTechnique | `` | `CombatTechniqueData` | `obj:getCurrentTechnique()` |
 | getCurrentTechniqueSection | `` | `integer` | `obj:getCurrentTechniqueSection()` |
@@ -2718,7 +2718,7 @@
 | getNumWaitingAttackers | `` | `integer` | `obj:getNumWaitingAttackers()` |
 | readyToFinishCombatMode | `` | `boolean` | `obj:readyToFinishCombatMode()` |
 | getTimeSinceLastCombatModeInHours | `` | `number` | `obj:getTimeSinceLastCombatModeInHours()` |
-| hasFocusedTarget | `` | `void` | `obj:hasFocusedTarget()` |
+| hasFocusedTarget | `` | `hand` | `obj:hasFocusedTarget()` |
 | changeState | `newState: integer, minTime: number` | `void` | `obj:changeState(newState, minTime)` |
 | getStateClass | `state: integer` | `lightuserdata` | `obj:getStateClass(state)` |
 | update [1] | `` | `void` | `obj:update()` |
@@ -2770,7 +2770,7 @@
 |---|---|---|---|
 | me | `Character` | RW | `obj.me = <value>` |
 | combatClass | `CombatClass` | RW | `obj.combatClass = <value>` |
-| attackSlotH | `number` | RW | `obj.attackSlotH = <value>` |
+| attackSlotH | `hand` | RW | `obj.attackSlotH = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -2832,8 +2832,8 @@
 | canStrafe | `boolean` | RW | `obj.canStrafe = <value>` |
 | speedLimit | `number` | RW | `obj.speedLimit = <value>` |
 | currentAccelSpeed | `number` | RW | `obj.currentAccelSpeed = <value>` |
-| lookAtCharacter | `unknown` | RW | `obj.lookAtCharacter = <value>` |
-| combatTarget | `unknown` | RW | `obj.combatTarget = <value>` |
+| lookAtCharacter | `hand` | RW | `obj.lookAtCharacter = <value>` |
+| combatTarget | `hand` | RW | `obj.combatTarget = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -2966,7 +2966,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| contextMenuTarget | `unknown` | RW | `obj.contextMenuTarget = <value>` |
+| contextMenuTarget | `hand` | RW | `obj.contextMenuTarget = <value>` |
 | name | `string` | RW | `obj.name = <value>` |
 | nameText | `lightuserdata` | R | `obj.nameText` |
 | optionsList | `lightuserdata` | R | `obj.optionsList` |
@@ -3011,7 +3011,7 @@
 | crafting | `CraftingItemDequeBinding::DequeType` | RW | `obj.crafting = <value>` |
 | specialCraftItemType | `integer` | RW | `obj.specialCraftItemType = <value>` |
 | repeat | `boolean` | RW | `obj.repeat = <value>` |
-| whosCrafting | `unknown` | RW | `obj.whosCrafting = <value>` |
+| whosCrafting | `hand` | RW | `obj.whosCrafting = <value>` |
 | itemCrafted | `boolean` | RW | `obj.itemCrafted = <value>` |
 | failiureNotified | `boolean` | RW | `obj.failiureNotified = <value>` |
 | biggestCraftableItem | `GameData` | RW | `obj.biggestCraftableItem = <value>` |
@@ -3208,7 +3208,7 @@
 | changeCategory | `cat: integer` | `void` | `obj:changeCategory(cat)` |
 | getCurrentCategory | `` | `integer` | `obj:getCurrentCategory()` |
 | addCustomLine | `` | `void` | `obj:addCustomLine()` |
-| getObject | `` | `void` | `obj:getObject()` |
+| getObject | `` | `hand` | `obj:getObject()` |
 | setLineSpacing | `numLinesPerScreen: number` | `void` | `obj:setLineSpacing(numLinesPerScreen)` |
 | getLine | `key: string, cat: integer` | `DataPanelLine` | `obj:getLine(key, cat)` |
 | lineExists | `key: string, cat: integer` | `boolean` | `obj:lineExists(key, cat)` |
@@ -3263,7 +3263,7 @@
 | resize | `width: integer, height: integer` | `void` | `obj:resize(width, height)` |
 | getBottom | `` | `integer` | `obj:getBottom()` |
 | getType | `` | `integer` | `obj:getType()` |
-| getUserData | `` | `void` | `obj:getUserData()` |
+| getUserData | `` | `hand` | `obj:getUserData()` |
 | getNumWidgets | `` | `integer` | `obj:getNumWidgets()` |
 | getWidget | `index: integer` | `lightuserdata` | `obj:getWidget(index)` |
 
@@ -3296,7 +3296,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| userData | `unknown` | RW | `obj.userData = <value>` |
+| userData | `hand` | RW | `obj.userData = <value>` |
 | button | `lightuserdata` | RW | `obj.button = <value>` |
 | buttonWidth | `number` | RW | `obj.buttonWidth = <value>` |
 | buttonHeight | `number` | RW | `obj.buttonHeight = <value>` |
@@ -3305,7 +3305,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| getUserData | `` | `void` | `obj:getUserData()` |
+| getUserData | `` | `hand` | `obj:getUserData()` |
 | createMe | `top: number, lastLine: boolean` | `void` | `obj:createMe(top, lastLine)` |
 
 ## DataPanelLine_CheckBox
@@ -3562,7 +3562,7 @@
 | chancePermanent | `number` | RW | `obj.chancePermanent = <value>` |
 | chanceTemporary | `number` | RW | `obj.chanceTemporary = <value>` |
 | unique | `boolean` | RW | `obj.unique = <value>` |
-| uniqueOwner | `unknown` | RW | `obj.uniqueOwner = <value>` |
+| uniqueOwner | `hand` | RW | `obj.uniqueOwner = <value>` |
 | dialogRepeatMinTimeInHours | `number` | RW | `obj.dialogRepeatMinTimeInHours = <value>` |
 | lastTimeSaid | `TimeOfDay` | RW | `obj.lastTimeSaid = <value>` |
 | score | `integer` | RW | `obj.score = <value>` |
@@ -3658,21 +3658,21 @@
 | shouting | `boolean` | RW | `obj.shouting = <value>` |
 | staysOnScreen | `boolean` | RW | `obj.staysOnScreen = <value>` |
 | me | `Character` | RW | `obj.me = <value>` |
-| conversationTarget | `unknown` | RW | `obj.conversationTarget = <value>` |
+| conversationTarget | `hand` | RW | `obj.conversationTarget = <value>` |
 | stats | `CharStats` | RW | `obj.stats = <value>` |
 | movement | `CharMovement` | RW | `obj.movement = <value>` |
 | currentConversationType | `integer` | RW | `obj.currentConversationType = <value>` |
 | currentConversation | `DialogLineData` | RW | `obj.currentConversation = <value>` |
 | currentLine | `DialogLineData` | RW | `obj.currentLine = <value>` |
-| interjector1 | `unknown` | RW | `obj.interjector1 = <value>` |
-| interjector2 | `unknown` | RW | `obj.interjector2 = <value>` |
-| interjector3 | `unknown` | RW | `obj.interjector3 = <value>` |
+| interjector1 | `hand` | RW | `obj.interjector1 = <value>` |
+| interjector2 | `hand` | RW | `obj.interjector2 = <value>` |
+| interjector3 | `hand` | RW | `obj.interjector3 = <value>` |
 | speechBubblePanel | `DialogueSpeechBubble` | RW | `obj.speechBubblePanel = <value>` |
 | speechTextTimer | `number` | RW | `obj.speechTextTimer = <value>` |
 | speechTextTimer_forced | `number` | RW | `obj.speechTextTimer_forced = <value>` |
 | npcReplyText | `string` | RW | `obj.npcReplyText = <value>` |
-| conversationMaster | `unknown` | RW | `obj.conversationMaster = <value>` |
-| waitingForReplyFrom | `unknown` | RW | `obj.waitingForReplyFrom = <value>` |
+| conversationMaster | `hand` | RW | `obj.conversationMaster = <value>` |
+| waitingForReplyFrom | `hand` | RW | `obj.waitingForReplyFrom = <value>` |
 | pacakgesIHave | `GameData` | RW | `obj.pacakgesIHave = <value>` |
 | locked | `DialogLineDataBoolMapBinding::MapType` | RW | `obj.locked = <value>` |
 | _hasChanceLines | `DialogLineDataBoolMapBinding::MapType` | RW | `obj._hasChanceLines = <value>` |
@@ -3690,7 +3690,7 @@
 | setupWordSwaps | `` | `void` | `obj:setupWordSwaps()` |
 | getGUIData | `cat: integer` | `void` | `obj:getGUIData(cat)` |
 | create | `` | `void` | `obj:create()` |
-| getHandle | `` | `void` | `obj:getHandle()` |
+| getHandle | `` | `hand` | `obj:getHandle()` |
 | getCharacter | `` | `Character` | `obj:getCharacter()` |
 | setLineLocked | `on: boolean` | `void` | `obj:setLineLocked(on)` |
 | isLocked | `` | `boolean` | `obj:isLocked()` |
@@ -3708,7 +3708,7 @@
 | runCustomDialog | `` | `boolean` | `obj:runCustomDialog()` |
 | scoreCustomDialog | `` | `integer` | `obj:scoreCustomDialog()` |
 | conversationHasEnded | `` | `boolean` | `obj:conversationHasEnded()` |
-| getConversationTarget | `` | `void` | `obj:getConversationTarget()` |
+| getConversationTarget | `` | `hand` | `obj:getConversationTarget()` |
 | changeConversationTarget | `` | `void` | `obj:changeConversationTarget()` |
 | conversationHasEndedPrettyMuch | `` | `boolean` | `obj:conversationHasEndedPrettyMuch()` |
 | makeAnnouncement | `` | `boolean` | `obj:makeAnnouncement()` |
@@ -4345,7 +4345,7 @@
 | triggerCampaign [2] | `targetTown: RootObjectBase, _data: GameData, minTime: number, maxTime: number, hometown: TownBase, forceDuplicate: boolean, triggeringFaction: Faction` | `void` | `obj:triggerCampaign(targetTown, _data, minTime, maxTime, hometown, forceDuplicate, triggeringFaction)` |
 | triggerCampaign [3] | `randomTriggers: FitnessSelector<CampaignTriggerData*>, targetTown: RootObjectBase, hometown: TownBase, forceDuplicate: boolean, triggeringFaction: Faction` | `void` | `obj:triggerCampaign(randomTriggers, targetTown, hometown, forceDuplicate, triggeringFaction)` |
 | getCurrentCampaign | `` | `lightuserdata` | `obj:getCurrentCampaign()` |
-| getAITarget | `` | `void` | `obj:getAITarget()` |
+| getAITarget | `` | `hand` | `obj:getAITarget()` |
 | getMyUnloadedAI | `` | `integer` | `obj:getMyUnloadedAI()` |
 | isBiomeHomeTerritory | `area: userdata` | `boolean` | `obj:isBiomeHomeTerritory(area)` |
 | getNearestTown | `p: Vector3` | `TownBase` | `obj:getNearestTown(p)` |
@@ -4365,8 +4365,8 @@
 |---|---|---|---|
 | timeToStart | `TimeOfDay` | RW | `obj.timeToStart = <value>` |
 | data | `lightuserdata` | R | `obj.data` |
-| target | `unknown` | RW | `obj.target = <value>` |
-| homeBase | `unknown` | RW | `obj.homeBase = <value>` |
+| target | `hand` | RW | `obj.target = <value>` |
+| homeBase | `hand` | RW | `obj.homeBase = <value>` |
 | enemy | `Faction` | RW | `obj.enemy = <value>` |
 | numAttempts | `integer` | RW | `obj.numAttempts = <value>` |
 
@@ -4540,7 +4540,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| getOutOfTheWayOfCharacter | `unknown` | RW | `obj.getOutOfTheWayOfCharacter = <value>` |
+| getOutOfTheWayOfCharacter | `hand` | RW | `obj.getOutOfTheWayOfCharacter = <value>` |
 | currentPosition | `Vector3` | RW | `obj.currentPosition = <value>` |
 | me | `Character` | RW | `obj.me = <value>` |
 | combatMover | `CombatMovementController` | RW | `obj.combatMover = <value>` |
@@ -4707,20 +4707,20 @@
 | manager | `lightuserdata` | R | `obj.manager` |
 | guiPlatform | `lightuserdata` | R | `obj.guiPlatform` |
 | _closeTradeWindowMsg | `boolean` | RW | `obj._closeTradeWindowMsg = <value>` |
-| tradeA | `unknown` | RW | `obj.tradeA = <value>` |
-| tradeB | `unknown` | RW | `obj.tradeB = <value>` |
-| inventoryWindowBuilding | `unknown` | RW | `obj.inventoryWindowBuilding = <value>` |
-| inventoryWindowCharacter | `unknown` | RW | `obj.inventoryWindowCharacter = <value>` |
-| inventoryWindowTrader | `unknown` | RW | `obj.inventoryWindowTrader = <value>` |
-| inventoryWindowNPC | `unknown` | RW | `obj.inventoryWindowNPC = <value>` |
+| tradeA | `hand` | RW | `obj.tradeA = <value>` |
+| tradeB | `hand` | RW | `obj.tradeB = <value>` |
+| inventoryWindowBuilding | `hand` | RW | `obj.inventoryWindowBuilding = <value>` |
+| inventoryWindowCharacter | `hand` | RW | `obj.inventoryWindowCharacter = <value>` |
+| inventoryWindowTrader | `hand` | RW | `obj.inventoryWindowTrader = <value>` |
+| inventoryWindowNPC | `hand` | RW | `obj.inventoryWindowNPC = <value>` |
 | characterEditor | `CharacterEditWindow` | RW | `obj.characterEditor = <value>` |
 | guiScreenLabelsMutex | `lightuserdata` | R | `obj.guiScreenLabelsMutex` |
-| selectedObject | `unknown` | RW | `obj.selectedObject = <value>` |
-| selectedPlayerCharacter | `unknown` | RW | `obj.selectedPlayerCharacter = <value>` |
+| selectedObject | `hand` | RW | `obj.selectedObject = <value>` |
+| selectedPlayerCharacter | `hand` | RW | `obj.selectedPlayerCharacter = <value>` |
 | cursorPanel | `DatapanelGUI` | RW | `obj.cursorPanel = <value>` |
 | cursorAction | `boolean` | RW | `obj.cursorAction = <value>` |
-| cursorActionPlayer | `unknown` | RW | `obj.cursorActionPlayer = <value>` |
-| cursorActionTarget | `unknown` | RW | `obj.cursorActionTarget = <value>` |
+| cursorActionPlayer | `hand` | RW | `obj.cursorActionPlayer = <value>` |
+| cursorActionTarget | `hand` | RW | `obj.cursorActionTarget = <value>` |
 | visible | `boolean` | RW | `obj.visible = <value>` |
 | created | `boolean` | RW | `obj.created = <value>` |
 | inventoryWindowsOpen | `ForgottenInventoryWindowsOpenMapBinding::MapType` | RW | `obj.inventoryWindowsOpen = <value>` |
@@ -4797,8 +4797,8 @@
 | getInventoryWindow | `` | `InventoryGUI` | `obj:getInventoryWindow()` |
 | hasInventoryWindowOpen | `` | `boolean` | `obj:hasInventoryWindowOpen()` |
 | toggleInventoryWindowPermanent | `` | `void` | `obj:toggleInventoryWindowPermanent()` |
-| getSelectedObject | `` | `void` | `obj:getSelectedObject()` |
-| getSelectedPlayerCharacter | `` | `void` | `obj:getSelectedPlayerCharacter()` |
+| getSelectedObject | `` | `hand` | `obj:getSelectedObject()` |
+| getSelectedPlayerCharacter | `` | `hand` | `obj:getSelectedPlayerCharacter()` |
 | showTradeWindow | `type: integer` | `void` | `obj:showTradeWindow(type)` |
 | destroy [1] | `label: ScreenLabelInterface` | `void` | `obj:destroy(label)` |
 | destroy [2] | `datapanel: DatapanelGUI` | `void` | `obj:destroy(datapanel)` |
@@ -4831,7 +4831,7 @@
 | me | `Character` | RW | `obj.me = <value>` |
 | destination | `Vector3` | RW | `obj.destination = <value>` |
 | direction | `Vector3` | RW | `obj.direction = <value>` |
-| movementTarget | `unknown` | RW | `obj.movementTarget = <value>` |
+| movementTarget | `hand` | RW | `obj.movementTarget = <value>` |
 | currentFormationID | `integer` | RW | `obj.currentFormationID = <value>` |
 
 ### Methods
@@ -4913,7 +4913,7 @@
 | storeHandleList [1] | `handle: ogre_unordered_set<hand>::type, _name: string` | `void` | `obj:storeHandleList(handle, _name)` |
 | storeHandleList [2] | `handle: lektor<hand>, _name: string` | `void` | `obj:storeHandleList(handle, _name)` |
 | storeHandle | `name: string, redirect: boolean` | `void` | `obj:storeHandle(name, redirect)` |
-| getHandle | `name: string` | `void` | `obj:getHandle(name)` |
+| getHandle | `name: string` | `hand` | `obj:getHandle(name)` |
 | updateFrom | `mod: boolean` | `boolean` | `obj:updateFrom(mod)` |
 | isValueActive | `v: string` | `boolean` | `obj:isValueActive(v)` |
 | isRefActive | `v: string` | `boolean` | `obj:isRefActive(v)` |
@@ -5190,7 +5190,7 @@
 | factionMgr | `FactionManager` | RW | `obj.factionMgr = <value>` |
 | navmesh | `NavMesh` | RW | `obj.navmesh = <value>` |
 | nodeList | `lightuserdata` | RW | `obj.nodeList = <value>` |
-| guiDisplayObject | `unknown` | RW | `obj.guiDisplayObject = <value>` |
+| guiDisplayObject | `hand` | RW | `obj.guiDisplayObject = <value>` |
 | messageRoller | `lightuserdata` | RW | `obj.messageRoller = <value>` |
 | ogreLogger | `lightuserdata` | RW | `obj.ogreLogger = <value>` |
 | steamEnabled | `boolean` | RW | `obj.steamEnabled = <value>` |
@@ -5325,8 +5325,8 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | msg | `integer` | RW | `obj.msg = <value>` |
-| target | `unknown` | RW | `obj.target = <value>` |
-| from | `unknown` | RW | `obj.from = <value>` |
+| target | `hand` | RW | `obj.target = <value>` |
+| from | `hand` | RW | `obj.from = <value>` |
 | on | `boolean` | RW | `obj.on = <value>` |
 | number | `number` | RW | `obj.number = <value>` |
 | data | `lightuserdata` | R | `obj.data` |
@@ -5529,7 +5529,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | win | `MyGUI::Widget` | R | `obj.win` |
-| selectedObject | `unknown` | RW | `obj.selectedObject = <value>` |
+| selectedObject | `hand` | RW | `obj.selectedObject = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -5591,8 +5591,8 @@
 | characterState | `integer` | RW | `obj.characterState = <value>` |
 | lastState | `integer` | RW | `obj.lastState = <value>` |
 | pathState | `integer` | RW | `obj.pathState = <value>` |
-| handle | `unknown` | RW | `obj.handle = <value>` |
-| collided | `unknown` | RW | `obj.collided = <value>` |
+| handle | `hand` | RW | `obj.handle = <value>` |
+| collided | `hand` | RW | `obj.collided = <value>` |
 | sensoryData | `SensoryData` | RW | `obj.sensoryData = <value>` |
 | resolveFlag | `integer` | RW | `obj.resolveFlag = <value>` |
 
@@ -5623,7 +5623,7 @@
 | updateNextEdge | `` | `integer` | `obj:updateNextEdge()` |
 | resolveProblems | `` | `void` | `obj:resolveProblems()` |
 | atGoal | `` | `boolean` | `obj:atGoal()` |
-| getCollidedCharacter | `` | `void` | `obj:getCollidedCharacter()` |
+| getCollidedCharacter | `` | `hand` | `obj:getCollidedCharacter()` |
 | setHandle | `` | `void` | `obj:setHandle()` |
 | calculateFuturePosition [1] | `d: number, out: hkVector4f, dir: hkVector4f, stopAtScreenEdge: boolean` | `integer` | `obj:calculateFuturePosition(d, out, dir, stopAtScreenEdge)` |
 | calculateFuturePosition [2] | `distance: number` | `Vector3` | `obj:calculateFuturePosition(distance)` |
@@ -5947,7 +5947,7 @@
 | exteriorsInvisible | `boolean` | RW | `obj.exteriorsInvisible = <value>` |
 | interiorMode | `boolean` | RW | `obj.interiorMode = <value>` |
 | dataEditWindow | `GameDataEditorWindow` | RW | `obj.dataEditWindow = <value>` |
-| currentBuilding | `unknown` | RW | `obj.currentBuilding = <value>` |
+| currentBuilding | `hand` | RW | `obj.currentBuilding = <value>` |
 | currentInterior | `string` | RW | `obj.currentInterior = <value>` |
 | currentExterior | `string` | RW | `obj.currentExterior = <value>` |
 | interiorModeButton | `lightuserdata` | R | `obj.interiorModeButton` |
@@ -6054,7 +6054,7 @@
 | getCallbackObject | `` | `RootObject` | `obj:getCallbackObject()` |
 | _addToList | `` | `void` | `obj:_addToList()` |
 | _removeFromList | `checkEverything: boolean` | `void` | `obj:_removeFromList(checkEverything)` |
-| getHandle | `` | `void` | `obj:getHandle()` |
+| getHandle | `` | `hand` | `obj:getHandle()` |
 | loadFrom [1] | `container: GameDataContainer, inventoryState: GameData` | `void` | `obj:loadFrom(container, inventoryState)` |
 | loadFrom [2] | `state: GameSaveState` | `void` | `obj:loadFrom(state)` |
 | fillFromVendorList [1] | `vendorData: GameData, f: Faction` | `void` | `obj:fillFromVendorList(vendorData, f)` |
@@ -6188,7 +6188,7 @@
 | paymentRequired | `boolean` | RW | `obj.paymentRequired = <value>` |
 | canDropItems | `boolean` | RW | `obj.canDropItems = <value>` |
 | isPlayer | `boolean` | RW | `obj.isPlayer = <value>` |
-| owner | `unknown` | RW | `obj.owner = <value>` |
+| owner | `hand` | RW | `obj.owner = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -6269,8 +6269,8 @@
 | itemHeight | `integer` | RW | `obj.itemHeight = <value>` |
 | deathItem | `boolean` | RW | `obj.deathItem = <value>` |
 | objectType | `integer` | RW | `obj.objectType = <value>` |
-| properOwner | `unknown` | RW | `obj.properOwner = <value>` |
-| _whosInventoryWeAreIn | `unknown` | RW | `obj._whosInventoryWeAreIn = <value>` |
+| properOwner | `hand` | RW | `obj.properOwner = <value>` |
+| _whosInventoryWeAreIn | `hand` | RW | `obj._whosInventoryWeAreIn = <value>` |
 | _isResearchArtifact | `boolean` | RW | `obj._isResearchArtifact = <value>` |
 | itemGroup | `lightuserdata` | RW | `obj.itemGroup = <value>` |
 
@@ -6311,7 +6311,7 @@
 | getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
 | getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
 | addQuantity | `amount: integer` | `integer` | `obj:addQuantity(amount)` |
-| getProperOwner | `` | `void` | `obj:getProperOwner()` |
+| getProperOwner | `` | `hand` | `obj:getProperOwner()` |
 | setProperOwner | `` | `void` | `obj:setProperOwner()` |
 | getTooltipTradeValue | `` | `void` | `obj:getTooltipTradeValue()` |
 
@@ -6342,8 +6342,6 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | notifyCellSizeChanged | `` | `void` | `InventoryLayout.notifyCellSizeChanged()`<br>`obj:notifyCellSizeChanged()` |
-| getCellSize | `` | `void` | `InventoryLayout.getCellSize()`<br>`obj:getCellSize()` |
-| setCellSize | `` | `void` | `InventoryLayout.setCellSize()`<br>`obj:setCellSize()` |
 
 ## InventorySection
 **Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
@@ -6482,7 +6480,7 @@
 |---|---|---|---|
 | physicalShouldExist | `boolean` | RW | `obj.physicalShouldExist = <value>` |
 | existAsBareWeapon | `boolean` | RW | `obj.existAsBareWeapon = <value>` |
-| persistant | `unknown` | RW | `obj.persistant = <value>` |
+| persistant | `hand` | RW | `obj.persistant = <value>` |
 | visible | `boolean` | RW | `obj.visible = <value>` |
 | physical | `lightuserdata` | RW | `obj.physical = <value>` |
 | _isPhysical | `boolean` | RW | `obj._isPhysical = <value>` |
@@ -6528,7 +6526,7 @@
 | createPhysical | `` | `boolean` | `obj:createPhysical()` |
 | destroyPhysical | `` | `void` | `obj:destroyPhysical()` |
 | loadUnloadCheck | `` | `void` | `obj:loadUnloadCheck()` |
-| getInventoryWeAreIn | `` | `void` | `obj:getInventoryWeAreIn()` |
+| getInventoryWeAreIn | `` | `hand` | `obj:getInventoryWeAreIn()` |
 | setInventoryWeAreIn | `` | `void` | `obj:setInventoryWeAreIn()` |
 | isFood | `` | `boolean` | `obj:isFood()` |
 | activate | `createPhysical: boolean, bareWeapon: integer, rotation: Quaternion, fixedPosition: boolean, bareWeapon: integer, dynamicPhysics: boolean` | `void` | `obj:activate(createPhysical, bareWeapon, rotation, fixedPosition, bareWeapon, dynamicPhysics)` |
@@ -6594,7 +6592,7 @@
 | panel | `lightuserdata` | R | `obj.panel` |
 | interiorModeWindow | `InteriorModeButtonWindow` | RW | `obj.interiorModeWindow = <value>` |
 | selectedLocked | `integer` | RW | `obj.selectedLocked = <value>` |
-| selectedObject | `unknown` | RW | `obj.selectedObject = <value>` |
+| selectedObject | `hand` | RW | `obj.selectedObject = <value>` |
 | selectedFeature | `lightuserdata` | R | `obj.selectedFeature` |
 | seedMode | `integer` | RW | `obj.seedMode = <value>` |
 | roadMode | `integer` | RW | `obj.roadMode = <value>` |
@@ -6738,7 +6736,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| mountedBuilding | `unknown` | RW | `obj.mountedBuilding = <value>` |
+| mountedBuilding | `hand` | RW | `obj.mountedBuilding = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -6896,7 +6894,7 @@
 | biomeTimer | `number` | RW | `obj.biomeTimer = <value>` |
 | lastFrameBiomeGroup | `GameData` | RW | `obj.lastFrameBiomeGroup = <value>` |
 | rememberlastBiomeGroup | `GameData` | RW | `obj.rememberlastBiomeGroup = <value>` |
-| portraitContextMenuTarget | `unknown` | RW | `obj.portraitContextMenuTarget = <value>` |
+| portraitContextMenuTarget | `hand` | RW | `obj.portraitContextMenuTarget = <value>` |
 | portraitContextMenuTimer | `number` | RW | `obj.portraitContextMenuTimer = <value>` |
 | portraitSelectedContextIndex | `integer` | RW | `obj.portraitSelectedContextIndex = <value>` |
 | portraitsUpdating | `boolean` | RW | `obj.portraitsUpdating = <value>` |
@@ -7142,7 +7140,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| handle | `unknown` | RW | `obj.handle = <value>` |
+| handle | `hand` | RW | `obj.handle = <value>` |
 | image | `lightuserdata` | R | `obj.image` |
 
 ### Methods
@@ -7159,7 +7157,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| handle | `unknown` | RW | `obj.handle = <value>` |
+| handle | `hand` | RW | `obj.handle = <value>` |
 | zoomLayer | `integer` | RW | `obj.zoomLayer = <value>` |
 | root | `lightuserdata` | R | `obj.root` |
 | image | `lightuserdata` | R | `obj.image` |
@@ -7538,7 +7536,7 @@
 | getClosestExteriorPoint | `point: Vector3, radius: number, inset: number, out: Vector3` | `integer` | `obj:getClosestExteriorPoint(point, radius, inset, out)` |
 | setDoorState | `open: boolean` | `void` | `obj:setDoorState(open)` |
 | isInterior | `key: integer` | `boolean` | `obj:isInterior(key)` |
-| getHandle | `key: integer` | `void` | `obj:getHandle(key)` |
+| getHandle | `key: integer` | `hand` | `obj:getHandle(key)` |
 | getPositionValid | `point: Vector3` | `boolean` | `obj:getPositionValid(point)` |
 | processCompletedCharacterMessages | `` | `void` | `obj:processCompletedCharacterMessages()` |
 | processDoorRequests | `` | `void` | `obj:processDoorRequests()` |
@@ -7971,7 +7969,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| ordersCharacter | `unknown` | RW | `obj.ordersCharacter = <value>` |
+| ordersCharacter | `hand` | RW | `obj.ordersCharacter = <value>` |
 | ordersItemBox | `OrdersItemBox` | RW | `obj.ordersItemBox = <value>` |
 | ordersItemWidth | `integer` | RW | `obj.ordersItemWidth = <value>` |
 | ordersItemBoxScrollBarSize | `integer` | RW | `obj.ordersItemBoxScrollBarSize = <value>` |
@@ -8010,7 +8008,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | _homeTown | `TownBase` | RW | `obj._homeTown = <value>` |
-| _homeBuilding | `unknown` | RW | `obj._homeBuilding = <value>` |
+| _homeBuilding | `hand` | RW | `obj._homeBuilding = <value>` |
 | faction | `Faction` | RW | `obj.faction = <value>` |
 | me | `Platoon` | RW | `obj.me = <value>` |
 | occupiedTown | `TownBase` | RW | `obj.occupiedTown = <value>` |
@@ -8088,7 +8086,7 @@
 | normal | `Vector3` | RW | `obj.normal = <value>` |
 | distance | `number` | RW | `obj.distance = <value>` |
 | shape | `lightuserdata` | R | `obj.shape` |
-| hitObject | `unknown` | RW | `obj.hitObject = <value>` |
+| hitObject | `hand` | RW | `obj.hitObject = <value>` |
 | _group | `integer` | RW | `obj._group = <value>` |
 | _hitObjectUnsafePtr | `RootObject` | RW | `obj._hitObjectUnsafePtr = <value>` |
 
@@ -8284,7 +8282,7 @@
 | squadType | `integer` | RW | `obj.squadType = <value>` |
 | hasUniques | `YesNoMaybe` | RW | `obj.hasUniques = <value>` |
 | speedOverride | `integer` | RW | `obj.speedOverride = <value>` |
-| isSeparatedSquad | `unknown` | RW | `obj.isSeparatedSquad = <value>` |
+| isSeparatedSquad | `hand` | RW | `obj.isSeparatedSquad = <value>` |
 | canRefresh | `boolean` | RW | `obj.canRefresh = <value>` |
 | regenerates | `boolean` | RW | `obj.regenerates = <value>` |
 | myBaseHomeTownData | `GameData` | RW | `obj.myBaseHomeTownData = <value>` |
@@ -8300,7 +8298,7 @@
 | _persistentSquad | `boolean` | RW | `obj._persistentSquad = <value>` |
 | isResidentSquad | `boolean` | RW | `obj.isResidentSquad = <value>` |
 | currentSpawnArea | `lightuserdata` | RW | `obj.currentSpawnArea = <value>` |
-| squadleader | `unknown` | RW | `obj.squadleader = <value>` |
+| squadleader | `hand` | RW | `obj.squadleader = <value>` |
 | ownerships | `Ownerships` | RW | `obj.ownerships = <value>` |
 | activePlatoon | `ActivePlatoon` | RW | `obj.activePlatoon = <value>` |
 | unloadedPlatoon | `lightuserdata` | RW | `obj.unloadedPlatoon = <value>` |
@@ -8315,7 +8313,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setCharacterCount | `count: integer` | `void` | `obj:setCharacterCount(count)` |
-| chooseNewHome | `` | `void` | `obj:chooseNewHome()` |
+| chooseNewHome | `` | `hand` | `obj:chooseNewHome()` |
 | isUnconcious | `` | `boolean` | `obj:isUnconcious()` |
 | getSquadType | `` | `integer` | `obj:getSquadType()` |
 | setSquadType | `t: integer` | `void` | `obj:setSquadType(t)` |
@@ -8380,7 +8378,7 @@
 | contextMenu | `ContextMenu` | RW | `obj.contextMenu = <value>` |
 | selectBox | `SelectionBox` | RW | `obj.selectBox = <value>` |
 | moveMarker | `lightuserdata` | RW | `obj.moveMarker = <value>` |
-| selectedCharacter | `unknown` | RW | `obj.selectedCharacter = <value>` |
+| selectedCharacter | `hand` | RW | `obj.selectedCharacter = <value>` |
 | aiOptions | `PlayerInterface::AIOptions` | RW | `obj.aiOptions = <value>` |
 | interiorsVisibleHash | `integer` | RW | `obj.interiorsVisibleHash = <value>` |
 | currentFloor | `integer` | RW | `obj.currentFloor = <value>` |
@@ -8389,15 +8387,15 @@
 | mouseRightTargetSet | `boolean` | RW | `obj.mouseRightTargetSet = <value>` |
 | mouseRightTarget | `RootObject` | RW | `obj.mouseRightTarget = <value>` |
 | rmouseTimer | `number` | RW | `obj.rmouseTimer = <value>` |
-| selectedObject | `unknown` | RW | `obj.selectedObject = <value>` |
+| selectedObject | `hand` | RW | `obj.selectedObject = <value>` |
 | onlyAnimalsSelected | `boolean` | RW | `obj.onlyAnimalsSelected = <value>` |
 | selectedLoadedLeft | `integer` | RW | `obj.selectedLoadedLeft = <value>` |
-| trackedCharacterHandle | `unknown` | RW | `obj.trackedCharacterHandle = <value>` |
+| trackedCharacterHandle | `hand` | RW | `obj.trackedCharacterHandle = <value>` |
 | trackedCharacterFloor | `integer` | RW | `obj.trackedCharacterFloor = <value>` |
 | levelEditor | `LevelEditor` | RW | `obj.levelEditor = <value>` |
 | participant | `Faction` | RW | `obj.participant = <value>` |
 | currentPlatoon | `Platoon` | RW | `obj.currentPlatoon = <value>` |
-| deadPlayerSquad | `unknown` | RW | `obj.deadPlayerSquad = <value>` |
+| deadPlayerSquad | `hand` | RW | `obj.deadPlayerSquad = <value>` |
 | placementObject | `lightuserdata` | RW | `obj.placementObject = <value>` |
 | characterEditorMode | `boolean` | RW | `obj.characterEditorMode = <value>` |
 | mLeftUp | `boolean` | RW | `obj.mLeftUp = <value>` |
@@ -8541,14 +8539,14 @@
 | flashing | `integer` | RW | `obj.flashing = <value>` |
 | state | `integer` | RW | `obj.state = <value>` |
 | reloadPortrait | `boolean` | RW | `obj.reloadPortrait = <value>` |
-| characterHandle | `unknown` | RW | `obj.characterHandle = <value>` |
+| characterHandle | `hand` | RW | `obj.characterHandle = <value>` |
 | updateRequested | `boolean` | RW | `obj.updateRequested = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | getCharacter | `` | `Character` | `obj:getCharacter()` |
-| getHandle | `` | `void` | `obj:getHandle()` |
+| getHandle | `` | `hand` | `obj:getHandle()` |
 | update | `` | `boolean` | `obj:update()` |
 | forceUpdate | `` | `void` | `obj:forceUpdate()` |
 | isSelected | `` | `boolean` | `obj:isSelected()` |
@@ -8575,7 +8573,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| characterHandle | `unknown` | RW | `obj.characterHandle = <value>` |
+| characterHandle | `hand` | RW | `obj.characterHandle = <value>` |
 | name | `string` | RW | `obj.name = <value>` |
 | border | `lightuserdata` | R | `obj.border` |
 | imageBackground | `lightuserdata` | R | `obj.imageBackground` |
@@ -9226,7 +9224,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | container | `RootObjectContainer` | RW | `obj.container = <value>` |
-| isInsideBuilding | `unknown` | RW | `obj.isInsideBuilding = <value>` |
+| isInsideBuilding | `hand` | RW | `obj.isInsideBuilding = <value>` |
 | isInsideTownWalls | `integer` | RW | `obj.isInsideTownWalls = <value>` |
 | floorNum | `integer` | RW | `obj.floorNum = <value>` |
 | spacialKey | `integer` | RW | `obj.spacialKey = <value>` |
@@ -9278,7 +9276,7 @@
 | destroyPhysical | `` | `void` | `obj:destroyPhysical()` |
 | notifyEffect | `type: integer, what: integer, strength: number` | `void` | `obj:notifyEffect(type, what, strength)` |
 | loadUnloadCheck | `` | `void` | `obj:loadUnloadCheck()` |
-| isIndoors | `` | `void` | `obj:isIndoors()` |
+| isIndoors | `` | `hand` | `obj:isIndoors()` |
 | setIsInsideBuilding | `` | `void` | `obj:setIsInsideBuilding()` |
 | getLayoutInstanceID | `` | `string` | `obj:getLayoutInstanceID()` |
 | getAABB | `` | `lightuserdata` | `obj:getAABB()` |
@@ -9299,7 +9297,7 @@
 | displayName | `string` | RW | `obj.displayName = <value>` |
 | data | `GameData` | RW | `obj.data = <value>` |
 | pos | `Vector3` | RW | `obj.pos = <value>` |
-| handle | `unknown` | RW | `obj.handle = <value>` |
+| handle | `hand` | RW | `obj.handle = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -9324,7 +9322,7 @@
 | loadFromSerialise | `` | `void` | `obj:loadFromSerialise()` |
 | getOwnerships | `` | `Ownerships` | `obj:getOwnerships()` |
 | setFaction | `` | `void` | `obj:setFaction()` |
-| getHandle | `` | `void` | `obj:getHandle()` |
+| getHandle | `` | `hand` | `obj:getHandle()` |
 | setHandle | `` | `void` | `obj:setHandle()` |
 | serialise | `offset: userdata` | `void` | `obj:serialise(offset)` |
 
@@ -9563,7 +9561,7 @@
 | risingSpeed | `number` | RW | `obj.risingSpeed = <value>` |
 | risingHeight | `number` | RW | `obj.risingHeight = <value>` |
 | labelSize | `integer` | RW | `obj.labelSize = <value>` |
-| trackingHandle | `unknown` | RW | `obj.trackingHandle = <value>` |
+| trackingHandle | `hand` | RW | `obj.trackingHandle = <value>` |
 | trackingOffset | `Vector3` | RW | `obj.trackingOffset = <value>` |
 | destroyed | `boolean` | RW | `obj.destroyed = <value>` |
 | color | `unknown` | RW | `obj.color = <value>` |
@@ -9706,7 +9704,7 @@
 | spottedSuspiciousPeople | `SensoryData::SpottingPeopleMgr` | RW | `obj.spottedSuspiciousPeople = <value>` |
 | progressBar | `FloatingProgressBar` | RW | `obj.progressBar = <value>` |
 | progressBarStillNeeded | `integer` | RW | `obj.progressBarStillNeeded = <value>` |
-| spottedGuyIndexForProgressBar | `unknown` | RW | `obj.spottedGuyIndexForProgressBar = <value>` |
+| spottedGuyIndexForProgressBar | `hand` | RW | `obj.spottedGuyIndexForProgressBar = <value>` |
 | amSharingThisFrame | `boolean` | RW | `obj.amSharingThisFrame = <value>` |
 | assessList | `lightuserdata` | R | `obj.assessList` |
 | flockingList | `lightuserdata` | R | `obj.flockingList` |
@@ -9815,7 +9813,7 @@
 | getMoney | `` | `integer` | `obj:getMoney()` |
 | getOrientation | `` | `Quaternion` | `obj:getOrientation()` |
 | getPosition | `` | `Vector3` | `obj:getPosition()` |
-| isIndoors | `` | `void` | `obj:isIndoors()` |
+| isIndoors | `` | `hand` | `obj:isIndoors()` |
 | getFloor | `` | `integer` | `obj:getFloor()` |
 | getCurrentTownLocation | `` | `TownBase` | `obj:getCurrentTownLocation()` |
 | getDataType | `` | `integer` | `obj:getDataType()` |
@@ -9981,7 +9979,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| characterHandle | `unknown` | RW | `obj.characterHandle = <value>` |
+| characterHandle | `hand` | RW | `obj.characterHandle = <value>` |
 | name | `string` | RW | `obj.name = <value>` |
 | border | `lightuserdata` | R | `obj.border` |
 | imgBoxPortrait | `lightuserdata` | R | `obj.imgBoxPortrait` |
@@ -10231,9 +10229,9 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | resetsWhenDone | `boolean` | RW | `obj.resetsWhenDone = <value>` |
-| subject | `unknown` | RW | `obj.subject = <value>` |
+| subject | `hand` | RW | `obj.subject = <value>` |
 | weight | `number` | RW | `obj.weight = <value>` |
-| currentSubTarget | `unknown` | RW | `obj.currentSubTarget = <value>` |
+| currentSubTarget | `hand` | RW | `obj.currentSubTarget = <value>` |
 | location | `Vector3` | RW | `obj.location = <value>` |
 | startTime | `integer` | RW | `obj.startTime = <value>` |
 | endTime | `integer` | RW | `obj.endTime = <value>` |
@@ -10802,11 +10800,11 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| parentTown | `unknown` | RW | `obj.parentTown = <value>` |
+| parentTown | `hand` | RW | `obj.parentTown = <value>` |
 | item | `Item` | RW | `obj.item = <value>` |
 | nestData | `GameData` | RW | `obj.nestData = <value>` |
 | pos | `Vector3` | RW | `obj.pos = <value>` |
-| insideBuilding | `unknown` | RW | `obj.insideBuilding = <value>` |
+| insideBuilding | `hand` | RW | `obj.insideBuilding = <value>` |
 
 ## TownBase::ResidentData
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
@@ -10971,7 +10969,7 @@
 | rootAimDir | `Vector3` | RW | `obj.rootAimDir = <value>` |
 | currentAimSpeed | `number` | RW | `obj.currentAimSpeed = <value>` |
 | currentAimTarget | `Vector3` | RW | `obj.currentAimTarget = <value>` |
-| mountedBuilding | `unknown` | RW | `obj.mountedBuilding = <value>` |
+| mountedBuilding | `hand` | RW | `obj.mountedBuilding = <value>` |
 | hingePart | `lightuserdata` | R | `obj.hingePart` |
 | gunPart | `lightuserdata` | R | `obj.gunPart` |
 | aimTargetPos | `Vector3` | RW | `obj.aimTargetPos = <value>` |
@@ -10996,7 +10994,7 @@
 | calculatePowerMult | `` | `number` | `obj:calculatePowerMult()` |
 | _teleport | `p: Vector3` | `void` | `obj:_teleport(p)` |
 | clearTownBuildingsManagerPtr | `` | `void` | `obj:clearTownBuildingsManagerPtr()` |
-| getMountedBuilding | `` | `void` | `obj:getMountedBuilding()` |
+| getMountedBuilding | `` | `hand` | `obj:getMountedBuilding()` |
 | serialise | `offset: userdata` | `void` | `obj:serialise(offset)` |
 
 ## TutorialGUI
@@ -11148,11 +11146,11 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| shopOwner | `unknown` | RW | `obj.shopOwner = <value>` |
-| callbackOwner | `unknown` | RW | `obj.callbackOwner = <value>` |
+| shopOwner | `hand` | RW | `obj.shopOwner = <value>` |
+| callbackOwner | `hand` | RW | `obj.callbackOwner = <value>` |
 | hasProgressBarWhenUsed | `boolean` | RW | `obj.hasProgressBarWhenUsed = <value>` |
 | progressBarLevel | `number` | RW | `obj.progressBarLevel = <value>` |
-| occupantSelection | `unknown` | RW | `obj.occupantSelection = <value>` |
+| occupantSelection | `hand` | RW | `obj.occupantSelection = <value>` |
 | needsOperating | `boolean` | RW | `obj.needsOperating = <value>` |
 | numOperatorsMax | `integer` | RW | `obj.numOperatorsMax = <value>` |
 | hungerRate | `number` | RW | `obj.hungerRate = <value>` |
@@ -11222,7 +11220,7 @@
 | setup | `` | `void` | `obj:setup()` |
 | getOutputBasedRotationSpeedMult | `` | `number` | `obj:getOutputBasedRotationSpeedMult()` |
 | getGUIPowerEfficiencyToolTipString | `` | `string` | `obj:getGUIPowerEfficiencyToolTipString()` |
-| getOccupant | `` | `void` | `obj:getOccupant()` |
+| getOccupant | `` | `hand` | `obj:getOccupant()` |
 | getAnimation | `` | `string` | `obj:getAnimation()` |
 | getAnimationKO | `` | `string` | `obj:getAnimationKO()` |
 | getAnimationDazed | `` | `string` | `obj:getAnimationDazed()` |
@@ -11331,7 +11329,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| handle | `unknown` | RW | `obj.handle = <value>` |
+| handle | `hand` | RW | `obj.handle = <value>` |
 | range | `number` | RW | `obj.range = <value>` |
 | isEnemy | `boolean` | RW | `obj.isEnemy = <value>` |
 
@@ -11343,7 +11341,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | wallSectionLinkType | `integer` | RW | `obj.wallSectionLinkType = <value>` |
-| shareBuildStateOfAnother | `unknown` | RW | `obj.shareBuildStateOfAnother = <value>` |
+| shareBuildStateOfAnother | `hand` | RW | `obj.shareBuildStateOfAnother = <value>` |
 | othersSharingMyBuildState | `lektor<hand>` | RW | `obj.othersSharingMyBuildState = <value>` |
 
 ### Methods

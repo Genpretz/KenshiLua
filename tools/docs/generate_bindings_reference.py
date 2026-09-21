@@ -183,7 +183,7 @@ def extract_args_from_body(body: str):
             indices[idx] = {"name": var, "type": type_name}
             
     # Pattern B: var = ...checkObject/luaL_check...(L, idx)
-    for m in re.finditer(r"\b([\w_]+)\s*=\s*[^;]*?\b(?:lua[lL]?_check(\w+)|lua[lL]?_to(\w+)|checkObject\s*<\s*([\w:*&\s<>]+)\s*>|handBinding::read)\b[^;]*?\(\s*L\s*,\s*(\d+)", body):
+    for m in re.finditer(r"\b([\w_]+)\s*=\s*[^;]*?\b(?:lua[lL]?_check(\w+)|lua[lL]?_to(\w+)|checkObject\s*<\s*([\w:*&\s<>]+)\s*>|[Hh]andBinding::read)\b[^;]*?\(\s*L\s*,\s*(\d+)", body):
         var = m.group(1)
         check_type = m.group(2) or m.group(3)
         check_obj_type = m.group(4)
@@ -207,7 +207,7 @@ def extract_args_from_body(body: str):
             indices[idx] = {"name": var, "type": t}
             
     # Pattern C: catch any other L usage with indices to know the max index
-    for m in re.finditer(r"\b(?:lua[lL]?_check(\w+)|lua[lL]?_to(\w+)|checkObject\s*<\s*([\w:*&\s<>]+)\s*>|readVector2|readVector3|readVector4|readQuaternion|handBinding::read)\b[^;]*?\(\s*L\s*,\s*(\d+)", body):
+    for m in re.finditer(r"\b(?:lua[lL]?_check(\w+)|lua[lL]?_to(\w+)|checkObject\s*<\s*([\w:*&\s<>]+)\s*>|readVector2|readVector3|readVector4|readQuaternion|[Hh]andBinding::read)\b[^;]*?\(\s*L\s*,\s*(\d+)", body):
         check_type = m.group(1) or m.group(2)
         check_obj_type = m.group(3)
         idx = int(m.group(4))
@@ -236,7 +236,11 @@ def extract_return_type_from_body(body: str) -> str:
     if m:
         return m.group(1).strip()
         
-    if re.search(r"return\s+handBinding::push\s*\(", body) or re.search(r"handBinding::push\s*\(.*?\);\s*return\s+\d+", body):
+    if re.search(r"return\s+[Hh]andBinding::push\s*\(", body) or re.search(r"[Hh]andBinding::push\s*\(.*?\);\s*return\s+\d+", body):
+        return "hand"
+    
+    # Check for pattern: hand result = ...; return HandBinding::push(L, result);
+    if re.search(r"\bhand\s+\w+\s*=\s*[^;]+;\s*return\s+[Hh]andBinding::push\s*\(", body):
         return "hand"
         
     m = re.search(r"pushObject(?:T)?\s*<\s*([\w:*&\s<>]+)\s*>\s*\(.*?\);\s*return\s+\d+", body)
@@ -697,7 +701,7 @@ def parse_binding_file(filepath: pathlib.Path):
             
             if body:
                 push_match = re.search(
-                    r"(?:lua_push(\w+)|(pushObject(?:T)?)(?:\s*<\s*[\w:*&\s<>]+>\s*)?|(pushVector2)|(pushVector3)|(pushVector4)|(pushQuaternion)|(handBinding::push))\s*\(\s*L\s*,\s*([^;)]+)", 
+                    r"(?:lua_push(\w+)|(pushObject(?:T)?)(?:\s*<\s*[\w:*&\s<>]+>\s*)?|(pushVector2)|(pushVector3)|(pushVector4)|(pushQuaternion)|([Hh]andBinding::push))\s*\(\s*L\s*,\s*([^;)]+)", 
                     body
                 )
                 if push_match:
