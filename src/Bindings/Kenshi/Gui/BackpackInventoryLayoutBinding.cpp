@@ -1,0 +1,72 @@
+#include "pch.h"
+#include "kenshi\gui\InventoryGUI.h"
+#include "BackpackInventoryLayoutBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Gui/GenericFixedInventoryLayoutBinding.h"
+#include "Bindings/Kenshi/InventoryBinding.h"
+#include "Bindings/Kenshi/Gui/InventoryGUIBinding.h"
+
+namespace KenshiLua
+{
+
+static BackpackInventoryLayout* getInstance(lua_State* L, int idx)
+{
+    return checkObject<BackpackInventoryLayout>(L, idx, BackpackInventoryLayoutBinding::getMetatableName());
+}
+
+// --- Getters for BackpackInventoryLayout ---
+// --- Setters for BackpackInventoryLayout ---
+/*
+Skipped methods needing manual binding:
+  line 283: void setupSections(...) - unsupported arg type
+  line 284: void _NV_setupSections(...) - unsupported arg type
+*/
+
+int BackpackInventoryLayoutBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int BackpackInventoryLayoutBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.BackpackInventoryLayout object");
+    return 1;
+}
+
+void BackpackInventoryLayoutBinding::registerBinding(lua_State* L)
+{
+    static const luaL_Reg meta[] = {
+        { "__gc",       BackpackInventoryLayoutBinding::gc },
+        { "__tostring", BackpackInventoryLayoutBinding::tostring },
+        { 0, 0 }
+    };
+
+    static const luaL_Reg methods[] = {
+        { 0, 0 }
+    };
+
+    registerClass(
+        L, 
+        BackpackInventoryLayoutBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, BackpackInventoryLayoutBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to GenericFixedInventoryLayout
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, BackpackInventoryLayoutBinding::getMetatableName(), GenericFixedInventoryLayoutBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
+}
+
+} // namespace KenshiLua

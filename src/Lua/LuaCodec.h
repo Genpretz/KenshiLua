@@ -1,6 +1,6 @@
 #pragma once
 #include "Lua/BindingHelpers.h"
-#include "Bindings/Util/HandBinding.h"
+#include "Bindings/Kenshi/Util/HandBinding.h"
 
 #include <kenshi/util/hand.h>
 #include <ogre/OgreVector3.h>

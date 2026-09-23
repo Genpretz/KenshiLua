@@ -1,0 +1,25 @@
+#pragma once
+#include "Bindings/Kenshi/TownBinding.h"
+
+#include "kenshi/gui/MapScreen.h"
+
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+}
+
+namespace KenshiLua
+{
+class MapMarkerTownBinding
+{
+public:
+    static const char* getMetatableName() { return "KenshiLua.MapMarkerTown"; }
+    static void registerBinding(lua_State* L);
+
+    static int gc(lua_State* L);
+    static int tostring(lua_State* L);
+
+    static int setVisible(lua_State* L);
+    static int getVisible(lua_State* L);
+};
+}

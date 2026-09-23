@@ -1,0 +1,1618 @@
+#include "pch.h"
+#include "kenshi\Building\Building.h"
+#include "PreviewBuildingBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Building/BuildingBinding.h"
+#include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Kenshi/GameDataBinding.h"
+#include "Bindings/Kenshi/RootObjectBinding.h"
+#include "Bindings/Kenshi/TownBinding.h"
+#include "Bindings/Kenshi/Util/HandBinding.h"
+#include "Bindings/Kenshi/physHitBinding.h"
+
+namespace KenshiLua
+{
+
+static PreviewBuilding* getInstance(lua_State* L, int idx)
+{
+    return checkObject<PreviewBuilding>(L, idx, PreviewBuildingBinding::getMetatableName());
+}
+
+// --- Getters for PreviewBuilding ---
+static int PreviewBuilding_get_parentNode(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushlightuserdata(L, (void*)instance->parentNode);
+    return 1;
+}
+
+static int PreviewBuilding_get_isCurrentlySnapped(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->isCurrentlySnapped ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_snappedTo(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    return pushObject<Building>(L, instance->snappedTo, BuildingBinding::getMetatableName());
+}
+
+static int PreviewBuilding_get_prospectingInformation(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    return pushObject<DatapanelGUI>(L, instance->prospectingInformation, DatapanelGUIBinding::getMetatableName());
+}
+
+static int PreviewBuilding_get_prospectResource(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushinteger(L, (lua_Integer)instance->prospectResource);
+    return 1;
+}
+
+static int PreviewBuilding_get_roofOnly(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->roofOnly ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_spaceAbove(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushnumber(L, instance->spaceAbove);
+    return 1;
+}
+
+static int PreviewBuilding_get_spaceBelow(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushnumber(L, instance->spaceBelow);
+    return 1;
+}
+
+static int PreviewBuilding_get_collisionOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->collisionOK ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_charactersOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->charactersOK ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_floorOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->floorOk ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_indoorsOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->indoorsOK ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_slopeOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->slopeOK ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_nodesOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->nodesOk ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_blockedBuildings(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->blockedBuildings ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_validGround(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->validGround ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_inTown(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    return pushObject<Town>(L, instance->inTown, TownBinding::getMetatableName());
+}
+
+static int PreviewBuilding_get_floorNum(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushinteger(L, instance->floorNum);
+    return 1;
+}
+
+static int PreviewBuilding_get_isOutside(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->isOutside ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_matchSlope(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->matchSlope ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_justBeenBuilt(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    return pushObject<Building>(L, instance->justBeenBuilt, BuildingBinding::getMetatableName());
+}
+
+static int PreviewBuilding_get_yaw(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushnumber(L, instance->yaw);
+    return 1;
+}
+
+static int PreviewBuilding_get_centreOffset(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    pushVector3(L, instance->centreOffset);
+    return 1;
+}
+
+static int PreviewBuilding_get_isFurnitureOf(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    return pushObject<Building>(L, instance->isFurnitureOf, BuildingBinding::getMetatableName());
+}
+
+static int PreviewBuilding_get_isIndoors(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    return pushObject<Building>(L, instance->isIndoors, BuildingBinding::getMetatableName());
+}
+
+static int PreviewBuilding_get_buildDataPtr(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    return pushObject<GameData>(L, instance->buildDataPtr, GameDataBinding::getMetatableName());
+}
+
+static int PreviewBuilding_get_farmData(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    return pushObject<GameData>(L, instance->farmData, GameDataBinding::getMetatableName());
+}
+
+static int PreviewBuilding_get_prospectingOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->prospectingOK ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_furniture(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->furniture ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_exteriorFurniture(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushboolean(L, instance->exteriorFurniture ? 1 : 0);
+    return 1;
+}
+
+static int PreviewBuilding_get_pos(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    pushVector3(L, instance->pos);
+    return 1;
+}
+
+static int PreviewBuilding_get_rot(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    pushQuaternion(L, instance->rot);
+    return 1;
+}
+
+static int PreviewBuilding_get_positionHitGroup(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    lua_pushinteger(L, instance->positionHitGroup);
+    return 1;
+}
+
+// --- Setters for PreviewBuilding ---
+static int PreviewBuilding_set_isCurrentlySnapped(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->isCurrentlySnapped = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_snappedTo(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->snappedTo = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    return 0;
+}
+
+static int PreviewBuilding_set_prospectingInformation(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->prospectingInformation = lua_isnoneornil(L, 2) ? nullptr : checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int PreviewBuilding_set_prospectResource(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->prospectResource = (MiningResource)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int PreviewBuilding_set_roofOnly(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->roofOnly = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_spaceAbove(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->spaceAbove = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int PreviewBuilding_set_spaceBelow(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->spaceBelow = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int PreviewBuilding_set_collisionOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->collisionOK = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_charactersOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->charactersOK = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_floorOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->floorOk = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_indoorsOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->indoorsOK = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_slopeOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->slopeOK = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_nodesOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->nodesOk = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_blockedBuildings(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->blockedBuildings = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_validGround(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->validGround = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_inTown(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->inTown = lua_isnoneornil(L, 2) ? nullptr : checkObject<Town>(L, 2, TownBinding::getMetatableName());
+    return 0;
+}
+
+static int PreviewBuilding_set_floorNum(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->floorNum = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int PreviewBuilding_set_isOutside(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->isOutside = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_matchSlope(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->matchSlope = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_justBeenBuilt(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->justBeenBuilt = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    return 0;
+}
+
+static int PreviewBuilding_set_yaw(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->yaw = (float)luaL_checknumber(L, 2);
+    return 0;
+}
+
+static int PreviewBuilding_set_centreOffset(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    readVector3(L, 2, instance->centreOffset);
+    return 0;
+}
+
+static int PreviewBuilding_set_isFurnitureOf(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->isFurnitureOf = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    return 0;
+}
+
+static int PreviewBuilding_set_isIndoors(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->isIndoors = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    return 0;
+}
+
+static int PreviewBuilding_set_buildDataPtr(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->buildDataPtr = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
+}
+
+static int PreviewBuilding_set_farmData(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->farmData = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
+}
+
+static int PreviewBuilding_set_prospectingOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->prospectingOK = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_furniture(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->furniture = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_exteriorFurniture(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->exteriorFurniture = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int PreviewBuilding_set_pos(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    readVector3(L, 2, instance->pos);
+    return 0;
+}
+
+static int PreviewBuilding_set_rot(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    readQuaternion(L, 2, instance->rot);
+    return 0;
+}
+
+static int PreviewBuilding_set_positionHitGroup(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->positionHitGroup = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+int PreviewBuildingBinding::type(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    PreviewBuilding::PreviewBuildingClassType result = instance->type();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_type(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    PreviewBuilding::PreviewBuildingClassType result = instance->_NV_type();
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int PreviewBuildingBinding::checkProspectingIsNotZero(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->checkProspectingIsNotZero();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_checkProspectingIsNotZero(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_checkProspectingIsNotZero();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isASnapToBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isASnapToBuilding();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isASnapToBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isASnapToBuilding();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isACeilingBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isACeilingBuilding();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isACeilingBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isACeilingBuilding();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::snappingOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->snappingOk();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_snappingOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_snappingOk();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isInteriorBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isInteriorBuilding();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isInteriorBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isInteriorBuilding();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isCurrent(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isCurrent();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::setup(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->setup();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_setup(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_setup();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_destroyEnts(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    instance->_destroyEnts();
+    return 0;
+}
+
+int PreviewBuildingBinding::_NV__destroyEnts(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    instance->_NV__destroyEnts();
+    return 0;
+}
+
+int PreviewBuildingBinding::update(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    instance->update();
+    return 0;
+}
+
+int PreviewBuildingBinding::_NV_update(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    instance->_NV_update();
+    return 0;
+}
+
+int PreviewBuildingBinding::figureOutWhichTown(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    instance->figureOutWhichTown();
+    return 0;
+}
+
+int PreviewBuildingBinding::setVisualPosition(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 position;
+    readVector3(L, 2, position);
+    instance->setVisualPosition(position);
+    return 0;
+}
+
+int PreviewBuildingBinding::_NV_setVisualPosition(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 position;
+    readVector3(L, 2, position);
+    instance->_NV_setVisualPosition(position);
+    return 0;
+}
+
+int PreviewBuildingBinding::yawBy(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    float pan = (float)luaL_checknumber(L, 2);
+    instance->yawBy(pan);
+    return 0;
+}
+
+int PreviewBuildingBinding::yawSet(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    float pan = (float)luaL_checknumber(L, 2);
+    instance->yawSet(pan);
+    return 0;
+}
+
+int PreviewBuildingBinding::rotateBy(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Quaternion by;
+    readQuaternion(L, 2, by);
+    instance->rotateBy(by);
+    return 0;
+}
+
+int PreviewBuildingBinding::tilt(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    float pan = (float)luaL_checknumber(L, 2);
+    instance->tilt(pan);
+    return 0;
+}
+
+int PreviewBuildingBinding::roll(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    float pan = (float)luaL_checknumber(L, 2);
+    instance->roll(pan);
+    return 0;
+}
+
+int PreviewBuildingBinding::setRotation(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Quaternion r;
+    readQuaternion(L, 2, r);
+    instance->setRotation(r);
+    return 0;
+}
+
+int PreviewBuildingBinding::allFootprintsWantBelowGround(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->allFootprintsWantBelowGround();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::allFootprintsWantAboveGround(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->allFootprintsWantAboveGround();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::updateFootprintHeights(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->updateFootprintHeights();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isCollisionOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isCollisionOK();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isCollisionOK(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isCollisionOK();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isFloorOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isFloorOk();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isFloorOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isFloorOk();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isIndoorsOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isIndoorsOk();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isIndoorsOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isIndoorsOk();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isNodesOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isNodesOk();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isNodesOk(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isNodesOk();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isBlockingBuildingsNodes(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isBlockingBuildingsNodes();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isBlockingBuildingsNodes(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isBlockingBuildingsNodes();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isGoodAboveAndBelow(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isGoodAboveAndBelow();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isGoodAboveAndBelow(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isGoodAboveAndBelow();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isOnValidGround(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isOnValidGround();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isOnValidGround(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isOnValidGround();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::isLinked(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->isLinked();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isLinked(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_isLinked();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::moveHeightOffset(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    float h = (float)luaL_checknumber(L, 2);
+    instance->moveHeightOffset(h);
+    return 0;
+}
+
+int PreviewBuildingBinding::resetHeightOffset(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    instance->resetHeightOffset();
+    return 0;
+}
+
+int PreviewBuildingBinding::getFootprintShift(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    float result = instance->getFootprintShift();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int PreviewBuildingBinding::setOrientation(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Quaternion q;
+    readQuaternion(L, 2, q);
+    instance->setOrientation(q);
+    return 0;
+}
+
+int PreviewBuildingBinding::getPosition(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    const Ogre::Vector3 result = instance->getPosition();
+    pushVector3(L, result);
+    return 1;
+}
+
+int PreviewBuildingBinding::getFloor(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    int result = instance->getFloor();
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int PreviewBuildingBinding::setStartPosition(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 p;
+    readVector3(L, 2, p);
+    instance->setStartPosition(p);
+    return 0;
+}
+
+int PreviewBuildingBinding::_NV_setStartPosition(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 p;
+    readVector3(L, 2, p);
+    instance->_NV_setStartPosition(p);
+    return 0;
+}
+
+int PreviewBuildingBinding::setEndPosition(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 position;
+    readVector3(L, 2, position);
+    instance->setEndPosition(position);
+    return 0;
+}
+
+int PreviewBuildingBinding::_NV_setEndPosition(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 position;
+    readVector3(L, 2, position);
+    instance->_NV_setEndPosition(position);
+    return 0;
+}
+
+int PreviewBuildingBinding::getEndPos(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 result = instance->getEndPos();
+    pushVector3(L, result);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_getEndPos(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 result = instance->_NV_getEndPos();
+    pushVector3(L, result);
+    return 1;
+}
+
+int PreviewBuildingBinding::clearPointersTo(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    PreviewBuilding* _a1 = checkObject<PreviewBuilding>(L, 2, PreviewBuildingBinding::getMetatableName());
+    instance->clearPointersTo(_a1);
+    return 0;
+}
+
+int PreviewBuildingBinding::_NV_clearPointersTo(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    PreviewBuilding* _a1 = checkObject<PreviewBuilding>(L, 2, PreviewBuildingBinding::getMetatableName());
+    instance->_NV_clearPointersTo(_a1);
+    return 0;
+}
+
+int PreviewBuildingBinding::placeFinalPreviewBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    instance->placeFinalPreviewBuilding();
+    return 0;
+}
+
+int PreviewBuildingBinding::_NV_placeFinalPreviewBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    instance->_NV_placeFinalPreviewBuilding();
+    return 0;
+}
+
+int PreviewBuildingBinding::insideBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Building* result = instance->insideBuilding();
+    return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
+}
+
+int PreviewBuildingBinding::placementVerification(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->placementVerification();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_placementVerification(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_placementVerification();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::getGameData(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    GameData* result = instance->getGameData();
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+}
+
+int PreviewBuildingBinding::noAltitude(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->noAltitude();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_noAltitude(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_noAltitude();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::noPathfindingNeeded(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->noPathfindingNeeded();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_noPathfindingNeeded(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->_NV_noPathfindingNeeded();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::placePreview(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 position;
+    readVector3(L, 2, position);
+    Ogre::Quaternion rotation;
+    readQuaternion(L, 3, rotation);
+    int floorNumber = (int)luaL_checkinteger(L, 4);
+    instance->placePreview(position, rotation, floorNumber);
+    return 0;
+}
+
+int PreviewBuildingBinding::_NV_placePreview(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 position;
+    readVector3(L, 2, position);
+    Ogre::Quaternion rotation;
+    readQuaternion(L, 3, rotation);
+    int floorNumber = (int)luaL_checkinteger(L, 4);
+    instance->_NV_placePreview(position, rotation, floorNumber);
+    return 0;
+}
+
+int PreviewBuildingBinding::resetUseageNodes(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    instance->resetUseageNodes();
+    return 0;
+}
+
+int PreviewBuildingBinding::calculateRotationsAndStuff(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 position;
+    readVector3(L, 2, position);
+    instance->calculateRotationsAndStuff(position);
+    return 0;
+}
+
+int PreviewBuildingBinding::_NV_calculateRotationsAndStuff(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    Ogre::Vector3 position;
+    readVector3(L, 2, position);
+    instance->_NV_calculateRotationsAndStuff(position);
+    return 0;
+}
+
+int PreviewBuildingBinding::placementVerification_recurse(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    bool result = instance->placementVerification_recurse();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::getTerrainHeightAtCenter(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    float result = instance->getTerrainHeightAtCenter();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_getTerrainHeightAtCenter(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    float result = instance->_NV_getTerrainHeightAtCenter();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int PreviewBuildingBinding::recalculateWorldAABB(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    instance->recalculateWorldAABB();
+    return 0;
+}
+
+int PreviewBuildingBinding::validateUsageNodes(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+    instance->validateUsageNodes();
+    return 0;
+}
+
+int PreviewBuildingBinding::getPlacementResultMaterialName(lua_State* L)
+{
+    int idx = (testObject<PreviewBuilding>(L, 1, PreviewBuildingBinding::getMetatableName()) != nullptr) ? 2 : 1;
+    PreviewBuilding::PlacementResult res = (PreviewBuilding::PlacementResult)luaL_checkinteger(L, idx);
+    const std::string& str = PreviewBuilding::getPlacementResultMaterialName(res);
+    lua_pushlstring(L, str.c_str(), str.size());
+    return 1;
+}
+
+int PreviewBuildingBinding::getOrientation(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    pushQuaternion(L, instance->getOrientation());
+    return 1;
+}
+
+int PreviewBuildingBinding::getCentreOffset(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    pushVector3(L, instance->getCentreOffset());
+    return 1;
+}
+
+int PreviewBuildingBinding::isNoCollideWithThisBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    PreviewBuilding* what = checkObject<PreviewBuilding>(L, 2, PreviewBuildingBinding::getMetatableName());
+    if (!what) return luaL_error(L, "Argument 2 to isNoCollideWithThisBuilding must be a PreviewBuilding");
+
+    bool result = instance->isNoCollideWithThisBuilding(what);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int PreviewBuildingBinding::_NV_isNoCollideWithThisBuilding(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    PreviewBuilding* what = checkObject<PreviewBuilding>(L, 2, PreviewBuildingBinding::getMetatableName());
+    if (!what) return luaL_error(L, "Argument 2 to _NV_isNoCollideWithThisBuilding must be a PreviewBuilding");
+
+    bool result = instance->_NV_isNoCollideWithThisBuilding(what);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+/*
+Skipped methods needing manual binding:
+  line 626: void buildingPlacementUpdate(...) - non-string reference arg
+  line 627: void _NV_buildingPlacementUpdate(...) - non-string reference arg
+  line 678: const Ogre::Aabb& getWorldAABB(...) - reference return type
+*/
+
+/*
+Skipped properties needing manual binding:
+  line 692: entitiesList (Ogre::vector<Ogre::Entity*>::type) - unsupported type
+  line 693: footprints (lektor<Footprint>) - unsupported type
+  line 703: usageNodes (lektor<FootprintNode>) - unsupported type
+  line 721: nodeResults (lektor<PlacementResult>) - unsupported type
+  line 727: AABB (Ogre::Aabb) - unsupported type
+*/
+
+int PreviewBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int PreviewBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.PreviewBuilding object");
+    return 1;
+}
+
+void PreviewBuildingBinding::registerBinding(lua_State* L)
+{
+    static const luaL_Reg meta[] = {
+        { "__gc",       PreviewBuildingBinding::gc },
+        { "__tostring", PreviewBuildingBinding::tostring },
+        { 0, 0 }
+    };
+
+    static const luaL_Reg methods[] = {
+        { "type", PreviewBuildingBinding::type },
+        { "_NV_type", PreviewBuildingBinding::_NV_type },
+        { "checkProspectingIsNotZero", PreviewBuildingBinding::checkProspectingIsNotZero },
+        { "_NV_checkProspectingIsNotZero", PreviewBuildingBinding::_NV_checkProspectingIsNotZero },
+        { "isASnapToBuilding", PreviewBuildingBinding::isASnapToBuilding },
+        { "_NV_isASnapToBuilding", PreviewBuildingBinding::_NV_isASnapToBuilding },
+        { "isACeilingBuilding", PreviewBuildingBinding::isACeilingBuilding },
+        { "_NV_isACeilingBuilding", PreviewBuildingBinding::_NV_isACeilingBuilding },
+        { "snappingOk", PreviewBuildingBinding::snappingOk },
+        { "_NV_snappingOk", PreviewBuildingBinding::_NV_snappingOk },
+        { "isInteriorBuilding", PreviewBuildingBinding::isInteriorBuilding },
+        { "_NV_isInteriorBuilding", PreviewBuildingBinding::_NV_isInteriorBuilding },
+        { "isCurrent", PreviewBuildingBinding::isCurrent },
+        { "setup", PreviewBuildingBinding::setup },
+        { "_NV_setup", PreviewBuildingBinding::_NV_setup },
+        { "_destroyEnts", PreviewBuildingBinding::_destroyEnts },
+        { "_NV__destroyEnts", PreviewBuildingBinding::_NV__destroyEnts },
+        { "update", PreviewBuildingBinding::update },
+        { "_NV_update", PreviewBuildingBinding::_NV_update },
+        { "figureOutWhichTown", PreviewBuildingBinding::figureOutWhichTown },
+        { "setVisualPosition", PreviewBuildingBinding::setVisualPosition },
+        { "_NV_setVisualPosition", PreviewBuildingBinding::_NV_setVisualPosition },
+        { "yawBy", PreviewBuildingBinding::yawBy },
+        { "yawSet", PreviewBuildingBinding::yawSet },
+        { "rotateBy", PreviewBuildingBinding::rotateBy },
+        { "tilt", PreviewBuildingBinding::tilt },
+        { "roll", PreviewBuildingBinding::roll },
+        { "setRotation", PreviewBuildingBinding::setRotation },
+        { "allFootprintsWantBelowGround", PreviewBuildingBinding::allFootprintsWantBelowGround },
+        { "allFootprintsWantAboveGround", PreviewBuildingBinding::allFootprintsWantAboveGround },
+        { "updateFootprintHeights", PreviewBuildingBinding::updateFootprintHeights },
+        { "isCollisionOK", PreviewBuildingBinding::isCollisionOK },
+        { "_NV_isCollisionOK", PreviewBuildingBinding::_NV_isCollisionOK },
+        { "isFloorOk", PreviewBuildingBinding::isFloorOk },
+        { "_NV_isFloorOk", PreviewBuildingBinding::_NV_isFloorOk },
+        { "isIndoorsOk", PreviewBuildingBinding::isIndoorsOk },
+        { "_NV_isIndoorsOk", PreviewBuildingBinding::_NV_isIndoorsOk },
+        { "isNodesOk", PreviewBuildingBinding::isNodesOk },
+        { "_NV_isNodesOk", PreviewBuildingBinding::_NV_isNodesOk },
+        { "isBlockingBuildingsNodes", PreviewBuildingBinding::isBlockingBuildingsNodes },
+        { "_NV_isBlockingBuildingsNodes", PreviewBuildingBinding::_NV_isBlockingBuildingsNodes },
+        { "isGoodAboveAndBelow", PreviewBuildingBinding::isGoodAboveAndBelow },
+        { "_NV_isGoodAboveAndBelow", PreviewBuildingBinding::_NV_isGoodAboveAndBelow },
+        { "isOnValidGround", PreviewBuildingBinding::isOnValidGround },
+        { "_NV_isOnValidGround", PreviewBuildingBinding::_NV_isOnValidGround },
+        { "isLinked", PreviewBuildingBinding::isLinked },
+        { "_NV_isLinked", PreviewBuildingBinding::_NV_isLinked },
+        { "moveHeightOffset", PreviewBuildingBinding::moveHeightOffset },
+        { "resetHeightOffset", PreviewBuildingBinding::resetHeightOffset },
+        { "getFootprintShift", PreviewBuildingBinding::getFootprintShift },
+        { "setOrientation", PreviewBuildingBinding::setOrientation },
+        { "getPosition", PreviewBuildingBinding::getPosition },
+        { "getFloor", PreviewBuildingBinding::getFloor },
+        { "setStartPosition", PreviewBuildingBinding::setStartPosition },
+        { "_NV_setStartPosition", PreviewBuildingBinding::_NV_setStartPosition },
+        { "setEndPosition", PreviewBuildingBinding::setEndPosition },
+        { "_NV_setEndPosition", PreviewBuildingBinding::_NV_setEndPosition },
+        { "getEndPos", PreviewBuildingBinding::getEndPos },
+        { "_NV_getEndPos", PreviewBuildingBinding::_NV_getEndPos },
+        { "clearPointersTo", PreviewBuildingBinding::clearPointersTo },
+        { "_NV_clearPointersTo", PreviewBuildingBinding::_NV_clearPointersTo },
+        { "placeFinalPreviewBuilding", PreviewBuildingBinding::placeFinalPreviewBuilding },
+        { "_NV_placeFinalPreviewBuilding", PreviewBuildingBinding::_NV_placeFinalPreviewBuilding },
+        { "insideBuilding", PreviewBuildingBinding::insideBuilding },
+        { "placementVerification", PreviewBuildingBinding::placementVerification },
+        { "_NV_placementVerification", PreviewBuildingBinding::_NV_placementVerification },
+        { "getGameData", PreviewBuildingBinding::getGameData },
+        { "noAltitude", PreviewBuildingBinding::noAltitude },
+        { "_NV_noAltitude", PreviewBuildingBinding::_NV_noAltitude },
+        { "noPathfindingNeeded", PreviewBuildingBinding::noPathfindingNeeded },
+        { "_NV_noPathfindingNeeded", PreviewBuildingBinding::_NV_noPathfindingNeeded },
+        { "placePreview", PreviewBuildingBinding::placePreview },
+        { "_NV_placePreview", PreviewBuildingBinding::_NV_placePreview },
+        { "resetUseageNodes", PreviewBuildingBinding::resetUseageNodes },
+        { "calculateRotationsAndStuff", PreviewBuildingBinding::calculateRotationsAndStuff },
+        { "_NV_calculateRotationsAndStuff", PreviewBuildingBinding::_NV_calculateRotationsAndStuff },
+        { "placementVerification_recurse", PreviewBuildingBinding::placementVerification_recurse },
+        { "getTerrainHeightAtCenter", PreviewBuildingBinding::getTerrainHeightAtCenter },
+        { "_NV_getTerrainHeightAtCenter", PreviewBuildingBinding::_NV_getTerrainHeightAtCenter },
+        { "recalculateWorldAABB", PreviewBuildingBinding::recalculateWorldAABB },
+        { "validateUsageNodes", PreviewBuildingBinding::validateUsageNodes },
+        { "getPlacementResultMaterialName", PreviewBuildingBinding::getPlacementResultMaterialName },
+        { "getOrientation", PreviewBuildingBinding::getOrientation },
+        { "getCentreOffset", PreviewBuildingBinding::getCentreOffset },
+        { "isNoCollideWithThisBuilding", PreviewBuildingBinding::isNoCollideWithThisBuilding },
+        { "_NV_isNoCollideWithThisBuilding", PreviewBuildingBinding::_NV_isNoCollideWithThisBuilding },
+        { 0, 0 }
+    };
+
+    registerClass(
+        L, 
+        PreviewBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, PreviewBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    registerGetter(L, "parentNode", PreviewBuilding_get_parentNode);
+    registerGetter(L, "isCurrentlySnapped", PreviewBuilding_get_isCurrentlySnapped);
+    registerGetter(L, "snappedTo", PreviewBuilding_get_snappedTo);
+    registerGetter(L, "prospectingInformation", PreviewBuilding_get_prospectingInformation);
+    registerGetter(L, "prospectResource", PreviewBuilding_get_prospectResource);
+    registerGetter(L, "roofOnly", PreviewBuilding_get_roofOnly);
+    registerGetter(L, "spaceAbove", PreviewBuilding_get_spaceAbove);
+    registerGetter(L, "spaceBelow", PreviewBuilding_get_spaceBelow);
+    registerGetter(L, "collisionOK", PreviewBuilding_get_collisionOK);
+    registerGetter(L, "charactersOK", PreviewBuilding_get_charactersOK);
+    registerGetter(L, "floorOk", PreviewBuilding_get_floorOk);
+    registerGetter(L, "indoorsOK", PreviewBuilding_get_indoorsOK);
+    registerGetter(L, "slopeOK", PreviewBuilding_get_slopeOK);
+    registerGetter(L, "nodesOk", PreviewBuilding_get_nodesOk);
+    registerGetter(L, "blockedBuildings", PreviewBuilding_get_blockedBuildings);
+    registerGetter(L, "validGround", PreviewBuilding_get_validGround);
+    registerGetter(L, "inTown", PreviewBuilding_get_inTown);
+    registerGetter(L, "floorNum", PreviewBuilding_get_floorNum);
+    registerGetter(L, "isOutside", PreviewBuilding_get_isOutside);
+    registerGetter(L, "matchSlope", PreviewBuilding_get_matchSlope);
+    registerGetter(L, "justBeenBuilt", PreviewBuilding_get_justBeenBuilt);
+    registerGetter(L, "yaw", PreviewBuilding_get_yaw);
+    registerGetter(L, "centreOffset", PreviewBuilding_get_centreOffset);
+    registerGetter(L, "isFurnitureOf", PreviewBuilding_get_isFurnitureOf);
+    registerGetter(L, "isIndoors", PreviewBuilding_get_isIndoors);
+    registerGetter(L, "buildDataPtr", PreviewBuilding_get_buildDataPtr);
+    registerGetter(L, "farmData", PreviewBuilding_get_farmData);
+    registerGetter(L, "prospectingOK", PreviewBuilding_get_prospectingOK);
+    registerGetter(L, "furniture", PreviewBuilding_get_furniture);
+    registerGetter(L, "exteriorFurniture", PreviewBuilding_get_exteriorFurniture);
+    registerGetter(L, "pos", PreviewBuilding_get_pos);
+    registerGetter(L, "rot", PreviewBuilding_get_rot);
+    registerGetter(L, "positionHitGroup", PreviewBuilding_get_positionHitGroup);
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    registerSetter(L, "isCurrentlySnapped", PreviewBuilding_set_isCurrentlySnapped);
+    registerSetter(L, "snappedTo", PreviewBuilding_set_snappedTo);
+    registerSetter(L, "prospectingInformation", PreviewBuilding_set_prospectingInformation);
+    registerSetter(L, "prospectResource", PreviewBuilding_set_prospectResource);
+    registerSetter(L, "roofOnly", PreviewBuilding_set_roofOnly);
+    registerSetter(L, "spaceAbove", PreviewBuilding_set_spaceAbove);
+    registerSetter(L, "spaceBelow", PreviewBuilding_set_spaceBelow);
+    registerSetter(L, "collisionOK", PreviewBuilding_set_collisionOK);
+    registerSetter(L, "charactersOK", PreviewBuilding_set_charactersOK);
+    registerSetter(L, "floorOk", PreviewBuilding_set_floorOk);
+    registerSetter(L, "indoorsOK", PreviewBuilding_set_indoorsOK);
+    registerSetter(L, "slopeOK", PreviewBuilding_set_slopeOK);
+    registerSetter(L, "nodesOk", PreviewBuilding_set_nodesOk);
+    registerSetter(L, "blockedBuildings", PreviewBuilding_set_blockedBuildings);
+    registerSetter(L, "validGround", PreviewBuilding_set_validGround);
+    registerSetter(L, "inTown", PreviewBuilding_set_inTown);
+    registerSetter(L, "floorNum", PreviewBuilding_set_floorNum);
+    registerSetter(L, "isOutside", PreviewBuilding_set_isOutside);
+    registerSetter(L, "matchSlope", PreviewBuilding_set_matchSlope);
+    registerSetter(L, "justBeenBuilt", PreviewBuilding_set_justBeenBuilt);
+    registerSetter(L, "yaw", PreviewBuilding_set_yaw);
+    registerSetter(L, "centreOffset", PreviewBuilding_set_centreOffset);
+    registerSetter(L, "isFurnitureOf", PreviewBuilding_set_isFurnitureOf);
+    registerSetter(L, "isIndoors", PreviewBuilding_set_isIndoors);
+    registerSetter(L, "buildDataPtr", PreviewBuilding_set_buildDataPtr);
+    registerSetter(L, "farmData", PreviewBuilding_set_farmData);
+    registerSetter(L, "prospectingOK", PreviewBuilding_set_prospectingOK);
+    registerSetter(L, "furniture", PreviewBuilding_set_furniture);
+    registerSetter(L, "exteriorFurniture", PreviewBuilding_set_exteriorFurniture);
+    registerSetter(L, "pos", PreviewBuilding_set_pos);
+    registerSetter(L, "rot", PreviewBuilding_set_rot);
+    registerSetter(L, "positionHitGroup", PreviewBuilding_set_positionHitGroup);
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    pushGlobalTable(L, "PreviewBuilding");
+    registerStaticMethod(L, "getPlacementResultMaterialName", PreviewBuildingBinding::getPlacementResultMaterialName);
+    lua_setglobal(L, "PreviewBuilding");
+}
+
+} // namespace KenshiLua

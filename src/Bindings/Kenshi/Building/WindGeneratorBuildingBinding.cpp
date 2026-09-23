@@ -1,0 +1,175 @@
+#include "pch.h"
+#include <kenshi/Building/GeneratorBuilding.h>
+#include "WindGeneratorBuildingBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Building/GeneratorBuildingBinding.h"
+#include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
+
+namespace KenshiLua
+{
+
+static WindGeneratorBuilding* getInstance(lua_State* L, int idx)
+{
+    return checkObject<WindGeneratorBuilding>(L, idx, WindGeneratorBuildingBinding::getMetatableName());
+}
+
+// --- Getters for WindGeneratorBuilding ---
+// --- Setters for WindGeneratorBuilding ---
+int WindGeneratorBuildingBinding::getPowerOutput(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+
+    float result = instance->getPowerOutput();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int WindGeneratorBuildingBinding::_NV_getPowerOutput(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+
+    float result = instance->_NV_getPowerOutput();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int WindGeneratorBuildingBinding::getSoundIntensity(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+
+    float result = instance->getSoundIntensity();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int WindGeneratorBuildingBinding::_NV_getSoundIntensity(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+
+    float result = instance->_NV_getSoundIntensity();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int WindGeneratorBuildingBinding::isAnyInputsEmpty(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+
+    bool result = instance->isAnyInputsEmpty();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WindGeneratorBuildingBinding::_NV_isAnyInputsEmpty(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+
+    bool result = instance->_NV_isAnyInputsEmpty();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WindGeneratorBuildingBinding::getGUIState(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIState(datapanel, category);
+    return 0;
+}
+
+int WindGeneratorBuildingBinding::_NV_getGUIState(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIState(datapanel, category);
+    return 0;
+}
+
+int WindGeneratorBuildingBinding::getGUIPower(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIPower(datapanel, category);
+    return 0;
+}
+
+int WindGeneratorBuildingBinding::_NV_getGUIPower(lua_State* L)
+{
+    WindGeneratorBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WindGeneratorBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIPower(datapanel, category);
+    return 0;
+}
+
+int WindGeneratorBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int WindGeneratorBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.WindGeneratorBuilding object");
+    return 1;
+}
+
+void WindGeneratorBuildingBinding::registerBinding(lua_State* L)
+{
+    static const luaL_Reg meta[] = {
+        { "__gc",       WindGeneratorBuildingBinding::gc },
+        { "__tostring", WindGeneratorBuildingBinding::tostring },
+        { 0, 0 }
+    };
+
+    static const luaL_Reg methods[] = {
+        { "getPowerOutput", WindGeneratorBuildingBinding::getPowerOutput },
+        { "_NV_getPowerOutput", WindGeneratorBuildingBinding::_NV_getPowerOutput },
+        { "getSoundIntensity", WindGeneratorBuildingBinding::getSoundIntensity },
+        { "_NV_getSoundIntensity", WindGeneratorBuildingBinding::_NV_getSoundIntensity },
+        { "isAnyInputsEmpty", WindGeneratorBuildingBinding::isAnyInputsEmpty },
+        { "_NV_isAnyInputsEmpty", WindGeneratorBuildingBinding::_NV_isAnyInputsEmpty },
+        { "getGUIState", WindGeneratorBuildingBinding::getGUIState },
+        { "_NV_getGUIState", WindGeneratorBuildingBinding::_NV_getGUIState },
+        { "getGUIPower", WindGeneratorBuildingBinding::getGUIPower },
+        { "_NV_getGUIPower", WindGeneratorBuildingBinding::_NV_getGUIPower },
+        { 0, 0 }
+    };
+
+    registerClass(
+        L, 
+        WindGeneratorBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, WindGeneratorBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to GeneratorBuilding
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, WindGeneratorBuildingBinding::getMetatableName(), GeneratorBuildingBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
+}
+
+} // namespace KenshiLua

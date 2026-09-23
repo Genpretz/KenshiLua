@@ -7,9 +7,9 @@
 #include "Logger.h"
 #include "Lua/LuaState.h"
 #include "Lua/BindingHelpers.h"
-#include "Bindings/GameDataBinding.h"
-#include "Bindings/DialogueBinding.h"
-#include "Bindings/DialogLineDataBinding.h"
+#include "Bindings/Kenshi/GameDataBinding.h"
+#include "Bindings/Kenshi/DialogueBinding.h"
+#include "Bindings/Kenshi/DialogLineDataBinding.h"
 #include "ScriptLoader.h"
 #include <core/Functions.h>
 #include <kenshi/GameDataManager.h>

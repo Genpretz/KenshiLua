@@ -1,0 +1,588 @@
+#include "pch.h"
+#include "Bindings/Kenshi/GameDataBinding.h"
+
+#include <kenshi/Building/WallBuilding.h>
+#include "WallBuildingBinding.h"
+#include "BuildingBinding.h"
+#include "ConstructionStateBinding.h"
+#include "UseableStuffBinding.h"
+#include "Bindings/Kenshi/CharacterBinding.h"
+#include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/DamagesBinding.h"
+#include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLineBinding.h"
+#include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Util/HandBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
+
+namespace KenshiLua
+{
+
+static WallBuilding* getInstance(lua_State* L, int idx)
+{
+    return checkObject<WallBuilding>(L, idx, WallBuildingBinding::getMetatableName());
+}
+
+// --- Getters for WallBuilding ---
+static int WallBuilding_get_wallSectionLinkType(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    lua_pushinteger(L, (lua_Integer)instance->wallSectionLinkType);
+    return 1;
+}
+
+static int WallBuilding_get_shareBuildStateOfAnother(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    return HandBinding::push(L, instance->shareBuildStateOfAnother);
+}
+
+static int WallBuilding_get_othersSharingMyBuildState(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    return pushObject<lektor<hand>>(L, &instance->othersSharingMyBuildState, LektorValueBinding<hand>::metaName);
+}
+
+// --- Setters for WallBuilding ---
+static int WallBuilding_set_wallSectionLinkType(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    instance->wallSectionLinkType = (WallSectionLinkType)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int WallBuilding_set_shareBuildStateOfAnother(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    hand* val = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!val) return luaL_error(L, "Expected hand");
+    instance->shareBuildStateOfAnother = *val;
+    return 0;
+}
+
+static int WallBuilding_set_othersSharingMyBuildState(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    lektor<hand>* val = LektorValueBinding<hand>::get(L, 2);
+    if (!val) return luaL_error(L, "Expected lektor<hand>");
+    instance->othersSharingMyBuildState = *val;
+    return 0;
+}
+
+// --- Methods for WallBuilding ---
+int WallBuildingBinding::getUseableStuff(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    UseableStuff* result = instance->getUseableStuff();
+    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
+}
+
+int WallBuildingBinding::_NV_getUseableStuff(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    UseableStuff* result = instance->_NV_getUseableStuff();
+    return pushObject<UseableStuff>(L, result, UseableStuffBinding::getMetatableName());
+}
+
+int WallBuildingBinding::getReachRange(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    float result = instance->getReachRange();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int WallBuildingBinding::_NV_getReachRange(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    float result = instance->_NV_getReachRange();
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int WallBuildingBinding::isForSale(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    bool result = instance->isForSale();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WallBuildingBinding::_NV_isForSale(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    bool result = instance->_NV_isForSale();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WallBuildingBinding::createPhysical(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    bool result = instance->createPhysical();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WallBuildingBinding::_NV_createPhysical(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    bool result = instance->_NV_createPhysical();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WallBuildingBinding::isDamaged(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    bool result = instance->isDamaged();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WallBuildingBinding::_NV_isDamaged(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    bool result = instance->_NV_isDamaged();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WallBuildingBinding::getPositionForWaypoint_outside(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    Ogre::Vector3 result = instance->getPositionForWaypoint_outside();
+    pushVector3(L, result);
+    return 1;
+}
+
+int WallBuildingBinding::getOutsideGateCode(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    int result = instance->getOutsideGateCode();
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int WallBuildingBinding::isAWall(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    WallBuilding* result = instance->isAWall();
+    return pushObject<WallBuilding>(L, result, WallBuildingBinding::getMetatableName());
+}
+
+int WallBuildingBinding::_NV_isAWall(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    WallBuilding* result = instance->_NV_isAWall();
+    return pushObject<WallBuilding>(L, result, WallBuildingBinding::getMetatableName());
+}
+
+int WallBuildingBinding::canUpgrade(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    GameData* result = instance->canUpgrade();
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+}
+
+int WallBuildingBinding::_NV_canUpgrade(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    GameData* result = instance->_NV_canUpgrade();
+    return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
+}
+
+int WallBuildingBinding::addConstructionProgress(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    float amount = (float)luaL_checknumber(L, 2);
+    instance->addConstructionProgress(amount);
+    return 0;
+}
+
+int WallBuildingBinding::_NV_addConstructionProgress(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    float amount = (float)luaL_checknumber(L, 2);
+    instance->_NV_addConstructionProgress(amount);
+    return 0;
+}
+
+int WallBuildingBinding::setConstructionProgress(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    float amount = (float)luaL_checknumber(L, 2);
+    instance->setConstructionProgress(amount);
+    return 0;
+}
+
+int WallBuildingBinding::_NV_setConstructionProgress(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    float amount = (float)luaL_checknumber(L, 2);
+    instance->_NV_setConstructionProgress(amount);
+    return 0;
+}
+
+int WallBuildingBinding::notifyConstructionComplete(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    instance->notifyConstructionComplete();
+    return 0;
+}
+
+int WallBuildingBinding::_NV_notifyConstructionComplete(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    instance->_NV_notifyConstructionComplete();
+    return 0;
+}
+
+int WallBuildingBinding::addDismantleProgress(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    float amount = (float)luaL_checknumber(L, 2);
+    bool result = instance->addDismantleProgress(amount);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WallBuildingBinding::_NV_addDismantleProgress(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    float amount = (float)luaL_checknumber(L, 2);
+    bool result = instance->_NV_addDismantleProgress(amount);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WallBuildingBinding::notifyConstructionDismantling(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    instance->notifyConstructionDismantling();
+    return 0;
+}
+
+int WallBuildingBinding::_NV_notifyConstructionDismantling(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    instance->_NV_notifyConstructionDismantling();
+    return 0;
+}
+
+int WallBuildingBinding::getBuildState(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    Building::ConstructionState* result = instance->getBuildState();
+    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
+}
+
+int WallBuildingBinding::_NV_getBuildState(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    Building::ConstructionState* result = instance->_NV_getBuildState();
+    return pushObject<Building::ConstructionState>(L, result, ConstructionStateBinding::getMetatableName());
+}
+
+int WallBuildingBinding::isALittleWallPartLikeACornerOrSomething(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    bool result = instance->isALittleWallPartLikeACornerOrSomething();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WallBuildingBinding::isAShortWallPart(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    bool result = instance->isAShortWallPart();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int WallBuildingBinding::hitByMeleeAttack(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to hitByMeleeAttack must be Damages");
+    Character* who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    CombatTechniqueData* attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    int comboID = (int)luaL_checkinteger(L, 6);
+
+    HitMaterialType result = instance->hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int WallBuildingBinding::_NV_hitByMeleeAttack(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+
+    CutDirection dir = (CutDirection)luaL_checkinteger(L, 2);
+    Damages* damage = checkObject<Damages>(L, 3, DamagesBinding::getMetatableName());
+    if (!damage) return luaL_error(L, "Argument 3 to _NV_hitByMeleeAttack must be Damages");
+    Character* who = checkObject<Character>(L, 4, CharacterBinding::getMetatableName());
+    CombatTechniqueData* attack = checkObject<CombatTechniqueData>(L, 5, CombatTechniqueDataBinding::getMetatableName());
+    int comboID = (int)luaL_checkinteger(L, 6);
+
+    HitMaterialType result = instance->_NV_hitByMeleeAttack(dir, *damage, who, attack, comboID);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int WallBuildingBinding::upgrade(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->upgrade(line);
+    return 0;
+}
+
+int WallBuildingBinding::_NV_upgrade(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_upgrade(line);
+    return 0;
+}
+
+int WallBuildingBinding::getGUIUpgrade(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIUpgrade(datapanel, category);
+    return 0;
+}
+
+int WallBuildingBinding::_NV_getGUIUpgrade(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIUpgrade(datapanel, category);
+    return 0;
+}
+
+int WallBuildingBinding::getGUIDestroyButton(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->getGUIDestroyButton(datapanel, category);
+    return 0;
+}
+
+int WallBuildingBinding::_NV_getGUIDestroyButton(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    int category = (int)luaL_checkinteger(L, 3);
+    instance->_NV_getGUIDestroyButton(datapanel, category);
+    return 0;
+}
+
+int WallBuildingBinding::dismantleButton_all(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->dismantleButton_all(line);
+    return 0;
+}
+
+int WallBuildingBinding::_NV_dismantleButton_all(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    DataPanelLine* line = checkObject<DataPanelLine>(L, 2, DataPanelLineBinding::getMetatableName());
+    instance->_NV_dismantleButton_all(line);
+    return 0;
+}
+
+int WallBuildingBinding::letsShare(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    WallBuilding* who = checkObject<WallBuilding>(L, 2, WallBuildingBinding::getMetatableName());
+    bool result = instance->letsShare(who);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+/*
+Skipped methods needing manual binding:
+  line 63: void runLinkingCheck(...) - unsupported arg type: ZoneMapContent*
+*/
+
+int WallBuildingBinding::gc(lua_State* L)
+{
+    // Implementation depends on ownership model
+    return 0;
+}
+
+int WallBuildingBinding::tostring(lua_State* L)
+{
+    lua_pushstring(L, "KenshiLua.WallBuilding object");
+    return 1;
+}
+
+void WallBuildingBinding::registerBinding(lua_State* L)
+{
+    static const luaL_Reg meta[] = {
+        { "__gc",       WallBuildingBinding::gc },
+        { "__tostring", WallBuildingBinding::tostring },
+        { 0, 0 }
+    };
+
+    static const luaL_Reg methods[] = {
+        { "getUseableStuff", WallBuildingBinding::getUseableStuff },
+        { "_NV_getUseableStuff", WallBuildingBinding::_NV_getUseableStuff },
+        { "getReachRange", WallBuildingBinding::getReachRange },
+        { "_NV_getReachRange", WallBuildingBinding::_NV_getReachRange },
+        { "isForSale", WallBuildingBinding::isForSale },
+        { "_NV_isForSale", WallBuildingBinding::_NV_isForSale },
+        { "createPhysical", WallBuildingBinding::createPhysical },
+        { "_NV_createPhysical", WallBuildingBinding::_NV_createPhysical },
+        { "isDamaged", WallBuildingBinding::isDamaged },
+        { "_NV_isDamaged", WallBuildingBinding::_NV_isDamaged },
+        { "getPositionForWaypoint_outside", WallBuildingBinding::getPositionForWaypoint_outside },
+        { "getOutsideGateCode", WallBuildingBinding::getOutsideGateCode },
+        { "isAWall", WallBuildingBinding::isAWall },
+        { "_NV_isAWall", WallBuildingBinding::_NV_isAWall },
+        { "canUpgrade", WallBuildingBinding::canUpgrade },
+        { "_NV_canUpgrade", WallBuildingBinding::_NV_canUpgrade },
+        { "addConstructionProgress", WallBuildingBinding::addConstructionProgress },
+        { "_NV_addConstructionProgress", WallBuildingBinding::_NV_addConstructionProgress },
+        { "setConstructionProgress", WallBuildingBinding::setConstructionProgress },
+        { "_NV_setConstructionProgress", WallBuildingBinding::_NV_setConstructionProgress },
+        { "notifyConstructionComplete", WallBuildingBinding::notifyConstructionComplete },
+        { "_NV_notifyConstructionComplete", WallBuildingBinding::_NV_notifyConstructionComplete },
+        { "addDismantleProgress", WallBuildingBinding::addDismantleProgress },
+        { "_NV_addDismantleProgress", WallBuildingBinding::_NV_addDismantleProgress },
+        { "notifyConstructionDismantling", WallBuildingBinding::notifyConstructionDismantling },
+        { "_NV_notifyConstructionDismantling", WallBuildingBinding::_NV_notifyConstructionDismantling },
+        { "getBuildState", WallBuildingBinding::getBuildState },
+        { "_NV_getBuildState", WallBuildingBinding::_NV_getBuildState },
+        { "isALittleWallPartLikeACornerOrSomething", WallBuildingBinding::isALittleWallPartLikeACornerOrSomething },
+        { "isAShortWallPart", WallBuildingBinding::isAShortWallPart },
+        { "hitByMeleeAttack", WallBuildingBinding::hitByMeleeAttack },
+        { "_NV_hitByMeleeAttack", WallBuildingBinding::_NV_hitByMeleeAttack },
+        { "upgrade", WallBuildingBinding::upgrade },
+        { "_NV_upgrade", WallBuildingBinding::_NV_upgrade },
+        { "getGUIUpgrade", WallBuildingBinding::getGUIUpgrade },
+        { "_NV_getGUIUpgrade", WallBuildingBinding::_NV_getGUIUpgrade },
+        { "getGUIDestroyButton", WallBuildingBinding::getGUIDestroyButton },
+        { "_NV_getGUIDestroyButton", WallBuildingBinding::_NV_getGUIDestroyButton },
+        { "dismantleButton_all", WallBuildingBinding::dismantleButton_all },
+        { "_NV_dismantleButton_all", WallBuildingBinding::_NV_dismantleButton_all },
+        { "letsShare", WallBuildingBinding::letsShare },
+        { 0, 0 }
+    };
+
+    registerClass(
+        L, 
+        WallBuildingBinding::getMetatableName(), 
+        meta, 
+        methods, 
+        genericPropertyIndex, 
+        genericPropertyNewIndex
+    );
+
+    luaL_getmetatable(L, WallBuildingBinding::getMetatableName());
+    lua_newtable(L); // Create __getters table
+    registerGetter(L, "wallSectionLinkType", WallBuilding_get_wallSectionLinkType);
+    registerGetter(L, "shareBuildStateOfAnother", WallBuilding_get_shareBuildStateOfAnother);
+    registerGetter(L, "othersSharingMyBuildState", WallBuilding_get_othersSharingMyBuildState);
+    lua_setfield(L, -2, "__getters"); // Bind to metatable
+
+    lua_newtable(L); // Create __setters table
+    registerSetter(L, "wallSectionLinkType", WallBuilding_set_wallSectionLinkType);
+    registerSetter(L, "shareBuildStateOfAnother", WallBuilding_set_shareBuildStateOfAnother);
+    registerSetter(L, "othersSharingMyBuildState", WallBuilding_set_othersSharingMyBuildState);
+    lua_setfield(L, -2, "__setters"); // Bind to metatable
+
+    // Wire up inheritance to Building
+    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
+    // setMetatableParent(L, WallBuildingBinding::getMetatableName(), BuildingBinding::getMetatableName());
+
+    lua_pop(L, 1); // Pop the metatable off the stack
+}
+
+} // namespace KenshiLua
