@@ -678,7 +678,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\Building\UseableStuffBinding.h" />
     <ClInclude Include="src\Bindings\Building\WallBuildingBinding.h" />
     <ClInclude Include="src\Bindings\Building\WindGeneratorBuildingBinding.h" />
-    <ClInclude Include="src\Bindings\BuildingSwapsBinding.h" />
+    <ClInclude Include="src\Bindings\Faction_BuildingSwapsBinding.h" />
     <ClInclude Include="src\Bindings\CameraClassBinding.h" />
     <ClInclude Include="src\Bindings\CampaignRequestBinding.h" />
     <ClInclude Include="src\Bindings\CampaignTriggerDataBinding.h" />
@@ -857,7 +857,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\ItemDataBinding.h" />
     <ClInclude Include="src\Bindings\LightEntBinding.h" />
     <ClInclude Include="src\Bindings\LimbsInventoryLayoutBinding.h" />
-    <ClInclude Include="src\Bindings\LimiterBinding.h" />
+    <ClInclude Include="src\Bindings\RaceLimiter_LimiterBinding.h" />
     <ClInclude Include="src\Bindings\ListenerBinding.h" />
     <ClInclude Include="src\Bindings\LockedArmourBinding.h" />
     <ClInclude Include="src\Bindings\LoggerBinding.h" />
@@ -943,7 +943,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\RotatingEntBinding.h" />
     <ClInclude Include="src\Bindings\SaveFileSystemBinding.h" />
     <ClInclude Include="src\Bindings\SaveManagerBinding.h" />
-    <ClInclude Include="src\Bindings\SectionItemBinding.h" />
+    <ClInclude Include="src\Bindings\InventorySection_SectionItemBinding.h" />
     <ClInclude Include="src\Bindings\SeenSomeoneBinding.h" />
     <ClInclude Include="src\Bindings\SelectionBoxBinding.h" />
     <ClInclude Include="src\Bindings\SenseItrBinding.h" />
@@ -959,7 +959,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\StateTBinding.h" />
     <ClInclude Include="src\Bindings\StaticEntBinding.h" />
     <ClInclude Include="src\Bindings\SwordBinding.h" />
-    <ClInclude Include="src\Bindings\SysMessageBinding.h" />
+    <ClInclude Include="src\Bindings\GameWorld_SysMessageBinding.h" />
     <ClInclude Include="src\Bindings\TaskDataBinding.h" />
     <ClInclude Include="src\Bindings\TaskerBinding.h" />
     <ClInclude Include="src\Bindings\TaskStateDataBinding.h" />
@@ -1140,7 +1140,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Bindings\Building\UseableStuffBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\WallBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\Building\WindGeneratorBuildingBinding.cpp" />
-    <ClCompile Include="src\Bindings\BuildingSwapsBinding.cpp" />
+    <ClCompile Include="src\Bindings\Faction_BuildingSwapsBinding.cpp" />
     <ClCompile Include="src\Bindings\CameraClassBinding.cpp" />
     <ClCompile Include="src\Bindings\CampaignRequestBinding.cpp" />
     <ClCompile Include="src\Bindings\CampaignTriggerDataBinding.cpp" />
@@ -1317,7 +1317,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Bindings\ItemDataBinding.cpp" />
     <ClCompile Include="src\Bindings\LightEntBinding.cpp" />
     <ClCompile Include="src\Bindings\LimbsInventoryLayoutBinding.cpp" />
-    <ClCompile Include="src\Bindings\LimiterBinding.cpp" />
+    <ClCompile Include="src\Bindings\RaceLimiter_LimiterBinding.cpp" />
     <ClCompile Include="src\Bindings\ListenerBinding.cpp" />
     <ClCompile Include="src\Bindings\LockedArmourBinding.cpp" />
     <ClCompile Include="src\Bindings\LoggerBinding.cpp" />
@@ -1403,7 +1403,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Bindings\RotatingEntBinding.cpp" />
     <ClCompile Include="src\Bindings\SaveFileSystemBinding.cpp" />
     <ClCompile Include="src\Bindings\SaveManagerBinding.cpp" />
-    <ClCompile Include="src\Bindings\SectionItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\InventorySection_SectionItemBinding.cpp" />
     <ClCompile Include="src\Bindings\SeenSomeoneBinding.cpp" />
     <ClCompile Include="src\Bindings\SelectionBoxBinding.cpp" />
     <ClCompile Include="src\Bindings\SenseItrBinding.cpp" />
@@ -1419,7 +1419,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Bindings\StateTBinding.cpp" />
     <ClCompile Include="src\Bindings\StaticEntBinding.cpp" />
     <ClCompile Include="src\Bindings\SwordBinding.cpp" />
-    <ClCompile Include="src\Bindings\SysMessageBinding.cpp" />
+    <ClCompile Include="src\Bindings\GameWorld_SysMessageBinding.cpp" />
     <ClCompile Include="src\Bindings\TaskDataBinding.cpp" />
     <ClCompile Include="src\Bindings\TaskerBinding.cpp" />
     <ClCompile Include="src\Bindings\TaskStateDataBinding.cpp" />

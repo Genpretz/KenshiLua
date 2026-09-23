@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "kenshi\GameWorld.h"
-#include "SysMessageBinding.h"
+#include "GameWorld_SysMessageBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Util/HandBinding.h"
 
@@ -137,11 +137,11 @@ void SysMessageBinding::registerBinding(lua_State* L)
     };
 
     registerClass(
-        L, 
-        SysMessageBinding::getMetatableName(), 
-        meta, 
-        methods, 
-        genericPropertyIndex, 
+        L,
+        SysMessageBinding::getMetatableName(),
+        meta,
+        methods,
+        genericPropertyIndex,
         genericPropertyNewIndex
     );
 

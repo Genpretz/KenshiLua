@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "kenshi\faction.h"
-#include "BuildingSwapsBinding.h"
+#include "kenshi\Faction.h"
+#include "Faction_BuildingSwapsBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"

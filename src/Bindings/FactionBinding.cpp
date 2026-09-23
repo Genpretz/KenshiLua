@@ -18,7 +18,7 @@
 #include "Bindings/TownBaseBinding.h"
 #include "Bindings/TradeCultureBinding.h"
 #include "Bindings/FitnessSelectorBinding.h"
-#include "Bindings/BuildingSwapsBinding.h"
+#include "Bindings/Faction_BuildingSwapsBinding.h"
 #include "Bindings/Faction_CharacteristicsDataBinding.h"
 #include "Bindings/Util/LektorBinding.h"
 

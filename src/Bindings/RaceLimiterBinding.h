@@ -1,6 +1,6 @@
 #pragma once
 
-#include "kenshi/RaceData.h"
+#include "kenshi\Item.h"
 
 extern "C" {
 #include <lua.h>

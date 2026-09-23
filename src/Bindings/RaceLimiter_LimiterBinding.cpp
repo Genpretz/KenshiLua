@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "kenshi\Item.h"
-#include "LimiterBinding.h"
+#include "RaceLimiter_LimiterBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/RaceDataBinding.h"
 #include "Bindings/Util/StdSetBinding.h"

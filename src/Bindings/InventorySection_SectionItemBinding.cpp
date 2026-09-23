@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "kenshi\Inventory.h"
-#include "SectionItemBinding.h"
+#include "InventorySection_SectionItemBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/ItemBinding.h"
 #include "ItemBinding.h"

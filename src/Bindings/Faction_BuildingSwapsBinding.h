@@ -1,6 +1,6 @@
 #pragma once
 
-#include "kenshi/Town.h"
+#include "kenshi\Faction.h"
 
 extern "C" {
 #include <lua.h>

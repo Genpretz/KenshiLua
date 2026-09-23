@@ -5,7 +5,7 @@
 #include "Bindings/GameDataBinding.h"
 #include "Bindings/RaceDataBinding.h"
 #include "Bindings/RootObjectBinding.h"
-#include "Bindings/LimiterBinding.h"
+#include "Bindings/RaceLimiter_LimiterBinding.h"
 #include "Bindings/Util/OgreUnorderedBinding.h"
 
 namespace KenshiLua

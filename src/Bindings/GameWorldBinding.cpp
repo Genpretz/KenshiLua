@@ -14,7 +14,7 @@
 #include "Bindings/RootObjectBinding.h"
 #include "Bindings/RootObjectFactoryBinding.h"
 #include "Bindings/SimpleTimeStamperBinding.h"
-#include "Bindings/SysMessageBinding.h"
+#include "Bindings/GameWorld_SysMessageBinding.h"
 #include "Bindings/ThreadWannabeBinding.h"
 #include "Bindings/Util/TimeOfDayBinding.h"
 #include "Bindings/TownBuildingsManagerBinding.h"
