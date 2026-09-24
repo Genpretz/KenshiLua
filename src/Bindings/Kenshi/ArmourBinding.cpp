@@ -628,7 +628,7 @@ void ArmourBinding::registerBinding(lua_State* L)
         { "getCraftTime", ArmourBinding::getCraftTime },
         { "_NV_getCraftTime", ArmourBinding::_NV_getCraftTime },
         { "getWeatherProtection_simple", ArmourBinding::getWeatherProtection_simple },
-                { "getArmourCraftingMaterialConsumptionRate", ArmourBinding::getArmourCraftingMaterialConsumptionRate },
+        { "getArmourCraftingMaterialConsumptionRate", ArmourBinding::getArmourCraftingMaterialConsumptionRate },
         { 0, 0 }
     };
 
@@ -698,11 +698,6 @@ void ArmourBinding::registerBinding(lua_State* L)
     registerSetter(L, "weatherProtections", Armour_set_weatherProtections);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    // Wire up inheritance to Gear
-    // Inheritance wired in RegisterBindings.cpp::registerInheritance()
-    // setMetatableParent(L, ArmourBinding::getMetatableName(), GearBinding::getMetatableName());
-
-    OgreUnorderedMapBinding<GameData*, float>::registerBinding(L, "ogre_unordered_map<GameData*, float>", GameDataBinding::getMetatableName(), nullptr);
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

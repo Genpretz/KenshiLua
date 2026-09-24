@@ -15,6 +15,14 @@ class LuaBindings
 {
 public:
     static void registerAll(lua_State* L);
+    static void registerLektor(lua_State* L);
+    static void registerOgreUnordered(lua_State* L);
+    static void registerSTL(lua_State* L);
+    static void registerStdSet(lua_State* L);
+    static void registerStdMap(lua_State* L);
+    static void registerStdDeque(lua_State* L);
+    static void registerFitnessSelector(lua_State* L);
+    static void registerClasses(lua_State* L);
 };
 
 void installKenshiLuaTable(lua_State* L);

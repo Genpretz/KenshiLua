@@ -165,8 +165,8 @@ namespace KenshiLua
         return 0;
     }
 
-    template <class T>
-    inline int pushObjectOwned(lua_State* L, T* ptr, const char* baseMetatableName)
+    template <class T, lua_CFunction GcFn>
+    inline int pushObjectOwnedCustom(lua_State* L, T* ptr, const char* baseMetatableName)
     {
         if (!ptr) {
             lua_pushnil(L);
@@ -174,67 +174,107 @@ namespace KenshiLua
         }
 
         if (!baseMetatableName || !*baseMetatableName) {
-            logToFileWarn("[BindingHelpers] pushObjectOwned: baseMetatableName is null or empty!");
+            logToFileWarn("[BindingHelpers] pushObjectOwnedCustom: baseMetatableName is null or empty!");
             lua_pushnil(L);
             return 1;
         }
 
-        // 1. Allocate the userdata on the Lua stack.
         void** ud = (void**)lua_newuserdata(L, sizeof(void*));
         *ud = (void*)ptr;
         int udIdx = lua_gettop(L);
 
-        // 2. Retrieve or create the '_Owned' metatable for this type.
         std::string ownedMetaName = std::string(baseMetatableName) + "_Owned";
         luaL_getmetatable(L, ownedMetaName.c_str());
 
         if (lua_isnil(L, -1)) {
-            // Metatable doesn't exist yet: pop nil and create it
             lua_pop(L, 1);
             luaL_newmetatable(L, ownedMetaName.c_str());
             int ownedMTIdx = lua_gettop(L);
 
-            // Copy all keys and metamethods from base metatable
             luaL_getmetatable(L, baseMetatableName);
             if (lua_istable(L, -1)) {
                 int baseMTIdx = lua_gettop(L);
 
-                // Iterate through all key-value pairs of base metatable
-                lua_pushnil(L); // initial key
+                lua_pushnil(L);
                 while (lua_next(L, baseMTIdx) != 0) {
-                    // key is at -2, val is at -1
                     if (lua_type(L, -2) == LUA_TSTRING && strcmp(lua_tostring(L, -2), "__gc") == 0) {
-                        lua_pop(L, 1); // skip base __gc, keep key for lua_next
+                        lua_pop(L, 1);
                     } else {
-                        lua_pushvalue(L, -2); // copy key -> stack top
-                        lua_insert(L, -2);    // move copied key before val
-                        lua_rawset(L, ownedMTIdx); // ownedMT[copied_key] = val, pops copied key & val
+                        lua_pushvalue(L, -2);
+                        lua_insert(L, -2);
+                        lua_rawset(L, ownedMTIdx);
                     }
                 }
 
-                // If base metatable itself has a metatable (inheritance), replicate it
                 if (lua_getmetatable(L, baseMTIdx)) {
                     lua_setmetatable(L, ownedMTIdx);
                 }
 
-                lua_pop(L, 1); // pop base metatable
+                lua_pop(L, 1);
             } else {
-                logToFileWarn(std::string("[BindingHelpers] pushObjectOwned: base metatable '") + baseMetatableName + "' not found!");
-                lua_pop(L, 1); // pop non-table base metatable
+                logToFileWarn(std::string("[BindingHelpers] pushObjectOwnedCustom: base metatable '") + baseMetatableName + "' not found!");
+                lua_pop(L, 1);
             }
 
-            // Ensure __name is set to baseMetatableName so testObject<T> matches
             lua_pushstring(L, baseMetatableName);
             lua_setfield(L, ownedMTIdx, "__name");
 
-            // Set __gc to automatically invoke C++ destructor and operator delete
-            lua_pushcfunction(L, ownedObjectGc<T>);
+            lua_pushcfunction(L, GcFn);
             lua_setfield(L, ownedMTIdx, "__gc");
         }
 
-        // Set owned metatable on userdata
         lua_setmetatable(L, udIdx);
         return 1;
+    }
+
+    template <class T>
+    inline int pushObjectOwned(lua_State* L, T* ptr, const char* baseMetatableName)
+    {
+        return pushObjectOwnedCustom<T, ownedObjectGc<T>>(L, ptr, baseMetatableName);
+    }
+
+    inline std::string extractContainerTypeName(lua_State* L, int idx)
+    {
+        if (lua_isstring(L, idx))
+        {
+            return lua_tostring(L, idx);
+        }
+        else if (lua_isuserdata(L, idx))
+        {
+            if (lua_getmetatable(L, idx))
+            {
+                lua_pushstring(L, "__name");
+                lua_rawget(L, -2);
+                std::string typeName;
+                if (lua_isstring(L, -1))
+                    typeName = lua_tostring(L, -1);
+                lua_pop(L, 2);
+                return typeName;
+            }
+        }
+        else if (lua_istable(L, idx))
+        {
+            lua_pushstring(L, "__name");
+            lua_rawget(L, idx);
+            std::string typeName;
+            if (lua_isstring(L, -1))
+                typeName = lua_tostring(L, -1);
+            lua_pop(L, 1);
+
+            if (typeName.empty())
+            {
+                if (lua_getmetatable(L, idx))
+                {
+                    lua_pushstring(L, "__name");
+                    lua_rawget(L, -2);
+                    if (lua_isstring(L, -1))
+                        typeName = lua_tostring(L, -1);
+                    lua_pop(L, 2);
+                }
+            }
+            return typeName;
+        }
+        return "";
     }
 
     template <class T>

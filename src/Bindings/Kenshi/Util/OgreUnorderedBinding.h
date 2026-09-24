@@ -1,6 +1,8 @@
 #pragma once
 #include <type_traits>
 #include <string>
+#include <unordered_map>
+#include <utility>
 #include <ogre/OgreVector3.h>
 #include <ogre/OgreQuaternion.h>
 #include <kenshi/util/OgreUnordered.h>
@@ -10,6 +12,31 @@
 
 namespace KenshiLua
 {
+    typedef int (*OgreSetFactoryFn)(lua_State* L);
+    typedef int (*OgreMapFactoryFn)(lua_State* L);
+
+    inline std::unordered_map<std::string, OgreSetFactoryFn>& getOgreSetFactories()
+    {
+        static std::unordered_map<std::string, OgreSetFactoryFn> s_setFactories;
+        return s_setFactories;
+    }
+
+    inline void registerOgreSetFactory(const std::string& typeName, OgreSetFactoryFn fn)
+    {
+        getOgreSetFactories()[typeName] = fn;
+    }
+
+    inline std::unordered_map<std::string, OgreMapFactoryFn>& getOgreMapFactories()
+    {
+        static std::unordered_map<std::string, OgreMapFactoryFn> s_mapFactories;
+        return s_mapFactories;
+    }
+
+    inline void registerOgreMapFactory(const std::string& typeName, OgreMapFactoryFn fn)
+    {
+        getOgreMapFactories()[typeName] = fn;
+    }
+
     // Set Binding
     template <typename K>
     struct OgreUnorderedSetBinding
@@ -27,6 +54,29 @@ namespace KenshiLua
 
         static int gc(lua_State* L) { return noopGc(L); }
 
+        static int gcOwned(lua_State* L)
+        {
+            void** ud = (void**)lua_touserdata(L, 1);
+            if (ud && *ud)
+            {
+                SetType* s = static_cast<SetType*>(*ud);
+                delete s;
+                *ud = nullptr;
+            }
+            return 0;
+        }
+
+        static int pushOwned(lua_State* L, SetType* s)
+        {
+            return pushObjectOwnedCustom<SetType, gcOwned>(L, s, metaName);
+        }
+
+        static int createNew(lua_State* L)
+        {
+            SetType* s = new SetType();
+            return pushOwned(L, s);
+        }
+
         static int index(lua_State* L)
         {
             SetType* s = get(L, 1);
@@ -38,6 +88,11 @@ namespace KenshiLua
                 lua_getfield(L, -1, lua_tostring(L, 2));
                 if (!lua_isnil(L, -1)) return 1;
                 lua_pop(L, 2);
+                if (!std::is_same<K, std::string>::value)
+                {
+                    lua_pushnil(L);
+                    return 1;
+                }
             }
 
             K key = LuaCodec<K>::read(L, 2, elemMetaName);
@@ -159,14 +214,25 @@ namespace KenshiLua
             };
             static const luaL_Reg methods[] = {
                 { "has",      has },
+                { "contains", has },
                 { "add",      add },
+                { "insert",   add },
                 { "remove",   remove },
+                { "erase",    remove },
                 { "clear",    clear },
                 { "toTable",  toTable },
                 { "size",     len },
+                { "items",    pairs },
                 { 0, 0 }
             };
             registerClass(L, metaName, meta, methods, index, newindex);
+
+            registerOgreSetFactory(name, createNew);
+            if (elemName)
+            {
+                registerOgreSetFactory(elemName, createNew);
+                registerOgreSetFactory(std::string(elemName) + "*", createNew);
+            }
         }
     };
 
@@ -195,6 +261,29 @@ namespace KenshiLua
 
         static int gc(lua_State* L) { return noopGc(L); }
 
+        static int gcOwned(lua_State* L)
+        {
+            void** ud = (void**)lua_touserdata(L, 1);
+            if (ud && *ud)
+            {
+                MapType* m = static_cast<MapType*>(*ud);
+                delete m;
+                *ud = nullptr;
+            }
+            return 0;
+        }
+
+        static int pushOwned(lua_State* L, MapType* m)
+        {
+            return pushObjectOwnedCustom<MapType, gcOwned>(L, m, metaName);
+        }
+
+        static int createNew(lua_State* L)
+        {
+            MapType* m = new MapType();
+            return pushOwned(L, m);
+        }
+
         static int index(lua_State* L)
         {
             MapType* m = get(L, 1);
@@ -206,6 +295,11 @@ namespace KenshiLua
                 lua_getfield(L, -1, lua_tostring(L, 2));
                 if (!lua_isnil(L, -1)) return 1;
                 lua_pop(L, 2);
+                if (!std::is_same<K, std::string>::value)
+                {
+                    lua_pushnil(L);
+                    return 1;
+                }
             }
 
             K key = LuaCodec<K>::read(L, 2, keyMetaName);
@@ -348,13 +442,23 @@ namespace KenshiLua
             };
             static const luaL_Reg methods[] = {
                 { "has",      has },
+                { "contains", has },
                 { "remove",   remove },
+                { "erase",    remove },
                 { "clear",    clear },
                 { "toTable",  toTable },
                 { "size",     len },
+                { "pairs",    pairs },
                 { 0, 0 }
             };
             registerClass(L, metaName, meta, methods, index, newindex);
+
+            registerOgreMapFactory(name, createNew);
+            if (keyName && valName)
+            {
+                std::string pairKey = std::string(keyName) + "," + std::string(valName);
+                registerOgreMapFactory(pairKey, createNew);
+            }
         }
     };
 
@@ -367,4 +471,152 @@ namespace KenshiLua
     template <typename K, typename V>
     const char* OgreUnorderedMapBinding<K, V>::valMetaName = nullptr;
 
+    inline int lua_ogre_unordered_set_new(lua_State* L)
+    {
+        std::string typeName = extractContainerTypeName(L, 1);
+
+        if (typeName.empty())
+        {
+            return luaL_error(L, "ogre_unordered_set.new: expected type name or class table as argument 1, got %s", luaL_typename(L, 1));
+        }
+
+        auto& factories = getOgreSetFactories();
+        auto it = factories.find(typeName);
+        if (it != factories.end())
+        {
+            return it->second(L);
+        }
+
+        if (typeName.length() > 20 && typeName.rfind("ogre_unordered_set<", 0) == 0 && typeName.back() == '>')
+        {
+            std::string inner = typeName.substr(19, typeName.length() - 20);
+            it = factories.find(inner);
+            if (it != factories.end())
+                return it->second(L);
+
+            if (inner.back() != '*')
+            {
+                it = factories.find(inner + "*");
+                if (it != factories.end())
+                    return it->second(L);
+            }
+        }
+
+        it = factories.find(typeName + "*");
+        if (it != factories.end())
+        {
+            return it->second(L);
+        }
+
+        if (!typeName.empty() && typeName.back() == '*')
+        {
+            it = factories.find(typeName.substr(0, typeName.length() - 1));
+            if (it != factories.end())
+                return it->second(L);
+        }
+
+        it = factories.find("ogre_unordered_set<" + typeName + ">");
+        if (it != factories.end())
+        {
+            return it->second(L);
+        }
+
+        return luaL_error(L, "ogre_unordered_set.new: unsupported or unknown type '%s'", typeName.c_str());
+    }
+
+    inline int lua_ogre_unordered_map_new(lua_State* L)
+    {
+        std::string mapTypeStr;
+        if (lua_gettop(L) >= 2)
+        {
+            std::string kStr = extractContainerTypeName(L, 1);
+            std::string vStr = extractContainerTypeName(L, 2);
+            if (kStr.empty() || vStr.empty())
+            {
+                return luaL_error(L, "ogre_unordered_map.new: expected type names or class tables for key and value");
+            }
+            auto& factories = getOgreMapFactories();
+
+            auto it = factories.find(kStr + "," + vStr);
+            if (it != factories.end())
+                return it->second(L);
+
+            it = factories.find("ogre_unordered_map<" + kStr + ", " + vStr + ">");
+            if (it != factories.end())
+                return it->second(L);
+
+            if (kStr.back() != '*')
+            {
+                it = factories.find(kStr + "*," + vStr);
+                if (it != factories.end())
+                    return it->second(L);
+
+                it = factories.find("ogre_unordered_map<" + kStr + "*, " + vStr + ">");
+                if (it != factories.end())
+                    return it->second(L);
+            }
+
+            if (vStr.back() != '*')
+            {
+                it = factories.find(kStr + "," + vStr + "*");
+                if (it != factories.end())
+                    return it->second(L);
+
+                it = factories.find("ogre_unordered_map<" + kStr + ", " + vStr + "*>");
+                if (it != factories.end())
+                    return it->second(L);
+            }
+
+            return luaL_error(L, "ogre_unordered_map.new: unsupported map type (%s, %s)", kStr.c_str(), vStr.c_str());
+        }
+        else if (lua_isstring(L, 1))
+        {
+            mapTypeStr = lua_tostring(L, 1);
+            auto& factories = getOgreMapFactories();
+            auto it = factories.find(mapTypeStr);
+            if (it != factories.end())
+                return it->second(L);
+            return luaL_error(L, "ogre_unordered_map.new: unsupported map type '%s'", mapTypeStr.c_str());
+        }
+
+        return luaL_error(L, "ogre_unordered_map.new: expected (keyType, valType) or full type string");
+    }
+
+    inline int lua_ogre_unordered_set_call(lua_State* L)
+    {
+        lua_remove(L, 1);
+        return lua_ogre_unordered_set_new(L);
+    }
+
+    inline int lua_ogre_unordered_map_call(lua_State* L)
+    {
+        lua_remove(L, 1);
+        return lua_ogre_unordered_map_new(L);
+    }
+
+    inline void registerOgreUnorderedGlobals(lua_State* L)
+    {
+        // ogre_unordered_set
+        lua_newtable(L);
+        lua_pushcfunction(L, lua_ogre_unordered_set_new);
+        lua_setfield(L, -2, "new");
+
+        lua_newtable(L);
+        lua_pushcfunction(L, lua_ogre_unordered_set_call);
+        lua_setfield(L, -2, "__call");
+        lua_setmetatable(L, -2);
+        lua_setglobal(L, "ogre_unordered_set");
+
+        // ogre_unordered_map
+        lua_newtable(L);
+        lua_pushcfunction(L, lua_ogre_unordered_map_new);
+        lua_setfield(L, -2, "new");
+
+        lua_newtable(L);
+        lua_pushcfunction(L, lua_ogre_unordered_map_call);
+        lua_setfield(L, -2, "__call");
+        lua_setmetatable(L, -2);
+        lua_setglobal(L, "ogre_unordered_map");
+    }
 } // namespace KenshiLua
+
