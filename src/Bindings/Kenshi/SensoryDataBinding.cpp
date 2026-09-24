@@ -626,7 +626,7 @@ int SensoryDataBinding::canISeeThisGuyDoinSneakingOrSomething(lua_State* L)
     float spotTimeMinFOV = (float)luaL_checknumber(L, 5);
     float spotTimeMaxFOV = (float)luaL_checknumber(L, 6);
     YesNoMaybe result = instance->canISeeThisGuyDoinSneakingOrSomething(who, FOVScore, memory, spotTimeMinFOV, spotTimeMaxFOV);
-    return pushObject<YesNoMaybe>(L, &result, YesNoMaybeBinding::getMetatableName());
+    return pushValue<YesNoMaybe>(L, result, YesNoMaybeBinding::getMetatableName());
 }
 
 int SensoryDataBinding::isIntruder_Base(lua_State* L)

@@ -671,7 +671,7 @@ int ActivePlatoonBinding::setupCheck(lua_State* L)
     if (!instance) return luaL_error(L, "ActivePlatoon is nil");
 
     YesNoMaybe result = instance->setupCheck();
-    return pushObject<YesNoMaybe>(L, &result, YesNoMaybeBinding::getMetatableName());
+    return pushValue<YesNoMaybe>(L, result, YesNoMaybeBinding::getMetatableName());
 }
 
 int ActivePlatoonBinding::destroyCharacters(lua_State* L)

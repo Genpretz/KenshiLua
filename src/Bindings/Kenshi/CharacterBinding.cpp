@@ -1934,7 +1934,7 @@ int CharacterBinding::smugglingTradeCheck(lua_State* L)
     Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
     Character* who = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
     YesNoMaybe result = instance->smugglingTradeCheck(item, who);
-    return pushObject<YesNoMaybe>(L, &result, YesNoMaybeBinding::getMetatableName());
+    return pushValue<YesNoMaybe>(L, result, YesNoMaybeBinding::getMetatableName());
 }
 
 int CharacterBinding::_NV_smugglingTradeCheck(lua_State* L)
@@ -1945,7 +1945,7 @@ int CharacterBinding::_NV_smugglingTradeCheck(lua_State* L)
     Item* item = checkObject<Item>(L, 2, ItemBinding::getMetatableName());
     Character* who = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
     YesNoMaybe result = instance->_NV_smugglingTradeCheck(item, who);
-    return pushObject<YesNoMaybe>(L, &result, YesNoMaybeBinding::getMetatableName());
+    return pushValue<YesNoMaybe>(L, result, YesNoMaybeBinding::getMetatableName());
 }
 
 int CharacterBinding::getStealingSuccessChance(lua_State* L)
@@ -5654,9 +5654,6 @@ int CharacterBinding::getAllAttackers(lua_State* L)
     for (uint32_t i = 0; i < out.count; ++i) {
         HandBinding::push(L, out.stuff[i]);
         lua_rawseti(L, -2, i + 1);
-    }
-    if (out.stuff) {
-        Ogre::AllocatedObject<Ogre::CategorisedAllocPolicy<Ogre::MEMCATEGORY_GENERAL>>::operator delete(out.stuff);
     }
     return 1;
 }
