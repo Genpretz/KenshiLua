@@ -190,6 +190,16 @@ void installKenshiLuaTable(lua_State* L)
     lua_pushcfunction(L, luaUnregisterHandler);
     lua_setfield(L, -2, "unregisterHandler");
 
+    // Events namespace table on KenshiLua
+    lua_getglobal(L, "Events");
+    lua_setfield(L, -2, "Events");
+
+    lua_pushcfunction(L, luaEventsOn);
+    lua_setfield(L, -2, "on");
+
+    lua_pushcfunction(L, luaEventsOff);
+    lua_setfield(L, -2, "off");
+
     // Version check helper.
     lua_pushcfunction(L, luaKenshiVersion);
     lua_setfield(L, -2, "version");

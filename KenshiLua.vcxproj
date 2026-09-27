@@ -1011,6 +1011,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\Kenshi\ZoneMapBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ZoneSpacialGridBinding.h" />
     <ClInclude Include="src\Callbacks.h" />
+    <ClInclude Include="src\Compatability\LegacyCompat.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\DialogueScriptBridge.h" />
     <ClInclude Include="src\EventSystem.h" />
@@ -1463,6 +1464,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Bindings\Kenshi\ZoneMapBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ZoneSpacialGridBinding.cpp" />
     <ClCompile Include="src\Callbacks.cpp" />
+    <ClCompile Include="src\Compatability\LegacyCompat.cpp" />
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\DialogueScriptBridge.cpp" />
     <ClCompile Include="src\dllmain.cpp" />

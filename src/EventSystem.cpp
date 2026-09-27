@@ -3,6 +3,7 @@
 #include "EventSystem.h"
 #include "Logger.h"
 #include "Hooks/Hooks_Common.h"
+#include "Compatability/LegacyCompat.h"
 
 #include <lua.hpp>
 #include "Lua/BindingHelpers.h"
@@ -48,21 +49,41 @@ namespace KenshiLua
         return *g_eventSystem;
     }
 
+    const char* EventSystem::resolveCanonicalEventName(const char* eventName, const char* source)
+    {
+        return LegacyCompat::ResolveEventName(eventName, source);
+    }
+
     bool EventSystem::initialize(lua_State* L)
     {
         m_L = L;
 
+        // Legacy global functions
         lua_pushcfunction(L, luaRegisterHandler);
         lua_setglobal(L, "registerHandler");
 
         lua_pushcfunction(L, luaUnregisterHandler);
         lua_setglobal(L, "unregisterHandler");
 
+        // Unified Events table
+        lua_newtable(L);
+        lua_pushcfunction(L, luaEventsOn);
+        lua_setfield(L, -2, "on");
+        lua_pushcfunction(L, luaEventsOff);
+        lua_setfield(L, -2, "off");
+        lua_pushcfunction(L, luaEventsOn);
+        lua_setfield(L, -2, "register");
+        lua_pushcfunction(L, luaEventsOff);
+        lua_setfield(L, -2, "unregister");
+        lua_setglobal(L, "Events");
+
         return true;
     }
 
-    int EventSystem::registerHandler(const char* eventName, int luaRef, const char* source)
+    int EventSystem::registerHandler(const char* rawEventName, int luaRef, const char* source)
     {
+        const char* eventName = resolveCanonicalEventName(rawEventName, source);
+
         HandlerInfo info;
         info.id = m_nextHandlerId++;
         info.luaRef = luaRef;
@@ -446,5 +467,15 @@ namespace KenshiLua
         int handlerId = (int)luaL_checkinteger(L, 1);
         EventSystem::get().unregisterHandler(handlerId);
         return 0;
+    }
+
+    int luaEventsOn(lua_State* L)
+    {
+        return luaRegisterHandler(L);
+    }
+
+    int luaEventsOff(lua_State* L)
+    {
+        return luaUnregisterHandler(L);
     }
 }

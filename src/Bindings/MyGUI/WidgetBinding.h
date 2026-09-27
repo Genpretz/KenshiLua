@@ -83,6 +83,8 @@ public:
     static int changeWidgetSkin(lua_State* L);
     static int setProperty(lua_State* L);
     static int destroy(lua_State* L);
+    static int on(lua_State* L);
+    static int off(lua_State* L);
     static int registerCallback(lua_State* L);
     static int upLayerItem(lua_State* L);
 };

@@ -11,10 +11,32 @@ static void BaseLayout_initialise_hook(wraps::BaseLayout* thisptr, const std::st
     BaseLayout_initialise_orig(thisptr, layout, parent, throwException, createChildren);
     CallBaseLayoutInitialiseCallbacks(thisptr, layout);
 }
-DEFINE_HOOK_INSTALLER(InstallHook_BaseLayout_initialise,
-    "wraps::BaseLayout::initialise",
-    KenshiLib::GetRealAddress(static_cast<void (wraps::BaseLayout::*)(const std::string&, MyGUI::Widget*, bool, bool)>(&wraps::BaseLayout::initialise)),
-    BaseLayout_initialise_hook, BaseLayout_initialise_orig)
+bool InstallHook_BaseLayout_initialise()
+{
+    if (BaseLayout_initialise_orig)
+        return true;
+
+    HMODULE hKenshiLib = GetModuleHandleA("KenshiLib.dll");
+    if (!hKenshiLib)
+        hKenshiLib = GetModuleHandleA("kenshilib.dll");
+
+    if (!hKenshiLib)
+    {
+        KenshiLua::logToFileErrorf("Error: KenshiLib.dll module handle not found for wraps::BaseLayout::initialise");
+        return false;
+    }
+
+    void* stubAddr = (void*)GetProcAddress(hKenshiLib,
+        "?initialise@BaseLayout@wraps@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEAVWidget@MyGUI@@_N2@Z");
+    if (!stubAddr)
+    {
+        KenshiLua::logToFileErrorf("Error: Failed to locate wraps::BaseLayout::initialise export in KenshiLib.dll");
+        return false;
+    }
+
+    intptr_t realAddr = KenshiLib::GetRealAddress(stubAddr);
+    return InstallHookT("wraps::BaseLayout::initialise", realAddr, &BaseLayout_initialise_hook, &BaseLayout_initialise_orig);
+}
 
 // ---------------------------------------------------------------------------
 // Hooks for InventoryGUI.h

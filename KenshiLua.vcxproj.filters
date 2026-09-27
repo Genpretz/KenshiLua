@@ -325,6 +325,7 @@
     <ClCompile Include="src\Bindings\ZoneMapBinding.cpp" />
     <ClCompile Include="src\Bindings\ZoneSpacialGridBinding.cpp" />
     <ClCompile Include="src\Callbacks.cpp" />
+    <ClCompile Include="src\Compatability\LegacyCompat.cpp" />
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\DialogueScriptBridge.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
@@ -1273,6 +1274,7 @@
     <ClInclude Include="src\Bindings\ZoneMapBinding.h" />
     <ClInclude Include="src\Bindings\ZoneSpacialGridBinding.h" />
     <ClInclude Include="src\Callbacks.h" />
+    <ClInclude Include="src\Compatability\LegacyCompat.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\DialogueScriptBridge.h" />
     <ClInclude Include="src\EventSystem.h" />

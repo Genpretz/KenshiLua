@@ -106,10 +106,10 @@ DEFINE_HOOK_INSTALLER(InstallHook_Building_addAnInternalBuilding,
     KenshiLib::GetRealAddress(&Building::addAnInternalBuilding),
     Building_addAnInternalBuilding_hook, Building_addAnInternalBuilding_orig)
 
-static GameSaveState (*Building_NV_serialise_orig)(Building*, GameDataContainer*, GameData*, PosRotPair*) = NULL;
-static GameSaveState Building_NV_serialise_hook(Building* thisptr, GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)
+static GameSaveState* (*Building_NV_serialise_orig)(Building*, GameSaveState*, GameDataContainer*, GameData*, PosRotPair*) = NULL;
+static GameSaveState* Building_NV_serialise_hook(Building* thisptr, GameSaveState* return_buffer, GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)
 {
-    GameSaveState res = Building_NV_serialise_orig(thisptr, container, refList, offsetPosToSubtract);
+    GameSaveState* res = Building_NV_serialise_orig(thisptr, return_buffer, container, refList, offsetPosToSubtract);
     CallBuildingSerialiseCallbacks(thisptr, container, refList);
     return res;
 }

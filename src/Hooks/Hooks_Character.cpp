@@ -291,10 +291,10 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_removeJob,
     KenshiLib::GetRealAddress(&Character::removeJob),
     Character_removeJob_hook, Character_removeJob_orig)
 
-static GameSaveState (*Character_NV_serialise_orig)(Character*, GameDataContainer*, GameData*, PosRotPair*) = NULL;
-static GameSaveState Character_NV_serialise_hook(Character* thisptr, GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)
+static GameSaveState* (*Character_NV_serialise_orig)(Character*, GameSaveState*, GameDataContainer*, GameData*, PosRotPair*) = NULL;
+static GameSaveState* Character_NV_serialise_hook(Character* thisptr, GameSaveState* return_buffer, GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)
 {
-    GameSaveState res = Character_NV_serialise_orig(thisptr, container, refList, offsetPosToSubtract);
+    GameSaveState* res = Character_NV_serialise_orig(thisptr, return_buffer, container, refList, offsetPosToSubtract);
     CallCharacterSerialiseCallbacks(thisptr, container, refList);
     return res;
 }
@@ -349,11 +349,11 @@ DEFINE_HOOK_INSTALLER(InstallHook_CharacterHuman_CONSTRUCTOR,
     KenshiLib::GetRealAddress(&CharacterHuman::_CONSTRUCTOR),
     CharacterHuman_CONSTRUCTOR_hook, CharacterHuman_CONSTRUCTOR_orig)
 
-static CharacterAnimal* (*CharacterAnimal_CONSTRUCTOR_orig)(CharacterAnimal*, GameData*, Faction*, hand) = NULL;
-static CharacterAnimal* CharacterAnimal_CONSTRUCTOR_hook(CharacterAnimal* thisptr, GameData* d, Faction* f, hand _handle)
+static CharacterAnimal* (*CharacterAnimal_CONSTRUCTOR_orig)(CharacterAnimal*, GameData*, Faction*, hand, float) = NULL;
+static CharacterAnimal* CharacterAnimal_CONSTRUCTOR_hook(CharacterAnimal* thisptr, GameData* d, Faction* f, hand _handle, float _age)
 {
-    CharacterAnimal* res = CharacterAnimal_CONSTRUCTOR_orig(thisptr, d, f, _handle);
-    CharacterAnimal* overrideRes = CallCharacterAnimalConstructedCallbacks(thisptr, d, f, _handle, res);
+    CharacterAnimal* res = CharacterAnimal_CONSTRUCTOR_orig(thisptr, d, f, _handle, _age);
+    CharacterAnimal* overrideRes = CallCharacterAnimalConstructedCallbacks(thisptr, d, f, _handle, _age, res);
     return overrideRes ? overrideRes : res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_CharacterAnimal_CONSTRUCTOR,

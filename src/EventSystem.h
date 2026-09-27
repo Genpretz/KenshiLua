@@ -43,9 +43,12 @@ namespace KenshiLua
     public:
         static EventSystem& get();
 
+        // Resolve any legacy event name or "on"-prefixed name to its canonical ClassNameFunctionName.
+        static const char* resolveCanonicalEventName(const char* eventName, const char* source = "");
+
         // Must be called once after the Lua state is created.
         // Registers registerHandler and unregisterHandler
-        // as Lua globals.
+        // as Lua globals, and Events namespace.
         bool initialize(lua_State* L);
 
         // Pin a Lua function ref under eventName and return a handler ID.
@@ -106,5 +109,7 @@ namespace KenshiLua
     // ---------------------------------------------------------------------------
     int luaRegisterHandler(lua_State* L);
     int luaUnregisterHandler(lua_State* L);
+    int luaEventsOn(lua_State* L);
+    int luaEventsOff(lua_State* L);
 
 } // namespace KenshiLua

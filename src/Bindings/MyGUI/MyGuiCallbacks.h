@@ -53,6 +53,12 @@ public:
         }
     };
 
+    struct CallbackValue
+    {
+        int id;
+        int luaRef;
+    };
+
     static LuaWidgetCallbackManager& get()
     {
         static LuaWidgetCallbackManager s_instance;
@@ -62,9 +68,13 @@ public:
     void setLuaState(lua_State* L);
     lua_State* getLuaState() const;
 
-    void registerCallback(MyGUI::Widget* widget, EventType type, int luaRef);
+    int registerCallback(MyGUI::Widget* widget, EventType type, int luaRef);
+    bool unregisterCallback(int callbackId);
+    bool unregisterCallback(MyGUI::Widget* widget, EventType type);
     void unregisterAll(MyGUI::Widget* widget);
     void clear();
+
+    static EventType parseEventType(const char* eventType);
 
     // Delegate implementations
     void onMouseButtonClick(MyGUI::Widget* sender);
@@ -88,12 +98,16 @@ public:
     void onMenuAccept(MyGUI::MenuControl* sender, MyGUI::MenuItem* item);
 
 private:
-    LuaWidgetCallbackManager() : m_L(nullptr) {}
-    std::map<CallbackKey, int> m_callbacks;
+    LuaWidgetCallbackManager() : m_L(nullptr), m_nextCallbackId(1) {}
+    std::map<CallbackKey, CallbackValue> m_callbacks;
+    std::map<int, CallbackKey> m_idToKey;
+    int m_nextCallbackId;
     lua_State* m_L;
 };
 
 int widget_registerCallback(lua_State* L);
+int widget_on(lua_State* L);
+int widget_off(lua_State* L);
 
 } // namespace MyGUIBindings
 } // namespace KenshiLua

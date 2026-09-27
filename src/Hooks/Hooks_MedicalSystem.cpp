@@ -38,11 +38,11 @@ DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_canGetUpWakeUp,
     KenshiLib::GetRealAddress(&MedicalSystem::canGetUpWakeUp),
     MedicalSystem_canGetUpWakeUp_hook, MedicalSystem_canGetUpWakeUp_orig)
 
-static MedicalSystem* (*MedicalSystem_CONSTRUCTOR_orig)(MedicalSystem*, Character*) = NULL;
-static MedicalSystem* MedicalSystem_CONSTRUCTOR_hook(MedicalSystem* thisptr, Character* c)
+static MedicalSystem* (*MedicalSystem_CONSTRUCTOR_orig)(MedicalSystem*) = NULL;
+static MedicalSystem* MedicalSystem_CONSTRUCTOR_hook(MedicalSystem* thisptr)
 {
-    MedicalSystem* res = MedicalSystem_CONSTRUCTOR_orig(thisptr, c);
-    MedicalSystem* overrideRes = CallMedicalSystemConstructedCallbacks(thisptr, c, res);
+    MedicalSystem* res = MedicalSystem_CONSTRUCTOR_orig(thisptr);
+    MedicalSystem* overrideRes = CallMedicalSystemConstructedCallbacks(thisptr, res);
     return overrideRes ? overrideRes : res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_CONSTRUCTOR,

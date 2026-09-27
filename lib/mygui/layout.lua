@@ -130,7 +130,7 @@ function VBox:addButton(caption, onClick, width, height, skin)
     local btn = self.parent:createWidget("Button", s, self.curX, self.curY, w, h, self.opts.align)
     btn:setCaption(caption or "")
     if onClick and type(onClick) == "function" then
-        btn:registerCallback("MouseButtonClick", onClick)
+        btn:on("MouseButtonClick", onClick)
     end
     self.curY = self.curY + h + self.opts.spacing
     if w > self.maxWidth then self.maxWidth = w end
@@ -152,7 +152,7 @@ function VBox:addEditBox(defaultText, onChange, width, height, skin)
     local edit = self.parent:createWidget("EditBox", s, self.curX, self.curY, w, h, self.opts.align)
     edit:setCaption(defaultText or "")
     if onChange and type(onChange) == "function" then
-        edit:registerCallback("EditTextChange", onChange)
+        edit:on("EditTextChange", onChange)
     end
     self.curY = self.curY + h + self.opts.spacing
     if w > self.maxWidth then self.maxWidth = w end
@@ -181,7 +181,7 @@ function VBox:addComboBox(items, onSelect, width, height, skin)
         end
     end
     if onSelect and type(onSelect) == "function" then
-        combo:registerCallback("ComboAccept", onSelect)
+        combo:on("ComboAccept", onSelect)
     end
     self.curY = self.curY + h + self.opts.spacing
     if w > self.maxWidth then self.maxWidth = w end
@@ -346,7 +346,7 @@ function HBox:addButton(caption, onClick, width, height, skin)
     local btn = self.parent:createWidget("Button", s, self.curX, self.curY, w, h, self.opts.align)
     btn:setCaption(caption or "")
     if onClick and type(onClick) == "function" then
-        btn:registerCallback("MouseButtonClick", onClick)
+        btn:on("MouseButtonClick", onClick)
     end
     self.curX = self.curX + w + self.opts.spacing
     if h > self.maxHeight then self.maxHeight = h end

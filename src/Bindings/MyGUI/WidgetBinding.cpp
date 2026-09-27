@@ -821,6 +821,16 @@ int WidgetBinding::destroy(lua_State* L)
     return 0;
 }
 
+int WidgetBinding::on(lua_State* L)
+{
+    return MyGUIBindings::widget_on(L);
+}
+
+int WidgetBinding::off(lua_State* L)
+{
+    return MyGUIBindings::widget_off(L);
+}
+
 int WidgetBinding::registerCallback(lua_State* L)
 {
     return MyGUIBindings::widget_registerCallback(L);
@@ -1002,6 +1012,10 @@ void WidgetBinding::registerBinding(lua_State* L)
         { "changeWidgetSkin",     changeWidgetSkin },
         { "setProperty",          setProperty },
         { "destroy",              destroy },
+        { "on",                   on },
+        { "off",                  off },
+        { "register",             on },
+        { "unregister",           off },
         { "registerCallback",     registerCallback },
         { "upLayerItem",          upLayerItem },
         { "bringToFront",         upLayerItem },

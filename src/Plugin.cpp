@@ -5,6 +5,7 @@
 #include "Gui/GuiManager.h"
 #include "Gui/KenshiLua_ScriptManager.h"
 #include "Hooks/Hooks_Common.h"
+#include "Compatability/LegacyCompat.h"
 #include "Logger.h"
 #include "Config.h"
 #include "Lua/LuaBindings.h"
@@ -67,6 +68,9 @@ bool Plugin::initialize(void* hModule)
     }
     logToFile("EventSystem initialized");
 
+    LegacyCompat::Initialize(g_luaState->getState());
+    logToFile("Legacy compatibility initialized");
+
     m_initialized = true;
     logToFile("KenshiLua initialization complete");
     return true;
@@ -103,11 +107,11 @@ void Plugin::start()
     }
 
     // Always install keydown hook so the dev GUI hotkey works by default
-    InstallHookForEvent("onKeyDown");
+    InstallHookForEvent("InputHandler::keyDownEvent");
 
     // Install hook for running Lua scripts from dialogue lines
-    InstallHookForEvent("onDialogueDoActions");
-    InstallHookForEvent("onDialogueSay");
+    InstallHookForEvent("Dialogue::_doActions");
+    InstallHookForEvent("Dialogue::say");
 
     // initialize developer GUI (hidden by default, toggle with 'Ctrl+Shift+L' by default).
     if (GuiManager::get().isInitialized())
