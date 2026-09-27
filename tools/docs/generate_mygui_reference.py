@@ -379,7 +379,11 @@ CLASS_METHOD_OVERRIDES = {
     "InputManager.isModalAny": ([], "boolean"),
     "Widget.setProperty": ([{"name": "key", "type": "string"}, {"name": "value", "type": "string"}], "void"),
     "Widget.destroy": ([], "void"),
-    "Widget.registerCallback": ([{"name": "eventName", "type": "string"}, {"name": "handler", "type": "function"}], "void"),
+    "Widget.on": ([{"name": "eventType", "type": "string"}, {"name": "handler", "type": "function"}], "integer"),
+    "Widget.off": ([{"name": "idOrEvent", "type": "any"}], "boolean"),
+    "Widget.register": ([{"name": "eventType", "type": "string"}, {"name": "handler", "type": "function"}], "integer"),
+    "Widget.unregister": ([{"name": "idOrEvent", "type": "any"}], "boolean"),
+    "Widget.registerCallback": ([{"name": "eventName", "type": "string"}, {"name": "handler", "type": "function"}], "integer"),
     "Widget.upLayerItem": ([], "void"),
     "Widget.bringToFront": ([], "void"),
     "Widget.createWidget": ([{"name": "type", "type": "string"}, {"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "align", "type": "Align"}, {"name": "name", "type": "string"}], "Widget"),
@@ -877,7 +881,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
     # Section 6: Event Callbacks
     lines.append("## Event Callbacks Reference")
     lines.append("")
-    lines.append("Event callbacks are attached to widgets using `widget:registerCallback(eventType, callbackFunction)`.")
+    lines.append("Event callbacks are attached to widgets using `widget:on(eventType, callbackFunction)` (returns a callback ID). Callbacks can be detached using `widget:off(callbackId)` or `widget:off(eventType)`. Legacy `registerCallback`, `register`, and `unregister` are also supported as aliases.")
     lines.append("")
     lines.append("### Usage Example")
     lines.append("```lua")
@@ -885,9 +889,12 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
     lines.append("win:upLayerItem()")
     lines.append("local btn = win:createWidget(\"Button\", \"Kenshi_Button1\", 20, 20, 120, 30, 0, \"MyButton\")")
     lines.append("btn:setCaption(\"Click Me\")")
-    lines.append("btn:registerCallback(\"OnClick\", function(sender)")
+    lines.append("local callbackId = btn:on(\"MouseButtonClick\", function(sender)")
     lines.append("    print(\"Button clicked:\", sender.caption)")
     lines.append("end)")
+    lines.append("")
+    lines.append("-- Detaching when done")
+    lines.append("btn:off(callbackId)")
     lines.append("```")
     lines.append("")
     lines.append("### Supported Event Types")

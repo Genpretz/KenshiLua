@@ -388,7 +388,11 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 | `changeWidgetSkin` | `skin: string` | `void` | `w:changeWidgetSkin(skin)` |
 | `setProperty` | `key: string, value: string` | `void` | `w:setProperty(key, value)` |
 | `destroy` | `` | `void` | `w:destroy()` |
-| `registerCallback` | `eventName: string, handler: function` | `void` | `w:registerCallback(eventName, handler)` |
+| `on` | `eventType: string, handler: function` | `integer` | `w:on(eventType, handler)` |
+| `off` | `idOrEvent: any` | `boolean` | `w:off(idOrEvent)` |
+| `register` | `eventType: string, handler: function` | `integer` | `w:register(eventType, handler)` |
+| `unregister` | `idOrEvent: any` | `boolean` | `w:unregister(idOrEvent)` |
+| `registerCallback` | `eventName: string, handler: function` | `integer` | `w:registerCallback(eventName, handler)` |
 | `upLayerItem` | `` | `void` | `w:upLayerItem()` |
 | `bringToFront` | `` | `void` | `w:bringToFront()` |
 
@@ -1075,7 +1079,7 @@ Managers provide global control over input, cursor pointer, skins, layout templa
 
 ## Event Callbacks Reference
 
-Event callbacks are attached to widgets using `widget:registerCallback(eventType, callbackFunction)`.
+Event callbacks are attached to widgets using `widget:on(eventType, callbackFunction)` (returns a callback ID). Callbacks can be detached using `widget:off(callbackId)` or `widget:off(eventType)`. Legacy `registerCallback`, `register`, and `unregister` are also supported as aliases.
 
 ### Usage Example
 ```lua
@@ -1083,9 +1087,12 @@ local win = MyGUI.createWindow("Kenshi_WindowCX", 100, 100, 300, 200, "ExampleWi
 win:upLayerItem()
 local btn = win:createWidget("Button", "Kenshi_Button1", 20, 20, 120, 30, 0, "MyButton")
 btn:setCaption("Click Me")
-btn:registerCallback("OnClick", function(sender)
+local callbackId = btn:on("MouseButtonClick", function(sender)
     print("Button clicked:", sender.caption)
 end)
+
+-- Detaching when done
+btn:off(callbackId)
 ```
 
 ### Supported Event Types
