@@ -22,7 +22,7 @@ Override the destination when needed:
 python tools/bindings/generate_class.py extern/KenshiLib/Include/kenshi/Building/FarmBuilding.h --write-dir path/to/output
 ```
 
-The class-binding generator automatically discovers bindings in `src/Bindings`, registered enums in `src/Bindings/EnumBinding.cpp`, and their associated headers. `--bind-map`, `--classes`, and `--enums` remain available for one-off additions or overrides.
+The class-binding generator automatically discovers bindings in `src/Bindings`, registered enums in `src/Bindings/Kenshi/EnumBinding.cpp`, and their associated headers. `--bind-map`, `--classes`, and `--enums` remain available for one-off additions or overrides.
 
 ## Documentation and audits
 

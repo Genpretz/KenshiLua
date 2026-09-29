@@ -828,10 +828,10 @@ def discover_known_bindings():
 
 def discover_known_enums():
     enums = set()
-    enum_cpp = Path("src/Bindings/EnumBinding.cpp")
+    enum_cpp = Path("src/Bindings/Kenshi/EnumBinding.cpp")
     if not enum_cpp.is_file():
         script_dir = Path(__file__).resolve().parents[2]
-        enum_cpp = script_dir / "src" / "Bindings" / "EnumBinding.cpp"
+        enum_cpp = script_dir / "src" / "Bindings" / "Kenshi" / "EnumBinding.cpp"
     
     if enum_cpp.is_file():
         content = enum_cpp.read_text(encoding="utf-8", errors="ignore")
