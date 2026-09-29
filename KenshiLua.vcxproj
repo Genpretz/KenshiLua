@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
@@ -29,10 +21,10 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
+    <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>Windows7.1SDK</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -62,42 +54,16 @@
     <OutDir>$(SolutionDir)bin\KenshiLua\plugin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)include;$(ProjectDir)src;$(ProjectDir)src\Bindings\Kenshi;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\KenshiLua\plugin\</OutDir>
-    <IntDir>obj\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Bindings\Kenshi;$(ProjectDir)extern\luajit\include;$(ProjectDir)extern\kenshilib\Include;$(ProjectDir)extern\kenshilib\Include\ogre\Overlay;$(ProjectDir)extern\kenshilib\Include\ogre;$(ProjectDir)extern\kenshilib\Include\ois;$(ProjectDir)extern\kenshilib\Include\mygui;$(BOOST_ROOT);$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\kenshilib;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;$(ProjectDir)extern\kenshilib\Libraries\;$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
+    <SourcePath>$(SolutionDir)src;$(SourcePath)</SourcePath>
+    <TargetName>KenshiLua</TargetName>
+    <OutDir>$(SolutionDir)bin\KenshiLua\plugin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <VcpkgInstalledDir>$(VCPKG_ROOT)/installed</VcpkgInstalledDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_DEBUG;KENSHILUA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;KENSHILUA_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>

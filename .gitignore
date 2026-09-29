@@ -408,5 +408,6 @@ tools/generated/**
 .agents/**
 docs/ChangeLogs/**
 docs/in_progress/**
-tools/command.txt
 .editorconfig
+/scratch
+/docs/ideas
