@@ -21,6 +21,8 @@
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "Bindings/Kenshi/Util/OgreUnorderedBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/WindowBinding.h"
+#include "Bindings/MyGUI/GuiBinding.h"
 #include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
@@ -98,8 +100,7 @@ static int ForgottenGUI_get_manager(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->manager);
-    return 1;
+    return pushObject<MyGUI::Gui>(L, instance->manager, GuiBinding::getMetatableName());
 }
 
 static int ForgottenGUI_get_guiPlatform(lua_State* L)
@@ -115,6 +116,14 @@ static int ForgottenGUI_get__closeTradeWindowMsg(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
     lua_pushboolean(L, instance->_closeTradeWindowMsg ? 1 : 0);
+    return 1;
+}
+
+static int ForgottenGUI_get__showTradeWindowMsg(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    lua_pushinteger(L, (lua_Integer)instance->_showTradeWindowMsg);
     return 1;
 }
 
@@ -357,6 +366,14 @@ static int ForgottenGUI_set__closeTradeWindowMsg(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
     instance->_closeTradeWindowMsg = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int ForgottenGUI_set__showTradeWindowMsg(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    instance->_showTradeWindowMsg = (TradeWindowType)luaL_checkinteger(L, 2);
     return 0;
 }
 
@@ -950,8 +967,7 @@ int ForgottenGUIBinding::getGuiManager(lua_State* L)
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
     MyGUI::Gui* result = instance->getGuiManager();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<MyGUI::Gui>(L, result, GuiBinding::getMetatableName());
 }
 
 int ForgottenGUIBinding::createPanel(lua_State* L)
@@ -967,8 +983,6 @@ int ForgottenGUIBinding::createPanel(lua_State* L)
     std::string layer = luaL_checkstring(L, 7);
     std::string skin = luaL_checkstring(L, 8);
     MyGUI::Window* result = instance->createPanel(name, top, left, width, height, layer, skin);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
     return MyGUIBindings::pushWidget(L, result);
 }
 
@@ -985,8 +999,6 @@ int ForgottenGUIBinding::createPanelAbs(lua_State* L)
     std::string layer = luaL_checkstring(L, 7);
     std::string skin = luaL_checkstring(L, 8);
     MyGUI::Window* result = instance->createPanelAbs(name, top, left, width, height, layer, skin);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
     return MyGUIBindings::pushWidget(L, result);
 }
 
@@ -1003,8 +1015,6 @@ int ForgottenGUIBinding::createTabPanel(lua_State* L)
     const std::string layer = luaL_checkstring(L, 7);
     const std::string skin = luaL_checkstring(L, 8);
     MyGUI::TabControl* result = instance->createTabPanel(name, top, left, width, height, layer, skin);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
     return MyGUIBindings::pushWidget(L, result);
 }
 
@@ -1020,8 +1030,6 @@ int ForgottenGUIBinding::createFloatingImage(lua_State* L)
     float height = (float)luaL_checknumber(L, 6);
     std::string layer = luaL_checkstring(L, 7);
     MyGUI::Window* result = instance->createFloatingImage(image, top, left, width, height, layer);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
     return MyGUIBindings::pushWidget(L, result);
 }
 
@@ -1037,8 +1045,6 @@ int ForgottenGUIBinding::createFloatingImageAbs(lua_State* L)
     float height = (float)luaL_checknumber(L, 6);
     std::string layer = luaL_checkstring(L, 7);
     MyGUI::Window* result = instance->createFloatingImageAbs(image, top, left, width, height, layer);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
     return MyGUIBindings::pushWidget(L, result);
 }
 
@@ -1398,6 +1404,332 @@ int ForgottenGUIBinding::inventoriesSelectedObjectUpdate(lua_State* L)
     return 0;
 }
 
+int ForgottenGUIBinding::_showTradeWindow(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    RootObject* a = lua_isnoneornil(L, 2) ? nullptr : checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
+    RootObject* b = lua_isnoneornil(L, 3) ? nullptr : checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    TradeWindowType tradeType = (TradeWindowType)luaL_checkinteger(L, 4);
+    instance->_showTradeWindow(a, b, tradeType);
+    return 0;
+}
+
+int ForgottenGUIBinding::createFloatingLabel(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    float top = (float)luaL_checknumber(L, 2);
+    float left = (float)luaL_checknumber(L, 3);
+    float width = (float)luaL_checknumber(L, 4);
+    float height = (float)luaL_checknumber(L, 5);
+    const std::string text = luaL_checkstring(L, 6);
+    MyGUI::Align a = MyGUI::Align::Enum((int)luaL_checkinteger(L, 7));
+    std::string layer = luaL_checkstring(L, 8);
+    MyGUI::Window* result = instance->createFloatingLabel(top, left, width, height, text, a, layer);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createImage(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    float left = (float)luaL_checknumber(L, 4);
+    float width = (float)luaL_checknumber(L, 5);
+    float height = (float)luaL_checknumber(L, 6);
+    const std::string image = luaL_checkstring(L, 7);
+    MyGUI::ImageBox* result = instance->createImage(parent, top, left, width, height, image);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createImageAbs(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    int top = (int)luaL_checkinteger(L, 3);
+    int left = (int)luaL_checkinteger(L, 4);
+    int width = (int)luaL_checkinteger(L, 5);
+    int height = (int)luaL_checkinteger(L, 6);
+    const std::string image = luaL_checkstring(L, 7);
+    MyGUI::ImageBox* result = instance->createImageAbs(parent, top, left, width, height, image);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createRotatableImageAbs(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    int top = (int)luaL_checkinteger(L, 3);
+    int left = (int)luaL_checkinteger(L, 4);
+    int width = (int)luaL_checkinteger(L, 5);
+    int height = (int)luaL_checkinteger(L, 6);
+    const std::string image = luaL_checkstring(L, 7);
+    MyGUI::ImageBox* result = instance->createRotatableImageAbs(parent, top, left, width, height, image);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createButton(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    float left = (float)luaL_checknumber(L, 4);
+    float width = (float)luaL_checknumber(L, 5);
+    float height = (float)luaL_checknumber(L, 6);
+    const std::string name = luaL_checkstring(L, 7);
+    const std::string text = luaL_checkstring(L, 8);
+    const std::string skin = luaL_optstring(L, 9, "");
+    MyGUI::Button* result = instance->createButton(parent, top, left, width, height, name, text, skin);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createButtonAbs(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    int top = (int)luaL_checkinteger(L, 3);
+    int left = (int)luaL_checkinteger(L, 4);
+    int width = (int)luaL_checkinteger(L, 5);
+    int height = (int)luaL_checkinteger(L, 6);
+    const std::string name = luaL_checkstring(L, 7);
+    const std::string text = luaL_checkstring(L, 8);
+    const std::string skin = luaL_optstring(L, 9, "");
+    MyGUI::Button* result = instance->createButtonAbs(parent, top, left, width, height, name, text, skin);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createCheckbox(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    int left = (int)luaL_checkinteger(L, 3);
+    int top = (int)luaL_checkinteger(L, 4);
+    int width = (int)luaL_checkinteger(L, 5);
+    int height = (int)luaL_checkinteger(L, 6);
+    const std::string caption = luaL_checkstring(L, 7);
+    MyGUI::Button* result = instance->createCheckbox(parent, left, top, width, height, caption);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createDropBox(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    const std::string name = luaL_checkstring(L, 3);
+    float top = (float)luaL_checknumber(L, 4);
+    float left = (float)luaL_checknumber(L, 5);
+    float width = (float)luaL_checknumber(L, 6);
+    float height = (float)luaL_checknumber(L, 7);
+    MyGUI::ComboBox* result = instance->createDropBox(parent, name, top, left, width, height);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createDropBoxAbs(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    const std::string name = luaL_checkstring(L, 3);
+    int top = (int)luaL_checkinteger(L, 4);
+    int left = (int)luaL_checkinteger(L, 5);
+    int width = (int)luaL_checkinteger(L, 6);
+    int height = (int)luaL_checkinteger(L, 7);
+    MyGUI::ComboBox* result = instance->createDropBoxAbs(parent, name, top, left, width, height);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createProgressBar(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    float left = (float)luaL_checknumber(L, 4);
+    float width = (float)luaL_checknumber(L, 5);
+    float height = (float)luaL_checknumber(L, 6);
+    const std::string type = luaL_checkstring(L, 7);
+    MyGUI::ProgressBar* result = instance->createProgressBar(parent, top, left, width, height, type);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createProgressBarAbs(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    float left = (float)luaL_checknumber(L, 4);
+    float width = (float)luaL_checknumber(L, 5);
+    float height = (float)luaL_checknumber(L, 6);
+    const std::string type = luaL_checkstring(L, 7);
+    MyGUI::ProgressBar* result = instance->createProgressBarAbs(parent, top, left, width, height, type);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createLabel(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    float left = (float)luaL_checknumber(L, 4);
+    float width = (float)luaL_checknumber(L, 5);
+    float height = (float)luaL_checknumber(L, 6);
+    const std::string text = luaL_checkstring(L, 7);
+    if (lua_isnumber(L, 8))
+    {
+        MyGUI::Align a = MyGUI::Align::Enum((int)luaL_checkinteger(L, 8));
+        MyGUI::TextBox* result = instance->createLabel(parent, top, left, width, height, text, a);
+        return MyGUIBindings::pushWidget(L, result);
+    }
+    else
+    {
+        const std::string skin = luaL_optstring(L, 8, "");
+        MyGUI::EditBox* result = instance->createLabel(parent, top, left, width, height, text, skin);
+        return MyGUIBindings::pushWidget(L, result);
+    }
+}
+
+int ForgottenGUIBinding::createLabelAbs(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    int top = (int)luaL_checkinteger(L, 3);
+    int left = (int)luaL_checkinteger(L, 4);
+    int width = (int)luaL_checkinteger(L, 5);
+    int height = (int)luaL_checkinteger(L, 6);
+    const std::string text = luaL_checkstring(L, 7);
+    if (lua_isnumber(L, 8))
+    {
+        MyGUI::Align a = MyGUI::Align::Enum((int)luaL_checkinteger(L, 8));
+        MyGUI::TextBox* result = instance->createLabelAbs(parent, top, left, width, height, text, a);
+        return MyGUIBindings::pushWidget(L, result);
+    }
+    else
+    {
+        const std::string skin = luaL_optstring(L, 8, "");
+        MyGUI::EditBox* result = instance->createLabelAbs(parent, top, left, width, height, text, skin);
+        return MyGUIBindings::pushWidget(L, result);
+    }
+}
+
+int ForgottenGUIBinding::createValueEdit(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    float left = (float)luaL_checknumber(L, 4);
+    float width = (float)luaL_checknumber(L, 5);
+    float height = (float)luaL_checknumber(L, 6);
+    const std::string name = luaL_checkstring(L, 7);
+    MyGUI::EditBox* result = instance->createValueEdit(parent, top, left, width, height, name);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createValueEditTransparent(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    float left = (float)luaL_checknumber(L, 4);
+    float width = (float)luaL_checknumber(L, 5);
+    float height = (float)luaL_checknumber(L, 6);
+    const std::string name = luaL_checkstring(L, 7);
+    MyGUI::EditBox* result = instance->createValueEditTransparent(parent, top, left, width, height, name);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createEditBox(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    float left = (float)luaL_checknumber(L, 4);
+    float width = (float)luaL_checknumber(L, 5);
+    float height = (float)luaL_checknumber(L, 6);
+    const std::string name = luaL_checkstring(L, 7);
+    if (lua_gettop(L) >= 9)
+    {
+        const std::string skin = luaL_checkstring(L, 8);
+        bool multiLine = lua_toboolean(L, 9) != 0;
+        MyGUI::EditBox* result = instance->createEditBox(parent, top, left, width, height, name, skin, multiLine);
+        return MyGUIBindings::pushWidget(L, result);
+    }
+    else
+    {
+        bool multiLine = lua_toboolean(L, 8) != 0;
+        MyGUI::EditBox* result = instance->createEditBox(parent, top, left, width, height, name, multiLine);
+        return MyGUIBindings::pushWidget(L, result);
+    }
+}
+
+int ForgottenGUIBinding::createEditBoxAbs(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    int top = (int)luaL_checkinteger(L, 3);
+    int left = (int)luaL_checkinteger(L, 4);
+    int width = (int)luaL_checkinteger(L, 5);
+    int height = (int)luaL_checkinteger(L, 6);
+    const std::string name = luaL_checkstring(L, 7);
+    if (lua_gettop(L) >= 9)
+    {
+        const std::string skin = luaL_checkstring(L, 8);
+        bool multiLine = lua_toboolean(L, 9) != 0;
+        MyGUI::EditBox* result = instance->createEditBoxAbs(parent, top, left, width, height, name, skin, multiLine);
+        return MyGUIBindings::pushWidget(L, result);
+    }
+    else
+    {
+        bool multiLine = lua_toboolean(L, 8) != 0;
+        MyGUI::EditBox* result = instance->createEditBoxAbs(parent, top, left, width, height, name, multiLine);
+        return MyGUIBindings::pushWidget(L, result);
+    }
+}
+
+int ForgottenGUIBinding::createScrollBarAbs(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    int top = (int)luaL_checkinteger(L, 3);
+    int left = (int)luaL_checkinteger(L, 4);
+    int width = (int)luaL_checkinteger(L, 5);
+    int height = (int)luaL_checkinteger(L, 6);
+    int range = (int)luaL_checkinteger(L, 7);
+    int value = (int)luaL_checkinteger(L, 8);
+    MyGUI::ScrollBar* result = instance->createScrollBarAbs(parent, top, left, width, height, range, value);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
+int ForgottenGUIBinding::createListbox(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+    MyGUI::Window* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    float top = (float)luaL_checknumber(L, 3);
+    float left = (float)luaL_checknumber(L, 4);
+    float width = (float)luaL_checknumber(L, 5);
+    float height = (float)luaL_checknumber(L, 6);
+    MyGUI::ListBox* result = instance->createListbox(parent, top, left, width, height);
+    return MyGUIBindings::pushWidget(L, result);
+}
+
 /*
 Skipped methods needing manual binding:
   line 68: DatapanelGUI* createDatapanel(...) - overloaded method
@@ -1407,49 +1739,17 @@ Skipped methods needing manual binding:
   line 122: void destroyWidgets(...) - overloaded method
   line 123: void destroyWidgets(...) - overloaded method
   line 132: void setup(...) - unsupported arg type
-  line 141: void _showTradeWindow(...) - unsupported arg type
-  line 179: MyGUI::ImageBox* createImage(...) - unsupported arg type
-  line 180: MyGUI::ImageBox* createImageAbs(...) - unsupported arg type
-  line 181: MyGUI::ImageBox* createRotatableImageAbs(...) - unsupported arg type
-  line 183: MyGUI::Button* createButtonAbs(...) - unsupported arg type
-  line 184: MyGUI::Button* createButton(...) - unsupported arg type
-  line 185: MyGUI::ComboBox* createDropBox(...) - unsupported arg type
-  line 186: MyGUI::ComboBox* createDropBoxAbs(...) - unsupported arg type
-  line 187: MyGUI::ProgressBar* createProgressBar(...) - unsupported arg type
-  line 188: MyGUI::ProgressBar* createProgressBarAbs(...) - unsupported arg type
-  line 189: MyGUI::Window* createFloatingLabel(...) - unsupported arg type
-  line 190: MyGUI::EditBox* createLabel(...) - overloaded method
-  line 191: MyGUI::TextBox* createLabel(...) - overloaded method
-  line 192: MyGUI::TextBox* createLabelAbs(...) - overloaded method
-  line 193: MyGUI::EditBox* createLabelAbs(...) - overloaded method
-  line 194: MyGUI::EditBox* createValueEdit(...) - unsupported arg type
-  line 195: MyGUI::EditBox* createEditBox(...) - overloaded method
-  line 196: MyGUI::EditBox* createEditBox(...) - overloaded method
-  line 197: MyGUI::EditBox* createEditBoxAbs(...) - overloaded method
-  line 198: MyGUI::EditBox* createEditBoxAbs(...) - overloaded method
-  line 199: MyGUI::ScrollBar* createScrollBarAbs(...) - unsupported arg type
-  line 200: MyGUI::Button* createCheckbox(...) - unsupported arg type
-  line 201: MyGUI::EditBox* createValueEditTransparent(...) - unsupported arg type
-  line 202: MyGUI::ListBox* createListbox(...) - unsupported arg type
   line 206: ScreenLabel* createScreenLabel(...) - unsupported arg type
 */
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - ForgottenGUI_get_manager: MyGUI::Gui* (unbound pointer)
   - ForgottenGUI_get_guiPlatform: MyGUI::OgrePlatform* (unbound pointer)
-  - ForgottenGUIBinding::getGuiManager: MyGUI::Gui* (unbound pointer)
-  - ForgottenGUIBinding::createPanel: MyGUI::Window* (unbound pointer)
-  - ForgottenGUIBinding::createPanelAbs: MyGUI::Window* (unbound pointer)
-  - ForgottenGUIBinding::createTabPanel: MyGUI::TabControl* (unbound pointer)
-  - ForgottenGUIBinding::createFloatingImage: MyGUI::Window* (unbound pointer)
-  - ForgottenGUIBinding::createFloatingImageAbs: MyGUI::Window* (unbound pointer)
   - ForgottenGUIBinding::createScreenLabelD: ScreenLabelDebug* (unbound pointer)
 */
 
 /*
 Skipped properties needing manual binding:
-  line 146: _showTradeWindowMsg (TradeWindowType) - unsupported type
   line 156: inventoryWindowsKillList (Ogre::vector<InventoryGUI*>::type) - unsupported type
   line 158: characterStatsWindows (Ogre::vector<CharacterStatsWindow*>::type) - unsupported type
   line 159: characterStatsWindowsKillList (Ogre::vector<CharacterStatsWindow*>::type) - unsupported type
@@ -1561,6 +1861,26 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
         { "keepWindownOnScreen", ForgottenGUIBinding::keepWindownOnScreen },
         { "setInventoryPosition", ForgottenGUIBinding::setInventoryPosition },
         { "inventoriesSelectedObjectUpdate", ForgottenGUIBinding::inventoriesSelectedObjectUpdate },
+        { "_showTradeWindow", ForgottenGUIBinding::_showTradeWindow },
+        { "createFloatingLabel", ForgottenGUIBinding::createFloatingLabel },
+        { "createImage", ForgottenGUIBinding::createImage },
+        { "createImageAbs", ForgottenGUIBinding::createImageAbs },
+        { "createRotatableImageAbs", ForgottenGUIBinding::createRotatableImageAbs },
+        { "createButton", ForgottenGUIBinding::createButton },
+        { "createButtonAbs", ForgottenGUIBinding::createButtonAbs },
+        { "createCheckbox", ForgottenGUIBinding::createCheckbox },
+        { "createDropBox", ForgottenGUIBinding::createDropBox },
+        { "createDropBoxAbs", ForgottenGUIBinding::createDropBoxAbs },
+        { "createProgressBar", ForgottenGUIBinding::createProgressBar },
+        { "createProgressBarAbs", ForgottenGUIBinding::createProgressBarAbs },
+        { "createLabel", ForgottenGUIBinding::createLabel },
+        { "createLabelAbs", ForgottenGUIBinding::createLabelAbs },
+        { "createValueEdit", ForgottenGUIBinding::createValueEdit },
+        { "createValueEditTransparent", ForgottenGUIBinding::createValueEditTransparent },
+        { "createEditBox", ForgottenGUIBinding::createEditBox },
+        { "createEditBoxAbs", ForgottenGUIBinding::createEditBoxAbs },
+        { "createScrollBarAbs", ForgottenGUIBinding::createScrollBarAbs },
+        { "createListbox", ForgottenGUIBinding::createListbox },
         { 0, 0 }
     };
 
@@ -1586,6 +1906,7 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
     registerGetter(L, "manager", ForgottenGUI_get_manager);
     registerGetter(L, "guiPlatform", ForgottenGUI_get_guiPlatform);
     registerGetter(L, "_closeTradeWindowMsg", ForgottenGUI_get__closeTradeWindowMsg);
+    registerGetter(L, "_showTradeWindowMsg", ForgottenGUI_get__showTradeWindowMsg);
     registerGetter(L, "tradeA", ForgottenGUI_get_tradeA);
     registerGetter(L, "tradeB", ForgottenGUI_get_tradeB);
     registerGetter(L, "inventoryWindowsOpen", ForgottenGUI_get_inventoryWindowsOpen);
@@ -1619,6 +1940,7 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
     registerSetter(L, "currentCursor", ForgottenGUI_set_currentCursor);
     registerSetter(L, "Scale", ForgottenGUI_set_Scale);
     registerSetter(L, "_closeTradeWindowMsg", ForgottenGUI_set__closeTradeWindowMsg);
+    registerSetter(L, "_showTradeWindowMsg", ForgottenGUI_set__showTradeWindowMsg);
     registerSetter(L, "tradeA", ForgottenGUI_set_tradeA);
     registerSetter(L, "tradeB", ForgottenGUI_set_tradeB);
     registerSetter(L, "inventoryWindowsOpen", ForgottenGUI_set_inventoryWindowsOpen);

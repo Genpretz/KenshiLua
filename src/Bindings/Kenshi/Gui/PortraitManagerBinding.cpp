@@ -7,6 +7,7 @@
 #include "Bindings/Kenshi/Gui/PortraitDataBinding.h"
 #include "Bindings/Kenshi/Util/iVector2Binding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
+#include "Bindings/MyGUI/ImageBoxBinding.h"
 
 namespace KenshiLua
 {
@@ -261,9 +262,22 @@ int PortraitManagerBinding::setImageWidget(lua_State* L)
 
     hand* characterHandle = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     if (!characterHandle) return luaL_error(L, "Argument 2 to setImageWidget must be hand");
-    MyGUI::ImageBox* imgBox = (MyGUI::ImageBox*)lua_touserdata(L, 3);
+    MyGUI::ImageBox* imgBox = checkObject<MyGUI::ImageBox>(L, 3, ImageBoxBinding::getMetatableName());
     bool force = lua_toboolean(L, 4) != 0;
     instance->setImageWidget(*characterHandle, imgBox, force);
+    return 0;
+}
+
+int PortraitManagerBinding::setImageWidgetNPC(lua_State* L)
+{
+    PortraitManager* instance = get_instance(L, 1);
+    if (!instance) return luaL_error(L, "PortraitManager is nil");
+
+    Character* character = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    if (!character) return luaL_error(L, "Argument 2 to setImageWidgetNPC must be Character");
+    MyGUI::ImageBox* imgBox = checkObject<MyGUI::ImageBox>(L, 3, ImageBoxBinding::getMetatableName());
+    if (!imgBox) return luaL_error(L, "Argument 3 to setImageWidgetNPC must be MyGUI::ImageBox");
+    instance->setImageWidgetNPC(character, imgBox);
     return 0;
 }
 
@@ -271,13 +285,11 @@ int PortraitManagerBinding::setImageWidget(lua_State* L)
 Skipped methods needing manual binding:
   line 60: bool createPortraitImage(...) - unsupported arg type
   line 61: void getNextIndices(...) - non-string reference arg
-  line 62: void setImageWidgetNPC(...) - unsupported arg type
 */
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - PortraitManager_get_imagesIndices: bool* (unbound pointer)
-  - PortraitManagerBinding::setImageWidget: MyGUI::ImageBox* (unbound pointer)
 */
 
 /*
@@ -323,6 +335,7 @@ void PortraitManagerBinding::registerBinding(lua_State* L)
         { "updatePortrait", PortraitManagerBinding::updatePortrait },
         { "updatePortraitImage", PortraitManagerBinding::updatePortraitImage },
         { "setImageWidget", PortraitManagerBinding::setImageWidget },
+        { "setImageWidgetNPC", PortraitManagerBinding::setImageWidgetNPC },
         { "getInstance", PortraitManagerBinding::getInstance },
         { 0, 0 }
     };

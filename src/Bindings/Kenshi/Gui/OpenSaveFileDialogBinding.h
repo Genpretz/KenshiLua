@@ -28,5 +28,13 @@ public:
     static int setFileMask(lua_State* L);
     static int getFileMask(lua_State* L);
     static int update(lua_State* L);
+    static int accept(lua_State* L);
+    static int cancel(lua_State* L);
+    static int upFolder(lua_State* L);
+    static int notifyDirectoryComboAccept(lua_State* L);
+    static int notifyDirectoryComboChangePosition(lua_State* L);
+    static int notifyListChangePosition(lua_State* L);
+    static int notifyListSelectAccept(lua_State* L);
+    static int closeWindow(lua_State* L);
 };
 }

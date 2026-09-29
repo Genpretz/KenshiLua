@@ -20,5 +20,7 @@ public:
 
     static int select(lua_State* L);
     static int _NV_select(lua_State* L);
+    static int importPress(lua_State* L);
+    static int toggleAdvancedOptions(lua_State* L);
 };
 }

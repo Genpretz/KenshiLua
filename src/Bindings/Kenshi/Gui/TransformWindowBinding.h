@@ -37,5 +37,7 @@ public:
     static int reset(lua_State* L);
     static int revert(lua_State* L);
     static int getSingleton(lua_State* L);
+    static int confirmValue(lua_State* L);
+    static int hide(lua_State* L);
 };
 }

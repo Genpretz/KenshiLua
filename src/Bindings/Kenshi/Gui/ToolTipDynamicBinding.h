@@ -20,5 +20,7 @@ public:
 
     static int setVisible(lua_State* L);
     static int _NV_setVisible(lua_State* L);
+    static int setPosition(lua_State* L);
+    static int _NV_setPosition(lua_State* L);
 };
 }

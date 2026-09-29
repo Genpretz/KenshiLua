@@ -25,5 +25,11 @@ public:
     static int addOption(lua_State* L);
     static int enableOption(lua_State* L);
     static int getOptions(lua_State* L);
+    static int close(lua_State* L);
+    static int selectGame(lua_State* L);
+    static int keyPressed(lua_State* L);
+    static int toggleCheck(lua_State* L);
+    static int createInfo(lua_State* L);
+    static int updateInfo(lua_State* L);
 };
 }

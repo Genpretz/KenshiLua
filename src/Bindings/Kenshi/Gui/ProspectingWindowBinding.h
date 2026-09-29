@@ -28,5 +28,7 @@ public:
     static int clear(lua_State* L);
     static int worldToMapCoords(lua_State* L);
     static int getSingleton(lua_State* L);
+    static int closeButton(lua_State* L);
+    static int resourceSelected(lua_State* L);
 };
 }

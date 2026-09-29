@@ -7,6 +7,7 @@
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Kenshi/Gui/GUIWindowBinding.h"
 #include "Bindings/Kenshi/Gui/ToolTipBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h" 
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 
 namespace KenshiLua
@@ -375,10 +376,16 @@ int OptionsWindowBinding::getSingleton(lua_State* L)
     return pushObject<OptionsWindow>(L, result, OptionsWindowBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 47: void closeButton(...) - unsupported arg type
-*/
+int OptionsWindowBinding::closeButton(lua_State* L)
+{
+    OptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OptionsWindow is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->closeButton(sender);
+    return 0;
+}
+
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -427,6 +434,7 @@ void OptionsWindowBinding::registerBinding(lua_State* L)
         { "saveOptions", OptionsWindowBinding::saveOptions },
         { "create", OptionsWindowBinding::create },
         { "updateResolutions", OptionsWindowBinding::updateResolutions },
+        { "closeButton", OptionsWindowBinding::closeButton },
         { "getSingleton", OptionsWindowBinding::getSingleton },
         { 0, 0 }
     };

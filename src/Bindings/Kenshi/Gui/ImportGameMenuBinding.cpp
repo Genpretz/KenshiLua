@@ -4,6 +4,8 @@
 #include "LoadSaveWindowBinding.h"
 #include "NewGameOptionsWindowBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -50,11 +52,23 @@ int ImportGameMenuBinding::_NV_select(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 53: void importPress(...) - unsupported arg type
-  line 54: void toggleAdvancedOptions(...) - unsupported arg type
-*/
+int ImportGameMenuBinding::importPress(lua_State* L)
+{
+    ImportGameMenu* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ImportGameMenu is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->importPress(sender);
+    return 0;
+}
+
+int ImportGameMenuBinding::toggleAdvancedOptions(lua_State* L)
+{
+    ImportGameMenu* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ImportGameMenu is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->toggleAdvancedOptions(sender);
+    return 0;
+}
 
 int ImportGameMenuBinding::gc(lua_State* L)
 {
@@ -79,6 +93,8 @@ void ImportGameMenuBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "select", ImportGameMenuBinding::select },
         { "_NV_select", ImportGameMenuBinding::_NV_select },
+        { "importPress", ImportGameMenuBinding::importPress },
+        { "toggleAdvancedOptions", ImportGameMenuBinding::toggleAdvancedOptions },
         { 0, 0 }
     };
 

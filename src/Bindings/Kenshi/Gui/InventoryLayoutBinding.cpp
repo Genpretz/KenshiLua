@@ -9,6 +9,7 @@
 #include "Bindings/Kenshi/Gui/InventoryGUIBinding.h"
 #include "Bindings/Kenshi/InventorySectionBinding.h"
 #include "Bindings/Kenshi/Gui/InventorySectionGUIBinding.h"
+#include "Bindings/Kenshi/Util/StdMapBinding.h"
 #include "Bindings/MyGUI/TypesBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
 #include "Bindings/MyGUI/WindowBinding.h"
@@ -166,17 +167,30 @@ int InventoryLayoutBinding::resizeSectionWidget(lua_State* L)
     return pushValue<MyGUI::IntSize>(L, result, IntSizeBinding::getMetatableName());
 }
 
+typedef StdMapBinding<std::string, InventorySectionGUI*> InventorySectionsMapBinding;
+
+int InventoryLayoutBinding::setupSections(lua_State* L)
+{
+    InventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryLayout is nil");
+
+    InventoryGUI* gui = checkObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    if (!gui) return luaL_error(L, "Argument 2 to setupSections must be InventoryGUI");
+    auto* sections = InventorySectionsMapBinding::get(L, 3);
+    if (!sections) return luaL_error(L, "Argument 3 to setupSections must be std::map<std::string, InventorySectionGUI*>");
+    Inventory* inv = checkObject<Inventory>(L, 4, InventoryBinding::getMetatableName());
+    if (!inv) return luaL_error(L, "Argument 4 to setupSections must be Inventory");
+
+    instance->setupSections(gui, *sections, inv);
+    return 0;
+}
+
 /*
 CellSize bindings intentionally disabled.
 InventoryLayout::CellSize is static storage whose address is not exposed as a
 linkable symbol. The known GOG RVA must not be used for the unverified Steam
 build. Re-enable these bindings only after a version-independent accessor or
 verified per-build address is available.
-*/
-
-/*
-Skipped methods needing manual binding:
-  line 239: void setupSections(...) - unsupported arg type
 */
 
 int InventoryLayoutBinding::gc(lua_State* L)
@@ -210,9 +224,12 @@ void InventoryLayoutBinding::registerBinding(lua_State* L)
         { "notifyCellSizeChanged", InventoryLayoutBinding::notifyCellSizeChanged },
         { "resizeSection", InventoryLayoutBinding::resizeSection },
         { "resizeSectionWidget", InventoryLayoutBinding::resizeSectionWidget },
+        { "setupSections", InventoryLayoutBinding::setupSections },
         // CellSize intentionally omitted; see the note above.
         { 0, 0 }
     };
+
+    InventorySectionsMapBinding::registerBinding(L, "std::map<std::string, InventorySectionGUI*>", nullptr, InventorySectionGUIBinding::getMetatableName());
 
     registerClass(
         L, 

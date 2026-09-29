@@ -304,19 +304,127 @@ int OrdersPanelBinding::setSpeedImage(lua_State* L)
 Skipped methods needing manual binding:
   line 92: void notifyStartDropOrder(...) - non-string reference arg
   line 93: void notifyRequestDropOrder(...) - non-string reference arg
-  line 95: void toggleStealth(...) - unsupported arg type
-  line 96: void toggleRanged(...) - unsupported arg type
-  line 99: void speedPrevious(...) - unsupported arg type
-  line 100: void speedNext(...) - unsupported arg type
-  line 101: void blockmodeButton(...) - unsupported arg type
-  line 102: void holdButtonCallback(...) - unsupported arg type
-  line 103: void passiveButtonCallback(...) - unsupported arg type
-  line 104: void chaseButtonCallback(...) - unsupported arg type
-  line 105: void tauntButtonCallback(...) - unsupported arg type
-  line 106: void medicButton(...) - unsupported arg type
-  line 107: void liftButton(...) - unsupported arg type
-  line 108: void prospectingButton(...) - unsupported arg type
 */
+int OrdersPanelBinding::toggleStealth(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->toggleStealth(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::toggleRanged(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->toggleRanged(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::speedPrevious(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->speedPrevious(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::speedNext(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->speedNext(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::blockmodeButton(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->blockmodeButton(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::holdButtonCallback(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->holdButtonCallback(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::passiveButtonCallback(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->passiveButtonCallback(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::chaseButtonCallback(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->chaseButtonCallback(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::tauntButtonCallback(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->tauntButtonCallback(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::medicButton(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->medicButton(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::liftButton(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->liftButton(sender);
+    return 0;
+}
+
+int OrdersPanelBinding::prospectingButton(lua_State* L)
+{
+    OrdersPanel* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrdersPanel is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->prospectingButton(sender);
+    return 0;
+}
+
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -369,6 +477,18 @@ void OrdersPanelBinding::registerBinding(lua_State* L)
         { "notifyEndDropOrder", OrdersPanelBinding::notifyEndDropOrder },
         { "setSpeed", OrdersPanelBinding::setSpeed },
         { "setSpeedImage", OrdersPanelBinding::setSpeedImage },
+        { "toggleStealth", OrdersPanelBinding::toggleStealth },
+        { "toggleRanged", OrdersPanelBinding::toggleRanged },
+        { "speedPrevious", OrdersPanelBinding::speedPrevious },
+        { "speedNext", OrdersPanelBinding::speedNext },
+        { "blockmodeButton", OrdersPanelBinding::blockmodeButton },
+        { "holdButtonCallback", OrdersPanelBinding::holdButtonCallback },
+        { "passiveButtonCallback", OrdersPanelBinding::passiveButtonCallback },
+        { "chaseButtonCallback", OrdersPanelBinding::chaseButtonCallback },
+        { "tauntButtonCallback", OrdersPanelBinding::tauntButtonCallback },
+        { "medicButton", OrdersPanelBinding::medicButton },
+        { "liftButton", OrdersPanelBinding::liftButton },
+        { "prospectingButton", OrdersPanelBinding::prospectingButton },
         { 0, 0 }
     };
 

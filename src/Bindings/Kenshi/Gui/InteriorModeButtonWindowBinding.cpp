@@ -1,5 +1,13 @@
 #include "pch.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
+#include "Bindings/MyGUI/ButtonBinding.h"
+#include "Bindings/MyGUI/WindowBinding.h"
+#include "Bindings/MyGUI/TextBoxBinding.h"
+#include "Bindings/MyGUI/ListBoxBinding.h"
+#include "Bindings/MyGUI/EditBoxBinding.h"
 
 #include "kenshi\gui\InteriorModeButtonWindow.h"
 #include "InteriorModeButtonWindowBinding.h"
@@ -67,104 +75,212 @@ static int InteriorModeButtonWindow_get_interiorModeButton(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->interiorModeButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->interiorModeButton);
+}
+
+static int InteriorModeButtonWindow_set_interiorModeButton(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->interiorModeButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_win(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->win);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->win);
+}
+
+static int InteriorModeButtonWindow_set_win(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->win = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_centerButton(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->centerButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->centerButton);
+}
+
+static int InteriorModeButtonWindow_set_centerButton(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->centerButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_exteriorButton(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->exteriorButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->exteriorButton);
+}
+
+static int InteriorModeButtonWindow_set_exteriorButton(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->exteriorButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_titleLabel(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->titleLabel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->titleLabel);
+}
+
+static int InteriorModeButtonWindow_set_titleLabel(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->titleLabel = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, TextBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_saveBut(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->saveBut);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->saveBut);
+}
+
+static int InteriorModeButtonWindow_set_saveBut(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->saveBut = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_deleteBut(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->deleteBut);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->deleteBut);
+}
+
+static int InteriorModeButtonWindow_set_deleteBut(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->deleteBut = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_listbox(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->listbox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->listbox);
+}
+
+static int InteriorModeButtonWindow_set_listbox(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->listbox = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_namebox(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->namebox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->namebox);
+}
+
+static int InteriorModeButtonWindow_set_namebox(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->namebox = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_saveBut2(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->saveBut2);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->saveBut2);
+}
+
+static int InteriorModeButtonWindow_set_saveBut2(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->saveBut2 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_deleteBut2(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->deleteBut2);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->deleteBut2);
+}
+
+static int InteriorModeButtonWindow_set_deleteBut2(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->deleteBut2 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_listbox2(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->listbox2);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->listbox2);
+}
+
+static int InteriorModeButtonWindow_set_listbox2(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->listbox2 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int InteriorModeButtonWindow_get_namebox2(lua_State* L)
 {
     InteriorModeButtonWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->namebox2);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->namebox2);
+}
+
+static int InteriorModeButtonWindow_set_namebox2(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    instance->namebox2 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    return 0;
+}
+
+static int InteriorModeButtonWindow_get_updateNodesMessages(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    return LektorValueBinding<hand>::push(L, &instance->updateNodesMessages);
+}
+
+static int InteriorModeButtonWindow_set_updateNodesMessages(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    lektor<hand>* val = checkObject<lektor<hand>>(L, 2, LektorValueBinding<hand>::metaName);
+    if (!val) return luaL_error(L, "Argument 2 must be lektor<hand>");
+    instance->updateNodesMessages = *val;
+    return 0;
 }
 
 // --- Setters for InteriorModeButtonWindow ---
@@ -354,47 +470,156 @@ int InteriorModeButtonWindowBinding::wasTheInteriorLoadedFromASave(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 50: void closeWindow(...) - unsupported arg type
-  line 51: void toggleVisButtonPressed(...) - unsupported arg type
-  line 52: void interiorModePressed(...) - unsupported arg type
-  line 53: void interiorModeButtonUpdate(...) - unsupported arg type
-  line 54: void interiorModeButtonUpdate2(...) - unsupported arg type
-  line 55: void notifyEditTextChange(...) - unsupported arg type
-  line 56: void centerButtonPressed(...) - unsupported arg type
-  line 57: void saveButtonPressed(...) - unsupported arg type
-  line 58: void deleteButtonPressed(...) - unsupported arg type
-  line 59: void clearNodes(...) - unsupported arg type
-  line 60: void clearAll(...) - unsupported arg type
-  line 61: void listItemSelected(...) - unsupported arg type
-  line 64: void saveButtonPressed2(...) - unsupported arg type
-  line 65: void deleteButtonPressed2(...) - unsupported arg type
-  line 66: void listItemSelected2(...) - unsupported arg type
-  line 67: void notifyEditTextChange2(...) - unsupported arg type
-*/
+int InteriorModeButtonWindowBinding::closeWindow(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Window* sender = checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    const std::string name = luaL_checkstring(L, 3);
+    instance->closeWindow(sender, name);
+    return 0;
+}
 
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - InteriorModeButtonWindow_get_interiorModeButton: MyGUI::Button* (unbound pointer)
-  - InteriorModeButtonWindow_get_win: MyGUI::Window* (unbound pointer)
-  - InteriorModeButtonWindow_get_centerButton: MyGUI::Button* (unbound pointer)
-  - InteriorModeButtonWindow_get_exteriorButton: MyGUI::Button* (unbound pointer)
-  - InteriorModeButtonWindow_get_titleLabel: MyGUI::TextBox* (unbound pointer)
-  - InteriorModeButtonWindow_get_saveBut: MyGUI::Button* (unbound pointer)
-  - InteriorModeButtonWindow_get_deleteBut: MyGUI::Button* (unbound pointer)
-  - InteriorModeButtonWindow_get_listbox: MyGUI::ListBox* (unbound pointer)
-  - InteriorModeButtonWindow_get_namebox: MyGUI::EditBox* (unbound pointer)
-  - InteriorModeButtonWindow_get_saveBut2: MyGUI::Button* (unbound pointer)
-  - InteriorModeButtonWindow_get_deleteBut2: MyGUI::Button* (unbound pointer)
-  - InteriorModeButtonWindow_get_listbox2: MyGUI::ListBox* (unbound pointer)
-  - InteriorModeButtonWindow_get_namebox2: MyGUI::EditBox* (unbound pointer)
-*/
+int InteriorModeButtonWindowBinding::toggleVisButtonPressed(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->toggleVisButtonPressed(sender);
+    return 0;
+}
 
-/*
-Skipped properties needing manual binding:
-  line 35: updateNodesMessages (lektor<hand>) - unsupported type
-*/
+int InteriorModeButtonWindowBinding::interiorModePressed(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->interiorModePressed(sender);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::interiorModeButtonUpdate(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int a2 = (int)luaL_checkinteger(L, 3);
+    int a3 = (int)luaL_checkinteger(L, 4);
+    MyGUI::MouseButton a4 = MyGUI::MouseButton::Enum((int)luaL_checkinteger(L, 5));
+    instance->interiorModeButtonUpdate(sender, a2, a3, a4);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::interiorModeButtonUpdate2(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    MyGUI::Widget* sender2 = checkObject<MyGUI::Widget>(L, 3, MyGUIBinding::getMetatableName());
+    instance->interiorModeButtonUpdate2(sender, sender2);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::notifyEditTextChange(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::EditBox* sender = checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    instance->notifyEditTextChange(sender);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::centerButtonPressed(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->centerButtonPressed(sender);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::saveButtonPressed(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->saveButtonPressed(sender);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::deleteButtonPressed(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->deleteButtonPressed(sender);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::clearNodes(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->clearNodes(sender);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::clearAll(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->clearAll(sender);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::listItemSelected(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::ListBox* sender = checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->listItemSelected(sender, index);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::saveButtonPressed2(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->saveButtonPressed2(sender);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::deleteButtonPressed2(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->deleteButtonPressed2(sender);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::listItemSelected2(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::ListBox* sender = checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->listItemSelected2(sender, index);
+    return 0;
+}
+
+int InteriorModeButtonWindowBinding::notifyEditTextChange2(lua_State* L)
+{
+    InteriorModeButtonWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InteriorModeButtonWindow is nil");
+    MyGUI::EditBox* sender = checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    instance->notifyEditTextChange2(sender);
+    return 0;
+}
 
 int InteriorModeButtonWindowBinding::gc(lua_State* L)
 {
@@ -431,6 +656,22 @@ void InteriorModeButtonWindowBinding::registerBinding(lua_State* L)
         { "setExteriorLayout", InteriorModeButtonWindowBinding::setExteriorLayout },
         { "recheckOutsideFurniture", InteriorModeButtonWindowBinding::recheckOutsideFurniture },
         { "wasTheInteriorLoadedFromASave", InteriorModeButtonWindowBinding::wasTheInteriorLoadedFromASave },
+        { "interiorModePressed", InteriorModeButtonWindowBinding::interiorModePressed },
+        { "interiorModeButtonUpdate", InteriorModeButtonWindowBinding::interiorModeButtonUpdate },
+        { "interiorModeButtonUpdate2", InteriorModeButtonWindowBinding::interiorModeButtonUpdate2 },
+        { "deleteButtonPressed", InteriorModeButtonWindowBinding::deleteButtonPressed },
+        { "deleteButtonPressed2", InteriorModeButtonWindowBinding::deleteButtonPressed2 },
+        { "closeWindow", InteriorModeButtonWindowBinding::closeWindow },
+        { "toggleVisButtonPressed", InteriorModeButtonWindowBinding::toggleVisButtonPressed },
+        { "notifyEditTextChange", InteriorModeButtonWindowBinding::notifyEditTextChange },
+        { "centerButtonPressed", InteriorModeButtonWindowBinding::centerButtonPressed },
+        { "saveButtonPressed", InteriorModeButtonWindowBinding::saveButtonPressed },
+        { "clearNodes", InteriorModeButtonWindowBinding::clearNodes },
+        { "clearAll", InteriorModeButtonWindowBinding::clearAll },
+        { "listItemSelected", InteriorModeButtonWindowBinding::listItemSelected },
+        { "saveButtonPressed2", InteriorModeButtonWindowBinding::saveButtonPressed2 },
+        { "listItemSelected2", InteriorModeButtonWindowBinding::listItemSelected2 },
+        { "notifyEditTextChange2", InteriorModeButtonWindowBinding::notifyEditTextChange2 },
         { 0, 0 }
     };
 
@@ -464,6 +705,7 @@ void InteriorModeButtonWindowBinding::registerBinding(lua_State* L)
     registerGetter(L, "deleteBut2", InteriorModeButtonWindow_get_deleteBut2);
     registerGetter(L, "listbox2", InteriorModeButtonWindow_get_listbox2);
     registerGetter(L, "namebox2", InteriorModeButtonWindow_get_namebox2);
+    registerGetter(L, "updateNodesMessages", InteriorModeButtonWindow_get_updateNodesMessages);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -473,6 +715,20 @@ void InteriorModeButtonWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "currentBuilding", InteriorModeButtonWindow_set_currentBuilding);
     registerSetter(L, "currentInterior", InteriorModeButtonWindow_set_currentInterior);
     registerSetter(L, "currentExterior", InteriorModeButtonWindow_set_currentExterior);
+    registerSetter(L, "interiorModeButton", InteriorModeButtonWindow_set_interiorModeButton);
+    registerSetter(L, "win", InteriorModeButtonWindow_set_win);
+    registerSetter(L, "centerButton", InteriorModeButtonWindow_set_centerButton);
+    registerSetter(L, "exteriorButton", InteriorModeButtonWindow_set_exteriorButton);
+    registerSetter(L, "titleLabel", InteriorModeButtonWindow_set_titleLabel);
+    registerSetter(L, "saveBut", InteriorModeButtonWindow_set_saveBut);
+    registerSetter(L, "deleteBut", InteriorModeButtonWindow_set_deleteBut);
+    registerSetter(L, "listbox", InteriorModeButtonWindow_set_listbox);
+    registerSetter(L, "namebox", InteriorModeButtonWindow_set_namebox);
+    registerSetter(L, "saveBut2", InteriorModeButtonWindow_set_saveBut2);
+    registerSetter(L, "deleteBut2", InteriorModeButtonWindow_set_deleteBut2);
+    registerSetter(L, "listbox2", InteriorModeButtonWindow_set_listbox2);
+    registerSetter(L, "namebox2", InteriorModeButtonWindow_set_namebox2);
+    registerSetter(L, "updateNodesMessages", InteriorModeButtonWindow_set_updateNodesMessages);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     // Wire up inheritance to wraps::BaseLayout

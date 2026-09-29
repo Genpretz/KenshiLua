@@ -54,5 +54,20 @@ public:
     static int updateFoliageRemoval(lua_State* L);
     static int updateSeedEditor(lua_State* L);
     static int deleteObject(lua_State* L);
+    static int saveMod(lua_State* L);
+    static int regenerate(lua_State* L);
+    static int closeNavmeshWindow(lua_State* L);
+    static int fixBuildings(lua_State* L);
+    static int factionButton(lua_State* L);
+    static int npcButton(lua_State* L);
+    static int townButton(lua_State* L);
+    static int squadButton(lua_State* L);
+    static int featureButton(lua_State* L);
+    static int fogButton(lua_State* L);
+    static int itemsButton(lua_State* L);
+    static int buildingsButton(lua_State* L);
+    static int navmeshButton(lua_State* L);
+    static int exitLevelEditMode(lua_State* L);
+    static int activeModChanged(lua_State* L);
 };
 }

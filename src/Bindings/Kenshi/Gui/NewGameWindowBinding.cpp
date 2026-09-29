@@ -7,6 +7,7 @@
 #include "Bindings/Kenshi/Gui/NewGameOptionsWindowBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/Util/OgreFastArrayBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
 
 namespace KenshiLua
 {
@@ -204,14 +205,68 @@ int NewGameWindowBinding::updateCurrentData(lua_State* L)
     return 0;
 }
 
+int NewGameWindowBinding::showWindow(lua_State* L)
+{
+    NewGameWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NewGameWindow is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->showWindow(sender);
+    return 0;
+}
+
+int NewGameWindowBinding::close(lua_State* L)
+{
+    NewGameWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NewGameWindow is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->close(sender);
+    return 0;
+}
+
+int NewGameWindowBinding::prevStart(lua_State* L)
+{
+    NewGameWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NewGameWindow is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->prevStart(sender);
+    return 0;
+}
+
+int NewGameWindowBinding::nextStart(lua_State* L)
+{
+    NewGameWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NewGameWindow is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->nextStart(sender);
+    return 0;
+}
+
+int NewGameWindowBinding::newGameStart(lua_State* L)
+{
+    NewGameWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NewGameWindow is nil");
+
+    MyGUI::Widget* a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->newGameStart(a1);
+    return 0;
+}
+
+int NewGameWindowBinding::toggleAdvancedOptions(lua_State* L)
+{
+    NewGameWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NewGameWindow is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->toggleAdvancedOptions(sender);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 25: void showWindow(...) - unsupported arg type
-  line 32: void close(...) - unsupported arg type
-  line 33: void prevStart(...) - unsupported arg type
-  line 34: void nextStart(...) - unsupported arg type
-  line 35: void newGameStart(...) - unsupported arg type
-  line 36: void toggleAdvancedOptions(...) - unsupported arg type
 */
 
 /*
@@ -251,6 +306,12 @@ void NewGameWindowBinding::registerBinding(lua_State* L)
         { "_NV_update", NewGameWindowBinding::_NV_update },
         { "loadData", NewGameWindowBinding::loadData },
         { "updateCurrentData", NewGameWindowBinding::updateCurrentData },
+        { "showWindow", NewGameWindowBinding::showWindow },
+        { "close", NewGameWindowBinding::close },
+        { "prevStart", NewGameWindowBinding::prevStart },
+        { "nextStart", NewGameWindowBinding::nextStart },
+        { "newGameStart", NewGameWindowBinding::newGameStart },
+        { "toggleAdvancedOptions", NewGameWindowBinding::toggleAdvancedOptions },
         { 0, 0 }
     };
 

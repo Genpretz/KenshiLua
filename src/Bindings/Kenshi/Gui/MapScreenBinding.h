@@ -40,5 +40,12 @@ public:
     static int updatePlayerTownMapMarker(lua_State* L);
     static int worldToMapCoords(lua_State* L);
     static int mapCoordsToWorld(lua_State* L);
+    static int mapMouseWheel(lua_State* L);
+    static int mapMousePressed(lua_State* L);
+    static int mapMouseReleased(lua_State* L);
+    static int centerButton(lua_State* L);
+    static int zoomInButton(lua_State* L);
+    static int zoomOutButton(lua_State* L);
+    static int getMarkerColor(lua_State* L);
 };
 }

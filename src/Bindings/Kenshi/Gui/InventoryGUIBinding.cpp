@@ -17,6 +17,7 @@
 #include "Bindings/Kenshi/Util/iVector2Binding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/StdMapBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/MyGUI/TypesBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
 #include "Bindings/MyGUI/WindowBinding.h"
@@ -802,14 +803,60 @@ int InventoryGUIBinding::fencingConfirmation(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 156: void getTrader1Trader2(...) - non-string reference arg
-  line 206: void sectionMouseButtonPressed(...) - unsupported arg type
-  line 207: void sectionMouseButtonReleased(...) - unsupported arg type
-  line 208: void onWindowFocus(...) - unsupported arg type
-  line 209: void windowMoved(...) - unsupported arg type
-*/
+int InventoryGUIBinding::getTrader1Trader2(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    InventoryGUI* trader1 = nullptr;
+    InventoryGUI* trader2 = nullptr;
+    instance->getTrader1Trader2(trader1, trader2);
+    pushObject<InventoryGUI>(L, trader1, InventoryGUIBinding::getMetatableName());
+    pushObject<InventoryGUI>(L, trader2, InventoryGUIBinding::getMetatableName());
+    return 2;
+}
+
+int InventoryGUIBinding::sectionMouseButtonPressed(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int left = (int)luaL_checkinteger(L, 3);
+    int top = (int)luaL_checkinteger(L, 4);
+    MyGUI::MouseButton id = MyGUI::MouseButton::Enum((int)luaL_checkinteger(L, 5));
+    instance->sectionMouseButtonPressed(sender, left, top, id);
+    return 0;
+}
+
+int InventoryGUIBinding::sectionMouseButtonReleased(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int left = (int)luaL_checkinteger(L, 3);
+    int top = (int)luaL_checkinteger(L, 4);
+    MyGUI::MouseButton id = MyGUI::MouseButton::Enum((int)luaL_checkinteger(L, 5));
+    instance->sectionMouseButtonReleased(sender, left, top, id);
+    return 0;
+}
+
+int InventoryGUIBinding::onWindowFocus(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    bool focus = lua_toboolean(L, 3) != 0;
+    instance->onWindowFocus(sender, focus);
+    return 0;
+}
+
+int InventoryGUIBinding::windowMoved(lua_State* L)
+{
+    InventoryGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryGUI is nil");
+    MyGUI::Window* sender = checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    instance->windowMoved(sender);
+    return 0;
+}
 
 int InventoryGUIBinding::gc(lua_State* L)
 {
@@ -897,6 +944,11 @@ void InventoryGUIBinding::registerBinding(lua_State* L)
         { "openLimbsInterface", InventoryGUIBinding::openLimbsInterface },
         { "windowButtonPressed", InventoryGUIBinding::windowButtonPressed },
         { "fencingConfirmation", InventoryGUIBinding::fencingConfirmation },
+        { "getTrader1Trader2", InventoryGUIBinding::getTrader1Trader2 },
+        { "sectionMouseButtonPressed", InventoryGUIBinding::sectionMouseButtonPressed },
+        { "sectionMouseButtonReleased", InventoryGUIBinding::sectionMouseButtonReleased },
+        { "onWindowFocus", InventoryGUIBinding::onWindowFocus },
+        { "windowMoved", InventoryGUIBinding::windowMoved },
         { 0, 0 }
     };
 

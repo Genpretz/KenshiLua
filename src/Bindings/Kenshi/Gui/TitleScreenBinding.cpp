@@ -175,16 +175,77 @@ int TitleScreenBinding::getSingleton(lua_State* L)
     return pushObject<TitleScreen>(L, result, TitleScreenBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 32: void loadGame(...) - unsupported arg type
-  line 33: void importGame(...) - unsupported arg type
-  line 34: void showOptions(...) - unsupported arg type
-  line 35: void credits(...) - unsupported arg type
-  line 36: void exitGame(...) - unsupported arg type
-  line 38: void continueGame(...) - unsupported arg type
-  line 39: void hover(...) - unsupported arg type
-*/
+int TitleScreenBinding::loadGame(lua_State* L)
+{
+    TitleScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TitleScreen is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->loadGame(sender);
+    return 0;
+}
+
+int TitleScreenBinding::importGame(lua_State* L)
+{
+    TitleScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TitleScreen is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->importGame(sender);
+    return 0;
+}
+
+int TitleScreenBinding::showOptions(lua_State* L)
+{
+    TitleScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TitleScreen is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->showOptions(sender);
+    return 0;
+}
+
+int TitleScreenBinding::credits(lua_State* L)
+{
+    TitleScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TitleScreen is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->credits(sender);
+    return 0;
+}
+
+int TitleScreenBinding::exitGame(lua_State* L)
+{
+    TitleScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TitleScreen is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->exitGame(sender);
+    return 0;
+}
+
+int TitleScreenBinding::continueGame(lua_State* L)
+{
+    TitleScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TitleScreen is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->continueGame(sender);
+    return 0;
+}
+
+int TitleScreenBinding::hover(lua_State* L)
+{
+    TitleScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TitleScreen is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    MyGUI::Widget* a2 = lua_isnoneornil(L, 3) ? nullptr : checkObject<MyGUI::Widget>(L, 3, MyGUIBinding::getMetatableName());
+    instance->hover(sender, a2);
+    return 0;
+}
+
 
 int TitleScreenBinding::gc(lua_State* L)
 {
@@ -216,6 +277,13 @@ void TitleScreenBinding::registerBinding(lua_State* L)
         { "closeTheOtherBits", TitleScreenBinding::closeTheOtherBits },
         { "setCreditsVisible", TitleScreenBinding::setCreditsVisible },
         { "getSingleton", TitleScreenBinding::getSingleton },
+        { "loadGame", TitleScreenBinding::loadGame },
+        { "importGame", TitleScreenBinding::importGame },
+        { "showOptions", TitleScreenBinding::showOptions },
+        { "credits", TitleScreenBinding::credits },
+        { "exitGame", TitleScreenBinding::exitGame },
+        { "continueGame", TitleScreenBinding::continueGame },
+        { "hover", TitleScreenBinding::hover },
         { 0, 0 }
     };
 

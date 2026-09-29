@@ -8,6 +8,9 @@
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Kenshi/InstanceIDBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/WindowBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h" 
 
 namespace KenshiLua
 {
@@ -468,9 +471,30 @@ int TransformWindowBinding::revert(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 24: void show(...) - unsupported arg type
-  line 42: void confirmValue(...) - unsupported arg type
-  line 45: void hide(...) - unsupported arg type
 */
+
+int TransformWindowBinding::confirmValue(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+
+    MyGUI::Widget* w1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    MyGUI::Widget* w2 = lua_isnoneornil(L, 3) ? nullptr : checkObject<MyGUI::Widget>(L, 3, MyGUIBinding::getMetatableName());
+    instance->confirmValue(w1, w2);
+    return 0;
+}
+
+int TransformWindowBinding::hide(lua_State* L)
+{
+    TransformWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TransformWindow is nil");
+
+    MyGUI::Window* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    std::string name = luaL_checkstring(L, 3);
+    instance->hide(sender, name);
+    return 0;
+}
+
 
 static int TransformWindow_set_node(lua_State* L)
 {
@@ -549,6 +573,8 @@ void TransformWindowBinding::registerBinding(lua_State* L)
         { "reset", TransformWindowBinding::reset },
         { "revert", TransformWindowBinding::revert },
         { "getSingleton", TransformWindowBinding::getSingleton },
+        { "confirmValue", TransformWindowBinding::confirmValue },
+        { "hide", TransformWindowBinding::hide },
         { 0, 0 }
     };
 

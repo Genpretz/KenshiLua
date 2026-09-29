@@ -3,6 +3,8 @@
 #include "TutorialGUIBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/WindowBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h" 
 #include "Bindings/Kenshi/Gui/GUIWindowBinding.h"
 #include "Bindings/Kenshi/Gui/TutorialItemBinding.h"
 #include "Bindings/Kenshi/Gui/TutorialGUILineBinding.h"
@@ -328,16 +330,67 @@ int TutorialGUIBinding::updateCurrentItem(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 164: void addTutorialsToList(...) - unsupported arg type
-  line 168: void windowButtonEvent(...) - unsupported arg type
-  line 169: void windowPrevEvent(...) - unsupported arg type
-  line 170: void windowNextEvent(...) - unsupported arg type
-  line 171: void dismissButtonEvent(...) - unsupported arg type
-  line 172: void tooltipOpen(...) - unsupported arg type
-  line 173: void tooltipClose(...) - unsupported arg type
-*/
+int TutorialGUIBinding::windowButtonEvent(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+
+    MyGUI::Window* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    std::string name = luaL_checkstring(L, 3);
+    instance->windowButtonEvent(sender, name);
+    return 0;
+}
+
+int TutorialGUIBinding::windowPrevEvent(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->windowPrevEvent(sender);
+    return 0;
+}
+
+int TutorialGUIBinding::windowNextEvent(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->windowNextEvent(sender);
+    return 0;
+}
+
+int TutorialGUIBinding::dismissButtonEvent(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->dismissButtonEvent(sender);
+    return 0;
+}
+
+int TutorialGUIBinding::tooltipOpen(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->tooltipOpen(sender);
+    return 0;
+}
+
+int TutorialGUIBinding::tooltipClose(lua_State* L)
+{
+    TutorialGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialGUI is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->tooltipClose(sender);
+    return 0;
+}
+
 
 static int TutorialGUI_get_activeTutorials(lua_State* L)
 {
@@ -358,12 +411,6 @@ static int TutorialGUI_set_activeTutorials(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 164: void addTutorialsToList(...) - unsupported arg type
-  line 168: void windowButtonEvent(...) - unsupported arg type
-  line 169: void windowPrevEvent(...) - unsupported arg type
-  line 170: void windowNextEvent(...) - unsupported arg type
-  line 171: void dismissButtonEvent(...) - unsupported arg type
-  line 172: void tooltipOpen(...) - unsupported arg type
-  line 173: void tooltipClose(...) - unsupported arg type
 */
 
 /*
@@ -410,6 +457,12 @@ void TutorialGUIBinding::registerBinding(lua_State* L)
         { "showTutorialWindow", TutorialGUIBinding::showTutorialWindow },
         { "closeTutorialWindow", TutorialGUIBinding::closeTutorialWindow },
         { "updateCurrentItem", TutorialGUIBinding::updateCurrentItem },
+        { "windowButtonEvent", TutorialGUIBinding::windowButtonEvent },
+        { "windowPrevEvent", TutorialGUIBinding::windowPrevEvent },
+        { "windowNextEvent", TutorialGUIBinding::windowNextEvent },
+        { "dismissButtonEvent", TutorialGUIBinding::dismissButtonEvent },
+        { "tooltipOpen", TutorialGUIBinding::tooltipOpen },
+        { "tooltipClose", TutorialGUIBinding::tooltipClose },
         { 0, 0 }
     };
 

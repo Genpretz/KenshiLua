@@ -3,6 +3,7 @@
 #include "ToolTipDynamicBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Gui/ToolTipBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -34,11 +35,23 @@ int ToolTipDynamicBinding::_NV_setVisible(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 146: void setPosition(...) - unsupported arg type
-  line 147: void _NV_setPosition(...) - unsupported arg type
-*/
+int ToolTipDynamicBinding::setPosition(lua_State* L)
+{
+    ToolTipDynamic* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipDynamic is nil");
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 2);
+    instance->setPosition(pt);
+    return 0;
+}
+
+int ToolTipDynamicBinding::_NV_setPosition(lua_State* L)
+{
+    ToolTipDynamic* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipDynamic is nil");
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 2);
+    instance->_NV_setPosition(pt);
+    return 0;
+}
 
 int ToolTipDynamicBinding::gc(lua_State* L)
 {
@@ -63,6 +76,8 @@ void ToolTipDynamicBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "setVisible", ToolTipDynamicBinding::setVisible },
         { "_NV_setVisible", ToolTipDynamicBinding::_NV_setVisible },
+        { "setPosition", ToolTipDynamicBinding::setPosition },
+        { "_NV_setPosition", ToolTipDynamicBinding::_NV_setPosition },
         { 0, 0 }
     };
 

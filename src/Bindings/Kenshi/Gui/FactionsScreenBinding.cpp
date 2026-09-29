@@ -6,6 +6,8 @@
 #include "Bindings/Kenshi/FactionBinding.h"
 #include "Bindings/Kenshi/Gui/FactionRelationsLineBinding.h"
 #include "Bindings/Kenshi/Util/StdMapBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/EditBoxBinding.h"
 
 namespace KenshiLua
 {
@@ -183,13 +185,61 @@ int FactionsScreenBinding::updateInfo(lua_State* L)
     return 0;
 }
 
+int FactionsScreenBinding::notifyEditTextChange(lua_State* L)
+{
+    FactionsScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionsScreen is nil");
+
+    MyGUI::EditBox* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    instance->notifyEditTextChange(sender);
+    return 0;
+}
+
+int FactionsScreenBinding::setFocus(lua_State* L)
+{
+    FactionsScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionsScreen is nil");
+
+    MyGUI::Widget* a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    MyGUI::Widget* a2 = lua_isnoneornil(L, 3) ? nullptr : checkObject<MyGUI::Widget>(L, 3, WidgetBinding::getMetatableName());
+    instance->setFocus(a1, a2);
+    return 0;
+}
+
+int FactionsScreenBinding::loseFocus(lua_State* L)
+{
+    FactionsScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionsScreen is nil");
+
+    MyGUI::Widget* a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    MyGUI::Widget* a2 = lua_isnoneornil(L, 3) ? nullptr : checkObject<MyGUI::Widget>(L, 3, WidgetBinding::getMetatableName());
+    instance->loseFocus(a1, a2);
+    return 0;
+}
+
+int FactionsScreenBinding::factionLineSelected(lua_State* L)
+{
+    FactionsScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionsScreen is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->factionLineSelected(sender);
+    return 0;
+}
+
+int FactionsScreenBinding::notifyMouseWheel(lua_State* L)
+{
+    FactionsScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionsScreen is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    int rel = (int)luaL_checkinteger(L, 3);
+    instance->notifyMouseWheel(sender, rel);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 48: void notifyEditTextChange(...) - unsupported arg type
-  line 49: void setFocus(...) - unsupported arg type
-  line 50: void loseFocus(...) - unsupported arg type
-  line 51: void factionLineSelected(...) - unsupported arg type
-  line 52: void notifyMouseWheel(...) - unsupported arg type
 */
 
 int FactionsScreenBinding::gc(lua_State* L)
@@ -220,6 +270,11 @@ void FactionsScreenBinding::registerBinding(lua_State* L)
         { "update", FactionsScreenBinding::update },
         { "refresh", FactionsScreenBinding::refresh },
         { "updateInfo", FactionsScreenBinding::updateInfo },
+        { "notifyEditTextChange", FactionsScreenBinding::notifyEditTextChange },
+        { "setFocus", FactionsScreenBinding::setFocus },
+        { "loseFocus", FactionsScreenBinding::loseFocus },
+        { "factionLineSelected", FactionsScreenBinding::factionLineSelected },
+        { "notifyMouseWheel", FactionsScreenBinding::notifyMouseWheel },
         { 0, 0 }
     };
 

@@ -11,6 +11,11 @@
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/OgreUnorderedBinding.h"
 #include "Bindings/Kenshi/Util/OgreFastArrayBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
+#include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/ScrollViewBinding.h"
+#include "Bindings/MyGUI/ImageBoxBinding.h"
 
 namespace KenshiLua
 {
@@ -45,32 +50,60 @@ static int MapScreen_get_mainWidget(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->mainWidget);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->mainWidget);
+}
+
+static int MapScreen_set_mainWidget(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    instance->mainWidget = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    return 0;
 }
 
 static int MapScreen_get_mapScrollView(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->mapScrollView);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->mapScrollView);
+}
+
+static int MapScreen_set_mapScrollView(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    instance->mapScrollView = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ScrollView>(L, 2, ScrollViewBinding::getMetatableName());
+    return 0;
 }
 
 static int MapScreen_get_mapImage(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->mapImage);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->mapImage);
+}
+
+static int MapScreen_set_mapImage(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    instance->mapImage = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ImageBox>(L, 2, ImageBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int MapScreen_get_cameraMarker(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->cameraMarker);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->cameraMarker);
+}
+
+static int MapScreen_set_cameraMarker(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    instance->cameraMarker = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ImageBox>(L, 2, ImageBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int MapScreen_get_cameraMarkerSkin(lua_State* L)
@@ -125,8 +158,25 @@ static int MapScreen_get_mapOverlaysContainer(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->mapOverlaysContainer);
+    lua_createtable(L, 4, 0);
+    for (int i = 0; i < 4; ++i) {
+        MyGUIBindings::pushWidget(L, instance->mapOverlaysContainer[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
     return 1;
+}
+
+static int MapScreen_set_mapOverlaysContainer(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    if (!lua_istable(L, 2)) return luaL_error(L, "Argument 2 must be a table of widgets");
+    for (int i = 0; i < 4; ++i) {
+        lua_rawgeti(L, 2, i + 1);
+        instance->mapOverlaysContainer[i] = lua_isnoneornil(L, -1) ? nullptr : checkObject<MyGUI::Widget>(L, -1, MyGUIBinding::getMetatableName());
+        lua_pop(L, 1);
+    }
+    return 0;
 }
 
 static int MapScreen_get_zoomLevels(lua_State* L)
@@ -145,8 +195,15 @@ static int MapScreen_get_mapMarkerMovement(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->mapMarkerMovement);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->mapMarkerMovement);
+}
+
+static int MapScreen_set_mapMarkerMovement(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    instance->mapMarkerMovement = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ImageBox>(L, 2, ImageBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int MapScreen_get_mapMarkerMovementPosition(lua_State* L)
@@ -655,26 +712,78 @@ int MapScreenBinding::mapCoordsToWorld(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 78: void mapMouseWheel(...) - unsupported arg type
-  line 79: void mapMousePressed(...) - unsupported arg type
-  line 80: void mapMouseReleased(...) - unsupported arg type
-  line 83: void centerButton(...) - unsupported arg type
-  line 84: void zoomInButton(...) - unsupported arg type
-  line 85: void zoomOutButton(...) - unsupported arg type
-  line 86: const MyGUI::Colour& getMarkerColor(...) - static method
-*/
+int MapScreenBinding::mapMouseWheel(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int rel = (int)luaL_checkinteger(L, 3);
+    instance->mapMouseWheel(sender, rel);
+    return 0;
+}
+
+int MapScreenBinding::mapMousePressed(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int left = (int)luaL_checkinteger(L, 3);
+    int top = (int)luaL_checkinteger(L, 4);
+    MyGUI::MouseButton id = MyGUI::MouseButton::Enum((int)luaL_checkinteger(L, 5));
+    instance->mapMousePressed(sender, left, top, id);
+    return 0;
+}
+
+int MapScreenBinding::mapMouseReleased(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int left = (int)luaL_checkinteger(L, 3);
+    int top = (int)luaL_checkinteger(L, 4);
+    MyGUI::MouseButton id = MyGUI::MouseButton::Enum((int)luaL_checkinteger(L, 5));
+    instance->mapMouseReleased(sender, left, top, id);
+    return 0;
+}
+
+int MapScreenBinding::centerButton(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->centerButton(sender);
+    return 0;
+}
+
+int MapScreenBinding::zoomInButton(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->zoomInButton(sender);
+    return 0;
+}
+
+int MapScreenBinding::zoomOutButton(lua_State* L)
+{
+    MapScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapScreen is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->zoomOutButton(sender);
+    return 0;
+}
+
+int MapScreenBinding::getMarkerColor(lua_State* L)
+{
+    int idx = (lua_isuserdata(L, 1) && testObject<MapScreen>(L, 1, MapScreenBinding::getMetatableName())) ? 2 : 1;
+    RootObjectBase* who = checkObject<RootObjectBase>(L, idx, RootObjectBaseBinding::getMetatableName());
+    const MyGUI::Colour& col = MapScreen::getMarkerColor(who);
+    return pushValue<MyGUI::Colour>(L, col, ColourBinding::getMetatableName());
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - MapScreen_get_mainWidget: MyGUI::Widget* (unbound pointer)
-  - MapScreen_get_mapScrollView: MyGUI::ScrollView* (unbound pointer)
-  - MapScreen_get_mapImage: MyGUI::ImageBox* (unbound pointer)
-  - MapScreen_get_cameraMarker: MyGUI::ImageBox* (unbound pointer)
   - MapScreen_get_cameraMarkerSkin: MyGUI::RotatingSkin* (unbound pointer)
-  - MapScreen_get_mapOverlaysContainer: MyGUI::Widget* (unbound pointer)
-  - MapScreen_get_mapMarkerMovement: MyGUI::ImageBox* (unbound pointer)
 */
 
 /*
@@ -730,6 +839,13 @@ void MapScreenBinding::registerBinding(lua_State* L)
         { "updatePlayerTownMapMarker", MapScreenBinding::updatePlayerTownMapMarker },
         { "worldToMapCoords", MapScreenBinding::worldToMapCoords },
         { "mapCoordsToWorld", MapScreenBinding::mapCoordsToWorld },
+        { "mapMouseWheel", MapScreenBinding::mapMouseWheel },
+        { "mapMousePressed", MapScreenBinding::mapMousePressed },
+        { "mapMouseReleased", MapScreenBinding::mapMouseReleased },
+        { "centerButton", MapScreenBinding::centerButton },
+        { "zoomInButton", MapScreenBinding::zoomInButton },
+        { "zoomOutButton", MapScreenBinding::zoomOutButton },
+        { "getMarkerColor", MapScreenBinding::getMarkerColor },
         { 0, 0 }
     };
 
@@ -776,14 +892,20 @@ void MapScreenBinding::registerBinding(lua_State* L)
     lua_newtable(L); // Create __setters table
     registerSetter(L, "updateTimer", MapScreen_set_updateTimer);
     registerSetter(L, "toolTip", MapScreen_set_toolTip);
+    registerSetter(L, "mainWidget", MapScreen_set_mainWidget);
+    registerSetter(L, "mapScrollView", MapScreen_set_mapScrollView);
+    registerSetter(L, "mapImage", MapScreen_set_mapImage);
+    registerSetter(L, "cameraMarker", MapScreen_set_cameraMarker);
     registerSetter(L, "zoomUpdated", MapScreen_set_zoomUpdated);
     registerSetter(L, "zoomValueBase", MapScreen_set_zoomValueBase);
     registerSetter(L, "zoomValueMax", MapScreen_set_zoomValueMax);
     registerSetter(L, "zoomValueCurrent", MapScreen_set_zoomValueCurrent);
     registerSetter(L, "zoomLevelCurrent", MapScreen_set_zoomLevelCurrent);
+    registerSetter(L, "mapOverlaysContainer", MapScreen_set_mapOverlaysContainer);
     registerSetter(L, "zoomLevels", MapScreen_set_zoomLevels);
     registerSetter(L, "mapMarkersTowns", MapScreen_set_mapMarkersTowns);
     registerSetter(L, "mapMarkersCharacters", MapScreen_set_mapMarkersCharacters);
+    registerSetter(L, "mapMarkerMovement", MapScreen_set_mapMarkerMovement);
     registerSetter(L, "mapMarkerMovementPosition", MapScreen_set_mapMarkerMovementPosition);
     registerSetter(L, "mapMarkerMovementFadeOutDelay", MapScreen_set_mapMarkerMovementFadeOutDelay);
     registerSetter(L, "squadsList", MapScreen_set_squadsList);
@@ -797,6 +919,11 @@ void MapScreenBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    // Register global class table for static methods
+    pushGlobalTable(L, "MapScreen");
+    registerStaticMethod(L, "getMarkerColor", MapScreenBinding::getMarkerColor);
+    lua_setglobal(L, "MapScreen");
 }
 
 } // namespace KenshiLua

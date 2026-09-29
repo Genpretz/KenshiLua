@@ -30,5 +30,14 @@ public:
     static int update(lua_State* L);
     static int changeCurrentIndex(lua_State* L);
     static int compareBuildMaterials(lua_State* L);
+    static int categorySelected(lua_State* L);
+    static int buildingSelected(lua_State* L);
+    static int confirm(lua_State* L);
+    static int undo(lua_State* L);
+    static int close(lua_State* L);
+    static int buildingTypePrev(lua_State* L);
+    static int buildingTypeNext(lua_State* L);
+    static int changeFloorButtonUp(lua_State* L);
+    static int changeFloorButtonDown(lua_State* L);
 };
 }

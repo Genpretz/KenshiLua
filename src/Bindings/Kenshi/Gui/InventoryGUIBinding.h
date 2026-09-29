@@ -81,5 +81,10 @@ public:
     static int openLimbsInterface(lua_State* L);
     static int windowButtonPressed(lua_State* L);
     static int fencingConfirmation(lua_State* L);
+    static int getTrader1Trader2(lua_State* L);
+    static int sectionMouseButtonPressed(lua_State* L);
+    static int sectionMouseButtonReleased(lua_State* L);
+    static int onWindowFocus(lua_State* L);
+    static int windowMoved(lua_State* L);
 };
 }

@@ -44,5 +44,11 @@ public:
     static int printResearch(lua_State* L);
     static int addMessage(lua_State* L);
     static int getSingleton(lua_State* L);
+    static int closeEverythingButton(lua_State* L);
+    static int tabCallback(lua_State* L);
+    static int researchTypeSelect(lua_State* L);
+    static int addButtonPress(lua_State* L);
+    static int removeButtonPress(lua_State* L);
+    static int mouseOverCallback(lua_State* L);
 };
 }

@@ -20,5 +20,7 @@ public:
 
     static int updateSquadSize(lua_State* L);
     static int getCellDimension(lua_State* L);
+    static int onNameChanged(lua_State* L);
+    static int onRemove(lua_State* L);
 };
 }

@@ -3,6 +3,9 @@
 #include "TutorialpediaGUIBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/ListBoxBinding.h"
+#include "Bindings/MyGUI/WindowBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h" 
 #include "Bindings/Kenshi/Gui/GUIWindowBinding.h"
 #include "Bindings/Kenshi/Gui/TutorialItemBinding.h"
 
@@ -165,14 +168,58 @@ int TutorialpediaGUIBinding::updateCurrentItem(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 217: void tutorialSelectedEvent(...) - unsupported arg type
-  line 218: void tutorialPrevEvent(...) - unsupported arg type
-  line 219: void tutorialNextEvent(...) - unsupported arg type
-  line 220: void tutorialActivateButtonEvent(...) - unsupported arg type
-  line 221: void tutorialWindowButton(...) - unsupported arg type
-*/
+int TutorialpediaGUIBinding::tutorialSelectedEvent(lua_State* L)
+{
+    TutorialpediaGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
+
+    MyGUI::ListBox* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    size_t index = (size_t)luaL_checkinteger(L, 3);
+    instance->tutorialSelectedEvent(sender, index);
+    return 0;
+}
+
+int TutorialpediaGUIBinding::tutorialPrevEvent(lua_State* L)
+{
+    TutorialpediaGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->tutorialPrevEvent(sender);
+    return 0;
+}
+
+int TutorialpediaGUIBinding::tutorialNextEvent(lua_State* L)
+{
+    TutorialpediaGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->tutorialNextEvent(sender);
+    return 0;
+}
+
+int TutorialpediaGUIBinding::tutorialActivateButtonEvent(lua_State* L)
+{
+    TutorialpediaGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->tutorialActivateButtonEvent(sender);
+    return 0;
+}
+
+int TutorialpediaGUIBinding::tutorialWindowButton(lua_State* L)
+{
+    TutorialpediaGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TutorialpediaGUI is nil");
+
+    MyGUI::Window* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    std::string name = luaL_checkstring(L, 3);
+    instance->tutorialWindowButton(sender, name);
+    return 0;
+}
+
 
 int TutorialpediaGUIBinding::gc(lua_State* L)
 {
@@ -203,6 +250,11 @@ void TutorialpediaGUIBinding::registerBinding(lua_State* L)
         { "_NV_isVisible", TutorialpediaGUIBinding::_NV_isVisible },
         { "setup", TutorialpediaGUIBinding::setup },
         { "updateCurrentItem", TutorialpediaGUIBinding::updateCurrentItem },
+        { "tutorialSelectedEvent", TutorialpediaGUIBinding::tutorialSelectedEvent },
+        { "tutorialPrevEvent", TutorialpediaGUIBinding::tutorialPrevEvent },
+        { "tutorialNextEvent", TutorialpediaGUIBinding::tutorialNextEvent },
+        { "tutorialActivateButtonEvent", TutorialpediaGUIBinding::tutorialActivateButtonEvent },
+        { "tutorialWindowButton", TutorialpediaGUIBinding::tutorialWindowButton },
         { 0, 0 }
     };
 

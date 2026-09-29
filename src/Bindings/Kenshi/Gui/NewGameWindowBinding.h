@@ -29,5 +29,11 @@ public:
     static int _NV_update(lua_State* L);
     static int loadData(lua_State* L);
     static int updateCurrentData(lua_State* L);
+    static int showWindow(lua_State* L);
+    static int close(lua_State* L);
+    static int prevStart(lua_State* L);
+    static int nextStart(lua_State* L);
+    static int newGameStart(lua_State* L);
+    static int toggleAdvancedOptions(lua_State* L);
 };
 }

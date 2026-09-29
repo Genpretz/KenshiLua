@@ -27,5 +27,17 @@ public:
     static int notifyEndDropOrder(lua_State* L);
     static int setSpeed(lua_State* L);
     static int setSpeedImage(lua_State* L);
+    static int toggleStealth(lua_State* L);
+    static int toggleRanged(lua_State* L);
+    static int speedPrevious(lua_State* L);
+    static int speedNext(lua_State* L);
+    static int blockmodeButton(lua_State* L);
+    static int holdButtonCallback(lua_State* L);
+    static int passiveButtonCallback(lua_State* L);
+    static int chaseButtonCallback(lua_State* L);
+    static int tauntButtonCallback(lua_State* L);
+    static int medicButton(lua_State* L);
+    static int liftButton(lua_State* L);
+    static int prospectingButton(lua_State* L);
 };
 }

@@ -34,5 +34,11 @@ public:
     static int showTutorialWindow(lua_State* L);
     static int closeTutorialWindow(lua_State* L);
     static int updateCurrentItem(lua_State* L);
+    static int windowButtonEvent(lua_State* L);
+    static int windowPrevEvent(lua_State* L);
+    static int windowNextEvent(lua_State* L);
+    static int dismissButtonEvent(lua_State* L);
+    static int tooltipOpen(lua_State* L);
+    static int tooltipClose(lua_State* L);
 };
 }

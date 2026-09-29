@@ -27,5 +27,6 @@ public:
     static int removeSquad(lua_State* L);
     static int getSquad(lua_State* L);
     static int dismissCharacter(lua_State* L);
+    static int onAddSquad(lua_State* L);
 };
 }

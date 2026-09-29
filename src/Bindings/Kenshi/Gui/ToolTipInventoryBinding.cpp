@@ -3,6 +3,8 @@
 #include "ToolTipInventoryBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Gui/ToolTipBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -47,22 +49,126 @@ int ToolTipInventoryBinding::_NV_update(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 162: void _setup(...) - unsupported arg type
-  line 163: void _NV__setup(...) - unsupported arg type
-  line 164: void setup(...) - unsupported arg type
-  line 165: void _NV_setup(...) - unsupported arg type
-  line 166: void show(...) - unsupported arg type
-  line 167: void _NV_show(...) - unsupported arg type
-  line 170: void setContent(...) - unsupported arg type
-  line 171: void _NV_setContent(...) - unsupported arg type
-  line 172: void clearData(...) - unsupported arg type
-  line 173: void _NV_clearData(...) - unsupported arg type
-  line 174: void mouseMoved(...) - unsupported arg type
-  line 175: void setPosition(...) - unsupported arg type
-  line 176: void _NV_setPosition(...) - unsupported arg type
-*/
+int ToolTipInventoryBinding::_setup(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_setup(widget);
+    return 0;
+}
+
+int ToolTipInventoryBinding::_NV__setup(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV__setup(widget);
+    return 0;
+}
+
+int ToolTipInventoryBinding::setup(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->setup(widget);
+    return 0;
+}
+
+int ToolTipInventoryBinding::_NV_setup(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV_setup(widget);
+    return 0;
+}
+
+int ToolTipInventoryBinding::show(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 3);
+    instance->show(sender, pt);
+    return 0;
+}
+
+int ToolTipInventoryBinding::_NV_show(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 3);
+    instance->_NV_show(sender, pt);
+    return 0;
+}
+
+int ToolTipInventoryBinding::setContent(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->setContent(widget);
+    return 0;
+}
+
+int ToolTipInventoryBinding::_NV_setContent(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV_setContent(widget);
+    return 0;
+}
+
+int ToolTipInventoryBinding::clearData(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->clearData(widget);
+    return 0;
+}
+
+int ToolTipInventoryBinding::_NV_clearData(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV_clearData(widget);
+    return 0;
+}
+
+int ToolTipInventoryBinding::mouseMoved(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int left = (int)luaL_checkinteger(L, 3);
+    int top = (int)luaL_checkinteger(L, 4);
+    instance->mouseMoved(sender, left, top);
+    return 0;
+}
+
+int ToolTipInventoryBinding::setPosition(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 2);
+    instance->setPosition(pt);
+    return 0;
+}
+
+int ToolTipInventoryBinding::_NV_setPosition(lua_State* L)
+{
+    ToolTipInventory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipInventory is nil");
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 2);
+    instance->_NV_setPosition(pt);
+    return 0;
+}
 
 int ToolTipInventoryBinding::gc(lua_State* L)
 {
@@ -87,6 +193,19 @@ void ToolTipInventoryBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "update", ToolTipInventoryBinding::update },
         { "_NV_update", ToolTipInventoryBinding::_NV_update },
+        { "_setup", ToolTipInventoryBinding::_setup },
+        { "_NV__setup", ToolTipInventoryBinding::_NV__setup },
+        { "setup", ToolTipInventoryBinding::setup },
+        { "_NV_setup", ToolTipInventoryBinding::_NV_setup },
+        { "show", ToolTipInventoryBinding::show },
+        { "_NV_show", ToolTipInventoryBinding::_NV_show },
+        { "setContent", ToolTipInventoryBinding::setContent },
+        { "_NV_setContent", ToolTipInventoryBinding::_NV_setContent },
+        { "clearData", ToolTipInventoryBinding::clearData },
+        { "_NV_clearData", ToolTipInventoryBinding::_NV_clearData },
+        { "mouseMoved", ToolTipInventoryBinding::mouseMoved },
+        { "setPosition", ToolTipInventoryBinding::setPosition },
+        { "_NV_setPosition", ToolTipInventoryBinding::_NV_setPosition },
         { 0, 0 }
     };
 

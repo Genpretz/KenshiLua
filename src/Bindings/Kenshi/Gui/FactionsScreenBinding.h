@@ -23,5 +23,10 @@ public:
     static int update(lua_State* L);
     static int refresh(lua_State* L);
     static int updateInfo(lua_State* L);
+    static int notifyEditTextChange(lua_State* L);
+    static int setFocus(lua_State* L);
+    static int loseFocus(lua_State* L);
+    static int factionLineSelected(lua_State* L);
+    static int notifyMouseWheel(lua_State* L);
 };
 }

@@ -2,6 +2,7 @@
 #include <kenshi/gui/CharacterTradingWindow.h>
 #include "CharacterTradingWindowBinding.h"
 #include "GUIWindowBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
 #include "Bindings/Kenshi/Util/OgreFastArrayBinding.h"
 #include "Lua/BindingHelpers.h"
 
@@ -153,18 +154,12 @@ int CharacterTradingWindowBinding::_NV_close(lua_State* L)
     return 0;
 }
 
-int CharacterTradingWindowBinding::updateSelected(lua_State* L)
-{
-    // Private and non-exported in SDK
-    return 0;
-}
-
 /*
 Skipped methods needing manual binding:
-  line 28: void updateSelected(...) - non-exported/private in SDK
-  line 29: void confirmButton(...) - unsupported arg type
-  line 30: void cancelButton(...) - unsupported arg type
-  line 31: void notifyMouseWheel(...) - unsupported arg type
+  line 28: void updateSelected(...) - non-exported in KenshiLib
+  line 29: void confirmButton(...) - non-exported in KenshiLib
+  line 30: void cancelButton(...) - non-exported in KenshiLib
+  line 31: void notifyMouseWheel(...) - non-exported in KenshiLib
 */
 
 /*
@@ -201,7 +196,6 @@ void CharacterTradingWindowBinding::registerBinding(lua_State* L)
         // { "_NV_update", CharacterTradingWindowBinding::_NV_update },
         { "close", CharacterTradingWindowBinding::close },
         // { "_NV_close", CharacterTradingWindowBinding::_NV_close },
-        // { "updateSelected", CharacterTradingWindowBinding::updateSelected },
         { 0, 0 }
     };
 

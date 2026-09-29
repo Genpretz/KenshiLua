@@ -15,6 +15,9 @@
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/RootObjectBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/WindowBinding.h"
+#include "Bindings/MyGUI/ComboBoxBinding.h"
 
 namespace KenshiLua
 {
@@ -688,26 +691,163 @@ int LevelEditorBinding::deleteObject(lua_State* L)
     return 0;
 }
 
+int LevelEditorBinding::saveMod(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->saveMod(sender);
+    return 0;
+}
+
+int LevelEditorBinding::regenerate(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->regenerate(sender);
+    return 0;
+}
+
+int LevelEditorBinding::closeNavmeshWindow(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Window* a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    std::string a2 = luaL_checkstring(L, 3);
+    instance->closeNavmeshWindow(a1, a2);
+    return 0;
+}
+
+int LevelEditorBinding::fixBuildings(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->fixBuildings(a1);
+    return 0;
+}
+
+int LevelEditorBinding::factionButton(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->factionButton(sender);
+    return 0;
+}
+
+int LevelEditorBinding::npcButton(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->npcButton(sender);
+    return 0;
+}
+
+int LevelEditorBinding::townButton(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->townButton(sender);
+    return 0;
+}
+
+int LevelEditorBinding::squadButton(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->squadButton(sender);
+    return 0;
+}
+
+int LevelEditorBinding::featureButton(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->featureButton(sender);
+    return 0;
+}
+
+int LevelEditorBinding::fogButton(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->fogButton(sender);
+    return 0;
+}
+
+int LevelEditorBinding::itemsButton(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->itemsButton(sender);
+    return 0;
+}
+
+int LevelEditorBinding::buildingsButton(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->buildingsButton(sender);
+    return 0;
+}
+
+int LevelEditorBinding::navmeshButton(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->navmeshButton(a1);
+    return 0;
+}
+
+int LevelEditorBinding::exitLevelEditMode(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->exitLevelEditMode(sender);
+    return 0;
+}
+
+int LevelEditorBinding::activeModChanged(lua_State* L)
+{
+    LevelEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LevelEditor is nil");
+
+    MyGUI::ComboBox* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ComboBox>(L, 2, ComboBoxBinding::getMetatableName());
+    unsigned __int64 a2 = static_cast<unsigned __int64>(luaL_checkinteger(L, 3));
+    instance->activeModChanged(sender, a2);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 34: RootObject* hitFurnitureOrItemGroup(...) - unsupported arg type
   line 35: std::pair<bool, float> hitOgreMesh(...) - static method
   line 36: std::pair<bool, float> hitBuildingMesh(...) - static method
-  line 45: void saveMod(...) - unsupported arg type
-  line 46: void regenerate(...) - unsupported arg type
-  line 53: void closeNavmeshWindow(...) - unsupported arg type
-  line 54: void fixBuildings(...) - unsupported arg type
-  line 185: void factionButton(...) - unsupported arg type
-  line 186: void npcButton(...) - unsupported arg type
-  line 187: void townButton(...) - unsupported arg type
-  line 188: void squadButton(...) - unsupported arg type
-  line 189: void featureButton(...) - unsupported arg type
-  line 190: void fogButton(...) - unsupported arg type
-  line 191: void itemsButton(...) - unsupported arg type
-  line 192: void buildingsButton(...) - unsupported arg type
-  line 193: void navmeshButton(...) - unsupported arg type
-  line 194: void exitLevelEditMode(...) - unsupported arg type
-  line 195: void activeModChanged(...) - unsupported arg type
   line 204: bool paintRoads(...) - unsupported arg type
   line 205: bool paintFoliageEraser(...) - unsupported arg type
   line 206: void selectRoad(...) - unsupported arg type
@@ -788,6 +928,21 @@ void LevelEditorBinding::registerBinding(lua_State* L)
         { "updateFoliageRemoval", LevelEditorBinding::updateFoliageRemoval },
         { "updateSeedEditor", LevelEditorBinding::updateSeedEditor },
         { "deleteObject", LevelEditorBinding::deleteObject },
+        { "saveMod", LevelEditorBinding::saveMod },
+        { "regenerate", LevelEditorBinding::regenerate },
+        { "closeNavmeshWindow", LevelEditorBinding::closeNavmeshWindow },
+        { "fixBuildings", LevelEditorBinding::fixBuildings },
+        { "factionButton", LevelEditorBinding::factionButton },
+        { "npcButton", LevelEditorBinding::npcButton },
+        { "townButton", LevelEditorBinding::townButton },
+        { "squadButton", LevelEditorBinding::squadButton },
+        { "featureButton", LevelEditorBinding::featureButton },
+        { "fogButton", LevelEditorBinding::fogButton },
+        { "itemsButton", LevelEditorBinding::itemsButton },
+        { "buildingsButton", LevelEditorBinding::buildingsButton },
+        { "navmeshButton", LevelEditorBinding::navmeshButton },
+        { "exitLevelEditMode", LevelEditorBinding::exitLevelEditMode },
+        { "activeModChanged", LevelEditorBinding::activeModChanged },
         { 0, 0 }
     };
 

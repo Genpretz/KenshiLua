@@ -7,6 +7,13 @@
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/Gui/BuildingGroupBinding.h"
 #include "Bindings/Kenshi/Gui/BuildingCategoryBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
+#include "Bindings/MyGUI/ListBoxBinding.h"
+#include "Bindings/MyGUI/ButtonBinding.h"
+#include "Bindings/MyGUI/TextBoxBinding.h"
+#include "Bindings/MyGUI/ImageBoxBinding.h"
+#include "Bindings/MyGUI/EditBoxBinding.h"
 
 namespace KenshiLua
 {
@@ -89,120 +96,225 @@ static int BuildModeWindow_get_confirmButton(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->confirmButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->confirmButton);
+}
+
+static int BuildModeWindow_set_confirmButton(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->confirmButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_undoButton(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->undoButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->undoButton);
+}
+
+static int BuildModeWindow_set_undoButton(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->undoButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_closeButton(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->closeButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->closeButton);
+}
+
+static int BuildModeWindow_set_closeButton(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->closeButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_categoriesList(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->categoriesList);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->categoriesList);
+}
+
+static int BuildModeWindow_set_categoriesList(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->categoriesList = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_buildingsList(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->buildingsList);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->buildingsList);
+}
+
+static int BuildModeWindow_set_buildingsList(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->buildingsList = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_buildingTxt(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->buildingTxt);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->buildingTxt);
+}
+
+static int BuildModeWindow_set_buildingTxt(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->buildingTxt = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, TextBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_buildingTypePrevButton(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->buildingTypePrevButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->buildingTypePrevButton);
+}
+
+static int BuildModeWindow_set_buildingTypePrevButton(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->buildingTypePrevButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_buildingTypeNextButton(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->buildingTypeNextButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->buildingTypeNextButton);
+}
+
+static int BuildModeWindow_set_buildingTypeNextButton(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->buildingTypeNextButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_buildingImageBox(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->buildingImageBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->buildingImageBox);
+}
+
+static int BuildModeWindow_set_buildingImageBox(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->buildingImageBox = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ImageBox>(L, 2, ImageBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_statsPanel(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->statsPanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->statsPanel);
+}
+
+static int BuildModeWindow_set_statsPanel(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->statsPanel = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_descriptionTxt(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->descriptionTxt);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->descriptionTxt);
+}
+
+static int BuildModeWindow_set_descriptionTxt(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->descriptionTxt = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, TextBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_messageTextBox(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->messageTextBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->messageTextBox);
+}
+
+static int BuildModeWindow_set_messageTextBox(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->messageTextBox = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_floorDownButton(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->floorDownButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->floorDownButton);
+}
+
+static int BuildModeWindow_set_floorDownButton(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->floorDownButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_floorUpButton(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->floorUpButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->floorUpButton);
+}
+
+static int BuildModeWindow_set_floorUpButton(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->floorUpButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int BuildModeWindow_get_floorText(lua_State* L)
 {
     BuildModeWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->floorText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->floorText);
+}
+
+static int BuildModeWindow_set_floorText(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    instance->floorText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, TextBoxBinding::getMetatableName());
+    return 0;
 }
 
 // --- Setters for BuildModeWindow ---
@@ -280,8 +392,7 @@ int BuildModeWindowBinding::getBuildingListWidget(lua_State* L)
     if (!instance) return luaL_error(L, "BuildModeWindow is nil");
 
     MyGUI::Widget* result = instance->getBuildingListWidget();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int BuildModeWindowBinding::setVisible(lua_State* L)
@@ -377,18 +488,88 @@ int BuildModeWindowBinding::compareBuildMaterials(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 62: void categorySelected(...) - unsupported arg type
-  line 63: void buildingSelected(...) - unsupported arg type
-  line 65: void confirm(...) - unsupported arg type
-  line 66: void undo(...) - unsupported arg type
-  line 67: void close(...) - unsupported arg type
-  line 68: void buildingTypePrev(...) - unsupported arg type
-  line 69: void buildingTypeNext(...) - unsupported arg type
-  line 74: void changeFloorButtonUp(...) - unsupported arg type
-  line 75: void changeFloorButtonDown(...) - unsupported arg type
-*/
+int BuildModeWindowBinding::categorySelected(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    MyGUI::ListBox* sender = checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->categorySelected(sender, index);
+    return 0;
+}
+
+int BuildModeWindowBinding::buildingSelected(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    MyGUI::ListBox* sender = checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->buildingSelected(sender, index);
+    return 0;
+}
+
+int BuildModeWindowBinding::confirm(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->confirm(sender);
+    return 0;
+}
+
+int BuildModeWindowBinding::undo(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->undo(sender);
+    return 0;
+}
+
+int BuildModeWindowBinding::close(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->close(sender);
+    return 0;
+}
+
+int BuildModeWindowBinding::buildingTypePrev(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->buildingTypePrev(sender);
+    return 0;
+}
+
+int BuildModeWindowBinding::buildingTypeNext(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->buildingTypeNext(sender);
+    return 0;
+}
+
+int BuildModeWindowBinding::changeFloorButtonUp(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->changeFloorButtonUp(sender);
+    return 0;
+}
+
+int BuildModeWindowBinding::changeFloorButtonDown(lua_State* L)
+{
+    BuildModeWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildModeWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->changeFloorButtonDown(sender);
+    return 0;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -428,6 +609,15 @@ void BuildModeWindowBinding::registerBinding(lua_State* L)
         { "update", BuildModeWindowBinding::update },
         { "changeCurrentIndex", BuildModeWindowBinding::changeCurrentIndex },
         { "compareBuildMaterials", BuildModeWindowBinding::compareBuildMaterials },
+        { "categorySelected", BuildModeWindowBinding::categorySelected },
+        { "buildingSelected", BuildModeWindowBinding::buildingSelected },
+        { "confirm", BuildModeWindowBinding::confirm },
+        { "undo", BuildModeWindowBinding::undo },
+        { "close", BuildModeWindowBinding::close },
+        { "buildingTypePrev", BuildModeWindowBinding::buildingTypePrev },
+        { "buildingTypeNext", BuildModeWindowBinding::buildingTypeNext },
+        { "changeFloorButtonUp", BuildModeWindowBinding::changeFloorButtonUp },
+        { "changeFloorButtonDown", BuildModeWindowBinding::changeFloorButtonDown },
         { 0, 0 }
     };
 
@@ -476,6 +666,21 @@ void BuildModeWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "currentBuildingIndex", BuildModeWindow_set_currentBuildingIndex);
     registerSetter(L, "switchBuildingIndex", BuildModeWindow_set_switchBuildingIndex);
     registerSetter(L, "statsDataPanel", BuildModeWindow_set_statsDataPanel);
+    registerSetter(L, "confirmButton", BuildModeWindow_set_confirmButton);
+    registerSetter(L, "undoButton", BuildModeWindow_set_undoButton);
+    registerSetter(L, "closeButton", BuildModeWindow_set_closeButton);
+    registerSetter(L, "categoriesList", BuildModeWindow_set_categoriesList);
+    registerSetter(L, "buildingsList", BuildModeWindow_set_buildingsList);
+    registerSetter(L, "buildingTxt", BuildModeWindow_set_buildingTxt);
+    registerSetter(L, "buildingTypePrevButton", BuildModeWindow_set_buildingTypePrevButton);
+    registerSetter(L, "buildingTypeNextButton", BuildModeWindow_set_buildingTypeNextButton);
+    registerSetter(L, "buildingImageBox", BuildModeWindow_set_buildingImageBox);
+    registerSetter(L, "statsPanel", BuildModeWindow_set_statsPanel);
+    registerSetter(L, "descriptionTxt", BuildModeWindow_set_descriptionTxt);
+    registerSetter(L, "messageTextBox", BuildModeWindow_set_messageTextBox);
+    registerSetter(L, "floorDownButton", BuildModeWindow_set_floorDownButton);
+    registerSetter(L, "floorUpButton", BuildModeWindow_set_floorUpButton);
+    registerSetter(L, "floorText", BuildModeWindow_set_floorText);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -3,6 +3,8 @@
 #include "ToolTipLineBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
+#include "Bindings/MyGUI/EditBoxBinding.h"
 
 namespace KenshiLua
 {
@@ -18,21 +20,21 @@ static int ToolTipLine_get_content(lua_State* L)
 {
     ToolTipLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipLine is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->content, MyGUIBinding::getMetatableName());
+    return MyGUIBindings::pushWidget(L, instance->content);
 }
 
 static int ToolTipLine_get_leftBox(lua_State* L)
 {
     ToolTipLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipLine is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->leftBox, MyGUIBinding::getMetatableName());
+    return MyGUIBindings::pushWidget(L, instance->leftBox);
 }
 
 static int ToolTipLine_get_rightBox(lua_State* L)
 {
     ToolTipLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipLine is nil");
-    return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->rightBox, MyGUIBinding::getMetatableName());
+    return MyGUIBindings::pushWidget(L, instance->rightBox);
 }
 
 static int ToolTipLine_get_width(lua_State* L)
@@ -44,6 +46,30 @@ static int ToolTipLine_get_width(lua_State* L)
 }
 
 // --- Setters for ToolTipLine ---
+static int ToolTipLine_set_content(lua_State* L)
+{
+    ToolTipLine* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipLine is nil");
+    instance->content = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int ToolTipLine_set_leftBox(lua_State* L)
+{
+    ToolTipLine* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipLine is nil");
+    instance->leftBox = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    return 0;
+}
+
+static int ToolTipLine_set_rightBox(lua_State* L)
+{
+    ToolTipLine* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipLine is nil");
+    instance->rightBox = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    return 0;
+}
+
 static int ToolTipLine_set_width(lua_State* L)
 {
     ToolTipLine* instance = getInstance(L, 1);
@@ -51,14 +77,6 @@ static int ToolTipLine_set_width(lua_State* L)
     instance->width = (int)luaL_checkinteger(L, 2);
     return 0;
 }
-
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - ToolTipLine_get_content: MyGUI::Widget* (unbound pointer)
-  - ToolTipLine_get_leftBox: MyGUI::EditBox* (unbound pointer)
-  - ToolTipLine_get_rightBox: MyGUI::EditBox* (unbound pointer)
-*/
 
 int ToolTipLineBinding::gc(lua_State* L)
 {
@@ -102,6 +120,9 @@ void ToolTipLineBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "content", ToolTipLine_set_content);
+    registerSetter(L, "leftBox", ToolTipLine_set_leftBox);
+    registerSetter(L, "rightBox", ToolTipLine_set_rightBox);
     registerSetter(L, "width", ToolTipLine_set_width);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 

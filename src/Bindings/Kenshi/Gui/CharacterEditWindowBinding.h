@@ -40,5 +40,22 @@ public:
     static int getCurrentAttachmentName(lua_State* L);
     static int setCurrentHeadName(lua_State* L);
     static int setCurrentAttachmentName(lua_State* L);
+    static int nameChanged(lua_State* L);
+    static int prevRace(lua_State* L);
+    static int nextRace(lua_State* L);
+    static int prevSubRace(lua_State* L);
+    static int nextSubRace(lua_State* L);
+    static int changeGender(lua_State* L);
+    static int changeAppearanceData(lua_State* L);
+    static int prevCharacter(lua_State* L);
+    static int nextCharacter(lua_State* L);
+    static int changeCategory(lua_State* L);
+    static int resetAppearance(lua_State* L);
+    static int randomiseAll(lua_State* L);
+    static int randomisePart(lua_State* L);
+    static int importCharacter(lua_State* L);
+    static int exportCharacter(lua_State* L);
+    static int toggleClothes(lua_State* L);
+    static int confirmButton(lua_State* L);
 };
 }

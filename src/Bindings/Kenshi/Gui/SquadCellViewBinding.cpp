@@ -5,6 +5,7 @@
 #include "SquadDataBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/EditBoxBinding.h" 
 #include "Bindings/MyGUI/TypesBinding.h"
 #include "Bindings/MyGUI/MyGuiTypes.h"
 
@@ -108,9 +109,28 @@ int SquadCellViewBinding::getCellDimension(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 121: void update(...) - unsupported arg type
-  line 126: void onNameChanged(...) - unsupported arg type
-  line 127: void onRemove(...) - unsupported arg type
 */
+
+int SquadCellViewBinding::onNameChanged(lua_State* L)
+{
+    SquadCellView* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadCellView is nil");
+
+    MyGUI::EditBox* editBox = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    instance->onNameChanged(editBox);
+    return 0;
+}
+
+int SquadCellViewBinding::onRemove(lua_State* L)
+{
+    SquadCellView* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadCellView is nil");
+
+    MyGUI::Widget* widget = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->onRemove(widget);
+    return 0;
+}
+
 
 int SquadCellViewBinding::gc(lua_State* L)
 {
@@ -135,6 +155,8 @@ void SquadCellViewBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "updateSquadSize", SquadCellViewBinding::updateSquadSize },
         { "getCellDimension", SquadCellViewBinding::getCellDimension },
+        { "onNameChanged", SquadCellViewBinding::onNameChanged },
+        { "onRemove", SquadCellViewBinding::onRemove },
         { 0, 0 }
     };
 

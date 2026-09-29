@@ -27,5 +27,12 @@ public:
     static int closeTheOtherBits(lua_State* L);
     static int setCreditsVisible(lua_State* L);
     static int getSingleton(lua_State* L);
+    static int loadGame(lua_State* L);
+    static int importGame(lua_State* L);
+    static int showOptions(lua_State* L);
+    static int credits(lua_State* L);
+    static int exitGame(lua_State* L);
+    static int continueGame(lua_State* L);
+    static int hover(lua_State* L);
 };
 }

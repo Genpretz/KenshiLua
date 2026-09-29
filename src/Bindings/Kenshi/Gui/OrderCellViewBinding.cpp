@@ -102,8 +102,18 @@ int OrderCellViewBinding::getCellDimension(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 26: void update(...) - unsupported arg type
-  line 31: void onRemove(...) - unsupported arg type
 */
+
+int OrderCellViewBinding::onRemove(lua_State* L)
+{
+    OrderCellView* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrderCellView is nil");
+
+    MyGUI::Widget* widget = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->onRemove(widget);
+    return 0;
+}
+
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -136,6 +146,7 @@ void OrderCellViewBinding::registerBinding(lua_State* L)
         { "getWidget", OrderCellViewBinding::getWidget },
         { "resize", OrderCellViewBinding::resize },
         { "getCellDimension", OrderCellViewBinding::getCellDimension },
+        { "onRemove", OrderCellViewBinding::onRemove },
         { 0, 0 }
     };
 

@@ -18,5 +18,6 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int buttonClick(lua_State* L);
 };
 }

@@ -12,6 +12,13 @@
 #include "Bindings/Kenshi/Gui/ToolTipBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
+#include "Bindings/MyGUI/WindowBinding.h"
+#include "Bindings/MyGUI/ListBoxBinding.h"
+#include "Bindings/MyGUI/EditBoxBinding.h"
+#include "Bindings/MyGUI/TabControlBinding.h"
+#include "Bindings/MyGUI/TabItemBinding.h"
 
 namespace KenshiLua
 {
@@ -54,8 +61,15 @@ static int ManagementScreen_get_researchCategoriesListBox(lua_State* L)
 {
     ManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->researchCategoriesListBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->researchCategoriesListBox);
+}
+
+static int ManagementScreen_set_researchCategoriesListBox(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    instance->researchCategoriesListBox = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int ManagementScreen_get_availableList(lua_State* L)
@@ -98,8 +112,15 @@ static int ManagementScreen_get_researchBenchMessage(lua_State* L)
 {
     ManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->researchBenchMessage);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->researchBenchMessage);
+}
+
+static int ManagementScreen_set_researchBenchMessage(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    instance->researchBenchMessage = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int ManagementScreen_get_researchDescriptionUpdateRequest(lua_State* L)
@@ -138,8 +159,15 @@ static int ManagementScreen_get_messagesTextBox(lua_State* L)
 {
     ManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->messagesTextBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->messagesTextBox);
+}
+
+static int ManagementScreen_set_messagesTextBox(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    instance->messagesTextBox = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int ManagementScreen_get_messagesUpdated(lua_State* L)
@@ -199,16 +227,30 @@ static int ManagementScreen_get_window(lua_State* L)
 {
     ManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->window);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->window);
+}
+
+static int ManagementScreen_set_window(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    instance->window = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    return 0;
 }
 
 static int ManagementScreen_get_tabs(lua_State* L)
 {
     ManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ManagementScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->tabs);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->tabs);
+}
+
+static int ManagementScreen_set_tabs(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    instance->tabs = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TabControl>(L, 2, TabControlBinding::getMetatableName());
+    return 0;
 }
 
 // --- Setters for ManagementScreen ---
@@ -393,8 +435,7 @@ int ManagementScreenBinding::getTab(lua_State* L)
 
     int index = (int)luaL_checkinteger(L, 2);
     MyGUI::TabItem* result = instance->getTab(index);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int ManagementScreenBinding::getWidget(lua_State* L)
@@ -404,8 +445,7 @@ int ManagementScreenBinding::getWidget(lua_State* L)
 
     const std::string name = luaL_checkstring(L, 2);
     MyGUI::Widget* result = instance->getWidget(name);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int ManagementScreenBinding::refresh(lua_State* L)
@@ -601,14 +641,73 @@ static int ManagementScreen_set_mapScreen(lua_State* L)
     return 0;
 }
 
+int ManagementScreenBinding::closeEverythingButton(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    MyGUI::Window* widget = checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    const std::string name = luaL_checkstring(L, 3);
+    instance->closeEverythingButton(widget, name);
+    return 0;
+}
+
+int ManagementScreenBinding::tabCallback(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    MyGUI::TabControl* sender = checkObject<MyGUI::TabControl>(L, 2, TabControlBinding::getMetatableName());
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->tabCallback(sender, index);
+    return 0;
+}
+
+int ManagementScreenBinding::researchTypeSelect(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    MyGUI::ListBox* sender = checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->researchTypeSelect(sender, index);
+    return 0;
+}
+
+int ManagementScreenBinding::addButtonPress(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int a2 = (int)luaL_checkinteger(L, 3);
+    int a3 = (int)luaL_checkinteger(L, 4);
+    MyGUI::MouseButton a4 = MyGUI::MouseButton::Enum((int)luaL_checkinteger(L, 5));
+    instance->addButtonPress(sender, a2, a3, a4);
+    return 0;
+}
+
+int ManagementScreenBinding::removeButtonPress(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int a2 = (int)luaL_checkinteger(L, 3);
+    int a3 = (int)luaL_checkinteger(L, 4);
+    MyGUI::MouseButton a4 = MyGUI::MouseButton::Enum((int)luaL_checkinteger(L, 5));
+    instance->removeButtonPress(sender, a2, a3, a4);
+    return 0;
+}
+
+int ManagementScreenBinding::mouseOverCallback(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int a2 = (int)luaL_checkinteger(L, 3);
+    int a3 = (int)luaL_checkinteger(L, 4);
+    instance->mouseOverCallback(sender, a2, a3);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 69: void closeEverythingButton(...) - unsupported arg type
-  line 70: void tabCallback(...) - unsupported arg type
-  line 99: void researchTypeSelect(...) - unsupported arg type
-  line 100: void addButtonPress(...) - unsupported arg type
-  line 101: void removeButtonPress(...) - unsupported arg type
-  line 102: void mouseOverCallback(...) - unsupported arg type
   line 134: void researchQueueTooltip(...) - unsupported arg type
   line 135: void researchRemoved(...) - non-string reference arg
   line 136: void researchValidateOrder(...) - non-string reference arg
@@ -616,15 +715,8 @@ Skipped methods needing manual binding:
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - ManagementScreen_get_researchCategoriesListBox: MyGUI::ListBox* (unbound pointer)
-  - ManagementScreen_get_researchBenchMessage: MyGUI::EditBox* (unbound pointer)
   - ManagementScreen_get_todoList: ReorderableList<std::deque<ResearchItem, Ogre::STLAllocator<ResearchItem, Ogre::GeneralAllocPolicy > >, ManagementScreen::TechItemViewData>* (unbound pointer)
   - ManagementScreen_get_craftingQueue: CraftingQueue* (unbound pointer)
-  - ManagementScreen_get_messagesTextBox: MyGUI::EditBox* (unbound pointer)
-  - ManagementScreen_get_window: MyGUI::Window* (unbound pointer)
-  - ManagementScreen_get_tabs: MyGUI::TabControl* (unbound pointer)
-  - ManagementScreenBinding::getTab: MyGUI::TabItem* (unbound pointer)
-  - ManagementScreenBinding::getWidget: MyGUI::Widget* (unbound pointer)
 */
 
 /*
@@ -679,6 +771,12 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
         { "getSingleton", ManagementScreenBinding::getSingleton },
         { "updateResearchListRate", ManagementScreenBinding::updateResearchListRate },
         { "refreshResearchListDescription", ManagementScreenBinding::refreshResearchListDescription },
+        { "closeEverythingButton", ManagementScreenBinding::closeEverythingButton },
+        { "tabCallback", ManagementScreenBinding::tabCallback },
+        { "researchTypeSelect", ManagementScreenBinding::researchTypeSelect },
+        { "addButtonPress", ManagementScreenBinding::addButtonPress },
+        { "removeButtonPress", ManagementScreenBinding::removeButtonPress },
+        { "mouseOverCallback", ManagementScreenBinding::mouseOverCallback },
         { 0, 0 }
     };
 
@@ -724,13 +822,16 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
     registerSetter(L, "squadScreen", ManagementScreen_set_squadScreen);
     registerSetter(L, "mapScreen", ManagementScreen_set_mapScreen);
     registerSetter(L, "factionScreen", ManagementScreen_set_factionScreen);
+    registerSetter(L, "researchCategoriesListBox", ManagementScreen_set_researchCategoriesListBox);
     registerSetter(L, "availableList", ManagementScreen_set_availableList);
     registerSetter(L, "info", ManagementScreen_set_info);
     registerSetter(L, "info2", ManagementScreen_set_info2);
     registerSetter(L, "techCategory", ManagementScreen_set_techCategory);
     registerSetter(L, "currentResearch", ManagementScreen_set_currentResearch);
+    registerSetter(L, "researchBenchMessage", ManagementScreen_set_researchBenchMessage);
     registerSetter(L, "researchDescriptionUpdateRequest", ManagementScreen_set_researchDescriptionUpdateRequest);
     registerSetter(L, "lastResearchRate", ManagementScreen_set_lastResearchRate);
+    registerSetter(L, "messagesTextBox", ManagementScreen_set_messagesTextBox);
     registerSetter(L, "messagesUpdated", ManagementScreen_set_messagesUpdated);
     registerSetter(L, "messagesMutex", ManagementScreen_set_messagesMutex);
     registerSetter(L, "messagesPlayerColor", ManagementScreen_set_messagesPlayerColor);
@@ -738,6 +839,8 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
     registerSetter(L, "aiScreen", ManagementScreen_set_aiScreen);
     registerSetter(L, "aiToolTip", ManagementScreen_set_aiToolTip);
     registerSetter(L, "toolTip", ManagementScreen_set_toolTip);
+    registerSetter(L, "window", ManagementScreen_set_window);
+    registerSetter(L, "tabs", ManagementScreen_set_tabs);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

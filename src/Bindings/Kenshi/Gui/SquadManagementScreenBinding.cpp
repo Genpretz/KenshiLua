@@ -248,8 +248,18 @@ Skipped methods needing manual binding:
   line 162: void notifyRequestDropSquad(...) - non-string reference arg
   line 164: void notifyStartDropPortrait(...) - non-string reference arg
   line 165: void notifyRequestDropPortrait(...) - non-string reference arg
-  line 167: void onAddSquad(...) - unsupported arg type
 */
+
+int SquadManagementScreenBinding::onAddSquad(lua_State* L)
+{
+    SquadManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SquadManagementScreen is nil");
+
+    MyGUI::Widget* widget = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->onAddSquad(widget);
+    return 0;
+}
+
 
 int SquadManagementScreenBinding::gc(lua_State* L)
 {
@@ -283,6 +293,7 @@ void SquadManagementScreenBinding::registerBinding(lua_State* L)
         { "removeSquad", SquadManagementScreenBinding::removeSquad },
         { "getSquad", SquadManagementScreenBinding::getSquad },
         { "dismissCharacter", SquadManagementScreenBinding::dismissCharacter },
+        { "onAddSquad", SquadManagementScreenBinding::onAddSquad },
         { 0, 0 }
     };
 

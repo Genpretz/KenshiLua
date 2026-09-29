@@ -3,6 +3,8 @@
 #include "ToolTipFixedBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Gui/ToolTipBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -17,8 +19,15 @@ static int ToolTipFixed_get_parentPanel(lua_State* L)
 {
     ToolTipFixed* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTipFixed is nil");
-    lua_pushlightuserdata(L, (void*)instance->parentPanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->parentPanel);
+}
+
+static int ToolTipFixed_set_parentPanel(lua_State* L)
+{
+    ToolTipFixed* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipFixed is nil");
+    instance->parentPanel = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    return 0;
 }
 
 static int ToolTipFixed_get_minHeight(lua_State* L)
@@ -76,22 +85,79 @@ int ToolTipFixedBinding::_NV_setVisible(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 93: void clear(...) - unsupported arg type
-  line 94: void _NV_clear(...) - unsupported arg type
-  line 97: void setBottomPosition(...) - unsupported arg type
-  line 100: void setPosition(...) - unsupported arg type
-  line 101: void _NV_setPosition(...) - unsupported arg type
-  line 102: void _setup(...) - unsupported arg type
-  line 103: void _NV__setup(...) - unsupported arg type
-  line 104: void mouseMoved(...) - unsupported arg type
-*/
+int ToolTipFixedBinding::clear(lua_State* L)
+{
+    ToolTipFixed* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipFixed is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->clear(widget);
+    return 0;
+}
 
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - ToolTipFixed_get_parentPanel: MyGUI::Widget* (unbound pointer)
-*/
+int ToolTipFixedBinding::_NV_clear(lua_State* L)
+{
+    ToolTipFixed* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipFixed is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV_clear(widget);
+    return 0;
+}
+
+int ToolTipFixedBinding::setBottomPosition(lua_State* L)
+{
+    ToolTipFixed* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipFixed is nil");
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 2);
+    instance->setBottomPosition(pt);
+    return 0;
+}
+
+int ToolTipFixedBinding::setPosition(lua_State* L)
+{
+    ToolTipFixed* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipFixed is nil");
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 2);
+    instance->setPosition(pt);
+    return 0;
+}
+
+int ToolTipFixedBinding::_NV_setPosition(lua_State* L)
+{
+    ToolTipFixed* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipFixed is nil");
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 2);
+    instance->_NV_setPosition(pt);
+    return 0;
+}
+
+int ToolTipFixedBinding::_setup(lua_State* L)
+{
+    ToolTipFixed* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipFixed is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_setup(widget);
+    return 0;
+}
+
+int ToolTipFixedBinding::_NV__setup(lua_State* L)
+{
+    ToolTipFixed* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipFixed is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV__setup(widget);
+    return 0;
+}
+
+int ToolTipFixedBinding::mouseMoved(lua_State* L)
+{
+    ToolTipFixed* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipFixed is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int left = (int)luaL_checkinteger(L, 3);
+    int top = (int)luaL_checkinteger(L, 4);
+    instance->mouseMoved(sender, left, top);
+    return 0;
+}
 
 int ToolTipFixedBinding::gc(lua_State* L)
 {
@@ -118,6 +184,14 @@ void ToolTipFixedBinding::registerBinding(lua_State* L)
         { "_NV_update", ToolTipFixedBinding::_NV_update },
         { "setVisible", ToolTipFixedBinding::setVisible },
         { "_NV_setVisible", ToolTipFixedBinding::_NV_setVisible },
+        { "clear", ToolTipFixedBinding::clear },
+        { "_NV_clear", ToolTipFixedBinding::_NV_clear },
+        { "setBottomPosition", ToolTipFixedBinding::setBottomPosition },
+        { "setPosition", ToolTipFixedBinding::setPosition },
+        { "_NV_setPosition", ToolTipFixedBinding::_NV_setPosition },
+        { "_setup", ToolTipFixedBinding::_setup },
+        { "_NV__setup", ToolTipFixedBinding::_NV__setup },
+        { "mouseMoved", ToolTipFixedBinding::mouseMoved },
         { 0, 0 }
     };
 
@@ -137,6 +211,7 @@ void ToolTipFixedBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "parentPanel", ToolTipFixed_set_parentPanel);
     registerSetter(L, "minHeight", ToolTipFixed_set_minHeight);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 

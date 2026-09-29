@@ -26,6 +26,5 @@ public:
     static int _NV_update(lua_State* L);
     static int close(lua_State* L);
     static int _NV_close(lua_State* L);
-    static int updateSelected(lua_State* L);
 };
 }

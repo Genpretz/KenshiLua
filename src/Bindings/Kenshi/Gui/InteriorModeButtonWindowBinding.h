@@ -32,5 +32,21 @@ public:
     static int setExteriorLayout(lua_State* L);
     static int recheckOutsideFurniture(lua_State* L);
     static int wasTheInteriorLoadedFromASave(lua_State* L);
+    static int interiorModePressed(lua_State* L);
+    static int interiorModeButtonUpdate(lua_State* L);
+    static int interiorModeButtonUpdate2(lua_State* L);
+    static int deleteButtonPressed(lua_State* L);
+    static int deleteButtonPressed2(lua_State* L);
+    static int closeWindow(lua_State* L);
+    static int toggleVisButtonPressed(lua_State* L);
+    static int notifyEditTextChange(lua_State* L);
+    static int centerButtonPressed(lua_State* L);
+    static int saveButtonPressed(lua_State* L);
+    static int clearNodes(lua_State* L);
+    static int clearAll(lua_State* L);
+    static int listItemSelected(lua_State* L);
+    static int saveButtonPressed2(lua_State* L);
+    static int listItemSelected2(lua_State* L);
+    static int notifyEditTextChange2(lua_State* L);
 };
 }

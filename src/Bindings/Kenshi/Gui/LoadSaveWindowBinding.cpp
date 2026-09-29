@@ -6,6 +6,9 @@
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "SaveInfoBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
+#include "Bindings/MyGUI/MultiListBoxBinding.h"
 
 namespace KenshiLua
 {
@@ -20,8 +23,7 @@ static int LoadSaveWindow_get_list(lua_State* L)
 {
     LoadSaveWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->list);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->list);
 }
 
 static int LoadSaveWindow_get_games(lua_State* L)
@@ -83,8 +85,7 @@ int LoadSaveWindowBinding::getWidget(lua_State* L)
     if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
 
     MyGUI::Widget* result = instance->getWidget();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int LoadSaveWindowBinding::deleteSelectedSave(lua_State* L)
@@ -130,28 +131,79 @@ int LoadSaveWindowBinding::getOptions(lua_State* L)
     lua_pushinteger(L, result);
     return 1;
 }
+int LoadSaveWindowBinding::close(lua_State* L)
+{
+    LoadSaveWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
+
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->close(sender);
+    return 0;
+}
+
+int LoadSaveWindowBinding::selectGame(lua_State* L)
+{
+    LoadSaveWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
+
+    MyGUI::MultiListBox* sender = checkObject<MyGUI::MultiListBox>(L, 2, MultiListBoxBinding::getMetatableName());
+    if (!sender) return luaL_error(L, "Argument 2 must be MultiListBox");
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->selectGame(sender, index);
+    return 0;
+}
+
+int LoadSaveWindowBinding::keyPressed(lua_State* L)
+{
+    LoadSaveWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
+
+    MyGUI::Widget* w = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    MyGUI::KeyCode key = MyGUI::KeyCode::Enum((int)luaL_checkinteger(L, 3));
+    unsigned int a3 = (unsigned int)luaL_optinteger(L, 4, 0);
+    instance->keyPressed(w, key, a3);
+    return 0;
+}
+
+int LoadSaveWindowBinding::toggleCheck(lua_State* L)
+{
+    LoadSaveWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
+
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->toggleCheck(sender);
+    return 0;
+}
+
+int LoadSaveWindowBinding::createInfo(lua_State* L)
+{
+    LoadSaveWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
+
+    MyGUI::Widget* panel = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->createInfo(panel);
+    return 0;
+}
+
+int LoadSaveWindowBinding::updateInfo(lua_State* L)
+{
+    LoadSaveWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
+
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 2);
+    instance->updateInfo(index);
+    return 0;
+}
 
 /*
 Skipped methods needing manual binding:
-  line 18: void close(...) - unsupported arg type
-  line 19: void selectGame(...) - unsupported arg type
-  line 20: void keyPressed(...) - unsupported arg type
-  line 21: void toggleCheck(...) - unsupported arg type
-  line 26: void sortListComparer(...) - unsupported arg type
-  line 27: void createInfo(...) - unsupported arg type
-  line 28: void updateInfo(...) - unsupported arg type
-*/
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - LoadSaveWindow_get_list: MyGUI::MultiListBox* (unbound pointer)
-  - LoadSaveWindowBinding::getWidget: MyGUI::Widget* (unbound pointer)
+  line 26: void sortListComparer(...) - complex MyGUI::UString& and bool& params
 */
 
 /*
 Skipped properties needing manual binding:
   line 32: options (lektor<MyGUI::Button*>) - unsupported type
-  line 36: savesTimesStr (std::map<MyGUI::UString, int, std::less<MyGUI::UString>, Ogre::STLAllocator<std::pair<MyGUI::UString const, int>, Ogre::GeneralAllocPolicy > >) - unsupported type
+  line 36: savesTimesStr (std::map<MyGUI::UString, int, ...>) - unsupported type
 */
 
 int LoadSaveWindowBinding::gc(lua_State* L)
@@ -182,6 +234,12 @@ void LoadSaveWindowBinding::registerBinding(lua_State* L)
         { "addOption", LoadSaveWindowBinding::addOption },
         { "enableOption", LoadSaveWindowBinding::enableOption },
         { "getOptions", LoadSaveWindowBinding::getOptions },
+        { "close", LoadSaveWindowBinding::close },
+        { "selectGame", LoadSaveWindowBinding::selectGame },
+        { "keyPressed", LoadSaveWindowBinding::keyPressed },
+        { "toggleCheck", LoadSaveWindowBinding::toggleCheck },
+        { "createInfo", LoadSaveWindowBinding::createInfo },
+        { "updateInfo", LoadSaveWindowBinding::updateInfo },
         { 0, 0 }
     };
 

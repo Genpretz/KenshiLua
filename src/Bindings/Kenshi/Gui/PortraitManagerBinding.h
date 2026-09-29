@@ -33,6 +33,7 @@ public:
     static int updatePortrait(lua_State* L);
     static int updatePortraitImage(lua_State* L);
     static int setImageWidget(lua_State* L);
+    static int setImageWidgetNPC(lua_State* L);
     static int getInstance(lua_State* L);
 };
 }

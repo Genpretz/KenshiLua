@@ -2,6 +2,8 @@
 #include "kenshi\gui\ProspectingWindow.h"
 #include "ProspectingWindowBinding.h"
 #include "BaseLayoutBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/WindowBinding.h" 
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
 
@@ -245,11 +247,27 @@ int ProspectingWindowBinding::getSingleton(lua_State* L)
     return pushObject<ProspectingWindow>(L, result, ProspectingWindowBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 39: void closeButton(...) - unsupported arg type
-  line 41: void resourceSelected(...) - unsupported arg type
-*/
+int ProspectingWindowBinding::closeButton(lua_State* L)
+{
+    ProspectingWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProspectingWindow is nil");
+
+    MyGUI::Window* window = checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    const std::string name = luaL_checkstring(L, 3);
+    instance->closeButton(window, name);
+    return 0;
+}
+
+int ProspectingWindowBinding::resourceSelected(lua_State* L)
+{
+    ProspectingWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ProspectingWindow is nil");
+
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->resourceSelected(widget);
+    return 0;
+}
+
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -298,6 +316,8 @@ void ProspectingWindowBinding::registerBinding(lua_State* L)
         { "clear", ProspectingWindowBinding::clear },
         { "worldToMapCoords", ProspectingWindowBinding::worldToMapCoords },
         { "getSingleton", ProspectingWindowBinding::getSingleton },
+        { "closeButton", ProspectingWindowBinding::closeButton },
+        { "resourceSelected", ProspectingWindowBinding::resourceSelected },
         { 0, 0 }
     };
 

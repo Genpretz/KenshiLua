@@ -40,5 +40,6 @@ public:
     static int saveOptions(lua_State* L);
     static int create(lua_State* L);
     static int updateResolutions(lua_State* L);
+    static int closeButton(lua_State* L);
 };
 }

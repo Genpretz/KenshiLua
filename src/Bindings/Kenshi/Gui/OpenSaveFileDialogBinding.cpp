@@ -4,6 +4,10 @@
 #include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/ComboBoxBinding.h"
+#include "Bindings/MyGUI/ListBoxBinding.h"
+#include "Bindings/MyGUI/WindowBinding.h"
 
 namespace KenshiLua
 {
@@ -232,17 +236,94 @@ int OpenSaveFileDialogBinding::getFileMask(lua_State* L)
     return 1;
 }
 
+int OpenSaveFileDialogBinding::accept(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    MyGUI::Widget* a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->accept(a1);
+    return 0;
+}
+
+int OpenSaveFileDialogBinding::cancel(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    MyGUI::Widget* a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->cancel(a1);
+    return 0;
+}
+
+int OpenSaveFileDialogBinding::upFolder(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    MyGUI::Widget* a1 = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->upFolder(a1);
+    return 0;
+}
+
+int OpenSaveFileDialogBinding::notifyDirectoryComboAccept(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    MyGUI::ComboBox* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ComboBox>(L, 2, ComboBoxBinding::getMetatableName());
+    unsigned __int64 index = static_cast<unsigned __int64>(luaL_checkinteger(L, 3));
+    instance->notifyDirectoryComboAccept(sender, index);
+    return 0;
+}
+
+int OpenSaveFileDialogBinding::notifyDirectoryComboChangePosition(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    MyGUI::ComboBox* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ComboBox>(L, 2, ComboBoxBinding::getMetatableName());
+    unsigned __int64 index = static_cast<unsigned __int64>(luaL_checkinteger(L, 3));
+    instance->notifyDirectoryComboChangePosition(sender, index);
+    return 0;
+}
+
+int OpenSaveFileDialogBinding::notifyListChangePosition(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    MyGUI::ListBox* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    unsigned __int64 index = static_cast<unsigned __int64>(luaL_checkinteger(L, 3));
+    instance->notifyListChangePosition(sender, index);
+    return 0;
+}
+
+int OpenSaveFileDialogBinding::notifyListSelectAccept(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    MyGUI::ListBox* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ListBox>(L, 2, ListBoxBinding::getMetatableName());
+    unsigned __int64 index = static_cast<unsigned __int64>(luaL_checkinteger(L, 3));
+    instance->notifyListSelectAccept(sender, index);
+    return 0;
+}
+
+int OpenSaveFileDialogBinding::closeWindow(lua_State* L)
+{
+    OpenSaveFileDialog* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
+
+    MyGUI::Window* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Window>(L, 2, WindowBinding::getMetatableName());
+    std::string name = luaL_checkstring(L, 3);
+    instance->closeWindow(sender, name);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 24: void setRecentFolders(...) - unsupported arg type
-  line 28: void notifyDirectoryComboAccept(...) - unsupported arg type
-  line 29: void notifyDirectoryComboChangePosition(...) - unsupported arg type
-  line 30: void notifyListChangePosition(...) - unsupported arg type
-  line 31: void notifyListSelectAccept(...) - unsupported arg type
-  line 32: void closeWindow(...) - unsupported arg type
-  line 34: void accept(...) - unsupported arg type
-  line 35: void cancel(...) - unsupported arg type
-  line 36: void upFolder(...) - unsupported arg type
 */
 
 int OpenSaveFileDialogBinding::gc(lua_State* L)
@@ -276,6 +357,14 @@ void OpenSaveFileDialogBinding::registerBinding(lua_State* L)
         { "setFileMask", OpenSaveFileDialogBinding::setFileMask },
         { "getFileMask", OpenSaveFileDialogBinding::getFileMask },
         { "update", OpenSaveFileDialogBinding::update },
+        { "accept", OpenSaveFileDialogBinding::accept },
+        { "cancel", OpenSaveFileDialogBinding::cancel },
+        { "upFolder", OpenSaveFileDialogBinding::upFolder },
+        { "notifyDirectoryComboAccept", OpenSaveFileDialogBinding::notifyDirectoryComboAccept },
+        { "notifyDirectoryComboChangePosition", OpenSaveFileDialogBinding::notifyDirectoryComboChangePosition },
+        { "notifyListChangePosition", OpenSaveFileDialogBinding::notifyListChangePosition },
+        { "notifyListSelectAccept", OpenSaveFileDialogBinding::notifyListSelectAccept },
+        { "closeWindow", OpenSaveFileDialogBinding::closeWindow },
         { 0, 0 }
     };
 

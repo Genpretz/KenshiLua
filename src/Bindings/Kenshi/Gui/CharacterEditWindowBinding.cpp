@@ -9,6 +9,12 @@
 #include "Bindings/Kenshi/GameDataCopyStandaloneBinding.h"
 #include "Bindings/Kenshi/Gui/OpenSaveFileDialogBinding.h"
 #include "Bindings/Kenshi/Util/OgreFastArrayBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
+#include "Bindings/MyGUI/ButtonBinding.h"
+#include "Bindings/MyGUI/TextBoxBinding.h"
+#include "Bindings/MyGUI/EditBoxBinding.h"
+#include "Bindings/MyGUI/ScrollViewBinding.h"
 
 namespace KenshiLua
 {
@@ -35,168 +41,315 @@ static int CharacterEditWindow_get_txtName(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->txtName);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->txtName);
+}
+
+static int CharacterEditWindow_set_txtName(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->txtName = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_txtGender(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->txtGender);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->txtGender);
+}
+
+static int CharacterEditWindow_set_txtGender(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->txtGender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, TextBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_txtRace(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->txtRace);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->txtRace);
+}
+
+static int CharacterEditWindow_set_txtRace(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->txtRace = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, TextBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_txtSubRace(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->txtSubRace);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->txtSubRace);
+}
+
+static int CharacterEditWindow_set_txtSubRace(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->txtSubRace = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, TextBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_txtCharIdx(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->txtCharIdx);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->txtCharIdx);
+}
+
+static int CharacterEditWindow_set_txtCharIdx(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->txtCharIdx = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::TextBox>(L, 2, TextBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_importButton(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->importButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->importButton);
+}
+
+static int CharacterEditWindow_set_importButton(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->importButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_exportButton(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->exportButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->exportButton);
+}
+
+static int CharacterEditWindow_set_exportButton(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->exportButton = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_panelTabs(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->panelTabs);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->panelTabs);
+}
+
+static int CharacterEditWindow_set_panelTabs(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->panelTabs = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_panelTabsView(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->panelTabsView);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->panelTabsView);
+}
+
+static int CharacterEditWindow_set_panelTabsView(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->panelTabsView = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::ScrollView>(L, 2, ScrollViewBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_btnPrevGender(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->btnPrevGender);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btnPrevGender);
+}
+
+static int CharacterEditWindow_set_btnPrevGender(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->btnPrevGender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_btnNextGender(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->btnNextGender);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btnNextGender);
+}
+
+static int CharacterEditWindow_set_btnNextGender(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->btnNextGender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_btnPrevRace(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->btnPrevRace);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btnPrevRace);
+}
+
+static int CharacterEditWindow_set_btnPrevRace(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->btnPrevRace = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_btnNextRace(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->btnNextRace);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btnNextRace);
+}
+
+static int CharacterEditWindow_set_btnNextRace(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->btnNextRace = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_btnPrevSubRace(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->btnPrevSubRace);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btnPrevSubRace);
+}
+
+static int CharacterEditWindow_set_btnPrevSubRace(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->btnPrevSubRace = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_btnNextSubRace(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->btnNextSubRace);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btnNextSubRace);
+}
+
+static int CharacterEditWindow_set_btnNextSubRace(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->btnNextSubRace = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_btnReset(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->btnReset);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btnReset);
+}
+
+static int CharacterEditWindow_set_btnReset(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->btnReset = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_btnRandomiseAll(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->btnRandomiseAll);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btnRandomiseAll);
+}
+
+static int CharacterEditWindow_set_btnRandomiseAll(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->btnRandomiseAll = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_btnRandomisePart(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->btnRandomisePart);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btnRandomisePart);
+}
+
+static int CharacterEditWindow_set_btnRandomisePart(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->btnRandomisePart = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Button>(L, 2, ButtonBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_descriptionPanel(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->descriptionPanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->descriptionPanel);
+}
+
+static int CharacterEditWindow_set_descriptionPanel(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->descriptionPanel = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_descriptionPanelText(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->descriptionPanelText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->descriptionPanelText);
+}
+
+static int CharacterEditWindow_set_descriptionPanelText(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->descriptionPanelText = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_statsPanel(lua_State* L)
 {
     CharacterEditWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->statsPanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->statsPanel);
+}
+
+static int CharacterEditWindow_set_statsPanel(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    instance->statsPanel = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    return 0;
 }
 
 static int CharacterEditWindow_get_statsDataPanel(lua_State* L)
@@ -824,31 +977,169 @@ int CharacterEditWindowBinding::setCurrentAttachmentName(lua_State* L)
     return 0;
 }
 
+int CharacterEditWindowBinding::nameChanged(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::EditBox* sender = checkObject<MyGUI::EditBox>(L, 2, EditBoxBinding::getMetatableName());
+    instance->nameChanged(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::prevRace(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->prevRace(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::nextRace(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->nextRace(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::prevSubRace(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->prevSubRace(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::nextSubRace(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->nextSubRace(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::changeGender(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->changeGender(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::changeAppearanceData(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    GameData* prevRace = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    AppearanceManager::Gender::Enum genderVal = (AppearanceManager::Gender::Enum)(int)luaL_checkinteger(L, 3);
+    AppearanceManager::Gender prevGender(genderVal);
+    instance->changeAppearanceData(prevRace, prevGender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::prevCharacter(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->prevCharacter(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::nextCharacter(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->nextCharacter(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::changeCategory(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->changeCategory(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::resetAppearance(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->resetAppearance(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::randomiseAll(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->randomiseAll(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::randomisePart(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->randomisePart(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::importCharacter(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->importCharacter(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::exportCharacter(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->exportCharacter(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::toggleClothes(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->toggleClothes(sender);
+    return 0;
+}
+
+int CharacterEditWindowBinding::confirmButton(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->confirmButton(sender);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 44: void nameChanged(...) - unsupported arg type
-  line 45: void prevRace(...) - unsupported arg type
-  line 46: void nextRace(...) - unsupported arg type
-  line 47: void prevSubRace(...) - unsupported arg type
-  line 48: void nextSubRace(...) - unsupported arg type
-  line 50: void changeGender(...) - unsupported arg type
-  line 51: void changeAppearanceData(...) - non-string reference arg
-  line 54: void prevCharacter(...) - unsupported arg type
-  line 55: void nextCharacter(...) - unsupported arg type
-  line 58: void changeCategory(...) - unsupported arg type
-  line 60: void resetAppearance(...) - unsupported arg type
-  line 61: void randomiseAll(...) - unsupported arg type
-  line 62: void randomisePart(...) - unsupported arg type
-  line 63: void importCharacter(...) - unsupported arg type
-  line 64: void exportCharacter(...) - unsupported arg type
-  line 66: void toggleClothes(...) - unsupported arg type
   line 68: void updateAppearanceSlider(...) - unsupported arg type
   line 69: void updateAppearanceSliderPose(...) - unsupported arg type
   line 70: void updateAppearanceSliderVector(...) - unsupported arg type
   line 71: void updateAppearanceList(...) - unsupported arg type
   line 72: void updateAppearanceMultiSlider(...) - unsupported arg type
   line 73: void updateAnimationIdle(...) - unsupported arg type
-  line 74: void confirmButton(...) - unsupported arg type
   line 86: Ogre::Entity* getCharacterEntity(...) - unsupported arg type
 */
 
@@ -914,6 +1205,23 @@ void CharacterEditWindowBinding::registerBinding(lua_State* L)
         { "getCurrentAttachmentName", CharacterEditWindowBinding::getCurrentAttachmentName },
         { "setCurrentHeadName", CharacterEditWindowBinding::setCurrentHeadName },
         { "setCurrentAttachmentName", CharacterEditWindowBinding::setCurrentAttachmentName },
+        { "nameChanged", CharacterEditWindowBinding::nameChanged },
+        { "prevRace", CharacterEditWindowBinding::prevRace },
+        { "nextRace", CharacterEditWindowBinding::nextRace },
+        { "prevSubRace", CharacterEditWindowBinding::prevSubRace },
+        { "nextSubRace", CharacterEditWindowBinding::nextSubRace },
+        { "changeGender", CharacterEditWindowBinding::changeGender },
+        { "changeAppearanceData", CharacterEditWindowBinding::changeAppearanceData },
+        { "prevCharacter", CharacterEditWindowBinding::prevCharacter },
+        { "nextCharacter", CharacterEditWindowBinding::nextCharacter },
+        { "changeCategory", CharacterEditWindowBinding::changeCategory },
+        { "resetAppearance", CharacterEditWindowBinding::resetAppearance },
+        { "randomiseAll", CharacterEditWindowBinding::randomiseAll },
+        { "randomisePart", CharacterEditWindowBinding::randomisePart },
+        { "importCharacter", CharacterEditWindowBinding::importCharacter },
+        { "exportCharacter", CharacterEditWindowBinding::exportCharacter },
+        { "toggleClothes", CharacterEditWindowBinding::toggleClothes },
+        { "confirmButton", CharacterEditWindowBinding::confirmButton },
         { 0, 0 }
     };
 
@@ -982,6 +1290,27 @@ void CharacterEditWindowBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "txtName", CharacterEditWindow_set_txtName);
+    registerSetter(L, "txtGender", CharacterEditWindow_set_txtGender);
+    registerSetter(L, "txtRace", CharacterEditWindow_set_txtRace);
+    registerSetter(L, "txtSubRace", CharacterEditWindow_set_txtSubRace);
+    registerSetter(L, "txtCharIdx", CharacterEditWindow_set_txtCharIdx);
+    registerSetter(L, "importButton", CharacterEditWindow_set_importButton);
+    registerSetter(L, "exportButton", CharacterEditWindow_set_exportButton);
+    registerSetter(L, "panelTabs", CharacterEditWindow_set_panelTabs);
+    registerSetter(L, "panelTabsView", CharacterEditWindow_set_panelTabsView);
+    registerSetter(L, "btnPrevGender", CharacterEditWindow_set_btnPrevGender);
+    registerSetter(L, "btnNextGender", CharacterEditWindow_set_btnNextGender);
+    registerSetter(L, "btnPrevRace", CharacterEditWindow_set_btnPrevRace);
+    registerSetter(L, "btnNextRace", CharacterEditWindow_set_btnNextRace);
+    registerSetter(L, "btnPrevSubRace", CharacterEditWindow_set_btnPrevSubRace);
+    registerSetter(L, "btnNextSubRace", CharacterEditWindow_set_btnNextSubRace);
+    registerSetter(L, "btnReset", CharacterEditWindow_set_btnReset);
+    registerSetter(L, "btnRandomiseAll", CharacterEditWindow_set_btnRandomiseAll);
+    registerSetter(L, "btnRandomisePart", CharacterEditWindow_set_btnRandomisePart);
+    registerSetter(L, "descriptionPanel", CharacterEditWindow_set_descriptionPanel);
+    registerSetter(L, "descriptionPanelText", CharacterEditWindow_set_descriptionPanelText);
+    registerSetter(L, "statsPanel", CharacterEditWindow_set_statsPanel);
     registerSetter(L, "statsDataPanel", CharacterEditWindow_set_statsDataPanel);
     registerSetter(L, "dialog", CharacterEditWindow_set_dialog);
     registerSetter(L, "isMidGame", CharacterEditWindow_set_isMidGame);

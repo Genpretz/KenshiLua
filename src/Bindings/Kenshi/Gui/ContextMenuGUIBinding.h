@@ -21,5 +21,7 @@ public:
     static int getMainWidget(lua_State* L);
     static int getVisible(lua_State* L);
     static int setVisible(lua_State* L);
+    static int show(lua_State* L);
+    static int optionSelected(lua_State* L);
 };
 }

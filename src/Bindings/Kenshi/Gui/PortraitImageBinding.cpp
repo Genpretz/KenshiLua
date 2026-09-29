@@ -2,6 +2,7 @@
 #include "kenshi\gui\PortraitManager.h"
 #include "PortraitImageBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/MyGUI/ImageBoxBinding.h" 
 
 namespace KenshiLua
 {
@@ -61,10 +62,17 @@ static int PortraitImage_set_textureName(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 21: void updateImageWidget(...) - unsupported arg type
-*/
+int PortraitImageBinding::updateImageWidget(lua_State* L)
+{
+    PortraitImage* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PortraitImage is nil");
+
+    MyGUI::ImageBox* image = checkObject<MyGUI::ImageBox>(L, 2, ImageBoxBinding::getMetatableName());
+    bool val = lua_toboolean(L, 3) != 0;
+    instance->updateImageWidget(image, val);
+    return 0;
+}
+
 
 /*
 Skipped properties needing manual binding:
@@ -93,6 +101,7 @@ void PortraitImageBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "updateImageWidget", PortraitImageBinding::updateImageWidget },
         { 0, 0 }
     };
 

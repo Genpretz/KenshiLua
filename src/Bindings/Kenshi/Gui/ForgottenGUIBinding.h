@@ -98,5 +98,25 @@ public:
     static int keepWindownOnScreen(lua_State* L);
     static int setInventoryPosition(lua_State* L);
     static int inventoriesSelectedObjectUpdate(lua_State* L);
+    static int _showTradeWindow(lua_State* L);
+    static int createFloatingLabel(lua_State* L);
+    static int createImage(lua_State* L);
+    static int createImageAbs(lua_State* L);
+    static int createRotatableImageAbs(lua_State* L);
+    static int createButton(lua_State* L);
+    static int createButtonAbs(lua_State* L);
+    static int createCheckbox(lua_State* L);
+    static int createDropBox(lua_State* L);
+    static int createDropBoxAbs(lua_State* L);
+    static int createProgressBar(lua_State* L);
+    static int createProgressBarAbs(lua_State* L);
+    static int createLabel(lua_State* L);
+    static int createLabelAbs(lua_State* L);
+    static int createValueEdit(lua_State* L);
+    static int createValueEditTransparent(lua_State* L);
+    static int createEditBox(lua_State* L);
+    static int createEditBoxAbs(lua_State* L);
+    static int createScrollBarAbs(lua_State* L);
+    static int createListbox(lua_State* L);
 };
 }

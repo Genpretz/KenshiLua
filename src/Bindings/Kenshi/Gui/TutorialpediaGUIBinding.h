@@ -26,5 +26,10 @@ public:
     static int _NV_isVisible(lua_State* L);
     static int setup(lua_State* L);
     static int updateCurrentItem(lua_State* L);
+    static int tutorialSelectedEvent(lua_State* L);
+    static int tutorialPrevEvent(lua_State* L);
+    static int tutorialNextEvent(lua_State* L);
+    static int tutorialActivateButtonEvent(lua_State* L);
+    static int tutorialWindowButton(lua_State* L);
 };
 }

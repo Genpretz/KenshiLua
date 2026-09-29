@@ -22,5 +22,12 @@ public:
     static int _NV_update(lua_State* L);
     static int setVisible(lua_State* L);
     static int _NV_setVisible(lua_State* L);
+    static int clear(lua_State* L);
+    static int _NV_clear(lua_State* L);
+    static int _setup(lua_State* L);
+    static int _NV__setup(lua_State* L);
+    static int setPosition(lua_State* L);
+    static int _NV_setPosition(lua_State* L);
+    static int mouseMoved(lua_State* L);
 };
 }

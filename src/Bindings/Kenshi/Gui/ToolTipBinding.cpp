@@ -3,6 +3,11 @@
 #include "ToolTipBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
+#include "Bindings/Kenshi/Util/HandBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
+#include "Bindings/Kenshi/Util/StringPairBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -17,8 +22,7 @@ static int ToolTip_get_panel(lua_State* L)
 {
     ToolTip* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTip is nil");
-    lua_pushlightuserdata(L, (void*)instance->panel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->panel);
 }
 
 static int ToolTip_get_panelWidth(lua_State* L)
@@ -57,8 +61,7 @@ static int ToolTip_get_caller(lua_State* L)
 {
     ToolTip* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTip is nil");
-    lua_pushlightuserdata(L, (void*)instance->caller);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->caller);
 }
 
 // --- Setters for ToolTip ---
@@ -180,35 +183,204 @@ int ToolTipBinding::clearLines(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 41: void setup(...) - overloaded method
-  line 42: void setup(...) - overloaded method
-  line 43: void setup(...) - overloaded method
-  line 44: void setup(...) - overloaded method
-  line 45: void clear(...) - unsupported arg type
-  line 46: void _NV_clear(...) - unsupported arg type
-  line 52: void _setup(...) - unsupported arg type
-  line 53: void _NV__setup(...) - unsupported arg type
-  line 54: void clearData(...) - unsupported arg type
-  line 55: void _NV_clearData(...) - unsupported arg type
-  line 56: void show(...) - unsupported arg type
-  line 57: void _NV_show(...) - unsupported arg type
-  line 58: void setContent(...) - unsupported arg type
-  line 59: void _NV_setContent(...) - unsupported arg type
-  line 60: void showText(...) - unsupported arg type
-  line 61: void showMultiLine(...) - unsupported arg type
-  line 62: void showGameData(...) - overloaded method
-  line 63: void showGameData(...) - overloaded method
-  line 66: void setPosition(...) - unsupported arg type
-  line 67: void _NV_setPosition(...) - unsupported arg type
-  line 70: void notifyToolTip(...) - unsupported arg type
-*/
+// setup(Widget*, hand&)
+int ToolTipBinding::setup_hand(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    hand* data = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    if (!data) return luaL_error(L, "Argument 3 must be hand");
+    instance->setup(widget, *data);
+    return 0;
+}
+
+// setup(Widget*, GameData*)
+int ToolTipBinding::setup_gamedata(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    GameData* data = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
+    instance->setup(widget, data);
+    return 0;
+}
+
+// setup(Widget*, lektor<StringPair>&)
+int ToolTipBinding::setup_stringpairs(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    lektor<StringPair>* lines = checkObject<lektor<StringPair>>(L, 3, LektorValueBinding<StringPair>::metaName);
+    if (!lines) return luaL_error(L, "Argument 3 must be lektor<StringPair>");
+    instance->setup(widget, *lines);
+    return 0;
+}
+
+// setup(Widget*, string)
+int ToolTipBinding::setup_text(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    const std::string text = luaL_checkstring(L, 3);
+    instance->setup(widget, text);
+    return 0;
+}
+
+int ToolTipBinding::clear(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->clear(widget);
+    return 0;
+}
+
+int ToolTipBinding::_NV_clear(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV_clear(widget);
+    return 0;
+}
+
+int ToolTipBinding::_setup(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_setup(widget);
+    return 0;
+}
+
+int ToolTipBinding::_NV__setup(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV__setup(widget);
+    return 0;
+}
+
+int ToolTipBinding::clearData(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->clearData(widget);
+    return 0;
+}
+
+int ToolTipBinding::_NV_clearData(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV_clearData(widget);
+    return 0;
+}
+
+int ToolTipBinding::show(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    MyGUI::IntPoint point = MyGUIBindings::readIntPoint(L, 3);
+    instance->show(sender, point);
+    return 0;
+}
+
+int ToolTipBinding::_NV_show(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    MyGUI::IntPoint point = MyGUIBindings::readIntPoint(L, 3);
+    instance->_NV_show(sender, point);
+    return 0;
+}
+
+int ToolTipBinding::setContent(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->setContent(widget);
+    return 0;
+}
+
+int ToolTipBinding::_NV_setContent(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV_setContent(widget);
+    return 0;
+}
+
+int ToolTipBinding::showText(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->showText(widget);
+    return 0;
+}
+
+int ToolTipBinding::showMultiLine(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->showMultiLine(widget);
+    return 0;
+}
+
+// showGameData(hand&) overload
+int ToolTipBinding::showGameData_hand(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    hand* h = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (!h) return luaL_error(L, "Argument 2 must be hand");
+    instance->showGameData(*h);
+    return 0;
+}
+
+// showGameData(Widget*) overload
+int ToolTipBinding::showGameData_widget(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->showGameData(widget);
+    return 0;
+}
+
+int ToolTipBinding::setPosition(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::IntPoint point = MyGUIBindings::readIntPoint(L, 2);
+    instance->setPosition(point);
+    return 0;
+}
+
+int ToolTipBinding::_NV_setPosition(lua_State* L)
+{
+    ToolTip* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTip is nil");
+    MyGUI::IntPoint point = MyGUIBindings::readIntPoint(L, 2);
+    instance->_NV_setPosition(point);
+    return 0;
+}
 
 /*
-LIGHTUSERDATA DEPENDENCIES:
-  - ToolTip_get_panel: MyGUI::Widget* (unbound pointer)
-  - ToolTip_get_caller: MyGUI::Widget* (unbound pointer)
+Skipped methods needing manual binding:
+  line 70: void notifyToolTip(...) - MyGUI::ToolTipInfo& unsupported
 */
 
 /*
@@ -246,6 +418,26 @@ void ToolTipBinding::registerBinding(lua_State* L)
         { "_NV_setVisible", ToolTipBinding::_NV_setVisible },
         { "addLine", ToolTipBinding::addLine },
         { "clearLines", ToolTipBinding::clearLines },
+        { "setup_hand", ToolTipBinding::setup_hand },
+        { "setup_gamedata", ToolTipBinding::setup_gamedata },
+        { "setup_stringpairs", ToolTipBinding::setup_stringpairs },
+        { "setup_text", ToolTipBinding::setup_text },
+        { "clear", ToolTipBinding::clear },
+        { "_NV_clear", ToolTipBinding::_NV_clear },
+        { "_setup", ToolTipBinding::_setup },
+        { "_NV__setup", ToolTipBinding::_NV__setup },
+        { "clearData", ToolTipBinding::clearData },
+        { "_NV_clearData", ToolTipBinding::_NV_clearData },
+        { "show", ToolTipBinding::show },
+        { "_NV_show", ToolTipBinding::_NV_show },
+        { "setContent", ToolTipBinding::setContent },
+        { "_NV_setContent", ToolTipBinding::_NV_setContent },
+        { "showText", ToolTipBinding::showText },
+        { "showMultiLine", ToolTipBinding::showMultiLine },
+        { "showGameData_hand", ToolTipBinding::showGameData_hand },
+        { "showGameData_widget", ToolTipBinding::showGameData_widget },
+        { "setPosition", ToolTipBinding::setPosition },
+        { "_NV_setPosition", ToolTipBinding::_NV_setPosition },
         { 0, 0 }
     };
 

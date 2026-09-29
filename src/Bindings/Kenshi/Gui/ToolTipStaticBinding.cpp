@@ -3,6 +3,8 @@
 #include "ToolTipStaticBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Gui/ToolTipBinding.h"
+#include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 namespace KenshiLua
 {
@@ -52,16 +54,70 @@ int ToolTipStaticBinding::_NV_setVisible(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 122: void clear(...) - unsupported arg type
-  line 123: void _NV_clear(...) - unsupported arg type
-  line 124: void _setup(...) - unsupported arg type
-  line 125: void _NV__setup(...) - unsupported arg type
-  line 128: void setPosition(...) - unsupported arg type
-  line 129: void _NV_setPosition(...) - unsupported arg type
-  line 130: void mouseMoved(...) - unsupported arg type
-*/
+int ToolTipStaticBinding::clear(lua_State* L)
+{
+    ToolTipStatic* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipStatic is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->clear(widget);
+    return 0;
+}
+
+int ToolTipStaticBinding::_NV_clear(lua_State* L)
+{
+    ToolTipStatic* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipStatic is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV_clear(widget);
+    return 0;
+}
+
+int ToolTipStaticBinding::_setup(lua_State* L)
+{
+    ToolTipStatic* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipStatic is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_setup(widget);
+    return 0;
+}
+
+int ToolTipStaticBinding::_NV__setup(lua_State* L)
+{
+    ToolTipStatic* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipStatic is nil");
+    MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    instance->_NV__setup(widget);
+    return 0;
+}
+
+int ToolTipStaticBinding::setPosition(lua_State* L)
+{
+    ToolTipStatic* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipStatic is nil");
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 2);
+    instance->setPosition(pt);
+    return 0;
+}
+
+int ToolTipStaticBinding::_NV_setPosition(lua_State* L)
+{
+    ToolTipStatic* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipStatic is nil");
+    MyGUI::IntPoint pt = MyGUIBindings::readIntPoint(L, 2);
+    instance->_NV_setPosition(pt);
+    return 0;
+}
+
+int ToolTipStaticBinding::mouseMoved(lua_State* L)
+{
+    ToolTipStatic* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ToolTipStatic is nil");
+    MyGUI::Widget* sender = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
+    int left = (int)luaL_checkinteger(L, 3);
+    int top = (int)luaL_checkinteger(L, 4);
+    instance->mouseMoved(sender, left, top);
+    return 0;
+}
 
 int ToolTipStaticBinding::gc(lua_State* L)
 {
@@ -88,6 +144,13 @@ void ToolTipStaticBinding::registerBinding(lua_State* L)
         { "_NV_update", ToolTipStaticBinding::_NV_update },
         { "setVisible", ToolTipStaticBinding::setVisible },
         { "_NV_setVisible", ToolTipStaticBinding::_NV_setVisible },
+        { "clear", ToolTipStaticBinding::clear },
+        { "_NV_clear", ToolTipStaticBinding::_NV_clear },
+        { "_setup", ToolTipStaticBinding::_setup },
+        { "_NV__setup", ToolTipStaticBinding::_NV__setup },
+        { "setPosition", ToolTipStaticBinding::setPosition },
+        { "_NV_setPosition", ToolTipStaticBinding::_NV_setPosition },
+        { "mouseMoved", ToolTipStaticBinding::mouseMoved },
         { 0, 0 }
     };
 

@@ -2,6 +2,7 @@
 #include "kenshi\gui\MessageBoxManager.h"
 #include "BoxBinding.h"
 #include "BaseLayoutBinding.h"
+#include "Bindings/MyGUI/WidgetBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -38,9 +39,18 @@ static int Box_set_modal(lua_State* L)
     return 0;
 }
 
+int BoxBinding::buttonClick(lua_State* L)
+{
+    MessageBoxManager::Box* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Box is nil");
+
+    MyGUI::Widget* sender = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
+    instance->buttonClick(sender);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 22: void buttonClick(...) - unsupported arg type
 */
 
 /*
@@ -74,6 +84,7 @@ void BoxBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "buttonClick", BoxBinding::buttonClick },
         { 0, 0 }
     };
 
