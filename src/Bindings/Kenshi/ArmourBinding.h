@@ -32,5 +32,9 @@ public:
     static int _NV_getCraftTime(lua_State* L);
     static int getWeatherProtection_simple(lua_State* L);
     static int getArmourCraftingMaterialConsumptionRate(lua_State* L);
+    static int getTooltipData1(lua_State* L);
+    static int _NV_getTooltipData1(lua_State* L);
+    static int getTooltipData2(lua_State* L);
+    static int _NV_getTooltipData2(lua_State* L);
 };
 }

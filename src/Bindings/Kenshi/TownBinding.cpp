@@ -19,9 +19,12 @@
 #include "Bindings/Kenshi/Util/OgreUnorderedBinding.h"
 #include "Bindings/Kenshi/Util/OgreFastArrayBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
+#include "Bindings/Kenshi/Util/TagsClassBinding.h"
 
 namespace KenshiLua
 {
+
+typedef TagsClassBinding<BuildingDesignation> TownFacilitiesTagsBinding;
 
 typedef OgreFastArrayPrimitiveBinding<hand> HandFastArrayBinding;
 
@@ -1373,9 +1376,16 @@ int TownBinding::_NV_serialise(lua_State* L)
     return pushValue<GameSaveState>(L, result, GameSaveStateBinding::getMetatableName());
 }
 
+int TownBinding::facilitesWeHaveHere(lua_State* L)
+{
+    Town* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Town is nil");
+    TagsClass<BuildingDesignation> result = instance->facilitesWeHaveHere();
+    return pushValue<TagsClass<BuildingDesignation>>(L, result, TownFacilitiesTagsBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
-  line 453: TagsClass<BuildingDesignation> facilitesWeHaveHere(...) - unsupported return type
   line 455: bool powerBuilding(...) - non-string reference arg
   line 456: bool drainBattery(...) - non-string reference arg
 */
@@ -1620,6 +1630,8 @@ int TownBinding::chooseResidents(lua_State* L)
 
 void TownBinding::registerBinding(lua_State* L)
 {
+    TownFacilitiesTagsBinding::registerBinding(L, "KenshiLua.TagsClass<BuildingDesignation>");
+
     static const luaL_Reg meta[] = {
         { "__gc",       TownBinding::gc },
         { "__tostring", TownBinding::tostring },
@@ -1627,6 +1639,7 @@ void TownBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "facilitesWeHaveHere", TownBinding::facilitesWeHaveHere },
         { "initialiseResidentData", TownBinding::initialiseResidentData },
         { "getGameData", TownBinding::getGameData },
         { "_NV_getGameData", TownBinding::_NV_getGameData },

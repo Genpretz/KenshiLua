@@ -6,6 +6,8 @@
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/RootObjectBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
+#include "Bindings/Kenshi/CharacterBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -625,10 +627,20 @@ int CameraClassBinding::isVisible(lua_State* L)
     return 1;
 }
 
+int CameraClassBinding::restrictPosition(lua_State* L)
+{
+    CameraClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CameraClass is nil");
+
+    lektor<Character*>* objects = LektorPtrBinding<Character*>::get(L, 2);
+    if (!objects) return luaL_error(L, "Argument 2 to restrictPosition must be lektor<Character*>");
+    instance->restrictPosition(*objects);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 25: int intersectScreenEdge(...) - non-string reference arg
-  line 37: void restrictPosition(...) - unsupported arg type
 */
 
 /*
@@ -695,6 +707,7 @@ void CameraClassBinding::registerBinding(lua_State* L)
         { "followObject", CameraClassBinding::followObject },
         { "getFollowObject", CameraClassBinding::getFollowObject },
         { "isVisible", CameraClassBinding::isVisible },
+        { "restrictPosition", CameraClassBinding::restrictPosition },
         { 0, 0 }
     };
 

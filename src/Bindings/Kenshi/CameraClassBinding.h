@@ -46,5 +46,6 @@ public:
     static int followObject(lua_State* L);
     static int getFollowObject(lua_State* L);
     static int isVisible(lua_State* L);
+    static int restrictPosition(lua_State* L);
 };
 }

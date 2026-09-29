@@ -6,8 +6,8 @@
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/GearBinding.h"
 #include "Bindings/Kenshi/SwordBinding.h"
-#include "CrossbowBinding.h"
-#include "SwordBinding.h"
+#include "Bindings/Kenshi/Util/OgreVectorBinding.h"
+#include "Bindings/Kenshi/Util/StringPairBinding.h"
 
 namespace KenshiLua
 {
@@ -295,10 +295,15 @@ int WeaponBinding::_NV_getSkillModIndoors(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 57: void getTooltipData1(...) - unsupported arg type
-*/
+int WeaponBinding::getTooltipData1(lua_State* L)
+{
+    Weapon* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Weapon is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData1 must be ogre_vector<StringPair>");
+    instance->getTooltipData1(*lines);
+    return 0;
+}
 
 int WeaponBinding::gc(lua_State* L)
 {
@@ -341,6 +346,7 @@ void WeaponBinding::registerBinding(lua_State* L)
         { "_NV_isCrossbow", WeaponBinding::_NV_isCrossbow },
         { "getSkillModIndoors", WeaponBinding::getSkillModIndoors },
         { "_NV_getSkillModIndoors", WeaponBinding::_NV_getSkillModIndoors },
+        { "getTooltipData1", WeaponBinding::getTooltipData1 },
         { 0, 0 }
     };
 

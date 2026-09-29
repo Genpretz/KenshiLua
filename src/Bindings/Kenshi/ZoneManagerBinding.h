@@ -31,6 +31,8 @@ public:
     static int updateGPUSafeThread(lua_State* L);
     static int spawnChecksUpdateThreaded(lua_State* L);
     static int levelEditorDeleteAllSelectedObjects(lua_State* L);
+    static int levelEditorGetAllSelectedObjects(lua_State* L);
+    static int getIsland(lua_State* L);
     static int getCurrentMapSector(lua_State* L);
     static int getCurrentZoneMap(lua_State* L);
     static int getSubMapSector(lua_State* L);
@@ -87,5 +89,7 @@ public:
     static int getResource(lua_State* L);
     static int getResourceBase(lua_State* L);
     static int getGroundEffect(lua_State* L);
+    static int getAllActiveZonesT(lua_State* L);
+    static int _NV_getAllActiveZonesT(lua_State* L);
 };
 }

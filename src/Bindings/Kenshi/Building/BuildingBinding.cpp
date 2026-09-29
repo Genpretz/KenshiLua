@@ -2659,6 +2659,16 @@ int BuildingBinding::destroyAudioObject(lua_State* L)
     return 0;
 }
 
+int BuildingBinding::getAudioObject(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    unsigned __int64 result = instance->getAudioObject();
+    lua_pushinteger(L, static_cast<lua_Integer>(result));
+    return 1;
+}
+
 int BuildingBinding::getGroundType(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
@@ -3254,16 +3264,38 @@ static int Building_set_doors(lua_State* L)
     return 0;
 }
 
+int BuildingBinding::getMountedBuildings(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    lektor<Building*>* out = lua_isnoneornil(L, 2) ? nullptr : LektorPtrBinding<Building*>::get(L, 2);
+    if (!lua_isnoneornil(L, 2) && !out) return luaL_error(L, "Argument 2 to getMountedBuildings must be lektor<Building*> or nil");
+    int result = instance->getMountedBuildings(out);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int BuildingBinding::findAllFurnitureWithFunction(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    auto* out = LektorPtrBinding<Building*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to findAllFurnitureWithFunction must be lektor<Building*>");
+    BuildingFunction func = (BuildingFunction)luaL_checkinteger(L, 3);
+
+    instance->findAllFurnitureWithFunction(*out, func);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 215: int getMountedBuildings(...) - unsupported arg type
-  line 306: void findAllFurnitureWithFunction(...) - unsupported arg type
   line 366: const Ogre::Aabb& getAABB(...) - overloaded method
   line 367: const Ogre::Aabb& _NV_getAABB(...) - overloaded method
   line 368: Ogre::Aabb getAABB(...) - overloaded method
   line 369: Ogre::Aabb _NV_getAABB(...) - overloaded method
   line 370: void setAABB(...) - unsupported arg type
-  line 383: unsigned __int64 getAudioObject(...) - unsupported return type
   line 393: int getLights(...) - unsupported arg type
   line 457: Ogre::SharedPtr<Ogre::Material> getBuildingPartMaterial(...) - static method
   line 458: void setBuildingPartMaterial(...) - static method
@@ -3413,6 +3445,8 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "getBuildState", BuildingBinding::getBuildState },
         { "_NV_getBuildState", BuildingBinding::_NV_getBuildState },
         { "getBuildState_ActualNonShared", BuildingBinding::getBuildState_ActualNonShared },
+        { "getMountedBuildings", BuildingBinding::getMountedBuildings },
+        { "findAllFurnitureWithFunction", BuildingBinding::findAllFurnitureWithFunction },
         { "select", BuildingBinding::select },
         { "_NV_select", BuildingBinding::_NV_select },
         { "getBuildingDesignation", BuildingBinding::getBuildingDesignation },
@@ -3604,6 +3638,7 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "destroyDoors", BuildingBinding::destroyDoors },
         { "createTriggerHull", BuildingBinding::createTriggerHull },
         { "destroyAudioObject", BuildingBinding::destroyAudioObject },
+        { "getAudioObject", BuildingBinding::getAudioObject },
         { "getGroundType", BuildingBinding::getGroundType },
         { "isCeilingMounted", BuildingBinding::isCeilingMounted },
         { "_NV_isCeilingMounted", BuildingBinding::_NV_isCeilingMounted },

@@ -1,24 +1,26 @@
 #include "pch.h"
+
+// KenshiLua
 #include "Bindings/Kenshi/GlobalBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/GameWorldBinding.h"
 #include "Bindings/Kenshi/PlayerInterfaceBinding.h"
 #include "Bindings/Kenshi/InputHandlerBinding.h"
-#include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/RootObjectFactoryBinding.h"
 #include "Bindings/Kenshi/GlobalConstantsBinding.h"
 #include "Bindings/Kenshi/OptionsHolderBinding.h"
 #include "Bindings/Kenshi/Gui/ForgottenGUIBinding.h"
+#include "Lua/BindingHelpers.h"
 #include "Logger.h"
+
+// KenshiLib
+#include <kenshi/GameWorld.h>
+#include <kenshi/PlayerInterface.h>
+#include <kenshi/InputHandler.h>
 #include <kenshi/RootObjectFactory.h>
 #include <kenshi/GlobalConstants.h>
 #include <kenshi/OptionsHolder.h>
 #include <kenshi/gui/ForgottenGUI.h>
-
-#include <kenshi/Globals.h>
-#include <kenshi/GameWorld.h>
-#include <kenshi/PlayerInterface.h>
-#include <kenshi/InputHandler.h>
 
 extern "C" {
 #include <lua.h>

@@ -62,5 +62,6 @@ public:
     static int getAllItemsOfName(lua_State* L);
     static int findNearestPlaceForItem(lua_State* L);
     static int getItemsInFootprint(lua_State* L);
+    static int getItems(lua_State* L);
 };
 }

@@ -4,6 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/GameDataContainerBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -71,10 +72,17 @@ int GameDataManagerBinding::updateData(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 80: void getBuildings(...) - unsupported arg type
-*/
+int GameDataManagerBinding::getBuildings(lua_State* L)
+{
+    GameDataManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataManager is nil");
+
+    lektor<GameData*>* list = LektorPtrBinding<GameData*>::get(L, 2);
+    if (!list) return luaL_error(L, "Argument 2 to getBuildings must be lektor<GameData*>");
+    std::string category = luaL_checkstring(L, 3);
+    instance->getBuildings(*list, category);
+    return 0;
+}
 
 int GameDataManagerBinding::gc(lua_State* L)
 {
@@ -102,6 +110,7 @@ void GameDataManagerBinding::registerBinding(lua_State* L)
         { "getMapSector", GameDataManagerBinding::getMapSector },
         { "updateDatasOfType", GameDataManagerBinding::updateDatasOfType },
         { "updateData", GameDataManagerBinding::updateData },
+        { "getBuildings", GameDataManagerBinding::getBuildings },
         { 0, 0 }
     };
 

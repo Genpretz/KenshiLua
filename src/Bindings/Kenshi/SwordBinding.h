@@ -25,5 +25,9 @@ public:
     static int setupStats(lua_State* L);
     static int getSkillModIndoors(lua_State* L);
     static int _NV_getSkillModIndoors(lua_State* L);
+    static int getTooltipData1(lua_State* L);
+    static int _NV_getTooltipData1(lua_State* L);
+    static int getTooltipData2(lua_State* L);
+    static int _NV_getTooltipData2(lua_State* L);
 };
 }

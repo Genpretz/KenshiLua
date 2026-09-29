@@ -7,6 +7,8 @@
 #include "Bindings/Kenshi/GearBinding.h"
 #include "Bindings/Kenshi/EnumBinding.h"
 #include "Bindings/Kenshi/Util/OgreUnorderedBinding.h"
+#include "Bindings/Kenshi/Util/OgreVectorBinding.h"
+#include "Bindings/Kenshi/Util/StringPairBinding.h"
 
 namespace KenshiLua
 {
@@ -486,13 +488,45 @@ int ArmourBinding::getWeatherProtection_simple(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 168: void getTooltipData1(...) - unsupported arg type
-  line 169: void _NV_getTooltipData1(...) - unsupported arg type
-  line 170: void getTooltipData2(...) - unsupported arg type
-  line 171: void _NV_getTooltipData2(...) - unsupported arg type
-*/
+int ArmourBinding::getTooltipData1(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData1 must be ogre_vector<StringPair>");
+    instance->getTooltipData1(*lines);
+    return 0;
+}
+
+int ArmourBinding::_NV_getTooltipData1(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData1 must be ogre_vector<StringPair>");
+    instance->_NV_getTooltipData1(*lines);
+    return 0;
+}
+
+int ArmourBinding::getTooltipData2(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData2 must be ogre_vector<StringPair>");
+    instance->getTooltipData2(*lines);
+    return 0;
+}
+
+int ArmourBinding::_NV_getTooltipData2(lua_State* L)
+{
+    Armour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Armour is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData2 must be ogre_vector<StringPair>");
+    instance->_NV_getTooltipData2(*lines);
+    return 0;
+}
 
 int ArmourBinding::gc(lua_State* L)
 {
@@ -629,6 +663,10 @@ void ArmourBinding::registerBinding(lua_State* L)
         { "_NV_getCraftTime", ArmourBinding::_NV_getCraftTime },
         { "getWeatherProtection_simple", ArmourBinding::getWeatherProtection_simple },
         { "getArmourCraftingMaterialConsumptionRate", ArmourBinding::getArmourCraftingMaterialConsumptionRate },
+        { "getTooltipData1", ArmourBinding::getTooltipData1 },
+        { "_NV_getTooltipData1", ArmourBinding::_NV_getTooltipData1 },
+        { "getTooltipData2", ArmourBinding::getTooltipData2 },
+        { "_NV_getTooltipData2", ArmourBinding::_NV_getTooltipData2 },
         { 0, 0 }
     };
 

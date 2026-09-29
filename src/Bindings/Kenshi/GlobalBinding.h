@@ -1,5 +1,7 @@
 #pragma once
 
+#include <kenshi/Globals.h>
+
 #include <string>
 
 extern "C" {

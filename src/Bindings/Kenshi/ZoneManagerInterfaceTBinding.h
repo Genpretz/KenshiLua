@@ -19,5 +19,6 @@ public:
     static int isZoneLoadedT(lua_State* L);
     static int isZoneBeingLoadedT(lua_State* L);
     static int getZoneBoundsT(lua_State* L);
+    static int getAllActiveZonesT(lua_State* L);
 };
 }

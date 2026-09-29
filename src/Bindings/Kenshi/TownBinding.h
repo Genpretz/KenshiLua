@@ -118,5 +118,6 @@ public:
     static int getPlayerTownTypeEnum(lua_State* L);
     static int serialise(lua_State* L);
     static int _NV_serialise(lua_State* L);
+    static int facilitesWeHaveHere(lua_State* L);
 };
 }

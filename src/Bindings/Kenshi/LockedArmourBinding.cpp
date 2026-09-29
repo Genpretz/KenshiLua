@@ -6,7 +6,8 @@
 #include "Bindings/Kenshi/FactionBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/GameDataContainerBinding.h"
-#include "ArmourBinding.h"
+#include "Bindings/Kenshi/Util/OgreVectorBinding.h"
+#include "Bindings/Kenshi/Util/StringPairBinding.h"
 
 namespace KenshiLua
 {
@@ -106,13 +107,45 @@ int LockedArmourBinding::_NV__loadFromSerialise(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 233: void getTooltipData1(...) - unsupported arg type
-  line 234: void _NV_getTooltipData1(...) - unsupported arg type
-  line 235: void getTooltipData2(...) - unsupported arg type
-  line 236: void _NV_getTooltipData2(...) - unsupported arg type
-*/
+int LockedArmourBinding::getTooltipData1(lua_State* L)
+{
+    LockedArmour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LockedArmour is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData1 must be ogre_vector<StringPair>");
+    instance->getTooltipData1(*lines);
+    return 0;
+}
+
+int LockedArmourBinding::_NV_getTooltipData1(lua_State* L)
+{
+    LockedArmour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LockedArmour is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData1 must be ogre_vector<StringPair>");
+    instance->_NV_getTooltipData1(*lines);
+    return 0;
+}
+
+int LockedArmourBinding::getTooltipData2(lua_State* L)
+{
+    LockedArmour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LockedArmour is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData2 must be ogre_vector<StringPair>");
+    instance->getTooltipData2(*lines);
+    return 0;
+}
+
+int LockedArmourBinding::_NV_getTooltipData2(lua_State* L)
+{
+    LockedArmour* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LockedArmour is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData2 must be ogre_vector<StringPair>");
+    instance->_NV_getTooltipData2(*lines);
+    return 0;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -158,6 +191,10 @@ void LockedArmourBinding::registerBinding(lua_State* L)
         { "_NV__serialise", LockedArmourBinding::_NV__serialise },
         { "_loadFromSerialise", LockedArmourBinding::_loadFromSerialise },
         { "_NV__loadFromSerialise", LockedArmourBinding::_NV__loadFromSerialise },
+        { "getTooltipData1", LockedArmourBinding::getTooltipData1 },
+        { "_NV_getTooltipData1", LockedArmourBinding::_NV_getTooltipData1 },
+        { "getTooltipData2", LockedArmourBinding::getTooltipData2 },
+        { "_NV_getTooltipData2", LockedArmourBinding::_NV_getTooltipData2 },
         { 0, 0 }
     };
 

@@ -35,7 +35,7 @@ namespace KenshiLua
 
         static int get_flags(lua_State* L)
         {
-            TagsType* instance = getInstance(L, 1);
+            TagsType* instance = get(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             lua_pushinteger(L, instance->flags);
             return 1;
@@ -43,7 +43,7 @@ namespace KenshiLua
 
         static int set_flags(lua_State* L)
         {
-            TagsType* instance = getInstance(L, 1);
+            TagsType* instance = get(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             instance->flags = (unsigned int)luaL_checkinteger(L, 2);
             return 0;
@@ -51,7 +51,7 @@ namespace KenshiLua
 
         static int clearAll(lua_State* L)
         {
-            TagsType* instance = getInstance(L, 1);
+            TagsType* instance = get(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             instance->clearAll();
             return 0;
@@ -59,7 +59,7 @@ namespace KenshiLua
 
         static int hasNONEOfTheseBitsSet(lua_State* L)
         {
-            TagsType* instance = getInstance(L, 1);
+            TagsType* instance = get(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             unsigned int flagsToTest = (unsigned int)luaL_checkinteger(L, 2);
             lua_pushboolean(L, instance->hasNONEOfTheseBitsSet(flagsToTest) ? 1 : 0);
@@ -68,11 +68,65 @@ namespace KenshiLua
 
         static int hasANYOfTheseBitsSet(lua_State* L)
         {
-            TagsType* instance = getInstance(L, 1);
+            TagsType* instance = get(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             unsigned int flagsToTest = (unsigned int)luaL_checkinteger(L, 2);
             lua_pushboolean(L, instance->hasANYOfTheseBitsSet(flagsToTest) ? 1 : 0);
             return 1;
+        }
+
+        static int setTag(lua_State* L)
+        {
+            TagsType* instance = get(L, 1);
+            if (!instance) return luaL_error(L, "TagsClass is nil");
+            T tag = static_cast<T>(luaL_checkinteger(L, 2));
+            instance->setTag(tag);
+            return 0;
+        }
+
+        static int _NV_setTag(lua_State* L)
+        {
+            TagsType* instance = get(L, 1);
+            if (!instance) return luaL_error(L, "TagsClass is nil");
+            T tag = static_cast<T>(luaL_checkinteger(L, 2));
+            instance->_NV_setTag(tag);
+            return 0;
+        }
+
+        static int getTag(lua_State* L)
+        {
+            TagsType* instance = get(L, 1);
+            if (!instance) return luaL_error(L, "TagsClass is nil");
+            T tag = static_cast<T>(luaL_checkinteger(L, 2));
+            lua_pushboolean(L, instance->getTag(tag) ? 1 : 0);
+            return 1;
+        }
+
+        static int _NV_getTag(lua_State* L)
+        {
+            TagsType* instance = get(L, 1);
+            if (!instance) return luaL_error(L, "TagsClass is nil");
+            T tag = static_cast<T>(luaL_checkinteger(L, 2));
+            lua_pushboolean(L, instance->_NV_getTag(tag) ? 1 : 0);
+            return 1;
+        }
+
+        static int has(lua_State* L)
+        {
+            TagsType* instance = get(L, 1);
+            if (!instance) return luaL_error(L, "TagsClass is nil");
+            T tag = static_cast<T>(luaL_checkinteger(L, 2));
+            lua_pushboolean(L, instance->has(tag) ? 1 : 0);
+            return 1;
+        }
+
+        static int clearTag(lua_State* L)
+        {
+            TagsType* instance = get(L, 1);
+            if (!instance) return luaL_error(L, "TagsClass is nil");
+            T tag = static_cast<T>(luaL_checkinteger(L, 2));
+            instance->clearTag(tag);
+            return 0;
         }
 
         static void registerBinding(lua_State* L, const char* name)
@@ -87,6 +141,12 @@ namespace KenshiLua
 
             static const luaL_Reg methods[] = {
                 { "clearAll", clearAll },
+                { "clearTag", clearTag },
+                { "setTag", setTag },
+                { "_NV_setTag", _NV_setTag },
+                { "getTag", getTag },
+                { "_NV_getTag", _NV_getTag },
+                { "has", has },
                 { "hasNONEOfTheseBitsSet", hasNONEOfTheseBitsSet },
                 { "hasANYOfTheseBitsSet", hasANYOfTheseBitsSet },
                 { 0, 0 }
@@ -113,4 +173,58 @@ namespace KenshiLua
     };
 
     template <typename T> const char* TagsClassBinding<T>::metaName = nullptr;
+}
+
+template <typename T>
+inline void TagsClass<T>::clearAll()
+{
+    flags = 0;
+}
+
+template <typename T>
+inline bool TagsClass<T>::hasNONEOfTheseBitsSet(unsigned int flagsToTest) const
+{
+    return (flags & flagsToTest) == 0;
+}
+
+template <typename T>
+inline bool TagsClass<T>::hasANYOfTheseBitsSet(unsigned int flagsToTest) const
+{
+    return (flags & flagsToTest) != 0;
+}
+
+template <typename T>
+inline void TagsClass<T>::setTag(T f)
+{
+    flags |= (1u << static_cast<unsigned int>(f));
+}
+
+template <typename T>
+inline void TagsClass<T>::_NV_setTag(T f)
+{
+    setTag(f);
+}
+
+template <typename T>
+inline void TagsClass<T>::clearTag(T f)
+{
+    flags &= ~(1u << static_cast<unsigned int>(f));
+}
+
+template <typename T>
+inline bool TagsClass<T>::getTag(T f) const
+{
+    return (flags & (1u << static_cast<unsigned int>(f))) != 0;
+}
+
+template <typename T>
+inline bool TagsClass<T>::_NV_getTag(T f) const
+{
+    return getTag(f);
+}
+
+template <typename T>
+inline bool TagsClass<T>::has(T t) const
+{
+    return getTag(t);
 }

@@ -22,6 +22,8 @@ public:
     static int getBuildState(lua_State* L);
     static int _NV_getBuildState(lua_State* L);
     static int getBuildState_ActualNonShared(lua_State* L);
+    static int getMountedBuildings(lua_State* L);
+    static int findAllFurnitureWithFunction(lua_State* L);
     static int select(lua_State* L);
     static int _NV_select(lua_State* L);
     static int getBuildingDesignation(lua_State* L);
@@ -213,6 +215,7 @@ public:
     static int destroyDoors(lua_State* L);
     static int createTriggerHull(lua_State* L);
     static int destroyAudioObject(lua_State* L);
+    static int getAudioObject(lua_State* L);
     static int getGroundType(lua_State* L);
     static int isCeilingMounted(lua_State* L);
     static int _NV_isCeilingMounted(lua_State* L);

@@ -23,5 +23,6 @@ public:
     static int getMapSector(lua_State* L);
     static int updateDatasOfType(lua_State* L);
     static int updateData(lua_State* L);
+    static int getBuildings(lua_State* L);
 };
 }

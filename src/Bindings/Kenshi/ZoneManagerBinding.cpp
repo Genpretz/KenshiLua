@@ -15,6 +15,8 @@
 #include "Bindings/Kenshi/ZoneSpacialGridBinding.h"
 #include "Bindings/Kenshi/Util/iVector2Binding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
+#include "Bindings/Kenshi/RootObjectBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
 #include <kenshi/ZoneManager.h>
 
 namespace KenshiLua
@@ -187,6 +189,8 @@ static int ZoneManager_set_groundEffectsPool(lua_State* L)
     return 0;
 }
 
+// --- Methods for ZoneManager ---
+
 int ZoneManagerBinding::isZoneLoadedT(lua_State* L)
 {
     ZoneManager* instance = getInstance(L, 1);
@@ -324,6 +328,31 @@ int ZoneManagerBinding::levelEditorDeleteAllSelectedObjects(lua_State* L)
     if (!instance) return luaL_error(L, "ZoneManager is nil");
 
     instance->levelEditorDeleteAllSelectedObjects();
+    return 0;
+}
+
+int ZoneManagerBinding::levelEditorGetAllSelectedObjects(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to levelEditorGetAllSelectedObjects must be lektor<RootObject*>");
+    itemType type = (itemType)luaL_checkinteger(L, 3);
+    instance->levelEditorGetAllSelectedObjects(*out, type);
+    return 0;
+}
+
+int ZoneManagerBinding::getIsland(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+
+    ZoneMap* zone = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    auto* out = LektorPtrBinding<ZoneMap*>::get(L, 3);
+    if (!out) return luaL_error(L, "Argument 3 to getIsland must be lektor<ZoneMap*>");
+
+    instance->getIsland(zone, *out);
     return 0;
 }
 
@@ -945,14 +974,30 @@ int ZoneManagerBinding::getGroundEffect(lua_State* L)
     return 4;
 }
 
+int ZoneManagerBinding::getAllActiveZonesT(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+    lektor<iVector2>* out = LektorValueBinding<iVector2>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getAllActiveZonesT must be lektor<iVector2>");
+    instance->getAllActiveZonesT(*out);
+    return 0;
+}
+
+int ZoneManagerBinding::_NV_getAllActiveZonesT(lua_State* L)
+{
+    ZoneManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManager is nil");
+    lektor<iVector2>* out = LektorValueBinding<iVector2>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to _NV_getAllActiveZonesT must be lektor<iVector2>");
+    instance->_NV_getAllActiveZonesT(*out);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 333: void getAllActiveZonesT(...) - unsupported arg type
-  line 334: void _NV_getAllActiveZonesT(...) - unsupported arg type
-  line 351: void levelEditorGetAllSelectedObjects(...) - unsupported arg type
   line 368: const lektor<MapFeatureList*>& getLoadedFeatureLists(...) - reference return type
   line 369: ZoneMapOverlay* getOverlay(...) - non-string reference arg
-  line 400: void getIsland(...) - unsupported arg type
 */
 
 /*
@@ -1137,6 +1182,8 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
         { "updateGPUSafeThread", ZoneManagerBinding::updateGPUSafeThread },
         { "spawnChecksUpdateThreaded", ZoneManagerBinding::spawnChecksUpdateThreaded },
         { "levelEditorDeleteAllSelectedObjects", ZoneManagerBinding::levelEditorDeleteAllSelectedObjects },
+        { "levelEditorGetAllSelectedObjects", ZoneManagerBinding::levelEditorGetAllSelectedObjects },
+        { "getIsland", ZoneManagerBinding::getIsland },
         { "getCurrentMapSector", ZoneManagerBinding::getCurrentMapSector },
         { "getCurrentZoneMap", ZoneManagerBinding::getCurrentZoneMap },
         { "getSubMapSector", ZoneManagerBinding::getSubMapSector },
@@ -1193,8 +1240,13 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
         { "getResource", ZoneManagerBinding::getResource },
         { "getResourceBase", ZoneManagerBinding::getResourceBase },
         { "getGroundEffect", ZoneManagerBinding::getGroundEffect },
+        { "getAllActiveZonesT", ZoneManagerBinding::getAllActiveZonesT },
+        { "_NV_getAllActiveZonesT", ZoneManagerBinding::_NV_getAllActiveZonesT },
         { 0, 0 }
     };
+
+    LektorPtrBinding<ZoneMap*>::registerBinding(L, "lektor<ZoneMap*>", ZoneMapBinding::getMetatableName());
+    LektorValueBinding<iVector2>::registerBinding(L, "lektor<iVector2>", iVector2Binding::getMetatableName());
 
     registerClass(
         L, 

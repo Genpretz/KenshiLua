@@ -4,7 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/AABB2DBinding.h"
 #include "Bindings/Kenshi/Util/iVector2Binding.h"
-#include <kenshi/ZoneManager.h>
+#include "Bindings/Kenshi/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -68,10 +68,16 @@ int ZoneManagerInterfaceTBinding::getZoneBoundsT(lua_State* L)
     return luaL_error(L, "Argument 2 to getZoneBoundsT must be Vector3 or iVector2");
 }
 
-/*
-Skipped methods needing manual binding:
-  line 57: void getAllActiveZonesT(...) - unsupported arg type
-*/
+int ZoneManagerInterfaceTBinding::getAllActiveZonesT(lua_State* L)
+{
+    ZoneManagerInterfaceT* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneManagerInterfaceT is nil");
+
+    lektor<iVector2>* out = LektorValueBinding<iVector2>::get(L, 2);
+    if (!out) return luaL_error(L, "Argument 2 to getAllActiveZonesT must be lektor<iVector2>");
+    instance->getAllActiveZonesT(*out);
+    return 0;
+}
 
 int ZoneManagerInterfaceTBinding::gc(lua_State* L)
 {
@@ -87,6 +93,8 @@ int ZoneManagerInterfaceTBinding::tostring(lua_State* L)
 
 void ZoneManagerInterfaceTBinding::registerBinding(lua_State* L)
 {
+    LektorValueBinding<iVector2>::registerBinding(L, "lektor<iVector2>", iVector2Binding::getMetatableName());
+
     static const luaL_Reg meta[] = {
         { "__gc",       ZoneManagerInterfaceTBinding::gc },
         { "__tostring", ZoneManagerInterfaceTBinding::tostring },
@@ -97,6 +105,7 @@ void ZoneManagerInterfaceTBinding::registerBinding(lua_State* L)
         { "isZoneLoadedT", ZoneManagerInterfaceTBinding::isZoneLoadedT },
         { "isZoneBeingLoadedT", ZoneManagerInterfaceTBinding::isZoneBeingLoadedT },
         { "getZoneBoundsT", ZoneManagerInterfaceTBinding::getZoneBoundsT },
+        { "getAllActiveZonesT", ZoneManagerInterfaceTBinding::getAllActiveZonesT },
         { 0, 0 }
     };
 

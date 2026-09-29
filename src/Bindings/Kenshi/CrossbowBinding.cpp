@@ -4,6 +4,8 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/WeaponBinding.h"
+#include "Bindings/Kenshi/Util/OgreVectorBinding.h"
+#include "Bindings/Kenshi/Util/StringPairBinding.h"
 
 namespace KenshiLua
 {
@@ -159,12 +161,48 @@ int CrossbowBinding::_NV_setVisible(lua_State* L)
     return 0;
 }
 
+int CrossbowBinding::getTooltipData1(lua_State* L)
+{
+    Crossbow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Crossbow is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData1 must be ogre_vector<StringPair>");
+    instance->getTooltipData1(*lines);
+    return 0;
+}
+
+int CrossbowBinding::_NV_getTooltipData1(lua_State* L)
+{
+    Crossbow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Crossbow is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData1 must be ogre_vector<StringPair>");
+    instance->_NV_getTooltipData1(*lines);
+    return 0;
+}
+
+int CrossbowBinding::getTooltipData2(lua_State* L)
+{
+    Crossbow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Crossbow is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to getTooltipData2 must be ogre_vector<StringPair>");
+    instance->getTooltipData2(*lines);
+    return 0;
+}
+
+int CrossbowBinding::_NV_getTooltipData2(lua_State* L)
+{
+    Crossbow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Crossbow is nil");
+    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData2 must be ogre_vector<StringPair>");
+    instance->_NV_getTooltipData2(*lines);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 130: void getTooltipData1(...) - unsupported arg type
-  line 131: void _NV_getTooltipData1(...) - unsupported arg type
-  line 132: void getTooltipData2(...) - unsupported arg type
-  line 133: void _NV_getTooltipData2(...) - unsupported arg type
   line 134: void createItemEntityCallback_Equipping(...) - unsupported arg type
   line 135: void _NV_createItemEntityCallback_Equipping(...) - unsupported arg type
 */
@@ -219,6 +257,10 @@ void CrossbowBinding::registerBinding(lua_State* L)
         { "_NV_destroyItemEntityCallback_Equipping", CrossbowBinding::_NV_destroyItemEntityCallback_Equipping },
         { "setVisible", CrossbowBinding::setVisible },
         { "_NV_setVisible", CrossbowBinding::_NV_setVisible },
+        { "getTooltipData1", CrossbowBinding::getTooltipData1 },
+        { "_NV_getTooltipData1", CrossbowBinding::_NV_getTooltipData1 },
+        { "getTooltipData2", CrossbowBinding::getTooltipData2 },
+        { "_NV_getTooltipData2", CrossbowBinding::_NV_getTooltipData2 },
         { 0, 0 }
     };
 

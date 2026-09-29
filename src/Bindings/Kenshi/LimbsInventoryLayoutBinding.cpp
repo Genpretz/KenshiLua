@@ -6,6 +6,8 @@
 #include "Bindings/Kenshi/InventoryBinding.h"
 #include "Bindings/Kenshi/Gui/InventoryGUIBinding.h"
 #include "Bindings/Kenshi/Gui/InventoryLayoutBinding.h"
+#include "Bindings/Kenshi/Gui/InventorySectionGUIBinding.h"
+#include "Bindings/Kenshi/Util/StdMapBinding.h"
 
 namespace KenshiLua
 {
@@ -32,10 +34,27 @@ static int LimbsInventoryLayout_set_character(lua_State* L)
     return 0;
 }
 
+typedef StdMapBinding<std::string, InventorySectionGUI*> InventorySectionsMapBinding;
+
+int LimbsInventoryLayoutBinding::setupSections(lua_State* L)
+{
+    LimbsInventoryLayout* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LimbsInventoryLayout is nil");
+
+    InventoryGUI* gui = checkObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
+    if (!gui) return luaL_error(L, "Argument 2 to setupSections must be InventoryGUI");
+    auto* sections = InventorySectionsMapBinding::get(L, 3);
+    if (!sections) return luaL_error(L, "Argument 3 to setupSections must be std::map<std::string, InventorySectionGUI*>");
+    Inventory* inv = checkObject<Inventory>(L, 4, InventoryBinding::getMetatableName());
+    if (!inv) return luaL_error(L, "Argument 4 to setupSections must be Inventory");
+
+    instance->setupSections(gui, *sections, inv);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 36: void setupSections(...) - unsupported arg type
-  line 37: void _NV_setupSections(...) - unsupported arg type
+  line 18: void _NV_setupSections(...) - unexported in KenshiLib.lib
 */
 
 int LimbsInventoryLayoutBinding::gc(lua_State* L)
@@ -59,8 +78,11 @@ void LimbsInventoryLayoutBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "setupSections", LimbsInventoryLayoutBinding::setupSections },
         { 0, 0 }
     };
+
+    InventorySectionsMapBinding::registerBinding(L, "std::map<std::string, InventorySectionGUI*>", nullptr, InventorySectionGUIBinding::getMetatableName());
 
     registerClass(
         L, 

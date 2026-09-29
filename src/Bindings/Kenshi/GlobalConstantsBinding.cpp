@@ -1589,10 +1589,22 @@ static int GlobalConstants_set_fogDistMin(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 7: void setup(...) - unsupported arg type
-*/
+static int GlobalConstants_set_settings(lua_State* L)
+{
+    GlobalConstants* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GlobalConstants is nil");
+    instance->settings = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    return 0;
+}
+
+int GlobalConstantsBinding::setup(lua_State* L)
+{
+    GlobalConstants* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GlobalConstants is nil");
+    GameData* data = lua_isnoneornil(L, 2) ? nullptr : checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    instance->setup(data);
+    return 0;
+}
 
 int GlobalConstantsBinding::gc(lua_State* L)
 {
@@ -1615,6 +1627,7 @@ void GlobalConstantsBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "setup", GlobalConstantsBinding::setup },
         { 0, 0 }
     };
 
@@ -1829,6 +1842,7 @@ void GlobalConstantsBinding::registerBinding(lua_State* L)
     registerSetter(L, "APPEARANCE_RANDOM_DEVIATION", GlobalConstants_set_APPEARANCE_RANDOM_DEVIATION);
     registerSetter(L, "fogDistMax", GlobalConstants_set_fogDistMax);
     registerSetter(L, "fogDistMin", GlobalConstants_set_fogDistMin);
+    registerSetter(L, "settings", GlobalConstants_set_settings);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

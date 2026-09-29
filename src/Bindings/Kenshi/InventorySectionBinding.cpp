@@ -8,13 +8,13 @@
 #include "Bindings/Kenshi/RootObjectBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "Bindings/Kenshi/Util/Array2dBinding.h"
-#include "GameDataBinding.h"
-#include "InventoryBinding.h"
-#include "ItemBinding.h"
-#include "RootObjectBinding.h"
+#include "Bindings/Kenshi/Util/OgreVectorBinding.h"
+#include "Bindings/Kenshi/InventorySection_SectionItemBinding.h"
 
 namespace KenshiLua
 {
+
+typedef OgreVectorValueBinding<InventorySection::SectionItem> InventorySectionItemsVectorBinding;
 
 static InventorySection* getInstance(lua_State* L, int idx)
 {
@@ -643,15 +643,14 @@ int InventorySectionBinding::resize(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods/members needing manual RVA offset binding if required:
-  - const Ogre::vector<InventorySection::SectionItem>::type& getItems(...) - reference return type
-*/
-
-/*
-Skipped properties needing manual binding:
-  line 94: items (Ogre::vector<InventorySection::SectionItem>::type) - unsupported type
-*/
+int InventorySectionBinding::getItems(lua_State* L)
+{
+    InventorySection* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventorySection is nil");
+    const Ogre::vector<InventorySection::SectionItem>::type& result = instance->getItems();
+    return pushObject<Ogre::vector<InventorySection::SectionItem>::type>(
+        L, const_cast<Ogre::vector<InventorySection::SectionItem>::type*>(&result), InventorySectionItemsVectorBinding::metaName);
+}
 
 int InventorySectionBinding::gc(lua_State* L)
 {
@@ -679,8 +678,8 @@ static int InventorySection_get_items(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    // TODO: Unsupported type for items (Ogre::vector<InventorySection::SectionItem>::type)
-    return luaL_error(L, "Unsupported property 'items' (type: Ogre::vector<InventorySection::SectionItem>::type)");
+    return pushObject<Ogre::vector<InventorySection::SectionItem>::type>(
+        L, &instance->items, InventorySectionItemsVectorBinding::metaName);
 }
 
 
@@ -707,7 +706,10 @@ static int InventorySection_set_items(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for items");
+    auto* val = InventorySectionItemsVectorBinding::get(L, 2);
+    if (!val) return luaL_error(L, "Expected ogre_vector<InventorySection::SectionItem>");
+    instance->items = *val;
+    return 0;
 }
 
 
@@ -908,10 +910,12 @@ void InventorySectionBinding::registerBinding(lua_State* L)
         { "getAllItemsOfName", InventorySectionBinding::getAllItemsOfName },
         { "findNearestPlaceForItem", InventorySectionBinding::findNearestPlaceForItem },
         { "getItemsInFootprint", InventorySectionBinding::getItemsInFootprint },
+        { "getItems", InventorySectionBinding::getItems },
         { 0, 0 }
     };
 
     Array2dBinding<Item>::registerBinding(L, "KenshiLua.Array2d<Item>", ItemBinding::getMetatableName());
+    InventorySectionItemsVectorBinding::registerBinding(L, "ogre_vector<InventorySection::SectionItem>", SectionItemBinding::getMetatableName());
 
     registerClass(
         L, 
@@ -941,6 +945,7 @@ void InventorySectionBinding::registerBinding(lua_State* L)
     registerGetter(L, "enabled", InventorySection_get_enabled);
     registerGetter(L, "content", InventorySection_get_content);
     registerGetter(L, "veryLimitedSlot", InventorySection_get_veryLimitedSlot);
+    registerGetter(L, "items", InventorySection_get_items);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -961,6 +966,7 @@ void InventorySectionBinding::registerBinding(lua_State* L)
     registerSetter(L, "enabled", InventorySection_set_enabled);
     registerSetter(L, "content", InventorySection_set_content);
     registerSetter(L, "veryLimitedSlot", InventorySection_set_veryLimitedSlot);
+    registerSetter(L, "items", InventorySection_set_items);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

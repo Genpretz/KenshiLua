@@ -32,5 +32,9 @@ public:
     static int _NV_destroyItemEntityCallback_Equipping(lua_State* L);
     static int setVisible(lua_State* L);
     static int _NV_setVisible(lua_State* L);
+    static int getTooltipData1(lua_State* L);
+    static int _NV_getTooltipData1(lua_State* L);
+    static int getTooltipData2(lua_State* L);
+    static int _NV_getTooltipData2(lua_State* L);
 };
 }
