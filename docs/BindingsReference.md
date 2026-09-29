@@ -417,8 +417,9 @@
 | inflate | `amount: number` | `void` | `obj:inflate(amount)` |
 | sizeX | `` | `number` | `obj:sizeX()` |
 | sizeY | `` | `number` | `obj:sizeY()` |
-| intersects [1] | `` | `boolean` | `obj:intersects()` |
-| intersects [2] | `v1: Vector3, radius: number` | `boolean` | `obj:intersects(v1, radius)` |
+| intersects [1] | `pos: Vector3, radius: number` | `boolean` | `obj:intersects(pos, radius)` |
+| intersects [2] | `b: AABB2D` | `boolean` | `obj:intersects(b)` |
+| intersects [3] | `raypos: Vector3, raydest: Vector3` | `boolean` | `obj:intersects(raypos, raydest)` |
 | intersects2 | `rayorig: Vector2, raydirection: Vector2` | `Vector2` | `obj:intersects2(rayorig, raydirection)` |
 
 ## AbstractMovementBase
@@ -479,11 +480,16 @@
 | leaveSpeedGroup | `` | `void` | `obj:leaveSpeedGroup()` |
 | getPosition | `` | `Vector3` | `obj:getPosition()` |
 | getFacingDirection | `` | `Vector3` | `obj:getFacingDirection()` |
-| setDestination | `dest: Vector3, notVertical: boolean` | `void` | `obj:setDestination(dest, notVertical)` |
+| setDestination [1] | `dest: Vector3, pri: UpdatePriority, _a3: boolean` | `void` | `obj:setDestination(dest, pri, _a3)` |
+| setDestination [2] | `target: RootObjectBase, pri: UpdatePriority` | `void` | `obj:setDestination(target, pri)` |
+| setDestination [3] | `who: Character, pri: UpdatePriority` | `void` | `obj:setDestination(who, pri)` |
+| setDestination [4] | `who: Building, pri: UpdatePriority` | `void` | `obj:setDestination(who, pri)` |
 | setCurrentRoadFollower | `d: Vector3, r: userdata` | `void` | `obj:setCurrentRoadFollower(d, r)` |
 | setPatrolInput | `patrol: userdata` | `void` | `obj:setPatrolInput(patrol)` |
-| setDesiredSpeed | `i: integer` | `void` | `obj:setDesiredSpeed(i)` |
-| setDesiredSpeedOrders | `i: integer` | `void` | `obj:setDesiredSpeedOrders(i)` |
+| setDesiredSpeed [1] | `speed: MoveSpeed` | `void` | `obj:setDesiredSpeed(speed)` |
+| setDesiredSpeed [2] | `speed: number` | `void` | `obj:setDesiredSpeed(speed)` |
+| setDesiredSpeedOrders [1] | `speed: MoveSpeed` | `void` | `obj:setDesiredSpeedOrders(speed)` |
+| setDesiredSpeedOrders [2] | `speed: number` | `void` | `obj:setDesiredSpeedOrders(speed)` |
 | onShapeHit | `hit: userdata` | `integer` | `obj:onShapeHit(hit)` |
 | onControllerHit | `hit: userdata` | `integer` | `obj:onControllerHit(hit)` |
 
@@ -586,6 +592,11 @@
 ## AnimalInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/CharacterAnimal.h`
 **Metatable:** `KenshiLua.AnimalInventoryLayout`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupSections | `` | `void` | `obj:setupSections()` |
 
 ## AppearanceAnimal
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
@@ -696,9 +707,9 @@
 | updateOverlap | `` | `void` | `obj:updateOverlap()` |
 | updateCharaterTexture | `` | `void` | `obj:updateCharaterTexture()` |
 | getCharacterHeightSpeedMultiplier | `` | `number` | `obj:getCharacterHeightSpeedMultiplier()` |
-| attachItem [1] | `mesh: string, slot: string` | `boolean` | `obj:attachItem(mesh, slot)` |
-| attachItem [2] | `slot: string` | `boolean` | `obj:attachItem(slot)` |
-| detachItem [1] | `` | `boolean` | `obj:detachItem()` |
+| attachItem [1] | `item: Item, mesh: string, slot: string` | `boolean` | `obj:attachItem(item, mesh, slot)` |
+| attachItem [2] | `item: Item, slot: string` | `boolean` | `obj:attachItem(item, slot)` |
+| detachItem [1] | `item: Item` | `boolean` | `obj:detachItem(item)` |
 | detachItem [2] | `slot: string` | `boolean` | `obj:detachItem(slot)` |
 | getVertexPosition | `index: integer` | `Vector3` | `obj:getVertexPosition(index)` |
 | getRandomVertexPosition | `boneName: string, direction: integer` | `Vector3` | `obj:getRandomVertexPosition(boneName, direction)` |
@@ -895,6 +906,8 @@
 | getCraftTime | `` | `number` | `obj:getCraftTime()` |
 | getWeatherProtection_simple | `weather: integer` | `number` | `obj:getWeatherProtection_simple(weather)` |
 | getArmourCraftingMaterialConsumptionRate | `` | `number` | `obj:getArmourCraftingMaterialConsumptionRate()` |
+| getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
+| getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
 
 ## Array2d
 **Header:** `extern/KenshiLib/Include/kenshi/util/array2d.h`
@@ -903,6 +916,11 @@
 ## BackpackInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
 **Metatable:** `KenshiLua.BackpackInventoryLayout`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupSections | `` | `void` | `obj:setupSections()` |
 
 ## BackThreadMessagesToMainT
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
@@ -1067,6 +1085,8 @@
 | getScale | `` | `number` | `obj:getScale()` |
 | getBuildState | `` | `Building::ConstructionState` | `obj:getBuildState()` |
 | getBuildState_ActualNonShared | `` | `Building::ConstructionState` | `obj:getBuildState_ActualNonShared()` |
+| getMountedBuildings | `` | `integer` | `obj:getMountedBuildings()` |
+| findAllFurnitureWithFunction | `func: integer` | `void` | `obj:findAllFurnitureWithFunction(func)` |
 | select | `` | `void` | `obj:select()` |
 | getBuildingDesignation | `` | `integer` | `obj:getBuildingDesignation()` |
 | addConstructionProgress | `amount: number` | `void` | `obj:addConstructionProgress(amount)` |
@@ -1180,6 +1200,7 @@
 | destroyDoors | `` | `void` | `obj:destroyDoors()` |
 | createTriggerHull | `` | `void` | `obj:createTriggerHull()` |
 | destroyAudioObject | `` | `void` | `obj:destroyAudioObject()` |
+| getAudioObject | `` | `integer` | `obj:getAudioObject()` |
 | getGroundType | `inside: boolean` | `integer` | `obj:getGroundType(inside)` |
 | isCeilingMounted | `` | `boolean` | `obj:isCeilingMounted()` |
 | setFloorVisibility | `floor: integer, vis: boolean` | `void` | `obj:setFloorVisibility(floor, vis)` |
@@ -1194,7 +1215,8 @@
 | getRootNode | `` | `lightuserdata` | `obj:getRootNode()` |
 | getZoneMapLocation | `` | `ZoneMap` | `obj:getZoneMapLocation()` |
 | clearTownBuildingsManagerPtr | `` | `void` | `obj:clearTownBuildingsManagerPtr()` |
-| setup | `` | `void` | `obj:setup()` |
+| setup [1] | `buildingdata: GameData` | `void` | `obj:setup(buildingdata)` |
+| setup [2] | `` | `void` | `obj:setup()` |
 | setupFromData | `` | `void` | `obj:setupFromData()` |
 | setupAudio | `` | `void` | `obj:setupAudio()` |
 | switchLights | `on: boolean` | `void` | `obj:switchLights(on)` |
@@ -1363,27 +1385,27 @@
 | currentBuildingIndex | `integer` | RW | `obj.currentBuildingIndex = <value>` |
 | switchBuildingIndex | `integer` | RW | `obj.switchBuildingIndex = <value>` |
 | statsDataPanel | `DatapanelGUI` | RW | `obj.statsDataPanel = <value>` |
-| confirmButton | `lightuserdata` | R | `obj.confirmButton` |
-| undoButton | `lightuserdata` | R | `obj.undoButton` |
-| closeButton | `lightuserdata` | R | `obj.closeButton` |
-| categoriesList | `lightuserdata` | R | `obj.categoriesList` |
-| buildingsList | `lightuserdata` | R | `obj.buildingsList` |
-| buildingTxt | `lightuserdata` | R | `obj.buildingTxt` |
-| buildingTypePrevButton | `lightuserdata` | R | `obj.buildingTypePrevButton` |
-| buildingTypeNextButton | `lightuserdata` | R | `obj.buildingTypeNextButton` |
-| buildingImageBox | `lightuserdata` | R | `obj.buildingImageBox` |
-| statsPanel | `lightuserdata` | R | `obj.statsPanel` |
-| descriptionTxt | `lightuserdata` | R | `obj.descriptionTxt` |
-| messageTextBox | `lightuserdata` | R | `obj.messageTextBox` |
-| floorDownButton | `lightuserdata` | R | `obj.floorDownButton` |
-| floorUpButton | `lightuserdata` | R | `obj.floorUpButton` |
-| floorText | `lightuserdata` | R | `obj.floorText` |
+| confirmButton | `unknown` | RW | `obj.confirmButton = <value>` |
+| undoButton | `unknown` | RW | `obj.undoButton = <value>` |
+| closeButton | `unknown` | RW | `obj.closeButton = <value>` |
+| categoriesList | `unknown` | RW | `obj.categoriesList = <value>` |
+| buildingsList | `unknown` | RW | `obj.buildingsList = <value>` |
+| buildingTxt | `unknown` | RW | `obj.buildingTxt = <value>` |
+| buildingTypePrevButton | `unknown` | RW | `obj.buildingTypePrevButton = <value>` |
+| buildingTypeNextButton | `unknown` | RW | `obj.buildingTypeNextButton = <value>` |
+| buildingImageBox | `unknown` | RW | `obj.buildingImageBox = <value>` |
+| statsPanel | `unknown` | RW | `obj.statsPanel = <value>` |
+| descriptionTxt | `unknown` | RW | `obj.descriptionTxt = <value>` |
+| messageTextBox | `unknown` | RW | `obj.messageTextBox = <value>` |
+| floorDownButton | `unknown` | RW | `obj.floorDownButton = <value>` |
+| floorUpButton | `unknown` | RW | `obj.floorUpButton = <value>` |
+| floorText | `unknown` | RW | `obj.floorText = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setMessage | `message: string` | `void` | `obj:setMessage(message)` |
-| getBuildingListWidget | `` | `lightuserdata` | `obj:getBuildingListWidget()` |
+| getBuildingListWidget | `` | `void` | `obj:getBuildingListWidget()` |
 | setVisible | `v: boolean` | `void` | `obj:setVisible(v)` |
 | setupData | `` | `void` | `obj:setupData()` |
 | listCategories | `` | `void` | `obj:listCategories()` |
@@ -1393,6 +1415,15 @@
 | showBuildingStats | `` | `void` | `obj:showBuildingStats()` |
 | update | `` | `void` | `obj:update()` |
 | changeCurrentIndex | `index: integer` | `void` | `obj:changeCurrentIndex(index)` |
+| categorySelected | `index: integer` | `void` | `obj:categorySelected(index)` |
+| buildingSelected | `index: integer` | `void` | `obj:buildingSelected(index)` |
+| confirm | `` | `void` | `obj:confirm()` |
+| undo | `` | `void` | `obj:undo()` |
+| close | `` | `void` | `obj:close()` |
+| buildingTypePrev | `` | `void` | `obj:buildingTypePrev()` |
+| buildingTypeNext | `` | `void` | `obj:buildingTypeNext()` |
+| changeFloorButtonUp | `` | `void` | `obj:changeFloorButtonUp()` |
+| changeFloorButtonDown | `` | `void` | `obj:changeFloorButtonDown()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -1479,7 +1510,9 @@
 | updateAudio | `` | `void` | `obj:updateAudio()` |
 | followObject | `` | `void` | `obj:followObject()` |
 | getFollowObject | `` | `hand` | `obj:getFollowObject()` |
-| isVisible | `pos: Vector3, radius: number` | `boolean` | `obj:isVisible(pos, radius)` |
+| isVisible [1] | `pos: Vector3, radius: number` | `boolean` | `obj:isVisible(pos, radius)` |
+| isVisible [2] | `pos: Vector3` | `boolean` | `obj:isVisible(pos)` |
+| restrictPosition | `` | `void` | `obj:restrictPosition()` |
 
 ## CampaignTriggerData
 **Header:** `extern/KenshiLib/Include/kenshi/FactionWarMgr.h`
@@ -1877,7 +1910,8 @@
 | setEffectBT | `active: boolean` | `void` | `obj:setEffectBT(active)` |
 | postRagdollCallback | `on: boolean, part: integer` | `void` | `obj:postRagdollCallback(on, part)` |
 | reCalculateNaturalWeapon | `` | `void` | `obj:reCalculateNaturalWeapon()` |
-| rememberCharacter | `str: string, arg3: boolean` | `void` | `obj:rememberCharacter(str, arg3)` |
+| rememberCharacter [1] | `who: Character, mem: CharacterPerceptionTags_ShortTerm` | `void` | `obj:rememberCharacter(who, mem)` |
+| rememberCharacter [2] | `who: Character, mem: CharacterPerceptionTags_LongTerm` | `void` | `obj:rememberCharacter(who, mem)` |
 | setHandle | `` | `void` | `obj:setHandle()` |
 | isIndoors | `` | `hand` | `obj:isIndoors()` |
 | isStandingOnBuilding | `` | `hand` | `obj:isStandingOnBuilding()` |
@@ -1886,15 +1920,18 @@
 | getAudioObject | `` | `integer` | `obj:getAudioObject()` |
 | getName | `` | `string` | `obj:getName()` |
 | changeSlaveOwner | `` | `void` | `obj:changeSlaveOwner()` |
-| teleport | `moveBy: Vector3, rot: Quaternion` | `void` | `obj:teleport(moveBy, rot)` |
-| audioValue | `name: string, value: string` | `void` | `obj:audioValue(name, value)` |
+| teleport [1] | `moveBy: Vector3, rot: Quaternion` | `void` | `obj:teleport(moveBy, rot)` |
+| teleport [2] | `moveBy: Vector3` | `void` | `obj:teleport(moveBy)` |
+| audioValue [1] | `name: char, value: number` | `void` | `obj:audioValue(name, value)` |
+| audioValue [2] | `name: char, value: char` | `void` | `obj:audioValue(name, value)` |
 | getPermajobName | `slot: integer` | `string` | `obj:getPermajobName(slot)` |
 | getAABB | `` | `lightuserdata` | `obj:getAABB()` |
 | getAllAttackers | `` | `void` | `obj:getAllAttackers()` |
-| getCharacterMemoryTag [1] | `isLongTerm: boolean` | `void` | `obj:getCharacterMemoryTag(isLongTerm)` |
-| getCharacterMemoryTag [2] | `mem: integer, isLongTerm: boolean` | `boolean` | `obj:getCharacterMemoryTag(mem, isLongTerm)` |
+| getCharacterMemoryTag [1] | `who: Character, mem: CharacterPerceptionTags_LongTerm` | `boolean` | `obj:getCharacterMemoryTag(who, mem)` |
+| getCharacterMemoryTag [2] | `who: Character, mem: CharacterPerceptionTags_ShortTerm` | `boolean` | `obj:getCharacterMemoryTag(who, mem)` |
 | hitByMeleeAttack | `dir: integer, comboID: integer` | `integer` | `obj:hitByMeleeAttack(dir, comboID)` |
-| convertCutDirection | `cut: integer, from: integer` | `integer` | `obj:convertCutDirection(cut, from)` |
+| convertCutDirection [1] | `dir: CutDirection, from: CutOrigination` | `CutDirection` | `obj:convertCutDirection(dir, from)` |
+| convertCutDirection [2] | `cut: CutDirection, attacker: Character` | `CutDirection` | `obj:convertCutDirection(cut, attacker)` |
 | breakFollowOrderLoop | `` | `boolean` | `obj:breakFollowOrderLoop()` |
 | formationUpdateCallback | `pos: Vector3, heading: Vector3, from: userdata` | `void` | `obj:formationUpdateCallback(pos, heading, from)` |
 | serialise | `offset: userdata` | `void` | `obj:serialise(offset)` |
@@ -2006,27 +2043,27 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | camera | `lightuserdata` | R | `obj.camera` |
-| txtName | `lightuserdata` | R | `obj.txtName` |
-| txtGender | `lightuserdata` | R | `obj.txtGender` |
-| txtRace | `lightuserdata` | R | `obj.txtRace` |
-| txtSubRace | `lightuserdata` | R | `obj.txtSubRace` |
-| txtCharIdx | `lightuserdata` | R | `obj.txtCharIdx` |
-| importButton | `lightuserdata` | R | `obj.importButton` |
-| exportButton | `lightuserdata` | R | `obj.exportButton` |
-| panelTabs | `lightuserdata` | R | `obj.panelTabs` |
-| panelTabsView | `lightuserdata` | R | `obj.panelTabsView` |
-| btnPrevGender | `lightuserdata` | R | `obj.btnPrevGender` |
-| btnNextGender | `lightuserdata` | R | `obj.btnNextGender` |
-| btnPrevRace | `lightuserdata` | R | `obj.btnPrevRace` |
-| btnNextRace | `lightuserdata` | R | `obj.btnNextRace` |
-| btnPrevSubRace | `lightuserdata` | R | `obj.btnPrevSubRace` |
-| btnNextSubRace | `lightuserdata` | R | `obj.btnNextSubRace` |
-| btnReset | `lightuserdata` | R | `obj.btnReset` |
-| btnRandomiseAll | `lightuserdata` | R | `obj.btnRandomiseAll` |
-| btnRandomisePart | `lightuserdata` | R | `obj.btnRandomisePart` |
-| descriptionPanel | `lightuserdata` | R | `obj.descriptionPanel` |
-| descriptionPanelText | `lightuserdata` | R | `obj.descriptionPanelText` |
-| statsPanel | `lightuserdata` | R | `obj.statsPanel` |
+| txtName | `unknown` | RW | `obj.txtName = <value>` |
+| txtGender | `unknown` | RW | `obj.txtGender = <value>` |
+| txtRace | `unknown` | RW | `obj.txtRace = <value>` |
+| txtSubRace | `unknown` | RW | `obj.txtSubRace = <value>` |
+| txtCharIdx | `unknown` | RW | `obj.txtCharIdx = <value>` |
+| importButton | `unknown` | RW | `obj.importButton = <value>` |
+| exportButton | `unknown` | RW | `obj.exportButton = <value>` |
+| panelTabs | `unknown` | RW | `obj.panelTabs = <value>` |
+| panelTabsView | `unknown` | RW | `obj.panelTabsView = <value>` |
+| btnPrevGender | `unknown` | RW | `obj.btnPrevGender = <value>` |
+| btnNextGender | `unknown` | RW | `obj.btnNextGender = <value>` |
+| btnPrevRace | `unknown` | RW | `obj.btnPrevRace = <value>` |
+| btnNextRace | `unknown` | RW | `obj.btnNextRace = <value>` |
+| btnPrevSubRace | `unknown` | RW | `obj.btnPrevSubRace = <value>` |
+| btnNextSubRace | `unknown` | RW | `obj.btnNextSubRace = <value>` |
+| btnReset | `unknown` | RW | `obj.btnReset = <value>` |
+| btnRandomiseAll | `unknown` | RW | `obj.btnRandomiseAll = <value>` |
+| btnRandomisePart | `unknown` | RW | `obj.btnRandomisePart = <value>` |
+| descriptionPanel | `unknown` | RW | `obj.descriptionPanel = <value>` |
+| descriptionPanelText | `unknown` | RW | `obj.descriptionPanelText = <value>` |
+| statsPanel | `unknown` | RW | `obj.statsPanel = <value>` |
 | statsDataPanel | `DatapanelGUI` | RW | `obj.statsDataPanel = <value>` |
 | dialog | `OpenSaveFileDialog` | RW | `obj.dialog = <value>` |
 | isMidGame | `boolean` | RW | `obj.isMidGame = <value>` |
@@ -2082,6 +2119,23 @@
 | getCurrentAttachmentName | `slot: integer` | `void` | `obj:getCurrentAttachmentName(slot)` |
 | setCurrentHeadName | `index: integer` | `void` | `obj:setCurrentHeadName(index)` |
 | setCurrentAttachmentName | `slot: integer, index: integer` | `void` | `obj:setCurrentAttachmentName(slot, index)` |
+| nameChanged | `` | `void` | `obj:nameChanged()` |
+| prevRace | `` | `void` | `obj:prevRace()` |
+| nextRace | `` | `void` | `obj:nextRace()` |
+| prevSubRace | `` | `void` | `obj:prevSubRace()` |
+| nextSubRace | `` | `void` | `obj:nextSubRace()` |
+| changeGender | `` | `void` | `obj:changeGender()` |
+| changeAppearanceData | `genderVal: integer` | `void` | `obj:changeAppearanceData(genderVal)` |
+| prevCharacter | `` | `void` | `obj:prevCharacter()` |
+| nextCharacter | `` | `void` | `obj:nextCharacter()` |
+| changeCategory | `` | `void` | `obj:changeCategory()` |
+| resetAppearance | `` | `void` | `obj:resetAppearance()` |
+| randomiseAll | `` | `void` | `obj:randomiseAll()` |
+| randomisePart | `` | `void` | `obj:randomisePart()` |
+| importCharacter | `` | `void` | `obj:importCharacter()` |
+| exportCharacter | `` | `void` | `obj:exportCharacter()` |
+| toggleClothes | `` | `void` | `obj:toggleClothes()` |
+| confirmButton | `` | `void` | `obj:confirmButton()` |
 
 ## CharacterHuman
 **Header:** `extern/KenshiLib/Include/kenshi/CharacterHuman.h`
@@ -2123,6 +2177,11 @@
 ## CharacterInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
 **Metatable:** `KenshiLua.CharacterInventoryLayout`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupSections | `` | `void` | `obj:setupSections()` |
 
 ## CharacterStatsWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/CharacterStatsWindow.h`
@@ -2262,7 +2321,8 @@
 | getFaction | `` | `Faction` | `obj:getFaction()` |
 | _endAction | `` | `void` | `obj:_endAction()` |
 | create | `a: userdata, an: userdata` | `void` | `obj:create(a, an)` |
-| setCurrentAction | `t: integer` | `boolean` | `obj:setCurrentAction(t)` |
+| setCurrentAction [1] | `startActionMsg: Tasker` | `boolean` | `obj:setCurrentAction(startActionMsg)` |
+| setCurrentAction [2] | `t: TaskType, target: RootObject` | `boolean` | `obj:setCurrentAction(t, target)` |
 | notifyPathImpossible | `` | `void` | `obj:notifyPathImpossible()` |
 | _move | `location: Vector3` | `void` | `obj:_move(location)` |
 | _patrol | `end: integer, pos: Vector3, area: userdata, taskSys: userdata` | `void` | `obj:_patrol(end, pos, area, taskSys)` |
@@ -2592,7 +2652,8 @@
 | getThieving | `` | `number` | `obj:getThieving()` |
 | printStealthStats | `` | `void` | `obj:printStealthStats()` |
 | printRunSpeedStatMax | `` | `void` | `obj:printRunSpeedStatMax()` |
-| formatWholeStatStringWithBonuses | `stat: integer, current: integer` | `void` | `obj:formatWholeStatStringWithBonuses(stat, current)` |
+| formatWholeStatStringWithBonuses [1] | `base: integer, current: integer` | `string` | `obj:formatWholeStatStringWithBonuses(base, current)` |
+| formatWholeStatStringWithBonuses [2] | `stat: StatsEnumerated` | `string` | `obj:formatWholeStatStringWithBonuses(stat)` |
 | getStatRef | `what: integer` | `number` | `obj:getStatRef(what)` |
 | getMeleeAttackRef | `` | `number` | `obj:getMeleeAttackRef()` |
 | getPainAnim | `` | `void` | `obj:getPainAnim()` |
@@ -2707,7 +2768,8 @@
 | hasFocusedTarget | `` | `hand` | `obj:hasFocusedTarget()` |
 | changeState | `newState: integer, minTime: number` | `void` | `obj:changeState(newState, minTime)` |
 | getStateClass | `state: integer` | `lightuserdata` | `obj:getStateClass(state)` |
-| update | `frameTIME: number` | `void` | `obj:update(frameTIME)` |
+| update [1] | `` | `void` | `obj:update()` |
+| update [2] | `frameTIME: number` | `void` | `obj:update(frameTIME)` |
 | getMeiMax | `` | `number` | `obj:getMeiMax()` |
 | startupState | `` | `boolean` | `obj:startupState()` |
 | stumbleState | `` | `void` | `obj:stumbleState()` |
@@ -2953,15 +3015,20 @@
 |---|---|---|---|
 | contextMenuTarget | `hand` | RW | `obj.contextMenuTarget = <value>` |
 | name | `string` | RW | `obj.name = <value>` |
-| nameText | `lightuserdata` | R | `obj.nameText` |
-| optionsList | `lightuserdata` | R | `obj.optionsList` |
+| nameText | `unknown` | RW | `obj.nameText = <value>` |
+| optionsList | `unknown` | RW | `obj.optionsList = <value>` |
+| optionCoords | `unknown` | RW | `obj.optionCoords = <value>` |
+| buttonCoords | `unknown` | RW | `obj.buttonCoords = <value>` |
+| valueCoords | `unknown` | RW | `obj.valueCoords = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| getMainWidget | `` | `lightuserdata` | `obj:getMainWidget()` |
+| getMainWidget | `` | `void` | `obj:getMainWidget()` |
 | getVisible | `` | `boolean` | `obj:getVisible()` |
 | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
+| show | `name: string, offset: boolean` | `void` | `obj:show(name, offset)` |
+| optionSelected | `left: integer, top: integer, id: integer` | `void` | `obj:optionSelected(left, top, id)` |
 
 ## CPerfTimer
 **Header:** `extern/KenshiLib/Include/kenshi/util/PerfTimer.h`
@@ -3085,6 +3152,8 @@
 | getEquipPositionOffset | `` | `number` | `obj:getEquipPositionOffset()` |
 | destroyItemEntityCallback_Equipping | `` | `void` | `obj:destroyItemEntityCallback_Equipping()` |
 | setVisible | `on: boolean` | `void` | `obj:setVisible(on)` |
+| getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
+| getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
 
 ## Damages
 **Header:** `extern/KenshiLib/Include/kenshi/Damages.h`
@@ -3204,8 +3273,13 @@
 | getNextVerticalPos | `category: integer` | `number` | `obj:getNextVerticalPos(category)` |
 | dataExists | `cat: integer, name: string` | `boolean` | `obj:dataExists(cat, name)` |
 | clearCategoryTabs | `` | `void` | `obj:clearCategoryTabs()` |
-| setLine | `keyValue: string, s1: string, s2: string, category: integer, last: boolean, keyVisible: boolean` | `DataPanelLine` | `obj:setLine(keyValue, s1, s2, category, last, keyVisible)` |
-| setLineResearch | `key: string, s1: string, s2: string, category: integer, v1: number, barColor: string, Xbutton: boolean` | `DataPanelLine_Research` | `obj:setLineResearch(key, s1, s2, category, v1, barColor, Xbutton)` |
+| setLine [1] | `keyValue: string, s1: string, s2: string, skinA: string, skinB: string, category: integer` | `DataPanelLine` | `obj:setLine(keyValue, s1, s2, skinA, skinB, category)` |
+| setLine [2] | `keyValue: string, s1: string, s2: string, category: integer, last: boolean, keyVisible: boolean` | `DataPanelLine` | `obj:setLine(keyValue, s1, s2, category, last, keyVisible)` |
+| setLine [3] | `s1: string, s2: string, skinA: string, skinB: string, category: integer` | `DataPanelLine` | `obj:setLine(s1, s2, skinA, skinB, category)` |
+| setLine [4] | `s1: string, s2: string, barValue: number, category: integer` | `DataPanelLine` | `obj:setLine(s1, s2, barValue, category)` |
+| setLine [5] | `s1: string, s2: string, category: integer, last: boolean, keyVisible: boolean` | `DataPanelLine` | `obj:setLine(s1, s2, category, last, keyVisible)` |
+| setLineResearch [1] | `s1: string, s2: string, category: integer, v1: number, barColor: string, XButton: boolean` | `DataPanelLine_Research` | `obj:setLineResearch(s1, s2, category, v1, barColor, XButton)` |
+| setLineResearch [2] | `key: string, s1: string, s2: string, category: integer, v1: number, barColor: string, Xbutton: boolean` | `DataPanelLine_Research` | `obj:setLineResearch(key, s1, s2, category, v1, barColor, Xbutton)` |
 | setTabEnabled | `id: integer, enabled: boolean` | `void` | `obj:setTabEnabled(id, enabled)` |
 | setLineText | `key: string, caption: string, category: integer, wordWrap: boolean, textAlign: string` | `DataPanelLine_Text` | `obj:setLineText(key, caption, category, wordWrap, textAlign)` |
 | setLineTextEditable | `key: string, text: string, category: integer, showKey: boolean, multiLine: boolean, textAlign: string, width: number` | `DataPanelLine_TextEditable` | `obj:setLineTextEditable(key, text, category, showKey, multiLine, textAlign, width)` |
@@ -3581,7 +3655,8 @@
 | getChildByStringID | `sid: string` | `DialogLineData` | `obj:getChildByStringID(sid)` |
 | setParent | `` | `void` | `obj:setParent()` |
 | getMoneyCostForLine | `` | `integer` | `obj:getMoneyCostForLine()` |
-| getText | `stampTime: boolean` | `string` | `obj:getText(stampTime)` |
+| getText [1] | `_stampTime: boolean` | `string` | `obj:getText(_stampTime)` |
+| getText [2] | `out: string, _stampTime: boolean` | `void` | `obj:getText(out, _stampTime)` |
 | getPlayerReplies | `` | `void` | `obj:getPlayerReplies()` |
 | getActions | `` | `lektor<DialogLineData::DialogAction*>` | `obj:getActions()` |
 
@@ -3724,8 +3799,10 @@
 | clearResponesGUI | `` | `void` | `obj:clearResponesGUI()` |
 | setResponesGUI | `` | `void` | `obj:setResponesGUI()` |
 | setConversationReplyGUI | `` | `void` | `obj:setConversationReplyGUI()` |
-| say | `text: string` | `void` | `obj:say(text)` |
-| replyClicked | `index: string` | `void` | `obj:replyClicked(index)` |
+| say [1] | `dialogLine: DialogLineData` | `void` | `obj:say(dialogLine)` |
+| say [2] | `_text: string, line: DialogLineData` | `void` | `obj:say(_text, line)` |
+| replyClicked [1] | `index: string` | `void` | `obj:replyClicked(index)` |
+| replyClicked [2] | `index: integer` | `void` | `obj:replyClicked(index)` |
 | isAtTownOf | `` | `boolean` | `obj:isAtTownOf()` |
 | resolveOverlappedSpeechBubbles | `` | `void` | `obj:resolveOverlappedSpeechBubbles()` |
 
@@ -3779,7 +3856,7 @@
 | setText | `text: string` | `void` | `obj:setText(text)` |
 | setAlpha | `value: number` | `void` | `obj:setAlpha(value)` |
 | setPosition [1] | `x: integer, y: integer` | `void` | `obj:setPosition(x, y)` |
-| setPosition [2] | `pos: Vector3` | `void` | `obj:setPosition(pos)` |
+| setPosition [2] | `position: Vector3` | `void` | `obj:setPosition(position)` |
 | reset | `` | `void` | `obj:reset()` |
 | getAlpha | `` | `number` | `obj:getAlpha()` |
 | getRect | `` | `integer` | `obj:getRect()` |
@@ -4103,7 +4180,7 @@
 | clearAndDestroy | `` | `void` | `obj:clearAndDestroy()` |
 | activateUnloadedPlatoons | `` | `void` | `obj:activateUnloadedPlatoons()` |
 | getOrCreateFaction [1] | `id: string, name: string` | `Faction` | `obj:getOrCreateFaction(id, name)` |
-| getOrCreateFaction [2] | `` | `Faction` | `obj:getOrCreateFaction()` |
+| getOrCreateFaction [2] | `data: GameData` | `Faction` | `obj:getOrCreateFaction(data)` |
 | getFactionByName | `name: string` | `Faction` | `obj:getFactionByName(name)` |
 | getFactionByStringID | `sid: string` | `Faction` | `obj:getFactionByStringID(sid)` |
 | getEmptyFaction | `` | `Faction` | `obj:getEmptyFaction()` |
@@ -4139,8 +4216,10 @@
 | reset | `` | `void` | `obj:reset()` |
 | update | `` | `void` | `obj:update()` |
 | setupPhase1 | `` | `void` | `obj:setupPhase1()` |
-| save | `` | `void` | `obj:save()` |
-| load | `playerOnly: boolean` | `void` | `obj:load(playerOnly)` |
+| save [1] | `factionsList: GameData` | `void` | `obj:save(factionsList)` |
+| save [2] | `factionsList: GameData, ID: string, who: Faction` | `void` | `obj:save(factionsList, ID, who)` |
+| load [1] | `gamestate_faction: GameData, playerOnly: boolean` | `void` | `obj:load(gamestate_faction, playerOnly)` |
+| load [2] | `gamestate_faction: GameData, ID: string, who: Faction` | `void` | `obj:load(gamestate_faction, ID, who)` |
 | _isAlly | `` | `boolean` | `obj:_isAlly()` |
 | _isEnemy | `` | `boolean` | `obj:_isEnemy()` |
 | isEnemy | `` | `boolean` | `obj:isEnemy()` |
@@ -4151,7 +4230,8 @@
 | getFactionRelationMultiplier | `` | `number` | `obj:getFactionRelationMultiplier()` |
 | getFactionRelationMultiplierInverse | `` | `number` | `obj:getFactionRelationMultiplierInverse()` |
 | setRelation | `setTo: number` | `void` | `obj:setRelation(setTo)` |
-| affectRelations | `amount: number, mult: number` | `void` | `obj:affectRelations(amount, mult)` |
+| affectRelations [1] | `p: Faction, e: FactionEvent, mult: number` | `void` | `obj:affectRelations(p, e, mult)` |
+| affectRelations [2] | `p: Faction, amount: number, mult: number` | `void` | `obj:affectRelations(p, amount, mult)` |
 | affectTrust | `amount: number, mult: number` | `void` | `obj:affectTrust(amount, mult)` |
 | setNoLongerEnemies | `` | `void` | `obj:setNoLongerEnemies()` |
 | declareWar | `` | `void` | `obj:declareWar()` |
@@ -4209,6 +4289,11 @@
 | update | `` | `void` | `obj:update()` |
 | refresh | `` | `void` | `obj:refresh()` |
 | updateInfo | `` | `void` | `obj:updateInfo()` |
+| notifyEditTextChange | `` | `void` | `obj:notifyEditTextChange()` |
+| setFocus | `` | `void` | `obj:setFocus()` |
+| loseFocus | `` | `void` | `obj:loseFocus()` |
+| factionLineSelected | `` | `void` | `obj:factionLineSelected()` |
+| notifyMouseWheel | `rel: integer` | `void` | `obj:notifyMouseWheel(rel)` |
 
 ## FactionsScreen::FactionRelationsLine
 **Header:** `extern/KenshiLib/Include/kenshi/gui/FactionsScreen.h`
@@ -4314,7 +4399,9 @@
 | canGenerateThisManyForces | `num: integer` | `boolean` | `obj:canGenerateThisManyForces(num)` |
 | periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
 | debugButton | `` | `void` | `obj:debugButton()` |
-| triggerCampaign | `data: userdata, minTime: number, forceDuplicate: boolean, forceDuplicate: boolean` | `lightuserdata` | `obj:triggerCampaign(data, minTime, forceDuplicate, forceDuplicate)` |
+| triggerCampaign [1] | `targetTown: RootObjectBase, data: CampaignData, home: TownBase` | `CampaignInstance` | `obj:triggerCampaign(targetTown, data, home)` |
+| triggerCampaign [2] | `targetTown: RootObjectBase, _data: GameData, minTime: number, maxTime: number, hometown: TownBase, forceDuplicate: boolean, triggeringFaction: Faction` | `void` | `obj:triggerCampaign(targetTown, _data, minTime, maxTime, hometown, forceDuplicate, triggeringFaction)` |
+| triggerCampaign [3] | `randomTriggers: FitnessSelector<CampaignTriggerData*>, targetTown: RootObjectBase, hometown: TownBase, forceDuplicate: boolean, triggeringFaction: Faction` | `void` | `obj:triggerCampaign(randomTriggers, targetTown, hometown, forceDuplicate, triggeringFaction)` |
 | getCurrentCampaign | `` | `lightuserdata` | `obj:getCurrentCampaign()` |
 | getAITarget | `` | `hand` | `obj:getAITarget()` |
 | getMyUnloadedAI | `` | `integer` | `obj:getMyUnloadedAI()` |
@@ -4413,8 +4500,8 @@
 | getGUIFertility | `category: integer` | `void` | `obj:getGUIFertility(category)` |
 | isCropsEdible | `` | `boolean` | `obj:isCropsEdible()` |
 | eat | `rate: number` | `void` | `obj:eat(rate)` |
-| getYieldChancePerCrop [1] | `biome: userdata, skillMult: number, resourceMult: number` | `number` | `obj:getYieldChancePerCrop(biome, skillMult, resourceMult)` |
-| getYieldChancePerCrop [2] | `skillMult: number, skillMult: number, resourceMult: number` | `number` | `obj:getYieldChancePerCrop(skillMult, skillMult, resourceMult)` |
+| getYieldChancePerCrop [1] | `farmData: GameData, biome: AreaBiomeGroup, skillMult: number, resourceMult: number` | `number` | `obj:getYieldChancePerCrop(farmData, biome, skillMult, resourceMult)` |
+| getYieldChancePerCrop [2] | `skillMult: number` | `number` | `obj:getYieldChancePerCrop(skillMult)` |
 | getCropMult | `typ: integer` | `number` | `obj:getCropMult(typ)` |
 | serialise | `offsetPosToSubtract: userdata` | `void` | `obj:serialise(offsetPosToSubtract)` |
 | loadFromSerialise | `` | `void` | `obj:loadFromSerialise()` |
@@ -4675,9 +4762,10 @@
 | tutorialpedia | `TutorialpediaGUI` | RW | `obj.tutorialpedia = <value>` |
 | currentCursor | `integer` | RW | `obj.currentCursor = <value>` |
 | Scale | `Vector2` | RW | `obj.Scale = <value>` |
-| manager | `lightuserdata` | R | `obj.manager` |
+| manager | `MyGUI::Gui` | R | `obj.manager` |
 | guiPlatform | `lightuserdata` | R | `obj.guiPlatform` |
 | _closeTradeWindowMsg | `boolean` | RW | `obj._closeTradeWindowMsg = <value>` |
+| _showTradeWindowMsg | `integer` | RW | `obj._showTradeWindowMsg = <value>` |
 | tradeA | `hand` | RW | `obj.tradeA = <value>` |
 | tradeB | `hand` | RW | `obj.tradeB = <value>` |
 | inventoryWindowBuilding | `hand` | RW | `obj.inventoryWindowBuilding = <value>` |
@@ -4748,12 +4836,12 @@
 | addDatapanelToUpdateList | `` | `void` | `obj:addDatapanelToUpdateList()` |
 | removeDatapanelFromUpdateList | `` | `void` | `obj:removeDatapanelFromUpdateList()` |
 | setMouseCursorVisible | `visible: boolean` | `void` | `obj:setMouseCursorVisible(visible)` |
-| getGuiManager | `` | `lightuserdata` | `obj:getGuiManager()` |
-| createPanel | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `lightuserdata` | `obj:createPanel(name, top, left, width, height, layer, skin)` |
-| createPanelAbs | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `lightuserdata` | `obj:createPanelAbs(name, top, left, width, height, layer, skin)` |
-| createTabPanel | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `lightuserdata` | `obj:createTabPanel(name, top, left, width, height, layer, skin)` |
-| createFloatingImage | `image: string, top: number, left: number, width: number, height: number, layer: string` | `lightuserdata` | `obj:createFloatingImage(image, top, left, width, height, layer)` |
-| createFloatingImageAbs | `image: string, top: number, left: number, width: number, height: number, layer: string` | `lightuserdata` | `obj:createFloatingImageAbs(image, top, left, width, height, layer)` |
+| getGuiManager | `` | `MyGUI::Gui` | `obj:getGuiManager()` |
+| createPanel | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `void` | `obj:createPanel(name, top, left, width, height, layer, skin)` |
+| createPanelAbs | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `void` | `obj:createPanelAbs(name, top, left, width, height, layer, skin)` |
+| createTabPanel | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `void` | `obj:createTabPanel(name, top, left, width, height, layer, skin)` |
+| createFloatingImage | `image: string, top: number, left: number, width: number, height: number, layer: string` | `void` | `obj:createFloatingImage(image, top, left, width, height, layer)` |
+| createFloatingImageAbs | `image: string, top: number, left: number, width: number, height: number, layer: string` | `void` | `obj:createFloatingImageAbs(image, top, left, width, height, layer)` |
 | createFloatingProgressBar | `` | `FloatingProgressBar` | `obj:createFloatingProgressBar()` |
 | createScreenLabelD | `text: string, time: number` | `lightuserdata` | `obj:createScreenLabelD(text, time)` |
 | showCharacterStatsWindow | `` | `void` | `obj:showCharacterStatsWindow()` |
@@ -4771,9 +4859,13 @@
 | getSelectedObject | `` | `hand` | `obj:getSelectedObject()` |
 | getSelectedPlayerCharacter | `` | `hand` | `obj:getSelectedPlayerCharacter()` |
 | showTradeWindow | `type: integer` | `void` | `obj:showTradeWindow(type)` |
-| destroy | `` | `void` | `obj:destroy()` |
-| changeMouseCursor | `cursor: integer` | `void` | `obj:changeMouseCursor(cursor)` |
-| createInventoryWindow | `` | `InventoryGUI` | `obj:createInventoryWindow()` |
+| destroy [1] | `label: ScreenLabelInterface` | `void` | `obj:destroy(label)` |
+| destroy [2] | `datapanel: DatapanelGUI` | `void` | `obj:destroy(datapanel)` |
+| destroy [3] | `win: GUIWindow` | `void` | `obj:destroy(win)` |
+| changeMouseCursor [1] | `cursor: CursorType, player: hand, target: hand` | `void` | `obj:changeMouseCursor(cursor, player, target)` |
+| changeMouseCursor [2] | `cursor: CursorType` | `void` | `obj:changeMouseCursor(cursor)` |
+| createInventoryWindow [1] | `owner: hand, inventory: Inventory, layout: InventoryLayout, trader: RootObject` | `InventoryGUI` | `obj:createInventoryWindow(owner, inventory, layout, trader)` |
+| createInventoryWindow [2] | `owner: hand, layout: InventoryLayout` | `InventoryGUI` | `obj:createInventoryWindow(owner, layout)` |
 | toggleInventory | `attached: boolean` | `InventoryGUI` | `obj:toggleInventory(attached)` |
 | widgetHasMouse | `` | `boolean` | `obj:widgetHasMouse()` |
 | destroyWidget | `` | `void` | `obj:destroyWidget()` |
@@ -4782,6 +4874,30 @@
 | keepWindownOnScreen | `` | `void` | `obj:keepWindownOnScreen()` |
 | setInventoryPosition | `` | `void` | `obj:setInventoryPosition()` |
 | inventoriesSelectedObjectUpdate | `` | `void` | `obj:inventoriesSelectedObjectUpdate()` |
+| _showTradeWindow | `tradeType: integer` | `void` | `obj:_showTradeWindow(tradeType)` |
+| createFloatingLabel | `top: number, left: number, width: number, height: number, text: string, a: integer, layer: string` | `void` | `obj:createFloatingLabel(top, left, width, height, text, a, layer)` |
+| createImage | `top: number, left: number, width: number, height: number, image: string` | `void` | `obj:createImage(top, left, width, height, image)` |
+| createImageAbs | `top: integer, left: integer, width: integer, height: integer, image: string` | `void` | `obj:createImageAbs(top, left, width, height, image)` |
+| createRotatableImageAbs | `top: integer, left: integer, width: integer, height: integer, image: string` | `void` | `obj:createRotatableImageAbs(top, left, width, height, image)` |
+| createButton | `top: number, left: number, width: number, height: number, name: string, text: string` | `void` | `obj:createButton(top, left, width, height, name, text)` |
+| createButtonAbs | `top: integer, left: integer, width: integer, height: integer, name: string, text: string` | `void` | `obj:createButtonAbs(top, left, width, height, name, text)` |
+| createCheckbox | `left: integer, top: integer, width: integer, height: integer, caption: string` | `void` | `obj:createCheckbox(left, top, width, height, caption)` |
+| createDropBox | `name: string, top: number, left: number, width: number, height: number` | `void` | `obj:createDropBox(name, top, left, width, height)` |
+| createDropBoxAbs | `name: string, top: integer, left: integer, width: integer, height: integer` | `void` | `obj:createDropBoxAbs(name, top, left, width, height)` |
+| createProgressBar | `top: number, left: number, width: number, height: number, type: string` | `void` | `obj:createProgressBar(top, left, width, height, type)` |
+| createProgressBarAbs | `top: number, left: number, width: number, height: number, type: string` | `void` | `obj:createProgressBarAbs(top, left, width, height, type)` |
+| createLabel [1] | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, text: string, skin: string` | `MyGUI::EditBox` | `obj:createLabel(parent, top, left, width, height, text, skin)` |
+| createLabel [2] | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, text: string, a: MyGUI::Align` | `MyGUI::TextBox` | `obj:createLabel(parent, top, left, width, height, text, a)` |
+| createLabelAbs [1] | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, labelText: string, align: MyGUI::Align` | `MyGUI::TextBox` | `obj:createLabelAbs(parent, top, left, width, height, labelText, align)` |
+| createLabelAbs [2] | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, text: string, skin: string` | `MyGUI::EditBox` | `obj:createLabelAbs(parent, top, left, width, height, text, skin)` |
+| createValueEdit | `top: number, left: number, width: number, height: number, name: string` | `void` | `obj:createValueEdit(top, left, width, height, name)` |
+| createValueEditTransparent | `top: number, left: number, width: number, height: number, name: string` | `void` | `obj:createValueEditTransparent(top, left, width, height, name)` |
+| createEditBox [1] | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, name: string, skin: string, multiLine: boolean` | `MyGUI::EditBox` | `obj:createEditBox(parent, top, left, width, height, name, skin, multiLine)` |
+| createEditBox [2] | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, name: string, multiLine: boolean` | `MyGUI::EditBox` | `obj:createEditBox(parent, top, left, width, height, name, multiLine)` |
+| createEditBoxAbs [1] | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, name: string, skin: string, multiLine: boolean` | `MyGUI::EditBox` | `obj:createEditBoxAbs(parent, top, left, width, height, name, skin, multiLine)` |
+| createEditBoxAbs [2] | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, name: string, multiLine: boolean` | `MyGUI::EditBox` | `obj:createEditBoxAbs(parent, top, left, width, height, name, multiLine)` |
+| createScrollBarAbs | `top: integer, left: integer, width: integer, height: integer, range: integer, value: integer` | `void` | `obj:createScrollBarAbs(top, left, width, height, range, value)` |
+| createListbox | `top: number, left: number, width: number, height: number` | `void` | `obj:createListbox(top, left, width, height)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -4841,6 +4957,11 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FurnaceBuilding.h`
 **Metatable:** `KenshiLua.FurnaceInventoryLayout`
 
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupSections | `` | `void` | `obj:setupSections()` |
+
 ## GameData
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
 **Metatable:** `KenshiLua.GameData`
@@ -4877,7 +4998,8 @@
 | initialise | `t: integer, isActive: boolean` | `void` | `obj:initialise(t, isActive)` |
 | loadFromFile | `path: string, _type: integer` | `boolean` | `obj:loadFromFile(path, _type)` |
 | saveToFile | `path: string` | `boolean` | `obj:saveToFile(path)` |
-| storeHandleList | `name: string` | `void` | `obj:storeHandleList(name)` |
+| storeHandleList [1] | `handle: ogre_unordered_set<hand>::type, _name: string` | `void` | `obj:storeHandleList(handle, _name)` |
+| storeHandleList [2] | `handle: lektor<hand>, _name: string` | `void` | `obj:storeHandleList(handle, _name)` |
 | storeHandle | `name: string, redirect: boolean` | `void` | `obj:storeHandle(name, redirect)` |
 | getHandle | `name: string` | `hand` | `obj:getHandle(name)` |
 | updateFrom | `mod: boolean` | `boolean` | `obj:updateFrom(mod)` |
@@ -4885,10 +5007,14 @@
 | isRefActive | `v: string` | `boolean` | `obj:isRefActive(v)` |
 | addFileName | `n: string, v: string, filestype: string, category: string, vis: boolean` | `void` | `obj:addFileName(n, v, filestype, category, vis)` |
 | addString | `n: string, v: string, category: string, vis: boolean` | `void` | `obj:addString(n, v, category, vis)` |
-| add | `n: string, v: number, vis: boolean, isSlider: boolean` | `void` | `obj:add(n, v, vis, isSlider)` |
+| add [1] | `n: string, v: Vector3` | `void` | `obj:add(n, v)` |
+| add [2] | `n: string, v: boolean, category: string, vis: boolean` | `void` | `obj:add(n, v, category, vis)` |
+| add [3] | `n: string, v: number, category: string, vis: boolean, isSlider: boolean` | `void` | `obj:add(n, v, category, vis, isSlider)` |
+| add [4] | `n: string, v: integer, category: string, vis: boolean` | `void` | `obj:add(n, v, category, vis)` |
 | getGameDataReferenceObject | `list: string, id: string` | `GameDataReference` | `obj:getGameDataReferenceObject(list, id)` |
 | addToList | `list: string, id: string, val: integer, val2: integer, val3: integer` | `void` | `obj:addToList(list, id, val, val2, val3)` |
-| removeFromList | `list: string, id: string` | `void` | `obj:removeFromList(list, id)` |
+| removeFromList [1] | `list: string, id: integer` | `void` | `obj:removeFromList(list, id)` |
+| removeFromList [2] | `list: string, id: string` | `void` | `obj:removeFromList(list, id)` |
 | findInList | `list: string, SID: string` | `boolean` | `obj:findInList(list, SID)` |
 | clearList | `n: string` | `void` | `obj:clearList(n)` |
 | clearEverything | `` | `void` | `obj:clearEverything()` |
@@ -5047,6 +5173,7 @@
 | getMapSector | `x: integer, y: integer` | `GameData` | `obj:getMapSector(x, y)` |
 | updateDatasOfType | `type: integer, isMod: boolean` | `void` | `obj:updateDatasOfType(type, isMod)` |
 | updateData | `isMod: boolean` | `void` | `obj:updateData(isMod)` |
+| getBuildings | `category: string` | `void` | `obj:getBuildings(category)` |
 
 ## GameDataReference
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
@@ -5190,8 +5317,12 @@
 | justLoadFactionRelations | `` | `void` | `obj:justLoadFactionRelations()` |
 | startUpThreads | `` | `boolean` | `obj:startUpThreads()` |
 | start | `rend: userdata` | `boolean` | `obj:start(rend)` |
-| destroy [1] | `justUnloaded: boolean, debugInfo: string` | `boolean` | `obj:destroy(justUnloaded, debugInfo)` |
-| destroy [2] | `ptr: userdata` | `void` | `obj:destroy(ptr)` |
+| destroy [1] | `e: Ogre::MovableObject` | `void` | `obj:destroy(e)` |
+| destroy [2] | `e: AttachedEntity` | `void` | `obj:destroy(e)` |
+| destroy [3] | `b: TownBuildingsManager` | `void` | `obj:destroy(b)` |
+| destroy [4] | `n: NestBatcher` | `void` | `obj:destroy(n)` |
+| destroy [5] | `obj: RootObject, justUnloaded: boolean, debugInfo: char` | `boolean` | `obj:destroy(obj, justUnloaded, debugInfo)` |
+| destroy [6] | `d: GameData` | `void` | `obj:destroy(d)` |
 | resetGame | `` | `void` | `obj:resetGame()` |
 | _clearAndDestroyGameWorldStuff | `` | `void` | `obj:_clearAndDestroyGameWorldStuff()` |
 | initialisation | `` | `boolean` | `obj:initialisation()` |
@@ -5202,7 +5333,8 @@
 | errorD | `msg: string` | `void` | `obj:errorD(msg)` |
 | logToSave | `msg: string` | `void` | `obj:logToSave(msg)` |
 | log | `line: string` | `void` | `obj:log(line)` |
-| logDebug | `line: string, logname: string` | `void` | `obj:logDebug(line, logname)` |
+| logDebug [1] | `msg: string, logname: string` | `void` | `obj:logDebug(msg, logname)` |
+| logDebug [2] | `line: string` | `void` | `obj:logDebug(line)` |
 | dynamicDestroyBuilding | `` | `void` | `obj:dynamicDestroyBuilding()` |
 | getFromDeathParade | `` | `Character` | `obj:getFromDeathParade()` |
 | addPortraitUpdate | `` | `void` | `obj:addPortraitUpdate()` |
@@ -5218,7 +5350,8 @@
 | sysMessageUrgent | `` | `void` | `obj:sysMessageUrgent()` |
 | sysMessage_noDuplicates | `` | `void` | `obj:sysMessage_noDuplicates()` |
 | getCollisionGroupType | `type: integer` | `integer` | `obj:getCollisionGroupType(type)` |
-| getTimeFromStamp | `stamp: number` | `number` | `obj:getTimeFromStamp(stamp)` |
+| getTimeFromStamp [1] | `stamp: TimeOfDay` | `TimeOfDay` | `obj:getTimeFromStamp(stamp)` |
+| getTimeFromStamp [2] | `stamp: number` | `number` | `obj:getTimeFromStamp(stamp)` |
 | getIsInKillList | `` | `boolean` | `obj:getIsInKillList()` |
 | flushKillList | `` | `void` | `obj:flushKillList()` |
 | allThreadQueuesAreClear | `` | `boolean` | `obj:allThreadQueuesAreClear()` |
@@ -5367,7 +5500,7 @@
 | setSize | `slotsW: integer, slotsH: integer, hasArrange: boolean, hasType: boolean` | `void` | `obj:setSize(slotsW, slotsH, hasArrange, hasType)` |
 
 ## Global
-**Header:** `???`
+**Header:** `extern/KenshiLib/Include/kenshi/Globals.h`
 **Metatable:** `KenshiLua.Global`
 
 ## GlobalConstants
@@ -5472,10 +5605,15 @@
 | MAX_SQUADS | `integer` | RW | `obj.MAX_SQUADS = <value>` |
 | MAX_FACTION_SIZE | `integer` | RW | `obj.MAX_FACTION_SIZE = <value>` |
 | attackDiplomats | `boolean` | RW | `obj.attackDiplomats = <value>` |
-| settings | `GameData` | R | `obj.settings` |
+| settings | `GameData` | RW | `obj.settings = <value>` |
 | APPEARANCE_RANDOM_DEVIATION | `number` | RW | `obj.APPEARANCE_RANDOM_DEVIATION = <value>` |
 | fogDistMax | `number` | RW | `obj.fogDistMax = <value>` |
 | fogDistMin | `number` | RW | `obj.fogDistMin = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setup | `` | `void` | `obj:setup()` |
 
 ## GUIWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/GUIWindow.h`
@@ -5581,7 +5719,8 @@
 | atGoal | `` | `boolean` | `obj:atGoal()` |
 | getCollidedCharacter | `` | `hand` | `obj:getCollidedCharacter()` |
 | setHandle | `` | `void` | `obj:setHandle()` |
-| calculateFuturePosition | `distance: number` | `Vector3` | `obj:calculateFuturePosition(distance)` |
+| calculateFuturePosition [1] | `d: number, out: hkVector4f, dir: hkVector4f, stopAtScreenEdge: boolean` | `integer` | `obj:calculateFuturePosition(d, out, dir, stopAtScreenEdge)` |
+| calculateFuturePosition [2] | `distance: number` | `Vector3` | `obj:calculateFuturePosition(distance)` |
 
 ## hkArray
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
@@ -5664,24 +5803,40 @@
 | getInt16W | `` | `integer` | `obj:getInt16W()` |
 | setZero4 | `` | `void` | `obj:setZero4()` |
 | normalize3 | `` | `void` | `obj:normalize3()` |
-| set | `a: number, b: number, c: number, d: number` | `void` | `obj:set(a, b, c, d)` |
-| setAll | `a: number` | `void` | `obj:setAll(a)` |
+| set [1] | `a: number, b: number, c: number, d: number` | `void` | `obj:set(a, b, c, d)` |
+| set [2] | `a: hkSimdFloat32, b: hkSimdFloat32, c: hkSimdFloat32, d: hkSimdFloat32` | `void` | `obj:set(a, b, c, d)` |
+| setAll [1] | `a: number` | `void` | `obj:setAll(a)` |
+| setAll [2] | `a: hkSimdFloat32` | `void` | `obj:setAll(a)` |
 | add | `` | `void` | `obj:add()` |
 | sub | `` | `void` | `obj:sub()` |
-| mul | `` | `void` | `obj:mul()` |
+| mul [1] | `s: hkSimdFloat32` | `void` | `obj:mul(s)` |
+| mul [2] | `a: hkVector4f` | `void` | `obj:mul(a)` |
 | div | `` | `void` | `obj:div()` |
-| setAdd | `` | `void` | `obj:setAdd()` |
-| setSub | `` | `void` | `obj:setSub()` |
-| setMul | `` | `void` | `obj:setMul()` |
+| setAdd [1] | `v0: hkVector4f, v1: hkSimdFloat32` | `void` | `obj:setAdd(v0, v1)` |
+| setAdd [2] | `v0: hkVector4f, v1: hkVector4f` | `void` | `obj:setAdd(v0, v1)` |
+| setSub [1] | `v0: hkVector4f, v1: hkSimdFloat32` | `void` | `obj:setSub(v0, v1)` |
+| setSub [2] | `v0: hkVector4f, v1: hkVector4f` | `void` | `obj:setSub(v0, v1)` |
+| setMul [1] | `r: hkSimdFloat32, v1: hkVector4f` | `void` | `obj:setMul(r, v1)` |
+| setMul [2] | `v1: hkVector4f, r: hkSimdFloat32` | `void` | `obj:setMul(v1, r)` |
+| setMul [3] | `v0: hkVector4f, v1: hkVector4f` | `void` | `obj:setMul(v0, v1)` |
 | setDiv | `` | `void` | `obj:setDiv()` |
-| addMul | `` | `void` | `obj:addMul()` |
-| setAddMul | `` | `void` | `obj:setAddMul()` |
-| subMul | `` | `void` | `obj:subMul()` |
-| setSubMul | `` | `void` | `obj:setSubMul()` |
+| addMul [1] | `r: hkSimdFloat32, v1: hkVector4f` | `void` | `obj:addMul(r, v1)` |
+| addMul [2] | `v1: hkVector4f, r: hkSimdFloat32` | `void` | `obj:addMul(v1, r)` |
+| addMul [3] | `x: hkVector4f, y: hkVector4f` | `void` | `obj:addMul(x, y)` |
+| setAddMul [1] | `a: hkVector4f, b: hkVector4f, r: hkSimdFloat32` | `void` | `obj:setAddMul(a, b, r)` |
+| setAddMul [2] | `a: hkVector4f, x: hkVector4f, y: hkVector4f` | `void` | `obj:setAddMul(a, x, y)` |
+| subMul [1] | `r: hkSimdFloat32, a: hkVector4f` | `void` | `obj:subMul(r, a)` |
+| subMul [2] | `v1: hkVector4f, r: hkSimdFloat32` | `void` | `obj:subMul(v1, r)` |
+| subMul [3] | `x: hkVector4f, y: hkVector4f` | `void` | `obj:subMul(x, y)` |
+| setSubMul [1] | `a: hkVector4f, b: hkVector4f, r: hkSimdFloat32` | `void` | `obj:setSubMul(a, b, r)` |
+| setSubMul [2] | `a: hkVector4f, x: hkVector4f, y: hkVector4f` | `void` | `obj:setSubMul(a, x, y)` |
 | setCross | `` | `void` | `obj:setCross()` |
-| setXYZ_W | `` | `void` | `obj:setXYZ_W()` |
-| setW | `` | `void` | `obj:setW()` |
-| setXYZ | `v: number` | `void` | `obj:setXYZ(v)` |
+| setXYZ_W [1] | `xyz: hkVector4f, w: hkSimdFloat32` | `void` | `obj:setXYZ_W(xyz, w)` |
+| setXYZ_W [2] | `xyz: hkVector4f, w: hkVector4f` | `void` | `obj:setXYZ_W(xyz, w)` |
+| setW [1] | `w: hkSimdFloat32` | `void` | `obj:setW(w)` |
+| setW [2] | `w: hkVector4f` | `void` | `obj:setW(w)` |
+| setXYZ [1] | `v: number` | `void` | `obj:setXYZ(v)` |
+| setXYZ [2] | `xyz: hkVector4f` | `void` | `obj:setXYZ(xyz)` |
 | setXYZ_0 | `` | `void` | `obj:setXYZ_0()` |
 | equals3 | `` | `boolean` | `obj:equals3()` |
 | setAbs | `` | `void` | `obj:setAbs()` |
@@ -5726,8 +5881,10 @@
 | getIndexOfLastComponentSet | `` | `integer` | `obj:getIndexOfLastComponentSet()` |
 | getIndexOfFirstComponentSet | `` | `integer` | `obj:getIndexOfFirstComponentSet()` |
 | allAreSet | `` | `integer` | `obj:allAreSet()` |
-| anyIsSet | `m: integer` | `integer` | `obj:anyIsSet(m)` |
-| getMask | `m: integer` | `integer` | `obj:getMask(m)` |
+| anyIsSet [1] | `` | `integer` | `obj:anyIsSet()` |
+| anyIsSet [2] | `m: Mask` | `integer` | `obj:anyIsSet(m)` |
+| getMask [1] | `m: Mask` | `Mask` | `obj:getMask(m)` |
+| getMask [2] | `` | `Mask` | `obj:getMask()` |
 | set | `m: integer` | `void` | `obj:set(m)` |
 | setAnd | `` | `void` | `obj:setAnd()` |
 | setAndNot | `` | `void` | `obj:setAndNot()` |
@@ -5755,6 +5912,8 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | select | `index: integer` | `void` | `obj:select(index)` |
+| importPress | `` | `void` | `obj:importPress()` |
+| toggleAdvancedOptions | `` | `void` | `obj:toggleAdvancedOptions()` |
 
 ## InputHandler
 **Header:** `extern/KenshiLib/Include/kenshi/InputHandler.h`
@@ -5830,9 +5989,12 @@
 | loadConfig | `` | `void` | `obj:loadConfig()` |
 | saveConfig | `` | `void` | `obj:saveConfig()` |
 | keyString | `key: integer, translated: boolean` | `string` | `obj:keyString(key, translated)` |
-| addCommand | `name: string, value: integer, key: integer, alt: integer, masks: integer, mode: integer` | `void` | `obj:addCommand(name, value, key, alt, masks, mode)` |
-| unbind | `cmd: string, mode: integer` | `void` | `obj:unbind(cmd, mode)` |
-| isBound | `cmd: string` | `boolean` | `obj:isBound(cmd)` |
+| addCommand [1] | `name: string, value: integer, key: integer, alt: integer, masks: Masks, mode: GameMode` | `void` | `obj:addCommand(name, value, key, alt, masks, mode)` |
+| addCommand [2] | `name: string, value: boolean, key: integer, alt: integer, masks: Masks, mode: GameMode` | `void` | `obj:addCommand(name, value, key, alt, masks, mode)` |
+| unbind [1] | `code: integer, mode: GameMode` | `void` | `obj:unbind(code, mode)` |
+| unbind [2] | `cmd: string` | `void` | `obj:unbind(cmd)` |
+| isBound [1] | `command: string` | `boolean` | `obj:isBound(command)` |
+| isBound [2] | `key: integer` | `boolean` | `obj:isBound(key)` |
 | getBoundKeys | `command: string` | `integer` | `obj:getBoundKeys(command)` |
 | getBoundCommand | `key: integer, mode: integer` | `string` | `obj:getBoundCommand(key, mode)` |
 
@@ -5884,19 +6046,20 @@
 | currentBuilding | `hand` | RW | `obj.currentBuilding = <value>` |
 | currentInterior | `string` | RW | `obj.currentInterior = <value>` |
 | currentExterior | `string` | RW | `obj.currentExterior = <value>` |
-| interiorModeButton | `lightuserdata` | R | `obj.interiorModeButton` |
-| win | `lightuserdata` | R | `obj.win` |
-| centerButton | `lightuserdata` | R | `obj.centerButton` |
-| exteriorButton | `lightuserdata` | R | `obj.exteriorButton` |
-| titleLabel | `lightuserdata` | R | `obj.titleLabel` |
-| saveBut | `lightuserdata` | R | `obj.saveBut` |
-| deleteBut | `lightuserdata` | R | `obj.deleteBut` |
-| listbox | `lightuserdata` | R | `obj.listbox` |
-| namebox | `lightuserdata` | R | `obj.namebox` |
-| saveBut2 | `lightuserdata` | R | `obj.saveBut2` |
-| deleteBut2 | `lightuserdata` | R | `obj.deleteBut2` |
-| listbox2 | `lightuserdata` | R | `obj.listbox2` |
-| namebox2 | `lightuserdata` | R | `obj.namebox2` |
+| interiorModeButton | `unknown` | RW | `obj.interiorModeButton = <value>` |
+| win | `unknown` | RW | `obj.win = <value>` |
+| centerButton | `unknown` | RW | `obj.centerButton = <value>` |
+| exteriorButton | `unknown` | RW | `obj.exteriorButton = <value>` |
+| titleLabel | `unknown` | RW | `obj.titleLabel = <value>` |
+| saveBut | `unknown` | RW | `obj.saveBut = <value>` |
+| deleteBut | `unknown` | RW | `obj.deleteBut = <value>` |
+| listbox | `unknown` | RW | `obj.listbox = <value>` |
+| namebox | `unknown` | RW | `obj.namebox = <value>` |
+| saveBut2 | `unknown` | RW | `obj.saveBut2 = <value>` |
+| deleteBut2 | `unknown` | RW | `obj.deleteBut2 = <value>` |
+| listbox2 | `unknown` | RW | `obj.listbox2 = <value>` |
+| namebox2 | `unknown` | RW | `obj.namebox2 = <value>` |
+| updateNodesMessages | `unknown` | RW | `obj.updateNodesMessages = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -5914,6 +6077,22 @@
 | setInteriorLayout | `name: string` | `void` | `obj:setInteriorLayout(name)` |
 | setExteriorLayout | `name: string` | `void` | `obj:setExteriorLayout(name)` |
 | recheckOutsideFurniture | `` | `void` | `obj:recheckOutsideFurniture()` |
+| interiorModePressed | `` | `void` | `obj:interiorModePressed()` |
+| interiorModeButtonUpdate | `a2: integer, a3: integer, a4: integer` | `void` | `obj:interiorModeButtonUpdate(a2, a3, a4)` |
+| interiorModeButtonUpdate2 | `` | `void` | `obj:interiorModeButtonUpdate2()` |
+| deleteButtonPressed | `` | `void` | `obj:deleteButtonPressed()` |
+| deleteButtonPressed2 | `` | `void` | `obj:deleteButtonPressed2()` |
+| closeWindow | `name: string` | `void` | `obj:closeWindow(name)` |
+| toggleVisButtonPressed | `` | `void` | `obj:toggleVisButtonPressed()` |
+| notifyEditTextChange | `` | `void` | `obj:notifyEditTextChange()` |
+| centerButtonPressed | `` | `void` | `obj:centerButtonPressed()` |
+| saveButtonPressed | `` | `void` | `obj:saveButtonPressed()` |
+| clearNodes | `` | `void` | `obj:clearNodes()` |
+| clearAll | `` | `void` | `obj:clearAll()` |
+| listItemSelected | `index: integer` | `void` | `obj:listItemSelected(index)` |
+| saveButtonPressed2 | `` | `void` | `obj:saveButtonPressed2()` |
+| listItemSelected2 | `index: integer` | `void` | `obj:listItemSelected2(index)` |
+| notifyEditTextChange2 | `` | `void` | `obj:notifyEditTextChange2()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -5989,22 +6168,27 @@
 | _addToList | `` | `void` | `obj:_addToList()` |
 | _removeFromList | `checkEverything: boolean` | `void` | `obj:_removeFromList(checkEverything)` |
 | getHandle | `` | `hand` | `obj:getHandle()` |
-| loadFrom | `` | `void` | `obj:loadFrom()` |
-| fillFromVendorList | `` | `void` | `obj:fillFromVendorList()` |
+| loadFrom [1] | `container: GameDataContainer, inventoryState: GameData` | `void` | `obj:loadFrom(container, inventoryState)` |
+| loadFrom [2] | `state: GameSaveState` | `void` | `obj:loadFrom(state)` |
+| fillFromVendorList [1] | `vendorData: GameData, f: Faction` | `void` | `obj:fillFromVendorList(vendorData, f)` |
+| fillFromVendorList [2] | `vendorlistList: lektor<GameData*>, f: Faction` | `void` | `obj:fillFromVendorList(vendorlistList, f)` |
 | getAllSectionsOfType | `type: integer` | `void` | `obj:getAllSectionsOfType(type)` |
 | getAllSections | `` | `lektor<InventorySection*>` | `obj:getAllSections()` |
 | getExcessLoot | `justAsking: boolean` | `boolean` | `obj:getExcessLoot(justAsking)` |
 | getResourceItems | `buildingMatsToo: boolean` | `void` | `obj:getResourceItems(buildingMatsToo)` |
-| getNumItems | `` | `integer` | `obj:getNumItems()` |
-| hasItem [1] | `quantity: integer` | `boolean` | `obj:hasItem(quantity)` |
-| hasItem [2] | `` | `boolean` | `obj:hasItem()` |
+| getNumItems [1] | `itemType: GameData` | `integer` | `obj:getNumItems(itemType)` |
+| getNumItems [2] | `` | `integer` | `obj:getNumItems()` |
+| hasItem [1] | `item: GameData, quantity: integer` | `boolean` | `obj:hasItem(item, quantity)` |
+| hasItem [2] | `item: Item` | `boolean` | `obj:hasItem(item)` |
 | getAllStolenItems | `includeUnknown: boolean` | `void` | `obj:getAllStolenItems(includeUnknown)` |
 | getAllItemsOfType | `ty: integer, skipEquipped: boolean` | `void` | `obj:getAllItemsOfType(ty, skipEquipped)` |
 | getEquippedWeapons | `` | `void` | `obj:getEquippedWeapons()` |
 | getEquippedArmour | `` | `void` | `obj:getEquippedArmour()` |
-| takeItem_EntireStack | `` | `Item` | `obj:takeItem_EntireStack()` |
+| takeItem_EntireStack [1] | `what: Item` | `boolean` | `obj:takeItem_EntireStack(what)` |
+| takeItem_EntireStack [2] | `item: GameData` | `Item` | `obj:takeItem_EntireStack(item)` |
 | getAllItemsWithFunction | `type: integer` | `void` | `obj:getAllItemsWithFunction(type)` |
-| getBestItemWithLowestCharges | `type: integer` | `Item` | `obj:getBestItemWithLowestCharges(type)` |
+| getBestItemWithLowestCharges [1] | `what: GameData` | `Item` | `obj:getBestItemWithLowestCharges(what)` |
+| getBestItemWithLowestCharges [2] | `type: ItemFunction` | `Item` | `obj:getBestItemWithLowestCharges(type)` |
 | getAllItems | `` | `lektor<Item*>` | `obj:getAllItems()` |
 
 ## Inventory::HasRoomCache
@@ -6071,9 +6255,10 @@
 | hasMouse | `` | `boolean` | `obj:hasMouse()` |
 | getSectionWithMouseLocal | `` | `string` | `obj:getSectionWithMouseLocal()` |
 | getSlotWithMouse | `` | `void` | `obj:getSlotWithMouse()` |
-| refreshSection | `` | `void` | `obj:refreshSection()` |
+| refreshSection [1] | `section: InventorySection` | `void` | `obj:refreshSection(section)` |
+| refreshSection [2] | `` | `void` | `obj:refreshSection()` |
 | getSection [1] | `sectionName: string` | `InventorySection` | `obj:getSection(sectionName)` |
-| getSection [2] | `` | `InventorySection` | `obj:getSection()` |
+| getSection [2] | `sect: InventorySectionGUI` | `InventorySection` | `obj:getSection(sect)` |
 | getWindowCoord | `` | `void` | `obj:getWindowCoord()` |
 | autoChangeSelectedObject | `` | `void` | `obj:autoChangeSelectedObject()` |
 | placeItemFromMouse | `sectionName: string` | `boolean` | `obj:placeItemFromMouse(sectionName)` |
@@ -6082,6 +6267,11 @@
 | openLimbsInterface | `` | `void` | `obj:openLimbsInterface()` |
 | windowButtonPressed | `name: string` | `void` | `obj:windowButtonPressed(name)` |
 | fencingConfirmation | `sectionName: string` | `boolean` | `obj:fencingConfirmation(sectionName)` |
+| getTrader1Trader2 | `` | `InventoryGUI` | `obj:getTrader1Trader2()` |
+| sectionMouseButtonPressed | `left: integer, top: integer, id: integer` | `void` | `obj:sectionMouseButtonPressed(left, top, id)` |
+| sectionMouseButtonReleased | `left: integer, top: integer, id: integer` | `void` | `obj:sectionMouseButtonReleased(left, top, id)` |
+| onWindowFocus | `focus: boolean` | `void` | `obj:onWindowFocus(focus)` |
+| windowMoved | `` | `void` | `obj:windowMoved()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -6265,6 +6455,7 @@
 | setSectionGUIDisabled | `sectionName: string, width: integer, height: integer` | `void` | `obj:setSectionGUIDisabled(sectionName, width, height)` |
 | resizeSection | `` | `void` | `obj:resizeSection()` |
 | resizeSectionWidget | `width: integer, height: integer` | `void` | `obj:resizeSectionWidget(width, height)` |
+| setupSections | `` | `void` | `obj:setupSections()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -6294,7 +6485,7 @@
 | parentInventory | `Inventory` | RW | `obj.parentInventory = <value>` |
 | enabled | `boolean` | RW | `obj.enabled = <value>` |
 | content | `unknown` | RW | `obj.content = <value>` |
-| items | `Ogre::vector<InventorySection::SectionItem>::type` | R | `obj.items` |
+| items | `Ogre::vector<InventorySection::SectionItem>::type` | RW | `obj.items = <value>` |
 | veryLimitedSlot | `lektor<GameData*>` | RW | `obj.veryLimitedSlot = <value>` |
 
 ### Methods
@@ -6332,15 +6523,20 @@
 | setupEquipCallbacks | `` | `void` | `obj:setupEquipCallbacks()` |
 | numItemsInFootprint | `x: integer, y: integer` | `integer` | `obj:numItemsInFootprint(x, y)` |
 | resize | `w: integer, h: integer, clearContent: boolean` | `void` | `obj:resize(w, h, clearContent)` |
-| hasItem | `` | `boolean` | `obj:hasItem()` |
-| hasItem | `` | `boolean` | `obj:hasItem()` |
-| isLimitedSlotCompatible | `` | `boolean` | `obj:isLimitedSlotCompatible()` |
+| hasItem [1] | `itemData: GameData` | `boolean` | `obj:hasItem(itemData)` |
+| hasItem [2] | `item: Item` | `boolean` | `obj:hasItem(item)` |
+| hasItem [1] | `itemData: GameData` | `boolean` | `obj:hasItem(itemData)` |
+| hasItem [2] | `item: Item` | `boolean` | `obj:hasItem(item)` |
+| isLimitedSlotCompatible [1] | `itemData: GameData` | `boolean` | `obj:isLimitedSlotCompatible(itemData)` |
+| isLimitedSlotCompatible [2] | `item: Item` | `boolean` | `obj:isLimitedSlotCompatible(item)` |
 | getValidInventoryPosition | `` | `boolean\|integer` | `obj:getValidInventoryPosition()` |
-| getAllItemsOfType | `type: integer` | `void` | `obj:getAllItemsOfType(type)` |
+| getAllItemsOfType [1] | `list: lektor<Item*>, item: Item` | `void` | `obj:getAllItemsOfType(list, item)` |
+| getAllItemsOfType [2] | `list: lektor<Item*>, type: itemType` | `void` | `obj:getAllItemsOfType(list, type)` |
 | getAllItemsOfName | `itemName: string` | `void` | `obj:getAllItemsOfName(itemName)` |
 | findNearestPlaceForItem | `` | `boolean\|integer` | `obj:findNearestPlaceForItem()` |
-| getItemsInFootprint [1] | `x: integer, y: integer` | `integer` | `obj:getItemsInFootprint(x, y)` |
-| getItemsInFootprint [2] | `itemWidth: integer, itemHeight: integer, x: integer, y: integer` | `integer` | `obj:getItemsInFootprint(itemWidth, itemHeight, x, y)` |
+| getItemsInFootprint [1] | `itemList: lektor<Item*>, itemWidth: integer, itemHeight: integer, x: integer, y: integer` | `integer` | `obj:getItemsInFootprint(itemList, itemWidth, itemHeight, x, y)` |
+| getItemsInFootprint [2] | `out: lektor<Item*>, item: Item, x: integer, y: integer` | `integer` | `obj:getItemsInFootprint(out, item, x, y)` |
+| getItems | `` | `Ogre::vector<InventorySection::SectionItem>::type` | `obj:getItems()` |
 
 ## InventorySection::SectionItem
 **Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
@@ -6456,9 +6652,12 @@
 | activate | `createPhysical: boolean, bareWeapon: integer, rotation: Quaternion, fixedPosition: boolean, bareWeapon: integer, dynamicPhysics: boolean` | `void` | `obj:activate(createPhysical, bareWeapon, rotation, fixedPosition, bareWeapon, dynamicPhysics)` |
 | serialise | `offset: userdata` | `void` | `obj:serialise(offset)` |
 | createItemEntityCallback_Equipping | `ent: userdata, node: userdata` | `void` | `obj:createItemEntityCallback_Equipping(ent, node)` |
-| notifyTheftFrom | `` | `void` | `obj:notifyTheftFrom()` |
-| findProperOwner | `` | `hand` | `obj:findProperOwner()` |
-| setPersistant | `p: boolean` | `void` | `obj:setPersistant(p)` |
+| notifyTheftFrom [1] | `owner: hand` | `void` | `obj:notifyTheftFrom(owner)` |
+| notifyTheftFrom [2] | `obj: RootObject` | `void` | `obj:notifyTheftFrom(obj)` |
+| findProperOwner [1] | `obj: RootObject` | `hand` | `obj:findProperOwner(obj)` |
+| findProperOwner [2] | `handle: hand` | `hand` | `obj:findProperOwner(handle)` |
+| setPersistant [1] | `anchor: hand` | `void` | `obj:setPersistant(anchor)` |
+| setPersistant [2] | `p: boolean` | `void` | `obj:setPersistant(p)` |
 | itemEntityCreated | `ent: userdata` | `void` | `obj:itemEntityCreated(ent)` |
 
 ## iVector2
@@ -6573,6 +6772,21 @@
 | updateFoliageRemoval | `` | `void` | `obj:updateFoliageRemoval()` |
 | updateSeedEditor | `` | `void` | `obj:updateSeedEditor()` |
 | deleteObject | `` | `void` | `obj:deleteObject()` |
+| saveMod | `` | `void` | `obj:saveMod()` |
+| regenerate | `` | `void` | `obj:regenerate()` |
+| closeNavmeshWindow | `a2: string` | `void` | `obj:closeNavmeshWindow(a2)` |
+| fixBuildings | `` | `void` | `obj:fixBuildings()` |
+| factionButton | `` | `void` | `obj:factionButton()` |
+| npcButton | `` | `void` | `obj:npcButton()` |
+| townButton | `` | `void` | `obj:townButton()` |
+| squadButton | `` | `void` | `obj:squadButton()` |
+| featureButton | `` | `void` | `obj:featureButton()` |
+| fogButton | `` | `void` | `obj:fogButton()` |
+| itemsButton | `` | `void` | `obj:itemsButton()` |
+| buildingsButton | `` | `void` | `obj:buildingsButton()` |
+| navmeshButton | `` | `void` | `obj:navmeshButton()` |
+| exitLevelEditMode | `` | `void` | `obj:exitLevelEditMode()` |
+| activeModChanged | `a2: integer` | `void` | `obj:activeModChanged(a2)` |
 
 ## LevelEditor::FactionListWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
@@ -6680,6 +6894,11 @@
 |---|---|---|---|
 | character | `Character` | RW | `obj.character = <value>` |
 
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupSections | `` | `void` | `obj:setupSections()` |
+
 ## ListScrollBar
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MyGUI_ListScrollBar.h`
 **Metatable:** `KenshiLua.ListScrollBar`
@@ -6737,7 +6956,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| list | `lightuserdata` | R | `obj.list` |
+| list | `unknown` | R | `obj.list` |
 | games | `lektor<SaveInfo>` | RW | `obj.games = <value>` |
 | infoPanel | `DatapanelGUI` | RW | `obj.infoPanel = <value>` |
 
@@ -6745,11 +6964,17 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | select | `index: integer` | `void` | `obj:select(index)` |
-| getWidget | `` | `lightuserdata` | `obj:getWidget()` |
+| getWidget | `` | `void` | `obj:getWidget()` |
 | deleteSelectedSave | `mbResult: integer` | `void` | `obj:deleteSelectedSave(mbResult)` |
 | addOption | `key: integer, check: string, label: string, caption: string` | `void` | `obj:addOption(key, check, label, caption)` |
 | enableOption | `key: integer, enabled: boolean` | `void` | `obj:enableOption(key, enabled)` |
 | getOptions | `` | `integer` | `obj:getOptions()` |
+| close | `` | `void` | `obj:close()` |
+| selectGame | `index: integer` | `void` | `obj:selectGame(index)` |
+| keyPressed | `key: integer` | `void` | `obj:keyPressed(key)` |
+| toggleCheck | `` | `void` | `obj:toggleCheck()` |
+| createInfo | `` | `void` | `obj:createInfo()` |
+| updateInfo | `index: integer` | `void` | `obj:updateInfo(index)` |
 
 ## LockedArmour
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
@@ -6767,6 +6992,8 @@
 | isLockedArmour | `` | `LockedArmour` | `obj:isLockedArmour()` |
 | _serialise | `type: integer` | `GameData` | `obj:_serialise(type)` |
 | _loadFromSerialise | `` | `void` | `obj:_loadFromSerialise()` |
+| getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
+| getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
 
 ## Logger
 **Header:** `extern/KenshiLib/Include/kenshi/Logger.h`
@@ -6855,8 +7082,8 @@
 | setExtendInfoPanelEnabled | `enabled: boolean` | `void` | `obj:setExtendInfoPanelEnabled(enabled)` |
 | _getWidget | `name: string` | `MyGUI::Widget` | `obj:_getWidget(name)` |
 | autoChangeSelectedObject | `` | `void` | `obj:autoChangeSelectedObject()` |
-| getPortrait [1] | `` | `lightuserdata` | `obj:getPortrait()` |
-| getPortrait [2] | `left: integer, top: integer` | `lightuserdata` | `obj:getPortrait(left, top)` |
+| getPortrait [1] | `position: MyGUI::types::TPoint<int>` | `PortraitData` | `obj:getPortrait(position)` |
+| getPortrait [2] | `character: hand` | `PortraitData` | `obj:getPortrait(character)` |
 | updatePortrait | `` | `void` | `obj:updatePortrait()` |
 | closeMapWindow | `` | `void` | `obj:closeMapWindow()` |
 | toggleMapWindow | `` | `void` | `obj:toggleMapWindow()` |
@@ -6868,7 +7095,8 @@
 | changeFloorButtonDown | `` | `void` | `obj:changeFloorButtonDown()` |
 | ordersPanelFill | `` | `void` | `obj:ordersPanelFill()` |
 | getBuildingInventoryPosition | `` | `void` | `obj:getBuildingInventoryPosition()` |
-| getTabPlatoonPortrait | `idx: integer` | `MainTabPortraitPlatoon` | `obj:getTabPlatoonPortrait(idx)` |
+| getTabPlatoonPortrait [1] | `tabIndex: integer` | `MainTabPortraitPlatoon` | `obj:getTabPlatoonPortrait(tabIndex)` |
+| getTabPlatoonPortrait [2] | `platoon: ActivePlatoon` | `MainTabPortraitPlatoon` | `obj:getTabPlatoonPortrait(platoon)` |
 | extendInfoPanel | `_a2: integer, _a3: integer, arg4: integer` | `void` | `obj:extendInfoPanel(_a2, _a3, arg4)` |
 | toggleInventory | `` | `void` | `obj:toggleInventory()` |
 | toggleStatsWindow | `` | `void` | `obj:toggleStatsWindow()` |
@@ -6928,18 +7156,18 @@
 | mapScreen | `MapScreen` | RW | `obj.mapScreen = <value>` |
 | currentCategoryList | `lektor<GameData*>` | R | `obj.currentCategoryList` |
 | factionScreen | `FactionsScreen` | RW | `obj.factionScreen = <value>` |
-| researchCategoriesListBox | `lightuserdata` | R | `obj.researchCategoriesListBox` |
+| researchCategoriesListBox | `unknown` | RW | `obj.researchCategoriesListBox = <value>` |
 | availableList | `DatapanelGUI` | RW | `obj.availableList = <value>` |
 | info | `DatapanelGUI` | RW | `obj.info = <value>` |
 | info2 | `DatapanelGUI` | RW | `obj.info2 = <value>` |
 | techCategory | `string` | RW | `obj.techCategory = <value>` |
 | currentResearch | `GameData` | RW | `obj.currentResearch = <value>` |
-| researchBenchMessage | `lightuserdata` | R | `obj.researchBenchMessage` |
+| researchBenchMessage | `unknown` | RW | `obj.researchBenchMessage = <value>` |
 | researchDescriptionUpdateRequest | `boolean` | RW | `obj.researchDescriptionUpdateRequest = <value>` |
 | lastResearchRate | `number` | RW | `obj.lastResearchRate = <value>` |
 | todoList | `lightuserdata` | R | `obj.todoList` |
 | craftingQueue | `lightuserdata` | R | `obj.craftingQueue` |
-| messagesTextBox | `lightuserdata` | R | `obj.messagesTextBox` |
+| messagesTextBox | `unknown` | RW | `obj.messagesTextBox = <value>` |
 | messagesUpdated | `boolean` | RW | `obj.messagesUpdated = <value>` |
 | messagesMutex | `lightuserdata` | R | `obj.messagesMutex` |
 | messagesPlayerColor | `string` | RW | `obj.messagesPlayerColor = <value>` |
@@ -6947,8 +7175,8 @@
 | aiScreen | `DatapanelGUI` | RW | `obj.aiScreen = <value>` |
 | aiToolTip | `ToolTip` | RW | `obj.aiToolTip = <value>` |
 | toolTip | `ToolTip` | RW | `obj.toolTip = <value>` |
-| window | `lightuserdata` | R | `obj.window` |
-| tabs | `lightuserdata` | R | `obj.tabs` |
+| window | `unknown` | RW | `obj.window = <value>` |
+| tabs | `unknown` | RW | `obj.tabs = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -6958,8 +7186,8 @@
 | getVisible | `` | `boolean` | `obj:getVisible()` |
 | setVisible | `on: boolean, tab: integer` | `void` | `obj:setVisible(on, tab)` |
 | getCurrentTab | `` | `integer` | `obj:getCurrentTab()` |
-| getTab | `index: integer` | `lightuserdata` | `obj:getTab(index)` |
-| getWidget | `name: string` | `lightuserdata` | `obj:getWidget(name)` |
+| getTab | `index: integer` | `void` | `obj:getTab(index)` |
+| getWidget | `name: string` | `void` | `obj:getWidget(name)` |
 | refresh | `progress: number` | `void` | `obj:refresh(progress)` |
 | refreshResearchList | `` | `void` | `obj:refreshResearchList()` |
 | refreshResearchRate | `` | `void` | `obj:refreshResearchRate()` |
@@ -6977,6 +7205,12 @@
 | addMessage | `owner: string, message: string, isPlayer: integer` | `void` | `obj:addMessage(owner, message, isPlayer)` |
 | updateResearchListRate | `` | `void` | `obj:updateResearchListRate()` |
 | refreshResearchListDescription | `` | `void` | `obj:refreshResearchListDescription()` |
+| closeEverythingButton | `name: string` | `void` | `obj:closeEverythingButton(name)` |
+| tabCallback | `index: integer` | `void` | `obj:tabCallback(index)` |
+| researchTypeSelect | `index: integer` | `void` | `obj:researchTypeSelect(index)` |
+| addButtonPress | `a2: integer, a3: integer, a4: integer` | `void` | `obj:addButtonPress(a2, a3, a4)` |
+| removeButtonPress | `a2: integer, a3: integer, a4: integer` | `void` | `obj:removeButtonPress(a2, a3, a4)` |
+| mouseOverCallback | `a2: integer, a3: integer` | `void` | `obj:mouseOverCallback(a2, a3)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -6998,19 +7232,19 @@
 |---|---|---|---|
 | updateTimer | `number` | RW | `obj.updateTimer = <value>` |
 | toolTip | `ToolTip` | RW | `obj.toolTip = <value>` |
-| mainWidget | `lightuserdata` | R | `obj.mainWidget` |
-| mapScrollView | `lightuserdata` | R | `obj.mapScrollView` |
-| mapImage | `lightuserdata` | R | `obj.mapImage` |
-| cameraMarker | `lightuserdata` | R | `obj.cameraMarker` |
+| mainWidget | `unknown` | RW | `obj.mainWidget = <value>` |
+| mapScrollView | `unknown` | RW | `obj.mapScrollView = <value>` |
+| mapImage | `unknown` | RW | `obj.mapImage = <value>` |
+| cameraMarker | `unknown` | RW | `obj.cameraMarker = <value>` |
 | cameraMarkerSkin | `lightuserdata` | R | `obj.cameraMarkerSkin` |
 | zoomUpdated | `boolean` | RW | `obj.zoomUpdated = <value>` |
 | zoomValueBase | `number` | RW | `obj.zoomValueBase = <value>` |
 | zoomValueMax | `number` | RW | `obj.zoomValueMax = <value>` |
 | zoomValueCurrent | `number` | RW | `obj.zoomValueCurrent = <value>` |
 | zoomLevelCurrent | `integer` | RW | `obj.zoomLevelCurrent = <value>` |
-| mapOverlaysContainer | `lightuserdata` | R | `obj.mapOverlaysContainer` |
+| mapOverlaysContainer | `unknown` | RW | `obj.mapOverlaysContainer = <value>` |
 | zoomLevels | `number` | RW | `obj.zoomLevels = <value>` |
-| mapMarkerMovement | `lightuserdata` | RW | `obj.mapMarkerMovement = <value>` |
+| mapMarkerMovement | `unknown` | RW | `obj.mapMarkerMovement = <value>` |
 | mapMarkerMovementPosition | `Vector3` | RW | `obj.mapMarkerMovementPosition = <value>` |
 | mapMarkerMovementFadeOutDelay | `number` | RW | `obj.mapMarkerMovementFadeOutDelay = <value>` |
 | mapDragging | `boolean` | RW | `obj.mapDragging = <value>` |
@@ -7032,7 +7266,9 @@
 | centerCamera | `` | `void` | `obj:centerCamera()` |
 | clearTempMarkers | `` | `void` | `obj:clearTempMarkers()` |
 | refresh | `` | `void` | `obj:refresh()` |
-| update | `` | `void` | `obj:update()` |
+| update [1] | `mapPosition: MyGUI::types::TPoint<int>, zoom: MapZoomLevel` | `void` | `obj:update(mapPosition, zoom)` |
+| update [2] | `mapPosition: MyGUI::types::TPoint<int>` | `void` | `obj:update(mapPosition)` |
+| update [3] | `` | `void` | `obj:update()` |
 | addSquad | `` | `void` | `obj:addSquad()` |
 | removeSquad | `` | `void` | `obj:removeSquad()` |
 | hide | `` | `void` | `obj:hide()` |
@@ -7049,6 +7285,17 @@
 | updatePlayerTownMapMarker | `` | `void` | `obj:updatePlayerTownMapMarker()` |
 | worldToMapCoords | `pos: Vector3` | `void` | `obj:worldToMapCoords(pos)` |
 | mapCoordsToWorld | `left: integer, top: integer` | `Vector3` | `obj:mapCoordsToWorld(left, top)` |
+| mapMouseWheel | `rel: integer` | `void` | `obj:mapMouseWheel(rel)` |
+| mapMousePressed | `left: integer, top: integer, id: integer` | `void` | `obj:mapMousePressed(left, top, id)` |
+| mapMouseReleased | `left: integer, top: integer, id: integer` | `void` | `obj:mapMouseReleased(left, top, id)` |
+| centerButton | `` | `void` | `obj:centerButton()` |
+| zoomInButton | `` | `void` | `obj:zoomInButton()` |
+| zoomOutButton | `` | `void` | `obj:zoomOutButton()` |
+
+### Static Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getMarkerColor | `` | `void` | `MapScreen.getMarkerColor()`<br>`obj:getMarkerColor()` |
 
 ## MapScreen::MapMarkerCharacter
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
@@ -7233,7 +7480,9 @@
 | calculateBleedRateForFX | `` | `number` | `obj:calculateBleedRateForFX()` |
 | _setHealth | `` | `void` | `obj:_setHealth()` |
 | getLimbState | `` | `void` | `obj:getLimbState()` |
-| getPart | `` | `void` | `obj:getPart()` |
+| getPart [1] | `what: RobotLimbs::Limb` | `MedicalSystem::HealthPartStatus` | `obj:getPart(what)` |
+| getPart [2] | `index: integer` | `MedicalSystem::HealthPartStatus` | `obj:getPart(index)` |
+| getPart [3] | `partType: MedicalSystem::HealthPartStatus::PartType, leftSide: LeftRight` | `MedicalSystem::HealthPartStatus` | `obj:getPart(partType, leftSide)` |
 | addArmour | `` | `void` | `obj:addArmour()` |
 | removeArmour | `` | `void` | `obj:removeArmour()` |
 | wearingUniformOf | `` | `void` | `obj:wearingUniformOf()` |
@@ -7321,6 +7570,11 @@
 |---|---|---|---|
 | modal | `boolean` | RW | `obj.modal = <value>` |
 | callback | `lightuserdata` | R | `obj.callback` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| buttonClick | `` | `void` | `obj:buttonClick()` |
 
 ## MessageChain
 **Header:** `extern/KenshiLib/Include/kenshi/physicsactual.h`
@@ -7471,7 +7725,8 @@
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| getUID | `` | `integer` | `NavMesh.getUID()`<br>`obj:getUID()` |
+| getUID [1] | `building: hand` | `integer` | `NavMesh.getUID(building)`<br>`obj:getUID(building)` |
+| getUID [2] | `zone: iVector2` | `integer` | `NavMesh.getUID(zone)`<br>`obj:getUID(zone)` |
 | hashBuilding | `` | `integer` | `NavMesh.hashBuilding()`<br>`obj:hashBuilding()` |
 | hashInterior | `` | `integer` | `NavMesh.hashInterior()`<br>`obj:hashInterior()` |
 | hashZone | `` | `integer` | `NavMesh.hashZone()`<br>`obj:hashZone()` |
@@ -7590,6 +7845,12 @@
 | update | `` | `void` | `obj:update()` |
 | loadData | `` | `void` | `obj:loadData()` |
 | updateCurrentData | `` | `void` | `obj:updateCurrentData()` |
+| showWindow | `` | `void` | `obj:showWindow()` |
+| close | `` | `void` | `obj:close()` |
+| prevStart | `` | `void` | `obj:prevStart()` |
+| nextStart | `` | `void` | `obj:nextStart()` |
+| newGameStart | `` | `void` | `obj:newGameStart()` |
+| toggleAdvancedOptions | `` | `void` | `obj:toggleAdvancedOptions()` |
 
 ## Nx9Real
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsActual.h`
@@ -7622,8 +7883,10 @@
 | id | `` | `void` | `obj:id()` |
 | setColumn | `col: integer` | `void` | `obj:setColumn(col)` |
 | getRow | `row: integer` | `void` | `obj:getRow(row)` |
-| getColumn | `col: integer` | `void` | `obj:getColumn(col)` |
-| multiply | `` | `void` | `obj:multiply()` |
+| getColumn [1] | `col: integer` | `NxVec3` | `obj:getColumn(col)` |
+| getColumn [2] | `col: integer, v: NxVec3` | `void` | `obj:getColumn(col, v)` |
+| multiply [1] | `left: NxMat33, right: NxMat33` | `void` | `obj:multiply(left, right)` |
+| multiply [2] | `src: NxVec3, dst: NxVec3` | `void` | `obj:multiply(src, dst)` |
 | get | `row: integer, col: integer` | `number` | `obj:get(row, col)` |
 | set | `row: integer, col: integer, val: number` | `void` | `obj:set(row, col, val)` |
 
@@ -7668,7 +7931,8 @@
 | add | `` | `void` | `obj:add()` |
 | subtract | `` | `void` | `obj:subtract()` |
 | cross | `` | `void` | `obj:cross()` |
-| set | `x: number, y: number, z: number` | `void` | `obj:set(x, y, z)` |
+| set [1] | `_x: number, _y: number, _z: number` | `void` | `obj:set(_x, _y, _z)` |
+| set [2] | `v: number` | `void` | `obj:set(v)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7705,6 +7969,14 @@
 | setFileMask | `_value: string` | `void` | `obj:setFileMask(_value)` |
 | getFileMask | `` | `void` | `obj:getFileMask()` |
 | update | `` | `void` | `obj:update()` |
+| accept | `` | `void` | `obj:accept()` |
+| cancel | `` | `void` | `obj:cancel()` |
+| upFolder | `` | `void` | `obj:upFolder()` |
+| notifyDirectoryComboAccept | `index: integer` | `void` | `obj:notifyDirectoryComboAccept(index)` |
+| notifyDirectoryComboChangePosition | `index: integer` | `void` | `obj:notifyDirectoryComboChangePosition(index)` |
+| notifyListChangePosition | `index: integer` | `void` | `obj:notifyListChangePosition(index)` |
+| notifyListSelectAccept | `index: integer` | `void` | `obj:notifyListSelectAccept(index)` |
+| closeWindow | `name: string` | `void` | `obj:closeWindow(name)` |
 
 ## OptionsHolder
 **Header:** `extern/KenshiLib/Include/kenshi/OptionsHolder.h`
@@ -7824,6 +8096,7 @@
 | saveOptions | `` | `void` | `obj:saveOptions()` |
 | create | `` | `void` | `obj:create()` |
 | updateResolutions | `` | `void` | `obj:updateResolutions()` |
+| closeButton | `` | `void` | `obj:closeButton()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7846,6 +8119,7 @@
 |---|---|---|---|
 | getWidget | `` | `lightuserdata` | `obj:getWidget()` |
 | resize | `` | `void` | `obj:resize()` |
+| onRemove | `` | `void` | `obj:onRemove()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7911,6 +8185,18 @@
 | notifyEndDropOrder | `_sender: userdata, _result: boolean` | `void` | `obj:notifyEndDropOrder(_sender, _result)` |
 | setSpeed | `moveSpeed: integer` | `void` | `obj:setSpeed(moveSpeed)` |
 | setSpeedImage | `moveSpeed: integer` | `void` | `obj:setSpeedImage(moveSpeed)` |
+| toggleStealth | `` | `void` | `obj:toggleStealth()` |
+| toggleRanged | `` | `void` | `obj:toggleRanged()` |
+| speedPrevious | `` | `void` | `obj:speedPrevious()` |
+| speedNext | `` | `void` | `obj:speedNext()` |
+| blockmodeButton | `` | `void` | `obj:blockmodeButton()` |
+| holdButtonCallback | `` | `void` | `obj:holdButtonCallback()` |
+| passiveButtonCallback | `` | `void` | `obj:passiveButtonCallback()` |
+| chaseButtonCallback | `` | `void` | `obj:chaseButtonCallback()` |
+| tauntButtonCallback | `` | `void` | `obj:tauntButtonCallback()` |
+| medicButton | `` | `void` | `obj:medicButton()` |
+| liftButton | `` | `void` | `obj:liftButton()` |
+| prospectingButton | `` | `void` | `obj:prospectingButton()` |
 
 ## Ownerships
 **Header:** `extern/KenshiLib/Include/kenshi/Platoon.h`
@@ -8091,7 +8377,8 @@
 | isLoaded | `` | `boolean` | `obj:isLoaded()` |
 | setVisible | `on: boolean` | `void` | `obj:setVisible(on)` |
 | handleChanged | `` | `void` | `obj:handleChanged()` |
-| update | `speed: number` | `void` | `obj:update(speed)` |
+| update [1] | `spd: number` | `void` | `obj:update(spd)` |
+| update [2] | `speed: number` | `void` | `obj:update(speed)` |
 | updateAimingType | `speed: number, rotTarget: Vector3` | `number` | `obj:updateAimingType(speed, rotTarget)` |
 
 ## PhysicsCollection::LightEnt
@@ -8401,13 +8688,15 @@
 | buildingSelected | `position: Vector3, interiorsVisible: boolean` | `boolean` | `obj:buildingSelected(position, interiorsVisible)` |
 | playerMove | `pos: Vector3` | `void` | `obj:playerMove(pos)` |
 | _isPlayerCharacter | `` | `boolean` | `obj:_isPlayerCharacter()` |
-| recruit | `editor: boolean` | `boolean` | `obj:recruit(editor)` |
+| recruit [1] | `characters: lektor<Character*>, editor: boolean` | `boolean` | `obj:recruit(characters, editor)` |
+| recruit [2] | `character: Character, editor: boolean` | `boolean` | `obj:recruit(character, editor)` |
 | getDeadSquadHandle | `` | `hand` | `obj:getDeadSquadHandle()` |
 | updatePlayerSelection | `` | `void` | `obj:updatePlayerSelection()` |
 | getAllSelectedObjects | `type: integer` | `void` | `obj:getAllSelectedObjects(type)` |
 | newPlayerTaskSelectedCharacters | `t: integer, clickpos: Vector3, addDontClear: boolean` | `void` | `obj:newPlayerTaskSelectedCharacters(t, clickpos, addDontClear)` |
 | getPlayerTaskProbability | `task: integer` | `boolean\|number` | `obj:getPlayerTaskProbability(task)` |
-| getAllPlayerCharacters | `` | `lektor<Character*>` | `obj:getAllPlayerCharacters()` |
+| getAllPlayerCharacters [1] | `list: lektor<RootObject*>` | `void` | `obj:getAllPlayerCharacters(list)` |
+| getAllPlayerCharacters [2] | `` | `lektor<Character*>` | `obj:getAllPlayerCharacters()` |
 | updateFloorVisibility | `` | `void` | `obj:updateFloorVisibility()` |
 | playerControl | `` | `void` | `obj:playerControl()` |
 
@@ -8475,6 +8764,11 @@
 | created | `boolean` | RW | `obj.created = <value>` |
 | textureName | `string` | RW | `obj.textureName = <value>` |
 
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| updateImageWidget | `val: boolean` | `void` | `obj:updateImageWidget(val)` |
+
 ## PortraitMainCellView
 **Header:** `extern/KenshiLib/Include/kenshi/gui/PortraitManager.h`
 **Metatable:** `KenshiLua.PortraitMainCellView`
@@ -8533,7 +8827,8 @@
 | getPortrait | `` | `PortraitData` | `obj:getPortrait()` |
 | updatePortrait | `` | `void` | `obj:updatePortrait()` |
 | updatePortraitImage | `` | `boolean` | `obj:updatePortraitImage()` |
-| setImageWidget | `imgBox: userdata, force: boolean` | `void` | `obj:setImageWidget(imgBox, force)` |
+| setImageWidget | `force: boolean` | `void` | `obj:setImageWidget(force)` |
+| setImageWidgetNPC | `` | `void` | `obj:setImageWidgetNPC()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -8638,7 +8933,8 @@
 | validateUsageNodes | `` | `void` | `obj:validateUsageNodes()` |
 | getOrientation | `` | `Quaternion` | `obj:getOrientation()` |
 | getCentreOffset | `` | `Vector3` | `obj:getCentreOffset()` |
-| isNoCollideWithThisBuilding | `` | `boolean` | `obj:isNoCollideWithThisBuilding()` |
+| isNoCollideWithThisBuilding [1] | `what: RootObject, shape: NxShape, node: boolean` | `boolean` | `obj:isNoCollideWithThisBuilding(what, shape, node)` |
+| isNoCollideWithThisBuilding [2] | `what: PreviewBuilding` | `boolean` | `obj:isNoCollideWithThisBuilding(what)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -8789,6 +9085,8 @@
 | refresh | `` | `void` | `obj:refresh()` |
 | clear | `` | `void` | `obj:clear()` |
 | worldToMapCoords | `pos: Vector3` | `void` | `obj:worldToMapCoords(pos)` |
+| closeButton | `name: string` | `void` | `obj:closeButton(name)` |
+| resourceSelected | `` | `void` | `obj:resourceSelected()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -8873,12 +9171,15 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| getRaceData | `` | `RaceData` | `obj:getRaceData()` |
-| isRelatedRace | `` | `boolean` | `obj:isRelatedRace()` |
+| getRaceData [1] | `stringID: string` | `RaceData` | `obj:getRaceData(stringID)` |
+| getRaceData [2] | `data: GameData` | `RaceData` | `obj:getRaceData(data)` |
+| isRelatedRace [1] | `data: RaceData` | `boolean` | `obj:isRelatedRace(data)` |
+| isRelatedRace [2] | `d: GameData` | `boolean` | `obj:isRelatedRace(d)` |
 | isSpecificRace | `` | `boolean` | `obj:isSpecificRace()` |
 | getStatMod | `stat: integer` | `number` | `obj:getStatMod(stat)` |
 | isImmune | `w: integer` | `boolean` | `obj:isImmune(w)` |
-| canEat | `isAnimal: boolean` | `boolean` | `obj:canEat(isAnimal)` |
+| canEat [1] | `food: GameData, isAnimal: boolean` | `boolean` | `obj:canEat(food, isAnimal)` |
+| canEat [2] | `food: Item, isAnimal: boolean` | `boolean` | `obj:canEat(food, isAnimal)` |
 
 ## RaceLimiter
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
@@ -8893,7 +9194,9 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | addLimit | `` | `void` | `obj:addLimit()` |
-| canEquip | `isAnimal: boolean` | `boolean` | `obj:canEquip(isAnimal)` |
+| canEquip [1] | `race: RaceData, isAnimal: boolean` | `boolean` | `obj:canEquip(race, isAnimal)` |
+| canEquip [2] | `item: GameData, race: RaceData, isAnimal: boolean` | `boolean` | `obj:canEquip(item, race, isAnimal)` |
+| canEquip [3] | `item: GameData, who: RootObject` | `boolean` | `obj:canEquip(item, who)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -9010,7 +9313,11 @@
 | isLoading | `` | `boolean` | `obj:isLoading()` |
 | init | `` | `void` | `obj:init()` |
 | threadProc | `` | `integer` | `obj:threadProc()` |
-| destroy | `` | `void` | `obj:destroy()` |
+| destroy [1] | `material: Ogre::SharedPtr<Ogre::Material>, destroyManualTextures: boolean` | `void` | `obj:destroy(material, destroyManualTextures)` |
+| destroy [2] | `entity: Ogre::InstancedEntity, destroyParent: boolean` | `void` | `obj:destroy(entity, destroyParent)` |
+| destroy [3] | `obj: Ogre::MovableObject, destroyParent: boolean` | `void` | `obj:destroy(obj, destroyParent)` |
+| destroy [4] | `entity: Ogre::Entity, destroyParent: boolean` | `void` | `obj:destroy(entity, destroyParent)` |
+| destroy [5] | `` | `void` | `obj:destroy()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -9247,7 +9554,8 @@
 | getThings | `` | `lektor<RootObject*>` | `obj:getThings()` |
 | loadToReality | `skipSaveState: boolean, positionMoved: Vector3, rotOffset: Quaternion, specificSID: string` | `void` | `obj:loadToReality(skipSaveState, positionMoved, rotOffset, specificSID)` |
 | getSelectedObjects | `type: integer, selectedOnly: boolean` | `void` | `obj:getSelectedObjects(type, selectedOnly)` |
-| serialiseThings | `offset: userdata, mod: string, mod: string` | `void` | `obj:serialiseThings(offset, mod, mod)` |
+| serialiseThings [1] | `_things: lektor<RootObject*>, outputToInstanceCollectionOfSomeKind: GameData, source: GameDataContainer, offsetPosToSubtract: PosRotPair, mod: string` | `void` | `obj:serialiseThings(_things, outputToInstanceCollectionOfSomeKind, source, offsetPosToSubtract, mod)` |
+| serialiseThings [2] | `outputToInstanceCollectionOfSomeKind: GameData, source: GameDataContainer, offsetPosToSubtract: PosRotPair, mod: string` | `void` | `obj:serialiseThings(outputToInstanceCollectionOfSomeKind, source, offsetPosToSubtract, mod)` |
 | loadInstance | `skipSaveState: boolean, pos: Vector3, rot: Quaternion, positionMoved: Vector3` | `void` | `obj:loadInstance(skipSaveState, pos, rot, positionMoved)` |
 
 ## RootObjectContainer::SpecificItemLoadFirst
@@ -9292,7 +9600,8 @@
 | populateBuilding | `` | `void` | `obj:populateBuilding()` |
 | process | `` | `RootObjectBase` | `obj:process()` |
 | createBuilding | `position: Vector3, rotation: Quaternion, furnitureOf: userdata, invisible: boolean, completed: boolean, isFoliage: boolean, isOutsideFurniture: boolean` | `Building` | `obj:createBuilding(position, rotation, furnitureOf, invisible, completed, isFoliage, isOutsideFurniture)` |
-| createItem | `levelOverride: integer` | `Item` | `obj:createItem(levelOverride)` |
+| createItem [1] | `gd: GameData, handle: hand, weaponMesh: GameData, matData: GameData, levelOverride: integer, flagUniform: Faction` | `Item` | `obj:createItem(gd, handle, weaponMesh, matData, levelOverride, flagUniform)` |
+| createItem [2] | `itemState: GameData` | `Item` | `obj:createItem(itemState)` |
 | getValsFromDataInList | `listName: string` | `void` | `obj:getValsFromDataInList(listName)` |
 | createRandomUnloadedCharacter | `platoon: userdata, position: Vector3` | `void` | `obj:createRandomUnloadedCharacter(platoon, position)` |
 | createRandomSquad | `position: Vector3, maxnum: integer, maparea: userdata, permanentsquad: boolean, sizeMultiplier: number, squadType: integer, isJustARefresh: boolean` | `Platoon` | `obj:createRandomSquad(position, maxnum, maparea, permanentsquad, sizeMultiplier, squadType, isJustARefresh)` |
@@ -9305,7 +9614,7 @@
 | _chooseClothingItemFromList | `` | `GameData` | `RootObjectFactory._chooseClothingItemFromList()`<br>`obj:_chooseClothingItemFromList()` |
 
 ## RootObjectFactory::CreatelistItem
-**Header:** `extern/KenshiLib/Include/kenshi/RootObject.h`
+**Header:** `extern/KenshiLib/Include/kenshi/RootObjectFactory.h`
 **Parent Class:** [`RootObjectFactory`](#rootobjectfactory)
 **Metatable:** `KenshiLua.CreatelistItem`
 
@@ -9433,15 +9742,15 @@
 | importGame | `location: string, name: string, flags: integer` | `integer` | `obj:importGame(location, name, flags)` |
 | importPlayerBuildings | `path: string, file: string` | `integer` | `obj:importPlayerBuildings(path, file)` |
 | importOldPlayerBuildings | `path: string, name: string` | `integer` | `obj:importOldPlayerBuildings(path, name)` |
-| load [1] | `name: string` | `void` | `obj:load(name)` |
-| load [2] | `resetPos: boolean` | `void` | `obj:load(resetPos)` |
+| load [1] | `s: SaveInfo, resetPos: boolean` | `void` | `obj:load(s, resetPos)` |
+| load [2] | `name: string` | `void` | `obj:load(name)` |
 | import | `flags: integer` | `void` | `obj:import(flags)` |
 | loadInfo | `` | `boolean` | `obj:loadInfo()` |
 | checkVersion | `` | `boolean` | `obj:checkVersion()` |
 | getCurrentGame | `` | `string` | `obj:getCurrentGame()` |
 | getSavePath | `` | `string` | `obj:getSavePath()` |
-| scanGames [1] | `location: string, loadDetails: boolean` | `integer` | `obj:scanGames(location, loadDetails)` |
-| scanGames [2] | `loadDetails: boolean` | `integer` | `obj:scanGames(loadDetails)` |
+| scanGames [1] | `list: lektor<SaveInfo>, loadDetails: boolean` | `integer` | `obj:scanGames(list, loadDetails)` |
+| scanGames [2] | `location: string, list: lektor<SaveInfo>, loadDetails: boolean` | `integer` | `obj:scanGames(location, list, loadDetails)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -9556,10 +9865,12 @@
 | update | `m: Vector2` | `void` | `obj:update(m)` |
 | cancel | `` | `void` | `obj:cancel()` |
 | isActive | `` | `boolean` | `obj:isActive()` |
-| contains | `point: Vector3, b: Vector3` | `boolean` | `obj:contains(point, b)` |
+| contains [1] | `a: Vector3, b: Vector3, radius: number` | `boolean` | `obj:contains(a, b, radius)` |
+| contains [2] | `box: Ogre::AxisAlignedBox` | `boolean` | `obj:contains(box)` |
+| contains [3] | `point: Vector3, r: number` | `boolean` | `obj:contains(point, r)` |
 
 ## SenseItr
-**Header:** `???`
+**Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
 **Metatable:** `KenshiLua.SenseItr`
 
 ### Fields
@@ -9616,7 +9927,8 @@
 | periodicUpdate | `time: number` | `void` | `obj:periodicUpdate(time)` |
 | periodicUpdate_KOed | `` | `void` | `obj:periodicUpdate_KOed()` |
 | getVisionRange | `inTown: boolean` | `number` | `obj:getVisionRange(inTown)` |
-| update | `frameTime: number` | `void` | `obj:update(frameTime)` |
+| update [1] | `frameTime: number` | `void` | `obj:update(frameTime)` |
+| update [2] | `time: number` | `void` | `obj:update(time)` |
 | notifyKO | `` | `void` | `obj:notifyKO()` |
 | getIterator | `tagsAny: integer, tagsNOT: integer` | `void` | `obj:getIterator(tagsAny, tagsNOT)` |
 | getNearestEnemyDistanceSq | `` | `number` | `obj:getNearestEnemyDistanceSq()` |
@@ -9856,7 +10168,9 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | getVisible | `` | `boolean` | `obj:getVisible()` |
-| update | `` | `void` | `obj:update()` |
+| update [1] | `` | `void` | `obj:update()` |
+| update [2] | `_info: MyGUI::IBDrawItemInfo, _data: PortraitData` | `void` | `obj:update(_info, _data)` |
+| update [3] | `_info: MyGUI::IBDrawItemInfo, _data: SquadManagementScreen::SquadData` | `void` | `obj:update(_info, _data)` |
 | reset | `` | `void` | `obj:reset()` |
 | refreshSquads | `` | `void` | `obj:refreshSquads()` |
 | notifyEndDropSquad | `_sender: userdata, _result: boolean` | `void` | `obj:notifyEndDropSquad(_sender, _result)` |
@@ -9864,6 +10178,7 @@
 | removeSquad | `` | `void` | `obj:removeSquad()` |
 | getSquad | `` | `SquadManagementScreen::SquadData` | `obj:getSquad()` |
 | dismissCharacter | `result: integer` | `void` | `obj:dismissCharacter(result)` |
+| onAddSquad | `` | `void` | `obj:onAddSquad()` |
 
 ## SquadManagementScreen::PortraitSquadCellView
 **Header:** `extern/KenshiLib/Include/kenshi/gui/PortraitManager.h`
@@ -9924,6 +10239,8 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | updateSquadSize | `` | `void` | `obj:updateSquadSize()` |
+| onNameChanged | `` | `void` | `obj:onNameChanged()` |
+| onRemove | `` | `void` | `obj:onRemove()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -10044,6 +10361,8 @@
 | isSword | `` | `Sword` | `obj:isSword()` |
 | setupStats | `_level: integer` | `void` | `obj:setupStats(_level)` |
 | getSkillModIndoors | `` | `integer` | `obj:getSkillModIndoors()` |
+| getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
+| getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
 
 ## TagsClass
 **Header:** `extern/KenshiLib/Include/kenshi/util/TagsClass.h`
@@ -10338,6 +10657,13 @@
 | update | `` | `void` | `obj:update()` |
 | closeTheOtherBits | `` | `boolean` | `obj:closeTheOtherBits()` |
 | setCreditsVisible | `value: boolean` | `void` | `obj:setCreditsVisible(value)` |
+| loadGame | `` | `void` | `obj:loadGame()` |
+| importGame | `` | `void` | `obj:importGame()` |
+| showOptions | `` | `void` | `obj:showOptions()` |
+| credits | `` | `void` | `obj:credits()` |
+| exitGame | `` | `void` | `obj:exitGame()` |
+| continueGame | `` | `void` | `obj:continueGame()` |
+| hover | `` | `void` | `obj:hover()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -10351,12 +10677,12 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| panel | `lightuserdata` | RW | `obj.panel = <value>` |
+| panel | `unknown` | RW | `obj.panel = <value>` |
 | panelWidth | `integer` | RW | `obj.panelWidth = <value>` |
 | lineMarginH | `number` | RW | `obj.lineMarginH = <value>` |
 | panelMarginV | `integer` | RW | `obj.panelMarginV = <value>` |
 | lineSpacing | `integer` | RW | `obj.lineSpacing = <value>` |
-| caller | `lightuserdata` | R | `obj.caller` |
+| caller | `unknown` | R | `obj.caller` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -10367,6 +10693,20 @@
 | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
 | addLine | `textLeft: string, textRight: string` | `void` | `obj:addLine(textLeft, textRight)` |
 | clearLines | `` | `void` | `obj:clearLines()` |
+| setup_hand | `` | `void` | `obj:setup_hand()` |
+| setup_gamedata | `` | `void` | `obj:setup_gamedata()` |
+| setup_stringpairs | `` | `void` | `obj:setup_stringpairs()` |
+| setup_text | `text: string` | `void` | `obj:setup_text(text)` |
+| clear | `` | `void` | `obj:clear()` |
+| _setup | `` | `void` | `obj:_setup()` |
+| clearData | `` | `void` | `obj:clearData()` |
+| show | `` | `void` | `obj:show()` |
+| setContent | `` | `void` | `obj:setContent()` |
+| showText | `` | `void` | `obj:showText()` |
+| showMultiLine | `` | `void` | `obj:showMultiLine()` |
+| showGameData_hand | `` | `void` | `obj:showGameData_hand()` |
+| showGameData_widget | `` | `void` | `obj:showGameData_widget()` |
+| setPosition | `` | `void` | `obj:setPosition()` |
 
 ## ToolTip::ToolTipLine
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
@@ -10376,9 +10716,9 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| content | `MyGUI::Widget` | R | `obj.content` |
-| leftBox | `MyGUI::Widget` | R | `obj.leftBox` |
-| rightBox | `MyGUI::Widget` | R | `obj.rightBox` |
+| content | `unknown` | RW | `obj.content = <value>` |
+| leftBox | `unknown` | RW | `obj.leftBox = <value>` |
+| rightBox | `unknown` | RW | `obj.rightBox = <value>` |
 | width | `integer` | RW | `obj.width = <value>` |
 
 ## ToolTipDynamic
@@ -10389,6 +10729,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
+| setPosition | `` | `void` | `obj:setPosition()` |
 
 ## ToolTipFixed
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
@@ -10397,7 +10738,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| parentPanel | `lightuserdata` | R | `obj.parentPanel` |
+| parentPanel | `unknown` | RW | `obj.parentPanel = <value>` |
 | minHeight | `integer` | RW | `obj.minHeight = <value>` |
 
 ### Methods
@@ -10405,6 +10746,11 @@
 |---|---|---|---|
 | update | `` | `void` | `obj:update()` |
 | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
+| clear | `` | `void` | `obj:clear()` |
+| setBottomPosition | `` | `void` | `obj:setBottomPosition()` |
+| setPosition | `` | `void` | `obj:setPosition()` |
+| _setup | `` | `void` | `obj:_setup()` |
+| mouseMoved | `left: integer, top: integer` | `void` | `obj:mouseMoved(left, top)` |
 
 ## ToolTipInventory
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
@@ -10419,6 +10765,13 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | update | `` | `void` | `obj:update()` |
+| _setup | `` | `void` | `obj:_setup()` |
+| setup | `` | `void` | `obj:setup()` |
+| show | `` | `void` | `obj:show()` |
+| setContent | `` | `void` | `obj:setContent()` |
+| clearData | `` | `void` | `obj:clearData()` |
+| mouseMoved | `left: integer, top: integer` | `void` | `obj:mouseMoved(left, top)` |
+| setPosition | `` | `void` | `obj:setPosition()` |
 
 ## ToolTipStatic
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
@@ -10429,6 +10782,10 @@
 |---|---|---|---|
 | update | `` | `void` | `obj:update()` |
 | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
+| clear | `` | `void` | `obj:clear()` |
+| _setup | `` | `void` | `obj:_setup()` |
+| setPosition | `` | `void` | `obj:setPosition()` |
+| mouseMoved | `left: integer, top: integer` | `void` | `obj:mouseMoved(left, top)` |
 
 ## TortureBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/TortureBuilding.h`
@@ -10486,6 +10843,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
+| facilitesWeHaveHere | `` | `void` | `obj:facilitesWeHaveHere()` |
 | initialiseResidentData | `` | `void` | `obj:initialiseResidentData()` |
 | getGameData | `` | `GameData` | `obj:getGameData()` |
 | getOriginalGameData | `` | `GameData` | `obj:getOriginalGameData()` |
@@ -10747,8 +11105,8 @@
 | resetAllVisible | `` | `void` | `obj:resetAllVisible()` |
 | setSignsVisible | `value: boolean` | `void` | `obj:setSignsVisible(value)` |
 | factoryObjectCreatedCallback | `` | `void` | `obj:factoryObjectCreatedCallback()` |
-| getFloorVisible [1] | `floor: integer` | `boolean` | `obj:getFloorVisible(floor)` |
-| getFloorVisible [2] | `` | `integer` | `obj:getFloorVisible()` |
+| getFloorVisible [1] | `building: Building` | `integer` | `obj:getFloorVisible(building)` |
+| getFloorVisible [2] | `building: Building, floor: integer` | `boolean` | `obj:getFloorVisible(building, floor)` |
 
 ## TownBuildingsManager::BuildingInfo
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
@@ -10786,6 +11144,12 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | scrollBackpack | `lightuserdata` | R | `obj.scrollBackpack` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupSections | `` | `void` | `obj:setupSections()` |
+| notifyMouseWheel | `rel: integer` | `void` | `obj:notifyMouseWheel(rel)` |
 
 ## TransformWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TransformWindow.h`
@@ -10835,6 +11199,8 @@
 | changeValue | `` | `void` | `obj:changeValue()` |
 | reset | `` | `void` | `obj:reset()` |
 | revert | `` | `void` | `obj:revert()` |
+| confirmValue | `` | `void` | `obj:confirmValue()` |
+| hide | `name: string` | `void` | `obj:hide(name)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -10931,6 +11297,12 @@
 | showTutorialWindow | `` | `void` | `obj:showTutorialWindow()` |
 | closeTutorialWindow | `` | `void` | `obj:closeTutorialWindow()` |
 | updateCurrentItem | `` | `void` | `obj:updateCurrentItem()` |
+| windowButtonEvent | `name: string` | `void` | `obj:windowButtonEvent(name)` |
+| windowPrevEvent | `` | `void` | `obj:windowPrevEvent()` |
+| windowNextEvent | `` | `void` | `obj:windowNextEvent()` |
+| dismissButtonEvent | `` | `void` | `obj:dismissButtonEvent()` |
+| tooltipOpen | `` | `void` | `obj:tooltipOpen()` |
+| tooltipClose | `` | `void` | `obj:tooltipClose()` |
 
 ## TutorialGUI::TutorialGUILine
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TutorialGUI.h`
@@ -11015,6 +11387,11 @@
 | isVisible | `` | `boolean` | `obj:isVisible()` |
 | setup | `` | `void` | `obj:setup()` |
 | updateCurrentItem | `` | `void` | `obj:updateCurrentItem()` |
+| tutorialSelectedEvent | `index: integer` | `void` | `obj:tutorialSelectedEvent(index)` |
+| tutorialPrevEvent | `` | `void` | `obj:tutorialPrevEvent()` |
+| tutorialNextEvent | `` | `void` | `obj:tutorialNextEvent()` |
+| tutorialActivateButtonEvent | `` | `void` | `obj:tutorialActivateButtonEvent()` |
+| tutorialWindowButton | `name: string` | `void` | `obj:tutorialWindowButton(name)` |
 
 ## TutorialSubItem
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TutorialGUI.h`
@@ -11176,17 +11553,21 @@
 | getTerrainWithWaterHeight | `z: number` | `number` | `obj:getTerrainWithWaterHeight(z)` |
 | getTerrainWithWaterHeightFromRenderer | `` | `number` | `obj:getTerrainWithWaterHeightFromRenderer()` |
 | getPositionInWater | `z: number` | `boolean` | `obj:getPositionInWater(z)` |
-| getFloorHeight | `withTerrain: boolean, furniture: boolean, furniture: boolean` | `number` | `obj:getFloorHeight(withTerrain, furniture, furniture)` |
+| getFloorHeight [1] | `origin: Vector3, floorNum: integer, withTerrain: boolean, furniture: boolean` | `number` | `obj:getFloorHeight(origin, floorNum, withTerrain, furniture)` |
+| getFloorHeight [2] | `origin: Vector3, withTerrain: boolean, furniture: boolean` | `number` | `obj:getFloorHeight(origin, withTerrain, furniture)` |
 | getBuildingGroundFloorHeight | `withTerrain: boolean` | `number` | `obj:getBuildingGroundFloorHeight(withTerrain)` |
 | isIndoors | `` | `Building` | `obj:isIndoors()` |
 | isIndoorsFast | `` | `boolean` | `obj:isIndoorsFast()` |
 | isIndoors_forWaypoint | `` | `Building` | `obj:isIndoors_forWaypoint()` |
-| getFloorNumber | `` | `integer` | `obj:getFloorNumber()` |
+| getFloorNumber [1] | `collisionGroup: integer` | `integer` | `obj:getFloorNumber(collisionGroup)` |
+| getFloorNumber [2] | `position: Vector3, hitBuilding: hand` | `integer` | `obj:getFloorNumber(position, hitBuilding)` |
 | getTerrainHeightFast | `z: number` | `number` | `obj:getTerrainHeightFast(z)` |
-| random | `hi: number` | `number` | `obj:random(hi)` |
+| random [1] | `lo: number, hi: number` | `number` | `obj:random(lo, hi)` |
+| random [2] | `` | `number` | `obj:random()` |
 | randomBool | `` | `boolean` | `obj:randomBool()` |
 | randomInt | `hi: integer` | `integer` | `obj:randomInt(hi)` |
-| seed | `` | `void` | `obj:seed()` |
+| seed [1] | `s: integer` | `void` | `obj:seed(s)` |
+| seed [2] | `` | `void` | `obj:seed()` |
 | round | `` | `integer` | `obj:round()` |
 | nlerp | `b: number, t: number` | `number` | `obj:nlerp(b, t)` |
 | getNextPow2 | `` | `integer` | `obj:getNextPow2()` |
@@ -11289,6 +11670,7 @@
 | isSword | `` | `Sword` | `obj:isSword()` |
 | isCrossbow | `` | `Crossbow` | `obj:isCrossbow()` |
 | getSkillModIndoors | `` | `integer` | `obj:getSkillModIndoors()` |
+| getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
 
 ## WeatherRegion
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsCollection.h`
@@ -11436,6 +11818,8 @@
 | updateGPUSafeThread | `camerapos: Vector3` | `void` | `obj:updateGPUSafeThread(camerapos)` |
 | spawnChecksUpdateThreaded | `island: integer` | `void` | `obj:spawnChecksUpdateThreaded(island)` |
 | levelEditorDeleteAllSelectedObjects | `` | `void` | `obj:levelEditorDeleteAllSelectedObjects()` |
+| levelEditorGetAllSelectedObjects | `type: integer` | `void` | `obj:levelEditorGetAllSelectedObjects(type)` |
+| getIsland | `` | `void` | `obj:getIsland()` |
 | getCurrentMapSector | `` | `void` | `obj:getCurrentMapSector()` |
 | getCurrentZoneMap | `` | `ZoneMap` | `obj:getCurrentZoneMap()` |
 | getSubMapSector | `X: number, Z: number` | `void` | `obj:getSubMapSector(X, Z)` |
@@ -11474,15 +11858,18 @@
 | loadPhase1 | `` | `void` | `obj:loadPhase1()` |
 | loadPhase2 | `` | `void` | `obj:loadPhase2()` |
 | loadPhase3 | `` | `void` | `obj:loadPhase3()` |
-| getMapSector [1] | `x: number, z: number` | `void` | `obj:getMapSector(x, z)` |
-| getMapSector [2] | `v: Vector3` | `void` | `obj:getMapSector(v)` |
+| getMapSector [1] | `v: Vector3` | `iVector2` | `obj:getMapSector(v)` |
+| getMapSector [2] | `x: number, z: number` | `iVector2` | `obj:getMapSector(x, z)` |
 | getZoneBoundsT | `pos: Vector3` | `void` | `obj:getZoneBoundsT(pos)` |
 | getZoneMapSectorBounds | `` | `Vector4` | `obj:getZoneMapSectorBounds()` |
-| getZoneMap | `x: integer, y: integer` | `ZoneMap` | `obj:getZoneMap(x, y)` |
+| getZoneMap [1] | `v: Vector3` | `ZoneMap` | `obj:getZoneMap(v)` |
+| getZoneMap [2] | `x: integer, y: integer` | `ZoneMap` | `obj:getZoneMap(x, y)` |
+| getZoneMap [3] | `v: iVector2` | `ZoneMap` | `obj:getZoneMap(v)` |
 | getZoneMapFromBuildingHandle | `` | `ZoneMap` | `obj:getZoneMapFromBuildingHandle()` |
-| activateZoneMap [1] | `range: integer, type: integer, deactivationTimer: number` | `boolean` | `obj:activateZoneMap(range, type, deactivationTimer)` |
-| activateZoneMap [2] | `range: integer, playerActivated: integer, backThread: boolean` | `boolean` | `obj:activateZoneMap(range, playerActivated, backThread)` |
-| findBuilding | `forSaleOnly: boolean, fun: integer` | `Building` | `obj:findBuilding(forSaleOnly, fun)` |
+| activateZoneMap [1] | `map: ZoneMap, center: iVector2, range: integer, type: ZoneActivationType, deactivationTimer: number` | `boolean` | `obj:activateZoneMap(map, center, range, type, deactivationTimer)` |
+| activateZoneMap [2] | `co: iVector2, range: integer, playerActivated: ZoneActivationType, backThread: boolean` | `boolean` | `obj:activateZoneMap(co, range, playerActivated, backThread)` |
+| findBuilding [1] | `t: TownBase, f: Faction, out: BuildingFinderClass` | `void` | `obj:findBuilding(t, f, out)` |
+| findBuilding [2] | `t: TownBase, f: Faction, forSaleOnly: boolean, fun: BuildingFunction, own: Ownerships` | `Building` | `obj:findBuilding(t, f, forSaleOnly, fun, own)` |
 | getAllActiveZones | `` | `void` | `obj:getAllActiveZones()` |
 | getAllActiveIslandNumbers | `` | `integer` | `obj:getAllActiveIslandNumbers()` |
 | getZonesTouchingTown | `` | `void` | `obj:getZonesTouchingTown()` |
@@ -11492,12 +11879,13 @@
 | getResource | `resource: integer, biome: userdata, pos: Vector3` | `number` | `obj:getResource(resource, biome, pos)` |
 | getResourceBase | `resource: integer, biome: userdata, pos: Vector3` | `number` | `obj:getResourceBase(resource, biome, pos)` |
 | getGroundEffect | `pos: Vector3` | `boolean\|number` | `obj:getGroundEffect(pos)` |
+| getAllActiveZonesT | `` | `void` | `obj:getAllActiveZonesT()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| getGroundSound [1] | `type: integer, barefoot: boolean` | `string` | `ZoneManager.getGroundSound(type, barefoot)`<br>`obj:getGroundSound(type, barefoot)` |
-| getGroundSound [2] | `barefoot: boolean` | `string` | `ZoneManager.getGroundSound(barefoot)`<br>`obj:getGroundSound(barefoot)` |
+| getGroundSound [1] | `type: GroundType, barefoot: boolean` | `char` | `ZoneManager.getGroundSound(type, barefoot)`<br>`obj:getGroundSound(type, barefoot)` |
+| getGroundSound [2] | `pos: Vector3` | `char` | `ZoneManager.getGroundSound(pos)`<br>`obj:getGroundSound(pos)` |
 
 ## ZoneManager::BiomeGroundEffects
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
@@ -11505,7 +11893,7 @@
 **Metatable:** `KenshiLua.ZoneManager_BiomeGroundEffects`
 
 ## ZoneManagerInterfaceT
-**Header:** `???`
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
 **Metatable:** `KenshiLua.ZoneManagerInterfaceT`
 
 ### Methods
@@ -11513,7 +11901,9 @@
 |---|---|---|---|
 | isZoneLoadedT | `_a1: Vector3` | `boolean` | `obj:isZoneLoadedT(_a1)` |
 | isZoneBeingLoadedT | `_a1: Vector3` | `boolean` | `obj:isZoneBeingLoadedT(_a1)` |
-| getZoneBoundsT | `pos: Vector3` | `void` | `obj:getZoneBoundsT(pos)` |
+| getZoneBoundsT [1] | `_a1: Vector3` | `AABB2D` | `obj:getZoneBoundsT(_a1)` |
+| getZoneBoundsT [2] | `_a1: iVector2` | `AABB2D` | `obj:getZoneBoundsT(_a1)` |
+| getAllActiveZonesT | `` | `void` | `obj:getAllActiveZonesT()` |
 
 ## ZoneMap
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
@@ -11614,6 +12004,6 @@
 | initialiseGrid | `size: number` | `void` | `obj:initialiseGrid(size)` |
 
 ## ZoneSpacialGrid::ZoneCell
-**Header:** `???`
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
 **Parent Class:** [`ZoneSpacialGrid`](#zonespacialgrid)
 **Metatable:** `KenshiLua.ZoneSpacialGrid_ZoneCell`

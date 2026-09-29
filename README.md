@@ -22,7 +22,12 @@ Loaded at runtime through RE_Kenshi, KenshiLua exposes selected portions of Kens
 
 A large amount of KenshiLib has been exposed for use from Lua. This includes almost the entirety of KenshiLib 0.3.0.
 * [BindingReference.md](docs/BindingsReference.md) - View for a list of methods and properties available from Lua.
+* [EnumsReference.md](docs/EnumsReference.md) - View for a list of enums available from Lua.
+* [CallbacksReference.md](docs/CallbacksReference.md) - View for a list of event callbacks available from Lua.
+* [MyGuiReference.md](docs/MyGuiReference.md) - View for a list of MyGUI methods and properties available from Lua.
 * [UnboundReference.md](docs/UnboundReference.md) - View for a list of methods and properties that exist in KenshiLib 0.3.0 but are not currently exposed to Lua.
+
+KenshiLib is a large and complex codebase, and while KenshiLua exposes a large portion of it, there are still many methods and properties that are not yet exposed to Lua. If you find that a method or property you need is not available, please open an issue on the KenshiLua GitHub repository.
 
 ## Installation
 
@@ -57,6 +62,25 @@ if world.paused then
 end
 ```
 
+There is also a list of events that you can register callbacks for like so:
+```lua
+-- This will run every time the InputHandler::keyDownEvent method is called by the game.
+
+-- OIS::KeyCode KC_V is equal to the integer 47
+local KC_V = 47
+
+-- The OnKeyDown Callback passes an InputHandler* as a thisptr and an OIS::KeyCode as an Integer
+local function on_key_down(thisptr, key_code)
+-- if that int is equal to 47 (the v key was pressed)
+if key_code == KC_V then
+toggle_prone()
+end
+end
+
+-- Register a callback to InputHandler::keyDownEvent
+registerHandler("onKeyDown", on_key_down)
+```
+
 ### Ways to load Lua scripts:
 
 #### Loaded On Start
@@ -81,7 +105,7 @@ end
 
 1. Clone the KenshiLua repository using the --recursive flag to ensure all dependencies are also cloned:
    `git clone --recursive https://github.com/Genpretz/KenshiLua.git`
-2. Several changes need to be made to KenshiLib v0.3.0's headers for KenshiLua to be able to compile.
+2. Several changes need to be made to KenshiLib v0.3.0's headers for KenshiLua to be able to compile. (This guide is not enough as of KenshiLua v0.3.4 and needs updating. The exact changes can be found described in [this pull request](https://github.com/BFrizzleFoShizzle/KenshiLib/pull/13).)
 
    * Add `#pragma once` to the top of every header file that doesn't already have it. These include:
       - CharMovement.h

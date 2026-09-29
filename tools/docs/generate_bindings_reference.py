@@ -665,19 +665,20 @@ def parse_binding_file(filepath: pathlib.Path):
         if '::' in display_name:
             parent_class = display_name.split('::')[0]
         elif '_' in class_name:
-            parts = class_name.split("_")
             cache = get_headers_cache()
-            for i in range(1, len(parts)):
-                outer = "::".join(parts[:i])
-                inner = "::".join(parts[i:])
-                scoped = f"{outer}::{inner}"
-                for _, stripped_hdr, _, raw_hdr in cache:
-                    if re.search(r'\b(?:class|struct)\s+' + re.escape(parts[i-1]) + r'\b', raw_hdr) and re.search(r'\b(?:class|struct)\s+' + re.escape(parts[-1]) + r'\b', raw_hdr):
-                        display_name = scoped
-                        parent_class = parts[0]
+            if not any(defines_class_or_struct(stripped_hdr, class_name) for _, stripped_hdr, _, _ in cache):
+                parts = class_name.split("_")
+                for i in range(1, len(parts)):
+                    outer = "::".join(parts[:i])
+                    inner = "::".join(parts[i:])
+                    scoped = f"{outer}::{inner}"
+                    for _, stripped_hdr, _, raw_hdr in cache:
+                        if re.search(r'\b(?:class|struct)\s+' + re.escape(parts[i-1]) + r'\b', raw_hdr) and re.search(r'\b(?:class|struct)\s+' + re.escape(parts[-1]) + r'\b', raw_hdr):
+                            display_name = scoped
+                            parent_class = parts[0]
+                            break
+                    if parent_class:
                         break
-                if parent_class:
-                    break
 
         if parent_class:
             parent_class = parent_class.lstrip(':')
