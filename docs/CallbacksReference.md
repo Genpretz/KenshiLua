@@ -8,8 +8,8 @@ KenshiLuaJIT provides an event-driven callback system allowing Lua scripts to su
 
 ```lua
 -- Registering an event handler
-local handlerId = Events.on("Character::declareDead", function(character)
-    print("Character died: ", character)
+local handlerId = Events.on("Character::declareDead", function(self)
+    print("Character died: ", self)
 end)
 
 -- Unregistering when done
@@ -23,242 +23,241 @@ Events.off(handlerId)
 
 ## 1. Notification Callbacks (135)
 
-| Event Name | Source Engine Hook | Lua Signature |
-| :--- | :--- | :--- |
-| `InputHandler::keyDownEvent` | `InputHandler::keyDownEvent hook` | `function(inputHandler: InputHandler, keyCode: integer)` |
-| `GameWorld::charsUpdate` | `GameWorld::charsUpdate hook` | `function(gameWorld: GameWorld)` |
-| `Character::declareDead` | `Character::declareDead hook` | `function(character: Character)` |
-| `Character::_NV_select` | `Character::_NV_select hook` | `function(character: Character)` |
-| `Character::_NV_unselect` | `Character::_NV_unselect hook` | `function(character: Character)` |
-| `Character::_NV_say` | `Character::_NV_say hook` | `function(character: Character, message: string)` |
-| `Character::pickupObject` | `Character::pickupObject hook` | `function(character: Character, who: Character)` |
-| `Character::getPickedUp` | `Character::getPickedUp hook` | `function(character: Character, byWhom: Character)` |
-| `Character::_NV_takeMoney` | `Character::_NV_takeMoney hook` | `function(character: Character, amount: integer)` |
-| `Character::eatItem` | `Character::eatItem hook` | `function(character: Character, foodItem: Item, inventory: Inventory)` |
-| `Character::_NV_hitByMeleeAttack` | `Character::_NV_hitByMeleeAttack hook` | `function(character: Character, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
-| `Character::_NV_gettingEaten` | `Character::_NV_gettingEaten hook` | `function(character: Character, amount: number, eater: Character)` |
-| `Character::_NV_setStandingOrder` | `Character::_NV_setStandingOrder hook` | `function(character: Character, orderID: integer, enabled: boolean)` |
-| `Character::_NV_setFaction` | `Character::_NV_setFaction hook` | `function(character: Character, faction: Faction, platoon: ActivePlatoon)` |
-| `Character::_NV_equipItem` | `Character::_NV_equipItem hook` | `function(character: Character, sectionName: string, item: Item)` |
-| `Character::_NV_unequipItem` | `Character::_NV_unequipItem hook` | `function(character: Character, sectionName: string, item: Item)` |
-| `Character::_NV_ImStealingDoYouNotice` | `Character::_NV_ImStealingDoYouNotice hook` | `function(character: Character, stealFrom: RootObject, item: Item)` |
-| `Character::_NV_smugglingTradeCheck` | `Character::_NV_smugglingTradeCheck hook` | `function(character: Character, item: Item, who: Character)` |
-| `Character::_NV_init` | `Character::_NV_init hook` | `function(character: Character)` |
-| `CharStats::setHoldLocation` | `CharStats::setHoldLocation hook` | `function(charStats: CharStats, vector3Table: Vector3)` |
-| `CharStats::clearHoldLocation` | `CharStats::clearHoldLocation hook` | `function(charStats: CharStats)` |
-| `CharStats::xpRunning` | `CharStats::xpRunning hook` | `function(charStats: CharStats, time: number, speed: number)` |
-| `CharStats::xpFirstAid` | `CharStats::xpFirstAid hook` | `function(charStats: CharStats, patient: Character, time: number, medicStat: integer)` |
-| `CharStats::xpStealth` | `CharStats::xpStealth hook` | `function(charStats: CharStats, time: number, enemiesAbout: boolean, seen: YesNoMaybe, isMoving: boolean)` |
-| `CharStats::xpToughness_GetUpEvent` | `CharStats::xpToughness_GetUpEvent hook` | `function(charStats: CharStats)` |
-| `CharStats::xpToughness_RagdollEvent` | `CharStats::xpToughness_RagdollEvent hook` | `function(charStats: CharStats)` |
-| `CharStats::xpToughness_PunchSomething` | `CharStats::xpToughness_PunchSomething hook` | `function(charStats: CharStats, mat: integer)` |
-| `CharStats::xpEngineering` | `CharStats::xpEngineering hook` | `function(charStats: CharStats, time: number)` |
-| `CharStats::xpLockpicking` | `CharStats::xpLockpicking hook` | `function(charStats: CharStats, lockLevel: integer, success: boolean)` |
-| `PlayerInterface::recruit` | `PlayerInterface::recruit hook` | `function(player: PlayerInterface, character: Character, editor: boolean)` |
-| `PlayerInterface::selectObject` | `PlayerInterface::selectObject hook` | `function(player: PlayerInterface, obj: RootObject, modifier: boolean)` |
-| `PlayerInterface::newPlayerTaskSelectedCharacters` | `PlayerInterface::newPlayerTaskSelectedCharacters hook` | `function(player: PlayerInterface, taskType: integer, targetH: hand, destinationIndoors: Building, clickpos: Vector3, addDontClear: boolean)` |
-| `ActivePlatoon::_NV_addActiveObject` | `ActivePlatoon::_NV_addActiveObject hook` | `function(platoon: ActivePlatoon, character: RootObject)` |
-| `ActivePlatoon::_NV_removeObject` | `ActivePlatoon::_NV_removeObject hook` | `function(platoon: ActivePlatoon, character: RootObject)` |
-| `Platoon::taskIsComplete` | `Platoon::taskIsComplete hook` | `function(platoon: Platoon, completedTask: Tasker)` |
-| `Item::_NV_notifyTheftFrom` | `Item::_NV_notifyTheftFrom hook` | `function(item: Item, victim: RootObject)` |
-| `BountyManager::notifyCrimeWitnessed` | `BountyManager::notifyCrimeWitnessed hook` | `function(bountyManager: BountyManager, faction: Faction, againstWho: hand, expiryTime: integer, crimeType: integer)` |
-| `FactionRelations::affectRelations` | `FactionRelations::affectRelations hook` | `function(factionRelations: FactionRelations, otherFaction: Faction, eventType: integer, multiplier: number)` |
-| `MedicalSystem::amputate` | `MedicalSystem::amputate hook` | `function(medicalSystem: MedicalSystem, limb: integer, createSeveredItem: boolean, forceVector: Vector3)` |
-| `DialogueWindow::show` | `DialogueWindow::show hook` | `function(dialogueWindow: DialogueWindow, dialogue: Dialogue)` |
-| `Dialogue::_doActions` | `Dialogue::_doActions hook` | `function(dialogue: Dialogue, dialogLine: DialogLineData)` |
-| `Dialogue::say` | `Dialogue::say hook` | `function(dialogue: Dialogue, dialogLine: DialogLineData)` |
-| `Dialogue::endDialogue` | `Dialogue::endDialogue hook` | `function(dialogue: Dialogue, definitelyTheEnd: boolean)` |
-| `Dialogue::_endPlayerConversation` | `Dialogue::_endPlayerConversation hook` | `function(dialogue: Dialogue, finished: boolean)` |
-| `Dialogue::stopEvent` | `Dialogue::stopEvent hook` | `function(dialogue: Dialogue, what: EventTriggerEnum)` |
-| `RootObjectFactory::chooseMyClothing` | `RootObjectFactory::chooseMyClothing hook` | `function(gearLektor: lektor<GameData>, dataList: GameData, listName: string, race: RaceData, noShoes: boolean)` |
-| `wraps::BaseLayout::initialise` | `wraps::BaseLayout::initialise hook` | `function(baseLayout: BaseLayout, layoutName: string)` |
-| `CharStats::xpStat_eventBased` | `CharStats::xpStat_eventBased hook` | `function(charStats: CharStats, statType: integer, amount: number)` |
-| `CharStats::xpDodgeEvent` | `CharStats::xpDodgeEvent hook` | `function(charStats: CharStats, enemySkill: number, successful: boolean)` |
-| `PlayerInterface::activateCharacterEditMode` | `PlayerInterface::activateCharacterEditMode hook` | `function(player: PlayerInterface, character: Character)` |
-| `PlayerInterface::createSquad` | `PlayerInterface::createSquad hook` | `function(player: PlayerInterface, newSquad: ActivePlatoon)` |
-| `Building::setResidentSquad` | `Building::setResidentSquad hook` | `function(building: Building, platoon: Platoon)` |
-| `Building::addAnInternalBuilding` | `Building::addAnInternalBuilding hook` | `function(building: Building, internalBuilding: Building)` |
-| `InventoryGUI::addTradePartner` | `InventoryGUI::addTradePartner hook` | `function(tradeWith: InventoryGUI, payment: boolean, canDrop: boolean, isPlayer: boolean, whoHand: hand)` |
-| `BuildModeWindow::confirm` | `BuildModeWindow::confirm hook` | `function(buildModeWindow: BuildModeWindow, widget: Widget)` |
-| `SquadManagementScreen::removeSquad` | `SquadManagementScreen::removeSquad hook` | `function(squadManagementScreen: SquadManagementScreen, squadData: lightuserdata)` |
-| `ManagementScreen::addMessage` | `ManagementScreen::addMessage hook` | `function(managementScreen: ManagementScreen, owner: string, message: string, logColor: integer)` |
-| `TitleScreen::loadGame` | `TitleScreen::loadGame hook` | `function(titleScreen: TitleScreen, widget: Widget)` |
-| `Character::addGoal` | `Character::addGoal hook` | `function(character: Character, taskType: integer, subject: RootObject)` |
-| `Character::addJob` | `Character::addJob hook` | `function(character: Character, taskType: integer, subject: RootObject, shift: boolean, addDontClear: boolean, location: Vector3)` |
-| `Character::addOrder` | `Character::addOrder hook` | `function(character: Character, destBuilding: Building, taskType: integer, subject: RootObject, shift: boolean, clear: boolean, location: Vector3)` |
-| `Character::removeJob` | `Character::removeJob hook` | `function(character: Character, taskType: integer)` |
-| `PlayerInterface::addJobSelectedCharacters` | `PlayerInterface::addJobSelectedCharacters hook` | `function(player: PlayerInterface, taskType: integer, subject: RootObject, shift: boolean, add: boolean, location: Vector3)` |
-| `PlayerInterface::addOrderSelectedCharacters` | `PlayerInterface::addOrderSelectedCharacters hook` | `function(player: PlayerInterface, destinationIndoors: Building, taskType: integer, subject: RootObject, shift: boolean, addDontClear: boolean, location: Vector3)` |
-| `MedicalSystem::knockout` | `MedicalSystem::knockout hook` | `function(medicalSystem: MedicalSystem, skill: number)` |
-| `Faction::createNewEmptyActivePlatoon` | `Faction::createNewEmptyActivePlatoon hook` | `function(faction: Faction, platoon: Platoon)` |
-| `Faction::destroyPlatoon` | `Faction::destroyPlatoon hook` | `function(faction: Faction, platoon: Platoon)` |
-| `PlayerInterface::encounterFaction` | `PlayerInterface::encounterFaction hook` | `function(player: PlayerInterface, faction: Faction)` |
-| `Character::changeSlaveOwner` | `Character::changeSlaveOwner hook` | `function(slave: Character, newOwnerHandle: hand)` |
-| `Character::setChainedMode` | `Character::setChainedMode hook` | `function(character: Character, on: boolean, ownerHandle: hand)` |
-| `Building::_NV_onBuildingLoaded` | `Building::onBuildingLoaded hook` | `function(building: Building)` |
-| `Building::_NV_setBroken` | `Building::setBroken hook` | `function(building: Building, broken: boolean)` |
-| `PlayerInterface::serialise` | `PlayerInterface::serialise hook` | `function(player: PlayerInterface, gameData: GameData)` |
-| `PlayerInterface::loadFromSerialise` | `PlayerInterface::loadFromSerialise hook` | `function(player: PlayerInterface, gameData: GameData)` |
-| `Character::_NV_serialise` | `Character::_NV_serialise hook` | `function(character: Character, container: GameDataContainer, refList: GameData)` |
-| `Character::_NV_loadFromSerialise` | `Character::_NV_loadFromSerialise hook` | `function(character: Character, saveState: GameSaveState)` |
-| `Character::_NV_loadFromSerialisePostCreationStage` | `Character::_NV_loadFromSerialisePostCreationStage hook` | `function(character: Character, saveState: GameSaveState)` |
-| `Building::_NV_serialise` | `Building::_NV_serialise hook` | `function(building: Building, container: GameDataContainer, refList: GameData)` |
-| `Building::_NV_loadFromSerialise` | `Building::_NV_loadFromSerialise hook` | `function(building: Building, saveState: GameSaveState)` |
-| `Platoon::_NV_loadFromSerialise` | `Platoon::_NV_loadFromSerialise hook` | `function(platoon: Platoon, saveState: GameSaveState)` |
-| `Town::_NV_loadFromSerialise` | `Town::_NV_loadFromSerialise hook` | `function(town: Town, saveState: GameSaveState)` |
-| `Building::_NV_buyMeCallback` | `Building::_NV_buyMeCallback hook` | `function(building: Building, result: integer)` |
-| `DataPanelLine_Button::pressCallback` | `DataPanelLine_Button::pressCallback hook` | `function(button: DataPanelLine_Button, sender: Widget)` |
-| `InventoryGUI::fencingConfirmationCallback` | `InventoryGUI::fencingConfirmationCallback hook` | `function(gui: InventoryGUI, b: integer)` |
-| `OrdersPanel::blockmodeButton` | `OrdersPanel::blockmodeButton hook` | `function(panel: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::holdButtonCallback` | `OrdersPanel::holdButtonCallback hook` | `function(panel: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::passiveButtonCallback` | `OrdersPanel::passiveButtonCallback hook` | `function(panel: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::chaseButtonCallback` | `OrdersPanel::chaseButtonCallback hook` | `function(panel: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::tauntButtonCallback` | `OrdersPanel::tauntButtonCallback hook` | `function(panel: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::medicButton` | `OrdersPanel::medicButton hook` | `function(panel: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::liftButton` | `OrdersPanel::liftButton hook` | `function(panel: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::prospectingButton` | `OrdersPanel::prospectingButton hook` | `function(panel: OrdersPanel, sender: Widget)` |
-| `Inventory::_NV__sectionAddItemCallback` | `Inventory::_NV__sectionAddItemCallback hook` | `function(inventory: Inventory, item: Item)` |
-| `Inventory::_NV__sectionRemoveItemCallback` | `Inventory::_NV__sectionRemoveItemCallback hook` | `function(inventory: Inventory, item: Item)` |
-| `Inventory::_NV__sectionUpdateItemCallback` | `Inventory::_NV__sectionUpdateItemCallback hook` | `function(inventory: Inventory, item: Item, prevQuantity: integer)` |
-| `Inventory::_NV_dropItem` | `Inventory::_NV_dropItem hook` | `function(inventory: Inventory, item: Item)` |
-| `UseableStuff::_NV_tryOperate` | `UseableStuff::_NV_tryOperate hook` | `function(useableStuff: UseableStuff, userHandle: hand, success: boolean)` |
-| `UseableStuff::stopOperating` | `UseableStuff::stopOperating hook` | `function(useableStuff: UseableStuff, userHandle: hand)` |
-| `UseableStuff::occupantHandleChangedEvent` | `UseableStuff::occupantHandleChangedEvent hook` | `function(useableStuff: UseableStuff, newOccupantHandle: hand)` |
-| `UseableStuff::_NV_switchPowerOn` | `UseableStuff::_NV_switchPowerOn hook` | `function(useableStuff: UseableStuff, on: boolean)` |
-| `UseableStuff::_NV_givePower` | `UseableStuff::_NV_givePower hook` | `function(useableStuff: UseableStuff, amount: number)` |
-| `Building::_NV_notifyConstructionComplete` | `Building::_NV_notifyConstructionComplete hook` | `function(building: Building)` |
-| `Building::_NV_addConstructionProgress` | `Building::_NV_addConstructionProgress hook` | `function(building: Building, amount: number)` |
-| `Building::_NV_setConstructionProgress` | `Building::_NV_setConstructionProgress hook` | `function(building: Building, amount: number)` |
-| `Building::_NV_notifyConstructionDismantling` | `Building::_NV_notifyConstructionDismantling hook` | `function(building: Building)` |
-| `Building::_NV_upgrade` | `Building::_NV_upgrade hook` | `function(building: Building, line: DataPanelLine)` |
-| `Building::destroyDoors` | `Building::destroyDoors hook` | `function(building: Building)` |
-| `Building::_NV_setFaction` | `Building::_NV_setFaction hook` | `function(building: Building, faction: Faction, activePlatoon: ActivePlatoon)` |
-| `Building::setFloorVisibility` | `Building::setFloorVisibility hook` | `function(building: Building, floor: integer, isVisible: boolean)` |
-| `Building::_NV_switchLights` | `Building::_NV_switchLights hook` | `function(building: Building, on: boolean)` |
-| `Building::_NV_switchEffects` | `Building::_NV_switchEffects hook` | `function(building: Building, on: boolean)` |
-| `Building::_NV_notifyEffect` | `Building::_NV_notifyEffect hook` | `function(building: Building, effectType: integer, weatherType: integer, strength: number)` |
-| `WallBuilding::_NV_hitByMeleeAttack` | `WallBuilding::_NV_hitByMeleeAttack hook` | `function(wallBuilding: WallBuilding, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
-| `DoorStuff::lockDoor` | `DoorStuff::lockDoor hook` | `function(doorStuff: DoorStuff)` |
-| `DoorStuff::unlockDoor` | `DoorStuff::unlockDoor hook` | `function(doorStuff: DoorStuff)` |
-| `DoorStuff::setDoorState` | `DoorStuff::setDoorState hook` | `function(doorStuff: DoorStuff, doorState: integer)` |
-| `DoorStuff::_NV_hitByMeleeAttack` | `DoorStuff::_NV_hitByMeleeAttack hook` | `function(doorStuff: DoorStuff, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
-| `ProductionBuilding::_NV_operate` | `ProductionBuilding::_NV_operate hook` | `function(productionBuilding: ProductionBuilding, worker: Character, amount: number)` |
-| `CraftingBuilding::_NV_operate` | `CraftingBuilding::_NV_operate hook` | `function(craftingBuilding: CraftingBuilding, worker: Character, amount: number)` |
-| `CraftingBuilding::_NV_newCraftingButton` | `CraftingBuilding::_NV_newCraftingButton hook` | `function(craftingBuilding: CraftingBuilding, sender: Widget)` |
-| `CraftingBuilding::addFinishedCraftItem` | `CraftingBuilding::addFinishedCraftItem hook` | `function(craftingBuilding: CraftingBuilding, item: Item)` |
-| `CraftingBuilding::notifyCraftFailiure` | `CraftingBuilding::notifyCraftFailiure hook` | `function(craftingBuilding: CraftingBuilding)` |
-| `CraftingBuilding::destroyProductionItem` | `CraftingBuilding::destroyProductionItem hook` | `function(craftingBuilding: CraftingBuilding)` |
-| `CraftingBuilding::_removeCraft` | `CraftingBuilding::_removeCraft hook` | `function(craftingBuilding: CraftingBuilding, index: integer)` |
-| `FurnaceBuilding::_NV_operate` | `FurnaceBuilding::_NV_operate hook` | `function(furnaceBuilding: FurnaceBuilding, worker: Character, amount: number)` |
-| `ResearchBuilding::_NV_operate` | `ResearchBuilding::_NV_operate hook` | `function(researchBuilding: ResearchBuilding, worker: Character, amount: number)` |
-| `FarmBuilding::_NV_operate` | `FarmBuilding::_NV_operate hook` | `function(farmBuilding: FarmBuilding, worker: Character, amount: number)` |
-| `FarmBuilding::eat` | `FarmBuilding::eat hook` | `function(farmBuilding: FarmBuilding, rate: number)` |
-| `TurretBuilding::_NV_operate` | `TurretBuilding::_NV_operate hook` | `function(turretBuilding: TurretBuilding, gunner: Character, amount: number)` |
-| `TurretBuilding::aimAt` | `TurretBuilding::aimAt hook` | `function(turretBuilding: TurretBuilding, targetPos: Vector3)` |
-| `UseableStuff::_NV_hitByMeleeAttack` | `UseableStuff::_NV_hitByMeleeAttack hook` | `function(useableStuff: UseableStuff, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
-| `UseableStuff::_NV_togglePowerButton` | `UseableStuff::_NV_togglePowerButton hook` | `function(useableStuff: UseableStuff, line: DataPanelLine)` |
-| `UseableStuff::_NV_toggleBattButton` | `UseableStuff::_NV_toggleBattButton hook` | `function(useableStuff: UseableStuff, line: DataPanelLine)` |
-| `PreviewBuilding::_NV_placeFinalPreviewBuilding` | `PreviewBuilding::_NV_placeFinalPreviewBuilding hook` | `function(previewBuilding: PreviewBuilding)` |
-| `PreviewBuilding::_NV_placePreview` | `PreviewBuilding::_NV_placePreview hook` | `function(previewBuilding: PreviewBuilding, position: Vector3, rotation: Quaternion, floorNumber: integer)` |
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `InputHandler::keyDownEvent` | `function(self: InputHandler, keyCode: integer)` |
+| `GameWorld::charsUpdate` | `function(self: GameWorld)` |
+| `Character::declareDead` | `function(self: Character)` |
+| `Character::_NV_select` | `function(self: Character)` |
+| `Character::_NV_unselect` | `function(self: Character)` |
+| `Character::_NV_say` | `function(self: Character, message: string)` |
+| `Character::pickupObject` | `function(self: Character, who: Character)` |
+| `Character::getPickedUp` | `function(self: Character, byWhom: Character)` |
+| `Character::_NV_takeMoney` | `function(self: Character, amount: integer)` |
+| `Character::eatItem` | `function(self: Character, foodItem: Item, inventory: Inventory)` |
+| `Character::_NV_hitByMeleeAttack` | `function(self: Character, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
+| `Character::_NV_gettingEaten` | `function(self: Character, amount: number, eater: Character)` |
+| `Character::_NV_setStandingOrder` | `function(self: Character, orderID: integer, enabled: boolean)` |
+| `Character::_NV_setFaction` | `function(self: Character, faction: Faction, platoon: ActivePlatoon)` |
+| `Character::_NV_equipItem` | `function(self: Character, sectionName: string, item: Item)` |
+| `Character::_NV_unequipItem` | `function(self: Character, sectionName: string, item: Item)` |
+| `Character::_NV_ImStealingDoYouNotice` | `function(self: Character, stealFrom: RootObject, item: Item)` |
+| `Character::_NV_smugglingTradeCheck` | `function(self: Character, item: Item, who: Character)` |
+| `Character::_NV_init` | `function(self: Character)` |
+| `CharStats::setHoldLocation` | `function(self: CharStats, vector3Table: Vector3)` |
+| `CharStats::clearHoldLocation` | `function(self: CharStats)` |
+| `CharStats::xpRunning` | `function(self: CharStats, time: number, speed: number)` |
+| `CharStats::xpFirstAid` | `function(self: CharStats, patient: Character, time: number, medicStat: integer)` |
+| `CharStats::xpStealth` | `function(self: CharStats, time: number, enemiesAbout: boolean, seen: YesNoMaybe, isMoving: boolean)` |
+| `CharStats::xpToughness_GetUpEvent` | `function(self: CharStats)` |
+| `CharStats::xpToughness_RagdollEvent` | `function(self: CharStats)` |
+| `CharStats::xpToughness_PunchSomething` | `function(self: CharStats, mat: integer)` |
+| `CharStats::xpEngineering` | `function(self: CharStats, time: number)` |
+| `CharStats::xpLockpicking` | `function(self: CharStats, lockLevel: integer, success: boolean)` |
+| `PlayerInterface::recruit` | `function(self: PlayerInterface, character: Character, isEditor: boolean)` |
+| `PlayerInterface::selectObject` | `function(self: PlayerInterface, obj: RootObject, modifier: boolean)` |
+| `PlayerInterface::newPlayerTaskSelectedCharacters` | `function(self: PlayerInterface, taskType: integer, targetHandle: hand, destinationBuilding: Building, clickPos: Vector3, queueOrder: boolean)` |
+| `ActivePlatoon::_NV_addActiveObject` | `function(self: ActivePlatoon, character: RootObject)` |
+| `ActivePlatoon::_NV_removeObject` | `function(self: ActivePlatoon, character: RootObject)` |
+| `Platoon::taskIsComplete` | `function(self: Platoon, completedTask: Tasker)` |
+| `Item::_NV_notifyTheftFrom` | `function(self: Item, victim: RootObject)` |
+| `BountyManager::notifyCrimeWitnessed` | `function(self: BountyManager, faction: Faction, againstWho: hand, expiryTime: integer, crimeType: integer)` |
+| `FactionRelations::affectRelations` | `function(self: FactionRelations, otherFaction: Faction, eventType: integer, multiplier: number)` |
+| `MedicalSystem::amputate` | `function(self: MedicalSystem, limb: integer, createSeveredItem: boolean, forceVector: Vector3)` |
+| `DialogueWindow::show` | `function(self: DialogueWindow, dialogue: Dialogue)` |
+| `Dialogue::_doActions` | `function(self: Dialogue, dialogLine: DialogLineData)` |
+| `Dialogue::say` | `function(self: Dialogue, dialogLine: DialogLineData)` |
+| `Dialogue::endDialogue` | `function(self: Dialogue, definitelyTheEnd: boolean)` |
+| `Dialogue::_endPlayerConversation` | `function(self: Dialogue, finished: boolean)` |
+| `Dialogue::stopEvent` | `function(self: Dialogue, what: EventTriggerEnum)` |
+| `RootObjectFactory::chooseMyClothing` | `function(gearLektor: lektor<GameData>, dataList: GameData, listName: string, race: RaceData, noShoes: boolean)` |
+| `wraps::BaseLayout::initialise` | `function(self: BaseLayout, layoutName: string)` |
+| `CharStats::xpStat_eventBased` | `function(self: CharStats, statType: integer, amount: number)` |
+| `CharStats::xpDodgeEvent` | `function(self: CharStats, enemySkill: number, successful: boolean)` |
+| `PlayerInterface::activateCharacterEditMode` | `function(self: PlayerInterface, character: Character)` |
+| `PlayerInterface::createSquad` | `function(self: PlayerInterface, newSquad: ActivePlatoon)` |
+| `Building::setResidentSquad` | `function(self: Building, platoon: Platoon)` |
+| `Building::addAnInternalBuilding` | `function(self: Building, internalBuilding: Building)` |
+| `InventoryGUI::addTradePartner` | `function(self: InventoryGUI, payment: boolean, canDrop: boolean, isPlayer: boolean, whoHand: hand)` |
+| `BuildModeWindow::confirm` | `function(self: BuildModeWindow, widget: Widget)` |
+| `SquadManagementScreen::removeSquad` | `function(self: SquadManagementScreen, squadData: lightuserdata)` |
+| `ManagementScreen::addMessage` | `function(self: ManagementScreen, owner: string, message: string, logColor: integer)` |
+| `TitleScreen::loadGame` | `function(self: TitleScreen, widget: Widget)` |
+| `Character::addGoal` | `function(self: Character, taskType: integer, subject: RootObject)` |
+| `Character::addJob` | `function(self: Character, taskType: integer, subject: RootObject, shift: boolean, addDontClear: boolean, location: Vector3)` |
+| `Character::addOrder` | `function(self: Character, destBuilding: Building, taskType: integer, subject: RootObject, shift: boolean, clear: boolean, location: Vector3)` |
+| `Character::removeJob` | `function(self: Character, taskType: integer)` |
+| `PlayerInterface::addJobSelectedCharacters` | `function(self: PlayerInterface, taskType: integer, subject: RootObject, shift: boolean, add: boolean, location: Vector3)` |
+| `PlayerInterface::addOrderSelectedCharacters` | `function(self: PlayerInterface, destinationIndoors: Building, taskType: integer, subject: RootObject, shift: boolean, addDontClear: boolean, location: Vector3)` |
+| `MedicalSystem::knockout` | `function(self: MedicalSystem, skill: number)` |
+| `Faction::createNewEmptyActivePlatoon` | `function(self: Faction, platoon: Platoon)` |
+| `Faction::destroyPlatoon` | `function(self: Faction, platoon: Platoon)` |
+| `PlayerInterface::encounterFaction` | `function(self: PlayerInterface, faction: Faction)` |
+| `Character::changeSlaveOwner` | `function(self: Character, newOwnerHandle: hand)` |
+| `Character::setChainedMode` | `function(self: Character, on: boolean, ownerHandle: hand)` |
+| `Building::_NV_onBuildingLoaded` | `function(self: Building)` |
+| `Building::_NV_setBroken` | `function(self: Building, broken: boolean)` |
+| `PlayerInterface::serialise` | `function(self: PlayerInterface, gameData: GameData)` |
+| `PlayerInterface::loadFromSerialise` | `function(self: PlayerInterface, gameData: GameData)` |
+| `Character::_NV_serialise` | `function(self: Character, container: GameDataContainer, refList: GameData)` |
+| `Character::_NV_loadFromSerialise` | `function(self: Character, saveState: GameSaveState)` |
+| `Character::_NV_loadFromSerialisePostCreationStage` | `function(self: Character, saveState: GameSaveState)` |
+| `Building::_NV_serialise` | `function(self: Building, container: GameDataContainer, refList: GameData)` |
+| `Building::_NV_loadFromSerialise` | `function(self: Building, saveState: GameSaveState)` |
+| `Platoon::_NV_loadFromSerialise` | `function(self: Platoon, saveState: GameSaveState)` |
+| `Town::_NV_loadFromSerialise` | `function(self: Town, saveState: GameSaveState)` |
+| `Building::_NV_buyMeCallback` | `function(self: Building, result: integer)` |
+| `DataPanelLine_Button::pressCallback` | `function(self: DataPanelLine_Button, sender: Widget)` |
+| `InventoryGUI::fencingConfirmationCallback` | `function(self: InventoryGUI, b: integer)` |
+| `OrdersPanel::blockmodeButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::holdButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::passiveButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::chaseButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::tauntButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::medicButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::liftButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::prospectingButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `Inventory::_NV__sectionAddItemCallback` | `function(self: Inventory, item: Item)` |
+| `Inventory::_NV__sectionRemoveItemCallback` | `function(self: Inventory, item: Item)` |
+| `Inventory::_NV__sectionUpdateItemCallback` | `function(self: Inventory, item: Item, prevQuantity: integer)` |
+| `Inventory::_NV_dropItem` | `function(self: Inventory, item: Item)` |
+| `UseableStuff::_NV_tryOperate` | `function(self: UseableStuff, userHandle: hand, success: boolean)` |
+| `UseableStuff::stopOperating` | `function(self: UseableStuff, userHandle: hand)` |
+| `UseableStuff::occupantHandleChangedEvent` | `function(self: UseableStuff, newOccupantHandle: hand)` |
+| `UseableStuff::_NV_switchPowerOn` | `function(self: UseableStuff, on: boolean)` |
+| `UseableStuff::_NV_givePower` | `function(self: UseableStuff, amount: number)` |
+| `Building::_NV_notifyConstructionComplete` | `function(self: Building)` |
+| `Building::_NV_addConstructionProgress` | `function(self: Building, amount: number)` |
+| `Building::_NV_setConstructionProgress` | `function(self: Building, amount: number)` |
+| `Building::_NV_notifyConstructionDismantling` | `function(self: Building)` |
+| `Building::_NV_upgrade` | `function(self: Building, line: DataPanelLine)` |
+| `Building::destroyDoors` | `function(self: Building)` |
+| `Building::_NV_setFaction` | `function(self: Building, faction: Faction, activePlatoon: ActivePlatoon)` |
+| `Building::setFloorVisibility` | `function(self: Building, floor: integer, isVisible: boolean)` |
+| `Building::_NV_switchLights` | `function(self: Building, on: boolean)` |
+| `Building::_NV_switchEffects` | `function(self: Building, on: boolean)` |
+| `Building::_NV_notifyEffect` | `function(self: Building, effectType: integer, weatherType: integer, strength: number)` |
+| `WallBuilding::_NV_hitByMeleeAttack` | `function(self: WallBuilding, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
+| `DoorStuff::lockDoor` | `function(self: DoorStuff)` |
+| `DoorStuff::unlockDoor` | `function(self: DoorStuff)` |
+| `DoorStuff::setDoorState` | `function(self: DoorStuff, doorState: integer)` |
+| `DoorStuff::_NV_hitByMeleeAttack` | `function(self: DoorStuff, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
+| `ProductionBuilding::_NV_operate` | `function(self: ProductionBuilding, worker: Character, amount: number)` |
+| `CraftingBuilding::_NV_operate` | `function(self: CraftingBuilding, worker: Character, amount: number)` |
+| `CraftingBuilding::_NV_newCraftingButton` | `function(self: CraftingBuilding, sender: Widget)` |
+| `CraftingBuilding::addFinishedCraftItem` | `function(self: CraftingBuilding, item: Item)` |
+| `CraftingBuilding::notifyCraftFailiure` | `function(self: CraftingBuilding)` |
+| `CraftingBuilding::destroyProductionItem` | `function(self: CraftingBuilding)` |
+| `CraftingBuilding::_removeCraft` | `function(self: CraftingBuilding, index: integer)` |
+| `FurnaceBuilding::_NV_operate` | `function(self: FurnaceBuilding, worker: Character, amount: number)` |
+| `ResearchBuilding::_NV_operate` | `function(self: ResearchBuilding, worker: Character, amount: number)` |
+| `FarmBuilding::_NV_operate` | `function(self: FarmBuilding, worker: Character, amount: number)` |
+| `FarmBuilding::eat` | `function(self: FarmBuilding, rate: number)` |
+| `TurretBuilding::_NV_operate` | `function(self: TurretBuilding, gunner: Character, amount: number)` |
+| `TurretBuilding::aimAt` | `function(self: TurretBuilding, targetPos: Vector3)` |
+| `UseableStuff::_NV_hitByMeleeAttack` | `function(self: UseableStuff, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
+| `UseableStuff::_NV_togglePowerButton` | `function(self: UseableStuff, line: DataPanelLine)` |
+| `UseableStuff::_NV_toggleBattButton` | `function(self: UseableStuff, line: DataPanelLine)` |
+| `PreviewBuilding::_NV_placeFinalPreviewBuilding` | `function(self: PreviewBuilding)` |
+| `PreviewBuilding::_NV_placePreview` | `function(self: PreviewBuilding, position: Vector3, rotation: Quaternion, floorNumber: integer)` |
 
 ## 2. Override Callbacks (84)
 
-| Event Name | Source Engine Hook | Lua Signature & Expected Return |
-| :--- | :--- | :--- |
-| `Character::isItOkForMeToLoot` | `Character::isItOkForMeToLoot hook` | `function(me: Character, victim: RootObject, item: Item, defaultVal: boolean) -> boolean` |
-| `Character::getFencingSuccessChance` | `Character::getFencingSuccessChance hook` | `function(merchant: Character, item: Item, thief: RootObject, defaultVal: number) -> number` |
-| `CharStats::chooseAttack` | `CharStats::chooseAttack hook` | `function(charStats: CharStats, range: number, weaponReach: number, lastAttack: CombatTechniqueData, opponentIsStationary: boolean, defaultAttack: CombatTechniqueData) -> CombatTechniqueData` |
-| `CharStats::getStat` | `CharStats::getStat hook` | `function(stats: CharStats, statType: integer, unmodified: boolean, defaultVal: number) -> number` |
-| `Platoon::iBuyStolenGoods` | `Platoon::iBuyStolenGoods hook` | `function(platoon: Platoon, item: Item, defaultVal: boolean) -> boolean` |
-| `Platoon::iBuyIllegalGoods` | `Platoon::iBuyIllegalGoods hook` | `function(platoon: Platoon, defaultVal: boolean) -> boolean` |
-| `Ownerships::canIUseThisBuilding` | `Ownerships::canIUseThisBuilding hook` | `function(ownerships: Ownerships, building: Building, character: Character, defaultVal: boolean) -> boolean` |
-| `Inventory::getSectionOfType` | `Inventory::getSectionOfType hook` | `function(inventory: Inventory, type: integer) -> InventorySection` |
-| `Inventory::getBestFoodItem` | `Inventory::getBestFoodItem hook` | `function(inventory: Inventory, race: Character) -> Item` |
-| `InventoryItemBase::getValueSingle` | `Inventory::getBaseValueSingle hook` | `function(item: InventoryItemBase, isPlayer: boolean, defaultVal: integer) -> integer` |
-| `Faction::chooseARace` | `Faction::chooseARace hook` | `function(faction: Faction, character: GameData, squadTemplate: GameData, defaultVal: GameData) -> GameData` |
-| `Faction::getBuildingReplacement` | `Faction::getBuildingReplacement hook` | `function(faction: Faction, building: GameData, defaultVal: GameData) -> GameData` |
-| `Dialogue::_checkCondition` | `Dialogue::_checkCondition hook` | `function(dialogue: Dialogue, conditionName: DialogConditionEnum, compareBy: ComparisonEnum, val: integer, target: Character, actualConversationTarget: Character, defaultVal: boolean) -> boolean` |
-| `Dialogue::startConversation` | `Dialogue::startConversation hook` | `function(dialogue: Dialogue, target: Character, talk: DialogLineData, ev: EventTriggerEnum, force: boolean, defaultVal: boolean) -> boolean` |
-| `Dialogue::startPlayerConversation` | `Dialogue::startPlayerConversation hook` | `function(dialogue: Dialogue, target: Character, talk: DialogLineData, defaultVal: boolean) -> boolean` |
-| `Dialogue::sendEvent` | `Dialogue::sendEvent hook` | `function(dialogue: Dialogue, who: Character, what: EventTriggerEnum, defaultVal: boolean) -> boolean` |
-| `Building::isPublic` | `Building::isPublic hook` | `function(building: Building, defaultVal: boolean) -> boolean` |
-| `Building::isForSale` | `Building::isForSale hook` | `function(building: Building, defaultVal: boolean) -> boolean` |
-| `Building::calculateSaleValue` | `Building::calculateSaleValue hook` | `function(building: Building, defaultVal: integer) -> integer` |
-| `CharMovement::isRunning` | `CharMovement::isRunning hook` | `function(charMovement: CharMovement, defaultVal: boolean) -> boolean` |
-| `CharMovement::isRunningAway` | `CharMovement::isRunningAway hook` | `function(charMovement: CharMovement, from: Vector3, defaultVal: boolean) -> boolean` |
-| `MedicalSystem::canGetUpWakeUp` | `MedicalSystem::canGetUpWakeUp hook` | `function(med: MedicalSystem, defaultVal: boolean) -> boolean` |
-| `Inventory::_NV_addItem` | `Inventory::addItem hook` | `function(inventory: Inventory, item: Item, quantity: integer, dropOnFail: boolean, destroyOnFail: boolean) -> boolean` |
-| `Inventory::_NV_removeItemDontDestroy_returnsItem` | `Inventory::removeItemDontDestroy_returnsItem hook` | `function(inventory: Inventory, item: Item, howmany: integer, returnCopyIfSomeLeft: boolean) -> Item` |
-| `Inventory::buyItem` | `Inventory::buyItem hook` | `function(buyerInventory: Inventory, item: Item, sendingTo: RootObject) -> Item` |
-| `Character::_CONSTRUCTOR` | `Character::_CONSTRUCTOR hook` | `function(character: Character, dat: GameData, own: Faction, handle: hand, defaultVal: Character) -> Character` |
-| `Item::_CONSTRUCTOR` | `Item::_CONSTRUCTOR hook` | `function(item: Item, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, defaultVal: Item) -> Item` |
-| `Gear::_CONSTRUCTOR` | `Gear::_CONSTRUCTOR hook` | `function(gear: Gear, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, uniform: Faction, defaultVal: Gear) -> Gear` |
-| `Sword::_CONSTRUCTOR` | `Sword::_CONSTRUCTOR hook` | `function(sword: Sword, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, defaultVal: Sword) -> Sword` |
-| `Crossbow::_CONSTRUCTOR` | `Crossbow::_CONSTRUCTOR hook` | `function(crossbow: Crossbow, baseData: GameData, handle: hand, overallLevel: integer, defaultVal: Crossbow) -> Crossbow` |
-| `Armour::_CONSTRUCTOR` | `Armour::_CONSTRUCTOR hook` | `function(armour: Armour, baseData: GameData, materialData: GameData, handle: hand, uniformFlag: Faction, level: integer, defaultVal: Armour) -> Armour` |
-| `LockedArmour::_CONSTRUCTOR` | `LockedArmour::_CONSTRUCTOR hook` | `function(lockedArmour: LockedArmour, baseData: GameData, materialData: GameData, handle: hand, uniformFlag: Faction, level: integer, defaultVal: LockedArmour) -> LockedArmour` |
-| `Weapon::_CONSTRUCTOR` | `Weapon::_CONSTRUCTOR hook` | `function(weapon: Weapon, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, defaultVal: Weapon) -> Weapon` |
-| `Building::_CONSTRUCTOR` | `Building::_CONSTRUCTOR hook` | `function(building: Building, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: Building) -> Building` |
-| `Platoon::_CONSTRUCTOR` | `Platoon::_CONSTRUCTOR hook` | `function(platoon: Platoon, faction: Faction, squadTemplate: GameData, platoonState: GameData, position: Vector3, persistent: boolean, defaultVal: Platoon) -> Platoon` |
-| `ActivePlatoon::_CONSTRUCTOR` | `ActivePlatoon::_CONSTRUCTOR hook` | `function(activePlatoon: ActivePlatoon, platoon: Platoon, doc: DataObjectContainer, faction: Faction, gameData: GameData, currentGoal: Tasker, posOffset: Vector3, defaultVal: ActivePlatoon) -> ActivePlatoon` |
-| `Faction::_CONSTRUCTOR` | `Faction::_CONSTRUCTOR hook` | `function(faction: Faction, name: string, defaultVal: Faction) -> Faction` |
-| `Bounty::_CONSTRUCTOR` | `Bounty::_CONSTRUCTOR hook` | `function(bounty: Bounty, defaultVal: Bounty) -> Bounty` |
-| `Damages::_CONSTRUCTOR` | `Damages::_CONSTRUCTOR hook` | `function(damages: Damages, cut: number, blunt: number, pierce: number, bleed: number, armour: number, defaultVal: Damages) -> Damages` |
-| `Inventory::_CONSTRUCTOR` | `Inventory::_CONSTRUCTOR hook` | `function(inventory: Inventory, owner: RootObject, defaultVal: Inventory) -> Inventory` |
-| `DoorStuff::_CONSTRUCTOR` | `DoorStuff::_CONSTRUCTOR hook` | `function(doorStuff: DoorStuff, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, parent: Building, defaultVal: DoorStuff) -> DoorStuff` |
-| `ProductionBuilding::_CONSTRUCTOR` | `ProductionBuilding::_CONSTRUCTOR hook` | `function(productionBuilding: ProductionBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: ProductionBuilding) -> ProductionBuilding` |
-| `CraftingBuilding::_CONSTRUCTOR` | `CraftingBuilding::_CONSTRUCTOR hook` | `function(craftingBuilding: CraftingBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: CraftingBuilding) -> CraftingBuilding` |
-| `FarmBuilding::_CONSTRUCTOR` | `FarmBuilding::_CONSTRUCTOR hook` | `function(farmBuilding: FarmBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: FarmBuilding) -> FarmBuilding` |
-| `TurretBuilding::_CONSTRUCTOR` | `TurretBuilding::_CONSTRUCTOR hook` | `function(turretBuilding: TurretBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: TurretBuilding) -> TurretBuilding` |
-| `FurnaceBuilding::_CONSTRUCTOR` | `FurnaceBuilding::_CONSTRUCTOR hook` | `function(furnaceBuilding: FurnaceBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: FurnaceBuilding) -> FurnaceBuilding` |
-| `ResearchBuilding::_CONSTRUCTOR` | `ResearchBuilding::_CONSTRUCTOR hook` | `function(researchBuilding: ResearchBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: ResearchBuilding) -> ResearchBuilding` |
-| `WallBuilding::_CONSTRUCTOR` | `WallBuilding::_CONSTRUCTOR hook` | `function(wallBuilding: WallBuilding, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, furnitureOf: Layout, town: hand, handle: hand, defaultVal: WallBuilding) -> WallBuilding` |
-| `PreviewBuilding::_CONSTRUCTOR` | `PreviewBuilding::_CONSTRUCTOR hook` | `function(previewBuilding: PreviewBuilding, data: GameData, furnitureParent: Building, defaultVal: PreviewBuilding) -> PreviewBuilding` |
-| `UseableStuff::_CONSTRUCTOR` | `UseableStuff::_CONSTRUCTOR hook` | `function(useableStuff: UseableStuff, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: UseableStuff) -> UseableStuff` |
-| `StorageBuilding::_CONSTRUCTOR` | `StorageBuilding::_CONSTRUCTOR hook` | `function(storageBuilding: StorageBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: StorageBuilding) -> StorageBuilding` |
-| `LightBuilding::_CONSTRUCTOR` | `LightBuilding::_CONSTRUCTOR hook` | `function(lightBuilding: LightBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: LightBuilding) -> LightBuilding` |
-| `GeneratorBuilding::_CONSTRUCTOR` | `GeneratorBuilding::_CONSTRUCTOR hook` | `function(generatorBuilding: GeneratorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: GeneratorBuilding) -> GeneratorBuilding` |
-| `WindGeneratorBuilding::_CONSTRUCTOR` | `WindGeneratorBuilding::_CONSTRUCTOR hook` | `function(windGeneratorBuilding: WindGeneratorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: WindGeneratorBuilding) -> WindGeneratorBuilding` |
-| `GatewayBuilding::_CONSTRUCTOR` | `GatewayBuilding::_CONSTRUCTOR hook` | `function(gatewayBuilding: GatewayBuilding, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, defaultVal: GatewayBuilding) -> GatewayBuilding` |
-| `TortureBuilding::_CONSTRUCTOR` | `TortureBuilding::_CONSTRUCTOR hook` | `function(tortureBuilding: TortureBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: TortureBuilding) -> TortureBuilding` |
-| `RainCollectorBuilding::_CONSTRUCTOR` | `RainCollectorBuilding::_CONSTRUCTOR hook` | `function(rainCollectorBuilding: RainCollectorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: RainCollectorBuilding) -> RainCollectorBuilding` |
-| `CharacterHuman::_CONSTRUCTOR` | `CharacterHuman::_CONSTRUCTOR hook` | `function(characterHuman: CharacterHuman, data: GameData, faction: Faction, handle: hand, defaultVal: CharacterHuman) -> CharacterHuman` |
-| `CharacterAnimal::_CONSTRUCTOR` | `CharacterAnimal::_CONSTRUCTOR hook` | `function(characterAnimal: CharacterAnimal, data: GameData, faction: Faction, handle: hand, age: number, defaultVal: CharacterAnimal) -> CharacterAnimal` |
-| `CharStats::_CONSTRUCTOR` | `CharStats::_CONSTRUCTOR hook` | `function(charStats: CharStats, defaultVal: CharStats) -> CharStats` |
-| `CharBody::_CONSTRUCTOR` | `CharBody::_CONSTRUCTOR hook` | `function(charBody: CharBody, defaultVal: CharBody) -> CharBody` |
-| `CharMovement::_CONSTRUCTOR` | `CharMovement::_CONSTRUCTOR hook` | `function(charMovement: CharMovement, defaultVal: CharMovement) -> CharMovement` |
-| `CombatClass::_CONSTRUCTOR` | `CombatClass::_CONSTRUCTOR hook` | `function(combatClass: CombatClass, movement: CharMovement, ai: lightuserdata, anim: lightuserdata, character: Character, stats: CharStats, medical: MedicalSystem, defaultVal: CombatClass) -> CombatClass` |
-| `Town::_CONSTRUCTOR` | `Town::_CONSTRUCTOR hook` | `function(town: Town, data: GameData, defaultVal: Town) -> Town` |
-| `TownBase::_CONSTRUCTOR` | `TownBase::_CONSTRUCTOR hook` | `function(townBase: TownBase, data: GameData, defaultVal: TownBase) -> TownBase` |
-| `FactionLeader::_CONSTRUCTOR` | `FactionLeader::_CONSTRUCTOR hook` | `function(factionLeader: FactionLeader, faction: Faction, defaultVal: FactionLeader) -> FactionLeader` |
-| `FactionRelations::_CONSTRUCTOR` | `FactionRelations::_CONSTRUCTOR hook` | `function(factionRelations: FactionRelations, defaultVal: FactionRelations) -> FactionRelations` |
-| `FactionUniqueSquadManager::_CONSTRUCTOR` | `FactionUniqueSquadManager::_CONSTRUCTOR hook` | `function(factionUniqueSquadManager: FactionUniqueSquadManager, defaultVal: FactionUniqueSquadManager) -> FactionUniqueSquadManager` |
-| `ProsperityManager::_CONSTRUCTOR` | `ProsperityManager::_CONSTRUCTOR hook` | `function(prosperityManager: ProsperityManager, defaultVal: ProsperityManager) -> ProsperityManager` |
-| `InventoryItemBase::_CONSTRUCTOR` | `InventoryItemBase::_CONSTRUCTOR hook` | `function(inventoryItemBase: InventoryItemBase, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, defaultVal: InventoryItemBase) -> InventoryItemBase` |
-| `MedicalSystem::_CONSTRUCTOR` | `MedicalSystem::_CONSTRUCTOR hook` | `function(medicalSystem: MedicalSystem, defaultVal: MedicalSystem) -> MedicalSystem` |
-| `CombatTechniqueData::_CONSTRUCTOR` | `CombatTechniqueData::_CONSTRUCTOR hook` | `function(combatTechniqueData: CombatTechniqueData, data: GameData, defaultVal: CombatTechniqueData) -> CombatTechniqueData` |
-| `Dialogue::_CONSTRUCTOR` | `Dialogue::_CONSTRUCTOR hook` | `function(dialogue: Dialogue, defaultVal: Dialogue) -> Dialogue` |
-| `DialogLineData::_CONSTRUCTOR` | `DialogLineData::_CONSTRUCTOR hook` | `function(dialogLineData: DialogLineData, data: GameData, defaultVal: DialogLineData) -> DialogLineData` |
-| `UseableStuff::_NV_getCostToUse` | `UseableStuff::_NV_getCostToUse hook` | `function(useableStuff: UseableStuff, who: Character, defaultVal: integer) -> integer` |
-| `UseableStuff::_NV_couldIOperate` | `UseableStuff::_NV_couldIOperate hook` | `function(useableStuff: UseableStuff, userHandle: hand, defaultVal: boolean) -> boolean` |
-| `UseableStuff::_NV_dontNeedWorkRightNow` | `UseableStuff::_NV_dontNeedWorkRightNow hook` | `function(useableStuff: UseableStuff, defaultVal: boolean) -> boolean` |
-| `Building::_NV_addDismantleProgress` | `Building::_NV_addDismantleProgress hook` | `function(building: Building, amount: number, defaultVal: boolean) -> boolean` |
-| `Building::_NV_canUpgrade` | `Building::_NV_canUpgrade hook` | `function(building: Building, defaultVal: GameData) -> GameData` |
-| `DoorStuff::openDoor` | `DoorStuff::openDoor hook` | `function(doorStuff: DoorStuff, defaultVal: boolean) -> boolean` |
-| `DoorStuff::closeDoor` | `DoorStuff::closeDoor hook` | `function(doorStuff: DoorStuff, defaultVal: boolean) -> boolean` |
-| `FarmBuilding::destroyAPlant` | `FarmBuilding::destroyAPlant hook` | `function(farmBuilding: FarmBuilding, defaultVal: boolean) -> boolean` |
-| `UseableStuff::takePowerFrom` | `UseableStuff::takePowerFrom hook` | `function(useableStuff: UseableStuff, amount: number, frameTime: number, defaultVal: number) -> number` |
-| `PreviewBuilding::_NV_placementVerification` | `PreviewBuilding::_NV_placementVerification hook` | `function(previewBuilding: PreviewBuilding, defaultVal: boolean) -> boolean` |
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Character::isItOkForMeToLoot` | `function(self: Character, victim: RootObject, item: Item, defaultVal: boolean) -> boolean` |
+| `Character::getFencingSuccessChance` | `function(self: Character, item: Item, thief: RootObject, defaultVal: number) -> number` |
+| `CharStats::chooseAttack` | `function(self: CharStats, range: number, weaponReach: number, lastAttack: CombatTechniqueData, opponentIsStationary: boolean, defaultAttack: CombatTechniqueData) -> CombatTechniqueData` |
+| `CharStats::getStat` | `function(self: CharStats, statType: integer, unmodified: boolean, defaultVal: number) -> number` |
+| `Platoon::iBuyStolenGoods` | `function(self: Platoon, item: Item, defaultVal: boolean) -> boolean` |
+| `Platoon::iBuyIllegalGoods` | `function(self: Platoon, defaultVal: boolean) -> boolean` |
+| `Ownerships::canIUseThisBuilding` | `function(self: Ownerships, building: Building, character: Character, defaultVal: boolean) -> boolean` |
+| `Inventory::getSectionOfType` | `function(self: Inventory, type: integer) -> InventorySection` |
+| `Inventory::getBestFoodItem` | `function(self: Inventory, race: Character) -> Item` |
+| `InventoryItemBase::getValueSingle` | `function(self: InventoryItemBase, isPlayer: boolean, defaultVal: integer) -> integer` |
+| `Faction::chooseARace` | `function(self: Faction, character: GameData, squadTemplate: GameData, defaultVal: GameData) -> GameData` |
+| `Faction::getBuildingReplacement` | `function(self: Faction, building: GameData, defaultVal: GameData) -> GameData` |
+| `Dialogue::_checkCondition` | `function(self: Dialogue, conditionName: DialogConditionEnum, compareBy: ComparisonEnum, val: integer, target: Character, actualConversationTarget: Character, defaultVal: boolean) -> boolean` |
+| `Dialogue::startConversation` | `function(self: Dialogue, target: Character, talk: DialogLineData, ev: EventTriggerEnum, force: boolean, defaultVal: boolean) -> boolean` |
+| `Dialogue::startPlayerConversation` | `function(self: Dialogue, target: Character, talk: DialogLineData, defaultVal: boolean) -> boolean` |
+| `Dialogue::sendEvent` | `function(self: Dialogue, who: Character, what: EventTriggerEnum, defaultVal: boolean) -> boolean` |
+| `Building::isPublic` | `function(self: Building, defaultVal: boolean) -> boolean` |
+| `Building::isForSale` | `function(self: Building, defaultVal: boolean) -> boolean` |
+| `Building::calculateSaleValue` | `function(self: Building, defaultVal: integer) -> integer` |
+| `CharMovement::isRunning` | `function(self: CharMovement, defaultVal: boolean) -> boolean` |
+| `CharMovement::isRunningAway` | `function(self: CharMovement, from: Vector3, defaultVal: boolean) -> boolean` |
+| `MedicalSystem::canGetUpWakeUp` | `function(self: MedicalSystem, defaultVal: boolean) -> boolean` |
+| `Inventory::_NV_addItem` | `function(self: Inventory, item: Item, quantity: integer, dropOnFail: boolean, destroyOnFail: boolean) -> boolean` |
+| `Inventory::_NV_removeItemDontDestroy_returnsItem` | `function(self: Inventory, item: Item, howmany: integer, returnCopyIfSomeLeft: boolean) -> Item` |
+| `Inventory::buyItem` | `function(self: Inventory, item: Item, sendingTo: RootObject) -> Item` |
+| `Character::_CONSTRUCTOR` | `function(self: Character, dat: GameData, own: Faction, handle: hand, defaultVal: Character) -> Character` |
+| `Item::_CONSTRUCTOR` | `function(self: Item, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, defaultVal: Item) -> Item` |
+| `Gear::_CONSTRUCTOR` | `function(self: Gear, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, uniform: Faction, defaultVal: Gear) -> Gear` |
+| `Sword::_CONSTRUCTOR` | `function(self: Sword, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, defaultVal: Sword) -> Sword` |
+| `Crossbow::_CONSTRUCTOR` | `function(self: Crossbow, baseData: GameData, handle: hand, overallLevel: integer, defaultVal: Crossbow) -> Crossbow` |
+| `Armour::_CONSTRUCTOR` | `function(self: Armour, baseData: GameData, materialData: GameData, handle: hand, uniformFlag: Faction, level: integer, defaultVal: Armour) -> Armour` |
+| `LockedArmour::_CONSTRUCTOR` | `function(self: LockedArmour, baseData: GameData, materialData: GameData, handle: hand, uniformFlag: Faction, level: integer, defaultVal: LockedArmour) -> LockedArmour` |
+| `Weapon::_CONSTRUCTOR` | `function(self: Weapon, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, defaultVal: Weapon) -> Weapon` |
+| `Building::_CONSTRUCTOR` | `function(self: Building, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: Building) -> Building` |
+| `Platoon::_CONSTRUCTOR` | `function(self: Platoon, faction: Faction, squadTemplate: GameData, platoonState: GameData, position: Vector3, persistent: boolean, defaultVal: Platoon) -> Platoon` |
+| `ActivePlatoon::_CONSTRUCTOR` | `function(self: ActivePlatoon, platoon: Platoon, doc: DataObjectContainer, faction: Faction, gameData: GameData, currentGoal: Tasker, posOffset: Vector3, defaultVal: ActivePlatoon) -> ActivePlatoon` |
+| `Faction::_CONSTRUCTOR` | `function(self: Faction, name: string, defaultVal: Faction) -> Faction` |
+| `Bounty::_CONSTRUCTOR` | `function(self: Bounty, defaultVal: Bounty) -> Bounty` |
+| `Damages::_CONSTRUCTOR` | `function(self: Damages, cut: number, blunt: number, pierce: number, bleed: number, armour: number, defaultVal: Damages) -> Damages` |
+| `Inventory::_CONSTRUCTOR` | `function(self: Inventory, owner: RootObject, defaultVal: Inventory) -> Inventory` |
+| `DoorStuff::_CONSTRUCTOR` | `function(self: DoorStuff, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, parent: Building, defaultVal: DoorStuff) -> DoorStuff` |
+| `ProductionBuilding::_CONSTRUCTOR` | `function(self: ProductionBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: ProductionBuilding) -> ProductionBuilding` |
+| `CraftingBuilding::_CONSTRUCTOR` | `function(self: CraftingBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: CraftingBuilding) -> CraftingBuilding` |
+| `FarmBuilding::_CONSTRUCTOR` | `function(self: FarmBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: FarmBuilding) -> FarmBuilding` |
+| `TurretBuilding::_CONSTRUCTOR` | `function(self: TurretBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: TurretBuilding) -> TurretBuilding` |
+| `FurnaceBuilding::_CONSTRUCTOR` | `function(self: FurnaceBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: FurnaceBuilding) -> FurnaceBuilding` |
+| `ResearchBuilding::_CONSTRUCTOR` | `function(self: ResearchBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: ResearchBuilding) -> ResearchBuilding` |
+| `WallBuilding::_CONSTRUCTOR` | `function(self: WallBuilding, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, furnitureOf: Layout, town: hand, handle: hand, defaultVal: WallBuilding) -> WallBuilding` |
+| `PreviewBuilding::_CONSTRUCTOR` | `function(self: PreviewBuilding, data: GameData, furnitureParent: Building, defaultVal: PreviewBuilding) -> PreviewBuilding` |
+| `UseableStuff::_CONSTRUCTOR` | `function(self: UseableStuff, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: UseableStuff) -> UseableStuff` |
+| `StorageBuilding::_CONSTRUCTOR` | `function(self: StorageBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: StorageBuilding) -> StorageBuilding` |
+| `LightBuilding::_CONSTRUCTOR` | `function(self: LightBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: LightBuilding) -> LightBuilding` |
+| `GeneratorBuilding::_CONSTRUCTOR` | `function(self: GeneratorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: GeneratorBuilding) -> GeneratorBuilding` |
+| `WindGeneratorBuilding::_CONSTRUCTOR` | `function(self: WindGeneratorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: WindGeneratorBuilding) -> WindGeneratorBuilding` |
+| `GatewayBuilding::_CONSTRUCTOR` | `function(self: GatewayBuilding, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, defaultVal: GatewayBuilding) -> GatewayBuilding` |
+| `TortureBuilding::_CONSTRUCTOR` | `function(self: TortureBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: TortureBuilding) -> TortureBuilding` |
+| `RainCollectorBuilding::_CONSTRUCTOR` | `function(self: RainCollectorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: RainCollectorBuilding) -> RainCollectorBuilding` |
+| `CharacterHuman::_CONSTRUCTOR` | `function(self: CharacterHuman, data: GameData, faction: Faction, handle: hand, defaultVal: CharacterHuman) -> CharacterHuman` |
+| `CharacterAnimal::_CONSTRUCTOR` | `function(self: CharacterAnimal, data: GameData, faction: Faction, handle: hand, age: number, defaultVal: CharacterAnimal) -> CharacterAnimal` |
+| `CharStats::_CONSTRUCTOR` | `function(self: CharStats, defaultVal: CharStats) -> CharStats` |
+| `CharBody::_CONSTRUCTOR` | `function(self: CharBody, defaultVal: CharBody) -> CharBody` |
+| `CharMovement::_CONSTRUCTOR` | `function(self: CharMovement, defaultVal: CharMovement) -> CharMovement` |
+| `CombatClass::_CONSTRUCTOR` | `function(self: CombatClass, movement: CharMovement, ai: lightuserdata, anim: lightuserdata, character: Character, stats: CharStats, medical: MedicalSystem, defaultVal: CombatClass) -> CombatClass` |
+| `Town::_CONSTRUCTOR` | `function(self: Town, data: GameData, defaultVal: Town) -> Town` |
+| `TownBase::_CONSTRUCTOR` | `function(self: TownBase, data: GameData, defaultVal: TownBase) -> TownBase` |
+| `FactionLeader::_CONSTRUCTOR` | `function(self: FactionLeader, faction: Faction, defaultVal: FactionLeader) -> FactionLeader` |
+| `FactionRelations::_CONSTRUCTOR` | `function(self: FactionRelations, defaultVal: FactionRelations) -> FactionRelations` |
+| `FactionUniqueSquadManager::_CONSTRUCTOR` | `function(self: FactionUniqueSquadManager, defaultVal: FactionUniqueSquadManager) -> FactionUniqueSquadManager` |
+| `ProsperityManager::_CONSTRUCTOR` | `function(self: ProsperityManager, defaultVal: ProsperityManager) -> ProsperityManager` |
+| `InventoryItemBase::_CONSTRUCTOR` | `function(self: InventoryItemBase, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, defaultVal: InventoryItemBase) -> InventoryItemBase` |
+| `MedicalSystem::_CONSTRUCTOR` | `function(self: MedicalSystem, defaultVal: MedicalSystem) -> MedicalSystem` |
+| `CombatTechniqueData::_CONSTRUCTOR` | `function(self: CombatTechniqueData, data: GameData, defaultVal: CombatTechniqueData) -> CombatTechniqueData` |
+| `Dialogue::_CONSTRUCTOR` | `function(self: Dialogue, defaultVal: Dialogue) -> Dialogue` |
+| `DialogLineData::_CONSTRUCTOR` | `function(self: DialogLineData, data: GameData, defaultVal: DialogLineData) -> DialogLineData` |
+| `UseableStuff::_NV_getCostToUse` | `function(self: UseableStuff, who: Character, defaultVal: integer) -> integer` |
+| `UseableStuff::_NV_couldIOperate` | `function(self: UseableStuff, userHandle: hand, defaultVal: boolean) -> boolean` |
+| `UseableStuff::_NV_dontNeedWorkRightNow` | `function(self: UseableStuff, defaultVal: boolean) -> boolean` |
+| `Building::_NV_addDismantleProgress` | `function(self: Building, amount: number, defaultVal: boolean) -> boolean` |
+| `Building::_NV_canUpgrade` | `function(self: Building, defaultVal: GameData) -> GameData` |
+| `DoorStuff::openDoor` | `function(self: DoorStuff, defaultVal: boolean) -> boolean` |
+| `DoorStuff::closeDoor` | `function(self: DoorStuff, defaultVal: boolean) -> boolean` |
+| `FarmBuilding::destroyAPlant` | `function(self: FarmBuilding, defaultVal: boolean) -> boolean` |
+| `UseableStuff::takePowerFrom` | `function(self: UseableStuff, amount: number, frameTime: number, defaultVal: number) -> number` |
+| `PreviewBuilding::_NV_placementVerification` | `function(self: PreviewBuilding, defaultVal: boolean) -> boolean` |
 
 ## Detailed Callback Documentation
 
 ### `ActivePlatoon::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `ActivePlatoon::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(activePlatoon, platoon, doc, faction, gameData, currentGoal, posOffset, defaultVal)`
+- **Lua Signature**: `function(self, platoon, doc, faction, gameData, currentGoal, posOffset, defaultVal)`
 - **Parameters**:
-  - `activePlatoon`: `ActivePlatoon`
+  - `self`: `ActivePlatoon`
   - `platoon`: `Platoon`
   - `doc`: `DataObjectContainer`
   - `faction`: `Faction`
@@ -271,28 +270,25 @@ Events.off(handlerId)
 ### `ActivePlatoon::_NV_addActiveObject`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `ActivePlatoon::_NV_addActiveObject hook`
-- **Lua Signature**: `function(platoon, character)`
+- **Lua Signature**: `function(self, character)`
 - **Parameters**:
-  - `platoon`: `ActivePlatoon`
+  - `self`: `ActivePlatoon`
   - `character`: `RootObject`
 
 ### `ActivePlatoon::_NV_removeObject`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `ActivePlatoon::_NV_removeObject hook`
-- **Lua Signature**: `function(platoon, character)`
+- **Lua Signature**: `function(self, character)`
 - **Parameters**:
-  - `platoon`: `ActivePlatoon`
+  - `self`: `ActivePlatoon`
   - `character`: `RootObject`
 
 ### `Armour::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Armour::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(armour, baseData, materialData, handle, uniformFlag, level, defaultVal)`
+- **Lua Signature**: `function(self, baseData, materialData, handle, uniformFlag, level, defaultVal)`
 - **Parameters**:
-  - `armour`: `Armour`
+  - `self`: `Armour`
   - `baseData`: `GameData`
   - `materialData`: `GameData`
   - `handle`: `hand`
@@ -304,20 +300,18 @@ Events.off(handlerId)
 ### `Bounty::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Bounty::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(bounty, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `bounty`: `Bounty`
+  - `self`: `Bounty`
   - `defaultVal`: `Bounty`
 - **Returns**: `Bounty`
 
 ### `BountyManager::notifyCrimeWitnessed`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `BountyManager::notifyCrimeWitnessed hook`
-- **Lua Signature**: `function(bountyManager, faction, againstWho, expiryTime, crimeType)`
+- **Lua Signature**: `function(self, faction, againstWho, expiryTime, crimeType)`
 - **Parameters**:
-  - `bountyManager`: `BountyManager`
+  - `self`: `BountyManager`
   - `faction`: `Faction`
   - `againstWho`: `hand`
   - `expiryTime`: `integer`
@@ -326,19 +320,17 @@ Events.off(handlerId)
 ### `BuildModeWindow::confirm`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `BuildModeWindow::confirm hook`
-- **Lua Signature**: `function(buildModeWindow, widget)`
+- **Lua Signature**: `function(self, widget)`
 - **Parameters**:
-  - `buildModeWindow`: `BuildModeWindow`
+  - `self`: `BuildModeWindow`
   - `widget`: `Widget`
 
 ### `Building::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Building::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(building, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -353,19 +345,17 @@ Events.off(handlerId)
 ### `Building::_NV_addConstructionProgress`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_addConstructionProgress hook`
-- **Lua Signature**: `function(building, amount)`
+- **Lua Signature**: `function(self, amount)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `amount`: `number`
 
 ### `Building::_NV_addDismantleProgress`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Building::_NV_addDismantleProgress hook`
-- **Lua Signature**: `function(building, amount, defaultVal)`
+- **Lua Signature**: `function(self, amount, defaultVal)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `amount`: `number`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
@@ -373,54 +363,48 @@ Events.off(handlerId)
 ### `Building::_NV_buyMeCallback`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_buyMeCallback hook`
-- **Lua Signature**: `function(building, result)`
+- **Lua Signature**: `function(self, result)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `result`: `integer`
 
 ### `Building::_NV_canUpgrade`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Building::_NV_canUpgrade hook`
-- **Lua Signature**: `function(building, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `defaultVal`: `GameData`
 - **Returns**: `GameData`
 
 ### `Building::_NV_loadFromSerialise`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_loadFromSerialise hook`
-- **Lua Signature**: `function(building, saveState)`
+- **Lua Signature**: `function(self, saveState)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `saveState`: `GameSaveState`
 
 ### `Building::_NV_notifyConstructionComplete`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_notifyConstructionComplete hook`
-- **Lua Signature**: `function(building)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
 
 ### `Building::_NV_notifyConstructionDismantling`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_notifyConstructionDismantling hook`
-- **Lua Signature**: `function(building)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
 
 ### `Building::_NV_notifyEffect`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_notifyEffect hook`
-- **Lua Signature**: `function(building, effectType, weatherType, strength)`
+- **Lua Signature**: `function(self, effectType, weatherType, strength)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `effectType`: `integer`
   - `weatherType`: `integer`
   - `strength`: `number`
@@ -428,179 +412,162 @@ Events.off(handlerId)
 ### `Building::_NV_onBuildingLoaded`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::onBuildingLoaded hook`
-- **Lua Signature**: `function(building)`
+- **Engine Hook**: `Building::onBuildingLoaded`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
 
 ### `Building::_NV_serialise`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_serialise hook`
-- **Lua Signature**: `function(building, container, refList)`
+- **Lua Signature**: `function(self, container, refList)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `container`: `GameDataContainer`
   - `refList`: `GameData`
 
 ### `Building::_NV_setBroken`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::setBroken hook`
-- **Lua Signature**: `function(building, broken)`
+- **Engine Hook**: `Building::setBroken`
+- **Lua Signature**: `function(self, broken)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `broken`: `boolean`
 
 ### `Building::_NV_setConstructionProgress`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_setConstructionProgress hook`
-- **Lua Signature**: `function(building, amount)`
+- **Lua Signature**: `function(self, amount)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `amount`: `number`
 
 ### `Building::_NV_setFaction`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_setFaction hook`
-- **Lua Signature**: `function(building, faction, activePlatoon)`
+- **Lua Signature**: `function(self, faction, activePlatoon)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `faction`: `Faction`
   - `activePlatoon`: `ActivePlatoon`
 
 ### `Building::_NV_switchEffects`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_switchEffects hook`
-- **Lua Signature**: `function(building, on)`
+- **Lua Signature**: `function(self, on)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `on`: `boolean`
 
 ### `Building::_NV_switchLights`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_switchLights hook`
-- **Lua Signature**: `function(building, on)`
+- **Lua Signature**: `function(self, on)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `on`: `boolean`
 
 ### `Building::_NV_upgrade`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::_NV_upgrade hook`
-- **Lua Signature**: `function(building, line)`
+- **Lua Signature**: `function(self, line)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `line`: `DataPanelLine`
 
 ### `Building::addAnInternalBuilding`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::addAnInternalBuilding hook`
-- **Lua Signature**: `function(building, internalBuilding)`
+- **Lua Signature**: `function(self, internalBuilding)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `internalBuilding`: `Building`
 
 ### `Building::calculateSaleValue`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Building::calculateSaleValue hook`
-- **Lua Signature**: `function(building, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `defaultVal`: `integer`
 - **Returns**: `integer`
 
 ### `Building::destroyDoors`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::destroyDoors hook`
-- **Lua Signature**: `function(building)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
 
 ### `Building::isForSale`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Building::isForSale hook`
-- **Lua Signature**: `function(building, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
 ### `Building::isPublic`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Building::isPublic hook`
-- **Lua Signature**: `function(building, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
 ### `Building::setFloorVisibility`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::setFloorVisibility hook`
-- **Lua Signature**: `function(building, floor, isVisible)`
+- **Lua Signature**: `function(self, floor, isVisible)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `floor`: `integer`
   - `isVisible`: `boolean`
 
 ### `Building::setResidentSquad`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Building::setResidentSquad hook`
-- **Lua Signature**: `function(building, platoon)`
+- **Lua Signature**: `function(self, platoon)`
 - **Parameters**:
-  - `building`: `Building`
+  - `self`: `Building`
   - `platoon`: `Platoon`
 
 ### `CharBody::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CharBody::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(charBody, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `charBody`: `CharBody`
+  - `self`: `CharBody`
   - `defaultVal`: `CharBody`
 - **Returns**: `CharBody`
 
 ### `CharMovement::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CharMovement::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(charMovement, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `charMovement`: `CharMovement`
+  - `self`: `CharMovement`
   - `defaultVal`: `CharMovement`
 - **Returns**: `CharMovement`
 
 ### `CharMovement::isRunning`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CharMovement::isRunning hook`
-- **Lua Signature**: `function(charMovement, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `charMovement`: `CharMovement`
+  - `self`: `CharMovement`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
 ### `CharMovement::isRunningAway`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CharMovement::isRunningAway hook`
-- **Lua Signature**: `function(charMovement, from, defaultVal)`
+- **Lua Signature**: `function(self, from, defaultVal)`
 - **Parameters**:
-  - `charMovement`: `CharMovement`
+  - `self`: `CharMovement`
   - `from`: `Vector3`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
@@ -608,20 +575,18 @@ Events.off(handlerId)
 ### `CharStats::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CharStats::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(charStats, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `defaultVal`: `CharStats`
 - **Returns**: `CharStats`
 
 ### `CharStats::chooseAttack`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CharStats::chooseAttack hook`
-- **Lua Signature**: `function(charStats, range, weaponReach, lastAttack, opponentIsStationary, defaultAttack)`
+- **Lua Signature**: `function(self, range, weaponReach, lastAttack, opponentIsStationary, defaultAttack)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `range`: `number`
   - `weaponReach`: `number`
   - `lastAttack`: `CombatTechniqueData`
@@ -632,18 +597,16 @@ Events.off(handlerId)
 ### `CharStats::clearHoldLocation`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::clearHoldLocation hook`
-- **Lua Signature**: `function(charStats)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
 
 ### `CharStats::getStat`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CharStats::getStat hook`
-- **Lua Signature**: `function(stats, statType, unmodified, defaultVal)`
+- **Lua Signature**: `function(self, statType, unmodified, defaultVal)`
 - **Parameters**:
-  - `stats`: `CharStats`
+  - `self`: `CharStats`
   - `statType`: `integer`
   - `unmodified`: `boolean`
   - `defaultVal`: `number`
@@ -652,38 +615,34 @@ Events.off(handlerId)
 ### `CharStats::setHoldLocation`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::setHoldLocation hook`
-- **Lua Signature**: `function(charStats, vector3Table)`
+- **Lua Signature**: `function(self, vector3Table)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `vector3Table`: `Vector3`
 
 ### `CharStats::xpDodgeEvent`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::xpDodgeEvent hook`
-- **Lua Signature**: `function(charStats, enemySkill, successful)`
+- **Lua Signature**: `function(self, enemySkill, successful)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `enemySkill`: `number`
   - `successful`: `boolean`
 
 ### `CharStats::xpEngineering`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::xpEngineering hook`
-- **Lua Signature**: `function(charStats, time)`
+- **Lua Signature**: `function(self, time)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `time`: `number`
 
 ### `CharStats::xpFirstAid`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::xpFirstAid hook`
-- **Lua Signature**: `function(charStats, patient, time, medicStat)`
+- **Lua Signature**: `function(self, patient, time, medicStat)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `patient`: `Character`
   - `time`: `number`
   - `medicStat`: `integer`
@@ -691,40 +650,36 @@ Events.off(handlerId)
 ### `CharStats::xpLockpicking`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::xpLockpicking hook`
-- **Lua Signature**: `function(charStats, lockLevel, success)`
+- **Lua Signature**: `function(self, lockLevel, success)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `lockLevel`: `integer`
   - `success`: `boolean`
 
 ### `CharStats::xpRunning`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::xpRunning hook`
-- **Lua Signature**: `function(charStats, time, speed)`
+- **Lua Signature**: `function(self, time, speed)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `time`: `number`
   - `speed`: `number`
 
 ### `CharStats::xpStat_eventBased`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::xpStat_eventBased hook`
-- **Lua Signature**: `function(charStats, statType, amount)`
+- **Lua Signature**: `function(self, statType, amount)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `statType`: `integer`
   - `amount`: `number`
 
 ### `CharStats::xpStealth`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::xpStealth hook`
-- **Lua Signature**: `function(charStats, time, enemiesAbout, seen, isMoving)`
+- **Lua Signature**: `function(self, time, enemiesAbout, seen, isMoving)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `time`: `number`
   - `enemiesAbout`: `boolean`
   - `seen`: `YesNoMaybe`
@@ -733,35 +688,31 @@ Events.off(handlerId)
 ### `CharStats::xpToughness_GetUpEvent`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::xpToughness_GetUpEvent hook`
-- **Lua Signature**: `function(charStats)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
 
 ### `CharStats::xpToughness_PunchSomething`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::xpToughness_PunchSomething hook`
-- **Lua Signature**: `function(charStats, mat)`
+- **Lua Signature**: `function(self, mat)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
   - `mat`: `integer`
 
 ### `CharStats::xpToughness_RagdollEvent`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CharStats::xpToughness_RagdollEvent hook`
-- **Lua Signature**: `function(charStats)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `charStats`: `CharStats`
+  - `self`: `CharStats`
 
 ### `Character::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Character::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(character, dat, own, handle, defaultVal)`
+- **Lua Signature**: `function(self, dat, own, handle, defaultVal)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `dat`: `GameData`
   - `own`: `Faction`
   - `handle`: `hand`
@@ -771,40 +722,36 @@ Events.off(handlerId)
 ### `Character::_NV_ImStealingDoYouNotice`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_ImStealingDoYouNotice hook`
-- **Lua Signature**: `function(character, stealFrom, item)`
+- **Lua Signature**: `function(self, stealFrom, item)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `stealFrom`: `RootObject`
   - `item`: `Item`
 
 ### `Character::_NV_equipItem`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_equipItem hook`
-- **Lua Signature**: `function(character, sectionName, item)`
+- **Lua Signature**: `function(self, sectionName, item)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `sectionName`: `string`
   - `item`: `Item`
 
 ### `Character::_NV_gettingEaten`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_gettingEaten hook`
-- **Lua Signature**: `function(character, amount, eater)`
+- **Lua Signature**: `function(self, amount, eater)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `amount`: `number`
   - `eater`: `Character`
 
 ### `Character::_NV_hitByMeleeAttack`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_hitByMeleeAttack hook`
-- **Lua Signature**: `function(character, cutDir, damage, attacker, attack, comboID)`
+- **Lua Signature**: `function(self, cutDir, damage, attacker, attack, comboID)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `cutDir`: `integer`
   - `damage`: `Damages`
   - `attacker`: `Character`
@@ -814,131 +761,117 @@ Events.off(handlerId)
 ### `Character::_NV_init`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_init hook`
-- **Lua Signature**: `function(character)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
 
 ### `Character::_NV_loadFromSerialise`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_loadFromSerialise hook`
-- **Lua Signature**: `function(character, saveState)`
+- **Lua Signature**: `function(self, saveState)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `saveState`: `GameSaveState`
 
 ### `Character::_NV_loadFromSerialisePostCreationStage`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_loadFromSerialisePostCreationStage hook`
-- **Lua Signature**: `function(character, saveState)`
+- **Lua Signature**: `function(self, saveState)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `saveState`: `GameSaveState`
 
 ### `Character::_NV_say`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_say hook`
-- **Lua Signature**: `function(character, message)`
+- **Lua Signature**: `function(self, message)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `message`: `string`
 - **Notes**: Returning false from the handler suppresses remaining handlers.
 
 ### `Character::_NV_select`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_select hook`
-- **Lua Signature**: `function(character)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
 
 ### `Character::_NV_serialise`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_serialise hook`
-- **Lua Signature**: `function(character, container, refList)`
+- **Lua Signature**: `function(self, container, refList)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `container`: `GameDataContainer`
   - `refList`: `GameData`
 
 ### `Character::_NV_setFaction`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_setFaction hook`
-- **Lua Signature**: `function(character, faction, platoon)`
+- **Lua Signature**: `function(self, faction, platoon)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `faction`: `Faction`
   - `platoon`: `ActivePlatoon`
 
 ### `Character::_NV_setStandingOrder`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_setStandingOrder hook`
-- **Lua Signature**: `function(character, orderID, enabled)`
+- **Lua Signature**: `function(self, orderID, enabled)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `orderID`: `integer`
   - `enabled`: `boolean`
 
 ### `Character::_NV_smugglingTradeCheck`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_smugglingTradeCheck hook`
-- **Lua Signature**: `function(character, item, who)`
+- **Lua Signature**: `function(self, item, who)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `item`: `Item`
   - `who`: `Character`
 
 ### `Character::_NV_takeMoney`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_takeMoney hook`
-- **Lua Signature**: `function(character, amount)`
+- **Lua Signature**: `function(self, amount)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `amount`: `integer`
 
 ### `Character::_NV_unequipItem`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_unequipItem hook`
-- **Lua Signature**: `function(character, sectionName, item)`
+- **Lua Signature**: `function(self, sectionName, item)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `sectionName`: `string`
   - `item`: `Item`
 
 ### `Character::_NV_unselect`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::_NV_unselect hook`
-- **Lua Signature**: `function(character)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
 
 ### `Character::addGoal`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::addGoal hook`
-- **Lua Signature**: `function(character, taskType, subject)`
+- **Lua Signature**: `function(self, taskType, subject)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `taskType`: `integer`
   - `subject`: `RootObject`
 
 ### `Character::addJob`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::addJob hook`
-- **Lua Signature**: `function(character, taskType, subject, shift, addDontClear, location)`
+- **Lua Signature**: `function(self, taskType, subject, shift, addDontClear, location)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `taskType`: `integer`
   - `subject`: `RootObject`
   - `shift`: `boolean`
@@ -948,10 +881,9 @@ Events.off(handlerId)
 ### `Character::addOrder`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::addOrder hook`
-- **Lua Signature**: `function(character, destBuilding, taskType, subject, shift, clear, location)`
+- **Lua Signature**: `function(self, destBuilding, taskType, subject, shift, clear, location)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `destBuilding`: `Building`
   - `taskType`: `integer`
   - `subject`: `RootObject`
@@ -962,37 +894,33 @@ Events.off(handlerId)
 ### `Character::changeSlaveOwner`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::changeSlaveOwner hook`
-- **Lua Signature**: `function(slave, newOwnerHandle)`
+- **Lua Signature**: `function(self, newOwnerHandle)`
 - **Parameters**:
-  - `slave`: `Character`
+  - `self`: `Character`
   - `newOwnerHandle`: `hand`
 
 ### `Character::declareDead`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::declareDead hook`
-- **Lua Signature**: `function(character)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
 
 ### `Character::eatItem`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::eatItem hook`
-- **Lua Signature**: `function(character, foodItem, inventory)`
+- **Lua Signature**: `function(self, foodItem, inventory)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `foodItem`: `Item`
   - `inventory`: `Inventory`
 
 ### `Character::getFencingSuccessChance`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Character::getFencingSuccessChance hook`
-- **Lua Signature**: `function(merchant, item, thief, defaultVal)`
+- **Lua Signature**: `function(self, item, thief, defaultVal)`
 - **Parameters**:
-  - `merchant`: `Character`
+  - `self`: `Character`
   - `item`: `Item`
   - `thief`: `RootObject`
   - `defaultVal`: `number`
@@ -1001,19 +929,17 @@ Events.off(handlerId)
 ### `Character::getPickedUp`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::getPickedUp hook`
-- **Lua Signature**: `function(character, byWhom)`
+- **Lua Signature**: `function(self, byWhom)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `byWhom`: `Character`
 
 ### `Character::isItOkForMeToLoot`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Character::isItOkForMeToLoot hook`
-- **Lua Signature**: `function(me, victim, item, defaultVal)`
+- **Lua Signature**: `function(self, victim, item, defaultVal)`
 - **Parameters**:
-  - `me`: `Character`
+  - `self`: `Character`
   - `victim`: `RootObject`
   - `item`: `Item`
   - `defaultVal`: `boolean`
@@ -1022,38 +948,34 @@ Events.off(handlerId)
 ### `Character::pickupObject`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::pickupObject hook`
-- **Lua Signature**: `function(character, who)`
+- **Lua Signature**: `function(self, who)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `who`: `Character`
 
 ### `Character::removeJob`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::removeJob hook`
-- **Lua Signature**: `function(character, taskType)`
+- **Lua Signature**: `function(self, taskType)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `taskType`: `integer`
 
 ### `Character::setChainedMode`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Character::setChainedMode hook`
-- **Lua Signature**: `function(character, on, ownerHandle)`
+- **Lua Signature**: `function(self, on, ownerHandle)`
 - **Parameters**:
-  - `character`: `Character`
+  - `self`: `Character`
   - `on`: `boolean`
   - `ownerHandle`: `hand`
 
 ### `CharacterAnimal::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CharacterAnimal::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(characterAnimal, data, faction, handle, age, defaultVal)`
+- **Lua Signature**: `function(self, data, faction, handle, age, defaultVal)`
 - **Parameters**:
-  - `characterAnimal`: `CharacterAnimal`
+  - `self`: `CharacterAnimal`
   - `data`: `GameData`
   - `faction`: `Faction`
   - `handle`: `hand`
@@ -1064,10 +986,9 @@ Events.off(handlerId)
 ### `CharacterHuman::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CharacterHuman::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(characterHuman, data, faction, handle, defaultVal)`
+- **Lua Signature**: `function(self, data, faction, handle, defaultVal)`
 - **Parameters**:
-  - `characterHuman`: `CharacterHuman`
+  - `self`: `CharacterHuman`
   - `data`: `GameData`
   - `faction`: `Faction`
   - `handle`: `hand`
@@ -1077,10 +998,9 @@ Events.off(handlerId)
 ### `CombatClass::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CombatClass::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(combatClass, movement, ai, anim, character, stats, medical, defaultVal)`
+- **Lua Signature**: `function(self, movement, ai, anim, character, stats, medical, defaultVal)`
 - **Parameters**:
-  - `combatClass`: `CombatClass`
+  - `self`: `CombatClass`
   - `movement`: `CharMovement`
   - `ai`: `lightuserdata`
   - `anim`: `lightuserdata`
@@ -1093,10 +1013,9 @@ Events.off(handlerId)
 ### `CombatTechniqueData::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CombatTechniqueData::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(combatTechniqueData, data, defaultVal)`
+- **Lua Signature**: `function(self, data, defaultVal)`
 - **Parameters**:
-  - `combatTechniqueData`: `CombatTechniqueData`
+  - `self`: `CombatTechniqueData`
   - `data`: `GameData`
   - `defaultVal`: `CombatTechniqueData`
 - **Returns**: `CombatTechniqueData`
@@ -1104,10 +1023,9 @@ Events.off(handlerId)
 ### `CraftingBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `CraftingBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(craftingBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `craftingBuilding`: `CraftingBuilding`
+  - `self`: `CraftingBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -1122,63 +1040,56 @@ Events.off(handlerId)
 ### `CraftingBuilding::_NV_newCraftingButton`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CraftingBuilding::_NV_newCraftingButton hook`
-- **Lua Signature**: `function(craftingBuilding, sender)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
-  - `craftingBuilding`: `CraftingBuilding`
+  - `self`: `CraftingBuilding`
   - `sender`: `Widget`
 
 ### `CraftingBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CraftingBuilding::_NV_operate hook`
-- **Lua Signature**: `function(craftingBuilding, worker, amount)`
+- **Lua Signature**: `function(self, worker, amount)`
 - **Parameters**:
-  - `craftingBuilding`: `CraftingBuilding`
+  - `self`: `CraftingBuilding`
   - `worker`: `Character`
   - `amount`: `number`
 
 ### `CraftingBuilding::_removeCraft`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CraftingBuilding::_removeCraft hook`
-- **Lua Signature**: `function(craftingBuilding, index)`
+- **Lua Signature**: `function(self, index)`
 - **Parameters**:
-  - `craftingBuilding`: `CraftingBuilding`
+  - `self`: `CraftingBuilding`
   - `index`: `integer`
 
 ### `CraftingBuilding::addFinishedCraftItem`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CraftingBuilding::addFinishedCraftItem hook`
-- **Lua Signature**: `function(craftingBuilding, item)`
+- **Lua Signature**: `function(self, item)`
 - **Parameters**:
-  - `craftingBuilding`: `CraftingBuilding`
+  - `self`: `CraftingBuilding`
   - `item`: `Item`
 
 ### `CraftingBuilding::destroyProductionItem`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CraftingBuilding::destroyProductionItem hook`
-- **Lua Signature**: `function(craftingBuilding)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `craftingBuilding`: `CraftingBuilding`
+  - `self`: `CraftingBuilding`
 
 ### `CraftingBuilding::notifyCraftFailiure`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `CraftingBuilding::notifyCraftFailiure hook`
-- **Lua Signature**: `function(craftingBuilding)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `craftingBuilding`: `CraftingBuilding`
+  - `self`: `CraftingBuilding`
 
 ### `Crossbow::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Crossbow::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(crossbow, baseData, handle, overallLevel, defaultVal)`
+- **Lua Signature**: `function(self, baseData, handle, overallLevel, defaultVal)`
 - **Parameters**:
-  - `crossbow`: `Crossbow`
+  - `self`: `Crossbow`
   - `baseData`: `GameData`
   - `handle`: `hand`
   - `overallLevel`: `integer`
@@ -1188,10 +1099,9 @@ Events.off(handlerId)
 ### `Damages::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Damages::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(damages, cut, blunt, pierce, bleed, armour, defaultVal)`
+- **Lua Signature**: `function(self, cut, blunt, pierce, bleed, armour, defaultVal)`
 - **Parameters**:
-  - `damages`: `Damages`
+  - `self`: `Damages`
   - `cut`: `number`
   - `blunt`: `number`
   - `pierce`: `number`
@@ -1203,19 +1113,17 @@ Events.off(handlerId)
 ### `DataPanelLine_Button::pressCallback`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Button::pressCallback hook`
-- **Lua Signature**: `function(button, sender)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
-  - `button`: `DataPanelLine_Button`
+  - `self`: `DataPanelLine_Button`
   - `sender`: `Widget`
 
 ### `DialogLineData::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `DialogLineData::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(dialogLineData, data, defaultVal)`
+- **Lua Signature**: `function(self, data, defaultVal)`
 - **Parameters**:
-  - `dialogLineData`: `DialogLineData`
+  - `self`: `DialogLineData`
   - `data`: `GameData`
   - `defaultVal`: `DialogLineData`
 - **Returns**: `DialogLineData`
@@ -1223,20 +1131,18 @@ Events.off(handlerId)
 ### `Dialogue::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Dialogue::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(dialogue, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `dialogue`: `Dialogue`
+  - `self`: `Dialogue`
   - `defaultVal`: `Dialogue`
 - **Returns**: `Dialogue`
 
 ### `Dialogue::_checkCondition`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Dialogue::_checkCondition hook`
-- **Lua Signature**: `function(dialogue, conditionName, compareBy, val, target, actualConversationTarget, defaultVal)`
+- **Lua Signature**: `function(self, conditionName, compareBy, val, target, actualConversationTarget, defaultVal)`
 - **Parameters**:
-  - `dialogue`: `Dialogue`
+  - `self`: `Dialogue`
   - `conditionName`: `DialogConditionEnum`
   - `compareBy`: `ComparisonEnum`
   - `val`: `integer`
@@ -1248,46 +1154,41 @@ Events.off(handlerId)
 ### `Dialogue::_doActions`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Dialogue::_doActions hook`
-- **Lua Signature**: `function(dialogue, dialogLine)`
+- **Lua Signature**: `function(self, dialogLine)`
 - **Parameters**:
-  - `dialogue`: `Dialogue`
+  - `self`: `Dialogue`
   - `dialogLine`: `DialogLineData`
 
 ### `Dialogue::_endPlayerConversation`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Dialogue::_endPlayerConversation hook`
-- **Lua Signature**: `function(dialogue, finished)`
+- **Lua Signature**: `function(self, finished)`
 - **Parameters**:
-  - `dialogue`: `Dialogue`
+  - `self`: `Dialogue`
   - `finished`: `boolean`
 
 ### `Dialogue::endDialogue`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Dialogue::endDialogue hook`
-- **Lua Signature**: `function(dialogue, definitelyTheEnd)`
+- **Lua Signature**: `function(self, definitelyTheEnd)`
 - **Parameters**:
-  - `dialogue`: `Dialogue`
+  - `self`: `Dialogue`
   - `definitelyTheEnd`: `boolean`
 
 ### `Dialogue::say`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Dialogue::say hook`
-- **Lua Signature**: `function(dialogue, dialogLine)`
+- **Lua Signature**: `function(self, dialogLine)`
 - **Parameters**:
-  - `dialogue`: `Dialogue`
+  - `self`: `Dialogue`
   - `dialogLine`: `DialogLineData`
 
 ### `Dialogue::sendEvent`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Dialogue::sendEvent hook`
-- **Lua Signature**: `function(dialogue, who, what, defaultVal)`
+- **Lua Signature**: `function(self, who, what, defaultVal)`
 - **Parameters**:
-  - `dialogue`: `Dialogue`
+  - `self`: `Dialogue`
   - `who`: `Character`
   - `what`: `EventTriggerEnum`
   - `defaultVal`: `boolean`
@@ -1296,10 +1197,9 @@ Events.off(handlerId)
 ### `Dialogue::startConversation`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Dialogue::startConversation hook`
-- **Lua Signature**: `function(dialogue, target, talk, ev, force, defaultVal)`
+- **Lua Signature**: `function(self, target, talk, ev, force, defaultVal)`
 - **Parameters**:
-  - `dialogue`: `Dialogue`
+  - `self`: `Dialogue`
   - `target`: `Character`
   - `talk`: `DialogLineData`
   - `ev`: `EventTriggerEnum`
@@ -1310,10 +1210,9 @@ Events.off(handlerId)
 ### `Dialogue::startPlayerConversation`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Dialogue::startPlayerConversation hook`
-- **Lua Signature**: `function(dialogue, target, talk, defaultVal)`
+- **Lua Signature**: `function(self, target, talk, defaultVal)`
 - **Parameters**:
-  - `dialogue`: `Dialogue`
+  - `self`: `Dialogue`
   - `target`: `Character`
   - `talk`: `DialogLineData`
   - `defaultVal`: `boolean`
@@ -1322,28 +1221,25 @@ Events.off(handlerId)
 ### `Dialogue::stopEvent`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Dialogue::stopEvent hook`
-- **Lua Signature**: `function(dialogue, what)`
+- **Lua Signature**: `function(self, what)`
 - **Parameters**:
-  - `dialogue`: `Dialogue`
+  - `self`: `Dialogue`
   - `what`: `EventTriggerEnum`
 
 ### `DialogueWindow::show`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `DialogueWindow::show hook`
-- **Lua Signature**: `function(dialogueWindow, dialogue)`
+- **Lua Signature**: `function(self, dialogue)`
 - **Parameters**:
-  - `dialogueWindow`: `DialogueWindow`
+  - `self`: `DialogueWindow`
   - `dialogue`: `Dialogue`
 
 ### `DoorStuff::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `DoorStuff::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(doorStuff, dat, position, orientation, participant, town, handle, isFurnitureOf, indoors, parent, defaultVal)`
+- **Lua Signature**: `function(self, dat, position, orientation, participant, town, handle, isFurnitureOf, indoors, parent, defaultVal)`
 - **Parameters**:
-  - `doorStuff`: `DoorStuff`
+  - `self`: `DoorStuff`
   - `dat`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -1359,10 +1255,9 @@ Events.off(handlerId)
 ### `DoorStuff::_NV_hitByMeleeAttack`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `DoorStuff::_NV_hitByMeleeAttack hook`
-- **Lua Signature**: `function(doorStuff, cutDir, damage, attacker, attack, comboID)`
+- **Lua Signature**: `function(self, cutDir, damage, attacker, attack, comboID)`
 - **Parameters**:
-  - `doorStuff`: `DoorStuff`
+  - `self`: `DoorStuff`
   - `cutDir`: `integer`
   - `damage`: `Damages`
   - `attacker`: `Character`
@@ -1372,55 +1267,49 @@ Events.off(handlerId)
 ### `DoorStuff::closeDoor`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `DoorStuff::closeDoor hook`
-- **Lua Signature**: `function(doorStuff, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `doorStuff`: `DoorStuff`
+  - `self`: `DoorStuff`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
 ### `DoorStuff::lockDoor`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `DoorStuff::lockDoor hook`
-- **Lua Signature**: `function(doorStuff)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `doorStuff`: `DoorStuff`
+  - `self`: `DoorStuff`
 
 ### `DoorStuff::openDoor`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `DoorStuff::openDoor hook`
-- **Lua Signature**: `function(doorStuff, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `doorStuff`: `DoorStuff`
+  - `self`: `DoorStuff`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
 ### `DoorStuff::setDoorState`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `DoorStuff::setDoorState hook`
-- **Lua Signature**: `function(doorStuff, doorState)`
+- **Lua Signature**: `function(self, doorState)`
 - **Parameters**:
-  - `doorStuff`: `DoorStuff`
+  - `self`: `DoorStuff`
   - `doorState`: `integer`
 
 ### `DoorStuff::unlockDoor`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `DoorStuff::unlockDoor hook`
-- **Lua Signature**: `function(doorStuff)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `doorStuff`: `DoorStuff`
+  - `self`: `DoorStuff`
 
 ### `Faction::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Faction::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(faction, name, defaultVal)`
+- **Lua Signature**: `function(self, name, defaultVal)`
 - **Parameters**:
-  - `faction`: `Faction`
+  - `self`: `Faction`
   - `name`: `string`
   - `defaultVal`: `Faction`
 - **Returns**: `Faction`
@@ -1428,10 +1317,9 @@ Events.off(handlerId)
 ### `Faction::chooseARace`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Faction::chooseARace hook`
-- **Lua Signature**: `function(faction, character, squadTemplate, defaultVal)`
+- **Lua Signature**: `function(self, character, squadTemplate, defaultVal)`
 - **Parameters**:
-  - `faction`: `Faction`
+  - `self`: `Faction`
   - `character`: `GameData`
   - `squadTemplate`: `GameData`
   - `defaultVal`: `GameData`
@@ -1440,28 +1328,25 @@ Events.off(handlerId)
 ### `Faction::createNewEmptyActivePlatoon`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Faction::createNewEmptyActivePlatoon hook`
-- **Lua Signature**: `function(faction, platoon)`
+- **Lua Signature**: `function(self, platoon)`
 - **Parameters**:
-  - `faction`: `Faction`
+  - `self`: `Faction`
   - `platoon`: `Platoon`
 
 ### `Faction::destroyPlatoon`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Faction::destroyPlatoon hook`
-- **Lua Signature**: `function(faction, platoon)`
+- **Lua Signature**: `function(self, platoon)`
 - **Parameters**:
-  - `faction`: `Faction`
+  - `self`: `Faction`
   - `platoon`: `Platoon`
 
 ### `Faction::getBuildingReplacement`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Faction::getBuildingReplacement hook`
-- **Lua Signature**: `function(faction, building, defaultVal)`
+- **Lua Signature**: `function(self, building, defaultVal)`
 - **Parameters**:
-  - `faction`: `Faction`
+  - `self`: `Faction`
   - `building`: `GameData`
   - `defaultVal`: `GameData`
 - **Returns**: `GameData`
@@ -1469,10 +1354,9 @@ Events.off(handlerId)
 ### `FactionLeader::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `FactionLeader::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(factionLeader, faction, defaultVal)`
+- **Lua Signature**: `function(self, faction, defaultVal)`
 - **Parameters**:
-  - `factionLeader`: `FactionLeader`
+  - `self`: `FactionLeader`
   - `faction`: `Faction`
   - `defaultVal`: `FactionLeader`
 - **Returns**: `FactionLeader`
@@ -1480,20 +1364,18 @@ Events.off(handlerId)
 ### `FactionRelations::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `FactionRelations::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(factionRelations, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `factionRelations`: `FactionRelations`
+  - `self`: `FactionRelations`
   - `defaultVal`: `FactionRelations`
 - **Returns**: `FactionRelations`
 
 ### `FactionRelations::affectRelations`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `FactionRelations::affectRelations hook`
-- **Lua Signature**: `function(factionRelations, otherFaction, eventType, multiplier)`
+- **Lua Signature**: `function(self, otherFaction, eventType, multiplier)`
 - **Parameters**:
-  - `factionRelations`: `FactionRelations`
+  - `self`: `FactionRelations`
   - `otherFaction`: `Faction`
   - `eventType`: `integer`
   - `multiplier`: `number`
@@ -1501,20 +1383,18 @@ Events.off(handlerId)
 ### `FactionUniqueSquadManager::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `FactionUniqueSquadManager::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(factionUniqueSquadManager, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `factionUniqueSquadManager`: `FactionUniqueSquadManager`
+  - `self`: `FactionUniqueSquadManager`
   - `defaultVal`: `FactionUniqueSquadManager`
 - **Returns**: `FactionUniqueSquadManager`
 
 ### `FarmBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `FarmBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(farmBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `farmBuilding`: `FarmBuilding`
+  - `self`: `FarmBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -1529,39 +1409,35 @@ Events.off(handlerId)
 ### `FarmBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `FarmBuilding::_NV_operate hook`
-- **Lua Signature**: `function(farmBuilding, worker, amount)`
+- **Lua Signature**: `function(self, worker, amount)`
 - **Parameters**:
-  - `farmBuilding`: `FarmBuilding`
+  - `self`: `FarmBuilding`
   - `worker`: `Character`
   - `amount`: `number`
 
 ### `FarmBuilding::destroyAPlant`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `FarmBuilding::destroyAPlant hook`
-- **Lua Signature**: `function(farmBuilding, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `farmBuilding`: `FarmBuilding`
+  - `self`: `FarmBuilding`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
 ### `FarmBuilding::eat`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `FarmBuilding::eat hook`
-- **Lua Signature**: `function(farmBuilding, rate)`
+- **Lua Signature**: `function(self, rate)`
 - **Parameters**:
-  - `farmBuilding`: `FarmBuilding`
+  - `self`: `FarmBuilding`
   - `rate`: `number`
 
 ### `FurnaceBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `FurnaceBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(furnaceBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `furnaceBuilding`: `FurnaceBuilding`
+  - `self`: `FurnaceBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -1576,28 +1452,25 @@ Events.off(handlerId)
 ### `FurnaceBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `FurnaceBuilding::_NV_operate hook`
-- **Lua Signature**: `function(furnaceBuilding, worker, amount)`
+- **Lua Signature**: `function(self, worker, amount)`
 - **Parameters**:
-  - `furnaceBuilding`: `FurnaceBuilding`
+  - `self`: `FurnaceBuilding`
   - `worker`: `Character`
   - `amount`: `number`
 
 ### `GameWorld::charsUpdate`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `GameWorld::charsUpdate hook`
-- **Lua Signature**: `function(gameWorld)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `gameWorld`: `GameWorld`
+  - `self`: `GameWorld`
 
 ### `GatewayBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `GatewayBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(gatewayBuilding, dat, position, orientation, participant, town, handle, defaultVal)`
+- **Lua Signature**: `function(self, dat, position, orientation, participant, town, handle, defaultVal)`
 - **Parameters**:
-  - `gatewayBuilding`: `GatewayBuilding`
+  - `self`: `GatewayBuilding`
   - `dat`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -1610,10 +1483,9 @@ Events.off(handlerId)
 ### `Gear::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Gear::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(gear, baseData, companyData, materialData, handle, level, uniform, defaultVal)`
+- **Lua Signature**: `function(self, baseData, companyData, materialData, handle, level, uniform, defaultVal)`
 - **Parameters**:
-  - `gear`: `Gear`
+  - `self`: `Gear`
   - `baseData`: `GameData`
   - `companyData`: `GameData`
   - `materialData`: `GameData`
@@ -1626,10 +1498,9 @@ Events.off(handlerId)
 ### `GeneratorBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `GeneratorBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(generatorBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `generatorBuilding`: `GeneratorBuilding`
+  - `self`: `GeneratorBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -1644,20 +1515,18 @@ Events.off(handlerId)
 ### `InputHandler::keyDownEvent`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `InputHandler::keyDownEvent hook`
-- **Lua Signature**: `function(inputHandler, keyCode)`
+- **Lua Signature**: `function(self, keyCode)`
 - **Parameters**:
-  - `inputHandler`: `InputHandler`
+  - `self`: `InputHandler`
   - `keyCode`: `integer`
 - **Notes**: keyCode is the raw OIS::KeyCode cast to int.
 
 ### `Inventory::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Inventory::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(inventory, owner, defaultVal)`
+- **Lua Signature**: `function(self, owner, defaultVal)`
 - **Parameters**:
-  - `inventory`: `Inventory`
+  - `self`: `Inventory`
   - `owner`: `RootObject`
   - `defaultVal`: `Inventory`
 - **Returns**: `Inventory`
@@ -1665,38 +1534,35 @@ Events.off(handlerId)
 ### `Inventory::_NV__sectionAddItemCallback`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Inventory::_NV__sectionAddItemCallback hook`
-- **Lua Signature**: `function(inventory, item)`
+- **Lua Signature**: `function(self, item)`
 - **Parameters**:
-  - `inventory`: `Inventory`
+  - `self`: `Inventory`
   - `item`: `Item`
 
 ### `Inventory::_NV__sectionRemoveItemCallback`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Inventory::_NV__sectionRemoveItemCallback hook`
-- **Lua Signature**: `function(inventory, item)`
+- **Lua Signature**: `function(self, item)`
 - **Parameters**:
-  - `inventory`: `Inventory`
+  - `self`: `Inventory`
   - `item`: `Item`
 
 ### `Inventory::_NV__sectionUpdateItemCallback`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Inventory::_NV__sectionUpdateItemCallback hook`
-- **Lua Signature**: `function(inventory, item, prevQuantity)`
+- **Lua Signature**: `function(self, item, prevQuantity)`
 - **Parameters**:
-  - `inventory`: `Inventory`
+  - `self`: `Inventory`
   - `item`: `Item`
   - `prevQuantity`: `integer`
 
 ### `Inventory::_NV_addItem`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Inventory::addItem hook`
-- **Lua Signature**: `function(inventory, item, quantity, dropOnFail, destroyOnFail)`
+- **Engine Hook**: `Inventory::addItem`
+- **Lua Signature**: `function(self, item, quantity, dropOnFail, destroyOnFail)`
 - **Parameters**:
-  - `inventory`: `Inventory`
+  - `self`: `Inventory`
   - `item`: `Item`
   - `quantity`: `integer`
   - `dropOnFail`: `boolean`
@@ -1706,19 +1572,18 @@ Events.off(handlerId)
 ### `Inventory::_NV_dropItem`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Inventory::_NV_dropItem hook`
-- **Lua Signature**: `function(inventory, item)`
+- **Lua Signature**: `function(self, item)`
 - **Parameters**:
-  - `inventory`: `Inventory`
+  - `self`: `Inventory`
   - `item`: `Item`
 
 ### `Inventory::_NV_removeItemDontDestroy_returnsItem`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Inventory::removeItemDontDestroy_returnsItem hook`
-- **Lua Signature**: `function(inventory, item, howmany, returnCopyIfSomeLeft)`
+- **Engine Hook**: `Inventory::removeItemDontDestroy_returnsItem`
+- **Lua Signature**: `function(self, item, howmany, returnCopyIfSomeLeft)`
 - **Parameters**:
-  - `inventory`: `Inventory`
+  - `self`: `Inventory`
   - `item`: `Item`
   - `howmany`: `integer`
   - `returnCopyIfSomeLeft`: `boolean`
@@ -1727,10 +1592,9 @@ Events.off(handlerId)
 ### `Inventory::buyItem`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Inventory::buyItem hook`
-- **Lua Signature**: `function(buyerInventory, item, sendingTo)`
+- **Lua Signature**: `function(self, item, sendingTo)`
 - **Parameters**:
-  - `buyerInventory`: `Inventory`
+  - `self`: `Inventory`
   - `item`: `Item`
   - `sendingTo`: `RootObject`
 - **Returns**: `Item`
@@ -1738,30 +1602,27 @@ Events.off(handlerId)
 ### `Inventory::getBestFoodItem`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Inventory::getBestFoodItem hook`
-- **Lua Signature**: `function(inventory, race)`
+- **Lua Signature**: `function(self, race)`
 - **Parameters**:
-  - `inventory`: `Inventory`
+  - `self`: `Inventory`
   - `race`: `Character`
 - **Returns**: `Item`
 
 ### `Inventory::getSectionOfType`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Inventory::getSectionOfType hook`
-- **Lua Signature**: `function(inventory, type)`
+- **Lua Signature**: `function(self, type)`
 - **Parameters**:
-  - `inventory`: `Inventory`
+  - `self`: `Inventory`
   - `type`: `integer`
 - **Returns**: `InventorySection`
 
 ### `InventoryGUI::addTradePartner`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `InventoryGUI::addTradePartner hook`
-- **Lua Signature**: `function(tradeWith, payment, canDrop, isPlayer, whoHand)`
+- **Lua Signature**: `function(self, payment, canDrop, isPlayer, whoHand)`
 - **Parameters**:
-  - `tradeWith`: `InventoryGUI`
+  - `self`: `InventoryGUI`
   - `payment`: `boolean`
   - `canDrop`: `boolean`
   - `isPlayer`: `boolean`
@@ -1770,19 +1631,17 @@ Events.off(handlerId)
 ### `InventoryGUI::fencingConfirmationCallback`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `InventoryGUI::fencingConfirmationCallback hook`
-- **Lua Signature**: `function(gui, b)`
+- **Lua Signature**: `function(self, b)`
 - **Parameters**:
-  - `gui`: `InventoryGUI`
+  - `self`: `InventoryGUI`
   - `b`: `integer`
 
 ### `InventoryItemBase::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `InventoryItemBase::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(inventoryItemBase, baseData, companyData, materialData, handle, defaultVal)`
+- **Lua Signature**: `function(self, baseData, companyData, materialData, handle, defaultVal)`
 - **Parameters**:
-  - `inventoryItemBase`: `InventoryItemBase`
+  - `self`: `InventoryItemBase`
   - `baseData`: `GameData`
   - `companyData`: `GameData`
   - `materialData`: `GameData`
@@ -1793,10 +1652,10 @@ Events.off(handlerId)
 ### `InventoryItemBase::getValueSingle`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Inventory::getBaseValueSingle hook`
-- **Lua Signature**: `function(item, isPlayer, defaultVal)`
+- **Engine Hook**: `Inventory::getBaseValueSingle`
+- **Lua Signature**: `function(self, isPlayer, defaultVal)`
 - **Parameters**:
-  - `item`: `InventoryItemBase`
+  - `self`: `InventoryItemBase`
   - `isPlayer`: `boolean`
   - `defaultVal`: `integer`
 - **Returns**: `integer`
@@ -1804,10 +1663,9 @@ Events.off(handlerId)
 ### `Item::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Item::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(item, baseData, companyData, materialData, handle, defaultVal)`
+- **Lua Signature**: `function(self, baseData, companyData, materialData, handle, defaultVal)`
 - **Parameters**:
-  - `item`: `Item`
+  - `self`: `Item`
   - `baseData`: `GameData`
   - `companyData`: `GameData`
   - `materialData`: `GameData`
@@ -1818,19 +1676,17 @@ Events.off(handlerId)
 ### `Item::_NV_notifyTheftFrom`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Item::_NV_notifyTheftFrom hook`
-- **Lua Signature**: `function(item, victim)`
+- **Lua Signature**: `function(self, victim)`
 - **Parameters**:
-  - `item`: `Item`
+  - `self`: `Item`
   - `victim`: `RootObject`
 
 ### `LightBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `LightBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(lightBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `lightBuilding`: `LightBuilding`
+  - `self`: `LightBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -1845,10 +1701,9 @@ Events.off(handlerId)
 ### `LockedArmour::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `LockedArmour::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(lockedArmour, baseData, materialData, handle, uniformFlag, level, defaultVal)`
+- **Lua Signature**: `function(self, baseData, materialData, handle, uniformFlag, level, defaultVal)`
 - **Parameters**:
-  - `lockedArmour`: `LockedArmour`
+  - `self`: `LockedArmour`
   - `baseData`: `GameData`
   - `materialData`: `GameData`
   - `handle`: `hand`
@@ -1860,10 +1715,9 @@ Events.off(handlerId)
 ### `ManagementScreen::addMessage`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `ManagementScreen::addMessage hook`
-- **Lua Signature**: `function(managementScreen, owner, message, logColor)`
+- **Lua Signature**: `function(self, owner, message, logColor)`
 - **Parameters**:
-  - `managementScreen`: `ManagementScreen`
+  - `self`: `ManagementScreen`
   - `owner`: `string`
   - `message`: `string`
   - `logColor`: `integer`
@@ -1871,20 +1725,18 @@ Events.off(handlerId)
 ### `MedicalSystem::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `MedicalSystem::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(medicalSystem, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `medicalSystem`: `MedicalSystem`
+  - `self`: `MedicalSystem`
   - `defaultVal`: `MedicalSystem`
 - **Returns**: `MedicalSystem`
 
 ### `MedicalSystem::amputate`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `MedicalSystem::amputate hook`
-- **Lua Signature**: `function(medicalSystem, limb, createSeveredItem, forceVector)`
+- **Lua Signature**: `function(self, limb, createSeveredItem, forceVector)`
 - **Parameters**:
-  - `medicalSystem`: `MedicalSystem`
+  - `self`: `MedicalSystem`
   - `limb`: `integer`
   - `createSeveredItem`: `boolean`
   - `forceVector`: `Vector3`
@@ -1892,101 +1744,90 @@ Events.off(handlerId)
 ### `MedicalSystem::canGetUpWakeUp`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `MedicalSystem::canGetUpWakeUp hook`
-- **Lua Signature**: `function(med, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `med`: `MedicalSystem`
+  - `self`: `MedicalSystem`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
 ### `MedicalSystem::knockout`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `MedicalSystem::knockout hook`
-- **Lua Signature**: `function(medicalSystem, skill)`
+- **Lua Signature**: `function(self, skill)`
 - **Parameters**:
-  - `medicalSystem`: `MedicalSystem`
+  - `self`: `MedicalSystem`
   - `skill`: `number`
 
 ### `OrdersPanel::blockmodeButton`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `OrdersPanel::blockmodeButton hook`
-- **Lua Signature**: `function(panel, sender)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
-  - `panel`: `OrdersPanel`
+  - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
 ### `OrdersPanel::chaseButtonCallback`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `OrdersPanel::chaseButtonCallback hook`
-- **Lua Signature**: `function(panel, sender)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
-  - `panel`: `OrdersPanel`
+  - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
 ### `OrdersPanel::holdButtonCallback`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `OrdersPanel::holdButtonCallback hook`
-- **Lua Signature**: `function(panel, sender)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
-  - `panel`: `OrdersPanel`
+  - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
 ### `OrdersPanel::liftButton`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `OrdersPanel::liftButton hook`
-- **Lua Signature**: `function(panel, sender)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
-  - `panel`: `OrdersPanel`
+  - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
 ### `OrdersPanel::medicButton`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `OrdersPanel::medicButton hook`
-- **Lua Signature**: `function(panel, sender)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
-  - `panel`: `OrdersPanel`
+  - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
 ### `OrdersPanel::passiveButtonCallback`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `OrdersPanel::passiveButtonCallback hook`
-- **Lua Signature**: `function(panel, sender)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
-  - `panel`: `OrdersPanel`
+  - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
 ### `OrdersPanel::prospectingButton`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `OrdersPanel::prospectingButton hook`
-- **Lua Signature**: `function(panel, sender)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
-  - `panel`: `OrdersPanel`
+  - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
 ### `OrdersPanel::tauntButtonCallback`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `OrdersPanel::tauntButtonCallback hook`
-- **Lua Signature**: `function(panel, sender)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
-  - `panel`: `OrdersPanel`
+  - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
 ### `Ownerships::canIUseThisBuilding`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Ownerships::canIUseThisBuilding hook`
-- **Lua Signature**: `function(ownerships, building, character, defaultVal)`
+- **Lua Signature**: `function(self, building, character, defaultVal)`
 - **Parameters**:
-  - `ownerships`: `Ownerships`
+  - `self`: `Ownerships`
   - `building`: `Building`
   - `character`: `Character`
   - `defaultVal`: `boolean`
@@ -1995,10 +1836,9 @@ Events.off(handlerId)
 ### `Platoon::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Platoon::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(platoon, faction, squadTemplate, platoonState, position, persistent, defaultVal)`
+- **Lua Signature**: `function(self, faction, squadTemplate, platoonState, position, persistent, defaultVal)`
 - **Parameters**:
-  - `platoon`: `Platoon`
+  - `self`: `Platoon`
   - `faction`: `Faction`
   - `squadTemplate`: `GameData`
   - `platoonState`: `GameData`
@@ -2010,29 +1850,26 @@ Events.off(handlerId)
 ### `Platoon::_NV_loadFromSerialise`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Platoon::_NV_loadFromSerialise hook`
-- **Lua Signature**: `function(platoon, saveState)`
+- **Lua Signature**: `function(self, saveState)`
 - **Parameters**:
-  - `platoon`: `Platoon`
+  - `self`: `Platoon`
   - `saveState`: `GameSaveState`
 
 ### `Platoon::iBuyIllegalGoods`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Platoon::iBuyIllegalGoods hook`
-- **Lua Signature**: `function(platoon, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `platoon`: `Platoon`
+  - `self`: `Platoon`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
 ### `Platoon::iBuyStolenGoods`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Platoon::iBuyStolenGoods hook`
-- **Lua Signature**: `function(platoon, item, defaultVal)`
+- **Lua Signature**: `function(self, item, defaultVal)`
 - **Parameters**:
-  - `platoon`: `Platoon`
+  - `self`: `Platoon`
   - `item`: `Item`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
@@ -2040,28 +1877,25 @@ Events.off(handlerId)
 ### `Platoon::taskIsComplete`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Platoon::taskIsComplete hook`
-- **Lua Signature**: `function(platoon, completedTask)`
+- **Lua Signature**: `function(self, completedTask)`
 - **Parameters**:
-  - `platoon`: `Platoon`
+  - `self`: `Platoon`
   - `completedTask`: `Tasker`
 
 ### `PlayerInterface::activateCharacterEditMode`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PlayerInterface::activateCharacterEditMode hook`
-- **Lua Signature**: `function(player, character)`
+- **Lua Signature**: `function(self, character)`
 - **Parameters**:
-  - `player`: `PlayerInterface`
+  - `self`: `PlayerInterface`
   - `character`: `Character`
 
 ### `PlayerInterface::addJobSelectedCharacters`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PlayerInterface::addJobSelectedCharacters hook`
-- **Lua Signature**: `function(player, taskType, subject, shift, add, location)`
+- **Lua Signature**: `function(self, taskType, subject, shift, add, location)`
 - **Parameters**:
-  - `player`: `PlayerInterface`
+  - `self`: `PlayerInterface`
   - `taskType`: `integer`
   - `subject`: `RootObject`
   - `shift`: `boolean`
@@ -2071,10 +1905,9 @@ Events.off(handlerId)
 ### `PlayerInterface::addOrderSelectedCharacters`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PlayerInterface::addOrderSelectedCharacters hook`
-- **Lua Signature**: `function(player, destinationIndoors, taskType, subject, shift, addDontClear, location)`
+- **Lua Signature**: `function(self, destinationIndoors, taskType, subject, shift, addDontClear, location)`
 - **Parameters**:
-  - `player`: `PlayerInterface`
+  - `self`: `PlayerInterface`
   - `destinationIndoors`: `Building`
   - `taskType`: `integer`
   - `subject`: `RootObject`
@@ -2085,79 +1918,71 @@ Events.off(handlerId)
 ### `PlayerInterface::createSquad`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PlayerInterface::createSquad hook`
-- **Lua Signature**: `function(player, newSquad)`
+- **Lua Signature**: `function(self, newSquad)`
 - **Parameters**:
-  - `player`: `PlayerInterface`
+  - `self`: `PlayerInterface`
   - `newSquad`: `ActivePlatoon`
 
 ### `PlayerInterface::encounterFaction`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PlayerInterface::encounterFaction hook`
-- **Lua Signature**: `function(player, faction)`
+- **Lua Signature**: `function(self, faction)`
 - **Parameters**:
-  - `player`: `PlayerInterface`
+  - `self`: `PlayerInterface`
   - `faction`: `Faction`
 
 ### `PlayerInterface::loadFromSerialise`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PlayerInterface::loadFromSerialise hook`
-- **Lua Signature**: `function(player, gameData)`
+- **Lua Signature**: `function(self, gameData)`
 - **Parameters**:
-  - `player`: `PlayerInterface`
+  - `self`: `PlayerInterface`
   - `gameData`: `GameData`
 
 ### `PlayerInterface::newPlayerTaskSelectedCharacters`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PlayerInterface::newPlayerTaskSelectedCharacters hook`
-- **Lua Signature**: `function(player, taskType, targetH, destinationIndoors, clickpos, addDontClear)`
+- **Lua Signature**: `function(self, taskType, targetHandle, destinationBuilding, clickPos, queueOrder)`
 - **Parameters**:
-  - `player`: `PlayerInterface`
+  - `self`: `PlayerInterface`
   - `taskType`: `integer`
-  - `targetH`: `hand`
-  - `destinationIndoors`: `Building`
-  - `clickpos`: `Vector3`
-  - `addDontClear`: `boolean`
+  - `targetHandle`: `hand`
+  - `destinationBuilding`: `Building`
+  - `clickPos`: `Vector3`
+  - `queueOrder`: `boolean`
 
 ### `PlayerInterface::recruit`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PlayerInterface::recruit hook`
-- **Lua Signature**: `function(player, character, editor)`
+- **Lua Signature**: `function(self, character, isEditor)`
 - **Parameters**:
-  - `player`: `PlayerInterface`
+  - `self`: `PlayerInterface`
   - `character`: `Character`
-  - `editor`: `boolean`
+  - `isEditor`: `boolean`
 
 ### `PlayerInterface::selectObject`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PlayerInterface::selectObject hook`
-- **Lua Signature**: `function(player, obj, modifier)`
+- **Lua Signature**: `function(self, obj, modifier)`
 - **Parameters**:
-  - `player`: `PlayerInterface`
+  - `self`: `PlayerInterface`
   - `obj`: `RootObject`
   - `modifier`: `boolean`
 
 ### `PlayerInterface::serialise`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PlayerInterface::serialise hook`
-- **Lua Signature**: `function(player, gameData)`
+- **Lua Signature**: `function(self, gameData)`
 - **Parameters**:
-  - `player`: `PlayerInterface`
+  - `self`: `PlayerInterface`
   - `gameData`: `GameData`
 
 ### `PreviewBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `PreviewBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(previewBuilding, data, furnitureParent, defaultVal)`
+- **Lua Signature**: `function(self, data, furnitureParent, defaultVal)`
 - **Parameters**:
-  - `previewBuilding`: `PreviewBuilding`
+  - `self`: `PreviewBuilding`
   - `data`: `GameData`
   - `furnitureParent`: `Building`
   - `defaultVal`: `PreviewBuilding`
@@ -2166,18 +1991,16 @@ Events.off(handlerId)
 ### `PreviewBuilding::_NV_placeFinalPreviewBuilding`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PreviewBuilding::_NV_placeFinalPreviewBuilding hook`
-- **Lua Signature**: `function(previewBuilding)`
+- **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `previewBuilding`: `PreviewBuilding`
+  - `self`: `PreviewBuilding`
 
 ### `PreviewBuilding::_NV_placePreview`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `PreviewBuilding::_NV_placePreview hook`
-- **Lua Signature**: `function(previewBuilding, position, rotation, floorNumber)`
+- **Lua Signature**: `function(self, position, rotation, floorNumber)`
 - **Parameters**:
-  - `previewBuilding`: `PreviewBuilding`
+  - `self`: `PreviewBuilding`
   - `position`: `Vector3`
   - `rotation`: `Quaternion`
   - `floorNumber`: `integer`
@@ -2185,20 +2008,18 @@ Events.off(handlerId)
 ### `PreviewBuilding::_NV_placementVerification`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `PreviewBuilding::_NV_placementVerification hook`
-- **Lua Signature**: `function(previewBuilding, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `previewBuilding`: `PreviewBuilding`
+  - `self`: `PreviewBuilding`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
 ### `ProductionBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `ProductionBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(productionBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `productionBuilding`: `ProductionBuilding`
+  - `self`: `ProductionBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -2213,30 +2034,27 @@ Events.off(handlerId)
 ### `ProductionBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `ProductionBuilding::_NV_operate hook`
-- **Lua Signature**: `function(productionBuilding, worker, amount)`
+- **Lua Signature**: `function(self, worker, amount)`
 - **Parameters**:
-  - `productionBuilding`: `ProductionBuilding`
+  - `self`: `ProductionBuilding`
   - `worker`: `Character`
   - `amount`: `number`
 
 ### `ProsperityManager::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `ProsperityManager::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(prosperityManager, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `prosperityManager`: `ProsperityManager`
+  - `self`: `ProsperityManager`
   - `defaultVal`: `ProsperityManager`
 - **Returns**: `ProsperityManager`
 
 ### `RainCollectorBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `RainCollectorBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(rainCollectorBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `rainCollectorBuilding`: `RainCollectorBuilding`
+  - `self`: `RainCollectorBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -2251,10 +2069,9 @@ Events.off(handlerId)
 ### `ResearchBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `ResearchBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(researchBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `researchBuilding`: `ResearchBuilding`
+  - `self`: `ResearchBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -2269,17 +2086,15 @@ Events.off(handlerId)
 ### `ResearchBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `ResearchBuilding::_NV_operate hook`
-- **Lua Signature**: `function(researchBuilding, worker, amount)`
+- **Lua Signature**: `function(self, worker, amount)`
 - **Parameters**:
-  - `researchBuilding`: `ResearchBuilding`
+  - `self`: `ResearchBuilding`
   - `worker`: `Character`
   - `amount`: `number`
 
 ### `RootObjectFactory::chooseMyClothing`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `RootObjectFactory::chooseMyClothing hook`
 - **Lua Signature**: `function(gearLektor, dataList, listName, race, noShoes)`
 - **Parameters**:
   - `gearLektor`: `lektor<GameData>`
@@ -2291,19 +2106,17 @@ Events.off(handlerId)
 ### `SquadManagementScreen::removeSquad`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `SquadManagementScreen::removeSquad hook`
-- **Lua Signature**: `function(squadManagementScreen, squadData)`
+- **Lua Signature**: `function(self, squadData)`
 - **Parameters**:
-  - `squadManagementScreen`: `SquadManagementScreen`
+  - `self`: `SquadManagementScreen`
   - `squadData`: `lightuserdata`
 
 ### `StorageBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `StorageBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(storageBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `storageBuilding`: `StorageBuilding`
+  - `self`: `StorageBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -2318,10 +2131,9 @@ Events.off(handlerId)
 ### `Sword::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Sword::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(sword, baseData, companyData, materialData, handle, level, defaultVal)`
+- **Lua Signature**: `function(self, baseData, companyData, materialData, handle, level, defaultVal)`
 - **Parameters**:
-  - `sword`: `Sword`
+  - `self`: `Sword`
   - `baseData`: `GameData`
   - `companyData`: `GameData`
   - `materialData`: `GameData`
@@ -2333,19 +2145,17 @@ Events.off(handlerId)
 ### `TitleScreen::loadGame`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `TitleScreen::loadGame hook`
-- **Lua Signature**: `function(titleScreen, widget)`
+- **Lua Signature**: `function(self, widget)`
 - **Parameters**:
-  - `titleScreen`: `TitleScreen`
+  - `self`: `TitleScreen`
   - `widget`: `Widget`
 
 ### `TortureBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `TortureBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(tortureBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `tortureBuilding`: `TortureBuilding`
+  - `self`: `TortureBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -2360,10 +2170,9 @@ Events.off(handlerId)
 ### `Town::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Town::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(town, data, defaultVal)`
+- **Lua Signature**: `function(self, data, defaultVal)`
 - **Parameters**:
-  - `town`: `Town`
+  - `self`: `Town`
   - `data`: `GameData`
   - `defaultVal`: `Town`
 - **Returns**: `Town`
@@ -2371,19 +2180,17 @@ Events.off(handlerId)
 ### `Town::_NV_loadFromSerialise`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `Town::_NV_loadFromSerialise hook`
-- **Lua Signature**: `function(town, saveState)`
+- **Lua Signature**: `function(self, saveState)`
 - **Parameters**:
-  - `town`: `Town`
+  - `self`: `Town`
   - `saveState`: `GameSaveState`
 
 ### `TownBase::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `TownBase::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(townBase, data, defaultVal)`
+- **Lua Signature**: `function(self, data, defaultVal)`
 - **Parameters**:
-  - `townBase`: `TownBase`
+  - `self`: `TownBase`
   - `data`: `GameData`
   - `defaultVal`: `TownBase`
 - **Returns**: `TownBase`
@@ -2391,10 +2198,9 @@ Events.off(handlerId)
 ### `TurretBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `TurretBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(turretBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `turretBuilding`: `TurretBuilding`
+  - `self`: `TurretBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -2409,29 +2215,26 @@ Events.off(handlerId)
 ### `TurretBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `TurretBuilding::_NV_operate hook`
-- **Lua Signature**: `function(turretBuilding, gunner, amount)`
+- **Lua Signature**: `function(self, gunner, amount)`
 - **Parameters**:
-  - `turretBuilding`: `TurretBuilding`
+  - `self`: `TurretBuilding`
   - `gunner`: `Character`
   - `amount`: `number`
 
 ### `TurretBuilding::aimAt`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `TurretBuilding::aimAt hook`
-- **Lua Signature**: `function(turretBuilding, targetPos)`
+- **Lua Signature**: `function(self, targetPos)`
 - **Parameters**:
-  - `turretBuilding`: `TurretBuilding`
+  - `self`: `TurretBuilding`
   - `targetPos`: `Vector3`
 
 ### `UseableStuff::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `UseableStuff::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(useableStuff, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -2446,10 +2249,9 @@ Events.off(handlerId)
 ### `UseableStuff::_NV_couldIOperate`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `UseableStuff::_NV_couldIOperate hook`
-- **Lua Signature**: `function(useableStuff, userHandle, defaultVal)`
+- **Lua Signature**: `function(self, userHandle, defaultVal)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `userHandle`: `hand`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
@@ -2457,20 +2259,18 @@ Events.off(handlerId)
 ### `UseableStuff::_NV_dontNeedWorkRightNow`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `UseableStuff::_NV_dontNeedWorkRightNow hook`
-- **Lua Signature**: `function(useableStuff, defaultVal)`
+- **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
 ### `UseableStuff::_NV_getCostToUse`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `UseableStuff::_NV_getCostToUse hook`
-- **Lua Signature**: `function(useableStuff, who, defaultVal)`
+- **Lua Signature**: `function(self, who, defaultVal)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `who`: `Character`
   - `defaultVal`: `integer`
 - **Returns**: `integer`
@@ -2478,19 +2278,17 @@ Events.off(handlerId)
 ### `UseableStuff::_NV_givePower`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `UseableStuff::_NV_givePower hook`
-- **Lua Signature**: `function(useableStuff, amount)`
+- **Lua Signature**: `function(self, amount)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `amount`: `number`
 
 ### `UseableStuff::_NV_hitByMeleeAttack`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `UseableStuff::_NV_hitByMeleeAttack hook`
-- **Lua Signature**: `function(useableStuff, cutDir, damage, attacker, attack, comboID)`
+- **Lua Signature**: `function(self, cutDir, damage, attacker, attack, comboID)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `cutDir`: `integer`
   - `damage`: `Damages`
   - `attacker`: `Character`
@@ -2500,65 +2298,58 @@ Events.off(handlerId)
 ### `UseableStuff::_NV_switchPowerOn`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `UseableStuff::_NV_switchPowerOn hook`
-- **Lua Signature**: `function(useableStuff, on)`
+- **Lua Signature**: `function(self, on)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `on`: `boolean`
 
 ### `UseableStuff::_NV_toggleBattButton`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `UseableStuff::_NV_toggleBattButton hook`
-- **Lua Signature**: `function(useableStuff, line)`
+- **Lua Signature**: `function(self, line)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `line`: `DataPanelLine`
 
 ### `UseableStuff::_NV_togglePowerButton`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `UseableStuff::_NV_togglePowerButton hook`
-- **Lua Signature**: `function(useableStuff, line)`
+- **Lua Signature**: `function(self, line)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `line`: `DataPanelLine`
 
 ### `UseableStuff::_NV_tryOperate`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `UseableStuff::_NV_tryOperate hook`
-- **Lua Signature**: `function(useableStuff, userHandle, success)`
+- **Lua Signature**: `function(self, userHandle, success)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `userHandle`: `hand`
   - `success`: `boolean`
 
 ### `UseableStuff::occupantHandleChangedEvent`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `UseableStuff::occupantHandleChangedEvent hook`
-- **Lua Signature**: `function(useableStuff, newOccupantHandle)`
+- **Lua Signature**: `function(self, newOccupantHandle)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `newOccupantHandle`: `hand`
 
 ### `UseableStuff::stopOperating`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `UseableStuff::stopOperating hook`
-- **Lua Signature**: `function(useableStuff, userHandle)`
+- **Lua Signature**: `function(self, userHandle)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `userHandle`: `hand`
 
 ### `UseableStuff::takePowerFrom`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `UseableStuff::takePowerFrom hook`
-- **Lua Signature**: `function(useableStuff, amount, frameTime, defaultVal)`
+- **Lua Signature**: `function(self, amount, frameTime, defaultVal)`
 - **Parameters**:
-  - `useableStuff`: `UseableStuff`
+  - `self`: `UseableStuff`
   - `amount`: `number`
   - `frameTime`: `number`
   - `defaultVal`: `number`
@@ -2567,10 +2358,9 @@ Events.off(handlerId)
 ### `WallBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `WallBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(wallBuilding, dat, position, orientation, participant, furnitureOf, town, handle, defaultVal)`
+- **Lua Signature**: `function(self, dat, position, orientation, participant, furnitureOf, town, handle, defaultVal)`
 - **Parameters**:
-  - `wallBuilding`: `WallBuilding`
+  - `self`: `WallBuilding`
   - `dat`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -2584,10 +2374,9 @@ Events.off(handlerId)
 ### `WallBuilding::_NV_hitByMeleeAttack`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `WallBuilding::_NV_hitByMeleeAttack hook`
-- **Lua Signature**: `function(wallBuilding, cutDir, damage, attacker, attack, comboID)`
+- **Lua Signature**: `function(self, cutDir, damage, attacker, attack, comboID)`
 - **Parameters**:
-  - `wallBuilding`: `WallBuilding`
+  - `self`: `WallBuilding`
   - `cutDir`: `integer`
   - `damage`: `Damages`
   - `attacker`: `Character`
@@ -2597,10 +2386,9 @@ Events.off(handlerId)
 ### `Weapon::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `Weapon::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(weapon, baseData, companyData, materialData, handle, level, defaultVal)`
+- **Lua Signature**: `function(self, baseData, companyData, materialData, handle, level, defaultVal)`
 - **Parameters**:
-  - `weapon`: `Weapon`
+  - `self`: `Weapon`
   - `baseData`: `GameData`
   - `companyData`: `GameData`
   - `materialData`: `GameData`
@@ -2612,10 +2400,9 @@ Events.off(handlerId)
 ### `WindGeneratorBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
-- **Engine Hook**: `WindGeneratorBuilding::_CONSTRUCTOR hook`
-- **Lua Signature**: `function(windGeneratorBuilding, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
+- **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
 - **Parameters**:
-  - `windGeneratorBuilding`: `WindGeneratorBuilding`
+  - `self`: `WindGeneratorBuilding`
   - `data`: `GameData`
   - `position`: `Vector3`
   - `orientation`: `Quaternion`
@@ -2630,8 +2417,7 @@ Events.off(handlerId)
 ### `wraps::BaseLayout::initialise`
 
 - **Category**: Notification / Observer
-- **Engine Hook**: `wraps::BaseLayout::initialise hook`
-- **Lua Signature**: `function(baseLayout, layoutName)`
+- **Lua Signature**: `function(self, layoutName)`
 - **Parameters**:
-  - `baseLayout`: `BaseLayout`
+  - `self`: `BaseLayout`
   - `layoutName`: `string`

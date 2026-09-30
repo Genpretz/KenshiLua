@@ -229,8 +229,8 @@ def generate_markdown(callbacks, registry_map):
     output.append("")
     output.append("```lua")
     output.append("-- Registering an event handler")
-    output.append("local handlerId = Events.on(\"Character::declareDead\", function(character)")
-    output.append("    print(\"Character died: \", character)")
+    output.append("local handlerId = Events.on(\"Character::declareDead\", function(self)")
+    output.append("    print(\"Character died: \", self)")
     output.append("end)")
     output.append("")
     output.append("-- Unregistering when done")
@@ -256,24 +256,22 @@ def generate_markdown(callbacks, registry_map):
 
     output.append(f"## 1. Notification Callbacks ({len(notifications)})")
     output.append("")
-    output.append("| Event Name | Source Engine Hook | Lua Signature |")
-    output.append("| :--- | :--- | :--- |")
+    output.append("| Event Name | Lua Signature |")
+    output.append("| :--- | :--- |")
     for cb in notifications:
         ev_name = f"`{cb['lua_event']}`" if cb['lua_event'] else "*(Unmapped)*"
-        fired = f"`{cb['fired_by']}`" if cb['fired_by'] else "*(Engine Hook)*"
         sig = f"`{cb['typed_sig']}`"
-        output.append(f"| {ev_name} | {fired} | {sig} |")
+        output.append(f"| {ev_name} | {sig} |")
     output.append("")
 
     output.append(f"## 2. Override Callbacks ({len(overrides)})")
     output.append("")
-    output.append("| Event Name | Source Engine Hook | Lua Signature & Expected Return |")
-    output.append("| :--- | :--- | :--- |")
+    output.append("| Event Name | Lua Signature & Expected Return |")
+    output.append("| :--- | :--- |")
     for cb in overrides:
         ev_name = f"`{cb['lua_event']}`" if cb['lua_event'] else "*(Unmapped)*"
-        fired = f"`{cb['fired_by']}`" if cb['fired_by'] else "*(Engine Hook)*"
         sig = f"`{cb['typed_sig']}`"
-        output.append(f"| {ev_name} | {fired} | {sig} |")
+        output.append(f"| {ev_name} | {sig} |")
     output.append("")
 
     output.append("## Detailed Callback Documentation")
@@ -288,8 +286,9 @@ def generate_markdown(callbacks, registry_map):
         output.append(f"### `{ev_title}`")
         output.append("")
         output.append(f"- **Category**: {'Override / Interceptor' if cb['ret_type'] != 'void' else 'Notification / Observer'}")
-        if cb['fired_by']:
-            output.append(f"- **Engine Hook**: `{cb['fired_by']}`")
+        fired_clean = cb['fired_by'].removesuffix(' hook').strip() if cb['fired_by'] else ""
+        if fired_clean and fired_clean != ev_title:
+            output.append(f"- **Engine Hook**: `{fired_clean}`")
         output.append(f"- **Lua Signature**: `{plain_sig}`")
         
         if cb['parsed_params']:
