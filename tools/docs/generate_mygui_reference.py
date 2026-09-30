@@ -381,13 +381,16 @@ CLASS_METHOD_OVERRIDES = {
     "Widget.destroy": ([], "void"),
     "Widget.on": ([{"name": "eventType", "type": "string"}, {"name": "handler", "type": "function"}], "integer"),
     "Widget.off": ([{"name": "idOrEvent", "type": "any"}], "boolean"),
-    "Widget.register": ([{"name": "eventType", "type": "string"}, {"name": "handler", "type": "function"}], "integer"),
-    "Widget.unregister": ([{"name": "idOrEvent", "type": "any"}], "boolean"),
-    "Widget.registerCallback": ([{"name": "eventName", "type": "string"}, {"name": "handler", "type": "function"}], "integer"),
     "Widget.upLayerItem": ([], "void"),
     "Widget.bringToFront": ([], "void"),
     "Widget.createWidget": ([{"name": "type", "type": "string"}, {"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "align", "type": "Align"}, {"name": "name", "type": "string"}], "Widget"),
     "Widget.createWidgetReal": ([{"name": "type", "type": "string"}, {"name": "skin", "type": "string"}, {"name": "left", "type": "number"}, {"name": "top", "type": "number"}, {"name": "width", "type": "number"}, {"name": "height", "type": "number"}, {"name": "align", "type": "Align"}, {"name": "name", "type": "string"}], "Widget"),
+}
+
+IGNORED_METHODS = {
+    "Widget.register",
+    "Widget.unregister",
+    "Widget.registerCallback",
 }
 
 def parse_global_methods(mygui_cpp_path: pathlib.Path):
@@ -453,8 +456,10 @@ def parse_mygui_class_file(cpp_path: pathlib.Path):
                 mat = re.match(r"\{\s*\"([^\"]+)\"\s*,\s*([\w:]+)\s*\}", line.rstrip(','))
                 if mat:
                     l_name, func = mat.group(1), mat.group(2)
-                    func_short = func.split('::')[-1]
                     override_key = f"{class_name}.{l_name}"
+                    if override_key in IGNORED_METHODS:
+                        continue
+                    func_short = func.split('::')[-1]
                     is_stat = l_name in ("getInstance", "new", "parse")
                     if override_key in CLASS_METHOD_OVERRIDES:
                         args, ret = CLASS_METHOD_OVERRIDES[override_key]
@@ -545,7 +550,7 @@ def parse_types_file(types_cpp_path: pathlib.Path):
 EVENT_CALLBACKS = [
     {
         "event": "OnClick",
-        "aliases": ["OnClick", "click"],
+        "aliases": ["MouseButtonClick", "OnClick", "click"],
         "widgets": "Button, MenuItem, Widget",
         "signature": "function(sender: Widget)",
         "description": "Triggered when the user clicks on the widget with the mouse."
@@ -688,9 +693,9 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
         "- **Global Factory & Utility Functions**: Convenient `MyGUI.createButton(...)`, `MyGUI.createWindow(...)`, `MyGUI.loadLayout(...)`, etc.",
         "- **Pixel & Relative Coordinates**: Precise integer pixel positioning or resolution-independent relative positioning (`0.0` to `1.0`).",
         "- **Rich Object-Oriented Widgets**: Full support for buttons, textboxes, editboxes, windows, scrollbars, listboxes, comboboxes, tab controls, menus, and canvases.",
-        "- **Metatable Inheritance**: Child widgets inherit all base properties and methods from `MyGUI.Widget` (e.g. `setCaption`, `setPosition`, `setVisible`, `destroy`, `registerCallback`).",
+        "- **Metatable Inheritance**: Child widgets inherit all base properties and methods from `MyGUI.Widget` (e.g. `setCaption`, `setPosition`, `setVisible`, `destroy`, `on`, `off`).",
         "- **Lifecycle Safety**: All widgets instantiated from Lua are tracked automatically and cleaned up upon script reload or shutdown.",
-        "- **Event Callbacks**: Unified event registration via `widget:registerCallback(eventName, handler)` supporting clicks, text edits, drag/scroll, keys, and focus changes.",
+        "- **Event Callbacks**: Unified event registration via `widget:on(eventType, handler)` and `widget:off(idOrEvent)` supporting clicks, text edits, drag/scroll, keys, and focus changes.",
         "",
         "For KenshiLib game engine class bindings, see the [KenshiLua Bindings Reference](BindingsReference.md).",
         "",
@@ -881,7 +886,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
     # Section 6: Event Callbacks
     lines.append("## Event Callbacks Reference")
     lines.append("")
-    lines.append("Event callbacks are attached to widgets using `widget:on(eventType, callbackFunction)` (returns a callback ID). Callbacks can be detached using `widget:off(callbackId)` or `widget:off(eventType)`. Legacy `registerCallback`, `register`, and `unregister` are also supported as aliases.")
+    lines.append("Event callbacks are attached to widgets using `widget:on(eventType, callbackFunction)` (returns a callback ID). Callbacks can be detached using `widget:off(callbackId)` or `widget:off(eventType)`.")
     lines.append("")
     lines.append("### Usage Example")
     lines.append("```lua")

@@ -6,9 +6,9 @@ The **MyGUI** subsystem in KenshiLua provides a comprehensive set of UI bindings
 - **Global Factory & Utility Functions**: Convenient `MyGUI.createButton(...)`, `MyGUI.createWindow(...)`, `MyGUI.loadLayout(...)`, etc.
 - **Pixel & Relative Coordinates**: Precise integer pixel positioning or resolution-independent relative positioning (`0.0` to `1.0`).
 - **Rich Object-Oriented Widgets**: Full support for buttons, textboxes, editboxes, windows, scrollbars, listboxes, comboboxes, tab controls, menus, and canvases.
-- **Metatable Inheritance**: Child widgets inherit all base properties and methods from `MyGUI.Widget` (e.g. `setCaption`, `setPosition`, `setVisible`, `destroy`, `registerCallback`).
+- **Metatable Inheritance**: Child widgets inherit all base properties and methods from `MyGUI.Widget` (e.g. `setCaption`, `setPosition`, `setVisible`, `destroy`, `on`, `off`).
 - **Lifecycle Safety**: All widgets instantiated from Lua are tracked automatically and cleaned up upon script reload or shutdown.
-- **Event Callbacks**: Unified event registration via `widget:registerCallback(eventName, handler)` supporting clicks, text edits, drag/scroll, keys, and focus changes.
+- **Event Callbacks**: Unified event registration via `widget:on(eventType, handler)` and `widget:off(idOrEvent)` supporting clicks, text edits, drag/scroll, keys, and focus changes.
 
 For KenshiLib game engine class bindings, see the [KenshiLua Bindings Reference](BindingsReference.md).
 
@@ -390,9 +390,6 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 | `destroy` | `` | `void` | `w:destroy()` |
 | `on` | `eventType: string, handler: function` | `integer` | `w:on(eventType, handler)` |
 | `off` | `idOrEvent: any` | `boolean` | `w:off(idOrEvent)` |
-| `register` | `eventType: string, handler: function` | `integer` | `w:register(eventType, handler)` |
-| `unregister` | `idOrEvent: any` | `boolean` | `w:unregister(idOrEvent)` |
-| `registerCallback` | `eventName: string, handler: function` | `integer` | `w:registerCallback(eventName, handler)` |
 | `upLayerItem` | `` | `void` | `w:upLayerItem()` |
 | `bringToFront` | `` | `void` | `w:bringToFront()` |
 
@@ -1079,7 +1076,7 @@ Managers provide global control over input, cursor pointer, skins, layout templa
 
 ## Event Callbacks Reference
 
-Event callbacks are attached to widgets using `widget:on(eventType, callbackFunction)` (returns a callback ID). Callbacks can be detached using `widget:off(callbackId)` or `widget:off(eventType)`. Legacy `registerCallback`, `register`, and `unregister` are also supported as aliases.
+Event callbacks are attached to widgets using `widget:on(eventType, callbackFunction)` (returns a callback ID). Callbacks can be detached using `widget:off(callbackId)` or `widget:off(eventType)`.
 
 ### Usage Example
 ```lua
@@ -1098,7 +1095,7 @@ btn:off(callbackId)
 ### Supported Event Types
 | Event Name | Accepted String Aliases | Target Widgets | Handler Signature | Description |
 |---|---|---|---|---|
-| **`OnClick`** | `"OnClick"`, `"click"` | `Button, MenuItem, Widget` | `function(sender: Widget)` | Triggered when the user clicks on the widget with the mouse. |
+| **`OnClick`** | `"MouseButtonClick"`, `"OnClick"`, `"click"` | `Button, MenuItem, Widget` | `function(sender: Widget)` | Triggered when the user clicks on the widget with the mouse. |
 | **`OnTextChanged`** | `"EditTextChange"`, `"editTextChange"`, `"change"` | `EditBox, ComboBox` | `function(sender: EditBox)` | Triggered when the text content of an edit box is modified by the user or programmatically. |
 | **`OnWindowButtonPressed`** | `"WindowButtonPressed"`, `"windowButtonPressed"` | `Window` | `function(sender: Window, buttonName: string)` | Triggered when a window control button (e.g. close, minimize, maximize) is clicked. |
 | **`OnMouseButtonPressed`** | `"MouseButtonPressed"`, `"mouseButtonPressed"`, `"mouseDown"` | `Widget` | `function(sender: Widget, left: integer, top: integer, button: MouseButton)` | Triggered when a mouse button is pressed down over the widget. |

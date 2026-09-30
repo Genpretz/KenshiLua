@@ -225,7 +225,7 @@ def generate_markdown(callbacks, registry_map):
     output.append("")
     output.append("## Overview")
     output.append("")
-    output.append("KenshiLuaJIT provides an event-driven callback system allowing Lua scripts to subscribe to in-game events using `Events.on` and `Events.off` (with `registerHandler` and `unregisterHandler` preserved as legacy globals).")
+    output.append("KenshiLuaJIT provides an event-driven callback system allowing Lua scripts to subscribe to in-game events using `Events.on` and `Events.off`.")
     output.append("")
     output.append("```lua")
     output.append("-- Registering an event handler")

@@ -71,10 +71,6 @@ namespace KenshiLua
         lua_setfield(L, -2, "on");
         lua_pushcfunction(L, luaEventsOff);
         lua_setfield(L, -2, "off");
-        lua_pushcfunction(L, luaEventsOn);
-        lua_setfield(L, -2, "register");
-        lua_pushcfunction(L, luaEventsOff);
-        lua_setfield(L, -2, "unregister");
         lua_setglobal(L, "Events");
 
         return true;

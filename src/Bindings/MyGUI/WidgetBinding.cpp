@@ -1014,8 +1014,6 @@ void WidgetBinding::registerBinding(lua_State* L)
         { "destroy",              destroy },
         { "on",                   on },
         { "off",                  off },
-        { "register",             on },
-        { "unregister",           off },
         { "registerCallback",     registerCallback },
         { "upLayerItem",          upLayerItem },
         { "bringToFront",         upLayerItem },
