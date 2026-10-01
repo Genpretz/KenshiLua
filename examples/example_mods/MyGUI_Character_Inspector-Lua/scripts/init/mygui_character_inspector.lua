@@ -53,14 +53,12 @@ local function getOrCreateWindow()
     CharInspectorWindow:setCaption("Character Inspector")
     CharInspectorWindow:setVisible(false)
 
-    CharInspectorWindow:registerCallback("WindowButtonPressed", function(window, buttonName)
+    CharInspectorWindow:on("OnWindowButtonPressed", function(window, buttonName)
         if buttonName == "close" then
             window:setVisible(false)
-            local im = MyGUI.InputManager and MyGUI.InputManager.getInstance and MyGUI.InputManager.getInstance()
-            if im and im.resetKeyFocusWidget then
+            local im = MyGUI.InputManager.getInstance()
+            if im then
                 im:resetKeyFocusWidget()
-            elseif MyGUI.resetKeyFocus then
-                MyGUI.resetKeyFocus()
             end
         end
     end)
@@ -91,7 +89,7 @@ local function getOrCreateWindow()
     local btnHeal = client:createWidget("Button", "Kenshi_Button1", 20, 200, 190, 40, 0, "BtnHeal")
     if btnHeal then
         btnHeal:setCaption("Heal Completely")
-        btnHeal:registerCallback("MouseButtonClick", function(widget)
+        btnHeal:on("OnClick", function(widget)
             if inspectingChar and inspectingChar:isValid() then
                 inspectingChar:healCompletely()
                 log("[CharInspector] Healed character: " .. inspectingChar:getName())
@@ -103,11 +101,11 @@ local function getOrCreateWindow()
     local btnBuff = client:createWidget("Button", "Kenshi_Button1", 230, 200, 190, 40, 0, "BtnBuff")
     if btnBuff then
         btnBuff:setCaption("Set Strength 100")
-        btnBuff:registerCallback("MouseButtonClick", function(widget)
+        btnBuff:on("OnClick", function(widget)
             if inspectingChar and inspectingChar:isValid() then
                 local stats = inspectingChar:getStats()
                 if stats then
-                    stats.strength = 100.0
+                    stats._strength = 100.0
                     updateStatsLabels()
                     log("[CharInspector] Set strength of " .. inspectingChar:getName() .. " to 100")
                 end
@@ -150,7 +148,7 @@ local function onUpdate()
 end
 
 log("[CharInspector] Registering character select/unselect/update event handlers")
-registerHandler("onCharacterSelect", onSelect)
-registerHandler("onCharacterUnselect", onUnselect)
-registerHandler("onCharsUpdate", onUpdate)
+Events.on("Character::_NV_select", onSelect)
+Events.on("Character::_NV_unselect", onUnselect)
+Events.on("GameWorld::charsUpdate", onUpdate)
 log("[CharInspector] Initialization complete")

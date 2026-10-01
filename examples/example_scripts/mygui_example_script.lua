@@ -16,7 +16,7 @@ local myButton = mainWindow:createWidgetReal("Button", "Kenshi_Button1", 0.05, 0
 myButton:setCaption("Click Me!")
 
 -- Register a click callback
-myButton:registerCallback("click", function(widget)
+myButton:on("OnClick", function(widget)
     print("Button clicked!")
     widget:setCaption("Clicked!")
     -- Let's change the window caption too!
@@ -29,8 +29,8 @@ local editBox = mainWindow:createWidgetReal("EditBox", "Kenshi_EditBox", 0.05, 0
 editBox:setCaption("Type something here...")
 editBox:setEditMultiLine(false)
 
--- Register text change callback ("EditTextChange" or "change")
-editBox:registerCallback("change", function(widget)
+-- Register text change callback
+editBox:on("OnTextChanged", function(widget)
     -- We can read what the user typed:
     local currentText = widget:getCaption()
     print("User typed: " .. currentText)
@@ -44,8 +44,8 @@ listBox:addItem("Second Item")
 listBox:addItem("Third Item")
 
 -- Register selection callback:
--- Use "ListChangePosition" for selection changes or "ListSelectAccept" for double-click/Enter
-listBox:registerCallback("ListChangePosition", function(widget, index)
+-- Use "OnListChangePosition" for selection changes or "OnListSelectAccept" for double-click/Enter
+listBox:on("OnListChangePosition", function(widget, index)
     if index ~= -1 then -- -1 means no selection
         local selectedName = widget:getItemNameAt(index)
         print("Selected item index " .. index .. ": " .. selectedName)
@@ -65,7 +65,7 @@ label:setProperty("TextColour", "1 0 0") -- Red text
 mainWindow:setVisibleSmooth(true)
 
 -- Hook up the window frame close button ("x" icon in the upper-right of Kenshi_WindowCX)
-mainWindow:registerCallback("windowButtonPressed", function(window, buttonName)
+mainWindow:on("OnWindowButtonPressed", function(window, buttonName)
     print("Window button pressed: " .. tostring(buttonName))
     if buttonName == "close" then
         window:destroySmooth()
@@ -75,6 +75,6 @@ end)
 -- We can also create an explicit close button inside the window body (x=68%, y=85%, width=27%, height=8%):
 local closeBtn = mainWindow:createWidgetReal("Button", "Kenshi_Button1", 0.68, 0.85, 0.27, 0.08, 0, "CloseButton")
 closeBtn:setCaption("Close")
-closeBtn:registerCallback("click", function(widget)
+closeBtn:on("OnClick", function(widget)
     mainWindow:destroySmooth()
 end)

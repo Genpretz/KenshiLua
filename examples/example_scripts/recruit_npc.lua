@@ -51,12 +51,12 @@ local function recruitSelectedNPC()
 end
 
 -- Key listener callback
-local function onKeyDown(inputHandler, keyCode)
+local function on_key_down(inputHandler, keyCode)
     if keyCode == KC_K then
         recruitSelectedNPC()
     end
 end
 
 -- Register the key listener
-registerHandler("onKeyDown", onKeyDown)
+Events.on("InputHandler::keyDownEvent", on_key_down)
 KenshiLua.log("[RecruitNPC] Loaded! Select any NPC and press 'K' to recruit them.")

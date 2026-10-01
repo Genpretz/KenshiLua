@@ -45,8 +45,8 @@ dialogue:endDialogue(true)
 
 -- 3. Process check result in the game world, deferred to the next frame
 local handlerId
-handlerId = KenshiLua.registerHandler("onCharsUpdate", function()
-    KenshiLua.unregisterHandler(handlerId)
+handlerId = Events.on("GameWorld::charsUpdate", function()
+    Events.off(handlerId)
 
     if roll <= cheatChance then
         -- Success: Player cheats successfully, wins 2000 cats (refund + 1000 cats)
@@ -55,7 +55,6 @@ handlerId = KenshiLua.registerHandler("onCharsUpdate", function()
     else
         -- Caught: NPC shouts catchphrase, marks player as thief.
         npc:say("I dont play with cheats!")
-        npc:rememberCharacter(playerChar, CharacterPerceptionTags_LongTerm.STOLE_FROM_ME)
+        npc:rememberCharacter(playerChar, CharacterPerceptionTags_LongTerm.LT_STOLE_FROM_ME)
     end
 end)
-

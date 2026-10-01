@@ -30,4 +30,4 @@ Because this variable is cleared as soon as the hook finishes executing, scripts
 - **Logic**:
   - Compares the player's thieving stats (averaging `Thieving` and `Dexterity`) against the NPC's `Perception` stat to calculate a success chance (clamped between 5% and 95%).
   - Payout is processed if the cheat succeeds (payouts 2,000 cats).
-  - If the cheat fails, the player is caught! The NPC shouts a warning line, marks the player character as a criminal via `npc:rememberCharacter(playerChar, CharacterPerceptionTags_LongTerm.STOLE_FROM_ME)`.
+  - If the cheat fails, the player is caught! The NPC marks the player character as a criminal via `npc:rememberCharacter(playerChar, CharacterPerceptionTags_LongTerm.LT_STOLE_FROM_ME)` and will no longer play with the player.

@@ -34,8 +34,8 @@ dialogue:endDialogue(true)
 
 -- 3. Payout and dialogue responses in the game world, deferred to the next frame
 local handlerId
-handlerId = KenshiLua.registerHandler("onCharsUpdate", function()
-    KenshiLua.unregisterHandler(handlerId)
+handlerId = Events.on("GameWorld::charsUpdate", function()
+    Events.off(handlerId)
 
     if playerRoll > npcRoll then
         -- Player wins: payout 2,000 cats (refund + 1,000 cats winnings)
@@ -50,4 +50,3 @@ handlerId = KenshiLua.registerHandler("onCharsUpdate", function()
         npc:say(string.format("You rolled a %d. I rolled a %d. I win! Better luck next time.", playerRoll, npcRoll))
     end
 end)
-

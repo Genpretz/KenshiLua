@@ -51,5 +51,5 @@ local function on_key_down(input_handler, key_code)
 end
 
 logDebug("[Go Prone] Registering key callback")
-registerHandler("onKeyDown", on_key_down)
+Events.on("InputHandler::keyDownEvent", on_key_down)
 logDebug("[Go Prone] Callback registered")
