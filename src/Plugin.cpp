@@ -5,7 +5,7 @@
 #include "Gui/GuiManager.h"
 #include "Gui/KenshiLua_ScriptManager.h"
 #include "Hooks/Hooks_Common.h"
-#include "Compatability/LegacyCompat.h"
+#include "Compatibility/LegacyCompat.h"
 #include "Logger.h"
 #include "Config.h"
 #include "Lua/LuaBindings.h"

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Compatability/LegacyCompat.h"
+#include "Compatibility/LegacyCompat.h"
 #include "Logger.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
 #include "Bindings/MyGUI/LayoutManagerBinding.h"

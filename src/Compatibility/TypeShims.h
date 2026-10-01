@@ -1,7 +1,7 @@
 #pragma once
 
 // ============================================================================
-// SDK Compatibility & Type Shims
+// SDK Type Shims
 //
 // Provides struct/class definitions for types that are incomplete or only forward-
 // declared in KenshiLib SDK headers, but are required as complete types for:
@@ -16,4 +16,3 @@ class AreaBiomeGroup {};
 class PosRotPair {};
 class StaticBoxEntity {};
 class CraftingItem {};
-

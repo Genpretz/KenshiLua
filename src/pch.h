@@ -21,7 +21,7 @@
 #include <lua.hpp>
 
 // Include SDK compatibility shims for incomplete engine types
-#include "SDKCompat.h"
+#include "Compatibility/TypeShims.h"
 
 // Include KenshiLib headers
 #include <core/Functions.h>

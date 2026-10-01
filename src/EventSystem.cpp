@@ -3,7 +3,7 @@
 #include "EventSystem.h"
 #include "Logger.h"
 #include "Hooks/Hooks_Common.h"
-#include "Compatability/LegacyCompat.h"
+#include "Compatibility/LegacyCompat.h"
 
 #include <lua.hpp>
 #include "Lua/BindingHelpers.h"
