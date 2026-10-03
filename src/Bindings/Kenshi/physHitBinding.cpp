@@ -246,20 +246,28 @@ int physHitBinding::group(lua_State* L)
     return 1;
 }
 
-int physHitBinding::isValid(lua_State* L)
+int physHitBinding::operator_bool(lua_State* L)
 {
+    if (lua_gettop(L) != 1)
+        return luaL_error(L, "physHit:operator_bool() expects only self (no arguments)");
     physHit* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "physHit is nil");
-
     bool result = instance->operator bool();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 44: physHit& operator=(...) - operator
-*/
+int physHitBinding::operator_assign(lua_State* L)
+{
+    physHit* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "physHit is nil");
+
+    physHit* other = checkObject<physHit>(L, 2, physHitBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be physHit");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -292,7 +300,8 @@ void physHitBinding::registerBinding(lua_State* L)
         { "hitObjectUnsafePtr", physHitBinding::hitObjectUnsafePtr },
         { "getBuilding", physHitBinding::getBuilding },
         { "group", physHitBinding::group },
-        { "isValid", physHitBinding::isValid },
+        { "operator_bool", physHitBinding::operator_bool },
+        { "operator_assign", physHitBinding::operator_assign },
         { 0, 0 }
     };
 

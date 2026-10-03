@@ -20,5 +20,10 @@ public:
 
     static int getLinearValue(lua_State* L);
     static int getAsString(lua_State* L);
+
+    static int operator_eq(lua_State* L);
+    static int operator_ne(lua_State* L);
+    static int operator_lt(lua_State* L);
+    static int operator_add(lua_State* L);
 };
 }

@@ -18,5 +18,10 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int index(lua_State* L);
+    static int newindex(lua_State* L);
+
+    static int operator_assign(lua_State* L);
+    static int operator_subscript(lua_State* L);
 };
 }

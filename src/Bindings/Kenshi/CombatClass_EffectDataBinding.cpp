@@ -116,6 +116,17 @@ int CombatClass_EffectDataBinding::operator_eq(lua_State* L)
     return 1;
 }
 
+int CombatClass_EffectDataBinding::operator_assign(lua_State* L)
+{
+    auto* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatClass::EffectData is nil");
+    auto* other = getInstance(L, 2);
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be CombatClass::EffectData");
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
+
 void CombatClass_EffectDataBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -125,6 +136,8 @@ void CombatClass_EffectDataBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
+        { "operator_eq",     operator_eq },
+        { "operator_assign", operator_assign },
         { 0, 0 }
     };
 

@@ -102,10 +102,21 @@ static int SysMessage_set_number(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 189: bool operator==(...) - operator
-*/
+int SysMessageBinding::operator_eq(lua_State* L)
+{
+    SysMessage* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be SysMessage");
+
+    SysMessage* b = testObject<SysMessage>(L, 2, SysMessageBinding::getMetatableName());
+    if (b)
+    {
+        bool res = (*a == *b);
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+    lua_pushboolean(L, 0);
+    return 1;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -129,10 +140,12 @@ void SysMessageBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       SysMessageBinding::gc },
         { "__tostring", SysMessageBinding::tostring },
+        { "__eq",       SysMessageBinding::operator_eq },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_eq", SysMessageBinding::operator_eq },
         { 0, 0 }
     };
 

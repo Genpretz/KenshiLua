@@ -19,5 +19,6 @@ public:
     static int tostring(lua_State* L);
 
     static int isValid(lua_State* L);
+    static int operator_assign(lua_State* L);
 };
 }

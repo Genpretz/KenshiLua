@@ -65,13 +65,43 @@ int iVector2Binding::getAsString(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 14: bool operator==(...) - operator
-  line 15: bool operator!=(...) - operator
-  line 17: bool operator<(...) - operator
-  line 19: iVector2 operator+(...) - operator
-*/
+int iVector2Binding::operator_eq(lua_State* L)
+{
+    iVector2* a = testObject<iVector2>(L, 1, iVector2Binding::getMetatableName());
+    iVector2* b = testObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
+    lua_pushboolean(L, (a && b && (*a == *b)) ? 1 : 0);
+    return 1;
+}
+
+int iVector2Binding::operator_ne(lua_State* L)
+{
+    iVector2* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "iVector2 is nil");
+    iVector2* b = getInstance(L, 2);
+    if (!b) return luaL_error(L, "Argument 2 to operator_ne must be iVector2");
+    lua_pushboolean(L, (*a != *b) ? 1 : 0);
+    return 1;
+}
+
+int iVector2Binding::operator_lt(lua_State* L)
+{
+    iVector2* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "iVector2 is nil");
+    iVector2* b = getInstance(L, 2);
+    if (!b) return luaL_error(L, "Argument 2 to operator_lt must be iVector2");
+    lua_pushboolean(L, (*a < *b) ? 1 : 0);
+    return 1;
+}
+
+int iVector2Binding::operator_add(lua_State* L)
+{
+    iVector2* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "iVector2 is nil");
+    iVector2* b = getInstance(L, 2);
+    if (!b) return luaL_error(L, "Argument 2 to operator_add must be iVector2");
+    iVector2 result = *a + *b;
+    return pushValue<iVector2>(L, result, iVector2Binding::getMetatableName());
+}
 
 int iVector2Binding::gc(lua_State* L)
 {
@@ -88,6 +118,9 @@ int iVector2Binding::tostring(lua_State* L)
 void iVector2Binding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
+        { "__eq",       iVector2Binding::operator_eq },
+        { "__lt",       iVector2Binding::operator_lt },
+        { "__add",      iVector2Binding::operator_add },
         { "__gc",       iVector2Binding::gc },
         { "__tostring", iVector2Binding::tostring },
         { 0, 0 }
@@ -95,7 +128,11 @@ void iVector2Binding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "getLinearValue", iVector2Binding::getLinearValue },
-        { "getAsString", iVector2Binding::getAsString },
+        { "getAsString",    iVector2Binding::getAsString },
+        { "operator_eq",    iVector2Binding::operator_eq },
+        { "operator_ne",    iVector2Binding::operator_ne },
+        { "operator_lt",    iVector2Binding::operator_lt },
+        { "operator_add",   iVector2Binding::operator_add },
         { 0, 0 }
     };
 

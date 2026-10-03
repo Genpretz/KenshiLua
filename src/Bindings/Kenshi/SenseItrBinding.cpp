@@ -84,10 +84,15 @@ int SenseItrBinding::increment(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 71: void operator++(...) - operator
-*/
+int SenseItrBinding::operator_inc(lua_State* L)
+{
+    SenseItr* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "SenseItr is nil");
+
+    ++(*instance);
+    lua_settop(L, 1);
+    return 1;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -156,6 +161,7 @@ void SenseItrBinding::registerBinding(lua_State* L)
         { "getData", SenseItrBinding::getData },
         { "ended", SenseItrBinding::ended },
         { "increment", SenseItrBinding::increment },
+        { "operator_inc", SenseItrBinding::operator_inc },
         { 0, 0 }
     };
 

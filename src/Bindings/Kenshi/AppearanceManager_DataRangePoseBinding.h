@@ -19,5 +19,6 @@ public:
     static int operator_eq(lua_State* L);
 
     static int clamp(lua_State* L);
+    static int operator_assign(lua_State* L);
 };
 } // namespace KenshiLua

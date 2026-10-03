@@ -130,8 +130,8 @@ This document registers all C++ SDK classes and complex types that are currently
 | `const std::string&` | 3 |
 | `const type_info&` | 3 |
 | `const void*` | 1 |
-| `float` | 10 |
-| `float&` | 10 |
+| `float` | 9 |
+| `float&` | 9 |
 | `function*` | 1 |
 | `hkArray<EdgePathNode, hkContainerHeapAllocator>&` | 5 |
 | `hkArray<unsigned int, hkContainerHeapAllocator>&` | 2 |
@@ -259,7 +259,6 @@ Below are methods that were skipped during binding generation:
 | Kenshi/FoliageSystemBinding.cpp | getNavmeshCarvers | `int` | unsupported arg type (lektor<Ogre::Vector4>&) |
 | Kenshi/FoliageSystemBinding.cpp | loadEnts | `void` | unsupported arg type (GameData*, lektor<FoliageSystem::EntData*>&, bool) |
 | Kenshi/FoliageSystemBinding.cpp | setupWind | `void` | unsupported arg type (Forests::PagedGeometry*) |
-| Kenshi/GameSaveStateBinding.cpp | bool | `operator` | unsupported return type (exposed as isValid) |
 | Kenshi/Gui/BackpackInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unexported in KenshiLib.lib |
 | Kenshi/Gui/CharacterEditWindowBinding.cpp | getCharacterEntity | `Ogre::Entity*` | unsupported arg type (unsigned __int64) |
 | Kenshi/Gui/CharacterEditWindowBinding.cpp | updateAnimationIdle | `void` | unsupported arg type (MyGUI::Slider*, int) |
@@ -456,7 +455,6 @@ Below are methods that were skipped during binding generation:
 | Kenshi/NavMeshGeneratorBinding.cpp | stitchWithInteriors | `int` | unsupported arg type (NavInstance*, const lektor<NavInstance*>&) |
 | Kenshi/NavMeshGeneratorBinding.cpp | unlockZone | `void` | non-string reference arg (const iVector2&) |
 | Kenshi/NxMat33Binding.cpp | fromQuat | `void` | unsupported arg type (const NxQuat&) |
-| Kenshi/NxMat33Binding.cpp | operator | `const float&` | operator |
 | Kenshi/NxMat33Binding.cpp | toQuat | `void` | unsupported arg type (NxQuat&) |
 | Kenshi/NxUserControllerHitReportBinding.cpp | onControllerHit | `NxControllerAction` | unsupported return type |
 | Kenshi/NxUserControllerHitReportBinding.cpp | onShapeHit | `NxControllerAction` | unsupported return type |
@@ -550,8 +548,6 @@ Below are methods that were skipped during binding generation:
 | Kenshi/TownBuildingsManagerBinding.cpp | switchInstancing | `bool` | unsupported arg type (Ogre::MovableObject*&) |
 | Kenshi/TriggerCallbackBinding.cpp | _NV_onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
 | Kenshi/TriggerCallbackBinding.cpp | onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
-| Kenshi/Util/HandBinding.cpp | bool | `operator` | unsupported return type |
-| Kenshi/Util/StringPairBinding.cpp | _NV_operator_assign | `const StringPair&` | reference return type |
 | Kenshi/ZoneManagerBinding.cpp | getLoadedFeatureLists | `const lektor<MapFeatureList*>&` | reference return type |
 | Kenshi/ZoneManagerBinding.cpp | getOverlay | `ZoneMapOverlay*` | non-string reference arg |
 | Kenshi/ZoneMapBinding.cpp | _activate | `bool` | unsupported arg type (int, ZoneActivationType, float) |
@@ -564,7 +560,6 @@ Below are methods that were skipped during binding generation:
 | Kenshi/ZoneMapBinding.cpp | materialCallback | `Ogre::SharedPtr<Ogre::Material>` | static method |
 | Kenshi/ZoneSpacialGridBinding.cpp | getObjects | `int` | overloaded method |
 | Kenshi/ZoneSpacialGridBinding.cpp | getObjects | `int` | overloaded method |
-| Kenshi/hkBoolBinding.cpp | bool | `operator` | unsupported return type |
 | Kenshi/hkMemoryAllocatorBinding.cpp | _NV_blockAllocBatch | `void` | unsupported arg type (void**, int, int) |
 | Kenshi/hkMemoryAllocatorBinding.cpp | _NV_blockFreeBatch | `void` | unsupported arg type (void**, int, int) |
 | Kenshi/hkMemoryAllocatorBinding.cpp | _NV_bufAlloc | `void*` | non-string reference arg (int&) |
@@ -589,7 +584,6 @@ Below are methods that were skipped during binding generation:
 | Kenshi/hkVector4fBinding.cpp | _setTransformedPos | `void` | overloaded method |
 | Kenshi/hkVector4fBinding.cpp | _setTransformedPos | `void` | overloaded method |
 | Kenshi/hkVector4fBinding.cpp | _setTransformedPos | `void` | overloaded method |
-| Kenshi/hkVector4fBinding.cpp | delete | `void operator` | static method |
 | Kenshi/hkVector4fBinding.cpp | distanceTo | `const hkSimdFloat32` | unsupported return type |
 | Kenshi/hkVector4fBinding.cpp | distanceTo3 | `hkSimdFloat32` | unsupported return type |
 | Kenshi/hkVector4fBinding.cpp | distanceToSquared | `const hkSimdFloat32` | unsupported return type |
@@ -601,10 +595,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/hkVector4fBinding.cpp | getW | `const hkSimdFloat32` | unsupported return type |
 | Kenshi/hkVector4fBinding.cpp | length3 | `hkSimdFloat32` | unsupported return type |
 | Kenshi/hkVector4fBinding.cpp | lengthSquared3 | `hkSimdFloat32` | unsupported return type |
-| Kenshi/hkVector4fBinding.cpp | new | `void*operator` | static method |
 | Kenshi/hkVector4fBinding.cpp | normalizeWithLength3 | `hkSimdFloat32` | unsupported return type |
-| Kenshi/hkVector4fBinding.cpp | operator | `const float&` | operator |
-| Kenshi/hkVector4fBinding.cpp | operator | `float&` | operator |
 | Kenshi/hkVector4fBinding.cpp | setClampedToMaxLength | `void` | unsupported arg type (const hkSimdFloat32&) |
 | Kenshi/hkVector4fBinding.cpp | setComponent | `void` | unsupported arg type (const hkSimdFloat32&) |
 | Kenshi/hkVector4fBinding.cpp | setFlipSign | `void` | overloaded method |

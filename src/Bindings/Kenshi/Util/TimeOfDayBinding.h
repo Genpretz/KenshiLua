@@ -38,5 +38,12 @@ public:
     static int getTimePassedString(lua_State* L);
     static int getTimeRemainingString(lua_State* L);
     static int getTotalTimeString(lua_State* L);
+
+    static int operator_gt(lua_State* L);
+    static int operator_ge(lua_State* L);
+    static int operator_lt(lua_State* L);
+    static int operator_le(lua_State* L);
+    static int operator_eq(lua_State* L);
+    static int operator_assign(lua_State* L);
 };
 }

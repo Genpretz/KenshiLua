@@ -120,26 +120,190 @@ int CPerfTimerBinding::Elapsedus(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 48: const CPerfTimer& operator=(...) - operator
-  line 51: CPerfTimer operator+(...) - operator
-  line 52: CPerfTimer operator-(...) - operator
-  line 53: const CPerfTimer& operator+=(...) - operator
-  line 54: const CPerfTimer& operator-=(...) - operator
-  line 56: CPerfTimer operator+(...) - operator
-  line 57: CPerfTimer operator-(...) - operator
-  line 58: const CPerfTimer& operator+=(...) - operator
-  line 59: const CPerfTimer& operator-=(...) - operator
-  line 62: BOOL operator<(...) - operator
-  line 63: BOOL operator>(...) - operator
-  line 64: BOOL operator<=(...) - operator
-  line 65: BOOL operator>=(...) - operator
-  line 67: BOOL operator<(...) - operator
-  line 68: BOOL operator>(...) - operator
-  line 69: BOOL operator<=(...) - operator
-  line 70: BOOL operator>=(...) - operator
-*/
+int CPerfTimerBinding::operator_assign(lua_State* L)
+{
+    CPerfTimer* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "CPerfTimer is nil");
+
+    CPerfTimer* b = checkObject<CPerfTimer>(L, 2, CPerfTimerBinding::getMetatableName());
+    if (!b) return luaL_error(L, "Argument 1 to operator_assign must be CPerfTimer");
+
+    *a = *b;
+    lua_settop(L, 1);
+    return 1;
+}
+
+int CPerfTimerBinding::operator_add(lua_State* L)
+{
+    CPerfTimer* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be CPerfTimer");
+
+    CPerfTimer* b = testObject<CPerfTimer>(L, 2, CPerfTimerBinding::getMetatableName());
+    if (b)
+    {
+        CPerfTimer res = *a + *b;
+        return pushValue<CPerfTimer>(L, res, CPerfTimerBinding::getMetatableName());
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        double secs = (double)lua_tonumber(L, 2);
+        CPerfTimer res = *a + secs;
+        return pushValue<CPerfTimer>(L, res, CPerfTimerBinding::getMetatableName());
+    }
+    return luaL_error(L, "Right operand must be CPerfTimer or number");
+}
+
+int CPerfTimerBinding::operator_sub(lua_State* L)
+{
+    CPerfTimer* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be CPerfTimer");
+
+    CPerfTimer* b = testObject<CPerfTimer>(L, 2, CPerfTimerBinding::getMetatableName());
+    if (b)
+    {
+        CPerfTimer res = *a - *b;
+        return pushValue<CPerfTimer>(L, res, CPerfTimerBinding::getMetatableName());
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        double secs = (double)lua_tonumber(L, 2);
+        CPerfTimer res = *a - secs;
+        return pushValue<CPerfTimer>(L, res, CPerfTimerBinding::getMetatableName());
+    }
+    return luaL_error(L, "Right operand must be CPerfTimer or number");
+}
+
+int CPerfTimerBinding::operator_add_assign(lua_State* L)
+{
+    CPerfTimer* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be CPerfTimer");
+
+    CPerfTimer* b = testObject<CPerfTimer>(L, 2, CPerfTimerBinding::getMetatableName());
+    if (b)
+    {
+        *a += *b;
+        lua_settop(L, 1);
+        return 1;
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        double secs = (double)lua_tonumber(L, 2);
+        *a += secs;
+        lua_settop(L, 1);
+        return 1;
+    }
+    return luaL_error(L, "Right operand must be CPerfTimer or number");
+}
+
+int CPerfTimerBinding::operator_sub_assign(lua_State* L)
+{
+    CPerfTimer* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be CPerfTimer");
+
+    CPerfTimer* b = testObject<CPerfTimer>(L, 2, CPerfTimerBinding::getMetatableName());
+    if (b)
+    {
+        *a -= *b;
+        lua_settop(L, 1);
+        return 1;
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        double secs = (double)lua_tonumber(L, 2);
+        *a -= secs;
+        lua_settop(L, 1);
+        return 1;
+    }
+    return luaL_error(L, "Right operand must be CPerfTimer or number");
+}
+
+int CPerfTimerBinding::operator_lt(lua_State* L)
+{
+    CPerfTimer* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be CPerfTimer");
+
+    CPerfTimer* b = testObject<CPerfTimer>(L, 2, CPerfTimerBinding::getMetatableName());
+    if (b)
+    {
+        BOOL res = *a < *b;
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        double secs = (double)lua_tonumber(L, 2);
+        BOOL res = *a < secs;
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+    return luaL_error(L, "Right operand must be CPerfTimer or number");
+}
+
+int CPerfTimerBinding::operator_le(lua_State* L)
+{
+    CPerfTimer* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be CPerfTimer");
+
+    CPerfTimer* b = testObject<CPerfTimer>(L, 2, CPerfTimerBinding::getMetatableName());
+    if (b)
+    {
+        BOOL res = *a <= *b;
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        double secs = (double)lua_tonumber(L, 2);
+        BOOL res = *a <= secs;
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+    return luaL_error(L, "Right operand must be CPerfTimer or number");
+}
+
+int CPerfTimerBinding::operator_gt(lua_State* L)
+{
+    CPerfTimer* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be CPerfTimer");
+
+    CPerfTimer* b = testObject<CPerfTimer>(L, 2, CPerfTimerBinding::getMetatableName());
+    if (b)
+    {
+        BOOL res = *a > *b;
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        double secs = (double)lua_tonumber(L, 2);
+        BOOL res = *a > secs;
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+    return luaL_error(L, "Right operand must be CPerfTimer or number");
+}
+
+int CPerfTimerBinding::operator_ge(lua_State* L)
+{
+    CPerfTimer* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be CPerfTimer");
+
+    CPerfTimer* b = testObject<CPerfTimer>(L, 2, CPerfTimerBinding::getMetatableName());
+    if (b)
+    {
+        BOOL res = *a >= *b;
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        double secs = (double)lua_tonumber(L, 2);
+        BOOL res = *a >= secs;
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+    return luaL_error(L, "Right operand must be CPerfTimer or number");
+}
 
 int CPerfTimerBinding::gc(lua_State* L)
 {
@@ -158,10 +322,23 @@ void CPerfTimerBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       CPerfTimerBinding::gc },
         { "__tostring", CPerfTimerBinding::tostring },
+        { "__add",      CPerfTimerBinding::operator_add },
+        { "__sub",      CPerfTimerBinding::operator_sub },
+        { "__lt",       CPerfTimerBinding::operator_lt },
+        { "__le",       CPerfTimerBinding::operator_le },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", CPerfTimerBinding::operator_assign },
+        { "operator_add", CPerfTimerBinding::operator_add },
+        { "operator_sub", CPerfTimerBinding::operator_sub },
+        { "operator_add_assign", CPerfTimerBinding::operator_add_assign },
+        { "operator_sub_assign", CPerfTimerBinding::operator_sub_assign },
+        { "operator_lt", CPerfTimerBinding::operator_lt },
+        { "operator_le", CPerfTimerBinding::operator_le },
+        { "operator_gt", CPerfTimerBinding::operator_gt },
+        { "operator_ge", CPerfTimerBinding::operator_ge },
         { "Start", CPerfTimerBinding::Start },
         { "Stop", CPerfTimerBinding::Stop },
         { "IsRunning", CPerfTimerBinding::IsRunning },

@@ -174,12 +174,31 @@ int hkVector4fComparisonBinding::setSelect(lua_State* L)
     return 0;
 }
 
-int hkVector4fComparisonBinding::create(lua_State* L)
+int hkVector4fComparisonBinding::constructor(lua_State* L)
 {
-    int idx = lua_isuserdata(L, 1) ? 2 : 1;
-    hkVector4fComparison::Mask m = (hkVector4fComparison::Mask)luaL_optinteger(L, idx, hkVector4fComparison::MASK_NONE);
+    int startIdx = 1;
+    if (lua_istable(L, 1))
+        startIdx = 2; // Invoked via __call metamethod on hkVector4fComparison global table
+
+    int top = lua_gettop(L);
+    int numArgs = top - startIdx + 1;
+
+    if (numArgs >= 1)
+    {
+        hkVector4fComparison* other = testObject<hkVector4fComparison>(L, startIdx, hkVector4fComparisonBinding::getMetatableName());
+        if (other)
+        {
+            hkVector4fComparison comp(*other);
+            return pushValue<hkVector4fComparison>(L, comp, hkVector4fComparisonBinding::getMetatableName());
+        }
+        hkVector4fComparison::Mask m = (hkVector4fComparison::Mask)luaL_checkinteger(L, startIdx);
+        hkVector4fComparison comp;
+        comp.set(m);
+        return pushValue<hkVector4fComparison>(L, comp, hkVector4fComparisonBinding::getMetatableName());
+    }
+
     hkVector4fComparison comp;
-    comp.set(m);
+    comp.set(hkVector4fComparison::MASK_NONE);
     return pushValue<hkVector4fComparison>(L, comp, hkVector4fComparisonBinding::getMetatableName());
 }
 
@@ -235,7 +254,6 @@ void hkVector4fComparisonBinding::registerBinding(lua_State* L)
         { "setOr", hkVector4fComparisonBinding::setOr },
         { "setNot", hkVector4fComparisonBinding::setNot },
         { "setSelect", hkVector4fComparisonBinding::setSelect },
-        { "create", hkVector4fComparisonBinding::create },
         { 0, 0 }
     };
 
@@ -257,9 +275,9 @@ void hkVector4fComparisonBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    // Register global class table for static methods
+    // Register global class table with constructor (__call metamethod) and static methods
     pushGlobalTable(L, "hkVector4fComparison");
-    registerStaticMethod(L, "create", hkVector4fComparisonBinding::create);
+    registerConstructor(L, hkVector4fComparisonBinding::constructor);
     registerStaticMethod(L, "getMaskForComponent", hkVector4fComparisonBinding::getMaskForComponent);
     lua_setglobal(L, "hkVector4fComparison");
 }

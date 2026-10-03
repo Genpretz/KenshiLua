@@ -100,10 +100,22 @@ static int ImpactPoint_set_limb(lua_State* L)
 
 
 
-/*
-Skipped methods needing manual binding:
-  line 26: const CombatTechniqueData::ImpactPoint& operator=(...) - operator
-*/
+int ImpactPointBinding::operator_assign(lua_State* L)
+{
+    ImpactPoint* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ImpactPoint is nil");
+
+    ImpactPoint* other = checkObject<ImpactPoint>(L, 2, ImpactPointBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be ImpactPoint");
+
+    instance->direction = other->direction;
+    instance->power = other->power;
+    instance->impactAnimationFrame = other->impactAnimationFrame;
+    instance->motionStopsAnimationFrame = other->motionStopsAnimationFrame;
+    instance->limb = other->limb;
+    lua_settop(L, 1);
+    return 1;
+}
 
 int ImpactPointBinding::gc(lua_State* L)
 {
@@ -126,6 +138,7 @@ void ImpactPointBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", ImpactPointBinding::operator_assign },
         { 0, 0 }
     };
 

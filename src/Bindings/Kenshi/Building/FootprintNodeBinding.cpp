@@ -95,8 +95,20 @@ Skipped methods needing manual binding:
   line 573: const Ogre::Aabb _NV_getLocalAABB(...) - unsupported return type
   line 577: bool collisionTestOK(...) - unsupported arg type
   line 578: bool _NV_collisionTestOK(...) - unsupported arg type
-  line 585: PreviewBuilding::FootprintNode& operator=(...) - operator
 */
+
+int FootprintNodeBinding::operator_assign(lua_State* L)
+{
+    FootprintNode* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FootprintNode is nil");
+
+    FootprintNode* other = checkObject<FootprintNode>(L, 2, FootprintNodeBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be FootprintNode");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -128,6 +140,7 @@ void FootprintNodeBinding::registerBinding(lua_State* L)
         { "_NV_updateBox", FootprintNodeBinding::_NV_updateBox },
         { "setEnabled", FootprintNodeBinding::setEnabled },
         { "getNodeId", FootprintNodeBinding::getNodeId },
+        { "operator_assign", FootprintNodeBinding::operator_assign },
         { 0, 0 }
     };
 

@@ -236,6 +236,16 @@ int HandBinding::isNull(lua_State* L)
     return 1;
 }
 
+int HandBinding::operator_bool(lua_State* L)
+{
+    if (lua_gettop(L) != 1)
+        return luaL_error(L, "hand:operator_bool() expects only self (no arguments)");
+    hand* instance = get(L, 1);
+    bool result = instance->operator bool();
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 int HandBinding::isValid(lua_State* L)
 {
     hand* instance = get(L, 1);
@@ -269,26 +279,111 @@ int HandBinding::squadMatch(lua_State* L)
     return 1;
 }
 
-int HandBinding::eq(lua_State* L)
+int HandBinding::operator_eq(lua_State* L)
 {
     hand* a = get(L, 1);
-    hand* b = get(L, 2);
-    if (!a || !b) {
-        lua_pushboolean(L, a == b ? 1 : 0);
+    if (!a) return luaL_error(L, "hand is nil");
+
+    hand* b = testObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (b)
+    {
+        lua_pushboolean(L, (*a == *b) ? 1 : 0);
         return 1;
     }
-    lua_pushboolean(L, (*a == *b) ? 1 : 0);
+
+    RootObjectBase* obj = testObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName());
+    if (obj)
+    {
+        lua_pushboolean(L, (*a == obj) ? 1 : 0);
+        return 1;
+    }
+
+    if (lua_isboolean(L, 2))
+    {
+        bool bVal = lua_toboolean(L, 2) != 0;
+        lua_pushboolean(L, (*a == bVal) ? 1 : 0);
+        return 1;
+    }
+
+    lua_pushboolean(L, 0);
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 48: operator bool(...) - unsupported return type
-  line 58: bool operator<(...) - operator
-  line 59: hand& operator=(...) - operator
-  line 60: const hand& operator=(...) - operator
-  line 61: const hand& operator=(...) - operator
-*/
+int HandBinding::eq(lua_State* L)
+{
+    return operator_eq(L);
+}
+
+int HandBinding::operator_ne(lua_State* L)
+{
+    hand* a = get(L, 1);
+    if (!a) return luaL_error(L, "hand is nil");
+
+    hand* b = testObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (b)
+    {
+        lua_pushboolean(L, (*a != *b) ? 1 : 0);
+        return 1;
+    }
+
+    RootObjectBase* obj = testObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName());
+    if (obj)
+    {
+        lua_pushboolean(L, (*a != obj) ? 1 : 0);
+        return 1;
+    }
+
+    if (lua_isboolean(L, 2))
+    {
+        bool bVal = lua_toboolean(L, 2) != 0;
+        lua_pushboolean(L, !(*a == bVal) ? 1 : 0);
+        return 1;
+    }
+
+    lua_pushboolean(L, 1);
+    return 1;
+}
+
+int HandBinding::operator_lt(lua_State* L)
+{
+    hand* a = get(L, 1);
+    hand* b = get(L, 2);
+    if (!a || !b) return luaL_error(L, "Both operands must be hand");
+    lua_pushboolean(L, (*a < *b) ? 1 : 0);
+    return 1;
+}
+
+int HandBinding::operator_assign(lua_State* L)
+{
+    hand* instance = get(L, 1);
+    if (!instance) return luaL_error(L, "hand is nil");
+
+    hand* otherHand = testObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (otherHand)
+    {
+        *instance = *otherHand;
+        lua_settop(L, 1);
+        return 1;
+    }
+
+    RootObjectBase* obj = testObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName());
+    if (obj)
+    {
+        *instance = obj;
+        lua_settop(L, 1);
+        return 1;
+    }
+
+    if (lua_isnumber(L, 2))
+    {
+        int val = (int)lua_tointeger(L, 2);
+        *instance = val;
+        lua_settop(L, 1);
+        return 1;
+    }
+
+    return luaL_error(L, "Argument 1 to operator_assign must be hand, RootObjectBase, or integer");
+}
 
 int HandBinding::push(lua_State* L, const hand& h)
 {
@@ -317,11 +412,17 @@ void HandBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       HandBinding::gc },
         { "__tostring", HandBinding::tostring },
-        { "__eq",       HandBinding::eq },
+        { "__eq",       HandBinding::operator_eq },
+        { "__lt",       HandBinding::operator_lt },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_bool", HandBinding::operator_bool },
+        { "operator_eq", HandBinding::operator_eq },
+        { "operator_ne", HandBinding::operator_ne },
+        { "operator_lt", HandBinding::operator_lt },
+        { "operator_assign", HandBinding::operator_assign },
         { "toString", HandBinding::toString },
         { "fromString", HandBinding::fromString },
         { "getCharacter", HandBinding::getCharacter },

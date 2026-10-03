@@ -98,10 +98,18 @@ int OrderDataBinding::updateText(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 56: OrderData& operator=(...) - operator
-*/
+int OrderDataBinding::operator_assign(lua_State* L)
+{
+    OrderData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "OrderData is nil");
+
+    OrderData* other = checkObject<OrderData>(L, 2, OrderDataBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be OrderData");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 int OrderDataBinding::gc(lua_State* L)
 {
@@ -124,6 +132,7 @@ void OrderDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", OrderDataBinding::operator_assign },
         { "set", OrderDataBinding::set },
         { "updateText", OrderDataBinding::updateText },
         { 0, 0 }

@@ -202,6 +202,17 @@ int AppearanceManager_DataRangeVectorBinding::operator_eq(lua_State* L)
     return 1;
 }
 
+int AppearanceManager_DataRangeVectorBinding::operator_assign(lua_State* L)
+{
+    auto* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceManager::DataRangeVector is nil");
+    auto* other = getInstance(L, 2);
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be AppearanceManager::DataRangeVector");
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
+
 void AppearanceManager_DataRangeVectorBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -211,11 +222,13 @@ void AppearanceManager_DataRangeVectorBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "addValue",       AppearanceManager_DataRangeVectorBinding::addValue },
-        { "getValue",       AppearanceManager_DataRangeVectorBinding::getValue },
-        { "getValueIndex",  AppearanceManager_DataRangeVectorBinding::getValueIndex },
-        { "size",           AppearanceManager_DataRangeVectorBinding::size },
-        { "clamp",          AppearanceManager_DataRangeVectorBinding::clamp },
+        { "addValue",        AppearanceManager_DataRangeVectorBinding::addValue },
+        { "getValue",        AppearanceManager_DataRangeVectorBinding::getValue },
+        { "getValueIndex",   AppearanceManager_DataRangeVectorBinding::getValueIndex },
+        { "size",            AppearanceManager_DataRangeVectorBinding::size },
+        { "clamp",           AppearanceManager_DataRangeVectorBinding::clamp },
+        { "operator_eq",     AppearanceManager_DataRangeVectorBinding::operator_eq },
+        { "operator_assign", AppearanceManager_DataRangeVectorBinding::operator_assign },
         { 0, 0 }
     };
 

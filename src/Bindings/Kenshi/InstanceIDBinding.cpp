@@ -187,11 +187,43 @@ int InstanceIDBinding::getModIndex(lua_State* L)
     return luaL_error(L, "Invalid arguments for getModIndex");
 }
 
-/*
-Skipped methods needing manual binding:
-  line 29: bool operator==(...) - operator
-  line 33: InstanceID& operator=(...) - operator
-*/
+int InstanceIDBinding::operator_eq(lua_State* L)
+{
+    InstanceID* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Left operand must be InstanceID");
+
+    if (lua_isstring(L, 2))
+    {
+        std::string s = luaL_checkstring(L, 2);
+        bool res = (*instance == s);
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+
+    InstanceID* other = testObject<InstanceID>(L, 2, InstanceIDBinding::getMetatableName());
+    if (other)
+    {
+        bool res = (*instance == other->uid);
+        lua_pushboolean(L, res ? 1 : 0);
+        return 1;
+    }
+
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+int InstanceIDBinding::operator_assign(lua_State* L)
+{
+    InstanceID* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InstanceID is nil");
+
+    InstanceID* other = checkObject<InstanceID>(L, 2, InstanceIDBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be InstanceID");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 int InstanceIDBinding::gc(lua_State* L)
 {
@@ -210,10 +242,13 @@ void InstanceIDBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       InstanceIDBinding::gc },
         { "__tostring", InstanceIDBinding::tostring },
+        { "__eq",       InstanceIDBinding::operator_eq },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_eq", InstanceIDBinding::operator_eq },
+        { "operator_assign", InstanceIDBinding::operator_assign },
         { "assign", InstanceIDBinding::assign },
         { "clear", InstanceIDBinding::clear },
         { "needsSaving", InstanceIDBinding::needsSaving },

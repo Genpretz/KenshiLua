@@ -138,6 +138,17 @@ int AppearanceManager_DataRangeBinding::operator_eq(lua_State* L)
     return 1;
 }
 
+int AppearanceManager_DataRangeBinding::operator_assign(lua_State* L)
+{
+    auto* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceManager::DataRange is nil");
+    auto* other = getInstance(L, 2);
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be AppearanceManager::DataRange");
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
+
 void AppearanceManager_DataRangeBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -147,7 +158,9 @@ void AppearanceManager_DataRangeBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "clamp",      AppearanceManager_DataRangeBinding::clamp },
+        { "clamp",           AppearanceManager_DataRangeBinding::clamp },
+        { "operator_eq",     AppearanceManager_DataRangeBinding::operator_eq },
+        { "operator_assign", AppearanceManager_DataRangeBinding::operator_assign },
         { 0, 0 }
     };
 

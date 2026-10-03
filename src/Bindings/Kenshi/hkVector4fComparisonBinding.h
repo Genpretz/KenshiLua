@@ -31,6 +31,6 @@ public:
     static int setOr(lua_State* L);
     static int setNot(lua_State* L);
     static int setSelect(lua_State* L);
-    static int create(lua_State* L);
+    static int constructor(lua_State* L);
 };
 }

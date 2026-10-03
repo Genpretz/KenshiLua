@@ -20,5 +20,6 @@ public:
 
     static int save(lua_State* L);
     static int load(lua_State* L);
+    static int operator_assign(lua_State* L);
 };
 }

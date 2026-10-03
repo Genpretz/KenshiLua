@@ -62,10 +62,18 @@ static int VisibleObjectInfo_set_isEnemy(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 93: VisibleObjectInfo& operator=(...) - operator
-*/
+int VisibleObjectInfoBinding::operator_assign(lua_State* L)
+{
+    VisibleObjectInfo* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "VisibleObjectInfo is nil");
+
+    VisibleObjectInfo* other = checkObject<VisibleObjectInfo>(L, 2, VisibleObjectInfoBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be VisibleObjectInfo");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 int VisibleObjectInfoBinding::gc(lua_State* L)
 {
@@ -88,6 +96,7 @@ void VisibleObjectInfoBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", VisibleObjectInfoBinding::operator_assign },
         { 0, 0 }
     };
 

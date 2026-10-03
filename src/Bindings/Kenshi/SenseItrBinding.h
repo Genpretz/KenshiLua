@@ -20,5 +20,6 @@ public:
     static int getData(lua_State* L);
     static int ended(lua_State* L);
     static int increment(lua_State* L);
+    static int operator_inc(lua_State* L);
 };
 }

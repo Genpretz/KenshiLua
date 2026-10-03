@@ -95,10 +95,18 @@ static int Stat_set_active(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 32: CharacterStatsWindow::Stat& operator=(...) - operator
-*/
+int StatBinding::operator_assign(lua_State* L)
+{
+    Stat* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Stat is nil");
+
+    Stat* other = checkObject<Stat>(L, 2, StatBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be Stat");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 int StatBinding::gc(lua_State* L)
 {
@@ -121,6 +129,7 @@ void StatBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", StatBinding::operator_assign },
         { 0, 0 }
     };
 

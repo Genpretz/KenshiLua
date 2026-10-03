@@ -548,6 +548,59 @@ int HavokCharacterBinding::calculateFuturePosition(lua_State* L)
     return 1;
 }
 
+int HavokCharacterBinding::operator_new(lua_State* L)
+{
+    int idx = 1;
+    if (lua_istable(L, 1) || testObject<HavokCharacter>(L, 1, HavokCharacterBinding::getMetatableName()))
+        idx = 2;
+
+    unsigned __int64 nbytes = sizeof(HavokCharacter);
+    if (!lua_isnoneornil(L, idx))
+    {
+        nbytes = (unsigned __int64)luaL_checkinteger(L, idx);
+    }
+
+    void* result = HavokCharacter::operator new(nbytes);
+    lua_pushlightuserdata(L, result);
+    return 1;
+}
+
+int HavokCharacterBinding::operator_delete(lua_State* L)
+{
+    int ptrIdx = 1;
+    if (lua_istable(L, 1))
+    {
+        ptrIdx = 2;
+    }
+    else if (testObject<HavokCharacter>(L, 1, HavokCharacterBinding::getMetatableName()))
+    {
+        if (lua_islightuserdata(L, 2) || testObject<HavokCharacter>(L, 2, HavokCharacterBinding::getMetatableName()))
+        {
+            ptrIdx = 2;
+        }
+    }
+
+    void* ptr = nullptr;
+    if (lua_islightuserdata(L, ptrIdx))
+    {
+        ptr = lua_touserdata(L, ptrIdx);
+    }
+    else if (HavokCharacter* obj = testObject<HavokCharacter>(L, ptrIdx, HavokCharacterBinding::getMetatableName()))
+    {
+        ptr = obj;
+    }
+    else
+    {
+        return luaL_error(L, "HavokCharacter:operator_delete expects a pointer or HavokCharacter instance");
+    }
+
+    if (ptr)
+    {
+        HavokCharacter::operator delete(ptr);
+    }
+    return 0;
+}
+
 int HavokCharacterBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -596,6 +649,8 @@ void HavokCharacterBinding::registerBinding(lua_State* L)
         { "getCollidedCharacter", HavokCharacterBinding::getCollidedCharacter },
         { "setHandle", HavokCharacterBinding::setHandle },
         { "calculateFuturePosition", HavokCharacterBinding::calculateFuturePosition },
+        { "operator_new", HavokCharacterBinding::operator_new },
+        { "operator_delete", HavokCharacterBinding::operator_delete },
         { 0, 0 }
     };
 
@@ -648,6 +703,11 @@ void HavokCharacterBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    pushGlobalTable(L, "HavokCharacter");
+    registerStaticMethod(L, "operator_new", HavokCharacterBinding::operator_new);
+    registerStaticMethod(L, "operator_delete", HavokCharacterBinding::operator_delete);
+    lua_setglobal(L, "HavokCharacter");
 }
 
 } // namespace KenshiLua

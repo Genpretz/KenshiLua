@@ -138,6 +138,17 @@ int AppearanceManager_DataCategoryBinding::operator_eq(lua_State* L)
     return 1;
 }
 
+int AppearanceManager_DataCategoryBinding::operator_assign(lua_State* L)
+{
+    auto* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AppearanceManager::DataCategory is nil");
+    auto* other = getInstance(L, 2);
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be AppearanceManager::DataCategory");
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
+
 void AppearanceManager_DataCategoryBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
@@ -147,8 +158,10 @@ void AppearanceManager_DataCategoryBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "setValue",   AppearanceManager_DataCategoryBinding::setValue },
-        { "getValue",   AppearanceManager_DataCategoryBinding::getValue },
+        { "setValue",        AppearanceManager_DataCategoryBinding::setValue },
+        { "getValue",        AppearanceManager_DataCategoryBinding::getValue },
+        { "operator_eq",     AppearanceManager_DataCategoryBinding::operator_eq },
+        { "operator_assign", AppearanceManager_DataCategoryBinding::operator_assign },
         { 0, 0 }
     };
 

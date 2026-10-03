@@ -115,10 +115,18 @@ static int AppearanceData_set_headsDataProb(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 150: AppearanceData& operator=(...) - operator
-*/
+int AppearanceManager_AppearanceDataBinding::operator_assign(lua_State* L)
+{
+    auto* inst = getInstance(L, 1);
+    if (!inst) return luaL_error(L, "AppearanceManager::AppearanceData is nil");
+
+    auto* other = checkObject<AppearanceManager::AppearanceData>(L, 2, AppearanceManager_AppearanceDataBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be AppearanceManager::AppearanceData");
+
+    *inst = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -158,6 +166,8 @@ void AppearanceManager_AppearanceDataBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
+        { "operator_eq", AppearanceManager_AppearanceDataBinding::operator_eq },
+        { "operator_assign", AppearanceManager_AppearanceDataBinding::operator_assign },
         { 0, 0 }
     };
 

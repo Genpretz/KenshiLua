@@ -71,10 +71,18 @@ static int TreeData_set_building(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 107: FoliageSystem::TreeData& operator=(...) - operator
-*/
+int TreeDataBinding::operator_assign(lua_State* L)
+{
+    TreeData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TreeData is nil");
+
+    TreeData* other = checkObject<TreeData>(L, 2, TreeDataBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be TreeData");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -108,6 +116,7 @@ void TreeDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", TreeDataBinding::operator_assign },
         { 0, 0 }
     };
 

@@ -597,22 +597,142 @@ int hkVector4fBinding::isOk4(lua_State* L)
     return 1;
 }
 
-int hkVector4fBinding::create(lua_State* L)
+int hkVector4fBinding::constructor(lua_State* L)
 {
-    int idx = lua_isuserdata(L, 1) ? 2 : 1;
-    float a = (float)luaL_optnumber(L, idx, 0.0);
-    float b = (float)luaL_optnumber(L, idx + 1, 0.0);
-    float c = (float)luaL_optnumber(L, idx + 2, 0.0);
-    float d = (float)luaL_optnumber(L, idx + 3, 0.0);
-    hkVector4f v(a, b, c, d);
-    return pushValue<hkVector4f>(L, v, hkVector4fBinding::getMetatableName());
+    int startIdx = 1;
+    if (lua_istable(L, 1))
+        startIdx = 2; // Invoked via __call metamethod on hkVector4f global table
+
+    int top = lua_gettop(L);
+    int numArgs = top - startIdx + 1;
+
+    if (numArgs <= 0)
+    {
+        hkVector4f v(0.0f, 0.0f, 0.0f, 0.0f);
+        return pushValue<hkVector4f>(L, v, hkVector4fBinding::getMetatableName());
+    }
+    else if (numArgs == 1)
+    {
+        hkVector4f* other = testObject<hkVector4f>(L, startIdx, hkVector4fBinding::getMetatableName());
+        if (other)
+        {
+            hkVector4f v(*other);
+            return pushValue<hkVector4f>(L, v, hkVector4fBinding::getMetatableName());
+        }
+        float a = (float)luaL_checknumber(L, startIdx);
+        hkVector4f v(a, a, a, a);
+        return pushValue<hkVector4f>(L, v, hkVector4fBinding::getMetatableName());
+    }
+    else
+    {
+        float a = (float)luaL_optnumber(L, startIdx, 0.0);
+        float b = (float)luaL_optnumber(L, startIdx + 1, 0.0);
+        float c = (float)luaL_optnumber(L, startIdx + 2, 0.0);
+        float d = (float)luaL_optnumber(L, startIdx + 3, 0.0);
+        hkVector4f v(a, b, c, d);
+        return pushValue<hkVector4f>(L, v, hkVector4fBinding::getMetatableName());
+    }
+}
+
+int hkVector4fBinding::operator_new(lua_State* L)
+{
+    int idx = 1;
+    if (lua_istable(L, 1) || testObject<hkVector4f>(L, 1, hkVector4fBinding::getMetatableName()))
+        idx = 2;
+
+    unsigned __int64 nbytes = sizeof(hkVector4f);
+    if (!lua_isnoneornil(L, idx))
+    {
+        nbytes = (unsigned __int64)luaL_checkinteger(L, idx);
+    }
+
+    void* result = hkVector4f::operator new(nbytes);
+    lua_pushlightuserdata(L, result);
+    return 1;
+}
+
+int hkVector4fBinding::operator_delete(lua_State* L)
+{
+    int ptrIdx = 1;
+    if (lua_istable(L, 1))
+    {
+        ptrIdx = 2;
+    }
+    else if (testObject<hkVector4f>(L, 1, hkVector4fBinding::getMetatableName()))
+    {
+        if (lua_islightuserdata(L, 2) || testObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName()))
+        {
+            ptrIdx = 2;
+        }
+        else
+        {
+            ptrIdx = 1;
+        }
+    }
+
+    void* p = nullptr;
+    if (lua_islightuserdata(L, ptrIdx))
+    {
+        p = lua_touserdata(L, ptrIdx);
+    }
+    else if (hkVector4f* v = testObject<hkVector4f>(L, ptrIdx, hkVector4fBinding::getMetatableName()))
+    {
+        p = static_cast<void*>(v);
+    }
+    else
+    {
+        return luaL_error(L, "Argument to operator_delete must be pointer (lightuserdata or hkVector4f)");
+    }
+
+    int bytesIdx = ptrIdx + 1;
+    unsigned __int64 nbytes = sizeof(hkVector4f);
+    if (!lua_isnoneornil(L, bytesIdx))
+    {
+        nbytes = (unsigned __int64)luaL_checkinteger(L, bytesIdx);
+    }
+
+    if (p)
+    {
+        hkVector4f::operator delete(p, nbytes);
+    }
+    return 0;
+}
+
+int hkVector4fBinding::operator_assign(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* v = getInstance(L, 2);
+    if (!v) return luaL_error(L, "Argument 2 to operator_assign must be hkVector4f");
+
+    instance->operator=(*v);
+    lua_settop(L, 1);
+    return 1;
+}
+
+int hkVector4fBinding::operator_call(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    int idx = (int)luaL_checkinteger(L, 2);
+    if (idx < 0 || idx > 3)
+        return luaL_error(L, "Index out of bounds [0..3]");
+
+    if (lua_gettop(L) >= 3)
+    {
+        float val = (float)luaL_checknumber(L, 3);
+        (*instance)(idx) = val;
+        return 0;
+    }
+    float val = (*instance)(idx);
+    lua_pushnumber(L, val);
+    return 1;
 }
 
 /*
 Skipped methods needing manual binding:
-  line 153: void*operator new(...) - static method
-  line 155: void operator delete(...) - static method
-  line 171: void operator=(...) - operator
   line 205: void setInterpolate(...) - unsupported arg type
   line 223: void setFlipSign(...) - overloaded method
   line 224: void setFlipSign(...) - overloaded method
@@ -642,8 +762,6 @@ Skipped methods needing manual binding:
   line 254: const hkSimdFloat32 dot4xyz1(...) - unsupported return type
   line 255: const hkSimdFloat32 distanceTo(...) - unsupported return type
   line 256: const hkSimdFloat32 distanceToSquared(...) - unsupported return type
-  line 271: const float& operator(...) - operator
-  line 272: float& operator(...) - operator
   line 273: const hkSimdFloat32 getComponent(...) - unsupported return type
   line 274: const hkSimdFloat32 getW(...) - unsupported return type
   line 277: void setComponent(...) - unsupported arg type
@@ -655,6 +773,11 @@ Skipped methods needing manual binding:
   line 337: hkSimdFloat32 lengthSquared3(...) - unsupported return type
   line 365: hkSimdFloat32 distanceTo3(...) - unsupported return type
   line 366: hkSimdFloat32 distanceToSquared3(...) - unsupported return type
+*/
+
+/*
+LIGHTUSERDATA DEPENDENCIES:
+  - hkVector4fBinding::operator_new: void* (unbound pointer)
 */
 
 /*
@@ -688,6 +811,7 @@ void hkVector4fBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       hkVector4fBinding::gc },
         { "__tostring", hkVector4fBinding::tostring },
+        { "__call",     hkVector4fBinding::operator_call },
         { 0, 0 }
     };
 
@@ -745,7 +869,10 @@ void hkVector4fBinding::registerBinding(lua_State* L)
         { "notEqualZero", hkVector4fBinding::notEqualZero },
         { "isOk3", hkVector4fBinding::isOk3 },
         { "isOk4", hkVector4fBinding::isOk4 },
-        { "create", hkVector4fBinding::create },
+        { "operator_new", hkVector4fBinding::operator_new },
+        { "operator_delete", hkVector4fBinding::operator_delete },
+        { "operator_assign", hkVector4fBinding::operator_assign },
+        { "operator_call", hkVector4fBinding::operator_call },
         { 0, 0 }
     };
 
@@ -767,10 +894,12 @@ void hkVector4fBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    // Register global class table for static methods
+    // Register global class table with constructor (__call metamethod) and static methods
     pushGlobalTable(L, "hkVector4f");
     registerStaticMethod(L, "getZero", hkVector4fBinding::getZero);
-    registerStaticMethod(L, "create", hkVector4fBinding::create);
+    registerConstructor(L, hkVector4fBinding::constructor);
+    registerStaticMethod(L, "operator_new", hkVector4fBinding::operator_new);
+    registerStaticMethod(L, "operator_delete", hkVector4fBinding::operator_delete);
     lua_setglobal(L, "hkVector4f");
 }
 

@@ -40,8 +40,42 @@ int hkResultBinding::tostring(lua_State* L)
 int hkResultBinding::operator_eq(lua_State* L)
 {
     auto* a = getInstance(L, 1);
-    auto* b = getInstance(L, 2);
-    lua_pushboolean(L, (a && b && a->m_enum == b->m_enum) ? 1 : 0);
+    if (!a) return luaL_error(L, "hkResult is nil");
+
+    auto* b = testObject<hkResult>(L, 2, hkResultBinding::getMetatableName());
+    if (b)
+    {
+        lua_pushboolean(L, (a->m_enum == b->m_enum) ? 1 : 0);
+        return 1;
+    }
+    if (lua_isnumber(L, 2))
+    {
+        hkResultEnum e = (hkResultEnum)lua_tointeger(L, 2);
+        lua_pushboolean(L, (a->m_enum == e) ? 1 : 0);
+        return 1;
+    }
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+int hkResultBinding::operator_ne(lua_State* L)
+{
+    auto* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "hkResult is nil");
+
+    auto* b = testObject<hkResult>(L, 2, hkResultBinding::getMetatableName());
+    if (b)
+    {
+        lua_pushboolean(L, (a->m_enum != b->m_enum) ? 1 : 0);
+        return 1;
+    }
+    if (lua_isnumber(L, 2))
+    {
+        hkResultEnum e = (hkResultEnum)lua_tointeger(L, 2);
+        lua_pushboolean(L, (a->m_enum != e) ? 1 : 0);
+        return 1;
+    }
+    lua_pushboolean(L, 1);
     return 1;
 }
 
@@ -54,6 +88,8 @@ void hkResultBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
+        { "operator_eq", operator_eq },
+        { "operator_ne", operator_ne },
         { 0, 0 }
     };
 

@@ -140,19 +140,6 @@ int NxVec3Binding::magnitudeSquared(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 291: const NxVec3& operator=(...) - operator
-  line 297: float& operator[](...) - operator
-  line 299: bool operator==(...) - operator
-  line 300: bool operator!=(...) - operator
-  line 339: NxVec3 operator-(...) - operator
-  line 340: NxVec3 operator+(...) - operator
-  line 343: NxVec3& operator+=(...) - operator
-  line 344: NxVec3& operator-=(...) - operator
-  line 345: NxVec3& operator*=(...) - operator
-  line 347: NxVec3 operator^(...) - operator
-*/
 int NxVec3Binding::dot(lua_State* L)
 {
     NxVec3* instance = getInstance(L, 1);
@@ -279,14 +266,40 @@ int NxVec3Binding::set(lua_State* L)
     return 0;
 }
 
-int NxVec3Binding::create(lua_State* L)
+int NxVec3Binding::constructor(lua_State* L)
 {
-    int idx = lua_isuserdata(L, 1) ? 2 : 1;
-    float x = (float)luaL_optnumber(L, idx, 0.0);
-    float y = (float)luaL_optnumber(L, idx + 1, 0.0);
-    float z = (float)luaL_optnumber(L, idx + 2, 0.0);
-    NxVec3 v(x, y, z);
-    return pushValue<NxVec3>(L, v, NxVec3Binding::getMetatableName());
+    int startIdx = 1;
+    if (lua_istable(L, 1))
+        startIdx = 2; // Invoked via __call metamethod on NxVec3 global table
+
+    int top = lua_gettop(L);
+    int numArgs = top - startIdx + 1;
+
+    if (numArgs <= 0)
+    {
+        NxVec3 v(0.0f, 0.0f, 0.0f);
+        return pushValue<NxVec3>(L, v, NxVec3Binding::getMetatableName());
+    }
+    else if (numArgs == 1)
+    {
+        NxVec3* other = testObject<NxVec3>(L, startIdx, NxVec3Binding::getMetatableName());
+        if (other)
+        {
+            NxVec3 v(*other);
+            return pushValue<NxVec3>(L, v, NxVec3Binding::getMetatableName());
+        }
+        float a = (float)luaL_checknumber(L, startIdx);
+        NxVec3 v(a, a, a);
+        return pushValue<NxVec3>(L, v, NxVec3Binding::getMetatableName());
+    }
+    else
+    {
+        float x = (float)luaL_optnumber(L, startIdx, 0.0);
+        float y = (float)luaL_optnumber(L, startIdx + 1, 0.0);
+        float z = (float)luaL_optnumber(L, startIdx + 2, 0.0);
+        NxVec3 v(x, y, z);
+        return pushValue<NxVec3>(L, v, NxVec3Binding::getMetatableName());
+    }
 }
 
 int NxVec3Binding::lua_add(lua_State* L)
@@ -349,6 +362,90 @@ int NxVec3Binding::lua_eq(lua_State* L)
     return 1;
 }
 
+int NxVec3Binding::operator_assign(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+    NxVec3* v = getInstance(L, 2);
+    if (!v) return luaL_error(L, "Argument 2 to operator_assign must be NxVec3");
+    instance->operator=(*v);
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+int NxVec3Binding::operator_subscript(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+    int index = (int)luaL_checkinteger(L, 2);
+    if (index < 0 || index >= 3)
+        return luaL_error(L, "Index out of bounds: %d (expected 0..2)", index);
+    if (lua_gettop(L) >= 3)
+    {
+        float val = (float)luaL_checknumber(L, 3);
+        instance->operator[](index) = val;
+        return 0;
+    }
+    else
+    {
+        float res = instance->operator[](index);
+        lua_pushnumber(L, res);
+        return 1;
+    }
+}
+
+int NxVec3Binding::operator_ne(lua_State* L)
+{
+    NxVec3* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "NxVec3 is nil");
+    NxVec3* b = getInstance(L, 2);
+    if (!b) return luaL_error(L, "Argument 2 to operator_ne must be NxVec3");
+    lua_pushboolean(L, (*a != *b) ? 1 : 0);
+    return 1;
+}
+
+int NxVec3Binding::operator_add_assign(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+    NxVec3* v = getInstance(L, 2);
+    if (!v) return luaL_error(L, "Argument 2 to operator_add_assign must be NxVec3");
+    instance->operator+=(*v);
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+int NxVec3Binding::operator_sub_assign(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+    NxVec3* v = getInstance(L, 2);
+    if (!v) return luaL_error(L, "Argument 2 to operator_sub_assign must be NxVec3");
+    instance->operator-=(*v);
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+int NxVec3Binding::operator_mul_assign(lua_State* L)
+{
+    NxVec3* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxVec3 is nil");
+    float f = (float)luaL_checknumber(L, 2);
+    instance->operator*=(f);
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+int NxVec3Binding::operator_xor(lua_State* L)
+{
+    NxVec3* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "NxVec3 is nil");
+    NxVec3* b = getInstance(L, 2);
+    if (!b) return luaL_error(L, "Argument 2 to operator_xor must be NxVec3");
+    NxVec3 res = (*a) ^ (*b);
+    return pushValue<NxVec3>(L, res, NxVec3Binding::getMetatableName());
+}
+
 int NxVec3Binding::gc(lua_State* L)
 {
     // Implementation depends on ownership model
@@ -383,22 +480,33 @@ void NxVec3Binding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "zero", NxVec3Binding::zero },
-        { "isZero", NxVec3Binding::isZero },
-        { "normalize", NxVec3Binding::normalize },
-        { "setMagnitude", NxVec3Binding::setMagnitude },
-        { "closestAxis", NxVec3Binding::closestAxis },
-        { "isFinite", NxVec3Binding::isFinite },
-        { "magnitude", NxVec3Binding::magnitude },
-        { "magnitudeSquared", NxVec3Binding::magnitudeSquared },
-        { "dot", NxVec3Binding::dot },
-        { "equals", NxVec3Binding::equals },
-        { "multiplyAdd", NxVec3Binding::multiplyAdd },
-        { "add", NxVec3Binding::add },
-        { "subtract", NxVec3Binding::subtract },
-        { "cross", NxVec3Binding::cross },
-        { "set", NxVec3Binding::set },
-        { "create", NxVec3Binding::create },
+        { "zero",                NxVec3Binding::zero },
+        { "isZero",              NxVec3Binding::isZero },
+        { "normalize",           NxVec3Binding::normalize },
+        { "setMagnitude",        NxVec3Binding::setMagnitude },
+        { "closestAxis",         NxVec3Binding::closestAxis },
+        { "isFinite",            NxVec3Binding::isFinite },
+        { "magnitude",           NxVec3Binding::magnitude },
+        { "magnitudeSquared",    NxVec3Binding::magnitudeSquared },
+        { "dot",                 NxVec3Binding::dot },
+        { "equals",              NxVec3Binding::equals },
+        { "multiplyAdd",         NxVec3Binding::multiplyAdd },
+        { "add",                 NxVec3Binding::add },
+        { "subtract",            NxVec3Binding::subtract },
+        { "cross",               NxVec3Binding::cross },
+        { "set",                 NxVec3Binding::set },
+        { "operator_assign",     NxVec3Binding::operator_assign },
+        { "operator_subscript",  NxVec3Binding::operator_subscript },
+        { "operator_eq",         NxVec3Binding::lua_eq },
+        { "operator_ne",         NxVec3Binding::operator_ne },
+        { "operator_add",        NxVec3Binding::lua_add },
+        { "operator_sub",        NxVec3Binding::lua_sub },
+        { "operator_unm",        NxVec3Binding::lua_unm },
+        { "operator_mul",        NxVec3Binding::lua_mul },
+        { "operator_add_assign", NxVec3Binding::operator_add_assign },
+        { "operator_sub_assign", NxVec3Binding::operator_sub_assign },
+        { "operator_mul_assign", NxVec3Binding::operator_mul_assign },
+        { "operator_xor",        NxVec3Binding::operator_xor },
         { 0, 0 }
     };
 
@@ -426,9 +534,9 @@ void NxVec3Binding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    // Register global class table for static methods
+    // Register global class table with constructor (__call metamethod)
     pushGlobalTable(L, "NxVec3");
-    registerStaticMethod(L, "create", NxVec3Binding::create);
+    registerConstructor(L, NxVec3Binding::constructor);
     lua_setglobal(L, "NxVec3");
 }
 

@@ -125,6 +125,8 @@ void BinaryVersionBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_eq",       BinaryVersionBinding::operator_eq },
+        { "operator_lt",       BinaryVersionBinding::operator_lt },
         { "GetPlatform",       BinaryVersionBinding::GetPlatform },
         { "GetPlatformStr",    BinaryVersionBinding::GetPlatformStr },
         { "GetBinaryName",     BinaryVersionBinding::GetBinaryName },

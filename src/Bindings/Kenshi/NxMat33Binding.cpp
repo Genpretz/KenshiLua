@@ -177,7 +177,7 @@ int NxMat33Binding::get(lua_State* L)
     if (row < 0 || row > 2 || col < 0 || col > 2)
         return luaL_error(L, "Row and column index out of bounds [0..2]");
 
-    float val = instance->data.m[row][col];
+    float val = (*instance)(row, col);
     lua_pushnumber(L, val);
     return 1;
 }
@@ -193,12 +193,29 @@ int NxMat33Binding::set(lua_State* L)
     if (row < 0 || row > 2 || col < 0 || col > 2)
         return luaL_error(L, "Row and column index out of bounds [0..2]");
 
-    instance->data.m[row][col] = val;
+    const_cast<float&>((*instance)(row, col)) = val;
     return 0;
 }
 
-int NxMat33Binding::create(lua_State* L)
+int NxMat33Binding::constructor(lua_State* L)
 {
+    int startIdx = 1;
+    if (lua_istable(L, 1))
+        startIdx = 2; // Invoked via __call metamethod on NxMat33 global table
+
+    int top = lua_gettop(L);
+    int numArgs = top - startIdx + 1;
+
+    if (numArgs >= 1)
+    {
+        NxMat33* other = testObject<NxMat33>(L, startIdx, NxMat33Binding::getMetatableName());
+        if (other)
+        {
+            NxMat33 m(*other);
+            return pushValue<NxMat33>(L, m, NxMat33Binding::getMetatableName());
+        }
+    }
+
     NxMat33 m;
     m.id();
     return pushValue<NxMat33>(L, m, NxMat33Binding::getMetatableName());
@@ -227,14 +244,58 @@ int NxMat33Binding::lua_mul(lua_State* L)
     return luaL_error(L, "Right operand must be NxVec3 or NxMat33");
 }
 
+int NxMat33Binding::operator_assign(lua_State* L)
+{
+    NxMat33* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxMat33 is nil");
+
+    NxMat33* other = checkObject<NxMat33>(L, 2, NxMat33Binding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be NxMat33");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
+
+int NxMat33Binding::operator_mul_assign(lua_State* L)
+{
+    NxMat33* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxMat33 is nil");
+
+    NxMat33* other = checkObject<NxMat33>(L, 2, NxMat33Binding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_mul_assign must be NxMat33");
+
+    *instance *= *other;
+    lua_settop(L, 1);
+    return 1;
+}
+
+int NxMat33Binding::operator_call(lua_State* L)
+{
+    NxMat33* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxMat33 is nil");
+
+    int row = (int)luaL_checkinteger(L, 2);
+    int col = (int)luaL_checkinteger(L, 3);
+    if (row < 0 || row > 2 || col < 0 || col > 2)
+        return luaL_error(L, "Row and column index out of bounds [0..2]");
+
+    if (lua_gettop(L) >= 4)
+    {
+        float val = (float)luaL_checknumber(L, 4);
+        const_cast<float&>((*instance)(row, col)) = val;
+        return 0;
+    }
+
+    float val = (*instance)(row, col);
+    lua_pushnumber(L, val);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 388: const NxMat33& operator=(...) - operator
-  line 427: const float& operator(...) - operator
   line 437: void fromQuat(...) - unsupported arg type
   line 438: void toQuat(...) - unsupported arg type
-  line 441: NxMat33& operator*=(...) - operator
-  line 470: NxVec3 operator*(...) - operator
 */
 
 /*
@@ -260,6 +321,7 @@ void NxMat33Binding::registerBinding(lua_State* L)
         { "__gc",       NxMat33Binding::gc },
         { "__tostring", NxMat33Binding::tostring },
         { "__mul",      NxMat33Binding::lua_mul },
+        { "__call",     NxMat33Binding::operator_call },
         { 0, 0 }
     };
 
@@ -279,7 +341,10 @@ void NxMat33Binding::registerBinding(lua_State* L)
         { "multiply", NxMat33Binding::multiply },
         { "get", NxMat33Binding::get },
         { "set", NxMat33Binding::set },
-        { "create", NxMat33Binding::create },
+        { "operator_mul", NxMat33Binding::lua_mul },
+        { "operator_assign", NxMat33Binding::operator_assign },
+        { "operator_mul_assign", NxMat33Binding::operator_mul_assign },
+        { "operator_call", NxMat33Binding::operator_call },
         { 0, 0 }
     };
 
@@ -301,9 +366,9 @@ void NxMat33Binding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    // Register global class table for static methods
+    // Register global class table with constructor (__call metamethod)
     pushGlobalTable(L, "NxMat33");
-    registerStaticMethod(L, "create", NxMat33Binding::create);
+    registerConstructor(L, NxMat33Binding::constructor);
     lua_setglobal(L, "NxMat33");
 }
 

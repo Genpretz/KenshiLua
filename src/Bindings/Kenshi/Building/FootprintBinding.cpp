@@ -337,8 +337,20 @@ Skipped methods needing manual binding:
   line 534: bool collisionTestOK(...) - unsupported arg type
   line 535: bool _NV_collisionTestOK(...) - unsupported arg type
   line 540: bool blocksAnyBuildingTest(...) - unsupported arg type
-  line 558: PreviewBuilding::Footprint& operator=(...) - operator
 */
+
+int FootprintBinding::operator_assign(lua_State* L)
+{
+    Footprint* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Footprint is nil");
+
+    Footprint* other = checkObject<Footprint>(L, 2, FootprintBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be Footprint");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -382,6 +394,7 @@ void FootprintBinding::registerBinding(lua_State* L)
         { "updateBox", FootprintBinding::updateBox },
         { "_NV_updateBox", FootprintBinding::_NV_updateBox },
         { "getGroundHeight", FootprintBinding::getGroundHeight },
+        { "operator_assign", FootprintBinding::operator_assign },
         { 0, 0 }
     };
 

@@ -30,11 +30,30 @@ static int BuildingCategory_set_name(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 35: bool operator<(...) - operator
-  line 42: BuildModeWindow::BuildingCategory& operator=(...) - operator
-*/
+int BuildingCategoryBinding::operator_lt(lua_State* L)
+{
+    BuildingCategory* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be BuildingCategory");
+
+    BuildingCategory* b = checkObject<BuildingCategory>(L, 2, BuildingCategoryBinding::getMetatableName());
+    if (!b) return luaL_error(L, "Right operand must be BuildingCategory");
+
+    lua_pushboolean(L, (*a < *b) ? 1 : 0);
+    return 1;
+}
+
+int BuildingCategoryBinding::operator_assign(lua_State* L)
+{
+    BuildingCategory* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingCategory is nil");
+
+    BuildingCategory* other = checkObject<BuildingCategory>(L, 2, BuildingCategoryBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be BuildingCategory");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -58,10 +77,13 @@ void BuildingCategoryBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       BuildingCategoryBinding::gc },
         { "__tostring", BuildingCategoryBinding::tostring },
+        { "__lt",       BuildingCategoryBinding::operator_lt },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_lt", BuildingCategoryBinding::operator_lt },
+        { "operator_assign", BuildingCategoryBinding::operator_assign },
         { 0, 0 }
     };
 

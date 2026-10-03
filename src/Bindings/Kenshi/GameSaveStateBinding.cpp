@@ -283,18 +283,15 @@ int GameSaveStateBinding::getAllStates(lua_State* L)
 }
 */
 
-int GameSaveStateBinding::isValid(lua_State* L)
+int GameSaveStateBinding::operator_bool(lua_State* L)
 {
+    if (lua_gettop(L) != 1)
+        return luaL_error(L, "GameSaveState:operator_bool() expects only self (no arguments)");
     GameSaveState* instance = getInstance(L, 1);
-    bool result = instance && instance->operator bool();
+    bool result = instance->operator bool();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 37: operator bool(...) - unsupported return type (exposed as isValid)
-*/
 
 int GameSaveStateBinding::gc(lua_State* L)
 {
@@ -335,7 +332,7 @@ void GameSaveStateBinding::registerBinding(lua_State* L)
         { "getInstanceID", GameSaveStateBinding::getInstanceID },
         // Commented out as this method is not exported by kenshilib:
         // { "getAllStates", GameSaveStateBinding::getAllStates },
-        { "isValid", GameSaveStateBinding::isValid },
+        { "operator_bool", GameSaveStateBinding::operator_bool },
         { 0, 0 }
     };
 

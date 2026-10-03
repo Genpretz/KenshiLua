@@ -142,10 +142,18 @@ int ModInfoBinding::getLocale(lua_State* L)
     return 3;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 24: ModInfo& operator=(...) - operator
-*/
+int ModInfoBinding::operator_assign(lua_State* L)
+{
+    ModInfo* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ModInfo is nil");
+
+    ModInfo* other = checkObject<ModInfo>(L, 2, ModInfoBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be ModInfo");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 int ModInfoBinding::gc(lua_State* L)
 {
@@ -168,6 +176,7 @@ void ModInfoBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", ModInfoBinding::operator_assign },
         { "getLocale", ModInfoBinding::getLocale },
         { 0, 0 }
     };

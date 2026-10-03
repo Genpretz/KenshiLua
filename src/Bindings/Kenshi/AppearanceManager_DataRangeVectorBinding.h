@@ -23,5 +23,6 @@ public:
     static int getValueIndex(lua_State* L);
     static int size(lua_State* L);
     static int clamp(lua_State* L);
+    static int operator_assign(lua_State* L);
 };
 } // namespace KenshiLua

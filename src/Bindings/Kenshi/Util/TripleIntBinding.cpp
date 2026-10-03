@@ -35,12 +35,97 @@ static int TripleInt_set_value(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 14: const TripleInt& operator=(...) - operator
-  line 15: int operator[](...) - operator
-  line 16: int& operator[](...) - operator
-*/
+int TripleIntBinding::operator_assign(lua_State* L)
+{
+    TripleInt* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TripleInt is nil");
+
+    TripleInt* other = testObject<TripleInt>(L, 2, TripleIntBinding::getMetatableName());
+    if (other)
+    {
+        instance->operator=(*other);
+    }
+    else if (lua_istable(L, 2))
+    {
+        TripleInt temp;
+        if (!readTripleInt(L, 2, temp))
+            return luaL_error(L, "Argument 2 table must be {x, y, z}");
+        instance->operator=(temp);
+    }
+    else
+    {
+        return luaL_error(L, "Argument 2 to operator_assign must be TripleInt or table {x, y, z}");
+    }
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+int TripleIntBinding::operator_subscript(lua_State* L)
+{
+    TripleInt* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TripleInt is nil");
+
+    int i = (int)luaL_checkinteger(L, 2);
+    if (i < 0 || i >= 3)
+    {
+        return luaL_error(L, "Index out of bounds: %d (expected 0..2)", i);
+    }
+
+    if (lua_gettop(L) >= 3)
+    {
+        int val = (int)luaL_checkinteger(L, 3);
+        instance->operator[](i) = val;
+        return 0;
+    }
+    else
+    {
+        int result = instance->operator[](i);
+        lua_pushinteger(L, result);
+        return 1;
+    }
+}
+
+//custom index function
+int TripleIntBinding::index(lua_State* L)
+{
+    if (lua_type(L, 2) == LUA_TNUMBER)
+    {
+        TripleInt* instance = getInstance(L, 1);
+        if (!instance) return luaL_error(L, "TripleInt is nil");
+
+        int idx = (int)lua_tointeger(L, 2);
+        if (idx >= 1 && idx <= 3)
+        {
+            lua_pushinteger(L, instance->operator[](idx - 1));
+            return 1;
+        }
+        lua_pushnil(L);
+        return 1;
+    }
+
+    return genericPropertyIndex(L);
+}
+//custom new index function
+int TripleIntBinding::newindex(lua_State* L)
+{
+    if (lua_type(L, 2) == LUA_TNUMBER)
+    {
+        TripleInt* instance = getInstance(L, 1);
+        if (!instance) return luaL_error(L, "TripleInt is nil");
+
+        int idx = (int)lua_tointeger(L, 2);
+        if (idx >= 1 && idx <= 3)
+        {
+            int val = (int)luaL_checkinteger(L, 3);
+            instance->operator[](idx - 1) = val;
+            return 0;
+        }
+        return luaL_error(L, "TripleInt index out of bounds: %d (expected 1..3)", idx);
+    }
+
+    return genericPropertyNewIndex(L);
+}
 
 int TripleIntBinding::gc(lua_State* L)
 {
@@ -63,6 +148,9 @@ void TripleIntBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign",    TripleIntBinding::operator_assign },
+        { "operator_subscript", TripleIntBinding::operator_subscript },
+        { "operator_index",     TripleIntBinding::operator_subscript },
         { 0, 0 }
     };
 
@@ -71,8 +159,8 @@ void TripleIntBinding::registerBinding(lua_State* L)
         TripleIntBinding::getMetatableName(), 
         meta, 
         methods, 
-        genericPropertyIndex, 
-        genericPropertyNewIndex
+        TripleIntBinding::index, 
+        TripleIntBinding::newindex
     );
 
     luaL_getmetatable(L, TripleIntBinding::getMetatableName());

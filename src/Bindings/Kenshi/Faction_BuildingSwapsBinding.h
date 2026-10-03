@@ -20,5 +20,6 @@ public:
 
     static int hasReplacement(lua_State* L);
     static int getReplacement(lua_State* L);
+    static int operator_assign(lua_State* L);
 };
 }

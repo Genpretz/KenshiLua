@@ -228,15 +228,75 @@ int TimeOfDayBinding::getTotalTimeString(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 17: bool operator>(...) - operator
-  line 18: bool operator>=(...) - operator
-  line 19: bool operator<(...) - operator
-  line 20: bool operator<=(...) - operator
-  line 21: bool operator==(...) - operator
-  line 22: const TimeOfDay& operator=(...) - operator
-*/
+int TimeOfDayBinding::operator_gt(lua_State* L)
+{
+    TimeOfDay* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "TimeOfDay is nil");
+
+    TimeOfDay* b = getInstance(L, 2);
+    if (!b) return luaL_error(L, "Argument 2 to operator_gt must be TimeOfDay");
+
+    lua_pushboolean(L, (*a > *b) ? 1 : 0);
+    return 1;
+}
+
+int TimeOfDayBinding::operator_ge(lua_State* L)
+{
+    TimeOfDay* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "TimeOfDay is nil");
+
+    TimeOfDay* b = getInstance(L, 2);
+    if (!b) return luaL_error(L, "Argument 2 to operator_ge must be TimeOfDay");
+
+    lua_pushboolean(L, (*a >= *b) ? 1 : 0);
+    return 1;
+}
+
+int TimeOfDayBinding::operator_lt(lua_State* L)
+{
+    TimeOfDay* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "TimeOfDay is nil");
+
+    TimeOfDay* b = getInstance(L, 2);
+    if (!b) return luaL_error(L, "Argument 2 to operator_lt must be TimeOfDay");
+
+    lua_pushboolean(L, (*a < *b) ? 1 : 0);
+    return 1;
+}
+
+int TimeOfDayBinding::operator_le(lua_State* L)
+{
+    TimeOfDay* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "TimeOfDay is nil");
+
+    TimeOfDay* b = getInstance(L, 2);
+    if (!b) return luaL_error(L, "Argument 2 to operator_le must be TimeOfDay");
+
+    lua_pushboolean(L, (*a <= *b) ? 1 : 0);
+    return 1;
+}
+
+int TimeOfDayBinding::operator_eq(lua_State* L)
+{
+    TimeOfDay* a = testObject<TimeOfDay>(L, 1, TimeOfDayBinding::getMetatableName());
+    TimeOfDay* b = testObject<TimeOfDay>(L, 2, TimeOfDayBinding::getMetatableName());
+
+    lua_pushboolean(L, (a && b && (*a == *b)) ? 1 : 0);
+    return 1;
+}
+
+int TimeOfDayBinding::operator_assign(lua_State* L)
+{
+    TimeOfDay* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TimeOfDay is nil");
+
+    TimeOfDay* other = getInstance(L, 2);
+    if (!other) return luaL_error(L, "Argument 2 to operator_assign must be TimeOfDay");
+
+    instance->operator=(*other);
+    lua_pushvalue(L, 1);
+    return 1;
+}
 
 int TimeOfDayBinding::gc(lua_State* L)
 {
@@ -253,32 +313,41 @@ int TimeOfDayBinding::tostring(lua_State* L)
 void TimeOfDayBinding::registerBinding(lua_State* L)
 {
     static const luaL_Reg meta[] = {
+        { "__eq",       TimeOfDayBinding::operator_eq },
+        { "__lt",       TimeOfDayBinding::operator_lt },
+        { "__le",       TimeOfDayBinding::operator_le },
         { "__gc",       TimeOfDayBinding::gc },
         { "__tostring", TimeOfDayBinding::tostring },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
-        { "setNull", TimeOfDayBinding::setNull },
-        { "isUnset", TimeOfDayBinding::isUnset },
-        { "setTime", TimeOfDayBinding::setTime },
-        { "addHours", TimeOfDayBinding::addHours },
-        { "addMinutes", TimeOfDayBinding::addMinutes },
-        { "getTotalHours", TimeOfDayBinding::getTotalHours },
-        { "getTotalMinutes", TimeOfDayBinding::getTotalMinutes },
-        { "getTotalSeconds", TimeOfDayBinding::getTotalSeconds },
-        { "getRealLifeSeconds", TimeOfDayBinding::getRealLifeSeconds },
-        { "getRealLifeSecondsPassed", TimeOfDayBinding::getRealLifeSecondsPassed },
-        { "getTotalDays", TimeOfDayBinding::getTotalDays },
-        { "stampTime", TimeOfDayBinding::stampTime },
-        { "getHoursPassed", TimeOfDayBinding::getHoursPassed },
-        { "getMinutesPassed", TimeOfDayBinding::getMinutesPassed },
-        { "getSecondsPassed", TimeOfDayBinding::getSecondsPassed },
-        { "timeOfDayHasPassed", TimeOfDayBinding::timeOfDayHasPassed },
-        { "timePassed", TimeOfDayBinding::timePassed },
-        { "getTimePassedString", TimeOfDayBinding::getTimePassedString },
-        { "getTimeRemainingString", TimeOfDayBinding::getTimeRemainingString },
-        { "getTotalTimeString", TimeOfDayBinding::getTotalTimeString },
+        { "setNull",                 TimeOfDayBinding::setNull },
+        { "isUnset",                 TimeOfDayBinding::isUnset },
+        { "setTime",                 TimeOfDayBinding::setTime },
+        { "addHours",                TimeOfDayBinding::addHours },
+        { "addMinutes",              TimeOfDayBinding::addMinutes },
+        { "getTotalHours",           TimeOfDayBinding::getTotalHours },
+        { "getTotalMinutes",         TimeOfDayBinding::getTotalMinutes },
+        { "getTotalSeconds",         TimeOfDayBinding::getTotalSeconds },
+        { "getRealLifeSeconds",      TimeOfDayBinding::getRealLifeSeconds },
+        { "getRealLifeSecondsPassed",TimeOfDayBinding::getRealLifeSecondsPassed },
+        { "getTotalDays",            TimeOfDayBinding::getTotalDays },
+        { "stampTime",               TimeOfDayBinding::stampTime },
+        { "getHoursPassed",          TimeOfDayBinding::getHoursPassed },
+        { "getMinutesPassed",        TimeOfDayBinding::getMinutesPassed },
+        { "getSecondsPassed",        TimeOfDayBinding::getSecondsPassed },
+        { "timeOfDayHasPassed",      TimeOfDayBinding::timeOfDayHasPassed },
+        { "timePassed",              TimeOfDayBinding::timePassed },
+        { "getTimePassedString",     TimeOfDayBinding::getTimePassedString },
+        { "getTimeRemainingString",  TimeOfDayBinding::getTimeRemainingString },
+        { "getTotalTimeString",      TimeOfDayBinding::getTotalTimeString },
+        { "operator_gt",             TimeOfDayBinding::operator_gt },
+        { "operator_ge",             TimeOfDayBinding::operator_ge },
+        { "operator_lt",             TimeOfDayBinding::operator_lt },
+        { "operator_le",             TimeOfDayBinding::operator_le },
+        { "operator_eq",             TimeOfDayBinding::operator_eq },
+        { "operator_assign",         TimeOfDayBinding::operator_assign },
         { 0, 0 }
     };
 

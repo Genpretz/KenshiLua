@@ -13,10 +13,18 @@ static NxBox* getInstance(lua_State* L, int idx)
 
 // --- Getters for NxBox ---
 // --- Setters for NxBox ---
-/*
-Skipped methods needing manual binding:
-  line 496: NxBox& operator=(...) - operator
-*/
+int NxBoxBinding::operator_assign(lua_State* L)
+{
+    NxBox* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NxBox is nil");
+
+    NxBox* other = checkObject<NxBox>(L, 2, NxBoxBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be NxBox");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -46,6 +54,7 @@ void NxBoxBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", NxBoxBinding::operator_assign },
         { 0, 0 }
     };
 

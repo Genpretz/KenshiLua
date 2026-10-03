@@ -61,11 +61,18 @@ static int StringPair_set_val1(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 24: const StringPair& operator=(...) - operator
-  line 25: const StringPair& _NV_operator_assign(...) - reference return type
-*/
+int StringPairBinding::operator_assign(lua_State* L)
+{
+    StringPair* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "StringPair is nil");
+
+    StringPair* other = checkObject<StringPair>(L, 2, StringPairBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be StringPair");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 int StringPairBinding::gc(lua_State* L)
 {
@@ -88,6 +95,7 @@ void StringPairBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", StringPairBinding::operator_assign },
         { 0, 0 }
     };
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "kenshi\havok.h"
+#include "kenshi/Havok.h"
 #include "hkBoolBinding.h"
 #include "Lua/BindingHelpers.h"
 
@@ -29,12 +29,6 @@ static int hkBool_set_m_bool(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 143: operator bool(...) - unsupported return type
-  line 144: hkBool operator==(...) - operator
-  line 145: hkBool operator!=(...) - operator
-*/
 int hkBoolBinding::eq(lua_State* L)
 {
     hkBool* a = getInstance(L, 1);
@@ -42,7 +36,7 @@ int hkBoolBinding::eq(lua_State* L)
     if (lua_isboolean(L, 2))
     {
         bool b = lua_toboolean(L, 2) != 0;
-        lua_pushboolean(L, a->operator==(b) ? 1 : 0);
+        lua_pushboolean(L, a->operator==(b).operator bool() ? 1 : 0);
         return 1;
     }
     hkBool* b = checkObject<hkBool>(L, 2, hkBoolBinding::getMetatableName());
@@ -51,32 +45,66 @@ int hkBoolBinding::eq(lua_State* L)
     return 1;
 }
 
-int hkBoolBinding::isValid(lua_State* L)
+int hkBoolBinding::operator_eq(lua_State* L)
 {
+    if (lua_gettop(L) != 2)
+        return luaL_error(L, "hkBool:operator_eq() expects exactly 1 argument (value)");
     hkBool* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hkBool is nil");
 
+    bool val = false;
+    if (lua_isboolean(L, 2))
+    {
+        val = lua_toboolean(L, 2) != 0;
+    }
+    else if (hkBool* other = testObject<hkBool>(L, 2, hkBoolBinding::getMetatableName()))
+    {
+        val = other->operator bool();
+    }
+    else
+    {
+        return luaL_error(L, "Argument 1 to hkBool:operator_eq() must be a boolean or hkBool");
+    }
+
+    hkBool result = instance->operator==(val);
+    lua_pushboolean(L, result.operator bool() ? 1 : 0);
+    return 1;
+}
+
+int hkBoolBinding::operator_ne(lua_State* L)
+{
+    if (lua_gettop(L) != 2)
+        return luaL_error(L, "hkBool:operator_ne() expects exactly 1 argument (value)");
+    hkBool* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkBool is nil");
+
+    bool val = false;
+    if (lua_isboolean(L, 2))
+    {
+        val = lua_toboolean(L, 2) != 0;
+    }
+    else if (hkBool* other = testObject<hkBool>(L, 2, hkBoolBinding::getMetatableName()))
+    {
+        val = other->operator bool();
+    }
+    else
+    {
+        return luaL_error(L, "Argument 1 to hkBool:operator_ne() must be a boolean or hkBool");
+    }
+
+    hkBool result = instance->operator!=(val);
+    lua_pushboolean(L, result.operator bool() ? 1 : 0);
+    return 1;
+}
+
+int hkBoolBinding::operator_bool(lua_State* L)
+{
+    if (lua_gettop(L) != 1)
+        return luaL_error(L, "hkBool:operator_bool() expects only self (no arguments)");
+    hkBool* instance = getInstance(L, 1);
     bool result = instance->operator bool();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
-}
-
-int hkBoolBinding::get(lua_State* L)
-{
-    hkBool* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "hkBool is nil");
-
-    lua_pushboolean(L, instance->operator bool() ? 1 : 0);
-    return 1;
-}
-
-int hkBoolBinding::set(lua_State* L)
-{
-    hkBool* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "hkBool is nil");
-
-    instance->m_bool = lua_toboolean(L, 2) ? 1 : 0;
-    return 0;
 }
 
 int hkBoolBinding::gc(lua_State* L)
@@ -101,9 +129,9 @@ void hkBoolBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
-        { "isValid", hkBoolBinding::isValid },
-        { "get",     hkBoolBinding::get },
-        { "set",     hkBoolBinding::set },
+        { "operator_bool", hkBoolBinding::operator_bool },
+        { "operator_eq",   hkBoolBinding::operator_eq },
+        { "operator_ne",   hkBoolBinding::operator_ne },
         { 0, 0 }
     };
 

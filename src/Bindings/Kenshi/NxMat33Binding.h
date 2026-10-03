@@ -33,7 +33,10 @@ public:
     static int multiply(lua_State* L);
     static int get(lua_State* L);
     static int set(lua_State* L);
-    static int create(lua_State* L);
+    static int constructor(lua_State* L);
     static int lua_mul(lua_State* L);
+    static int operator_assign(lua_State* L);
+    static int operator_mul_assign(lua_State* L);
+    static int operator_call(lua_State* L);
 };
 }

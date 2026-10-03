@@ -32,6 +32,6 @@ public:
     static int getInstanceID(lua_State* L);
     // Commented out as this method is not exported by kenshilib:
     // static int getAllStates(lua_State* L);
-    static int isValid(lua_State* L);
+    static int operator_bool(lua_State* L);
 };
 }

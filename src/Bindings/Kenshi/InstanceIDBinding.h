@@ -18,6 +18,8 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int operator_eq(lua_State* L);
+    static int operator_assign(lua_State* L);
     static int assign(lua_State* L);
     static int clear(lua_State* L);
     static int needsSaving(lua_State* L);

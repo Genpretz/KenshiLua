@@ -20,5 +20,6 @@ public:
 
     static int set(lua_State* L);
     static int updateText(lua_State* L);
+    static int operator_assign(lua_State* L);
 };
 }

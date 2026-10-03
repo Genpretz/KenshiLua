@@ -33,5 +33,6 @@ public:
     static int updateBox(lua_State* L);
     static int _NV_updateBox(lua_State* L);
     static int getGroundHeight(lua_State* L);
+    static int operator_assign(lua_State* L);
 };
 }

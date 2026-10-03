@@ -71,6 +71,10 @@ public:
     static int notEqualZero(lua_State* L);
     static int isOk3(lua_State* L);
     static int isOk4(lua_State* L);
-    static int create(lua_State* L);
+    static int constructor(lua_State* L);
+    static int operator_new(lua_State* L);
+    static int operator_delete(lua_State* L);
+    static int operator_assign(lua_State* L);
+    static int operator_call(lua_State* L);
 };
 }

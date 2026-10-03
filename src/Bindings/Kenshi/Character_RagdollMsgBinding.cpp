@@ -71,6 +71,7 @@ void Character_RagdollMsgBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
+        { "operator_eq", operator_eq },
         { 0, 0 }
     };
 

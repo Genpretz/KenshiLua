@@ -95,9 +95,21 @@ static int ObjectInstance_set_modified(lua_State* L)
     return 0;
 }
 
+int ObjectInstanceBinding::operator_assign(lua_State* L)
+{
+    GameData::ObjectInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ObjectInstance is nil");
+
+    GameData::ObjectInstance* other = checkObject<GameData::ObjectInstance>(L, 2, ObjectInstanceBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be ObjectInstance");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 149: const GameData::ObjectInstance& operator=(...) - operator
   line 150: void updateInstancedObjectAttachedDatas(...) - unsupported arg type
 */
 
@@ -127,6 +139,7 @@ void ObjectInstanceBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", ObjectInstanceBinding::operator_assign },
         { 0, 0 }
     };
 

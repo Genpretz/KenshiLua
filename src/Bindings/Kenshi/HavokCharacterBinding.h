@@ -46,5 +46,7 @@ public:
     static int getCollidedCharacter(lua_State* L);
     static int setHandle(lua_State* L);
     static int calculateFuturePosition(lua_State* L);
+    static int operator_new(lua_State* L);
+    static int operator_delete(lua_State* L);
 };
 }

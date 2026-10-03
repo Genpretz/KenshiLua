@@ -31,11 +31,30 @@ static int BuildingGroup_set_name(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 20: bool operator<(...) - operator
-  line 27: BuildModeWindow::BuildingGroup& operator=(...) - operator
-*/
+int BuildingGroupBinding::operator_lt(lua_State* L)
+{
+    BuildingGroup* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "Left operand must be BuildingGroup");
+
+    BuildingGroup* b = checkObject<BuildingGroup>(L, 2, BuildingGroupBinding::getMetatableName());
+    if (!b) return luaL_error(L, "Right operand must be BuildingGroup");
+
+    lua_pushboolean(L, (*a < *b) ? 1 : 0);
+    return 1;
+}
+
+int BuildingGroupBinding::operator_assign(lua_State* L)
+{
+    BuildingGroup* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingGroup is nil");
+
+    BuildingGroup* other = checkObject<BuildingGroup>(L, 2, BuildingGroupBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be BuildingGroup");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -59,10 +78,13 @@ void BuildingGroupBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       BuildingGroupBinding::gc },
         { "__tostring", BuildingGroupBinding::tostring },
+        { "__lt",       BuildingGroupBinding::operator_lt },
         { 0, 0 }
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_lt", BuildingGroupBinding::operator_lt },
+        { "operator_assign", BuildingGroupBinding::operator_assign },
         { 0, 0 }
     };
 

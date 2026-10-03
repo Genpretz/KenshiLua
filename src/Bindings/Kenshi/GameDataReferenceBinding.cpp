@@ -72,10 +72,18 @@ int GameDataReferenceBinding::getPtr(lua_State* L)
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 203: GameDataReference& operator=(...) - operator
-*/
+int GameDataReferenceBinding::operator_assign(lua_State* L)
+{
+    GameDataReference* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataReference is nil");
+
+    GameDataReference* other = checkObject<GameDataReference>(L, 2, GameDataReferenceBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be GameDataReference");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 int GameDataReferenceBinding::gc(lua_State* L)
 {
@@ -98,6 +106,7 @@ void GameDataReferenceBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", GameDataReferenceBinding::operator_assign },
         { "getPtr", GameDataReferenceBinding::getPtr },
         { 0, 0 }
     };

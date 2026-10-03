@@ -105,10 +105,18 @@ int InventoryTradeDataBinding::isValid(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 115: InventoryGUI::InventoryTradeData& operator=(...) - operator
-*/
+int InventoryTradeDataBinding::operator_assign(lua_State* L)
+{
+    InventoryTradeData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "InventoryTradeData is nil");
+
+    InventoryTradeData* other = checkObject<InventoryTradeData>(L, 2, InventoryTradeDataBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be InventoryTradeData");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 int InventoryTradeDataBinding::gc(lua_State* L)
 {
@@ -131,6 +139,7 @@ void InventoryTradeDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", InventoryTradeDataBinding::operator_assign },
         { "isValid", InventoryTradeDataBinding::isValid },
         { 0, 0 }
     };

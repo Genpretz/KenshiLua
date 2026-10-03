@@ -22,6 +22,12 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
     static int eq(lua_State* L);
+    
+    static int operator_eq(lua_State* L);
+    static int operator_ne(lua_State* L);
+    static int operator_lt(lua_State* L);
+    static int operator_assign(lua_State* L);
+    static int operator_bool(lua_State* L);
 
     static int toString(lua_State* L);
     static int fromString(lua_State* L);

@@ -76,10 +76,18 @@ int BuildingSwapsBinding::getReplacement(lua_State* L)
         GameDataBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 47: Faction::BuildingSwaps& operator=(...) - operator
-*/
+int BuildingSwapsBinding::operator_assign(lua_State* L)
+{
+    BuildingSwaps* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "BuildingSwaps is nil");
+
+    BuildingSwaps* other = checkObject<BuildingSwaps>(L, 2, BuildingSwapsBinding::getMetatableName());
+    if (!other) return luaL_error(L, "Argument 1 to operator_assign must be BuildingSwaps");
+
+    *instance = *other;
+    lua_settop(L, 1);
+    return 1;
+}
 
 int BuildingSwapsBinding::gc(lua_State* L)
 {
@@ -102,6 +110,7 @@ void BuildingSwapsBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_assign", BuildingSwapsBinding::operator_assign },
         { "hasReplacement", BuildingSwapsBinding::hasReplacement },
         { "getReplacement", BuildingSwapsBinding::getReplacement },
         { 0, 0 }

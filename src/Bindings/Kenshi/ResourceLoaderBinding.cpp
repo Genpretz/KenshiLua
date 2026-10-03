@@ -225,8 +225,11 @@ Skipped properties needing manual binding:
   line 149: abortedMeshLoaders (ogre_unordered_map<unsigned __int64, ResourceLoadRequestMesh*>::type) - unsupported type
   line 150: loadedMeshesList (std::list<ResourceLoadRequestMesh*, Ogre::STLAllocator<ResourceLoadRequestMesh*, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 151: loadingMeshQueue (std::list<ResourceLoadRequestMesh*, Ogre::STLAllocator<ResourceLoadRequestMesh*, Ogre::GeneralAllocPolicy > >) - unsupported type
+  line 152: loadingMeshQueueMutex (boost::shared_mutex) - unsupported setter type (read-only)
   line 153: activeTextureLoaders (boost::unordered::unordered_map<TextureLoadData*, Ogre::FastArray<ResourceLoadRequestTexture*>, boost::hash<TextureLoadData*>, std::equal_to<TextureLoadData*>, Ogre::STLAllocator<std::pair<TextureLoadData*const, Ogre::FastArray<ResourceLoadRequestTexture*> >, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 154: texturesToLoad (ogre_unordered_set<TextureLoadData*>::type) - unsupported type
+  line 155: texturesLoadingMutex (boost::shared_mutex) - unsupported setter type (read-only)
+  line 156: texturesLoadedMutex (boost::shared_mutex) - unsupported setter type (read-only)
   line 159: manualTexturesLoaded (boost::unordered::unordered_map<Ogre::SharedPtr<Ogre::Texture>, float, boost::hash<Ogre::SharedPtr<Ogre::Texture> >, std::equal_to<Ogre::SharedPtr<Ogre::Texture> >, Ogre::STLAllocator<std::pair<Ogre::SharedPtr<Ogre::Texture> const, float>, Ogre::GeneralAllocPolicy > >) - unsupported type
   line 160: textureUnitsLoading (ogre_unordered_set<Ogre::TextureUnitState*>::type) - unsupported type
 */

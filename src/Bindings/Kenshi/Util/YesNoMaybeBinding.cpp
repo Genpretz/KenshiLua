@@ -39,13 +39,23 @@ int YesNoMaybeBinding::toInt(lua_State* L)
     return 1;
 }
 
-int YesNoMaybeBinding::isValid(lua_State* L)
+int YesNoMaybeBinding::operator_bool(lua_State* L)
 {
+    if (lua_gettop(L) != 1)
+        return luaL_error(L, "YesNoMaybe:operator_bool() expects only self (no arguments)");
     YesNoMaybe* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "YesNoMaybe is nil");
-
     bool result = instance->operator bool();
     lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int YesNoMaybeBinding::operator_ynm(lua_State* L)
+{
+    if (lua_gettop(L) != 1)
+        return luaL_error(L, "YesNoMaybe:operator_ynm() expects only self (no arguments)");
+    YesNoMaybe* instance = getInstance(L, 1);
+    YesNoMaybe::ynm result = instance->operator YesNoMaybe::ynm();
+    lua_pushinteger(L, (lua_Integer)result);
     return 1;
 }
 
@@ -69,12 +79,35 @@ int YesNoMaybeBinding::eq(lua_State* L)
     return 1;
 }
 
+int YesNoMaybeBinding::ne(lua_State* L)
+{
+    YesNoMaybe* a = getInstance(L, 1);
+    if (!a) return luaL_error(L, "YesNoMaybe is nil");
+
+    if (YesNoMaybe* b = testObject<YesNoMaybe>(L, 2, YesNoMaybeBinding::getMetatableName()))
+    {
+        lua_pushboolean(L, (*a != *b) ? 1 : 0);
+        return 1;
+    }
+    else if (lua_isboolean(L, 2))
+    {
+        bool b = lua_toboolean(L, 2) != 0;
+        lua_pushboolean(L, (*a != b) ? 1 : 0);
+        return 1;
+    }
+    else if (lua_isnumber(L, 2))
+    {
+        YesNoMaybe::ynm val = (YesNoMaybe::ynm)luaL_checkinteger(L, 2);
+        lua_pushboolean(L, (*a != val) ? 1 : 0);
+        return 1;
+    }
+    lua_pushboolean(L, 1);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 24: operator YesNoMaybe::ynm(...) - unsupported return type
-  line 28: bool operator!=(...) - operator
-  line 29: bool operator!=(...) - operator
-  line 30: bool operator!=(...) - operator
 */
 
 int YesNoMaybeBinding::gc(lua_State* L)
@@ -99,8 +132,11 @@ void YesNoMaybeBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "operator_eq", YesNoMaybeBinding::eq },
+        { "operator_ne", YesNoMaybeBinding::ne },
         { "toInt", YesNoMaybeBinding::toInt },
-        { "isValid", YesNoMaybeBinding::isValid },
+        { "operator_bool", YesNoMaybeBinding::operator_bool },
+        { "operator_ynm", YesNoMaybeBinding::operator_ynm },
         { 0, 0 }
     };
 
