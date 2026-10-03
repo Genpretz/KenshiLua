@@ -14,6 +14,7 @@
 #include "Bindings/MyGUI/MyGUIBinding.h"
 #include "DialogueScriptBridge.h"
 #include "Benchmark.h"
+#include <kenshi/Kenshi.h>
 #include <mygui/MyGUI.h>
 
 #include "FileWatcher.h"
@@ -48,6 +49,7 @@ bool Plugin::initialize(void* hModule)
     setLoggerDllModule(m_dllModule);
     initLogger();
     logToFile("Initializing KenshiLua...");
+    logToFile("Kenshi version: " + KenshiLib::GetKenshiVersion().ToString());
 
     Config::get().load(m_dllModule);
     logToFilef("Config loaded");
