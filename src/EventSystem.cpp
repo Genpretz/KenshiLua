@@ -51,6 +51,14 @@ namespace KenshiLua
 
     const char* EventSystem::resolveCanonicalEventName(const char* eventName, const char* source)
     {
+        if (!eventName || !eventName[0])
+            return "";
+
+        // Fast path: if this is already a known canonical event name, return directly without LegacyCompat
+        if (IsKnownEvent(eventName))
+            return eventName;
+
+        // Fallback: check LegacyCompat for deprecated aliases
         return LegacyCompat::ResolveEventName(eventName, source);
     }
 

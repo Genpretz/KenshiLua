@@ -280,6 +280,118 @@ namespace KenshiLua
             return rawEventName;
         }
 
+        static const LegacyEventAlias g_legacyWidgetEventAliases[] = {
+            { "ComboAccept", "eventComboAccept" },
+            { "ComboChangePosition", "eventComboChangePosition" },
+            { "EditTextChange", "eventEditTextChange" },
+            { "KeyButtonPressed", "eventKeyButtonPressed" },
+            { "KeyButtonReleased", "eventKeyButtonReleased" },
+            { "ListChangePosition", "eventListChangePosition" },
+            { "ListSelectAccept", "eventListSelectAccept" },
+            { "MenuAccept", "eventMenuAccept" },
+            { "MenuCtrlAccept", "eventMenuAccept" },
+            { "MouseButtonClick", "eventMouseButtonClick" },
+            { "MouseButtonPressed", "eventMouseButtonPressed" },
+            { "MouseButtonReleased", "eventMouseButtonReleased" },
+            { "MouseLostFocus", "eventMouseLostFocus" },
+            { "MouseMove", "eventMouseMove" },
+            { "MouseSetFocus", "eventMouseSetFocus" },
+            { "MouseWheel", "eventMouseWheel" },
+            { "OnClick", "eventMouseButtonClick" },
+            { "OnComboAccept", "eventComboAccept" },
+            { "OnComboChangePosition", "eventComboChangePosition" },
+            { "OnKeyButtonPressed", "eventKeyButtonPressed" },
+            { "OnKeyButtonReleased", "eventKeyButtonReleased" },
+            { "OnListChangePosition", "eventListChangePosition" },
+            { "OnListSelectAccept", "eventListSelectAccept" },
+            { "OnMenuAccept", "eventMenuAccept" },
+            { "OnMouseButtonPressed", "eventMouseButtonPressed" },
+            { "OnMouseButtonReleased", "eventMouseButtonReleased" },
+            { "OnMouseLostFocus", "eventMouseLostFocus" },
+            { "OnMouseMove", "eventMouseMove" },
+            { "OnMouseSetFocus", "eventMouseSetFocus" },
+            { "OnMouseWheel", "eventMouseWheel" },
+            { "OnScrollChangePosition", "eventScrollChangePosition" },
+            { "OnTabChangeSelect", "eventTabChangeSelect" },
+            { "OnTextChanged", "eventEditTextChange" },
+            { "OnWindowButtonPressed", "eventWindowButtonPressed" },
+            { "OnWindowChangeCoord", "eventWindowChangeCoord" },
+            { "ScrollChangePosition", "eventScrollChangePosition" },
+            { "TabChangeSelect", "eventTabChangeSelect" },
+            { "WindowButtonPressed", "eventWindowButtonPressed" },
+            { "WindowChangeCoord", "eventWindowChangeCoord" },
+            { "change", "eventEditTextChange" },
+            { "click", "eventMouseButtonClick" },
+            { "comboAccept", "eventComboAccept" },
+            { "comboChangePosition", "eventComboChangePosition" },
+            { "editTextChange", "eventEditTextChange" },
+            { "keyButtonPressed", "eventKeyButtonPressed" },
+            { "keyButtonReleased", "eventKeyButtonReleased" },
+            { "keyDown", "eventKeyButtonPressed" },
+            { "keyUp", "eventKeyButtonReleased" },
+            { "listChangePosition", "eventListChangePosition" },
+            { "listSelectAccept", "eventListSelectAccept" },
+            { "menuAccept", "eventMenuAccept" },
+            { "mouseButtonClick", "eventMouseButtonClick" },
+            { "mouseButtonPressed", "eventMouseButtonPressed" },
+            { "mouseButtonReleased", "eventMouseButtonReleased" },
+            { "mouseDown", "eventMouseButtonPressed" },
+            { "mouseLostFocus", "eventMouseLostFocus" },
+            { "mouseMove", "eventMouseMove" },
+            { "mouseOut", "eventMouseLostFocus" },
+            { "mouseOver", "eventMouseSetFocus" },
+            { "mouseSetFocus", "eventMouseSetFocus" },
+            { "mouseUp", "eventMouseButtonReleased" },
+            { "mouseWheel", "eventMouseWheel" },
+            { "onClick", "eventMouseButtonClick" },
+            { "onComboAccept", "eventComboAccept" },
+            { "onComboChangePosition", "eventComboChangePosition" },
+            { "onKeyButtonPressed", "eventKeyButtonPressed" },
+            { "onKeyButtonReleased", "eventKeyButtonReleased" },
+            { "onListChangePosition", "eventListChangePosition" },
+            { "onListSelectAccept", "eventListSelectAccept" },
+            { "onMenuAccept", "eventMenuAccept" },
+            { "onMouseButtonPressed", "eventMouseButtonPressed" },
+            { "onMouseButtonReleased", "eventMouseButtonReleased" },
+            { "onMouseLostFocus", "eventMouseLostFocus" },
+            { "onMouseMove", "eventMouseMove" },
+            { "onMouseSetFocus", "eventMouseSetFocus" },
+            { "onMouseWheel", "eventMouseWheel" },
+            { "onScrollChangePosition", "eventScrollChangePosition" },
+            { "onTabChangeSelect", "eventTabChangeSelect" },
+            { "onTextChanged", "eventEditTextChange" },
+            { "onWindowButtonPressed", "eventWindowButtonPressed" },
+            { "onWindowChangeCoord", "eventWindowChangeCoord" },
+            { "scrollChangePosition", "eventScrollChangePosition" },
+            { "tabChangeSelect", "eventTabChangeSelect" },
+            { "windowButtonPressed", "eventWindowButtonPressed" },
+            { "windowChangeCoord", "eventWindowChangeCoord" },
+        };
+        static const size_t g_legacyWidgetEventAliasesCount = sizeof(g_legacyWidgetEventAliases) / sizeof(g_legacyWidgetEventAliases[0]);
+
+        const char* ResolveWidgetEventName(const char* rawEventName, const char* source)
+        {
+            if (!rawEventName || !rawEventName[0])
+                return "";
+
+            const LegacyEventAlias* first = g_legacyWidgetEventAliases;
+            const LegacyEventAlias* last = g_legacyWidgetEventAliases + g_legacyWidgetEventAliasesCount;
+            const LegacyEventAlias* it = std::lower_bound(first, last, rawEventName, LegacyAliasComparator());
+
+            if (it != last && strcmp(it->legacy, rawEventName) == 0)
+            {
+                if (strcmp(it->legacy, it->canonical) != 0)
+                {
+                    std::string src = (source && source[0]) ? source : "unknown";
+                    Logger::get().log(LogLevel_Warn, std::string("[MyGUI] Script '") + src +
+                        "' registered legacy widget event '" + it->legacy + "'; please update to '" + it->canonical + "'.");
+                }
+                return it->canonical;
+            }
+
+            return rawEventName;
+        }
+
         namespace
         {
             // ========================================================================

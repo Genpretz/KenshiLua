@@ -60,6 +60,13 @@ For KenshiLib game engine class bindings, see the [KenshiLua Bindings Reference]
   - [`SkinManager`](#skinmanager)
 - [Event Callbacks Reference](#event-callbacks-reference)
 - [Global Enums](#global-enums)
+  - [`MyGUI.Align`](#myguialign)
+  - [`MyGUI.FlowDirection`](#myguiflowdirection)
+  - [`MyGUI.KeyCode`](#myguikeycode)
+  - [`MyGUI.MenuItemType`](#myguimenuitemtype)
+  - [`MyGUI.MouseButton`](#myguimousebutton)
+  - [`MyGUI.ResizingPolicy`](#myguiresizingpolicy)
+  - [`MyGUI.WidgetStyle`](#myguiwidgetstyle)
 
 ---
 
@@ -1084,7 +1091,7 @@ local win = MyGUI.createWindow("Kenshi_WindowCX", 100, 100, 300, 200, "ExampleWi
 win:upLayerItem()
 local btn = win:createWidget("Button", "Kenshi_Button1", 20, 20, 120, 30, 0, "MyButton")
 btn:setCaption("Click Me")
-local callbackId = btn:on("MouseButtonClick", function(sender)
+local callbackId = btn:on("eventMouseButtonClick", function(sender)
     print("Button clicked:", sender.caption)
 end)
 
@@ -1093,26 +1100,107 @@ btn:off(callbackId)
 ```
 
 ### Supported Event Types
-| Event Name | Accepted String Aliases | Target Widgets | Handler Signature | Description |
-|---|---|---|---|---|
-| **`OnClick`** | `"MouseButtonClick"`, `"OnClick"`, `"click"` | `Button, MenuItem, Widget` | `function(sender: Widget)` | Triggered when the user clicks on the widget with the mouse. |
-| **`OnTextChanged`** | `"EditTextChange"`, `"editTextChange"`, `"change"` | `EditBox, ComboBox` | `function(sender: EditBox)` | Triggered when the text content of an edit box is modified by the user or programmatically. |
-| **`OnWindowButtonPressed`** | `"WindowButtonPressed"`, `"windowButtonPressed"` | `Window` | `function(sender: Window, buttonName: string)` | Triggered when a window control button (e.g. close, minimize, maximize) is clicked. |
-| **`OnMouseButtonPressed`** | `"MouseButtonPressed"`, `"mouseButtonPressed"`, `"mouseDown"` | `Widget` | `function(sender: Widget, left: integer, top: integer, button: MouseButton)` | Triggered when a mouse button is pressed down over the widget. |
-| **`OnMouseButtonReleased`** | `"MouseButtonReleased"`, `"mouseButtonReleased"`, `"mouseUp"` | `Widget` | `function(sender: Widget, left: integer, top: integer, button: MouseButton)` | Triggered when a mouse button is released over the widget. |
-| **`OnMouseSetFocus`** | `"MouseSetFocus"`, `"mouseSetFocus"`, `"mouseOver"` | `Widget` | `function(sender: Widget, oldWidget: Widget)` | Triggered when the mouse cursor enters the bounds of the widget. |
-| **`OnMouseLostFocus`** | `"MouseLostFocus"`, `"mouseLostFocus"`, `"mouseOut"` | `Widget` | `function(sender: Widget, newWidget: Widget)` | Triggered when the mouse cursor leaves the bounds of the widget. |
-| **`OnMouseMove`** | `"MouseMove"`, `"mouseMove"` | `Widget` | `function(sender: Widget, left: integer, top: integer)` | Triggered continuously as the mouse moves across the widget surface. |
-| **`OnMouseWheel`** | `"MouseWheel"`, `"mouseWheel"` | `Widget` | `function(sender: Widget, relValue: integer)` | Triggered when the mouse scroll wheel is rotated while hovering over the widget. |
-| **`OnKeyButtonPressed`** | `"KeyButtonPressed"`, `"keyButtonPressed"`, `"keyDown"` | `Widget` | `function(sender: Widget, keyCode: KeyCode, charCode: integer)` | Triggered when a keyboard key is pressed while the widget holds key focus. |
-| **`OnKeyButtonReleased`** | `"KeyButtonReleased"`, `"keyButtonReleased"`, `"keyUp"` | `Widget` | `function(sender: Widget, keyCode: KeyCode)` | Triggered when a keyboard key is released while the widget holds key focus. |
-| **`OnComboAccept`** | `"ComboAccept"`, `"comboAccept"` | `ComboBox` | `function(sender: ComboBox, index: integer)` | Triggered when an item in the combo box drop list is confirmed/accepted. |
-| **`OnComboChangePosition`** | `"ComboChangePosition"`, `"comboChangePosition"` | `ComboBox` | `function(sender: ComboBox, index: integer)` | Triggered when the highlighted selection position changes in the combo box. |
-| **`OnListSelectAccept`** | `"ListSelectAccept"`, `"listSelectAccept"` | `ListBox` | `function(sender: ListBox, index: integer)` | Triggered when an item in the list box is double-clicked or confirmed with Enter. |
-| **`OnListChangePosition`** | `"ListChangePosition"`, `"listChangePosition"` | `ListBox` | `function(sender: ListBox, index: integer)` | Triggered when the selected item index changes in the list box. |
-| **`OnWindowChangeCoord`** | `"WindowChangeCoord"`, `"windowChangeCoord"` | `Window` | `function(sender: Window)` | Triggered when a window is moved or resized by the user. |
-| **`OnScrollChangePosition`** | `"ScrollChangePosition"`, `"scrollChangePosition"` | `ScrollBar` | `function(sender: ScrollBar, position: integer)` | Triggered when the scroll bar slider position changes. |
-| **`OnTabChangeSelect`** | `"TabChangeSelect"`, `"tabChangeSelect"` | `TabControl` | `function(sender: TabControl, index: integer)` | Triggered when the active tab sheet is changed in a tab control. |
-| **`OnMenuAccept`** | `"MenuAccept"`, `"menuAccept"`, `"MenuCtrlAccept"` | `MenuControl, MenuBar, PopupMenu` | `function(sender: MenuControl, item: MenuItem)` | Triggered when an item in a menu bar or popup menu is activated/clicked. |
+| Event Name | Target Widgets | Handler Signature | Description |
+|---|---|---|---|
+| **`eventMouseButtonClick`** | `Button, MenuItem, Widget` | `function(sender: Widget)` | Triggered when the user clicks on the widget with the mouse. |
+| **`eventEditTextChange`** | `EditBox, ComboBox` | `function(sender: EditBox)` | Triggered when the text content of an edit box is modified by the user or programmatically. |
+| **`eventWindowButtonPressed`** | `Window` | `function(sender: Window, buttonName: string)` | Triggered when a window control button (e.g. close, minimize, maximize) is clicked. |
+| **`eventMouseButtonPressed`** | `Widget` | `function(sender: Widget, left: integer, top: integer, button: MouseButton)` | Triggered when a mouse button is pressed down over the widget. |
+| **`eventMouseButtonReleased`** | `Widget` | `function(sender: Widget, left: integer, top: integer, button: MouseButton)` | Triggered when a mouse button is released over the widget. |
+| **`eventMouseSetFocus`** | `Widget` | `function(sender: Widget, oldWidget: Widget)` | Triggered when the mouse cursor enters the bounds of the widget. |
+| **`eventMouseLostFocus`** | `Widget` | `function(sender: Widget, newWidget: Widget)` | Triggered when the mouse cursor leaves the bounds of the widget. |
+| **`eventMouseMove`** | `Widget` | `function(sender: Widget, left: integer, top: integer)` | Triggered continuously as the mouse moves across the widget surface. |
+| **`eventMouseWheel`** | `Widget` | `function(sender: Widget, relValue: integer)` | Triggered when the mouse scroll wheel is rotated while hovering over the widget. |
+| **`eventKeyButtonPressed`** | `Widget` | `function(sender: Widget, keyCode: KeyCode, charCode: integer)` | Triggered when a keyboard key is pressed while the widget holds key focus. |
+| **`eventKeyButtonReleased`** | `Widget` | `function(sender: Widget, keyCode: KeyCode)` | Triggered when a keyboard key is released while the widget holds key focus. |
+| **`eventComboAccept`** | `ComboBox` | `function(sender: ComboBox, index: integer)` | Triggered when an item in the combo box drop list is confirmed/accepted. |
+| **`eventComboChangePosition`** | `ComboBox` | `function(sender: ComboBox, index: integer)` | Triggered when the highlighted selection position changes in the combo box. |
+| **`eventListSelectAccept`** | `ListBox` | `function(sender: ListBox, index: integer)` | Triggered when an item in the list box is double-clicked or confirmed with Enter. |
+| **`eventListChangePosition`** | `ListBox` | `function(sender: ListBox, index: integer)` | Triggered when the selected item index changes in the list box. |
+| **`eventWindowChangeCoord`** | `Window` | `function(sender: Window)` | Triggered when a window is moved or resized by the user. |
+| **`eventScrollChangePosition`** | `ScrollBar` | `function(sender: ScrollBar, position: integer)` | Triggered when the scroll bar slider position changes. |
+| **`eventTabChangeSelect`** | `TabControl` | `function(sender: TabControl, index: integer)` | Triggered when the active tab sheet is changed in a tab control. |
+| **`eventMenuAccept`** | `MenuControl, MenuBar, PopupMenu` | `function(sender: MenuControl, item: MenuItem)` | Triggered when an item in a menu bar or popup menu is activated/clicked. |
 
 ## Global Enums
+
+### MyGUI.Align
+| Enum Field | Underlying Value |
+|---|---|
+| `MyGUI.Align.HCenter` | `MyGUI::Align::HCenter` |
+| `MyGUI.Align.VCenter` | `MyGUI::Align::VCenter` |
+| `MyGUI.Align.Center` | `MyGUI::Align::Center` |
+| `MyGUI.Align.Left` | `MyGUI::Align::Left` |
+| `MyGUI.Align.Right` | `MyGUI::Align::Right` |
+| `MyGUI.Align.HStretch` | `MyGUI::Align::HStretch` |
+| `MyGUI.Align.Top` | `MyGUI::Align::Top` |
+| `MyGUI.Align.Bottom` | `MyGUI::Align::Bottom` |
+| `MyGUI.Align.VStretch` | `MyGUI::Align::VStretch` |
+| `MyGUI.Align.Stretch` | `MyGUI::Align::Stretch` |
+| `MyGUI.Align.Default` | `MyGUI::Align::Default` |
+
+### MyGUI.FlowDirection
+| Enum Field | Underlying Value |
+|---|---|
+| `MyGUI.FlowDirection.LeftToRight` | `MyGUI::FlowDirection::LeftToRight` |
+| `MyGUI.FlowDirection.RightToLeft` | `MyGUI::FlowDirection::RightToLeft` |
+| `MyGUI.FlowDirection.TopToBottom` | `MyGUI::FlowDirection::TopToBottom` |
+| `MyGUI.FlowDirection.BottomToTop` | `MyGUI::FlowDirection::BottomToTop` |
+
+### MyGUI.KeyCode
+| Enum Field | Underlying Value |
+|---|---|
+| `MyGUI.KeyCode.None` | `MyGUI::KeyCode::None` |
+| `MyGUI.KeyCode.Escape` | `MyGUI::KeyCode::Escape` |
+| `MyGUI.KeyCode.Return` | `MyGUI::KeyCode::Return` |
+| `MyGUI.KeyCode.Space` | `MyGUI::KeyCode::Space` |
+| `MyGUI.KeyCode.Tab` | `MyGUI::KeyCode::Tab` |
+| `MyGUI.KeyCode.Backspace` | `MyGUI::KeyCode::Backspace` |
+| `MyGUI.KeyCode.Delete` | `MyGUI::KeyCode::Delete` |
+| `MyGUI.KeyCode.LeftShift` | `MyGUI::KeyCode::LeftShift` |
+| `MyGUI.KeyCode.RightShift` | `MyGUI::KeyCode::RightShift` |
+| `MyGUI.KeyCode.LeftControl` | `MyGUI::KeyCode::LeftControl` |
+| `MyGUI.KeyCode.RightControl` | `MyGUI::KeyCode::RightControl` |
+| `MyGUI.KeyCode.LeftAlt` | `MyGUI::KeyCode::LeftAlt` |
+| `MyGUI.KeyCode.RightAlt` | `MyGUI::KeyCode::RightAlt` |
+| `MyGUI.KeyCode.ArrowUp` | `MyGUI::KeyCode::ArrowUp` |
+| `MyGUI.KeyCode.ArrowDown` | `MyGUI::KeyCode::ArrowDown` |
+| `MyGUI.KeyCode.ArrowLeft` | `MyGUI::KeyCode::ArrowLeft` |
+| `MyGUI.KeyCode.ArrowRight` | `MyGUI::KeyCode::ArrowRight` |
+
+### MyGUI.MenuItemType
+| Enum Field | Underlying Value |
+|---|---|
+| `MyGUI.MenuItemType.Normal` | `MyGUI::MenuItemType::Normal` |
+| `MyGUI.MenuItemType.Popup` | `MyGUI::MenuItemType::Popup` |
+| `MyGUI.MenuItemType.Separator` | `MyGUI::MenuItemType::Separator` |
+
+### MyGUI.MouseButton
+| Enum Field | Underlying Value |
+|---|---|
+| `MyGUI.MouseButton.Left` | `MyGUI::MouseButton::Left` |
+| `MyGUI.MouseButton.Right` | `MyGUI::MouseButton::Right` |
+| `MyGUI.MouseButton.Middle` | `MyGUI::MouseButton::Middle` |
+| `MyGUI.MouseButton.Button0` | `MyGUI::MouseButton::Button0` |
+| `MyGUI.MouseButton.Button1` | `MyGUI::MouseButton::Button1` |
+| `MyGUI.MouseButton.Button2` | `MyGUI::MouseButton::Button2` |
+| `MyGUI.MouseButton.Button3` | `MyGUI::MouseButton::Button3` |
+| `MyGUI.MouseButton.Button4` | `MyGUI::MouseButton::Button4` |
+| `MyGUI.MouseButton.Button5` | `MyGUI::MouseButton::Button5` |
+| `MyGUI.MouseButton.Button6` | `MyGUI::MouseButton::Button6` |
+| `MyGUI.MouseButton.Button7` | `MyGUI::MouseButton::Button7` |
+| `MyGUI.MouseButton.None` | `MyGUI::MouseButton::None` |
+
+### MyGUI.ResizingPolicy
+| Enum Field | Underlying Value |
+|---|---|
+| `MyGUI.ResizingPolicy.Auto` | `MyGUI::ResizingPolicy::Auto` |
+| `MyGUI.ResizingPolicy.Fixed` | `MyGUI::ResizingPolicy::Fixed` |
+| `MyGUI.ResizingPolicy.Fill` | `MyGUI::ResizingPolicy::Fill` |
+
+### MyGUI.WidgetStyle
+| Enum Field | Underlying Value |
+|---|---|
+| `MyGUI.WidgetStyle.Child` | `MyGUI::WidgetStyle::Child` |
+| `MyGUI.WidgetStyle.Overlapped` | `MyGUI::WidgetStyle::Overlapped` |
+| `MyGUI.WidgetStyle.Popup` | `MyGUI::WidgetStyle::Popup` |

@@ -12,6 +12,12 @@ namespace KenshiLua
         // Logs an advisory deprecation warning when a legacy name is resolved.
         const char* ResolveEventName(const char* rawEventName, const char* source = "");
 
+        // Resolves a legacy/alias MyGUI widget event name (e.g. "OnClick", "click", "MouseButtonClick")
+        // to its canonical C++ member delegate ("eventMouseButtonClick").
+        // If the event is already canonical or unrecognized, returns rawEventName unchanged.
+        // Logs an advisory deprecation warning when a legacy name is resolved.
+        const char* ResolveWidgetEventName(const char* rawEventName, const char* source = "");
+
         // Installs temporary enum compatibility for aliases and table paths removed by the
         // literal C++ enum naming migration. Legacy lookups resolve to their canonical value
         // and emit a one-time advisory warning naming the replacement syntax.

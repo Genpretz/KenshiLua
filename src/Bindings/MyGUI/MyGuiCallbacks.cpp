@@ -13,6 +13,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Lua/LuaState.h"
 #include "Logger.h"
+#include "Compatibility/LegacyCompat.h"
 
 namespace KenshiLua
 {
@@ -786,43 +787,43 @@ LuaWidgetCallbackManager::EventType LuaWidgetCallbackManager::parseEventType(con
 {
     if (!eventType) return EventType_Count;
 
-    if (strcmp(eventType, "MouseButtonClick") == 0 || strcmp(eventType, "mouseButtonClick") == 0 || strcmp(eventType, "click") == 0 || strcmp(eventType, "OnClick") == 0 || strcmp(eventType, "onClick") == 0)
+    if (strcmp(eventType, "eventMouseButtonClick") == 0)
         return OnClick;
-    if (strcmp(eventType, "EditTextChange") == 0 || strcmp(eventType, "editTextChange") == 0 || strcmp(eventType, "change") == 0 || strcmp(eventType, "OnTextChanged") == 0 || strcmp(eventType, "onTextChanged") == 0)
+    if (strcmp(eventType, "eventEditTextChange") == 0)
         return OnTextChanged;
-    if (strcmp(eventType, "WindowButtonPressed") == 0 || strcmp(eventType, "windowButtonPressed") == 0 || strcmp(eventType, "OnWindowButtonPressed") == 0 || strcmp(eventType, "onWindowButtonPressed") == 0)
+    if (strcmp(eventType, "eventWindowButtonPressed") == 0)
         return OnWindowButtonPressed;
-    if (strcmp(eventType, "MouseButtonPressed") == 0 || strcmp(eventType, "mouseButtonPressed") == 0 || strcmp(eventType, "mouseDown") == 0 || strcmp(eventType, "OnMouseButtonPressed") == 0 || strcmp(eventType, "onMouseButtonPressed") == 0)
+    if (strcmp(eventType, "eventMouseButtonPressed") == 0)
         return OnMouseButtonPressed;
-    if (strcmp(eventType, "MouseButtonReleased") == 0 || strcmp(eventType, "mouseButtonReleased") == 0 || strcmp(eventType, "mouseUp") == 0 || strcmp(eventType, "OnMouseButtonReleased") == 0 || strcmp(eventType, "onMouseButtonReleased") == 0)
+    if (strcmp(eventType, "eventMouseButtonReleased") == 0)
         return OnMouseButtonReleased;
-    if (strcmp(eventType, "MouseSetFocus") == 0 || strcmp(eventType, "mouseSetFocus") == 0 || strcmp(eventType, "mouseOver") == 0 || strcmp(eventType, "OnMouseSetFocus") == 0 || strcmp(eventType, "onMouseSetFocus") == 0)
+    if (strcmp(eventType, "eventMouseSetFocus") == 0)
         return OnMouseSetFocus;
-    if (strcmp(eventType, "MouseLostFocus") == 0 || strcmp(eventType, "mouseLostFocus") == 0 || strcmp(eventType, "mouseOut") == 0 || strcmp(eventType, "OnMouseLostFocus") == 0 || strcmp(eventType, "onMouseLostFocus") == 0)
+    if (strcmp(eventType, "eventMouseLostFocus") == 0)
         return OnMouseLostFocus;
-    if (strcmp(eventType, "MouseMove") == 0 || strcmp(eventType, "mouseMove") == 0 || strcmp(eventType, "OnMouseMove") == 0 || strcmp(eventType, "onMouseMove") == 0)
+    if (strcmp(eventType, "eventMouseMove") == 0)
         return OnMouseMove;
-    if (strcmp(eventType, "MouseWheel") == 0 || strcmp(eventType, "mouseWheel") == 0 || strcmp(eventType, "OnMouseWheel") == 0 || strcmp(eventType, "onMouseWheel") == 0)
+    if (strcmp(eventType, "eventMouseWheel") == 0)
         return OnMouseWheel;
-    if (strcmp(eventType, "KeyButtonPressed") == 0 || strcmp(eventType, "keyButtonPressed") == 0 || strcmp(eventType, "keyDown") == 0 || strcmp(eventType, "OnKeyButtonPressed") == 0 || strcmp(eventType, "onKeyButtonPressed") == 0)
+    if (strcmp(eventType, "eventKeyButtonPressed") == 0)
         return OnKeyButtonPressed;
-    if (strcmp(eventType, "KeyButtonReleased") == 0 || strcmp(eventType, "keyButtonReleased") == 0 || strcmp(eventType, "keyUp") == 0 || strcmp(eventType, "OnKeyButtonReleased") == 0 || strcmp(eventType, "onKeyButtonReleased") == 0)
+    if (strcmp(eventType, "eventKeyButtonReleased") == 0)
         return OnKeyButtonReleased;
-    if (strcmp(eventType, "ComboAccept") == 0 || strcmp(eventType, "comboAccept") == 0 || strcmp(eventType, "OnComboAccept") == 0 || strcmp(eventType, "onComboAccept") == 0)
+    if (strcmp(eventType, "eventComboAccept") == 0)
         return OnComboAccept;
-    if (strcmp(eventType, "ComboChangePosition") == 0 || strcmp(eventType, "comboChangePosition") == 0 || strcmp(eventType, "OnComboChangePosition") == 0 || strcmp(eventType, "onComboChangePosition") == 0)
+    if (strcmp(eventType, "eventComboChangePosition") == 0)
         return OnComboChangePosition;
-    if (strcmp(eventType, "ListSelectAccept") == 0 || strcmp(eventType, "listSelectAccept") == 0 || strcmp(eventType, "OnListSelectAccept") == 0 || strcmp(eventType, "onListSelectAccept") == 0)
+    if (strcmp(eventType, "eventListSelectAccept") == 0)
         return OnListSelectAccept;
-    if (strcmp(eventType, "ListChangePosition") == 0 || strcmp(eventType, "listChangePosition") == 0 || strcmp(eventType, "OnListChangePosition") == 0 || strcmp(eventType, "onListChangePosition") == 0)
+    if (strcmp(eventType, "eventListChangePosition") == 0)
         return OnListChangePosition;
-    if (strcmp(eventType, "WindowChangeCoord") == 0 || strcmp(eventType, "windowChangeCoord") == 0 || strcmp(eventType, "OnWindowChangeCoord") == 0 || strcmp(eventType, "onWindowChangeCoord") == 0)
+    if (strcmp(eventType, "eventWindowChangeCoord") == 0)
         return OnWindowChangeCoord;
-    if (strcmp(eventType, "ScrollChangePosition") == 0 || strcmp(eventType, "scrollChangePosition") == 0 || strcmp(eventType, "OnScrollChangePosition") == 0 || strcmp(eventType, "onScrollChangePosition") == 0)
+    if (strcmp(eventType, "eventScrollChangePosition") == 0)
         return OnScrollChangePosition;
-    if (strcmp(eventType, "TabChangeSelect") == 0 || strcmp(eventType, "tabChangeSelect") == 0 || strcmp(eventType, "OnTabChangeSelect") == 0 || strcmp(eventType, "onTabChangeSelect") == 0)
+    if (strcmp(eventType, "eventTabChangeSelect") == 0)
         return OnTabChangeSelect;
-    if (strcmp(eventType, "MenuAccept") == 0 || strcmp(eventType, "menuAccept") == 0 || strcmp(eventType, "MenuCtrlAccept") == 0 || strcmp(eventType, "OnMenuAccept") == 0 || strcmp(eventType, "onMenuAccept") == 0)
+    if (strcmp(eventType, "eventMenuAccept") == 0)
         return OnMenuAccept;
 
     return EventType_Count;
@@ -831,13 +832,32 @@ LuaWidgetCallbackManager::EventType LuaWidgetCallbackManager::parseEventType(con
 int widget_on(lua_State* L)
 {
     MyGUI::Widget* w = testObject<MyGUI::Widget>(L, 1, WidgetBinding::getMetatableName());
-    const char* eventType = luaL_checkstring(L, 2);
+    const char* rawEventType = luaL_checkstring(L, 2);
     luaL_checktype(L, 3, LUA_TFUNCTION);
 
-    LuaWidgetCallbackManager::EventType type = LuaWidgetCallbackManager::parseEventType(eventType);
+    // Fast path: Try canonical C++ name first
+    LuaWidgetCallbackManager::EventType type = LuaWidgetCallbackManager::parseEventType(rawEventType);
+
+    // Fallback: If unrecognized, check LegacyCompat for deprecated aliases
     if (type == LuaWidgetCallbackManager::EventType_Count)
     {
-        return luaL_error(L, "Unsupported event type: %s", eventType);
+        std::string source = "";
+        lua_Debug ar;
+        if (lua_getstack(L, 1, &ar) && lua_getinfo(L, "S", &ar) && ar.source)
+        {
+            source = ar.source;
+        }
+
+        const char* canonical = LegacyCompat::ResolveWidgetEventName(rawEventType, source.c_str());
+        if (canonical != rawEventType)
+        {
+            type = LuaWidgetCallbackManager::parseEventType(canonical);
+        }
+    }
+
+    if (type == LuaWidgetCallbackManager::EventType_Count)
+    {
+        return luaL_error(L, "Unsupported event type: %s", rawEventType);
     }
 
     lua_pushvalue(L, 3);
@@ -875,8 +895,28 @@ int widget_off(lua_State* L)
     }
     else if (lua_isstring(L, 2))
     {
-        const char* eventType = lua_tostring(L, 2);
-        LuaWidgetCallbackManager::EventType type = LuaWidgetCallbackManager::parseEventType(eventType);
+        const char* rawEventType = lua_tostring(L, 2);
+
+        // Fast path: Try canonical C++ name first
+        LuaWidgetCallbackManager::EventType type = LuaWidgetCallbackManager::parseEventType(rawEventType);
+
+        // Fallback: If unrecognized, check LegacyCompat for deprecated aliases
+        if (type == LuaWidgetCallbackManager::EventType_Count)
+        {
+            std::string source = "";
+            lua_Debug ar;
+            if (lua_getstack(L, 1, &ar) && lua_getinfo(L, "S", &ar) && ar.source)
+            {
+                source = ar.source;
+            }
+
+            const char* canonical = LegacyCompat::ResolveWidgetEventName(rawEventType, source.c_str());
+            if (canonical != rawEventType)
+            {
+                type = LuaWidgetCallbackManager::parseEventType(canonical);
+            }
+        }
+
         if (type != LuaWidgetCallbackManager::EventType_Count && w)
         {
             bool ok = LuaWidgetCallbackManager::get().unregisterCallback(w, type);

@@ -53,7 +53,7 @@ local function getOrCreateWindow()
     CharInspectorWindow:setCaption("Character Inspector")
     CharInspectorWindow:setVisible(false)
 
-    CharInspectorWindow:on("OnWindowButtonPressed", function(window, buttonName)
+    CharInspectorWindow:on("eventWindowButtonPressed", function(window, buttonName)
         if buttonName == "close" then
             window:setVisible(false)
             local im = MyGUI.InputManager.getInstance()
@@ -89,7 +89,7 @@ local function getOrCreateWindow()
     local btnHeal = client:createWidget("Button", "Kenshi_Button1", 20, 200, 190, 40, 0, "BtnHeal")
     if btnHeal then
         btnHeal:setCaption("Heal Completely")
-        btnHeal:on("OnClick", function(widget)
+        btnHeal:on("eventMouseButtonClick", function(widget)
             if inspectingChar and inspectingChar:isValid() then
                 inspectingChar:healCompletely()
                 log("[CharInspector] Healed character: " .. inspectingChar:getName())
@@ -101,7 +101,7 @@ local function getOrCreateWindow()
     local btnBuff = client:createWidget("Button", "Kenshi_Button1", 230, 200, 190, 40, 0, "BtnBuff")
     if btnBuff then
         btnBuff:setCaption("Set Strength 100")
-        btnBuff:on("OnClick", function(widget)
+        btnBuff:on("eventMouseButtonClick", function(widget)
             if inspectingChar and inspectingChar:isValid() then
                 local stats = inspectingChar:getStats()
                 if stats then

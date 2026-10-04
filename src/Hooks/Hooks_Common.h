@@ -59,6 +59,7 @@
 // ---------------------------------------------------------------------------
 namespace KenshiLua
 {
+    bool IsKnownEvent(const char* eventName);
     bool InstallHookForEvent(const std::string& eventName); //definition in Hooks_Registry.cpp
 }
 

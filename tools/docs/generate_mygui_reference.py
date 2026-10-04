@@ -416,16 +416,32 @@ def parse_global_methods(mygui_cpp_path: pathlib.Path):
 def parse_global_enums(mygui_cpp_path: pathlib.Path):
     content = mygui_cpp_path.read_text(encoding='utf-8', errors='ignore')
     enums = {}
-    for block in re.finditer(r"lua_newtable\(L\);(.*?)lua_setfield\(L,\s*-2,\s*\"([^\"]+)\"\);", content, re.DOTALL):
-        tbody = block.group(1)
-        ename = block.group(2)
-        vals = []
-        for m in re.finditer(r"lua_pushinteger\(L,\s*\(int\)(?:MyGUI::)?([^)]+)\);\s*lua_setfield\(L,\s*-2,\s*\"([^\"]+)\"\);", tbody):
-            c_val = m.group(1).strip()
-            f_name = m.group(2).strip()
-            vals.append((f_name, c_val))
-        if vals:
-            enums[ename] = vals
+    current_ename = None
+    current_vals = []
+
+    for line in content.splitlines():
+        line = line.strip()
+        reg_match = re.search(r'//\s*Register\s+(\w+)\s+enum\s+table', line, re.IGNORECASE)
+        if reg_match:
+            current_ename = reg_match.group(1)
+            current_vals = []
+            continue
+
+        if current_ename:
+            val_match = re.search(r'lua_pushinteger\(L,\s*\(int\)([^)]+)\);\s*lua_setfield\(L,\s*-2,\s*\"([^\"]+)\"\);', line)
+            if val_match:
+                c_val = val_match.group(1).strip()
+                f_name = val_match.group(2).strip()
+                current_vals.append((f_name, c_val))
+                continue
+
+            close_match = re.search(r'lua_setfield\(L,\s*-2,\s*\"([^\"]+)\"\);', line)
+            if close_match and close_match.group(1) == current_ename:
+                if current_vals:
+                    enums[current_ename] = current_vals
+                current_ename = None
+                current_vals = []
+
     return enums
 
 def parse_mygui_class_file(cpp_path: pathlib.Path):
@@ -549,134 +565,115 @@ def parse_types_file(types_cpp_path: pathlib.Path):
 
 EVENT_CALLBACKS = [
     {
-        "event": "OnClick",
-        "aliases": ["MouseButtonClick", "OnClick", "click"],
+        "event": "eventMouseButtonClick",
         "widgets": "Button, MenuItem, Widget",
         "signature": "function(sender: Widget)",
         "description": "Triggered when the user clicks on the widget with the mouse."
     },
     {
-        "event": "OnTextChanged",
-        "aliases": ["EditTextChange", "editTextChange", "change"],
+        "event": "eventEditTextChange",
         "widgets": "EditBox, ComboBox",
         "signature": "function(sender: EditBox)",
         "description": "Triggered when the text content of an edit box is modified by the user or programmatically."
     },
     {
-        "event": "OnWindowButtonPressed",
-        "aliases": ["WindowButtonPressed", "windowButtonPressed"],
+        "event": "eventWindowButtonPressed",
         "widgets": "Window",
         "signature": "function(sender: Window, buttonName: string)",
         "description": "Triggered when a window control button (e.g. close, minimize, maximize) is clicked."
     },
     {
-        "event": "OnMouseButtonPressed",
-        "aliases": ["MouseButtonPressed", "mouseButtonPressed", "mouseDown"],
+        "event": "eventMouseButtonPressed",
         "widgets": "Widget",
         "signature": "function(sender: Widget, left: integer, top: integer, button: MouseButton)",
         "description": "Triggered when a mouse button is pressed down over the widget."
     },
     {
-        "event": "OnMouseButtonReleased",
-        "aliases": ["MouseButtonReleased", "mouseButtonReleased", "mouseUp"],
+        "event": "eventMouseButtonReleased",
         "widgets": "Widget",
         "signature": "function(sender: Widget, left: integer, top: integer, button: MouseButton)",
         "description": "Triggered when a mouse button is released over the widget."
     },
     {
-        "event": "OnMouseSetFocus",
-        "aliases": ["MouseSetFocus", "mouseSetFocus", "mouseOver"],
+        "event": "eventMouseSetFocus",
         "widgets": "Widget",
         "signature": "function(sender: Widget, oldWidget: Widget)",
         "description": "Triggered when the mouse cursor enters the bounds of the widget."
     },
     {
-        "event": "OnMouseLostFocus",
-        "aliases": ["MouseLostFocus", "mouseLostFocus", "mouseOut"],
+        "event": "eventMouseLostFocus",
         "widgets": "Widget",
         "signature": "function(sender: Widget, newWidget: Widget)",
         "description": "Triggered when the mouse cursor leaves the bounds of the widget."
     },
     {
-        "event": "OnMouseMove",
-        "aliases": ["MouseMove", "mouseMove"],
+        "event": "eventMouseMove",
         "widgets": "Widget",
         "signature": "function(sender: Widget, left: integer, top: integer)",
         "description": "Triggered continuously as the mouse moves across the widget surface."
     },
     {
-        "event": "OnMouseWheel",
-        "aliases": ["MouseWheel", "mouseWheel"],
+        "event": "eventMouseWheel",
         "widgets": "Widget",
         "signature": "function(sender: Widget, relValue: integer)",
         "description": "Triggered when the mouse scroll wheel is rotated while hovering over the widget."
     },
     {
-        "event": "OnKeyButtonPressed",
-        "aliases": ["KeyButtonPressed", "keyButtonPressed", "keyDown"],
+        "event": "eventKeyButtonPressed",
         "widgets": "Widget",
         "signature": "function(sender: Widget, keyCode: KeyCode, charCode: integer)",
         "description": "Triggered when a keyboard key is pressed while the widget holds key focus."
     },
     {
-        "event": "OnKeyButtonReleased",
-        "aliases": ["KeyButtonReleased", "keyButtonReleased", "keyUp"],
+        "event": "eventKeyButtonReleased",
         "widgets": "Widget",
         "signature": "function(sender: Widget, keyCode: KeyCode)",
         "description": "Triggered when a keyboard key is released while the widget holds key focus."
     },
     {
-        "event": "OnComboAccept",
-        "aliases": ["ComboAccept", "comboAccept"],
+        "event": "eventComboAccept",
         "widgets": "ComboBox",
         "signature": "function(sender: ComboBox, index: integer)",
         "description": "Triggered when an item in the combo box drop list is confirmed/accepted."
     },
     {
-        "event": "OnComboChangePosition",
-        "aliases": ["ComboChangePosition", "comboChangePosition"],
+        "event": "eventComboChangePosition",
         "widgets": "ComboBox",
         "signature": "function(sender: ComboBox, index: integer)",
         "description": "Triggered when the highlighted selection position changes in the combo box."
     },
     {
-        "event": "OnListSelectAccept",
-        "aliases": ["ListSelectAccept", "listSelectAccept"],
+        "event": "eventListSelectAccept",
         "widgets": "ListBox",
         "signature": "function(sender: ListBox, index: integer)",
         "description": "Triggered when an item in the list box is double-clicked or confirmed with Enter."
     },
     {
-        "event": "OnListChangePosition",
-        "aliases": ["ListChangePosition", "listChangePosition"],
+        "event": "eventListChangePosition",
         "widgets": "ListBox",
         "signature": "function(sender: ListBox, index: integer)",
         "description": "Triggered when the selected item index changes in the list box."
     },
     {
-        "event": "OnWindowChangeCoord",
-        "aliases": ["WindowChangeCoord", "windowChangeCoord"],
+        "event": "eventWindowChangeCoord",
         "widgets": "Window",
         "signature": "function(sender: Window)",
         "description": "Triggered when a window is moved or resized by the user."
     },
     {
-        "event": "OnScrollChangePosition",
-        "aliases": ["ScrollChangePosition", "scrollChangePosition"],
+        "event": "eventScrollChangePosition",
         "widgets": "ScrollBar",
         "signature": "function(sender: ScrollBar, position: integer)",
         "description": "Triggered when the scroll bar slider position changes."
     },
     {
-        "event": "OnTabChangeSelect",
-        "aliases": ["TabChangeSelect", "tabChangeSelect"],
+        "event": "eventTabChangeSelect",
         "widgets": "TabControl",
         "signature": "function(sender: TabControl, index: integer)",
         "description": "Triggered when the active tab sheet is changed in a tab control."
     },
     {
-        "event": "OnMenuAccept",
-        "aliases": ["MenuAccept", "menuAccept", "MenuCtrlAccept"],
+        "event": "eventMenuAccept",
         "widgets": "MenuControl, MenuBar, PopupMenu",
         "signature": "function(sender: MenuControl, item: MenuItem)",
         "description": "Triggered when an item in a menu bar or popup menu is activated/clicked."
@@ -894,7 +891,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
     lines.append("win:upLayerItem()")
     lines.append("local btn = win:createWidget(\"Button\", \"Kenshi_Button1\", 20, 20, 120, 30, 0, \"MyButton\")")
     lines.append("btn:setCaption(\"Click Me\")")
-    lines.append("local callbackId = btn:on(\"MouseButtonClick\", function(sender)")
+    lines.append("local callbackId = btn:on(\"eventMouseButtonClick\", function(sender)")
     lines.append("    print(\"Button clicked:\", sender.caption)")
     lines.append("end)")
     lines.append("")
@@ -903,12 +900,11 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
     lines.append("```")
     lines.append("")
     lines.append("### Supported Event Types")
-    lines.append("| Event Name | Accepted String Aliases | Target Widgets | Handler Signature | Description |")
-    lines.append("|---|---|---|---|---|")
+    lines.append("| Event Name | Target Widgets | Handler Signature | Description |")
+    lines.append("|---|---|---|---|")
 
     for ev in EVENT_CALLBACKS:
-        aliases = ", ".join([f"`\"{a}\"`" for a in ev['aliases']])
-        lines.append(f"| **`{ev['event']}`** | {aliases} | `{ev['widgets']}` | `{ev['signature']}` | {ev['description']} |")
+        lines.append(f"| **`{ev['event']}`** | `{ev['widgets']}` | `{ev['signature']}` | {ev['description']} |")
     lines.append("")
 
     # Section 7: Enums

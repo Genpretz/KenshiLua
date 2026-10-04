@@ -3,6 +3,7 @@
 #include "Hooks_Internal.h"
 #include "EventSystem.h"
 #include <string>
+#include <cstring>
 
 // ---------------------------------------------------------------------------
 // Hook registry mapping Lua event names to domain-specific hook installer functions.
@@ -326,16 +327,42 @@ namespace KenshiLua
 
     static const size_t g_eventHookRegistryCount = sizeof(g_eventHookRegistry) / sizeof(g_eventHookRegistry[0]);
 
-    bool InstallHookForEvent(const std::string& rawEventName)
+    bool IsKnownEvent(const char* eventName)
     {
-        const char* canonical = EventSystem::resolveCanonicalEventName(rawEventName.c_str());
-        std::string eventName = (canonical && canonical[0]) ? canonical : rawEventName;
+        if (!eventName || !eventName[0])
+            return false;
 
         for (size_t i = 0; i < g_eventHookRegistryCount; ++i)
         {
-            if (eventName == g_eventHookRegistry[i].eventName)
+            if (strcmp(eventName, g_eventHookRegistry[i].eventName) == 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool InstallHookForEvent(const std::string& rawEventName)
+    {
+        // Fast path: try the event name directly as a canonical hook name
+        for (size_t i = 0; i < g_eventHookRegistryCount; ++i)
+        {
+            if (rawEventName == g_eventHookRegistry[i].eventName)
             {
                 return g_eventHookRegistry[i].install();
+            }
+        }
+
+        // Fallback: If not recognized canonically, resolve legacy alias
+        const char* canonical = EventSystem::resolveCanonicalEventName(rawEventName.c_str());
+        if (canonical && canonical[0] && rawEventName != canonical)
+        {
+            for (size_t i = 0; i < g_eventHookRegistryCount; ++i)
+            {
+                if (strcmp(canonical, g_eventHookRegistry[i].eventName) == 0)
+                {
+                    return g_eventHookRegistry[i].install();
+                }
             }
         }
         return false;
