@@ -161,7 +161,7 @@ Events.off(handlerId)
 | `PreviewBuilding::_NV_placeFinalPreviewBuilding` | `function(self: PreviewBuilding)` |
 | `PreviewBuilding::_NV_placePreview` | `function(self: PreviewBuilding, position: Vector3, rotation: Quaternion, floorNumber: integer)` |
 
-## 2. Override Callbacks (84)
+## 2. Override Callbacks (107)
 
 | Event Name | Lua Signature & Expected Return |
 | :--- | :--- |
@@ -239,6 +239,29 @@ Events.off(handlerId)
 | `CombatTechniqueData::_CONSTRUCTOR` | `function(self: CombatTechniqueData, data: GameData, defaultVal: CombatTechniqueData) -> CombatTechniqueData` |
 | `Dialogue::_CONSTRUCTOR` | `function(self: Dialogue, defaultVal: Dialogue) -> Dialogue` |
 | `DialogLineData::_CONSTRUCTOR` | `function(self: DialogLineData, data: GameData, defaultVal: DialogLineData) -> DialogLineData` |
+| `GameData::_CONSTRUCTOR` | `function(self: GameData, defaultVal: GameData) -> GameData` |
+| `Tasker::_CONSTRUCTOR` | `function(self: Tasker, defaultVal: Tasker) -> Tasker` |
+| `AppearanceManager::_CONSTRUCTOR` | `function(self: AppearanceManager, defaultVal: AppearanceManager) -> AppearanceManager` |
+| `CombatMovementController::_CONSTRUCTOR` | `function(self: CombatMovementController, defaultVal: CombatMovementController) -> CombatMovementController` |
+| `WorldEventStateQuery::_CONSTRUCTOR` | `function(self: WorldEventStateQuery, defaultVal: WorldEventStateQuery) -> WorldEventStateQuery` |
+| `DialogueWindow::_CONSTRUCTOR` | `function(self: DialogueWindow, defaultVal: DialogueWindow) -> DialogueWindow` |
+| `InventoryGUI::_CONSTRUCTOR` | `function(self: InventoryGUI, inventory: Inventory, layout: InventoryLayout, callback: RootObject, defaultVal: InventoryGUI) -> InventoryGUI` |
+| `GenericFixedInventoryLayout::_CONSTRUCTOR` | `function(self: GenericFixedInventoryLayout, defaultVal: GenericFixedInventoryLayout) -> GenericFixedInventoryLayout` |
+| `GameWorld::_CONSTRUCTOR` | `function(self: GameWorld, defaultVal: GameWorld) -> GameWorld` |
+| `PlayerInterface::_CONSTRUCTOR` | `function(self: PlayerInterface, defaultVal: PlayerInterface) -> PlayerInterface` |
+| `InputHandler::_CONSTRUCTOR` | `function(self: InputHandler, defaultVal: InputHandler) -> InputHandler` |
+| `RootObjectFactory::_CONSTRUCTOR` | `function(self: RootObjectFactory, defaultVal: RootObjectFactory) -> RootObjectFactory` |
+| `FactionManager::_CONSTRUCTOR` | `function(self: FactionManager, defaultVal: FactionManager) -> FactionManager` |
+| `FactionWarMgr::_CONSTRUCTOR` | `function(self: FactionWarMgr, faction: Faction, defaultVal: FactionWarMgr) -> FactionWarMgr` |
+| `BountyManager::_CONSTRUCTOR` | `function(self: BountyManager, character: Character, defaultVal: BountyManager) -> BountyManager` |
+| `ZoneMap::_CONSTRUCTOR` | `function(self: ZoneMap, defaultVal: ZoneMap) -> ZoneMap` |
+| `ZoneManager::_CONSTRUCTOR` | `function(self: ZoneManager, defaultVal: ZoneManager) -> ZoneManager` |
+| `Character::AttachedArrowManager::_CONSTRUCTOR` | `function(self: Character::AttachedArrowManager, defaultVal: Character::AttachedArrowManager) -> Character::AttachedArrowManager` |
+| `LimbsInventoryLayout::_CONSTRUCTOR` | `function(self: LimbsInventoryLayout, character: Character, defaultVal: LimbsInventoryLayout) -> LimbsInventoryLayout` |
+| `RobotLimbs::_CONSTRUCTOR` | `function(self: RobotLimbs, character: Character, defaultVal: RobotLimbs) -> RobotLimbs` |
+| `ShopTrader::_CONSTRUCTOR` | `function(self: ShopTrader, character: Character, defaultVal: ShopTrader) -> ShopTrader` |
+| `RootObjectBase::_CONSTRUCTOR` | `function(self: RootObjectBase, data: GameData, faction: Faction, handle: hand, defaultVal: RootObjectBase) -> RootObjectBase` |
+| `RootObject::_CONSTRUCTOR` | `function(self: RootObject, data: GameData, faction: Faction, handle: hand, defaultVal: RootObject) -> RootObject` |
 | `UseableStuff::_NV_getCostToUse` | `function(self: UseableStuff, who: Character, defaultVal: integer) -> integer` |
 | `UseableStuff::_NV_couldIOperate` | `function(self: UseableStuff, userHandle: hand, defaultVal: boolean) -> boolean` |
 | `UseableStuff::_NV_dontNeedWorkRightNow` | `function(self: UseableStuff, defaultVal: boolean) -> boolean` |
@@ -283,6 +306,15 @@ Events.off(handlerId)
   - `self`: `ActivePlatoon`
   - `character`: `RootObject`
 
+### `AppearanceManager::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `AppearanceManager`
+  - `defaultVal`: `AppearanceManager`
+- **Returns**: `AppearanceManager`
+
 ### `Armour::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -305,6 +337,16 @@ Events.off(handlerId)
   - `self`: `Bounty`
   - `defaultVal`: `Bounty`
 - **Returns**: `Bounty`
+
+### `BountyManager::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, character, defaultVal)`
+- **Parameters**:
+  - `self`: `BountyManager`
+  - `character`: `Character`
+  - `defaultVal`: `BountyManager`
+- **Returns**: `BountyManager`
 
 ### `BountyManager::notifyCrimeWitnessed`
 
@@ -707,6 +749,15 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `CharStats`
 
+### `Character::AttachedArrowManager::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `Character::AttachedArrowManager`
+  - `defaultVal`: `Character::AttachedArrowManager`
+- **Returns**: `Character::AttachedArrowManager`
+
 ### `Character::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -1010,6 +1061,15 @@ Events.off(handlerId)
   - `defaultVal`: `CombatClass`
 - **Returns**: `CombatClass`
 
+### `CombatMovementController::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CombatMovementController`
+  - `defaultVal`: `CombatMovementController`
+- **Returns**: `CombatMovementController`
+
 ### `CombatTechniqueData::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -1226,6 +1286,15 @@ Events.off(handlerId)
   - `self`: `Dialogue`
   - `what`: `EventTriggerEnum`
 
+### `DialogueWindow::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `defaultVal`: `DialogueWindow`
+- **Returns**: `DialogueWindow`
+
 ### `DialogueWindow::show`
 
 - **Category**: Notification / Observer
@@ -1361,6 +1430,15 @@ Events.off(handlerId)
   - `defaultVal`: `FactionLeader`
 - **Returns**: `FactionLeader`
 
+### `FactionManager::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `FactionManager`
+  - `defaultVal`: `FactionManager`
+- **Returns**: `FactionManager`
+
 ### `FactionRelations::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -1388,6 +1466,16 @@ Events.off(handlerId)
   - `self`: `FactionUniqueSquadManager`
   - `defaultVal`: `FactionUniqueSquadManager`
 - **Returns**: `FactionUniqueSquadManager`
+
+### `FactionWarMgr::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, faction, defaultVal)`
+- **Parameters**:
+  - `self`: `FactionWarMgr`
+  - `faction`: `Faction`
+  - `defaultVal`: `FactionWarMgr`
+- **Returns**: `FactionWarMgr`
 
 ### `FarmBuilding::_CONSTRUCTOR`
 
@@ -1458,6 +1546,24 @@ Events.off(handlerId)
   - `worker`: `Character`
   - `amount`: `number`
 
+### `GameData::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GameData`
+  - `defaultVal`: `GameData`
+- **Returns**: `GameData`
+
+### `GameWorld::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GameWorld`
+  - `defaultVal`: `GameWorld`
+- **Returns**: `GameWorld`
+
 ### `GameWorld::charsUpdate`
 
 - **Category**: Notification / Observer
@@ -1511,6 +1617,24 @@ Events.off(handlerId)
   - `indoors`: `Building`
   - `defaultVal`: `GeneratorBuilding`
 - **Returns**: `GeneratorBuilding`
+
+### `GenericFixedInventoryLayout::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GenericFixedInventoryLayout`
+  - `defaultVal`: `GenericFixedInventoryLayout`
+- **Returns**: `GenericFixedInventoryLayout`
+
+### `InputHandler::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InputHandler`
+  - `defaultVal`: `InputHandler`
+- **Returns**: `InputHandler`
 
 ### `InputHandler::keyDownEvent`
 
@@ -1617,6 +1741,18 @@ Events.off(handlerId)
   - `type`: `integer`
 - **Returns**: `InventorySection`
 
+### `InventoryGUI::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, inventory, layout, callback, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `inventory`: `Inventory`
+  - `layout`: `InventoryLayout`
+  - `callback`: `RootObject`
+  - `defaultVal`: `InventoryGUI`
+- **Returns**: `InventoryGUI`
+
 ### `InventoryGUI::addTradePartner`
 
 - **Category**: Notification / Observer
@@ -1697,6 +1833,16 @@ Events.off(handlerId)
   - `indoors`: `Building`
   - `defaultVal`: `LightBuilding`
 - **Returns**: `LightBuilding`
+
+### `LimbsInventoryLayout::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, character, defaultVal)`
+- **Parameters**:
+  - `self`: `LimbsInventoryLayout`
+  - `character`: `Character`
+  - `defaultVal`: `LimbsInventoryLayout`
+- **Returns**: `LimbsInventoryLayout`
 
 ### `LockedArmour::_CONSTRUCTOR`
 
@@ -1881,6 +2027,15 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `Platoon`
   - `completedTask`: `Tasker`
+
+### `PlayerInterface::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `PlayerInterface`
+  - `defaultVal`: `PlayerInterface`
+- **Returns**: `PlayerInterface`
 
 ### `PlayerInterface::activateCharacterEditMode`
 
@@ -2092,6 +2247,49 @@ Events.off(handlerId)
   - `worker`: `Character`
   - `amount`: `number`
 
+### `RobotLimbs::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, character, defaultVal)`
+- **Parameters**:
+  - `self`: `RobotLimbs`
+  - `character`: `Character`
+  - `defaultVal`: `RobotLimbs`
+- **Returns**: `RobotLimbs`
+
+### `RootObject::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, data, faction, handle, defaultVal)`
+- **Parameters**:
+  - `self`: `RootObject`
+  - `data`: `GameData`
+  - `faction`: `Faction`
+  - `handle`: `hand`
+  - `defaultVal`: `RootObject`
+- **Returns**: `RootObject`
+
+### `RootObjectBase::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, data, faction, handle, defaultVal)`
+- **Parameters**:
+  - `self`: `RootObjectBase`
+  - `data`: `GameData`
+  - `faction`: `Faction`
+  - `handle`: `hand`
+  - `defaultVal`: `RootObjectBase`
+- **Returns**: `RootObjectBase`
+
+### `RootObjectFactory::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `RootObjectFactory`
+  - `defaultVal`: `RootObjectFactory`
+- **Returns**: `RootObjectFactory`
+
 ### `RootObjectFactory::chooseMyClothing`
 
 - **Category**: Notification / Observer
@@ -2102,6 +2300,16 @@ Events.off(handlerId)
   - `listName`: `string`
   - `race`: `RaceData`
   - `noShoes`: `boolean`
+
+### `ShopTrader::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, character, defaultVal)`
+- **Parameters**:
+  - `self`: `ShopTrader`
+  - `character`: `Character`
+  - `defaultVal`: `ShopTrader`
+- **Returns**: `ShopTrader`
 
 ### `SquadManagementScreen::removeSquad`
 
@@ -2141,6 +2349,15 @@ Events.off(handlerId)
   - `level`: `integer`
   - `defaultVal`: `Sword`
 - **Returns**: `Sword`
+
+### `Tasker::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `Tasker`
+  - `defaultVal`: `Tasker`
+- **Returns**: `Tasker`
 
 ### `TitleScreen::loadGame`
 
@@ -2413,6 +2630,33 @@ Events.off(handlerId)
   - `indoors`: `Building`
   - `defaultVal`: `WindGeneratorBuilding`
 - **Returns**: `WindGeneratorBuilding`
+
+### `WorldEventStateQuery::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `WorldEventStateQuery`
+  - `defaultVal`: `WorldEventStateQuery`
+- **Returns**: `WorldEventStateQuery`
+
+### `ZoneManager::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ZoneManager`
+  - `defaultVal`: `ZoneManager`
+- **Returns**: `ZoneManager`
+
+### `ZoneMap::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ZoneMap`
+  - `defaultVal`: `ZoneMap`
+- **Returns**: `ZoneMap`
 
 ### `wraps::BaseLayout::initialise`
 

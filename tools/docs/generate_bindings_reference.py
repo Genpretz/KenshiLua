@@ -590,6 +590,7 @@ def parse_binding_file(filepath: pathlib.Path):
             if matching:
                 h_file = matching[0]
 
+        h_text = ""
         if h_file and h_file.is_file():
             h_text = h_file.read_text(encoding='utf-8', errors='ignore')
             h_includes = re.findall(r'#\s*include\s+["<](kenshi[/\\][^">]+)[">]', h_text)
@@ -773,6 +774,9 @@ def parse_binding_file(filepath: pathlib.Path):
         static_method_names = set()
         for sm_match in re.finditer(r'registerStaticMethod\s*\(\s*L\s*,\s*"([^"]+)"', register_body):
             static_method_names.add(sm_match.group(1))
+
+        # Detect constructors by scanning registerConstructor calls in registerBinding
+        has_constructor = bool(re.search(r'registerConstructor\s*\(\s*L\s*,', register_body))
         
         # Extract header methods for class to detect overloads
         header_methods = extract_header_methods_for_class(header, class_name)
@@ -833,7 +837,7 @@ def parse_binding_file(filepath: pathlib.Path):
                         "is_static": is_static,
                         "overloads": overloads
                     })
-        classes.append((class_name, fields, methods, header, display_name, parent_class, metatable))
+        classes.append((class_name, fields, methods, header, display_name, parent_class, metatable, has_constructor))
     return classes
 
 def parse_enum_file(filepath: pathlib.Path):
@@ -890,7 +894,7 @@ def generate_markdown(data_by_class, enums):
     top_level = []
     nested_by_parent = {}
 
-    for cls, (fields, methods, header, display_name, parent_class, metatable) in cleaned_data.items():
+    for cls, (fields, methods, header, display_name, parent_class, metatable, has_constructor) in cleaned_data.items():
         if parent_class and parent_class in cleaned_data and parent_class != cls:
             nested_by_parent.setdefault(parent_class, []).append(cls)
         else:
@@ -898,12 +902,12 @@ def generate_markdown(data_by_class, enums):
 
     # Generate TOC
     for parent in sorted(top_level, key=lambda c: cleaned_data[c][3].lower()):
-        p_fields, p_methods, p_header, p_disp, p_parent, p_meta = cleaned_data[parent]
+        p_fields, p_methods, p_header, p_disp, p_parent, p_meta, *_ = cleaned_data[parent]
         lines.append(f"- [`{p_disp}`](#{make_anchor(p_disp)})")
         
         if parent in nested_by_parent:
             for child in sorted(nested_by_parent[parent], key=lambda c: cleaned_data[c][3].lower()):
-                c_fields, c_methods, c_header, c_disp, c_parent, c_meta = cleaned_data[child]
+                c_fields, c_methods, c_header, c_disp, c_parent, c_meta, *_ = cleaned_data[child]
                 lines.append(f"  - [`{c_disp}`](#{make_anchor(c_disp)})")
 
     if enums:
@@ -917,7 +921,7 @@ def generate_markdown(data_by_class, enums):
             items_to_render.extend(sorted(nested_by_parent[parent], key=lambda c: cleaned_data[c][3].lower()))
 
         for item in items_to_render:
-            fields, methods, header, display_name, parent_class, metatable = cleaned_data[item]
+            fields, methods, header, display_name, parent_class, metatable, has_constructor = cleaned_data[item]
             lines.append(f"## {display_name}")
             lines.append(f"**Header:** `{header}`")
             if parent_class and parent_class in cleaned_data and parent_class != item:
@@ -994,6 +998,22 @@ def generate_markdown(data_by_class, enums):
                             lines.append(f"| {mname} | `{margs}` | `{mret}` | {example} |")
                     lines.append("")
 
+            if has_constructor:
+                lines.append("### Constructors")
+                lines.append("| Lua Name | Arguments | Return Type | Example |")
+                lines.append("|---|---|---|---|")
+                if display_name == "NxVec3":
+                    lines.append(f"| {display_name} | `[x: number, y: number, z: number]` | `{display_name}` | `local v = {display_name}(1, 2, 3)` |")
+                elif display_name == "NxMat33":
+                    lines.append(f"| {display_name} | `[other: NxMat33]` | `{display_name}` | `local m = {display_name}()` |")
+                elif display_name == "hkVector4f":
+                    lines.append(f"| {display_name} | `[x: number, y: number, z: number, w: number]` | `{display_name}` | `local v = {display_name}(1, 2, 3, 4)` |")
+                elif display_name == "hkVector4fComparison":
+                    lines.append(f"| {display_name} | `[mask: integer]` | `{display_name}` | `local comp = {display_name}()` |")
+                else:
+                    lines.append(f"| {display_name} | `` | `{display_name}` | `local obj = {display_name}()` |")
+                lines.append("")
+
     if enums:
         lines.append("## Enums")
         lines.append("")
@@ -1013,8 +1033,8 @@ def main():
         if 'MyGUI' in path.parts or path.name.endswith('EnumBinding.cpp'):
             continue
         parsed_classes = parse_binding_file(path)
-        for cls, fields, methods, header, display_name, parent_class, metatable in parsed_classes:
-            data_by_class[cls] = (fields, methods, header, display_name, parent_class, metatable)
+        for cls, fields, methods, header, display_name, parent_class, metatable, has_constructor in parsed_classes:
+            data_by_class[cls] = (fields, methods, header, display_name, parent_class, metatable, has_constructor)
     enums = {}
     for path in BINDINGS_DIR.rglob('*.cpp'):
         if 'MyGUI' in path.parts or path.name.endswith('EnumBinding.cpp'):

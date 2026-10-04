@@ -819,6 +819,8 @@
 |---|---|---|---|
 | setValue | `arg1: string` | `void` | `obj:setValue(arg1)` |
 | getValue | `` | `integer` | `obj:getValue()` |
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
 
 ## AppearanceManager::DataRange
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -829,6 +831,8 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | clamp | `` | `void` | `obj:clamp()` |
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
 
 ## AppearanceManager::DataRangePose
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -839,6 +843,8 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | clamp | `` | `void` | `obj:clamp()` |
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
 
 ## AppearanceManager::DataRangeVector
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -853,6 +859,8 @@
 | getValueIndex | `value: Vector3` | `integer` | `obj:getValueIndex(value)` |
 | size | `` | `integer` | `obj:size()` |
 | clamp | `` | `void` | `obj:clamp()` |
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
 
 ## AppearanceManager::Gender
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -1990,6 +1998,11 @@
 **Parent Class:** [`Character`](#character)
 **Metatable:** `KenshiLua.Character_RagdollMsg`
 
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+
 ## Character::WhoSeesMe
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
 **Parent Class:** [`Character`](#character)
@@ -2863,6 +2876,12 @@
 **Header:** `extern/KenshiLib/Include/kenshi/CombatClass.h`
 **Parent Class:** [`CombatClass`](#combatclass)
 **Metatable:** `KenshiLua.CombatClass_EffectData`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
 
 ## CombatMovementController
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
@@ -4051,6 +4070,12 @@
 | rightClearance | `number` | RW | `obj.rightClearance = <value>` |
 | maxPoint | `number` | RW | `obj.maxPoint = <value>` |
 
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
+
 ## Faction
 **Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
 **Metatable:** `KenshiLua.Faction`
@@ -4301,6 +4326,7 @@
 |---|---|---|---|
 | save | `ID: string` | `void` | `obj:save(ID)` |
 | load | `ID: string` | `void` | `obj:load(ID)` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
 
 ## FactionsScreen
 **Header:** `extern/KenshiLib/Include/kenshi/gui/FactionsScreen.h`
@@ -4581,6 +4607,12 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FarmBuilding.h`
 **Parent Class:** [`FarmBuilding`](#farmbuilding)
 **Metatable:** `KenshiLua.FarmBuilding_Plant`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
 
 ## FarmBuilding::PlantSource
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FarmBuilding.h`
@@ -5209,6 +5241,11 @@
 | dependencies | `lektor<std::string>` | RW | `obj.dependencies = <value>` |
 | references | `lektor<std::string>` | RW | `obj.references = <value>` |
 
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_assign | `` | `void` | `obj:operator_assign()` |
+
 ## GameDataManager
 **Header:** `extern/KenshiLib/Include/kenshi/GameDataManager.h`
 **Metatable:** `KenshiLua.GameDataManager`
@@ -5781,6 +5818,12 @@
 | calculateFuturePosition [1] | `d: number, out: hkVector4f, dir: hkVector4f, stopAtScreenEdge: boolean` | `integer` | `obj:calculateFuturePosition(d, out, dir, stopAtScreenEdge)` |
 | calculateFuturePosition [2] | `distance: number` | `Vector3` | `obj:calculateFuturePosition(distance)` |
 
+### Static Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_new | `` | `void*` | `HavokCharacter.operator_new()`<br>`obj:operator_new()` |
+| operator_delete | `` | `void` | `HavokCharacter.operator_delete()`<br>`obj:operator_delete()` |
+
 ## hkArray
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
 **Metatable:** `KenshiLua.hkArray`
@@ -5843,6 +5886,12 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | m_enum | `integer` | RW | `obj.m_enum = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `e: integer` | `boolean` | `obj:operator_eq(e)` |
+| operator_ne | `e: integer` | `boolean` | `obj:operator_ne(e)` |
 
 ## hkTrait::TraitBool
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
@@ -5931,9 +5980,13 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | getZero | `` | `void` | `hkVector4f.getZero()`<br>`obj:getZero()` |
-| create | `` | `void` | `hkVector4f.create()`<br>`obj:create()` |
 | operator_new | `` | `void*` | `hkVector4f.operator_new()`<br>`obj:operator_new()` |
 | operator_delete | `` | `void` | `hkVector4f.operator_delete()`<br>`obj:operator_delete()` |
+
+### Constructors
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| hkVector4f | `[x: number, y: number, z: number, w: number]` | `hkVector4f` | `local v = hkVector4f(1, 2, 3, 4)` |
 
 ## hkVector4fComparison
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
@@ -5961,7 +6014,11 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | getMaskForComponent | `` | `integer` | `hkVector4fComparison.getMaskForComponent()`<br>`obj:getMaskForComponent()` |
-| create | `` | `void` | `hkVector4fComparison.create()`<br>`obj:create()` |
+
+### Constructors
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| hkVector4fComparison | `[mask: integer]` | `hkVector4fComparison` | `local comp = hkVector4fComparison()` |
 
 ## ImportGameMenu
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LoadSaveWindow.h`
@@ -6066,6 +6123,12 @@
 **Header:** `extern/KenshiLib/Include/kenshi/InputHandler.h`
 **Parent Class:** [`InputHandler`](#inputhandler)
 **Metatable:** `KenshiLua.InputHandler_Command`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
 
 ## InstanceID
 **Header:** `extern/KenshiLib/Include/kenshi/InstanceID.h`
@@ -7812,6 +7875,12 @@
 **Parent Class:** [`NavMesh`](#navmesh)
 **Metatable:** `KenshiLua.NavMesh_BuildingInfo`
 
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
+
 ## NavMesh::NavMeshMessage
 **Header:** `extern/KenshiLib/Include/kenshi/NavMesh.h`
 **Parent Class:** [`NavMesh`](#navmesh)
@@ -7972,12 +8041,13 @@
 | operator_mul | `` | `void` | `obj:operator_mul()` |
 | operator_assign | `` | `void` | `obj:operator_assign()` |
 | operator_mul_assign | `` | `void` | `obj:operator_mul_assign()` |
-| operator_call | `row: integer, col: integer` | `number` | `obj:operator_call(row, col)` |
+| operator_call [1] | `val: number` | `void` | `obj:operator_call(val)` |
+| operator_call [2] | `row: integer, col: integer, val: number` | `number` | `obj:operator_call(row, col, val)` |
 
-### Static Methods
+### Constructors
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| create | `` | `void` | `NxMat33.create()`<br>`obj:create()` |
+| NxMat33 | `[other: NxMat33]` | `NxMat33` | `local m = NxMat33()` |
 
 ## NxUserControllerHitReport
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
@@ -8031,10 +8101,10 @@
 | operator_mul_assign | `f: number` | `void` | `obj:operator_mul_assign(f)` |
 | operator_xor | `` | `void` | `obj:operator_xor()` |
 
-### Static Methods
+### Constructors
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| create | `` | `void` | `NxVec3.create()`<br>`obj:create()` |
+| NxVec3 | `[x: number, y: number, z: number]` | `NxVec3` | `local v = NxVec3(1, 2, 3)` |
 
 ## OpenSaveFileDialog
 **Header:** `extern/KenshiLib/Include/kenshi/gui/OpenSaveFileDialog.h`
@@ -9782,6 +9852,12 @@
 **Parent Class:** [`SaveFileSystem`](#savefilesystem)
 **Metatable:** `KenshiLua.SaveFileSystem_FileMessage`
 
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
+
 ## SaveInfo
 **Header:** `extern/KenshiLib/Include/kenshi/SaveInfo.h`
 **Metatable:** `KenshiLua.SaveInfo`
@@ -9799,6 +9875,12 @@
 | days | `integer` | RW | `obj.days = <value>` |
 | location | `string` | RW | `obj.location = <value>` |
 | advanced | `GameplayOptions` | RW | `obj.advanced = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
 
 ## SaveManager
 **Header:** `extern/KenshiLib/Include/kenshi/SaveManager.h`
@@ -11032,6 +11114,12 @@
 **Parent Class:** [`Town`](#town)
 **Metatable:** `KenshiLua.Town_NestSpot`
 
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
+
 ## TownBase
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
 **Metatable:** `KenshiLua.TownBase`
@@ -11175,6 +11263,12 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
 **Parent Class:** [`TownBase`](#townbase)
 **Metatable:** `KenshiLua.TownBase_ResidentData`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
 
 ## TownBase::TownPositionCacher
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
@@ -11915,6 +12009,7 @@
 | operator_ne [3] | `val: integer` | `boolean` | `obj:operator_ne(val)` |
 | toInt | `` | `integer` | `obj:toInt()` |
 | operator_bool | `` | `boolean` | `obj:operator_bool()` |
+| operator_ynm | `` | `integer` | `obj:operator_ynm()` |
 
 ## ZoneManager
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
