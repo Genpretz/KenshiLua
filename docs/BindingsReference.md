@@ -8546,8 +8546,7 @@
 | isLoaded | `` | `boolean` | `obj:isLoaded()` |
 | setVisible | `on: boolean` | `void` | `obj:setVisible(on)` |
 | handleChanged | `` | `void` | `obj:handleChanged()` |
-| update [1] | `spd: number` | `void` | `obj:update(spd)` |
-| update [2] | `speed: number` | `void` | `obj:update(speed)` |
+| update | `speed: number` | `void` | `obj:update(speed)` |
 | updateAimingType | `speed: number, rotTarget: Vector3` | `number` | `obj:updateAimingType(speed, rotTarget)` |
 
 ## PhysicsCollection::LightEnt

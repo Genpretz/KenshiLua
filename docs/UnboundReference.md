@@ -57,7 +57,7 @@ This document registers all C++ SDK classes and complex types that are currently
 | `Ogre::Renderable::Visitor*` | 1 |
 | `Ogre::Root*` | 1 |
 | `Ogre::SceneMemoryMgrTypes` | 1 |
-| `Ogre::SceneNode*` | 9 |
+| `Ogre::SceneNode*` | 10 |
 | `Ogre::SharedPtr<Ogre::Material>` | 4 |
 | `Ogre::SharedPtr<Ogre::Resource>` | 6 |
 | `Ogre::SharedPtr<Ogre::Texture>` | 5 |
@@ -282,7 +282,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Gui/DataPanelLineBinding.cpp | setToolTip | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLineBinding.cpp | setToolTipMainBar | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLineBinding.cpp | setToolTipMainBar | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLineBinding.cpp | updateValuePtr | `void` | unsupported arg type (void*) |
+| Kenshi/Gui/DataPanelLineBinding.cpp | updateValuePtr | `void` | unsupported arg type |
 | Kenshi/Gui/DataPanelLine_ButtonBinding.cpp | _NV_setToolTipMainBar | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLine_ButtonBinding.cpp | _NV_setToolTipMainBar | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLine_ButtonBinding.cpp | pressCallback | `void` | unsupported arg type (MyGUI::Widget*) |
@@ -290,11 +290,11 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Gui/DataPanelLine_ButtonBinding.cpp | setToolTipMainBar | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLine_CheckBoxBinding.cpp | _NV_updateValuePtr | `void` | unsupported arg type (void*) |
 | Kenshi/Gui/DataPanelLine_CheckBoxBinding.cpp | notifyToggleCheck | `void` | unsupported arg type (MyGUI::Widget*) |
-| Kenshi/Gui/DataPanelLine_CheckBoxBinding.cpp | updateValuePtr | `void` | unsupported arg type (void*) |
+| Kenshi/Gui/DataPanelLine_CheckBoxBinding.cpp | updateValuePtr | `void` | unsupported arg type |
 | Kenshi/Gui/DataPanelLine_DropBoxBinding.cpp | _NV_updateValuePtr | `void` | unsupported arg type (void*) |
 | Kenshi/Gui/DataPanelLine_DropBoxBinding.cpp | goPressed | `void` | unsupported arg type (MyGUI::Widget*) |
 | Kenshi/Gui/DataPanelLine_DropBoxBinding.cpp | selectionChange | `void` | unsupported arg type (MyGUI::ComboBox*, unsigned __int64) |
-| Kenshi/Gui/DataPanelLine_DropBoxBinding.cpp | updateValuePtr | `void` | unsupported arg type (void*) |
+| Kenshi/Gui/DataPanelLine_DropBoxBinding.cpp | updateValuePtr | `void` | unsupported arg type |
 | Kenshi/Gui/DataPanelLine_KeyConfigBinding.cpp | clickButton | `void` | unsupported arg type (MyGUI::Widget*) |
 | Kenshi/Gui/DataPanelLine_ResearchBinding.cpp | _NV_setToolTipMainBar | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLine_ResearchBinding.cpp | _NV_setToolTipMainBar | `void` | overloaded method |
@@ -302,11 +302,11 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Gui/DataPanelLine_ResearchBinding.cpp | setToolTipMainBar | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLine_SliderBinding.cpp | _NV_updateValuePtr | `void` | unsupported arg type (void*) |
 | Kenshi/Gui/DataPanelLine_SliderBinding.cpp | sliderValueChanged | `void` | unsupported arg type (MyGUI::Slider*, int) |
-| Kenshi/Gui/DataPanelLine_SliderBinding.cpp | updateValuePtr | `void` | unsupported arg type (void*) |
+| Kenshi/Gui/DataPanelLine_SliderBinding.cpp | updateValuePtr | `void` | unsupported arg type |
 | Kenshi/Gui/DataPanelLine_SliderEditableBinding.cpp | _NV_updateValuePtr | `void` | unsupported arg type (void*) |
 | Kenshi/Gui/DataPanelLine_SliderEditableBinding.cpp | editCallback | `void` | unsupported arg type (MyGUI::EditBox*) |
 | Kenshi/Gui/DataPanelLine_SliderEditableBinding.cpp | sliderCallback | `void` | unsupported arg type (MyGUI::ScrollBar*, unsigned __int64) |
-| Kenshi/Gui/DataPanelLine_SliderEditableBinding.cpp | updateValuePtr | `void` | unsupported arg type (void*) |
+| Kenshi/Gui/DataPanelLine_SliderEditableBinding.cpp | updateValuePtr | `void` | unsupported arg type |
 | Kenshi/Gui/DataPanelLine_TextEditableBinding.cpp | textChanged | `void` | unsupported arg type (MyGUI::EditBox*) |
 | Kenshi/Gui/DatapanelGUIBinding.cpp | _NV_setMouseOverCallback | `void` | unsupported callback delegate type |
 | Kenshi/Gui/DatapanelGUIBinding.cpp | closeButtonCallback | `void` | internal event handler |
@@ -371,7 +371,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/ItemBinding.cpp | createItemEntityCallback | `void` | unsupported arg type (Ogre::SharedPtr<Ogre::Resource>) |
 | Kenshi/LimbsInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unexported in KenshiLib.lib |
 | Kenshi/ListenerBinding.cpp | weatherUpdated | `void` | unsupported arg type (WeatherInstance*) |
-| Kenshi/MedianFilterBinding.cpp | apply | `void` | non-string reference arg |
+| Kenshi/MedianFilterBinding.cpp | apply | `void` | non-string reference arg (float&) |
 | Kenshi/MeshDataLookupBinding.cpp | init | `void` | unsupported arg type (const Ogre::Entity*) |
 | Kenshi/MotionFilterBinding.cpp | Apply | `void` | non-string reference arg (float&) |
 | Kenshi/NavMeshBinding.cpp | areEdgesConnected | `int` | unsupported arg type (const EdgePathNode&, const EdgePathNode&, int) |
@@ -460,7 +460,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/NxUserControllerHitReportBinding.cpp | onShapeHit | `NxControllerAction` | unsupported return type |
 | Kenshi/NxUserTriggerReportBinding.cpp | onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
 | Kenshi/ObjectInstanceBinding.cpp | updateInstancedObjectAttachedDatas | `void` | unsupported arg type (const ogre_unordered_map<itemType, GameData*>::type&) |
-| Kenshi/ParticlePoolBinding.cpp | addParticle | `bool` | unsupported arg type |
+| Kenshi/ParticlePoolBinding.cpp | addParticle | `bool` | unsupported arg type (Ogre::SceneNode*) |
 | Kenshi/PhysicsActualBinding.cpp | convertXMLToBin | `void` | non-string reference arg (std::string&, const Ogre::Vector3&) |
 | Kenshi/PhysicsActualBinding.cpp | loadPhysXFile | `NxActor*` | unsupported arg type (PhysFileParams&, lektor<NxActor*>*) |
 | Kenshi/PhysicsActualBinding.cpp | loadPhysXFileAsATrigger | `NxActor*` | unsupported arg type (PhysFileParams&, lektor<NxActor*>*) |
@@ -549,7 +549,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/TriggerCallbackBinding.cpp | _NV_onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
 | Kenshi/TriggerCallbackBinding.cpp | onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
 | Kenshi/ZoneManagerBinding.cpp | getLoadedFeatureLists | `const lektor<MapFeatureList*>&` | reference return type |
-| Kenshi/ZoneManagerBinding.cpp | getOverlay | `ZoneMapOverlay*` | non-string reference arg |
+| Kenshi/ZoneManagerBinding.cpp | getOverlay | `ZoneMapOverlay*` | non-string reference arg (const iVector2&) |
 | Kenshi/ZoneMapBinding.cpp | _activate | `bool` | unsupported arg type (int, ZoneActivationType, float) |
 | Kenshi/ZoneMapBinding.cpp | createTextureArray | `Ogre::SharedPtr<Ogre::Texture>` | static method |
 | Kenshi/ZoneMapBinding.cpp | destroyMaterialCallback | `void` | static method |
