@@ -121,7 +121,7 @@ python "$(ProjectDir)tools\release\sync_version.py" --input "$(ProjectDir)assets
 copy /Y "$(ProjectDir)extern\luajit\lib\lua51.dll" "$(OutDir)..\"
 if not exist "$(OutDir)..\docs" mkdir "$(OutDir)..\docs"
 copy /Y "$(ProjectDir)docs\BindingsReference.md" "$(OutDir)..\docs\"
-copy /Y "$(ProjectDir)docs\UnboundRefrence.md" "$(OutDir)..\docs\"
+copy /Y "$(ProjectDir)docs\UnboundReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\CallbacksReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\EnumsReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\MyGUIReference.md" "$(OutDir)..\docs\"

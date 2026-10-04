@@ -32,7 +32,7 @@ The class-binding generator automatically discovers bindings in `src/Bindings`, 
 | `docs/generate_mygui_reference.py` | Generates the MyGUI Lua bindings reference. | `docs/MyGUIReference.md` |
 | `docs/generate_enums_reference.py` | Generates the enum reference from `EnumBinding.cpp`. | `docs/EnumsReference.md` |
 | `docs/generate_callbacks_reference.py` | Generates the callbacks reference from callback and hook declarations. | `docs/CallbacksReference.md` |
-| `audit/generate_unbound_reference.py` | Reports unsupported or unbound types and methods. | `docs/UnboundRefrence.md` |
+| `audit/generate_unbound_reference.py` | Reports unsupported or unbound types and methods. | `docs/UnboundReference.md` |
 
 Each documentation and audit script can be run directly, for example:
 

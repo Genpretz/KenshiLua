@@ -8,7 +8,7 @@ def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(os.path.dirname(script_dir))
     bindings_dir = os.path.join(project_root, "src", "Bindings")
-    output_file = os.path.join(project_root, "docs", "UnboundRefrence.md")
+    output_file = os.path.join(project_root, "docs", "UnboundReference.md")
     enum_file = os.path.join(bindings_dir, "Kenshi", "EnumBinding.cpp")
 
     # 1. Discover all registered enums

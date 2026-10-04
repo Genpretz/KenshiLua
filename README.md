@@ -1,6 +1,13 @@
 
 # KenshiLua
 
+[![GitHub Release](https://img.shields.io/github/v/release/Genpretz/KenshiLua?include_prereleases)](https://github.com/Genpretz/KenshiLua/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/Genpretz/KenshiLua/total)](https://github.com/Genpretz/KenshiLua/releases)
+[![License](https://img.shields.io/github/license/Genpretz/KenshiLua)](https://github.com/Genpretz/KenshiLua/blob/main/LICENSE)
+![Platform](https://img.shields.io/badge/platform-Windows%20x64-0078D4)
+![LuaJIT](https://img.shields.io/badge/LuaJIT-2.1-2C2D72?logo=lua&logoColor=white)
+![Status](https://img.shields.io/badge/status-alpha-orange)
+
 KenshiLua is a DLL extension for Kenshi that embeds a Lua runtime and exposes selected portions of KenshiLib to Lua.
 
 The goal is to provide a Lua scripting workflow to mod Kenshi and lower the barrier to entry for utilizing KenshiLib through rapid iteration and scripting.
@@ -69,7 +76,7 @@ There is also a list of events that you can register callbacks for like so:
 -- OIS::KeyCode KC_V is equal to the integer 47
 local KC_V = 47
 
--- The OnKeyDown Callback passes an InputHandler* as a thisptr and an OIS::KeyCode as an Integer
+-- The callback receives an InputHandler* and an OIS::KeyCode integer.
 local function on_key_down(thisptr, key_code)
 -- if that int is equal to 47 (the v key was pressed)
 if key_code == KC_V then
@@ -78,7 +85,7 @@ end
 end
 
 -- Register a callback to InputHandler::keyDownEvent
-registerHandler("onKeyDown", on_key_down)
+Events.on("InputHandler::keyDownEvent", on_key_down)
 ```
 
 ### Ways to load Lua scripts:

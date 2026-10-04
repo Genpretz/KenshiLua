@@ -405,9 +405,24 @@ FodyWeavers.xsd
 extern/KenshiLib
 issues/**
 tools/generated/**
+# Project agent guidance is shared; personal skills remain local.
 .agents/**
+!.agents/skills/
+!.agents/skills/cpp-lua-bindings/
+!.agents/skills/cpp-lua-bindings/**
+!.agents/skills/cpp-hooks-callbacks/
+!.agents/skills/cpp-hooks-callbacks/**
+!.agents/skills/code-review/
+!.agents/skills/code-review/**
 docs/ChangeLogs/**
 docs/in_progress/**
 .editorconfig
 /scratch
 /docs/ideas
+AGENTS.md
+.agents/skills/code-review/SKILL.md
+.agents/skills/cpp-hooks-callbacks/SKILL.md
+.agents/skills/cpp-lua-bindings/SKILL.md
+.agents/skills/cpp-lua-bindings/references/container_bindings_guide.md
+tests/in_game/constructor_events_smoke.lua
+tests/in_game/operator_bindings_smoke.lua
