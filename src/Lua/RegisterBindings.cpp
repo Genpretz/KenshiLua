@@ -32,7 +32,6 @@
 #include "Bindings/Kenshi/Building/ConstructionStateBinding.h"
 #include "Bindings/Kenshi/Building/ConsumptionItemBinding.h"
 #include "Bindings/Kenshi/Building/CraftingBuildingBinding.h"
-#include <kenshi/Building/CraftingBuilding.h>
 #include "Bindings/Kenshi/Building/CraftingInventoryLayoutBinding.h"
 #include "Bindings/Kenshi/Building/DoorStuffBinding.h"
 #include "Bindings/Kenshi/Building/FarmBatchBinding.h"
@@ -462,6 +461,7 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, GeneratorBuildingBinding::getMetatableName(),                 ProductionBuildingBinding::getMetatableName());
     setMetatableParent(L, GenericFixedInventoryLayoutBinding::getMetatableName(),       InventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, GenericInventoryLayoutBinding::getMetatableName(),            InventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, hkContainerHeapAllocator_AllocatorBinding::getMetatableName(), hkMemoryAllocatorBinding::getMetatableName());
     setMetatableParent(L, ImportGameMenuBinding::getMetatableName(),                    LoadSaveWindowBinding::getMetatableName());
     setMetatableParent(L, InteriorModeButtonWindowBinding::getMetatableName(),          BaseLayoutBinding::getMetatableName());
     setMetatableParent(L, InventoryGUIBinding::getMetatableName(),                      GUIWindowBinding::getMetatableName());
@@ -498,6 +498,7 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, ResearchBuildingBinding::getMetatableName(),                  UseableStuffBinding::getMetatableName());
     setMetatableParent(L, ResearchBuildingInventoryLayoutBinding::getMetatableName(),   GenericInventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, ResourceLinePanelBinding::getMetatableName(),                 BaseLayoutBinding::getMetatableName());
+    setMetatableParent(L, ResourceLoaderBinding::getMetatableName(),                    ThreadClassBinding::getMetatableName());
     setMetatableParent(L, RobotLimbItemBinding::getMetatableName(),                     ItemBinding::getMetatableName());
     setMetatableParent(L, RootObjectBinding::getMetatableName(),                        RootObjectBaseBinding::getMetatableName());
     setMetatableParent(L, RootObjectContainerBinding::getMetatableName(),               DataObjectContainerBinding::getMetatableName());
@@ -538,49 +539,90 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, ZoneManagerBinding::getMetatableName(),                       ZoneManagerInterfaceTBinding::getMetatableName());
 
 // --- FUTURE / COMMENTED-OUT INHERITANCE ---
+    // setMetatableParent(L, AbstractMovementBaseBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, AppearanceBaseBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, AppearanceManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, AttackSlotManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, BuildingBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, CharBodyBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, CharStatsBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, CharacterBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, CharacterEditWindowBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, CombatClassBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, CombatClass_AttackSlotManager_SlotDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, CombatClass_EffectDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, ConstructionStateBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, ContextMenuBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, ContextMenuGUIBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, DamagesBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, DataPanelLineBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, DialogueSpeechBubbleBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, EntDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, FactionBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, FactionManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, FactionWarMgrBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, FoliageSystemBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, ForgottenGUIBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, GUIWindowBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, GameDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, GameDataContainerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, GameDataEditorWindowBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, GameWorldBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, InputHandlerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, InteriorModeButtonWindowBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, InventoryBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, InventoryItemBaseBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, InventoryLayoutBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, LevelEditorBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, ListScrollBarBinding::getMetatableName(), ScrollBarBinding::getMetatableName());
     // setMetatableParent(L, MainTabPortraitPlatoonBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, MainthreadStateReaderTBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, MeshDataLookupBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, MessageBoxManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, ModInfoBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, OrderCellViewBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, OrderCellViewBinding::getMetatableName(), wraps::BaseCellViewBinding::getMetatableName());
     // setMetatableParent(L, OrderDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, OrdersItemBoxBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, OrdersItemBoxBinding::getMetatableName(), wraps::BaseItemBoxBinding::getMetatableName());
     // setMetatableParent(L, OrdersPanelBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, ParticlePoolBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, PhysicalEntityBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, PhysicsActualBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, PhysicsCollectionBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, PlatoonBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, PlayerInterfaceBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, PortraitDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, PortraitImageBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, PortraitMainCellViewBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, PortraitMainCellViewBinding::getMetatableName(), wraps::BaseCellViewBinding::getMetatableName());
     // setMetatableParent(L, PortraitManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, PortraitSquadCellViewBinding::getMetatableName(), wraps::BaseCellViewBinding::getMetatableName());
+    // setMetatableParent(L, PortraitSquadItemBoxBinding::getMetatableName(), wraps::BaseItemBoxBinding::getMetatableName());
     // setMetatableParent(L, PreviewBuildingBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, ResourceLoaderBinding::getMetatableName(), Ogre::ResourceAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, ResourceLoaderBinding::getMetatableName(), Ogre::ResourceBackgroundQueue::ListenerBinding::getMetatableName());
+    // setMetatableParent(L, RootObjectContainerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, RootObjectFactoryBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, SaveManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, ScreenLabelInterfaceBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, SelectionBoxBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, ShopTraderBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, SquadCellViewBinding::getMetatableName(), wraps::BaseCellViewBinding::getMetatableName());
+    // setMetatableParent(L, SquadItemBoxBinding::getMetatableName(), wraps::BaseItemBoxBinding::getMetatableName());
     // setMetatableParent(L, TaskDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, TaskerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, TerrainBinding::getMetatableName(), Ogre::FrameListenerBinding::getMetatableName());
     // setMetatableParent(L, TerrainBinding::getMetatableName(), Ogre::MovableObjectBinding::getMetatableName());
     // setMetatableParent(L, ToolTipBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, TownBaseBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, TownBuildingsManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, TransformWindowBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, TreeDataBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, TutorialItemBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, TutorialSubItemBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, WeatherRegionBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
+    // setMetatableParent(L, ZoneManagerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
     // setMetatableParent(L, ZoneMapBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
 }
 
@@ -698,7 +740,9 @@ void LuaBindings::registerClasses(lua_State* L)
     AttackSlotManagerBinding::registerBinding(L);
     BackThreadMessagesToMainTBinding::registerBinding(L);
     BackpackInventoryLayoutBinding::registerBinding(L);
+    BadSizeBinding::registerBinding(L);
     BinaryVersionBinding::registerBinding(L);
+    BoundsViolationBinding::registerBinding(L);
     BountyBinding::registerBinding(L);
     BountyManagerBinding::registerBinding(L);
     BoxBinding::registerBinding(L);
@@ -875,6 +919,7 @@ void LuaBindings::registerClasses(lua_State* L)
     ModInfoBinding::registerBinding(L);
     MotionFilterBinding::registerBinding(L);
     MultiSliderBinding::registerBinding(L);
+    MustEndWithSemiColonBinding::registerBinding(L);
     MyGUIBinding::registerBinding(L);
     NavInstanceBinding::registerBinding(L);
     NavMeshBinding::registerBinding(L);
@@ -1047,6 +1092,7 @@ void LuaBindings::registerClasses(lua_State* L)
     hkMemoryAllocator_MemoryStatisticsBinding::registerBinding(L);
     hkResultBinding::registerBinding(L);
     hkVector4fBinding::registerBinding(L);
+    hkVector4fComparisonBinding::registerBinding(L);
     iVector2Binding::registerBinding(L);
     physHitBinding::registerBinding(L);
     rendHitBinding::registerBinding(L);
