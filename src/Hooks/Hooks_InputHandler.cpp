@@ -16,3 +16,15 @@ DEFINE_HOOK_INSTALLER(InstallHook_InputHandler_KeyDown,
     "InputHandler::keyDownEvent",
     KenshiLib::GetRealAddress(&InputHandler::keyDownEvent),
     InputHandler_keyDownEvent_hook, InputHandler_keyDownEvent_orig)
+
+static InputHandler* (*InputHandler_CONSTRUCTOR_orig)(InputHandler*) = NULL;
+static InputHandler* InputHandler_CONSTRUCTOR_hook(InputHandler* thisptr)
+{
+    InputHandler* res = InputHandler_CONSTRUCTOR_orig(thisptr);
+    InputHandler* overrideRes = CallInputHandlerConstructedCallbacks(thisptr, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_InputHandler_CONSTRUCTOR,
+    "InputHandler::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&InputHandler::_CONSTRUCTOR),
+    InputHandler_CONSTRUCTOR_hook, InputHandler_CONSTRUCTOR_orig)

@@ -64,6 +64,30 @@ DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_fencingConfirmationCallback,
     KenshiLib::GetRealAddress(&InventoryGUI::fencingConfirmationCallback),
     InventoryGUI_fencingConfirmationCallback_hook, InventoryGUI_fencingConfirmationCallback_orig)
 
+static InventoryGUI* (*InventoryGUI_CONSTRUCTOR_orig)(InventoryGUI*, Inventory*, InventoryLayout*, RootObject*) = NULL;
+static InventoryGUI* InventoryGUI_CONSTRUCTOR_hook(InventoryGUI* thisptr, Inventory* inventory, InventoryLayout* layout, RootObject* callback)
+{
+    InventoryGUI* res = InventoryGUI_CONSTRUCTOR_orig(thisptr, inventory, layout, callback);
+    InventoryGUI* overrideRes = CallInventoryGUIConstructedCallbacks(thisptr, inventory, layout, callback, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_CONSTRUCTOR,
+    "InventoryGUI::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&InventoryGUI::_CONSTRUCTOR),
+    InventoryGUI_CONSTRUCTOR_hook, InventoryGUI_CONSTRUCTOR_orig)
+
+static GenericFixedInventoryLayout* (*GenericFixedInventoryLayout_CONSTRUCTOR_orig)(GenericFixedInventoryLayout*) = NULL;
+static GenericFixedInventoryLayout* GenericFixedInventoryLayout_CONSTRUCTOR_hook(GenericFixedInventoryLayout* thisptr)
+{
+    GenericFixedInventoryLayout* res = GenericFixedInventoryLayout_CONSTRUCTOR_orig(thisptr);
+    GenericFixedInventoryLayout* overrideRes = CallGenericFixedInventoryLayoutConstructedCallbacks(thisptr, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_GenericFixedInventoryLayout_CONSTRUCTOR,
+    "GenericFixedInventoryLayout::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&GenericFixedInventoryLayout::_CONSTRUCTOR),
+    GenericFixedInventoryLayout_CONSTRUCTOR_hook, GenericFixedInventoryLayout_CONSTRUCTOR_orig)
+
 // ---------------------------------------------------------------------------
 // Hooks for BuildModeWindow.h
 // ---------------------------------------------------------------------------

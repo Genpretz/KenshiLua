@@ -337,6 +337,10 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_CONSTRUCTOR,
     KenshiLib::GetRealAddress(&Character::_CONSTRUCTOR),
     Character_CONSTRUCTOR_hook, Character_CONSTRUCTOR_orig)
 
+// ---------------------------------------------------------------------------
+// Hooks for CharacterHuman.h
+// ---------------------------------------------------------------------------
+
 static CharacterHuman* (*CharacterHuman_CONSTRUCTOR_orig)(CharacterHuman*, GameData*, Faction*, hand) = NULL;
 static CharacterHuman* CharacterHuman_CONSTRUCTOR_hook(CharacterHuman* thisptr, GameData* d, Faction* f, hand _handle)
 {
@@ -348,6 +352,10 @@ DEFINE_HOOK_INSTALLER(InstallHook_CharacterHuman_CONSTRUCTOR,
     "CharacterHuman::_CONSTRUCTOR",
     KenshiLib::GetRealAddress(&CharacterHuman::_CONSTRUCTOR),
     CharacterHuman_CONSTRUCTOR_hook, CharacterHuman_CONSTRUCTOR_orig)
+
+// ---------------------------------------------------------------------------
+// Hooks for CharacterAnimal.h
+// ---------------------------------------------------------------------------
 
 static CharacterAnimal* (*CharacterAnimal_CONSTRUCTOR_orig)(CharacterAnimal*, GameData*, Faction*, hand, float) = NULL;
 static CharacterAnimal* CharacterAnimal_CONSTRUCTOR_hook(CharacterAnimal* thisptr, GameData* d, Faction* f, hand _handle, float _age)
@@ -361,6 +369,10 @@ DEFINE_HOOK_INSTALLER(InstallHook_CharacterAnimal_CONSTRUCTOR,
     KenshiLib::GetRealAddress(&CharacterAnimal::_CONSTRUCTOR),
     CharacterAnimal_CONSTRUCTOR_hook, CharacterAnimal_CONSTRUCTOR_orig)
 
+// ---------------------------------------------------------------------------
+// Hooks for CharBody.h
+// ---------------------------------------------------------------------------
+
 static CharBody* (*CharBody_CONSTRUCTOR_orig)(CharBody*) = NULL;
 static CharBody* CharBody_CONSTRUCTOR_hook(CharBody* thisptr)
 {
@@ -372,5 +384,17 @@ DEFINE_HOOK_INSTALLER(InstallHook_CharBody_CONSTRUCTOR,
     "CharBody::_CONSTRUCTOR",
     KenshiLib::GetRealAddress(&CharBody::_CONSTRUCTOR),
     CharBody_CONSTRUCTOR_hook, CharBody_CONSTRUCTOR_orig)
+
+static Character::AttachedArrowManager* (*AttachedArrowManager_CONSTRUCTOR_orig)(Character::AttachedArrowManager*) = NULL;
+static Character::AttachedArrowManager* AttachedArrowManager_CONSTRUCTOR_hook(Character::AttachedArrowManager* thisptr)
+{
+    Character::AttachedArrowManager* res = AttachedArrowManager_CONSTRUCTOR_orig(thisptr);
+    Character::AttachedArrowManager* overrideRes = CallAttachedArrowManagerConstructedCallbacks(thisptr, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_AttachedArrowManager_CONSTRUCTOR,
+    "Character::AttachedArrowManager::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&Character::AttachedArrowManager::_CONSTRUCTOR),
+    AttachedArrowManager_CONSTRUCTOR_hook, AttachedArrowManager_CONSTRUCTOR_orig)
 
 

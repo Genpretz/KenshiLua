@@ -16,6 +16,18 @@ DEFINE_HOOK_INSTALLER(InstallHook_DialogueWindow_Show,
     KenshiLib::GetRealAddress(static_cast<void (DialogueWindow::*)(Dialogue*)>(&DialogueWindow::show)),
     DialogueWindow_show_hook, DialogueWindow_show_orig)
 
+static DialogueWindow* (*DialogueWindow_CONSTRUCTOR_orig)(DialogueWindow*) = NULL;
+static DialogueWindow* DialogueWindow_CONSTRUCTOR_hook(DialogueWindow* thisptr)
+{
+    DialogueWindow* res = DialogueWindow_CONSTRUCTOR_orig(thisptr);
+    DialogueWindow* overrideRes = CallDialogueWindowConstructedCallbacks(thisptr, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_DialogueWindow_CONSTRUCTOR,
+    "DialogueWindow::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&DialogueWindow::_CONSTRUCTOR),
+    DialogueWindow_CONSTRUCTOR_hook, DialogueWindow_CONSTRUCTOR_orig)
+
 // ---------------------------------------------------------------------------
 // Hooks for Dialogue.h
 // ---------------------------------------------------------------------------
@@ -148,4 +160,3 @@ DEFINE_HOOK_INSTALLER(InstallHook_DialogLineData_CONSTRUCTOR,
     "DialogLineData::_CONSTRUCTOR",
     KenshiLib::GetRealAddress(&DialogLineData::_CONSTRUCTOR),
     DialogLineData_CONSTRUCTOR_hook, DialogLineData_CONSTRUCTOR_orig)
-

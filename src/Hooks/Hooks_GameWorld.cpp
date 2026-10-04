@@ -15,3 +15,15 @@ DEFINE_HOOK_INSTALLER(InstallHook_GameWorld_CharsUpdate,
     "GameWorld::charsUpdate",
     KenshiLib::GetRealAddress(&GameWorld::charsUpdate),
     GameWorld_charsUpdate_hook, GameWorld_charsUpdate_orig)
+
+static GameWorld* (*GameWorld_CONSTRUCTOR_orig)(GameWorld*) = NULL;
+static GameWorld* GameWorld_CONSTRUCTOR_hook(GameWorld* thisptr)
+{
+    GameWorld* res = GameWorld_CONSTRUCTOR_orig(thisptr);
+    GameWorld* overrideRes = CallGameWorldConstructedCallbacks(thisptr, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_GameWorld_CONSTRUCTOR,
+    "GameWorld::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&GameWorld::_CONSTRUCTOR),
+    GameWorld_CONSTRUCTOR_hook, GameWorld_CONSTRUCTOR_orig)

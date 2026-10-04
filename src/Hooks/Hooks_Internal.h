@@ -215,8 +215,6 @@ bool InstallHook_Faction_CONSTRUCTOR();
 bool InstallHook_Bounty_CONSTRUCTOR();
 bool InstallHook_Damages_CONSTRUCTOR();
 bool InstallHook_Inventory_CONSTRUCTOR();
-
-// New Constructor Hooks
 bool InstallHook_DoorStuff_CONSTRUCTOR();
 bool InstallHook_ProductionBuilding_CONSTRUCTOR();
 bool InstallHook_CraftingBuilding_CONSTRUCTOR();
@@ -234,24 +232,43 @@ bool InstallHook_WindGeneratorBuilding_CONSTRUCTOR();
 bool InstallHook_GatewayBuilding_CONSTRUCTOR();
 bool InstallHook_TortureBuilding_CONSTRUCTOR();
 bool InstallHook_RainCollectorBuilding_CONSTRUCTOR();
-
 bool InstallHook_CharacterHuman_CONSTRUCTOR();
 bool InstallHook_CharacterAnimal_CONSTRUCTOR();
 bool InstallHook_CharStats_CONSTRUCTOR();
 bool InstallHook_CharBody_CONSTRUCTOR();
 bool InstallHook_CharMovement_CONSTRUCTOR();
 bool InstallHook_CombatClass_CONSTRUCTOR();
-
 bool InstallHook_Town_CONSTRUCTOR();
 bool InstallHook_TownBase_CONSTRUCTOR();
 bool InstallHook_FactionLeader_CONSTRUCTOR();
 bool InstallHook_FactionRelations_CONSTRUCTOR();
 bool InstallHook_FactionUniqueSquadManager_CONSTRUCTOR();
 bool InstallHook_ProsperityManager_CONSTRUCTOR();
-
 bool InstallHook_InventoryItemBase_CONSTRUCTOR();
 bool InstallHook_MedicalSystem_CONSTRUCTOR();
 bool InstallHook_CombatTechniqueData_CONSTRUCTOR();
-
 bool InstallHook_Dialogue_CONSTRUCTOR();
 bool InstallHook_DialogLineData_CONSTRUCTOR();
+bool InstallHook_GameData_CONSTRUCTOR();
+bool InstallHook_Tasker_CONSTRUCTOR();
+bool InstallHook_AppearanceManager_CONSTRUCTOR();
+bool InstallHook_CombatMovementController_CONSTRUCTOR();
+bool InstallHook_WorldEventStateQuery_CONSTRUCTOR();
+bool InstallHook_DialogueWindow_CONSTRUCTOR();
+bool InstallHook_InventoryGUI_CONSTRUCTOR();
+bool InstallHook_GenericFixedInventoryLayout_CONSTRUCTOR();
+bool InstallHook_GameWorld_CONSTRUCTOR();
+bool InstallHook_PlayerInterface_CONSTRUCTOR();
+bool InstallHook_InputHandler_CONSTRUCTOR();
+bool InstallHook_RootObjectFactory_CONSTRUCTOR();
+bool InstallHook_FactionManager_CONSTRUCTOR();
+bool InstallHook_FactionWarMgr_CONSTRUCTOR();
+bool InstallHook_BountyManager_CONSTRUCTOR();
+bool InstallHook_ZoneMap_CONSTRUCTOR();
+bool InstallHook_ZoneManager_CONSTRUCTOR();
+bool InstallHook_AttachedArrowManager_CONSTRUCTOR();
+bool InstallHook_LimbsInventoryLayout_CONSTRUCTOR();
+bool InstallHook_RobotLimbs_CONSTRUCTOR();
+bool InstallHook_ShopTrader_CONSTRUCTOR();
+bool InstallHook_RootObjectBase_CONSTRUCTOR();
+bool InstallHook_RootObject_CONSTRUCTOR();

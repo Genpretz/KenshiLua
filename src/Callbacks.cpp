@@ -14,8 +14,15 @@
 #include "Bindings/Kenshi/DialogLineDataBinding.h"
 #include "Bindings/Kenshi/DialogueBinding.h"
 #include "Bindings/Kenshi/FactionBinding.h"
+#include "Bindings/Kenshi/FactionManagerBinding.h"
+#include "Bindings/Kenshi/FactionWarMgrBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
+#include "Bindings/Kenshi/AppearanceManagerBinding.h"
+#include "Bindings/Kenshi/AttachedArrowManagerBinding.h"
+#include "Bindings/Kenshi/BountyManagerBinding.h"
+#include "Bindings/Kenshi/CombatMovementControllerBinding.h"
 #include "Bindings/Kenshi/Gui/DialogueWindowBinding.h"
+#include "Bindings/Kenshi/Gui/GenericFixedInventoryLayoutBinding.h"
 #include "Bindings/Kenshi/InventoryBinding.h"
 #include "Bindings/Kenshi/InventorySectionBinding.h"
 #include "Bindings/Kenshi/InventoryItemBaseBinding.h"
@@ -28,8 +35,12 @@
 #include "Bindings/Kenshi/GameWorldBinding.h"
 #include "Bindings/Kenshi/RaceDataBinding.h"
 #include "Bindings/Kenshi/RootObjectBinding.h"
+#include "Bindings/Kenshi/RootObjectBaseBinding.h"
+#include "Bindings/Kenshi/RootObjectFactoryBinding.h"
+#include "Bindings/Kenshi/ShopTraderBinding.h"
 #include "Bindings/Kenshi/TaskerBinding.h"
 #include "Bindings/Kenshi/Gui/InventoryGUIBinding.h"
+#include "Bindings/Kenshi/Gui/InventoryLayoutBinding.h"
 #include "Bindings/Kenshi/Gui/BuildModeWindowBinding.h"
 #include "Bindings/Kenshi/Gui/SquadManagementScreenBinding.h"
 #include "Bindings/Kenshi/Gui/ManagementScreenBinding.h"
@@ -38,6 +49,8 @@
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "Bindings/Kenshi/MedicalSystemBinding.h"
+#include "Bindings/Kenshi/LimbsInventoryLayoutBinding.h"
+#include "Bindings/Kenshi/RobotLimbsBinding.h"
 #include "Bindings/Kenshi/GameSaveStateBinding.h"
 #include "Bindings/Kenshi/GameDataContainerBinding.h"
 #include "Bindings/Kenshi/TownBinding.h"
@@ -80,9 +93,13 @@
 #include "Bindings/Kenshi/ProsperityManagerBinding.h"
 #include "Bindings/Kenshi/Gui/DataPanelLineBinding.h"
 #include "Bindings/Kenshi/Util/rendHitBinding.h"
+#include "Bindings/Kenshi/WorldEventStateQueryBinding.h"
+#include "Bindings/Kenshi/ZoneManagerBinding.h"
+#include "Bindings/Kenshi/ZoneMapBinding.h"
 
 // KenshiLib headers
 #include <kenshi/CharMovement.h>
+#include <kenshi/AppearanceManager.h>
 #include <kenshi/CombatClass.h>
 #include <kenshi/GameWorld.h>
 #include <kenshi/Building/Building.h>
@@ -120,6 +137,15 @@
 #include <kenshi/Bounty.h>
 #include <kenshi/gui/DialogueWindow.h>
 #include <kenshi/Dialogue.h>
+#include <kenshi/WorldEventStateQuery.h>
+#include <kenshi/RootObjectFactory.h>
+#include <kenshi/FactionWarMgr.h>
+#include <kenshi/BountyManager.h>
+#include <kenshi/ZoneManager.h>
+#include <kenshi/MedicalSystem.h>
+#include <kenshi/ShopTrader.h>
+#include <kenshi/RootObjectBase.h>
+#include <kenshi/gui/InventoryGUI.h>
 #include <kenshi/util/lektor.h>
 #include <mygui/common/baselayout/BaseLayout.h>
 
@@ -138,11 +164,14 @@ namespace KenshiLua
     static inline const char* PlatoonMetatable()                { return PlatoonBinding::getMetatableName(); }
     static inline const char* ItemMetatable()                   { return ItemBinding::getMetatableName(); }
     static inline const char* PlayerInterfaceMetatable()        { return PlayerInterfaceBinding::getMetatableName(); }
+    static inline const char* BountyManagerMetatable()           { return BountyManagerBinding::getMetatableName(); }
     static inline const char* FactionMetatable()                { return FactionBinding::getMetatableName(); }
     static inline const char* DialogueWindowMetatable()         { return DialogueWindowBinding::getMetatableName(); }
     static inline const char* DialogueMetatable()               { return DialogueBinding::getMetatableName(); }
     static inline const char* DialogLineDataMetatable()         { return DialogLineDataBinding::getMetatableName(); }
     static inline const char* RootObjectMetatable()             { return RootObjectBinding::getMetatableName(); }
+    static inline const char* RootObjectBaseMetatable()         { return RootObjectBaseBinding::getMetatableName(); }
+    static inline const char* RootObjectFactoryMetatable()      { return RootObjectFactoryBinding::getMetatableName(); }
     static inline const char* InventoryMetatable()              { return InventoryBinding::getMetatableName(); }
     static inline const char* OwnershipsMetatable()             { return OwnershipsBinding::getMetatableName(); }
     static inline const char* InventoryItemBaseMetatable()      { return InventoryItemBaseBinding::getMetatableName(); }
@@ -152,13 +181,19 @@ namespace KenshiLua
     static inline const char* UseableStuffMetatable()           { return UseableStuffBinding::getMetatableName(); }
     static inline const char* HandMetatable()                   { return HandBinding::getMetatableName(); }
     static inline const char* GameDataMetatable()               { return GameDataBinding::getMetatableName(); }
+    static inline const char* AppearanceManagerMetatable()      { return AppearanceManagerBinding::getMetatableName(); }
+    static inline const char* CombatMovementControllerMetatable() { return CombatMovementControllerBinding::getMetatableName(); }
     static inline const char* RaceDataMetatable()               { return RaceDataBinding::getMetatableName(); }
     static inline const char* InventorySectionMetatable()       { return InventorySectionBinding::getMetatableName(); }
     static inline const char* MedicalSystemMetatable()          { return MedicalSystemBinding::getMetatableName(); }
     static inline const char* CharMovementMetatable()           { return CharMovementBinding::getMetatableName(); }
     static inline const char* CombatClassMetatable()            { return CombatClassBinding::getMetatableName(); }
     static inline const char* GameWorldMetatable()              { return GameWorldBinding::getMetatableName(); }
+    static inline const char* FactionManagerMetatable()         { return FactionManagerBinding::getMetatableName(); }
+    static inline const char* FactionWarMgrMetatable()          { return FactionWarMgrBinding::getMetatableName(); }
     static inline const char* InventoryGUIMetatable()           { return InventoryGUIBinding::getMetatableName(); }
+    static inline const char* InventoryLayoutMetatable()        { return InventoryLayoutBinding::getMetatableName(); }
+    static inline const char* GenericFixedInventoryLayoutMetatable() { return GenericFixedInventoryLayoutBinding::getMetatableName(); }
     static inline const char* BuildModeWindowMetatable()        { return BuildModeWindowBinding::getMetatableName(); }
     static inline const char* SquadManagementScreenMetatable()  { return SquadManagementScreenBinding::getMetatableName(); }
     static inline const char* ManagementScreenMetatable()       { return ManagementScreenBinding::getMetatableName(); }
@@ -167,6 +202,10 @@ namespace KenshiLua
     static inline const char* OrdersPanelMetatable()            { return OrdersPanelBinding::getMetatableName(); }
     static inline const char* DataPanelLineButtonMetatable()    { return DataPanelLine_ButtonBinding::getMetatableName(); }
     static inline const char* InputHandlerMetatable()           { return InputHandlerBinding::getMetatableName(); }
+    static inline const char* AttachedArrowManagerMetatable()   { return AttachedArrowManagerBinding::getMetatableName(); }
+    static inline const char* LimbsInventoryLayoutMetatable()   { return LimbsInventoryLayoutBinding::getMetatableName(); }
+    static inline const char* RobotLimbsMetatable()             { return RobotLimbsBinding::getMetatableName(); }
+    static inline const char* ShopTraderMetatable()             { return ShopTraderBinding::getMetatableName(); }
     static inline const char* BaseLayoutMetatable()             { return BaseLayoutBinding::getMetatableName(); }
     static inline const char* ActivePlatoonMetatable()          { return ActivePlatoonBinding::getMetatableName(); }
     static inline const char* ArmourMetatable()                 { return ArmourBinding::getMetatableName(); }
@@ -204,6 +243,9 @@ namespace KenshiLua
     static inline const char* FactionRelationsMetatable()       { return FactionRelationsBinding::getMetatableName(); }
     static inline const char* FactionUniqueSquadManagerMetatable() { return FactionUniqueSquadManagerBinding::getMetatableName(); }
     static inline const char* ProsperityManagerMetatable()      { return ProsperityManagerBinding::getMetatableName(); }
+    static inline const char* WorldEventStateQueryMetatable()   { return WorldEventStateQueryBinding::getMetatableName(); }
+    static inline const char* ZoneManagerMetatable()            { return ZoneManagerBinding::getMetatableName(); }
+    static inline const char* ZoneMapMetatable()                { return ZoneMapBinding::getMetatableName(); }
 
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, int val)                       { lua_pushinteger(L, val); }
@@ -220,15 +262,20 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, Item* val)                     { pushObject<Item>(L, val, ItemMetatable()); }
     static inline void pushArg(lua_State* L, Faction* val)                  { pushObject<Faction>(L, val, FactionMetatable()); }
     static inline void pushArg(lua_State* L, PlayerInterface* val)          { pushObject<PlayerInterface>(L, val, PlayerInterfaceMetatable()); }
+    static inline void pushArg(lua_State* L, BountyManager* val)             { pushObject<BountyManager>(L, val, BountyManagerMetatable()); }
     static inline void pushArg(lua_State* L, DialogueWindow* val)           { pushObject<DialogueWindow>(L, val, DialogueWindowMetatable()); }
     static inline void pushArg(lua_State* L, Dialogue* val)                 { pushObject<Dialogue>(L, val, DialogueMetatable()); }
     static inline void pushArg(lua_State* L, DialogLineData* val)           { pushObject<DialogLineData>(L, val, DialogLineDataMetatable()); }
     static inline void pushArg(lua_State* L, RootObject* val)               { pushObject<RootObject>(L, val, RootObjectMetatable()); }
+    static inline void pushArg(lua_State* L, RootObjectBase* val)           { pushObject<RootObjectBase>(L, val, RootObjectBaseMetatable()); }
+    static inline void pushArg(lua_State* L, RootObjectFactory* val)        { pushObject<RootObjectFactory>(L, val, RootObjectFactoryMetatable()); }
     static inline void pushArg(lua_State* L, Inventory* val)                { pushObject<Inventory>(L, val, InventoryMetatable()); }
     static inline void pushArg(lua_State* L, CombatTechniqueData* val)      { pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
     static inline void pushArg(lua_State* L, Tasker* val)                   { pushObject<Tasker>(L, val, TaskerMetatable()); }
     static inline void pushArg(lua_State* L, CombatClass* val)              { pushObject<CombatClass>(L, val, CombatClassMetatable()); }
     static inline void pushArg(lua_State* L, GameWorld* val)                { pushObject<GameWorld>(L, val, GameWorldMetatable()); }
+    static inline void pushArg(lua_State* L, FactionManager* val)           { pushObject<FactionManager>(L, val, FactionManagerMetatable()); }
+    static inline void pushArg(lua_State* L, FactionWarMgr* val)            { pushObject<FactionWarMgr>(L, val, FactionWarMgrMetatable()); }
     static inline void pushArg(lua_State* L, Building* val)                 { pushObject<Building>(L, val, BuildingMetatable()); }
     static inline void pushArg(lua_State* L, const Building* val)           { pushObject<Building>(L, const_cast<Building*>(val), BuildingMetatable()); }
     static inline void pushArg(lua_State* L, UseableStuff* val)             { pushObject<UseableStuff>(L, val, UseableStuffMetatable()); }
@@ -241,9 +288,13 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, const Ogre::Quaternion& val)   { pushQuaternion(L, val); }
     static inline void pushArg(lua_State* L, YesNoMaybe val)                { lua_pushinteger(L, static_cast<int>(val.key)); }
     static inline void pushArg(lua_State* L, GameData* val)                 { pushObject<GameData>(L, val, GameDataMetatable()); }
+    static inline void pushArg(lua_State* L, AppearanceManager* val)        { pushObject<AppearanceManager>(L, val, AppearanceManagerMetatable()); }
+    static inline void pushArg(lua_State* L, CombatMovementController* val) { pushObject<CombatMovementController>(L, val, CombatMovementControllerMetatable()); }
     static inline void pushArg(lua_State* L, RaceData* val)                 { pushObject<RaceData>(L, val, RaceDataMetatable()); }
     static inline void pushArg(lua_State* L, MedicalSystem* val)            { pushObject<MedicalSystem>(L, val, MedicalSystemMetatable()); }
     static inline void pushArg(lua_State* L, InventoryGUI* val)             { pushObject<InventoryGUI>(L, val, InventoryGUIMetatable()); }
+    static inline void pushArg(lua_State* L, InventoryLayout* val)          { pushObject<InventoryLayout>(L, val, InventoryLayoutMetatable()); }
+    static inline void pushArg(lua_State* L, GenericFixedInventoryLayout* val) { pushObject<GenericFixedInventoryLayout>(L, val, GenericFixedInventoryLayoutMetatable()); }
     static inline void pushArg(lua_State* L, BuildModeWindow* val)          { pushObject<BuildModeWindow>(L, val, BuildModeWindowMetatable()); }
     static inline void pushArg(lua_State* L, SquadManagementScreen* val)    { pushObject<SquadManagementScreen>(L, val, SquadManagementScreenMetatable()); }
     static inline void pushArg(lua_State* L, ManagementScreen* val)         { pushObject<ManagementScreen>(L, val, ManagementScreenMetatable()); }
@@ -252,6 +303,10 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, OrdersPanel* val)              { pushObject<OrdersPanel>(L, val, OrdersPanelMetatable()); }
     static inline void pushArg(lua_State* L, DataPanelLine_Button* val)     { pushObject<DataPanelLine_Button>(L, val, DataPanelLineButtonMetatable()); }
     static inline void pushArg(lua_State* L, InputHandler* val)             { pushObject<InputHandler>(L, val, InputHandlerMetatable()); }
+    static inline void pushArg(lua_State* L, Character::AttachedArrowManager* val) { pushObject<Character::AttachedArrowManager>(L, val, AttachedArrowManagerMetatable()); }
+    static inline void pushArg(lua_State* L, LimbsInventoryLayout* val)     { pushObject<LimbsInventoryLayout>(L, val, LimbsInventoryLayoutMetatable()); }
+    static inline void pushArg(lua_State* L, RobotLimbs* val)                { pushObject<RobotLimbs>(L, val, RobotLimbsMetatable()); }
+    static inline void pushArg(lua_State* L, ShopTrader* val)                { pushObject<ShopTrader>(L, val, ShopTraderMetatable()); }
     static inline void pushArg(lua_State* L, wraps::BaseLayout* val)        { pushObject<wraps::BaseLayout>(L, val, BaseLayoutMetatable()); }
     static inline void pushArg(lua_State* L, void* val)                     { lua_pushlightuserdata(L, val); }
     static inline void pushArg(lua_State* L, lektor<GameData*>& val)        { pushObject<lektor<GameData*>>(L, &val, LektorPtrBinding<GameData*>::metaName); }
@@ -292,6 +347,9 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, FactionRelations* val)         { pushObject<FactionRelations>(L, val, FactionRelationsMetatable()); }
     static inline void pushArg(lua_State* L, FactionUniqueSquadManager* val){ pushObject<FactionUniqueSquadManager>(L, val, FactionUniqueSquadManagerMetatable()); }
     static inline void pushArg(lua_State* L, ProsperityManager* val)        { pushObject<ProsperityManager>(L, val, ProsperityManagerMetatable()); }
+    static inline void pushArg(lua_State* L, WorldEventStateQuery* val)     { pushObject<WorldEventStateQuery>(L, val, WorldEventStateQueryMetatable()); }
+    static inline void pushArg(lua_State* L, ZoneManager* val)              { pushObject<ZoneManager>(L, val, ZoneManagerMetatable()); }
+    static inline void pushArg(lua_State* L, ZoneMap* val)                  { pushObject<ZoneMap>(L, val, ZoneMapMetatable()); }
 
     // pullArg — reads a (possibly Lua-edited) value back off the stack.
     // No pointer/object overloads on purpose; see IParamsFilter comment.
@@ -1598,6 +1656,175 @@ DialogLineData* CallDialogLineDataConstructedCallbacks(DialogLineData* thisptr, 
     ArgPusher3<DialogLineData*, GameData*, DialogLineData*> pusher(thisptr, dat, defaultVal);
     DialogLineData* overrideObj = static_cast<DialogLineData*>(KenshiLua::EventSystem::get().callHandlersObject(
         "DialogLineData::_CONSTRUCTOR", KenshiLua::DialogLineDataMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+GameData* CallGameDataConstructedCallbacks(GameData* thisptr, GameData* defaultVal)
+{
+    ArgPusher2<GameData*, GameData*> pusher(thisptr, defaultVal);
+    GameData* overrideObj = static_cast<GameData*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "GameData::_CONSTRUCTOR", KenshiLua::GameDataMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Tasker* CallTaskerConstructedCallbacks(Tasker* thisptr, Tasker* defaultVal)
+{
+    ArgPusher2<Tasker*, Tasker*> pusher(thisptr, defaultVal);
+    Tasker* overrideObj = static_cast<Tasker*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "Tasker::_CONSTRUCTOR", KenshiLua::TaskerMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+AppearanceManager* CallAppearanceManagerConstructedCallbacks(AppearanceManager* thisptr, AppearanceManager* defaultVal)
+{
+    ArgPusher2<AppearanceManager*, AppearanceManager*> pusher(thisptr, defaultVal);
+    AppearanceManager* overrideObj = static_cast<AppearanceManager*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "AppearanceManager::_CONSTRUCTOR", KenshiLua::AppearanceManagerMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+CombatMovementController* CallCombatMovementControllerConstructedCallbacks(CombatMovementController* thisptr, CombatMovementController* defaultVal)
+{
+    ArgPusher2<CombatMovementController*, CombatMovementController*> pusher(thisptr, defaultVal);
+    CombatMovementController* overrideObj = static_cast<CombatMovementController*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "CombatMovementController::_CONSTRUCTOR", KenshiLua::CombatMovementControllerMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+WorldEventStateQuery* CallWorldEventStateQueryConstructedCallbacks(WorldEventStateQuery* thisptr, WorldEventStateQuery* defaultVal)
+{
+    ArgPusher2<WorldEventStateQuery*, WorldEventStateQuery*> pusher(thisptr, defaultVal);
+    WorldEventStateQuery* overrideObj = static_cast<WorldEventStateQuery*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "WorldEventStateQuery::_CONSTRUCTOR", KenshiLua::WorldEventStateQueryMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+DialogueWindow* CallDialogueWindowConstructedCallbacks(DialogueWindow* thisptr, DialogueWindow* defaultVal)
+{
+    ArgPusher2<DialogueWindow*, DialogueWindow*> pusher(thisptr, defaultVal);
+    DialogueWindow* overrideObj = static_cast<DialogueWindow*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "DialogueWindow::_CONSTRUCTOR", KenshiLua::DialogueWindowMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+InventoryGUI* CallInventoryGUIConstructedCallbacks(InventoryGUI* thisptr, Inventory* inventory, InventoryLayout* layout, RootObject* callback, InventoryGUI* defaultVal)
+{
+    ArgPusher5<InventoryGUI*, Inventory*, InventoryLayout*, RootObject*, InventoryGUI*> pusher(thisptr, inventory, layout, callback, defaultVal);
+    InventoryGUI* overrideObj = static_cast<InventoryGUI*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "InventoryGUI::_CONSTRUCTOR", KenshiLua::InventoryGUIMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+GenericFixedInventoryLayout* CallGenericFixedInventoryLayoutConstructedCallbacks(GenericFixedInventoryLayout* thisptr, GenericFixedInventoryLayout* defaultVal)
+{
+    ArgPusher2<GenericFixedInventoryLayout*, GenericFixedInventoryLayout*> pusher(thisptr, defaultVal);
+    GenericFixedInventoryLayout* overrideObj = static_cast<GenericFixedInventoryLayout*>(KenshiLua::EventSystem::get().callHandlersObject(
+        "GenericFixedInventoryLayout::_CONSTRUCTOR", KenshiLua::GenericFixedInventoryLayoutMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+GameWorld* CallGameWorldConstructedCallbacks(GameWorld* thisptr, GameWorld* defaultVal)
+{
+    ArgPusher2<GameWorld*, GameWorld*> pusher(thisptr, defaultVal);
+    GameWorld* overrideObj = static_cast<GameWorld*>(KenshiLua::EventSystem::get().callHandlersObject("GameWorld::_CONSTRUCTOR", KenshiLua::GameWorldMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+PlayerInterface* CallPlayerInterfaceConstructedCallbacks(PlayerInterface* thisptr, PlayerInterface* defaultVal)
+{
+    ArgPusher2<PlayerInterface*, PlayerInterface*> pusher(thisptr, defaultVal);
+    PlayerInterface* overrideObj = static_cast<PlayerInterface*>(KenshiLua::EventSystem::get().callHandlersObject("PlayerInterface::_CONSTRUCTOR", KenshiLua::PlayerInterfaceMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+InputHandler* CallInputHandlerConstructedCallbacks(InputHandler* thisptr, InputHandler* defaultVal)
+{
+    ArgPusher2<InputHandler*, InputHandler*> pusher(thisptr, defaultVal);
+    InputHandler* overrideObj = static_cast<InputHandler*>(KenshiLua::EventSystem::get().callHandlersObject("InputHandler::_CONSTRUCTOR", KenshiLua::InputHandlerMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+RootObjectFactory* CallRootObjectFactoryConstructedCallbacks(RootObjectFactory* thisptr, RootObjectFactory* defaultVal)
+{
+    ArgPusher2<RootObjectFactory*, RootObjectFactory*> pusher(thisptr, defaultVal);
+    RootObjectFactory* overrideObj = static_cast<RootObjectFactory*>(KenshiLua::EventSystem::get().callHandlersObject("RootObjectFactory::_CONSTRUCTOR", KenshiLua::RootObjectFactoryMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+FactionManager* CallFactionManagerConstructedCallbacks(FactionManager* thisptr, FactionManager* defaultVal)
+{
+    ArgPusher2<FactionManager*, FactionManager*> pusher(thisptr, defaultVal);
+    FactionManager* overrideObj = static_cast<FactionManager*>(KenshiLua::EventSystem::get().callHandlersObject("FactionManager::_CONSTRUCTOR", KenshiLua::FactionManagerMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+FactionWarMgr* CallFactionWarMgrConstructedCallbacks(FactionWarMgr* thisptr, Faction* faction, FactionWarMgr* defaultVal)
+{
+    ArgPusher3<FactionWarMgr*, Faction*, FactionWarMgr*> pusher(thisptr, faction, defaultVal);
+    FactionWarMgr* overrideObj = static_cast<FactionWarMgr*>(KenshiLua::EventSystem::get().callHandlersObject("FactionWarMgr::_CONSTRUCTOR", KenshiLua::FactionWarMgrMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+BountyManager* CallBountyManagerConstructedCallbacks(BountyManager* thisptr, Character* character, BountyManager* defaultVal)
+{
+    ArgPusher3<BountyManager*, Character*, BountyManager*> pusher(thisptr, character, defaultVal);
+    BountyManager* overrideObj = static_cast<BountyManager*>(KenshiLua::EventSystem::get().callHandlersObject("BountyManager::_CONSTRUCTOR", KenshiLua::BountyManagerMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+ZoneMap* CallZoneMapConstructedCallbacks(ZoneMap* thisptr, ZoneMap* defaultVal)
+{
+    ArgPusher2<ZoneMap*, ZoneMap*> pusher(thisptr, defaultVal);
+    ZoneMap* overrideObj = static_cast<ZoneMap*>(KenshiLua::EventSystem::get().callHandlersObject("ZoneMap::_CONSTRUCTOR", KenshiLua::ZoneMapMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+ZoneManager* CallZoneManagerConstructedCallbacks(ZoneManager* thisptr, ZoneManager* defaultVal)
+{
+    ArgPusher2<ZoneManager*, ZoneManager*> pusher(thisptr, defaultVal);
+    ZoneManager* overrideObj = static_cast<ZoneManager*>(KenshiLua::EventSystem::get().callHandlersObject("ZoneManager::_CONSTRUCTOR", KenshiLua::ZoneManagerMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+Character::AttachedArrowManager* CallAttachedArrowManagerConstructedCallbacks(Character::AttachedArrowManager* thisptr, Character::AttachedArrowManager* defaultVal)
+{
+    ArgPusher2<Character::AttachedArrowManager*, Character::AttachedArrowManager*> pusher(thisptr, defaultVal);
+    Character::AttachedArrowManager* overrideObj = static_cast<Character::AttachedArrowManager*>(KenshiLua::EventSystem::get().callHandlersObject("Character::AttachedArrowManager::_CONSTRUCTOR", KenshiLua::AttachedArrowManagerMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+LimbsInventoryLayout* CallLimbsInventoryLayoutConstructedCallbacks(LimbsInventoryLayout* thisptr, Character* character, LimbsInventoryLayout* defaultVal)
+{
+    ArgPusher3<LimbsInventoryLayout*, Character*, LimbsInventoryLayout*> pusher(thisptr, character, defaultVal);
+    LimbsInventoryLayout* overrideObj = static_cast<LimbsInventoryLayout*>(KenshiLua::EventSystem::get().callHandlersObject("LimbsInventoryLayout::_CONSTRUCTOR", KenshiLua::LimbsInventoryLayoutMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+RobotLimbs* CallRobotLimbsConstructedCallbacks(RobotLimbs* thisptr, Character* character, RobotLimbs* defaultVal)
+{
+    ArgPusher3<RobotLimbs*, Character*, RobotLimbs*> pusher(thisptr, character, defaultVal);
+    RobotLimbs* overrideObj = static_cast<RobotLimbs*>(KenshiLua::EventSystem::get().callHandlersObject("RobotLimbs::_CONSTRUCTOR", KenshiLua::RobotLimbsMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+ShopTrader* CallShopTraderConstructedCallbacks(ShopTrader* thisptr, Character* character, ShopTrader* defaultVal)
+{
+    ArgPusher3<ShopTrader*, Character*, ShopTrader*> pusher(thisptr, character, defaultVal);
+    ShopTrader* overrideObj = static_cast<ShopTrader*>(KenshiLua::EventSystem::get().callHandlersObject("ShopTrader::_CONSTRUCTOR", KenshiLua::ShopTraderMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+RootObjectBase* CallRootObjectBaseConstructedCallbacks(RootObjectBase* thisptr, GameData* data, Faction* faction, hand handle, RootObjectBase* defaultVal)
+{
+    ArgPusher5<RootObjectBase*, GameData*, Faction*, hand, RootObjectBase*> pusher(thisptr, data, faction, handle, defaultVal);
+    RootObjectBase* overrideObj = static_cast<RootObjectBase*>(KenshiLua::EventSystem::get().callHandlersObject("RootObjectBase::_CONSTRUCTOR", KenshiLua::RootObjectBaseMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
+}
+
+RootObject* CallRootObjectConstructedCallbacks(RootObject* thisptr, GameData* data, Faction* faction, hand handle, RootObject* defaultVal)
+{
+    ArgPusher5<RootObject*, GameData*, Faction*, hand, RootObject*> pusher(thisptr, data, faction, handle, defaultVal);
+    RootObject* overrideObj = static_cast<RootObject*>(KenshiLua::EventSystem::get().callHandlersObject("RootObject::_CONSTRUCTOR", KenshiLua::RootObjectMetatable(), &pusher));
     return overrideObj ? overrideObj : defaultVal;
 }
 

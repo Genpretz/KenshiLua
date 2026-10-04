@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <kenshi/Character.h>
 
 // Forward declaration — avoids pulling in the full headers in every
 // translation unit that only needs to call these dispatchers.
@@ -31,6 +32,7 @@ class Ownerships;
 class InventoryItemBase;
 class CharMovement;
 class InventoryGUI;
+class InventoryLayout;
 class BuildModeWindow;
 class SquadManagementScreen;
 class ManagementScreen;
@@ -78,6 +80,19 @@ class TortureBuilding;
 class RainCollectorBuilding;
 class DataPanelLine;
 class rendHit;
+class AppearanceManager;
+class CombatMovementController;
+class WorldEventStateQuery;
+class GenericFixedInventoryLayout;
+class RootObjectFactory;
+class FactionManager;
+class FactionWarMgr;
+class ZoneMap;
+class ZoneManager;
+class LimbsInventoryLayout;
+class RobotLimbs;
+class ShopTrader;
+class RootObjectBase;
 namespace wraps { class BaseLayout; }
 namespace MyGUI { class Widget; }
 template <typename T> class lektor;
@@ -1028,6 +1043,92 @@ Dialogue* CallDialogueConstructedCallbacks(Dialogue* thisptr, Dialogue* defaultV
 // Lua event name: "DialogLineData::_CONSTRUCTOR"
 // Lua signature:  function(self, data, defaultVal) -> DialogLineData
 DialogLineData* CallDialogLineDataConstructedCallbacks(DialogLineData* thisptr, GameData* dat, DialogLineData* defaultVal);
+
+// Fired by GameData::_CONSTRUCTOR hook.
+// Lua event name: "GameData::_CONSTRUCTOR"
+// Lua signature:  function(self, defaultVal) -> GameData
+GameData* CallGameDataConstructedCallbacks(GameData* thisptr, GameData* defaultVal);
+
+// Fired by Tasker::_CONSTRUCTOR hook.
+// Lua event name: "Tasker::_CONSTRUCTOR"
+// Lua signature:  function(self, defaultVal) -> Tasker
+Tasker* CallTaskerConstructedCallbacks(Tasker* thisptr, Tasker* defaultVal);
+
+// Fired by AppearanceManager::_CONSTRUCTOR hook.
+// Lua event name: "AppearanceManager::_CONSTRUCTOR"
+// Lua signature:  function(self, defaultVal) -> AppearanceManager
+AppearanceManager* CallAppearanceManagerConstructedCallbacks(AppearanceManager* thisptr, AppearanceManager* defaultVal);
+
+// Fired by CombatMovementController::_CONSTRUCTOR hook.
+// Lua event name: "CombatMovementController::_CONSTRUCTOR"
+// Lua signature:  function(self, defaultVal) -> CombatMovementController
+CombatMovementController* CallCombatMovementControllerConstructedCallbacks(CombatMovementController* thisptr, CombatMovementController* defaultVal);
+
+// Fired by WorldEventStateQuery::_CONSTRUCTOR hook.
+// Lua event name: "WorldEventStateQuery::_CONSTRUCTOR"
+// Lua signature:  function(self, defaultVal) -> WorldEventStateQuery
+WorldEventStateQuery* CallWorldEventStateQueryConstructedCallbacks(WorldEventStateQuery* thisptr, WorldEventStateQuery* defaultVal);
+
+// Fired by DialogueWindow::_CONSTRUCTOR hook.
+// Lua event name: "DialogueWindow::_CONSTRUCTOR"
+// Lua signature:  function(self, defaultVal) -> DialogueWindow
+DialogueWindow* CallDialogueWindowConstructedCallbacks(DialogueWindow* thisptr, DialogueWindow* defaultVal);
+
+// Fired by InventoryGUI::_CONSTRUCTOR hook.
+// Lua event name: "InventoryGUI::_CONSTRUCTOR"
+// Lua signature:  function(self, inventory, layout, callback, defaultVal) -> InventoryGUI
+InventoryGUI* CallInventoryGUIConstructedCallbacks(InventoryGUI* thisptr, Inventory* inventory, InventoryLayout* layout, RootObject* callback, InventoryGUI* defaultVal);
+
+// Fired by GenericFixedInventoryLayout::_CONSTRUCTOR hook.
+// Lua event name: "GenericFixedInventoryLayout::_CONSTRUCTOR"
+// Lua signature:  function(self, defaultVal) -> GenericFixedInventoryLayout
+GenericFixedInventoryLayout* CallGenericFixedInventoryLayoutConstructedCallbacks(GenericFixedInventoryLayout* thisptr, GenericFixedInventoryLayout* defaultVal);
+
+// Lua event name: "GameWorld::_CONSTRUCTOR"
+// Lua signature: function(self, defaultVal) -> GameWorld
+GameWorld* CallGameWorldConstructedCallbacks(GameWorld* thisptr, GameWorld* defaultVal);
+// Lua event name: "PlayerInterface::_CONSTRUCTOR"
+// Lua signature: function(self, defaultVal) -> PlayerInterface
+PlayerInterface* CallPlayerInterfaceConstructedCallbacks(PlayerInterface* thisptr, PlayerInterface* defaultVal);
+// Lua event name: "InputHandler::_CONSTRUCTOR"
+// Lua signature: function(self, defaultVal) -> InputHandler
+InputHandler* CallInputHandlerConstructedCallbacks(InputHandler* thisptr, InputHandler* defaultVal);
+// Lua event name: "RootObjectFactory::_CONSTRUCTOR"
+// Lua signature: function(self, defaultVal) -> RootObjectFactory
+RootObjectFactory* CallRootObjectFactoryConstructedCallbacks(RootObjectFactory* thisptr, RootObjectFactory* defaultVal);
+// Lua event name: "FactionManager::_CONSTRUCTOR"
+// Lua signature: function(self, defaultVal) -> FactionManager
+FactionManager* CallFactionManagerConstructedCallbacks(FactionManager* thisptr, FactionManager* defaultVal);
+// Lua event name: "FactionWarMgr::_CONSTRUCTOR"
+// Lua signature: function(self, faction, defaultVal) -> FactionWarMgr
+FactionWarMgr* CallFactionWarMgrConstructedCallbacks(FactionWarMgr* thisptr, Faction* faction, FactionWarMgr* defaultVal);
+// Lua event name: "BountyManager::_CONSTRUCTOR"
+// Lua signature: function(self, character, defaultVal) -> BountyManager
+BountyManager* CallBountyManagerConstructedCallbacks(BountyManager* thisptr, Character* character, BountyManager* defaultVal);
+// Lua event name: "ZoneMap::_CONSTRUCTOR"
+// Lua signature: function(self, defaultVal) -> ZoneMap
+ZoneMap* CallZoneMapConstructedCallbacks(ZoneMap* thisptr, ZoneMap* defaultVal);
+// Lua event name: "ZoneManager::_CONSTRUCTOR"
+// Lua signature: function(self, defaultVal) -> ZoneManager
+ZoneManager* CallZoneManagerConstructedCallbacks(ZoneManager* thisptr, ZoneManager* defaultVal);
+// Lua event name: "Character::AttachedArrowManager::_CONSTRUCTOR"
+// Lua signature: function(self, defaultVal) -> AttachedArrowManager
+Character::AttachedArrowManager* CallAttachedArrowManagerConstructedCallbacks(Character::AttachedArrowManager* thisptr, Character::AttachedArrowManager* defaultVal);
+// Lua event name: "LimbsInventoryLayout::_CONSTRUCTOR"
+// Lua signature: function(self, character, defaultVal) -> LimbsInventoryLayout
+LimbsInventoryLayout* CallLimbsInventoryLayoutConstructedCallbacks(LimbsInventoryLayout* thisptr, Character* character, LimbsInventoryLayout* defaultVal);
+// Lua event name: "RobotLimbs::_CONSTRUCTOR"
+// Lua signature: function(self, character, defaultVal) -> RobotLimbs
+RobotLimbs* CallRobotLimbsConstructedCallbacks(RobotLimbs* thisptr, Character* character, RobotLimbs* defaultVal);
+// Lua event name: "ShopTrader::_CONSTRUCTOR"
+// Lua signature: function(self, character, defaultVal) -> ShopTrader
+ShopTrader* CallShopTraderConstructedCallbacks(ShopTrader* thisptr, Character* character, ShopTrader* defaultVal);
+// Lua event name: "RootObjectBase::_CONSTRUCTOR"
+// Lua signature: function(self, data, faction, handle, defaultVal) -> RootObjectBase
+RootObjectBase* CallRootObjectBaseConstructedCallbacks(RootObjectBase* thisptr, GameData* data, Faction* faction, hand handle, RootObjectBase* defaultVal);
+// Lua event name: "RootObject::_CONSTRUCTOR"
+// Lua signature: function(self, data, faction, handle, defaultVal) -> RootObject
+RootObject* CallRootObjectConstructedCallbacks(RootObject* thisptr, GameData* data, Faction* faction, hand handle, RootObject* defaultVal);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in Building/UseableStuff.h

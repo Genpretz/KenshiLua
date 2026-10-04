@@ -17,3 +17,15 @@ DEFINE_HOOK_INSTALLER(InstallHook_BountyManager_NotifyCrimeWitnessed,
     "BountyManager::notifyCrimeWitnessed",
     KenshiLib::GetRealAddress(&BountyManager::notifyCrimeWitnessed),
     BountyManager_notifyCrimeWitnessed_hook, BountyManager_notifyCrimeWitnessed_orig)
+
+static BountyManager* (*BountyManager_CONSTRUCTOR_orig)(BountyManager*, Character*) = NULL;
+static BountyManager* BountyManager_CONSTRUCTOR_hook(BountyManager* thisptr, Character* character)
+{
+    BountyManager* res = BountyManager_CONSTRUCTOR_orig(thisptr, character);
+    BountyManager* overrideRes = CallBountyManagerConstructedCallbacks(thisptr, character, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_BountyManager_CONSTRUCTOR,
+    "BountyManager::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&BountyManager::_CONSTRUCTOR),
+    BountyManager_CONSTRUCTOR_hook, BountyManager_CONSTRUCTOR_orig)

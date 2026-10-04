@@ -39,3 +39,14 @@ DEFINE_HOOK_INSTALLER(InstallHook_CharMovement_CONSTRUCTOR,
     KenshiLib::GetRealAddress(&CharMovement::_CONSTRUCTOR),
     CharMovement_CONSTRUCTOR_hook, CharMovement_CONSTRUCTOR_orig)
 
+static CombatMovementController* (*CombatMovementController_CONSTRUCTOR_orig)(CombatMovementController*) = NULL;
+static CombatMovementController* CombatMovementController_CONSTRUCTOR_hook(CombatMovementController* thisptr)
+{
+    CombatMovementController* res = CombatMovementController_CONSTRUCTOR_orig(thisptr);
+    CombatMovementController* overrideRes = CallCombatMovementControllerConstructedCallbacks(thisptr, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_CombatMovementController_CONSTRUCTOR,
+    "CombatMovementController::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&CombatMovementController::_CONSTRUCTOR),
+    CombatMovementController_CONSTRUCTOR_hook, CombatMovementController_CONSTRUCTOR_orig)

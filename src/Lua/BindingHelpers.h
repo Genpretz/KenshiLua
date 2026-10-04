@@ -431,6 +431,14 @@ namespace KenshiLua
         }
     }
 
+    inline void registerConstructor(lua_State* L, lua_CFunction constructor)
+    {
+        lua_newtable(L);
+        lua_pushcfunction(L, constructor);
+        lua_setfield(L, -2, "__call");
+        lua_setmetatable(L, -2);
+    }
+
     inline void setNestedClassTable(lua_State* L, const char* parentClassName, const char* fieldName)
     {
         lua_getglobal(L, parentClassName);

@@ -15,3 +15,15 @@ DEFINE_HOOK_INSTALLER(InstallHook_RootObjectFactory_chooseMyClothing,
     "RootObjectFactory::chooseMyClothing",
     KenshiLib::GetRealAddress(&RootObjectFactory::chooseMyClothing),
     RootObjectFactory_chooseMyClothing_hook, RootObjectFactory_chooseMyClothing_orig)
+
+static RootObjectFactory* (*RootObjectFactory_CONSTRUCTOR_orig)(RootObjectFactory*) = NULL;
+static RootObjectFactory* RootObjectFactory_CONSTRUCTOR_hook(RootObjectFactory* thisptr)
+{
+    RootObjectFactory* res = RootObjectFactory_CONSTRUCTOR_orig(thisptr);
+    RootObjectFactory* overrideRes = CallRootObjectFactoryConstructedCallbacks(thisptr, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_RootObjectFactory_CONSTRUCTOR,
+    "RootObjectFactory::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&RootObjectFactory::_CONSTRUCTOR),
+    RootObjectFactory_CONSTRUCTOR_hook, RootObjectFactory_CONSTRUCTOR_orig)

@@ -50,3 +50,27 @@ DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_CONSTRUCTOR,
     KenshiLib::GetRealAddress(&MedicalSystem::_CONSTRUCTOR),
     MedicalSystem_CONSTRUCTOR_hook, MedicalSystem_CONSTRUCTOR_orig)
 
+static LimbsInventoryLayout* (*LimbsInventoryLayout_CONSTRUCTOR_orig)(LimbsInventoryLayout*, Character*) = NULL;
+static LimbsInventoryLayout* LimbsInventoryLayout_CONSTRUCTOR_hook(LimbsInventoryLayout* thisptr, Character* character)
+{
+    LimbsInventoryLayout* res = LimbsInventoryLayout_CONSTRUCTOR_orig(thisptr, character);
+    LimbsInventoryLayout* overrideRes = CallLimbsInventoryLayoutConstructedCallbacks(thisptr, character, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_LimbsInventoryLayout_CONSTRUCTOR,
+    "LimbsInventoryLayout::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&LimbsInventoryLayout::_CONSTRUCTOR),
+    LimbsInventoryLayout_CONSTRUCTOR_hook, LimbsInventoryLayout_CONSTRUCTOR_orig)
+
+static RobotLimbs* (*RobotLimbs_CONSTRUCTOR_orig)(RobotLimbs*, Character*) = NULL;
+static RobotLimbs* RobotLimbs_CONSTRUCTOR_hook(RobotLimbs* thisptr, Character* character)
+{
+    RobotLimbs* res = RobotLimbs_CONSTRUCTOR_orig(thisptr, character);
+    RobotLimbs* overrideRes = CallRobotLimbsConstructedCallbacks(thisptr, character, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_RobotLimbs_CONSTRUCTOR,
+    "RobotLimbs::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&RobotLimbs::_CONSTRUCTOR),
+    RobotLimbs_CONSTRUCTOR_hook, RobotLimbs_CONSTRUCTOR_orig)
+

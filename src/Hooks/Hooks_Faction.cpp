@@ -52,6 +52,18 @@ DEFINE_HOOK_INSTALLER(InstallHook_Faction_destroyPlatoon,
     KenshiLib::GetRealAddress(&Faction::destroyPlatoon),
     Faction_destroyPlatoon_hook, Faction_destroyPlatoon_orig)
 
+static FactionManager* (*FactionManager_CONSTRUCTOR_orig)(FactionManager*) = NULL;
+static FactionManager* FactionManager_CONSTRUCTOR_hook(FactionManager* thisptr)
+{
+    FactionManager* res = FactionManager_CONSTRUCTOR_orig(thisptr);
+    FactionManager* overrideRes = CallFactionManagerConstructedCallbacks(thisptr, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_FactionManager_CONSTRUCTOR,
+    "FactionManager::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&FactionManager::_CONSTRUCTOR),
+    FactionManager_CONSTRUCTOR_hook, FactionManager_CONSTRUCTOR_orig)
+
 static Faction* (*Faction_CONSTRUCTOR_orig)(Faction*, const std::string&) = NULL;
 static Faction* Faction_CONSTRUCTOR_hook(Faction* thisptr, const std::string& _name)
 {
@@ -99,4 +111,3 @@ DEFINE_HOOK_INSTALLER(InstallHook_ProsperityManager_CONSTRUCTOR,
     "ProsperityManager::_CONSTRUCTOR",
     KenshiLib::GetRealAddress(&ProsperityManager::_CONSTRUCTOR),
     ProsperityManager_CONSTRUCTOR_hook, ProsperityManager_CONSTRUCTOR_orig)
-

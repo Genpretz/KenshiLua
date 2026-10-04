@@ -116,3 +116,15 @@ DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_loadFromSerialise,
     "PlayerInterface::loadFromSerialise",
     KenshiLib::GetRealAddress(&PlayerInterface::loadFromSerialise),
     PlayerInterface_loadFromSerialise_hook, PlayerInterface_loadFromSerialise_orig)
+
+static PlayerInterface* (*PlayerInterface_CONSTRUCTOR_orig)(PlayerInterface*) = NULL;
+static PlayerInterface* PlayerInterface_CONSTRUCTOR_hook(PlayerInterface* thisptr)
+{
+    PlayerInterface* res = PlayerInterface_CONSTRUCTOR_orig(thisptr);
+    PlayerInterface* overrideRes = CallPlayerInterfaceConstructedCallbacks(thisptr, res);
+    return overrideRes ? overrideRes : res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_CONSTRUCTOR,
+    "PlayerInterface::_CONSTRUCTOR",
+    KenshiLib::GetRealAddress(&PlayerInterface::_CONSTRUCTOR),
+    PlayerInterface_CONSTRUCTOR_hook, PlayerInterface_CONSTRUCTOR_orig)
