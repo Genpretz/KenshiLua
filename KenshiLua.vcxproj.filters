@@ -475,6 +475,7 @@
     <ClCompile Include="src\Bindings\MyGUI\TypesBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\WidgetBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\WindowBinding.cpp" />
+    <ClCompile Include="src\Util\FileDialogs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="extern\kenshilib\Include\ogre\Animation\OgreBone.h" />
@@ -1390,6 +1391,7 @@
     <ClInclude Include="src\Bindings\MyGUI\TypesBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\WidgetBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\WindowBinding.h" />
+    <ClInclude Include="src\Util\FileDialogs.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extern\kenshilib\Include\ogre\Animation\OgreBone.inl" />

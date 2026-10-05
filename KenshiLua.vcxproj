@@ -1005,6 +1005,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Plugin.h" />
     <ClInclude Include="src\ScriptLoader.h" />
     <ClInclude Include="src\Compatibility\TypeShims.h" />
+    <ClInclude Include="src\Util\FileDialogs.h" />
     <ClInclude Include="src\Util\KeyCodes.h" />
     <ClInclude Include="src\Util\PathUtils.h" />
     <ClInclude Include="src\Version.h" />
@@ -1485,6 +1486,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\FileWatcher.cpp" />
     <ClCompile Include="src\Plugin.cpp" />
     <ClCompile Include="src\ScriptLoader.cpp" />
+    <ClCompile Include="src\Util\FileDialogs.cpp" />
     <ClCompile Include="src\Util\KeyCodes.cpp" />
     <ClCompile Include="src\Util\PathUtils.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AkSoundPositionBinding.cpp" />
