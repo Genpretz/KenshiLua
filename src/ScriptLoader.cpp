@@ -17,7 +17,6 @@
 #include <algorithm>
 #include <cstring>
 
-#include <lua.hpp>
 #include "Lua/LuaState.h"
 
 namespace KenshiLua
@@ -76,6 +75,7 @@ void ScriptLoader::discover()
     m_scripts.clear();
     m_activeModNames.clear();
 
+	// GameWorld Singleton (ou)
     if (!::ou) {
         logToFileWarn("ScriptLoader: GameWorld (ou) not yet available - skipping mod discovery");
         return;

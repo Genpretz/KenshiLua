@@ -1,9 +1,14 @@
 #include "pch.h"
 #include "Gui/GuiHelpers.h"
 
+#include <MyGUI_Button.h>
+#include <MyGUI_EditBox.h>
+#include <MyGUI_Enumerator.h>
+#include <MyGUI_Gui.h>
+#include <MyGUI_Widget.h>
+#include <MyGUI_Window.h>
 #include <Windows.h>
-#include <commdlg.h>
-#include <cstring>
+#include <string>
 
 namespace KenshiLua
 {
@@ -106,8 +111,7 @@ namespace KenshiLua
 
         std::string EscapeMyGuiColourTags(const std::string& text)
         {
-            // MyGUI parses "#rrggbb" as an inline colour tag in any caption, including
-            // ones set programmatically. "##" is MyGUI's own escape for a literal '#',
+            // MyGUI parses "#rrggbb" as an inline colour tag in any caption. "##" is MyGUI's own escape for a literal '#',
             // so double every '#' before handing loaded file content to setCaption().
             std::string out;
             out.reserve(text.size());
@@ -120,8 +124,7 @@ namespace KenshiLua
             return out;
         }
 
-        void handleWindowButton(MyGUI::Window* sender, const std::string& name,
-            bool& edgeHideEnabled, MyGUI::Window* rootWindow)
+        void handleWindowButton(MyGUI::Window* sender, const std::string& name, bool& edgeHideEnabled, MyGUI::Window* rootWindow)
         {
             if (name == "close")
             {

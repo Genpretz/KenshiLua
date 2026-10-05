@@ -1,11 +1,9 @@
 #pragma once
 
 #include <string>
-#include <MyGUI.h>
-#include <OISKeyboard.h>
-#include "Gui/GuiHelpers.h"
 
 class InputHandler;
+enum OIS::KeyCode;
 
 namespace KenshiLua
 {

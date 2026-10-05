@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "KenshiLua_Settings.h"
-#include "Gui/GuiManager.h"
+#include "Gui/GuiHelpers.h"
 #include "Logger.h"
 #include "Config.h"
 #include "Util/KeyCodes.h"

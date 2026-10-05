@@ -1,12 +1,10 @@
 #include "pch.h"
+#include "Gui/GuiHelpers.h"
 #include "KenshiLua_LogViewer.h"
-#include "Gui/GuiManager.h"
 #include "Logger.h"
-
-#include <Windows.h>
-#include <commdlg.h>
-#include <fstream>
+#include "Util/FileDialogs.h"
 #include <algorithm>
+#include <fstream>
 
 namespace KenshiLua
 {
@@ -113,7 +111,7 @@ namespace KenshiLua
 		if (!mLogViewer_OutputBoxEditBox)
 			return;
 
-		std::string path = GuiHelpers::saveFileDialog("Save Log Copy", "Text Files (*.txt)\0*.txt\0Log Files (*.log)\0*.log\0All Files (*.*)\0*.*\0", "txt", "kenshilua_log.txt");
+		std::string path = FileDialogs::saveFileDialog("Save Log Copy", "Text Files (*.txt)\0*.txt\0Log Files (*.log)\0*.log\0All Files (*.*)\0*.*\0", "txt", "kenshilua_log.txt");
 		if (path.empty())
 			return;
 

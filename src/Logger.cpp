@@ -7,8 +7,6 @@
 #include <ctime>
 #include <fstream>
 
-#include <boost/chrono.hpp>
-#include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
 
 namespace KenshiLua

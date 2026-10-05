@@ -13,13 +13,8 @@
 
 #include "Gui/GuiHelpers.h"
 #include "FileWatcher.h"
-#include <Windows.h>
 #include <kenshi/InputHandler.h>
 
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-}
 
 namespace KenshiLua
 {

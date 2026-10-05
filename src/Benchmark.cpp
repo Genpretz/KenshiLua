@@ -1,16 +1,17 @@
 #include "pch.h"
 #include "Benchmark.h"
 #include "Config.h"
-#include "Lua/LuaBindings.h"
-#include "Logger.h"
 #include "EventSystem.h"
+#include "Logger.h"
+#include "Lua/LuaBindings.h"
 #include "Util/PathUtils.h"
-#include <windows.h>
-#include <sstream>
-#include <iomanip>
-#include <fstream>
-#include <vector>
 #include <ctime>
+#include <fstream>
+#include <iomanip>
+#include <sstream>
+#include <vector>
+#include <windows.h>
+
 namespace KenshiLua
 {
 

@@ -3,7 +3,6 @@
 
 #include "EventSystem.h"
 #include "Gui/GuiManager.h"
-#include "Gui/KenshiLua_ScriptManager.h"
 #include "Hooks/Hooks_Common.h"
 #include "Compatibility/LegacyCompat.h"
 #include "Logger.h"
@@ -12,11 +11,8 @@
 #include "Lua/LuaState.h"
 #include "ScriptLoader.h"
 #include "Bindings/MyGUI/MyGUIBinding.h"
-#include "DialogueScriptBridge.h"
 #include "Benchmark.h"
 #include <kenshi/Kenshi.h>
-#include <mygui/MyGUI.h>
-
 #include "FileWatcher.h"
 
 namespace KenshiLua

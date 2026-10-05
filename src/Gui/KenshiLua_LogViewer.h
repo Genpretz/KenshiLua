@@ -1,14 +1,10 @@
-#ifndef _KENSHI_LUA__LOG_VIEWER_H_
-#define _KENSHI_LUA__LOG_VIEWER_H_
-
-#include <mygui/common/baselayout/BaseLayout.h>
+#pragma once
 
 namespace KenshiLua
 {
 
 	ATTRIBUTE_CLASS_LAYOUT(KenshiLua_LogViewer, "KenshiLua_LogViewer.layout");
-	class KenshiLua_LogViewer :
-		public wraps::BaseLayout
+	class KenshiLua_LogViewer : public wraps::BaseLayout
 	{
 	public:
 		KenshiLua_LogViewer(MyGUI::Widget* _parent = nullptr);
@@ -44,5 +40,3 @@ namespace KenshiLua
 	};
 
 } // namespace KenshiLua
-
-#endif // _KENSHI_LUA__LOG_VIEWER_H_

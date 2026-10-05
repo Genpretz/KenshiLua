@@ -1,22 +1,20 @@
 #include "pch.h"
 #include "KenshiLua_ScriptEditor.h"
+
 #include "Gui/GuiManager.h"
+#include "Gui/GuiHelpers.h"
 #include "Logger.h"
-#include "Config.h"
-#include "ScriptLoader.h"
 #include "Lua/LuaState.h"
+#include "Plugin.h"
+#include "ScriptLoader.h"
+#include "Util/FileDialogs.h"
+#include <MyGUI_EditBox.h>
+#include <MyGUI_Window.h>
+#include <MyGUI_Gui.h>
+#include <MyGUI_InputManager.h>
+
 #include <fstream>
 #include <sstream>
-#include "Plugin.h"
-
-
-#include <kenshi/InputHandler.h>
-
-#include "KenshiLua_Hub.h"
-#include "KenshiLua_Console.h"
-#include "KenshiLua_LogViewer.h"
-#include "KenshiLua_ScriptManager.h"
-#include "KenshiLua_Settings.h"
 
 extern "C" {
 #include <lua.h>
@@ -25,13 +23,6 @@ extern "C" {
 
 namespace KenshiLua
 {
-
-
-
-	// ---------------------------------------------------------------------------
-	// KenshiLua_ScriptEditor (UI panel) Implementation
-	// ---------------------------------------------------------------------------
-
 	KenshiLua_ScriptEditor::KenshiLua_ScriptEditor(MyGUI::Widget* _parent)
 		: m_lastInputVScrollPos(0), m_lastOutputVScrollPos(0)
 		, mEdgeHideEnabled(false)
@@ -322,7 +313,7 @@ namespace KenshiLua
 
 	void KenshiLua_ScriptEditor::onOpenClicked(MyGUI::Widget*)
 	{
-		std::string path = GuiHelpers::openFileDialog("Open Lua Script", "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0", "lua", m_currentFilePath);
+		std::string path = FileDialogs::openFileDialog("Open Lua Script", "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0", "lua", m_currentFilePath);
 		if (path.empty())
 			return;
 
@@ -350,7 +341,7 @@ namespace KenshiLua
 			return;
 
 		std::string path = m_currentFilePath.empty()
-			? GuiHelpers::saveFileDialog("Save Lua Script", "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0", "lua", "", m_currentFilePath)
+			? FileDialogs::saveFileDialog("Save Lua Script", "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0", "lua", "", m_currentFilePath)
 			: m_currentFilePath;
 
 		if (path.empty())
@@ -364,7 +355,7 @@ namespace KenshiLua
 		if (!mScriptEditor_InputBoxEditBox)
 			return;
 
-		std::string path = GuiHelpers::saveFileDialog("Save Lua Script", "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0", "lua", "", m_currentFilePath);
+		std::string path = FileDialogs::saveFileDialog("Save Lua Script", "Lua Files (*.lua)\0*.lua\0All Files (*.*)\0*.*\0", "lua", "", m_currentFilePath);
 
 		if (path.empty())
 			return;

@@ -1,14 +1,9 @@
-#ifndef _KENSHI_LUA__SETTINGS_H_
-#define _KENSHI_LUA__SETTINGS_H_
-
-#include <mygui/common/baselayout/BaseLayout.h>
+#pragma once
 
 namespace KenshiLua
 {
-
 	ATTRIBUTE_CLASS_LAYOUT(KenshiLua_Settings, "KenshiLua_Settings.layout");
-	class KenshiLua_Settings :
-		public wraps::BaseLayout
+	class KenshiLua_Settings : public wraps::BaseLayout
 	{
 	public:
 		KenshiLua_Settings(MyGUI::Widget* _parent = nullptr);
@@ -56,5 +51,3 @@ namespace KenshiLua
 	};
 
 } // namespace KenshiLua
-
-#endif // _KENSHI_LUA__SETTINGS_H_

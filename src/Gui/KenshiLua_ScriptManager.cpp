@@ -1,21 +1,12 @@
 #include "pch.h"
 #include "KenshiLua_ScriptManager.h"
-#include "KenshiLua_ScriptEditor.h"
 #include "Gui/GuiManager.h"
+#include "Gui/GuiHelpers.h"
 #include "Logger.h"
 #include "ScriptLoader.h"
 #include "Lua/LuaState.h"
 #include "Plugin.h"
-
-#include <kenshi/Globals.h>
-#include <kenshi/GameWorld.h>
-#include <kenshi/ModInfo.h>
-#include <kenshi/util/lektor.h>
-
-#include <shellapi.h>
-#include <boost/filesystem.hpp>
 #include <algorithm>
-#include <set>
 
 namespace KenshiLua
 {

@@ -1,10 +1,9 @@
 #include "pch.h"
 #include "KenshiLua_Console.h"
 #include "Gui/GuiManager.h"
+#include "Gui/GuiHelpers.h"
 #include "Logger.h"
 #include "Lua/LuaState.h"
-
-#include <lua.hpp>
 
 namespace KenshiLua
 {

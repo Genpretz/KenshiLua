@@ -4,9 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/ActivePlatoonBinding.h"
 #include "Bindings/Kenshi/Building/BuildingBinding.h"
-#include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/FactionBinding.h"
-#include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/GameDataCopyStandaloneBinding.h"
 #include "Bindings/Kenshi/GameSaveStateBinding.h"
 #include "Bindings/Kenshi/Gui/InventoryLayoutBinding.h"
@@ -14,9 +12,7 @@
 #include "Bindings/Kenshi/RootObjectBinding.h"
 #include "Bindings/Kenshi/Util/TimeOfDayBinding.h"
 #include "Bindings/Kenshi/WeaponBinding.h"
-#include "ItemBinding.h"
-#include "WeaponBinding.h"
-#include "kenshi/Item.h"
+#include <kenshi/Item.h>
 
 namespace KenshiLua
 {
