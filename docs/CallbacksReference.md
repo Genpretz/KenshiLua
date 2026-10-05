@@ -21,7 +21,7 @@ Events.off(handlerId)
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
-## 1. Notification Callbacks (135)
+## 1. Notification Callbacks (148)
 
 | Event Name | Lua Signature |
 | :--- | :--- |
@@ -160,12 +160,25 @@ Events.off(handlerId)
 | `UseableStuff::_NV_toggleBattButton` | `function(self: UseableStuff, line: DataPanelLine)` |
 | `PreviewBuilding::_NV_placeFinalPreviewBuilding` | `function(self: PreviewBuilding)` |
 | `PreviewBuilding::_NV_placePreview` | `function(self: PreviewBuilding, position: Vector3, rotation: Quaternion, floorNumber: integer)` |
+| `CharacterAnimal::_NV_isAnimal` | `function(self: CharacterAnimal, result: CharacterAnimal)` |
+| `CharacterAnimal::_NV_createAnimationClass` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_drawWeapon` | `function(self: CharacterAnimal, item: Item, lastSlot: string, success: boolean)` |
+| `CharacterAnimal::_NV_sheatheWeapon` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_createInventoryLayout` | `function(self: CharacterAnimal, layout: InventoryLayout)` |
+| `CharacterAnimal::_NV_giveBirth` | `function(self: CharacterAnimal, appearance: GameDataCopyStandalone, position: Vector3, rotation: Quaternion, state: GameSaveState, tempPlatoon: ActivePlatoon, faction: Faction, success: boolean)` |
+| `CharacterAnimal::_NV_setupInventorySections` | `function(self: CharacterAnimal, state: GameSaveState, success: boolean)` |
+| `CharacterAnimal::_NV_setupAudio` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_periodicUpdate` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_setAge` | `function(self: CharacterAnimal, zeroToOne: number)` |
+| `CharacterAnimal::_NV_foodUpdate` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_init` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_dropItem` | `function(self: CharacterAnimal, item: RootObject)` |
 
-## 2. Override Callbacks (107)
+## 2. Override Callbacks (117)
 
 | Event Name | Lua Signature & Expected Return |
 | :--- | :--- |
-| `Character::isItOkForMeToLoot` | `function(self: Character, victim: RootObject, item: Item, defaultVal: boolean) -> boolean` |
+| `Character::_NV_isItOkForMeToLoot` | `function(self: Character, victim: RootObject, item: Item, defaultVal: boolean) -> boolean` |
 | `Character::getFencingSuccessChance` | `function(self: Character, item: Item, thief: RootObject, defaultVal: number) -> number` |
 | `CharStats::chooseAttack` | `function(self: CharStats, range: number, weaponReach: number, lastAttack: CombatTechniqueData, opponentIsStationary: boolean, defaultAttack: CombatTechniqueData) -> CombatTechniqueData` |
 | `CharStats::getStat` | `function(self: CharStats, statType: integer, unmodified: boolean, defaultVal: number) -> number` |
@@ -181,8 +194,8 @@ Events.off(handlerId)
 | `Dialogue::startConversation` | `function(self: Dialogue, target: Character, talk: DialogLineData, ev: EventTriggerEnum, force: boolean, defaultVal: boolean) -> boolean` |
 | `Dialogue::startPlayerConversation` | `function(self: Dialogue, target: Character, talk: DialogLineData, defaultVal: boolean) -> boolean` |
 | `Dialogue::sendEvent` | `function(self: Dialogue, who: Character, what: EventTriggerEnum, defaultVal: boolean) -> boolean` |
-| `Building::isPublic` | `function(self: Building, defaultVal: boolean) -> boolean` |
-| `Building::isForSale` | `function(self: Building, defaultVal: boolean) -> boolean` |
+| `Building::_NV_isPublic` | `function(self: Building, defaultVal: boolean) -> boolean` |
+| `Building::_NV_isForSale` | `function(self: Building, defaultVal: boolean) -> boolean` |
 | `Building::calculateSaleValue` | `function(self: Building, defaultVal: integer) -> integer` |
 | `CharMovement::isRunning` | `function(self: CharMovement, defaultVal: boolean) -> boolean` |
 | `CharMovement::isRunningAway` | `function(self: CharMovement, from: Vector3, defaultVal: boolean) -> boolean` |
@@ -272,6 +285,16 @@ Events.off(handlerId)
 | `FarmBuilding::destroyAPlant` | `function(self: FarmBuilding, defaultVal: boolean) -> boolean` |
 | `UseableStuff::takePowerFrom` | `function(self: UseableStuff, amount: number, frameTime: number, defaultVal: number) -> number` |
 | `PreviewBuilding::_NV_placementVerification` | `function(self: PreviewBuilding, defaultVal: boolean) -> boolean` |
+| `CharacterAnimal::_NV_getCurrentWeapon` | `function(self: CharacterAnimal, defaultVal: Weapon) -> Weapon` |
+| `CharacterAnimal::_NV_getThePreferredWeapon` | `function(self: CharacterAnimal, defaultVal: Weapon) -> Weapon` |
+| `CharacterAnimal::_NV_getAge` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getAgeInverse` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getAge0to1` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getDefaultTaskRepertoireEnum` | `function(self: CharacterAnimal, defaultVal: integer) -> integer` |
+| `CharacterAnimal::_NV_canGoIndoors` | `function(self: CharacterAnimal, building: Building, defaultVal: boolean) -> boolean` |
+| `CharacterAnimal::_NV_getSmellHuntingThresholdBlood` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getSmellHuntingThresholdEggs` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getHPMultiplier` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
 
 ## Detailed Callback Documentation
 
@@ -419,6 +442,24 @@ Events.off(handlerId)
   - `defaultVal`: `GameData`
 - **Returns**: `GameData`
 
+### `Building::_NV_isForSale`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `Building`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `Building::_NV_isPublic`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `Building`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
 ### `Building::_NV_loadFromSerialise`
 
 - **Category**: Notification / Observer
@@ -541,24 +582,6 @@ Events.off(handlerId)
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Building`
-
-### `Building::isForSale`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `Building`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-
-### `Building::isPublic`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `Building`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
 
 ### `Building::setFloorVisibility`
 
@@ -816,6 +839,17 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `Character`
 
+### `Character::_NV_isItOkForMeToLoot`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, victim, item, defaultVal)`
+- **Parameters**:
+  - `self`: `Character`
+  - `victim`: `RootObject`
+  - `item`: `Item`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
 ### `Character::_NV_loadFromSerialise`
 
 - **Category**: Notification / Observer
@@ -985,17 +1019,6 @@ Events.off(handlerId)
   - `self`: `Character`
   - `byWhom`: `Character`
 
-### `Character::isItOkForMeToLoot`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, victim, item, defaultVal)`
-- **Parameters**:
-  - `self`: `Character`
-  - `victim`: `RootObject`
-  - `item`: `Item`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-
 ### `Character::pickupObject`
 
 - **Category**: Notification / Observer
@@ -1033,6 +1056,219 @@ Events.off(handlerId)
   - `age`: `number`
   - `defaultVal`: `CharacterAnimal`
 - **Returns**: `CharacterAnimal`
+
+### `CharacterAnimal::_NV_canGoIndoors`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, building, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `building`: `Building`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `CharacterAnimal::_NV_createAnimationClass`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_createAnimationClass hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+
+### `CharacterAnimal::_NV_createInventoryLayout`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_createInventoryLayout hook after the original call`
+- **Lua Signature**: `function(self, layout)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `layout`: `InventoryLayout`
+
+### `CharacterAnimal::_NV_drawWeapon`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_drawWeapon hook after the original call`
+- **Lua Signature**: `function(self, item, lastSlot, success)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `item`: `Item`
+  - `lastSlot`: `string`
+  - `success`: `boolean`
+
+### `CharacterAnimal::_NV_dropItem`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_dropItem hook after the original call`
+- **Lua Signature**: `function(self, item)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `item`: `RootObject`
+
+### `CharacterAnimal::_NV_foodUpdate`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_foodUpdate hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+
+### `CharacterAnimal::_NV_getAge`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `CharacterAnimal::_NV_getAge0to1`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `CharacterAnimal::_NV_getAgeInverse`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `CharacterAnimal::_NV_getCurrentWeapon`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `Weapon`
+- **Returns**: `Weapon`
+- **Notes**: Returning nil or a non-Weapon value keeps defaultVal.
+
+### `CharacterAnimal::_NV_getDefaultTaskRepertoireEnum`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `CharacterAnimal::_NV_getHPMultiplier`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `CharacterAnimal::_NV_getSmellHuntingThresholdBlood`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `CharacterAnimal::_NV_getSmellHuntingThresholdEggs`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `CharacterAnimal::_NV_getThePreferredWeapon`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `Weapon`
+- **Returns**: `Weapon`
+- **Notes**: Returning nil or a non-Weapon value keeps defaultVal.
+
+### `CharacterAnimal::_NV_giveBirth`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_giveBirth hook after the original call`
+- **Lua Signature**: `function(self, appearance, position, rotation, state, tempPlatoon, faction, success)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `appearance`: `GameDataCopyStandalone`
+  - `position`: `Vector3`
+  - `rotation`: `Quaternion`
+  - `state`: `GameSaveState`
+  - `tempPlatoon`: `ActivePlatoon`
+  - `faction`: `Faction`
+  - `success`: `boolean`
+
+### `CharacterAnimal::_NV_init`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_init hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+
+### `CharacterAnimal::_NV_isAnimal`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_isAnimal hook after the original call`
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `result`: `CharacterAnimal`
+
+### `CharacterAnimal::_NV_periodicUpdate`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_periodicUpdate hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+
+### `CharacterAnimal::_NV_setAge`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_setAge hook after the original call`
+- **Lua Signature**: `function(self, zeroToOne)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `zeroToOne`: `number`
+
+### `CharacterAnimal::_NV_setupAudio`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_setupAudio hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+
+### `CharacterAnimal::_NV_setupInventorySections`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_setupInventorySections hook after the original call`
+- **Lua Signature**: `function(self, state, success)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `state`: `GameSaveState`
+  - `success`: `boolean`
+
+### `CharacterAnimal::_NV_sheatheWeapon`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterAnimal::_NV_sheatheWeapon hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
 
 ### `CharacterHuman::_CONSTRUCTOR`
 

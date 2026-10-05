@@ -1451,6 +1451,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClCompile Include="src\Hooks\Hooks_CharMovement.cpp" />
     <ClCompile Include="src\Hooks\Hooks_CharStats.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Character.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_CharacterAnimal.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Combat.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Damages.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Dialogue.cpp" />

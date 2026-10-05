@@ -40,6 +40,7 @@ class TitleScreen;
 class MedicalSystem;
 class GameDataContainer;
 class GameSaveState;
+class GameDataCopyStandalone;
 class Town;
 class OrdersPanel;
 class DataPanelLine_Button;
@@ -221,8 +222,8 @@ void CallCharacterSmugglingCheckCallbacks(Character* character, Item* item, Char
 // Lua signature:  function(self)
 void CallCharacterInitCallbacks(Character* character);
 
-// Fired by Character::isItOkForMeToLoot hook
-// Lua event name: "Character::isItOkForMeToLoot"
+// Fired by Character::_NV_isItOkForMeToLoot hook
+// Lua event name: "Character::_NV_isItOkForMeToLoot"
 // Lua signature:  function(self, victim, item, defaultVal) -> boolean
 bool CallCharacterIsItOkForMeToLootCallbacks(Character* me, RootObject* victim, Item* item, bool defaultVal);
 
@@ -497,13 +498,13 @@ void CallBaseLayoutInitialiseCallbacks(wraps::BaseLayout* thisptr, const std::st
 // Callbacks for hooks in Building/Building.h
 // -----------------------------------------------------------
 
-// Fired by Building::isPublic hook
-// Lua event name: "Building::isPublic"
+// Fired by Building::_NV_isPublic hook
+// Lua event name: "Building::_NV_isPublic"
 // Lua signature:  function(self, defaultVal) -> boolean
 bool CallBuildingIsPublicCallbacks(const Building* b, bool defaultVal);
 
-// Fired by Building::isForSale hook
-// Lua event name: "Building::isForSale"
+// Fired by Building::_NV_isForSale hook
+// Lua event name: "Building::_NV_isForSale"
 // Lua signature:  function(self, defaultVal) -> boolean
 bool CallBuildingIsForSaleCallbacks(Building* b, bool defaultVal);
 
@@ -1422,4 +1423,125 @@ bool CallPreviewBuildingPlacementVerificationCallbacks(PreviewBuilding* thisptr,
 // Lua event name: "PreviewBuilding::_NV_placePreview"
 // Lua signature:  function(self, position, rotation, floorNumber)
 void CallPreviewBuildingPlacePreviewCallbacks(PreviewBuilding* thisptr, const Ogre::Vector3& position, const Ogre::Quaternion& rotation, int floorNumber);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in CharacterAnimal.h
+// -----------------------------------------------------------
+
+// Fired by CharacterAnimal::_NV_isAnimal hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_isAnimal"
+// Lua signature:  function(self, result)
+void CallCharacterAnimalIsAnimalCallbacks(CharacterAnimal* thisptr, CharacterAnimal* result);
+
+// Fired by CharacterAnimal::_NV_createAnimationClass hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_createAnimationClass"
+// Lua signature:  function(self)
+void CallCharacterAnimalCreateAnimationClassCallbacks(CharacterAnimal* thisptr);
+
+// Fired by CharacterAnimal::_NV_drawWeapon hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_drawWeapon"
+// Lua signature:  function(self, item, lastSlot, success)
+void CallCharacterAnimalDrawWeaponCallbacks(CharacterAnimal* thisptr, Item* item, const std::string& lastSlot, bool success);
+
+// Fired by CharacterAnimal::_NV_sheatheWeapon hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_sheatheWeapon"
+// Lua signature:  function(self)
+void CallCharacterAnimalSheatheWeaponCallbacks(CharacterAnimal* thisptr);
+
+// Fired by CharacterAnimal::_NV_getCurrentWeapon hook.
+// Lua event name: "CharacterAnimal::_NV_getCurrentWeapon"
+// Lua signature:  function(self, defaultVal) -> Weapon
+// Returning nil or a non-Weapon value keeps defaultVal.
+Weapon* CallCharacterAnimalGetCurrentWeaponCallbacks(CharacterAnimal* thisptr, Weapon* defaultVal);
+
+// Fired by CharacterAnimal::_NV_getThePreferredWeapon hook.
+// Lua event name: "CharacterAnimal::_NV_getThePreferredWeapon"
+// Lua signature:  function(self, defaultVal) -> Weapon
+// Returning nil or a non-Weapon value keeps defaultVal.
+Weapon* CallCharacterAnimalGetThePreferredWeaponCallbacks(CharacterAnimal* thisptr, Weapon* defaultVal);
+
+// Fired by CharacterAnimal::_NV_createInventoryLayout hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_createInventoryLayout"
+// Lua signature:  function(self, layout)
+void CallCharacterAnimalCreateInventoryLayoutCallbacks(CharacterAnimal* thisptr, InventoryLayout* layout);
+
+// Fired by CharacterAnimal::_NV_giveBirth hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_giveBirth"
+// Lua signature:  function(self, appearance, position, rotation, state, tempPlatoon, faction, success)
+void CallCharacterAnimalGiveBirthCallbacks(CharacterAnimal* thisptr, GameDataCopyStandalone* appearance, const Ogre::Vector3& position, const Ogre::Quaternion& rotation, GameSaveState* state, ActivePlatoon* tempplatoonptr, Faction* _faction, bool success);
+
+// Fired by CharacterAnimal::_NV_setupInventorySections hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_setupInventorySections"
+// Lua signature:  function(self, state, success)
+void CallCharacterAnimalSetupInventorySectionsCallbacks(CharacterAnimal* thisptr, GameSaveState* state, bool success);
+
+// Fired by CharacterAnimal::_NV_setupAudio hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_setupAudio"
+// Lua signature:  function(self)
+void CallCharacterAnimalSetupAudioCallbacks(CharacterAnimal* thisptr);
+
+// Fired by CharacterAnimal::_NV_periodicUpdate hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_periodicUpdate"
+// Lua signature:  function(self)
+void CallCharacterAnimalPeriodicUpdateCallbacks(CharacterAnimal* thisptr);
+
+// Fired by CharacterAnimal::_NV_setAge hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_setAge"
+// Lua signature:  function(self, zeroToOne)
+void CallCharacterAnimalSetAgeCallbacks(CharacterAnimal* thisptr, float zeroToOne);
+
+// Fired by CharacterAnimal::_NV_getAge hook.
+// Lua event name: "CharacterAnimal::_NV_getAge"
+// Lua signature:  function(self, defaultVal) -> number
+float CallCharacterAnimalGetAgeCallbacks(const CharacterAnimal* thisptr, float defaultVal);
+
+// Fired by CharacterAnimal::_NV_getAgeInverse hook.
+// Lua event name: "CharacterAnimal::_NV_getAgeInverse"
+// Lua signature:  function(self, defaultVal) -> number
+float CallCharacterAnimalGetAgeInverseCallbacks(const CharacterAnimal* thisptr, float defaultVal);
+
+// Fired by CharacterAnimal::_NV_getAge0to1 hook.
+// Lua event name: "CharacterAnimal::_NV_getAge0to1"
+// Lua signature:  function(self, defaultVal) -> number
+float CallCharacterAnimalGetAge0to1Callbacks(const CharacterAnimal* thisptr, float defaultVal);
+
+// Fired by CharacterAnimal::_NV_getDefaultTaskRepertoireEnum hook.
+// Lua event name: "CharacterAnimal::_NV_getDefaultTaskRepertoireEnum"
+// Lua signature:  function(self, defaultVal) -> integer
+unsigned int CallCharacterAnimalGetDefaultTaskRepertoireEnumCallbacks(const CharacterAnimal* thisptr, unsigned int defaultVal);
+
+// Fired by CharacterAnimal::_NV_canGoIndoors hook.
+// Lua event name: "CharacterAnimal::_NV_canGoIndoors"
+// Lua signature:  function(self, building, defaultVal) -> boolean
+bool CallCharacterAnimalCanGoIndoorsCallbacks(const CharacterAnimal* thisptr, Building* b, bool defaultVal);
+
+// Fired by CharacterAnimal::_NV_getSmellHuntingThresholdBlood hook.
+// Lua event name: "CharacterAnimal::_NV_getSmellHuntingThresholdBlood"
+// Lua signature:  function(self, defaultVal) -> number
+float CallCharacterAnimalGetSmellHuntingThresholdBloodCallbacks(const CharacterAnimal* thisptr, float defaultVal);
+
+// Fired by CharacterAnimal::_NV_getSmellHuntingThresholdEggs hook.
+// Lua event name: "CharacterAnimal::_NV_getSmellHuntingThresholdEggs"
+// Lua signature:  function(self, defaultVal) -> number
+float CallCharacterAnimalGetSmellHuntingThresholdEggsCallbacks(const CharacterAnimal* thisptr, float defaultVal);
+
+// Fired by CharacterAnimal::_NV_getHPMultiplier hook.
+// Lua event name: "CharacterAnimal::_NV_getHPMultiplier"
+// Lua signature:  function(self, defaultVal) -> number
+float CallCharacterAnimalGetHPMultiplierCallbacks(const CharacterAnimal* thisptr, float defaultVal);
+
+// Fired by CharacterAnimal::_NV_foodUpdate hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_foodUpdate"
+// Lua signature:  function(self)
+void CallCharacterAnimalFoodUpdateCallbacks(CharacterAnimal* thisptr);
+
+// Fired by CharacterAnimal::_NV_init hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_init"
+// Lua signature:  function(self)
+void CallCharacterAnimalInitCallbacks(CharacterAnimal* thisptr);
+
+// Fired by CharacterAnimal::_NV_dropItem hook after the original call.
+// Lua event name: "CharacterAnimal::_NV_dropItem"
+// Lua signature:  function(self, item)
+void CallCharacterAnimalDropItemCallbacks(CharacterAnimal* thisptr, RootObject* itembase);
 

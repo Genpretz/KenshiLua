@@ -295,11 +295,8 @@ int GameSaveStateBinding::operator_bool(lua_State* L)
 
 int GameSaveStateBinding::gc(lua_State* L)
 {
-    void** ud = (void**)lua_touserdata(L, 1);
-    if (ud && *ud) {
-        delete (GameSaveState*)*ud;
-        *ud = nullptr;
-    }
+    // Base metatable wraps borrowed engine pointers; owned copies from
+    // pushValue use the "_Owned" metatable and its own cleanup.
     return 0;
 }
 

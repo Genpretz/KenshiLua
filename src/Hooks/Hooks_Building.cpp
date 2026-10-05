@@ -29,27 +29,27 @@
 // Hooks for Building/Building.h
 // ---------------------------------------------------------------------------
 
-static bool (*Building_isPublic_orig)(const Building*) = NULL;
-static bool Building_isPublic_hook(const Building* thisptr)
+static bool (*Building_NV_isPublic_orig)(const Building*) = NULL;
+static bool Building_NV_isPublic_hook(const Building* thisptr)
 {
-    bool current = Building_isPublic_orig(thisptr);
+    bool current = Building_NV_isPublic_orig(thisptr);
     return CallBuildingIsPublicCallbacks(thisptr, current);
 }
-DEFINE_HOOK_INSTALLER(InstallHook_Building_isPublic,
-    "Building::isPublic",
-    KenshiLib::GetRealAddress(&Building::isPublic),
-    Building_isPublic_hook, Building_isPublic_orig)
+DEFINE_HOOK_INSTALLER(InstallHook_Building_NV_isPublic,
+    "Building::_NV_isPublic",
+    KenshiLib::GetRealAddress(&Building::_NV_isPublic),
+    Building_NV_isPublic_hook, Building_NV_isPublic_orig)
 
-static bool (*Building_isForSale_orig)(Building*) = NULL;
-static bool Building_isForSale_hook(Building* thisptr)
+static bool (*Building_NV_isForSale_orig)(Building*) = NULL;
+static bool Building_NV_isForSale_hook(Building* thisptr)
 {
-    bool current = Building_isForSale_orig(thisptr);
+    bool current = Building_NV_isForSale_orig(thisptr);
     return CallBuildingIsForSaleCallbacks(thisptr, current);
 }
-DEFINE_HOOK_INSTALLER(InstallHook_Building_isForSale,
-    "Building::isForSale",
-    KenshiLib::GetRealAddress(&Building::isForSale),
-    Building_isForSale_hook, Building_isForSale_orig)
+DEFINE_HOOK_INSTALLER(InstallHook_Building_NV_isForSale,
+    "Building::_NV_isForSale",
+    KenshiLib::GetRealAddress(&Building::_NV_isForSale),
+    Building_NV_isForSale_hook, Building_NV_isForSale_orig)
 
 static int (*Building_calculateSaleValue_orig)(Building*) = NULL;
 static int Building_calculateSaleValue_hook(Building* thisptr)

@@ -203,16 +203,16 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_NV_init,
     KenshiLib::GetRealAddress(&Character::_NV_init),
     Character_NV_init_hook, Character_NV_init_orig)
 
-static bool (*Character_isItOkForMeToLoot_orig)(Character*, RootObject*, Item*) = NULL;
-static bool Character_isItOkForMeToLoot_hook(Character* thisptr, RootObject* victim, Item* item)
+static bool (*Character_NV_isItOkForMeToLoot_orig)(Character*, RootObject*, Item*) = NULL;
+static bool Character_NV_isItOkForMeToLoot_hook(Character* thisptr, RootObject* victim, Item* item)
 {
-    bool current = Character_isItOkForMeToLoot_orig(thisptr, victim, item);
+    bool current = Character_NV_isItOkForMeToLoot_orig(thisptr, victim, item);
     return CallCharacterIsItOkForMeToLootCallbacks(thisptr, victim, item, current);
 }
-DEFINE_HOOK_INSTALLER(InstallHook_Character_isItOkForMeToLoot,
-    "Character::isItOkForMeToLoot",
-    KenshiLib::GetRealAddress(&Character::isItOkForMeToLoot),
-    Character_isItOkForMeToLoot_hook, Character_isItOkForMeToLoot_orig)
+DEFINE_HOOK_INSTALLER(InstallHook_Character_NV_isItOkForMeToLoot,
+    "Character::_NV_isItOkForMeToLoot",
+    KenshiLib::GetRealAddress(&Character::_NV_isItOkForMeToLoot),
+    Character_NV_isItOkForMeToLoot_hook, Character_NV_isItOkForMeToLoot_orig)
 
 static float (*Character_getFencingSuccessChance_orig)(Character*, Item*, RootObject*) = NULL;
 static float Character_getFencingSuccessChance_hook(Character* thisptr, Item* item, RootObject* thief)
