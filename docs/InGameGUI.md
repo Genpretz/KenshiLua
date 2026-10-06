@@ -51,6 +51,8 @@ The Script Editor allows `.lua` files to be opened directly in-game, edited, sav
   * **Save**: Saves changes made to the `.lua` file.
   * **Clear Output**: Clears the text from the script editor's output box.
 
+Code run from the Script Editor runs in the global Lua environment, not in a script sandbox. See [Script Editor and Console environment](#script-editor-and-console-environment).
+
 ---
 
 ### 2.3 Console
@@ -63,6 +65,16 @@ The Console is designed for executing short, single Lua statements or quick debu
 * **Controls**:
   * **Run**: Executes the entered Lua command.
   * **Clear Output**: Clears the console output history.
+
+#### Script Editor and Console environment
+
+The Console and the Script Editor both run code directly in the global Lua environment, `_G`. Scripts loaded from a mod's `scripts/` folder, which are the scripts listed in the Script Manager, each run in their own sandbox environment instead.
+
+* A sandboxed script can read globals, because names it does not define fall through to `_G`. A plain assignment such as `MyMod = {}` creates the name only inside that script's sandbox.
+* The Console and Script Editor cannot see a sandboxed script's plain assignments. Commands such as `MyMod.status()` fail with "attempt to index global" even though the script loaded.
+* To make a script's table reachable from the Console, the Script Editor, and other scripts, assign it to the global table explicitly: `_G.MyMod = _G.MyMod or {}`. See the [shared global example](../examples/example_mods/Simple_Shared_Global_Demo-Lua/README.md).
+* Running a mod script from the Script Editor puts its plain assignments in `_G`, so its commands work from the Console even when the same file loaded automatically did not. The two runs also register separate event handlers.
+* Globals created from the Console or Script Editor are visible to every script that does not define the same name itself.
 
 ---
 
