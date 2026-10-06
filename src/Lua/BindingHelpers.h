@@ -46,18 +46,15 @@ namespace KenshiLua
         if (normHandler.empty() || normTarget.empty()) return false;
         if (normHandler == normTarget) return true;
 
+        // Containment matches the same file named through different paths, such as a
+        // mod-relative chunk name and an absolute path from the Script Editor.
         if (boost::algorithm::contains(normHandler, normTarget) || boost::algorithm::contains(normTarget, normHandler))
             return true;
 
-        size_t slashIdx1 = normHandler.find('/');
-        size_t slashIdx2 = normTarget.find('/');
-        if (slashIdx1 != std::string::npos && slashIdx2 != std::string::npos)
-        {
-            std::string mod1 = normHandler.substr(0, slashIdx1);
-            std::string mod2 = normTarget.substr(0, slashIdx2);
-            if (!mod1.empty() && mod1 == mod2)
-                return true;
-        }
+        // Scripts are matched per file, never per mod. ScriptLoader removes the handlers
+        // and widgets of a script before loading or reloading it; matching every script
+        // in the same mod made loading one file remove what the mod's other files had
+        // registered.
 
         return false;
     }
