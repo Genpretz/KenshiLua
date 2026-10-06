@@ -23,6 +23,12 @@ void destroyWidgetsBySource(const std::string& source);
 void shutdownMyGui();
 void cleanupWidgetRecursive(MyGUI::Widget* widget);
 
+// Registers a MyGUI unlinker (once) so that widgets destroyed by the engine or by MyGUI
+// itself are removed from KenshiLua's tracking tables and their Lua callbacks are released.
+// Without it, a Lua-created widget parented to an engine-owned widget (for example a button
+// added to the context menu) leaves a dangling pointer when the engine destroys its parent.
+void ensureWidgetUnlinkerRegistered();
+
 // Validates if a skin or template exists in SkinManager or ResourceManager, logging a warning if not found
 void validateWidgetSkin(const std::string& type, const std::string& skin);
 

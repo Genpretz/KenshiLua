@@ -36,6 +36,35 @@ static std::unordered_set<MyGUI::Widget*> g_luaCreatedWidgets;
 static std::vector<MyGUI::Widget*> g_luaCreatedRootWidgets;
 static std::map<MyGUI::Widget*, std::string> g_luaCreatedWidgetSources;
 
+// Receives a notification from MyGUI for every widget it destroys, before the widget
+// is freed. MyGUI calls this for each child widget as well as the destroyed root.
+class LuaWidgetUnlinker : public MyGUI::IUnlinkWidget
+{
+public:
+    virtual void _unlinkWidget(MyGUI::Widget* widget)
+    {
+        if (!widget) return;
+        LuaWidgetCallbackManager::get().unregisterAll(widget);
+        if (g_luaCreatedWidgets.find(widget) != g_luaCreatedWidgets.end())
+        {
+            logToFileDebugf("MyGUI: released tracking for destroyed Lua-created widget '%s'", widget->getName().c_str());
+            untrackLuaCreatedWidget(widget);
+        }
+    }
+};
+
+static LuaWidgetUnlinker g_widgetUnlinker;
+static bool g_widgetUnlinkerRegistered = false;
+
+void ensureWidgetUnlinkerRegistered()
+{
+    if (g_widgetUnlinkerRegistered) return;
+    MyGUI::WidgetManager* manager = MyGUI::WidgetManager::getInstancePtr();
+    if (!manager) return;
+    manager->registerUnlinker(&g_widgetUnlinker);
+    g_widgetUnlinkerRegistered = true;
+}
+
 static std::string getCallerSource(lua_State* L)
 {
     if (!L) return "";
@@ -56,6 +85,7 @@ static std::string getCallerSource(lua_State* L)
 void trackLuaCreatedWidget(lua_State* L, MyGUI::Widget* widget, MyGUI::Widget* parent)
 {
     if (!widget) return;
+    ensureWidgetUnlinkerRegistered();
     g_luaCreatedWidgets.insert(widget);
     if (!parent || g_luaCreatedWidgets.find(parent) == g_luaCreatedWidgets.end())
     {
@@ -112,6 +142,10 @@ void destroyWidgetsBySource(const std::string& source)
     for (size_t i = 0; i < toDestroy.size(); ++i)
     {
         MyGUI::Widget* w = toDestroy[i];
+        // Destroying an earlier entry, or the engine, may already have destroyed this
+        // widget; the unlinker removes destroyed widgets from the source table.
+        if (g_luaCreatedWidgetSources.find(w) == g_luaCreatedWidgetSources.end())
+            continue;
         cleanupWidgetRecursive(w);
         try
         {
@@ -128,9 +162,13 @@ void shutdownMyGui()
     LuaWidgetCallbackManager::get().clear();
     if (MyGUI::Gui::getInstancePtr())
     {
-        for (size_t i = 0; i < g_luaCreatedRootWidgets.size(); ++i)
+        // The unlinker removes entries from g_luaCreatedRootWidgets as widgets are
+        // destroyed, including roots nested inside an earlier root. Untrack each root
+        // before destroying it so the loop always makes progress.
+        while (!g_luaCreatedRootWidgets.empty())
         {
-            MyGUI::Widget* w = g_luaCreatedRootWidgets[i];
+            MyGUI::Widget* w = g_luaCreatedRootWidgets.back();
+            untrackLuaCreatedWidget(w);
             try
             {
                 MyGUI::Gui::getInstance().destroyWidget(w);

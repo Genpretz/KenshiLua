@@ -36,6 +36,9 @@ lua_State* LuaWidgetCallbackManager::getLuaState() const
 
 int LuaWidgetCallbackManager::registerCallback(MyGUI::Widget* widget, EventType type, int luaRef)
 {
+    // Callbacks can be attached to engine-owned widgets, so make sure their
+    // entries are released when MyGUI destroys those widgets.
+    ensureWidgetUnlinkerRegistered();
     CallbackKey key = { widget, type };
     auto it = m_callbacks.find(key);
     int id = m_nextCallbackId++;
