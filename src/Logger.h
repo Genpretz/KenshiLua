@@ -30,6 +30,7 @@ namespace KenshiLua
         void snapshot(std::vector<std::string>& out, size_t maxLines = 0) const;
         void shutdown();
         size_t getSequenceNumber() const;
+        bool isInitialized() const;
 
     private:
         Logger()
@@ -58,7 +59,14 @@ namespace KenshiLua
     // ---------------------------------------------------------------------------
 
     void setLoggerDllModule(void* hModule);
+
+    // Opens <KenshiLua mod>/logs/KenshiLua.log, archiving the previous session's log
+    // first when keep_session_logs is enabled. Call after Config::load.
     void initLogger();
+
+    // Returns <KenshiLua mod>/logs, the folder beside the plugin folder.
+    std::string getLogsDirectory();
+
     void shutdownLogger();
 
     // Single-string overload - use when you already have a formatted string.

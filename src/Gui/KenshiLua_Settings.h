@@ -22,6 +22,7 @@ namespace KenshiLua
 		void onKeyButtonPressed(MyGUI::Widget* sender, MyGUI::KeyCode key, MyGUI::Char ch);
 		void onStartMinimizedClicked(MyGUI::Widget* sender);
 		void onHotReloadClicked(MyGUI::Widget* sender);
+		void onSessionLogsClicked(MyGUI::Widget* sender);
 
 		bool mEdgeHideEnabled;
 
@@ -47,6 +48,8 @@ namespace KenshiLua
 		MyGUI::Button* mStartMinimized_TickBoxButton;
 		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Settings, mHotReload_TickBoxButton, "HotReload_TickBox");
 		MyGUI::Button* mHotReload_TickBoxButton;
+		ATTRIBUTE_FIELD_WIDGET_NAME(KenshiLua_Settings, mSessionLogs_TickBoxButton, "SessionLogs_TickBox");
+		MyGUI::Button* mSessionLogs_TickBoxButton;
 	//%LE Widget_Declaration list end
 	};
 

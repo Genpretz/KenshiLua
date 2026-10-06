@@ -7,6 +7,7 @@
 #include <fstream>
 #include <algorithm>
 #include <cctype>
+#include <cstdlib>
 #include <kenshi/Globals.h>
 #include <kenshi/InputHandler.h>
 
@@ -25,6 +26,8 @@ Config::Config()
     , m_logLevel(LogLevel_Log)
     , m_startMinimized(true)
     , m_enableHotReload(false)
+    , m_keepSessionLogs(false)
+    , m_maxSessionLogs(20)
     , m_toggleGuiKey(OIS::KC_L)
     , m_toggleGuiCtrl(true)
     , m_toggleGuiShift(true)
@@ -101,6 +104,11 @@ void Config::load(void* hModule)
             m_startMinimized = (val == "true" || val == "1");
         } else if (key == "enable_hot_reload" || key == "hot_reload") {
             m_enableHotReload = (val == "true" || val == "1");
+        } else if (key == "keep_session_logs") {
+            m_keepSessionLogs = (val == "true" || val == "1");
+        } else if (key == "max_session_logs") {
+            int count = atoi(val.c_str());
+            m_maxSessionLogs = count < 0 ? 0 : count;
         } else if (key == "gui_toggle_key" || key == "toggle_gui_key") {
             OIS::KeyCode keycode = parseKeyCode(val);
             if (keycode != OIS::KC_UNASSIGNED) {
@@ -162,6 +170,16 @@ bool Config::isHotReloadEnabled() const
     return m_enableHotReload;
 }
 
+bool Config::isKeepSessionLogsEnabled() const
+{
+    return m_keepSessionLogs;
+}
+
+int Config::getMaxSessionLogs() const
+{
+    return m_maxSessionLogs;
+}
+
 void Config::setLogLevel(int level)
 {
     m_logLevel = level;
@@ -176,6 +194,11 @@ void Config::setStartMinimized(bool minimized)
 void Config::setHotReloadEnabled(bool enabled)
 {
     m_enableHotReload = enabled;
+}
+
+void Config::setKeepSessionLogsEnabled(bool enabled)
+{
+    m_keepSessionLogs = enabled;
 }
 
 void Config::setToggleGuiKey(OIS::KeyCode key)
@@ -226,7 +249,7 @@ void Config::save()
     file << "# KenshiLua Configuration File\n";
     file << "# ----------------------------\n\n";
 
-    file << "# Set to true to run the benchmark system on game startup and log results to KenshiLua_Benchmark.log\n";
+    file << "# Set to true to run the benchmark system on game startup and log results to logs/KenshiLua_Benchmark.log\n";
     file << "enable_benchmark=" << (m_benchmarkEnabled ? "true" : "false") << "\n\n";
 
     file << "# Global log level (default, warning, error, debug)\n";
@@ -245,7 +268,16 @@ void Config::save()
     file << "start_minimized=" << (m_startMinimized ? "true" : "false") << "\n\n";
 
     file << "# Automatic file-watcher hot reload system (default false)\n";
-    file << "enable_hot_reload=" << (m_enableHotReload ? "true" : "false") << "\n";
+    file << "enable_hot_reload=" << (m_enableHotReload ? "true" : "false") << "\n\n";
+
+    file << "# Developer option: keep a separate log for every game session (default false).\n";
+    file << "# The current session always writes logs/KenshiLua.log. When true, the previous\n";
+    file << "# session's log is kept as logs/KenshiLua_<date>_<time>.log at startup.\n";
+    file << "# Takes effect the next time the game starts.\n";
+    file << "keep_session_logs=" << (m_keepSessionLogs ? "true" : "false") << "\n\n";
+
+    file << "# Maximum number of earlier session logs to keep when keep_session_logs is true (0 keeps all)\n";
+    file << "max_session_logs=" << m_maxSessionLogs << "\n";
 
     file.close();
     logToFile("Config: Saved configuration to " + m_configPath);

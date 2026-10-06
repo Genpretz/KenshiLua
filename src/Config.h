@@ -26,9 +26,15 @@ namespace KenshiLua
         bool isStartMinimized() const;
         bool isHotReloadEnabled() const;
 
+        // Developer logging: keep earlier sessions' logs in the logs folder instead of
+        // overwriting a single log. Read at startup, before the log file opens.
+        bool isKeepSessionLogsEnabled() const;
+        int getMaxSessionLogs() const;
+
         void setLogLevel(int level);
         void setStartMinimized(bool minimized);
         void setHotReloadEnabled(bool enabled);
+        void setKeepSessionLogsEnabled(bool enabled);
         void setToggleGuiKey(OIS::KeyCode key);
         void setToggleGuiCtrl(bool ctrl);
         void setToggleGuiShift(bool shift);
@@ -49,6 +55,8 @@ namespace KenshiLua
         int m_logLevel;
         bool m_startMinimized;
         bool m_enableHotReload;
+        bool m_keepSessionLogs;
+        int m_maxSessionLogs;
 
         OIS::KeyCode m_toggleGuiKey;
         bool m_toggleGuiCtrl;

@@ -41,6 +41,9 @@ namespace KenshiLua
 		if (mHotReload_TickBoxButton)
 			mHotReload_TickBoxButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_Settings::onHotReloadClicked);
 
+		if (mSessionLogs_TickBoxButton)
+			mSessionLogs_TickBoxButton->eventMouseButtonClick += MyGUI::newDelegate(this, &KenshiLua_Settings::onSessionLogsClicked);
+
 
 
 		if (mLogLevel_ComboBoxComboBox)
@@ -101,6 +104,11 @@ namespace KenshiLua
 				{
 					mHotReload_TickBoxButton->setStateSelected(conf.isHotReloadEnabled());
 				}
+
+				if (mSessionLogs_TickBoxButton)
+				{
+					mSessionLogs_TickBoxButton->setStateSelected(conf.isKeepSessionLogsEnabled());
+				}
 			}
 			else
 			{
@@ -153,6 +161,18 @@ namespace KenshiLua
 			conf.setHotReloadEnabled(mHotReload_TickBoxButton->getStateSelected());
 		}
 
+		if (mSessionLogs_TickBoxButton)
+		{
+			bool keep = mSessionLogs_TickBoxButton->getStateSelected();
+			if (keep != conf.isKeepSessionLogsEnabled())
+			{
+				// The log file is chosen at startup, so the change applies on the next launch.
+				logToFile(std::string("Settings: Keep Session Logs ") + (keep ? "enabled" : "disabled")
+					+ "; takes effect the next time the game starts");
+			}
+			conf.setKeepSessionLogsEnabled(keep);
+		}
+
 		conf.save();
 		setVisible(false);
 	}
@@ -182,6 +202,11 @@ namespace KenshiLua
 		if (mHotReload_TickBoxButton)
 		{
 			mHotReload_TickBoxButton->setStateSelected(false);
+		}
+
+		if (mSessionLogs_TickBoxButton)
+		{
+			mSessionLogs_TickBoxButton->setStateSelected(false);
 		}
 	}
 
@@ -259,6 +284,15 @@ namespace KenshiLua
 	}
 
 	void KenshiLua_Settings::onHotReloadClicked(MyGUI::Widget* sender)
+	{
+		MyGUI::Button* btn = sender->castType<MyGUI::Button>(false);
+		if (btn)
+		{
+			btn->setStateSelected(!btn->getStateSelected());
+		}
+	}
+
+	void KenshiLua_Settings::onSessionLogsClicked(MyGUI::Widget* sender)
 	{
 		MyGUI::Button* btn = sender->castType<MyGUI::Button>(false);
 		if (btn)

@@ -94,6 +94,7 @@ The Settings window provides configuration options for customization and debuggi
 * **Log Level**: Adjust the log filtering verbosity level (e.g. Debug, Info, Warn, Error).
 * **Start Minimized**: Enabled by default. When enabled, KenshiLua remains hidden until activated via the hotkey. Disabling this option makes the KenshiLua Hub window visible automatically on startup.
 * **Hot-Reloading**: Option to enable automatic hot-reloading of Lua scripts when files are modified on disk. *(Note: This option is present in-game but not visible in the screenshot above; the image will be updated in a future release.)*
+* **Keep Session Logs**: Disabled by default. KenshiLua writes its log to `logs/KenshiLua.log` in the KenshiLua mod folder, beside the `plugin` folder, and replaces it each time the game starts. When enabled, the previous session's log is kept as `logs/KenshiLua_<date>_<time>.log` at startup, so each session has its own file. The 20 most recent session logs are kept by default; set `max_session_logs` in `config.ini` to change the limit, or to `0` to keep all of them. Takes effect the next time the game starts. *(Not visible in the screenshot above.)*
 * **Controls**:
   * **Save**: Saves changes to the configuration file.
   * **Defaults**: Resets all settings back to default values.

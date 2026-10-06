@@ -64,7 +64,7 @@ If the issue only occurs with certain mods enabled, please identify them.
 ## Logs
 
 Please attach the relevant log files. Do not paste large log files directly into the issue.
-* `KenshiLua.log`
+* `KenshiLua.log`, found in the `logs` folder of the KenshiLua mod folder
 * `RE_Kenshi_log.txt`
 * `kenshi.log`
 * `kenshi_info.log`

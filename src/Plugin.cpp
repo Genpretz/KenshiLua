@@ -43,11 +43,12 @@ bool Plugin::initialize(void* hModule)
     m_dllModule = hModule;
 
     setLoggerDllModule(m_dllModule);
+    // Load the config before opening the log: it decides whether the previous
+    // session's log is kept. Lines logged while loading are written once the log opens.
+    Config::get().load(m_dllModule);
     initLogger();
     logToFile("Initializing KenshiLua...");
     logToFile("Kenshi version: " + KenshiLib::GetKenshiVersion().ToString());
-
-    Config::get().load(m_dllModule);
     logToFilef("Config loaded");
 
     g_luaState = new LuaState();
