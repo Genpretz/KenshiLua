@@ -117,7 +117,9 @@ When using KenshiLua, all Lua scripts **must** reside inside the `scripts` subdi
 ```
 
 ### Script Execution Timing
-- **`scripts/init/*.lua`**: All `.lua` files in `scripts/init/` are loaded and executed as soon as KenshiLua initializes (at the main menu, before loading a save game). Use this for registering custom event callbacks, global variables, or helper functions.
+- **`scripts/init/*.lua`**: All `.lua` files in `scripts/init/` are loaded and executed as soon as KenshiLua initializes (at the main menu, before loading a save game). Use this for registering custom event callbacks and defining helper functions or shared state.
+  - Each script runs in its own sandbox environment. Reading a name falls through to the shared globals, but a plain assignment such as `MyMod = {}` creates the name only inside that script's sandbox. Other scripts, dialogue scripts, and the KenshiLua console cannot see it.
+  - To share state, assign it to the global table explicitly: `_G.MyMod = _G.MyMod or {}`. See the [shared global example](../examples/example_mods/Simple_Shared_Global_Demo-Lua/README.md).
 - **`scripts/dialogue/*.lua`**: Recommended directory for scripts triggered via `run lua script` in dialogue. They run dynamically whenever the linked dialogue line is executed in-game.
 
 ---
