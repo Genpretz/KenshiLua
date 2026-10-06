@@ -14,6 +14,9 @@
 #include "Gui/GuiHelpers.h"
 #include "FileWatcher.h"
 #include <kenshi/InputHandler.h>
+#include <MyGUI.h>
+#include <algorithm>
+#include <vector>
 
 
 namespace KenshiLua
@@ -37,6 +40,10 @@ namespace KenshiLua
 		, m_initialized(false)
 		, m_visible(false)
 		, m_activeOutputTarget(nullptr)
+		, m_hubHomeLeft(0)
+		, m_hubHomeTop(0)
+		, m_hubHomeWidth(0)
+		, m_hubHomeHeight(0)
 		, m_hub(nullptr)
 		, m_editor(nullptr)
 		, m_console(nullptr)
@@ -108,6 +115,14 @@ namespace KenshiLua
 			m_scriptManager = new KenshiLua_ScriptManager();
 			m_settings = new KenshiLua_Settings();
 
+			if (MyGUI::Window* hubWindow = m_hub->getWindow())
+			{
+				const MyGUI::IntCoord home = hubWindow->getAbsoluteCoord();
+				m_hubHomeLeft = home.left;
+				m_hubHomeTop = home.top;
+				m_hubHomeWidth = home.width;
+				m_hubHomeHeight = home.height;
+			}
 			m_initialized = true;
 
 
@@ -157,8 +172,29 @@ namespace KenshiLua
 	{
 		if (m_initialized && m_hub)
 		{
-			m_visible = !m_visible;
-			m_hub->setVisible(m_visible);
+			// Use the window's actual visibility rather than m_visible: the Hub's close
+			// button hides the window without updating m_visible, which made the next
+			// shortcut press hide an already hidden window.
+			bool visible = m_hub->getVisible();
+
+			// An edge-hidden Hub is visible but tucked mostly off-screen. Bring it out
+			// instead of hiding it: the edge-hide controller slides a window onto the
+			// screen while it has keyboard focus, which setVisible(true) gives it.
+			MyGUI::Window* window = m_hub->getWindow();
+			if (visible && window && m_hub->isEdgeHideEnabled())
+			{
+				const MyGUI::IntCoord coord = window->getAbsoluteCoord();
+				const MyGUI::IntSize view = MyGUI::RenderManager::getInstance().getViewSize();
+				bool partlyOffScreen = coord.left < 0 || coord.top < 0 ||
+					coord.right() > view.width || coord.bottom() > view.height;
+				if (partlyOffScreen)
+				{
+					setVisible(true);
+					return;
+				}
+			}
+
+			setVisible(!visible);
 		}
 	}
 
@@ -186,6 +222,88 @@ namespace KenshiLua
 		{
 			toggle();
 		}
+	}
+
+	void GuiManager::placeWindow(MyGUI::Window* target)
+	{
+		if (!target || m_hubHomeWidth <= 0)
+			return;
+
+		const MyGUI::IntSize view = MyGUI::RenderManager::getInstance().getViewSize();
+		const MyGUI::IntSize size = target->getSize();
+
+		// Everything the new window must not cover: the Hub, and every other open window.
+		// Open windows are clipped to the screen, so an edge-hidden window only blocks the
+		// sliver that is still showing.
+		std::vector<MyGUI::IntCoord> taken;
+		taken.push_back(MyGUI::IntCoord(m_hubHomeLeft, m_hubHomeTop, m_hubHomeWidth, m_hubHomeHeight));
+
+		MyGUI::Window* others[5] = {
+			m_editor ? m_editor->getWindow() : nullptr,
+			m_console ? m_console->getWindow() : nullptr,
+			m_logViewer ? m_logViewer->getWindow() : nullptr,
+			m_scriptManager ? m_scriptManager->getWindow() : nullptr,
+			m_settings ? m_settings->getWindow() : nullptr
+		};
+		for (int i = 0; i < 5; ++i)
+		{
+			if (!others[i] || others[i] == target || !others[i]->getVisible())
+				continue;
+
+			const MyGUI::IntCoord c = others[i]->getAbsoluteCoord();
+			const int left = std::max(c.left, 0);
+			const int top = std::max(c.top, 0);
+			const int right = std::min(c.right(), view.width);
+			const int bottom = std::min(c.bottom(), view.height);
+			if (right > left && bottom > top)
+				taken.push_back(MyGUI::IntCoord(left, top, right - left, bottom - top));
+		}
+
+		// Candidate corners: the Hub's right edge, then for each taken rectangle the spot
+		// against its right edge, the spot below it, and the spot below it next to the Hub.
+		// The topmost, then leftmost, candidate that fits is used, which fills a row from
+		// left to right before starting the next one.
+		const int homeRight = m_hubHomeLeft + m_hubHomeWidth;
+		std::vector<MyGUI::IntPoint> candidates;
+		candidates.push_back(MyGUI::IntPoint(homeRight, m_hubHomeTop));
+		for (size_t i = 0; i < taken.size(); ++i)
+		{
+			candidates.push_back(MyGUI::IntPoint(taken[i].right(), taken[i].top));
+			candidates.push_back(MyGUI::IntPoint(taken[i].left, taken[i].bottom()));
+			candidates.push_back(MyGUI::IntPoint(homeRight, taken[i].bottom()));
+		}
+
+		bool found = false;
+		MyGUI::IntPoint best(homeRight, m_hubHomeTop);
+		for (size_t i = 0; i < candidates.size(); ++i)
+		{
+			const MyGUI::IntPoint& p = candidates[i];
+			if (p.left < 0 || p.top < 0 || p.left + size.width > view.width || p.top + size.height > view.height)
+				continue;
+
+			bool overlaps = false;
+			for (size_t j = 0; j < taken.size(); ++j)
+			{
+				const MyGUI::IntCoord& t = taken[j];
+				if (p.left < t.right() && p.left + size.width > t.left &&
+					p.top < t.bottom() && p.top + size.height > t.top)
+				{
+					overlaps = true;
+					break;
+				}
+			}
+			if (overlaps)
+				continue;
+
+			if (!found || p.top < best.top || (p.top == best.top && p.left < best.left))
+			{
+				best = p;
+				found = true;
+			}
+		}
+
+		// With no free spot the window opens against the Hub, on top of the others.
+		target->setPosition(best);
 	}
 
 	void GuiManager::appendOutput(const std::string& text)

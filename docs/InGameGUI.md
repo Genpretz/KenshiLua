@@ -105,7 +105,7 @@ The Settings window provides configuration options for customization and debuggi
 
 * **Theme Integration**: KenshiLua's interface uses the game's native MyGUI skin engine. It automatically inherits and adapts to whatever UI theme mod is installed in Kenshi.
 * **Minimize & Edge Hide**: Each window has a minimize button that toggles MyGUI's "edge hide" attribute, allowing windows to dock/slide off-screen when not actively in use.
-* **Window Positioning & Docking**: The KenshiLua Hub window is locked to the upper-right corner of the screen by default. All other windows can be dragged and repositioned freely.
+* **Window Positioning & Docking**: The KenshiLua Hub window is locked to the upper-left corner of the screen. A window opened from the Hub appears against the right edge of the Hub, or against the right edge of the windows already open, and starts a new row below them when the row is full. If no free space is left on screen, it opens against the Hub on top of the others. All windows other than the Hub can then be dragged and repositioned freely; a window is placed again each time it is opened from the Hub.
 * **Layout Files**: Each window's UI structure is defined by an associated MyGUI `.layout` file located in the release distribution under `./kenshilua/gui/`.
 
 ---

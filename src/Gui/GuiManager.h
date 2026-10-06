@@ -5,6 +5,8 @@
 class InputHandler;
 enum OIS::KeyCode;
 
+namespace MyGUI { class Window; }
+
 namespace KenshiLua
 {
     class LuaState;
@@ -27,6 +29,11 @@ namespace KenshiLua
         void setVisible(bool visible);
         bool isInitialized() const;
         void checkKeyboardShortcut(OIS::KeyCode key, InputHandler* thisptr);
+
+        // Moves a window that is about to be shown to the first free spot beside the Hub:
+        // against the right edge of the windows already open, wrapping below them when a
+        // row is full.
+        void placeWindow(MyGUI::Window* target);
 
         void* getActiveOutputTarget() const { return m_activeOutputTarget; }
         void setActiveOutputTarget(void* target) { m_activeOutputTarget = target; }
@@ -55,6 +62,13 @@ namespace KenshiLua
         bool                m_initialized;
         bool                m_visible;
         void*               m_activeOutputTarget;
+
+        // The Hub's position when it was created. The Hub cannot be moved, but edge hide
+        // slides it off screen, so windows are placed against this rectangle instead.
+        int                 m_hubHomeLeft;
+        int                 m_hubHomeTop;
+        int                 m_hubHomeWidth;
+        int                 m_hubHomeHeight;
 
         KenshiLua_Hub*           m_hub;
         KenshiLua_ScriptEditor*  m_editor;

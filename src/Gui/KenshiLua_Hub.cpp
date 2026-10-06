@@ -65,6 +65,8 @@ namespace KenshiLua
 		if (editor)
 		{
 			bool vis = editor->getVisible();
+			if (!vis)
+				GuiManager::get().placeWindow(editor->getWindow());
 			editor->setVisible(!vis);
 		}
 	}
@@ -75,6 +77,8 @@ namespace KenshiLua
 		if (console)
 		{
 			bool vis = console->getVisible();
+			if (!vis)
+				GuiManager::get().placeWindow(console->getWindow());
 			console->setVisible(!vis);
 		}
 	}
@@ -85,6 +89,8 @@ namespace KenshiLua
 		if (viewer)
 		{
 			bool vis = viewer->getVisible();
+			if (!vis)
+				GuiManager::get().placeWindow(viewer->getWindow());
 			viewer->setVisible(!vis);
 		}
 	}
@@ -95,6 +101,8 @@ namespace KenshiLua
 		if (manager)
 		{
 			bool vis = manager->getVisible();
+			if (!vis)
+				GuiManager::get().placeWindow(manager->getWindow());
 			manager->setVisible(!vis);
 		}
 	}
@@ -105,6 +113,8 @@ namespace KenshiLua
 		if (settings)
 		{
 			bool vis = settings->getVisible();
+			if (!vis)
+				GuiManager::get().placeWindow(settings->getWindow());
 			settings->setVisible(!vis);
 		}
 	}

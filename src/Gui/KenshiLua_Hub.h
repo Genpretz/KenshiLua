@@ -16,6 +16,7 @@ namespace KenshiLua
 		void setVisible(bool visible);
 		bool getVisible();
 		MyGUI::Window* getWindow() const { return mKenshiLua_HubRootWindow; }
+		bool isEdgeHideEnabled() const { return mEdgeHideEnabled; }
 
 	private:
 		void onBtnScriptEditor(MyGUI::Widget* sender);
