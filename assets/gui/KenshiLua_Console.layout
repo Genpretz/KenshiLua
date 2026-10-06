@@ -4,7 +4,6 @@
         <Property key="Caption" value="CONSOLE"/>
         <Property key="Movable" value="true"/>
         <Property key="Snap" value="true"/>
-        <Controller type="ControllerEdgeHide"/>
         <Widget type="TextBox" skin="Kenshi_TextboxPaintedText" position_real="0.0171674 0.0240642 0.572246 0.0641711" align="Left Top" name="Console_ContextLabel">
             <Property key="Caption" value="Executing against: global Lua state"/>
             <Property key="FontName" value="Kenshi_StandardFont_Small"/>
