@@ -15,6 +15,45 @@
 
 #include <release_assert.h>
 
+namespace KenshiLua
+{
+    // Lektor storage blocks that KenshiLua allocated, each mapped to the lektor that
+    // owns it. Storage that the engine allocated, for example when a script-created
+    // lektor is passed to an engine function that fills it, comes from the engine's
+    // allocator. Freeing such a block with Ogre's allocator corrupts the heap, so only
+    // blocks recorded here may be freed by KenshiLua.
+    inline std::unordered_map<void*, const void*>& lektorOwnedStorage()
+    {
+        static std::unordered_map<void*, const void*> s_storage;
+        return s_storage;
+    }
+
+    template <typename T>
+    inline bool lektorOwnsStorage(const lektor<T>& lek)
+    {
+        if (!lek.stuff)
+            return false;
+        std::unordered_map<void*, const void*>& storage = lektorOwnedStorage();
+        std::unordered_map<void*, const void*>::const_iterator it = storage.find((void*)lek.stuff);
+        return it != storage.end() && it->second == (const void*)&lek;
+    }
+
+    template <typename T>
+    inline void lektorRecordOwnedStorage(const lektor<T>& lek)
+    {
+        if (lek.stuff)
+            lektorOwnedStorage()[(void*)lek.stuff] = (const void*)&lek;
+    }
+
+    inline void lektorFreeOwnedStorage(void* block)
+    {
+        lektorOwnedStorage().erase(block);
+        Ogre::AllocatedObject<
+            Ogre::CategorisedAllocPolicy<Ogre::MEMCATEGORY_GENERAL>
+        >::operator delete(block);
+    }
+}
+
 template<typename T>
 void lektor_push_back(lektor<T>& lek, const T& val)
 {
@@ -26,6 +65,7 @@ void lektor_push_back(lektor<T>& lek, const T& val)
         >::operator new(newMax * sizeof(T));
         if (lek.stuff)
         {
+            const bool ownedOld = KenshiLua::lektorOwnsStorage(lek);
             if (boost::has_trivial_copy<T>::value)
             {
                 memcpy(newStuff, lek.stuff, lek.count * sizeof(T));
@@ -38,11 +78,15 @@ void lektor_push_back(lektor<T>& lek, const T& val)
                     lek.stuff[i].~T();
                 }
             }
-            // Do not free lek.stuff with Ogre operator delete:
-            // lek.stuff may originate from the engine's internal pool/heap allocator.
+            // Free the old block only if KenshiLua allocated it. A block from the
+            // engine's allocator must not be freed with Ogre operator delete, so it
+            // is deliberately leaked.
+            if (ownedOld)
+                KenshiLua::lektorFreeOwnedStorage(lek.stuff);
         }
         lek.stuff = newStuff;
         lek.maxSize = newMax;
+        KenshiLua::lektorRecordOwnedStorage(lek);
     }
     ::new((void*)&lek.stuff[lek.count++]) T(val);
 }
@@ -278,11 +322,17 @@ namespace KenshiLua
                 lektor<T>* lek = static_cast<lektor<T>*>(*ud);
                 if (lek->stuff)
                 {
-                    for (uint32_t i = 0; i < lek->count; ++i)
-                        lek->stuff[i].~T();
-                    Ogre::AllocatedObject<
-                        Ogre::CategorisedAllocPolicy<Ogre::MEMCATEGORY_GENERAL>
-                    >::operator delete(lek->stuff);
+                    // Only storage KenshiLua allocated is destroyed and freed. Storage
+                    // the engine allocated, such as after an engine function filled
+                    // this lektor, belongs to the engine's allocator; freeing it with
+                    // Ogre operator delete corrupts the heap, so it and its elements
+                    // are deliberately leaked.
+                    if (lektorOwnsStorage(*lek))
+                    {
+                        for (uint32_t i = 0; i < lek->count; ++i)
+                            lek->stuff[i].~T();
+                        lektorFreeOwnedStorage(lek->stuff);
+                    }
                     lek->stuff = NULL;
                 }
                 delete lek;
