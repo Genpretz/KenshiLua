@@ -957,6 +957,7 @@ xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
     <ClInclude Include="src\Bindings\Kenshi\Util\OgreVectorBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Util\rendHitBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Util\StdDequeBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Util\ContainerIteration.h" />
     <ClInclude Include="src\Bindings\Kenshi\Util\StdMapBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Util\StdSetBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Util\StringPairBinding.h" />

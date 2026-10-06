@@ -1,5 +1,6 @@
 #pragma once
 #include "Bindings/Kenshi/GameDataBinding.h"
+#include "Bindings/Kenshi/Util/ContainerIteration.h"
 #include <map>
 #include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"
@@ -149,34 +150,28 @@ namespace KenshiLua
             return 1;
         }
 
-        // Stateful iterator: upvalue 1 = skip count (how many to skip from begin)
-        static int iterNext(lua_State* L)
-        {
-            MapType* m = get(L, 1);
-            if (!m) return 0;
-            int skip = (int)lua_tointeger(L, lua_upvalueindex(1));
-            typename MapType::const_iterator it = m->begin();
-            for (int s = 0; s < skip && it != m->end(); ++s, ++it) {}
-            if (it == m->end()) return 0;
-            // Update skip count for next call
-            lua_pushinteger(L, skip + 1);
-            lua_replace(L, lua_upvalueindex(1));
-            // Push key, value
-            LuaCodec<K>::push(L, it->first, keyMetaName);
-            if (valMetaName)
-                pushObject<V>(L, const_cast<V*>(&it->second), valMetaName);
-            else
-                LuaCodec<V>::push(L, it->second, nullptr);
-            return 2;
-        }
-
+        // pairs() copies the entries into a snapshot table and iterates that. See
+        // ContainerIteration.h for why the container is not walked step by step.
         static int pairs(lua_State* L)
         {
-            lua_pushinteger(L, 0); // initial skip = 0
-            lua_pushcclosure(L, iterNext, 1);
-            lua_pushvalue(L, 1);
-            lua_pushnil(L);
-            return 3;
+            MapType* m = get(L, 1);
+            int count = 0;
+            lua_createtable(L, m ? (int)m->size() * 2 : 0, 0);
+            if (m)
+            {
+                for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
+                {
+                    ++count;
+                    LuaCodec<K>::push(L, it->first, keyMetaName);
+                    lua_rawseti(L, -2, 2 * count - 1);
+                    if (valMetaName)
+                        pushObject<V>(L, const_cast<V*>(&it->second), valMetaName);
+                    else
+                        LuaCodec<V>::push(L, it->second, nullptr);
+                    lua_rawseti(L, -2, 2 * count);
+                }
+            }
+            return pushSnapshotIterator(L, count);
         }
 
         static void registerBinding(lua_State* L, const char* name, const char* keyName = nullptr, const char* valName = nullptr)

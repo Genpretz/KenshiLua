@@ -2,6 +2,7 @@
 #include <set>
 #include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Util/ContainerIteration.h"
 #include "Lua/LuaCodec.h"
 
 namespace KenshiLua
@@ -121,31 +122,25 @@ namespace KenshiLua
             return 1;
         }
 
-        // Stateful iterator: upvalue 1 = skip count
-        static int iterNext(lua_State* L)
-        {
-            SetType* s = get(L, 1);
-            if (!s) return 0;
-            int skip = (int)lua_tointeger(L, lua_upvalueindex(1));
-            typename SetType::const_iterator it = s->begin();
-            for (int i = 0; i < skip && it != s->end(); ++i, ++it) {}
-            if (it == s->end()) return 0;
-
-            lua_pushinteger(L, skip + 1);
-            lua_replace(L, lua_upvalueindex(1));
-
-            LuaCodec<T>::push(L, *it, elemMetaName);
-            lua_pushboolean(L, 1);
-            return 2;
-        }
-
+        // pairs() copies the elements into a snapshot table and iterates that. See
+        // ContainerIteration.h for why the container is not walked step by step.
         static int pairs(lua_State* L)
         {
-            lua_pushinteger(L, 0);
-            lua_pushcclosure(L, iterNext, 1);
-            lua_pushvalue(L, 1);
-            lua_pushnil(L);
-            return 3;
+            SetType* s = get(L, 1);
+            int count = 0;
+            lua_createtable(L, s ? (int)s->size() * 2 : 0, 0);
+            if (s)
+            {
+                for (typename SetType::const_iterator it = s->begin(); it != s->end(); ++it)
+                {
+                    ++count;
+                    LuaCodec<T>::push(L, *it, elemMetaName);
+                    lua_rawseti(L, -2, 2 * count - 1);
+                    lua_pushboolean(L, 1);
+                    lua_rawseti(L, -2, 2 * count);
+                }
+            }
+            return pushSnapshotIterator(L, count);
         }
 
         static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
