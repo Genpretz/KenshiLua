@@ -248,10 +248,13 @@ int RootObjectFactoryBinding::createItem(lua_State* L)
         Item* result = instance->createItem(itemState);
         return pushObject<Item>(L, result, ItemBinding::getMetatableName());
     }
-    else if (nargs == 6)
+    else if (nargs == 5 || nargs == 6)
     {
         GameData* gd = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-        hand* handle = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+        // A null handle asks the factory to create a new item rather than restore one
+        // with a specific handle. Accept nil for it, since Lua cannot construct a hand.
+        hand nullHandle;
+        const hand* handle = lua_isnoneornil(L, 3) ? &nullHandle : checkObject<hand>(L, 3, HandBinding::getMetatableName());
         GameData* weaponMesh = lua_isnoneornil(L, 4) ? nullptr : checkObject<GameData>(L, 4, GameDataBinding::getMetatableName());
         GameData* matData = lua_isnoneornil(L, 5) ? nullptr : checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
         int levelOverride = (int)luaL_checkinteger(L, 6);
@@ -261,7 +264,7 @@ int RootObjectFactoryBinding::createItem(lua_State* L)
         return pushObject<Item>(L, result, ItemBinding::getMetatableName());
     }
 
-    return luaL_error(L, "Incorrect number of arguments for RootObjectFactory:createItem (expected 1 or 6)");
+    return luaL_error(L, "Incorrect number of arguments for RootObjectFactory:createItem (expected 1, or 5 to 6: data, handle or nil, weaponMesh, matData, levelOverride, flagUniform)");
 }
 
 int RootObjectFactoryBinding::createRandomSquad(lua_State* L)
