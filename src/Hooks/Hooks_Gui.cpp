@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Hooks_Common.h"
+#include <kenshi/gui/ContextMenu.h>
 
 // ---------------------------------------------------------------------------
 // Hooks for mygui/common/baselayout/BaseLayout.h
@@ -254,3 +255,29 @@ DEFINE_HOOK_INSTALLER(InstallHook_OrdersPanel_prospectingButton,
     "OrdersPanel::prospectingButton",
     KenshiLib::GetRealAddress(&OrdersPanel::prospectingButton),
     OrdersPanel_prospectingButton_hook, OrdersPanel_prospectingButton_orig)
+
+// ---------------------------------------------------------------------------
+// Hooks for ContextMenu.h
+// ---------------------------------------------------------------------------
+
+static void (*ContextMenu_showContextMenu_orig)(ContextMenu*, bool, RootObject*) = NULL;
+static void ContextMenu_showContextMenu_hook(ContextMenu* thisptr, bool on, RootObject* what)
+{
+    ContextMenu_showContextMenu_orig(thisptr, on, what);
+    CallContextMenuShowContextMenuCallbacks(thisptr, on, what);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_ContextMenu_showContextMenu,
+    "ContextMenu::showContextMenu",
+    KenshiLib::GetRealAddress(&ContextMenu::showContextMenu),
+    ContextMenu_showContextMenu_hook, ContextMenu_showContextMenu_orig)
+
+static void (*ContextMenuGUI_show_orig)(ContextMenuGUI*, const lektor<int>&, const std::string&, bool) = NULL;
+static void ContextMenuGUI_show_hook(ContextMenuGUI* thisptr, const lektor<int>& ordersList, const std::string& name, bool offset)
+{
+    ContextMenuGUI_show_orig(thisptr, ordersList, name, offset);
+    CallContextMenuGUIShowCallbacks(thisptr, ordersList, name, offset);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_ContextMenuGUI_show,
+    "ContextMenuGUI::show",
+    KenshiLib::GetRealAddress(&ContextMenuGUI::show),
+    ContextMenuGUI_show_hook, ContextMenuGUI_show_orig)

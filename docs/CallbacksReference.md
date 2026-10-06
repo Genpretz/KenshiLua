@@ -21,7 +21,7 @@ Events.off(handlerId)
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
-## 1. Notification Callbacks (148)
+## 1. Notification Callbacks (150)
 
 | Event Name | Lua Signature |
 | :--- | :--- |
@@ -117,6 +117,8 @@ Events.off(handlerId)
 | `OrdersPanel::medicButton` | `function(self: OrdersPanel, sender: Widget)` |
 | `OrdersPanel::liftButton` | `function(self: OrdersPanel, sender: Widget)` |
 | `OrdersPanel::prospectingButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `ContextMenu::showContextMenu` | `function(self: ContextMenu, on: boolean, what: RootObject)` |
+| `ContextMenuGUI::show` | `function(self: ContextMenuGUI, ordersList: lektor<integer>, name: string, offset: boolean)` |
 | `Inventory::_NV__sectionAddItemCallback` | `function(self: Inventory, item: Item)` |
 | `Inventory::_NV__sectionRemoveItemCallback` | `function(self: Inventory, item: Item)` |
 | `Inventory::_NV__sectionUpdateItemCallback` | `function(self: Inventory, item: Item, prevQuantity: integer)` |
@@ -1315,6 +1317,29 @@ Events.off(handlerId)
   - `data`: `GameData`
   - `defaultVal`: `CombatTechniqueData`
 - **Returns**: `CombatTechniqueData`
+
+### `ContextMenu::showContextMenu`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ContextMenu::showContextMenu hook, after the original call returns`
+- **Lua Signature**: `function(self, on, what)`
+- **Parameters**:
+  - `self`: `ContextMenu`
+  - `on`: `boolean`
+  - `what`: `RootObject`
+- **Notes**: `on` and `what` are the original arguments: the requested visibility and the target, which can be nil.
+
+### `ContextMenuGUI::show`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ContextMenuGUI::show hook, after the original call returns`
+- **Lua Signature**: `function(self, ordersList, name, offset)`
+- **Parameters**:
+  - `self`: `ContextMenuGUI`
+  - `ordersList`: `lektor<integer>`
+  - `name`: `string`
+  - `offset`: `boolean`
+- **Notes**: ordersList is borrowed from the engine and valid only during the callback; do not modify it.
 
 ### `CraftingBuilding::_CONSTRUCTOR`
 

@@ -123,6 +123,8 @@ bool InstallHook_OrdersPanel_tauntButtonCallback();
 bool InstallHook_OrdersPanel_medicButton();
 bool InstallHook_OrdersPanel_liftButton();
 bool InstallHook_OrdersPanel_prospectingButton();
+bool InstallHook_ContextMenu_showContextMenu();
+bool InstallHook_ContextMenuGUI_show();
 bool InstallHook_Inventory_NV_sectionAddItemCallback();
 bool InstallHook_Inventory_NV_sectionRemoveItemCallback();
 bool InstallHook_Inventory_NV_sectionUpdateItemCallback();

@@ -242,6 +242,10 @@ namespace KenshiLua
         { "OrdersPanel::liftButton",                                         InstallHook_OrdersPanel_liftButton },
         { "OrdersPanel::prospectingButton",                                  InstallHook_OrdersPanel_prospectingButton },
 
+        // ContextMenu.h
+        { "ContextMenu::showContextMenu",                                    InstallHook_ContextMenu_showContextMenu },
+        { "ContextMenuGUI::show",                                            InstallHook_ContextMenuGUI_show },
+
         // Misc
         { "BuildModeWindow::confirm",                                        InstallHook_BuildModeWindow_confirm },
         { "SquadManagementScreen::removeSquad",                              InstallHook_SquadManagementScreen_removeSquad },

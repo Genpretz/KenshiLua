@@ -43,6 +43,8 @@ class GameSaveState;
 class GameDataCopyStandalone;
 class Town;
 class OrdersPanel;
+class ContextMenu;
+class ContextMenuGUI;
 class DataPanelLine_Button;
 class InputHandler;
 class GameWorld;
@@ -775,6 +777,18 @@ void CallOrdersPanelLiftButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sende
 // Lua event name: "OrdersPanel::prospectingButton"
 // Lua signature:  function(self, sender)
 void CallOrdersPanelProspectingButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
+
+// Fired by ContextMenu::showContextMenu hook, after the original call returns.
+// `on` and `what` are the original arguments: the requested visibility and the target, which can be nil.
+// Lua event name: "ContextMenu::showContextMenu"
+// Lua signature:  function(self, on, what)
+void CallContextMenuShowContextMenuCallbacks(ContextMenu* menu, bool on, RootObject* what);
+
+// Fired by ContextMenuGUI::show hook, after the original call returns.
+// ordersList is borrowed from the engine and valid only during the callback; do not modify it.
+// Lua event name: "ContextMenuGUI::show"
+// Lua signature:  function(self, ordersList, name, offset)
+void CallContextMenuGUIShowCallbacks(ContextMenuGUI* menuGUI, const lektor<int>& ordersList, const std::string& name, bool offset);
 
 // Fired by Inventory::_NV__sectionAddItemCallback hook.
 // Lua event name: "Inventory::_NV__sectionAddItemCallback"

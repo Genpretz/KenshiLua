@@ -62,6 +62,8 @@
 #include "Bindings/Kenshi/Gui/GenericFixedInventoryLayoutBinding.h"
 #include "Bindings/Kenshi/Gui/InventoryGUIBinding.h"
 #include "Bindings/Kenshi/Gui/InventoryLayoutBinding.h"
+#include "Bindings/Kenshi/Gui/ContextMenuBinding.h"
+#include "Bindings/Kenshi/Gui/ContextMenuGUIBinding.h"
 #include "Bindings/Kenshi/Gui/ManagementScreenBinding.h"
 #include "Bindings/Kenshi/Gui/OrdersPanelBinding.h"
 #include "Bindings/Kenshi/Gui/SquadManagementScreenBinding.h"
@@ -209,6 +211,8 @@ namespace KenshiLua
     static inline const char* LightBuildingMetatable()                              { return LightBuildingBinding::getMetatableName(); }
     static inline const char* LimbsInventoryLayoutMetatable()                       { return LimbsInventoryLayoutBinding::getMetatableName(); }
     static inline const char* LockedArmourMetatable()                               { return LockedArmourBinding::getMetatableName(); }
+    static inline const char* ContextMenuMetatable()                                { return ContextMenuBinding::getMetatableName(); }
+    static inline const char* ContextMenuGUIMetatable()                             { return ContextMenuGUIBinding::getMetatableName(); }
     static inline const char* ManagementScreenMetatable()                           { return ManagementScreenBinding::getMetatableName(); }
     static inline const char* MedicalSystemMetatable()                              { return MedicalSystemBinding::getMetatableName(); }
     static inline const char* MyGuiWidgetMetatable()                                { return MyGUIBinding::getMetatableName(); }
@@ -268,10 +272,13 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, CombatClass* val)                      { pushObject<CombatClass>(L, val, CombatClassMetatable()); }
     static inline void pushArg(lua_State* L, CombatMovementController* val)         { pushObject<CombatMovementController>(L, val, CombatMovementControllerMetatable()); }
     static inline void pushArg(lua_State* L, CombatTechniqueData* val)              { pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
+    static inline void pushArg(lua_State* L, ContextMenu* val)                      { pushObject<ContextMenu>(L, val, ContextMenuMetatable()); }
+    static inline void pushArg(lua_State* L, ContextMenuGUI* val)                   { pushObject<ContextMenuGUI>(L, val, ContextMenuGUIMetatable()); }
     static inline void pushArg(lua_State* L, const Building* val)                   { pushObject<Building>(L, const_cast<Building*>(val), BuildingMetatable()); }
     static inline void pushArg(lua_State* L, const CharacterAnimal* val)            { pushObject<CharacterAnimal>(L, const_cast<CharacterAnimal*>(val), CharacterAnimalMetatable()); }
     static inline void pushArg(lua_State* L, const CharStats* val)                { pushObject<CharStats>(L, const_cast<CharStats*>(val), CharStatsMetatable()); }
     static inline void pushArg(lua_State* L, const hand& val)                       { HandBinding::push(L, val); }
+    static inline void pushArg(lua_State* L, const lektor<int>& val)                { LektorIntBinding<int>::push(L, const_cast<lektor<int>*>(&val)); }
     static inline void pushArg(lua_State* L, const InventoryItemBase* val)          { pushObject<InventoryItemBase>(L, const_cast<InventoryItemBase*>(val), InventoryItemBaseMetatable()); }
     static inline void pushArg(lua_State* L, const rendHit& val)                    { pushObject<rendHit>(L, const_cast<rendHit*>(&val), RendHitMetatable()); }
     static inline void pushArg(lua_State* L, const UseableStuff* val)               { pushObject<UseableStuff>(L, const_cast<UseableStuff*>(val), UseableStuffMetatable()); }
@@ -1245,6 +1252,18 @@ void CallOrdersPanelProspectingButtonCallbacks(OrdersPanel* panel, MyGUI::Widget
 {
     ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
     KenshiLua::EventSystem::get().callHandlers("OrdersPanel::prospectingButton", &pusher);
+}
+
+void CallContextMenuShowContextMenuCallbacks(ContextMenu* menu, bool on, RootObject* what)
+{
+    ArgPusher3<ContextMenu*, bool, RootObject*> pusher(menu, on, what);
+    KenshiLua::EventSystem::get().callHandlers("ContextMenu::showContextMenu", &pusher);
+}
+
+void CallContextMenuGUIShowCallbacks(ContextMenuGUI* menuGUI, const lektor<int>& ordersList, const std::string& name, bool offset)
+{
+    ArgPusher4<ContextMenuGUI*, const lektor<int>&, const std::string&, bool> pusher(menuGUI, ordersList, name, offset);
+    KenshiLua::EventSystem::get().callHandlers("ContextMenuGUI::show", &pusher);
 }
 
 void CallInventorySectionAddItemCallbacks(Inventory* inventory, Item* item)
