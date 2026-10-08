@@ -625,14 +625,14 @@ namespace KenshiLua
         }
 
         // 1. If wrapped in lektor<...>, extract inner
-        if (typeName.length() > 8 && typeName.rfind("lektor<", 0) == 0 && typeName[typeName.length() - 1] == '>')
+        if (typeName.length() > 8 && typeName.rfind("lektor<", 0) == 0 && typeName.back() == '>')
         {
             std::string inner = typeName.substr(7, typeName.length() - 8);
             it = factories.find(inner);
             if (it != factories.end())
                 return it->second(L);
 
-            if (inner[inner.length() - 1] != '*')
+            if (inner.back() != '*')
             {
                 it = factories.find(inner + "*");
                 if (it != factories.end())
@@ -648,7 +648,7 @@ namespace KenshiLua
         }
 
         // 3. Try removing '*'
-        if (!typeName.empty() && typeName[typeName.length() - 1] == '*')
+        if (!typeName.empty() && typeName.back() == '*')
         {
             it = factories.find(typeName.substr(0, typeName.length() - 1));
             if (it != factories.end())
@@ -660,6 +660,14 @@ namespace KenshiLua
         if (it != factories.end())
         {
             return it->second(L);
+        }
+
+        // 5. A pointer element named without '*' ("Character" -> lektor<Character*>)
+        if (typeName.back() != '*')
+        {
+            it = factories.find("lektor<" + typeName + "*>");
+            if (it != factories.end())
+                return it->second(L);
         }
 
         return luaL_error(L, "lektor.new: unsupported or unknown type '%s'", typeName.c_str());

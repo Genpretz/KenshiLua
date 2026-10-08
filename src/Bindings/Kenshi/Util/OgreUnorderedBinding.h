@@ -514,6 +514,14 @@ namespace KenshiLua
             return it->second(L);
         }
 
+        // A pointer element named without '*' ("GameData" -> ogre_unordered_set<GameData*>)
+        if (typeName.back() != '*')
+        {
+            it = factories.find("ogre_unordered_set<" + typeName + "*>");
+            if (it != factories.end())
+                return it->second(L);
+        }
+
         return luaL_error(L, "ogre_unordered_set.new: unsupported or unknown type '%s'", typeName.c_str());
     }
 
