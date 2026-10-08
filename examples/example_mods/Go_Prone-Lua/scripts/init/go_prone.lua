@@ -11,11 +11,13 @@ local function toggle_prone()
         return
     end
 
-    local selected = getPlayerInterface().selectedCharacters
-    if not selected then
-        logDebug("[Go Prone] No selected characters set found")
+    local playerInterface = getPlayerInterface()
+    if not playerInterface then
+        logDebug("[Go Prone] No player interface")
         return
     end
+
+    local selected = playerInterface.selectedCharacters
 
     local count = 0
     for h, _ in pairs(selected:toTable()) do
@@ -42,6 +44,9 @@ local function toggle_prone()
     end
 end
 
+--- Key down event handler
+---@param input_handler InputHandler
+---@param key_code number
 local function on_key_down(input_handler, key_code)
     logDebug("[Go Prone] Key pressed: " .. tostring(key_code))
     if key_code == KC_V then

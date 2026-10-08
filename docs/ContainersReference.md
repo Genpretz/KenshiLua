@@ -64,7 +64,7 @@ local rootList = lektor.new(RootObject)
 #### Supported Types
 * **Pointers**: `"RootObject*"`, `"Character*"`, `"Building*"`, `"FarmBuilding*"`, `"Item*"`, `"InventorySection*"`, `"CombatTechniqueData*"`, `"GameData*"`, `"ModInfo*"`, `"DialogLineData*"`, `"DialogCondition*"`, `"DialogAction*"`
 * **Primitives and Values**: `"int"`, `"string"`, `"std::string"`, `"hand"`, `"ModInfo"`, `"SaveInfo"`
-* **Short Type Names**: Passing `"Character"`, `"Item"`, or `"RootObject"` automatically maps to pointer collections.
+* **Short Type Names**: A pointer element type may be written without `*`: `"Character"`, `"Item"`, and `"RootObject"` create the same lists as `"Character*"`, `"Item*"`, and `"RootObject*"`. `ogre_unordered_set.new` accepts the same short names.
 
 ### Methods and Operators
 | Operation | Syntax | Description |
@@ -102,7 +102,7 @@ local handSet = ogre_unordered_set.new("hand")
 | **Add** | `set:add(elem)` or `set[elem] = true` | Adds element to set. Returns `true` if newly inserted. |
 | **Remove** | `set:remove(elem)` or `set[elem] = nil` | Removes element from set. Returns `true` if removed. |
 | **Clear** | `set:clear()` | Removes all elements from the set. |
-| **Table Conversion** | `local tbl = set:toTable()` | Returns an array table of all elements in the set. |
+| **Table Conversion** | `local tbl = set:toTable()` | Returns a table keyed by element, with `true` values. Object elements become new userdata keys, so iterate it rather than looking up another handle. |
 | **Iteration** | `for elem in pairs(set) do` | Iterates over all elements. |
 
 ---

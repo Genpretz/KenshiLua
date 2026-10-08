@@ -32,6 +32,10 @@ The class-binding generator automatically discovers bindings in `src/Bindings`, 
 | `docs/generate_mygui_reference.py` | Generates the MyGUI Lua bindings reference. | `docs/MyGUIReference.md` |
 | `docs/generate_enums_reference.py` | Generates the enum reference from `EnumBinding.cpp`. | `docs/EnumsReference.md` |
 | `docs/generate_callbacks_reference.py` | Generates the callbacks reference from callback and hook declarations. | `docs/CallbacksReference.md` |
+| `luals/generate_definitions.py` | Generates the versioned LuaLS definitions from reviewed metadata and runtime registries. | `luals/generated/kenshilua.lua`, `luals/addon/kenshilua/library/kenshilua.lua` |
+| `luals/generate_binding_inventory.py` | Inventories bindings reachable from the runtime registration graph without inferring signatures. | `luals/generated/binding_inventory.json` |
+| `luals/generate_coverage_report.py` | Compares inventoried bindings with reviewed LuaLS metadata and reports remaining coverage gaps. | `luals/generated/coverage_report.json` |
+| `luals/check_fixtures.py` | Checks LuaLS regression fixtures against the generated definitions. | LuaLS diagnostic result |
 | `audit/generate_unbound_reference.py` | Reports unsupported or unbound types and methods. | `docs/UnboundReference.md` |
 
 Each documentation and audit script can be run directly, for example:
@@ -39,6 +43,12 @@ Each documentation and audit script can be run directly, for example:
 ```powershell
 python tools/docs/generate_bindings_reference.py
 python tools/docs/generate_enums_reference.py
+python tools/luals/generate_definitions.py --check
+python tools/luals/generate_binding_inventory.py --check
+python tools/luals/generate_coverage_report.py --check
+python tools/luals/check_fixtures.py --luals C:/path/to/lua-language-server.exe
+python tools/luals/check_fixtures.py --workspace --luals C:/path/to/lua-language-server.exe
+python -m unittest discover -s tests/luals -p "test_*.py"
 python tools/audit/generate_unbound_reference.py
 ```
 

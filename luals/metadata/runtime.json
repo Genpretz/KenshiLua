@@ -1,0 +1,2153 @@
+{
+  "schemaVersion": 1,
+  "aliases": [
+    {
+      "name": "KenshiLua.EventHandler",
+      "definition": "fun(...: any): any"
+    },
+    {
+      "name": "MyGUI.WidgetEventHandler",
+      "definition": "fun(sender: MyGUI.Widget, ...: any)"
+    },
+    {
+      "name": "MyGUI.WidgetEventName",
+      "definition": "\"eventMouseButtonClick\"|\"eventEditTextChange\"|\"eventWindowButtonPressed\"|\"eventMouseButtonPressed\"|\"eventMouseButtonReleased\"|\"eventMouseSetFocus\"|\"eventMouseLostFocus\"|\"eventMouseMove\"|\"eventMouseWheel\"|\"eventKeyButtonPressed\"|\"eventKeyButtonReleased\"|\"eventComboAccept\"|\"eventComboChangePosition\"|\"eventListSelectAccept\"|\"eventListChangePosition\"|\"eventWindowChangeCoord\"|\"eventScrollChangePosition\"|\"eventTabChangeSelect\"|\"eventMenuAccept\""
+    },
+    {
+      "name": "MyGUI.LegacyWidgetEventName",
+      "definition": "\"MouseButtonClick\"|\"EditTextChange\"|\"WindowButtonPressed\"|\"MouseButtonPressed\"|\"MouseButtonReleased\"|\"MouseSetFocus\"|\"MouseLostFocus\"|\"MouseMove\"|\"MouseWheel\"|\"KeyButtonPressed\"|\"KeyButtonReleased\"|\"ComboAccept\"|\"ComboChangePosition\"|\"ListSelectAccept\"|\"ListChangePosition\"|\"WindowChangeCoord\"|\"ScrollChangePosition\"|\"TabChangeSelect\"|\"MenuAccept\""
+    },
+    {
+      "name": "MyGUI.FactoryFirstArgument",
+      "definition": "string|integer|MyGUI.IntCoord|table"
+    }
+  ],
+  "classes": [
+    {
+      "name": "FitnessSelectorCampaignTriggerData",
+      "description": "Lua view of the `FitnessSelector<CampaignTriggerData*>` helper. Its fields are served by a custom __index in FitnessSelectorBinding.h.",
+      "fields": [
+        {"name": "totalScore", "type": "number"},
+        {"name": "highestScore", "type": "number"},
+        {"name": "highestItem", "type": "lightuserdata|nil", "description": "Pushed through LuaCodec without an element metatable, so Lua receives a raw pointer."},
+        {"name": "list", "type": "nil", "description": "This instance is registered without a list metatable."},
+        {"name": "itemsScores", "type": "nil", "description": "This instance is registered without an item-score metatable."}
+      ]
+    },
+    {
+      "name": "CombatTechniqueDataFitnessSelector",
+      "description": "Lua view of the `FitnessSelector<CombatTechniqueData*>` helper. Its fields are served by a custom __index in FitnessSelectorBinding.h.",
+      "fields": [
+        {"name": "totalScore", "type": "number"},
+        {"name": "highestScore", "type": "number"},
+        {"name": "highestItem", "type": "lightuserdata|nil", "description": "Pushed through LuaCodec without an element metatable, so Lua receives a raw pointer."},
+        {"name": "list", "type": "StdMap<number, CombatTechniqueData>"},
+        {"name": "itemsScores", "type": "StdMap<CombatTechniqueData, number>"}
+      ]
+    },
+    {
+      "name": "GameDataFitnessSelector",
+      "description": "Lua view of the `FitnessSelector<GameData*>` helper. Its fields are served by a custom __index in FitnessSelectorBinding.h.",
+      "fields": [
+        {"name": "totalScore", "type": "number"},
+        {"name": "highestScore", "type": "number"},
+        {"name": "highestItem", "type": "lightuserdata|nil", "description": "Pushed through LuaCodec without an element metatable, so Lua receives a raw pointer."},
+        {"name": "list", "type": "StdMap<number, GameData>"},
+        {"name": "itemsScores", "type": "StdMap<GameData, number>"}
+      ]
+    },
+    {
+      "name": "KenshiLua.Events",
+      "fields": [
+        { "name": "on", "type": "fun(eventName: KenshiLua.EventName|string, handler: KenshiLua.EventHandler): integer", "description": "Registers a handler and returns its ID." },
+        { "name": "off", "type": "fun(handlerId: integer)", "description": "Removes a handler. Unknown IDs are ignored." }
+      ]
+    },
+    {
+      "name": "KenshiLua.Api",
+      "fields": [
+        { "name": "reloadMods", "type": "fun(): integer", "description": "Reloads scripts and returns the number of loaded scripts." },
+        { "name": "reloadScript", "type": "fun(path: string): boolean", "description": "Reloads one script by path." },
+        { "name": "enableHotReload", "type": "fun()" },
+        { "name": "disableHotReload", "type": "fun()" },
+        { "name": "isHotReloadEnabled", "type": "fun(): boolean" },
+        { "name": "toggleGui", "type": "fun()" },
+        { "name": "registerHandler", "type": "fun(eventName: KenshiLua.EventName|string, handler: KenshiLua.EventHandler): integer", "description": "Compatibility alias for Events.on." },
+        { "name": "unregisterHandler", "type": "fun(handlerId: integer)", "description": "Compatibility alias for Events.off." },
+        { "name": "Events", "type": "KenshiLua.Events" },
+        { "name": "version", "type": "fun(): string" },
+        { "name": "runBenchmark", "type": "fun(csvFilename?: string, logFilename?: string): string" },
+        { "name": "checkLuaScriptReferences", "type": "fun(): string" },
+        { "name": "log", "type": "fun(...: any)" },
+        { "name": "logDebug", "type": "fun(...: any)" },
+        { "name": "logWarn", "type": "fun(...: any)" },
+        { "name": "logError", "type": "fun(...: any)" },
+        { "name": "error", "type": "fun(...: any)" },
+        { "name": "profileStart", "type": "fun(mode?: string)" },
+        { "name": "profileStop", "type": "fun(): string" },
+        { "name": "profileDump", "type": "fun(): string" }
+      ]
+    },
+    {
+      "name": "MyGUI.Align",
+      "fields": [
+        { "name": "HCenter", "type": "integer" }, { "name": "VCenter", "type": "integer" }, { "name": "Center", "type": "integer" },
+        { "name": "Left", "type": "integer" }, { "name": "Right", "type": "integer" }, { "name": "HStretch", "type": "integer" },
+        { "name": "Top", "type": "integer" }, { "name": "Bottom", "type": "integer" }, { "name": "VStretch", "type": "integer" },
+        { "name": "Stretch", "type": "integer" }, { "name": "Default", "type": "integer" }
+      ]
+    },
+    { "name": "MyGUI.WidgetStyle", "fields": [ { "name": "Child", "type": "integer" }, { "name": "Overlapped", "type": "integer" }, { "name": "Popup", "type": "integer" } ] },
+    { "name": "MyGUI.FlowDirection", "fields": [ { "name": "LeftToRight", "type": "integer" }, { "name": "RightToLeft", "type": "integer" }, { "name": "TopToBottom", "type": "integer" }, { "name": "BottomToTop", "type": "integer" } ] },
+    { "name": "MyGUI.MenuItemType", "fields": [ { "name": "Normal", "type": "integer" }, { "name": "Popup", "type": "integer" }, { "name": "Separator", "type": "integer" } ] },
+    { "name": "MyGUI.MouseButton", "fields": [ { "name": "Left", "type": "integer" }, { "name": "Right", "type": "integer" }, { "name": "Middle", "type": "integer" }, { "name": "Button0", "type": "integer" }, { "name": "Button1", "type": "integer" }, { "name": "Button2", "type": "integer" }, { "name": "Button3", "type": "integer" }, { "name": "Button4", "type": "integer" }, { "name": "Button5", "type": "integer" }, { "name": "Button6", "type": "integer" }, { "name": "Button7", "type": "integer" }, { "name": "None", "type": "integer" } ] },
+    { "name": "MyGUI.KeyCode", "fields": [ { "name": "None", "type": "integer" }, { "name": "Escape", "type": "integer" }, { "name": "Return", "type": "integer" }, { "name": "Space", "type": "integer" }, { "name": "Tab", "type": "integer" }, { "name": "Backspace", "type": "integer" }, { "name": "Delete", "type": "integer" }, { "name": "LeftShift", "type": "integer" }, { "name": "RightShift", "type": "integer" }, { "name": "LeftControl", "type": "integer" }, { "name": "RightControl", "type": "integer" }, { "name": "LeftAlt", "type": "integer" }, { "name": "RightAlt", "type": "integer" }, { "name": "ArrowUp", "type": "integer" }, { "name": "ArrowDown", "type": "integer" }, { "name": "ArrowLeft", "type": "integer" }, { "name": "ArrowRight", "type": "integer" } ] },
+    { "name": "MyGUI.ResizingPolicy", "fields": [ { "name": "Auto", "type": "integer" }, { "name": "Fixed", "type": "integer" }, { "name": "Fill", "type": "integer" } ] },
+    {
+      "name": "MyGUI.IntPoint",
+      "fields": [
+        { "name": "left", "type": "integer" }, { "name": "x", "type": "integer" },
+        { "name": "top", "type": "integer" }, { "name": "y", "type": "integer" }
+      ]
+    },
+    {
+      "name": "MyGUI.IntSize",
+      "fields": [
+        { "name": "width", "type": "integer" }, { "name": "w", "type": "integer" },
+        { "name": "height", "type": "integer" }, { "name": "h", "type": "integer" }
+      ]
+    },
+    {
+      "name": "MyGUI.IntCoord",
+      "fields": [
+        { "name": "left", "type": "integer" }, { "name": "x", "type": "integer" },
+        { "name": "top", "type": "integer" }, { "name": "y", "type": "integer" },
+        { "name": "width", "type": "integer" }, { "name": "w", "type": "integer" },
+        { "name": "height", "type": "integer" }, { "name": "h", "type": "integer" },
+        { "name": "point", "type": "MyGUI.IntPoint" }, { "name": "size", "type": "MyGUI.IntSize" }
+      ]
+    },
+    {
+      "name": "MyGUI.IntPointConstructor",
+      "fields": [ { "name": "new", "type": "fun(left?: integer, top?: integer): MyGUI.IntPoint" } ]
+    },
+    {
+      "name": "MyGUI.IntSizeConstructor",
+      "fields": [ { "name": "new", "type": "fun(width?: integer, height?: integer): MyGUI.IntSize" } ]
+    },
+    {
+      "name": "MyGUI.IntCoordConstructor",
+      "fields": [ { "name": "new", "type": "fun(left?: integer, top?: integer, width?: integer, height?: integer): MyGUI.IntCoord" } ]
+    },
+    { "name": "MyGUI.IntRect", "fields": [ { "name": "left", "type": "integer" }, { "name": "top", "type": "integer" }, { "name": "right", "type": "integer" }, { "name": "bottom", "type": "integer" }, { "name": "width", "type": "integer" }, { "name": "height", "type": "integer" } ] },
+    { "name": "MyGUI.IntRectConstructor", "fields": [ { "name": "new", "type": "fun(left?: integer, top?: integer, right?: integer, bottom?: integer): MyGUI.IntRect" } ] },
+    { "name": "MyGUI.FloatPoint", "fields": [ { "name": "left", "type": "number" }, { "name": "x", "type": "number" }, { "name": "top", "type": "number" }, { "name": "y", "type": "number" } ] },
+    { "name": "MyGUI.FloatPointConstructor", "fields": [ { "name": "new", "type": "fun(left?: number, top?: number): MyGUI.FloatPoint" } ] },
+    { "name": "MyGUI.FloatSize", "fields": [ { "name": "width", "type": "number" }, { "name": "w", "type": "number" }, { "name": "height", "type": "number" }, { "name": "h", "type": "number" } ] },
+    { "name": "MyGUI.FloatSizeConstructor", "fields": [ { "name": "new", "type": "fun(width?: number, height?: number): MyGUI.FloatSize" } ] },
+    { "name": "MyGUI.FloatCoord", "fields": [ { "name": "left", "type": "number" }, { "name": "x", "type": "number" }, { "name": "top", "type": "number" }, { "name": "y", "type": "number" }, { "name": "width", "type": "number" }, { "name": "w", "type": "number" }, { "name": "height", "type": "number" }, { "name": "h", "type": "number" } ] },
+    { "name": "MyGUI.FloatCoordConstructor", "fields": [ { "name": "new", "type": "fun(left?: number, top?: number, width?: number, height?: number): MyGUI.FloatCoord" } ] },
+    { "name": "MyGUI.FloatRect", "fields": [ { "name": "left", "type": "number" }, { "name": "top", "type": "number" }, { "name": "right", "type": "number" }, { "name": "bottom", "type": "number" }, { "name": "width", "type": "number" }, { "name": "height", "type": "number" } ] },
+    { "name": "MyGUI.FloatRectConstructor", "fields": [ { "name": "new", "type": "fun(left?: number, top?: number, right?: number, bottom?: number): MyGUI.FloatRect" } ] },
+    { "name": "MyGUI.Colour", "fields": [ { "name": "red", "type": "number" }, { "name": "r", "type": "number" }, { "name": "green", "type": "number" }, { "name": "g", "type": "number" }, { "name": "blue", "type": "number" }, { "name": "b", "type": "number" }, { "name": "alpha", "type": "number" }, { "name": "a", "type": "number" } ] },
+    { "name": "MyGUI.ColourConstructor", "fields": [ { "name": "new", "type": "fun(red?: number, green?: number, blue?: number, alpha?: number): MyGUI.Colour" }, { "name": "parse", "type": "fun(value: string): MyGUI.Colour" } ] },
+    {
+      "name": "MyGUI.Gui",
+      "fields": [
+        { "name": "createWidget", "type": "fun(self: MyGUI.Gui, widgetType: string, skin: string, left: integer, top: integer, width: integer, height: integer, align?: integer, parentOrLayer?: MyGUI.Widget|string, name?: string): MyGUI.Widget|nil" },
+        { "name": "createWidgetReal", "type": "fun(self: MyGUI.Gui, widgetType: string, skin: string, left: number, top: number, width: number, height: number, align?: integer, parentOrLayer?: MyGUI.Widget|string, name?: string): MyGUI.Widget|nil" },
+        { "name": "findWidget", "type": "fun(self: MyGUI.Gui, name: string): MyGUI.Widget|nil" },
+        { "name": "findWidgetT", "type": "fun(self: MyGUI.Gui, name: string): MyGUI.Widget|nil" },
+        { "name": "destroyWidget", "type": "fun(self: MyGUI.Gui, widget: MyGUI.Widget)" },
+        { "name": "destroyWidgets", "type": "fun(self: MyGUI.Gui, widgets: MyGUI.Widget[])" },
+        { "name": "hidePointer", "type": "fun(self: MyGUI.Gui)" },
+        { "name": "showPointer", "type": "fun(self: MyGUI.Gui)" },
+        { "name": "isPointerVisible", "type": "fun(self: MyGUI.Gui): boolean" }
+      ]
+    },
+    {
+      "name": "MyGUI.GuiStatic",
+      "fields": [ { "name": "getInstance", "type": "fun(): MyGUI.Gui|nil" } ]
+    },
+    {
+      "name": "MyGUI.InputManager",
+      "fields": [
+        { "name": "injectMouseMove", "type": "fun(self: MyGUI.InputManager, x: integer, y: integer, wheel?: integer): boolean" },
+        { "name": "injectMousePress", "type": "fun(self: MyGUI.InputManager, x: integer, y: integer, button?: integer): boolean" },
+        { "name": "injectMouseRelease", "type": "fun(self: MyGUI.InputManager, x: integer, y: integer, button?: integer): boolean" },
+        { "name": "injectKeyPress", "type": "fun(self: MyGUI.InputManager, key: integer, character?: integer): boolean" },
+        { "name": "injectKeyRelease", "type": "fun(self: MyGUI.InputManager, key: integer): boolean" },
+        { "name": "isControlPressed", "type": "fun(self: MyGUI.InputManager): boolean" }, { "name": "isShiftPressed", "type": "fun(self: MyGUI.InputManager): boolean" },
+        { "name": "isFocusMouse", "type": "fun(self: MyGUI.InputManager): boolean" }, { "name": "isFocusKey", "type": "fun(self: MyGUI.InputManager): boolean" }, { "name": "isCaptureMouse", "type": "fun(self: MyGUI.InputManager): boolean" },
+        { "name": "setKeyFocusWidget", "type": "fun(self: MyGUI.InputManager, widget: MyGUI.Widget|nil)" }, { "name": "resetKeyFocusWidget", "type": "fun(self: MyGUI.InputManager, widget?: MyGUI.Widget)" },
+        { "name": "getMouseFocusWidget", "type": "fun(self: MyGUI.InputManager): MyGUI.Widget|nil" }, { "name": "getKeyFocusWidget", "type": "fun(self: MyGUI.InputManager): MyGUI.Widget|nil" },
+        { "name": "getMousePosition", "type": "fun(self: MyGUI.InputManager): integer, integer" },
+        { "name": "addWidgetModal", "type": "fun(self: MyGUI.InputManager, widget: MyGUI.Widget)" }, { "name": "removeWidgetModal", "type": "fun(self: MyGUI.InputManager, widget: MyGUI.Widget)" },
+        { "name": "isModalAny", "type": "fun(self: MyGUI.InputManager): boolean" }, { "name": "resetMouseCaptureWidget", "type": "fun(self: MyGUI.InputManager)" }
+      ]
+    },
+    { "name": "MyGUI.InputManagerStatic", "fields": [ { "name": "getInstance", "type": "fun(): MyGUI.InputManager|nil" } ] },
+    {
+      "name": "MyGUI.PointerManager",
+      "fields": [
+        { "name": "setPointer", "type": "fun(self: MyGUI.PointerManager, name: string)" }, { "name": "clearPointer", "type": "fun(self: MyGUI.PointerManager)" },
+        { "name": "getVisible", "type": "fun(self: MyGUI.PointerManager): boolean" }, { "name": "setVisible", "type": "fun(self: MyGUI.PointerManager, visible: boolean)" }, { "name": "isVisible", "type": "fun(self: MyGUI.PointerManager): boolean" },
+        { "name": "getDefaultPointer", "type": "fun(self: MyGUI.PointerManager): string" }, { "name": "setDefaultPointer", "type": "fun(self: MyGUI.PointerManager, name: string)" },
+        { "name": "getLayerName", "type": "fun(self: MyGUI.PointerManager): string" }, { "name": "setLayerName", "type": "fun(self: MyGUI.PointerManager, name: string)" }
+      ]
+    },
+    { "name": "MyGUI.PointerManagerStatic", "fields": [ { "name": "getInstance", "type": "fun(): MyGUI.PointerManager|nil" } ] },
+    {
+      "name": "MyGUI.ClipboardManager",
+      "fields": [
+        { "name": "setClipboardData", "type": "fun(self: MyGUI.ClipboardManager, dataType: string, data: string)" }, { "name": "clearClipboardData", "type": "fun(self: MyGUI.ClipboardManager, dataType: string)" },
+        { "name": "getClipboardData", "type": "fun(self: MyGUI.ClipboardManager, dataType: string): string" }, { "name": "setText", "type": "fun(self: MyGUI.ClipboardManager, text: string)" }, { "name": "getText", "type": "fun(self: MyGUI.ClipboardManager): string" }
+      ]
+    },
+    { "name": "MyGUI.ClipboardManagerStatic", "fields": [ { "name": "getInstance", "type": "fun(): MyGUI.ClipboardManager|nil" } ] },
+    {
+      "name": "MyGUI.LayoutManager",
+      "fields": [
+        { "name": "loadLayout", "type": "fun(self: MyGUI.LayoutManager, filename: string, prefix?: string, parent?: MyGUI.Widget): MyGUI.Widget[]" },
+        { "name": "unloadLayout", "type": "fun(self: MyGUI.LayoutManager, widgets: MyGUI.Widget[])" }
+      ]
+    },
+    { "name": "MyGUI.LayoutManagerStatic", "fields": [ { "name": "getInstance", "type": "fun(): MyGUI.LayoutManager|nil" } ] },
+    {
+      "name": "MyGUI.RenderManager",
+      "fields": [
+        { "name": "getViewSize", "type": "fun(self: MyGUI.RenderManager): integer, integer" }, { "name": "getViewWidth", "type": "fun(self: MyGUI.RenderManager): integer" }, { "name": "getViewHeight", "type": "fun(self: MyGUI.RenderManager): integer" }
+      ]
+    },
+    { "name": "MyGUI.RenderManagerStatic", "fields": [ { "name": "getInstance", "type": "fun(): MyGUI.RenderManager|nil" } ] },
+    {
+      "name": "MyGUI.SkinManager",
+      "fields": [
+        { "name": "isExist", "type": "fun(self: MyGUI.SkinManager, name: string): boolean" }, { "name": "getDefaultSkin", "type": "fun(self: MyGUI.SkinManager): string" }, { "name": "setDefaultSkin", "type": "fun(self: MyGUI.SkinManager, skin: string)" }
+      ]
+    },
+    { "name": "MyGUI.SkinManagerStatic", "fields": [ { "name": "getInstance", "type": "fun(): MyGUI.SkinManager|nil" } ] },
+    {
+      "name": "MyGUI.Widget",
+      "fields": [
+        { "name": "setPosition", "type": "fun(self: MyGUI.Widget, x: integer|MyGUI.IntPoint, y?: integer)" },
+        { "name": "getPosition", "type": "fun(self: MyGUI.Widget): integer, integer" },
+        { "name": "setSize", "type": "fun(self: MyGUI.Widget, width: integer|MyGUI.IntSize, height?: integer)" },
+        { "name": "getSize", "type": "fun(self: MyGUI.Widget): integer, integer" },
+        { "name": "setCoord", "type": "fun(self: MyGUI.Widget, left: integer|MyGUI.IntCoord, top?: integer, width?: integer, height?: integer)" },
+        { "name": "getCoord", "type": "fun(self: MyGUI.Widget): integer, integer, integer, integer" },
+        { "name": "setRealPosition", "type": "fun(self: MyGUI.Widget, left: number, top: number)" },
+        { "name": "getRealPosition", "type": "fun(self: MyGUI.Widget): number, number" },
+        { "name": "setRealSize", "type": "fun(self: MyGUI.Widget, width: number, height: number)" },
+        { "name": "getRealSize", "type": "fun(self: MyGUI.Widget): number, number" },
+        { "name": "setRealCoord", "type": "fun(self: MyGUI.Widget, left: number, top: number, width: number, height: number)" },
+        { "name": "getRealCoord", "type": "fun(self: MyGUI.Widget): number, number, number, number" },
+        { "name": "setCoordReal", "type": "fun(self: MyGUI.Widget, left: number, top: number, width: number, height: number)", "description": "Alias of setRealCoord." },
+        { "name": "getCoordReal", "type": "fun(self: MyGUI.Widget): number, number, number, number", "description": "Alias of getRealCoord." },
+        { "name": "setVisible", "type": "fun(self: MyGUI.Widget, visible: boolean)" },
+        { "name": "getVisible", "type": "fun(self: MyGUI.Widget): boolean" },
+        { "name": "getInheritedVisible", "type": "fun(self: MyGUI.Widget): boolean" },
+        { "name": "setAlign", "type": "fun(self: MyGUI.Widget, align: integer)" },
+        { "name": "getAlign", "type": "fun(self: MyGUI.Widget): integer" },
+        { "name": "setAlpha", "type": "fun(self: MyGUI.Widget, alpha: number)" },
+        { "name": "getAlpha", "type": "fun(self: MyGUI.Widget): number" },
+        { "name": "setInheritsAlpha", "type": "fun(self: MyGUI.Widget, inherits: boolean)" },
+        { "name": "getInheritsAlpha", "type": "fun(self: MyGUI.Widget): boolean" },
+        { "name": "setColour", "type": "fun(self: MyGUI.Widget, colour: MyGUI.Colour)" },
+        { "name": "setDepth", "type": "fun(self: MyGUI.Widget, depth: integer)" },
+        { "name": "getDepth", "type": "fun(self: MyGUI.Widget): integer" },
+        { "name": "setEnabled", "type": "fun(self: MyGUI.Widget, enabled: boolean)" },
+        { "name": "getEnabled", "type": "fun(self: MyGUI.Widget): boolean" },
+        { "name": "getInheritedEnabled", "type": "fun(self: MyGUI.Widget): boolean" },
+        { "name": "setCaption", "type": "fun(self: MyGUI.Widget, text: string)" },
+        { "name": "getCaption", "type": "fun(self: MyGUI.Widget): string" },
+        { "name": "setWidgetStyle", "type": "fun(self: MyGUI.Widget, style: integer, layer?: string)" },
+        { "name": "getWidgetStyle", "type": "fun(self: MyGUI.Widget): integer" },
+        { "name": "setNeedKeyFocus", "type": "fun(self: MyGUI.Widget, needed: boolean)" },
+        { "name": "getNeedKeyFocus", "type": "fun(self: MyGUI.Widget): boolean" },
+        { "name": "setNeedMouseFocus", "type": "fun(self: MyGUI.Widget, needed: boolean)" },
+        { "name": "getNeedMouseFocus", "type": "fun(self: MyGUI.Widget): boolean" },
+        { "name": "setInheritsPick", "type": "fun(self: MyGUI.Widget, inherits: boolean)" },
+        { "name": "getInheritsPick", "type": "fun(self: MyGUI.Widget): boolean" },
+        { "name": "setMaskPick", "type": "fun(self: MyGUI.Widget, filename: string)" },
+        { "name": "setPointer", "type": "fun(self: MyGUI.Widget, pointer: string)" },
+        { "name": "getPointer", "type": "fun(self: MyGUI.Widget): string" },
+        { "name": "setUserString", "type": "fun(self: MyGUI.Widget, key: string, value: string)" },
+        { "name": "getUserString", "type": "fun(self: MyGUI.Widget, key: string): string" },
+        { "name": "isUserString", "type": "fun(self: MyGUI.Widget, key: string): boolean" },
+        { "name": "clearUserString", "type": "fun(self: MyGUI.Widget, key: string)" },
+        { "name": "createWidget", "type": "fun(self: MyGUI.Widget, widgetType: string, skin: string, left: integer, top: integer, width: integer, height: integer, alignOrName?: integer|string, name?: string): MyGUI.Widget|nil" },
+        { "name": "createWidgetReal", "type": "fun(self: MyGUI.Widget, widgetType: string, skin: string, left: number, top: number, width: number, height: number, alignOrName?: integer|string, name?: string): MyGUI.Widget|nil" },
+        { "name": "getParent", "type": "fun(self: MyGUI.Widget): MyGUI.Widget|nil" },
+        { "name": "getRootWidget", "type": "fun(self: MyGUI.Widget): MyGUI.Widget|nil" },
+        { "name": "isRootWidget", "type": "fun(self: MyGUI.Widget): boolean" },
+        { "name": "getChildCount", "type": "fun(self: MyGUI.Widget): integer" },
+        { "name": "getChildAt", "type": "fun(self: MyGUI.Widget, index: integer): MyGUI.Widget|nil" },
+        { "name": "findWidget", "type": "fun(self: MyGUI.Widget, name: string): MyGUI.Widget|nil" },
+        { "name": "getClientWidget", "type": "fun(self: MyGUI.Widget): MyGUI.Widget|nil", "description": "Returns a Window's client widget, or nil for a non-Window widget or when unavailable." },
+        { "name": "getClientCoord", "type": "fun(self: MyGUI.Widget): integer, integer, integer, integer" },
+        { "name": "getType", "type": "fun(self: MyGUI.Widget): string" },
+        { "name": "getName", "type": "fun(self: MyGUI.Widget): string" },
+        { "name": "getLayerName", "type": "fun(self: MyGUI.Widget): string", "description": "Currently returns an empty string." },
+        { "name": "getAbsoluteCoord", "type": "fun(self: MyGUI.Widget): integer, integer, integer, integer" },
+        { "name": "getAbsolutePosition", "type": "fun(self: MyGUI.Widget): integer, integer" },
+        { "name": "getAbsoluteRect", "type": "fun(self: MyGUI.Widget): integer, integer, integer, integer" },
+        { "name": "changeWidgetSkin", "type": "fun(self: MyGUI.Widget, skin: string)" },
+        { "name": "setProperty", "type": "fun(self: MyGUI.Widget, key: string, value: string)" },
+        { "name": "destroy", "type": "fun(self: MyGUI.Widget)" },
+        { "name": "upLayerItem", "type": "fun(self: MyGUI.Widget)" },
+        { "name": "bringToFront", "type": "fun(self: MyGUI.Widget)" },
+        { "name": "on", "type": "fun(self: MyGUI.Widget, eventName: MyGUI.WidgetEventName|MyGUI.LegacyWidgetEventName|string, handler: MyGUI.WidgetEventHandler): integer", "description": "Registers a widget callback. Use the event-prefixed names in MyGUI.WidgetEventName. MyGUI.LegacyWidgetEventName and other historical spellings remain accepted with a deprecation warning." },
+        { "name": "off", "type": "fun(self: MyGUI.Widget, callbackIdOrEventName: integer|MyGUI.WidgetEventName|MyGUI.LegacyWidgetEventName|string): boolean" },
+        { "name": "registerCallback", "type": "fun(self: MyGUI.Widget, eventName: MyGUI.WidgetEventName|MyGUI.LegacyWidgetEventName|string, handler: MyGUI.WidgetEventHandler): integer", "description": "Compatibility alias of on." },
+        { "name": "alpha", "type": "number" },
+        { "name": "caption", "type": "string" },
+        { "name": "enabled", "type": "boolean" },
+        { "name": "name", "type": "string", "description": "Read-only at runtime." },
+        { "name": "text", "type": "string", "description": "Alias of caption." },
+        { "name": "type", "type": "string", "description": "Read-only at runtime." },
+        { "name": "visible", "type": "boolean" }
+      ]
+    },
+    {
+      "name": "MyGUI.Button",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "setStateSelected", "type": "fun(self: MyGUI.Button, selected: boolean)" },
+        { "name": "getStateSelected", "type": "fun(self: MyGUI.Button): boolean" },
+        { "name": "setModeImage", "type": "fun(self: MyGUI.Button, enabled: boolean)" },
+        { "name": "getModeImage", "type": "fun(self: MyGUI.Button): boolean" },
+        { "name": "setImageResource", "type": "fun(self: MyGUI.Button, resourceName: string)" },
+        { "name": "stateSelected", "type": "boolean" },
+        { "name": "selected", "type": "boolean", "description": "Alias of stateSelected." }
+      ]
+    },
+    {
+      "name": "MyGUI.TextBox",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "getTextRegion", "type": "fun(self: MyGUI.TextBox): integer, integer, integer, integer" },
+        { "name": "getTextSize", "type": "fun(self: MyGUI.TextBox): integer, integer" },
+        { "name": "setFontName", "type": "fun(self: MyGUI.TextBox, fontName: string)" },
+        { "name": "getFontName", "type": "fun(self: MyGUI.TextBox): string" },
+        { "name": "setFontHeight", "type": "fun(self: MyGUI.TextBox, height: integer)" },
+        { "name": "getFontHeight", "type": "fun(self: MyGUI.TextBox): integer" },
+        { "name": "setTextAlign", "type": "fun(self: MyGUI.TextBox, align: integer)" },
+        { "name": "getTextAlign", "type": "fun(self: MyGUI.TextBox): integer" },
+        { "name": "setTextColour", "type": "fun(self: MyGUI.TextBox, colour: MyGUI.Colour)" },
+        { "name": "getTextColour", "type": "fun(self: MyGUI.TextBox): MyGUI.Colour|nil" },
+        { "name": "setCaptionWithReplacing", "type": "fun(self: MyGUI.TextBox, text: string)" },
+        { "name": "fontName", "type": "string" },
+        { "name": "fontHeight", "type": "integer" }
+      ]
+    },
+    {
+      "name": "MyGUI.EditBox",
+      "parent": "MyGUI.TextBox",
+      "fields": [
+        { "name": "getTextSelection", "type": "fun(self: MyGUI.EditBox): string" },
+        { "name": "setTextSelection", "type": "fun(self: MyGUI.EditBox, startIndex: integer, endIndex: integer)" },
+        { "name": "deleteTextSelection", "type": "fun(self: MyGUI.EditBox)" },
+        { "name": "isTextSelection", "type": "fun(self: MyGUI.EditBox): boolean" },
+        { "name": "getTextSelectionStart", "type": "fun(self: MyGUI.EditBox): integer" },
+        { "name": "getTextSelectionEnd", "type": "fun(self: MyGUI.EditBox): integer" },
+        { "name": "getTextSelectionLength", "type": "fun(self: MyGUI.EditBox): integer" },
+        { "name": "getTextInterval", "type": "fun(self: MyGUI.EditBox, startIndex: integer, count: integer): string" },
+        { "name": "setTextCursor", "type": "fun(self: MyGUI.EditBox, position: integer)" },
+        { "name": "getTextCursor", "type": "fun(self: MyGUI.EditBox): integer" },
+        { "name": "getTextLength", "type": "fun(self: MyGUI.EditBox): integer" },
+        { "name": "setOverflowToTheLeft", "type": "fun(self: MyGUI.EditBox, enabled: boolean)" },
+        { "name": "getOverflowToTheLeft", "type": "fun(self: MyGUI.EditBox): boolean" },
+        { "name": "setMaxTextLength", "type": "fun(self: MyGUI.EditBox, length: integer)" },
+        { "name": "getMaxTextLength", "type": "fun(self: MyGUI.EditBox): integer" },
+        { "name": "setEditWordWrap", "type": "fun(self: MyGUI.EditBox, enabled: boolean)" },
+        { "name": "getEditWordWrap", "type": "fun(self: MyGUI.EditBox): boolean" },
+        { "name": "setEditReadOnly", "type": "fun(self: MyGUI.EditBox, readOnly: boolean)" },
+        { "name": "getEditReadOnly", "type": "fun(self: MyGUI.EditBox): boolean" },
+        { "name": "setEditMultiLine", "type": "fun(self: MyGUI.EditBox, multiLine: boolean)" },
+        { "name": "getEditMultiLine", "type": "fun(self: MyGUI.EditBox): boolean" },
+        { "name": "setEditPassword", "type": "fun(self: MyGUI.EditBox, password: boolean)" },
+        { "name": "getEditPassword", "type": "fun(self: MyGUI.EditBox): boolean" },
+        { "name": "setEditStatic", "type": "fun(self: MyGUI.EditBox, static: boolean)" },
+        { "name": "getEditStatic", "type": "fun(self: MyGUI.EditBox): boolean" },
+        { "name": "setPasswordChar", "type": "fun(self: MyGUI.EditBox, character: string)", "description": "Uses the first byte of a non-empty string." },
+        { "name": "getPasswordChar", "type": "fun(self: MyGUI.EditBox): string" },
+        { "name": "setOnlyText", "type": "fun(self: MyGUI.EditBox, text: string)" },
+        { "name": "getOnlyText", "type": "fun(self: MyGUI.EditBox): string" },
+        { "name": "addText", "type": "fun(self: MyGUI.EditBox, text: string)" },
+        { "name": "insertText", "type": "fun(self: MyGUI.EditBox, text: string, index?: integer)" },
+        { "name": "eraseText", "type": "fun(self: MyGUI.EditBox, startIndex: integer, count?: integer)" },
+        { "name": "setTextIntervalColour", "type": "fun(self: MyGUI.EditBox, startIndex: integer, count: integer, colour: MyGUI.Colour)" },
+        { "name": "setTextSelectionColour", "type": "fun(self: MyGUI.EditBox, colour: MyGUI.Colour)" },
+        { "name": "readOnly", "type": "boolean" },
+        { "name": "multiLine", "type": "boolean" },
+        { "name": "wordWrap", "type": "boolean" }
+      ]
+    },
+    {
+      "name": "MyGUI.ComboBox",
+      "parent": "MyGUI.EditBox",
+      "fields": [
+        { "name": "addItem", "type": "fun(self: MyGUI.ComboBox, name: string)" },
+        { "name": "getItemCount", "type": "fun(self: MyGUI.ComboBox): integer" },
+        { "name": "getItemNameAt", "type": "fun(self: MyGUI.ComboBox, index: integer): string" },
+        { "name": "setIndexSelected", "type": "fun(self: MyGUI.ComboBox, index: integer)", "description": "Pass a negative index to clear the selection." },
+        { "name": "getIndexSelected", "type": "fun(self: MyGUI.ComboBox): integer" },
+        { "name": "clearIndexSelected", "type": "fun(self: MyGUI.ComboBox)" },
+        { "name": "insertItemAt", "type": "fun(self: MyGUI.ComboBox, index: integer, name: string)" },
+        { "name": "removeItemAt", "type": "fun(self: MyGUI.ComboBox, index: integer)" },
+        { "name": "removeAllItems", "type": "fun(self: MyGUI.ComboBox)" },
+        { "name": "setItemNameAt", "type": "fun(self: MyGUI.ComboBox, index: integer, name: string)" },
+        { "name": "findItemIndexWith", "type": "fun(self: MyGUI.ComboBox, name: string): integer", "description": "Returns -1 when the item is not found." },
+        { "name": "beginToItemAt", "type": "fun(self: MyGUI.ComboBox, index: integer)" },
+        { "name": "beginToItemFirst", "type": "fun(self: MyGUI.ComboBox)" },
+        { "name": "beginToItemLast", "type": "fun(self: MyGUI.ComboBox)" },
+        { "name": "beginToItemSelected", "type": "fun(self: MyGUI.ComboBox)" },
+        { "name": "setComboModeDrop", "type": "fun(self: MyGUI.ComboBox, dropMode: boolean)" },
+        { "name": "getComboModeDrop", "type": "fun(self: MyGUI.ComboBox): boolean" },
+        { "name": "setSmoothShow", "type": "fun(self: MyGUI.ComboBox, smooth: boolean)" },
+        { "name": "getSmoothShow", "type": "fun(self: MyGUI.ComboBox): boolean" },
+        { "name": "setMaxListLength", "type": "fun(self: MyGUI.ComboBox, length: integer)" },
+        { "name": "getMaxListLength", "type": "fun(self: MyGUI.ComboBox): integer" },
+        { "name": "setFlowDirection", "type": "fun(self: MyGUI.ComboBox, direction: integer)" },
+        { "name": "getFlowDirection", "type": "fun(self: MyGUI.ComboBox): integer" },
+        { "name": "itemCount", "type": "integer", "description": "Read-only item count." },
+        { "name": "count", "type": "integer", "description": "Read-only alias of itemCount." },
+        { "name": "indexSelected", "type": "integer" },
+        { "name": "selectedIndex", "type": "integer", "description": "Alias of indexSelected." },
+        { "name": "comboModeDrop", "type": "boolean" },
+        { "name": "modeDrop", "type": "boolean", "description": "Alias of comboModeDrop." }
+      ]
+    },
+    {
+      "name": "MyGUI.Window",
+      "parent": "MyGUI.TextBox",
+      "fields": [
+        { "name": "setVisibleSmooth", "type": "fun(self: MyGUI.Window, smooth: boolean)" },
+        { "name": "destroySmooth", "type": "fun(self: MyGUI.Window)" },
+        { "name": "setAutoAlpha", "type": "fun(self: MyGUI.Window, enabled: boolean)" },
+        { "name": "getAutoAlpha", "type": "fun(self: MyGUI.Window): boolean" },
+        { "name": "setSnap", "type": "fun(self: MyGUI.Window, enabled: boolean)" },
+        { "name": "getSnap", "type": "fun(self: MyGUI.Window): boolean" },
+        { "name": "setMovable", "type": "fun(self: MyGUI.Window, movable: boolean)" },
+        { "name": "getMovable", "type": "fun(self: MyGUI.Window): boolean" },
+        { "name": "setMinSize", "type": "fun(self: MyGUI.Window, width: integer|MyGUI.IntSize, height?: integer)" },
+        { "name": "getMinSize", "type": "fun(self: MyGUI.Window): integer, integer" },
+        { "name": "setMaxSize", "type": "fun(self: MyGUI.Window, width: integer|MyGUI.IntSize, height?: integer)" },
+        { "name": "getMaxSize", "type": "fun(self: MyGUI.Window): integer, integer" },
+        { "name": "getActionScale", "type": "fun(self: MyGUI.Window): MyGUI.IntCoord|nil" },
+        { "name": "getCaptionWidget", "type": "fun(self: MyGUI.Window): MyGUI.Widget|nil" },
+        { "name": "movable", "type": "boolean" },
+        { "name": "autoAlpha", "type": "boolean" },
+        { "name": "snap", "type": "boolean" }
+      ]
+    },
+    {
+      "name": "MyGUI.ListBox",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "addItem", "type": "fun(self: MyGUI.ListBox, name: string)" },
+        { "name": "getItemNameAt", "type": "fun(self: MyGUI.ListBox, index: integer): string" },
+        { "name": "getItemCount", "type": "fun(self: MyGUI.ListBox): integer" },
+        { "name": "insertItemAt", "type": "fun(self: MyGUI.ListBox, index: integer, name: string)" },
+        { "name": "removeItemAt", "type": "fun(self: MyGUI.ListBox, index: integer)" },
+        { "name": "removeAllItems", "type": "fun(self: MyGUI.ListBox)" },
+        { "name": "swapItemsAt", "type": "fun(self: MyGUI.ListBox, firstIndex: integer, secondIndex: integer)" },
+        { "name": "setItemNameAt", "type": "fun(self: MyGUI.ListBox, index: integer, name: string)" },
+        { "name": "getIndexSelected", "type": "fun(self: MyGUI.ListBox): integer", "description": "Returns -1 when no item is selected." },
+        { "name": "setIndexSelected", "type": "fun(self: MyGUI.ListBox, index: integer)", "description": "Pass a negative index to clear the selection." },
+        { "name": "clearIndexSelected", "type": "fun(self: MyGUI.ListBox)" },
+        { "name": "findItemIndexWith", "type": "fun(self: MyGUI.ListBox, name: string): integer", "description": "Returns -1 when the item is not found." },
+        { "name": "beginToItemAt", "type": "fun(self: MyGUI.ListBox, index: integer)" },
+        { "name": "beginToItemFirst", "type": "fun(self: MyGUI.ListBox)" },
+        { "name": "beginToItemLast", "type": "fun(self: MyGUI.ListBox)" },
+        { "name": "beginToItemSelected", "type": "fun(self: MyGUI.ListBox)" },
+        { "name": "isItemVisibleAt", "type": "fun(self: MyGUI.ListBox, index: integer, fill?: boolean): boolean" },
+        { "name": "isItemSelectedVisible", "type": "fun(self: MyGUI.ListBox, fill?: boolean): boolean" },
+        { "name": "setScrollVisible", "type": "fun(self: MyGUI.ListBox, visible: boolean)" },
+        { "name": "setScrollPosition", "type": "fun(self: MyGUI.ListBox, position: integer)" },
+        { "name": "getOptimalHeight", "type": "fun(self: MyGUI.ListBox): integer" },
+        { "name": "getWidgetByIndex", "type": "fun(self: MyGUI.ListBox, index: integer): MyGUI.Widget|nil" },
+        { "name": "itemCount", "type": "integer", "description": "Read-only item count." },
+        { "name": "count", "type": "integer", "description": "Read-only alias of itemCount." },
+        { "name": "indexSelected", "type": "integer" },
+        { "name": "selectedIndex", "type": "integer", "description": "Alias of indexSelected." }
+      ]
+    },
+    {
+      "name": "MyGUI.TabControl",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "getItemCount", "type": "fun(self: MyGUI.TabControl): integer" },
+        { "name": "insertItemAt", "type": "fun(self: MyGUI.TabControl, index: integer, name: string): MyGUI.TabItem|nil" },
+        { "name": "addItem", "type": "fun(self: MyGUI.TabControl, name: string): MyGUI.TabItem|nil" },
+        { "name": "removeItemAt", "type": "fun(self: MyGUI.TabControl, index: integer)" },
+        { "name": "removeAllItems", "type": "fun(self: MyGUI.TabControl)" },
+        { "name": "getItemNameAt", "type": "fun(self: MyGUI.TabControl, index: integer): string" },
+        { "name": "setItemNameAt", "type": "fun(self: MyGUI.TabControl, index: integer, name: string)" },
+        { "name": "getIndexSelected", "type": "fun(self: MyGUI.TabControl): integer", "description": "Returns -1 when no tab is selected." },
+        { "name": "setIndexSelected", "type": "fun(self: MyGUI.TabControl, index: integer)", "description": "Pass a negative index to clear the selection." },
+        { "name": "clearIndexSelected", "type": "fun(self: MyGUI.TabControl)" },
+        { "name": "getItemAt", "type": "fun(self: MyGUI.TabControl, index: integer): MyGUI.TabItem|nil" },
+        { "name": "getItemSelected", "type": "fun(self: MyGUI.TabControl): MyGUI.TabItem|nil" },
+        { "name": "setButtonWidthAt", "type": "fun(self: MyGUI.TabControl, index: integer, width: integer)" },
+        { "name": "getButtonWidthAt", "type": "fun(self: MyGUI.TabControl, index: integer): integer" },
+        { "name": "setButtonDefaultWidth", "type": "fun(self: MyGUI.TabControl, width: integer)" },
+        { "name": "getButtonDefaultWidth", "type": "fun(self: MyGUI.TabControl): integer" },
+        { "name": "setButtonAutoWidth", "type": "fun(self: MyGUI.TabControl, autoWidth: boolean)" },
+        { "name": "getButtonAutoWidth", "type": "fun(self: MyGUI.TabControl): boolean" },
+        { "name": "setSmoothShow", "type": "fun(self: MyGUI.TabControl, smooth: boolean)" },
+        { "name": "getSmoothShow", "type": "fun(self: MyGUI.TabControl): boolean" },
+        { "name": "itemCount", "type": "integer", "description": "Read-only tab count." },
+        { "name": "count", "type": "integer", "description": "Read-only alias of itemCount." },
+        { "name": "indexSelected", "type": "integer" },
+        { "name": "selectedIndex", "type": "integer", "description": "Alias of indexSelected." }
+      ]
+    },
+    {
+      "name": "MyGUI.MultiListBox",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "getColumnCount", "type": "fun(self: MyGUI.MultiListBox): integer" },
+        { "name": "insertColumnAt", "type": "fun(self: MyGUI.MultiListBox, column: integer, name: string, width?: integer)" },
+        { "name": "addColumn", "type": "fun(self: MyGUI.MultiListBox, name: string, width?: integer)" },
+        { "name": "removeColumnAt", "type": "fun(self: MyGUI.MultiListBox, column: integer)" },
+        { "name": "removeAllColumns", "type": "fun(self: MyGUI.MultiListBox)" },
+        { "name": "setColumnNameAt", "type": "fun(self: MyGUI.MultiListBox, column: integer, name: string)" },
+        { "name": "setColumnWidthAt", "type": "fun(self: MyGUI.MultiListBox, column: integer, width: integer)" },
+        { "name": "getColumnNameAt", "type": "fun(self: MyGUI.MultiListBox, column: integer): string" },
+        { "name": "getColumnWidthAt", "type": "fun(self: MyGUI.MultiListBox, column: integer): integer" },
+        { "name": "getItemCount", "type": "fun(self: MyGUI.MultiListBox): integer" },
+        { "name": "insertItemAt", "type": "fun(self: MyGUI.MultiListBox, index: integer, name: string)" },
+        { "name": "addItem", "type": "fun(self: MyGUI.MultiListBox, name: string)" },
+        { "name": "removeItemAt", "type": "fun(self: MyGUI.MultiListBox, index: integer)" },
+        { "name": "removeAllItems", "type": "fun(self: MyGUI.MultiListBox)" },
+        { "name": "swapItemsAt", "type": "fun(self: MyGUI.MultiListBox, firstIndex: integer, secondIndex: integer)" },
+        { "name": "setItemNameAt", "type": "fun(self: MyGUI.MultiListBox, index: integer, name: string)" },
+        { "name": "getItemNameAt", "type": "fun(self: MyGUI.MultiListBox, index: integer): string" },
+        { "name": "getIndexSelected", "type": "fun(self: MyGUI.MultiListBox): integer", "description": "Returns -1 when no row is selected." },
+        { "name": "setIndexSelected", "type": "fun(self: MyGUI.MultiListBox, index: integer)", "description": "Pass a negative index to clear the selection." },
+        { "name": "clearIndexSelected", "type": "fun(self: MyGUI.MultiListBox)" },
+        { "name": "setSubItemNameAt", "type": "fun(self: MyGUI.MultiListBox, column: integer, row: integer, name: string)" },
+        { "name": "getSubItemNameAt", "type": "fun(self: MyGUI.MultiListBox, column: integer, row: integer): string" },
+        { "name": "findSubItemWith", "type": "fun(self: MyGUI.MultiListBox, column: integer, name: string): integer", "description": "Returns -1 when the sub-item is not found." },
+        { "name": "itemCount", "type": "integer", "description": "Read-only row count." },
+        { "name": "count", "type": "integer", "description": "Read-only alias of itemCount." },
+        { "name": "columnCount", "type": "integer", "description": "Read-only column count." },
+        { "name": "indexSelected", "type": "integer" },
+        { "name": "selectedIndex", "type": "integer", "description": "Alias of indexSelected." }
+      ]
+    },
+    {
+      "name": "MyGUI.ScrollBar",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "setScrollRange", "type": "fun(self: MyGUI.ScrollBar, range: integer)" },
+        { "name": "getScrollRange", "type": "fun(self: MyGUI.ScrollBar): integer" },
+        { "name": "setScrollPosition", "type": "fun(self: MyGUI.ScrollBar, position: integer)" },
+        { "name": "getScrollPosition", "type": "fun(self: MyGUI.ScrollBar): integer" },
+        { "name": "setScrollPage", "type": "fun(self: MyGUI.ScrollBar, page: integer)" },
+        { "name": "getScrollPage", "type": "fun(self: MyGUI.ScrollBar): integer" },
+        { "name": "setScrollViewPage", "type": "fun(self: MyGUI.ScrollBar, page: integer)" },
+        { "name": "getScrollViewPage", "type": "fun(self: MyGUI.ScrollBar): integer" },
+        { "name": "setScrollWheelPage", "type": "fun(self: MyGUI.ScrollBar, page: integer)" },
+        { "name": "getScrollWheelPage", "type": "fun(self: MyGUI.ScrollBar): integer" },
+        { "name": "setVerticalAlignment", "type": "fun(self: MyGUI.ScrollBar, vertical: boolean)" },
+        { "name": "getVerticalAlignment", "type": "fun(self: MyGUI.ScrollBar): boolean" },
+        { "name": "setTrackSize", "type": "fun(self: MyGUI.ScrollBar, size: integer)" },
+        { "name": "getTrackSize", "type": "fun(self: MyGUI.ScrollBar): integer" },
+        { "name": "setMinTrackSize", "type": "fun(self: MyGUI.ScrollBar, size: integer)" },
+        { "name": "getMinTrackSize", "type": "fun(self: MyGUI.ScrollBar): integer" },
+        { "name": "getLineSize", "type": "fun(self: MyGUI.ScrollBar): integer" },
+        { "name": "setMoveToClick", "type": "fun(self: MyGUI.ScrollBar, enabled: boolean)" },
+        { "name": "getMoveToClick", "type": "fun(self: MyGUI.ScrollBar): boolean" },
+        { "name": "setRepeatEnabled", "type": "fun(self: MyGUI.ScrollBar, enabled: boolean)" },
+        { "name": "getRepeatEnabled", "type": "fun(self: MyGUI.ScrollBar): boolean" },
+        { "name": "scrollPosition", "type": "integer" },
+        { "name": "position", "type": "integer", "description": "Alias of scrollPosition." },
+        { "name": "scrollRange", "type": "integer" },
+        { "name": "range", "type": "integer", "description": "Alias of scrollRange." }
+      ]
+    },
+    {
+      "name": "MyGUI.ScrollView",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "setVisibleHScroll", "type": "fun(self: MyGUI.ScrollView, visible: boolean)" },
+        { "name": "isVisibleHScroll", "type": "fun(self: MyGUI.ScrollView): boolean" },
+        { "name": "setVisibleVScroll", "type": "fun(self: MyGUI.ScrollView, visible: boolean)" },
+        { "name": "isVisibleVScroll", "type": "fun(self: MyGUI.ScrollView): boolean" },
+        { "name": "setCanvasAlign", "type": "fun(self: MyGUI.ScrollView, align: integer)" },
+        { "name": "getCanvasAlign", "type": "fun(self: MyGUI.ScrollView): integer" },
+        { "name": "setCanvasSize", "type": "fun(self: MyGUI.ScrollView, width: integer|MyGUI.IntSize, height?: integer)" },
+        { "name": "getCanvasSize", "type": "fun(self: MyGUI.ScrollView): integer, integer" },
+        { "name": "setViewOffset", "type": "fun(self: MyGUI.ScrollView, x: integer|MyGUI.IntPoint, y?: integer)" },
+        { "name": "getViewOffset", "type": "fun(self: MyGUI.ScrollView): integer, integer" },
+        { "name": "getViewCoord", "type": "fun(self: MyGUI.ScrollView): integer, integer, integer, integer" }
+      ]
+    },
+    {
+      "name": "MyGUI.ProgressBar",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "setProgressRange", "type": "fun(self: MyGUI.ProgressBar, range: integer)" },
+        { "name": "getProgressRange", "type": "fun(self: MyGUI.ProgressBar): integer" },
+        { "name": "setProgressPosition", "type": "fun(self: MyGUI.ProgressBar, position: integer)" },
+        { "name": "getProgressPosition", "type": "fun(self: MyGUI.ProgressBar): integer" },
+        { "name": "setProgressAutoTrack", "type": "fun(self: MyGUI.ProgressBar, enabled: boolean)" },
+        { "name": "getProgressAutoTrack", "type": "fun(self: MyGUI.ProgressBar): boolean" },
+        { "name": "setFlowDirection", "type": "fun(self: MyGUI.ProgressBar, direction: integer)" },
+        { "name": "getFlowDirection", "type": "fun(self: MyGUI.ProgressBar): integer" },
+        { "name": "progressPosition", "type": "integer" },
+        { "name": "position", "type": "integer", "description": "Alias of progressPosition." },
+        { "name": "progressRange", "type": "integer" },
+        { "name": "range", "type": "integer", "description": "Alias of progressRange." }
+      ]
+    },
+    {
+      "name": "MyGUI.ImageBox",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "setImageTexture", "type": "fun(self: MyGUI.ImageBox, texture: string)" },
+        { "name": "setImageCoord", "type": "fun(self: MyGUI.ImageBox, left: integer|MyGUI.IntCoord, top?: integer, width?: integer, height?: integer)" },
+        { "name": "setImageTile", "type": "fun(self: MyGUI.ImageBox, width: integer|MyGUI.IntSize, height?: integer)" },
+        { "name": "setImageIndex", "type": "fun(self: MyGUI.ImageBox, index: integer)" },
+        { "name": "getImageIndex", "type": "fun(self: MyGUI.ImageBox): integer" },
+        { "name": "getItemCount", "type": "fun(self: MyGUI.ImageBox): integer" },
+        { "name": "setItemSelect", "type": "fun(self: MyGUI.ImageBox, index: integer)" },
+        { "name": "getItemSelect", "type": "fun(self: MyGUI.ImageBox): integer" },
+        { "name": "resetItemSelect", "type": "fun(self: MyGUI.ImageBox)" },
+        { "name": "setItemResource", "type": "fun(self: MyGUI.ImageBox, resourceName: string): boolean" },
+        { "name": "setImageResource", "type": "fun(self: MyGUI.ImageBox, resourceName: string): boolean", "description": "Alias of setItemResource." }
+      ]
+    },
+    {
+      "name": "MyGUI.DDContainer",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "setNeedDragDrop", "type": "fun(self: MyGUI.DDContainer, needed: boolean)" },
+        { "name": "getNeedDragDrop", "type": "fun(self: MyGUI.DDContainer): boolean" },
+        { "name": "resetDrag", "type": "fun(self: MyGUI.DDContainer)" }
+      ]
+    },
+    {
+      "name": "MyGUI.ItemBox",
+      "parent": "MyGUI.DDContainer",
+      "fields": [
+        { "name": "getItemCount", "type": "fun(self: MyGUI.ItemBox): integer" },
+        { "name": "insertItemAt", "type": "fun(self: MyGUI.ItemBox, index: integer)" },
+        { "name": "addItem", "type": "fun(self: MyGUI.ItemBox)" },
+        { "name": "removeItemAt", "type": "fun(self: MyGUI.ItemBox, index: integer)" },
+        { "name": "removeAllItems", "type": "fun(self: MyGUI.ItemBox)" },
+        { "name": "getIndexSelected", "type": "fun(self: MyGUI.ItemBox): integer", "description": "Returns -1 when no item is selected." },
+        { "name": "setIndexSelected", "type": "fun(self: MyGUI.ItemBox, index: integer)", "description": "Pass a negative index to clear the selection." },
+        { "name": "clearIndexSelected", "type": "fun(self: MyGUI.ItemBox)" },
+        { "name": "redrawItemAt", "type": "fun(self: MyGUI.ItemBox, index: integer)" },
+        { "name": "redrawAllItems", "type": "fun(self: MyGUI.ItemBox)" },
+        { "name": "getWidgetDrag", "type": "fun(self: MyGUI.ItemBox): MyGUI.Widget|nil" },
+        { "name": "getWidgetByIndex", "type": "fun(self: MyGUI.ItemBox, index: integer): MyGUI.Widget|nil" },
+        { "name": "getIndexByWidget", "type": "fun(self: MyGUI.ItemBox, widget: MyGUI.Widget): integer", "description": "Returns -1 when the widget is not an item." }
+      ]
+    },
+    {
+      "name": "MyGUI.Canvas",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "createTexture", "type": "fun(self: MyGUI.Canvas, widthOrMode?: integer, height?: integer, mode?: integer)", "description": "With width and height, creates an explicitly sized texture. With zero or one argument, the argument is the resize mode." },
+        { "name": "destroyTexture", "type": "fun(self: MyGUI.Canvas)" },
+        { "name": "updateTexture", "type": "fun(self: MyGUI.Canvas)" },
+        { "name": "isTextureCreated", "type": "fun(self: MyGUI.Canvas): boolean" },
+        { "name": "isTextureManaged", "type": "fun(self: MyGUI.Canvas): boolean" },
+        { "name": "setTextureManaged", "type": "fun(self: MyGUI.Canvas, managed: boolean)" },
+        { "name": "getTextureRealWidth", "type": "fun(self: MyGUI.Canvas): integer" },
+        { "name": "getTextureRealHeight", "type": "fun(self: MyGUI.Canvas): integer" },
+        { "name": "getTextureRealSize", "type": "fun(self: MyGUI.Canvas): integer, integer" },
+        { "name": "getTextureSrcWidth", "type": "fun(self: MyGUI.Canvas): integer" },
+        { "name": "getTextureSrcHeight", "type": "fun(self: MyGUI.Canvas): integer" },
+        { "name": "getTextureSrcSize", "type": "fun(self: MyGUI.Canvas): integer, integer" },
+        { "name": "isTextureSrcSize", "type": "fun(self: MyGUI.Canvas): boolean" },
+        { "name": "getTextureName", "type": "fun(self: MyGUI.Canvas): string" },
+        { "name": "getTextureFormat", "type": "fun(self: MyGUI.Canvas): integer" },
+        { "name": "setResizeMode", "type": "fun(self: MyGUI.Canvas, mode: integer)" },
+        { "name": "getResizeMode", "type": "fun(self: MyGUI.Canvas): integer" }
+      ]
+    },
+    {
+      "name": "MyGUI.MenuControl",
+      "parent": "MyGUI.Widget",
+      "fields": [
+        { "name": "getItemCount", "type": "fun(self: MyGUI.MenuControl): integer" },
+        { "name": "insertItemAt", "type": "fun(self: MyGUI.MenuControl, index: integer, name: string, itemType?: integer, id?: string): MyGUI.MenuItem|nil" },
+        { "name": "addItem", "type": "fun(self: MyGUI.MenuControl, name: string, itemType?: integer, id?: string): MyGUI.MenuItem|nil" },
+        { "name": "removeItemAt", "type": "fun(self: MyGUI.MenuControl, index: integer)" },
+        { "name": "removeAllItems", "type": "fun(self: MyGUI.MenuControl)" },
+        { "name": "getItemNameAt", "type": "fun(self: MyGUI.MenuControl, index: integer): string" },
+        { "name": "setItemNameAt", "type": "fun(self: MyGUI.MenuControl, index: integer, name: string)" },
+        { "name": "getItemIdAt", "type": "fun(self: MyGUI.MenuControl, index: integer): string" },
+        { "name": "setItemIdAt", "type": "fun(self: MyGUI.MenuControl, index: integer, id: string)" },
+        { "name": "getItemAt", "type": "fun(self: MyGUI.MenuControl, index: integer): MyGUI.MenuItem|nil" },
+        { "name": "getItemById", "type": "fun(self: MyGUI.MenuControl, id: string): MyGUI.MenuItem|nil" },
+        { "name": "getItemIndex", "type": "fun(self: MyGUI.MenuControl, item: MyGUI.MenuItem): integer", "description": "Returns -1 when the item is not in this menu." },
+        { "name": "getItemIndexById", "type": "fun(self: MyGUI.MenuControl, id: string): integer", "description": "Returns -1 when the ID is not found." },
+        { "name": "findItemIndexWith", "type": "fun(self: MyGUI.MenuControl, name: string): integer", "description": "Returns -1 when the item is not found." },
+        { "name": "setItemDataAt", "type": "fun(self: MyGUI.MenuControl, index: integer, data: string)" },
+        { "name": "clearItemDataAt", "type": "fun(self: MyGUI.MenuControl, index: integer)" },
+        { "name": "setItemTypeAt", "type": "fun(self: MyGUI.MenuControl, index: integer, itemType: integer)" },
+        { "name": "getItemTypeAt", "type": "fun(self: MyGUI.MenuControl, index: integer): integer" },
+        { "name": "setItemChildVisibleAt", "type": "fun(self: MyGUI.MenuControl, index: integer, visible: boolean)" },
+        { "name": "createItemChildAt", "type": "fun(self: MyGUI.MenuControl, index: integer): MyGUI.MenuControl|nil" },
+        { "name": "setPopupAccept", "type": "fun(self: MyGUI.MenuControl, enabled: boolean)" },
+        { "name": "getPopupAccept", "type": "fun(self: MyGUI.MenuControl): boolean" },
+        { "name": "setPopupMode", "type": "fun(self: MyGUI.MenuControl, enabled: boolean)", "description": "Alias of setPopupAccept." },
+        { "name": "getPopupMode", "type": "fun(self: MyGUI.MenuControl): boolean", "description": "Alias of getPopupAccept." },
+        { "name": "setVerticalAlignment", "type": "fun(self: MyGUI.MenuControl, vertical: boolean)" },
+        { "name": "getVerticalAlignment", "type": "fun(self: MyGUI.MenuControl): boolean" }
+      ]
+    },
+    { "name": "MyGUI.MenuBar", "parent": "MyGUI.MenuControl", "fields": [] },
+    { "name": "MyGUI.PopupMenu", "parent": "MyGUI.MenuControl", "fields": [] },
+    {
+      "name": "MyGUI.TabItem",
+      "parent": "MyGUI.TextBox",
+      "fields": [
+        { "name": "setButtonWidth", "type": "fun(self: MyGUI.TabItem, width?: integer)" }
+      ]
+    },
+    {
+      "name": "MyGUI.MenuItem",
+      "parent": "MyGUI.Button",
+      "fields": [
+        { "name": "setItemName", "type": "fun(self: MyGUI.MenuItem, name: string)" },
+        { "name": "getItemName", "type": "fun(self: MyGUI.MenuItem): string" },
+        { "name": "setItemId", "type": "fun(self: MyGUI.MenuItem, id: string)" },
+        { "name": "getItemId", "type": "fun(self: MyGUI.MenuItem): string" },
+        { "name": "setItemType", "type": "fun(self: MyGUI.MenuItem, itemType: integer)" },
+        { "name": "getItemType", "type": "fun(self: MyGUI.MenuItem): integer" },
+        { "name": "setItemData", "type": "fun(self: MyGUI.MenuItem, data: string)" },
+        { "name": "clearItemData", "type": "fun(self: MyGUI.MenuItem)" },
+        { "name": "getItemIndex", "type": "fun(self: MyGUI.MenuItem): integer", "description": "Returns -1 when the item is not attached to a menu." },
+        { "name": "createItemChild", "type": "fun(self: MyGUI.MenuItem): MyGUI.MenuControl|nil" },
+        { "name": "removeItemChild", "type": "fun(self: MyGUI.MenuItem)" },
+        { "name": "getItemChild", "type": "fun(self: MyGUI.MenuItem): MyGUI.MenuControl|nil" },
+        { "name": "setItemChildVisible", "type": "fun(self: MyGUI.MenuItem, visible: boolean)" },
+        { "name": "setItemChecked", "type": "fun(self: MyGUI.MenuItem, checked: boolean)" },
+        { "name": "getItemChecked", "type": "fun(self: MyGUI.MenuItem): boolean" },
+        { "name": "itemName", "type": "string" },
+        { "name": "itemId", "type": "string" },
+        { "name": "checked", "type": "boolean" }
+      ]
+    },
+    {
+      "name": "MyGUI.Api",
+      "fields": [
+        { "name": "createWidget", "type": "fun(widgetType: string, skin: string, left: integer, top: integer, width: integer, height: integer, align?: integer, parentOrLayer?: MyGUI.Widget|string, name?: string): MyGUI.Widget|nil" },
+        { "name": "createWidgetReal", "type": "fun(widgetType: string, skin: string, left: number, top: number, width: number, height: number, align?: integer, parentOrLayer?: MyGUI.Widget|string, name?: string): MyGUI.Widget|nil" },
+        { "name": "findWidget", "type": "fun(name: string): MyGUI.Widget|nil" },
+        { "name": "findWidgetT", "type": "fun(name: string): MyGUI.Widget|nil" },
+        { "name": "destroyWidget", "type": "fun(widget: MyGUI.Widget)" },
+        { "name": "destroyWidgets", "type": "fun(widgets: MyGUI.Widget[])" },
+        { "name": "hidePointer", "type": "fun()" }, { "name": "showPointer", "type": "fun()" }, { "name": "isPointerVisible", "type": "fun(): boolean" },
+        { "name": "createButton", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.Button|nil" }, { "name": "createButtonReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.Button|nil" },
+        { "name": "createWindow", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.Window|nil" }, { "name": "createWindowReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.Window|nil" },
+        { "name": "createTextBox", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.TextBox|nil" }, { "name": "createTextBoxReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.TextBox|nil" },
+        { "name": "createEditBox", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.EditBox|nil" }, { "name": "createEditBoxReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.EditBox|nil" },
+        { "name": "createListBox", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ListBox|nil" }, { "name": "createListBoxReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ListBox|nil" },
+        { "name": "createComboBox", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ComboBox|nil" }, { "name": "createComboBoxReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ComboBox|nil" },
+        { "name": "createTabControl", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.TabControl|nil" }, { "name": "createTabControlReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.TabControl|nil" },
+        { "name": "createMultiListBox", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.MultiListBox|nil" }, { "name": "createMultiListBoxReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.MultiListBox|nil" },
+        { "name": "createScrollBar", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ScrollBar|nil" }, { "name": "createScrollBarReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ScrollBar|nil" },
+        { "name": "createScrollView", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ScrollView|nil" }, { "name": "createScrollViewReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ScrollView|nil" },
+        { "name": "createProgressBar", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ProgressBar|nil" }, { "name": "createProgressBarReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ProgressBar|nil" },
+        { "name": "createImageBox", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ImageBox|nil" }, { "name": "createImageBoxReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ImageBox|nil" },
+        { "name": "createItemBox", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ItemBox|nil" }, { "name": "createItemBoxReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.ItemBox|nil" },
+        { "name": "createDDContainer", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.DDContainer|nil" }, { "name": "createDDContainerReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.DDContainer|nil" },
+        { "name": "createCanvas", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.Canvas|nil" }, { "name": "createCanvasReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.Canvas|nil" },
+        { "name": "createMenuBar", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.MenuBar|nil" }, { "name": "createMenuBarReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.MenuBar|nil" },
+        { "name": "createPopupMenu", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.PopupMenu|nil" }, { "name": "createPopupMenuReal", "type": "fun(first: MyGUI.FactoryFirstArgument, ...: any): MyGUI.PopupMenu|nil" },
+        { "name": "setPointer", "type": "fun(name: string)" }, { "name": "clearPointer", "type": "fun()" }, { "name": "getMousePosition", "type": "fun(): integer, integer" },
+        { "name": "loadLayout", "type": "fun(filename: string, prefix?: string, parent?: MyGUI.Widget): MyGUI.Widget[]" }, { "name": "unloadLayout", "type": "fun(widgets: MyGUI.Widget[])" },
+        { "name": "getViewSize", "type": "fun(): integer, integer" }, { "name": "getViewWidth", "type": "fun(): integer" }, { "name": "getViewHeight", "type": "fun(): integer" },
+        { "name": "setClipboardText", "type": "fun(text: string)" }, { "name": "getClipboardText", "type": "fun(): string" },
+        { "name": "isSkinExist", "type": "fun(name: string): boolean" }, { "name": "getDefaultSkin", "type": "fun(): string" }, { "name": "setDefaultSkin", "type": "fun(skin: string)" },
+        { "name": "upLayerItem", "type": "fun(widget: MyGUI.Widget)" }, { "name": "bringToFront", "type": "fun(widget: MyGUI.Widget)" },
+        { "name": "Align", "type": "MyGUI.Align" }, { "name": "WidgetStyle", "type": "MyGUI.WidgetStyle" }, { "name": "FlowDirection", "type": "MyGUI.FlowDirection" }, { "name": "MenuItemType", "type": "MyGUI.MenuItemType" }, { "name": "MouseButton", "type": "MyGUI.MouseButton" }, { "name": "KeyCode", "type": "MyGUI.KeyCode" }, { "name": "ResizingPolicy", "type": "MyGUI.ResizingPolicy" },
+        { "name": "IntPoint", "type": "MyGUI.IntPointConstructor" }, { "name": "IntSize", "type": "MyGUI.IntSizeConstructor" }, { "name": "IntCoord", "type": "MyGUI.IntCoordConstructor" }, { "name": "IntRect", "type": "MyGUI.IntRectConstructor" },
+        { "name": "FloatPoint", "type": "MyGUI.FloatPointConstructor" }, { "name": "FloatSize", "type": "MyGUI.FloatSizeConstructor" }, { "name": "FloatCoord", "type": "MyGUI.FloatCoordConstructor" }, { "name": "FloatRect", "type": "MyGUI.FloatRectConstructor" }, { "name": "Colour", "type": "MyGUI.ColourConstructor" },
+        { "name": "Gui", "type": "MyGUI.GuiStatic" }, { "name": "InputManager", "type": "MyGUI.InputManagerStatic" }, { "name": "PointerManager", "type": "MyGUI.PointerManagerStatic" },
+        { "name": "ClipboardManager", "type": "MyGUI.ClipboardManagerStatic" }, { "name": "LayoutManager", "type": "MyGUI.LayoutManagerStatic" }, { "name": "RenderManager", "type": "MyGUI.RenderManagerStatic" }, { "name": "SkinManager", "type": "MyGUI.SkinManagerStatic" }
+      ]
+    },
+    {
+      "name": "Dialogue",
+      "fields": [
+        { "name": "getCharacter", "type": "fun(self: Dialogue): Character|nil", "description": "Returns the dialogue's owning character." },
+        { "name": "getConversationTarget", "type": "fun(self: Dialogue): hand|nil", "description": "Returns the current conversation target handle." },
+        { "name": "endDialogue", "type": "fun(self: Dialogue, definitelyTheEnd: boolean)" }
+      ]
+    },
+    {
+      "name": "DialogLineData",
+      "fields": [
+        { "name": "getParent", "type": "fun(self: DialogLineData): DialogLineData|nil" },
+        { "name": "isForSpecificCharacter", "type": "fun(self: DialogLineData, who: GameData): boolean" },
+        { "name": "hasSpecificCharacterRequirement", "type": "fun(self: DialogLineData): boolean" },
+        { "name": "setupChildren", "type": "fun(self: DialogLineData)" },
+        { "name": "checkRepeatLimits", "type": "fun(self: DialogLineData): boolean" },
+        { "name": "checkTags", "type": "fun(self: DialogLineData, me: Character, target: Character): boolean" },
+        { "name": "getName", "type": "fun(self: DialogLineData): string" },
+        { "name": "saidItBefore", "type": "fun(self: DialogLineData): boolean" },
+        { "name": "willTalkToEnemies", "type": "fun(self: DialogLineData): boolean" },
+        { "name": "isEmptyNode", "type": "fun(self: DialogLineData): boolean" },
+        { "name": "_NV_isEmptyNode", "type": "fun(self: DialogLineData): boolean" },
+        { "name": "isAnnouncement", "type": "fun(self: DialogLineData): boolean" },
+        { "name": "stampLastTimeSaid", "type": "fun(self: DialogLineData)" },
+        { "name": "getScore", "type": "fun(self: DialogLineData, target: Character): integer" },
+        { "name": "getScorePlusChildrenIfEmpty", "type": "fun(self: DialogLineData, target: Character): integer" },
+        { "name": "hasChildren", "type": "fun(self: DialogLineData): boolean" },
+        { "name": "checkConditions", "type": "fun(self: DialogLineData, dialogue: Dialogue, target: Character, isWordswap: boolean): boolean" },
+        { "name": "chooseAChild", "type": "fun(self: DialogLineData, dialogue: Dialogue, target: Character, isForWordswaps: boolean): DialogLineData|nil" },
+        { "name": "getStringID", "type": "fun(self: DialogLineData): string" },
+        { "name": "getGameData", "type": "fun(self: DialogLineData): GameData|nil" },
+        { "name": "getChildByStringID", "type": "fun(self: DialogLineData, id: string): DialogLineData|nil" },
+        { "name": "setParent", "type": "fun(self: DialogLineData, parent: DialogLineData)" },
+        { "name": "getMoneyCostForLine", "type": "fun(self: DialogLineData): integer" },
+        { "name": "getText", "type": "fun(self: DialogLineData, stampTime: boolean): string" },
+        { "name": "getPlayerReplies", "type": "fun(self: DialogLineData, out: Lektor<DialogLineData>, dialogue: Dialogue, target: Character)" },
+        { "name": "getActions", "type": "fun(self: DialogLineData): Lektor<DialogAction>|nil" },
+        { "name": "targetFlagsNeeded", "type": "integer" },
+        { "name": "targetFlagsNotWanted", "type": "integer" },
+        { "name": "personalityNeeded", "type": "integer" },
+        { "name": "personalityNotWanted", "type": "integer" },
+        { "name": "campaignTriggers", "type": "FitnessSelectorCampaignTriggerData" },
+        { "name": "isTargetRace", "type": "Lektor<GameData>" },
+        { "name": "isTargetSubRace_specificallyTheTarget", "type": "Lektor<GameData>" },
+        { "name": "givesItem", "type": "LektorReadOnly<GameDataValuePair>" },
+        { "name": "inTownOf", "type": "Faction[]" },
+        { "name": "isTargetFaction", "type": "Faction[]" },
+        { "name": "isMyFaction", "type": "Faction[]" },
+        { "name": "isCharacter", "type": "Lektor<GameData>" },
+        { "name": "isTargetCarryingCharacter", "type": "Lektor<GameData>" },
+        { "name": "hasPackage", "type": "Lektor<GameData>" },
+        { "name": "isMyRace", "type": "Lektor<GameData>" },
+        { "name": "isMySubRace", "type": "Lektor<GameData>" },
+        { "name": "hasItemType", "type": "ItemFunction" },
+        { "name": "hasItem", "type": "Lektor<GameData>" },
+        { "name": "worldState", "type": "WorldEventStateQueryList|nil" },
+        { "name": "data", "type": "GameData|nil" },
+        { "name": "onceOnly", "type": "boolean" },
+        { "name": "isMonologue", "type": "boolean" },
+        { "name": "forCertainType", "type": "CharacterTypeEnum" },
+        { "name": "children", "type": "DialogChoiceList|nil" },
+        { "name": "conditions", "type": "Lektor<DialogCondition>" },
+        { "name": "actions", "type": "Lektor<DialogAction>" },
+        { "name": "lineCount", "type": "integer" },
+        { "name": "texts", "type": "string|string[]|nil" },
+        { "name": "parent", "type": "DialogLineData|nil" },
+        { "name": "chancePermanent", "type": "number" },
+        { "name": "chanceTemporary", "type": "number" },
+        { "name": "unique", "type": "boolean" },
+        { "name": "uniqueOwner", "type": "hand" },
+        { "name": "dialogRepeatMinTimeInHours", "type": "number" },
+        { "name": "lastTimeSaid", "type": "TimeOfDay" },
+        { "name": "score", "type": "integer" },
+        { "name": "oneAtATime", "type": "boolean" },
+        { "name": "isLocked", "type": "boolean" },
+        { "name": "locks", "type": "Lektor<DialogLineData>" },
+        { "name": "unlocks_lockMe", "type": "Lektor<DialogLineData>" },
+        { "name": "unlocks_dontLockMe", "type": "Lektor<DialogLineData>" },
+        { "name": "crowdTrigger", "type": "DialogLineData|nil" },
+        { "name": "factionRelationEffects", "type": "OgreUnorderedMap<GameData, integer>" },
+        { "name": "playerInterruptionDialog", "type": "DialogLineData|nil" },
+        { "name": "isInterjection", "type": "boolean" },
+        { "name": "speaker", "type": "TalkerEnum" }
+      ]
+    },
+    {
+      "name": "DialogAction",
+      "fields": [
+        { "name": "key", "type": "DialogActionEnum" },
+        { "name": "value", "type": "integer" }
+      ]
+    },
+    {
+      "name": "DialogCondition",
+      "fields": [
+        { "name": "key", "type": "DialogConditionEnum" },
+        { "name": "compareBy", "type": "ComparisonEnum" },
+        { "name": "who", "type": "TalkerEnum" },
+        { "name": "value", "type": "integer" }
+      ]
+    },
+    {
+      "name": "CampaignTriggerData",
+      "fields": [
+        { "name": "what", "type": "GameData|nil" },
+        { "name": "minTime", "type": "integer" },
+        { "name": "maxTime", "type": "integer" },
+        { "name": "chance", "type": "number" }
+      ]
+    },
+    {
+      "name": "TimeOfDay",
+      "fields": [
+        { "name": "setNull", "type": "fun(self: TimeOfDay)" },
+        { "name": "isUnset", "type": "fun(self: TimeOfDay): boolean" },
+        { "name": "setTime", "type": "fun(self: TimeOfDay, hours: number)" },
+        { "name": "addHours", "type": "fun(self: TimeOfDay, hours: number)" },
+        { "name": "addMinutes", "type": "fun(self: TimeOfDay, minutes: number)" },
+        { "name": "getTotalHours", "type": "fun(self: TimeOfDay): number" },
+        { "name": "getTotalMinutes", "type": "fun(self: TimeOfDay): number" },
+        { "name": "getTotalSeconds", "type": "fun(self: TimeOfDay): number" },
+        { "name": "getRealLifeSeconds", "type": "fun(self: TimeOfDay): number" },
+        { "name": "getRealLifeSecondsPassed", "type": "fun(self: TimeOfDay): number" },
+        { "name": "getTotalDays", "type": "fun(self: TimeOfDay): number" },
+        { "name": "stampTime", "type": "fun(self: TimeOfDay)" },
+        { "name": "getHoursPassed", "type": "fun(self: TimeOfDay): number" },
+        { "name": "getMinutesPassed", "type": "fun(self: TimeOfDay): number" },
+        { "name": "getSecondsPassed", "type": "fun(self: TimeOfDay): number" },
+        { "name": "timeOfDayHasPassed", "type": "fun(self: TimeOfDay, additionalHours: number): boolean" },
+        { "name": "timePassed", "type": "fun(self: TimeOfDay): number" },
+        { "name": "getTimePassedString", "type": "fun(self: TimeOfDay): string" },
+        { "name": "getTimeRemainingString", "type": "fun(self: TimeOfDay): string" },
+        { "name": "getTotalTimeString", "type": "fun(self: TimeOfDay): string" },
+        { "name": "operator_gt", "type": "fun(self: TimeOfDay, other: TimeOfDay): boolean" },
+        { "name": "operator_ge", "type": "fun(self: TimeOfDay, other: TimeOfDay): boolean" },
+        { "name": "operator_lt", "type": "fun(self: TimeOfDay, other: TimeOfDay): boolean" },
+        { "name": "operator_le", "type": "fun(self: TimeOfDay, other: TimeOfDay): boolean" },
+        { "name": "operator_eq", "type": "fun(self: TimeOfDay, other: TimeOfDay): boolean" },
+        { "name": "operator_assign", "type": "fun(self: TimeOfDay, other: TimeOfDay): TimeOfDay" },
+        { "name": "time", "type": "number" }
+      ]
+    },
+    {
+      "name": "WorldEventStateQueryList",
+      "fields": [
+        { "name": "setupFrom", "type": "fun(self: WorldEventStateQueryList, data: GameData, listName: string): boolean" },
+        { "name": "reset", "type": "fun(self: WorldEventStateQueryList)" },
+        { "name": "isTrue", "type": "fun(self: WorldEventStateQueryList): boolean" },
+        { "name": "statesList", "type": "OgreUnorderedMap<WorldEventStateQuery, boolean>" }
+      ]
+    },
+    {
+      "name": "WorldEventStateQuery",
+      "fields": [
+        { "name": "isTrue", "type": "fun(self: WorldEventStateQuery): boolean" },
+        { "name": "playerInvolvement", "type": "boolean" },
+        { "name": "isAllyOf", "type": "OgreUnorderedMap<Faction, boolean>" },
+        { "name": "isEnemyOf", "type": "OgreUnorderedMap<Faction, boolean>" },
+        { "name": "towns", "type": "OgreUnorderedMap<GameData, integer>" },
+        { "name": "uniqueNPCsAre", "type": "OgreUnorderedMap<GameData, integer>" },
+        { "name": "uniqueNPCsAreNot", "type": "OgreUnorderedMap<GameData, integer>" }
+      ]
+    },
+    {
+      "name": "WorldEventStateQueryStatic",
+      "fields": [
+        { "name": "checkAllStatesInObject", "type": "fun(data: GameData, listName: string): boolean" },
+        { "name": "getFromData", "type": "fun(data: GameData): WorldEventStateQuery|nil" }
+      ]
+    },
+    {
+      "name": "AkSoundPosition",
+      "fields": [
+        { "name": "Position", "type": "AkVector" },
+        { "name": "Orientation", "type": "AkVector" }
+      ]
+    },
+    {
+      "name": "AkVector",
+      "fields": [
+        { "name": "X", "type": "number" },
+        { "name": "Y", "type": "number" },
+        { "name": "Z", "type": "number" }
+      ]
+    },
+    {
+      "name": "CombatClass_AttackSlotManager_SlotData",
+      "fields": [
+        { "name": "who", "type": "hand" },
+        { "name": "time", "type": "number" }
+      ]
+    },
+    {
+      "name": "EdgeCache_Edge",
+      "fields": [
+        { "name": "a", "type": "hkVector4f" },
+        { "name": "b", "type": "hkVector4f" }
+      ]
+    },
+    {
+      "name": "Faction_CharacteristicsData",
+      "fields": [
+        { "name": "fleeRatio_squadSize", "type": "number" },
+        { "name": "fleeRatio_relativeEnemy", "type": "number" }
+      ]
+    },
+    {
+      "name": "ManagementScreen_TechItemViewData",
+      "fields": [
+        { "name": "item", "type": "lightuserdata|nil", "description": "Raw ResearchItem pointer." }
+      ]
+    },
+    {
+      "name": "MapScreen_MapRoad",
+      "fields": [
+        { "name": "widget", "type": "lightuserdata|nil", "description": "Raw MyGUI::Widget pointer." }
+      ]
+    },
+    {
+      "name": "NavMeshGenerator_TaskQueue",
+      "fields": [
+        { "name": "front", "type": "NavMeshGenerator_Task|nil" }
+      ]
+    },
+    {
+      "name": "NavMeshGenerator_Task",
+      "fields": [
+        { "name": "zone", "type": "ZoneMap|nil" },
+        { "name": "buildings", "type": "Lektor<hand>" },
+        { "name": "hash", "type": "integer" },
+        { "name": "offset", "type": "table", "description": "Ogre::Vector3 encoded as the binding's vector table." },
+        { "name": "bounds", "type": "lightuserdata", "description": "Raw Ogre::Aabb pointer." },
+        { "name": "mesh", "type": "lightuserdata|nil", "description": "Raw hkaiNavMesh pointer." },
+        { "name": "output", "type": "NavInstance|nil" },
+        { "name": "flags", "type": "integer" },
+        { "name": "next", "type": "NavMeshGenerator_Task|nil" }
+      ]
+    },
+    { "name": "ZoneMap", "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.", "fields": [] },
+    { "name": "NavInstance", "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.", "fields": [] },
+    {
+      "name": "TownBuildingsManager_BuildingInfo",
+      "fields": [
+        { "name": "visibleFloor", "type": "integer" }
+      ]
+    },
+    {
+      "name": "MessageQueue_Node",
+      "fields": [
+        { "name": "value", "type": "lightuserdata|nil" },
+        { "name": "next", "type": "MessageQueue_Node|nil" }
+      ]
+    },
+    {
+      "name": "MeshDataLookup",
+      "fields": [
+        { "name": "verts", "type": "lightuserdata|nil", "description": "Raw Ogre::Vector3 pointer." },
+        { "name": "uvs", "type": "lightuserdata|nil", "description": "Raw Ogre::Vector2 pointer." }
+      ]
+    },
+    {
+      "name": "DialogChoiceList",
+      "fields": [
+        { "name": "add", "type": "fun(self: DialogChoiceList, conversation: GameData, parent: DialogLineData)" },
+        { "name": "conversationChoices", "type": "Lektor<DialogLineData>" }
+      ]
+    },
+    {
+      "name": "hand",
+      "fields": [
+        { "name": "getCharacter", "type": "fun(self: hand): Character|nil" },
+        { "name": "isNull", "type": "fun(self: hand): boolean", "description": "Tests whether this engine handle is null." },
+        { "name": "isValid", "type": "fun(self: hand): boolean" },
+        { "name": "operator_bool", "type": "fun(self: hand): boolean" },
+        { "name": "operator_eq", "type": "fun(self: hand, other: hand): boolean" },
+        { "name": "operator_ne", "type": "fun(self: hand, other: hand): boolean" },
+        { "name": "operator_lt", "type": "fun(self: hand, other: hand): boolean" }
+      ]
+    },
+    {
+      "name": "CharBody",
+      "fields": [
+        { "name": "getFaction", "type": "fun(self: CharBody): Faction|nil" }
+      ]
+    },
+    {
+      "name": "GameWorld",
+      "fields": [
+        { "name": "player", "type": "PlayerInterface|nil" },
+        { "name": "factionMgr", "type": "FactionManager|nil" },
+        { "name": "togglePause", "type": "fun(self: GameWorld, on: boolean)" },
+        { "name": "isPaused", "type": "fun(self: GameWorld): boolean" }
+      ]
+    },
+    {
+      "name": "PlayerInterface",
+      "fields": [
+        { "name": "selectedCharacter", "type": "hand" },
+        { "name": "selectedCharacters", "type": "OgreUnorderedSet<hand>" },
+        { "name": "selectedObject", "type": "hand" },
+        { "name": "participant", "type": "Faction|nil" },
+        { "name": "currentPlatoon", "type": "Platoon|nil" }
+      ]
+    },
+    {
+      "name": "ForgottenGUI",
+      "fields": [
+        { "name": "selectedObject", "type": "hand" }
+      ]
+    },
+    { "name": "InputHandler", "fields": [] },
+    { "name": "RootObjectFactory", "fields": [] },
+    { "name": "GlobalConstants", "fields": [] },
+    { "name": "OptionsHolder", "fields": [] },
+    {
+      "name": "Faction",
+      "fields": [
+        { "name": "relations", "type": "FactionRelations|nil" },
+        { "name": "getName", "type": "fun(self: Faction): string" }
+      ]
+    },
+    {
+      "name": "FactionManager",
+      "fields": [
+        { "name": "getFactionByName", "type": "fun(self: FactionManager, name: string): Faction|nil" },
+        { "name": "getFactionByStringID", "type": "fun(self: FactionManager, stringId: string): Faction|nil" },
+        { "name": "getEmptyFaction", "type": "fun(self: FactionManager): Faction|nil" }
+      ]
+    },
+    {
+      "name": "FactionRelations",
+      "fields": [
+        { "name": "getFactionRelation", "type": "fun(self: FactionRelations, faction: Faction): number" },
+        { "name": "setRelation", "type": "fun(self: FactionRelations, faction: Faction, value: number)" }
+      ]
+    },
+    {
+      "name": "Platoon",
+      "fields": [
+        { "name": "activePlatoon", "type": "ActivePlatoon|nil" }
+      ]
+    },
+    { "name": "ActivePlatoon", "fields": [] },
+    {
+      "name": "NxVec3",
+      "operators": [
+        "add(NxVec3): NxVec3",
+        "sub(NxVec3): NxVec3",
+        "mul(number): NxVec3",
+        "unm: NxVec3"
+      ],
+      "fields": [
+        { "name": "x", "type": "number" },
+        { "name": "y", "type": "number" },
+        { "name": "z", "type": "number" },
+        { "name": "zero", "type": "fun(self: NxVec3)" },
+        { "name": "isZero", "type": "fun(self: NxVec3): integer" },
+        { "name": "normalize", "type": "fun(self: NxVec3): number" },
+        { "name": "setMagnitude", "type": "fun(self: NxVec3, length: number)" },
+        { "name": "closestAxis", "type": "fun(self: NxVec3): integer" },
+        { "name": "isFinite", "type": "fun(self: NxVec3): boolean" },
+        { "name": "magnitude", "type": "fun(self: NxVec3): number" },
+        { "name": "magnitudeSquared", "type": "fun(self: NxVec3): number" },
+        { "name": "dot", "type": "fun(self: NxVec3, other: NxVec3): number" },
+        { "name": "equals", "type": "fun(self: NxVec3, other: NxVec3, tolerance?: number): boolean" },
+        { "name": "multiplyAdd", "type": "fun(self: NxVec3, scalar: number, a: NxVec3, b: NxVec3)" },
+        { "name": "add", "type": "fun(self: NxVec3, a: NxVec3, b: NxVec3)" },
+        { "name": "subtract", "type": "fun(self: NxVec3, a: NxVec3, b: NxVec3)" },
+        { "name": "cross", "type": "fun(self: NxVec3, left: NxVec3, right?: NxVec3): NxVec3|nil" },
+        { "name": "set", "type": "fun(self: NxVec3, x: number, y: number, z: number)" },
+        { "name": "operator_assign", "type": "fun(self: NxVec3, other: NxVec3): NxVec3" },
+        { "name": "operator_subscript", "type": "fun(self: NxVec3, index: integer, value?: number): number" },
+        { "name": "operator_eq", "type": "fun(self: NxVec3, other: NxVec3): boolean" },
+        { "name": "operator_ne", "type": "fun(self: NxVec3, other: NxVec3): boolean" },
+        { "name": "operator_add", "type": "fun(self: NxVec3, other: NxVec3): NxVec3" },
+        { "name": "operator_sub", "type": "fun(self: NxVec3, other: NxVec3): NxVec3" },
+        { "name": "operator_unm", "type": "fun(self: NxVec3): NxVec3" },
+        { "name": "operator_mul", "type": "fun(self: NxVec3, scalar: number): NxVec3" },
+        { "name": "operator_add_assign", "type": "fun(self: NxVec3, other: NxVec3): NxVec3" },
+        { "name": "operator_sub_assign", "type": "fun(self: NxVec3, other: NxVec3): NxVec3" },
+        { "name": "operator_mul_assign", "type": "fun(self: NxVec3, scalar: number): NxVec3" },
+        { "name": "operator_xor", "type": "fun(self: NxVec3, other: NxVec3): NxVec3" }
+      ]
+    },
+    {
+      "name": "NxVec3Static",
+      "overloads": [
+        "fun(x?: number, y?: number, z?: number): NxVec3"
+      ],
+      "fields": []
+    },
+    {
+      "name": "NxMat33",
+      "operators": [
+        "mul(NxVec3): NxVec3",
+        "mul(NxMat33): NxMat33"
+      ],
+      "overloads": [
+        "fun(row: integer, col: integer): number",
+        "fun(row: integer, col: integer, val: number)"
+      ],
+      "fields": [
+        { "name": "setRowMajor", "type": "fun(self: NxMat33, values: number[])" },
+        { "name": "getRowMajor", "type": "fun(self: NxMat33, d: lightuserdata)" },
+        { "name": "setColumnMajor", "type": "fun(self: NxMat33, values: number[])" },
+        { "name": "getColumnMajor", "type": "fun(self: NxMat33, d: lightuserdata)" },
+        { "name": "setRowMajorStride4", "type": "fun(self: NxMat33, values: number[])" },
+        { "name": "getRowMajorStride4", "type": "fun(self: NxMat33, d: lightuserdata)" },
+        { "name": "getColumnMajorStride4", "type": "fun(self: NxMat33, d: lightuserdata)" },
+        { "name": "isFinite", "type": "fun(self: NxMat33): boolean" },
+        { "name": "zero", "type": "fun(self: NxMat33)" },
+        { "name": "id", "type": "fun(self: NxMat33)" },
+        { "name": "setColumn", "type": "fun(self: NxMat33, col: integer, v: NxVec3)" },
+        { "name": "getRow", "type": "fun(self: NxMat33, row: integer): NxVec3" },
+        { "name": "getColumn", "type": "fun(self: NxMat33, col: integer): NxVec3" },
+        { "name": "multiply", "type": "fun(self: NxMat33, left: NxMat33|NxVec3, right?: NxMat33): NxVec3|NxMat33" },
+        { "name": "get", "type": "fun(self: NxMat33, row: integer, col: integer): number" },
+        { "name": "set", "type": "fun(self: NxMat33, row: integer, col: integer, val: number)" },
+        { "name": "operator_mul", "type": "fun(self: NxMat33, other: NxVec3|NxMat33): NxVec3|NxMat33" },
+        { "name": "operator_assign", "type": "fun(self: NxMat33, other: NxMat33): NxMat33" },
+        { "name": "operator_mul_assign", "type": "fun(self: NxMat33, other: NxMat33): NxMat33" },
+        { "name": "operator_call", "type": "fun(self: NxMat33, row: integer, col: integer, val?: number): number|nil" }
+      ]
+    },
+    {
+      "name": "NxMat33Static",
+      "overloads": [
+        "fun(other?: NxMat33): NxMat33"
+      ],
+      "fields": []
+    },
+    {
+      "name": "hkVector4f",
+      "overloads": [
+        "fun(index: integer): number",
+        "fun(index: integer, val: number)"
+      ],
+      "fields": [
+        { "name": "setAll", "type": "fun(self: hkVector4f, a: number)" },
+        { "name": "add", "type": "fun(self: hkVector4f, a: hkVector4f)" },
+        { "name": "sub", "type": "fun(self: hkVector4f, a: hkVector4f)" },
+        { "name": "mul", "type": "fun(self: hkVector4f, a: hkVector4f)" },
+        { "name": "div", "type": "fun(self: hkVector4f, a: hkVector4f)" },
+        { "name": "getInt24W", "type": "fun(self: hkVector4f): integer" },
+        { "name": "operator_assign", "type": "fun(self: hkVector4f, other: hkVector4f): hkVector4f" },
+        { "name": "operator_call", "type": "fun(self: hkVector4f, index: integer, val?: number): number|nil" },
+        { "name": "operator_new", "type": "fun(self: hkVector4f, size: integer): userdata" },
+        { "name": "operator_delete", "type": "fun(selfOrPtr: hkVector4f|lightuserdata|table, ptr?: hkVector4f|lightuserdata)" }
+      ]
+    },
+    {
+      "name": "hkVector4fStatic",
+      "overloads": [
+        "fun(x?: number, y?: number, z?: number, w?: number): hkVector4f"
+      ],
+      "fields": [
+        { "name": "getZero", "type": "fun(): hkVector4f" },
+        { "name": "operator_new", "type": "fun(size: integer): userdata" },
+        { "name": "operator_delete", "type": "fun(ptr: userdata)" }
+      ]
+    },
+    {
+      "name": "hkVector4fComparison",
+      "fields": [
+        { "name": "getMask", "type": "fun(self: hkVector4fComparison, m?: integer): integer" },
+        { "name": "getIndexOfLastComponentSet", "type": "fun(self: hkVector4fComparison): integer" },
+        { "name": "getIndexOfFirstComponentSet", "type": "fun(self: hkVector4fComparison): integer" },
+        { "name": "allAreSet", "type": "fun(self: hkVector4fComparison): integer" },
+        { "name": "anyIsSet", "type": "fun(self: hkVector4fComparison, m?: integer): integer" },
+        { "name": "getMaskForComponent", "type": "fun(self: hkVector4fComparison, component: integer): integer" },
+        { "name": "set", "type": "fun(self: hkVector4fComparison, mask: integer)" },
+        { "name": "setAnd", "type": "fun(self: hkVector4fComparison, a: hkVector4fComparison, b: hkVector4fComparison)" },
+        { "name": "setAndNot", "type": "fun(self: hkVector4fComparison, a: hkVector4fComparison, b: hkVector4fComparison)" },
+        { "name": "setXor", "type": "fun(self: hkVector4fComparison, a: hkVector4fComparison, b: hkVector4fComparison)" },
+        { "name": "setOr", "type": "fun(self: hkVector4fComparison, a: hkVector4fComparison, b: hkVector4fComparison)" },
+        { "name": "setNot", "type": "fun(self: hkVector4fComparison, a: hkVector4fComparison)" },
+        { "name": "setSelect", "type": "fun(self: hkVector4fComparison, comp: hkVector4fComparison, trueValue: hkVector4fComparison, falseValue: hkVector4fComparison)" }
+      ]
+    },
+    {
+      "name": "hkVector4fComparisonStatic",
+      "overloads": [
+        "fun(mask?: integer): hkVector4fComparison"
+      ],
+      "fields": [
+        { "name": "getMaskForComponent", "type": "fun(component: integer): integer" }
+      ]
+    },
+    {
+      "name": "HavokCharacterStatic",
+      "fields": [
+        { "name": "operator_new", "type": "fun(size: integer): userdata" },
+        { "name": "operator_delete", "type": "fun(ptr: userdata)" }
+      ]
+    },
+    { "name": "BadSize", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "BoundsViolation", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "BuildingPlacementGroundType", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "FactionsScreen_FactionRelationsLine_LessSort", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "hkContainerHeapAllocator", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "hkMemoryAllocator_ExtendedInterface", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "Listener", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "MustEndWithSemiColon", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "Nx9Real", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "NxUserControllerHitReport", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "NxUserTriggerReport", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "OrdersItemBox", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "PhysicsClass", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "TimerClass", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    { "name": "TraitBool", "description": "Opaque runtime-registered type with no exposed members.", "fields": [] },
+    {
+      "name": "BaseLayout",
+      "fields": [
+        { "name": "mMainWidget", "type": "lightuserdata", "description": "Read-only pointer to the layout's main MyGUI widget." },
+        { "name": "mPrefix", "type": "string" },
+        { "name": "mLayoutName", "type": "string" }
+      ]
+    },
+    {
+      "name": "InventoryLayout",
+      "parent": "BaseLayout",
+      "fields": [
+        { "name": "getWindow", "type": "fun(self: InventoryLayout): MyGUI.Window|nil" },
+        { "name": "getWidget", "type": "fun(self: InventoryLayout, name: string): MyGUI.Widget|nil" },
+        { "name": "getDatapanel", "type": "fun(self: InventoryLayout): DatapanelGUI|nil" },
+        { "name": "_NV_getDatapanel", "type": "fun(self: InventoryLayout): DatapanelGUI|nil" },
+        { "name": "setupDataPanelInfos", "type": "fun(self: InventoryLayout, name: string)" },
+        { "name": "createSectionGUI", "type": "fun(self: InventoryLayout, section: InventorySection): InventorySectionGUI|nil" },
+        { "name": "setSectionGUIDisabled", "type": "fun(self: InventoryLayout, sectionName: string, width: integer, height: integer)" },
+        { "name": "resizeSection", "type": "fun(self: InventoryLayout, section: InventorySection, sectionGUI: InventorySectionGUI): MyGUI.IntSize" },
+        { "name": "resizeSectionWidget", "type": "fun(self: InventoryLayout, width: integer, height: integer, widget: MyGUI.Widget): MyGUI.IntSize" },
+        { "name": "setupSections", "type": "fun(self: InventoryLayout, gui: InventoryGUI, sections: StdMap<string, InventorySectionGUI>, inventory: Inventory)" },
+        { "name": "dataPanelInfos", "type": "GameDataCopyStandalone" },
+        { "name": "datapanel", "type": "DatapanelGUI|nil" },
+        { "name": "window", "type": "MyGUI.Window|nil" }
+      ]
+    },
+    {
+      "name": "InventoryLayoutStatic",
+      "fields": [
+        { "name": "notifyCellSizeChanged", "type": "fun()" }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
+      "fields": []
+    },
+    {
+      "name": "InventorySection",
+      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
+      "fields": []
+    },
+    {
+      "name": "Item",
+      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
+      "fields": []
+    },
+    {
+      "name": "GameData",
+      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
+      "fields": []
+    },
+    {
+      "name": "GameDataCopyStandalone",
+      "parent": "GameData",
+      "description": "Standalone GameData value with no additional registered members.",
+      "fields": []
+    },
+    {
+      "name": "GameDataGroup",
+      "fields": [
+        { "name": "g1", "type": "GameData|nil" },
+        { "name": "g2", "type": "GameData|nil" }
+      ]
+    },
+    {
+      "name": "GameDataValuePair",
+      "fields": [
+        { "name": "data", "type": "GameData|nil" },
+        { "name": "val0", "type": "integer" }
+      ]
+    },
+    {
+      "name": "DatapanelGUI",
+      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
+      "fields": []
+    },
+    {
+      "name": "InventorySectionGUI",
+      "fields": [
+        { "name": "hasMouse", "type": "fun(self: InventorySectionGUI): boolean" },
+        { "name": "getItemAbsolutePosition", "type": "fun(self: InventorySectionGUI, x: integer, y: integer): MyGUI.IntPoint" },
+        { "name": "getWidget", "type": "fun(self: InventorySectionGUI): lightuserdata", "description": "Returns the raw MyGUI widget pointer as lightuserdata." },
+        { "name": "getPositionSlot", "type": "fun(self: InventorySectionGUI, position: MyGUI.IntPoint, section: InventorySection, round: boolean): MyGUI.IntPoint" },
+        { "name": "getBestPositionSlot", "type": "fun(self: InventorySectionGUI, position: MyGUI.IntPoint, section: InventorySection, item: Item): boolean, MyGUI.IntPoint" },
+        { "name": "setEnabled", "type": "fun(self: InventorySectionGUI, enabled: boolean)" },
+        { "name": "refreshIcons", "type": "fun(self: InventorySectionGUI, section: InventorySection)" },
+        { "name": "update", "type": "fun(self: InventorySectionGUI)" },
+        { "name": "widget", "type": "lightuserdata|MyGUI.Widget|nil", "description": "Reads as a raw lightuserdata pointer; assignment accepts a MyGUI.Widget or nil." }
+      ]
+    },
+    {
+      "name": "BuildInventoryLayout",
+      "parent": "InventoryLayout",
+      "fields": [
+        { "name": "setupSections", "type": "fun(self: BuildInventoryLayout, gui: InventoryGUI|lightuserdata, sections: StdMap<string, InventorySectionGUI>|lightuserdata, inventory: Inventory|lightuserdata)" },
+        { "name": "_NV_setupSections", "type": "fun(self: BuildInventoryLayout, gui: InventoryGUI|lightuserdata, sections: StdMap<string, InventorySectionGUI>|lightuserdata, inventory: Inventory|lightuserdata)" },
+        { "name": "setInput", "type": "fun(self: BuildInventoryLayout, inputIndex: integer, name: string, status: string)" },
+        { "name": "setOutput", "type": "fun(self: BuildInventoryLayout, name: string)" },
+        { "name": "setInputProgress", "type": "fun(self: BuildInventoryLayout, inputIndex: integer, progress: number)" },
+        { "name": "setInputEnabled", "type": "fun(self: BuildInventoryLayout, inputIndex: integer, enabled: boolean)" },
+        { "name": "setOutputProgress", "type": "fun(self: BuildInventoryLayout, progress: number)" },
+        { "name": "setInputItem", "type": "fun(self: BuildInventoryLayout, inputIndex: integer, item: Item|nil, visible: boolean)" },
+        { "name": "setOutputItem", "type": "fun(self: BuildInventoryLayout, item: Item|nil, visible: boolean)" },
+        { "name": "input1Item", "type": "Item|nil" },
+        { "name": "input1ItemIcon", "type": "MyGUI.Widget|nil" },
+        { "name": "input1NameText", "type": "MyGUI.Widget|nil" },
+        { "name": "input1Panel", "type": "MyGUI.Widget|nil" },
+        { "name": "input1Progress", "type": "MyGUI.Widget|nil" },
+        { "name": "input1StatusText", "type": "MyGUI.Widget|nil" },
+        { "name": "input2Item", "type": "Item|nil" },
+        { "name": "input2ItemIcon", "type": "MyGUI.Widget|nil" },
+        { "name": "input2NameText", "type": "MyGUI.Widget|nil" },
+        { "name": "input2Panel", "type": "MyGUI.Widget|nil" },
+        { "name": "input2Progress", "type": "MyGUI.Widget|nil" },
+        { "name": "input2StatusText", "type": "MyGUI.Widget|nil" },
+        { "name": "inputs", "type": "integer" },
+        { "name": "outputItem", "type": "Item|nil" },
+        { "name": "outputItemIcon", "type": "MyGUI.Widget|nil" },
+        { "name": "outputNameText", "type": "MyGUI.Widget|nil" },
+        { "name": "outputProgress", "type": "MyGUI.Widget|nil" },
+        { "name": "outputs", "type": "integer" }
+      ]
+    },
+    {
+      "name": "CraftingInventoryLayout",
+      "parent": "BuildInventoryLayout",
+      "fields": [
+        { "name": "setupSections", "type": "fun(self: CraftingInventoryLayout, gui: InventoryGUI|lightuserdata, sections: StdMap<string, InventorySectionGUI>|lightuserdata, inventory: Inventory|lightuserdata)" },
+        { "name": "_NV_setupSections", "type": "fun(self: CraftingInventoryLayout, gui: InventoryGUI|lightuserdata, sections: StdMap<string, InventorySectionGUI>|lightuserdata, inventory: Inventory|lightuserdata)" },
+        { "name": "refresh", "type": "fun(self: CraftingInventoryLayout)" },
+        { "name": "setOutputType", "type": "fun(self: CraftingInventoryLayout, itemType: integer)" },
+        { "name": "setCraftingName", "type": "fun(self: CraftingInventoryLayout, name: string)" },
+        { "name": "getQueueButton", "type": "fun(self: CraftingInventoryLayout): MyGUI.Widget|nil" },
+        { "name": "craftingName", "type": "MyGUI.Widget|nil" },
+        { "name": "outputType", "type": "integer" },
+        { "name": "queueBtn", "type": "MyGUI.Widget|nil" }
+      ]
+    },
+    {
+      "name": "GenericFixedInventoryLayout",
+      "parent": "InventoryLayout",
+      "fields": [
+        { "name": "setSize", "type": "fun(self: GenericFixedInventoryLayout, slotsWide: integer, slotsHigh: integer)" },
+        { "name": "_NV_setSize", "type": "fun(self: GenericFixedInventoryLayout, slotsWide: integer, slotsHigh: integer)" }
+      ]
+    },
+    {
+      "name": "BackpackInventoryLayout",
+      "parent": "GenericFixedInventoryLayout",
+      "fields": [
+        { "name": "setupSections", "type": "fun(self: BackpackInventoryLayout, gui: InventoryGUI, sections: StdMap<string, InventorySectionGUI>, inventory: Inventory)" }
+      ]
+    },
+    {
+      "name": "GenericInventoryLayout",
+      "parent": "InventoryLayout",
+      "fields": [
+        { "name": "setSize", "type": "fun(self: GenericInventoryLayout, slotsWide: integer, slotsHigh: integer, hasArrange: boolean, hasType: boolean)" },
+        { "name": "_NV_setSize", "type": "fun(self: GenericInventoryLayout, slotsWide: integer, slotsHigh: integer, hasArrange: boolean, hasType: boolean)" },
+        { "name": "arrangeButton", "type": "MyGUI.Widget|nil" }
+      ]
+    },
+    {
+      "name": "BuildingContainerInventoryLayout",
+      "parent": "GenericInventoryLayout",
+      "fields": [
+        { "name": "setCapacity", "type": "fun(self: BuildingContainerInventoryLayout, value: integer, full: boolean)" },
+        { "name": "setupSections", "type": "fun(self: BuildingContainerInventoryLayout, gui: InventoryGUI|lightuserdata, sections: StdMap<string, InventorySectionGUI>|lightuserdata, inventory: Inventory|lightuserdata)" },
+        { "name": "capacityText", "type": "MyGUI.Widget|nil" }
+      ]
+    },
+    {
+      "name": "ResearchBuildingInventoryLayout",
+      "parent": "GenericInventoryLayout",
+      "fields": [
+        { "name": "getResearchButton", "type": "fun(self: ResearchBuildingInventoryLayout): MyGUI.Widget|nil" },
+        { "name": "setupSections", "type": "fun(self: ResearchBuildingInventoryLayout, gui: InventoryGUI|lightuserdata, sections: StdMap<string, InventorySectionGUI>|lightuserdata, inventory: Inventory|lightuserdata)" },
+        { "name": "researchButton", "type": "MyGUI.Widget|nil" }
+      ]
+    },
+    {
+      "name": "AnimalInventoryLayout",
+      "parent": "InventoryLayout",
+      "fields": [
+        { "name": "setupSections", "type": "fun(self: AnimalInventoryLayout, gui: InventoryGUI, sections: StdMap<string, InventorySectionGUI>, inventory: Inventory)" }
+      ]
+    },
+    {
+      "name": "CharacterInventoryLayout",
+      "parent": "InventoryLayout",
+      "fields": [
+        { "name": "setupSections", "type": "fun(self: CharacterInventoryLayout, gui: InventoryGUI, sections: StdMap<string, InventorySectionGUI>, inventory: Inventory)" }
+      ]
+    },
+    {
+      "name": "LimbsInventoryLayout",
+      "parent": "InventoryLayout",
+      "fields": [
+        { "name": "setupSections", "type": "fun(self: LimbsInventoryLayout, gui: InventoryGUI, sections: StdMap<string, InventorySectionGUI>, inventory: Inventory)" },
+        { "name": "character", "type": "Character|nil" }
+      ]
+    },
+    {
+      "name": "TraderInventoryLayout",
+      "parent": "InventoryLayout",
+      "fields": [
+        { "name": "setupSections", "type": "fun(self: TraderInventoryLayout, gui: InventoryGUI, sections: StdMap<string, InventorySectionGUI>, inventory: Inventory)" },
+        { "name": "notifyMouseWheel", "type": "fun(self: TraderInventoryLayout, widget: MyGUI.Widget|nil, relative: integer)" },
+        { "name": "scrollBackpack", "type": "lightuserdata", "description": "Read-only raw pointer to the backing MyGUI ScrollView." }
+      ]
+    },
+    {
+      "name": "FurnaceInventoryLayout",
+      "parent": "BuildInventoryLayout",
+      "fields": [
+        { "name": "setupSections", "type": "fun(self: FurnaceInventoryLayout, gui: InventoryGUI, sections: StdMap<string, InventorySectionGUI>, inventory: Inventory)" }
+      ]
+    },
+    {
+      "name": "ProductionInventoryLayout",
+      "parent": "BuildInventoryLayout",
+      "description": "Production layout with no additional registered members.",
+      "fields": []
+    },
+    {
+      "name": "SectionItem",
+      "fields": [
+        { "name": "item", "type": "Item|nil" },
+        { "name": "x", "type": "integer" },
+        { "name": "y", "type": "integer" },
+        { "name": "w", "type": "integer" },
+        { "name": "h", "type": "integer" }
+      ]
+    },
+    {
+      "name": "Inventory_HasRoomCache",
+      "fields": [
+        { "name": "modified", "type": "fun(self: Inventory_HasRoomCache)" },
+        { "name": "knowsAbout", "type": "fun(self: Inventory_HasRoomCache, item: GameData): boolean" },
+        { "name": "hasRoomFor", "type": "fun(self: Inventory_HasRoomCache, item: GameData): boolean" },
+        { "name": "remember", "type": "fun(self: Inventory_HasRoomCache, item: GameData, state: boolean)" },
+        { "name": "itemStates", "type": "StdMap<GameData, boolean>" }
+      ]
+    },
+    { "name": "RootObjectBase", "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.", "fields": [] },
+    { "name": "RootObject", "parent": "RootObjectBase", "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.", "fields": [] },
+    {
+      "name": "GameDataContainer",
+      "fields": [
+        { "name": "createNewData", "type": "fun(self: GameDataContainer, itemType: integer, forceID: string, name: string): GameData|nil" },
+        { "name": "getDataByName", "type": "fun(self: GameDataContainer, dataName: string, category: integer): GameData|nil" },
+        { "name": "renameData", "type": "fun(self: GameDataContainer, data: GameData, name: string)" },
+        { "name": "removeData", "type": "fun(self: GameDataContainer, data: GameData)" },
+        { "name": "removeDuplicatesOf", "type": "fun(self: GameDataContainer, data: GameData)" },
+        { "name": "removeAllDataOfType", "type": "fun(self: GameDataContainer, itemType: integer)" },
+        { "name": "clearInstances", "type": "fun(self: GameDataContainer)" },
+        { "name": "clearButDontDestroy", "type": "fun(self: GameDataContainer)" },
+        { "name": "clearButDontDestroyPlatoons", "type": "fun(self: GameDataContainer)" },
+        { "name": "clearAndDestroy", "type": "fun(self: GameDataContainer)" },
+        { "name": "getNewID", "type": "fun(self: GameDataContainer): integer" },
+        { "name": "destroyData", "type": "fun(self: GameDataContainer, data: GameData)" },
+        { "name": "preLoadAllReferencePtrs", "type": "fun(self: GameDataContainer)" },
+        { "name": "clearAllReferencePtrs", "type": "fun(self: GameDataContainer)" },
+        { "name": "setName", "type": "fun(self: GameDataContainer, name: string)" },
+        { "name": "checkForDuplicates", "type": "fun(self: GameDataContainer, data: GameData)" },
+        { "name": "addNewData", "type": "fun(self: GameDataContainer, dataOrList: GameData|Lektor<GameData>, forceID?: string)" },
+        { "name": "getData", "type": "fun(self: GameDataContainer, idOrSID: integer|string, category?: integer): GameData|nil" },
+        { "name": "getDataOfType", "type": "fun(self: GameDataContainer, list: Lektor<GameData>, itemType: integer)" },
+        { "name": "_getAllData", "type": "fun(self: GameDataContainer): OgreUnorderedMap<integer, GameData>" },
+        { "name": "loadGameDataReturn", "type": "fun(self: GameDataContainer, file: string, isActive: boolean, readOnly: boolean, moreData?: lightuserdata): boolean" },
+        { "name": "load", "type": "fun(self: GameDataContainer, filename: string, modName: string, modIndex: integer, moreData?: lightuserdata, keepDeletedInstances?: boolean): boolean" },
+        { "name": "save", "type": "fun(self: GameDataContainer, filename: string, moreData?: lightuserdata): boolean" },
+        { "name": "flushKillList", "type": "fun()", "description": "Static function exposed through the instance method table; call with dot syntax." },
+        { "name": "destroyHomelessData", "type": "fun(data: GameData)", "description": "Static function exposed through the instance method table; call with dot syntax." },
+        { "name": "findAllDataThatReferencesThis", "type": "fun(self: GameDataContainer, out: Lektor<GameData>, what: GameData, ofType: integer, listName: string)" },
+        { "name": "_addToKillList", "type": "fun(data: GameData)", "description": "Static function exposed through the instance method table; call with dot syntax." },
+        { "name": "currentID", "type": "integer" },
+        { "name": "name", "type": "string" },
+        { "name": "isBaseDatafile", "type": "boolean" },
+        { "name": "readOnly", "type": "boolean" },
+        { "name": "gamedataID", "type": "OgreUnorderedMap<integer, GameData>" },
+        { "name": "gamedataSID", "type": "BoostUnorderedMap<string, GameData>" },
+        { "name": "mainList", "type": "OgreUnorderedSet<GameData>" }
+      ]
+    },
+    {
+      "name": "GameDataManager",
+      "parent": "GameDataContainer",
+      "fields": [
+        { "name": "reloadGameData", "type": "fun(self: GameDataManager, filename: string, isActive: boolean, baseData: boolean): boolean" },
+        { "name": "postProcessingTheDatas", "type": "fun(self: GameDataManager)" },
+        { "name": "getMapSector", "type": "fun(self: GameDataManager, x: integer, y: integer): GameData|nil" },
+        { "name": "updateDatasOfType", "type": "fun(self: GameDataManager, fromContainer: GameDataContainer, itemType: integer, isMod: boolean)" },
+        { "name": "updateData", "type": "fun(self: GameDataManager, from: GameData, isMod: boolean)" },
+        { "name": "getBuildings", "type": "fun(self: GameDataManager, list: Lektor<GameData>, category: string)" }
+      ]
+    },
+    {
+      "name": "GameSaveState",
+      "fields": [
+        { "name": "generateNewInstanceID", "type": "fun(self: GameSaveState)" },
+        { "name": "generateStateID", "type": "fun(self: GameSaveState, itemType: integer): string" },
+        { "name": "createState", "type": "fun(self: GameSaveState, itemType: integer): GameData|nil" },
+        { "name": "hasState", "type": "fun(self: GameSaveState, itemType: integer): boolean" },
+        { "name": "getState", "type": "fun(self: GameSaveState, itemType: integer): GameData|nil" },
+        { "name": "numStates", "type": "fun(self: GameSaveState): integer" },
+        { "name": "getPos", "type": "fun(self: GameSaveState): table" },
+        { "name": "getRot", "type": "fun(self: GameSaveState): table" },
+        { "name": "getTheInstancesData", "type": "fun(self: GameSaveState): GameData|nil" },
+        { "name": "createFromSerialisedInstanceData", "type": "fun(self: GameSaveState, container: GameDataContainer, instance: ObjectInstance, id: string)" },
+        { "name": "addState", "type": "fun(self: GameSaveState, state: GameData)" },
+        { "name": "getInstanceID", "type": "fun(self: GameSaveState): InstanceID" },
+        { "name": "operator_bool", "type": "fun(self: GameSaveState): boolean" },
+        { "name": "baseData", "type": "GameData|nil" },
+        { "name": "dataSource", "type": "GameDataContainer|nil" },
+        { "name": "firstTime", "type": "boolean" },
+        { "name": "instance", "type": "ObjectInstance|nil" },
+        { "name": "instanceID", "type": "string" },
+        { "name": "pos", "type": "table" },
+        { "name": "rot", "type": "table" },
+        { "name": "states", "type": "OgreUnorderedMap<integer, GameData>" }
+      ]
+    },
+    { "name": "ObjectInstance", "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.", "fields": [] },
+    { "name": "InstanceID", "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.", "fields": [] },
+    {
+      "name": "iVector2",
+      "operators": [
+        "add(iVector2): iVector2"
+      ],
+      "fields": [
+        { "name": "getLinearValue", "type": "fun(self: iVector2): integer" },
+        { "name": "getAsString", "type": "fun(self: iVector2): string" },
+        { "name": "operator_eq", "type": "fun(self: iVector2, other: iVector2): boolean" },
+        { "name": "operator_ne", "type": "fun(self: iVector2, other: iVector2): boolean" },
+        { "name": "operator_lt", "type": "fun(self: iVector2, other: iVector2): boolean" },
+        { "name": "operator_add", "type": "fun(self: iVector2, other: iVector2): iVector2" },
+        { "name": "x", "type": "integer" },
+        { "name": "y", "type": "integer" }
+      ]
+    },
+    {
+      "name": "StringPair",
+      "fields": [
+        { "name": "operator_assign", "type": "fun(self: StringPair, other: StringPair): StringPair" },
+        { "name": "s1", "type": "string" },
+        { "name": "s2", "type": "string" },
+        { "name": "val1", "type": "number" }
+      ]
+    },
+    {
+      "name": "InventoryItemBase",
+      "parent": "RootObject",
+      "fields": [
+        { "name": "deactivate", "type": "fun(self: InventoryItemBase)" },
+        { "name": "resetAfterCopy", "type": "fun(self: InventoryItemBase)" },
+        { "name": "resetCharges", "type": "fun(self: InventoryItemBase, randomise: boolean)" },
+        { "name": "getItemType", "type": "fun(self: InventoryItemBase): integer" },
+        { "name": "getItemWeightSingle", "type": "fun(self: InventoryItemBase): number" },
+        { "name": "_NV_getItemWeightSingle", "type": "fun(self: InventoryItemBase): number" },
+        { "name": "getItemWeight", "type": "fun(self: InventoryItemBase): number" },
+        { "name": "_NV_getItemWeight", "type": "fun(self: InventoryItemBase): number" },
+        { "name": "_serialise", "type": "fun(self: InventoryItemBase, container: GameDataContainer, itemType: integer): GameData|nil" },
+        { "name": "_loadFromSerialise", "type": "fun(self: InventoryItemBase, container: GameDataContainer, data: GameData)" },
+        { "name": "loadFromSerialise", "type": "fun(self: InventoryItemBase, state: GameSaveState)" },
+        { "name": "serialiseInInventory", "type": "fun(self: InventoryItemBase, container: GameDataContainer, referenceList: GameData): GameData|nil" },
+        { "name": "loadFromSerialiseInInventory", "type": "fun(self: InventoryItemBase, container: GameDataContainer, data: GameData)" },
+        { "name": "getGUIData", "type": "fun(self: InventoryItemBase, datapanel: DatapanelGUI, category: integer)" },
+        { "name": "_NV_getGUIData", "type": "fun(self: InventoryItemBase, datapanel: DatapanelGUI, category: integer)" },
+        { "name": "getAvgPrice", "type": "fun(self: InventoryItemBase): integer" },
+        { "name": "getValueSingle", "type": "fun(self: InventoryItemBase, isPlayer: boolean): integer" },
+        { "name": "_NV_getValueSingle", "type": "fun(self: InventoryItemBase, isPlayer: boolean): integer" },
+        { "name": "getValueAll", "type": "fun(self: InventoryItemBase, isPlayer: boolean): integer" },
+        { "name": "_NV_getValueAll", "type": "fun(self: InventoryItemBase, isPlayer: boolean): integer" },
+        { "name": "getMaxAffordableNum", "type": "fun(self: InventoryItemBase, cashLimit: integer, isPlayer: boolean): integer" },
+        { "name": "_NV_getMaxAffordableNum", "type": "fun(self: InventoryItemBase, cashLimit: integer, isPlayer: boolean): integer" },
+        { "name": "isStackable", "type": "fun(self: InventoryItemBase, section: InventorySection): integer" },
+        { "name": "canStackWith", "type": "fun(self: InventoryItemBase, other: InventoryItemBase): boolean" },
+        { "name": "getInventory", "type": "fun(self: InventoryItemBase): Inventory|nil" },
+        { "name": "_NV_getInventory", "type": "fun(self: InventoryItemBase): Inventory|nil" },
+        { "name": "isSameAs", "type": "fun(self: InventoryItemBase, other: InventoryItemBase): boolean" },
+        { "name": "_NV_isSameAs", "type": "fun(self: InventoryItemBase, other: InventoryItemBase): boolean" },
+        { "name": "onGround", "type": "fun(self: InventoryItemBase): boolean" },
+        { "name": "isResearchArtifact", "type": "fun(self: InventoryItemBase): boolean" },
+        { "name": "getLevel", "type": "fun(self: InventoryItemBase): integer" },
+        { "name": "_NV_getLevel", "type": "fun(self: InventoryItemBase): integer" },
+        { "name": "getItemSound", "type": "fun(self: InventoryItemBase): lightuserdata", "description": "Returns the raw const char pointer exposed by the binding." },
+        { "name": "isStolen", "type": "fun(self: InventoryItemBase, includeUnknown: boolean): boolean" },
+        { "name": "merchantPriceMod", "type": "fun(self: InventoryItemBase): number" },
+        { "name": "activate", "type": "fun(self: InventoryItemBase, active: boolean, modeOrPosition: integer|table, rotation?: table, flag?: boolean, yesNoMaybe?: integer, finalFlag?: boolean)", "description": "Accepts either (active, yesNoMaybe) or (active, position, rotation, flag, yesNoMaybe, finalFlag)." },
+        { "name": "getStolenItemGUIInfo", "type": "fun(self: InventoryItemBase, lines: OgreVector<StringPair>)" },
+        { "name": "getBuyBackGUIInfo", "type": "fun(self: InventoryItemBase, lines: OgreVector<StringPair>)" },
+        { "name": "serialise", "type": "fun(self: InventoryItemBase, container: GameDataContainer, referenceList: GameData, offsetPosition?: lightuserdata): GameSaveState" },
+        { "name": "getTooltipData1", "type": "fun(self: InventoryItemBase, lines: OgreVector<StringPair>)" },
+        { "name": "_NV_getTooltipData1", "type": "fun(self: InventoryItemBase, lines: OgreVector<StringPair>)" },
+        { "name": "getTooltipData2", "type": "fun(self: InventoryItemBase, lines: OgreVector<StringPair>)" },
+        { "name": "_NV_getTooltipData2", "type": "fun(self: InventoryItemBase, lines: OgreVector<StringPair>)" },
+        { "name": "addQuantity", "type": "fun(self: InventoryItemBase, amount: integer, addedItem: Item, section: InventorySection): integer" },
+        { "name": "getProperOwner", "type": "fun(self: InventoryItemBase): hand" },
+        { "name": "_NV_getProperOwner", "type": "fun(self: InventoryItemBase): hand" },
+        { "name": "setProperOwner", "type": "fun(self: InventoryItemBase, owner: hand)" },
+        { "name": "_NV_setProperOwner", "type": "fun(self: InventoryItemBase, owner: hand)" },
+        { "name": "getTooltipTradeValue", "type": "fun(self: InventoryItemBase, lines: OgreVector<StringPair>)" },
+        { "name": "manufacturerData", "type": "GameData|nil" },
+        { "name": "materialData", "type": "GameData|nil" },
+        { "name": "coloriseData", "type": "GameData|nil" },
+        { "name": "isInInventory", "type": "boolean" },
+        { "name": "inventoryPos", "type": "iVector2" },
+        { "name": "inventorySection", "type": "string" },
+        { "name": "slotType", "type": "integer" },
+        { "name": "originalFullChargeAmount", "type": "number" },
+        { "name": "chargesLeft", "type": "number" },
+        { "name": "quality", "type": "number" },
+        { "name": "weight", "type": "number" },
+        { "name": "itemFunction", "type": "integer" },
+        { "name": "isTradeItem", "type": "boolean" },
+        { "name": "isEquipped", "type": "boolean" },
+        { "name": "isUnique", "type": "boolean" },
+        { "name": "quantity", "type": "integer" },
+        { "name": "itemWidth", "type": "integer" },
+        { "name": "itemHeight", "type": "integer" },
+        { "name": "deathItem", "type": "boolean" },
+        { "name": "objectType", "type": "integer" },
+        { "name": "properOwner", "type": "hand" },
+        { "name": "_whosInventoryWeAreIn", "type": "hand" },
+        { "name": "_isResearchArtifact", "type": "boolean" },
+        { "name": "itemGroup", "type": "lightuserdata", "description": "Raw BuildingItemGroup pointer." }
+      ]
+    },
+    {
+      "name": "AABB2D",
+      "fields": [
+        { "name": "setNull", "type": "fun(self: AABB2D)" },
+        { "name": "pointWithin", "type": "fun(self: AABB2D, point: table): boolean" },
+        { "name": "inflate", "type": "fun(self: AABB2D, amount: number)" },
+        { "name": "sizeX", "type": "fun(self: AABB2D): number" },
+        { "name": "sizeY", "type": "fun(self: AABB2D): number" },
+        { "name": "intersects", "type": "fun(self: AABB2D, otherOrStart: AABB2D|table, endOrRadius?: table|number): boolean", "description": "Accepts another AABB2D, a Vector3 and radius, or two Vector3 values." },
+        { "name": "intersects2", "type": "fun(self: AABB2D, rayOrigin: table, rayDirection: table): table" },
+        { "name": "x", "type": "number" },
+        { "name": "y", "type": "number" },
+        { "name": "x2", "type": "number" },
+        { "name": "y2", "type": "number" }
+      ]
+    },
+    {
+      "name": "AIOptions",
+      "fields": [
+        { "name": "load", "type": "fun(self: AIOptions, data: GameData)" },
+        { "name": "save", "type": "fun(self: AIOptions, data: GameData)" },
+        { "name": "healAllies", "type": "boolean" },
+        { "name": "helpAllies", "type": "boolean" },
+        { "name": "rescueAllies", "type": "boolean" },
+        { "name": "stayInBase", "type": "boolean" },
+        { "name": "feedAnimals", "type": "boolean" },
+        { "name": "shareFood", "type": "boolean" },
+        { "name": "autoSleep", "type": "boolean" },
+        { "name": "autoDitchItems", "type": "boolean" },
+        { "name": "autoSit", "type": "boolean" },
+        { "name": "ejectEnemies", "type": "boolean" },
+        { "name": "shootFirst", "type": "boolean" }
+      ]
+    },
+    {
+      "name": "FactoryCallbackInterface",
+      "fields": [
+        { "name": "factoryObjectCreatedCallback", "type": "fun(self: FactoryCallbackInterface, object: RootObject)" }
+      ]
+    },
+    {
+      "name": "NxBox",
+      "fields": [
+        { "name": "operator_assign", "type": "fun(self: NxBox, other: NxBox): NxBox" }
+      ]
+    },
+    {
+      "name": "TriggerCallback",
+      "parent": "NxUserTriggerReport",
+      "fields": [
+        { "name": "updateFrameEndMT", "type": "fun(self: TriggerCallback)" }
+      ]
+    },
+    {
+      "name": "StatGroup",
+      "fields": [
+        { "name": "group", "type": "integer" },
+        { "name": "name", "type": "string" }
+      ]
+    },
+    {
+      "name": "StateT",
+      "fields": [
+        { "name": "_zoneBeingLoaded", "type": "boolean" },
+        { "name": "_zoneIsLoaded", "type": "boolean" }
+      ]
+    },
+    {
+      "name": "ZoneSpacialGrid_ZoneCell",
+      "fields": [
+        { "name": "zone", "type": "ZoneMap|nil" },
+        { "name": "cells", "type": "lightuserdata|nil", "description": "Raw SpacialCell** pointer." }
+      ]
+    },
+    {
+      "name": "rendHit",
+      "fields": [
+        { "name": "data", "type": "integer" },
+        { "name": "hit", "type": "table", "description": "Ogre::Vector3 encoded as { x, y, z } or positional indices." }
+      ]
+    },
+    {
+      "name": "RobotLimbItem",
+      "parent": "Item",
+      "fields": []
+    },
+    {
+      "name": "CPerfTimer",
+      "operators": [
+        "add(any): CPerfTimer",
+        "sub(any): CPerfTimer"
+      ],
+      "fields": [
+        { "name": "operator_assign", "type": "fun(self: CPerfTimer, other: CPerfTimer): CPerfTimer" },
+        { "name": "operator_add", "type": "fun(self: CPerfTimer, other: CPerfTimer|number): CPerfTimer" },
+        { "name": "operator_sub", "type": "fun(self: CPerfTimer, other: CPerfTimer|number): CPerfTimer" },
+        { "name": "operator_add_assign", "type": "fun(self: CPerfTimer, other: CPerfTimer|number): CPerfTimer" },
+        { "name": "operator_sub_assign", "type": "fun(self: CPerfTimer, other: CPerfTimer|number): CPerfTimer" },
+        { "name": "operator_lt", "type": "fun(self: CPerfTimer, other: CPerfTimer|number): boolean" },
+        { "name": "operator_le", "type": "fun(self: CPerfTimer, other: CPerfTimer|number): boolean" },
+        { "name": "operator_gt", "type": "fun(self: CPerfTimer, other: CPerfTimer|number): boolean" },
+        { "name": "operator_ge", "type": "fun(self: CPerfTimer, other: CPerfTimer|number): boolean" },
+        { "name": "Start", "type": "fun(self: CPerfTimer, reset?: boolean)" },
+        { "name": "Stop", "type": "fun(self: CPerfTimer)" },
+        { "name": "IsRunning", "type": "fun(self: CPerfTimer): boolean" },
+        { "name": "IsSupported", "type": "fun(self: CPerfTimer): boolean" },
+        { "name": "Resolution", "type": "fun(self: CPerfTimer): number" },
+        { "name": "Resolutionms", "type": "fun(self: CPerfTimer): number" },
+        { "name": "Resolutionus", "type": "fun(self: CPerfTimer): number" },
+        { "name": "Elapsed", "type": "fun(self: CPerfTimer): number" },
+        { "name": "Elapsedms", "type": "fun(self: CPerfTimer): number" },
+        { "name": "Elapsedus", "type": "fun(self: CPerfTimer): number" }
+      ]
+    },
+    {
+      "name": "CPerfTimerT",
+      "parent": "CPerfTimer",
+      "fields": []
+    },
+    {
+      "name": "FlagCondition",
+      "fields": [
+        { "name": "key", "type": "integer", "description": "DialogConditionEnum value." },
+        { "name": "want", "type": "boolean" },
+        { "name": "flags", "type": "integer" }
+      ]
+    },
+    {
+      "name": "DialogState",
+      "fields": [
+        { "name": "count", "type": "integer" },
+        { "name": "lastTimeStamp", "type": "number" },
+        { "name": "resetTime", "type": "number" }
+      ]
+    },
+    {
+      "name": "MessageForB",
+      "fields": [
+        { "name": "messageType", "type": "integer" },
+        { "name": "messageInt", "type": "integer" }
+      ]
+    },
+    {
+      "name": "MessageForBStatic",
+      "fields": [
+        { "name": "new", "type": "fun(messageType?: integer, messageInt?: integer): MessageForB" }
+      ]
+    },
+    {
+      "name": "FactionListWindow",
+      "parent": "GamedataSelectionList",
+      "fields": [
+        { "name": "itemSelected", "type": "fun(self: FactionListWindow, item: GameData)" },
+        { "name": "_NV_itemSelected", "type": "fun(self: FactionListWindow, item: GameData)" }
+      ]
+    },
+    {
+      "name": "ItemListWindow",
+      "parent": "GamedataSelectionList",
+      "fields": [
+        { "name": "itemSelected", "type": "fun(self: ItemListWindow, item: GameData)" },
+        { "name": "_NV_itemSelected", "type": "fun(self: ItemListWindow, item: GameData)" }
+      ]
+    },
+    {
+      "name": "NpcListWindow",
+      "parent": "GamedataSelectionList",
+      "fields": [
+        { "name": "itemSelected", "type": "fun(self: NpcListWindow, item: GameData)" },
+        { "name": "_NV_itemSelected", "type": "fun(self: NpcListWindow, item: GameData)" }
+      ]
+    },
+    {
+      "name": "TownListWindow",
+      "parent": "NpcListWindow",
+      "fields": [
+        { "name": "formatItem", "type": "fun(self: TownListWindow, item: GameData): string" },
+        { "name": "_NV_formatItem", "type": "fun(self: TownListWindow, item: GameData): string" }
+      ]
+    },
+    {
+      "name": "GamedataSelectionList",
+      "fields": [],
+      "description": "Forward declaration for the level-editor list base; its members are documented separately."
+    },
+    {
+      "name": "hkMemoryAllocator",
+      "fields": [],
+      "description": "Forward declaration for Havok allocator inheritance; its members are documented separately."
+    },
+    {
+      "name": "hkContainerHeapAllocator_Allocator",
+      "parent": "hkMemoryAllocator",
+      "fields": []
+    },
+    {
+      "name": "ResourceLinePanel",
+      "parent": "BaseLayout",
+      "fields": [
+        { "name": "getWidget", "type": "fun(self: ResourceLinePanel): MyGUI.Widget|nil" },
+        { "name": "button", "type": "MyGUI.Widget|nil" }
+      ]
+    },
+    {
+      "name": "ResourceLoadRequestMesh",
+      "fields": [
+        { "name": "finish", "type": "fun(self: ResourceLoadRequestMesh)" },
+        { "name": "entity", "type": "lightuserdata|nil", "description": "Raw Ogre::Entity pointer." }
+      ]
+    },
+    {
+      "name": "ResourceLoadRequestTexture",
+      "fields": [
+        { "name": "isMaterialValid", "type": "fun(self: ResourceLoadRequestTexture): boolean" },
+        { "name": "textureUnitState", "type": "lightuserdata|nil", "description": "Raw Ogre::TextureUnitState pointer." }
+      ]
+    },
+    {
+      "name": "Box",
+      "parent": "BaseLayout",
+      "fields": [
+        { "name": "buttonClick", "type": "fun(self: Box, sender?: MyGUI.Widget)" },
+        { "name": "modal", "type": "boolean" },
+        { "name": "callback", "type": "lightuserdata|nil", "description": "Raw MyGUI delegate pointer." }
+      ]
+    },
+    {
+      "name": "TextureLoadData",
+      "fields": [],
+      "description": "Forward declaration for texture-load inheritance; its members are documented separately."
+    },
+    {
+      "name": "TextureArrayLoadData",
+      "parent": "TextureLoadData",
+      "fields": [
+        { "name": "loadImage", "type": "fun(self: TextureArrayLoadData)" },
+        { "name": "_NV_loadImage", "type": "fun(self: TextureArrayLoadData)" }
+      ]
+    },
+    { "name": "Character_CarryMsg", "fields": [ { "name": "on", "type": "boolean" }, { "name": "rag", "type": "boolean" }, { "name": "hull", "type": "boolean" } ] },
+    { "name": "Character_RagdollMsg", "fields": [ { "name": "operator_eq", "type": "fun(self: Character_RagdollMsg, other: Character_RagdollMsg): boolean" }, { "name": "on", "type": "boolean" }, { "name": "part", "type": "integer" } ] },
+    { "name": "TaskStateData", "fields": [ { "name": "key", "type": "integer" }, { "name": "progressionOnly", "type": "boolean" }, { "name": "val", "type": "boolean" } ] },
+    { "name": "Spot", "fields": [ { "name": "timeSoFar", "type": "number" }, { "name": "timeLimitMax", "type": "number" }, { "name": "stillSeen", "type": "boolean" } ] }
+    ,{ "name": "MeshLoadData", "fields": [ { "name": "skeletonName", "type": "string" }, { "name": "materialName", "type": "string" }, { "name": "renderQueue", "type": "integer" } ] }
+    ,{ "name": "ParticlePool_ParticleData", "fields": [ { "name": "particle", "type": "lightuserdata|nil" }, { "name": "effectData", "type": "GameData|nil" }, { "name": "node", "type": "lightuserdata|nil" } ] }
+    ,{ "name": "GameDataEditorWindow_DataItem", "fields": [ { "name": "name", "type": "string" }, { "name": "edit", "type": "lightuserdata|nil", "description": "Raw MyGUI::EditBox pointer." }, { "name": "label", "type": "lightuserdata|nil", "description": "Raw MyGUI::TextBox pointer." } ] }
+    ,{ "name": "WhoSeesMe", "fields": [ { "name": "lastUpdated", "type": "number" }, { "name": "seeState", "type": "YesNoMaybeValue" }, { "name": "progressOfMaybe", "type": "number" } ] }
+    ,{ "name": "BuildingCategory", "fields": [ { "name": "operator_lt", "type": "fun(self: BuildingCategory, other: BuildingCategory): boolean" }, { "name": "operator_assign", "type": "fun(self: BuildingCategory, other: BuildingCategory): BuildingCategory" }, { "name": "name", "type": "string" } ] }
+    ,{ "name": "BuildingGroup", "fields": [ { "name": "operator_lt", "type": "fun(self: BuildingGroup, other: BuildingGroup): boolean" }, { "name": "operator_assign", "type": "fun(self: BuildingGroup, other: BuildingGroup): BuildingGroup" }, { "name": "name", "type": "string" } ] }
+    ,{ "name": "hkResult", "fields": [ { "name": "operator_eq", "type": "fun(self: hkResult, other: hkResult|integer): boolean" }, { "name": "operator_ne", "type": "fun(self: hkResult, other: hkResult|integer): boolean" }, { "name": "m_enum", "type": "integer" } ] }
+    ,{ "name": "SimpleTimeStamper", "fields": [ { "name": "getTime", "type": "fun(self: SimpleTimeStamper, lastStamp: number): number" }, { "name": "stampTime", "type": "fun(self: SimpleTimeStamper): number" }, { "name": "timer", "type": "CPerfTimer" } ] }
+    ,{ "name": "SquadListWindow", "parent": "GamedataSelectionList", "fields": [ { "name": "refresh", "type": "fun(self: SquadListWindow, faction: GameData)" }, { "name": "itemSelected", "type": "fun(self: SquadListWindow, item: GameData)" }, { "name": "_NV_itemSelected", "type": "fun(self: SquadListWindow, item: GameData)" } ] }
+    ,{ "name": "SquadItemBox", "fields": [ { "name": "setCellSize", "type": "fun(self: SquadItemBox, width: integer, height: integer)" }, { "name": "getItemCount", "type": "fun(self: SquadItemBox): integer" } ] }
+    ,{ "name": "SquadData", "fields": [ { "name": "setName", "type": "fun(self: SquadData, name: string)" }, { "name": "getName", "type": "fun(self: SquadData): string" }, { "name": "platoon", "type": "ActivePlatoon|nil" } ] }
+    ,{ "name": "MessageBoxManager", "fields": [] }
+    ,{ "name": "MessageBoxManagerStatic", "fields": [ { "name": "hideMessageBox", "type": "fun(enter: boolean): boolean" }, { "name": "hasModalMessage", "type": "fun(): boolean" }, { "name": "removeMessageBox", "type": "fun(box: Box, button: integer)" } ] }
+    ,{ "name": "PortraitImage", "fields": [ { "name": "updateImageWidget", "type": "fun(self: PortraitImage, image: MyGUI.ImageBox, value: boolean)" }, { "name": "index", "type": "integer" }, { "name": "created", "type": "boolean" }, { "name": "textureName", "type": "string" } ] }
+    ,{ "name": "MapMarkerCharacter", "fields": [ { "name": "setVisible", "type": "fun(self: MapMarkerCharacter, value: boolean)" }, { "name": "getVisible", "type": "fun(self: MapMarkerCharacter): boolean" }, { "name": "handle", "type": "hand" }, { "name": "image", "type": "lightuserdata|nil" } ] }
+    ,{ "name": "DataPanelLine_Text", "parent": "DataPanelLine", "fields": [ { "name": "createMe", "type": "fun(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)" }, { "name": "_NV_createMe", "type": "fun(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)" }, { "name": "editBox", "type": "lightuserdata|nil" }, { "name": "wordWrap", "type": "boolean" } ] }
+    ,{ "name": "RepetitionCounter", "fields": [ { "name": "setup", "type": "fun(self: RepetitionCounter)" }, { "name": "count", "type": "fun(self: RepetitionCounter, event: integer): boolean" }, { "name": "getTimeSinceLastTrigger", "type": "fun(self: RepetitionCounter, event: integer): number" }, { "name": "getCount", "type": "fun(self: RepetitionCounter, event: integer): integer" } ] }
+    ,{ "name": "ShopTraderInventorySection", "parent": "InventorySection", "fields": [ { "name": "autoArrange", "type": "fun(self: ShopTraderInventorySection)" }, { "name": "_NV_autoArrange", "type": "fun(self: ShopTraderInventorySection)" }, { "name": "addItem", "type": "fun(self: ShopTraderInventorySection, item: Item, quantity: integer): boolean" }, { "name": "_NV_addItem", "type": "fun(self: ShopTraderInventorySection, item: Item, quantity: integer): boolean" } ] }
+    ,{ "name": "Terrain_BloodQueue", "fields": [ { "name": "patch", "type": "integer" }, { "name": "sector", "type": "integer" }, { "name": "depth", "type": "integer" }, { "name": "texture", "type": "lightuserdata", "description": "Address of the unbound Ogre texture shared pointer; writes always raise an error." } ] }
+    ,{ "name": "TripleInt", "fields": [ { "name": "operator_assign", "type": "fun(self: TripleInt, other: TripleInt|table): TripleInt" }, { "name": "operator_subscript", "type": "fun(self: TripleInt, index: integer, value?: integer): integer|nil" }, { "name": "operator_index", "type": "fun(self: TripleInt, index: integer, value?: integer): integer|nil" }, { "name": "value", "type": "table" } ] }
+    ,{ "name": "hkBool", "fields": [ { "name": "operator_bool", "type": "fun(self: hkBool): boolean" }, { "name": "operator_eq", "type": "fun(self: hkBool, other: hkBool|boolean): boolean" }, { "name": "operator_ne", "type": "fun(self: hkBool, other: hkBool|boolean): boolean" }, { "name": "m_bool", "type": "integer" } ] }
+    ,{ "name": "TradeResult", "fields": [ { "name": "operator_eq", "type": "fun(self: TradeResult, other: TradeResult): boolean" }, { "name": "showMessage", "type": "fun(self: TradeResult)" }, { "name": "value", "type": "integer" } ] }
+    ,{ "name": "TradeResultStatic", "fields": [ { "name": "ShowMessage", "type": "fun(value: integer)" } ] }
+    ,{ "name": "AppearanceBase", "fields": [], "description": "Forward declaration for appearance inheritance; its members are documented separately." }
+    ,{ "name": "AppearanceAnimal", "parent": "AppearanceBase", "fields": [ { "name": "createBody", "type": "fun(self: AppearanceAnimal)" }, { "name": "_NV_createBody", "type": "fun(self: AppearanceAnimal)" }, { "name": "updateCharaterTexture", "type": "fun(self: AppearanceAnimal)" }, { "name": "_NV_updateCharaterTexture", "type": "fun(self: AppearanceAnimal)" } ] },
+    {
+      "name": "Character",
+      "parent": "RootObject",
+      "inventory_fields": "Character",
+      "description": "Character binding. Registered members are exposed from the source binding inventory; signatures not yet source-audited remain explicitly broad.",
+      "fields": [
+        { "name": "handle", "type": "hand" },
+        { "name": "getBody", "type": "fun(self: Character): CharBody|nil" },
+        { "name": "getStats", "type": "fun(self: Character): CharStats|nil" },
+        { "name": "takeMoney", "type": "fun(self: Character, amount: integer): boolean" },
+        { "name": "say", "type": "fun(self: Character, text: string)" },
+        { "name": "rememberCharacter", "type": "fun(self: Character, who: Character, tag: integer|string, isLongTerm: boolean)" },
+        { "name": "getProneState", "type": "fun(self: Character): ProneState" },
+        { "name": "setProneState", "type": "fun(self: Character, state: ProneState)" },
+        { "name": "setFaction", "type": "fun(self: Character, faction: Faction, platoon: ActivePlatoon)" },
+        { "name": "getName", "type": "fun(self: Character): string" }
+      ]
+    },
+    {
+      "name": "Building",
+      "parent": "RootObject",
+      "inventory_fields": "Building",
+      "description": "Building binding. Registered members are exposed from the source binding inventory; signatures not yet source-audited remain explicitly broad.",
+      "fields": []
+    },
+    {
+      "name": "TownBase",
+      "parent": "RootObject",
+      "inventory_fields": "TownBase",
+      "description": "Town-base binding. Registered members are exposed from the source binding inventory; signatures not yet source-audited remain explicitly broad.",
+      "fields": []
+    },
+    {
+      "name": "CharStats",
+      "inventory_fields": "CharStats",
+      "description": "Character-statistics binding. Registered members are exposed from the source binding inventory; signatures not yet source-audited remain explicitly broad.",
+      "fields": [
+        { "name": "getThieving", "type": "fun(self: CharStats): number" },
+        { "name": "getDexterity", "type": "fun(self: CharStats): number" },
+        { "name": "getPerception", "type": "fun(self: CharStats): number" }
+      ]
+    },
+    { "name": "GameDataEditorWindow", "fields": [ { "name": "_NV_show", "type": "fun(self: GameDataEditorWindow, on: boolean)" }, { "name": "initDataValues", "type": "fun(self: GameDataEditorWindow)" }, { "name": "win", "type": "DatapanelGUI|nil" }, { "name": "data", "type": "GameData|nil" } ] },
+    { "name": "PortraitSquadItemBox", "fields": [ { "name": "getItemCount", "type": "fun(self: PortraitSquadItemBox): integer" }, { "name": "update", "type": "fun(self: PortraitSquadItemBox)" }, { "name": "squad", "type": "lightuserdata|nil" }, { "name": "squadView", "type": "lightuserdata|nil" } ] }
+  ],
+  "globals": [
+    { "name": "KenshiLua", "type": "KenshiLua.Api", "initialValue": "{}" },
+    { "name": "Events", "type": "KenshiLua.Events", "initialValue": "{}" },
+    { "name": "MyGUI", "type": "MyGUI.Api", "initialValue": "{}", "description": "Global MyGUI factory and utility table. Widgets returned from its factories are engine-owned." },
+    { "name": "Gui", "type": "MyGUI.GuiStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI Gui singleton." },
+    { "name": "InputManager", "type": "MyGUI.InputManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI input-manager singleton." },
+    { "name": "PointerManager", "type": "MyGUI.PointerManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI pointer-manager singleton." },
+    { "name": "ClipboardManager", "type": "MyGUI.ClipboardManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI clipboard-manager singleton." },
+    { "name": "LayoutManager", "type": "MyGUI.LayoutManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI layout-manager singleton." },
+    { "name": "RenderManager", "type": "MyGUI.RenderManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI render-manager singleton." },
+    { "name": "SkinManager", "type": "MyGUI.SkinManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI skin-manager singleton." },
+    { "name": "IntPoint", "type": "MyGUI.IntPointConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.IntPoint." },
+    { "name": "IntSize", "type": "MyGUI.IntSizeConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.IntSize." },
+    { "name": "IntCoord", "type": "MyGUI.IntCoordConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.IntCoord." },
+    { "name": "IntRect", "type": "MyGUI.IntRectConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.IntRect." },
+    { "name": "FloatPoint", "type": "MyGUI.FloatPointConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.FloatPoint." },
+    { "name": "FloatSize", "type": "MyGUI.FloatSizeConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.FloatSize." },
+    { "name": "FloatCoord", "type": "MyGUI.FloatCoordConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.FloatCoord." },
+    { "name": "FloatRect", "type": "MyGUI.FloatRectConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.FloatRect." },
+    { "name": "Colour", "type": "MyGUI.ColourConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.Colour." },
+    { "name": "currentDialogue", "type": "Dialogue|nil", "initialValue": "nil", "description": "Injected only during synchronous dialogue-script execution; the wrapped object is borrowed." },
+    { "name": "currentDialogueLine", "type": "DialogLineData|nil", "initialValue": "nil", "description": "Injected only during synchronous dialogue-script execution; the wrapped object is borrowed." },
+    { "name": "ou", "type": "GameWorld|nil", "initialValue": "nil", "description": "Conditional game-world alias registered at Lua startup. Prefer getGameWorld()." },
+    { "name": "player", "type": "PlayerInterface|nil", "initialValue": "nil", "description": "Conditional player-interface alias registered at Lua startup. Prefer getPlayerInterface()." },
+    { "name": "key", "type": "InputHandler|nil", "initialValue": "nil", "description": "Conditional input-handler alias registered at Lua startup. Prefer getInputHandler()." },
+    { "name": "root", "type": "RootObjectFactory|nil", "initialValue": "nil", "description": "Conditional root-object-factory alias registered at Lua startup. Prefer getRootObjectFactory()." },
+    { "name": "con", "type": "GlobalConstants|nil", "initialValue": "nil", "description": "Conditional constants alias registered at Lua startup. Prefer getGlobalConstants()." },
+    { "name": "options", "type": "OptionsHolder|nil", "initialValue": "nil", "description": "Conditional options alias registered at Lua startup. Prefer getOptionsHolder()." },
+    { "name": "gui", "type": "ForgottenGUI|nil", "initialValue": "nil", "description": "Conditional ForgottenGUI alias registered at Lua startup. Prefer getForgottenGUI()." },
+    { "name": "NxVec3", "type": "NxVec3Static", "initialValue": "{}" },
+    { "name": "NxMat33", "type": "NxMat33Static", "initialValue": "{}" },
+    { "name": "hkVector4f", "type": "hkVector4fStatic", "initialValue": "{}" },
+    { "name": "hkVector4fComparison", "type": "hkVector4fComparisonStatic", "initialValue": "{}" },
+    { "name": "HavokCharacter", "type": "HavokCharacterStatic", "initialValue": "{}" },
+    { "name": "InventoryLayout", "type": "InventoryLayoutStatic", "initialValue": "{}" },
+    { "name": "WorldEventStateQuery", "type": "WorldEventStateQueryStatic", "initialValue": "{}" },
+    { "name": "MessageForB", "type": "MessageForBStatic", "initialValue": "{}" },
+    { "name": "MessageBoxManager", "type": "MessageBoxManagerStatic", "initialValue": "{}" },
+    { "name": "TradeResult", "type": "TradeResultStatic", "initialValue": "{}" },
+    { "name": "Building", "type": "Building", "initialValue": "{}", "description": "Global Building binding table." },
+    { "name": "TownBase", "type": "TownBase", "initialValue": "{}", "description": "Global TownBase binding table." },
+    { "name": "CharStats", "type": "CharStats", "initialValue": "{}", "description": "Global CharStats binding table." }
+  ],
+  "functions": [
+    {
+      "name": "registerHandler",
+      "params": [
+        { "name": "eventName", "type": "KenshiLua.EventName|string" },
+        { "name": "handler", "type": "KenshiLua.EventHandler" }
+      ],
+      "returns": [ { "type": "integer", "name": "handlerId" } ]
+    },
+    {
+      "name": "unregisterHandler",
+      "params": [ { "name": "handlerId", "type": "integer" } ],
+      "returns": []
+    },
+    {
+      "name": "getGameWorld",
+      "params": [],
+      "returns": [ { "type": "GameWorld|nil" } ]
+    },
+    {
+      "name": "getPlayerInterface",
+      "params": [],
+      "returns": [ { "type": "PlayerInterface|nil" } ]
+    },
+    {
+      "name": "getInputHandler",
+      "params": [],
+      "returns": [ { "type": "InputHandler|nil" } ]
+    },
+    {
+      "name": "getSelectedCharacter",
+      "params": [],
+      "returns": [ { "type": "Character|nil" } ]
+    },
+    {
+      "name": "getRootObjectFactory",
+      "params": [],
+      "returns": [ { "type": "RootObjectFactory|nil" } ]
+    },
+    {
+      "name": "getGlobalConstants",
+      "params": [],
+      "returns": [ { "type": "GlobalConstants|nil" } ]
+    },
+    {
+      "name": "getOptionsHolder",
+      "params": [],
+      "returns": [ { "type": "OptionsHolder|nil" } ]
+    },
+    {
+      "name": "getForgottenGUI",
+      "params": [],
+      "returns": [ { "type": "ForgottenGUI|nil" } ]
+    },
+    {
+      "name": "print",
+      "description": "Prints values through the KenshiLua logger and GUI console/editor.",
+      "params": [ { "name": "...", "type": "any" } ],
+      "returns": []
+    },
+    {
+      "name": "pcall",
+      "description": "Calls function or callable table f with the given arguments in protected mode (LuaJIT).",
+      "overloads": [
+        "fun(callable: any, ...: any): boolean, any"
+      ],
+      "params": [
+        { "name": "f", "type": "fun(...: any): ...any" },
+        { "name": "...", "type": "any" }
+      ],
+      "returns": [
+        { "type": "boolean" },
+        { "type": "any" }
+      ]
+    }
+  ]
+}

@@ -55,6 +55,6 @@ handlerId = Events.on("GameWorld::charsUpdate", function()
     else
         -- Caught: NPC shouts catchphrase, marks player as thief.
         npc:say("I dont play with cheats!")
-        npc:rememberCharacter(playerChar, CharacterPerceptionTags_LongTerm.LT_STOLE_FROM_ME)
+        npc:rememberCharacter(playerChar, CharacterPerceptionTags_LongTerm.LT_STOLE_FROM_ME, true)
     end
 end)

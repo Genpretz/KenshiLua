@@ -27,6 +27,14 @@ local function recruitSelectedNPC()
         return
     end
 
+    local targetBody = targetChar:getBody()
+    if not targetBody then
+        KenshiLua.logWarn("[RecruitNPC] Selected character's body is not available.")
+        return
+    end
+
+    local targetFaction = targetBody:getFaction()
+
     -- 4. Get player's faction and active squad (ActivePlatoon)
     local playerFaction = playerObj.participant
     local activeSquad = nil
@@ -40,9 +48,12 @@ local function recruitSelectedNPC()
     end
 
     -- 5. Check if character is already in the player faction
-    if targetChar:getFaction() == playerFaction then
+    if targetFaction == playerFaction then
         KenshiLua.log("[RecruitNPC] " .. tostring(targetChar:getName()) .. " is already in your faction.")
         return
+    end
+    if targetFaction then
+        KenshiLua.log("[RecruitNPC] " .. tostring(targetChar:getName()) .. " is currently in another faction.")
     end
 
     -- 6. Transfer the character into the player's faction and active squad

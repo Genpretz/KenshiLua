@@ -1,0 +1,25 @@
+{
+  "description": "Members whose binding is broken in C++, so no correct Lua type exists until the binding is fixed. The type audit reports them as known_binding_bug instead of blocking. Entries name a class, or a container metatable since container classes are generic instantiations. Remove an entry once its binding is fixed.",
+  "members": [
+    {
+      "metatable": "std::deque<CraftingItem>",
+      "member": "*",
+      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
+    },
+    {
+      "class": "GameData",
+      "member": "storeHandleList",
+      "reason": "Reads LektorPtrBinding<hand>::get(L, 2), but only LektorValueReadOnlyBinding<hand> is registered, so its metatable name is null."
+    },
+    {
+      "class": "ToolTip",
+      "member": "setup_stringpairs",
+      "reason": "Checks argument 3 against LektorValueBinding<StringPair>::metaName, but lektor<StringPair> is never registered, so the metatable name is null."
+    },
+    {
+      "class": "UseableStuff",
+      "member": "occupantSelection",
+      "reason": "The getter pushes the C++ bool through HandBinding::push while the setter reads a boolean."
+    }
+  ]
+}

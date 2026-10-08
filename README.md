@@ -32,6 +32,7 @@ A large amount of KenshiLib has been exposed for use from Lua. This includes alm
 * [EnumsReference.md](docs/EnumsReference.md) - View for a list of enums available from Lua.
 * [CallbacksReference.md](docs/CallbacksReference.md) - View for a list of event callbacks available from Lua.
 * [MyGuiReference.md](docs/MyGuiReference.md) - View for a list of MyGUI methods and properties available from Lua.
+* [LuaLS.md](docs/LuaLS.md) - Configure Lua Language Server editor support for KenshiLua scripts.
 * [UnboundReference.md](docs/UnboundReference.md) - View for a list of methods and properties that exist in KenshiLib 0.3.0 but are not currently exposed to Lua.
 
 KenshiLib is a large and complex codebase, and while KenshiLua exposes a large portion of it, there are still many methods and properties that are not yet exposed to Lua. If you find that a method or property you need is not available, please open an issue on the KenshiLua GitHub repository.

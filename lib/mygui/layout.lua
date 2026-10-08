@@ -27,7 +27,8 @@ local function mergeOptions(defaults, opts)
     return res
 end
 
-local function resolveDefaultSkin(widgetType, customSkin)
+local function resolveDefaultSkin(widgetType, ...)
+    local customSkin = ...
     if customSkin and customSkin ~= "" then
         return customSkin
     end
@@ -35,6 +36,23 @@ local function resolveDefaultSkin(widgetType, customSkin)
 end
 
 Layout.resolveDefaultSkin = resolveDefaultSkin
+
+--- Creates a child widget or reports the same failure that the following
+--- widget operation would otherwise encounter. MyGUI factories may return nil.
+--- @param parent MyGUI.Widget
+--- @param widgetType string
+--- @param skin string
+--- @param x integer
+--- @param y integer
+--- @param width integer
+--- @param height integer
+--- @param align integer
+--- @return MyGUI.Widget
+local function createWidget(parent, widgetType, skin, x, y, width, height, align)
+    local widget = parent:createWidget(widgetType, skin, x, y, width, height, align)
+    assert(widget, "MyGUI failed to create a " .. widgetType .. " widget")
+    return widget
+end
 
 -- ============================================================================
 -- VBox (Vertical Stacking Box)
@@ -53,7 +71,7 @@ local VBOX_DEFAULTS = {
 }
 
 --- Creates a new VBox vertical layout manager inside a parent widget.
---- @param parent userdata MyGUI.Widget parent
+--- @param parent MyGUI.Widget parent
 --- @param options table Optional configuration table
 function Layout.createVBox(parent, options)
     local self = setmetatable({}, VBox)
@@ -67,10 +85,10 @@ function Layout.createVBox(parent, options)
 end
 
 --- Adds an existing widget to the vertical stack, advancing the vertical cursor.
---- @param widget userdata MyGUI.Widget
+--- @param widget MyGUI.Widget
 --- @param width number Optional custom width
 --- @param height number Optional custom height
---- @return userdata The added widget
+--- @return MyGUI.Widget|nil The added widget, or nil when widget is nil
 function VBox:addWidget(widget, width, height)
     if not widget then return nil end
     local w = width or (widget.getSize and select(1, widget:getSize())) or self.opts.defaultWidth
@@ -103,12 +121,12 @@ end
 --- @param width number Optional custom width
 --- @param height number Optional custom height
 --- @param skin string Optional skin (defaults to "TextBox")
---- @return userdata The created TextBox widget
+--- @return MyGUI.Widget The created TextBox widget
 function VBox:addLabel(text, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or 20
     local s = resolveDefaultSkin("TextBox", skin)
-    local label = self.parent:createWidget("TextBox", s, self.curX, self.curY, w, h, self.opts.align)
+    local label = createWidget(self.parent, "TextBox", s, self.curX, self.curY, w, h, self.opts.align)
     label:setCaption(text or "")
     self.curY = self.curY + h + self.opts.spacing
     if w > self.maxWidth then self.maxWidth = w end
@@ -122,12 +140,12 @@ end
 --- @param width number Optional custom width
 --- @param height number Optional custom height
 --- @param skin string Optional skin (defaults to "Button")
---- @return userdata The created Button widget
+--- @return MyGUI.Widget The created Button widget
 function VBox:addButton(caption, onClick, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or self.opts.defaultHeight
     local s = resolveDefaultSkin("Button", skin)
-    local btn = self.parent:createWidget("Button", s, self.curX, self.curY, w, h, self.opts.align)
+    local btn = createWidget(self.parent, "Button", s, self.curX, self.curY, w, h, self.opts.align)
     btn:setCaption(caption or "")
     if onClick and type(onClick) == "function" then
         btn:on("eventMouseButtonClick", onClick)
@@ -144,12 +162,12 @@ end
 --- @param width number Optional custom width
 --- @param height number Optional custom height
 --- @param skin string Optional skin (defaults to "EditBox")
---- @return userdata The created EditBox widget
+--- @return MyGUI.Widget The created EditBox widget
 function VBox:addEditBox(defaultText, onChange, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or self.opts.defaultHeight
     local s = resolveDefaultSkin("EditBox", skin)
-    local edit = self.parent:createWidget("EditBox", s, self.curX, self.curY, w, h, self.opts.align)
+    local edit = createWidget(self.parent, "EditBox", s, self.curX, self.curY, w, h, self.opts.align)
     edit:setCaption(defaultText or "")
     if onChange and type(onChange) == "function" then
         edit:on("eventEditTextChange", onChange)
@@ -166,12 +184,13 @@ end
 --- @param width number Optional custom width
 --- @param height number Optional custom height
 --- @param skin string Optional skin (defaults to "ComboBox")
---- @return userdata The created ComboBox widget
+--- @return MyGUI.Widget The created ComboBox widget
 function VBox:addComboBox(items, onSelect, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or self.opts.defaultHeight
     local s = resolveDefaultSkin("ComboBox", skin)
-    local combo = self.parent:createWidget("ComboBox", s, self.curX, self.curY, w, h, self.opts.align)
+    local combo = createWidget(self.parent, "ComboBox", s, self.curX, self.curY, w, h, self.opts.align)
+    --- @cast combo MyGUI.ComboBox
     if items and type(items) == "table" then
         for _, item in ipairs(items) do
             combo:addItem(tostring(item))
@@ -191,7 +210,7 @@ end
 
 --- Creates a horizontal pair row (e.g. Label + EditBox/Value) inside the VBox.
 --- @param labelText string Label text on the left
---- @param rightContent string|userdata Text string or Widget on the right
+--- @param rightContent string|MyGUI.Widget Text string or Widget on the right
 --- @param labelWidth number Optional width of the label column (defaults to 70)
 --- @param totalWidth number Optional total row width
 --- @param rowHeight number Optional row height (defaults to 22)
@@ -203,12 +222,12 @@ function VBox:addRow(labelText, rightContent, labelWidth, totalWidth, rowHeight)
     local rw = math.max(20, tw - lw - self.opts.spacing)
 
     local s = resolveDefaultSkin("TextBox")
-    local lbl = self.parent:createWidget("TextBox", s, self.curX, self.curY, lw, rh, self.opts.align)
+    local lbl = createWidget(self.parent, "TextBox", s, self.curX, self.curY, lw, rh, self.opts.align)
     lbl:setCaption(labelText or "")
 
     local rightWidget = nil
     if type(rightContent) == "string" then
-        rightWidget = self.parent:createWidget("TextBox", s, self.curX + lw + self.opts.spacing, self.curY, rw, rh, self.opts.align)
+        rightWidget = createWidget(self.parent, "TextBox", s, self.curX + lw + self.opts.spacing, self.curY, rw, rh, self.opts.align)
         rightWidget:setCaption(rightContent)
     elseif rightContent then
         rightWidget = rightContent
@@ -280,7 +299,7 @@ local HBOX_DEFAULTS = {
 }
 
 --- Creates a new HBox horizontal layout manager inside a parent widget.
---- @param parent userdata MyGUI.Widget parent
+--- @param parent MyGUI.Widget parent
 --- @param options table Optional configuration table
 function Layout.createHBox(parent, options)
     local self = setmetatable({}, HBox)
@@ -294,10 +313,10 @@ function Layout.createHBox(parent, options)
 end
 
 --- Adds an existing widget to the horizontal stack, advancing the horizontal cursor.
---- @param widget userdata MyGUI.Widget
+--- @param widget MyGUI.Widget
 --- @param width number Optional custom width
 --- @param height number Optional custom height
---- @return userdata The added widget
+--- @return MyGUI.Widget|nil The added widget, or nil when widget is nil
 function HBox:addWidget(widget, width, height)
     if not widget then return nil end
     local w = width or (widget.getSize and select(1, widget:getSize())) or self.opts.defaultWidth
@@ -330,7 +349,7 @@ function HBox:addLabel(text, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or 20
     local s = resolveDefaultSkin("TextBox", skin)
-    local label = self.parent:createWidget("TextBox", s, self.curX, self.curY, w, h, self.opts.align)
+    local label = createWidget(self.parent, "TextBox", s, self.curX, self.curY, w, h, self.opts.align)
     label:setCaption(text or "")
     self.curX = self.curX + w + self.opts.spacing
     if h > self.maxHeight then self.maxHeight = h end
@@ -343,7 +362,7 @@ function HBox:addButton(caption, onClick, width, height, skin)
     local w = width or self.opts.defaultWidth
     local h = height or self.opts.defaultHeight
     local s = resolveDefaultSkin("Button", skin)
-    local btn = self.parent:createWidget("Button", s, self.curX, self.curY, w, h, self.opts.align)
+    local btn = createWidget(self.parent, "Button", s, self.curX, self.curY, w, h, self.opts.align)
     btn:setCaption(caption or "")
     if onClick and type(onClick) == "function" then
         btn:on("eventMouseButtonClick", onClick)
@@ -390,7 +409,7 @@ local GRID_DEFAULTS = {
 }
 
 --- Creates a new Grid layout manager inside a parent widget.
---- @param parent userdata MyGUI.Widget parent
+--- @param parent MyGUI.Widget parent
 --- @param options table Optional grid configuration
 function Layout.createGrid(parent, options)
     local self = setmetatable({}, Grid)
@@ -403,9 +422,10 @@ function Layout.createGrid(parent, options)
 end
 
 --- Adds a widget at the current grid cell and advances to the next cell.
---- @param widget userdata MyGUI.Widget
---- @param colSpan number Number of columns to span (default 1)
---- @param rowSpan number Number of rows to span (default 1)
+--- @param widget MyGUI.Widget
+--- @param colSpan? number Number of columns to span (default 1)
+--- @param rowSpan? number Number of rows to span (default 1)
+--- @return MyGUI.Widget|nil The added widget, or nil when widget is nil
 function Grid:addWidget(widget, colSpan, rowSpan)
     if not widget then return nil end
     local cs = colSpan or 1
@@ -431,15 +451,15 @@ end
 
 --- Creates and adds a label + value/control pair to the grid row.
 --- @param labelText string Label text
---- @param rightItem string|userdata String or Widget for second column
+--- @param rightItem string|MyGUI.Widget String or Widget for second column
 function Grid:addRow(labelText, rightItem)
     local s = resolveDefaultSkin("TextBox")
-    local lbl = self.parent:createWidget("TextBox", s, 0, 0, self.opts.colWidth, self.opts.rowHeight, self.opts.align)
+    local lbl = createWidget(self.parent, "TextBox", s, 0, 0, self.opts.colWidth, self.opts.rowHeight, self.opts.align)
     lbl:setCaption(labelText or "")
     self:addWidget(lbl)
 
     if type(rightItem) == "string" then
-        local val = self.parent:createWidget("TextBox", s, 0, 0, self.opts.colWidth, self.opts.rowHeight, self.opts.align)
+        local val = createWidget(self.parent, "TextBox", s, 0, 0, self.opts.colWidth, self.opts.rowHeight, self.opts.align)
         val:setCaption(rightItem)
         self:addWidget(val)
     elseif rightItem then

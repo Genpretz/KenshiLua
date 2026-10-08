@@ -1,0 +1,10 @@
+{
+  "runtime.version": "LuaJIT",
+  "workspace.checkThirdParty": false,
+  "workspace.ignoreDir": [
+    "luals/addon"
+  ],
+  "workspace.library": [
+    "./luals/generated"
+  ]
+}

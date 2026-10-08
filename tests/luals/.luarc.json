@@ -1,0 +1,6 @@
+{
+  "runtime.version": "LuaJIT",
+  "workspace.library": [
+    "../../luals/addon/kenshilua/library"
+  ]
+}

@@ -1,0 +1,73 @@
+name: LuaLS
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+env:
+  LUALS_VERSION: "3.19.1"
+  LUALS_SHA256: "e9235d2d72ef55bc41cf8c99cda2ed64777682024b4bb81f5dea425060c5cbb8"
+
+jobs:
+  validate-luals:
+    name: Validate LuaLS addon
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository and KenshiLib
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pinned LuaLS
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          archive="${RUNNER_TEMP}/lua-language-server.tar.gz"
+          install_dir="${RUNNER_TEMP}/lua-language-server"
+          url="https://github.com/LuaLS/lua-language-server/releases/download/${LUALS_VERSION}/lua-language-server-${LUALS_VERSION}-linux-x64.tar.gz"
+
+          curl -fsSL "${url}" -o "${archive}"
+          echo "${LUALS_SHA256}  ${archive}" | sha256sum --check -
+
+          mkdir -p "${install_dir}"
+          tar -xzf "${archive}" -C "${install_dir}"
+          chmod +x "${install_dir}/bin/lua-language-server"
+
+          echo "LUA_LANGUAGE_SERVER=${install_dir}/bin/lua-language-server" >> "${GITHUB_ENV}"
+          "${install_dir}/bin/lua-language-server" --version
+
+      - name: Test LuaLS generators
+        run: python -m unittest discover -s tests/luals -p "test_*.py"
+
+      - name: Verify registered enum values
+        run: python tools/luals/extract_enum_values.py
+
+      - name: Verify generated definitions
+        run: python tools/luals/generate_definitions.py --check
+
+      - name: Verify binding inventory
+        run: python tools/luals/generate_binding_inventory.py --check
+
+      - name: Verify LuaLS coverage report
+        run: python tools/luals/generate_coverage_report.py --check --require-complete
+
+      - name: Verify LuaLS type audit
+        run: python tools/luals/generate_type_audit.py --check --require-correct
+
+      - name: Run focused LuaLS fixtures
+        run: python tools/luals/check_fixtures.py --luals "${LUA_LANGUAGE_SERVER}"
+
+      - name: Check the complete Lua workspace
+        run: python tools/luals/check_fixtures.py --workspace --luals "${LUA_LANGUAGE_SERVER}"

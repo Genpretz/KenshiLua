@@ -5,76 +5,92 @@
 -- Coordinates (0.30, 0.20, 0.30, 0.45) scale responsively across all screen resolutions (e.g. 1920x1080, 2560x1600)
 -- Create root window using skin-first MyGUI parameters (skin, x, y, width, height, name, layer)
 local mainWindow = MyGUI.createWindow("Kenshi_WindowCX", 0.30, 0.20, 0.30, 0.45, "ExampleWindow", "Window")
+if not mainWindow then
+    KenshiLua.logError("[MyGUI Example] Failed to create main window.")
+    return
+end
+
 mainWindow:setCaption("MyGUI Example Window")
 mainWindow:setMovable(true)
 mainWindow:upLayerItem() -- Bring to front of Window layer
 
 -- 2. Create a Button inside the Window (relative to mainWindow)
 -- Positioned at x=5%, y=10%, width=45%, height=8% of the parent window
--- Using mainWindow:createWidgetReal(type, skin, x, y, width, height, align, name)
-local myButton = mainWindow:createWidgetReal("Button", "Kenshi_Button1", 0.05, 0.10, 0.45, 0.08, 0, "ExampleButton")
-myButton:setCaption("Click Me!")
+local myButton = MyGUI.createButtonReal("Kenshi_Button1", 0.05, 0.10, 0.45, 0.08, mainWindow, "ExampleButton")
+if myButton then
+    myButton:setCaption("Click Me!")
 
--- Register a click callback
-myButton:on("eventMouseButtonClick", function(widget)
-    print("Button clicked!")
-    widget:setCaption("Clicked!")
-    -- Let's change the window caption too!
-    mainWindow:setCaption("You clicked the button!")
-end)
+    -- Register a click callback
+    myButton:on("eventMouseButtonClick", function(widget)
+        print("Button clicked!")
+        widget:setCaption("Clicked!")
+        -- Let's change the window caption too!
+        mainWindow:setCaption("You clicked the button!")
+    end)
+end
 
 -- 3. Create an EditBox (Text Input)
 -- Positioned at x=5%, y=22%, width=55%, height=8% of parent window
-local editBox = mainWindow:createWidgetReal("EditBox", "Kenshi_EditBox", 0.05, 0.22, 0.55, 0.08, 0, "ExampleEditBox")
-editBox:setCaption("Type something here...")
-editBox:setEditMultiLine(false)
+local editBox = MyGUI.createEditBoxReal("Kenshi_EditBox", 0.05, 0.22, 0.55, 0.08, mainWindow, "ExampleEditBox")
+if editBox then
+    editBox:setCaption("Type something here...")
+    editBox:setEditMultiLine(false)
 
--- Register text change callback
-editBox:on("eventEditTextChange", function(widget)
-    -- We can read what the user typed:
-    local currentText = widget:getCaption()
-    print("User typed: " .. currentText)
-end)
+    -- Register text change callback
+    editBox:on("eventEditTextChange", function(widget)
+        -- We can read what the user typed:
+        local currentText = widget:getCaption()
+        print("User typed: " .. currentText)
+    end)
+end
 
 -- 4. Create a ListBox
 -- Positioned at x=5%, y=34%, width=55%, height=38% of parent window
-local listBox = mainWindow:createWidgetReal("ListBox", "Kenshi_ListBox", 0.05, 0.34, 0.55, 0.38, 0, "ExampleListBox")
-listBox:addItem("First Item")
-listBox:addItem("Second Item")
-listBox:addItem("Third Item")
+local listBox = MyGUI.createListBoxReal("Kenshi_ListBox", 0.05, 0.34, 0.55, 0.38, mainWindow, "ExampleListBox")
+if listBox then
+    listBox:addItem("First Item")
+    listBox:addItem("Second Item")
+    listBox:addItem("Third Item")
 
--- Register selection callback:
--- Use "eventListChangePosition" for selection changes or "eventListSelectAccept" for double-click/Enter
-listBox:on("eventListChangePosition", function(widget, index)
-    if index ~= -1 then -- -1 means no selection
-        local selectedName = widget:getItemNameAt(index)
-        print("Selected item index " .. index .. ": " .. selectedName)
-        editBox:setCaption("Selected: " .. selectedName)
-    end
-end)
+    -- Register selection callback:
+    -- Use "eventListChangePosition" for selection changes or "eventListSelectAccept" for double-click/Enter
+    listBox:on("eventListChangePosition", function(widget, index)
+        if index ~= -1 then -- -1 means no selection
+            local selectedName = listBox:getItemNameAt(index)
+            print("Selected item index " .. index .. ": " .. selectedName)
+            if editBox then
+                editBox:setCaption("Selected: " .. selectedName)
+            end
+        end
+    end)
+end
 
 -- 5. Creating a generic TextBox (Label)
 -- Positioned at x=5%, y=76%, width=60%, height=6% of parent window
-local label = mainWindow:createWidgetReal("TextBox", "Kenshi_TextboxPaintedText", 0.05, 0.76, 0.60, 0.06, 0, "ExampleLabel")
-label:setCaption("This is a simple text label.")
--- We can set its text alignment or color using properties
-label:setProperty("TextAlign", "Left VCenter")
-label:setProperty("TextColour", "1 0 0") -- Red text
+local label = MyGUI.createTextBoxReal("Kenshi_TextboxPaintedText", 0.05, 0.76, 0.60, 0.06, mainWindow, "ExampleLabel")
+if label then
+    label:setCaption("This is a simple text label.")
+    -- We can set its text alignment or color using properties
+    label:setProperty("TextAlign", "Left VCenter")
+    label:setProperty("TextColour", "1 0 0") -- Red text
+end
 
 -- Finally, make sure the main window is visible
 mainWindow:setVisibleSmooth(true)
 
 -- Hook up the window frame close button ("x" icon in the upper-right of Kenshi_WindowCX)
-mainWindow:on("eventWindowButtonPressed", function(window, buttonName)
+mainWindow:on("eventWindowButtonPressed", function(_window, buttonName)
     print("Window button pressed: " .. tostring(buttonName))
     if buttonName == "close" then
-        window:destroySmooth()
+        mainWindow:destroySmooth()
     end
 end)
 
 -- We can also create an explicit close button inside the window body (x=68%, y=85%, width=27%, height=8%):
-local closeBtn = mainWindow:createWidgetReal("Button", "Kenshi_Button1", 0.68, 0.85, 0.27, 0.08, 0, "CloseButton")
-closeBtn:setCaption("Close")
-closeBtn:on("eventMouseButtonClick", function(widget)
-    mainWindow:destroySmooth()
-end)
+local closeBtn = MyGUI.createButtonReal("Kenshi_Button1", 0.68, 0.85, 0.27, 0.08, mainWindow, "CloseButton")
+if closeBtn then
+    closeBtn:setCaption("Close")
+    closeBtn:on("eventMouseButtonClick", function(widget)
+        mainWindow:destroySmooth()
+    end)
+end

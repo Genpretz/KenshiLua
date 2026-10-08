@@ -11,25 +11,34 @@ if not dialogue then
     return
 end
 
--- 2: Target specific named faction (uncomment below if targeting named faction instead)
-local gw = getGameWorld and getGameWorld() or GameWorld
+-- 2. Look up the two factions through the registered game-world accessor.
+local gw = getGameWorld()
 local factionMgr = gw and gw.factionMgr
-local targetFaction1 = factionMgr and factionMgr:getFactionByName("Starving Bandits")
-local targetFaction2 = factionMgr and factionMgr:getFactionByName("Dust Bandits")
+if not factionMgr then
+    KenshiLua.log("[DialogueAction] Error: faction manager not available.")
+    return
+end
+
+local targetFaction1 = factionMgr:getFactionByName("Starving Bandits")
+local targetFaction2 = factionMgr:getFactionByName("Dust Bandits")
 
 if not targetFaction1 then
-    KenshiLua.log("[DialogueAction] Error: Target faction '%s' not found.", targetFaction1:getName())
+    KenshiLua.log("[DialogueAction] Error: Target faction 'Starving Bandits' not found.")
     return
 end
 
 if not targetFaction2 then
-    KenshiLua.log("[DialogueAction] Error: Target faction '%s' not found.", targetFaction2:getName())
+    KenshiLua.log("[DialogueAction] Error: Target faction 'Dust Bandits' not found.")
     return
 end
 
 -- 3. Get relations for both target factions
 local relations1 = targetFaction1.relations
 local relations2 = targetFaction2.relations
+if not relations1 or not relations2 then
+    KenshiLua.log("[DialogueAction] Error: faction relations not available.")
+    return
+end
 
 -- 4. Check current relation level and set new relation value (-100 to 100)
 local currentRel1 = relations1:getFactionRelation(targetFaction2)
