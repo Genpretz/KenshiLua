@@ -212,7 +212,7 @@ int ToolTipBinding::setup_stringpairs(lua_State* L)
     ToolTip* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTip is nil");
     MyGUI::Widget* widget = checkObject<MyGUI::Widget>(L, 2, MyGUIBinding::getMetatableName());
-    lektor<StringPair>* lines = checkObject<lektor<StringPair>>(L, 3, LektorValueBinding<StringPair>::metaName);
+    lektor<StringPair>* lines = LektorValueBinding<StringPair>::get(L, 3);
     if (!lines) return luaL_error(L, "Argument 3 must be lektor<StringPair>");
     instance->setup(widget, *lines);
     return 0;

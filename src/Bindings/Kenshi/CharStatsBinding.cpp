@@ -3054,7 +3054,7 @@ int CharStatsBinding::getAthleticsTooltip(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharStats is nil");
-    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, LektorValueReadOnlyBinding<StringPair>::metaName);
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, LektorValueBinding<StringPair>::metaName);
     if (!dats) return luaL_error(L, "Expected lektor<StringPair>");
     instance->getAthleticsTooltip(dats);
     return 0;
@@ -3161,7 +3161,7 @@ int CharStatsBinding::getStatPenaltiesForGUI(lua_State* L)
     if (!instance) return luaL_error(L, "CharStats is nil");
     std::string statName = luaL_checkstring(L, 2);
     StatsEnumerated stat = (StatsEnumerated)luaL_checkinteger(L, 3);
-    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 4, LektorValueReadOnlyBinding<StringPair>::metaName);
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 4, LektorValueBinding<StringPair>::metaName);
     if (!dats) return luaL_error(L, "Expected lektor<StringPair>");
     bool result = instance->getStatPenaltiesForGUI(statName, stat, *dats);
     lua_pushboolean(L, result ? 1 : 0);
@@ -3182,7 +3182,7 @@ int CharStatsBinding::getStealthTooltip(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharStats is nil");
-    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, LektorValueReadOnlyBinding<StringPair>::metaName);
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, LektorValueBinding<StringPair>::metaName);
     if (!dats) return luaL_error(L, "Expected lektor<StringPair>");
     instance->getStealthTooltip(dats);
     return 0;
@@ -3224,7 +3224,7 @@ int CharStatsBinding::printExertionHungerMultTooltip(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharStats is nil");
-    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, LektorValueReadOnlyBinding<StringPair>::metaName);
+    lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 2, LektorValueBinding<StringPair>::metaName);
     if (!dats) return luaL_error(L, "Expected lektor<StringPair>");
     instance->printExertionHungerMultTooltip(dats);
     return 0;

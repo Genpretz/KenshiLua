@@ -641,12 +641,21 @@ void LuaBindings::registerLektor(lua_State* L)
     LektorPtrBinding<RootObject*>::registerBinding(L, "lektor<RootObject*>", RootObjectBinding::getMetatableName());
     LektorPtrBinding<Building*>::registerBinding(L, "lektor<Building*>", BuildingBinding::getMetatableName());
     LektorPtrBinding<FarmBuilding*>::registerBinding(L, "lektor<FarmBuilding*>", FarmBuildingBinding::getMetatableName());
+    LektorPtrBinding<FarmBuilding::PlantSource*>::registerBinding(L, "lektor<FarmBuilding::PlantSource*>", FarmBuilding_PlantSourceBinding::getMetatableName());
+    LektorPtrBinding<TownBase*>::registerBinding(L, "lektor<TownBase*>", TownBaseBinding::getMetatableName());
+    LektorPtrBinding<DatapanelGUI*>::registerBinding(L, "lektor<DatapanelGUI*>", DatapanelGUIBinding::getMetatableName());
+    LektorPtrBinding<GUIWindow*>::registerBinding(L, "lektor<GUIWindow*>", GUIWindowBinding::getMetatableName());
+    LektorPtrBinding<ScreenLabelInterface*>::registerBinding(L, "lektor<ScreenLabelInterface*>", ScreenLabelInterfaceBinding::getMetatableName());
 
     LektorValueBinding<ModInfo>::registerBinding(L, "lektor<ModInfo>", ModInfoBinding::getMetatableName());
     LektorValueBinding<hand>::registerBinding(L, "lektor<hand>", HandBinding::getMetatableName());
     LektorValueBinding<SaveInfo>::registerBinding(L, "lektor<SaveInfo>", SaveInfoBinding::getMetatableName());
+    LektorValueBinding<StringPair>::registerBinding(L, "lektor<StringPair>", StringPairBinding::getMetatableName());
+    LektorValueBinding<Faction::BuildingSwaps>::registerBinding(L, "lektor<Faction::BuildingSwaps>", BuildingSwapsBinding::getMetatableName());
+    LektorValueBinding<FarmBuilding::Plant>::registerBinding(L, "lektor<FarmBuilding::Plant>", FarmBuilding_PlantBinding::getMetatableName());
 
     LektorValueReadOnlyBinding<GameDataValuePair>::registerBinding(L, "lektor<GameDataValuePair>", GameDataValuePairBinding::getMetatableName());
+    LektorValueReadOnlyBinding<GameDataGroup>::registerBinding(L, "lektor<GameDataGroup>", GameDataGroupBinding::getMetatableName());
 
     LektorStringBinding<std::string>::registerBinding(L, "lektor<std::string>");
     LektorIntBinding<int>::registerBinding(L, "lektor<int>");

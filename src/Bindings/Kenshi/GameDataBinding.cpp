@@ -508,7 +508,7 @@ int GameDataBinding::storeHandleList(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    lektor<hand>* handle = LektorPtrBinding<hand>::get(L, 2);
+    lektor<hand>* handle = LektorValueBinding<hand>::get(L, 2);
     if (!handle) return luaL_error(L, "Argument 2 to storeHandleList must be lektor<hand>");
     const std::string name = luaL_checkstring(L, 3);
     instance->storeHandleList(*handle, name);
@@ -636,7 +636,7 @@ int GameDataBinding::getAllFromList(lua_State* L)
     if (!instance) return luaL_error(L, "GameData is nil");
 
     const std::string n = luaL_checkstring(L, 2);
-    lektor<std::string>* list = LektorPtrBinding<std::string>::get(L, 3);
+    lektor<std::string>* list = LektorStringBinding<std::string>::get(L, 3);
     if (!list) return luaL_error(L, "Argument 3 to getAllFromList must be lektor<string>");
     instance->getAllFromList(n, *list);
     return 0;

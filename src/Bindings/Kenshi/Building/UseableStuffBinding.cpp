@@ -64,7 +64,8 @@ static int UseableStuff_get_occupantSelection(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    return HandBinding::push(L, instance->occupantSelection);
+    lua_pushboolean(L, instance->occupantSelection ? 1 : 0);
+    return 1;
 }
 
 static int UseableStuff_get_needsOperating(lua_State* L)
