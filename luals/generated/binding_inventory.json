@@ -16258,7 +16258,7 @@
               {
                 "name": "dats",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -16274,7 +16274,7 @@
               {
                 "name": "dats",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -16300,7 +16300,7 @@
               {
                 "name": "dats",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [
@@ -16369,7 +16369,7 @@
               {
                 "name": "dats",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -31152,7 +31152,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "LektorReadOnly<GameDataGroup>"
               }
             ],
             "returns": [],
@@ -35654,7 +35654,7 @@
               {
                 "name": "data",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               },
               {
                 "name": "category",
@@ -41705,7 +41705,8 @@
         },
         {
           "access": "readwrite",
-          "name": "buildingSwaps"
+          "name": "buildingSwaps",
+          "type": "Lektor<BuildingSwaps>"
         },
         {
           "access": "readwrite",
@@ -43611,7 +43612,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<TownBase>"
               },
               {
                 "name": "b",
@@ -43632,7 +43633,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<TownBase>"
               },
               {
                 "name": "popNeeded",
@@ -43737,7 +43738,8 @@
         },
         {
           "access": "readwrite",
-          "name": "myTowns"
+          "name": "myTowns",
+          "type": "Lektor<TownBase>"
         },
         {
           "access": "readwrite",
@@ -44111,7 +44113,8 @@
         },
         {
           "access": "readwrite",
-          "name": "plantSource"
+          "name": "plantSource",
+          "type": "Lektor<FarmBuilding_PlantSource>"
         },
         {
           "access": "readwrite",
@@ -45149,7 +45152,8 @@
         },
         {
           "access": "readwrite",
-          "name": "plants"
+          "name": "plants",
+          "type": "Lektor<FarmBuilding_Plant>"
         }
       ],
       "registered_from": [
@@ -49083,7 +49087,8 @@
         },
         {
           "access": "readwrite",
-          "name": "guiDatapanels"
+          "name": "guiDatapanels",
+          "type": "Lektor<DatapanelGUI>"
         },
         {
           "access": "readonly",
@@ -49092,7 +49097,8 @@
         },
         {
           "access": "readwrite",
-          "name": "guiScreenLabels"
+          "name": "guiScreenLabels",
+          "type": "Lektor<ScreenLabelInterface>"
         },
         {
           "access": "readwrite",
@@ -49101,7 +49107,8 @@
         },
         {
           "access": "readwrite",
-          "name": "guiWindows"
+          "name": "guiWindows",
+          "type": "Lektor<GUIWindow>"
         },
         {
           "access": "readwrite",
@@ -50259,7 +50266,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<hand>"
               },
               {
                 "name": "arg2",
@@ -85643,7 +85650,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -85659,7 +85666,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -87176,7 +87183,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -87192,7 +87199,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -90047,7 +90054,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -90063,7 +90070,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -101223,6 +101230,11 @@
                 "name": "arg1",
                 "optional": false,
                 "type": "MyGUI.Widget"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": []
@@ -110570,7 +110582,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -110586,7 +110598,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "any"
+                "type": "Lektor<StringPair>"
               }
             ],
             "returns": [],
@@ -110929,7 +110941,7 @@
         {
           "access": "readwrite",
           "name": "occupantSelection",
-          "type": "hand"
+          "type": "boolean"
         },
         {
           "access": "readwrite",
@@ -124309,6 +124321,119 @@
       ]
     },
     {
+      "binding": "LektorPtrBinding<DatapanelGUI*>",
+      "element_refs": [
+        "binding:DatapanelGUIBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "DatapanelGUI"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "DatapanelGUI|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<DatapanelGUI>",
+      "metatable": "lektor<DatapanelGUI*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "DatapanelGUI"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "DatapanelGUI|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, DatapanelGUI>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "DatapanelGUI*"
+      ]
+    },
+    {
       "binding": "LektorPtrBinding<DialogLineData*>",
       "element_refs": [
         "binding:DialogLineDataBinding"
@@ -125097,6 +125222,232 @@
       "template": "LektorPtrBinding",
       "template_args": [
         "FarmBuilding*"
+      ]
+    },
+    {
+      "binding": "LektorPtrBinding<FarmBuilding::PlantSource*>",
+      "element_refs": [
+        "binding:FarmBuilding_PlantSourceBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "FarmBuilding_PlantSource"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "FarmBuilding_PlantSource|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<FarmBuilding_PlantSource>",
+      "metatable": "lektor<FarmBuilding::PlantSource*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "FarmBuilding_PlantSource"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "FarmBuilding_PlantSource|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, FarmBuilding_PlantSource>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "FarmBuilding::PlantSource*"
+      ]
+    },
+    {
+      "binding": "LektorPtrBinding<GUIWindow*>",
+      "element_refs": [
+        "binding:GUIWindowBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "GUIWindow"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "GUIWindow|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<GUIWindow>",
+      "metatable": "lektor<GUIWindow*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "GUIWindow"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "GUIWindow|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, GUIWindow>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "GUIWindow*"
       ]
     },
     {
@@ -126124,6 +126475,119 @@
       ]
     },
     {
+      "binding": "LektorPtrBinding<ScreenLabelInterface*>",
+      "element_refs": [
+        "binding:ScreenLabelInterfaceBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "ScreenLabelInterface"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "ScreenLabelInterface|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<ScreenLabelInterface>",
+      "metatable": "lektor<ScreenLabelInterface*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "ScreenLabelInterface"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "ScreenLabelInterface|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, ScreenLabelInterface>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "ScreenLabelInterface*"
+      ]
+    },
+    {
       "binding": "LektorPtrBinding<StorageBuilding::ConsumptionItem*>",
       "binding_aliases": [
         "LektorValueBinding<StorageBuilding::ConsumptionItem>"
@@ -126242,6 +126706,119 @@
       "template": "LektorPtrBinding",
       "template_args": [
         "StorageBuilding::ConsumptionItem*"
+      ]
+    },
+    {
+      "binding": "LektorPtrBinding<TownBase*>",
+      "element_refs": [
+        "binding:TownBaseBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "TownBase"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "TownBase|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<TownBase>",
+      "metatable": "lektor<TownBase*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "TownBase"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TownBase|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, TownBase>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "TownBase*"
       ]
     },
     {
@@ -126469,6 +127046,232 @@
       ]
     },
     {
+      "binding": "LektorValueBinding<Faction::BuildingSwaps>",
+      "element_refs": [
+        "binding:BuildingSwapsBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "BuildingSwaps"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "BuildingSwaps|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<BuildingSwaps>",
+      "metatable": "lektor<Faction::BuildingSwaps>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "BuildingSwaps"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "BuildingSwaps|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, BuildingSwaps>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorValueBinding",
+      "template_args": [
+        "Faction::BuildingSwaps"
+      ]
+    },
+    {
+      "binding": "LektorValueBinding<FarmBuilding::Plant>",
+      "element_refs": [
+        "binding:FarmBuilding_PlantBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "FarmBuilding_Plant"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "FarmBuilding_Plant|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<FarmBuilding_Plant>",
+      "metatable": "lektor<FarmBuilding::Plant>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "FarmBuilding_Plant"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "FarmBuilding_Plant|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, FarmBuilding_Plant>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorValueBinding",
+      "template_args": [
+        "FarmBuilding::Plant"
+      ]
+    },
+    {
       "binding": "LektorValueBinding<SaveInfo>",
       "element_refs": [
         "binding:SaveInfoBinding"
@@ -126579,6 +127382,119 @@
       "template": "LektorValueBinding",
       "template_args": [
         "SaveInfo"
+      ]
+    },
+    {
+      "binding": "LektorValueBinding<StringPair>",
+      "element_refs": [
+        "binding:StringPairBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "StringPair"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "StringPair|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<StringPair>",
+      "metatable": "lektor<StringPair>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "StringPair"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "StringPair|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, StringPair>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorValueBinding",
+      "template_args": [
+        "StringPair"
       ]
     },
     {
@@ -126982,6 +127898,65 @@
       "template": "LektorValueReadOnlyBinding",
       "template_args": [
         "CombatTechniqueData::ImpactPoint"
+      ]
+    },
+    {
+      "binding": "LektorValueReadOnlyBinding<GameDataGroup>",
+      "element_refs": [
+        "binding:GameDataGroupBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "GameDataGroup"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "GameDataGroup|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "LektorReadOnly<GameDataGroup>",
+      "metatable": "lektor<GameDataGroup>",
+      "methods": [
+        {
+          "callback": "size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, GameDataGroup>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorValueReadOnlyBinding",
+      "template_args": [
+        "GameDataGroup"
       ]
     },
     {

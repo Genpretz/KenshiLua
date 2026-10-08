@@ -4167,15 +4167,15 @@ taskPriority = {
 --- Active character NPC conversation window.
 ---@field dialogue DialogueWindow
 --- Active HUD datapanels receiving telemetry updates (24 bytes: `0x220`–`0x238`).
----@field guiDatapanels any
+---@field guiDatapanels Lektor<DatapanelGUI>
 --- MyGUI Ogre rendering platform bridge.
 ---@field guiPlatform lightuserdata
 --- Active overhead 3D text labels and damage numbers (24 bytes: `0x258`–`0x270`).
----@field guiScreenLabels any
+---@field guiScreenLabels Lektor<ScreenLabelInterface>
 --- Concurrency mutex synchronizing floating label modifications (32 bytes: `0x238`–`0x258`).
 ---@field guiScreenLabelsMutex lightuserdata
 --- Generic active UI windows registered for frame updates (24 bytes: `0x208`–`0x220`).
----@field guiWindows any
+---@field guiWindows Lektor<GUIWindow>
 --- True if mouse cursor is hovering over an interactive MyGUI widget.
 ---@field hasMouse boolean
 --- Handle of building currently displayed in inventory window (32 bytes: `0x0E0`–`0x100`).
@@ -4876,7 +4876,7 @@ taskPriority = {
 --- Flag permitting slaves to bear arms.
 ---@field allowSlavesWeapons boolean
 --- Town override building swap rules (24 bytes: `0x270`–`0x288`).
----@field buildingSwaps any
+---@field buildingSwaps Lektor<BuildingSwaps>
 --- Flee ratios and behavioral traits (12 bytes: `0x00C`–`0x018`).
 ---@field characteristicsData Faction_CharacteristicsData
 --- FCS faction template record pointer (8 bytes: `0x240`–`0x248`).
@@ -6183,7 +6183,7 @@ taskPriority = {
 --- Serializes record attributes, references, and instances to disk file.
 ---@field saveToFile fun(self: GameData, path: string): boolean
 --- Serializes a set of runtime entity handles into record string lists.
----@field storeHandleList fun(self: GameData, arg1: any, arg2: string)
+---@field storeHandleList fun(self: GameData, arg1: Lektor<hand>, arg2: string)
 --- Serializes a runtime `hand` entity handle into record attributes by storing its instance ID and target pointer.
 ---@field storeHandle fun(self: GameData, handle: hand, _name: string, redirect?: boolean)
 --- Deserializes a runtime `hand` entity handle from stored record attributes.
@@ -6444,7 +6444,7 @@ taskPriority = {
 --- Signature inferred from Lua stack checks and callback return pushes in the binding source.
 ---@field setLineTextEditable fun(self: DatapanelGUI, key: string, text: string, category: integer, showKey?: boolean, multiLine?: boolean, textAlign?: integer|string, width: number): DataPanelLine_TextEditable
 --- Signature inferred from Lua stack checks and callback return pushes in the binding source.
----@field setLines fun(self: DatapanelGUI, data: any, category: integer)
+---@field setLines fun(self: DatapanelGUI, data: Lektor<StringPair>, category: integer)
 --- Signature inferred from Lua stack checks and callback return pushes in the binding source.
 ---@field autoChangeSelectedObject fun(self: DatapanelGUI, obj: hand)
 --- Signature inferred from Lua stack checks and callback return pushes in the binding source.
@@ -6887,9 +6887,9 @@ taskPriority = {
 --- Override dispatch for `getAABB`. Retrieves the world-space axis-aligned bounding box (`Ogre::Aabb`) enclosing the entity's physical geometry.
 ---@field _NV_getAABB fun(self: RootObject): lightuserdata
 --- Fills an output list with available datapanel tab categories supported by this entity.
----@field getGUIDataCategories fun(self: RootObject, out: any)
+---@field getGUIDataCategories fun(self: RootObject, out: Lektor<StringPair>)
 --- Override dispatch for `getGUIDataCategories`. Fills an output list with available datapanel tab categories supported by this entity.
----@field _NV_getGUIDataCategories fun(self: RootObject, out: any)
+---@field _NV_getGUIDataCategories fun(self: RootObject, out: Lektor<StringPair>)
 --- Retrieves the list of active GOAP tasks and permanent job orders assigned to this entity.
 ---@field getOrders fun(self: RootObject, arg1: Lektor<string>)
 --- Override dispatch for `getOrders`. Retrieves the list of active GOAP tasks and permanent job orders assigned to this entity.
@@ -10012,15 +10012,15 @@ taskPriority = {
 --- Static initialization function loading and configuring global technique datasets (`attacks` and `blocks`).
 ---@field setupCombatTechniques fun()
 --- Populates tooltip breakdown entries (`StringPair` list) detailing light levels, armor stealth penalties, and visibility factors.
----@field getStealthTooltip fun(self: CharStats, dats: any)
+---@field getStealthTooltip fun(self: CharStats, dats: Lektor<StringPair>)
 --- Populates tooltip breakdown entries explaining running speed components, encumbrance penalties, and leg health.
----@field getAthleticsTooltip fun(self: CharStats, dats: any)
+---@field getAthleticsTooltip fun(self: CharStats, dats: Lektor<StringPair>)
 --- Extracts itemized list of all active penalties (injuries, hunger, equipment, encumbrance) affecting a stat.
----@field getStatPenaltiesForGUI fun(self: CharStats, statName: string, stat: integer, dats: any): boolean
+---@field getStatPenaltiesForGUI fun(self: CharStats, statName: string, stat: integer, dats: Lektor<StringPair>): boolean
 --- Signature inferred from Lua stack checks and callback return pushes in the binding source.
 ---@field chooseAttacks fun(self: CharStats, possibleAttacks: CombatTechniqueDataFitnessSelector, range: number, weaponReach: number, lastAttack?: CombatTechniqueData, opponentIsStationary?: boolean, skipMedicals?: boolean, _weaponType: integer, _weaponSkill: number)
 --- Populates tooltip list describing calorie expenditure and hunger acceleration from heavy labor and combat.
----@field printExertionHungerMultTooltip fun(self: CharStats, dats: any)
+---@field printExertionHungerMultTooltip fun(self: CharStats, dats: Lektor<StringPair>)
 --- Awards diminishing-returns training XP up to a designated skill cap when using practice dummies or training equipment.
 ---@field xpTraining fun(self: CharStats, time: number, mult: number, stat: number, upperLimit: number, whatStatIsIt: integer): number
 --- Hold position dedication score.
@@ -12551,7 +12551,7 @@ taskPriority = {
 --- Retrieves the singleton FCS manufacturer template record representing player-crafted weapon branding and grade thresholds.
 ---@field playerManufacturerData fun(): GameData
 --- Collects all crafting recipes unlocked by the player faction's researched technology tree that are compatible with this workbench type.
----@field getAvailableCrafts fun(self: CraftingBuilding, out: any)
+---@field getAvailableCrafts fun(self: CraftingBuilding, out: LektorReadOnly<GameDataGroup>)
 --- Enqueues a new crafting recipe order at the tail of the production queue, instantiating the item blueprint and setting base fabrication time.
 ---@field _addCraft fun(self: CraftingBuilding, basedata: GameData, matdata?: GameData, progress: number, crit: integer): lightuserdata|nil
 --- Cancels and removes a recipe order at the specified queue index, refunding unprocessed raw materials.
@@ -13553,9 +13553,9 @@ taskPriority = {
 --- Retrieves `NearestTown` associated with `FactionWarMgr`.
 ---@field getNearestTown fun(self: FactionWarMgr, p: table): TownBase
 --- Retrieves `TownsInBiome` associated with `FactionWarMgr`.
----@field getTownsInBiome fun(self: FactionWarMgr, out: any, b: lightuserdata)
+---@field getTownsInBiome fun(self: FactionWarMgr, out: Lektor<TownBase>, b: lightuserdata)
 --- Retrieves `MyTownsWithEnoughFreePopulation` associated with `FactionWarMgr`.
----@field getMyTownsWithEnoughFreePopulation fun(self: FactionWarMgr, out: any, popNeeded: integer)
+---@field getMyTownsWithEnoughFreePopulation fun(self: FactionWarMgr, out: Lektor<TownBase>, popNeeded: integer)
 --- Retrieves `ActiveCampaign` associated with `FactionWarMgr`.
 ---@field getActiveCampaign fun(self: FactionWarMgr, uniqueID: integer): lightuserdata
 --- Sets `up` for `FactionWarMgr`.
@@ -13578,8 +13578,8 @@ taskPriority = {
 ---@field lastID integer
 --- Property type inferred from the binding getter's callback return pushes.
 ---@field me Faction
---- Registered engine property; type pending source audit.
----@field myTowns any
+--- Property type inferred from the binding getter's callback return pushes.
+---@field myTowns Lektor<TownBase>
 --- Property type inferred from the binding getter's callback return pushes.
 ---@field nextUpdateTime TimeOfDay
 --- Property type inferred from the binding getter's callback return pushes.
@@ -13644,8 +13644,8 @@ taskPriority = {
 ---@field meshesLoaded integer
 --- Property type inferred from the binding getter's callback return pushes.
 ---@field plantGroups Lektor<integer>
---- Registered engine property; type pending source audit.
----@field plantSource any
+--- Property type inferred from the binding getter's callback return pushes.
+---@field plantSource Lektor<FarmBuilding_PlantSource>
 --- Property type inferred from the binding getter's callback return pushes.
 ---@field size integer
 
@@ -13814,7 +13814,7 @@ taskPriority = {
 --- OGRE batched plant submesh entity.
 ---@field plantEntity lightuserdata|nil
 --- Individual plant specimen instances tracking local maturity and health.
----@field plants any
+---@field plants Lektor<FarmBuilding_Plant>
 
 --- Forward declaration from the registered binding inventory.
 ---@class FarmBuilding_Plant
@@ -17238,9 +17238,9 @@ taskPriority = {
 --- Override dispatch for `getGUIData`. Renders telemetry data to the HUD Datapanel, displaying operating efficiency, power usage, and ground resource fertility.
 ---@field _NV_getGUIData fun(self: ProductionBuilding, datapanel: DatapanelGUI, category: integer)
 --- Generates localized tooltip text describing ground resource extraction efficiency and quality ratings.
----@field getGUIToolTipForGroundResourceEfficiency fun(self: ProductionBuilding, out: any)
+---@field getGUIToolTipForGroundResourceEfficiency fun(self: ProductionBuilding, out: Lektor<StringPair>)
 --- Override dispatch for `getGUIToolTipForGroundResourceEfficiency`. Generates localized tooltip text describing ground resource extraction efficiency and quality ratings.
----@field _NV_getGUIToolTipForGroundResourceEfficiency fun(self: ProductionBuilding, out: any)
+---@field _NV_getGUIToolTipForGroundResourceEfficiency fun(self: ProductionBuilding, out: Lektor<StringPair>)
 --- Restores production progress, active operational state, and input buffers from serialized savegame records.
 ---@field loadFromSerialise fun(self: ProductionBuilding, wholeState: GameSaveState)
 --- Override dispatch for `loadFromSerialise`. Restores production progress, active operational state, and input buffers from serialized savegame records.
@@ -17477,9 +17477,9 @@ taskPriority = {
 --- Inherited API from `ProductionBuilding`. Override dispatch for `getGUIState`. Renders current operational state string (e.g. "Operating", "No Resources", "Output Full", "Out of Power") to the HUD.
 ---@field _NV_getGUIState fun(self: RainCollectorBuilding, datapanel: DatapanelGUI, category: integer)
 --- Inherited API from `ProductionBuilding`. Generates localized tooltip text describing ground resource extraction efficiency and quality ratings.
----@field getGUIToolTipForGroundResourceEfficiency fun(self: RainCollectorBuilding, out: any)
+---@field getGUIToolTipForGroundResourceEfficiency fun(self: RainCollectorBuilding, out: Lektor<StringPair>)
 --- Inherited API from `ProductionBuilding`. Override dispatch for `getGUIToolTipForGroundResourceEfficiency`. Generates localized tooltip text describing ground resource extraction efficiency and quality ratings.
----@field _NV_getGUIToolTipForGroundResourceEfficiency fun(self: RainCollectorBuilding, out: any)
+---@field _NV_getGUIToolTipForGroundResourceEfficiency fun(self: RainCollectorBuilding, out: Lektor<StringPair>)
 
 --- Forward declaration from the registered binding inventory.
 ---@class RelationData
@@ -19027,7 +19027,7 @@ taskPriority = {
 --- Signature inferred from Lua stack checks and callback return pushes in the binding source.
 ---@field setup_gamedata fun(self: ToolTip, arg1: MyGUI.Widget, arg2: GameData)
 --- Signature inferred from Lua stack checks and callback return pushes in the binding source.
----@field setup_stringpairs fun(self: ToolTip, arg1: MyGUI.Widget)
+---@field setup_stringpairs fun(self: ToolTip, arg1: MyGUI.Widget, arg2: Lektor<StringPair>)
 --- Signature inferred from Lua stack checks and callback return pushes in the binding source.
 ---@field setup_text fun(self: ToolTip, arg1: MyGUI.Widget, arg2: string)
 --- Signature inferred from Lua stack checks and callback return pushes in the binding source.
@@ -20202,9 +20202,9 @@ taskPriority = {
 --- Override dispatch for `getGUIWorkers`. Lists active workers operating this station and displays occupant portraits.
 ---@field _NV_getGUIWorkers fun(self: UseableStuff, datapanel: DatapanelGUI, category: integer)
 --- Generates contextual tooltips describing ground water, stone, or iron resource fertility underneath this resource extractor.
----@field getGUIToolTipForGroundResourceEfficiency fun(self: UseableStuff, out: any)
+---@field getGUIToolTipForGroundResourceEfficiency fun(self: UseableStuff, out: Lektor<StringPair>)
 --- Override dispatch for `getGUIToolTipForGroundResourceEfficiency`. Generates contextual tooltips describing ground water, stone, or iron resource fertility underneath this resource extractor.
----@field _NV_getGUIToolTipForGroundResourceEfficiency fun(self: UseableStuff, out: any)
+---@field _NV_getGUIToolTipForGroundResourceEfficiency fun(self: UseableStuff, out: Lektor<StringPair>)
 --- Restores active machine state, battery charge, door locks, and inventory items from save data.
 ---@field loadFromSerialise fun(self: UseableStuff, wholeState: GameSaveState)
 --- Override dispatch for `loadFromSerialise`. Restores active machine state, battery charge, door locks, and inventory items from save data.
@@ -20272,7 +20272,7 @@ taskPriority = {
 --- Maximum number of simultaneous characters allowed to operate this station.
 ---@field numOperatorsMax integer
 --- Enables direct player click-selection of character resting or locked inside (e.g. bed, cage).
----@field occupantSelection hand
+---@field occupantSelection boolean
 --- Master machine power switch state toggleable by the player or AI.
 ---@field powerOn boolean
 --- Current accumulated electrical energy reserve in watt-hours.
@@ -22228,6 +22228,8 @@ ZoneSpacialGrid.Result = {
 ---@overload fun(typeName: "Character*"): Lektor<Character>
 ---@overload fun(typeName: "lektor<CombatTechniqueData*>"): Lektor<CombatTechniqueData>
 ---@overload fun(typeName: "CombatTechniqueData*"): Lektor<CombatTechniqueData>
+---@overload fun(typeName: "lektor<DatapanelGUI*>"): Lektor<DatapanelGUI>
+---@overload fun(typeName: "DatapanelGUI*"): Lektor<DatapanelGUI>
 ---@overload fun(typeName: "lektor<DialogLineData*>"): Lektor<DialogLineData>
 ---@overload fun(typeName: "DialogLineData*"): Lektor<DialogLineData>
 ---@overload fun(typeName: "lektor<DialogAction*>"): Lektor<DialogAction>
@@ -22242,6 +22244,10 @@ ZoneSpacialGrid.Result = {
 ---@overload fun(typeName: "FactionWarMgr::CampaignRequest*"): Lektor<CampaignRequest>
 ---@overload fun(typeName: "lektor<FarmBuilding*>"): Lektor<FarmBuilding>
 ---@overload fun(typeName: "FarmBuilding*"): Lektor<FarmBuilding>
+---@overload fun(typeName: "lektor<FarmBuilding::PlantSource*>"): Lektor<FarmBuilding_PlantSource>
+---@overload fun(typeName: "FarmBuilding::PlantSource*"): Lektor<FarmBuilding_PlantSource>
+---@overload fun(typeName: "lektor<GUIWindow*>"): Lektor<GUIWindow>
+---@overload fun(typeName: "GUIWindow*"): Lektor<GUIWindow>
 ---@overload fun(typeName: "lektor<GameData*>"): Lektor<GameData>
 ---@overload fun(typeName: "GameData*"): Lektor<GameData>
 ---@overload fun(typeName: "lektor<GameData::ObjectInstance*>"): Lektor<ObjectInstance>
@@ -22262,18 +22268,28 @@ ZoneSpacialGrid.Result = {
 ---@overload fun(typeName: "Platoon*"): Lektor<Platoon>
 ---@overload fun(typeName: "lektor<RootObject*>"): Lektor<RootObject>
 ---@overload fun(typeName: "RootObject*"): Lektor<RootObject>
+---@overload fun(typeName: "lektor<ScreenLabelInterface*>"): Lektor<ScreenLabelInterface>
+---@overload fun(typeName: "ScreenLabelInterface*"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "lektor<StorageBuilding::ConsumptionItem*>"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem*"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "lektor<Building::ConsumptionItem>"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "Building::ConsumptionItem"): Lektor<ConsumptionItem>
+---@overload fun(typeName: "lektor<TownBase*>"): Lektor<TownBase>
+---@overload fun(typeName: "TownBase*"): Lektor<TownBase>
 ---@overload fun(typeName: "lektor<ZoneMap*>"): Lektor<ZoneMap>
 ---@overload fun(typeName: "ZoneMap*"): Lektor<ZoneMap>
 ---@overload fun(typeName: "lektor<std::string>"): Lektor<string>
 ---@overload fun(typeName: "std::string"): Lektor<string>
 ---@overload fun(typeName: "string"): Lektor<string>
 ---@overload fun(typeName: "lektor<string>"): Lektor<string>
+---@overload fun(typeName: "lektor<Faction::BuildingSwaps>"): Lektor<BuildingSwaps>
+---@overload fun(typeName: "Faction::BuildingSwaps"): Lektor<BuildingSwaps>
+---@overload fun(typeName: "lektor<FarmBuilding::Plant>"): Lektor<FarmBuilding_Plant>
+---@overload fun(typeName: "FarmBuilding::Plant"): Lektor<FarmBuilding_Plant>
 ---@overload fun(typeName: "lektor<SaveInfo>"): Lektor<SaveInfo>
 ---@overload fun(typeName: "SaveInfo"): Lektor<SaveInfo>
+---@overload fun(typeName: "lektor<StringPair>"): Lektor<StringPair>
+---@overload fun(typeName: "StringPair"): Lektor<StringPair>
 ---@overload fun(typeName: "lektor<ResidentData>"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "ResidentData"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "lektor<hand>"): Lektor<hand>
@@ -22282,6 +22298,8 @@ ZoneSpacialGrid.Result = {
 ---@overload fun(typeName: "iVector2"): Lektor<iVector2>
 ---@overload fun(typeName: "lektor<CombatTechniqueData::ImpactPoint>"): LektorReadOnly<ImpactPoint>
 ---@overload fun(typeName: "CombatTechniqueData::ImpactPoint"): LektorReadOnly<ImpactPoint>
+---@overload fun(typeName: "lektor<GameDataGroup>"): LektorReadOnly<GameDataGroup>
+---@overload fun(typeName: "GameDataGroup"): LektorReadOnly<GameDataGroup>
 ---@overload fun(typeName: "lektor<GameDataValuePair>"): LektorReadOnly<GameDataValuePair>
 ---@overload fun(typeName: "GameDataValuePair"): LektorReadOnly<GameDataValuePair>
 ---@overload fun(typeName: "Armour"): Lektor<Armour>
@@ -22289,6 +22307,7 @@ ZoneSpacialGrid.Result = {
 ---@overload fun(typeName: "Building::ConstructionState::BuildMaterial"): Lektor<BuildMaterial>
 ---@overload fun(typeName: "Character"): Lektor<Character>
 ---@overload fun(typeName: "CombatTechniqueData"): Lektor<CombatTechniqueData>
+---@overload fun(typeName: "DatapanelGUI"): Lektor<DatapanelGUI>
 ---@overload fun(typeName: "DialogLineData"): Lektor<DialogLineData>
 ---@overload fun(typeName: "DialogAction"): Lektor<DialogAction>
 ---@overload fun(typeName: "DialogCondition"): Lektor<DialogCondition>
@@ -22296,6 +22315,8 @@ ZoneSpacialGrid.Result = {
 ---@overload fun(typeName: "FactionUniqueSquadManager::UniqueSpawnData"): Lektor<UniqueSpawnData>
 ---@overload fun(typeName: "FactionWarMgr::CampaignRequest"): Lektor<CampaignRequest>
 ---@overload fun(typeName: "FarmBuilding"): Lektor<FarmBuilding>
+---@overload fun(typeName: "FarmBuilding::PlantSource"): Lektor<FarmBuilding_PlantSource>
+---@overload fun(typeName: "GUIWindow"): Lektor<GUIWindow>
 ---@overload fun(typeName: "GameData"): Lektor<GameData>
 ---@overload fun(typeName: "GameData::ObjectInstance"): Lektor<ObjectInstance>
 ---@overload fun(typeName: "InventorySection"): Lektor<InventorySection>
@@ -22304,7 +22325,9 @@ ZoneSpacialGrid.Result = {
 ---@overload fun(typeName: "MyGUI::Button"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "Platoon"): Lektor<Platoon>
 ---@overload fun(typeName: "RootObject"): Lektor<RootObject>
+---@overload fun(typeName: "ScreenLabelInterface"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
+---@overload fun(typeName: "TownBase"): Lektor<TownBase>
 ---@overload fun(typeName: "ZoneMap"): Lektor<ZoneMap>
 ---@overload fun(typeName: string|table): Lektor<any>
 lektor = {}
@@ -22322,6 +22345,8 @@ lektor = {}
 ---@overload fun(typeName: "Character*"): Lektor<Character>
 ---@overload fun(typeName: "lektor<CombatTechniqueData*>"): Lektor<CombatTechniqueData>
 ---@overload fun(typeName: "CombatTechniqueData*"): Lektor<CombatTechniqueData>
+---@overload fun(typeName: "lektor<DatapanelGUI*>"): Lektor<DatapanelGUI>
+---@overload fun(typeName: "DatapanelGUI*"): Lektor<DatapanelGUI>
 ---@overload fun(typeName: "lektor<DialogLineData*>"): Lektor<DialogLineData>
 ---@overload fun(typeName: "DialogLineData*"): Lektor<DialogLineData>
 ---@overload fun(typeName: "lektor<DialogAction*>"): Lektor<DialogAction>
@@ -22336,6 +22361,10 @@ lektor = {}
 ---@overload fun(typeName: "FactionWarMgr::CampaignRequest*"): Lektor<CampaignRequest>
 ---@overload fun(typeName: "lektor<FarmBuilding*>"): Lektor<FarmBuilding>
 ---@overload fun(typeName: "FarmBuilding*"): Lektor<FarmBuilding>
+---@overload fun(typeName: "lektor<FarmBuilding::PlantSource*>"): Lektor<FarmBuilding_PlantSource>
+---@overload fun(typeName: "FarmBuilding::PlantSource*"): Lektor<FarmBuilding_PlantSource>
+---@overload fun(typeName: "lektor<GUIWindow*>"): Lektor<GUIWindow>
+---@overload fun(typeName: "GUIWindow*"): Lektor<GUIWindow>
 ---@overload fun(typeName: "lektor<GameData*>"): Lektor<GameData>
 ---@overload fun(typeName: "GameData*"): Lektor<GameData>
 ---@overload fun(typeName: "lektor<GameData::ObjectInstance*>"): Lektor<ObjectInstance>
@@ -22356,18 +22385,28 @@ lektor = {}
 ---@overload fun(typeName: "Platoon*"): Lektor<Platoon>
 ---@overload fun(typeName: "lektor<RootObject*>"): Lektor<RootObject>
 ---@overload fun(typeName: "RootObject*"): Lektor<RootObject>
+---@overload fun(typeName: "lektor<ScreenLabelInterface*>"): Lektor<ScreenLabelInterface>
+---@overload fun(typeName: "ScreenLabelInterface*"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "lektor<StorageBuilding::ConsumptionItem*>"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem*"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "lektor<Building::ConsumptionItem>"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "Building::ConsumptionItem"): Lektor<ConsumptionItem>
+---@overload fun(typeName: "lektor<TownBase*>"): Lektor<TownBase>
+---@overload fun(typeName: "TownBase*"): Lektor<TownBase>
 ---@overload fun(typeName: "lektor<ZoneMap*>"): Lektor<ZoneMap>
 ---@overload fun(typeName: "ZoneMap*"): Lektor<ZoneMap>
 ---@overload fun(typeName: "lektor<std::string>"): Lektor<string>
 ---@overload fun(typeName: "std::string"): Lektor<string>
 ---@overload fun(typeName: "string"): Lektor<string>
 ---@overload fun(typeName: "lektor<string>"): Lektor<string>
+---@overload fun(typeName: "lektor<Faction::BuildingSwaps>"): Lektor<BuildingSwaps>
+---@overload fun(typeName: "Faction::BuildingSwaps"): Lektor<BuildingSwaps>
+---@overload fun(typeName: "lektor<FarmBuilding::Plant>"): Lektor<FarmBuilding_Plant>
+---@overload fun(typeName: "FarmBuilding::Plant"): Lektor<FarmBuilding_Plant>
 ---@overload fun(typeName: "lektor<SaveInfo>"): Lektor<SaveInfo>
 ---@overload fun(typeName: "SaveInfo"): Lektor<SaveInfo>
+---@overload fun(typeName: "lektor<StringPair>"): Lektor<StringPair>
+---@overload fun(typeName: "StringPair"): Lektor<StringPair>
 ---@overload fun(typeName: "lektor<ResidentData>"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "ResidentData"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "lektor<hand>"): Lektor<hand>
@@ -22376,6 +22415,8 @@ lektor = {}
 ---@overload fun(typeName: "iVector2"): Lektor<iVector2>
 ---@overload fun(typeName: "lektor<CombatTechniqueData::ImpactPoint>"): LektorReadOnly<ImpactPoint>
 ---@overload fun(typeName: "CombatTechniqueData::ImpactPoint"): LektorReadOnly<ImpactPoint>
+---@overload fun(typeName: "lektor<GameDataGroup>"): LektorReadOnly<GameDataGroup>
+---@overload fun(typeName: "GameDataGroup"): LektorReadOnly<GameDataGroup>
 ---@overload fun(typeName: "lektor<GameDataValuePair>"): LektorReadOnly<GameDataValuePair>
 ---@overload fun(typeName: "GameDataValuePair"): LektorReadOnly<GameDataValuePair>
 ---@overload fun(typeName: "Armour"): Lektor<Armour>
@@ -22383,6 +22424,7 @@ lektor = {}
 ---@overload fun(typeName: "Building::ConstructionState::BuildMaterial"): Lektor<BuildMaterial>
 ---@overload fun(typeName: "Character"): Lektor<Character>
 ---@overload fun(typeName: "CombatTechniqueData"): Lektor<CombatTechniqueData>
+---@overload fun(typeName: "DatapanelGUI"): Lektor<DatapanelGUI>
 ---@overload fun(typeName: "DialogLineData"): Lektor<DialogLineData>
 ---@overload fun(typeName: "DialogAction"): Lektor<DialogAction>
 ---@overload fun(typeName: "DialogCondition"): Lektor<DialogCondition>
@@ -22390,6 +22432,8 @@ lektor = {}
 ---@overload fun(typeName: "FactionUniqueSquadManager::UniqueSpawnData"): Lektor<UniqueSpawnData>
 ---@overload fun(typeName: "FactionWarMgr::CampaignRequest"): Lektor<CampaignRequest>
 ---@overload fun(typeName: "FarmBuilding"): Lektor<FarmBuilding>
+---@overload fun(typeName: "FarmBuilding::PlantSource"): Lektor<FarmBuilding_PlantSource>
+---@overload fun(typeName: "GUIWindow"): Lektor<GUIWindow>
 ---@overload fun(typeName: "GameData"): Lektor<GameData>
 ---@overload fun(typeName: "GameData::ObjectInstance"): Lektor<ObjectInstance>
 ---@overload fun(typeName: "InventorySection"): Lektor<InventorySection>
@@ -22398,7 +22442,9 @@ lektor = {}
 ---@overload fun(typeName: "MyGUI::Button"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "Platoon"): Lektor<Platoon>
 ---@overload fun(typeName: "RootObject"): Lektor<RootObject>
+---@overload fun(typeName: "ScreenLabelInterface"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
+---@overload fun(typeName: "TownBase"): Lektor<TownBase>
 ---@overload fun(typeName: "ZoneMap"): Lektor<ZoneMap>
 ---@param typeName string|table
 ---@return Lektor<any>

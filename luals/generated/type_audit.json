@@ -1113,25 +1113,13 @@
       "member": "swapMutex"
     },
     {
-      "category": "no_header_declaration",
+      "category": "binding_pushes_raw_pointer",
       "class": "BaseLayout",
-      "kind": "property",
-      "lua": "string",
-      "member": "mLayoutName"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "BaseLayout",
+      "expected": "MyGUI.Widget|nil",
+      "header": "MyGUI::Widget*",
       "kind": "property",
       "lua": "lightuserdata",
       "member": "mMainWidget"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "BaseLayout",
-      "kind": "property",
-      "lua": "string",
-      "member": "mPrefix"
     },
     {
       "category": "enum_typed_as_integer",
@@ -2576,43 +2564,9 @@
       "member": "convertBluntMultiplierToWeaponWeight"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "enum_typed_as_integer",
       "class": "CharStats",
-      "expected": "fun(?lektor<StringPair>*)",
-      "header": "void getStealthTooltip(lektor<StringPair>* dats)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CharStats, dats: any)",
-      "member": "getStealthTooltip"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "CharStats",
-      "expected": "fun(?lektor<StringPair>*)",
-      "header": "void getAthleticsTooltip(lektor<StringPair>* dats)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CharStats, dats: any)",
-      "member": "getAthleticsTooltip"
-    },
-    {
-      "category": "multiple",
-      "class": "CharStats",
-      "expected": "fun(string, StatsEnumerated, ?lektor<StringPair>): boolean",
+      "expected": "fun(string, StatsEnumerated, Lektor<StringPair>): boolean",
       "header": "bool getStatPenaltiesForGUI(const std::string& statName, StatsEnumerated stat, lektor<StringPair>& dats)",
       "issues": [
         {
@@ -2620,16 +2574,10 @@
           "category": "enum_typed_as_integer",
           "expected": "StatsEnumerated",
           "position": "param 2"
-        },
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>",
-          "position": "param 3"
         }
       ],
       "kind": "method",
-      "lua": "fun(self: CharStats, statName: string, stat: integer, dats: any): boolean",
+      "lua": "fun(self: CharStats, statName: string, stat: integer, dats: Lektor<StringPair>): boolean",
       "member": "getStatPenaltiesForGUI"
     },
     {
@@ -2648,23 +2596,6 @@
       "kind": "method",
       "lua": "fun(self: CharStats, possibleAttacks: CombatTechniqueDataFitnessSelector, range: number, weaponReach: number, lastAttack?: CombatTechniqueData, opponentIsStationary?: boolean, skipMedicals?: boolean, _weaponType: integer, _weaponSkill: number)",
       "member": "chooseAttacks"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "CharStats",
-      "expected": "fun(?lektor<StringPair>*)",
-      "header": "void printExertionHungerMultTooltip(lektor<StringPair>* dats)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CharStats, dats: any)",
-      "member": "printExertionHungerMultTooltip"
     },
     {
       "category": "enum_typed_as_integer",
@@ -4851,23 +4782,6 @@
       "member": "_NV_newCraftingButton"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "CraftingBuilding",
-      "expected": "fun(?lektor<GameDataGroup>)",
-      "header": "void getAvailableCrafts(lektor<GameDataGroup>& out)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<GameDataGroup>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CraftingBuilding, out: any)",
-      "member": "getAvailableCrafts"
-    },
-    {
       "category": "multiple",
       "class": "CraftingBuilding",
       "expected": "fun(GameData, GameData, number, YesNoMaybeValue): ?CraftingItem*",
@@ -5595,23 +5509,6 @@
       "kind": "method",
       "lua": "fun(self: DatapanelGUI, key: string, text: string, category: integer, showKey?: boolean, multiLine?: boolean, textAlign?: integer|string, width: number): DataPanelLine_TextEditable",
       "member": "setLineTextEditable"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "DatapanelGUI",
-      "expected": "fun(?lektor<StringPair>, integer)",
-      "header": "void setLines(const lektor<StringPair>& data, int category)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: DatapanelGUI, data: any, category: integer)",
-      "member": "setLines"
     },
     {
       "category": "unmapped_header_type",
@@ -6558,15 +6455,6 @@
       "member": "getFundamentalNPCType"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "Faction",
-      "expected": "?lektor<Faction::BuildingSwaps>",
-      "header": "lektor<Faction::BuildingSwaps>",
-      "kind": "property",
-      "lua": "any",
-      "member": "buildingSwaps"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "Faction",
       "expected": "CharacterTypeEnum",
@@ -6790,15 +6678,9 @@
     {
       "category": "unmapped_header_type",
       "class": "FactionWarMgr",
-      "expected": "fun(?lektor<TownBase*>, ?AreaBiomeGroup*)",
+      "expected": "fun(Lektor<TownBase>, ?AreaBiomeGroup*)",
       "header": "void getTownsInBiome(lektor<TownBase*>& out, AreaBiomeGroup* b)",
       "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<TownBase*>",
-          "position": "param 1"
-        },
         {
           "actual": "lightuserdata",
           "category": "unmapped_header_type",
@@ -6807,25 +6689,8 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: FactionWarMgr, out: any, b: lightuserdata)",
+      "lua": "fun(self: FactionWarMgr, out: Lektor<TownBase>, b: lightuserdata)",
       "member": "getTownsInBiome"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
-      "expected": "fun(?lektor<TownBase*>, integer)",
-      "header": "void getMyTownsWithEnoughFreePopulation(lektor<TownBase*>& out, int popNeeded)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<TownBase*>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: FactionWarMgr, out: any, popNeeded: integer)",
-      "member": "getMyTownsWithEnoughFreePopulation"
     },
     {
       "category": "unmapped_header_type",
@@ -6900,15 +6765,6 @@
     {
       "category": "unmapped_header_type",
       "class": "FactionWarMgr",
-      "expected": "?lektor<TownBase*>",
-      "header": "lektor<TownBase*>",
-      "kind": "property",
-      "lua": "any",
-      "member": "myTowns"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
       "expected": "?lektor<CampaignData*>",
       "header": "lektor<CampaignData*>",
       "kind": "property",
@@ -6967,15 +6823,6 @@
       "kind": "property",
       "lua": "lightuserdata|nil",
       "member": "geometry"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FarmBatch",
-      "expected": "?lektor<FarmBuilding::PlantSource*>",
-      "header": "lektor<FarmBuilding::PlantSource*>",
-      "kind": "property",
-      "lua": "any",
-      "member": "plantSource"
     },
     {
       "category": "no_header_declaration",
@@ -7062,15 +6909,6 @@
       "kind": "property",
       "lua": "lightuserdata|nil",
       "member": "plantEntity"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FarmBuilding",
-      "expected": "?lektor<FarmBuilding::Plant>",
-      "header": "lektor<FarmBuilding::Plant>",
-      "kind": "property",
-      "lua": "any",
-      "member": "plants"
     },
     {
       "category": "no_header_declaration",
@@ -7451,15 +7289,6 @@
     {
       "category": "unmapped_header_type",
       "class": "ForgottenGUI",
-      "expected": "?lektor<DatapanelGUI*>",
-      "header": "lektor<DatapanelGUI*>",
-      "kind": "property",
-      "lua": "any",
-      "member": "guiDatapanels"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "ForgottenGUI",
       "expected": "?MyGUI::OgrePlatform*",
       "header": "MyGUI::OgrePlatform*",
       "kind": "property",
@@ -7469,29 +7298,11 @@
     {
       "category": "unmapped_header_type",
       "class": "ForgottenGUI",
-      "expected": "?lektor<ScreenLabelInterface*>",
-      "header": "lektor<ScreenLabelInterface*>",
-      "kind": "property",
-      "lua": "any",
-      "member": "guiScreenLabels"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "ForgottenGUI",
       "expected": "?boost::shared_mutex",
       "header": "boost::shared_mutex",
       "kind": "property",
       "lua": "lightuserdata",
       "member": "guiScreenLabelsMutex"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "ForgottenGUI",
-      "expected": "?lektor<GUIWindow*>",
-      "header": "lektor<GUIWindow*>",
-      "kind": "property",
-      "lua": "any",
-      "member": "guiWindows"
     },
     {
       "category": "enum_typed_as_integer",
@@ -7560,27 +7371,6 @@
       "kind": "method",
       "lua": "fun(self: GameData, path: string, _type: integer): boolean",
       "member": "loadFromFile"
-    },
-    {
-      "audited_categories": [
-        "any_with_header_type"
-      ],
-      "audited_issues": [
-        {
-          "actual": "any",
-          "category": "any_with_header_type",
-          "expected": "OgreUnorderedSet<hand>",
-          "position": "param 1"
-        }
-      ],
-      "category": "known_binding_bug",
-      "class": "GameData",
-      "expected": "fun(OgreUnorderedSet<hand>, string)",
-      "header": "void storeHandleList(const ogre_unordered_set<hand>::type& handle, const std::string& _name)",
-      "kind": "method",
-      "lua": "fun(self: GameData, arg1: any, arg2: string)",
-      "member": "storeHandleList",
-      "reason": "Reads LektorPtrBinding<hand>::get(L, 2), but only LektorValueReadOnlyBinding<hand> is registered, so its metatable name is null."
     },
     {
       "category": "binding_shape_differs",
@@ -10299,8 +10089,8 @@
     {
       "category": "unmapped_header_type",
       "class": "MessageQueue_Node",
-      "expected": "?MessageQueue<T>::Node*",
-      "header": "MessageQueue<T>::Node*",
+      "expected": "?Node*",
+      "header": "Node*",
       "kind": "property",
       "lua": "MessageQueue_Node|nil",
       "member": "next"
@@ -11279,13 +11069,13 @@
     {
       "category": "binding_shape_differs",
       "class": "MyGUI.ItemBox",
-      "expected": "fun(integer, ?Any)",
-      "header": "void insertItemAt(size_t _index, Any _data = Any::Null)",
+      "expected": "fun(integer, ?Any, boolean)",
+      "header": "void insertItemAt(size_t _index, Any _data = Any::Null, bool update = true)",
       "issues": [
         {
           "actual": 1,
           "category": "binding_shape_differs",
-          "expected": 2,
+          "expected": 3,
           "position": null
         }
       ],
@@ -11296,19 +11086,36 @@
     {
       "category": "binding_shape_differs",
       "class": "MyGUI.ItemBox",
-      "expected": "fun(?Any)",
-      "header": "void addItem(Any _data = Any::Null)",
+      "expected": "fun(?Any, boolean)",
+      "header": "void addItem(Any _data = Any::Null, bool update = true)",
       "issues": [
         {
           "actual": 0,
           "category": "binding_shape_differs",
-          "expected": 1,
+          "expected": 2,
           "position": null
         }
       ],
       "kind": "method",
       "lua": "fun(self: MyGUI.ItemBox)",
       "member": "addItem"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "MyGUI.ItemBox",
+      "expected": "fun(integer, boolean)",
+      "header": "void removeItemAt(size_t _index, bool update = true)",
+      "issues": [
+        {
+          "actual": 1,
+          "category": "binding_shape_differs",
+          "expected": 2,
+          "position": null
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: MyGUI.ItemBox, index: integer)",
+      "member": "removeItemAt"
     },
     {
       "category": "no_header_declaration",
@@ -14793,40 +14600,6 @@
     {
       "category": "unmapped_header_type",
       "class": "ProductionBuilding",
-      "expected": "fun(?lektor<StringPair>)",
-      "header": "void getGUIToolTipForGroundResourceEfficiency(lektor<StringPair>& out) override",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ProductionBuilding, out: any)",
-      "member": "getGUIToolTipForGroundResourceEfficiency"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "ProductionBuilding",
-      "expected": "fun(?lektor<StringPair>)",
-      "header": "void _NV_getGUIToolTipForGroundResourceEfficiency(lektor<StringPair>& out)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ProductionBuilding, out: any)",
-      "member": "_NV_getGUIToolTipForGroundResourceEfficiency"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "ProductionBuilding",
       "expected": "?lektor<StorageBuilding::ConsumptionItem>",
       "header": "lektor<StorageBuilding::ConsumptionItem>",
       "kind": "property",
@@ -15191,40 +14964,6 @@
       "kind": "property",
       "lua": "OgreUnorderedSet<integer>",
       "member": "weatherImmunities"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "RainCollectorBuilding",
-      "expected": "fun(?lektor<StringPair>)",
-      "header": "void getGUIToolTipForGroundResourceEfficiency(lektor<StringPair>& out) override",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RainCollectorBuilding, out: any)",
-      "member": "getGUIToolTipForGroundResourceEfficiency"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "RainCollectorBuilding",
-      "expected": "fun(?lektor<StringPair>)",
-      "header": "void _NV_getGUIToolTipForGroundResourceEfficiency(lektor<StringPair>& out)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RainCollectorBuilding, out: any)",
-      "member": "_NV_getGUIToolTipForGroundResourceEfficiency"
     },
     {
       "category": "enum_typed_as_integer",
@@ -15628,40 +15367,6 @@
       "kind": "method",
       "lua": "fun(self: RootObject): lightuserdata",
       "member": "_NV_getAABB"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "RootObject",
-      "expected": "fun(?lektor<StringPair>)",
-      "header": "void getGUIDataCategories(lektor<StringPair>& out)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObject, out: any)",
-      "member": "getGUIDataCategories"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "RootObject",
-      "expected": "fun(?lektor<StringPair>)",
-      "header": "void _NV_getGUIDataCategories(lektor<StringPair>& out)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObject, out: any)",
-      "member": "_NV_getGUIDataCategories"
     },
     {
       "category": "enum_typed_as_integer",
@@ -17360,34 +17065,6 @@
       "member": "mute"
     },
     {
-      "audited_categories": [
-        "binding_shape_differs",
-        "params_missing"
-      ],
-      "audited_issues": [
-        {
-          "actual": 1,
-          "category": "params_missing",
-          "expected": 2,
-          "position": null
-        },
-        {
-          "actual": 1,
-          "category": "binding_shape_differs",
-          "expected": 2,
-          "position": null
-        }
-      ],
-      "category": "known_binding_bug",
-      "class": "ToolTip",
-      "expected": "fun(MyGUI.Widget, hand)",
-      "header": "void setup(MyGUI::Widget* widget, const hand& data)",
-      "kind": "method",
-      "lua": "fun(self: ToolTip, arg1: MyGUI.Widget)",
-      "member": "setup_stringpairs",
-      "reason": "Checks argument 3 against LektorValueBinding<StringPair>::metaName, but lektor<StringPair> is never registered, so the metatable name is null."
-    },
-    {
       "category": "unmapped_header_type",
       "class": "Town",
       "expected": "fun(): ?TagsClass<BuildingDesignation>",
@@ -18754,58 +18431,11 @@
     {
       "category": "unmapped_header_type",
       "class": "UseableStuff",
-      "expected": "fun(?lektor<StringPair>)",
-      "header": "void getGUIToolTipForGroundResourceEfficiency(lektor<StringPair>& out)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: UseableStuff, out: any)",
-      "member": "getGUIToolTipForGroundResourceEfficiency"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "UseableStuff",
-      "expected": "fun(?lektor<StringPair>)",
-      "header": "void _NV_getGUIToolTipForGroundResourceEfficiency(lektor<StringPair>& out)",
-      "issues": [
-        {
-          "actual": "any",
-          "category": "unmapped_header_type",
-          "expected": "?lektor<StringPair>",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: UseableStuff, out: any)",
-      "member": "_NV_getGUIToolTipForGroundResourceEfficiency"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "UseableStuff",
       "expected": "?DoorLock*",
       "header": "DoorLock*",
       "kind": "property",
       "lua": "lightuserdata",
       "member": "doorLock"
-    },
-    {
-      "audited_categories": [
-        "binding_converts"
-      ],
-      "category": "known_binding_bug",
-      "class": "UseableStuff",
-      "expected": "boolean",
-      "header": "bool",
-      "kind": "property",
-      "lua": "hand",
-      "member": "occupantSelection",
-      "reason": "The getter pushes the C++ bool through HandBinding::push while the setter reads a boolean."
     },
     {
       "category": "enum_typed_as_integer",
@@ -19950,17 +19580,17 @@
   "schema_version": 1,
   "summary": {
     "binding_converts": 48,
-    "binding_pushes_raw_pointer": 168,
-    "binding_shape_differs": 104,
+    "binding_pushes_raw_pointer": 169,
+    "binding_shape_differs": 105,
     "blocking_issues": 0,
-    "container_methods_typed": 875,
+    "container_methods_typed": 925,
     "enum_typed_as_integer": 430,
-    "known_binding_bug": 16,
-    "methods": 7139,
-    "methods_matching_header": 5384,
-    "no_header_declaration": 268,
+    "known_binding_bug": 13,
+    "methods": 7189,
+    "methods_matching_header": 5399,
+    "no_header_declaration": 265,
     "properties": 3072,
-    "properties_matching_header": 2414,
-    "unmapped_header_type": 523
+    "properties_matching_header": 2424,
+    "unmapped_header_type": 501
   }
 }
