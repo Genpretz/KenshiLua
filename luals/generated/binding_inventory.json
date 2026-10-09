@@ -47918,6 +47918,54 @@
           "static": false
         },
         {
+          "callback": "ForgottenGUIBinding::createDatapanel",
+          "name": "createDatapanel",
+          "signature": {
+            "params": [
+              {
+                "name": "name",
+                "optional": false,
+                "type": "number|string"
+              },
+              {
+                "name": "win",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "scrolls",
+                "optional": false,
+                "type": "boolean|number"
+              },
+              {
+                "name": "arg4",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "arg5",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "arg6",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "arg7",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "DatapanelGUI"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "ForgottenGUIBinding::changeMouseCursor",
           "name": "changeMouseCursor",
           "signature": {

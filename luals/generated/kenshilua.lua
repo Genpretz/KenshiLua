@@ -597,6 +597,14 @@ DialogActionEnum = {
     DA_RETREAT_PHASE = 38,
     DA_VICTORY_PHASE = 39,
     DA_ENSLAVE_TARGETS_CARRIED_PERSON = 40,
+    CHOOSE_SLAVES_SELLING = 41,
+    CHOOSE_SLAVES_BUYING = 42,
+    CHOOSE_PRISONER_BAIL = 43,
+    CHOOSE_CONSCRIPTION = 44,
+    CHOOSE_RECRUITING = 45,
+    CHOOSE_HIRING_CONTRACT = 46,
+    SURRENDER_NON_HUMANS = 47,
+    CHOOSE_ANIMALS_BUYING = 48,
     DA_CLEAR_BOUNTY = 49,
     DA_PLAYER_SELL_PRISONERS = 50,
     DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE = 51,
@@ -3944,6 +3952,8 @@ taskPriority = {
 ---@class ForgottenGUI
 --- Handle of primary selected entity in world space (32 bytes: `0x2A0`–`0x2C0`).
 ---@field selectedObject hand
+--- Updates HUD telemetry bars, datapanels, or inspection tooltips `createDatapanel`.
+---@field createDatapanel fun(self: ForgottenGUI, nameOrTop: string|number, winOrLeft: MyGUI.Widget|number, scrollsOrWidth?: boolean|number, height?: number, scrolls?: boolean, layer?: string, window?: boolean): DatapanelGUI|nil
 --- Executes core GUI system management routine `clearGUI`.
 ---@field clearGUI fun(self: ForgottenGUI)
 --- Executes core GUI system management routine `shutDown`.
