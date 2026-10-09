@@ -13648,7 +13648,7 @@
   "metadata_only_functions": [
     "pcall"
   ],
-  "runtime_version": "0.3.6-alpha",
+  "runtime_version": "0.3.7-alpha",
   "schema_version": 2,
   "scope": "runtime bindings represented by binding_inventory.json",
   "summary": {
