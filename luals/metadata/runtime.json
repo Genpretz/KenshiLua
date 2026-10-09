@@ -59,33 +59,32 @@
     {
       "name": "KenshiLua.Events",
       "fields": [
-        { "name": "on", "type": "fun(eventName: KenshiLua.EventName|string, handler: KenshiLua.EventHandler): integer", "description": "Registers a handler and returns its ID." },
-        { "name": "off", "type": "fun(handlerId: integer)", "description": "Removes a handler. Unknown IDs are ignored." }
+        { "name": "on", "type": "fun(eventName: KenshiLua.EventName|string, handler: KenshiLua.EventHandler): integer", "description": "Registers `handler` for an engine event and returns an ID for `Events.off`. The handler receives event-specific arguments, and what its return value does depends on the event. Errors in a handler are logged. Handlers are removed when the script that registered them is reloaded." },
+        { "name": "off", "type": "fun(handlerId: integer)", "description": "Removes a handler by the ID `Events.on` returned. Unknown IDs are ignored." }
       ]
     },
     {
       "name": "KenshiLua.Api",
       "fields": [
-        { "name": "reloadMods", "type": "fun(): integer", "description": "Reloads scripts and returns the number of loaded scripts." },
-        { "name": "reloadScript", "type": "fun(path: string): boolean", "description": "Reloads one script by path." },
-        { "name": "enableHotReload", "type": "fun()" },
-        { "name": "disableHotReload", "type": "fun()" },
-        { "name": "isHotReloadEnabled", "type": "fun(): boolean" },
-        { "name": "toggleGui", "type": "fun()" },
-        { "name": "registerHandler", "type": "fun(eventName: KenshiLua.EventName|string, handler: KenshiLua.EventHandler): integer", "description": "Compatibility alias for Events.on." },
-        { "name": "unregisterHandler", "type": "fun(handlerId: integer)", "description": "Compatibility alias for Events.off." },
-        { "name": "Events", "type": "KenshiLua.Events" },
-        { "name": "version", "type": "fun(): string" },
-        { "name": "runBenchmark", "type": "fun(csvFilename?: string, logFilename?: string): string" },
-        { "name": "checkLuaScriptReferences", "type": "fun(): string" },
-        { "name": "log", "type": "fun(...: any)" },
-        { "name": "logDebug", "type": "fun(...: any)" },
-        { "name": "logWarn", "type": "fun(...: any)" },
-        { "name": "logError", "type": "fun(...: any)" },
-        { "name": "error", "type": "fun(...: any)" },
-        { "name": "profileStart", "type": "fun(mode?: string)" },
-        { "name": "profileStop", "type": "fun(): string" },
-        { "name": "profileDump", "type": "fun(): string" }
+        { "name": "reloadMods", "type": "fun(): integer", "description": "Rediscovers the scripts of active mods, reruns those under `scripts/init/` that are not stopped, and returns the number of discovered scripts. The event handlers and MyGUI widgets a script created are removed before it reruns." },
+        { "name": "reloadScript", "type": "fun(path: string): boolean", "description": "Reruns one script, given a path relative to the game directory or to an active mod's folder, such as `scripts/init/main.lua`. The event handlers and MyGUI widgets it created are removed first. Returns false if the script is not found, is stopped, or raises an error." },
+        { "name": "enableHotReload", "type": "fun()", "description": "Turns on hot reload, which reruns script files when they change on disk." },
+        { "name": "disableHotReload", "type": "fun()", "description": "Turns off hot reload." },
+        { "name": "isHotReloadEnabled", "type": "fun(): boolean", "description": "Returns whether hot reload is on." },
+        { "name": "toggleGui", "type": "fun()", "description": "Shows or hides the KenshiLua hub window." },
+        { "name": "registerHandler", "type": "fun(eventName: KenshiLua.EventName|string, handler: KenshiLua.EventHandler): integer", "description": "Compatibility alias for `Events.on`." },
+        { "name": "unregisterHandler", "type": "fun(handlerId: integer)", "description": "Compatibility alias for `Events.off`." },
+        { "name": "version", "type": "fun(): string", "description": "Returns the KenshiLua name and version, such as `KenshiLua 0.3.7-alpha`." },
+        { "name": "runBenchmark", "type": "fun(csvFilename?: string, logFilename?: string): string", "description": "Runs the KenshiLua binding benchmark and returns the report. Results are appended to a CSV file next to the KenshiLua DLL and to a log file in the logs directory, by default `KenshiLua_Benchmark_Runtime.csv` and `KenshiLua_Benchmark_Runtime.log`." },
+        { "name": "checkLuaScriptReferences", "type": "fun(): string", "description": "Scans the loaded game data for `run lua script` references and returns a report of each referencing item and the script file it points to." },
+        { "name": "log", "type": "fun(...: any)", "description": "Writes the arguments, converted to strings and separated by spaces, to the KenshiLua log." },
+        { "name": "logDebug", "type": "fun(...: any)", "description": "Writes the arguments to the KenshiLua log at debug level. Debug lines are written only when `log_level=debug` or `debug_logging=true` is set in KenshiLua's `config.ini`." },
+        { "name": "logWarn", "type": "fun(...: any)", "description": "Writes the arguments to the KenshiLua log at warning level." },
+        { "name": "logError", "type": "fun(...: any)", "description": "Writes the arguments to the KenshiLua log at error level." },
+        { "name": "error", "type": "fun(...: any)", "description": "Logs the arguments as an error prefixed with `Lua Error:`, then raises that message as a Lua error." },
+        { "name": "profileStart", "type": "fun(mode?: string)", "description": "Clears earlier samples and starts the LuaJIT sampling profiler. `mode` is a LuaJIT profiler mode string; the default `fi1` samples per function every millisecond." },
+        { "name": "profileStop", "type": "fun(): string", "description": "Stops the profiler, writes its report to the KenshiLua log, and returns the report." },
+        { "name": "profileDump", "type": "fun(): string", "description": "Returns the report of the samples collected so far without stopping the profiler." }
       ]
     },
     {
@@ -1046,15 +1045,29 @@
     },
     {
       "name": "hand",
+      "description": "Engine handle that identifies a game object by object type, index, and serial. Resolve it with a getter such as `getCharacter`, which returns nil when the handle does not resolve to an object of that type.",
       "fields": [
-        { "name": "getCharacter", "type": "fun(self: hand): Character|nil" },
-        { "name": "isNull", "type": "fun(self: hand): boolean", "description": "Tests whether this engine handle is null." },
-        { "name": "isValid", "type": "fun(self: hand): boolean" },
-        { "name": "operator_bool", "type": "fun(self: hand): boolean" },
-        { "name": "operator_eq", "type": "fun(self: hand, other: hand): boolean" },
-        { "name": "operator_ne", "type": "fun(self: hand, other: hand): boolean" },
-        { "name": "operator_lt", "type": "fun(self: hand, other: hand): boolean" }
-      ]
+        { "name": "getCharacter", "type": "fun(self: hand): Character|nil", "description": "Returns the character this handle refers to, or nil if it does not resolve to a character." },
+        { "name": "isNull", "type": "fun(self: hand): boolean", "description": "Returns whether the handle's type is `NULL_ITEM`. It does not check that the object still exists." },
+        { "name": "isValid", "type": "fun(self: hand): boolean", "description": "Returns whether the handle's type is a valid object type. It does not check that the object still exists; resolve the handle with a getter for that." },
+        { "name": "operator_bool", "type": "fun(self: hand): boolean", "description": "Returns whether the handle's type is not `NULL_ITEM`; the opposite of `isNull`." },
+        { "name": "operator_eq", "type": "fun(self: hand, other: hand): boolean", "description": "Returns whether two handles are equal under the engine's `hand::operator==`." },
+        { "name": "operator_ne", "type": "fun(self: hand, other: hand): boolean", "description": "Returns whether two handles differ under the engine's `hand::operator!=`." },
+        { "name": "operator_lt", "type": "fun(self: hand, other: hand): boolean", "description": "Orders two handles with the engine's `hand::operator<`." }
+      ],
+      "descriptions": {
+        "getPlatoon": "Returns the squad this handle refers to, or nil if it does not resolve to one.",
+        "getActivePlatoon": "Returns the active squad this handle refers to, or nil if it does not resolve to one.",
+        "getBuilding": "Returns the building this handle refers to, or nil if it does not resolve to one.",
+        "getItem": "Returns the item this handle refers to, or nil if it does not resolve to one.",
+        "getRootObject": "Returns the world object this handle refers to, or nil if it does not resolve to one.",
+        "getRootObjectBase": "Returns the object this handle refers to as a `RootObjectBase`, or nil if it does not resolve to one.",
+        "getTown": "Returns the town this handle refers to, or nil if it does not resolve to one.",
+        "setNull": "Clears the handle so that its type is `NULL_ITEM`.",
+        "toString": "Returns the engine's string form of the handle; `fromString` parses it back.",
+        "fromString": "Overwrites the handle with one parsed from the engine's string form, as returned by `toString`.",
+        "type": "Object type, an `itemType` value. `NULL_ITEM` marks a null handle."
+      }
     },
     {
       "name": "CharBody",
@@ -1074,8 +1087,8 @@
     {
       "name": "PlayerInterface",
       "fields": [
-        { "name": "selectedCharacter", "type": "hand" },
-        { "name": "selectedCharacters", "type": "OgreUnorderedSet<hand>" },
+        { "name": "selectedCharacter", "type": "hand", "description": "Handle of the player's selected character; `getSelectedCharacter()` resolves it." },
+        { "name": "selectedCharacters", "type": "OgreUnorderedSet<hand>", "description": "Handles of all characters the player has selected." },
         { "name": "selectedObject", "type": "hand" },
         { "name": "participant", "type": "Faction|nil" },
         { "name": "currentPlatoon", "type": "Platoon|nil" }
@@ -2037,8 +2050,8 @@
     { "name": "PortraitSquadItemBox", "fields": [ { "name": "getItemCount", "type": "fun(self: PortraitSquadItemBox): integer" }, { "name": "update", "type": "fun(self: PortraitSquadItemBox)" }, { "name": "squad", "type": "lightuserdata|nil" }, { "name": "squadView", "type": "lightuserdata|nil" } ] }
   ],
   "globals": [
-    { "name": "KenshiLua", "type": "KenshiLua.Api", "initialValue": "{}" },
-    { "name": "Events", "type": "KenshiLua.Events", "initialValue": "{}" },
+    { "name": "KenshiLua", "type": "KenshiLua.Api", "initialValue": "{}", "description": "KenshiLua runtime API: script reloading, logging, profiling, and diagnostics." },
+    { "name": "Events", "type": "KenshiLua.Events", "initialValue": "{}", "description": "Registers Lua handlers for engine events. An event's engine hook is installed when its first handler is registered." },
     { "name": "MyGUI", "type": "MyGUI.Api", "initialValue": "{}", "description": "Global MyGUI factory and utility table. Widgets returned from its factories are engine-owned." },
     { "name": "Gui", "type": "MyGUI.GuiStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI Gui singleton." },
     { "name": "InputManager", "type": "MyGUI.InputManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI input-manager singleton." },
@@ -2082,6 +2095,7 @@
   "functions": [
     {
       "name": "registerHandler",
+      "description": "Compatibility alias for `Events.on`.",
       "params": [
         { "name": "eventName", "type": "KenshiLua.EventName|string" },
         { "name": "handler", "type": "KenshiLua.EventHandler" }
@@ -2090,46 +2104,55 @@
     },
     {
       "name": "unregisterHandler",
+      "description": "Compatibility alias for `Events.off`.",
       "params": [ { "name": "handlerId", "type": "integer" } ],
       "returns": []
     },
     {
       "name": "getGameWorld",
+      "description": "Returns the game world, or nil before it exists.",
       "params": [],
       "returns": [ { "type": "GameWorld|nil" } ]
     },
     {
       "name": "getPlayerInterface",
+      "description": "Returns the player interface, or nil before the game world and player exist.",
       "params": [],
       "returns": [ { "type": "PlayerInterface|nil" } ]
     },
     {
       "name": "getInputHandler",
+      "description": "Returns the engine input handler, or nil before it exists.",
       "params": [],
       "returns": [ { "type": "InputHandler|nil" } ]
     },
     {
       "name": "getSelectedCharacter",
+      "description": "Returns the player's selected character, or nil when none is selected or the game world is not ready.",
       "params": [],
       "returns": [ { "type": "Character|nil" } ]
     },
     {
       "name": "getRootObjectFactory",
+      "description": "Returns the game world's object factory, or nil before it exists.",
       "params": [],
       "returns": [ { "type": "RootObjectFactory|nil" } ]
     },
     {
       "name": "getGlobalConstants",
+      "description": "Returns the engine's global constants, or nil before they are loaded.",
       "params": [],
       "returns": [ { "type": "GlobalConstants|nil" } ]
     },
     {
       "name": "getOptionsHolder",
+      "description": "Returns the game options, or nil before they are loaded.",
       "params": [],
       "returns": [ { "type": "OptionsHolder|nil" } ]
     },
     {
       "name": "getForgottenGUI",
+      "description": "Returns the game's main GUI object, or nil before it exists.",
       "params": [],
       "returns": [ { "type": "ForgottenGUI|nil" } ]
     },

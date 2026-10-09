@@ -18,6 +18,11 @@ PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 OUTPUT_PATH = PROJECT_ROOT / "luals" / "metadata" / "kenshilib_descriptions.json"
 
 
+def strip_doc_links(text):
+    """Keep the text of links to other docs pages; their targets do not exist in LuaLS hovers."""
+    return re.sub(r"\[([^\]]+)\]\((?![a-z]+://)[^)]*\)", r"\1", text)
+
+
 def clean_summary(text):
     text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
     text = re.sub(r"^\|.*$", "", text, flags=re.MULTILINE)
@@ -34,7 +39,7 @@ def clean_summary(text):
         return ""
     # The final paragraph before Parameters/Returns is the method summary;
     # earlier paragraphs are usually signature metadata or code fences.
-    return paragraphs[-1]
+    return strip_doc_links(paragraphs[-1])
 
 
 def parse_memory_layout(text):
@@ -53,7 +58,7 @@ def parse_memory_layout(text):
         member_match = re.fullmatch(r"`([^`]+)`", cells[2])
         if not member_match:
             continue
-        description = re.sub(r"\s+", " ", cells[3]).strip()
+        description = strip_doc_links(re.sub(r"\s+", " ", cells[3]).strip())
         if description:
             properties[member_match.group(1)] = description
     return properties

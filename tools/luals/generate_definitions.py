@@ -265,19 +265,12 @@ def expand_inventory_fields(metadata):
                         method_type += ": " + "|".join(signature["returns"])
                 else:
                     method_type = "fun(...: any): any" if method.get("static") else "fun(self: " + lua_type + ", ...: any): any"
+                # How a signature was inferred is generator provenance, not
+                # API documentation, so undocumented members get no comment.
                 fields.append({
                     "name": name,
                     "type": method_type,
-                    "description": (
-                        method_description(name)
-                        or (
-                            "Reviewed contract of the `{0}` container template.".format(source.get("template"))
-                            if signature is not None and signature.get("type_source") == "container"
-                            else "Signature inferred from Lua stack checks and callback return pushes in the binding source."
-                            if signature is not None
-                            else "Registered engine method; signature pending source audit."
-                        )
-                    ),
+                    "description": method_description(name),
                 })
                 names.add(name)
         for prop in [] if static_only else source.get("properties", []):
@@ -286,16 +279,7 @@ def expand_inventory_fields(metadata):
                 fields.append({
                     "name": name,
                     "type": prop.get("type", "any"),
-                    "description": (
-                        property_descriptions.get(name)
-                        or (
-                            "Property type inferred from the binding setter's checked Lua value."
-                            if prop.get("type_source") == "setter"
-                            else "Property type inferred from the binding getter's callback return pushes."
-                        )
-                        if prop.get("type")
-                        else "Registered engine property; type pending source audit."
-                    ),
+                    "description": property_descriptions.get(name),
                 })
                 names.add(name)
         for field in fields:
@@ -305,6 +289,28 @@ def expand_inventory_fields(metadata):
             elif field["name"] in property_descriptions:
                 field["description"] = property_descriptions[field["name"]]
     return expanded
+
+
+def apply_description_overlays(metadata):
+    """Describe members that neither KenshiLib-docs nor a reviewed field covers.
+
+    A class's ``descriptions`` map in runtime.json names members by Lua name, so
+    inventory-backed members gain a description without pinning their
+    inferred types in a reviewed field.
+    """
+    for class_entry in metadata.get("classes", []):
+        overlay = class_entry.pop("descriptions", None)
+        if not overlay:
+            continue
+        fields = {field["name"]: field for field in class_entry.get("fields", [])}
+        unknown = sorted(set(overlay) - set(fields))
+        if unknown:
+            raise ValueError("descriptions for undeclared members of {0}: {1}".format(
+                class_entry["name"], ", ".join(unknown)))
+        for name, description in overlay.items():
+            if not fields[name].get("description"):
+                fields[name]["description"] = description
+    return metadata
 
 
 def add_inventory_forward_declarations(metadata, global_enums, nested_enums):
@@ -321,7 +327,7 @@ def add_inventory_forward_declarations(metadata, global_enums, nested_enums):
                 "description": (
                     "Lua view of the `{0}` container.".format(entry["metatable"])
                     if entry.get("kind") == "template_instance"
-                    else "Forward declaration from the registered binding inventory."
+                    else None
                 ),
                 "fields": [],
             })
@@ -421,6 +427,7 @@ def add_container_generics(metadata, inventory, declared):
 def generate(metadata, version, global_enums, nested_enums, event_names):
     metadata = add_inventory_forward_declarations(metadata, global_enums, nested_enums)
     metadata = expand_inventory_fields(metadata)
+    metadata = apply_description_overlays(metadata)
     lines = [
         "---@meta",
         "",

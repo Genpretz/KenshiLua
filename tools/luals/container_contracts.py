@@ -113,6 +113,72 @@ INDEXERS = {
     "map": ("K", "V|nil"),
 }
 
+# Hover text for the generic classes, checked against the same template
+# sources as the contracts above.
+_COPY_KEYS_NOTE = (
+    " Object keys in the copy are new userdata, so find an object with `has`"
+    " rather than by indexing the copy."
+)
+_LIST_DOCS = {
+    "push": "Appends a value to the end.",
+    "push_back": "Appends a value to the end.",
+    "push_front": "Inserts a value at the front.",
+    "pop": "Removes and returns the last element. Raises an error if the container is empty.",
+    "pop_back": "Removes and returns the last element. Raises an error if the container is empty.",
+    "pop_front": "Removes and returns the first element. Raises an error if the container is empty.",
+    "front": "Returns the first element, or nil if the container is empty.",
+    "back": "Returns the last element, or nil if the container is empty.",
+    "removeAt": "Removes the element at a 1-based index. Raises an error if the index is out of range.",
+    "clear": "Removes all elements.",
+    "empty": "Returns whether the container has no elements.",
+    "reserve": "Reserves storage for at least `count` elements without changing the size.",
+    "size": "Returns the number of elements.",
+    "toTable": "Copies the elements into a new Lua array.",
+}
+_SET_DOCS = {
+    "has": "Returns whether the set contains the value.",
+    "contains": "Returns whether the set contains the value.",
+    "add": "Inserts the value. Returns false if it was already present.",
+    "insert": "Inserts the value. Returns false if it was already present.",
+    "remove": "Removes the value. Returns whether it was present.",
+    "erase": "Removes the value. Returns whether it was present.",
+    "clear": "Removes all elements.",
+    "size": "Returns the number of elements.",
+    "toTable": "Copies the elements into a new table that maps each element to `true`." + _COPY_KEYS_NOTE,
+    "items": "Returns an iterator over a snapshot of the elements; each step yields an element and `true`.",
+}
+_MAP_DOCS = {
+    "has": "Returns whether the map contains the key.",
+    "contains": "Returns whether the map contains the key.",
+    "remove": "Removes the key. Returns whether it was present.",
+    "erase": "Removes the key. Returns whether it was present.",
+    "clear": "Removes all entries.",
+    "size": "Returns the number of entries.",
+    "toTable": "Copies the entries into a new Lua table." + _COPY_KEYS_NOTE,
+    "pairs": "Returns an iterator over a snapshot of the entries; each step yields a key and its value.",
+}
+METHOD_DOCS = {
+    "list": _LIST_DOCS,
+    "readonly_list": _LIST_DOCS,
+    "set": _SET_DOCS,
+    "map": _MAP_DOCS,
+}
+METHOD_DOC_OVERRIDES = {
+    ("StdSetBinding", "insert"): "Inserts the value.",
+}
+INDEXER_DOCS = {
+    "list": "Element at a 1-based index, or nil if the index is out of range.",
+    "readonly_list": "Element at a 1-based index, or nil if the index is out of range.",
+    "set": "Whether the set contains the value.",
+    "map": "Value stored under the key, or nil if the key is absent.",
+}
+CLASS_DOCS = {
+    "list": "Engine `{0}` list. Indexes are 1-based.",
+    "readonly_list": "Read-only engine `{0}` list. Indexes are 1-based.",
+    "set": "Engine `{0}` set. `set[value]` returns whether the set contains the value.",
+    "map": "Engine `{0}` map. `map[key]` returns the value stored under the key, or nil.",
+}
+
 # Non-generic container helpers keep a concrete class name.
 NAME_OVERRIDES = {
     "FitnessSelector<CampaignTriggerData*>": "FitnessSelectorCampaignTriggerData",
@@ -198,7 +264,7 @@ def generic_class(template, method_names):
     fields = [{
         "name": "[" + substitute(index_key, key_type, value_type) + "]",
         "type": substitute(index_type, key_type, value_type),
-        "description": "Element access through the container's `__index` metamethod.",
+        "description": INDEXER_DOCS[kind],
     }]
     for method_name in method_names:
         found = contract(template, method_name)
@@ -212,10 +278,15 @@ def generic_class(template, method_names):
         method_type = "fun(" + ", ".join(rendered) + ")"
         if returns:
             method_type += ": " + ", ".join(substitute(item, key_type, value_type) for item in returns)
-        fields.append({"name": method_name, "type": method_type})
+        fields.append({
+            "name": method_name,
+            "type": method_type,
+            "description": METHOD_DOC_OVERRIDES.get((template, method_name)) or METHOD_DOCS[kind].get(method_name),
+        })
+    cpp_type = FAMILIES[template][2][0].format(", ".join(params))
     return {
         "name": self_type,
-        "description": "Lua view of the `{0}` container template.".format(template),
+        "description": CLASS_DOCS[kind].format(cpp_type),
         "fields": fields,
     }
 

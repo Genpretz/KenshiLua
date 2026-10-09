@@ -2,7 +2,7 @@
   "source": "KenshiLib-docs/docs",
   "classes": {
     "AI": {
-      "description": "Master character artificial intelligence controller. Governs individual Goal-Oriented Action Planning (GOAP) precondition evaluation, sensory perception, order execution pipelines, squad mission targeting, combat arbitration, and movement coordination. Coordinates directly with [`Character`](character.md) for entity state, [`SensoryData`](sensorydata.md) for vision and awareness, [`AITaskSytem`](aitasksytem.md) for job/order priority stacks, [`Platoon`](platoon.md) for squad blackboards, and [`Blackboard`](blackboard.md) for collective tactical memory.",
+      "description": "Master character artificial intelligence controller. Governs individual Goal-Oriented Action Planning (GOAP) precondition evaluation, sensory perception, order execution pipelines, squad mission targeting, combat arbitration, and movement coordination. Coordinates directly with `Character` for entity state, `SensoryData` for vision and awareness, `AITaskSytem` for job/order priority stacks, `Platoon` for squad blackboards, and `Blackboard` for collective tactical memory.",
       "methods": {
         "getStateBroadcast": "Returns pointer to outward `StateBroadcastData` reflecting animation actions, current posture, and dialogue state to external observers.",
         "_notifyTaskComplete": "Internal callback invoked when active motor action or GOAP task completes, advancing the task queue to the next sequential action.",
@@ -465,7 +465,7 @@
       }
     },
     "AnimationClass": {
-      "description": "Core skeletal animation controller and locomotion blending coordinator governing character poses, movement cycles, combat techniques, stumbles, and ragdoll transitions. Manages Ogre3D skeletal animation layers, motion smoothing filters, pain overlay blend masks, and physics ragdoll kinematics coupling. Interacts directly with [`Character`](character.md) for actor state, [`CharMovement`](charmovement.md) for locomotion velocity and steering, [`AppearanceBase`](appearancebase.md) for skeletal mesh scaling and body morphs, and [`CombatClass`](combatclass.md) for attack and parry sequence timing.",
+      "description": "Core skeletal animation controller and locomotion blending coordinator governing character poses, movement cycles, combat techniques, stumbles, and ragdoll transitions. Manages Ogre3D skeletal animation layers, motion smoothing filters, pain overlay blend masks, and physics ragdoll kinematics coupling. Interacts directly with `Character` for actor state, `CharMovement` for locomotion velocity and steering, `AppearanceBase` for skeletal mesh scaling and body morphs, and `CombatClass` for attack and parry sequence timing.",
       "methods": {
         "AnimationClass": "Constructs the `AnimationClass` skeletal controller, initializing animation requirement buffers, ragdoll kinematics couplers, and Ogre animation layer channels.",
         "~AnimationClass": "Virtual destructor releasing all active skeletal animation states, tearing down PhysX ragdoll bindings, and unregistering motion filters.",
@@ -1171,7 +1171,7 @@
       }
     },
     "Building": {
-      "description": "Master architectural and structural simulation entity representing buildings, outposts, town gates, defensive walls, manufacturing facilities, and interior furniture items. Manages construction material delivery, construction progress tracking, structural dismantling, town ownership, power grid connectivity, Havok navmesh cutouts, PhysX collision hulls, Ogre3D scene node hierarchies, positional audio emitters, interior visibility culling, and character job/usage interaction nodes. Interacts directly with [`Town`](town.md) for settlement ownership, [`TownBuildingsManager`](townbuildingsmanager.md) for municipal infrastructure, [`BuildingInterior`](buildinginterior.md) for interior furniture layouts, [`DoorStuff`](doorstuff.md) for gateway/door security, [`UsageNode`](usagenode.md) for worker and craft station bindings, and child specializations ([`UseableStuff`](useablestuff.md), [`StorageBuilding`](storagebuilding.md), [`ProductionBuilding`](productionbuilding.md), [`CraftingBuilding`](craftingbuilding.md), [`FarmBuilding`](farmbuilding.md), [`WallBuilding`](wallbuilding.md), [`GatewayBuilding`](gatewaybuilding.md)).",
+      "description": "Master architectural and structural simulation entity representing buildings, outposts, town gates, defensive walls, manufacturing facilities, and interior furniture items. Manages construction material delivery, construction progress tracking, structural dismantling, town ownership, power grid connectivity, Havok navmesh cutouts, PhysX collision hulls, Ogre3D scene node hierarchies, positional audio emitters, interior visibility culling, and character job/usage interaction nodes. Interacts directly with `Town` for settlement ownership, `TownBuildingsManager` for municipal infrastructure, `BuildingInterior` for interior furniture layouts, `DoorStuff` for gateway/door security, `UsageNode` for worker and craft station bindings, and child specializations (`UseableStuff`, `StorageBuilding`, `ProductionBuilding`, `CraftingBuilding`, `FarmBuilding`, `WallBuilding`, `GatewayBuilding`).",
       "methods": {
         "getScale": "Executes `getScale` operation on `Building`, updating internal structural state and notifying relevant subsystems.",
         "getBuildState": "Executes `getBuildState` operation on `Building`, updating internal structural state and notifying relevant subsystems.",
@@ -1514,7 +1514,7 @@
       }
     },
     "CharStats": {
-      "description": "Attribute, combat skill, racial bonus, damage curve, and experience points (XP) calculation engine for `Character` actors. Manages primary attributes (Strength, Dexterity, Toughness, Perception) and secondary proficiencies (Martial Arts, Melee Attack/Defence, Weapon proficiencies, Athletics, Stealth, Thievery, Crafting, Medicine, Crossbows, and Turrets). Governs movement dynamics (run speed, encumbrance penalties, swim speed, stealth speed), combat speed (attack/block timing, weapon weight penalties), damage scaling (cut, blunt, pierce, bleed), environmental weather hazard protection, and experience event dispatching. Coordinates directly with [`Character`](character.md) for entity state, [`MedicalSystem`](medicalsystem.md) for health and wound penalties, [`Inventory`](inventory.md) for weight encumbrance, and [`CombatClass`](combatclass.md) for attack selection and damage resolution.",
+      "description": "Attribute, combat skill, racial bonus, damage curve, and experience points (XP) calculation engine for `Character` actors. Manages primary attributes (Strength, Dexterity, Toughness, Perception) and secondary proficiencies (Martial Arts, Melee Attack/Defence, Weapon proficiencies, Athletics, Stealth, Thievery, Crafting, Medicine, Crossbows, and Turrets). Governs movement dynamics (run speed, encumbrance penalties, swim speed, stealth speed), combat speed (attack/block timing, weapon weight penalties), damage scaling (cut, blunt, pierce, bleed), environmental weather hazard protection, and experience event dispatching. Coordinates directly with `Character` for entity state, `MedicalSystem` for health and wound penalties, `Inventory` for weight encumbrance, and `CombatClass` for attack selection and damage resolution.",
       "methods": {
         "CharStats": "Constructs a new `CharStats` instance, initializing primary attributes and proficiencies to default zero baseline, setting multiplier scalars to 1.0, configuring the unarmed hand weapon slot, and clearing racial bonus mappings.",
         "serialise": "Serializes and deserializes the full state of character attributes, current XP progression, skill values, and personality parameters to or from a savegame `GameData` node.",
@@ -1758,7 +1758,7 @@
       }
     },
     "Character": {
-      "description": "Primary entity actor representing all humanoid and creature characters across the game world. Coordinates AI execution, combat, movement, anatomical damage, inventories, equipment, physics ragdolls, perception, and dialogues. Interacts directly with [`MedicalSystem`](medicalsystem.md) for anatomical limb damage and vital hitpoints, [`CharStats`](charstats.md) for attributes and skill calculations, [`AI`](ai.md) for Goal-Oriented Action Planning and jobs, [`CombatClass`](combatclass.md) for melee combat execution, [`RangedCombatClass`](rangedcombatclass.md) for crossbow targeting, [`Inventory`](inventory.md) for equipment slots and items, [`CharMovement`](charmovement.md) for locomotion pathfinding, [`CharBody`](charbody.md) for visual mesh and detached limbs, and [`Platoon`](platoon.md) for squad membership and command structures.",
+      "description": "Primary entity actor representing all humanoid and creature characters across the game world. Coordinates AI execution, combat, movement, anatomical damage, inventories, equipment, physics ragdolls, perception, and dialogues. Interacts directly with `MedicalSystem` for anatomical limb damage and vital hitpoints, `CharStats` for attributes and skill calculations, `AI` for Goal-Oriented Action Planning and jobs, `CombatClass` for melee combat execution, `RangedCombatClass` for crossbow targeting, `Inventory` for equipment slots and items, `CharMovement` for locomotion pathfinding, `CharBody` for visual mesh and detached limbs, and `Platoon` for squad membership and command structures.",
       "methods": {
         "Character": "Primary constructor initializing character entity, binding RootObject scene nodes, creating MedicalSystem, CharStats, AI, CharMovement, BountyManager, and registering with owning faction.",
         "isImmuneToOffscreenMode": "Performs internal character operation `isImmuneToOffscreenMode`, synchronizing actor state across subsystems.",
@@ -2166,7 +2166,7 @@
       }
     },
     "CharacterEditWindow": {
-      "description": "Plastic surgeon and character creation window. Provides procedural bone scaling sliders, muscle and bulk blend curves, posture options, race/gender selection, and mesh export/import. Coordinates an orbital preview camera ([`CharacterEditCamera`](#)), multi-character squad setups ([`Character`](character.md)), procedural skeletal morph blending, and disk persistence for `.bod2` body preset files.",
+      "description": "Plastic surgeon and character creation window. Provides procedural bone scaling sliders, muscle and bulk blend curves, posture options, race/gender selection, and mesh export/import. Coordinates an orbital preview camera (`CharacterEditCamera`), multi-character squad setups (`Character`), procedural skeletal morph blending, and disk persistence for `.bod2` body preset files.",
       "methods": {
         "CharacterEditWindow": "Primary constructor for `CharacterEditWindow`. Initializes BaseLayout XML interface, creates orbital inspection camera (`CharacterEditCamera`), sets up 3D viewport platform and lighting nodes, builds race/subrace tables, initializes multi-character array, and configures UI category buttons.",
         "~CharacterEditWindow": "Virtual destructor deallocating 3D preview platform, releasing orbital camera controller, cleaning up temporary mesh clones and appearance dictionaries, and unregistering MyGUI listeners.",
@@ -2283,7 +2283,7 @@
       }
     },
     "CombatClass": {
-      "description": "Master tactical melee combat controller governing realtime weapon exchanges, directional swing trajectories, defensive blocking arcs, damage mitigations, and attack slot reservations. Coordinates directly with [`AnimationClass`](animationclass.md) for skeletal motion, [`CharStats`](charstats.md) for combat formulas and weapon skills, [`MedicalSystem`](medicalsystem.md) for anatomical trauma, and [`CharMovement`](movement.md) for combat spacing.",
+      "description": "Master tactical melee combat controller governing realtime weapon exchanges, directional swing trajectories, defensive blocking arcs, damage mitigations, and attack slot reservations. Coordinates directly with `AnimationClass` for skeletal motion, `CharStats` for combat formulas and weapon skills, `MedicalSystem` for anatomical trauma, and `CharMovement` for combat spacing.",
       "methods": {
         "CombatClass": "Constructs the `CombatClass` melee state machine controller, binding subsystems for locomotion, artificial intelligence, skeletal animation, attributes, and medical trauma, while registering discrete state handler classes into `stateMap`.",
         "~CombatClass": "Destructs the `CombatClass` instance, resetting targeting notifications, removing active attacker registrations, and releasing dynamically allocated `CombatState` objects in `stateMap`.",
@@ -2409,7 +2409,7 @@
       }
     },
     "CombatClassAI": {
-      "description": "Autonomous tactical combat decision engine extending [`CombatClass`](combatclass.md) with NPC AI behaviors. Implements tactical target selection, NavMesh line-of-sight raycasts, distance maintenance (`isInMeiDistance`), circling and strafing maneuvers (`circleState`), attack slot queue waiting (`waitState`), and priority arbitration (`whoAttacksYouOrMe`).",
+      "description": "Autonomous tactical combat decision engine extending `CombatClass` with NPC AI behaviors. Implements tactical target selection, NavMesh line-of-sight raycasts, distance maintenance (`isInMeiDistance`), circling and strafing maneuvers (`circleState`), attack slot queue waiting (`waitState`), and priority arbitration (`whoAttacksYouOrMe`).",
       "methods": {
         "CombatClassAI": "Constructs the `CombatClassAI` controller, initializing base `CombatClass`, allocating the line-of-sight raycast tracer, and setting target tracking defaults.",
         "~CombatClassAI": "Destructs the `CombatClassAI` instance, releasing allocated line-of-sight tracer objects.",
@@ -2485,7 +2485,7 @@
       }
     },
     "ContainerItem": {
-      "description": "Wearable backpack and storage container item. Extends [`Item`](item.md) and [`RaceLimiter`](racelimiter.md) with nested [`Inventory`](inventory.md) management, weight reduction scaling, athletics speed modifiers, combat skill penalties, stealth penalties, and race equipment whitelist/blacklist verification.",
+      "description": "Wearable backpack and storage container item. Extends `Item` and `RaceLimiter` with nested `Inventory` management, weight reduction scaling, athletics speed modifiers, combat skill penalties, stealth penalties, and race equipment whitelist/blacklist verification.",
       "methods": {
         "ContainerItem": "Constructs a `ContainerItem` instance, initializing base item states, reading backpack combat and speed penalties from the FCS blueprint, instantiating the internal nested `Inventory`, and populating race exclusion lists.",
         "~ContainerItem": "Destructs the `ContainerItem`, closing any open GUI panels via `ForgottenGUI::closeInventory`, deleting the nested `Inventory`, clearing race sets, and invoking base item destructors.",
@@ -2614,7 +2614,7 @@
       }
     },
     "Faction": {
-      "description": "Political superstructure governing diplomatic reputation scores, sovereign territorial biomes, military squad rosters, law enforcement alliances, economic trade cultures, and war campaigns. Interacts directly with [`FactionManager`](factionmanager.md) for global faction registration, [`Platoon`](platoon.md) for military and civilian squad simulation, [`Character`](character.md) for individual entity allegiance, [`FactionRelations`](factionrelations.md) for pairwise diplomatic standings, [`FactionWarMgr`](factionwarmgr.md) for military assaults, [`TradeCulture`](tradeculture.md) for contraband and tariffs, and [`FactionLeader`](factionleader.md) for political leadership hierarchies.",
+      "description": "Political superstructure governing diplomatic reputation scores, sovereign territorial biomes, military squad rosters, law enforcement alliances, economic trade cultures, and war campaigns. Interacts directly with `FactionManager` for global faction registration, `Platoon` for military and civilian squad simulation, `Character` for individual entity allegiance, `FactionRelations` for pairwise diplomatic standings, `FactionWarMgr` for military assaults, `TradeCulture` for contraband and tariffs, and `FactionLeader` for political leadership hierarchies.",
       "methods": {
         "Faction": "Primary constructor initializing faction political identity, allocating active and unloaded platoon containers, and initializing trade culture, racial fitness selectors, and diplomatic relations.",
         "~Faction": "Virtual destructor releasing all active squads, unloading background platoons, destroying diplomatic relations tables, and unregistering from the global FactionManager.",
@@ -2906,7 +2906,7 @@
       }
     },
     "ForgottenGUI": {
-      "description": "Master GUI manager coordinating the MyGUI rendering framework, viewport scaling, mouse cursor states, main HUD bars, floating window lifecycles, and context menus. Interacts directly with [`MainBarGUI`](mainbargui.md) for bottom HUD control bars and portraits, [`InventoryGUI`](inventorygui.md) for character, container, and shop barter layouts, [`DatapanelGUI`](datapanelgui.md) for character and building telemetry readouts, [`ToolTip`](tooltip.md) for hovering item inspections, [`CharacterEditWindow`](charactereditwindow.md) for character creation morphs, and [`ScreenLabelInterface`](screenlabelinterface.md) for 3D floating damage and dialogue labels.",
+      "description": "Master GUI manager coordinating the MyGUI rendering framework, viewport scaling, mouse cursor states, main HUD bars, floating window lifecycles, and context menus. Interacts directly with `MainBarGUI` for bottom HUD control bars and portraits, `InventoryGUI` for character, container, and shop barter layouts, `DatapanelGUI` for character and building telemetry readouts, `ToolTip` for hovering item inspections, `CharacterEditWindow` for character creation morphs, and `ScreenLabelInterface` for 3D floating damage and dialogue labels.",
       "methods": {
         "ForgottenGUI": "Primary constructor initializing the MyGUI singleton coordinator, cursor state buffers, window tracking collections, and screen label mutexes.",
         "~ForgottenGUI": "Virtual destructor destroying all active MyGUI widgets, unhooking Ogre render window event listeners, and freeing window wrappers.",
@@ -3066,7 +3066,7 @@
       }
     },
     "GameData": {
-      "description": "Universal object-relational data model record for the Kenshi engine and Forgotten Construction Set (FCS). Encapsulates typed primitive dictionaries (bool, int, float, string, file, vector, quaternion), ordered references with integer triplet values, world placement instances, dirty tracking for mod stack layering, and binary/text disk persistence. Interacts directly with [`GameDataContainer`](gamedatacontainer.md) for master mod record ownership, [`GameDataManager`](gamedatamanager.md) for active file mod stacking, and [`RootObjectFactory`](rootobjectfactory.md) for converting data templates into live game objects.",
+      "description": "Universal object-relational data model record for the Kenshi engine and Forgotten Construction Set (FCS). Encapsulates typed primitive dictionaries (bool, int, float, string, file, vector, quaternion), ordered references with integer triplet values, world placement instances, dirty tracking for mod stack layering, and binary/text disk persistence. Interacts directly with `GameDataContainer` for master mod record ownership, `GameDataManager` for active file mod stacking, and `RootObjectFactory` for converting data templates into live game objects.",
       "methods": {
         "~GameData": "Virtual destructor clearing all dynamic attribute dictionaries, releasing child references, freeing placement instances, and unhooking from parent container.",
         "GameData": "Primary constructor for `GameData`, allocating primitive typed attribute maps (bdata, idata, fdata, sdata), reference tables, and instance placement maps.",
@@ -3243,7 +3243,7 @@
       }
     },
     "GameWorld": {
-      "description": "Master game world simulation coordinator. Manages global game databases (gamedata, leveldata, savedata), physics, audio, root object factories, active mod lists, frame speeds, simulation pause states, system messages, and entity destruction queues. Interacts directly with [`GameDataManager`](gamedatamanager.md) for FCS template assets and world state storage, [`RootObjectFactory`](rootobjectfactory.md) for entity instantiation, [`FactionManager`](factionmanager.md) for diplomatic alignments and warfare, [`NavMesh`](navmesh.md) for terrain pathfinding geometry, [`ZoneManager`](zonemanager.md) for spatial world chunk paging, and [`PlayerInterface`](playerinterface.md) for human player commands.",
+      "description": "Master game world simulation coordinator. Manages global game databases (gamedata, leveldata, savedata), physics, audio, root object factories, active mod lists, frame speeds, simulation pause states, system messages, and entity destruction queues. Interacts directly with `GameDataManager` for FCS template assets and world state storage, `RootObjectFactory` for entity instantiation, `FactionManager` for diplomatic alignments and warfare, `NavMesh` for terrain pathfinding geometry, `ZoneManager` for spatial world chunk paging, and `PlayerInterface` for human player commands.",
       "methods": {
         "justLoadFactionRelations": "Handles mod data, faction relationships, or platoon persistence `justLoadFactionRelations`.",
         "errorToLogReleaseMode": "Handles mod data, faction relationships, or platoon persistence `errorToLogReleaseMode`.",
@@ -3781,7 +3781,7 @@
       }
     },
     "Inventory": {
-      "description": "Master container and item lifecycle coordinator governing multi-section 2D item grids, equipment paperdoll slots, automated item arrangement, container weight multipliers, encumbrance recalculations, currency transactions, theft status validation, and savegame serialization. Interacts directly with [`InventorySection`](inventorysection.md) for spatial slot arrays, [`Item`](item.md) for concrete physical objects, [`Character`](character.md) for personal equipment, and [`ShopTrader`](shoptrader.md) for mercantile inventories.",
+      "description": "Master container and item lifecycle coordinator governing multi-section 2D item grids, equipment paperdoll slots, automated item arrangement, container weight multipliers, encumbrance recalculations, currency transactions, theft status validation, and savegame serialization. Interacts directly with `InventorySection` for spatial slot arrays, `Item` for concrete physical objects, `Character` for personal equipment, and `ShopTrader` for mercantile inventories.",
       "methods": {
         "Inventory": "Constructs an `Inventory` instance, assigning the owning entity, allocating the room cache, and initializing section lookup structures.",
         "~Inventory": "Destructs the `Inventory` instance, clearing all items, deleting child `InventorySection` instances, and releasing the room cache.",
@@ -3865,7 +3865,7 @@
       }
     },
     "InventoryGUI": {
-      "description": "2D graphical inventory window governing tile grid interactions, drag-and-drop item movement, shop barter validation, paperdoll equipment slots, and thievery detection. Coordinates child windows for equipped backpacks ([`ContainerItem`](containeritem.md)), communicates with `ForgottenGUI` for modal dialogue popups, and integrates with `DatapanelGUI` for live character stat readouts.",
+      "description": "2D graphical inventory window governing tile grid interactions, drag-and-drop item movement, shop barter validation, paperdoll equipment slots, and thievery detection. Coordinates child windows for equipped backpacks (`ContainerItem`), communicates with `ForgottenGUI` for modal dialogue popups, and integrates with `DatapanelGUI` for live character stat readouts.",
       "methods": {
         "autoChangeSelectedObject": "Virtual notification handler invoked when the active game entity selection changes. InventoryGUI overrides this as a no-op.",
         "update": "Per-frame window update method. Refreshes hover tooltips, processes pending dirty section redraws (`needItemsUpdate`), updates thievery probability indicators, and synchronizes datapanel stats.",
@@ -3946,7 +3946,7 @@
       }
     },
     "InventorySection": {
-      "description": "Discrete 2D spatial inventory container grid managing item tile placement, cell occupancy bitmaps, equipment slot validation, stack bonuses, backpack weight reductions, and event callbacks. Each `InventorySection` belongs to a parent [`Inventory`](inventory.md) instance and coordinates directly with [`Item`](item.md) instances, [`Character`](character.md) equipment slots, and [`RaceLimiter`](racelimiter.md) gear restriction rules.",
+      "description": "Discrete 2D spatial inventory container grid managing item tile placement, cell occupancy bitmaps, equipment slot validation, stack bonuses, backpack weight reductions, and event callbacks. Each `InventorySection` belongs to a parent `Inventory` instance and coordinates directly with `Item` instances, `Character` equipment slots, and `RaceLimiter` gear restriction rules.",
       "methods": {
         "InventorySection": "Constructs an `InventorySection` instance, configuring grid dimensions, parent container reference, attachment slot constraints, equipment flags, and allocating the 2D occupancy grid.",
         "~InventorySection": "Destructs the `InventorySection`, tearing down all placed items through `GameWorld::destroy`, freeing `veryLimitedSlot` buffers, deallocating the 2D grid via NedPooling allocator, and clearing the item vector.",
@@ -4015,7 +4015,7 @@
       }
     },
     "Item": {
-      "description": "Base class representing all concrete physical object entities in Kenshi. Governs 3D OGRE mesh instantiation, PhysX rigid body dynamics, world streaming paging checks, inventory containment links, ownership and theft tracking, persistence across saves, crafting attributes, and specialized downcast RTTI methods for [`Armour`](armour.md), [`Weapon`](weapon.md), [`Crossbow`](crossbow.md), [`Gear`](gear.md), and [`LockedArmour`](lockedarmour.md).",
+      "description": "Base class representing all concrete physical object entities in Kenshi. Governs 3D OGRE mesh instantiation, PhysX rigid body dynamics, world streaming paging checks, inventory containment links, ownership and theft tracking, persistence across saves, crafting attributes, and specialized downcast RTTI methods for `Armour`, `Weapon`, `Crossbow`, `Gear`, and `LockedArmour`.",
       "methods": {
         "Item": "Constructs an `Item` instance, initializing base `InventoryItemBase` parameters, copying manufacturer and material references, setting default physics flags, and clearing entity pointers.",
         "~Item": "Destructs the `Item` instance, tearing down active PhysX rigid bodies and OGRE visual meshes via `destroyPhysical()`, then invoking the base destructor `InventoryItemBase::~InventoryItemBase()`.",
@@ -4032,11 +4032,11 @@
         "getEntity": "Retrieves the active OGRE visual mesh entity if currently instantiated in the physical world.",
         "getModelName": "Resolves the 3D `.mesh` resource file path from the item's FCS blueprint record (`'mesh'`).",
         "getClassType": "Returns the base item type enumeration code (`itemType::ITEM`).",
-        "isGear": "Virtual fast RTTI downcast checking if item is a [`Gear`](gear.md) instance; returns `nullptr` in base `Item`.",
-        "isCrossbow": "Virtual fast RTTI downcast checking if item is a [`Crossbow`](crossbow.md) instance; returns `nullptr` in base `Item`.",
-        "isArmour": "Virtual fast RTTI downcast checking if item is an [`Armour`](armour.md) instance; returns `nullptr` in base `Item`.",
-        "isWeapon": "Virtual fast RTTI downcast checking if item is a [`Weapon`](weapon.md) instance; returns `nullptr` in base `Item`.",
-        "isLockedArmour": "Virtual fast RTTI downcast checking if item is a [`LockedArmour`](lockedarmour.md) instance (e.g. slave shackles, fog poles); returns `nullptr` in base `Item`.",
+        "isGear": "Virtual fast RTTI downcast checking if item is a `Gear` instance; returns `nullptr` in base `Item`.",
+        "isCrossbow": "Virtual fast RTTI downcast checking if item is a `Crossbow` instance; returns `nullptr` in base `Item`.",
+        "isArmour": "Virtual fast RTTI downcast checking if item is an `Armour` instance; returns `nullptr` in base `Item`.",
+        "isWeapon": "Virtual fast RTTI downcast checking if item is a `Weapon` instance; returns `nullptr` in base `Item`.",
+        "isLockedArmour": "Virtual fast RTTI downcast checking if item is a `LockedArmour` instance (e.g. slave shackles, fog poles); returns `nullptr` in base `Item`.",
         "isAFactionUniform": "Queries if the item acts as a faction disguise/uniform, returning the associated `Faction*` if applicable; returns `nullptr` in base `Item`.",
         "isFood": "Static utility evaluating whether an FCS blueprint record represents edible food (`itemFunction == 3`).",
         "isGoodFood": "Checks if the item is food and still has remaining edible nutrition charges.",
@@ -4144,7 +4144,7 @@
       "properties": {}
     },
     "MainBarGUI": {
-      "description": "Main HUD bottom control bar managing squad portraits, simulation speed controls, time and currency readouts, floor level selectors, and orders toggles. Orchestrates interactive portrait item boxes across squad tabs ([`MainTabPortraitPlatoon`](#)), contextual inspection datapanels ([`DatapanelGUI`](datapanelgui.md)), vital limb health displays ([`MedicalDatapanel`](#)), and GOAP task stance selectors ([`OrdersPanel`](#)).",
+      "description": "Main HUD bottom control bar managing squad portraits, simulation speed controls, time and currency readouts, floor level selectors, and orders toggles. Orchestrates interactive portrait item boxes across squad tabs (`MainTabPortraitPlatoon`), contextual inspection datapanels (`DatapanelGUI`), vital limb health displays (`MedicalDatapanel`), and GOAP task stance selectors (`OrdersPanel`).",
       "methods": {
         "MainBarGUI": "Primary constructor for `MainBarGUI`. Initializes `GUIWindow` base and `wraps::BaseLayout` widget hierarchy from XML, sets up bottom HUD dock geometry, binds speed buttons, day/clock text widgets, floor controls, town panels, and registers input key listeners.",
         "~MainBarGUI": "Virtual destructor destroying squad portrait item boxes, deallocating tab controllers, unhooking MyGUI widget listeners, clearing registered datapanels, and tearing down sliding attribute drawer widgets.",
@@ -4322,7 +4322,7 @@
       }
     },
     "MedicalSystem": {
-      "description": "Governs: - **Anatomy & Damage Types**: Cut damage (bleeding & bandage degeneration), Blunt damage (stun), Wear damage (robotics degradation), and Acid/Weather erosion. - **Bleeding & Blood Loss**: Dynamic bleed rates, blood pool splattering, and blood loss coma (`pointOfCollapseBloodloss`). - **Consciousness & Recovery**: Shock knockout thresholds, recovery timers (`knockoutTimer`), coma states (`pointOfNoReturn`), and waking up (`canGetUpWakeUp`). - **Dismemberment & Prosthetics**: Limbs severed (`amputate`), crushed (`crushLimb`), or replaced with robotic prosthetics ([`RobotLimbs`](#robotlimbs)). - **Medical Treatment**: First aid bandaging (`applyFirstAid`), bone splinting (`applyDoctoring`), and robotic repair (`applyRigging`). - **Nutrition & Starvation**: Calorie depletion (`hunger`, `fed`), starvation speed penalties, and starvation coma.",
+      "description": "Governs: - **Anatomy & Damage Types**: Cut damage (bleeding & bandage degeneration), Blunt damage (stun), Wear damage (robotics degradation), and Acid/Weather erosion. - **Bleeding & Blood Loss**: Dynamic bleed rates, blood pool splattering, and blood loss coma (`pointOfCollapseBloodloss`). - **Consciousness & Recovery**: Shock knockout thresholds, recovery timers (`knockoutTimer`), coma states (`pointOfNoReturn`), and waking up (`canGetUpWakeUp`). - **Dismemberment & Prosthetics**: Limbs severed (`amputate`), crushed (`crushLimb`), or replaced with robotic prosthetics (`RobotLimbs`). - **Medical Treatment**: First aid bandaging (`applyFirstAid`), bone splinting (`applyDoctoring`), and robotic repair (`applyRigging`). - **Nutrition & Starvation**: Calorie depletion (`hunger`, `fed`), starvation speed penalties, and starvation coma.",
       "methods": {
         "addWound": "Primary combat damage injection gateway: selects target bodypart based on weighted hit chances and attack direction, applies armor mitigation from `armourList`, calculates cut/blunt wound distribution, checks limb severance, and splats blood decals.",
         "applyDamage": "Internal damage distribution routine routing cut damage into flesh and bleeding, blunt damage into stun, and wear into robotic degradation.",
@@ -4501,7 +4501,7 @@
       }
     },
     "NavMesh": {
-      "description": "Master navigation system integrating Havok AI (hkaiWorld). Manages asynchronous pathfinding queries, outdoor terrain sectors, interior building NavMesh instances, door traversal gates, and origin shifts. Interacts directly with [`HavokCharacter`](havokcharacter.md) for character agent path following, [`ZoneMap`](zonemap.md) for outdoor terrain tile streaming, [`Building`](building.md) for interior navigational cutouts and door states, and [`ThreadClass`](threadclass.md) for dedicated background multi-threaded path calculation.",
+      "description": "Master navigation system integrating Havok AI (hkaiWorld). Manages asynchronous pathfinding queries, outdoor terrain sectors, interior building NavMesh instances, door traversal gates, and origin shifts. Interacts directly with `HavokCharacter` for character agent path following, `ZoneMap` for outdoor terrain tile streaming, `Building` for interior navigational cutouts and door states, and `ThreadClass` for dedicated background multi-threaded path calculation.",
       "methods": {
         "NavMesh": "Primary constructor initializing the Havok AI navigation subsystem, allocating input/output message queues, and starting the asynchronous background pathfinding worker thread.",
         "initialise": "Executes navigation engine lifecycle and thread coordination `initialise`.",
@@ -4858,7 +4858,7 @@
       }
     },
     "Platoon": {
-      "description": "Macro military and civilian squad controller governing group formation navigation, roster management, squad AI tasks, patrol waypoints, persistent serialization, and asset ownership. Derived from [`RootObjectBase`](rootobject.md), `Platoon` bridges active 3D world reality and abstract background simulation. Coordinates directly with [`Faction`](faction.md) for political allegiance, [`Character`](character.md) for individual squad members, [`ActivePlatoon`](activeplatoon.md) for live scene graph entities, [`Ownerships`](ownerships.md) for squad currency and property ledgers, and [`TownBase`](townbase.md) for municipal settlement assignments.",
+      "description": "Macro military and civilian squad controller governing group formation navigation, roster management, squad AI tasks, patrol waypoints, persistent serialization, and asset ownership. Derived from `RootObjectBase`, `Platoon` bridges active 3D world reality and abstract background simulation. Coordinates directly with `Faction` for political allegiance, `Character` for individual squad members, `ActivePlatoon` for live scene graph entities, `Ownerships` for squad currency and property ledgers, and `TownBase` for municipal settlement assignments.",
       "methods": {
         "Platoon": "Primary constructor initializing squad identity string, allocating embedded Ownerships ledger, binding parent faction, and configuring squad template rules.",
         "~Platoon": "Virtual destructor unregistering all squad characters, releasing patrol paths, cleaning up blackboard memory, and destroying embedded ownership structures.",
@@ -5189,7 +5189,7 @@
       }
     },
     "RootObject": {
-      "description": "Polymorphic foundation for all physical and interactive world entities ([`Character`](character.md), [`Building`](building.md), [`Item`](item.md)). Encapsulates spatial orientation quaternion, interior building containment ([`hand`](#)), floor slice indexing, town wall containment checks, spatial partitioning hash keys, and delegation hooks for inventory transactions, sensory awareness, and combat reactions.",
+      "description": "Polymorphic foundation for all physical and interactive world entities (`Character`, `Building`, `Item`). Encapsulates spatial orientation quaternion, interior building containment (`hand`), floor slice indexing, town wall containment checks, spatial partitioning hash keys, and delegation hooks for inventory transactions, sensory awareness, and combat reactions.",
       "methods": {
         "RootObject": "Primary constructor for `RootObject`. Invokes `RootObjectBase` constructor to initialize object handle, template FCS data record (`GameData`), and owner faction. Initializes interior building handle, floor slice level (0), spatial partition key, and identity rotation quaternion.",
         "~RootObject": "Virtual destructor unhooking the entity from its parent container (`RootObjectContainer`), releasing interior spatial linkages, clearing spatial hash keys, and destroying base object resources.",
@@ -5345,7 +5345,7 @@
       }
     },
     "ShopTrader": {
-      "description": "Merchant trade interface proxy adapter mediating retail transactions between customer characters and vendor NPCs. Wraps a vendor [`Character`](character.md) instance with an isolated [`ShopTraderInventory`](inventory.md) containing shop stock, synchronizing currency exchanges, vendor list restocking schedules, barter price markups, and delegating spatial queries to the shopkeeper.",
+      "description": "Merchant trade interface proxy adapter mediating retail transactions between customer characters and vendor NPCs. Wraps a vendor `Character` instance with an isolated `ShopTraderInventory` containing shop stock, synchronizing currency exchanges, vendor list restocking schedules, barter price markups, and delegating spatial queries to the shopkeeper.",
       "methods": {
         "ShopTrader": "Constructs a `ShopTrader` merchant proxy for the specified character, instantiating an isolated `ShopTraderInventory`, configuring vendor sections, and loading merchandise items from FCS vendor lists.",
         "~ShopTrader": "Destructs the `ShopTrader` proxy, deleting the retail inventory and invoking base `RootObject` cleanup.",
@@ -5540,7 +5540,7 @@
       }
     },
     "Town": {
-      "description": "Specialized municipal settlement controller governing electrical power grids, generator output, battery storage reserves, defensive perimeter gates, public commerce policies, commodity trade price modifiers, and outpost progression tiers. Derived from [`TownBase`](townbase.md), `Town` interacts directly with [`GameData`](gamedata.md) for FCS settlement and resident records, [`UseableStuff`](useablestuff.md) for electrical machinery and generators, [`GatewayBuilding`](gatewaybuilding.md) for perimeter access gates, [`AlarmManager`](alarmmanager.md) for emergency alert states, [`DatapanelGUI`](datapanelgui.md) for inspector telemetry, and [`Faction`](faction.md) for municipal diplomatic relationships.",
+      "description": "Specialized municipal settlement controller governing electrical power grids, generator output, battery storage reserves, defensive perimeter gates, public commerce policies, commodity trade price modifiers, and outpost progression tiers. Derived from `TownBase`, `Town` interacts directly with `GameData` for FCS settlement and resident records, `UseableStuff` for electrical machinery and generators, `GatewayBuilding` for perimeter access gates, `AlarmManager` for emergency alert states, `DatapanelGUI` for inspector telemetry, and `Faction` for municipal diplomatic relationships.",
       "methods": {
         "Town": "Primary constructor for `Town`, initializing base settlement state, gateway set, power generator and consumer arrays, battery storage, and economic trade multiplier tables.",
         "~Town": "Virtual destructor releasing all dynamic town subsystems, clearing electrical power grids, detaching gateway handles, destroying nest anchors, and unregistering alarm managers.",
@@ -5660,7 +5660,7 @@
       }
     },
     "TownBase": {
-      "description": "Base settlement entity representing villages, ruins, creature nests, and bandit camps. Coordinates territorial coverage, resident populations, faction ownership, and town alert levels. Interacts directly with [`TownBuildingsManager`](townbuildingsmanager.md) for town infrastructure and structural building registration, [`BasePopulationManager`](basepopulationmanager.md) for squad spawning and resident counts, [`ZoneMap`](zonemap.md) for spatial terrain chunk coverage, [`NestBatcher`](nestbatcher.md) for procedural creature nest geometry, and [`Faction`](faction.md) for diplomatic alignments and town ownership.",
+      "description": "Base settlement entity representing villages, ruins, creature nests, and bandit camps. Coordinates territorial coverage, resident populations, faction ownership, and town alert levels. Interacts directly with `TownBuildingsManager` for town infrastructure and structural building registration, `BasePopulationManager` for squad spawning and resident counts, `ZoneMap` for spatial terrain chunk coverage, `NestBatcher` for procedural creature nest geometry, and `Faction` for diplomatic alignments and town ownership.",
       "methods": {
         "TownBase": "Primary constructor initializing the settlement container, building manager coordinator, zone coverage sets, and alarm state.",
         "~TownBase": "Virtual destructor unregistering town buildings, destroying territorial click hulls, clearing resident lists, and freeing artifact buffers.",
@@ -5786,7 +5786,7 @@
       }
     },
     "TownBuildingsManager": {
-      "description": "Municipal architectural graphics manager governing building mesh rendering, multi-floor visual slice visibility, commercial signboard fixtures, and OGRE GPU hardware mesh instancing. Coordinates directly with [`TownBase`](townbase.md) and [`Town`](town.md) for settlement ownership, [`Building`](building.md) for architectural hierarchy, and [`DatapanelGUI`](datapanelgui.md) for camera floor-slicing controls.",
+      "description": "Municipal architectural graphics manager governing building mesh rendering, multi-floor visual slice visibility, commercial signboard fixtures, and OGRE GPU hardware mesh instancing. Coordinates directly with `TownBase` and `Town` for settlement ownership, `Building` for architectural hierarchy, and `DatapanelGUI` for camera floor-slicing controls.",
       "methods": {
         "TownBuildingsManager": "Primary constructor binding the buildings manager to its parent settlement controller and initializing building entity maps, instancing tables, and signpost lists.",
         "~TownBuildingsManager": "Virtual destructor detaching all graphics movable objects, destroying OGRE instance managers, and clearing building floor slices.",
@@ -5841,7 +5841,7 @@
       }
     },
     "TurretBuilding": {
-      "description": "Mounted defensive weapon station encapsulating [`GunClassTurret`](gunclassturret.md). Governs operator gunnery tracking, horizontal and vertical articulated physics rotation joints, defensive wall elevation advantages, power consumption for electrified harpoons, and ammunition feed cycles. Derived from [`UseableStuff`](useablestuff.md), `TurretBuilding` interacts directly with [`Character`](character.md) for gunnery AI tasks, [`Building`](building.md) and [`WallBuilding`](wallbuilding.md) for parent rampart mounting, and [`TownBuildingsManager`](townbuildingsmanager.md) for settlement defensive spatial registration.",
+      "description": "Mounted defensive weapon station encapsulating `GunClassTurret`. Governs operator gunnery tracking, horizontal and vertical articulated physics rotation joints, defensive wall elevation advantages, power consumption for electrified harpoons, and ammunition feed cycles. Derived from `UseableStuff`, `TurretBuilding` interacts directly with `Character` for gunnery AI tasks, `Building` and `WallBuilding` for parent rampart mounting, and `TownBuildingsManager` for settlement defensive spatial registration.",
       "methods": {
         "TurretBuilding": "Primary constructor initializing turret structure, instantiating embedded `GunClassTurret` ballistic controller, setting default traverse limits, and binding parent wall/rampart handles.",
         "~TurretBuilding": "Virtual destructor destroying gun elevation and azimuth rotating physics joints, detaching operators, and unhooking from wall mountings.",
@@ -5890,7 +5890,7 @@
       }
     },
     "UseableStuff": {
-      "description": "Interactive furniture, production machinery, medical recovery beds, prisoner cages, training dummies, and shop trade counters. Extends the base [`Building`](building.md) class with operator assignment slots, electrical power grid consumption and battery storage, door locks, training XP acceleration, and interactive MyGUI layouts.",
+      "description": "Interactive furniture, production machinery, medical recovery beds, prisoner cages, training dummies, and shop trade counters. Extends the base `Building` class with operator assignment slots, electrical power grid consumption and battery storage, door locks, training XP acceleration, and interactive MyGUI layouts.",
       "methods": {
         "UseableStuff": "Constructs a new `UseableStuff` interactive furniture or machine instance within the game world, linking spatial placement, owner settlement, and layout context.",
         "~UseableStuff": "Destructs the `UseableStuff` instance, unregistering from the town power grid, releasing operator slots, and deleting allocated inventory and door lock subsystems.",
@@ -5995,7 +5995,7 @@
       }
     },
     "WallBuilding": {
-      "description": "Defensive wall fortification piece governing perimeter segment connections, rampart walkway placement, shared construction scaffolds, and structural upgrades. Derived from [`Building`](building.md), `WallBuilding` coordinates directly with [`ZoneMapContent`](zonemapcontent.md) for neighboring structural discovery, [`TurretBuilding`](turretbuilding.md) for mounted rampart defenses, and [`DatapanelGUI`](datapanelgui.md) for fortification upgrade and demolition controls.",
+      "description": "Defensive wall fortification piece governing perimeter segment connections, rampart walkway placement, shared construction scaffolds, and structural upgrades. Derived from `Building`, `WallBuilding` coordinates directly with `ZoneMapContent` for neighboring structural discovery, `TurretBuilding` for mounted rampart defenses, and `DatapanelGUI` for fortification upgrade and demolition controls.",
       "methods": {
         "~WallBuilding": "Virtual destructor unlinking adjacent wall segments, releasing shared construction scaffolding, and detaching PhysX static obstacle colliders.",
         "WallBuilding": "Primary constructor configuring wall segment geometry, orientation, defensive faction ownership, municipal settlement handle, and initializing scaffold-sharing containers.",
@@ -6053,7 +6053,7 @@
       "properties": {}
     },
     "ZoneManager": {
-      "description": "Master spatial streaming manager governing the 64x64 continuous world zone grid (4,096 ZoneMap chunks). Coordinates background zone loading threads, distance activation, spatial grids, island topologies, biomes, and terrain splatmaps. Interacts directly with [`ZoneMap`](zonemap.md) for individual sector terrain chunks and foliage, [`BiomeMap`](biomemap.md) for regional environmental palettes, [`Building`](building.md) and [`BuildingFinderClass`](buildingfinderclass.md) for structural spatial queries, and [`Town`](town.md) for settlement chunk registration.",
+      "description": "Master spatial streaming manager governing the 64x64 continuous world zone grid (4,096 ZoneMap chunks). Coordinates background zone loading threads, distance activation, spatial grids, island topologies, biomes, and terrain splatmaps. Interacts directly with `ZoneMap` for individual sector terrain chunks and foliage, `BiomeMap` for regional environmental palettes, `Building` and `BuildingFinderClass` for structural spatial queries, and `Town` for settlement chunk registration.",
       "methods": {
         "ZoneManager": "Primary constructor allocating the master 64x64 zone chunk matrix (4,096 ZoneMap instances), spatial indexing grids, and background streaming thread synchronization primitives.",
         "~ZoneManager": "Destructor flushing pending zone streaming tasks, deactivating all active world chunks, releasing terrain splatmaps, and destroying spatial grids.",
@@ -6159,7 +6159,7 @@
       }
     },
     "ZoneMap": {
-      "description": "Spatial terrain chunk representing an individual zone tile within Kenshi's continuous 64x64 world grid. Manages heightmap data, PhysX collision sectors, multi-layer biome textures, scent tracking, and dynamic actor population. Coordinates directly with [`ZoneManager`](zonemanager.md) for master grid paging, [`ZoneMapContent`](zonemapcontent.md) for chunk entity instances, [`ZoneSmell`](zonesmell.md) for predator scent trails, and [`MapFeatureList`](mapfeaturelist.md) for static geographical landmarks.",
+      "description": "Spatial terrain chunk representing an individual zone tile within Kenshi's continuous 64x64 world grid. Manages heightmap data, PhysX collision sectors, multi-layer biome textures, scent tracking, and dynamic actor population. Coordinates directly with `ZoneManager` for master grid paging, `ZoneMapContent` for chunk entity instances, `ZoneSmell` for predator scent trails, and `MapFeatureList` for static geographical landmarks.",
       "methods": {
         "ZoneMap": "Primary constructor for `ZoneMap`, zero-initializing chunk coordinate vectors, neighbor pointer arrays, biome list, deactivation timers, and state readers.",
         "init": "Initializes chunk spatial coordinates (X, Y) within the 64x64 world grid, calculates corner and center positions, and builds bounding box extents.",
