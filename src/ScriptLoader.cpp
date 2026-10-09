@@ -266,13 +266,24 @@ void ScriptLoader::reloadAll(lua_State* L)
     m_loaded = true;
 }
 
+// Discovered paths keep the mod path's spelling (often relative, such as
+// "mods/Name\scripts\init\x.lua"), while resolveScriptPath returns an absolute
+// path with forward slashes, so equal strings cannot be assumed for one file.
+static bool isSameScriptFile(const std::string& discoveredPath, const std::string& requestedPath)
+{
+    if (discoveredPath == requestedPath) return true;
+    boost::system::error_code ec;
+    return fs::equivalent(fs::path(discoveredPath), fs::path(requestedPath), ec) && !ec;
+}
+
 bool ScriptLoader::reloadSingleScript(lua_State* L, const std::string& absolutePath)
 {
     if (!L) return false;
 
     for (size_t i = 0; i < m_scripts.size(); ++i) {
-        if (m_scripts[i].absolutePath == absolutePath) {
-            if (isScriptStopped(absolutePath)) {
+        if (isSameScriptFile(m_scripts[i].absolutePath, absolutePath)) {
+            // Stopped scripts are recorded under their discovered path.
+            if (isScriptStopped(m_scripts[i].absolutePath)) {
                 logToFile("ScriptLoader: skipping hot reload of stopped script: " + m_scripts[i].chunkName);
                 return false;
             }
@@ -284,12 +295,13 @@ bool ScriptLoader::reloadSingleScript(lua_State* L, const std::string& absoluteP
     // New script file discovered
     discover();
     for (size_t i = 0; i < m_scripts.size(); ++i) {
-        if (m_scripts[i].absolutePath == absolutePath) {
+        if (isSameScriptFile(m_scripts[i].absolutePath, absolutePath)) {
             logToFile("ScriptLoader: Hot-reloading newly discovered script: " + m_scripts[i].chunkName);
             return runScript(L, m_scripts[i]);
         }
     }
 
+    logToFileDebug("ScriptLoader: no discovered script matches " + absolutePath);
     return false;
 }
 
