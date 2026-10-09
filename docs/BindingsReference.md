@@ -4937,6 +4937,8 @@
 | destroy [1] | `label: ScreenLabelInterface` | `void` | `obj:destroy(label)` |
 | destroy [2] | `datapanel: DatapanelGUI` | `void` | `obj:destroy(datapanel)` |
 | destroy [3] | `win: GUIWindow` | `void` | `obj:destroy(win)` |
+| createDatapanel [1] | `name: string, win: MyGUI::Widget, scrolls: boolean` | `DatapanelGUI` | `obj:createDatapanel(name, win, scrolls)` |
+| createDatapanel [2] | `top: number, left: number, width: number, height: number, scrolls: boolean, layer: string, window: boolean` | `DatapanelGUI` | `obj:createDatapanel(top, left, width, height, scrolls, layer, window)` |
 | changeMouseCursor [1] | `cursor: CursorType, player: hand, target: hand` | `void` | `obj:changeMouseCursor(cursor, player, target)` |
 | changeMouseCursor [2] | `cursor: CursorType` | `void` | `obj:changeMouseCursor(cursor)` |
 | createInventoryWindow [1] | `owner: hand, inventory: Inventory, layout: InventoryLayout, trader: RootObject` | `InventoryGUI` | `obj:createInventoryWindow(owner, inventory, layout, trader)` |

@@ -1084,7 +1084,12 @@
     {
       "name": "ForgottenGUI",
       "fields": [
-        { "name": "selectedObject", "type": "hand" }
+        { "name": "selectedObject", "type": "hand" },
+        {
+          "name": "createDatapanel",
+          "type": "fun(self: ForgottenGUI, nameOrTop: string|number, winOrLeft: MyGUI.Widget|number, scrollsOrWidth?: boolean|number, height?: number, scrolls?: boolean, layer?: string, window?: boolean): DatapanelGUI|nil",
+          "description": "Creates a datapanel. With `(name, win, scrolls)` it is created inside the widget `win`; with `(top, left, width, height, scrolls, layer, window)` it is created at screen-relative coordinates on a layer. Destroy it with `ForgottenGUI:destroy` before destroying its parent widget."
+        }
       ]
     },
     { "name": "InputHandler", "fields": [] },

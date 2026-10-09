@@ -1267,6 +1267,38 @@ int ForgottenGUIBinding::destroy(lua_State* L)
     return luaL_error(L, "Invalid argument for ForgottenGUI:destroy");
 }
 
+int ForgottenGUIBinding::createDatapanel(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    if (lua_type(L, 2) == LUA_TSTRING)
+    {
+        // createDatapanel(name, win, scrolls)
+        std::string name = luaL_checkstring(L, 2);
+        MyGUI::Widget* win = WidgetBinding::getWidget(L, 3);
+        if (!win) return luaL_argerror(L, 3, "ForgottenGUI:createDatapanel expects a MyGUI widget");
+        bool scrolls = lua_toboolean(L, 4) != 0;
+        DatapanelGUI* result = instance->createDatapanel(name, win, scrolls);
+        return pushObject<DatapanelGUI>(L, result, DatapanelGUIBinding::getMetatableName());
+    }
+    else if (lua_type(L, 2) == LUA_TNUMBER)
+    {
+        // createDatapanel(top, left, width, height, scrolls, layer, window)
+        float top = (float)luaL_checknumber(L, 2);
+        float left = (float)luaL_checknumber(L, 3);
+        float width = (float)luaL_checknumber(L, 4);
+        float height = (float)luaL_checknumber(L, 5);
+        bool scrolls = lua_toboolean(L, 6) != 0;
+        std::string layer = luaL_checkstring(L, 7);
+        bool window = lua_toboolean(L, 8) != 0;
+        DatapanelGUI* result = instance->createDatapanel(top, left, width, height, scrolls, layer, window);
+        return pushObject<DatapanelGUI>(L, result, DatapanelGUIBinding::getMetatableName());
+    }
+
+    return luaL_error(L, "Invalid arguments for ForgottenGUI:createDatapanel");
+}
+
 int ForgottenGUIBinding::changeMouseCursor(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
@@ -1732,8 +1764,6 @@ int ForgottenGUIBinding::createListbox(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 68: DatapanelGUI* createDatapanel(...) - overloaded method
-  line 69: DatapanelGUI* createDatapanel(...) - overloaded method
   line 70: MyGUI::Window* messageBox(...) - unsupported arg type
   line 82: void showCharacterEditor(...) - unsupported arg type
   line 122: void destroyWidgets(...) - overloaded method
@@ -1851,6 +1881,7 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
         { "showTradeWindow", ForgottenGUIBinding::showTradeWindow },
         { "changeFontSize", ForgottenGUIBinding::changeFontSize },
         { "destroy", ForgottenGUIBinding::destroy },
+        { "createDatapanel", ForgottenGUIBinding::createDatapanel },
         { "changeMouseCursor", ForgottenGUIBinding::changeMouseCursor },
         { "createInventoryWindow", ForgottenGUIBinding::createInventoryWindow },
         { "toggleInventory", ForgottenGUIBinding::toggleInventory },
