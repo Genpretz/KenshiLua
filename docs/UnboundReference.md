@@ -320,8 +320,6 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Gui/FogEditorBinding.cpp | closeWindow | `void` | unsupported arg type (MyGUI::Window*, const std::string&) |
 | Kenshi/Gui/FogEditorBinding.cpp | removeFog | `void` | unsupported arg type (MyGUI::Widget*) |
 | Kenshi/Gui/FogEditorBinding.cpp | selectFog | `void` | unsupported arg type (MyGUI::ListBox*, unsigned __int64) |
-| Kenshi/Gui/ForgottenGUIBinding.cpp | createDatapanel | `DatapanelGUI*` | overloaded method |
-| Kenshi/Gui/ForgottenGUIBinding.cpp | createDatapanel | `DatapanelGUI*` | overloaded method |
 | Kenshi/Gui/ForgottenGUIBinding.cpp | createScreenLabel | `ScreenLabel*` | unsupported arg type (ScreenLabel::LabelSize, ScreenLabel::RisingSpeed) |
 | Kenshi/Gui/ForgottenGUIBinding.cpp | destroyWidgets | `void` | overloaded method |
 | Kenshi/Gui/ForgottenGUIBinding.cpp | destroyWidgets | `void` | overloaded method |

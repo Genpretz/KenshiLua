@@ -11638,7 +11638,7 @@
 | callbackOwner | `hand` | RW | `obj.callbackOwner = <value>` |
 | hasProgressBarWhenUsed | `boolean` | RW | `obj.hasProgressBarWhenUsed = <value>` |
 | progressBarLevel | `number` | RW | `obj.progressBarLevel = <value>` |
-| occupantSelection | `hand` | RW | `obj.occupantSelection = <value>` |
+| occupantSelection | `boolean` | RW | `obj.occupantSelection = <value>` |
 | needsOperating | `boolean` | RW | `obj.needsOperating = <value>` |
 | numOperatorsMax | `integer` | RW | `obj.numOperatorsMax = <value>` |
 | hungerRate | `number` | RW | `obj.hungerRate = <value>` |
