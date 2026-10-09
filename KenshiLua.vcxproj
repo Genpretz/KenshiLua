@@ -80,7 +80,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>lua51.lib;KenshiLib.lib;MyGUIEngine_x64.lib;OgreMain_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua51.lib;KenshiLib.lib;MyGUIEngine_x64.lib;OgreMain_x64.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(ProjectDir)extern\kenshilib\Libraries\ogre</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -106,7 +106,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>lua51.lib;KenshiLib.lib;OgreMain_x64.lib;MyGUIEngine_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua51.lib;KenshiLib.lib;OgreMain_x64.lib;MyGUIEngine_x64.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)extern\luajit\lib;$(ProjectDir)extern\kenshilib\x64\$(Configuration);$(ProjectDir)extern\kenshilib\Libraries\ogre;$(ProjectDir)extern\kenshilib\Libraries\mygui;$(BOOST_ROOT)\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AssemblyDebug>true</AssemblyDebug>
       <OptimizeReferences>true</OptimizeReferences>

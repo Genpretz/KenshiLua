@@ -15,8 +15,84 @@
 #include <kenshi/Kenshi.h>
 #include "FileWatcher.h"
 
+#include <bcrypt.h>
+#include <fstream>
+
 namespace KenshiLua
 {
+
+// SHA-256 of a file as uppercase hex, or an empty string on failure. Test
+// records identify the exact game executable by this hash.
+static std::string sha256File(const wchar_t* path)
+{
+    std::ifstream file(path, std::ios::binary);
+    if (!file) return "";
+
+    BCRYPT_ALG_HANDLE alg = NULL;
+    BCRYPT_HASH_HANDLE hash = NULL;
+    std::vector<unsigned char> hashObject;
+    unsigned char digest[32];
+    bool ok = false;
+
+    if (BCRYPT_SUCCESS(BCryptOpenAlgorithmProvider(&alg, BCRYPT_SHA256_ALGORITHM, NULL, 0)))
+    {
+        DWORD objectLength = 0;
+        DWORD written = 0;
+        if (BCRYPT_SUCCESS(BCryptGetProperty(alg, BCRYPT_OBJECT_LENGTH, (PUCHAR)&objectLength,
+                sizeof(objectLength), &written, 0)))
+        {
+            hashObject.resize(objectLength);
+            if (BCRYPT_SUCCESS(BCryptCreateHash(alg, &hash, &hashObject[0], objectLength, NULL, 0, 0)))
+            {
+                std::vector<char> buffer(1 << 20);
+                ok = true;
+                while (ok && file)
+                {
+                    file.read(&buffer[0], buffer.size());
+                    std::streamsize count = file.gcount();
+                    if (count > 0)
+                        ok = BCRYPT_SUCCESS(BCryptHashData(hash, (PUCHAR)&buffer[0], (ULONG)count, 0));
+                }
+                ok = ok && file.eof() && BCRYPT_SUCCESS(BCryptFinishHash(hash, digest, sizeof(digest), 0));
+                BCryptDestroyHash(hash);
+            }
+        }
+        BCryptCloseAlgorithmProvider(alg, 0);
+    }
+    if (!ok) return "";
+
+    static const char hexDigits[] = "0123456789ABCDEF";
+    std::string hex;
+    hex.reserve(64);
+    for (int i = 0; i < 32; ++i)
+    {
+        hex += hexDigits[digest[i] >> 4];
+        hex += hexDigits[digest[i] & 0xF];
+    }
+    return hex;
+}
+
+// Debug-only because hashing the ~36 MB executable adds startup time.
+static void logExecutableHash()
+{
+    if (!Config::get().isDebugLoggingEnabled()) return;
+
+    wchar_t path[MAX_PATH];
+    DWORD length = GetModuleFileNameW(NULL, path, MAX_PATH);
+    if (length == 0 || length >= MAX_PATH)
+    {
+        logToFileDebug("Kenshi executable SHA-256: unavailable (could not get executable path)");
+        return;
+    }
+
+    std::string narrowPath;
+    for (DWORD i = 0; i < length; ++i)
+        narrowPath += (path[i] < 0x80) ? (char)path[i] : '?';
+
+    std::string hash = sha256File(path);
+    logToFileDebug("Kenshi executable: " + narrowPath);
+    logToFileDebug("Kenshi executable SHA-256: " + (hash.empty() ? std::string("unavailable (could not read executable)") : hash));
+}
 
 Plugin::Plugin()
     : m_dllModule(0)
@@ -49,6 +125,7 @@ bool Plugin::initialize(void* hModule)
     initLogger();
     logToFile("Initializing KenshiLua...");
     logToFile("Kenshi version: " + KenshiLib::GetKenshiVersion().ToString());
+    logExecutableHash();
     logToFilef("Config loaded");
 
     g_luaState = new LuaState();
