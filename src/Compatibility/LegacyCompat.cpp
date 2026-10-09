@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Compatibility/LegacyCompat.h"
 #include "Logger.h"
+#include "EventSystem.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
 #include "Bindings/MyGUI/LayoutManagerBinding.h"
 #include <MyGUI.h>
@@ -581,10 +582,11 @@ namespace KenshiLua
                 return "unknown";
             }
 
-            static void warnLegacyEnumLookup(lua_State* L, const std::string& legacySyntax,
-                const std::string& canonicalSyntax)
+            // Logs one warning per calling script and legacy syntax. Seen pairs are kept in
+            // a registry table so repeated calls from a hot path do not flood the log.
+            static void warnLegacyUseOnce(lua_State* L, const char* warningRegistryKey, const char* logTag,
+                const char* legacyKind, const std::string& legacySyntax, const std::string& canonicalSyntax)
             {
-                static const char* const warningRegistryKey = "KenshiLua.LegacyEnumWarnings";
                 const std::string source = getLegacyEnumSource(L);
                 const std::string warningKey = source + "\n" + legacySyntax;
 
@@ -606,12 +608,19 @@ namespace KenshiLua
                     lua_pushboolean(L, 1);
                     lua_setfield(L, -2, warningKey.c_str());
 
-                    Logger::get().log(LogLevel_Warn, std::string("[EnumBinding] Script '") +
-                        source + "' used legacy enum '" + legacySyntax +
+                    Logger::get().log(LogLevel_Warn, std::string(logTag) + " Script '" +
+                        source + "' used " + legacyKind + " '" + legacySyntax +
                         "'; please update to '" + canonicalSyntax + "'.");
                 }
 
                 lua_pop(L, 1);
+            }
+
+            static void warnLegacyEnumLookup(lua_State* L, const std::string& legacySyntax,
+                const std::string& canonicalSyntax)
+            {
+                warnLegacyUseOnce(L, "KenshiLua.LegacyEnumWarnings", "[EnumBinding]", "legacy enum",
+                    legacySyntax, canonicalSyntax);
             }
 
             static int callPreviousIndex(lua_State* L)
@@ -1698,10 +1707,49 @@ namespace KenshiLua
             }
         }
 
+        namespace
+        {
+            // ========================================================================
+            // Deprecated KenshiLua.on / KenshiLua.off
+            // ========================================================================
+
+            static int lua_compat_kenshiLuaOn(lua_State* L)
+            {
+                warnLegacyUseOnce(L, "KenshiLua.LegacyApiWarnings", "[KenshiLua]", "deprecated function",
+                    "KenshiLua.on", "Events.on");
+                // Direct C call keeps the script as stack level 1, which
+                // luaRegisterHandler records as the handler's source.
+                return luaEventsOn(L);
+            }
+
+            static int lua_compat_kenshiLuaOff(lua_State* L)
+            {
+                warnLegacyUseOnce(L, "KenshiLua.LegacyApiWarnings", "[KenshiLua]", "deprecated function",
+                    "KenshiLua.off", "Events.off");
+                return luaEventsOff(L);
+            }
+        }
+
+        void InstallEventCompatibility(lua_State* L)
+        {
+            if (!L) return;
+
+            lua_getglobal(L, "KenshiLua");
+            if (lua_istable(L, -1))
+            {
+                lua_pushcfunction(L, lua_compat_kenshiLuaOn);
+                lua_setfield(L, -2, "on");
+                lua_pushcfunction(L, lua_compat_kenshiLuaOff);
+                lua_setfield(L, -2, "off");
+            }
+            lua_pop(L, 1);
+        }
+
         void Initialize(lua_State* L)
         {
             InstallEnumCompatibility(L);
             InstallMyGUICompatibility(L);
+            InstallEventCompatibility(L);
         }
     }
 }

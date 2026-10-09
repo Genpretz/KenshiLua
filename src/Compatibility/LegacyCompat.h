@@ -29,6 +29,10 @@ namespace KenshiLua
         // - Monolithic widget property fallbacks on KenshiLua.MyGUI.Widget (setFontName, setEditReadOnly, setMinSize, setImageTexture, etc.)
         void InstallMyGUICompatibility(lua_State* L);
 
+        // Installs the deprecated KenshiLua.on / KenshiLua.off, which forward to Events.on /
+        // Events.off and emit a one-time advisory warning per script naming the replacement.
+        void InstallEventCompatibility(lua_State* L);
+
         // Initializes all compatibility subsystems on a newly created Lua state.
         void Initialize(lua_State* L);
     }
