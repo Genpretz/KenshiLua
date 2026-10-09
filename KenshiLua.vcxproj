@@ -131,7 +131,10 @@ xcopy /Y /S /I "$(ProjectDir)assets\media\*" "$(OutDir)..\assets\media\"
 copy /Y "$(ProjectDir)LICENSE" "$(OutDir)..\"
 copy /Y "$(ProjectDir)README.md" "$(OutDir)..\"
 xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"
-xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"</Command>
+xcopy /Y /S /I "$(ProjectDir)lib\*" "$(OutDir)..\lib\"
+copy /Y "$(ProjectDir)assets\package\README.md" "$(OutDir)..\..\"
+python "$(ProjectDir)tools\release\package_mod.py" --bin-dir "$(OutDir)..\.."
+python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir)..\.."</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

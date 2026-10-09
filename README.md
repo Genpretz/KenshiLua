@@ -43,6 +43,8 @@ KenshiLib is a large and complex codebase, and while KenshiLua exposes a large p
 2. Download the latest release of KenshiLua and extract the archive, placing the contents in Kenshi's mods directory.
 3. Activate the mod using the game's launcher like you would any other mod.
 
+To get autocompletion and type checking for KenshiLua scripts in your editor, download `KenshiLua-LuaLS-Addon-v<version>.zip` from the same release and follow the README inside it. See [LuaLS.md](docs/LuaLS.md).
+
 ## Usage
 
 ### Example Lua Script

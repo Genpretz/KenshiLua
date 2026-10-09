@@ -2,34 +2,27 @@
 
 KenshiLua supplies editor-only [Lua Language Server](https://luals.github.io/) definitions in [`luals/generated/kenshilua.lua`](../luals/generated/kenshilua.lua). They declare the whole runtime-registered API and are generated from the C++ binding sources, the KenshiLib headers and documentation, and reviewed metadata. The definitions are not Lua scripts and must not be copied into a mod's `scripts` directory.
 
-The repository root contains a `.luarc.json` that uses LuaJIT mode and loads this definition directory. Opening the repository in VS Code with the Lua Language Server extension therefore enables the definitions automatically.
+## Using the definitions in a mod
 
-For a mod in a separate workspace, create a `.luarc.json` in that workspace and point `workspace.library` at the packaged KenshiLua addon library:
+Each GitHub release includes `KenshiLua-LuaLS-Addon-v<version>.zip` next to the mod archive. It contains a standard LuaLS addon folder, `kenshilua`, with `config.json`, which configures LuaJIT, and `library/kenshilua.lua`, the definition file. A mod does not need a KenshiLua checkout: extract the zip outside the mods directory and point the editor at it, either with a `.luarc.json` in the mod folder or through the LuaLS Addon Manager. The [README](../luals/addon/kenshilua/README.md) in the zip gives both setups step by step.
 
-```json
-{
-  "runtime.version": "LuaJIT",
-  "workspace.library": [
-    "C:/path/to/KenshiLua/luals/addon/kenshilua/library"
-  ]
-}
+Use the zip from the release that matches the KenshiLua DLL the mod targets. The definitions describe that release's registered API, and the header of `kenshilua.lua` records the version.
+
+## Repository development
+
+The repository root contains a `.luarc.json` that uses LuaJIT mode and loads the development copy in `luals/generated`. Opening the repository in VS Code with the Lua Language Server extension therefore enables the definitions automatically. [`luals/addon/kenshilua`](../luals/addon/kenshilua) holds the addon as it is packaged; `generate_definitions.py` writes the same `kenshilua.lua` to both places.
+
+## Packaging the addon for a release
+
+The Release post-build step runs `tools/release/package_luals_addon.py`, next to the mod packaging. After a version bump and a regeneration of the definitions, the first Release build writes `bin/release/KenshiLua-LuaLS-Addon-v<version>.zip`, with the version taken from `src/Version.h`. Attach it to the GitHub release next to the mod zip.
+
+A zip that already exists for the current version is kept. To package later changes to the same version, rebuild it:
+
+```powershell
+python tools/release/package_luals_addon.py --force
 ```
 
-## Addon package and version selection
-
-Each checkout ships a standard LuaLS addon in [`luals/addon/kenshilua`](../luals/addon/kenshilua): `config.json` configures LuaJIT and `library/kenshilua.lua` is the editor-only definition file. Its header embeds the KenshiLua release version from `src/Version.h`.
-
-For LuaLS addon discovery, add the addon parent directory to the editor's user setting, then enable `kenshilua` through the LuaLS Addon Manager:
-
-```json
-{
-  "Lua.workspace.userThirdParty": [
-    "C:/path/to/KenshiLua/luals/addon"
-  ]
-}
-```
-
-For a mod that targets a released KenshiLua version, use the addon from the matching KenshiLua release tag or package. Do not mix the addon from one release with a different DLL: the definitions intentionally describe that release's registered API. The repository-root `.luarc.json` continues to use the development copy in `luals/generated`.
+The script never packages stale definitions. If the definitions record a different version than `src/Version.h`, or the addon copy differs from `luals/generated/kenshilua.lua`, it prints a warning and writes no zip without failing the build; regenerate the definitions and build again. Identical inputs produce an identical zip.
 
 Dialogue scripts receive `currentDialogue` and `currentDialogueLine` only during synchronous execution of a `run lua script` action. Both are declared nullable. Preserve that type when assigning one to a local value so LuaLS can report an unchecked nil use, matching the runtime requirement.
 
