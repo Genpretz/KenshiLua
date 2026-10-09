@@ -579,6 +579,14 @@ namespace KenshiLua
         setEnum(L, "DA_RETREAT_PHASE", DialogActionEnum::DA_RETREAT_PHASE);
         setEnum(L, "DA_VICTORY_PHASE", DialogActionEnum::DA_VICTORY_PHASE);
         setEnum(L, "DA_ENSLAVE_TARGETS_CARRIED_PERSON", DialogActionEnum::DA_ENSLAVE_TARGETS_CARRIED_PERSON);
+        setEnum(L, "CHOOSE_SLAVES_SELLING", DialogActionEnum::CHOOSE_SLAVES_SELLING);
+        setEnum(L, "CHOOSE_SLAVES_BUYING", DialogActionEnum::CHOOSE_SLAVES_BUYING);
+        setEnum(L, "CHOOSE_PRISONER_BAIL", DialogActionEnum::CHOOSE_PRISONER_BAIL);
+        setEnum(L, "CHOOSE_CONSCRIPTION", DialogActionEnum::CHOOSE_CONSCRIPTION);
+        setEnum(L, "CHOOSE_RECRUITING", DialogActionEnum::CHOOSE_RECRUITING);
+        setEnum(L, "CHOOSE_HIRING_CONTRACT", DialogActionEnum::CHOOSE_HIRING_CONTRACT);
+        setEnum(L, "SURRENDER_NON_HUMANS", DialogActionEnum::SURRENDER_NON_HUMANS);
+        setEnum(L, "CHOOSE_ANIMALS_BUYING", DialogActionEnum::CHOOSE_ANIMALS_BUYING);
         setEnum(L, "DA_CLEAR_BOUNTY", DialogActionEnum::DA_CLEAR_BOUNTY);
         setEnum(L, "DA_PLAYER_SELL_PRISONERS", DialogActionEnum::DA_PLAYER_SELL_PRISONERS);
         setEnum(L, "DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE", DialogActionEnum::DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE);
