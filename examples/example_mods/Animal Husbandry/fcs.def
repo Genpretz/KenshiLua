@@ -1,0 +1,16 @@
+[ANIMAL_CHARACTER]
+animal husbandry:
+sterile:        True "is this animal capable of breeding"
+number of offspring: 1 "# of offspring when an animal gives birth"
+pregnancy period: 1.0 "# of in-days an animal is pregnant for before giving birth"
+chance of pregnancy: 1.0 "pecentage chance of an animal becoming pregnant"
+time between pregnancy: 1.0 "# of in-game days before an animal can become pregnant again"
+animal products: ITEM (1, 1, 0) "item(s) produced by this animal and able to be harvested by another player character.\nval0 = # of items produced at a time, val1 = # of days it takes for item to be produced, \nval2 = which sexes are capable of producing (0 = male, 1 = female, 2 = both)"
+base price: 14000 "base sale price in cats, as used by vanilla animal traders. The price is (age + 0.1) x base price, from 0.1x at birth to 1.2x at old age"
+species: ANIMAL_CHARACTER "animals of the same species(ANIMAL_CHARACTER) that are capable of becoming a mate (i.e. Domesticated Bull -> Wild Bull)"
+genus: RACE "animals of the same genus (RACE) are capable of becoming a mate."
+CONDITIONS:
+condition "pregnancy period" if "sterile" is False
+condition "number of offspring" if "sterile" is False
+condition "time between pregnancy" if "sterile" is False
+condition "chance of pregnancy" if "sterile" is False
