@@ -113,6 +113,17 @@ static int CharacterStatsWindow_get_autoUpdateMode(lua_State* L)
 }
 
 // --- Setters for CharacterStatsWindow ---
+// Pointer setters reject nil: engine handling of a null character or panel is
+// unverified. Assignment does not transfer ownership; a replaced panel is not
+// destroyed, and an assigned panel must outlive its use by this window.
+static int CharacterStatsWindow_set_character(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+    instance->character = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    return 0;
+}
+
 static int CharacterStatsWindow_set_statsSum(lua_State* L)
 {
     CharacterStatsWindow* instance = getInstance(L, 1);
@@ -134,6 +145,70 @@ static int CharacterStatsWindow_set_currentStatIdDescription(lua_State* L)
     CharacterStatsWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
     instance->currentStatIdDescription = luaL_checkstring(L, 2);
+    return 0;
+}
+
+static int CharacterStatsWindow_set_attributesDatapanel(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+    instance->attributesDatapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int CharacterStatsWindow_set_skills1Datapanel(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+    instance->skills1Datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int CharacterStatsWindow_set_skills2Datapanel(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+    instance->skills2Datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int CharacterStatsWindow_set_skills3Datapanel(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+    instance->skills3Datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int CharacterStatsWindow_set_skills4Datapanel(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+    instance->skills4Datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int CharacterStatsWindow_set_statsDatapanel(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+    instance->statsDatapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int CharacterStatsWindow_set_description1Datapanel(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+    instance->description1Datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
+    return 0;
+}
+
+static int CharacterStatsWindow_set_description2Datapanel(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+    instance->description2Datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
     return 0;
 }
 
@@ -464,9 +539,18 @@ void CharacterStatsWindowBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
+    registerSetter(L, "character", CharacterStatsWindow_set_character);
     registerSetter(L, "statsSum", CharacterStatsWindow_set_statsSum);
     registerSetter(L, "statProgress", CharacterStatsWindow_set_statProgress);
     registerSetter(L, "currentStatIdDescription", CharacterStatsWindow_set_currentStatIdDescription);
+    registerSetter(L, "attributesDatapanel", CharacterStatsWindow_set_attributesDatapanel);
+    registerSetter(L, "skills1Datapanel", CharacterStatsWindow_set_skills1Datapanel);
+    registerSetter(L, "skills2Datapanel", CharacterStatsWindow_set_skills2Datapanel);
+    registerSetter(L, "skills3Datapanel", CharacterStatsWindow_set_skills3Datapanel);
+    registerSetter(L, "skills4Datapanel", CharacterStatsWindow_set_skills4Datapanel);
+    registerSetter(L, "statsDatapanel", CharacterStatsWindow_set_statsDatapanel);
+    registerSetter(L, "description1Datapanel", CharacterStatsWindow_set_description1Datapanel);
+    registerSetter(L, "description2Datapanel", CharacterStatsWindow_set_description2Datapanel);
     registerSetter(L, "autoUpdateMode", CharacterStatsWindow_set_autoUpdateMode);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
