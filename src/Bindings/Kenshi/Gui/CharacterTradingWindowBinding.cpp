@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include <kenshi/gui/CharacterTradingWindow.h>
 #include "CharacterTradingWindowBinding.h"
 #include "GUIWindowBinding.h"
@@ -28,32 +29,28 @@ static int CharacterTradingWindow_get_charactersBox(lua_State* L)
 {
     CharacterTradingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterTradingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->charactersBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->charactersBox);
 }
 
 static int CharacterTradingWindow_get_confirmBtn(lua_State* L)
 {
     CharacterTradingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterTradingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->confirmBtn);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->confirmBtn);
 }
 
 static int CharacterTradingWindow_get_currentTotalText(lua_State* L)
 {
     CharacterTradingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterTradingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->currentTotalText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->currentTotalText);
 }
 
 static int CharacterTradingWindow_get_selectedCountText(lua_State* L)
 {
     CharacterTradingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharacterTradingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->selectedCountText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->selectedCountText);
 }
 
 static int CharacterTradingWindow_get_tradingBoxes(lua_State* L)

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_TextEditableBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -18,16 +19,14 @@ static int DataPanelLine_TextEditable_get_editBox(lua_State* L)
 {
     DataPanelLine_TextEditable* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
-    lua_pushlightuserdata(L, (void*)instance->editBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->editBox);
 }
 
 static int DataPanelLine_TextEditable_get_nameText(lua_State* L)
 {
     DataPanelLine_TextEditable* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
-    lua_pushlightuserdata(L, (void*)instance->nameText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->nameText);
 }
 
 static int DataPanelLine_TextEditable_get_showKey(lua_State* L)
@@ -85,8 +84,7 @@ int DataPanelLine_TextEditableBinding::getEditBox(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
 
     MyGUI::EditBox* result = instance->getEditBox();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int DataPanelLine_TextEditableBinding::getNameBox(lua_State* L)
@@ -95,8 +93,7 @@ int DataPanelLine_TextEditableBinding::getNameBox(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
 
     MyGUI::EditBox* result = instance->getNameBox();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int DataPanelLine_TextEditableBinding::createMe(lua_State* L)

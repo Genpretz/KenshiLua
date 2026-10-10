@@ -143,6 +143,9 @@ namespace KenshiLua
         // mygui/common/baselayout/BaseLayout.h         
         { "wraps::BaseLayout::initialise",                                   InstallHook_BaseLayout_initialise },
 
+        // mygui/MyGUI_Gui.h (MyGUI delegate, not an engine hook)
+        { "MyGUI::Gui::eventFrameStart",                                     InstallDelegate_MyGUI_Gui_eventFrameStart },
+
         // Building/Building.h          
         { "Building::_NV_isPublic",                                          InstallHook_Building_NV_isPublic },
         { "Building::_NV_isForSale",                                         InstallHook_Building_NV_isForSale },

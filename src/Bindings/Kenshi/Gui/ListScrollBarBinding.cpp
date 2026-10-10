@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\MyGUI_ListScrollBar.h"
 #include "ListScrollBarBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -26,24 +27,21 @@ static int ListScrollBar_get_mListName(lua_State* L)
 {
     ListScrollBar* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ListScrollBar is nil");
-    lua_pushlightuserdata(L, (void*)instance->mListName);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->mListName);
 }
 
 static int ListScrollBar_get_mListValue(lua_State* L)
 {
     ListScrollBar* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ListScrollBar is nil");
-    lua_pushlightuserdata(L, (void*)instance->mListValue);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->mListValue);
 }
 
 static int ListScrollBar_get_mListIndex(lua_State* L)
 {
     ListScrollBar* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ListScrollBar is nil");
-    lua_pushlightuserdata(L, (void*)instance->mListIndex);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->mListIndex);
 }
 
 // --- Setters for ListScrollBar ---

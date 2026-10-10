@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_FactionBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -34,24 +35,21 @@ static int DataPanelLine_Faction_get_bar(lua_State* L)
 {
     DataPanelLine_Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
-    lua_pushlightuserdata(L, (void*)instance->bar);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->bar);
 }
 
 static int DataPanelLine_Faction_get_bar2(lua_State* L)
 {
     DataPanelLine_Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
-    lua_pushlightuserdata(L, (void*)instance->bar2);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->bar2);
 }
 
 static int DataPanelLine_Faction_get_but(lua_State* L)
 {
     DataPanelLine_Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Faction is nil");
-    lua_pushlightuserdata(L, (void*)instance->but);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->but);
 }
 
 // --- Setters for DataPanelLine_Faction ---

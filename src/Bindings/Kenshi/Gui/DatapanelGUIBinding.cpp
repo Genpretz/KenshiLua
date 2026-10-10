@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 
 #include "kenshi\gui\DatapanelGUI.h"
@@ -42,8 +43,7 @@ static int DatapanelGUI_get_scrollWin(lua_State* L)
 {
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->scrollWin);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->scrollWin);
 }
 
 static int DatapanelGUI_get_premadeParentWindow(lua_State* L)
@@ -114,8 +114,7 @@ static int DatapanelGUI_get_tabWin(lua_State* L)
 {
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->tabWin);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->tabWin);
 }
 
 static int DatapanelGUI_get_tabs(lua_State* L)
@@ -201,8 +200,7 @@ static int DatapanelGUI_get_scrollView(lua_State* L)
 {
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->scrollView);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->scrollView);
 }
 
 // --- Setters for DatapanelGUI ---

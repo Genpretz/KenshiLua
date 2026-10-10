@@ -2109,12 +2109,21 @@ taskPriority = {
 ---@field createWidgetReal fun(self: MyGUI.Gui, widgetType: string, skin: string, left: number, top: number, width: number, height: number, align?: integer, parentOrLayer?: MyGUI.Widget|string, name?: string): MyGUI.Widget|nil
 ---@field findWidget fun(self: MyGUI.Gui, name: string): MyGUI.Widget|nil
 ---@field findWidgetT fun(self: MyGUI.Gui, name: string): MyGUI.Widget|nil
+--- Returns an enumerator over a copy of the root widgets, taken now. Widgets created later are not included.
+---@field getEnumerator fun(self: MyGUI.Gui): MyGUI.EnumeratorWidgetPtrSnapshot
 ---@field destroyWidget fun(self: MyGUI.Gui, widget: MyGUI.Widget)
 ---@field destroyWidgets fun(self: MyGUI.Gui, widgets: MyGUI.Widget[])
 ---@field hidePointer fun(self: MyGUI.Gui)
 ---@field showPointer fun(self: MyGUI.Gui)
 ---@field isPointerVisible fun(self: MyGUI.Gui): boolean
 ---@field getInstance fun(): MyGUI.Gui|nil
+
+--- Walks the widgets copied by getEnumerator(), like MyGUI's EnumeratorWidgetPtr. Creating or destroying widgets during the walk is safe.
+---@class MyGUI.EnumeratorWidgetPtrSnapshot
+--- Moves to the next widget. The first call moves to the first widget. Returns false once no widgets remain.
+---@field next fun(self: MyGUI.EnumeratorWidgetPtrSnapshot): boolean
+--- Returns the widget next() moved to, or nil if it was destroyed after getEnumerator() was called. Raises an error after next() returns false.
+---@field current fun(self: MyGUI.EnumeratorWidgetPtrSnapshot): MyGUI.Widget|nil
 
 ---@class MyGUI.GuiStatic
 ---@field getInstance fun(): MyGUI.Gui|nil
@@ -2196,6 +2205,43 @@ taskPriority = {
 ---@class MyGUI.SkinManagerStatic
 ---@field getInstance fun(): MyGUI.SkinManager|nil
 
+---@class MyGUI.LayerManager
+--- Attaches a root widget to the named layer. Raises an error if the layer does not exist.
+---@field attachToLayerNode fun(self: MyGUI.LayerManager, name: string, widget: MyGUI.Widget)
+---@field detachFromLayer fun(self: MyGUI.LayerManager, widget: MyGUI.Widget)
+--- Moves the widget to the top of its layer.
+---@field upLayerItem fun(self: MyGUI.LayerManager, widget: MyGUI.Widget)
+---@field isExist fun(self: MyGUI.LayerManager, name: string): boolean
+--- Returns an enumerator over a copy of the layers, in drawing order, taken now. A layer MyGUI replaces later is not detected, so walk the layers when you need them instead of keeping the enumerator.
+---@field getEnumerator fun(self: MyGUI.LayerManager): MyGUI.EnumeratorLayerSnapshot
+--- Returns the named layer. A missing layer raises an error unless throw is false, which returns nil instead.
+---@field getByName fun(self: MyGUI.LayerManager, name: string, throw?: boolean): MyGUI.ILayer|nil
+---@field getLayerCount fun(self: MyGUI.LayerManager): integer
+--- Returns the layer at a 0-based index, in drawing order. Raises an error for an index outside 0 to getLayerCount() - 1.
+---@field getLayer fun(self: MyGUI.LayerManager, index: integer): MyGUI.ILayer
+--- Returns the top visible and enabled widget at the screen position.
+---@field getWidgetFromPoint fun(self: MyGUI.LayerManager, left: integer, top: integer): MyGUI.Widget|nil
+---@field getCategoryName fun(self: MyGUI.LayerManager): string
+---@field getInstance fun(): MyGUI.LayerManager
+
+--- Walks the layers copied by LayerManager:getEnumerator(), like MyGUI's LayerManager::EnumeratorLayer.
+---@class MyGUI.EnumeratorLayerSnapshot
+--- Moves to the next layer. The first call moves to the first layer. Returns false once no layers remain.
+---@field next fun(self: MyGUI.EnumeratorLayerSnapshot): boolean
+--- Returns the layer next() moved to. Raises an error after next() returns false.
+---@field current fun(self: MyGUI.EnumeratorLayerSnapshot): MyGUI.ILayer
+
+---@class MyGUI.LayerManagerStatic
+---@field getInstance fun(): MyGUI.LayerManager|nil
+
+--- A MyGUI layer, borrowed from the LayerManager.
+---@class MyGUI.ILayer
+---@field getName fun(self: MyGUI.ILayer): string
+---@field getLayerNodeCount fun(self: MyGUI.ILayer): integer
+---@field getSize fun(self: MyGUI.ILayer): MyGUI.IntSize
+--- Converts a screen position to a position in this layer.
+---@field getPosition fun(self: MyGUI.ILayer, left: integer, top: integer): MyGUI.IntPoint
+
 ---@class MyGUI.Widget
 ---@field setPosition fun(self: MyGUI.Widget, x: integer|MyGUI.IntPoint, y?: integer)
 ---@field getPosition fun(self: MyGUI.Widget): integer, integer
@@ -2253,6 +2299,8 @@ taskPriority = {
 ---@field getChildCount fun(self: MyGUI.Widget): integer
 ---@field getChildAt fun(self: MyGUI.Widget, index: integer): MyGUI.Widget|nil
 ---@field findWidget fun(self: MyGUI.Widget, name: string): MyGUI.Widget|nil
+--- Returns an enumerator over a copy of this widget's children, taken now. Widgets created later are not included.
+---@field getEnumerator fun(self: MyGUI.Widget): MyGUI.EnumeratorWidgetPtrSnapshot
 --- Returns a Window's client widget, or nil for a non-Window widget or when unavailable.
 ---@field getClientWidget fun(self: MyGUI.Widget): MyGUI.Widget|nil
 ---@field getClientCoord fun(self: MyGUI.Widget): integer, integer, integer, integer
@@ -2766,6 +2814,7 @@ taskPriority = {
 ---@field LayoutManager MyGUI.LayoutManagerStatic
 ---@field RenderManager MyGUI.RenderManagerStatic
 ---@field SkinManager MyGUI.SkinManagerStatic
+---@field LayerManager MyGUI.LayerManagerStatic
 
 ---@class Dialogue
 --- Returns the dialogue's owning character.
@@ -3036,8 +3085,7 @@ taskPriority = {
 ---@field item lightuserdata|nil
 
 ---@class MapScreen_MapRoad
---- Raw MyGUI::Widget pointer.
----@field widget lightuserdata|nil
+---@field widget MyGUI.Widget|nil
 
 ---@class NavMeshGenerator_TaskQueue
 ---@field front NavMeshGenerator_Task|nil
@@ -3601,7 +3649,7 @@ taskPriority = {
 ---@field zoneMgr ZoneManager
 ---@field SysMessageEnum GameWorld.SysMessageEnum
 
----@class PlayerInterface
+---@class PlayerInterface : FactoryCallbackInterface
 --- Handle of the player's selected character; `getSelectedCharacter()` resolves it.
 ---@field selectedCharacter hand
 --- Handles of all characters the player has selected.
@@ -4601,7 +4649,7 @@ taskPriority = {
 ---@field FactionEvent FactionRelations.FactionEvent
 
 --- Macro military and civilian squad controller governing group formation navigation, roster management, squad AI tasks, patrol waypoints, persistent serialization, and asset ownership. Derived from `RootObjectBase`, `Platoon` bridges active 3D world reality and abstract background simulation. Coordinates directly with `Faction` for political allegiance, `Character` for individual squad members, `ActivePlatoon` for live scene graph entities, `Ownerships` for squad currency and property ledgers, and `TownBase` for municipal settlement assignments.
----@class Platoon
+---@class Platoon : RootObjectBase
 --- Pointer to live 3D character container when loaded (8 bytes: `0x1D8`–`0x1E0`).
 ---@field activePlatoon ActivePlatoon|nil
 --- Sets the internal tracked character count for the squad.
@@ -4801,7 +4849,7 @@ taskPriority = {
 --- Pointer to background simulated container when unloaded (8 bytes: `0x1E0`–`0x1E8`).
 ---@field unloadedPlatoon lightuserdata
 
----@class ActivePlatoon
+---@class ActivePlatoon : RootObjectContainer
 ---@field _recalculateIsIntact fun(self: ActivePlatoon): boolean
 ---@field isAnyoneCaptured fun(self: ActivePlatoon): boolean
 ---@field getGroupSense fun(self: ActivePlatoon): lightuserdata
@@ -5080,8 +5128,8 @@ taskPriority = {
 ---@class TraitBool
 
 ---@class BaseLayout
---- Read-only pointer to the layout's main MyGUI widget.
----@field mMainWidget lightuserdata
+--- The layout's main widget.
+---@field mMainWidget MyGUI.Widget|nil
 ---@field mPrefix string
 ---@field mLayoutName string
 
@@ -5409,7 +5457,7 @@ taskPriority = {
 ---@field width integer
 
 --- Base class representing all concrete physical object entities in Kenshi. Governs 3D OGRE mesh instantiation, PhysX rigid body dynamics, world streaming paging checks, inventory containment links, ownership and theft tracking, persistence across saves, crafting attributes, and specialized downcast RTTI methods for `Armour`, `Weapon`, `Crossbow`, `Gear`, and `LockedArmour`.
----@class Item
+---@class Item : InventoryItemBase
 --- Virtual fast RTTI downcast checking if item is a `Gear` instance; returns `nullptr` in base `Item`.
 ---@field isGear fun(self: Item): Gear
 --- Override dispatch for `isGear`. Virtual fast RTTI downcast checking if item is a `Gear` instance; returns `nullptr` in base `Item`.
@@ -5721,7 +5769,7 @@ taskPriority = {
 ---@field val0 integer
 
 --- Forward declaration. Its registered API remains tracked as incomplete in the coverage report.
----@class DatapanelGUI
+---@class DatapanelGUI : GUIWindow
 ---@field setFrequentUpdateMode fun(self: DatapanelGUI)
 ---@field setPositionReal fun(self: DatapanelGUI, x: number, y: number)
 ---@field _NV_setPositionReal fun(self: DatapanelGUI, x: number, y: number)
@@ -5815,10 +5863,10 @@ taskPriority = {
 ---@field mouseOverEventDatas lightuserdata
 ---@field panelName string
 ---@field premadeParentWindow boolean
----@field scrollView lightuserdata
----@field scrollWin lightuserdata
+---@field scrollView MyGUI.ScrollView|nil
+---@field scrollWin MyGUI.Widget
 ---@field scrolling boolean
----@field tabWin lightuserdata
+---@field tabWin MyGUI.Window|nil
 ---@field tabs Lektor<MyGUI.Button>
 ---@field w number
 ---@field x number
@@ -5827,15 +5875,14 @@ taskPriority = {
 ---@class InventorySectionGUI
 ---@field hasMouse fun(self: InventorySectionGUI): boolean
 ---@field getItemAbsolutePosition fun(self: InventorySectionGUI, x: integer, y: integer): MyGUI.IntPoint
---- Returns the raw MyGUI widget pointer as lightuserdata.
----@field getWidget fun(self: InventorySectionGUI): lightuserdata
+---@field getWidget fun(self: InventorySectionGUI): MyGUI.Widget|nil
 ---@field getPositionSlot fun(self: InventorySectionGUI, position: MyGUI.IntPoint, section: InventorySection, round: boolean): MyGUI.IntPoint
 ---@field getBestPositionSlot fun(self: InventorySectionGUI, position: MyGUI.IntPoint, section: InventorySection, item: Item): boolean, MyGUI.IntPoint
 ---@field setEnabled fun(self: InventorySectionGUI, enabled: boolean)
 ---@field refreshIcons fun(self: InventorySectionGUI, section: InventorySection)
 ---@field update fun(self: InventorySectionGUI)
---- Reads as a raw lightuserdata pointer; assignment accepts a MyGUI.Widget or nil.
----@field widget lightuserdata|MyGUI.Widget|nil
+--- Assignment accepts a MyGUI.Widget or nil.
+---@field widget MyGUI.Widget|nil
 
 ---@class BuildInventoryLayout : InventoryLayout
 ---@field setupSections fun(self: BuildInventoryLayout, gui: InventoryGUI|lightuserdata, sections: StdMap<string, InventorySectionGUI>|lightuserdata, inventory: Inventory|lightuserdata)
@@ -5912,8 +5959,8 @@ taskPriority = {
 ---@class TraderInventoryLayout : InventoryLayout
 ---@field setupSections fun(self: TraderInventoryLayout, gui: InventoryGUI, sections: StdMap<string, InventorySectionGUI>, inventory: Inventory)
 ---@field notifyMouseWheel fun(self: TraderInventoryLayout, widget: MyGUI.Widget|nil, relative: integer)
---- Read-only raw pointer to the backing MyGUI ScrollView.
----@field scrollBackpack lightuserdata
+--- Read-only. The backing MyGUI ScrollView.
+---@field scrollBackpack MyGUI.ScrollView|nil
 
 ---@class FurnaceInventoryLayout : BuildInventoryLayout
 ---@field setupSections fun(self: FurnaceInventoryLayout, gui: InventoryGUI, sections: StdMap<string, InventorySectionGUI>, inventory: Inventory)
@@ -6653,10 +6700,8 @@ taskPriority = {
 
 ---@class GameDataEditorWindow_DataItem
 ---@field name string
---- Raw MyGUI::EditBox pointer.
----@field edit lightuserdata|nil
---- Raw MyGUI::TextBox pointer.
----@field label lightuserdata|nil
+---@field edit MyGUI.EditBox|nil
+---@field label MyGUI.Widget|nil
 
 ---@class WhoSeesMe
 ---@field lastUpdated number
@@ -6717,12 +6762,12 @@ taskPriority = {
 ---@field setVisible fun(self: MapMarkerCharacter, value: boolean)
 ---@field getVisible fun(self: MapMarkerCharacter): boolean
 ---@field handle hand
----@field image lightuserdata|nil
+---@field image MyGUI.Widget|nil
 
 ---@class DataPanelLine_Text : DataPanelLine
 ---@field createMe fun(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)
 ---@field _NV_createMe fun(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)
----@field editBox lightuserdata|nil
+---@field editBox MyGUI.EditBox|nil
 ---@field wordWrap boolean
 
 ---@class RepetitionCounter
@@ -9451,7 +9496,7 @@ taskPriority = {
 ---@field squad lightuserdata|nil
 ---@field squadView lightuserdata|nil
 
----@class AbstractMovementBase
+---@class AbstractMovementBase : NxUserControllerHitReport
 ---@field create fun(self: AbstractMovementBase, _pos: table)
 ---@field getHandle fun(self: AbstractMovementBase): hand
 ---@field _NV_getHandle fun(self: AbstractMovementBase): hand
@@ -9526,7 +9571,7 @@ taskPriority = {
 ---@field walkSpeed number
 
 --- Humanoid character appearance specialist managing facial features, hair/beard styling, gender dimorphism, chest/waist proportions, and skin normal overlays.
----@class AppearanceHuman
+---@class AppearanceHuman : AppearanceBase
 --- Sets `Gender` for `AppearanceHuman`.
 ---@field setGender fun(self: AppearanceHuman, female?: boolean)
 --- Override dispatch for `setGender`. Sets `Gender` for `AppearanceHuman`.
@@ -9648,7 +9693,7 @@ taskPriority = {
 ---@field random_group integer
 ---@field random_variation integer
 
----@class AppearanceManager_DataRangePose
+---@class AppearanceManager_DataRangePose : AppearanceManager_DataRange
 ---@field clamp fun(self: AppearanceManager_DataRangePose, data: GameData)
 ---@field operator_eq fun(self: AppearanceManager_DataRangePose, arg1: AppearanceManager_DataRangePose): boolean
 ---@field operator_assign fun(self: AppearanceManager_DataRangePose, arg1: AppearanceManager_DataRangePose): AppearanceManager_DataRangePose
@@ -9661,7 +9706,7 @@ taskPriority = {
 ---@field random_group integer
 ---@field random_variation integer
 
----@class AppearanceManager_DataRangeVector
+---@class AppearanceManager_DataRangeVector : AppearanceManager_DataRange
 ---@field addValue fun(self: AppearanceManager_DataRangeVector, value: table)
 ---@field getValue fun(self: AppearanceManager_DataRangeVector, value: integer): table
 ---@field getValueIndex fun(self: AppearanceManager_DataRangeVector, value: table): integer
@@ -9685,7 +9730,7 @@ taskPriority = {
 ---@field value integer
 
 --- Represents an equippable piece of armour, handling defensive stats, bodypart coverage, encumbrance multipliers, and weather protections. Inherits from `Gear`.
----@class Armour
+---@class Armour : Gear
 --- Runtime type identification method returning the base item type enum.
 ---@field getClassType fun(self: Armour): integer
 --- Override dispatch for `getClassType`. Runtime type identification method returning the base item type enum.
@@ -9909,7 +9954,7 @@ taskPriority = {
 ---@field mat GameData
 
 --- Player outpost construction interface dialog. Organizes architectural categories, building placement scaffolds, material costs, tech requirements, and confirms construction sites.
----@class BuildModeWindow
+---@class BuildModeWindow : BaseLayout
 --- Sets `Message` for `BuildModeWindow`.
 ---@field setMessage fun(self: BuildModeWindow, message: string)
 --- Retrieves `BuildingListWidget` associated with `BuildModeWindow`.
@@ -10070,7 +10115,7 @@ taskPriority = {
 ---@field target hand
 ---@field timeToStart TimeOfDay
 
----@class CharMovement
+---@class CharMovement : AbstractMovementBase
 ---@field _setPositionAndTeleport fun(self: CharMovement, p: table, floor: integer)
 ---@field _NV__setPositionAndTeleport fun(self: CharMovement, p: table, floor: integer)
 ---@field _setPositionDirectionAndTeleport fun(self: CharMovement, position: table, orientation: table)
@@ -10165,7 +10210,7 @@ taskPriority = {
 ---@field tracer lightuserdata
 ---@field trackingAnimRelocationVector table
 
----@class CharacterAnimal
+---@class CharacterAnimal : Character
 --- Inherited API from `Character`. Performs internal character operation `isAnimal`, synchronizing actor state across subsystems.
 ---@field isAnimal fun(self: CharacterAnimal): CharacterAnimal
 --- Inherited API from `Character`. Override dispatch for `isAnimal`. Performs internal character operation `isAnimal`, synchronizing actor state across subsystems.
@@ -10264,7 +10309,7 @@ taskPriority = {
 ---@field weaponIsTechnicallyEquipped boolean
 
 --- Plastic surgeon and character creation window. Provides procedural bone scaling sliders, muscle and bulk blend curves, posture options, race/gender selection, and mesh export/import. Coordinates an orbital preview camera (`CharacterEditCamera`), multi-character squad setups (`Character`), procedural skeletal morph blending, and disk persistence for `.bod2` body preset files.
----@class CharacterEditWindow
+---@class CharacterEditWindow : BaseLayout
 --- Per-frame update tick for the character creation screen. Updates orbital camera interpolation, applies pending live character model rebuilds, and animates character idle stance.
 ---@field update fun(self: CharacterEditWindow)
 --- Loads race templates, sub-race definitions, mesh attachment lists, and morph slider definitions from game data.
@@ -10446,7 +10491,7 @@ taskPriority = {
 --- Ogre 2.x rendering compositor workspace.
 ---@field workspace lightuserdata
 
----@class CharacterHuman
+---@class CharacterHuman : Character
 --- Inherited API from `Character`. Performs internal character operation `isHuman`, synchronizing actor state across subsystems.
 ---@field isHuman fun(self: CharacterHuman): CharacterHuman
 --- Inherited API from `Character`. Override dispatch for `isHuman`. Performs internal character operation `isHuman`, synchronizing actor state across subsystems.
@@ -10522,7 +10567,7 @@ taskPriority = {
 ---@field weaponInHands Weapon
 ---@field weaponInHandsSheathLocation string
 
----@class CharacterStatsWindow
+---@class CharacterStatsWindow : GUIWindow
 ---@field clear fun(self: CharacterStatsWindow)
 ---@field _NV_clear fun(self: CharacterStatsWindow)
 ---@field create fun(self: CharacterStatsWindow)
@@ -10560,15 +10605,15 @@ taskPriority = {
 ---@field statsSum integer
 ---@field StatGroup CharacterStatsWindow.StatGroup
 
----@class CharacterTradingWindow
+---@class CharacterTradingWindow : GUIWindow
 ---@field show fun(self: CharacterTradingWindow, on?: boolean)
 ---@field isVisible fun(self: CharacterTradingWindow): boolean
 ---@field update fun(self: CharacterTradingWindow)
 ---@field close fun(self: CharacterTradingWindow)
----@field charactersBox lightuserdata
----@field confirmBtn lightuserdata
----@field currentTotalText lightuserdata
----@field selectedCountText lightuserdata
+---@field charactersBox MyGUI.ScrollView|nil
+---@field confirmBtn MyGUI.Button|nil
+---@field currentTotalText MyGUI.Widget
+---@field selectedCountText MyGUI.Widget
 ---@field tradingBoxes OgreFastArray<lightuserdata>
 ---@field tradingHandler lightuserdata
 
@@ -10979,7 +11024,7 @@ taskPriority = {
 ---@field rate number
 
 --- Wearable backpack and storage container item. Extends `Item` and `RaceLimiter` with nested `Inventory` management, weight reduction scaling, athletics speed modifiers, combat skill penalties, stealth penalties, and race equipment whitelist/blacklist verification.
----@class ContainerItem
+---@class ContainerItem : Item
 --- Returns the container item type enumeration code (`itemType::CONTAINER` = 0x2E).
 ---@field getClassType fun(self: ContainerItem): integer
 --- Override dispatch for `getClassType`. Returns the container item type enumeration code (`itemType::CONTAINER` = 0x2E).
@@ -11067,7 +11112,7 @@ taskPriority = {
 ---@field orders Lektor<integer>
 ---@field rightMouseActivated boolean
 
----@class ContextMenuGUI
+---@class ContextMenuGUI : BaseLayout
 ---@field getMainWidget fun(self: ContextMenuGUI): MyGUI.Widget
 ---@field getVisible fun(self: ContextMenuGUI): boolean
 ---@field setVisible fun(self: ContextMenuGUI, visible?: boolean)
@@ -11082,7 +11127,7 @@ taskPriority = {
 ---@field valueCoords MyGUI.IntCoord
 
 --- `CraftingBuilding` extends `ProductionBuilding` to implement Kenshi's item creation system, powering weapon smithies, armour workbenches, crossbow fletchers, leather tanneries, robotics benches, and medical craft tables.
----@class CraftingBuilding
+---@class CraftingBuilding : ProductionBuilding
 --- Constructs a specialized `CraftingInventoryLayout` GUI controller managing recipe selection buttons, queue lists, and input/output inventory sections.
 ---@field createInventoryLayout fun(self: CraftingBuilding): InventoryLayout
 --- Override dispatch for `createInventoryLayout`. Constructs a specialized `CraftingInventoryLayout` GUI controller managing recipe selection buttons, queue lists, and input/output inventory sections.
@@ -11132,9 +11177,9 @@ taskPriority = {
 --- Override dispatch for `isAnyInputsInvalidType`. Verifies that items resting in input inventory sections match ingredients demanded by the active recipe queue.
 ---@field _NV_isAnyInputsInvalidType fun(self: CraftingBuilding): boolean
 --- MyGUI click event callback opening the recipe selection modal dialog.
----@field newCraftingButton fun(self: CraftingBuilding, _sender: lightuserdata)
+---@field newCraftingButton fun(self: CraftingBuilding, _sender: MyGUI.Widget)
 --- Override dispatch for `newCraftingButton`. MyGUI click event callback opening the recipe selection modal dialog.
----@field _NV_newCraftingButton fun(self: CraftingBuilding, _sender: lightuserdata)
+---@field _NV_newCraftingButton fun(self: CraftingBuilding, _sender: MyGUI.Widget)
 --- Deposits a newly fabricated item into the workbench output section or drops it on the floor if output space is filled.
 ---@field addFinishedCraftItem fun(self: CraftingBuilding, what: Item)
 --- Triggers an audible notification and UI status message indicating fabrication has stalled due to missing raw materials.
@@ -11227,7 +11272,7 @@ taskPriority = {
 ---@field saveState GameSaveState
 
 --- Ranged weapon class extending `Weapon`. Implements properties for bolts, max range, and entity representation for equipping logic.
----@class Crossbow
+---@class Crossbow : Weapon
 --- Runtime type identification method returning `this` pointer cast to Crossbow.
 ---@field isCrossbow fun(self: Crossbow): Crossbow
 --- Override dispatch for `isCrossbow`. Runtime type identification method returning `this` pointer cast to Crossbow.
@@ -11313,7 +11358,7 @@ taskPriority = {
 ---@field getUserData fun(self: DataPanelLine): hand
 ---@field _NV_getUserData fun(self: DataPanelLine): hand
 ---@field getNumWidgets fun(self: DataPanelLine): integer
----@field getWidget fun(self: DataPanelLine, index: integer): lightuserdata
+---@field getWidget fun(self: DataPanelLine, index: integer): MyGUI.Widget
 ---@field category integer
 ---@field classType integer
 ---@field hi integer
@@ -11323,22 +11368,22 @@ taskPriority = {
 ---@field s2 string
 ---@field skinW1 string
 ---@field skinW2 string
----@field w1 lightuserdata
----@field w2 lightuserdata
+---@field w1 MyGUI.Widget
+---@field w2 MyGUI.Widget
 ---@field LineType DataPanelLine.LineType
 
----@class DataPanelLine_Button
+---@class DataPanelLine_Button : DataPanelLine
 ---@field getUserData fun(self: DataPanelLine_Button): hand
 ---@field _NV_getUserData fun(self: DataPanelLine_Button): hand
 ---@field createMe fun(self: DataPanelLine_Button, parent: DatapanelGUI, top: number, lastLine?: boolean)
 ---@field _NV_createMe fun(self: DataPanelLine_Button, parent: DatapanelGUI, top: number, lastLine?: boolean)
----@field button lightuserdata
+---@field button MyGUI.Button|nil
 ---@field buttonHeight number
 ---@field buttonSkin string
 ---@field buttonWidth number
 ---@field userData hand
 
----@class DataPanelLine_CheckBox
+---@class DataPanelLine_CheckBox : DataPanelLine
 ---@field refresh fun(self: DataPanelLine_CheckBox)
 ---@field _NV_refresh fun(self: DataPanelLine_CheckBox)
 ---@field setValue fun(self: DataPanelLine_CheckBox, checked?: boolean)
@@ -11347,37 +11392,37 @@ taskPriority = {
 ---@field getCheckBox fun(self: DataPanelLine_CheckBox): MyGUI.Widget
 ---@field createMe fun(self: DataPanelLine_CheckBox, parent: DatapanelGUI, topReal: number, lastLine?: boolean)
 ---@field _NV_createMe fun(self: DataPanelLine_CheckBox, parent: DatapanelGUI, topReal: number, lastLine?: boolean)
----@field button lightuserdata
----@field text lightuserdata
+---@field button MyGUI.Button|nil
+---@field text MyGUI.EditBox|nil
 ---@field valuePtr lightuserdata
 
----@class DataPanelLine_DropBox
+---@class DataPanelLine_DropBox : DataPanelLine
 ---@field addAValue fun(self: DataPanelLine_DropBox, key: string, val: integer)
 ---@field getSelectedValue fun(self: DataPanelLine_DropBox): integer
 ---@field setSelectedValue fun(self: DataPanelLine_DropBox, val: integer)
 ---@field getSelectedText fun(self: DataPanelLine_DropBox): string
 ---@field clearValues fun(self: DataPanelLine_DropBox)
----@field getComboBox fun(self: DataPanelLine_DropBox): lightuserdata
+---@field getComboBox fun(self: DataPanelLine_DropBox): MyGUI.ComboBox
 ---@field createMe fun(self: DataPanelLine_DropBox, parent: DatapanelGUI, top: number, lastLine?: boolean)
 ---@field _NV_createMe fun(self: DataPanelLine_DropBox, parent: DatapanelGUI, top: number, lastLine?: boolean)
 ---@field refresh fun(self: DataPanelLine_DropBox)
 ---@field _NV_refresh fun(self: DataPanelLine_DropBox)
----@field goBox lightuserdata
+---@field goBox MyGUI.Button|nil
 ---@field hasGoBox boolean
----@field listBox lightuserdata
+---@field listBox MyGUI.ComboBox|nil
 ---@field listWidth number
 ---@field valPtr lightuserdata
 
----@class DataPanelLine_Faction
+---@class DataPanelLine_Faction : DataPanelLine
 ---@field createMe fun(self: DataPanelLine_Faction, parent: DatapanelGUI, top: number, lastLine?: boolean)
 ---@field _NV_createMe fun(self: DataPanelLine_Faction, parent: DatapanelGUI, top: number, lastLine?: boolean)
----@field bar lightuserdata
----@field bar2 lightuserdata
----@field but lightuserdata
+---@field bar MyGUI.Widget
+---@field bar2 MyGUI.Widget
+---@field but MyGUI.Button|nil
 ---@field v1 number
 ---@field v2 number
 
----@class DataPanelLine_KeyConfig
+---@class DataPanelLine_KeyConfig : DataPanelLine
 ---@field oldKey fun(self: DataPanelLine_KeyConfig): integer
 ---@field setKey fun(self: DataPanelLine_KeyConfig, s: string)
 ---@field eraseKey fun(self: DataPanelLine_KeyConfig, key: string)
@@ -11387,31 +11432,31 @@ taskPriority = {
 ---@field createMe fun(self: DataPanelLine_KeyConfig, p: DatapanelGUI, vpos: number, lastLine?: boolean)
 ---@field _NV_createMe fun(self: DataPanelLine_KeyConfig, p: DatapanelGUI, vpos: number, lastLine?: boolean)
 ---@field getCommand fun(self: DataPanelLine_KeyConfig): string
----@field btn0 lightuserdata
----@field btn1 lightuserdata
+---@field btn0 MyGUI.Button|nil
+---@field btn1 MyGUI.Button|nil
 ---@field command string
 
----@class DataPanelLine_Progress
+---@class DataPanelLine_Progress : DataPanelLine
 ---@field setProgress fun(self: DataPanelLine_Progress, value: number, text: string)
 ---@field createMe fun(self: DataPanelLine_Progress, parent: DatapanelGUI, top: number, lastLine?: boolean)
 ---@field _NV_createMe fun(self: DataPanelLine_Progress, parent: DatapanelGUI, top: number, lastLine?: boolean)
----@field progress lightuserdata
----@field progressText lightuserdata
+---@field progress MyGUI.Widget
+---@field progressText MyGUI.EditBox|nil
 ---@field showKey boolean
----@field textBox lightuserdata
+---@field textBox MyGUI.EditBox|nil
 
----@class DataPanelLine_Research
+---@class DataPanelLine_Research : DataPanelLine
 ---@field createMe fun(self: DataPanelLine_Research, parent: DatapanelGUI, top: number, lastLine?: boolean)
 ---@field _NV_createMe fun(self: DataPanelLine_Research, parent: DatapanelGUI, top: number, lastLine?: boolean)
----@field Xbut lightuserdata
----@field bar lightuserdata
+---@field Xbut MyGUI.Button|nil
+---@field bar MyGUI.Widget
 ---@field barSkin string
----@field but lightuserdata
+---@field but MyGUI.Button|nil
 ---@field hasXBut boolean
 ---@field v1 number
 ---@field v2 number
 
----@class DataPanelLine_Slider
+---@class DataPanelLine_Slider : DataPanelLine
 ---@field setValue fun(self: DataPanelLine_Slider, value: number)
 ---@field getValue fun(self: DataPanelLine_Slider): number
 ---@field refresh fun(self: DataPanelLine_Slider)
@@ -11424,7 +11469,7 @@ taskPriority = {
 ---@field slider lightuserdata
 ---@field valuePtr lightuserdata
 
----@class DataPanelLine_SliderEditable
+---@class DataPanelLine_SliderEditable : DataPanelLine
 ---@field setEditableValuePtr fun(self: DataPanelLine_SliderEditable, arg1: number, lo: number, hi: number)
 ---@field getSlider fun(self: DataPanelLine_SliderEditable): MyGUI.Widget
 ---@field getEditBox fun(self: DataPanelLine_SliderEditable): MyGUI.Widget
@@ -11436,22 +11481,22 @@ taskPriority = {
 ---@field _NV_createMe fun(self: DataPanelLine_SliderEditable, parent: DatapanelGUI, top: number, lastLine?: boolean)
 ---@field max number
 ---@field min number
----@field nameText lightuserdata
+---@field nameText MyGUI.EditBox|nil
 ---@field scale number
 ---@field showName boolean
----@field sliderBar lightuserdata
----@field valueEditBox lightuserdata
+---@field sliderBar MyGUI.ScrollBar|nil
+---@field valueEditBox MyGUI.EditBox|nil
 ---@field valuePtr lightuserdata
 ---@field width number
 
----@class DataPanelLine_TextEditable
----@field getEditBox fun(self: DataPanelLine_TextEditable): lightuserdata
----@field getNameBox fun(self: DataPanelLine_TextEditable): lightuserdata
+---@class DataPanelLine_TextEditable : DataPanelLine
+---@field getEditBox fun(self: DataPanelLine_TextEditable): MyGUI.EditBox
+---@field getNameBox fun(self: DataPanelLine_TextEditable): MyGUI.EditBox
 ---@field createMe fun(self: DataPanelLine_TextEditable, parent: DatapanelGUI, top: number, lastLine?: boolean)
 ---@field _NV_createMe fun(self: DataPanelLine_TextEditable, parent: DatapanelGUI, top: number, lastLine?: boolean)
----@field editBox lightuserdata
+---@field editBox MyGUI.EditBox|nil
 ---@field multiLine boolean
----@field nameText lightuserdata
+---@field nameText MyGUI.EditBox|nil
 ---@field showKey boolean
 ---@field width number
 
@@ -11470,7 +11515,7 @@ taskPriority = {
 ---@field newGameReset fun(self: DialogDataManager)
 ---@field getData fun(d: GameData): DialogLineData
 
----@class DialogueSpeechBubble
+---@class DialogueSpeechBubble : BaseLayout
 ---@field setText fun(self: DialogueSpeechBubble, text: string)
 ---@field setAlpha fun(self: DialogueSpeechBubble, value: number)
 ---@field setPosition fun(self: DialogueSpeechBubble, x: integer|table, y?: integer)
@@ -11482,9 +11527,9 @@ taskPriority = {
 ---@field marginW integer
 ---@field shout boolean
 ---@field stayOnScreen boolean
----@field textBox lightuserdata
+---@field textBox MyGUI.EditBox|nil
 
----@class DialogueWindow
+---@class DialogueWindow : GUIWindow
 ---@field getVisible fun(self: DialogueWindow): boolean
 ---@field setVisible fun(self: DialogueWindow, visible?: boolean)
 ---@field show fun(self: DialogueWindow, arg1?: Dialogue|boolean)
@@ -11501,26 +11546,26 @@ taskPriority = {
 ---@field clearResponses fun(self: DialogueWindow)
 ---@field changePortrait fun(self: DialogueWindow, character: Character, player?: boolean)
 ---@field updatePanelsPosition fun(self: DialogueWindow)
----@field conversationNPCNameText lightuserdata
----@field conversationNPCPanel lightuserdata
+---@field conversationNPCNameText MyGUI.Widget
+---@field conversationNPCPanel MyGUI.Widget
 ---@field conversationNPCPanelHeightDiffSpeechPanel integer
----@field conversationNPCPortrait lightuserdata
----@field conversationNPCSpeech lightuserdata
+---@field conversationNPCPortrait MyGUI.Widget
+---@field conversationNPCSpeech MyGUI.EditBox|nil
 ---@field conversationNPCSpeechPanelMinHeight integer
 ---@field conversationPC Character
----@field conversationPCMoneyText lightuserdata
----@field conversationPCNameText lightuserdata
----@field conversationPCPanel lightuserdata
+---@field conversationPCMoneyText MyGUI.Widget
+---@field conversationPCNameText MyGUI.Widget
+---@field conversationPCPanel MyGUI.Widget
 ---@field conversationPCPanelHeightDiffSpeechPanel integer
----@field conversationPCPortrait lightuserdata
----@field conversationPCSpeechPanel lightuserdata
+---@field conversationPCPortrait MyGUI.Widget
+---@field conversationPCSpeechPanel MyGUI.ScrollView|nil
 ---@field conversationPCSpeechPanelMinHeight integer
 ---@field conversationPanelsMargin integer
 ---@field converstaionPCPanelBottom integer
 ---@field dialogue Dialogue
 ---@field replyTexts OgreFastArray<MyGUI.EditBox>
 
----@class DoorStuff
+---@class DoorStuff : Building
 ---@field setupPhysicalUT fun(self: DoorStuff): boolean
 ---@field getFaction fun(self: DoorStuff): Faction
 ---@field _NV_getFaction fun(self: DoorStuff): Faction
@@ -11717,13 +11762,13 @@ taskPriority = {
 ---@field faction Faction
 ---@field worstEnemy Faction
 
----@class FactionRelationsLine
+---@class FactionRelationsLine : BaseLayout
 ---@field update fun(self: FactionRelationsLine)
 ---@field faction Faction
----@field leftBar lightuserdata
----@field rightBar lightuserdata
+---@field leftBar MyGUI.Widget
+---@field rightBar MyGUI.Widget
 ---@field value number
----@field valueText lightuserdata
+---@field valueText MyGUI.Widget
 
 ---@class FactionUniqueSquadManager
 ---@field clearAndReset fun(self: FactionUniqueSquadManager)
@@ -11818,9 +11863,9 @@ taskPriority = {
 ---@field notifyMouseWheel fun(self: FactionsScreen, _sender?: MyGUI.Widget, _rel: integer)
 ---@field infoPanel DatapanelGUI
 ---@field lines StdMap<Faction, FactionRelationsLine>
----@field mainWidget lightuserdata
----@field nameText lightuserdata
----@field scrollList lightuserdata
+---@field mainWidget MyGUI.Widget
+---@field nameText MyGUI.EditBox|nil
+---@field scrollList MyGUI.ScrollView|nil
 ---@field scrollListItemTop integer
 ---@field scrollListItemWidth integer
 ---@field selectedFaction Faction
@@ -11839,7 +11884,7 @@ taskPriority = {
 ---@field size integer
 
 --- `FarmBuilding` powers wheatstraw fields, greenfruit patches, cotton crops, hemp farms, cactus gardens, and riceweed paddies across Kenshi's diverse biomes.
----@class FarmBuilding
+---@class FarmBuilding : ProductionBuilding
 --- Creates physical collision geometry and instantiates procedural 3D plant specimens across the field grid.
 ---@field createPhysical fun(self: FarmBuilding): boolean
 --- Override dispatch for `createPhysical`. Creates physical collision geometry and instantiates procedural 3D plant specimens across the field grid.
@@ -12028,7 +12073,7 @@ taskPriority = {
 ---@field rv number
 ---@field scale number
 
----@class FloatingProgressBar
+---@class FloatingProgressBar : ScreenLabelInterface
 ---@field setProgress fun(self: FloatingProgressBar, value: number)
 ---@field setCaption fun(self: FloatingProgressBar, value: string)
 ---@field update fun(self: FloatingProgressBar)
@@ -12052,7 +12097,7 @@ taskPriority = {
 ---@field getOutOfTheWayOfCharacter hand
 ---@field me Character
 
----@class FogEditor
+---@class FogEditor : BaseLayout
 ---@field show fun(self: FogEditor)
 ---@field close fun(self: FogEditor)
 ---@field isActive fun(self: FogEditor): boolean
@@ -12068,13 +12113,13 @@ taskPriority = {
 ---@field editNode lightuserdata
 ---@field editPos table
 ---@field editRot table
----@field fogList lightuserdata
+---@field fogList MyGUI.ListBox|nil
 ---@field panel DatapanelGUI
 ---@field radius number
 ---@field selectedFog lightuserdata
 ---@field selectedSide integer
----@field typeList lightuserdata
----@field window lightuserdata
+---@field typeList MyGUI.ComboBox|nil
+---@field window MyGUI.Window|nil
 
 --- Procedural instanced foliage, grass, and tree generator integrating Forests::PagedGeometry and GrassLoader with biome coverage maps, slope filters, and navmesh carvers.
 ---@class FoliageSystem
@@ -12131,7 +12176,7 @@ taskPriority = {
 ---@field valid boolean
 ---@field wantsAboveGround boolean
 
----@class FootprintNode
+---@class FootprintNode : Footprint
 ---@field updateBox fun(self: FootprintNode)
 ---@field _NV_updateBox fun(self: FootprintNode)
 ---@field setEnabled fun(self: FootprintNode, value?: boolean)
@@ -12151,7 +12196,7 @@ taskPriority = {
 ---@field me Character
 ---@field movementTarget hand
 
----@class FurnaceBuilding
+---@class FurnaceBuilding : ProductionBuilding
 --- Inherited API from `ProductionBuilding`. Constructs a specialized MyGUI inventory layout presenting separate visual containers for raw material inputs and manufactured output products.
 ---@field createInventoryLayout fun(self: FurnaceBuilding): InventoryLayout
 --- Inherited API from `ProductionBuilding`. Override dispatch for `createInventoryLayout`. Constructs a specialized MyGUI inventory layout presenting separate visual containers for raw material inputs and manufactured output products.
@@ -12267,7 +12312,7 @@ taskPriority = {
 ---@field researchSpeed number
 
 --- Fortified defensive town gate managing passable door states, lock security levels, and dynamic Havok pathfinding corridor carving.
----@class GatewayBuilding
+---@class GatewayBuilding : Building
 --- Executes `reAnnounceGateToPathfinder` operation on `GatewayBuilding`.
 ---@field reAnnounceGateToPathfinder fun(self: GatewayBuilding)
 --- Executes `postCreationPathfinderSetupStuff` operation on `GatewayBuilding`.
@@ -12306,7 +12351,7 @@ taskPriority = {
 ---@field _NV_setHandle fun(self: GatewayBuilding, h: hand)
 
 --- Base class for equippable items and gear in the game. Extends `Item` by adding crafting attribution, level/quality scaling, and faction uniform data.
----@class Gear
+---@class Gear : Item
 --- Runtime type identification method for the `Gear` class.
 ---@field isGear fun(self: Gear): Gear
 --- Override dispatch for `isGear`. Runtime type identification method for the `Gear` class.
@@ -12344,7 +12389,7 @@ taskPriority = {
 ---@field value integer
 
 --- Power generator supplying electrical energy to settlement power grids by consuming fuel or harnessing environmental wind.
----@class GeneratorBuilding
+---@class GeneratorBuilding : ProductionBuilding
 --- Retrieves `PowerOutput` for this `GeneratorBuilding` instance.
 ---@field getPowerOutput fun(self: GeneratorBuilding): number
 --- Override dispatch for `getPowerOutput`. Retrieves `PowerOutput` for this `GeneratorBuilding` instance.
@@ -12463,7 +12508,7 @@ taskPriority = {
 ---@field motionStopsAnimationFrame number
 ---@field power number
 
----@class ImportGameMenu
+---@class ImportGameMenu : LoadSaveWindow
 ---@field select fun(self: ImportGameMenu, index: integer)
 ---@field _NV_select fun(self: ImportGameMenu, index: integer)
 ---@field importPress fun(self: ImportGameMenu, _sender: MyGUI.Widget)
@@ -12481,7 +12526,7 @@ taskPriority = {
 ---@field masks integer
 ---@field name string
 
----@class InteriorModeButtonWindow
+---@class InteriorModeButtonWindow : BaseLayout
 ---@field toggleInteriorMode fun(self: InteriorModeButtonWindow)
 ---@field setVisible fun(self: InteriorModeButtonWindow, v?: boolean)
 ---@field wantExteriorsInvisible fun(self: InteriorModeButtonWindow): boolean
@@ -12534,7 +12579,7 @@ taskPriority = {
 ---@field win MyGUI.Window|nil
 
 --- 2D graphical inventory window governing tile grid interactions, drag-and-drop item movement, shop barter validation, paperdoll equipment slots, and thievery detection. Coordinates child windows for equipped backpacks (`ContainerItem`), communicates with `ForgottenGUI` for modal dialogue popups, and integrates with `DatapanelGUI` for live character stat readouts.
----@class InventoryGUI
+---@class InventoryGUI : GUIWindow
 --- Per-frame window update method. Refreshes hover tooltips, processes pending dirty section redraws (`needItemsUpdate`), updates thievery probability indicators, and synchronizes datapanel stats.
 ---@field update fun(self: InventoryGUI)
 --- Override dispatch for `update`. Per-frame window update method. Refreshes hover tooltips, processes pending dirty section redraws (`needItemsUpdate`), updates thievery probability indicators, and synchronizes datapanel stats.
@@ -12694,18 +12739,18 @@ taskPriority = {
 ---@field point lightuserdata
 ---@field sectionName string
 
----@class InventoryIcon
+---@class InventoryIcon : BaseLayout
 ---@field update fun(self: InventoryIcon)
----@field getWidget fun(self: InventoryIcon): lightuserdata
+---@field getWidget fun(self: InventoryIcon): MyGUI.Widget
 ---@field setPosition fun(self: InventoryIcon, arg1: integer, arg2: integer)
 ---@field getSize fun(self: InventoryIcon): integer, integer
 ---@field createIconImage fun(item: Item): string, iVector2
 ---@field getItemSize fun(itemData: GameData): integer, integer
 ---@field getItemPosition fun(x: integer, y: integer): integer, integer
----@field chargesProgress lightuserdata
----@field image lightuserdata
+---@field chargesProgress MyGUI.Widget
+---@field image MyGUI.Widget
 ---@field item Item
----@field quantityText lightuserdata
+---@field quantityText MyGUI.Widget
 
 ---@class InventoryTradeData
 ---@field operator_assign fun(self: InventoryTradeData, arg1: InventoryTradeData): InventoryTradeData
@@ -12716,7 +12761,7 @@ taskPriority = {
 ---@field owner hand
 ---@field paymentRequired boolean
 
----@class InventoryTraderGUI
+---@class InventoryTraderGUI : InventoryGUI
 --- Inherited API from `InventoryGUI`. Resolves and returns the underlying `Inventory` model instance linked to this GUI window via `selectedObject` handle.
 ---@field getInventory fun(self: InventoryTraderGUI): Inventory
 --- Inherited API from `InventoryGUI`. Override dispatch for `getInventory`. Resolves and returns the underlying `Inventory` model instance linked to this GUI window via `selectedObject` handle.
@@ -12799,11 +12844,11 @@ taskPriority = {
 ---@field navmeshButton fun(self: LevelEditor, arg1?: MyGUI.Widget)
 ---@field exitLevelEditMode fun(self: LevelEditor, _sender?: MyGUI.Widget)
 ---@field activeModChanged fun(self: LevelEditor, _sender?: MyGUI.ComboBox, arg2: integer)
----@field activeModTxt lightuserdata
----@field altitudeTxt lightuserdata
----@field editMapTitleWindow lightuserdata
+---@field activeModTxt MyGUI.ComboBox|nil
+---@field altitudeTxt MyGUI.Widget
+---@field editMapTitleWindow MyGUI.Window|nil
 ---@field factionListWindow FactionListWindow
----@field factionTxt lightuserdata
+---@field factionTxt MyGUI.Widget
 ---@field featureListWindow NpcListWindow
 ---@field fogEditor FogEditor
 ---@field foliageEraser lightuserdata
@@ -12824,7 +12869,7 @@ taskPriority = {
 ---@field squadListWindow SquadListWindow
 ---@field townListWindow TownListWindow
 
----@class LightBuilding
+---@class LightBuilding : UseableStuff
 --- Inherited API from `Building`. Instantiates PhysX collision shapes and static rigid bodies corresponding to structural components.
 ---@field createPhysical fun(self: LightBuilding): boolean
 --- Inherited API from `Building`. Override dispatch for `createPhysical`. Instantiates PhysX collision shapes and static rigid bodies corresponding to structural components.
@@ -12875,11 +12920,11 @@ taskPriority = {
 ---@field shutdownOverride fun(self: ListScrollBar)
 ---@field getTypeName fun(self: ListScrollBar): string
 ---@field disableEvents boolean
----@field mListIndex lightuserdata
----@field mListName lightuserdata
----@field mListValue lightuserdata
+---@field mListIndex MyGUI.Widget
+---@field mListName MyGUI.Widget
+---@field mListValue MyGUI.Widget
 
----@class LoadSaveWindow
+---@class LoadSaveWindow : BaseLayout
 ---@field select fun(self: LoadSaveWindow, index: integer)
 ---@field _NV_select fun(self: LoadSaveWindow, index: integer)
 ---@field getWidget fun(self: LoadSaveWindow): MyGUI.Widget
@@ -12897,7 +12942,7 @@ taskPriority = {
 ---@field infoPanel DatapanelGUI
 ---@field list MyGUI.MultiListBox|nil
 
----@class LoadingWindow
+---@class LoadingWindow : BaseLayout
 ---@field reload fun(self: LoadingWindow)
 ---@field setVisible fun(self: LoadingWindow, visible?: boolean)
 ---@field getVisible fun(self: LoadingWindow): boolean
@@ -12907,14 +12952,14 @@ taskPriority = {
 ---@field setRandomBackground fun(self: LoadingWindow)
 ---@field setRandomTip fun(self: LoadingWindow)
 ---@field getInstance fun(): LoadingWindow
----@field backgroundImage lightuserdata
+---@field backgroundImage MyGUI.Widget
 ---@field currentIndex integer
 ---@field currentTime number
----@field loadingText lightuserdata
----@field messageText lightuserdata
+---@field loadingText MyGUI.Widget
+---@field messageText MyGUI.EditBox|nil
 
 --- `LockedArmour` is a specialized subclass of `Armour` that incorporates a lock mechanism, primarily used for slave shackles and similar items.
----@class LockedArmour
+---@class LockedArmour : Armour
 --- Runtime type identification method returning the `this` pointer cast to an `Armour` pointer.
 ---@field isArmour fun(self: LockedArmour): Armour
 --- Override dispatch for `isArmour`. Runtime type identification method returning the `this` pointer cast to an `Armour` pointer.
@@ -12950,7 +12995,7 @@ taskPriority = {
 ---@field Severity Logger.Severity
 
 --- Main HUD bottom control bar managing squad portraits, simulation speed controls, time and currency readouts, floor level selectors, and orders toggles. Orchestrates interactive portrait item boxes across squad tabs (`MainTabPortraitPlatoon`), contextual inspection datapanels (`DatapanelGUI`), vital limb health displays (`MedicalDatapanel`), and GOAP task stance selectors (`OrdersPanel`).
----@class MainBarGUI
+---@class MainBarGUI : GUIWindow
 --- Clears all dynamic HUD elements across the main control bar. Resets squad portrait tabs, unbinds selected target datapanels, clears active orders buttons, and hides contextual bounty notices.
 ---@field clear fun(self: MainBarGUI)
 --- Override dispatch for `clear`. Clears all dynamic HUD elements across the main control bar. Resets squad portrait tabs, unbinds selected target datapanels, clears active orders buttons, and hides contextual bounty notices.
@@ -13150,7 +13195,7 @@ taskPriority = {
 ---@field getBackData fun(self: MainthreadStateReaderT)
 ---@field swapMutex any
 
----@class ManagementScreen
+---@class ManagementScreen : BaseLayout
 ---@field update fun(self: ManagementScreen)
 ---@field clear fun(self: ManagementScreen)
 ---@field getVisible fun(self: ManagementScreen): boolean
@@ -13213,9 +13258,9 @@ taskPriority = {
 ---@field setVisible fun(self: MapMarkerTown, value?: boolean)
 ---@field getVisible fun(self: MapMarkerTown): boolean
 ---@field handle hand
----@field image lightuserdata
----@field label lightuserdata
----@field root lightuserdata
+---@field image MyGUI.Widget
+---@field label MyGUI.Widget
+---@field root MyGUI.Widget
 ---@field zoomLayer integer
 
 --- World map cartography and tactical navigation screen in Kenshi. Embedded inside `ManagementScreen`. Manages orthographic map rendering, viewport scroll/pan and multi-tier zoom interpolation (`mapScrollView`), settlement and outpost markers (`MapMarkerTown`), squad character tracking pins (`MapMarkerCharacter`), movement destination waypoints, and road network vector overlays (`MapRoad`).
@@ -13612,17 +13657,17 @@ taskPriority = {
 ---@field mHistoryBufferX StdDeque<number>
 ---@field mWeightModifier number
 
----@class MultiSlider
+---@class MultiSlider : MyGUI.Widget
 ---@field initialiseOverride fun(self: MultiSlider)
 ---@field shutdownOverride fun(self: MultiSlider)
 ---@field getTypeName fun(self: MultiSlider): string
 ---@field mDisableEvents boolean
----@field mName lightuserdata
+---@field mName MyGUI.Widget
 
 ---@class MyGUI
 
 --- Master navigation system integrating Havok AI (hkaiWorld). Manages asynchronous pathfinding queries, outdoor terrain sectors, interior building NavMesh instances, door traversal gates, and origin shifts. Interacts directly with `HavokCharacter` for character agent path following, `ZoneMap` for outdoor terrain tile streaming, `Building` for interior navigational cutouts and door states, and `ThreadClass` for dedicated background multi-threaded path calculation.
----@class NavMesh
+---@class NavMesh : ThreadClass
 --- Executes navigation engine lifecycle and thread coordination `initialise`.
 ---@field initialise fun(self: NavMesh)
 --- Executes navigation engine lifecycle and thread coordination `shutdown`.
@@ -13711,7 +13756,7 @@ taskPriority = {
 ---@field State NavMesh.State
 
 --- Background worker thread generating and carving NavMesh polygon meshes from raw terrain heightfields, static meshes, and dynamic building obstacle hulls. Integrates Havok AI (`hkaiNavMesh`, `hkaiNavMeshGenerationSettings`) with PhysX collision scenes, orchestrating multi-threaded task queues, building doorway connections, dynamic obstacle excision, and seamless adjacent zone edge stitching.
----@class NavMeshGenerator
+---@class NavMeshGenerator : ThreadClass
 --- Queries whether the generator is actively computing a task or has pending jobs remaining in the queue.
 ---@field isGenerating fun(self: NavMeshGenerator): boolean
 --- Primary worker thread procedure. Continuously pops generation tasks from `queue`, executes voxelization, polygon extraction, carving, and stitching, and pushes completed tasks into `done` queue.
@@ -13788,7 +13833,7 @@ taskPriority = {
 ---@field next NavMesh_NavMeshMessage
 ---@field zone ZoneMap
 
----@class NewGameOptionsWindow
+---@class NewGameOptionsWindow : BaseLayout
 ---@field setVisible fun(self: NewGameOptionsWindow, visible?: boolean)
 ---@field getVisible fun(self: NewGameOptionsWindow): boolean
 ---@field setPosition fun(self: NewGameOptionsWindow, x: integer, y: integer)
@@ -13796,7 +13841,7 @@ taskPriority = {
 ---@field optionsPanel DatapanelGUI
 ---@field tooltip ToolTip
 
----@class NewGameWindow
+---@class NewGameWindow : GUIWindow
 ---@field setVisible fun(self: NewGameWindow, visible?: boolean)
 ---@field getVisible fun(self: NewGameWindow): boolean
 ---@field setRealPosition fun(self: NewGameWindow, x: number, y: number)
@@ -13817,7 +13862,7 @@ taskPriority = {
 ---@field currentStart integer
 ---@field newGameOptions NewGameOptionsWindow
 ---@field startInfo DatapanelGUI
----@field startNameTextBox lightuserdata
+---@field startNameTextBox MyGUI.Widget
 ---@field startsData OgreFastArray<GameData>
 
 ---@class Nx9Real_S
@@ -13831,7 +13876,7 @@ taskPriority = {
 ---@field _32 number
 ---@field _33 number
 
----@class OpenSaveFileDialog
+---@class OpenSaveFileDialog : BaseLayout
 ---@field setVisible fun(self: OpenSaveFileDialog, visible?: boolean)
 ---@field getVisible fun(self: OpenSaveFileDialog): boolean
 ---@field setDialogInfo fun(self: OpenSaveFileDialog, _caption: string, _button: string, _folderMode?: boolean)
@@ -13851,16 +13896,16 @@ taskPriority = {
 ---@field notifyListSelectAccept fun(self: OpenSaveFileDialog, _sender?: MyGUI.ListBox, _index: integer)
 ---@field closeWindow fun(self: OpenSaveFileDialog, _sender?: MyGUI.Window, _name: string)
 ---@field currentFolder string
----@field currentFolderList lightuserdata
+---@field currentFolderList MyGUI.ComboBox|nil
 ---@field currentSelected string
 ---@field fileMask string
 ---@field fileName string
----@field fileNameTxt lightuserdata
----@field filesList lightuserdata
+---@field fileNameTxt MyGUI.EditBox|nil
+---@field filesList MyGUI.ListBox|nil
 ---@field folderMode boolean
----@field openSaveButton lightuserdata
+---@field openSaveButton MyGUI.Button|nil
 
----@class OptionsWindow
+---@class OptionsWindow : GUIWindow
 ---@field show fun(self: OptionsWindow, value?: boolean)
 ---@field _NV_show fun(self: OptionsWindow, value?: boolean)
 ---@field hide fun(self: OptionsWindow)
@@ -13892,17 +13937,17 @@ taskPriority = {
 ---@field previewFontSize boolean
 ---@field resolutionIndex integer
 ---@field resolutions Lektor<string>
----@field tabs lightuserdata
+---@field tabs MyGUI.TabControl|nil
 ---@field tooltip ToolTip
 
 ---@class OrderCellView
----@field getWidget fun(self: OrderCellView): lightuserdata
+---@field getWidget fun(self: OrderCellView): MyGUI.Widget
 ---@field resize fun(self: OrderCellView)
 ---@field getCellDimension fun(_sender: MyGUI.Widget, _coord?: MyGUI.IntCoord|boolean, _drop?: boolean): MyGUI.IntCoord
 ---@field onRemove fun(self: OrderCellView, arg1?: MyGUI.Widget)
 ---@field data OrderData
----@field orderText lightuserdata
----@field removeButton lightuserdata
+---@field orderText MyGUI.Widget
+---@field removeButton MyGUI.Button|nil
 
 ---@class OrderData
 ---@field operator_assign fun(self: OrderData, arg1: OrderData): OrderData
@@ -13958,15 +14003,15 @@ taskPriority = {
 --- Executes `prospectingButton` operation on `OrdersPanel`.
 ---@field prospectingButton fun(self: OrdersPanel, _sender?: MyGUI.Widget)
 --- Defensive combat stance (block only, no attacks) checkbox.
----@field blocksCheckbox lightuserdata
+---@field blocksCheckbox MyGUI.Button|nil
 --- Aggressive pursuit of fleeing targets checkbox.
----@field chaseCheckBox lightuserdata
+---@field chaseCheckBox MyGUI.Button|nil
 --- Hold position stance checkbox.
----@field holdCheckBox lightuserdata
+---@field holdCheckBox MyGUI.Button|nil
 --- Character entity currently bound to orders panel.
 ---@field ordersCharacter hand
 --- Placeholder widget shown when character has no assigned jobs.
----@field ordersEmptyPanel lightuserdata
+---@field ordersEmptyPanel MyGUI.Widget
 --- Scrollable list box of persistent GOAP jobs.
 ---@field ordersItemBox OrdersItemBox
 --- Maximum simultaneously visible order items.
@@ -13976,21 +14021,21 @@ taskPriority = {
 --- Pixel width of individual job entries.
 ---@field ordersItemWidth integer
 --- Passive stance (ignore hostiles unless commanded) checkbox.
----@field passiveCheckBox lightuserdata
+---@field passiveCheckBox MyGUI.Button|nil
 --- Ranged weapon priority checkbox.
----@field rangedCheckBox lightuserdata
+---@field rangedCheckBox MyGUI.Button|nil
 --- Current movement speed tier index (Walk, Jog, Run).
 ---@field speedImageNamesIdx integer
 --- Current movement speed mode icon display.
----@field speedImagePanel lightuserdata
+---@field speedImagePanel MyGUI.Widget
 --- Cycle to faster locomotion speed mode button.
----@field speedNextButton lightuserdata
+---@field speedNextButton MyGUI.Button|nil
 --- Cycle to slower locomotion speed mode button.
----@field speedPrevButton lightuserdata
+---@field speedPrevButton MyGUI.Button|nil
 --- Stealth sneaking mode toggle button.
----@field stealthCheckBox lightuserdata
+---@field stealthCheckBox MyGUI.Button|nil
 --- Taunt stance attracting enemy aggro checkbox.
----@field tauntCheckBox lightuserdata
+---@field tauntCheckBox MyGUI.Button|nil
 
 ---@class Ownerships
 ---@field setHandle fun(self: Ownerships, h: Platoon)
@@ -14050,7 +14095,7 @@ taskPriority = {
 ---@field partData GameData
 
 --- Concrete PhysX 2.8 physics implementation managing scene creation, raycasting queries, rigid body dynamics, collision filters, and simulation steps.
----@class PhysicsActual
+---@class PhysicsActual : PhysicsInterface
 --- Executes simulation and state update tick for `PhysicsActual`.
 ---@field updateUT fun(self: PhysicsActual)
 --- Override dispatch for `updateUT`. Executes simulation and state update tick for `PhysicsActual`.
@@ -14105,7 +14150,7 @@ taskPriority = {
 ---@field updateAimingType fun(self: PhysicsCollection, speed: number, rotTarget: table): number
 
 --- Abstract virtual interface decoupling game logic and character locomotion from concrete PhysX and Havok simulation implementations.
----@class PhysicsInterface
+---@class PhysicsInterface : ThreadWannabe
 --- Retrieves `Backthread` associated with `PhysicsInterface`.
 ---@field getBackthread fun(self: PhysicsInterface): PhysicsActual
 ---@field updateUT fun(self: PhysicsInterface)
@@ -14150,14 +14195,14 @@ taskPriority = {
 ---@field resize fun(self: PortraitMainCellView, size: integer)
 ---@field setName fun(self: PortraitMainCellView, newName: string)
 ---@field getCellDimension fun(_sender: MyGUI.Widget, _coord?: MyGUI.IntCoord|boolean, _drop?: boolean): MyGUI.IntCoord
----@field border lightuserdata
+---@field border MyGUI.Button|nil
 ---@field characterHandle hand
----@field imageBackground lightuserdata
----@field imageOverlayBack lightuserdata
----@field imageOverlayFront lightuserdata
----@field imagePortrait lightuserdata
+---@field imageBackground MyGUI.Widget
+---@field imageOverlayBack MyGUI.Widget
+---@field imageOverlayFront MyGUI.Widget
+---@field imagePortrait MyGUI.Widget
 ---@field name string
----@field textName lightuserdata
+---@field textName MyGUI.Widget
 
 --- Master squad portrait renderer and texture atlas manager. Renders 3D character heads into offscreen texture sheets, caching icons and updating combat status animations.
 ---@class PortraitManager
@@ -14212,11 +14257,11 @@ taskPriority = {
 ---@field resize fun(self: PortraitSquadCellView)
 ---@field setName fun(self: PortraitSquadCellView, newName: string)
 ---@field getCellDimension fun(_sender: MyGUI.Widget, _coord?: MyGUI.IntCoord|boolean, _drop?: boolean): MyGUI.IntCoord
----@field border lightuserdata
+---@field border MyGUI.Button|nil
 ---@field characterHandle hand
----@field imgBoxPortrait lightuserdata
+---@field imgBoxPortrait MyGUI.Widget
 ---@field name string
----@field txtName lightuserdata
+---@field txtName MyGUI.Widget
 
 ---@class PreviewBuilding
 ---@field type fun(self: PreviewBuilding): integer
@@ -14342,7 +14387,7 @@ taskPriority = {
 ---@field PreviewBuildingClassType PreviewBuilding.PreviewBuildingClassType
 
 --- `ProductionBuilding` forms the backbone of Kenshi's manufacturing economy, powering ore refineries, grain mills, cooking stoves, biofuel distillers, and automated mining drills.
----@class ProductionBuilding
+---@class ProductionBuilding : StorageBuilding
 --- Returns the downcasted polymorphic pointer to this `ProductionBuilding` instance. Overrides `Building::getProductionBuilding()`.
 ---@field getProductionBuilding fun(self: ProductionBuilding): ProductionBuilding
 --- Override dispatch for `getProductionBuilding`. Returns the downcasted polymorphic pointer to this `ProductionBuilding` instance. Overrides `Building::getProductionBuilding()`.
@@ -14499,15 +14544,15 @@ taskPriority = {
 ---@field productionState integer
 ---@field ProductionState ProductionBuilding.ProductionState
 
----@class ProgressBarWidget
+---@class ProgressBarWidget : BaseLayout
 ---@field setVisible fun(self: ProgressBarWidget, value?: boolean)
 ---@field setProgress fun(self: ProgressBarWidget, value: integer)
 ---@field setPosition fun(self: ProgressBarWidget, x: integer, y: integer)
 ---@field setCaption fun(self: ProgressBarWidget, value: string)
----@field bar lightuserdata
----@field label lightuserdata
+---@field bar MyGUI.Widget
+---@field label MyGUI.Widget
 
----@class ProspectingWindow
+---@class ProspectingWindow : BaseLayout
 ---@field showT fun(self: ProspectingWindow, pos: table, skill: number, name: string)
 ---@field _show fun(self: ProspectingWindow)
 ---@field hide fun(self: ProspectingWindow)
@@ -14520,18 +14565,18 @@ taskPriority = {
 ---@field getSingleton fun(): ProspectingWindow
 ---@field closeButton fun(self: ProspectingWindow, _sender: MyGUI.Window, _name: string)
 ---@field resourceSelected fun(self: ProspectingWindow, _sender: MyGUI.Widget)
----@field cameraMarker lightuserdata
+---@field cameraMarker MyGUI.Widget
 ---@field cameraMarkerSkin lightuserdata
 ---@field datapanelOverview1 DatapanelGUI
 ---@field datapanelOverview2 DatapanelGUI
----@field imgMap lightuserdata
+---@field imgMap MyGUI.Widget
 ---@field lastName string
 ---@field lastPos table
 ---@field lastSkill number
----@field listResourcesPanel lightuserdata
----@field listResourcesSelected lightuserdata
+---@field listResourcesPanel MyGUI.Widget
+---@field listResourcesSelected MyGUI.Button|nil
 ---@field resourceImage lightuserdata
----@field window lightuserdata
+---@field window MyGUI.Window|nil
 
 ---@class ProsperityManager
 ---@field setup fun(self: ProsperityManager, faction: GameData)
@@ -14598,7 +14643,7 @@ taskPriority = {
 ---@field _NV_canEquip fun(self: RaceLimiter, item: GameData, who: RaceData, arg3?: boolean): boolean
 ---@field limits OgreUnorderedMap<GameData, Limiter>
 
----@class RainCollectorBuilding
+---@class RainCollectorBuilding : ProductionBuilding
 --- Inherited API from `UseableStuff`. Calculates overall machine operating efficiency multiplier based on electrical satisfaction and structural condition.
 ---@field calculateEfficiencyMult fun(self: RainCollectorBuilding): number
 --- Inherited API from `UseableStuff`. Override dispatch for `calculateEfficiencyMult`. Calculates overall machine operating efficiency multiplier based on electrical satisfaction and structural condition.
@@ -14626,7 +14671,7 @@ taskPriority = {
 ---@field trustPositives number
 ---@field war boolean
 
----@class ResearchBuilding
+---@class ResearchBuilding : UseableStuff
 --- Inherited API from `UseableStuff`. Evaluates whether the station is currently in a state where operating tasks should be suspended (e.g. broken, unpowered, or full).
 ---@field dontNeedWorkRightNow fun(self: ResearchBuilding): boolean
 --- Inherited API from `UseableStuff`. Override dispatch for `dontNeedWorkRightNow`. Evaluates whether the station is currently in a state where operating tasks should be suspended (e.g. broken, unpowered, or full).
@@ -14659,7 +14704,7 @@ taskPriority = {
 ---@field _NV_getGUIData fun(self: ResearchBuilding, datapanel: DatapanelGUI, category: integer)
 ---@field showResearchWindow fun(self: ResearchBuilding, arg1: MyGUI.Widget)
 
----@class ResourceLoader
+---@class ResourceLoader : ThreadClass
 ---@field updateMT fun(self: ResourceLoader)
 ---@field updateBT fun(self: ResourceLoader): boolean
 ---@field isLoading fun(self: ResourceLoader): boolean
@@ -14702,7 +14747,7 @@ taskPriority = {
 ---@field states integer[]
 ---@field Limb RobotLimbs.Limb
 
----@class RootObjectContainer
+---@class RootObjectContainer : DataObjectContainer
 ---@field addActiveObject fun(self: RootObjectContainer, b: RootObject): boolean
 ---@field _NV_addActiveObject fun(self: RootObjectContainer, b: RootObject): boolean
 ---@field removeObject fun(self: RootObjectContainer, c: RootObject): boolean
@@ -14721,7 +14766,7 @@ taskPriority = {
 ---@field _NV_loadInstance fun(self: RootObjectContainer, state: GameSaveState, skipSaveState?: boolean, pos: table, rot: table, callback?: FactoryCallbackInterface, positionMoved: table)
 ---@field things Lektor<RootObject>
 
----@class RotatingEnt
+---@class RotatingEnt : StaticEnt
 ---@field update fun(self: RotatingEnt, productionSpeed: number)
 ---@field _NV_update fun(self: RotatingEnt, productionSpeed: number)
 ---@field updateAim fun(self: RotatingEnt, speed: number, target: table): number
@@ -14745,7 +14790,7 @@ taskPriority = {
 ---@field windSpeedRotationMin number
 
 --- Low-level filesystem staging engine managing directory layouts, zip archive streaming, atomic file replacement, and slot enumeration.
----@class SaveFileSystem
+---@class SaveFileSystem : ThreadClass
 --- Executes `log` operation on `SaveFileSystem`.
 ---@field log fun(self: SaveFileSystem, message: string, level: integer)
 --- Sets `TemporaryPath` for `SaveFileSystem`.
@@ -14793,7 +14838,7 @@ taskPriority = {
 ---@field currentPathIndex integer
 ---@field currentSave string
 ---@field failedToCopyError string
----@field savingIcon lightuserdata
+---@field savingIcon MyGUI.Widget
 ---@field state integer
 ---@field tempFolder string
 ---@field MessageType SaveFileSystem.MessageType
@@ -14905,7 +14950,7 @@ taskPriority = {
 ---@field Flags SaveManager.Flags
 ---@field Signal SaveManager.Signal
 
----@class ScreenLabel
+---@class ScreenLabel : ScreenLabelInterface
 ---@field setTracking fun(self: ScreenLabel, handle: hand, offset: table)
 ---@field _NV_setTracking fun(self: ScreenLabel, handle: hand, offset: table)
 ---@field setCaption fun(self: ScreenLabel, value: string)
@@ -14925,13 +14970,13 @@ taskPriority = {
 ---@field labelSize integer
 ---@field risingHeight number
 ---@field risingSpeed number
----@field textWidget lightuserdata
+---@field textWidget MyGUI.Widget
 ---@field trackingHandle hand
 ---@field trackingOffset table
 ---@field LabelSize ScreenLabel.LabelSize
 ---@field RisingSpeed ScreenLabel.RisingSpeed
 
----@class ScreenLabelDebug
+---@class ScreenLabelDebug : ScreenLabel
 ---@field update fun(self: ScreenLabelDebug)
 ---@field _NV_update fun(self: ScreenLabelDebug)
 ---@field getCaption fun(self: ScreenLabelDebug): string
@@ -14970,7 +15015,7 @@ taskPriority = {
 ---@field active boolean
 ---@field startPos table
 ---@field volume any
----@field widget lightuserdata
+---@field widget MyGUI.Widget
 
 ---@class SenseItr
 ---@field getCharacter fun(self: SenseItr): Character
@@ -15054,7 +15099,7 @@ taskPriority = {
 ---@field totalThreatLevelPersonal number
 
 --- Merchant trade interface proxy adapter mediating retail transactions between customer characters and vendor NPCs. Wraps a vendor `Character` instance with an isolated `ShopTraderInventory` containing shop stock, synchronizing currency exchanges, vendor list restocking schedules, barter price markups, and delegating spatial queries to the shopkeeper.
----@class ShopTrader
+---@class ShopTrader : RootObject
 --- Populates the barter interface data panel with shopkeeper title, faction affiliation, trade price markup factors, and Cat balances.
 ---@field getGUIData fun(self: ShopTrader, datapanel: DatapanelGUI, category: integer)
 --- Override dispatch for `getGUIData`. Populates the barter interface data panel with shopkeeper title, faction affiliation, trade price markup factors, and Cat balances.
@@ -15136,7 +15181,7 @@ taskPriority = {
 --- Pointer to the concrete vendor character entity managing this shop.
 ---@field trader Character
 
----@class ShopTraderInventory
+---@class ShopTraderInventory : Inventory
 ---@field updateInventory fun(self: ShopTraderInventory)
 ---@field _NV_updateInventory fun(self: ShopTraderInventory)
 --- Inherited API from `Inventory`. Ejects an item from the inventory onto the ground at the owner entity's world position.
@@ -15170,7 +15215,7 @@ taskPriority = {
 ---@field inventories OgreUnorderedMap<hand, InventorySection>
 ---@field section ShopTraderInventorySection
 
----@class Slider
+---@class Slider : MyGUI.Widget
 ---@field initialiseOverride fun(self: Slider)
 ---@field shutdownOverride fun(self: Slider)
 ---@field getTypeName fun(self: Slider): string
@@ -15207,7 +15252,7 @@ taskPriority = {
 ---@field addLogo fun(self: SplashScreen, file: string, scale: number)
 ---@field currentState integer
 ---@field delay integer
----@field mainPanel lightuserdata
+---@field mainPanel MyGUI.Widget
 ---@field skipLogo boolean
 ---@field startTime number
 
@@ -15227,8 +15272,8 @@ taskPriority = {
 ---@field onRemove fun(self: SquadCellView, arg1?: MyGUI.Widget)
 ---@field portraitsBox PortraitSquadItemBox
 ---@field squad SquadData
----@field txtName lightuserdata
----@field txtSquadSize lightuserdata
+---@field txtName MyGUI.EditBox|nil
+---@field txtSquadSize MyGUI.Widget
 
 ---@class SquadManagementScreen
 ---@field getVisible fun(self: SquadManagementScreen): boolean
@@ -15259,7 +15304,7 @@ taskPriority = {
 ---@field name string
 ---@field type integer
 
----@class StaticEnt
+---@class StaticEnt : PhysicalEntity
 ---@field update fun(self: StaticEnt, spd: number)
 ---@field _NV_update fun(self: StaticEnt, spd: number)
 ---@field updateAim fun(self: StaticEnt, rotSpeed: number, target: table): number
@@ -15268,7 +15313,7 @@ taskPriority = {
 ---@field _NV_isRotatingEnt fun(self: StaticEnt): boolean
 
 --- Item and resource storage container managing automatic inventory sorting, hauling jobs, and material supply limits. `StorageBuilding` serves as the foundational container for resource chests, item bins, shop counters, and cross-settlement distribution stockpiles.
----@class StorageBuilding
+---@class StorageBuilding : UseableStuff
 --- Returns the downcasted polymorphic pointer to this storage functional component. Overrides `Building::getFunctionStuff()`.
 ---@field getFunctionStuff fun(self: StorageBuilding): StorageBuilding
 --- Override dispatch for `getFunctionStuff`. Returns the downcasted polymorphic pointer to this storage functional component. Overrides `Building::getFunctionStuff()`.
@@ -15353,7 +15398,7 @@ taskPriority = {
 ---@field specialItemTypesOnly integer
 
 --- The `Sword` class represents all melee weapons in the game, inheriting from the base `Weapon` class. It manages weapon-specific stats such as cut and blunt damage, skill modifiers, and handles tooltip generation for weapon inspection.
----@class Sword
+---@class Sword : Weapon
 --- Runtime type identification method returning the specific `itemType` enum for this class.
 ---@field getClassType fun(self: Sword): integer
 --- Override dispatch for `getClassType`. Runtime type identification method returning the specific `itemType` enum for this class.
@@ -15590,7 +15635,7 @@ taskPriority = {
 ---@field threadHandle lightuserdata
 ---@field threadID integer
 
----@class ThreadWannabe
+---@class ThreadWannabe : ThreadClass
 ---@field backThreadUpdate fun(self: ThreadWannabe, arg1: number, arg2?: boolean)
 ---@field isPaused fun(self: ThreadWannabe): boolean
 ---@field setPaused fun(self: ThreadWannabe, on?: boolean, _speedMult: number)
@@ -15603,7 +15648,7 @@ taskPriority = {
 ---@field paused boolean
 ---@field speedMult number
 
----@class TitleScreen
+---@class TitleScreen : GUIWindow
 ---@field clear fun(self: TitleScreen)
 ---@field _NV_clear fun(self: TitleScreen)
 ---@field show fun(self: TitleScreen, on?: boolean)
@@ -15664,13 +15709,13 @@ taskPriority = {
 ---@field panelWidth integer
 ---@field Type ToolTip.Type
 
----@class ToolTipDynamic
+---@class ToolTipDynamic : ToolTip
 ---@field setVisible fun(self: ToolTipDynamic, visible?: boolean)
 ---@field _NV_setVisible fun(self: ToolTipDynamic, visible?: boolean)
 ---@field setPosition fun(self: ToolTipDynamic, _point: MyGUI.IntPoint)
 ---@field _NV_setPosition fun(self: ToolTipDynamic, _point: MyGUI.IntPoint)
 
----@class ToolTipFixed
+---@class ToolTipFixed : ToolTip
 ---@field update fun(self: ToolTipFixed)
 ---@field _NV_update fun(self: ToolTipFixed)
 ---@field setVisible fun(self: ToolTipFixed, visible?: boolean)
@@ -15686,7 +15731,7 @@ taskPriority = {
 ---@field minHeight integer
 ---@field parentPanel MyGUI.Widget|nil
 
----@class ToolTipInventory
+---@class ToolTipInventory : ToolTip
 ---@field update fun(self: ToolTipInventory)
 ---@field _NV_update fun(self: ToolTipInventory)
 ---@field _setup fun(self: ToolTipInventory, widget: MyGUI.Widget)
@@ -15710,7 +15755,7 @@ taskPriority = {
 ---@field rightBox MyGUI.EditBox|nil
 ---@field width integer
 
----@class ToolTipStatic
+---@class ToolTipStatic : ToolTip
 ---@field update fun(self: ToolTipStatic)
 ---@field _NV_update fun(self: ToolTipStatic)
 ---@field setVisible fun(self: ToolTipStatic, visible?: boolean)
@@ -15724,7 +15769,7 @@ taskPriority = {
 ---@field mouseMoved fun(self: ToolTipStatic, _sender: MyGUI.Widget, _left: integer, _top: integer)
 
 --- Execution and peeler apparatus inflicting periodic physical damage to locked occupants and generating anatomical animal skin/leather byproduct.
----@class TortureBuilding
+---@class TortureBuilding : ProductionBuilding
 --- Retrieves `FunctionStuff` for this `TortureBuilding` instance.
 ---@field getFunctionStuff fun(self: TortureBuilding): StorageBuilding
 --- Override dispatch for `getFunctionStuff`. Retrieves `FunctionStuff` for this `TortureBuilding` instance.
@@ -15747,7 +15792,7 @@ taskPriority = {
 ---@field priority integer
 
 --- Specialized municipal settlement controller governing electrical power grids, generator output, battery storage reserves, defensive perimeter gates, public commerce policies, commodity trade price modifiers, and outpost progression tiers. Derived from `TownBase`, `Town` interacts directly with `GameData` for FCS settlement and resident records, `UseableStuff` for electrical machinery and generators, `GatewayBuilding` for perimeter access gates, `AlarmManager` for emergency alert states, `DatapanelGUI` for inspector telemetry, and `Faction` for municipal diplomatic relationships.
----@class Town
+---@class Town : TownBase
 --- Aggregates bitmask tags representing all functional facility types present in this settlement (e.g., weapon shop, armor shop, bakery, bar, police station).
 ---@field facilitesWeHaveHere fun(self: Town): TownFacilitiesTags
 --- Initializes resident population data from the underlying FCS town record, instantiating resident squad descriptors, vendor inventories, and housing requirements.
@@ -16012,7 +16057,7 @@ taskPriority = {
 ---@field tradeGoodsMults OgreUnorderedMap<GameData, number>
 
 --- Municipal architectural graphics manager governing building mesh rendering, multi-floor visual slice visibility, commercial signboard fixtures, and OGRE GPU hardware mesh instancing. Coordinates directly with `TownBase` and `Town` for settlement ownership, `Building` for architectural hierarchy, and `DatapanelGUI` for camera floor-slicing controls.
----@class TownBuildingsManager
+---@class TownBuildingsManager : FactoryCallbackInterface
 --- Flushes all registered building entity records, signposts, and hardware instancing allocations when resetting or unloading town assets.
 ---@field clear fun(self: TownBuildingsManager)
 --- Transfers all registered building graphic entities, multi-floor slices, and instancing managers to another town manager instance during town merge or ownership swap.
@@ -16131,7 +16176,7 @@ taskPriority = {
 ---@field target lightuserdata
 
 --- Mounted defensive weapon station encapsulating `GunClassTurret`. Governs operator gunnery tracking, horizontal and vertical articulated physics rotation joints, defensive wall elevation advantages, power consumption for electrified harpoons, and ammunition feed cycles. Derived from `UseableStuff`, `TurretBuilding` interacts directly with `Character` for gunnery AI tasks, `Building` and `WallBuilding` for parent rampart mounting, and `TownBuildingsManager` for settlement defensive spatial registration.
----@class TurretBuilding
+---@class TurretBuilding : UseableStuff
 --- Returns default character AI task assigned when interacting with this structure (`TaskType::TASK_TURRET`).
 ---@field getDefaultTask fun(self: TurretBuilding): integer
 --- Override dispatch for `getDefaultTask`. Returns default character AI task assigned when interacting with this structure (`TaskType::TASK_TURRET`).
@@ -16219,7 +16264,7 @@ taskPriority = {
 --- Traversal state flag (4 bytes: `0x4B4`–`0x4B8`).
 ---@field rotating integer
 
----@class TutorialGUI
+---@class TutorialGUI : GUIWindow
 ---@field clear fun(self: TutorialGUI)
 ---@field _NV_clear fun(self: TutorialGUI)
 ---@field startHighlight fun(self: TutorialGUI, item: integer)
@@ -16260,11 +16305,11 @@ taskPriority = {
 ---@field windowText MyGUI.Widget
 ---@field HighlightItem TutorialGUI.HighlightItem
 
----@class TutorialGUILine
+---@class TutorialGUILine : BaseLayout
 ---@field updateHighlight fun(self: TutorialGUILine, time: number): boolean
----@field closeButton lightuserdata
----@field flashWidget lightuserdata
----@field nameButton lightuserdata
+---@field closeButton MyGUI.Button|nil
+---@field flashWidget MyGUI.Widget
+---@field nameButton MyGUI.Button|nil
 
 ---@class TutorialItem
 ---@field getId fun(self: TutorialItem): integer
@@ -16313,7 +16358,7 @@ taskPriority = {
 ---@field description string
 ---@field skippeable boolean
 
----@class TutorialpediaGUI
+---@class TutorialpediaGUI : GUIWindow
 ---@field show fun(self: TutorialpediaGUI, value?: boolean)
 ---@field _NV_show fun(self: TutorialpediaGUI, value?: boolean)
 ---@field clear fun(self: TutorialpediaGUI)
@@ -16344,7 +16389,7 @@ taskPriority = {
 ---@field squadTemplate GameData
 
 --- Interactive furniture, production machinery, medical recovery beds, prisoner cages, training dummies, and shop trade counters. Extends the base `Building` class with operator assignment slots, electrical power grid consumption and battery storage, door locks, training XP acceleration, and interactive MyGUI layouts.
----@class UseableStuff
+---@class UseableStuff : Building
 --- Polymorphic type cast helper returning this instance as a `UseableStuff*`.
 ---@field getUseableStuff fun(self: UseableStuff): UseableStuff
 --- Override dispatch for `getUseableStuff`. Polymorphic type cast helper returning this instance as a `UseableStuff*`.
@@ -16705,7 +16750,7 @@ taskPriority = {
 ---@field range number
 
 --- Defensive wall fortification piece governing perimeter segment connections, rampart walkway placement, shared construction scaffolds, and structural upgrades. Derived from `Building`, `WallBuilding` coordinates directly with `ZoneMapContent` for neighboring structural discovery, `TurretBuilding` for mounted rampart defenses, and `DatapanelGUI` for fortification upgrade and demolition controls.
----@class WallBuilding
+---@class WallBuilding : Building
 --- Returns associated `UseableStuff` pointer if wall includes operable rampart machinery (nullptr for passive wall sections).
 ---@field getUseableStuff fun(self: WallBuilding): UseableStuff
 --- Override dispatch for `getUseableStuff`. Returns associated `UseableStuff` pointer if wall includes operable rampart machinery (nullptr for passive wall sections).
@@ -16796,7 +16841,7 @@ taskPriority = {
 ---@field wallSectionLinkType integer
 
 --- Weapon represents an equippable weapon item in the game. It extends `Gear` with weapon-specific properties such as attack modifiers, bleed damage, and weapon skill categories.
----@class Weapon
+---@class Weapon : Gear
 --- Retrieves the weight of the weapon when stored in an inventory. This is calculated using the inventory multiplier during construction.
 ---@field getItemWeight fun(self: Weapon): number
 --- Override dispatch for `getItemWeight`. Retrieves the weight of the weapon when stored in an inventory. This is calculated using the inventory multiplier during construction.
@@ -16872,7 +16917,7 @@ taskPriority = {
 ---@field weatherStrengthMultiplierMin number
 ---@field weatherUpdated boolean
 
----@class WindGeneratorBuilding
+---@class WindGeneratorBuilding : GeneratorBuilding
 --- Inherited API from `GeneratorBuilding`. Retrieves `PowerOutput` for this `GeneratorBuilding` instance.
 ---@field getPowerOutput fun(self: WindGeneratorBuilding): number
 --- Inherited API from `GeneratorBuilding`. Override dispatch for `getPowerOutput`. Retrieves `PowerOutput` for this `GeneratorBuilding` instance.
@@ -16903,7 +16948,7 @@ taskPriority = {
 ---@field key integer
 
 --- Master spatial streaming manager governing the 64x64 continuous world zone grid (4,096 ZoneMap chunks). Coordinates background zone loading threads, distance activation, spatial grids, island topologies, biomes, and terrain splatmaps. Interacts directly with `ZoneMap` for individual sector terrain chunks and foliage, `BiomeMap` for regional environmental palettes, `Building` and `BuildingFinderClass` for structural spatial queries, and `Town` for settlement chunk registration.
----@class ZoneManager
+---@class ZoneManager : ZoneManagerInterfaceT
 --- Manages streaming thread execution or zone asset loading `isZoneLoadedT`.
 ---@field isZoneLoadedT fun(self: ZoneManager, pos: table): boolean
 --- Override dispatch for `isZoneLoadedT`. Manages streaming thread execution or zone asset loading `isZoneLoadedT`.
@@ -17614,6 +17659,11 @@ RenderManager = {}
 ---@type MyGUI.SkinManagerStatic
 ---@diagnostic disable-next-line: missing-fields
 SkinManager = {}
+
+--- Global table exposing the MyGUI layer-manager singleton.
+---@type MyGUI.LayerManagerStatic
+---@diagnostic disable-next-line: missing-fields
+LayerManager = {}
 
 --- Global alias of MyGUI.IntPoint.
 ---@type MyGUI.IntPointConstructor

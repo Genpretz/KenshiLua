@@ -319,6 +319,11 @@ def add_inventory_forward_declarations(metadata, global_enums, nested_enums):
     declared = {entry["name"] for entry in metadata.get("classes", [])}
     declared.update(alias["name"] for alias in metadata.get("aliases", []))
     declared.update(global_enums)
+    metatable_types = {
+        entry["metatable"]: entry["lua_type"]
+        for entry in inventory.get("classes", [])
+        if entry.get("metatable")
+    }
     for entry in inventory.get("classes", []):
         lua_type = entry["lua_type"]
         if lua_type not in declared and re.match(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*$", lua_type):
@@ -332,6 +337,14 @@ def add_inventory_forward_declarations(metadata, global_enums, nested_enums):
                 "fields": [],
             })
             declared.add(lua_type)
+    # Declare the runtime parent linked by setMetatableParent, as the coverage
+    # report expects, unless reviewed metadata already names one.
+    classes = {entry["name"]: entry for entry in metadata.get("classes", [])}
+    for entry in inventory.get("classes", []):
+        parent = metatable_types.get(entry.get("parent_metatable", ""), "")
+        class_entry = classes.get(entry["lua_type"])
+        if parent and class_entry is not None and not class_entry.get("parent"):
+            class_entry["parent"] = parent
     add_container_generics(metadata, inventory, declared)
     add_static_tables(metadata, inventory)
     return metadata

@@ -7,7 +7,7 @@ This script scans `src/Bindings/MyGUI/*.cpp` and `src/Bindings/MyGUI/*.h` to ext
 - Core types (IntPoint, IntSize, IntCoord, IntRect, FloatPoint, FloatSize, FloatCoord, FloatRect, Colour)
 - Base Widget class and its complete property/method set
 - All specialized Widget classes with inheritance hierarchy
-- Manager singletons (Gui, InputManager, PointerManager, ClipboardManager, LayoutManager, RenderManager, SkinManager)
+- Manager singletons (Gui, InputManager, PointerManager, ClipboardManager, LayoutManager, LayerManager, RenderManager, SkinManager)
 - Event callbacks system with event names and handler signatures
 - Global Enums (Align, WidgetStyle, FlowDirection, MenuItemType, MouseButton, KeyCode, ResizingPolicy)
 
@@ -381,6 +381,26 @@ CLASS_METHOD_OVERRIDES = {
     "Widget.destroy": ([], "void"),
     "Widget.on": ([{"name": "eventType", "type": "string"}, {"name": "handler", "type": "function"}], "integer"),
     "Widget.off": ([{"name": "idOrEvent", "type": "any"}], "boolean"),
+    "Widget.getEnumerator": ([], "EnumeratorWidgetPtrSnapshot"),
+    "Gui.getEnumerator": ([], "EnumeratorWidgetPtrSnapshot"),
+    "LayerManager.attachToLayerNode": ([{"name": "name", "type": "string"}, {"name": "widget", "type": "Widget"}], "void"),
+    "LayerManager.detachFromLayer": ([{"name": "widget", "type": "Widget"}], "void"),
+    "LayerManager.upLayerItem": ([{"name": "widget", "type": "Widget"}], "void"),
+    "LayerManager.isExist": ([{"name": "name", "type": "string"}], "boolean"),
+    "LayerManager.getByName": ([{"name": "name", "type": "string"}, {"name": "throw", "type": "boolean?"}], "ILayer"),
+    "LayerManager.getLayerCount": ([], "integer"),
+    "LayerManager.getLayer": ([{"name": "index", "type": "integer"}], "ILayer"),
+    "LayerManager.getWidgetFromPoint": ([{"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}], "Widget"),
+    "LayerManager.getCategoryName": ([], "string"),
+    "ILayer.getName": ([], "string"),
+    "ILayer.getLayerNodeCount": ([], "integer"),
+    "ILayer.getSize": ([], "IntSize"),
+    "ILayer.getPosition": ([{"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}], "IntPoint"),
+    "EnumeratorWidgetPtrSnapshot.next": ([], "boolean"),
+    "EnumeratorWidgetPtrSnapshot.current": ([], "Widget"),
+    "EnumeratorLayerSnapshot.next": ([], "boolean"),
+    "EnumeratorLayerSnapshot.current": ([], "ILayer"),
+    "LayerManager.getEnumerator": ([], "EnumeratorLayerSnapshot"),
     "Widget.upLayerItem": ([], "void"),
     "Widget.bringToFront": ([], "void"),
     "Widget.createWidget": ([{"name": "type", "type": "string"}, {"name": "skin", "type": "string"}, {"name": "left", "type": "integer"}, {"name": "top", "type": "integer"}, {"name": "width", "type": "integer"}, {"name": "height", "type": "integer"}, {"name": "align", "type": "Align"}, {"name": "name", "type": "string"}], "Widget"),
@@ -680,7 +700,25 @@ EVENT_CALLBACKS = [
     }
 ]
 
-def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_classes, manager_classes):
+def append_plain_class(lines, c, var):
+    """Render a non-widget, non-manager class: header and its instance methods."""
+    lines.append(f"### {c['class_name']}")
+    lines.append(f"**Metatable:** `{c['metatable']}`  ")
+    lines.append(f"**Header:** `{c['header']}`")
+    lines.append("")
+
+    if c['methods']:
+        lines.append("#### Methods")
+        lines.append("| Lua Name | Arguments | Return Type | Example |")
+        lines.append("|---|---|---|---|")
+        for meth in c['methods']:
+            args_str = ", ".join([f"{a['name']}: {a['type']}" for a in meth['args']])
+            call_args = ", ".join([a['name'] for a in meth['args']])
+            example = f"`{var}:{meth['lua_name']}({call_args})`"
+            lines.append(f"| `{meth['lua_name']}` | `{args_str}` | `{meth['ret_type']}` | {example} |")
+        lines.append("")
+
+def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_classes, manager_classes, enumerator_classes, layer_classes):
     lines = [
         "# MyGUI Lua API Reference",
         "",
@@ -718,6 +756,14 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
     lines.append("- [Managers (Singletons)](#managers-singletons)")
     for m in sorted(manager_classes, key=lambda x: x['class_name']):
         lines.append(f"  - [`{m['class_name']}`](#{make_anchor(m['class_name'])})")
+
+    lines.append("- [Enumerators](#enumerators)")
+    for c in sorted(enumerator_classes, key=lambda x: x['class_name']):
+        lines.append(f"  - [`{c['class_name']}`](#{make_anchor(c['class_name'])})")
+
+    lines.append("- [Layers](#layers)")
+    for c in sorted(layer_classes, key=lambda x: x['class_name']):
+        lines.append(f"  - [`{c['class_name']}`](#{make_anchor(c['class_name'])})")
 
     lines.append("- [Event Callbacks Reference](#event-callbacks-reference)")
     lines.append("- [Global Enums](#global-enums)")
@@ -848,7 +894,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
     # Section 5: Managers
     lines.append("## Managers (Singletons)")
     lines.append("")
-    lines.append("Managers provide global control over input, cursor pointer, skins, layout templates, clipboard, and rendering.")
+    lines.append("Managers provide global control over input, cursor pointer, skins, layout templates, layers, clipboard, and rendering.")
     lines.append("")
 
     for m in sorted(manager_classes, key=lambda x: x['class_name']):
@@ -880,7 +926,44 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
                 lines.append(f"| `{meth['lua_name']}` | `{args_str}` | `{meth['ret_type']}` | {example} |")
             lines.append("")
 
-    # Section 6: Event Callbacks
+    # Section 6: Enumerators
+    lines.append("## Enumerators")
+    lines.append("")
+    lines.append("`getEnumerator()` returns an enumerator over a copy of the items it lists, taken when `getEnumerator()` was called, so items created later are not included. As in MyGUI, the first `next()` moves to the first item, `next()` returns `false` once no items remain, and `current()` raises an error after that.")
+    lines.append("")
+    lines.append("- `Gui:getEnumerator()` lists the root widgets, and `widget:getEnumerator()` lists a widget's children. Creating or destroying widgets while walking either is safe: a copied widget destroyed since then reads back as `nil`.")
+    lines.append("")
+    lines.append("```lua")
+    lines.append("local e = MyGUI.Gui.getInstance():getEnumerator()")
+    lines.append("while e:next() do")
+    lines.append("    local w = e:current()")
+    lines.append("    if w then print(w:getName()) end")
+    lines.append("end")
+    lines.append("```")
+    lines.append("")
+    lines.append("- `LayerManager:getEnumerator()` lists the layers in drawing order. MyGUI reports no layer destruction, so a layer destroyed after the copy was taken is not detected, and calling it can crash the game. MyGUI only replaces layers when it reloads its layer configuration, so walk the layers when you need them instead of keeping the enumerator or its layers.")
+    lines.append("")
+    lines.append("```lua")
+    lines.append("local e = MyGUI.LayerManager.getInstance():getEnumerator()")
+    lines.append("while e:next() do")
+    lines.append("    print(e:current():getName())")
+    lines.append("end")
+    lines.append("```")
+    lines.append("")
+
+    for c in sorted(enumerator_classes, key=lambda x: x['class_name']):
+        append_plain_class(lines, c, "e")
+
+    # Section 7: Layers
+    lines.append("## Layers")
+    lines.append("")
+    lines.append("`LayerManager:getLayer(index)`, `LayerManager:getByName(name)`, and the [layer enumerator](#enumerators) return the layers MyGUI draws widgets on. Layers are borrowed from the `LayerManager`; look them up when you need them rather than keeping them, since a layer MyGUI has replaced is not detected.")
+    lines.append("")
+
+    for c in sorted(layer_classes, key=lambda x: x['class_name']):
+        append_plain_class(lines, c, "layer")
+
+    # Section 8: Event Callbacks
     lines.append("## Event Callbacks Reference")
     lines.append("")
     lines.append("Event callbacks are attached to widgets using `widget:on(eventType, callbackFunction)` (returns a callback ID). Callbacks can be detached using `widget:off(callbackId)` or `widget:off(eventType)`.")
@@ -907,7 +990,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
         lines.append(f"| **`{ev['event']}`** | `{ev['widgets']}` | `{ev['signature']}` | {ev['description']} |")
     lines.append("")
 
-    # Section 7: Enums
+    # Section 9: Enums
     lines.append("## Global Enums")
     lines.append("")
 
@@ -931,19 +1014,27 @@ def main():
     
     widget_classes = []
     manager_classes = []
-    
-    manager_names = {"Gui", "InputManager", "PointerManager", "ClipboardManager", "LayoutManager", "RenderManager", "SkinManager"}
-    
+    enumerator_classes = []
+    layer_classes = []
+
+    manager_names = {"Gui", "InputManager", "PointerManager", "ClipboardManager", "LayoutManager", "LayerManager", "RenderManager", "SkinManager"}
+    layer_names = {"ILayer"}
+    enumerator_names = {"EnumeratorWidgetPtrSnapshot", "EnumeratorLayerSnapshot"}
+
     for cpp in sorted(MYGUI_DIR.glob("*Binding.cpp")):
         if cpp.name in ("MyGUIBinding.cpp", "TypesBinding.cpp"):
             continue
         c_info = parse_mygui_class_file(cpp)
         if c_info['class_name'] in manager_names:
             manager_classes.append(c_info)
+        elif c_info['class_name'] in enumerator_names:
+            enumerator_classes.append(c_info)
+        elif c_info['class_name'] in layer_names:
+            layer_classes.append(c_info)
         else:
             widget_classes.append(c_info)
-            
-    md = generate_mygui_markdown(global_methods, global_enums, type_classes, widget_classes, manager_classes)
+
+    md = generate_mygui_markdown(global_methods, global_enums, type_classes, widget_classes, manager_classes, enumerator_classes, layer_classes)
     out_path = DOCS_DIR / "MyGUIReference.md"
     out_path.write_text(md, encoding='utf-8')
     print(f"Generated {out_path} ({len(md)} bytes)")

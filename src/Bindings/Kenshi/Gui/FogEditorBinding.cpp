@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\FogEditor.h"
 #include "FogEditorBinding.h"
 #include "BaseLayoutBinding.h"
@@ -19,24 +20,21 @@ static int FogEditor_get_window(lua_State* L)
 {
     FogEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FogEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->window);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->window);
 }
 
 static int FogEditor_get_fogList(lua_State* L)
 {
     FogEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FogEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->fogList);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->fogList);
 }
 
 static int FogEditor_get_typeList(lua_State* L)
 {
     FogEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FogEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->typeList);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->typeList);
 }
 
 static int FogEditor_get_panel(lua_State* L)

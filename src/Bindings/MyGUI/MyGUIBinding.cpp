@@ -3,6 +3,8 @@
 #include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Bindings/MyGUI/MyGuiCallbacks.h"
 #include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/EnumeratorWidgetPtrSnapshotBinding.h"
+#include "Bindings/MyGUI/EnumeratorLayerSnapshotBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
 #include "Bindings/MyGUI/ButtonBinding.h"
 #include "Bindings/MyGUI/WindowBinding.h"
@@ -31,6 +33,8 @@
 #include "Bindings/MyGUI/LayoutManagerBinding.h"
 #include "Bindings/MyGUI/RenderManagerBinding.h"
 #include "Bindings/MyGUI/SkinManagerBinding.h"
+#include "Bindings/MyGUI/LayerManagerBinding.h"
+#include "Bindings/MyGUI/ILayerBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -1063,6 +1067,8 @@ void MyGUIBinding::registerBinding(lua_State* L)
     FloatCoordBinding::registerBinding(L);     CHECK_BINDING_STACK(L, "FloatCoordBinding");
     FloatRectBinding::registerBinding(L);      CHECK_BINDING_STACK(L, "FloatRectBinding");
     ColourBinding::registerBinding(L);         CHECK_BINDING_STACK(L, "ColourBinding");
+    EnumeratorWidgetPtrSnapshotBinding::registerBinding(L); CHECK_BINDING_STACK(L, "EnumeratorWidgetPtrSnapshotBinding");
+    EnumeratorLayerSnapshotBinding::registerBinding(L); CHECK_BINDING_STACK(L, "EnumeratorLayerSnapshotBinding");
 
     // 2. Register widget hierarchy (base to derived)
     WidgetBinding::registerBinding(L);         CHECK_BINDING_STACK(L, "WidgetBinding");
@@ -1095,6 +1101,8 @@ void MyGUIBinding::registerBinding(lua_State* L)
     LayoutManagerBinding::registerBinding(L);  CHECK_BINDING_STACK(L, "LayoutManagerBinding");
     RenderManagerBinding::registerBinding(L);  CHECK_BINDING_STACK(L, "RenderManagerBinding");
     SkinManagerBinding::registerBinding(L);    CHECK_BINDING_STACK(L, "SkinManagerBinding");
+    LayerManagerBinding::registerBinding(L);   CHECK_BINDING_STACK(L, "LayerManagerBinding");
+    ILayerBinding::registerBinding(L);         CHECK_BINDING_STACK(L, "ILayerBinding");
 
 #undef CHECK_BINDING_STACK
 
@@ -1176,6 +1184,7 @@ void MyGUIBinding::registerBinding(lua_State* L)
     lua_getglobal(L, "LayoutManager");    lua_setfield(L, -2, "LayoutManager");
     lua_getglobal(L, "RenderManager");    lua_setfield(L, -2, "RenderManager");
     lua_getglobal(L, "SkinManager");      lua_setfield(L, -2, "SkinManager");
+    lua_getglobal(L, "LayerManager");     lua_setfield(L, -2, "LayerManager");
 
     // Expose value type constructors under MyGUI (e.g. MyGUI.IntPoint.new(x, y))
     lua_getglobal(L, "IntPoint");         lua_setfield(L, -2, "IntPoint");

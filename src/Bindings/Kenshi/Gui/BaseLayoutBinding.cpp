@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "mygui\common\baselayout\BaseLayout.h"
 #include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -16,8 +17,7 @@ static int BaseLayout_get_mMainWidget(lua_State* L)
 {
     wraps::BaseLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BaseLayout is nil");
-    lua_pushlightuserdata(L, (void*)instance->mMainWidget);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->mMainWidget);
 }
 
 static int BaseLayout_get_mPrefix(lua_State* L)

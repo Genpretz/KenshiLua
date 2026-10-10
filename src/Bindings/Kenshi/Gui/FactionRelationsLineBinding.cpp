@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\FactionsScreen.h"
 #include "FactionRelationsLineBinding.h"
 #include "BaseLayoutBinding.h"
@@ -35,24 +36,21 @@ static int FactionRelationsLine_get_valueText(lua_State* L)
 {
     FactionRelationsLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionRelationsLine is nil");
-    lua_pushlightuserdata(L, (void*)instance->valueText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->valueText);
 }
 
 static int FactionRelationsLine_get_leftBar(lua_State* L)
 {
     FactionRelationsLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionRelationsLine is nil");
-    lua_pushlightuserdata(L, (void*)instance->leftBar);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->leftBar);
 }
 
 static int FactionRelationsLine_get_rightBar(lua_State* L)
 {
     FactionRelationsLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionRelationsLine is nil");
-    lua_pushlightuserdata(L, (void*)instance->rightBar);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->rightBar);
 }
 
 // --- Setters for FactionRelationsLine ---

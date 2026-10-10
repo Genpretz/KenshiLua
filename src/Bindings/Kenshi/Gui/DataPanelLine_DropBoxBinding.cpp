@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_DropBoxBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -18,8 +19,7 @@ static int DataPanelLine_DropBox_get_listBox(lua_State* L)
 {
     DataPanelLine_DropBox* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_DropBox is nil");
-    lua_pushlightuserdata(L, (void*)instance->listBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->listBox);
 }
 
 static int DataPanelLine_DropBox_get_listWidth(lua_State* L)
@@ -50,8 +50,7 @@ static int DataPanelLine_DropBox_get_goBox(lua_State* L)
 {
     DataPanelLine_DropBox* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_DropBox is nil");
-    lua_pushlightuserdata(L, (void*)instance->goBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->goBox);
 }
 
 // --- Setters for DataPanelLine_DropBox ---
@@ -127,8 +126,7 @@ int DataPanelLine_DropBoxBinding::getComboBox(lua_State* L)
     if (!instance) return luaL_error(L, "DataPanelLine_DropBox is nil");
 
     MyGUI::ComboBox* result = instance->getComboBox();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int DataPanelLine_DropBoxBinding::createMe(lua_State* L)

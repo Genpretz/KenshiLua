@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_CheckBoxBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -27,16 +28,14 @@ static int DataPanelLine_CheckBox_get_text(lua_State* L)
 {
     DataPanelLine_CheckBox* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_CheckBox is nil");
-    lua_pushlightuserdata(L, (void*)instance->text);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->text);
 }
 
 static int DataPanelLine_CheckBox_get_button(lua_State* L)
 {
     DataPanelLine_CheckBox* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_CheckBox is nil");
-    lua_pushlightuserdata(L, (void*)instance->button);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->button);
 }
 
 // --- Setters for DataPanelLine_CheckBox ---

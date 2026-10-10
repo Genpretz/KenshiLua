@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\LevelEditor.h"
 #include "LevelEditorBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -182,32 +183,28 @@ static int LevelEditor_get_editMapTitleWindow(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->editMapTitleWindow);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->editMapTitleWindow);
 }
 
 static int LevelEditor_get_factionTxt(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->factionTxt);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->factionTxt);
 }
 
 static int LevelEditor_get_altitudeTxt(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->altitudeTxt);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->altitudeTxt);
 }
 
 static int LevelEditor_get_activeModTxt(lua_State* L)
 {
     LevelEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LevelEditor is nil");
-    lua_pushlightuserdata(L, (void*)instance->activeModTxt);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->activeModTxt);
 }
 
 // --- Setters for LevelEditor ---

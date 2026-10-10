@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_SliderEditableBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -67,24 +68,21 @@ static int DataPanelLine_SliderEditable_get_nameText(lua_State* L)
 {
     DataPanelLine_SliderEditable* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
-    lua_pushlightuserdata(L, (void*)instance->nameText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->nameText);
 }
 
 static int DataPanelLine_SliderEditable_get_valueEditBox(lua_State* L)
 {
     DataPanelLine_SliderEditable* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
-    lua_pushlightuserdata(L, (void*)instance->valueEditBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->valueEditBox);
 }
 
 static int DataPanelLine_SliderEditable_get_sliderBar(lua_State* L)
 {
     DataPanelLine_SliderEditable* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
-    lua_pushlightuserdata(L, (void*)instance->sliderBar);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->sliderBar);
 }
 
 // --- Setters for DataPanelLine_SliderEditable ---

@@ -35,6 +35,21 @@ void validateWidgetSkin(const std::string& type, const std::string& skin);
 // Polymorphic widget pusher: detects RTTI type and attaches the exact derived metatable
 int pushWidget(lua_State* L, MyGUI::Widget* widget);
 
+// Returns the widget at idx, or null when the value is not a widget userdata.
+MyGUI::Widget* toWidget(lua_State* L, int idx);
+
+// Reads a widget argument whose MyGUI type is T or derives from it. Raises a Lua
+// argument error for nil, a raw pointer, a non-widget, or a widget of another type.
+template <class T>
+T* checkWidget(lua_State* L, int idx)
+{
+    MyGUI::Widget* widget = toWidget(L, idx);
+    T* typed = widget ? widget->castType<T>(false) : nullptr;
+    if (!typed)
+        luaL_argerror(L, idx, lua_pushfstring(L, "MyGUI.%s expected", T::getClassTypeName().c_str()));
+    return typed;
+}
+
 // Helper to parse widget creation arguments (skin, coords, align, layer/parent, name)
 struct WidgetCreateParams
 {

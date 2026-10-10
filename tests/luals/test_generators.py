@@ -271,9 +271,18 @@ class BindingInventoryTests(unittest.TestCase):
             signature("ScreenLabel", "setColor"),
         )
         # lua_pushlightuserdata hands Lua a raw pointer whatever the declared
-        # MyGUI::ScrollBar* type, so the header must not relabel it.
+        # NavMesh* type, so the header must not relabel it.
         self.assertEqual(
             "lightuserdata",
+            next(
+                item for item in bindings["NavMeshGenerator"]["properties"]
+                if item["name"] == "navmesh"
+            )["type"],
+        )
+        # MyGUIBindings::pushWidget takes its type from the declared
+        # MyGUI::ScrollBar* header type.
+        self.assertEqual(
+            "MyGUI.ScrollBar|nil",
             next(
                 item for item in bindings["DataPanelLine_SliderEditable"]["properties"]
                 if item["name"] == "sliderBar"

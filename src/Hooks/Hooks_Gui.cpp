@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Hooks_Common.h"
+#include <MyGUI.h>
 #include <kenshi/gui/ContextMenu.h>
 
 // ---------------------------------------------------------------------------
@@ -37,6 +38,39 @@ bool InstallHook_BaseLayout_initialise()
 
     intptr_t realAddr = KenshiLib::GetRealAddress(stubAddr);
     return InstallHookT("wraps::BaseLayout::initialise", realAddr, &BaseLayout_initialise_hook, &BaseLayout_initialise_orig);
+}
+
+// ---------------------------------------------------------------------------
+// Delegates for mygui/MyGUI_Gui.h
+//
+// Not an engine hook: subscribes to the delegate MyGUI raises from its renderer
+// each frame, so no game address is involved. The subscription is kept for the
+// rest of the session; with no Lua handlers the dispatch finds no bucket.
+// ---------------------------------------------------------------------------
+
+static bool g_guiFrameStartSubscribed = false;
+
+static void Gui_eventFrameStart(float time)
+{
+    CallMyGUIGuiFrameStartCallbacks(time);
+}
+
+bool InstallDelegate_MyGUI_Gui_eventFrameStart()
+{
+    if (g_guiFrameStartSubscribed)
+        return true;
+
+    MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
+    if (!gui)
+    {
+        KenshiLua::logToFileErrorf("Error: MyGUI is not initialized; cannot subscribe to MyGUI::Gui::eventFrameStart");
+        return false;
+    }
+
+    gui->eventFrameStart += MyGUI::newDelegate(Gui_eventFrameStart);
+    g_guiFrameStartSubscribed = true;
+    KenshiLua::logToFileDebugf("Delegate subscribed: MyGUI::Gui::eventFrameStart");
+    return true;
 }
 
 // ---------------------------------------------------------------------------

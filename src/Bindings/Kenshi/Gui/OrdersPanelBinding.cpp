@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 
 #include "kenshi\gui\OrdersPanel.h"
@@ -61,88 +62,77 @@ static int OrdersPanel_get_ordersEmptyPanel(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->ordersEmptyPanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->ordersEmptyPanel);
 }
 
 static int OrdersPanel_get_blocksCheckbox(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->blocksCheckbox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->blocksCheckbox);
 }
 
 static int OrdersPanel_get_holdCheckBox(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->holdCheckBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->holdCheckBox);
 }
 
 static int OrdersPanel_get_passiveCheckBox(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->passiveCheckBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->passiveCheckBox);
 }
 
 static int OrdersPanel_get_chaseCheckBox(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->chaseCheckBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->chaseCheckBox);
 }
 
 static int OrdersPanel_get_tauntCheckBox(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->tauntCheckBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->tauntCheckBox);
 }
 
 static int OrdersPanel_get_rangedCheckBox(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->rangedCheckBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->rangedCheckBox);
 }
 
 static int OrdersPanel_get_stealthCheckBox(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->stealthCheckBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->stealthCheckBox);
 }
 
 static int OrdersPanel_get_speedPrevButton(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->speedPrevButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->speedPrevButton);
 }
 
 static int OrdersPanel_get_speedNextButton(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->speedNextButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->speedNextButton);
 }
 
 static int OrdersPanel_get_speedImagePanel(lua_State* L)
 {
     OrdersPanel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrdersPanel is nil");
-    lua_pushlightuserdata(L, (void*)instance->speedImagePanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->speedImagePanel);
 }
 
 static int OrdersPanel_get_speedImageNamesIdx(lua_State* L)

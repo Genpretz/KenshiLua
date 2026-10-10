@@ -29,8 +29,7 @@ static int ScreenLabel_get_textWidget(lua_State* L)
 {
     ScreenLabel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ScreenLabel is nil");
-    lua_pushlightuserdata(L, (void*)instance->textWidget);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->textWidget);
 }
 
 static int ScreenLabel_get_risingSpeed(lua_State* L)

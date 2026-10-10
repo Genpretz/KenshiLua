@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\PlayerInterface.h"
 #include "SelectionBoxBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -24,8 +25,7 @@ static int SelectionBox_get_widget(lua_State* L)
 {
     SelectionBox* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SelectionBox is nil");
-    lua_pushlightuserdata(L, (void*)instance->widget);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->widget);
 }
 
 static int SelectionBox_get_active(lua_State* L)

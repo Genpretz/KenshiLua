@@ -30,16 +30,14 @@ static int SquadCellView_get_txtName(lua_State* L)
 {
     SquadCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->txtName);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->txtName);
 }
 
 static int SquadCellView_get_txtSquadSize(lua_State* L)
 {
     SquadCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SquadCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->txtSquadSize);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->txtSquadSize);
 }
 
 static int SquadCellView_get_squad(lua_State* L)

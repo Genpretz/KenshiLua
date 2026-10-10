@@ -863,6 +863,12 @@ void CallBaseLayoutInitialiseCallbacks(wraps::BaseLayout* thisptr, const std::st
     KenshiLua::EventSystem::get().callHandlers("wraps::BaseLayout::initialise", &pusher);
 }
 
+void CallMyGUIGuiFrameStartCallbacks(float time)
+{
+    ArgPusher1<float> pusher(time);
+    KenshiLua::EventSystem::get().callHandlers("MyGUI::Gui::eventFrameStart", &pusher);
+}
+
 InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type)
 {
     ArgPusher2<Inventory*, int> pusher(inventory, type);

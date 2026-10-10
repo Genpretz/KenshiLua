@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 
 #include "kenshi\gui\MapScreen.h"
@@ -36,24 +37,21 @@ static int MapMarkerTown_get_root(lua_State* L)
 {
     MapMarkerTown* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapMarkerTown is nil");
-    lua_pushlightuserdata(L, (void*)instance->root);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->root);
 }
 
 static int MapMarkerTown_get_image(lua_State* L)
 {
     MapMarkerTown* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapMarkerTown is nil");
-    lua_pushlightuserdata(L, (void*)instance->image);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->image);
 }
 
 static int MapMarkerTown_get_label(lua_State* L)
 {
     MapMarkerTown* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapMarkerTown is nil");
-    lua_pushlightuserdata(L, (void*)instance->label);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->label);
 }
 
 // --- Setters for MapMarkerTown ---

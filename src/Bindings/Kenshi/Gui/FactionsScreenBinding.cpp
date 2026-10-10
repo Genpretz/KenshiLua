@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\FactionsScreen.h"
 #include "FactionsScreenBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -24,8 +25,7 @@ static int FactionsScreen_get_mainWidget(lua_State* L)
 {
     FactionsScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionsScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->mainWidget);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->mainWidget);
 }
 
 static int FactionsScreen_get_selectedFaction(lua_State* L)
@@ -39,8 +39,7 @@ static int FactionsScreen_get_scrollList(lua_State* L)
 {
     FactionsScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionsScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->scrollList);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->scrollList);
 }
 
 static int FactionsScreen_get_scrollListItemTop(lua_State* L)
@@ -63,8 +62,7 @@ static int FactionsScreen_get_nameText(lua_State* L)
 {
     FactionsScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionsScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->nameText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->nameText);
 }
 
 static int FactionsScreen_get_infoPanel(lua_State* L)

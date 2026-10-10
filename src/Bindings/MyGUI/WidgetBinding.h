@@ -72,6 +72,7 @@ public:
     static int getChildCount(lua_State* L);
     static int getChildAt(lua_State* L);
     static int findWidget(lua_State* L);
+    static int getEnumerator(lua_State* L);
     static int getClientWidget(lua_State* L);
     static int getClientCoord(lua_State* L);
     static int getType(lua_State* L);

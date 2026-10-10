@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\OptionsWindow.h"
 #include "OptionsWindowBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -68,8 +69,7 @@ static int OptionsWindow_get_tabs(lua_State* L)
 {
     OptionsWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OptionsWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->tabs);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->tabs);
 }
 
 static int OptionsWindow_get_created(lua_State* L)

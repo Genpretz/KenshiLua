@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\DialogueWindow.h"
 #include "DialogueWindowBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -83,72 +84,63 @@ static int DialogueWindow_get_conversationPCPanel(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->conversationPCPanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->conversationPCPanel);
 }
 
 static int DialogueWindow_get_conversationNPCPanel(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->conversationNPCPanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->conversationNPCPanel);
 }
 
 static int DialogueWindow_get_conversationNPCNameText(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->conversationNPCNameText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->conversationNPCNameText);
 }
 
 static int DialogueWindow_get_conversationPCNameText(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->conversationPCNameText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->conversationPCNameText);
 }
 
 static int DialogueWindow_get_conversationPCMoneyText(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->conversationPCMoneyText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->conversationPCMoneyText);
 }
 
 static int DialogueWindow_get_conversationNPCSpeech(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->conversationNPCSpeech);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->conversationNPCSpeech);
 }
 
 static int DialogueWindow_get_conversationPCSpeechPanel(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->conversationPCSpeechPanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->conversationPCSpeechPanel);
 }
 
 static int DialogueWindow_get_conversationNPCPortrait(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->conversationNPCPortrait);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->conversationNPCPortrait);
 }
 
 static int DialogueWindow_get_conversationPCPortrait(lua_State* L)
 {
     DialogueWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->conversationPCPortrait);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->conversationPCPortrait);
 }
 
 static int DialogueWindow_get_replyTexts(lua_State* L)

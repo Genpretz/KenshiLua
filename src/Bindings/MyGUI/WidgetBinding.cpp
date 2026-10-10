@@ -3,6 +3,7 @@
 #include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Bindings/MyGUI/MyGuiCallbacks.h"
 #include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/EnumeratorWidgetPtrSnapshotBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -667,6 +668,14 @@ int WidgetBinding::findWidget(lua_State* L)
     return 1;
 }
 
+int WidgetBinding::getEnumerator(lua_State* L)
+{
+    MyGUI::Widget* w = getWidget(L, 1);
+    if (!w)
+        return luaL_argerror(L, 1, "Widget expected");
+    return MyGUIBindings::pushWidgetEnumerator(L, w->getEnumerator());
+}
+
 int WidgetBinding::getClientWidget(lua_State* L)
 {
     MyGUI::Widget* w = getWidget(L, 1);
@@ -1001,6 +1010,7 @@ void WidgetBinding::registerBinding(lua_State* L)
         { "getChildCount",        getChildCount },
         { "getChildAt",           getChildAt },
         { "findWidget",           findWidget },
+        { "getEnumerator",        getEnumerator },
         { "getClientWidget",      getClientWidget },
         { "getClientCoord",       getClientCoord },
         { "getType",              getType },

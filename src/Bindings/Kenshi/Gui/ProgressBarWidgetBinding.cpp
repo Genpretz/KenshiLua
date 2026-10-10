@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\ScreenLabel.h"
 #include "ProgressBarWidgetBinding.h"
 #include "BaseLayoutBinding.h"
@@ -19,16 +20,14 @@ static int ProgressBarWidget_get_bar(lua_State* L)
 {
     ProgressBarWidget* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProgressBarWidget is nil");
-    lua_pushlightuserdata(L, (void*)instance->bar);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->bar);
 }
 
 static int ProgressBarWidget_get_label(lua_State* L)
 {
     ProgressBarWidget* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProgressBarWidget is nil");
-    lua_pushlightuserdata(L, (void*)instance->label);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->label);
 }
 
 // --- Setters for ProgressBarWidget ---

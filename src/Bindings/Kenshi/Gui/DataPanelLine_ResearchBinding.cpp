@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_ResearchBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -50,24 +51,21 @@ static int DataPanelLine_Research_get_bar(lua_State* L)
 {
     DataPanelLine_Research* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
-    lua_pushlightuserdata(L, (void*)instance->bar);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->bar);
 }
 
 static int DataPanelLine_Research_get_but(lua_State* L)
 {
     DataPanelLine_Research* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
-    lua_pushlightuserdata(L, (void*)instance->but);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->but);
 }
 
 static int DataPanelLine_Research_get_Xbut(lua_State* L)
 {
     DataPanelLine_Research* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
-    lua_pushlightuserdata(L, (void*)instance->Xbut);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->Xbut);
 }
 
 // --- Setters for DataPanelLine_Research ---

@@ -38,24 +38,21 @@ static int PortraitSquadCellView_get_border(lua_State* L)
 {
     PortraitSquadCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitSquadCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->border);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->border);
 }
 
 static int PortraitSquadCellView_get_imgBoxPortrait(lua_State* L)
 {
     PortraitSquadCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitSquadCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->imgBoxPortrait);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->imgBoxPortrait);
 }
 
 static int PortraitSquadCellView_get_txtName(lua_State* L)
 {
     PortraitSquadCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitSquadCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->txtName);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->txtName);
 }
 
 // --- Setters for PortraitSquadCellView ---

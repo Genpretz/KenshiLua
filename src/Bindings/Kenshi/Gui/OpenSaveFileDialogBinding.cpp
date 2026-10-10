@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include <kenshi/gui/OpenSaveFileDialog.h>
 #include "OpenSaveFileDialogBinding.h"
 #include "BaseLayoutBinding.h"
@@ -22,8 +23,7 @@ static int OpenSaveFileDialog_get_filesList(lua_State* L)
 {
     OpenSaveFileDialog* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
-    lua_pushlightuserdata(L, (void*)instance->filesList);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->filesList);
     return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->filesList, MyGUIBinding::getMetatableName());
 }
 
@@ -31,8 +31,7 @@ static int OpenSaveFileDialog_get_fileNameTxt(lua_State* L)
 {
     OpenSaveFileDialog* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
-    lua_pushlightuserdata(L, (void*)instance->fileNameTxt);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->fileNameTxt);
     return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->fileNameTxt, MyGUIBinding::getMetatableName());
 }
 
@@ -40,8 +39,7 @@ static int OpenSaveFileDialog_get_currentFolderList(lua_State* L)
 {
     OpenSaveFileDialog* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
-    lua_pushlightuserdata(L, (void*)instance->currentFolderList);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->currentFolderList);
     return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->currentFolderList, MyGUIBinding::getMetatableName());
 }
 
@@ -49,8 +47,7 @@ static int OpenSaveFileDialog_get_openSaveButton(lua_State* L)
 {
     OpenSaveFileDialog* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
-    lua_pushlightuserdata(L, (void*)instance->openSaveButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->openSaveButton);
     return pushObject<MyGUI::Widget>(L, (MyGUI::Widget*)instance->openSaveButton, MyGUIBinding::getMetatableName());
 }
 

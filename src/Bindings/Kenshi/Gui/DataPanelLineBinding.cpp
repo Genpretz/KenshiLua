@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 
 #include "kenshi\gui\DataPanelLine.h"
@@ -20,16 +21,14 @@ static int DataPanelLine_get_w1(lua_State* L)
 {
     DataPanelLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine is nil");
-    lua_pushlightuserdata(L, (void*)instance->w1);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->w1);
 }
 
 static int DataPanelLine_get_w2(lua_State* L)
 {
     DataPanelLine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine is nil");
-    lua_pushlightuserdata(L, (void*)instance->w2);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->w2);
 }
 
 static int DataPanelLine_get_category(lua_State* L)
@@ -346,8 +345,7 @@ int DataPanelLineBinding::getWidget(lua_State* L)
 
     int index = (int)luaL_checkinteger(L, 2);
     MyGUI::Widget* result = instance->getWidget(index);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 /*

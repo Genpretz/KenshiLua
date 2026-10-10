@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\InventoryGUI.h"
 #include "InventoryIconBinding.h"
 #include "BaseLayoutBinding.h"
@@ -27,24 +28,21 @@ static int InventoryIcon_get_image(lua_State* L)
 {
     InventoryIcon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryIcon is nil");
-    lua_pushlightuserdata(L, (void*)instance->image);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->image);
 }
 
 static int InventoryIcon_get_quantityText(lua_State* L)
 {
     InventoryIcon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryIcon is nil");
-    lua_pushlightuserdata(L, (void*)instance->quantityText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->quantityText);
 }
 
 static int InventoryIcon_get_chargesProgress(lua_State* L)
 {
     InventoryIcon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryIcon is nil");
-    lua_pushlightuserdata(L, (void*)instance->chargesProgress);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->chargesProgress);
 }
 
 // --- Setters for InventoryIcon ---
@@ -71,8 +69,7 @@ int InventoryIconBinding::getWidget(lua_State* L)
     if (!instance) return luaL_error(L, "InventoryIcon is nil");
 
     MyGUI::Widget* result = instance->getWidget();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int InventoryIconBinding::setPosition(lua_State* L)

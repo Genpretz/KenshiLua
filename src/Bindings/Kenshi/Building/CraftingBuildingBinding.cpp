@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 #include <kenshi/Building/CraftingBuilding.h>
 #include "CraftingBuildingBinding.h"
@@ -465,7 +466,7 @@ int CraftingBuildingBinding::newCraftingButton(lua_State* L)
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    MyGUI::Widget* sender = (MyGUI::Widget*)lua_touserdata(L, 2);
+    MyGUI::Widget* sender = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
     instance->newCraftingButton(sender);
     return 0;
 }
@@ -475,7 +476,7 @@ int CraftingBuildingBinding::_NV_newCraftingButton(lua_State* L)
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    MyGUI::Widget* sender = (MyGUI::Widget*)lua_touserdata(L, 2);
+    MyGUI::Widget* sender = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
     instance->_NV_newCraftingButton(sender);
     return 0;
 }

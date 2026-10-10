@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\TutorialGUI.h"
 #include "TutorialGUILineBinding.h"
 #include "BaseLayoutBinding.h"
@@ -20,24 +21,21 @@ static int TutorialGUILine_get_nameButton(lua_State* L)
 {
     TutorialGUILine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUILine is nil");
-    lua_pushlightuserdata(L, (void*)instance->nameButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->nameButton);
 }
 
 static int TutorialGUILine_get_closeButton(lua_State* L)
 {
     TutorialGUILine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUILine is nil");
-    lua_pushlightuserdata(L, (void*)instance->closeButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->closeButton);
 }
 
 static int TutorialGUILine_get_flashWidget(lua_State* L)
 {
     TutorialGUILine* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TutorialGUILine is nil");
-    lua_pushlightuserdata(L, (void*)instance->flashWidget);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->flashWidget);
 }
 
 // --- Setters for TutorialGUILine ---

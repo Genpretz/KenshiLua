@@ -21,8 +21,6 @@ static int InventorySectionGUI_get_widget(lua_State* L)
 {
     InventorySectionGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySectionGUI is nil");
-    lua_pushlightuserdata(L, (void*)instance->widget);
-    return 1;
     return MyGUIBindings::pushWidget(L, instance->widget);
 }
 
@@ -62,8 +60,6 @@ int InventorySectionGUIBinding::getWidget(lua_State* L)
     if (!instance) return luaL_error(L, "InventorySectionGUI is nil");
 
     MyGUI::Widget* result = instance->getWidget();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
     return MyGUIBindings::pushWidget(L, result);
 }
 

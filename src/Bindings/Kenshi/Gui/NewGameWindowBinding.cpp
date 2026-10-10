@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\NewGameWindow.h"
 #include "NewGameWindowBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -38,8 +39,7 @@ static int NewGameWindow_get_startNameTextBox(lua_State* L)
 {
     NewGameWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "NewGameWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->startNameTextBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->startNameTextBox);
 }
 
 static int NewGameWindow_get_newGameOptions(lua_State* L)

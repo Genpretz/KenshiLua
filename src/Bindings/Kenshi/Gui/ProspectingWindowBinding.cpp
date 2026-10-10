@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\ProspectingWindow.h"
 #include "ProspectingWindowBinding.h"
 #include "BaseLayoutBinding.h"
@@ -20,40 +21,35 @@ static int ProspectingWindow_get_window(lua_State* L)
 {
     ProspectingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProspectingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->window);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->window);
 }
 
 static int ProspectingWindow_get_imgMap(lua_State* L)
 {
     ProspectingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProspectingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->imgMap);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->imgMap);
 }
 
 static int ProspectingWindow_get_listResourcesPanel(lua_State* L)
 {
     ProspectingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProspectingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->listResourcesPanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->listResourcesPanel);
 }
 
 static int ProspectingWindow_get_listResourcesSelected(lua_State* L)
 {
     ProspectingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProspectingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->listResourcesSelected);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->listResourcesSelected);
 }
 
 static int ProspectingWindow_get_cameraMarker(lua_State* L)
 {
     ProspectingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProspectingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->cameraMarker);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->cameraMarker);
 }
 
 static int ProspectingWindow_get_cameraMarkerSkin(lua_State* L)

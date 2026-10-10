@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\dialogue.h"
 #include "DialogueSpeechBubbleBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -48,8 +49,7 @@ static int DialogueSpeechBubble_get_textBox(lua_State* L)
 {
     DialogueSpeechBubble* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
-    lua_pushlightuserdata(L, (void*)instance->textBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->textBox);
 }
 
 // --- Setters for DialogueSpeechBubble ---
@@ -101,7 +101,7 @@ static int DialogueSpeechBubble_set_textBox(lua_State* L)
 {
     DialogueSpeechBubble* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogueSpeechBubble is nil");
-    instance->textBox = (MyGUI::EditBox*)lua_touserdata(L, 2);
+    instance->textBox = MyGUIBindings::checkWidget<MyGUI::EditBox>(L, 2);
     return 0;
 }
 

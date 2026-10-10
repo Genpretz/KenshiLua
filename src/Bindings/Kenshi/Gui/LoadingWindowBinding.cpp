@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\LoadingWindow.h"
 #include "LoadingWindowBinding.h"
 #include "BaseLayoutBinding.h"
@@ -33,24 +34,21 @@ static int LoadingWindow_get_loadingText(lua_State* L)
 {
     LoadingWindow* instance = get_instance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->loadingText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->loadingText);
 }
 
 static int LoadingWindow_get_messageText(lua_State* L)
 {
     LoadingWindow* instance = get_instance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->messageText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->messageText);
 }
 
 static int LoadingWindow_get_backgroundImage(lua_State* L)
 {
     LoadingWindow* instance = get_instance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
-    lua_pushlightuserdata(L, (void*)instance->backgroundImage);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->backgroundImage);
 }
 
 // --- Setters for LoadingWindow ---

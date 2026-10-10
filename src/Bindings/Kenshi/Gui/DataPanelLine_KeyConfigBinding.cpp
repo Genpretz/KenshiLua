@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_KeyConfigBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -18,16 +19,14 @@ static int DataPanelLine_KeyConfig_get_btn0(lua_State* L)
 {
     DataPanelLine_KeyConfig* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
-    lua_pushlightuserdata(L, (void*)instance->btn0);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btn0);
 }
 
 static int DataPanelLine_KeyConfig_get_btn1(lua_State* L)
 {
     DataPanelLine_KeyConfig* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
-    lua_pushlightuserdata(L, (void*)instance->btn1);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->btn1);
 }
 
 static int DataPanelLine_KeyConfig_get_command(lua_State* L)

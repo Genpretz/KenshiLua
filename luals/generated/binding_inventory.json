@@ -5684,7 +5684,7 @@
         {
           "access": "readonly",
           "name": "mMainWidget",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -26594,22 +26594,24 @@
         {
           "access": "readonly",
           "name": "charactersBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.ScrollView|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "confirmBtn",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "currentTotalText",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "selectedCountText",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -31048,7 +31050,7 @@
               {
                 "name": "_sender",
                 "optional": false,
-                "type": "lightuserdata"
+                "type": "MyGUI.Widget"
               }
             ],
             "returns": [],
@@ -31064,7 +31066,7 @@
               {
                 "name": "_sender",
                 "optional": false,
-                "type": "lightuserdata"
+                "type": "MyGUI.Widget"
               }
             ],
             "returns": [],
@@ -32542,7 +32544,7 @@
               }
             ],
             "returns": [
-              "lightuserdata"
+              "MyGUI.Widget"
             ],
             "type_source": "header"
           },
@@ -32600,12 +32602,12 @@
         {
           "access": "readonly",
           "name": "w1",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "w2",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -32702,7 +32704,8 @@
         {
           "access": "readonly",
           "name": "button",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -32868,12 +32871,14 @@
         {
           "access": "readonly",
           "name": "button",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "text",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
@@ -32968,7 +32973,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "MyGUI.ComboBox"
             ]
           },
           "static": false
@@ -33050,7 +33055,8 @@
         {
           "access": "readonly",
           "name": "goBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -33060,7 +33066,8 @@
         {
           "access": "readonly",
           "name": "listBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.ComboBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -33145,17 +33152,18 @@
         {
           "access": "readonly",
           "name": "bar",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "bar2",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "but",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -33321,12 +33329,14 @@
         {
           "access": "readonly",
           "name": "btn0",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "btn1",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -33427,12 +33437,13 @@
         {
           "access": "readonly",
           "name": "progress",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "progressText",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -33442,7 +33453,8 @@
         {
           "access": "readonly",
           "name": "textBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         }
       ],
       "registered_from": [
@@ -33517,12 +33529,13 @@
         {
           "access": "readonly",
           "name": "Xbut",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "bar",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -33532,7 +33545,8 @@
         {
           "access": "readonly",
           "name": "but",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -33870,7 +33884,8 @@
         {
           "access": "readonly",
           "name": "nameText",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -33885,12 +33900,14 @@
         {
           "access": "readonly",
           "name": "sliderBar",
-          "type": "lightuserdata"
+          "type": "MyGUI.ScrollBar|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "valueEditBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
@@ -33975,7 +33992,8 @@
         {
           "access": "readonly",
           "name": "editBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -34002,7 +34020,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "MyGUI.EditBox"
             ]
           },
           "static": false
@@ -34013,7 +34031,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "MyGUI.EditBox"
             ]
           },
           "static": false
@@ -34077,7 +34095,8 @@
         {
           "access": "readonly",
           "name": "editBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -34087,7 +34106,8 @@
         {
           "access": "readonly",
           "name": "nameText",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -35841,12 +35861,13 @@
         {
           "access": "readonly",
           "name": "scrollView",
-          "type": "lightuserdata"
+          "type": "MyGUI.ScrollView|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "scrollWin",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -35856,7 +35877,8 @@
         {
           "access": "readonly",
           "name": "tabWin",
-          "type": "lightuserdata"
+          "type": "MyGUI.Window|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -38197,7 +38219,8 @@
         {
           "access": "readwrite",
           "name": "textBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         }
       ],
       "registered_from": [
@@ -38431,12 +38454,12 @@
         {
           "access": "readonly",
           "name": "conversationNPCNameText",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "conversationNPCPanel",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -38446,12 +38469,13 @@
         {
           "access": "readonly",
           "name": "conversationNPCPortrait",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "conversationNPCSpeech",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -38466,17 +38490,17 @@
         {
           "access": "readonly",
           "name": "conversationPCMoneyText",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "conversationPCNameText",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "conversationPCPanel",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -38486,12 +38510,13 @@
         {
           "access": "readonly",
           "name": "conversationPCPortrait",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "conversationPCSpeechPanel",
-          "type": "lightuserdata"
+          "type": "MyGUI.ScrollView|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -40504,6 +40529,84 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/EntDataBinding.cpp"
+    },
+    {
+      "binding": "EnumeratorLayerSnapshotBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "MyGUI.EnumeratorLayerSnapshot",
+      "metatable": "KenshiLua.MyGUI.EnumeratorLayerSnapshot",
+      "methods": [
+        {
+          "callback": "next",
+          "name": "next",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "current",
+          "name": "current",
+          "signature": {
+            "params": [],
+            "returns": [
+              "MyGUI.ILayer"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/MyGUI/MyGUIBinding.cpp"
+      ],
+      "source": "src/Bindings/MyGUI/EnumeratorLayerSnapshotBinding.cpp"
+    },
+    {
+      "binding": "EnumeratorWidgetPtrSnapshotBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "MyGUI.EnumeratorWidgetPtrSnapshot",
+      "metatable": "KenshiLua.MyGUI.EnumeratorWidgetPtrSnapshot",
+      "methods": [
+        {
+          "callback": "next",
+          "name": "next",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "current",
+          "name": "current",
+          "signature": {
+            "params": [],
+            "returns": [
+              "MyGUI.Widget"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/MyGUI/MyGUIBinding.cpp"
+      ],
+      "source": "src/Bindings/MyGUI/EnumeratorWidgetPtrSnapshotBinding.cpp"
     },
     {
       "binding": "FactionBinding",
@@ -43000,12 +43103,12 @@
         {
           "access": "readonly",
           "name": "leftBar",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "rightBar",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -43015,7 +43118,7 @@
         {
           "access": "readonly",
           "name": "valueText",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -43949,17 +44052,19 @@
         {
           "access": "readonly",
           "name": "mainWidget",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "nameText",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "scrollList",
-          "type": "lightuserdata"
+          "type": "MyGUI.ScrollView|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -46159,7 +46264,8 @@
         {
           "access": "readonly",
           "name": "fogList",
-          "type": "lightuserdata"
+          "type": "MyGUI.ListBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -46184,12 +46290,14 @@
         {
           "access": "readonly",
           "name": "typeList",
-          "type": "lightuserdata"
+          "type": "MyGUI.ComboBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "window",
-          "type": "lightuserdata"
+          "type": "MyGUI.Window|nil",
+          "type_source": "header"
         }
       ],
       "registered_from": [
@@ -51686,12 +51794,13 @@
         {
           "access": "readwrite",
           "name": "edit",
-          "type": "lightuserdata|nil"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
           "name": "label",
-          "type": "lightuserdata|nil"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -55518,6 +55627,17 @@
           "static": false
         },
         {
+          "callback": "getEnumerator",
+          "name": "getEnumerator",
+          "signature": {
+            "params": [],
+            "returns": [
+              "MyGUI.Widget"
+            ]
+          },
+          "static": false
+        },
+        {
           "callback": "destroyWidget",
           "name": "destroyWidget",
           "signature": {
@@ -56409,6 +56529,79 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/HavokCharacterBinding.cpp"
+    },
+    {
+      "binding": "ILayerBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "MyGUI.ILayer",
+      "metatable": "KenshiLua.MyGUI.ILayer",
+      "methods": [
+        {
+          "callback": "getName",
+          "name": "getName",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "getLayerNodeCount",
+          "name": "getLayerNodeCount",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "getSize",
+          "name": "getSize",
+          "signature": {
+            "params": [],
+            "returns": [
+              "MyGUI.IntSize"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "getPosition",
+          "name": "getPosition",
+          "signature": {
+            "params": [
+              {
+                "name": "_left",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "_top",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "MyGUI.IntPoint"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/MyGUI/MyGUIBinding.cpp"
+      ],
+      "source": "src/Bindings/MyGUI/ILayerBinding.cpp"
     },
     {
       "binding": "ImageBoxBinding",
@@ -61658,7 +61851,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "MyGUI.Widget"
             ]
           },
           "static": false
@@ -61768,12 +61961,12 @@
         {
           "access": "readonly",
           "name": "chargesProgress",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "image",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -61783,7 +61976,7 @@
         {
           "access": "readonly",
           "name": "quantityText",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -63896,7 +64089,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "MyGUI.Widget"
             ]
           },
           "static": false
@@ -64007,7 +64200,7 @@
         {
           "access": "readwrite",
           "name": "widget",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -65842,6 +66035,196 @@
       "source": "src/Bindings/Kenshi/Gui/ItemListWindowBinding.cpp"
     },
     {
+      "binding": "LayerManagerBinding",
+      "global_names": [
+        "LayerManager"
+      ],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "MyGUI.LayerManager",
+      "metatable": "KenshiLua.MyGUI.LayerManager",
+      "methods": [
+        {
+          "callback": "getInstance",
+          "name": "getInstance",
+          "signature": {
+            "params": [],
+            "returns": [
+              "MyGUI.LayerManager"
+            ]
+          },
+          "static": true
+        },
+        {
+          "callback": "attachToLayerNode",
+          "name": "attachToLayerNode",
+          "signature": {
+            "params": [
+              {
+                "name": "_name",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "_item",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "detachFromLayer",
+          "name": "detachFromLayer",
+          "signature": {
+            "params": [
+              {
+                "name": "_item",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "upLayerItem",
+          "name": "upLayerItem",
+          "signature": {
+            "params": [
+              {
+                "name": "_item",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "isExist",
+          "name": "isExist",
+          "signature": {
+            "params": [
+              {
+                "name": "_name",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "getEnumerator",
+          "name": "getEnumerator",
+          "signature": {
+            "params": []
+          },
+          "static": false
+        },
+        {
+          "callback": "getByName",
+          "name": "getByName",
+          "signature": {
+            "params": [
+              {
+                "name": "_name",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "MyGUI.ILayer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "getLayerCount",
+          "name": "getLayerCount",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "getLayer",
+          "name": "getLayer",
+          "signature": {
+            "params": [
+              {
+                "name": "_index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "MyGUI.ILayer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "getWidgetFromPoint",
+          "name": "getWidgetFromPoint",
+          "signature": {
+            "params": [
+              {
+                "name": "_left",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "_top",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "MyGUI.Widget"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "getCategoryName",
+          "name": "getCategoryName",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/MyGUI/MyGUIBinding.cpp"
+      ],
+      "source": "src/Bindings/MyGUI/LayerManagerBinding.cpp"
+    },
+    {
       "binding": "LayoutManagerBinding",
       "global_names": [
         "LayoutManager"
@@ -66672,17 +67055,19 @@
         {
           "access": "readonly",
           "name": "activeModTxt",
-          "type": "lightuserdata"
+          "type": "MyGUI.ComboBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "altitudeTxt",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "editMapTitleWindow",
-          "type": "lightuserdata"
+          "type": "MyGUI.Window|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -66692,7 +67077,7 @@
         {
           "access": "readonly",
           "name": "factionTxt",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -67665,17 +68050,17 @@
         {
           "access": "readonly",
           "name": "mListIndex",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "mListName",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "mListValue",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -68082,7 +68467,7 @@
         {
           "access": "readonly",
           "name": "backgroundImage",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -68097,12 +68482,13 @@
         {
           "access": "readonly",
           "name": "loadingText",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "messageText",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         }
       ],
       "registered_from": [
@@ -70256,7 +70642,7 @@
         {
           "access": "readonly",
           "name": "image",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -70311,17 +70697,17 @@
         {
           "access": "readonly",
           "name": "image",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "label",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "root",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -70935,7 +71321,7 @@
         {
           "access": "readwrite",
           "name": "widget",
-          "type": "lightuserdata|nil"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -74151,7 +74537,7 @@
         {
           "access": "readonly",
           "name": "mName",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -75777,7 +76163,7 @@
         {
           "access": "readonly",
           "name": "startNameTextBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -77196,7 +77582,8 @@
         {
           "access": "readonly",
           "name": "currentFolderList",
-          "type": "lightuserdata"
+          "type": "MyGUI.ComboBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -77216,12 +77603,14 @@
         {
           "access": "readonly",
           "name": "fileNameTxt",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "filesList",
-          "type": "lightuserdata"
+          "type": "MyGUI.ListBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -77231,7 +77620,8 @@
         {
           "access": "readonly",
           "name": "openSaveButton",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         }
       ],
       "registered_from": [
@@ -77973,7 +78363,8 @@
         {
           "access": "readonly",
           "name": "tabs",
-          "type": "lightuserdata"
+          "type": "MyGUI.TabControl|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -78002,7 +78393,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "MyGUI.Widget"
             ]
           },
           "static": false
@@ -78071,12 +78462,13 @@
         {
           "access": "readonly",
           "name": "orderText",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "removeButton",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         }
       ],
       "registered_from": [
@@ -78542,17 +78934,20 @@
         {
           "access": "readonly",
           "name": "blocksCheckbox",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "chaseCheckBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "holdCheckBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -78562,7 +78957,7 @@
         {
           "access": "readonly",
           "name": "ordersEmptyPanel",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -78587,12 +78982,14 @@
         {
           "access": "readonly",
           "name": "passiveCheckBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "rangedCheckBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -78602,27 +78999,31 @@
         {
           "access": "readonly",
           "name": "speedImagePanel",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "speedNextButton",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "speedPrevButton",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "stealthCheckBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "tauntCheckBox",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         }
       ],
       "registered_from": [
@@ -83238,7 +83639,8 @@
         {
           "access": "readonly",
           "name": "border",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -83248,22 +83650,22 @@
         {
           "access": "readonly",
           "name": "imageBackground",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "imageOverlayBack",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "imageOverlayFront",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "imagePortrait",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -83273,7 +83675,7 @@
         {
           "access": "readonly",
           "name": "textName",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -83665,7 +84067,8 @@
         {
           "access": "readonly",
           "name": "border",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -83675,7 +84078,7 @@
         {
           "access": "readonly",
           "name": "imgBoxPortrait",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -83685,7 +84088,7 @@
         {
           "access": "readonly",
           "name": "txtName",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -86340,12 +86743,12 @@
         {
           "access": "readonly",
           "name": "bar",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "label",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -86534,7 +86937,7 @@
         {
           "access": "readonly",
           "name": "cameraMarker",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
@@ -86554,7 +86957,7 @@
         {
           "access": "readonly",
           "name": "imgMap",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -86574,12 +86977,13 @@
         {
           "access": "readonly",
           "name": "listResourcesPanel",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "listResourcesSelected",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
@@ -86589,7 +86993,8 @@
         {
           "access": "readonly",
           "name": "window",
-          "type": "lightuserdata"
+          "type": "MyGUI.Window|nil",
+          "type_source": "header"
         }
       ],
       "registered_from": [
@@ -92031,7 +92436,7 @@
         {
           "access": "readonly",
           "name": "savingIcon",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -92974,7 +93379,7 @@
         {
           "access": "readonly",
           "name": "textWidget",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -93891,7 +94296,7 @@
         {
           "access": "readwrite",
           "name": "widget",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -96437,7 +96842,7 @@
         {
           "access": "readonly",
           "name": "mainPanel",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readwrite",
@@ -96702,12 +97107,13 @@
         {
           "access": "readonly",
           "name": "txtName",
-          "type": "lightuserdata"
+          "type": "MyGUI.EditBox|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "txtSquadSize",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         }
       ],
       "registered_from": [
@@ -106998,7 +107404,8 @@
         {
           "access": "readonly",
           "name": "scrollBackpack",
-          "type": "lightuserdata"
+          "type": "MyGUI.ScrollView|nil",
+          "type_source": "header"
         }
       ],
       "registered_from": [
@@ -108461,17 +108868,19 @@
         {
           "access": "readonly",
           "name": "closeButton",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "flashWidget",
-          "type": "lightuserdata"
+          "type": "MyGUI.Widget"
         },
         {
           "access": "readonly",
           "name": "nameButton",
-          "type": "lightuserdata"
+          "type": "MyGUI.Button|nil",
+          "type_source": "header"
         }
       ],
       "registered_from": [
@@ -114488,6 +114897,17 @@
               "nil"
             ],
             "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "getEnumerator",
+          "name": "getEnumerator",
+          "signature": {
+            "params": [],
+            "returns": [
+              "MyGUI.Widget"
+            ]
           },
           "static": false
         },

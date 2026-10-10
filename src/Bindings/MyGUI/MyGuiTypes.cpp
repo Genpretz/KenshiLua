@@ -24,6 +24,7 @@
 #include "Bindings/MyGUI/MenuControlBinding.h"
 #include "Bindings/MyGUI/MenuItemBinding.h"
 #include "Bindings/MyGUI/TypesBinding.h"
+#include "Bindings/MyGUI/EnumeratorWidgetPtrSnapshotBinding.h"
 #include "Lua/BindingHelpers.h"
 #include <algorithm>
 
@@ -45,6 +46,7 @@ public:
     {
         if (!widget) return;
         LuaWidgetCallbackManager::get().unregisterAll(widget);
+        unlinkWidgetFromEnumerators(widget);
         if (g_luaCreatedWidgets.find(widget) != g_luaCreatedWidgets.end())
         {
             logToFileDebugf("MyGUI: released tracking for destroyed Lua-created widget '%s'", widget->getName().c_str());
@@ -201,6 +203,11 @@ void validateWidgetSkin(const std::string& type, const std::string& skin)
     {
         Logger::get().log(LogLevel_Warn, "[MyGUI] Skin or template '" + skin + "' for widget type '" + type + "' was not found in SkinManager or ResourceManager! MyGUI will fall back to 'Default' skin (which may be invisible in Kenshi).");
     }
+}
+
+MyGUI::Widget* toWidget(lua_State* L, int idx)
+{
+    return WidgetBinding::getWidget(L, idx);
 }
 
 int pushWidget(lua_State* L, MyGUI::Widget* widget)

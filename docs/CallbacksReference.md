@@ -21,7 +21,7 @@ Events.off(handlerId)
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
-## 1. Notification Callbacks (150)
+## 1. Notification Callbacks (151)
 
 | Event Name | Lua Signature |
 | :--- | :--- |
@@ -72,6 +72,7 @@ Events.off(handlerId)
 | `Dialogue::stopEvent` | `function(self: Dialogue, what: EventTriggerEnum)` |
 | `RootObjectFactory::chooseMyClothing` | `function(gearLektor: lektor<GameData>, dataList: GameData, listName: string, race: RaceData, noShoes: boolean)` |
 | `wraps::BaseLayout::initialise` | `function(self: BaseLayout, layoutName: string)` |
+| `MyGUI::Gui::eventFrameStart` | `function(time: number)` |
 | `CharStats::xpStat_eventBased` | `function(self: CharStats, statType: integer, amount: number)` |
 | `CharStats::xpDodgeEvent` | `function(self: CharStats, enemySkill: number, successful: boolean)` |
 | `PlayerInterface::activateCharacterEditMode` | `function(self: PlayerInterface, character: Character)` |
@@ -2164,6 +2165,15 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `MedicalSystem`
   - `skill`: `number`
+
+### `MyGUI::Gui::eventFrameStart`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `the MyGUI::Gui::eventFrameStart delegate`
+- **Lua Signature**: `function(time)`
+- **Parameters**:
+  - `time`: `number`
+- **Notes**: Raised by the renderer at the start of every frame, including while the game is paused. The argument is the time since the previous frame, in seconds.
 
 ### `OrdersPanel::blockmodeButton`
 

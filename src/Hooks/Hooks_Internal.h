@@ -84,6 +84,7 @@ bool InstallHook_Dialogue_sendEvent();
 bool InstallHook_Dialogue_stopEvent();
 bool InstallHook_RootObjectFactory_chooseMyClothing();
 bool InstallHook_BaseLayout_initialise();
+bool InstallDelegate_MyGUI_Gui_eventFrameStart();
 bool InstallHook_Ownerships_canIUseThisBuilding();
 bool InstallHook_Building_NV_isPublic();
 bool InstallHook_Building_NV_isForSale();

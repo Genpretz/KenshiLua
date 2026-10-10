@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\InventoryTraderGUI.h"
 #include "TraderInventoryLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -22,8 +23,7 @@ static int TraderInventoryLayout_get_scrollBackpack(lua_State* L)
 {
     TraderInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TraderInventoryLayout is nil");
-    lua_pushlightuserdata(L, (void*)instance->scrollBackpack);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->scrollBackpack);
 }
 
 // --- Setters for TraderInventoryLayout ---

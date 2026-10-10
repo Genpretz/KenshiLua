@@ -37,48 +37,42 @@ static int PortraitMainCellView_get_border(lua_State* L)
 {
     PortraitMainCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitMainCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->border);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->border);
 }
 
 static int PortraitMainCellView_get_imageBackground(lua_State* L)
 {
     PortraitMainCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitMainCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->imageBackground);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->imageBackground);
 }
 
 static int PortraitMainCellView_get_imagePortrait(lua_State* L)
 {
     PortraitMainCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitMainCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->imagePortrait);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->imagePortrait);
 }
 
 static int PortraitMainCellView_get_imageOverlayBack(lua_State* L)
 {
     PortraitMainCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitMainCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->imageOverlayBack);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->imageOverlayBack);
 }
 
 static int PortraitMainCellView_get_imageOverlayFront(lua_State* L)
 {
     PortraitMainCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitMainCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->imageOverlayFront);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->imageOverlayFront);
 }
 
 static int PortraitMainCellView_get_textName(lua_State* L)
 {
     PortraitMainCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitMainCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->textName);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->textName);
 }
 
 // --- Setters for PortraitMainCellView ---

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\SaveFileSystem.h"
 #include "SaveFileSystemBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -56,8 +57,7 @@ static int SaveFileSystem_get_savingIcon(lua_State* L)
 {
     SaveFileSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SaveFileSystem is nil");
-    lua_pushlightuserdata(L, (void*)instance->savingIcon);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->savingIcon);
 }
 
 static int SaveFileSystem_get_state(lua_State* L)

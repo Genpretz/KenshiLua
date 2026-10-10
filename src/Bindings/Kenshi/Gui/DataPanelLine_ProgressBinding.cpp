@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\DataPanelLine.h"
 #include "DataPanelLine_ProgressBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -18,24 +19,21 @@ static int DataPanelLine_Progress_get_textBox(lua_State* L)
 {
     DataPanelLine_Progress* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
-    lua_pushlightuserdata(L, (void*)instance->textBox);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->textBox);
 }
 
 static int DataPanelLine_Progress_get_progress(lua_State* L)
 {
     DataPanelLine_Progress* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
-    lua_pushlightuserdata(L, (void*)instance->progress);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->progress);
 }
 
 static int DataPanelLine_Progress_get_progressText(lua_State* L)
 {
     DataPanelLine_Progress* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Progress is nil");
-    lua_pushlightuserdata(L, (void*)instance->progressText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->progressText);
 }
 
 static int DataPanelLine_Progress_get_showKey(lua_State* L)

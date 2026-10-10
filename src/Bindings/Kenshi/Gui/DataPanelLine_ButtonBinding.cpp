@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 
 #include "kenshi\gui\DataPanelLine.h"
@@ -27,8 +28,7 @@ static int DataPanelLine_Button_get_button(lua_State* L)
 {
     DataPanelLine_Button* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
-    lua_pushlightuserdata(L, (void*)instance->button);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->button);
 }
 
 static int DataPanelLine_Button_get_buttonWidth(lua_State* L)

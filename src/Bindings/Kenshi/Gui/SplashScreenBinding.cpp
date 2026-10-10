@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "kenshi\gui\SplashScreen.h"
 #include "SplashScreenBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -48,8 +49,7 @@ static int SplashScreen_get_mainPanel(lua_State* L)
 {
     SplashScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SplashScreen is nil");
-    lua_pushlightuserdata(L, (void*)instance->mainPanel);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->mainPanel);
 }
 
 // --- Setters for SplashScreen ---

@@ -20,16 +20,14 @@ static int OrderCellView_get_orderText(lua_State* L)
 {
     OrderCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrderCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->orderText);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->orderText);
 }
 
 static int OrderCellView_get_removeButton(lua_State* L)
 {
     OrderCellView* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OrderCellView is nil");
-    lua_pushlightuserdata(L, (void*)instance->removeButton);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->removeButton);
 }
 
 static int OrderCellView_get_data(lua_State* L)
@@ -54,8 +52,7 @@ int OrderCellViewBinding::getWidget(lua_State* L)
     if (!instance) return luaL_error(L, "OrderCellView is nil");
 
     MyGUI::Widget* result = instance->getWidget();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return MyGUIBindings::pushWidget(L, result);
 }
 
 int OrderCellViewBinding::resize(lua_State* L)

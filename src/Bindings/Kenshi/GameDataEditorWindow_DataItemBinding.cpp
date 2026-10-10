@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Bindings/Kenshi/GameDataEditorWindow_DataItemBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Lua/BindingHelpers.h"
 #include <kenshi/gui/GameDataEditorWindow.h>
 
@@ -23,18 +24,14 @@ static int DataItem_get_edit(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "GameDataEditorWindow::DataItem is nil");
-    if (inst->edit) lua_pushlightuserdata(L, (void*)inst->edit);
-    else lua_pushnil(L);
-    return 1;
+    return MyGUIBindings::pushWidget(L, inst->edit);
 }
 
 static int DataItem_get_label(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "GameDataEditorWindow::DataItem is nil");
-    if (inst->label) lua_pushlightuserdata(L, (void*)inst->label);
-    else lua_pushnil(L);
-    return 1;
+    return MyGUIBindings::pushWidget(L, inst->label);
 }
 
 static int DataItem_set_name(lua_State* L)
@@ -49,7 +46,7 @@ static int DataItem_set_edit(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "GameDataEditorWindow::DataItem is nil");
-    inst->edit = (MyGUI::EditBox*)lua_touserdata(L, 2);
+    inst->edit = MyGUIBindings::checkWidget<MyGUI::EditBox>(L, 2);
     return 0;
 }
 
@@ -57,7 +54,7 @@ static int DataItem_set_label(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "GameDataEditorWindow::DataItem is nil");
-    inst->label = (MyGUI::TextBox*)lua_touserdata(L, 2);
+    inst->label = MyGUIBindings::checkWidget<MyGUI::TextBox>(L, 2);
     return 0;
 }
 

@@ -1113,15 +1113,6 @@
       "member": "swapMutex"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "BaseLayout",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "mMainWidget"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "BinaryVersion",
       "expected": "fun(): KenshiPlatform",
@@ -4232,42 +4223,6 @@
       "member": "statProgress"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "CharacterTradingWindow",
-      "expected": "MyGUI.ScrollView|nil",
-      "header": "MyGUI::ScrollView*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "charactersBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "CharacterTradingWindow",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "confirmBtn"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "CharacterTradingWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "currentTotalText"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "CharacterTradingWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "selectedCountText"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "CharacterTradingWindow",
       "expected": "?Ogre::FastArray<CharacterTradingBox*>",
@@ -4748,40 +4703,6 @@
       "member": "_NV_serialise"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "CraftingBuilding",
-      "expected": "fun(MyGUI.Widget)",
-      "header": "void newCraftingButton(MyGUI::Widget* _sender)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "MyGUI.Widget",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CraftingBuilding, _sender: lightuserdata)",
-      "member": "newCraftingButton"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "CraftingBuilding",
-      "expected": "fun(MyGUI.Widget)",
-      "header": "void _NV_newCraftingButton(MyGUI::Widget* _sender)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "MyGUI.Widget",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CraftingBuilding, _sender: lightuserdata)",
-      "member": "_NV_newCraftingButton"
-    },
-    {
       "category": "multiple",
       "class": "CraftingBuilding",
       "expected": "fun(GameData, GameData, number, YesNoMaybeValue): ?CraftingItem*",
@@ -4969,23 +4890,6 @@
       "member": "getType"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine",
-      "expected": "fun(integer): MyGUI.Widget|nil",
-      "header": "MyGUI::Widget* getWidget(int index) const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "MyGUI.Widget|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: DataPanelLine, index: integer): lightuserdata",
-      "member": "getWidget"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "DataPanelLine",
       "expected": "LineType",
@@ -4993,33 +4897,6 @@
       "kind": "property",
       "lua": "integer",
       "member": "classType"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "w1"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "w2"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Button",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "button"
     },
     {
       "category": "unmapped_header_type",
@@ -5073,24 +4950,6 @@
       "member": "getCheckBox"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_CheckBox",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "button"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_CheckBox",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "text"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "DataPanelLine_CheckBox",
       "expected": "?bool*",
@@ -5100,41 +4959,6 @@
       "member": "valuePtr"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_DropBox",
-      "expected": "fun(): MyGUI.ComboBox|nil",
-      "header": "MyGUI::ComboBox* getComboBox()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "MyGUI.ComboBox|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: DataPanelLine_DropBox): lightuserdata",
-      "member": "getComboBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_DropBox",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "goBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_DropBox",
-      "expected": "MyGUI.ComboBox|nil",
-      "header": "MyGUI::ComboBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "listBox"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "DataPanelLine_DropBox",
       "expected": "?int*",
@@ -5142,105 +4966,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "valPtr"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Faction",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "bar"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Faction",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "bar2"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Faction",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "but"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_KeyConfig",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "btn0"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_KeyConfig",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "btn1"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Progress",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ProgressBar*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "progress"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Progress",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "progressText"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Progress",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "textBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Research",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "Xbut"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Research",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "bar"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Research",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "but"
     },
     {
       "category": "unmapped_header_type",
@@ -5312,33 +5037,6 @@
       "member": "getEditBox"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_SliderEditable",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "nameText"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_SliderEditable",
-      "expected": "MyGUI.ScrollBar|nil",
-      "header": "MyGUI::ScrollBar*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "sliderBar"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_SliderEditable",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "valueEditBox"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "DataPanelLine_SliderEditable",
       "expected": "?float*",
@@ -5346,67 +5044,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "valuePtr"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_Text",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata|nil",
-      "member": "editBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_TextEditable",
-      "expected": "fun(): MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox* getEditBox()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "MyGUI.EditBox|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: DataPanelLine_TextEditable): lightuserdata",
-      "member": "getEditBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_TextEditable",
-      "expected": "fun(): MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox* getNameBox()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "MyGUI.EditBox|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: DataPanelLine_TextEditable): lightuserdata",
-      "member": "getNameBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_TextEditable",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "editBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DataPanelLine_TextEditable",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "nameText"
     },
     {
       "category": "unmapped_header_type",
@@ -5518,33 +5155,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "mouseOverEvent"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DatapanelGUI",
-      "expected": "MyGUI.ScrollView|nil",
-      "header": "MyGUI::ScrollView*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "scrollView"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DatapanelGUI",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "scrollWin"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DatapanelGUI",
-      "expected": "MyGUI.Window|nil",
-      "header": "MyGUI::Window*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "tabWin"
     },
     {
       "category": "no_header_declaration",
@@ -5985,15 +5595,6 @@
       "member": "baseSize"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DialogueSpeechBubble",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "textBox"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "DialogueWindow",
       "expected": "fun(?Ogre::vector<std::string>::type)",
@@ -6009,87 +5610,6 @@
       "kind": "method",
       "lua": "fun(self: DialogueWindow, arg1: string[])",
       "member": "setResponses"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DialogueWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "conversationNPCNameText"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DialogueWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "conversationNPCPanel"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DialogueWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "conversationNPCPortrait"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DialogueWindow",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "conversationNPCSpeech"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DialogueWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "conversationPCMoneyText"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DialogueWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "conversationPCNameText"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DialogueWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "conversationPCPanel"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DialogueWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "conversationPCPortrait"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "DialogueWindow",
-      "expected": "MyGUI.ScrollView|nil",
-      "header": "MyGUI::ScrollView*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "conversationPCSpeechPanel"
     },
     {
       "category": "unmapped_header_type",
@@ -6496,33 +6016,6 @@
       "member": "checkStateCondition"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "FactionRelationsLine",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "leftBar"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "FactionRelationsLine",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "rightBar"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "FactionRelationsLine",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "valueText"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "FactionUniqueSquadManager",
       "expected": "fun(GameData): ?UniquePlatoon*",
@@ -6772,33 +6265,6 @@
       "member": "possibleCampaigns"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "FactionsScreen",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "mainWidget"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "FactionsScreen",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "nameText"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "FactionsScreen",
-      "expected": "MyGUI.ScrollView|nil",
-      "header": "MyGUI::ScrollView*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "scrollList"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "FarmBatch",
       "expected": "fun(?Ogre::SharedPtr<Ogre::Resource>, lightuserdata)",
@@ -6964,15 +6430,6 @@
       "member": "editNode"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "FogEditor",
-      "expected": "MyGUI.ListBox|nil",
-      "header": "MyGUI::ListBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "fogList"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "FogEditor",
       "expected": "?FogVolume*",
@@ -6980,24 +6437,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "selectedFog"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "FogEditor",
-      "expected": "MyGUI.ComboBox|nil",
-      "header": "MyGUI::ComboBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "typeList"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "FogEditor",
-      "expected": "MyGUI.Window|nil",
-      "header": "MyGUI::Window*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "window"
     },
     {
       "category": "unmapped_header_type",
@@ -7601,24 +7040,6 @@
       "kind": "property",
       "lua": "BoostUnorderedMap<string, GameData>",
       "member": "gamedataSID"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "GameDataEditorWindow_DataItem",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata|nil",
-      "member": "edit"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "GameDataEditorWindow_DataItem",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata|nil",
-      "member": "label"
     },
     {
       "category": "enum_typed_as_integer",
@@ -8585,23 +8006,6 @@
       "member": "point"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "InventoryIcon",
-      "expected": "fun(): MyGUI.Widget|nil",
-      "header": "MyGUI::Widget* getWidget() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "MyGUI.Widget|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: InventoryIcon): lightuserdata",
-      "member": "getWidget"
-    },
-    {
       "category": "binding_shape_differs",
       "class": "InventoryIcon",
       "expected": "fun(MyGUI.IntPoint)",
@@ -8668,33 +8072,6 @@
       "kind": "method",
       "lua": "fun(x: integer, y: integer): integer, integer",
       "member": "getItemPosition"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "InventoryIcon",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "chargesProgress"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "InventoryIcon",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "image"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "InventoryIcon",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "quantityText"
     },
     {
       "category": "enum_typed_as_integer",
@@ -8868,32 +8245,6 @@
       "kind": "property",
       "lua": "integer",
       "member": "limitedSlot"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "InventorySectionGUI",
-      "expected": "fun(): MyGUI.Widget|nil",
-      "header": "MyGUI::Widget* getWidget()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "MyGUI.Widget|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: InventorySectionGUI): lightuserdata",
-      "member": "getWidget"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "InventorySectionGUI",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata|MyGUI.Widget|nil",
-      "member": "widget"
     },
     {
       "category": "unmapped_header_type",
@@ -9235,42 +8586,6 @@
       "member": "objectType"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "LevelEditor",
-      "expected": "MyGUI.ComboBox|nil",
-      "header": "MyGUI::ComboBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "activeModTxt"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "LevelEditor",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "altitudeTxt"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "LevelEditor",
-      "expected": "MyGUI.Window|nil",
-      "header": "MyGUI::Window*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "editMapTitleWindow"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "LevelEditor",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "factionTxt"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "LevelEditor",
       "expected": "?FoliageEraser*",
@@ -9393,33 +8708,6 @@
       "member": "light"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ListScrollBar",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "mListIndex"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ListScrollBar",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "mListName"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ListScrollBar",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "mListValue"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "LoadSaveWindow",
       "expected": "fun(MyGUI.Widget, ?MyGUI::KeyCode, integer)",
@@ -9435,33 +8723,6 @@
       "kind": "method",
       "lua": "fun(self: LoadSaveWindow, w: MyGUI.Widget, key: integer, arg3?: integer)",
       "member": "keyPressed"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "LoadingWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "backgroundImage"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "LoadingWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "loadingText"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "LoadingWindow",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "messageText"
     },
     {
       "category": "enum_typed_as_integer",
@@ -9794,42 +9055,6 @@
       "member": "item"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "MapMarkerCharacter",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata|nil",
-      "member": "image"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "MapMarkerTown",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "image"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "MapMarkerTown",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "label"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "MapMarkerTown",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "root"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "MapMarkerTown",
       "expected": "MapZoomLevel",
@@ -9923,15 +9148,6 @@
       "kind": "property",
       "lua": "integer",
       "member": "zoomLevelCurrent"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "MapScreen_MapRoad",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata|nil",
-      "member": "widget"
     },
     {
       "category": "enum_typed_as_integer",
@@ -10103,15 +9319,6 @@
       "kind": "property",
       "lua": "lightuserdata|nil",
       "member": "value"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "MultiSlider",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "mName"
     },
     {
       "category": "no_header_declaration",
@@ -10368,6 +9575,38 @@
       "kind": "property",
       "lua": "boolean",
       "member": "wordWrap"
+    },
+    {
+      "category": "no_header_declaration",
+      "class": "MyGUI.EnumeratorLayerSnapshot",
+      "cpp": "MyGUIBindings::EnumeratorLayerSnapshot::next",
+      "kind": "method",
+      "lua": "fun(self: MyGUI.EnumeratorLayerSnapshot): boolean",
+      "member": "next"
+    },
+    {
+      "category": "no_header_declaration",
+      "class": "MyGUI.EnumeratorLayerSnapshot",
+      "cpp": "MyGUIBindings::EnumeratorLayerSnapshot::current",
+      "kind": "method",
+      "lua": "fun(self: MyGUI.EnumeratorLayerSnapshot): MyGUI.ILayer",
+      "member": "current"
+    },
+    {
+      "category": "no_header_declaration",
+      "class": "MyGUI.EnumeratorWidgetPtrSnapshot",
+      "cpp": "MyGUIBindings::EnumeratorWidgetPtrSnapshot::next",
+      "kind": "method",
+      "lua": "fun(self: MyGUI.EnumeratorWidgetPtrSnapshot): boolean",
+      "member": "next"
+    },
+    {
+      "category": "no_header_declaration",
+      "class": "MyGUI.EnumeratorWidgetPtrSnapshot",
+      "cpp": "MyGUIBindings::EnumeratorWidgetPtrSnapshot::current",
+      "kind": "method",
+      "lua": "fun(self: MyGUI.EnumeratorWidgetPtrSnapshot): MyGUI.Widget|nil",
+      "member": "current"
     },
     {
       "category": "no_header_declaration",
@@ -10630,6 +9869,23 @@
       "kind": "method",
       "lua": "fun(self: MyGUI.Gui, name: string): MyGUI.Widget|nil",
       "member": "findWidgetT"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "MyGUI.Gui",
+      "expected": "fun(): ?EnumeratorWidgetPtr",
+      "header": "EnumeratorWidgetPtr getEnumerator() const",
+      "issues": [
+        {
+          "actual": "MyGUI.EnumeratorWidgetPtrSnapshot",
+          "category": "unmapped_header_type",
+          "expected": "?EnumeratorWidgetPtr",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: MyGUI.Gui): MyGUI.EnumeratorWidgetPtrSnapshot",
+      "member": "getEnumerator"
     },
     {
       "category": "unmapped_header_type",
@@ -11116,6 +10372,31 @@
       "kind": "method",
       "lua": "fun(self: MyGUI.ItemBox, index: integer)",
       "member": "removeItemAt"
+    },
+    {
+      "category": "no_header_declaration",
+      "class": "MyGUI.LayerManager",
+      "cpp": "MyGUI::LayerManager::getInstance",
+      "kind": "method",
+      "lua": "fun(): MyGUI.LayerManager",
+      "member": "getInstance"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "MyGUI.LayerManager",
+      "expected": "fun(): ?EnumeratorLayer",
+      "header": "EnumeratorLayer getEnumerator() const",
+      "issues": [
+        {
+          "actual": "MyGUI.EnumeratorLayerSnapshot",
+          "category": "unmapped_header_type",
+          "expected": "?EnumeratorLayer",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: MyGUI.LayerManager): MyGUI.EnumeratorLayerSnapshot",
+      "member": "getEnumerator"
     },
     {
       "category": "no_header_declaration",
@@ -12168,6 +11449,23 @@
       "member": "getRootWidget"
     },
     {
+      "category": "unmapped_header_type",
+      "class": "MyGUI.Widget",
+      "expected": "fun(): ?EnumeratorWidgetPtr",
+      "header": "EnumeratorWidgetPtr getEnumerator() const",
+      "issues": [
+        {
+          "actual": "MyGUI.EnumeratorWidgetPtrSnapshot",
+          "category": "unmapped_header_type",
+          "expected": "?EnumeratorWidgetPtr",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: MyGUI.Widget): MyGUI.EnumeratorWidgetPtrSnapshot",
+      "member": "getEnumerator"
+    },
+    {
       "category": "binding_shape_differs",
       "class": "MyGUI.Widget",
       "expected": "fun(): MyGUI.IntCoord",
@@ -12830,15 +12128,6 @@
       "member": "message"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "NewGameWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "startNameTextBox"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "NxMat33",
       "expected": "fun(?float*)",
@@ -13040,42 +12329,6 @@
       "member": "operator_xor"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OpenSaveFileDialog",
-      "expected": "MyGUI.ComboBox|nil",
-      "header": "MyGUI::ComboBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "currentFolderList"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OpenSaveFileDialog",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "fileNameTxt"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OpenSaveFileDialog",
-      "expected": "MyGUI.ListBox|nil",
-      "header": "MyGUI::ListBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "filesList"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OpenSaveFileDialog",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "openSaveButton"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "OptionsHolder",
       "expected": "?lektor<std::pair<std::string,bool>>",
@@ -13083,50 +12336,6 @@
       "kind": "property",
       "lua": "nil",
       "member": "compositors"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OptionsWindow",
-      "expected": "MyGUI.TabControl|nil",
-      "header": "MyGUI::TabControl*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "tabs"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrderCellView",
-      "expected": "fun(): MyGUI.Widget|nil",
-      "header": "MyGUI::Widget* getWidget() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "MyGUI.Widget|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: OrderCellView): lightuserdata",
-      "member": "getWidget"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrderCellView",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "orderText"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrderCellView",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "removeButton"
     },
     {
       "category": "multiple",
@@ -13184,105 +12393,6 @@
       "kind": "method",
       "lua": "fun(self: OrdersPanel, moveSpeed: integer)",
       "member": "setSpeedImage"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "blocksCheckbox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "chaseCheckBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "holdCheckBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "ordersEmptyPanel"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "passiveCheckBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "rangedCheckBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "speedImagePanel"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "speedNextButton"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "speedPrevButton"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "stealthCheckBox"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "OrdersPanel",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "tauntCheckBox"
     },
     {
       "category": "enum_typed_as_integer",
@@ -14285,60 +13395,6 @@
       "member": "state"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "PortraitMainCellView",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "border"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "PortraitMainCellView",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "imageBackground"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "PortraitMainCellView",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "imageOverlayBack"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "PortraitMainCellView",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "imageOverlayFront"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "PortraitMainCellView",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "imagePortrait"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "PortraitMainCellView",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "textName"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "PortraitManager",
       "expected": "?bool*",
@@ -14346,33 +13402,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "imagesIndices"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "PortraitSquadCellView",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "border"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "PortraitSquadCellView",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "imgBoxPortrait"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "PortraitSquadCellView",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "txtName"
     },
     {
       "category": "binding_pushes_raw_pointer",
@@ -14616,24 +13645,6 @@
       "member": "productionState"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ProgressBarWidget",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ProgressBar*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "bar"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ProgressBarWidget",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "label"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "ProspectingWindow",
       "expected": "fun(MiningResource)",
@@ -14651,15 +13662,6 @@
       "member": "updateMap"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ProspectingWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "cameraMarker"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "ProspectingWindow",
       "expected": "?MyGUI::RotatingSkin*",
@@ -14669,33 +13671,6 @@
       "member": "cameraMarkerSkin"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ProspectingWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "imgMap"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ProspectingWindow",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "listResourcesPanel"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ProspectingWindow",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "listResourcesSelected"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "ProspectingWindow",
       "expected": "?RealWorldEditableImage*",
@@ -14703,15 +13678,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "resourceImage"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ProspectingWindow",
-      "expected": "MyGUI.Window|nil",
-      "header": "MyGUI::Window*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "window"
     },
     {
       "category": "no_header_declaration",
@@ -15748,15 +14714,6 @@
       "member": "currentMutex"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "SaveFileSystem",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::ImageBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "savingIcon"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "SaveFileSystem",
       "expected": "State",
@@ -15861,15 +14818,6 @@
       "member": "labelSize"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ScreenLabel",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "textWidget"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "SeenSomeone",
       "expected": "SlaveStateEnum",
@@ -15895,15 +14843,6 @@
       "kind": "property",
       "lua": "any",
       "member": "volume"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "SelectionBox",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "widget"
     },
     {
       "category": "binding_shape_differs",
@@ -16247,33 +15186,6 @@
       "kind": "property",
       "lua": "integer",
       "member": "stateEnum"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "SplashScreen",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "mainPanel"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "SquadCellView",
-      "expected": "MyGUI.EditBox|nil",
-      "header": "MyGUI::EditBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "txtName"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "SquadCellView",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::TextBox*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "txtSquadSize"
     },
     {
       "category": "multiple",
@@ -17873,15 +16785,6 @@
       "member": "value"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "TraderInventoryLayout",
-      "expected": "MyGUI.ScrollView|nil",
-      "header": "MyGUI::ScrollView*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "scrollBackpack"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "TransformWindow",
       "expected": "?Gizmo*",
@@ -18147,33 +17050,6 @@
       "kind": "property",
       "lua": "MyGUI.Widget",
       "member": "windowText"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "TutorialGUILine",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "closeButton"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "TutorialGUILine",
-      "expected": "MyGUI.Widget|nil",
-      "header": "MyGUI::Widget*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "flashWidget"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "TutorialGUILine",
-      "expected": "MyGUI.Button|nil",
-      "header": "MyGUI::Button*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "nameButton"
     },
     {
       "category": "enum_typed_as_integer",
@@ -19580,17 +18456,17 @@
   "schema_version": 1,
   "summary": {
     "binding_converts": 48,
-    "binding_pushes_raw_pointer": 169,
+    "binding_pushes_raw_pointer": 42,
     "binding_shape_differs": 105,
     "blocking_issues": 0,
     "container_methods_typed": 925,
     "enum_typed_as_integer": 430,
     "known_binding_bug": 13,
-    "methods": 7190,
-    "methods_matching_header": 5400,
-    "no_header_declaration": 265,
+    "methods": 7211,
+    "methods_matching_header": 5422,
+    "no_header_declaration": 270,
     "properties": 3072,
-    "properties_matching_header": 2424,
-    "unmapped_header_type": 501
+    "properties_matching_header": 2542,
+    "unmapped_header_type": 504
   }
 }

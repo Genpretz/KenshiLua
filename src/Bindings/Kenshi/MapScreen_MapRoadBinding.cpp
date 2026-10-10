@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Bindings/Kenshi/MapScreen_MapRoadBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Lua/BindingHelpers.h"
 #include <kenshi/gui/MapScreen.h>
 
@@ -15,16 +16,14 @@ static int MapRoad_get_widget(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "MapScreen::MapRoad is nil");
-    if (inst->widget) lua_pushlightuserdata(L, (void*)inst->widget);
-    else lua_pushnil(L);
-    return 1;
+    return MyGUIBindings::pushWidget(L, inst->widget);
 }
 
 static int MapRoad_set_widget(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "MapScreen::MapRoad is nil");
-    inst->widget = (MyGUI::Widget*)lua_touserdata(L, 2);
+    inst->widget = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
     return 0;
 }
 

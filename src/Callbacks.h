@@ -497,6 +497,17 @@ void CallChooseMyClothingCallbacks(lektor<GameData*>& gear, GameData* dataList, 
 void CallBaseLayoutInitialiseCallbacks(wraps::BaseLayout* thisptr, const std::string& layout);
 
 // -----------------------------------------------------------
+// Callbacks for MyGUI delegates in mygui/MyGUI_Gui.h
+// -----------------------------------------------------------
+
+// Fired by the MyGUI::Gui::eventFrameStart delegate
+// Raised by the renderer at the start of every frame, including while the game is paused.
+// The argument is the time since the previous frame, in seconds.
+// Lua event name: "MyGUI::Gui::eventFrameStart"
+// Lua signature:  function(time)
+void CallMyGUIGuiFrameStartCallbacks(float time);
+
+// -----------------------------------------------------------
 // Callbacks for hooks in Building/Building.h
 // -----------------------------------------------------------
 

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 
 #include "kenshi\gui\MapScreen.h"
 #include "MapMarkerCharacterBinding.h"
@@ -29,8 +30,7 @@ static int MapMarkerCharacter_get_image(lua_State* L)
 {
     MapMarkerCharacter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapMarkerCharacter is nil");
-    lua_pushlightuserdata(L, (void*)instance->image);
-    return 1;
+    return MyGUIBindings::pushWidget(L, instance->image);
 }
 
 // --- Setters for MapMarkerCharacter ---

@@ -22,6 +22,7 @@ public:
     static int createWidgetReal(lua_State* L);
     static int findWidget(lua_State* L);
     static int findWidgetT(lua_State* L);
+    static int getEnumerator(lua_State* L);
     static int destroyWidget(lua_State* L);
     static int destroyWidgets(lua_State* L);
     static int hidePointer(lua_State* L);

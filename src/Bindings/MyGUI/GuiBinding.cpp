@@ -2,6 +2,7 @@
 #include "Bindings/MyGUI/GuiBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
 #include "Bindings/MyGUI/MyGuiTypes.h"
+#include "Bindings/MyGUI/EnumeratorWidgetPtrSnapshotBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -105,6 +106,12 @@ int GuiBinding::findWidgetT(lua_State* L)
     return findWidget(L);
 }
 
+int GuiBinding::getEnumerator(lua_State* L)
+{
+    MyGUI::Gui* gui = checkObject<MyGUI::Gui>(L, 1, getMetatableName());
+    return MyGUIBindings::pushWidgetEnumerator(L, gui->getEnumerator());
+}
+
 int GuiBinding::destroyWidget(lua_State* L)
 {
     int idx = (lua_isuserdata(L, 1) && !testObject<MyGUI::Widget>(L, 1, WidgetBinding::getMetatableName())) ? 2 : 1;
@@ -197,6 +204,7 @@ void GuiBinding::registerBinding(lua_State* L)
         { "createWidgetReal", createWidgetReal },
         { "findWidget",       findWidget },
         { "findWidgetT",      findWidgetT },
+        { "getEnumerator",    getEnumerator },
         { "destroyWidget",    destroyWidget },
         { "destroyWidgets",   destroyWidgets },
         { "hidePointer",      hidePointer },

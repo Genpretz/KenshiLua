@@ -54,10 +54,16 @@ For KenshiLib game engine class bindings, see the [KenshiLua Bindings Reference]
   - [`ClipboardManager`](#clipboardmanager)
   - [`Gui`](#gui)
   - [`InputManager`](#inputmanager)
+  - [`LayerManager`](#layermanager)
   - [`LayoutManager`](#layoutmanager)
   - [`PointerManager`](#pointermanager)
   - [`RenderManager`](#rendermanager)
   - [`SkinManager`](#skinmanager)
+- [Enumerators](#enumerators)
+  - [`EnumeratorLayerSnapshot`](#enumeratorlayersnapshot)
+  - [`EnumeratorWidgetPtrSnapshot`](#enumeratorwidgetptrsnapshot)
+- [Layers](#layers)
+  - [`ILayer`](#ilayer)
 - [Event Callbacks Reference](#event-callbacks-reference)
 - [Global Enums](#global-enums)
   - [`MyGUI.Align`](#myguialign)
@@ -384,6 +390,7 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 | `getChildCount` | `` | `integer` | `w:getChildCount()` |
 | `getChildAt` | `idx: integer` | `Widget` | `w:getChildAt(idx)` |
 | `findWidget` | `name: string` | `Widget` | `w:findWidget(name)` |
+| `getEnumerator` | `` | `EnumeratorWidgetPtrSnapshot` | `w:getEnumerator()` |
 | `getClientWidget` | `` | `Widget` | `w:getClientWidget()` |
 | `getClientCoord` | `` | `integer, integer, integer, integer` | `w:getClientCoord()` |
 | `getType` | `` | `string` | `w:getType()` |
@@ -938,7 +945,7 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 
 ## Managers (Singletons)
 
-Managers provide global control over input, cursor pointer, skins, layout templates, clipboard, and rendering.
+Managers provide global control over input, cursor pointer, skins, layout templates, layers, clipboard, and rendering.
 
 ### ClipboardManager
 **Metatable:** `KenshiLua.MyGUI.ClipboardManager`  
@@ -974,6 +981,7 @@ Managers provide global control over input, cursor pointer, skins, layout templa
 | `createWidgetReal` | `` | `Widget` | `mgr:createWidgetReal()` |
 | `findWidget` | `` | `Widget` | `mgr:findWidget()` |
 | `findWidgetT` | `` | `void` | `mgr:findWidgetT()` |
+| `getEnumerator` | `` | `EnumeratorWidgetPtrSnapshot` | `mgr:getEnumerator()` |
 | `destroyWidget` | `` | `void` | `mgr:destroyWidget()` |
 | `destroyWidgets` | `` | `void` | `mgr:destroyWidgets()` |
 | `hidePointer` | `` | `void` | `mgr:hidePointer()` |
@@ -1011,6 +1019,29 @@ Managers provide global control over input, cursor pointer, skins, layout templa
 | `removeWidgetModal` | `widget: Widget` | `void` | `mgr:removeWidgetModal(widget)` |
 | `isModalAny` | `` | `boolean` | `mgr:isModalAny()` |
 | `resetMouseCaptureWidget` | `` | `void` | `mgr:resetMouseCaptureWidget()` |
+
+### LayerManager
+**Metatable:** `KenshiLua.MyGUI.LayerManager`  
+**Header:** `src/Bindings/MyGUI/LayerManagerBinding.h`
+
+#### Static Methods
+| Method | Arguments | Return Type | Example |
+|---|---|---|---|
+| `getInstance` | `` | `LayerManager` | `MyGUI.LayerManager.getInstance()` |
+
+#### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| `attachToLayerNode` | `name: string, widget: Widget` | `void` | `mgr:attachToLayerNode(name, widget)` |
+| `detachFromLayer` | `widget: Widget` | `void` | `mgr:detachFromLayer(widget)` |
+| `upLayerItem` | `widget: Widget` | `void` | `mgr:upLayerItem(widget)` |
+| `isExist` | `name: string` | `boolean` | `mgr:isExist(name)` |
+| `getEnumerator` | `` | `EnumeratorLayerSnapshot` | `mgr:getEnumerator()` |
+| `getByName` | `name: string, throw: boolean?` | `ILayer` | `mgr:getByName(name, throw)` |
+| `getLayerCount` | `` | `integer` | `mgr:getLayerCount()` |
+| `getLayer` | `index: integer` | `ILayer` | `mgr:getLayer(index)` |
+| `getWidgetFromPoint` | `left: integer, top: integer` | `Widget` | `mgr:getWidgetFromPoint(left, top)` |
+| `getCategoryName` | `` | `string` | `mgr:getCategoryName()` |
 
 ### LayoutManager
 **Metatable:** `KenshiLua.MyGUI.LayoutManager`  
@@ -1080,6 +1111,65 @@ Managers provide global control over input, cursor pointer, skins, layout templa
 | `isExist` | `skinName: string` | `boolean` | `mgr:isExist(skinName)` |
 | `getDefaultSkin` | `` | `string` | `mgr:getDefaultSkin()` |
 | `setDefaultSkin` | `skinName: string` | `void` | `mgr:setDefaultSkin(skinName)` |
+
+## Enumerators
+
+`getEnumerator()` returns an enumerator over a copy of the items it lists, taken when `getEnumerator()` was called, so items created later are not included. As in MyGUI, the first `next()` moves to the first item, `next()` returns `false` once no items remain, and `current()` raises an error after that.
+
+- `Gui:getEnumerator()` lists the root widgets, and `widget:getEnumerator()` lists a widget's children. Creating or destroying widgets while walking either is safe: a copied widget destroyed since then reads back as `nil`.
+
+```lua
+local e = MyGUI.Gui.getInstance():getEnumerator()
+while e:next() do
+    local w = e:current()
+    if w then print(w:getName()) end
+end
+```
+
+- `LayerManager:getEnumerator()` lists the layers in drawing order. MyGUI reports no layer destruction, so a layer destroyed after the copy was taken is not detected, and calling it can crash the game. MyGUI only replaces layers when it reloads its layer configuration, so walk the layers when you need them instead of keeping the enumerator or its layers.
+
+```lua
+local e = MyGUI.LayerManager.getInstance():getEnumerator()
+while e:next() do
+    print(e:current():getName())
+end
+```
+
+### EnumeratorLayerSnapshot
+**Metatable:** `KenshiLua.MyGUI.EnumeratorLayerSnapshot`  
+**Header:** `src/Bindings/MyGUI/EnumeratorLayerSnapshotBinding.h`
+
+#### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| `next` | `` | `boolean` | `e:next()` |
+| `current` | `` | `ILayer` | `e:current()` |
+
+### EnumeratorWidgetPtrSnapshot
+**Metatable:** `KenshiLua.MyGUI.EnumeratorWidgetPtrSnapshot`  
+**Header:** `src/Bindings/MyGUI/EnumeratorWidgetPtrSnapshotBinding.h`
+
+#### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| `next` | `` | `boolean` | `e:next()` |
+| `current` | `` | `Widget` | `e:current()` |
+
+## Layers
+
+`LayerManager:getLayer(index)`, `LayerManager:getByName(name)`, and the [layer enumerator](#enumerators) return the layers MyGUI draws widgets on. Layers are borrowed from the `LayerManager`; look them up when you need them rather than keeping them, since a layer MyGUI has replaced is not detected.
+
+### ILayer
+**Metatable:** `KenshiLua.MyGUI.ILayer`  
+**Header:** `src/Bindings/MyGUI/ILayerBinding.h`
+
+#### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| `getName` | `` | `string` | `layer:getName()` |
+| `getLayerNodeCount` | `` | `integer` | `layer:getLayerNodeCount()` |
+| `getSize` | `` | `IntSize` | `layer:getSize()` |
+| `getPosition` | `left: integer, top: integer` | `IntPoint` | `layer:getPosition(left, top)` |
 
 ## Event Callbacks Reference
 

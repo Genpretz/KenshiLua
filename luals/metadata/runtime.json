@@ -157,11 +157,20 @@
         { "name": "createWidgetReal", "type": "fun(self: MyGUI.Gui, widgetType: string, skin: string, left: number, top: number, width: number, height: number, align?: integer, parentOrLayer?: MyGUI.Widget|string, name?: string): MyGUI.Widget|nil" },
         { "name": "findWidget", "type": "fun(self: MyGUI.Gui, name: string): MyGUI.Widget|nil" },
         { "name": "findWidgetT", "type": "fun(self: MyGUI.Gui, name: string): MyGUI.Widget|nil" },
+        { "name": "getEnumerator", "type": "fun(self: MyGUI.Gui): MyGUI.EnumeratorWidgetPtrSnapshot", "description": "Returns an enumerator over a copy of the root widgets, taken now. Widgets created later are not included." },
         { "name": "destroyWidget", "type": "fun(self: MyGUI.Gui, widget: MyGUI.Widget)" },
         { "name": "destroyWidgets", "type": "fun(self: MyGUI.Gui, widgets: MyGUI.Widget[])" },
         { "name": "hidePointer", "type": "fun(self: MyGUI.Gui)" },
         { "name": "showPointer", "type": "fun(self: MyGUI.Gui)" },
         { "name": "isPointerVisible", "type": "fun(self: MyGUI.Gui): boolean" }
+      ]
+    },
+    {
+      "name": "MyGUI.EnumeratorWidgetPtrSnapshot",
+      "description": "Walks the widgets copied by getEnumerator(), like MyGUI's EnumeratorWidgetPtr. Creating or destroying widgets during the walk is safe.",
+      "fields": [
+        { "name": "next", "type": "fun(self: MyGUI.EnumeratorWidgetPtrSnapshot): boolean", "description": "Moves to the next widget. The first call moves to the first widget. Returns false once no widgets remain." },
+        { "name": "current", "type": "fun(self: MyGUI.EnumeratorWidgetPtrSnapshot): MyGUI.Widget|nil", "description": "Returns the widget next() moved to, or nil if it was destroyed after getEnumerator() was called. Raises an error after next() returns false." }
       ]
     },
     {
@@ -227,6 +236,40 @@
     },
     { "name": "MyGUI.SkinManagerStatic", "fields": [ { "name": "getInstance", "type": "fun(): MyGUI.SkinManager|nil" } ] },
     {
+      "name": "MyGUI.LayerManager",
+      "fields": [
+        { "name": "attachToLayerNode", "type": "fun(self: MyGUI.LayerManager, name: string, widget: MyGUI.Widget)", "description": "Attaches a root widget to the named layer. Raises an error if the layer does not exist." },
+        { "name": "detachFromLayer", "type": "fun(self: MyGUI.LayerManager, widget: MyGUI.Widget)" },
+        { "name": "upLayerItem", "type": "fun(self: MyGUI.LayerManager, widget: MyGUI.Widget)", "description": "Moves the widget to the top of its layer." },
+        { "name": "isExist", "type": "fun(self: MyGUI.LayerManager, name: string): boolean" },
+        { "name": "getEnumerator", "type": "fun(self: MyGUI.LayerManager): MyGUI.EnumeratorLayerSnapshot", "description": "Returns an enumerator over a copy of the layers, in drawing order, taken now. A layer MyGUI replaces later is not detected, so walk the layers when you need them instead of keeping the enumerator." },
+        { "name": "getByName", "type": "fun(self: MyGUI.LayerManager, name: string, throw?: boolean): MyGUI.ILayer|nil", "description": "Returns the named layer. A missing layer raises an error unless throw is false, which returns nil instead." },
+        { "name": "getLayerCount", "type": "fun(self: MyGUI.LayerManager): integer" },
+        { "name": "getLayer", "type": "fun(self: MyGUI.LayerManager, index: integer): MyGUI.ILayer", "description": "Returns the layer at a 0-based index, in drawing order. Raises an error for an index outside 0 to getLayerCount() - 1." },
+        { "name": "getWidgetFromPoint", "type": "fun(self: MyGUI.LayerManager, left: integer, top: integer): MyGUI.Widget|nil", "description": "Returns the top visible and enabled widget at the screen position." },
+        { "name": "getCategoryName", "type": "fun(self: MyGUI.LayerManager): string" }
+      ]
+    },
+    {
+      "name": "MyGUI.EnumeratorLayerSnapshot",
+      "description": "Walks the layers copied by LayerManager:getEnumerator(), like MyGUI's LayerManager::EnumeratorLayer.",
+      "fields": [
+        { "name": "next", "type": "fun(self: MyGUI.EnumeratorLayerSnapshot): boolean", "description": "Moves to the next layer. The first call moves to the first layer. Returns false once no layers remain." },
+        { "name": "current", "type": "fun(self: MyGUI.EnumeratorLayerSnapshot): MyGUI.ILayer", "description": "Returns the layer next() moved to. Raises an error after next() returns false." }
+      ]
+    },
+    { "name": "MyGUI.LayerManagerStatic", "fields": [ { "name": "getInstance", "type": "fun(): MyGUI.LayerManager|nil" } ] },
+    {
+      "name": "MyGUI.ILayer",
+      "description": "A MyGUI layer, borrowed from the LayerManager.",
+      "fields": [
+        { "name": "getName", "type": "fun(self: MyGUI.ILayer): string" },
+        { "name": "getLayerNodeCount", "type": "fun(self: MyGUI.ILayer): integer" },
+        { "name": "getSize", "type": "fun(self: MyGUI.ILayer): MyGUI.IntSize" },
+        { "name": "getPosition", "type": "fun(self: MyGUI.ILayer, left: integer, top: integer): MyGUI.IntPoint", "description": "Converts a screen position to a position in this layer." }
+      ]
+    },
+    {
       "name": "MyGUI.Widget",
       "fields": [
         { "name": "setPosition", "type": "fun(self: MyGUI.Widget, x: integer|MyGUI.IntPoint, y?: integer)" },
@@ -283,6 +326,7 @@
         { "name": "getChildCount", "type": "fun(self: MyGUI.Widget): integer" },
         { "name": "getChildAt", "type": "fun(self: MyGUI.Widget, index: integer): MyGUI.Widget|nil" },
         { "name": "findWidget", "type": "fun(self: MyGUI.Widget, name: string): MyGUI.Widget|nil" },
+        { "name": "getEnumerator", "type": "fun(self: MyGUI.Widget): MyGUI.EnumeratorWidgetPtrSnapshot", "description": "Returns an enumerator over a copy of this widget's children, taken now. Widgets created later are not included." },
         { "name": "getClientWidget", "type": "fun(self: MyGUI.Widget): MyGUI.Widget|nil", "description": "Returns a Window's client widget, or nil for a non-Window widget or when unavailable." },
         { "name": "getClientCoord", "type": "fun(self: MyGUI.Widget): integer, integer, integer, integer" },
         { "name": "getType", "type": "fun(self: MyGUI.Widget): string" },
@@ -773,7 +817,7 @@
         { "name": "IntPoint", "type": "MyGUI.IntPointConstructor" }, { "name": "IntSize", "type": "MyGUI.IntSizeConstructor" }, { "name": "IntCoord", "type": "MyGUI.IntCoordConstructor" }, { "name": "IntRect", "type": "MyGUI.IntRectConstructor" },
         { "name": "FloatPoint", "type": "MyGUI.FloatPointConstructor" }, { "name": "FloatSize", "type": "MyGUI.FloatSizeConstructor" }, { "name": "FloatCoord", "type": "MyGUI.FloatCoordConstructor" }, { "name": "FloatRect", "type": "MyGUI.FloatRectConstructor" }, { "name": "Colour", "type": "MyGUI.ColourConstructor" },
         { "name": "Gui", "type": "MyGUI.GuiStatic" }, { "name": "InputManager", "type": "MyGUI.InputManagerStatic" }, { "name": "PointerManager", "type": "MyGUI.PointerManagerStatic" },
-        { "name": "ClipboardManager", "type": "MyGUI.ClipboardManagerStatic" }, { "name": "LayoutManager", "type": "MyGUI.LayoutManagerStatic" }, { "name": "RenderManager", "type": "MyGUI.RenderManagerStatic" }, { "name": "SkinManager", "type": "MyGUI.SkinManagerStatic" }
+        { "name": "ClipboardManager", "type": "MyGUI.ClipboardManagerStatic" }, { "name": "LayoutManager", "type": "MyGUI.LayoutManagerStatic" }, { "name": "RenderManager", "type": "MyGUI.RenderManagerStatic" }, { "name": "SkinManager", "type": "MyGUI.SkinManagerStatic" }, { "name": "LayerManager", "type": "MyGUI.LayerManagerStatic" }
       ]
     },
     {
@@ -991,7 +1035,7 @@
     {
       "name": "MapScreen_MapRoad",
       "fields": [
-        { "name": "widget", "type": "lightuserdata|nil", "description": "Raw MyGUI::Widget pointer." }
+        { "name": "widget", "type": "MyGUI.Widget|nil" }
       ]
     },
     {
@@ -1308,7 +1352,7 @@
     {
       "name": "BaseLayout",
       "fields": [
-        { "name": "mMainWidget", "type": "lightuserdata", "description": "Read-only pointer to the layout's main MyGUI widget." },
+        { "name": "mMainWidget", "type": "MyGUI.Widget|nil", "description": "The layout's main widget." },
         { "name": "mPrefix", "type": "string" },
         { "name": "mLayoutName", "type": "string" }
       ]
@@ -1388,13 +1432,13 @@
       "fields": [
         { "name": "hasMouse", "type": "fun(self: InventorySectionGUI): boolean" },
         { "name": "getItemAbsolutePosition", "type": "fun(self: InventorySectionGUI, x: integer, y: integer): MyGUI.IntPoint" },
-        { "name": "getWidget", "type": "fun(self: InventorySectionGUI): lightuserdata", "description": "Returns the raw MyGUI widget pointer as lightuserdata." },
+        { "name": "getWidget", "type": "fun(self: InventorySectionGUI): MyGUI.Widget|nil" },
         { "name": "getPositionSlot", "type": "fun(self: InventorySectionGUI, position: MyGUI.IntPoint, section: InventorySection, round: boolean): MyGUI.IntPoint" },
         { "name": "getBestPositionSlot", "type": "fun(self: InventorySectionGUI, position: MyGUI.IntPoint, section: InventorySection, item: Item): boolean, MyGUI.IntPoint" },
         { "name": "setEnabled", "type": "fun(self: InventorySectionGUI, enabled: boolean)" },
         { "name": "refreshIcons", "type": "fun(self: InventorySectionGUI, section: InventorySection)" },
         { "name": "update", "type": "fun(self: InventorySectionGUI)" },
-        { "name": "widget", "type": "lightuserdata|MyGUI.Widget|nil", "description": "Reads as a raw lightuserdata pointer; assignment accepts a MyGUI.Widget or nil." }
+        { "name": "widget", "type": "MyGUI.Widget|nil", "description": "Assignment accepts a MyGUI.Widget or nil." }
       ]
     },
     {
@@ -1515,7 +1559,7 @@
       "fields": [
         { "name": "setupSections", "type": "fun(self: TraderInventoryLayout, gui: InventoryGUI, sections: StdMap<string, InventorySectionGUI>, inventory: Inventory)" },
         { "name": "notifyMouseWheel", "type": "fun(self: TraderInventoryLayout, widget: MyGUI.Widget|nil, relative: integer)" },
-        { "name": "scrollBackpack", "type": "lightuserdata", "description": "Read-only raw pointer to the backing MyGUI ScrollView." }
+        { "name": "scrollBackpack", "type": "MyGUI.ScrollView|nil", "description": "Read-only. The backing MyGUI ScrollView." }
       ]
     },
     {
@@ -1981,7 +2025,7 @@
     { "name": "Spot", "fields": [ { "name": "timeSoFar", "type": "number" }, { "name": "timeLimitMax", "type": "number" }, { "name": "stillSeen", "type": "boolean" } ] }
     ,{ "name": "MeshLoadData", "fields": [ { "name": "skeletonName", "type": "string" }, { "name": "materialName", "type": "string" }, { "name": "renderQueue", "type": "integer" } ] }
     ,{ "name": "ParticlePool_ParticleData", "fields": [ { "name": "particle", "type": "lightuserdata|nil" }, { "name": "effectData", "type": "GameData|nil" }, { "name": "node", "type": "lightuserdata|nil" } ] }
-    ,{ "name": "GameDataEditorWindow_DataItem", "fields": [ { "name": "name", "type": "string" }, { "name": "edit", "type": "lightuserdata|nil", "description": "Raw MyGUI::EditBox pointer." }, { "name": "label", "type": "lightuserdata|nil", "description": "Raw MyGUI::TextBox pointer." } ] }
+    ,{ "name": "GameDataEditorWindow_DataItem", "fields": [ { "name": "name", "type": "string" }, { "name": "edit", "type": "MyGUI.EditBox|nil" }, { "name": "label", "type": "MyGUI.Widget|nil" } ] }
     ,{ "name": "WhoSeesMe", "fields": [ { "name": "lastUpdated", "type": "number" }, { "name": "seeState", "type": "YesNoMaybeValue" }, { "name": "progressOfMaybe", "type": "number" } ] }
     ,{ "name": "BuildingCategory", "fields": [ { "name": "operator_lt", "type": "fun(self: BuildingCategory, other: BuildingCategory): boolean" }, { "name": "operator_assign", "type": "fun(self: BuildingCategory, other: BuildingCategory): BuildingCategory" }, { "name": "name", "type": "string" } ] }
     ,{ "name": "BuildingGroup", "fields": [ { "name": "operator_lt", "type": "fun(self: BuildingGroup, other: BuildingGroup): boolean" }, { "name": "operator_assign", "type": "fun(self: BuildingGroup, other: BuildingGroup): BuildingGroup" }, { "name": "name", "type": "string" } ] }
@@ -1993,8 +2037,8 @@
     ,{ "name": "MessageBoxManager", "fields": [] }
     ,{ "name": "MessageBoxManagerStatic", "fields": [ { "name": "hideMessageBox", "type": "fun(enter: boolean): boolean" }, { "name": "hasModalMessage", "type": "fun(): boolean" }, { "name": "removeMessageBox", "type": "fun(box: Box, button: integer)" } ] }
     ,{ "name": "PortraitImage", "fields": [ { "name": "updateImageWidget", "type": "fun(self: PortraitImage, image: MyGUI.ImageBox, value: boolean)" }, { "name": "index", "type": "integer" }, { "name": "created", "type": "boolean" }, { "name": "textureName", "type": "string" } ] }
-    ,{ "name": "MapMarkerCharacter", "fields": [ { "name": "setVisible", "type": "fun(self: MapMarkerCharacter, value: boolean)" }, { "name": "getVisible", "type": "fun(self: MapMarkerCharacter): boolean" }, { "name": "handle", "type": "hand" }, { "name": "image", "type": "lightuserdata|nil" } ] }
-    ,{ "name": "DataPanelLine_Text", "parent": "DataPanelLine", "fields": [ { "name": "createMe", "type": "fun(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)" }, { "name": "_NV_createMe", "type": "fun(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)" }, { "name": "editBox", "type": "lightuserdata|nil" }, { "name": "wordWrap", "type": "boolean" } ] }
+    ,{ "name": "MapMarkerCharacter", "fields": [ { "name": "setVisible", "type": "fun(self: MapMarkerCharacter, value: boolean)" }, { "name": "getVisible", "type": "fun(self: MapMarkerCharacter): boolean" }, { "name": "handle", "type": "hand" }, { "name": "image", "type": "MyGUI.Widget|nil" } ] }
+    ,{ "name": "DataPanelLine_Text", "parent": "DataPanelLine", "fields": [ { "name": "createMe", "type": "fun(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)" }, { "name": "_NV_createMe", "type": "fun(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)" }, { "name": "editBox", "type": "MyGUI.EditBox|nil" }, { "name": "wordWrap", "type": "boolean" } ] }
     ,{ "name": "RepetitionCounter", "fields": [ { "name": "setup", "type": "fun(self: RepetitionCounter)" }, { "name": "count", "type": "fun(self: RepetitionCounter, event: integer): boolean" }, { "name": "getTimeSinceLastTrigger", "type": "fun(self: RepetitionCounter, event: integer): number" }, { "name": "getCount", "type": "fun(self: RepetitionCounter, event: integer): integer" } ] }
     ,{ "name": "ShopTraderInventorySection", "parent": "InventorySection", "fields": [ { "name": "autoArrange", "type": "fun(self: ShopTraderInventorySection)" }, { "name": "_NV_autoArrange", "type": "fun(self: ShopTraderInventorySection)" }, { "name": "addItem", "type": "fun(self: ShopTraderInventorySection, item: Item, quantity: integer): boolean" }, { "name": "_NV_addItem", "type": "fun(self: ShopTraderInventorySection, item: Item, quantity: integer): boolean" } ] }
     ,{ "name": "Terrain_BloodQueue", "fields": [ { "name": "patch", "type": "integer" }, { "name": "sector", "type": "integer" }, { "name": "depth", "type": "integer" }, { "name": "texture", "type": "lightuserdata", "description": "Address of the unbound Ogre texture shared pointer; writes always raise an error." } ] }
@@ -2060,6 +2104,7 @@
     { "name": "LayoutManager", "type": "MyGUI.LayoutManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI layout-manager singleton." },
     { "name": "RenderManager", "type": "MyGUI.RenderManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI render-manager singleton." },
     { "name": "SkinManager", "type": "MyGUI.SkinManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI skin-manager singleton." },
+    { "name": "LayerManager", "type": "MyGUI.LayerManagerStatic", "initialValue": "{}", "description": "Global table exposing the MyGUI layer-manager singleton." },
     { "name": "IntPoint", "type": "MyGUI.IntPointConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.IntPoint." },
     { "name": "IntSize", "type": "MyGUI.IntSizeConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.IntSize." },
     { "name": "IntCoord", "type": "MyGUI.IntCoordConstructor", "initialValue": "{}", "description": "Global alias of MyGUI.IntCoord." },

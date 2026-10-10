@@ -9,9 +9,10 @@
 ---@param nextNode MessageQueue_Node
 ---@param mesh MeshDataLookup
 ---@param ptr lightuserdata
-local function checkSmallRecordTypes(tech, road, queue, task, building, node, nextNode, mesh, ptr)
+---@param widget MyGUI.Widget
+local function checkSmallRecordTypes(tech, road, queue, task, building, node, nextNode, mesh, ptr, widget)
     tech.item = ptr
-    road.widget = ptr
+    road.widget = widget
     queue.front = task
     building.visibleFloor = 2
     node.value = ptr
@@ -19,7 +20,7 @@ local function checkSmallRecordTypes(tech, road, queue, task, building, node, ne
     mesh.verts = ptr
     mesh.uvs = ptr
 
-    assert(tech.item == ptr and road.widget == ptr)
+    assert(tech.item == ptr and road.widget == widget)
     assert(queue.front == task and building.visibleFloor == 2)
     assert(node.value == ptr and node.next == nextNode)
     assert(mesh.verts == ptr and mesh.uvs == ptr)
