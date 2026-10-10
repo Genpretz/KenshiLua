@@ -1473,6 +1473,11 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Hooks\Hooks_GameData.cpp" />
     <ClCompile Include="src\Hooks\Hooks_GameWorld.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Gui.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_CharacterStatsWindow.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_DataPanelLine.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_DatapanelGUI.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_ForgottenGUI.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_GUIWindow.cpp" />
     <ClCompile Include="src\Hooks\Hooks_InputHandler.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Inventory.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Item.cpp" />

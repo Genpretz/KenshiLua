@@ -184,21 +184,6 @@ DEFINE_HOOK_INSTALLER(InstallHook_TitleScreen_loadGame,
     TitleScreen_loadGame_hook, TitleScreen_loadGame_orig)
 
 // ---------------------------------------------------------------------------
-// Hooks for DataPanelLine.h
-// ---------------------------------------------------------------------------
-
-static void (*DataPanelLine_Button_pressCallback_orig)(DataPanelLine_Button*, MyGUI::Widget*) = NULL;
-static void DataPanelLine_Button_pressCallback_hook(DataPanelLine_Button* thisptr, MyGUI::Widget* sender)
-{
-    DataPanelLine_Button_pressCallback_orig(thisptr, sender);
-    CallDataPanelLineButtonPressCallbacks(thisptr, sender);
-}
-DEFINE_HOOK_INSTALLER(InstallHook_DataPanelLine_Button_pressCallback,
-    "DataPanelLine_Button::pressCallback",
-    KenshiLib::GetRealAddress(&DataPanelLine_Button::pressCallback),
-    DataPanelLine_Button_pressCallback_hook, DataPanelLine_Button_pressCallback_orig)
-
-// ---------------------------------------------------------------------------
 // Hooks for OrdersPanel.h
 // ---------------------------------------------------------------------------
 

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <kenshi/Character.h>
+#include <kenshi/gui/CharacterStatsWindow.h> // nested Stat and StatGroup types
 
 // Forward declaration — avoids pulling in the full headers in every
 // translation unit that only needs to call these dispatchers.
@@ -96,8 +97,27 @@ class LimbsInventoryLayout;
 class RobotLimbs;
 class ShopTrader;
 class RootObjectBase;
+class GUIWindow;
+class DatapanelGUI;
+class ForgottenGUI;
+class DataPanelLine_Faction;
+class DataPanelLine_Research;
+class DataPanelLine_SliderEditable;
+class DataPanelLine_Text;
+class DataPanelLine_TextEditable;
+class DataPanelLine_Slider;
+class DataPanelLine_Progress;
+class DataPanelLine_CheckBox;
+class DataPanelLine_DropBox;
+class DataPanelLine_KeyConfig;
+class ToolTip;
+class ScreenLabelInterface;
+class ScreenLabel;
+class ScreenLabelDebug;
+class FloatingProgressBar;
+class StringPair;
 namespace wraps { class BaseLayout; }
-namespace MyGUI { class Widget; }
+namespace MyGUI { class Widget; class Gui; }
 template <typename T> class lektor;
 namespace Ogre {
     class Vector3;
@@ -1570,3 +1590,1325 @@ void CallCharacterAnimalInitCallbacks(CharacterAnimal* thisptr);
 // Lua signature:  function(self, item)
 void CallCharacterAnimalDropItemCallbacks(CharacterAnimal* thisptr, RootObject* itembase);
 
+
+// -----------------------------------------------------------
+// Callbacks for hooks in GUIWindow.h
+// -----------------------------------------------------------
+
+// Fired by GUIWindow::_NV_setPositionReal hook after the original call.
+// Lua event name: "GUIWindow::_NV_setPositionReal"
+// Lua signature:  function(self, x, y)
+void CallGUIWindowSetPositionRealCallbacks(GUIWindow* thisptr, float x, float y);
+
+// Fired by GUIWindow::_NV_setPosition hook after the original call.
+// Lua event name: "GUIWindow::_NV_setPosition"
+// Lua signature:  function(self, x, y)
+void CallGUIWindowSetPositionCallbacks(GUIWindow* thisptr, int x, int y);
+
+// Fired by GUIWindow::_NV_getWidth hook after the original call.
+// Lua event name: "GUIWindow::_NV_getWidth"
+// Lua signature:  function(self, defaultVal) -> integer
+int CallGUIWindowGetWidthCallbacks(GUIWindow* thisptr, int defaultVal);
+
+// Fired by GUIWindow::_NV_getHeight hook after the original call.
+// Lua event name: "GUIWindow::_NV_getHeight"
+// Lua signature:  function(self, defaultVal) -> integer
+int CallGUIWindowGetHeightCallbacks(GUIWindow* thisptr, int defaultVal);
+
+// Fired by GUIWindow::_NV_getWidthReal hook after the original call.
+// Lua event name: "GUIWindow::_NV_getWidthReal"
+// Lua signature:  function(self, defaultVal) -> number
+float CallGUIWindowGetWidthRealCallbacks(GUIWindow* thisptr, float defaultVal);
+
+// Fired by GUIWindow::_NV_getHeightReal hook after the original call.
+// Lua event name: "GUIWindow::_NV_getHeightReal"
+// Lua signature:  function(self, defaultVal) -> number
+float CallGUIWindowGetHeightRealCallbacks(GUIWindow* thisptr, float defaultVal);
+
+// Fired by GUIWindow::_NV_isVisible hook after the original call.
+// Lua event name: "GUIWindow::_NV_isVisible"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallGUIWindowIsVisibleCallbacks(GUIWindow* thisptr, bool defaultVal);
+
+// Fired by GUIWindow::_NV_update hook after the original call.
+// Lua event name: "GUIWindow::_NV_update"
+// Lua signature:  function(self)
+void CallGUIWindowUpdateCallbacks(GUIWindow* thisptr);
+
+// Fired by GUIWindow::_NV_autoChangeSelectedObject hook after the original call.
+// Lua event name: "GUIWindow::_NV_autoChangeSelectedObject"
+// Lua signature:  function(self, obj)
+void CallGUIWindowAutoChangeSelectedObjectCallbacks(GUIWindow* thisptr, const hand& obj);
+
+// Fired by GUIWindow::getWidget hook after the original call.
+// Lua event name: "GUIWindow::getWidget"
+// Lua signature:  function(self, result)
+void CallGUIWindowGetWidgetCallbacks(GUIWindow* thisptr, MyGUI::Widget* result);
+
+// Fired by GUIWindow::_NV_resize hook after the original call.
+// Lua event name: "GUIWindow::_NV_resize"
+// Lua signature:  function(self, w, h)
+void CallGUIWindowResizeCallbacks(GUIWindow* thisptr, int w, int h);
+
+
+// -----------------------------------------------------------
+// Callbacks for hooks in CharacterStatsWindow.h
+// -----------------------------------------------------------
+
+// Fired by CharacterStatsWindow::Stat::_DESTRUCTOR hook before the original call.
+// Lua event name: "CharacterStatsWindow::Stat::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallCharacterStatsWindowStatDestructorCallbacks(CharacterStatsWindow::Stat* thisptr);
+
+// Fired by CharacterStatsWindow::Stat::operator= hook after the original call.
+// Lua event name: "CharacterStatsWindow::Stat::operator="
+// Lua signature:  function(self, that)
+void CallCharacterStatsWindowStatAssignCallbacks(CharacterStatsWindow::Stat* thisptr, CharacterStatsWindow::Stat* that);
+
+// Fired by CharacterStatsWindow::StatGroup::_DESTRUCTOR hook before the original call.
+// Lua event name: "CharacterStatsWindow::StatGroup::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallCharacterStatsWindowStatGroupDestructorCallbacks(CharacterStatsWindow::StatGroup* thisptr);
+
+// Fired by CharacterStatsWindow::_CONSTRUCTOR hook after the original call.
+// Lua event name: "CharacterStatsWindow::_CONSTRUCTOR"
+// Lua signature:  function(self, charHandle)
+void CallCharacterStatsWindowConstructedCallbacks(CharacterStatsWindow* thisptr, const hand& charHandle);
+
+// Fired by CharacterStatsWindow::_DESTRUCTOR hook before the original call.
+// Lua event name: "CharacterStatsWindow::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallCharacterStatsWindowDestructorCallbacks(CharacterStatsWindow* thisptr);
+
+// Fired by CharacterStatsWindow::_NV_clear hook after the original call.
+// Lua event name: "CharacterStatsWindow::_NV_clear"
+// Lua signature:  function(self)
+void CallCharacterStatsWindowClearCallbacks(CharacterStatsWindow* thisptr);
+
+// Fired by CharacterStatsWindow::_NV_create hook after the original call.
+// Lua event name: "CharacterStatsWindow::_NV_create"
+// Lua signature:  function(self)
+void CallCharacterStatsWindowCreateCallbacks(CharacterStatsWindow* thisptr);
+
+// Fired by CharacterStatsWindow::_NV_update hook after the original call.
+// Lua event name: "CharacterStatsWindow::_NV_update"
+// Lua signature:  function(self)
+void CallCharacterStatsWindowUpdateCallbacks(CharacterStatsWindow* thisptr);
+
+// Fired by CharacterStatsWindow::_NV_show hook after the original call.
+// Lua event name: "CharacterStatsWindow::_NV_show"
+// Lua signature:  function(self, on)
+void CallCharacterStatsWindowShowCallbacks(CharacterStatsWindow* thisptr, bool on);
+
+// Fired by CharacterStatsWindow::_NV_isVisible hook after the original call.
+// Lua event name: "CharacterStatsWindow::_NV_isVisible"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallCharacterStatsWindowIsVisibleCallbacks(CharacterStatsWindow* thisptr, bool defaultVal);
+
+// Fired by CharacterStatsWindow::_NV_autoChangeSelectedObject hook after the original call.
+// Lua event name: "CharacterStatsWindow::_NV_autoChangeSelectedObject"
+// Lua signature:  function(self, obj)
+void CallCharacterStatsWindowAutoChangeSelectedObjectCallbacks(CharacterStatsWindow* thisptr, const hand& obj);
+
+// Fired by CharacterStatsWindow::setAutoUpdateMode hook after the original call.
+// Lua event name: "CharacterStatsWindow::setAutoUpdateMode"
+// Lua signature:  function(self, on)
+void CallCharacterStatsWindowSetAutoUpdateModeCallbacks(CharacterStatsWindow* thisptr, bool on);
+
+// Fired by CharacterStatsWindow::setupStats hook after the original call.
+// Lua event name: "CharacterStatsWindow::setupStats"
+// Lua signature:  function(self)
+void CallCharacterStatsWindowSetupStatsCallbacks(CharacterStatsWindow* thisptr);
+
+// Fired by CharacterStatsWindow::updateStats hook after the original call.
+// Lua event name: "CharacterStatsWindow::updateStats"
+// Lua signature:  function(self)
+void CallCharacterStatsWindowUpdateStatsCallbacks(CharacterStatsWindow* thisptr);
+
+// Fired by CharacterStatsWindow::clearDesctiption hook after the original call.
+// Lua event name: "CharacterStatsWindow::clearDesctiption"
+// Lua signature:  function(self)
+void CallCharacterStatsWindowClearDesctiptionCallbacks(CharacterStatsWindow* thisptr);
+
+// Fired by CharacterStatsWindow::sumStats hook after the original call.
+// Lua event name: "CharacterStatsWindow::sumStats"
+// Lua signature:  function(self, defaultVal) -> integer
+int CallCharacterStatsWindowSumStatsCallbacks(CharacterStatsWindow* thisptr, int defaultVal);
+
+// Fired by CharacterStatsWindow::closeWindow hook before the original call.
+// Lua event name: "CharacterStatsWindow::closeWindow"
+// Lua signature:  function(self, sender, name)
+void CallCharacterStatsWindowCloseWindowCallbacks(CharacterStatsWindow* thisptr, MyGUI::Widget* sender, const std::string& name);
+
+// Fired by CharacterStatsWindow::statMouseOver hook after the original call.
+// Lua event name: "CharacterStatsWindow::statMouseOver"
+// Lua signature:  function(self, sender, arg2, arg3)
+void CallCharacterStatsWindowStatMouseOverCallbacks(CharacterStatsWindow* thisptr, MyGUI::Widget* sender, int arg2, int arg3);
+
+// Fired by CharacterStatsWindow::getStatsPanel hook after the original call.
+// Lua event name: "CharacterStatsWindow::getStatsPanel"
+// Lua signature:  function(self, group, defaultVal) -> DatapanelGUI
+// Returning nil or a non-DatapanelGUI value keeps defaultVal.
+DatapanelGUI* CallCharacterStatsWindowGetStatsPanelCallbacks(CharacterStatsWindow* thisptr, int group, DatapanelGUI* defaultVal);
+
+// Fired by CharacterStatsWindow::addStat hook after the original call.
+// Lua event name: "CharacterStatsWindow::addStat"
+// Lua signature:  function(type, id, name, active, description)
+void CallCharacterStatsWindowAddStatCallbacks(int type, const std::string& id, const std::string& name, bool active, const std::string& description);
+
+// Fired by CharacterStatsWindow::getStat hook after the original call.
+// Lua event name: "CharacterStatsWindow::getStat"
+// Lua signature:  function(type, defaultVal) -> Stat
+// Returning nil or a non-Stat value keeps defaultVal.
+CharacterStatsWindow::Stat* CallCharacterStatsWindowGetStatCallbacks(int type, CharacterStatsWindow::Stat* defaultVal);
+
+// Fired by CharacterStatsWindow::getStatById hook after the original call.
+// Lua event name: "CharacterStatsWindow::getStatById"
+// Lua signature:  function(id, defaultVal) -> Stat
+// Returning nil or a non-Stat value keeps defaultVal.
+CharacterStatsWindow::Stat* CallCharacterStatsWindowGetStatByIdCallbacks(const std::string& id, CharacterStatsWindow::Stat* defaultVal);
+
+// Fired by CharacterStatsWindow::BuildStats hook after the original call.
+// Lua event name: "CharacterStatsWindow::BuildStats"
+// Lua signature:  function()
+void CallCharacterStatsWindowBuildStatsCallbacks();
+
+
+// -----------------------------------------------------------
+// Callbacks for hooks in DatapanelGUI.h
+// -----------------------------------------------------------
+
+// Fired by DatapanelGUI::_NV_setPositionReal hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_setPositionReal"
+// Lua signature:  function(self, x, y)
+void CallDatapanelGUISetPositionRealCallbacks(DatapanelGUI* thisptr, float x, float y);
+
+// Fired by DatapanelGUI::_NV_setPosition hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_setPosition"
+// Lua signature:  function(self, x, y)
+void CallDatapanelGUISetPositionCallbacks(DatapanelGUI* thisptr, int x, int y);
+
+// Fired by DatapanelGUI::_NV_resize hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_resize"
+// Lua signature:  function(self, w, h)
+void CallDatapanelGUIResizeCallbacks(DatapanelGUI* thisptr, int w, int h);
+
+// Fired by DatapanelGUI::_NV_clear hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_clear"
+// Lua signature:  function(self)
+void CallDatapanelGUIClearCallbacks(DatapanelGUI* thisptr);
+
+// Fired by DatapanelGUI::_NV_clearPage hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_clearPage"
+// Lua signature:  function(self, cat)
+void CallDatapanelGUIClearPageCallbacks(DatapanelGUI* thisptr, int cat);
+
+// Fired by DatapanelGUI::_NV_hideAllWidgets hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_hideAllWidgets"
+// Lua signature:  function(self)
+void CallDatapanelGUIHideAllWidgetsCallbacks(DatapanelGUI* thisptr);
+
+// Fired by DatapanelGUI::_NV_create hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_create"
+// Lua signature:  function(self)
+void CallDatapanelGUICreateCallbacks(DatapanelGUI* thisptr);
+
+// Fired by DatapanelGUI::_NV_show hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_show"
+// Lua signature:  function(self, on)
+void CallDatapanelGUIShowCallbacks(DatapanelGUI* thisptr, bool on);
+
+// Fired by DatapanelGUI::show_NonSmooth hook after the original call.
+// Lua event name: "DatapanelGUI::show_NonSmooth"
+// Lua signature:  function(self, on)
+void CallDatapanelGUIShow_NonSmoothCallbacks(DatapanelGUI* thisptr, bool on);
+
+// Fired by DatapanelGUI::_NV_update hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_update"
+// Lua signature:  function(self)
+void CallDatapanelGUIUpdateCallbacks(DatapanelGUI* thisptr);
+
+// Fired by DatapanelGUI::setPanelName hook after the original call.
+// Lua event name: "DatapanelGUI::setPanelName"
+// Lua signature:  function(self, name)
+void CallDatapanelGUISetPanelNameCallbacks(DatapanelGUI* thisptr, const std::string& name);
+
+// Fired by DatapanelGUI::_NV_showTabs hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_showTabs"
+// Lua signature:  function(self, on)
+void CallDatapanelGUIShowTabsCallbacks(DatapanelGUI* thisptr, bool on);
+
+// Fired by DatapanelGUI::_NV_addTab hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_addTab"
+// Lua signature:  function(self, id, name, icon)
+void CallDatapanelGUIAddTabCallbacks(DatapanelGUI* thisptr, int id, const std::string& name, const std::string& icon);
+
+// Fired by DatapanelGUI::_NV_setTabEnabled hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_setTabEnabled"
+// Lua signature:  function(self, id, enabled)
+void CallDatapanelGUISetTabEnabledCallbacks(DatapanelGUI* thisptr, int id, bool enabled);
+
+// Fired by DatapanelGUI::_NV_setTabName hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_setTabName"
+// Lua signature:  function(self, id, name)
+void CallDatapanelGUISetTabNameCallbacks(DatapanelGUI* thisptr, int id, const std::string& name);
+
+// Fired by DatapanelGUI::setCaption hook after the original call.
+// Lua event name: "DatapanelGUI::setCaption"
+// Lua signature:  function(self, s)
+void CallDatapanelGUISetCaptionCallbacks(DatapanelGUI* thisptr, const std::string& s);
+
+// Fired by DatapanelGUI::setCloseCallback hook after the original call.
+// Lua event name: "DatapanelGUI::setCloseCallback"
+// Lua signature:  function(self, close)
+void CallDatapanelGUISetCloseCallbackCallbacks(DatapanelGUI* thisptr, void* close);
+
+// Fired by DatapanelGUI::_NV_setAutomaticRefresh hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_setAutomaticRefresh"
+// Lua signature:  function(self, on)
+void CallDatapanelGUISetAutomaticRefreshCallbacks(DatapanelGUI* thisptr, bool on);
+
+// Fired by DatapanelGUI::_NV_setAutomaticTargeting hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_setAutomaticTargeting"
+// Lua signature:  function(self, on)
+void CallDatapanelGUISetAutomaticTargetingCallbacks(DatapanelGUI* thisptr, bool on);
+
+// Fired by DatapanelGUI::_NV__zeroLines hook after the original call.
+// Lua event name: "DatapanelGUI::_NV__zeroLines"
+// Lua signature:  function(self, cat, result)
+void CallDatapanelGUIZeroLinesCallbacks(DatapanelGUI* thisptr, int cat, DataPanelLine* result);
+
+// Fired by DatapanelGUI::setLineStatInfo hook after the original call.
+// Lua event name: "DatapanelGUI::setLineStatInfo"
+// Lua signature:  function(self, s1, s2, category, result)
+void CallDatapanelGUISetLineStatInfoCallbacks(DatapanelGUI* thisptr, const std::string& s1, const std::string& s2, int category, DataPanelLine* result);
+
+// Fired by DatapanelGUI::setLineFaction hook after the original call.
+// Lua event name: "DatapanelGUI::setLineFaction"
+// Lua signature:  function(self, s1, s2, category, v1, v2, result)
+void CallDatapanelGUISetLineFactionCallbacks(DatapanelGUI* thisptr, const std::string& s1, const std::string& s2, int category, float v1, float v2, DataPanelLine_Faction* result);
+
+// Fired by DatapanelGUI::setLineTextButton hook after the original call.
+// Lua event name: "DatapanelGUI::setLineTextButton"
+// Lua signature:  function(self, text, caption, category, buttonWidth, skin, result)
+void CallDatapanelGUISetLineTextButtonCallbacks(DatapanelGUI* thisptr, const std::string& text, const std::string& caption, int category, float buttonWidth, const std::string& skin, DataPanelLine_Button* result);
+
+// Fired by DatapanelGUI::setLineButton hook after the original call.
+// Lua event name: "DatapanelGUI::setLineButton"
+// Lua signature:  function(self, key, caption, category, result)
+void CallDatapanelGUISetLineButtonCallbacks(DatapanelGUI* thisptr, const std::string& key, const std::string& caption, int category, DataPanelLine_Button* result);
+
+// Fired by DatapanelGUI::setLineToggleButton hook after the original call.
+// Lua event name: "DatapanelGUI::setLineToggleButton"
+// Lua signature:  function(self, key, caption, category, result)
+void CallDatapanelGUISetLineToggleButtonCallbacks(DatapanelGUI* thisptr, const std::string& key, const std::string& caption, int category, DataPanelLine_Button* result);
+
+// Fired by DatapanelGUI::setLineSliderEditable hook after the original call.
+// Lua event name: "DatapanelGUI::setLineSliderEditable"
+// Lua signature:  function(self, key, category, showName, min, max, value, result)
+void CallDatapanelGUISetLineSliderEditableCallbacks(DatapanelGUI* thisptr, const std::string& key, int category, bool showName, float min, float max, void* value, DataPanelLine_SliderEditable* result);
+
+// Fired by DatapanelGUI::setLineText hook after the original call.
+// Lua event name: "DatapanelGUI::setLineText"
+// Lua signature:  function(self, key, caption, category, wordWrap, textAlign, result)
+void CallDatapanelGUISetLineTextCallbacks(DatapanelGUI* thisptr, const std::string& key, const std::string& caption, int category, bool wordWrap, int textAlign, DataPanelLine_Text* result);
+
+// Fired by DatapanelGUI::setLineTextEditable hook after the original call.
+// Lua event name: "DatapanelGUI::setLineTextEditable"
+// Lua signature:  function(self, key, text, category, showKey, multiLine, textAlign, width, result)
+void CallDatapanelGUISetLineTextEditableCallbacks(DatapanelGUI* thisptr, const std::string& key, const std::string& text, int category, bool showKey, bool multiLine, int textAlign, float width, DataPanelLine_TextEditable* result);
+
+// Fired by DatapanelGUI::setLineSlider hook after the original call.
+// Lua event name: "DatapanelGUI::setLineSlider"
+// Lua signature:  function(self, key, caption, min, max, category, value, scale, result)
+void CallDatapanelGUISetLineSliderCallbacks(DatapanelGUI* thisptr, const std::string& key, const std::string& caption, float min, float max, int category, void* value, float scale, DataPanelLine_Slider* result);
+
+// Fired by DatapanelGUI::setLineProgress hook after the original call.
+// Lua event name: "DatapanelGUI::setLineProgress"
+// Lua signature:  function(self, key, category, progressValue, progressText, showKey, result)
+void CallDatapanelGUISetLineProgressCallbacks(DatapanelGUI* thisptr, const std::string& key, int category, float progressValue, const std::string& progressText, bool showKey, DataPanelLine_Progress* result);
+
+// Fired by DatapanelGUI::removeLine hook after the original call.
+// Lua event name: "DatapanelGUI::removeLine"
+// Lua signature:  function(self, s1, category)
+void CallDatapanelGUIRemoveLineCallbacks(DatapanelGUI* thisptr, const std::string& s1, int category);
+
+// Fired by DatapanelGUI::setLineCheckbox hook after the original call.
+// Lua event name: "DatapanelGUI::setLineCheckbox"
+// Lua signature:  function(self, s1, val, category, result)
+void CallDatapanelGUISetLineCheckboxCallbacks(DatapanelGUI* thisptr, const std::string& s1, void* val, int category, DataPanelLine_CheckBox* result);
+
+// Fired by DatapanelGUI::setLineDropBox hook after the original call.
+// Lua event name: "DatapanelGUI::setLineDropBox"
+// Lua signature:  function(self, key, category, valPtr, goBox, width, result)
+void CallDatapanelGUISetLineDropBoxCallbacks(DatapanelGUI* thisptr, const std::string& key, int category, void* valPtr, bool goBox, float width, DataPanelLine_DropBox* result);
+
+// Fired by DatapanelGUI::addSpace hook after the original call.
+// Lua event name: "DatapanelGUI::addSpace"
+// Lua signature:  function(self, category, h)
+void CallDatapanelGUIAddSpaceCallbacks(DatapanelGUI* thisptr, int category, float h);
+
+// Fired by DatapanelGUI::setLines hook after the original call.
+// Lua event name: "DatapanelGUI::setLines"
+// Lua signature:  function(self, data, category)
+void CallDatapanelGUISetLinesCallbacks(DatapanelGUI* thisptr, const lektor<StringPair>& data, int category);
+
+// Fired by DatapanelGUI::_NV_setCategoryIcon hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_setCategoryIcon"
+// Lua signature:  function(self, cat, image)
+void CallDatapanelGUISetCategoryIconCallbacks(DatapanelGUI* thisptr, int cat, const std::string& image);
+
+// Fired by DatapanelGUI::_NV_changeCategory hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_changeCategory"
+// Lua signature:  function(self, cat)
+void CallDatapanelGUIChangeCategoryCallbacks(DatapanelGUI* thisptr, int cat);
+
+// Fired by DatapanelGUI::addCustomLine hook after the original call.
+// Lua event name: "DatapanelGUI::addCustomLine"
+// Lua signature:  function(self, line)
+void CallDatapanelGUIAddCustomLineCallbacks(DatapanelGUI* thisptr, DataPanelLine* line);
+
+// Fired by DatapanelGUI::_NV_autoChangeSelectedObject hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_autoChangeSelectedObject"
+// Lua signature:  function(self, obj)
+void CallDatapanelGUIAutoChangeSelectedObjectCallbacks(DatapanelGUI* thisptr, const hand& obj);
+
+// Fired by DatapanelGUI::_NV_setObject hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_setObject"
+// Lua signature:  function(self, obj)
+void CallDatapanelGUISetObjectCallbacks(DatapanelGUI* thisptr, const hand& obj);
+
+// Fired by DatapanelGUI::_NV_setLineSpacing hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_setLineSpacing"
+// Lua signature:  function(self, numLinesPerScreen)
+void CallDatapanelGUISetLineSpacingCallbacks(DatapanelGUI* thisptr, float numLinesPerScreen);
+
+// Fired by DatapanelGUI::_NV_getLine hook after the original call.
+// Lua event name: "DatapanelGUI::_NV_getLine"
+// Lua signature:  function(self, key, cat, defaultVal) -> DataPanelLine
+// Returning nil or a non-DataPanelLine value keeps defaultVal.
+DataPanelLine* CallDatapanelGUIGetLineCallbacks(DatapanelGUI* thisptr, const std::string& key, int cat, DataPanelLine* defaultVal);
+
+// Fired by DatapanelGUI::lineExists hook after the original call.
+// Lua event name: "DatapanelGUI::lineExists"
+// Lua signature:  function(self, key, cat, defaultVal) -> boolean
+bool CallDatapanelGUILineExistsCallbacks(DatapanelGUI* thisptr, const std::string& key, int cat, bool defaultVal);
+
+// Fired by DatapanelGUI::tabButton hook after the original call.
+// Lua event name: "DatapanelGUI::tabButton"
+// Lua signature:  function(self, sender, arg2, arg3, arg4)
+void CallDatapanelGUITabButtonCallbacks(DatapanelGUI* thisptr, MyGUI::Widget* sender, int arg2, int arg3, int arg4);
+
+// Fired by DatapanelGUI::getNumLines hook after the original call.
+// Lua event name: "DatapanelGUI::getNumLines"
+// Lua signature:  function(self, cat, defaultVal) -> integer
+int CallDatapanelGUIGetNumLinesCallbacks(DatapanelGUI* thisptr, int cat, int defaultVal);
+
+// Fired by DatapanelGUI::getLineByNum hook after the original call.
+// Lua event name: "DatapanelGUI::getLineByNum"
+// Lua signature:  function(self, cat, i, defaultVal) -> DataPanelLine
+// Returning nil or a non-DataPanelLine value keeps defaultVal.
+DataPanelLine* CallDatapanelGUIGetLineByNumCallbacks(DatapanelGUI* thisptr, int cat, int i, DataPanelLine* defaultVal);
+
+// Fired by DatapanelGUI::_DESTRUCTOR hook before the original call.
+// Lua event name: "DatapanelGUI::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDatapanelGUIDestructorCallbacks(DatapanelGUI* thisptr);
+
+// Fired by DatapanelGUI::createLine hook after the original call.
+// Lua event name: "DatapanelGUI::createLine"
+// Lua signature:  function(self, line, category, lastLine, result)
+void CallDatapanelGUICreateLineCallbacks(DatapanelGUI* thisptr, DataPanelLine* line, int category, bool lastLine, DataPanelLine* result);
+
+// Fired by DatapanelGUI::getNextVerticalPos hook after the original call.
+// Lua event name: "DatapanelGUI::getNextVerticalPos"
+// Lua signature:  function(self, category, defaultVal) -> number
+float CallDatapanelGUIGetNextVerticalPosCallbacks(DatapanelGUI* thisptr, int category, float defaultVal);
+
+// Fired by DatapanelGUI::closeButtonCallback hook before the original call.
+// Lua event name: "DatapanelGUI::closeButtonCallback"
+// Lua signature:  function(self, arg1, arg2)
+void CallDatapanelGUICloseButtonCallbackCallbacks(DatapanelGUI* thisptr, MyGUI::Widget* arg1, const std::string& arg2);
+
+// Fired by DatapanelGUI::mouseOverCallback hook after the original call.
+// Lua event name: "DatapanelGUI::mouseOverCallback"
+// Lua signature:  function(self, sender)
+void CallDatapanelGUIMouseOverCallbackCallbacks(DatapanelGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by DatapanelGUI::notifyMouseWheel hook after the original call.
+// Lua event name: "DatapanelGUI::notifyMouseWheel"
+// Lua signature:  function(self, sender, rel)
+void CallDatapanelGUINotifyMouseWheelCallbacks(DatapanelGUI* thisptr, MyGUI::Widget* sender, int rel);
+
+// Fired by DatapanelGUI::getCoords hook after the original call.
+// Lua event name: "DatapanelGUI::getCoords"
+// Lua signature:  function(self, left, top, width, height, result)
+void CallDatapanelGUIGetCoordsCallbacks(DatapanelGUI* thisptr, float left, float top, float width, float height, const MyGUI::IntCoord& result);
+
+// Fired by DatapanelGUI::dataExists hook after the original call.
+// Lua event name: "DatapanelGUI::dataExists"
+// Lua signature:  function(self, cat, name, defaultVal) -> boolean
+bool CallDatapanelGUIDataExistsCallbacks(DatapanelGUI* thisptr, int cat, const std::string& name, bool defaultVal);
+
+// Fired by DatapanelGUI::clearCategoryTabs hook after the original call.
+// Lua event name: "DatapanelGUI::clearCategoryTabs"
+// Lua signature:  function(self)
+void CallDatapanelGUIClearCategoryTabsCallbacks(DatapanelGUI* thisptr);
+
+
+// -----------------------------------------------------------
+// Callbacks for hooks in DataPanelLine.h
+// -----------------------------------------------------------
+
+// Fired by DataPanelLine::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineDestructorCallbacks(DataPanelLine* thisptr);
+
+// Fired by DataPanelLine::_NV_setVisible hook after the original call.
+// Lua event name: "DataPanelLine::_NV_setVisible"
+// Lua signature:  function(self, on)
+void CallDataPanelLineSetVisibleCallbacks(DataPanelLine* thisptr, bool on);
+
+// Fired by DataPanelLine::_NV_setEnabled hook after the original call.
+// Lua event name: "DataPanelLine::_NV_setEnabled"
+// Lua signature:  function(self, on)
+void CallDataPanelLineSetEnabledCallbacks(DataPanelLine* thisptr, bool on);
+
+// Fired by DataPanelLine::_NV_refresh hook after the original call.
+// Lua event name: "DataPanelLine::_NV_refresh"
+// Lua signature:  function(self)
+void CallDataPanelLineRefreshCallbacks(DataPanelLine* thisptr);
+
+// Fired by DataPanelLine::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine::_NV_createMe"
+// Lua signature:  function(self, parent, top, lastLine)
+void CallDataPanelLineCreateMeCallbacks(DataPanelLine* thisptr, DatapanelGUI* parent, float top, bool lastLine);
+
+// Fired by DataPanelLine::_NV_resize hook after the original call.
+// Lua event name: "DataPanelLine::_NV_resize"
+// Lua signature:  function(self, width, height)
+void CallDataPanelLineResizeCallbacks(DataPanelLine* thisptr, int width, int height);
+
+// Fired by DataPanelLine::_NV_getBottom hook after the original call.
+// Lua event name: "DataPanelLine::_NV_getBottom"
+// Lua signature:  function(self, defaultVal) -> integer
+int CallDataPanelLineGetBottomCallbacks(DataPanelLine* thisptr, int defaultVal);
+
+// Fired by DataPanelLine_Faction::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_Faction::_CONSTRUCTOR"
+// Lua signature:  function(self, a, b, cat, vv1, vv2)
+void CallDataPanelLineFactionConstructedCallbacks(DataPanelLine_Faction* thisptr, const std::string& a, const std::string& b, int cat, float vv1, float vv2);
+
+// Fired by DataPanelLine_Faction::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_Faction::_NV_createMe"
+// Lua signature:  function(self, parent, top, lastLine)
+void CallDataPanelLineFactionCreateMeCallbacks(DataPanelLine_Faction* thisptr, DatapanelGUI* parent, float top, bool lastLine);
+
+// Fired by DataPanelLine_Faction::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_Faction::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineFactionDestructorCallbacks(DataPanelLine_Faction* thisptr);
+
+// Fired by DataPanelLine_Research::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_Research::_CONSTRUCTOR"
+// Lua signature:  function(self, a, b, cat, vv1, barColor, Xbut)
+void CallDataPanelLineResearchConstructedCallbacks(DataPanelLine_Research* thisptr, const std::string& a, const std::string& b, int cat, float vv1, const std::string& barColor, bool Xbut);
+
+// Fired by DataPanelLine_Research::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_Research::_NV_createMe"
+// Lua signature:  function(self, parent, top, lastLine)
+void CallDataPanelLineResearchCreateMeCallbacks(DataPanelLine_Research* thisptr, DatapanelGUI* parent, float top, bool lastLine);
+
+// Fired by DataPanelLine_Research::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_Research::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineResearchDestructorCallbacks(DataPanelLine_Research* thisptr);
+
+// Fired by DataPanelLine_Button::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_Button::_CONSTRUCTOR"
+// Lua signature:  function(self, a, b, cat, w, skin)
+void CallDataPanelLineButtonConstructedCallbacks(DataPanelLine_Button* thisptr, const std::string& a, const std::string& b, int cat, float w, const std::string& skin);
+
+// Fired by DataPanelLine_Button::_NV_getUserData hook after the original call.
+// Lua event name: "DataPanelLine_Button::_NV_getUserData"
+// Lua signature:  function(self, result)
+void CallDataPanelLineButtonGetUserDataCallbacks(DataPanelLine_Button* thisptr, const hand& result);
+
+// Fired by DataPanelLine_Button::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_Button::_NV_createMe"
+// Lua signature:  function(self, parent, top, lastLine)
+void CallDataPanelLineButtonCreateMeCallbacks(DataPanelLine_Button* thisptr, DatapanelGUI* parent, float top, bool lastLine);
+
+// Fired by DataPanelLine_Button::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_Button::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineButtonDestructorCallbacks(DataPanelLine_Button* thisptr);
+
+// Fired by DataPanelLine_SliderEditable::setEditableValuePtr hook after the original call.
+// Lua event name: "DataPanelLine_SliderEditable::setEditableValuePtr"
+// Lua signature:  function(self, val, lo, hi)
+void CallDataPanelLineSliderEditableSetEditableValuePtrCallbacks(DataPanelLine_SliderEditable* thisptr, void* val, float lo, float hi);
+
+// Fired by DataPanelLine_SliderEditable::_NV_updateValuePtr hook after the original call.
+// Lua event name: "DataPanelLine_SliderEditable::_NV_updateValuePtr"
+// Lua signature:  function(self, ptr)
+void CallDataPanelLineSliderEditableUpdateValuePtrCallbacks(DataPanelLine_SliderEditable* thisptr, void* ptr);
+
+// Fired by DataPanelLine_SliderEditable::setValue hook after the original call.
+// Lua event name: "DataPanelLine_SliderEditable::setValue"
+// Lua signature:  function(self, v)
+void CallDataPanelLineSliderEditableSetValueCallbacks(DataPanelLine_SliderEditable* thisptr, float v);
+
+// Fired by DataPanelLine_SliderEditable::_NV_refresh hook after the original call.
+// Lua event name: "DataPanelLine_SliderEditable::_NV_refresh"
+// Lua signature:  function(self)
+void CallDataPanelLineSliderEditableRefreshCallbacks(DataPanelLine_SliderEditable* thisptr);
+
+// Fired by DataPanelLine_SliderEditable::setPrecision hook after the original call.
+// Lua event name: "DataPanelLine_SliderEditable::setPrecision"
+// Lua signature:  function(self, dp)
+void CallDataPanelLineSliderEditableSetPrecisionCallbacks(DataPanelLine_SliderEditable* thisptr, int dp);
+
+// Fired by DataPanelLine_SliderEditable::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_SliderEditable::_CONSTRUCTOR"
+// Lua signature:  function(self, text, category, showName, min, max, value)
+void CallDataPanelLineSliderEditableConstructedCallbacks(DataPanelLine_SliderEditable* thisptr, const std::string& text, int category, bool showName, float min, float max, void* value);
+
+// Fired by DataPanelLine_SliderEditable::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_SliderEditable::_NV_createMe"
+// Lua signature:  function(self, parent, top, lastLine)
+void CallDataPanelLineSliderEditableCreateMeCallbacks(DataPanelLine_SliderEditable* thisptr, DatapanelGUI* parent, float top, bool lastLine);
+
+// Fired by DataPanelLine_SliderEditable::editCallback hook after the original call.
+// Lua event name: "DataPanelLine_SliderEditable::editCallback"
+// Lua signature:  function(self, sender)
+void CallDataPanelLineSliderEditableEditCallbackCallbacks(DataPanelLine_SliderEditable* thisptr, MyGUI::Widget* sender);
+
+// Fired by DataPanelLine_SliderEditable::sliderCallback hook after the original call.
+// Lua event name: "DataPanelLine_SliderEditable::sliderCallback"
+// Lua signature:  function(self, sender, position)
+void CallDataPanelLineSliderEditableSliderCallbackCallbacks(DataPanelLine_SliderEditable* thisptr, MyGUI::Widget* sender, int position);
+
+// Fired by DataPanelLine_SliderEditable::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_SliderEditable::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineSliderEditableDestructorCallbacks(DataPanelLine_SliderEditable* thisptr);
+
+// Fired by DataPanelLine_Text::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_Text::_CONSTRUCTOR"
+// Lua signature:  function(self, key, text, category, wordWrap, textAlign)
+void CallDataPanelLineTextConstructedCallbacks(DataPanelLine_Text* thisptr, const std::string& key, const std::string& text, int category, bool wordWrap, int textAlign);
+
+// Fired by DataPanelLine_Text::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_Text::_NV_createMe"
+// Lua signature:  function(self, parent, top, lastLine)
+void CallDataPanelLineTextCreateMeCallbacks(DataPanelLine_Text* thisptr, DatapanelGUI* parent, float top, bool lastLine);
+
+// Fired by DataPanelLine_Text::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_Text::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineTextDestructorCallbacks(DataPanelLine_Text* thisptr);
+
+// Fired by DataPanelLine_TextEditable::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_TextEditable::_CONSTRUCTOR"
+// Lua signature:  function(self, key, text, category, showKey, multiLine, textAlign, width)
+void CallDataPanelLineTextEditableConstructedCallbacks(DataPanelLine_TextEditable* thisptr, const std::string& key, const std::string& text, int category, bool showKey, bool multiLine, int textAlign, float width);
+
+// Fired by DataPanelLine_TextEditable::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_TextEditable::_NV_createMe"
+// Lua signature:  function(self, parent, top, lastLine)
+void CallDataPanelLineTextEditableCreateMeCallbacks(DataPanelLine_TextEditable* thisptr, DatapanelGUI* parent, float top, bool lastLine);
+
+// Fired by DataPanelLine_TextEditable::textChanged hook after the original call.
+// Lua event name: "DataPanelLine_TextEditable::textChanged"
+// Lua signature:  function(self, sender)
+void CallDataPanelLineTextEditableTextChangedCallbacks(DataPanelLine_TextEditable* thisptr, MyGUI::Widget* sender);
+
+// Fired by DataPanelLine_TextEditable::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_TextEditable::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineTextEditableDestructorCallbacks(DataPanelLine_TextEditable* thisptr);
+
+// Fired by DataPanelLine_Slider::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_Slider::_CONSTRUCTOR"
+// Lua signature:  function(self, key, text, min, max, category, scale)
+void CallDataPanelLineSliderConstructedCallbacks(DataPanelLine_Slider* thisptr, const std::string& key, const std::string& text, float min, float max, int category, float scale);
+
+// Fired by DataPanelLine_Slider::sliderValueChanged hook after the original call.
+// Lua event name: "DataPanelLine_Slider::sliderValueChanged"
+// Lua signature:  function(self, sender, value)
+void CallDataPanelLineSliderSliderValueChangedCallbacks(DataPanelLine_Slider* thisptr, MyGUI::Widget* sender, int value);
+
+// Fired by DataPanelLine_Slider::_NV_updateValuePtr hook after the original call.
+// Lua event name: "DataPanelLine_Slider::_NV_updateValuePtr"
+// Lua signature:  function(self, ptr)
+void CallDataPanelLineSliderUpdateValuePtrCallbacks(DataPanelLine_Slider* thisptr, void* ptr);
+
+// Fired by DataPanelLine_Slider::setValue hook after the original call.
+// Lua event name: "DataPanelLine_Slider::setValue"
+// Lua signature:  function(self, value)
+void CallDataPanelLineSliderSetValueCallbacks(DataPanelLine_Slider* thisptr, float value);
+
+// Fired by DataPanelLine_Slider::getValue hook after the original call.
+// Lua event name: "DataPanelLine_Slider::getValue"
+// Lua signature:  function(self, defaultVal) -> number
+float CallDataPanelLineSliderGetValueCallbacks(DataPanelLine_Slider* thisptr, float defaultVal);
+
+// Fired by DataPanelLine_Slider::_NV_refresh hook after the original call.
+// Lua event name: "DataPanelLine_Slider::_NV_refresh"
+// Lua signature:  function(self)
+void CallDataPanelLineSliderRefreshCallbacks(DataPanelLine_Slider* thisptr);
+
+// Fired by DataPanelLine_Slider::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_Slider::_NV_createMe"
+// Lua signature:  function(self, parent, top, lastLine)
+void CallDataPanelLineSliderCreateMeCallbacks(DataPanelLine_Slider* thisptr, DatapanelGUI* parent, float top, bool lastLine);
+
+// Fired by DataPanelLine_Slider::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_Slider::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineSliderDestructorCallbacks(DataPanelLine_Slider* thisptr);
+
+// Fired by DataPanelLine_Progress::setProgress hook after the original call.
+// Lua event name: "DataPanelLine_Progress::setProgress"
+// Lua signature:  function(self, value, text)
+void CallDataPanelLineProgressSetProgressCallbacks(DataPanelLine_Progress* thisptr, float value, const std::string& text);
+
+// Fired by DataPanelLine_Progress::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_Progress::_CONSTRUCTOR"
+// Lua signature:  function(self, key, category, showKey)
+void CallDataPanelLineProgressConstructedCallbacks(DataPanelLine_Progress* thisptr, const std::string& key, int category, bool showKey);
+
+// Fired by DataPanelLine_Progress::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_Progress::_NV_createMe"
+// Lua signature:  function(self, parent, top, lastLine)
+void CallDataPanelLineProgressCreateMeCallbacks(DataPanelLine_Progress* thisptr, DatapanelGUI* parent, float top, bool lastLine);
+
+// Fired by DataPanelLine_Progress::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_Progress::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineProgressDestructorCallbacks(DataPanelLine_Progress* thisptr);
+
+// Fired by DataPanelLine_CheckBox::_NV_updateValuePtr hook after the original call.
+// Lua event name: "DataPanelLine_CheckBox::_NV_updateValuePtr"
+// Lua signature:  function(self, ptr)
+void CallDataPanelLineCheckBoxUpdateValuePtrCallbacks(DataPanelLine_CheckBox* thisptr, void* ptr);
+
+// Fired by DataPanelLine_CheckBox::_NV_refresh hook after the original call.
+// Lua event name: "DataPanelLine_CheckBox::_NV_refresh"
+// Lua signature:  function(self)
+void CallDataPanelLineCheckBoxRefreshCallbacks(DataPanelLine_CheckBox* thisptr);
+
+// Fired by DataPanelLine_CheckBox::setValue hook after the original call.
+// Lua event name: "DataPanelLine_CheckBox::setValue"
+// Lua signature:  function(self, checked)
+void CallDataPanelLineCheckBoxSetValueCallbacks(DataPanelLine_CheckBox* thisptr, bool checked);
+
+// Fired by DataPanelLine_CheckBox::setValuePtr hook after the original call.
+// Lua event name: "DataPanelLine_CheckBox::setValuePtr"
+// Lua signature:  function(self, valPtr)
+void CallDataPanelLineCheckBoxSetValuePtrCallbacks(DataPanelLine_CheckBox* thisptr, void* valPtr);
+
+// Fired by DataPanelLine_CheckBox::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_CheckBox::_CONSTRUCTOR"
+// Lua signature:  function(self, key, cat, val)
+void CallDataPanelLineCheckBoxConstructedCallbacks(DataPanelLine_CheckBox* thisptr, const std::string& key, int cat, void* val);
+
+// Fired by DataPanelLine_CheckBox::notifyToggleCheck hook after the original call.
+// Lua event name: "DataPanelLine_CheckBox::notifyToggleCheck"
+// Lua signature:  function(self, sender)
+void CallDataPanelLineCheckBoxNotifyToggleCheckCallbacks(DataPanelLine_CheckBox* thisptr, MyGUI::Widget* sender);
+
+// Fired by DataPanelLine_CheckBox::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_CheckBox::_NV_createMe"
+// Lua signature:  function(self, parent, topReal, lastLine)
+void CallDataPanelLineCheckBoxCreateMeCallbacks(DataPanelLine_CheckBox* thisptr, DatapanelGUI* parent, float topReal, bool lastLine);
+
+// Fired by DataPanelLine_CheckBox::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_CheckBox::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineCheckBoxDestructorCallbacks(DataPanelLine_CheckBox* thisptr);
+
+// Fired by DataPanelLine_DropBox::addAValue hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::addAValue"
+// Lua signature:  function(self, key, val)
+void CallDataPanelLineDropBoxAddAValueCallbacks(DataPanelLine_DropBox* thisptr, const std::string& key, int val);
+
+// Fired by DataPanelLine_DropBox::getSelectedValue hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::getSelectedValue"
+// Lua signature:  function(self, defaultVal) -> integer
+int CallDataPanelLineDropBoxGetSelectedValueCallbacks(DataPanelLine_DropBox* thisptr, int defaultVal);
+
+// Fired by DataPanelLine_DropBox::setSelectedValue hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::setSelectedValue"
+// Lua signature:  function(self, val)
+void CallDataPanelLineDropBoxSetSelectedValueCallbacks(DataPanelLine_DropBox* thisptr, int val);
+
+// Fired by DataPanelLine_DropBox::getSelectedText hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::getSelectedText"
+// Lua signature:  function(self, result)
+void CallDataPanelLineDropBoxGetSelectedTextCallbacks(DataPanelLine_DropBox* thisptr, const std::string& result);
+
+// Fired by DataPanelLine_DropBox::clearValues hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::clearValues"
+// Lua signature:  function(self)
+void CallDataPanelLineDropBoxClearValuesCallbacks(DataPanelLine_DropBox* thisptr);
+
+// Fired by DataPanelLine_DropBox::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::_NV_createMe"
+// Lua signature:  function(self, parent, top, lastLine)
+void CallDataPanelLineDropBoxCreateMeCallbacks(DataPanelLine_DropBox* thisptr, DatapanelGUI* parent, float top, bool lastLine);
+
+// Fired by DataPanelLine_DropBox::_NV_updateValuePtr hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::_NV_updateValuePtr"
+// Lua signature:  function(self, ptr)
+void CallDataPanelLineDropBoxUpdateValuePtrCallbacks(DataPanelLine_DropBox* thisptr, void* ptr);
+
+// Fired by DataPanelLine_DropBox::_NV_refresh hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::_NV_refresh"
+// Lua signature:  function(self)
+void CallDataPanelLineDropBoxRefreshCallbacks(DataPanelLine_DropBox* thisptr);
+
+// Fired by DataPanelLine_DropBox::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::_CONSTRUCTOR"
+// Lua signature:  function(self, text, category, valuePtr, width, hasGobox)
+void CallDataPanelLineDropBoxConstructedCallbacks(DataPanelLine_DropBox* thisptr, const std::string& text, int category, void* valuePtr, float width, bool hasGobox);
+
+// Fired by DataPanelLine_DropBox::selectionChange hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::selectionChange"
+// Lua signature:  function(self, sender, i)
+void CallDataPanelLineDropBoxSelectionChangeCallbacks(DataPanelLine_DropBox* thisptr, MyGUI::Widget* sender, int i);
+
+// Fired by DataPanelLine_DropBox::goPressed hook after the original call.
+// Lua event name: "DataPanelLine_DropBox::goPressed"
+// Lua signature:  function(self, sender)
+void CallDataPanelLineDropBoxGoPressedCallbacks(DataPanelLine_DropBox* thisptr, MyGUI::Widget* sender);
+
+// Fired by DataPanelLine_DropBox::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_DropBox::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineDropBoxDestructorCallbacks(DataPanelLine_DropBox* thisptr);
+
+// Fired by DataPanelLine_KeyConfig::_CONSTRUCTOR hook after the original call.
+// Lua event name: "DataPanelLine_KeyConfig::_CONSTRUCTOR"
+// Lua signature:  function(self, cmd, text, cat)
+void CallDataPanelLineKeyConfigConstructedCallbacks(DataPanelLine_KeyConfig* thisptr, const std::string& cmd, const std::string& text, int cat);
+
+// Fired by DataPanelLine_KeyConfig::getCommand hook after the original call.
+// Lua event name: "DataPanelLine_KeyConfig::getCommand"
+// Lua signature:  function(self, result)
+void CallDataPanelLineKeyConfigGetCommandCallbacks(DataPanelLine_KeyConfig* thisptr, const std::string& result);
+
+// Fired by DataPanelLine_KeyConfig::oldKey hook after the original call.
+// Lua event name: "DataPanelLine_KeyConfig::oldKey"
+// Lua signature:  function(self, defaultVal) -> integer
+int CallDataPanelLineKeyConfigOldKeyCallbacks(DataPanelLine_KeyConfig* thisptr, int defaultVal);
+
+// Fired by DataPanelLine_KeyConfig::setKey hook after the original call.
+// Lua event name: "DataPanelLine_KeyConfig::setKey"
+// Lua signature:  function(self, s)
+void CallDataPanelLineKeyConfigSetKeyCallbacks(DataPanelLine_KeyConfig* thisptr, const std::string& s);
+
+// Fired by DataPanelLine_KeyConfig::eraseKey hook after the original call.
+// Lua event name: "DataPanelLine_KeyConfig::eraseKey"
+// Lua signature:  function(self, key)
+void CallDataPanelLineKeyConfigEraseKeyCallbacks(DataPanelLine_KeyConfig* thisptr, const std::string& key);
+
+// Fired by DataPanelLine_KeyConfig::_NV_refresh hook after the original call.
+// Lua event name: "DataPanelLine_KeyConfig::_NV_refresh"
+// Lua signature:  function(self)
+void CallDataPanelLineKeyConfigRefreshCallbacks(DataPanelLine_KeyConfig* thisptr);
+
+// Fired by DataPanelLine_KeyConfig::cancel hook after the original call.
+// Lua event name: "DataPanelLine_KeyConfig::cancel"
+// Lua signature:  function(self)
+void CallDataPanelLineKeyConfigCancelCallbacks(DataPanelLine_KeyConfig* thisptr);
+
+// Fired by DataPanelLine_KeyConfig::_NV_createMe hook after the original call.
+// Lua event name: "DataPanelLine_KeyConfig::_NV_createMe"
+// Lua signature:  function(self, p, vpos, lastLine)
+void CallDataPanelLineKeyConfigCreateMeCallbacks(DataPanelLine_KeyConfig* thisptr, DatapanelGUI* p, float vpos, bool lastLine);
+
+// Fired by DataPanelLine_KeyConfig::clickButton hook after the original call.
+// Lua event name: "DataPanelLine_KeyConfig::clickButton"
+// Lua signature:  function(self, sender)
+void CallDataPanelLineKeyConfigClickButtonCallbacks(DataPanelLine_KeyConfig* thisptr, MyGUI::Widget* sender);
+
+// Fired by DataPanelLine_KeyConfig::_DESTRUCTOR hook before the original call.
+// Lua event name: "DataPanelLine_KeyConfig::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallDataPanelLineKeyConfigDestructorCallbacks(DataPanelLine_KeyConfig* thisptr);
+
+
+// -----------------------------------------------------------
+// Callbacks for hooks in ForgottenGUI.h
+// -----------------------------------------------------------
+
+// Fired by ForgottenGUI::_CONSTRUCTOR hook after the original call.
+// Lua event name: "ForgottenGUI::_CONSTRUCTOR"
+// Lua signature:  function(self)
+void CallForgottenGUIConstructedCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::_DESTRUCTOR hook before the original call.
+// Lua event name: "ForgottenGUI::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallForgottenGUIDestructorCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::clearGUI hook after the original call.
+// Lua event name: "ForgottenGUI::clearGUI"
+// Lua signature:  function(self)
+void CallForgottenGUIClearGUICallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::shutDown hook before the original call.
+// Lua event name: "ForgottenGUI::shutDown"
+// Lua signature:  function(self)
+void CallForgottenGUIShutDownCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::restart hook after the original call.
+// Lua event name: "ForgottenGUI::restart"
+// Lua signature:  function(self)
+void CallForgottenGUIRestartCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::changeFontSize hook after the original call.
+// Lua event name: "ForgottenGUI::changeFontSize"
+// Lua signature:  function()
+void CallForgottenGUIChangeFontSizeCallbacks();
+
+// Fired by ForgottenGUI::setupGuiScaling hook after the original call.
+// Lua event name: "ForgottenGUI::setupGuiScaling"
+// Lua signature:  function(self)
+void CallForgottenGUISetupGuiScalingCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::init hook after the original call.
+// Lua event name: "ForgottenGUI::init"
+// Lua signature:  function(self)
+void CallForgottenGUIInitCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::getTopOfScreenMessagePosition hook after the original call.
+// Lua event name: "ForgottenGUI::getTopOfScreenMessagePosition"
+// Lua signature:  function(self, defaultVal) -> number
+float CallForgottenGUIGetTopOfScreenMessagePositionCallbacks(ForgottenGUI* thisptr, float defaultVal);
+
+// Fired by ForgottenGUI::showLoadingMessage hook after the original call.
+// Lua event name: "ForgottenGUI::showLoadingMessage"
+// Lua signature:  function(self, on)
+void CallForgottenGUIShowLoadingMessageCallbacks(ForgottenGUI* thisptr, bool on);
+
+// Fired by ForgottenGUI::isLoadingMessageVisible hook after the original call.
+// Lua event name: "ForgottenGUI::isLoadingMessageVisible"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallForgottenGUIIsLoadingMessageVisibleCallbacks(ForgottenGUI* thisptr, bool defaultVal);
+
+// Fired by ForgottenGUI::showPauseMessage hook after the original call.
+// Lua event name: "ForgottenGUI::showPauseMessage"
+// Lua signature:  function(self, on)
+void CallForgottenGUIShowPauseMessageCallbacks(ForgottenGUI* thisptr, bool on);
+
+// Fired by ForgottenGUI::isLoading hook after the original call.
+// Lua event name: "ForgottenGUI::isLoading"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallForgottenGUIIsLoadingCallbacks(ForgottenGUI* thisptr, bool defaultVal);
+
+// Fired by ForgottenGUI::setLoading hook after the original call.
+// Lua event name: "ForgottenGUI::setLoading"
+// Lua signature:  function(self, value)
+void CallForgottenGUISetLoadingCallbacks(ForgottenGUI* thisptr, bool value);
+
+// Fired by ForgottenGUI::isPaused hook after the original call.
+// Lua event name: "ForgottenGUI::isPaused"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallForgottenGUIIsPausedCallbacks(ForgottenGUI* thisptr, bool defaultVal);
+
+// Fired by ForgottenGUI::inDialogue hook after the original call.
+// Lua event name: "ForgottenGUI::inDialogue"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallForgottenGUIInDialogueCallbacks(ForgottenGUI* thisptr, bool defaultVal);
+
+// Fired by ForgottenGUI::messageBox hook after the original call.
+// Lua event name: "ForgottenGUI::messageBox"
+// Lua signature:  function(self, title, message, btn, modal, callback, result)
+void CallForgottenGUIMessageBoxCallbacks(ForgottenGUI* thisptr, const std::string& title, const std::string& message, int btn, bool modal, void* callback, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::hideMessageBox hook after the original call.
+// Lua event name: "ForgottenGUI::hideMessageBox"
+// Lua signature:  function(self, enter, result)
+void CallForgottenGUIHideMessageBoxCallbacks(ForgottenGUI* thisptr, bool enter, bool result);
+
+// Fired by ForgottenGUI::hasModalMessage hook after the original call.
+// Lua event name: "ForgottenGUI::hasModalMessage"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallForgottenGUIHasModalMessageCallbacks(ForgottenGUI* thisptr, bool defaultVal);
+
+// Fired by ForgottenGUI::showMainbar hook after the original call.
+// Lua event name: "ForgottenGUI::showMainbar"
+// Lua signature:  function(self, on)
+void CallForgottenGUIShowMainbarCallbacks(ForgottenGUI* thisptr, bool on);
+
+// Fired by ForgottenGUI::updateBountyPanelVisibility hook after the original call.
+// Lua event name: "ForgottenGUI::updateBountyPanelVisibility"
+// Lua signature:  function(self)
+void CallForgottenGUIUpdateBountyPanelVisibilityCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::getInDialogue hook after the original call.
+// Lua event name: "ForgottenGUI::getInDialogue"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallForgottenGUIGetInDialogueCallbacks(ForgottenGUI* thisptr, bool defaultVal);
+
+// Fired by ForgottenGUI::getToolTip hook after the original call.
+// Lua event name: "ForgottenGUI::getToolTip"
+// Lua signature:  function(self, defaultVal) -> ToolTip
+// Returning nil or a non-ToolTip value keeps defaultVal.
+ToolTip* CallForgottenGUIGetToolTipCallbacks(ForgottenGUI* thisptr, ToolTip* defaultVal);
+
+// Fired by ForgottenGUI::toggle hook after the original call.
+// Lua event name: "ForgottenGUI::toggle"
+// Lua signature:  function(self)
+void CallForgottenGUIToggleCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::showNames hook after the original call.
+// Lua event name: "ForgottenGUI::showNames"
+// Lua signature:  function(self, on)
+void CallForgottenGUIShowNamesCallbacks(ForgottenGUI* thisptr, bool on);
+
+// Fired by ForgottenGUI::showPrintOutput hook after the original call.
+// Lua event name: "ForgottenGUI::showPrintOutput"
+// Lua signature:  function(self, v)
+void CallForgottenGUIShowPrintOutputCallbacks(ForgottenGUI* thisptr, bool v);
+
+// Fired by ForgottenGUI::showCharacterEditor hook before the original call.
+// Lua event name: "ForgottenGUI::showCharacterEditor"
+// Lua signature:  function(self, characters, mode, races)
+void CallForgottenGUIShowCharacterEditorCallbacks(ForgottenGUI* thisptr, const lektor<Character*>& characters, int mode, const Ogre::vector<GameDataReference>::type* races);
+
+// Fired by ForgottenGUI::closeCharacterEditor hook after the original call.
+// Lua event name: "ForgottenGUI::closeCharacterEditor"
+// Lua signature:  function(self)
+void CallForgottenGUICloseCharacterEditorCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::showCharacterStatsWindow hook after the original call.
+// Lua event name: "ForgottenGUI::showCharacterStatsWindow"
+// Lua signature:  function(self, owner)
+void CallForgottenGUIShowCharacterStatsWindowCallbacks(ForgottenGUI* thisptr, const hand& owner);
+
+// Fired by ForgottenGUI::closeCharacterStatsWindow hook after the original call.
+// Lua event name: "ForgottenGUI::closeCharacterStatsWindow"
+// Lua signature:  function(self, owner)
+void CallForgottenGUICloseCharacterStatsWindowCallbacks(ForgottenGUI* thisptr, const hand& owner);
+
+// Fired by ForgottenGUI::closeAllCharacterStatsWindows hook after the original call.
+// Lua event name: "ForgottenGUI::closeAllCharacterStatsWindows"
+// Lua signature:  function(self)
+void CallForgottenGUICloseAllCharacterStatsWindowsCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::isStatsWindowOpen hook after the original call.
+// Lua event name: "ForgottenGUI::isStatsWindowOpen"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallForgottenGUIIsStatsWindowOpenCallbacks(ForgottenGUI* thisptr, bool defaultVal);
+
+// Fired by ForgottenGUI::toggleStatsWindow hook after the original call.
+// Lua event name: "ForgottenGUI::toggleStatsWindow"
+// Lua signature:  function(self, owner)
+void CallForgottenGUIToggleStatsWindowCallbacks(ForgottenGUI* thisptr, const hand& owner);
+
+// Fired by ForgottenGUI::toggleCharacterStatsWindowPermanent hook after the original call.
+// Lua event name: "ForgottenGUI::toggleCharacterStatsWindowPermanent"
+// Lua signature:  function(self, owner)
+void CallForgottenGUIToggleCharacterStatsWindowPermanentCallbacks(ForgottenGUI* thisptr, const hand& owner);
+
+// Fired by ForgottenGUI::selectedObjectsChanged hook after the original call.
+// Lua event name: "ForgottenGUI::selectedObjectsChanged"
+// Lua signature:  function(self)
+void CallForgottenGUISelectedObjectsChangedCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::updateToOrdersPanel hook after the original call.
+// Lua event name: "ForgottenGUI::updateToOrdersPanel"
+// Lua signature:  function(self)
+void CallForgottenGUIUpdateToOrdersPanelCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::notifyTownDeleted hook after the original call.
+// Lua event name: "ForgottenGUI::notifyTownDeleted"
+// Lua signature:  function(self, t)
+void CallForgottenGUINotifyTownDeletedCallbacks(ForgottenGUI* thisptr, Town* t);
+
+// Fired by ForgottenGUI::update hook after the original call.
+// Lua event name: "ForgottenGUI::update"
+// Lua signature:  function(self)
+void CallForgottenGUIUpdateCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::showTradeWindow hook after the original call.
+// Lua event name: "ForgottenGUI::showTradeWindow"
+// Lua signature:  function(self, a, b, type)
+void CallForgottenGUIShowTradeWindowCallbacks(ForgottenGUI* thisptr, const hand& a, const hand& b, int type);
+
+// Fired by ForgottenGUI::closeTradeWindow hook after the original call.
+// Lua event name: "ForgottenGUI::closeTradeWindow"
+// Lua signature:  function(self)
+void CallForgottenGUICloseTradeWindowCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::showInventory hook after the original call.
+// Lua event name: "ForgottenGUI::showInventory"
+// Lua signature:  function(self, owner, autoPosition, x, y, result)
+void CallForgottenGUIShowInventoryCallbacks(ForgottenGUI* thisptr, const hand& owner, bool autoPosition, float x, float y, InventoryGUI* result);
+
+// Fired by ForgottenGUI::showTraderInventory hook after the original call.
+// Lua event name: "ForgottenGUI::showTraderInventory"
+// Lua signature:  function(self, owner, result)
+void CallForgottenGUIShowTraderInventoryCallbacks(ForgottenGUI* thisptr, const hand& owner, InventoryGUI* result);
+
+// Fired by ForgottenGUI::showInventoryBuilding hook after the original call.
+// Lua event name: "ForgottenGUI::showInventoryBuilding"
+// Lua signature:  function(self, owner, result)
+void CallForgottenGUIShowInventoryBuildingCallbacks(ForgottenGUI* thisptr, const hand& owner, InventoryGUI* result);
+
+// Fired by ForgottenGUI::showInventoryNPC hook after the original call.
+// Lua event name: "ForgottenGUI::showInventoryNPC"
+// Lua signature:  function(self, owner, result)
+void CallForgottenGUIShowInventoryNPCCallbacks(ForgottenGUI* thisptr, const hand& owner, InventoryGUI* result);
+
+// Fired by ForgottenGUI::closeInventory hook after the original call.
+// Lua event name: "ForgottenGUI::closeInventory"
+// Lua signature:  function(self, owner)
+void CallForgottenGUICloseInventoryCallbacks(ForgottenGUI* thisptr, const hand& owner);
+
+// Fired by ForgottenGUI::closeInventoryBuilding hook after the original call.
+// Lua event name: "ForgottenGUI::closeInventoryBuilding"
+// Lua signature:  function(self)
+void CallForgottenGUICloseInventoryBuildingCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::closeAllInventories hook after the original call.
+// Lua event name: "ForgottenGUI::closeAllInventories"
+// Lua signature:  function(self)
+void CallForgottenGUICloseAllInventoriesCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::closeAllWindows hook after the original call.
+// Lua event name: "ForgottenGUI::closeAllWindows"
+// Lua signature:  function(self)
+void CallForgottenGUICloseAllWindowsCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::getInventoryWindow hook after the original call.
+// Lua event name: "ForgottenGUI::getInventoryWindow"
+// Lua signature:  function(self, who, defaultVal) -> InventoryGUI
+// Returning nil or a non-InventoryGUI value keeps defaultVal.
+InventoryGUI* CallForgottenGUIGetInventoryWindowCallbacks(ForgottenGUI* thisptr, const hand& who, InventoryGUI* defaultVal);
+
+// Fired by ForgottenGUI::toggleInventory hook after the original call.
+// Lua event name: "ForgottenGUI::toggleInventory"
+// Lua signature:  function(self, owner, parentInv, attached, result)
+void CallForgottenGUIToggleInventoryCallbacks(ForgottenGUI* thisptr, const hand& owner, InventoryGUI* parentInv, bool attached, InventoryGUI* result);
+
+// Fired by ForgottenGUI::getNumOpenInventoryWindows hook after the original call.
+// Lua event name: "ForgottenGUI::getNumOpenInventoryWindows"
+// Lua signature:  function(self, defaultVal) -> integer
+int CallForgottenGUIGetNumOpenInventoryWindowsCallbacks(ForgottenGUI* thisptr, int defaultVal);
+
+// Fired by ForgottenGUI::getInventoryWindowWithMouse hook after the original call.
+// Lua event name: "ForgottenGUI::getInventoryWindowWithMouse"
+// Lua signature:  function(self, defaultVal) -> InventoryGUI
+// Returning nil or a non-InventoryGUI value keeps defaultVal.
+InventoryGUI* CallForgottenGUIGetInventoryWindowWithMouseCallbacks(ForgottenGUI* thisptr, InventoryGUI* defaultVal);
+
+// Fired by ForgottenGUI::hasInventoryWindowOpen hook after the original call.
+// Lua event name: "ForgottenGUI::hasInventoryWindowOpen"
+// Lua signature:  function(self, obj, defaultVal) -> boolean
+bool CallForgottenGUIHasInventoryWindowOpenCallbacks(ForgottenGUI* thisptr, const hand& obj, bool defaultVal);
+
+// Fired by ForgottenGUI::isAnyInventoryWindowOpen hook after the original call.
+// Lua event name: "ForgottenGUI::isAnyInventoryWindowOpen"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallForgottenGUIIsAnyInventoryWindowOpenCallbacks(ForgottenGUI* thisptr, bool defaultVal);
+
+// Fired by ForgottenGUI::toggleInventoryWindowPermanent hook after the original call.
+// Lua event name: "ForgottenGUI::toggleInventoryWindowPermanent"
+// Lua signature:  function(self, owner)
+void CallForgottenGUIToggleInventoryWindowPermanentCallbacks(ForgottenGUI* thisptr, const hand& owner);
+
+// Fired by ForgottenGUI::toggleHelpWindow hook after the original call.
+// Lua event name: "ForgottenGUI::toggleHelpWindow"
+// Lua signature:  function(self)
+void CallForgottenGUIToggleHelpWindowCallbacks(ForgottenGUI* thisptr);
+
+// Fired by ForgottenGUI::addWindowToUpdateList hook after the original call.
+// Lua event name: "ForgottenGUI::addWindowToUpdateList"
+// Lua signature:  function(self, win)
+void CallForgottenGUIAddWindowToUpdateListCallbacks(ForgottenGUI* thisptr, GUIWindow* win);
+
+// Fired by ForgottenGUI::removeWindowFromUpdateList hook after the original call.
+// Lua event name: "ForgottenGUI::removeWindowFromUpdateList"
+// Lua signature:  function(self, win)
+void CallForgottenGUIRemoveWindowFromUpdateListCallbacks(ForgottenGUI* thisptr, GUIWindow* win);
+
+// Fired by ForgottenGUI::addScreenLabel hook after the original call.
+// Lua event name: "ForgottenGUI::addScreenLabel"
+// Lua signature:  function(self, label)
+void CallForgottenGUIAddScreenLabelCallbacks(ForgottenGUI* thisptr, ScreenLabelInterface* label);
+
+// Fired by ForgottenGUI::addDatapanelToUpdateList hook after the original call.
+// Lua event name: "ForgottenGUI::addDatapanelToUpdateList"
+// Lua signature:  function(self, datapanel)
+void CallForgottenGUIAddDatapanelToUpdateListCallbacks(ForgottenGUI* thisptr, DatapanelGUI* datapanel);
+
+// Fired by ForgottenGUI::removeDatapanelFromUpdateList hook after the original call.
+// Lua event name: "ForgottenGUI::removeDatapanelFromUpdateList"
+// Lua signature:  function(self, datapanel)
+void CallForgottenGUIRemoveDatapanelFromUpdateListCallbacks(ForgottenGUI* thisptr, DatapanelGUI* datapanel);
+
+// Fired by ForgottenGUI::destroyWidget hook before the original call.
+// Lua event name: "ForgottenGUI::destroyWidget"
+// Lua signature:  function(self, widget)
+void CallForgottenGUIDestroyWidgetCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* widget);
+
+// Fired by ForgottenGUI::widgetHasMouse hook after the original call.
+// Lua event name: "ForgottenGUI::widgetHasMouse"
+// Lua signature:  function(self, w, defaultVal) -> boolean
+bool CallForgottenGUIWidgetHasMouseCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* w, bool defaultVal);
+
+// Fired by ForgottenGUI::setup hook after the original call.
+// Lua event name: "ForgottenGUI::setup"
+// Lua signature:  function(self, mRoot, window)
+void CallForgottenGUISetupCallbacks(ForgottenGUI* thisptr, void* mRoot, void* window);
+
+// Fired by ForgottenGUI::setMouseCursorVisible hook after the original call.
+// Lua event name: "ForgottenGUI::setMouseCursorVisible"
+// Lua signature:  function(self, visible)
+void CallForgottenGUISetMouseCursorVisibleCallbacks(ForgottenGUI* thisptr, bool visible);
+
+// Fired by ForgottenGUI::_showTradeWindow hook after the original call.
+// Lua event name: "ForgottenGUI::_showTradeWindow"
+// Lua signature:  function(self, a, b, tradeType)
+void CallForgottenGUI_showTradeWindowCallbacks(ForgottenGUI* thisptr, RootObject* a, RootObject* b, int tradeType);
+
+// Fired by ForgottenGUI::setInventoryPosition hook after the original call.
+// Lua event name: "ForgottenGUI::setInventoryPosition"
+// Lua signature:  function(self, owner, inventory)
+void CallForgottenGUISetInventoryPositionCallbacks(ForgottenGUI* thisptr, const hand& owner, InventoryGUI* inventory);
+
+// Fired by ForgottenGUI::inventoriesSelectedObjectUpdate hook after the original call.
+// Lua event name: "ForgottenGUI::inventoriesSelectedObjectUpdate"
+// Lua signature:  function(self, selectedObject)
+void CallForgottenGUIInventoriesSelectedObjectUpdateCallbacks(ForgottenGUI* thisptr, const hand& selectedObject);
+
+// Fired by ForgottenGUI::keepWindownOnScreen hook after the original call.
+// Lua event name: "ForgottenGUI::keepWindownOnScreen"
+// Lua signature:  function(self, win)
+void CallForgottenGUIKeepWindownOnScreenCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* win);
+
+// Fired by ForgottenGUI::getDataLineColor hook after the original call.
+// Lua event name: "ForgottenGUI::getDataLineColor"
+// Lua signature:  function(self, actualVal, normalVal, result)
+void CallForgottenGUIGetDataLineColorCallbacks(ForgottenGUI* thisptr, int actualVal, int normalVal, const std::string& result);
+
+// Fired by ForgottenGUI::createPanel hook after the original call.
+// Lua event name: "ForgottenGUI::createPanel"
+// Lua signature:  function(self, name, top, left, width, height, layer, skin, result)
+void CallForgottenGUICreatePanelCallbacks(ForgottenGUI* thisptr, const std::string& name, float top, float left, float width, float height, const std::string& layer, const std::string& skin, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createPanelAbs hook after the original call.
+// Lua event name: "ForgottenGUI::createPanelAbs"
+// Lua signature:  function(self, name, top, left, width, height, layer, skin, result)
+void CallForgottenGUICreatePanelAbsCallbacks(ForgottenGUI* thisptr, const std::string& name, float top, float left, float width, float height, const std::string& layer, const std::string& skin, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createImage hook after the original call.
+// Lua event name: "ForgottenGUI::createImage"
+// Lua signature:  function(self, parent, top, left, width, height, image, result)
+void CallForgottenGUICreateImageCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& image, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createImageAbs hook after the original call.
+// Lua event name: "ForgottenGUI::createImageAbs"
+// Lua signature:  function(self, parent, top, left, width, height, image, result)
+void CallForgottenGUICreateImageAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, int top, int left, int width, int height, const std::string& image, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createRotatableImageAbs hook after the original call.
+// Lua event name: "ForgottenGUI::createRotatableImageAbs"
+// Lua signature:  function(self, parent, top, left, width, height, image, result)
+void CallForgottenGUICreateRotatableImageAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, int top, int left, int width, int height, const std::string& image, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createTabPanel hook after the original call.
+// Lua event name: "ForgottenGUI::createTabPanel"
+// Lua signature:  function(self, name, top, left, width, height, layer, skin, result)
+void CallForgottenGUICreateTabPanelCallbacks(ForgottenGUI* thisptr, const std::string& name, float top, float left, float width, float height, const std::string& layer, const std::string& skin, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createButtonAbs hook after the original call.
+// Lua event name: "ForgottenGUI::createButtonAbs"
+// Lua signature:  function(self, parent, top, left, width, height, name, text, skin, result)
+void CallForgottenGUICreateButtonAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, int top, int left, int width, int height, const std::string& name, const std::string& text, const std::string& skin, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createButton hook after the original call.
+// Lua event name: "ForgottenGUI::createButton"
+// Lua signature:  function(self, parent, top, left, width, height, name, text, skin, result)
+void CallForgottenGUICreateButtonCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& name, const std::string& text, const std::string& skin, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createDropBox hook after the original call.
+// Lua event name: "ForgottenGUI::createDropBox"
+// Lua signature:  function(self, parent, name, top, left, width, height, result)
+void CallForgottenGUICreateDropBoxCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, const std::string& name, float top, float left, float width, float height, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createDropBoxAbs hook after the original call.
+// Lua event name: "ForgottenGUI::createDropBoxAbs"
+// Lua signature:  function(self, parent, name, top, left, width, height, result)
+void CallForgottenGUICreateDropBoxAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, const std::string& name, int top, int left, int width, int height, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createProgressBar hook after the original call.
+// Lua event name: "ForgottenGUI::createProgressBar"
+// Lua signature:  function(self, parent, top, left, width, height, type, result)
+void CallForgottenGUICreateProgressBarCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& type, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createProgressBarAbs hook after the original call.
+// Lua event name: "ForgottenGUI::createProgressBarAbs"
+// Lua signature:  function(self, parent, top, left, width, height, type, result)
+void CallForgottenGUICreateProgressBarAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& type, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createFloatingLabel hook after the original call.
+// Lua event name: "ForgottenGUI::createFloatingLabel"
+// Lua signature:  function(self, top, left, width, height, text, a, layer, result)
+void CallForgottenGUICreateFloatingLabelCallbacks(ForgottenGUI* thisptr, float top, float left, float width, float height, const std::string& text, int a, const std::string& layer, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createValueEdit hook after the original call.
+// Lua event name: "ForgottenGUI::createValueEdit"
+// Lua signature:  function(self, parent, top, left, width, height, name, result)
+void CallForgottenGUICreateValueEditCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& name, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createScrollBarAbs hook after the original call.
+// Lua event name: "ForgottenGUI::createScrollBarAbs"
+// Lua signature:  function(self, parent, top, left, width, height, range, value, result)
+void CallForgottenGUICreateScrollBarAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, int top, int left, int width, int height, int range, int value, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createCheckbox hook after the original call.
+// Lua event name: "ForgottenGUI::createCheckbox"
+// Lua signature:  function(self, parent, left, top, width, height, caption, result)
+void CallForgottenGUICreateCheckboxCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, int left, int top, int width, int height, const std::string& caption, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createValueEditTransparent hook after the original call.
+// Lua event name: "ForgottenGUI::createValueEditTransparent"
+// Lua signature:  function(self, parent, top, left, width, height, name, result)
+void CallForgottenGUICreateValueEditTransparentCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& name, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createListbox hook after the original call.
+// Lua event name: "ForgottenGUI::createListbox"
+// Lua signature:  function(self, parent, top, left, width, height, result)
+void CallForgottenGUICreateListboxCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createFloatingImage hook after the original call.
+// Lua event name: "ForgottenGUI::createFloatingImage"
+// Lua signature:  function(self, image, top, left, width, height, layer, result)
+void CallForgottenGUICreateFloatingImageCallbacks(ForgottenGUI* thisptr, const std::string& image, float top, float left, float width, float height, const std::string& layer, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createFloatingImageAbs hook after the original call.
+// Lua event name: "ForgottenGUI::createFloatingImageAbs"
+// Lua signature:  function(self, image, top, left, width, height, layer, result)
+void CallForgottenGUICreateFloatingImageAbsCallbacks(ForgottenGUI* thisptr, const std::string& image, float top, float left, float width, float height, const std::string& layer, MyGUI::Widget* result);
+
+// Fired by ForgottenGUI::createFloatingProgressBar hook after the original call.
+// Lua event name: "ForgottenGUI::createFloatingProgressBar"
+// Lua signature:  function(self, result)
+void CallForgottenGUICreateFloatingProgressBarCallbacks(ForgottenGUI* thisptr, FloatingProgressBar* result);
+
+// Fired by ForgottenGUI::createScreenLabel hook after the original call.
+// Lua event name: "ForgottenGUI::createScreenLabel"
+// Lua signature:  function(self, text, textColour, textSize, risingSpeed, result)
+void CallForgottenGUICreateScreenLabelCallbacks(ForgottenGUI* thisptr, const std::string& text, const MyGUI::Colour& textColour, int textSize, int risingSpeed, ScreenLabel* result);
+
+// Fired by ForgottenGUI::createScreenLabelD hook after the original call.
+// Lua event name: "ForgottenGUI::createScreenLabelD"
+// Lua signature:  function(self, text, time, result)
+void CallForgottenGUICreateScreenLabelDCallbacks(ForgottenGUI* thisptr, const std::string& text, float time, ScreenLabelDebug* result);

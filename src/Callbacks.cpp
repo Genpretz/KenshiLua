@@ -56,9 +56,30 @@
 #include "Bindings/Kenshi/GearBinding.h"
 #include "Bindings/Kenshi/Gui/BaseLayoutBinding.h"
 #include "Bindings/Kenshi/Gui/BuildModeWindowBinding.h"
+#include "Bindings/Kenshi/Gui/CharacterStatsWindowBinding.h"
 #include "Bindings/Kenshi/Gui/DataPanelLineBinding.h"
 #include "Bindings/Kenshi/Gui/DataPanelLine_ButtonBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLine_CheckBoxBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLine_DropBoxBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLine_FactionBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLine_KeyConfigBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLine_ProgressBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLine_ResearchBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLine_SliderBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLine_SliderEditableBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLine_TextBinding.h"
+#include "Bindings/Kenshi/Gui/DataPanelLine_TextEditableBinding.h"
+#include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Kenshi/Gui/DialogueWindowBinding.h"
+#include "Bindings/Kenshi/Gui/FloatingProgressBarBinding.h"
+#include "Bindings/Kenshi/Gui/ForgottenGUIBinding.h"
+#include "Bindings/Kenshi/Gui/GUIWindowBinding.h"
+#include "Bindings/Kenshi/Gui/ScreenLabelBinding.h"
+#include "Bindings/Kenshi/Gui/ScreenLabelDebugBinding.h"
+#include "Bindings/Kenshi/Gui/ScreenLabelInterfaceBinding.h"
+#include "Bindings/Kenshi/Gui/StatBinding.h"
+#include "Bindings/Kenshi/Gui/StatGroupBinding.h"
+#include "Bindings/Kenshi/Gui/ToolTipBinding.h"
 #include "Bindings/Kenshi/Gui/GenericFixedInventoryLayoutBinding.h"
 #include "Bindings/Kenshi/Gui/InventoryGUIBinding.h"
 #include "Bindings/Kenshi/Gui/InventoryLayoutBinding.h"
@@ -98,6 +119,9 @@
 #include "Bindings/Kenshi/ZoneManagerBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
 #include "Bindings/MyGUI/MyGUIBinding.h"
+#include "Bindings/MyGUI/GuiBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
+#include "Bindings/MyGUI/TypesBinding.h"
 
 // KenshiLib headers
 #include <kenshi/AppearanceManager.h>
@@ -145,8 +169,14 @@
 #include <kenshi/ShopTrader.h>
 #include <kenshi/WorldEventStateQuery.h>
 #include <kenshi/ZoneManager.h>
+#include <kenshi/gui/DataPanelLine.h>
+#include <kenshi/gui/DatapanelGUI.h>
 #include <kenshi/gui/DialogueWindow.h>
+#include <kenshi/gui/ForgottenGUI.h>
+#include <kenshi/gui/GUIWindow.h>
 #include <kenshi/gui/InventoryGUI.h>
+#include <kenshi/gui/ScreenLabel.h>
+#include <kenshi/gui/ToolTip.h>
 #include <kenshi/util/UtilityT.h>
 #include <kenshi/util/lektor.h>
 #include <mygui/common/baselayout/BaseLayout.h>
@@ -248,6 +278,29 @@ namespace KenshiLua
     static inline const char* WorldEventStateQueryMetatable()                       { return WorldEventStateQueryBinding::getMetatableName(); }
     static inline const char* ZoneManagerMetatable()                                { return ZoneManagerBinding::getMetatableName(); }
     static inline const char* ZoneMapMetatable()                                    { return ZoneMapBinding::getMetatableName(); }
+
+    // Metatables for the GUI hook events (GUIWindow, CharacterStatsWindow, DatapanelGUI, DataPanelLine, ForgottenGUI)
+    static inline const char* CharacterStatsWindowMetatable()                       { return CharacterStatsWindowBinding::getMetatableName(); }
+    static inline const char* CharacterStatsWindowStatGroupMetatable()              { return StatGroupBinding::getMetatableName(); }
+    static inline const char* CharacterStatsWindowStatMetatable()                   { return StatBinding::getMetatableName(); }
+    static inline const char* DataPanelLineCheckBoxMetatable()                      { return DataPanelLine_CheckBoxBinding::getMetatableName(); }
+    static inline const char* DataPanelLineDropBoxMetatable()                       { return DataPanelLine_DropBoxBinding::getMetatableName(); }
+    static inline const char* DataPanelLineFactionMetatable()                       { return DataPanelLine_FactionBinding::getMetatableName(); }
+    static inline const char* DataPanelLineKeyConfigMetatable()                     { return DataPanelLine_KeyConfigBinding::getMetatableName(); }
+    static inline const char* DataPanelLineProgressMetatable()                      { return DataPanelLine_ProgressBinding::getMetatableName(); }
+    static inline const char* DataPanelLineResearchMetatable()                      { return DataPanelLine_ResearchBinding::getMetatableName(); }
+    static inline const char* DataPanelLineSliderEditableMetatable()                { return DataPanelLine_SliderEditableBinding::getMetatableName(); }
+    static inline const char* DataPanelLineSliderMetatable()                        { return DataPanelLine_SliderBinding::getMetatableName(); }
+    static inline const char* DataPanelLineTextEditableMetatable()                  { return DataPanelLine_TextEditableBinding::getMetatableName(); }
+    static inline const char* DataPanelLineTextMetatable()                          { return DataPanelLine_TextBinding::getMetatableName(); }
+    static inline const char* DatapanelGUIMetatable()                               { return DatapanelGUIBinding::getMetatableName(); }
+    static inline const char* FloatingProgressBarMetatable()                        { return FloatingProgressBarBinding::getMetatableName(); }
+    static inline const char* ForgottenGUIMetatable()                               { return ForgottenGUIBinding::getMetatableName(); }
+    static inline const char* GUIWindowMetatable()                                  { return GUIWindowBinding::getMetatableName(); }
+    static inline const char* ScreenLabelDebugMetatable()                           { return ScreenLabelDebugBinding::getMetatableName(); }
+    static inline const char* ScreenLabelInterfaceMetatable()                       { return ScreenLabelInterfaceBinding::getMetatableName(); }
+    static inline const char* ScreenLabelMetatable()                                { return ScreenLabelBinding::getMetatableName(); }
+    static inline const char* ToolTipMetatable()                                    { return ToolTipBinding::getMetatableName(); }
 
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, bool val)                              { lua_pushboolean(L, val ? 1 : 0); }
@@ -353,9 +406,48 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, ZoneManager* val)                      { pushObject<ZoneManager>(L, val, ZoneManagerMetatable()); }
     static inline void pushArg(lua_State* L, ZoneMap* val)                          { pushObject<ZoneMap>(L, val, ZoneMapMetatable()); }
 
+    // pushArg overloads for the GUI hook events
+    static inline void pushArg(lua_State* L, CharacterStatsWindow* val)             { pushObject<CharacterStatsWindow>(L, val, CharacterStatsWindowMetatable()); }
+    static inline void pushArg(lua_State* L, CharacterStatsWindow::Stat* val)       { pushObject<CharacterStatsWindow::Stat>(L, val, CharacterStatsWindowStatMetatable()); }
+    static inline void pushArg(lua_State* L, CharacterStatsWindow::StatGroup* val)  { pushObject<CharacterStatsWindow::StatGroup>(L, val, CharacterStatsWindowStatGroupMetatable()); }
+    static inline void pushArg(lua_State* L, const lektor<Character*>& val)         { LektorPtrBinding<Character*>::push(L, const_cast<lektor<Character*>*>(&val)); }
+    static inline void pushArg(lua_State* L, const lektor<StringPair>& val)         { LektorValueBinding<StringPair>::push(L, const_cast<lektor<StringPair>*>(&val)); }
+    static inline void pushArg(lua_State* L, const Ogre::vector<GameDataReference>::type* val) { pushObject<Ogre::vector<GameDataReference>::type>(L, const_cast<Ogre::vector<GameDataReference>::type*>(val), "ogre_vector<GameDataReference>"); }
+    static inline void pushArg(lua_State* L, DataPanelLine_CheckBox* val)           { pushObject<DataPanelLine_CheckBox>(L, val, DataPanelLineCheckBoxMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine_DropBox* val)            { pushObject<DataPanelLine_DropBox>(L, val, DataPanelLineDropBoxMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine_Faction* val)            { pushObject<DataPanelLine_Faction>(L, val, DataPanelLineFactionMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine_KeyConfig* val)          { pushObject<DataPanelLine_KeyConfig>(L, val, DataPanelLineKeyConfigMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine_Progress* val)           { pushObject<DataPanelLine_Progress>(L, val, DataPanelLineProgressMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine_Research* val)           { pushObject<DataPanelLine_Research>(L, val, DataPanelLineResearchMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine_Slider* val)             { pushObject<DataPanelLine_Slider>(L, val, DataPanelLineSliderMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine_SliderEditable* val)     { pushObject<DataPanelLine_SliderEditable>(L, val, DataPanelLineSliderEditableMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine_Text* val)               { pushObject<DataPanelLine_Text>(L, val, DataPanelLineTextMetatable()); }
+    static inline void pushArg(lua_State* L, DataPanelLine_TextEditable* val)       { pushObject<DataPanelLine_TextEditable>(L, val, DataPanelLineTextEditableMetatable()); }
+    static inline void pushArg(lua_State* L, DatapanelGUI* val)                     { pushObject<DatapanelGUI>(L, val, DatapanelGUIMetatable()); }
+    static inline void pushArg(lua_State* L, FloatingProgressBar* val)              { pushObject<FloatingProgressBar>(L, val, FloatingProgressBarMetatable()); }
+    static inline void pushArg(lua_State* L, ForgottenGUI* val)                     { pushObject<ForgottenGUI>(L, val, ForgottenGUIMetatable()); }
+    static inline void pushArg(lua_State* L, GUIWindow* val)                        { pushObject<GUIWindow>(L, val, GUIWindowMetatable()); }
+    static inline void pushArg(lua_State* L, ScreenLabel* val)                      { pushObject<ScreenLabel>(L, val, ScreenLabelMetatable()); }
+    static inline void pushArg(lua_State* L, ScreenLabelDebug* val)                 { pushObject<ScreenLabelDebug>(L, val, ScreenLabelDebugMetatable()); }
+    static inline void pushArg(lua_State* L, ScreenLabelInterface* val)             { pushObject<ScreenLabelInterface>(L, val, ScreenLabelInterfaceMetatable()); }
+    static inline void pushArg(lua_State* L, ToolTip* val)                          { pushObject<ToolTip>(L, val, ToolTipMetatable()); }
+
 	// pushArg overloads for MyGUI types
     static inline void pushArg(lua_State* L, MyGUI::Widget* val)                    { pushObject<MyGUI::Widget>(L, val, MyGuiWidgetMetatable()); }
     static inline void pushArg(lua_State* L, wraps::BaseLayout* val)                { pushObject<wraps::BaseLayout>(L, val, BaseLayoutMetatable()); }
+    static inline void pushArg(lua_State* L, MyGUI::Gui* val)                       { pushObject<MyGUI::Gui>(L, val, GuiBinding::getMetatableName()); }
+    static inline void pushArg(lua_State* L, const MyGUI::Colour& val)              { pushValue<MyGUI::Colour>(L, val, ColourBinding::getMetatableName()); }
+    static inline void pushArg(lua_State* L, const MyGUI::IntCoord& val)            { pushValue<MyGUI::IntCoord>(L, val, IntCoordBinding::getMetatableName()); }
+
+    // A widget argument pushed with the metatable of its runtime MyGUI type.
+    // The plain MyGUI::Widget* overload above keeps the base metatable for
+    // existing events.
+    struct WidgetArg
+    {
+        MyGUI::Widget* widget;
+        WidgetArg(MyGUI::Widget* w) : widget(w) {}
+    };
+    static inline void pushArg(lua_State* L, const WidgetArg& val)                  { MyGUIBindings::pushWidget(L, val.widget); }
 
 	// pushArg overloads for Ogre types
     static inline void pushArg(lua_State* L, const Ogre::Quaternion& val)           { pushQuaternion(L, val); }
@@ -2235,4 +2327,1574 @@ void CallCharacterAnimalDropItemCallbacks(CharacterAnimal* thisptr, RootObject* 
 {
     ArgPusher2<CharacterAnimal*, RootObject*> pusher(thisptr, itembase);
     KenshiLua::EventSystem::get().callHandlers("CharacterAnimal::_NV_dropItem", &pusher);
+}
+
+// -----------------------------------------------------------
+// Callbacks for hooks in GUIWindow.h
+// -----------------------------------------------------------
+
+void CallGUIWindowSetPositionRealCallbacks(GUIWindow* thisptr, float x, float y)
+{
+    ArgPusher3<GUIWindow*, float, float> pusher(thisptr, x, y);
+    KenshiLua::EventSystem::get().callHandlers("GUIWindow::_NV_setPositionReal", &pusher);
+}
+
+void CallGUIWindowSetPositionCallbacks(GUIWindow* thisptr, int x, int y)
+{
+    ArgPusher3<GUIWindow*, int, int> pusher(thisptr, x, y);
+    KenshiLua::EventSystem::get().callHandlers("GUIWindow::_NV_setPosition", &pusher);
+}
+
+int CallGUIWindowGetWidthCallbacks(GUIWindow* thisptr, int defaultVal)
+{
+    ArgPusher2<GUIWindow*, int> pusher(thisptr, defaultVal);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("GUIWindow::_NV_getWidth", &pusher, defaultVal);
+}
+
+int CallGUIWindowGetHeightCallbacks(GUIWindow* thisptr, int defaultVal)
+{
+    ArgPusher2<GUIWindow*, int> pusher(thisptr, defaultVal);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("GUIWindow::_NV_getHeight", &pusher, defaultVal);
+}
+
+float CallGUIWindowGetWidthRealCallbacks(GUIWindow* thisptr, float defaultVal)
+{
+    ArgPusher2<GUIWindow*, float> pusher(thisptr, defaultVal);
+    return (float)KenshiLua::EventSystem::get().callHandlersNumber("GUIWindow::_NV_getWidthReal", &pusher, defaultVal);
+}
+
+float CallGUIWindowGetHeightRealCallbacks(GUIWindow* thisptr, float defaultVal)
+{
+    ArgPusher2<GUIWindow*, float> pusher(thisptr, defaultVal);
+    return (float)KenshiLua::EventSystem::get().callHandlersNumber("GUIWindow::_NV_getHeightReal", &pusher, defaultVal);
+}
+
+bool CallGUIWindowIsVisibleCallbacks(GUIWindow* thisptr, bool defaultVal)
+{
+    ArgPusher2<GUIWindow*, bool> pusher(thisptr, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("GUIWindow::_NV_isVisible", &pusher, defaultVal);
+}
+
+void CallGUIWindowUpdateCallbacks(GUIWindow* thisptr)
+{
+    ArgPusher1<GUIWindow*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("GUIWindow::_NV_update", &pusher);
+}
+
+void CallGUIWindowAutoChangeSelectedObjectCallbacks(GUIWindow* thisptr, const hand& obj)
+{
+    ArgPusher2<GUIWindow*, const hand&> pusher(thisptr, obj);
+    KenshiLua::EventSystem::get().callHandlers("GUIWindow::_NV_autoChangeSelectedObject", &pusher);
+}
+
+void CallGUIWindowGetWidgetCallbacks(GUIWindow* thisptr, MyGUI::Widget* result)
+{
+    ArgPusher2<GUIWindow*, KenshiLua::WidgetArg> pusher(thisptr, result);
+    KenshiLua::EventSystem::get().callHandlers("GUIWindow::getWidget", &pusher);
+}
+
+void CallGUIWindowResizeCallbacks(GUIWindow* thisptr, int w, int h)
+{
+    ArgPusher3<GUIWindow*, int, int> pusher(thisptr, w, h);
+    KenshiLua::EventSystem::get().callHandlers("GUIWindow::_NV_resize", &pusher);
+}
+
+
+// -----------------------------------------------------------
+// Callbacks for hooks in CharacterStatsWindow.h
+// -----------------------------------------------------------
+
+void CallCharacterStatsWindowStatDestructorCallbacks(CharacterStatsWindow::Stat* thisptr)
+{
+    ArgPusher1<CharacterStatsWindow::Stat*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::Stat::_DESTRUCTOR", &pusher);
+}
+
+void CallCharacterStatsWindowStatAssignCallbacks(CharacterStatsWindow::Stat* thisptr, CharacterStatsWindow::Stat* that)
+{
+    ArgPusher2<CharacterStatsWindow::Stat*, CharacterStatsWindow::Stat*> pusher(thisptr, that);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::Stat::operator=", &pusher);
+}
+
+void CallCharacterStatsWindowStatGroupDestructorCallbacks(CharacterStatsWindow::StatGroup* thisptr)
+{
+    ArgPusher1<CharacterStatsWindow::StatGroup*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::StatGroup::_DESTRUCTOR", &pusher);
+}
+
+void CallCharacterStatsWindowConstructedCallbacks(CharacterStatsWindow* thisptr, const hand& charHandle)
+{
+    ArgPusher2<CharacterStatsWindow*, const hand&> pusher(thisptr, charHandle);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::_CONSTRUCTOR", &pusher);
+}
+
+void CallCharacterStatsWindowDestructorCallbacks(CharacterStatsWindow* thisptr)
+{
+    ArgPusher1<CharacterStatsWindow*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::_DESTRUCTOR", &pusher);
+}
+
+void CallCharacterStatsWindowClearCallbacks(CharacterStatsWindow* thisptr)
+{
+    ArgPusher1<CharacterStatsWindow*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::_NV_clear", &pusher);
+}
+
+void CallCharacterStatsWindowCreateCallbacks(CharacterStatsWindow* thisptr)
+{
+    ArgPusher1<CharacterStatsWindow*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::_NV_create", &pusher);
+}
+
+void CallCharacterStatsWindowUpdateCallbacks(CharacterStatsWindow* thisptr)
+{
+    ArgPusher1<CharacterStatsWindow*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::_NV_update", &pusher);
+}
+
+void CallCharacterStatsWindowShowCallbacks(CharacterStatsWindow* thisptr, bool on)
+{
+    ArgPusher2<CharacterStatsWindow*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::_NV_show", &pusher);
+}
+
+bool CallCharacterStatsWindowIsVisibleCallbacks(CharacterStatsWindow* thisptr, bool defaultVal)
+{
+    ArgPusher2<CharacterStatsWindow*, bool> pusher(thisptr, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("CharacterStatsWindow::_NV_isVisible", &pusher, defaultVal);
+}
+
+void CallCharacterStatsWindowAutoChangeSelectedObjectCallbacks(CharacterStatsWindow* thisptr, const hand& obj)
+{
+    ArgPusher2<CharacterStatsWindow*, const hand&> pusher(thisptr, obj);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::_NV_autoChangeSelectedObject", &pusher);
+}
+
+void CallCharacterStatsWindowSetAutoUpdateModeCallbacks(CharacterStatsWindow* thisptr, bool on)
+{
+    ArgPusher2<CharacterStatsWindow*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::setAutoUpdateMode", &pusher);
+}
+
+void CallCharacterStatsWindowSetupStatsCallbacks(CharacterStatsWindow* thisptr)
+{
+    ArgPusher1<CharacterStatsWindow*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::setupStats", &pusher);
+}
+
+void CallCharacterStatsWindowUpdateStatsCallbacks(CharacterStatsWindow* thisptr)
+{
+    ArgPusher1<CharacterStatsWindow*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::updateStats", &pusher);
+}
+
+void CallCharacterStatsWindowClearDesctiptionCallbacks(CharacterStatsWindow* thisptr)
+{
+    ArgPusher1<CharacterStatsWindow*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::clearDesctiption", &pusher);
+}
+
+int CallCharacterStatsWindowSumStatsCallbacks(CharacterStatsWindow* thisptr, int defaultVal)
+{
+    ArgPusher2<CharacterStatsWindow*, int> pusher(thisptr, defaultVal);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("CharacterStatsWindow::sumStats", &pusher, defaultVal);
+}
+
+void CallCharacterStatsWindowCloseWindowCallbacks(CharacterStatsWindow* thisptr, MyGUI::Widget* sender, const std::string& name)
+{
+    ArgPusher3<CharacterStatsWindow*, KenshiLua::WidgetArg, const std::string&> pusher(thisptr, sender, name);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::closeWindow", &pusher);
+}
+
+void CallCharacterStatsWindowStatMouseOverCallbacks(CharacterStatsWindow* thisptr, MyGUI::Widget* sender, int arg2, int arg3)
+{
+    ArgPusher4<CharacterStatsWindow*, KenshiLua::WidgetArg, int, int> pusher(thisptr, sender, arg2, arg3);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::statMouseOver", &pusher);
+}
+
+DatapanelGUI* CallCharacterStatsWindowGetStatsPanelCallbacks(CharacterStatsWindow* thisptr, int group, DatapanelGUI* defaultVal)
+{
+    ArgPusher3<CharacterStatsWindow*, int, DatapanelGUI*> pusher(thisptr, group, defaultVal);
+    return static_cast<DatapanelGUI*>(KenshiLua::EventSystem::get().callHandlersObject("CharacterStatsWindow::getStatsPanel", KenshiLua::DatapanelGUIMetatable(), &pusher));
+}
+
+void CallCharacterStatsWindowAddStatCallbacks(int type, const std::string& id, const std::string& name, bool active, const std::string& description)
+{
+    ArgPusher5<int, const std::string&, const std::string&, bool, const std::string&> pusher(type, id, name, active, description);
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::addStat", &pusher);
+}
+
+CharacterStatsWindow::Stat* CallCharacterStatsWindowGetStatCallbacks(int type, CharacterStatsWindow::Stat* defaultVal)
+{
+    ArgPusher2<int, CharacterStatsWindow::Stat*> pusher(type, defaultVal);
+    return static_cast<CharacterStatsWindow::Stat*>(KenshiLua::EventSystem::get().callHandlersObject("CharacterStatsWindow::getStat", KenshiLua::CharacterStatsWindowStatMetatable(), &pusher));
+}
+
+CharacterStatsWindow::Stat* CallCharacterStatsWindowGetStatByIdCallbacks(const std::string& id, CharacterStatsWindow::Stat* defaultVal)
+{
+    ArgPusher2<const std::string&, CharacterStatsWindow::Stat*> pusher(id, defaultVal);
+    return static_cast<CharacterStatsWindow::Stat*>(KenshiLua::EventSystem::get().callHandlersObject("CharacterStatsWindow::getStatById", KenshiLua::CharacterStatsWindowStatMetatable(), &pusher));
+}
+
+void CallCharacterStatsWindowBuildStatsCallbacks()
+{
+    KenshiLua::EventSystem::get().callHandlers("CharacterStatsWindow::BuildStats", NULL);
+}
+
+
+// -----------------------------------------------------------
+// Callbacks for hooks in DatapanelGUI.h
+// -----------------------------------------------------------
+
+void CallDatapanelGUISetPositionRealCallbacks(DatapanelGUI* thisptr, float x, float y)
+{
+    ArgPusher3<DatapanelGUI*, float, float> pusher(thisptr, x, y);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_setPositionReal", &pusher);
+}
+
+void CallDatapanelGUISetPositionCallbacks(DatapanelGUI* thisptr, int x, int y)
+{
+    ArgPusher3<DatapanelGUI*, int, int> pusher(thisptr, x, y);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_setPosition", &pusher);
+}
+
+void CallDatapanelGUIResizeCallbacks(DatapanelGUI* thisptr, int w, int h)
+{
+    ArgPusher3<DatapanelGUI*, int, int> pusher(thisptr, w, h);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_resize", &pusher);
+}
+
+void CallDatapanelGUIClearCallbacks(DatapanelGUI* thisptr)
+{
+    ArgPusher1<DatapanelGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_clear", &pusher);
+}
+
+void CallDatapanelGUIClearPageCallbacks(DatapanelGUI* thisptr, int cat)
+{
+    ArgPusher2<DatapanelGUI*, int> pusher(thisptr, cat);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_clearPage", &pusher);
+}
+
+void CallDatapanelGUIHideAllWidgetsCallbacks(DatapanelGUI* thisptr)
+{
+    ArgPusher1<DatapanelGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_hideAllWidgets", &pusher);
+}
+
+void CallDatapanelGUICreateCallbacks(DatapanelGUI* thisptr)
+{
+    ArgPusher1<DatapanelGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_create", &pusher);
+}
+
+void CallDatapanelGUIShowCallbacks(DatapanelGUI* thisptr, bool on)
+{
+    ArgPusher2<DatapanelGUI*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_show", &pusher);
+}
+
+void CallDatapanelGUIShow_NonSmoothCallbacks(DatapanelGUI* thisptr, bool on)
+{
+    ArgPusher2<DatapanelGUI*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::show_NonSmooth", &pusher);
+}
+
+void CallDatapanelGUIUpdateCallbacks(DatapanelGUI* thisptr)
+{
+    ArgPusher1<DatapanelGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_update", &pusher);
+}
+
+void CallDatapanelGUISetPanelNameCallbacks(DatapanelGUI* thisptr, const std::string& name)
+{
+    ArgPusher2<DatapanelGUI*, const std::string&> pusher(thisptr, name);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setPanelName", &pusher);
+}
+
+void CallDatapanelGUIShowTabsCallbacks(DatapanelGUI* thisptr, bool on)
+{
+    ArgPusher2<DatapanelGUI*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_showTabs", &pusher);
+}
+
+void CallDatapanelGUIAddTabCallbacks(DatapanelGUI* thisptr, int id, const std::string& name, const std::string& icon)
+{
+    ArgPusher4<DatapanelGUI*, int, const std::string&, const std::string&> pusher(thisptr, id, name, icon);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_addTab", &pusher);
+}
+
+void CallDatapanelGUISetTabEnabledCallbacks(DatapanelGUI* thisptr, int id, bool enabled)
+{
+    ArgPusher3<DatapanelGUI*, int, bool> pusher(thisptr, id, enabled);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_setTabEnabled", &pusher);
+}
+
+void CallDatapanelGUISetTabNameCallbacks(DatapanelGUI* thisptr, int id, const std::string& name)
+{
+    ArgPusher3<DatapanelGUI*, int, const std::string&> pusher(thisptr, id, name);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_setTabName", &pusher);
+}
+
+void CallDatapanelGUISetCaptionCallbacks(DatapanelGUI* thisptr, const std::string& s)
+{
+    ArgPusher2<DatapanelGUI*, const std::string&> pusher(thisptr, s);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setCaption", &pusher);
+}
+
+void CallDatapanelGUISetCloseCallbackCallbacks(DatapanelGUI* thisptr, void* close)
+{
+    ArgPusher2<DatapanelGUI*, void*> pusher(thisptr, close);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setCloseCallback", &pusher);
+}
+
+void CallDatapanelGUISetAutomaticRefreshCallbacks(DatapanelGUI* thisptr, bool on)
+{
+    ArgPusher2<DatapanelGUI*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_setAutomaticRefresh", &pusher);
+}
+
+void CallDatapanelGUISetAutomaticTargetingCallbacks(DatapanelGUI* thisptr, bool on)
+{
+    ArgPusher2<DatapanelGUI*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_setAutomaticTargeting", &pusher);
+}
+
+void CallDatapanelGUIZeroLinesCallbacks(DatapanelGUI* thisptr, int cat, DataPanelLine* result)
+{
+    ArgPusher3<DatapanelGUI*, int, DataPanelLine*> pusher(thisptr, cat, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV__zeroLines", &pusher);
+}
+
+void CallDatapanelGUISetLineStatInfoCallbacks(DatapanelGUI* thisptr, const std::string& s1, const std::string& s2, int category, DataPanelLine* result)
+{
+    ArgPusher5<DatapanelGUI*, const std::string&, const std::string&, int, DataPanelLine*> pusher(thisptr, s1, s2, category, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineStatInfo", &pusher);
+}
+
+void CallDatapanelGUISetLineFactionCallbacks(DatapanelGUI* thisptr, const std::string& s1, const std::string& s2, int category, float v1, float v2, DataPanelLine_Faction* result)
+{
+    ArgPusher7<DatapanelGUI*, const std::string&, const std::string&, int, float, float, DataPanelLine_Faction*> pusher(thisptr, s1, s2, category, v1, v2, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineFaction", &pusher);
+}
+
+void CallDatapanelGUISetLineTextButtonCallbacks(DatapanelGUI* thisptr, const std::string& text, const std::string& caption, int category, float buttonWidth, const std::string& skin, DataPanelLine_Button* result)
+{
+    ArgPusher7<DatapanelGUI*, const std::string&, const std::string&, int, float, const std::string&, DataPanelLine_Button*> pusher(thisptr, text, caption, category, buttonWidth, skin, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineTextButton", &pusher);
+}
+
+void CallDatapanelGUISetLineButtonCallbacks(DatapanelGUI* thisptr, const std::string& key, const std::string& caption, int category, DataPanelLine_Button* result)
+{
+    ArgPusher5<DatapanelGUI*, const std::string&, const std::string&, int, DataPanelLine_Button*> pusher(thisptr, key, caption, category, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineButton", &pusher);
+}
+
+void CallDatapanelGUISetLineToggleButtonCallbacks(DatapanelGUI* thisptr, const std::string& key, const std::string& caption, int category, DataPanelLine_Button* result)
+{
+    ArgPusher5<DatapanelGUI*, const std::string&, const std::string&, int, DataPanelLine_Button*> pusher(thisptr, key, caption, category, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineToggleButton", &pusher);
+}
+
+void CallDatapanelGUISetLineSliderEditableCallbacks(DatapanelGUI* thisptr, const std::string& key, int category, bool showName, float min, float max, void* value, DataPanelLine_SliderEditable* result)
+{
+    ArgPusher8<DatapanelGUI*, const std::string&, int, bool, float, float, void*, DataPanelLine_SliderEditable*> pusher(thisptr, key, category, showName, min, max, value, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineSliderEditable", &pusher);
+}
+
+void CallDatapanelGUISetLineTextCallbacks(DatapanelGUI* thisptr, const std::string& key, const std::string& caption, int category, bool wordWrap, int textAlign, DataPanelLine_Text* result)
+{
+    ArgPusher7<DatapanelGUI*, const std::string&, const std::string&, int, bool, int, DataPanelLine_Text*> pusher(thisptr, key, caption, category, wordWrap, textAlign, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineText", &pusher);
+}
+
+void CallDatapanelGUISetLineTextEditableCallbacks(DatapanelGUI* thisptr, const std::string& key, const std::string& text, int category, bool showKey, bool multiLine, int textAlign, float width, DataPanelLine_TextEditable* result)
+{
+    ArgPusher9<DatapanelGUI*, const std::string&, const std::string&, int, bool, bool, int, float, DataPanelLine_TextEditable*> pusher(thisptr, key, text, category, showKey, multiLine, textAlign, width, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineTextEditable", &pusher);
+}
+
+void CallDatapanelGUISetLineSliderCallbacks(DatapanelGUI* thisptr, const std::string& key, const std::string& caption, float min, float max, int category, void* value, float scale, DataPanelLine_Slider* result)
+{
+    ArgPusher9<DatapanelGUI*, const std::string&, const std::string&, float, float, int, void*, float, DataPanelLine_Slider*> pusher(thisptr, key, caption, min, max, category, value, scale, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineSlider", &pusher);
+}
+
+void CallDatapanelGUISetLineProgressCallbacks(DatapanelGUI* thisptr, const std::string& key, int category, float progressValue, const std::string& progressText, bool showKey, DataPanelLine_Progress* result)
+{
+    ArgPusher7<DatapanelGUI*, const std::string&, int, float, const std::string&, bool, DataPanelLine_Progress*> pusher(thisptr, key, category, progressValue, progressText, showKey, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineProgress", &pusher);
+}
+
+void CallDatapanelGUIRemoveLineCallbacks(DatapanelGUI* thisptr, const std::string& s1, int category)
+{
+    ArgPusher3<DatapanelGUI*, const std::string&, int> pusher(thisptr, s1, category);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::removeLine", &pusher);
+}
+
+void CallDatapanelGUISetLineCheckboxCallbacks(DatapanelGUI* thisptr, const std::string& s1, void* val, int category, DataPanelLine_CheckBox* result)
+{
+    ArgPusher5<DatapanelGUI*, const std::string&, void*, int, DataPanelLine_CheckBox*> pusher(thisptr, s1, val, category, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineCheckbox", &pusher);
+}
+
+void CallDatapanelGUISetLineDropBoxCallbacks(DatapanelGUI* thisptr, const std::string& key, int category, void* valPtr, bool goBox, float width, DataPanelLine_DropBox* result)
+{
+    ArgPusher7<DatapanelGUI*, const std::string&, int, void*, bool, float, DataPanelLine_DropBox*> pusher(thisptr, key, category, valPtr, goBox, width, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLineDropBox", &pusher);
+}
+
+void CallDatapanelGUIAddSpaceCallbacks(DatapanelGUI* thisptr, int category, float h)
+{
+    ArgPusher3<DatapanelGUI*, int, float> pusher(thisptr, category, h);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::addSpace", &pusher);
+}
+
+void CallDatapanelGUISetLinesCallbacks(DatapanelGUI* thisptr, const lektor<StringPair>& data, int category)
+{
+    ArgPusher3<DatapanelGUI*, const lektor<StringPair>&, int> pusher(thisptr, data, category);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::setLines", &pusher);
+}
+
+void CallDatapanelGUISetCategoryIconCallbacks(DatapanelGUI* thisptr, int cat, const std::string& image)
+{
+    ArgPusher3<DatapanelGUI*, int, const std::string&> pusher(thisptr, cat, image);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_setCategoryIcon", &pusher);
+}
+
+void CallDatapanelGUIChangeCategoryCallbacks(DatapanelGUI* thisptr, int cat)
+{
+    ArgPusher2<DatapanelGUI*, int> pusher(thisptr, cat);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_changeCategory", &pusher);
+}
+
+void CallDatapanelGUIAddCustomLineCallbacks(DatapanelGUI* thisptr, DataPanelLine* line)
+{
+    ArgPusher2<DatapanelGUI*, DataPanelLine*> pusher(thisptr, line);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::addCustomLine", &pusher);
+}
+
+void CallDatapanelGUIAutoChangeSelectedObjectCallbacks(DatapanelGUI* thisptr, const hand& obj)
+{
+    ArgPusher2<DatapanelGUI*, const hand&> pusher(thisptr, obj);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_autoChangeSelectedObject", &pusher);
+}
+
+void CallDatapanelGUISetObjectCallbacks(DatapanelGUI* thisptr, const hand& obj)
+{
+    ArgPusher2<DatapanelGUI*, const hand&> pusher(thisptr, obj);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_setObject", &pusher);
+}
+
+void CallDatapanelGUISetLineSpacingCallbacks(DatapanelGUI* thisptr, float numLinesPerScreen)
+{
+    ArgPusher2<DatapanelGUI*, float> pusher(thisptr, numLinesPerScreen);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_NV_setLineSpacing", &pusher);
+}
+
+DataPanelLine* CallDatapanelGUIGetLineCallbacks(DatapanelGUI* thisptr, const std::string& key, int cat, DataPanelLine* defaultVal)
+{
+    ArgPusher4<DatapanelGUI*, const std::string&, int, DataPanelLine*> pusher(thisptr, key, cat, defaultVal);
+    return static_cast<DataPanelLine*>(KenshiLua::EventSystem::get().callHandlersObject("DatapanelGUI::_NV_getLine", KenshiLua::DataPanelLineMetatable(), &pusher));
+}
+
+bool CallDatapanelGUILineExistsCallbacks(DatapanelGUI* thisptr, const std::string& key, int cat, bool defaultVal)
+{
+    ArgPusher4<DatapanelGUI*, const std::string&, int, bool> pusher(thisptr, key, cat, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("DatapanelGUI::lineExists", &pusher, defaultVal);
+}
+
+void CallDatapanelGUITabButtonCallbacks(DatapanelGUI* thisptr, MyGUI::Widget* sender, int arg2, int arg3, int arg4)
+{
+    ArgPusher5<DatapanelGUI*, KenshiLua::WidgetArg, int, int, int> pusher(thisptr, sender, arg2, arg3, arg4);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::tabButton", &pusher);
+}
+
+int CallDatapanelGUIGetNumLinesCallbacks(DatapanelGUI* thisptr, int cat, int defaultVal)
+{
+    ArgPusher3<DatapanelGUI*, int, int> pusher(thisptr, cat, defaultVal);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("DatapanelGUI::getNumLines", &pusher, defaultVal);
+}
+
+DataPanelLine* CallDatapanelGUIGetLineByNumCallbacks(DatapanelGUI* thisptr, int cat, int i, DataPanelLine* defaultVal)
+{
+    ArgPusher4<DatapanelGUI*, int, int, DataPanelLine*> pusher(thisptr, cat, i, defaultVal);
+    return static_cast<DataPanelLine*>(KenshiLua::EventSystem::get().callHandlersObject("DatapanelGUI::getLineByNum", KenshiLua::DataPanelLineMetatable(), &pusher));
+}
+
+void CallDatapanelGUIDestructorCallbacks(DatapanelGUI* thisptr)
+{
+    ArgPusher1<DatapanelGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::_DESTRUCTOR", &pusher);
+}
+
+void CallDatapanelGUICreateLineCallbacks(DatapanelGUI* thisptr, DataPanelLine* line, int category, bool lastLine, DataPanelLine* result)
+{
+    ArgPusher5<DatapanelGUI*, DataPanelLine*, int, bool, DataPanelLine*> pusher(thisptr, line, category, lastLine, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::createLine", &pusher);
+}
+
+float CallDatapanelGUIGetNextVerticalPosCallbacks(DatapanelGUI* thisptr, int category, float defaultVal)
+{
+    ArgPusher3<DatapanelGUI*, int, float> pusher(thisptr, category, defaultVal);
+    return (float)KenshiLua::EventSystem::get().callHandlersNumber("DatapanelGUI::getNextVerticalPos", &pusher, defaultVal);
+}
+
+void CallDatapanelGUICloseButtonCallbackCallbacks(DatapanelGUI* thisptr, MyGUI::Widget* arg1, const std::string& arg2)
+{
+    ArgPusher3<DatapanelGUI*, KenshiLua::WidgetArg, const std::string&> pusher(thisptr, arg1, arg2);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::closeButtonCallback", &pusher);
+}
+
+void CallDatapanelGUIMouseOverCallbackCallbacks(DatapanelGUI* thisptr, MyGUI::Widget* sender)
+{
+    ArgPusher2<DatapanelGUI*, KenshiLua::WidgetArg> pusher(thisptr, sender);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::mouseOverCallback", &pusher);
+}
+
+void CallDatapanelGUINotifyMouseWheelCallbacks(DatapanelGUI* thisptr, MyGUI::Widget* sender, int rel)
+{
+    ArgPusher3<DatapanelGUI*, KenshiLua::WidgetArg, int> pusher(thisptr, sender, rel);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::notifyMouseWheel", &pusher);
+}
+
+void CallDatapanelGUIGetCoordsCallbacks(DatapanelGUI* thisptr, float left, float top, float width, float height, const MyGUI::IntCoord& result)
+{
+    ArgPusher6<DatapanelGUI*, float, float, float, float, const MyGUI::IntCoord&> pusher(thisptr, left, top, width, height, result);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::getCoords", &pusher);
+}
+
+bool CallDatapanelGUIDataExistsCallbacks(DatapanelGUI* thisptr, int cat, const std::string& name, bool defaultVal)
+{
+    ArgPusher4<DatapanelGUI*, int, const std::string&, bool> pusher(thisptr, cat, name, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("DatapanelGUI::dataExists", &pusher, defaultVal);
+}
+
+void CallDatapanelGUIClearCategoryTabsCallbacks(DatapanelGUI* thisptr)
+{
+    ArgPusher1<DatapanelGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DatapanelGUI::clearCategoryTabs", &pusher);
+}
+
+
+// -----------------------------------------------------------
+// Callbacks for hooks in DataPanelLine.h
+// -----------------------------------------------------------
+
+void CallDataPanelLineDestructorCallbacks(DataPanelLine* thisptr)
+{
+    ArgPusher1<DataPanelLine*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineSetVisibleCallbacks(DataPanelLine* thisptr, bool on)
+{
+    ArgPusher2<DataPanelLine*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine::_NV_setVisible", &pusher);
+}
+
+void CallDataPanelLineSetEnabledCallbacks(DataPanelLine* thisptr, bool on)
+{
+    ArgPusher2<DataPanelLine*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine::_NV_setEnabled", &pusher);
+}
+
+void CallDataPanelLineRefreshCallbacks(DataPanelLine* thisptr)
+{
+    ArgPusher1<DataPanelLine*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine::_NV_refresh", &pusher);
+}
+
+void CallDataPanelLineCreateMeCallbacks(DataPanelLine* thisptr, DatapanelGUI* parent, float top, bool lastLine)
+{
+    ArgPusher4<DataPanelLine*, DatapanelGUI*, float, bool> pusher(thisptr, parent, top, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineResizeCallbacks(DataPanelLine* thisptr, int width, int height)
+{
+    ArgPusher3<DataPanelLine*, int, int> pusher(thisptr, width, height);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine::_NV_resize", &pusher);
+}
+
+int CallDataPanelLineGetBottomCallbacks(DataPanelLine* thisptr, int defaultVal)
+{
+    ArgPusher2<DataPanelLine*, int> pusher(thisptr, defaultVal);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("DataPanelLine::_NV_getBottom", &pusher, defaultVal);
+}
+
+void CallDataPanelLineFactionConstructedCallbacks(DataPanelLine_Faction* thisptr, const std::string& a, const std::string& b, int cat, float vv1, float vv2)
+{
+    ArgPusher6<DataPanelLine_Faction*, const std::string&, const std::string&, int, float, float> pusher(thisptr, a, b, cat, vv1, vv2);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Faction::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineFactionCreateMeCallbacks(DataPanelLine_Faction* thisptr, DatapanelGUI* parent, float top, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_Faction*, DatapanelGUI*, float, bool> pusher(thisptr, parent, top, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Faction::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineFactionDestructorCallbacks(DataPanelLine_Faction* thisptr)
+{
+    ArgPusher1<DataPanelLine_Faction*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Faction::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineResearchConstructedCallbacks(DataPanelLine_Research* thisptr, const std::string& a, const std::string& b, int cat, float vv1, const std::string& barColor, bool Xbut)
+{
+    ArgPusher7<DataPanelLine_Research*, const std::string&, const std::string&, int, float, const std::string&, bool> pusher(thisptr, a, b, cat, vv1, barColor, Xbut);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Research::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineResearchCreateMeCallbacks(DataPanelLine_Research* thisptr, DatapanelGUI* parent, float top, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_Research*, DatapanelGUI*, float, bool> pusher(thisptr, parent, top, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Research::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineResearchDestructorCallbacks(DataPanelLine_Research* thisptr)
+{
+    ArgPusher1<DataPanelLine_Research*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Research::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineButtonConstructedCallbacks(DataPanelLine_Button* thisptr, const std::string& a, const std::string& b, int cat, float w, const std::string& skin)
+{
+    ArgPusher6<DataPanelLine_Button*, const std::string&, const std::string&, int, float, const std::string&> pusher(thisptr, a, b, cat, w, skin);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Button::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineButtonGetUserDataCallbacks(DataPanelLine_Button* thisptr, const hand& result)
+{
+    ArgPusher2<DataPanelLine_Button*, const hand&> pusher(thisptr, result);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Button::_NV_getUserData", &pusher);
+}
+
+void CallDataPanelLineButtonCreateMeCallbacks(DataPanelLine_Button* thisptr, DatapanelGUI* parent, float top, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_Button*, DatapanelGUI*, float, bool> pusher(thisptr, parent, top, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Button::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineButtonDestructorCallbacks(DataPanelLine_Button* thisptr)
+{
+    ArgPusher1<DataPanelLine_Button*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Button::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineSliderEditableSetEditableValuePtrCallbacks(DataPanelLine_SliderEditable* thisptr, void* val, float lo, float hi)
+{
+    ArgPusher4<DataPanelLine_SliderEditable*, void*, float, float> pusher(thisptr, val, lo, hi);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_SliderEditable::setEditableValuePtr", &pusher);
+}
+
+void CallDataPanelLineSliderEditableUpdateValuePtrCallbacks(DataPanelLine_SliderEditable* thisptr, void* ptr)
+{
+    ArgPusher2<DataPanelLine_SliderEditable*, void*> pusher(thisptr, ptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_SliderEditable::_NV_updateValuePtr", &pusher);
+}
+
+void CallDataPanelLineSliderEditableSetValueCallbacks(DataPanelLine_SliderEditable* thisptr, float v)
+{
+    ArgPusher2<DataPanelLine_SliderEditable*, float> pusher(thisptr, v);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_SliderEditable::setValue", &pusher);
+}
+
+void CallDataPanelLineSliderEditableRefreshCallbacks(DataPanelLine_SliderEditable* thisptr)
+{
+    ArgPusher1<DataPanelLine_SliderEditable*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_SliderEditable::_NV_refresh", &pusher);
+}
+
+void CallDataPanelLineSliderEditableSetPrecisionCallbacks(DataPanelLine_SliderEditable* thisptr, int dp)
+{
+    ArgPusher2<DataPanelLine_SliderEditable*, int> pusher(thisptr, dp);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_SliderEditable::setPrecision", &pusher);
+}
+
+void CallDataPanelLineSliderEditableConstructedCallbacks(DataPanelLine_SliderEditable* thisptr, const std::string& text, int category, bool showName, float min, float max, void* value)
+{
+    ArgPusher7<DataPanelLine_SliderEditable*, const std::string&, int, bool, float, float, void*> pusher(thisptr, text, category, showName, min, max, value);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_SliderEditable::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineSliderEditableCreateMeCallbacks(DataPanelLine_SliderEditable* thisptr, DatapanelGUI* parent, float top, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_SliderEditable*, DatapanelGUI*, float, bool> pusher(thisptr, parent, top, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_SliderEditable::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineSliderEditableEditCallbackCallbacks(DataPanelLine_SliderEditable* thisptr, MyGUI::Widget* sender)
+{
+    ArgPusher2<DataPanelLine_SliderEditable*, KenshiLua::WidgetArg> pusher(thisptr, sender);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_SliderEditable::editCallback", &pusher);
+}
+
+void CallDataPanelLineSliderEditableSliderCallbackCallbacks(DataPanelLine_SliderEditable* thisptr, MyGUI::Widget* sender, int position)
+{
+    ArgPusher3<DataPanelLine_SliderEditable*, KenshiLua::WidgetArg, int> pusher(thisptr, sender, position);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_SliderEditable::sliderCallback", &pusher);
+}
+
+void CallDataPanelLineSliderEditableDestructorCallbacks(DataPanelLine_SliderEditable* thisptr)
+{
+    ArgPusher1<DataPanelLine_SliderEditable*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_SliderEditable::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineTextConstructedCallbacks(DataPanelLine_Text* thisptr, const std::string& key, const std::string& text, int category, bool wordWrap, int textAlign)
+{
+    ArgPusher6<DataPanelLine_Text*, const std::string&, const std::string&, int, bool, int> pusher(thisptr, key, text, category, wordWrap, textAlign);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Text::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineTextCreateMeCallbacks(DataPanelLine_Text* thisptr, DatapanelGUI* parent, float top, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_Text*, DatapanelGUI*, float, bool> pusher(thisptr, parent, top, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Text::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineTextDestructorCallbacks(DataPanelLine_Text* thisptr)
+{
+    ArgPusher1<DataPanelLine_Text*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Text::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineTextEditableConstructedCallbacks(DataPanelLine_TextEditable* thisptr, const std::string& key, const std::string& text, int category, bool showKey, bool multiLine, int textAlign, float width)
+{
+    ArgPusher8<DataPanelLine_TextEditable*, const std::string&, const std::string&, int, bool, bool, int, float> pusher(thisptr, key, text, category, showKey, multiLine, textAlign, width);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_TextEditable::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineTextEditableCreateMeCallbacks(DataPanelLine_TextEditable* thisptr, DatapanelGUI* parent, float top, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_TextEditable*, DatapanelGUI*, float, bool> pusher(thisptr, parent, top, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_TextEditable::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineTextEditableTextChangedCallbacks(DataPanelLine_TextEditable* thisptr, MyGUI::Widget* sender)
+{
+    ArgPusher2<DataPanelLine_TextEditable*, KenshiLua::WidgetArg> pusher(thisptr, sender);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_TextEditable::textChanged", &pusher);
+}
+
+void CallDataPanelLineTextEditableDestructorCallbacks(DataPanelLine_TextEditable* thisptr)
+{
+    ArgPusher1<DataPanelLine_TextEditable*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_TextEditable::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineSliderConstructedCallbacks(DataPanelLine_Slider* thisptr, const std::string& key, const std::string& text, float min, float max, int category, float scale)
+{
+    ArgPusher7<DataPanelLine_Slider*, const std::string&, const std::string&, float, float, int, float> pusher(thisptr, key, text, min, max, category, scale);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Slider::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineSliderSliderValueChangedCallbacks(DataPanelLine_Slider* thisptr, MyGUI::Widget* sender, int value)
+{
+    ArgPusher3<DataPanelLine_Slider*, KenshiLua::WidgetArg, int> pusher(thisptr, sender, value);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Slider::sliderValueChanged", &pusher);
+}
+
+void CallDataPanelLineSliderUpdateValuePtrCallbacks(DataPanelLine_Slider* thisptr, void* ptr)
+{
+    ArgPusher2<DataPanelLine_Slider*, void*> pusher(thisptr, ptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Slider::_NV_updateValuePtr", &pusher);
+}
+
+void CallDataPanelLineSliderSetValueCallbacks(DataPanelLine_Slider* thisptr, float value)
+{
+    ArgPusher2<DataPanelLine_Slider*, float> pusher(thisptr, value);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Slider::setValue", &pusher);
+}
+
+float CallDataPanelLineSliderGetValueCallbacks(DataPanelLine_Slider* thisptr, float defaultVal)
+{
+    ArgPusher2<DataPanelLine_Slider*, float> pusher(thisptr, defaultVal);
+    return (float)KenshiLua::EventSystem::get().callHandlersNumber("DataPanelLine_Slider::getValue", &pusher, defaultVal);
+}
+
+void CallDataPanelLineSliderRefreshCallbacks(DataPanelLine_Slider* thisptr)
+{
+    ArgPusher1<DataPanelLine_Slider*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Slider::_NV_refresh", &pusher);
+}
+
+void CallDataPanelLineSliderCreateMeCallbacks(DataPanelLine_Slider* thisptr, DatapanelGUI* parent, float top, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_Slider*, DatapanelGUI*, float, bool> pusher(thisptr, parent, top, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Slider::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineSliderDestructorCallbacks(DataPanelLine_Slider* thisptr)
+{
+    ArgPusher1<DataPanelLine_Slider*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Slider::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineProgressSetProgressCallbacks(DataPanelLine_Progress* thisptr, float value, const std::string& text)
+{
+    ArgPusher3<DataPanelLine_Progress*, float, const std::string&> pusher(thisptr, value, text);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Progress::setProgress", &pusher);
+}
+
+void CallDataPanelLineProgressConstructedCallbacks(DataPanelLine_Progress* thisptr, const std::string& key, int category, bool showKey)
+{
+    ArgPusher4<DataPanelLine_Progress*, const std::string&, int, bool> pusher(thisptr, key, category, showKey);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Progress::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineProgressCreateMeCallbacks(DataPanelLine_Progress* thisptr, DatapanelGUI* parent, float top, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_Progress*, DatapanelGUI*, float, bool> pusher(thisptr, parent, top, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Progress::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineProgressDestructorCallbacks(DataPanelLine_Progress* thisptr)
+{
+    ArgPusher1<DataPanelLine_Progress*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_Progress::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineCheckBoxUpdateValuePtrCallbacks(DataPanelLine_CheckBox* thisptr, void* ptr)
+{
+    ArgPusher2<DataPanelLine_CheckBox*, void*> pusher(thisptr, ptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_CheckBox::_NV_updateValuePtr", &pusher);
+}
+
+void CallDataPanelLineCheckBoxRefreshCallbacks(DataPanelLine_CheckBox* thisptr)
+{
+    ArgPusher1<DataPanelLine_CheckBox*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_CheckBox::_NV_refresh", &pusher);
+}
+
+void CallDataPanelLineCheckBoxSetValueCallbacks(DataPanelLine_CheckBox* thisptr, bool checked)
+{
+    ArgPusher2<DataPanelLine_CheckBox*, bool> pusher(thisptr, checked);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_CheckBox::setValue", &pusher);
+}
+
+void CallDataPanelLineCheckBoxSetValuePtrCallbacks(DataPanelLine_CheckBox* thisptr, void* valPtr)
+{
+    ArgPusher2<DataPanelLine_CheckBox*, void*> pusher(thisptr, valPtr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_CheckBox::setValuePtr", &pusher);
+}
+
+void CallDataPanelLineCheckBoxConstructedCallbacks(DataPanelLine_CheckBox* thisptr, const std::string& key, int cat, void* val)
+{
+    ArgPusher4<DataPanelLine_CheckBox*, const std::string&, int, void*> pusher(thisptr, key, cat, val);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_CheckBox::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineCheckBoxNotifyToggleCheckCallbacks(DataPanelLine_CheckBox* thisptr, MyGUI::Widget* sender)
+{
+    ArgPusher2<DataPanelLine_CheckBox*, KenshiLua::WidgetArg> pusher(thisptr, sender);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_CheckBox::notifyToggleCheck", &pusher);
+}
+
+void CallDataPanelLineCheckBoxCreateMeCallbacks(DataPanelLine_CheckBox* thisptr, DatapanelGUI* parent, float topReal, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_CheckBox*, DatapanelGUI*, float, bool> pusher(thisptr, parent, topReal, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_CheckBox::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineCheckBoxDestructorCallbacks(DataPanelLine_CheckBox* thisptr)
+{
+    ArgPusher1<DataPanelLine_CheckBox*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_CheckBox::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineDropBoxAddAValueCallbacks(DataPanelLine_DropBox* thisptr, const std::string& key, int val)
+{
+    ArgPusher3<DataPanelLine_DropBox*, const std::string&, int> pusher(thisptr, key, val);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::addAValue", &pusher);
+}
+
+int CallDataPanelLineDropBoxGetSelectedValueCallbacks(DataPanelLine_DropBox* thisptr, int defaultVal)
+{
+    ArgPusher2<DataPanelLine_DropBox*, int> pusher(thisptr, defaultVal);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("DataPanelLine_DropBox::getSelectedValue", &pusher, defaultVal);
+}
+
+void CallDataPanelLineDropBoxSetSelectedValueCallbacks(DataPanelLine_DropBox* thisptr, int val)
+{
+    ArgPusher2<DataPanelLine_DropBox*, int> pusher(thisptr, val);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::setSelectedValue", &pusher);
+}
+
+void CallDataPanelLineDropBoxGetSelectedTextCallbacks(DataPanelLine_DropBox* thisptr, const std::string& result)
+{
+    ArgPusher2<DataPanelLine_DropBox*, const std::string&> pusher(thisptr, result);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::getSelectedText", &pusher);
+}
+
+void CallDataPanelLineDropBoxClearValuesCallbacks(DataPanelLine_DropBox* thisptr)
+{
+    ArgPusher1<DataPanelLine_DropBox*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::clearValues", &pusher);
+}
+
+void CallDataPanelLineDropBoxCreateMeCallbacks(DataPanelLine_DropBox* thisptr, DatapanelGUI* parent, float top, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_DropBox*, DatapanelGUI*, float, bool> pusher(thisptr, parent, top, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineDropBoxUpdateValuePtrCallbacks(DataPanelLine_DropBox* thisptr, void* ptr)
+{
+    ArgPusher2<DataPanelLine_DropBox*, void*> pusher(thisptr, ptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::_NV_updateValuePtr", &pusher);
+}
+
+void CallDataPanelLineDropBoxRefreshCallbacks(DataPanelLine_DropBox* thisptr)
+{
+    ArgPusher1<DataPanelLine_DropBox*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::_NV_refresh", &pusher);
+}
+
+void CallDataPanelLineDropBoxConstructedCallbacks(DataPanelLine_DropBox* thisptr, const std::string& text, int category, void* valuePtr, float width, bool hasGobox)
+{
+    ArgPusher6<DataPanelLine_DropBox*, const std::string&, int, void*, float, bool> pusher(thisptr, text, category, valuePtr, width, hasGobox);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineDropBoxSelectionChangeCallbacks(DataPanelLine_DropBox* thisptr, MyGUI::Widget* sender, int i)
+{
+    ArgPusher3<DataPanelLine_DropBox*, KenshiLua::WidgetArg, int> pusher(thisptr, sender, i);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::selectionChange", &pusher);
+}
+
+void CallDataPanelLineDropBoxGoPressedCallbacks(DataPanelLine_DropBox* thisptr, MyGUI::Widget* sender)
+{
+    ArgPusher2<DataPanelLine_DropBox*, KenshiLua::WidgetArg> pusher(thisptr, sender);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::goPressed", &pusher);
+}
+
+void CallDataPanelLineDropBoxDestructorCallbacks(DataPanelLine_DropBox* thisptr)
+{
+    ArgPusher1<DataPanelLine_DropBox*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_DropBox::_DESTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineKeyConfigConstructedCallbacks(DataPanelLine_KeyConfig* thisptr, const std::string& cmd, const std::string& text, int cat)
+{
+    ArgPusher4<DataPanelLine_KeyConfig*, const std::string&, const std::string&, int> pusher(thisptr, cmd, text, cat);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_KeyConfig::_CONSTRUCTOR", &pusher);
+}
+
+void CallDataPanelLineKeyConfigGetCommandCallbacks(DataPanelLine_KeyConfig* thisptr, const std::string& result)
+{
+    ArgPusher2<DataPanelLine_KeyConfig*, const std::string&> pusher(thisptr, result);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_KeyConfig::getCommand", &pusher);
+}
+
+int CallDataPanelLineKeyConfigOldKeyCallbacks(DataPanelLine_KeyConfig* thisptr, int defaultVal)
+{
+    ArgPusher2<DataPanelLine_KeyConfig*, int> pusher(thisptr, defaultVal);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("DataPanelLine_KeyConfig::oldKey", &pusher, defaultVal);
+}
+
+void CallDataPanelLineKeyConfigSetKeyCallbacks(DataPanelLine_KeyConfig* thisptr, const std::string& s)
+{
+    ArgPusher2<DataPanelLine_KeyConfig*, const std::string&> pusher(thisptr, s);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_KeyConfig::setKey", &pusher);
+}
+
+void CallDataPanelLineKeyConfigEraseKeyCallbacks(DataPanelLine_KeyConfig* thisptr, const std::string& key)
+{
+    ArgPusher2<DataPanelLine_KeyConfig*, const std::string&> pusher(thisptr, key);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_KeyConfig::eraseKey", &pusher);
+}
+
+void CallDataPanelLineKeyConfigRefreshCallbacks(DataPanelLine_KeyConfig* thisptr)
+{
+    ArgPusher1<DataPanelLine_KeyConfig*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_KeyConfig::_NV_refresh", &pusher);
+}
+
+void CallDataPanelLineKeyConfigCancelCallbacks(DataPanelLine_KeyConfig* thisptr)
+{
+    ArgPusher1<DataPanelLine_KeyConfig*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_KeyConfig::cancel", &pusher);
+}
+
+void CallDataPanelLineKeyConfigCreateMeCallbacks(DataPanelLine_KeyConfig* thisptr, DatapanelGUI* p, float vpos, bool lastLine)
+{
+    ArgPusher4<DataPanelLine_KeyConfig*, DatapanelGUI*, float, bool> pusher(thisptr, p, vpos, lastLine);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_KeyConfig::_NV_createMe", &pusher);
+}
+
+void CallDataPanelLineKeyConfigClickButtonCallbacks(DataPanelLine_KeyConfig* thisptr, MyGUI::Widget* sender)
+{
+    ArgPusher2<DataPanelLine_KeyConfig*, KenshiLua::WidgetArg> pusher(thisptr, sender);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_KeyConfig::clickButton", &pusher);
+}
+
+void CallDataPanelLineKeyConfigDestructorCallbacks(DataPanelLine_KeyConfig* thisptr)
+{
+    ArgPusher1<DataPanelLine_KeyConfig*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("DataPanelLine_KeyConfig::_DESTRUCTOR", &pusher);
+}
+
+
+// -----------------------------------------------------------
+// Callbacks for hooks in ForgottenGUI.h
+// -----------------------------------------------------------
+
+void CallForgottenGUIConstructedCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::_CONSTRUCTOR", &pusher);
+}
+
+void CallForgottenGUIDestructorCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::_DESTRUCTOR", &pusher);
+}
+
+void CallForgottenGUIClearGUICallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::clearGUI", &pusher);
+}
+
+void CallForgottenGUIShutDownCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::shutDown", &pusher);
+}
+
+void CallForgottenGUIRestartCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::restart", &pusher);
+}
+
+void CallForgottenGUIChangeFontSizeCallbacks()
+{
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::changeFontSize", NULL);
+}
+
+void CallForgottenGUISetupGuiScalingCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::setupGuiScaling", &pusher);
+}
+
+void CallForgottenGUIInitCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::init", &pusher);
+}
+
+float CallForgottenGUIGetTopOfScreenMessagePositionCallbacks(ForgottenGUI* thisptr, float defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, float> pusher(thisptr, defaultVal);
+    return (float)KenshiLua::EventSystem::get().callHandlersNumber("ForgottenGUI::getTopOfScreenMessagePosition", &pusher, defaultVal);
+}
+
+void CallForgottenGUIShowLoadingMessageCallbacks(ForgottenGUI* thisptr, bool on)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showLoadingMessage", &pusher);
+}
+
+bool CallForgottenGUIIsLoadingMessageVisibleCallbacks(ForgottenGUI* thisptr, bool defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ForgottenGUI::isLoadingMessageVisible", &pusher, defaultVal);
+}
+
+void CallForgottenGUIShowPauseMessageCallbacks(ForgottenGUI* thisptr, bool on)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showPauseMessage", &pusher);
+}
+
+bool CallForgottenGUIIsLoadingCallbacks(ForgottenGUI* thisptr, bool defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ForgottenGUI::isLoading", &pusher, defaultVal);
+}
+
+void CallForgottenGUISetLoadingCallbacks(ForgottenGUI* thisptr, bool value)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, value);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::setLoading", &pusher);
+}
+
+bool CallForgottenGUIIsPausedCallbacks(ForgottenGUI* thisptr, bool defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ForgottenGUI::isPaused", &pusher, defaultVal);
+}
+
+bool CallForgottenGUIInDialogueCallbacks(ForgottenGUI* thisptr, bool defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ForgottenGUI::inDialogue", &pusher, defaultVal);
+}
+
+void CallForgottenGUIMessageBoxCallbacks(ForgottenGUI* thisptr, const std::string& title, const std::string& message, int btn, bool modal, void* callback, MyGUI::Widget* result)
+{
+    ArgPusher7<ForgottenGUI*, const std::string&, const std::string&, int, bool, void*, KenshiLua::WidgetArg> pusher(thisptr, title, message, btn, modal, callback, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::messageBox", &pusher);
+}
+
+void CallForgottenGUIHideMessageBoxCallbacks(ForgottenGUI* thisptr, bool enter, bool result)
+{
+    ArgPusher3<ForgottenGUI*, bool, bool> pusher(thisptr, enter, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::hideMessageBox", &pusher);
+}
+
+bool CallForgottenGUIHasModalMessageCallbacks(ForgottenGUI* thisptr, bool defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ForgottenGUI::hasModalMessage", &pusher, defaultVal);
+}
+
+void CallForgottenGUIShowMainbarCallbacks(ForgottenGUI* thisptr, bool on)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showMainbar", &pusher);
+}
+
+void CallForgottenGUIUpdateBountyPanelVisibilityCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::updateBountyPanelVisibility", &pusher);
+}
+
+bool CallForgottenGUIGetInDialogueCallbacks(ForgottenGUI* thisptr, bool defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ForgottenGUI::getInDialogue", &pusher, defaultVal);
+}
+
+ToolTip* CallForgottenGUIGetToolTipCallbacks(ForgottenGUI* thisptr, ToolTip* defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, ToolTip*> pusher(thisptr, defaultVal);
+    return static_cast<ToolTip*>(KenshiLua::EventSystem::get().callHandlersObject("ForgottenGUI::getToolTip", KenshiLua::ToolTipMetatable(), &pusher));
+}
+
+void CallForgottenGUIToggleCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::toggle", &pusher);
+}
+
+void CallForgottenGUIShowNamesCallbacks(ForgottenGUI* thisptr, bool on)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, on);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showNames", &pusher);
+}
+
+void CallForgottenGUIShowPrintOutputCallbacks(ForgottenGUI* thisptr, bool v)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, v);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showPrintOutput", &pusher);
+}
+
+void CallForgottenGUIShowCharacterEditorCallbacks(ForgottenGUI* thisptr, const lektor<Character*>& characters, int mode, const Ogre::vector<GameDataReference>::type* races)
+{
+    ArgPusher4<ForgottenGUI*, const lektor<Character*>&, int, const Ogre::vector<GameDataReference>::type*> pusher(thisptr, characters, mode, races);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showCharacterEditor", &pusher);
+}
+
+void CallForgottenGUICloseCharacterEditorCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::closeCharacterEditor", &pusher);
+}
+
+void CallForgottenGUIShowCharacterStatsWindowCallbacks(ForgottenGUI* thisptr, const hand& owner)
+{
+    ArgPusher2<ForgottenGUI*, const hand&> pusher(thisptr, owner);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showCharacterStatsWindow", &pusher);
+}
+
+void CallForgottenGUICloseCharacterStatsWindowCallbacks(ForgottenGUI* thisptr, const hand& owner)
+{
+    ArgPusher2<ForgottenGUI*, const hand&> pusher(thisptr, owner);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::closeCharacterStatsWindow", &pusher);
+}
+
+void CallForgottenGUICloseAllCharacterStatsWindowsCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::closeAllCharacterStatsWindows", &pusher);
+}
+
+bool CallForgottenGUIIsStatsWindowOpenCallbacks(ForgottenGUI* thisptr, bool defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ForgottenGUI::isStatsWindowOpen", &pusher, defaultVal);
+}
+
+void CallForgottenGUIToggleStatsWindowCallbacks(ForgottenGUI* thisptr, const hand& owner)
+{
+    ArgPusher2<ForgottenGUI*, const hand&> pusher(thisptr, owner);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::toggleStatsWindow", &pusher);
+}
+
+void CallForgottenGUIToggleCharacterStatsWindowPermanentCallbacks(ForgottenGUI* thisptr, const hand& owner)
+{
+    ArgPusher2<ForgottenGUI*, const hand&> pusher(thisptr, owner);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::toggleCharacterStatsWindowPermanent", &pusher);
+}
+
+void CallForgottenGUISelectedObjectsChangedCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::selectedObjectsChanged", &pusher);
+}
+
+void CallForgottenGUIUpdateToOrdersPanelCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::updateToOrdersPanel", &pusher);
+}
+
+void CallForgottenGUINotifyTownDeletedCallbacks(ForgottenGUI* thisptr, Town* t)
+{
+    ArgPusher2<ForgottenGUI*, Town*> pusher(thisptr, t);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::notifyTownDeleted", &pusher);
+}
+
+void CallForgottenGUIUpdateCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::update", &pusher);
+}
+
+void CallForgottenGUIShowTradeWindowCallbacks(ForgottenGUI* thisptr, const hand& a, const hand& b, int type)
+{
+    ArgPusher4<ForgottenGUI*, const hand&, const hand&, int> pusher(thisptr, a, b, type);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showTradeWindow", &pusher);
+}
+
+void CallForgottenGUICloseTradeWindowCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::closeTradeWindow", &pusher);
+}
+
+void CallForgottenGUIShowInventoryCallbacks(ForgottenGUI* thisptr, const hand& owner, bool autoPosition, float x, float y, InventoryGUI* result)
+{
+    ArgPusher6<ForgottenGUI*, const hand&, bool, float, float, InventoryGUI*> pusher(thisptr, owner, autoPosition, x, y, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showInventory", &pusher);
+}
+
+void CallForgottenGUIShowTraderInventoryCallbacks(ForgottenGUI* thisptr, const hand& owner, InventoryGUI* result)
+{
+    ArgPusher3<ForgottenGUI*, const hand&, InventoryGUI*> pusher(thisptr, owner, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showTraderInventory", &pusher);
+}
+
+void CallForgottenGUIShowInventoryBuildingCallbacks(ForgottenGUI* thisptr, const hand& owner, InventoryGUI* result)
+{
+    ArgPusher3<ForgottenGUI*, const hand&, InventoryGUI*> pusher(thisptr, owner, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showInventoryBuilding", &pusher);
+}
+
+void CallForgottenGUIShowInventoryNPCCallbacks(ForgottenGUI* thisptr, const hand& owner, InventoryGUI* result)
+{
+    ArgPusher3<ForgottenGUI*, const hand&, InventoryGUI*> pusher(thisptr, owner, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::showInventoryNPC", &pusher);
+}
+
+void CallForgottenGUICloseInventoryCallbacks(ForgottenGUI* thisptr, const hand& owner)
+{
+    ArgPusher2<ForgottenGUI*, const hand&> pusher(thisptr, owner);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::closeInventory", &pusher);
+}
+
+void CallForgottenGUICloseInventoryBuildingCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::closeInventoryBuilding", &pusher);
+}
+
+void CallForgottenGUICloseAllInventoriesCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::closeAllInventories", &pusher);
+}
+
+void CallForgottenGUICloseAllWindowsCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::closeAllWindows", &pusher);
+}
+
+InventoryGUI* CallForgottenGUIGetInventoryWindowCallbacks(ForgottenGUI* thisptr, const hand& who, InventoryGUI* defaultVal)
+{
+    ArgPusher3<ForgottenGUI*, const hand&, InventoryGUI*> pusher(thisptr, who, defaultVal);
+    return static_cast<InventoryGUI*>(KenshiLua::EventSystem::get().callHandlersObject("ForgottenGUI::getInventoryWindow", KenshiLua::InventoryGUIMetatable(), &pusher));
+}
+
+void CallForgottenGUIToggleInventoryCallbacks(ForgottenGUI* thisptr, const hand& owner, InventoryGUI* parentInv, bool attached, InventoryGUI* result)
+{
+    ArgPusher5<ForgottenGUI*, const hand&, InventoryGUI*, bool, InventoryGUI*> pusher(thisptr, owner, parentInv, attached, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::toggleInventory", &pusher);
+}
+
+int CallForgottenGUIGetNumOpenInventoryWindowsCallbacks(ForgottenGUI* thisptr, int defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, int> pusher(thisptr, defaultVal);
+    return (int)KenshiLua::EventSystem::get().callHandlersNumber("ForgottenGUI::getNumOpenInventoryWindows", &pusher, defaultVal);
+}
+
+InventoryGUI* CallForgottenGUIGetInventoryWindowWithMouseCallbacks(ForgottenGUI* thisptr, InventoryGUI* defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, InventoryGUI*> pusher(thisptr, defaultVal);
+    return static_cast<InventoryGUI*>(KenshiLua::EventSystem::get().callHandlersObject("ForgottenGUI::getInventoryWindowWithMouse", KenshiLua::InventoryGUIMetatable(), &pusher));
+}
+
+bool CallForgottenGUIHasInventoryWindowOpenCallbacks(ForgottenGUI* thisptr, const hand& obj, bool defaultVal)
+{
+    ArgPusher3<ForgottenGUI*, const hand&, bool> pusher(thisptr, obj, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ForgottenGUI::hasInventoryWindowOpen", &pusher, defaultVal);
+}
+
+bool CallForgottenGUIIsAnyInventoryWindowOpenCallbacks(ForgottenGUI* thisptr, bool defaultVal)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ForgottenGUI::isAnyInventoryWindowOpen", &pusher, defaultVal);
+}
+
+void CallForgottenGUIToggleInventoryWindowPermanentCallbacks(ForgottenGUI* thisptr, const hand& owner)
+{
+    ArgPusher2<ForgottenGUI*, const hand&> pusher(thisptr, owner);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::toggleInventoryWindowPermanent", &pusher);
+}
+
+void CallForgottenGUIToggleHelpWindowCallbacks(ForgottenGUI* thisptr)
+{
+    ArgPusher1<ForgottenGUI*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::toggleHelpWindow", &pusher);
+}
+
+void CallForgottenGUIAddWindowToUpdateListCallbacks(ForgottenGUI* thisptr, GUIWindow* win)
+{
+    ArgPusher2<ForgottenGUI*, GUIWindow*> pusher(thisptr, win);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::addWindowToUpdateList", &pusher);
+}
+
+void CallForgottenGUIRemoveWindowFromUpdateListCallbacks(ForgottenGUI* thisptr, GUIWindow* win)
+{
+    ArgPusher2<ForgottenGUI*, GUIWindow*> pusher(thisptr, win);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::removeWindowFromUpdateList", &pusher);
+}
+
+void CallForgottenGUIAddScreenLabelCallbacks(ForgottenGUI* thisptr, ScreenLabelInterface* label)
+{
+    ArgPusher2<ForgottenGUI*, ScreenLabelInterface*> pusher(thisptr, label);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::addScreenLabel", &pusher);
+}
+
+void CallForgottenGUIAddDatapanelToUpdateListCallbacks(ForgottenGUI* thisptr, DatapanelGUI* datapanel)
+{
+    ArgPusher2<ForgottenGUI*, DatapanelGUI*> pusher(thisptr, datapanel);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::addDatapanelToUpdateList", &pusher);
+}
+
+void CallForgottenGUIRemoveDatapanelFromUpdateListCallbacks(ForgottenGUI* thisptr, DatapanelGUI* datapanel)
+{
+    ArgPusher2<ForgottenGUI*, DatapanelGUI*> pusher(thisptr, datapanel);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::removeDatapanelFromUpdateList", &pusher);
+}
+
+void CallForgottenGUIDestroyWidgetCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* widget)
+{
+    ArgPusher2<ForgottenGUI*, KenshiLua::WidgetArg> pusher(thisptr, widget);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::destroyWidget", &pusher);
+}
+
+bool CallForgottenGUIWidgetHasMouseCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* w, bool defaultVal)
+{
+    ArgPusher3<ForgottenGUI*, KenshiLua::WidgetArg, bool> pusher(thisptr, w, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ForgottenGUI::widgetHasMouse", &pusher, defaultVal);
+}
+
+void CallForgottenGUISetupCallbacks(ForgottenGUI* thisptr, void* mRoot, void* window)
+{
+    ArgPusher3<ForgottenGUI*, void*, void*> pusher(thisptr, mRoot, window);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::setup", &pusher);
+}
+
+void CallForgottenGUISetMouseCursorVisibleCallbacks(ForgottenGUI* thisptr, bool visible)
+{
+    ArgPusher2<ForgottenGUI*, bool> pusher(thisptr, visible);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::setMouseCursorVisible", &pusher);
+}
+
+void CallForgottenGUI_showTradeWindowCallbacks(ForgottenGUI* thisptr, RootObject* a, RootObject* b, int tradeType)
+{
+    ArgPusher4<ForgottenGUI*, RootObject*, RootObject*, int> pusher(thisptr, a, b, tradeType);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::_showTradeWindow", &pusher);
+}
+
+void CallForgottenGUISetInventoryPositionCallbacks(ForgottenGUI* thisptr, const hand& owner, InventoryGUI* inventory)
+{
+    ArgPusher3<ForgottenGUI*, const hand&, InventoryGUI*> pusher(thisptr, owner, inventory);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::setInventoryPosition", &pusher);
+}
+
+void CallForgottenGUIInventoriesSelectedObjectUpdateCallbacks(ForgottenGUI* thisptr, const hand& selectedObject)
+{
+    ArgPusher2<ForgottenGUI*, const hand&> pusher(thisptr, selectedObject);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::inventoriesSelectedObjectUpdate", &pusher);
+}
+
+void CallForgottenGUIKeepWindownOnScreenCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* win)
+{
+    ArgPusher2<ForgottenGUI*, KenshiLua::WidgetArg> pusher(thisptr, win);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::keepWindownOnScreen", &pusher);
+}
+
+void CallForgottenGUIGetDataLineColorCallbacks(ForgottenGUI* thisptr, int actualVal, int normalVal, const std::string& result)
+{
+    ArgPusher4<ForgottenGUI*, int, int, const std::string&> pusher(thisptr, actualVal, normalVal, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::getDataLineColor", &pusher);
+}
+
+void CallForgottenGUICreatePanelCallbacks(ForgottenGUI* thisptr, const std::string& name, float top, float left, float width, float height, const std::string& layer, const std::string& skin, MyGUI::Widget* result)
+{
+    ArgPusher9<ForgottenGUI*, const std::string&, float, float, float, float, const std::string&, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, name, top, left, width, height, layer, skin, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createPanel", &pusher);
+}
+
+void CallForgottenGUICreatePanelAbsCallbacks(ForgottenGUI* thisptr, const std::string& name, float top, float left, float width, float height, const std::string& layer, const std::string& skin, MyGUI::Widget* result)
+{
+    ArgPusher9<ForgottenGUI*, const std::string&, float, float, float, float, const std::string&, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, name, top, left, width, height, layer, skin, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createPanelAbs", &pusher);
+}
+
+void CallForgottenGUICreateImageCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& image, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, KenshiLua::WidgetArg, float, float, float, float, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, image, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createImage", &pusher);
+}
+
+void CallForgottenGUICreateImageAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, int top, int left, int width, int height, const std::string& image, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, KenshiLua::WidgetArg, int, int, int, int, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, image, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createImageAbs", &pusher);
+}
+
+void CallForgottenGUICreateRotatableImageAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, int top, int left, int width, int height, const std::string& image, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, KenshiLua::WidgetArg, int, int, int, int, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, image, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createRotatableImageAbs", &pusher);
+}
+
+void CallForgottenGUICreateTabPanelCallbacks(ForgottenGUI* thisptr, const std::string& name, float top, float left, float width, float height, const std::string& layer, const std::string& skin, MyGUI::Widget* result)
+{
+    ArgPusher9<ForgottenGUI*, const std::string&, float, float, float, float, const std::string&, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, name, top, left, width, height, layer, skin, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createTabPanel", &pusher);
+}
+
+void CallForgottenGUICreateButtonAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, int top, int left, int width, int height, const std::string& name, const std::string& text, const std::string& skin, MyGUI::Widget* result)
+{
+    ArgPusher10<ForgottenGUI*, KenshiLua::WidgetArg, int, int, int, int, const std::string&, const std::string&, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, name, text, skin, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createButtonAbs", &pusher);
+}
+
+void CallForgottenGUICreateButtonCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& name, const std::string& text, const std::string& skin, MyGUI::Widget* result)
+{
+    ArgPusher10<ForgottenGUI*, KenshiLua::WidgetArg, float, float, float, float, const std::string&, const std::string&, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, name, text, skin, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createButton", &pusher);
+}
+
+void CallForgottenGUICreateDropBoxCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, const std::string& name, float top, float left, float width, float height, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, KenshiLua::WidgetArg, const std::string&, float, float, float, float, KenshiLua::WidgetArg> pusher(thisptr, parent, name, top, left, width, height, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createDropBox", &pusher);
+}
+
+void CallForgottenGUICreateDropBoxAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, const std::string& name, int top, int left, int width, int height, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, KenshiLua::WidgetArg, const std::string&, int, int, int, int, KenshiLua::WidgetArg> pusher(thisptr, parent, name, top, left, width, height, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createDropBoxAbs", &pusher);
+}
+
+void CallForgottenGUICreateProgressBarCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& type, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, KenshiLua::WidgetArg, float, float, float, float, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, type, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createProgressBar", &pusher);
+}
+
+void CallForgottenGUICreateProgressBarAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& type, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, KenshiLua::WidgetArg, float, float, float, float, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, type, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createProgressBarAbs", &pusher);
+}
+
+void CallForgottenGUICreateFloatingLabelCallbacks(ForgottenGUI* thisptr, float top, float left, float width, float height, const std::string& text, int a, const std::string& layer, MyGUI::Widget* result)
+{
+    ArgPusher9<ForgottenGUI*, float, float, float, float, const std::string&, int, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, top, left, width, height, text, a, layer, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createFloatingLabel", &pusher);
+}
+
+void CallForgottenGUICreateValueEditCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& name, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, KenshiLua::WidgetArg, float, float, float, float, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, name, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createValueEdit", &pusher);
+}
+
+void CallForgottenGUICreateScrollBarAbsCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, int top, int left, int width, int height, int range, int value, MyGUI::Widget* result)
+{
+    ArgPusher9<ForgottenGUI*, KenshiLua::WidgetArg, int, int, int, int, int, int, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, range, value, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createScrollBarAbs", &pusher);
+}
+
+void CallForgottenGUICreateCheckboxCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, int left, int top, int width, int height, const std::string& caption, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, KenshiLua::WidgetArg, int, int, int, int, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, parent, left, top, width, height, caption, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createCheckbox", &pusher);
+}
+
+void CallForgottenGUICreateValueEditTransparentCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, const std::string& name, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, KenshiLua::WidgetArg, float, float, float, float, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, name, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createValueEditTransparent", &pusher);
+}
+
+void CallForgottenGUICreateListboxCallbacks(ForgottenGUI* thisptr, MyGUI::Widget* parent, float top, float left, float width, float height, MyGUI::Widget* result)
+{
+    ArgPusher7<ForgottenGUI*, KenshiLua::WidgetArg, float, float, float, float, KenshiLua::WidgetArg> pusher(thisptr, parent, top, left, width, height, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createListbox", &pusher);
+}
+
+void CallForgottenGUICreateFloatingImageCallbacks(ForgottenGUI* thisptr, const std::string& image, float top, float left, float width, float height, const std::string& layer, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, const std::string&, float, float, float, float, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, image, top, left, width, height, layer, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createFloatingImage", &pusher);
+}
+
+void CallForgottenGUICreateFloatingImageAbsCallbacks(ForgottenGUI* thisptr, const std::string& image, float top, float left, float width, float height, const std::string& layer, MyGUI::Widget* result)
+{
+    ArgPusher8<ForgottenGUI*, const std::string&, float, float, float, float, const std::string&, KenshiLua::WidgetArg> pusher(thisptr, image, top, left, width, height, layer, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createFloatingImageAbs", &pusher);
+}
+
+void CallForgottenGUICreateFloatingProgressBarCallbacks(ForgottenGUI* thisptr, FloatingProgressBar* result)
+{
+    ArgPusher2<ForgottenGUI*, FloatingProgressBar*> pusher(thisptr, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createFloatingProgressBar", &pusher);
+}
+
+void CallForgottenGUICreateScreenLabelCallbacks(ForgottenGUI* thisptr, const std::string& text, const MyGUI::Colour& textColour, int textSize, int risingSpeed, ScreenLabel* result)
+{
+    ArgPusher6<ForgottenGUI*, const std::string&, const MyGUI::Colour&, int, int, ScreenLabel*> pusher(thisptr, text, textColour, textSize, risingSpeed, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createScreenLabel", &pusher);
+}
+
+void CallForgottenGUICreateScreenLabelDCallbacks(ForgottenGUI* thisptr, const std::string& text, float time, ScreenLabelDebug* result)
+{
+    ArgPusher4<ForgottenGUI*, const std::string&, float, ScreenLabelDebug*> pusher(thisptr, text, time, result);
+    KenshiLua::EventSystem::get().callHandlers("ForgottenGUI::createScreenLabelD", &pusher);
 }
