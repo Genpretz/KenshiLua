@@ -1382,21 +1382,21 @@
 | currentBuildingIndex | `integer` | RW | `obj.currentBuildingIndex = <value>` |
 | switchBuildingIndex | `integer` | RW | `obj.switchBuildingIndex = <value>` |
 | statsDataPanel | `DatapanelGUI` | RW | `obj.statsDataPanel = <value>` |
-| confirmButton | `MyGUI::Widget` | RW | `obj.confirmButton = <value>` |
-| undoButton | `MyGUI::Widget` | RW | `obj.undoButton = <value>` |
-| closeButton | `MyGUI::Widget` | RW | `obj.closeButton = <value>` |
-| categoriesList | `MyGUI::Widget` | RW | `obj.categoriesList = <value>` |
-| buildingsList | `MyGUI::Widget` | RW | `obj.buildingsList = <value>` |
-| buildingTxt | `MyGUI::Widget` | RW | `obj.buildingTxt = <value>` |
-| buildingTypePrevButton | `MyGUI::Widget` | RW | `obj.buildingTypePrevButton = <value>` |
-| buildingTypeNextButton | `MyGUI::Widget` | RW | `obj.buildingTypeNextButton = <value>` |
-| buildingImageBox | `MyGUI::Widget` | RW | `obj.buildingImageBox = <value>` |
+| confirmButton | `MyGUI::Button` | RW | `obj.confirmButton = <value>` |
+| undoButton | `MyGUI::Button` | RW | `obj.undoButton = <value>` |
+| closeButton | `MyGUI::Button` | RW | `obj.closeButton = <value>` |
+| categoriesList | `MyGUI::ListBox` | RW | `obj.categoriesList = <value>` |
+| buildingsList | `MyGUI::ListBox` | RW | `obj.buildingsList = <value>` |
+| buildingTxt | `MyGUI::TextBox` | RW | `obj.buildingTxt = <value>` |
+| buildingTypePrevButton | `MyGUI::Button` | RW | `obj.buildingTypePrevButton = <value>` |
+| buildingTypeNextButton | `MyGUI::Button` | RW | `obj.buildingTypeNextButton = <value>` |
+| buildingImageBox | `MyGUI::ImageBox` | RW | `obj.buildingImageBox = <value>` |
 | statsPanel | `MyGUI::Widget` | RW | `obj.statsPanel = <value>` |
-| descriptionTxt | `MyGUI::Widget` | RW | `obj.descriptionTxt = <value>` |
-| messageTextBox | `MyGUI::Widget` | RW | `obj.messageTextBox = <value>` |
-| floorDownButton | `MyGUI::Widget` | RW | `obj.floorDownButton = <value>` |
-| floorUpButton | `MyGUI::Widget` | RW | `obj.floorUpButton = <value>` |
-| floorText | `MyGUI::Widget` | RW | `obj.floorText = <value>` |
+| descriptionTxt | `MyGUI::TextBox` | RW | `obj.descriptionTxt = <value>` |
+| messageTextBox | `MyGUI::EditBox` | RW | `obj.messageTextBox = <value>` |
+| floorDownButton | `MyGUI::Button` | RW | `obj.floorDownButton = <value>` |
+| floorUpButton | `MyGUI::Button` | RW | `obj.floorUpButton = <value>` |
+| floorText | `MyGUI::TextBox` | RW | `obj.floorText = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -2058,26 +2058,26 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | camera | `lightuserdata` | R | `obj.camera` |
-| txtName | `MyGUI::Widget` | RW | `obj.txtName = <value>` |
-| txtGender | `MyGUI::Widget` | RW | `obj.txtGender = <value>` |
-| txtRace | `MyGUI::Widget` | RW | `obj.txtRace = <value>` |
-| txtSubRace | `MyGUI::Widget` | RW | `obj.txtSubRace = <value>` |
-| txtCharIdx | `MyGUI::Widget` | RW | `obj.txtCharIdx = <value>` |
-| importButton | `MyGUI::Widget` | RW | `obj.importButton = <value>` |
-| exportButton | `MyGUI::Widget` | RW | `obj.exportButton = <value>` |
+| txtName | `MyGUI::EditBox` | RW | `obj.txtName = <value>` |
+| txtGender | `MyGUI::TextBox` | RW | `obj.txtGender = <value>` |
+| txtRace | `MyGUI::TextBox` | RW | `obj.txtRace = <value>` |
+| txtSubRace | `MyGUI::TextBox` | RW | `obj.txtSubRace = <value>` |
+| txtCharIdx | `MyGUI::TextBox` | RW | `obj.txtCharIdx = <value>` |
+| importButton | `MyGUI::Button` | RW | `obj.importButton = <value>` |
+| exportButton | `MyGUI::Button` | RW | `obj.exportButton = <value>` |
 | panelTabs | `MyGUI::Widget` | RW | `obj.panelTabs = <value>` |
-| panelTabsView | `MyGUI::Widget` | RW | `obj.panelTabsView = <value>` |
-| btnPrevGender | `MyGUI::Widget` | RW | `obj.btnPrevGender = <value>` |
-| btnNextGender | `MyGUI::Widget` | RW | `obj.btnNextGender = <value>` |
-| btnPrevRace | `MyGUI::Widget` | RW | `obj.btnPrevRace = <value>` |
-| btnNextRace | `MyGUI::Widget` | RW | `obj.btnNextRace = <value>` |
-| btnPrevSubRace | `MyGUI::Widget` | RW | `obj.btnPrevSubRace = <value>` |
-| btnNextSubRace | `MyGUI::Widget` | RW | `obj.btnNextSubRace = <value>` |
-| btnReset | `MyGUI::Widget` | RW | `obj.btnReset = <value>` |
-| btnRandomiseAll | `MyGUI::Widget` | RW | `obj.btnRandomiseAll = <value>` |
-| btnRandomisePart | `MyGUI::Widget` | RW | `obj.btnRandomisePart = <value>` |
+| panelTabsView | `MyGUI::ScrollView` | RW | `obj.panelTabsView = <value>` |
+| btnPrevGender | `MyGUI::Button` | RW | `obj.btnPrevGender = <value>` |
+| btnNextGender | `MyGUI::Button` | RW | `obj.btnNextGender = <value>` |
+| btnPrevRace | `MyGUI::Button` | RW | `obj.btnPrevRace = <value>` |
+| btnNextRace | `MyGUI::Button` | RW | `obj.btnNextRace = <value>` |
+| btnPrevSubRace | `MyGUI::Button` | RW | `obj.btnPrevSubRace = <value>` |
+| btnNextSubRace | `MyGUI::Button` | RW | `obj.btnNextSubRace = <value>` |
+| btnReset | `MyGUI::Button` | RW | `obj.btnReset = <value>` |
+| btnRandomiseAll | `MyGUI::Button` | RW | `obj.btnRandomiseAll = <value>` |
+| btnRandomisePart | `MyGUI::Button` | RW | `obj.btnRandomisePart = <value>` |
 | descriptionPanel | `MyGUI::Widget` | RW | `obj.descriptionPanel = <value>` |
-| descriptionPanelText | `MyGUI::Widget` | RW | `obj.descriptionPanelText = <value>` |
+| descriptionPanelText | `MyGUI::EditBox` | RW | `obj.descriptionPanelText = <value>` |
 | statsPanel | `MyGUI::Widget` | RW | `obj.statsPanel = <value>` |
 | statsDataPanel | `DatapanelGUI` | RW | `obj.statsDataPanel = <value>` |
 | dialog | `OpenSaveFileDialog` | RW | `obj.dialog = <value>` |
@@ -2205,18 +2205,18 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| character | `Character` | R | `obj.character` |
+| character | `Character` | RW | `obj.character = <value>` |
 | statsSum | `integer` | RW | `obj.statsSum = <value>` |
 | statProgress | `StatsEnumerated` | RW | `obj.statProgress = <value>` |
 | currentStatIdDescription | `string` | RW | `obj.currentStatIdDescription = <value>` |
-| attributesDatapanel | `DatapanelGUI` | R | `obj.attributesDatapanel` |
-| skills1Datapanel | `DatapanelGUI` | R | `obj.skills1Datapanel` |
-| skills2Datapanel | `DatapanelGUI` | R | `obj.skills2Datapanel` |
-| skills3Datapanel | `DatapanelGUI` | R | `obj.skills3Datapanel` |
-| skills4Datapanel | `DatapanelGUI` | R | `obj.skills4Datapanel` |
-| statsDatapanel | `DatapanelGUI` | R | `obj.statsDatapanel` |
-| description1Datapanel | `DatapanelGUI` | R | `obj.description1Datapanel` |
-| description2Datapanel | `DatapanelGUI` | R | `obj.description2Datapanel` |
+| attributesDatapanel | `DatapanelGUI` | RW | `obj.attributesDatapanel = <value>` |
+| skills1Datapanel | `DatapanelGUI` | RW | `obj.skills1Datapanel = <value>` |
+| skills2Datapanel | `DatapanelGUI` | RW | `obj.skills2Datapanel = <value>` |
+| skills3Datapanel | `DatapanelGUI` | RW | `obj.skills3Datapanel = <value>` |
+| skills4Datapanel | `DatapanelGUI` | RW | `obj.skills4Datapanel = <value>` |
+| statsDatapanel | `DatapanelGUI` | RW | `obj.statsDatapanel = <value>` |
+| description1Datapanel | `DatapanelGUI` | RW | `obj.description1Datapanel = <value>` |
+| description2Datapanel | `DatapanelGUI` | RW | `obj.description2Datapanel = <value>` |
 | autoUpdateMode | `boolean` | RW | `obj.autoUpdateMode = <value>` |
 
 ### Methods
@@ -2281,10 +2281,10 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | tradingHandler | `lightuserdata` | R | `obj.tradingHandler` |
-| charactersBox | `MyGUI::Widget` | R | `obj.charactersBox` |
-| confirmBtn | `MyGUI::Widget` | R | `obj.confirmBtn` |
-| currentTotalText | `MyGUI::Widget` | R | `obj.currentTotalText` |
-| selectedCountText | `MyGUI::Widget` | R | `obj.selectedCountText` |
+| charactersBox | `MyGUI::ScrollView` | R | `obj.charactersBox` |
+| confirmBtn | `MyGUI::Button` | R | `obj.confirmBtn` |
+| currentTotalText | `MyGUI::TextBox` | R | `obj.currentTotalText` |
+| selectedCountText | `MyGUI::TextBox` | R | `obj.selectedCountText` |
 | tradingBoxes | `Ogre::FastArray<CharacterTradingBox*>` | RW | `obj.tradingBoxes = <value>` |
 
 ### Methods
@@ -3047,7 +3047,7 @@
 |---|---|---|---|
 | contextMenuTarget | `hand` | RW | `obj.contextMenuTarget = <value>` |
 | name | `string` | RW | `obj.name = <value>` |
-| nameText | `MyGUI::Widget` | RW | `obj.nameText = <value>` |
+| nameText | `MyGUI::TextBox` | RW | `obj.nameText = <value>` |
 | optionsList | `MyGUI::Widget` | RW | `obj.optionsList = <value>` |
 | optionCoords | `MyGUI::IntCoord` | RW | `obj.optionCoords = <value>` |
 | buttonCoords | `MyGUI::IntCoord` | RW | `obj.buttonCoords = <value>` |
@@ -3127,7 +3127,7 @@
 | getProductionItemData | `` | `GameData` | `obj:getProductionItemData()` |
 | getCurrentProductionQuantity | `` | `integer` | `obj:getCurrentProductionQuantity()` |
 | isAnyInputsInvalidType | `` | `boolean` | `obj:isAnyInputsInvalidType()` |
-| newCraftingButton | `` | `void` | `obj:newCraftingButton()` |
+| newCraftingButton | `sender: MyGUI::Widget` | `void` | `obj:newCraftingButton(sender)` |
 | addFinishedCraftItem | `what: Item` | `void` | `obj:addFinishedCraftItem(what)` |
 | notifyCraftFailiure | `` | `void` | `obj:notifyCraftFailiure()` |
 | tryOperate | `h: hand` | `boolean` | `obj:tryOperate(h)` |
@@ -3252,7 +3252,7 @@
 | mouseOverEventDatas | `lightuserdata` | R | `obj.mouseOverEventDatas` |
 | automaticRefresh | `boolean` | RW | `obj.automaticRefresh = <value>` |
 | automaticTarget | `boolean` | RW | `obj.automaticTarget = <value>` |
-| tabWin | `MyGUI::Widget` | R | `obj.tabWin` |
+| tabWin | `MyGUI::Window` | R | `obj.tabWin` |
 | tabs | `lektor<MyGUI::Button*>` | RW | `obj.tabs = <value>` |
 | panelName | `string` | RW | `obj.panelName = <value>` |
 | x | `number` | RW | `obj.x = <value>` |
@@ -3263,7 +3263,7 @@
 | DATALINETHICKNESS | `number` | RW | `obj.DATALINETHICKNESS = <value>` |
 | basicSpacing | `boolean` | RW | `obj.basicSpacing = <value>` |
 | layer | `string` | RW | `obj.layer = <value>` |
-| scrollView | `MyGUI::Widget` | R | `obj.scrollView` |
+| scrollView | `MyGUI::ScrollView` | R | `obj.scrollView` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -3336,8 +3336,8 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| w1 | `MyGUI::Widget` | R | `obj.w1` |
-| w2 | `MyGUI::Widget` | R | `obj.w2` |
+| w1 | `MyGUI::TextBox` | R | `obj.w1` |
+| w2 | `MyGUI::TextBox` | R | `obj.w2` |
 | category | `integer` | RW | `obj.category = <value>` |
 | keyValue | `string` | RW | `obj.keyValue = <value>` |
 | s1 | `string` | RW | `obj.s1 = <value>` |
@@ -3370,7 +3370,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | userData | `hand` | RW | `obj.userData = <value>` |
-| button | `MyGUI::Widget` | RW | `obj.button = <value>` |
+| button | `MyGUI::Button` | RW | `obj.button = <value>` |
 | buttonWidth | `number` | RW | `obj.buttonWidth = <value>` |
 | buttonHeight | `number` | RW | `obj.buttonHeight = <value>` |
 | buttonSkin | `string` | RW | `obj.buttonSkin = <value>` |
@@ -3389,8 +3389,8 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | valuePtr | `lightuserdata` | R | `obj.valuePtr` |
-| text | `MyGUI::Widget` | R | `obj.text` |
-| button | `MyGUI::Widget` | R | `obj.button` |
+| text | `MyGUI::EditBox` | R | `obj.text` |
+| button | `MyGUI::Button` | R | `obj.button` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -3409,11 +3409,11 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| listBox | `MyGUI::Widget` | R | `obj.listBox` |
+| listBox | `MyGUI::ComboBox` | R | `obj.listBox` |
 | listWidth | `number` | RW | `obj.listWidth = <value>` |
 | valPtr | `lightuserdata` | R | `obj.valPtr` |
 | hasGoBox | `boolean` | RW | `obj.hasGoBox = <value>` |
-| goBox | `MyGUI::Widget` | R | `obj.goBox` |
+| goBox | `MyGUI::Button` | R | `obj.goBox` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -3423,7 +3423,7 @@
 | setSelectedValue | `val: integer` | `void` | `obj:setSelectedValue(val)` |
 | getSelectedText | `` | `string` | `obj:getSelectedText()` |
 | clearValues | `` | `void` | `obj:clearValues()` |
-| getComboBox | `` | `MyGUI::Widget` | `obj:getComboBox()` |
+| getComboBox | `` | `MyGUI::ComboBox` | `obj:getComboBox()` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 | refresh | `` | `void` | `obj:refresh()` |
 
@@ -3438,7 +3438,7 @@
 | v2 | `number` | RW | `obj.v2 = <value>` |
 | bar | `MyGUI::Widget` | R | `obj.bar` |
 | bar2 | `MyGUI::Widget` | R | `obj.bar2` |
-| but | `MyGUI::Widget` | R | `obj.but` |
+| but | `MyGUI::Button` | R | `obj.but` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -3452,8 +3452,8 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| btn0 | `MyGUI::Widget` | R | `obj.btn0` |
-| btn1 | `MyGUI::Widget` | R | `obj.btn1` |
+| btn0 | `MyGUI::Button` | R | `obj.btn0` |
+| btn1 | `MyGUI::Button` | R | `obj.btn1` |
 | command | `string` | RW | `obj.command = <value>` |
 
 ### Methods
@@ -3474,9 +3474,9 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| textBox | `MyGUI::Widget` | R | `obj.textBox` |
-| progress | `MyGUI::Widget` | R | `obj.progress` |
-| progressText | `MyGUI::Widget` | R | `obj.progressText` |
+| textBox | `MyGUI::EditBox` | R | `obj.textBox` |
+| progress | `MyGUI::ProgressBar` | R | `obj.progress` |
+| progressText | `MyGUI::EditBox` | R | `obj.progressText` |
 | showKey | `boolean` | RW | `obj.showKey = <value>` |
 
 ### Methods
@@ -3497,8 +3497,8 @@
 | hasXBut | `boolean` | RW | `obj.hasXBut = <value>` |
 | barSkin | `string` | RW | `obj.barSkin = <value>` |
 | bar | `MyGUI::Widget` | RW | `obj.bar = <value>` |
-| but | `MyGUI::Widget` | R | `obj.but` |
-| Xbut | `MyGUI::Widget` | R | `obj.Xbut` |
+| but | `MyGUI::Button` | R | `obj.but` |
+| Xbut | `MyGUI::Button` | R | `obj.Xbut` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -3539,9 +3539,9 @@
 | max | `number` | RW | `obj.max = <value>` |
 | valuePtr | `lightuserdata` | R | `obj.valuePtr` |
 | scale | `number` | RW | `obj.scale = <value>` |
-| nameText | `MyGUI::Widget` | R | `obj.nameText` |
-| valueEditBox | `MyGUI::Widget` | R | `obj.valueEditBox` |
-| sliderBar | `MyGUI::Widget` | R | `obj.sliderBar` |
+| nameText | `MyGUI::EditBox` | R | `obj.nameText` |
+| valueEditBox | `MyGUI::EditBox` | R | `obj.valueEditBox` |
+| sliderBar | `MyGUI::ScrollBar` | R | `obj.sliderBar` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -3561,7 +3561,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| editBox | `MyGUI::Widget` | R | `obj.editBox` |
+| editBox | `MyGUI::EditBox` | R | `obj.editBox` |
 | wordWrap | `boolean` | RW | `obj.wordWrap = <value>` |
 
 ### Methods
@@ -3576,8 +3576,8 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| editBox | `MyGUI::Widget` | R | `obj.editBox` |
-| nameText | `MyGUI::Widget` | R | `obj.nameText` |
+| editBox | `MyGUI::EditBox` | R | `obj.editBox` |
+| nameText | `MyGUI::EditBox` | R | `obj.nameText` |
 | showKey | `boolean` | RW | `obj.showKey = <value>` |
 | multiLine | `boolean` | RW | `obj.multiLine = <value>` |
 | width | `number` | RW | `obj.width = <value>` |
@@ -3585,8 +3585,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| getEditBox | `` | `MyGUI::Widget` | `obj:getEditBox()` |
-| getNameBox | `` | `MyGUI::Widget` | `obj:getNameBox()` |
+| getEditBox | `` | `MyGUI::EditBox` | `obj:getEditBox()` |
+| getNameBox | `` | `MyGUI::EditBox` | `obj:getNameBox()` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 
 ## DialogChoiceList
@@ -3888,7 +3888,7 @@
 | shout | `boolean` | RW | `obj.shout = <value>` |
 | marginW | `integer` | RW | `obj.marginW = <value>` |
 | marginH | `integer` | RW | `obj.marginH = <value>` |
-| textBox | `MyGUI::Widget` | RW | `obj.textBox = <value>` |
+| textBox | `MyGUI::EditBox` | RW | `obj.textBox = <value>` |
 | baseSize | `integer` | RW | `obj.baseSize = <value>` |
 
 ### Methods
@@ -3919,13 +3919,13 @@
 | conversationPC | `Character` | RW | `obj.conversationPC = <value>` |
 | conversationPCPanel | `MyGUI::Widget` | RW | `obj.conversationPCPanel = <value>` |
 | conversationNPCPanel | `MyGUI::Widget` | RW | `obj.conversationNPCPanel = <value>` |
-| conversationNPCNameText | `MyGUI::Widget` | R | `obj.conversationNPCNameText` |
-| conversationPCNameText | `MyGUI::Widget` | R | `obj.conversationPCNameText` |
-| conversationPCMoneyText | `MyGUI::Widget` | R | `obj.conversationPCMoneyText` |
-| conversationNPCSpeech | `MyGUI::Widget` | RW | `obj.conversationNPCSpeech = <value>` |
-| conversationPCSpeechPanel | `MyGUI::Widget` | RW | `obj.conversationPCSpeechPanel = <value>` |
-| conversationNPCPortrait | `MyGUI::Widget` | R | `obj.conversationNPCPortrait` |
-| conversationPCPortrait | `MyGUI::Widget` | R | `obj.conversationPCPortrait` |
+| conversationNPCNameText | `MyGUI::TextBox` | R | `obj.conversationNPCNameText` |
+| conversationPCNameText | `MyGUI::TextBox` | R | `obj.conversationPCNameText` |
+| conversationPCMoneyText | `MyGUI::TextBox` | R | `obj.conversationPCMoneyText` |
+| conversationNPCSpeech | `MyGUI::EditBox` | RW | `obj.conversationNPCSpeech = <value>` |
+| conversationPCSpeechPanel | `MyGUI::ScrollView` | RW | `obj.conversationPCSpeechPanel = <value>` |
+| conversationNPCPortrait | `MyGUI::ImageBox` | R | `obj.conversationNPCPortrait` |
+| conversationPCPortrait | `MyGUI::ImageBox` | R | `obj.conversationPCPortrait` |
 | replyTexts | `Ogre::FastArray<MyGUI::EditBox*>` | RW | `obj.replyTexts = <value>` |
 
 ### Methods
@@ -4322,10 +4322,10 @@
 |---|---|---|---|
 | mainWidget | `MyGUI::Widget` | R | `obj.mainWidget` |
 | selectedFaction | `Faction` | RW | `obj.selectedFaction = <value>` |
-| scrollList | `MyGUI::Widget` | RW | `obj.scrollList = <value>` |
+| scrollList | `MyGUI::ScrollView` | RW | `obj.scrollList = <value>` |
 | scrollListItemTop | `integer` | RW | `obj.scrollListItemTop = <value>` |
 | scrollListItemWidth | `integer` | RW | `obj.scrollListItemWidth = <value>` |
-| nameText | `MyGUI::Widget` | R | `obj.nameText` |
+| nameText | `MyGUI::EditBox` | R | `obj.nameText` |
 | infoPanel | `DatapanelGUI` | RW | `obj.infoPanel = <value>` |
 | lines | `FactionLinesMapBinding::MapType` | RW | `obj.lines = <value>` |
 | updateTimer | `number` | RW | `obj.updateTimer = <value>` |
@@ -4354,7 +4354,7 @@
 |---|---|---|---|
 | faction | `Faction` | RW | `obj.faction = <value>` |
 | value | `number` | RW | `obj.value = <value>` |
-| valueText | `MyGUI::Widget` | R | `obj.valueText` |
+| valueText | `MyGUI::TextBox` | R | `obj.valueText` |
 | leftBar | `MyGUI::Widget` | R | `obj.leftBar` |
 | rightBar | `MyGUI::Widget` | R | `obj.rightBar` |
 
@@ -4678,9 +4678,9 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| window | `MyGUI::Widget` | R | `obj.window` |
-| fogList | `MyGUI::Widget` | R | `obj.fogList` |
-| typeList | `MyGUI::Widget` | R | `obj.typeList` |
+| window | `MyGUI::Window` | R | `obj.window` |
+| fogList | `MyGUI::ListBox` | R | `obj.fogList` |
+| typeList | `MyGUI::ComboBox` | R | `obj.typeList` |
 | panel | `DatapanelGUI` | RW | `obj.panel = <value>` |
 | selectedFog | `lightuserdata` | R | `obj.selectedFog` |
 | selectedSide | `integer` | RW | `obj.selectedSide = <value>` |
@@ -4897,11 +4897,11 @@
 | removeDatapanelFromUpdateList | `datapanel: DatapanelGUI` | `void` | `obj:removeDatapanelFromUpdateList(datapanel)` |
 | setMouseCursorVisible | `visible: boolean` | `void` | `obj:setMouseCursorVisible(visible)` |
 | getGuiManager | `` | `MyGUI::Gui` | `obj:getGuiManager()` |
-| createPanel | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `MyGUI::Widget` | `obj:createPanel(name, top, left, width, height, layer, skin)` |
-| createPanelAbs | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `MyGUI::Widget` | `obj:createPanelAbs(name, top, left, width, height, layer, skin)` |
-| createTabPanel | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `MyGUI::Widget` | `obj:createTabPanel(name, top, left, width, height, layer, skin)` |
-| createFloatingImage | `image: string, top: number, left: number, width: number, height: number, layer: string` | `MyGUI::Widget` | `obj:createFloatingImage(image, top, left, width, height, layer)` |
-| createFloatingImageAbs | `image: string, top: number, left: number, width: number, height: number, layer: string` | `MyGUI::Widget` | `obj:createFloatingImageAbs(image, top, left, width, height, layer)` |
+| createPanel | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `MyGUI::Window` | `obj:createPanel(name, top, left, width, height, layer, skin)` |
+| createPanelAbs | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `MyGUI::Window` | `obj:createPanelAbs(name, top, left, width, height, layer, skin)` |
+| createTabPanel | `name: string, top: number, left: number, width: number, height: number, layer: string, skin: string` | `MyGUI::TabControl` | `obj:createTabPanel(name, top, left, width, height, layer, skin)` |
+| createFloatingImage | `image: string, top: number, left: number, width: number, height: number, layer: string` | `MyGUI::Window` | `obj:createFloatingImage(image, top, left, width, height, layer)` |
+| createFloatingImageAbs | `image: string, top: number, left: number, width: number, height: number, layer: string` | `MyGUI::Window` | `obj:createFloatingImageAbs(image, top, left, width, height, layer)` |
 | createFloatingProgressBar | `` | `FloatingProgressBar` | `obj:createFloatingProgressBar()` |
 | createScreenLabelD | `text: string, time: number` | `lightuserdata` | `obj:createScreenLabelD(text, time)` |
 | showCharacterStatsWindow | `owner: hand` | `void` | `obj:showCharacterStatsWindow(owner)` |
@@ -4937,29 +4937,29 @@
 | setInventoryPosition | `owner: hand, inventory: InventoryGUI` | `void` | `obj:setInventoryPosition(owner, inventory)` |
 | inventoriesSelectedObjectUpdate | `obj: hand` | `void` | `obj:inventoriesSelectedObjectUpdate(obj)` |
 | _showTradeWindow | `a: RootObject, b: RootObject, tradeType: TradeWindowType` | `void` | `obj:_showTradeWindow(a, b, tradeType)` |
-| createFloatingLabel | `top: number, left: number, width: number, height: number, text: string, a: integer, layer: string` | `MyGUI::Widget` | `obj:createFloatingLabel(top, left, width, height, text, a, layer)` |
-| createImage | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, image: string` | `MyGUI::Widget` | `obj:createImage(parent, top, left, width, height, image)` |
-| createImageAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, image: string` | `MyGUI::Widget` | `obj:createImageAbs(parent, top, left, width, height, image)` |
-| createRotatableImageAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, image: string` | `MyGUI::Widget` | `obj:createRotatableImageAbs(parent, top, left, width, height, image)` |
-| createButton | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, name: string, text: string, skin: string` | `MyGUI::Widget` | `obj:createButton(parent, top, left, width, height, name, text, skin)` |
-| createButtonAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, name: string, text: string, skin: string` | `MyGUI::Widget` | `obj:createButtonAbs(parent, top, left, width, height, name, text, skin)` |
-| createCheckbox | `parent: MyGUI::Widget, left: integer, top: integer, width: integer, height: integer, caption: string` | `MyGUI::Widget` | `obj:createCheckbox(parent, left, top, width, height, caption)` |
-| createDropBox | `parent: MyGUI::Widget, name: string, top: number, left: number, width: number, height: number` | `MyGUI::Widget` | `obj:createDropBox(parent, name, top, left, width, height)` |
-| createDropBoxAbs | `parent: MyGUI::Widget, name: string, top: integer, left: integer, width: integer, height: integer` | `MyGUI::Widget` | `obj:createDropBoxAbs(parent, name, top, left, width, height)` |
-| createProgressBar | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, type: string` | `MyGUI::Widget` | `obj:createProgressBar(parent, top, left, width, height, type)` |
-| createProgressBarAbs | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, type: string` | `MyGUI::Widget` | `obj:createProgressBarAbs(parent, top, left, width, height, type)` |
+| createFloatingLabel | `top: number, left: number, width: number, height: number, text: string, a: integer, layer: string` | `MyGUI::Window` | `obj:createFloatingLabel(top, left, width, height, text, a, layer)` |
+| createImage | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, image: string` | `MyGUI::ImageBox` | `obj:createImage(parent, top, left, width, height, image)` |
+| createImageAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, image: string` | `MyGUI::ImageBox` | `obj:createImageAbs(parent, top, left, width, height, image)` |
+| createRotatableImageAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, image: string` | `MyGUI::ImageBox` | `obj:createRotatableImageAbs(parent, top, left, width, height, image)` |
+| createButton | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, name: string, text: string, skin: string` | `MyGUI::Button` | `obj:createButton(parent, top, left, width, height, name, text, skin)` |
+| createButtonAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, name: string, text: string, skin: string` | `MyGUI::Button` | `obj:createButtonAbs(parent, top, left, width, height, name, text, skin)` |
+| createCheckbox | `parent: MyGUI::Widget, left: integer, top: integer, width: integer, height: integer, caption: string` | `MyGUI::Button` | `obj:createCheckbox(parent, left, top, width, height, caption)` |
+| createDropBox | `parent: MyGUI::Widget, name: string, top: number, left: number, width: number, height: number` | `MyGUI::ComboBox` | `obj:createDropBox(parent, name, top, left, width, height)` |
+| createDropBoxAbs | `parent: MyGUI::Widget, name: string, top: integer, left: integer, width: integer, height: integer` | `MyGUI::ComboBox` | `obj:createDropBoxAbs(parent, name, top, left, width, height)` |
+| createProgressBar | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, type: string` | `MyGUI::ProgressBar` | `obj:createProgressBar(parent, top, left, width, height, type)` |
+| createProgressBarAbs | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, type: string` | `MyGUI::ProgressBar` | `obj:createProgressBarAbs(parent, top, left, width, height, type)` |
 | createLabel [1] | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, text: string, skin: string` | `MyGUI::EditBox` | `obj:createLabel(parent, top, left, width, height, text, skin)` |
 | createLabel [2] | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, text: string, a: MyGUI::Align` | `MyGUI::TextBox` | `obj:createLabel(parent, top, left, width, height, text, a)` |
 | createLabelAbs [1] | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, labelText: string, align: MyGUI::Align` | `MyGUI::TextBox` | `obj:createLabelAbs(parent, top, left, width, height, labelText, align)` |
 | createLabelAbs [2] | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, text: string, skin: string` | `MyGUI::EditBox` | `obj:createLabelAbs(parent, top, left, width, height, text, skin)` |
-| createValueEdit | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, name: string` | `MyGUI::Widget` | `obj:createValueEdit(parent, top, left, width, height, name)` |
-| createValueEditTransparent | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, name: string` | `MyGUI::Widget` | `obj:createValueEditTransparent(parent, top, left, width, height, name)` |
+| createValueEdit | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, name: string` | `MyGUI::EditBox` | `obj:createValueEdit(parent, top, left, width, height, name)` |
+| createValueEditTransparent | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, name: string` | `MyGUI::EditBox` | `obj:createValueEditTransparent(parent, top, left, width, height, name)` |
 | createEditBox [1] | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, name: string, skin: string, multiLine: boolean` | `MyGUI::EditBox` | `obj:createEditBox(parent, top, left, width, height, name, skin, multiLine)` |
 | createEditBox [2] | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, name: string, multiLine: boolean` | `MyGUI::EditBox` | `obj:createEditBox(parent, top, left, width, height, name, multiLine)` |
 | createEditBoxAbs [1] | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, name: string, skin: string, multiLine: boolean` | `MyGUI::EditBox` | `obj:createEditBoxAbs(parent, top, left, width, height, name, skin, multiLine)` |
 | createEditBoxAbs [2] | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, name: string, multiLine: boolean` | `MyGUI::EditBox` | `obj:createEditBoxAbs(parent, top, left, width, height, name, multiLine)` |
-| createScrollBarAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, range: integer, value: integer` | `MyGUI::Widget` | `obj:createScrollBarAbs(parent, top, left, width, height, range, value)` |
-| createListbox | `parent: MyGUI::Window, top: number, left: number, width: number, height: number` | `MyGUI::Widget` | `obj:createListbox(parent, top, left, width, height)` |
+| createScrollBarAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, range: integer, value: integer` | `MyGUI::ScrollBar` | `obj:createScrollBarAbs(parent, top, left, width, height, range, value)` |
+| createListbox | `parent: MyGUI::Window, top: number, left: number, width: number, height: number` | `MyGUI::ListBox` | `obj:createListbox(parent, top, left, width, height)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -6164,19 +6164,19 @@
 | currentBuilding | `hand` | RW | `obj.currentBuilding = <value>` |
 | currentInterior | `string` | RW | `obj.currentInterior = <value>` |
 | currentExterior | `string` | RW | `obj.currentExterior = <value>` |
-| interiorModeButton | `MyGUI::Widget` | RW | `obj.interiorModeButton = <value>` |
-| win | `MyGUI::Widget` | RW | `obj.win = <value>` |
-| centerButton | `MyGUI::Widget` | RW | `obj.centerButton = <value>` |
-| exteriorButton | `MyGUI::Widget` | RW | `obj.exteriorButton = <value>` |
-| titleLabel | `MyGUI::Widget` | RW | `obj.titleLabel = <value>` |
-| saveBut | `MyGUI::Widget` | RW | `obj.saveBut = <value>` |
-| deleteBut | `MyGUI::Widget` | RW | `obj.deleteBut = <value>` |
-| listbox | `MyGUI::Widget` | RW | `obj.listbox = <value>` |
-| namebox | `MyGUI::Widget` | RW | `obj.namebox = <value>` |
-| saveBut2 | `MyGUI::Widget` | RW | `obj.saveBut2 = <value>` |
-| deleteBut2 | `MyGUI::Widget` | RW | `obj.deleteBut2 = <value>` |
-| listbox2 | `MyGUI::Widget` | RW | `obj.listbox2 = <value>` |
-| namebox2 | `MyGUI::Widget` | RW | `obj.namebox2 = <value>` |
+| interiorModeButton | `MyGUI::Button` | RW | `obj.interiorModeButton = <value>` |
+| win | `MyGUI::Window` | RW | `obj.win = <value>` |
+| centerButton | `MyGUI::Button` | RW | `obj.centerButton = <value>` |
+| exteriorButton | `MyGUI::Button` | RW | `obj.exteriorButton = <value>` |
+| titleLabel | `MyGUI::TextBox` | RW | `obj.titleLabel = <value>` |
+| saveBut | `MyGUI::Button` | RW | `obj.saveBut = <value>` |
+| deleteBut | `MyGUI::Button` | RW | `obj.deleteBut = <value>` |
+| listbox | `MyGUI::ListBox` | RW | `obj.listbox = <value>` |
+| namebox | `MyGUI::EditBox` | RW | `obj.namebox = <value>` |
+| saveBut2 | `MyGUI::Button` | RW | `obj.saveBut2 = <value>` |
+| deleteBut2 | `MyGUI::Button` | RW | `obj.deleteBut2 = <value>` |
+| listbox2 | `MyGUI::ListBox` | RW | `obj.listbox2 = <value>` |
+| namebox2 | `MyGUI::EditBox` | RW | `obj.namebox2 = <value>` |
 | updateNodesMessages | `unknown` | RW | `obj.updateNodesMessages = <value>` |
 
 ### Methods
@@ -6461,8 +6461,8 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | item | `Item` | RW | `obj.item = <value>` |
-| image | `MyGUI::Widget` | R | `obj.image` |
-| quantityText | `MyGUI::Widget` | R | `obj.quantityText` |
+| image | `MyGUI::ImageBox` | R | `obj.image` |
+| quantityText | `MyGUI::TextBox` | R | `obj.quantityText` |
 | chargesProgress | `MyGUI::Widget` | R | `obj.chargesProgress` |
 
 ### Methods
@@ -6853,10 +6853,10 @@
 | featureListWindow | `LevelEditor::NpcListWindow` | RW | `obj.featureListWindow = <value>` |
 | itemListWindow | `LevelEditor::ItemListWindow` | RW | `obj.itemListWindow = <value>` |
 | navmeshWindow | `DatapanelGUI` | RW | `obj.navmeshWindow = <value>` |
-| editMapTitleWindow | `MyGUI::Widget` | R | `obj.editMapTitleWindow` |
-| factionTxt | `MyGUI::Widget` | R | `obj.factionTxt` |
-| altitudeTxt | `MyGUI::Widget` | R | `obj.altitudeTxt` |
-| activeModTxt | `MyGUI::Widget` | R | `obj.activeModTxt` |
+| editMapTitleWindow | `MyGUI::Window` | R | `obj.editMapTitleWindow` |
+| factionTxt | `MyGUI::TextBox` | R | `obj.factionTxt` |
+| altitudeTxt | `MyGUI::TextBox` | R | `obj.altitudeTxt` |
+| activeModTxt | `MyGUI::ComboBox` | R | `obj.activeModTxt` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7032,9 +7032,9 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | disableEvents | `boolean` | RW | `obj.disableEvents = <value>` |
-| mListName | `MyGUI::Widget` | R | `obj.mListName` |
-| mListValue | `MyGUI::Widget` | R | `obj.mListValue` |
-| mListIndex | `MyGUI::Widget` | R | `obj.mListIndex` |
+| mListName | `MyGUI::TextBox` | R | `obj.mListName` |
+| mListValue | `MyGUI::TextBox` | R | `obj.mListValue` |
+| mListIndex | `MyGUI::TextBox` | R | `obj.mListIndex` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7053,9 +7053,9 @@
 |---|---|---|---|
 | currentIndex | `integer` | RW | `obj.currentIndex = <value>` |
 | currentTime | `number` | RW | `obj.currentTime = <value>` |
-| loadingText | `MyGUI::Widget` | R | `obj.loadingText` |
-| messageText | `MyGUI::Widget` | R | `obj.messageText` |
-| backgroundImage | `MyGUI::Widget` | R | `obj.backgroundImage` |
+| loadingText | `MyGUI::TextBox` | R | `obj.loadingText` |
+| messageText | `MyGUI::EditBox` | R | `obj.messageText` |
+| backgroundImage | `MyGUI::ImageBox` | R | `obj.backgroundImage` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7081,7 +7081,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| list | `MyGUI::Widget` | R | `obj.list` |
+| list | `MyGUI::MultiListBox` | R | `obj.list` |
 | games | `lektor<SaveInfo>` | RW | `obj.games = <value>` |
 | infoPanel | `DatapanelGUI` | RW | `obj.infoPanel = <value>` |
 
@@ -7281,18 +7281,18 @@
 | mapScreen | `MapScreen` | RW | `obj.mapScreen = <value>` |
 | currentCategoryList | `lektor<GameData*>` | R | `obj.currentCategoryList` |
 | factionScreen | `FactionsScreen` | RW | `obj.factionScreen = <value>` |
-| researchCategoriesListBox | `MyGUI::Widget` | RW | `obj.researchCategoriesListBox = <value>` |
+| researchCategoriesListBox | `MyGUI::ListBox` | RW | `obj.researchCategoriesListBox = <value>` |
 | availableList | `DatapanelGUI` | RW | `obj.availableList = <value>` |
 | info | `DatapanelGUI` | RW | `obj.info = <value>` |
 | info2 | `DatapanelGUI` | RW | `obj.info2 = <value>` |
 | techCategory | `string` | RW | `obj.techCategory = <value>` |
 | currentResearch | `GameData` | RW | `obj.currentResearch = <value>` |
-| researchBenchMessage | `MyGUI::Widget` | RW | `obj.researchBenchMessage = <value>` |
+| researchBenchMessage | `MyGUI::EditBox` | RW | `obj.researchBenchMessage = <value>` |
 | researchDescriptionUpdateRequest | `boolean` | RW | `obj.researchDescriptionUpdateRequest = <value>` |
 | lastResearchRate | `number` | RW | `obj.lastResearchRate = <value>` |
 | todoList | `lightuserdata` | R | `obj.todoList` |
 | craftingQueue | `lightuserdata` | R | `obj.craftingQueue` |
-| messagesTextBox | `MyGUI::Widget` | RW | `obj.messagesTextBox = <value>` |
+| messagesTextBox | `MyGUI::EditBox` | RW | `obj.messagesTextBox = <value>` |
 | messagesUpdated | `boolean` | RW | `obj.messagesUpdated = <value>` |
 | messagesMutex | `lightuserdata` | R | `obj.messagesMutex` |
 | messagesPlayerColor | `string` | RW | `obj.messagesPlayerColor = <value>` |
@@ -7300,8 +7300,8 @@
 | aiScreen | `DatapanelGUI` | RW | `obj.aiScreen = <value>` |
 | aiToolTip | `ToolTip` | RW | `obj.aiToolTip = <value>` |
 | toolTip | `ToolTip` | RW | `obj.toolTip = <value>` |
-| window | `MyGUI::Widget` | RW | `obj.window = <value>` |
-| tabs | `MyGUI::Widget` | RW | `obj.tabs = <value>` |
+| window | `MyGUI::Window` | RW | `obj.window = <value>` |
+| tabs | `MyGUI::TabControl` | RW | `obj.tabs = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7311,7 +7311,7 @@
 | getVisible | `` | `boolean` | `obj:getVisible()` |
 | setVisible | `on: boolean, tab: integer` | `void` | `obj:setVisible(on, tab)` |
 | getCurrentTab | `` | `integer` | `obj:getCurrentTab()` |
-| getTab | `index: integer` | `MyGUI::Widget` | `obj:getTab(index)` |
+| getTab | `index: integer` | `MyGUI::TabItem` | `obj:getTab(index)` |
 | getWidget | `name: string` | `MyGUI::Widget` | `obj:getWidget(name)` |
 | refresh | `current: GameData, progress: number` | `void` | `obj:refresh(current, progress)` |
 | refreshResearchList | `` | `void` | `obj:refreshResearchList()` |
@@ -7358,9 +7358,9 @@
 | updateTimer | `number` | RW | `obj.updateTimer = <value>` |
 | toolTip | `ToolTip` | RW | `obj.toolTip = <value>` |
 | mainWidget | `MyGUI::Widget` | RW | `obj.mainWidget = <value>` |
-| mapScrollView | `MyGUI::Widget` | RW | `obj.mapScrollView = <value>` |
-| mapImage | `MyGUI::Widget` | RW | `obj.mapImage = <value>` |
-| cameraMarker | `MyGUI::Widget` | RW | `obj.cameraMarker = <value>` |
+| mapScrollView | `MyGUI::ScrollView` | RW | `obj.mapScrollView = <value>` |
+| mapImage | `MyGUI::ImageBox` | RW | `obj.mapImage = <value>` |
+| cameraMarker | `MyGUI::ImageBox` | RW | `obj.cameraMarker = <value>` |
 | cameraMarkerSkin | `lightuserdata` | R | `obj.cameraMarkerSkin` |
 | zoomUpdated | `boolean` | RW | `obj.zoomUpdated = <value>` |
 | zoomValueBase | `number` | RW | `obj.zoomValueBase = <value>` |
@@ -7369,7 +7369,7 @@
 | zoomLevelCurrent | `MapZoomLevel` | RW | `obj.zoomLevelCurrent = <value>` |
 | mapOverlaysContainer | `MyGUI::Widget` | RW | `obj.mapOverlaysContainer = <value>` |
 | zoomLevels | `number` | RW | `obj.zoomLevels = <value>` |
-| mapMarkerMovement | `MyGUI::Widget` | RW | `obj.mapMarkerMovement = <value>` |
+| mapMarkerMovement | `MyGUI::ImageBox` | RW | `obj.mapMarkerMovement = <value>` |
 | mapMarkerMovementPosition | `Vector3` | RW | `obj.mapMarkerMovementPosition = <value>` |
 | mapMarkerMovementFadeOutDelay | `number` | RW | `obj.mapMarkerMovementFadeOutDelay = <value>` |
 | mapDragging | `boolean` | RW | `obj.mapDragging = <value>` |
@@ -7431,7 +7431,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | handle | `hand` | RW | `obj.handle = <value>` |
-| image | `MyGUI::Widget` | R | `obj.image` |
+| image | `MyGUI::ImageBox` | R | `obj.image` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7450,8 +7450,8 @@
 | handle | `hand` | RW | `obj.handle = <value>` |
 | zoomLayer | `MapZoomLevel` | RW | `obj.zoomLayer = <value>` |
 | root | `MyGUI::Widget` | R | `obj.root` |
-| image | `MyGUI::Widget` | R | `obj.image` |
-| label | `MyGUI::Widget` | R | `obj.label` |
+| image | `MyGUI::ImageBox` | R | `obj.image` |
+| label | `MyGUI::TextBox` | R | `obj.label` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7772,7 +7772,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| mName | `MyGUI::Widget` | R | `obj.mName` |
+| mName | `MyGUI::TextBox` | R | `obj.mName` |
 | mDisableEvents | `boolean` | RW | `obj.mDisableEvents = <value>` |
 
 ### Methods
@@ -7962,7 +7962,7 @@
 |---|---|---|---|
 | currentStart | `integer` | RW | `obj.currentStart = <value>` |
 | startInfo | `DatapanelGUI` | RW | `obj.startInfo = <value>` |
-| startNameTextBox | `MyGUI::Widget` | R | `obj.startNameTextBox` |
+| startNameTextBox | `MyGUI::TextBox` | R | `obj.startNameTextBox` |
 | newGameOptions | `NewGameOptionsWindow` | RW | `obj.newGameOptions = <value>` |
 | startsData | `Ogre::FastArray<GameData*>` | RW | `obj.startsData = <value>` |
 
@@ -8101,10 +8101,10 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| filesList | `MyGUI::Widget` | R | `obj.filesList` |
-| fileNameTxt | `MyGUI::Widget` | R | `obj.fileNameTxt` |
-| currentFolderList | `MyGUI::Widget` | R | `obj.currentFolderList` |
-| openSaveButton | `MyGUI::Widget` | R | `obj.openSaveButton` |
+| filesList | `MyGUI::ListBox` | R | `obj.filesList` |
+| fileNameTxt | `MyGUI::EditBox` | R | `obj.fileNameTxt` |
+| currentFolderList | `MyGUI::ComboBox` | R | `obj.currentFolderList` |
+| openSaveButton | `MyGUI::Button` | R | `obj.openSaveButton` |
 | currentFolder | `string` | RW | `obj.currentFolder = <value>` |
 | fileName | `string` | RW | `obj.fileName = <value>` |
 | fileMask | `string` | RW | `obj.fileMask = <value>` |
@@ -8224,7 +8224,7 @@
 | resolutionIndex | `integer` | RW | `obj.resolutionIndex = <value>` |
 | keyConfig | `DataPanelLine_KeyConfig` | RW | `obj.keyConfig = <value>` |
 | keysDatapanel | `DatapanelGUI` | RW | `obj.keysDatapanel = <value>` |
-| tabs | `MyGUI::Widget` | R | `obj.tabs` |
+| tabs | `MyGUI::TabControl` | R | `obj.tabs` |
 | created | `boolean` | RW | `obj.created = <value>` |
 | tooltip | `ToolTip` | RW | `obj.tooltip = <value>` |
 | previewFontSize | `boolean` | RW | `obj.previewFontSize = <value>` |
@@ -8265,8 +8265,8 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| orderText | `MyGUI::Widget` | R | `obj.orderText` |
-| removeButton | `MyGUI::Widget` | R | `obj.removeButton` |
+| orderText | `MyGUI::TextBox` | R | `obj.orderText` |
+| removeButton | `MyGUI::Button` | R | `obj.removeButton` |
 | data | `OrderData` | RW | `obj.data = <value>` |
 
 ### Methods
@@ -8317,16 +8317,16 @@
 | ordersItemBoxScrollBarSize | `integer` | RW | `obj.ordersItemBoxScrollBarSize = <value>` |
 | ordersItemBoxMaxVisible | `integer` | RW | `obj.ordersItemBoxMaxVisible = <value>` |
 | ordersEmptyPanel | `MyGUI::Widget` | R | `obj.ordersEmptyPanel` |
-| blocksCheckbox | `MyGUI::Widget` | R | `obj.blocksCheckbox` |
-| holdCheckBox | `MyGUI::Widget` | R | `obj.holdCheckBox` |
-| passiveCheckBox | `MyGUI::Widget` | R | `obj.passiveCheckBox` |
-| chaseCheckBox | `MyGUI::Widget` | R | `obj.chaseCheckBox` |
-| tauntCheckBox | `MyGUI::Widget` | R | `obj.tauntCheckBox` |
-| rangedCheckBox | `MyGUI::Widget` | R | `obj.rangedCheckBox` |
-| stealthCheckBox | `MyGUI::Widget` | R | `obj.stealthCheckBox` |
-| speedPrevButton | `MyGUI::Widget` | R | `obj.speedPrevButton` |
-| speedNextButton | `MyGUI::Widget` | R | `obj.speedNextButton` |
-| speedImagePanel | `MyGUI::Widget` | R | `obj.speedImagePanel` |
+| blocksCheckbox | `MyGUI::Button` | R | `obj.blocksCheckbox` |
+| holdCheckBox | `MyGUI::Button` | R | `obj.holdCheckBox` |
+| passiveCheckBox | `MyGUI::Button` | R | `obj.passiveCheckBox` |
+| chaseCheckBox | `MyGUI::Button` | R | `obj.chaseCheckBox` |
+| tauntCheckBox | `MyGUI::Button` | R | `obj.tauntCheckBox` |
+| rangedCheckBox | `MyGUI::Button` | R | `obj.rangedCheckBox` |
+| stealthCheckBox | `MyGUI::Button` | R | `obj.stealthCheckBox` |
+| speedPrevButton | `MyGUI::Button` | R | `obj.speedPrevButton` |
+| speedNextButton | `MyGUI::Button` | R | `obj.speedNextButton` |
+| speedImagePanel | `MyGUI::ImageBox` | R | `obj.speedImagePanel` |
 | speedImageNamesIdx | `integer` | RW | `obj.speedImageNamesIdx = <value>` |
 
 ### Methods
@@ -8935,12 +8935,12 @@
 |---|---|---|---|
 | characterHandle | `hand` | RW | `obj.characterHandle = <value>` |
 | name | `string` | RW | `obj.name = <value>` |
-| border | `MyGUI::Widget` | R | `obj.border` |
-| imageBackground | `MyGUI::Widget` | R | `obj.imageBackground` |
-| imagePortrait | `MyGUI::Widget` | R | `obj.imagePortrait` |
-| imageOverlayBack | `MyGUI::Widget` | R | `obj.imageOverlayBack` |
-| imageOverlayFront | `MyGUI::Widget` | R | `obj.imageOverlayFront` |
-| textName | `MyGUI::Widget` | R | `obj.textName` |
+| border | `MyGUI::Button` | R | `obj.border` |
+| imageBackground | `MyGUI::ImageBox` | R | `obj.imageBackground` |
+| imagePortrait | `MyGUI::ImageBox` | R | `obj.imagePortrait` |
+| imageOverlayBack | `MyGUI::ImageBox` | R | `obj.imageOverlayBack` |
+| imageOverlayFront | `MyGUI::ImageBox` | R | `obj.imageOverlayFront` |
+| textName | `MyGUI::TextBox` | R | `obj.textName` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -9219,11 +9219,11 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| window | `MyGUI::Widget` | R | `obj.window` |
-| imgMap | `MyGUI::Widget` | R | `obj.imgMap` |
+| window | `MyGUI::Window` | R | `obj.window` |
+| imgMap | `MyGUI::ImageBox` | R | `obj.imgMap` |
 | listResourcesPanel | `MyGUI::Widget` | R | `obj.listResourcesPanel` |
-| listResourcesSelected | `MyGUI::Widget` | R | `obj.listResourcesSelected` |
-| cameraMarker | `MyGUI::Widget` | R | `obj.cameraMarker` |
+| listResourcesSelected | `MyGUI::Button` | R | `obj.listResourcesSelected` |
+| cameraMarker | `MyGUI::ImageBox` | R | `obj.cameraMarker` |
 | cameraMarkerSkin | `lightuserdata` | R | `obj.cameraMarkerSkin` |
 | datapanelOverview1 | `DatapanelGUI` | RW | `obj.datapanelOverview1 = <value>` |
 | datapanelOverview2 | `DatapanelGUI` | RW | `obj.datapanelOverview2 = <value>` |
@@ -9804,7 +9804,7 @@
 | tempFolder | `string` | RW | `obj.tempFolder = <value>` |
 | currentPathIndex | `integer` | RW | `obj.currentPathIndex = <value>` |
 | currentMutex | `lightuserdata` | R | `obj.currentMutex` |
-| savingIcon | `MyGUI::Widget` | R | `obj.savingIcon` |
+| savingIcon | `MyGUI::ImageBox` | R | `obj.savingIcon` |
 | state | `SaveFileSystem::State` | RW | `obj.state = <value>` |
 | failedToCopyError | `string` | RW | `obj.failedToCopyError = <value>` |
 
@@ -9937,7 +9937,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | caption | `string` | RW | `obj.caption = <value>` |
-| textWidget | `MyGUI::Widget` | R | `obj.textWidget` |
+| textWidget | `MyGUI::TextBox` | R | `obj.textWidget` |
 | risingSpeed | `number` | RW | `obj.risingSpeed = <value>` |
 | risingHeight | `number` | RW | `obj.risingHeight = <value>` |
 | labelSize | `ScreenLabel::LabelSize` | RW | `obj.labelSize = <value>` |
@@ -10363,7 +10363,7 @@
 |---|---|---|---|
 | characterHandle | `hand` | RW | `obj.characterHandle = <value>` |
 | name | `string` | RW | `obj.name = <value>` |
-| border | `MyGUI::Widget` | R | `obj.border` |
+| border | `MyGUI::Button` | R | `obj.border` |
 | imgBoxPortrait | `MyGUI::Widget` | R | `obj.imgBoxPortrait` |
 | txtName | `MyGUI::Widget` | R | `obj.txtName` |
 
@@ -10404,8 +10404,8 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | portraitsBox | `SquadManagementScreen::PortraitSquadItemBox` | RW | `obj.portraitsBox = <value>` |
-| txtName | `MyGUI::Widget` | R | `obj.txtName` |
-| txtSquadSize | `MyGUI::Widget` | R | `obj.txtSquadSize` |
+| txtName | `MyGUI::EditBox` | R | `obj.txtName` |
+| txtSquadSize | `MyGUI::TextBox` | R | `obj.txtSquadSize` |
 | squad | `SquadManagementScreen::SquadData` | RW | `obj.squad = <value>` |
 
 ### Methods
@@ -10901,8 +10901,8 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | content | `MyGUI::Widget` | RW | `obj.content = <value>` |
-| leftBox | `MyGUI::Widget` | RW | `obj.leftBox = <value>` |
-| rightBox | `MyGUI::Widget` | RW | `obj.rightBox = <value>` |
+| leftBox | `MyGUI::EditBox` | RW | `obj.leftBox = <value>` |
+| rightBox | `MyGUI::EditBox` | RW | `obj.rightBox = <value>` |
 | width | `integer` | RW | `obj.width = <value>` |
 
 ## ToolTipDynamic
@@ -11520,8 +11520,8 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| nameButton | `MyGUI::Widget` | R | `obj.nameButton` |
-| closeButton | `MyGUI::Widget` | R | `obj.closeButton` |
+| nameButton | `MyGUI::Button` | R | `obj.nameButton` |
+| closeButton | `MyGUI::Button` | R | `obj.closeButton` |
 | flashWidget | `MyGUI::Widget` | R | `obj.flashWidget` |
 
 ### Methods

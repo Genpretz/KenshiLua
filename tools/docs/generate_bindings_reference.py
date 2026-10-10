@@ -226,7 +226,7 @@ def extract_args_from_body(body: str):
 
     # Pattern B: typed object checks assigned to a local variable.
     for m in re.finditer(
-        r"\b([\w_]+)\s*=\s*[^;]*?\b(?:checkObject|testObject)\s*<\s*([\w:*&,\s<>]+)\s*>\s*\(\s*L\s*,\s*(\d+)",
+        r"\b([\w_]+)\s*=\s*[^;]*?\b(?:checkObject|testObject|checkWidget)\s*<\s*([\w:*&,\s<>]+)\s*>\s*\(\s*L\s*,\s*(\d+)",
         body,
     ):
         var = m.group(1)
@@ -281,7 +281,7 @@ def extract_args_from_body(body: str):
 
     # Pattern G: unassigned helper calls still establish an argument position.
     for m in re.finditer(
-        r"\b(?:checkObject|testObject)\s*<\s*([\w:*&,\s<>]+)\s*>\s*\(\s*L\s*,\s*(\d+)",
+        r"\b(?:checkObject|testObject|checkWidget)\s*<\s*([\w:*&,\s<>]+)\s*>\s*\(\s*L\s*,\s*(\d+)",
         body,
     ):
         idx = int(m.group(2))
@@ -307,11 +307,49 @@ def extract_args_from_body(body: str):
         
     return sorted_args
 
+def widget_type(decl_type: str) -> str:
+    """Name the MyGUI type in a C++ declaration, such as 'MyGUI::ScrollView' for
+    'MyGUI::ScrollView*'. pushWidget gives Lua the widget's runtime type, so the
+    declared type is the documented minimum; 'MyGUI::Widget' when it is unknown."""
+    m = re.search(r"\bMyGUI::\w+", decl_type or "")
+    return m.group(0) if m else "MyGUI::Widget"
+
+def find_member_type(header_rel: str, class_name: str, member: str) -> str:
+    """Return the declared C++ type of a data member of class_name, or '' when the
+    header does not declare it in that class (an inherited member, for example)."""
+    if not header_rel or header_rel == "???":
+        return ""
+    path = PROJECT_ROOT / header_rel
+    if not path.is_file():
+        return ""
+    try:
+        text = strip_cpp_comments(path.read_text(encoding='utf-8', errors='ignore'))
+    except Exception:
+        return ""
+    body = extract_class_body(text, class_name)
+    m = re.search(
+        r"^[^\S\r\n]*(?:(?:public|protected|private)\s*:)?[^\S\r\n]*(.+?)\b"
+        + re.escape(member)
+        + r"[^\S\r\n]*(?:\[[^\]]*\])?[^\S\r\n]*;",
+        body,
+        re.MULTILINE
+    )
+    return m.group(1).strip() if m else ""
+
 def extract_return_type_from_body(body: str) -> str:
     """Extract returned type from a C++ function body by analyzing return/push statements."""
     if not body:
         return "void"
-        
+
+    # Widgets: return MyGUIBindings::pushWidget(L, result), typed by the local's declaration.
+    m = re.search(r"return\s+(?:MyGUIBindings::)?pushWidget\s*\(\s*L\s*,\s*([^;]+?)\s*\)\s*;", body)
+    if m:
+        expr = m.group(1)
+        decl = None
+        if re.match(r"^\w+$", expr):
+            decl = re.search(r"([\w:<>]+)\s*\*\s*" + re.escape(expr) + r"\s*=", body)
+        return widget_type(decl.group(1) if decl else "")
+
     m = re.search(r"return\s+push(?:Object(?:T)?|Value)\s*<\s*([\w:*&,\s<>]+)\s*>\s*\(", body)
     if m:
         return m.group(1).strip()
@@ -811,7 +849,7 @@ def parse_binding_file(filepath: pathlib.Path):
             
             if body:
                 push_match = re.search(
-                    r"(?:lua_push(\w+)|(push(?:Object(?:T)?|Value))(?:\s*<\s*[\w:*&,\s<>]+>\s*)?|(pushVector2)|(pushVector3)|(pushVector4)|(pushQuaternion)|([Hh]andBinding::push))\s*\(\s*L\s*,\s*([^;)]+)",
+                    r"(?:lua_push(\w+)|(push(?:Object(?:T)?|Value))(?:\s*<\s*[\w:*&,\s<>]+>\s*)?|(pushVector2)|(pushVector3)|(pushVector4)|(pushQuaternion)|([Hh]andBinding::push)|(pushWidget))\s*\(\s*L\s*,\s*([^;)]+)",
                     body
                 )
                 if push_match:
@@ -837,7 +875,7 @@ def parse_binding_file(filepath: pathlib.Path):
                     elif push_match.group(7):
                         push_type = "hand"
                         
-                    expr = push_match.group(8).strip()
+                    expr = push_match.group(9).strip()
                     member_match = re.search(r"\w+\s*->\s*([\w_]+)", expr)
                     if member_match:
                         member = member_match.group(1)
@@ -847,7 +885,10 @@ def parse_binding_file(filepath: pathlib.Path):
                             body,
                         )
                         member = body_member_match.group(1) if body_member_match else expr
-                        
+
+                    if push_match.group(8):
+                        push_type = widget_type(find_member_type(header, class_name, member))
+
             if push_type == "unknown" and body:
                 widget_match = re.search(
                     r"\bMyGUIBindings::pushWidget\s*\(\s*L\s*,\s*([^;)]+)",
