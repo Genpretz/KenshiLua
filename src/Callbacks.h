@@ -3,6 +3,8 @@
 #include <string>
 #include <kenshi/Character.h>
 #include <kenshi/gui/CharacterStatsWindow.h> // nested Stat and StatGroup types
+#include <kenshi/gui/FactionsScreen.h> // nested FactionRelationsLine types
+#include <kenshi/gui/InventoryGUI.h> // nested inventory helper types
 
 // Forward declaration — avoids pulling in the full headers in every
 // translation unit that only needs to call these dispatchers.
@@ -116,6 +118,19 @@ class ScreenLabel;
 class ScreenLabelDebug;
 class FloatingProgressBar;
 class StringPair;
+class NewGameOptionsWindow;
+class GameplayOptions;
+class SplashScreen;
+class FactionsScreen;
+class MainBarGUI;
+class MainTabPortraitPlatoon;
+class RootObjectContainer;
+class MedicalDatapanel;
+class InventoryIcon;
+class InventorySectionGUI;
+class BackpackInventoryLayout;
+class ContainerItem;
+class iVector2;
 namespace wraps { class BaseLayout; }
 namespace MyGUI { class Widget; class Gui; }
 template <typename T> class lektor;
@@ -2912,3 +2927,1017 @@ void CallForgottenGUICreateScreenLabelCallbacks(ForgottenGUI* thisptr, const std
 // Lua event name: "ForgottenGUI::createScreenLabelD"
 // Lua signature:  function(self, text, time, result)
 void CallForgottenGUICreateScreenLabelDCallbacks(ForgottenGUI* thisptr, const std::string& text, float time, ScreenLabelDebug* result);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in gui/NewGameOptionsWindow.h
+// -----------------------------------------------------------
+
+// Fired by NewGameOptionsWindow::_CONSTRUCTOR hook after the original call.
+// Lua event name: "NewGameOptionsWindow::_CONSTRUCTOR"
+// Lua signature:  function(self)
+void CallNewGameOptionsWindowConstructedCallbacks(NewGameOptionsWindow* thisptr);
+
+// Fired by NewGameOptionsWindow::_DESTRUCTOR hook before the original call.
+// Lua event name: "NewGameOptionsWindow::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallNewGameOptionsWindowDestructorCallbacks(NewGameOptionsWindow* thisptr);
+
+// Fired by NewGameOptionsWindow::setVisible hook after the original call.
+// Lua event name: "NewGameOptionsWindow::setVisible"
+// Lua signature:  function(self, visible)
+void CallNewGameOptionsWindowSetVisibleCallbacks(NewGameOptionsWindow* thisptr, bool visible);
+
+// Fired by NewGameOptionsWindow::getVisible hook after the original call.
+// Lua event name: "NewGameOptionsWindow::getVisible"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallNewGameOptionsWindowGetVisibleCallbacks(NewGameOptionsWindow* thisptr, bool defaultVal);
+
+// Fired by NewGameOptionsWindow::setPosition hook after the original call.
+// Lua event name: "NewGameOptionsWindow::setPosition"
+// Lua signature:  function(self, x, y)
+void CallNewGameOptionsWindowSetPositionCallbacks(NewGameOptionsWindow* thisptr, int x, int y);
+
+// Fired by NewGameOptionsWindow::update hook after the original call.
+// Lua event name: "NewGameOptionsWindow::update"
+// Lua signature:  function(self)
+void CallNewGameOptionsWindowUpdateCallbacks(NewGameOptionsWindow* thisptr);
+
+// Fired by NewGameOptionsWindow::setOptions hook after the original call.
+// Lua event name: "NewGameOptionsWindow::setOptions"
+// Lua signature:  function(self, options)
+void CallNewGameOptionsWindowSetOptionsCallbacks(NewGameOptionsWindow* thisptr, const GameplayOptions& options);
+
+// -----------------------------------------------------------
+// Additional callbacks for hooks in gui/InventoryGUI.h
+// -----------------------------------------------------------
+
+// Fired by InventoryIcon::_CONSTRUCTOR hook.
+// Lua event name: "InventoryIcon::_CONSTRUCTOR"
+// Lua signature: function(self, item, position, parent)
+void CallInventoryIconConstructedCallbacks(InventoryIcon* thisptr, Item* item, const MyGUI::types::TPoint<int>& position, MyGUI::Widget* parent);
+
+// Fired by InventoryIcon::setPosition hook.
+// Lua event name: "InventoryIcon::setPosition"
+// Lua signature: function(self, position)
+void CallInventoryIconSetPositionCallbacks(InventoryIcon* thisptr, const MyGUI::types::TPoint<int>& position);
+
+// Fired by InventoryIcon::getSize hook.
+// Lua event name: "InventoryIcon::getSize"
+// Lua signature: function(self, result)
+void CallInventoryIconGetSizeCallbacks(InventoryIcon* thisptr, const MyGUI::types::TSize<int>& result);
+
+// Fired by InventoryIcon::update hook.
+// Lua event name: "InventoryIcon::update"
+// Lua signature: function(self)
+void CallInventoryIconUpdateCallbacks(InventoryIcon* thisptr);
+
+// Fired by InventoryIcon::getWidget hook.
+// Lua event name: "InventoryIcon::getWidget"
+// Lua signature: function(self, result)
+void CallInventoryIconGetWidgetCallbacks(InventoryIcon* thisptr, MyGUI::Widget* result);
+
+// Fired by InventoryIcon::createIconImage hook.
+// Lua event name: "InventoryIcon::createIconImage"
+// Lua signature: function(item, name, size)
+void CallInventoryIconCreateIconImageCallbacks(Item* item, const std::string& name, const iVector2& size);
+
+// Fired by InventoryIcon::getItemSize hook.
+// Lua event name: "InventoryIcon::getItemSize"
+// Lua signature: function(itemData, result)
+void CallInventoryIconGetItemSizeCallbacks(GameData* itemData, const MyGUI::types::TSize<int>& result);
+
+// Fired by InventoryIcon::getItemPosition hook.
+// Lua event name: "InventoryIcon::getItemPosition"
+// Lua signature: function(x, y, result)
+void CallInventoryIconGetItemPositionCallbacks(int x, int y, const MyGUI::types::TPoint<int>& result);
+
+// Fired by InventoryIcon::_DESTRUCTOR hook.
+// Lua event name: "InventoryIcon::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallInventoryIconDestructorCallbacks(InventoryIcon* thisptr);
+
+// Fired by InventorySectionGUI::_CONSTRUCTOR hook.
+// Lua event name: "InventorySectionGUI::_CONSTRUCTOR"
+// Lua signature: function(self, widget, sectionName)
+void CallInventorySectionGUIConstructedCallbacks(InventorySectionGUI* thisptr, MyGUI::Widget* widget, const std::string& sectionName);
+
+// Fired by InventorySectionGUI::_DESTRUCTOR hook.
+// Lua event name: "InventorySectionGUI::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallInventorySectionGUIDestructorCallbacks(InventorySectionGUI* thisptr);
+
+// Fired by InventorySectionGUI::hasMouse hook.
+// Lua event name: "InventorySectionGUI::hasMouse"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallInventorySectionGUIHasMouseCallbacks(InventorySectionGUI* thisptr, bool defaultVal);
+
+// Fired by InventorySectionGUI::getItemAbsolutePosition hook.
+// Lua event name: "InventorySectionGUI::getItemAbsolutePosition"
+// Lua signature: function(self, x, y, result)
+void CallInventorySectionGUIGetItemAbsolutePositionCallbacks(InventorySectionGUI* thisptr, int x, int y, const MyGUI::types::TPoint<int>& result);
+
+// Fired by InventorySectionGUI::getWidget hook.
+// Lua event name: "InventorySectionGUI::getWidget"
+// Lua signature: function(self, result)
+void CallInventorySectionGUIGetWidgetCallbacks(InventorySectionGUI* thisptr, MyGUI::Widget* result);
+
+// Fired by InventorySectionGUI::getPositionSlot hook.
+// Lua event name: "InventorySectionGUI::getPositionSlot"
+// Lua signature: function(self, position, section, round, result)
+void CallInventorySectionGUIGetPositionSlotCallbacks(InventorySectionGUI* thisptr, const MyGUI::types::TPoint<int>& position, InventorySection* section, bool round, const MyGUI::types::TPoint<int>& result);
+
+// Fired by InventorySectionGUI::getBestPositionSlot hook.
+// Lua event name: "InventorySectionGUI::getBestPositionSlot"
+// Lua signature: function(self, position, section, item, slot, defaultVal) -> boolean
+bool CallInventorySectionGUIGetBestPositionSlotCallbacks(InventorySectionGUI* thisptr, const MyGUI::types::TPoint<int>& position, InventorySection* section, Item* item, const MyGUI::types::TPoint<int>& slot, bool defaultVal);
+
+// Fired by InventorySectionGUI::setEnabled hook.
+// Lua event name: "InventorySectionGUI::setEnabled"
+// Lua signature: function(self, value)
+void CallInventorySectionGUISetEnabledCallbacks(InventorySectionGUI* thisptr, bool value);
+
+// Fired by InventorySectionGUI::refreshIcons hook.
+// Lua event name: "InventorySectionGUI::refreshIcons"
+// Lua signature: function(self, section)
+void CallInventorySectionGUIRefreshIconsCallbacks(InventorySectionGUI* thisptr, InventorySection* section);
+
+// Fired by InventorySectionGUI::update hook.
+// Lua event name: "InventorySectionGUI::update"
+// Lua signature: function(self)
+void CallInventorySectionGUIUpdateCallbacks(InventorySectionGUI* thisptr);
+
+// Fired by InventoryGUI::TradeResult::_CONSTRUCTOR hook.
+// Lua event name: "InventoryGUI::TradeResult::_CONSTRUCTOR"
+// Lua signature: function(self, value)
+void CallInventoryTradeResultConstructedCallbacks(InventoryGUI::TradeResult* thisptr, int value);
+
+// Fired by InventoryGUI::TradeResult::operator== hook.
+// Lua event name: "InventoryGUI::TradeResult::operator=="
+// Lua signature: function(self, other, defaultVal) -> boolean
+bool CallInventoryTradeResultEqualsCallbacks(InventoryGUI::TradeResult* thisptr, InventoryGUI::TradeResult* other, bool defaultVal);
+
+// Fired by InventoryGUI::TradeResult::operator!= hook.
+// Lua event name: "InventoryGUI::TradeResult::operator!="
+// Lua signature: function(self, other, defaultVal) -> boolean
+bool CallInventoryTradeResultNotEqualsCallbacks(InventoryGUI::TradeResult* thisptr, InventoryGUI::TradeResult* other, bool defaultVal);
+
+// Fired by InventoryGUI::TradeResult::showMessage hook.
+// Lua event name: "InventoryGUI::TradeResult::showMessage"
+// Lua signature: function(self)
+void CallInventoryTradeResultShowMessageCallbacks(InventoryGUI::TradeResult* thisptr);
+
+// Fired by InventoryGUI::TradeResult::ShowMessage hook.
+// Lua event name: "InventoryGUI::TradeResult::ShowMessage"
+// Lua signature: function(value)
+void CallInventoryTradeResultStaticShowMessageCallbacks(int value);
+
+// Fired by InventoryGUI::InventoryTradeData::isValid hook.
+// Lua event name: "InventoryGUI::InventoryTradeData::isValid"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallInventoryTradeDataIsValidCallbacks(InventoryGUI::InventoryTradeData* thisptr, bool defaultVal);
+
+// Fired by InventoryGUI::InventoryTradeData::operator= hook.
+// Lua event name: "InventoryGUI::InventoryTradeData::operator="
+// Lua signature: function(self, other)
+void CallInventoryTradeDataAssignCallbacks(InventoryGUI::InventoryTradeData* thisptr, InventoryGUI::InventoryTradeData* other);
+
+// Fired by InventoryGUI::lockedItemCheck hook.
+// Lua event name: "InventoryGUI::lockedItemCheck"
+// Lua signature: function(item, defaultVal) -> boolean
+bool CallInventoryGUILockedItemCheckCallbacks(LockedArmour* item, bool defaultVal);
+
+// Fired by InventoryGUI::setTradingTown hook.
+// Lua event name: "InventoryGUI::setTradingTown"
+// Lua signature: function(town)
+void CallInventoryGUISetTradingTownCallbacks(const hand& town);
+
+// Fired by InventoryGUI::getTradingTown hook.
+// Lua event name: "InventoryGUI::getTradingTown"
+// Lua signature: function(defaultVal) -> Town
+Town* CallInventoryGUIGetTradingTownCallbacks(Town* defaultVal);
+
+// Fired by InventoryGUI::removeTradePartner hook.
+// Lua event name: "InventoryGUI::removeTradePartner"
+// Lua signature: function(tradeWith)
+void CallInventoryGUIRemoveTradePartnerCallbacks(InventoryGUI* tradeWith);
+
+// Fired by InventoryGUI::clearTradePartners hook.
+// Lua event name: "InventoryGUI::clearTradePartners"
+// Lua signature: function()
+void CallInventoryGUIClearTradePartnersCallbacks();
+
+// Fired by InventoryGUI::canDropMouseItemWithoutPaying hook.
+// Lua event name: "InventoryGUI::canDropMouseItemWithoutPaying"
+// Lua signature: function(cameFrom, defaultVal) -> boolean
+bool CallInventoryGUICanDropMouseItemWithoutPayingCallbacks(InventoryGUI* cameFrom, bool defaultVal);
+
+// Fired by InventoryGUI::_NV_autoChangeSelectedObject hook.
+// Lua event name: "InventoryGUI::_NV_autoChangeSelectedObject"
+// Lua signature: function(self, obj)
+void CallInventoryGUINVAutoChangeSelectedObjectCallbacks(InventoryGUI* thisptr, const hand& obj);
+
+// Fired by InventoryGUI::_NV_update hook.
+// Lua event name: "InventoryGUI::_NV_update"
+// Lua signature: function(self)
+void CallInventoryGUINVUpdateCallbacks(InventoryGUI* thisptr);
+
+// Fired by InventoryGUI::_NV_show hook.
+// Lua event name: "InventoryGUI::_NV_show"
+// Lua signature: function(self, on)
+void CallInventoryGUINVShowCallbacks(InventoryGUI* thisptr, bool on);
+
+// Fired by InventoryGUI::_NV_setPositionReal hook.
+// Lua event name: "InventoryGUI::_NV_setPositionReal"
+// Lua signature: function(self, x, y)
+void CallInventoryGUINVSetPositionRealCallbacks(InventoryGUI* thisptr, float x, float y);
+
+// Fired by InventoryGUI::_NV_refreshSection hook.
+// Lua event name: "InventoryGUI::_NV_refreshSection"
+// Lua signature: function(self, section)
+void CallInventoryGUINVRefreshSectionCallbacks(InventoryGUI* thisptr, InventorySection* section);
+
+// Fired by InventoryGUI::refreshSection hook.
+// Lua event name: "InventoryGUI::refreshSection"
+// Lua signature: function(self)
+void CallInventoryGUIRefreshSectionCallbacks(InventoryGUI* thisptr);
+
+// Fired by InventoryGUI::autoArrangeButton hook.
+// Lua event name: "InventoryGUI::autoArrangeButton"
+// Lua signature: function(self, sender)
+void CallInventoryGUIAutoArrangeButtonCallbacks(InventoryGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by InventoryGUI::openBackpackButton hook.
+// Lua event name: "InventoryGUI::openBackpackButton"
+// Lua signature: function(self, sender)
+void CallInventoryGUIOpenBackpackButtonCallbacks(InventoryGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by InventoryGUI::openLimbsInterface hook.
+// Lua event name: "InventoryGUI::openLimbsInterface"
+// Lua signature: function(self, sender)
+void CallInventoryGUIOpenLimbsInterfaceCallbacks(InventoryGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by InventoryGUI::showBackpack hook.
+// Lua event name: "InventoryGUI::showBackpack"
+// Lua signature: function(self, on)
+void CallInventoryGUIShowBackpackCallbacks(InventoryGUI* thisptr, bool on);
+
+// Fired by InventoryGUI::windowButtonPressed hook.
+// Lua event name: "InventoryGUI::windowButtonPressed"
+// Lua signature: function(self, widget, name)
+void CallInventoryGUIWindowButtonPressedCallbacks(InventoryGUI* thisptr, MyGUI::Widget* widget, const std::string& name);
+
+// Fired by InventoryGUI::stealingGUIInfoUpdate hook.
+// Lua event name: "InventoryGUI::stealingGUIInfoUpdate"
+// Lua signature: function(self)
+void CallInventoryGUIStealingGUIInfoUpdateCallbacks(InventoryGUI* thisptr);
+
+// Fired by InventoryGUI::getTrader1Trader2 hook.
+// Lua event name: "InventoryGUI::getTrader1Trader2"
+// Lua signature: function(self, trader1, trader2)
+void CallInventoryGUIGetTrader1Trader2Callbacks(InventoryGUI* thisptr, InventoryGUI* trader1, InventoryGUI* trader2);
+
+// Fired by InventoryGUI::playSound hook.
+// Lua event name: "InventoryGUI::playSound"
+// Lua signature: function(self, eventId, item)
+void CallInventoryGUIPlaySoundCallbacks(InventoryGUI* thisptr, const std::string& eventId, Item* item);
+
+// Fired by InventoryGUI::refreshAllSections hook.
+// Lua event name: "InventoryGUI::refreshAllSections"
+// Lua signature: function(self)
+void CallInventoryGUIRefreshAllSectionsCallbacks(InventoryGUI* thisptr);
+
+// Fired by InventoryGUI::updateDatapanel hook.
+// Lua event name: "InventoryGUI::updateDatapanel"
+// Lua signature: function(self)
+void CallInventoryGUIUpdateDatapanelCallbacks(InventoryGUI* thisptr);
+
+// Fired by InventoryGUI::rightClickAutoEquipping hook.
+// Lua event name: "InventoryGUI::rightClickAutoEquipping"
+// Lua signature: function(self)
+void CallInventoryGUIRightClickAutoEquippingCallbacks(InventoryGUI* thisptr);
+
+// Fired by InventoryGUI::returnItem hook.
+// Lua event name: "InventoryGUI::returnItem"
+// Lua signature: function(self, item, sectionName)
+void CallInventoryGUIReturnItemCallbacks(InventoryGUI* thisptr, Item* item, const std::string& sectionName);
+
+// Fired by InventoryGUI::sectionMouseButtonPressed hook.
+// Lua event name: "InventoryGUI::sectionMouseButtonPressed"
+// Lua signature: function(self, sender, left, top, id)
+void CallInventoryGUISectionMouseButtonPressedCallbacks(InventoryGUI* thisptr, MyGUI::Widget* sender, int left, int top, int id);
+
+// Fired by InventoryGUI::sectionMouseButtonReleased hook.
+// Lua event name: "InventoryGUI::sectionMouseButtonReleased"
+// Lua signature: function(self, sender, left, top, id)
+void CallInventoryGUISectionMouseButtonReleasedCallbacks(InventoryGUI* thisptr, MyGUI::Widget* sender, int left, int top, int id);
+
+// Fired by InventoryGUI::onWindowFocus hook.
+// Lua event name: "InventoryGUI::onWindowFocus"
+// Lua signature: function(self, sender, focus)
+void CallInventoryGUIOnWindowFocusCallbacks(InventoryGUI* thisptr, MyGUI::Widget* sender, bool focus);
+
+// Fired by InventoryGUI::windowMoved hook.
+// Lua event name: "InventoryGUI::windowMoved"
+// Lua signature: function(self, sender)
+void CallInventoryGUIWindowMovedCallbacks(InventoryGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by InventoryGUI::_NV_isVisible hook.
+// Lua event name: "InventoryGUI::_NV_isVisible"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallInventoryGUINVIsVisibleCallbacks(InventoryGUI* thisptr, bool defaultVal);
+
+// Fired by InventoryGUI::getBackpack hook.
+// Lua event name: "InventoryGUI::getBackpack"
+// Lua signature: function(self, defaultVal) -> ContainerItem
+ContainerItem* CallInventoryGUIGetBackpackCallbacks(InventoryGUI* thisptr, ContainerItem* defaultVal);
+
+// Fired by InventoryGUI::_NV_getInventory hook.
+// Lua event name: "InventoryGUI::_NV_getInventory"
+// Lua signature: function(self, defaultVal) -> Inventory
+Inventory* CallInventoryGUINVGetInventoryCallbacks(InventoryGUI* thisptr, Inventory* defaultVal);
+
+// Fired by InventoryGUI::hasSameOwner hook.
+// Lua event name: "InventoryGUI::hasSameOwner"
+// Lua signature: function(self, other, defaultVal) -> boolean
+bool CallInventoryGUIHasSameOwnerCallbacks(InventoryGUI* thisptr, InventoryGUI* other, bool defaultVal);
+
+// Fired by InventoryGUI::_NV_getCallbackCharacter hook.
+// Lua event name: "InventoryGUI::_NV_getCallbackCharacter"
+// Lua signature: function(self, defaultVal) -> Character
+Character* CallInventoryGUINVGetCallbackCharacterCallbacks(InventoryGUI* thisptr, Character* defaultVal);
+
+// Fired by InventoryGUI::_NV_getCallbackObject hook.
+// Lua event name: "InventoryGUI::_NV_getCallbackObject"
+// Lua signature: function(self, defaultVal) -> RootObject
+RootObject* CallInventoryGUINVGetCallbackObjectCallbacks(InventoryGUI* thisptr, RootObject* defaultVal);
+
+// Fired by InventoryGUI::getSelectedItem hook.
+// Lua event name: "InventoryGUI::getSelectedItem"
+// Lua signature: function(self, sectionName, defaultVal) -> Item
+Item* CallInventoryGUIGetSelectedItemCallbacks(InventoryGUI* thisptr, const std::string& sectionName, Item* defaultVal);
+
+// Fired by InventoryGUI::getMouseItem hook.
+// Lua event name: "InventoryGUI::getMouseItem"
+// Lua signature: function(self, defaultVal) -> Item
+Item* CallInventoryGUIGetMouseItemCallbacks(InventoryGUI* thisptr, Item* defaultVal);
+
+// Fired by InventoryGUI::takeCertainAmountFrom hook.
+// Lua event name: "InventoryGUI::takeCertainAmountFrom"
+// Lua signature: function(self, baseItem, amount, defaultVal) -> Item
+Item* CallInventoryGUITakeCertainAmountFromCallbacks(InventoryGUI* thisptr, Item* baseItem, int amount, Item* defaultVal);
+
+// Fired by InventoryGUI::pickupItemToMouse hook.
+// Lua event name: "InventoryGUI::pickupItemToMouse"
+// Lua signature: function(self, sectionName, defaultVal) -> boolean
+bool CallInventoryGUIPickupItemToMouseCallbacks(InventoryGUI* thisptr, const std::string& sectionName, bool defaultVal);
+
+// Fired by InventoryGUI::placeItemFromMouse hook.
+// Lua event name: "InventoryGUI::placeItemFromMouse"
+// Lua signature: function(self, sectionName, mousePos, defaultVal) -> boolean
+bool CallInventoryGUIPlaceItemFromMouseCallbacks(InventoryGUI* thisptr, const std::string& sectionName, const MyGUI::types::TPoint<int>& mousePos, bool defaultVal);
+
+// Fired by InventoryGUI::isTradingForMoney hook.
+// Lua event name: "InventoryGUI::isTradingForMoney"
+// Lua signature: function(self, cameFrom, defaultVal) -> boolean
+bool CallInventoryGUIIsTradingForMoneyCallbacks(InventoryGUI* thisptr, InventoryGUI* cameFrom, bool defaultVal);
+
+// Fired by InventoryGUI::isStealing hook.
+// Lua event name: "InventoryGUI::isStealing"
+// Lua signature: function(self, cameFrom, defaultVal) -> boolean
+bool CallInventoryGUIIsStealingCallbacks(InventoryGUI* thisptr, InventoryGUI* cameFrom, bool defaultVal);
+
+// Fired by InventoryGUI::isWithinRangeToTrade hook.
+// Lua event name: "InventoryGUI::isWithinRangeToTrade"
+// Lua signature: function(self, otherOwner, stealing, defaultVal) -> boolean
+bool CallInventoryGUIIsWithinRangeToTradeCallbacks(InventoryGUI* thisptr, RootObject* otherOwner, bool stealing, bool defaultVal);
+
+// Fired by InventoryGUI::setItemToPlayerPortrait hook.
+// Lua event name: "InventoryGUI::setItemToPlayerPortrait"
+// Lua signature: function(self, item, character, defaultVal) -> boolean
+bool CallInventoryGUISetItemToPlayerPortraitCallbacks(InventoryGUI* thisptr, Item* item, Character* character, bool defaultVal);
+
+// Fired by InventoryGUI::fencingConfirmation hook.
+// Lua event name: "InventoryGUI::fencingConfirmation"
+// Lua signature: function(self, item, thief, fence, sectionName, mouse, defaultVal) -> boolean
+bool CallInventoryGUIFencingConfirmationResultCallbacks(InventoryGUI* thisptr, Item* item, RootObject* thief, Character* fence, const std::string& sectionName, const MyGUI::types::TPoint<int>& mouse, bool defaultVal);
+
+// Fired by InventoryGUI::getPlayerTradeCharacter hook.
+// Lua event name: "InventoryGUI::getPlayerTradeCharacter"
+// Lua signature: function(self, defaultVal) -> RootObject
+RootObject* CallInventoryGUIGetPlayerTradeCharacterCallbacks(InventoryGUI* thisptr, RootObject* defaultVal);
+
+// Fired by InventoryGUI::tryToEquip hook.
+// Lua event name: "InventoryGUI::tryToEquip"
+// Lua signature: function(self, item, replace, defaultVal) -> boolean
+bool CallInventoryGUITryToEquipCallbacks(InventoryGUI* thisptr, Item* item, bool replace, bool defaultVal);
+
+// Fired by InventoryGUI::hasMouse hook.
+// Lua event name: "InventoryGUI::hasMouse"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallInventoryGUIHasMouseCallbacks(InventoryGUI* thisptr, bool defaultVal);
+
+// Fired by InventoryGUI::getWindowCoord hook.
+// Lua event name: "InventoryGUI::getWindowCoord"
+// Lua signature: function(self, result)
+void CallInventoryGUIGetWindowCoordCallbacks(InventoryGUI* thisptr, const MyGUI::types::TCoord<int>& result);
+
+// Fired by InventoryGUI::getNPCTrader hook.
+// Lua event name: "InventoryGUI::getNPCTrader"
+// Lua signature: function(defaultVal) -> Character
+Character* CallInventoryGUIGetNPCTraderCallbacks(Character* defaultVal);
+
+// Fired by InventoryGUI::isTradingForMoney_static hook.
+// Lua event name: "InventoryGUI::isTradingForMoney_static"
+// Lua signature: function(defaultVal) -> RootObject
+RootObject* CallInventoryGUIIsTradingForMoneyStaticCallbacks(RootObject* defaultVal);
+
+// Fired by InventoryGUI::isTradingAndStealing_static hook.
+// Lua event name: "InventoryGUI::isTradingAndStealing_static"
+// Lua signature: function(defaultVal) -> RootObject
+RootObject* CallInventoryGUIIsTradingAndStealingStaticCallbacks(RootObject* defaultVal);
+
+// Fired by InventoryGUI::getTraderPriceMultiplier hook.
+// Lua event name: "InventoryGUI::getTraderPriceMultiplier"
+// Lua signature: function(defaultVal) -> number
+float CallInventoryGUIGetTraderPriceMultiplierCallbacks(float defaultVal);
+
+// Fired by InventoryGUI::_DESTRUCTOR hook.
+// Lua event name: "InventoryGUI::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallInventoryGUIDestructorCallbacks(InventoryGUI* thisptr);
+
+// Fired by InventoryGUI::RClickAutoTrade hook.
+// Lua event name: "InventoryGUI::RClickAutoTrade"
+// Lua signature: function(self, invSectionName, x, y, sendingTo, thieveryChecks, first, result)
+void CallInventoryGUIRClickAutoTradeCallbacks(InventoryGUI* thisptr, const std::string& invSectionName, int x, int y, InventoryGUI* sendingTo, bool thieveryChecks, bool first, const InventoryGUI::TradeResult& result);
+
+// Fired by InventoryGUI::RClickAutoTradeAll hook.
+// Lua event name: "InventoryGUI::RClickAutoTradeAll"
+// Lua signature: function(self, invSectionName, x, y, sendingTo, thieveryChecks, first, result)
+void CallInventoryGUIRClickAutoTradeAllCallbacks(InventoryGUI* thisptr, const std::string& invSectionName, int x, int y, InventoryGUI* sendingTo, bool thieveryChecks, bool first, const InventoryGUI::TradeResult& result);
+
+// Fired by InventoryGUI::FenceCallbackData::_DESTRUCTOR hook.
+// Lua event name: "InventoryGUI::FenceCallbackData::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallInventoryGUIFenceCallbackDataDestructorCallbacks(InventoryGUI::FenceCallbackData* thisptr);
+
+// Fired by InventoryGUI::getSectionWithMouseLocal hook.
+// Lua event name: "InventoryGUI::getSectionWithMouseLocal"
+// Lua signature: function(self, result)
+void CallInventoryGUIGetSectionWithMouseLocalCallbacks(InventoryGUI* thisptr, const std::string& result);
+
+// Fired by InventoryGUI::getSlotWithMouse hook.
+// Lua event name: "InventoryGUI::getSlotWithMouse"
+// Lua signature: function(self, result)
+void CallInventoryGUIGetSlotWithMouseCallbacks(InventoryGUI* thisptr, const iVector2& result);
+
+// Fired by InventoryGUI::makeIconForItem hook.
+// Lua event name: "InventoryGUI::makeIconForItem"
+// Lua signature: function(item, x, y, defaultVal) -> InventoryIcon
+InventoryIcon* CallInventoryGUIMakeIconForItemCallbacks(Item* item, int x, int y, InventoryIcon* defaultVal);
+
+// Fired by InventoryLayout::_CONSTRUCTOR hook.
+// Lua event name: "InventoryLayout::_CONSTRUCTOR"
+// Lua signature: function(self, file)
+void CallInventoryLayoutConstructedCallbacks(InventoryLayout* thisptr, const std::string& file);
+
+// Fired by InventoryLayout::_DESTRUCTOR hook.
+// Lua event name: "InventoryLayout::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallInventoryLayoutDestructorCallbacks(InventoryLayout* thisptr);
+
+// Fired by InventoryLayout::getWindow hook.
+// Lua event name: "InventoryLayout::getWindow"
+// Lua signature: function(self, result)
+void CallInventoryLayoutGetWindowCallbacks(InventoryLayout* thisptr, MyGUI::Widget* result);
+
+// Fired by InventoryLayout::getWidget hook.
+// Lua event name: "InventoryLayout::getWidget"
+// Lua signature: function(self, name, result)
+void CallInventoryLayoutGetWidgetCallbacks(InventoryLayout* thisptr, const std::string& name, MyGUI::Widget* result);
+
+// Fired by InventoryLayout::_NV_getDatapanel hook.
+// Lua event name: "InventoryLayout::_NV_getDatapanel"
+// Lua signature: function(self, defaultVal) -> DatapanelGUI
+DatapanelGUI* CallInventoryLayoutNVGetDatapanelCallbacks(InventoryLayout* thisptr, DatapanelGUI* defaultVal);
+
+// Fired by InventoryLayout::setupDataPanelInfos hook.
+// Lua event name: "InventoryLayout::setupDataPanelInfos"
+// Lua signature: function(self, name)
+void CallInventoryLayoutSetupDataPanelInfosCallbacks(InventoryLayout* thisptr, const std::string& name);
+
+// Fired by InventoryLayout::notifyCellSizeChanged hook.
+// Lua event name: "InventoryLayout::notifyCellSizeChanged"
+// Lua signature: function()
+void CallInventoryLayoutNotifyCellSizeChangedCallbacks();
+
+// Fired by InventoryLayout::createSectionGUI hook.
+// Lua event name: "InventoryLayout::createSectionGUI"
+// Lua signature: function(self, section, defaultVal) -> InventorySectionGUI
+InventorySectionGUI* CallInventoryLayoutCreateSectionGUICallbacks(InventoryLayout* thisptr, InventorySection* section, InventorySectionGUI* defaultVal);
+
+// Fired by InventoryLayout::setSectionGUIDisabled hook.
+// Lua event name: "InventoryLayout::setSectionGUIDisabled"
+// Lua signature: function(self, sectionName, width, height)
+void CallInventoryLayoutSetSectionGUIDisabledCallbacks(InventoryLayout* thisptr, const std::string& sectionName, int width, int height);
+
+// Fired by InventoryLayout::resizeSection hook.
+// Lua event name: "InventoryLayout::resizeSection"
+// Lua signature: function(self, section, sectionGUI, result)
+void CallInventoryLayoutResizeSectionCallbacks(InventoryLayout* thisptr, InventorySection* section, InventorySectionGUI* sectionGUI, const MyGUI::types::TSize<int>& result);
+
+// Fired by InventoryLayout::resizeSectionWidget hook.
+// Lua event name: "InventoryLayout::resizeSectionWidget"
+// Lua signature: function(self, width, height, widget, result)
+void CallInventoryLayoutResizeSectionWidgetCallbacks(InventoryLayout* thisptr, int width, int height, MyGUI::Widget* widget, const MyGUI::types::TSize<int>& result);
+
+// Fired by GenericFixedInventoryLayout::_NV_setSize hook.
+// Lua event name: "GenericFixedInventoryLayout::_NV_setSize"
+// Lua signature: function(self, slotsW, slotsH)
+void CallGenericFixedInventoryLayoutNVSetSizeCallbacks(GenericFixedInventoryLayout* thisptr, int slotsW, int slotsH);
+
+// Fired by GenericFixedInventoryLayout::_DESTRUCTOR hook.
+// Lua event name: "GenericFixedInventoryLayout::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallGenericFixedInventoryLayoutDestructorCallbacks(GenericFixedInventoryLayout* thisptr);
+
+// Fired by BackpackInventoryLayout::_CONSTRUCTOR hook.
+// Lua event name: "BackpackInventoryLayout::_CONSTRUCTOR"
+// Lua signature: function(self, standAlone)
+void CallBackpackInventoryLayoutConstructedCallbacks(BackpackInventoryLayout* thisptr, bool standAlone);
+
+// Fired by BackpackInventoryLayout::_DESTRUCTOR hook.
+// Lua event name: "BackpackInventoryLayout::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallBackpackInventoryLayoutDestructorCallbacks(BackpackInventoryLayout* thisptr);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in gui/MainBarGUI.h
+// -----------------------------------------------------------
+
+// Fired by MainTabPortraitPlatoon::addTab hook.
+// Lua event name: "MainTabPortraitPlatoon::addTab"
+// Lua signature: function(self, tabControl, visible)
+void CallMainTabPortraitPlatoonAddTabCallbacks(MainTabPortraitPlatoon* thisptr, MyGUI::Widget* tabControl, bool visible);
+
+// Fired by MainTabPortraitPlatoon::detach hook.
+// Lua event name: "MainTabPortraitPlatoon::detach"
+// Lua signature: function(self)
+void CallMainTabPortraitPlatoonDetachCallbacks(MainTabPortraitPlatoon* thisptr);
+
+// Fired by MainTabPortraitPlatoon::setFlash hook.
+// Lua event name: "MainTabPortraitPlatoon::setFlash"
+// Lua signature: function(self, flash)
+void CallMainTabPortraitPlatoonSetFlashCallbacks(MainTabPortraitPlatoon* thisptr, bool flash);
+
+// Fired by MainTabPortraitPlatoon::update hook.
+// Lua event name: "MainTabPortraitPlatoon::update"
+// Lua signature: function(self)
+void CallMainTabPortraitPlatoonUpdateCallbacks(MainTabPortraitPlatoon* thisptr);
+
+// Fired by MainTabPortraitPlatoon::_DESTRUCTOR hook.
+// Lua event name: "MainTabPortraitPlatoon::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallMainTabPortraitPlatoonDestructorCallbacks(MainTabPortraitPlatoon* thisptr);
+
+// Fired by MainBarGUI::_CONSTRUCTOR hook.
+// Lua event name: "MainBarGUI::_CONSTRUCTOR"
+// Lua signature: function(self)
+void CallMainBarGUIConstructedCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::_DESTRUCTOR hook.
+// Lua event name: "MainBarGUI::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallMainBarGUIDestructorCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::_NV_clear hook.
+// Lua event name: "MainBarGUI::_NV_clear"
+// Lua signature: function(self)
+void CallMainBarGUINVclearCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::_NV_update hook.
+// Lua event name: "MainBarGUI::_NV_update"
+// Lua signature: function(self)
+void CallMainBarGUINVUpdateCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::speedChanged hook.
+// Lua event name: "MainBarGUI::speedChanged"
+// Lua signature: function(self)
+void CallMainBarGUISpeedChangedCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::_NV_updateBountyPanelVisibility hook.
+// Lua event name: "MainBarGUI::_NV_updateBountyPanelVisibility"
+// Lua signature: function(self)
+void CallMainBarGUINVUpdateBountyPanelVisibilityCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::updatePotraitsPlatoon hook.
+// Lua event name: "MainBarGUI::updatePotraitsPlatoon"
+// Lua signature: function(self)
+void CallMainBarGUIUpdatePotraitsPlatoonCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::updatePortraits hook.
+// Lua event name: "MainBarGUI::updatePortraits"
+// Lua signature: function(self)
+void CallMainBarGUIUpdatePortraitsCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::refreshPortraitTabs hook.
+// Lua event name: "MainBarGUI::refreshPortraitTabs"
+// Lua signature: function(self)
+void CallMainBarGUIRefreshPortraitTabsCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::ordersPanelClear hook.
+// Lua event name: "MainBarGUI::ordersPanelClear"
+// Lua signature: function(self)
+void CallMainBarGUIOrdersPanelClearCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::setMessagePosition hook.
+// Lua event name: "MainBarGUI::setMessagePosition"
+// Lua signature: function(self)
+void CallMainBarGUISetMessagePositionCallbacks(MainBarGUI* thisptr);
+
+// Fired by MainBarGUI::_NV_show hook.
+// Lua event name: "MainBarGUI::_NV_show"
+// Lua signature: function(self, on)
+void CallMainBarGUINVShowCallbacks(MainBarGUI* thisptr, bool on);
+
+// Fired by MainBarGUI::setLevelEditMode hook.
+// Lua event name: "MainBarGUI::setLevelEditMode"
+// Lua signature: function(self, on)
+void CallMainBarGUISetLevelEditModeCallbacks(MainBarGUI* thisptr, bool on);
+
+// Fired by MainBarGUI::setLevelEditInteriorMode hook.
+// Lua event name: "MainBarGUI::setLevelEditInteriorMode"
+// Lua signature: function(self, interiorMode)
+void CallMainBarGUISetLevelEditInteriorModeCallbacks(MainBarGUI* thisptr, bool interiorMode);
+
+// Fired by MainBarGUI::setExtendInfoPanelEnabled hook.
+// Lua event name: "MainBarGUI::setExtendInfoPanelEnabled"
+// Lua signature: function(self, enabled)
+void CallMainBarGUISetExtendInfoPanelEnabledCallbacks(MainBarGUI* thisptr, bool enabled);
+
+// Fired by MainBarGUI::_NV_autoChangeSelectedObject hook.
+// Lua event name: "MainBarGUI::_NV_autoChangeSelectedObject"
+// Lua signature: function(self, obj)
+void CallMainBarGUINVAutoChangeSelectedObjectCallbacks(MainBarGUI* thisptr, const hand& obj);
+
+// Fired by MainBarGUI::pressedKey hook.
+// Lua event name: "MainBarGUI::pressedKey"
+// Lua signature: function(self, keycode)
+void CallMainBarGUIPressedKeyCallbacks(MainBarGUI* thisptr, int keycode);
+
+// Fired by MainBarGUI::updatePortrait hook.
+// Lua event name: "MainBarGUI::updatePortrait"
+// Lua signature: function(self, character)
+void CallMainBarGUIUpdatePortraitCallbacks(MainBarGUI* thisptr, const hand& character);
+
+// Fired by MainBarGUI::platoonUpdated hook.
+// Lua event name: "MainBarGUI::platoonUpdated"
+// Lua signature: function(self, platoon, charAdded)
+void CallMainBarGUIPlatoonUpdatedCallbacks(MainBarGUI* thisptr, RootObjectContainer* platoon, bool charAdded);
+
+// Fired by MainBarGUI::updatePortraitSize hook.
+// Lua event name: "MainBarGUI::updatePortraitSize"
+// Lua signature: function(self, platoon)
+void CallMainBarGUIUpdatePortraitSizeCallbacks(MainBarGUI* thisptr, ActivePlatoon* platoon);
+
+// Fired by MainBarGUI::closeMapWindow hook.
+// Lua event name: "MainBarGUI::closeMapWindow"
+// Lua signature: function(self, sender)
+void CallMainBarGUICloseMapWindowCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::toggleMapWindow hook.
+// Lua event name: "MainBarGUI::toggleMapWindow"
+// Lua signature: function(self, sender)
+void CallMainBarGUIToggleMapWindowCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::toggleFactionWindow hook.
+// Lua event name: "MainBarGUI::toggleFactionWindow"
+// Lua signature: function(self, sender)
+void CallMainBarGUIToggleFactionWindowCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::toggleTechWindow hook.
+// Lua event name: "MainBarGUI::toggleTechWindow"
+// Lua signature: function(self, sender)
+void CallMainBarGUIToggleTechWindowCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::toggleCraftWindow hook.
+// Lua event name: "MainBarGUI::toggleCraftWindow"
+// Lua signature: function(self, sender)
+void CallMainBarGUIToggleCraftWindowCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::toggleSquadWindow hook.
+// Lua event name: "MainBarGUI::toggleSquadWindow"
+// Lua signature: function(self, sender)
+void CallMainBarGUIToggleSquadWindowCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::changeFloorButtonUp hook.
+// Lua event name: "MainBarGUI::changeFloorButtonUp"
+// Lua signature: function(self, sender)
+void CallMainBarGUIChangeFloorButtonUpCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::changeFloorButtonDown hook.
+// Lua event name: "MainBarGUI::changeFloorButtonDown"
+// Lua signature: function(self, sender)
+void CallMainBarGUIChangeFloorButtonDownCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::toggleInventory hook.
+// Lua event name: "MainBarGUI::toggleInventory"
+// Lua signature: function(self, sender)
+void CallMainBarGUIToggleInventoryCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::toggleStatsWindow hook.
+// Lua event name: "MainBarGUI::toggleStatsWindow"
+// Lua signature: function(self, sender)
+void CallMainBarGUIToggleStatsWindowCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::toggleHelpWindow hook.
+// Lua event name: "MainBarGUI::toggleHelpWindow"
+// Lua signature: function(self, sender)
+void CallMainBarGUIToggleHelpWindowCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::changeSpeed hook.
+// Lua event name: "MainBarGUI::changeSpeed"
+// Lua signature: function(self, sender)
+void CallMainBarGUIChangeSpeedCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::buildButton hook.
+// Lua event name: "MainBarGUI::buildButton"
+// Lua signature: function(self, sender)
+void CallMainBarGUIBuildButtonCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender);
+
+// Fired by MainBarGUI::ordersPanelFill hook.
+// Lua event name: "MainBarGUI::ordersPanelFill"
+// Lua signature: function(self, character)
+void CallMainBarGUIOrdersPanelFillCallbacks(MainBarGUI* thisptr, const hand& character);
+
+// Fired by MainBarGUI::serialise hook.
+// Lua event name: "MainBarGUI::serialise"
+// Lua signature: function(self, data)
+void CallMainBarGUISerialiseCallbacks(MainBarGUI* thisptr, GameData* data);
+
+// Fired by MainBarGUI::loadFromSerialise hook.
+// Lua event name: "MainBarGUI::loadFromSerialise"
+// Lua signature: function(self, data)
+void CallMainBarGUILoadFromSerialiseCallbacks(MainBarGUI* thisptr, GameData* data);
+
+// Fired by MainBarGUI::portraitChangeSelection hook.
+// Lua event name: "MainBarGUI::portraitChangeSelection"
+// Lua signature: function(self, sender, index, follow)
+void CallMainBarGUIPortraitChangeSelectionCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender, double index, bool follow);
+
+// Fired by MainBarGUI::portraitSelectItemAccept hook.
+// Lua event name: "MainBarGUI::portraitSelectItemAccept"
+// Lua signature: function(self, sender, index)
+void CallMainBarGUIPortraitSelectItemAcceptCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender, double index);
+
+// Fired by MainBarGUI::portraitNotifyItem hook.
+// Lua event name: "MainBarGUI::portraitNotifyItem"
+// Lua signature: function(self, sender, info)
+void CallMainBarGUIPortraitNotifyItemCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender, void* info);
+
+// Fired by MainBarGUI::tabPlatoonChange hook.
+// Lua event name: "MainBarGUI::tabPlatoonChange"
+// Lua signature: function(self, sender, index)
+void CallMainBarGUITabPlatoonChangeCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender, double index);
+
+// Fired by MainBarGUI::extendInfoPanel hook.
+// Lua event name: "MainBarGUI::extendInfoPanel"
+// Lua signature: function(self, sender, left, top, id)
+void CallMainBarGUIExtendInfoPanelCallbacks(MainBarGUI* thisptr, MyGUI::Widget* sender, int left, int top, int id);
+
+// Fired by MainBarGUI::getPausePanel hook.
+// Lua event name: "MainBarGUI::getPausePanel"
+// Lua signature: function(self, result)
+void CallMainBarGUIGetPausePanelCallbacks(MainBarGUI* thisptr, MyGUI::Widget* result);
+
+// Fired by MainBarGUI::getLoadingPanel hook.
+// Lua event name: "MainBarGUI::getLoadingPanel"
+// Lua signature: function(self, result)
+void CallMainBarGUIGetLoadingPanelCallbacks(MainBarGUI* thisptr, MyGUI::Widget* result);
+
+// Fired by MainBarGUI::getMedicalPanel hook.
+// Lua event name: "MainBarGUI::getMedicalPanel"
+// Lua signature: function(self, result)
+void CallMainBarGUIGetMedicalPanelCallbacks(MainBarGUI* thisptr, void* result);
+
+// Fired by MainBarGUI::_NV_getToolTip hook.
+// Lua event name: "MainBarGUI::_NV_getToolTip"
+// Lua signature: function(self, defaultVal) -> ToolTip
+ToolTip* CallMainBarGUINVGetToolTipCallbacks(MainBarGUI* thisptr, ToolTip* defaultVal);
+
+// Fired by MainBarGUI::getDatapanel hook.
+// Lua event name: "MainBarGUI::getDatapanel"
+// Lua signature: function(self, id, defaultVal) -> DatapanelGUI
+DatapanelGUI* CallMainBarGUIGetDatapanelCallbacks(MainBarGUI* thisptr, const std::string& id, DatapanelGUI* defaultVal);
+
+// Fired by MainBarGUI::getBuildingInventoryPosition hook.
+// Lua event name: "MainBarGUI::getBuildingInventoryPosition"
+// Lua signature: function(self, result)
+void CallMainBarGUIGetBuildingInventoryPositionCallbacks(MainBarGUI* thisptr, const MyGUI::types::TPoint<int>& result);
+
+// Fired by MainBarGUI::_getWidget hook.
+// Lua event name: "MainBarGUI::_getWidget"
+// Lua signature: function(self, name, result)
+void CallMainBarGUIGetWidgetCallbacks(MainBarGUI* thisptr, const std::string& name, MyGUI::Widget* result);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in gui/FactionsScreen.h
+// -----------------------------------------------------------
+
+// Fired after FactionsScreen::FactionRelationsLine::_CONSTRUCTOR.
+// Lua event name: "FactionsScreen::FactionRelationsLine::_CONSTRUCTOR"
+// Lua signature: function(self, faction)
+void CallFactionRelationsLineConstructedCallbacks(FactionsScreen::FactionRelationsLine* thisptr, Faction* faction);
+
+// Fired after FactionsScreen::FactionRelationsLine::attachToWidget.
+// Lua event name: "FactionsScreen::FactionRelationsLine::attachToWidget"
+// Lua signature: function(self, widget)
+void CallFactionRelationsLineAttachToWidgetCallbacks(FactionsScreen::FactionRelationsLine* thisptr, MyGUI::Widget* widget);
+
+// Fired after FactionsScreen::FactionRelationsLine::update.
+// Lua event name: "FactionsScreen::FactionRelationsLine::update"
+// Lua signature: function(self)
+void CallFactionRelationsLineUpdateCallbacks(FactionsScreen::FactionRelationsLine* thisptr);
+
+// Fired before FactionsScreen::FactionRelationsLine::_DESTRUCTOR.
+// Lua event name: "FactionsScreen::FactionRelationsLine::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallFactionRelationsLineDestructorCallbacks(FactionsScreen::FactionRelationsLine* thisptr);
+
+// Fired after FactionsScreen::FactionRelationsLine::LessSort::operator().
+// Lua event name: "FactionsScreen::FactionRelationsLine::LessSort::operator()"
+// Lua signature: function(comparator, left, right, defaultVal) -> boolean
+bool CallFactionRelationsLineLessSortCallbacks(void* comparator, FactionsScreen::FactionRelationsLine* left, FactionsScreen::FactionRelationsLine* right, bool defaultVal);
+
+// Fired after FactionsScreen::_CONSTRUCTOR.
+// Lua event name: "FactionsScreen::_CONSTRUCTOR"
+// Lua signature: function(self, screen)
+void CallFactionsScreenConstructedCallbacks(FactionsScreen* thisptr, ManagementScreen* screen);
+
+// Fired before FactionsScreen::_DESTRUCTOR.
+// Lua event name: "FactionsScreen::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallFactionsScreenDestructorCallbacks(FactionsScreen* thisptr);
+
+// Fired after FactionsScreen::getVisible.
+// Lua event name: "FactionsScreen::getVisible"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallFactionsScreenGetVisibleCallbacks(FactionsScreen* thisptr, bool defaultVal);
+
+// Fired after FactionsScreen::clear.
+// Lua event name: "FactionsScreen::clear"
+// Lua signature: function(self)
+void CallFactionsScreenClearCallbacks(FactionsScreen* thisptr);
+
+// Fired after FactionsScreen::update.
+// Lua event name: "FactionsScreen::update"
+// Lua signature: function(self)
+void CallFactionsScreenUpdateCallbacks(FactionsScreen* thisptr);
+
+// Fired after FactionsScreen::refresh.
+// Lua event name: "FactionsScreen::refresh"
+// Lua signature: function(self)
+void CallFactionsScreenRefreshCallbacks(FactionsScreen* thisptr);
+
+// Fired after FactionsScreen::updateInfo.
+// Lua event name: "FactionsScreen::updateInfo"
+// Lua signature: function(self)
+void CallFactionsScreenUpdateInfoCallbacks(FactionsScreen* thisptr);
+
+// Fired after FactionsScreen::notifyEditTextChange.
+// Lua event name: "FactionsScreen::notifyEditTextChange"
+// Lua signature: function(self, sender)
+void CallFactionsScreenNotifyEditTextChangeCallbacks(FactionsScreen* thisptr, MyGUI::Widget* sender);
+
+// Fired after FactionsScreen::setFocus.
+// Lua event name: "FactionsScreen::setFocus"
+// Lua signature: function(self, first, second)
+void CallFactionsScreenSetFocusCallbacks(FactionsScreen* thisptr, MyGUI::Widget* first, MyGUI::Widget* second);
+
+// Fired after FactionsScreen::loseFocus.
+// Lua event name: "FactionsScreen::loseFocus"
+// Lua signature: function(self, first, second)
+void CallFactionsScreenLoseFocusCallbacks(FactionsScreen* thisptr, MyGUI::Widget* first, MyGUI::Widget* second);
+
+// Fired after FactionsScreen::factionLineSelected.
+// Lua event name: "FactionsScreen::factionLineSelected"
+// Lua signature: function(self, sender)
+void CallFactionsScreenFactionLineSelectedCallbacks(FactionsScreen* thisptr, MyGUI::Widget* sender);
+
+// Fired after FactionsScreen::notifyMouseWheel.
+// Lua event name: "FactionsScreen::notifyMouseWheel"
+// Lua signature: function(self, sender, rel)
+void CallFactionsScreenNotifyMouseWheelCallbacks(FactionsScreen* thisptr, MyGUI::Widget* sender, int rel);
+
+// -----------------------------------------------------------
+// Additional callbacks for hooks in gui/DialogueWindow.h
+// -----------------------------------------------------------
+
+// Fired after DialogueWindow::getVisible.
+// Lua event name: "DialogueWindow::getVisible"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallDialogueWindowGetVisibleCallbacks(DialogueWindow* thisptr, bool defaultVal);
+
+// Fired after DialogueWindow::setVisible.
+// Lua event name: "DialogueWindow::setVisible"
+// Lua signature: function(self, visible)
+void CallDialogueWindowSetVisibleCallbacks(DialogueWindow* thisptr, bool visible);
+
+// Fired after DialogueWindow::_NV_show.
+// Lua event name: "DialogueWindow::_NV_show"
+// Lua signature: function(self, on)
+void CallDialogueWindowNVShowCallbacks(DialogueWindow* thisptr, bool on);
+
+// Fired after DialogueWindow::hide.
+// Lua event name: "DialogueWindow::hide"
+// Lua signature: function(self, dialogue)
+void CallDialogueWindowHideCallbacks(DialogueWindow* thisptr, Dialogue* dialogue);
+
+// Fired after DialogueWindow::_NV_isVisible.
+// Lua event name: "DialogueWindow::_NV_isVisible"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallDialogueWindowNVIsVisibleCallbacks(DialogueWindow* thisptr, bool defaultVal);
+
+// Fired after DialogueWindow::_NV_update.
+// Lua event name: "DialogueWindow::_NV_update"
+// Lua signature: function(self)
+void CallDialogueWindowNVUpdateCallbacks(DialogueWindow* thisptr);
+
+// Fired after DialogueWindow::getTop.
+// Lua event name: "DialogueWindow::getTop"
+// Lua signature: function(self, defaultVal) -> integer
+int CallDialogueWindowGetTopCallbacks(DialogueWindow* thisptr, int defaultVal);
+
+// Fired after DialogueWindow::activateResponse.
+// Lua event name: "DialogueWindow::activateResponse"
+// Lua signature: function(self, index)
+void CallDialogueWindowActivateResponseCallbacks(DialogueWindow* thisptr, int index);
+
+// Fired after DialogueWindow::setNPCText.
+// Lua event name: "DialogueWindow::setNPCText"
+// Lua signature: function(self, text)
+void CallDialogueWindowSetNPCTextCallbacks(DialogueWindow* thisptr, const std::string& text);
+
+// Fired after DialogueWindow::setResponses. responses is borrowed lightuserdata.
+// Lua event name: "DialogueWindow::setResponses"
+// Lua signature: function(self, responses)
+void CallDialogueWindowSetResponsesCallbacks(DialogueWindow* thisptr, const void* responses);
+
+// Fired after DialogueWindow::clearResponses.
+// Lua event name: "DialogueWindow::clearResponses"
+// Lua signature: function(self)
+void CallDialogueWindowClearResponsesCallbacks(DialogueWindow* thisptr);
+
+// Fired after DialogueWindow::changePortrait.
+// Lua event name: "DialogueWindow::changePortrait"
+// Lua signature: function(self, character, player)
+void CallDialogueWindowChangePortraitCallbacks(DialogueWindow* thisptr, Character* character, bool player);
+
+// Fired before DialogueWindow::_DESTRUCTOR.
+// Lua event name: "DialogueWindow::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallDialogueWindowDestructorCallbacks(DialogueWindow* thisptr);
+
+// Fired after DialogueWindow::updatePanelsPosition.
+// Lua event name: "DialogueWindow::updatePanelsPosition"
+// Lua signature: function(self)
+void CallDialogueWindowUpdatePanelsPositionCallbacks(DialogueWindow* thisptr);
+
+// -----------------------------------------------------------
+// Callbacks for hooks in gui/SplashScreen.h
+// -----------------------------------------------------------
+
+// Fired by SplashScreen::_CONSTRUCTOR hook after the original call.
+// Lua event name: "SplashScreen::_CONSTRUCTOR"
+// Lua signature:  function(self)
+void CallSplashScreenConstructedCallbacks(SplashScreen* thisptr);
+
+// Fired by SplashScreen::_DESTRUCTOR hook before the original call.
+// Lua event name: "SplashScreen::_DESTRUCTOR"
+// Lua signature:  function(self)
+void CallSplashScreenDestructorCallbacks(SplashScreen* thisptr);
+
+// Fired by SplashScreen::update hook after the original call.
+// Lua event name: "SplashScreen::update"
+// Lua signature:  function(self)
+void CallSplashScreenUpdateCallbacks(SplashScreen* thisptr);
+
+// Fired by SplashScreen::getState hook after the original call.
+// Lua event name: "SplashScreen::getState"
+// Lua signature:  function(self, defaultVal) -> integer
+int CallSplashScreenGetStateCallbacks(SplashScreen* thisptr, int defaultVal);
+
+// Fired by SplashScreen::getEnded hook after the original call.
+// Lua event name: "SplashScreen::getEnded"
+// Lua signature:  function(self, defaultVal) -> boolean
+bool CallSplashScreenGetEndedCallbacks(SplashScreen* thisptr, bool defaultVal);
+
+// Fired by SplashScreen::skip hook after the original call.
+// Lua event name: "SplashScreen::skip"
+// Lua signature:  function(self)
+void CallSplashScreenSkipCallbacks(SplashScreen* thisptr);
+
+// Fired by SplashScreen::addLogo hook after the original call.
+// Lua event name: "SplashScreen::addLogo"
+// Lua signature:  function(self, file, scale)
+void CallSplashScreenAddLogoCallbacks(SplashScreen* thisptr, const std::string& file, float scale);

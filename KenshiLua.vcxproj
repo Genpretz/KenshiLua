@@ -1478,6 +1478,12 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Hooks\Hooks_DatapanelGUI.cpp" />
     <ClCompile Include="src\Hooks\Hooks_ForgottenGUI.cpp" />
     <ClCompile Include="src\Hooks\Hooks_GUIWindow.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_InventoryGUI.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_MainBarGUI.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_FactionsScreen.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_DialogueWindow.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_NewGameOptionsWindow.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_SplashScreen.cpp" />
     <ClCompile Include="src\Hooks\Hooks_InputHandler.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Inventory.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Item.cpp" />

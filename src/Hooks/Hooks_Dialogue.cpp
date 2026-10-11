@@ -2,33 +2,6 @@
 #include "Hooks_Common.h"
 
 // ---------------------------------------------------------------------------
-// Hooks for gui/DialogueWindow.h
-// ---------------------------------------------------------------------------
-
-static void (*DialogueWindow_show_orig)(DialogueWindow*, Dialogue*) = NULL;
-static void DialogueWindow_show_hook(DialogueWindow* thisptr, Dialogue* dialogue)
-{
-    DialogueWindow_show_orig(thisptr, dialogue);
-    CallDialogueWindowShowCallbacks(thisptr, dialogue);
-}
-DEFINE_HOOK_INSTALLER(InstallHook_DialogueWindow_Show,
-    "DialogueWindow::show",
-    KenshiLib::GetRealAddress(static_cast<void (DialogueWindow::*)(Dialogue*)>(&DialogueWindow::show)),
-    DialogueWindow_show_hook, DialogueWindow_show_orig)
-
-static DialogueWindow* (*DialogueWindow_CONSTRUCTOR_orig)(DialogueWindow*) = NULL;
-static DialogueWindow* DialogueWindow_CONSTRUCTOR_hook(DialogueWindow* thisptr)
-{
-    DialogueWindow* res = DialogueWindow_CONSTRUCTOR_orig(thisptr);
-    DialogueWindow* overrideRes = CallDialogueWindowConstructedCallbacks(thisptr, res);
-    return overrideRes ? overrideRes : res;
-}
-DEFINE_HOOK_INSTALLER(InstallHook_DialogueWindow_CONSTRUCTOR,
-    "DialogueWindow::_CONSTRUCTOR",
-    KenshiLib::GetRealAddress(&DialogueWindow::_CONSTRUCTOR),
-    DialogueWindow_CONSTRUCTOR_hook, DialogueWindow_CONSTRUCTOR_orig)
-
-// ---------------------------------------------------------------------------
 // Hooks for Dialogue.h
 // ---------------------------------------------------------------------------
 

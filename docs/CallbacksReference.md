@@ -21,7 +21,7 @@ Events.off(handlerId)
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
-## 1. Notification Callbacks (374)
+## 1. Notification Callbacks (528)
 
 | Event Name | Lua Signature |
 | :--- | :--- |
@@ -399,8 +399,162 @@ Events.off(handlerId)
 | `ForgottenGUI::createFloatingProgressBar` | `function(self: ForgottenGUI, result: FloatingProgressBar)` |
 | `ForgottenGUI::createScreenLabel` | `function(self: ForgottenGUI, text: string, textColour: Colour, textSize: integer, risingSpeed: integer, result: ScreenLabel)` |
 | `ForgottenGUI::createScreenLabelD` | `function(self: ForgottenGUI, text: string, time: number, result: ScreenLabelDebug)` |
+| `NewGameOptionsWindow::_CONSTRUCTOR` | `function(self: NewGameOptionsWindow)` |
+| `NewGameOptionsWindow::_DESTRUCTOR` | `function(self: NewGameOptionsWindow)` |
+| `NewGameOptionsWindow::setVisible` | `function(self: NewGameOptionsWindow, visible: boolean)` |
+| `NewGameOptionsWindow::setPosition` | `function(self: NewGameOptionsWindow, x: integer, y: integer)` |
+| `NewGameOptionsWindow::update` | `function(self: NewGameOptionsWindow)` |
+| `NewGameOptionsWindow::setOptions` | `function(self: NewGameOptionsWindow, options: GameplayOptions)` |
+| `InventoryIcon::_CONSTRUCTOR` | `function(self: InventoryIcon, item: Item, position: types::TPoint<int>, parent: Widget)` |
+| `InventoryIcon::setPosition` | `function(self: InventoryIcon, position: types::TPoint<int>)` |
+| `InventoryIcon::getSize` | `function(self: InventoryIcon, result: types::TSize<int>)` |
+| `InventoryIcon::update` | `function(self: InventoryIcon)` |
+| `InventoryIcon::getWidget` | `function(self: InventoryIcon, result: Widget)` |
+| `InventoryIcon::createIconImage` | `function(item: Item, name: string, size: iVector2)` |
+| `InventoryIcon::getItemSize` | `function(itemData: GameData, result: types::TSize<int>)` |
+| `InventoryIcon::getItemPosition` | `function(x: integer, y: integer, result: types::TPoint<int>)` |
+| `InventoryIcon::_DESTRUCTOR` | `function(self: InventoryIcon)` |
+| `InventorySectionGUI::_CONSTRUCTOR` | `function(self: InventorySectionGUI, widget: Widget, sectionName: string)` |
+| `InventorySectionGUI::_DESTRUCTOR` | `function(self: InventorySectionGUI)` |
+| `InventorySectionGUI::getItemAbsolutePosition` | `function(self: InventorySectionGUI, x: integer, y: integer, result: types::TPoint<int>)` |
+| `InventorySectionGUI::getWidget` | `function(self: InventorySectionGUI, result: Widget)` |
+| `InventorySectionGUI::getPositionSlot` | `function(self: InventorySectionGUI, position: types::TPoint<int>, section: InventorySection, round: boolean, result: types::TPoint<int>)` |
+| `InventorySectionGUI::setEnabled` | `function(self: InventorySectionGUI, value: boolean)` |
+| `InventorySectionGUI::refreshIcons` | `function(self: InventorySectionGUI, section: InventorySection)` |
+| `InventorySectionGUI::update` | `function(self: InventorySectionGUI)` |
+| `InventoryGUI::TradeResult::_CONSTRUCTOR` | `function(self: InventoryGUI::TradeResult, value: integer)` |
+| `InventoryGUI::TradeResult::showMessage` | `function(self: InventoryGUI::TradeResult)` |
+| `InventoryGUI::TradeResult::ShowMessage` | `function(value: integer)` |
+| `InventoryGUI::InventoryTradeData::operator=` | `function(self: InventoryGUI::InventoryTradeData, other: InventoryGUI::InventoryTradeData)` |
+| `InventoryGUI::setTradingTown` | `function(town: hand)` |
+| `InventoryGUI::removeTradePartner` | `function(tradeWith: InventoryGUI)` |
+| `InventoryGUI::clearTradePartners` | `function()` |
+| `InventoryGUI::_NV_autoChangeSelectedObject` | `function(self: InventoryGUI, obj: hand)` |
+| `InventoryGUI::_NV_update` | `function(self: InventoryGUI)` |
+| `InventoryGUI::_NV_show` | `function(self: InventoryGUI, on: boolean)` |
+| `InventoryGUI::_NV_setPositionReal` | `function(self: InventoryGUI, x: number, y: number)` |
+| `InventoryGUI::_NV_refreshSection` | `function(self: InventoryGUI, section: InventorySection)` |
+| `InventoryGUI::refreshSection` | `function(self: InventoryGUI)` |
+| `InventoryGUI::autoArrangeButton` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::openBackpackButton` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::openLimbsInterface` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::showBackpack` | `function(self: InventoryGUI, on: boolean)` |
+| `InventoryGUI::windowButtonPressed` | `function(self: InventoryGUI, widget: Widget, name: string)` |
+| `InventoryGUI::stealingGUIInfoUpdate` | `function(self: InventoryGUI)` |
+| `InventoryGUI::getTrader1Trader2` | `function(self: InventoryGUI, trader1: InventoryGUI, trader2: InventoryGUI)` |
+| `InventoryGUI::playSound` | `function(self: InventoryGUI, eventId: string, item: Item)` |
+| `InventoryGUI::refreshAllSections` | `function(self: InventoryGUI)` |
+| `InventoryGUI::updateDatapanel` | `function(self: InventoryGUI)` |
+| `InventoryGUI::rightClickAutoEquipping` | `function(self: InventoryGUI)` |
+| `InventoryGUI::returnItem` | `function(self: InventoryGUI, item: Item, sectionName: string)` |
+| `InventoryGUI::sectionMouseButtonPressed` | `function(self: InventoryGUI, sender: Widget, left: integer, top: integer, id: integer)` |
+| `InventoryGUI::sectionMouseButtonReleased` | `function(self: InventoryGUI, sender: Widget, left: integer, top: integer, id: integer)` |
+| `InventoryGUI::onWindowFocus` | `function(self: InventoryGUI, sender: Widget, focus: boolean)` |
+| `InventoryGUI::windowMoved` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::getWindowCoord` | `function(self: InventoryGUI, result: types::TCoord<int>)` |
+| `InventoryGUI::_DESTRUCTOR` | `function(self: InventoryGUI)` |
+| `InventoryGUI::RClickAutoTrade` | `function(self: InventoryGUI, invSectionName: string, x: integer, y: integer, sendingTo: InventoryGUI, thieveryChecks: boolean, first: boolean, result: InventoryGUI::TradeResult)` |
+| `InventoryGUI::RClickAutoTradeAll` | `function(self: InventoryGUI, invSectionName: string, x: integer, y: integer, sendingTo: InventoryGUI, thieveryChecks: boolean, first: boolean, result: InventoryGUI::TradeResult)` |
+| `InventoryGUI::FenceCallbackData::_DESTRUCTOR` | `function(self: InventoryGUI::FenceCallbackData)` |
+| `InventoryGUI::getSectionWithMouseLocal` | `function(self: InventoryGUI, result: string)` |
+| `InventoryGUI::getSlotWithMouse` | `function(self: InventoryGUI, result: iVector2)` |
+| `InventoryLayout::_CONSTRUCTOR` | `function(self: InventoryLayout, file: string)` |
+| `InventoryLayout::_DESTRUCTOR` | `function(self: InventoryLayout)` |
+| `InventoryLayout::getWindow` | `function(self: InventoryLayout, result: Widget)` |
+| `InventoryLayout::getWidget` | `function(self: InventoryLayout, name: string, result: Widget)` |
+| `InventoryLayout::setupDataPanelInfos` | `function(self: InventoryLayout, name: string)` |
+| `InventoryLayout::notifyCellSizeChanged` | `function()` |
+| `InventoryLayout::setSectionGUIDisabled` | `function(self: InventoryLayout, sectionName: string, width: integer, height: integer)` |
+| `InventoryLayout::resizeSection` | `function(self: InventoryLayout, section: InventorySection, sectionGUI: InventorySectionGUI, result: types::TSize<int>)` |
+| `InventoryLayout::resizeSectionWidget` | `function(self: InventoryLayout, width: integer, height: integer, widget: Widget, result: types::TSize<int>)` |
+| `GenericFixedInventoryLayout::_NV_setSize` | `function(self: GenericFixedInventoryLayout, slotsW: integer, slotsH: integer)` |
+| `GenericFixedInventoryLayout::_DESTRUCTOR` | `function(self: GenericFixedInventoryLayout)` |
+| `BackpackInventoryLayout::_CONSTRUCTOR` | `function(self: BackpackInventoryLayout, standAlone: boolean)` |
+| `BackpackInventoryLayout::_DESTRUCTOR` | `function(self: BackpackInventoryLayout)` |
+| `MainTabPortraitPlatoon::addTab` | `function(self: MainTabPortraitPlatoon, tabControl: Widget, visible: boolean)` |
+| `MainTabPortraitPlatoon::detach` | `function(self: MainTabPortraitPlatoon)` |
+| `MainTabPortraitPlatoon::setFlash` | `function(self: MainTabPortraitPlatoon, flash: boolean)` |
+| `MainTabPortraitPlatoon::update` | `function(self: MainTabPortraitPlatoon)` |
+| `MainTabPortraitPlatoon::_DESTRUCTOR` | `function(self: MainTabPortraitPlatoon)` |
+| `MainBarGUI::_CONSTRUCTOR` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_DESTRUCTOR` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_NV_clear` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_NV_update` | `function(self: MainBarGUI)` |
+| `MainBarGUI::speedChanged` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_NV_updateBountyPanelVisibility` | `function(self: MainBarGUI)` |
+| `MainBarGUI::updatePotraitsPlatoon` | `function(self: MainBarGUI)` |
+| `MainBarGUI::updatePortraits` | `function(self: MainBarGUI)` |
+| `MainBarGUI::refreshPortraitTabs` | `function(self: MainBarGUI)` |
+| `MainBarGUI::ordersPanelClear` | `function(self: MainBarGUI)` |
+| `MainBarGUI::setMessagePosition` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_NV_show` | `function(self: MainBarGUI, on: boolean)` |
+| `MainBarGUI::setLevelEditMode` | `function(self: MainBarGUI, on: boolean)` |
+| `MainBarGUI::setLevelEditInteriorMode` | `function(self: MainBarGUI, interiorMode: boolean)` |
+| `MainBarGUI::setExtendInfoPanelEnabled` | `function(self: MainBarGUI, enabled: boolean)` |
+| `MainBarGUI::_NV_autoChangeSelectedObject` | `function(self: MainBarGUI, obj: hand)` |
+| `MainBarGUI::pressedKey` | `function(self: MainBarGUI, keycode: integer)` |
+| `MainBarGUI::updatePortrait` | `function(self: MainBarGUI, character: hand)` |
+| `MainBarGUI::platoonUpdated` | `function(self: MainBarGUI, platoon: RootObjectContainer, charAdded: boolean)` |
+| `MainBarGUI::updatePortraitSize` | `function(self: MainBarGUI, platoon: ActivePlatoon)` |
+| `MainBarGUI::closeMapWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleMapWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleFactionWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleTechWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleCraftWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleSquadWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::changeFloorButtonUp` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::changeFloorButtonDown` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleInventory` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleStatsWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleHelpWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::changeSpeed` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::buildButton` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::ordersPanelFill` | `function(self: MainBarGUI, character: hand)` |
+| `MainBarGUI::serialise` | `function(self: MainBarGUI, data: GameData)` |
+| `MainBarGUI::loadFromSerialise` | `function(self: MainBarGUI, data: GameData)` |
+| `MainBarGUI::portraitChangeSelection` | `function(self: MainBarGUI, sender: Widget, index: number, follow: boolean)` |
+| `MainBarGUI::portraitSelectItemAccept` | `function(self: MainBarGUI, sender: Widget, index: number)` |
+| `MainBarGUI::portraitNotifyItem` | `function(self: MainBarGUI, sender: Widget, info: lightuserdata)` |
+| `MainBarGUI::tabPlatoonChange` | `function(self: MainBarGUI, sender: Widget, index: number)` |
+| `MainBarGUI::extendInfoPanel` | `function(self: MainBarGUI, sender: Widget, left: integer, top: integer, id: integer)` |
+| `MainBarGUI::getPausePanel` | `function(self: MainBarGUI, result: Widget)` |
+| `MainBarGUI::getLoadingPanel` | `function(self: MainBarGUI, result: Widget)` |
+| `MainBarGUI::getMedicalPanel` | `function(self: MainBarGUI, result: lightuserdata)` |
+| `MainBarGUI::getBuildingInventoryPosition` | `function(self: MainBarGUI, result: types::TPoint<int>)` |
+| `MainBarGUI::_getWidget` | `function(self: MainBarGUI, name: string, result: Widget)` |
+| `FactionsScreen::FactionRelationsLine::_CONSTRUCTOR` | `function(self: FactionsScreen::FactionRelationsLine, faction: Faction)` |
+| `FactionsScreen::FactionRelationsLine::attachToWidget` | `function(self: FactionsScreen::FactionRelationsLine, widget: Widget)` |
+| `FactionsScreen::FactionRelationsLine::update` | `function(self: FactionsScreen::FactionRelationsLine)` |
+| `FactionsScreen::FactionRelationsLine::_DESTRUCTOR` | `function(self: FactionsScreen::FactionRelationsLine)` |
+| `FactionsScreen::_CONSTRUCTOR` | `function(self: FactionsScreen, screen: ManagementScreen)` |
+| `FactionsScreen::_DESTRUCTOR` | `function(self: FactionsScreen)` |
+| `FactionsScreen::clear` | `function(self: FactionsScreen)` |
+| `FactionsScreen::update` | `function(self: FactionsScreen)` |
+| `FactionsScreen::refresh` | `function(self: FactionsScreen)` |
+| `FactionsScreen::updateInfo` | `function(self: FactionsScreen)` |
+| `FactionsScreen::notifyEditTextChange` | `function(self: FactionsScreen, sender: Widget)` |
+| `FactionsScreen::setFocus` | `function(self: FactionsScreen, first: Widget, second: Widget)` |
+| `FactionsScreen::loseFocus` | `function(self: FactionsScreen, first: Widget, second: Widget)` |
+| `FactionsScreen::factionLineSelected` | `function(self: FactionsScreen, sender: Widget)` |
+| `FactionsScreen::notifyMouseWheel` | `function(self: FactionsScreen, sender: Widget, rel: integer)` |
+| `DialogueWindow::setVisible` | `function(self: DialogueWindow, visible: boolean)` |
+| `DialogueWindow::_NV_show` | `function(self: DialogueWindow, on: boolean)` |
+| `DialogueWindow::hide` | `function(self: DialogueWindow, dialogue: Dialogue)` |
+| `DialogueWindow::_NV_update` | `function(self: DialogueWindow)` |
+| `DialogueWindow::activateResponse` | `function(self: DialogueWindow, index: integer)` |
+| `DialogueWindow::setNPCText` | `function(self: DialogueWindow, text: string)` |
+| `DialogueWindow::setResponses` | `function(self: DialogueWindow, responses: void)` |
+| `DialogueWindow::clearResponses` | `function(self: DialogueWindow)` |
+| `DialogueWindow::changePortrait` | `function(self: DialogueWindow, character: Character, player: boolean)` |
+| `DialogueWindow::_DESTRUCTOR` | `function(self: DialogueWindow)` |
+| `DialogueWindow::updatePanelsPosition` | `function(self: DialogueWindow)` |
+| `SplashScreen::_CONSTRUCTOR` | `function(self: SplashScreen)` |
+| `SplashScreen::_DESTRUCTOR` | `function(self: SplashScreen)` |
+| `SplashScreen::update` | `function(self: SplashScreen)` |
+| `SplashScreen::skip` | `function(self: SplashScreen)` |
+| `SplashScreen::addLogo` | `function(self: SplashScreen, file: string, scale: number)` |
 
-## 2. Override Callbacks (152)
+## 2. Override Callbacks (196)
 
 | Event Name | Lua Signature & Expected Return |
 | :--- | :--- |
@@ -556,6 +710,50 @@ Events.off(handlerId)
 | `ForgottenGUI::hasInventoryWindowOpen` | `function(self: ForgottenGUI, obj: hand, defaultVal: boolean) -> boolean` |
 | `ForgottenGUI::isAnyInventoryWindowOpen` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
 | `ForgottenGUI::widgetHasMouse` | `function(self: ForgottenGUI, w: Widget, defaultVal: boolean) -> boolean` |
+| `NewGameOptionsWindow::getVisible` | `function(self: NewGameOptionsWindow, defaultVal: boolean) -> boolean` |
+| `InventorySectionGUI::hasMouse` | `function(self: InventorySectionGUI, defaultVal: boolean) -> boolean` |
+| `InventorySectionGUI::getBestPositionSlot` | `function(self: InventorySectionGUI, position: types::TPoint<int>, section: InventorySection, item: Item, slot: types::TPoint<int>, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::TradeResult::operator==` | `function(self: InventoryGUI::TradeResult, other: InventoryGUI::TradeResult, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::TradeResult::operator!=` | `function(self: InventoryGUI::TradeResult, other: InventoryGUI::TradeResult, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::InventoryTradeData::isValid` | `function(self: InventoryGUI::InventoryTradeData, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::lockedItemCheck` | `function(item: LockedArmour, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::getTradingTown` | `function(defaultVal: Town) -> Town` |
+| `InventoryGUI::canDropMouseItemWithoutPaying` | `function(cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::_NV_isVisible` | `function(self: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::getBackpack` | `function(self: InventoryGUI, defaultVal: ContainerItem) -> ContainerItem` |
+| `InventoryGUI::_NV_getInventory` | `function(self: InventoryGUI, defaultVal: Inventory) -> Inventory` |
+| `InventoryGUI::hasSameOwner` | `function(self: InventoryGUI, other: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::_NV_getCallbackCharacter` | `function(self: InventoryGUI, defaultVal: Character) -> Character` |
+| `InventoryGUI::_NV_getCallbackObject` | `function(self: InventoryGUI, defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::getSelectedItem` | `function(self: InventoryGUI, sectionName: string, defaultVal: Item) -> Item` |
+| `InventoryGUI::getMouseItem` | `function(self: InventoryGUI, defaultVal: Item) -> Item` |
+| `InventoryGUI::takeCertainAmountFrom` | `function(self: InventoryGUI, baseItem: Item, amount: integer, defaultVal: Item) -> Item` |
+| `InventoryGUI::pickupItemToMouse` | `function(self: InventoryGUI, sectionName: string, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::placeItemFromMouse` | `function(self: InventoryGUI, sectionName: string, mousePos: types::TPoint<int>, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::isTradingForMoney` | `function(self: InventoryGUI, cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::isStealing` | `function(self: InventoryGUI, cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::isWithinRangeToTrade` | `function(self: InventoryGUI, otherOwner: RootObject, stealing: boolean, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::setItemToPlayerPortrait` | `function(self: InventoryGUI, item: Item, character: Character, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::fencingConfirmation` | `function(self: InventoryGUI, item: Item, thief: RootObject, fence: Character, sectionName: string, mouse: types::TPoint<int>, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::getPlayerTradeCharacter` | `function(self: InventoryGUI, defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::tryToEquip` | `function(self: InventoryGUI, item: Item, replace: boolean, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::hasMouse` | `function(self: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::getNPCTrader` | `function(defaultVal: Character) -> Character` |
+| `InventoryGUI::isTradingForMoney_static` | `function(defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::isTradingAndStealing_static` | `function(defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::getTraderPriceMultiplier` | `function(defaultVal: number) -> number` |
+| `InventoryGUI::makeIconForItem` | `function(item: Item, x: integer, y: integer, defaultVal: InventoryIcon) -> InventoryIcon` |
+| `InventoryLayout::_NV_getDatapanel` | `function(self: InventoryLayout, defaultVal: DatapanelGUI) -> DatapanelGUI` |
+| `InventoryLayout::createSectionGUI` | `function(self: InventoryLayout, section: InventorySection, defaultVal: InventorySectionGUI) -> InventorySectionGUI` |
+| `MainBarGUI::_NV_getToolTip` | `function(self: MainBarGUI, defaultVal: ToolTip) -> ToolTip` |
+| `MainBarGUI::getDatapanel` | `function(self: MainBarGUI, id: string, defaultVal: DatapanelGUI) -> DatapanelGUI` |
+| `FactionsScreen::FactionRelationsLine::LessSort::operator()` | `function(comparator: lightuserdata, left: FactionsScreen::FactionRelationsLine, right: FactionsScreen::FactionRelationsLine, defaultVal: boolean) -> boolean` |
+| `FactionsScreen::getVisible` | `function(self: FactionsScreen, defaultVal: boolean) -> boolean` |
+| `DialogueWindow::getVisible` | `function(self: DialogueWindow, defaultVal: boolean) -> boolean` |
+| `DialogueWindow::_NV_isVisible` | `function(self: DialogueWindow, defaultVal: boolean) -> boolean` |
+| `DialogueWindow::getTop` | `function(self: DialogueWindow, defaultVal: integer) -> integer` |
+| `SplashScreen::getState` | `function(self: SplashScreen, defaultVal: integer) -> integer` |
+| `SplashScreen::getEnded` | `function(self: SplashScreen, defaultVal: boolean) -> boolean` |
 
 ## Detailed Callback Documentation
 
@@ -612,6 +810,21 @@ Events.off(handlerId)
   - `level`: `integer`
   - `defaultVal`: `Armour`
 - **Returns**: `Armour`
+
+### `BackpackInventoryLayout::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, standAlone)`
+- **Parameters**:
+  - `self`: `BackpackInventoryLayout`
+  - `standAlone`: `boolean`
+
+### `BackpackInventoryLayout::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `BackpackInventoryLayout`
 
 ### `Bounty::_CONSTRUCTOR`
 
@@ -3357,6 +3570,124 @@ Events.off(handlerId)
   - `defaultVal`: `DialogueWindow`
 - **Returns**: `DialogueWindow`
 
+### `DialogueWindow::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+- **Notes**: Fired before DialogueWindow::_DESTRUCTOR.
+
+### `DialogueWindow::_NV_isVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+- **Notes**: Fired after DialogueWindow::_NV_isVisible.
+
+### `DialogueWindow::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `on`: `boolean`
+- **Notes**: Fired after DialogueWindow::_NV_show.
+
+### `DialogueWindow::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+- **Notes**: Fired after DialogueWindow::_NV_update.
+
+### `DialogueWindow::activateResponse`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, index)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `index`: `integer`
+- **Notes**: Fired after DialogueWindow::activateResponse.
+
+### `DialogueWindow::changePortrait`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, character, player)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `character`: `Character`
+  - `player`: `boolean`
+- **Notes**: Fired after DialogueWindow::changePortrait.
+
+### `DialogueWindow::clearResponses`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+- **Notes**: Fired after DialogueWindow::clearResponses.
+
+### `DialogueWindow::getTop`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+- **Notes**: Fired after DialogueWindow::getTop.
+
+### `DialogueWindow::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+- **Notes**: Fired after DialogueWindow::getVisible.
+
+### `DialogueWindow::hide`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, dialogue)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `dialogue`: `Dialogue`
+- **Notes**: Fired after DialogueWindow::hide.
+
+### `DialogueWindow::setNPCText`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, text)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `text`: `string`
+- **Notes**: Fired after DialogueWindow::setNPCText.
+
+### `DialogueWindow::setResponses`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, responses)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `responses`: `void`
+- **Notes**: Fired after DialogueWindow::setResponses. responses is borrowed lightuserdata.
+
+### `DialogueWindow::setVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, visible)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `visible`: `boolean`
+- **Notes**: Fired after DialogueWindow::setVisible.
+
 ### `DialogueWindow::show`
 
 - **Category**: Notification / Observer
@@ -3364,6 +3695,14 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `DialogueWindow`
   - `dialogue`: `Dialogue`
+
+### `DialogueWindow::updatePanelsPosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+- **Notes**: Fired after DialogueWindow::updatePanelsPosition.
 
 ### `DoorStuff::_CONSTRUCTOR`
 
@@ -3538,6 +3877,159 @@ Events.off(handlerId)
   - `faction`: `Faction`
   - `defaultVal`: `FactionWarMgr`
 - **Returns**: `FactionWarMgr`
+
+### `FactionsScreen::FactionRelationsLine::LessSort::operator()`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(comparator, left, right, defaultVal)`
+- **Parameters**:
+  - `comparator`: `lightuserdata`
+  - `left`: `FactionsScreen::FactionRelationsLine`
+  - `right`: `FactionsScreen::FactionRelationsLine`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::LessSort::operator().
+
+### `FactionsScreen::FactionRelationsLine::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, faction)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+  - `faction`: `Faction`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::_CONSTRUCTOR.
+
+### `FactionsScreen::FactionRelationsLine::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+- **Notes**: Fired before FactionsScreen::FactionRelationsLine::_DESTRUCTOR.
+
+### `FactionsScreen::FactionRelationsLine::attachToWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, widget)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+  - `widget`: `Widget`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::attachToWidget.
+
+### `FactionsScreen::FactionRelationsLine::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::update.
+
+### `FactionsScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, screen)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `screen`: `ManagementScreen`
+- **Notes**: Fired after FactionsScreen::_CONSTRUCTOR.
+
+### `FactionsScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired before FactionsScreen::_DESTRUCTOR.
+
+### `FactionsScreen::clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::clear.
+
+### `FactionsScreen::factionLineSelected`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `sender`: `Widget`
+- **Notes**: Fired after FactionsScreen::factionLineSelected.
+
+### `FactionsScreen::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+- **Notes**: Fired after FactionsScreen::getVisible.
+
+### `FactionsScreen::loseFocus`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, first, second)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `first`: `Widget`
+  - `second`: `Widget`
+- **Notes**: Fired after FactionsScreen::loseFocus.
+
+### `FactionsScreen::notifyEditTextChange`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `sender`: `Widget`
+- **Notes**: Fired after FactionsScreen::notifyEditTextChange.
+
+### `FactionsScreen::notifyMouseWheel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, rel)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `sender`: `Widget`
+  - `rel`: `integer`
+- **Notes**: Fired after FactionsScreen::notifyMouseWheel.
+
+### `FactionsScreen::refresh`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::refresh.
+
+### `FactionsScreen::setFocus`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, first, second)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `first`: `Widget`
+  - `second`: `Widget`
+- **Notes**: Fired after FactionsScreen::setFocus.
+
+### `FactionsScreen::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::update.
+
+### `FactionsScreen::updateInfo`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::updateInfo.
 
 ### `FarmBuilding::_CONSTRUCTOR`
 
@@ -4792,6 +5284,22 @@ Events.off(handlerId)
   - `defaultVal`: `GenericFixedInventoryLayout`
 - **Returns**: `GenericFixedInventoryLayout`
 
+### `GenericFixedInventoryLayout::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `GenericFixedInventoryLayout`
+
+### `GenericFixedInventoryLayout::_NV_setSize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, slotsW, slotsH)`
+- **Parameters**:
+  - `self`: `GenericFixedInventoryLayout`
+  - `slotsW`: `integer`
+  - `slotsH`: `integer`
+
 ### `InputHandler::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -4906,6 +5414,100 @@ Events.off(handlerId)
   - `type`: `integer`
 - **Returns**: `InventorySection`
 
+### `InventoryGUI::FenceCallbackData::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI::FenceCallbackData`
+
+### `InventoryGUI::InventoryTradeData::isValid`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI::InventoryTradeData`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::InventoryTradeData::operator=`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, other)`
+- **Parameters**:
+  - `self`: `InventoryGUI::InventoryTradeData`
+  - `other`: `InventoryGUI::InventoryTradeData`
+
+### `InventoryGUI::RClickAutoTrade`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, invSectionName, x, y, sendingTo, thieveryChecks, first, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `invSectionName`: `string`
+  - `x`: `integer`
+  - `y`: `integer`
+  - `sendingTo`: `InventoryGUI`
+  - `thieveryChecks`: `boolean`
+  - `first`: `boolean`
+  - `result`: `InventoryGUI::TradeResult`
+
+### `InventoryGUI::RClickAutoTradeAll`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, invSectionName, x, y, sendingTo, thieveryChecks, first, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `invSectionName`: `string`
+  - `x`: `integer`
+  - `y`: `integer`
+  - `sendingTo`: `InventoryGUI`
+  - `thieveryChecks`: `boolean`
+  - `first`: `boolean`
+  - `result`: `InventoryGUI::TradeResult`
+
+### `InventoryGUI::TradeResult::ShowMessage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(value)`
+- **Parameters**:
+  - `value`: `integer`
+
+### `InventoryGUI::TradeResult::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+  - `value`: `integer`
+
+### `InventoryGUI::TradeResult::operator!=`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, other, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+  - `other`: `InventoryGUI::TradeResult`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::TradeResult::operator==`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, other, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+  - `other`: `InventoryGUI::TradeResult`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::TradeResult::showMessage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+
 ### `InventoryGUI::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -4918,6 +5520,89 @@ Events.off(handlerId)
   - `defaultVal`: `InventoryGUI`
 - **Returns**: `InventoryGUI`
 
+### `InventoryGUI::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::_NV_autoChangeSelectedObject`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, obj)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `obj`: `hand`
+
+### `InventoryGUI::_NV_getCallbackCharacter`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `Character`
+- **Returns**: `Character`
+
+### `InventoryGUI::_NV_getCallbackObject`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `RootObject`
+- **Returns**: `RootObject`
+
+### `InventoryGUI::_NV_getInventory`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `Inventory`
+- **Returns**: `Inventory`
+
+### `InventoryGUI::_NV_isVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::_NV_refreshSection`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, section)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `section`: `InventorySection`
+
+### `InventoryGUI::_NV_setPositionReal`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, x, y)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `x`: `number`
+  - `y`: `number`
+
+### `InventoryGUI::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `on`: `boolean`
+
+### `InventoryGUI::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
 ### `InventoryGUI::addTradePartner`
 
 - **Category**: Notification / Observer
@@ -4929,6 +5614,43 @@ Events.off(handlerId)
   - `isPlayer`: `boolean`
   - `whoHand`: `hand`
 
+### `InventoryGUI::autoArrangeButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+
+### `InventoryGUI::canDropMouseItemWithoutPaying`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(cameFrom, defaultVal)`
+- **Parameters**:
+  - `cameFrom`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::clearTradePartners`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function()`
+- **Parameters**: None
+
+### `InventoryGUI::fencingConfirmation`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, item, thief, fence, sectionName, mouse, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `item`: `Item`
+  - `thief`: `RootObject`
+  - `fence`: `Character`
+  - `sectionName`: `string`
+  - `mouse`: `types::TPoint<int>`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
 ### `InventoryGUI::fencingConfirmationCallback`
 
 - **Category**: Notification / Observer
@@ -4936,6 +5658,453 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `InventoryGUI`
   - `b`: `integer`
+
+### `InventoryGUI::getBackpack`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `ContainerItem`
+- **Returns**: `ContainerItem`
+
+### `InventoryGUI::getMouseItem`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `Item`
+- **Returns**: `Item`
+
+### `InventoryGUI::getNPCTrader`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `Character`
+- **Returns**: `Character`
+
+### `InventoryGUI::getPlayerTradeCharacter`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `RootObject`
+- **Returns**: `RootObject`
+
+### `InventoryGUI::getSectionWithMouseLocal`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `result`: `string`
+
+### `InventoryGUI::getSelectedItem`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, sectionName, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sectionName`: `string`
+  - `defaultVal`: `Item`
+- **Returns**: `Item`
+
+### `InventoryGUI::getSlotWithMouse`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `result`: `iVector2`
+
+### `InventoryGUI::getTrader1Trader2`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, trader1, trader2)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `trader1`: `InventoryGUI`
+  - `trader2`: `InventoryGUI`
+
+### `InventoryGUI::getTraderPriceMultiplier`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `InventoryGUI::getTradingTown`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `Town`
+- **Returns**: `Town`
+
+### `InventoryGUI::getWindowCoord`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `result`: `types::TCoord<int>`
+
+### `InventoryGUI::hasMouse`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::hasSameOwner`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, other, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `other`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::isStealing`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, cameFrom, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `cameFrom`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::isTradingAndStealing_static`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `RootObject`
+- **Returns**: `RootObject`
+
+### `InventoryGUI::isTradingForMoney`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, cameFrom, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `cameFrom`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::isTradingForMoney_static`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `RootObject`
+- **Returns**: `RootObject`
+
+### `InventoryGUI::isWithinRangeToTrade`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, otherOwner, stealing, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `otherOwner`: `RootObject`
+  - `stealing`: `boolean`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::lockedItemCheck`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(item, defaultVal)`
+- **Parameters**:
+  - `item`: `LockedArmour`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::makeIconForItem`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(item, x, y, defaultVal)`
+- **Parameters**:
+  - `item`: `Item`
+  - `x`: `integer`
+  - `y`: `integer`
+  - `defaultVal`: `InventoryIcon`
+- **Returns**: `InventoryIcon`
+
+### `InventoryGUI::onWindowFocus`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, focus)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+  - `focus`: `boolean`
+
+### `InventoryGUI::openBackpackButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+
+### `InventoryGUI::openLimbsInterface`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+
+### `InventoryGUI::pickupItemToMouse`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, sectionName, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sectionName`: `string`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::placeItemFromMouse`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, sectionName, mousePos, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sectionName`: `string`
+  - `mousePos`: `types::TPoint<int>`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::playSound`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, eventId, item)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `eventId`: `string`
+  - `item`: `Item`
+
+### `InventoryGUI::refreshAllSections`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::refreshSection`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::removeTradePartner`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(tradeWith)`
+- **Parameters**:
+  - `tradeWith`: `InventoryGUI`
+
+### `InventoryGUI::returnItem`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, item, sectionName)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `item`: `Item`
+  - `sectionName`: `string`
+
+### `InventoryGUI::rightClickAutoEquipping`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::sectionMouseButtonPressed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `InventoryGUI::sectionMouseButtonReleased`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `InventoryGUI::setItemToPlayerPortrait`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, item, character, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `item`: `Item`
+  - `character`: `Character`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::setTradingTown`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(town)`
+- **Parameters**:
+  - `town`: `hand`
+
+### `InventoryGUI::showBackpack`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `on`: `boolean`
+
+### `InventoryGUI::stealingGUIInfoUpdate`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::takeCertainAmountFrom`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, baseItem, amount, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `baseItem`: `Item`
+  - `amount`: `integer`
+  - `defaultVal`: `Item`
+- **Returns**: `Item`
+
+### `InventoryGUI::tryToEquip`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, item, replace, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `item`: `Item`
+  - `replace`: `boolean`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::updateDatapanel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::windowButtonPressed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, widget, name)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `widget`: `Widget`
+  - `name`: `string`
+
+### `InventoryGUI::windowMoved`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+
+### `InventoryIcon::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, item, position, parent)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
+  - `item`: `Item`
+  - `position`: `types::TPoint<int>`
+  - `parent`: `Widget`
+
+### `InventoryIcon::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
+
+### `InventoryIcon::createIconImage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(item, name, size)`
+- **Parameters**:
+  - `item`: `Item`
+  - `name`: `string`
+  - `size`: `iVector2`
+
+### `InventoryIcon::getItemPosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(x, y, result)`
+- **Parameters**:
+  - `x`: `integer`
+  - `y`: `integer`
+  - `result`: `types::TPoint<int>`
+
+### `InventoryIcon::getItemSize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(itemData, result)`
+- **Parameters**:
+  - `itemData`: `GameData`
+  - `result`: `types::TSize<int>`
+
+### `InventoryIcon::getSize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
+  - `result`: `types::TSize<int>`
+
+### `InventoryIcon::getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
+  - `result`: `Widget`
+
+### `InventoryIcon::setPosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, position)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
+  - `position`: `types::TPoint<int>`
+
+### `InventoryIcon::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
 
 ### `InventoryItemBase::_CONSTRUCTOR`
 
@@ -4960,6 +6129,192 @@ Events.off(handlerId)
   - `isPlayer`: `boolean`
   - `defaultVal`: `integer`
 - **Returns**: `integer`
+
+### `InventoryLayout::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, file)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `file`: `string`
+
+### `InventoryLayout::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+
+### `InventoryLayout::_NV_getDatapanel`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `defaultVal`: `DatapanelGUI`
+- **Returns**: `DatapanelGUI`
+
+### `InventoryLayout::createSectionGUI`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, section, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `section`: `InventorySection`
+  - `defaultVal`: `InventorySectionGUI`
+- **Returns**: `InventorySectionGUI`
+
+### `InventoryLayout::getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, name, result)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `name`: `string`
+  - `result`: `Widget`
+
+### `InventoryLayout::getWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `result`: `Widget`
+
+### `InventoryLayout::notifyCellSizeChanged`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function()`
+- **Parameters**: None
+
+### `InventoryLayout::resizeSection`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, section, sectionGUI, result)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `section`: `InventorySection`
+  - `sectionGUI`: `InventorySectionGUI`
+  - `result`: `types::TSize<int>`
+
+### `InventoryLayout::resizeSectionWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, width, height, widget, result)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `width`: `integer`
+  - `height`: `integer`
+  - `widget`: `Widget`
+  - `result`: `types::TSize<int>`
+
+### `InventoryLayout::setSectionGUIDisabled`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sectionName, width, height)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `sectionName`: `string`
+  - `width`: `integer`
+  - `height`: `integer`
+
+### `InventoryLayout::setupDataPanelInfos`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, name)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `name`: `string`
+
+### `InventorySectionGUI::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, widget, sectionName)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `widget`: `Widget`
+  - `sectionName`: `string`
+
+### `InventorySectionGUI::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+
+### `InventorySectionGUI::getBestPositionSlot`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, position, section, item, slot, defaultVal)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `position`: `types::TPoint<int>`
+  - `section`: `InventorySection`
+  - `item`: `Item`
+  - `slot`: `types::TPoint<int>`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventorySectionGUI::getItemAbsolutePosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, x, y, result)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `x`: `integer`
+  - `y`: `integer`
+  - `result`: `types::TPoint<int>`
+
+### `InventorySectionGUI::getPositionSlot`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, position, section, round, result)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `position`: `types::TPoint<int>`
+  - `section`: `InventorySection`
+  - `round`: `boolean`
+  - `result`: `types::TPoint<int>`
+
+### `InventorySectionGUI::getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `result`: `Widget`
+
+### `InventorySectionGUI::hasMouse`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventorySectionGUI::refreshIcons`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, section)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `section`: `InventorySection`
+
+### `InventorySectionGUI::setEnabled`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `value`: `boolean`
+
+### `InventorySectionGUI::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
 
 ### `Item::_CONSTRUCTOR`
 
@@ -5023,6 +6378,430 @@ Events.off(handlerId)
   - `defaultVal`: `LockedArmour`
 - **Returns**: `LockedArmour`
 
+### `MainBarGUI::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::_NV_autoChangeSelectedObject`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, obj)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `obj`: `hand`
+
+### `MainBarGUI::_NV_clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::_NV_getToolTip`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `defaultVal`: `ToolTip`
+- **Returns**: `ToolTip`
+
+### `MainBarGUI::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `on`: `boolean`
+
+### `MainBarGUI::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::_NV_updateBountyPanelVisibility`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::_getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, name, result)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `name`: `string`
+  - `result`: `Widget`
+
+### `MainBarGUI::buildButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::changeFloorButtonDown`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::changeFloorButtonUp`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::changeSpeed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::closeMapWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::extendInfoPanel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `MainBarGUI::getBuildingInventoryPosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `result`: `types::TPoint<int>`
+
+### `MainBarGUI::getDatapanel`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, id, defaultVal)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `id`: `string`
+  - `defaultVal`: `DatapanelGUI`
+- **Returns**: `DatapanelGUI`
+
+### `MainBarGUI::getLoadingPanel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `result`: `Widget`
+
+### `MainBarGUI::getMedicalPanel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `result`: `lightuserdata`
+
+### `MainBarGUI::getPausePanel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `result`: `Widget`
+
+### `MainBarGUI::loadFromSerialise`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, data)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `data`: `GameData`
+
+### `MainBarGUI::ordersPanelClear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::ordersPanelFill`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, character)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `character`: `hand`
+
+### `MainBarGUI::platoonUpdated`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, platoon, charAdded)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `platoon`: `RootObjectContainer`
+  - `charAdded`: `boolean`
+
+### `MainBarGUI::portraitChangeSelection`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, index, follow)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+  - `index`: `number`
+  - `follow`: `boolean`
+
+### `MainBarGUI::portraitNotifyItem`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, info)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+  - `info`: `lightuserdata`
+
+### `MainBarGUI::portraitSelectItemAccept`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, index)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+  - `index`: `number`
+
+### `MainBarGUI::pressedKey`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, keycode)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `keycode`: `integer`
+
+### `MainBarGUI::refreshPortraitTabs`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::serialise`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, data)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `data`: `GameData`
+
+### `MainBarGUI::setExtendInfoPanelEnabled`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, enabled)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `enabled`: `boolean`
+
+### `MainBarGUI::setLevelEditInteriorMode`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, interiorMode)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `interiorMode`: `boolean`
+
+### `MainBarGUI::setLevelEditMode`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `on`: `boolean`
+
+### `MainBarGUI::setMessagePosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::speedChanged`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::tabPlatoonChange`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, index)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+  - `index`: `number`
+
+### `MainBarGUI::toggleCraftWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleFactionWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleHelpWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleInventory`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleMapWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleSquadWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleStatsWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleTechWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::updatePortrait`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, character)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `character`: `hand`
+
+### `MainBarGUI::updatePortraitSize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, platoon)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `platoon`: `ActivePlatoon`
+
+### `MainBarGUI::updatePortraits`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::updatePotraitsPlatoon`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainTabPortraitPlatoon::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainTabPortraitPlatoon`
+
+### `MainTabPortraitPlatoon::addTab`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, tabControl, visible)`
+- **Parameters**:
+  - `self`: `MainTabPortraitPlatoon`
+  - `tabControl`: `Widget`
+  - `visible`: `boolean`
+
+### `MainTabPortraitPlatoon::detach`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainTabPortraitPlatoon`
+
+### `MainTabPortraitPlatoon::setFlash`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, flash)`
+- **Parameters**:
+  - `self`: `MainTabPortraitPlatoon`
+  - `flash`: `boolean`
+
+### `MainTabPortraitPlatoon::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainTabPortraitPlatoon`
+
 ### `ManagementScreen::addMessage`
 
 - **Category**: Notification / Observer
@@ -5077,6 +6856,68 @@ Events.off(handlerId)
 - **Parameters**:
   - `time`: `number`
 - **Notes**: Raised by the renderer at the start of every frame, including while the game is paused. The argument is the time since the previous frame, in seconds.
+
+### `NewGameOptionsWindow::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+
+### `NewGameOptionsWindow::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+
+### `NewGameOptionsWindow::getVisible`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `NewGameOptionsWindow::getVisible hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `NewGameOptionsWindow::setOptions`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::setOptions hook after the original call`
+- **Lua Signature**: `function(self, options)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+  - `options`: `GameplayOptions`
+
+### `NewGameOptionsWindow::setPosition`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::setPosition hook after the original call`
+- **Lua Signature**: `function(self, x, y)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+  - `x`: `integer`
+  - `y`: `integer`
+
+### `NewGameOptionsWindow::setVisible`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::setVisible hook after the original call`
+- **Lua Signature**: `function(self, visible)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+  - `visible`: `boolean`
+
+### `NewGameOptionsWindow::update`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::update hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
 
 ### `OrdersPanel::blockmodeButton`
 
@@ -5484,6 +7325,68 @@ Events.off(handlerId)
   - `character`: `Character`
   - `defaultVal`: `ShopTrader`
 - **Returns**: `ShopTrader`
+
+### `SplashScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SplashScreen::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+
+### `SplashScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SplashScreen::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+
+### `SplashScreen::addLogo`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SplashScreen::addLogo hook after the original call`
+- **Lua Signature**: `function(self, file, scale)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+  - `file`: `string`
+  - `scale`: `number`
+
+### `SplashScreen::getEnded`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `SplashScreen::getEnded hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `SplashScreen::getState`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `SplashScreen::getState hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `SplashScreen::skip`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SplashScreen::skip hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+
+### `SplashScreen::update`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SplashScreen::update hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `SplashScreen`
 
 ### `SquadManagementScreen::removeSquad`
 
